@@ -2,499 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2233521B3D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4400621B3D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgGJLMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 07:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728051AbgGJLM3 (ORCPT
+        id S1727059AbgGJLPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 07:15:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64646 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726369AbgGJLP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 07:12:29 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00886C08C5CE;
-        Fri, 10 Jul 2020 04:12:28 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id d10so2125455pll.3;
-        Fri, 10 Jul 2020 04:12:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l7RTKh+bZmJP85JGxF8cbqEPL7ohgIm/VkKorltZQs8=;
-        b=GicmT6qVnPwNmyFD+RvB556xofUdcZ0CUZSmjnHihQ9WlaJQDLPyadjflzQy4UHVty
-         BAJ6WXyjq/DmUQjSuAi+1cmmhaA5kG5DmXTKvic4yj981sZP65UdtXumzJ5nnC+Hjqli
-         bJ5D2MT6UZFxfToZ5sX2hqPY/7zFYFu3mxdkJXt/HLtOEz3YNvAFxVuZ4VUD1dE11s8U
-         zOhjgkCZLFcMmo+C2CmzNXI7INsaBnhN7HE7jduH1nYpU7PzRTZrYoQ2oHrtWKxNER83
-         vLJ/SAFBgKkpd8yMIZv14sO5PSFkDpLDRXgEZrqdLH1lClogoFw0M3kb4h2VupTdXGJY
-         /KiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l7RTKh+bZmJP85JGxF8cbqEPL7ohgIm/VkKorltZQs8=;
-        b=l/8g005xCSJ6LJm6aQKH/ptsBJatDjDu1qsav/QBiWNdRHBDLLUdRT7yQhA+IHTjqV
-         KXAc8v+JWVCz/pcu8+FIMzPVDMLmzdoVk4OEZiHL7nNt6lq7KV6eKJzvG9nWwQa7DWXZ
-         AaMjX65RyKWjQUfmww0StrSiJPCh+mvnue6eP3vemRdUr18kMIs6ZZ40CRaYiWs70Lze
-         tckYz3Uldi6QOLUHTXwV+ysw1o3RCm2YwVTS0HgWP+qcvZZcq7V6HSbEKB+5wg+cp6Qr
-         3STPglkKUc/O4of+Scf7igWsbqGouTUgjiflfS7XAZMb6HdW+TY104X8fPlye7ehwdE/
-         0xiQ==
-X-Gm-Message-State: AOAM531mYFQSu3lObQLaPAP42cx7lfMbFzb/tFAJ75GD3Z2P+Juv2RM7
-        fgZfAWhAu9O7PO5DIXhQhO2vWCEB
-X-Google-Smtp-Source: ABdhPJzJhF7vmftalvZ+YXUG0ixeh/Br6oqfQI4Zboy0wjJrq29tulvaNXLj9+Gyqdj8LiQXf9ExfQ==
-X-Received: by 2002:a17:90a:b901:: with SMTP id p1mr4727036pjr.134.1594379548474;
-        Fri, 10 Jul 2020 04:12:28 -0700 (PDT)
-Received: from gli-arch.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
-        by smtp.gmail.com with ESMTPSA id az13sm5046274pjb.34.2020.07.10.04.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 04:12:28 -0700 (PDT)
-From:   Ben Chuang <benchuanggli@gmail.com>
-To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, takahiro.akashi@linaro.org,
-        greg.tu@genesyslogic.com.tw, Ben Chuang <benchuanggli@gmail.com>
-Subject: [RFC PATCH V3 21/21] mmc: sdhci-pci-gli: enable UHS-II mode for GL9755
-Date:   Fri, 10 Jul 2020 19:13:12 +0800
-Message-Id: <20200710111312.30046-1-benchuanggli@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 10 Jul 2020 07:15:26 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06AB1vqU160546;
+        Fri, 10 Jul 2020 07:15:19 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 326bpb8y8s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jul 2020 07:15:19 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06AB28s0161601;
+        Fri, 10 Jul 2020 07:15:19 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 326bpb8y81-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jul 2020 07:15:19 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06AB5Riv015525;
+        Fri, 10 Jul 2020 11:15:17 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma02fra.de.ibm.com with ESMTP id 326bcf0hxw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jul 2020 11:15:17 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06ABFFmZ50266196
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Jul 2020 11:15:15 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E5D335205F;
+        Fri, 10 Jul 2020 11:15:14 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 7782C5204F;
+        Fri, 10 Jul 2020 11:15:13 +0000 (GMT)
+Date:   Fri, 10 Jul 2020 16:45:12 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
+        Andi Kleen <andi@firstfloor.org>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH 4/4] perf-probe: Warn if the target function is GNU
+ Indirect function
+Message-ID: <20200710111512.GK874@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <159428201109.56570.3802208017109058146.stgit@devnote2>
+ <159428205174.56570.17588311835868886287.stgit@devnote2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <159428205174.56570.17588311835868886287.stgit@devnote2>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-10_03:2020-07-10,2020-07-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ malwarescore=0 mlxlogscore=999 phishscore=0 adultscore=0 suspectscore=0
+ impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007100074
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+* Masami Hiramatsu <mhiramat@kernel.org> [2020-07-09 17:07:31]:
 
-Changes are:
-* Disable GL9755 overcurrent interrupt when power on/off on UHS-II.
-* Enable the internal clock when do reset on UHS-II mode.
-* Set ZC to 0x0 for Sandisk cards and set ZC to 0xB for others.
-* Increase timeout value before detecting UHS-II interface.
-* Add vendor settings fro UHS-II mode.
+> Reported-by: Andi Kleen <andi@firstfloor.org>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  tools/perf/util/probe-event.c |    5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+> index 1e95a336862c..671176d39569 100644
+> --- a/tools/perf/util/probe-event.c
+> +++ b/tools/perf/util/probe-event.c
+> @@ -379,6 +379,11 @@ static int find_alternative_probe_point(struct debuginfo *dinfo,
+>  			address = sym->start;
+>  		else
+>  			address = map->unmap_ip(map, sym->start) - map->reloc;
+> +		if (sym->type == STT_GNU_IFUNC) {
+> +			pr_warning("Warning: The probe address (0x%lx) is in a GNU indirect function.\n"
+> +				"This may not work as you expected unless you intend to probe the indirect function.\n",
+> +				(unsigned long)address);
+> +		}
 
-Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
----
- drivers/mmc/host/Kconfig         |   1 +
- drivers/mmc/host/sdhci-pci-gli.c | 361 ++++++++++++++++++++++++++++++-
- 2 files changed, 361 insertions(+), 1 deletion(-)
+Are these GNU indirect functions possible in kernel? If not we could move
+this warning under if (uprobes)
 
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index ffeef38264c0..88e27d3a032b 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -102,6 +102,7 @@ config MMC_SDHCI_PCI
- 	tristate "SDHCI support on PCI bus"
- 	depends on MMC_SDHCI && PCI
- 	select MMC_CQHCI
-+	select MMC_SDHCI_UHS2
- 	select IOSF_MBI if X86
- 	select MMC_SDHCI_IO_ACCESSORS
- 	help
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index ca0166d9bf82..16be8e47bf15 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -14,6 +14,7 @@
- #include <linux/delay.h>
- #include "sdhci.h"
- #include "sdhci-pci.h"
-+#include "sdhci-uhs2.h"
- 
- /*  Genesys Logic extra registers */
- #define SDHCI_GLI_9750_WT         0x800
-@@ -63,6 +64,42 @@
- #define   SDHCI_GLI_9750_TUNING_PARAMETERS_RX_DLY    GENMASK(2, 0)
- #define   GLI_9750_TUNING_PARAMETERS_RX_DLY_VALUE    0x1
- 
-+#define PCI_GLI_9755_WT       0x800
-+#define   PCI_GLI_9755_WT_EN    BIT(0)
-+#define   GLI_9755_WT_EN_ON	0x1
-+#define   GLI_9755_WT_EN_OFF    0x0
-+
-+#define PCI_GLI_9755_PLLSSC                 0x68
-+#define   PCI_GLI_9755_PLLSSC_RTL             BIT(24)
-+#define   GLI_9755_PLLSSC_RTL_VALUE           0x1
-+#define   PCI_GLI_9755_PLLSSC_TRANS_PASS      BIT(27)
-+#define   GLI_9755_PLLSSC_TRANS_PASS_VALUE    0x1
-+#define   PCI_GLI_9755_PLLSSC_RECV            GENMASK(29, 28)
-+#define   GLI_9755_PLLSSC_RECV_VALUE          0x3
-+#define   PCI_GLI_9755_PLLSSC_TRAN            GENMASK(31, 30)
-+#define   GLI_9755_PLLSSC_TRAN_VALUE          0x3
-+
-+#define PCI_GLI_9755_UHS2_PLL            0x6C
-+#define   PCI_GLI_9755_UHS2_PLL_SSC        GENMASK(9, 8)
-+#define   GLI_9755_UHS2_PLL_SSC_VALUE      0x0
-+#define   PCI_GLI_9755_UHS2_PLL_DELAY      BIT(18)
-+#define   GLI_9755_UHS2_PLL_DELAY_VALUE    0x1
-+#define   PCI_GLI_9755_UHS2_PLL_PDRST      BIT(27)
-+#define   GLI_9755_UHS2_PLL_PDRST_VALUE    0x1
-+
-+#define PCI_GLI_9755_UHS2_SERDES	    0x70
-+#define   PCI_GLI_9755_UHS2_SERDES_INTR       GENMASK(2, 0)
-+#define   GLI_9755_UHS2_SERDES_INTR_VALUE     0x3
-+#define   PCI_GLI_9755_UHS2_SERDES_ZC1        BIT(3)
-+#define   GLI_9755_UHS2_SERDES_ZC1_VALUE      0x0
-+#define   PCI_GLI_9755_UHS2_SERDES_ZC2        GENMASK(7, 4)
-+#define   GLI_9755_UHS2_SERDES_ZC2_DEFAULT    0xB
-+#define   GLI_9755_UHS2_SERDES_ZC2_SANDISK    0x0
-+#define   PCI_GLI_9755_UHS2_SERDES_TRAN       GENMASK(27, 24)
-+#define   GLI_9755_UHS2_SERDES_TRAN_VALUE     0xC
-+#define   PCI_GLI_9755_UHS2_SERDES_RECV       GENMASK(31, 28)
-+#define   GLI_9755_UHS2_SERDES_RECV_VALUE     0xF
-+
- #define SDHCI_GLI_9763E_CTRL_HS400  0x7
- 
- #define SDHCI_GLI_9763E_HS400_ES_REG      0x52C
-@@ -295,6 +332,324 @@ static void gli_pcie_enable_msi(struct sdhci_pci_slot *slot)
- 	slot->host->irq = pci_irq_vector(slot->chip->pdev, 0);
- }
- 
-+static inline void gl9755_wt_on(struct pci_dev *pdev)
-+{
-+	u32 wt_value;
-+	u32 wt_enable;
-+
-+	pci_read_config_dword(pdev, PCI_GLI_9755_WT, &wt_value);
-+	wt_enable = FIELD_GET(PCI_GLI_9755_WT_EN, wt_value);
-+
-+	if (wt_enable == GLI_9755_WT_EN_ON)
-+		return;
-+
-+	wt_value &= ~PCI_GLI_9755_WT_EN;
-+	wt_value |= FIELD_PREP(PCI_GLI_9755_WT_EN, GLI_9755_WT_EN_ON);
-+
-+	pci_write_config_dword(pdev, PCI_GLI_9755_WT, wt_value);
-+}
-+
-+static inline void gl9755_wt_off(struct pci_dev *pdev)
-+{
-+	u32 wt_value;
-+	u32 wt_enable;
-+
-+	pci_read_config_dword(pdev, PCI_GLI_9755_WT, &wt_value);
-+	wt_enable = FIELD_GET(PCI_GLI_9755_WT_EN, wt_value);
-+
-+	if (wt_enable == GLI_9755_WT_EN_OFF)
-+		return;
-+
-+	wt_value &= ~PCI_GLI_9755_WT_EN;
-+	wt_value |= FIELD_PREP(PCI_GLI_9755_WT_EN, GLI_9755_WT_EN_OFF);
-+
-+	pci_write_config_dword(pdev, PCI_GLI_9755_WT, wt_value);
-+}
-+
-+static void gl9755_vendor_init(struct sdhci_host *host)
-+{
-+	struct sdhci_pci_slot *slot = sdhci_priv(host);
-+	struct pci_dev *pdev = slot->chip->pdev;
-+	u32 serdes;
-+	u32 pllssc;
-+	u32 uhs2_pll;
-+
-+	gl9755_wt_on(pdev);
-+
-+	pci_read_config_dword(pdev, PCI_GLI_9755_UHS2_SERDES, &serdes);
-+	serdes &= ~PCI_GLI_9755_UHS2_SERDES_TRAN;
-+	serdes |= FIELD_PREP(PCI_GLI_9755_UHS2_SERDES_TRAN,
-+			     GLI_9755_UHS2_SERDES_TRAN_VALUE);
-+	serdes &= ~PCI_GLI_9755_UHS2_SERDES_RECV;
-+	serdes |= FIELD_PREP(PCI_GLI_9755_UHS2_SERDES_RECV,
-+			     GLI_9755_UHS2_SERDES_RECV_VALUE);
-+	serdes &= ~PCI_GLI_9755_UHS2_SERDES_INTR;
-+	serdes |= FIELD_PREP(PCI_GLI_9755_UHS2_SERDES_INTR,
-+			     GLI_9755_UHS2_SERDES_INTR_VALUE);
-+	serdes &= ~PCI_GLI_9755_UHS2_SERDES_ZC1;
-+	serdes |= FIELD_PREP(PCI_GLI_9755_UHS2_SERDES_ZC1,
-+			     GLI_9755_UHS2_SERDES_ZC1_VALUE);
-+	serdes &= ~PCI_GLI_9755_UHS2_SERDES_ZC2;
-+	serdes |= FIELD_PREP(PCI_GLI_9755_UHS2_SERDES_ZC2,
-+			     GLI_9755_UHS2_SERDES_ZC2_DEFAULT);
-+	pci_write_config_dword(pdev, PCI_GLI_9755_UHS2_SERDES, serdes);
-+
-+	pci_read_config_dword(pdev, PCI_GLI_9755_UHS2_PLL, &uhs2_pll);
-+	uhs2_pll &= ~PCI_GLI_9755_UHS2_PLL_SSC;
-+	uhs2_pll |= FIELD_PREP(PCI_GLI_9755_UHS2_PLL_SSC,
-+			  GLI_9755_UHS2_PLL_SSC_VALUE);
-+	uhs2_pll &= ~PCI_GLI_9755_UHS2_PLL_DELAY;
-+	uhs2_pll |= FIELD_PREP(PCI_GLI_9755_UHS2_PLL_DELAY,
-+			  GLI_9755_UHS2_PLL_DELAY_VALUE);
-+	uhs2_pll &= ~PCI_GLI_9755_UHS2_PLL_PDRST;
-+	uhs2_pll |= FIELD_PREP(PCI_GLI_9755_UHS2_PLL_PDRST,
-+			  GLI_9755_UHS2_PLL_PDRST_VALUE);
-+	pci_write_config_dword(pdev, PCI_GLI_9755_UHS2_PLL, uhs2_pll);
-+
-+	pci_read_config_dword(pdev, PCI_GLI_9755_PLLSSC, &pllssc);
-+	pllssc &= ~PCI_GLI_9755_PLLSSC_RTL;
-+	pllssc |= FIELD_PREP(PCI_GLI_9755_PLLSSC_RTL,
-+			  GLI_9755_PLLSSC_RTL_VALUE);
-+	pllssc &= ~PCI_GLI_9755_PLLSSC_TRANS_PASS;
-+	pllssc |= FIELD_PREP(PCI_GLI_9755_PLLSSC_TRANS_PASS,
-+			  GLI_9755_PLLSSC_TRANS_PASS_VALUE);
-+	pllssc &= ~PCI_GLI_9755_PLLSSC_RECV;
-+	pllssc |= FIELD_PREP(PCI_GLI_9755_PLLSSC_RECV,
-+			  GLI_9755_PLLSSC_RECV_VALUE);
-+	pllssc &= ~PCI_GLI_9755_PLLSSC_TRAN;
-+	pllssc |= FIELD_PREP(PCI_GLI_9755_PLLSSC_TRAN,
-+			  GLI_9755_PLLSSC_TRAN_VALUE);
-+	pci_write_config_dword(pdev, PCI_GLI_9755_PLLSSC, pllssc);
-+
-+	gl9755_wt_off(pdev);
-+}
-+
-+static void gl9755_pre_detect_init(struct sdhci_host *host)
-+{
-+	/* GL9755 need more time on UHS2 detect flow */
-+	sdhci_writeb(host, 0xA7, SDHCI_UHS2_TIMER_CTRL);
-+}
-+
-+static void gl9755_post_attach_sd(struct sdhci_host *host)
-+{
-+	struct pci_dev *pdev;
-+	struct sdhci_pci_chip *chip;
-+	struct sdhci_pci_slot *slot;
-+	u32 serdes;
-+
-+	slot = sdhci_priv(host);
-+	chip = slot->chip;
-+	pdev = chip->pdev;
-+
-+	gl9755_wt_on(pdev);
-+
-+	pci_read_config_dword(pdev, PCI_GLI_9755_UHS2_SERDES, &serdes);
-+	serdes &= ~PCI_GLI_9755_UHS2_SERDES_ZC1;
-+	serdes &= ~PCI_GLI_9755_UHS2_SERDES_ZC2;
-+	serdes |= FIELD_PREP(PCI_GLI_9755_UHS2_SERDES_ZC1,
-+			     GLI_9755_UHS2_SERDES_ZC1_VALUE);
-+
-+	/* the manfid of sandisk card is 0x3 */
-+	if (host->mmc->card->cid.manfid == 0x3)
-+		serdes |= FIELD_PREP(PCI_GLI_9755_UHS2_SERDES_ZC2,
-+				     GLI_9755_UHS2_SERDES_ZC2_SANDISK);
-+	else
-+		serdes |= FIELD_PREP(PCI_GLI_9755_UHS2_SERDES_ZC2,
-+				     GLI_9755_UHS2_SERDES_ZC2_DEFAULT);
-+
-+	pci_write_config_dword(pdev, PCI_GLI_9755_UHS2_SERDES, serdes);
-+
-+	gl9755_wt_off(pdev);
-+}
-+
-+static void gl9755_overcurrent_event_enable(struct sdhci_host *host,
-+					    bool enable)
-+{
-+	u32 mask;
-+
-+	mask = sdhci_readl(host, SDHCI_SIGNAL_ENABLE);
-+	if (enable)
-+		mask |= SDHCI_INT_BUS_POWER;
-+	else
-+		mask &= ~SDHCI_INT_BUS_POWER;
-+
-+	sdhci_writel(host, mask, SDHCI_SIGNAL_ENABLE);
-+
-+	mask = sdhci_readl(host, SDHCI_INT_ENABLE);
-+	if (enable)
-+		mask |= SDHCI_INT_BUS_POWER;
-+	else
-+		mask &= ~SDHCI_INT_BUS_POWER;
-+
-+	sdhci_writel(host, mask, SDHCI_INT_ENABLE);
-+}
-+
-+static void gl9755_set_power(struct sdhci_host *host, unsigned char mode,
-+			     unsigned short vdd, unsigned short vdd2)
-+{
-+	u8 pwr = 0;
-+
-+	if (mode != MMC_POWER_OFF) {
-+		switch (1 << vdd) {
-+		case MMC_VDD_165_195:
-+		/*
-+		 * Without a regulator, SDHCI does not support 2.0v
-+		 * so we only get here if the driver deliberately
-+		 * added the 2.0v range to ocr_avail. Map it to 1.8v
-+		 * for the purpose of turning on the power.
-+		 */
-+		case MMC_VDD_20_21:
-+			pwr = SDHCI_POWER_180;
-+			break;
-+		case MMC_VDD_29_30:
-+		case MMC_VDD_30_31:
-+			pwr = SDHCI_POWER_300;
-+			break;
-+		case MMC_VDD_32_33:
-+		case MMC_VDD_33_34:
-+			pwr = SDHCI_POWER_330;
-+			break;
-+		default:
-+			WARN(1, "%s: Invalid vdd %#x\n",
-+			     mmc_hostname(host->mmc), vdd);
-+			break;
-+		}
-+	}
-+
-+	if (mode != MMC_POWER_OFF) {
-+		if (vdd2 != (unsigned short)-1) {
-+			switch (1 << vdd2) {
-+			case MMC_VDD2_165_195:
-+				pwr |= SDHCI_VDD2_POWER_180;
-+				break;
-+			default:
-+				WARN(1, "%s: Invalid vdd2 %#x\n",
-+				     mmc_hostname(host->mmc), vdd2);
-+				break;
-+			}
-+		}
-+	}
-+
-+	if (host->pwr == pwr)
-+		return;
-+
-+	host->pwr = pwr;
-+
-+	if (pwr == 0) {
-+		gl9755_overcurrent_event_enable(host, false);
-+		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
-+	} else {
-+		gl9755_overcurrent_event_enable(host, false);
-+		sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
-+
-+		pwr |= SDHCI_POWER_ON;
-+		if (vdd2 != (unsigned short)-1)
-+			pwr |= SDHCI_VDD2_POWER_ON;
-+
-+		sdhci_writeb(host, pwr & 0xf, SDHCI_POWER_CONTROL);
-+		/* wait stable */
-+		mdelay(5);
-+		sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
-+		/* wait stable */
-+		mdelay(5);
-+		gl9755_overcurrent_event_enable(host, true);
-+	}
-+}
-+
-+static bool sdhci_wait_clock_stable(struct sdhci_host *host)
-+{
-+	u16 clk = 0;
-+	ktime_t timeout;
-+
-+	/* Wait max 20 ms */
-+	timeout = ktime_add_ms(ktime_get(), 20);
-+	while (1) {
-+		bool timedout = ktime_after(ktime_get(), timeout);
-+
-+		clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-+		if (clk & SDHCI_CLOCK_INT_STABLE)
-+			break;
-+		if (timedout) {
-+			pr_err("%s: Internal clock never stabilised.\n",
-+			       mmc_hostname(host->mmc));
-+			sdhci_dumpregs(host);
-+			return false;
-+		}
-+		udelay(10);
-+	}
-+	return true;
-+}
-+
-+static void gl9755_uhs2_reset_sd_tran(struct sdhci_host *host)
-+{
-+	/* do this on UHS2 mode */
-+	if (host->mmc->flags & MMC_UHS2_INITIALIZED) {
-+		sdhci_uhs2_reset(host, SDHCI_UHS2_SW_RESET_SD);
-+		sdhci_writel(host, host->ier, SDHCI_INT_ENABLE);
-+		sdhci_writel(host, host->ier, SDHCI_SIGNAL_ENABLE);
-+		sdhci_uhs2_clear_set_irqs(host,
-+					  SDHCI_INT_ALL_MASK,
-+					  SDHCI_UHS2_ERR_INT_STATUS_MASK);
-+	}
-+}
-+
-+static void sdhci_gl9755_reset(struct sdhci_host *host, u8 mask)
-+{
-+	ktime_t timeout;
-+	u16 ctrl2;
-+	u16 clk_ctrl;
-+
-+	/* need internal clock */
-+	if (mask & SDHCI_RESET_ALL) {
-+		ctrl2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-+		clk_ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-+
-+		if ((ctrl2 & SDHCI_CTRL_V4_MODE) &&
-+		    (ctrl2 & SDHCI_CTRL_UHS2_INTERFACE_EN)) {
-+			sdhci_writew(host,
-+				     SDHCI_CLOCK_INT_EN,
-+				     SDHCI_CLOCK_CONTROL);
-+		} else {
-+			sdhci_writew(host,
-+				     SDHCI_CLOCK_INT_EN,
-+				     SDHCI_CLOCK_CONTROL);
-+			sdhci_wait_clock_stable(host);
-+			sdhci_writew(host,
-+				     SDHCI_CTRL_V4_MODE,
-+				     SDHCI_HOST_CONTROL2);
-+		}
-+	}
-+
-+	sdhci_writeb(host, mask, SDHCI_SOFTWARE_RESET);
-+
-+	/* reset sd-tran on UHS2 mode if need to reset cmd/data */
-+	if ((mask & SDHCI_RESET_CMD) | (mask & SDHCI_RESET_DATA))
-+		gl9755_uhs2_reset_sd_tran(host);
-+
-+	if (mask & SDHCI_RESET_ALL)
-+		host->clock = 0;
-+
-+	/* Wait max 100 ms */
-+	timeout = ktime_add_ms(ktime_get(), 100);
-+
-+	/* hw clears the bit when it's done */
-+	while (1) {
-+		bool timedout = ktime_after(ktime_get(), timeout);
-+
-+		if (!(sdhci_readb(host, SDHCI_SOFTWARE_RESET) & mask))
-+			break;
-+		if (timedout) {
-+			pr_err("%s: Reset 0x%x never completed.\n",
-+			       mmc_hostname(host->mmc), (int)mask);
-+			sdhci_dumpregs(host);
-+			/* manual clear */
-+			sdhci_writeb(host, 0, SDHCI_SOFTWARE_RESET);
-+			return;
-+		}
-+		udelay(10);
-+	}
-+}
-+
- static int gli_probe_slot_gl9750(struct sdhci_pci_slot *slot)
- {
- 	struct sdhci_host *host = slot->host;
-@@ -313,6 +668,7 @@ static int gli_probe_slot_gl9755(struct sdhci_pci_slot *slot)
- 	gli_pcie_enable_msi(slot);
- 	slot->host->mmc->caps2 |= MMC_CAP2_NO_SDIO;
- 	sdhci_enable_v4_mode(host);
-+	gl9755_vendor_init(host);
- 
- 	return 0;
- }
-@@ -441,11 +797,14 @@ static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
- 
- static const struct sdhci_ops sdhci_gl9755_ops = {
- 	.set_clock		= sdhci_set_clock,
-+	.set_power              = gl9755_set_power,
- 	.enable_dma		= sdhci_pci_enable_dma,
- 	.set_bus_width		= sdhci_set_bus_width,
--	.reset			= sdhci_reset,
-+	.reset			= sdhci_gl9755_reset,
- 	.set_uhs_signaling	= sdhci_set_uhs_signaling,
- 	.voltage_switch		= sdhci_gli_voltage_switch,
-+	.uhs2_pre_detect_init    = gl9755_pre_detect_init,
-+	.uhs2_post_attach_sd    = gl9755_post_attach_sd,
- };
- 
- const struct sdhci_pci_fixes sdhci_gl9755 = {
+Also instead of printing the address, can we print the pp->function?
+
+>  		break;
+>  	}
+>  	if (!address) {
+> 
+
 -- 
-2.27.0
-
+Thanks and Regards
+Srikar Dronamraju
