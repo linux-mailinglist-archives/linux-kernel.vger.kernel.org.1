@@ -2,77 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E089E21BF05
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4193C21BF08
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgGJVJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:09:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35738 "EHLO mail.kernel.org"
+        id S1726376AbgGJVMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:12:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726223AbgGJVJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:09:27 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
+        id S1726251AbgGJVMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 17:12:01 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52D5520748;
-        Fri, 10 Jul 2020 21:09:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 720442068F;
+        Fri, 10 Jul 2020 21:12:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594415366;
-        bh=3G98qnEaA/R516BEiJIDzuUxC5EndF3JHX2eXGymybA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=z0+GTNPn0bhj5UyUdVoFvb7htf9qSPKOOnb3HqyG7uLdhnEOEAVcdTA5nmrLV06Pj
-         4/X3u/LMZbHP/M28Qj5MvEfjixgagHB6RamRQ6TewsNBpCVVJnvtV1S1mOarCv5qg4
-         aQOwuzESUBqh550N2mDLnLbjHtnjT5zdY0BbOCb8=
-Date:   Fri, 10 Jul 2020 16:09:24 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: PCI: Disable not requested resource types in pci_enable_resources
-Message-ID: <20200710210924.GA80868@bjorn-Precision-5520>
+        s=default; t=1594415520;
+        bh=dtv92RysIExNP/4vr0aXEII+j2WcLlm5yFmgM3Aqo7g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=0PFcXODQshHA/N1GujomWCok/4f/VdjWapStXrzyMTj80CN3EPoeOAUMJfgBtjURm
+         gtu3QT152yg5nvALVClsf0fOWG+chb7+ValzZU5cwG4U26DVeuYk7QfPPzF+xkdHPi
+         HEaEp9AjTzTOPLj6crk5dPtQu4hnALpgh6osjwuw=
+Date:   Fri, 10 Jul 2020 14:11:58 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 0/7] Add devlink-health support for devlink
+ ports
+Message-ID: <20200710141158.30e19596@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1594383913-3295-1-git-send-email-moshe@mellanox.com>
+References: <1594383913-3295-1-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18bb3264-9901-135d-8b40-1ee98dd672f1@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 28, 2020 at 08:47:12PM +0200, Heiner Kallweit wrote:
-> Currently, if both resource types are enabled before the call, the mask
-> value doesn't matter. Means as of today I wouldn't be able to e.g.
-> disable PCI_COMMAND_IO. At least my interpretation is that mask defines
-> which resource types are enabled after the call. Therefore change the
-> behavior to disable not requested resource types.
-> 
-> At least on my x86 devices this change doesn't have side effects.
+On Fri, 10 Jul 2020 15:25:06 +0300 Moshe Shemesh wrote:
+> Changes v2 -> v3:
+> Added motivation to cover letter and note on uAPI.
 
-Does this have a practical benefit?  If it fixes a bug or if there's
-something useful we can do because of this patch, I'll push it higher
-up the priority list.
+I guess this will be a test of how many production users this API has...
 
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> ---
->  drivers/pci/setup-res.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/setup-res.c b/drivers/pci/setup-res.c
-> index d21fa04fa..6ef458c10 100644
-> --- a/drivers/pci/setup-res.c
-> +++ b/drivers/pci/setup-res.c
-> @@ -459,8 +459,8 @@ int pci_enable_resources(struct pci_dev *dev, int mask)
->  	int i;
->  	struct resource *r;
->  
-> -	pci_read_config_word(dev, PCI_COMMAND, &cmd);
-> -	old_cmd = cmd;
-> +	pci_read_config_word(dev, PCI_COMMAND, &old_cmd);
-> +	cmd = old_cmd & ~(PCI_COMMAND_IO | PCI_COMMAND_MEMORY);
->  
->  	for (i = 0; i < PCI_NUM_RESOURCES; i++) {
->  		if (!(mask & (1 << i)))
-> -- 
-> 2.26.2
-> 
+Acked-by: Jakub Kicinski <kuba@kernel.org>
