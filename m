@@ -2,174 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99F421AF34
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 08:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AE621AF3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 08:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgGJGOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 02:14:25 -0400
-Received: from mga12.intel.com ([192.55.52.136]:8969 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbgGJGOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 02:14:23 -0400
-IronPort-SDR: CQIaZkqwaRBwpS0YaOXKh3hyKkJbnLSVzK7VUy3E9cU2VQNXsKSEo2KaDbq7bDclVz9j+XFkG+
- l+tHPa/FX+WA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="127748810"
-X-IronPort-AV: E=Sophos;i="5.75,334,1589266800"; 
-   d="scan'208";a="127748810"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 23:14:21 -0700
-IronPort-SDR: DYrjkeNDTDE+0PeUvDulaksFLuvo12c7J85VIUTELK0uiRi7Nz1XS0Icj/is35EfXwN680sZQg
- Dp9MAc6zN5OQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,334,1589266800"; 
-   d="scan'208";a="267632581"
-Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Jul 2020 23:14:21 -0700
-Received: from fmsmsx111.amr.corp.intel.com (10.18.116.5) by
- FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 9 Jul 2020 23:14:21 -0700
-Received: from FMSEDG001.ED.cps.intel.com (10.1.192.133) by
- fmsmsx111.amr.corp.intel.com (10.18.116.5) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 9 Jul 2020 23:14:21 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.104)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Thu, 9 Jul 2020 23:14:21 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iJsgm767m+R8OZzhwHl1XNxzGhuSdKGhyfnC/UIJyZl+iQtiOGl13zSSwnHnMMq/El8kKHbr9U6ab37ZqSKL7GVqQDOSwMHyueqNO6deImzmzt6cq+aoXa8o2lh0wRnAskKIcq8n0EhGvW3G4nhcyTOEVvBY8Xp7hnlcnYVo7Ghhu7ouAP3U9S4GAyb7Q9YBB2bhKneITMpCLOjdAeSUYDdXAPsjI3Ume5OMtGXWSSq0PqE5YOnd/rDe9QB4jDDK/JkQ61css4424ljXEvhMcrRBDNDKOjF/DU1ZGeim4v/Ds/Z3VX0gXYRgiXDHkUEJYx7BsJ3w7ap3vAXTvmrNFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vghefcwCSH88jKC69AJMZnndDh/2LId7LS7zeySOEb8=;
- b=HBHLieSU8MEM3iE+wHFiw8q8iFTU/8IyfczVx2V9K1Nd1NBTQIAgxvpdfPZ81Eiu2ZgZB1X7y5Hv1ZaJZpjr91TtF2mKOJ7WgjibO3s0hXVZ8+LOcqCSCB0Tupdi4tkYfNmztW/bONKh8bquSkjuRqZ+ILQuccbZUaD2dbQVdLpP9c1rwL0OkMa69Uk8+qj6KkFyH1mxCvT2x1XFEq9M1BPo9x6vH7HhtrWjPMcNHly6G2/Oh3ZCxcEjOvMYeCUz9rIJw0PUTx+k+oSysOiBM05D5423/nGT7Db/rjN4a2/HaUTFvvy2F+Yq85cA9+CTxfBbud824B5I2Nj3mERwTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vghefcwCSH88jKC69AJMZnndDh/2LId7LS7zeySOEb8=;
- b=tw2TiHJ3NRiBmL8YWWoO72F5ATlShTZ20E2n2tzEMSq1elIabzDrz6BzoRgd/AvfZ43EQCI5VlMF/Cpv2Ip3DVtaMtEwYaI2gDroDeHFBH3fqQGCls5vizai04Ue2DHGrpd4nj59XZMWY/5vYc4JbcOMn3oO6ORrR97ubPoJ9U8=
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com (2603:10b6:5:13f::31)
- by DM6PR11MB3545.namprd11.prod.outlook.com (2603:10b6:5:141::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Fri, 10 Jul
- 2020 06:14:19 +0000
-Received: from DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::c1c1:6930:f17d:a80a]) by DM6PR11MB3819.namprd11.prod.outlook.com
- ([fe80::c1c1:6930:f17d:a80a%4]) with mapi id 15.20.3174.023; Fri, 10 Jul 2020
- 06:14:19 +0000
-From:   "Wu, Hao" <hao.wu@intel.com>
-To:     "Xu, Yilun" <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
-CC:     "mdf@kernel.org" <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>
-Subject: RE: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
-Thread-Topic: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
-Thread-Index: AQHWVcomDnRuf5Ios0uozSMTJLBb7aj+8y7ggAAJzICAAAjeAIAAMHgAgAES8YCAAAzw8A==
-Date:   Fri, 10 Jul 2020 06:14:19 +0000
-Message-ID: <DM6PR11MB3819BF1B54D64AD706BF832E85650@DM6PR11MB3819.namprd11.prod.outlook.com>
-References: <1594282705-32289-1-git-send-email-yilun.xu@intel.com>
- <DM6PR11MB3819117029F124067F7EA8B985640@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20200709093527.GA32541@yilunxu-OptiPlex-7050>
- <DM6PR11MB3819D07348C347B5BB8F86C085640@DM6PR11MB3819.namprd11.prod.outlook.com>
- <2d7919d5-a320-58f4-5c9d-7ef868ad8676@redhat.com>
- <20200710052443.GB8689@yilunxu-OptiPlex-7050>
-In-Reply-To: <20200710052443.GB8689@yilunxu-OptiPlex-7050>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.102.204.38]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1e7cfd86-9ee7-4d7f-c97d-08d824987b7c
-x-ms-traffictypediagnostic: DM6PR11MB3545:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB35451B1CF9C23EE9D9ACD1C585650@DM6PR11MB3545.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3t9EwkGoIckfO+O7tOWLdsZT/Tx3hn9oIuy8H9Kv4HsSs2ZSPedWrhuz+jvXlDtkL5eG5Z4fXN8JYFQdJfT46F0UQagbUP+V/Yf5WrirzZOSS4bzsYT+YmoT6e5TRCyQNHXP9Ub8AQ2mJxlJM0BvfRsLghXasy5hRtMi1GmXpLUGS14BgblGVHlfoixw6Q35E73EDHjL2TbBi+++R35YC/ljUFGbLB771QFuu+pn/BtBA3quJlehEv8T1Gzamthlk037JFPXAQwJWzfb0BFBFzgc8wUJcOZyduM/0U794tzlQ1wwkx+/oOeLUfUFvCd4nyjFPc0kw9mRmdXEJyn6rw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3819.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39860400002)(346002)(366004)(376002)(396003)(186003)(316002)(478600001)(110136005)(54906003)(8936002)(86362001)(4326008)(8676002)(2906002)(26005)(5660300002)(66946007)(76116006)(71200400001)(55016002)(66446008)(66556008)(7696005)(66476007)(64756008)(53546011)(6506007)(33656002)(52536014)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 15LgN48fABBac9En745C80uzRbIailKiQzgnQrmQFh2xEhXvRr8TvP8dDn24kbhWaeu7nnnXQSiasUGtNbd72BHUO8qEZVngX4+58ohqVFgdzbHkxxOxsiFxIZg09JkF7k5QZ36bzy96Uh7gP7I+B47TZjmjPIzp26dcr9uySHx54oa+fGfw4HmPJHF/YRIceXKLsqH3JvNe20R+atc+OLdl0Fq/rWvQdm7bo5DnDyIOjeamfWOoMPC6UewaMsV6zAmZbXO5P3HXXGj3S9oWI3MNMTbaKHawDqo6BAgco1c6ccbFhkLupuCChZy2RiIX7Kq6Yt2oMgY2tIMdomAiiA0KXQUTy41N9O25G+//ktVZX9HPo8Nz3lZjsfgKU2vkh/xQ9sSYwIi/hlvGNh5nmg9MRvS6GZ+OeR29il8PAaol3nyIYDN8L2UO4KVi8LpTnX6f2+Gt6LmR8SvQQ98zXL7/ylJDLMQUlYzVfYioci13XI4BH22s/ZjVHXp4Vtac
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3819.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e7cfd86-9ee7-4d7f-c97d-08d824987b7c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jul 2020 06:14:19.8029
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mpi1hs8lZD4U/diSJF3EqHoL53OI/DLUNqNbxnpmDvejOKsf8u4AlC2MD6TBG8wxJ7lHj5rMP0z0wPLmJL9PNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3545
-X-OriginatorOrg: intel.com
+        id S1727833AbgGJGPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 02:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbgGJGPt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 02:15:49 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFD5C08C5CE;
+        Thu,  9 Jul 2020 23:15:49 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id u18so2073364pfk.10;
+        Thu, 09 Jul 2020 23:15:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3UDisdmmxAxoVFDA02zf8tgRXf0NT2qryD8Bj88ZzkU=;
+        b=CCNnBzGlzx2kwlJE26zUeWzUawQ+jCzFseRnJJDqF/W9ziK8E58GyapnxXQnmKOmnG
+         lpeljdj6FVx0JZKwIm2KDmLULADPCUJXz4DdB0K88wMCWV0CqQ6TiQ18FzmOtKPF9pPh
+         Ofkj9xNfQ56eJF4Hk8/TWYwmPbn1EFRlLDYpXRjRBatdth70hPEBrhjgu5wgJ87XDIKF
+         mNzLsb88HZaL5aMDK0V80Ar6QJhG7Y5M8w3AHFZGE2ccazhL6rMFx6viXQEDCQhZ8C29
+         S2P9fN9upJ1Ok7MR/7Wll0Ix/7SXeAKOg8QxQy47ujRyW3vOEsGDfBDD+VRCgSHvZjcZ
+         Mp8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3UDisdmmxAxoVFDA02zf8tgRXf0NT2qryD8Bj88ZzkU=;
+        b=WO/yZXmvHyp/UzBgJdRnAJFSP8ydorh/lELGts+wEB9VnKhoTWo8nEL5a69rI/o+ej
+         7rh5NAlxynyGJl6o+I8JDcfyu1HJ/dQwsi5FsSfPY4KkJBKAGa2mOfg3P+VYv1G2EScU
+         8AnW0lMPusmEGvwAGk4/Cyr91yJduOcZTmoOeg2eEEUsu+cHmfZb1hDmd2jAqXmDh6hF
+         COpg/u1YlZvHNX9PBt4tRXtK0EJGBk3pInzJA8sWbjPnJJWR1IjxVtJWKmQv6A7iW6Tz
+         Vyp++A4l1YFBT8bWuUu8EID4gaYu6jjW87mi4xN2ymfd7oMXKeapSIs5Sai8EUWMV7Ua
+         XuCQ==
+X-Gm-Message-State: AOAM532o019p8TZGCxALVHOeYKCsXFVUB8yT4Dhzah+t5MmTisaXz7kN
+        //VwYwQQpjLc8bKJjHs/WYs=
+X-Google-Smtp-Source: ABdhPJwVmqZUAAKfhO3/uTq/APmG/M/vVevTvaXd5iCq2GNOukYygaFFeyJ1gQdq7JJEVW4TbnRU2w==
+X-Received: by 2002:a65:43c1:: with SMTP id n1mr17832268pgp.67.1594361747517;
+        Thu, 09 Jul 2020 23:15:47 -0700 (PDT)
+Received: from mi-OptiPlex-7050.mioffice.cn ([43.224.245.180])
+        by smtp.gmail.com with ESMTPSA id j13sm4372525pjz.8.2020.07.09.23.15.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Jul 2020 23:15:47 -0700 (PDT)
+From:   yang che <chey84736@gmail.com>
+To:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        yang che <chey84736@gmail.com>
+Subject: [PATCH v3] hung_task:add detecting task in D state milliseconds timeout
+Date:   Fri, 10 Jul 2020 14:15:15 +0800
+Message-Id: <1594361715-25325-1-git-send-email-chey84736@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, Jul 09, 2020 at 06:00:40AM -0700, Tom Rix wrote:
-> >
-> > On 7/9/20 3:14 AM, Wu, Hao wrote:
-> > >> On Thu, Jul 09, 2020 at 05:10:49PM +0800, Wu, Hao wrote:
-> > >>>> Subject: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC =
-N3000
-> > >>>>
-> > >>>> Add PCIe Device ID for Intel FPGA PAC N3000.
-> > >>>>
-> > >>>> Signed-off-by: Wu Hao <hao.wu@intel.com>
-> > >>>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > >>>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > >>>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > >>>> ---
-> > >>>>  drivers/fpga/dfl-pci.c | 2 ++
-> > >>>>  1 file changed, 2 insertions(+)
-> > >>>>
-> > >>>> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-> > >>>> index 73b5153..824aecf 100644
-> > >>>> --- a/drivers/fpga/dfl-pci.c
-> > >>>> +++ b/drivers/fpga/dfl-pci.c
-> > >>>> @@ -64,6 +64,7 @@ static void cci_pci_free_irq(struct pci_dev
-> *pcidev)
-> > >>>>  #define PCIE_DEVICE_ID_PF_INT_5_X0xBCBD
-> > >>>>  #define PCIE_DEVICE_ID_PF_INT_6_X0xBCC0
-> > >>>>  #define PCIE_DEVICE_ID_PF_DSC_1_X0x09C4
-> > >>>> +#define PCIE_DEVICE_ID_PF_PAC_N3000 0x0B30
-> > >>> Should we drop _PF_ here? and also do you want _INTEL_ here?
-> > >> I think we could keep _PF_, also there is no need to support VF of p=
-ac
-> > >> n3000 in product now, but it does exist (ID: 0x0b31).
-> >
-> > I was wondering about the vf id, thanks!
-> >
-> > >>
-> > >> And add _INTEL_ is good to me.
-> > >>
-> > >> Then how about this one:
-> > >>   #define PCIE_DEVICE_ID_PF_INTEL_PAC_N3000	0x0B30
-> > > I am just considering the alignment with ids defined in
-> include/linux/pci_ids.h
-> > > So drop _PF_ before _INTEL_ would be better? : )
-> >
-> > To be consistent, all the id's are intel and all could drop pf.
->=20
-> That's good to me after checking the pci_ids.h. So we have:
->=20
-> #define PCIE_DEVICE_ID_INTEL_PAC_N3000        0x0B30
+current hung_task_check_interval_secs and hung_task_timeout_secs
+only supports seconds. In some cases,the TASK_UNINTERRUPTIBLE state
+takes less than 1 second,may need to hung task trigger panic
+get ramdump or print all cpu task.
 
-Sounds good to me.
+modify hung_task_check_interval_secs to hung_task_check_interval_msecs,
+check interval use milliseconds. Add hung_task_timeout_msecs file to
+set milliseconds.
+task timeout = hung_task_timeout_secs * 1000 + hung_task_timeout_msecs.
 
-Hao
+Signed-off-by: yang che <chey84736@gmail.com>
+---
+
+v2->v3:
+ Fix some format issues.
+ add use msecs_to_jiffies,jiffies_to_msec.
+ because use timeout = secs * 1000  + msecs,so sysctl_hung_task_timeout_msec
+ = CONFIG_DEFAULT_HUNG_TASK_TIMEOUT * MSEC_PER_SEC; will cause timeout is
+ CONFIG_DEFAULT_HUNG_TASK_TIMEOUT double.
+
+v1->v2:
+ add hung_task_check_interval_millisecs,hung_task_timeout_millisecs.
+ fix writing to the millisecond file silently overrides the setting in
+ the seconds file.
+
+ [1]https://lore.kernel.org/lkml/CAN_w4MWMfoDGfpON-bYHrU=KuJG2vpFj01ZbN4r-iwM4AyyuGw@mail.gmail.com
+ [2]https://lore.kernel.org/lkml/20200705171633.GU25523@casper.infradead.org/
+
+ include/linux/sched/sysctl.h |  3 ++-
+ kernel/hung_task.c           | 31 ++++++++++++++++++++++---------
+ kernel/sysctl.c              | 12 ++++++++++--
+ 3 files changed, 34 insertions(+), 12 deletions(-)
+
+diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+index 660ac49..41b426e 100644
+--- a/include/linux/sched/sysctl.h
++++ b/include/linux/sched/sysctl.h
+@@ -16,8 +16,9 @@ extern unsigned int sysctl_hung_task_all_cpu_backtrace;
+ 
+ extern int	     sysctl_hung_task_check_count;
+ extern unsigned int  sysctl_hung_task_panic;
++extern unsigned long sysctl_hung_task_timeout_msecs;
+ extern unsigned long sysctl_hung_task_timeout_secs;
+-extern unsigned long sysctl_hung_task_check_interval_secs;
++extern unsigned long sysctl_hung_task_check_interval_msecs;
+ extern int sysctl_hung_task_warnings;
+ int proc_dohung_task_timeout_secs(struct ctl_table *table, int write,
+ 		void *buffer, size_t *lenp, loff_t *ppos);
+diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+index ce76f49..bac6f33 100644
+--- a/kernel/hung_task.c
++++ b/kernel/hung_task.c
+@@ -37,16 +37,23 @@ int __read_mostly sysctl_hung_task_check_count = PID_MAX_LIMIT;
+  * the RCU grace period. So it needs to be upper-bound.
+  */
+ #define HUNG_TASK_LOCK_BREAK (HZ / 10)
++#define MSEC_PER_SEC 1000L
+ 
+ /*
+- * Zero means infinite timeout - no checking done:
++ * Zero and sysctl_hung_task_timeout_msecs zero means infinite timeout - no checking done:
+  */
+ unsigned long __read_mostly sysctl_hung_task_timeout_secs = CONFIG_DEFAULT_HUNG_TASK_TIMEOUT;
+ 
+ /*
+- * Zero (default value) means use sysctl_hung_task_timeout_secs:
++ * Zero (default value) means only use sysctl_hung_task_timeout_secs
+  */
+-unsigned long __read_mostly sysctl_hung_task_check_interval_secs;
++unsigned long  __read_mostly sysctl_hung_task_timeout_msecs;
++
++/*
++ * Zero (default value) means use
++ * sysctl_hung_task_timeout_secs * MSEC_PER_SEC + sysctl_hung_task_timeout_msecs
++ */
++unsigned long __read_mostly sysctl_hung_task_check_interval_msecs;
+ 
+ int __read_mostly sysctl_hung_task_warnings = 10;
+ 
+@@ -108,7 +115,8 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+ 		t->last_switch_time = jiffies;
+ 		return;
+ 	}
+-	if (time_is_after_jiffies(t->last_switch_time + timeout * HZ))
++
++	if (time_is_after_jiffies(t->last_switch_time + msecs_to_jiffies(timeout)))
+ 		return;
+ 
+ 	trace_sched_process_hang(t);
+@@ -126,13 +134,17 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+ 	if (sysctl_hung_task_warnings) {
+ 		if (sysctl_hung_task_warnings > 0)
+ 			sysctl_hung_task_warnings--;
+-		pr_err("INFO: task %s:%d blocked for more than %ld seconds.\n",
+-		       t->comm, t->pid, (jiffies - t->last_switch_time) / HZ);
++
++		pr_err("INFO: task %s:%d blocked for more than %ld.%03ld seconds.\n",
++			t->comm, t->pid,
++			jiffies_to_msecs(jiffies - t->last_switch_time) / MSEC_PER_SEC,
++			jiffies_to_msecs(jiffies - t->last_switch_time) % MSEC_PER_SEC);
+ 		pr_err("      %s %s %.*s\n",
+ 			print_tainted(), init_utsname()->release,
+ 			(int)strcspn(init_utsname()->version, " "),
+ 			init_utsname()->version);
+ 		pr_err("\"echo 0 > /proc/sys/kernel/hung_task_timeout_secs\""
++			"\"echo 0 > /proc/sys/kernel/hung_task_timeout_msecs\""
+ 			" disables this message.\n");
+ 		sched_show_task(t);
+ 		hung_task_show_lock = true;
+@@ -217,7 +229,7 @@ static long hung_timeout_jiffies(unsigned long last_checked,
+ 				 unsigned long timeout)
+ {
+ 	/* timeout of 0 will disable the watchdog */
+-	return timeout ? last_checked - jiffies + timeout * HZ :
++	return timeout ? last_checked - jiffies + msecs_to_jiffies(timeout) :
+ 		MAX_SCHEDULE_TIMEOUT;
+ }
+ 
+@@ -281,8 +293,9 @@ static int watchdog(void *dummy)
+ 	set_user_nice(current, 0);
+ 
+ 	for ( ; ; ) {
+-		unsigned long timeout = sysctl_hung_task_timeout_secs;
+-		unsigned long interval = sysctl_hung_task_check_interval_secs;
++		unsigned long timeout = sysctl_hung_task_timeout_secs * MSEC_PER_SEC +
++					sysctl_hung_task_timeout_msecs;
++		unsigned long interval = sysctl_hung_task_check_interval_msecs;
+ 		long t;
+ 
+ 		if (interval == 0)
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index db1ce7a..5c52759 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2476,6 +2476,14 @@ static struct ctl_table kern_table[] = {
+ 		.extra1		= SYSCTL_ZERO,
+ 	},
+ 	{
++		.procname       = "hung_task_timeout_msecs",
++		.data           = &sysctl_hung_task_timeout_msecs,
++		.maxlen         = sizeof(unsigned long),
++		.mode           = 0644,
++		.proc_handler   = proc_dohung_task_timeout_secs,
++		.extra2         = &hung_task_timeout_max,
++	},
++	{
+ 		.procname	= "hung_task_timeout_secs",
+ 		.data		= &sysctl_hung_task_timeout_secs,
+ 		.maxlen		= sizeof(unsigned long),
+@@ -2484,8 +2492,8 @@ static struct ctl_table kern_table[] = {
+ 		.extra2		= &hung_task_timeout_max,
+ 	},
+ 	{
+-		.procname	= "hung_task_check_interval_secs",
+-		.data		= &sysctl_hung_task_check_interval_secs,
++		.procname	= "hung_task_check_interval_msecs",
++		.data		= &sysctl_hung_task_check_interval_msecs,
+ 		.maxlen		= sizeof(unsigned long),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dohung_task_timeout_secs,
+-- 
+2.7.4
+
