@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C8F21BAB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA40E21BAB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgGJQUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:20:30 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:54486 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727916AbgGJQU1 (ORCPT
+        id S1727952AbgGJQVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:21:35 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:3434 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726896AbgGJQVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:20:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594398025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q9OBXiOBnT1mGmZ2eGcWLsQs9qpaRL+ZvL1+d8k1S8o=;
-        b=gjp2xMlL82kham00+fOQkIMod7p8PBnHK0dIXP36vxyx2N+jYVuesM1mjX0XgTvxUIVYJv
-        j54Q6p0aqCtl0hzNp1ufhV9dOIo+9lFvFJhsybVZwkb/63E5o0RmEbD5hpOxZzxufNn8QB
-        NamVTrLHbt96WQYWB5LJwNrRUboK0vY=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-gD70DAuDMf2a5hi_mlHx4A-1; Fri, 10 Jul 2020 12:20:24 -0400
-X-MC-Unique: gD70DAuDMf2a5hi_mlHx4A-1
-Received: by mail-wr1-f71.google.com with SMTP id e11so6537105wrs.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:20:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q9OBXiOBnT1mGmZ2eGcWLsQs9qpaRL+ZvL1+d8k1S8o=;
-        b=CotTY/DBldwepIRYs2wn7zhDEZA9FbQr5Z9dPKXoUeMePMSvrcV5RBLkcqwa2antL0
-         SLg/WcSAUD5m/MR86ti1seNh5DRIafrTfuGXedgKSPaZwaPETfEtv7vnuSav7AmP/9KS
-         SrCk8OkZawFS6yQXOjzLr9gYXE7WwARB5m/QhR90kDsEqlK8ax/Bkm34esjIvO64sGtr
-         2+HZh9bYwUSOS09bWPQIEmBLdu5+kyIpO9UdQ7ZityYsEvbV13hwp68GSCM9EUmKq2O0
-         AQ5IntwLKk9BYbGRHuFaESpNT9fqd4WPSpwHCj9Cgj0YSCf7xtu3Ps7i5i0IbLMm0+EE
-         kZVA==
-X-Gm-Message-State: AOAM5322PjUcAs88sPUABpH8OY2DPWKHK7WXK0wztApw8y7RprDKcI+4
-        fY7bsiYhtWdT8/duQDjf1VcdWlKSD+uxry/GdRPoOQiSkqWkH/m/WmQ0ENMe7q+MgDsSQ8MIHpb
-        pdKjOQ2NST89q9JVxM+5xhxrA
-X-Received: by 2002:a5d:630c:: with SMTP id i12mr75515899wru.158.1594398022819;
-        Fri, 10 Jul 2020 09:20:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwNg29SHEj/1kCIq20X+QBQi6Vi8ell7jTihmuv4S0/ilMJ558e1BkioaTjMsJllIACTM1T8A==
-X-Received: by 2002:a5d:630c:: with SMTP id i12mr75515878wru.158.1594398022605;
-        Fri, 10 Jul 2020 09:20:22 -0700 (PDT)
-Received: from steredhat ([5.180.207.22])
-        by smtp.gmail.com with ESMTPSA id 129sm10475853wmd.48.2020.07.10.09.20.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 09:20:22 -0700 (PDT)
-Date:   Fri, 10 Jul 2020 18:20:17 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Jann Horn <jannh@google.com>, Aleksa Sarai <asarai@suse.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        io-uring@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Moyer <jmoyer@redhat.com>
-Subject: Re: [PATCH RFC 0/3] io_uring: add restrictions to support untrusted
- applications and guests
-Message-ID: <20200710162017.qdu34ermtxh3rfgl@steredhat>
-References: <20200710141945.129329-1-sgarzare@redhat.com>
- <20200710153309.GA4699@char.us.oracle.com>
+        Fri, 10 Jul 2020 12:21:34 -0400
+X-UUID: f214f8fc31fe42cea55bd003da326edd-20200711
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=LoI2c6gi3jQYjLM5dZfi8Lk3EE1492i2ph2ScUkCE1Y=;
+        b=AzVCRYD7jMgWJEFyBZY+6zeTRaliGMihlUhA11+g0uoFMyawWuun5mgYcrG8GYVaQP+1XOFLsj699ajE8k8Fq83mkiz+4kV6UYXQgIlgTw60oWy9VZ3mwZCWxIkbbonLdQspFncmBHaE5ET7HDVI4y+gYbkhZx/D2QjCpt+n+rk=;
+X-UUID: f214f8fc31fe42cea55bd003da326edd-20200711
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1669486166; Sat, 11 Jul 2020 00:21:31 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 11 Jul 2020 00:21:29 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 11 Jul 2020 00:21:30 +0800
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: [PATCH v8 0/4] kasan: memorize and print call_rcu stack
+Date:   Sat, 11 Jul 2020 00:21:23 +0800
+Message-ID: <20200710162123.23713-1-walter-zh.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710153309.GA4699@char.us.oracle.com>
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
-
-On Fri, Jul 10, 2020 at 11:33:09AM -0400, Konrad Rzeszutek Wilk wrote:
-> .snip..
-> > Just to recap the proposal, the idea is to add some restrictions to the
-> > operations (sqe, register, fixed file) to safely allow untrusted applications
-> > or guests to use io_uring queues.
-> 
-> Hi!
-> 
-> This is neat and quite cool - but one thing that keeps nagging me is
-> what how much overhead does this cut from the existing setup when you use
-> virtio (with guests obviously)?
-
-I need to do more tests, but the preliminary results that I reported on
-the original proposal [1] show an overhead of ~ 4.17 uS (with iodepth=1)
-when I'm using virtio ring processed in a dedicated iothread:
-
-  - 73 kIOPS using virtio-blk + QEMU iothread + io_uring backend
-  - 104 kIOPS using io_uring passthrough
-
->                                 That is from a high level view the
-> beaty of io_uring being passed in the guest is you don't have the
-> virtio ring -> io_uring processing, right?
-
-Right, and potentially we can share the io_uring queues directly to the
-guest userspace applications, cutting down the cost of Linux block
-layer in the guest.
-
-Thanks for your feedback,
-Stefano
-
-[1] https://lore.kernel.org/io-uring/20200609142406.upuwpfmgqjeji4lc@steredhat/
+VGhpcyBwYXRjaHNldCBpbXByb3ZlcyBLQVNBTiByZXBvcnRzIGJ5IG1ha2luZyB0aGVtIHRvIGhh
+dmUNCmNhbGxfcmN1KCkgY2FsbCBzdGFjayBpbmZvcm1hdGlvbi4gSXQgaXMgdXNlZnVsIGZvciBw
+cm9ncmFtbWVycw0KdG8gc29sdmUgdXNlLWFmdGVyLWZyZWUgb3IgZG91YmxlLWZyZWUgbWVtb3J5
+IGlzc3VlLg0KDQpUaGUgS0FTQU4gcmVwb3J0IHdhcyBhcyBmb2xsb3dzKGNsZWFuZWQgdXAgc2xp
+Z2h0bHkpOg0KDQpCVUc6IEtBU0FOOiB1c2UtYWZ0ZXItZnJlZSBpbiBrYXNhbl9yY3VfcmVjbGFp
+bSsweDU4LzB4NjANCg0KRnJlZWQgYnkgdGFzayAwOg0KIGthc2FuX3NhdmVfc3RhY2srMHgyNC8w
+eDUwDQoga2FzYW5fc2V0X3RyYWNrKzB4MjQvMHgzOA0KIGthc2FuX3NldF9mcmVlX2luZm8rMHgx
+OC8weDIwDQogX19rYXNhbl9zbGFiX2ZyZWUrMHgxMGMvMHgxNzANCiBrYXNhbl9zbGFiX2ZyZWUr
+MHgxMC8weDE4DQoga2ZyZWUrMHg5OC8weDI3MA0KIGthc2FuX3JjdV9yZWNsYWltKzB4MWMvMHg2
+MA0KDQpMYXN0IGNhbGxfcmN1KCk6DQoga2FzYW5fc2F2ZV9zdGFjaysweDI0LzB4NTANCiBrYXNh
+bl9yZWNvcmRfYXV4X3N0YWNrKzB4YmMvMHhkMA0KIGNhbGxfcmN1KzB4OGMvMHg1ODANCiBrYXNh
+bl9yY3VfdWFmKzB4ZjQvMHhmOA0KDQpHZW5lcmljIEtBU0FOIHdpbGwgcmVjb3JkIHRoZSBsYXN0
+IHR3byBjYWxsX3JjdSgpIGNhbGwgc3RhY2tzIGFuZA0KcHJpbnQgdXAgdG8gMiBjYWxsX3JjdSgp
+IGNhbGwgc3RhY2tzIGluIEtBU0FOIHJlcG9ydC4gaXQgaXMgb25seQ0Kc3VpdGFibGUgZm9yIGdl
+bmVyaWMgS0FTQU4uDQoNClRoaXMgZmVhdHVyZSBjb25zaWRlcnMgdGhlIHNpemUgb2Ygc3RydWN0
+IGthc2FuX2FsbG9jX21ldGEgYW5kDQprYXNhbl9mcmVlX21ldGEsIHdlIHRyeSB0byBvcHRpbWl6
+ZSB0aGUgc3RydWN0dXJlIGxheW91dCBhbmQgc2l6ZQ0KLCBsZXRzIGl0IGdldCBiZXR0ZXIgbWVt
+b3J5IGNvbnN1bXB0aW9uLg0KDQpbMV1odHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19i
+dWcuY2dpP2lkPTE5ODQzNw0KWzJdaHR0cHM6Ly9ncm91cHMuZ29vZ2xlLmNvbS9mb3J1bS8jIXNl
+YXJjaGluL2thc2FuLWRldi9iZXR0ZXIkMjBzdGFjayQyMHRyYWNlcyQyMGZvciQyMHJjdSU3Q3Nv
+cnQ6ZGF0ZS9rYXNhbi1kZXYvS1FzalRfODhoREUvN3JOVVpwclJCZ0FKDQoNCkNoYW5nZXMgc2lu
+Y2UgdjE6DQotIHJlbW92ZSBuZXcgY29uZmlnIG9wdGlvbiwgZGVmYXVsdCBlbmFibGUgaXQgaW4g
+Z2VuZXJpYyBLQVNBTg0KLSB0ZXN0IHRoaXMgZmVhdHVyZSBpbiBTTEFCL1NMVUIsIGl0IGlzIHBh
+c3MuDQotIG1vZGlmeSBtYWNybyB0byBiZSBtb3JlIGNsZWFybHkNCi0gbW9kaWZ5IGRvY3VtZW50
+YXRpb24NCg0KQ2hhbmdlcyBzaW5jZSB2MjoNCi0gY2hhbmdlIHJlY29yZGluZyBmcm9tIGZpcnN0
+L2xhc3QgdG8gdGhlIGxhc3QgdHdvIGNhbGwgc3RhY2tzDQotIG1vdmUgZnJlZSB0cmFjayBpbnRv
+IGthc2FuIGZyZWUgbWV0YQ0KLSBpbml0IHNsYWJfZnJlZV9tZXRhIG9uIG9iamVjdCBzbG90IGNy
+ZWF0aW9uDQotIG1vZGlmeSBkb2N1bWVudGF0aW9uDQoNCkNoYW5nZXMgc2luY2UgdjM6DQotIGNo
+YW5nZSB2YXJpYWJsZSBuYW1lIHRvIGJlIG1vcmUgY2xlYXJseQ0KLSByZW1vdmUgdGhlIHJlZHVu
+ZGFudCBjb25kaXRpb24NCi0gcmVtb3ZlIGluaXQgZnJlZSBtZXRhLWRhdGEgYW5kIGluY3JlYXNp
+bmcgb2JqZWN0IGNvbmRpdGlvbg0KDQpDaGFuZ2VzIHNpbmNlIHY0Og0KLSBhZGQgYSBtYWNybyBL
+QVNBTl9LTUFMTE9DX0ZSRUVUUkFDSyBpbiBvcmRlciB0byBjaGVjayB3aGV0aGVyDQogIHByaW50
+IGZyZWUgc3RhY2sNCi0gY2hhbmdlIHByaW50aW5nIG1lc3NhZ2UNCi0gcmVtb3ZlIGRlc2NyaXB0
+aW9ucyBpbiBLb2Nvbmcua2FzYW4NCg0KQ2hhbmdlcyBzaW5jZSB2NToNCi0gcmV1c2UgcHJpbnRf
+c3RhY2soKSBpbiBwcmludF90cmFjaygpDQoNCkNoYW5nZXMgc2luY2UgdjY6DQotIGZpeCB0eXBv
+DQotIHJlbmFtZWQgdGhlIHZhcmlhYmxlIG5hbWUgaW4gdGVzdGNhc2UNCg0KQ2hhbmdlcyBzaW5j
+ZSB2NzoNCi0gZml4IHRoaXMgY29tbWl0IGRlcGVuZGVuY2UgaW4gdGhlIHNlcmllcw0KDQpXYWx0
+ZXIgV3UgKDQpOg0KcmN1OiBrYXNhbjogcmVjb3JkIGFuZCBwcmludCBjYWxsX3JjdSgpIGNhbGwg
+c3RhY2sNCmthc2FuOiByZWNvcmQgYW5kIHByaW50IHRoZSBmcmVlIHRyYWNrDQprYXNhbjogYWRk
+IHRlc3RzIGZvciBjYWxsX3JjdSBzdGFjayByZWNvcmRpbmcNCmthc2FuOiB1cGRhdGUgZG9jdW1l
+bnRhdGlvbiBmb3IgZ2VuZXJpYyBrYXNhbg0KDQpEb2N1bWVudGF0aW9uL2Rldi10b29scy9rYXNh
+bi5yc3QgfCAgMyArKysNCmluY2x1ZGUvbGludXgva2FzYW4uaCAgICAgICAgICAgICB8ICAyICsr
+DQprZXJuZWwvcmN1L3RyZWUuYyAgICAgICAgICAgICAgICAgfCAgMiArKw0KbGliL3Rlc3Rfa2Fz
+YW4uYyAgICAgICAgICAgICAgICAgIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+DQptbS9rYXNhbi9jb21tb24uYyAgICAgICAgICAgICAgICAgfCAyNiArKysrLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQ0KbW0va2FzYW4vZ2VuZXJpYy5jICAgICAgICAgICAgICAgIHwgNDMgKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KbW0va2FzYW4vZ2VuZXJpY19y
+ZXBvcnQuYyAgICAgICAgIHwgIDEgKw0KbW0va2FzYW4va2FzYW4uaCAgICAgICAgICAgICAgICAg
+IHwgMjMgKysrKysrKysrKysrKysrKysrKysrLS0NCm1tL2thc2FuL3F1YXJhbnRpbmUuYyAgICAg
+ICAgICAgICB8ICAxICsNCm1tL2thc2FuL3JlcG9ydC5jICAgICAgICAgICAgICAgICB8IDU0ICsr
+KysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KbW0v
+a2FzYW4vdGFncy5jICAgICAgICAgICAgICAgICAgIHwgMzcgKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKw0KMTEgZmlsZXMgY2hhbmdlZCwgMTcxIGluc2VydGlvbnMoKyksIDUx
+IGRlbGV0aW9ucygtKQ==
 
