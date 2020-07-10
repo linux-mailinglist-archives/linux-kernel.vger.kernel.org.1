@@ -2,110 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D1D21B1AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 10:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EAE21B19F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 10:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbgGJIv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 04:51:28 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:29932 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727947AbgGJIvZ (ORCPT
+        id S1727834AbgGJIvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 04:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726644AbgGJIvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 04:51:25 -0400
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 06A8orCp001998
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 17:50:54 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 06A8orCp001998
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1594371054;
-        bh=L2agycBkWuNPWcp2GvrsWJYrwV4nURk1F02slKECrU4=;
-        h=From:Date:Subject:To:Cc:From;
-        b=YarFmJJrd+LaO9bK0TJ09lqCrsIniY3oPjiScdFcwUwCPwp0dg2c4Jl3xCXJqSrr1
-         nqwoW1oXOeP5DPS4N89G3aUxmuAW5QC9zCONVsqv2fWaWEreWoSZYxQlFLAmOnCKfA
-         TAfr+zRcciluK5ENmmvttJuXXx5DuYzQ4t16x+VLWEub2bXqHuKg4wZhq3cfmeJ9MH
-         DUomNKvG5+O6qMH5HM5nbC4oeOOOcayBZ3iv0+jJ9MvPYziYxsiDBRff56Utbs/cBT
-         7Q8gy8oeBVBj4GMcsynaIh8Jg+pxXg1PPyz4AyufPZ1r2xhkkJB2NZ95pUf62Xl5s/
-         oLrYKYgs9x0Vw==
-X-Nifty-SrcIP: [209.85.217.51]
-Received: by mail-vs1-f51.google.com with SMTP id k7so2588043vso.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 01:50:54 -0700 (PDT)
-X-Gm-Message-State: AOAM530xCYg5XvaBsJkwrLv1hM6KOhsCsQFm6+4vQVy5VPCLwqAysvLw
-        mn8EWxYKqXjk2OB6GxLEbIrygtkL56/tK/EpL9I=
-X-Google-Smtp-Source: ABdhPJxZQnZP+1HPzAFDuZUj6XewWgNJEeV6YYJKLVbcJqwX2kwvQBNzT9TG5lf25xFd5h7EJnYh1XYSrnF1NKxYhSU=
-X-Received: by 2002:a67:2e4d:: with SMTP id u74mr39844334vsu.215.1594371053268;
- Fri, 10 Jul 2020 01:50:53 -0700 (PDT)
+        Fri, 10 Jul 2020 04:51:11 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247B9C08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 01:51:11 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id a17so2578537vsq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 01:51:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IqIVvQ2zr6ElD+RZxcXvNwfajcIvHD5hM0pq+5dyaCU=;
+        b=FLn2L3Yu3a71IwsJbkyQMnv/2osNAG/OpLYe8aVWnpHC68jeftI7JiS5xkEur8kxr8
+         5NHTmxbaEsLcIUnxVR6rii4rGIYH6RKZ59lfFL8So3UnrtKvIw6lxdU7uLFYBeJUNnIm
+         tfEpSMgM2TOUjQEI4tpG8lTUAfHJ/RH85mI05YDwSzSztlH5AYXDWGNrnei6VmYZahKC
+         AI5y3oT6Ch+wl6ujyswxkMQJKfF2kRbnx51NAIofofKcmxWWI9uyI9welkfj6IDQ34rg
+         vKIlPJiXCdkk9Dk/riLmjG7zTZxG8comE2fgeJsZ7tDyRlfXSW3bnr82QgFyZWPwBDFC
+         ugfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IqIVvQ2zr6ElD+RZxcXvNwfajcIvHD5hM0pq+5dyaCU=;
+        b=GXXziLLN3rrchFwCvqVPVt2LXNcQpPnhNzhapcyEf67CQnaJzLZAYORKTU0uTfA5+e
+         WPpJGtr4G5grDcUprV4bMWVovQwrBX7qVLVCt7g5s/QQ8wik/3E+y33bcfBbNbVtZ7uR
+         4kdptnx+k5HvJTBrgWm5UZqugik7YWEG9Ild0Drp0f17RhxKQBS15e4g9L1B9Ce2YPRE
+         K8JodDktASdyKhahaF12sKff6IOWNjJB+0j3TT7uL9XdJMxxL42E33ut66g6hmOfjfTr
+         RG9QbFahOGYCaV0Bga6vy+RY+NHt4uJ8fget9v5GDEbwCODMrq6zkhDqOjwI+O3mwLA6
+         gqog==
+X-Gm-Message-State: AOAM532RqWUypm5p06AsJ6gdc5FUfMp+Qzc5ru72yVYU1GkEY89DJFQP
+        OjJY0x86tQMbzwMrIR0pPtFnKQ/imT4mSM/kBq/9Fn4IE5g=
+X-Google-Smtp-Source: ABdhPJxOxsAazACc1kbzqT6xDB5kyDVlMOltsczaiTYVbWwwDKSYWKhNV616GOdXFWDb1WiHKNt7EMLwcaMLICyoP3s=
+X-Received: by 2002:a67:c90c:: with SMTP id w12mr41263992vsk.86.1594371070342;
+ Fri, 10 Jul 2020 01:51:10 -0700 (PDT)
 MIME-Version: 1.0
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Fri, 10 Jul 2020 17:50:17 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARGDcCKxV3-H7WmuZAVe49n0QF+672-KN0tsP0och0a_A@mail.gmail.com>
-Message-ID: <CAK7LNARGDcCKxV3-H7WmuZAVe49n0QF+672-KN0tsP0och0a_A@mail.gmail.com>
-Subject: [GIT PULL] ARM: dts: uniphier: UniPhier DT updates for v5.9
-To:     soc@kernel.org, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
+References: <20200710074143.306787-1-christian.gmeiner@gmail.com>
+ <20200710074143.306787-3-christian.gmeiner@gmail.com> <6098f2549eb96348af0ba062d87a716f20d1af1c.camel@pengutronix.de>
+In-Reply-To: <6098f2549eb96348af0ba062d87a716f20d1af1c.camel@pengutronix.de>
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+Date:   Fri, 10 Jul 2020 10:50:59 +0200
+Message-ID: <CAH9NwWex+9LvaBhzPkYDaYOHnvxFeK4sAMgFZi2i5b+TOSVPmA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] drm/etnaviv: add loadavg accounting
+To:     Lucas Stach <l.stach@pengutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Chris Healy <cphealy@gmail.com>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Olof, Arnd,
+Hoi Lucas,
 
-Here are UniPhier DT (32bit) updates for the v5.9 merge window.
+Am Fr., 10. Juli 2020 um 10:19 Uhr schrieb Lucas Stach <l.stach@pengutronix.de>:
+>
+> Hi Christian,
+>
+> Am Freitag, den 10.07.2020, 09:41 +0200 schrieb Christian Gmeiner:
+> > The GPU has an idle state register where each bit represents the idle
+> > state of a sub-GPU component like FE or TX. Sample this register
+> > every 10ms and calculate a simple moving average over the sub-GPU
+> > component idle states with a total observation time frame of 1s.
+> >
+> > This provides us with a percentage based load of each sub-GPU
+> > component.
+> >
+> > Signed-off-by: Christian Gmeiner <christian.gmeiner@gmail.com>
+> > ---
+> >  drivers/gpu/drm/etnaviv/etnaviv_drv.c | 14 ++++++++++++
+> >  drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 32 +++++++++++++++++++++++++++
+> >  drivers/gpu/drm/etnaviv/etnaviv_gpu.h | 29 ++++++++++++++++++++++++
+> >  3 files changed, 75 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> > index f9afe11c50f0..b31920241c86 100644
+> > --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> > +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
+> > @@ -46,6 +46,19 @@ static void load_gpu(struct drm_device *dev)
+> >       }
+> >  }
+> >
+> > +static void unload_gpu(struct drm_device *dev)
+> > +{
+> > +     struct etnaviv_drm_private *priv = dev->dev_private;
+> > +     unsigned int i;
+> > +
+> > +     for (i = 0; i < ETNA_MAX_PIPES; i++) {
+> > +             struct etnaviv_gpu *g = priv->gpu[i];
+> > +
+> > +             if (g)
+> > +                     etnaviv_gpu_shutdown(g);
+> > +     }
+> > +}
+> > +
+> >  static int etnaviv_open(struct drm_device *dev, struct drm_file *file)
+> >  {
+> >       struct etnaviv_drm_private *priv = dev->dev_private;
+> > @@ -581,6 +594,7 @@ static void etnaviv_unbind(struct device *dev)
+> >       struct drm_device *drm = dev_get_drvdata(dev);
+> >       struct etnaviv_drm_private *priv = drm->dev_private;
+> >
+> > +     unload_gpu(drm);
+> >       drm_dev_unregister(drm);
+> >
+> >       component_unbind_all(dev, drm);
+> > diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> > index a31eeff2b297..1f0eb7e00657 100644
+> > --- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> > +++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+> > @@ -714,6 +714,28 @@ static void etnaviv_gpu_hw_init(struct etnaviv_gpu *gpu)
+> >       gpu_write(gpu, VIVS_HI_INTR_ENBL, ~0U);
+> >  }
+> >
+> > +static void etnaviv_loadavg_function(struct timer_list *t)
+> > +{
+> > +     struct etnaviv_gpu *gpu = from_timer(gpu, t, loadavg_timer);
+> > +     const u32 idle = gpu_read(gpu, VIVS_HI_IDLE_STATE);
+>
+> This isn't guaranteed to work on a clock/power gated GPU. Also we
+> surely don't want to wake a idle system every 10ms just to sample a "no
+> load" value, so this needs some integration with runtime PM, to disable
+> the sampling when the GPU is powered down and enable when powered up.
+> The loadavg must be able to adapt to jumps in the sampling interval
+> while idle.
+>
 
-Please pull!
+Oh yea.. runtime PM.. I thought I was missing something. Will tackle this in the
+next version.
 
+>
+> > +     int i;
+> > +
+> > +     for (i = 0; i < ARRAY_SIZE(etna_idle_module_names); i++)
+> > +             if ((idle & etna_idle_module_names[i].bit))
+> > +                     sma_loadavg_add(&gpu->loadavg_value[i], 0);
+> > +             else
+> > +                     sma_loadavg_add(&gpu->loadavg_value[i], 100);
+> > +
+> > +     spin_lock_bh(&gpu->loadavg_spinlock);
+> > +
+> > +     for (i = 0; i < ARRAY_SIZE(etna_idle_module_names); i++)
+> > +             gpu->loadavg_percentage[i] = sma_loadavg_read(&gpu->loadavg_value[i]);
+> > +
+> > +     spin_unlock_bh(&gpu->loadavg_spinlock);
+> > +
+> > +     mod_timer(t, jiffies + msecs_to_jiffies(10));
+>
+> A jiffies based timer is much too coarse for a regular 10ms sampling.
+> On a typical 100Hz system 10ms is a single jiffy, so your timer will
+> fire anywhere in the range of ~0ms...~20ms. This won't get us a usable
+> measurement.
+>
 
+Makes sense.. will switch to hrtimers.
 
-The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
+-- 
+greets
+--
+Christian Gmeiner, MSc
 
-  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-uniphier.git
-tags/uniphier-dt-v5.9
-
-for you to fetch changes up to 781865604d1695314df901e106d27b26446359d8:
-
-  ARM: dts: uniphier: simplify support-card node structure (2020-07-10
-17:13:20 +0900)
-
-----------------------------------------------------------------
-UniPhier ARM SoC DT updates for v5.9
-
-- add missing interrupts property to support card serial
-
-- fix node names to follow the DT schema
-
-- add PCIe endpoint and PHY nodes for Pro5 SoC
-
-- simplify device hierarchy of support-card.dtsi
-
-----------------------------------------------------------------
-Kunihiko Hayashi (2):
-      ARM: dts: uniphier: Rename ethphy node to ethernet-phy
-      ARM: dts: uniphier: Add PCIe endpoint and PHY node for Pro5
-
-Masahiro Yamada (4):
-      ARM: dts: uniphier: add interrupts to support card serial
-      ARM: dts: uniphier: rename support card serial node to fix schema warning
-      ARM: dts: uniphier: give fixed port number to support card serial
-      ARM: dts: uniphier: simplify support-card node structure
-
- arch/arm/boot/dts/uniphier-ld4-ref.dts       |  6 +++++-
- arch/arm/boot/dts/uniphier-ld6b-ref.dts      |  7 ++++++-
- arch/arm/boot/dts/uniphier-pinctrl.dtsi      |  5 +++++
- arch/arm/boot/dts/uniphier-pro4-ace.dts      |  2 +-
- arch/arm/boot/dts/uniphier-pro4-ref.dts      |  8 ++++++--
- arch/arm/boot/dts/uniphier-pro4-sanji.dts    |  2 +-
- arch/arm/boot/dts/uniphier-pro5.dtsi         | 30
-++++++++++++++++++++++++++++++
- arch/arm/boot/dts/uniphier-pxs2-gentil.dts   |  2 +-
- arch/arm/boot/dts/uniphier-pxs2-vodka.dts    |  2 +-
- arch/arm/boot/dts/uniphier-sld8-ref.dts      |  6 +++++-
- arch/arm/boot/dts/uniphier-support-card.dtsi | 31
-++++++++++++-------------------
- 11 files changed, 73 insertions(+), 28 deletions(-)
+https://christian-gmeiner.info/privacypolicy
