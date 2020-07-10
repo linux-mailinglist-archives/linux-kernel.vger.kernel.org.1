@@ -2,295 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE9621C086
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 01:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684F121C07E
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 01:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgGJXFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 19:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726948AbgGJXFl (ORCPT
+        id S1726945AbgGJXFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 19:05:33 -0400
+Received: from www62.your-server.de ([213.133.104.62]:48604 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726519AbgGJXFc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 19:05:41 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D489BC08C5DD
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 16:05:40 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id k18so5756038qtm.10
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 16:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=X3Q9PjvIkiub9SDi5ST21u3dYQ6wpXEFkUrvNbu49NQ=;
-        b=sZqxVZ16XMXWSCGcpa2Y6WchTWrh88KveDtmdgvHWNo/ZDhj6dNnCgmkOdTMkgUjWk
-         2rc5Q4ADeYDNF+TaULXttJpzWZBkZes80QaGLhiiwclpH9TAb9IfZqNPPgQgIj/O/BIM
-         z7dqwys7OK/G3DLUOXgPNmt4/WedT6v6RcI0HvEA/pHhmBq/lmIJYZ0hsmlWK9LjOj0p
-         U07y+VLxkFK4EqNQKEv9fgGVdf1AY0Pb6Y6fCo6HAGr3zAjMQe09qXiBJ6AJrAA6nYDA
-         a0C/K27+GUD5jiPvgnDJfr/bzUXS5x8jtJVcITNmg9ciBIysqDRBrRrgB+gVythXvPLo
-         5/fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=X3Q9PjvIkiub9SDi5ST21u3dYQ6wpXEFkUrvNbu49NQ=;
-        b=TSLex/2mwjLo4C1FoP4rYfcMxjIopj2Ovro6V5mBAM4EtRU2sdYC4iU87q9BHtx8FW
-         oL0+BAHeTf+MRz9h5IhElOyjOTQr5CLgMQVEr2ReJaa6vemyjMNNcqh7t01qjEzsCY2C
-         JWBVFgOEkxBIK9IcxXqFdI9A6KH3OG3kLMrqMOGbPg//LT5uZV/Ocmi78dylMwq3WDZE
-         olGfeo1Hl/SEnvhZk/eEfcTBA1JjXwG+ZK1RcerOg35f9t+jwYEC8+tvjyQh/nkNV1QP
-         x3DpkFL37bz8CtHqM7O0t+EGHmafSVI+Po+4oBKkHcnpl/neANJbq6Okuadzj++HTo++
-         GlDA==
-X-Gm-Message-State: AOAM530CwhWfukZ1WfGIJ/Q28FrIJdbHbzb3R9zjdHAjgNLwnXv+ysVh
-        ZsE+T8fZ6tX0yvMOWD7vi+yn/A==
-X-Google-Smtp-Source: ABdhPJwvl2XF+qzMnXqNtckjWjGvpOzQ6OywoNC8NIABSElWhTNO0oTNYwMnDbP5CyzvxMziz4WXPA==
-X-Received: by 2002:ac8:33d7:: with SMTP id d23mr73606921qtb.204.1594422340007;
-        Fri, 10 Jul 2020 16:05:40 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id l1sm9513541qtk.18.2020.07.10.16.05.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 16:05:39 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        Brian Masney <masneyb@onstation.org>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/2] drm/msm/a6xx: add A640/A650 hwcg
-Date:   Fri, 10 Jul 2020 19:04:10 -0400
-Message-Id: <20200710230413.2944-2-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200710230413.2944-1-jonathan@marek.ca>
-References: <20200710230413.2944-1-jonathan@marek.ca>
+        Fri, 10 Jul 2020 19:05:32 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ju24i-0004Pg-E8; Sat, 11 Jul 2020 01:05:00 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ju24i-000VO0-4H; Sat, 11 Jul 2020 01:05:00 +0200
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: use dedicated bpf_trace_printk event
+ instead of trace_printk()
+To:     Alan Maguire <alan.maguire@oracle.com>, rostedt@goodmis.org,
+        mingo@redhat.com, ast@kernel.org, andriin@fb.com
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <1594390953-31757-1-git-send-email-alan.maguire@oracle.com>
+ <1594390953-31757-2-git-send-email-alan.maguire@oracle.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <10d713e3-c2d6-7331-a589-b567e8378944@iogearbox.net>
+Date:   Sat, 11 Jul 2020 01:04:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1594390953-31757-2-git-send-email-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25869/Fri Jul 10 16:01:45 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize hardware clock-gating registers on A640 and A650 GPUs.
+On 7/10/20 4:22 PM, Alan Maguire wrote:
+> The bpf helper bpf_trace_printk() uses trace_printk() under the hood.
+> This leads to an alarming warning message originating from trace
+> buffer allocation which occurs the first time a program using
+> bpf_trace_printk() is loaded.
+> 
+> We can instead create a trace event for bpf_trace_printk() and enable
+> it in-kernel when/if we encounter a program using the
+> bpf_trace_printk() helper.  With this approach, trace_printk()
+> is not used directly and no warning message appears.
+> 
+> This work was started by Steven (see Link) and finished by Alan; added
+> Steven's Signed-off-by with his permission.
+> 
+> Link: https://lore.kernel.org/r/20200628194334.6238b933@oasis.local.home
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>   kernel/trace/Makefile    |  2 ++
+>   kernel/trace/bpf_trace.c | 41 ++++++++++++++++++++++++++++++++++++-----
+>   kernel/trace/bpf_trace.h | 34 ++++++++++++++++++++++++++++++++++
+>   3 files changed, 72 insertions(+), 5 deletions(-)
+>   create mode 100644 kernel/trace/bpf_trace.h
+> 
+> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+> index 6575bb0..aeba5ee 100644
+> --- a/kernel/trace/Makefile
+> +++ b/kernel/trace/Makefile
+> @@ -31,6 +31,8 @@ ifdef CONFIG_GCOV_PROFILE_FTRACE
+>   GCOV_PROFILE := y
+>   endif
+>   
+> +CFLAGS_bpf_trace.o := -I$(src)
+> +
+>   CFLAGS_trace_benchmark.o := -I$(src)
+>   CFLAGS_trace_events_filter.o := -I$(src)
+>   
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 1d874d8..1414bf5 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -11,6 +11,7 @@
+>   #include <linux/uaccess.h>
+>   #include <linux/ctype.h>
+>   #include <linux/kprobes.h>
+> +#include <linux/spinlock.h>
+>   #include <linux/syscalls.h>
+>   #include <linux/error-injection.h>
+>   
+> @@ -19,6 +20,9 @@
+>   #include "trace_probe.h"
+>   #include "trace.h"
+>   
+> +#define CREATE_TRACE_POINTS
+> +#include "bpf_trace.h"
+> +
+>   #define bpf_event_rcu_dereference(p)					\
+>   	rcu_dereference_protected(p, lockdep_is_held(&bpf_event_mutex))
+>   
+> @@ -374,6 +378,29 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+>   	}
+>   }
+>   
+> +static DEFINE_RAW_SPINLOCK(trace_printk_lock);
+> +
+> +#define BPF_TRACE_PRINTK_SIZE   1024
+> +
+> +
 
-At least for A650, this solves some performance issues.
+nit: double newline
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- drivers/gpu/drm/msm/adreno/a6xx.xml.h      |   8 ++
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c      | 117 ++++++++++++++++++++-
- drivers/gpu/drm/msm/adreno/adreno_device.c |   2 +
- drivers/gpu/drm/msm/adreno/adreno_gpu.h    |   2 +-
- 4 files changed, 125 insertions(+), 4 deletions(-)
+> +static inline __printf(1, 0) int bpf_do_trace_printk(const char *fmt, ...)
+> +{
+> +	static char buf[BPF_TRACE_PRINTK_SIZE];
+> +	unsigned long flags;
+> +	va_list ap;
+> +	int ret;
+> +
+> +	raw_spin_lock_irqsave(&trace_printk_lock, flags);
+> +	va_start(ap, fmt);
+> +	ret = vsnprintf(buf, BPF_TRACE_PRINTK_SIZE, fmt, ap);
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx.xml.h b/drivers/gpu/drm/msm/adreno/a6xx.xml.h
-index 47840b73cdda..f0498faf7d0b 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx.xml.h
-+++ b/drivers/gpu/drm/msm/adreno/a6xx.xml.h
-@@ -1996,6 +1996,14 @@ static inline uint32_t A6XX_CP_PROTECT_REG_MASK_LEN(uint32_t val)
- 
- #define REG_A6XX_RBBM_CLOCK_DELAY_HLSQ				0x0000011c
- 
-+#define REG_A6XX_RBBM_CLOCK_HYST_HLSQ				0x0000011d
-+
-+#define REG_A6XX_RBBM_CLOCK_CNTL_TEX_FCHE			0x00000120
-+
-+#define REG_A6XX_RBBM_CLOCK_DELAY_TEX_FCHE			0x00000121
-+
-+#define REG_A6XX_RBBM_CLOCK_HYST_TEX_FCHE			0x00000122
-+
- #define REG_A6XX_DBGC_CFG_DBGBUS_SEL_A				0x00000600
- 
- #define REG_A6XX_DBGC_CFG_DBGBUS_SEL_B				0x00000601
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index ddcbc57ac25d..726fc3d3c7ba 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -260,6 +260,112 @@ const struct adreno_reglist a630_hwcg[] = {
- 	{},
- };
- 
-+const struct adreno_reglist a640_hwcg[] = {
-+	{REG_A6XX_RBBM_CLOCK_CNTL_SP0, 0x02222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_SP0, 0x02222220},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_SP0, 0x00000080},
-+	{REG_A6XX_RBBM_CLOCK_HYST_SP0, 0x0000F3CF},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_TP0, 0x02222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_TP0, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL3_TP0, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL4_TP0, 0x00022222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_TP0, 0x11111111},
-+	{REG_A6XX_RBBM_CLOCK_DELAY2_TP0, 0x11111111},
-+	{REG_A6XX_RBBM_CLOCK_DELAY3_TP0, 0x11111111},
-+	{REG_A6XX_RBBM_CLOCK_DELAY4_TP0, 0x00011111},
-+	{REG_A6XX_RBBM_CLOCK_HYST_TP0, 0x77777777},
-+	{REG_A6XX_RBBM_CLOCK_HYST2_TP0, 0x77777777},
-+	{REG_A6XX_RBBM_CLOCK_HYST3_TP0, 0x77777777},
-+	{REG_A6XX_RBBM_CLOCK_HYST4_TP0, 0x00077777},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_RB0, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_RB0, 0x01002222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_CCU0, 0x00002220},
-+	{REG_A6XX_RBBM_CLOCK_HYST_RB_CCU0, 0x00040F00},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_RAC, 0x05222022},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_RAC, 0x00005555},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_RAC, 0x00000011},
-+	{REG_A6XX_RBBM_CLOCK_HYST_RAC, 0x00445044},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_TSE_RAS_RBBM, 0x04222222},
-+	{REG_A6XX_RBBM_CLOCK_MODE_VFD, 0x00002222},
-+	{REG_A6XX_RBBM_CLOCK_MODE_GPC, 0x00222222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_HLSQ_2, 0x00000002},
-+	{REG_A6XX_RBBM_CLOCK_MODE_HLSQ, 0x00002222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_TSE_RAS_RBBM, 0x00004000},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_VFD, 0x00002222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_GPC, 0x00000200},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_HLSQ, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_HYST_TSE_RAS_RBBM, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_HYST_VFD, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_HYST_GPC, 0x04104004},
-+	{REG_A6XX_RBBM_CLOCK_HYST_HLSQ, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_TEX_FCHE, 0x00000222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_TEX_FCHE, 0x00000111},
-+	{REG_A6XX_RBBM_CLOCK_HYST_TEX_FCHE, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_UCHE, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_HYST_UCHE, 0x00000004},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_UCHE, 0x00000002},
-+	{REG_A6XX_RBBM_ISDB_CNT, 0x00000182},
-+	{REG_A6XX_RBBM_RAC_THRESHOLD_CNT, 0x00000000},
-+	{REG_A6XX_RBBM_SP_HYST_CNT, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_GMU_GX, 0x00000222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_GMU_GX, 0x00000111},
-+	{REG_A6XX_RBBM_CLOCK_HYST_GMU_GX, 0x00000555},
-+	{},
-+};
-+
-+const struct adreno_reglist a650_hwcg[] = {
-+	{REG_A6XX_RBBM_CLOCK_CNTL_SP0, 0x02222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_SP0, 0x02222220},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_SP0, 0x00000080},
-+	{REG_A6XX_RBBM_CLOCK_HYST_SP0, 0x0000F3CF},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_TP0, 0x02222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_TP0, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL3_TP0, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL4_TP0, 0x00022222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_TP0, 0x11111111},
-+	{REG_A6XX_RBBM_CLOCK_DELAY2_TP0, 0x11111111},
-+	{REG_A6XX_RBBM_CLOCK_DELAY3_TP0, 0x11111111},
-+	{REG_A6XX_RBBM_CLOCK_DELAY4_TP0, 0x00011111},
-+	{REG_A6XX_RBBM_CLOCK_HYST_TP0, 0x77777777},
-+	{REG_A6XX_RBBM_CLOCK_HYST2_TP0, 0x77777777},
-+	{REG_A6XX_RBBM_CLOCK_HYST3_TP0, 0x77777777},
-+	{REG_A6XX_RBBM_CLOCK_HYST4_TP0, 0x00077777},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_RB0, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_RB0, 0x01002222},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_CCU0, 0x00002220},
-+	{REG_A6XX_RBBM_CLOCK_HYST_RB_CCU0, 0x00040F00},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_RAC, 0x25222022},
-+	{REG_A6XX_RBBM_CLOCK_CNTL2_RAC, 0x00005555},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_RAC, 0x00000011},
-+	{REG_A6XX_RBBM_CLOCK_HYST_RAC, 0x00445044},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_TSE_RAS_RBBM, 0x04222222},
-+	{REG_A6XX_RBBM_CLOCK_MODE_VFD, 0x00002222},
-+	{REG_A6XX_RBBM_CLOCK_MODE_GPC, 0x00222222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_HLSQ_2, 0x00000002},
-+	{REG_A6XX_RBBM_CLOCK_MODE_HLSQ, 0x00002222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_TSE_RAS_RBBM, 0x00004000},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_VFD, 0x00002222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_GPC, 0x00000200},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_HLSQ, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_HYST_TSE_RAS_RBBM, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_HYST_VFD, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_HYST_GPC, 0x04104004},
-+	{REG_A6XX_RBBM_CLOCK_HYST_HLSQ, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_TEX_FCHE, 0x00000222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_TEX_FCHE, 0x00000111},
-+	{REG_A6XX_RBBM_CLOCK_HYST_TEX_FCHE, 0x00000777},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_UCHE, 0x22222222},
-+	{REG_A6XX_RBBM_CLOCK_HYST_UCHE, 0x00000004},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_UCHE, 0x00000002},
-+	{REG_A6XX_RBBM_ISDB_CNT, 0x00000182},
-+	{REG_A6XX_RBBM_RAC_THRESHOLD_CNT, 0x00000000},
-+	{REG_A6XX_RBBM_SP_HYST_CNT, 0x00000000},
-+	{REG_A6XX_RBBM_CLOCK_CNTL_GMU_GX, 0x00000222},
-+	{REG_A6XX_RBBM_CLOCK_DELAY_GMU_GX, 0x00000111},
-+	{REG_A6XX_RBBM_CLOCK_HYST_GMU_GX, 0x00000555},
-+	{},
-+};
-+
- static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
- {
- 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
-@@ -267,15 +373,20 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
- 	struct a6xx_gmu *gmu = &a6xx_gpu->gmu;
- 	const struct adreno_reglist *reg;
- 	unsigned int i;
--	u32 val;
-+	u32 val, clock_cntl_on;
- 
- 	if (!adreno_gpu->info->hwcg)
- 		return;
- 
-+	if (adreno_is_a630(adreno_gpu))
-+		clock_cntl_on = 0x8aa8aa02;
-+	else
-+		clock_cntl_on = 0x8aa8aa82;
-+
- 	val = gpu_read(gpu, REG_A6XX_RBBM_CLOCK_CNTL);
- 
- 	/* Don't re-program the registers if they are already correct */
--	if ((!state && !val) || (state && (val == 0x8aa8aa02)))
-+	if ((!state && !val) || (state && (val == clock_cntl_on)))
- 		return;
- 
- 	/* Disable SP clock before programming HWCG registers */
-@@ -287,7 +398,7 @@ static void a6xx_set_hwcg(struct msm_gpu *gpu, bool state)
- 	/* Enable SP clock */
- 	gmu_rmw(gmu, REG_A6XX_GPU_GMU_GX_SPTPRAC_CLOCK_CONTROL, 0, 1);
- 
--	gpu_write(gpu, REG_A6XX_RBBM_CLOCK_CNTL, state ? 0x8aa8aa02 : 0);
-+	gpu_write(gpu, REG_A6XX_RBBM_CLOCK_CNTL, state ? clock_cntl_on : 0);
- }
- 
- static void a6xx_set_ubwc_config(struct msm_gpu *gpu)
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-index 97996e7fc668..4e84f3c76f4f 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-@@ -213,6 +213,7 @@ static const struct adreno_info gpulist[] = {
- 		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
- 		.init = a6xx_gpu_init,
- 		.zapfw = "a640_zap.mdt",
-+		.hwcg = a640_hwcg,
- 	}, {
- 		.rev = ADRENO_REV(6, 5, 0, ANY_ID),
- 		.revn = 650,
-@@ -225,6 +226,7 @@ static const struct adreno_info gpulist[] = {
- 		.inactive_period = DRM_MSM_INACTIVE_PERIOD,
- 		.init = a6xx_gpu_init,
- 		.zapfw = "a650_zap.mdt",
-+		.hwcg = a650_hwcg,
- 	},
- };
- 
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-index 426cabd374bb..99bb468f5f24 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-@@ -73,7 +73,7 @@ struct adreno_reglist {
- 	u32 value;
- };
- 
--extern const struct adreno_reglist a630_hwcg[];
-+extern const struct adreno_reglist a630_hwcg[], a640_hwcg[], a650_hwcg[];
- 
- struct adreno_info {
- 	struct adreno_rev rev;
--- 
-2.26.1
+nit: s/BPF_TRACE_PRINTK_SIZE/sizeof(buf)/
+
+> +	va_end(ap);
+> +	if (ret >= 0)
+> +		trace_bpf_trace_printk(buf);
+
+Is there a specific reason you added the 'ret >= 0' check on top of [0]? Given
+the vsnprintf() internals you either return 0 or number of characters generated,
+no?
+
+   [0] https://lore.kernel.org/bpf/20200628194334.6238b933@oasis.local.home/
+
+Rest lgtm, thanks!
+
+> +	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+> +
+> +	return ret;
+> +}
+> +
+>   /*
+>    * Only limited trace_printk() conversion specifiers allowed:
+>    * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %pB %pks %pus %s
+> @@ -483,8 +510,7 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+>    */
+>   #define __BPF_TP_EMIT()	__BPF_ARG3_TP()
+>   #define __BPF_TP(...)							\
+> -	__trace_printk(0 /* Fake ip */,					\
+> -		       fmt, ##__VA_ARGS__)
+> +	bpf_do_trace_printk(fmt, ##__VA_ARGS__)
+>   
+>   #define __BPF_ARG1_TP(...)						\
+>   	((mod[0] == 2 || (mod[0] == 1 && __BITS_PER_LONG == 64))	\
+> @@ -521,10 +547,15 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+>   const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
+>   {
+>   	/*
+> -	 * this program might be calling bpf_trace_printk,
+> -	 * so allocate per-cpu printk buffers
+> +	 * This program might be calling bpf_trace_printk,
+> +	 * so enable the associated bpf_trace/bpf_trace_printk event.
+> +	 * Repeat this each time as it is possible a user has
+> +	 * disabled bpf_trace_printk events.  By loading a program
+> +	 * calling bpf_trace_printk() however the user has expressed
+> +	 * the intent to see such events.
+>   	 */
+> -	trace_printk_init_buffers();
+> +	if (trace_set_clr_event("bpf_trace", "bpf_trace_printk", 1))
+> +		pr_warn_ratelimited("could not enable bpf_trace_printk events");
+>   
+>   	return &bpf_trace_printk_proto;
+>   }
+> diff --git a/kernel/trace/bpf_trace.h b/kernel/trace/bpf_trace.h
+> new file mode 100644
+> index 0000000..9acbc11
+> --- /dev/null
+> +++ b/kernel/trace/bpf_trace.h
+> @@ -0,0 +1,34 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM bpf_trace
+> +
+> +#if !defined(_TRACE_BPF_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
+> +
+> +#define _TRACE_BPF_TRACE_H
+> +
+> +#include <linux/tracepoint.h>
+> +
+> +TRACE_EVENT(bpf_trace_printk,
+> +
+> +	TP_PROTO(const char *bpf_string),
+> +
+> +	TP_ARGS(bpf_string),
+> +
+> +	TP_STRUCT__entry(
+> +		__string(bpf_string, bpf_string)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__assign_str(bpf_string, bpf_string);
+> +	),
+> +
+> +	TP_printk("%s", __get_str(bpf_string))
+> +);
+> +
+> +#endif /* _TRACE_BPF_TRACE_H */
+> +
+> +#undef TRACE_INCLUDE_PATH
+> +#define TRACE_INCLUDE_PATH .
+> +#define TRACE_INCLUDE_FILE bpf_trace
+> +
+> +#include <trace/define_trace.h>
+> 
 
