@@ -2,123 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106E621B948
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6672E21B955
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbgGJPUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 11:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgGJPTw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:19:52 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBE7C08E763
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 08:19:51 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 22so6563742wmg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 08:19:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=secretlab.ca; s=google;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kxnyGnMwxTRwHtpgKXQFv4Sp6EsduZoxQF9xvlfrbr8=;
-        b=ZRVe/ibOcbNKEM/ckw2d45EAviU8Pdos52byPUPcHAF0KcH9B9qASluESjw4KaH4Yg
-         gBkMUVeA1w+53smdKc/n0mMXp8ja0j3tKCB99dT5ELfcmTBVz/0PIEcqwf9AD2yrL8er
-         PY1kyYvl0PYqsDEk51ZVOmlJCnfONwb34Yym1ASVdaVRgYExPRp2Y3zXG/wT4X8+Nosi
-         WXeFcMTadVk1AeJs7OmMT/m29gdv4Ev/PzKgJYP1/nA0q7mFScCBEyass+jmBB4cgKJE
-         iMAW7Rj1l5WQ57KkxmxPz2NC3QjhP/w9B1s0khMrEXmosFgOecRkp0W0udq1Wt4sttst
-         fihQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=kxnyGnMwxTRwHtpgKXQFv4Sp6EsduZoxQF9xvlfrbr8=;
-        b=WWlryurFRfrvvp+d39fmqiiQlcyAMMbcouj62pZLJQixlrWhDkWxFTd7RzcyNeBWmZ
-         L876D9xUDV0FgcUOdJTTZQMa2+fkl6VsrVoYpp26Bn9fw7U+cQUcmRsZl659xcLpmO7s
-         xOCS4z6fkGdmPGWhCIEAcTWAKqqjyAoCjLGTE5CN8E3SH3ZKs2ospTisHUvmX7EWbgHF
-         WThpZD7Jw7ko0vWuLRalAJvV64W46Dyn52hIuiA8EF1D7dn9iZq5KCgs1Arlw3N4ZuUC
-         kTxWqoVl8XS8NoK9XYYS9vsmAGtkQ4WXEii/PTtfV1/0FtSKtKZcXNZ4wlrx07HX6btk
-         kFmQ==
-X-Gm-Message-State: AOAM531Be8R/pBgbTOml+bVupd7HxIkPA812Chz/x7kD8oAwrmgcQR6Q
-        /77hquuXC7e/b7QoR93ECw8s/YNIbYuJIyz6
-X-Google-Smtp-Source: ABdhPJzXzqIMMMApQjKWDU1z5QkbzF8CAES3zC4qQ+Oqh5yRVV9kfEvVTZWzmZDin+QTicbt2ad4Cw==
-X-Received: by 2002:a1c:790e:: with SMTP id l14mr5587090wme.65.1594394389624;
-        Fri, 10 Jul 2020 08:19:49 -0700 (PDT)
-Received: from moist.secretlab.ca (188.28.146.46.threembb.co.uk. [188.28.146.46])
-        by smtp.gmail.com with ESMTPSA id d13sm10400297wrn.61.2020.07.10.08.19.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 08:19:49 -0700 (PDT)
-From:   Grant Likely <grant.likely@secretlab.ca>
-X-Google-Original-From: Grant Likely <grant.likely@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Grant Likely <grant.likely@arm.com>,
-        Grant Likely <grant.likely@secretlab.ca>,
-        Darren Hart <darren@dvhart.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] hid-input: Fix devices that return multiple bytes in battery report
-Date:   Fri, 10 Jul 2020 16:19:39 +0100
-Message-Id: <20200710151939.4894-1-grant.likely@arm.com>
-X-Mailer: git-send-email 2.20.1
+        id S1728028AbgGJPVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 11:21:15 -0400
+Received: from mout.gmx.net ([212.227.15.15]:36177 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726977AbgGJPVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 11:21:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1594394445;
+        bh=IwTd6axjUykRPNOqnxq1T8INyLFtH4Grahn4QNilSIY=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=IiyV/6kjkH3p89Vqdcea131zUdn9e34AvyYLqul29i8n3OewYzMUQPSaAYq+mKx0g
+         qRT7h8fpEin/AOQKIM1D81dhUL1jo3orZvfF5ny395Xfn2hNnYZZqtdUsmAXakBUYM
+         Ta9mDhOuebH3gbKq09HFuzthzrJxp5O/9dmSEC9A=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmlT2-1kdSCA3C6Q-00juVa; Fri, 10
+ Jul 2020 17:20:44 +0200
+Date:   Fri, 10 Jul 2020 17:20:24 +0200
+From:   Oscar Carter <oscar.carter@gmx.com>
+To:     Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc:     Oscar Carter <oscar.carter@gmx.com>,
+        Kees Cook <keescook@chromium.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        kernel-hardening@lists.openwall.com,
+        linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] firewire: Remove function callback casts
+Message-ID: <20200710152024.GA3305@ubuntu>
+References: <20200530090839.7895-1-oscar.carter@gmx.com>
+ <20200708130628.GA21753@workstation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708130628.GA21753@workstation>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:NXOytpk85GGVi2EnBsjBjoJRKIjmWxRVO9BFlQb88DJo4bolwEQ
+ vJlfsHetbkUzntLVvbSdJ7BPm7lucP7k88RrGtbyKFzirFQlLkGPcAgOq2jED7UYt3CZKgV
+ QWJo8yzPSrWfqjp3wjSixQi6aHWnWKy0qgIauL2EZb4V8wME7v6/t2kvM4GEsVNsPL7RVxI
+ mOOGIm1/q555Wckac+/xg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cprC2WU1qiE=:g5jM+UtJlALXvgDapZSWJW
+ y2Vg03TXGW8JcjxyvkncCzBEjctPVHWdf7QJxWOmMGjPLwpy8hBTpzZuLk9d9cHzMb9mq6v/+
+ yIOb1Hlz3Eof2ItGQju+EWGUv/R4WkD1xC54pa7hkQm+dTFM/bGYz7Z6gDVsDhlpNCgX5p3Pm
+ rGVw2r9Ug/WxrnWW0cuyMf6UP1BFpkhX8Qn+X2QZhqECj3cUW9bcIVfKKqFS0YYMtTRt0iuq+
+ SvncdleCVJMHmng7n668wfGIQDrA6LVA7+E+z5JSjsWpZ6iZDDKpxIgSh8C5UQS0my4Ycdtla
+ /cwNW7iVtvSJ2fgny+CRAr0WaU7Je6KEmJ28nvWdOWzV97D4ryksdbUJouZohvQ0tHg4ROx1i
+ cn2ZEPlfgJmSzDYCp1G2ZEeikjHfOoT3QMFNjYulQicUNiNIuZ4llXeDVOr8QK33P7pTKQTbS
+ ppApIZu1Ev1PLIDrCr55gES7r/kv6k0Gd7rrDVhsfIYcg2yCNsVpUlZl+kSgN0WnWnxda2oVM
+ 9VqOK3ZR9I/jC1Ih7VOSEfIWJKm+3yn+39ZTI8hHk8Uu9YAsm2rz1nnO/p3P0sEG+ud/9vkUd
+ ijYrb9wiuy1ogJ5BR7CH1Upud2xvLD121FuCMYhUTHAPZTivwyE+eGplJBBFuZCOOi9cAelO7
+ LRuXGgHcW17FMVz5rj2W04G44WXsEWXfy72vPPl1sE1A3HlsGl7ktP3ySKhd+OOrx+O5BoXwc
+ auoI95ZP6L6FWmeO0QMH4e88HuFxNYWCDKUV4f8c7W5LIhKLHBCGr4vdW0hC9sltiOU5iODMn
+ sWpVPR/XZKMmqMXzOG5kMllrRUp4DoNgOz10GRWrfAgGB+u0tUxsoKzDKcN+3Sxm6Vjwk7Iu2
+ d8vvZARPL0fuPn1pRPrvj2wJOLk9WPSTSp2KnWEDuFWjxRMPQNflAjXP2M1dBuq/yuoyNd/FT
+ mtgRi9gsvSzYMAs4k9oJbOTQGEyLJq6nCQqEKGN+KKbwijMRKReoCE6x4JYUSEmSIQXDecopH
+ aQbue1p/3V0tXxMI1UyXGkL+nuZAhlo6+XlP2PFdMHAcFpkSPql1l+bD1ZAOS7/7R5PcXz4AL
+ C+1DeW2nZNf+l3tWAoepmD5b/Yr4mDQsIx2sW3ijyHg17nA+0zWyYQ/H78RgifNTO3DpGGVsE
+ WmINZ0mM4XBMTQnbwYtWIS6Ub2bB5VPgzsk+w2rJNpLBzQF1z1kX03yX+SN1iLvxfu7h1O07s
+ 66DlNnCNC5yb2iySX1vISn9b/X8KRhEaFyoH36g==
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some devices, particularly the 3DConnexion Spacemouse wireless 3D
-controllers, return more than just the battery capacity in the battery
-report. The Spacemouse devices return an additional byte with a device
-specific field. However, hidinput_query_battery_capacity() only
-requests a 2 byte transfer.
+Hi Takashi,
 
-When a spacemouse is connected via USB (direct wire, no wireless dongle)
-and it returns a 3 byte report instead of the assumed 2 byte battery
-report the larger transfer confuses and frightens the USB subsystem
-which chooses to ignore the transfer. Then after 2 seconds assume the
-device has stopped responding and reset it. This can be reproduced
-easily by using a wired connection with a wireless spacemouse. The
-Spacemouse will enter a loop of resetting every 2 seconds which can be
-observed in dmesg.
+On Wed, Jul 08, 2020 at 10:06:28PM +0900, Takashi Sakamoto wrote:
+> Hi,
+>
+> I'm sorry to be late but I was stuck at my work for ALSA control
+> service programs for audio and music units on IEEE 1394 bus[1].
+>
+> On Sat, May 30, 2020 at 11:08:39AM +0200, Oscar Carter wrote:
+> > [...]
+> > Hi,
+> >
+> > this is another proposal to achieved the goal of remove function callb=
+ack
+> > cast start by me with the first [1] and second [2] versions, and follo=
+wed
+> > by the work of Takashi Sakamoto with his first [3] and second [4] vers=
+ions,
+> > and the code of Stefan Richter [5].
+> >
+> > The purpose of this third version is to put together all the work done
+> > until now following the comments of all reviewed patches.
+> >
+> > I've added the "Co-developed-by" and "Signed-off-by" tags to give cred=
+it to
+> > Takashi Sakamoto and Stefan Richter if there are no objections.
+>
+> In my opinion, it's no need to add my and Stefan's sign-off tag to patch
+> in which you firstly wrote even if it includes ideas from the others ;)
 
-This patch solves the problem by increasing the transfer request to 4
-bytes instead of 2. The fix isn't particularly elegant, but it is simple
-and safe to backport to stable kernels. A further patch will follow to
-more elegantly handle battery reports that contain additional data.
+I would like to leave it as is because most of the work is based on your c=
+ode
+(Takashi and Stefan).
 
-Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
-Cc: Darren Hart <darren@dvhart.com>
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: stable@vger.kernel.org
----
- drivers/hid/hid-input.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> > [...]
+>
+> Anyway this patch looks good to me. I test this patch with libhinoko and
+> find no regression.
+>
+> Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Testeb-by: Takashi Sakamoto<o-takashi@sakamocchi.jp>
+>
+>
+> [1] [RFT] ALSA control service programs for Digidesign Digi 002/003 fami=
+ly
+> and Tascam FireWire series
+> https://mailman.alsa-project.org/pipermail/alsa-devel/2020-July/170331.h=
+tml
+>
+> Thanks
+>
+> Takashi Sakamoto
 
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index dea9cc65bf80..e8641ce677e4 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -350,13 +350,13 @@ static int hidinput_query_battery_capacity(struct hid_device *dev)
- 	u8 *buf;
- 	int ret;
- 
--	buf = kmalloc(2, GFP_KERNEL);
-+	buf = kmalloc(4, GFP_KERNEL);
- 	if (!buf)
- 		return -ENOMEM;
- 
--	ret = hid_hw_raw_request(dev, dev->battery_report_id, buf, 2,
-+	ret = hid_hw_raw_request(dev, dev->battery_report_id, buf, 4,
- 				 dev->battery_report_type, HID_REQ_GET_REPORT);
--	if (ret != 2) {
-+	if (ret < 2) {
- 		kfree(buf);
- 		return -ENODATA;
- 	}
--- 
-2.20.1
-
+Regards,
+Oscar Carter
