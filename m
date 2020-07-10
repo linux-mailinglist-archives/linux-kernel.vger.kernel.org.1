@@ -2,333 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE56421B9E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB1021B9F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbgGJPsv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Jul 2020 11:48:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52222 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728199AbgGJPsr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:48:47 -0400
-Received: from mail-pl1-f200.google.com ([209.85.214.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1jtvGT-0003gk-Ro
-        for linux-kernel@vger.kernel.org; Fri, 10 Jul 2020 15:48:42 +0000
-Received: by mail-pl1-f200.google.com with SMTP id 59so3678856pla.12
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 08:48:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=N1xGiQms8sbgC2BixU7VSPSHisiTFHwPd+ZKrKX0wTI=;
-        b=DTtM/mWv9TSPkJkl3Py8Uyu7DNCkplN9rqr+OHUxuAOaaTTFGCmTQcpb8UI9FSH4vT
-         yF2ihVhiGjA+fHfhJvcyCUQmH465aU28OccbRWMIhGsPuf7g+gV4IibojiPLDx0Gs7MQ
-         uNmvZXYGLFNYQFOIKayorXTaruvM7onyO3nOMEGf0nn6wfJCySjo/UZNZyZDR5tCg/GD
-         c2i8Qyjyg8Uv/Rcv2OErvXczls9nHgMC48WiJEd/5kSV932PJgq1E/MkZFk2DQd0G88i
-         wVoTQUw8Cjn+Pz7Z6rCK8CJj9C2GlKjeBiCYxJ++SfJqEWVGlaMFFzr4MprHBMx9U8eH
-         EXeQ==
-X-Gm-Message-State: AOAM532uPwElcPWnbPl2X2PYZx8vU+VI21HBPqwbkfSgfjkjrAM6BizG
-        AoNKELAby4fKgsZrH+gIJrmpQ91wdzherEiil/kRe5eOUPZYqYMmqUhRiovaYHfW63ebTABQf0Y
-        2ztBl4s3+lLUbV9ZlFq5MZbJDEptc/yleE3K+vGJkrg==
-X-Received: by 2002:a17:902:b185:: with SMTP id s5mr15558621plr.211.1594396120348;
-        Fri, 10 Jul 2020 08:48:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFahFk0g8OPWuiV8TvEMjbyHgjf+qYUHmdMGTSGo5KdPouoaisemlLCTjJK1SXI7HTqA1msQ==
-X-Received: by 2002:a17:902:b185:: with SMTP id s5mr15558589plr.211.1594396119788;
-        Fri, 10 Jul 2020 08:48:39 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id lx2sm6394653pjb.16.2020.07.10.08.48.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 Jul 2020 08:48:39 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v6] drm/i915: Init lspcon after HPD in intel_dp_detect()
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <21A619C1-627F-49CC-B2F4-9B533F351DF3@canonical.com>
-Date:   Fri, 10 Jul 2020 23:48:34 +0800
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?utf-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        =?utf-8?Q?Jos=C3=A9_Roberto_de_Souza?= <jose.souza@intel.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Ramalingam C <ramalingam.c@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <F9B12234-5D1D-4081-BFCF-2FFF2694CBD4@canonical.com>
-References: <20200610075542.12882-1-kai.heng.feng@canonical.com>
- <21A619C1-627F-49CC-B2F4-9B533F351DF3@canonical.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1728257AbgGJPtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 11:49:49 -0400
+Received: from mail-db8eur05on2108.outbound.protection.outlook.com ([40.107.20.108]:30784
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726950AbgGJPts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 11:49:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KhedyrS583iVXfEQVx1uHO5xcwMmIEPiLTA3iLknpbGV6rk/K0/Az9l91SdRIpLXNgnbRwLlMMbH/pBLVdA/1WsLvGTzSKTkvykqUTFM0WGHltd7fzP+ARveNC7y9CyFhlBOMj9QsuWNGMyCmIe1qQ6YI3tH80awYxfjKRUYlaLLG68gSTybJA8W/cJCeWceIVRfJ5sT7IqLCgNw9C8QJ2MbSqRPbUz/kt4rcBuZvv43MYxA50dvvPadsmcJ0DIT640J4LYOxuOd3dAHf9XTluyjTAwlpOl/fo2lZFgztkIgwGvcmvEYj/vtF6LB7m9Hexu7O//mhQM6ol1TKttZag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ntUudqTpdIV2P2ptD1MDuZY6tRQ5gZwq4AhJhQrFWKc=;
+ b=IzlVzVeOT8DQ+9/qsVipkW4aIHRRYJiEZzJ2XQz5XBMtSRyW3NNrgkEi6DCGlsuCXz6EciJ3hdoIb/GRJRyHL7KciM1ow5e3Z4/fQKL2Xg58oJ3HRbJnVd6LbpFo9BWGMS+aJHGO1ahaGy/aFR/YGsU/KeaHrE5JXlZA1A2qjN585AKq2K0dwotudsQ1U2/KtYQf9dGtvT2D6WIctHVcN7ClX2t2vmDqzJygNxNXrfF8W8hZ/tUUbGw6OOEFjNYZW73a2xEZsCa2WfOyhZuQ3hwR/kdi1nJ+2feYkUkB1E07d04yV0lPKv9RDSZOeWZ9wQo3oSBXBePZ0w7TxoMgvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
+ dkim=pass header.d=toradex.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ntUudqTpdIV2P2ptD1MDuZY6tRQ5gZwq4AhJhQrFWKc=;
+ b=fRrKUGssO/MiDZp8B9BtVRCktpcn+OTI1YU3zOVwm9LwTaW4OA765Syek+hSumyKXUCSe9WQLDxL7XJaJRb8xsutmPeXI4A8P7GpsB10grzlLO+xeRNv1lNYXw/szXH6CV5iVacGPQEaLwAvfcfPmvV7XmNhg239GZd1Cct3pL0=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=toradex.com;
+Received: from AM6PR05MB6120.eurprd05.prod.outlook.com (2603:10a6:20b:a8::25)
+ by AM6PR05MB5879.eurprd05.prod.outlook.com (2603:10a6:20b:a2::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Fri, 10 Jul
+ 2020 15:49:44 +0000
+Received: from AM6PR05MB6120.eurprd05.prod.outlook.com
+ ([fe80::1d81:6a9b:8c26:3b7d]) by AM6PR05MB6120.eurprd05.prod.outlook.com
+ ([fe80::1d81:6a9b:8c26:3b7d%4]) with mapi id 15.20.3174.023; Fri, 10 Jul 2020
+ 15:49:44 +0000
+From:   Philippe Schenker <philippe.schenker@toradex.com>
+To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, Peter Chen <Peter.Chen@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Philippe Schenker <philippe.schenker@toradex.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] dt-bindings: usb: ci-hdrc-usb2: add property disable-runtime-pm
+Date:   Fri, 10 Jul 2020 17:49:32 +0200
+Message-Id: <20200710154935.697190-1-philippe.schenker@toradex.com>
+X-Mailer: git-send-email 2.27.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: GV0P278CA0047.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:710:29::16) To AM6PR05MB6120.eurprd05.prod.outlook.com
+ (2603:10a6:20b:a8::25)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from philippe-pc.toradex.int (31.10.206.124) by GV0P278CA0047.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:29::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.23 via Frontend Transport; Fri, 10 Jul 2020 15:49:43 +0000
+X-Mailer: git-send-email 2.27.0
+X-Originating-IP: [31.10.206.124]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6e6226b2-6a98-44be-72cb-08d824e8dd5f
+X-MS-TrafficTypeDiagnostic: AM6PR05MB5879:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR05MB5879E61A1A8B8E52D441BA79F4650@AM6PR05MB5879.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: X9YhtxW1tGjJzniJZ6MK0RhuwuM6BJHNPrg2ceka6rlt+ytxFt741KMZuDCOXmHlWI0tGkwVUI8H9O4jargY9bWX21NDuY1ZMmP5Rwdrm5ofSZFrj5OwQUXHROrBdfkIrIGvIoH1S1x2bDDUakx+b223bq0Iid/4d3y66emnq6BrWhlCVaUNX6dV+vOoWuvMJKtBL2O40ctK++SfFoRjjZtEU8FJXoeNjXEp2j1IS98vNjn0giT0cmKtE9GpKb1iTS1D4oKKJskRyBbJIdQRhF2R59bg3X30W2J6rPshrQhuC5q7JZryHPh4boG4/0Kh8i9EtDeg4WB78WznkUWm2uiaAlwLtJ96sa6Ue+VBj8iJUEqkfvgAzijJm0iq0vl7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6120.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(346002)(136003)(376002)(39850400004)(54906003)(66946007)(86362001)(52116002)(478600001)(110136005)(1076003)(6666004)(4326008)(6486002)(316002)(6506007)(83380400001)(26005)(2906002)(8936002)(44832011)(36756003)(5660300002)(16526019)(6512007)(8676002)(66476007)(66556008)(956004)(2616005)(186003)(4744005)(16060500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: z019xzeYg+ojJdyLOsfQwo4hHg77LaMET3F9pTJJ8Xham0St72jTDWeXfUSv7Iyxk5sVzXnMQFOt2Jt21cIpw8y4HFeBSLBXqKa+ClFJxgAc+G9TqCBDOC8+oYnsEW0FF/7dKGcfU3eN1E/8xI/lnDg2ulC79ZPrbJ+OkrkGSxXuNPiIbHc0dCr5JEQx7x+1ga3CIoA4bnrR0aR0V7SkD2Z2jaRHlhvTBk5CBUrhN+xKoT/neBgYFKRJzF/D0lgge4V8k0Mu74t75LOOt9CYwmk2J4HUNeqlohamHzZUo+w5SZJy/Y374/N2jeI26VCpprXVvDSW6DDWZwZpl4/MjLPdnju+E0e9m2vvWeSz+AV+FZyOGWaJkBfzgR0QDtWUmADLde2iINW4xgB2QXgNAO+WyENkXa7HHR/qjJ2UCiAuWp5Gt6Mr+eBots8d8Q1W4WRiOXdcrR0kaGzhJwwrBfiQaf9kzvRrC+drS8O8wG0=
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e6226b2-6a98-44be-72cb-08d824e8dd5f
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB6120.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2020 15:49:43.9436
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E889PdGyF94hWhK4ogblsBTF3OcafpDouKZnv+DLwCmKZWmdJAUHSSakKc9bqQ0JXIUS/9SiSiWazDH26jSYPJ2bX8/mx94YnNIB8exMTQ8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB5879
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Chipidea depends on some hardware signals to be there in order
+for runtime-pm to work well. Add the possibility to disable runtime
+power management that is necessary for certain boards.
 
+Signed-off-by: Philippe Schenker <philippe.schenker@toradex.com>
+---
 
-> On Jun 30, 2020, at 16:37, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
-> 
-> 
->> On Jun 10, 2020, at 15:55, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
->> 
->> On HP 800 G4 DM, if HDMI cable isn't plugged before boot, the HDMI port
->> becomes useless and never responds to cable hotplugging:
->> [    3.031904] [drm:lspcon_init [i915]] *ERROR* Failed to probe lspcon
->> [    3.031945] [drm:intel_ddi_init [i915]] *ERROR* LSPCON init failed on port D
->> 
->> Seems like the lspcon chip on the system only gets powered after the
->> cable is plugged.
->> 
->> Consilidate lspcon_init() into lspcon_resume() to dynamically init
->> lspcon chip, and make HDMI port work.
->> 
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> 
-> A gentle ping...
+ Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-Another gentle ping...
-
-> 
->> ---
->> v6:
->> - Rebase on latest for-linux-next.
->> 
->> v5:
->> - Consolidate lspcon_resume() with lspcon_init().
->> - Move more logic into lspcon code.
->> 
->> v4:
->> - Trust VBT in intel_infoframe_init().
->> - Init lspcon in intel_dp_detect().
->> 
->> v3:
->> - Make sure it's handled under long HPD case.
->> 
->> v2: 
->> - Move lspcon_init() inside of intel_dp_hpd_pulse().
->> 
->> drivers/gpu/drm/i915/display/intel_ddi.c    | 19 +------
->> drivers/gpu/drm/i915/display/intel_dp.c     | 10 ++--
->> drivers/gpu/drm/i915/display/intel_hdmi.c   |  3 +-
->> drivers/gpu/drm/i915/display/intel_lspcon.c | 63 ++++++++++++---------
->> drivers/gpu/drm/i915/display/intel_lspcon.h |  3 +-
->> 5 files changed, 43 insertions(+), 55 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
->> index aa22465bb56e..af755b1aa24b 100644
->> --- a/drivers/gpu/drm/i915/display/intel_ddi.c
->> +++ b/drivers/gpu/drm/i915/display/intel_ddi.c
->> @@ -4805,7 +4805,7 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
->> {
->> 	struct intel_digital_port *intel_dig_port;
->> 	struct intel_encoder *encoder;
->> -	bool init_hdmi, init_dp, init_lspcon = false;
->> +	bool init_hdmi, init_dp;
->> 	enum phy phy = intel_port_to_phy(dev_priv, port);
->> 
->> 	init_hdmi = intel_bios_port_supports_dvi(dev_priv, port) ||
->> @@ -4819,7 +4819,6 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
->> 		 * is initialized before lspcon.
->> 		 */
->> 		init_dp = true;
->> -		init_lspcon = true;
->> 		init_hdmi = false;
->> 		drm_dbg_kms(&dev_priv->drm, "VBT says port %c has lspcon\n",
->> 			    port_name(port));
->> @@ -4904,22 +4903,6 @@ void intel_ddi_init(struct drm_i915_private *dev_priv, enum port port)
->> 			goto err;
->> 	}
->> 
->> -	if (init_lspcon) {
->> -		if (lspcon_init(intel_dig_port))
->> -			/* TODO: handle hdmi info frame part */
->> -			drm_dbg_kms(&dev_priv->drm,
->> -				    "LSPCON init success on port %c\n",
->> -				    port_name(port));
->> -		else
->> -			/*
->> -			 * LSPCON init faied, but DP init was success, so
->> -			 * lets try to drive as DP++ port.
->> -			 */
->> -			drm_err(&dev_priv->drm,
->> -				"LSPCON init failed on port %c\n",
->> -				port_name(port));
->> -	}
->> -
->> 	if (INTEL_GEN(dev_priv) >= 11) {
->> 		if (intel_phy_is_tc(dev_priv, phy))
->> 			intel_dig_port->connected = intel_tc_port_connected;
->> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
->> index ed9e53c373a7..398a104158a8 100644
->> --- a/drivers/gpu/drm/i915/display/intel_dp.c
->> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
->> @@ -5962,15 +5962,14 @@ static enum drm_connector_status
->> intel_dp_detect_dpcd(struct intel_dp *intel_dp)
->> {
->> 	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
->> -	struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
->> +	struct intel_digital_port *dig_port = dp_to_dig_port(intel_dp);
->> 	u8 *dpcd = intel_dp->dpcd;
->> 	u8 type;
->> 
->> 	if (WARN_ON(intel_dp_is_edp(intel_dp)))
->> 		return connector_status_connected;
->> 
->> -	if (lspcon->active)
->> -		lspcon_resume(lspcon);
->> +	lspcon_resume(dig_port);
->> 
->> 	if (!intel_dp_get_dpcd(intel_dp))
->> 		return connector_status_disconnected;
->> @@ -7056,14 +7055,13 @@ void intel_dp_encoder_reset(struct drm_encoder *encoder)
->> {
->> 	struct drm_i915_private *dev_priv = to_i915(encoder->dev);
->> 	struct intel_dp *intel_dp = enc_to_intel_dp(to_intel_encoder(encoder));
->> -	struct intel_lspcon *lspcon = dp_to_lspcon(intel_dp);
->> +	struct intel_digital_port *dig_port = dp_to_dig_port(intel_dp);
->> 	intel_wakeref_t wakeref;
->> 
->> 	if (!HAS_DDI(dev_priv))
->> 		intel_dp->DP = intel_de_read(dev_priv, intel_dp->output_reg);
->> 
->> -	if (lspcon->active)
->> -		lspcon_resume(lspcon);
->> +	lspcon_resume(dig_port);
->> 
->> 	intel_dp->reset_link_params = true;
->> 
->> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
->> index 010f37240710..643ad2127931 100644
->> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
->> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
->> @@ -3155,7 +3155,8 @@ void intel_infoframe_init(struct intel_digital_port *intel_dig_port)
->> 		intel_dig_port->set_infoframes = g4x_set_infoframes;
->> 		intel_dig_port->infoframes_enabled = g4x_infoframes_enabled;
->> 	} else if (HAS_DDI(dev_priv)) {
->> -		if (intel_dig_port->lspcon.active) {
->> +		if (intel_bios_is_lspcon_present(dev_priv,
->> +						 intel_dig_port->base.port)) {
->> 			intel_dig_port->write_infoframe = lspcon_write_infoframe;
->> 			intel_dig_port->read_infoframe = lspcon_read_infoframe;
->> 			intel_dig_port->set_infoframes = lspcon_set_infoframes;
->> diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.c b/drivers/gpu/drm/i915/display/intel_lspcon.c
->> index 6ff7b226f0a1..e3dde4c25604 100644
->> --- a/drivers/gpu/drm/i915/display/intel_lspcon.c
->> +++ b/drivers/gpu/drm/i915/display/intel_lspcon.c
->> @@ -525,44 +525,17 @@ u32 lspcon_infoframes_enabled(struct intel_encoder *encoder,
->> 	return 0;
->> }
->> 
->> -void lspcon_resume(struct intel_lspcon *lspcon)
->> -{
->> -	enum drm_lspcon_mode expected_mode;
->> -
->> -	if (lspcon_wake_native_aux_ch(lspcon)) {
->> -		expected_mode = DRM_LSPCON_MODE_PCON;
->> -		lspcon_resume_in_pcon_wa(lspcon);
->> -	} else {
->> -		expected_mode = DRM_LSPCON_MODE_LS;
->> -	}
->> -
->> -	if (lspcon_wait_mode(lspcon, expected_mode) == DRM_LSPCON_MODE_PCON)
->> -		return;
->> -
->> -	if (lspcon_change_mode(lspcon, DRM_LSPCON_MODE_PCON))
->> -		DRM_ERROR("LSPCON resume failed\n");
->> -	else
->> -		DRM_DEBUG_KMS("LSPCON resume success\n");
->> -}
->> -
->> void lspcon_wait_pcon_mode(struct intel_lspcon *lspcon)
->> {
->> 	lspcon_wait_mode(lspcon, DRM_LSPCON_MODE_PCON);
->> }
->> 
->> -bool lspcon_init(struct intel_digital_port *intel_dig_port)
->> +static bool lspcon_init(struct intel_digital_port *intel_dig_port)
->> {
->> 	struct intel_dp *dp = &intel_dig_port->dp;
->> 	struct intel_lspcon *lspcon = &intel_dig_port->lspcon;
->> -	struct drm_device *dev = intel_dig_port->base.base.dev;
->> -	struct drm_i915_private *dev_priv = to_i915(dev);
->> 	struct drm_connector *connector = &dp->attached_connector->base;
->> 
->> -	if (!HAS_LSPCON(dev_priv)) {
->> -		DRM_ERROR("LSPCON is not supported on this platform\n");
->> -		return false;
->> -	}
->> -
->> 	lspcon->active = false;
->> 	lspcon->mode = DRM_LSPCON_MODE_INVALID;
->> 
->> @@ -586,3 +559,37 @@ bool lspcon_init(struct intel_digital_port *intel_dig_port)
->> 	DRM_DEBUG_KMS("Success: LSPCON init\n");
->> 	return true;
->> }
->> +
->> +void lspcon_resume(struct intel_digital_port *intel_dig_port)
->> +{
->> +	struct intel_lspcon *lspcon = &intel_dig_port->lspcon;
->> +	struct drm_device *dev = intel_dig_port->base.base.dev;
->> +	struct drm_i915_private *dev_priv = to_i915(dev);
->> +	enum drm_lspcon_mode expected_mode;
->> +
->> +	if (!intel_bios_is_lspcon_present(dev_priv, intel_dig_port->base.port))
->> +		return;
->> +
->> +	if (!lspcon->active) {
->> +		if (!lspcon_init(intel_dig_port)) {
->> +			DRM_ERROR("LSPCON init failed on port %c\n",
->> +				  port_name(intel_dig_port->base.port));
->> +			return;
->> +		}
->> +	}
->> +
->> +	if (lspcon_wake_native_aux_ch(lspcon)) {
->> +		expected_mode = DRM_LSPCON_MODE_PCON;
->> +		lspcon_resume_in_pcon_wa(lspcon);
->> +	} else {
->> +		expected_mode = DRM_LSPCON_MODE_LS;
->> +	}
->> +
->> +	if (lspcon_wait_mode(lspcon, expected_mode) == DRM_LSPCON_MODE_PCON)
->> +		return;
->> +
->> +	if (lspcon_change_mode(lspcon, DRM_LSPCON_MODE_PCON))
->> +		DRM_ERROR("LSPCON resume failed\n");
->> +	else
->> +		DRM_DEBUG_KMS("LSPCON resume success\n");
->> +}
->> diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.h b/drivers/gpu/drm/i915/display/intel_lspcon.h
->> index 37cfddf8a9c5..169db35db13e 100644
->> --- a/drivers/gpu/drm/i915/display/intel_lspcon.h
->> +++ b/drivers/gpu/drm/i915/display/intel_lspcon.h
->> @@ -15,8 +15,7 @@ struct intel_digital_port;
->> struct intel_encoder;
->> struct intel_lspcon;
->> 
->> -bool lspcon_init(struct intel_digital_port *intel_dig_port);
->> -void lspcon_resume(struct intel_lspcon *lspcon);
->> +void lspcon_resume(struct intel_digital_port *intel_dig_port);
->> void lspcon_wait_pcon_mode(struct intel_lspcon *lspcon);
->> void lspcon_write_infoframe(struct intel_encoder *encoder,
->> 			    const struct intel_crtc_state *crtc_state,
->> -- 
->> 2.17.1
->> 
-> 
+diff --git a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt
+index 51376cbe5f3d..67a31df13e69 100644
+--- a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt
++++ b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt
+@@ -90,6 +90,7 @@ Optional properties:
+   case, the "idle" state needs to pull down the data and strobe pin
+   and the "active" state needs to pull up the strobe pin.
+ - pinctrl-n: alternate pin modes
++- disable-runtime-pm: This disables the runtime power management.
+ 
+ i.mx specific properties
+ - fsl,usbmisc: phandler of non-core register device, with one
+-- 
+2.27.0
 
