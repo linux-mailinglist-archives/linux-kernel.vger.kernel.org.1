@@ -2,94 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0C921B80E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7797521B80C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgGJOPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727003AbgGJOPo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:15:44 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F8FC08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:15:44 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ch3so2674136pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Np20KBV9uAuILvx/6WSz0515vYUEpXzeFH3JEsTBmro=;
-        b=BI8hKdk5odB0XZTJVe9u7hyENje++L8s5m3m+2QRAKeMaT5p7ww6Xd2Q91myLFzP63
-         +qeMBoCuiVS44MmhUEYrBUBHJ83ldlORQFxpKavoHlt55hoAokkclCsoye6wdf+8IH/D
-         bLj91m/n9F4fpygp1P1FimXNgGOiKinC0DITm7cdHIQkM3CxWs60PlUkmthlFkyhNrqo
-         OUrk2DLAWhEx3Q1zl/ei57LOQ8ItFBziEkfHlXsEm7cOJuLJVFmBltg+wvVGXlPlJ0jT
-         G4/O2uwEgWj9lCjgd9326qFZzeYD3Z6NcQK1hnETesCHj7x9s6KrSussYIHcYuzPSWIq
-         LL0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Np20KBV9uAuILvx/6WSz0515vYUEpXzeFH3JEsTBmro=;
-        b=kCMQ2uH5jDer10pc3XUEmGToy/+YWg4zocNbSELyqAvCiDpuTV1ucZ51TwppE5C/PS
-         Mab2LPwU3bmUp36PWkrRRICDKp7PhepYAxig+Y2a4A3VkKJiGCfqEl7nUXJnlmPny17a
-         G1m6bW07d9FyVp23rF0iSLHeXwyCHlcvO0pTi+nDZ1YfNjAY7v86C2uQKE1gIqOmQOxy
-         5T04Q1BijZZ4POJpA97f42bU3bbp6jlqsANX3xgOdWWHUbLqyuTyLnT9/GfLIsVM2jh8
-         iedTWWNSuQZ9E8/qYO2DIYuZmEbehPbEQIoQqB080Ncp1VOoMrUfj19Tj5jpqkPimWFN
-         PhlA==
-X-Gm-Message-State: AOAM532B5mW5BxczqCjYR5OEa479h91/y6CLajp/qGPlsAYJh2VGH1XT
-        6CNiuOzm9ds0vHGN++q2l8H3slkgOA18xzaFhaQ=
-X-Google-Smtp-Source: ABdhPJx2U+o/XgGNmTpcxCpf4xQ8vT9sr8876SJOyCMzqMkthrlhTGqVJfmGSbU8lWCLU/U50JVoU21gyHn6frGBFH0=
-X-Received: by 2002:a17:902:7288:: with SMTP id d8mr60676028pll.18.1594390543743;
- Fri, 10 Jul 2020 07:15:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200708161232.17914-1-andriy.shevchenko@linux.intel.com>
- <20200708162117.GV4655@sirena.org.uk> <20200710100558.GI3703480@smile.fi.intel.com>
- <20200710110132.GA5653@sirena.org.uk> <20200710114622.GJ3703480@smile.fi.intel.com>
- <20200710120856.GD5653@sirena.org.uk> <20200710133233.GF5653@sirena.org.uk> <CAHp75VeWmWU6=ybDmQmv7ymwaHG+FxNBzZM9eBxp2Oie6MrZQw@mail.gmail.com>
-In-Reply-To: <CAHp75VeWmWU6=ybDmQmv7ymwaHG+FxNBzZM9eBxp2Oie6MrZQw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 10 Jul 2020 17:15:27 +0300
-Message-ID: <CAHp75VcKSRem-eHi2FY89Y0yZcJrMVX_p_-OnF8+NuCrBSZfuA@mail.gmail.com>
-Subject: Re: [PATCH v1] regmap: Switch to use fwnode instead of OF one
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        id S1728030AbgGJOPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:15:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51674 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727097AbgGJOPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 10:15:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 65580ABDE;
+        Fri, 10 Jul 2020 14:15:28 +0000 (UTC)
+Date:   Fri, 10 Jul 2020 16:15:27 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrea Parri <parri.andrea@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/4] printk: replace ringbuffer
+Message-ID: <20200710141527.GP4751@alley>
+References: <20200707145932.8752-1-john.ogness@linutronix.de>
+ <20200708152005.GF4751@alley>
+ <87wo3d9nlo.fsf@jogness.linutronix.de>
+ <20200710091137.GN4751@alley>
+ <87o8onhf31.fsf@jogness.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o8onhf31.fsf@jogness.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 5:13 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+On Fri 2020-07-10 11:58:34, John Ogness wrote:
+> On 2020-07-10, Petr Mladek <pmladek@suse.com> wrote:
+> >> The next series in the printk-rework (move LOG_CONT handling from
+> >> writers to readers) makes some further changes that, while not
+> >> incompatible, could affect the output of existing tools. It may be a
+> >> good idea to let the new ringbuffer sit in linux-next until the next
+> >> series has been discussed/reviewed/merged. After the next series,
+> >> everything will be in place (with regard to userspace tools) to
+> >> finish the rework.
+> >
+> > I know that it might be premature question. But I wonder what kind
+> > of changes are expected because of the continuous lines.
+> 
+> I will be posting the next series quite soon, so I think it will be
+> better to discuss it when we have a working example in front of us.
+
+sure
+
+> > Do you expect some changes in the ring buffer structures so that
+> > the debugging tools would need yet another update to actually
+> > access the data?
 >
-> On Fri, Jul 10, 2020 at 4:36 PM Mark Brown <broonie@kernel.org> wrote:
-> >
-> > On Fri, Jul 10, 2020 at 01:08:56PM +0100, Mark Brown wrote:
-> > > On Fri, Jul 10, 2020 at 02:46:22PM +0300, Andy Shevchenko wrote:
-> >
-> > > > You mean it's being synchronised with git.kernel.org, but not yet contains that
-> > > > patch? Okay, I will monitor the regmap tree (as of now I didn't see any update).
-> >
-> > > 5cc2013bfeee756a1ee6da9bfbe42e52b4695035
-> >
-> > Oh, I see your patch covered a different bit of code without covering
-> > the stuff in regmap-irq (which I'd just handled when your patch came in)
-> > for some reason so the changelog made it sound like the same code, and
-> > at the time you submitted it the patch was incomplete.
->
-> Should I do anything to improve it?
+> The next series will be modifying the ringbuffer to allow data-less
+> records. This is necessary to support the thousands of
+> 
+>     pr_cont("\n");
+> 
+> calls in the kernel code. Failed dataring allocations will still be
+> detected because the message flags for those records will be 0. For the
+> above pr_cont() line, they will be LOG_NEWLINE|LOG_CONT.
+> 
+> Since the dump tools need to make changes for the new ringbuffer anyway,
+> I think it would be good to hammer out the accepted LOG_CONT
+> implementation first, just in case we do need to make any subtle
+> internal changes.
 
-Actually I think we can completely get rid of fwnode by switching to
-device properties.
-I'll send v2 soon.
+Makes sense.
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+> > Or do you expect backward compatible changes that would allow
+> > to pass related parts of the continuous lines via syslog/dev_kmsg
+> > interface and join them later in userspace?
+> 
+> For users of console, non-extended netconsole, syslog, and kmsg_dump,
+> there will be no external changes whatsoever. These interfaces have no
+> awareness of sequence numbers, which will allow the kernel to
+> re-assemble the LOG_CONT messages for them.
+
+yup
+
+> Users of /dev/kmsg and extended netconsole see sequence numbers. Offlist
+> we discussed various hacks how to get around this without causing errors
+> for existing software, but it was all ugly.
+> 
+> IMHO users of these sequence number interfaces need to see all the
+> records individually and reassemble the LOG_CONT messages themselves if
+> they want to. I believe that is the only sane path forward. To do this,
+> the caller id will no longer be optional to the sequence number output
+> since that is vital information to re-assemble the LOG_CONT messages.
+> 
+> Keep in mind that current software already needs to be able to handle
+> the caller id being shown. Also, currently in mainline there is no
+> guarantee that LOG_CONT messages are contiguous. So current software
+> must also be ready to accept broken up LOG_CONT messages. This is why I
+> think it would be acceptable to make this change for /dev/kmsg and
+> extended netconsole. But I understand it is controversial since tools
+> like systemd and dmesg use /dev/kmsg. Until they are modified to
+> re-assemble LOG_CONT messages, they will present the user with the
+> ugliness of LOG_CONT pieces (always, rather than as is now rarely).
+
+I am not completely sure how often newline is used in common messages.
+I hope that it is more frequently used in a debug code that has to
+dump many details.
+
+If my assumption is correct then your proposed approach should be well
+acceptable. Normal people will not notice. Developers should be able
+to deal with it, especially when a reasonable output might be seen
+on consoles, via dmesg or crashdumnp.
+
+Anyway, the proposal looks fine to me. I hope that it will work :-)
+Let's continue the discussion when you send the patchset.
+
+Best Regards,
+Petr
