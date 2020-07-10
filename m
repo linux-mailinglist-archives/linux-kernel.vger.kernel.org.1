@@ -2,124 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7390221B4CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 14:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4892D21B4D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 14:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgGJMOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 08:14:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55892 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726920AbgGJMOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 08:14:51 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16E9B20720;
-        Fri, 10 Jul 2020 12:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594383290;
-        bh=+DQn2ABxFIeH2E8eyeHAHR2kX1rDKuCsIIS7EZbr/Pk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X0wFFz+2N7kZTdGzftkv0OdulkABi6xKNNRVJJcPjUjtZaqtj7RQ5gvMKz8ALoiWz
-         PjP9OJPneHsDu2xduCDi8/cUmYb411qd/drmjPmUmZRUDgvhr2tzJxusbaid0vuD+h
-         WGOfwzbYhVWyQly73uCUGv72bejf6Vd1eHDXYap4=
-Date:   Fri, 10 Jul 2020 21:14:47 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
-        Andi Kleen <andi@firstfloor.org>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH 1/4] perf-probe: Avoid setting probes on same address on
- same event
-Message-Id: <20200710211447.da9a6e436f7b527c26849c4c@kernel.org>
-In-Reply-To: <20200710111847.GN874@linux.vnet.ibm.com>
-References: <159428201109.56570.3802208017109058146.stgit@devnote2>
-        <159428202173.56570.3555041287477206859.stgit@devnote2>
-        <20200710111847.GN874@linux.vnet.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727999AbgGJMPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 08:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726920AbgGJMPL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 08:15:11 -0400
+Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5890DC08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 05:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tsoy.me;
+        s=mymail; h=Sender:Content-Transfer-Encoding:MIME-Version:Content-Type:
+        References:In-Reply-To:Date:To:From:Subject:Message-ID:Reply-To:Cc:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+        :List-Post:List-Owner:List-Archive;
+        bh=OhiI8yraeH7GEOlj0APWEU84wEkFnnBv6aI7P/byAxY=; b=NOhO54DIuLsEzeueneXvLLgTCv
+        09iAWKjCpZyCO8HsPQ5525LXfDNkQ/60YWuMdf/5+oBMB+wvQuk0hPjSSdHaGLGJFo+08Gg8b2Y/p
+        2fOiGxX4RSpD61H81VYi6KF4mZslEWJuTRxnfbfComn80MMmzkIG07/F+TQJVOrdSyhQ=;
+Received: from [10.8.11.2] (helo=work)
+        by puleglot.ru with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93.0.4)
+        (envelope-from <puleglot@puleglot.ru>)
+        id 1jtrvm-00085e-1A; Fri, 10 Jul 2020 15:15:06 +0300
+Message-ID: <98b1ba96fca2c6e1a90ce4120b3f3201a3cefd43.camel@tsoy.me>
+Subject: Re: Beginning 5.8rc1 kernel USB headsets (ASUS ROG Delta and HyperX
+ Cloud Orbit S) play sound as if in slow-motion.
+From:   Alexander Tsoy <alexander@tsoy.me>
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org
+Date:   Fri, 10 Jul 2020 15:15:04 +0300
+In-Reply-To: <CABXGCsN2-TTemU8JOnh3YErxe2GH7xtG+EZrF9gn_JWLmMxRag@mail.gmail.com>
+References: <CABXGCsN2-TTemU8JOnh3YErxe2GH7xtG+EZrF9gn_JWLmMxRag@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Jul 2020 16:48:47 +0530
-Srikar Dronamraju <srikar@linux.vnet.ibm.com> wrote:
+В Пт, 10/07/2020 в 10:46 +0500, Mikhail Gavrilov пишет:
+> Beginning 5.8rc1 (git 69119673bd50) kernel USB headsets (ASUS ROG
+> Delta and HyperX Cloud Orbit S) play sound as if in slow-motion.
+> 
+> And in 5.8rc4 (git dcde237b9b0e) this still not fixed yet.
+> The bisecting is problematic because rc1 also has another issue
+> https://lkml.org/lkml/2020/6/22/21 which completely breaks the sound
+> subsystem.
+> If anyone said how to fix https://lkml.org/lkml/2020/6/22/21 I can
+> bisect this issue.
 
-> * Masami Hiramatsu <mhiramat@kernel.org> [2020-07-09 17:07:01]:
-> 
-> > There is a case that the several same-name symbols points
-> > same address. In that case, perf probe returns an error.
-> > 
-> > E.g.
-> > 
-> > With this patch;
-> > 
-> >   # perf probe -x /lib64/libc-2.30.so -a "memcpy arg1=%di"
-> >   Failed to find the location of the '%di' variable at this address.
-> >    Perhaps it has been optimized out.
-> >    Use -V with the --range option to show '%di' location range.
-> >   Added new events:
-> >     probe_libc:memcpy    (on memcpy in /usr/lib64/libc-2.30.so with arg1=%di)
-> >     probe_libc:memcpy    (on memcpy in /usr/lib64/libc-2.30.so with arg1=%di)
-> > 
-> >   You can now use it in all perf tools, such as:
-> > 
-> >   	perf record -e probe_libc:memcpy -aR sleep 1
-> > 
-> > 
-> > Reported-by: Andi Kleen <andi@firstfloor.org>
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> One small nit:
-> 
-> > ---
-> >  tools/perf/util/probe-event.c |    9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-> > index df713a5d1e26..1e95a336862c 100644
-> > --- a/tools/perf/util/probe-event.c
-> > +++ b/tools/perf/util/probe-event.c
-> > @@ -2968,6 +2968,15 @@ static int find_probe_trace_events_from_map(struct perf_probe_event *pev,
-> >  	for (j = 0; j < num_matched_functions; j++) {
-> >  		sym = syms[j];
-> > 
-> > +		/* There can be duplicated symbols in the map */
-> > +		for (i = 0; i < j; i++)
-> > +			if (sym->start == syms[i]->start) {
-> > +				pr_debug("find duplicated symbol %s @ %lx\n", sym->name, sym->start);
-> 	
-> Would "Found" sound better than "find"?
+You've probably hit this bug:
+https://bugzilla.kernel.org/show_bug.cgi?id=208353
 
-OK.
-
-> 
-> > +				break;
-> > +			}
-> > +		if (i != j)
-> > +			continue;
-> > +
-> 
-> Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-
-Thank you!
-
-> 
-> 
-> >  		tev = (*tevs) + ret;
-> >  		tp = &tev->point;
-> >  		if (ret == num_matched_functions) {
-> > 
-> 
-> -- 
-> Thanks and Regards
-> Srikar Dronamraju
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
