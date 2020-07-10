@@ -2,225 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684F121C07E
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 01:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B939121C087
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 01:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgGJXFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 19:05:33 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48604 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726519AbgGJXFc (ORCPT
+        id S1727820AbgGJXFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 19:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727052AbgGJXFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 19:05:32 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ju24i-0004Pg-E8; Sat, 11 Jul 2020 01:05:00 +0200
-Received: from [178.196.57.75] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ju24i-000VO0-4H; Sat, 11 Jul 2020 01:05:00 +0200
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: use dedicated bpf_trace_printk event
- instead of trace_printk()
-To:     Alan Maguire <alan.maguire@oracle.com>, rostedt@goodmis.org,
-        mingo@redhat.com, ast@kernel.org, andriin@fb.com
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <1594390953-31757-1-git-send-email-alan.maguire@oracle.com>
- <1594390953-31757-2-git-send-email-alan.maguire@oracle.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <10d713e3-c2d6-7331-a589-b567e8378944@iogearbox.net>
-Date:   Sat, 11 Jul 2020 01:04:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Fri, 10 Jul 2020 19:05:42 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA57C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 16:05:42 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id p3so3173813pgh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 16:05:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DLqqu28iK3HzfVLGGSoyKiRaazrB3YV5o+GyyPDcf8I=;
+        b=BxG2YXJwxKR8pGptobhdQW7F2cokdhIUEK0pentOHtqsGFs0l5C6wyOwvMDVJvtLlL
+         IAn72LMcghNaqBFq1qWndZWJjD55ymLU35HWW2AkHYPI2O3i+2U7D4V4VE1wfTgLVR48
+         HjQRAnLCBxTgZV9MnTDtq84Oj08DfvM0rU2TY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DLqqu28iK3HzfVLGGSoyKiRaazrB3YV5o+GyyPDcf8I=;
+        b=rTxppGwnuIaP9nS7WgsuJFnvDmJwTanhleMuBG4TUzHoCwVHjimTEAxXrS+G+TAWaU
+         TAn1e18/rcEyxPKISekzh0J68ntECSealjbDf+O6cxxZKn0lGdqu4IXRbOtkB9yi++DF
+         F4hhgkpRYm2SfGHFwJ6Wbs9IbQwNfie040QLz6JR87X6H/ZYkhBxB9bUZelGqlCp5jFd
+         ABzjbPLtICM6jNtL33ho+rW5gZtuPS3sSmXUPKQccW7uwzUlCg4fNqY2QdU2SdRGITlS
+         TesxuEar4gHqK8l8R7dmcKTdH4+KrAZ/IjtQ+paJdtmRUo4QeTpvTI6YtMbJtXepKvFK
+         2rpg==
+X-Gm-Message-State: AOAM532lhnFSo0kcrTQyKdMYBXT5KGJzIP5DBrJBYscjSvg1nJJDIby1
+        6cX2ojJak+wbo2fHe6QltWdsWQ==
+X-Google-Smtp-Source: ABdhPJyY4By66SxxJjGgHuwSmbeFsHxHWrdvMxyYZpjgw6ythZ4sp6ulqZ9xn4+83lV07MB94vmjmg==
+X-Received: by 2002:a62:3204:: with SMTP id y4mr36745409pfy.50.1594422342212;
+        Fri, 10 Jul 2020 16:05:42 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c207sm7013552pfb.159.2020.07.10.16.05.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 16:05:41 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 16:05:40 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Alex Gaynor <alex.gaynor@gmail.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Geoffrey Thomas <geofft@ldpreload.com>, jbaublitz@redhat.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: Linux kernel in-tree Rust support
+Message-ID: <202007101604.9ED99CCAED@keescook>
+References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
+ <20200710062803.GA1071395@kroah.com>
+ <20200710125022.alry7wkymalmv3ge@wittgenstein>
+ <202007100905.94A79A7A76@keescook>
+ <CAFRnB2WNo45J8h3-ncopLKENvcO0rf7J3xsy_eRKwFSpDD-5sQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1594390953-31757-2-git-send-email-alan.maguire@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.3/25869/Fri Jul 10 16:01:45 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFRnB2WNo45J8h3-ncopLKENvcO0rf7J3xsy_eRKwFSpDD-5sQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/10/20 4:22 PM, Alan Maguire wrote:
-> The bpf helper bpf_trace_printk() uses trace_printk() under the hood.
-> This leads to an alarming warning message originating from trace
-> buffer allocation which occurs the first time a program using
-> bpf_trace_printk() is loaded.
+On Fri, Jul 10, 2020 at 12:28:30PM -0400, Alex Gaynor wrote:
+> :wave:,
 > 
-> We can instead create a trace event for bpf_trace_printk() and enable
-> it in-kernel when/if we encounter a program using the
-> bpf_trace_printk() helper.  With this approach, trace_printk()
-> is not used directly and no warning message appears.
-> 
-> This work was started by Steven (see Link) and finished by Alan; added
-> Steven's Signed-off-by with his permission.
-> 
-> Link: https://lore.kernel.org/r/20200628194334.6238b933@oasis.local.home
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->   kernel/trace/Makefile    |  2 ++
->   kernel/trace/bpf_trace.c | 41 ++++++++++++++++++++++++++++++++++++-----
->   kernel/trace/bpf_trace.h | 34 ++++++++++++++++++++++++++++++++++
->   3 files changed, 72 insertions(+), 5 deletions(-)
->   create mode 100644 kernel/trace/bpf_trace.h
-> 
-> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-> index 6575bb0..aeba5ee 100644
-> --- a/kernel/trace/Makefile
-> +++ b/kernel/trace/Makefile
-> @@ -31,6 +31,8 @@ ifdef CONFIG_GCOV_PROFILE_FTRACE
->   GCOV_PROFILE := y
->   endif
->   
-> +CFLAGS_bpf_trace.o := -I$(src)
-> +
->   CFLAGS_trace_benchmark.o := -I$(src)
->   CFLAGS_trace_events_filter.o := -I$(src)
->   
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 1d874d8..1414bf5 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -11,6 +11,7 @@
->   #include <linux/uaccess.h>
->   #include <linux/ctype.h>
->   #include <linux/kprobes.h>
-> +#include <linux/spinlock.h>
->   #include <linux/syscalls.h>
->   #include <linux/error-injection.h>
->   
-> @@ -19,6 +20,9 @@
->   #include "trace_probe.h"
->   #include "trace.h"
->   
-> +#define CREATE_TRACE_POINTS
-> +#include "bpf_trace.h"
-> +
->   #define bpf_event_rcu_dereference(p)					\
->   	rcu_dereference_protected(p, lockdep_is_held(&bpf_event_mutex))
->   
-> @@ -374,6 +378,29 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
->   	}
->   }
->   
-> +static DEFINE_RAW_SPINLOCK(trace_printk_lock);
-> +
-> +#define BPF_TRACE_PRINTK_SIZE   1024
-> +
-> +
+> Hey Kees, that's Geoffrey Thomas and I, we're both on this thread :-)
 
-nit: double newline
+*face palm* Hello! I swear I can read. Though perhaps not well enough
+before lunch. :)
 
-> +static inline __printf(1, 0) int bpf_do_trace_printk(const char *fmt, ...)
-> +{
-> +	static char buf[BPF_TRACE_PRINTK_SIZE];
-> +	unsigned long flags;
-> +	va_list ap;
-> +	int ret;
-> +
-> +	raw_spin_lock_irqsave(&trace_printk_lock, flags);
-> +	va_start(ap, fmt);
-> +	ret = vsnprintf(buf, BPF_TRACE_PRINTK_SIZE, fmt, ap);
-
-nit: s/BPF_TRACE_PRINTK_SIZE/sizeof(buf)/
-
-> +	va_end(ap);
-> +	if (ret >= 0)
-> +		trace_bpf_trace_printk(buf);
-
-Is there a specific reason you added the 'ret >= 0' check on top of [0]? Given
-the vsnprintf() internals you either return 0 or number of characters generated,
-no?
-
-   [0] https://lore.kernel.org/bpf/20200628194334.6238b933@oasis.local.home/
-
-Rest lgtm, thanks!
-
-> +	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
-> +
-> +	return ret;
-> +}
-> +
->   /*
->    * Only limited trace_printk() conversion specifiers allowed:
->    * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %pB %pks %pus %s
-> @@ -483,8 +510,7 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
->    */
->   #define __BPF_TP_EMIT()	__BPF_ARG3_TP()
->   #define __BPF_TP(...)							\
-> -	__trace_printk(0 /* Fake ip */,					\
-> -		       fmt, ##__VA_ARGS__)
-> +	bpf_do_trace_printk(fmt, ##__VA_ARGS__)
->   
->   #define __BPF_ARG1_TP(...)						\
->   	((mod[0] == 2 || (mod[0] == 1 && __BITS_PER_LONG == 64))	\
-> @@ -521,10 +547,15 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
->   const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
->   {
->   	/*
-> -	 * this program might be calling bpf_trace_printk,
-> -	 * so allocate per-cpu printk buffers
-> +	 * This program might be calling bpf_trace_printk,
-> +	 * so enable the associated bpf_trace/bpf_trace_printk event.
-> +	 * Repeat this each time as it is possible a user has
-> +	 * disabled bpf_trace_printk events.  By loading a program
-> +	 * calling bpf_trace_printk() however the user has expressed
-> +	 * the intent to see such events.
->   	 */
-> -	trace_printk_init_buffers();
-> +	if (trace_set_clr_event("bpf_trace", "bpf_trace_printk", 1))
-> +		pr_warn_ratelimited("could not enable bpf_trace_printk events");
->   
->   	return &bpf_trace_printk_proto;
->   }
-> diff --git a/kernel/trace/bpf_trace.h b/kernel/trace/bpf_trace.h
-> new file mode 100644
-> index 0000000..9acbc11
-> --- /dev/null
-> +++ b/kernel/trace/bpf_trace.h
-> @@ -0,0 +1,34 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM bpf_trace
-> +
-> +#if !defined(_TRACE_BPF_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
-> +
-> +#define _TRACE_BPF_TRACE_H
-> +
-> +#include <linux/tracepoint.h>
-> +
-> +TRACE_EVENT(bpf_trace_printk,
-> +
-> +	TP_PROTO(const char *bpf_string),
-> +
-> +	TP_ARGS(bpf_string),
-> +
-> +	TP_STRUCT__entry(
-> +		__string(bpf_string, bpf_string)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(bpf_string, bpf_string);
-> +	),
-> +
-> +	TP_printk("%s", __get_str(bpf_string))
-> +);
-> +
-> +#endif /* _TRACE_BPF_TRACE_H */
-> +
-> +#undef TRACE_INCLUDE_PATH
-> +#define TRACE_INCLUDE_PATH .
-> +#define TRACE_INCLUDE_FILE bpf_trace
-> +
-> +#include <trace/define_trace.h>
-> 
-
+-- 
+Kees Cook
