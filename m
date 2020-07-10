@@ -2,248 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9720E21BC03
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A6721BC07
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgGJRPo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Jul 2020 13:15:44 -0400
-Received: from mga11.intel.com ([192.55.52.93]:31671 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726925AbgGJRPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:15:44 -0400
-IronPort-SDR: D6ya71ft4vcQJueRJp95PVvt+no4ayEV7QQ4stX0NIutk7EM+jYkIJnn00yKAhvYY0/eE9DRcc
- E06T23echicA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9678"; a="146319170"
-X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
-   d="scan'208";a="146319170"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 10:15:35 -0700
-IronPort-SDR: OMEX8yzz71moOOb125GbUCoRqR/01b3pvHJLnHLJKYt/dHNIsU+KjDvQ1Trl9Ke/JKO/uSf00L
- Ai4znPyEEMhQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
-   d="scan'208";a="284570094"
-Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
-  by orsmga006.jf.intel.com with ESMTP; 10 Jul 2020 10:15:35 -0700
-Received: from FMSMSX109.amr.corp.intel.com (10.18.116.9) by
- FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 10 Jul 2020 10:15:34 -0700
-Received: from fmsmsx108.amr.corp.intel.com ([169.254.9.193]) by
- FMSMSX109.amr.corp.intel.com ([169.254.15.60]) with mapi id 14.03.0439.000;
- Fri, 10 Jul 2020 10:15:34 -0700
-From:   "Ruhl, Michael J" <michael.j.ruhl@intel.com>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: RE: [PATCH v8 2/5] driver core: add deferring probe reason to
- devices_deferred property
-Thread-Topic: [PATCH v8 2/5] driver core: add deferring probe reason to
- devices_deferred property
-Thread-Index: AQHWVs8brT2CjFa9skuBYqTTYNxLbqkBDYkA
-Date:   Fri, 10 Jul 2020 17:15:34 +0000
-Message-ID: <14063C7AD467DE4B82DEDB5C278E866301245BC852@FMSMSX108.amr.corp.intel.com>
-References: <20200710153018.12226-1-a.hajda@samsung.com>
- <CGME20200710153024eucas1p1b0686b4acce78838db93fddb3c23939c@eucas1p1.samsung.com>
- <20200710153018.12226-3-a.hajda@samsung.com>
-In-Reply-To: <20200710153018.12226-3-a.hajda@samsung.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.1.200.107]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728288AbgGJRQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 13:16:24 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54288 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728215AbgGJRQX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 13:16:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594401382;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VYYAKT69qJC8cXBBjJthRJSXfG2nYGjV6nWSQ+iUBs0=;
+        b=UHGvPuSxw+Jz10fbJ3FSyUHbTRiXmdqF/9kFq9UZd+a7OQMakLWfcKKcR62aEmPAohi1mO
+        RU3m2kOreQ4Vs2sI6Z2h5KXgX2JJXtIlX1Hp02iFGG+4IX/bXvkUskFsw78zBvb2lkYnPS
+        ZAftfhM2liv8QxLo5Z73Pl6dgmtPHJw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-RGxl7ilzNA6B9YhG-v_W6g-1; Fri, 10 Jul 2020 13:16:18 -0400
+X-MC-Unique: RGxl7ilzNA6B9YhG-v_W6g-1
+Received: by mail-wm1-f69.google.com with SMTP id e15so7417556wme.8
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:16:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VYYAKT69qJC8cXBBjJthRJSXfG2nYGjV6nWSQ+iUBs0=;
+        b=g7iKmY3Kkk3C5QY8EGyZ1pK5HugAt5T4AUj+JB5HKKTWYkIyyYeAjm37C3hMSny87r
+         1P2y2925nqt/b9KFSEpbRgoY2xkfIXqA5hYgDxe0tSnUchk+f/96KqW2eH2jMBj5Qyp4
+         8aQO2WcWkBJs4/3Mf504aLqMHxGDuyinnQwvNepj0TivRQMzpaAklwMzN/dW1rWr90CM
+         SmS5ZcD5ox7qiWg8zLz1zmYbD9m1s+AXf6Mk/b3EtYFMsXwN0mYOQeL6dhGUl/OHza65
+         TzMkmWR8dwwzZUd6WRIqs21NuqxFCG67VPI/wAWkrPllTvxvp42ysAdievPD284AWc+p
+         6L8g==
+X-Gm-Message-State: AOAM530Zb+yUNEnHGwH70plMNDSDuC5rKGktzAzQ2itQ8VRjuzKSyP19
+        Jt/6Fq6f+qiacNmaKuo4KHjueMrVVRR5Rjx1gMIUD6FbLumHP+DWqx7zeljCW4y4A5wvAM7Ib/P
+        CGpdYKMtjd4KThm/LY0nETyv/
+X-Received: by 2002:adf:db42:: with SMTP id f2mr68136088wrj.298.1594401377387;
+        Fri, 10 Jul 2020 10:16:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxXnEfdioHVFKguZS3kZcS8dBW7ubOyBPqnpSZpaWNF4miTy+T6IbMEcoEtCVas5nZXP6TxGw==
+X-Received: by 2002:adf:db42:: with SMTP id f2mr68136068wrj.298.1594401377138;
+        Fri, 10 Jul 2020 10:16:17 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
+        by smtp.gmail.com with ESMTPSA id r1sm10847140wrt.73.2020.07.10.10.16.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 10:16:16 -0700 (PDT)
+Subject: Re: [PATCH v3 0/9] KVM: Support guest MAXPHYADDR < host MAXPHYADDR
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Mohammed Gamal <mgamal@redhat.com>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20200710154811.418214-1-mgamal@redhat.com>
+ <CALMp9eRfZ50iyrED0-LU75VWhHu_kVoB2Qw55VzEFzZ=0QCGow@mail.gmail.com>
+ <0c892b1e-6fe6-2aa7-602e-f5fadc54c257@redhat.com>
+ <CALMp9eQXHGnXo4ACX2-qYww4XdRODMn-O6CAvhupib67Li9S2w@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <9e784c62-15ee-63b7-4942-474493bac536@redhat.com>
+Date:   Fri, 10 Jul 2020 19:16:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <CALMp9eQXHGnXo4ACX2-qYww4XdRODMn-O6CAvhupib67Li9S2w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->-----Original Message-----
->From: dri-devel <dri-devel-bounces@lists.freedesktop.org> On Behalf Of
->Andrzej Hajda
->Sent: Friday, July 10, 2020 11:30 AM
->To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->Cc: Jernej Skrabec <jernej.skrabec@siol.net>; Rafael J. Wysocki
-><rafael@kernel.org>; Jonas Karlman <jonas@kwiboo.se>; Bartlomiej
->Zolnierkiewicz <b.zolnierkie@samsung.com>; linux-kernel@vger.kernel.org;
->open list:DRM DRIVERS <dri-devel@lists.freedesktop.org>; Russell King - ARM
->Linux <linux@armlinux.org.uk>; Neil Armstrong <narmstrong@baylibre.com>;
->Andrzej Hajda <a.hajda@samsung.com>; andy.shevchenko@gmail.com; Mark
->Brown <broonie@kernel.org>; Laurent Pinchart
-><Laurent.pinchart@ideasonboard.com>; linux-arm-
->kernel@lists.infradead.org; Marek Szyprowski
-><m.szyprowski@samsung.com>
->Subject: [PATCH v8 2/5] driver core: add deferring probe reason to
->devices_deferred property
->
->/sys/kernel/debug/devices_deferred property contains list of deferred
->devices.
->This list does not contain reason why the driver deferred probe, the patch
->improves it.
->The natural place to set the reason is dev_err_probe function introduced
->recently, ie. if dev_err_probe will be called with -EPROBE_DEFER instead of
->printk the message will be attached to a deferred device and printed when
->user
->reads devices_deferred property.
->
->Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
->Reviewed-by: Mark Brown <broonie@kernel.org>
->Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
->Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
->---
->v8:
->- improved commit message
->---
-> drivers/base/base.h |  3 +++
-> drivers/base/core.c |  8 ++++++--
-> drivers/base/dd.c   | 23 ++++++++++++++++++++++-
-> 3 files changed, 31 insertions(+), 3 deletions(-)
->
->diff --git a/drivers/base/base.h b/drivers/base/base.h
->index 95c22c0f9036..6954fccab3d7 100644
->--- a/drivers/base/base.h
->+++ b/drivers/base/base.h
->@@ -93,6 +93,7 @@ struct device_private {
-> 	struct klist_node knode_class;
-> 	struct list_head deferred_probe;
-> 	struct device_driver *async_driver;
->+	char *deferred_probe_reason;
-> 	struct device *device;
-> 	u8 dead:1;
-> };
->@@ -134,6 +135,8 @@ extern void device_release_driver_internal(struct
->device *dev,
-> extern void driver_detach(struct device_driver *drv);
-> extern int driver_probe_device(struct device_driver *drv, struct device
->*dev);
-> extern void driver_deferred_probe_del(struct device *dev);
->+extern void device_set_deferred_probe_reson(const struct device *dev,
->+					    struct va_format *vaf);
-> static inline int driver_match_device(struct device_driver *drv,
-> 				      struct device *dev)
-> {
->diff --git a/drivers/base/core.c b/drivers/base/core.c
->index 3a827c82933f..fee047f03681 100644
->--- a/drivers/base/core.c
->+++ b/drivers/base/core.c
->@@ -3963,6 +3963,8 @@ define_dev_printk_level(_dev_info, KERN_INFO);
->  * This helper implements common pattern present in probe functions for
->error
->  * checking: print debug or error message depending if the error value is
->  * -EPROBE_DEFER and propagate error upwards.
->+ * In case of -EPROBE_DEFER it sets also defer probe reason, which can be
->+ * checked later by reading devices_deferred debugfs attribute.
->  * It replaces code sequence:
->  * 	if (err != -EPROBE_DEFER)
->  * 		dev_err(dev, ...);
->@@ -3984,10 +3986,12 @@ int dev_err_probe(const struct device *dev, int
->err, const char *fmt, ...)
-> 	vaf.fmt = fmt;
-> 	vaf.va = &args;
->
->-	if (err != -EPROBE_DEFER)
->+	if (err != -EPROBE_DEFER) {
-> 		dev_err(dev, "error %d: %pV", err, &vaf);
->-	else
->+	} else {
->+		device_set_deferred_probe_reson(dev, &vaf);
-> 		dev_dbg(dev, "error %d: %pV", err, &vaf);
->+	}
->
-> 	va_end(args);
->
->diff --git a/drivers/base/dd.c b/drivers/base/dd.c
->index 9a1d940342ac..dd5683b61f74 100644
->--- a/drivers/base/dd.c
->+++ b/drivers/base/dd.c
->@@ -27,6 +27,7 @@
-> #include <linux/async.h>
-> #include <linux/pm_runtime.h>
-> #include <linux/pinctrl/devinfo.h>
->+#include <linux/slab.h>
->
-> #include "base.h"
-> #include "power/power.h"
->@@ -136,6 +137,8 @@ void driver_deferred_probe_del(struct device *dev)
-> 	if (!list_empty(&dev->p->deferred_probe)) {
-> 		dev_dbg(dev, "Removed from deferred list\n");
-> 		list_del_init(&dev->p->deferred_probe);
->+		kfree(dev->p->deferred_probe_reason);
->+		dev->p->deferred_probe_reason = NULL;
-> 	}
-> 	mutex_unlock(&deferred_probe_mutex);
-> }
->@@ -211,6 +214,23 @@ void device_unblock_probing(void)
-> 	driver_deferred_probe_trigger();
-> }
->
->+/**
->+ * device_set_deferred_probe_reson() - Set defer probe reason message
->for device
->+ * @dev: the pointer to the struct device
->+ * @vaf: the pointer to va_format structure with message
->+ */
->+void device_set_deferred_probe_reson(const struct device *dev, struct
+On 10/07/20 19:13, Jim Mattson wrote:
+> On Fri, Jul 10, 2020 at 10:06 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 10/07/20 18:30, Jim Mattson wrote:
+>>>>
+>>>> This can be problem when having a mixed setup of machines with 5-level page
+>>>> tables and machines with 4-level page tables, as live migration can change
+>>>> MAXPHYADDR while the guest runs, which can theoretically introduce bugs.
+>>>
+>>> Huh? Changing MAXPHYADDR while the guest runs should be illegal. Or
+>>> have I missed some peculiarity of LA57 that makes MAXPHYADDR a dynamic
+>>> CPUID information field?
+>>
+>> Changing _host_ MAXPHYADDR while the guest runs, such as if you migrate
+>> from a host-maxphyaddr==46 to a host-maxphyaddr==52 machine (while
+>> keeping guest-maxphyaddr==46).
+> 
+> Ah, but what does that have to do with LA57?
 
-Is 'reson'  supposed to be 'reason'?
+Intel only has MAXPHYADDR > 46 on LA57 machines (because in general OSes
+like to have a physical 1:1 map into the kernel part of the virtual
+address space, so having a higher MAXPHYADDR would be of limited use
+with 48-bit linear addresses).
 
-Same spelling on the above kernel-doc, but the comment says "reason".
+In other words, while this issue has existed forever it could be ignored
+until IceLake introduced MAXPHYADDR==52 machines.  I'll introduce
+something like this in a commit message.
 
-mike
+Paolo
 
->va_format *vaf)
->+{
->+	const char *drv = dev_driver_string(dev);
->+
->+	mutex_lock(&deferred_probe_mutex);
->+
->+	kfree(dev->p->deferred_probe_reason);
->+	dev->p->deferred_probe_reason = kasprintf(GFP_KERNEL, "%s:
->%pV", drv, vaf);
->+
->+	mutex_unlock(&deferred_probe_mutex);
->+}
->+
-> /*
->  * deferred_devs_show() - Show the devices in the deferred probe pending
->list.
->  */
->@@ -221,7 +241,8 @@ static int deferred_devs_show(struct seq_file *s, void
->*data)
-> 	mutex_lock(&deferred_probe_mutex);
->
-> 	list_for_each_entry(curr, &deferred_probe_pending_list,
->deferred_probe)
->-		seq_printf(s, "%s\n", dev_name(curr->device));
->+		seq_printf(s, "%s\t%s", dev_name(curr->device),
->+			   curr->device->p->deferred_probe_reason ?: "\n");
->
-> 	mutex_unlock(&deferred_probe_mutex);
->
->--
->2.17.1
->
->_______________________________________________
->dri-devel mailing list
->dri-devel@lists.freedesktop.org
->https://lists.freedesktop.org/mailman/listinfo/dri-devel
