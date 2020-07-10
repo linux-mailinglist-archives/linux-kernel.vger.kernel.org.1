@@ -2,164 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FDF21B6ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C1821B6F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728418AbgGJNqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:46:14 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42116 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727932AbgGJNqJ (ORCPT
+        id S1728456AbgGJNqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:46:31 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:5355 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726962AbgGJNq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:46:09 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 528722A0FD4
-Subject: Re: [RFC v2 0/4] futex2: Add new futex interface
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, krisman@collabora.com, kernel@collabora.com,
-        dvhart@infradead.org, mingo@redhat.com,
-        pgriffais@valvesoftware.com, fweimer@redhat.com,
-        libc-alpha@sourceware.org, malteskarupke@web.de,
-        linux-api@vger.kernel.org, arnd@arndb.de
-References: <20200709175921.211387-1-andrealmeid@collabora.com>
- <4d9163924224d4265c280fc2ca6481c3@natalenko.name>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <4c9e997a-bbad-f3f2-0c9b-277aebf960c5@collabora.com>
-Date:   Fri, 10 Jul 2020 10:45:55 -0300
+        Fri, 10 Jul 2020 09:46:27 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0871250000>; Fri, 10 Jul 2020 06:46:13 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 10 Jul 2020 06:46:26 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 10 Jul 2020 06:46:26 -0700
+Received: from [10.26.72.135] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 10 Jul
+ 2020 13:46:24 +0000
+Subject: Re: [PATCH v2 4/6] devres: handle zero size in devm_kmalloc()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-hwmon@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20200629065008.27620-1-brgl@bgdev.pl>
+ <20200629065008.27620-5-brgl@bgdev.pl>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <5c2e7514-b6d0-1331-37b0-d17a0cdb9693@nvidia.com>
+Date:   Fri, 10 Jul 2020 14:46:22 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <4d9163924224d4265c280fc2ca6481c3@natalenko.name>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200629065008.27620-5-brgl@bgdev.pl>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594388773; bh=hWNtW0he69p/XnXcx11grAuh7Oms3d5ySxgbsSf/Ck4=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Mjq/MxqvIcLX2zNjarkYBDY4l4xMkON0sQ46JWsXy593tbxhJoBE7i0N8+baF4oiN
+         ofOwyucpaFaZ5AY4TEzOt+HY4LOEMafSb21nj6FBwvvuzupmMylA+tkJ2ipH9fEYbQ
+         +Knzdhxv1J4aQGZYn9bJljsBMcioOD3v/9AiKzXbi7zPJhzsUOAoeRI4Tk3E/KfTCq
+         U0NjzAJwsWMrK+qLmGb2ZJ2MiuGk/u9X610ITWLw7E2BT523r+GGVOLJKy5w+Iwk16
+         VuwaZtHAMMbdI81ADas/Him3YmDkZiXJtCOozirVlFqXJHWpsemFEMzvRVxe+Ljocv
+         waosClzfwPxzg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hi Bartosz,
 
-On 7/10/20 10:23 AM, Oleksandr Natalenko wrote:
-> Hello.
+On 29/06/2020 07:50, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> On 09.07.2020 19:59, André Almeida wrote:
->> This RFC is a followup to the previous discussion initiated from my last
->> patch "futex: Implement mechanism to wait on any of several futexes"[1].
->> As stated in the thread, the correct approach to move forward with the
->> wait multiple operation would be to create a new syscall that would have
->> all new cool features.
->>
->> The first patch adds the new interface and just translate the call for
->> the old interface, without implementing new features. The goal here is
->> to establish the interface and to check if everyone is happy with this
->> API. The rest of patches are selftests to show the interface in action.
->> I have the following questions:
->>
->> - What suggestions do you have to implement this? Start from scratch or
->>   reuse the most code possible?
->>
->> - The interface seems correct and implements the requirements asked by
->> you?
->>
->> Those are the cool new features that this syscall should address some
->> day:
->>
->> - Operate with variable bit size futexes, not restricted to 32:
->>   8, 16 and 64
->>
->> - Wait on multiple futexes, using the following semantics:
->>
->>   struct futex_wait {
->>     void *uaddr;
->>     unsigned long val;
->>     unsigned long flags;
->>   };
->>
->>   sys_futex_waitv(struct futex_wait *waiters, unsigned int nr_waiters,
->>           unsigned long flags, struct __kernel_timespec *timo);
->>
->> - Have NUMA optimizations: if FUTEX_NUMA_FLAG is set, the `void *uaddr`
->>   argument won't be a value of type u{8, 16, 32, 64} anymore, but a
->> struct
->>   containing a NUMA node hint:
->>
->>   struct futex32_numa {
->>       u32 value __attribute__ ((aligned (8)));
->>       u32 hint;
->>   };
->>
->>   struct futex64_numa {
->>       u64 value __attribute__ ((aligned (16)));
->>       u64 hint;
->>   };
->>
->> Thanks,
->>     André
->>
->> Changes since v1:
->>  - The timeout argument now uses __kernel_timespec as type
->>  - time32 interface was removed
->>  v1: https://lore.kernel.org/patchwork/cover/1255437/
->>
->> [1] https://lore.kernel.org/patchwork/patch/1194339/
->>
->> André Almeida (4):
->>   futex2: Add new futex interface
->>   selftests: futex: Add futex2 wake/wait test
->>   selftests: futex: Add futex2 timeout test
->>   selftests: futex: Add futex2 wouldblock test
->>
->>  MAINTAINERS                                   |   2 +-
->>  arch/x86/entry/syscalls/syscall_32.tbl        |   2 +
->>  arch/x86/entry/syscalls/syscall_64.tbl        |   2 +
->>  include/linux/syscalls.h                      |   7 ++
->>  include/uapi/asm-generic/unistd.h             |   8 +-
->>  include/uapi/linux/futex.h                    |  10 ++
->>  init/Kconfig                                  |   7 ++
->>  kernel/Makefile                               |   1 +
->>  kernel/futex2.c                               |  73 ++++++++++++
->>  kernel/sys_ni.c                               |   4 +
->>  tools/include/uapi/asm-generic/unistd.h       |   7 +-
->>  .../selftests/futex/functional/.gitignore     |   1 +
->>  .../selftests/futex/functional/Makefile       |   4 +-
->>  .../selftests/futex/functional/futex2_wait.c  | 111 ++++++++++++++++++
->>  .../futex/functional/futex_wait_timeout.c     |  38 ++++--
->>  .../futex/functional/futex_wait_wouldblock.c  |  33 +++++-
->>  .../testing/selftests/futex/functional/run.sh |   3 +
->>  .../selftests/futex/include/futex2test.h      |  77 ++++++++++++
->>  18 files changed, 373 insertions(+), 17 deletions(-)
->>  create mode 100644 kernel/futex2.c
->>  create mode 100644
->> tools/testing/selftests/futex/functional/futex2_wait.c
->>  create mode 100644 tools/testing/selftests/futex/include/futex2test.h
+> Make devm_kmalloc() behave similarly to non-managed kmalloc(): return
+> ZERO_SIZE_PTR when requested size is 0. Update devm_kfree() to handle
+> this case.
 > 
-> What branch/tag this submission is based on please? It seems it is not a
-> 5.8 but rather 5.7 since the second patch misses faccessat2() syscall
-> and fails to be applied cleanly.
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  drivers/base/devres.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 > 
+> diff --git a/drivers/base/devres.c b/drivers/base/devres.c
+> index 1df1fb10b2d9..ed615d3b9cf1 100644
+> --- a/drivers/base/devres.c
+> +++ b/drivers/base/devres.c
+> @@ -819,6 +819,9 @@ void *devm_kmalloc(struct device *dev, size_t size, gfp_t gfp)
+>  {
+>  	struct devres *dr;
+>  
+> +	if (unlikely(!size))
+> +		return ZERO_SIZE_PTR;
+> +
+>  	/* use raw alloc_dr for kmalloc caller tracing */
+>  	dr = alloc_dr(devm_kmalloc_release, size, gfp, dev_to_node(dev));
+>  	if (unlikely(!dr))
+> @@ -950,10 +953,10 @@ void devm_kfree(struct device *dev, const void *p)
+>  	int rc;
+>  
+>  	/*
+> -	 * Special case: pointer to a string in .rodata returned by
+> -	 * devm_kstrdup_const().
+> +	 * Special cases: pointer to a string in .rodata returned by
+> +	 * devm_kstrdup_const() or NULL/ZERO ptr.
+>  	 */
+> -	if (unlikely(is_kernel_rodata((unsigned long)p)))
+> +	if (unlikely(is_kernel_rodata((unsigned long)p) || ZERO_OR_NULL_PTR(p)))
+>  		return;
+>  
+>  	rc = devres_destroy(dev, devm_kmalloc_release,
 
-As stated in MAINTAINERS[1], this submission is based on locking/core
-branch from tip/tip[2] tree. The most updated release tag in this tree
-is v5.8-rc1. My patches applied on top of locking/core are available in
-my tree: https://gitlab.collabora.com/tonyk/linux/-/commits/futex2
 
-According to 6c3c184fc420 ("tools headers API: Update faccessat2
-affected files"), it seems that `faccessat2` entry at
-`tools/include/uapi/asm-generic/unistd.h` was added after the syscall
-was merged, so that's why 5.8-rc1 misses the syscall in this specific
-file. Rebasing locking/core in 5.8-rc2 or above will fix that.
+This change caught a bug in one of our Tegra drivers, which I am in the
+process of fixing. Once I bisected to this commit it was easy to track
+down, but I am wondering if there is any reason why we don't add a
+WARN_ON() if size is 0 in devm_kmalloc? It was essentially what I ended
+up doing to find the bug.
 
-> Thanks.
-> 
+Jon
 
-Thanks,
-	André
-
-[1]
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/MAINTAINERS?h=v5.8-rc4#n7102
-
-[2]
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/log/?h=locking/core
+-- 
+nvpublic
