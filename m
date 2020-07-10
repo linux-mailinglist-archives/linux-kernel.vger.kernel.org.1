@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6613621AF46
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 08:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6236321AF4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 08:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgGJGSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 02:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
+        id S1727899AbgGJGTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 02:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727772AbgGJGSL (ORCPT
+        with ESMTP id S1725851AbgGJGTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 02:18:11 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D87C08C5CE;
-        Thu,  9 Jul 2020 23:18:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B32sX0CGnz9sRK;
-        Fri, 10 Jul 2020 16:18:07 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594361888;
-        bh=uebh7Nj+FZYez9qaSQRIVhMsqdQtviRjGVGzYgirTWo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XqqlC1qCopY/k+4JUsz77Op4qC/UktVCViUgw0QJ3im+6So+nyWLJ8LS46D+OWLG+
-         MzFukU5KFg1YvrvAjR72AM87GBaqUFbVXBecw8IMWxnXqzTAeMNcQlJpEO4DAkFFbJ
-         oMwQHnHOycBTH0JjVHKvhLLluWVkxaquKBGrsxnnE6GSMt+iD8cYi2+Z72HnDXljPC
-         nBTaY5+T8axvyReUyXc2CQa9LN0z7ZUnOgamn09BAQyTraeeEZR+lXhPB+3SDziCTr
-         29zN8qT1ytAA4xRlb/6zAf8j8Uquq7up19vdOvq7LpmmccBCiqyIOqlxu99Bm49Y4u
-         ujx0b/PwUUOXw==
-Date:   Fri, 10 Jul 2020 16:18:06 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian@brauner.io>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the pidfd tree with the seccomp tree
-Message-ID: <20200710161806.28d8c856@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BKyrhWxOocKHwTO5Q19txOk";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Fri, 10 Jul 2020 02:19:39 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C3ABC08C5CE;
+        Thu,  9 Jul 2020 23:19:39 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id j20so2092064pfe.5;
+        Thu, 09 Jul 2020 23:19:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=z3152dqnSlWeiXq3wOBUus0ULGBKw90/q/Q1d/LB/HE=;
+        b=r+zGGnHnYmRgFFIAyQZNMQ8Uw6o+GY6iA7ubBKJNBoVMjKWQIPSXm0F4Ud9Zh1X07c
+         IT3cZjVwb88qqtZgZOGamepW4yyBni47O34Lmvdae7Q/MWpFf+M3/CzCmeuhozTT/1gy
+         xw7YhB6mnHKePJHGnMHHiHbL0KGFcZLVD0R2FjNjU1gp9YOosnwTIjgyKu+ftHazB3Cc
+         qH5WzIeIsuY59QCR9A0/Ug5KDg0fjnex/vJeFypP6/BIZutdFpYLv8NNKyqRXjlf7XTC
+         a4BeHkyC//WmbUFrB+Xmj4GO4oL8olLp98N+S7GFG9RWQZrXSXnO0fuYR/slkwqiC+Vp
+         hLqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=z3152dqnSlWeiXq3wOBUus0ULGBKw90/q/Q1d/LB/HE=;
+        b=BPX+w6WVruzFinz67E+ToY/rzY7SaeJloIurgrWX2gQjxUcY8RImbONXi2SXpMwosq
+         APYM53RqU9i5tOe07qO4pHEmTyA0iuzPcb3OUhQnX3cKdm44Kd82470eEr5d49SpDQg6
+         H2KF6UDRQbbHEJmVdjAzTwMD6+IbASNYLRk3jsKC/HoD8uP7pAGBYyGYAGz5oq9+edB9
+         tYFfC7Nu22fI8OZ+oqy2wcO0aF6vRYurvT3EBOKVAfhUJx1hBaw22NaBCk0VxFnsvI/s
+         074GMPEWkLRlTDIj2sSH7DxHM5o2chXeGzUCVCewwnVTewsCdFr6nG663NBi05e2hSMM
+         tJiw==
+X-Gm-Message-State: AOAM533DuYrPs/EAcrPlQS+ntoSjNSXnjYdEKTDK24WV6/PMjiub3wqE
+        SthmzFVEogmGJtrIwr3RPUs=
+X-Google-Smtp-Source: ABdhPJwk1O0qjcabIuGkCbS6P0zOopiQEbwplyknGnMwjadxi2LOYOAkQZimFuhs7J6PJBkLi06Utw==
+X-Received: by 2002:a65:56cc:: with SMTP id w12mr56044215pgs.399.1594361979107;
+        Thu, 09 Jul 2020 23:19:39 -0700 (PDT)
+Received: from intel-CCE-SH.Home (x-plane.vip. [104.238.153.221])
+        by smtp.googlemail.com with ESMTPSA id m9sm4431132pjs.18.2020.07.09.23.19.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 23:19:38 -0700 (PDT)
+From:   Wei Shuai <cpuwolf@gmail.com>
+Cc:     cpuwolf@gmail.com, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Erwan Velu <e.velu@criteo.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-input@vger.kernel.org (open list:INPUT (KEYBOARD, MOUSE, JOYSTICK
+        , TOUCHSCREEN)...)
+Subject: [PATCH] break joystick limitation of maxmium 80 buttons
+Date:   Fri, 10 Jul 2020 14:19:17 +0800
+Message-Id: <20200710061919.13108-1-cpuwolf@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/BKyrhWxOocKHwTO5Q19txOk
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The 80 limitation comes from
 
-Hi all,
+include/uapi/linux/input-event-codes.h
 
-Today's linux-next merge of the pidfd tree got a conflict in:
+according to function hidinput_configure_usage() in file drivers/hid/hid-input.c
 
-  fs/file.c
+the joystick button mapping is not a continues space, generally speak the mapping space is from
 
-between commit:
+1. BTN_JOYSTICK~BTN_DEAD
+2. BTN_TRIGGER_HAPPY~KEY_MAX
 
-  21fec66fd4be ("fs: Move __scm_install_fd() to __receive_fd()")
+Finally I got the max limitation is 80.
 
-from the seccomp tree and commit:
+Signed-off-by: Wei Shuai <cpuwolf@gmail.com>
+---
+ include/linux/mod_devicetable.h        | 2 +-
+ include/uapi/linux/input-event-codes.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-  60997c3d45d9 ("close_range: add CLOSE_RANGE_UNSHARE")
+diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+index 8d764aab29de..35eb59ae1f19 100644
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -311,7 +311,7 @@ struct pcmcia_device_id {
+ /* Input */
+ #define INPUT_DEVICE_ID_EV_MAX		0x1f
+ #define INPUT_DEVICE_ID_KEY_MIN_INTERESTING	0x71
+-#define INPUT_DEVICE_ID_KEY_MAX		0x2ff
++#define INPUT_DEVICE_ID_KEY_MAX		0x4ff
+ #define INPUT_DEVICE_ID_REL_MAX		0x0f
+ #define INPUT_DEVICE_ID_ABS_MAX		0x3f
+ #define INPUT_DEVICE_ID_MSC_MAX		0x07
+diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
+index b6a835d37826..ad1b9bed3828 100644
+--- a/include/uapi/linux/input-event-codes.h
++++ b/include/uapi/linux/input-event-codes.h
+@@ -774,7 +774,7 @@
+ 
+ /* We avoid low common keys in module aliases so they don't get huge. */
+ #define KEY_MIN_INTERESTING	KEY_MUTE
+-#define KEY_MAX			0x2ff
++#define KEY_MAX			0x4ff
+ #define KEY_CNT			(KEY_MAX+1)
+ 
+ /*
+-- 
+2.17.1
 
-from the pidfd tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/file.c
-index 4fb111735d1d,340bc9569f9d..000000000000
---- a/fs/file.c
-+++ b/fs/file.c
-@@@ -18,7 -19,7 +19,8 @@@
-  #include <linux/bitops.h>
-  #include <linux/spinlock.h>
-  #include <linux/rcupdate.h>
- +#include <net/sock.h>
-+ #include <linux/close_range.h>
- =20
-  unsigned int sysctl_nr_open __read_mostly =3D 1024*1024;
-  unsigned int sysctl_nr_open_min =3D BITS_PER_LONG;
-
---Sig_/BKyrhWxOocKHwTO5Q19txOk
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8ICB4ACgkQAVBC80lX
-0Gxb3gf/XR6DTlWiYpt8lqJWXNtw298QPZ+oY0HhzoIdMn5fmODYdVrvygpy0Ee0
-hLE3ijXyEXgWvBfY+eiQ9Xj2lGbuXFnay2pfjJJXjA5YvdpE5p4dunEaqbte95Af
-1YtpdFu+JvgPoSg7Xxzw6HIX0FMohG04N7NGZcLqz/w3ZZgEveBeGX0lDBmoff2c
-5FX1ydeh04dnXEEbNDUlr2QsW01z58+6Hgr3x+Ov86F1JG2hA/pHJmYQ+vu2e3sy
-sVAeQtdPH8MKD3FPQor12c+D86BPlIQjwfs+NxbVCWyJuu3bUN+LOW5aXMtY40Td
-FQ0oRLXCYY2QgB/+UZ5JzDuAG/FX3w==
-=aYHZ
------END PGP SIGNATURE-----
-
---Sig_/BKyrhWxOocKHwTO5Q19txOk--
