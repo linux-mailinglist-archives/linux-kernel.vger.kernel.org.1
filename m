@@ -2,167 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1E421B947
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809F821B943
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727935AbgGJPTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 11:19:53 -0400
-Received: from mga09.intel.com ([134.134.136.24]:38307 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727910AbgGJPMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:12:10 -0400
-IronPort-SDR: l2N3vigUWRBl6eG4Enjt5cOsUFMCorp2Q7NlkYM+b3yLZ/OHz28+T45pXB3i3KgXnH9pcGhsOb
- Eaq9RanB144A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9678"; a="149686466"
-X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
-   d="scan'208";a="149686466"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 08:12:10 -0700
-IronPort-SDR: SVs3RUzcXiYwAPFPqajKfW1FT8riFfuLVwr2IOzYEPUzsfK0ay7kHea8tubB3KTUE2fB6OuBhc
- kaMiO8ojd30w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
-   d="scan'208";a="484675572"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
-  by fmsmga005.fm.intel.com with ESMTP; 10 Jul 2020 08:12:08 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 12/12] perf intel-pt: Add support for decoding PSB+ only
-Date:   Fri, 10 Jul 2020 18:11:04 +0300
-Message-Id: <20200710151104.15137-13-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200710151104.15137-1-adrian.hunter@intel.com>
-References: <20200710151104.15137-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S1728063AbgGJPT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 11:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727952AbgGJPMg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 11:12:36 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0A3C08C5CE;
+        Fri, 10 Jul 2020 08:12:36 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id o2so6272111wmh.2;
+        Fri, 10 Jul 2020 08:12:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xEchJDumlr5zSz/EMCvc3mIu0atKAoLY2c6rM2/WmwA=;
+        b=CD0901AbfEpZzWSg2DqIk6HF9pzekPCM3fMqDKwLVlTGXa8tpdfENHUgfLTW/8VOar
+         6dHmIPwFe6ipQKhW8yCG6ZCNAF+UnO9UGmpzc/SL8n3kkDapEP1pP9eZzMkEbgpwzaDI
+         iXjnLCF86qHvuqsWaDZODNhucxvPN+wC8L6Obr3cx74b+vR5ZUeNHJep3dlJn0+ioZZs
+         uTCvYTKYmZUJWDm/sbfmpJ0LQRdK6ucsPgPorbG2bK1stvKpbQy/DFha0Yk/rs8iHW4V
+         QkF9iDdaXDMoeWVfQNGBH07ypqKofE2j4xEg0IOjktV2AKqSdAmHXKsQhQL56MDouMlz
+         UKcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xEchJDumlr5zSz/EMCvc3mIu0atKAoLY2c6rM2/WmwA=;
+        b=I03o1AiWe1j8rgwOXriYtNoQqygS46EPNchlDPu8A1I6PBJLkJ9l/AxMsXNE817D2Z
+         xv8xBCzPrpOzaIAGLl5EoofEDcCg1tFYP288ghvMcxc0kh2LIbXZNE+z8ocVgM5hcqIb
+         7DJV8hR2khyNFRtC7vgm4UDVA1rUpO8zSHUV8oHFDuClc6YM1RDDd//+iGLJrjIapkeV
+         jPF2408EcbEZf5pdLohFe58ltI/v6KQ7D9qaRVzKDMGVXLvbhROC0Z3PiQo1QfTVGQHg
+         uImC1ve8n2H/Olwc5WHb2GDWOLBWhn4rwyBmo1azDkM5vOM9Kjmox1y9sFswwnj4JJd3
+         89Dg==
+X-Gm-Message-State: AOAM533epHwARACaAyLWt84POZAMm1C59C880uoHhZeqAnLwsVQRH6we
+        44SeF0fY38uVf5wjg/oxxw2CWka/
+X-Google-Smtp-Source: ABdhPJzzvpOnyFWAZ9LjUtwsQhOc0TLo40Xs9qE+VazD4kcKa3lIteNJVkDHzkZR5ZymXroYPSJ/ow==
+X-Received: by 2002:a1c:5f41:: with SMTP id t62mr5504254wmb.53.1594393954943;
+        Fri, 10 Jul 2020 08:12:34 -0700 (PDT)
+Received: from macmini.local (181.4.199.77.rev.sfr.net. [77.199.4.181])
+        by smtp.gmail.com with ESMTPSA id v24sm13229925wrd.92.2020.07.10.08.12.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 08:12:34 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 17:12:33 +0200
+From:   Willy Wolff <willy.mh.wolff.ml@gmail.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>, k.konieczny@samsung.com,
+        krzk@kernel.org, kgene@kernel.org, s.nawrocki@samsung.com,
+        b.zolnierkie@samsung.com, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 0/2] PM / devfreq: Add delayed timer for polling
+Message-ID: <20200710151233.ci5c4rgwb64eswy7@macmini.local>
+References: <CGME20200703061508epcas1p171aa3c0ab832b77e5837d8bd1e563742@epcas1p1.samsung.com>
+ <20200703062622.11773-1-cw00.choi@samsung.com>
+ <20200703123346.6fy6i33ks6nox46a@macmini.local>
+ <a3339c58-6350-9298-6053-9dc021170048@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a3339c58-6350-9298-6053-9dc021170048@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A single q option decodes ip from only FUP/TIP packets. Make it so that
-repeating the q option (i.e. qq) decodes only PSB+, getting ip if there is
-a FUP packet within PSB+ (i.e. between PSB and PSBEND).
+Hi Lukasz,
 
-Example:
+On 2020-07-08-15-25-03, Lukasz Luba wrote:
+> Hi Willy,
+> 
+> On 7/3/20 1:33 PM, Willy Wolff wrote:
+> > Hi Chanwoo,
+> > 
+> > I think it doesn't help on the benchmark I suggested that is doing only memory
+> > accesses. With both timer, I have the same timing.
+> > 
+> > To test the benchmark with these new patches about timer:
+> > 
+> > git clone https://github.com/wwilly/benchmark.git \
+> >    && cd benchmark \
+> >    && source env.sh \
+> >    && ./bench_build.sh \
+> >    && bash source/scripts/test_dvfs_mem_patched.sh
+> > 
+> > The benchmark is set by default to run for 1s, but you can increase this by
+> > tweaking the script as:
+> > 
+> > taskset 8 ./bench_install/bin/microbe_cache 33554431 0 9722222 <TIME in sec> ${little_freq}
+> > 
+> > 
+> > Also, as I reported the issue, would it be possible to add a
+> > Reported-by: Willy Wolff <willy.mh.wolff.ml@gmail.com> ?
+> > Many thanks in advance.
+> 
+> Thank you for your good work and the benchmark. I hope you will continue
+> to use it and report some issues. I am going to send a follow up patches
+> for the DMC and I will add your 'Reported-by'. In the tests I can see
+> the improvements, but it's worth to consult with you if I understand
+> the new results correctly.
+> 
 
- $ perf record -e intel_pt//u grep -rI pudding drivers
- [ perf record: Woken up 52 times to write data ]
- [ perf record: Captured and wrote 57.870 MB perf.data ]
- $ time perf script --itrace=bi | wc -l
- 58948289
+Thanks for that. I will follow on the other patch thread discussion.
 
- real    1m23.863s
- user    1m23.251s
- sys     0m7.452s
- $ time perf script --itrace=biq | wc -l
- 3385694
+> I think there is still some area for improvements in the devfreq and you
+> could find the interesting bits to contribute.
 
- real    0m4.453s
- user    0m4.455s
- sys     0m0.328s
- $ time perf script --itrace=biqq | wc -l
- 1883
+In fact, this benchmark is motivated about part of my PhD research that has just
+been accepted at LCTES2020: "Performance Optimization on big.LITTLE Architectures:
+A Memory-latency Aware Approach" at https://dl.acm.org/doi/10.1145/3372799.3394370
 
- real    0m0.047s
- user    0m0.043s
- sys     0m0.009s
+Basically, it's about snooping latency with "bad" CPU DVFS choice on big.LITTLE
+systems or more generally SMP/AMP architecture. I'm cleaning up my code and will
+propose patches as an RFC later. It introduces a new CPU DVFS governor to limit
+snooping latency.
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/Documentation/perf-intel-pt.txt     | 15 +++++++++++++++
- .../util/intel-pt-decoder/intel-pt-decoder.c   | 18 ++++++++++++++++++
- 2 files changed, 33 insertions(+)
+Cheers,
+Willy
 
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index f9fe4a4040ba..d5a266d7f15b 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -999,6 +999,21 @@ What *will* be decoded with the (single) q option:
- Note the q option does not specify what events will be synthesized e.g. the p
- option must be used also to show power events.
- 
-+Repeating the q option (double-q i.e. qq) results in even faster decoding and even
-+less detail.  The decoder decodes only extended PSB (PSB+) packets, getting the
-+instruction pointer if there is a FUP packet within PSB+ (i.e. between PSB and
-+PSBEND).  Note PSB packets occur regularly in the trace based on the psb_period
-+config term (refer config terms section).  There will be a FUP packet if the
-+PSB+ occurs while control flow is being traced.
-+
-+What will *not* be decoded with the qq option:
-+
-+	- everything except instruction pointer associated with PSB packets
-+
-+What *will* be decoded with the qq option:
-+
-+	- instruction pointer associated with PSB packets
-+
- 
- dump option
- ~~~~~~~~~~~
-diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-index ccb204b1a050..697513f35154 100644
---- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-+++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-@@ -113,6 +113,7 @@ struct intel_pt_decoder {
- 	bool in_psb;
- 	bool hop;
- 	bool hop_psb_fup;
-+	bool leap;
- 	enum intel_pt_param_flags flags;
- 	uint64_t pos;
- 	uint64_t last_ip;
-@@ -240,6 +241,7 @@ struct intel_pt_decoder *intel_pt_decoder_new(struct intel_pt_params *params)
- 	decoder->return_compression = params->return_compression;
- 	decoder->branch_enable      = params->branch_enable;
- 	decoder->hop                = params->quick >= 1;
-+	decoder->leap               = params->quick >= 2;
- 
- 	decoder->flags              = params->flags;
- 
-@@ -1903,9 +1905,18 @@ static int intel_pt_resample(struct intel_pt_decoder *decoder)
- #define HOP_RETURN	2
- #define HOP_AGAIN	3
- 
-+static int intel_pt_scan_for_psb(struct intel_pt_decoder *decoder);
-+
- /* Hop mode: Ignore TNT, do not walk code, but get ip from FUPs and TIPs */
- static int intel_pt_hop_trace(struct intel_pt_decoder *decoder, bool *no_tip, int *err)
- {
-+	/* Leap from PSB to PSB, getting ip from FUP within PSB+ */
-+	if (decoder->leap && !decoder->in_psb && decoder->packet.type != INTEL_PT_PSB) {
-+		*err = intel_pt_scan_for_psb(decoder);
-+		if (*err)
-+			return HOP_RETURN;
-+	}
-+
- 	switch (decoder->packet.type) {
- 	case INTEL_PT_TNT:
- 		return HOP_IGNORE;
-@@ -2681,6 +2692,7 @@ static int intel_pt_sync(struct intel_pt_decoder *decoder)
- 	decoder->ip = 0;
- 	intel_pt_clear_stack(&decoder->stack);
- 
-+leap:
- 	err = intel_pt_scan_for_psb(decoder);
- 	if (err)
- 		return err;
-@@ -2702,6 +2714,12 @@ static int intel_pt_sync(struct intel_pt_decoder *decoder)
- 			decoder->pkt_state = INTEL_PT_STATE_RESAMPLE;
- 		else
- 			decoder->pkt_state = INTEL_PT_STATE_IN_SYNC;
-+	} else if (decoder->leap) {
-+		/*
-+		 * In leap mode, only PSB+ is decoded, so keeping leaping to the
-+		 * next PSB until there is an ip.
-+		 */
-+		goto leap;
- 	} else {
- 		return intel_pt_sync_ip(decoder);
- 	}
--- 
-2.17.1
-
+> 
+> Regards,
+> Lukasz
+> 
+> > 
+> > 
+> > Best Regards,
+> > Willy
+> > 
