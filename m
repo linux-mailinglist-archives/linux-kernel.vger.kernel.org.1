@@ -2,161 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA18A21B6DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D383321B6C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbgGJNp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
+        id S1728040AbgGJNoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727768AbgGJNpK (ORCPT
+        with ESMTP id S1726774AbgGJNn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:45:10 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B10C08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:45:10 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ls15so2644851pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:45:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=N7KG5QWQXC0DT5Wy+0SYBLxbROhm08sns0ssVfXKln0=;
-        b=XZu9+pWQbTy60PSoHQBwjwbQMrb5r4JmvOsB9uKCfCWtvev3RcGAQV8lvPW3ltvX1E
-         R5UcMS9cEg1j4lDqHhwSBPctGD6+ljgmsZZg7vQnJf+ASoMZlCKBAkl/vqg+zA1I2uRQ
-         CKgN5yukxYU/RL7vL54n4pYNwOlVlL+Cgh8MoMlcLzUveSTAwKDBQZikNCf414IRQev6
-         HPYQUQDPGCCNMFSlsscQB1S1zDfLoN1yVXsXaf0w9vA8tGTgQsXfuS2vPcror/QnM0VX
-         aXo6S9llVhSQHFgnTaawneCqilaAJybBQfRsAdwity5LvMDMizJH6gDlQDhlupuAgYS7
-         Z7aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=N7KG5QWQXC0DT5Wy+0SYBLxbROhm08sns0ssVfXKln0=;
-        b=FmLGO6CTlRhW7kxHxoWhAR9klcwYzKTPR+p5i3+mWQpZxfcHaTpqpje5EIk9M6XgY3
-         xTCrABTC6vielaGfW4XKUfz64MAGSdjdGYGfYR2rR8BbkI4/ZwkUTFMLSb0aOGN3zG2F
-         ClovXEx3algx1hinZ3GgECf9cJgRg0nQserqANueZz2o70KFFsWNd3WGTk7q6rWdvLBM
-         L8jBwI1piA6Yf0oHp49Qgwvg7wsgovFDe7sYfYuB4OBZ8NXm6zWuZSjskpv2nybNDfVp
-         8DKqKEGANTEpXwocv5bgRWBzsLAYBxgfh4qrufwNyM+AeCGDCsWtHbJDDqPUs0snF6dt
-         9T/Q==
-X-Gm-Message-State: AOAM5327tHhtWknBsnK6QSOlL7M85pMpj1FDqur71+mBFxHWp2HSyqzL
-        C4MI/6Y8D/tf6/cd/lTR0bs=
-X-Google-Smtp-Source: ABdhPJz6IiPHNSVd7i9nrd6Wo9FhX15AQTUgKDWGi6ePstv+AqsYEYYLey0QJ14cXLSvSRME/KMLlg==
-X-Received: by 2002:a17:902:820a:: with SMTP id x10mr8288876pln.135.1594388710310;
-        Fri, 10 Jul 2020 06:45:10 -0700 (PDT)
-Received: from vultr.guest ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id 198sm6297363pfb.27.2020.07.10.06.45.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 06:45:09 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v4 12/17] perf ftrace: add support for tracing option 'irq-info'
-Date:   Fri, 10 Jul 2020 21:43:17 +0800
-Message-Id: <20200710134322.15400-13-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200710134322.15400-1-changbin.du@gmail.com>
-References: <20200710134322.15400-1-changbin.du@gmail.com>
+        Fri, 10 Jul 2020 09:43:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE07C08C5CE;
+        Fri, 10 Jul 2020 06:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LfLVLxxOmlmDOlDinFk/aMFA2Uwys7/Mharys896vzk=; b=FEgCX43ahzk8VgsN48BnOirVa7
+        hR9txw/NB9mjn/87qH2UYTdR7rgygcTR8Nz5Xi+P49yt4q22U5C+OCtwUZ4lVWaRURRJzMEpM9auM
+        xqw0wfdltzcTKQbC4y9XP1pqoy0oXSmVnO9VmBHNW1J160FmEfPLZzyTHRoDLJRf+V1ThAln6JKTz
+        Z9YKVNj9tayvMraarD0G5EyLOl9+XyFCYHd/D3pMN6k7tkoOedBy5MXaNSDf5v0SOFeuBsbYqHVZq
+        DCCcOi3foi91pfuXUlGUl3WILL3+u14o2OtbLS5q0nuBh8B7e1mVJnw/qmuRy6ykVaqa8imrURarn
+        VeNQz3yw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jttJe-0003qg-Co; Fri, 10 Jul 2020 13:43:50 +0000
+Date:   Fri, 10 Jul 2020 14:43:50 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Kanchan Joshi <joshiiitr@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Kanchan Joshi <joshi.k@samsung.com>, viro@zeniv.linux.org.uk,
+        bcrl@kvack.org, Damien.LeMoal@wdc.com, asml.silence@gmail.com,
+        linux-fsdevel@vger.kernel.org, Matias Bj??rling <mb@lightnvm.io>,
+        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+Message-ID: <20200710134350.GA14704@infradead.org>
+References: <1593974870-18919-5-git-send-email-joshi.k@samsung.com>
+ <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk>
+ <20200709085501.GA64935@infradead.org>
+ <adc14700-8e95-10b2-d914-afa5029ae80c@kernel.dk>
+ <20200709140053.GA7528@infradead.org>
+ <2270907f-670c-5182-f4ec-9756dc645376@kernel.dk>
+ <CA+1E3r+H7WEyfTufNz3xBQQynOVV-uD3myYynkfp7iU+D=Svuw@mail.gmail.com>
+ <f5e3e931-ef1b-2eb6-9a03-44dd5589c8d3@kernel.dk>
+ <20200710130912.GA7491@infradead.org>
+ <CA+1E3rJSiS58TE=hHv5wVv-umJ19_7zKv-JqZTNzD=xi3MoX1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+1E3rJSiS58TE=hHv5wVv-umJ19_7zKv-JqZTNzD=xi3MoX1g@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds support to display irq context info for function tracer. To do
-this, just specify a '--func-opts irq-info' option.
+On Fri, Jul 10, 2020 at 06:59:45PM +0530, Kanchan Joshi wrote:
+> > block doesn't work for the case of writes to files that don't have
+> > to be aligned in any way.  And that I think is the more broadly
+> > applicable use case than zone append on block devices.
+> 
+> But when can it happen that we do zone-append on a file (zonefs I
+> asssume), and device returns a location (write-pointer essentially)
+> which is not in multiple of 512b?
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- tools/perf/Documentation/perf-ftrace.txt |  1 +
- tools/perf/builtin-ftrace.c              | 21 ++++++++++++++++++++-
- 2 files changed, 21 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-index 2e16e1e588d9..e6e9564d6c2e 100644
---- a/tools/perf/Documentation/perf-ftrace.txt
-+++ b/tools/perf/Documentation/perf-ftrace.txt
-@@ -81,6 +81,7 @@ OPTIONS
- --func-opts::
- 	List of options allowed to set:
- 	  call-graph - Display kernel stack trace for function tracer.
-+	  irq-info   - Display irq context info for function tracer.
- 
- -G::
- --graph-funcs=::
-diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index 179c5da678e3..a5906258c413 100644
---- a/tools/perf/builtin-ftrace.c
-+++ b/tools/perf/builtin-ftrace.c
-@@ -42,6 +42,7 @@ struct perf_ftrace {
- 	unsigned long		percpu_buffer_size;
- 	bool			inherit;
- 	int			func_stack_trace;
-+	int			func_irq_info;
- 	int			graph_nosleep_time;
- 	int			graph_noirqs;
- };
-@@ -204,6 +205,7 @@ static void reset_tracing_options(struct perf_ftrace *ftrace __maybe_unused)
- 	write_tracing_option_file("func_stack_trace", "0");
- 	write_tracing_option_file("sleep-time", "1");
- 	write_tracing_option_file("funcgraph-irqs", "1");
-+	write_tracing_option_file("irq-info", "0");
- }
- 
- static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
-@@ -291,6 +293,17 @@ static int set_tracing_func_stack_trace(struct perf_ftrace *ftrace)
- 	return 0;
- }
- 
-+static int set_tracing_func_irqinfo(struct perf_ftrace *ftrace)
-+{
-+	if (!ftrace->func_irq_info)
-+		return 0;
-+
-+	if (write_tracing_option_file("irq-info", "1") < 0)
-+		return -1;
-+
-+	return 0;
-+}
-+
- static int reset_tracing_cpu(void)
- {
- 	struct perf_cpu_map *cpumap = perf_cpu_map__new(NULL);
-@@ -466,6 +479,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
- 		goto out_reset;
- 	}
- 
-+	if (set_tracing_func_irqinfo(ftrace) < 0) {
-+		pr_err("failed to set tracing option irq-info\n");
-+		goto out_reset;
-+	}
-+
- 	if (set_tracing_filters(ftrace) < 0) {
- 		pr_err("failed to set tracing filters\n");
- 		goto out_reset;
-@@ -656,6 +674,7 @@ static int parse_func_tracer_opts(const struct option *opt,
- 	struct perf_ftrace *ftrace = (struct perf_ftrace *) opt->value;
- 	struct sublevel_option func_tracer_opts[] = {
- 		{ .name = "call-graph",	.value_ptr = &ftrace->func_stack_trace },
-+		{ .name = "irq-info",	.value_ptr = &ftrace->func_irq_info },
- 		{ .name = NULL, }
- 	};
- 
-@@ -723,7 +742,7 @@ int cmd_ftrace(int argc, const char **argv)
- 	OPT_CALLBACK('N', "notrace-funcs", &ftrace.notrace, "func",
- 		     "do not trace given functions", parse_filter_func),
- 	OPT_CALLBACK(0, "func-opts", &ftrace, "options",
--		     "function tracer options, available options: call-graph",
-+		     "function tracer options, available options: call-graph,irq-info",
- 		     parse_func_tracer_opts),
- 	OPT_CALLBACK('G', "graph-funcs", &ftrace.graph_funcs, "func",
- 		     "trace given functions using function_graph tracer",
--- 
-2.25.1
-
+All the time.  You open a file with O_APPEND.  You write a record to
+it of any kind of size, then the next write will return the position
+it got written at, which can be anything.
