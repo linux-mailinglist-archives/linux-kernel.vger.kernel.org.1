@@ -2,120 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F5B21BA04
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD2321BA0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728196AbgGJPv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 11:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56734 "EHLO
+        id S1727866AbgGJP4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 11:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726828AbgGJPv7 (ORCPT
+        with ESMTP id S1726820AbgGJP4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:51:59 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6667C08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 08:51:58 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id k4so2404573pld.12
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 08:51:58 -0700 (PDT)
+        Fri, 10 Jul 2020 11:56:43 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920ABC08C5CE;
+        Fri, 10 Jul 2020 08:56:42 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s9so7004718ljm.11;
+        Fri, 10 Jul 2020 08:56:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DQese5NC62g6R1leDp/qCM4i5r8CiSVoueHjPxDj68o=;
-        b=oUV4qdW6mPV9TACal8VDQwPXp4TfiKZooo6GketEaLJGMrLHYVY3V9ARqO6vVO5YpV
-         Qxh7B5tKgZDkBBQ2tKs6I+p2JwDy5eTqh660pHJNkoJngvOK+NJQUr1HlUg+yX/2EiRx
-         h2JmBIyslnxwJ/i802vUWOdAgTbhVmWPqwZU4=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C2jwZ+DTUt+/0PqQHnFq2z8XoC0/BJ4auZW7z0y2jMc=;
+        b=cPcxV2TTJwQAiEaNbWP9z9+K7QbPnltMgTaQkNRkoL+hPRj3AOYIRRDmsdv/HjLhBd
+         QvJiD8IR9r8qqV2d54iir0ckD+EGZcJ9osiT6dAYQ07Q3u8xGJ4VZtAX5my6LSb8p/Vz
+         CT7foH3UaZI6yhK/BRmU9znL15f9QPHj4X9fgptTeyMfil+x+vjm0kD9OO7UoswiEPRE
+         y3W0VMwfRDm5KoxyIQMSdr7l0soRN7p8Ia2Y+gjLihA9bwVeV1ySYn8qIO3oHJ7Yt2yq
+         QiG8TFkp4VSo/ozVaLwVhRVsUXdKcQW5nFAp7wN+TegnAoWCDKCeQSbfbTd5tvjtAVz7
+         9New==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DQese5NC62g6R1leDp/qCM4i5r8CiSVoueHjPxDj68o=;
-        b=CXvP4Bj5AlOzFkM6ic9T+32qvVPJoiSVKrzsUrrB8c6YAG9Em014EZ3L5VdJbrVmWi
-         5OB8/FrVZvYv4SEmdC+dN0ViC3O2Rdh3ZmaavXEZan67NEf29EhLkZMs5jJZJ6XCNSh3
-         kyrf9Xsop8uEhVYWB6moLKWTdFIYZgW67ZdSxEhNdoXf7lkXUrqIVFFak+EjjIYYqoZp
-         9ihcAFOGYToYAPXeW9ViOuFMz/mm/cOSqH5N8EFfFHM/amwXz3yR+HZ1m9XGO4yVuRhO
-         3O3l16MnBMu7zxnqcPcgrtwU9y2bRgmD1rduU/ifDPHfa73PRAa3TCa8gUNuQVkCmbQY
-         duqw==
-X-Gm-Message-State: AOAM533jj5w51FOeAXByPc1PwhyGexN12dgSuL//MTLHsrftGP51CMpg
-        7Vq3/AH2IW3Va1J4oujeK4XG4Q==
-X-Google-Smtp-Source: ABdhPJxdBmulO3UZ7ab+Reja0ySreW+1xomJB1W1FlNI+5HWxnZ5HGistj70iTcj9697BSVCBEi/7g==
-X-Received: by 2002:a17:90b:94f:: with SMTP id dw15mr6530095pjb.199.1594396318409;
-        Fri, 10 Jul 2020 08:51:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c71sm6755425pje.32.2020.07.10.08.51.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 08:51:57 -0700 (PDT)
-Date:   Fri, 10 Jul 2020 08:51:56 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Alexandre Ghiti <alex@ghiti.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [PATCH RFC] kprobes: Remove MODULES dependency
-Message-ID: <202007100849.9FA1E414A@keescook>
-References: <20200709234521.194005-1-jarkko.sakkinen@linux.intel.com>
- <20200710193257.4eeb19e9cd042d99cbca7f9a@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C2jwZ+DTUt+/0PqQHnFq2z8XoC0/BJ4auZW7z0y2jMc=;
+        b=NJ4YtsXwqzflrAFIV/q/2WvN+OesSbgj9TUZPHYhFTyKquPzuUoMdXnDoFqVwfntRp
+         7aorPSgH08PIOSHC1K0cBJTL1Dqlkc3arvCpj/WqBHYPomCDieqy1B5WBtXiLJC4g84H
+         pZb1F1fvv36ZuxDIfug44aF1trtq2S4PyyXxPbghg2juXM+WFTBXYlUCAUeZpOvLF+EE
+         ZvvZ5EiW8L2CdUXIyBhRvfhzBZ/2Kr5L6vujJs+IcfQ/G9Mi4gxGnczmJ8irj3M+dxoC
+         q6x748U9z2GL7Who4JmXm/qHhlTbDBEMY8X4SBG3whH+3UKJiMfhZUPr3z/fgoaRdLX/
+         nydg==
+X-Gm-Message-State: AOAM533U2SoS/Gro47RTlR+EfLxBwDMfpBWR1xzWy4va3l9qz/gu5YHJ
+        HRIWf6mullXvM3m9Bbra7ZQIFdQrTm0AK1N9YZA=
+X-Google-Smtp-Source: ABdhPJwHbAjospPHQTV5mJl6B9f6wI4iNS+jAIysLM7TFCmtAmWHcGftNV+CXq627FmF99I/vmuICSp7n8AyiSuBo4I=
+X-Received: by 2002:a2e:880e:: with SMTP id x14mr29680040ljh.218.1594396600956;
+ Fri, 10 Jul 2020 08:56:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710193257.4eeb19e9cd042d99cbca7f9a@kernel.org>
+References: <20200710154935.697190-1-philippe.schenker@toradex.com>
+In-Reply-To: <20200710154935.697190-1-philippe.schenker@toradex.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Fri, 10 Jul 2020 12:56:29 -0300
+Message-ID: <CAOMZO5DvArJPAJ+PzDi=zpDmTdr3u0j9nbd3wSVT5tdV+STmWw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: usb: ci-hdrc-usb2: add property disable-runtime-pm
+To:     Philippe Schenker <philippe.schenker@toradex.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, USB list <linux-usb@vger.kernel.org>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 07:32:57PM +0900, Masami Hiramatsu wrote:
-> On Fri, 10 Jul 2020 02:45:19 +0300
-> Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-> > +#ifdef CONFIG_MODULES
-> >  	/* Lock modules while optimizing kprobes */
-> >  	mutex_lock(&module_mutex);
-> > +#endif
-> 
-> Hmm, can you reduce these "#ifdef CONFIG_MODULE"s ?
-> 
-> e.g. 
-> 
-> #ifdef CONFIG_MODULES
-> static void lock_modules(void)
-> {
-> 	mutex_lock(&module_mutex);
-> }
-> ...
-> #else
-> #define lock_modules() do { } while (0)
-> ...
-> #endif
+Hi Philippe,
 
-I prefer using "static inline" for no-op functions just because they
-will maintain argument type validation by the compiler regardless of the
-CONFIG state (though it doesn't really matter here since it's void).
+On Fri, Jul 10, 2020 at 12:51 PM Philippe Schenker
+<philippe.schenker@toradex.com> wrote:
+>
+> Chipidea depends on some hardware signals to be there in order
 
-#else
-static inline lock_modules(void) { }
-#endif
+I think this description is too vague.
 
--- 
-Kees Cook
+Could you please provide more details so that a user can know if their
+hardware falls into this category?
+
+It is not clear from seeing this series what is the hardware details
+that would require this property to be used.
