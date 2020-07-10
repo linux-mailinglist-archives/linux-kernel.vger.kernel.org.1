@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F7021B42A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB7D21B42D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbgGJLkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 07:40:07 -0400
-Received: from mga03.intel.com ([134.134.136.65]:53565 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726828AbgGJLkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 07:40:05 -0400
-IronPort-SDR: aJV7CgbdijTx+fy6IFDRB2UdxlZaj0XJbQw7d9tFBky2fNsj89MzXPeN5nLHtbZibBCOMJ0UKq
- Ki810C6ww1Dg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="148173814"
-X-IronPort-AV: E=Sophos;i="5.75,335,1589266800"; 
-   d="scan'208";a="148173814"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 04:40:04 -0700
-IronPort-SDR: GgUGeJx380Kb043Ycq+vOjyyyY2kot0/3TdLXU2AGXiqyVLKWd5yRL/sqOaCsjJoPfu0fEcd/O
- T20s/oE8UqBA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,335,1589266800"; 
-   d="scan'208";a="324588693"
-Received: from taverna-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.137])
-  by orsmga007.jf.intel.com with ESMTP; 10 Jul 2020 04:40:01 -0700
-Date:   Fri, 10 Jul 2020 14:40:00 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Andrey Pronin <apronin@chromium.org>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, groeck@chromium.org
-Subject: Re: [PATCH] tpm: avoid accessing cleared ops during shutdown
-Message-ID: <20200710114000.GD2614@linux.intel.com>
-References: <20200710002209.6757-1-apronin@chromium.org>
+        id S1727950AbgGJLkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 07:40:45 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32925 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726828AbgGJLko (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 07:40:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594381243;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VHkgHsP2LMXiJzMuU12W+yp4KrE8aOeFbQ7+oDie8jo=;
+        b=W609tspmoBhQH/GF4adhR6CgFSdsszfhlwdQ7nmuZg9pPkiypI0SNqxiTVotkqRWVHqpUx
+        b6dsXHJ0DBl8raJRLKpY6EPiqGhg9HGtK7nE5CCpyw3vEme6B5GGt2O6fFMsj2uJeZwnzt
+        TnwQWGN33f/qYDEBWpC8JCzIOiv2KIU=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-lIGhmCLUPTu3-7EZKhzlpQ-1; Fri, 10 Jul 2020 07:40:41 -0400
+X-MC-Unique: lIGhmCLUPTu3-7EZKhzlpQ-1
+Received: by mail-wm1-f71.google.com with SMTP id g6so6519642wmk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 04:40:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=VHkgHsP2LMXiJzMuU12W+yp4KrE8aOeFbQ7+oDie8jo=;
+        b=drGYnDbYgH/iycScSO5eqHbwZMXY2RrqEXnLNyt0xx4+PiWz2G+jgsjEdkw5TVZF8d
+         7E+MFDD16oHSTROaA0mEh3gVGvXRZfESWIuPN3meb46N+HDD+HssG5bxWXgV+32rotVl
+         T4Oeekg/xPJzqCTAZ88fVKX5wvWUl2+nnDZTGufaS5jarh6LyK7+6nxRrJACzEtknQZX
+         bVQBLMGOo+mMxOJB/RYpXVSHG10D7Y6K2SbIn4UxCn27S76Ky+sWWzMF1sTcTKKHRjBP
+         ewZIKM3sbO1DzxhXOf2wHFFtoJu3G/EPZqY/NoXgoOMpZwom1fcXtc1S4423u1nvxzob
+         aBGA==
+X-Gm-Message-State: AOAM530wBOflVN96fGfLkLpusy6hWWj39NXEQkBIUdo47X580Z87VHux
+        /vzPdPSYYAqtwzoJV+u1Vo7voGqDUB+fpntpD63+yGGdOyMTQvfZhrvXRK9Wz5cRmuR/H329NNN
+        /PTZMHt1L5x1sle+Ar8MjLRSg
+X-Received: by 2002:a1c:4846:: with SMTP id v67mr5008224wma.175.1594381239905;
+        Fri, 10 Jul 2020 04:40:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzexHDpMo1ULLtIMbhLiWf3L2m1aZ1l+TwAjQ9GHUa2QztMKPPmHnEuaReNPKxs3BoWz2+j/w==
+X-Received: by 2002:a1c:4846:: with SMTP id v67mr5008197wma.175.1594381239727;
+        Fri, 10 Jul 2020 04:40:39 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id t2sm9040491wma.43.2020.07.10.04.40.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 04:40:39 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 7/9] KVM: nSVM: implement nested_svm_load_cr3() and use it for host->guest switch
+In-Reply-To: <c7c65e0e-0c8f-106b-6249-ac706e702259@redhat.com>
+References: <20200709145358.1560330-1-vkuznets@redhat.com> <20200709145358.1560330-8-vkuznets@redhat.com> <4d3f5b01-72d9-c2c5-08e8-c2b1e0046e5e@redhat.com> <c7c65e0e-0c8f-106b-6249-ac706e702259@redhat.com>
+Date:   Fri, 10 Jul 2020 13:40:37 +0200
+Message-ID: <87blknvbre.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710002209.6757-1-apronin@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 05:22:09PM -0700, Andrey Pronin wrote:
-> This patch prevents NULL dereferencing when using chip->ops while
-> sending TPM2_Shutdown command if both tpm_class_shutdown handler and
-> tpm_del_char_device are called during system shutdown.
-> 
-> Both these handlers set chip->ops to NULL but don't check if it's
-> already NULL when they are called before using it.
-> 
-> This issue was revealed in Chrome OS after a recent set of changes
-> to the unregister order for spi controllers, such as:
->   b4c6230bb0ba spi: Fix controller unregister order
->   f40913d2dca1 spi: pxa2xx: Fix controller unregister order
-> and similar for other controllers.
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
-I'm not sure I fully understand the scenario. When does thi happen?
-Why does not tpm_del_char_device need this? The changes listed tell
-me nothing. Why they have this effect?
+> On 09/07/20 19:57, Paolo Bonzini wrote:
+>> On 09/07/20 16:53, Vitaly Kuznetsov wrote:
+>>> +	if (nested_npt_enabled(svm))
+>>> +		nested_svm_init_mmu_context(&svm->vcpu);
+>>> +
+>>>  	ret = nested_svm_load_cr3(&svm->vcpu, nested_vmcb->save.cr3,
+>>>  				  nested_npt_enabled(svm));
+>> 
+>> This needs to be done in svm_set_nested_state, so my suggestion is that
+>> the previous patch includes a call to nested_svm_load_cr3 in
+>> svm_set_nested_state, and this one adds the "if" inside
+>> nested_svm_load_cr3 itself.
+>
+> Actually no, that doesn't work after the next patch.  So the best option
+> is probably to extract nested_svm_init_mmu as a separate step in
+> enter_svm_guest_mode.  This also leaves nested_prepare_vmcb_save as a
+> void function.
+>
 
-I'm just trying to understand whether this could be a regression or
-not.
+Hm, it seems I missed svm_set_nested_state() path
+completely. Surprisingly, state_test didn't fail)
 
-I neither understand what you mean by "and similar for other
-controllers."
+I'm struggling a bit to understand why we don't have kvm_set_cr3() on
+svm_set_nested_state() path: enter_svm_guest_mode() does it through
+nested_prepare_vmcb_save() but it is skipped in svm_set_nested_state().
+Don't we need it at least for !npt_enabled case? We'll have to extract
+nested_cr3 from nested_vmcb then.
 
-NAK for the reason that I don't understand what I'm merging.
+-- 
+Vitaly
 
-/Jarkko
-
-> 
-> Signed-off-by: Andrey Pronin <apronin@chromium.org>
-> ---
->  drivers/char/tpm/tpm-chip.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index 8c77e88012e9..a410ca40a3c5 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -296,7 +296,7 @@ static int tpm_class_shutdown(struct device *dev)
->  	struct tpm_chip *chip = container_of(dev, struct tpm_chip, dev);
->  
->  	down_write(&chip->ops_sem);
-> -	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
-> +	if (chip->ops && (chip->flags & TPM_CHIP_FLAG_TPM2)) {
->  		if (!tpm_chip_start(chip)) {
->  			tpm2_shutdown(chip, TPM2_SU_CLEAR);
->  			tpm_chip_stop(chip);
-> @@ -479,7 +479,7 @@ static void tpm_del_char_device(struct tpm_chip *chip)
->  
->  	/* Make the driver uncallable. */
->  	down_write(&chip->ops_sem);
-> -	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
-> +	if (chip->ops && (chip->flags & TPM_CHIP_FLAG_TPM2)) {
->  		if (!tpm_chip_start(chip)) {
->  			tpm2_shutdown(chip, TPM2_SU_CLEAR);
->  			tpm_chip_stop(chip);
-> -- 
-> 2.25.1
-> 
