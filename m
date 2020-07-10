@@ -2,78 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D3621B76F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB0021B781
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgGJN7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727085AbgGJN7u (ORCPT
+        id S1728276AbgGJOBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:01:04 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:36217 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727978AbgGJOA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:59:50 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E33C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:59:50 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id k23so6067797iom.10
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:59:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mlQguU1U2hvwSJk30LAK9bB9kVEoSAR2Lu6iWKVRBx0=;
-        b=QxVgzK2SsL8sgX36yDnhSAlanH8a9ipHEgYMzsFZMu4XWL4dS5GHNGFqeK2a4IPiQc
-         AaiToF9P7IpNAzxLUVPA7K0UyT+EGR5s+SIphaYOW1dv65zea/4hvzCiVxnd5tE54m7p
-         ht8MxEacP4qOK1+e59bVNasYU5WQWytNq1nUnB/4yL2oq3lsIiIEvCMVASV7R9gSySNq
-         qk0LaBiFQAKh+TDD7oOgQpop0Vg13cWVlK5PGBT1/OtRL32YSCq3fVbEB2M1rCW0Mx+L
-         m4DVJgvr6AsZzrjLM9MZBtc12QRaRgo9eh8SstcWB1pUT2Aoyp+9+UHIzOWXArpsr7Uj
-         QOfg==
+        Fri, 10 Jul 2020 10:00:57 -0400
+Received: by mail-lf1-f66.google.com with SMTP id k17so3266446lfg.3;
+        Fri, 10 Jul 2020 07:00:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mlQguU1U2hvwSJk30LAK9bB9kVEoSAR2Lu6iWKVRBx0=;
-        b=eI9V39LwUZrS9FnGp9rlHvSSNntqIQiB8V0XwxdDpQXsruvKtjzcI8ijRZnIK01wk+
-         KrPiebhUPfpdFH1ODGR5K0CSI6qPMOhaQAyIz8Of0Z2sRF+rtsrCjnoHwJZL48TkEk+T
-         RY0takhO4KE7cCEy1c7R451AixHUOyol2pncA6yOd/Il7THhOnb2N+sl+PeKh0w6+CAn
-         JldSp1pmmrAUaJqu/ibvJQSnRshXdy8dHHVLBKnBXYv5pLz9/ND1hUaI+1kSrSguF4A8
-         MCo2yl0SpInq2C0FtR9XkS43HBQoE+bXtbAjmH3ylGVgDVdQQWM2o3+TBHiceXns1F3v
-         sc9g==
-X-Gm-Message-State: AOAM530EG5TrZ+YX8lx8G0Qyi+PMW/YoT1iw2N+FDHdROaUFnKws6yFA
-        E6SqxvQnIu6xLQU3quvkVenMkISnuNnbSQ==
-X-Google-Smtp-Source: ABdhPJw4W2QlT96qjonJgHmFLwy6GyJG/IHPn+aFBToTY/NhL8XjMBDyq5Q6DerUJbHeCxRVjyhFQg==
-X-Received: by 2002:a02:370b:: with SMTP id r11mr75398071jar.119.1594389589474;
-        Fri, 10 Jul 2020 06:59:49 -0700 (PDT)
-Received: from [192.168.1.58] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id t5sm4038923iov.53.2020.07.10.06.59.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 06:59:49 -0700 (PDT)
-Subject: Re: [PATCH] blk-mq: Remove unnecessary local variable
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     ming.lei@redhat.com, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <37baa5f3d47675b782652c85acf303662368e99f.1593846844.git.baolin.wang7@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <9858c648-6070-05ff-c6e1-38317eb65045@kernel.dk>
-Date:   Fri, 10 Jul 2020 07:59:47 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=RMzivlzUW4rzxFNjnhbbZoBhTd2As0ue9nkTjYqTX5I=;
+        b=F02FrvA+O18mR6yaPCcqyR9nFsuYsbTitC5LyEiWwBK/rrwni7bPjshrCLxwr40muA
+         dOMjYI+SPI4d01/bNkul5H2AFhDuc25iTUnQtLpgnqMKQ495w/O0K3d44INPbVJBwKi2
+         IRMaJUvNaKRtuCBJt+2pnXpGZkFmVFOYreoH1JI3GJuprCSqDRGSSZDPjIJi4Puj5VB8
+         BczpwCT90zVlzXNGWWBr2TgpkSoqwtLigJ+Zup3WX/OHqe3trS4Mwj5+2JKvpPto63TM
+         HQ/SxeJwp7I85aSA3WQLhM+RrBJeX4vr1PJ8e7aM8wXHdqKQWLx2B0TFbxDsFtMBAkni
+         ADtw==
+X-Gm-Message-State: AOAM533vUqHUZ7xVtW40AuWRnjHNDQlfwV4k+wyouyY2UaNsWSnhHq/O
+        Kh/fPXb/R69PGgTXhJR/hM4=
+X-Google-Smtp-Source: ABdhPJwtw5yq+ncWSD8hCBCP/UMKxDvk+Y0CnlyclQc1SXh+aw8BNGPj8CMugR/oByDsUVzExbdH6Q==
+X-Received: by 2002:a05:6512:482:: with SMTP id v2mr42695899lfq.3.1594389653839;
+        Fri, 10 Jul 2020 07:00:53 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id z7sm1940292ljj.33.2020.07.10.07.00.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 07:00:53 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1jttaB-0000ja-V0; Fri, 10 Jul 2020 16:00:55 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jslaby@suse.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 2/2] serial: tegra: drop bogus NULL tty-port checks
+Date:   Fri, 10 Jul 2020 15:59:47 +0200
+Message-Id: <20200710135947.2737-3-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200710135947.2737-1-johan@kernel.org>
+References: <20200710135947.2737-1-johan@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <37baa5f3d47675b782652c85acf303662368e99f.1593846844.git.baolin.wang7@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/4/20 1:26 AM, Baolin Wang wrote:
-> Remove unnecessary local variable 'ret' in blk_mq_dispatch_hctx_list().
+The struct tty_port is part of the uart state and will never be NULL in
+the receive helpers. Drop the bogus NULL checks and rename the
+pointer-variables "port" to differentiate them from struct tty_struct
+pointers (which can be NULL).
 
-Applied, thanks.
+Fixes: 962963e4ee23 ("serial: tegra: Switch to using struct tty_port")
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/tty/serial/serial-tegra.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/tty/serial/serial-tegra.c b/drivers/tty/serial/serial-tegra.c
+index b3bbee6b6702..04d1b0807e66 100644
+--- a/drivers/tty/serial/serial-tegra.c
++++ b/drivers/tty/serial/serial-tegra.c
+@@ -635,7 +635,7 @@ static void tegra_uart_handle_tx_pio(struct tegra_uart_port *tup)
+ }
+ 
+ static void tegra_uart_handle_rx_pio(struct tegra_uart_port *tup,
+-		struct tty_port *tty)
++		struct tty_port *port)
+ {
+ 	do {
+ 		char flag = TTY_NORMAL;
+@@ -659,13 +659,12 @@ static void tegra_uart_handle_rx_pio(struct tegra_uart_port *tup,
+ 		if (tup->uport.ignore_status_mask & UART_LSR_DR)
+ 			continue;
+ 
+-		if (tty)
+-			tty_insert_flip_char(tty, ch, flag);
++		tty_insert_flip_char(port, ch, flag);
+ 	} while (1);
+ }
+ 
+ static void tegra_uart_copy_rx_to_tty(struct tegra_uart_port *tup,
+-				      struct tty_port *tty,
++				      struct tty_port *port,
+ 				      unsigned int count)
+ {
+ 	int copied;
+@@ -675,17 +674,13 @@ static void tegra_uart_copy_rx_to_tty(struct tegra_uart_port *tup,
+ 		return;
+ 
+ 	tup->uport.icount.rx += count;
+-	if (!tty) {
+-		dev_err(tup->uport.dev, "No tty port\n");
+-		return;
+-	}
+ 
+ 	if (tup->uport.ignore_status_mask & UART_LSR_DR)
+ 		return;
+ 
+ 	dma_sync_single_for_cpu(tup->uport.dev, tup->rx_dma_buf_phys,
+ 				count, DMA_FROM_DEVICE);
+-	copied = tty_insert_flip_string(tty,
++	copied = tty_insert_flip_string(port,
+ 			((unsigned char *)(tup->rx_dma_buf_virt)), count);
+ 	if (copied != count) {
+ 		WARN_ON(1);
 -- 
-Jens Axboe
+2.26.2
 
