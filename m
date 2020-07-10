@@ -2,279 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EADF21AEA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 07:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A4321AEA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 07:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727810AbgGJF3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 01:29:11 -0400
-Received: from mga03.intel.com ([134.134.136.65]:20778 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727038AbgGJF0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 01:26:04 -0400
-IronPort-SDR: wbJF9zqyWDeByJeOMrFkbfqlwrcozAHCkeGnAZ45ztkTmPLo4Mn+yfJ9l5zq060rRiSUkgvQRp
- Fs+wQo1qk+Hw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="148142446"
-X-IronPort-AV: E=Sophos;i="5.75,334,1589266800"; 
-   d="scan'208";a="148142446"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 22:25:37 -0700
-IronPort-SDR: 4j1ShUqut6A/r8IhoUGs/RIzlFrgal+5jxzG2jIA7llcRJ+31FQnBAAPVZpv43cmICMrFm2BGN
- t9X91ktzGD3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,334,1589266800"; 
-   d="scan'208";a="298313649"
-Received: from xzhou33-mobl1.ccr.corp.intel.com (HELO [10.255.31.159]) ([10.255.31.159])
-  by orsmga002.jf.intel.com with ESMTP; 09 Jul 2020 22:25:35 -0700
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/4] iommu/vt-d: Report page request faults for guest
- SVA
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-References: <20200709070537.18473-1-baolu.lu@linux.intel.com>
- <20200709070537.18473-4-baolu.lu@linux.intel.com>
- <MWHPR11MB1645D22D2CBCECE1257CBFEF8C650@MWHPR11MB1645.namprd11.prod.outlook.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <027ccdd4-003e-9cf7-c519-d5655606b702@linux.intel.com>
-Date:   Fri, 10 Jul 2020 13:25:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <MWHPR11MB1645D22D2CBCECE1257CBFEF8C650@MWHPR11MB1645.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1725802AbgGJF3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 01:29:17 -0400
+Received: from mail-eopbgr40066.outbound.protection.outlook.com ([40.107.4.66]:28007
+        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725943AbgGJF3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 01:29:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YXDrG2ezDhJflQgN/KKf/atXdfFzGhGqsdZ9sIg529OSTJlvHY6sIPy+j2SLqWsykk0UYDTaS7dluyW/THSlCtmgRynNnHtwzgjI0mx/LyasCE1FyFDJrQzuzijbjep+jGKH7XH3Bv3s30ObfwLVXEDMKJmWDtNvVz1LmCv0jvrmCoNaM3HlOLJ5oKay2VqimnStREhhcDzenZIkUUgQA789IJSbP0UQzALhztE0txxtD9hUVrnntt5iCY6xbf4LQigUWXtoR1/Ml3XS6RHpGLb5ifxpGK3i0YEjLZ/K2V5tgwlHuK/EMXGY4P5hiOfcp0y2qQZIHL5pdWYGshJDUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9VjAOnnwrQY8+YyBP4uoe7/omMgsbxGUC+29+Ul5Flc=;
+ b=CoGNH4O0SxMOgFwaTqNf5o91S0qYEUeQWNYDLHiBewGO6OKLSDVydCm9fF/1yiTE2MjFUcI/Zyg9kOE8tIBpXnloyzbYaGaOcr+YDUHWjaYp9s3V574ETVgnPk7KSjdYUoaSxIX1I6brkI5H+bAb/e/CxeMWVPkpd+NWFjKlYNytmKvB/fNLqZdvmW26kfSh71T7+7EyTYi4QMsEt0/OwJ5dV6/BJV5pVHVJHmSyMg0uPtDSJcpD9w1aIy1k5L0XcyQqdkEEeavLEH9qcJBc5PDrioV/qX2aUWNyEKcbhoyehM5njwFhxvO/gEahThnPJlq8Az2TtbG86fD1d4izVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nextfour.com; dmarc=pass action=none header.from=nextfour.com;
+ dkim=pass header.d=nextfour.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=NextfourGroupOy.onmicrosoft.com;
+ s=selector2-NextfourGroupOy-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9VjAOnnwrQY8+YyBP4uoe7/omMgsbxGUC+29+Ul5Flc=;
+ b=cVlW7Zy4uNUB53rJ/0giUdOGr66TvlgAEu9Mkl43bDZ+7VvGnr6ByS8nik+mCyn2rRRIBH+c+4Ay1RNXS4IGnYkaeG2c0T2TgJmG4q9jroSsgT30pRALOxdonpf7E2iXth/0lJ+DtXOryYe1DuTMk4zNylo70A7/cMIjWF2c9uc=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=nextfour.com;
+Received: from HE1PR0302MB2682.eurprd03.prod.outlook.com (2603:10a6:3:f5::14)
+ by HE1PR0301MB2139.eurprd03.prod.outlook.com (2603:10a6:3:1d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.21; Fri, 10 Jul
+ 2020 05:29:02 +0000
+Received: from HE1PR0302MB2682.eurprd03.prod.outlook.com
+ ([fe80::e57c:5ef1:dd36:92f3]) by HE1PR0302MB2682.eurprd03.prod.outlook.com
+ ([fe80::e57c:5ef1:dd36:92f3%6]) with mapi id 15.20.3174.022; Fri, 10 Jul 2020
+ 05:29:02 +0000
+Subject: Re: a question of split_huge_page
+To:     Alex Shi <alex.shi@linux.alibaba.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hugh Dickins <hughd@google.com>
+References: <df2597f6-af21-5547-d39c-94c02ad17adb@linux.alibaba.com>
+ <20200709155002.GF12769@casper.infradead.org>
+ <20200709160750.utl46xvavceuvnom@box>
+ <f761007f-4663-f72e-b0da-fc3ce9486b4b@linux.alibaba.com>
+From:   =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
+X-Pep-Version: 2.0
+Message-ID: <441ebbeb-0408-e22e-20f4-1be571c4a18e@nextfour.com>
+Date:   Fri, 10 Jul 2020 08:28:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+In-Reply-To: <f761007f-4663-f72e-b0da-fc3ce9486b4b@linux.alibaba.com>
+Content-Type: multipart/mixed;
+ boundary="------------E1A4ECF968ACCD6490110D2A"
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: HE1PR09CA0046.eurprd09.prod.outlook.com
+ (2603:10a6:7:3c::14) To HE1PR0302MB2682.eurprd03.prod.outlook.com
+ (2603:10a6:3:f5::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.10.10.126] (194.157.170.35) by HE1PR09CA0046.eurprd09.prod.outlook.com (2603:10a6:7:3c::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend Transport; Fri, 10 Jul 2020 05:29:00 +0000
+X-Pep-Version: 2.0
+X-Originating-IP: [194.157.170.35]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 361f098b-9aae-4bd5-a776-08d824922741
+X-MS-TrafficTypeDiagnostic: HE1PR0301MB2139:
+X-Microsoft-Antispam-PRVS: <HE1PR0301MB21394484F1A53B41525DD1C883650@HE1PR0301MB2139.eurprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 046060344D
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iljgbPFNc9PHevE/2ChTWA/WWySuZu3jZ5ASsrdMGv7FzhtRAtvUcxpzbsU3IqkVgnynrHTm224ifVt6PDaaly7VTqk5WLxvxw8yVOWz7ctHs6gDIcCFG0mxJ29gnKYQNcZ1/pQlaVf9XDVv6XG7i4hu+eP/CfucUZXPG98pseUF0sTNA6uxf50QM32XHGO4LQv5sPeITUuGuC6qJcZolN2jOeiXjUEEyiEuZah/9k1nsq5mXar7ILtOtZjH9uELprdT/UUROWS2TN8IbthOchUTAU49fKuUMJsfWNeDscyGfPaDEch/7+X4PTuseZgNe7R3Rt3r72tn7cQ/ey7Kx3tHHD0vcuPoomU2viqvvGQfxkXjgE8B4yx5SuVx+4KVGn/muUQ86TROSX443/j1Aw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0302MB2682.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(396003)(39830400003)(366004)(346002)(376002)(21480400003)(2906002)(956004)(2616005)(66616009)(186003)(6486002)(16526019)(33964004)(66556008)(508600001)(52116002)(26005)(66476007)(36756003)(66946007)(86362001)(8676002)(8936002)(54906003)(5660300002)(4326008)(83380400001)(31686004)(110136005)(16576012)(235185007)(31696002)(316002)(14583001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: u57OW5oM6YHh9cOr6KavhOyTtYJ4gXnZlI5qDn0OG+gh8Nx3ew5LdOZi5ExHR2z/fk2cib4Usx39wQ7ot8dld5gUnWZbX0C51vGdp0QmGVBEtkEi+2DLiiYLfXgwTkt8byaZor3EJUOshhxkXJktGblCgt3zipR03QRW5gmkMrY0BUKjR/ExYxGHlQU7mb79AuNBY5/7xXxL9zDBHTTE0iH5y4ane57mGeCKAyQ8mhowMKF0oC8Fp8ZUpF2woN1bJzEQMWOhIFmCDHD6wVnZ5Ft6dZ6CQi7OMa0lztVAYNBStE/Gx8yO11uJ3G5zbI0ORP0O6hvNGv1kf36IUOyoz7OgRZrDJUy2e5r92otX/i1QuRR4Fsja7nocEBcFfTaiNLt88zgLZDYyR0BVu4fEdehLcQOeTVbsFZc9AARM0MMzRmVC4vABJfyQIyqlIInl0CGnEz5ZsbHnvGWlcA8ickIZTfhR1T48NsioA/Ciml8=
+X-OriginatorOrg: nextfour.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 361f098b-9aae-4bd5-a776-08d824922741
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0302MB2682.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2020 05:29:01.9042
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 972e95c2-9290-4a02-8705-4014700ea294
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: heUqb1cZAJdsi0NGXzITRFM3L6whPbJvbFbu6BQ4CnB9TieMVt29XmNneyx5VY6Xxm0GKp50Ed0MkUYLHHshUtZ2Br13ijAg2XPG4anNgJA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0301MB2139
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
+--------------E1A4ECF968ACCD6490110D2A
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2020/7/10 10:24, Tian, Kevin wrote:
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Thursday, July 9, 2020 3:06 PM
->>
->> A pasid might be bound to a page table from a VM guest via the iommu
->> ops.sva_bind_gpasid. In this case, when a DMA page fault is detected
->> on the physical IOMMU, we need to inject the page fault request into
->> the guest. After the guest completes handling the page fault, a page
->> response need to be sent back via the iommu ops.page_response().
->>
->> This adds support to report a page request fault. Any external module
->> which is interested in handling this fault should regiester a notifier
->> with iommu_register_device_fault_handler().
->>
->> Co-developed-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
->> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
->> Co-developed-by: Liu Yi L <yi.l.liu@intel.com>
->> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/intel/svm.c | 103 +++++++++++++++++++++++++++++++-------
->>   1 file changed, 85 insertions(+), 18 deletions(-)
->>
->> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
->> index c23167877b2b..d24e71bac8db 100644
->> --- a/drivers/iommu/intel/svm.c
->> +++ b/drivers/iommu/intel/svm.c
->> @@ -815,8 +815,63 @@ static void intel_svm_drain_prq(struct device *dev,
->> int pasid)
->>   	}
->>   }
->>
->> +static int prq_to_iommu_prot(struct page_req_dsc *req)
->> +{
->> +	int prot = 0;
->> +
->> +	if (req->rd_req)
->> +		prot |= IOMMU_FAULT_PERM_READ;
->> +	if (req->wr_req)
->> +		prot |= IOMMU_FAULT_PERM_WRITE;
->> +	if (req->exe_req)
->> +		prot |= IOMMU_FAULT_PERM_EXEC;
->> +	if (req->pm_req)
->> +		prot |= IOMMU_FAULT_PERM_PRIV;
->> +
->> +	return prot;
->> +}
->> +
->> +static int
->> +intel_svm_prq_report(struct device *dev, struct page_req_dsc *desc)
->> +{
->> +	struct iommu_fault_event event;
->> +
->> +	/* Fill in event data for device specific processing */
->> +	memset(&event, 0, sizeof(struct iommu_fault_event));
->> +	event.fault.type = IOMMU_FAULT_PAGE_REQ;
->> +	event.fault.prm.addr = desc->addr;
->> +	event.fault.prm.pasid = desc->pasid;
->> +	event.fault.prm.grpid = desc->prg_index;
->> +	event.fault.prm.perm = prq_to_iommu_prot(desc);
->> +
->> +	if (!dev || !dev_is_pci(dev))
->> +		return -ENODEV;
-> 
-> move the check before memset.
 
-Yes.
 
-> 
->> +
->> +	if (desc->lpig)
->> +		event.fault.prm.flags |=
->> IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
->> +	if (desc->pasid_present) {
->> +		event.fault.prm.flags |=
->> IOMMU_FAULT_PAGE_REQUEST_PASID_VALID;
->> +		event.fault.prm.flags |=
->> IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID;
->> +	}
-> 
-> if pasid is not present, should we return error directly instead of
-> submitting the req and let iommu core to figure out? I don't have
+On 10.7.2020 7.51, Alex Shi wrote:
+>
+> =E5=9C=A8 2020/7/10 =E4=B8=8A=E5=8D=8812:07, Kirill A. Shutemov =E5=86=99=
+=E9=81=93:
+>> On Thu, Jul 09, 2020 at 04:50:02PM +0100, Matthew Wilcox wrote:
+>>> On Thu, Jul 09, 2020 at 11:11:11PM +0800, Alex Shi wrote:
+>>>> Hi Kirill & Matthew,
+>>>>
+>>>> In the func call chain, from split_huge_page() to lru_add_page_tail(),
+>>>> Seems tail pages are added to lru list at line 963, but in this scenar=
+io
+>>>> the head page has no lru bit and isn't set the bit later. Why we do th=
+is?
+>>>> or do I miss sth?
+>>> I don't understand how we get to split_huge_page() with a page that's
+>>> not on an LRU list.  Both anonymous and page cache pages should be on
+>>> an LRU list.  What am I missing?>=20
+>
+> Thanks a lot for quick reply!
+> What I am confusing is the call chain: __iommu_dma_alloc_pages()
+> to split_huge_page(), in the func, splited page,
+> 	page =3D alloc_pages_node(nid, alloc_flags, order);
+> And if the pages were added into lru, they maybe reclaimed and lost,
+> that would be a panic bug. But in fact, this never happened for long time=
+.
+> Also I put a BUG() at the line, it's nevre triggered in ltp, and run_vmte=
+sts
 
-This has been done in prq_event_thread(), so I don't need to check it
-again here.
 
-> a strong preference, thus:
-> 
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+In=C2=A0 __iommu_dma_alloc_pages, after split_huge_page(),=C2=A0 who is tak=
+ing a
+reference on tail pages? Seems tail pages are freed and the function
+errornously returns them in pages[] array for use?
 
-Thanks a lot for your time.
-
-Best regards,
-baolu
-
-> 
->> +	if (desc->priv_data_present) {
->> +		/*
->> +		 * Set last page in group bit if private data is present,
->> +		 * page response is required as it does for LPIG.
->> +		 * iommu_report_device_fault() doesn't understand this
->> vendor
->> +		 * specific requirement thus we set last_page as a
->> workaround.
->> +		 */
->> +		event.fault.prm.flags |=
->> IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
->> +		event.fault.prm.flags |=
->> IOMMU_FAULT_PAGE_REQUEST_PRIV_DATA;
->> +		memcpy(event.fault.prm.private_data, desc->priv_data,
->> +		       sizeof(desc->priv_data));
->> +	}
->> +
->> +	return iommu_report_device_fault(dev, &event);
->> +}
->> +
->>   static irqreturn_t prq_event_thread(int irq, void *d)
->>   {
->> +	struct intel_svm_dev *sdev = NULL;
->>   	struct intel_iommu *iommu = d;
->>   	struct intel_svm *svm = NULL;
->>   	int head, tail, handled = 0;
->> @@ -828,7 +883,6 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->>   	tail = dmar_readq(iommu->reg + DMAR_PQT_REG) &
->> PRQ_RING_MASK;
->>   	head = dmar_readq(iommu->reg + DMAR_PQH_REG) &
->> PRQ_RING_MASK;
->>   	while (head != tail) {
->> -		struct intel_svm_dev *sdev;
->>   		struct vm_area_struct *vma;
->>   		struct page_req_dsc *req;
->>   		struct qi_desc resp;
->> @@ -864,6 +918,20 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->>   			}
->>   		}
+> in kselftest.
+>
+>> Right, and it's never got removed from LRU during the split. The tail
+>> pages have to be added to LRU because they now separate from the tail
+>> page.
 >>
->> +		if (!sdev || sdev->sid != req->rid) {
->> +			struct intel_svm_dev *t;
->> +
->> +			sdev = NULL;
->> +			rcu_read_lock();
->> +			list_for_each_entry_rcu(t, &svm->devs, list) {
->> +				if (t->sid == req->rid) {
->> +					sdev = t;
->> +					break;
->> +				}
->> +			}
->> +			rcu_read_unlock();
->> +		}
->> +
->>   		result = QI_RESP_INVALID;
->>   		/* Since we're using init_mm.pgd directly, we should never
->> take
->>   		 * any faults on kernel addresses. */
->> @@ -874,6 +942,17 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->>   		if (!is_canonical_address(address))
->>   			goto bad_req;
->>
->> +		/*
->> +		 * If prq is to be handled outside iommu driver via receiver of
->> +		 * the fault notifiers, we skip the page response here.
->> +		 */
->> +		if (svm->flags & SVM_FLAG_GUEST_MODE) {
->> +			if (sdev && !intel_svm_prq_report(sdev->dev, req))
->> +				goto prq_advance;
->> +			else
->> +				goto bad_req;
->> +		}
->> +
->>   		/* If the mm is already defunct, don't handle faults. */
->>   		if (!mmget_not_zero(svm->mm))
->>   			goto bad_req;
->> @@ -892,24 +971,11 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->>   			goto invalid;
->>
->>   		result = QI_RESP_SUCCESS;
->> -	invalid:
->> +invalid:
->>   		mmap_read_unlock(svm->mm);
->>   		mmput(svm->mm);
->> -	bad_req:
->> -		/* Accounting for major/minor faults? */
->> -		rcu_read_lock();
->> -		list_for_each_entry_rcu(sdev, &svm->devs, list) {
->> -			if (sdev->sid == req->rid)
->> -				break;
->> -		}
->> -		/* Other devices can go away, but the drivers are not
->> permitted
->> -		 * to unbind while any page faults might be in flight. So it's
->> -		 * OK to drop the 'lock' here now we have it. */
->> -		rcu_read_unlock();
->> -
->> -		if (WARN_ON(&sdev->list == &svm->devs))
->> -			sdev = NULL;
->> -
->> +bad_req:
->> +		WARN_ON(!sdev);
->>   		if (sdev && sdev->ops && sdev->ops->fault_cb) {
->>   			int rwxp = (req->rd_req << 3) | (req->wr_req << 2) |
->>   				(req->exe_req << 1) | (req->pm_req);
->> @@ -920,7 +986,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->>   		   and these can be NULL. Do not use them below this point!
->> */
->>   		sdev = NULL;
->>   		svm = NULL;
->> -	no_pasid:
->> +no_pasid:
->>   		if (req->lpig || req->priv_data_present) {
->>   			/*
->>   			 * Per VT-d spec. v3.0 ch7.7, system software must
->> @@ -945,6 +1011,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->>   			resp.qw3 = 0;
->>   			qi_submit_sync(iommu, &resp, 1, 0);
->>   		}
->> +prq_advance:
->>   		head = (head + sizeof(*req)) & PRQ_RING_MASK;
->>   	}
->>
->> --
->> 2.17.1
-> 
+> According to the explaination, looks like we could remove the code path,
+> since it's never got into. (base on my v15 patchset). Any comments?
+>
+> Thanks
+> Alex
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 7c52c5228aab..c28409509ad3 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2357,17 +2357,6 @@ static void lru_add_page_tail(struct page *head, s=
+truct page *page_tail,
+>         if (!list)
+>                 SetPageLRU(page_tail);
+>
+>         if (likely(PageLRU(head)))
+>                 list_add_tail(&page_tail->lru, &head->lru);
+>         else if (list) {
+>                 /* page reclaim is reclaiming a huge page */
+>                 get_page(page_tail);
+>                 list_add_tail(&page_tail->lru, list);
+> -       } else {
+> -               /*
+> -                * Head page has not yet been counted, as an hpage,
+> -                * so we must account for each subpage individually.
+> -                *
+> -                * Put page_tail on the list at the correct position
+> -                * so they all end up in order.
+> -                */
+> -               VM_BUG_ON_PAGE(1, head);
+> -               add_page_to_lru_list_tail(page_tail, lruvec,
+> -                                         page_lru(page_tail));
+>         }
+>  }
+
+
+--------------E1A4ECF968ACCD6490110D2A
+Content-Type: application/pgp-keys;
+ name="pEpkey.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="pEpkey.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQGNBFvX20QBDADHfSUsGkocbl0+tOTyMv2bt1uVgYSC7OPA19wqpYvaNOYv3uwE
+u1Fj4AIwNJur6GeiDO8ayvt4yLK1+Rt+he1C3eBbonyO4eHViyBghbGh7Bl3Ljza
+wN5Z6ZdtjPsdUkQ4NXhhYrC/N5Ap0Z/4SUH9l01/KvH2O/DEFpQeFzAXLoCaPENt
+bznsfu9F7eVWqTkFmu5K6Dw0RZ34G6RPhkEPnTsEOZFKlCSZBT4XWed7w+7cGuGf
+bRVcsCt0I8W79DAMvY9tBN08emQvTyk+ZqyICMQQHGGrThiqeQmVa4G1c0ninXXm
+CWhvx1LbaLe8XnTn+85vJwSoOv7cGGM2QrFck3kP8pgllGusHlSBMREpAa/faJVN
+bW/W5M/2TknKr4b6cacj67n8eSjR1oEl9S1GOB3LRadfbRv48U5tlDXmJQ00wTFW
+6MdNNsD9vtO9rzRA2ZXMRrqM91WDQxwEaofL79F55kq6ynEBbV4GJlmuM7GKXxEi
+6peb/TcUyCtc0sEAEQEAAbQrTWlrYSBQZW50dGlsw6QgPG1pa2EucGVudHRpbGFA
+bmV4dGZvdXIuY29tPokB1AQTAQgAPgIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIX
+gBYhBFata2kTIxeklMhOYMQGecfz2wzFBQJdr9gUBQkDuW7MAAoJEMQGecfz2wzF
+fq0MAKSu3hHsVNdmAiA+x8XSz8HHUNqheQ23NwSc0dBex6bo+FuU0OXKNfa84Te8
+zpCey9O4mf4/FrCOmzaySlakfkDVaC/eJnDM5u7/rW/ifrzkZQ1gcqzJq2nwYSS0
++ml6AqZNaORXAsn9Q6FVeYEGPkzcM+JKpljBYpMCtrHj8mIH+1/BNpdxTjeU8OM+
+jJm42GTmEuCdb7kS5YwEq3Sj6wmwg8R7DZgA9khoF0w2PWBb/K6MM0vPf6oLOhDP
+MJMyZJ431JICAeLYzWvBB+Bt+CbDjBJTpPObdaa7uVun8iTUBXdG6ESAcuOS9S2Q
+pQ2HUWp5ZFqmjfoIBrIVM1WJuQfh+IplY740xUQeoweYMUguQDzEEIYOOvW75k0P
+GTaG1J7IVKnF7+Dr3qlTwoo1eiyS3jLnaYGUdoKXyt5Ws+aSibaiHWZTRAP3tz1e
+QBRe42iwiPNPYU9cri3e0y1OEM3DjwA+2bFnm9hQ2heLAEzfK0Y0G2bzGM2ubR7B
+v6ZpAokB1AQTAQgAPhYhBFata2kTIxeklMhOYMQGecfz2wzFBQJb19uLAhsDBQkB
+4TOABQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEMQGecfz2wzFVjwL/35S54tI
+dWOLFeu3pwTOvc+65K4xWYxpNZ1TqYYmYoiPoHPDSOZgP9PxEvxY786u95x3GOzI
+OVnAVFLma6Ox7glEHI8pbCTdK4e7Yoj44wjqg2y1h1ix7gx7/x0JrSgZtoh0BBxm
+38PCSjh5AKpLkyfiaZKinRTXMRz4N/EOHpJBRoxsyWe8hSlPWFmzQTO5Hby77MgQ
+p3j4KWVMbu1ueTB/Gg817hKMEbXZ9JyLaXft21R1oaO3P7pj8OZOQ7Ay8PpY9qm8
+EJdz8GeHQVP0HZtwI1wYaaXKQn35VE8USmL6wTfemEnymQD1e2aOgTcHoSNGM5kx
+snAGxV7++Jk68z+hATzhj2xJjJ64Gtj2JRE5NvOMuDn23d+ryGnVcfd0pwS1OTPJ
+eJWyYoLB6mlEIbOchRhZyQpxcMfKdvBaMDM+Ivaz4iaet8bXyUuXa1psGJ64jrqC
+qbP0s+lA/0OU0btshN3MZ6BHlkGp4XPaHQZUW6t9OJ+kBxZizeZ4o97QYLkBjQRb
+19tJAQwArbTMo0laShmV82WWYA3ScFf3Osrbkvi5MTlrNJSQ4cdhMVfGyU6riN3b
+5495EBmACmEE7nZ7nARrbYT7A5PCJPZsaE42zwq3AZ890AoEjjLF+SluUBGZkZz+
+lLBxpLxyhlqCh0iI2GrgEVFhkeDLMJFQOfTvmGyQQYu3FYI2Zo4oBpqmiwyZVNi8
+YJmCYJK+11YOR8SmRT/g7w5poy2WektHfhImGpdMERkTNzzSx9re+kSfEIKEleCa
+XCf3JUn0YMYbV7gigWdjGKEbfH82Xnmjz1dwjcqPhF+TlxlhsoL1wdhuyBBLjfHO
+13/8waD0DlmtZbngBIndVBCBetC9wp972GPjcyVAPLyGQa9pk5JIOgIUEdMr5tTo
+Y2gHjKjJ31kROEl8VFzitku+fsIsZbdPfqp2gOUoqgVEDky3HYFiaZulzNPUmYRY
+J/GHo8ALU8h4NSvCdk97CzHvdkB1/E8H19Kvk0aZHzFQcBnhkzq+n0ZbSaTJS7M4
+aqRaI8f7ABEBAAGJAbwEGAEIACYCGwwWIQRWrWtpEyMXpJTITmDEBnnH89sMxQUC
+Xa/YFAUJA7luxwAKCRDEBnnH89sMxYLxC/9Lu1xjdUTdmd10/5EzA1i0bdNBojBY
+3PJ4O4bhGpb9KGnxshTOEWncNmyy40s8aHLbdrgEVKCtkS+kwArmTFjmk49GzQie
+rRO2cNU0WkUepcX9wr51qKSbrnd7E0rz0yMmuWvRHjRtz1+D8dR/GJhJdYrEKqnl
+vPVnrONj5ZxXW8wjsgQms5iLuVQzuyRyX4Q8xbHRbailXEDNU+HTWR58aAmw4iyl
+287LtDwyU/ISc7OqM2EsTPOhSeYjOnLHZvot+ufu6qOGKkAiKaNnwN6pRJkW1zKY
+qnQRY0HJ6kyrj1ZaJw1N4C3VopBLjC/Pnn8vWAzH35RL+2ohk4168dHaArUaRNWK
+quDAV+zl8dlGL2H5U0ynqLB5koSCH4zgQDmcH2pt27zBquq4MrK3pL/9zgnXOUya
+VnPecLdGjHRa22KldoNVOf41kICl1LZ6fYWqxVXIveA67HSqifducUP9n50aWTyg
+Fq/REmUeraUWcYydE+B+4Xt5yIF/V/Zwm0o=3D
+=3DZ2VJ
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------E1A4ECF968ACCD6490110D2A--
