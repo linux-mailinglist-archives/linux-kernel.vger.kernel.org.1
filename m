@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BB921B250
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0393421B223
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgGJJau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 05:30:50 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:10252 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726615AbgGJJat (ORCPT
+        id S1726828AbgGJJZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 05:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726288AbgGJJZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 05:30:49 -0400
-X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Jul 2020 05:30:48 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1594373447;
-        s=strato-dkim-0002; d=aepfle.de;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=6gtHIv8UTS2QIMu+DBcnOduo7G4i7G7T+gs+Ih2xJT0=;
-        b=YIxYOkciFBu/29TgpQ2trlmq3J8mJhOwq4+a2cdZ8qA7SstPu4pdLhlI1rQo7f1P17
-        J8G97dJhqa2OBTKe7DLL6xkpWSUgwu3WuGktEMRqfNzQQjv/Gkli5XoF5naVkCoZ26uJ
-        RqJLwFI1gHsBHIxciJ+X8jlqeV1ZhQ63WYS4uBDBmtR540bfDA2RRPArj7M3gfgLnoAh
-        a4am7skG3OdjvEqGkZjMGlhLk8ndiq4anyUJwV4YsuUAMBVC1G7o13OFeOU86AP2i+f9
-        RRiLymkPZYb33b+e/q0Bsomz9elck2ZGloA0X7TcGrwrQKVhfZzUQyQ1kVQAxlPUxAH0
-        41aQ==
-X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QXkBR9MXjAuzBW/OdlBZQ4AHSS3QE="
-X-RZG-CLASS-ID: mo00
-Received: from aepfle.de
-        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
-        with ESMTPSA id m032cfw6A9Ohzku
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Fri, 10 Jul 2020 11:24:43 +0200 (CEST)
-Date:   Fri, 10 Jul 2020 11:24:40 +0200
-From:   Olaf Hering <olaf@aepfle.de>
-To:     Joseph Salisbury <joseph.salisbury@microsoft.com>,
-        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        mikelley@microsoft.com
-Cc:     wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Drivers: hv: Change flag to write log level in panic msg
- to false
-Message-ID: <20200710092440.GA16562@aepfle.de>
-References: <1593193685-74615-1-git-send-email-joseph.salisbury@microsoft.com>
+        Fri, 10 Jul 2020 05:25:54 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EE3C08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:25:53 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id o2so5172401wmh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SkCUMnau7wnh370CWTBdQrZya4Pn73aX8uOog7kVa2E=;
+        b=UYk1cfsifyvuGjnTw8dAHN4r78tIvcbD3PqzKIc+DeXtTlhlCvLN5VRA8MRoYzGoHR
+         IK4lmrCyR3uRX/nbRMvBM7/uMwKF8qtAjOov7YcLERv8zHxk6ng+1NxInm92+SJ6Akqa
+         ojkE2EFETlJl+LwwP3FefzD/qTWHp7MxtBmG2TQeIPzfSy/FyygYlSdGYJgnkuYPYad/
+         yIYysbpCmV3rG3OHifCECL4mG6YWxczbVNA00WW8NZIiHlBXSxmyuwxh4ac9ZKfTzXTb
+         bkZjHGkP27D9ywFcOR/pcp7dr+5NOm9QgJ5qN/alyfRvjN8mB0aY2UqbrY8dQ2sOGld1
+         IONw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SkCUMnau7wnh370CWTBdQrZya4Pn73aX8uOog7kVa2E=;
+        b=p2fFewAvStw+9UGDY0BEXyC7StqudB2tyFp68BfXbxuvtajZi/MACfhWuHSx4ueWR9
+         qHLknLyjAQRO1Yl3hvsEHdufKhV/2I0KmRPO3pm3qXgWGzkXyc0cOG+fTf0B1fqEs1X6
+         ZZ9NMxHbkTa47nDyugWsD3ejVWq839btY+39FyWb0h9jJG3jwLjudLyZVoLMaNGQc3j8
+         48VugxdtkP5XKgydi6Y6bmbOjB7vf6KdfGDHvCrg3hunIZ1sTkyjP5YEg9ZV5YyEDXcr
+         ms171jyIGimPnpv9R1g3J6GLrvFiFIEdFOqCR+RkZQV22/c/JI0VYpPfq0YREotApH8G
+         pwvw==
+X-Gm-Message-State: AOAM532dACwWQsb5UKLZF7PVmzZZP+FpjUiU7a+yzKI8Q3FLec0tlWOZ
+        4QziY4CoupOUXPEAM+WY2qw=
+X-Google-Smtp-Source: ABdhPJykwFKqd3Ulm4muDnruAlm7cK5WE0WlSGnkadjFhkFQp/pGh88FXxmcyBKPb7h52m9nMhehww==
+X-Received: by 2002:a1c:23d0:: with SMTP id j199mr4520599wmj.12.1594373152253;
+        Fri, 10 Jul 2020 02:25:52 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+        by smtp.gmail.com with ESMTPSA id h23sm8179559wmb.3.2020.07.10.02.25.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 02:25:51 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v4 00/14] Add regulator devfreq support to Panfrost
+Date:   Fri, 10 Jul 2020 11:25:34 +0200
+Message-Id: <20200710092548.316054-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
-Content-Disposition: inline
-In-Reply-To: <1593193685-74615-1-git-send-email-joseph.salisbury@microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---cWoXeonUoKmBZSoM
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+This serie cleans and adds regulator support to Panfrost devfreq.
+This is mostly based on comment for the freshly introduced lima
+devfreq.
 
-On Fri, Jun 26, Joseph Salisbury wrote:
+We need to add regulator support because on Allwinner the GPU OPP
+table defines both frequencies and voltages.
 
-> When the kernel panics, one page worth of kmsg data is written to an allocated
-> page.  The Hypervisor is notified of the page address trough the MSR.  This
-> panic information is collected on the host.  Since we are only collecting one
-> page of data, the full panic message may not be collected.
+First patches [01-07] should not change the actual behavior
+and introduce a proper panfrost_devfreq struct.
 
-Are the people who need to work with this tiny bit of information
-satisfied already, or did they already miss info even with this patch?
+Regards,
+Clément
 
-I'm asking because kmsg_dump_get_buffer unconditionally includes the
-timestamp (unless it is enabled). I do wonder if there should be an API
-addition to omit the timestamp. Then even more dmesg output can be
-written into the 4k buffer.
+Changes since v3:
+ - Collect Steven Price reviewed-by tags
+ - Rebase on next/master (next-20200709)
 
-Olaf
+Changes since v2:
+ - Collect Alyssa Rosenzweig reviewed-by tags
+ - Fix opp_set_regulator before adding opp_table (introduce in v2)
+ - Call err_fini in case opp_add_table failed
 
---cWoXeonUoKmBZSoM
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes since v1:
+ - Collect Steven Price reviewed-by tags
+ - Fix spinlock comment
+ - Drop OPP clock-name patch
+ - Drop device_property_test patch
+ - Add rename error labels patch
 
------BEGIN PGP SIGNATURE-----
+Clément Péron (14):
+  drm/panfrost: avoid static declaration
+  drm/panfrost: clean headers in devfreq
+  drm/panfrost: don't use pfdevfreq.busy_count to know if hw is idle
+  drm/panfrost: introduce panfrost_devfreq struct
+  drm/panfrost: use spinlock instead of atomic
+  drm/panfrost: properly handle error in probe
+  drm/panfrost: rename error labels in device_init
+  drm/panfrost: move devfreq_init()/fini() in device
+  drm/panfrost: dynamically alloc regulators
+  drm/panfrost: add regulators to devfreq
+  arm64: defconfig: Enable devfreq cooling device
+  arm64: dts: allwinner: h6: Add cooling map for GPU
+  [DO NOT MERGE] arm64: dts: allwinner: h6: Add GPU OPP table
+  [DO NOT MERGE] arm64: dts: allwinner: force GPU regulator to be always
 
-iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAl8IM9EACgkQ86SN7mm1
-DoADEg/+ObaMF8Ognj2sFIxdowc2+rGVM5s81nQz7FY7IuOZJ6wKfzoPSlaune42
-t0IY4ChbugrKPFuRu8WnfbMfFhSN5Y/vJnV0vt6bwN5RfeIep3W5IizRm/QMZ9Kv
-1JvKvta6m0PsTfedVq2hSnqQR/2w7vbs0+vvecxu42Afz3z37Dtoweklcqc5JPOz
-Y7iRPpKkR2pvIQpGXY643AthP9rzwSJoWUK2ejtZ0YVvTerEQm5u6gkv8zBfa5Wc
-eCjm/STRDgsfdIBVZSNQaLcHGL/Av9yIRRsXMFCjuJsXSCFHJGff29Qkc7HRzkJZ
-Q+hw2edSJ8AxUUt/dGEV0HrwZJlAFvGthwscGyl80YjQ8qygk6dDP44fyPdhtdff
-rpArbS8mt7FkQpZleFHDPYLuk8cztNsxCTJdzatzkuj7hD6Xwpz9r3RzGcRTRSLq
-N6EIki5cEFCG/kibknftoThJSxD+ZWvU8iym7mIUvS2z9ibmVrr3fr/U0PneyB1t
-RFL2knUXSomopps2zvyX2sSl2p/3fJ2RiExBD+vnWBpU0r0Vvrbn7fhDUiB31Xsk
-NHvbG5pycT/W9tHEu+5kyq8eWLA4dLAMGkXe/xu6iQAIJ28llupMG39+Abqr65fP
-0FxkTXFRiX4s8YzpK9QCzE676IN1g0m4mzkP2YU1C8Kqu5qVoFQ=
-=h+ud
------END PGP SIGNATURE-----
+ .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |   1 +
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 102 ++++++++++
+ arch/arm64/configs/defconfig                  |   1 +
+ drivers/gpu/drm/panfrost/panfrost_devfreq.c   | 175 ++++++++++++------
+ drivers/gpu/drm/panfrost/panfrost_devfreq.h   |  30 ++-
+ drivers/gpu/drm/panfrost/panfrost_device.c    |  61 +++---
+ drivers/gpu/drm/panfrost/panfrost_device.h    |  14 +-
+ drivers/gpu/drm/panfrost/panfrost_drv.c       |  15 +-
+ drivers/gpu/drm/panfrost/panfrost_job.c       |   8 +-
+ 9 files changed, 295 insertions(+), 112 deletions(-)
 
---cWoXeonUoKmBZSoM--
+-- 
+2.25.1
+
