@@ -2,130 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4548B21AE78
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 07:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C84C21AE95
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 07:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726004AbgGJFWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 01:22:39 -0400
-Received: from mga02.intel.com ([134.134.136.20]:63096 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726369AbgGJFUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 01:20:08 -0400
-IronPort-SDR: 89zsZ07epgpbrOchQmNxtYkDtQGYs9UqXjODbUkUINrRQ4PcTA959Kq/xoQX0iBnS9cNAMVmZg
- YxOdk7vFUguA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="136357837"
-X-IronPort-AV: E=Sophos;i="5.75,334,1589266800"; 
-   d="scan'208";a="136357837"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 22:20:05 -0700
-IronPort-SDR: er3Yql4woWrwlkos2OshdOAJN7cSZpcX5srBsK/40rA4ByVbUGij2PLrwD5qsAeb/vDWQ64rYE
- XZBriPRCWOAw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,334,1589266800"; 
-   d="scan'208";a="428460769"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga004.jf.intel.com with ESMTP; 09 Jul 2020 22:20:03 -0700
-Date:   Fri, 10 Jul 2020 13:16:00 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lgoncalv@redhat.com
-Subject: Re: [RESEND PATCH 1/2] fpga: dfl: pci: reduce the scope of variable
-  'ret'
-Message-ID: <20200710051600.GA8689@yilunxu-OptiPlex-7050>
-References: <1594282337-32125-1-git-send-email-yilun.xu@intel.com>
- <1594282337-32125-2-git-send-email-yilun.xu@intel.com>
- <ef506ec6-d857-736b-e9e2-46077ab7d778@redhat.com>
+        id S1726757AbgGJF2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 01:28:19 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48134 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726933AbgGJFWw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 01:22:52 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06A51dKX019342;
+        Fri, 10 Jul 2020 01:22:15 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 326bpb09jr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jul 2020 01:22:15 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06A51glN019703;
+        Fri, 10 Jul 2020 01:22:15 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 326bpb09ja-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jul 2020 01:22:14 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06A5FAnB016688;
+        Fri, 10 Jul 2020 05:22:13 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 326bcj84x0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Jul 2020 05:22:12 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06A5MATY65601896
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 10 Jul 2020 05:22:10 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F179FA405B;
+        Fri, 10 Jul 2020 05:22:09 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0A5B0A4054;
+        Fri, 10 Jul 2020 05:22:08 +0000 (GMT)
+Received: from pratiks-thinkpad.ibmuc.com (unknown [9.85.105.207])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 10 Jul 2020 05:22:07 +0000 (GMT)
+From:   Pratik Rajesh Sampat <psampat@linux.ibm.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        mikey@neuling.org, ravi.bangoria@linux.ibm.com,
+        ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
+        psampat@linux.ibm.com, pratik.r.sampat@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] Power10 basic energy management
+Date:   Fri, 10 Jul 2020 10:52:04 +0530
+Message-Id: <20200710052207.12003-1-psampat@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ef506ec6-d857-736b-e9e2-46077ab7d778@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-10_01:2020-07-09,2020-07-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ malwarescore=0 mlxlogscore=661 phishscore=0 adultscore=0 suspectscore=0
+ impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007100029
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 06:18:18AM -0700, Tom Rix wrote:
-> I think a better change is to use the ret variable, like this
-> 
-> --- a/drivers/fpga/dfl-pci.c
-> +++ b/drivers/fpga/dfl-pci.c
-> @@ -312,7 +312,7 @@ static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
->                 }
->         }
->  
-> -       return num_vfs;
-> +       return ret;
->  }
-> 
-> The existing use of returning num_vfs is not right, the function should return 0/err not num_vfs. currently it is reusing the 0 passed in with num_vfs to mean disable as the 0 return status.  it should be properly returning ret.
+Changelog v1 --> v2:
+1. Save-restore DAWR and DAWRX unconditionally as they are lost in
+shallow idle states too
+2. Rename pnv_first_spr_loss_level to pnv_first_fullstate_loss_level to
+correct naming terminology
 
-The sriov_configure callback should return negative value for error, and
-return num_vfs if success.
+Pratik Rajesh Sampat (3):
+  powerpc/powernv/idle: Exclude mfspr on HID1,4,5 on P9 and above
+  powerpc/powernv/idle: save-restore DAWR0,DAWRX0 for P10
+  powerpc/powernv/idle: Rename pnv_first_spr_loss_level variable
 
-See the Documentation/PCI/pci-iov-howto.rst
+ arch/powerpc/platforms/powernv/idle.c | 34 +++++++++++++++++----------
+ 1 file changed, 22 insertions(+), 12 deletions(-)
 
-also in drivers/pci/iov.c:
+-- 
+2.25.4
 
-  static ssize_t sriov_numvfs_store(struct device *dev, ...)
-  {
-	...
-
-        ret = pdev->driver->sriov_configure(pdev, num_vfs);
-        if (ret < 0) 
-                goto exit;
-
-        if (ret != num_vfs)
-                pci_warn(pdev, "%d VFs requested; only %d enabled\n",
-                         num_vfs, ret);
-
-	...
-  }
-
-> 
-> Tom
-> 
-> On 7/9/20 1:12 AM, Xu Yilun wrote:
-> > This is to fix lkp cppcheck warnings:
-> >
-> >  drivers/fpga/dfl-pci.c:230:6: warning: The scope of the variable 'ret' can be reduced. [variableScope]
-> >     int ret = 0;
-> >         ^
-> >
-> >  drivers/fpga/dfl-pci.c:230:10: warning: Variable 'ret' is assigned a value that is never used. [unreadVariable]
-> >     int ret = 0;
-> >             ^
-> >
-> > Fixes: 3c2760b78f90 ("fpga: dfl: pci: fix return value of cci_pci_sriov_configure")
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > Acked-by: Wu Hao <hao.wu@intel.com>
-> > ---
-> >  drivers/fpga/dfl-pci.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-> > index 4a14a24..73b5153 100644
-> > --- a/drivers/fpga/dfl-pci.c
-> > +++ b/drivers/fpga/dfl-pci.c
-> > @@ -285,7 +285,6 @@ static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
-> >  {
-> >  	struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
-> >  	struct dfl_fpga_cdev *cdev = drvdata->cdev;
-> > -	int ret = 0;
-> >  
-> >  	if (!num_vfs) {
-> >  		/*
-> > @@ -297,6 +296,8 @@ static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
-> >  		dfl_fpga_cdev_config_ports_pf(cdev);
-> >  
-> >  	} else {
-> > +		int ret;
-> > +
-> >  		/*
-> >  		 * before enable SRIOV, put released ports into VF access mode
-> >  		 * first of all.
