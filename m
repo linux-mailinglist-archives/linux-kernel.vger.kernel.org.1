@@ -2,100 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCC221AD8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 05:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F39C21AD8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 05:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgGJDbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 23:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
+        id S1727780AbgGJDcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 23:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726495AbgGJDbo (ORCPT
+        with ESMTP id S1726908AbgGJDcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 23:31:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A28C08C5CE;
-        Thu,  9 Jul 2020 20:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=zouGvWxWBT0wxNaFx3ilX6K+72vX502NQC1RPD8NseQ=; b=osZSK816BsPK/giJQuGntSny3j
-        jb2W0Ht34tJhWh3EQ6vwYlmCQMcGgk/f6YOj2w6pyVj//6CU41PpyPrIZVXyXnGM4DQpSYWdr716b
-        2SYoYiast/LkktLNjbbaZneql+TtulDgulexzAC5SgI6nVYbvoWnOCjf28vIEhXuRYxwat2nmncRb
-        5tWt58Zuvz4k+/UrCIsS+aSDNpkFKCWtCoHFY2NC4Okm4g93DOtD15n6rVrE2SzcP50hckiJfJWh5
-        qME3Tl4Y5Bnpra6zBnlOsDut5BGoDWHxmsxpUm5/dEkZqqPXi7bTpKW12DmvDaeirMiGcSZ8erli3
-        xT2z5Ykw==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jtjlG-0001L7-0P; Fri, 10 Jul 2020 03:31:42 +0000
-Subject: Re: [PATCH] sysctl: add bound to panic_timeout to prevent overflow
-To:     Changming Liu <charley.ashbringer@gmail.com>, keescook@chromium.org
-Cc:     mcgrof@kernel.org, yzaikin@google.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <1594351343-11811-1-git-send-email-charley.ashbringer@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b50e8198-ca2e-eb44-ed71-e4ca27f48232@infradead.org>
-Date:   Thu, 9 Jul 2020 20:31:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 9 Jul 2020 23:32:04 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A954C08C5DD
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 20:32:04 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id m22so1895162pgv.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 20:32:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6M9I0N+ITvQl9xLS8Krk1EyTKkYlOBKb0aLEeu36Cv8=;
+        b=W/lnnY3WTAA7T9J1NuelxckKknOIoZXKKbX/36nao31ESoCDBAuZ+OW+30GViwVfd8
+         5z+0iEl48c4xcxnb5XJilpOu3XLYs6AWNo8D2ckZNgIU8Xkz/LZICnbM7OmeLdBYAfwE
+         Mu12ew52Bep212m3xFB2cYiLBQpdr8qxuTeoUXi6m9TtnpD/srLkIUnaDdpzgliIupTF
+         6B8WF6wprssPLXrKtgQ4aOTDu+7J6QxZmmpULDLsikCwBGME4BC/HG1W53UVTVCR+kJp
+         b1dERd7Jqf/Gvg/fy6IYHXaVY+ooxDd+15OinfaHrBmqNe1s6P0x74b/Cw3b8nc/naiW
+         4oWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6M9I0N+ITvQl9xLS8Krk1EyTKkYlOBKb0aLEeu36Cv8=;
+        b=XPR2hfIVDIUqatLmTkZln/X2dPQwibN1Kj0tIh/aXRA6EuRfJphRX/1hc4nQVus+F/
+         NJYrPCJCBGXZdSnuF90AJMtSfb/DRMlLwR3eNz8p9RQSNxGX0ICOiUvgsWsGKKQbHE0z
+         vMs4MhJTfDtB3iPeP+bNfnc7mMFOhkS202EK7SrQGKx8rDL4Obbf2WPm3ADOLIqi/hsA
+         6pOLmcqpSu9wF/r3BfMkqmpe86wmaHOY/qzXi27zLS3hUY5mVR44y1o7ixdpTooeKlLb
+         0t/Ai68KyYu4mVmEXY3JdTERE+3BWNmyial5G21lhoFYDZzup1nGmxVXp3BrlMP1d3/0
+         wNGQ==
+X-Gm-Message-State: AOAM532RQhLbUBlXlk3jSbSL65ekQv+xEfx+l0HtW0J/fLdhRmk125L8
+        K+/cq56PHe8JrZS1V4e1+AY4ZHoPLN0=
+X-Google-Smtp-Source: ABdhPJxWp7W3tDSKZHDWvomOrjvvu5VENBEUeF62wqgfTC+Phjp6QzIdRtIQ5UxiD+hL8FDDrsZcZg==
+X-Received: by 2002:a62:195:: with SMTP id 143mr52866988pfb.226.1594351923564;
+        Thu, 09 Jul 2020 20:32:03 -0700 (PDT)
+Received: from localhost ([122.172.34.142])
+        by smtp.gmail.com with ESMTPSA id b82sm4212684pfb.215.2020.07.09.20.32.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Jul 2020 20:32:02 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 09:02:01 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     rjw@rjwysocki.net, lenb@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dan.carpenter@oracle.com,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: intel_pstate: Fix static checker warning for
+ epp variable
+Message-ID: <20200710033201.batyrrr7lgqchw4j@vireshk-i7>
+References: <20200709200522.3566181-1-srinivas.pandruvada@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1594351343-11811-1-git-send-email-charley.ashbringer@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709200522.3566181-1-srinivas.pandruvada@linux.intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/9/20 8:22 PM, Changming Liu wrote:
-> Function panic() in kernel/panic.c will use panic_timeout
-> multiplying 1000 as a loop boundery. So this multiplication
-
-                             boundary.
-
-> can overflow when panic_timeout is greater than (INT_MAX/1000).
-> And this results in a zero-delay panic, instead of a huge
-> timeout as the user intends.
+On 09-07-20, 13:05, Srinivas Pandruvada wrote:
+> Fix warning for:
+> drivers/cpufreq/intel_pstate.c:731 store_energy_performance_preference()
+> error: uninitialized symbol 'epp'.
 > 
-> Fix this by adding bound check to make it no bigger than
-> (INT_MAX/1000).
+> This warning is for a case, when energy_performance_preference attribute
+> matches pre defined strings. In this case the value of raw epp will not
+> be used to set EPP bits in MSR_HWP_REQUEST. So initializing with any
+> value is fine.
 > 
-> Signed-off-by: Changming Liu <charley.ashbringer@gmail.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 > ---
->  kernel/sysctl.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> This patch is on top of bleed-edge branch at
+> https://kernel.googlesource.com/pub/scm/linux/kernel/git/rafael/linux-pm
 > 
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index db1ce7a..e60cf04 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -137,6 +137,9 @@ static int minolduid;
->  static int ngroups_max = NGROUPS_MAX;
->  static const int cap_last_cap = CAP_LAST_CAP;
+>  drivers/cpufreq/intel_pstate.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index 44c7b4677675..94cd07678ee3 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -709,7 +709,7 @@ static ssize_t store_energy_performance_preference(
+>  	struct cpudata *cpu_data = all_cpu_data[policy->cpu];
+>  	char str_preference[21];
+>  	bool raw = false;
+> -	u32 epp;
+> +	u32 epp = 0;
+>  	int ret;
 >  
-> +/* this is needed for setting boundery for panic_timeout to prevent it from overflow*/
+>  	ret = sscanf(buf, "%20s", str_preference);
 
-                                 boundary (or max value)                       overflow */
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-> +static int panic_time_max = INT_MAX / 1000;
-> +
->  /*
->   * This is needed for proc_doulongvec_minmax of sysctl_hung_task_timeout_secs
->   * and hung_task_check_interval_secs
-> @@ -1857,7 +1860,8 @@ static struct ctl_table kern_table[] = {
->  		.data		= &panic_timeout,
->  		.maxlen		= sizeof(int),
->  		.mode		= 0644,
-> -		.proc_handler	= proc_dointvec,
-> +		.proc_handler	= proc_dointvec_minmax,
-> +		.extra2		= &panic_time_max,
->  	},
->  #ifdef CONFIG_COREDUMP
->  	{
-> 
-
-thanks.
 -- 
-~Randy
-
+viresh
