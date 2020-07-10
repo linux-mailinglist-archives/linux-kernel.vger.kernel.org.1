@@ -2,108 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C44821B69A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F071D21B6EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbgGJNg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
+        id S1728440AbgGJNqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgGJNgy (ORCPT
+        with ESMTP id S1728108AbgGJNod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:36:54 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2252C08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:36:53 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id 72so4213376otc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:36:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=digitalocean.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nmcel6hnCJlIj22fihRFD6BrYZLNIkP5+FTjhcnw9o8=;
-        b=GX8zxuVhdC9uja2zMn8o2d29S/xFaumMWA9hqdJJaq4Yt+cFx8noGVO2kG/WtV0f8A
-         /bUlgvYm4jLyOy4+NzLFTMxf91WwW97uDdzz7ske13qLjXYQj8Xx6ZTY6ac7NROEr5SA
-         SxzzZLU1A2SNWhD4CAjRWAvnFFXkdDQNuVDAg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nmcel6hnCJlIj22fihRFD6BrYZLNIkP5+FTjhcnw9o8=;
-        b=ddzbN92+I2COOwhZvGFWwB1vw316d9eyz59HO9B94dpOXh1UK7v5WygKShn/Hsn2Wl
-         9pYPzx5oMhu15F7bxIWmBy+OOwX7HuIyrTStrSALGZEuTiVXpgu7O4+ur+U/X6WwrDnT
-         MuU3sX6o5INPUtbaEYmLAhxN7T0euvKrRiZO+kVF7mF2Y8JflYjyLTF6jT+XBLJhMyk0
-         r/LfcV7s0lE3rtvn7eLkjAJ4qnoUxlF+K62/SrF72UImHZU75btT9s7czi9VTg0LDHxr
-         bsXZ3wUCAAQctrb5CwzSdddTWRJih+44mfZPSeu12Osm02ECyt7svJKfzxc8wJDoaCOx
-         PUuw==
-X-Gm-Message-State: AOAM5326CQRQFNwu/heU50O30qeFDu8fx0GaV2SpXu6yHzFZa3uZ34Ox
-        ptcnjziTTI5+5S4t6ElVqOzbqwLcL3pqu+5P99XNKg==
-X-Google-Smtp-Source: ABdhPJwVBbcsNjNQvs02Ak+32h+kJHFtnmZ1zNowEhHhzLcOKvCq1Vt5X4LsucLlQ1RJzMaKN62kgE/jK9bd0JxcWcM=
-X-Received: by 2002:a9d:7a98:: with SMTP id l24mr59311273otn.75.1594388213194;
- Fri, 10 Jul 2020 06:36:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1593530334.git.vpillai@digitalocean.com>
- <c783b3890b6df669a72c7c4a3012950d009b8034.1593530334.git.vpillai@digitalocean.com>
- <ed837e01-043b-e19b-293c-30d44df6f3a8@linux.intel.com>
-In-Reply-To: <ed837e01-043b-e19b-293c-30d44df6f3a8@linux.intel.com>
-From:   Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Date:   Fri, 10 Jul 2020 09:36:42 -0400
-Message-ID: <CANaguZArdu1Jz3SvogFSXhnqmbdKX5aAORmGMf_uc+J=UQZpJw@mail.gmail.com>
-Subject: Re: [RFC PATCH 14/16] irq: Add support for core-wide protection of
- IRQ and softirq
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Subhra Mazumdar <subhra.mazumdar@oracle.com>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 10 Jul 2020 09:44:33 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6B3C08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:44:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=3BWFwGO4Xdi2JfAeDNFfNOWtThIzEJ9leOj9Vzu/b/0=; b=kyZeUH5CF/W5Oqw87hovOrUYNK
+        FeojyQKN3cqbt7oeFdPAR5tfSxwrXC2wGwMU/oR9M41SUd1YTZFbQZrXB5zlkboBY2upXI3V73Gzk
+        b2cdychMFfiywSfGmbaEIDzhYkTqb7oq2bCJ2MdAD6gMG96krVLHhtkzV/MBLXq7UULDeZCh49XiO
+        1AyHHA80KuhOpWtZ/fFqTRnmHIAATwgYVeGq7aDKYyBKNCU5+aOp1rI5nocXils++TLO5GZaVUh3K
+        sATo3rw3RnUcCOow91I+eAvZu/0y1Y6Z3ZLSzxJzznWy0TP8GpAWAuhQ+uFmfZxCHhIdikwwcz2ps
+        uHtxPFgw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jttK2-000180-0q; Fri, 10 Jul 2020 13:44:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 23AB930769C;
+        Fri, 10 Jul 2020 15:44:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id C8E712B7A732F; Fri, 10 Jul 2020 15:44:09 +0200 (CEST)
+Message-ID: <20200710133831.943894387@infradead.org>
+User-Agent: quilt/0.66
+Date:   Fri, 10 Jul 2020 15:38:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org
+Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org, mhiramat@kernel.org, bristot@redhat.com,
+        jbaron@akamai.com, torvalds@linux-foundation.org,
+        tglx@linutronix.de, mingo@kernel.org, namit@vmware.com,
+        hpa@zytor.com, luto@kernel.org, ard.biesheuvel@linaro.org,
+        jpoimboe@redhat.com, pbonzini@redhat.com,
+        mathieu.desnoyers@efficios.com, linux@rasmusvillemoes.dk
+Subject: [PATCH v6 00/17] Add static_call
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aubrey,
+Hi all,
 
-On Fri, Jul 10, 2020 at 8:19 AM Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->
-> Hi Joel/Vineeth,
-> [...]
-> The problem is gone when we reverted this patch. We are running multiple
-> uperf threads(equal to cpu number) in a cgroup with coresched enabled.
-> This is 100% reproducible on our side.
->
-> Just wonder if anything already known before we dig into it.
->
-Thanks for reporting this. We haven't seen any lockups like this
-in our testing yet.
+Hopefully for the last time...
 
-Could you please add more information on how to reproduce this?
-Was it a simple uperf run without any options or was it running any
-specific kind of network test?
+static_call(), is the idea of static_branch() applied to indirect function
+calls. Remove a data load (indirection) by modifying the text.
 
-We shall also try to reproduce this and investigate.
+The inline implementation still relies on objtool to generate the
+.static_call_sites section, mostly because this is a natural place for x86_64
+and works for both GCC and LLVM.  Other architectures can pick other means
+if/when they implement the inline patching. The out-of-line (aka. trampoline)
+variant doesn't require this.
 
-Thanks,
-Vineeth
+Patches go on top of: linus + tip/objtool/core
+
+Patches can also be found here:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/static_call
+
+Changes since the last time:
+
+ - rebased
+ - fixed ftrace synthetic events (rostedt)
+
+
