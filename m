@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586F421BF5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B8B21BF5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgGJVqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
+        id S1726497AbgGJVqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbgGJVqb (ORCPT
+        with ESMTP id S1726251AbgGJVqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:46:31 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE31C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:46:31 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 113C52D7;
-        Fri, 10 Jul 2020 21:46:31 +0000 (UTC)
-Date:   Fri, 10 Jul 2020 15:46:30 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     torvalds@linux-foundation.org, davej@codemonkey.org.uk,
-        kvalo@codeaurora.org, luis.f.correia@gmail.com, cyphar@cyphar.com,
-        paulburton@kernel.org, ribalda@kernel.org, martink@posteo.de,
-        geert+renesas@glider.be, mchehab+samsung@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] CREDITS: replace HTTP links with HTTPS ones and add
- myself
-Message-ID: <20200710154630.31521104@lwn.net>
-In-Reply-To: <20200710194342.33107-1-grandmaster@al2klimov.de>
-References: <20200710194342.33107-1-grandmaster@al2klimov.de>
-Organization: LWN.net
+        Fri, 10 Jul 2020 17:46:45 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECDBC08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:46:45 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id l12so7553622ejn.10
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:46:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A4VTlerwbUNoSt2XThLD+6dlusu4El/U42eSnUsX6n4=;
+        b=ouw7PqH/fd8RGpSOHN4Mf9hQW5R4Y18NG0VUofEAKvSp8zxVfLxlcyWHs6/BawgCtQ
+         Wu9E+0/yRuuOxqZBIymVEUbDrr7izwaHEnnrSOzaYCCakeKdQXptNiTmqjGnvoQ/j7aZ
+         Y5DsRdkkGJRcE9gYVv2USPQcehf0mDfFbQ1Nw8kcBHf5+d4OvU+Gc0/4/nZlfSshnh77
+         pAe4uFiIoeXSGaPPnlJszgorOVd/NkWtv+XzqK5VwrCbxx/3QIFTRWcMyGHXHKVs7fhM
+         vJU4VuUZ8O+RUPgjoLvIsLIwmXPZQEH0MwDrplvv70LdG6KC6ooH26ncHDvoGNbd9PJE
+         50UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A4VTlerwbUNoSt2XThLD+6dlusu4El/U42eSnUsX6n4=;
+        b=iUpjYu0/D8rVqK5JCsFgSEJphgIo2Znp7ACzz5aMA00vNLAwwEAQaeaD1jRQEAYyDM
+         wRRkJOa0lqmF7/wvUwW3KX4Nf7l97Z+HkdHZ5YKKohyBXVJV+FwYoS0HrcFc+Sr1JcJi
+         5HixUg/b7dpqUhGtlFxSzALMKWU99MrEUYLbB21/LMHpZVoyhsXafCJ/N8fydjAl0NaR
+         oKQouZs/FDbcSpPEZLUb+kUibRPGRH9HQmhSsNIpUGAUGEcgZgd7ktRBrIbh26ZYa5Kc
+         7pyAPAFy7JbPom6vntkwIvSs+3N36X6XxoV6mwqwD5iSzS6AcXoNvRQYRbX9VF+KUEGn
+         hLRw==
+X-Gm-Message-State: AOAM531Vz2Vs2DPAvDgeBquxp6S/O3BCRk+k8kD4RlDbZ/Vi11D/e7e2
+        aYj1bApEPA7Zpm498eOYVKynj4rZmDoBACPqLYm2+A==
+X-Google-Smtp-Source: ABdhPJxLaVOXj7Cfq7OFeW3FAbbjCqcQic4yp5DelaumYpXwZLQLJubKiaDXlv2Z7to/Tyc2BK9z0MZe48Rnok/Xx4c=
+X-Received: by 2002:a17:906:b888:: with SMTP id hb8mr62470722ejb.124.1594417604353;
+ Fri, 10 Jul 2020 14:46:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+References: <159423201991.2466245.8461410729774664077.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <CALCETrVufhJTh3LweQqqH1OHc2rTsGkMcmTzCq6kKh1ETY0arw@mail.gmail.com>
+In-Reply-To: <CALCETrVufhJTh3LweQqqH1OHc2rTsGkMcmTzCq6kKh1ETY0arw@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 10 Jul 2020 14:46:33 -0700
+Message-ID: <CAPcyv4iCJfzggmOXpmWUWcFPay5DauWzzBWjECYr2f9vCxLZWg@mail.gmail.com>
+Subject: Re: [Ksummit-discuss] [PATCH v3] CodingStyle: Inclusive Terminology
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        SeongJae Park <sjpark@amazon.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        tech-board-discuss@lists.linuxfoundation.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Jul 2020 21:43:42 +0200
-"Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
+On Fri, Jul 10, 2020 at 2:12 PM Andy Lutomirski <luto@amacapital.net> wrote:
+>
+> On Wed, Jul 8, 2020 at 11:30 AM Dan Williams <dan.j.williams@intel.com> wrote:
+> >
+> > Linux maintains a coding-style and its own idiomatic set of terminology.
+> > Update the style guidelines to recommend replacements for the terms
+> > master/slave and blacklist/whitelist.
+>
+> Acked-by: Andy Lutomirski <luto@kernel.org>
 
-> Regarding the links:
-> 
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
-> 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
->           If both the HTTP and HTTPS versions
->           return 200 OK and serve the same content:
->             Replace HTTP with HTTPS.
-> 
-> Regarding the addition of myself:
-
-A couple of things here...
-
-> Rationale:
-> * 93431e0607e5
-
-This is ... not particularly self-explanatory.  Is that meant to be a
-commit reference?  If so, you would want to use the normal format.
-
-> * the replaced links in this patch
-
-If you are going to do something like make an addition to the file, you
-need to do that separately from a cleanup patch.
-
-But somebody has to say this: I don't think we have any sort of laid-down
-policy for what it takes to be mentioned in CREDITS, but I don't think that
-your work thus far clears whatever bar we might set.  We don't immortalize
-every person who submits some cleanup patches, or this file would be a long
-one indeed.  If you would like to be remembered for your kernel work, I
-would respectfully suggest that you move beyond mechanical cleanups into
-higher-level work.
-
-One other little thing that jumped out at me:
-
->  N: Alan Cox
-> -W: http://www.linux.org.uk/diary/
-> +W: https://www.linux.org.uk/diary/
->  D: Linux Networking (0.99.10->2.0.29)
->  D: Original Appletalk, AX.25, and IPX code
->  D: 3c501 hacker
-
-That link just redirects to linux.com, which is probably not what Alan had
-in mind.  Replacing the link with one into the wayback machine (or perhaps
-just removing it entirely) would seem like a more useful change than adding
-HTTPS to a link that clearly does not reach the intended destination.
-
-Thanks,
-
-jon
+Thanks, Andy.
