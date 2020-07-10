@@ -2,146 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAB721B748
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C538421B752
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgGJN5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:57:39 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24712 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727810AbgGJN53 (ORCPT
+        id S1726965AbgGJN6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727999AbgGJN6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:57:29 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06ADVx1v007716;
-        Fri, 10 Jul 2020 09:57:20 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 326bpbdj3d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jul 2020 09:57:19 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06ADW283008023;
-        Fri, 10 Jul 2020 09:57:19 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 326bpbdj2f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jul 2020 09:57:19 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06ADtlv7010600;
-        Fri, 10 Jul 2020 13:57:17 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 326bcj8b20-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jul 2020 13:57:17 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06ADvE6h48496888
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 10 Jul 2020 13:57:14 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4896A4060;
-        Fri, 10 Jul 2020 13:57:14 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3D9CAA405C;
-        Fri, 10 Jul 2020 13:57:13 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri, 10 Jul 2020 13:57:13 +0000 (GMT)
-Date:   Fri, 10 Jul 2020 19:27:12 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-kernel@vger.kernel.org,
-        Andi Kleen <andi@firstfloor.org>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH v2 4/4] perf-probe: Warn if the target function is GNU
- Indirect function
-Message-ID: <20200710135712.GO874@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <159438665389.62703.13848613271334658629.stgit@devnote2>
- <159438669349.62703.5978345670436126948.stgit@devnote2>
+        Fri, 10 Jul 2020 09:58:07 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85AFC08C5CE;
+        Fri, 10 Jul 2020 06:58:06 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r12so6007064wrj.13;
+        Fri, 10 Jul 2020 06:58:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qGTdmZTNycuSsZdYyd+aOzaPH9cISwBzNXZdZyFF4OI=;
+        b=rzyk22Li/x8K4ZYEuz81gQfs0qxf588SLcl4ZiGskAdILv8F4NmLTti5Y5MNLsqX4A
+         cVRiD2BKx6SKDbwn9iDnKIyVf8XWOJ7lC8ioWjj+ojQj1STT3efceKA+V3idbqE+g1bp
+         vGFdZXyMfG0zzTIBRcYl8SFjy7JZOqUka8IP5rHmUK/UqT1j7WPkk3hpiLU2f3nMIQBq
+         tpnrCR8Y2midwlrbwJx8I/3G1CJVvwmRkaJx6d88LwHlRF5zH2jbUBr2lisOSHhW10hE
+         ZCdzSzrB77RoZEDa6anJH7lt9PNCSXESjyzSnqfSZdblccMBPGTBlz7LP36lxBNkXYe5
+         oPlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qGTdmZTNycuSsZdYyd+aOzaPH9cISwBzNXZdZyFF4OI=;
+        b=W7rteyHSLQBbgXLPirUrUWhvgyMXW9E0VFxG535wfStdldcEzk7eXGQN3FGjGdDcj3
+         zZ8cii9MfzvBo4R+LHnk2U2PAnvRDZaQME7u5BG4wmjdtXCEK/R5uARDqQYE42DN+823
+         /C5hDGlhK0+k3QjQ0gdTxgC02JaMIJI/nBPujQwAXSPcSXl6VBPH2b9CBgQTd/98GqY/
+         ngWRB/Nicj4uJ2vWXcnJNw5MRLp2JxSvhs1YW8UrXNguffY4/Nf1QjXeT4Lz1TKh2917
+         xLQs/KQXRuGJXDxN/vvFFpDd+6pqPsLGTGZRY7ywGAvb7h0AFLGJ+Y96EVCCuJb6UCzH
+         wp1A==
+X-Gm-Message-State: AOAM531k3Vtj6CzVpSfIq5G9LTgUAJ0E3mrUW/8eetG2GKfLmz38NVKJ
+        SzaTg2pbzThErpHmHEtsESdI6xaOucV7ee4XDRc=
+X-Google-Smtp-Source: ABdhPJxAXPyq+TgGM1KIrPXsNrVp0LsQhJw7n+KMql5in4TTsc5AAhvy36mPobH51Ew8wqP3H+CbX4J2nUXnh92VB5A=
+X-Received: by 2002:adf:f0ce:: with SMTP id x14mr65348995wro.137.1594389485356;
+ Fri, 10 Jul 2020 06:58:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <159438669349.62703.5978345670436126948.stgit@devnote2>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-10_07:2020-07-10,2020-07-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 priorityscore=1501 mlxscore=0 spamscore=0
- malwarescore=0 mlxlogscore=999 phishscore=0 adultscore=0 suspectscore=0
- impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007100093
+References: <1593974870-18919-1-git-send-email-joshi.k@samsung.com>
+ <CGME20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7@epcas5p1.samsung.com>
+ <1593974870-18919-5-git-send-email-joshi.k@samsung.com> <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk>
+ <20200709085501.GA64935@infradead.org> <adc14700-8e95-10b2-d914-afa5029ae80c@kernel.dk>
+ <20200709140053.GA7528@infradead.org> <2270907f-670c-5182-f4ec-9756dc645376@kernel.dk>
+ <CA+1E3r+H7WEyfTufNz3xBQQynOVV-uD3myYynkfp7iU+D=Svuw@mail.gmail.com>
+ <f5e3e931-ef1b-2eb6-9a03-44dd5589c8d3@kernel.dk> <20200710130912.GA7491@infradead.org>
+ <CA+1E3rJSiS58TE=hHv5wVv-umJ19_7zKv-JqZTNzD=xi3MoX1g@mail.gmail.com>
+In-Reply-To: <CA+1E3rJSiS58TE=hHv5wVv-umJ19_7zKv-JqZTNzD=xi3MoX1g@mail.gmail.com>
+From:   Kanchan Joshi <joshiiitr@gmail.com>
+Date:   Fri, 10 Jul 2020 19:27:38 +0530
+Message-ID: <CA+1E3r+6TVr8SYtOJpDyDu9=LZQpr4qaNiYno6ErMoSBh-eBkA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Kanchan Joshi <joshi.k@samsung.com>,
+        viro@zeniv.linux.org.uk, bcrl@kvack.org, Damien.LeMoal@wdc.com,
+        asml.silence@gmail.com, linux-fsdevel@vger.kernel.org,
+        "Matias Bj??rling" <mb@lightnvm.io>, linux-kernel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        Selvakumar S <selvakuma.s1@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Masami Hiramatsu <mhiramat@kernel.org> [2020-07-10 22:11:33]:
+On Fri, Jul 10, 2020 at 6:59 PM Kanchan Joshi <joshiiitr@gmail.com> wrote:
+>
+> On Fri, Jul 10, 2020 at 6:39 PM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Thu, Jul 09, 2020 at 12:50:27PM -0600, Jens Axboe wrote:
+> > > It might, if you have IRQ context for the completion. task_work isn't
+> > > expensive, however. It's not like a thread offload.
 
-> Warn if the probe target function is GNU indirect function (GNU_IFUNC)
-> because it may not what the user want to probe.
-> 
-> The GNU indirect function ( https://sourceware.org/glibc/wiki/GNU_IFUNC )
-> is the dynamic solved symbol at runtime. IFUNC function is a selector
-> which is invoked from the elf loader, but the symbol address of the
-> function which will be modified by the IFUNC is same as the IFUNC in
-> the symbol table. This can confuse users who is trying to probe on
-> such functions.
-> 
-> For example, the memcpy is one of IFUNC.
-> 
-> # perf probe -x /lib64/libc-2.30.so -a memcpy
-> # perf probe -l
->   probe_libc:memcpy    (on __new_memcpy_ifunc@x86_64/multiarch/memcpy.c in /usr/lib64/libc-2.30.so)
-> 
-> the probe is put on a IFUNC.
-> 
-> # perf record -e probe_libc:memcpy --call-graph dwarf -aR ./perf
-> 
-> Thus, I decided to warn user when the perf probe detects the probe point
-> is on the GNU IFUNC symbol. Someone who wants to probe an IFUNC symbol to
-> debug the IFUNC function, they can ignore this warning.
-> 
-> Reported-by: Andi Kleen <andi@firstfloor.org>
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Not sure about polled-completion but we have IRQ context for regular completion.
+If I've got it right, I need to store task_struct during submission,
+and use that to register a task_work during completion. At some point
+when this task_work gets called it will update the user-space pointer
+with the result.
+It can be the case that we get N completions parallely, but they all
+would get serialized because all N task-works need to be executed in
+the context of single task/process?
 
-Looks good to me.
+> > > > Using flags have not been liked here, but given the upheaval involved so
+> > > > far I have begun to feel - it was keeping things simple. Should it be
+> > > > reconsidered?
+> > >
+> > > It's definitely worth considering, especially since we can use cflags
+> > > like Pavel suggested upfront and not need any extra storage. But it
+> > > brings us back to the 32-bit vs 64-bit discussion, and then using blocks
+> > > instead of bytes. Which isn't exactly super pretty.
+> >
+> > block doesn't work for the case of writes to files that don't have
+> > to be aligned in any way.  And that I think is the more broadly
+> > applicable use case than zone append on block devices.
+>
+> But when can it happen that we do zone-append on a file (zonefs I
+> asssume), and device returns a location (write-pointer essentially)
+> which is not in multiple of 512b?
+>
+>
+> --
+> Joshi
 
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 
-> ---
->   Changes in v2:
->    - Check GNU_IFUNC only for uprobe
->    - Show function name instead of the address.
->    - Update the warning message according to Andi's comment.
-> ---
->  tools/perf/util/probe-event.c |    8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-> index 8cd1224e5f4c..679447f13c20 100644
-> --- a/tools/perf/util/probe-event.c
-> +++ b/tools/perf/util/probe-event.c
-> @@ -375,9 +375,13 @@ static int find_alternative_probe_point(struct debuginfo *dinfo,
-> 
->  	/* Find the address of given function */
->  	map__for_each_symbol_by_name(map, pp->function, sym) {
-> -		if (uprobes)
-> +		if (uprobes) {
->  			address = sym->start;
-> -		else
-> +			if (sym->type == STT_GNU_IFUNC)
-> +				pr_warning("Warning: The probe function (%s) is a GNU indirect function.\n"
-> +					   "Consider identifying the final function used at run time and set the probe directly on that.\n",
-> +					   pp->function);
-> +		} else
->  			address = map->unmap_ip(map, sym->start) - map->reloc;
->  		break;
->  	}
-> 
 
 -- 
-Thanks and Regards
-Srikar Dronamraju
+Joshi
