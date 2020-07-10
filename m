@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D4121B077
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 09:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F4421B07B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 09:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgGJHoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 03:44:09 -0400
-Received: from ozlabs.org ([203.11.71.1]:44501 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726369AbgGJHoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 03:44:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B34mg5gnFz9sRN;
-        Fri, 10 Jul 2020 17:44:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594367044;
-        bh=Ofc7OFZZS89CLiSP2EAJ6EFzJWAIH5mL7JdJIQFHVYM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TDCLsuyW98TVwRM+JWeqR3WInQVNwJVA2UjUAUxV7sAPW0fZLR+wUSnUtVmn8Kv7W
-         wi/9P1sclMegtVBW7c6Fcf5QC7aEccvuGDkRzynO1ZlQBHHCkNfjaY5o3fScBeYj9E
-         0z7DuEvSRb6NYQiyuXQVjWljBaeUB3jDnD1AbdpeK02eN5afhho+S2t4AP+DSqSib3
-         /VT1NKfZI2Bm9z+3NGdSPNHL+DB7D5zFLFoUMtsuAlaS9ww4gqyl3HdY7B/rF1/MnX
-         znR7ya3OAH318Ypm3r+50ijSAVZhkIVQLv2aCUxBSy6UtunfnIlTIPS+dFIwJRX39V
-         08IIdiJ8CtPAg==
-Date:   Fri, 10 Jul 2020 17:44:03 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul@pwsan.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: linux-next: manual merge of the akpm-current tree with the risc-v
- tree
-Message-ID: <20200710174314.451a29af@canb.auug.org.au>
+        id S1726818AbgGJHrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 03:47:01 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:55439 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726288AbgGJHrA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 03:47:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594367219;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JdHl2OiH4p6Iz0SiMtzkS/pKFwgmTmJSXShGkd+cqo8=;
+        b=bhgWT9dXfOZunyjk5wJhq03ORQEslxL9haxb4mZUhteutC0KUUk7RkC42+LZ1PdFLmuLrO
+        EZQnBFp1uBolqokSCfYDQSFX186EPkGvMVDyvH10QLc3qEc/YCBJMV+G11LPTWvohuuHCZ
+        9ylikX4OoZAfJa/qX4acD8MVESgsyK4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-mxe7WY_uN1m_Oc_5D13rrA-1; Fri, 10 Jul 2020 03:46:57 -0400
+X-MC-Unique: mxe7WY_uN1m_Oc_5D13rrA-1
+Received: by mail-wr1-f69.google.com with SMTP id w4so5053651wrm.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 00:46:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JdHl2OiH4p6Iz0SiMtzkS/pKFwgmTmJSXShGkd+cqo8=;
+        b=i8us0676LoLkeuBno3kA5GX3pQ0J4t9e54jdmxwfERoJgYgk7oslnZb2iNcIZbKgdO
+         z09dqfem/AnQgn2EHJfPIBujBoWT88hPSSqZpOhBYQ2hbAwqBxlVJIxIhaQByzjIZa2I
+         JmsYAubBmcx3qBqqhbGOQURRoBPn5Quoolj4aEalSjwW1f3gVL0jg9dMyV/mGp/VdZXT
+         i5jCPiRCvL4W4L13RbNY31n284C6DdLnQT37gNPq7rWZPPl8KKI0r7nr1ovCzFXlpycp
+         xdtSgXTmNXjHiXlOTdX1Meqeq9s2VwhXg21ZSTwWMhsofIqS0yuIBz3HfDwO1mvVgw+T
+         YFtA==
+X-Gm-Message-State: AOAM530kMkn2tZMLsXC2KE5j7blaaZfjBbhYVQb3PXEO+2qDehPpQpoz
+        21oP2FeZiWPRWVGEqkkYlqOW/iWrV+zML44Lgaiy7IjSRKg21BWyFAl2UBwx3yZoUUd5KhVJoBk
+        rQ1kHm9icade7W+o7tKL/T3kY
+X-Received: by 2002:a1c:b686:: with SMTP id g128mr3986796wmf.145.1594367215831;
+        Fri, 10 Jul 2020 00:46:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyuGy1axXIP4NvsxIBSy6jkXMCqPU4GtMCNiYKIfYo8qhu5JkSK8NP7Ezs/ydWQoVmvN6gUlw==
+X-Received: by 2002:a1c:b686:: with SMTP id g128mr3986767wmf.145.1594367215569;
+        Fri, 10 Jul 2020 00:46:55 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
+        by smtp.gmail.com with ESMTPSA id k18sm8954712wrx.34.2020.07.10.00.46.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 00:46:55 -0700 (PDT)
+Subject: Re: [PATCH] scsi: virtio_scsi: Remove unnecessary condition checks
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        Xianting Tian <xianting_tian@126.com>,
+        linux-scsi@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "James E. J. Bottomley" <jejb@linux.ibm.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+References: <a197f532-7020-0d8e-21bf-42bb66e8daec@web.de>
+ <e87746e6-813e-7c0e-e21e-5921e759da5d@redhat.com>
+ <8eb9a827-45f1-e71c-0cbf-1c29acd8e310@web.de>
+ <58e3feb8-1ffb-f77f-cf3a-75222b3cd524@redhat.com>
+ <9815ef2d-d0da-d197-49d7-83559d750ff1@web.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d052b441-cc4d-4b2b-1442-b1a30bed2fdb@redhat.com>
+Date:   Fri, 10 Jul 2020 09:46:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/IcrC8uHRZCHQjY57=5CQ0Re";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <9815ef2d-d0da-d197-49d7-83559d750ff1@web.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/IcrC8uHRZCHQjY57=5CQ0Re
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 10/07/20 09:40, Markus Elfring wrote:
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/scsi/virtio_scsi.c?id=42f82040ee66db13525dc6f14b8559890b2f4c1c#n980
+>>>
+>>>  	if (!virtscsi_cmd_cache) {
+>>>  		pr_err("kmem_cache_create() for virtscsi_cmd_cache failed\n");
+>>> -		goto error;
+>>> +		return -ENOMEM;
+>>>  	}
+>>
+>> Could be doable, but I don't see a particular benefit.
+> 
+> Can a bit more “compliance” (with the Linux coding style) matter here?
 
-Hi all,
+No.
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+>> Having a single error loop is an advantage by itself.
+> 
+> I do not see that a loop is involved in the implementation of the function “init”.
 
-  lib/Makefile
+s/loop/label/ sorry.
 
-between commit:
+Paolo
 
-  1a479f783857 ("lib: Add a generic version of devmem_is_allowed()")
-
-from the risc-v tree and commit:
-
-  d0bb028dd7f4 ("lib/test_bits.c: add tests of GENMASK")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc lib/Makefile
-index 7bdda9ea53ab,591d10906354..000000000000
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@@ -342,5 -317,4 +341,6 @@@ obj-$(CONFIG_OBJAGG) +=3D objagg.
-  # KUnit tests
-  obj-$(CONFIG_LIST_KUNIT_TEST) +=3D list-test.o
-  obj-$(CONFIG_LINEAR_RANGES_TEST) +=3D test_linear_ranges.o
-+ obj-$(CONFIG_BITS_TEST) +=3D test_bits.o
- +
- +obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) +=3D devmem_is_allowed.o
-
---Sig_/IcrC8uHRZCHQjY57=5CQ0Re
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8IHEMACgkQAVBC80lX
-0Gx0jwgAgh5HbgxSiiQQyWW1ctkaQrdhpTwDPwqcEXSdvG6axU/Ker4KZ6m3Bzbk
-YqXVaeYzupzWdV43ZcaAsOMEEwSenFwjrLtI2sJUdhqdc4iRIGNDzPox89yGobNx
-O6gJ1T73oKkVI2UaOyP0IDFRW9tptwtouJayYM0rOmSQkNKaCkB/qBNqQyM+YuEF
-qvu2HVHm8W9dnUIifUseu26B5am3OXBYldMSxfOBX3xJH1J99e99inX3NH4BExbv
-HkA4HZdNOBdE8VOS80I+HiqLn5l2+GWuThkNbeAEzZ7PAMYfjODg+UurT0UQyK6x
-RGFp7xKpiVo8GEouoBdKmxqYNZGadg==
-=wYHl
------END PGP SIGNATURE-----
-
---Sig_/IcrC8uHRZCHQjY57=5CQ0Re--
