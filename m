@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBB721BB95
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3494D21BB6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728731AbgGJQyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:54:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59750 "EHLO mail.kernel.org"
+        id S1728493AbgGJQwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:52:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728362AbgGJQwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:52:45 -0400
+        id S1728459AbgGJQws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 12:52:48 -0400
 Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1F4E2078B;
-        Fri, 10 Jul 2020 16:52:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE040207FC;
+        Fri, 10 Jul 2020 16:52:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594399964;
-        bh=kg+o40FwM+uHn0pA7V5zFqwWP0HjsEZrR4OqChGKd5k=;
+        s=default; t=1594399968;
+        bh=33ol2wfww+buJMx3tza0CIjhnMXSbv1JPshM2dQmTHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cdnYPtdLMTCP2QVBq2Q/L1lGIbfGXUbfjgUO1eWQbxfhgNQEzBkmiH5N+qcJ7FDqV
-         BA3iOc7kpzWgtCqV4MYfanOICXcUT/3JP43fYdEq5kaRgijE7kaMOaPUcJgPo8DMsg
-         1aaFw1eIoBg3geVsPqSgVPuDcAQrKGj3a8PGm59I=
+        b=zmm4Beup9Cb/cXcX+cFkF3Ys9o4W8ykaffV0B1ywu2WmWxk2m0L6n/aOe+2s19P/P
+         KJasSyR2/jQmcHBESwcpm08rw7T3YJ5j1W4OqQj5YlZyMPBPd5Dm5HQf5idVyVBFJY
+         6Px+iT08RxLqWmpNFon2pEOMv6R7ANj0ReBB6LnI=
 From:   Will Deacon <will@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>, Joel Fernandes <joelaf@google.com>,
@@ -44,9 +44,9 @@ Cc:     Will Deacon <will@kernel.org>, Joel Fernandes <joelaf@google.com>,
         Mark Rutland <mark.rutland@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
         virtualization@lists.linux-foundation.org, kernel-team@android.com
-Subject: [PATCH v3 08/19] alpha: Replace smp_read_barrier_depends() usage with smp_[r]mb()
-Date:   Fri, 10 Jul 2020 17:51:52 +0100
-Message-Id: <20200710165203.31284-9-will@kernel.org>
+Subject: [PATCH v3 09/19] locking/barriers: Remove definitions for [smp_]read_barrier_depends()
+Date:   Fri, 10 Jul 2020 17:51:53 +0100
+Message-Id: <20200710165203.31284-10-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200710165203.31284-1-will@kernel.org>
 References: <20200710165203.31284-1-will@kernel.org>
@@ -57,120 +57,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for removing smp_read_barrier_depends() altogether,
-move the Alpha code over to using smp_rmb() and smp_mb() directly.
+There are no remaining users of [smp_]read_barrier_depends(), so
+remove it from the generic implementation of 'barrier.h'.
 
 Acked-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Will Deacon <will@kernel.org>
 ---
- arch/alpha/include/asm/atomic.h  | 16 ++++++++--------
- arch/alpha/include/asm/pgtable.h | 10 +++++-----
- mm/memory.c                      |  2 +-
- 3 files changed, 14 insertions(+), 14 deletions(-)
+ include/asm-generic/barrier.h | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
-diff --git a/arch/alpha/include/asm/atomic.h b/arch/alpha/include/asm/atomic.h
-index 2144530d1428..2f8f7e54792f 100644
---- a/arch/alpha/include/asm/atomic.h
-+++ b/arch/alpha/include/asm/atomic.h
-@@ -16,10 +16,10 @@
+diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
+index 8116744bb82c..fec97dc34de7 100644
+--- a/include/asm-generic/barrier.h
++++ b/include/asm-generic/barrier.h
+@@ -46,10 +46,6 @@
+ #define dma_wmb()	wmb()
+ #endif
  
- /*
-  * To ensure dependency ordering is preserved for the _relaxed and
-- * _release atomics, an smp_read_barrier_depends() is unconditionally
-- * inserted into the _relaxed variants, which are used to build the
-- * barriered versions. Avoid redundant back-to-back fences in the
-- * _acquire and _fence versions.
-+ * _release atomics, an smp_mb() is unconditionally inserted into the
-+ * _relaxed variants, which are used to build the barriered versions.
-+ * Avoid redundant back-to-back fences in the _acquire and _fence
-+ * versions.
-  */
- #define __atomic_acquire_fence()
- #define __atomic_post_full_fence()
-@@ -70,7 +70,7 @@ static inline int atomic_##op##_return_relaxed(int i, atomic_t *v)	\
- 	".previous"							\
- 	:"=&r" (temp), "=m" (v->counter), "=&r" (result)		\
- 	:"Ir" (i), "m" (v->counter) : "memory");			\
--	smp_read_barrier_depends();					\
-+	smp_mb();							\
- 	return result;							\
- }
+-#ifndef read_barrier_depends
+-#define read_barrier_depends()		do { } while (0)
+-#endif
+-
+ #ifndef __smp_mb
+ #define __smp_mb()	mb()
+ #endif
+@@ -62,10 +58,6 @@
+ #define __smp_wmb()	wmb()
+ #endif
  
-@@ -88,7 +88,7 @@ static inline int atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
- 	".previous"							\
- 	:"=&r" (temp), "=m" (v->counter), "=&r" (result)		\
- 	:"Ir" (i), "m" (v->counter) : "memory");			\
--	smp_read_barrier_depends();					\
-+	smp_mb();							\
- 	return result;							\
- }
+-#ifndef __smp_read_barrier_depends
+-#define __smp_read_barrier_depends()	read_barrier_depends()
+-#endif
+-
+ #ifdef CONFIG_SMP
  
-@@ -123,7 +123,7 @@ static __inline__ s64 atomic64_##op##_return_relaxed(s64 i, atomic64_t * v)	\
- 	".previous"							\
- 	:"=&r" (temp), "=m" (v->counter), "=&r" (result)		\
- 	:"Ir" (i), "m" (v->counter) : "memory");			\
--	smp_read_barrier_depends();					\
-+	smp_mb();							\
- 	return result;							\
- }
+ #ifndef smp_mb
+@@ -80,10 +72,6 @@
+ #define smp_wmb()	__smp_wmb()
+ #endif
  
-@@ -141,7 +141,7 @@ static __inline__ s64 atomic64_fetch_##op##_relaxed(s64 i, atomic64_t * v)	\
- 	".previous"							\
- 	:"=&r" (temp), "=m" (v->counter), "=&r" (result)		\
- 	:"Ir" (i), "m" (v->counter) : "memory");			\
--	smp_read_barrier_depends();					\
-+	smp_mb();							\
- 	return result;							\
- }
+-#ifndef smp_read_barrier_depends
+-#define smp_read_barrier_depends()	__smp_read_barrier_depends()
+-#endif
+-
+ #else	/* !CONFIG_SMP */
  
-diff --git a/arch/alpha/include/asm/pgtable.h b/arch/alpha/include/asm/pgtable.h
-index 162c17b2631f..660b14ce1317 100644
---- a/arch/alpha/include/asm/pgtable.h
-+++ b/arch/alpha/include/asm/pgtable.h
-@@ -277,9 +277,9 @@ extern inline pte_t pte_mkdirty(pte_t pte)	{ pte_val(pte) |= __DIRTY_BITS; retur
- extern inline pte_t pte_mkyoung(pte_t pte)	{ pte_val(pte) |= __ACCESS_BITS; return pte; }
+ #ifndef smp_mb
+@@ -98,10 +86,6 @@
+ #define smp_wmb()	barrier()
+ #endif
  
- /*
-- * The smp_read_barrier_depends() in the following functions are required to
-- * order the load of *dir (the pointer in the top level page table) with any
-- * subsequent load of the returned pmd_t *ret (ret is data dependent on *dir).
-+ * The smp_rmb() in the following functions are required to order the load of
-+ * *dir (the pointer in the top level page table) with any subsequent load of
-+ * the returned pmd_t *ret (ret is data dependent on *dir).
-  *
-  * If this ordering is not enforced, the CPU might load an older value of
-  * *ret, which may be uninitialized data. See mm/memory.c:__pte_alloc for
-@@ -293,7 +293,7 @@ extern inline pte_t pte_mkyoung(pte_t pte)	{ pte_val(pte) |= __ACCESS_BITS; retu
- extern inline pmd_t * pmd_offset(pud_t * dir, unsigned long address)
- {
- 	pmd_t *ret = (pmd_t *) pud_page_vaddr(*dir) + ((address >> PMD_SHIFT) & (PTRS_PER_PAGE - 1));
--	smp_read_barrier_depends(); /* see above */
-+	smp_rmb(); /* see above */
- 	return ret;
- }
- #define pmd_offset pmd_offset
-@@ -303,7 +303,7 @@ extern inline pte_t * pte_offset_kernel(pmd_t * dir, unsigned long address)
- {
- 	pte_t *ret = (pte_t *) pmd_page_vaddr(*dir)
- 		+ ((address >> PAGE_SHIFT) & (PTRS_PER_PAGE - 1));
--	smp_read_barrier_depends(); /* see above */
-+	smp_rmb(); /* see above */
- 	return ret;
- }
- #define pte_offset_kernel pte_offset_kernel
-diff --git a/mm/memory.c b/mm/memory.c
-index 87ec87cdc1ff..e1f2c730d8bb 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -437,7 +437,7 @@ int __pte_alloc(struct mm_struct *mm, pmd_t *pmd)
- 	 * of a chain of data-dependent loads, meaning most CPUs (alpha
- 	 * being the notable exception) will already guarantee loads are
- 	 * seen in-order. See the alpha page table accessors for the
--	 * smp_read_barrier_depends() barriers in page table walking code.
-+	 * smp_rmb() barriers in page table walking code.
- 	 */
- 	smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
+-#ifndef smp_read_barrier_depends
+-#define smp_read_barrier_depends()	do { } while (0)
+-#endif
+-
+ #endif	/* CONFIG_SMP */
  
+ #ifndef __smp_store_mb
+@@ -196,7 +180,6 @@ do {									\
+ #define virt_mb() __smp_mb()
+ #define virt_rmb() __smp_rmb()
+ #define virt_wmb() __smp_wmb()
+-#define virt_read_barrier_depends() __smp_read_barrier_depends()
+ #define virt_store_mb(var, value) __smp_store_mb(var, value)
+ #define virt_mb__before_atomic() __smp_mb__before_atomic()
+ #define virt_mb__after_atomic()	__smp_mb__after_atomic()
 -- 
 2.27.0.383.g050319c2ae-goog
 
