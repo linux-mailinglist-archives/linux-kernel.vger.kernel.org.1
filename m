@@ -2,133 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC0121C011
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3E1821C014
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgGJWoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 18:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35640 "EHLO
+        id S1726831AbgGJWod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 18:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726769AbgGJWoK (ORCPT
+        with ESMTP id S1726798AbgGJWoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 18:44:10 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3263C08E763
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:44:09 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mn17so3206582pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:44:09 -0700 (PDT)
+        Fri, 10 Jul 2020 18:44:32 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545E1C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:44:32 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id x2so1292139oog.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:44:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=TjEJpib1IL5htaIPNtgXZReDUQ6slE49xFUwHakVlH0=;
-        b=SO1xAbaPN5JafN9toT/S+WneSLZasNKIViJUdCc3GKTm5RREBz48J7iN1ANJD4rGJC
-         oLJy5cqcDy+SDN0nvcAXoX0qVGw0sHTomDkxRemFAupDhPw+xCwT01Lz1nYiaZNCU99V
-         rJrNVo6yLJNpmhg0DMRwUu5W0ig+vMBotm3/c=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gCyI0kUrT87FAQAI0Q1u+opAu/z1jGmTcNbCc0ywLlQ=;
+        b=pEe0x1D2oXhrROhhsfdBSl2Of0HeeOQzHLu21ytP7olDdMMZPcgjiV0SFxkgRAMS/a
+         zblIckErEPPlyKbegdkpsh0OW2Xqu9dnKnUdDl8IU+qez3avQGV8FZM14sbgNWmRlm7w
+         Ko1PO1Prn7C0/+tMbFDpECoaIDNxX4OffjwTb6Ox7od3D9ZNzpnW3pgRUR/h8hQQQUnw
+         NAWhdtBgvYpwFCMZjLHabISmRiZm6E7qj3wdj04qmnUqNzmD90pKyk3HAmgJ+Eu491o1
+         m/JxPxczvMRz7ZVoUvv+TZ8LvVDcYiZGgoZQEAs290rCxG9VW0H0QJwbyUdRTgYdcdoP
+         jx5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=TjEJpib1IL5htaIPNtgXZReDUQ6slE49xFUwHakVlH0=;
-        b=WiPWhyzw+Z0+PiR9as8FnfKuRSpEsUBmuHoo44o8l91Pf6+b6ZEU+PgTHpLVJs1C5i
-         Xh+DfotooBVDC64W7dEqfVefs/lm/XTa0C4+NQvWa+SgvTuW645DjeqRzgNeIdBEy4/2
-         4UvMC5N1OEp8QiMUluPUwJtvhIKqRzc8/6xpvaVdDNTpPQpq2+Wg+rxMsXTwCx2JEMSO
-         A4KsrIgFkLxHhUJwKXmI2Gz2sSFosf+rIzUjj6rkD1FhpRhIZxVitz2mRLwNBHDRHOwi
-         e+wtsITEgHY7czd5391WCD14Aojto5uVpj9OeHxvfYsFn4ISZg4wiAfT/cAHptzeJqdW
-         j26g==
-X-Gm-Message-State: AOAM530JlrSPp9I3VJvXRCbVdZ4i6V37v/ruWNj2StUjvjBvMDZT+eUW
-        ndip1aQtEs+tjb0EmBTq7gVOsw==
-X-Google-Smtp-Source: ABdhPJxQKXZOntIHVtBHw75TX+0uQyvL4Fgsc3zGCY0FUh3ifMwWHpCyP6LF7aHmjDXcutvHnmqdtg==
-X-Received: by 2002:a17:90b:338d:: with SMTP id ke13mr7916117pjb.60.1594421049223;
-        Fri, 10 Jul 2020 15:44:09 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b128sm6195291pfg.114.2020.07.10.15.44.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 15:44:08 -0700 (PDT)
-Date:   Fri, 10 Jul 2020 15:44:06 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        James Morris <jmorris@namei.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jessica Yu <jeyu@kernel.org>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        KP Singh <kpsingh@google.com>, Dave Olsthoorn <dave@bewaar.me>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Peter Jones <pjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Boyd <stephen.boyd@linaro.org>,
-        Paul Moore <paul@paul-moore.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH 2/4] fs: Remove FIRMWARE_PREALLOC_BUFFER from
- kernel_read_file() enums
-Message-ID: <202007101543.912633AA73@keescook>
-References: <20200707081926.3688096-1-keescook@chromium.org>
- <20200707081926.3688096-3-keescook@chromium.org>
- <3fdb3c53-7471-14d8-ce6a-251d8b660b8a@broadcom.com>
- <20200710220411.GR12769@casper.infradead.org>
- <128120ca-7465-e041-7481-4c5d53f639dd@broadcom.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gCyI0kUrT87FAQAI0Q1u+opAu/z1jGmTcNbCc0ywLlQ=;
+        b=VBkyRMK5TArfeHWKioPQpej2GEs+O/HpBVewMFKz946muJbpQKNFr5TcbXxQ5Tq96+
+         rYqxblRtT++qcQFnZbGJe5i2stgTXDzmHzk0rhC62tM9bLECI2N1ufdKBAPD3WI1SGdU
+         V8FoVxMkSSjMd2dmRGjh/xSSd2b0WzhJNksTiOjV6CzIkuaGn8V65BTzAWfFM1KevcXX
+         7EzNzgnBvxjWkrIQLiSAO3XXwzWsuoJ5AJdBT75pCDEi6WuoEbUZBDwvGdQIh0GH6Ndk
+         OufT4GNM1sD0PmzXAdNN7/aWtNeZL/USGUXZOqJ2McN2WdQQQqnyOrpPHhIzlIhH1wDa
+         W0cg==
+X-Gm-Message-State: AOAM530kykD1CzK8mWixbfETQlzrMgYog+expNFGUXAW8yAVytEdimEo
+        5BEC3fuaQ5sfM1Ne1gbjkEYOrRb3EbICbLeg6GZiLg==
+X-Google-Smtp-Source: ABdhPJwHQLhjN0fx5nsYDQ/5gAMYf/FtTG+FNllJpIvQ3csH/hy0WBxDIT6X+tOsNnJi0NtINvoXzdjwg4qm1AYXGVE=
+X-Received: by 2002:a4a:d08a:: with SMTP id i10mr60007237oor.88.1594421071672;
+ Fri, 10 Jul 2020 15:44:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <128120ca-7465-e041-7481-4c5d53f639dd@broadcom.com>
+References: <20200625001039.56174-1-john.stultz@linaro.org>
+ <20200625001039.56174-4-john.stultz@linaro.org> <159315737502.62212.16093934831673347066@swboyd.mtv.corp.google.com>
+ <CALAqxLVNGar8g+FvHaVHN_e-MOZZ+=ZPmDt_GKKSC8AS-wLFGg@mail.gmail.com>
+ <87wo3setn8.wl-maz@kernel.org> <159436097057.1987609.13993891118929459851@swboyd.mtv.corp.google.com>
+In-Reply-To: <159436097057.1987609.13993891118929459851@swboyd.mtv.corp.google.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 10 Jul 2020 15:44:18 -0700
+Message-ID: <CALAqxLW14f4Gn6Q3b89X10y7=Zct2NJSgjagUqxez_bObcp42w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] irqchip: Allow QCOM_PDC to be loadable as a
+ permanent module
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Marc Zyngier <maz@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 03:10:25PM -0700, Scott Branden wrote:
-> 
-> 
-> On 2020-07-10 3:04 p.m., Matthew Wilcox wrote:
-> > On Fri, Jul 10, 2020 at 02:00:32PM -0700, Scott Branden wrote:
-> > > > @@ -950,8 +951,8 @@ int kernel_read_file(struct file *file, void **buf, loff_t *size,
-> > > >    		goto out;
-> > > >    	}
-> > > > -	if (id != READING_FIRMWARE_PREALLOC_BUFFER)
-> > > > -		*buf = vmalloc(i_size);
-> > > > +	if (!*buf)
-> > > The assumption that *buf is always NULL when id !=
-> > > READING_FIRMWARE_PREALLOC_BUFFER doesn't appear to be correct.
-> > > I get unhandled page faults due to this change on boot.
-> > Did it give you a stack backtrace?
-> Yes, but there's no requirement that *buf need to be NULL when calling this
-> function.
-> To fix my particular crash I added the following locally:
-> 
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -3989,7 +3989,7 @@ SYSCALL_DEFINE3(finit_module, int, fd, const char
-> __user *, uargs, int, flags)
->  {
->      struct load_info info = { };
->      loff_t size;
-> -    void *hdr;
-> +    void *hdr = NULL;
->      int err;
-> 
->      err = may_init_module();
-> > 
-> 
+On Thu, Jul 9, 2020 at 11:02 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> Quoting Marc Zyngier (2020-06-27 02:37:47)
+> > On Sat, 27 Jun 2020 02:34:25 +0100,
+> > John Stultz <john.stultz@linaro.org> wrote:
+> > >
+> > > On Fri, Jun 26, 2020 at 12:42 AM Stephen Boyd <swboyd@chromium.org> wrote:
+> > > >
+> > > >
+> > > > Is there any reason to use IRQCHIP_DECLARE if this can work as a
+> > > > platform device driver?
+> > > >
+> > >
+> > > Hey! Thanks so much for the review!
+> > >
+> > > Mostly it was done this way to minimize the change in the non-module
+> > > case. But if you'd rather avoid the #ifdefery I'll respin it without.
+> >
+> > That would certainly be my own preference. In general, IRQCHIP_DECLARE
+> > and platform drivers should be mutually exclusive in the same driver:
+> > if you can delay the probing and have it as a proper platform device,
+> > then this should be the one true way.
+> >
+>
+> Does it work? I haven't looked in detail but I worry that the child
+> irqdomain (i.e. pinctrl-msm) would need to delay probing until this
+> parent irqdomain is registered. Or has the hierarchical irqdomain code
+> been updated to handle the parent child relationship and wait for things
+> to probe or be loaded?
 
-Thanks for the diagnosis and fix! I haven't had time to cycle back
-around to this series yet. Hopefully soon. :)
+So I can't say I know the underlying hardware particularly well, but
+I've been using this successfully on the Dragonboard 845c with both
+static builds as well as module enabled builds.
+And the same patch has been in the android-mainline and android-5.4
+kernels for a while without objections from QCOM.
 
--- 
-Kees Cook
+As to the probe ordering question, Saravana can maybe speak in more
+detail if it's involved in this case but the fw_devlink code has
+addressed many of these sorts of ordering issues.
+However, I'm not sure if I'm lucking into the right probe order, as we
+have been able to boot android-mainline w/ both fw_devlink=on and
+fw_devlink=off (though in the =off case, we need
+deferred_probe_timeout=30 to give us a bit more time for modules to
+load after init starts).
+
+thanks
+-john
