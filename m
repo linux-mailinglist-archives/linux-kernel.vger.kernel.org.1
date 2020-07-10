@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE9E21B1F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E8321B1FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgGJJFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 05:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726496AbgGJJFQ (ORCPT
+        id S1728022AbgGJJFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 05:05:53 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42149 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727927AbgGJJFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 05:05:16 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A153C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:05:16 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 9so5589691ljv.5
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VUmFAc962e5K337BfXwFy3uOoKxsKlxWlo6RdFjoWeU=;
-        b=fAutD3cY5ow4YDV5uFTnEihRtuC7Y68t5bQaAcEGwzsqiN3yEk3pVzn5mMwLm0lOmL
-         VSSvAUFBBhFsy6dQskJH1YPZX9Lx3irhJqVRTFkBdnN8OkHOoKmubOCN0Qrt+lsu2KfL
-         63RF42ZenfvJ1bMQEXzT4IVxvDFOA2BE2kLwo=
+        Fri, 10 Jul 2020 05:05:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594371943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rBMD0sSb0w5KCpcjnu5JAG0eeG/Qn+GEjvEGuxcUNnk=;
+        b=SozFQuu9Rbeq4ZU1VYXQQ6FB0HJk/FxI7fAPIm021xl02FmHy3rCA9INiNnerxJYfrJooL
+        7hhbtKDIl5c0W4qY+vVowq6Phu/B/TaRek/xWje360YNz4Www/7kG/Nfglcu69HDKR03NW
+        ZTMjsldZDF89A+3qPHjbdkOYOD95cEc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-I377619mP8ixTu7N3-IYNw-1; Fri, 10 Jul 2020 05:05:42 -0400
+X-MC-Unique: I377619mP8ixTu7N3-IYNw-1
+Received: by mail-wr1-f70.google.com with SMTP id b14so5364920wrp.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:05:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VUmFAc962e5K337BfXwFy3uOoKxsKlxWlo6RdFjoWeU=;
-        b=cJdC3t0NYKG3BMFV1Lr5Dy8OPHHeqLVc3yF8msaS5eLR06VEPyVbnkYPb/eO7UqjGF
-         9HoyrqGDoVOUL8GV9PD8RLbskkcmXEepoNEPa95U13ZDObTe00Jz4hRL05LihKrrDXK6
-         KHD3ZP1oTQj1d/sKtK7z1fpeZUUtDDqOQmOEvBgG6CKzbd0Dz9ibVXgUhSqwhFhIEz+L
-         YuxiqmZutFJDbD5TR1YkNVO7WdJHcL1nGjqmcl2dVvtIWJc9o9z346Sq1Sh++KHTkCGd
-         9kPTe34K7l0ov07EKsphsgtpyitW0dJPncZ/8KEr5ZwcEp7g/NTNYQQ1DyRVBBFEuJQD
-         yltg==
-X-Gm-Message-State: AOAM532F24AIz/Ka8UKH6Y9YA3s1yhKa3cJc+dEoRhSokM4Pa/ha26aA
-        8CGZg6oc9kL6kLQqre6ZtuRy3Gob45UbzQfV
-X-Google-Smtp-Source: ABdhPJyfIcP/PQ2s2693hklug7eNZqe5piHixI/UWoYEV5w5FplqjvG+6fc9SV7PjhrnOvGJY/ELSw==
-X-Received: by 2002:a2e:8e8a:: with SMTP id z10mr30448109ljk.351.1594371914312;
-        Fri, 10 Jul 2020 02:05:14 -0700 (PDT)
-Received: from [172.16.11.153] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id q1sm1687890lji.71.2020.07.10.02.05.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 02:05:13 -0700 (PDT)
-Subject: Re: [PATCH] kcmp: add separate Kconfig symbol for kcmp syscall
-To:     Cyrill Gorcunov <gorcunov@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200710075632.14661-1-linux@rasmusvillemoes.dk>
- <20200710083025.GD1999@grain>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <14b4a1f0-3caf-75e4-600a-3de877a92950@rasmusvillemoes.dk>
-Date:   Fri, 10 Jul 2020 11:05:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rBMD0sSb0w5KCpcjnu5JAG0eeG/Qn+GEjvEGuxcUNnk=;
+        b=NY0NZ9QMKhn2GBj219jODAfEYDohd7qVhy9atBk0L5MjnS8o+tzhxbOq4r/Qdf3kcJ
+         FZMQyRiMoXD9Ktohgr/qyZapRh7Xl3B30ecp5Jw7PA+R4zLvU/19VI+EBwRt5YK9IfVZ
+         l/BDxvHzWJgd1SOcxneK2V/TWdL97kXzdIliZ3FVqQUDfALFLeMGvqgHb0yP5dz8K2Th
+         d8CP/VDHhVroRSVb0hdtwQ6AWGplRtH2sc6QckICuAAu40Bb8+N8DmL/f+r2HwzH2srV
+         rjTvw5aageoRhAyNs4gWtbBl1OnoWocL4nrtwf1pVZGIFfHglfg/ZOkpZ5fLGuxuRk/+
+         FZzg==
+X-Gm-Message-State: AOAM530WgVZ9CVtel9INuj8I1+ZpyLki8vsLdb9IfB9opacK73jAgpSK
+        3PT3N15wsD9YuJLafhj6W/+qFxJgsijLjwlGDpzK0T6JEMMFE4yujwitjGJ1CYpQVNqKg1K5CD0
+        Q3cRNKOOTPDwtFVl92W7lGDI0
+X-Received: by 2002:a7b:c94a:: with SMTP id i10mr4339720wml.183.1594371939196;
+        Fri, 10 Jul 2020 02:05:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxdSKxSnNl4oHDK3tCHLmcJEHYYFjHnDOEs4+Y09FVBCBpRkm8rhElrxBVkZIHFDJvwZdaGw==
+X-Received: by 2002:a7b:c94a:: with SMTP id i10mr4339689wml.183.1594371938901;
+        Fri, 10 Jul 2020 02:05:38 -0700 (PDT)
+Received: from steredhat ([5.180.207.22])
+        by smtp.gmail.com with ESMTPSA id w14sm9373016wrt.55.2020.07.10.02.05.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 02:05:38 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 11:05:30 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Makarand Sonare <makarandsonare@google.com>,
+        Jim Mattson <jmattson@google.com>
+Subject: Re: [PATCH v2] KVM: nVMX: fixes for preemption timer migration
+Message-ID: <20200710090530.evy5ezrhnskywbt2@steredhat>
+References: <20200709172801.2697-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200710083025.GD1999@grain>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709172801.2697-1-pbonzini@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/07/2020 10.30, Cyrill Gorcunov wrote:
-> On Fri, Jul 10, 2020 at 09:56:31AM +0200, Rasmus Villemoes wrote:
->> The ability to check open file descriptions for equality (without
->> resorting to unreliable fstat() and fcntl(F_GETFL) comparisons) can be
->> useful outside of the checkpoint/restore use case - for example,
->> systemd uses kcmp() to deduplicate the per-service file descriptor
->> store.
->>
->> Make it possible to have the kcmp() syscall without the full
->> CONFIG_CHECKPOINT_RESTORE.
->>
->> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
->> ---
->> I deliberately drop the ifdef in the eventpoll.h header rather than
->> replace with KCMP_SYSCALL; it's harmless to declare a function that
->> isn't defined anywhere.
+Hi Paolo,
+
+On Thu, Jul 09, 2020 at 01:28:01PM -0400, Paolo Bonzini wrote:
+> Commit 850448f35aaf ("KVM: nVMX: Fix VMX preemption timer migration",
+> 2020-06-01) accidentally broke nVMX live migration from older version
+> by changing the userspace ABI.  Restore it and, while at it, ensure
+> that vmx->nested.has_preemption_timer_deadline is always initialized
+> according to the KVM_STATE_VMX_PREEMPTION_TIMER_DEADLINE flag.
 > 
-> Could you please point why setting #fidef KCMP_SYSCALL in eventpoll.h
-> is not suitable?
+> Cc: Makarand Sonare <makarandsonare@google.com>
+> Fixes: 850448f35aaf ("KVM: nVMX: Fix VMX preemption timer migration")
+> Reviewed-by: Jim Mattson <jmattson@google.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+> v1->v2: coding style [Jim]
+> 
+>  arch/x86/include/uapi/asm/kvm.h | 5 +++--
+>  arch/x86/kvm/vmx/nested.c       | 1 +
+>  2 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+> index 17c5a038f42d..0780f97c1850 100644
+> --- a/arch/x86/include/uapi/asm/kvm.h
+> +++ b/arch/x86/include/uapi/asm/kvm.h
+> @@ -408,14 +408,15 @@ struct kvm_vmx_nested_state_data {
+>  };
+>  
+>  struct kvm_vmx_nested_state_hdr {
+> -	__u32 flags;
+>  	__u64 vmxon_pa;
+>  	__u64 vmcs12_pa;
+> -	__u64 preemption_timer_deadline;
+>  
+>  	struct {
+>  		__u16 flags;
+>  	} smm;
+> +
+> +	__u32 flags;
+> +	__u64 preemption_timer_deadline;
+>  };
+>  
 
-It's just from a general "avoid ifdef clutter if possible" POV. The
-conditional declaration of the function doesn't really serve any purpose.
+Should we update also Documentation/virt/kvm/api.rst to be consistent?
 
-> Still the overall idea is fine for me, thanks!>
-> Reviewed-by: Cyrill Gorcunov <gorcunov@gmail.com>
-
-Thank you.
-
-Rasmus
-
+Thanks,
+Stefano
 
