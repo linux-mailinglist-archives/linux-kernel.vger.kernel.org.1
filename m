@@ -2,103 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA5521BEE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4AB21BEEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726347AbgGJVBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbgGJVBd (ORCPT
+        id S1726435AbgGJVCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:02:09 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:42800 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726374AbgGJVCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:01:33 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB3AC08C5DC;
-        Fri, 10 Jul 2020 14:01:33 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id z2so7229210wrp.2;
-        Fri, 10 Jul 2020 14:01:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6+r5bXWhv/RQ5xFOE17P6y/DtE6DdUph31T/6lnjgyI=;
-        b=Xj0O+fppYfdFYtGXu/8QJhYwJ7qRKnFTirnizTXoFo5bZj6n94L2JJj0BdRzJwzAb5
-         xZRyrEv3g4yyg5OvsM4snf2LCqod8codoTvAxrPCUxbIvksvMH1AU8WPvenGlYrpxSQf
-         6BjZ3/b3VUh3+MkQZawapsKpjwcb2Ex6HXUZFheK4SJDgNSlkTZm5VxobjBO1AQ5WX5K
-         aaZGH6qaz17M8SlXpxudD5NTY4oJewCMG4Q6skZFj/xPz2y1jeXWQLe2zCpIrQxxh940
-         SMoOyMYtdW1UeDYAgsdG/e20KOUC8x8x3GL5LKFyb7Zb02f8D42khsD14r13TK76VWQc
-         2R5Q==
+        Fri, 10 Jul 2020 17:02:08 -0400
+Received: by mail-il1-f200.google.com with SMTP id d3so4538531ilq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:02:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6+r5bXWhv/RQ5xFOE17P6y/DtE6DdUph31T/6lnjgyI=;
-        b=BxEhAZZtDDsyBzqANkTnCFRYrLUEhQwx4vuxe0tuyokzdVJAFNsUPr8jnGq0SmTNBa
-         gMALJmNNKIdOmUYg7XYrWx9ETbzA5Z9hBBhBIM1FAmyAMGVEEZpOUhSdxnvPIMrr3TF7
-         dY6LN7ctMpJIeHqeQN0oyHjXTAQ1bcFh8AYmuAY2oLe7XXUKqXBY9gcX6pjxX8A4TfEG
-         gQgxAWekABIPsrRZ7Fh3Nof+EHC0TTVlPhtHU9C2+jUV6CaxzuMSV8Qi+H9xFr3gcoxL
-         Gl1PS8uSBKyxUWjQBKooV2YVCjLVM5G0cLTY3k5P6iaV2qWcfqowjYB2adym9Lhu73xI
-         Z5lQ==
-X-Gm-Message-State: AOAM531W+LW7u+2Q9f6ljlp5rhgejWWpm05QR3EtL2zFzjdDp4IhuCoJ
-        VPMFgdVgFX/JbuFh4+orywzdkQooxAriDsWVlSw=
-X-Google-Smtp-Source: ABdhPJypPwO8Bo/INW0FnA8A7BrNDcU34sqKrdYu805RwMp6HxYo7wINlncuUBXunFISVe1eQrqua5IIzU9mGV+XpdY=
-X-Received: by 2002:adf:dd8d:: with SMTP id x13mr68186470wrl.362.1594414891375;
- Fri, 10 Jul 2020 14:01:31 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=EcX2YoSI4hSwdGD5PhGCWpYPH2pi2umYsQ04cJa1lWU=;
+        b=LVMs6zPC65oeQW8RfO+yU0CV47MEAyUwogwLfPbSB2GM2SBALjpGqK5VeJsq2DVfSt
+         XfQ/xwC3ed9diia3J9b3iJVT16svVlU8yKL3DAR3pxnDDkrDMdRXANigGzNcIrF8cCPf
+         gopml3IJSRyWEHyjfVzmFL/tCcEHtI9FVVj6KueCZDU5mJJQ98nP3MrX2uteR5V5FBwL
+         ayb7XKxORc34lTSSzy9hKXn6bfqlcv+1SsfBSA5V2++fPioS6ceuRwGRegsSwCCcj2jB
+         GSdqFh+m4t+EkGScQ+i1GNP3Kf17i8Tu7ngHLCPdPFrPDawDTkppHaoHpqpfdYudgNbF
+         /ZGg==
+X-Gm-Message-State: AOAM5306uqL8U2xS3vmHF5Txwq4mNt0HhisR1yR9mhnWccznmmGLyy1r
+        JLvUL134zlnPFnNEMBXwt+nNHKB9K//sXYIs/cFT12L1eyky
+X-Google-Smtp-Source: ABdhPJyEq9NElE2CSRzXLsV2eA/q4ph+H8ODuNt0JPwMVMptXa9fHTlPXbqtll4w0/ey3EQ8Hk51+Rr2HK3XNMuFsi5+FTKc0c7b
 MIME-Version: 1.0
-References: <20200710083758.3304139-1-colin.king@canonical.com>
-In-Reply-To: <20200710083758.3304139-1-colin.king@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 10 Jul 2020 17:01:19 -0400
-Message-ID: <CADnq5_MWvu0JDbBMR1_wDqozxMahX6uAJBppTLKwPLOmdtTGSQ@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amdgpu: fix spelling mistake "Falied" -> "Failed"
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a6b:7610:: with SMTP id g16mr44556439iom.115.1594414927282;
+ Fri, 10 Jul 2020 14:02:07 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 14:02:07 -0700
+In-Reply-To: <000000000000b9c33505a63f2fea@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005d881b05aa1ca788@google.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in mark_lock
+From:   syzbot <syzbot+31610284091be1bf04f4@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, balbi@kernel.org,
+        christophe.jaillet@wanadoo.fr, dmitry.torokhov@gmail.com,
+        gregkh@linuxfoundation.org, gustavo@embeddedor.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 4:38 AM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> There is a spelling mistake in a DRM_ERROR error message. Fix it.
->
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+syzbot suspects this bug was fixed by commit:
 
-Applied.  Thanks!
+commit c154703bc8dd2231ae81aafef5589b795b2b7e09
+Author: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date:   Sun Apr 19 04:18:07 2020 +0000
 
-Alex
+    Input: tca6416-keypad - fix a typo in MODULE_DESCRIPTION
 
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-> index e20695b44dbe..40706334f7a8 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-> @@ -1984,7 +1984,7 @@ static int psp_suspend(void *handle)
->
->         ret = psp_tmr_terminate(psp);
->         if (ret) {
-> -               DRM_ERROR("Falied to terminate tmr\n");
-> +               DRM_ERROR("Failed to terminate tmr\n");
->                 return ret;
->         }
->
-> --
-> 2.27.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=151c0000900000
+start commit:   d2f8825a Merge tag 'for_linus' of git://git.kernel.org/pub..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c33c7f7c5471fd39
+dashboard link: https://syzkaller.appspot.com/bug?extid=31610284091be1bf04f4
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14797b81100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11f86d6e100000
+
+If the result looks correct, please mark the bug fixed by replying with:
+
+#syz fix: Input: tca6416-keypad - fix a typo in MODULE_DESCRIPTION
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
