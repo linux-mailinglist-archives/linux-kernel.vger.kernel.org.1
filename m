@@ -2,156 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8806621BF10
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95AB521BF17
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbgGJVNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbgGJVNj (ORCPT
+        id S1726514AbgGJVOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:14:49 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:59024 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbgGJVOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:13:39 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80E9C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:13:38 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id j10so5561402qtq.11
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:13:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=labbott.name; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Py7sbUg6SrhS/tqtX2Sq8t6PBGylJUmZvrnUWwDIZKQ=;
-        b=z2hrydleOwcHTXUTY3Zdw8+qKJdrCWfJB9WN6Em2f/LdnIx8oUqkbqEsO2E3Jn4n5c
-         WGWDW79gtum6V0gRq8VNRWPBOaUoJivLznSnq94+8ARITJSAp7ghn3Vb2Ft1hRqn1a7N
-         nAJjVeMEupzJ1xbWmmWyT7HWG08fr8APAxDFs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Py7sbUg6SrhS/tqtX2Sq8t6PBGylJUmZvrnUWwDIZKQ=;
-        b=AT47exbDo+E8aoXYjRbS6rnIn2Pw+NfXh3K6zOg4ywFBKeuqWCxNLwpI22fFlVqgoy
-         URewVzE6gilimz2MSMQ0+xlcr+HQdFhmVBT7xFBi3IcIpSgvPjHEcUm6eZNGJXuUU8h3
-         GRsEljto870BjXlvig0SZ0rt4eCL2m7ysrQ4Aawh2wpRofbZ557UOXOcCMyjgcMsGEWp
-         J2dIoiC5cEdGVaW/r9VkrbsZvjj1rKX8wxRyFmQ+Ft7ghPspGH+jMiREmZzrAhmNJxhv
-         wlMXlvfMygvwLNfRCHOj/Nzfk5bsmt3hC8KtIfmYxhNsJ/rO8B++vGt3zMyWVW6B38ah
-         kF8A==
-X-Gm-Message-State: AOAM530y70vDd+tvSj9vXVmfz+GCAssxeMjkpPqSIlF2MO0/zwLXlZ+e
-        jRUe4hhxsu4dRF9vvamwGYqiKj8pSFTbRw==
-X-Google-Smtp-Source: ABdhPJyyT+pNMBHbp+rM/XUuxP36fWE0gYZosn0juRTh7hjb86WB84iL4vCYnrV250o29G7X0RUy4A==
-X-Received: by 2002:ac8:197b:: with SMTP id g56mr52023025qtk.105.1594415617748;
-        Fri, 10 Jul 2020 14:13:37 -0700 (PDT)
-Received: from [192.168.1.168] (pool-74-109-246-95.pitbpa.fios.verizon.net. [74.109.246.95])
-        by smtp.gmail.com with ESMTPSA id b53sm9292264qtc.65.2020.07.10.14.13.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 14:13:37 -0700 (PDT)
-Subject: Re: [PATCH v3] CodingStyle: Inclusive Terminology
-To:     Dan Williams <dan.j.williams@intel.com>, corbet@lwn.net
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Dave Airlie <airlied@redhat.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Mark Brown <broonie@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Olof Johansson <olof@lixom.net>, Chris Mason <clm@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org,
-        tech-board-discuss@lists.linuxfoundation.org,
-        ksummit-discuss@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-References: <159423201991.2466245.8461410729774664077.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   Laura Abbott <laura@labbott.name>
-Message-ID: <97c24e99-9f49-f094-acfb-705c2da12a76@labbott.name>
-Date:   Fri, 10 Jul 2020 17:13:36 -0400
+        Fri, 10 Jul 2020 17:14:48 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06ALDx9N112187;
+        Fri, 10 Jul 2020 16:13:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594415639;
+        bh=q1pnMYCq9dsed/gdYAEjNLBVNb25WLckeWzTyxQdg+0=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=UXIO9akGzFSjh1182Sj19Pe95TBE6s/S5AuaU0zNJRiHeWMniq5+5r42XicMQY6V9
+         a3rIrMIqiHI+FerNiWpjnaqhpZllqht4kFLNB4ToNBg7Lwe03h074vBz9FLWLy3ZV1
+         3+xjQzQkOFuWZHCToSEacoXZFa8pHipKwPNwxErg=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06ALDxF0127631;
+        Fri, 10 Jul 2020 16:13:59 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 10
+ Jul 2020 16:13:58 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 10 Jul 2020 16:13:58 -0500
+Received: from [10.250.34.57] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06ALDwLm026850;
+        Fri, 10 Jul 2020 16:13:58 -0500
+Subject: Re: [PATCHv3 5/6] irqchip/irq-pruss-intc: Add support for ICSSG INTC
+ on K3 SoCs
+To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Marc Zyngier <maz@kernel.org>
+CC:     <tglx@linutronix.de>, <jason@lakedaemon.net>, <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <david@lechnology.com>,
+        "Mills, William" <wmills@ti.com>
+References: <1593699479-1445-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+ <1593699479-1445-6-git-send-email-grzegorz.jaszczyk@linaro.org>
+ <d1b232c6f33a629117a2ecbd440622d0@kernel.org>
+ <CAMxfBF5p3kh-E-vUxo60a+QTuqQXbsSVYSTc_qYvN8ZckLPKzA@mail.gmail.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <8de2316f-733e-25d3-7512-f7725ac4e9eb@ti.com>
+Date:   Fri, 10 Jul 2020 16:13:58 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <159423201991.2466245.8461410729774664077.stgit@dwillia2-desk3.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAMxfBF5p3kh-E-vUxo60a+QTuqQXbsSVYSTc_qYvN8ZckLPKzA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/20 2:14 PM, Dan Williams wrote:
-> Linux maintains a coding-style and its own idiomatic set of terminology.
-> Update the style guidelines to recommend replacements for the terms
-> master/slave and blacklist/whitelist.
+Hi Marc,
+
+On 7/3/20 12:05 PM, Grzegorz Jaszczyk wrote:
+> On Thu, 2 Jul 2020 at 19:59, Marc Zyngier <maz@kernel.org> wrote:
+>>
+>> On 2020-07-02 15:17, Grzegorz Jaszczyk wrote:
+>>> From: Suman Anna <s-anna@ti.com>
+>>>
+>>> The K3 AM65x and J721E SoCs have the next generation of the PRU-ICSS
+>>> IP,
+>>> commonly called ICSSG. The PRUSS INTC present within the ICSSG supports
+>>> more System Events (160 vs 64), more Interrupt Channels and Host
+>>> Interrupts
+>>> (20 vs 10) compared to the previous generation PRUSS INTC instances.
+>>> The
+>>> first 2 and the last 10 of these host interrupt lines are used by the
+>>> PRU and other auxiliary cores and sub-modules within the ICSSG, with 8
+>>> host interrupts connected to MPU. The host interrupts 5, 6, 7 are also
+>>> connected to the other ICSSG instances within the SoC and can be
+>>> partitioned as per system integration through the board dts files.
+>>>
+>>> Enhance the PRUSS INTC driver to add support for this ICSSG INTC
+>>> instance. This support is added using specific compatible and match
+>>> data and updating the code to use this data instead of the current
+>>> hard-coded macros. The INTC config structure is updated to use the
+>>> higher events and channels on all SoCs, while limiting the actual
+>>> processing to only the relevant number of events/channels/interrupts.
+>>>
+>>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>>> Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+>>> ---
+>>> v2->v3:
+>>> - Change patch order: use it directly after "irqchip/irq-pruss-intc:
+>>>    Implement irq_{get,set}_irqchip_state ops" and before new
+>>>    "irqchip/irq-pruss-intc: Add event mapping support" in order to
+>>> reduce
+>>>    diff.
+>>
+>> The diff would be even smaller if you introduced a variable number of
+>> inputs the first place, i.e. in patch #2. Most if this patch just
+>> retrofits it. Please squash these changes into that initial patch,
+>> and only add the platform stuff here.
+
+Yeah, all the variables were introduced in this patch based on patch 
+history. Until this new IP came, we haven't had a need to use variables 
+in the original driver code. That's also the reason for this being a 
+separate patch rather than squashed into the original patch.
+
+regards
+Suman
+
+>
+> Sure I will do that.
 > 
-> Link: http://lore.kernel.org/r/159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-> Acked-by: Dave Airlie <airlied@redhat.com>
-> Acked-by: SeongJae Park <sjpark@amazon.de>
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Acked-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Olof Johansson <olof@lixom.net>
-> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Chris Mason <clm@fb.com>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
-> Changes since v2 [1]:
-> - Pick up missed sign-offs and acks from Jon, Shuah, and Christian
->    (sorry about missing those earlier).
-> 
-> - Reformat the replacement list to make it easier to read.
-> 
-> - Add 'controller' as a suggested replacement (Kees and Mark)
-> 
-> - Fix up the paired term for 'performer' to be 'director' (Kees)
-> 
-> - Collect some new acks, reviewed-by's, and sign-offs for v2.
-> 
-> - Fix up Chris's email
-> 
-> [1]: http://lore.kernel.org/r/159419296487.2464622.863943877093636532.stgit@dwillia2-desk3.amr.corp.intel.com
-> 
-> 
->   Documentation/process/coding-style.rst |   20 ++++++++++++++++++++
->   1 file changed, 20 insertions(+)
-> 
-> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-> index 2657a55c6f12..1bee6f8affdb 100644
-> --- a/Documentation/process/coding-style.rst
-> +++ b/Documentation/process/coding-style.rst
-> @@ -319,6 +319,26 @@ If you are afraid to mix up your local variable names, you have another
->   problem, which is called the function-growth-hormone-imbalance syndrome.
->   See chapter 6 (Functions).
->   
-> +For symbol names and documentation, avoid introducing new usage of
-> +'master / slave' (or 'slave' independent of 'master') and 'blacklist /
-> +whitelist'.
-> +
-> +Recommended replacements for 'master / slave' are:
-> +    '{primary,main} / {secondary,replica,subordinate}'
-> +    '{initiator,requester} / {target,responder}'
-> +    '{controller,host} / {device,worker,proxy}'
-> +    'leader / follower'
-> +    'director / performer'
-> +
-> +Recommended replacements for 'blacklist/whitelist' are:
-> +    'denylist / allowlist'
-> +    'blocklist / passlist'
-> +
-> +Exceptions for introducing new usage is to maintain a userspace ABI/API,
-> +or when updating code for an existing (as of 2020) hardware or protocol
-> +specification that mandates those terms. For new specifications
-> +translate specification usage of the terminology to the kernel coding
-> +standard where possible.
->   
->   5) Typedefs
->   -----------
+> Thank you,
+> Grzegorz
 > 
 
-Acked-by: Laura Abbott <laura@labbott.name>
