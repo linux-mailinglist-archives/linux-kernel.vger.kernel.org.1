@@ -2,143 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A242921ADD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 06:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CA821ADDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 06:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgGJERu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 00:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
+        id S1726756AbgGJEVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 00:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726757AbgGJERt (ORCPT
+        with ESMTP id S1725777AbgGJEVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 00:17:49 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F30EC08C5DC
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Jul 2020 21:17:49 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id h22so4860303lji.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 21:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GOMunx3lII6WiFhmgXs6T+sFqTi8oTyhM5FPcahBiiw=;
-        b=x2EauDhpkHLZTqe4KZEHA12Eg/+hjjsWaGtUf76DIl22j4xWvuSNhdrb1CmJN7sFKA
-         ZI9hXDk3LNKTzhj+MSOjESmm/PRUTbRsky5OwjMhbVOqeU46NMBofU93TgMavaTNJrff
-         8ZqcFxYWALq3owf6BE5DpDkQZwxurRUvMZbJ+VlWKXYoAERkOQ35aLZigtpQe/3sGot5
-         Lk0M6l199ufPUj1B9V3PO4CGbukEkl/oLLHeGM3yM9Yfi3RZ5cfqssnLWjOEQW0cKNrJ
-         4hXgsG8d4wWT8i9pv2epuJcGwmog4GXGw7nqOkK99uljD1qt+f5KUsWr4TC2ivxVVgTf
-         VIOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GOMunx3lII6WiFhmgXs6T+sFqTi8oTyhM5FPcahBiiw=;
-        b=IZyoOrDIwUlGnB3kZN+Q3Y7yasZHEqrNqjqOndnWIT9KudjFovduB4bY7A0PgOBZHr
-         EajF8bf5Cg4HUkBWAmBFYHXc/cClU/gcckPvK3PX78GdVAyWf/oHtP1oPbi4CgcTYzvX
-         PO3E8iTYZHw+G+dRfsfXsGDhiDxjk79lK2ZLS6x9g80iEnHgbMVHOrMFWWsP8b5zEDEY
-         vfbivTSYDvzQoRaWZgZ7vlIiC+RmUWXJF0HBcwuJYFrrq4Kj5lvreINt05JKs42O3fgC
-         +QsTB8t4YH33cLZAdy6jn8DY3tiYQgcuYfCVDgj2SLYnPLUyOYTw9zp0SQpSpDe+Zzss
-         buaA==
-X-Gm-Message-State: AOAM5307H2pOMfVdG2uH1egiOHaXCG0YNWQ+WnY4czf4cWsv5nQiC0IO
-        D6T2PpQPHT6KJ+oZEW6dwu5HghJS3qXTM1sSMv7R+w==
-X-Google-Smtp-Source: ABdhPJzJ5G9NeGhYRGYXrilWZEb+Io/ok8iNRSWg6aJugFsWnWQO5XiLBdPCFqnu9yYcQ3qL/dVPmgppJtVodiO8leM=
-X-Received: by 2002:a2e:9089:: with SMTP id l9mr31662918ljg.431.1594354667432;
- Thu, 09 Jul 2020 21:17:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYt+6OeibZMD0fP=O3nqFbcN3O4xcLkjq0mpQbZJ2uxB9w@mail.gmail.com>
- <CAK8P3a0ii1Z-UG8NpwTvkmOEcOvvTo4+m9xjW0JqR6LPvUZ4=g@mail.gmail.com>
-In-Reply-To: <CAK8P3a0ii1Z-UG8NpwTvkmOEcOvvTo4+m9xjW0JqR6LPvUZ4=g@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 10 Jul 2020 09:47:35 +0530
-Message-ID: <CA+G9fYsoEiQ-8ECKxMqQqPZKUbTQStp6wZi7ZiJDyi0YahFAvg@mail.gmail.com>
-Subject: Re: WARNING: at mm/mremap.c:211 move_page_tables in i386
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     linux- stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        lkft-triage@lists.linaro.org, Chris Down <chris@chrisdown.name>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michel Lespinasse <walken@google.com>, Fan_Yang@sjtu.edu.cn,
-        bgeffon@google.com, Anshuman Khandual <anshuman.khandual@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, pugaowei@gmail.com,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Hugh Dickins <hughd@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
+        Fri, 10 Jul 2020 00:21:20 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BF6C08C5CE;
+        Thu,  9 Jul 2020 21:21:19 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 5AFC92A6705
+Message-ID: <233509924f72d69824920d9312373eced68674c0.camel@collabora.com>
+Subject: Re: [RFC 07/12] media: uapi: h264: Add DPB entry field reference
+ flags
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Jonas Karlman <jonas@kwiboo.se>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Fri, 10 Jul 2020 01:21:07 -0300
+In-Reply-To: <HE1PR06MB4011559BF2447047C66285D2ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
+References: <HE1PR06MB40117D0EE96E6FA638A04B78ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
+         <20190901124531.23645-1-jonas@kwiboo.se>
+         <HE1PR06MB4011559BF2447047C66285D2ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
+Organization: Collabora
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Jul 2020 at 13:55, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Jul 9, 2020 at 7:28 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> >
-> > While running LTP mm test suite on i386 or qemu_i386 this kernel warning
-> > has been noticed from stable 5.4 to stable 5.7 branches and mainline 5.8.0-rc4
-> > and linux next.
->
-> Are you able to correlate this with any particular test case in LTP, or does
-> it happen for random processes?
->
-> In the log you linked to, it happens once for ksm05.c and multiple times for
-> thp01.c, sources here:
->
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/mem/ksm/ksm05.c
-> https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/mem/thp/thp01.c
->
-> Is it always these tests that trigger the warning, or sometimes others?
+Hello Jonas,
 
-These two test cases are causing this warning multiple times on i386.
+In the context of the uAPI cleanup,
+I'm revisiting this patch.
 
->
-> When you say it happens with linux-5.4 stable, does that mean you don't see
-> it with older versions? What is the last known working version?
+On Sun, 2019-09-01 at 12:45 +0000, Jonas Karlman wrote:
+> Add DPB entry flags to help indicate when a reference frame is a field picture
+> and how the DPB entry is referenced, top or bottom field or full frame.
+> 
+> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+> ---
+>  Documentation/media/uapi/v4l/ext-ctrls-codec.rst | 12 ++++++++++++
+>  include/media/h264-ctrls.h                       |  4 ++++
+>  2 files changed, 16 insertions(+)
+> 
+> diff --git a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+> index bc5dd8e76567..eb6c32668ad7 100644
+> --- a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+> @@ -2022,6 +2022,18 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+>      * - ``V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM``
+>        - 0x00000004
+>        - The DPB entry is a long term reference frame
+> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE``
+> +      - 0x00000008
+> +      - The DPB entry is a field picture
+> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_TOP``
+> +      - 0x00000010
+> +      - The DPB entry is a top field reference
+> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM``
+> +      - 0x00000020
+> +      - The DPB entry is a bottom field reference
+> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME``
+> +      - 0x00000030
+> +      - The DPB entry is a reference frame
+>  
+>  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE (enum)``
+>      Specifies the decoding mode to use. Currently exposes slice-based and
+> diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> index e877bf1d537c..76020ebd1e6c 100644
+> --- a/include/media/h264-ctrls.h
+> +++ b/include/media/h264-ctrls.h
+> @@ -185,6 +185,10 @@ struct v4l2_ctrl_h264_slice_params {
+>  #define V4L2_H264_DPB_ENTRY_FLAG_VALID		0x01
+>  #define V4L2_H264_DPB_ENTRY_FLAG_ACTIVE		0x02
+>  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
+> +#define V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE	0x08
+> +#define V4L2_H264_DPB_ENTRY_FLAG_REF_TOP	0x10
+> +#define V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM	0x20
+> +#define V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME	0x30
+>  
 
-I do not notice on stable-4.19 and below versions.
-Sorry i did not get the known working commit id or version.
+I've been going thru the H264 spec and I'm unsure,
+are all these flags semantically needed?
 
-It started happening from stable-rc 5.0 first release.
-I have evidence [1] showing it on 5.0.1
+For instance, if one of REF_BOTTOM or REF_TOP (or both)
+are set, doesn't that indicate it's a field picture?
 
->
-> I also see that you give the virtual machine 16GB of RAM, but as you are
-> running a 32-bit kernel without PAE, only 2.3GB end up being available,
-> and some other LTP tests in the log run out of memory.
->
-> You could check if the behavior changes if you give the kernel less memory,
-> e.g. 768MB (lowmem only), or enable CONFIG_X86_PAE to let it use the
-> entire 16GB.
+Or conversely, if neither REF_BOTTOM or REF_TOP are set,
+then it's a frame picture?
 
-Warning is still happening after enabling PAE config.
-But the oom-killer messages are gone. Thank you.
+Thanks,
+Ezequiel
 
-CONFIG_HIGHMEM=y
-CONFIG_X86_PAE=y
-
-full test log oom-killer messages are gone and kernel warning is still there,
-https://lkft.validation.linaro.org/scheduler/job/1552606#L10357
-
-build location:
-https://builds.tuxbuild.com/puilcMcGVwzFMN5fDUhY4g/
-
-[1] https://qa-reports.linaro.org/lkft/linux-stable-rc-5.0-oe/build/v5.0.1/testrun/1324990/suite/ltp-mm-tests/test/ksm02/log
-
----
-[  775.646689] WARNING: CPU: 3 PID: 10858 at
-/srv/oe/build/tmp-lkft-glibc/work-shared/intel-core2-32/kernel-source/mm/mremap.c:211
-move_page_tables+0x553/0x570
-[  775.647006] Modules linked in: fuse
-[  775.647006] CPU: 3 PID: 10858 Comm: true Not tainted 5.0.1 #1
-[  775.647006] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.10.2-1 04/01/2014
-[  775.647006] EIP: move_page_tables+0x553/0x570
-
-- Naresh
