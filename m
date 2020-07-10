@@ -2,83 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA52721AF15
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 07:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F18221AF0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 07:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbgGJF7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 01:59:09 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:36738 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725966AbgGJF7E (ORCPT
+        id S1726958AbgGJF6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 01:58:32 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:40425 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725943AbgGJF6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 01:59:04 -0400
-X-UUID: 8c6f72ef7b134dfaa0591a3f94dd9dbe-20200710
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3J4M+F0supuqFwxgQsU3V/czRpfnA/Zs7qlL02F271M=;
-        b=eaOWi4hboW4xKQFG6Pz2Ttjuvu9LRJe9uYlsgtwdQEAF4M90fJb/wBYfVh/GKmCF8pWrjdL4FcrIO2HrhR+YHGfjvGQevi3sz16QpKqr/LpN/m/Mku0mVEEQHZwOkc7CfDR9ywpuFuVzm23MCU6cnl/6uEjqG6x+Re4YtB8xv9Q=;
-X-UUID: 8c6f72ef7b134dfaa0591a3f94dd9dbe-20200710
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1894286242; Fri, 10 Jul 2020 13:58:56 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32DR.mediatek.inc
- (172.27.6.104) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 10 Jul
- 2020 13:58:52 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 10 Jul 2020 13:58:51 +0800
-Message-ID: <1594360692.23885.29.camel@mhfsdcap03>
-Subject: Re: [PATCH] usb: xhci-mtk: fix the failure of bandwidth allocation
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-CC:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Ikjoon Jang <ikjn@chromium.org>
-Date:   Fri, 10 Jul 2020 13:58:12 +0800
-In-Reply-To: <CANMq1KA2kT1yLGqhJFBKt4sRzzE6r=ABkSX59S-Mjr8Dg8sTOQ@mail.gmail.com>
-References: <1594348182-431-1-git-send-email-chunfeng.yun@mediatek.com>
-         <CANMq1KA2kT1yLGqhJFBKt4sRzzE6r=ABkSX59S-Mjr8Dg8sTOQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Fri, 10 Jul 2020 01:58:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594360708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C4LnrvqT9+DNx24YkEZw2+SXe1o6FKiLlzwpTypzG8A=;
+        b=Y+XxOvBjEbl9F7XdtOTWEY97JVlA/4JP9m1OmOM/D/jNmDESGG8eUGLrkYTpi8iDjHO65f
+        DcJzt/9EtJvnxVr49HXpyCfTyPviqACGraWwl9LAp+nvbzYOwfs3ZJ/2BEaJ1Ey//5I0mk
+        Ry4yH4AO8/XNtQnB4TbTvmqSHnhav1M=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-376-FPdUbiyrNYmCVsD8AM-1aw-1; Fri, 10 Jul 2020 01:58:27 -0400
+X-MC-Unique: FPdUbiyrNYmCVsD8AM-1aw-1
+Received: by mail-wm1-f70.google.com with SMTP id e15so5249118wme.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Jul 2020 22:58:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C4LnrvqT9+DNx24YkEZw2+SXe1o6FKiLlzwpTypzG8A=;
+        b=J6omiadZEEwjiC/SEAhdJDZqsBK0WzE0Nv6moqC5rx7lwom4Iz85HW8i5tSYe6FHVz
+         6p7Z9wvdO8Jrr88Aof0yFf3UB0Lvs42NwTpgk4J5r2zzI6MBQU5AEJC0hj95MjFfzyvw
+         JgHmuvCbTlSsdgInJnA27Ab3WRvbJlcPtKZaoo7Bj6IGfxNwUyw9PEOFDFt2Fb0ffrYO
+         p5praA2zGNcgUwF9S5DZjAKK6X1NvZsBZoE7f9IJKMntOS62nVLFgZodFP0Efin0O+Nh
+         BIQxToaVEIItnKvVYzY2yZHpgRed87ndLYS+KhC5jZYWX8po/ff4OO2nSsTkvmlOPXT0
+         htbg==
+X-Gm-Message-State: AOAM53095lDKME82Aw7nfu++auOf/JLnIyvbDQcUfSsADmGyjcey0/6v
+        Og8s6NRYFdbaaUZVGKuRXuKiy/QvyijtLhY8B/mte3Nty45mz9ZC7Q7xk/qgvhgOl/ymirGlVVX
+        NRyJ6GEWZPlxYgrTezmLcuvSS
+X-Received: by 2002:a7b:c38f:: with SMTP id s15mr3394783wmj.152.1594360705673;
+        Thu, 09 Jul 2020 22:58:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwLn6mDVLNvrd8u4soiaqjHIlkFvr4sTxn75hYjrWzq/00SA7DFxiythkthHZ5njp79o9gOug==
+X-Received: by 2002:a7b:c38f:: with SMTP id s15mr3394766wmj.152.1594360705488;
+        Thu, 09 Jul 2020 22:58:25 -0700 (PDT)
+Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
+        by smtp.gmail.com with ESMTPSA id j15sm8366155wrx.69.2020.07.09.22.58.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jul 2020 22:58:24 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 01:58:21 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eugenio Perez Martin <eperezma@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH RFC v8 02/11] vhost: use batched get_vq_desc version
+Message-ID: <20200710015615-mutt-send-email-mst@kernel.org>
+References: <20200622122546-mutt-send-email-mst@kernel.org>
+ <CAJaqyWfbouY4kEXkc6sYsbdCAEk0UNsS5xjqEdHTD7bcTn40Ow@mail.gmail.com>
+ <CAJaqyWefMHPguj8ZGCuccTn0uyKxF9ZTEi2ASLtDSjGNb1Vwsg@mail.gmail.com>
+ <419cc689-adae-7ba4-fe22-577b3986688c@redhat.com>
+ <CAJaqyWedEg9TBkH1MxGP1AecYHD-e-=ugJ6XUN+CWb=rQGf49g@mail.gmail.com>
+ <0a83aa03-8e3c-1271-82f5-4c07931edea3@redhat.com>
+ <CAJaqyWeqF-KjFnXDWXJ2M3Hw3eQeCEE2-7p1KMLmMetMTm22DQ@mail.gmail.com>
+ <20200709133438-mutt-send-email-mst@kernel.org>
+ <7dec8cc2-152c-83f4-aa45-8ef9c6aca56d@redhat.com>
+ <CAJaqyWdLOH2EceTUduKYXCQUUNo1XQ1tLgjYHTBGhtdhBPHn_Q@mail.gmail.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 97B22A963E31DADB986C97287E9D5D6F20148FF6D6DB6C9860D7A8A1AC4405352000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJaqyWdLOH2EceTUduKYXCQUUNo1XQ1tLgjYHTBGhtdhBPHn_Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTA3LTEwIGF0IDExOjE0ICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
-DQo+IE9uIEZyaSwgSnVsIDEwLCAyMDIwIGF0IDEwOjMwIEFNIENodW5mZW5nIFl1biA8Y2h1bmZl
-bmcueXVuQG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBUaGUgd01heFBhY2tldFNpemUg
-ZmllbGQgb2YgZW5kcG9pbnQgZGVzY3JpcHRvciBtYXkgYmUgemVybw0KPiA+IGFzIGRlZmF1bHQg
-dmFsdWUgaW4gYWx0ZXJuYXRlIGludGVyZmFjZSwgYW5kIHRoZXkgYXJlIG5vdA0KPiA+IGFjdHVh
-bGx5IHNlbGVjdGVkIHdoZW4gc3RhcnQgc3RyZWFtLCBzbyBza2lwIHRoZW0gd2hlbiB0cnkgdG8N
-Cj4gPiBhbGxvY2F0ZSBiYW5kd2lkdGguDQo+ID4NCj4gPiBDYzogc3RhYmxlIDxzdGFibGVAdmdl
-ci5rZXJuZWwub3JnPg0KPiA+IFNpZ25lZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcu
-eXVuQG1lZGlhdGVrLmNvbT4NCj4gDQo+IEFkZCB0aGlzPw0KPiBGaXhlczogMGNiZDRiMzRjZGE5
-ZGZkICgieGhjaTogbWVkaWF0ZWs6IHN1cHBvcnQgTVRLIHhIQ0kgaG9zdCBjb250cm9sbGVyIikN
-Ck9rLCB0aGFua3MNCg0KPiANCj4gPiAtLS0NCj4gPiAgZHJpdmVycy91c2IvaG9zdC94aGNpLW10
-ay1zY2guYyB8IDQgKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspDQo+
-ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay1zY2guYyBiL2Ry
-aXZlcnMvdXNiL2hvc3QveGhjaS1tdGstc2NoLmMNCj4gPiBpbmRleCBmZWE1NTU1Li40NWM1NGQ1
-NiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLXNjaC5jDQo+ID4g
-KysrIGIvZHJpdmVycy91c2IvaG9zdC94aGNpLW10ay1zY2guYw0KPiA+IEBAIC01NTcsNiArNTU3
-LDEwIEBAIHN0YXRpYyBib29sIG5lZWRfYndfc2NoKHN0cnVjdCB1c2JfaG9zdF9lbmRwb2ludCAq
-ZXAsDQo+ID4gICAgICAgICBpZiAoaXNfZnNfb3JfbHMoc3BlZWQpICYmICFoYXNfdHQpDQo+ID4g
-ICAgICAgICAgICAgICAgIHJldHVybiBmYWxzZTsNCj4gPg0KPiA+ICsgICAgICAgLyogc2tpcCBl
-bmRwb2ludCB3aXRoIHplcm8gbWF4cGt0ICovDQo+ID4gKyAgICAgICBpZiAodXNiX2VuZHBvaW50
-X21heHAoJmVwLT5kZXNjKSA9PSAwKQ0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gZmFsc2U7
-DQo+ID4gKw0KPiA+ICAgICAgICAgcmV0dXJuIHRydWU7DQo+ID4gIH0NCj4gPg0KPiA+IC0tDQo+
-ID4gMS45LjENCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXw0KPiA+IExpbnV4LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiA+IExpbnV4LW1lZGlhdGVr
-QGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVrDQoNCg==
+On Fri, Jul 10, 2020 at 07:39:26AM +0200, Eugenio Perez Martin wrote:
+> > > How about playing with the batch size? Make it a mod parameter instead
+> > > of the hard coded 64, and measure for all values 1 to 64 ...
+> >
+> >
+> > Right, according to the test result, 64 seems to be too aggressive in
+> > the case of TX.
+> >
+> 
+> Got it, thanks both!
+
+In particular I wonder whether with batch size 1
+we get same performance as without batching
+(would indicate 64 is too aggressive)
+or not (would indicate one of the code changes
+affects performance in an unexpected way).
+
+-- 
+MST
 
