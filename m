@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F320A21AD87
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 05:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0FD21AD8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 05:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgGJDap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 23:30:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:44876 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726495AbgGJDan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 23:30:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4103831B;
-        Thu,  9 Jul 2020 20:30:43 -0700 (PDT)
-Received: from [10.163.87.77] (unknown [10.163.87.77])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BA903F9AB;
-        Thu,  9 Jul 2020 20:30:38 -0700 (PDT)
-Subject: Re: [PATCH V4] mm/vmstat: Add events for THP migration without split
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>, Zi Yan <ziy@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1594287583-16568-1-git-send-email-anshuman.khandual@arm.com>
- <cab90a5c-4c61-e9ad-659f-a9438d639fe5@infradead.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <50cc0a0d-e04e-9e5d-26a6-73a91944ba8c@arm.com>
-Date:   Fri, 10 Jul 2020 09:00:09 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1727107AbgGJDbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 23:31:49 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:8845 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726495AbgGJDbr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 23:31:47 -0400
+X-UUID: 60e408bae5c34e8199bd39f6c963ffae-20200710
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=EGM3/BWA8LhSsl+HU+sSKjzVuEq3sKi1FpSTwosiG/Y=;
+        b=nx0ywG3UFrBU0jPuTeVq7HNV5sLjB56T57UY7fFULkQTJYkIT4dhVbW4K97Ev+6/oUAkkB3uLcsaVrqGMn5TL8AYc5mOaLvOoxhSaSamMQo8eo8y4TWwzbqPL94LvpjZezJ2DgT9coKBwx876y7Z4lBhoiFEjNLk1T7SbRi/u4o=;
+X-UUID: 60e408bae5c34e8199bd39f6c963ffae-20200710
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 2019534727; Fri, 10 Jul 2020 11:31:40 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 10 Jul 2020 11:31:34 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 10 Jul 2020 11:31:38 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Felipe Balbi <balbi@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH] usb: gadget: bdc: use readl_poll_timeout() to simplify code
+Date:   Fri, 10 Jul 2020 11:30:56 +0800
+Message-ID: <1594351856-876-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-In-Reply-To: <cab90a5c-4c61-e9ad-659f-a9438d639fe5@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: FE010D8AB826172DBF251444CD9B52F4A7F285AF900E9FB851C849394F2C0CB92000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+VXNlIHJlYWRsX3BvbGxfdGltZW91dCgpIHRvIHBvbGwgcmVnaXN0ZXIgc3RhdHVzDQoNClNpZ25l
+ZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4NCi0tLQ0K
+IGRyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19jb3JlLmMgfCAyMiArKysrKysrKy0tLS0t
+LS0tLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25z
+KC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfY29yZS5j
+IGIvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2NvcmUuYw0KaW5kZXggMDJhM2E3Ny4u
+ZmExNzNkZSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19jb3Jl
+LmMNCisrKyBiL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19jb3JlLmMNCkBAIC0xMiw2
+ICsxMiw3IEBADQogI2luY2x1ZGUgPGxpbnV4L3NwaW5sb2NrLmg+DQogI2luY2x1ZGUgPGxpbnV4
+L3BsYXRmb3JtX2RldmljZS5oPg0KICNpbmNsdWRlIDxsaW51eC9pbnRlcnJ1cHQuaD4NCisjaW5j
+bHVkZSA8bGludXgvaW9wb2xsLmg+DQogI2luY2x1ZGUgPGxpbnV4L2lvcG9ydC5oPg0KICNpbmNs
+dWRlIDxsaW51eC9pby5oPg0KICNpbmNsdWRlIDxsaW51eC9saXN0Lmg+DQpAQCAtMzIsMjEgKzMz
+LDE0IEBADQogc3RhdGljIGludCBwb2xsX29pcChzdHJ1Y3QgYmRjICpiZGMsIGludCB1c2VjKQ0K
+IHsNCiAJdTMyIHN0YXR1czsNCi0JLyogUG9sbCB0aWxsIFNUUyE9IE9JUCAqLw0KLQl3aGlsZSAo
+dXNlYykgew0KLQkJc3RhdHVzID0gYmRjX3JlYWRsKGJkYy0+cmVncywgQkRDX0JEQ1NDKTsNCi0J
+CWlmIChCRENfQ1NUUyhzdGF0dXMpICE9IEJEQ19PSVApIHsNCi0JCQlkZXZfZGJnKGJkYy0+ZGV2
+LA0KLQkJCQkicG9sbF9vaXAgY29tcGxldGUgc3RhdHVzPSVkIiwNCi0JCQkJQkRDX0NTVFMoc3Rh
+dHVzKSk7DQotCQkJcmV0dXJuIDA7DQotCQl9DQotCQl1ZGVsYXkoMTApOw0KLQkJdXNlYyAtPSAx
+MDsNCi0JfQ0KLQlkZXZfZXJyKGJkYy0+ZGV2LCAiRXJyOiBvcGVyYXRpb24gdGltZWRvdXQgQkRD
+U0M6IDB4JTA4eFxuIiwgc3RhdHVzKTsNCisJaW50IHJldDsNCiANCi0JcmV0dXJuIC1FVElNRURP
+VVQ7DQorCXJldCA9IHJlYWRsX3BvbGxfdGltZW91dChiZGMtPnJlZ3MgKyBCRENfQkRDU0MsIHN0
+YXR1cywNCisJCShCRENfQ1NUUyhzdGF0dXMpICE9IEJEQ19PSVApLCAxMCwgdXNlYyk7DQorCWlm
+IChyZXQpDQorCQlkZXZfZXJyKGJkYy0+ZGV2LCAiRXJyOiBvcGVyYXRpb24gdGltZWRvdXQgQkRD
+U0M6IDB4JTA4eFxuIiwgc3RhdHVzKTsNCisNCisJcmV0dXJuIHJldDsNCiB9DQogDQogLyogU3Rv
+cCB0aGUgQkRDIGNvbnRyb2xsZXIgKi8NCi0tIA0KMS45LjENCg==
 
-On 07/09/2020 09:04 PM, Randy Dunlap wrote:
-> Hi,
-> 
-> I have a few comments on this.
-> 
-> a. I reported it very early and should have been Cc-ed.
-
-I should have Cc-ed you on this V4 patch, sorry about that.
-
-> 
-> b. A patch that applies to mmotm or linux-next would have been better
-> than a full replacement patch.
-I have followed that (i.e patch on mmotm/next as fix) only when the
-required change is smaller as compared to the series on mmotm/next.
-But for others a new patch should be better which can be replaced
-on mmotm and next. At least that is my understanding and would like
-to be corrected otherwise.
-
-> 
-> c. I tried replacing what I believe is the correct/same patch file in mmotm
-> and still have build errors.
-
-That should not have happened, all new THP migration events are with
-CONFIG_MIGRATION rather than CONFIG_TRANSPARENT_HUGEPAGE previously.
