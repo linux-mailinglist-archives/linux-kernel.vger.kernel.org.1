@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC7521B944
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DE021B931
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgGJPTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 11:19:54 -0400
-Received: from mga09.intel.com ([134.134.136.24]:38270 "EHLO mga09.intel.com"
+        id S1727003AbgGJPP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 11:15:56 -0400
+Received: from mga09.intel.com ([134.134.136.24]:38264 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727091AbgGJPL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727098AbgGJPL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 10 Jul 2020 11:11:59 -0400
-IronPort-SDR: +XW8sqGZY66IHmrC5zzAgKLf7xWiaIKkF8jn7DN/nZpOUBDRFGwP3pPdQg+uuXXUSb0GGKur9j
- O9eNsZTaH2pQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9678"; a="149686290"
+IronPort-SDR: SR7gP8FbT1lJcDs1kMc9nAwjscGWHcqESmNaEeYS4KiJmZij44KHhEgxcvqJlVbFub3Ie2+aTz
+ Yd54W747V/AA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9678"; a="149686314"
 X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
-   d="scan'208";a="149686290"
+   d="scan'208";a="149686314"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 08:11:56 -0700
-IronPort-SDR: n1SjVceTeR5yH8vaqkz1549J14IAVEBSpdOG/boll0caxAFVyUpHf5XUrSszoIiNz4aXJwlkEi
- il2ZvxDyDRUQ==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 08:11:58 -0700
+IronPort-SDR: ERac0KsH8rDYb6wE9CiXgD83MZHzMxGi9MHpmN6pq+vAY5ZTGpqeoNO3synewSy9+/z9vy33ph
+ LW1zZYUlPSKQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
-   d="scan'208";a="484675492"
+   d="scan'208";a="484675506"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.73])
-  by fmsmga005.fm.intel.com with ESMTP; 10 Jul 2020 08:11:54 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 10 Jul 2020 08:11:56 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V2 05/12] perf auxtrace: Add optional error flags to the itrace 'e' option
-Date:   Fri, 10 Jul 2020 18:10:57 +0300
-Message-Id: <20200710151104.15137-6-adrian.hunter@intel.com>
+Subject: [PATCH V2 06/12] perf intel-pt: Use itrace error flags to suppress some errors
+Date:   Fri, 10 Jul 2020 18:10:58 +0300
+Message-Id: <20200710151104.15137-7-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200710151104.15137-1-adrian.hunter@intel.com>
 References: <20200710151104.15137-1-adrian.hunter@intel.com>
@@ -43,139 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow the 'e' option to be followed by flags which will affect what errors
-will or will not be reported. Each flag must be preceded by either '+' or
-'-'. The flags are:
-	o	overflow
-	l	trace data lost
+The itrace "e" option may be followed by flags which affect what errors
+will or will not be reported.  Each flag must be preceded by either '+' or '-'.
+The flags supported by Intel PT are:
+		-o	Suppress overflow errors
+		-l	Suppress trace data lost errors
+For example, for errors but not overflow or data lost errors:
+
+	--itrace=e-o-l
+
+Suppressing those errors can be useful for testing and debugging
+because they are not due to decoding.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/Documentation/itrace.txt |  6 ++++
- tools/perf/util/auxtrace.c          | 44 +++++++++++++++++++++++++++++
- tools/perf/util/auxtrace.h          | 12 +++++++-
- 3 files changed, 61 insertions(+), 1 deletion(-)
+ tools/perf/Documentation/perf-intel-pt.txt | 9 ++++++++-
+ tools/perf/util/intel-pt.c                 | 9 +++++++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/Documentation/itrace.txt b/tools/perf/Documentation/itrace.txt
-index e817179c5027..114d0544d7c7 100644
---- a/tools/perf/Documentation/itrace.txt
-+++ b/tools/perf/Documentation/itrace.txt
-@@ -47,3 +47,9 @@
- 	--itrace=i0nss1000000
+diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
+index f4cd49a7fcdb..20ac592a2641 100644
+--- a/tools/perf/Documentation/perf-intel-pt.txt
++++ b/tools/perf/Documentation/perf-intel-pt.txt
+@@ -871,7 +871,14 @@ Developer Manuals.
  
- 	skips the first million instructions.
+ Error events show where the decoder lost the trace.  Error events
+ are quite important.  Users must know if what they are seeing is a complete
+-picture or not.
++picture or not. The "e" option may be followed by flags which affect what errors
++will or will not be reported.  Each flag must be preceded by either '+' or '-'.
++The flags supported by Intel PT are:
++		-o	Suppress overflow errors
++		-l	Suppress trace data lost errors
++For example, for errors but not overflow or data lost errors:
 +
-+	The 'e' option may be followed by flags which affect what errors will or
-+	will not be reported. Each flag must be preceded by either '+' or '-'.
-+	The flags are:
-+		o	overflow
-+		l	trace data lost
-diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-index 25c639ac4ad4..f0b0758830ee 100644
---- a/tools/perf/util/auxtrace.c
-+++ b/tools/perf/util/auxtrace.c
-@@ -1349,6 +1349,47 @@ void itrace_synth_opts__set_default(struct itrace_synth_opts *synth_opts,
- 	synth_opts->initial_skip = 0;
- }
++	--itrace=e-o-l
  
-+static int get_flag(const char **ptr, unsigned int *flags)
-+{
-+	while (1) {
-+		char c = **ptr;
-+
-+		if (c >= 'a' && c <= 'z') {
-+			*flags |= 1 << (c - 'a');
-+			++*ptr;
+ The "d" option will cause the creation of a file "intel_pt.log" containing all
+ decoded packets and instructions.  Note that this option slows down the decoder
+diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+index f09d4cfcd0fd..a1cb6a284a2b 100644
+--- a/tools/perf/util/intel-pt.c
++++ b/tools/perf/util/intel-pt.c
+@@ -1862,6 +1862,15 @@ static int intel_pt_synth_error(struct intel_pt *pt, int code, int cpu,
+ 	char msg[MAX_AUXTRACE_ERROR_MSG];
+ 	int err;
+ 
++	if (pt->synth_opts.error_minus_flags) {
++		if (code == INTEL_PT_ERR_OVR &&
++		    pt->synth_opts.error_minus_flags & AUXTRACE_ERR_FLG_OVERFLOW)
 +			return 0;
-+		} else if (c == ' ') {
-+			++*ptr;
-+			continue;
-+		} else {
-+			return -1;
-+		}
-+	}
-+}
-+
-+static int get_flags(const char **ptr, unsigned int *plus_flags, unsigned int *minus_flags)
-+{
-+	while (1) {
-+		switch (**ptr) {
-+		case '+':
-+			++*ptr;
-+			if (get_flag(ptr, plus_flags))
-+				return -1;
-+			break;
-+		case '-':
-+			++*ptr;
-+			if (get_flag(ptr, minus_flags))
-+				return -1;
-+			break;
-+		case ' ':
-+			++*ptr;
-+			break;
-+		default:
++		if (code == INTEL_PT_ERR_LOST &&
++		    pt->synth_opts.error_minus_flags & AUXTRACE_ERR_FLG_DATA_LOST)
 +			return 0;
-+		}
 +	}
-+}
 +
- /*
-  * Please check tools/perf/Documentation/perf-script.txt for information
-  * about the options parsed here, which is introduced after this cset,
-@@ -1436,6 +1477,9 @@ int itrace_parse_synth_opts(const struct option *opt, const char *str,
- 			break;
- 		case 'e':
- 			synth_opts->errors = true;
-+			if (get_flags(&p, &synth_opts->error_plus_flags,
-+				      &synth_opts->error_minus_flags))
-+				goto out_err;
- 			break;
- 		case 'd':
- 			synth_opts->log = true;
-diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-index e3ce5fb03ca0..cfe6d00d8624 100644
---- a/tools/perf/util/auxtrace.h
-+++ b/tools/perf/util/auxtrace.h
-@@ -55,6 +55,9 @@ enum itrace_period_type {
- 	PERF_ITRACE_PERIOD_NANOSECS,
- };
+ 	intel_pt__strerror(code, msg, MAX_AUXTRACE_ERROR_MSG);
  
-+#define AUXTRACE_ERR_FLG_OVERFLOW	(1 << ('o' - 'a'))
-+#define AUXTRACE_ERR_FLG_DATA_LOST	(1 << ('l' - 'a'))
-+
- /**
-  * struct itrace_synth_opts - AUX area tracing synthesis options.
-  * @set: indicates whether or not options have been set
-@@ -91,6 +94,8 @@ enum itrace_period_type {
-  * @cpu_bitmap: CPUs for which to synthesize events, or NULL for all
-  * @ptime_range: time intervals to trace or NULL
-  * @range_num: number of time intervals to trace
-+ * @error_plus_flags: flags to affect what errors are reported
-+ * @error_minus_flags: flags to affect what errors are reported
-  */
- struct itrace_synth_opts {
- 	bool			set;
-@@ -124,6 +129,8 @@ struct itrace_synth_opts {
- 	unsigned long		*cpu_bitmap;
- 	struct perf_time_interval *ptime_range;
- 	int			range_num;
-+	unsigned int		error_plus_flags;
-+	unsigned int		error_minus_flags;
- };
- 
- /**
-@@ -613,7 +620,10 @@ bool auxtrace__evsel_is_auxtrace(struct perf_session *session,
- "				p:	    		synthesize power events\n"			\
- "				o:			synthesize other events recorded due to the use\n" \
- "							of aux-output (refer to perf record)\n"	\
--"				e:	    		synthesize error events\n"			\
-+"				e[flags]:		synthesize error events\n" \
-+"							each flag must be preceded by + or -\n" \
-+"							error flags are: o (overflow)\n" \
-+"									 l (data lost)\n" \
- "				d:	    		create a debug log\n"			\
- "				f:	    		synthesize first level cache events\n" \
- "				m:	    		synthesize last level cache events\n" \
+ 	auxtrace_synth_error(&event.auxtrace_error, PERF_AUXTRACE_ERROR_ITRACE,
 -- 
 2.17.1
 
