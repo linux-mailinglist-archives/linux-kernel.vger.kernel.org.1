@@ -2,136 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C93021BC62
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F0821BC65
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728319AbgGJRhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 13:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
+        id S1727819AbgGJRja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 13:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726977AbgGJRg6 (ORCPT
+        with ESMTP id S1726872AbgGJRja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:36:58 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD85C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:36:57 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id l17so6980912wmj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:36:57 -0700 (PDT)
+        Fri, 10 Jul 2020 13:39:30 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192FAC08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:39:30 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id s9so7358879ljm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:39:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Iiz4rYBh0ppy8E6FVGSuhxlekX/0+s0wESvlaeRWIoE=;
-        b=Or5BdrrCvZbbSE0fPN11pmiriYqwUOPDmjZPCkGG4uxThrPQeqKs79u9AtglL1lx9s
-         qIPUd1l001+kGv1QhzHWTRbIo85y4c8iBW0k771L5mq9xcnC5V0PrLpD6Oj6vZrSk3z9
-         GEQOmWaRD3GXCJyJpc2qzJVxksuiehDUNbRGOCMJsHfLNYEOVfOxop1HWCEVbKLGfsiz
-         +AYpBQWG6IfG+TEVR4546T73GceNp1XGNtRTcXl5Z2EG5rLwu5yjGpmp7MsGm8yzTc45
-         /lNHSfpytl4dE74hhiIN0oFLdtcFrKtAM3wK+X//vRFKlIK6D7csIH/yk+v5p024Ml0r
-         WPXw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lXuUczWFNlwPKehZIWXn30gRWiLBJgbemeVZ6SnUAcc=;
+        b=H+fQVchtOQTAtj7qP/IRP93a2MdhdzCX+kqk9bAncYdhLuiymqoDTbVFJDni8bdQpW
+         bnkmCwDyWeEU0Op/y1KIcZ2rsMu0mVcT3G48Ow4qQw8E9PMNaJYfexIG1RlD8Tpvf9VU
+         MfU7LXYx4m5hygDtLlzwEm+bMw8uFlgaP7fOQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Iiz4rYBh0ppy8E6FVGSuhxlekX/0+s0wESvlaeRWIoE=;
-        b=KFCte3+RmxDydrbbT+qCg+OtkPcLoTX5vkF5nzezeWcWmu631sqOWiZlPeuRezy2xx
-         mgKz1Jd0PBuI5tb4qeRgnZWfATLFqObRJZ7Vbpeg2SRRphrymMOtmgW/b3zgZbXuAaNQ
-         PHEo796qZLyg6ac7SrhjKFrNA3pu52B18vjVqztV+lrbdwqNmK4l5fxIRfsUjqhWWML/
-         LBlBgQbFRZRerDJN2gxGD3LfM0DIZ1aTNgWo0vhro9c1LC7hZf4LDRQ4IQOCfGzrm+nL
-         h5uKe3CuQOQC+8PtxsD8Wdh32UVOxeeydbr26VApAEPTtYeTV+dBP8zGoWW/XjZ38P9/
-         1/yQ==
-X-Gm-Message-State: AOAM530JfOktGuh1DwM4id48PeEqTsfkIhJR2ynXhLB6Pf+67Err6tcE
-        Fy9GkCr+iiMEDj3QNMxFagFYcopb
-X-Google-Smtp-Source: ABdhPJyG30GMqmPugFhnU7rHKQuuDFM6rfeG5jCyYPpX+hMpml2iDX00qwWcNazvIA21hwQxort7Og==
-X-Received: by 2002:a7b:c936:: with SMTP id h22mr5908728wml.114.1594402615413;
-        Fri, 10 Jul 2020 10:36:55 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id n16sm9903857wmc.40.2020.07.10.10.36.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 10:36:54 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Cc:     Moti Haimovski <mhaimovski@habana.ai>
-Subject: [PATCH 4/4] habanalabs: check for DMA errors when clearing memory
-Date:   Fri, 10 Jul 2020 20:36:52 +0300
-Message-Id: <20200710173652.31039-4-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200710173652.31039-1-oded.gabbay@gmail.com>
-References: <20200710173652.31039-1-oded.gabbay@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lXuUczWFNlwPKehZIWXn30gRWiLBJgbemeVZ6SnUAcc=;
+        b=Y1c/DDkTJqCdywW9ub0XxA54qbbdkszRHeXVKNIKPRsc5TKZ0gW+/xTpxizEfZbrtT
+         pLFNXVFAdDNhpmAY/rxi+E+hHhuSCZkpjr0ccoOTgJhGIiE8ZU6q0Qyvrrb1rhjATXQy
+         pmeWokaxnA704tN5yIIkGG09vEDddQ9Ng+p8HWsa231/oz86uTG+2uorYKSU1PCzYPR/
+         WllGWRt6LpixbbdIDaICa/ltq18+U9531fEbBv4j1u03SdwgFtTstis/8g0635NQdQ7z
+         d3DRM4tCcdZJGH7OLwlbzdSfGWoPoW8jjUGIY162dzDE1pvseu7VOK3Gh43SGVFq0iFn
+         uusA==
+X-Gm-Message-State: AOAM530FZxRvvsUjFCs3NthzaKcETrzWe0We/VLbR5gqOHCJ9tFefST9
+        /mw811nt9XduS9jfkt/CXpvR273WAG4=
+X-Google-Smtp-Source: ABdhPJz+el0VyFayFMF7l5n9exemMpvmp9E4fi0BHYHz3bZisk5THVcF6JOsiYRS+b4ItkbeJDy8vg==
+X-Received: by 2002:a2e:2c18:: with SMTP id s24mr32073027ljs.291.1594402767815;
+        Fri, 10 Jul 2020 10:39:27 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id g22sm2381091lfb.43.2020.07.10.10.39.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 10:39:26 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id q4so7413582lji.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:39:26 -0700 (PDT)
+X-Received: by 2002:a2e:b0ed:: with SMTP id h13mr30489580ljl.250.1594402765997;
+ Fri, 10 Jul 2020 10:39:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200626200033.1528052-1-dianders@chromium.org> <20200626125844.1.I8546ecb6c5beb054f70c5302d1a7293484212cd1@changeid>
+In-Reply-To: <20200626125844.1.I8546ecb6c5beb054f70c5302d1a7293484212cd1@changeid>
+From:   Evan Green <evgreen@chromium.org>
+Date:   Fri, 10 Jul 2020 10:38:44 -0700
+X-Gmail-Original-Message-ID: <CAE=gft7Q-KC2+9kGVT1k3BaAHZv61iWaeEODZEf7FnXX6i=1LA@mail.gmail.com>
+Message-ID: <CAE=gft7Q-KC2+9kGVT1k3BaAHZv61iWaeEODZEf7FnXX6i=1LA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] serial: qcom_geni_serial: Make kgdb work even if UART
+ isn't console
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        daniel.thompson@linaro.org,
+        Akash Asthana <akashast@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        sumit.garg@linaro.org, Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moti Haimovski <mhaimovski@habana.ai>
+On Fri, Jun 26, 2020 at 1:01 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> The geni serial driver had the rather sketchy hack in it where it
+> would adjust the number of bytes per RX FIFO word from 4 down to 1 if
+> it detected that CONFIG_CONSOLE_POLL was enabled (for kgdb) and this
+> was a console port (defined by the kernel directing output to this
+> port via the "console=" command line argument).
+>
+> The problem with that sketchy hack is that it's possible to run kgdb
+> over a serial port even if it isn't used for console.
+>
+> Let's avoid the hack by simply handling the 4-bytes-per-FIFO word case
+> for kdb.  We'll have to have a (very small) cache but that should be
+> fine.
+>
+> A nice side effect of this patch is that an agetty (or similar)
+> running on this port is less likely to drop characters.  We'll
+> have roughly 4 times the RX FIFO depth than we used to now.
+>
+> NOTE: the character cache here isn't shared between the polling API
+> and the non-polling API.  That means that, technically, the polling
+> API could eat a few extra bytes.  This doesn't seem to pose a huge
+> problem in reality because we'll only get several characters per FIFO
+> word if those characters are all received at nearly the same time and
+> we don't really expect non-kgdb characters to be sent to the same port
+> as kgdb at the exact same time we're exiting kgdb.
+>
+> ALSO NOTE: we still have the sketchy hack for setting the number of
+> bytes per TX FIFO word in place, but that one is less bad.  kgdb
+> doesn't have any problem with this because it always just sends 1 byte
+> at a time and waits for it to finish.  The TX FIFO hack is only really
+> needed for console output.  In any case, a future patch will remove
+> that hack, too.
+>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+>
+>  drivers/tty/serial/qcom_geni_serial.c | 80 ++++++++++++++++++---------
+>  1 file changed, 55 insertions(+), 25 deletions(-)
+>
+> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
+> index 0300867eab7a..4610e391e886 100644
+> --- a/drivers/tty/serial/qcom_geni_serial.c
+> +++ b/drivers/tty/serial/qcom_geni_serial.c
+> @@ -103,11 +103,13 @@
+>  #define DEFAULT_IO_MACRO_IO2_IO3_MASK          GENMASK(15, 4)
+>  #define IO_MACRO_IO2_IO3_SWAP          0x4640
+>
+> -#ifdef CONFIG_CONSOLE_POLL
+> -#define CONSOLE_RX_BYTES_PW 1
+> -#else
+> -#define CONSOLE_RX_BYTES_PW 4
+> -#endif
+> +struct qcom_geni_private_data {
+> +       /* NOTE: earlycon port will have NULL here */
+> +       struct uart_driver *drv;
+> +
+> +       u32 poll_cached_bytes;
+> +       unsigned int poll_cached_bytes_cnt;
+> +};
+>
+>  struct qcom_geni_serial_port {
+>         struct uart_port uport;
+> @@ -129,6 +131,8 @@ struct qcom_geni_serial_port {
+>         int wakeup_irq;
+>         bool rx_tx_swap;
+>         bool cts_rts_swap;
+> +
+> +       struct qcom_geni_private_data private_data;
+>  };
+>
+>  static const struct uart_ops qcom_geni_console_pops;
+> @@ -264,8 +268,9 @@ static bool qcom_geni_serial_poll_bit(struct uart_port *uport,
+>         unsigned int baud;
+>         unsigned int fifo_bits;
+>         unsigned long timeout_us = 20000;
+> +       struct qcom_geni_private_data *private_data = uport->private_data;
+>
+> -       if (uport->private_data) {
+> +       if (private_data->drv) {
+>                 port = to_dev_port(uport, uport);
+>                 baud = port->baud;
+>                 if (!baud)
+> @@ -331,23 +336,42 @@ static void qcom_geni_serial_abort_rx(struct uart_port *uport)
+>  }
+>
+>  #ifdef CONFIG_CONSOLE_POLL
+> +
+>  static int qcom_geni_serial_get_char(struct uart_port *uport)
+>  {
+> -       u32 rx_fifo;
+> +       struct qcom_geni_private_data *private_data = uport->private_data;
+>         u32 status;
+> +       u32 word_cnt;
+> +       int ret;
+> +
+> +       if (!private_data->poll_cached_bytes_cnt) {
+> +               status = readl(uport->membase + SE_GENI_M_IRQ_STATUS);
+> +               writel(status, uport->membase + SE_GENI_M_IRQ_CLEAR);
+>
+> -       status = readl(uport->membase + SE_GENI_M_IRQ_STATUS);
+> -       writel(status, uport->membase + SE_GENI_M_IRQ_CLEAR);
+> +               status = readl(uport->membase + SE_GENI_S_IRQ_STATUS);
+> +               writel(status, uport->membase + SE_GENI_S_IRQ_CLEAR);
+>
+> -       status = readl(uport->membase + SE_GENI_S_IRQ_STATUS);
+> -       writel(status, uport->membase + SE_GENI_S_IRQ_CLEAR);
+> +               status = readl(uport->membase + SE_GENI_RX_FIFO_STATUS);
+> +               word_cnt = status & RX_FIFO_WC_MSK;
+> +               if (!word_cnt)
+> +                       return NO_POLL_CHAR;
+>
+> -       status = readl(uport->membase + SE_GENI_RX_FIFO_STATUS);
+> -       if (!(status & RX_FIFO_WC_MSK))
+> -               return NO_POLL_CHAR;
+> +               if (word_cnt == 1 && (status & RX_LAST))
 
-In GAUDI we use QMAN0 DMA for clearing the MMU memory region
-at initialization. if this operation fails it places the DMA in an error
-state and then when trying to initialize QMAN0 we fail and erroneously
-assume its the QMAN that failed.
+I forget how the partial word snapping works. Are you sure you want
+word_cnt == 1? I see qcom_geni_serial_handle_rx() looks at RX_LAST
+independently as long as word_cnt != 0. I'm worried the hardware
+allows one FIFO entry with say 2 bytes in it and RX_LAST set, but then
+also piles new stuff in the FIFO behind it, so that word_cnt can be
+>1.
 
-This commit adds a check and clear of such DMA errors at initialization so
-we will have a better understanding of what went wrong.
-
-Signed-off-by: Moti Haimovski <mhaimovski@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
----
- drivers/misc/habanalabs/gaudi/gaudi.c | 25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index a9fd3d352ef0..57b2b9392cb2 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -4253,7 +4253,7 @@ static int gaudi_memset_device_memory(struct hl_device *hdev, u64 addr,
- {
- 	struct packet_lin_dma *lin_dma_pkt;
- 	struct hl_cs_job *job;
--	u32 cb_size, ctl;
-+	u32 cb_size, ctl, err_cause;
- 	struct hl_cb *cb;
- 	int rc;
- 
-@@ -4282,6 +4282,15 @@ static int gaudi_memset_device_memory(struct hl_device *hdev, u64 addr,
- 		goto release_cb;
- 	}
- 
-+	/* Verify DMA is OK */
-+	err_cause = RREG32(mmDMA0_CORE_ERR_CAUSE);
-+	if (err_cause && !hdev->init_done) {
-+		dev_dbg(hdev->dev,
-+			"Clearing DMA0 engine from errors (cause 0x%x)\n",
-+			err_cause);
-+		WREG32(mmDMA0_CORE_ERR_CAUSE, err_cause);
-+	}
-+
- 	job->id = 0;
- 	job->user_cb = cb;
- 	job->user_cb->cs_cnt++;
-@@ -4293,11 +4302,23 @@ static int gaudi_memset_device_memory(struct hl_device *hdev, u64 addr,
- 	hl_debugfs_add_job(hdev, job);
- 
- 	rc = gaudi_send_job_on_qman0(hdev, job);
--
- 	hl_debugfs_remove_job(hdev, job);
- 	kfree(job);
- 	cb->cs_cnt--;
- 
-+	/* Verify DMA is OK */
-+	err_cause = RREG32(mmDMA0_CORE_ERR_CAUSE);
-+	if (err_cause) {
-+		dev_err(hdev->dev, "DMA Failed, cause 0x%x\n", err_cause);
-+		rc = -EIO;
-+		if (!hdev->init_done) {
-+			dev_dbg(hdev->dev,
-+				"Clearing DMA0 engine from errors (cause 0x%x)\n",
-+				err_cause);
-+			WREG32(mmDMA0_CORE_ERR_CAUSE, err_cause);
-+		}
-+	}
-+
- release_cb:
- 	hl_cb_put(cb);
- 	hl_cb_destroy(hdev, &hdev->kernel_cb_mgr, cb->id << PAGE_SHIFT);
--- 
-2.17.1
-
+Also I mostly reviewed the change on Gerrit, they seemed to be the
+same. In this case it was easier to understand the indentation
+changes. If there were gotchas between the Gerrit version and this
+patch, let me know.
+-Evan
