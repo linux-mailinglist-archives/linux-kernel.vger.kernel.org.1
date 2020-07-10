@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE5E21AC69
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 03:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AADBA21AC77
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 03:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgGJBOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 21:14:15 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:60272 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726311AbgGJBOO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 21:14:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U2F61Zf_1594343650;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U2F61Zf_1594343650)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Jul 2020 09:14:10 +0800
-Date:   Fri, 10 Jul 2020 09:14:10 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
-        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
-        vbabka@suse.cz, yang.shi@linux.alibaba.com, thomas_os@shipmail.org,
-        anshuman.khandual@arm.com, sean.j.christopherson@intel.com,
-        peterx@redhat.com, aneesh.kumar@linux.ibm.com, willy@infradead.org,
-        thellstrom@vmware.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [Patch v4 0/4] mm/mremap: cleanup move_page_tables() a little
-Message-ID: <20200710011410.GC51939@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200708095028.41706-1-richard.weiyang@linux.alibaba.com>
- <3cab86b0-586e-781b-1620-f28b00c57d44@gmail.com>
+        id S1726757AbgGJBVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 21:21:14 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:58348 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726265AbgGJBVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 21:21:14 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5C638CEB53E9A7DF348C;
+        Fri, 10 Jul 2020 09:21:09 +0800 (CST)
+Received: from [127.0.0.1] (10.174.186.75) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Fri, 10 Jul 2020
+ 09:21:02 +0800
+Subject: Re: [RESEND PATCH v5 3/6] arm64: Add tlbi_user_level TLB invalidation
+ helper
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     <peterz@infradead.org>, <mark.rutland@arm.com>, <will@kernel.org>,
+        <aneesh.kumar@linux.ibm.com>, <akpm@linux-foundation.org>,
+        <npiggin@gmail.com>, <arnd@arndb.de>, <rostedt@goodmis.org>,
+        <maz@kernel.org>, <suzuki.poulose@arm.com>, <tglx@linutronix.de>,
+        <yuzhao@google.com>, <Dave.Martin@arm.com>, <steven.price@arm.com>,
+        <broonie@kernel.org>, <guohanjun@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
+        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
+        <kuhn.chenqun@huawei.com>
+References: <20200625080314.230-1-yezhenyu2@huawei.com>
+ <20200625080314.230-4-yezhenyu2@huawei.com> <20200709164845.GB6579@gaia>
+From:   Zhenyu Ye <yezhenyu2@huawei.com>
+Message-ID: <33a5dc75-8209-e198-bb41-8b4ab82c000e@huawei.com>
+Date:   Fri, 10 Jul 2020 09:20:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3cab86b0-586e-781b-1620-f28b00c57d44@gmail.com>
+In-Reply-To: <20200709164845.GB6579@gaia>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.186.75]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 10:38:58PM +0300, Dmitry Osipenko wrote:
->08.07.2020 12:50, Wei Yang пишет:
->> move_page_tables() tries to move page table by PMD or PTE.
->> 
->> The root reason is if it tries to move PMD, both old and new range should be
->> PMD aligned. But current code calculate old range and new range separately.
->> This leads to some redundant check and calculation.
->> 
->> This cleanup tries to consolidate the range check in one place to reduce some
->> extra range handling.
->> 
->> v4:
->>   * remove a redundant parentheses pointed by Kirill
->> 
->> v3:
->>   * merge patch 1 with 2 as suggested by Kirill
->
->>   * add patch 4 to simplify the logic to calculate next and extent
->
->Hello, Wei!
->
->Unfortunately you re-introduced the offending change that was fixed in
->v2 and today's next-20200709 on ARM32 is broken once again:
->
->BUG: Bad rss-counter state mm:db85ec46 type:MM_ANONPAGES val:190
->
+Hi Catalin,
 
-Ah, my bad, I forget the error we met last time. It is the different format of
-pmd_addr_end.
+On 2020/7/10 0:48, Catalin Marinas wrote:
+> On Thu, Jun 25, 2020 at 04:03:11PM +0800, Zhenyu Ye wrote:
+>> @@ -189,8 +195,9 @@ static inline void flush_tlb_page_nosync(struct vm_area_struct *vma,
+>>  	unsigned long addr = __TLBI_VADDR(uaddr, ASID(vma->vm_mm));
+>>  
+>>  	dsb(ishst);
+>> -	__tlbi(vale1is, addr);
+>> -	__tlbi_user(vale1is, addr);
+>> +	/* This function is only called on a small page */
+>> +	__tlbi_level(vale1is, addr, 3);
+>> +	__tlbi_user_level(vale1is, addr, 3);
+>>  }
+> 
+> Actually, that's incorrect. It was ok in v2 of your patches when I
+> suggested to drop level 0, just leave the function unchanged but I
+> missed that you updated it to pass level 3.
+> 
+> pmdp_set_access_flags -> ptep_set_access_flags ->
+> flush_tlb_fix_spurious_fault -> flush_tlb_page -> flush_tlb_page_nosync.
 
-Sorry for that.
+How do you want to fix this error? I notice that this series have been applied
+to arm64 (for-next/tlbi).  Should I send a new series based on arm64 (for-next/tlbi)?
 
-@ Kirill
+Thanks,
+Zhenyu
 
-If you agree, I would leave the extent/next calculation as it is in patch 3.
-
->Please don't do it ;)
->
->> v2:
->>   * remove 3rd patch which doesn't work on ARM platform. Thanks report and
->>     test from Dmitry Osipenko
->> 
->> Wei Yang (4):
->>   mm/mremap: it is sure to have enough space when extent meets
->>     requirement
->>   mm/mremap: calculate extent in one place
->>   mm/mremap: start addresses are properly aligned
->>   mm/mremap: use pmd_addr_end to simplify the calculate of extent
->> 
->>  include/linux/huge_mm.h |  2 +-
->>  mm/huge_memory.c        |  8 +-------
->>  mm/mremap.c             | 27 ++++++++++-----------------
->>  3 files changed, 12 insertions(+), 25 deletions(-)
->> 
-
--- 
-Wei Yang
-Help you, Help me
