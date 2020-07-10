@@ -2,156 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446D921BFBA
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD6921BFC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgGJWWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 18:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726806AbgGJWWH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 18:22:07 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B98BC08E6DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:22:07 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id 12so6062177oir.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:22:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sfPk1+u61DN4Dz/z2Pu4rTndUdKhPwDaWZtZBaUU1jg=;
-        b=CGWgrEwlpWSxGS28p+B9aKE3dWl38zgj4StlTqSCg3W9KgUJXjeDSaY6Jwx8i9lwRi
-         9UpvDUF7JWYl638DQLAuqEazgzf8DbZZ9YxsBc+6s4pA0JeV/ASd0IAshGRT8qT4BX0S
-         xxqg9moE+lu34pnF6PLPa3mQs1nK4VYFyAzoCRitXkydtj0aNPoPsnzkeIETzFjSHGPb
-         shBuYBhaTugM1OgtxES7TxTi/SzCN3mS/hMPilaBmHk0TAg8MoF64kvJ+n7z+8WllDhx
-         AAW0+zB1xhT0lObKRKFabhrxJAJ+RjvomcYh6bFq6juanWOudCq7LiXglEaxQI7fxDia
-         slHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sfPk1+u61DN4Dz/z2Pu4rTndUdKhPwDaWZtZBaUU1jg=;
-        b=nagIrDsWbkHsM40/7lEb+lBlqELHS+8vzG9zreHWL23ktVatTtEi4L4jnGk+RVCnta
-         0ErqQtwR8HJ4ZC49vF0YIuRXoG9D4IJW22gKifNngHj0LBtHGPNllinHD88qReJEXK0e
-         edsYch1vbefSZvh0QEI1tLPIkVOsZ8Z03F6/ClRfhuvYFy211IUkCPELIGSjX/zhrYrR
-         he3MyqXJMVYrfYKiNvqZuGIbIVFhFIsIVr+xlyGHepAEfopj/iWlLd7XuKqzo9vJRTMq
-         ExF/feLuhFphd8dqZTxoQhPuFeHmTzbeirZmZ0KHF3LLvaJ7E+5uLNIPm4CZphXCNHQy
-         VVEg==
-X-Gm-Message-State: AOAM530J9YV9d6weoZUuTDrYPVBdRJQr+98IGvW5Mv+FETkBBH5i7PNL
-        3GNLxOGEV2ZPXN1bzdmUQHJpuDwL9NJ3XBw2heK+8wZrNJY=
-X-Google-Smtp-Source: ABdhPJxLt4Cehy4m7wD0RYUwN5jq18bgpscixR8K5qySY9mHffzEWL0hF8baUYqT7R4HfV0LqTJoVtMk95ufKZmESKg=
-X-Received: by 2002:aca:b5c3:: with SMTP id e186mr5976661oif.10.1594419726479;
- Fri, 10 Jul 2020 15:22:06 -0700 (PDT)
+        id S1726582AbgGJWY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 18:24:58 -0400
+Received: from mga12.intel.com ([192.55.52.136]:36378 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726476AbgGJWY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 18:24:57 -0400
+IronPort-SDR: DQ+ePe7RYilR01sMbszQ4FG3shMEV6NuY4v0YGZh43Hd7v7dX5eX+EShXOlxHCiNWsVHahodfT
+ hVd2woB5uclQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9678"; a="127888362"
+X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
+   d="scan'208";a="127888362"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 15:24:56 -0700
+IronPort-SDR: QTrIxQ9gFItrcLdTgCaiZz6+5IqtsmFMfnikhpSabdxGcjxuYy3sTOz0Mx24WUt/rjZyPzOLqo
+ rqrfhd+yurAg==
+X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
+   d="scan'208";a="269197913"
+Received: from ideak-desk.fi.intel.com ([10.237.68.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 15:24:53 -0700
+Date:   Sat, 11 Jul 2020 01:24:47 +0300
+From:   Imre Deak <imre.deak@intel.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Lee Shawn C <shawn.c.lee@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Ville Syrjala <ville.syrjala@linux.intel.com>,
+        Cooper Chiou <cooper.chiou@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?iso-8859-1?Q?Jos=E9?= Roberto de Souza 
+        <jose.souza@intel.com>, Lucas De Marchi <lucas.demarchi@intel.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] drm/i915/mst: filter out the display mode exceed
+ sink's capability
+Message-ID: <20200710222447.GB29318@ideak-desk.fi.intel.com>
+Reply-To: imre.deak@intel.com
+References: <20200710193144.94751-1-lyude@redhat.com>
+ <20200710193144.94751-3-lyude@redhat.com>
 MIME-Version: 1.0
-References: <20200625001039.56174-1-john.stultz@linaro.org>
- <20200625001039.56174-6-john.stultz@linaro.org> <20200702141825.GA16941@willie-the-truck>
- <CALAqxLVZ2EhutYjOt7Be1RgnYwHT6-4m6DxA-t1wuxuSy=6yDQ@mail.gmail.com> <20200710075411.GA30011@willie-the-truck>
-In-Reply-To: <20200710075411.GA30011@willie-the-truck>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 10 Jul 2020 15:21:53 -0700
-Message-ID: <CALAqxLWadLrxckRHRAR0Q417RnFKquQJbRfO_DLEVH56cykRow@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] firmware: QCOM_SCM: Allow qcom_scm driver to be
- loadable as a permenent module
-To:     Will Deacon <will@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710193144.94751-3-lyude@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 12:54 AM Will Deacon <will@kernel.org> wrote:
-> On Thu, Jul 09, 2020 at 08:28:45PM -0700, John Stultz wrote:
-> > On Thu, Jul 2, 2020 at 7:18 AM Will Deacon <will@kernel.org> wrote:
-> > > On Thu, Jun 25, 2020 at 12:10:39AM +0000, John Stultz wrote:
-> > > > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> > > > index b510f67dfa49..714893535dd2 100644
-> > > > --- a/drivers/iommu/Kconfig
-> > > > +++ b/drivers/iommu/Kconfig
-> > > > @@ -381,6 +381,7 @@ config SPAPR_TCE_IOMMU
-> > > >  config ARM_SMMU
-> > > >       tristate "ARM Ltd. System MMU (SMMU) Support"
-> > > >       depends on (ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)) && MMU
-> > > > +     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
-> > > >       select IOMMU_API
-> > > >       select IOMMU_IO_PGTABLE_LPAE
-> > > >       select ARM_DMA_USE_IOMMU if ARM
-> > >
-> > > This looks like a giant hack. Is there another way to handle this?
-> >
-> > Sorry for the slow response here.
-> >
-> > So, I agree the syntax looks strange (requiring a comment obviously
-> > isn't a good sign), but it's a fairly common way to ensure drivers
-> > don't get built in if they optionally depend on another driver that
-> > can be built as a module.
-> >   See "RFKILL || !RFKILL", "EXTCON || !EXTCON", or "USB_GADGET ||
-> > !USB_GADGET" in various Kconfig files.
-> >
-> > I'm open to using a different method, and in a different thread you
-> > suggested using something like symbol_get(). I need to look into it
-> > more, but that approach looks even more messy and prone to runtime
-> > failures. Blocking the unwanted case at build time seems a bit cleaner
-> > to me, even if the syntax is odd.
->
-> Maybe just split it out then, so that the ARM_SMMU entry doesn't have this,
-> as that driver _really_ doesn't care about SoC details like this. In other
-> words, add a new entry along the lines of:
->
->         config ARM_SMMU_QCOM_IMPL
->         default y
->         #if QCOM_SCM=m this can't be =y
->         depends on ARM_SMMU & (QCOM_SCM || !QCOM_SCM)
->
-> and then have arm-smmu.h provide a static inline qcom_smmu_impl_init()
-> which returns -ENODEV if CONFIG_ARM_SMMU_QCOM_IMPL=n and hack the Makefile
-> so that we don't bother to compile arm-smmu-qcom.o in that case.
->
-> Would that work?
+On Fri, Jul 10, 2020 at 03:31:44PM -0400, Lyude Paul wrote:
+> From: Lee Shawn C <shawn.c.lee@intel.com>
+> 
+> So far, max dot clock rate for MST mode rely on physcial
+> bandwidth limitation. It would caused compatibility issue
+> if source display resolution exceed MST hub output ability.
+> 
+> For example, source DUT had DP 1.2 output capability.
+> And MST docking just support HDMI 1.4 spec. When a HDMI 2.0
+> monitor connected. Source would retrieve EDID from external
+> and get max resolution 4k@60fps. DP 1.2 can support 4K@60fps
+> because it did not surpass DP physical bandwidth limitation.
+> Do modeset to 4k@60fps, source output display data but MST
+> docking can't output HDMI properly due to this resolution
+> already over HDMI 1.4 spec.
+> 
+> Refer to commit <fcf463807596> ("drm/dp_mst: Use full_pbn
+> instead of available_pbn for bandwidth checks").
+> Source driver should refer to full_pbn to evaluate sink
+> output capability. And filter out the resolution surpass
+> sink output limitation.
+> 
+> Changes since v1:
+> * Using mgr->base.lock to protect full_pbn.
+> Changes since v2:
+> * Add ctx lock.
+> Changes since v3:
+> * s/intel_dp_mst_mode_clock_exceed_pbn_bandwidth/
+>   intel_dp_mst_mode_clock_exceeds_pbn_bw/
+> * Use the new drm_connector_helper_funcs.mode_valid_ctx to properly pipe
+>   down the drm_modeset_acquire_ctx that the probe helpers are using, so
+>   we can safely grab &mgr->base.lock without deadlocking
+> Changes since v4:
+> * Move drm_dp_calc_pbn_mode(mode->clock, bpp, false) > port->full_pbn
+>   check
+> * Fix the bpp we use in drm_dp_calc_pbn_mode()
+> * Drop leftover (!mgr) check
+> * Don't check for if full_pbn is unset. To be clear - it _can_ be unset,
+>   but if it is then it's certainly a bug in DRM or a non-compliant sink
+>   as full_pbn should always be populated by the time we call
+>   ->mode_valid_ctx.
+>   We should workaround non-compliant sinks with full_pbn=0, but that
+>   should happen in the DP MST helpers so we can estimate the full_pbn
+>   value as best we can.
 
-I think this proposal still has problems with the directionality of the call.
+I guess when the connector gets unplugged full_pbn would also get reset
+but pruning all modes in that case is ok.
 
-The arm-smmu-impl.o calls to arm-smmu-qcom.o which calls qcom_scm.o
-So if qcom_scm.o is part of a module, the calling code in
-arm-smmu-qcom.o also needs to be a module, which means CONFIG_ARM_SMMU
-needs to be a module.
+> 
+> Cc: Manasi Navare <manasi.d.navare@intel.com>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> Cc: Ville Syrjala <ville.syrjala@linux.intel.com>
+> Cc: Cooper Chiou <cooper.chiou@intel.com>
+> Co-developed-by: Lyude Paul <lyude@redhat.com>
+> Signed-off-by: Lee Shawn C <shawn.c.lee@intel.com>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
 
-I know you said the arm-smmu driver doesn't care about SoC details,
-but the trouble is that currently the arm-smmu driver does directly
-call the qcom-scm code. So it is a real dependency. However, if
-QCOM_SCM is not configured, it calls stubs and that's ok.  In that
-way, the "depends on QCOM_SCM || !QCOM_SCM" line actually makes sense.
-It looks terrible because we're used to boolean logic, but it's
-ternary.
+Reviewed-and-tested-by: Imre Deak <imre.deak@intel.com>
 
-Maybe can have the ARM_SMMU_QCOM_IMPL approach you suggest above, but
-that just holds the issue out at arms length, because we're still
-going to need to have:
-  depends on ARM_SMMU_QCOM_IMPL || !ARM_SMMU_QCOM_IMPL
-in the ARM_SMMU definition, which I suspect you're wanting to avoid.
-
-Otherwise the only thing I can think of is a deeper reworking of the
-arm-smmu-impl code so that the arm-smmu-qcom code probes itself and
-registers its hooks with the arm-smmu core.
-That way the arm-smmu driver would not directly call any SoC specific
-code (and thus have no dependencies outward). But it's probably a fair
-amount of churn vs the extra depends string.
-
-thanks
--john
+> ---
+>  drivers/gpu/drm/i915/display/intel_dp_mst.c | 55 ++++++++++++++-------
+>  1 file changed, 38 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp_mst.c b/drivers/gpu/drm/i915/display/intel_dp_mst.c
+> index bdc19b04b2c10..a2d91a4997001 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp_mst.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp_mst.c
+> @@ -639,39 +639,60 @@ static int intel_dp_mst_get_modes(struct drm_connector *connector)
+>  	return intel_dp_mst_get_ddc_modes(connector);
+>  }
+>  
+> -static enum drm_mode_status
+> -intel_dp_mst_mode_valid(struct drm_connector *connector,
+> -			struct drm_display_mode *mode)
+> +static int
+> +intel_dp_mst_mode_valid_ctx(struct drm_connector *connector,
+> +			    struct drm_display_mode *mode,
+> +			    struct drm_modeset_acquire_ctx *ctx,
+> +			    enum drm_mode_status *status)
+>  {
+>  	struct drm_i915_private *dev_priv = to_i915(connector->dev);
+>  	struct intel_connector *intel_connector = to_intel_connector(connector);
+>  	struct intel_dp *intel_dp = intel_connector->mst_port;
+> +	struct drm_dp_mst_topology_mgr *mgr = &intel_dp->mst_mgr;
+> +	struct drm_dp_mst_port *port = intel_connector->port;
+> +	const int min_bpp = 18;
+>  	int max_dotclk = to_i915(connector->dev)->max_dotclk_freq;
+>  	int max_rate, mode_rate, max_lanes, max_link_clock;
+> +	int ret;
+>  
+> -	if (drm_connector_is_unregistered(connector))
+> -		return MODE_ERROR;
+> +	if (drm_connector_is_unregistered(connector)) {
+> +		*status = MODE_ERROR;
+> +		return 0;
+> +	}
+>  
+> -	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
+> -		return MODE_NO_DBLESCAN;
+> +	if (mode->flags & DRM_MODE_FLAG_DBLSCAN) {
+> +		*status = MODE_NO_DBLESCAN;
+> +		return 0;
+> +	}
+>  
+>  	max_link_clock = intel_dp_max_link_rate(intel_dp);
+>  	max_lanes = intel_dp_max_lane_count(intel_dp);
+>  
+>  	max_rate = intel_dp_max_data_rate(max_link_clock, max_lanes);
+> -	mode_rate = intel_dp_link_required(mode->clock, 18);
+> +	mode_rate = intel_dp_link_required(mode->clock, min_bpp);
+>  
+> -	/* TODO - validate mode against available PBN for link */
+> -	if (mode->clock < 10000)
+> -		return MODE_CLOCK_LOW;
+> +	ret = drm_modeset_lock(&mgr->base.lock, ctx);
+> +	if (ret)
+> +		return ret;
+>  
+> -	if (mode->flags & DRM_MODE_FLAG_DBLCLK)
+> -		return MODE_H_ILLEGAL;
+> +	if (mode_rate > max_rate || mode->clock > max_dotclk ||
+> +	    drm_dp_calc_pbn_mode(mode->clock, min_bpp, false) > port->full_pbn) {
+> +		*status = MODE_CLOCK_HIGH;
+> +		return 0;
+> +	}
+> +
+> +	if (mode->clock < 10000) {
+> +		*status = MODE_CLOCK_LOW;
+> +		return 0;
+> +	}
+>  
+> -	if (mode_rate > max_rate || mode->clock > max_dotclk)
+> -		return MODE_CLOCK_HIGH;
+> +	if (mode->flags & DRM_MODE_FLAG_DBLCLK) {
+> +		*status = MODE_H_ILLEGAL;
+> +		return 0;
+> +	}
+>  
+> -	return intel_mode_valid_max_plane_size(dev_priv, mode);
+> +	*status = intel_mode_valid_max_plane_size(dev_priv, mode);
+> +	return 0;
+>  }
+>  
+>  static struct drm_encoder *intel_mst_atomic_best_encoder(struct drm_connector *connector,
+> @@ -700,7 +721,7 @@ intel_dp_mst_detect(struct drm_connector *connector,
+>  
+>  static const struct drm_connector_helper_funcs intel_dp_mst_connector_helper_funcs = {
+>  	.get_modes = intel_dp_mst_get_modes,
+> -	.mode_valid = intel_dp_mst_mode_valid,
+> +	.mode_valid_ctx = intel_dp_mst_mode_valid_ctx,
+>  	.atomic_best_encoder = intel_mst_atomic_best_encoder,
+>  	.atomic_check = intel_dp_mst_atomic_check,
+>  	.detect_ctx = intel_dp_mst_detect,
+> -- 
+> 2.26.2
+> 
