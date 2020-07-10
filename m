@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67AA021B36E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 12:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C0421B368
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 12:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbgGJKsz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Jul 2020 06:48:55 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:27836 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727837AbgGJKsv (ORCPT
+        id S1727941AbgGJKsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 06:48:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59628 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727848AbgGJKsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 06:48:51 -0400
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHmAvw4TuZw=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
-        with ESMTPSA id V07054w6AAmb7rG
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Fri, 10 Jul 2020 12:48:37 +0200 (CEST)
-Subject: Re: [PATCH] [stable v5.4.x] pwm: jz4740: Fix build failure
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=utf-8
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20200710102758.8341-1-u.kleine-koenig@pengutronix.de>
-Date:   Fri, 10 Jul 2020 12:48:36 +0200
-Cc:     stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, linux-mips@vger.kernel.org,
-        tsbogend@alpha.franken.de
-Content-Transfer-Encoding: 8BIT
-Message-Id: <DB8C7C01-0FBB-4A9F-B068-15C06BBC0873@goldelico.com>
-References: <20200710102758.8341-1-u.kleine-koenig@pengutronix.de>
-To:     =?utf-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-X-Mailer: Apple Mail (2.3124)
+        Fri, 10 Jul 2020 06:48:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594378127;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=iyQ7Mdq+cHsZNfXMcFEBHnbLg0y1+f956n6Psm19Z3A=;
+        b=L0N/o/dDA9BtB6LrSwMQ4QcfzgaemIdtoSuR/SBKBlkHh9wc8mdtpZ1TFmPtz6fFoSWUk0
+        YowyTqMk9/XIwQIEsIFX2YWB+SH5Fs5NsnpWLf5UjAFg0at587GMYNPNaDkLhWrdMaIvA9
+        9zh4L7N8ooRb08j/bEbdJN4+yneF1z4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-bapRcGWQPQKWgDpilhJ9rA-1; Fri, 10 Jul 2020 06:48:45 -0400
+X-MC-Unique: bapRcGWQPQKWgDpilhJ9rA-1
+Received: by mail-wm1-f70.google.com with SMTP id c124so6287004wme.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 03:48:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=iyQ7Mdq+cHsZNfXMcFEBHnbLg0y1+f956n6Psm19Z3A=;
+        b=J2VFouLy9Cc0eBmT7+oe3KlA/LoKSGX4dBrhfKtw6GMeWolAyqi+uSAoPqjEduwFip
+         yW4VDSuqljMUsexnp+CDA2Z/FaP+zhLIuC2J4wxB2JOCEO3KNjP7y/uCOPyws13n7zhr
+         hzobvBcxLMbPhhgpDyo2F4XJBFLSmZbBCKNO1LQx5o8yvVM9WPFgDOORkj7ElgU8pvLy
+         QpiDrRLAuu5ctOyRprmPp6gYWy7t4jHhrlKwmdIslXnwDeM82Oz4mlEH5yn17bnsVI5Z
+         3LVGlAHaXH06+bdaVJ92teBHD3zIvN0gx6vs58ZErkZx9qK8o2g+22gBH4IG0ABmbA2f
+         tKuw==
+X-Gm-Message-State: AOAM530R7pD0TvPWY8itHIpDGmS2wHZ9yz7bEpxRCUMCwFfEXb4IiMJ7
+        oM5G4VlVeB8bu/ItFav7gsv4y83jict1o8S5IZCZYRqjpv0KjL+jyYbdUu+EG40D6/zN6xsq5sd
+        im+SAL/0LA9vXo6mM7VzhG6D1
+X-Received: by 2002:a1c:7306:: with SMTP id d6mr4281126wmb.113.1594378123167;
+        Fri, 10 Jul 2020 03:48:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnW96UmADFr3lBKu+J51FwC7hW91yxrY9fm+6R2FmCNMnZCpNPJGpddYdjDEzeRnojHSJuXQ==
+X-Received: by 2002:a1c:7306:: with SMTP id d6mr4281109wmb.113.1594378123028;
+        Fri, 10 Jul 2020 03:48:43 -0700 (PDT)
+Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
+        by smtp.gmail.com with ESMTPSA id w13sm9528434wrr.67.2020.07.10.03.48.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 03:48:42 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 06:48:40 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH] virtio_balloon: fix sparse warning
+Message-ID: <20200710104837.405966-1-mst@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
+X-Mutt-Fcc: =sent
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+balloon uses virtio32_to_cpu instead of cpu_to_virtio32
+to convert a native endian number to virtio.
+No practical difference but makes sparse warn.
+Fix it up.
 
-> Am 10.07.2020 um 12:27 schrieb Uwe Kleine-König <u.kleine-koenig@pengutronix.de>:
-> 
-> When commit 9017dc4fbd59 ("pwm: jz4740: Enhance precision in calculation
-> of duty cycle") from v5.8-rc1 was backported to v5.4.x its dependency on
-> commit ce1f9cece057 ("pwm: jz4740: Use clocks from TCU driver") was not
-> noticed which made the pwm-jz4740 driver fail to build.
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ drivers/virtio/virtio_balloon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please can you add my "reported by?"
-
-> As ce1f9cece057 depends on still more rework, just backport a small part
-> of this commit to make the driver build again. (There is no dependency
-> on the functionality introduced in ce1f9cece057, just the rate variable
-> is needed.)
-
-BR and thanks,
-Nikolaus
-
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
-> Hello,
-> 
-> @Paul: Can you please check this is correct? I only build-tested this
-> change.
-> 
-> Best regards
-> Uwe
-> 
-> drivers/pwm/pwm-jz4740.c | 5 +++--
-> 1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pwm/pwm-jz4740.c b/drivers/pwm/pwm-jz4740.c
-> index d0f5c69930d0..77c28313e95f 100644
-> --- a/drivers/pwm/pwm-jz4740.c
-> +++ b/drivers/pwm/pwm-jz4740.c
-> @@ -92,11 +92,12 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-> {
-> 	struct jz4740_pwm_chip *jz4740 = to_jz4740(pwm->chip);
-> 	unsigned long long tmp;
-> -	unsigned long period, duty;
-> +	unsigned long rate, period, duty;
-> 	unsigned int prescaler = 0;
-> 	uint16_t ctrl;
-> 
-> -	tmp = (unsigned long long)clk_get_rate(jz4740->clk) * state->period;
-> +	rate = clk_get_rate(jz4740->clk);
-> +	tmp = rate * state->period;
-> 	do_div(tmp, 1000000000);
-> 	period = tmp;
-> 
-> -- 
-> 2.27.0
-> 
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index fc7301406540..5d4b891bf84f 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -596,7 +596,7 @@ static int send_cmd_id_start(struct virtio_balloon *vb)
+ 	while (virtqueue_get_buf(vq, &unused))
+ 		;
+ 
+-	vb->cmd_id_active = virtio32_to_cpu(vb->vdev,
++	vb->cmd_id_active = cpu_to_virtio32(vb->vdev,
+ 					virtio_balloon_cmd_id_received(vb));
+ 	sg_init_one(&sg, &vb->cmd_id_active, sizeof(vb->cmd_id_active));
+ 	err = virtqueue_add_outbuf(vq, &sg, 1, &vb->cmd_id_active, GFP_KERNEL);
+-- 
+MST
 
