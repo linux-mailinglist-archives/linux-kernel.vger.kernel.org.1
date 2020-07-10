@@ -2,154 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B180321BC39
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4A921BC3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728090AbgGJR3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 13:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
+        id S1728054AbgGJRaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 13:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726962AbgGJR3s (ORCPT
+        with ESMTP id S1726962AbgGJRaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:29:48 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7007C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:29:47 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id y10so6971790eje.1
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:29:47 -0700 (PDT)
+        Fri, 10 Jul 2020 13:30:20 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25ACEC08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:30:20 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id j19so2803241pgm.11
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:30:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dhYqHDXmVB851MO24k0xJG8pSyIioIjacD8y0LsCCxY=;
-        b=dLMJe+V9OFFRHOT42hrZZ1af8nQv7C6RUMqJRqQTx5tKDOZ8GvnlINDSvRebp84+iU
-         m7IQVo5KdPxMFgtHzn8b+huKWXTMhwT9YtcAEAjYMQA2ytWBrN/gts3Imut/Hysm0f86
-         FMd6HXbnlMjLcq1Pu1reAqpngO8kLHyS10S+JLt06MgNOdupDkW2kNYqn2dDOkMsZS+L
-         1xrS2mpxHCeQFfcdO5nV9spuB/E4DmmcsY/a88MrBRyF2I3DZp8wL4+L3eTUP0ZTPTQL
-         iL1nofMyqqy/pfiAZW6rku3LfcG4tO0SCqavMgENEzHFSwiClEjGVHkrJd1tF783H9dh
-         ALZA==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tTmWEqz6lUd89tDyZu3lt2tGh6dUI6Q1soQYsW2JCJk=;
+        b=Iq0sROh9nDv/QnxdNYnmzniAQlTq+9F/tAmE+fB0P+oqdIGJv9M6SBZ+FCL2XB1kKz
+         pJmfMVVGEAJU/fA1qJJOcB43dFKLqmhpVSkmH8zIa+xeoFkEmIw6RTtErPrkw3uvB7O4
+         1soS86qCMAjSqBFDjMPu3+9jbVb0dwxIhSXa+cvGkTHG+nMa4WKaAEwnUcYnvy9jnela
+         2mKXo/X5OkUoZ92KOo6xtFPqN4Kk5+64356NQ/rjBZautEk4aD8gRlvJL7Ir/QUxXeFv
+         Jgu2Q8IA9YBF7OX4/aHuUmKzqYEDpHIw139KvTXca71jzVti4OYyob3HMdFczwcSptxI
+         Az3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dhYqHDXmVB851MO24k0xJG8pSyIioIjacD8y0LsCCxY=;
-        b=W1pCKiUnUfOTRbH7QbgbRjDF0/hp7LwSRTaTw7cKSvQgoFJNclIs04awVaO1Nfg4+S
-         xQ256KxJhfxjeXjZAUjxtlbwkjWZvTSRvx/KPDCExpysfXRjeWuBPukjOAeSbyf2Dxz8
-         9zF5yE7N/cGPkOEhblIURWczr6lNFcEr/fZ/3YUQoNgGt6ImzddYI61R29/i4EOOL+Wh
-         NuNx+SxSdeX1CAnh3MsRcEXbIz2l/McxX+dhg8nZgAQW2EbYv/qEeAobBDIrKgbuVOgo
-         r7jAJ7fkSFyqbUh/1s+Ges1V/utrWX8LfuO4J5Expih1x2AbLpWUWunFsksB1rkvezVO
-         Aotw==
-X-Gm-Message-State: AOAM533Nw1sI47/8itP0d1xggCDmOFYS7bxzYqPtSSzC44wAJtYHksiL
-        yNNldkc/baNT0R8YmLIcCiFwZfrszKs94Ay9KmIw4nuCcBk=
-X-Google-Smtp-Source: ABdhPJyTnwMaj0fBe3xhHrqoUd5Au+DzxnbxORXfAamjJPmba1exXOGavNjGe0okwDqGFdHfQ8vRWv6iZ1kk1s3wtmM=
-X-Received: by 2002:a17:906:c209:: with SMTP id d9mr38452213ejz.449.1594402186385;
- Fri, 10 Jul 2020 10:29:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <df2597f6-af21-5547-d39c-94c02ad17adb@linux.alibaba.com>
- <20200709155002.GF12769@casper.infradead.org> <20200709160750.utl46xvavceuvnom@box>
- <f761007f-4663-f72e-b0da-fc3ce9486b4b@linux.alibaba.com> <441ebbeb-0408-e22e-20f4-1be571c4a18e@nextfour.com>
- <50113530-fae5-bb36-56c2-5b5c4f90426d@linux.alibaba.com>
-In-Reply-To: <50113530-fae5-bb36-56c2-5b5c4f90426d@linux.alibaba.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 10 Jul 2020 10:29:27 -0700
-Message-ID: <CAHbLzko9DtqTpamdGAZRtRm9fq8E-FQR_79SHso7SeheUjzEzA@mail.gmail.com>
-Subject: Re: a question of split_huge_page
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=tTmWEqz6lUd89tDyZu3lt2tGh6dUI6Q1soQYsW2JCJk=;
+        b=moCvTOhobO3Wfi6a15WNbyt+4iCFg5+8oJagLg7kTu8S7+1DrOsRvZFQ+KwfTLF+v7
+         aYorIb0LwN1v5jw6P1gZGOzypWFzMjRRvOFAiezXsLgFGZcgs+jl/d3iW/kIxGQE8mDT
+         jweBuhq+Xv+nE9ogKl9F7qCuWqHDcpULAVNDxcIhD4RqzmSPRCCYxwbTNXOrwI9tFRXM
+         m7F2at3gyGYqhyXLXWNV7yKt6Wo5hf8JxdF4fx0wnBY5uUan1dACLbmuFf4FYThl3PyY
+         5b1CLlBqnpDAUJMmrqH1sJmE+st0YgvjX9MYB6jNPNJbrBH+7blV0l1BVH1m7oxLtyGa
+         88+A==
+X-Gm-Message-State: AOAM531/6NNmfXec9uMkmBMgr8s1/8OEn5DDD+VP/7XRX6nEuUWDV5+P
+        WDtoqm92nGYYddAIUnB7AbQdLA==
+X-Google-Smtp-Source: ABdhPJxNDZlA7O43xRha9ury48i2drKmQyDtiMgBJRNThVorkoTtCGOUgfpDAyIbuKa4VWEGZyntjA==
+X-Received: by 2002:aa7:9e0e:: with SMTP id y14mr49980161pfq.77.1594402219419;
+        Fri, 10 Jul 2020 10:30:19 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id c2sm6330306pgk.77.2020.07.10.10.30.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 10:30:18 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 10:30:18 -0700 (PDT)
+X-Google-Original-Date: Fri, 10 Jul 2020 10:29:46 PDT (-0700)
+Subject:     Re: [PATCH v2 2/2] riscv: Enable context tracking
+In-Reply-To: <1d89d5a6b54ca3d3203cb02ff4548b4eb9820c61.1592989082.git.greentime.hu@sifive.com>
+CC:     greentime.hu@sifive.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        guoren@linux.alibaba.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     greentime.hu@sifive.com
+Message-ID: <mhng-21b29738-a664-4209-89e8-763e32a59a4e@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 2:35 AM Alex Shi <alex.shi@linux.alibaba.com> wrote=
-:
+On Wed, 24 Jun 2020 02:03:16 PDT (-0700), greentime.hu@sifive.com wrote:
+> This patch implements and enables context tracking for riscv (which is a
+> prerequisite for CONFIG_NO_HZ_FULL support)
 >
-> =E5=9C=A8 2020/7/10 =E4=B8=8B=E5=8D=881:28, Mika Penttil=C3=A4 =E5=86=99=
-=E9=81=93:
-> >
-> >
-> > On 10.7.2020 7.51, Alex Shi wrote:
-> >>
-> >> =E5=9C=A8 2020/7/10 =E4=B8=8A=E5=8D=8812:07, Kirill A. Shutemov =E5=86=
-=99=E9=81=93:
-> >>> On Thu, Jul 09, 2020 at 04:50:02PM +0100, Matthew Wilcox wrote:
-> >>>> On Thu, Jul 09, 2020 at 11:11:11PM +0800, Alex Shi wrote:
-> >>>>> Hi Kirill & Matthew,
-> >>>>>
-> >>>>> In the func call chain, from split_huge_page() to lru_add_page_tail=
-(),
-> >>>>> Seems tail pages are added to lru list at line 963, but in this sce=
-nario
-> >>>>> the head page has no lru bit and isn't set the bit later. Why we do=
- this?
-> >>>>> or do I miss sth?
-> >>>> I don't understand how we get to split_huge_page() with a page that'=
-s
-> >>>> not on an LRU list.  Both anonymous and page cache pages should be o=
-n
-> >>>> an LRU list.  What am I missing?>
-> >>
-> >> Thanks a lot for quick reply!
-> >> What I am confusing is the call chain: __iommu_dma_alloc_pages()
-> >> to split_huge_page(), in the func, splited page,
-> >>      page =3D alloc_pages_node(nid, alloc_flags, order);
-> >> And if the pages were added into lru, they maybe reclaimed and lost,
-> >> that would be a panic bug. But in fact, this never happened for long t=
-ime.
-> >> Also I put a BUG() at the line, it's nevre triggered in ltp, and run_v=
-mtests
-> >
-> >
-> > In  __iommu_dma_alloc_pages, after split_huge_page(),  who is taking a
-> > reference on tail pages? Seems tail pages are freed and the function
-> > errornously returns them in pages[] array for use?
-> >
+> It adds checking for previous state in the entry that all excepttions and
+> interrupts goes to and calls context_tracking_user_exit() if it comes from
+> user space. It also calls context_tracking_user_enter() if it will return
+> to user space before restore_all.
 >
-> CC Joerg and iommu list,
+> This patch is tested with the dynticks-testing testcase in
+> qemu-system-riscv64 virt machine and Unleashed board.
+> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/dynticks-testing.git
 >
-> That's a good question. seems the split_huge_page was never triggered her=
-e,
-> since the func would check the PageLock first. and have page->mapping and=
- PageAnon
-> check, any of them couldn't be matched for the alloced page.
+> We can see the log here. The tick got mostly stopped during the execution
+> of the user loop.
 >
-> Hi Joerg,
-> would you like look into this? do we still need the split_huge_page() her=
-e?
+>                         _-----=> irqs-off
+>                        / _----=> need-resched
+>                       | / _---=> hardirq/softirq
+>                       || / _--=> preempt-depth
+>                       ||| /     delay
+>      TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
+>         | |       |   ||||       |         |
+>    <idle>-0     [001] d..2   604.183512: sched_switch: prev_comm=swapper/1 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=taskset next_pid=273 next_prio=120
+> user_loop-273   [001] d.h1   604.184788: hrtimer_expire_entry: hrtimer=000000002eda5fab function=tick_sched_timer now=604176096300
+> user_loop-273   [001] d.s2   604.184897: workqueue_queue_work: work struct=00000000383402c2 function=vmstat_update workqueue=00000000f36d35d4 req_cpu=1 cpu=1
+> user_loop-273   [001] dns2   604.185039: tick_stop: success=0 dependency=SCHED
+> user_loop-273   [001] dn.1   604.185103: tick_stop: success=0 dependency=SCHED
+> user_loop-273   [001] d..2   604.185154: sched_switch: prev_comm=taskset prev_pid=273 prev_prio=120 prev_state=R+ ==> next_comm=kworker/1:1 next_pid=46 next_prio=120
+>     <...>-46    [001] ....   604.185194: workqueue_execute_start: work struct 00000000383402c2: function vmstat_update
+>     <...>-46    [001] d..2   604.185266: sched_switch: prev_comm=kworker/1:1 prev_pid=46 prev_prio=120 prev_state=I ==> next_comm=taskset next_pid=273 next_prio=120
+> user_loop-273   [001] d.h1   604.188812: hrtimer_expire_entry: hrtimer=000000002eda5fab function=tick_sched_timer now=604180133400
+> user_loop-273   [001] d..1   604.189050: tick_stop: success=1 dependency=NONE
+> user_loop-273   [001] d..2   614.251386: sched_switch: prev_comm=user_loop prev_pid=273 prev_prio=120 prev_state=X ==> next_comm=swapper/1 next_pid=0 next_prio=120
+>    <idle>-0     [001] d..2   614.315391: sched_switch: prev_comm=swapper/1 prev_pid=0 prev_prio=120 prev_state=R ==> next_comm=taskset next_pid=276 next_prio=120
+>
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> ---
+>  arch/riscv/Kconfig        |  1 +
+>  arch/riscv/kernel/entry.S | 23 +++++++++++++++++++++++
+>  2 files changed, 24 insertions(+)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 128192e14ff2..17520e11815b 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -52,6 +52,7 @@ config RISCV
+>  	select HAVE_ARCH_SECCOMP_FILTER
+>  	select HAVE_ARCH_TRACEHOOK
+>  	select HAVE_ASM_MODVERSIONS
+> +	select HAVE_CONTEXT_TRACKING
+>  	select HAVE_COPY_THREAD_TLS
+>  	select HAVE_DMA_CONTIGUOUS if MMU
+>  	select HAVE_EBPF_JIT if MMU
+> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> index cae7e6d4c7ef..6ed579fc1073 100644
+> --- a/arch/riscv/kernel/entry.S
+> +++ b/arch/riscv/kernel/entry.S
+> @@ -97,6 +97,14 @@ _save_context:
+>  	la gp, __global_pointer$
+>  .option pop
+>
+> +#ifdef CONFIG_CONTEXT_TRACKING
+> +	/* If previous state is in user mode, call context_tracking_user_exit. */
+> +	andi a0, s1, SR_SPP
 
-I think this is the same problem which has been discussed a couple of
-weeks ago. Please refer to:
-https://lore.kernel.org/linux-mm/20200619001938.GA135965@carbon.dhcp.thefac=
-ebook.com/
+I've changed that to SR_PP, as I don't see any reason why this should depend on
+MMU.
 
-I think the conclusion is split_huge_page() can't be used in this path
-at all. But we didn't reach a fix yet.
+I think this is correct: we're using scratch==0 elsewhere to detect recursive
+traps, but we've blown that away by this point so it's not an option.  I don't
+know of any reason why PP wouldn't be accurate.
 
+> +	bnez a0, skip_context_tracking
+> +	call context_tracking_user_exit
+> +
+> +skip_context_tracking:
+> +#endif
+>  	la ra, ret_from_exception
+>  	/*
+>  	 * MSB of cause differentiates between
+> @@ -137,6 +145,17 @@ _save_context:
+>  	tail do_trap_unknown
 >
-> Thanks
-> Alex
+>  handle_syscall:
+> +#ifdef CONFIG_CONTEXT_TRACKING
+> +	/* Recover a0 - a7 for system calls */
+> +	REG_L x10, PT_A0(sp)
+> +	REG_L x11, PT_A1(sp)
+> +	REG_L x12, PT_A2(sp)
+> +	REG_L x13, PT_A3(sp)
+> +	REG_L x14, PT_A4(sp)
+> +	REG_L x15, PT_A5(sp)
+> +	REG_L x16, PT_A6(sp)
+> +	REG_L x17, PT_A7(sp)
+> +#endif
+>  	 /* save the initial A0 value (needed in signal handlers) */
+>  	REG_S a0, PT_ORIG_A0(sp)
+>  	/*
+> @@ -205,6 +224,10 @@ resume_userspace:
+>  	andi s1, s0, _TIF_WORK_MASK
+>  	bnez s1, work_pending
 >
-> int split_huge_page_to_list(struct page *page, struct list_head *list)
-> {
->         struct page *head =3D compound_head(page);
->         struct deferred_split *ds_queue =3D get_deferred_split_queue(head=
-);
->         struct anon_vma *anon_vma =3D NULL;
->         struct address_space *mapping =3D NULL;
->         int count, mapcount, extra_pins, ret;
->         pgoff_t end;
->
->         VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
->         VM_BUG_ON_PAGE(!PageLocked(head), head);        <=3D=3D
-> >
->
+> +#ifdef CONFIG_CONTEXT_TRACKING
+> +	call context_tracking_user_enter
+> +#endif
+> +
+>  	/* Save unwound kernel stack pointer in thread_info */
+>  	addi s0, sp, PT_SIZE_ON_STACK
+>  	REG_S s0, TASK_TI_KERNEL_SP(tp)
