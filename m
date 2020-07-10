@@ -2,131 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F88021BBC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8DF21BBCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbgGJRDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 13:03:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35693 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727863AbgGJRDo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:03:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594400622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zJSG5Xu9Pbt04zlwluiGAtbXS/uva9oKZizpa8qTv/A=;
-        b=DyWWqASYO8cSoUtUyx+XanwtsEleNdWIOyan9UP0mGPclfW25rCPd4PDye64SmAYpxhDLw
-        wZM+YeLtt7XzMUtMGllZqWdI6c4ofxzMgNCiJX52GJxA3rByEAvaG8MhjmrPY/ruVp/8Xz
-        BrvP/3pgMKHCPTGtsTm+h6Km9GSoLeU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-443-nAI-aUh8N_qnTEFcSU2ZSw-1; Fri, 10 Jul 2020 13:03:40 -0400
-X-MC-Unique: nAI-aUh8N_qnTEFcSU2ZSw-1
-Received: by mail-wm1-f72.google.com with SMTP id z74so1979589wmc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:03:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zJSG5Xu9Pbt04zlwluiGAtbXS/uva9oKZizpa8qTv/A=;
-        b=I2w3sHTVKRdIGY394a+pywesIidZwd7JxOjyzkaUAWdB8XEyYSTN/48fP+Eu5QJmbo
-         Aq1c4DEZNlXgu0CT5gqHo9lrleIz8PDtDLwhN3VmpbA1XOpDZYNFiasUwHgJGc4ONn10
-         vshFrcxTuXde5refDPUChHeJDI8fYNjjx7rYNgiyHSQIwJG02xCUfu1Q0V8VZvYP+X/S
-         ogkXyAI5PZw+H4Tjca4escBC8UtCzi63iL1R9y+MGZWaveT1g8/2gudCOZ8G8FUoyKUJ
-         Rp2rFhYsTff4KHyMzx2MWsd64aRZFIw40nkr38RjOB/lTznwHq7fRz1OG4k3VHz/tFc1
-         ALag==
-X-Gm-Message-State: AOAM531UKZuEMCjoVDup+gqIhJlRRMFV0TvJW6J+3VJLCVM3BJ4byBXW
-        8skKs30cw4B/matKPkshKf6dq7ICVKqb7s5pPwpu2ENVc2DKSJ9HkifuVuLtQCOJwXvhgtaXXgn
-        NQn7i72G/FbvFI0nUP1B/Vuxt
-X-Received: by 2002:a5d:5084:: with SMTP id a4mr71035621wrt.191.1594400619578;
-        Fri, 10 Jul 2020 10:03:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw3h0nVEw+2+GgsORJ2/Fsvu67DVFBqUZoc6rQmebj8pKOAagZin2+JOgn05/ohtFk1iIRbBA==
-X-Received: by 2002:a5d:5084:: with SMTP id a4mr71035602wrt.191.1594400619293;
-        Fri, 10 Jul 2020 10:03:39 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
-        by smtp.gmail.com with ESMTPSA id b10sm9459481wmj.30.2020.07.10.10.03.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 10:03:38 -0700 (PDT)
-Subject: Re: [PATCH v4 0/9] KVM: nSVM: fixes for CR3/MMU switch upon nested
- guest entry/exit
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        linux-kernel@vger.kernel.org
-References: <20200710141157.1640173-1-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6dba1900-5149-f8dd-2da3-42803ee9f96b@redhat.com>
-Date:   Fri, 10 Jul 2020 19:03:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728455AbgGJRFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 13:05:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728146AbgGJRFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 13:05:09 -0400
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED984207F9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 17:05:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594400708;
+        bh=3S7IewpNxJBD3L+ZfZ/E6af35AY9UGg9jqOelSrpKo4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=1tRe4LZ68tVZGxEGQ7XeZ+yUcJKPuc4ZhIcHwk2QL6cG3SdjNkD2PO5p5HsegEww3
+         gmZfDPpe4jdgPlAuSo+u1XmlaVBSKvuVGiOOZM6SQIII2HSnN7c89x9nK4D4K4r+6q
+         zcxAm6d3uRrL58fmcsOUp32tlZPRex6+m3Qe/Vmk=
+Received: by mail-wr1-f43.google.com with SMTP id z15so6685606wrl.8
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:05:07 -0700 (PDT)
+X-Gm-Message-State: AOAM531kx3FU0wZfom8BD+OJuZfhO+wLtW1uCN8WrLTID8t3gEwPs7zM
+        966np6/FXELQxW7MvzBI2iuytQEICj2i7kYTzM8V7Q==
+X-Google-Smtp-Source: ABdhPJwltug8Dryi9wS37jyJz6qJjriDvb96hMI47ek0pD++Bm/QsUvqdOhO95P79buU9BFsgr/1LX6a5Jbh2/sEF7w=
+X-Received: by 2002:adf:e482:: with SMTP id i2mr67761053wrm.75.1594400706520;
+ Fri, 10 Jul 2020 10:05:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200710141157.1640173-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200710015646.2020871-1-npiggin@gmail.com> <20200710015646.2020871-5-npiggin@gmail.com>
+In-Reply-To: <20200710015646.2020871-5-npiggin@gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 10 Jul 2020 10:04:54 -0700
+X-Gmail-Original-Message-ID: <CALCETrVqHDLo09HcaoeOoAVK8w+cNWkSNTLkDDU=evUhaXkyhQ@mail.gmail.com>
+Message-ID: <CALCETrVqHDLo09HcaoeOoAVK8w+cNWkSNTLkDDU=evUhaXkyhQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than membarrier_mm_sync_core_before_usermode
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-MM <linux-mm@kvack.org>, Anton Blanchard <anton@ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/07/20 16:11, Vitaly Kuznetsov wrote:
-> Changes since v3:
-> - Swapped my "KVM: nSVM: stop dereferencing vcpu->arch.mmu to get the
->  context in kvm_init_shadow{,_npt}_mmu()" with Paolo's "KVM: MMU: stop
->  dereferencing vcpu->arch.mmu to get the context for MMU init".
-> - keeping nested_svm_init_mmu_context() in nested_prepare_vmcb_control()
->  as this is also used from svm_set_nested_state() [Paolo],
->  nested_svm_load_cr3() becomes a separate step in enter_svm_guest_mode().
-> - nested_prepare_vmcb_save() remains 'void' [Paolo]
-> 
-> Original description:
-> 
-> This is a successor of "[PATCH v2 0/3] KVM: nSVM: fix #TF from CR3 switch
-> when entering guest" and "[PATCH] KVM: x86: drop erroneous mmu_check_root()
-> from fast_pgd_switch()".
-> 
-> The snowball is growing fast! It all started with an intention to fix
-> the particular 'tripple fault' issue (now fixed by PATCH7) but now we
-> also get rid of unconditional kvm_mmu_reset_context() upon nested guest
-> entry/exit and make the code resemble nVMX. There is still a huge room
-> for further improvement (proper error propagation, removing unconditional
-> MMU sync/TLB flush,...) but at least we're making some progress.
-> 
-> Tested with kvm selftests/kvm-unit-tests and by running nested Hyper-V
-> on KVM. The series doesn't seem to introduce any new issues.
-> 
-> Paolo Bonzini (1):
->   KVM: MMU: stop dereferencing vcpu->arch.mmu to get the context for MMU
->     init
-> 
-> Vitaly Kuznetsov (8):
->   KVM: nSVM: split kvm_init_shadow_npt_mmu() from kvm_init_shadow_mmu()
->   KVM: nSVM: reset nested_run_pending upon nested_svm_vmrun_msrpm()
->     failure
->   KVM: nSVM: prepare to handle errors from enter_svm_guest_mode()
->   KVM: nSVM: introduce nested_svm_load_cr3()/nested_npt_enabled()
->   KVM: nSVM: move kvm_set_cr3() after nested_svm_uninit_mmu_context()
->   KVM: nSVM: implement nested_svm_load_cr3() and use it for host->guest
->     switch
->   KVM: nSVM: use nested_svm_load_cr3() on guest->host switch
->   KVM: x86: drop superfluous mmu_check_root() from fast_pgd_switch()
-> 
->  arch/x86/kvm/mmu.h        |  3 +-
->  arch/x86/kvm/mmu/mmu.c    | 45 ++++++++++++------
->  arch/x86/kvm/svm/nested.c | 97 ++++++++++++++++++++++++++++-----------
->  arch/x86/kvm/svm/svm.c    |  6 ++-
->  arch/x86/kvm/svm/svm.h    |  4 +-
->  5 files changed, 110 insertions(+), 45 deletions(-)
-> 
+On Thu, Jul 9, 2020 at 6:57 PM Nicholas Piggin <npiggin@gmail.com> wrote:
+>
+> And get rid of the generic sync_core_before_usermode facility.
+>
+> This helper is the wrong way around I think. The idea that membarrier
+> state requires a core sync before returning to user is the easy one
+> that does not need hiding behind membarrier calls. The gap in core
+> synchronization due to x86's sysret/sysexit and lazy tlb mode, is the
+> tricky detail that is better put in x86 lazy tlb code.
+>
+> Consider if an arch did not synchronize core in switch_mm either, then
+> membarrier_mm_sync_core_before_usermode would be in the wrong place
+> but arch specific mmu context functions would still be the right place.
+> There is also a exit_lazy_tlb case that is not covered by this call, which
+> could be a bugs (kthread use mm the membarrier process's mm then context
+> switch back to the process without switching mm or lazy mm switch).
+>
+> This makes lazy tlb code a bit more modular.
 
-Queued, thanks.
+The mm-switching and TLB-management has often had the regrettable
+property that it gets wired up in a way that seems to work at the time
+but doesn't have clear semantics, and I'm a bit concerned that this
+patch is in that category.  If I'm understanding right, you're trying
+to enforce the property that exiting lazy TLB mode will promise to
+sync the core eventually.  But this has all kinds of odd properties:
 
-Paolo
+ - Why is exit_lazy_tlb() getting called at all in the relevant cases?
+ When is it permissible to call it?  I look at your new code and see:
 
+> +/*
+> + * Ensure that a core serializing instruction is issued before returning
+> + * to user-mode, if a SYNC_CORE was requested. x86 implements return to
+> + * user-space through sysexit, sysrel, and sysretq, which are not core
+> + * serializing.
+> + *
+> + * See the membarrier comment in finish_task_switch as to why this is done
+> + * in exit_lazy_tlb.
+> + */
+> +#define exit_lazy_tlb exit_lazy_tlb
+> +static inline void exit_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
+> +{
+> +       /* Switching mm is serializing with write_cr3 */
+> +        if (tsk->mm != mm)
+> +                return;
+
+And my brain says WTF?  Surely you meant something like if
+(WARN_ON_ONCE(tsk->mm != mm)) { /* egads, what even happened?  how do
+we try to recover well enough to get a crashed logged at least? */ }
+
+So this needs actual documentation, preferably in comments near the
+function, of what the preconditions are and what this mm parameter is.
+Once that's done, then we could consider whether it's appropriate to
+have this function promise to sync the core under some conditions.
+
+ - This whole structure seems to rely on the idea that switching mm
+syncs something.  I periodically ask chip vendor for non-serializing
+mm switches.  Specifically, in my dream world, we have totally
+separate user and kernel page tables.  Changing out the user tables
+doesn't serialize or even create a fence.  Instead it creates the
+minimum required pipeline hazard such that user memory access and
+switches to usermode will make sure they access memory through the
+correct page tables.  I haven't convinced a chip vendor yet, but there
+are quite a few hundreds of cycles to be saved here.  With this in
+mind, I see the fencing aspects of the TLB handling code as somewhat
+of an accident.  I'm fine with documenting them and using them to
+optimize other paths, but I think it should be explicit.  For example:
+
+/* Also does a full barrier?  (Or a sync_core()-style barrier.)
+However, if you rely on this, you must document it in a comment where
+you call this function. *?
+void switch_mm_irqs_off()
+{
+}
+
+This is kind of like how we strongly encourage anyone using smp_?mb()
+to document what they are fencing against.
+
+Also, as it stands, I can easily see in_irq() ceasing to promise to
+serialize.  There are older kernels for which it does not promise to
+serialize.  And I have plans to make it stop serializing in the
+nearish future.
+
+--Andy
