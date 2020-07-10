@@ -2,113 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B8821B4FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 14:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B88F21B4F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 14:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgGJM0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 08:26:02 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:51804 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727901AbgGJMZz (ORCPT
+        id S1727780AbgGJMZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 08:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgGJMZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 08:25:55 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
-        with SMTP; 10 Jul 2020 15:25:49 +0300
-Received: from dev-l-vrt-136.mtl.labs.mlnx (dev-l-vrt-136.mtl.labs.mlnx [10.234.136.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06ACPnML012407;
-        Fri, 10 Jul 2020 15:25:49 +0300
-Received: from dev-l-vrt-136.mtl.labs.mlnx (localhost [127.0.0.1])
-        by dev-l-vrt-136.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 06ACPnXW003382;
-        Fri, 10 Jul 2020 15:25:49 +0300
-Received: (from moshe@localhost)
-        by dev-l-vrt-136.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 06ACPnh5003381;
-        Fri, 10 Jul 2020 15:25:49 +0300
-From:   Moshe Shemesh <moshe@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vladyslav Tarasiuk <vladyslavt@mellanox.com>
-Subject: [PATCH net-next v3 7/7] net/mlx5e: Move devlink-health rx and tx reporters to devlink port
-Date:   Fri, 10 Jul 2020 15:25:13 +0300
-Message-Id: <1594383913-3295-8-git-send-email-moshe@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
-In-Reply-To: <1594383913-3295-1-git-send-email-moshe@mellanox.com>
-References: <1594383913-3295-1-git-send-email-moshe@mellanox.com>
+        Fri, 10 Jul 2020 08:25:41 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABCEC08C5CE;
+        Fri, 10 Jul 2020 05:25:41 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 4DAE42A698B
+Message-ID: <05b6cff6ba230c0ab6a562e17926d8503e2dfadd.camel@collabora.com>
+Subject: Re: [RFC 07/12] media: uapi: h264: Add DPB entry field reference
+ flags
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>,
+        nicolas.dufresne@collabora.com
+Cc:     Jonas Karlman <jonas@kwiboo.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Fri, 10 Jul 2020 09:25:29 -0300
+In-Reply-To: <20200710140502.627b2b54@collabora.com>
+References: <HE1PR06MB40117D0EE96E6FA638A04B78ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
+         <20190901124531.23645-1-jonas@kwiboo.se>
+         <HE1PR06MB4011559BF2447047C66285D2ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
+         <233509924f72d69824920d9312373eced68674c0.camel@collabora.com>
+         <20200710101333.05077f18@collabora.com>
+         <6232d8475e169ee53b5864959af21d14bf0fc620.camel@collabora.com>
+         <20200710140502.627b2b54@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladyslav Tarasiuk <vladyslavt@mellanox.com>
++Nicolas
 
-Utilize new devlink-health port reporters API to move rx and tx
-reporters from device to port.
+On Fri, 2020-07-10 at 14:05 +0200, Boris Brezillon wrote:
+> On Fri, 10 Jul 2020 08:50:28 -0300
+> Ezequiel Garcia <ezequiel@collabora.com> wrote:
+> 
+> > On Fri, 2020-07-10 at 10:13 +0200, Boris Brezillon wrote:
+> > > On Fri, 10 Jul 2020 01:21:07 -0300
+> > > Ezequiel Garcia <ezequiel@collabora.com> wrote:
+> > >   
+> > > > Hello Jonas,
+> > > > 
+> > > > In the context of the uAPI cleanup,
+> > > > I'm revisiting this patch.
+> > > > 
+> > > > On Sun, 2019-09-01 at 12:45 +0000, Jonas Karlman wrote:  
+> > > > > Add DPB entry flags to help indicate when a reference frame is a field picture
+> > > > > and how the DPB entry is referenced, top or bottom field or full frame.
+> > > > > 
+> > > > > Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+> > > > > ---
+> > > > >  Documentation/media/uapi/v4l/ext-ctrls-codec.rst | 12 ++++++++++++
+> > > > >  include/media/h264-ctrls.h                       |  4 ++++
+> > > > >  2 files changed, 16 insertions(+)
+> > > > > 
+> > > > > diff --git a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+> > > > > index bc5dd8e76567..eb6c32668ad7 100644
+> > > > > --- a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+> > > > > +++ b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+> > > > > @@ -2022,6 +2022,18 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+> > > > >      * - ``V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM``
+> > > > >        - 0x00000004
+> > > > >        - The DPB entry is a long term reference frame
+> > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE``
+> > > > > +      - 0x00000008
+> > > > > +      - The DPB entry is a field picture
+> > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_TOP``
+> > > > > +      - 0x00000010
+> > > > > +      - The DPB entry is a top field reference
+> > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM``
+> > > > > +      - 0x00000020
+> > > > > +      - The DPB entry is a bottom field reference
+> > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME``
+> > > > > +      - 0x00000030
+> > > > > +      - The DPB entry is a reference frame
+> > > > >  
+> > > > >  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE (enum)``
+> > > > >      Specifies the decoding mode to use. Currently exposes slice-based and
+> > > > > diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> > > > > index e877bf1d537c..76020ebd1e6c 100644
+> > > > > --- a/include/media/h264-ctrls.h
+> > > > > +++ b/include/media/h264-ctrls.h
+> > > > > @@ -185,6 +185,10 @@ struct v4l2_ctrl_h264_slice_params {
+> > > > >  #define V4L2_H264_DPB_ENTRY_FLAG_VALID		0x01
+> > > > >  #define V4L2_H264_DPB_ENTRY_FLAG_ACTIVE		0x02
+> > > > >  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
+> > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE	0x08
+> > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_REF_TOP	0x10
+> > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM	0x20
+> > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME	0x30
+> > > > >      
+> > > > 
+> > > > I've been going thru the H264 spec and I'm unsure,
+> > > > are all these flags semantically needed?
+> > > > 
+> > > > For instance, if one of REF_BOTTOM or REF_TOP (or both)
+> > > > are set, doesn't that indicate it's a field picture?
+> > > > 
+> > > > Or conversely, if neither REF_BOTTOM or REF_TOP are set,
+> > > > then it's a frame picture?  
+> > > 
+> > > I think that's what I was trying to do here [1]
+> > > 
+> > > [1]https://patchwork.kernel.org/patch/11392095/  
+> > 
+> > Right. Aren't we missing a DPB_ENTRY_FLAG_TOP_FIELD?
+> > 
+> > If I understand correctly, the DPB can contain:
+> > 
+> > * frames (FLAG_FIELD not set)
+> > * a field pair, with a single field (FLAG_FIELD and either TOP or BOTTOM).
+> > * a field pair, with boths fields (FLAG_FIELD and both TOP or BOTTOM).
+> 
+> Well, my understand is that, if the buffer contains both a TOP and
+> BOTTOM field, it actually becomes a full frame, so you actually have
+> those cases:
+> 
+> * FLAG_FIELD not set: this a frame (note that a TOP/BOTTOM field
+>   decoded buffer can become of frame if it's complemented with the
+>   missing field later during the decoding)
+> * FLAG_FIELD set + BOTTOM_FIELD not set: this is a TOP field
+> * FLAG_FIELD set + BOTTOM_FIELD set: this is a BOTTOM field
+> * FLAG_FIELD not set + BOTTOM_FIELD set: invalid combination
+> 
+> but I might be wrong.
 
-Signed-off-by: Vladyslav Tarasiuk <vladyslavt@mellanox.com>
-Reviewed-by: Moshe Shemesh <moshe@mellanox.com>
-Reviewed-by: Jiri Pirko <jiri@mellanox.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c |  9 +++------
- drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c | 13 ++++---------
- 2 files changed, 7 insertions(+), 15 deletions(-)
+Yes, perhaps that's correct. I was trying to think strictly
+in terms of the H264 semantics, to define a clean interface.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-index 32ed106..9913647 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_rx.c
-@@ -611,13 +611,10 @@ void mlx5e_reporter_icosq_cqe_err(struct mlx5e_icosq *icosq)
- 
- void mlx5e_reporter_rx_create(struct mlx5e_priv *priv)
- {
--	struct devlink *devlink = priv_to_devlink(priv->mdev);
- 	struct devlink_health_reporter *reporter;
- 
--	reporter = devlink_health_reporter_create(devlink,
--						  &mlx5_rx_reporter_ops,
--						  MLX5E_REPORTER_RX_GRACEFUL_PERIOD,
--						  priv);
-+	reporter = devlink_port_health_reporter_create(&priv->dl_port, &mlx5_rx_reporter_ops,
-+						       MLX5E_REPORTER_RX_GRACEFUL_PERIOD, priv);
- 	if (IS_ERR(reporter)) {
- 		netdev_warn(priv->netdev, "Failed to create rx reporter, err = %ld\n",
- 			    PTR_ERR(reporter));
-@@ -631,5 +628,5 @@ void mlx5e_reporter_rx_destroy(struct mlx5e_priv *priv)
- 	if (!priv->rx_reporter)
- 		return;
- 
--	devlink_health_reporter_destroy(priv->rx_reporter);
-+	devlink_port_health_reporter_destroy(priv->rx_reporter);
- }
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-index 8265843..8be6eaa 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/reporter_tx.c
-@@ -440,14 +440,9 @@ int mlx5e_reporter_tx_timeout(struct mlx5e_txqsq *sq)
- void mlx5e_reporter_tx_create(struct mlx5e_priv *priv)
- {
- 	struct devlink_health_reporter *reporter;
--	struct mlx5_core_dev *mdev = priv->mdev;
--	struct devlink *devlink;
--
--	devlink = priv_to_devlink(mdev);
--	reporter =
--		devlink_health_reporter_create(devlink, &mlx5_tx_reporter_ops,
--					       MLX5_REPORTER_TX_GRACEFUL_PERIOD,
--					       priv);
-+
-+	reporter = devlink_port_health_reporter_create(&priv->dl_port, &mlx5_tx_reporter_ops,
-+						       MLX5_REPORTER_TX_GRACEFUL_PERIOD, priv);
- 	if (IS_ERR(reporter)) {
- 		netdev_warn(priv->netdev,
- 			    "Failed to create tx reporter, err = %ld\n",
-@@ -462,5 +457,5 @@ void mlx5e_reporter_tx_destroy(struct mlx5e_priv *priv)
- 	if (!priv->tx_reporter)
- 		return;
- 
--	devlink_health_reporter_destroy(priv->tx_reporter);
-+	devlink_port_health_reporter_destroy(priv->tx_reporter);
- }
--- 
-1.8.3.1
+From the mpp code, looks like the above is enough for rkvdec
+(although I haven't done any tests).
+
+Ezequiel
+
+
 
