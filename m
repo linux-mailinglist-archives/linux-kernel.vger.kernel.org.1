@@ -2,113 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3448421BB63
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D83921BB8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728402AbgGJQwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:52:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728341AbgGJQwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:52:33 -0400
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DFC620857
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 16:52:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594399952;
-        bh=/cUKDLPl2jvjdReg3ifbQY1VJUI2VkF7Wamm7bRWSbE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=C7QnMDweAh3zXfozgOU23mQU1lsF4mwDug4sJ3VIycdsn2HkU1nJEOxfPy/Q96k5M
-         XJbehqF3mSKAekECjJPHKVY/lOhSWjOWqX4rmYVrUNbJNoWNog3vzmTXKfbbVJExl0
-         ow7s2am7NzB8FF7EL2f6eL76g96VA/VR8ENPLC+Q=
-Received: by mail-wm1-f54.google.com with SMTP id o8so6836935wmh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:52:32 -0700 (PDT)
-X-Gm-Message-State: AOAM5327VHTTDYJHiq/Fcfk4/aehUVHv+57zTMzMZxXwO0mjgufGaJxh
-        QcCloHhLk6QMoM/eBiVJu0njIw3gxphc6XV0JvwCtQ==
-X-Google-Smtp-Source: ABdhPJwJ5vNk5o5bj03nmpE/WvKrwZ2QjZ/A6anCEV1vb9R8ED2N6Rh7yxfqDFe7tH8YXxOI9rWHfQEt0/FrxN1A5eg=
-X-Received: by 2002:a1c:1b90:: with SMTP id b138mr6024612wmb.21.1594399950758;
- Fri, 10 Jul 2020 09:52:30 -0700 (PDT)
+        id S1728717AbgGJQxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:53:47 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50348 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728642AbgGJQxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 12:53:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594400024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mTbg3U6lOAL1frqXN6ZgumAR5RgCm4pmbTt3ifAZ6gA=;
+        b=XAF+95OKFYaQJ60gh4u3qd6ZzlY/SEh6Q+zOpOK9f1YxbGJAo6KxXtaKAUCezfXaA0+rmP
+        ieKGnLehHr1RSnYiN3cb9TELEHBO0dtBG1MqXDnZWbk00QeYzeL38mTN7Cb14UTdSx7Te/
+        S0vGWUoXf3qbhrAbAsyZAY1mZmOyJU0=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-YBAPrLh5OyaElknhrzVdIQ-1; Fri, 10 Jul 2020 12:53:40 -0400
+X-MC-Unique: YBAPrLh5OyaElknhrzVdIQ-1
+Received: by mail-wr1-f69.google.com with SMTP id b8so6576774wro.19
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:53:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mTbg3U6lOAL1frqXN6ZgumAR5RgCm4pmbTt3ifAZ6gA=;
+        b=TnBfJMnczi45hTr5Aqy8q5lhO9Bg3aPZhavtqFHbMLudZ6owbrPeT7U7fB17iDPLX2
+         0TP4S5gCuIr+2kdUGTkgJEHpbGf8XsZcMenuOfSqGsz+fBNWvQGfNQNKFEbttxkyE8Vn
+         MvG74Qfc6Bu1Yh7TN5DvaulKWWpF5AePIz2898tGr8RriFnISaPC5zrSS9F4uZwnNfZq
+         6OX4Pxf0rbjvQuR8Hef+15BNEWQrS7HCVUsuXC9nH5Y8D/Vr6MGb2bhETrspHSAU3aj0
+         M72SLlN4zOyvrzbetHbwgxrcOfGco56vAfyna7bA6jDW/DR1nlNrF1+KUxeaWOYU4Fwa
+         5t2w==
+X-Gm-Message-State: AOAM532lTNCzQdiLYL+9Jq6QADmn9m43gffidk33bF4pTK++1LYasrzd
+        M+cBC4HNFi2XgozFVjr74B8KhFLCT4/LiL+wJOV8aSPRLxryc/114sQp3h3GIVj2QgHyC/+qxLD
+        tCrMs66TW/DAIcKJanKRuO/8l
+X-Received: by 2002:a7b:c775:: with SMTP id x21mr6168370wmk.34.1594400019664;
+        Fri, 10 Jul 2020 09:53:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyr41yxVE/py/FXZd3TzKsnMsxa9t0Mud+LeC+plAYWiHrPHKpZInuTdfVRgC6MzJmcoOlkdw==
+X-Received: by 2002:a7b:c775:: with SMTP id x21mr6168360wmk.34.1594400019427;
+        Fri, 10 Jul 2020 09:53:39 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
+        by smtp.gmail.com with ESMTPSA id u17sm10389648wrp.70.2020.07.10.09.53.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 09:53:38 -0700 (PDT)
+Subject: Re: [PATCH v3] KVM: x86: move MSR_IA32_PERF_CAPABILITIES emulation to
+ common x86 code
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Like Xu <like.xu@linux.intel.com>, linux-kernel@vger.kernel.org
+References: <20200710152559.1645827-1-vkuznets@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3c58c709-eb63-2abb-8191-064164271f9f@redhat.com>
+Date:   Fri, 10 Jul 2020 18:53:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
- <202007041703.51F4059CA@keescook> <CAPcyv4jy6cKLNBhi9HCUP=f6GC4bM_iw_-U8o0uMrO8OX1SWTw@mail.gmail.com>
-In-Reply-To: <CAPcyv4jy6cKLNBhi9HCUP=f6GC4bM_iw_-U8o0uMrO8OX1SWTw@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 10 Jul 2020 09:52:18 -0700
-X-Gmail-Original-Message-ID: <CALCETrUvfB6rLWMx=KOsFxbCowz3H2atSCbq-ecHQ5mNFe=e3g@mail.gmail.com>
-Message-ID: <CALCETrUvfB6rLWMx=KOsFxbCowz3H2atSCbq-ecHQ5mNFe=e3g@mail.gmail.com>
-Subject: Re: [Ksummit-discuss] [PATCH] CodingStyle: Inclusive Terminology
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        tech-board-discuss@lists.linuxfoundation.org,
-        Chris Mason <clm@fb.clm>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200710152559.1645827-1-vkuznets@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 6, 2020 at 9:30 PM Dan Williams <dan.j.williams@intel.com> wrote:
->
-> On Sat, Jul 4, 2020 at 5:41 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Sat, Jul 04, 2020 at 01:02:51PM -0700, Dan Williams wrote:
-> > > Recent events have prompted a Linux position statement on inclusive
-> > > terminology. Given that Linux maintains a coding-style and its own
-> > > idiomatic set of terminology here is a proposal to answer the call to
-> > > replace non-inclusive terminology.
-> > >
-> > > Cc: Jonathan Corbet <corbet@lwn.net>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Signed-off-by: Chris Mason <clm@fb.clm>
-> > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> >
-> > (nit: isn't this a Co-developed-by chain, not a SoB chain?)
-> >
-> > Acked-by: Kees Cook <keescook@chromium.org>
-> >
-> > Comments below...
-> >
-> > > ---
-> > >  Documentation/process/coding-style.rst          |   12 ++++
-> > >  Documentation/process/inclusive-terminology.rst |   64 +++++++++++++++++++++++
-> > >  Documentation/process/index.rst                 |    1
-> > >  3 files changed, 77 insertions(+)
-> > >  create mode 100644 Documentation/process/inclusive-terminology.rst
-> > >
-> > > diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-> > > index 2657a55c6f12..4b15ab671089 100644
-> > > --- a/Documentation/process/coding-style.rst
-> > > +++ b/Documentation/process/coding-style.rst
-> > > @@ -319,6 +319,18 @@ If you are afraid to mix up your local variable names, you have another
-> > >  problem, which is called the function-growth-hormone-imbalance syndrome.
-> > >  See chapter 6 (Functions).
-> > >
-> > > +For symbol names, avoid introducing new usage of the words 'slave' and
-> > > +'blacklist'. Recommended replacements for 'slave' are: 'secondary',
-> > > +'subordinate', 'replica', 'responder', 'follower', 'proxy', or
-> > > +'performer'.  Recommended replacements for blacklist are: 'blocklist' or
-> > > +'denylist'.
-> >
-> > Keeping "master" in a "master/slave" pairing (i.e. replacing only
-> > "slave") seems incomplete to me. If "master" is paired with "slave", it
-> > should be replaced too. Potential examples: 'primary', 'leader', 'principle',
-> > 'controller', 'sender', 'initial'.
->
-> Yes, this matches Andy's feedback, will add.
->
-> > Similarly, for "whitelist/blacklist", "whitelist" needs to replaced when
-> > "blacklist" has been. For example, seccomp documentation[1] uses
-> > "allow-list" and "deny-list".
-> >
-> > [1] https://man7.org/linux/man-pages/man2/seccomp.2.html
->
-> Oh, good to know will make that change.
+On 10/07/20 17:25, Vitaly Kuznetsov wrote:
+> state_test/smm_test selftests are failing on AMD with:
+> "Unexpected result from KVM_GET_MSRS, r: 51 (failed MSR was 0x345)"
+> 
+> MSR_IA32_PERF_CAPABILITIES is an emulated MSR on Intel but it is not
+> known to AMD code, we can move the emulation to common x86 code. For
+> AMD, we basically just allow the host to read and write zero to the MSR.
+> 
+> Fixes: 27461da31089 ("KVM: x86/pmu: Support full width counting")
+> Suggested-by: Jim Mattson <jmattson@google.com>
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+> - This is a succesor of "[PATCH v2] KVM: SVM: emulate MSR_IA32_PERF_CAPABILITIES".
+> ---
+>  arch/x86/kvm/svm/svm.c       |  2 ++
+>  arch/x86/kvm/vmx/pmu_intel.c | 17 -----------------
+>  arch/x86/kvm/x86.c           | 20 ++++++++++++++++++++
+>  3 files changed, 22 insertions(+), 17 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index c0da4dd78ac5..1b68cc6cd756 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -2358,6 +2358,8 @@ static int svm_get_msr_feature(struct kvm_msr_entry *msr)
+>  		if (boot_cpu_has(X86_FEATURE_LFENCE_RDTSC))
+>  			msr->data |= MSR_F10H_DECFG_LFENCE_SERIALIZE;
+>  		break;
+> +	case MSR_IA32_PERF_CAPABILITIES:
+> +		return 0;
+>  	default:
+>  		return 1;
+>  	}
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index bdcce65c7a1d..a886a47daebd 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -180,9 +180,6 @@ static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
+>  	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
+>  		ret = pmu->version > 1;
+>  		break;
+> -	case MSR_IA32_PERF_CAPABILITIES:
+> -		ret = 1;
+> -		break;
+>  	default:
+>  		ret = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0) ||
+>  			get_gp_pmc(pmu, msr, MSR_P6_EVNTSEL0) ||
+> @@ -224,12 +221,6 @@ static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
+>  		msr_info->data = pmu->global_ovf_ctrl;
+>  		return 0;
+> -	case MSR_IA32_PERF_CAPABILITIES:
+> -		if (!msr_info->host_initiated &&
+> -		    !guest_cpuid_has(vcpu, X86_FEATURE_PDCM))
+> -			return 1;
+> -		msr_info->data = vcpu->arch.perf_capabilities;
+> -		return 0;
+>  	default:
+>  		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+>  		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> @@ -289,14 +280,6 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  			return 0;
+>  		}
+>  		break;
+> -	case MSR_IA32_PERF_CAPABILITIES:
+> -		if (!msr_info->host_initiated)
+> -			return 1;
+> -		if (guest_cpuid_has(vcpu, X86_FEATURE_PDCM) ?
+> -			(data & ~vmx_get_perf_capabilities()) : data)
+> -			return 1;
+> -		vcpu->arch.perf_capabilities = data;
+> -		return 0;
+>  	default:
+>  		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
+>  		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 3b92db412335..a08bd66cd662 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -2817,6 +2817,20 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  			return 1;
+>  		vcpu->arch.arch_capabilities = data;
+>  		break;
+> +	case MSR_IA32_PERF_CAPABILITIES: {
+> +		struct kvm_msr_entry msr_ent = {.index = msr, .data = 0};
+> +
+> +		if (!msr_info->host_initiated)
+> +			return 1;
+> +		if (guest_cpuid_has(vcpu, X86_FEATURE_PDCM) && kvm_get_msr_feature(&msr_ent))
+> +			return 1;
+> +		if (data & ~msr_ent.data)
+> +			return 1;
+> +
+> +		vcpu->arch.perf_capabilities = data;
+> +
+> +		return 0;
+> +		}
+>  	case MSR_EFER:
+>  		return set_efer(vcpu, msr_info);
+>  	case MSR_K7_HWCR:
+> @@ -3167,6 +3181,12 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  			return 1;
+>  		msr_info->data = vcpu->arch.arch_capabilities;
+>  		break;
+> +	case MSR_IA32_PERF_CAPABILITIES:
+> +		if (!msr_info->host_initiated &&
+> +		    !guest_cpuid_has(vcpu, X86_FEATURE_PDCM))
+> +			return 1;
+> +		msr_info->data = vcpu->arch.perf_capabilities;
+> +		break;
+>  	case MSR_IA32_POWER_CTL:
+>  		msr_info->data = vcpu->arch.msr_ia32_power_ctl;
+>  		break;
+> 
 
-Looks like that change already happened.  And the new language is IMO
-not vastly better than the old language.  I'll send a patch.
+Queued, thanks.
+
+Paolo
+
