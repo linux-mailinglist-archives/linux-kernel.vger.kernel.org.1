@@ -2,134 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D47621BFF9
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5672321BFFD
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgGJWgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 18:36:50 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:29444 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726476AbgGJWgt (ORCPT
+        id S1726889AbgGJWhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 18:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726823AbgGJWhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 18:36:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594420609; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=zibTUJTH6MFdxW//DfqanSRTw7aZklvYX/+cHS6yCOw=; b=k5N4r23pwKNLepli9sMvVWonT/NnnptDSe0+6tBl0xMlmUaWw8IaaTH9FNiu8qtm+HmnWDcr
- LzYStwbN1KrKdu93j+zkS38d+060zN2L7GVGRcpdhjkzpYKLcsZEgXa0jZFXdwdYO8sA7EjF
- l2aFgmRFM0cXQqOQWICHydv616Y=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f08ed80d3d6508422f97efc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 10 Jul 2020 22:36:48
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8BDA2C433A0; Fri, 10 Jul 2020 22:36:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.9] (unknown [117.210.185.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B02ABC433C8;
-        Fri, 10 Jul 2020 22:36:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B02ABC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH v4 3/7] drm: msm: a6xx: set gpu freq through hfi
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     Jonathan Marek <jonathan@marek.ca>, freedreno@lists.freedesktop.org
-Cc:     devicetree@vger.kernel.org, saravanak@google.com,
-        linux-arm-msm@vger.kernel.org, smasetty@codeaurora.org,
-        linux-kernel@vger.kernel.org, mka@chromium.org,
-        dri-devel@freedesktop.org, viresh.kumar@linaro.org,
-        sibis@codeaurora.org
-References: <1594324828-9571-1-git-send-email-akhilpo@codeaurora.org>
- <1594324828-9571-4-git-send-email-akhilpo@codeaurora.org>
- <322c921f-7c8f-7052-b191-44f0dade742e@marek.ca>
- <40f6df1d-f524-c612-9215-591fd7f16e3b@codeaurora.org>
-Message-ID: <d9875eae-d7e5-e091-4f3d-b279157ac1c1@codeaurora.org>
-Date:   Sat, 11 Jul 2020 04:06:41 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 10 Jul 2020 18:37:31 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43962C08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:37:31 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id e8so8175674ljb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EOOtoPj/TYBlLc+eU82ZHIb+aymt/x6TobGnTd4fwRE=;
+        b=dIx+a/OwAnrG8R/KYnef3nenl3etd7RuZhDAvmAKf7ajW9FgZYiY8mwJH2kbJjCGgL
+         3Eqx+OUt+DfTqjhEIgVjZIcJuRAUMoSbLLJVDrixXdLI6pQjJzHO23RA08UVqdtmORyA
+         GTqR0ieEhppw219L++AfD2SD316wsFRClTDOQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EOOtoPj/TYBlLc+eU82ZHIb+aymt/x6TobGnTd4fwRE=;
+        b=J6v50puw/INOL68oY0EMBQH/AEp/8noCSaDJXgeCfg/FoHf9obAHkiE4gUdvSXdZlo
+         QjZOvrFdPqD8PMVvwtOAKxtg6Y9/YRgVZdupHexp1oK3GT6OqnVDsVBEQl70y+kKU1S2
+         f6woaSlo1IXEA3nYqjvAws8U+h4VBQe5bsQu1C8PKGakEM31bRbO8j/ijn+lkIEZzEg7
+         6SmQH6MaKKejY64Bo9NVkdw5ounhaQpBGU0clQGafP4vj2IGAuFKZBeOmaPWOkNjV5VS
+         DG5sdpxMFlZewX3n4kAGrOVtcENTUC9XPQtQ2Sj4aDY1gBdrqJgn7y26ArtIRwFk8hi3
+         QeMg==
+X-Gm-Message-State: AOAM532i8MGPFDTZcY5rMR+AX5Exw3WtNFPuVGUbzt9UNwF20VClaTtd
+        TtJFwdMlI3+siq+FMgMVpfGPh7dUGcE=
+X-Google-Smtp-Source: ABdhPJxUktYoE/MdJuNNoAW+J/fCn6fpIxbet6yjzSuEeL6MEbheGnF/mnIvM+U8wUqsgeXrgngV1Q==
+X-Received: by 2002:a05:651c:1b5:: with SMTP id c21mr16337147ljn.82.1594420649264;
+        Fri, 10 Jul 2020 15:37:29 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id 203sm2349338ljf.14.2020.07.10.15.37.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 15:37:27 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id h22so8115563lji.9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:37:26 -0700 (PDT)
+X-Received: by 2002:a2e:9b42:: with SMTP id o2mr40467600ljj.102.1594420646447;
+ Fri, 10 Jul 2020 15:37:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <40f6df1d-f524-c612-9215-591fd7f16e3b@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <CAHk-=wj-CYhKZR8ZKQgi=VTx=o7n6dtwPXikvgkJ3SdiqRPd8A@mail.gmail.com>
+ <87lfk26nx4.fsf@mpe.ellerman.id.au> <CAHk-=wicOPQwuDUzFyDTBgr4UvQJHPdCX7_6BLaK6cve6CqBSg@mail.gmail.com>
+ <20200702201755.GO2786714@ZenIV.linux.org.uk> <CAHk-=whW7qYEK-MJMS9gKf-K4cBNGTq0pv-5wo4bqE_QtUfkDw@mail.gmail.com>
+ <20200702205902.GP2786714@ZenIV.linux.org.uk> <CAHk-=whm66UhcEQgXHr8hPkzyDTOdbGikLbSg0zJ4-b93aSg8w@mail.gmail.com>
+ <20200703013328.GQ2786714@ZenIV.linux.org.uk> <20200703210237.GS2786714@ZenIV.linux.org.uk>
+ <20200704004959.GY2786714@ZenIV.linux.org.uk> <20200704021157.GZ2786714@ZenIV.linux.org.uk>
+ <b95ffa72db83431b95597a35f63d8e33@AcuMS.aculab.com>
+In-Reply-To: <b95ffa72db83431b95597a35f63d8e33@AcuMS.aculab.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 10 Jul 2020 15:37:10 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjQJjZX3cgX6vLp6ntTiBG+a6md64J+e74SDntoTi+q4A@mail.gmail.com>
+Message-ID: <CAHk-=wjQJjZX3cgX6vLp6ntTiBG+a6md64J+e74SDntoTi+q4A@mail.gmail.com>
+Subject: Re: objtool clac/stac handling change..
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/11/2020 2:43 AM, Akhil P Oommen wrote:
+On Tue, Jul 7, 2020 at 5:35 AM David Laight <David.Laight@aculab.com> wrote:
 >
-> On 7/10/2020 1:34 AM, Jonathan Marek wrote:
->> On 7/9/20 4:00 PM, Akhil P Oommen wrote:
->>> Newer targets support changing gpu frequency through HFI. So
->>> use that wherever supported instead of the legacy method.
->>>
->>
->> It was already using HFI on newer targets. Don't break it in one 
->> commit then fix it in the next.
 >
-> Oops. I somehow got confused. Will fix and resend.
->
-> -Akhil
+> So separate copy and checksum passes should easily exceed 4 bytes/clock,
+> but I suspect that doing them together never does.
+> (Unless the buffer is too big for the L1 cache.)
 
-I broke the pm_runtime_get_if_in_use() check too. Other than that, just 
-squashing this patch with the previous one should be enough.
+Its' the "touch the caches twice" that is the problem".
 
--Akhil.
+And it's not the "buffer is too big for L1", it's "the source, the
+destination and any incidentals are too big for L1" with the
+additional noise from replacement policies etc.
 
->
->>
->>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
->>> ---
->>>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 11 +++++++----
->>>   1 file changed, 7 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c 
->>> b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
->>> index 233afea..b547339 100644
->>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
->>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
->>> @@ -121,6 +121,12 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, 
->>> struct dev_pm_opp *opp)
->>>           if (gpu_freq == gmu->gpu_freqs[perf_index])
->>>               break;
->>>   +    if (!gmu->legacy) {
->>> +        a6xx_hfi_set_freq(gmu, gmu->current_perf_index);
->>> +        icc_set_bw(gpu->icc_path, 0, MBps_to_icc(7216));
->>> +        return;
->>> +    }
->>> +
->>>       gmu->current_perf_index = perf_index;
->>>       gmu->freq = gmu->gpu_freqs[perf_index];
->>>   @@ -893,10 +899,7 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
->>>       enable_irq(gmu->hfi_irq);
->>>         /* Set the GPU to the current freq */
->>> -    if (gmu->legacy)
->>> -        a6xx_gmu_set_initial_freq(gpu, gmu);
->>> -    else
->>> -        a6xx_hfi_set_freq(gmu, gmu->current_perf_index);
->>> +    a6xx_gmu_set_initial_freq(gpu, gmu);
->>>         /*
->>>        * "enable" the GX power domain which won't actually do 
->>> anything but it
->>>
->> _______________________________________________
->> dri-devel mailing list
->> dri-devel@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+That said, I agree it's likely less of an issue these days when L1
+sizes are bigger, and thankfully direct-mapped caches are no more. It
+_used_ to be that touching the location twice was very very noticeable
+in some situations, it may not be so much any more.
+
+             Linus
