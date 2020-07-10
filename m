@@ -2,83 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2429721BBF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCB021BBFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728049AbgGJRNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 13:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726872AbgGJRNT (ORCPT
+        id S1728162AbgGJRN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 13:13:58 -0400
+Received: from smtprelay0008.hostedemail.com ([216.40.44.8]:60414 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726920AbgGJRN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:13:19 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2778FC08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:13:19 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id a6so5651801ilq.13
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=84ZXCV8hDQ+R5ezHGlVeKRrDnq+BIKMBqF4O35I2mAU=;
-        b=uXRgs8RXS68b0Quf5QIP7lY7g8JASh2hxqEYYRrQeMoIGtj9erXk5JTXrFVc6cFhyr
-         bG1/VNQVX9SeKZvwO0E5XiApXK7A5wmbjBDhXvBFfah+DKBdg1KxeAeS5ihfy8M6F+Uj
-         Oj/Ax225XjIZ+NeX7sgaKdlOYfov+ZZh+RHNd71U6LWc6Ysql3GrCDci50+q3cnR4Xa9
-         6QKuV7m2//VmHl/sZ7UYy0YYpZZtmUFNMVLwZ0I0WQfROWKprUXb0gtaeFvUyV5wIZrx
-         v4OjT3xJta1onx8eUwTX7N9vq0bJwF/RoYaP6As9k7AhiYr6YgcBn2Gb9Z3GYtbeS5Qs
-         leLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=84ZXCV8hDQ+R5ezHGlVeKRrDnq+BIKMBqF4O35I2mAU=;
-        b=sZwozw9D241oJ7c+/940LFvzfDFaRfBm51aG3NvXFCk31Frrn/jvKD4OnfHBW5Cn06
-         JGyJdOtkl1JDdlkxeteOlStI/jNiUgaz5LIKUog6Lm6dSG0w4kiloSRJxDptJpgsBNQ8
-         exH7JpI6iLPxKlQBhEs00/LcxKwhtFBJ0pZC4EJXDFbZG5l5fMZFWza8XvL1LuUmGxA7
-         BIPQ3g5WrD6Szoj/Mgy6MkHQHEsCOIh13NBEF+6V9TIIWspnB5BsRRFDAbQQ2pGPS/4E
-         mVKHEu6AbaoKDjd5215RiYw1zvN16dFon9KTeGlzqVqymK9nU3T/B6yMcbkmKYPtUVSR
-         56eA==
-X-Gm-Message-State: AOAM5339f0hWP4xPIGuSAN5UUCP/isxhc4KAL4ohxUDWp2SAV3DdfX7S
-        +w20ChESWAxV8WHbeUiOrNvduMPi+sYlzIlaWchcmw==
-X-Google-Smtp-Source: ABdhPJwBA5AirBckpFqBud4uPWIU+hnJlSHn3ByjqzmJ47BokabuqeNOCy1OQrj33SMvU88+SIo9y9H1TzuxucnwE7o=
-X-Received: by 2002:a92:b60a:: with SMTP id s10mr49715934ili.119.1594401198223;
- Fri, 10 Jul 2020 10:13:18 -0700 (PDT)
+        Fri, 10 Jul 2020 13:13:56 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 25435182CED2A;
+        Fri, 10 Jul 2020 17:13:55 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2376:2393:2559:2562:2828:2902:3138:3139:3140:3141:3142:3351:3622:3865:3866:3867:3868:3870:4250:4321:4362:5007:6742:7903:10004:10400:11232:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21451:21627:21939:30045:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: shade61_3512d3f26ed0
+X-Filterd-Recvd-Size: 1831
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 10 Jul 2020 17:13:52 +0000 (UTC)
+Message-ID: <db753175946cf53e77999d1fbb3cf949f777ef61.camel@perches.com>
+Subject: Re: [PATCH v2] genpd: Fix up terminology with parent/child
+From:   Joe Perches <joe@perches.com>
+To:     Kees Cook <keescook@chromium.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Kevin Hilman <khilman@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 10 Jul 2020 10:13:51 -0700
+In-Reply-To: <202007081629.0840B4CB78@keescook>
+References: <202007081629.0840B4CB78@keescook>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-References: <20200710154811.418214-1-mgamal@redhat.com> <CALMp9eRfZ50iyrED0-LU75VWhHu_kVoB2Qw55VzEFzZ=0QCGow@mail.gmail.com>
- <0c892b1e-6fe6-2aa7-602e-f5fadc54c257@redhat.com>
-In-Reply-To: <0c892b1e-6fe6-2aa7-602e-f5fadc54c257@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 10 Jul 2020 10:13:07 -0700
-Message-ID: <CALMp9eQXHGnXo4ACX2-qYww4XdRODMn-O6CAvhupib67Li9S2w@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] KVM: Support guest MAXPHYADDR < host MAXPHYADDR
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Mohammed Gamal <mgamal@redhat.com>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 10:06 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 10/07/20 18:30, Jim Mattson wrote:
-> >>
-> >> This can be problem when having a mixed setup of machines with 5-level page
-> >> tables and machines with 4-level page tables, as live migration can change
-> >> MAXPHYADDR while the guest runs, which can theoretically introduce bugs.
-> >
-> > Huh? Changing MAXPHYADDR while the guest runs should be illegal. Or
-> > have I missed some peculiarity of LA57 that makes MAXPHYADDR a dynamic
-> > CPUID information field?
->
-> Changing _host_ MAXPHYADDR while the guest runs, such as if you migrate
-> from a host-maxphyaddr==46 to a host-maxphyaddr==52 machine (while
-> keeping guest-maxphyaddr==46).
+On Wed, 2020-07-08 at 16:32 -0700, Kees Cook wrote:
+> The genpd infrastructure uses the terms master/slave, but such uses have
+> no external exposures (not even in Documentation/driver-api/pm/*) and are
+> not mandated by nor associated with any external specifications. Change
+> the language used through-out to parent/child.
 
-Ah, but what does that have to do with LA57?
+Thanks.
+
+Perhaps change a couple more references:
+
+$ grep -i -P '(?:master|slave)' drivers/cpuidle/cpuidle-psci-domain.c
+	/* Link genpd masters/subdomains to model the CPU topology. */
+$ grep -i -P '(?:master|slave)' drivers/opp/core.c
+	 * genpd and its master have one to one mapping of performance states
+
+
