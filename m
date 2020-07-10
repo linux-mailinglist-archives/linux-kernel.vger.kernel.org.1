@@ -2,89 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB78921BC3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D79D21BC44
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728208AbgGJRaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 13:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726962AbgGJRaV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:30:21 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B061C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:30:21 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mn17so2905787pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:30:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NNOpX7zDJV4e6MqnpK0c1GKw6S05vm1dDD8qM9H4QAo=;
-        b=BumlcOmRyWmV34V0WnslhAdIOlWLgH0M6des+BNHIMbocDgDL/sGvEV2F232x8Kez/
-         txkLpRixttssRpjMpHHHLKlVjaxH4ADaQcwyS13x6TEb/7SkalWdmqb9fyASZ+11Ljg/
-         WYsUOaZvojTJDC53BbPr6b1L0FykO7UoEjNrLiY22Aj47LE5SUB8MUk8U1FjOiKiVR8X
-         rP45YEcqF4I5hE+JAB1wUGmRMmyN4LHcw2ILoPDj6mbAcFope0T5ttPMVQTYYM5Uo0ge
-         uBQgV6WWgIQYjQbl0zGG9YmWmnv7ApKh60Jw2QHUbwEz+kbqL185pz4/qYbIFi9bZ7OD
-         EU0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=NNOpX7zDJV4e6MqnpK0c1GKw6S05vm1dDD8qM9H4QAo=;
-        b=h8hBd1Ryo6sRvcNPCLq15LjGiHeNFyDHlCgftyRmx2DK5RxRsruKo4Y7oODJRIr/Vd
-         SDJ59GC6pFJl9moxhZ/dSKrEophqsIGz2k0eFy85htCB+bpDMrNIeveLCPGqfVWJrh4G
-         EUniLdDOJYM4sAr1FF1kDDkTvNYUcZqfMChvqgJMFnj7gGOSvprs9XInM7QQn+WP4SW2
-         CVjR6dwF8WgSZ8zGmj02QopjNTLXmXjlV/3PLcVHgYIkRjkN8Rjs5mnmhDybuwq2zh+1
-         w8ujDTShBJiHIJrOi3uP8j6lp5dkGyIq5ZHJC2aK8aSIA8Dx9RXjcFHK96/h7Ax5IObj
-         jRvw==
-X-Gm-Message-State: AOAM5338u5eAO36oRT6L09mUotH2lAIffamgPq0s5lRAfgfC98vK32dJ
-        ZD9lB0wR5a3Xsjcf32U0k7El3w==
-X-Google-Smtp-Source: ABdhPJxSBaTuTeaxjBm4A5kHzDSTVrnLGZh3eB75FK+XRaeA3wzVkI7EZNAzLMTp7OVPZTe4x0fSBA==
-X-Received: by 2002:a17:902:9683:: with SMTP id n3mr36897652plp.65.1594402220938;
-        Fri, 10 Jul 2020 10:30:20 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id s6sm6192968pfd.20.2020.07.10.10.30.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 10:30:20 -0700 (PDT)
-Date:   Fri, 10 Jul 2020 10:30:20 -0700 (PDT)
-X-Google-Original-Date: Fri, 10 Jul 2020 10:30:10 PDT (-0700)
-Subject:     Re: [PATCH v2 0/2] riscv: Add context tracker suppor
-In-Reply-To: <cover.1592989082.git.greentime.hu@sifive.com>
-CC:     greentime.hu@sifive.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        guoren@linux.alibaba.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     greentime.hu@sifive.com
-Message-ID: <mhng-39d66393-b510-4b88-a0a7-93075d014531@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1728205AbgGJRb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 13:31:57 -0400
+Received: from mga18.intel.com ([134.134.136.126]:5578 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727046AbgGJRb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 13:31:57 -0400
+IronPort-SDR: YKKXh/gAA+ekFZk0/vqM2im3uLEA8CClM2r1DIkrQoQyxsmufXJZgIe4CYGsRvW78cFfHybPSm
+ ZX2s7B2zDR3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9678"; a="135725518"
+X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
+   d="scan'208";a="135725518"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 10:31:56 -0700
+IronPort-SDR: FcFPPJHbsF3Sawwv4Q5N2TnUc5kA2EADWIOYsjYMOShwW4bXFZ3J4avDdEZBCfo4ud355ZwnD1
+ Qsksbff2s4QA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
+   d="scan'208";a="306614586"
+Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
+  by fmsmga004.fm.intel.com with ESMTP; 10 Jul 2020 10:31:55 -0700
+Date:   Fri, 10 Jul 2020 17:31:54 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     tglx@linutronix.de, fenghua.yu@intel.com, bp@alien8.de,
+        tony.luck@intel.com, kuo-lang.tseng@intel.com,
+        ravi.v.shankar@intel.com, mingo@redhat.com, babu.moger@amd.com,
+        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V7 0/4] x86/resctrl: Enable user to view and select
+ thread throttling mode
+Message-ID: <20200710173154.GA290028@otcwcpicx6.sc.intel.com>
+References: <cover.1592841671.git.reinette.chatre@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1592841671.git.reinette.chatre@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Jun 2020 02:03:14 PDT (-0700), greentime.hu@sifive.com wrote:
-> This patchset adds support for irq_work via self IPI and context tracking.
-> It is tested in qemu-system-riscv64 and SiFive HiFive Unleashed board based
-> on v5.8-rc2.
->
-> ---
-> Changes in v2
->  - Fix the compiling warning
->
-> Greentime Hu (2):
->   riscv: Support irq_work via self IPIs
->   riscv: Enable context tracking
->
->  arch/riscv/Kconfig                |  1 +
->  arch/riscv/include/asm/irq_work.h | 10 ++++++++++
->  arch/riscv/kernel/entry.S         | 23 +++++++++++++++++++++++
->  arch/riscv/kernel/smp.c           | 15 +++++++++++++++
->  4 files changed, 49 insertions(+)
->  create mode 100644 arch/riscv/include/asm/irq_work.h
+Hi, Boris, Thomas and Ingo,
 
-These are on for-next, with some merge conflicts fixed up.  Thanks!
+On Mon, Jun 22, 2020 at 09:43:27AM -0700, Reinette Chatre wrote:
+> V6 upstream submission available from:
+> https://lore.kernel.org/lkml/cover.1589922949.git.reinette.chatre@intel.com
+> 
+> Patches apply against v5.8-rc2
+> base-commit: 48778464bb7d346b47157d21ffde2af6b2d39110
+> 
+> Changes since V6:
+> - Rebase against v5.8-rc2
+> - Add Andy's Reviewed-by tag to patch 4
+
+Do you have any comment on this series? Is it possible to push this series
+into 5.9?
+
+Thank you very much!
+
+-Fenghua
