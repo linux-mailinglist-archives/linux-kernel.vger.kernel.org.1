@@ -2,119 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA56721BAAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6ED021BAAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgGJQUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:20:05 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2162 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgGJQUE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:20:04 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f0894c70000>; Fri, 10 Jul 2020 09:18:15 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Fri, 10 Jul 2020 09:20:04 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Fri, 10 Jul 2020 09:20:04 -0700
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 10 Jul
- 2020 16:19:57 +0000
-Subject: Re: [PATCH 1/2] mm/migrate: optimize migrate_vma_setup() for holes
-To:     <bharata@linux.ibm.com>
-CC:     <linux-mm@kvack.org>, <kvm-ppc@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Jerome Glisse" <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Christoph Hellwig" <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200709165711.26584-1-rcampbell@nvidia.com>
- <20200709165711.26584-2-rcampbell@nvidia.com>
- <20200710063509.GE7902@in.ibm.com>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <72557537-3d64-7082-11f7-d70b41f7d0e6@nvidia.com>
-Date:   Fri, 10 Jul 2020 09:19:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1728067AbgGJQU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:20:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726820AbgGJQU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 12:20:26 -0400
+Received: from localhost.localdomain (unknown [89.208.247.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 320D420657;
+        Fri, 10 Jul 2020 16:20:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594398025;
+        bh=ERGigc8QaW07BGajQpKa6kuFdOuBQHa4YxZRxHxyvG4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=P4/zkk+OTc+xvnY6KxP1vHRODZoVLxJJn16uHU7qWli0vWQntfnTEIqIzqPCR2KIm
+         QYTPjJt0sRKFVlTA+hOrmHFUDBcjDujpl8rekHxeXG7nIkAsM4sTSMLqSTvjihJXrs
+         pvZu1XPk4TCvLB4LlpctImEuS5FEGfvJ9IH+aw4M=
+From:   guoren@kernel.org
+To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        anup@brainfault.org, greentime.hu@sifive.com, zong.li@sifive.com,
+        keescook@chromium.org, bjorn.topel@gmail.com, atish.patra@wdc.com,
+        cooper.qu@linux.alibaba.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, guoren@kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Greentime Hu <green.hu@gmail.com>
+Subject: [PATCH v3 1/2] riscv: Add STACKPROTECTOR supported
+Date:   Fri, 10 Jul 2020 16:19:57 +0000
+Message-Id: <1594397998-10221-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20200710063509.GE7902@in.ibm.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594397895; bh=Ue/frzFxUQ5xNe2FlvXb4r/DHKPE3j0pZwT+2iMRx4s=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=CsSiPpre9qxK1jS02numnr4cfl7QmxJ0/oYmekUMhjtq34QymiInNuhlkiCDn0E7p
-         Bl+cgS3sGUonpda8dBJFP7ibbOFONADHdtgHtgcRKvXQArVDB0uEePCFyqO8B5UHlb
-         KR1pBKdSmVPdg062vI5u3K6IVK2DExOIGzrUf2dX5pQySstXbXRvhrXpWDd6xWF+c8
-         TMjfbHedmpP4pZt21f75Zm+hj4lVqe8Ny94gFMGjxbEqdutYx1QT/u3g8DBXsjb5a0
-         DtGKN67dVzTn8mziAEBNJI/0nEz200XIpALyu/RdCHrI+Df8RJivh9s4L720y+2BV3
-         M0oTYVkJHwS9g==
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Guo Ren <guoren@linux.alibaba.com>
 
-On 7/9/20 11:35 PM, Bharata B Rao wrote:
-> On Thu, Jul 09, 2020 at 09:57:10AM -0700, Ralph Campbell wrote:
->> When migrating system memory to device private memory, if the source
->> address range is a valid VMA range and there is no memory or a zero page,
->> the source PFN array is marked as valid but with no PFN. This lets the
->> device driver allocate private memory and clear it, then insert the new
->> device private struct page into the CPU's page tables when
->> migrate_vma_pages() is called. migrate_vma_pages() only inserts the
->> new page if the VMA is an anonymous range. There is no point in telling
->> the device driver to allocate device private memory and then not migrate
->> the page. Instead, mark the source PFN array entries as not migrating to
->> avoid this overhead.
->>
->> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->> ---
->>   mm/migrate.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/mm/migrate.c b/mm/migrate.c
->> index b0125c082549..8aa434691577 100644
->> --- a/mm/migrate.c
->> +++ b/mm/migrate.c
->> @@ -2204,9 +2204,13 @@ static int migrate_vma_collect_hole(unsigned long start,
->>   {
->>   	struct migrate_vma *migrate = walk->private;
->>   	unsigned long addr;
->> +	unsigned long flags;
->> +
->> +	/* Only allow populating anonymous memory. */
->> +	flags = vma_is_anonymous(walk->vma) ? MIGRATE_PFN_MIGRATE : 0;
->>   
->>   	for (addr = start; addr < end; addr += PAGE_SIZE) {
->> -		migrate->src[migrate->npages] = MIGRATE_PFN_MIGRATE;
->> +		migrate->src[migrate->npages] = flags;
-> 
-> I see a few other such cases where we directly populate MIGRATE_PFN_MIGRATE
-> w/o a pfn in migrate_vma_collect_pmd() and wonder why the vma_is_anonymous()
-> check can't help there as well?
-> 
-> 1. pte_none() check in migrate_vma_collect_pmd()
-> 2. is_zero_pfn() check in migrate_vma_collect_pmd()
-> 
-> Regards,
-> Bharata.
+The -fstack-protector & -fstack-protector-strong features are from
+gcc. The patch only add basic kernel support to stack-protector
+feature and some arch could have its own solution such as
+ARM64_PTR_AUTH.
 
-For case 1, this seems like a useful addition.
-For case 2, the zero page is only inserted if the VMA is marked read-only and
-anonymous so I don't think the check is needed.
-I'll post a v2 with the change.
+After enabling STACKPROTECTOR and STACKPROTECTOR_STRONG, the .text
+size is expanded from  0x7de066 to 0x81fb32 (only 5%) to add canary
+checking code.
 
-Thanks for the suggestions!
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Björn Töpel <bjorn.topel@gmail.com>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Atish Patra <atish.patra@wdc.com>
+---
+Change v2:
+ - Fixup rsicv32 compile warning
+
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+---
+ arch/riscv/Kconfig                      |  1 +
+ arch/riscv/include/asm/stackprotector.h | 33 +++++++++++++++++++++++++++++++++
+ arch/riscv/kernel/process.c             |  6 ++++++
+ 3 files changed, 40 insertions(+)
+ create mode 100644 arch/riscv/include/asm/stackprotector.h
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index f927a91..4b0e308 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -63,6 +63,7 @@ config RISCV
+ 	select HAVE_PERF_EVENTS
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
++	select HAVE_STACKPROTECTOR
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select IRQ_DOMAIN
+ 	select MODULES_USE_ELF_RELA if MODULES
+diff --git a/arch/riscv/include/asm/stackprotector.h b/arch/riscv/include/asm/stackprotector.h
+new file mode 100644
+index 00000000..d95f7b2
+--- /dev/null
++++ b/arch/riscv/include/asm/stackprotector.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef _ASM_RISCV_STACKPROTECTOR_H
++#define _ASM_RISCV_STACKPROTECTOR_H
++
++#include <linux/random.h>
++#include <linux/version.h>
++#include <asm/timex.h>
++
++extern unsigned long __stack_chk_guard;
++
++/*
++ * Initialize the stackprotector canary value.
++ *
++ * NOTE: this must only be called from functions that never return,
++ * and it must always be inlined.
++ */
++static __always_inline void boot_init_stack_canary(void)
++{
++	unsigned long canary;
++	unsigned long tsc;
++
++	/* Try to get a semi random initial value. */
++	get_random_bytes(&canary, sizeof(canary));
++	tsc = get_cycles();
++	canary += tsc + (tsc << BITS_PER_LONG/2);
++	canary ^= LINUX_VERSION_CODE;
++	canary &= CANARY_MASK;
++
++	current->stack_canary = canary;
++	__stack_chk_guard = current->stack_canary;
++}
++#endif /* _ASM_RISCV_STACKPROTECTOR_H */
+diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
+index 824d117..6548929 100644
+--- a/arch/riscv/kernel/process.c
++++ b/arch/riscv/kernel/process.c
+@@ -24,6 +24,12 @@
+ 
+ register unsigned long gp_in_global __asm__("gp");
+ 
++#ifdef CONFIG_STACKPROTECTOR
++#include <linux/stackprotector.h>
++unsigned long __stack_chk_guard __read_mostly;
++EXPORT_SYMBOL(__stack_chk_guard);
++#endif
++
+ extern asmlinkage void ret_from_fork(void);
+ extern asmlinkage void ret_from_kernel_thread(void);
+ 
+-- 
+2.7.4
+
