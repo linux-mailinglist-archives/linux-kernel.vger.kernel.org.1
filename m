@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF37121AE3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 06:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7AD121AE43
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 06:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbgGJEwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 00:52:41 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:47115 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725919AbgGJEwk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 00:52:40 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U2GOhiJ_1594356756;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2GOhiJ_1594356756)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Jul 2020 12:52:36 +0800
-Subject: Re: a question of split_huge_page
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hugh Dickins <hughd@google.com>
-References: <df2597f6-af21-5547-d39c-94c02ad17adb@linux.alibaba.com>
- <20200709155002.GF12769@casper.infradead.org>
- <20200709160750.utl46xvavceuvnom@box>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <f761007f-4663-f72e-b0da-fc3ce9486b4b@linux.alibaba.com>
-Date:   Fri, 10 Jul 2020 12:51:58 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726832AbgGJE6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 00:58:21 -0400
+Received: from mga04.intel.com ([192.55.52.120]:22339 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725802AbgGJE6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 00:58:20 -0400
+IronPort-SDR: 4LwEiUcUnmrH2Ggn2gGw30ia7ld6V7rP//wHc2zS/yoSKbmetB6g/Tr4Zbi+FWI9X1zeRoItPJ
+ P6OOn4mon7yA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="145645382"
+X-IronPort-AV: E=Sophos;i="5.75,334,1589266800"; 
+   d="scan'208";a="145645382"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jul 2020 21:58:19 -0700
+IronPort-SDR: iYtFy0YA4DZG08J4aL8gUwJX3Js0JS9r5dOKli8Uxl0HiAdTCX9cdDov+oZpXeD+ouz1Oj0nXV
+ w3RNzE3LHCwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,334,1589266800"; 
+   d="scan'208";a="298307698"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga002.jf.intel.com with ESMTP; 09 Jul 2020 21:58:19 -0700
+Date:   Thu, 9 Jul 2020 21:58:19 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH 1/2] KVM: X86: Move ignore_msrs handling upper the stack
+Message-ID: <20200710045819.GB24919@linux.intel.com>
+References: <20200626180732.GB175520@xz-x1>
+ <20200626181820.GG6583@linux.intel.com>
+ <47b90b77-cf03-6087-b25f-fcd2fd313165@redhat.com>
+ <20200630154726.GD7733@linux.intel.com>
+ <20200709182220.GG199122@xz-x1>
+ <20200709192440.GD24919@linux.intel.com>
+ <20200709210919.GI199122@xz-x1>
+ <20200709212652.GX24919@linux.intel.com>
+ <20200709215046.GJ199122@xz-x1>
+ <610241d9-b2ab-8643-1ede-3f957573dff3@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200709160750.utl46xvavceuvnom@box>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <610241d9-b2ab-8643-1ede-3f957573dff3@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-ÔÚ 2020/7/10 ÉÏÎç12:07, Kirill A. Shutemov Ð´µÀ:
-> On Thu, Jul 09, 2020 at 04:50:02PM +0100, Matthew Wilcox wrote:
->> On Thu, Jul 09, 2020 at 11:11:11PM +0800, Alex Shi wrote:
->>> Hi Kirill & Matthew,
->>>
->>> In the func call chain, from split_huge_page() to lru_add_page_tail(),
->>> Seems tail pages are added to lru list at line 963, but in this scenario
->>> the head page has no lru bit and isn't set the bit later. Why we do this?
->>> or do I miss sth?
->>
->> I don't understand how we get to split_huge_page() with a page that's
->> not on an LRU list.  Both anonymous and page cache pages should be on
->> an LRU list.  What am I missing?> 
-
-
-Thanks a lot for quick reply!
-What I am confusing is the call chain: __iommu_dma_alloc_pages()
-to split_huge_page(), in the func, splited page,
-	page = alloc_pages_node(nid, alloc_flags, order);
-And if the pages were added into lru, they maybe reclaimed and lost,
-that would be a panic bug. But in fact, this never happened for long time.
-Also I put a BUG() at the line, it's nevre triggered in ltp, and run_vmtests
-in kselftest.
-
-> Right, and it's never got removed from LRU during the split. The tail
-> pages have to be added to LRU because they now separate from the tail
-> page.
+On Fri, Jul 10, 2020 at 12:11:54AM +0200, Paolo Bonzini wrote:
+> On 09/07/20 23:50, Peter Xu wrote:
+> >> Sean: Objection your honor.
+> >> Paolo: Overruled, you're wrong.
+> >> Sean: Phooey.
+> >>
+> >> My point is that even though I still object to this series, Paolo has final
+> >> say.
+> >
+> > I could be wrong, but I feel like Paolo was really respecting your input, as
+> > always.
 > 
-According to the explaination, looks like we could remove the code path,
-since it's never got into. (base on my v15 patchset). Any comments?
+> I do respect Sean's input
 
-Thanks
-Alex
+Ya, my comments were in jest.  Sorry if I implied I was grumpy about Paolo
+taking this patch, because I'm not.  Just stubborn :-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 7c52c5228aab..c28409509ad3 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2357,17 +2357,6 @@ static void lru_add_page_tail(struct page *head, struct page *page_tail,
-        if (!list)
-                SetPageLRU(page_tail);
+> but I also believe that in this case there's three questions:
+> 
+> a) should KVM be allowed to use the equivalent of rdmsr*_safe() on guest
+> MSRs?  I say a mild yes, Sean says a strong no.
 
-        if (likely(PageLRU(head)))
-                list_add_tail(&page_tail->lru, &head->lru);
-        else if (list) {
-                /* page reclaim is reclaiming a huge page */
-                get_page(page_tail);
-                list_add_tail(&page_tail->lru, list);
--       } else {
--               /*
--                * Head page has not yet been counted, as an hpage,
--                * so we must account for each subpage individually.
--                *
--                * Put page_tail on the list at the correct position
--                * so they all end up in order.
--                */
--               VM_BUG_ON_PAGE(1, head);
--               add_page_to_lru_list_tail(page_tail, lruvec,
--                                         page_lru(page_tail));
-        }
- }
+It's more that I don't think host_initiated=true is the equivalent of
+rdmsr_safe().  It kind of holds true for rdmsr, but that's most definitely
+not the case for wrmsr where host_initiated=true completely changes what
+is/isn't allow.  And if using host_initiated=true for rdmsr is allowed,
+then logically using it for wrmsr is also allowed.
+
+> b) is it good to separate the "1" and "-EINVAL" results so that
+> ignore_msrs handling can be moved out of the MSR access functions?  I
+> say yes because KVM should never rely on ignore_msrs; Sean didn't say
+> anything (it's not too relevant if you answer no to the first question).
+> 
+> c) is it possible to reimplement TSX_CTRL_MSR to avoid using the
+> equivalent of rdmsr*_safe()?  Sean says yes and it's not really possible
+> to argue against that, but then it doesn't really matter if you answer
+> yes to the first two questions.
+> 
+> Sean sees your patch mostly as answering "yes" to the question (a), and
+> therefore disagrees with it.  I see your patch mostly as answering "yes"
+> to question (b), and therefore like it.  I would also accept a patch
+> that reimplements TSX_CTRL_MSR (question c), but I consider your patch
+> to be an improvement anyway (question b).
+> 
+> > It's just as simple as a 2:1 vote, isn't it? (I can still count myself
+> > in for the vote, right? :)
+> 
+> I do have the final say but I try to use that as little as possible (or
+> never).  And then it happens that ever so rare disagreements cluster in
+> the same week!
+> 
+> The important thing is to analyze the source of the disagreement.
+> Usually when that happens, it's because a change has multiple purposes
+> and people see it in a different way.
+> 
+> In this case, I'm happy to accept this patch (and overrule Sean) not
+> because he's wrong on question (a), but because in my opinion the actual
+> motivation of the patch is question (b).
+> 
+> To be fair, I would prefer it if ignore_msrs didn't apply to
+> host-initiated MSR accesses at all (only guest accesses).  That would
+> make this series much much simpler.  It wouldn't solve the disagremement
+> on question (a), but perhaps it would be a patch that Sean would agree on.
+
+I think I could get behind that.  It shoudn't interfere with my crusade to
+vanquish host_initiated :-)
