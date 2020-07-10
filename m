@@ -2,113 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A2921B83A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0846021B83E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgGJOSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgGJOSw (ORCPT
+        id S1727033AbgGJOUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:20:06 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48412 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727110AbgGJOUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:18:52 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6321DC08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:18:52 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id 18so4298879otv.6
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PDkeD7akaYc+KDClaom9zWMxwhKX5k48L8L5j9McWnM=;
-        b=SktJprXvPgcuo/VJ93DjQ1b6oAP91Kjvyl6zRqpGHLKoIEDZBeXLFIYSpqnIY6XaMU
-         J2aoIOWLheOa8u6c/ypc0mepQXtkeDjlRXQeCW086Cn2ntYpFhjuZZuFAZjowXLpDEC5
-         dO6TCqHMBzDHr0jgwmT/cnS9F0xjJYGjLmPj4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PDkeD7akaYc+KDClaom9zWMxwhKX5k48L8L5j9McWnM=;
-        b=AWtGjp/KaVjjS0k/b9ZA/2KwFAJzZxGqcjmvneygIGUfECK1eIz1Kt6apiLC4Fg6mo
-         UXkmli6EmCQ03KDyiJZvUSKh6S/QtXsOxqdMu7i7IIEc/dhYY3xn2ZK/32o+WSaUeTqh
-         MBvC4IQmWstIaDRa60KXcR9O0FC0cptV/Mootmqol/9Xsl693RrJLFYcz+P1B2sDDSXO
-         mGetAGTH6XNVDTLpvZ/1jxFIs29ipKCcutiNyD5ZpNFI2aprjxVURwhk4KxPr/V2XpHQ
-         S2uHRExlb/mREYMXtRSABiqCQ4pCp2dWz5XyD0mtk+dwt1xJF9BsJ0m5A8k/fWkA06HS
-         v8Yw==
-X-Gm-Message-State: AOAM5322pLxgjzFXJQlQZ/2IpknYGYhuORZEqBdFBGnQGh0eTOB+AwNm
-        U676VP2GKG82eBMFj05719VAm9/QtaI=
-X-Google-Smtp-Source: ABdhPJwpNl45l2iTeVFgZmaAi054E5Smh5x/gbRjeGzpu74xxKNrENHyuHBvQlKr0f9uj7V6mCjjvg==
-X-Received: by 2002:a05:6830:4aa:: with SMTP id l10mr23319482otd.214.1594390731767;
-        Fri, 10 Jul 2020 07:18:51 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id n6sm1110367otq.33.2020.07.10.07.18.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 07:18:51 -0700 (PDT)
-Subject: Re: [selftests] 7cb32086e5:
- kernel-selftests.x86.check_initial_reg_state_32.fail
-To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200709064946.GQ3874@shao2-debian>
- <9cfe8123-9cd7-a6ec-f73b-3252d695a387@linuxfoundation.org>
- <CANoWswkjNnyBi68HL6VjX9dWt6VdjxycXV09j5L+jkCAbnrHrg@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <8316a170-4aee-eb57-9038-3afb91c6f0e2@linuxfoundation.org>
-Date:   Fri, 10 Jul 2020 08:18:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 10 Jul 2020 10:20:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594390801;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=S/hfdY2jn078JPQClgP6PouoRBDjiWkYV+fASuPUqJA=;
+        b=Vlpha8W+gfVSUDC8sJdYzNMYLSJbDGwtrnPJ1dIvei+SFgUNTxb/9rQJ7/2dDegtVprlf6
+        Cn9TVwZF+8TgvegnCilmVTSlqK9NxdGE/1QUt2EDDlSLbGeZRHvzpEeMvRAX+Xgib02tdR
+        XO8q0aTjWi+KGitg8Bt04X1daD5hBjA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-Ur_35eYIO8ykayRn1yNGQw-1; Fri, 10 Jul 2020 10:19:57 -0400
+X-MC-Unique: Ur_35eYIO8ykayRn1yNGQw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 128B11B18BC0;
+        Fri, 10 Jul 2020 14:19:55 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-112-4.ams2.redhat.com [10.36.112.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DF67B5C1D6;
+        Fri, 10 Jul 2020 14:19:46 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Jann Horn <jannh@google.com>, Aleksa Sarai <asarai@suse.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        io-uring@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: [PATCH RFC 0/3] io_uring: add restrictions to support untrusted
+ applications and guests
+Date:   Fri, 10 Jul 2020 16:19:42 +0200
+Message-Id: <20200710141945.129329-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CANoWswkjNnyBi68HL6VjX9dWt6VdjxycXV09j5L+jkCAbnrHrg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/10/20 12:02 AM, Yauheni Kaliuta wrote:
-> On Thu, Jul 9, 2020 at 6:36 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->>
->> On 7/9/20 12:49 AM, kernel test robot wrote:
->>> Greeting,
->>>
->>> FYI, we noticed the following commit (built with gcc-9):
->>>
->>> commit: 7cb32086e59b514a832a3e11f5370d37e7cfe022 ("selftests: simplify run_tests")
->>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
->>>
->>>
->>
->> Thanks for the report. I will drop this patch for now from next.
->>
->> Yauheni,
->>
->> This patch broke x86 32-bit test run
->> make run_tests -C x86
->>
->> Please resubmit the patch with the fix.
-> 
-> I did not check carefully the report, but isn't it expected that some
-> tests are moved after the patch since they originally were placed
-> incorrectly?
-> 
-> 
-The failure doesn't have anything to do with test being moved. You can
-reproduce this very easily by running make as shown below in x86 dir
-under tools/testing/selftests
+Following the proposal that I send about restrictions [1], I wrote a PoC with
+the main changes. It is still WiP so I left some TODO in the code.
 
-make run_tests -C x86
+I also wrote helpers in liburing and a test case (test/register-restrictions.c)
+available in this repository:
+https://github.com/stefano-garzarella/liburing (branch: io_uring_restrictions)
 
-I reproduced the problem with your and patch and verified that the
-problem tracks your patch. I dropped the patch from linux-next
-Your other two patches in the series are fine.
+Just to recap the proposal, the idea is to add some restrictions to the
+operations (sqe, register, fixed file) to safely allow untrusted applications
+or guests to use io_uring queues.
 
-In any case, this patch isn't really adding any functionality and
-is a good cleanup. Let's do the cleanup right or not.
+The first patch changes io_uring_register(2) opcodes into an enumeration to
+keep track of the last opcode available.
 
-thanks,
--- Shuah
+The second patch adds IOURING_REGISTER_RESTRICTIONS opcode and the code to
+handle restrictions.
+
+The third patch adds IORING_SETUP_R_DISABLED flag to start the rings disabled,
+allowing the user to register restrictions, buffers, files, before to start
+processing SQEs.
+I'm not sure if this could help seccomp. An alternative pointed out by Jann
+Horn could be to register restrictions during io_uring_setup(2), but this
+requires some intrusive changes (there is no space in the struct
+io_uring_params to pass a pointer to restriction arrays, maybe we can add a
+flag and add the pointer at the end of the struct io_uring_params).
+
+Another limitation now is that I need to enable every time
+IORING_REGISTER_ENABLE_RINGS in the restrictions to be able to start the rings,
+I'm not sure if we should treat it as an exception.
+
+Maybe registering restrictions during io_uring_setup(2) could solve both issues
+(seccomp integration and IORING_REGISTER_ENABLE_RINGS registration), but I need
+some suggestions to properly extend the io_uring_setup(2).
+
+Comments and suggestions are very welcome.
+
+Thank you in advance,
+Stefano
+
+[1] https://lore.kernel.org/io-uring/20200609142406.upuwpfmgqjeji4lc@steredhat/
+
+Stefano Garzarella (3):
+  io_uring: use an enumeration for io_uring_register(2) opcodes
+  io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
+  io_uring: allow disabling rings during the creation
+
+ fs/io_uring.c                 | 155 ++++++++++++++++++++++++++++++++--
+ include/uapi/linux/io_uring.h |  59 ++++++++++---
+ 2 files changed, 194 insertions(+), 20 deletions(-)
+
+-- 
+2.26.2
+
