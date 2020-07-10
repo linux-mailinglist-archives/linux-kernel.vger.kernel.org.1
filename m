@@ -2,124 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0577D21B23A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE6021B242
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgGJJ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 05:27:48 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27020 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726288AbgGJJ1q (ORCPT
+        id S1727942AbgGJJ2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 05:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727828AbgGJJ2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 05:27:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594373265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/KCNOjvhcmN9tHZIJ5geCf/PPeLc9q3ydsQmHFPRwbs=;
-        b=C1vmIKp+0eE9a2C9h8KMEcTC7bgZ8gfm63FFTKCVRQ+vpOYuWX8UbBFL8qPiqGfADtbFyF
-        lO76561LIOVgEhoPx7z1n/pZTOyZjEKUSEFV48+NF+7Ve8rRze8vYQVRFaPtQ1M0Tokbs6
-        LmFX975EtoFjqSS5nVLPDM+6YydvUKE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-333-t8IdKv8IMNih35SmaC2R7A-1; Fri, 10 Jul 2020 05:27:43 -0400
-X-MC-Unique: t8IdKv8IMNih35SmaC2R7A-1
-Received: by mail-wm1-f72.google.com with SMTP id g138so5972946wme.7
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:27:43 -0700 (PDT)
+        Fri, 10 Jul 2020 05:28:36 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58980C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:28:36 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id k7so1604865uan.13
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 02:28:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MOW30LWGVGgHDsxnHhurzdv0a/FILHUvG2/DHcNZoI4=;
+        b=bnzvDGU7zXPbziIdRdVi4TSs+noharSMJVfDTIbjqh3RuVKK0nJ/VBqVGTnruLQFrY
+         vmR4ws08bcS0UMCkkHbGcBXfdnkR+npTr64BVmBubl8z4WwpMcjFUcwHYJj93aKf4FsJ
+         QEj9jZ1WNwB+nj5QMKwXZr5B7oVkw9qdSc9ly0GTwz1qV6LcsRGQ/2ge18PSuOSniSZB
+         baYZCaXWJFE6BvQl53n3P9QVXZZWmoituUaX997p1PsqkypK8K+4/5bXQk/ECjb8kY+A
+         +VprU+YP1ApyUjZlgGBpCkkk++TTfNmGpn+fbjEAKQ+AtAJKQkbxmHKvjlOAHONidE64
+         kliw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/KCNOjvhcmN9tHZIJ5geCf/PPeLc9q3ydsQmHFPRwbs=;
-        b=QfxHKZ2O9mbbvSjUH89YM3DGSM3WLvSeqtmbf5lhUKAxHvngJ9lGsxWz8iqhITay4E
-         jVPkRvObCZuTuZupoasi3bRgV4cog/9am5sUwRsBWUao3WvjuUjPhRWJggufODFbHSsP
-         ufUtyZPC6JsqJRGkOgMtARWsvHKMyanHI4Nx34sXGq+XOZe3F56W6A9qGolNn9DK94NL
-         dQwhkJ2igAEJ9AkSwvLpQJFPMw8dXslwHVaakgbmWYxejSUGE8cC6YIZhS6CxjH7zkVw
-         UAoQJfjK9Q0Ca3EezqnDWui1KYm/L6bc9QfrxIJFXGIK5k+nGpclxyj5Ep8rk1wbZn2Z
-         8EFg==
-X-Gm-Message-State: AOAM531RgIHsPwhL7KYZn/KdvXdeuszjksKoAw6VzUGpinzTlJztl8xB
-        gYJgA1H64bXRKdzpo5yBj2PXi+n0JubBvsJNq34fa1M+kxMYYyxhw/UaD07Vo36T6RCMEqDwJ68
-        uwAQhA7fC51KWwtP67T0epcnu
-X-Received: by 2002:a1c:4804:: with SMTP id v4mr4247194wma.139.1594373262594;
-        Fri, 10 Jul 2020 02:27:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPF0u9Z6v9ZPKyb3nZ/etss6BBCtK5QCsw/TY8+VEZaQcKuN1hFqj++yJ+ryUN2sEckplufg==
-X-Received: by 2002:a1c:4804:: with SMTP id v4mr4247185wma.139.1594373262370;
-        Fri, 10 Jul 2020 02:27:42 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
-        by smtp.gmail.com with ESMTPSA id t4sm9089741wmf.4.2020.07.10.02.27.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 02:27:41 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: nVMX: fixes for preemption timer migration
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Makarand Sonare <makarandsonare@google.com>,
-        Jim Mattson <jmattson@google.com>
-References: <20200709172801.2697-1-pbonzini@redhat.com>
- <20200710090530.evy5ezrhnskywbt2@steredhat>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <311c1b21-82fb-396b-382e-d4caca0cb691@redhat.com>
-Date:   Fri, 10 Jul 2020 11:27:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MOW30LWGVGgHDsxnHhurzdv0a/FILHUvG2/DHcNZoI4=;
+        b=CYvULI6Vg/2PLaVAvVAj94sdJv5qPsHl0HBj66/va81g9MhRtOFKeDBLF8LNBKutQF
+         g5zuBEew3/FenLfST12meZPASL5caSIgB0SBufUJbYgeRpa4d0LjtDH3Vof9D6S5bXxn
+         XePwditOcORcXvVKHkGUnznNkcuE2NXpw7sUBkF6q+/u8gFQCpx8g7rQWPL2zWTwKq+x
+         dwPwUwkt0ZwHpLuM99/UiZMVan4C25hIStcdLeto8oQkBmTwkNQsdvgqqAm/oljiX6xi
+         3SGp5Jk1uhqc66ojQTPpov+yyW5EzK925cowQmyuqIWNTl/MDpUhIO3n71VmRD7zKCt/
+         MhWg==
+X-Gm-Message-State: AOAM533Tc3Eb/aOmZrQ/nZysndbi7EQ2KeRLitGSFyNlyB0leHHqrrks
+        ubOYd/nK+dRjRjebBhPZljMlvLAouKj2XnYRSsKQ8afw1DCIow==
+X-Google-Smtp-Source: ABdhPJy4KIKPN5ob6vqVPh6sGXXql1ac/vvDAf9OLPrZvxX6hts8s3kXcH1N61pqeZYYgTXA6zHbse8yWmaHkz76pWM=
+X-Received: by 2002:ab0:4e98:: with SMTP id l24mr17930390uah.15.1594373315479;
+ Fri, 10 Jul 2020 02:28:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200710090530.evy5ezrhnskywbt2@steredhat>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200709195706.12741-1-eajames@linux.ibm.com> <20200709195706.12741-3-eajames@linux.ibm.com>
+In-Reply-To: <20200709195706.12741-3-eajames@linux.ibm.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 10 Jul 2020 11:27:59 +0200
+Message-ID: <CAPDyKFrUUfXQmsrXd8TpSxkyq6up1ZRvwYwrWPsSpCibsxJejw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mmc: sdhci-of-aspeed: Fix clock divider calculation
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/07/20 11:05, Stefano Garzarella wrote:
-> Hi Paolo,
-> 
-> On Thu, Jul 09, 2020 at 01:28:01PM -0400, Paolo Bonzini wrote:
->> Commit 850448f35aaf ("KVM: nVMX: Fix VMX preemption timer migration",
->> 2020-06-01) accidentally broke nVMX live migration from older version
->> by changing the userspace ABI.  Restore it and, while at it, ensure
->> that vmx->nested.has_preemption_timer_deadline is always initialized
->> according to the KVM_STATE_VMX_PREEMPTION_TIMER_DEADLINE flag.
->>
->> Cc: Makarand Sonare <makarandsonare@google.com>
->> Fixes: 850448f35aaf ("KVM: nVMX: Fix VMX preemption timer migration")
->> Reviewed-by: Jim Mattson <jmattson@google.com>
->> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
->> ---
->> v1->v2: coding style [Jim]
->>
->>  arch/x86/include/uapi/asm/kvm.h | 5 +++--
->>  arch/x86/kvm/vmx/nested.c       | 1 +
->>  2 files changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
->> index 17c5a038f42d..0780f97c1850 100644
->> --- a/arch/x86/include/uapi/asm/kvm.h
->> +++ b/arch/x86/include/uapi/asm/kvm.h
->> @@ -408,14 +408,15 @@ struct kvm_vmx_nested_state_data {
->>  };
->>  
->>  struct kvm_vmx_nested_state_hdr {
->> -	__u32 flags;
->>  	__u64 vmxon_pa;
->>  	__u64 vmcs12_pa;
->> -	__u64 preemption_timer_deadline;
->>  
->>  	struct {
->>  		__u16 flags;
->>  	} smm;
->> +
->> +	__u32 flags;
->> +	__u64 preemption_timer_deadline;
->>  };
->>  
-> 
-> Should we update also Documentation/virt/kvm/api.rst to be consistent?
+On Thu, 9 Jul 2020 at 21:57, Eddie James <eajames@linux.ibm.com> wrote:
+>
+> When calculating the clock divider, start dividing at 2 instead of 1.
+> The divider is divided by two at the end of the calculation, so starting
+> at 1 may result in a divider of 0, which shouldn't happen.
+>
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
 
-Yes, of course.  Thanks for pointing it out.
+Applied for fixes and by adding a stable tag for v5.4+, thanks!
 
-Paolo
+Kind regards
+Uffe
 
+
+
+
+> ---
+>  drivers/mmc/host/sdhci-of-aspeed.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
+> index 56912e30c47e..a1bcc0f4ba9e 100644
+> --- a/drivers/mmc/host/sdhci-of-aspeed.c
+> +++ b/drivers/mmc/host/sdhci-of-aspeed.c
+> @@ -68,7 +68,7 @@ static void aspeed_sdhci_set_clock(struct sdhci_host *host, unsigned int clock)
+>         if (WARN_ON(clock > host->max_clk))
+>                 clock = host->max_clk;
+>
+> -       for (div = 1; div < 256; div *= 2) {
+> +       for (div = 2; div < 256; div *= 2) {
+>                 if ((parent / div) <= clock)
+>                         break;
+>         }
+> --
+> 2.24.0
+>
