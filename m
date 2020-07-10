@@ -2,75 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B7C21AF37
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 08:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0C921B80E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgGJGPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 02:15:16 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7830 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725851AbgGJGPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 02:15:15 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id F20893357126DAC07796;
-        Fri, 10 Jul 2020 14:15:09 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Fri, 10 Jul 2020
- 14:15:04 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <io-uring@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <axboe@kernel.dk>
-Subject: [PATCH] io_uring: fix memleak in io_sqe_files_register()
-Date:   Fri, 10 Jul 2020 14:14:20 +0000
-Message-ID: <20200710141420.3987063-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728179AbgGJOPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727003AbgGJOPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 10:15:44 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F8FC08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:15:44 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id ch3so2674136pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Np20KBV9uAuILvx/6WSz0515vYUEpXzeFH3JEsTBmro=;
+        b=BI8hKdk5odB0XZTJVe9u7hyENje++L8s5m3m+2QRAKeMaT5p7ww6Xd2Q91myLFzP63
+         +qeMBoCuiVS44MmhUEYrBUBHJ83ldlORQFxpKavoHlt55hoAokkclCsoye6wdf+8IH/D
+         bLj91m/n9F4fpygp1P1FimXNgGOiKinC0DITm7cdHIQkM3CxWs60PlUkmthlFkyhNrqo
+         OUrk2DLAWhEx3Q1zl/ei57LOQ8ItFBziEkfHlXsEm7cOJuLJVFmBltg+wvVGXlPlJ0jT
+         G4/O2uwEgWj9lCjgd9326qFZzeYD3Z6NcQK1hnETesCHj7x9s6KrSussYIHcYuzPSWIq
+         LL0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Np20KBV9uAuILvx/6WSz0515vYUEpXzeFH3JEsTBmro=;
+        b=kCMQ2uH5jDer10pc3XUEmGToy/+YWg4zocNbSELyqAvCiDpuTV1ucZ51TwppE5C/PS
+         Mab2LPwU3bmUp36PWkrRRICDKp7PhepYAxig+Y2a4A3VkKJiGCfqEl7nUXJnlmPny17a
+         G1m6bW07d9FyVp23rF0iSLHeXwyCHlcvO0pTi+nDZ1YfNjAY7v86C2uQKE1gIqOmQOxy
+         5T04Q1BijZZ4POJpA97f42bU3bbp6jlqsANX3xgOdWWHUbLqyuTyLnT9/GfLIsVM2jh8
+         iedTWWNSuQZ9E8/qYO2DIYuZmEbehPbEQIoQqB080Ncp1VOoMrUfj19Tj5jpqkPimWFN
+         PhlA==
+X-Gm-Message-State: AOAM532B5mW5BxczqCjYR5OEa479h91/y6CLajp/qGPlsAYJh2VGH1XT
+        6CNiuOzm9ds0vHGN++q2l8H3slkgOA18xzaFhaQ=
+X-Google-Smtp-Source: ABdhPJx2U+o/XgGNmTpcxCpf4xQ8vT9sr8876SJOyCMzqMkthrlhTGqVJfmGSbU8lWCLU/U50JVoU21gyHn6frGBFH0=
+X-Received: by 2002:a17:902:7288:: with SMTP id d8mr60676028pll.18.1594390543743;
+ Fri, 10 Jul 2020 07:15:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+References: <20200708161232.17914-1-andriy.shevchenko@linux.intel.com>
+ <20200708162117.GV4655@sirena.org.uk> <20200710100558.GI3703480@smile.fi.intel.com>
+ <20200710110132.GA5653@sirena.org.uk> <20200710114622.GJ3703480@smile.fi.intel.com>
+ <20200710120856.GD5653@sirena.org.uk> <20200710133233.GF5653@sirena.org.uk> <CAHp75VeWmWU6=ybDmQmv7ymwaHG+FxNBzZM9eBxp2Oie6MrZQw@mail.gmail.com>
+In-Reply-To: <CAHp75VeWmWU6=ybDmQmv7ymwaHG+FxNBzZM9eBxp2Oie6MrZQw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 10 Jul 2020 17:15:27 +0300
+Message-ID: <CAHp75VcKSRem-eHi2FY89Y0yZcJrMVX_p_-OnF8+NuCrBSZfuA@mail.gmail.com>
+Subject: Re: [PATCH v1] regmap: Switch to use fwnode instead of OF one
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a memleak report when doing some fuzz test:
+On Fri, Jul 10, 2020 at 5:13 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Fri, Jul 10, 2020 at 4:36 PM Mark Brown <broonie@kernel.org> wrote:
+> >
+> > On Fri, Jul 10, 2020 at 01:08:56PM +0100, Mark Brown wrote:
+> > > On Fri, Jul 10, 2020 at 02:46:22PM +0300, Andy Shevchenko wrote:
+> >
+> > > > You mean it's being synchronised with git.kernel.org, but not yet contains that
+> > > > patch? Okay, I will monitor the regmap tree (as of now I didn't see any update).
+> >
+> > > 5cc2013bfeee756a1ee6da9bfbe42e52b4695035
+> >
+> > Oh, I see your patch covered a different bit of code without covering
+> > the stuff in regmap-irq (which I'd just handled when your patch came in)
+> > for some reason so the changelog made it sound like the same code, and
+> > at the time you submitted it the patch was incomplete.
+>
+> Should I do anything to improve it?
 
-BUG: memory leak
-unreferenced object 0x607eeac06e78 (size 8):
-  comm "test", pid 295, jiffies 4294735835 (age 31.745s)
-  hex dump (first 8 bytes):
-    00 00 00 00 00 00 00 00                          ........
-  backtrace:
-    [<00000000932632e6>] percpu_ref_init+0x2a/0x1b0
-    [<0000000092ddb796>] __io_uring_register+0x111d/0x22a0
-    [<00000000eadd6c77>] __x64_sys_io_uring_register+0x17b/0x480
-    [<00000000591b89a6>] do_syscall_64+0x56/0xa0
-    [<00000000864a281d>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Actually I think we can completely get rid of fwnode by switching to
+device properties.
+I'll send v2 soon.
 
 
-Call percpu_ref_exit() on error path to avoid
-refcount memleak.
-
-Fixes: 05f3fb3c5397 ("io_uring: avoid ring quiesce for fixed file set unregister and update")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- fs/io_uring.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index d37d7ea5ebe5..ea81be3c14af 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6693,6 +6693,7 @@ static int io_sqe_files_register(struct io_ring_ctx *ctx, void __user *arg,
- 		for (i = 0; i < nr_tables; i++)
- 			kfree(ctx->file_data->table[i].files);
- 
-+		percpu_ref_exit(&ctx->file_data->refs);
- 		kfree(ctx->file_data->table);
- 		kfree(ctx->file_data);
- 		ctx->file_data = NULL;
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
