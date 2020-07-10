@@ -2,66 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9311E21B739
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD67921B749
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgGJNxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
+        id S1726950AbgGJN5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726950AbgGJNxL (ORCPT
+        with ESMTP id S1726496AbgGJN5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:53:11 -0400
+        Fri, 10 Jul 2020 09:57:13 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D03C08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:53:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAA5C08C5CE;
+        Fri, 10 Jul 2020 06:57:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ey6uKFbNSnOPCZZza0xaCAwIsnIW4VILi+2xhSgWe/s=; b=UCxbXM/kVZe69IRi0UZIwVKCLP
-        T0He1JuTeSqeB5GKa3llJnwxidsw7IvHdSNUIp9a978KMI1fm78/6dcO3Sx73L99JnaTxvtzlv5+0
-        sbiumvbHy/OtapkXVKKwUzwEBwwG0DegP8Z//S7CkhS9dvYZJEvp5sb/Fs+d+K0p5d7RBLkFpTt2Y
-        hNox503bzpITX/aODa9FTKlymXIvST6t+xS1H9EZ8mE+vlqpbJ3CjJnWHCUQ280wFSj/6Dr5T/yWt
-        XfCNE+BZnuKrxm7rWqD7a/q1yvRR0siboC3+uj+ALjEy14+GNnsJtjdiy0PdaQW003R71r9uSTOaI
-        bUGP8DxQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jttSX-0004Vm-Ri; Fri, 10 Jul 2020 13:53:01 +0000
-Date:   Fri, 10 Jul 2020 14:53:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Tian Tao <tiantao6@hisilicon.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v3] vmalloc: Add the right hint when vmalloc failed
-Message-ID: <20200710135301.GM12769@casper.infradead.org>
-References: <1594383472-52983-1-git-send-email-tiantao6@hisilicon.com>
- <20200710124323.GJ12769@casper.infradead.org>
- <20200710134956.GA14549@pc636>
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=B7pw9VB6Nltmz3Y300r/gUvA4/r7iQ5LJ7MRpv3euRQ=; b=oTblXaxxdMYgqzyWl/61AZfUDq
+        Em+mmsEq18XABkt4HcXcqWCojruqtuYuxz6rz3NBC/ziJ4LGO/7YPle2SpO7EegE2OahG0RJozJDp
+        cN2rl1cfIKXl8Mqrz0XeFQSpuKiMgg7sEZHL+zNVeV3nEdwB1msbLjIJefAgheb8Mz2Is7u+e8Xmh
+        SVvKocawwCr6ZzS+T1LonpbkoIkdKnLTdtQxjaPg2tM0YXE99YPTrPxXryLHRWA1U3HO4lzRARAzo
+        dLxfdpyGiAQP9HpENHCTYu0qkAeSfG2JOl+ysNpFHI5zuJ3oCZeObDLXAQY7MsDBbAST7AwT31I4p
+        YvvW2EMg==;
+Received: from [2001:4bb8:188:5f50:c70:4a89:bc61:2] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jttWV-0004gQ-6D; Fri, 10 Jul 2020 13:57:07 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: clean up address limit helpers
+Date:   Fri, 10 Jul 2020 15:57:00 +0200
+Message-Id: <20200710135706.537715-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710134956.GA14549@pc636>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 03:49:56PM +0200, Uladzislau Rezki wrote:
-> > On Fri, Jul 10, 2020 at 08:17:52PM +0800, Tian Tao wrote:
-> > > In fact "vmalloc=<size>" cmdline option is not available on many
-> > > platforms.When the user encounters this error, add the correct
-> > > hint to prevent misleading.
-> > 
-> > i don't think this is an improvement.
-> >
-> Matthew, maybe it should not be considered as improvements?
+Hi all,
 
-Every patch should be an improvement along some dimension.  This doesn't
-feel like an improvement in any way.
+in preparation for eventually phasing out direct use of set_fs(), this
+series removes the segment_eq() arch helper that is only used to
+implement or duplicate the uaccess_kernel() API, and then adds
+descriptive helpers to force the kernel address limit.
 
-> It is rather an extra information that indicates that your
-> ARCH may not support "vmalloc" early parameter.
-
-If anything needs to be improved, it's the documentation, not this
-error message.
+Diffstat:
+ arch/alpha/include/asm/uaccess.h      |    2 +-
+ arch/arc/include/asm/segment.h        |    3 +--
+ arch/arm/include/asm/uaccess.h        |    4 ++--
+ arch/arm64/include/asm/uaccess.h      |    2 +-
+ arch/arm64/kernel/sdei.c              |    2 +-
+ arch/csky/include/asm/segment.h       |    2 +-
+ arch/h8300/include/asm/segment.h      |    2 +-
+ arch/ia64/include/asm/uaccess.h       |    2 +-
+ arch/m68k/include/asm/segment.h       |    2 +-
+ arch/m68k/include/asm/tlbflush.h      |   12 ++++++------
+ arch/microblaze/include/asm/uaccess.h |    2 +-
+ arch/mips/include/asm/uaccess.h       |    2 +-
+ arch/mips/kernel/unaligned.c          |   27 +++++++++++++--------------
+ arch/nds32/include/asm/uaccess.h      |    2 +-
+ arch/nds32/kernel/process.c           |    2 +-
+ arch/nds32/mm/alignment.c             |    7 +++----
+ arch/nios2/include/asm/uaccess.h      |    2 +-
+ arch/openrisc/include/asm/uaccess.h   |    2 +-
+ arch/parisc/include/asm/uaccess.h     |    2 +-
+ arch/powerpc/include/asm/uaccess.h    |    3 +--
+ arch/riscv/include/asm/uaccess.h      |    6 +++---
+ arch/s390/include/asm/uaccess.h       |    2 +-
+ arch/sh/include/asm/segment.h         |    3 +--
+ arch/sh/kernel/traps_32.c             |   18 ++++++++----------
+ arch/sparc/include/asm/uaccess_32.h   |    2 +-
+ arch/sparc/include/asm/uaccess_64.h   |    2 +-
+ arch/x86/include/asm/uaccess.h        |    2 +-
+ arch/xtensa/include/asm/uaccess.h     |    2 +-
+ drivers/firmware/arm_sdei.c           |    5 ++---
+ fs/exec.c                             |    7 ++++++-
+ include/asm-generic/uaccess.h         |    4 ++--
+ include/linux/syscalls.h              |    2 +-
+ include/linux/uaccess.h               |   20 ++++++++++++++++++--
+ kernel/events/callchain.c             |    5 ++---
+ kernel/events/core.c                  |    5 ++---
+ kernel/exit.c                         |    2 +-
+ kernel/kthread.c                      |    5 ++---
+ kernel/stacktrace.c                   |    5 ++---
+ mm/maccess.c                          |   22 ++++++++++------------
+ 39 files changed, 105 insertions(+), 98 deletions(-)
