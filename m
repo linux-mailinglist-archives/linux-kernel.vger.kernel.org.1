@@ -2,204 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB24C21BAB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C8F21BAB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728163AbgGJQUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:20:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728069AbgGJQU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:20:29 -0400
-Received: from localhost.localdomain (unknown [89.208.247.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E74F1207DF;
-        Fri, 10 Jul 2020 16:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594398029;
-        bh=4Gdqg7/67DYu/Qm0cdZwYioVv/ZYFFjvIwGERCtCikc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wlrYGMUrLcS6eAYMZav/ztsL6GHup0IZD9CSVFabPYM8M6rn3hhThZdtlwXJsLMVF
-         wRN+OBvX26DXkY3FxtBZJQ8yyXXHcerI6BSoDLmZ3l5FwL5pE73eyiaT0W9MmMVc8R
-         zb7w4S+KOVNx11vY2fkqZ13NukeW4jyOWzWVu0kU=
-From:   guoren@kernel.org
-To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        anup@brainfault.org, greentime.hu@sifive.com, zong.li@sifive.com,
-        keescook@chromium.org, bjorn.topel@gmail.com, atish.patra@wdc.com,
-        cooper.qu@linux.alibaba.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, guoren@kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH v3 2/2] riscv: Enable per-task stack canaries
-Date:   Fri, 10 Jul 2020 16:19:58 +0000
-Message-Id: <1594397998-10221-2-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594397998-10221-1-git-send-email-guoren@kernel.org>
-References: <1594397998-10221-1-git-send-email-guoren@kernel.org>
+        id S1728121AbgGJQUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:20:30 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:54486 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727916AbgGJQU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 12:20:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594398025;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q9OBXiOBnT1mGmZ2eGcWLsQs9qpaRL+ZvL1+d8k1S8o=;
+        b=gjp2xMlL82kham00+fOQkIMod7p8PBnHK0dIXP36vxyx2N+jYVuesM1mjX0XgTvxUIVYJv
+        j54Q6p0aqCtl0hzNp1ufhV9dOIo+9lFvFJhsybVZwkb/63E5o0RmEbD5hpOxZzxufNn8QB
+        NamVTrLHbt96WQYWB5LJwNrRUboK0vY=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-153-gD70DAuDMf2a5hi_mlHx4A-1; Fri, 10 Jul 2020 12:20:24 -0400
+X-MC-Unique: gD70DAuDMf2a5hi_mlHx4A-1
+Received: by mail-wr1-f71.google.com with SMTP id e11so6537105wrs.2
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 09:20:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q9OBXiOBnT1mGmZ2eGcWLsQs9qpaRL+ZvL1+d8k1S8o=;
+        b=CotTY/DBldwepIRYs2wn7zhDEZA9FbQr5Z9dPKXoUeMePMSvrcV5RBLkcqwa2antL0
+         SLg/WcSAUD5m/MR86ti1seNh5DRIafrTfuGXedgKSPaZwaPETfEtv7vnuSav7AmP/9KS
+         SrCk8OkZawFS6yQXOjzLr9gYXE7WwARB5m/QhR90kDsEqlK8ax/Bkm34esjIvO64sGtr
+         2+HZh9bYwUSOS09bWPQIEmBLdu5+kyIpO9UdQ7ZityYsEvbV13hwp68GSCM9EUmKq2O0
+         AQ5IntwLKk9BYbGRHuFaESpNT9fqd4WPSpwHCj9Cgj0YSCf7xtu3Ps7i5i0IbLMm0+EE
+         kZVA==
+X-Gm-Message-State: AOAM5322PjUcAs88sPUABpH8OY2DPWKHK7WXK0wztApw8y7RprDKcI+4
+        fY7bsiYhtWdT8/duQDjf1VcdWlKSD+uxry/GdRPoOQiSkqWkH/m/WmQ0ENMe7q+MgDsSQ8MIHpb
+        pdKjOQ2NST89q9JVxM+5xhxrA
+X-Received: by 2002:a5d:630c:: with SMTP id i12mr75515899wru.158.1594398022819;
+        Fri, 10 Jul 2020 09:20:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNg29SHEj/1kCIq20X+QBQi6Vi8ell7jTihmuv4S0/ilMJ558e1BkioaTjMsJllIACTM1T8A==
+X-Received: by 2002:a5d:630c:: with SMTP id i12mr75515878wru.158.1594398022605;
+        Fri, 10 Jul 2020 09:20:22 -0700 (PDT)
+Received: from steredhat ([5.180.207.22])
+        by smtp.gmail.com with ESMTPSA id 129sm10475853wmd.48.2020.07.10.09.20.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 09:20:22 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 18:20:17 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Sargun Dhillon <sargun@sargun.me>,
+        Kees Cook <keescook@chromium.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Jann Horn <jannh@google.com>, Aleksa Sarai <asarai@suse.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        io-uring@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: Re: [PATCH RFC 0/3] io_uring: add restrictions to support untrusted
+ applications and guests
+Message-ID: <20200710162017.qdu34ermtxh3rfgl@steredhat>
+References: <20200710141945.129329-1-sgarzare@redhat.com>
+ <20200710153309.GA4699@char.us.oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710153309.GA4699@char.us.oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+Hi Konrad,
 
-This enables the use of per-task stack canary values if GCC has
-support for emitting the stack canary reference relative to the
-value of tp, which holds the task struct pointer in the riscv
-kernel.
+On Fri, Jul 10, 2020 at 11:33:09AM -0400, Konrad Rzeszutek Wilk wrote:
+> .snip..
+> > Just to recap the proposal, the idea is to add some restrictions to the
+> > operations (sqe, register, fixed file) to safely allow untrusted applications
+> > or guests to use io_uring queues.
+> 
+> Hi!
+> 
+> This is neat and quite cool - but one thing that keeps nagging me is
+> what how much overhead does this cut from the existing setup when you use
+> virtio (with guests obviously)?
 
-After compare arm64 and x86 implementations, seems arm64's is more
-flexible and readable. The key point is how gcc get the offset of
-stack_canary from gs/el0_sp.
+I need to do more tests, but the preliminary results that I reported on
+the original proposal [1] show an overhead of ~ 4.17 uS (with iodepth=1)
+when I'm using virtio ring processed in a dedicated iothread:
 
-x86: Use a fix offset from gs, not flexible.
+  - 73 kIOPS using virtio-blk + QEMU iothread + io_uring backend
+  - 104 kIOPS using io_uring passthrough
 
-struct fixed_percpu_data {
-	/*
-	 * GCC hardcodes the stack canary as %gs:40.  Since the
-	 * irq_stack is the object at %gs:0, we reserve the bottom
-	 * 48 bytes of the irq stack for the canary.
-	 */
-	char            gs_base[40]; // :(
-	unsigned long   stack_canary;
-};
+>                                 That is from a high level view the
+> beaty of io_uring being passed in the guest is you don't have the
+> virtio ring -> io_uring processing, right?
 
-arm64: Use -mstack-protector-guard-offset & guard-reg
-	gcc options:
-	-mstack-protector-guard=sysreg
-	-mstack-protector-guard-reg=sp_el0
-	-mstack-protector-guard-offset=xxx
+Right, and potentially we can share the io_uring queues directly to the
+guest userspace applications, cutting down the cost of Linux block
+layer in the guest.
 
-riscv: Use -mstack-protector-guard-offset & guard-reg
-	gcc options:
-	-mstack-protector-guard=tls
-	-mstack-protector-guard-reg=tp
-	-mstack-protector-guard-offset=xxx
+Thanks for your feedback,
+Stefano
 
-Here is riscv gcc's work [1].
-
-[1] https://gcc.gnu.org/pipermail/gcc-patches/2020-July/549583.html
-
-In the end, these codes are inserted by gcc before return:
-
-*  0xffffffe00020b396 <+120>:   ld      a5,1008(tp) # 0x3f0
-*  0xffffffe00020b39a <+124>:   xor     a5,a5,a4
-*  0xffffffe00020b39c <+126>:   mv      a0,s5
-*  0xffffffe00020b39e <+128>:   bnez    a5,0xffffffe00020b61c <_do_fork+766>
-   0xffffffe00020b3a2 <+132>:   ld      ra,136(sp)
-   0xffffffe00020b3a4 <+134>:   ld      s0,128(sp)
-   0xffffffe00020b3a6 <+136>:   ld      s1,120(sp)
-   0xffffffe00020b3a8 <+138>:   ld      s2,112(sp)
-   0xffffffe00020b3aa <+140>:   ld      s3,104(sp)
-   0xffffffe00020b3ac <+142>:   ld      s4,96(sp)
-   0xffffffe00020b3ae <+144>:   ld      s5,88(sp)
-   0xffffffe00020b3b0 <+146>:   ld      s6,80(sp)
-   0xffffffe00020b3b2 <+148>:   ld      s7,72(sp)
-   0xffffffe00020b3b4 <+150>:   addi    sp,sp,144
-   0xffffffe00020b3b6 <+152>:   ret
-   ...
-*  0xffffffe00020b61c <+766>:   auipc   ra,0x7f8
-*  0xffffffe00020b620 <+770>:   jalr    -1764(ra) # 0xffffffe000a02f38 <__stack_chk_fail>
-
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Signed-off-by: cooper <cooper.qu@linux.alibaba.com>
-Cc: cooper <cooper.qu@linux.alibaba.com>
-Cc: Kees Cook <keescook@chromium.org>
----
-Change v2:
- - Change to -mstack-protector-guard=tls for gcc final define
- - Solve compile error by changing position of KBUILD_CFLAGS in
-   Makefile
-
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
----
- arch/riscv/Kconfig                      |  7 +++++++
- arch/riscv/Makefile                     | 10 ++++++++++
- arch/riscv/include/asm/stackprotector.h |  3 ++-
- arch/riscv/kernel/asm-offsets.c         |  3 +++
- arch/riscv/kernel/process.c             |  2 +-
- 5 files changed, 23 insertions(+), 2 deletions(-)
-
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 4b0e308..d98ce29 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -394,6 +394,13 @@ config CMDLINE_FORCE
- 
- endchoice
- 
-+config CC_HAVE_STACKPROTECTOR_TLS
-+	def_bool $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=tp -mstack-protector-guard-offset=0)
-+
-+config STACKPROTECTOR_PER_TASK
-+	def_bool y
-+	depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_TLS
-+
- endmenu
- 
- config BUILTIN_DTB
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index fb6e37d..f5f8ee9 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -68,6 +68,16 @@ KBUILD_CFLAGS_MODULE += $(call cc-option,-mno-relax)
- # architectures.  It's faster to have GCC emit only aligned accesses.
- KBUILD_CFLAGS += $(call cc-option,-mstrict-align)
- 
-+ifeq ($(CONFIG_STACKPROTECTOR_PER_TASK),y)
-+prepare: stack_protector_prepare
-+stack_protector_prepare: prepare0
-+	$(eval KBUILD_CFLAGS += -mstack-protector-guard=tls		  \
-+				-mstack-protector-guard-reg=tp		  \
-+				-mstack-protector-guard-offset=$(shell	  \
-+			awk '{if ($$2 == "TSK_STACK_CANARY") print $$3;}' \
-+					include/generated/asm-offsets.h))
-+endif
-+
- # arch specific predefines for sparse
- CHECKFLAGS += -D__riscv -D__riscv_xlen=$(BITS)
- 
-diff --git a/arch/riscv/include/asm/stackprotector.h b/arch/riscv/include/asm/stackprotector.h
-index d95f7b2..a895e07 100644
---- a/arch/riscv/include/asm/stackprotector.h
-+++ b/arch/riscv/include/asm/stackprotector.h
-@@ -28,6 +28,7 @@ static __always_inline void boot_init_stack_canary(void)
- 	canary &= CANARY_MASK;
- 
- 	current->stack_canary = canary;
--	__stack_chk_guard = current->stack_canary;
-+	if (!IS_ENABLED(CONFIG_STACKPROTECTOR_PER_TASK))
-+		__stack_chk_guard = current->stack_canary;
- }
- #endif /* _ASM_RISCV_STACKPROTECTOR_H */
-diff --git a/arch/riscv/kernel/asm-offsets.c b/arch/riscv/kernel/asm-offsets.c
-index 07cb9c1..999b465 100644
---- a/arch/riscv/kernel/asm-offsets.c
-+++ b/arch/riscv/kernel/asm-offsets.c
-@@ -29,6 +29,9 @@ void asm_offsets(void)
- 	OFFSET(TASK_THREAD_S11, task_struct, thread.s[11]);
- 	OFFSET(TASK_THREAD_SP, task_struct, thread.sp);
- 	OFFSET(TASK_STACK, task_struct, stack);
-+#ifdef CONFIG_STACKPROTECTOR
-+	OFFSET(TSK_STACK_CANARY, task_struct, stack_canary);
-+#endif
- 	OFFSET(TASK_TI, task_struct, thread_info);
- 	OFFSET(TASK_TI_FLAGS, task_struct, thread_info.flags);
- 	OFFSET(TASK_TI_PREEMPT_COUNT, task_struct, thread_info.preempt_count);
-diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-index 6548929..cb4ac65 100644
---- a/arch/riscv/kernel/process.c
-+++ b/arch/riscv/kernel/process.c
-@@ -24,7 +24,7 @@
- 
- register unsigned long gp_in_global __asm__("gp");
- 
--#ifdef CONFIG_STACKPROTECTOR
-+#if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PER_TASK)
- #include <linux/stackprotector.h>
- unsigned long __stack_chk_guard __read_mostly;
- EXPORT_SYMBOL(__stack_chk_guard);
--- 
-2.7.4
+[1] https://lore.kernel.org/io-uring/20200609142406.upuwpfmgqjeji4lc@steredhat/
 
