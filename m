@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C443B21B8C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F38621B8D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgGJOfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:35:51 -0400
-Received: from mga05.intel.com ([192.55.52.43]:48386 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727978AbgGJOfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:35:48 -0400
-IronPort-SDR: PW4+0tFsmVEEFTCWe//jRB175Uahgbsqz5wIsSVeBp4oDjbB6FqhpfDvtRqbOiliMbjJ4UzpD1
- w2XZV8d02QvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9678"; a="233069546"
-X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
-   d="scan'208";a="233069546"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 07:35:30 -0700
-IronPort-SDR: ECrrrkzvxc1YOLs1Tb1e4wtm6FjeWPUDFojMs/DsVc0DN6EH988x/HW76rC0HZqsRYezxxIYJh
- UOfNiwB0J9YQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
-   d="scan'208";a="316620225"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Jul 2020 07:35:28 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jtu7d-0014Ir-O8; Fri, 10 Jul 2020 17:35:29 +0300
-Date:   Fri, 10 Jul 2020 17:35:29 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v1] regmap: Switch to use fwnode instead of OF one
-Message-ID: <20200710143529.GR3703480@smile.fi.intel.com>
-References: <20200708161232.17914-1-andriy.shevchenko@linux.intel.com>
- <20200708162117.GV4655@sirena.org.uk>
- <20200710100558.GI3703480@smile.fi.intel.com>
- <20200710110132.GA5653@sirena.org.uk>
- <20200710114622.GJ3703480@smile.fi.intel.com>
- <20200710120856.GD5653@sirena.org.uk>
- <20200710133233.GF5653@sirena.org.uk>
- <CAHp75VeWmWU6=ybDmQmv7ymwaHG+FxNBzZM9eBxp2Oie6MrZQw@mail.gmail.com>
- <CAHp75VcKSRem-eHi2FY89Y0yZcJrMVX_p_-OnF8+NuCrBSZfuA@mail.gmail.com>
+        id S1728220AbgGJOht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:37:49 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47192 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgGJOht (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 10:37:49 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06AEbdOo090306;
+        Fri, 10 Jul 2020 09:37:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594391859;
+        bh=s/Z8V9mGX3gOoutpqf8o4ND8qHAKcSCacNptqGjaKUI=;
+        h=From:To:CC:Subject:Date;
+        b=WDvzP9jYBZUZkzu325ftwGkluhcMqAEvy+t5AUGlcTXz8nf6IwSn1k1iWbVe3McDK
+         xhceuPIyQvRQo+L3ZAvZul8Zfhr24ZyIEUq+cDAeWEedokiaQAIgiEcs7u16oLp0Ux
+         t8ecclIzVMmPtPYSvwHdFQPjXDayhMWQDbYiUiFc=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06AEbdYm118635
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 10 Jul 2020 09:37:39 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 10
+ Jul 2020 09:37:39 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 10 Jul 2020 09:37:39 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06AEbc0S083159;
+        Fri, 10 Jul 2020 09:37:39 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>, <robh@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH net-next v2 0/2] DP83822 Fiber enablement
+Date:   Fri, 10 Jul 2020 09:37:31 -0500
+Message-ID: <20200710143733.30751-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcKSRem-eHi2FY89Y0yZcJrMVX_p_-OnF8+NuCrBSZfuA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 05:15:27PM +0300, Andy Shevchenko wrote:
-> On Fri, Jul 10, 2020 at 5:13 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Fri, Jul 10, 2020 at 4:36 PM Mark Brown <broonie@kernel.org> wrote:
-> > >
-> > > On Fri, Jul 10, 2020 at 01:08:56PM +0100, Mark Brown wrote:
-> > > > On Fri, Jul 10, 2020 at 02:46:22PM +0300, Andy Shevchenko wrote:
-> > >
-> > > > > You mean it's being synchronised with git.kernel.org, but not yet contains that
-> > > > > patch? Okay, I will monitor the regmap tree (as of now I didn't see any update).
-> > >
-> > > > 5cc2013bfeee756a1ee6da9bfbe42e52b4695035
-> > >
-> > > Oh, I see your patch covered a different bit of code without covering
-> > > the stuff in regmap-irq (which I'd just handled when your patch came in)
-> > > for some reason so the changelog made it sound like the same code, and
-> > > at the time you submitted it the patch was incomplete.
-> >
-> > Should I do anything to improve it?
-> 
-> Actually I think we can completely get rid of fwnode by switching to
-> device properties.
-> I'll send v2 soon.
+Hello
 
-Oops, I have looked into this and see that either way we would need an
-additional conditional and fwnode approach looks better. So, if you agree with
-v1, please apply.
+The DP83822 Ethernet PHY has the ability to connect via a Fiber port.  The
+derivative PHYs DP83825 and DP83826 do not have this ability. In fiber mode
+the DP83822 disables auto negotiation and has a fixed 100Mbps speed with
+support for full or half duplex modes.
+
+A devicetree binding was added to set the signal polarity for the fiber
+connection.  This property is only applicable if the FX_EN strap is set in
+hardware other wise the signal loss detection is disabled on the PHY.
+
+If the FX_EN is not strapped the device can be configured to run in fiber mode
+via the device tree. All be it the PHY will not perfomr signal loss detection.
+
+Dan
+
+Dan Murphy (2):
+  dt-bindings: net: dp83822: Add TI dp83822 phy
+  net: phy: DP83822: Add ability to advertise Fiber connection
+
+ .../devicetree/bindings/net/ti,dp83822.yaml   |  80 +++++++++
+ drivers/net/phy/dp83822.c                     | 161 ++++++++++++++++++
+ 2 files changed, 241 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/ti,dp83822.yaml
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.27.0
 
