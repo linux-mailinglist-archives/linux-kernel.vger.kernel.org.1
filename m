@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812B121B21C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BB921B250
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgGJJUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 05:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726288AbgGJJUq (ORCPT
+        id S1727098AbgGJJau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 05:30:50 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:10252 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726615AbgGJJat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 05:20:46 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6128C08C5CE;
-        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc15so4344618pjb.0;
-        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=k3Fg5uwWi3YIL1ND93G+AfS7yVUtKWD1/rSB1uSDlrw=;
-        b=V2AkEhpMUH+KvSbxIjWFzekdSoByVCjiHrqM6j0Af5aT1HNGdfs/S13m1HgEk8L8uH
-         /N+ZRBJbte83Mbv+EqjVgM/73jc2jrMwIV8u//7tMQkcsk7L9YOWqF9En11idEEYHNUo
-         CoFyial+U9c+L8f3mh2CK0T76qzCiwTTrSwOqeJdmzbdvMlHPpCISev+77I/QmPj/KLk
-         vfMLTuVDyLw+HrB5h9VhB3i3+k7CHItB+1q4s9QvbMAma+BU/qBRnXzpfolepnmrB7tY
-         SLvZJGLljmjxie1ca/3PxOPcHsiBnIFdfWkfrd7fnmW3/SkvKfmwJcWpZrj77T5+5aAq
-         I7mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=k3Fg5uwWi3YIL1ND93G+AfS7yVUtKWD1/rSB1uSDlrw=;
-        b=PyDxvRIQITpInFu2a5HprzWpFB+lbuN4KFYZIGDUD/SepqwL9EYDHWCi6I46uEJ1n1
-         YqPG7wvrP8eDW1sJDV8K6ys+0f9mtX4oBDi5T5/+RJj94cdzlIZPojukGeo/XMyBKYqe
-         Y9CEPuNN5abo9OrGxxHB7Gc9IaN2ngj86V8a2j07SRda8Mzy3bkgxQqn8snKCzxdWo+H
-         Cu9ybHeWUlvqeI3Ti52+FGNGXRuc0iF+eMqt+Nk1VqBHWKRRWpZT/24SdVf7R5Ai/7eT
-         pDphIztqAbBljebQO72U+73MIVHAvcqUkAxi8UEXnSwv0JM/A9eT6hP6nc+yYVuZQs8f
-         acxA==
-X-Gm-Message-State: AOAM5319VXECIGJxIupDPTiWebWkLCmCI98wDS0cP7u1Z2pCq0kHE/DN
-        a3xPSKxeHMkj/3uYUNAOLniDDqgygsxHzsj8
-X-Google-Smtp-Source: ABdhPJx0z3oN+10frWzUngzJ8rZr4E4WNMuJsBdU4vBk4Qe3hRr1WE3NechrtXApQrlpC1p3cSZsiQ==
-X-Received: by 2002:a17:90a:2a4d:: with SMTP id d13mr4505138pjg.195.1594372846367;
-        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
-Received: from ubuntu-18.04-x8664 ([119.28.181.184])
-        by smtp.gmail.com with ESMTPSA id i23sm5580924pfq.206.2020.07.10.02.20.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 02:20:46 -0700 (PDT)
-From:   Wenbo Zhang <ethercflow@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ethercflow@gmail.com
-Subject: [PATCH] bpf: fix fds_example SIGSEGV error
-Date:   Fri, 10 Jul 2020 05:20:35 -0400
-Message-Id: <20200710092035.28919-1-ethercflow@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 10 Jul 2020 05:30:49 -0400
+X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Jul 2020 05:30:48 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1594373447;
+        s=strato-dkim-0002; d=aepfle.de;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=6gtHIv8UTS2QIMu+DBcnOduo7G4i7G7T+gs+Ih2xJT0=;
+        b=YIxYOkciFBu/29TgpQ2trlmq3J8mJhOwq4+a2cdZ8qA7SstPu4pdLhlI1rQo7f1P17
+        J8G97dJhqa2OBTKe7DLL6xkpWSUgwu3WuGktEMRqfNzQQjv/Gkli5XoF5naVkCoZ26uJ
+        RqJLwFI1gHsBHIxciJ+X8jlqeV1ZhQ63WYS4uBDBmtR540bfDA2RRPArj7M3gfgLnoAh
+        a4am7skG3OdjvEqGkZjMGlhLk8ndiq4anyUJwV4YsuUAMBVC1G7o13OFeOU86AP2i+f9
+        RRiLymkPZYb33b+e/q0Bsomz9elck2ZGloA0X7TcGrwrQKVhfZzUQyQ1kVQAxlPUxAH0
+        41aQ==
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QXkBR9MXjAuzBW/OdlBZQ4AHSS3QE="
+X-RZG-CLASS-ID: mo00
+Received: from aepfle.de
+        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
+        with ESMTPSA id m032cfw6A9Ohzku
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Fri, 10 Jul 2020 11:24:43 +0200 (CEST)
+Date:   Fri, 10 Jul 2020 11:24:40 +0200
+From:   Olaf Hering <olaf@aepfle.de>
+To:     Joseph Salisbury <joseph.salisbury@microsoft.com>,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        mikelley@microsoft.com
+Cc:     wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Drivers: hv: Change flag to write log level in panic msg
+ to false
+Message-ID: <20200710092440.GA16562@aepfle.de>
+References: <1593193685-74615-1-git-send-email-joseph.salisbury@microsoft.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cWoXeonUoKmBZSoM"
+Content-Disposition: inline
+In-Reply-To: <1593193685-74615-1-git-send-email-joseph.salisbury@microsoft.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The `BPF_LOG_BUF_SIZE`'s value is `UINT32_MAX >> 8`, so define an array
-with it on stack caused an overflow.
 
-Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
----
- samples/bpf/fds_example.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--cWoXeonUoKmBZSoM
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-diff --git a/samples/bpf/fds_example.c b/samples/bpf/fds_example.c
-index d5992f787232..59f45fef5110 100644
---- a/samples/bpf/fds_example.c
-+++ b/samples/bpf/fds_example.c
-@@ -30,6 +30,8 @@
- #define BPF_M_MAP	1
- #define BPF_M_PROG	2
- 
-+char bpf_log_buf[BPF_LOG_BUF_SIZE];
-+
- static void usage(void)
- {
- 	printf("Usage: fds_example [...]\n");
-@@ -57,7 +59,6 @@ static int bpf_prog_create(const char *object)
- 		BPF_EXIT_INSN(),
- 	};
- 	size_t insns_cnt = sizeof(insns) / sizeof(struct bpf_insn);
--	char bpf_log_buf[BPF_LOG_BUF_SIZE];
- 	struct bpf_object *obj;
- 	int prog_fd;
- 
--- 
-2.17.1
+On Fri, Jun 26, Joseph Salisbury wrote:
 
+> When the kernel panics, one page worth of kmsg data is written to an allocated
+> page.  The Hypervisor is notified of the page address trough the MSR.  This
+> panic information is collected on the host.  Since we are only collecting one
+> page of data, the full panic message may not be collected.
+
+Are the people who need to work with this tiny bit of information
+satisfied already, or did they already miss info even with this patch?
+
+I'm asking because kmsg_dump_get_buffer unconditionally includes the
+timestamp (unless it is enabled). I do wonder if there should be an API
+addition to omit the timestamp. Then even more dmesg output can be
+written into the 4k buffer.
+
+Olaf
+
+--cWoXeonUoKmBZSoM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAl8IM9EACgkQ86SN7mm1
+DoADEg/+ObaMF8Ognj2sFIxdowc2+rGVM5s81nQz7FY7IuOZJ6wKfzoPSlaune42
+t0IY4ChbugrKPFuRu8WnfbMfFhSN5Y/vJnV0vt6bwN5RfeIep3W5IizRm/QMZ9Kv
+1JvKvta6m0PsTfedVq2hSnqQR/2w7vbs0+vvecxu42Afz3z37Dtoweklcqc5JPOz
+Y7iRPpKkR2pvIQpGXY643AthP9rzwSJoWUK2ejtZ0YVvTerEQm5u6gkv8zBfa5Wc
+eCjm/STRDgsfdIBVZSNQaLcHGL/Av9yIRRsXMFCjuJsXSCFHJGff29Qkc7HRzkJZ
+Q+hw2edSJ8AxUUt/dGEV0HrwZJlAFvGthwscGyl80YjQ8qygk6dDP44fyPdhtdff
+rpArbS8mt7FkQpZleFHDPYLuk8cztNsxCTJdzatzkuj7hD6Xwpz9r3RzGcRTRSLq
+N6EIki5cEFCG/kibknftoThJSxD+ZWvU8iym7mIUvS2z9ibmVrr3fr/U0PneyB1t
+RFL2knUXSomopps2zvyX2sSl2p/3fJ2RiExBD+vnWBpU0r0Vvrbn7fhDUiB31Xsk
+NHvbG5pycT/W9tHEu+5kyq8eWLA4dLAMGkXe/xu6iQAIJ28llupMG39+Abqr65fP
+0FxkTXFRiX4s8YzpK9QCzE676IN1g0m4mzkP2YU1C8Kqu5qVoFQ=
+=h+ud
+-----END PGP SIGNATURE-----
+
+--cWoXeonUoKmBZSoM--
