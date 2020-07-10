@@ -2,49 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF5221B3D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CE321B3C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 13:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgGJLMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 07:12:49 -0400
-Received: from nautica.notk.org ([91.121.71.147]:48350 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727003AbgGJLMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 07:12:49 -0400
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id A3B2DC009; Fri, 10 Jul 2020 13:12:47 +0200 (CEST)
-Date:   Fri, 10 Jul 2020 13:12:32 +0200
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     ericvh@gmail.com, lucho@ionkov.net,
-        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+e6f77e16ff68b2434a2c@syzkaller.appspotmail.com
-Subject: Re: [PATCH] net/9p: validate fds in p9_fd_open
-Message-ID: <20200710111232.GC17924@nautica>
-References: <20200710085722.435850-1-hch@lst.de>
+        id S1728102AbgGJLLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 07:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728010AbgGJLLx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 07:11:53 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AC6C08C5CE;
+        Fri, 10 Jul 2020 04:11:53 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x11so2116149plo.7;
+        Fri, 10 Jul 2020 04:11:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LNlz30IWOHI0EzUpbjw6GP+YcxLHXUvj3TU9mudyrqE=;
+        b=TWFUzpMkGWdEJR/dntGvghD70r4RnseZlevMSVT2OkXokxRQRxOnIW2L+DZn89hDF9
+         exlyHvKx3g1QMGKjL5jO+YIsy2dySSJh+3CX3ZsgyVQlVT/4v4LW3TviUKuUn6pPim5q
+         QvoZkSwSfFDHanr0rbYx4X3jLHpqpUHH438yPXC8tlZaVqj83zCBkbuYlYa57p/WgevE
+         UZdrtdPnuAIDV9QZXBDcukGQ72rPFHX1uv4n56SNfezP5qPtqC9k7rMvEKGQqe14yE7f
+         B4Ok65wV1CfcJSWLK9w1nKFnO61zIEaLIRZSH3laz3V9tvPYAqa0ckflwnCchJPCnvl8
+         tv1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LNlz30IWOHI0EzUpbjw6GP+YcxLHXUvj3TU9mudyrqE=;
+        b=WTXpyVlL2fdf0iTy87SdLi793lJCFJdIvD2QMGkHVMbnCrJ8LiX7FLaNFeH5HX6yX9
+         e69QuS7HXHA7Ql86YvL5aqY3KiDPlLgfe2Mnbr6vQNTHSgD8eiumBRW0qVB/MctZKqsB
+         KssrR+CJXdHMlF2XivHacvVLFJSmKb+LmnCj6UasO4POQh/jiCfW8Ytrr5xIbvJUn6BT
+         H7Q2FmSHL6X9O1WZqP8O9C4hXW8pK5Bj7tcKo0Dt4IJfLRh5iv3kLERj4vFzAcMzOU6G
+         Xs8bbfyWqpJSYHX4CWc9KsCwiYgIYwDaCzxYKCi24n0x/PcyJIFbitG7bVVRgHVv2/Gi
+         +z9A==
+X-Gm-Message-State: AOAM533qCplmghn44SgV1fResg4234InYDSpIAbx2MwOf/Tfm+Gz1Yve
+        8ASLepASCs7BoirccYIuu6A=
+X-Google-Smtp-Source: ABdhPJzXMpnI3N2MmVSAmrIXDJg32JEDi0wJm3cFwqCUc+s/bm9ffzDOAN7dPvVGoLrWwlCDqTN6yw==
+X-Received: by 2002:a17:902:7c91:: with SMTP id y17mr26294187pll.103.1594379513255;
+        Fri, 10 Jul 2020 04:11:53 -0700 (PDT)
+Received: from gli-arch.genesyslogic.com.tw (60-251-58-169.HINET-IP.hinet.net. [60.251.58.169])
+        by smtp.gmail.com with ESMTPSA id gv16sm5436756pjb.5.2020.07.10.04.11.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 04:11:52 -0700 (PDT)
+From:   Ben Chuang <benchuanggli@gmail.com>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ben.chuang@genesyslogic.com.tw, takahiro.akashi@linaro.org,
+        greg.tu@genesyslogic.com.tw, Ben Chuang <benchuanggli@gmail.com>
+Subject: [RFC PATCH V3 18/21] mmc: sdhci-uhs2: add pre-detect_init hook
+Date:   Fri, 10 Jul 2020 19:12:36 +0800
+Message-Id: <20200710111236.29885-1-benchuanggli@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200710085722.435850-1-hch@lst.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig wrote on Fri, Jul 10, 2020:
-> p9_fd_open just fgets file descriptors passed in from userspace, but
-> doesn't verify that they are valid for read or writing.  This gets
-> cought down in the VFS when actually attemping a read or write, but a
-> new warning added in linux-next upsets syzcaller.
-> 
-> Fix this by just verifying the fds early on.
-> 
-> Reported-by: syzbot+e6f77e16ff68b2434a2c@syzkaller.appspotmail.com
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 
-Looks good to me, I'll pick it up shortly.
+This "pre" hook for detect_init(), uhs2_pre_detect_init, will be required
+to enable UHS-II support, at least, on GL9755.
 
+Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+---
+ drivers/mmc/host/sdhci-uhs2.c | 3 +++
+ drivers/mmc/host/sdhci.h      | 2 ++
+ 2 files changed, 5 insertions(+)
+
+diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
+index 3cb13071dd9d..3f7ebf5d18c5 100644
+--- a/drivers/mmc/host/sdhci-uhs2.c
++++ b/drivers/mmc/host/sdhci-uhs2.c
+@@ -525,6 +525,9 @@ static int sdhci_uhs2_do_detect_init(struct sdhci_host *host)
+ 	DBG("%s: begin UHS2 init.\n", __func__);
+ 	spin_lock_irqsave(&host->lock, flags);
+ 
++	if (host->ops && host->ops->uhs2_pre_detect_init)
++		host->ops->uhs2_pre_detect_init(host);
++
+ 	if (sdhci_uhs2_interface_detect(host)) {
+ 		pr_warn("%s: cannot detect UHS2 interface.\n",
+ 			mmc_hostname(host->mmc));
+diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+index 927aaba28932..c825a8130bc1 100644
+--- a/drivers/mmc/host/sdhci.h
++++ b/drivers/mmc/host/sdhci.h
+@@ -721,6 +721,8 @@ struct sdhci_ops {
+ 	void	(*request_done)(struct sdhci_host *host,
+ 				struct mmc_request *mrq);
+ 	void    (*dump_vendor_regs)(struct sdhci_host *host);
++	/* UHS-2 support */
++	void    (*uhs2_pre_detect_init)(struct sdhci_host *host);
+ };
+ 
+ struct sdhci_uhs2_ops {
 -- 
-Dominique
+2.27.0
+
