@@ -2,105 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEA921B079
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 09:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FCE21B074
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 09:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgGJHoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 03:44:17 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:43256 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbgGJHoQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 03:44:16 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 06A7hQCU009644;
-        Fri, 10 Jul 2020 16:43:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 06A7hQCU009644
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1594367007;
-        bh=XzgmZfHGbIg/7Bx4Qqjl6MK0bxbloahArh6T6eyAMM0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HK8u7AgjGGJCOEBySXc3+AJacIfrRJ34tZvG08tSJYzTeDP9H4JKqolNL5/0c5PsI
-         iFJXBufT7kunBigrBsb0uABb3vqUwClCnbQZ86L6G0E/bRZ8T5sfMthBBhAuzagf35
-         W1/ei07Lb2tfXI8IBLbIjq15hbHUyIVrsziVkNJd/WIIrInWDnev+jj1HgJu3edfS3
-         NZLu4Ky3fjGQ8Ib8igASaXOmMqec7DOqJvcEaiqU8u+Xgk5YKwvM/30Rktsezu/bb7
-         TF6tvR/FzgnwJXYHTFG+kl547I9HUbfbPf2rmEjOTjvRfsSVtArIH5gxBTlTZ1cE/J
-         n2G71W7igpSJg==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        id S1728010AbgGJHny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 03:43:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726664AbgGJHny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 03:43:54 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE02D206A5;
+        Fri, 10 Jul 2020 07:43:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594367033;
+        bh=SFQt0vxnwbG8QVBgOnlfaZeFajIEFrgh4tqcl3dJRaQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aN4Z3vbCN2d9QS2ITUdxqDzj3cytW5esIu1oMWQq4xVBbMNCIzyulWCz3at2y+nqr
+         j3ExIwo38spxxdY21kALdjLLm8MgIZaPYx+IXSjAIHkpRhG2MyHCL4BUsW9+Qe4MEI
+         hk1j3yfYTMfIJtNvqSA+LMR7ttlGThTLrdQsu77s=
+Date:   Fri, 10 Jul 2020 09:43:58 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: uniphier: remove support-card node
-Date:   Fri, 10 Jul 2020 16:43:23 +0900
-Message-Id: <20200710074323.296007-1-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH] USB PHY LAYER: Replace HTTP links with HTTPS ones
+Message-ID: <20200710074358.GB1179998@kroah.com>
+References: <20200710072045.29133-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710072045.29133-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This device hierarchy is needlessly complex.
+On Fri, Jul 10, 2020 at 09:20:45AM +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>  If there are any URLs to be removed completely or at least not HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+> 
+>  If you apply the patch, please let me know.
 
-Remove the support-card node level, and move the ethernet and serial
-nodes right under the system-bus node.
-
-This also fixes the following warning from 'make ARCH=arm dtbs_check':
-
-  support-card@1,1f00000: $nodename:0: 'support-card@1,1f00000' does not match '^(bus|soc|axi|ahb|apb)(@[0-9a-f]+)?$'
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
- arch/arm/boot/dts/uniphier-support-card.dtsi | 31 ++++++++------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
-
-diff --git a/arch/arm/boot/dts/uniphier-support-card.dtsi b/arch/arm/boot/dts/uniphier-support-card.dtsi
-index 11e46e7de7c5..444802fee9fb 100644
---- a/arch/arm/boot/dts/uniphier-support-card.dtsi
-+++ b/arch/arm/boot/dts/uniphier-support-card.dtsi
-@@ -8,26 +8,19 @@
- &system_bus {
- 	status = "okay";
- 	ranges = <1 0x00000000 0x42000000 0x02000000>;
-+	interrupt-parent = <&gpio>;
- 
--	support_card: support-card@1,1f00000 {
--		compatible = "simple-bus";
--		#address-cells = <1>;
--		#size-cells = <1>;
--		ranges = <0x00000000 1 0x01f00000 0x00100000>;
--		interrupt-parent = <&gpio>;
--
--		ethsc: ethernet@0 {
--			compatible = "smsc,lan9118", "smsc,lan9115";
--			reg = <0x00000000 0x1000>;
--			phy-mode = "mii";
--			reg-io-width = <4>;
--		};
-+	ethsc: ethernet@1,1f00000 {
-+		compatible = "smsc,lan9118", "smsc,lan9115";
-+		reg = <1 0x01f00000 0x1000>;
-+		phy-mode = "mii";
-+		reg-io-width = <4>;
-+	};
- 
--		serialsc: serial@b0000 {
--			compatible = "ns16550a";
--			reg = <0x000b0000 0x20>;
--			clock-frequency = <12288000>;
--			reg-shift = <1>;
--		};
-+	serialsc: serial@1,1fb0000 {
-+		compatible = "ns16550a";
-+		reg = <1 0x01fb0000 0x20>;
-+		clock-frequency = <12288000>;
-+		reg-shift = <1>;
- 	};
- };
--- 
-2.25.1
-
+Again, subject lines...
