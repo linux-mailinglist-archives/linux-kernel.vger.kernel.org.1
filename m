@@ -2,87 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0C621BEB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 22:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 043B921BEE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgGJUkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 16:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726832AbgGJUkM (ORCPT
+        id S1726369AbgGJVBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:01:37 -0400
+Received: from gateway30.websitewelcome.com ([192.185.197.25]:30798 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726319AbgGJVBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 16:40:12 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45C4C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 13:40:12 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id k27so3030620pgm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 13:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IHphsaPDEKolcYxtuiEwczCTo9yP0Y4tinyJJRJOiTA=;
-        b=AvdpalqT0e7fW4Hor23dGAdTht9tqlqB3sBC5vRgjKGWYmIKu8zreUfCMXUEM4524Q
-         5F+hjzPvTtkcprF66FK25Y7oVnfKr+h+HWDzVbll5l2WGMYhYW+UmjY8c8mS1kdlv4an
-         5+MsEabi6LfCAxunSNzoRgjYCwr88OO7KlBFG17sDsSfRcIMV1VxzJbRCijZoK33crNn
-         Mekr8rNvjuNUNpcDLTzWbza7SgfC2yS3lY3GAkiFYpEFbp0GMY2CYh7Ha6a2G0IjX8SE
-         rRTWeZyxPaBof90n1s3ZOt3fggq1Bht3J+U4L73knFt3irm+PtciXuv9pNgRYrt3wMeW
-         hFrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IHphsaPDEKolcYxtuiEwczCTo9yP0Y4tinyJJRJOiTA=;
-        b=IwMc30lGN6R7RfWBIICl14juU6URc/BIH5hR6wZ+v+T6WCWiD3dj70lVfxEAiMi47q
-         5SEuOV5VOqp/Tdjma53och3O+2WYebaahIoDTId/LhfjrY8PpJBxhig3XTcNwdFo6k2C
-         xjnQu4KzT2mOaUhUqb9Vi7wqrImVloof1zqOmKt87RBm68TyztJe0dX3LrrknK93Qsng
-         tz13bta3FdZirN62zZ0KgS+fmGXCmQIocnfhG29bd7JTjPNNkgpJFh6wvxlp73aXFF2K
-         Z4YIOjUUV5lrD4TIdZupK+P0VQAbOpJ/EVz4dRr4Y4Nc5+C4nsHkRMP6toMdmF6fqG1F
-         EFrw==
-X-Gm-Message-State: AOAM5309V6Oa7cxqTl2GbNeHjLwdHVcGIJYzxVmSypoRdF6qXHlcGzfF
-        hCEJlz+m2YEZ1s6w9klUHOxTSypBDqfEUvp5z9rKIscw
-X-Google-Smtp-Source: ABdhPJw7VcFL2m4dgDICeCSmiBnJ2k5SJR6et3ydjG4xXj1Q2iTQGkRhbvIpF/+0G4qBClFyzy8/71+J5P6oZvQJitw=
-X-Received: by 2002:a63:495c:: with SMTP id y28mr60595442pgk.30.1594413612107;
- Fri, 10 Jul 2020 13:40:12 -0700 (PDT)
+        Fri, 10 Jul 2020 17:01:34 -0400
+X-Greylist: delayed 1336 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Jul 2020 17:01:33 EDT
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id 48A638D5F
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:39:17 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id tznhjuX2oBb5dtznhjtb4z; Fri, 10 Jul 2020 15:39:17 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AOm7EjCoPF0xc+v+nCfS/QJQ5dx+KqUYST18V/slAK0=; b=DzgpsBQDzudchhwqdvkKil/yLg
+        g1wtYxq9dQywkERaWJtGV1GJA6KnU9NeDl7FAMEq5X9jQaa5pPifpzWy7FnNZ3vzT8psDkcP8iva4
+        ZO3Z6KAoBJmWsIfmvW7vdB1T9f7FUR96ewZQ89i0tM9JVa+fi9qbSnB86clcDzOnU4AMVU6rB9GVb
+        ne2saweKQ8Q+PIF9Ms4R9SHeyP0UCm8elIBeSiNbHvLfacpWi9r24csFTAKaztNC1DpZ9LglR0GRv
+        2lLK6HwRHobBvxDsKaAPSsYkDANMtdzzH+pv1Ear3BFTrdVA7W+BH+5ccq+tGjfpOOGRnexoj70y/
+        fR5OORGA==;
+Received: from [200.39.25.189] (port=13347 helo=[192.168.43.132])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jtzng-003181-SB; Fri, 10 Jul 2020 15:39:17 -0500
+To:     John Oldman <john.oldman@polehill.co.uk>,
+        gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20200710201643.27322-1-john.oldman@polehill.co.uk>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Subject: Re: [PATCH] staging: rtl8723bs: core: Using comparison to true is
+ error prone
+Message-ID: <69bf7931-7df2-a0f8-8329-929ccb6a2c20@embeddedor.com>
+Date:   Fri, 10 Jul 2020 15:44:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200521191800.136035-1-saravanak@google.com> <CAGETcx8UGps6bz1YhYcbjCAAXenBuR6XDT0qv5WED5zbyfzNFw@mail.gmail.com>
- <20200529123025.GA1710508@kroah.com> <CAGETcx-QiAysfd7AVV2Y7_GWRd2sj4N=8KwQ_T4fUZ5gVaV8Jw@mail.gmail.com>
- <CAGETcx94Os7o+xZPSs3vVOQAzGtESAGFXtUNdrEAK9iya05s1w@mail.gmail.com> <20200710132305.GA1920995@kroah.com>
-In-Reply-To: <20200710132305.GA1920995@kroah.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 10 Jul 2020 13:39:36 -0700
-Message-ID: <CAGETcx8HutYb+LLsmdDyd5uc4Hwf+SGPiFhVQkE0q+8-Xbccvw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] driver core: Add device link related sysfs files
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200710201643.27322-1-john.oldman@polehill.co.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 200.39.25.189
+X-Source-L: No
+X-Exim-ID: 1jtzng-003181-SB
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.132]) [200.39.25.189]:13347
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 6:23 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Jul 06, 2020 at 03:45:02PM -0700, Saravana Kannan wrote:
-> > On Tue, Jun 16, 2020 at 8:45 PM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Fri, May 29, 2020 at 5:30 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > > Looks semi-sane, but it's too close to the merge window at the moment
-> > > > for me to take this.  If there's no objections by the time 5.8-rc1 is
-> > > > out, I'll queue it up in my tree for 5.9-rc1.
-> > >
-> > > Another friendly reminder :)
-> >
-> > *nudge* *nudge*
->
-> Looks sane, given no objections, let's see what linux-next thinks about
-> it...
 
-Thanks!
 
--Saravana
+On 7/10/20 15:16, John Oldman wrote:
+> clear below issues reported by checkpatch.pl:
+> 
+> CHECK: Using comparison to true is error prone
+> 
+> Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
+> ---
+>  drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+> index ca98274ae390..d9bdd4fb9dc3 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
+> @@ -363,8 +363,9 @@ int rtw_generate_ie(struct registry_priv *pregistrypriv)
+>  	}
+>  
+>  	/* HT Cap. */
+> -	if (((pregistrypriv->wireless_mode&WIRELESS_11_5N) || (pregistrypriv->wireless_mode&WIRELESS_11_24N))
+> -		&& (pregistrypriv->ht_enable == true)) {
+> +	if (((pregistrypriv->wireless_mode & WIRELESS_11_5N)
+> +	      || (pregistrypriv->wireless_mode & WIRELESS_11_24N))
+> +	      && (pregistrypriv->ht_enable)) {
+		 ^			  ^
+The enclosing parentheses are unnecessary.
+
+Also, if you run checkpatch.pl on your patch, you'll see
+the following:
+
+CHECK: Logical continuations should be on the previous line
+#12: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:367:
++	if (((pregistrypriv->wireless_mode & WIRELESS_11_5N)
++	      || (pregistrypriv->wireless_mode & WIRELESS_11_24N))
+
+CHECK: Logical continuations should be on the previous line
+#13: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:368:
++	      || (pregistrypriv->wireless_mode & WIRELESS_11_24N))
++	      && (pregistrypriv->ht_enable)) {
+
+
+It'd be nice to fix the above, too. :)
+
+--
+Gustavo
+
+>  		/* todo: */
+>  	}
+>  
+> 
