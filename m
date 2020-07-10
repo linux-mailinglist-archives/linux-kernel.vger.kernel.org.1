@@ -2,115 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3FE21B071
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 09:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1055721B06A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 09:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgGJHnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 03:43:05 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7289 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726615AbgGJHlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 03:41:36 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id BDDEFE5A13F98D4BEC88;
-        Fri, 10 Jul 2020 15:41:32 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 10 Jul 2020 15:41:24 +0800
-From:   Meng Yu <yumeng18@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 6/6] crypto: hisilicon/hpre - disable FLR triggered by hardware
-Date:   Fri, 10 Jul 2020 15:40:46 +0800
-Message-ID: <1594366846-1313-7-git-send-email-yumeng18@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1594366846-1313-1-git-send-email-yumeng18@huawei.com>
-References: <1594366846-1313-1-git-send-email-yumeng18@huawei.com>
+        id S1727870AbgGJHm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 03:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbgGJHlt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 03:41:49 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D1EC08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 00:41:49 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id f18so4795282wml.3
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 00:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yRzp0fkgzEo5tA9tK65ADA4d9spnntHWN3TuXkgZmws=;
+        b=hnIxyl30UtrFXLZ6C2gE3jejOPSzk9VK2aMARHzcMFEZg7PxhTfGSvsUkq38Jmb3FF
+         aL8YYBIb0MucB5wIMw9j7LnIxVIrZc1Nu+AEDxD/nYZaGcHZeVzLaUbqtjr+LUW0Uor0
+         fG8uwhLNVZGW9T+v+d7kRCQSRP0tSwjELvSuV6bOHOrwuQ1f/VQs3tZ1im5omyHPK/Sk
+         0yu+kQt9yJu6/BmfmqFOM8DW/ccPh8khhnvRtGxOkL4hGZLDGSJ0mp4YAzQ8J/59E6a7
+         xh2rMZbBe96Iazd9dCQjjsH+M1/M3pKbuiN2GIPPz4qO5QS8bd/B9OKym0BcH/3vt4OZ
+         OAvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yRzp0fkgzEo5tA9tK65ADA4d9spnntHWN3TuXkgZmws=;
+        b=HyFn3QpYcZm8XdZJxS2KK787IRVVv1l9ZsEXUyEjvIIhV09C/AlrlbMXa0fRU5O8uL
+         B6Yl2b8lVQ2Z00lF4jOFE2ah7/GTaTTL7ve4fECQ1//JOQwBhaZzufIbklYPcA/1l1kf
+         YGJv4mBH9SCLuQ/5h0wHZ+pb4RooD1UKB/LvIsxxAvNaQKX2LUEBwY0bj72I7UnzjJa1
+         zo2p7M+R+roo3DJrywM+dCSc0xUO2bZm8APWnmjfZoNVbmbHH/iOztuWODew22FTo7Eh
+         rCRSZ8m+YjGgdmWtXBwshlXZmcye6gTCyKGgKEDd2yZMeAJgXwWreudWRzrhSyBCv5lQ
+         4NYQ==
+X-Gm-Message-State: AOAM531IINMro38l1pOQVY6vzJkhpVhL8zna/lw7UDPygJL5i+6/fdKb
+        K7z+MPFsZRjsriE1YYWN6eB9Sv/Yqh0=
+X-Google-Smtp-Source: ABdhPJxjmu1t81pwJYQvJu6PXnZ1rTlbee7s/kcWW+nojDUMarVkTZhwOJtURe+jV8IEXIJSndJrqA==
+X-Received: by 2002:a1c:48d7:: with SMTP id v206mr2150751wma.145.1594366907543;
+        Fri, 10 Jul 2020 00:41:47 -0700 (PDT)
+Received: from localhost.localdomain ([62.178.82.229])
+        by smtp.gmail.com with ESMTPSA id p17sm7951375wma.47.2020.07.10.00.41.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 00:41:46 -0700 (PDT)
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     cphealy@gmail.com, Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 0/4] Add support for GPU load values
+Date:   Fri, 10 Jul 2020 09:41:23 +0200
+Message-Id: <20200710074143.306787-1-christian.gmeiner@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Tang <tanghui20@huawei.com>
+This patch series add support for loadavg values for GPU
+sub-components. I am adding a SMA algorithm as I was not
+really sure if EWMA would be a good fit for this use case.
 
-for Hi1620 hardware, we should disable these hardware flr:
-1. BME_FLR - bit 7,
-2. PM_FLR - bit 11,
-3. SRIOV_FLR - bit 12,
-Or HPRE may goto D3 state, when we bind and unbind HPRE quickly,
-as it does FLR triggered by BME/PM/SRIOV.
+Christian Gmeiner (4):
+  drm/etnaviv: add simple moving average (SMA)
+  drm/etnaviv: add loadavg accounting
+  drm/etnaviv: show loadavg in debugfs
+  drm/etnaviv: export loadavg via perfmon
 
-Fixes: c8b4b477079d("crypto: hisilicon - add HiSilicon HPRE accelerator")
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
-Signed-off-by: Meng Yu <yumeng18@huawei.com>
-Reviewed-by: Zaibo Xu <xuzaibo@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_main.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_drv.c     | 14 ++++
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c     | 44 ++++++++++++-
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.h     | 29 +++++++++
+ drivers/gpu/drm/etnaviv/etnaviv_perfmon.c | 79 +++++++++++++++++++++++
+ drivers/gpu/drm/etnaviv/etnaviv_sma.h     | 53 +++++++++++++++
+ 5 files changed, 218 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/gpu/drm/etnaviv/etnaviv_sma.h
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index b69cea3..b135c74 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -82,6 +82,10 @@
- #define HPRE_CORE_ECC_2BIT_ERR		BIT(1)
- #define HPRE_OOO_ECC_2BIT_ERR		BIT(5)
- 
-+#define HPRE_QM_BME_FLR			BIT(7)
-+#define HPRE_QM_PM_FLR			BIT(11)
-+#define HPRE_QM_SRIOV_FLR		BIT(12)
-+
- #define HPRE_VIA_MSI_DSM		1
- #define HPRE_SQE_MASK_OFFSET		8
- #define HPRE_SQE_MASK_LEN		24
-@@ -230,6 +234,22 @@ static int hpre_cfg_by_dsm(struct hisi_qm *qm)
- 	return 0;
- }
- 
-+/*
-+ * For Hi1620, we shoul disable FLR triggered by hardware (BME/PM/SRIOV).
-+ * Or it may stay in D3 state when we bind and unbind hpre quickly,
-+ * as it does FLR triggered by hardware.
-+ */
-+static void disable_flr_of_bme(struct hisi_qm *qm)
-+{
-+	u32 val;
-+
-+	val = readl(HPRE_ADDR(qm, QM_PEH_AXUSER_CFG));
-+	val &= ~(HPRE_QM_BME_FLR | HPRE_QM_SRIOV_FLR);
-+	val |= HPRE_QM_PM_FLR;
-+	writel(val, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG));
-+	writel(PEH_AXUSER_CFG_ENABLE, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG_ENABLE));
-+}
-+
- static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
- {
- 	struct device *dev = &qm->pdev->dev;
-@@ -241,10 +261,6 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
- 	writel(HPRE_QM_USR_CFG_MASK, HPRE_ADDR(qm, QM_AWUSER_M_CFG_ENABLE));
- 	writel_relaxed(HPRE_QM_AXI_CFG_MASK, HPRE_ADDR(qm, QM_AXI_M_CFG));
- 
--	/* disable FLR triggered by BME(bus master enable) */
--	writel(PEH_AXUSER_CFG, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG));
--	writel(PEH_AXUSER_CFG_ENABLE, HPRE_ADDR(qm, QM_PEH_AXUSER_CFG_ENABLE));
--
- 	/* HPRE need more time, we close this interrupt */
- 	val = readl_relaxed(HPRE_ADDR(qm, HPRE_QM_ABNML_INT_MASK));
- 	val |= BIT(HPRE_TIMEOUT_ABNML_BIT);
-@@ -295,6 +311,8 @@ static int hpre_set_user_domain_and_cache(struct hisi_qm *qm)
- 	if (ret)
- 		dev_err(dev, "acpi_evaluate_dsm err.\n");
- 
-+	disable_flr_of_bme(qm);
-+
- 	return ret;
- }
- 
 -- 
-2.8.1
+2.26.2
 
