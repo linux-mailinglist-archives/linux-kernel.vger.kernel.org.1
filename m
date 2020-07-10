@@ -2,87 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B86121B6B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA98821B6BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbgGJNlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726774AbgGJNlu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:41:50 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDCAC08C5CE
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:41:50 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g75so6211378wme.5
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 06:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e/ZA0Mv8NdkQdP738drSY8vNZ7QUvkBua0yy5iWDaA8=;
-        b=vuz2JZoJqFAW0+FjDz7LUDip+uu6EGgOtzTmR+2TUNwxSBMoB5XOpkxEnyrbPCj8qJ
-         q8pj+Yv3r4zZhyrfWdfqUbeH/VzNh9/007rxkOntOqXFdlERnU2NFzV+5s8GgkDIglkv
-         xVww0jfxdL3XLqjigWsKEuh+gRSVc6WTFo5zwgGhyDvRTLvNohS/cfmBku4m4Yx6C7Ot
-         Kk169VbdkV8RpOt7kEixxTcduLOTXvVVz63q9Mi65X6gIYQl2x8jzQm9xG5+3getfZMh
-         xt4saUboqABXxU1aUPw2ijTAfoolymk+/WW2dAlpFmEnU0ZswXWRwnDwOyJouXp18mqk
-         HLrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e/ZA0Mv8NdkQdP738drSY8vNZ7QUvkBua0yy5iWDaA8=;
-        b=NNSWx/AgF9f22pG+wqdFF3fABbSf+ERb+ZOUr2XT3PxVZeixvIlJDtWJiLoXZyNYhP
-         zUJH0v/OWE4AcUoenSv6lDLkRt8To5n/vr1U7LpAKSflDLrRTc3U0RZ1tHqq3eqDSt+5
-         iqeHTJymi4go71qJ1jPkfr0sFRJTpXcP5z/AsDAU1EntSJOCnZH1IvVERgC7X2rbzndg
-         2PtVuh1pZwdLg8cPuhIYnA3vis8di9Yv/xpgJrkN6B7npQLXuezQ+VZDTR6oWfWu0d6j
-         cwFyMtSSqSsiG04Mxl7aEAABbeCX2BauXeqs5oukAvycBQR8joLCMOqe41NPux8XmTW+
-         h4nA==
-X-Gm-Message-State: AOAM532Og3TTZ9gQ+OcI93f5hN0npuwUNtO/ifceS44RDiajTYrHjc7j
-        oBaalg0Pw26VyoULYZUV+Oa3NA==
-X-Google-Smtp-Source: ABdhPJy7mN8DlGdbaVh/uhawD0B97hOHCbVHTpQzoL9nDsGzKMxgMryaSi16uOFHKGvedQnIuww9XA==
-X-Received: by 2002:a7b:cc91:: with SMTP id p17mr5556402wma.90.1594388508960;
-        Fri, 10 Jul 2020 06:41:48 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id b62sm9386006wmh.38.2020.07.10.06.41.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 06:41:48 -0700 (PDT)
-Date:   Fri, 10 Jul 2020 14:41:46 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Cengiz Can <cengiz@kernel.wtf>
-Cc:     kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Anderson <dianders@chromium.org>
-Subject: Re: [PATCH v3] kdb: remove unnecessary null check of dbg_io_ops
-Message-ID: <20200710134146.xk6je7ttp7ksmhj3@holly.lan>
-References: <CAFA6WYNpCG2xPERd=NeKf+EthbX+1R4iieOL52kWnBp8y_+Nbw@mail.gmail.com>
- <20200630082922.28672-1-cengiz@kernel.wtf>
- <CAD=FV=XbMfwAQ+M7oMksd0dv9xjkQrGhU8hVNahn7+vxTuhT6A@mail.gmail.com>
- <4b91d92eda95cf4f1e153544ff4c17e1@kernel.wtf>
+        id S1727091AbgGJNnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:43:12 -0400
+Received: from mail-db8eur05on2133.outbound.protection.outlook.com ([40.107.20.133]:25746
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726828AbgGJNnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:43:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oLkSf07iTADbM2j2TmfwHQ6f1aOB1Ngd+fWZRZ1R0IBc5d6aLc4LNA6gqyp7kQkP7OzsrzvG46CYoPzFmy797F1eG4ieraBn+4SGzt1JRjZXsq0yHoE5NBL/cDv6EBZtAGg71MFZJ5+p0GtYmxQIfjE2WqjyXcNMAVhTdzmn2d6/0WpyTYdFEN9ok7BjP1FUmiC8i34lMMTjFLoMoR9uDz/tNtSgMTbBSs0Z1yKQOFxkqMxk0ZsFKQ2cPM2s7LKkyQTF4UT7ZqYzYVBKj/2w6Ijlkk9/sbb8tEqgqFFj2rpVNaxz0vUL4rNHEdFkO8Htm6JlCEh2ng443evdhmo3Aw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MgNJNdBRgkUGxrFCBtamX5vo/Gxg61CUU0FWWvS5tQs=;
+ b=gvWhaEyg9518eFKKPcVnR1hl9V2EJnVJlQTeE0C19QSWJQhP0dosj1GajRBNw8WXk7KMkoz/WSuNoo6iepqXn0AsmbrIdOeWJHejOjNekS7YkM+GTJ6EgPGyHO3vxyAl1ENM3mV1vFFtVwY8HmGanwMVbMm9uA5vPpOPCxHqQK6I13PQhYAwWuf+6CDTeOULyLOj0q2qixuJGDLGSf9uZoR6KTcEyAFOzRAi0qIPEIQQ1BWOjkXgRUWUhepSE8ixBV/WsLZiqvPvAPqHNzUPr5zH2PV5Cru7Pv+QffLs/IZ592x5xVkQaS5REhhRWFB2TjhRu4cYGzbGkVlO7o2V1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
+ dkim=pass header.d=toradex.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MgNJNdBRgkUGxrFCBtamX5vo/Gxg61CUU0FWWvS5tQs=;
+ b=k2C+RrmNu/zpeU3NIvIPFyVtIRJIx73YPAFfUnc1snPuogHj8N542wP0Glad2VdaduR7KMx5/MQzBMVdcrx1Op3EVVwQ0kZBw2OvdDGXVGMULLnOOuI75xc/oTr6Zkn/dDdaqK8C4W/MfXt1VSQqQJijmnzVroGJ+VRE17xAr4E=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=toradex.com;
+Received: from AM0PR05MB6002.eurprd05.prod.outlook.com (2603:10a6:208:129::19)
+ by AM4PR0501MB2833.eurprd05.prod.outlook.com (2603:10a6:200:5b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Fri, 10 Jul
+ 2020 13:43:09 +0000
+Received: from AM0PR05MB6002.eurprd05.prod.outlook.com
+ ([fe80::343d:a818:80a7:3e6]) by AM0PR05MB6002.eurprd05.prod.outlook.com
+ ([fe80::343d:a818:80a7:3e6%7]) with mapi id 15.20.3174.022; Fri, 10 Jul 2020
+ 13:43:08 +0000
+X-Gm-Message-State: AOAM5333a748V4LQXpEit9B0t9I/A1gEYooQ3To08piw79eH+6sJuXPM
+        kQULlh7kzzBz0mPKMTsSgEJrgm943IXOSE/+gRI=
+X-Google-Smtp-Source: ABdhPJzNf0IJcF6AyZgQjPPpDtjsZEtOJqHtbO7eitfoyLlOorLzswO7yF6iIACo/O2GM6qhAYwzKY2FZVeRccj52bs=
+X-Received: by 2002:a37:a18f:: with SMTP id k137mr68956359qke.249.1594388584261;
+ Fri, 10 Jul 2020 06:43:04 -0700 (PDT)
+References: <20200710132423.497230-1-philippe.schenker@toradex.com>
+In-Reply-To: <20200710132423.497230-1-philippe.schenker@toradex.com>
+From:   Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Date:   Fri, 10 Jul 2020 16:42:52 +0300
+X-Gmail-Original-Message-ID: <CAGgjyvGrNPgg3uKGSyvQ=CC1DaHJCTLxeW+GHY0GT7+pG2JuEw@mail.gmail.com>
+Message-ID: <CAGgjyvGrNPgg3uKGSyvQ=CC1DaHJCTLxeW+GHY0GT7+pG2JuEw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ARM: dts: colibri-imx6: remove pinctrl-names orphan
+To:     Philippe Schenker <philippe.schenker@toradex.com>
+Cc:     devicetree@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-ClientProxiedBy: BL0PR0102CA0069.prod.exchangelabs.com
+ (2603:10b6:208:25::46) To AM0PR05MB6002.eurprd05.prod.outlook.com
+ (2603:10a6:208:129::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4b91d92eda95cf4f1e153544ff4c17e1@kernel.wtf>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mail-qk1-f171.google.com (209.85.222.171) by BL0PR0102CA0069.prod.exchangelabs.com (2603:10b6:208:25::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend Transport; Fri, 10 Jul 2020 13:43:08 +0000
+Received: by mail-qk1-f171.google.com with SMTP id b4so5168835qkn.11;        Fri, 10 Jul 2020 06:43:08 -0700 (PDT)
+X-Gm-Message-State: AOAM5333a748V4LQXpEit9B0t9I/A1gEYooQ3To08piw79eH+6sJuXPM
+        kQULlh7kzzBz0mPKMTsSgEJrgm943IXOSE/+gRI=
+X-Google-Smtp-Source: ABdhPJzNf0IJcF6AyZgQjPPpDtjsZEtOJqHtbO7eitfoyLlOorLzswO7yF6iIACo/O2GM6qhAYwzKY2FZVeRccj52bs=
+X-Received: by 2002:a37:a18f:: with SMTP id
+ k137mr68956359qke.249.1594388584261; Fri, 10 Jul 2020 06:43:04 -0700 (PDT)
+X-Gmail-Original-Message-ID: <CAGgjyvGrNPgg3uKGSyvQ=CC1DaHJCTLxeW+GHY0GT7+pG2JuEw@mail.gmail.com>
+X-Originating-IP: [209.85.222.171]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 789b47fb-d9d2-4bbc-ada2-08d824d72e0e
+X-MS-TrafficTypeDiagnostic: AM4PR0501MB2833:
+X-Microsoft-Antispam-PRVS: <AM4PR0501MB2833B36A1841E2BBBE87817DF9650@AM4PR0501MB2833.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1051;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3yEyqB6nTObZ5LI347jvPc95jEbt0Vb/5nimTqYOPEyo9zwKiObFHCUzo8h0GjoLpuIRQaBsdjb73IOZ3VkzbwdfyeuPzL2JzsGmjo9fY6TNOZtPXYkJ9XkDuNRTdZJsrehuvbzfKkgT0/IpBzcSoBxlj01YCA4D4SzDViMC9FNN6SC0t3FBPSkl33y/6mLMihoYrMdRXnmM3Vazc5STbJnoBM/CZNR+2AXafw8h6psSI9/CJhyOCy900xTG2qq9MYMo6yTSFfBSeUJR6vTRnmQ/eNRd2iLF8bQKyabv6AOcrbipqoxBEg5ysRQijVqG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB6002.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(39850400004)(346002)(376002)(136003)(2906002)(4326008)(86362001)(6862004)(54906003)(55446002)(52116002)(316002)(42186006)(4744005)(450100002)(478600001)(5660300002)(6636002)(6666004)(9686003)(53546011)(26005)(186003)(44832011)(66946007)(83380400001)(8936002)(8676002)(66556008)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: kHYYm1ZLK3w73X+/34jY7MZaOE1iwnWMwcZzn4gtlMgWKOMy2wqNNesV36/pW7aJ3M044T10lwC+2N73FH/jX2GI5Jge8iS/O2K78dFLbG664Ipac5vqVkHMiLrjPfR+qr/3hA7/QOM4R++WY+oAiZ+O6WKbU+oIqdqtTu5JHeYFCebMzQ0wvWUrgC13697M08EoVl9m5dLSNdq4dJSCogqx95VqBBpW0Tnakk37p/04Of/lDNh76+RLb+Fk4KYojIrHdBkztRXZF5Bxz/sU3vy4PrtvVS7PBvFwNKhsAvaZ5KneYXvhFiDgnrFLxPTDbhzfbawyQuQrK2nwjD/XMYTxIEBvQYp/ijRqTzpxxFS2p9cDUWSdB370fIJzb4iwIrsKb4JIJCusSmjgPiBwPaGrKUMUbnMRZ4ppwe5xIz3LfNxxHLR4rGCznbTOZArPfh+8vg9+mOhpqdqrD089qZpR57cH8HKSVbUwxK6rodQ=
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 789b47fb-d9d2-4bbc-ada2-08d824d72e0e
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB6002.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2020 13:43:08.3716
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lBE9mh+hRSbSwK5vcU1+0UK/uE6hRWqL/cwNuQRnuhP1y4fLH/5CUt7qY2Meppn2V06ZXvxlYu8LpXheq8/0SrQdIojOU5+s90DI5XnwFQ4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR0501MB2833
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 03:15:55PM +0300, Cengiz Can wrote:
-> Hello Daniel,
-> 
-> On 2020-07-01 01:32, Doug Anderson wrote:
-> > 
-> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > Tested-by: Douglas Anderson <dianders@chromium.org>
-> 
-> Wanted to ask about the status of this proposed patch.
-> 
-> I have checked your tree in git.kernel.org but you might be
-> collecting them somewhere else perhaps.
+On Fri, Jul 10, 2020 at 4:25 PM Philippe Schenker
+<philippe.schenker@toradex.com> wrote:
+>
+> This is not necessary without a pinctrl-0 statement. Remove this
+> orphan.
+>
+> Signed-off-by: Philippe Schenker <philippe.schenker@toradex.com>
 
-It's applied... but then holiday happened. Should be pushed out soon.
+Reviewed-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+
+> ---
+>
+>  arch/arm/boot/dts/imx6qdl-colibri.dtsi | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/arm/boot/dts/imx6qdl-colibri.dtsi b/arch/arm/boot/dts/imx6qdl-colibri.dtsi
+> index 240b86d2eb71..a4a54c82e28f 100644
+> --- a/arch/arm/boot/dts/imx6qdl-colibri.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-colibri.dtsi
+> @@ -362,7 +362,6 @@ &uart3 {
+>  };
+>
+>  &usbotg {
+> -       pinctrl-names = "default";
+>         disable-over-current;
+>         dr_mode = "peripheral";
+>         status = "disabled";
+> --
+> 2.27.0
+>
 
 
-Daniel.
+-- 
+Best regards
+
+Oleksandr Suvorov
+cryosay@gmail.com
+
+-- 
+Best regards
+Oleksandr Suvorov
+
+Toradex AG
+Ebenaustrasse 10 | 6048 Horw | Switzerland | T: +41 41 500 48 00
