@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0375621B26C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D34AB21B273
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 11:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgGJJii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 05:38:38 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:49904 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726288AbgGJJii (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 05:38:38 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id D2ABA803202B;
-        Fri, 10 Jul 2020 09:38:35 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id S5HEgB7Js0P8; Fri, 10 Jul 2020 12:38:35 +0300 (MSK)
-Date:   Fri, 10 Jul 2020 12:38:34 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 05/11] dmaengine: Introduce DMA-device device_caps
- callback
-Message-ID: <20200710093834.su3nsjesnhntpd6d@mobilestation>
-References: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
- <20200709224550.15539-6-Sergey.Semin@baikalelectronics.ru>
- <20200710084503.GE3703480@smile.fi.intel.com>
+        id S1726977AbgGJJm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 05:42:27 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7834 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726880AbgGJJm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 05:42:26 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B7A37FF07722E3ABF495;
+        Fri, 10 Jul 2020 17:42:21 +0800 (CST)
+Received: from DESKTOP-KKJBAGG.china.huawei.com (10.174.186.75) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 10 Jul 2020 17:42:11 +0800
+From:   Zhenyu Ye <yezhenyu2@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>
+CC:     <yezhenyu2@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>
+Subject: [PATCH v1] arm64: tlb: don't set the ttl value in flush_tlb_page_nosync
+Date:   Fri, 10 Jul 2020 17:41:58 +0800
+Message-ID: <20200710094158.468-1-yezhenyu2@huawei.com>
+X-Mailer: git-send-email 2.22.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200710084503.GE3703480@smile.fi.intel.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.186.75]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 11:45:03AM +0300, Andy Shevchenko wrote:
-> On Fri, Jul 10, 2020 at 01:45:44AM +0300, Serge Semin wrote:
-> > There are DMA devices (like ours version of Synopsys DW DMAC) which have
-> > DMA capabilities non-uniformly redistributed between the device channels.
-> > In order to provide a way of exposing the channel-specific parameters to
-> > the DMA engine consumers, we introduce a new DMA-device callback. In case
-> > if provided it gets called from the dma_get_slave_caps() method and is
-> > able to override the generic DMA-device capabilities.
-> 
+flush_tlb_page_nosync() may be called from pmd level, so we
+can not set the ttl = 3 here.
 
-> In light of recent developments consider not to add 'slave' and a such words to the kernel.
+The callstack is as follows:
 
-As long as the 'slave' word is used in the name of the dma_slave_caps
-structure and in the rest of the DMA-engine subsystem, it will be ambiguous
-to use some else terminology. If renaming needs to be done, then it should be
-done synchronously for the whole subsystem.
+	pmdp_set_access_flags
+		ptep_set_access_flags
+			flush_tlb_fix_spurious_fault
+				flush_tlb_page
+					flush_tlb_page_nosync
 
--Sergey
+Reported-by: Catalin Marinas <catalin.marinas@arm.com>
+Fixes: e735b98a5fe0 ("arm64: Add tlbi_user_level TLB invalidation helper")
+Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
+---
+ arch/arm64/include/asm/tlbflush.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
+index edfec8139ef8..7528c84a94ef 100644
+--- a/arch/arm64/include/asm/tlbflush.h
++++ b/arch/arm64/include/asm/tlbflush.h
+@@ -252,9 +252,8 @@ static inline void flush_tlb_page_nosync(struct vm_area_struct *vma,
+ 	unsigned long addr = __TLBI_VADDR(uaddr, ASID(vma->vm_mm));
+ 
+ 	dsb(ishst);
+-	/* This function is only called on a small page */
+-	__tlbi_level(vale1is, addr, 3);
+-	__tlbi_user_level(vale1is, addr, 3);
++	__tlbi(vale1is, addr);
++	__tlbi_user(vale1is, addr);
+ }
+ 
+ static inline void flush_tlb_page(struct vm_area_struct *vma,
+-- 
+2.19.1
+
+
