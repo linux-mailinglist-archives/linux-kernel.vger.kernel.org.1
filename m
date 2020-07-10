@@ -2,117 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A30221BE45
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 22:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DBA21BE49
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 22:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728521AbgGJUFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 16:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39398 "EHLO
+        id S1728262AbgGJUH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 16:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726832AbgGJUFp (ORCPT
+        with ESMTP id S1726867AbgGJUH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 16:05:45 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C72BC08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 13:05:45 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id r19so7772903ljn.12
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 13:05:45 -0700 (PDT)
+        Fri, 10 Jul 2020 16:07:28 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF18FC08C5DC;
+        Fri, 10 Jul 2020 13:07:27 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b15so5551060edy.7;
+        Fri, 10 Jul 2020 13:07:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rOjG8jOG5e2cka7UROrnmdRc1ZeKdWqp04+UTzezgXE=;
-        b=WmpCdav5rACJPM1yVreaa5jhIE1Rj0RGr/bF1Qjr1pwf2439Iz5WoGFXdSi5O12Dr5
-         IXWc1w8QTxV3dD+bOVtIv3lKjedZWexuqrhZTiipy7sQHNTW5whUuBZMflnCtZWXFq8v
-         f4lJqs3GKRsPnpqvfmvNw1KFo/5w8EYLFRpdo=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=+CqFjCkiMTTrEMmgLJvQC/nHsLPJva/2WbdazGmDbtU=;
+        b=KQpUS3RWR6SFYKtDRZ273kbQ9uITMIz9ZdfmBHBz9A0icwaPWk7rAb/sBMBRQFgRBa
+         KcX/Rviiz5ftE4zqNG64RB+X8IxFhaTJzdp41VlN3SPm+mT6PbadOSA9pdZ0igaG5g48
+         cAldkuDtYAbivpN7t4CSOOgCM/WjRkSUQR3kuxSu6gx0AApsrwaiETEOmG9sjDJmzZPi
+         9LwdXaSg11Uh4hcimoIIkTqUCDucnO5ZOeSvzdZNdHvW8+edqZr8vsT68Br1OyAiLjNP
+         99TXNTRJ5KlyUUekDdX7milIlXg6GeQmvx12oEUwDDpbX8EMAJt4lTPsEc4peOEjA4+N
+         L1sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rOjG8jOG5e2cka7UROrnmdRc1ZeKdWqp04+UTzezgXE=;
-        b=T4PBILgBZ54QB/FskolcX8EdwgI3b298jYAfv3A+bgh0NZsNtSARcvVBKVQE77bIkI
-         2NjWSGqUy1Qu13ougaTD+T68ReEDsnQyDKv/4tUCbxLnDsNXRsyJGNm6hCvufL7+trUP
-         vseXTO0HaYBx8MYJ4BGKuritgvcvwD9Whw66kPQ7beBpFBgNwAzleocLtygOOUFiPHmo
-         tBzowUcyQe+lGYyqPrbIM97d6i6oUFW4C4lQ4Lai0W9hlGnhFr0N4t4H1mpfDPkazfjs
-         OH+dwuMLeVIni+/k/YSpuZQgTC7BIFxhLDPZkcyxJeh3eEYDWgITHfIG6Icqpu7ZIHoS
-         SUAw==
-X-Gm-Message-State: AOAM530t3uKtxzTzHRAB/Q6V2ImviYwa37g+pwDFLDN04LGcEyJAswvI
-        zvGCsexrzMs8hsZC2UDL8S/Zggdok/s=
-X-Google-Smtp-Source: ABdhPJyyHM4ZfjNF6irBgwbwbObsblYapHHAAp2biTNlGp6+YIYpOS9d1aRR5+qXqhfHdH7ILbLUMQ==
-X-Received: by 2002:a2e:880c:: with SMTP id x12mr42572642ljh.375.1594411544021;
-        Fri, 10 Jul 2020 13:05:44 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id f4sm2515101lfh.38.2020.07.10.13.05.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 13:05:43 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id h22so7781978lji.9
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 13:05:43 -0700 (PDT)
-X-Received: by 2002:a2e:9b42:: with SMTP id o2mr40061229ljj.102.1594411542731;
- Fri, 10 Jul 2020 13:05:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=+CqFjCkiMTTrEMmgLJvQC/nHsLPJva/2WbdazGmDbtU=;
+        b=qnbRfxvBdNrNzKpfggnx299ZU+6lUpXpIDsRRPzQF1YZzj65eDpaRbBXCCbXyDhCa8
+         UKuaQO600w+tOcSLv7ZF+3l3LaGZzv6f+QkgwmBHKMWd3NcGG/Jnhts5+hNvxvqO7KWo
+         nBLPCesIDBMHVqXepsY2MeBvsy3hRoQEKxeQwrC2z8ZwQX6adIP1FTo1TPO6RnadfNlo
+         ElzfDDJkugmRx0m8QYxZv2bzGVCnjm9aTsgmYQr06APm0lM1nM49D5SxtUEnzw0ZHKSF
+         sXEfNGiokQwONY7H0+JWqRpoJGM0Lr+AQ7F+mXcfizjiWk6Ny1YwP9tL2dpANBWTtPqF
+         LxyQ==
+X-Gm-Message-State: AOAM530WvtKV+LsBxk1GoZJUQ4G201YHQ1A1QHiz2mvV3e3g9sw2/J6j
+        P6HW8o8l954/gGLbkQxpKKc=
+X-Google-Smtp-Source: ABdhPJyF2/CZ5X3guxfM+/Uff+qM6LTB72hZnQuiA9xDD+N5C423hmEZj2QKJBP3epqGirgLzA2cqg==
+X-Received: by 2002:a50:d55b:: with SMTP id f27mr41864893edj.312.1594411646388;
+        Fri, 10 Jul 2020 13:07:26 -0700 (PDT)
+Received: from AnsuelXPS (host-87-16-250-164.retail.telecomitalia.it. [87.16.250.164])
+        by smtp.gmail.com with ESMTPSA id i2sm5303716edk.30.2020.07.10.13.07.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Jul 2020 13:07:25 -0700 (PDT)
+From:   <ansuelsmth@gmail.com>
+To:     "'Rob Herring'" <robh@kernel.org>
+Cc:     "'Amit Kucheria'" <amit.kucheria@linaro.org>,
+        "'Andy Gross'" <agross@kernel.org>,
+        "'Bjorn Andersson'" <bjorn.andersson@linaro.org>,
+        "'Zhang Rui'" <rui.zhang@intel.com>,
+        "'Daniel Lezcano'" <daniel.lezcano@linaro.org>,
+        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200709215136.28044-1-ansuelsmth@gmail.com> <20200709215136.28044-4-ansuelsmth@gmail.com> <20200710162657.GB2743639@bogus>
+In-Reply-To: <20200710162657.GB2743639@bogus>
+Subject: R: [PATCH 3/6] dt-bindings: thermal: tsens: document ipq8064 bindings
+Date:   Fri, 10 Jul 2020 22:07:21 +0200
+Message-ID: <0ef601d656f5$b9f8e0c0$2deaa240$@gmail.com>
 MIME-Version: 1.0
-References: <CA+G9fYt+6OeibZMD0fP=O3nqFbcN3O4xcLkjq0mpQbZJ2uxB9w@mail.gmail.com>
- <CAHk-=wgRcFSnQt=T95S+1dPkyvCuVAVGQ37JDvRg41h8hRqO3Q@mail.gmail.com>
- <CA+G9fYuL=xJPLbQJVzDfXB8uNiCWdXpL=joDsnATEFCzyFh_1g@mail.gmail.com>
- <CAHk-=wgB6Ds6yqbZZmscKNuAiNR2J0Pf3a8UrbdfewYxHE7SbA@mail.gmail.com> <CA+G9fYudT63yZrkWG+mfKHTcn5mP+Ay6hraEQy3G_4jufztrrA@mail.gmail.com>
-In-Reply-To: <CA+G9fYudT63yZrkWG+mfKHTcn5mP+Ay6hraEQy3G_4jufztrrA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 10 Jul 2020 13:05:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whPrCRZpXYKois-0t8MibxH9KVXn=+-O1YVvOA016fqhw@mail.gmail.com>
-Message-ID: <CAHk-=whPrCRZpXYKois-0t8MibxH9KVXn=+-O1YVvOA016fqhw@mail.gmail.com>
-Subject: Re: WARNING: at mm/mremap.c:211 move_page_tables in i386
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux- stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        lkft-triage@lists.linaro.org, Chris Down <chris@chrisdown.name>,
-        Michel Lespinasse <walken@google.com>,
-        Fan Yang <Fan_Yang@sjtu.edu.cn>,
-        Brian Geffon <bgeffon@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, pugaowei@gmail.com,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Hugh Dickins <hughd@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKhcWl5bhTF+RXP3lhSldlnX/gq7QKeRUoHAWvA1uGnSreZEA==
+Content-Language: it
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 10:48 AM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> I have applied your patch and test started in a loop for a million times
-> but the test ran for 35 times. Seems like the test got a timeout after 1 hour.
 
-That just means that my test-case was wrong (in the sense that what it
-was testing wasn't what was triggering things).
 
-It might be wrong because I got the stack usage calculations wrong,
-but it might be wrong simply because the bug you've triggered with LTP
-needs something else to trigger.
+> -----Messaggio originale-----
+> Da: Rob Herring <robh@kernel.org>
+> Inviato: venerd=EC 10 luglio 2020 18:27
+> A: Ansuel Smith <ansuelsmth@gmail.com>
+> Cc: Amit Kucheria <amit.kucheria@linaro.org>; Andy Gross
+> <agross@kernel.org>; Bjorn Andersson <bjorn.andersson@linaro.org>;
+> Zhang Rui <rui.zhang@intel.com>; Daniel Lezcano
+> <daniel.lezcano@linaro.org>; linux-pm@vger.kernel.org; linux-arm-
+> msm@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Oggetto: Re: [PATCH 3/6] dt-bindings: thermal: tsens: document ipq8064
+> bindings
+>=20
+> On Thu, Jul 09, 2020 at 11:51:33PM +0200, Ansuel Smith wrote:
+> > Document the use of regmap phandle for ipq8064 SoCs
+> >
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  .../bindings/thermal/qcom-tsens.yaml          | 51 =
+++++++++++++++++---
+> >  1 file changed, 44 insertions(+), 7 deletions(-)
+> >
+> > diff --git =
+a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> > index d7be931b42d2..5ceb5d720e16 100644
+> > --- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> > +++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+> > @@ -24,6 +24,7 @@ properties:
+> >            - enum:
+> >                - qcom,msm8916-tsens
+> >                - qcom,msm8974-tsens
+> > +              - qcom,ipq8064-tsens
+> >            - const: qcom,tsens-v0_1
+> >
+> >        - description: v1 of TSENS
+> > @@ -47,6 +48,11 @@ properties:
+> >        - description: TM registers
+> >        - description: SROT registers
+> >
+> > +  regmap:
+> > +    description:
+> > +      Phandle to the gcc. On ipq8064 SoCs gcc and tsense share the =
+same
+> regs.
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+>=20
+> Can't you make this a child of the gcc and drop this property?
+>=20
 
-> Re-running test with long timeouts 4 hours and will share findings.
+Make the thermal a child of the gcc would be a little confusing. Anyway
+making this
+a child of gcc cause the not probing of the thermal driver as it's =
+ignored
+any child of
+gcc. I pushed v2 with the fixed problem.
 
-That test was more intended to trigger the issue reliably, if it was
-just a "stack is special, needs that exact 2MB aligned case to be
-problematic".
+> > +
+> >    interrupts:
+> >      minItems: 1
+> >      items:
+> > @@ -111,17 +117,48 @@ allOf:
+> >          interrupt-names:
+> >            minItems: 2
+> >
+> > -required:
+> > -  - compatible
+> > -  - reg
+> > -  - "#qcom,sensors"
+> > -  - interrupts
+> > -  - interrupt-names
+> > -  - "#thermal-sensor-cells"
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            enum:
+> > +              - qcom,ipq8064-tsens
+> > +    then:
+> > +      required:
+> > +        - compatible
+> > +        - regmap
+> > +        - "#qcom,sensors"
+> > +        - interrupts
+> > +        - interrupt-names
+> > +        - "#thermal-sensor-cells"
+> > +
+> > +    else:
+> > +      required:
+> > +        - compatible
+> > +        - reg
+> > +        - "#qcom,sensors"
+> > +        - interrupts
+> > +        - interrupt-names
+> > +        - "#thermal-sensor-cells"
+>=20
+> Keep all the common required properties and just put reg/regmap in the
+> if/then if this ends up staying.
+>=20
+> Rob
 
-So re-running my "t.c" the test for long times with that kernel patch
-that removes the stack randomization isn't going to matter. Either it
-triggers the case, or not.
-
-I don't actually see any case where we play with vm_start the way we
-used to (it was basically removed with commit 1be7107fbe18: "mm:
-larger stack guard gap, between vmas"). So it was kind of a log shot
-anyway.
-
-              Linus
