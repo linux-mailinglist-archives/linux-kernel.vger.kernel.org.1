@@ -2,206 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7AD21BD0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 20:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6B421BD1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 20:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgGJSef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 14:34:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39364 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727085AbgGJSee (ORCPT
+        id S1728163AbgGJSiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 14:38:19 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:37654 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727082AbgGJSiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 14:34:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594406073;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wl87mSyeBQAKYVwqwLq6rWbUN6A0MbLQVY0wQln3Kk8=;
-        b=DSTars05h6R/OgQR8SgcqWip4wA6FJaP/ynztWOUjPoZ3DAVIwIe01a5DLyBQSN/Hyo7Ra
-        rNZ//4K2X1/fZAcVenFzYT+UEJ8hDGCZuX3GPBXayjd5hx4ZCIitel4L6RUc140Lj8uiJ+
-        AXKQf/lGn3FctKSTE86dFpq26cS64pI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-305-QHkuZU1eOpyJCN5wFmhNfA-1; Fri, 10 Jul 2020 14:34:23 -0400
-X-MC-Unique: QHkuZU1eOpyJCN5wFmhNfA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C51E1902EA1;
-        Fri, 10 Jul 2020 18:34:22 +0000 (UTC)
-Received: from localhost (ovpn-116-13.gru2.redhat.com [10.97.116.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CE8A1724A0;
-        Fri, 10 Jul 2020 18:34:21 +0000 (UTC)
-Date:   Fri, 10 Jul 2020 15:34:20 -0300
-From:   Bruno Meneguele <bmeneg@redhat.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-integrity@vger.kernel.org, erichte@linux.ibm.com,
-        nayna@linux.ibm.com, stable@vger.kernel.org
-Subject: Re: [PATCH v5] ima: move APPRAISE_BOOTPARAM dependency on
- ARCH_POLICY to runtime
-Message-ID: <20200710183420.GB10547@glitch>
-References: <20200709164647.45153-1-bmeneg@redhat.com>
- <1594401804.14405.8.camel@linux.ibm.com>
- <20200710180338.GA10547@glitch>
+        Fri, 10 Jul 2020 14:38:18 -0400
+Received: by mail-il1-f197.google.com with SMTP id x23so4293354ilk.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 11:38:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=WqdH68p6XjuG3WJATM6GmNbQRoflL6uFHqhjW36VFBI=;
+        b=tAdtIv5TP1txPsQo68JyncR4T2k60owAQ865cmIjXHDes95rdGlunT95n/8cJezJgu
+         xfJvUtdOsr3+EOZjQ8WPSPBVKz2E6x/OS5RNbgs7+I9qWJJ1Z1jTfWjGr4J55k8z9pIQ
+         upbETtHN9S3rSS3xMUa3bnUjz2mbEOWcKk2iHHm5SdtKB48XpCOGO0Dfiw/XqGtgrHhV
+         2ZdN/Mr1K3jdgX5D75fICZlmfxTCf8vXmxxzUzHGMwNYsvd1N2W/GjCpN/sUvjwbCbbT
+         V6XcoOxVZTyumkvqqC1EYY57hbGb5niG5kBPuEiXa72McBIHO8Mvsri/jVw0AzByrhAa
+         2Zjg==
+X-Gm-Message-State: AOAM532B2s6sm/cfWNmzwph1JQxhvzCf3olNGl643OWlSzzymGE8Ot5A
+        iTl+Wh26DhTcDG6TpyquyMbBHakWQyYtH+0xPwbaTWsMHxOH
+X-Google-Smtp-Source: ABdhPJz4xg63WBLjem4rE0VTxzgBQIchhCQvKSZPrPVyR0wiGwBEI9XprvdZYiAjtwzQFWMSU9WwVDmpnGdw0BiCx2YmmHrBQdE0
 MIME-Version: 1.0
-In-Reply-To: <20200710180338.GA10547@glitch>
-X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dTy3Mrz/UPE2dbVg"
-Content-Disposition: inline
+X-Received: by 2002:a6b:730a:: with SMTP id e10mr49422839ioh.108.1594406298127;
+ Fri, 10 Jul 2020 11:38:18 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 11:38:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000714f605aa1aa56c@google.com>
+Subject: general protection fault in raw_notifier
+From:   syzbot <syzbot+d2ff507f470081495266@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
+        netdev@vger.kernel.org, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---dTy3Mrz/UPE2dbVg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-On Fri, Jul 10, 2020 at 03:03:38PM -0300, Bruno Meneguele wrote:
-> On Fri, Jul 10, 2020 at 01:23:24PM -0400, Mimi Zohar wrote:
-> > On Thu, 2020-07-09 at 13:46 -0300, Bruno Meneguele wrote:
-> > > APPRAISE_BOOTPARAM has been marked as dependent on !ARCH_POLICY in co=
-mpile
-> > > time, enforcing the appraisal whenever the kernel had the arch policy=
- option
-> > > enabled.
-> >=20
-> > > However it breaks systems where the option is set but the system didn=
-'t
-> > > boot in a "secure boot" platform. In this scenario, anytime an apprai=
-sal
-> > > policy (i.e. ima_policy=3Dappraisal_tcb) is used it will be forced, w=
-ithout
-> > > giving the user the opportunity to label the filesystem, before enfor=
-cing
-> > > integrity.
-> > >=20
-> > > Considering the ARCH_POLICY is only effective when secure boot is act=
-ually
-> > > enabled this patch remove the compile time dependency and move it to =
-a
-> > > runtime decision, based on the secure boot state of that platform.
-> >=20
-> > Perhaps we could simplify this patch description a bit?
-> >=20
-> > The IMA_APPRAISE_BOOTPARAM config allows enabling different
-> > "ima_appraise=3D" modes - log, fix, enforce - at run time, but not when
-> > IMA architecture specific policies are enabled. =A0This prevents
-> > properly labeling the filesystem on systems where secure boot is
-> > supported, but not enabled on the platform. =A0Only when secure boot is
-> > enabled, should these IMA appraise modes be disabled.
-> >=20
-> > This patch removes the compile time dependency and makes it a runtime
-> > decision, based on the secure boot state of that platform.
-> >=20
->=20
-> Sounds good to me.
->=20
-> > <snip>
-> >=20
-> > > diff --git a/security/integrity/ima/ima_appraise.c b/security/integri=
-ty/ima/ima_appraise.c
-> > > index a9649b04b9f1..884de471b38a 100644
-> > > --- a/security/integrity/ima/ima_appraise.c
-> > > +++ b/security/integrity/ima/ima_appraise.c
-> > > @@ -19,6 +19,11 @@
-> > >  static int __init default_appraise_setup(c
-> >=20
-> > > har *str)
-> > >  {
-> > >  #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
-> > > +=09if (arch_ima_get_secureboot()) {
-> > > +=09=09pr_info("appraise boot param ignored: secure boot enabled");
-> >=20
-> > Instead of a generic statement, is it possible to include the actual
-> > option being denied? =A0Perhaps something like: "Secure boot enabled,
-> > ignoring %s boot command line option"
-> >=20
-> > Mimi
-> >=20
->=20
-> Yes, sure.
->=20
+syzbot found the following crash on:
 
-Btw, would it make sense to first make sure we have a valid "str"
-option and not something random to print?
-=20
-diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima=
-/ima_appraise.c
-index a9649b04b9f1..1f1175531d3e 100644
---- a/security/integrity/ima/ima_appraise.c
-+++ b/security/integrity/ima/ima_appraise.c
-@@ -25,6 +25,16 @@ static int __init default_appraise_setup(char *str)
-                ima_appraise =3D IMA_APPRAISE_LOG;
-        else if (strncmp(str, "fix", 3) =3D=3D 0)
-                ima_appraise =3D IMA_APPRAISE_FIX;
-+       else
-+               pr_info("invalid \"%s\" appraise option");
-+
-+       if (arch_ima_get_secureboot()) {
-+               if (!is_ima_appraise_enabled()) {
-+                       pr_info("Secure boot enabled: ignoring ima_appraise=
-=3D%s boot parameter option",
-+                               str);
-+                       ima_appraise =3D IMA_APPRAISE_ENFORCE;
-+               }
-+       }
- #endif
-        return 1;
- }
+HEAD commit:    7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=111cddcb100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2ff507f470081495266
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+d2ff507f470081495266@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xe0000aeee00000aa: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x0000777700000550-0x0000777700000557]
+CPU: 0 PID: 8345 Comm: syz-executor.5 Not tainted 5.8.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:read_pnet include/net/net_namespace.h:330 [inline]
+RIP: 0010:dev_net include/linux/netdevice.h:2261 [inline]
+RIP: 0010:raw_notifier+0x7c/0x740 net/can/raw.c:273
+Code: 03 80 3c 02 00 0f 85 de 05 00 00 4d 8d b7 98 05 00 00 48 8b ab 70 fb ff ff 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 cc 05 00 00 49 3b af 98 05 00 00 74 16 e8 0c 5d
+RSP: 0018:ffffc9001ab27c78 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff88802521c4c0 RCX: ffffc90014660000
+RDX: 00000eeee00000aa RSI: ffffffff871159dc RDI: ffff88802521c030
+RBP: ffff88805602a180 R08: 0000000000000000 R09: ffffffff8a7b30cb
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000005
+R13: ffffed1004a43898 R14: 0000777700000550 R15: 00007776ffffffb8
+FS:  00007fe94efbf700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b32d21000 CR3: 00000001e1c55000 CR4: 00000000001426f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ call_netdevice_notifier net/core/dev.c:1727 [inline]
+ call_netdevice_register_notifiers net/core/dev.c:1735 [inline]
+ call_netdevice_register_net_notifiers+0xdd/0x2b0 net/core/dev.c:1765
+ register_netdevice_notifier+0xf5/0x260 net/core/dev.c:1816
+ raw_init+0x296/0x340 net/can/raw.c:339
+ can_create+0x27c/0x4d0 net/can/af_can.c:168
+ __sock_create+0x3ca/0x740 net/socket.c:1428
+ sock_create net/socket.c:1479 [inline]
+ __sys_socket+0xef/0x200 net/socket.c:1521
+ __do_sys_socket net/socket.c:1530 [inline]
+ __se_sys_socket net/socket.c:1528 [inline]
+ __x64_sys_socket+0x6f/0xb0 net/socket.c:1528
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45cb29
+Code: Bad RIP value.
+RSP: 002b:00007fe94efbec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
+RAX: ffffffffffffffda RBX: 00000000005084a0 RCX: 000000000045cb29
+RDX: 0000000000000001 RSI: 0000000000000003 RDI: 000000000000001d
+RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 0000000000000bb8 R14: 00000000004ce1ab R15: 00007fe94efbf6d4
+Modules linked in:
+---[ end trace 8db5579e5986dda6 ]---
+RIP: 0010:read_pnet include/net/net_namespace.h:330 [inline]
+RIP: 0010:dev_net include/linux/netdevice.h:2261 [inline]
+RIP: 0010:raw_notifier+0x7c/0x740 net/can/raw.c:273
+Code: 03 80 3c 02 00 0f 85 de 05 00 00 4d 8d b7 98 05 00 00 48 8b ab 70 fb ff ff 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 cc 05 00 00 49 3b af 98 05 00 00 74 16 e8 0c 5d
+RSP: 0018:ffffc9001ab27c78 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: ffff88802521c4c0 RCX: ffffc90014660000
+RDX: 00000eeee00000aa RSI: ffffffff871159dc RDI: ffff88802521c030
+RBP: ffff88805602a180 R08: 0000000000000000 R09: ffffffff8a7b30cb
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000005
+R13: ffffed1004a43898 R14: 0000777700000550 R15: 00007776ffffffb8
+FS:  00007fe94efbf700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fe94ef7cdb8 CR3: 00000001e1c55000 CR4: 00000000001426f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-The "else" there I think would make sense as well, at least to give the
-user some feedback about a possible mispelling of him (as a separate
-patch).
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-And "if(!is_ima_appraise_enabled())" would avoid to print anything about
-"ignoring the option" to the user in case he explicitly set "enforce",
-which we know there isn't any real effect but is allowed and shown in
-kernel-parameters.txt.
-
-> Thanks!
->=20
-> > > +=09=09return 1;
-> > > +=09}
-> > > +
-> > >  =09if (strncmp(str, "off", 3) =3D=3D 0)
-> > >  =09=09ima_appraise =3D 0;
-> > >  =09else if (strncmp(str, "log", 3) =3D=3D 0)
-> >=20
->=20
-> --=20
-> bmeneg=20
-> PGP Key: http://bmeneg.com/pubkey.txt
-
-
-
---=20
-bmeneg=20
-PGP Key: http://bmeneg.com/pubkey.txt
-
---dTy3Mrz/UPE2dbVg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl8ItKwACgkQYdRkFR+R
-okN6GAgAn8hp8spQ9CD62XqNiFqZlX9aYTyBwMwNwU1YsD5D4KGFaBEqkQb39CvQ
-9aZMXN3TegwWbfC3yB28dczdWnJqpPwjICUMODQ+qlVKBZIExGEqWwLLmXQs3HNp
-DaHPEmZLB5COMygTJKRO/EdfWp3oORR4yKABM/fT0coKE/uqdGBNkDBQBbBbsprS
-z4JjcOkpZhGjBpGLM9gYHZz4fOctzVBK0ewGLLxgcY7lpTrlFjgRbDJCuJ+/FmEo
-NpT+Nxrs3uo3dlsm3crv2t1o75ELNZQv6bD1qvS4FurrliNiOxFvGL7NEPbXgHIf
-OYA8itesTKD5TXA6fNRIKgAHQZC6Ig==
-=bOdW
------END PGP SIGNATURE-----
-
---dTy3Mrz/UPE2dbVg--
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
