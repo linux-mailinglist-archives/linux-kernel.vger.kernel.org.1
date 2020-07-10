@@ -2,95 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16BE21ADAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 05:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7621021ADB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 05:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgGJDsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Jul 2020 23:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgGJDsM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Jul 2020 23:48:12 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBCFC08C5CE;
-        Thu,  9 Jul 2020 20:48:12 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc9so2033306pjb.2;
-        Thu, 09 Jul 2020 20:48:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Gu/0uC+QDtxWdvOlcoY9Tz/6p4MtbAdmS5ljsFnkPqg=;
-        b=WTUOyk1XhsR2CrACw12GvrBtOHIoBJXRPZ7puT8Ig377hIwjohKnCApbXtCZur5Kpc
-         vboCygIXbWS8N/4oVDjoCI83vqq+eMcBwIeHEcA5nX3YRU18oDnR4ZgRAV9Rh4ud+MUC
-         NGRhXMvM5Mv6jS9XHqbsfLBrVuCp7fCrXNb4vV9rs5B2IsmKk6z+Pf0yteZh5Fv0a4eK
-         vmSJ7mmJB/vXr/uLvXh/QK4gg8iYjpCUX7mETKqyCOgz7WigiKLqnlZyoVcHLzD6jJFa
-         ibMyla+iCR7k2hMqRmD+82C1lvTv0BF2mL4O51edRMneVduz4WUxQi34Va+NfH0I70HZ
-         L2Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Gu/0uC+QDtxWdvOlcoY9Tz/6p4MtbAdmS5ljsFnkPqg=;
-        b=UMkO/HvbYqPv1Tgaaw79+Mf2t497nCnGgzdFBl64xzynNJ9cRA9IAfQUMomNZaiPao
-         PDOYKb5hD31yVr4IY4obHzGn/k1k1ToCFkPvmZ/FfQsktaPjhoH+Pzow5TNNpr3OSGtZ
-         A5u92YYq/Ke/aWidgaWSwpdV81RKDtNds0mfV0fVY+EPDzfu5aes4FqdLpqsCqdsbRfU
-         VEEvEyBLfepjtNCaVYqlajHwDxdETTeK8kQmrKJT0PWXb653RIMQvpCjYeyBdbvzTswp
-         vfBYJmPz7VujNjDA6Z4aqjqMhMHVzdncC1gSH19XP7Ai3BOWQMsdFXigOgb1ZIdlM8LH
-         iIeg==
-X-Gm-Message-State: AOAM5314Z1kPc3GdL/geo96fPhVw1MAqDe5CdIKJ0SLP8z/1uJzyP0hx
-        dHRAqClx7syi3QWPq0z2tkJck236
-X-Google-Smtp-Source: ABdhPJy3j9HGfuqDOkOdpeR3fyETA37d659Nw8UvgOxUOHp5zF4w0idcLpnXqbnfPaPMvPAI7fuy9Q==
-X-Received: by 2002:a17:902:d211:: with SMTP id t17mr21262388ply.106.1594352891825;
-        Thu, 09 Jul 2020 20:48:11 -0700 (PDT)
-Received: from localhost.localdomain ([2001:470:67:5b9:5dec:e971:4cde:a128])
-        by smtp.gmail.com with ESMTPSA id p10sm4386285pgn.6.2020.07.09.20.48.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jul 2020 20:48:10 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, balbi@kernel.org,
-        gregkh@linuxfoundation.org, matthias.bgg@gmail.com,
-        swboyd@chromium.org, chunfeng.yun@mediatek.com,
-        linux-arm-kernel@lists.infradead.org, alcooperx@gmail.com,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH] MAINTAINERS: Add entry for Broadcom BDC driver
-Date:   Thu,  9 Jul 2020 20:48:06 -0700
-Message-Id: <20200710034806.15650-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726974AbgGJDwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Jul 2020 23:52:25 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:56516 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726509AbgGJDwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Jul 2020 23:52:25 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 352C5E318CA7A956C58D;
+        Fri, 10 Jul 2020 11:52:20 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.201.126) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 10 Jul 2020 11:52:12 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <akpm@linux-foundation.org>
+CC:     <x86@kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Roman Gushchin <guro@fb.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        "Anshuman Khandual" <anshuman.khandual@arm.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>
+Subject: [PATCH v2] mm/hugetlb: split hugetlb_cma in nodes with memory
+Date:   Fri, 10 Jul 2020 15:50:14 +1200
+Message-ID: <20200710035014.25244-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.201.126]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Broadcom BDC driver did not have a MAINTAINERS entry which made it
-escape review from Al and myself, add an entry so the relevant mailing
-lists and people are copied.
+Rather than splitting huge_cma in online nodes, it is better to do it in
+nodes with memory.
+Without this patch, for an ARM64 server with four numa nodes and only
+node0 has memory. If I set hugetlb_cma=4G in bootargs,
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+without this patch, I got the below printk:
+hugetlb_cma: reserve 4096 MiB, up to 1024 MiB per node
+hugetlb_cma: reserved 1024 MiB on node 0
+hugetlb_cma: reservation failed: err -12, node 1
+hugetlb_cma: reservation failed: err -12, node 2
+hugetlb_cma: reservation failed: err -12, node 3
+
+With this patch, I got the below printk:
+
+hugetlb_cma: reserve 4096 MiB, up to 4096 MiB per node
+hugetlb_cma: reserved 4096 MiB on node 0
+
+So this patch makes the hugetlb_cma size consistent with users' setting
+on ARM64 platforms.
+
+Jonathan Cameron tested this patch on x86 platform. Jonathan figured out
+the boot code of x86 is much different with arm64. On arm64 all nodes are
+marked online at the same time. On x86, only nodes with memory are
+initially marked as online:
+initmem_init()->x86_numa_init()->numa_init()->
+numa_register_memblks()->alloc_node_data()->node_set_online()
+So at time of the existing cma setup call only the memory containing nodes
+are online. The other nodes are brought up much later.
+Therefore, on x86 platform, hugetlb_cma size is actually consistent with
+users' setting even though system has nodes without memory.
+
+The problem is always there if N_ONLINE != N_MEMORY. In x86 case, it
+is just hidden because N_ONLINE happen to match N_MEMORY during the boot
+process when hugetlb_cma_reserve() gets called.
+
+This patch documents this problem in the comment of hugetlb_cma_reserve()
+and makes hugetlb_cma size optimal.
+
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 ---
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ -v2: document better according to Anshuman Khandual's comment
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1d4aa7f942de..360d001b81b8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3434,6 +3434,14 @@ F:	drivers/bus/brcmstb_gisb.c
- F:	drivers/pci/controller/pcie-brcmstb.c
- N:	brcmstb
+ arch/arm64/mm/init.c    | 19 ++++++++++---------
+ arch/x86/kernel/setup.c | 12 +++++++++---
+ include/linux/hugetlb.h |  7 +++++++
+ mm/hugetlb.c            |  4 ++--
+ 4 files changed, 28 insertions(+), 14 deletions(-)
+
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 1e93cfc7c47a..420f5e55615c 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -420,15 +420,6 @@ void __init bootmem_init(void)
  
-+BROADCOM BDC DRIVER
-+M:	Al Cooper <alcooperx@gmail.com>
-+L:	linux-usb@vger.kernel.org
-+L:	bcm-kernel-feedback-list@broadcom.com
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/usb/brcm,bdc.txt
-+F:	drivers/usb/gadget/udc/bdc/
+ 	arm64_numa_init();
+ 
+-	/*
+-	 * must be done after arm64_numa_init() which calls numa_init() to
+-	 * initialize node_online_map that gets used in hugetlb_cma_reserve()
+-	 * while allocating required CMA size across online nodes.
+-	 */
+-#ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-#endif
+-
+ 	/*
+ 	 * Sparsemem tries to allocate bootmem in memory_present(), so must be
+ 	 * done after the fixed reservations.
+@@ -438,6 +429,16 @@ void __init bootmem_init(void)
+ 	sparse_init();
+ 	zone_sizes_init(min, max);
+ 
++	/*
++	 * must be done after zone_sizes_init() which calls free_area_init()
++	 * that calls node_set_state() to initialize node_states[N_MEMORY]
++	 * because hugetlb_cma_reserve() will scan over nodes with N_MEMORY
++	 * state
++	 */
++#ifdef CONFIG_ARM64_4K_PAGES
++	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
++#endif
 +
- BROADCOM BMIPS CPUFREQ DRIVER
- M:	Markus Mayer <mmayer@broadcom.com>
- M:	bcm-kernel-feedback-list@broadcom.com
+ 	memblock_dump_all();
+ }
+ 
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index a3767e74c758..a1a9712090ae 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1164,9 +1164,6 @@ void __init setup_arch(char **cmdline_p)
+ 	initmem_init();
+ 	dma_contiguous_reserve(max_pfn_mapped << PAGE_SHIFT);
+ 
+-	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+-		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-
+ 	/*
+ 	 * Reserve memory for crash kernel after SRAT is parsed so that it
+ 	 * won't consume hotpluggable memory.
+@@ -1180,6 +1177,15 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	x86_init.paging.pagetable_init();
+ 
++	/*
++	 * must be done after zone_sizes_init() which calls free_area_init()
++	 * that calls node_set_state() to initialize node_states[N_MEMORY]
++	 * because hugetlb_cma_reserve() will scan over nodes with N_MEMORY
++	 * state
++	 */
++	if (boot_cpu_has(X86_FEATURE_GBPAGES))
++		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
++
+ 	kasan_init();
+ 
+ 	/*
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 50650d0d01b9..6df411d91040 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -909,6 +909,13 @@ static inline spinlock_t *huge_pte_lock(struct hstate *h,
+ }
+ 
+ #if defined(CONFIG_HUGETLB_PAGE) && defined(CONFIG_CMA)
++/**
++ * hugetlb_cma_reserve() -- reserve CMA for gigantic pages on nodes with memory
++ *
++ * must be called after free_area_init() that updates N_MEMORY via node_set_state().
++ * hugetlb_cma_reserve() scans over N_MEMORY nodemask and hence expects the platforms
++ * to have initialized N_MEMORY state.
++ */
+ extern void __init hugetlb_cma_reserve(int order);
+ extern void __init hugetlb_cma_check(void);
+ #else
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index bc3304af40d0..f2071f2d8c1f 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5685,12 +5685,12 @@ void __init hugetlb_cma_reserve(int order)
+ 	 * If 3 GB area is requested on a machine with 4 numa nodes,
+ 	 * let's allocate 1 GB on first three nodes and ignore the last one.
+ 	 */
+-	per_node = DIV_ROUND_UP(hugetlb_cma_size, nr_online_nodes);
++	per_node = DIV_ROUND_UP(hugetlb_cma_size, num_node_state(N_MEMORY));
+ 	pr_info("hugetlb_cma: reserve %lu MiB, up to %lu MiB per node\n",
+ 		hugetlb_cma_size / SZ_1M, per_node / SZ_1M);
+ 
+ 	reserved = 0;
+-	for_each_node_state(nid, N_ONLINE) {
++	for_each_node_state(nid, N_MEMORY) {
+ 		int res;
+ 
+ 		size = min(per_node, hugetlb_cma_size - reserved);
 -- 
-2.17.1
+2.27.0
+
 
