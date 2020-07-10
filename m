@@ -2,76 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C985B21BF0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633A521BF13
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgGJVMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbgGJVMY (ORCPT
+        id S1726510AbgGJVNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:13:50 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:48037 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726465AbgGJVNt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:12:24 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71867C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:12:24 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q15so7461145wmj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 14:12:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iDU8fng2u/ptUYYN0OIalaQDIlRQ0CTBvjvqWdkkHMk=;
-        b=IhVmn6R4tsUfkKh5I/ciZ/rBQ8BsnoOVHYitAACUrBI96Gx5knzzbDJxd1g8amSNc1
-         h9NfSTz9p4iFMllLRKvvgIBucijejW6s+LUcmt7ZbsHKNINLfAQhhmh1f80wtJ/31ZIL
-         OBaw7HIjiBAK+SqgzXOECZj7SIbMC7eTvAcZx3O/DF3HMPS2sIPK+FXnGBYt+JQeMiuz
-         tacnne67e4StiLJQ0nh2JzxX3hC9xEIdAe+U4gnmooNA21ND0tIeBNFaercXcxxrbJ49
-         ByG6nTNPDRsZtM57GJLwiezngo4vT+tdYc5SATOmz5BLMvQiAm2VJwURTN4bRjysI6i9
-         5XTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iDU8fng2u/ptUYYN0OIalaQDIlRQ0CTBvjvqWdkkHMk=;
-        b=P+xs9jMeh8cH9Zs87nvt9xp2zJVYHaBEUq6oGEN3YF3ARRaTo5EgbBpbKiK1n7vQX2
-         UlrdEBBFy+dRHRQ0O05r/mSMSs6Rby4klMNX9gS04ra2WwOHcYYaxqedr8hogTDSQjZy
-         AwuIINCm82/ShuQb3xyY+3HvcCqE4Dx43HI5w7JAQHjnW3nT3BT/72BokHQaZ+wayDIu
-         LmXssJZHpukxOV26mg0tS+N3zUnWXx1COa0B6COYKVONfCAZCm/uGbM20imghEf+HM9Y
-         bDhfQeOiNy1MNtdWRaYTHDvPRFJJMdMLU79V6uzkElk0QpL/vKrPztMTapycBnkmvNF9
-         CjdA==
-X-Gm-Message-State: AOAM530FBWY50nk6bdvE1NIyhDWFi5Bb7sUeU6OPSD75QSDd14PWhNGa
-        zX9qf1qRvSO/2/zsfi57mONqSn5qjGqgrg9+jrEUVZu48+w=
-X-Google-Smtp-Source: ABdhPJw0YGnnoDBY2TL0MP5/In74DMvl0tW5Rc0TZ5jcVzPWcrZ/lgxBz9FeD1GSxb4qE+8Xci1yeE8ZPWNpKsDhnKc=
-X-Received: by 2002:a7b:c92e:: with SMTP id h14mr6698254wml.36.1594415543141;
- Fri, 10 Jul 2020 14:12:23 -0700 (PDT)
+        Fri, 10 Jul 2020 17:13:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594415629; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Y1rBBSjHn58KkYWcfa8FN19qXT4mpd6FmEsIOBn/G4I=; b=tXbYRLBmFq1laidGr1plL76Q7Nnynpm50FblsOkaT90v1LVgodi2C8t5Klk5SLqOe8lPkIK/
+ yJQvceH9Stj+TzQAfthuNa2Ykz7X3ciUIC9oA1SLTd2uZT39ufrMy0ahEIXKbq1j06g1b8sk
+ mcpH6WmeEBx+X8q94m2VET2YQjI=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n17.prod.us-east-1.postgun.com with SMTP id
+ 5f08d9e57c8ca473a82dccfc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 10 Jul 2020 21:13:09
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2269EC433CB; Fri, 10 Jul 2020 21:13:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.9] (unknown [117.210.185.108])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66CF0C433C8;
+        Fri, 10 Jul 2020 21:13:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 66CF0C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH v4 3/7] drm: msm: a6xx: set gpu freq through hfi
+To:     Jonathan Marek <jonathan@marek.ca>, freedreno@lists.freedesktop.org
+Cc:     devicetree@vger.kernel.org, saravanak@google.com,
+        linux-arm-msm@vger.kernel.org, smasetty@codeaurora.org,
+        linux-kernel@vger.kernel.org, mka@chromium.org,
+        dri-devel@freedesktop.org, viresh.kumar@linaro.org,
+        sibis@codeaurora.org
+References: <1594324828-9571-1-git-send-email-akhilpo@codeaurora.org>
+ <1594324828-9571-4-git-send-email-akhilpo@codeaurora.org>
+ <322c921f-7c8f-7052-b191-44f0dade742e@marek.ca>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <40f6df1d-f524-c612-9215-591fd7f16e3b@codeaurora.org>
+Date:   Sat, 11 Jul 2020 02:43:02 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <159423201991.2466245.8461410729774664077.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <159423201991.2466245.8461410729774664077.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   Andy Lutomirski <luto@amacapital.net>
-Date:   Fri, 10 Jul 2020 14:12:11 -0700
-Message-ID: <CALCETrVufhJTh3LweQqqH1OHc2rTsGkMcmTzCq6kKh1ETY0arw@mail.gmail.com>
-Subject: Re: [Ksummit-discuss] [PATCH v3] CodingStyle: Inclusive Terminology
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        SeongJae Park <sjpark@amazon.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        tech-board-discuss@lists.linuxfoundation.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <322c921f-7c8f-7052-b191-44f0dade742e@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 8, 2020 at 11:30 AM Dan Williams <dan.j.williams@intel.com> wrote:
->
-> Linux maintains a coding-style and its own idiomatic set of terminology.
-> Update the style guidelines to recommend replacements for the terms
-> master/slave and blacklist/whitelist.
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+On 7/10/2020 1:34 AM, Jonathan Marek wrote:
+> On 7/9/20 4:00 PM, Akhil P Oommen wrote:
+>> Newer targets support changing gpu frequency through HFI. So
+>> use that wherever supported instead of the legacy method.
+>>
+>
+> It was already using HFI on newer targets. Don't break it in one 
+> commit then fix it in the next.
+
+Oops. I somehow got confused. Will fix and resend.
+
+-Akhil
+
+>
+>> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+>> ---
+>>   drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 11 +++++++----
+>>   1 file changed, 7 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c 
+>> b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>> index 233afea..b547339 100644
+>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+>> @@ -121,6 +121,12 @@ void a6xx_gmu_set_freq(struct msm_gpu *gpu, 
+>> struct dev_pm_opp *opp)
+>>           if (gpu_freq == gmu->gpu_freqs[perf_index])
+>>               break;
+>>   +    if (!gmu->legacy) {
+>> +        a6xx_hfi_set_freq(gmu, gmu->current_perf_index);
+>> +        icc_set_bw(gpu->icc_path, 0, MBps_to_icc(7216));
+>> +        return;
+>> +    }
+>> +
+>>       gmu->current_perf_index = perf_index;
+>>       gmu->freq = gmu->gpu_freqs[perf_index];
+>>   @@ -893,10 +899,7 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+>>       enable_irq(gmu->hfi_irq);
+>>         /* Set the GPU to the current freq */
+>> -    if (gmu->legacy)
+>> -        a6xx_gmu_set_initial_freq(gpu, gmu);
+>> -    else
+>> -        a6xx_hfi_set_freq(gmu, gmu->current_perf_index);
+>> +    a6xx_gmu_set_initial_freq(gpu, gmu);
+>>         /*
+>>        * "enable" the GX power domain which won't actually do 
+>> anything but it
+>>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
