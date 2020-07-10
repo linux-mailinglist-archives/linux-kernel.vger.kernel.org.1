@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C81F21B7DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DDC21B7E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728090AbgGJOJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727086AbgGJOJg (ORCPT
+        id S1727975AbgGJOKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:10:30 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:37785 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726896AbgGJOK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:09:36 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FD3C08E806
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:09:36 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id d18so6174773ion.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 07:09:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GkJUhDwEWg19k+flxmmMGIck6ztbcEd5EG3ERyiHHYM=;
-        b=fuJTfU5frNftoB2nOBvhj+jH0w0v7UZBt3PnRDu7UtC8P7Sjj1DqVomTFixtOge9ng
-         pEAvE7Ed2zvkR8YDMoTElqae1xCMERl72kzobWs8n3Q08z3K1TqZfDI/df8oUG5w6ou1
-         FvwJ4Qt9KvhC8Suq6E9kP7Ffdr64WsPcUDDBnUVRgvxBs6HYsmpINdpOA652MjrafdJ0
-         //BgRQgnQ6kcjVnz5c0X2FZYU01+No7t4lPdlw6X5GFu5PHuecm10X3Xi7IjZlie1f8L
-         hYUamcPROy8+F7Grc28Rq5/qJsOhRSzAmkvgu9beFuD+suZDnIDHiuSXBFu0Dj78eLeo
-         t+WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GkJUhDwEWg19k+flxmmMGIck6ztbcEd5EG3ERyiHHYM=;
-        b=Ee9fJ4/uQVD+Ea8ivhVr1JgRks8BCbO0WnFuAzhB7GDFWl4lFie3R0s1SdjRcrwySC
-         8JIwytwy2mpt7w3MPDjpsQz2KLdGgFIOU9Ee9JTSTWeYMKWwKHE2NWPBFCCF4twdN9O+
-         GRz1r1Csna34ZHJUpjuOPoC7W4ZsWABzpXzCg5hNyojkgj9FkTlQRdEn0ChD9kRsEHmX
-         xtfuBF0n8a//1IrvLHXmJN9dTK2ZgDPpiV5a4+SC9JiCGUTU0PYQ/kIj1n5qFwRQnO2B
-         YdAz3k7oBYAM2pT8ujGWxRJXn2Tp32gqioNK+yHM8n/Ga9x5e2OyEAs5VnXRWQVbI9RE
-         eJ+w==
-X-Gm-Message-State: AOAM533h3fFtccLAHEdrUzImJztH6o8PQFePNLNcbnlmCGztraMYhzIk
-        9Sv5aQnuUlxiX4jc1Aeh9IJMvw==
-X-Google-Smtp-Source: ABdhPJzaZyEeMrMWgbopFxfHGDE7K7HRqxBSjebhSFB7gm/+G+oST+FYJgvn85vQMrSkFWFE9eWgyA==
-X-Received: by 2002:a02:70d4:: with SMTP id f203mr80267571jac.74.1594390175673;
-        Fri, 10 Jul 2020 07:09:35 -0700 (PDT)
-Received: from [192.168.1.58] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id z9sm3564606ilz.45.2020.07.10.07.09.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 07:09:35 -0700 (PDT)
-Subject: Re: [PATCH v3 4/4] io_uring: add support for zone-append
-To:     Christoph Hellwig <hch@infradead.org>,
-        Kanchan Joshi <joshiiitr@gmail.com>
-Cc:     Kanchan Joshi <joshi.k@samsung.com>, viro@zeniv.linux.org.uk,
-        bcrl@kvack.org, Damien.LeMoal@wdc.com, asml.silence@gmail.com,
-        linux-fsdevel@vger.kernel.org, Matias Bj??rling <mb@lightnvm.io>,
-        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
-        Selvakumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-References: <CGME20200705185227epcas5p16fba3cb92561794b960184c89fdf2bb7@epcas5p1.samsung.com>
- <1593974870-18919-5-git-send-email-joshi.k@samsung.com>
- <fe0066b7-5380-43ee-20b2-c9b17ba18e4f@kernel.dk>
- <20200709085501.GA64935@infradead.org>
- <adc14700-8e95-10b2-d914-afa5029ae80c@kernel.dk>
- <20200709140053.GA7528@infradead.org>
- <2270907f-670c-5182-f4ec-9756dc645376@kernel.dk>
- <CA+1E3r+H7WEyfTufNz3xBQQynOVV-uD3myYynkfp7iU+D=Svuw@mail.gmail.com>
- <f5e3e931-ef1b-2eb6-9a03-44dd5589c8d3@kernel.dk>
- <CA+1E3rLna6VVuwMSHVVEFmrgsTyJN=U4CcZtxSGWYr_UYV7AmQ@mail.gmail.com>
- <20200710131054.GB7491@infradead.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <9e870249-01db-c68d-ea65-28edc3c1f071@kernel.dk>
-Date:   Fri, 10 Jul 2020 08:09:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 10 Jul 2020 10:10:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U2IjCvH_1594390221;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2IjCvH_1594390221)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 10 Jul 2020 22:10:22 +0800
+Subject: Re: [PATCH v14 07/20] mm/thp: narrow lru locking
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
+References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1593752873-4493-8-git-send-email-alex.shi@linux.alibaba.com>
+ <124eeef1-ff2b-609e-3bf6-a118100c3f2a@linux.alibaba.com>
+ <20200706113513.GY25523@casper.infradead.org>
+ <alpine.LSU.2.11.2007062059420.2793@eggly.anvils>
+ <20200709154816.wieg5thfejyv2h2l@box>
+ <e87f7dd1-41c4-3392-f1df-982dd28c0617@linux.alibaba.com>
+ <20200710112831.jrv4hzjzjqtxtc7u@box>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <d4d8bbba-12af-45c2-a35d-58f962ca5f9a@linux.alibaba.com>
+Date:   Fri, 10 Jul 2020 22:09:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200710131054.GB7491@infradead.org>
+In-Reply-To: <20200710112831.jrv4hzjzjqtxtc7u@box>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/10/20 7:10 AM, Christoph Hellwig wrote:
-> On Fri, Jul 10, 2020 at 12:35:43AM +0530, Kanchan Joshi wrote:
->> Append required special treatment (conversion for sector to bytes) for io_uring.
->> And we were planning a user-space wrapper to abstract that.
->>
->> But good part (as it seems now) was: append result went along with cflags at
->> virtually no additional cost. And uring code changes became super clean/minimal
->> with further revisions.
->> While indirect-offset requires doing allocation/mgmt in application,
->> io-uring submission
->> and in completion path (which seems trickier), and those CQE flags
->> still get written
->> user-space and serve no purpose for append-write.
+
+
+在 2020/7/10 下午7:28, Kirill A. Shutemov 写道:
+>>   *           hugetlb_fault_mutex (hugetlbfs specific page fault mutex)
+>>   *           anon_vma->rwsem
+>>   *             mm->page_table_lock or pte_lock
+>> - *               pgdat->lru_lock (in mark_page_accessed, isolate_lru_page)
+>>   *               swap_lock (in swap_duplicate, swap_info_get)
+>>   *                 mmlist_lock (in mmput, drain_mmlist and others)
+>>   *                 mapping->private_lock (in __set_page_dirty_buffers)
+>> - *                   mem_cgroup_{begin,end}_page_stat (memcg->move_lock)
+>> + *                   lock_page_memcg move_lock (in __set_page_dirty_buffers)
+>>   *                     i_pages lock (widely used)
+>> + *                       lock_page_lruvec_irq lruvec->lru_lock
+> I think it has to be
+> 			    lruvec->lru_lock (in lock_page_lruvec_irq)
+
+Good catch! I will update it in next version.
+Thanks!
+
 > 
-> I have to say that storing the results in the CQE generally make
-> so much more sense.  I wonder if we need a per-fd "large CGE" flag
-> that adds two extra u64s to the CQE, and some ops just require this
-> version.
+> No?
 
-I have been pondering the same thing, we could make certain ops consume
-two CQEs if it makes sense. It's a bit ugly on the app side with two
-different CQEs for a request, though. We can't just treat it as a large
-CQE, as they might not be sequential if we happen to wrap. But maybe
-it's not too bad.
+> 
+>>   *                 inode->i_lock (in set_page_dirty's __mark_inode_dirty)
+>>   *                 bdi.wb->list_lock (in set_page_dirty's __mark_inode_dirty)
+>>   *                   sb_lock (within inode_lock in fs/fs-writeback.c)
+>>
+>>> local_irq_disable() also deserves a comment.
+>>>
+>> yes, I will add a comment for this. Do you mind give reviewed-by for this patch?
+> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
--- 
-Jens Axboe
+Thanks a lot! :)
 
