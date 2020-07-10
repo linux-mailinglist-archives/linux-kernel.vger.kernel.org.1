@@ -2,329 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71FE21BB1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5587B21BB26
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgGJQf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:35:58 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:39219 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726920AbgGJQf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:35:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594398956; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=xmJTwTmrZK5Az//rL1bxPUaXS32v4vqqvf+Bkjio6ek=;
- b=h9ADnk+Wbi8UGpYr8Lt+UOkTNltbZgJTN0loP2prMm/1AGr9JE1xVE30ZkHuLdA2UurKS3he
- 8Lt2WiH1xHLOVPTKow85S+3uS5O8CNWLjIDRrgoGbG3t04QnRwoWqpcvVsDYbAztHn103qZo
- +4ygkolQLGuBfsRV4MzPQc1yXVo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5f0898b7c7a053446a457e63 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 10 Jul 2020 16:35:03
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 742E4C433CB; Fri, 10 Jul 2020 16:35:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 450D7C433C8;
-        Fri, 10 Jul 2020 16:35:01 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 10 Jul 2020 09:35:01 -0700
-From:   rishabhb@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        id S1727914AbgGJQjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:39:09 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:38067 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726942AbgGJQjJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 12:39:09 -0400
+Received: by mail-il1-f194.google.com with SMTP id s21so5597632ilk.5;
+        Fri, 10 Jul 2020 09:39:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RDEiKXkfuo1LcvNVgxR5JlTZIhsrn+C+Okx9e1+bqZ4=;
+        b=saOGHK6ePcEtWiPDOLtNtdnjg/2nnJj61cNnhejzN3MUHDgNVBMyrGoYTZXrKmWqqo
+         +CCr0xyjQJMlyTcDXBlSGhIYapCqJOh9p/8mbJCVTX/yJUALX/wFZBR0+i6azcw5c6lZ
+         6ERaPuN51phFFg1SKqO0Is69oeoM+n1IZT4eNwM+5SsMjkdqXWWJR4adZ2yIGZ6jfXDW
+         L4OI3k7ILbD3Zjdt+l800X/lRFXMsJV4eJWv6jh8a63NCldFE4TMyBg8IH0Bnft9W0uq
+         ywwK2UlMpkKSSoAB7r9jW8KSiwfAm5VMOvNd8YdXjmFYjAtnjQ4oqXjaWtolKyjT7Mos
+         Bk7w==
+X-Gm-Message-State: AOAM5336JHOR/MP8TZaZLUt9VM9tjOqU6k5zdqSe2E82npmZLh1OMaUJ
+        KbMI8IMHlKKq8MwAzdD4Ng==
+X-Google-Smtp-Source: ABdhPJzLFaHStBCrMtyNEUyaEU9MNoIRNK7UH30HjnsBYGguV8MEdpVyBF9INgKlpdURHNTbgPM9bw==
+X-Received: by 2002:a92:5bdd:: with SMTP id c90mr47581679ilg.154.1594399147560;
+        Fri, 10 Jul 2020 09:39:07 -0700 (PDT)
+Received: from xps15 ([64.188.179.254])
+        by smtp.gmail.com with ESMTPSA id y12sm3670759ilm.38.2020.07.10.09.39.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 09:39:07 -0700 (PDT)
+Received: (nullmailer pid 2774475 invoked by uid 1000);
+        Fri, 10 Jul 2020 16:39:05 -0000
+Date:   Fri, 10 Jul 2020 10:39:05 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     linus.walleij@linaro.org, mark.rutland@arm.com,
+        matthias.bgg@gmail.com, sean.wang@kernel.org,
+        srv_heupstream@mediatek.com, hui.liu@mediatek.com,
+        eddie.huang@mediatek.com, chuanjia.liu@mediatek.com,
+        biao.huang@mediatek.com, hongzhou.yang@mediatek.com,
+        erin.lo@mediatek.com, sean.wang@mediatek.com,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-remoteproc-owner@vger.kernel.org
-Subject: Re: [PATCH v7 3/5] remoteproc: qcom: Update PIL relocation info on
- load
-In-Reply-To: <20200622191942.255460-4-bjorn.andersson@linaro.org>
-References: <20200622191942.255460-1-bjorn.andersson@linaro.org>
- <20200622191942.255460-4-bjorn.andersson@linaro.org>
-Message-ID: <4ddca08d7fdd6b5c77c5e5f855c6d8a3@codeaurora.org>
-X-Sender: rishabhb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: pinctrl: mt8192: add binding document
+Message-ID: <20200710163905.GA2761779@bogus>
+References: <20200710072717.3056-1-zhiyong.tao@mediatek.com>
+ <20200710072717.3056-3-zhiyong.tao@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710072717.3056-3-zhiyong.tao@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-22 12:19, Bjorn Andersson wrote:
-> Update the PIL relocation information in IMEM with information about
-> where the firmware for various remoteprocs are loaded.
+On Fri, Jul 10, 2020 at 03:27:16PM +0800, Zhiyong Tao wrote:
+> The commit adds mt8192 compatible node in binding document.
 > 
-> Reviewed-by: Vinod Koul <vkoul@kernel.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
 > ---
+>  .../bindings/pinctrl/pinctrl-mt8192.yaml      | 170 ++++++++++++++++++
+>  1 file changed, 170 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
 > 
-> Changes since v6:
-> - None
-> 
->  drivers/remoteproc/Kconfig          |  5 +++++
->  drivers/remoteproc/qcom_q6v5_adsp.c | 16 +++++++++++++---
->  drivers/remoteproc/qcom_q6v5_mss.c  |  3 +++
->  drivers/remoteproc/qcom_q6v5_pas.c  | 15 ++++++++++++---
->  drivers/remoteproc/qcom_q6v5_wcss.c | 14 +++++++++++---
->  drivers/remoteproc/qcom_wcnss.c     | 14 +++++++++++---
->  6 files changed, 55 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-> index f4bd96d1a1a3..3e8d5d1a2b9e 100644
-> --- a/drivers/remoteproc/Kconfig
-> +++ b/drivers/remoteproc/Kconfig
-> @@ -135,6 +135,7 @@ config QCOM_Q6V5_ADSP
->  	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
->  	depends on QCOM_SYSMON || QCOM_SYSMON=n
->  	select MFD_SYSCON
-> +	select QCOM_PIL_INFO
->  	select QCOM_MDT_LOADER
->  	select QCOM_Q6V5_COMMON
->  	select QCOM_RPROC_COMMON
-> @@ -151,6 +152,7 @@ config QCOM_Q6V5_MSS
->  	depends on QCOM_SYSMON || QCOM_SYSMON=n
->  	select MFD_SYSCON
->  	select QCOM_MDT_LOADER
-> +	select QCOM_PIL_INFO
->  	select QCOM_Q6V5_COMMON
->  	select QCOM_Q6V5_IPA_NOTIFY
->  	select QCOM_RPROC_COMMON
-> @@ -167,6 +169,7 @@ config QCOM_Q6V5_PAS
->  	depends on RPMSG_QCOM_GLINK_SMEM || RPMSG_QCOM_GLINK_SMEM=n
->  	depends on QCOM_SYSMON || QCOM_SYSMON=n
->  	select MFD_SYSCON
-> +	select QCOM_PIL_INFO
->  	select QCOM_MDT_LOADER
->  	select QCOM_Q6V5_COMMON
->  	select QCOM_RPROC_COMMON
-> @@ -185,6 +188,7 @@ config QCOM_Q6V5_WCSS
->  	depends on QCOM_SYSMON || QCOM_SYSMON=n
->  	select MFD_SYSCON
->  	select QCOM_MDT_LOADER
-> +	select QCOM_PIL_INFO
->  	select QCOM_Q6V5_COMMON
->  	select QCOM_RPROC_COMMON
->  	select QCOM_SCM
-> @@ -218,6 +222,7 @@ config QCOM_WCNSS_PIL
->  	depends on QCOM_SMEM
->  	depends on QCOM_SYSMON || QCOM_SYSMON=n
->  	select QCOM_MDT_LOADER
-> +	select QCOM_PIL_INFO
->  	select QCOM_RPROC_COMMON
->  	select QCOM_SCM
->  	help
-> diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c
-> b/drivers/remoteproc/qcom_q6v5_adsp.c
-> index d2a2574dcf35..efb2c1aa80a3 100644
-> --- a/drivers/remoteproc/qcom_q6v5_adsp.c
-> +++ b/drivers/remoteproc/qcom_q6v5_adsp.c
-> @@ -26,6 +26,7 @@
->  #include <linux/soc/qcom/smem_state.h>
-> 
->  #include "qcom_common.h"
-> +#include "qcom_pil_info.h"
->  #include "qcom_q6v5.h"
->  #include "remoteproc_internal.h"
-> 
-> @@ -82,6 +83,7 @@ struct qcom_adsp {
->  	unsigned int halt_lpass;
-> 
->  	int crash_reason_smem;
-> +	const char *info_name;
-> 
->  	struct completion start_done;
->  	struct completion stop_done;
-> @@ -164,10 +166,17 @@ static int qcom_adsp_shutdown(struct qcom_adsp 
-> *adsp)
->  static int adsp_load(struct rproc *rproc, const struct firmware *fw)
->  {
->  	struct qcom_adsp *adsp = (struct qcom_adsp *)rproc->priv;
-> +	int ret;
+> diff --git a/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> new file mode 100644
+> index 000000000000..c698b7f65950
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/pinctrl-mt8192.yaml
+> @@ -0,0 +1,170 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/pinctrl-mt8192.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	ret = qcom_mdt_load_no_init(adsp->dev, fw, rproc->firmware, 0,
-> +				    adsp->mem_region, adsp->mem_phys,
-> +				    adsp->mem_size, &adsp->mem_reloc);
-> +	if (ret)
-> +		return ret;
+> +title: Mediatek MT8192 Pin Controller
 > +
-> +	qcom_pil_info_store(adsp->info_name, adsp->mem_phys, adsp->mem_size);
-> 
-> -	return qcom_mdt_load_no_init(adsp->dev, fw, rproc->firmware, 0,
-> -			     adsp->mem_region, adsp->mem_phys, adsp->mem_size,
-> -			     &adsp->mem_reloc);
-> +	return 0;
->  }
-> 
->  static int adsp_start(struct rproc *rproc)
-> @@ -436,6 +445,7 @@ static int adsp_probe(struct platform_device *pdev)
->  	adsp = (struct qcom_adsp *)rproc->priv;
->  	adsp->dev = &pdev->dev;
->  	adsp->rproc = rproc;
-> +	adsp->info_name = desc->sysmon_name;
->  	platform_set_drvdata(pdev, adsp);
-> 
->  	ret = adsp_alloc_memory_region(adsp);
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c
-> b/drivers/remoteproc/qcom_q6v5_mss.c
-> index 903b2bb97e12..4b8567f970f9 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -30,6 +30,7 @@
-> 
->  #include "remoteproc_internal.h"
->  #include "qcom_common.h"
-> +#include "qcom_pil_info.h"
->  #include "qcom_q6v5.h"
-> 
->  #include <linux/qcom_scm.h>
-> @@ -1190,6 +1191,8 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
->  	else if (ret < 0)
->  		dev_err(qproc->dev, "MPSS authentication failed: %d\n", ret);
-> 
-> +	qcom_pil_info_store("modem", qproc->mpss_phys, qproc->mpss_size);
-> +
->  release_firmware:
->  	release_firmware(fw);
->  out:
-> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c
-> b/drivers/remoteproc/qcom_q6v5_pas.c
-> index 61791a03f648..3837f23995e0 100644
-> --- a/drivers/remoteproc/qcom_q6v5_pas.c
-> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
-> @@ -25,6 +25,7 @@
->  #include <linux/soc/qcom/smem_state.h>
-> 
->  #include "qcom_common.h"
-> +#include "qcom_pil_info.h"
->  #include "qcom_q6v5.h"
->  #include "remoteproc_internal.h"
-> 
-> @@ -64,6 +65,7 @@ struct qcom_adsp {
->  	int pas_id;
->  	int crash_reason_smem;
->  	bool has_aggre2_clk;
-> +	const char *info_name;
-> 
->  	struct completion start_done;
->  	struct completion stop_done;
-> @@ -117,11 +119,17 @@ static void adsp_pds_disable(struct qcom_adsp
-> *adsp, struct device **pds,
->  static int adsp_load(struct rproc *rproc, const struct firmware *fw)
->  {
->  	struct qcom_adsp *adsp = (struct qcom_adsp *)rproc->priv;
-> +	int ret;
-> 
-> -	return qcom_mdt_load(adsp->dev, fw, rproc->firmware, adsp->pas_id,
-> -			     adsp->mem_region, adsp->mem_phys, adsp->mem_size,
-> -			     &adsp->mem_reloc);
-> +	ret = qcom_mdt_load(adsp->dev, fw, rproc->firmware, adsp->pas_id,
-> +			    adsp->mem_region, adsp->mem_phys, adsp->mem_size,
-> +			    &adsp->mem_reloc);
-> +	if (ret)
-> +		return ret;
-> 
-> +	qcom_pil_info_store(adsp->info_name, adsp->mem_phys, adsp->mem_size);
-> +
-> +	return 0;
->  }
-> 
->  static int adsp_start(struct rproc *rproc)
-> @@ -405,6 +413,7 @@ static int adsp_probe(struct platform_device *pdev)
->  	adsp->rproc = rproc;
->  	adsp->pas_id = desc->pas_id;
->  	adsp->has_aggre2_clk = desc->has_aggre2_clk;
-> +	adsp->info_name = desc->sysmon_name;
->  	platform_set_drvdata(pdev, adsp);
-> 
->  	device_wakeup_enable(adsp->dev);
-> diff --git a/drivers/remoteproc/qcom_q6v5_wcss.c
-> b/drivers/remoteproc/qcom_q6v5_wcss.c
-> index 88c76b9417fa..8846ef0b0f1a 100644
-> --- a/drivers/remoteproc/qcom_q6v5_wcss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_wcss.c
-> @@ -14,6 +14,7 @@
->  #include <linux/reset.h>
->  #include <linux/soc/qcom/mdt_loader.h>
->  #include "qcom_common.h"
-> +#include "qcom_pil_info.h"
->  #include "qcom_q6v5.h"
-> 
->  #define WCSS_CRASH_REASON		421
-> @@ -424,10 +425,17 @@ static void *q6v5_wcss_da_to_va(struct rproc
-> *rproc, u64 da, size_t len)
->  static int q6v5_wcss_load(struct rproc *rproc, const struct firmware 
-> *fw)
->  {
->  	struct q6v5_wcss *wcss = rproc->priv;
-> +	int ret;
-> +
-> +	ret = qcom_mdt_load_no_init(wcss->dev, fw, rproc->firmware,
-> +				    0, wcss->mem_region, wcss->mem_phys,
-> +				    wcss->mem_size, &wcss->mem_reloc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	qcom_pil_info_store("wcnss", wcss->mem_phys, wcss->mem_size);
-> 
-> -	return qcom_mdt_load_no_init(wcss->dev, fw, rproc->firmware,
-> -				     0, wcss->mem_region, wcss->mem_phys,
-> -				     wcss->mem_size, &wcss->mem_reloc);
-> +	return ret;
->  }
-> 
->  static const struct rproc_ops q6v5_wcss_ops = {
-> diff --git a/drivers/remoteproc/qcom_wcnss.c 
-> b/drivers/remoteproc/qcom_wcnss.c
-> index 5d65e1a9329a..e2573f79a137 100644
-> --- a/drivers/remoteproc/qcom_wcnss.c
-> +++ b/drivers/remoteproc/qcom_wcnss.c
-> @@ -27,6 +27,7 @@
-> 
->  #include "qcom_common.h"
->  #include "remoteproc_internal.h"
-> +#include "qcom_pil_info.h"
->  #include "qcom_wcnss.h"
-> 
->  #define WCNSS_CRASH_REASON_SMEM		422
-> @@ -145,10 +146,17 @@ void qcom_wcnss_assign_iris(struct qcom_wcnss 
-> *wcnss,
->  static int wcnss_load(struct rproc *rproc, const struct firmware *fw)
->  {
->  	struct qcom_wcnss *wcnss = (struct qcom_wcnss *)rproc->priv;
-> +	int ret;
-> +
-> +	ret = qcom_mdt_load(wcnss->dev, fw, rproc->firmware, WCNSS_PAS_ID,
-> +			    wcnss->mem_region, wcnss->mem_phys,
-> +			    wcnss->mem_size, &wcnss->mem_reloc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	qcom_pil_info_store("wcnss", wcnss->mem_phys, wcnss->mem_size);
-> 
-> -	return qcom_mdt_load(wcnss->dev, fw, rproc->firmware, WCNSS_PAS_ID,
-> -			     wcnss->mem_region, wcnss->mem_phys,
-> -			     wcnss->mem_size, &wcnss->mem_reloc);
-> +	return 0;
->  }
-> 
->  static void wcnss_indicate_nv_download(struct qcom_wcnss *wcnss)
+> +maintainers:
+> +  - Linus Walleij <linus.walleij@linaro.org>
 
-Reviewed-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Tested-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Should be someone who knows the h/w (Mediatek).
+
+> +
+> +description: |
+> +  The Mediatek's Pin controller is used to control SoC pins.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,mt8192-pinctrl
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    description:
+> +      Number of cells in GPIO specifier. Since the generic GPIO binding is used,
+> +      the amount of cells must be specified as 2. See the below
+> +      mentioned gpio binding representation for description of particular cells.
+> +    const: 2
+> +
+> +  gpio-ranges:
+> +    description: gpio valid number range.
+> +    maxItems: 1
+> +
+> +  reg:
+> +    description:
+> +      Physical address base for gpio base registers. There are 11 GPIO
+> +      physical address base in mt8192.
+> +    maxItems: 11
+> +
+> +  reg-names:
+> +    description:
+> +      Gpio base register names. There are 11 gpio base register names in mt8192.
+> +      They are "iocfg0", "iocfg_rm", "iocfg_bm", "iocfg_bl", "iocfg_br",
+> +      "iocfg_lm", "iocfg_lb", "iocfg_rt", "iocfg_lt", "iocfg_tl", "eint".
+
+Should be a schema.
+
+> +    maxItems: 11
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    const: 2
+> +
+> +  interrupts:
+> +    description: The interrupt outputs to sysirq.
+> +    maxItems: 1
+> +
+> +#PIN CONFIGURATION NODES
+> +patternProperties:
+> +  subnode format:
+
+The child node name is 'subnode format'?
+
+> +    description:
+> +      A pinctrl node should contain at least one subnodes representing the
+> +      pinctrl groups available on the machine. Each subnode will list the
+> +      pins it needs, and how they should be configured, with regard to muxer
+> +      configuration, pullups, drive strength, input enable/disable and
+> +      input schmitt.
+> +
+> +      node {
+> +        pinmux = <PIN_NUMBER_PINMUX>;
+> +        GENERIC_PINCONFIG;
+> +      };
+
+If you want to preserve formatting, description needs a literal block 
+notation on the end ('|').
+
+> +  '-pinmux$':
+> +    description:
+> +      Integer array, represents gpio pin number and mux setting.
+> +      Supported pin number and mux varies for different SoCs, and are defined
+> +      as macros in dt-bindings/pinctrl/<soc>-pinfunc.h directly.
+> +    $ref: "/schemas/pinctrl/pincfg-node.yaml"
+> +
+> +  GENERIC_PINCONFIG:
+
+You just defined a property called 'GENERIC_PINCONFIG'...
+
+> +    description:
+> +      It is the generic pinconfig options to use, bias-disable,
+> +      bias-pull-down, bias-pull-up, input-enable, input-disable, output-low,
+> +      output-high, input-schmitt-enable, input-schmitt-disable
+> +      and drive-strength are valid.
+> +
+> +      Some special pins have extra pull up strength, there are R0 and R1 pull-up
+> +      resistors available, but for user, it's only need to set R1R0 as 00, 01,
+> +      10 or 11. So It needs config "mediatek,pull-up-adv" or
+> +      "mediatek,pull-down-adv" to support arguments for those special pins.
+> +      Valid arguments are from 0 to 3.
+> +
+> +      We can use "mediatek,tdsel" which is an integer describing the steps for
+> +      output level shifter duty cycle when asserted (high pulse width adjustment).
+> +      Valid arguments  are from 0 to 15.
+> +      We can use "mediatek,rdsel" which is an integer describing the steps for
+> +      input level shifter duty cycle when asserted (high pulse width adjustment).
+> +      Valid arguments are from 0 to 63.
+> +
+> +      When config drive-strength, it can support some arguments, such as
+> +      MTK_DRIVE_4mA, MTK_DRIVE_6mA, etc. See dt-bindings/pinctrl/mt65xx.h.
+> +      It can only support 2/4/6/8/10/12/14/16mA in mt8192.
+> +      For I2C pins, there are existing generic driving setup and the specific
+> +      driving setup. I2C pins can only support 2/4/6/8/10/12/14/16mA driving
+> +      adjustment in generic driving setup. But in specific driving setup,
+> +      they can support 0.125/0.25/0.5/1mA adjustment. If we enable specific
+> +      driving setup for I2C pins, the existing generic driving setup will be
+> +      disabled. For some special features, we need the I2C pins specific
+> +      driving setup. The specific driving setup is controlled by E1E0EN.
+> +      So we need add extra vendor driving preperty instead of
+> +      the generic driving property.
+> +      We can add "mediatek,drive-strength-adv = <XXX>;" to describe the specific
+> +      driving setup property. "XXX" means the value of E1E0EN. EN is 0 or 1.
+> +      It is used to enable or disable the specific driving setup.
+> +      E1E0 is used to describe the detail strength specification of the I2C pin.
+> +      When E1=0/E0=0, the strength is 0.125mA.
+> +      When E1=0/E0=1, the strength is 0.25mA.
+> +      When E1=1/E0=0, the strength is 0.5mA.
+> +      When E1=1/E0=1, the strength is 1mA.
+> +      So the valid arguments of "mediatek,drive-strength-adv" are from 0 to 7.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +  - gpio-ranges
+> +
+> +examples:
+> +  - |
+> +            #include <dt-bindings/pinctrl/mt8192-pinfunc.h>
+> +            #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +            pio: pinctrl@10005000 {
+
+Drop unused labels.
+
+> +                    compatible = "mediatek,mt8192-pinctrl";
+> +                    reg = <0 0x10005000 0 0x1000>,
+> +                          <0 0x11c20000 0 0x1000>,
+> +                          <0 0x11d10000 0 0x1000>,
+> +                          <0 0x11d30000 0 0x1000>,
+> +                          <0 0x11d40000 0 0x1000>,
+> +                          <0 0x11e20000 0 0x1000>,
+> +                          <0 0x11e70000 0 0x1000>,
+> +                          <0 0x11ea0000 0 0x1000>,
+> +                          <0 0x11f20000 0 0x1000>,
+> +                          <0 0x11f30000 0 0x1000>,
+> +                          <0 0x1000b000 0 0x1000>;
+> +                    reg-names = "iocfg0", "iocfg_rm", "iocfg_bm",
+> +                          "iocfg_bl", "iocfg_br", "iocfg_lm",
+> +                          "iocfg_lb", "iocfg_rt", "iocfg_lt",
+> +                          "iocfg_tl", "eint";
+> +                    gpio-controller;
+> +                    #gpio-cells = <2>;
+> +                    gpio-ranges = <&pio 0 0 220>;
+> +                    interrupt-controller;
+> +                    interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH 0>;
+> +                    #interrupt-cells = <2>;
+> +                    i2c0_pins_a: i2c0 {
+
+Doesn't match the schema.
+
+> +                        pins {
+
+Doesn't match the schema. Why do you need 2 levels of nodes here?
+
+> +                                pinmux = <PINMUX_GPIO118__FUNC_SCL1>,
+> +                                         <PINMUX_GPIO119__FUNC_SDA1>;
+> +                                mediatek,pull-up-adv = <3>;
+> +                                mediatek,drive-strength-adv = <7>;
+> +                        };
+> +                    };
+> +                    i2c1_pins_a: i2c1 {
+> +                        pins {
+> +                                pinmux = <PINMUX_GPIO141__FUNC_SCL2>,
+> +                                         <PINMUX_GPIO142__FUNC_SDA2>;
+> +                                mediatek,pull-down-adv = <2>;
+> +                                mediatek,drive-strength-adv = <4>;
+> +                       };
+> +                   };
+> +            };
+> -- 
+> 2.18.0
