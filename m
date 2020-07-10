@@ -2,127 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251FB21BB49
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5436421BB52
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 18:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728267AbgGJQse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 12:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727901AbgGJQsd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 12:48:33 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B534C08C5DC;
-        Fri, 10 Jul 2020 09:48:33 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id w6so6798618ejq.6;
-        Fri, 10 Jul 2020 09:48:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AH6BfNEx7NMMgyW4KKGIOyQbMozTPM1cZFNmtLAMXVo=;
-        b=itvOTeZzDsSKPmqWJyGD6DG0Zy9j+XU7lRcziqvd3wLRZvRrhacbBuSSAXWVPMYDiP
-         O/TOXofNQ0ZEnZAPFUtEfKqH0WhpXRHQQk9dO07qaBzAU4CWsY9rCwMlrhDIsFnL9Cvq
-         F24YrLP+euH2FKXaCsq2vIEFHMqDflH4YESs11zJFThC/pbNvW3PM3eHRjYrdX+v5wN/
-         kpzlPtzFZLzTg4a2qC7fr4caD2Yu7hQ9cK0trZmaRpj1/9liISYEwf8VslD5Ph3jyMTO
-         A+9panmjwkCMCoSArH1xEHAHCijuc1FPox0gRKyWguhTrMyQi2Z1xwg7xYP0k7fZeEcC
-         VKAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AH6BfNEx7NMMgyW4KKGIOyQbMozTPM1cZFNmtLAMXVo=;
-        b=ihvSO8lwq9T+wAPTQknK9Y2DnNkoUkz0WwEcEFyJb/3nnr5r6PGvw8389fhZib12ph
-         Pkn+17v06O+TA3rVuW0ScLORjzMBKuDuMJ/nncvyYTOqTZHg4qWsWx9spSHFVyCkiJ+M
-         WruMH5fN0/jFyBbV3asqT1S7uAb0NphjCkHHpxY2emtAiC7qqZlmS/KA4AtJprwfXDJT
-         k5L0Gs/UeKgDkLZ5dznDwYjilMWK9MMe8caO+0jRbGJUKNsGsOvKsJp7Ssp+jF945/nr
-         Q1gCFrGjmxufuTtTilUnzCgLCsZ4ZqkF/O+s/4s496KITuk2hYGEcEZhd/7r2VEN5B2C
-         1etA==
-X-Gm-Message-State: AOAM531BJLINPYRrRxJOvfOdVwIzfa5514K/XfQFlZNUXU/ukMB19rWV
-        Hw7QZj7PNE8tgrKCTHIj6RCuB9fZ4QwqpwgjUMQ=
-X-Google-Smtp-Source: ABdhPJwDjzzbL451WTm2kBZbNaPGaYstnPw8x3nK3iC9JJrKdS8XZ1xv6MgGnlX4lvBVk3NgQSo97t3LUsAnzPha41A=
-X-Received: by 2002:a17:906:7c54:: with SMTP id g20mr63237421ejp.460.1594399711917;
- Fri, 10 Jul 2020 09:48:31 -0700 (PDT)
+        id S1727901AbgGJQwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 12:52:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58874 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726977AbgGJQwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 12:52:12 -0400
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C5FB206F4;
+        Fri, 10 Jul 2020 16:52:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594399931;
+        bh=KcvQZrHB38KDnUP8nxJc19jdFdt8oGFue3inzmz/Efc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gpIwsoJ/xXbQSIbhAwidVUNkopiZBRtRJr6jm8fYtOsJO0sGFBU4VrzLmpjt8J0+h
+         bM3ZPwoxoAqbROw+x/9XrPnXHGuUR8yujViPTR/a4kKu7ko3AQlaCr7An51UhICwox
+         /CYhjCD7gHFg3nRhEECbjLxD55E4l8YFtDGAk0TY=
+From:   Will Deacon <will@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Will Deacon <will@kernel.org>, Joel Fernandes <joelaf@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Richard Henderson <rth@twiddle.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kernel-team@android.com
+Subject: [PATCH 00/18] Allow architectures to override __READ_ONCE()
+Date:   Fri, 10 Jul 2020 17:51:44 +0100
+Message-Id: <20200710165203.31284-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <1593089153-17811-1-git-send-email-kalyan_t@codeaurora.org>
-In-Reply-To: <1593089153-17811-1-git-send-email-kalyan_t@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 10 Jul 2020 09:49:04 -0700
-Message-ID: <CAF6AEGtPDh7q6Hjophdyz+Pvi93-bK5WULGeSw9P4BWRw5SWxQ@mail.gmail.com>
-Subject: Re: [v1] drm/msm/dpu: enumerate second cursor pipe for external interface
-To:     Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        nganji@codeaurora.org, Stephen Boyd <swboyd@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 5:46 AM Kalyan Thota <kalyan_t@codeaurora.org> wrote:
->
-> Setup an RGB HW pipe as cursor which can be used on
-> secondary interface.
->
-> For SC7180 2 HW pipes are enumerated as cursors
-> 1 - primary interface
-> 2 - secondary interface
->
-> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> index 8f2357d..23061fd 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-> @@ -117,10 +117,10 @@
->                 .reg_off = 0x2AC, .bit_off = 0},
->         .clk_ctrls[DPU_CLK_CTRL_DMA0] = {
->                 .reg_off = 0x2AC, .bit_off = 8},
-> -       .clk_ctrls[DPU_CLK_CTRL_DMA1] = {
-> -               .reg_off = 0x2B4, .bit_off = 8},
->         .clk_ctrls[DPU_CLK_CTRL_CURSOR0] = {
-> -               .reg_off = 0x2BC, .bit_off = 8},
-> +               .reg_off = 0x2B4, .bit_off = 8},
-> +       .clk_ctrls[DPU_CLK_CTRL_CURSOR1] = {
-> +               .reg_off = 0x2C4, .bit_off = 8},
+Hi all,
 
-It looks like you shifted the register offset here from 0x2bc to
-0x2c4, was that intentional?
+This is version three of the patches I previously posted here:
 
-BR,
--R
+  v1: https://lore.kernel.org/lkml/20191108170120.22331-1-will@kernel.org/
+  v2: https://lore.kernel.org/r/20200630173734.14057-1-will@kernel.org
 
->         },
->  };
->
-> @@ -272,10 +272,10 @@
->                 sc7180_vig_sblk_0, 0,  SSPP_TYPE_VIG, DPU_CLK_CTRL_VIG0),
->         SSPP_BLK("sspp_8", SSPP_DMA0, 0x24000,  DMA_SDM845_MASK,
->                 sdm845_dma_sblk_0, 1, SSPP_TYPE_DMA, DPU_CLK_CTRL_DMA0),
-> -       SSPP_BLK("sspp_9", SSPP_DMA1, 0x26000,  DMA_SDM845_MASK,
-> -               sdm845_dma_sblk_1, 5, SSPP_TYPE_DMA, DPU_CLK_CTRL_DMA1),
-> +       SSPP_BLK("sspp_9", SSPP_DMA1, 0x26000,  DMA_CURSOR_SDM845_MASK,
-> +               sdm845_dma_sblk_1, 5, SSPP_TYPE_DMA, DPU_CLK_CTRL_CURSOR0),
->         SSPP_BLK("sspp_10", SSPP_DMA2, 0x28000,  DMA_CURSOR_SDM845_MASK,
-> -               sdm845_dma_sblk_2, 9, SSPP_TYPE_DMA, DPU_CLK_CTRL_CURSOR0),
-> +               sdm845_dma_sblk_2, 9, SSPP_TYPE_DMA, DPU_CLK_CTRL_CURSOR1),
->  };
->
->  /*************************************************************
-> --
-> 1.9.1
->
+Changes since v2 include:
+
+  * Actually add the barrier in READ_ONCE() for Alpha!
+  * Implement Alpha's smp_load_acquire() using __READ_ONCE(), rather than
+    the other way around.
+  * Further untangling of header files
+  * Use CONFIG_LTO instead of CONFIG_CLANG_LTO
+
+I have booted this on arm64, and build-tested as follows:
+
+  - arm64	allnoconfig, defconfig (also bisected) and allmodconfig
+  - arm32	allnoconfig, defconfig and allmodconfig
+  - x86_64	allnoconfig, defconfig and allmodcofig
+  - alpha	defconfig, defconfig+CONFIG_SMP=y
+  - riscv64	defconfig
+  - powerpc64	defconfig
+  - s390	defconfig
+  - sparc32	defconfig, defconfig+CONFIG_SMP=y
+  - sparc64	defconfig
+
+Cheers,
+
+Will
+
+Cc: Joel Fernandes <joelaf@google.com>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Marco Elver <elver@google.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org>
+Cc: linux-alpha@vger.kernel.org
+Cc: virtualization@lists.linux-foundation.org
+Cc: kernel-team@android.com
+
+--->8
+
+SeongJae Park (1):
+  Documentation/barriers/kokr: Remove references to
+    [smp_]read_barrier_depends()
+
+Will Deacon (18):
+  tools: bpf: Use local copy of headers including uapi/linux/filter.h
+  compiler.h: Split {READ,WRITE}_ONCE definitions out into rwonce.h
+  asm/rwonce: Allow __READ_ONCE to be overridden by the architecture
+  alpha: Override READ_ONCE() with barriered implementation
+  asm/rwonce: Remove smp_read_barrier_depends() invocation
+  asm/rwonce: Don't pull <asm/barrier.h> into 'asm-generic/rwonce.h'
+  vhost: Remove redundant use of read_barrier_depends() barrier
+  alpha: Replace smp_read_barrier_depends() usage with smp_[r]mb()
+  locking/barriers: Remove definitions for [smp_]read_barrier_depends()
+  Documentation/barriers: Remove references to
+    [smp_]read_barrier_depends()
+  tools/memory-model: Remove smp_read_barrier_depends() from informal
+    doc
+  include/linux: Remove smp_read_barrier_depends() from comments
+  checkpatch: Remove checks relating to [smp_]read_barrier_depends()
+  arm64: Reduce the number of header files pulled into vmlinux.lds.S
+  arm64: alternatives: Split up alternative.h
+  arm64: cpufeatures: Add capability for LDAPR instruction
+  arm64: alternatives: Remove READ_ONCE() usage during patch operation
+  arm64: lto: Strengthen READ_ONCE() to acquire when CONFIG_LTO=y
+
+ .../RCU/Design/Requirements/Requirements.rst  |   2 +-
+ Documentation/memory-barriers.txt             | 156 +---------
+ .../translations/ko_KR/memory-barriers.txt    | 146 +--------
+ arch/alpha/include/asm/atomic.h               |  16 +-
+ arch/alpha/include/asm/barrier.h              |  59 +---
+ arch/alpha/include/asm/pgtable.h              |  10 +-
+ arch/alpha/include/asm/rwonce.h               |  35 +++
+ arch/arm/include/asm/vdso/gettimeofday.h      |   1 +
+ arch/arm64/Kconfig                            |   3 +
+ arch/arm64/include/asm/alternative-macros.h   | 276 ++++++++++++++++++
+ arch/arm64/include/asm/alternative.h          | 267 +----------------
+ arch/arm64/include/asm/cpucaps.h              |   3 +-
+ arch/arm64/include/asm/insn.h                 |   3 +-
+ arch/arm64/include/asm/kernel-pgtable.h       |   2 +-
+ arch/arm64/include/asm/memory.h               |  11 +-
+ arch/arm64/include/asm/rwonce.h               |  63 ++++
+ arch/arm64/include/asm/uaccess.h              |   1 +
+ .../include/asm/vdso/compat_gettimeofday.h    |   1 +
+ arch/arm64/include/asm/vdso/gettimeofday.h    |   1 +
+ arch/arm64/kernel/alternative.c               |   7 +-
+ arch/arm64/kernel/cpufeature.c                |  10 +
+ arch/arm64/kernel/entry.S                     |   1 +
+ arch/arm64/kernel/vdso/Makefile               |   2 +-
+ arch/arm64/kernel/vdso32/Makefile             |   2 +-
+ arch/arm64/kernel/vmlinux.lds.S               |   1 -
+ arch/arm64/kvm/hyp-init.S                     |   1 +
+ arch/riscv/include/asm/vdso/gettimeofday.h    |   1 +
+ drivers/vhost/vhost.c                         |   5 -
+ include/asm-generic/Kbuild                    |   1 +
+ include/asm-generic/barrier.h                 |  19 +-
+ include/asm-generic/rwonce.h                  |  80 +++++
+ include/linux/compiler.h                      |  83 +-----
+ include/linux/nospec.h                        |   2 +
+ include/linux/percpu-refcount.h               |   2 +-
+ include/linux/ptr_ring.h                      |   2 +-
+ mm/memory.c                                   |   2 +-
+ scripts/checkpatch.pl                         |   9 +-
+ tools/bpf/Makefile                            |   3 +-
+ tools/include/uapi/linux/filter.h             |  90 ++++++
+ .../Documentation/explanation.txt             |  26 +-
+ 40 files changed, 636 insertions(+), 769 deletions(-)
+ create mode 100644 arch/alpha/include/asm/rwonce.h
+ create mode 100644 arch/arm64/include/asm/alternative-macros.h
+ create mode 100644 arch/arm64/include/asm/rwonce.h
+ create mode 100644 include/asm-generic/rwonce.h
+ create mode 100644 tools/include/uapi/linux/filter.h
+
+-- 
+2.27.0.383.g050319c2ae-goog
+
