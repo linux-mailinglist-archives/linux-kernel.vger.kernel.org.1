@@ -2,39 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463AE21BF52
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28EED21BF55
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgGJViO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:38:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726251AbgGJViM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:38:12 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3865920772;
-        Fri, 10 Jul 2020 21:38:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594417092;
-        bh=isY0pS9oGm7dGtxlL9m4aLsA5EJIEBlakrUHURN2ht0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qzBtSTV5wS1vLwn1ewmhaZpMbH2Sj9LaladOMvk6RCzyJ48ljQ/ZeHxpW8BjuyNlX
-         dkqx/FLR54+gqNiz6bKVN99d4X6OMYOGMSB2zJ0b/EVAueY7NAJVgHW8Z6DKNAkz95
-         8JNtFVBZgrz0tz2F4jlNRcJczX0yTCJwt2/vovp8=
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Cc:     Sean V Kelley <sean.v.kelley@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 2/2] PCI/ACPI: Unexport acpi_pci_find_root()
-Date:   Fri, 10 Jul 2020 16:37:53 -0500
-Message-Id: <20200710213753.83420-3-helgaas@kernel.org>
+        id S1726440AbgGJVlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbgGJVlW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 17:41:22 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E47C08C5DC;
+        Fri, 10 Jul 2020 14:41:22 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id di5so3270563qvb.11;
+        Fri, 10 Jul 2020 14:41:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Da2tkZhxp36WWIM5SU4wWRnWrL+fbZs7REwsgJam7ZQ=;
+        b=VHhl70xJKGvDmkqn9+GFeBcUZmC518WJVEFdfy8ur5HqlFExf0rxCQqHtur+CxOaqb
+         iC/aDjq4YILIXcE9snn6uUpJEJSctpWWeSIcBd1gpIwKFbv+erXR9MKTWreSo0dOQKMo
+         +S2JOme4t+ViPdBBTh2LgOFP78FdMRVZa/KvKW3P12B3HMV4vmIDdLoL79AnN3/2ZMDp
+         GI/pYYdntjQ8qmt2ICS6qw2mjW85VFeM86w2EtTA4jwe+uQ4Zgt9eXxcDc8W1JL+247M
+         SDWh+bYC/tB5vjOXT2GObQ3uC1A7k3UDT3aCQI4VnJ9IcFq51Wrp+jeuyastgyymV+A4
+         D/QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Da2tkZhxp36WWIM5SU4wWRnWrL+fbZs7REwsgJam7ZQ=;
+        b=JO7KY24cK6qlP+MaJXUMypghc1aH8DTWDqJLMAP2hSUm1CP0JyM00cFr0dWO8fj6yx
+         MKpLOCnbRDRvajPppP/Zn9I2bjdwpGs5SJxIsQ+PyMra93TKxP3CYUe93B2tnwSA24hP
+         yNsQ+c6mCAVIE+/OPEeCAM9Oax20Hbi6sUtLDhCfiWqC24ZGpBQzonFUYmLM7Oo/m/97
+         6qqcFvNKG/KSsrqLC767tnsHZ7FS9THuhabQY3QGDlbaQqJ09WaQr06VhBINpXwFRMQb
+         4hDEZwxNlEfoA9pvPDlviFD954YryCcULumfG1S0+VPGpQTd68UujzgTMxftE9nOAZqN
+         08bg==
+X-Gm-Message-State: AOAM532jxGiq47B/utf5vJ2tVW+v/3GLPyBqqRnreKq81c9dnGhcc0Gm
+        eK+CggF9QIpAEFKJ1k0kZw==
+X-Google-Smtp-Source: ABdhPJwg0Bs8T3eqvmOkVd+YCSi+G7i0B+ClGVozwdpkm7Ok6mUVGyf25q1e54in3JRQd8S88Lf8gg==
+X-Received: by 2002:a0c:ab55:: with SMTP id i21mr71409390qvb.139.1594417281580;
+        Fri, 10 Jul 2020 14:41:21 -0700 (PDT)
+Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
+        by smtp.gmail.com with ESMTPSA id 2sm8652249qka.42.2020.07.10.14.41.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 14:41:21 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH 1/2] net/bluetooth: Prevent out-of-bounds read in hci_inquiry_result_evt()
+Date:   Fri, 10 Jul 2020 17:39:18 -0400
+Message-Id: <3f69f09d6eb0bc1430cae2894c635252a1cb09e1.1594414498.git.yepeilin.cs@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200710213753.83420-1-helgaas@kernel.org>
-References: <20200710213753.83420-1-helgaas@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -42,29 +70,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+Check `num_rsp` before using it as for-loop counter.
 
-acpi_pci_find_root() is called only from pci_root.c and
-drivers/pci/hotplug/acpi_pcihp.c, neither of which can be modules.
-Unexport it.
-
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 ---
- drivers/acpi/pci_root.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/bluetooth/hci_event.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-index b6da9745efcd..933890f97720 100644
---- a/drivers/acpi/pci_root.c
-+++ b/drivers/acpi/pci_root.c
-@@ -246,7 +246,6 @@ struct acpi_pci_root *acpi_pci_find_root(acpi_handle handle)
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 03a0759f2fc2..8b3736c83b8e 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -2517,7 +2517,7 @@ static void hci_inquiry_result_evt(struct hci_dev *hdev, struct sk_buff *skb)
  
- 	return root;
- }
--EXPORT_SYMBOL_GPL(acpi_pci_find_root);
+ 	BT_DBG("%s num_rsp %d", hdev->name, num_rsp);
  
- struct acpi_handle_node {
- 	struct list_head node;
+-	if (!num_rsp)
++	if (!num_rsp || skb->len < num_rsp * sizeof(*info) + 1)
+ 		return;
+ 
+ 	if (hci_dev_test_flag(hdev, HCI_PERIODIC_INQ))
 -- 
 2.25.1
 
