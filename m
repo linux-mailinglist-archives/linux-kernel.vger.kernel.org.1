@@ -2,185 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728CC21BC7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9971A21BC87
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbgGJRm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 13:42:56 -0400
-Received: from mail-eopbgr750084.outbound.protection.outlook.com ([40.107.75.84]:12814
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726962AbgGJRmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:42:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HeVfTYTvgTZxK4lCyWEZ6bZwRtkOeTFx/SFLkD/Ij97N8kh3571/twWylrMMjLjAjgvoRtMzrCTIGfpWWmGosl0+efEMJcZAET0UIsT3QwT0et4lv2cZqo1PO43Y1NWrrimHk0CUQgBctmN5Qk2E2fdFYCqX7HxEHzTwowcial1WyhXeHTMAhgfHxh+OgJ5RbpxD4I2MD5N9CiwXD3sEyfgYiy3aG7xzzwIr0FjAnZgezDNFoo+vM05VGDIGpVTRxyL7iH5EGbaqDsv1tiE9aS9T/FD6l0H7cZ42WhKEGU1bTeeZ0xqaaZzf4tF7ox6nlwexFOCno5pZevujj9J29w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/7mZzv7Xl/KY/HtaYlkOQSAy9lO8krjgsxp4FLAY7sM=;
- b=YgLx5zC7Trz33FEAdb1DR2TOK6UC1VY2AuSXa1QOkabvT040Q/mtbLXWzHwGbeKuDHFCdwXppJR/ts9oYTCVVwk1ROdSBvHh1/xnFfJ6b+gjSlLP5xzS2MRbmDsLXlnmgo98IeCKbAkI+7wDhYGEa/zq36paUWMWFpwlKfqAWQ6MGGF+jYa3djWqR3i1av9hRMnVyig6Qhk/K31a0fa9nqiujbJg/zvxmnbVxdZMZch4fxN/7wjKVPOylFwlfiYvfbDp5nt+cydQfc8lLWlrYMuLBK+orxakqwWgicxygfDOrdZxBBdWgPu8vZvuY43kxn0X60eGUBtzaUQaAMShkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/7mZzv7Xl/KY/HtaYlkOQSAy9lO8krjgsxp4FLAY7sM=;
- b=XndmATdh/2rnL9FJIp7oUA+mRU/1eq9YnGpAaYsq6gO1oNVk15Q84gOibSu9K6jGiO8BwqvWOi4qW1GFP0WOIrlxSp/l6D8d6jfdmKj4FL0z4Xrg+JuKHstnCngAKH3yt5NyTK3H24hZCCmL6DbSd9YXVeXxhL2dgEVgivvNHBA=
-Received: from MN2PR15CA0058.namprd15.prod.outlook.com (2603:10b6:208:237::27)
- by DM5PR02MB3894.namprd02.prod.outlook.com (2603:10b6:4:b1::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Fri, 10 Jul
- 2020 17:42:50 +0000
-Received: from BL2NAM02FT030.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:237:cafe::81) by MN2PR15CA0058.outlook.office365.com
- (2603:10b6:208:237::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend
- Transport; Fri, 10 Jul 2020 17:42:50 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- BL2NAM02FT030.mail.protection.outlook.com (10.152.77.172) with Microsoft SMTP
- Server id 15.20.3174.21 via Frontend Transport; Fri, 10 Jul 2020 17:42:50
- +0000
-Received: from [149.199.38.66] (port=52371 helo=xsj-pvapsmtp01)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <stefano.stabellini@xilinx.com>)
-        id 1jtx1N-0005rt-TG; Fri, 10 Jul 2020 10:41:13 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by xsj-pvapsmtp01 with smtp (Exim 4.63)
-        (envelope-from <stefano.stabellini@xilinx.com>)
-        id 1jtx2w-0000B6-0G; Fri, 10 Jul 2020 10:42:50 -0700
-Received: from xsj-pvapsmtp01 (smtp2.xilinx.com [149.199.38.66])
-        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 06AHgj2Z020161;
-        Fri, 10 Jul 2020 10:42:45 -0700
-Received: from [10.23.120.244] (helo=localhost)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <stefanos@xilinx.com>)
-        id 1jtx2q-0000AD-VH; Fri, 10 Jul 2020 10:42:45 -0700
-Date:   Fri, 10 Jul 2020 10:42:44 -0700 (PDT)
-From:   Stefano Stabellini <stefano.stabellini@xilinx.com>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-cc:     Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Rob Herring <robh@kernel.org>,
-        Ben Levinsky <BLEVINSK@xilinx.com>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        Michal Simek <michals@xilinx.com>,
-        Jolly Shah <JOLLYS@xilinx.com>, Rajan Vaja <RAJANV@xilinx.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stefano Stabellini <stefanos@xilinx.com>
-Subject: Re: [PATCH v4 4/5] dt-bindings: remoteproc: Add documentation for
- ZynqMP R5 rproc bindings
-In-Reply-To: <20200630022029.GC407764@builder.lan>
-Message-ID: <alpine.DEB.2.21.2007101023470.4124@sstabellini-ThinkPad-T480s>
-References: <1587749770-15082-1-git-send-email-ben.levinsky@xilinx.com> <1587749770-15082-5-git-send-email-ben.levinsky@xilinx.com> <20200511221755.GA13585@bogus> <BYAPR02MB44077C8B7B7FD23FDE8E31B8B5B00@BYAPR02MB4407.namprd02.prod.outlook.com>
- <CAL_JsqLGo380SRYska+xGgJhgF8NCRvY56ewafvSCU6c-LmhZw@mail.gmail.com> <alpine.DEB.2.21.2006291734370.8121@sstabellini-ThinkPad-T480s> <20200630022029.GC407764@builder.lan>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1728116AbgGJRod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 13:44:33 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27832 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726977AbgGJRod (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 13:44:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594403072;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qc023nhny6w6wkYHyPdwfmXQH84TOjG2Gsy5/9ekYpU=;
+        b=WiBDVzlU3yxiEk6cwF0/3LUSfQsDjxnE7jGb7Z3pCcsBlrHYvHzFfx72Tn1QWjVKx/DGdr
+        fnNgqg6UwzKadlhAA6EF2tTztrq08dSgaSq4WiuOaHXbr6/KLqp2l4Nmd3wWphA5BlRj71
+        m75hK9k8gQVuFy0hocC7qt0HZvpDR/Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-131-HcDM24aXMsKzcTD7-6iUIg-1; Fri, 10 Jul 2020 13:44:30 -0400
+X-MC-Unique: HcDM24aXMsKzcTD7-6iUIg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4CB68800FEB;
+        Fri, 10 Jul 2020 17:44:29 +0000 (UTC)
+Received: from localhost (ovpn-116-13.gru2.redhat.com [10.97.116.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D68766FEF8;
+        Fri, 10 Jul 2020 17:44:25 +0000 (UTC)
+From:   Bruno Meneguele <bmeneg@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     pmladek@suse.com, sergey.senozhatsky@gmail.com,
+        torvalds@linux-foundation.org, Jason@zx2c4.com,
+        Bruno Meneguele <bmeneg@redhat.com>
+Subject: [PATCH v2] doc:kmsg: explictly state the return value in case of SEEK_CUR
+Date:   Fri, 10 Jul 2020 14:44:23 -0300
+Message-Id: <20200710174423.10480-1-bmeneg@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(7916004)(396003)(39860400002)(136003)(346002)(376002)(46966005)(478600001)(8676002)(26005)(5660300002)(44832011)(426003)(9786002)(336012)(186003)(2906002)(81166007)(82310400002)(356005)(9686003)(316002)(8936002)(33716001)(6916009)(83380400001)(70586007)(107886003)(54906003)(4326008)(70206006)(47076004)(82740400003);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0ec5cbec-15ab-4463-9daf-08d824f8aa82
-X-MS-TrafficTypeDiagnostic: DM5PR02MB3894:
-X-Microsoft-Antispam-PRVS: <DM5PR02MB38940C23640C9790BF30B32AA0650@DM5PR02MB3894.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3ISK0oNbGxf+sH2GYI/jLr/UkA+I/a5VQfyBQV8Wc24gvee5V8dBqPzI32t9/dL6HCZxnSFIGVoKrbRQKRN5IDqyuIdH8mYfT2HgjGy5NXdNy2V8F0f6cwkesebHNFz7BJlNfwunwuS1+0Qxbza+zmnlrEW8utTHZj0cpvRHqcGcPOFFuMqtL3LAhFJVONupNBw7CTt+BiBgypTaaKOLf++2aY8FKZB14tSVo1/6I84wyxGQaqoBiHDemDhHQfLPuBfeuZqmcLkhAm9XtDz1krYKtuncCqlW6nRqtJfwH/ai/JzTsN4F2GZ5s/dBhgBCALLyuIeTAv/WRSpV0hbxeXWVBud1omwXC8rPzGfU/eEVN6DOwsMUylMYnlyvrjGu+3Fz267LHVJYNgaBMY3zD/TO26QuwifYE3/vUYnJBYL6qMh+/nCulAR0sCL2N1Yil2mkS/oGULoWvY6shejj87yV+aL87I4tqgTLfTZLgjQ=
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2020 17:42:50.3981
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ec5cbec-15ab-4463-9daf-08d824f8aa82
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT030.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR02MB3894
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the late reply, a couple of conferences kept me busy.
+The commit 625d3449788f ("Revert "kernel/printk: add kmsg SEEK_CUR
+handling"") reverted a change done to the return value in case a SEEK_CUR
+operation was performed for kmsg buffer based on the fact that different
+userspace apps were handling the new return value (-ESPIPE) in different
+ways, breaking them.
 
+At the same time -ESPIPE was the wrong decision because kmsg /does support/
+seek() but doesn't follow the "normal" behavior userspace is used to.
+Because of that and also considering the time -EINVAL has been used, it was
+decided to keep this way to avoid more userspace breakage.
 
-On Mon, 29 Jun 2020, Bjorn Andersson wrote:
-> > However, given the fragmentation of the remoteproc bindings across
-> > multiple vendors (they are all different), I think it is a good idea for
-> > Linux, for System Device Tree, and in general to come up with simpler
-> > remoteproc bindings, more aligned between the vendors. If nothing else,
-> > it is going to make Lopper's development easier.
-> > 
-> 
-> In my view the big reason for the fragmentation between bindings is
-> because they all describe different hardware. There has been common
-> properties of remoteprocs discussed, but apart from the firmware-name
-> property I don't think we have agreed on any.
+This patch adds an official statement to the kmsg documentation pointing to
+the current return value for SEEK_CUR, -EINVAL, thus userspace libraries
+and apps can refer to it for a definitive guide on what to expect.
 
-Yeah, it is as you wrote.
+Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
+---
+Changelog:
+v2:
+	- Changed wording to Documentation/ file and also added some doc
+	directly to the code (suggested by Petr)
 
-I meant to say that there might be room for improvement if the vendors
-come together and agree on a few more common properties. However, I
-don't have any concrete suggestions on this yet.  Also, as mentioned, we
-can work with today's bindings just fine from a system device tree
-perspective.
+ Documentation/ABI/testing/dev-kmsg | 11 +++++++++++
+ kernel/printk/printk.c             |  8 ++++++++
+ 2 files changed, 19 insertions(+)
 
+diff --git a/Documentation/ABI/testing/dev-kmsg b/Documentation/ABI/testing/dev-kmsg
+index f307506eb54c..79f007cdcd41 100644
+--- a/Documentation/ABI/testing/dev-kmsg
++++ b/Documentation/ABI/testing/dev-kmsg
+@@ -56,6 +56,17 @@ Description:	The /dev/kmsg character device node provides userspace access
+ 		  seek after the last record available at the time
+ 		  the last SYSLOG_ACTION_CLEAR was issued.
+ 
++		Other seek operations or offsets are not supported because of
++		the special behavior this device has. The device allows to read
++		or write only whole variable lenght messages (records) that are
++		stored in a ring buffer.
++
++		Because of the non-standard behavior also the error values are
++		non-standard. -ESPIPE is returned for non-zero offset. -EINVAL
++		is returned for other operations, e.g. SEEK_CUR. This behavior
++		and values are historical and could not be modified without the
++		risk of breaking userspace.
++
+ 		The output format consists of a prefix carrying the syslog
+ 		prefix including priority and facility, the 64 bit message
+ 		sequence number and the monotonic timestamp in microseconds,
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index b71eaf5f5a86..4c3a0822b705 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -943,6 +943,14 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
+ 	return ret;
+ }
+ 
++/*
++ * Be careful when modifying this function!!!
++ *
++ * Only few operations are supported because the device works only with the
++ * entire variable length messages (records). Non-standard values are
++ * returned in the other cases and has been this way for quite some time.
++ * User space applications might depend on this behavior.
++ */
+ static loff_t devkmsg_llseek(struct file *file, loff_t offset, int whence)
+ {
+ 	struct devkmsg_user *user = file->private_data;
+-- 
+2.26.2
 
-> Can you give some examples of how you will be able to describe the
-> hardware involved in powering/clocking resources surrounding your
-> remoteproc and the necessary resources in a "simpler and vendor neutral"
-> way that then can be further lopped(?) into something that Linux can use
-> to control any remoteproc?
-
-The description at the system device tree level looks a bit different,
-which might make the problem a bit easier, or at least different.
-
-Let me give you some context. Lopper
-(https://github.com/devicetree-org/lopper) is a tool that takes a system
-device tree as input and generates one or more traditional device trees
-as output (i.e. today's device tree for Linux.)
-
-System device tree comes with the description of multiple "execution
-domains" (https://connect.linaro.org/resources/ltd20/ltd20-205/) and
-the ability to assign resources to each of them. That part is
-vendor-neutral.  We also have the ability to define a vendor-specific
-flag when assigning resources.
-
-All together it enables us to describe an openamp/remoteproc system with
-only very few vendor-specific info. I am working on a full example of an
-input system device tree with openamp information and the resulting
-traditional Linux devicetree. I'll make sure to reach out when I have it
-ready.
-
-
-
-> > So I think it is a good idea to take this opportunity to simplify the
-> > Xilinx remoteproc bindings as you suggested. The idea of to removing the
-> > TCM nodes is a good one. In addition I asked Ben to have a look at
-> > whether the mboxes and mbox-names properties can be removed too.
-> > 
-> 
-> If your remoteproc uses a mailbox for signaling, then this should be
-> described in devicetree. This will allow you to reuse components in
-> other designs where either part is replaced or reused.
-
-OK
