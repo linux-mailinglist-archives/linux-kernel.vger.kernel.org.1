@@ -2,75 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3271421B0D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 09:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977B521B0D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 09:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgGJH5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 03:57:33 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:44424 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726004AbgGJH5d (ORCPT
+        id S1726872AbgGJH6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 03:58:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726391AbgGJH6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 03:57:33 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 06A7vMVs9001675, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 06A7vMVs9001675
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 10 Jul 2020 15:57:22 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 10 Jul 2020 15:57:22 +0800
-Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 10 Jul 2020 15:57:21 +0800
-Received: from RTEXMB04.realtek.com.tw ([fe80::941:6388:7d34:5c44]) by
- RTEXMB04.realtek.com.tw ([fe80::941:6388:7d34:5c44%3]) with mapi id
- 15.01.1779.005; Fri, 10 Jul 2020 15:57:21 +0800
-From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>
-To:     =?utf-8?B?QW5kcmVhcyBGw6RyYmVy?= <afaerber@suse.de>,
-        "linux-realtek-soc@lists.infradead.org" 
-        <linux-realtek-soc@lists.infradead.org>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>,
-        =?utf-8?B?RWRnYXIgTGVlIFvmnY7mib/oq61d?= <cylee12@realtek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH v2 04/29] ARM: dts: rtd1195: Add chip info node
-Thread-Topic: [PATCH v2 04/29] ARM: dts: rtd1195: Add chip info node
-Thread-Index: AQHWSQk2TT/boju1mUeYH+VuJZyHIakAjTQQ
-Date:   Fri, 10 Jul 2020 07:57:21 +0000
-Message-ID: <312be01bd09545f1b58d0df62ba08c0f@realtek.com>
-References: <20200623025106.31273-1-afaerber@suse.de>
- <20200623025106.31273-5-afaerber@suse.de>
-In-Reply-To: <20200623025106.31273-5-afaerber@suse.de>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.190.196]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 10 Jul 2020 03:58:47 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1204C08C5CE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 00:58:47 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id d198so2524870vsc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 00:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Diu8FPSk0YQQ/9KsIVHjWkR640rhqQzr3+RMJoJoM1g=;
+        b=gizcXlckz2M67ld6mSAeGM1bMlmeOkCCvNRWT7Vxi1AEXDbep0iGhPQoPlPyNipDCo
+         rDanyYCfqFnKRZVMrCKD+Q/KOeIV0SPfpteq76Qp607FT9oVWpG0vnZ5n3ev5Ih979p0
+         Q8kTOQ8m1JPR1WjyTUWGZaPzoRByowv73z17YAf5lItx0pNj7dNwxJuwHtMWXc81uSdV
+         2JExDCRtZHvk35n6+Is1Gd/whndlmF3a86z+GMgwSMgfm6CAxnOYvENB8qU8bHiP9MAF
+         5bU1xVX02rEFo1o4ntyxe6ndnQRMHh7dBGHhqEtqp70zk5VJ4/tAKZ8CdyRKACRpuUWZ
+         zKtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Diu8FPSk0YQQ/9KsIVHjWkR640rhqQzr3+RMJoJoM1g=;
+        b=BD4BF9v3KoYcLegDs+s9U5JSEya2RmiGVM6X2LCUHpmdR/kX/YmpPtW0jIbgBpNJw1
+         Nd6rhFC7PlrARPnirnptJUmq68rf8CwJ8gUPsVnwY1YgTxKtIwRKieJ3TqizzwmiI5Xr
+         ZcRpw1ddUGn9Kuwl7+JCNadS44Umvtu2rVzM+9ngD85nbco/FOBWZlpGINErj6IwPnbz
+         M4UAtsun3nE62UYk7fYHBCHBQZ7kz0h0heidIoE3DCKoLkMM3dzX/xGKuXsuVtntm6PB
+         MhnlY7nVpaNCwW0mXNV6R2nytDOnqBUMS/+WajCRDVLaWyH2DtwLWV/o1iuEKnfJx3gS
+         kkfQ==
+X-Gm-Message-State: AOAM5306N3S/2bSeKbBDDARedq1Y7om746e07AGwrxPjA4Ztx6Y0gz0P
+        YIcefuAs/N5y/OwggmzDe7qhJvlQixl0bkp9eiYc+A==
+X-Google-Smtp-Source: ABdhPJxPYSpMEhKAbJpUN77i+R+I1788d/Ems0i5GSKwTLANWpFKgAUr6sQNT4PO8IlvGncOYNGftRvmLJTjgk/y7ts=
+X-Received: by 2002:a05:6102:22f3:: with SMTP id b19mr4543062vsh.191.1594367926935;
+ Fri, 10 Jul 2020 00:58:46 -0700 (PDT)
 MIME-Version: 1.0
+References: <1594300408-17658-1-git-send-email-vbadigan@codeaurora.org>
+In-Reply-To: <1594300408-17658-1-git-send-email-vbadigan@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 10 Jul 2020 09:58:10 +0200
+Message-ID: <CAPDyKFqYqxA76zh0qdfcJuGb8x7QcbBGYoubXF5STqhPdWjGmQ@mail.gmail.com>
+Subject: Re: [PATCH V1] mmc: sdhci: Fix potential null pointer access while
+ accessing vqmmc
+To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Vijay Viswanath <vviswana@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQW5kcmVhcywNCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEFu
-ZHJlYXMgRsOkcmJlciBbbWFpbHRvOmFmYWVyYmVyQHN1c2UuZGVdDQo+IFNlbnQ6IFR1ZXNkYXks
-IEp1bmUgMjMsIDIwMjAgMTA6NTEgQU0NCj4gVG86IGxpbnV4LXJlYWx0ZWstc29jQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcNCj4gQ2M6IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsg
-bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgSmFtZXMNCj4gVGFpIFvmiLTlv5fls7BdOyBT
-dGFubGV5IENoYW5nW+aYjOiCsuW+t107IEVkZ2FyIExlZSBb5p2O5om/6KutXTsgQW5kcmVhcyBG
-w6RyYmVyOw0KPiBSb2IgSGVycmluZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcNCj4gU3Vi
-amVjdDogW1BBVENIIHYyIDA0LzI5XSBBUk06IGR0czogcnRkMTE5NTogQWRkIGNoaXAgaW5mbyBu
-b2RlDQo+IA0KPiBBZGQgYSBEVCBub2RlIGZvciBjaGlwIGlkZW50aWZpY2F0aW9uLg0KPiANCj4g
-U2lnbmVkLW9mZi1ieTogQW5kcmVhcyBGw6RyYmVyIDxhZmFlcmJlckBzdXNlLmRlPg0KDQpSZXZp
-ZXdlZC1ieTogU3RhbmxleSBDaGFuZyA8c3RhbmxleV9jaGFuZ0ByZWFsdGVrLmNvbT4NCg0KVGhh
-bmtzLA0KU3RhbmxleQ0K
+On Thu, 9 Jul 2020 at 15:13, Veerabhadrarao Badiganti
+<vbadigan@codeaurora.org> wrote:
+>
+> Don't access vqmmc regulator handler, if it's already invalidated.
+>
+> Fixes: f870b6d480d3 (mmc: sdhci: Allow platform controlled voltage switching)
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+
+Applied for next, thanks!
+
+Kind regards
+Uffe
+
+> ---
+>  drivers/mmc/host/sdhci.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index e6275c2202b0..d3b62fc5c661 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -4383,11 +4383,6 @@ int sdhci_setup_host(struct sdhci_host *host)
+>         if (!IS_ERR(mmc->supply.vqmmc)) {
+>                 if (enable_vqmmc) {
+>                         ret = regulator_enable(mmc->supply.vqmmc);
+> -                       if (ret) {
+> -                               pr_warn("%s: Failed to enable vqmmc regulator: %d\n",
+> -                                       mmc_hostname(mmc), ret);
+> -                               mmc->supply.vqmmc = ERR_PTR(-EINVAL);
+> -                       }
+>                         host->sdhci_core_to_disable_vqmmc = !ret;
+>                 }
+>
+> @@ -4402,6 +4397,13 @@ int sdhci_setup_host(struct sdhci_host *host)
+>                 if (!regulator_is_supported_voltage(mmc->supply.vqmmc, 2700000,
+>                                                     3600000))
+>                         host->flags &= ~SDHCI_SIGNALING_330;
+> +
+> +               if (ret) {
+> +                       pr_warn("%s: Failed to enable vqmmc regulator: %d\n",
+> +                               mmc_hostname(mmc), ret);
+> +                       mmc->supply.vqmmc = ERR_PTR(-EINVAL);
+> +               }
+> +
+>         }
+>
+>         if (host->quirks2 & SDHCI_QUIRK2_NO_1_8_V) {
+> --
+> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
+>
