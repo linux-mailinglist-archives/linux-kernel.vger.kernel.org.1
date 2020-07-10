@@ -2,127 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD2F21BBBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F88021BBC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 19:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgGJRDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 13:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgGJRDT (ORCPT
+        id S1728404AbgGJRDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 13:03:44 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35693 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727863AbgGJRDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 13:03:19 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EC0C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:03:19 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z13so6687496wrw.5
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:03:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=bQIq5s2dqiEjFMbe0CzvCv9st0ZbiUVbOFEQGKrFNck=;
-        b=mURRFeUfOBx1wJXzGFTph66BgqHt3V4hjdmsPFdNsVFXPQaHMrU5IJUWGGdYv7710W
-         eOPIghtkf6x+HlTYf1cy3I+w7wN59ujxzVZz+sU7aolWPXZ1cZkcX6gKy6Qg5ywYvBgW
-         eGbA2a2xMlHu/GP1lk3xan46biuy1Xq6t2TEFUYZnQ976Gu1/ya4oPToMvpHmDNO9YnN
-         OvUi+cdt//YwZ6J1aZIHLAvuTQS4e+RuuNvbBIOYH0dQnxkf3rr06HoOdjc7rWnjLqsE
-         9PzU1+e8Z9RnVcaurg4QMbk7tMk8PbZUaTPXCBMYR+XvDwZpx3NiXIEQjbEqKH+Ug648
-         /gug==
+        Fri, 10 Jul 2020 13:03:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594400622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zJSG5Xu9Pbt04zlwluiGAtbXS/uva9oKZizpa8qTv/A=;
+        b=DyWWqASYO8cSoUtUyx+XanwtsEleNdWIOyan9UP0mGPclfW25rCPd4PDye64SmAYpxhDLw
+        wZM+YeLtt7XzMUtMGllZqWdI6c4ofxzMgNCiJX52GJxA3rByEAvaG8MhjmrPY/ruVp/8Xz
+        BrvP/3pgMKHCPTGtsTm+h6Km9GSoLeU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-nAI-aUh8N_qnTEFcSU2ZSw-1; Fri, 10 Jul 2020 13:03:40 -0400
+X-MC-Unique: nAI-aUh8N_qnTEFcSU2ZSw-1
+Received: by mail-wm1-f72.google.com with SMTP id z74so1979589wmc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 10:03:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=bQIq5s2dqiEjFMbe0CzvCv9st0ZbiUVbOFEQGKrFNck=;
-        b=B5Gw4Bqg/1nJ3T069zoDBIRhVGTOfk3RSUX/VvilT546NHiaI49l/R9REVP16qWkGo
-         rg7HT4E4gpZS+mAhygp7hudgr8C5WnNKJN1P5N0iBFJGcUUbPdyfiLKAqj//92Yf7Sqf
-         p1Uqiyabi0Cw7FTYxamjSQbaQfbOmKGboOsQn2sxGmvVyvw2wLw3S5YkgouGQgOK2LjZ
-         uhHqVGAlv7Zs8VVeX0uCRSvNUghp5uhLPxsmz6/93EesXj+XJla7GALgMxe4cFmnS2UC
-         lJ0jfnX46qzNlJXNqxzJJ1eHQ665Mq91Bhab5ruah0vM1HguX51YYpTalnUKXBo9m+ZN
-         8BYw==
-X-Gm-Message-State: AOAM532q3hya7yj9O9pSaordmx1zCcYpX3iTyJQZSOnFUohHJwXNztUQ
-        CQfJyUNYafed5Qno3l2e2cfSEDX2
-X-Google-Smtp-Source: ABdhPJzLGmptrY+IgiSU0K4LC8+1xvwXLEosLWz/REgg/voxbg/LOtpNoaLvxJBCLnSlI9S67zclxw==
-X-Received: by 2002:a5d:4b0f:: with SMTP id v15mr32810907wrq.216.1594400597923;
-        Fri, 10 Jul 2020 10:03:17 -0700 (PDT)
-Received: from ogabbay-VM ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id r8sm10613363wrp.40.2020.07.10.10.03.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 10 Jul 2020 10:03:16 -0700 (PDT)
-Date:   Fri, 10 Jul 2020 20:03:22 +0300
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [git pull] habanalabs fixes pull request for kernel 5.8-rc4/5
-Message-ID: <20200710170322.GA29124@ogabbay-VM>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zJSG5Xu9Pbt04zlwluiGAtbXS/uva9oKZizpa8qTv/A=;
+        b=I2w3sHTVKRdIGY394a+pywesIidZwd7JxOjyzkaUAWdB8XEyYSTN/48fP+Eu5QJmbo
+         Aq1c4DEZNlXgu0CT5gqHo9lrleIz8PDtDLwhN3VmpbA1XOpDZYNFiasUwHgJGc4ONn10
+         vshFrcxTuXde5refDPUChHeJDI8fYNjjx7rYNgiyHSQIwJG02xCUfu1Q0V8VZvYP+X/S
+         ogkXyAI5PZw+H4Tjca4escBC8UtCzi63iL1R9y+MGZWaveT1g8/2gudCOZ8G8FUoyKUJ
+         Rp2rFhYsTff4KHyMzx2MWsd64aRZFIw40nkr38RjOB/lTznwHq7fRz1OG4k3VHz/tFc1
+         ALag==
+X-Gm-Message-State: AOAM531UKZuEMCjoVDup+gqIhJlRRMFV0TvJW6J+3VJLCVM3BJ4byBXW
+        8skKs30cw4B/matKPkshKf6dq7ICVKqb7s5pPwpu2ENVc2DKSJ9HkifuVuLtQCOJwXvhgtaXXgn
+        NQn7i72G/FbvFI0nUP1B/Vuxt
+X-Received: by 2002:a5d:5084:: with SMTP id a4mr71035621wrt.191.1594400619578;
+        Fri, 10 Jul 2020 10:03:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw3h0nVEw+2+GgsORJ2/Fsvu67DVFBqUZoc6rQmebj8pKOAagZin2+JOgn05/ohtFk1iIRbBA==
+X-Received: by 2002:a5d:5084:: with SMTP id a4mr71035602wrt.191.1594400619293;
+        Fri, 10 Jul 2020 10:03:39 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9541:9439:cb0f:89c? ([2001:b07:6468:f312:9541:9439:cb0f:89c])
+        by smtp.gmail.com with ESMTPSA id b10sm9459481wmj.30.2020.07.10.10.03.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 10:03:38 -0700 (PDT)
+Subject: Re: [PATCH v4 0/9] KVM: nSVM: fixes for CR3/MMU switch upon nested
+ guest entry/exit
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        linux-kernel@vger.kernel.org
+References: <20200710141157.1640173-1-vkuznets@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <6dba1900-5149-f8dd-2da3-42803ee9f96b@redhat.com>
+Date:   Fri, 10 Jul 2020 19:03:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200710141157.1640173-1-vkuznets@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+On 10/07/20 16:11, Vitaly Kuznetsov wrote:
+> Changes since v3:
+> - Swapped my "KVM: nSVM: stop dereferencing vcpu->arch.mmu to get the
+>  context in kvm_init_shadow{,_npt}_mmu()" with Paolo's "KVM: MMU: stop
+>  dereferencing vcpu->arch.mmu to get the context for MMU init".
+> - keeping nested_svm_init_mmu_context() in nested_prepare_vmcb_control()
+>  as this is also used from svm_set_nested_state() [Paolo],
+>  nested_svm_load_cr3() becomes a separate step in enter_svm_guest_mode().
+> - nested_prepare_vmcb_save() remains 'void' [Paolo]
+> 
+> Original description:
+> 
+> This is a successor of "[PATCH v2 0/3] KVM: nSVM: fix #TF from CR3 switch
+> when entering guest" and "[PATCH] KVM: x86: drop erroneous mmu_check_root()
+> from fast_pgd_switch()".
+> 
+> The snowball is growing fast! It all started with an intention to fix
+> the particular 'tripple fault' issue (now fixed by PATCH7) but now we
+> also get rid of unconditional kvm_mmu_reset_context() upon nested guest
+> entry/exit and make the code resemble nVMX. There is still a huge room
+> for further improvement (proper error propagation, removing unconditional
+> MMU sync/TLB flush,...) but at least we're making some progress.
+> 
+> Tested with kvm selftests/kvm-unit-tests and by running nested Hyper-V
+> on KVM. The series doesn't seem to introduce any new issues.
+> 
+> Paolo Bonzini (1):
+>   KVM: MMU: stop dereferencing vcpu->arch.mmu to get the context for MMU
+>     init
+> 
+> Vitaly Kuznetsov (8):
+>   KVM: nSVM: split kvm_init_shadow_npt_mmu() from kvm_init_shadow_mmu()
+>   KVM: nSVM: reset nested_run_pending upon nested_svm_vmrun_msrpm()
+>     failure
+>   KVM: nSVM: prepare to handle errors from enter_svm_guest_mode()
+>   KVM: nSVM: introduce nested_svm_load_cr3()/nested_npt_enabled()
+>   KVM: nSVM: move kvm_set_cr3() after nested_svm_uninit_mmu_context()
+>   KVM: nSVM: implement nested_svm_load_cr3() and use it for host->guest
+>     switch
+>   KVM: nSVM: use nested_svm_load_cr3() on guest->host switch
+>   KVM: x86: drop superfluous mmu_check_root() from fast_pgd_switch()
+> 
+>  arch/x86/kvm/mmu.h        |  3 +-
+>  arch/x86/kvm/mmu/mmu.c    | 45 ++++++++++++------
+>  arch/x86/kvm/svm/nested.c | 97 ++++++++++++++++++++++++++++-----------
+>  arch/x86/kvm/svm/svm.c    |  6 ++-
+>  arch/x86/kvm/svm/svm.h    |  4 +-
+>  5 files changed, 110 insertions(+), 45 deletions(-)
+> 
 
-This pull request is for the next rc (rc4 or 5) and it contains:
+Queued, thanks.
 
-1. Important bug fix for the GAUDI command parsing code.
+Paolo
 
-2. Change in debugfs interface that is relevant only for GAUDI and
-   therefore can still be changed in this release.
-
-3. Workaround for a timeout problem in GOYA and GAUDI.
-
-Details are in the tag message below.
-
-Thanks,
-Oded
-
-The following changes since commit 897c44f0bae574c5fb318c759b060bebf9dd6013:
-
-  virtio: virtio_console: add missing MODULE_DEVICE_TABLE() for rproc serial (2020-07-10 15:12:48 +0200)
-
-are available in the Git repository at:
-
-  git://people.freedesktop.org/~gabbayo/linux tags/misc-habanalabs-fixes-2020-07-10
-
-for you to fetch changes up to 788cacf308871db0a619952321bedfec8f1773e2:
-
-  habanalabs: set 4s timeout for message to device CPU (2020-07-10 19:53:03 +0300)
-
-----------------------------------------------------------------
-This tag contains the following fixes for 5.8-rc4/5:
-
-- Prevent user from using command WREG_BULK in PCI DMA channel. The command
-  won't be parsed correctly by the driver and will cause unknown behavior.
-  As the user doesn't need to use that command in that channel, its better
-  to just prevent it completely.
-
-- Change the interface of the clock gating debugfs property from true/false
-  to bitmask with bit per engine. This will allow the user to debug the
-  ASIC while disabling the clock gating feature with fine-grain
-  granularity.
-
-- Increase message-to-ASIC-CPU timeout to 4s (from 100ms/1s). The ASIC CPU
-  might respond sometimes after a large delay due to slow external
-  interfaces (such as temperature sensors) and that will result in a driver
-  timeout which will lead to ASIC reset.
-
-----------------------------------------------------------------
-Oded Gabbay (3):
-      habanalabs: block WREG_BULK packet on PDMA
-      habanalabs: set clock gating per engine
-      habanalabs: set 4s timeout for message to device CPU
-
- .../ABI/testing/debugfs-driver-habanalabs          |  11 +-
- drivers/misc/habanalabs/debugfs.c                  |  23 ++--
- drivers/misc/habanalabs/device.c                   |   2 +-
- drivers/misc/habanalabs/firmware_if.c              |  10 +-
- drivers/misc/habanalabs/gaudi/gaudi.c              | 123 ++++++++++++++-------
- drivers/misc/habanalabs/goya/goya.c                |  20 ++--
- drivers/misc/habanalabs/habanalabs.h               |  19 +++-
- drivers/misc/habanalabs/habanalabs_drv.c           |   2 +-
- drivers/misc/habanalabs/hwmon.c                    |  19 ++--
- drivers/misc/habanalabs/sysfs.c                    |  11 +-
- 10 files changed, 147 insertions(+), 93 deletions(-)
