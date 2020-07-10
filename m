@@ -2,98 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5672321BFFD
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2053E21C027
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgGJWhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 18:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726823AbgGJWhb (ORCPT
+        id S1726661AbgGJWwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 18:52:47 -0400
+Received: from gateway23.websitewelcome.com ([192.185.49.179]:48198 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726262AbgGJWwq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 18:37:31 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43962C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:37:31 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id e8so8175674ljb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EOOtoPj/TYBlLc+eU82ZHIb+aymt/x6TobGnTd4fwRE=;
-        b=dIx+a/OwAnrG8R/KYnef3nenl3etd7RuZhDAvmAKf7ajW9FgZYiY8mwJH2kbJjCGgL
-         3Eqx+OUt+DfTqjhEIgVjZIcJuRAUMoSbLLJVDrixXdLI6pQjJzHO23RA08UVqdtmORyA
-         GTqR0ieEhppw219L++AfD2SD316wsFRClTDOQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EOOtoPj/TYBlLc+eU82ZHIb+aymt/x6TobGnTd4fwRE=;
-        b=J6v50puw/INOL68oY0EMBQH/AEp/8noCSaDJXgeCfg/FoHf9obAHkiE4gUdvSXdZlo
-         QjZOvrFdPqD8PMVvwtOAKxtg6Y9/YRgVZdupHexp1oK3GT6OqnVDsVBEQl70y+kKU1S2
-         f6woaSlo1IXEA3nYqjvAws8U+h4VBQe5bsQu1C8PKGakEM31bRbO8j/ijn+lkIEZzEg7
-         6SmQH6MaKKejY64Bo9NVkdw5ounhaQpBGU0clQGafP4vj2IGAuFKZBeOmaPWOkNjV5VS
-         DG5sdpxMFlZewX3n4kAGrOVtcENTUC9XPQtQ2Sj4aDY1gBdrqJgn7y26ArtIRwFk8hi3
-         QeMg==
-X-Gm-Message-State: AOAM532i8MGPFDTZcY5rMR+AX5Exw3WtNFPuVGUbzt9UNwF20VClaTtd
-        TtJFwdMlI3+siq+FMgMVpfGPh7dUGcE=
-X-Google-Smtp-Source: ABdhPJxUktYoE/MdJuNNoAW+J/fCn6fpIxbet6yjzSuEeL6MEbheGnF/mnIvM+U8wUqsgeXrgngV1Q==
-X-Received: by 2002:a05:651c:1b5:: with SMTP id c21mr16337147ljn.82.1594420649264;
-        Fri, 10 Jul 2020 15:37:29 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id 203sm2349338ljf.14.2020.07.10.15.37.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 15:37:27 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id h22so8115563lji.9
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:37:26 -0700 (PDT)
-X-Received: by 2002:a2e:9b42:: with SMTP id o2mr40467600ljj.102.1594420646447;
- Fri, 10 Jul 2020 15:37:26 -0700 (PDT)
+        Fri, 10 Jul 2020 18:52:46 -0400
+X-Greylist: delayed 1202 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Jul 2020 18:52:45 EDT
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 449A080BE
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 17:32:41 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id u1ZRjmYWKwgQAu1ZRj1Fsj; Fri, 10 Jul 2020 17:32:41 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=gl0Hm2D0gaLmTt0p+QxZlEux5f9dkZeXgbntP1h/19w=; b=A4SAZ+3oKr7EUN2P1XxNyyt2F8
+        B1RNKqQwoRnLbmQFl0ApiJSekHJDS5Wt9ca2xgBnh+PGeOiYBV/WslOR0GvUDNgG61IVQd4yjl3uk
+        3PtHN/Tu1iru6KqXLiVpee16xYIvQSMPGwVxzhzPDyC72Ad5W63fBQP2OQhzmlbL98ui5gkGa1doJ
+        1zN9sl7WgLe6Y2gZ5Ul09ROol4xyQM4RBdmfNL4c8FAxhXnfRxlu5BcIt1j0u2E988+/gg/S+grox
+        5XSCwm/SwyQsibx2ZGDK3wkZLm/ziRGfiu1YyQzvpu7SSzNWaC1WyEm/WRVjKDi/7RF68JKCi1h+N
+        WjYRoUvA==;
+Received: from [200.39.25.189] (port=7432 helo=[192.168.43.132])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1ju1ZQ-003uj7-E0; Fri, 10 Jul 2020 17:32:40 -0500
+Subject: Re: [PATCH v3] CodingStyle: Inclusive Terminology
+To:     Dan Williams <dan.j.williams@intel.com>, corbet@lwn.net
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Dave Airlie <airlied@redhat.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Mark Brown <broonie@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Olof Johansson <olof@lixom.net>, Chris Mason <clm@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org,
+        tech-board-discuss@lists.linuxfoundation.org,
+        ksummit-discuss@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+References: <159423201991.2466245.8461410729774664077.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <1d52cfcb-20e6-9ba5-1b14-66da64cfcc87@embeddedor.com>
+Date:   Fri, 10 Jul 2020 17:38:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <CAHk-=wj-CYhKZR8ZKQgi=VTx=o7n6dtwPXikvgkJ3SdiqRPd8A@mail.gmail.com>
- <87lfk26nx4.fsf@mpe.ellerman.id.au> <CAHk-=wicOPQwuDUzFyDTBgr4UvQJHPdCX7_6BLaK6cve6CqBSg@mail.gmail.com>
- <20200702201755.GO2786714@ZenIV.linux.org.uk> <CAHk-=whW7qYEK-MJMS9gKf-K4cBNGTq0pv-5wo4bqE_QtUfkDw@mail.gmail.com>
- <20200702205902.GP2786714@ZenIV.linux.org.uk> <CAHk-=whm66UhcEQgXHr8hPkzyDTOdbGikLbSg0zJ4-b93aSg8w@mail.gmail.com>
- <20200703013328.GQ2786714@ZenIV.linux.org.uk> <20200703210237.GS2786714@ZenIV.linux.org.uk>
- <20200704004959.GY2786714@ZenIV.linux.org.uk> <20200704021157.GZ2786714@ZenIV.linux.org.uk>
- <b95ffa72db83431b95597a35f63d8e33@AcuMS.aculab.com>
-In-Reply-To: <b95ffa72db83431b95597a35f63d8e33@AcuMS.aculab.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 10 Jul 2020 15:37:10 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjQJjZX3cgX6vLp6ntTiBG+a6md64J+e74SDntoTi+q4A@mail.gmail.com>
-Message-ID: <CAHk-=wjQJjZX3cgX6vLp6ntTiBG+a6md64J+e74SDntoTi+q4A@mail.gmail.com>
-Subject: Re: objtool clac/stac handling change..
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <159423201991.2466245.8461410729774664077.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 200.39.25.189
+X-Source-L: No
+X-Exim-ID: 1ju1ZQ-003uj7-E0
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.132]) [200.39.25.189]:7432
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 25
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 7, 2020 at 5:35 AM David Laight <David.Laight@aculab.com> wrote:
->
->
-> So separate copy and checksum passes should easily exceed 4 bytes/clock,
-> but I suspect that doing them together never does.
-> (Unless the buffer is too big for the L1 cache.)
 
-Its' the "touch the caches twice" that is the problem".
 
-And it's not the "buffer is too big for L1", it's "the source, the
-destination and any incidentals are too big for L1" with the
-additional noise from replacement policies etc.
+On 7/8/20 13:14, Dan Williams wrote:
+> Linux maintains a coding-style and its own idiomatic set of terminology.
+> Update the style guidelines to recommend replacements for the terms
+> master/slave and blacklist/whitelist.
+> 
+> Link: http://lore.kernel.org/r/159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> Acked-by: Dave Airlie <airlied@redhat.com>
+> Acked-by: SeongJae Park <sjpark@amazon.de>
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> Acked-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Olof Johansson <olof@lixom.net>
+> Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Chris Mason <clm@fb.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 
-That said, I agree it's likely less of an issue these days when L1
-sizes are bigger, and thankfully direct-mapped caches are no more. It
-_used_ to be that touching the location twice was very very noticeable
-in some situations, it may not be so much any more.
+Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-             Linus
+Thanks
+--
+Gustavo
