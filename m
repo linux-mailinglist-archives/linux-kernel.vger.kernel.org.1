@@ -2,231 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B2821B8B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC64621B8CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbgGJObB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:31:01 -0400
-Received: from mga07.intel.com ([134.134.136.100]:53235 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726832AbgGJObB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:31:01 -0400
-IronPort-SDR: mn02xBGCwjyV3gLaoC19KLrdiOAKHCSDbtaCLoTR6ZLtaWRvSStcnp0dcI45iBIFAMlQFLRTt5
- R7xWYpdQvptw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="213087472"
-X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
-   d="scan'208";a="213087472"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 07:30:56 -0700
-IronPort-SDR: l+oczZlRHesjhYT/RVjERlIPOBvvzdUWgMvrKgcP1xI2vV4rgPo3QXbhZ4EvUl2kA80nT/Ej9G
- 2WvRalgm6d8Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
-   d="scan'208";a="284520136"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga006.jf.intel.com with ESMTP; 10 Jul 2020 07:30:56 -0700
-Received: from [10.249.228.181] (abudanko-mobl.ccr.corp.intel.com [10.249.228.181])
-        by linux.intel.com (Postfix) with ESMTP id 8039B5805F0;
-        Fri, 10 Jul 2020 07:30:51 -0700 (PDT)
-Subject: Re: [PATCH v8 00/12] Introduce CAP_PERFMON to secure system
- performance monitoring and observability
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>, Jiri Olsa <jolsa@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        linux-man@vger.kernel.org
-References: <f96f8f8a-e65c-3f36-dc85-fc3f5191e8c5@linux.intel.com>
- <76718dc6-5483-5e2e-85b8-64e70306ee1f@linux.ibm.com>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <7776fa40-6c65-2aa6-1322-eb3a01201000@linux.intel.com>
-Date:   Fri, 10 Jul 2020 17:30:50 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <76718dc6-5483-5e2e-85b8-64e70306ee1f@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728162AbgGJOhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:37:02 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:59992 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726908AbgGJOhC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 10:37:02 -0400
+Received: from fsav305.sakura.ne.jp (fsav305.sakura.ne.jp [153.120.85.136])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 06AEaVwI076432;
+        Fri, 10 Jul 2020 23:36:31 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav305.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav305.sakura.ne.jp);
+ Fri, 10 Jul 2020 23:36:31 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav305.sakura.ne.jp)
+Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 06AEaLY2076229
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 10 Jul 2020 23:36:30 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, linux-kernel@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        syzbot <syzbot+017265e8553724e514e8@syzkaller.appspotmail.com>
+Subject: [PATCH v2] vt: Reject zero-sized screen buffer size.
+Date:   Fri, 10 Jul 2020 23:34:55 +0900
+Message-Id: <20200710143455.3438-1-penguin-kernel@I-love.SAKURA.ne.jp>
+X-Mailer: git-send-email 2.18.4
+In-Reply-To: <20200710113658.GA1238355@kroah.com>
+References: <20200710113658.GA1238355@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot is reporting general protection fault in do_con_write() [1] caused
+by vc->vc_screenbuf == ZERO_SIZE_PTR caused by vc->vc_screenbuf_size == 0
+caused by vc->vc_cols == vc->vc_rows == vc->vc_size_row == 0 being passed
+to ioctl(FBIOPUT_VSCREENINFO) request on /dev/fb0 , for gotoxy(vc, 0, 0)
+ from reset_terminal() from vc_init() from vc_allocate() on such console
+causes vc->vc_pos == 0x10000000e due to
+((unsigned long) ZERO_SIZE_PTR) + -1U * 0 + (-1U << 1).
 
-Hi Ravi,
+I don't think that a console with 0 column and/or 0 row makes sense, and
+I think that we can reject such bogus arguments in fb_set_var() from
+ioctl(FBIOPUT_VSCREENINFO). Regardless, I think that it is safer to also
+check vc->vc_screenbuf_size when allocating vc->vc_screenbuf from
+vc_allocate() from con_install() from tty_init_dev() from tty_open().
 
-On 10.07.2020 16:31, Ravi Bangoria wrote:
-> Hi Alexey,
-> 
->> Currently access to perf_events, i915_perf and other performance
->> monitoring and observability subsystems of the kernel is open only for
->> a privileged process [1] with CAP_SYS_ADMIN capability enabled in the
->> process effective set [2].
->>
->> This patch set introduces CAP_PERFMON capability designed to secure
->> system performance monitoring and observability operations so that
->> CAP_PERFMON would assist CAP_SYS_ADMIN capability in its governing role
->> for performance monitoring and observability subsystems of the kernel.
-> 
-> I'm seeing an issue with CAP_PERFMON when I try to record data for a
-> specific target. I don't know whether this is sort of a regression or
-> an expected behavior.
+Theoretically, cols and rows can be any range as long as
+0 < cols * rows * 2 <= KMALLOC_MAX_SIZE is satisfied (e.g.
+cols == 1048576 && rows == 2 is possible) because of
 
-Thanks for reporting and root causing this case. The behavior looks like
-kind of expected since currently CAP_PERFMON takes over the related part
-of CAP_SYS_ADMIN credentials only. Actually Perf security docs [1] say
-that access control is also subject to CAP_SYS_PTRACE credentials.
+  vc->vc_size_row = vc->vc_cols << 1;
+  vc->vc_screenbuf_size = vc->vc_rows * vc->vc_size_row;
 
-CAP_PERFMON could be used to extend and substitute ptrace_may_access()
-check in perf_events subsystem to simplify user experience at least in
-this specific case.
+in visual_init() and kzalloc(vc->vc_screenbuf_size) in vc_allocate().
 
-Alexei
+But since vc_do_resize() requires cols <= 32767 and rows <= 32767,
+applying 1 <= cols <= 32767 and 1 <= rows <= 32767 requirements to
+vc_allocate() will be practically fine. (cols != 0 && rows != 0 is
+implicitly checked via screenbuf_size != 0.)
 
-[1] https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html
+This patch does not touch con_init(), for returning -EINVAL there
+does not help when we are not returning -ENOMEM.
 
-> 
-> Without setting CAP_PERFMON:
-> 
->   $ getcap ./perf
->   $ ./perf stat -a ls
->     Error:
->     Access to performance monitoring and observability operations is limited.
->   $ ./perf stat ls
->     Performance counter stats for 'ls':
->                     2.06 msec task-clock:u              #    0.418 CPUs utilized
->                     0      context-switches:u        #    0.000 K/sec
->                     0      cpu-migrations:u          #    0.000 K/sec
-> 
-> With CAP_PERFMON:
-> 
->   $ getcap ./perf
->     ./perf = cap_perfmon+ep
->   $ ./perf stat -a ls
->     Performance counter stats for 'system wide':
->                   142.42 msec cpu-clock                 #   25.062 CPUs utilized
->                   182      context-switches          #    0.001 M/sec
->                    48      cpu-migrations            #    0.337 K/sec
->   $ ./perf stat ls
->     Error:
->     Access to performance monitoring and observability operations is limited.
-> 
-> Am I missing something silly?
-> 
-> Analysis:
-> ---------
-> A bit more analysis lead me to below kernel code fs/exec.c:
-> 
->   begin_new_exec()
->   {
->         ...
->         if (bprm->interp_flags & BINPRM_FLAGS_ENFORCE_NONDUMP ||
->             !(uid_eq(current_euid(), current_uid()) &&
->               gid_eq(current_egid(), current_gid())))
->                 set_dumpable(current->mm, suid_dumpable);
->         else
->                 set_dumpable(current->mm, SUID_DUMP_USER);
-> 
->         ...
->         commit_creds(bprm->cred);
->   }
-> 
-> When I execute './perf stat ls', it's going into else condition and thus sets
-> dumpable flag as SUID_DUMP_USER. Then in commit_creds():
-> 
->   int commit_creds(struct cred *new)
->   {
->         ...
->         /* dumpability changes */
->         if (...
->             !cred_cap_issubset(old, new)) {
->                 if (task->mm)
->                         set_dumpable(task->mm, suid_dumpable);
->   }
-> 
-> !cred_cap_issubset(old, new) fails for perf without any capability and thus
-> it doesn't execute set_dumpable(). Whereas that condition passes for perf
-> with CAP_PERFMON and thus it overwrites old value (SUID_DUMP_USER) with
-> suid_dumpable in mm_flags. On an Ubuntu, suid_dumpable default value is
-> SUID_DUMP_ROOT. On Fedora, it's SUID_DUMP_DISABLE. (/proc/sys/fs/suid_dumpable).
-> 
-> Now while opening an event:
-> 
->   perf_event_open()
->     ptrace_may_access()
->       __ptrace_may_access() {
->                 ...
->                 if (mm &&
->                     ((get_dumpable(mm) != SUID_DUMP_USER) &&
->                      !ptrace_has_cap(cred, mm->user_ns, mode)))
->                     return -EPERM;
->       }
-> 
-> This if condition passes for perf with CAP_PERFMON and thus it returns -EPERM.
-> But it fails for perf without CAP_PERFMON and thus it goes ahead and returns
-> success. So opening an event fails when perf has CAP_PREFMON and tries to open
-> process specific event as normal user.
-> 
-> Workarounds:
-> ------------
-> Based on above analysis, I found couple of workarounds (examples are on
-> Ubuntu 18.04.4 powerpc):
-> 
-> Workaround1:
-> Setting SUID_DUMP_USER as default (in /proc/sys/fs/suid_dumpable) solves the
-> issue.
-> 
->   # echo 1 > /proc/sys/fs/suid_dumpable
->   $ getcap ./perf
->     ./perf = cap_perfmon+ep
->   $ ./perf stat ls
->     Performance counter stats for 'ls':
->                     1.47 msec task-clock                #    0.806 CPUs utilized
->                     0      context-switches          #    0.000 K/sec
->                     0      cpu-migrations            #    0.000 K/sec
-> 
-> Workaround2:
-> Using CAP_SYS_PTRACE along with CAP_PERFMON solves the issue.
-> 
->   $ cat /proc/sys/fs/suid_dumpable
->     2
->   # setcap "cap_perfmon,cap_sys_ptrace=ep" ./perf
->   $ ./perf stat ls
->     Performance counter stats for 'ls':
->                     1.41 msec task-clock                #    0.826 CPUs utilized
->                     0      context-switches          #    0.000 K/sec
->                     0      cpu-migrations            #    0.000 K/sec
-> 
-> Workaround3:
-> Adding CAP_PERFMON to parent of perf (/bin/bash) also solves the issue.
-> 
->   $ cat /proc/sys/fs/suid_dumpable
->     2
->   # setcap "cap_perfmon=ep" /bin/bash
->   # setcap "cap_perfmon=ep" ./perf
->   $ bash
->   $ ./perf stat ls
->     Performance counter stats for 'ls':
->                     1.47 msec task-clock                #    0.806 CPUs utilized
->                     0      context-switches          #    0.000 K/sec
->                     0      cpu-migrations            #    0.000 K/sec
-> 
-> - Ravi
+[1] https://syzkaller.appspot.com/bug?extid=017265e8553724e514e8
+
+Reported-by: syzbot <syzbot+017265e8553724e514e8@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ drivers/tty/vt/vt.c | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 48a8199f7845..42d8c67a481f 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1092,10 +1092,19 @@ static const struct tty_port_operations vc_port_ops = {
+ 	.destruct = vc_port_destruct,
+ };
+ 
++/*
++ * Change # of rows and columns (0 means unchanged/the size of fg_console)
++ * [this is to be used together with some user program
++ * like resize that changes the hardware videomode]
++ */
++#define VC_MAXCOL (32767)
++#define VC_MAXROW (32767)
++
+ int vc_allocate(unsigned int currcons)	/* return 0 on success */
+ {
+ 	struct vt_notifier_param param;
+ 	struct vc_data *vc;
++	int err;
+ 
+ 	WARN_CONSOLE_UNLOCKED();
+ 
+@@ -1125,6 +1134,11 @@ int vc_allocate(unsigned int currcons)	/* return 0 on success */
+ 	if (!*vc->vc_uni_pagedir_loc)
+ 		con_set_default_unimap(vc);
+ 
++	err = -EINVAL;
++	if (vc->vc_cols > VC_MAXCOL || vc->vc_rows > VC_MAXROW ||
++	    vc->vc_screenbuf_size > KMALLOC_MAX_SIZE || !vc->vc_screenbuf_size)
++		goto err_free;
++	err = -ENOMEM;
+ 	vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_KERNEL);
+ 	if (!vc->vc_screenbuf)
+ 		goto err_free;
+@@ -1143,7 +1157,7 @@ int vc_allocate(unsigned int currcons)	/* return 0 on success */
+ 	visual_deinit(vc);
+ 	kfree(vc);
+ 	vc_cons[currcons].d = NULL;
+-	return -ENOMEM;
++	return err;
+ }
+ 
+ static inline int resize_screen(struct vc_data *vc, int width, int height,
+@@ -1158,14 +1172,6 @@ static inline int resize_screen(struct vc_data *vc, int width, int height,
+ 	return err;
+ }
+ 
+-/*
+- * Change # of rows and columns (0 means unchanged/the size of fg_console)
+- * [this is to be used together with some user program
+- * like resize that changes the hardware videomode]
+- */
+-#define VC_RESIZE_MAXCOL (32767)
+-#define VC_RESIZE_MAXROW (32767)
+-
+ /**
+  *	vc_do_resize	-	resizing method for the tty
+  *	@tty: tty being resized
+@@ -1201,7 +1207,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+ 	user = vc->vc_resize_user;
+ 	vc->vc_resize_user = 0;
+ 
+-	if (cols > VC_RESIZE_MAXCOL || lines > VC_RESIZE_MAXROW)
++	if (cols > VC_MAXCOL || lines > VC_MAXROW)
+ 		return -EINVAL;
+ 
+ 	new_cols = (cols ? cols : vc->vc_cols);
+@@ -1212,7 +1218,7 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
+ 	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
+ 		return 0;
+ 
+-	if (new_screen_size > KMALLOC_MAX_SIZE)
++	if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
+ 		return -EINVAL;
+ 	newscreen = kzalloc(new_screen_size, GFP_USER);
+ 	if (!newscreen)
+@@ -3393,6 +3399,7 @@ static int __init con_init(void)
+ 		INIT_WORK(&vc_cons[currcons].SAK_work, vc_SAK);
+ 		tty_port_init(&vc->port);
+ 		visual_init(vc, currcons, 1);
++		/* Assuming vc->vc_{cols,rows,screenbuf_size} are sane here. */
+ 		vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_NOWAIT);
+ 		vc_init(vc, vc->vc_rows, vc->vc_cols,
+ 			currcons || !vc->vc_sw->con_save_screen);
+-- 
+2.18.4
+
