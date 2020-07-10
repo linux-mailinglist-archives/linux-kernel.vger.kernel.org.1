@@ -2,157 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DF421B644
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A59821B64F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 15:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728022AbgGJNYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 09:24:55 -0400
-Received: from mail-vi1eur05on2110.outbound.protection.outlook.com ([40.107.21.110]:11584
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726774AbgGJNYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 09:24:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eOGl0ydnyXGQScg2pqemv3sU+Vg/eaLmIW4zLws70fIJ92qcMod0dXHlWn6ymHZMCCFy89XnqMdXTmRZAauGmsWWJtohZilxCIZqC90uAjIsCyZfcABcEO/S4pXapd81GZ43IEaAsJMyvHQagy6mafBGYi4UMnynmlZHUCc7SgYAiFTwYZxBxxHrbfMoLXOptjcTDQI+pJbzoaRwKjrYgu/cS8zmxdpndYXojxra4zlaH7juiYgVuoh9iv4QPm+nNUfGXtqtBnjJleSvaG6ZUWhA3FpEPdw7FzB402T/a4ddLFcg5i16ktcsihEFCCPu7jksHk/rqW7prE3TdiensQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lUtaa33meW6NoQa3GEY8lq/xaXbnHOYW82NKhOq5xLs=;
- b=WUmNW9efErzSqZ4X2ImrZnnxxRkiNCv9OnqGOUNUYVL9JLPInIVeHvkZ7HUZzxlac/y3BBTvYL+pSTEmIRERh+5Zn5QkAg963rqTW84gnbdLnnQ81tq/u8xZ0wQEdV6gV4ekeFlfddHawgHh8+dXBYFFEl+hhztTTjy66ADiP3/Mqhb/viXgQW5FbiBkExEhCVvGKOWizZCzTrpgkSlER0T6NDed3Sn5832/i67KGsEvqL577Rpt5VvbAwDW9b4iqGsYpgVlDco5sUEXRz2PK9K2Ftbrmuug+izJii9tCyAhFWGsbJwZjfPAfSVXwa8DUkphY3NIF8EaEc/C36EEFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
- dkim=pass header.d=toradex.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lUtaa33meW6NoQa3GEY8lq/xaXbnHOYW82NKhOq5xLs=;
- b=oKPfuyiA/kKh83wHV17/vkOAICKAKduV2MEhUhAozrskRV0fandpXQciBVJkLMPSF/i+17P+1gxGfibp4hvVHwz4eH5DcBXuUqHsMV5rghgNkXlAw2LlzDOMTCN7pKacYB0BorHkA52HkSDYUzkh0WPqfLJwQ6zlyBGbra1F/PI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=toradex.com;
-Received: from AM6PR05MB6120.eurprd05.prod.outlook.com (2603:10a6:20b:a8::25)
- by AM6PR05MB4821.eurprd05.prod.outlook.com (2603:10a6:20b:2::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.28; Fri, 10 Jul
- 2020 13:24:44 +0000
-Received: from AM6PR05MB6120.eurprd05.prod.outlook.com
- ([fe80::1d81:6a9b:8c26:3b7d]) by AM6PR05MB6120.eurprd05.prod.outlook.com
- ([fe80::1d81:6a9b:8c26:3b7d%4]) with mapi id 15.20.3174.023; Fri, 10 Jul 2020
- 13:24:44 +0000
-From:   Philippe Schenker <philippe.schenker@toradex.com>
-To:     devicetree@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>
-Cc:     Philippe Schenker <philippe.schenker@toradex.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] ARM: dts: colibri-imx7: add usb dual-role switch capability
-Date:   Fri, 10 Jul 2020 15:24:23 +0200
-Message-Id: <20200710132423.497230-3-philippe.schenker@toradex.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200710132423.497230-1-philippe.schenker@toradex.com>
-References: <20200710132423.497230-1-philippe.schenker@toradex.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ZR0P278CA0015.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:16::25) To AM6PR05MB6120.eurprd05.prod.outlook.com
- (2603:10a6:20b:a8::25)
+        id S1727871AbgGJN1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 09:27:14 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21381 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726774AbgGJN1N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 09:27:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594387632;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8A/1vpEmoSOyHkkH6nhIq0DHvbGeWI2fZCwGb0gKD0U=;
+        b=ZTvIS/3VgfJzVLdZ1stwoHBYKFNEg5QV99BbNE1BSIougrfBUdecwRkF56iqjdNVtwObVI
+        +rlBsqpjHeCrA40FCxLACT/dmZBWEMD7T7NqCUreOl16K2eZ7PjKU9HrW4F5Wl5W3bHjSS
+        b2kCnU8gO2MYr5qOqBNiZYfejnP/sY4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-354-iB5ik_0TPn-3lfedhmvmhg-1; Fri, 10 Jul 2020 09:27:10 -0400
+X-MC-Unique: iB5ik_0TPn-3lfedhmvmhg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 447AB1092;
+        Fri, 10 Jul 2020 13:27:08 +0000 (UTC)
+Received: from carbon (unknown [10.40.208.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ACAD478A4B;
+        Fri, 10 Jul 2020 13:27:00 +0000 (UTC)
+Date:   Fri, 10 Jul 2020 15:26:58 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     iommu@lists.linux-foundation.org,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        linuxppc-dev@lists.ozlabs.org, Lu Baolu <baolu.lu@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-kernel@vger.kernel.org, brouer@redhat.com
+Subject: Re: generic DMA bypass flag v4
+Message-ID: <20200710152658.31a9391a@carbon>
+In-Reply-To: <20200708152449.316476-1-hch@lst.de>
+References: <20200708152449.316476-1-hch@lst.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from philippe-pc.toradex.int (31.10.206.124) by ZR0P278CA0015.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:16::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20 via Frontend Transport; Fri, 10 Jul 2020 13:24:44 +0000
-X-Mailer: git-send-email 2.27.0
-X-Originating-IP: [31.10.206.124]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 07e31297-02b3-454a-0d70-08d824d49c45
-X-MS-TrafficTypeDiagnostic: AM6PR05MB4821:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR05MB48214CF040321EF1AA503646F4650@AM6PR05MB4821.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-Forefront-PRVS: 046060344D
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: smGNKQvJt45kB2SmQr1L6LjvoqxjYpasQHFFHias5RYsWyz/SgSLqHOv97PmwGw82f4fXaFwMgqjYLNlawTwK2xoIFZR7I201GzqyD29NlgUpY8oC+RFBnTYspHLFv3jMmvZKJoGzBEO+VPanDjE1QVQgvhwhKN6UOa/RpLawEhgSlUx7Yr9Rz7E1dsXTAc++JEsojlLB/DPbBNWLwmD3EU70QOFS3XGbnChMFQIMQJT71IxLQ36/rjq87DbL7c8Yj4MfrOped8R4WEkfyxZSTpVeIlvWb0TWacLHSquQ1wMjfriRWGOOdAkScWHnR6BA7yJvgBYW/FTczMu/56RwMwYIBNLxGrFbOU8DKhV2eUL6eVYp89ncqbwsuzfe/c/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6120.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(396003)(39850400004)(346002)(376002)(1076003)(66476007)(66556008)(83380400001)(6506007)(26005)(6512007)(8936002)(54906003)(44832011)(4326008)(2906002)(316002)(6486002)(66946007)(2616005)(956004)(86362001)(5660300002)(6916009)(478600001)(8676002)(186003)(36756003)(52116002)(6666004)(16526019)(16060500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: NQVldgGFMkhtaHesRA47ZiRMK1v+JAve8GRGHsJPV88ujjeC8PxPFS5NUajrn2K2c5LLCgn45wX9/yCdtxgX0w069iF1AzkhVA+3owEDdYaXgkmdauAl06/F02XF71chckjg40VChuUulhEC7OMtNsUjAPJcFB7TG0CGeYZRGmTHeqLjSFw6rS1bbEuu9HBTMot9hlzf93VtWPLC+BtZL/Z03MHX2kx9g2XExiLS9+X5okqV/JDpng4F7BbQVdYnW+N4xXYvp7qqUrjYOaLHtk31L6V20urngsevGEEE4d3tjvvkxnLLO078DsRz+cHIKUDNOqgjKc2U5fnwEs2WZAyHiTc2vUvxk78Q51qIikSUcRXpr5B7hz3fQtLjIqYOKuzLe1DgrNJboIAnUvpzUZabSmyW2QmRWxNoRKPvWhEc95CXu/Dek8cr8+Y7HIg/cvmsJvbUmJ14fqzA8WEtjc4bys4NkcwpWQotzt05cpk=
-X-OriginatorOrg: toradex.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07e31297-02b3-454a-0d70-08d824d49c45
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB6120.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jul 2020 13:24:44.7732
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CYhO3VL+uzksSz3XNQ0RTX4cungh/QLa1VAqgJiWdt5j/hb9rAp1QB6ovfT/AJvTYmbys+r6/ln1Z+GmuwvlF7t31LfkenKH+icH8nLrh3I=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB4821
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the runtime-pm wakeup bug was fixed in
-drivers/usb/chipidea/core.c usb dual-role host/device switching is
-working. So make use of it.
+On Wed,  8 Jul 2020 17:24:44 +0200
+Christoph Hellwig <hch@lst.de> wrote:
 
-Signed-off-by: Philippe Schenker <philippe.schenker@toradex.com>
+> Note that as-is this breaks the XSK buffer pool, which unfortunately
+> poked directly into DMA internals.  A fix for that is already queued
+> up in the netdev tree.
+>=20
+> Jesper and XDP gang: this should not regress any performance as
+> the dma-direct calls are now inlined into the out of line DMA mapping
+> calls.  But if you can verify the performance numbers that would be
+> greatly appreciated.
 
----
+=46rom a superficial review of the patches, they look okay to me. I don't
+have time to run a performance benchmark (before I go on vacation).
 
- arch/arm/boot/dts/imx7-colibri-eval-v3.dtsi | 9 +++++++++
- arch/arm/boot/dts/imx7-colibri.dtsi         | 4 ++--
- 2 files changed, 11 insertions(+), 2 deletions(-)
+I hoped Bj=C3=B6rn could test/benchmark this(?), given (as mentioned) this
+also affect XSK / AF_XDP performance.
 
-diff --git a/arch/arm/boot/dts/imx7-colibri-eval-v3.dtsi b/arch/arm/boot/dts/imx7-colibri-eval-v3.dtsi
-index 97601375f264..db56a532a34a 100644
---- a/arch/arm/boot/dts/imx7-colibri-eval-v3.dtsi
-+++ b/arch/arm/boot/dts/imx7-colibri-eval-v3.dtsi
-@@ -20,6 +20,14 @@ clk16m: clk16m {
- 		clock-frequency = <16000000>;
- 	};
- 
-+	extcon_usbc_det: usbc_det {
-+		compatible = "linux,extcon-usb-gpio";
-+		id-gpio = <&gpio7 14 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_usbc_det>;
-+	};
-+
-+
- 	gpio-keys {
- 		compatible = "gpio-keys";
- 		pinctrl-names = "default";
-@@ -174,6 +182,7 @@ &uart3 {
- };
- 
- &usbotg1 {
-+	extcon = <0>, <&extcon_usbc_det>;
- 	status = "okay";
- };
- 
-diff --git a/arch/arm/boot/dts/imx7-colibri.dtsi b/arch/arm/boot/dts/imx7-colibri.dtsi
-index e18e89dec879..caea90d2421f 100644
---- a/arch/arm/boot/dts/imx7-colibri.dtsi
-+++ b/arch/arm/boot/dts/imx7-colibri.dtsi
-@@ -457,7 +457,7 @@ &uart3 {
- };
- 
- &usbotg1 {
--	dr_mode = "host";
-+	dr_mode = "otg";
- };
- 
- &usdhc1 {
-@@ -486,7 +486,7 @@ &usdhc3 {
- &iomuxc {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_gpio1 &pinctrl_gpio2 &pinctrl_gpio3 &pinctrl_gpio4
--		     &pinctrl_gpio7 &pinctrl_usbc_det>;
-+		     &pinctrl_gpio7>;
- 
- 	pinctrl_gpio1: gpio1-grp {
- 		fsl,pins = <
--- 
-2.27.0
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
