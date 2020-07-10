@@ -2,176 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C5D21BF66
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31C721BF6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 23:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgGJVtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 17:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbgGJVtY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 17:49:24 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C324C08C5DC;
-        Fri, 10 Jul 2020 14:49:24 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: nicolas)
-        with ESMTPSA id BAA9D2A6AC8
-Message-ID: <9a897ef99048077233685b121b03bd750e4d4a83.camel@collabora.com>
-Subject: Re: [RFC 07/12] media: uapi: h264: Add DPB entry field reference
- flags
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Jonas Karlman <jonas@kwiboo.se>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-rockchip@lists.infradead.org" 
-        <linux-rockchip@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Fri, 10 Jul 2020 17:49:07 -0400
-In-Reply-To: <05b6cff6ba230c0ab6a562e17926d8503e2dfadd.camel@collabora.com>
-References: <HE1PR06MB40117D0EE96E6FA638A04B78ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
-         <20190901124531.23645-1-jonas@kwiboo.se>
-         <HE1PR06MB4011559BF2447047C66285D2ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
-         <233509924f72d69824920d9312373eced68674c0.camel@collabora.com>
-         <20200710101333.05077f18@collabora.com>
-         <6232d8475e169ee53b5864959af21d14bf0fc620.camel@collabora.com>
-         <20200710140502.627b2b54@collabora.com>
-         <05b6cff6ba230c0ab6a562e17926d8503e2dfadd.camel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        id S1726308AbgGJV4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 17:56:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726251AbgGJV4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 17:56:06 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 646B920725;
+        Fri, 10 Jul 2020 21:56:04 +0000 (UTC)
+Date:   Fri, 10 Jul 2020 17:56:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mhiramat@kernel.org,
+        bristot@redhat.com, jbaron@akamai.com,
+        torvalds@linux-foundation.org, tglx@linutronix.de,
+        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
+        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
+        pbonzini@redhat.com, mathieu.desnoyers@efficios.com,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH v6 06/17] static_call: Add basic static call
+ infrastructure
+Message-ID: <20200710175602.1a84c355@oasis.local.home>
+In-Reply-To: <20200710134336.500117453@infradead.org>
+References: <20200710133831.943894387@infradead.org>
+        <20200710134336.500117453@infradead.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 10 juillet 2020 à 09:25 -0300, Ezequiel Garcia a écrit :
-> +Nicolas
-> 
-> On Fri, 2020-07-10 at 14:05 +0200, Boris Brezillon wrote:
-> > On Fri, 10 Jul 2020 08:50:28 -0300
-> > Ezequiel Garcia <ezequiel@collabora.com> wrote:
-> > 
-> > > On Fri, 2020-07-10 at 10:13 +0200, Boris Brezillon wrote:
-> > > > On Fri, 10 Jul 2020 01:21:07 -0300
-> > > > Ezequiel Garcia <ezequiel@collabora.com> wrote:
-> > > >   
-> > > > > Hello Jonas,
-> > > > > 
-> > > > > In the context of the uAPI cleanup,
-> > > > > I'm revisiting this patch.
-> > > > > 
-> > > > > On Sun, 2019-09-01 at 12:45 +0000, Jonas Karlman wrote:  
-> > > > > > Add DPB entry flags to help indicate when a reference frame is a
-> > > > > > field picture
-> > > > > > and how the DPB entry is referenced, top or bottom field or full
-> > > > > > frame.
-> > > > > > 
-> > > > > > Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-> > > > > > ---
-> > > > > >  Documentation/media/uapi/v4l/ext-ctrls-codec.rst | 12 ++++++++++++
-> > > > > >  include/media/h264-ctrls.h                       |  4 ++++
-> > > > > >  2 files changed, 16 insertions(+)
-> > > > > > 
-> > > > > > diff --git a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
-> > > > > > b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
-> > > > > > index bc5dd8e76567..eb6c32668ad7 100644
-> > > > > > --- a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
-> > > > > > +++ b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
-> > > > > > @@ -2022,6 +2022,18 @@ enum
-> > > > > > v4l2_mpeg_video_h264_hierarchical_coding_type -
-> > > > > >      * - ``V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM``
-> > > > > >        - 0x00000004
-> > > > > >        - The DPB entry is a long term reference frame
-> > > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE``
-> > > > > > +      - 0x00000008
-> > > > > > +      - The DPB entry is a field picture
-> > > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_TOP``
-> > > > > > +      - 0x00000010
-> > > > > > +      - The DPB entry is a top field reference
-> > > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM``
-> > > > > > +      - 0x00000020
-> > > > > > +      - The DPB entry is a bottom field reference
-> > > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME``
-> > > > > > +      - 0x00000030
-> > > > > > +      - The DPB entry is a reference frame
-> > > > > >  
-> > > > > >  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE (enum)``
-> > > > > >      Specifies the decoding mode to use. Currently exposes slice-
-> > > > > > based and
-> > > > > > diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
-> > > > > > index e877bf1d537c..76020ebd1e6c 100644
-> > > > > > --- a/include/media/h264-ctrls.h
-> > > > > > +++ b/include/media/h264-ctrls.h
-> > > > > > @@ -185,6 +185,10 @@ struct v4l2_ctrl_h264_slice_params {
-> > > > > >  #define V4L2_H264_DPB_ENTRY_FLAG_VALID		0x01
-> > > > > >  #define V4L2_H264_DPB_ENTRY_FLAG_ACTIVE		0x02
-> > > > > >  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
-> > > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE	0x08
-> > > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_REF_TOP	0x10
-> > > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM	0x20
-> > > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME	0x30
-> > > > > >      
-> > > > > 
-> > > > > I've been going thru the H264 spec and I'm unsure,
-> > > > > are all these flags semantically needed?
-> > > > > 
-> > > > > For instance, if one of REF_BOTTOM or REF_TOP (or both)
-> > > > > are set, doesn't that indicate it's a field picture?
-> > > > > 
-> > > > > Or conversely, if neither REF_BOTTOM or REF_TOP are set,
-> > > > > then it's a frame picture?  
-> > > > 
-> > > > I think that's what I was trying to do here [1]
-> > > > 
-> > > > [1]https://patchwork.kernel.org/patch/11392095/  
-> > > 
-> > > Right. Aren't we missing a DPB_ENTRY_FLAG_TOP_FIELD?
-> > > 
-> > > If I understand correctly, the DPB can contain:
-> > > 
-> > > * frames (FLAG_FIELD not set)
-> > > * a field pair, with a single field (FLAG_FIELD and either TOP or BOTTOM).
-> > > * a field pair, with boths fields (FLAG_FIELD and both TOP or BOTTOM).
-> > 
-> > Well, my understand is that, if the buffer contains both a TOP and
-> > BOTTOM field, it actually becomes a full frame, so you actually have
-> > those cases:
-> > 
-> > * FLAG_FIELD not set: this a frame (note that a TOP/BOTTOM field
-> >   decoded buffer can become of frame if it's complemented with the
-> >   missing field later during the decoding)
-> > * FLAG_FIELD set + BOTTOM_FIELD not set: this is a TOP field
-> > * FLAG_FIELD set + BOTTOM_FIELD set: this is a BOTTOM field
-> > * FLAG_FIELD not set + BOTTOM_FIELD set: invalid combination
+On Fri, 10 Jul 2020 15:38:37 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Let's admit, while this work, it's odd. Can we just move to that instewad ?
+> From: Josh Poimboeuf <jpoimboe@redhat.com>
+> 
+> Static calls are a replacement for global function pointers.  They use
+> code patching to allow direct calls to be used instead of indirect
+> calls.  They give the flexibility of function pointers, but with
+> improved performance.  This is especially important for cases where
+> retpolines would otherwise be used, as retpolines can significantly
+> impact performance.
+> 
+> The concept and code are an extension of previous work done by Ard
+> Biesheuvel and Steven Rostedt:
+> 
+>   https://lkml.kernel.org/r/20181005081333.15018-1-ard.biesheuvel@linaro.org
+>   https://lkml.kernel.org/r/20181006015110.653946300@goodmis.org
+> 
+> There are two implementations, depending on arch support:
+> 
+>  1) out-of-line: patched trampolines (CONFIG_HAVE_STATIC_CALL)
+>  2) basic function pointers
+> 
+> For more details, see the comments in include/linux/static_call.h.
+> 
+> [peterz: simplified interface]
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-  FLAG_TOP_FIELD
-  FLAG_BOTTOM_FIELD
-  FLAG_FRAME = (FLAG_TOP_FIELD | FLAG_BOTTOM_FIELD)
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-So it can be used as a flag, but also is a proper enum and there is no longer an
-invalid combination.
-  
-> > 
-> > but I might be wrong.
-> 
-> Yes, perhaps that's correct. I was trying to think strictly
-> in terms of the H264 semantics, to define a clean interface.
-> 
-> From the mpp code, looks like the above is enough for rkvdec
-> (although I haven't done any tests).
-> 
-> Ezequiel
-> 
-> 
-> 
-
+-- Steve
