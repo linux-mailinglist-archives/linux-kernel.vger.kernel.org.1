@@ -2,161 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C492421B779
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6B521B786
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 16:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728065AbgGJOAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 10:00:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:48346 "EHLO foss.arm.com"
+        id S1728044AbgGJOCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 10:02:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:10776 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726840AbgGJOAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 10:00:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF53F1FB;
-        Fri, 10 Jul 2020 07:00:42 -0700 (PDT)
-Received: from [10.37.12.58] (unknown [10.37.12.58])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9E75D3F819;
-        Fri, 10 Jul 2020 07:00:39 -0700 (PDT)
-Subject: Re: [PATCH 1/2] memory: samsung: exynos5422-dmc: Adjust polling
- interval and uptreshold
-To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, willy.mh.wolff.ml@gmail.com,
-        k.konieczny@samsung.com, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        s.nawrocki@samsung.com, kgene@kernel.org
-References: <20200708153420.29484-1-lukasz.luba@arm.com>
- <CGME20200708153448epcas1p438fae2327ac69fcc1a78d9c73cfda501@epcas1p4.samsung.com>
- <20200708153420.29484-2-lukasz.luba@arm.com>
- <fa3f651a-3c2b-188b-e2dc-4fd05ce4a1b7@samsung.com>
- <a676fc18-6f1f-8502-e8d5-5ad1ccf0eec6@arm.com> <20200710124503.GB22897@pi3>
- <0bfb4332-9a2e-9ff9-1a86-d9875a8f34bb@arm.com>
- <ef88644a-a75d-82c0-8b60-eb2810c68f58@samsung.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <b0ecbdd9-f445-b2f7-755a-cbc10cb1e56c@arm.com>
-Date:   Fri, 10 Jul 2020 15:00:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <ef88644a-a75d-82c0-8b60-eb2810c68f58@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726832AbgGJOCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 10:02:04 -0400
+IronPort-SDR: McT6vivCzeV4dLSodRiiQbgwKcs+k/XWDpQAPXSuapnOTdVtFyK2WUWHpOy2g0fi2oUIUm0lbm
+ nN4VwRClbfAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9677"; a="146267614"
+X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
+   d="scan'208";a="146267614"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 07:01:53 -0700
+IronPort-SDR: brHzR9HIyMBI1+gJQrxq5ZsKl13vJiFgkj6prqj+KXafPbY59Tz4sE8o1IEjKv8wLlPolRHmUb
+ eduseNop2XBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,336,1589266800"; 
+   d="scan'208";a="458287037"
+Received: from shbuild999.sh.intel.com ([10.239.146.107])
+  by orsmga005.jf.intel.com with ESMTP; 10 Jul 2020 07:01:49 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>, Qian Cai <cai@lca.pw>,
+        Dennis Zhou <dennis@kernel.org>, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Feng Tang <feng.tang@intel.com>
+Subject: [PATCH v6 0/4] make vm_committed_as_batch aware of vm overcommit policy  
+Date:   Fri, 10 Jul 2020 22:01:44 +0800
+Message-Id: <1594389708-60781-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When checking a performance change for will-it-scale scalability
+mmap test [1], we found very high lock contention for spinlock of
+percpu counter 'vm_committed_as':
+
+    94.14%     0.35%  [kernel.kallsyms]         [k] _raw_spin_lock_irqsave
+    48.21% _raw_spin_lock_irqsave;percpu_counter_add_batch;__vm_enough_memory;mmap_region;do_mmap;
+    45.91% _raw_spin_lock_irqsave;percpu_counter_add_batch;__do_munmap;
+
+Actually this heavy lock contention is not always necessary. The
+'vm_committed_as' needs to be very precise when the strict
+OVERCOMMIT_NEVER policy is set, which requires a rather small batch
+number for the percpu counter.
+
+So keep 'batch' number unchanged for strict OVERCOMMIT_NEVER policy,
+and enlarge it for not-so-strict  OVERCOMMIT_ALWAYS and OVERCOMMIT_GUESS
+policies.
+
+Benchmark with the same testcase in [1] shows 53% improvement on a
+8C/16T desktop, and 2097%(20X) on a 4S/72C/144T server. And for that
+case, whether it shows improvements depends on if the test mmap size
+is bigger than the batch number computed.
+
+We tested 10+ platforms in 0day (server, desktop and laptop). If we
+lift it to 64X, 80%+ platforms show improvements, and for 16X lift,
+1/3 of the platforms will show improvements.
+
+And generally it should help the mmap/unmap usage,as Michal Hocko
+mentioned:
+"
+I believe that there are non-synthetic worklaods which would benefit
+from a larger batch. E.g. large in memory databases which do large
+mmaps during startups from multiple threads.
+"
+
+Note: There are some style complain from checkpatch for patch 4,
+as sysctl handler declaration follows the similar format of sibling
+functions
+
+[1] https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
+
+patch1: a cleanup for /proc/meminfo
+patch2: a preparation patch which also improve the accuracy of
+        vm_memory_committed
+patch3: add a percpu_counter sync func 
+patch4: main change
+
+Please help to review, thanks!
+
+- Feng
+
+----------------------------------------------------------------
+Changelog:
+
+  v6: 
+      * fix the ltp vm-overcommit test case fail reported
+        by 0day test robot, by syncing the percpu-counter
+	when changing policy to OVERCOMMIT_NEVER
+
+  v5:
+      * rebase after 5.8-rc1
+      * remove the 3/4 patch in v4 which is merged in v5.7
+      * add code comments for vm_memory_committed()
+
+  v4:
+    * Remove the VM_WARN_ONCE check for vm_committed_as underflow,
+      thanks to Qian Cai for finding and testing the warning
+
+  v3:
+    * refine commit log and cleanup code, according to comments
+      from Michal Hocko and Matthew Wilcox
+    * change the lift from 16X and 64X after test 
+  
+  v2:
+     * add the sysctl handler to cover runtime overcommit policy
+       change, as suggested by Andres Morton 
+     * address the accuracy concern of vm_memory_committed()
+       from Andi Kleen 
 
 
-On 7/10/20 2:49 PM, Bartlomiej Zolnierkiewicz wrote:
-> 
-> On 7/10/20 2:56 PM, Lukasz Luba wrote:
->>
->>
->> On 7/10/20 1:45 PM, Krzysztof Kozlowski wrote:
->>> On Fri, Jul 10, 2020 at 09:34:45AM +0100, Lukasz Luba wrote:
->>>> Hi Chanwoo,
->>>>
->>>> On 7/9/20 5:08 AM, Chanwoo Choi wrote:
->>>>> Hi Lukasz,
->>>>>
->>>>> On 7/9/20 12:34 AM, Lukasz Luba wrote:
->>>>>> In order to react faster and make better decisions under some workloads,
->>>>>> benchmarking the memory subsystem behavior, adjust the polling interval
->>>>>> and upthreshold value used by the simple_ondemand governor.
->>>>>>
->>>>>> Reported-by: Willy Wolff <willy.mh.wolff.ml@gmail.com>
->>>>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>>>>> ---
->>>>>>     drivers/memory/samsung/exynos5422-dmc.c | 4 ++--
->>>>>>     1 file changed, 2 insertions(+), 2 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/memory/samsung/exynos5422-dmc.c b/drivers/memory/samsung/exynos5422-dmc.c
->>>>>> index 93e9c2429c0d..e03ee35f0ab5 100644
->>>>>> --- a/drivers/memory/samsung/exynos5422-dmc.c
->>>>>> +++ b/drivers/memory/samsung/exynos5422-dmc.c
->>>>>> @@ -1466,10 +1466,10 @@ static int exynos5_dmc_probe(struct platform_device *pdev)
->>>>>>              * Setup default thresholds for the devfreq governor.
->>>>>>              * The values are chosen based on experiments.
->>>>>>              */
->>>>>> -        dmc->gov_data.upthreshold = 30;
->>>>>> +        dmc->gov_data.upthreshold = 10;
->>>>>>             dmc->gov_data.downdifferential = 5;
->>>>>> -        exynos5_dmc_df_profile.polling_ms = 500;
->>>>>> +        exynos5_dmc_df_profile.polling_ms = 100;
->>>>>>         }
->>>>>>
->>>>>
->>>>> Reviewed-by: Chanwoo Choi <cw00.choi@samsung.com>
->>>>>
->>>>
->>>> Thank you for the review. Do you think this patch could go through
->>>> your tree together with your patches?
->>>>
->>>> I don't know Krzysztof's opinion about the patch 2/2, but
->>>> I would expect, assuming the patch itself is correct, he would
->>>> like to take it into his next/dt branch.
->>>
->>> In the cover letter you mentioned that this is a follow up for the
->>> Chanwoo's patchset. But are these patches really depending on it? Can
->>> they be picked up independently?
->>
->>
->> They are not heavily dependent on Chanwoo's patches.
->> Yes, they can be picked up independently.
-> 
-> Hmmm, are you sure?
+*** BLURB HERE ***
 
-In a sense: in two phases (first the Chanwoo's changes land into
-devfreq, then when Krzysztof prepares his topic branches for
-arm soc, I assumed Chanwoo's patches are mainline and will be there
-already).
+Feng Tang (4):
+  proc/meminfo: avoid open coded reading of vm_committed_as
+  mm/util.c: make vm_memory_committed() more accurate
+  percpu_counter: add percpu_counter_sync()
+  mm: adjust vm_committed_as_batch according to vm overcommit policy
 
-> 
-> Sure, they will apply fine but without Chanwoo's patches won't they
-> cause the dmc driver to use using polling mode with deferred timer
-> (unintended/bad behavior) instead of IRQs (current behavior) or
-> polling mode with delayed timer (future behavior)?
+ fs/proc/meminfo.c              |  2 +-
+ include/linux/mm.h             |  2 ++
+ include/linux/mman.h           |  4 ++++
+ include/linux/percpu_counter.h |  4 ++++
+ kernel/sysctl.c                |  2 +-
+ lib/percpu_counter.c           | 19 +++++++++++++++++
+ mm/mm_init.c                   | 22 +++++++++++++------
+ mm/util.c                      | 48 +++++++++++++++++++++++++++++++++++++++++-
+ 8 files changed, 94 insertions(+), 9 deletions(-)
 
-I was assuming that it will take longer, when Krzysztof is going to pick
-patch 2/2, definitely after a while (and it could be also the case for
-patch 1/1 if Krzysztof was going to take it).
+-- 
+2.7.4
 
-I think there is no rush and it can go in two phases.
-
-Good point Bartek for clarifying this. I wasn't clear in the messages.
-Thank you for keeping eye on this.
-
-Regards,
-Lukasz
-
-
-> 
-> Best regards,
-> --
-> Bartlomiej Zolnierkiewicz
-> Samsung R&D Institute Poland
-> Samsung Electronics
-> 
->> I just wanted to mention that the patch 1/2 was produced on the
->> code base which had already applied Chanwoo's patch for DMC.
->> If you like to take both 1/2 and 2/2 into your tree, it's good.
->>
->> Thank you for having a look on this.
->>
->> Regards,
->> Lukasz
->>
->>
->>>
->>> The DTS patch must go through arm soc, so I will take it. If it really
->>> depends on driver changes, then it has to wait for next release.
->>>
->>> Best regards,
->>> Krzysztof
->>>
-> 
