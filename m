@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDC121BFDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBE521BFEE
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726831AbgGJWeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 18:34:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45922 "EHLO mail.kernel.org"
+        id S1726996AbgGJWe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 18:34:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726605AbgGJWeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 18:34:31 -0400
+        id S1726769AbgGJWec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 18:34:32 -0400
 Received: from sstabellini-ThinkPad-T480s.hsd1.ca.comcast.net (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E05EB207DF;
-        Fri, 10 Jul 2020 22:34:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D3BB2088E;
+        Fri, 10 Jul 2020 22:34:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1594420471;
-        bh=bb+w4hoTLC8vPpt7yxTmGZYiSiGXzA32wxBnynGozPY=;
+        bh=Vs0xqtsJWIWR1q7n2x/kejMEtvYSj5EpVIj/uSYTM10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dfehD7AQAePQJ56EK6hgbwe6Jwhbv5sPi/IBt/TsLSyG92sE6vPwm14wGuknIP/2H
-         25o7wKQ8GkOj3BfJ8E/5wD43xNqd1FCQrIREXWBizXP8ULoa4DPax2k33qTPmalqFE
-         O1pRR5dDyGC10CJw7PD2/p8IQZbpUzLXhgRqKjB0=
+        b=IEfN+YoOhvU0/hM8GDqS8n1h5AfhunMYm2GQc6siAJRM0SWOS7Hl7yZCXjRCpO/ev
+         3VLAOXEdk+xBD0On1LhX+YN09vwO5Hjl5QpGMH4phflyXdv0socTbjszzkegJEe48O
+         WsYaPP0p6K8SyBbfj59+AuYV6o64CD7Qi3gLt+Jc=
 From:   Stefano Stabellini <sstabellini@kernel.org>
 To:     jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
 Cc:     sstabellini@kernel.org, xen-devel@lists.xenproject.org,
         linux-kernel@vger.kernel.org, hch@infradead.org,
         Stefano Stabellini <stefano.stabellini@xilinx.com>
-Subject: [PATCH v3 04/11] swiotlb-xen: add struct device * parameter to xen_bus_to_phys
-Date:   Fri, 10 Jul 2020 15:34:20 -0700
-Message-Id: <20200710223427.6897-4-sstabellini@kernel.org>
+Subject: [PATCH v3 05/11] swiotlb-xen: add struct device * parameter to xen_dma_sync_for_cpu
+Date:   Fri, 10 Jul 2020 15:34:21 -0700
+Message-Id: <20200710223427.6897-5-sstabellini@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <alpine.DEB.2.21.2007101521290.4124@sstabellini-ThinkPad-T480s>
 References: <alpine.DEB.2.21.2007101521290.4124@sstabellini-ThinkPad-T480s>
@@ -53,58 +53,65 @@ Changes in v3:
 - add whitespace in title
 - improve commit message
 ---
- drivers/xen/swiotlb-xen.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/arm/xen/mm.c         | 5 +++--
+ drivers/xen/swiotlb-xen.c | 4 ++--
+ include/xen/swiotlb-xen.h | 5 +++--
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
+diff --git a/arch/arm/xen/mm.c b/arch/arm/xen/mm.c
+index d40e9e5fc52b..1a00e8003c64 100644
+--- a/arch/arm/xen/mm.c
++++ b/arch/arm/xen/mm.c
+@@ -71,8 +71,9 @@ static void dma_cache_maint(dma_addr_t handle, size_t size, u32 op)
+  * pfn_valid returns true the pages is local and we can use the native
+  * dma-direct functions, otherwise we call the Xen specific version.
+  */
+-void xen_dma_sync_for_cpu(dma_addr_t handle, phys_addr_t paddr, size_t size,
+-		enum dma_data_direction dir)
++void xen_dma_sync_for_cpu(struct device *dev, dma_addr_t handle,
++			  phys_addr_t paddr, size_t size,
++			  enum dma_data_direction dir)
+ {
+ 	if (pfn_valid(PFN_DOWN(handle)))
+ 		arch_sync_dma_for_cpu(paddr, size, dir);
 diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
-index dbe710a59bf2..a8e447137faf 100644
+index a8e447137faf..d04b7a15124f 100644
 --- a/drivers/xen/swiotlb-xen.c
 +++ b/drivers/xen/swiotlb-xen.c
-@@ -67,7 +67,7 @@ static inline dma_addr_t xen_phys_to_bus(struct device *dev, phys_addr_t paddr)
- 	return dma;
- }
- 
--static inline phys_addr_t xen_bus_to_phys(dma_addr_t baddr)
-+static inline phys_addr_t xen_bus_to_phys(struct device *dev, dma_addr_t baddr)
- {
- 	unsigned long xen_pfn = bfn_to_pfn(XEN_PFN_DOWN(baddr));
- 	dma_addr_t dma = (dma_addr_t)xen_pfn << XEN_PAGE_SHIFT;
-@@ -339,7 +339,7 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
- 
- 	/* do not use virt_to_phys because on ARM it doesn't return you the
- 	 * physical address */
--	phys = xen_bus_to_phys(dev_addr);
-+	phys = xen_bus_to_phys(hwdev, dev_addr);
- 
- 	/* Convert the size to actually allocated. */
- 	size = 1UL << (order + XEN_PAGE_SHIFT);
-@@ -423,7 +423,7 @@ static dma_addr_t xen_swiotlb_map_page(struct device *dev, struct page *page,
- static void xen_swiotlb_unmap_page(struct device *hwdev, dma_addr_t dev_addr,
- 		size_t size, enum dma_data_direction dir, unsigned long attrs)
- {
--	phys_addr_t paddr = xen_bus_to_phys(dev_addr);
-+	phys_addr_t paddr = xen_bus_to_phys(hwdev, dev_addr);
- 
+@@ -428,7 +428,7 @@ static void xen_swiotlb_unmap_page(struct device *hwdev, dma_addr_t dev_addr,
  	BUG_ON(dir == DMA_NONE);
  
-@@ -439,7 +439,7 @@ static void
- xen_swiotlb_sync_single_for_cpu(struct device *dev, dma_addr_t dma_addr,
- 		size_t size, enum dma_data_direction dir)
- {
--	phys_addr_t paddr = xen_bus_to_phys(dma_addr);
-+	phys_addr_t paddr = xen_bus_to_phys(dev, dma_addr);
+ 	if (!dev_is_dma_coherent(hwdev) && !(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+-		xen_dma_sync_for_cpu(dev_addr, paddr, size, dir);
++		xen_dma_sync_for_cpu(hwdev, dev_addr, paddr, size, dir);
+ 
+ 	/* NOTE: We use dev_addr here, not paddr! */
+ 	if (is_xen_swiotlb_buffer(dev_addr))
+@@ -442,7 +442,7 @@ xen_swiotlb_sync_single_for_cpu(struct device *dev, dma_addr_t dma_addr,
+ 	phys_addr_t paddr = xen_bus_to_phys(dev, dma_addr);
  
  	if (!dev_is_dma_coherent(dev))
- 		xen_dma_sync_for_cpu(dma_addr, paddr, size, dir);
-@@ -452,7 +452,7 @@ static void
- xen_swiotlb_sync_single_for_device(struct device *dev, dma_addr_t dma_addr,
- 		size_t size, enum dma_data_direction dir)
- {
--	phys_addr_t paddr = xen_bus_to_phys(dma_addr);
-+	phys_addr_t paddr = xen_bus_to_phys(dev, dma_addr);
+-		xen_dma_sync_for_cpu(dma_addr, paddr, size, dir);
++		xen_dma_sync_for_cpu(dev, dma_addr, paddr, size, dir);
  
  	if (is_xen_swiotlb_buffer(dma_addr))
- 		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_DEVICE);
+ 		swiotlb_tbl_sync_single(dev, paddr, size, dir, SYNC_FOR_CPU);
+diff --git a/include/xen/swiotlb-xen.h b/include/xen/swiotlb-xen.h
+index ffc0d3902b71..f62d1854780b 100644
+--- a/include/xen/swiotlb-xen.h
++++ b/include/xen/swiotlb-xen.h
+@@ -4,8 +4,9 @@
+ 
+ #include <linux/swiotlb.h>
+ 
+-void xen_dma_sync_for_cpu(dma_addr_t handle, phys_addr_t paddr, size_t size,
+-		enum dma_data_direction dir);
++void xen_dma_sync_for_cpu(struct device *dev, dma_addr_t handle,
++			  phys_addr_t paddr, size_t size,
++			  enum dma_data_direction dir);
+ void xen_dma_sync_for_device(dma_addr_t handle, phys_addr_t paddr, size_t size,
+ 		enum dma_data_direction dir);
+ 
 -- 
 2.17.1
 
