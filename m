@@ -2,142 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1485521B942
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E553D21B950
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Jul 2020 17:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgGJPUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 11:20:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728042AbgGJPRd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 11:17:33 -0400
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 050F22065D;
-        Fri, 10 Jul 2020 15:17:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594394230;
-        bh=vby8T28Zhsl7qDBYQZOZlfnWOqlS6FqV3/U4aqAHwfk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=G8UF7jm/7Yy6MTG60kiv3FaSOhzrW9E2hKByIHWg7PY+naOKMMkKyxvJQCQG3zSpU
-         EHLfsan0j8gi6a/j50zOrREv9c/aE102NUgnvEesyBJCtOxv0nbJ0ZmRNmtre87x/t
-         UyfmFZN3VaMLqX8vmFOjTOnjq425a3F6cVMn+8jE=
-Received: by mail-ot1-f54.google.com with SMTP id 95so4424605otw.10;
-        Fri, 10 Jul 2020 08:17:09 -0700 (PDT)
-X-Gm-Message-State: AOAM532tnJuqNeRhCHFPqEOVKXbeTAa9OQ5vgqiQuOUS/MB4ZuIGRHQq
-        70sge2WZLo09IoNF6R9P9FMM37c++J4hiD/Uvg==
-X-Google-Smtp-Source: ABdhPJxZk1EF5sd2MNgTb5L8u1KvVR6QeY8YIQeDuM4HdEwDtdmx29dRwXbBaEwnBV7tWkgFm1gHZDWiIFzbsBYuOoY=
-X-Received: by 2002:a05:6830:3104:: with SMTP id b4mr59467283ots.192.1594394229410;
- Fri, 10 Jul 2020 08:17:09 -0700 (PDT)
+        id S1728154AbgGJPUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 11:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727820AbgGJPTe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 11:19:34 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A60CC08C5CE;
+        Fri, 10 Jul 2020 08:19:04 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 22so6560964wmg.1;
+        Fri, 10 Jul 2020 08:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XrzFqDjZylNG+KL47kJnNsuvtb+1kxd+FPY+/i5mZt4=;
+        b=UNtM+doYl8G3EzvIWbXAfCydIYtbFtA/G65jpu8mwF5//qs+MAlXc3y9qszbPU687D
+         CYDVzXa2j2Q3IkfrxO+d/sRFSUEpP+FtA6lJISsji6Kx7ufcEJGzD4Ej6oO94KwzB63u
+         sO1yqQuF4Fta7foJsA5tYSNCrtdbZX8Mb5V8VrM8/Yl+m88PJBesCAhnrkKOstjyODIf
+         qjNHQsapydA7qW5u/AB0Etram1VzVzJL+zLiSZhH3ZXB84kpS/C756PaUXH24wtYfULd
+         nOACW/fPGEPhSjHnfgROOQ1pGrgfesos7KeIznyfbEJVkxM6M8RpkkxOlnKHrtS/OkGg
+         kZmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XrzFqDjZylNG+KL47kJnNsuvtb+1kxd+FPY+/i5mZt4=;
+        b=h+bMnpbWZNTg3eZ8/f53VZY3pvP4T27rM2wNBEPKDcKHKbmr+xT7IqKqI8QjZj7p+K
+         s0l5AWwbpaCuiKeO2Fg5wqdp6mUjdTW6IIw1zkf2+vmP4BnhhbzkV1oqIOFf6QwQuO9h
+         KyB9Iqo+c33aXqVRpKT75AW1+dTZU/SV5oHIuRgA//xE6kM5XXLefEkgS62npCx1Rhj+
+         9YUqK4lBJ6vl54ESBn+1wYWX4bEwpsaFGt8jqvhO63tBDlBwwSc9p4+e/h8YyBSqHLkP
+         WG1NjcucgqqLtIgCzsbTsB6hyhkgaz6IPqRKWkPwkexxnbA8vL7mBwS2I+/OsnlgwHU3
+         KepQ==
+X-Gm-Message-State: AOAM532bmRWwCZxym3qyjlImHVsP4Prf0GiT/T3FWl3cGx8t02tjpoeT
+        VIIgbAtfQ7+y/lmTJPpdzzpG1tHENak=
+X-Google-Smtp-Source: ABdhPJzCkcfkGK+ERXI385yQy9ajXHjD/934EyflpmvQE2QG2B1P+YuyDCKd9EOc/U3LBtnDAZ1wBQ==
+X-Received: by 2002:a1c:28c4:: with SMTP id o187mr5420848wmo.62.1594394343258;
+        Fri, 10 Jul 2020 08:19:03 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.114.245])
+        by smtp.gmail.com with ESMTPSA id r10sm10531744wrm.17.2020.07.10.08.19.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Jul 2020 08:19:02 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] thermal: mediatek: prepare to add support for
+ other platforms
+To:     Henry Yen <henry.yen@mediatek.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Steven Liu <steven.liu@mediatek.com>,
+        Michael Kao <michael.kao@mediatek.com>
+References: <1588238074-19338-1-git-send-email-henry.yen@mediatek.com>
+ <1588238074-19338-2-git-send-email-henry.yen@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <94d81c8a-2710-98a1-4cae-040e9b51fcd9@gmail.com>
+Date:   Fri, 10 Jul 2020 17:19:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <1592312214-9347-1-git-send-email-bharat.kumar.gogada@xilinx.com> <1592312214-9347-3-git-send-email-bharat.kumar.gogada@xilinx.com>
-In-Reply-To: <1592312214-9347-3-git-send-email-bharat.kumar.gogada@xilinx.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 10 Jul 2020 09:16:57 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ0WARicxaATS_1h2W2MyXqZ8OGOxOTvWWB+hD70ea_MQ@mail.gmail.com>
-Message-ID: <CAL_JsqJ0WARicxaATS_1h2W2MyXqZ8OGOxOTvWWB+hD70ea_MQ@mail.gmail.com>
-Subject: Re: [PATCH v9 2/2] PCI: xilinx-cpm: Add Versal CPM Root Port driver
-To:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-Cc:     PCI <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1588238074-19338-2-git-send-email-henry.yen@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 6:57 AM Bharat Kumar Gogada
-<bharat.kumar.gogada@xilinx.com> wrote:
->
-> - Add support for Versal CPM as Root Port.
-> - The Versal ACAP devices include CCIX-PCIe Module (CPM). The integrated
->   block for CPM along with the integrated bridge can function
->   as PCIe Root Port.
-> - Bridge error and legacy interrupts in Versal CPM are handled using
->   Versal CPM specific interrupt line.
->
-> Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
+
+
+On 30/04/2020 11:14, Henry Yen wrote:
+> It is known that Mediatek owns two thermal systems, which only differ
+> in the way of reading calibration data and converting temperature.
+> MT8173, MT8183, MT2701 and MT2712 belongs to version 1 thermal
+> system, and MT7622 belongs to version 2.
+> 
+> In order to handle both systems, the suffix _V1 is appended to the
+> current code, and then the second patch will add _V2 functions with
+> the same purpose but different implementation.
+> 
+> Signed-off-by: Henry Yen <henry.yen@mediatek.com>
+
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
 > ---
->  drivers/pci/controller/Kconfig           |   8 +
->  drivers/pci/controller/Makefile          |   1 +
->  drivers/pci/controller/pcie-xilinx-cpm.c | 617 +++++++++++++++++++++++++++++++
->  3 files changed, 626 insertions(+)
->  create mode 100644 drivers/pci/controller/pcie-xilinx-cpm.c
-
-[...]
-
-> +static int xilinx_cpm_pcie_probe(struct platform_device *pdev)
+>   drivers/thermal/mtk_thermal.c | 114 ++++++++++++++++++----------------
+>   1 file changed, 62 insertions(+), 52 deletions(-)
+> 
+> diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+> index 76e30603d4d5..10107d9d56a8 100644
+> --- a/drivers/thermal/mtk_thermal.c
+> +++ b/drivers/thermal/mtk_thermal.c
+> @@ -120,18 +120,18 @@
+>    * MT2701 has 3 sensors and needs 3 VTS calibration data.
+>    * MT2712 has 4 sensors and needs 4 VTS calibration data.
+>    */
+> -#define CALIB_BUF0_VALID		BIT(0)
+> -#define CALIB_BUF1_ADC_GE(x)		(((x) >> 22) & 0x3ff)
+> -#define CALIB_BUF0_VTS_TS1(x)		(((x) >> 17) & 0x1ff)
+> -#define CALIB_BUF0_VTS_TS2(x)		(((x) >> 8) & 0x1ff)
+> -#define CALIB_BUF1_VTS_TS3(x)		(((x) >> 0) & 0x1ff)
+> -#define CALIB_BUF2_VTS_TS4(x)		(((x) >> 23) & 0x1ff)
+> -#define CALIB_BUF2_VTS_TS5(x)		(((x) >> 5) & 0x1ff)
+> -#define CALIB_BUF2_VTS_TSABB(x)		(((x) >> 14) & 0x1ff)
+> -#define CALIB_BUF0_DEGC_CALI(x)		(((x) >> 1) & 0x3f)
+> -#define CALIB_BUF0_O_SLOPE(x)		(((x) >> 26) & 0x3f)
+> -#define CALIB_BUF0_O_SLOPE_SIGN(x)	(((x) >> 7) & 0x1)
+> -#define CALIB_BUF1_ID(x)		(((x) >> 9) & 0x1)
+> +#define CALIB_BUF0_VALID_V1		BIT(0)
+> +#define CALIB_BUF1_ADC_GE_V1(x)		(((x) >> 22) & 0x3ff)
+> +#define CALIB_BUF0_VTS_TS1_V1(x)	(((x) >> 17) & 0x1ff)
+> +#define CALIB_BUF0_VTS_TS2_V1(x)	(((x) >> 8) & 0x1ff)
+> +#define CALIB_BUF1_VTS_TS3_V1(x)	(((x) >> 0) & 0x1ff)
+> +#define CALIB_BUF2_VTS_TS4_V1(x)	(((x) >> 23) & 0x1ff)
+> +#define CALIB_BUF2_VTS_TS5_V1(x)	(((x) >> 5) & 0x1ff)
+> +#define CALIB_BUF2_VTS_TSABB_V1(x)	(((x) >> 14) & 0x1ff)
+> +#define CALIB_BUF0_DEGC_CALI_V1(x)	(((x) >> 1) & 0x3f)
+> +#define CALIB_BUF0_O_SLOPE_V1(x)	(((x) >> 26) & 0x3f)
+> +#define CALIB_BUF0_O_SLOPE_SIGN_V1(x)	(((x) >> 7) & 0x1)
+> +#define CALIB_BUF1_ID_V1(x)		(((x) >> 9) & 0x1)
+>   
+>   enum {
+>   	VTS1,
+> @@ -525,7 +525,7 @@ static const struct mtk_thermal_data mt8183_thermal_data = {
+>    * This converts the raw ADC value to mcelsius using the SoC specific
+>    * calibration constants
+>    */
+> -static int raw_to_mcelsius(struct mtk_thermal *mt, int sensno, s32 raw)
+> +static int raw_to_mcelsius_v1(struct mtk_thermal *mt, int sensno, s32 raw)
+>   {
+>   	s32 tmp;
+>   
+> @@ -594,9 +594,9 @@ static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
+>   		raw = readl(mt->thermal_base +
+>   			    conf->msr[conf->bank_data[bank->id].sensors[i]]);
+>   
+> -		temp = raw_to_mcelsius(mt,
+> -				       conf->bank_data[bank->id].sensors[i],
+> -				       raw);
+> +		temp = raw_to_mcelsius_v1(mt,
+> +					  conf->bank_data[bank->id].sensors[i],
+> +					  raw);
+>   
+>   		/*
+>   		 * The first read of a sensor often contains very high bogus
+> @@ -758,6 +758,51 @@ static u64 of_get_phys_base(struct device_node *np)
+>   	return of_translate_address(np, regaddr_p);
+>   }
+>   
+> +static int mtk_thermal_extract_efuse_v1(struct mtk_thermal *mt, u32 *buf)
 > +{
-> +       struct xilinx_cpm_pcie_port *port;
-> +       struct device *dev = &pdev->dev;
-> +       struct pci_host_bridge *bridge;
-> +       struct resource *bus_range;
-> +       int err;
+> +	int i;
 > +
-> +       bridge = devm_pci_alloc_host_bridge(dev, sizeof(*port));
-> +       if (!bridge)
-> +               return -ENODEV;
+> +	if (!(buf[0] & CALIB_BUF0_VALID_V1))
+> +		return -EINVAL;
 > +
-> +       port = pci_host_bridge_priv(bridge);
+> +	mt->adc_ge = CALIB_BUF1_ADC_GE_V1(buf[1]);
 > +
-> +       port->dev = dev;
+> +	for (i = 0; i < mt->conf->num_sensors; i++) {
+> +		switch (mt->conf->vts_index[i]) {
+> +		case VTS1:
+> +			mt->vts[VTS1] = CALIB_BUF0_VTS_TS1_V1(buf[0]);
+> +			break;
+> +		case VTS2:
+> +			mt->vts[VTS2] = CALIB_BUF0_VTS_TS2_V1(buf[0]);
+> +			break;
+> +		case VTS3:
+> +			mt->vts[VTS3] = CALIB_BUF1_VTS_TS3_V1(buf[1]);
+> +			break;
+> +		case VTS4:
+> +			mt->vts[VTS4] = CALIB_BUF2_VTS_TS4_V1(buf[2]);
+> +			break;
+> +		case VTS5:
+> +			mt->vts[VTS5] = CALIB_BUF2_VTS_TS5_V1(buf[2]);
+> +			break;
+> +		case VTSABB:
+> +			mt->vts[VTSABB] =
+> +				CALIB_BUF2_VTS_TSABB_V1(buf[2]);
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +	}
 > +
-> +       err = pci_parse_request_of_pci_ranges(dev, &bridge->windows,
-> +                                             &bridge->dma_ranges, &bus_range);
-> +       if (err) {
-> +               dev_err(dev, "Getting bridge resources failed\n");
-> +               return err;
-> +       }
+> +	mt->degc_cali = CALIB_BUF0_DEGC_CALI_V1(buf[0]);
+> +	if (CALIB_BUF1_ID_V1(buf[1]) &
+> +	    CALIB_BUF0_O_SLOPE_SIGN_V1(buf[0]))
+> +		mt->o_slope = -CALIB_BUF0_O_SLOPE_V1(buf[0]);
+> +	else
+> +		mt->o_slope = CALIB_BUF0_O_SLOPE_V1(buf[0]);
 > +
-> +       err = xilinx_cpm_pcie_init_irq_domain(port);
-> +       if (err)
-> +               return err;
-> +
-> +       err = xilinx_cpm_pcie_parse_dt(port, bus_range);
-> +       if (err) {
-> +               dev_err(dev, "Parsing DT failed\n");
-> +               goto err_parse_dt;
-> +       }
-> +
-> +       xilinx_cpm_pcie_init_port(port);
-> +
-> +       err = xilinx_cpm_setup_irq(port);
-> +       if (err) {
-> +               dev_err(dev, "Failed to set up interrupts\n");
-> +               goto err_setup_irq;
-> +       }
-
-All the h/w init here can be moved to an .init() function in ecam ops
-and then use pci_host_common_probe. Given this is v9, that can be a
-follow-up I guess.
-
-Otherwise,
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-> +
-> +       bridge->dev.parent = dev;
-> +       bridge->sysdata = port->cfg;
-> +       bridge->busnr = port->cfg->busr.start;
-> +       bridge->ops = &pci_generic_ecam_ops.pci_ops;
-> +       bridge->map_irq = of_irq_parse_and_map_pci;
-> +       bridge->swizzle_irq = pci_common_swizzle;
-> +
-> +       err = pci_host_probe(bridge);
-> +       if (err < 0)
-> +               goto err_host_bridge;
-> +
-> +       return 0;
-> +
-> +err_host_bridge:
-> +       xilinx_cpm_free_interrupts(port);
-> +err_setup_irq:
-> +       pci_ecam_free(port->cfg);
-> +err_parse_dt:
-> +       xilinx_cpm_free_irq_domains(port);
-> +       return err;
+> +	return 0;
 > +}
+> +
+>   static int mtk_thermal_get_calibration_data(struct device *dev,
+>   					    struct mtk_thermal *mt)
+>   {
+> @@ -793,43 +838,8 @@ static int mtk_thermal_get_calibration_data(struct device *dev,
+>   		goto out;
+>   	}
+>   
+> -	if (buf[0] & CALIB_BUF0_VALID) {
+> -		mt->adc_ge = CALIB_BUF1_ADC_GE(buf[1]);
+> -
+> -		for (i = 0; i < mt->conf->num_sensors; i++) {
+> -			switch (mt->conf->vts_index[i]) {
+> -			case VTS1:
+> -				mt->vts[VTS1] = CALIB_BUF0_VTS_TS1(buf[0]);
+> -				break;
+> -			case VTS2:
+> -				mt->vts[VTS2] = CALIB_BUF0_VTS_TS2(buf[0]);
+> -				break;
+> -			case VTS3:
+> -				mt->vts[VTS3] = CALIB_BUF1_VTS_TS3(buf[1]);
+> -				break;
+> -			case VTS4:
+> -				mt->vts[VTS4] = CALIB_BUF2_VTS_TS4(buf[2]);
+> -				break;
+> -			case VTS5:
+> -				mt->vts[VTS5] = CALIB_BUF2_VTS_TS5(buf[2]);
+> -				break;
+> -			case VTSABB:
+> -				mt->vts[VTSABB] = CALIB_BUF2_VTS_TSABB(buf[2]);
+> -				break;
+> -			default:
+> -				break;
+> -			}
+> -		}
+> -
+> -		mt->degc_cali = CALIB_BUF0_DEGC_CALI(buf[0]);
+> -		if (CALIB_BUF1_ID(buf[1]) &
+> -		    CALIB_BUF0_O_SLOPE_SIGN(buf[0]))
+> -			mt->o_slope = -CALIB_BUF0_O_SLOPE(buf[0]);
+> -		else
+> -			mt->o_slope = CALIB_BUF0_O_SLOPE(buf[0]);
+> -	} else {
+> +	if (mtk_thermal_extract_efuse_v1(mt, buf))
+>   		dev_info(dev, "Device not calibrated, using default calibration values\n");
+> -	}
+>   
+>   out:
+>   	kfree(buf);
+> 
