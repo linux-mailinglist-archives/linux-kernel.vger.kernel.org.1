@@ -2,104 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C952221C02F
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 00:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D6D21C0C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 01:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgGJWzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 18:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgGJWzU (ORCPT
+        id S1726907AbgGJXcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 19:32:14 -0400
+Received: from ny018.relay.arandomserver.com ([172.96.188.180]:60037 "EHLO
+        ny018.relay.arandomserver.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726328AbgGJXcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 18:55:20 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F16AC08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:55:20 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d10so2846182pll.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 15:55:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4hGIhomb0LBlqZeWlHfi6+uoq7TnGBnqLNWsx4a+7J4=;
-        b=Sy4hD54SA3U4GzVNUhu3WHT/Se2HlZOeuny0PIHf3LkEsFN3L5vd5FV2YLuTq48trs
-         lWbPmMqV4THQNSS85KE3qi1I9n3GmAfqgc8R/eR1989HZ8itAMB4uS4uJyRb4W3k48PO
-         s6X4+JhsAyqy/acuNsVI/2UrSlydqmcYjXkhHsbRJ5fvAd+tQFJjQbvv/e72XHffd1WX
-         bkzGJ1wsGSb6C8LW99I1rjcYW4ZmrKhqMcLDWz1H/fn0aE4FgwL2wA4hmyaLR2TLVjbS
-         U6oL5+3Zay7lNtmD7gYDoGlKCrOsTBLNX9dsjPeWnGZjZK7ROrMTcTtpN3AdmY1Ejtdx
-         gZ5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4hGIhomb0LBlqZeWlHfi6+uoq7TnGBnqLNWsx4a+7J4=;
-        b=DT2pfnxtnkOwvfBtFBfSJAnn9Xl/OGziLBead3S31lmtLbSjCfkJlL6iwYH/mO8+wu
-         KOhh4fH1eZULQRC6ql8zvYr9Zalbu+JHusOzkrczA3xqCYNh8YKwrzQ6dbw8+S7PL98F
-         5ki3Tctuj3H/aNeMV3Bfh8WFuqlYYrQVKXlnILo45oKjjDFpiy2Rbxcbf0YcbPfGcvyd
-         4XM3MA/Sjf7aN/iSH2r/eHJyp/xNsQLro+sGlLvmX3Ehk2W7nwhyMbpR+sDwFBIlHOTs
-         ntBzIxBOk9GLXayB5Q71BSRyVH/4a5VZ0cRfUDSfhd/JjvyCSJZF36s2Tj6HqezNoTNx
-         ywzg==
-X-Gm-Message-State: AOAM5300S0qkLMZ3UIXRJT8wjg9BmQp1/NQab1oaafMeWS5v21L1h2AZ
-        Y0NSZ+yzzleLgxlcrfsC9NTohA==
-X-Google-Smtp-Source: ABdhPJzSoiJAa+Kgv5cLkAEBovyk20hEpctnbVme4FL/uFge5pdDBgtSVtzCycujqzLrVcWveqMuzw==
-X-Received: by 2002:a17:90a:148:: with SMTP id z8mr8452357pje.197.1594421719716;
-        Fri, 10 Jul 2020 15:55:19 -0700 (PDT)
-Received: from google.com ([100.117.212.88])
-        by smtp.gmail.com with ESMTPSA id nl11sm16403347pjb.0.2020.07.10.15.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 15:55:18 -0700 (PDT)
-Date:   Fri, 10 Jul 2020 15:55:15 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Ramana Radhakrishnan <ramana.gcc@googlemail.com>,
-        Ramana Radhakrishnan <Ramana.Radhakrishnan@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Plumbers session on GNU+LLVM collab?
-Message-ID: <20200710225515.o2d7aic2qgn5ac6i@google.com>
-References: <CAKwvOdnT5ZMjvz2_UJ4MtvDEs9+90bsDp-Rd2SnXZZ+AqebYHw@mail.gmail.com>
+        Fri, 10 Jul 2020 19:32:13 -0400
+X-Greylist: delayed 2130 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Jul 2020 19:32:12 EDT
+Received: from nyc006.hawkhost.com ([172.96.186.142])
+        by se004.arandomserver.com with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.92)
+        (envelope-from <nazard@nazar.ca>)
+        id 1ju1wc-0000xA-MN; Fri, 10 Jul 2020 17:56:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nazar.ca;
+         s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version
+        :Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=a8mXua/+pf0xwyAncboLdWQ9suD/hc8wf+xzJo2Jub0=; b=cIABLJRRMkWwES59M5tgDvsVWI
+        cyzeLcK5JhmzpW1y+T+YuOHuY/lqZ3rxuqMjY8OvlEP83ZneHoIEnyvG0xA5LM8KoifG50AoBqJcw
+        q1VfSm+IhJafIzTnBXfPC472uOPo1HLf2ohFJoIa6h41TM/b4XtFNbpZdgPMNURQt+da3wajAkt6s
+        kue4QmbgwkcLcl3dISofOzZJLY7nv56Th1VtFv2bgbdHUrEcLxKfPQOvUWbyVQIQ4wfCJQuKUii/0
+        tkgkZSWXITMI6NgW3IvsFmWjYNSRLXFc/gQFgcNlGX/aOP4K0u9JTHFbo94INgejWWAiQazPKi/HH
+        Lu1rAjjw==;
+Received: from [174.119.114.224] (port=51779 helo=[192.168.21.100])
+        by nyc006.hawkhost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <nazard@nazar.ca>)
+        id 1ju1wb-0001JF-5l; Fri, 10 Jul 2020 18:56:37 -0400
+Subject: Re: [PATCH] net/9p: validate fds in p9_fd_open
+To:     Christoph Hellwig <hch@lst.de>, ericvh@gmail.com, lucho@ionkov.net,
+        asmadeus@codewreck.org
+Cc:     v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+e6f77e16ff68b2434a2c@syzkaller.appspotmail.com
+References: <20200710085722.435850-1-hch@lst.de>
+From:   Doug Nazar <nazard@nazar.ca>
+Message-ID: <5bee3e33-2400-2d85-080e-d10cd82b0d85@nazar.ca>
+Date:   Fri, 10 Jul 2020 18:56:35 -0400
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnT5ZMjvz2_UJ4MtvDEs9+90bsDp-Rd2SnXZZ+AqebYHw@mail.gmail.com>
+In-Reply-To: <20200710085722.435850-1-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Get-Message-Sender-Via: nyc006.hawkhost.com: authenticated_id: nazard@nazar.ca
+X-Authenticated-Sender: nyc006.hawkhost.com: nazard@nazar.ca
+X-Originating-IP: 172.96.186.142
+X-SpamExperts-Domain: nyc006.hawkhost.com
+X-SpamExperts-Username: 172.96.186.142
+Authentication-Results: arandomserver.com; auth=pass smtp.auth=172.96.186.142@nyc006.hawkhost.com
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.02)
+X-Recommended-Action: accept
+X-Filter-ID: Mvzo4OR0dZXEDF/gcnlw0f6LF1GdvkEexklpcFpSF5apSDasLI4SayDByyq9LIhVMuypr3GMSFaE
+ uvJRzf/1yUTNWdUk1Ol2OGx3IfrIJKyP9eGNFz9TW9u+Jt8z2T3KT3YWyIaDV3adljNh4jqWUKSI
+ QOeql20yiFNywEx1SjSqpHnwsZpH9mYdhK3M+qkbqiRLIcfmSdhJhNnOTpqRUUuf+eM3l5KPnbp/
+ eQthjVNLgwTL2W1bPOGy+hBGRHuxJkHwcwZdqFJg2NUWc1YcXvxdBIPAoxSp6DmD3kr62KknbCKf
+ FChxpHEycMbUVAzYcL5hlVgBODQauTp1/J67gUkXEz24JLM60oxXCmgGpGhwhmcuhmLiP1a/raCx
+ FilUyJda7VCYQylwxTk+SG59pZAl8KjuuXzut5LRN3+1KzLohdJNqqo/lqC4rFTnLtWlJwFTBDk/
+ FifQTS+EwSURDVprjQPFk8m4tSTfORUp3ykAEfCPURLBYQ96jXOCfPgM7yBxSvtE49xNPqsQk/m8
+ 3UI6DP9LYFhbnb1vtJJips71hJElceuRZYSlzyjl2t8oot0CfeUAb1ubnnvth5TXPvMUVT6hEJ33
+ Zqh8Rt9f2+Ja8tTmww6d3C2rMChg9I1GSNhjzOZsqooLTt7iuA19HxRvrBU56+Gq1CsKFi4HMGDm
+ ZAzkNNfC/oYmrWISYEHgneZ90yZRP/mZ05FXSQ7oSP0ZoxlUh1E50DkFVrC5mmTa2K186OjbtWyZ
+ ReXkOW7QTPiGI9WvBsdInDten/s6zPvdHOR1u+8QOyZnun5jEnQ6L4bbC3LjdxFJDyottvPAgpqJ
+ lqCh0E7QP78UadwZo0RVGZM+1wcbqYXM3ytmvbBz/byN7FajYmOyHLF0nUatASJFC/49WOPBr5nl
+ EUI4xMQDKwJmo3AY//ulQjQy8hxFYb+WEaaSiV3zBSrHnWVE6LADrDXM4RByixAOHpDL5xFqmHrp
+ mKsRnlUf/9yRY2QfEfTJcXezne5mI3fuj/LNOOo6xspor93/x8GltFtgvskYoN/g2a11WysdYadd
+ IKYaHAwskslMOiSjwnYcoQfxAIRoFYTV6bX0TFzZ8IQWIj08OU/MCBTp7Xql3SIUUR9wgSVYm38H
+ wlCsmYlLW+GHMzjrEHSA2dmr6tzwahc1cl1C5Qu1fkKEWyoySmDifC3rjuU3A3io6xJmD59iFVkb
+ gdBkiJncLAR/qaxElieMsQKA1qwQKXzO6EftozfP8HPuQhCcctpQ4l5OT/VYcw/11p3btshdqNde
+ jy9cf5FpO8nnxaGW4j3UiT8Y7DP2CmsurJ77B3ZRwlMfr5yxE+Uuosi7SS2Yz+KKdUcngqDt1A==
+X-Report-Abuse-To: spam@se001.arandomserver.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-09, 'Nick Desaulniers' via Clang Built Linux wrote:
->Hi Segher, Rasmus, and Ramana,
->I am working on finalizing a proposal for an LLVM microconference at
->plumbers, which is focusing on a lot of issues we currently face on
->the LLVM side.
->
->I'd really like to host a session with more GNU toolchain developers
->to discuss collaboration more.
->
->I was curious; are either of you planning on attending plumbers this year?
->
->If so, would such a session be interesting enough for you to attend?
+On 2020-07-10 04:57, Christoph Hellwig wrote:
 
-Looks like a good idea. I am interested.
+> diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
+> index 13cd683a658ab6..1cd8ea0e493617 100644
+> --- a/net/9p/trans_fd.c
+> +++ b/net/9p/trans_fd.c
+> @@ -803,20 +803,28 @@ static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
+>   		return -ENOMEM;
+>   
+>   	ts->rd = fget(rfd);
+> +	if (!ts->rd)
+> +		goto out_free_ts;
+> +	if (!(ts->rd->f_mode & FMODE_READ))
+> +		goto out_put_wr;
 
-Perhaps Tom Stellard, Jeremy Bennett, Nathan Sidwell and Iain Sandoe have some ideas.
-They have a talk about GCC/LLVM collaboration
-https://gcc.gnu.org/wiki/cauldron2019#cauldron2019talks.GCC_LLVM_Collaboration_BoF
+		goto out_put_rd;
 
->I was curious too, who else we should explicitly invite?  I ran a
->quick set analysis on who's contributed to both kernel and
-><toolchain>, and the list was much much bigger than I was expecting.
->https://gist.github.com/nickdesaulniers/5330eea6f46dea93e7766bb03311d474
->89 contributors to both linux and llvm
->283 linux+gcc
->159 linux+binutils
->(No one to all four yet...also, not super scientific, since I'm using
->name+email for the set, and emails change. Point being I don't want to
->explicitly invite hundreds of people)
+unless I'm mistaken.
 
-Might be worth sending an email to gcc@gcc.gnu.org as well.
+>   	ts->wr = fget(wfd);
+> -	if (!ts->rd || !ts->wr) {
+> -		if (ts->rd)
+> -			fput(ts->rd);
+> -		if (ts->wr)
+> -			fput(ts->wr);
+> -		kfree(ts);
+> -		return -EIO;
+> -	}
+> +	if (!ts->wr)
+> +		goto out_put_rd;
+> +	if (!(ts->wr->f_mode & FMODE_WRITE))
+> +		goto out_put_wr;
+>   
+>   	client->trans = ts;
+>   	client->status = Connected;
+>   
+>   	return 0;
+> +
+> +out_put_wr:
+> +	fput(ts->wr);
+> +out_put_rd:
+> +	fput(ts->rd);
+> +out_free_ts:
+> +	kfree(ts);
+> +	return -EIO;
+>   }
+>   
+>   static int p9_socket_open(struct p9_client *client, struct socket *csocket)
+> 
 
-This month's archive: https://sourceware.org/pipermail/gcc/2020-July/
+Doug
