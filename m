@@ -2,225 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF3821C3B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 12:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E578221C3BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 12:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgGKKWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 06:22:00 -0400
-Received: from o1.b.az.sendgrid.net ([208.117.55.133]:36785 "EHLO
-        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726684AbgGKKV6 (ORCPT
+        id S1727924AbgGKK1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 06:27:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726220AbgGKK1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 06:21:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
-        h=subject:references:from:mime-version:in-reply-to:to:cc:content-type:
-        content-transfer-encoding;
-        s=001; bh=hKkiZdQQQCV7LCEzPFLeR2jKYXURO3Db8fTbLBVLOzM=;
-        b=roI/CBDdvtdfO+tdrcxWtxXDQztqaWnyzVYdpzdfDAMLP9fn1JO/eSwez7VNlpymbCzl
-        5zzKbEjCgUMJTzboObIFpZguC1nI+zHsxmTEr1V7JbFtPFtHQFbOoA4ENbD0NTSAY/RQIr
-        342C2ZQrUqYAcRNHeI28ECV9r03gGtzPQ=
-Received: by filterdrecv-p3mdw1-75c584b9c6-jp7b2 with SMTP id filterdrecv-p3mdw1-75c584b9c6-jp7b2-18-5F0992C5-3E
-        2020-07-11 10:21:57.869390778 +0000 UTC m=+1271538.380795897
-Received: from [192.168.1.14] (unknown)
-        by ismtpd0005p1lon1.sendgrid.net (SG) with ESMTP
-        id 9PlySEwUR9ap1X6LQ-LTfQ
-        Sat, 11 Jul 2020 10:21:57.603 +0000 (UTC)
-Subject: Re: [RFC 07/12] media: uapi: h264: Add DPB entry field reference
- flags
-References: <HE1PR06MB40117D0EE96E6FA638A04B78ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
- <20190901124531.23645-1-jonas@kwiboo.se>
- <HE1PR06MB4011559BF2447047C66285D2ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
- <233509924f72d69824920d9312373eced68674c0.camel@collabora.com>
- <20200710101333.05077f18@collabora.com>
- <6232d8475e169ee53b5864959af21d14bf0fc620.camel@collabora.com>
- <20200710140502.627b2b54@collabora.com>
- <05b6cff6ba230c0ab6a562e17926d8503e2dfadd.camel@collabora.com>
- <9a897ef99048077233685b121b03bd750e4d4a83.camel@collabora.com>
-From:   Jonas Karlman <jonas@kwiboo.se>
-Message-ID: <cf4a5d3f-934f-de59-b5df-97b23e30cb1b@kwiboo.se>
-Date:   Sat, 11 Jul 2020 10:21:57 +0000 (UTC)
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 11 Jul 2020 06:27:18 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9486BC08C5DD
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 03:27:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BTWBxIfujYZzc92iXY+CL7Ot0PsWScS2Axjaxv94il0=; b=eHFF2IL1sALbZgnGkCgSy7nhk6
+        raqpHtifXSSTAkQbUstvPEuMfdA3o2ytxyAyOUz7Ox5r0K2XX1EUdRe5Na52nmpn2Uhuuwcke5Rr0
+        t2slHHdCwnmqI+NJ1XSw6Vbrea4Q/4ovOCVEEtn+YhVtvyCqkZ+SCfwaYZ+Af/j+4haSXa8wp9Iha
+        7AqyLIIYss3VdpWLyQSWkXI7L30oYxrmVW7lfOX41nc1yUqOaq5B4LIV2zmTep0azBw1lQ/46aP8N
+        5fwOs5PHyQy9R3707v1oF4pqKRaI4Reh82sE73aBPTeXmifQ/ceEqqA0lrJCP/zYfubJGSr9D0kZT
+        VBXoQVKQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1juCim-0000Qk-Td; Sat, 11 Jul 2020 10:27:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1EE83304E03;
+        Sat, 11 Jul 2020 12:27:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F383228B57752; Sat, 11 Jul 2020 12:27:02 +0200 (CEST)
+Date:   Sat, 11 Jul 2020 12:27:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mhiramat@kernel.org,
+        bristot@redhat.com, jbaron@akamai.com,
+        torvalds@linux-foundation.org, tglx@linutronix.de,
+        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
+        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
+        pbonzini@redhat.com, mathieu.desnoyers@efficios.com,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH v6 11/17] static_call: Simple self-test
+Message-ID: <20200711102702.GC597537@hirez.programming.kicks-ass.net>
+References: <20200710133831.943894387@infradead.org>
+ <20200710134336.798619415@infradead.org>
+ <20200710184229.3c3f5d8d@oasis.local.home>
 MIME-Version: 1.0
-In-Reply-To: <9a897ef99048077233685b121b03bd750e4d4a83.camel@collabora.com>
-X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
- =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h=2F3MSfh0EOMJ0496t?=
- =?us-ascii?Q?Jf=2F+iUqhESCgGvRvw6so+hSgvWFjaMthfbkbcQR?=
- =?us-ascii?Q?g=2FAKU=2F=2F1LNxdwDk6bYbn=2FB5M6FbNNIU73Nunwl+?=
- =?us-ascii?Q?eJWhuejsrRFpw8PoiJEc3yRjZYuts3FxOf4q2Hn?=
- =?us-ascii?Q?OEfFOxvi4OsYOwDay3f8MLRGzpUIu+wYdgZyQEF?=
- =?us-ascii?Q?tevuCaTnYRiX3Pzao8Y7g=3D=3D?=
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-rockchip@lists.infradead.org" 
-        <linux-rockchip@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Language: sv
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710184229.3c3f5d8d@oasis.local.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-10 23:49, Nicolas Dufresne wrote:
-> Le vendredi 10 juillet 2020 à 09:25 -0300, Ezequiel Garcia a écrit :
->> +Nicolas
->>
->> On Fri, 2020-07-10 at 14:05 +0200, Boris Brezillon wrote:
->>> On Fri, 10 Jul 2020 08:50:28 -0300
->>> Ezequiel Garcia <ezequiel@collabora.com> wrote:
->>>
->>>> On Fri, 2020-07-10 at 10:13 +0200, Boris Brezillon wrote:
->>>>> On Fri, 10 Jul 2020 01:21:07 -0300
->>>>> Ezequiel Garcia <ezequiel@collabora.com> wrote:
->>>>>   
->>>>>> Hello Jonas,
->>>>>>
->>>>>> In the context of the uAPI cleanup,
->>>>>> I'm revisiting this patch.
->>>>>>
->>>>>> On Sun, 2019-09-01 at 12:45 +0000, Jonas Karlman wrote:  
->>>>>>> Add DPB entry flags to help indicate when a reference frame is a
->>>>>>> field picture
->>>>>>> and how the DPB entry is referenced, top or bottom field or full
->>>>>>> frame.
->>>>>>>
->>>>>>> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
->>>>>>> ---
->>>>>>>  Documentation/media/uapi/v4l/ext-ctrls-codec.rst | 12 ++++++++++++
->>>>>>>  include/media/h264-ctrls.h                       |  4 ++++
->>>>>>>  2 files changed, 16 insertions(+)
->>>>>>>
->>>>>>> diff --git a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
->>>>>>> b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
->>>>>>> index bc5dd8e76567..eb6c32668ad7 100644
->>>>>>> --- a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
->>>>>>> +++ b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
->>>>>>> @@ -2022,6 +2022,18 @@ enum
->>>>>>> v4l2_mpeg_video_h264_hierarchical_coding_type -
->>>>>>>      * - ``V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM``
->>>>>>>        - 0x00000004
->>>>>>>        - The DPB entry is a long term reference frame
->>>>>>> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE``
->>>>>>> +      - 0x00000008
->>>>>>> +      - The DPB entry is a field picture
->>>>>>> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_TOP``
->>>>>>> +      - 0x00000010
->>>>>>> +      - The DPB entry is a top field reference
->>>>>>> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM``
->>>>>>> +      - 0x00000020
->>>>>>> +      - The DPB entry is a bottom field reference
->>>>>>> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME``
->>>>>>> +      - 0x00000030
->>>>>>> +      - The DPB entry is a reference frame
->>>>>>>  
->>>>>>>  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE (enum)``
->>>>>>>      Specifies the decoding mode to use. Currently exposes slice-
->>>>>>> based and
->>>>>>> diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
->>>>>>> index e877bf1d537c..76020ebd1e6c 100644
->>>>>>> --- a/include/media/h264-ctrls.h
->>>>>>> +++ b/include/media/h264-ctrls.h
->>>>>>> @@ -185,6 +185,10 @@ struct v4l2_ctrl_h264_slice_params {
->>>>>>>  #define V4L2_H264_DPB_ENTRY_FLAG_VALID		0x01
->>>>>>>  #define V4L2_H264_DPB_ENTRY_FLAG_ACTIVE		0x02
->>>>>>>  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
->>>>>>> +#define V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE	0x08
->>>>>>> +#define V4L2_H264_DPB_ENTRY_FLAG_REF_TOP	0x10
->>>>>>> +#define V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM	0x20
->>>>>>> +#define V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME	0x30
->>>>>>>      
->>>>>>
->>>>>> I've been going thru the H264 spec and I'm unsure,
->>>>>> are all these flags semantically needed?
->>>>>>
->>>>>> For instance, if one of REF_BOTTOM or REF_TOP (or both)
->>>>>> are set, doesn't that indicate it's a field picture?
->>>>>>
->>>>>> Or conversely, if neither REF_BOTTOM or REF_TOP are set,
->>>>>> then it's a frame picture?  
->>>>>
->>>>> I think that's what I was trying to do here [1]
->>>>>
->>>>> [1]https://patchwork.kernel.org/patch/11392095/  
->>>>
->>>> Right. Aren't we missing a DPB_ENTRY_FLAG_TOP_FIELD?
->>>>
->>>> If I understand correctly, the DPB can contain:
->>>>
->>>> * frames (FLAG_FIELD not set)
->>>> * a field pair, with a single field (FLAG_FIELD and either TOP or BOTTOM).
->>>> * a field pair, with boths fields (FLAG_FIELD and both TOP or BOTTOM).
->>>
->>> Well, my understand is that, if the buffer contains both a TOP and
->>> BOTTOM field, it actually becomes a full frame, so you actually have
->>> those cases:
->>>
->>> * FLAG_FIELD not set: this a frame (note that a TOP/BOTTOM field
->>>   decoded buffer can become of frame if it's complemented with the
->>>   missing field later during the decoding)
->>> * FLAG_FIELD set + BOTTOM_FIELD not set: this is a TOP field
->>> * FLAG_FIELD set + BOTTOM_FIELD set: this is a BOTTOM field
->>> * FLAG_FIELD not set + BOTTOM_FIELD set: invalid combination
+On Fri, Jul 10, 2020 at 06:42:29PM -0400, Steven Rostedt wrote:
+> On Fri, 10 Jul 2020 15:38:42 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+
+> > +static int __init test_static_call_init(void)
+> > +{
+> > +	WARN_ON(static_call(sc_selftest)(2) != 3);
+> > +	static_call_update(sc_selftest, &func_b);
+> > +	WARN_ON(static_call(sc_selftest)(2) != 4);
+> > +	static_call_update(sc_selftest, &func_a);
+> > +	WARN_ON(static_call(sc_selftest)(2) != 3);
+> > +
+> > +	return 0;
+> > +}
 > 
-> Let's admit, while this work, it's odd. Can we just move to that instewad ?
+> I wonder if this would be better if we were testing the same static call each time?
+
+Makes sense, I suppose.
+
+> static int __init run_static_call(int val)
+> {
+> 	return static_call(sc_selftest)(val);
+> }
+
+Don't think we need this, or are you afraid of loop unrolling, in which
+case you also want a noinline here I suppose.
+
 > 
->   FLAG_TOP_FIELD
->   FLAG_BOTTOM_FIELD
->   FLAG_FRAME = (FLAG_TOP_FIELD | FLAG_BOTTOM_FIELD)
+> static struct {
+> 	int (*func)(int);
+> 	int val;
+> 	int expect;
+> } static_call_data [] = {
+> 	{ NULL, 2, 3 }
+> 	( func_b, 2 , 4},
+> 	{ func_a, 2, 3}
+> } __initdata;
 > 
-> So it can be used as a flag, but also is a proper enum and there is no longer an
-> invalid combination.
->   
->>>
->>> but I might be wrong.
-
-There seems to be some misunderstanding here, the top/bottom flagging should
-not be used to describe if the picture is a field, field pair or frame, it
-should be used to flag if a frame or the top and/or bottom field (in case of
-a field pair) is "used for short-term reference".
-
-FLAG_TOP_REF
-FLAG_BOTTOM_REF
-FLAG_FRAME_REF = (FLAG_TOP_REF | FLAG_BOTTOM_REF)
-
-Would be a more appropriate naming.
-
-The FIELD_PIC flag would then be used to describe if the picture is a
-reference frame or a complementary reference field pair.
-
-As described in hantro h264 driver [1] the MV buffer is split in two
-for field encoded frames, and I guess the rkvdec block does something
-similar and therefore the HW blocks probably needs to know if the reference
-picture is a reference frame or a complementary reference field pair.
-It should be possible to keep such state in driver but since such information
-was easily available in ffmpeg and the driver being "stateless" using a flag
-seamed like a good choice at the time.
-
-Please note that I have not done any test without the "field pic" flagging
-but both mpp and the imx/hantro reference code are configuring this bit.
-
-[1] https://git.linuxtv.org/media_tree.git/tree/drivers/staging/media/hantro/hantro_g1_h264_dec.c#n265
-
-Regards,
-Jonas
-
->>
->> Yes, perhaps that's correct. I was trying to think strictly
->> in terms of the H264 semantics, to define a clean interface.
->>
->> From the mpp code, looks like the above is enough for rkvdec
->> (although I haven't done any tests).
->>
->> Ezequiel
->>
->>
->>
+> static int __init test_static_call_init(void)
+> {
+> 	int i;
 > 
+> 	for (i = 0; i < ARRAY_SIZE(static_call_data); i++ ) {
+> 		if (static_call_data[i].func)
+> 			static_call_update(sc_selftest, static_call_data[i].func);
+> 		WARN_ON(run_static_call(static_call_data[i].val) != static_call_data[i].expect);
+> 	}
+> 
+> 	return 0;
+> }
+
+Lots of compile errors with that, fixed them all :-)
