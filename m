@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E980B21C444
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 14:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD5821C445
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 14:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgGKMnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 08:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
+        id S1728527AbgGKMnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 08:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgGKMnh (ORCPT
+        with ESMTP id S1726281AbgGKMnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 08:43:37 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04934C08C5DD
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 05:43:37 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id o1so3368425plk.1
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 05:43:37 -0700 (PDT)
+        Sat, 11 Jul 2020 08:43:41 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88065C08C5DD
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 05:43:41 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id j20so3765802pfe.5
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 05:43:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a2hRN1o8EhoWJ7fMKxLmJVUsfsNgfHlSCMCgFfm4Eu0=;
-        b=R1yg7ylscd3dtJGfSD6X8VU53CaYeaAiNis/Ps0Ikg+0iLZu3DUH0MsvRLYhATD+ib
-         I0HNCXSaklAbckgnaGezYXSGA3sEpHkw5DCA+uTnrdxnfjzIN1X0VI7cv8xJ+olPKyu4
-         BdBixJx34BNFd2TvRHlmGJssYzJbv8ElvefTozlN/1zrI9A0Oen38nP+bn97CB1G1So/
-         1jfPLmd4TksinX078/yfxWtwOMNS9NvP/geEUzCIa4ZoU6LnKd4ELWtpmUV5o6krpXNi
-         WjaH3fxg8KkIWz9ey4FB+jhSZRtjO86JDJhoxK7GucY4LZmppZkjSYxRt1c8BcdKSts0
-         wrwQ==
+        bh=li49iVWviGqS3VLMjcwZhSBcEz5HMh5QY3AlCy5JCOY=;
+        b=pzhcimjS1d/khyFMWPIn6qbTYhgumcrLk0CZq2lEqmmKCyZ3ChQHfQq0nj7FRwRY3a
+         GTpUsnX9+5/u9VFXeJ0Kqv9YQfjXtzf1xgNm1f1EvwgrJNmkYcdTKGyRNr6O7J+gGDaV
+         74GFvxiK1Lp/ESqMYN4b7z2uRzR3uR1bYHu3WTP1YW93KTyjLZA148Pi50+MUh1y+Dea
+         pCgIakzS7A4ei4/eNUCK6/KxqYS1OzZkXIteJp5qM2wO0HHxfI0mnNiem+ji0aN/ZHQW
+         g6cnaPHvTzHtCuWnlODq2h8bNSU4b2FU8jN6V/qqxSmxH9BJ5sDEO6m/RXyhcH5sYr9/
+         UK2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a2hRN1o8EhoWJ7fMKxLmJVUsfsNgfHlSCMCgFfm4Eu0=;
-        b=P5GuVyZCytOnKmakJzx4XpN6keLcN1L89TNWD5JrmlSbqhWrOQipM+u+46MfmgueQU
-         Abgt4e/sJnZ0VtMZd73C6vTyXVdccofEaOIrIdAazlwu+4/fAfCSFhHWt7jXACav1FZw
-         xDWTvQOZm4/7hnoPH4Fzo0ITXH7HePjmV07vZ+OjGy2U6g3kwwHDXwtDv3mM2DIkzGLB
-         /SpDvNYOViAY75V6c4OrKqeIbYkF4v2W5pKu6Kx+WPptb7ex5Ozlq8BA5K2uXLmQBSiM
-         HDo9aGSa2syHKbZlzq1IKbSajCWvVaDJxzvZeDAtS+dr21QErZuj5RX30va7wP0wFiEn
-         ROBw==
-X-Gm-Message-State: AOAM533ZeU6ozVW6f6tYcaB0KZjdryx1VsEV1EojheKcvtLn5Hmfk79O
-        JS8/q5Y6SobT20sGrKhHNdA=
-X-Google-Smtp-Source: ABdhPJw6QCztyuRE873NcvwIXkZy1Q0D3U4YD4hHmSBHs4f3C9BTAPp0rvyKCCCuE5qB5NYdO3XQFw==
-X-Received: by 2002:a17:902:9f93:: with SMTP id g19mr60489476plq.314.1594471416581;
-        Sat, 11 Jul 2020 05:43:36 -0700 (PDT)
+        bh=li49iVWviGqS3VLMjcwZhSBcEz5HMh5QY3AlCy5JCOY=;
+        b=oe4yFhd1kQxOVO/jd4QN1LMyv/Y5XoVN0BixIKkMabMEh7/z3N2PLlR3TiEIR1w4KB
+         ECZHWfGinv44BBttllk212L3km426LNOHrM5cwegmDB8JbeUb+Ih/havgzbZj0jzHFTb
+         YtbBg99XRjde8q8DjRGO95DKgo53Mther+BSOUKOJjzT5rLLhBInb1ZBWqJpL7mIKEYh
+         Fml1dJKZPgLRwyFsuTgncJQ0x53XpbOYwTa27rhXNI27QPrHA54XT0COWUvgO5/v0Jq/
+         cfsaggGEpuNpZ2d9Jnedu02UA4rFvxDPC3sVUbNXTb7v1tso+p+RA5Ctv0RA0lwAhy4B
+         6MTg==
+X-Gm-Message-State: AOAM53079dIUbS57Sp/zPqZUxtY5CoaT/LjRvy4B1mJ06f5bt1wKQ8sF
+        /Ju1sQqRuZ7ATEJ7WNGV66bxv5wV
+X-Google-Smtp-Source: ABdhPJwdu8jbywt76OfavFP3gWNVu9LwwIkDAOAV8/1DNdtRPZRL6e7135iv4EdjUi2C+PPrbKBRTA==
+X-Received: by 2002:a63:3005:: with SMTP id w5mr61075567pgw.441.1594471421132;
+        Sat, 11 Jul 2020 05:43:41 -0700 (PDT)
 Received: from vultr.guest ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id c19sm8352899pjs.11.2020.07.11.05.43.31
+        by smtp.gmail.com with ESMTPSA id c19sm8352899pjs.11.2020.07.11.05.43.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Jul 2020 05:43:35 -0700 (PDT)
+        Sat, 11 Jul 2020 05:43:40 -0700 (PDT)
 From:   Changbin Du <changbin.du@gmail.com>
 To:     Jiri Olsa <jolsa@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -56,9 +56,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH v5 14/17] perf ftrace: add support for trace option tracing_thresh
-Date:   Sat, 11 Jul 2020 20:40:32 +0800
-Message-Id: <20200711124035.6513-15-changbin.du@gmail.com>
+Subject: [PATCH v5 15/17] perf: ftrace: allow set graph depth by '--graph-opts'
+Date:   Sat, 11 Jul 2020 20:40:33 +0800
+Message-Id: <20200711124035.6513-16-changbin.du@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200711124035.6513-1-changbin.du@gmail.com>
 References: <20200711124035.6513-1-changbin.du@gmail.com>
@@ -69,102 +69,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds an option '--graph-opts thresh' to setup trace duration
-threshold for funcgraph tracer.
-
-$ sudo ./perf ftrace -G --graph-opts thresh=100
- 3) ! 184.060 us  |    } /* schedule */
- 3) ! 185.600 us  |  } /* exit_to_usermode_loop */
- 2) ! 225.989 us  |    } /* schedule_idle */
- 2) # 4140.051 us |  } /* do_idle */
+This is to have a consistent view of all graph tracer options.
+The original option '--graph-depth' is marked as deprecated.
 
 Signed-off-by: Changbin Du <changbin.du@gmail.com>
 ---
- tools/perf/Documentation/perf-ftrace.txt |  1 +
- tools/perf/builtin-ftrace.c              | 26 +++++++++++++++++++++++-
- 2 files changed, 26 insertions(+), 1 deletion(-)
+ tools/perf/Documentation/perf-ftrace.txt | 5 +----
+ tools/perf/builtin-ftrace.c              | 5 ++---
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-index 0dd5ef4f9c65..a103e3fd8d42 100644
+index a103e3fd8d42..97d89478ff5f 100644
 --- a/tools/perf/Documentation/perf-ftrace.txt
 +++ b/tools/perf/Documentation/perf-ftrace.txt
-@@ -108,6 +108,7 @@ OPTIONS
+@@ -99,16 +99,13 @@ OPTIONS
+ 	This can be used more than once to specify multiple functions.
+ 	It will be passed to 'set_graph_notrace' in tracefs.
+ 
+--D::
+---graph-depth=::
+-	Set max depth for function graph tracer to follow
+-
+ --graph-opts::
+ 	List of options allowed to set:
  	  nosleep-time - Measure on-CPU time only for function_graph tracer.
  	  noirqs       - Ignore functions that happen inside interrupt.
  	  verbose      - Show process names, PIDs, timestamps, etc.
-+	  thresh=<n>   - Setup trace duration threshold in microseconds.
+ 	  thresh=<n>   - Setup trace duration threshold in microseconds.
++	  depth=<n>    - Set max depth for function graph tracer to follow.
  
  SEE ALSO
  --------
 diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-index d169d6329454..c6d0194e4d0e 100644
+index c6d0194e4d0e..86fc5d466e97 100644
 --- a/tools/perf/builtin-ftrace.c
 +++ b/tools/perf/builtin-ftrace.c
-@@ -46,6 +46,7 @@ struct perf_ftrace {
- 	int			graph_nosleep_time;
- 	int			graph_noirqs;
- 	int			graph_verbose;
-+	int			graph_thresh;
- };
- 
- struct filter_entry {
-@@ -229,6 +230,9 @@ static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
- 	if (write_tracing_file("max_graph_depth", "0") < 0)
- 		return -1;
- 
-+	if (write_tracing_file("tracing_thresh", "0") < 0)
-+		return -1;
-+
- 	reset_tracing_filters();
- 	reset_tracing_options(ftrace);
- 	return 0;
-@@ -441,6 +445,20 @@ static int set_tracing_funcgraph_verbose(struct perf_ftrace *ftrace)
- 	return 0;
- }
- 
-+static int set_tracing_thresh(struct perf_ftrace *ftrace)
-+{
-+	int ret;
-+
-+	if (ftrace->graph_thresh == 0)
-+		return 0;
-+
-+	ret = write_tracing_file_int("tracing_thresh", ftrace->graph_thresh);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
- {
- 	char *trace_file;
-@@ -540,6 +558,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
- 		goto out_reset;
- 	}
- 
-+	if (set_tracing_thresh(ftrace) < 0) {
-+		pr_err("failed to set tracing thresh\n");
-+		goto out_reset;
-+	}
-+
- 	if (write_tracing_file("current_tracer", ftrace->tracer) < 0) {
- 		pr_err("failed to set current_tracer to %s\n", ftrace->tracer);
- 		goto out_reset;
-@@ -723,6 +746,7 @@ static int parse_graph_tracer_opts(const struct option *opt,
- 		{ .name = "nosleep-time",	.value_ptr = &ftrace->graph_nosleep_time },
+@@ -747,6 +747,7 @@ static int parse_graph_tracer_opts(const struct option *opt,
  		{ .name = "noirqs",		.value_ptr = &ftrace->graph_noirqs },
  		{ .name = "verbose",		.value_ptr = &ftrace->graph_verbose },
-+		{ .name = "thresh",		.value_ptr = &ftrace->graph_thresh },
+ 		{ .name = "thresh",		.value_ptr = &ftrace->graph_thresh },
++		{ .name = "depth",		.value_ptr = &ftrace->graph_depth },
  		{ .name = NULL, }
  	};
  
-@@ -779,7 +803,7 @@ int cmd_ftrace(int argc, const char **argv)
- 	OPT_INTEGER('D', "graph-depth", &ftrace.graph_depth,
- 		    "Max depth for function graph tracer"),
+@@ -800,10 +801,8 @@ int cmd_ftrace(int argc, const char **argv)
+ 		     parse_filter_func),
+ 	OPT_CALLBACK('g', "nograph-funcs", &ftrace.nograph_funcs, "func",
+ 		     "Set nograph filter on given functions", parse_filter_func),
+-	OPT_INTEGER('D', "graph-depth", &ftrace.graph_depth,
+-		    "Max depth for function graph tracer"),
  	OPT_CALLBACK(0, "graph-opts", &ftrace, "options",
--		     "graph tracer options, available options: nosleep-time,noirqs,verbose",
-+		     "graph tracer options, available options: nosleep-time,noirqs,verbose,thresh=<n>",
+-		     "graph tracer options, available options: nosleep-time,noirqs,verbose,thresh=<n>",
++		     "graph tracer options, available options: nosleep-time,noirqs,verbose,thresh=<n>,depth=<n>",
  		     parse_graph_tracer_opts),
  	OPT_CALLBACK('m', "buffer-size", &ftrace.percpu_buffer_size, "size",
  		     "size of per cpu buffer", parse_buffer_size),
