@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEE221C1AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 03:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A773B21C1B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 03:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727054AbgGKBzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 21:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
+        id S1727028AbgGKB7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 21:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726605AbgGKBzF (ORCPT
+        with ESMTP id S1726605AbgGKB7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 21:55:05 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DAFC08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 18:55:04 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id i4so7952016iov.11
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 18:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fHI4iXtmX01yNpRFDCOqzvlBSYR9wvdFvILVM3jzt4w=;
-        b=M7P0dNpcggbgMq8M3ZUKrRzfuzHd/DzMtIcX7NdMEr00hAR/QZ8gt5RoDEUgT1yOxK
-         px4ROFrpvTlpcSBMIMFpfZzmLQxIPjab+7WvXPLMWWZzjghjraS92SqCf6bTARF55h6F
-         6lUI+pieHU7pOZjluSZcZ0NCsGMSZ3qjzBpM/dfPFHQB6JBGG3pG9g57SsnS+xx017up
-         OVdNzDD6+oFnkmXyclJYkItOLkzZlfybaEfvA7vnpYcFQ3AJalyhdgL0F2aDpZGwDrwM
-         NQIU+H9g9Y5ufClFM/5bwUhV9ABYhzjWAOJwqtxpZx46WosAw1d6pqlhBRkAkmsGYCXB
-         27LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fHI4iXtmX01yNpRFDCOqzvlBSYR9wvdFvILVM3jzt4w=;
-        b=AoE8+8y7URKR1LvCzHtwchRFOiwDS7Xd98ekpaXEifGziGhXSAgUMWbFTmF45QYGcI
-         zFjKuUye5yER5stqL0LFUjZOqf6qUgZzWGKY0sYycRrBB8RAVtE5QkRMcgvGl+L3k4SO
-         5/G8E6V9H8RVOOiqkzt7dNRaY/PEtYgkAU57zCG9DG4AZk1GhX52hqogN6I1ZhdfIE5M
-         SRqOPLmcBLoWQ9X3Pz/s++Bkjbz00rCe+b6V2/IJvzJAC70pM8HM/ghdEyLkswbral05
-         8PI7sAd7t44U8tx6GpRMGF1h9rjJhxGnEA/cLvwRBkh+1T24X+YTda8fpxUgET9Up3Es
-         m/dg==
-X-Gm-Message-State: AOAM533SFHH6mdPw4bW45fZrxH53WodOzXix/bFUBIQc3GDYrvRbAexd
-        qjneam6j/uFY3AEqJHf+OC+qHQEWWdVg+fIKffs=
-X-Google-Smtp-Source: ABdhPJz6XuX2EPyiuy7Eq7m/T1DuQ4iZ2Gio4juwxIYfQIGYc6DsjbM7fcsqWQUrfO4N3DLRieTnx6j+OPbH0z0oIk4=
-X-Received: by 2002:a5d:9752:: with SMTP id c18mr26549080ioo.10.1594432504271;
- Fri, 10 Jul 2020 18:55:04 -0700 (PDT)
+        Fri, 10 Jul 2020 21:59:36 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DFF7C08C5DC;
+        Fri, 10 Jul 2020 18:59:35 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B3Y4f3D85z9sQt;
+        Sat, 11 Jul 2020 11:59:30 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594432771;
+        bh=l+rJw1Tu2JK+3XbtUHCAR+kbg7O3EQjKjtKhEmGOaxw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BKPG79MzuNL9TNqi3N8II5wdHquXF+7x0aqRhOiBKLuiCNCVjDaeID7F9G0Y5UX4K
+         4yzwaZe2ho1O2AeLdfFBhvXlkrS5E8XOkU+BLQLdZ7GZGNOK8bhPSkhHaePthx2MVx
+         X89Dl6XJfCGvYXCUz9vCl8UEM1pY9XqJqyJm/AMZ/8Ip3XtL0PDpOdGJFQGU5RiN8e
+         /Tw3aNcAcofngii4nHzECuyduUPL/YmNLNQfqjM6SitzeHb52BUGTllqh5sx+VLpak
+         5NFpne+vzI1f/zXD+wO+N7F+CDFs8O4p1AMnUgfuQR/hRoOgCxmJNPNcmIRMMW7avV
+         uxk67gserqf7g==
+Date:   Sat, 11 Jul 2020 11:59:29 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Akash Asthana <akashast@codeaurora.org>
+Subject: Re: [PATCH -next] <linux/of.h>: add stub for of_get_next_parent()
+ to fix qcom build error
+Message-ID: <20200711115929.4636a797@canb.auug.org.au>
+In-Reply-To: <215c3c59-e6f7-1721-76ca-993bbaf91356@infradead.org>
+References: <ce0d7561-ff93-d267-b57a-6505014c728c@infradead.org>
+        <CAL_Jsq+AWo6xP1vC1NubFcdWzoX4hVvSW4KGry1NhOXUieDrSA@mail.gmail.com>
+        <215c3c59-e6f7-1721-76ca-993bbaf91356@infradead.org>
 MIME-Version: 1.0
-References: <20200711011459.1159929-1-shakeelb@google.com>
-In-Reply-To: <20200711011459.1159929-1-shakeelb@google.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 11 Jul 2020 09:54:28 +0800
-Message-ID: <CALOAHbDWA2p_FhFHf227ie8djuY3ugkDsQq+v20BAUoJdXiH6Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: vmscan: consistent update to pgrefill
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Chris Down <chris@chrisdown.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/.J4ddMQAHs+RvRstUZxfdIB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 9:15 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> The vmstat pgrefill is useful together with pgscan and pgsteal stats to
-> measure the reclaim efficiency. However vmstat's pgrefill is not updated
-> consistently at system level. It gets updated for both global and memcg
-> reclaim however pgscan and pgsteal are updated for only global reclaim.
-> So, update pgrefill only for global reclaim. If someone is interested in
-> the stats representing both system level as well as memcg level reclaim,
-> then consult the root memcg's memory.stat instead of /proc/vmstat.
->
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+--Sig_/.J4ddMQAHs+RvRstUZxfdIB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Yafang Shao <laoar.shao@gmail.com>
+Hi Randy,
 
-> ---
->  mm/vmscan.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+On Fri, 10 Jul 2020 16:40:03 -0700 Randy Dunlap <rdunlap@infradead.org> wro=
+te:
 >
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 5215840ee217..4167b0cc1784 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2030,7 +2030,8 @@ static void shrink_active_list(unsigned long nr_to_scan,
->
->         __mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, nr_taken);
->
-> -       __count_vm_events(PGREFILL, nr_scanned);
-> +       if (!cgroup_reclaim(sc))
-> +               __count_vm_events(PGREFILL, nr_scanned);
->         __count_memcg_events(lruvec_memcg(lruvec), PGREFILL, nr_scanned);
->
->         spin_unlock_irq(&pgdat->lru_lock);
-> --
-> 2.27.0.383.g050319c2ae-goog
->
+> Are linux-next hashes/tags stable?
 
+That depends on the maintainer of the tree I fetch ... In this case the
+qcom tree.
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-Thanks
-Yafang
+--Sig_/.J4ddMQAHs+RvRstUZxfdIB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8JHQEACgkQAVBC80lX
+0Gx6kgf+ONvw3RpF1fOX3tBI3cbl2ONfD4C/J9u6TLjgyC/vQHIVpTTW2CHgi7Zl
+Ibg8lsS3KeYJTdHJccOi8VVAB+HKHzN3AsdBtHyxb6vyuuv9sIGx/Tg1TcqJ5TMG
+POhrjwZ7xVcdUHjrMB/yG/3vmfgL8l6v49SetFT9RZ8PfZHVVadsTjjZGgpRB98n
+HZR20fbdkEdmjGWy1XgN87lmBIBMm5jZyLyHNyFw+cD4e1QEGBF6R6lOSr/lOfa3
+a4oAbwgK6j5Me01ln8tx9/hrdSC4cbspX9BK+FQnXuPUPWve2qdiRGsftNs27rD8
+fjrv2Fu9CcsKj+nwBTz9WmczPuoYLA==
+=+wh6
+-----END PGP SIGNATURE-----
+
+--Sig_/.J4ddMQAHs+RvRstUZxfdIB--
