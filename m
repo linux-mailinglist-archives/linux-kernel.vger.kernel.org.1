@@ -2,205 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C8F21C4A9
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 16:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804BB21C4AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 16:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgGKO0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 10:26:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51512 "EHLO mail.kernel.org"
+        id S1728422AbgGKOcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 10:32:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726630AbgGKO0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 10:26:51 -0400
+        id S1728294AbgGKOcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Jul 2020 10:32:24 -0400
 Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8609720720;
-        Sat, 11 Jul 2020 14:26:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14BB220720;
+        Sat, 11 Jul 2020 14:32:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594477610;
-        bh=e/9LYPdcKCiFpCvMorMnwcl40GSAMJjc/wJdeKLs31I=;
+        s=default; t=1594477943;
+        bh=UqWFBHcsmz1nBysnWIV+Cuhkrsz5c16BQDv6NLgGk/Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i1Cu3DReyelZj2+0mf6nU9OWkEHe0u0TD971W6RGvAQ0xTnDhRCN+LZkpMth0xv6O
-         zhkPWWErpH5IZvrjGX2unaDRA8ySmyiNvtdRsYBct2QIT04MId9TO0ocRlLBwJux7Q
-         ZJwmPcQSNYxmUGJlPl3GjP3615h+RGGYmQLwo4TY=
-Date:   Sat, 11 Jul 2020 22:26:43 +0800
+        b=VJfsj+ZPAB8k4L09HNHzrZG7ZvoClAPFCTA5SNU78mzrkTkanJI9Ldfi1jFG2Lr7I
+         2FZTUvkKVO9ZpzQ2QbEiepROTP8fmDF5mk4IZWWdo3BsvCFyfO1T8WRenyJ0O7raVx
+         GqArakqzl1vyaeCwtbcia9gt0Lf/cYgKt7+UjrGg=
+Date:   Sat, 11 Jul 2020 22:32:18 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Leonard Crestez <cdleonard@gmail.com>,
-        Rob Herring <robh@kernel.org>,
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Leonard Crestez <leonard.crestez@nxp.com>
-Subject: Re: [RESEND v2] arm64: dts: imx8m: Add NOC nodes
-Message-ID: <20200711142642.GJ21277@dragon>
-References: <1594070006-816-1-git-send-email-abel.vesa@nxp.com>
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3] ARM: dts: imx6qdl-gw551x: fix audio SSI
+Message-ID: <20200711143217.GK21277@dragon>
+References: <1592937087-8885-1-git-send-email-tharvey@gateworks.com>
+ <1592939214-13637-1-git-send-email-tharvey@gateworks.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1594070006-816-1-git-send-email-abel.vesa@nxp.com>
+In-Reply-To: <1592939214-13637-1-git-send-email-tharvey@gateworks.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 12:13:26AM +0300, Abel Vesa wrote:
-> From: Leonard Crestez <leonard.crestez@nxp.com>
+On Tue, Jun 23, 2020 at 12:06:54PM -0700, Tim Harvey wrote:
+> The audio codec on the GW551x routes to ssi1
 > 
-> Add nodes for the main interconnect of the imx8m series chips.
-> 
-> These nodes are bound to by devfreq and interconnect drivers.
-> 
-> Signed-off-by: Leonard Crestez <leonard.crestez@nxp.com>
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> Tested-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> Acked-by: Georgi Djakov <georgi.djakov@linaro.org>
-> ---
-> 
-> Changes since v1:
->  - picked up the bindinds header which were part of the original patch
->    from Leonard
-> 
->  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 24 ++++++++++++++++++++++++
->  arch/arm64/boot/dts/freescale/imx8mn.dtsi | 24 ++++++++++++++++++++++++
->  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 24 ++++++++++++++++++++++++
->  3 files changed, 72 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> index 76f040e..970d132 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> @@ -8,6 +8,7 @@
->  #include <dt-bindings/input/input.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/thermal/thermal.h>
-> +#include <dt-bindings/interconnect/imx8mm.h>
->  
->  #include "imx8mm-pinfunc.h"
->  
-> @@ -877,6 +878,29 @@
->  
->  		};
->  
-> +		noc: interconnect@32700000 {
-> +			compatible = "fsl,imx8mm-noc", "fsl,imx8m-noc";
-> +			reg = <0x32700000 0x100000>;
-> +			clocks = <&clk IMX8MM_CLK_NOC>;
-> +			fsl,ddrc = <&ddrc>;
-> +			#interconnect-cells = <1>;
-> +			operating-points-v2 = <&noc_opp_table>;
-> +
-> +			noc_opp_table: opp-table {
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-150M {
-> +					opp-hz = /bits/ 64 <150000000>;
-> +				};
+> Cc: stable@vger.kernel.org
+> Fixes: 3117e851cef1 ("ARM: dts: imx: Add TDA19971 HDMI Receiver to GW551x")
+> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
 
-Please have a newline between nodes.
-
-Shawn
-
-> +				opp-375M {
-> +					opp-hz = /bits/ 64 <375000000>;
-> +				};
-> +				opp-750M {
-> +					opp-hz = /bits/ 64 <750000000>;
-> +				};
-> +			};
-> +		};
-> +
->  		aips4: bus@32c00000 {
->  			compatible = "fsl,aips-bus", "simple-bus";
->  			reg = <0x32c00000 0x400000>;
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> index 9385dd7..cd38aae 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> @@ -8,6 +8,7 @@
->  #include <dt-bindings/input/input.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/thermal/thermal.h>
-> +#include <dt-bindings/interconnect/imx8mn.h>
->  
->  #include "imx8mn-pinfunc.h"
->  
-> @@ -764,6 +765,29 @@
->  
->  		};
->  
-> +		noc: interconnect@32700000 {
-> +			compatible = "fsl,imx8mn-noc", "fsl,imx8m-noc";
-> +			reg = <0x32700000 0x100000>;
-> +			clocks = <&clk IMX8MN_CLK_NOC>;
-> +			fsl,ddrc = <&ddrc>;
-> +			#interconnect-cells = <1>;
-> +			operating-points-v2 = <&noc_opp_table>;
-> +
-> +			noc_opp_table: opp-table {
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-100M {
-> +					opp-hz = /bits/ 64 <100000000>;
-> +				};
-> +				opp-600M {
-> +					opp-hz = /bits/ 64 <600000000>;
-> +				};
-> +				opp-800M {
-> +					opp-hz = /bits/ 64 <800000000>;
-> +				};
-> +			};
-> +		};
-> +
->  		aips4: bus@32c00000 {
->  			compatible = "fsl,aips-bus", "simple-bus";
->  			reg = <0x32c00000 0x400000>;
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> index f70435c..d585650 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> @@ -11,6 +11,7 @@
->  #include "dt-bindings/input/input.h"
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/thermal/thermal.h>
-> +#include <dt-bindings/interconnect/imx8mq.h>
->  #include "imx8mq-pinfunc.h"
->  
->  / {
-> @@ -1045,6 +1046,29 @@
->  			};
->  		};
->  
-> +		noc: interconnect@32700000 {
-> +			compatible = "fsl,imx8mq-noc", "fsl,imx8m-noc";
-> +			reg = <0x32700000 0x100000>;
-> +			clocks = <&clk IMX8MQ_CLK_NOC>;
-> +			fsl,ddrc = <&ddrc>;
-> +			#interconnect-cells = <1>;
-> +			operating-points-v2 = <&noc_opp_table>;
-> +
-> +			noc_opp_table: opp-table {
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-133M {
-> +					opp-hz = /bits/ 64 <133333333>;
-> +				};
-> +				opp-400M {
-> +					opp-hz = /bits/ 64 <400000000>;
-> +				};
-> +				opp-800M {
-> +					opp-hz = /bits/ 64 <800000000>;
-> +				};
-> +			};
-> +		};
-> +
->  		bus@32c00000 { /* AIPS4 */
->  			compatible = "fsl,aips-bus", "simple-bus";
->  			reg = <0x32c00000 0x400000>;
-> -- 
-> 2.7.4
-> 
+Applied, thanks.
