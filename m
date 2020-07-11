@@ -2,144 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B14821C564
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 19:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F52E21C574
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 19:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgGKRDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 13:03:21 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:36536 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728507AbgGKRDV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 13:03:21 -0400
-Received: by mail-il1-f199.google.com with SMTP id t19so6004867ili.3
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 10:03:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=zx+wcMN9XwcOE9Jwr6b7EFyTsUN+BF3ioh+EWC9OsoU=;
-        b=axUwVQcjbT9zzeRoMwTu9LxIXrSBnSAV4AFT7nowOCdSzXogCvh20MqaWRn/77wkdU
-         INT9ZlQIvZksKHzV061FEaz20ELBQfokazaJg41d0cGcUA0983DykoOD9vd0DcLXpqAa
-         zOw58nHY9pBV00YBUBgk9XcAfSPJZ+WN/Qr1wHp2/mg9O/7D45tQZBir9jGXYsfy9dos
-         GZwxu2vJIYUm9XT3R0nlR+2Cg8KbDL70NEL32OztO8naaL8Svc6W4Nglg+qp6AWj5M6J
-         wdFCwZmWUNrac85aH0qT8a3dVOOwXHgIFRLKFmX2hl01OyTPVL9ccnXqIyQT34XdVNlR
-         K8Gg==
-X-Gm-Message-State: AOAM531IR1Eos9+2kIQyslfdvbrimZu5P5Jo2DhDTWBJ4EkeXsCzGb+b
-        pgt5id3pM+rDCRNNpsa6AYRazgHOiMbGGgZgS1TiqD9sgnNV
-X-Google-Smtp-Source: ABdhPJxCNrQ7mwfVu4cyIs1iVuRfd7CVfH485Y1eSUaP3CBGERIgIgOaI+mZPbaGNgwQVkMDXgoVmaJWisdQH/1M/dyre4UOH0UL
+        id S1728667AbgGKRMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 13:12:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728390AbgGKRMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Jul 2020 13:12:33 -0400
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B7ED207F9
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 17:12:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594487551;
+        bh=s9mrx7k59hwzdLeWPJcQcmvwf6/b9gcu+Ak1sy2igxM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IeaXB6GSRhioFWU0UTvh1ZtPOgVSI6WZtlrygLedn7tb5e3XWxUN+18LvhwZp+mBa
+         ZJZr1gZLDcpoT6EvncyhJvyf4NftCj7iUO+7kZ/Ap2mdB8UNpw+jXaSdW9dYzXGM7C
+         5OCe9PJGfLeJjHqXC2c6lePSLeSpGEbB4ZhXcIsg=
+Received: by mail-wr1-f41.google.com with SMTP id z13so8988247wrw.5
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 10:12:31 -0700 (PDT)
+X-Gm-Message-State: AOAM533dkRel8J8ofkHB4AHXRx4wDVa5NwJ4wkchgYY4TNxoRRpcccn3
+        lZlbRab7dtuj7dBef0ZaBT7MGxtyaYfXhHvQ4rc7CA==
+X-Google-Smtp-Source: ABdhPJxNtxNv97vVac68ETfyivGxBZOuJIp3HUrjq3Qf1jDPvSqczIR/Ifqp2jy/OgdOrzmC+NqwE8cc5w8QhdQwvnk=
+X-Received: by 2002:adf:f707:: with SMTP id r7mr71676977wrp.70.1594487550009;
+ Sat, 11 Jul 2020 10:12:30 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:9b08:: with SMTP id j8mr6336861iok.116.1594486999819;
- Sat, 11 Jul 2020 10:03:19 -0700 (PDT)
-Date:   Sat, 11 Jul 2020 10:03:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000392a0a05aa2d6faf@google.com>
-Subject: general protection fault in htab_elem_free_rcu
-From:   syzbot <syzbot+a9db0ab6a8e0ca14351d@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <000000000000a4fd8105aa252630@google.com>
+In-Reply-To: <000000000000a4fd8105aa252630@google.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 11 Jul 2020 10:12:18 -0700
+X-Gmail-Original-Message-ID: <CALCETrVM13_htxyALSTjZT-m2=qBfBh_Z8AaGFD=BLdSgX-jzA@mail.gmail.com>
+Message-ID: <CALCETrVM13_htxyALSTjZT-m2=qBfBh_Z8AaGFD=BLdSgX-jzA@mail.gmail.com>
+Subject: Re: BUG: stack guard page was hit in fixup_exception
+To:     syzbot <syzbot+3370f8260246b965fefd@syzkaller.appspotmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs@googlegroups.com,
+        Thomas Gleixner <tglx@linutronix.de>, X86 ML <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Jul 11, 2020 at 12:10 AM syzbot
+<syzbot+3370f8260246b965fefd@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following crash on:
+>
+> HEAD commit:    42f82040 Merge tag 'drm-fixes-2020-07-10' of git://anongit..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12d80333100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=66ad203c2bb6d8b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3370f8260246b965fefd
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>
+> Unfortunately, I don't have any reproducer for this crash yet.
+>
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+3370f8260246b965fefd@syzkaller.appspotmail.com
+>
 
-syzbot found the following crash on:
+> Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
-HEAD commit:    d31958b3 Add linux-next specific files for 20200710
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13935857100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3fe4fccb94cbc1a6
-dashboard link: https://syzkaller.appspot.com/bug?extid=a9db0ab6a8e0ca14351d
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133db22b100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16fe6f1f100000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+a9db0ab6a8e0ca14351d@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xf33bb70012bc003b: 0000 [#1] PREEMPT SMP KASAN
-KASAN: maybe wild-memory-access in range [0x99ddd80095e001d8-0x99ddd80095e001df]
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.8.0-rc4-next-20200710-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:htab_elem_free kernel/bpf/hashtab.c:769 [inline]
-RIP: 0010:htab_elem_free_rcu+0x4a/0x110 kernel/bpf/hashtab.c:779
-Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 bc 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 6b f8 48 8d 7d 18 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 82 00 00 00 44 8b 65 18 bf 05
-RSP: 0018:ffffc90000007e48 EFLAGS: 00010a03
-RAX: dffffc0000000000 RBX: ffff888084800010 RCX: 0000000000000001
-RDX: 133bbb0012bc003b RSI: ffffffff8186891e RDI: 99ddd80095e001de
-RBP: 99ddd80095e001c6 R08: 0000000000000000 R09: ffffffff8c5b09f7
-R10: fffffbfff18b613e R11: 0000000000000000 R12: ffffc90000007ed8
-R13: ffff888084800000 R14: 0000000000000000 R15: ffffffff89a86580
-FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004c6368 CR3: 0000000009a79000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- rcu_do_batch kernel/rcu/tree.c:2418 [inline]
- rcu_core+0x5dc/0x11d0 kernel/rcu/tree.c:2645
- __do_softirq+0x34c/0xa60 kernel/softirq.c:292
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- do_softirq_own_stack+0x111/0x170 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:387 [inline]
- __irq_exit_rcu kernel/softirq.c:417 [inline]
- irq_exit_rcu+0x229/0x270 kernel/softirq.c:429
- sysvec_apic_timer_interrupt+0x54/0x120 arch/x86/kernel/apic/apic.c:1090
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:587
-RIP: 0010:native_safe_halt+0xe/0x10 arch/x86/include/asm/irqflags.h:61
-Code: ff 4c 89 ef e8 93 66 c6 f9 e9 8e fe ff ff 48 89 df e8 86 66 c6 f9 eb 8a cc cc cc cc e9 07 00 00 00 0f 00 2d 34 9b 5b 00 fb f4 <c3> 90 e9 07 00 00 00 0f 00 2d 24 9b 5b 00 f4 c3 cc cc 55 53 e8 09
-RSP: 0018:ffffffff89a07c70 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffffffff89a86580 RSI: ffffffff87ed2968 RDI: ffffffff87ed293e
-RBP: ffff8880a6a93064 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: ffff8880a6a93064
-R13: 1ffffffff1340f98 R14: ffff8880a6a93065 R15: 0000000000000001
- arch_safe_halt arch/x86/include/asm/paravirt.h:150 [inline]
- acpi_safe_halt+0x8d/0x110 drivers/acpi/processor_idle.c:111
- acpi_idle_do_entry+0x15c/0x1b0 drivers/acpi/processor_idle.c:525
- acpi_idle_enter+0x3f9/0xab0 drivers/acpi/processor_idle.c:651
- cpuidle_enter_state+0xff/0x960 drivers/cpuidle/cpuidle.c:235
- cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:346
- call_cpuidle kernel/sched/idle.c:126 [inline]
- cpuidle_idle_call kernel/sched/idle.c:214 [inline]
- do_idle+0x431/0x6d0 kernel/sched/idle.c:276
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:372
- start_kernel+0x9cb/0xa06 init/main.c:1045
- secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:243
-Modules linked in:
----[ end trace 5ce7b44eaacf6c96 ]---
-RIP: 0010:htab_elem_free kernel/bpf/hashtab.c:769 [inline]
-RIP: 0010:htab_elem_free_rcu+0x4a/0x110 kernel/bpf/hashtab.c:779
-Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 bc 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 6b f8 48 8d 7d 18 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 82 00 00 00 44 8b 65 18 bf 05
-RSP: 0018:ffffc90000007e48 EFLAGS: 00010a03
-RAX: dffffc0000000000 RBX: ffff888084800010 RCX: 0000000000000001
-RDX: 133bbb0012bc003b RSI: ffffffff8186891e RDI: 99ddd80095e001de
-RBP: 99ddd80095e001c6 R08: 0000000000000000 R09: ffffffff8c5b09f7
-R10: fffffbfff18b613e R11: 0000000000000000 R12: ffffc90000007ed8
-R13: ffff888084800000 R14: 0000000000000000 R15: ffffffff89a86580
-FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004c6368 CR3: 0000000009a79000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+I bet this is the same fbcon bug.
