@@ -2,194 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B7C21C190
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 03:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C927521C19C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 03:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgGKB3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 21:29:18 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37718 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726991AbgGKB3O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 21:29:14 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06B1OTFc027668
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 18:29:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=Zt9u2EpjWjLtKzNqOLuW2yd8dLixE48PVNDjLnQBOGM=;
- b=cwzPqJzFj3nKDLXek/ZNIQ/9oxUu1edCuWpV3UbI6SQ3J12UrHs9ZJAHSADpnl9oMBoh
- kgl/ynnFLB0FjLoGiA8OFYivfDc69+gPJtRY5CChtOM6JW6e6C9USV94A0WzaMeLolBf
- Q7Nwj9uq1bzrNcTsjx79Jhv6CULRu39q5zU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 325k2cd84t-16
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 18:29:13 -0700
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 10 Jul 2020 18:29:10 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 56F4662E5296; Fri, 10 Jul 2020 18:27:00 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <brouer@redhat.com>, <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 5/5] selftests/bpf: add callchain_stackid
-Date:   Fri, 10 Jul 2020 18:26:39 -0700
-Message-ID: <20200711012639.3429622-6-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200711012639.3429622-1-songliubraving@fb.com>
-References: <20200711012639.3429622-1-songliubraving@fb.com>
+        id S1726729AbgGKBcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 21:32:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726605AbgGKBcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 21:32:16 -0400
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E30AC2077D;
+        Sat, 11 Jul 2020 01:32:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594431135;
+        bh=JHAq849TrDR2TO0YVgHnBwsgpBJXggDvOdSCDOO9Mhg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bMfSdxB7MrcYqYQa7ldPOwQ86Zvf7PpQlWpXfKwWn1cLEuXE64jZUFUYBu6rYOzyI
+         iW9WNDqwkrk0sgSJttDTT1OJ/ku53mvBNojP8dEQQR8KaZXPa7y6EUoPqUh/FVz9eG
+         YFLH08D+jTSwcQCN2Sb1ues3kIAJ8EMD9qUmzR5A=
+Received: by mail-lj1-f182.google.com with SMTP id q4so8455722lji.2;
+        Fri, 10 Jul 2020 18:32:14 -0700 (PDT)
+X-Gm-Message-State: AOAM533i9RSOURlAFGvve92goWza/FThJwSuHSocrh6mjc95rlGTOZ+4
+        3TqNKT67wiC+0SZv7TtaKeQ1BnH3eYxsadrDbL4=
+X-Google-Smtp-Source: ABdhPJyp9YYFId4+bHFEau35i4Dd+Jo03McSql50a82wua8FHQxiDnZqzZ8IFMQAFMi/x1kxYJ6SWwlxiHASFRW9a30=
+X-Received: by 2002:a2e:b0ed:: with SMTP id h13mr31505047ljl.250.1594431133218;
+ Fri, 10 Jul 2020 18:32:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-10_14:2020-07-10,2020-07-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 mlxscore=0 bulkscore=0
- phishscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007110006
-X-FB-Internal: deliver
+References: <1594261154-69745-1-git-send-email-guoren@kernel.org>
+ <1594261154-69745-7-git-send-email-guoren@kernel.org> <20200710225017.5ce329485e911f99e17cd483@kernel.org>
+In-Reply-To: <20200710225017.5ce329485e911f99e17cd483@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sat, 11 Jul 2020 09:32:01 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSfFY6qf7gZ9t80P-3cACWi3oEe4X8ek+_1nQZZT3Uk5w@mail.gmail.com>
+Message-ID: <CAJF2gTSfFY6qf7gZ9t80P-3cACWi3oEe4X8ek+_1nQZZT3Uk5w@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] riscv: Add KPROBES_ON_FTRACE supported
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup@brainfault.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        =?UTF-8?Q?Patrick_St=C3=A4hlin?= <me@packi.ch>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>, penberg@kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This tests new helper function bpf_get_callchain_stackid(), which is the
-alternative to bpf_get_stackid() for perf_event with PEBS entry.
+Thx Masami,
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../bpf/prog_tests/callchain_stackid.c        | 61 +++++++++++++++++++
- .../selftests/bpf/progs/callchain_stackid.c   | 37 +++++++++++
- 2 files changed, 98 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/callchain_stac=
-kid.c
- create mode 100644 tools/testing/selftests/bpf/progs/callchain_stackid.c
+On Fri, Jul 10, 2020 at 9:50 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Hi Guo,
+>
+> On Thu,  9 Jul 2020 02:19:14 +0000
+> guoren@kernel.org wrote:
+>
+> > +/* Ftrace callback handler for kprobes -- called under preepmt disabed */
+> > +void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+> > +                        struct ftrace_ops *ops, struct pt_regs *regs)
+> > +{
+> > +     struct kprobe *p;
+> > +     struct kprobe_ctlblk *kcb;
+> > +
+> > +     p = get_kprobe((kprobe_opcode_t *)ip);
+> > +     if (unlikely(!p) || kprobe_disabled(p))
+> > +             return;
+> > +
+> > +     kcb = get_kprobe_ctlblk();
+> > +     if (kprobe_running()) {
+> > +             kprobes_inc_nmissed_count(p);
+> > +     } else {
+> > +             /*
+> > +              * The regs->epc hasn't been saved by SAVE_ALL in mcount-dyn.S
+> > +              * So no need to resume it, just for kprobe handler.
+> > +              */
+> > +             instruction_pointer_set(regs, ip);
+> > +             __this_cpu_write(current_kprobe, p);
+> > +             kcb->kprobe_status = KPROBE_HIT_ACTIVE;
+> > +             if (!p->pre_handler || !p->pre_handler(p, regs)) {
+> > +                     /*
+> > +                      * Emulate singlestep (and also recover regs->pc)
+> > +                      * as if there is a nop
+> > +                      */
+> > +                     instruction_pointer_set(regs,
+> > +                             (unsigned long)p->addr + MCOUNT_INSN_SIZE);
+> > +                     if (unlikely(p->post_handler)) {
+> > +                             kcb->kprobe_status = KPROBE_HIT_SSDONE;
+> > +                             p->post_handler(p, regs, 0);
+> > +                     }
+>
+> Hmm, don't you need restoring the previous instruction pointer here?
+look at  riscv mcount-dyn.S SAVE_ALL function, sp frame lay out like this:
+-----------------------
+| return address |
+-----------------------
+| frame pointer   |
+-----------------------
+| pt_regs x1-x31|
+-----------------------
+It's not a complete pt_regs for the handler, so modifing regs->ip is no use.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/callchain_stackid.c b=
-/tools/testing/selftests/bpf/prog_tests/callchain_stackid.c
-new file mode 100644
-index 0000000000000..ebe6251324a1a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/callchain_stackid.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include <test_progs.h>
-+#include "callchain_stackid.skel.h"
-+
-+void test_callchain_stackid(void)
-+{
-+	struct perf_event_attr attr =3D {
-+		/* .type =3D PERF_TYPE_SOFTWARE, */
-+		.type =3D PERF_TYPE_HARDWARE,
-+		.config =3D PERF_COUNT_HW_CPU_CYCLES,
-+		.precise_ip =3D 2,
-+		.sample_type =3D PERF_SAMPLE_IP | PERF_SAMPLE_BRANCH_STACK |
-+			PERF_SAMPLE_CALLCHAIN,
-+		.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER |
-+			PERF_SAMPLE_BRANCH_NO_FLAGS |
-+			PERF_SAMPLE_BRANCH_NO_CYCLES |
-+			PERF_SAMPLE_BRANCH_CALL_STACK,
-+		.sample_period =3D 5000,
-+		.size =3D sizeof(struct perf_event_attr),
-+	};
-+	struct callchain_stackid *skel;
-+	__u32 duration =3D 0;
-+	int pmu_fd, err;
-+
-+	skel =3D callchain_stackid__open();
-+
-+	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
-+		return;
-+
-+	/* override program type */
-+	bpf_program__set_perf_event(skel->progs.oncpu);
-+
-+	err =3D callchain_stackid__load(skel);
-+	if (CHECK(err, "skel_load", "skeleton load failed: %d\n", err))
-+		goto cleanup;
-+
-+	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-+			 0 /* cpu 0 */, -1 /* group id */,
-+			 0 /* flags */);
-+	if (pmu_fd < 0) {
-+		printf("%s:SKIP:cpu doesn't support the event\n", __func__);
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
-+							   pmu_fd);
-+	if (CHECK(IS_ERR(skel->links.oncpu), "attach_perf_event",
-+		  "err %ld\n", PTR_ERR(skel->links.oncpu))) {
-+		close(pmu_fd);
-+		goto cleanup;
-+	}
-+	usleep(500000);
-+
-+	CHECK(skel->data->total_val =3D=3D 1, "get_callchain_stack", "failed\n"=
-);
-+	close(pmu_fd);
-+
-+cleanup:
-+	callchain_stackid__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/callchain_stackid.c b/tool=
-s/testing/selftests/bpf/progs/callchain_stackid.c
-new file mode 100644
-index 0000000000000..aab2c736a0a45
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/callchain_stackid.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+#ifndef PERF_MAX_STACK_DEPTH
-+#define PERF_MAX_STACK_DEPTH         127
-+#endif
-+
-+#ifndef BPF_F_USER_STACK
-+#define BPF_F_USER_STACK		(1ULL << 8)
-+#endif
-+
-+typedef __u64 stack_trace_t[PERF_MAX_STACK_DEPTH];
-+struct {
-+	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
-+	__uint(max_entries, 16384);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(stack_trace_t));
-+} stackmap SEC(".maps");
-+
-+long total_val =3D 1;
-+
-+SEC("perf_event")
-+int oncpu(struct bpf_perf_event_data *ctx)
-+{
-+	long val;
-+
-+	val =3D bpf_get_callchain_stackid(ctx->callchain, &stackmap, 0);
-+
-+	if (val > 0)
-+		total_val +=3D val;
-+
-+	return 0;
-+}
-+
-+char LICENSE[] SEC("license") =3D "GPL";
---=20
-2.24.1
+> If you don't support modifying the instruction pointer in the handler,
+We can modify ip like this if necessary:
+*(unsigned long *)((unsigned long)regs + sizeof(struct pt_regs) + 8) = xxx;
 
+> it must not be compatible with kprobes.
+Why, can you show related codes? thank you very much.
+
+>
+> Now BPF function override and function error injection depends on
+> this behevior, so could you consider to support it in the "ftrace"
+> implementation at first? (And if it is enabled, you can enable the
+> livepatch on RISCV too)
+Great message!
+
+But can you show me codes that bpf and err-jnject using the behavior? Thx
+
+I'll try to fix up it :)
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
