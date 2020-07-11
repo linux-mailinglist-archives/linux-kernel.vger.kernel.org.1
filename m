@@ -2,258 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA12221C149
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 02:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F331221C14C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 02:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgGKAuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 20:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
+        id S1726721AbgGKAxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 20:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727768AbgGKAu3 (ORCPT
+        with ESMTP id S1726262AbgGKAxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 20:50:29 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FDB7C08C5DD
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 17:50:29 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id l6so7086704qkc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 17:50:29 -0700 (PDT)
+        Fri, 10 Jul 2020 20:53:03 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59A1C08C5DC
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 17:53:02 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id z17so5937663edr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 17:53:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XuKnWcFSgGPyy7W5Q8ckcfqK3DnZHWryFWbqDhKba5s=;
-        b=nhfdA00sOP4HeM1eqGTbDiy9hgHHva2H+iOI+mbRMd8gU0X9bPyYzqqHdDc25LMhEc
-         Xvmec+YZqRx1RgXtYuA6m10pFaw3+uhCHmpHJTxx1lE+2XY43lvK7kYQwtwv7SLhJ1MB
-         /JJCafqgqDkRZuhfgk4cDaz+Qsid/NuECEnb2sa6r0f3t6iE2g6xNf9GX5CUWOUl8c98
-         htr9jjRFR4851rYX1RfoyGT/uTEjHAr+pK4sPszaR5wldX90Kr6EZnao0897h+eQOiXE
-         XGmXk010Ld8B4tjYsosiQ6zggVW1MN+PrIDt2WD6968z56ULIE1BY4kwIDZ6iSKxPG86
-         cQMw==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Rls/U/lDsLfT4D3DE5n9+9Nu0A90fUMZ5H2LpZadpY=;
+        b=iPPbSg9QOhO1/J2AGGABUiWYW1G+aZBlYGBwtZRUeuvTEkRismRqyyYYb/b5HtXFzD
+         eT6GM4fHT57mSqaeCJSPWS/lhpqKIIW/IEcSX0sOK4gzky06Dhnp/Ip1OIIpfdUL4I9D
+         zaf7XYwr0+dyWUSgZz/fIP6VpjQimltNJozru9KMByXvX/GmYaTxeawAnzBI049LwHqK
+         QyTtiHGsXlvVd8xwGIQmR9G52VI1TJAAt9K92hcxV/pbQ4SMotmatFqvGtbVlMbDTsbL
+         X0IogtzxzfRftbdheB9eRV8vW+J7XAIlFm6MBfLuy3kRg+Ca6FB45eVJjJ060lXd8Yag
+         +wpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XuKnWcFSgGPyy7W5Q8ckcfqK3DnZHWryFWbqDhKba5s=;
-        b=Qp7/fuo1RPl2IGvBRhPOP2WaRNwRmvgASVWIwoRnmUzjs+/USc6sy49JBu0ExHdV+5
-         xcmavvldrS5GeekZ8EB1PGQN6fDA4AkRFRY+dvvyqcsMJTpX1lGSFXVcgzw9W6qbgMXD
-         x/IhdLsfyYFHowMcj1OYmp38KEXKpdMWmlpZ4snIVWveRqVhB18hFN3xsuuQ9U4p1HA+
-         UGkeqxTUrOFOD/eD/V9gorjQLN8GbBJKAn5Y6oCNzyqONP0ke5SlhiVST0v+BrEVpPyF
-         qvAZmCdd9YFDv6hG3F3M/EhhnA92+jYgSe28K4V4ZojJduNayCR9npEooZ93xUVi0ftp
-         0Wyg==
-X-Gm-Message-State: AOAM530A//qYsVirwDABrfOdefdCJl82d+Ty0DnLGKvmmXn6XXwk/nr5
-        ZD3qgT2W0LDBt911mh2b2YZQrw==
-X-Google-Smtp-Source: ABdhPJw0K/rSJJFuRwVzyDZ7MnP/cQazYup2WzIpRertajcyTfq2AIBidcNxMjFRWsiMqPpX9pQsaw==
-X-Received: by 2002:a05:620a:633:: with SMTP id 19mr70729659qkv.372.1594428628616;
-        Fri, 10 Jul 2020 17:50:28 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id g20sm10427510qtc.46.2020.07.10.17.50.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2020 17:50:28 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Shubhashree Dhar <dhar@codeaurora.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 8/8] drm/msm/dpu: add SM8250 to hw catalog
-Date:   Fri, 10 Jul 2020 20:47:31 -0400
-Message-Id: <20200711004752.30760-9-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200711004752.30760-1-jonathan@marek.ca>
-References: <20200711004752.30760-1-jonathan@marek.ca>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Rls/U/lDsLfT4D3DE5n9+9Nu0A90fUMZ5H2LpZadpY=;
+        b=kgcQjewRc1/IMvMf8HTtlBN262Fxrw3q7k4X8Bnx6qdybvyf8jZc7l+H2kOrWO50Xc
+         4UqXVabdmd7N+6JqZhq+UCAbVplCmsdCTNliXMiCfjt/We0kCjlUxcth5Qqu6MlGi3s9
+         UEM4+cCaUHhRQAm4D2GFOcTrFpvccPTcNzbHD9Sv8jRsCLZyjKy7FLM7K1MwhgFWuMZk
+         gHbKAXPztmJJdkri6ktnc6mD99pKxzHE74/qfBxQAckuMWaOfKHb+Mdk2NBdx98ZME2T
+         pP/91MmW8MS/NNPbKW5l5IW5y9SEulj3KX9/hgJfAD0x5sTsjocl/GDIQGn3RFkg4pbY
+         9X8Q==
+X-Gm-Message-State: AOAM533lNKSHP8Y4rNPQG8of9CqCwWUoXZ+as8XTEu+Upz3H2zpAFzTN
+        +IvF6Y3jEJmZBqZVKpbrwaoXQGGsMuee4e3ZnsxMDQ==
+X-Google-Smtp-Source: ABdhPJzFhcpJg+WtMu5QLudWk0KLldzkSq/YYsINvRouju8S48SBuHcb7Lqaek9OHZZ2kIe4eSSfayb2v5gUYFCpvG0=
+X-Received: by 2002:a50:a1e7:: with SMTP id 94mr77926426edk.165.1594428781622;
+ Fri, 10 Jul 2020 17:53:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <158500767138.2088294.17131646259803932461.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <158500773552.2088294.8756587190550753100.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <d7043cad-076d-d065-f933-b772b4e9c131@oracle.com>
+In-Reply-To: <d7043cad-076d-d065-f933-b772b4e9c131@oracle.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 10 Jul 2020 17:52:50 -0700
+Message-ID: <CAPcyv4ie3pavOzPP68jGdeT1UK2eMjiZwiwvw1Jzy6D-d_pxjg@mail.gmail.com>
+Subject: Re: [PATCH 11/12] device-dax: Add dis-contiguous resource support
+To:     Joao Martins <joao.m.martins@oracle.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        jmoyer <jmoyer@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This brings up basic video mode functionality for SM8250 DPU. Command mode
-and dual mixer/intf configurations are not working, future patches will
-address this. Scaler functionality and multiple planes is also untested.
+On Tue, May 12, 2020 at 7:37 AM Joao Martins <joao.m.martins@oracle.com> wrote:
+>
+> On 3/23/20 11:55 PM, Dan Williams wrote:
+> > @@ -561,13 +580,26 @@ static int __alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+> >       if (start == U64_MAX)
+> >               return -EINVAL;
+> >
+> > +     ranges = krealloc(dev_dax->ranges, sizeof(*ranges)
+> > +                     * (dev_dax->nr_range + 1), GFP_KERNEL);
+> > +     if (!ranges)
+> > +             return -ENOMEM;
+> > +
+> >       alloc = __request_region(res, start, size, dev_name(dev), 0);
+> > -     if (!alloc)
+> > +     if (!alloc) {
+> > +             kfree(ranges);
+> >               return -ENOMEM;
+> > +     }
+>
+> Noticed this yesterday while looking at alloc_dev_dax_range().
+>
+> Is it correct to free @ranges here on __request_region failure?
+>
+> IIUC krealloc() would free dev_dax->ranges if it succeeds, leaving us without
+> any valid ranges if __request_region failure case indeed frees @ranges. These
+> @ranges are being used afterwards when we delete the interface and free the
+> assigned regions. Perhaps we should remove the kfree() above and set
+> dev_dax->ranges instead before __request_region; or alternatively change the
+> call order between krealloc and __request_region? FWIW, krealloc checks if the
+> object being reallocated already meets the requested size, so perhaps there's no
+> harm with going with the former.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 106 ++++++++++++++++++
- .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |   3 +
- 2 files changed, 109 insertions(+)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-index 20f869bbd574..17e9223e5a2e 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
-@@ -109,6 +109,21 @@ static const struct dpu_caps sm8150_dpu_caps = {
- 	.max_vdeci_exp = MAX_VERT_DECIMATION,
- };
- 
-+static const struct dpu_caps sm8250_dpu_caps = {
-+	.max_mixer_width = DEFAULT_DPU_OUTPUT_LINE_WIDTH,
-+	.max_mixer_blendstages = 0xb,
-+	.max_linewidth = 4096,
-+	.qseed_type = DPU_SSPP_SCALER_QSEED3, /* TODO: qseed3 lite */
-+	.smart_dma_rev = DPU_SSPP_SMART_DMA_V2, /* TODO: v2.5 */
-+	.ubwc_version = DPU_HW_UBWC_VER_40,
-+	.has_src_split = true,
-+	.has_dim_layer = true,
-+	.has_idle_pc = true,
-+	.has_3d_merge = true,
-+	.max_linewidth = 4096,
-+	.pixel_ram_size = DEFAULT_PIXEL_RAM_SIZE,
-+};
-+
- static const struct dpu_mdp_cfg sdm845_mdp[] = {
- 	{
- 	.name = "top_0", .id = MDP_TOP,
-@@ -151,6 +166,33 @@ static const struct dpu_mdp_cfg sc7180_mdp[] = {
- 	},
- };
- 
-+static const struct dpu_mdp_cfg sm8250_mdp[] = {
-+	{
-+	.name = "top_0", .id = MDP_TOP,
-+	.base = 0x0, .len = 0x45C,
-+	.features = 0,
-+	.highest_bank_bit = 0x3, /* TODO: 2 for LP_DDR4 */
-+	.clk_ctrls[DPU_CLK_CTRL_VIG0] = {
-+			.reg_off = 0x2AC, .bit_off = 0},
-+	.clk_ctrls[DPU_CLK_CTRL_VIG1] = {
-+			.reg_off = 0x2B4, .bit_off = 0},
-+	.clk_ctrls[DPU_CLK_CTRL_VIG2] = {
-+			.reg_off = 0x2BC, .bit_off = 0},
-+	.clk_ctrls[DPU_CLK_CTRL_VIG3] = {
-+			.reg_off = 0x2C4, .bit_off = 0},
-+	.clk_ctrls[DPU_CLK_CTRL_DMA0] = {
-+			.reg_off = 0x2AC, .bit_off = 8},
-+	.clk_ctrls[DPU_CLK_CTRL_DMA1] = {
-+			.reg_off = 0x2B4, .bit_off = 8},
-+	.clk_ctrls[DPU_CLK_CTRL_CURSOR0] = {
-+			.reg_off = 0x2BC, .bit_off = 8},
-+	.clk_ctrls[DPU_CLK_CTRL_CURSOR1] = {
-+			.reg_off = 0x2C4, .bit_off = 8},
-+	.clk_ctrls[DPU_CLK_CTRL_REG_DMA] = {
-+			.reg_off = 0x2BC, .bit_off = 20},
-+	},
-+};
-+
- /*************************************************************
-  * CTL sub blocks config
-  *************************************************************/
-@@ -542,6 +584,14 @@ static const struct dpu_reg_dma_cfg sm8150_regdma = {
- 	.base = 0x0, .version = 0x00010001, .trigger_sel_off = 0x119c
- };
- 
-+static const struct dpu_reg_dma_cfg sm8250_regdma = {
-+	.base = 0x0,
-+	.version = 0x00010002,
-+	.trigger_sel_off = 0x119c,
-+	.xin_id = 7,
-+	.clk_ctrl = DPU_CLK_CTRL_REG_DMA,
-+};
-+
- /*************************************************************
-  * PERF data config
-  *************************************************************/
-@@ -679,6 +729,31 @@ static const struct dpu_perf_cfg sm8150_perf_data = {
- 	},
- };
- 
-+static const struct dpu_perf_cfg sm8250_perf_data = {
-+	.max_bw_low = 13700000,
-+	.max_bw_high = 16600000,
-+	.min_core_ib = 4800000,
-+	.min_llcc_ib = 0,
-+	.min_dram_ib = 800000,
-+	.danger_lut_tbl = {0xf, 0xffff, 0x0},
-+	.qos_lut_tbl = {
-+		{.nentry = ARRAY_SIZE(sc7180_qos_linear),
-+		.entries = sc7180_qos_linear
-+		},
-+		{.nentry = ARRAY_SIZE(sc7180_qos_macrotile),
-+		.entries = sc7180_qos_macrotile
-+		},
-+		{.nentry = ARRAY_SIZE(sc7180_qos_nrt),
-+		.entries = sc7180_qos_nrt
-+		},
-+		/* TODO: macrotile-qseed is different from macrotile */
-+	},
-+	.cdp_cfg = {
-+		{.rd_enable = 1, .wr_enable = 1},
-+		{.rd_enable = 1, .wr_enable = 0}
-+	},
-+};
-+
- /*************************************************************
-  * Hardware catalog init
-  *************************************************************/
-@@ -772,11 +847,42 @@ static void sm8150_cfg_init(struct dpu_mdss_cfg *dpu_cfg)
- 	};
- }
- 
-+/*
-+ * sm8250_cfg_init(): populate sm8250 dpu sub-blocks reg offsets
-+ * and instance counts.
-+ */
-+static void sm8250_cfg_init(struct dpu_mdss_cfg *dpu_cfg)
-+{
-+	*dpu_cfg = (struct dpu_mdss_cfg){
-+		.caps = &sm8250_dpu_caps,
-+		.mdp_count = ARRAY_SIZE(sm8250_mdp),
-+		.mdp = sm8250_mdp,
-+		.ctl_count = ARRAY_SIZE(sm8150_ctl),
-+		.ctl = sm8150_ctl,
-+		/* TODO: sspp qseed version differs from 845 */
-+		.sspp_count = ARRAY_SIZE(sdm845_sspp),
-+		.sspp = sdm845_sspp,
-+		.mixer_count = ARRAY_SIZE(sm8150_lm),
-+		.mixer = sm8150_lm,
-+		.pingpong_count = ARRAY_SIZE(sm8150_pp),
-+		.pingpong = sm8150_pp,
-+		.intf_count = ARRAY_SIZE(sm8150_intf),
-+		.intf = sm8150_intf,
-+		.vbif_count = ARRAY_SIZE(sdm845_vbif),
-+		.vbif = sdm845_vbif,
-+		.reg_dma_count = 1,
-+		.dma_cfg = sm8250_regdma,
-+		.perf = sm8250_perf_data,
-+		.mdss_irqs = 0xff,
-+	};
-+}
-+
- static const struct dpu_mdss_hw_cfg_handler cfg_handler[] = {
- 	{ .hw_rev = DPU_HW_VER_400, .cfg_init = sdm845_cfg_init},
- 	{ .hw_rev = DPU_HW_VER_401, .cfg_init = sdm845_cfg_init},
- 	{ .hw_rev = DPU_HW_VER_500, .cfg_init = sm8150_cfg_init},
- 	{ .hw_rev = DPU_HW_VER_501, .cfg_init = sm8150_cfg_init},
-+	{ .hw_rev = DPU_HW_VER_600, .cfg_init = sm8250_cfg_init},
- 	{ .hw_rev = DPU_HW_VER_620, .cfg_init = sc7180_cfg_init},
- };
- 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-index e9458c85e20c..1b7a9213a756 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-@@ -429,6 +429,7 @@ enum dpu_clk_ctrl_type {
- 	DPU_CLK_CTRL_CURSOR0,
- 	DPU_CLK_CTRL_CURSOR1,
- 	DPU_CLK_CTRL_INLINE_ROT0_SSPP,
-+	DPU_CLK_CTRL_REG_DMA,
- 	DPU_CLK_CTRL_MAX,
- };
- 
-@@ -612,6 +613,8 @@ struct dpu_reg_dma_cfg {
- 	DPU_HW_BLK_INFO;
- 	u32 version;
- 	u32 trigger_sel_off;
-+	u32 xin_id;
-+	enum dpu_clk_ctrl_type clk_ctrl;
- };
- 
- /**
--- 
-2.26.1
-
+Yeah, the kfree is bogus. It can just wait until the device is
+destroyed to be freed, but only if there is an existing allocation. If
+this is a new allocation then nothing else will do the kfree.
