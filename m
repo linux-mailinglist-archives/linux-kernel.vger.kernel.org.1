@@ -2,131 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49D121C3E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 13:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F2221C3FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 13:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgGKLKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 07:10:19 -0400
-Received: from smtprelay0109.hostedemail.com ([216.40.44.109]:58056 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726523AbgGKLKT (ORCPT
+        id S1727834AbgGKL2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 07:28:36 -0400
+Received: from mail.parknet.co.jp ([210.171.160.6]:47256 "EHLO
+        mail.parknet.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726523AbgGKL2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 07:10:19 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 22C46100E7B42;
-        Sat, 11 Jul 2020 11:10:17 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3165:3355:3622:3865:3866:3867:3870:3871:3872:3873:3874:4321:4605:5007:6119:6742:7514:10004:10400:10848:10967:11232:11657:11658:11914:12043:12295:12297:12555:12663:12740:12895:12986:13439:13894:14093:14097:14181:14659:14721:21080:21451:21627:21740:30029:30054:30056:30064:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: day58_420072326ed6
-X-Filterd-Recvd-Size: 3571
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 11 Jul 2020 11:10:15 +0000 (UTC)
-Message-ID: <02995ace8cc4524d44bf6e6db0282391c3f6d8e4.camel@perches.com>
-Subject: Re: [PATCH v2] MAINTAINERS: XDP: restrict N: and K:
-From:   Joe Perches <joe@perches.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        mchehab+huawei@kernel.org, robh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Date:   Sat, 11 Jul 2020 04:10:13 -0700
-In-Reply-To: <20200711102318.28ce29d6@carbon>
-References: <87tuyfi4fm.fsf@toke.dk>
-         <20200710190407.31269-1-grandmaster@al2klimov.de>
-         <28a81dfe62b1dc00ccc721ddb88669d13665252b.camel@perches.com>
-         <20200711102318.28ce29d6@carbon>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Sat, 11 Jul 2020 07:28:35 -0400
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+        by mail.parknet.co.jp (Postfix) with ESMTPSA id 61E7A1B3FDD;
+        Sat, 11 Jul 2020 20:28:34 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+        by ibmpc.myhome.or.jp (8.15.2/8.15.2/Debian-19) with ESMTPS id 06BBSXcV194079
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sat, 11 Jul 2020 20:28:34 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+        by devron.myhome.or.jp (8.15.2/8.15.2/Debian-19) with ESMTPS id 06BBSWtt996343
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Sat, 11 Jul 2020 20:28:32 +0900
+Received: (from hirofumi@localhost)
+        by devron.myhome.or.jp (8.15.2/8.15.2/Submit) id 06BBSVpJ996342;
+        Sat, 11 Jul 2020 20:28:31 +0900
+From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+756199124937b31a9b7e@syzkaller.appspotmail.com>
+Subject: [PATCH] fat: Fix fat_ra_init() for data clusters == 0
+References: <000000000000ebc53005aa18a1a5@google.com>
+Date:   Sat, 11 Jul 2020 20:28:31 +0900
+In-Reply-To: <000000000000ebc53005aa18a1a5@google.com> (syzbot's message of
+        "Fri, 10 Jul 2020 09:14:16 -0700")
+Message-ID: <87mu462sv4.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-07-11 at 10:23 +0200, Jesper Dangaard Brouer wrote:
-> On Fri, 10 Jul 2020 12:37:47 -0700
-> Joe Perches <joe@perches.com> wrote:
-> 
-> > On Fri, 2020-07-10 at 21:04 +0200, Alexander A. Klimov wrote:
-> > > Rationale:
-> > > Documentation/arm/ixp4xx.rst contains "xdp" as part of "ixdp465"
-> > > which has nothing to do with XDP.
-> > > 
-> > > Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> > > ---
-> > >  Better?
-> > > 
-> > >  MAINTAINERS | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index 1d4aa7f942de..735e2475e926 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -18708,8 +18708,8 @@ F:	include/trace/events/xdp.h
-> > >  F:	kernel/bpf/cpumap.c
-> > >  F:	kernel/bpf/devmap.c
-> > >  F:	net/core/xdp.c
-> > > -N:	xdp
-> > > -K:	xdp
-> > > +N:	(?:\b|_)xdp
-> > > +K:	(?:\b|_)xdp  
-> > 
-> > Generally, it's better to have comprehensive files lists
-> > rather than adding name matching regexes.
-> 
-> I like below more direct matching of the files we already know are XDP
-> related. The pattern match are meant to catch drivers containing XDP
-> related bits.
+If data clusters == 0, fat_ra_init() calls the ->ent_blocknr() for the
+cluster beyond ->max_clusters.
 
-That's what the K: entry is for no?
+This checks the limit before initialization to suppress the warning.
 
-Anyway, if you agree with using the appropriate F: patterns,
-please submit it.  I'm not going to.
+Reported-by: syzbot+756199124937b31a9b7e@syzkaller.appspotmail.com
+Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+---
+ fs/fat/fatent.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-> (small typo in your patch below)
-> 
-> > Perhaps:
-> > ---
-> >  MAINTAINERS | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 16854e47e8cb..2e96cbf15b31 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -18763,13 +18763,19 @@ M:	John Fastabend <john.fastabend@gmail.com>
-> >  L:	netdev@vger.kernel.org
-> >  L:	bpf@vger.kernel.org
-> >  S:	Supported
-> > -F:	include/net/xdp.h
-> > +F:	Documentation/networking/af_xdp.rst
-> > +F:	include/net/xdp*
-> >  F:	include/trace/events/xdp.h
-> > +F:	include/uapi/linux/if_xdp.h
-> > +F:	include/uapi/linux/xdp_diag.h
-> >  F:	kernel/bpf/cpumap.c
-> >  F:	kernel/bpf/devmap.c
-> >  F:	net/core/xdp.c
-> > -N:	xdp
-> > -K:	xdp
-> > +F:	net/xdp/
-> > +F:	samples/bpf/xdp*
-> > +F:	tools/testing/selftests/bfp/*xdp*
->                                ^^^^ 
-> Typo, should be "bpf"
-> 
-> > +F:	tools/testing/selftests/bfp/*/*xdp*
-> > +K:	(?:\b|_)xdp(?:\b|_)
-> >  
-> >  XDP SOCKETS (AF_XDP)
-> >  M:	Björn Töpel <bjorn.topel@intel.com>
-> > 
-> 
-> 
-
+diff --git a/fs/fat/fatent.c b/fs/fat/fatent.c
+index bbfe18c..f7e3304 100644
+--- a/fs/fat/fatent.c	2020-07-11 19:58:41.903092419 +0900
++++ b/fs/fat/fatent.c	2020-07-11 19:58:51.545948758 +0900
+@@ -657,6 +657,9 @@ static void fat_ra_init(struct super_blo
+ 	unsigned long ra_pages = sb->s_bdi->ra_pages;
+ 	unsigned int reada_blocks;
+ 
++	if (fatent->entry >= ent_limit)
++		return;
++
+ 	if (ra_pages > sb->s_bdi->io_pages)
+ 		ra_pages = rounddown(ra_pages, sb->s_bdi->io_pages);
+ 	reada_blocks = ra_pages << (PAGE_SHIFT - sb->s_blocksize_bits + 1);
+_
