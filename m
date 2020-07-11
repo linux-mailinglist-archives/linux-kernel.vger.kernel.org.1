@@ -2,79 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A6821C303
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 09:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A263521C307
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 09:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgGKHMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 03:12:31 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:20793 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726958AbgGKHMb (ORCPT
+        id S1728080AbgGKHTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 03:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726900AbgGKHTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 03:12:31 -0400
-X-UUID: 6a255dd1d52a4162b9a29a9d328eb6a2-20200711
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=yilbJrHb4on0J7hThn4YoSbk9aK3TSJQjUpN3XgWrzE=;
-        b=nM2kFz5wU1FHh9xBxJ8fOzMTcgthThfLMN3XDWrbbKOjHaLejrwZVXH/HvXFKm0R9BzLVMK6QqaOPlxvlyCHUbXhwHlTsblRY3MKb20r4cS1G4ohhtVMZ38aC3jV9lZVUcCyjA83rcnWRJRA6hRIi0QLurpnbvyN69y4mfAj9w8=;
-X-UUID: 6a255dd1d52a4162b9a29a9d328eb6a2-20200711
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 220947356; Sat, 11 Jul 2020 15:12:16 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS32DR.mediatek.inc
- (172.27.6.104) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 11 Jul
- 2020 15:12:15 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 11 Jul 2020 15:12:14 +0800
-Message-ID: <1594451493.16172.6.camel@mhfsdcap03>
-Subject: Re: [PATCH v6 00/10] MT6779 IOMMU SUPPORT
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Joerg Roedel <joro@8bytes.org>
-CC:     Chao Hao <chao.hao@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <iommu@lists.linux-foundation.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        FY Yang <fy.yang@mediatek.com>, TH Yang <th.yang@mediatek.com>,
-        <ming-fan.chen@mediatek.com>, <youlin.pei@mediatek.com>,
-        <anan.sun@mediatek.com>
-Date:   Sat, 11 Jul 2020 15:11:33 +0800
-In-Reply-To: <20200710141349.GJ27672@8bytes.org>
-References: <20200703044127.27438-1-chao.hao@mediatek.com>
-         <20200710141349.GJ27672@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Sat, 11 Jul 2020 03:19:34 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40FBC08C5DD;
+        Sat, 11 Jul 2020 00:19:34 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id z5so3530687pgb.6;
+        Sat, 11 Jul 2020 00:19:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2sbW3VeapkXBFXBROMSYLe02+5wxSAmivcwGBlvvNys=;
+        b=QNzDaR01054tkyz/YJVqi/q9TFcxmfse+9weq2nlchNL13op2HWRPqDMSWwCkroAn3
+         FD/DwkkfQAHAeqJIqKDP6/UnAjF7WpgYxNtjTPlMG38vmcMYd969ySf4saUQjpLc0hO+
+         sp0BrkYLT7k6zkgb2dRqS4tYp9sbXBYN9E+6kdfhVG2IGDlS43BQqtrQks/pkMEv6zxc
+         jMPP/hyIpjezO3GEWX9EHBq8T/8Z9xxz1QAkVz61sEvYNZA+5hWjSFPV3BnYr+EJZ1Mg
+         7j7PPt1b1kPmPSzehKA54O3dv6hfd+RzHUqwa6rURaVkIpqitHJdxkTvbEadkrgKoIrs
+         dwyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2sbW3VeapkXBFXBROMSYLe02+5wxSAmivcwGBlvvNys=;
+        b=RVEnxRX1B9wPoGAH/7pmC9LYRgtpVxAqDZ2ZzEMZ9HW+Zfs+hUUpsh07IxcvOZV8r3
+         MsDJuzjjJFqkTrjlSrC+s66iQPjI6tfIWntQx8jymUjM8zrLwxpNWNh5jYZKAirzb/nW
+         0SiBPrZ03bPNb0wRtvo1NfArxLUzwR7+a/BkC/htnKWQMsJBg4j7slVlPCy/Z1PxZeRO
+         ZDQ4zCDgWPqviYpa0bC4/AsGUzycyg7fbzAMe4AdV4fAWJ0O3CR9VENWaSiGbZNwJtIb
+         MjSkYmrRy8hh/IcI7M/xgmAFimWFDwsf5fsnah1P9DA+iC3WE8lAqGjkUttZGcif9d+L
+         ioiw==
+X-Gm-Message-State: AOAM533Qb28BmKet3BTTc7yS4zTIje/aMVj1d45gW6UjssFC1N774EXl
+        pHWVpHkkxhZN07hoIvUEfGY=
+X-Google-Smtp-Source: ABdhPJyDPTLNEOM725IEvMGEGBOmqxXLlfjyzgmcNoEX0bcdL5ygp6VGfBDSyX0L4n5Q6P2EajYGqw==
+X-Received: by 2002:aa7:8513:: with SMTP id v19mr57199394pfn.74.1594451974086;
+        Sat, 11 Jul 2020 00:19:34 -0700 (PDT)
+Received: from localhost ([89.208.244.139])
+        by smtp.gmail.com with ESMTPSA id f3sm7574725pju.54.2020.07.11.00.19.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 11 Jul 2020 00:19:33 -0700 (PDT)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     bhelgaas@google.com, lorenzo.pieralisi@arm.com,
+        linux-pci@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
+Subject: [PATCH v1] PCI: Add more information when devm_request_mem_region() goes wrong
+Date:   Sat, 11 Jul 2020 15:19:27 +0800
+Message-Id: <20200711071927.3064-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 05BB3D50A356C307CD14C3C48E7C352C564F8EC9C54A287E85E8AED5818631902000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTA3LTEwIGF0IDE2OjEzICswMjAwLCBKb2VyZyBSb2VkZWwgd3JvdGU6DQo+
-IE9uIEZyaSwgSnVsIDAzLCAyMDIwIGF0IDEyOjQxOjE3UE0gKzA4MDAsIENoYW8gSGFvIHdyb3Rl
-Og0KPiA+IENoYW8gSGFvICgxMCk6DQo+ID4gICBkdC1iaW5kaW5nczogbWVkaWF0ZWs6IEFkZCBi
-aW5kaW5ncyBmb3IgTVQ2Nzc5DQo+ID4gICBpb21tdS9tZWRpYXRlazogUmVuYW1lIHRoZSByZWdp
-c3RlciBTVEFOREFSRF9BWElfTU9ERSgweDQ4KSB0byBNSVNDX0NUUkwNCj4gPiAgIGlvbW11L21l
-ZGlhdGVrOiBVc2UgYSB1MzIgZmxhZ3MgdG8gZGVzY3JpYmUgZGlmZmVyZW50IEhXIGZlYXR1cmVz
-DQo+ID4gICBpb21tdS9tZWRpYXRlazogU2V0dGluZyBNSVNDX0NUUkwgcmVnaXN0ZXINCj4gPiAg
-IGlvbW11L21lZGlhdGVrOiBNb3ZlIGludl9zZWxfcmVnIGludG8gdGhlIHBsYXRfZGF0YQ0KPiA+
-ICAgaW9tbXUvbWVkaWF0ZWs6IEFkZCBzdWJfY29tbSBpZCBpbiB0cmFuc2xhdGlvbiBmYXVsdA0K
-PiA+ICAgaW9tbXUvbWVkaWF0ZWs6IEFkZCBSRUdfTU1VX1dSX0xFTl9DVFJMIHJlZ2lzdGVyIGRl
-ZmluaXRpb24NCj4gPiAgIGlvbW11L21lZGlhdGVrOiBFeHRlbmQgcHJvdGVjdCBwYSBhbGlnbm1l
-bnQgdmFsdWUNCj4gPiAgIGlvbW11L21lZGlhdGVrOiBNb2RpZnkgTU1VX0NUUkwgcmVnaXN0ZXIg
-c2V0dGluZw0KPiA+ICAgaW9tbXUvbWVkaWF0ZWs6IEFkZCBtdDY3NzkgYmFzaWMgc3VwcG9ydA0K
-PiANCj4gQXBwbGllZCwgdGhhbmtzLg0KDQpIaSBKb2VyZywNCg0KVGhhbmtzIGZvciB0aGUgYXBw
-bHkuDQoNClRoZSBTTUkgcGFydCBhbHdheXMgZ28gd2l0aCB0aGUgSU9NTVUsIENvdWxkIHlvdSBh
-bHNvIGhlbHAgYXBwbHkgdGhlDQptdDY3NzkgU01JIGJhc2ljYWwgcGFydCBbMV1bMl0uIEJvdGgg
-aGFzIGFscmVhZHkgZ290IHJldmlld2VkLWJ5IGZyb20NClJvYiBhbmQgTWF0dGhpYXMuIGFuZCB0
-aGUgWzNdIGluIHRoYXQgcGF0Y2hzZXQgaXMgZm9yIHBlcmZvcm1hbmNlDQppbXByb3ZlbWVudCwg
-aXQncyBub3Qgc28gbmVjZXNzYXJ5LCBpdCBjYW4gYmUgc2VuZCBpbiBhbm90aGVyIHBhdGNoc2V0
-Lg0KDQoNClsxXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRjaHdvcmsvcGF0Y2gvMTE3Njgz
-My8NClsyXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRjaHdvcmsvcGF0Y2gvMTE3NjgzMS8N
-ClszXSBodHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRjaHdvcmsvcGF0Y2gvMTE3NjgzMi8NCg==
+Add more information, the name of the resource will be printed when the
+request memory region or remapping of configuration space fails in the
+devm_request_mem_region() function.
+
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+---
+ drivers/pci/pci.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index ce096272f52b..81c1045a3fa8 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -4153,13 +4153,15 @@ void __iomem *devm_pci_remap_cfg_resource(struct device *dev,
+ 	name = res->name ?: dev_name(dev);
+ 
+ 	if (!devm_request_mem_region(dev, res->start, size, name)) {
+-		dev_err(dev, "can't request region for resource %pR\n", res);
++		dev_err(dev, "can't request region for %s's resource %pR\n",
++			name, res);
+ 		return IOMEM_ERR_PTR(-EBUSY);
+ 	}
+ 
+ 	dest_ptr = devm_pci_remap_cfgspace(dev, res->start, size);
+ 	if (!dest_ptr) {
+-		dev_err(dev, "ioremap failed for resource %pR\n", res);
++		dev_err(dev, "ioremap failed for %s's resource %pR\n",
++			name, res);
+ 		devm_release_mem_region(dev, res->start, size);
+ 		dest_ptr = IOMEM_ERR_PTR(-ENOMEM);
+ 	}
+-- 
+2.25.0
 
