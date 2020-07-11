@@ -2,202 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4343521C592
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 19:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC0121C5B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 20:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728695AbgGKRkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 13:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
+        id S1728752AbgGKSU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 14:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728390AbgGKRkM (ORCPT
+        with ESMTP id S1728645AbgGKSU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 13:40:12 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0E0C08C5DD;
-        Sat, 11 Jul 2020 10:40:12 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id g22so1922283vke.9;
-        Sat, 11 Jul 2020 10:40:12 -0700 (PDT)
+        Sat, 11 Jul 2020 14:20:56 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB72C08C5DD
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 11:20:55 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id lx13so9717862ejb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 11:20:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wYIE8uSxQydN9Hh4OnZixe7WYhGulKLL0ArcHWNV1/Q=;
-        b=gYihtHLEN7XHfWdQr64bJC95ZbP0HEbrqhD5aNvATIDBdSisLylegV9e39OHptrtpW
-         kLx3//DpHMwaHx4cuY3HfGa/hP7HO7rBiweZvdmgtNBHJVn984HswyeASHuWXxSFCwNC
-         i6Z+bBEUq5q2r9n3lcFGBz3gi25uU5SneQjpZ2visq2wt/fOQt1d0vPPh78IHwhb6Adj
-         mFvWCpOBe9EoeiK0Ote5qAAWPm5++HVkmxW7V/lMkDQpcQ/1vBQKPr7Ba9G5/Wf10hwN
-         z05l/QKbGH6afdlmPiknMbJU+oOY9wwFFutkIuX8gIOGmPwUBFlgulWNPD/f6eOU6aOu
-         0lGQ==
+        bh=nOYGlWMMEU7tyKGZLlNjUtNxoe6S2h/oz0+oUhK+rOk=;
+        b=VBBPUfpiOu0muHbqeP4r3/fUpKQexAHw4DwIqUVNkb43xD+nP+XZ31NsLPUx/vRkRa
+         zzaUKWdXrUMfP1FaX3/iNfjqwE1q1Ok1Kix+hzrcv/inVzkMy6FKF046RABJFAJTQy8g
+         /oNUGPpsZ3sEzfL5OAQbTJjbjvnkfKAkigYrM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wYIE8uSxQydN9Hh4OnZixe7WYhGulKLL0ArcHWNV1/Q=;
-        b=Br4HC6Gm8RJM5l6bd2Sk41iiaqQC/GXl14M/6ez/4xxo3OhvFa569tIO9/DHMLcrIl
-         WTLOikTt3U/M0bOMp1b9S/e5A9YrfxicALZN9d8hGRzm3SIz9IsBwzDgwOfTsx+aPXrP
-         gjB70JEysugBl6Bf4sk8P8ZQh+66vEfD5YFD/qvu8RKPcl3WwzUR+GTMbdwmbMx3igMU
-         mInfBaodKhJcmuE0ffyslNH1pU8Hep9uF2Ce+6TUZTSht99DQxWqyP0rAf6Fm2PtuTCL
-         VCGKB7KtD5SWahYTvQMM66jFwCC9lsVaaVdkilHVwn3JkqCwHV6xgMaHG4sFhaMoh4Ob
-         QTEA==
-X-Gm-Message-State: AOAM532cgqeEhJbLTFTHKJGAOCZijEdF9f4FpljSQOPByJvsMozKO6X2
-        uXoT7M/O7T/XBLdk3OhmN72c51ww/8XALvu1NIQ=
-X-Google-Smtp-Source: ABdhPJz3Rrtvp1bF2Y2oR0nxkFbgMcYu6XA85Jf4OktHhaAlNmZ11+8EQa/RtmauBFIoV5y3ZHpa+fUY7RFf74Oovgo=
-X-Received: by 2002:a1f:1889:: with SMTP id 131mr46426504vky.59.1594489211463;
- Sat, 11 Jul 2020 10:40:11 -0700 (PDT)
+        bh=nOYGlWMMEU7tyKGZLlNjUtNxoe6S2h/oz0+oUhK+rOk=;
+        b=lglFRwWMsfQaciMkc/BLozstwIXlsQVcygPFaIxR2Qr96TxHI1zXsST0LkvXT3/U5z
+         730bmdY21qnGGeJguDUbnOI73gG12R47aibzthXzLJK4F+S58+Wg4GDamK1rTQEHZn9G
+         PZxU9PrCUqCms6R3qPtTvkCWcRPOvvXw7a1lE4mahadLmSsksNwLecmKoyDQ6bmSK7xI
+         ZF4ldk4eK2JK8OUh2CTBGr3CuAN6zDIS8pAU7a3B4Yq/wZZ5tfEZtsFOvRgkvN0fleDp
+         NOtlXJXaIebSAlihhKWhmBULE/JDsahqEKA/JMdaXh7LkxZqxWLtPRF4mzGWAPAvR32h
+         e5fQ==
+X-Gm-Message-State: AOAM5336IDc9psrdmTs0WEg03BxaxBgGWoPhX5HuDE6XIftJMhrfH9CU
+        BJgwA+SXZ8a67VWY5oH6Dtz0AD+PayM=
+X-Google-Smtp-Source: ABdhPJxWDxVe//614M1gb8WNyPJOHIlFhFFWSCG7jsiSLEfhzquMw67aSyXrE+eyPpeiOiHmoQm/RQ==
+X-Received: by 2002:a17:906:e2ca:: with SMTP id gr10mr64347738ejb.81.1594491654263;
+        Sat, 11 Jul 2020 11:20:54 -0700 (PDT)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id q21sm5975496ejc.112.2020.07.11.11.20.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Jul 2020 11:20:54 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id n26so9739378ejx.0
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 11:20:53 -0700 (PDT)
+X-Received: by 2002:a2e:9b42:: with SMTP id o2mr42771907ljj.102.1594491195002;
+ Sat, 11 Jul 2020 11:13:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20200625004942epcas5p13b2b4303e42bdd00f203419cbf883177@epcas5p1.samsung.com>
- <20200625003025.11656-1-alim.akhtar@samsung.com>
-In-Reply-To: <20200625003025.11656-1-alim.akhtar@samsung.com>
-From:   Alim Akhtar <alim.akhtar@gmail.com>
-Date:   Sat, 11 Jul 2020 23:09:35 +0530
-Message-ID: <CAGOxZ51DAncpYPmF0Wi0p0si4PQxS_xDnOFGQTuOR6UMdPn6iA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v10] dt-bindings: ufs: Add bindings for Samsung ufs host
-To:     Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     "robh+dt" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+References: <CA+G9fYt+6OeibZMD0fP=O3nqFbcN3O4xcLkjq0mpQbZJ2uxB9w@mail.gmail.com>
+ <CAHk-=wgRcFSnQt=T95S+1dPkyvCuVAVGQ37JDvRg41h8hRqO3Q@mail.gmail.com>
+ <CA+G9fYuL=xJPLbQJVzDfXB8uNiCWdXpL=joDsnATEFCzyFh_1g@mail.gmail.com>
+ <CAHk-=wgB6Ds6yqbZZmscKNuAiNR2J0Pf3a8UrbdfewYxHE7SbA@mail.gmail.com>
+ <CA+G9fYudT63yZrkWG+mfKHTcn5mP+Ay6hraEQy3G_4jufztrrA@mail.gmail.com>
+ <CAHk-=whPrCRZpXYKois-0t8MibxH9KVXn=+-O1YVvOA016fqhw@mail.gmail.com> <CA+G9fYusSSrc5G_pZV6Lc-LjjkzQcc3EsLMo+ejSzvyRcMgbqw@mail.gmail.com>
+In-Reply-To: <CA+G9fYusSSrc5G_pZV6Lc-LjjkzQcc3EsLMo+ejSzvyRcMgbqw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 11 Jul 2020 11:12:58 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj_Bqu5n3OJCnKiO_gs97fYEpdx6eSacEw2kv9YnnSv_w@mail.gmail.com>
+Message-ID: <CAHk-=wj_Bqu5n3OJCnKiO_gs97fYEpdx6eSacEw2kv9YnnSv_w@mail.gmail.com>
+Subject: Re: WARNING: at mm/mremap.c:211 move_page_tables in i386
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux- stable <stable@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc@vger.kernel.org
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        lkft-triage@lists.linaro.org, Chris Down <chris@chrisdown.name>,
+        Michel Lespinasse <walken@google.com>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Brian Geffon <bgeffon@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, pugaowei@gmail.com,
+        Jerome Glisse <jglisse@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Hugh Dickins <hughd@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob
-Can you please take this via your tree?
+On Sat, Jul 11, 2020 at 10:27 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> I have started bisecting this problem and found the first bad commit
 
+Thanks for the effort. Bisection is often a great tool to figure out
+what's wrong.
 
-On Thu, Jun 25, 2020 at 6:20 AM Alim Akhtar <alim.akhtar@samsung.com> wrote:
->
-> This patch adds DT bindings for Samsung ufs hci
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
-> ---
->
-> Hi Rob
-> This is just a rebase on your's dt/next
->
-> This patch was part of [1]
-> [1] https://lkml.org/lkml/2020/5/27/1697
->
->  .../bindings/ufs/samsung,exynos-ufs.yaml      | 89 +++++++++++++++++++
->  1 file changed, 89 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
->
-> diff --git a/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-> new file mode 100644
-> index 000000000000..38193975c9f1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/ufs/samsung,exynos-ufs.yaml
-> @@ -0,0 +1,89 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/ufs/samsung,exynos-ufs.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Samsung SoC series UFS host controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Alim Akhtar <alim.akhtar@samsung.com>
-> +
-> +description: |
-> +  Each Samsung UFS host controller instance should have its own node.
-> +  This binding define Samsung specific binding other then what is used
-> +  in the common ufshcd bindings
-> +  [1] Documentation/devicetree/bindings/ufs/ufshcd-pltfrm.txt
-> +
-> +properties:
-> +
-> +  compatible:
-> +    enum:
-> +      - samsung,exynos7-ufs
-> +
-> +  reg:
-> +    items:
-> +     - description: HCI register
-> +     - description: vendor specific register
-> +     - description: unipro register
-> +     - description: UFS protector register
-> +
-> +  reg-names:
-> +    items:
-> +      - const: hci
-> +      - const: vs_hci
-> +      - const: unipro
-> +      - const: ufsp
-> +
-> +  clocks:
-> +    items:
-> +      - description: ufs link core clock
-> +      - description: unipro main clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: core_clk
-> +      - const: sclk_unipro_main
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  phys:
-> +    maxItems: 1
-> +
-> +  phy-names:
-> +    const: ufs-phy
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - phys
-> +  - phy-names
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/exynos7-clk.h>
-> +
-> +    ufs: ufs@15570000 {
-> +       compatible = "samsung,exynos7-ufs";
-> +       reg = <0x15570000 0x100>,
-> +             <0x15570100 0x100>,
-> +             <0x15571000 0x200>,
-> +             <0x15572000 0x300>;
-> +       reg-names = "hci", "vs_hci", "unipro", "ufsp";
-> +       interrupts = <GIC_SPI 200 IRQ_TYPE_LEVEL_HIGH>;
-> +       clocks = <&clock_fsys1 ACLK_UFS20_LINK>,
-> +                <&clock_fsys1 SCLK_UFSUNIPRO20_USER>;
-> +       clock-names = "core_clk", "sclk_unipro_main";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&ufs_rst_n &ufs_refclk_out>;
-> +       phys = <&ufs_phy>;
-> +       phy-names = "ufs-phy";
-> +    };
-> +...
->
-> base-commit: b3a9e3b9622ae10064826dccb4f7a52bd88c7407
-> prerequisite-patch-id: e0425bbe8f2aff3882b728a0caf0218b6b3e9b6e
-> prerequisite-patch-id: c8c8502c512f9d6fdaf7d30e54dde3e68c3d855b
-> prerequisite-patch-id: 8505df2fd70632150b50543cadc6fd7dd42d191c
-> prerequisite-patch-id: 1a9701ab83425940c8aacb76737edb57ab815e47
-> prerequisite-patch-id: 7881e0b87f1f04f657d9e6d450fb5231ad6ffa1a
-> prerequisite-patch-id: 01dbc0e550e3fcad6e525e7e3183f9f0312e8496
-> prerequisite-patch-id: ad801812fff960abab3f27d2c7383be9fd9aa439
-> prerequisite-patch-id: 65474c9540e6dc749d30223897de1f486d6b3843
-> prerequisite-patch-id: 64b58cd4c5ecfacf28fc20c31a6617092a1e1931
-> prerequisite-patch-id: 9bcdd2995fd3f6361f8d5e89c56645058ac9ff96
-> --
-> 2.17.1
->
+Sadly, in this case:
 
+> commit 9f132f7e145506efc0744426cb338b18a54afc3b
+> Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Date:   Thu Jan 3 15:28:41 2019 -0800
+>
+>     mm: select HAVE_MOVE_PMD on x86 for faster mremap
 
--- 
-Regards,
-Alim
+Yeah, that's just the commit that enables the code, not the commit
+that introduces the fundamental problem.
+
+That said, this is a prime example of why I absolutely detest patch
+series that do this kind of thing, and are several patches that create
+new functionality, followed by one patch to enable it.
+
+If you can't get things working incrementally, maybe you shouldn't do
+them at all. Doing a big series of "hidden work" and then enabling it
+later is wrong.
+
+In this case, though, the real patch that did the code isn't that kind
+of "big series of hidden work" patch series, it's just the (single)
+previous commit 2c91bd4a4e2e ("mm: speed up mremap by 20x on large
+regions").
+
+So your bisection is useful, it's just that it really points to that
+previous commit, and it's where this code was introduced.
+
+It's also worth noting that that commit doesn't really *break*
+anything, since it just falls back to the old behavior when it warns.
+
+So to "fix" your test-case, we could just remove the WARN_ON.
+
+But the WARN_ON() is still worrisome, because the thing it tests for
+really _should_ be true.
+
+Now, we actually have a known bug in this area that is talked about
+elsewhere: the way unmap does the pgtable_free() is
+
+        /* Detach vmas from rbtree */
+        detach_vmas_to_be_unmapped(mm, vma, prev, end);
+
+        if (downgrade)
+                mmap_write_downgrade(mm);
+
+        unmap_region(mm, vma, prev, start, end);
+
+(and unmap_region() is what does the pgtable_free() that should have
+cleared the PMD).
+
+And the problem with the "downgrade" is that another thread can change
+the beginning of the next vma when it's a grow-down region (or the end
+of the prev one if it's a grow-up).
+
+See commit dd2283f2605e ("mm: mmap: zap pages with read mmap_sem in
+munmap") for the source of that
+
+But that requires an _actual_ "unmap()" system call (the others set
+"downgrade" to false - I'm not entirely sure why), and it requires
+another thread to be attached to that VM in order to actually do that
+racy concurrent stack size change.
+
+And neither of those two cases will be true for the execve() path.
+It's a new VM, with just one thread attached, so no threaded munmap()
+going on there.
+
+The fact that it seems to happen with
+
+    https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/mem/thp/thp01.c
+
+makes me think it's somehow related to THP mappings, but I don't see
+why those would matter. All the same pmd freeing should still have
+happened, afaik.
+
+And the printout I asked for a few days back for when it triggered
+clearly showed a normal non-huge pmd ("val: 7d530067" is just
+"accessed, dirty, rw, user and present", which is a perfectly normal
+page directory entry for 4kB pages, and we could move the whole thing
+and move 2MB (or 4MB) of aligned virtual memory in one go).
+
+Some race with THP splitting and pgtable_free()? I can't see how
+anything would race in execve(), or how anything would have touched
+that address below the stack in the first place..
+
+Kirill, Oleg, and reaction from this? Neither of you were on the
+original email, I think, it's this one:
+
+    https://lore.kernel.org/lkml/CA+G9fYt+6OeibZMD0fP=O3nqFbcN3O4xcLkjq0mpQbZJ2uxB9w@mail.gmail.com/
+
+and I really think it is harmless in that when the warning triggers,
+we just go back to the page-by-page code, but while I think the
+WARN_ON() should probably be downgraded to a WARN_ON_ONCE(), I do
+think it's showing _something_.
+
+I just can't see how this would trigger for execve(). That's just
+about the _simplest_ case for us: single-threaded, mappings set up
+purely by load_elf_binary() etc.
+
+I'm clearly missing something.
+
+               Linus
