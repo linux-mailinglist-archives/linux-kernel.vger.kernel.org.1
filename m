@@ -2,124 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C2021C19E
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 03:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4651421C1A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 03:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgGKBd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 21:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726605AbgGKBd6 (ORCPT
+        id S1727028AbgGKBoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 21:44:25 -0400
+Received: from relay5.mymailcheap.com ([159.100.241.64]:37458 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbgGKBoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 21:33:58 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70687C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 18:33:57 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id g2so4187498lfb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 18:33:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QDhpDzdneHH53SGh27TE0u/VykRq3m/++IxZ3dfl0aQ=;
-        b=PK1R8HNqDEX/7Dvatfv/qKlX9vFChD7Xo4sgDpyaQ3XF/eSdBWMSSv/vUBpfpiz8tJ
-         B15BH2tNhPv5wEwEh57g5xMVKnSaqM1Qb3FuB9Bfq4k1vulgeU6DNZgscexJ7EQtfXkf
-         YreiZfIPI62bLTTvg0ARhYkHgVLIVI6Res5Y/Vyo4M6Ug6miLzZYE+rf+l6uqTKlLfPf
-         EZ54gZV1sbFgaaT0i+qvNUom2lsJAOCTIfNBElpKmbqydHlGmAO/Whl0VmYusHwvyOLT
-         +Bf2TQWdtUFiS4AWtj9FKczUt7TRfi6d3ita8Z+52cxFifcRnUkoPZaYVYcZUY5P3+ZF
-         HpKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QDhpDzdneHH53SGh27TE0u/VykRq3m/++IxZ3dfl0aQ=;
-        b=DJ2Gr5vV1pqdJ0M/2mCnEZk3mrvWDb7X3tqX9ktvHoQrCdFMLT+EoG926GTQGyNM5O
-         HsbvWIHRBO0ny8iEgbaL0GvKQTVMPPDVEWbK2xBuzFMTcRnUQIT9pLPhhHqaR9ROFv2d
-         tf23aSvYjnrszIdO9K/HxZ/N4Wj8A25MCYEGUS2v4yE5wKTf/dinwnaJZK+gJ8khPxbe
-         sPk+Kr8scWKL2RIDqpNeNxL4CjH0OENVgnJTkD3qDzVEuvKq3STaJCxhrOalcYtZXa6S
-         TQ2Eh1JqdnBqW7zvlRYbwC6pU/YvinSkKAJImsJHktZ4Fhg78/KDN8rqd/2JCCp9pDhH
-         dNkg==
-X-Gm-Message-State: AOAM530+SqhyyTGo/RDNicIkcZVeN9Z3B1JKZ1TyxmNJ2B7Kqk0yxmn2
-        XDZ0IivHmfTdmEYFSvwFgM3tbwrrjcyCcUgvez8=
-X-Google-Smtp-Source: ABdhPJza/9oDjbm0HkGoz3dNvoXdkhKypeOY8s6rz5sU6P14UexauqnXxvhbPVc2VgDdaeauVx9P/JeqJKPgwskFOlE=
-X-Received: by 2002:a19:4285:: with SMTP id p127mr43176998lfa.74.1594431235970;
- Fri, 10 Jul 2020 18:33:55 -0700 (PDT)
+        Fri, 10 Jul 2020 21:44:25 -0400
+X-Greylist: delayed 517 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Jul 2020 21:44:22 EDT
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.100])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id DA2A320151;
+        Sat, 11 Jul 2020 01:35:43 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 5D5353ECE3;
+        Fri, 10 Jul 2020 21:35:41 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 3462B2A3AA;
+        Fri, 10 Jul 2020 21:35:41 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1594431341;
+        bh=td3lNQCQOo/Xhy8UHkkmlIUHbYQuYTGRjr9288xceGU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=rOmiQrfX3evRYDZdoRc6ljvur+cXM6iwx29vn1es1p2Z63Ol3llCAHR2U45KdI+vp
+         OrIh/l1uWRnlMwqqBeNEk/ZT6sCUvr+BHtVVT4kJHNqfGZuXYcNbDxAKSjn/8+WFpH
+         dRORu8sn+3bCv11e9HE8PmHggTYegN7FFEdX8mU8=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id LI7zgvur8FX1; Fri, 10 Jul 2020 21:35:38 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Fri, 10 Jul 2020 21:35:38 -0400 (EDT)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 485D4413E2;
+        Sat, 11 Jul 2020 01:35:36 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="O9Cz3ZLJ";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (unknown [38.39.233.131])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 9AC36413E2;
+        Sat, 11 Jul 2020 01:35:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1594431317;
+        bh=td3lNQCQOo/Xhy8UHkkmlIUHbYQuYTGRjr9288xceGU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=O9Cz3ZLJ++0Ayk365splSEyw3l6As35wTIllbvmxoT2Ygss8l5Wssxm/q3XDC6dK7
+         QTOew2nSJ0W0Rj6ybK7Nbh7OxFnFgb/65nEVlqV6BzlwVyiCbM+vmBDgej8XGpqLeQ
+         X5WsZOqyvLv3nBT1DGphs9EeMwyPEtd95ZXPDRUw=
+Subject: Re: [PATCH] stmmac: pci: Add support for LS7A bridge chip
+To:     Zhi Li <lizhi01@loongson.cn>, peppe.cavallaro@st.com,
+        alexandre.torgue@st.com, joabreu@synopsys.com, davem@davemloft.net,
+        kuba@kernel.org, mcoquelin.stm32@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lixuefeng@loongson.cn, chenhc@lemote.com, yangtiezhu@loongson.cn,
+        Hongbin Li <lihongbin@loongson.cn>
+References: <1594371110-7580-1-git-send-email-lizhi01@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <51aeec81-400f-c63b-3a22-e5384ff848f8@flygoat.com>
+Date:   Sat, 11 Jul 2020 09:35:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <cover.1593530334.git.vpillai@digitalocean.com>
- <c783b3890b6df669a72c7c4a3012950d009b8034.1593530334.git.vpillai@digitalocean.com>
- <ed837e01-043b-e19b-293c-30d44df6f3a8@linux.intel.com> <CANaguZArdu1Jz3SvogFSXhnqmbdKX5aAORmGMf_uc+J=UQZpJw@mail.gmail.com>
-In-Reply-To: <CANaguZArdu1Jz3SvogFSXhnqmbdKX5aAORmGMf_uc+J=UQZpJw@mail.gmail.com>
-From:   Aubrey Li <aubrey.intel@gmail.com>
-Date:   Sat, 11 Jul 2020 09:33:44 +0800
-Message-ID: <CAERHkrtqB2cMtQZxj0vQ2AkWU+6dFUQwcSpF=Pv9XR+wt=xZ0A@mail.gmail.com>
-Subject: Re: [RFC PATCH 14/16] irq: Add support for core-wide protection of
- IRQ and softirq
-To:     Vineeth Remanan Pillai <vpillai@digitalocean.com>
-Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Turner <pjt@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Subhra Mazumdar <subhra.mazumdar@oracle.com>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1594371110-7580-1-git-send-email-lizhi01@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 485D4413E2
+X-Spamd-Result: default: False [1.40 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         RCVD_IN_DNSWL_NONE(0.00)[213.133.102.83:from];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         FREEMAIL_TO(0.00)[loongson.cn,st.com,synopsys.com,davemloft.net,kernel.org,gmail.com];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 9:36 PM Vineeth Remanan Pillai
-<vpillai@digitalocean.com> wrote:
+
+
+ÔÚ 2020/7/10 16:51, Zhi Li Ð´µÀ:
+> Add gmac platform data to support LS7A bridge chip.
 >
-> Hi Aubrey,
+> Co-developed-by: Hongbin Li <lihongbin@loongson.cn>
+> Signed-off-by: Hongbin Li <lihongbin@loongson.cn>
+> Signed-off-by: Zhi Li <lizhi01@loongson.cn>
+> ---
+>   drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c | 22 ++++++++++++++++++++++
+>   1 file changed, 22 insertions(+)
 >
-> On Fri, Jul 10, 2020 at 8:19 AM Li, Aubrey <aubrey.li@linux.intel.com> wrote:
-> >
-> > Hi Joel/Vineeth,
-> > [...]
-> > The problem is gone when we reverted this patch. We are running multiple
-> > uperf threads(equal to cpu number) in a cgroup with coresched enabled.
-> > This is 100% reproducible on our side.
-> >
-> > Just wonder if anything already known before we dig into it.
-> >
-> Thanks for reporting this. We haven't seen any lockups like this
-> in our testing yet.
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c
+> index 272cb47..dab2a40 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_pci.c
+> @@ -138,6 +138,24 @@ static const struct stmmac_pci_info snps_gmac5_pci_info = {
+>   	.setup = snps_gmac5_default_data,
+>   };
+>   
+> +static int loongson_default_data(struct pci_dev *pdev, struct plat_stmmacenent_data *plat)
+> +{
+> +	common_default_data(plat);
+> +
+> +	plat->bus_id = pci_dev_id(pdev);
+> +	plat->phy_addr = 0;
+> +	plat->interface = PHY_INTERFACE_MODE_GMII;
+> +
+> +	plat->dma_cfg->pbl = 32;
+> +	plat->dma_cfg->pblx8 = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static struct stmmac_pci_info loongson_pci_info = {
+> +	.setup = loongson_default_data;
+> +};
+> +
+>   /**
+>    * stmmac_pci_probe
+>    *
+> @@ -204,6 +222,8 @@ static int stmmac_pci_probe(struct pci_dev *pdev,
+>   	res.addr = pcim_iomap_table(pdev)[i];
+>   	res.wol_irq = pdev->irq;
+>   	res.irq = pdev->irq;
+> +	if (pdev->vendor == PCI_VENDOR_ID_LOONGSON)
+> +		res.lpi_irq = pdev->irq + 1;
 
-This is replicable on a bare metal machine. We tried to reproduce
-on a 8-cpus KVM vm but failed.
+This can never work.
+We're allocating IRQs by irq_domain, not ID.
+Please describe IRQ in DeviceTree, and *DO NOT* sne dout untested patch.
 
-> Could you please add more information on how to reproduce this?
-> Was it a simple uperf run without any options or was it running any
-> specific kind of network test?
+Thanks.
 
-I put our scripts at here:
-https://github.com/aubreyli/uperf
-
->
-> We shall also try to reproduce this and investigate.
-
-I'll try to see if I can narrow down the test case and grab some logs
-next week.
-
-Thanks,
--Aubrey
+>   
+>   	return stmmac_dvr_probe(&pdev->dev, plat, &res);
+>   }
+> @@ -273,11 +293,13 @@ static SIMPLE_DEV_PM_OPS(stmmac_pm_ops, stmmac_pci_suspend, stmmac_pci_resume);
+>   
+>   #define PCI_DEVICE_ID_STMMAC_STMMAC		0x1108
+>   #define PCI_DEVICE_ID_SYNOPSYS_GMAC5_ID		0x7102
+> +#define PCI_DEVICE_ID_LOONGSON_GMAC		0x7a03
+>   
+>   static const struct pci_device_id stmmac_id_table[] = {
+>   	{ PCI_DEVICE_DATA(STMMAC, STMMAC, &stmmac_pci_info) },
+>   	{ PCI_DEVICE_DATA(STMICRO, MAC, &stmmac_pci_info) },
+>   	{ PCI_DEVICE_DATA(SYNOPSYS, GMAC5_ID, &snps_gmac5_pci_info) },
+> +	{ PCI_DEVICE_DATA(LOONGSON, GMAC, &loongson_pci_info) },
+>   	{}
+>   };
+>   
+- Jiaxun
