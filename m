@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0F621C4B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 16:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C6021C4C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 17:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbgGKOtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 10:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42210 "EHLO
+        id S1728441AbgGKO77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 10:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728309AbgGKOtW (ORCPT
+        with ESMTP id S1728330AbgGKO77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 10:49:22 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5391DC08C5DD;
-        Sat, 11 Jul 2020 07:49:21 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id a8so6962298edy.1;
-        Sat, 11 Jul 2020 07:49:21 -0700 (PDT)
+        Sat, 11 Jul 2020 10:59:59 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012A5C08C5DD
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 07:59:58 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b6so8739697wrs.11
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 07:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4yR4ElxSmQKAvvG7liwNFfm8FLmxQ3u6hyl81BR6FRs=;
-        b=mhfhaSL3VH3YP+HH2mKvyYUSrtIDiSMSbkJEOyyqXAslTAjfGZeerQMmzEafymvtux
-         fBStxw9Qg808qFtgqSmdAqFPrenNhjg+/TgSpXMGX0wxCY+idvGpmXJqlnKBE+EYNvhC
-         4oDt9xbpxGTL5jJIFqD/o1LYupXdWREzGUqBiR5j9MMc1WKs5UwGzP5NUYMygpVbDJqU
-         NANb0Fv58gCoFICIEg740wlv3ITcSynGXaxuW/ZJ7SS98QGaPPWN4hwW3QwbLHDvmJQo
-         CZ9iMvwKk83kgYOXVnuXiiQwgRVLDSYz7t+Xm92LFTO5gd0OWD1EDbwa2sSlAG7+0M3K
-         /Svw==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=+5YJ4BXyiVlwCev/UR7kk6fTDXZ3Zt+Tj2RKUuxL+a8=;
+        b=CMRj30qE68pT3/+9gTayn6Oxa3rw+6akAmiovWC9XLMF8VgQXxMOZFuuoGYKLYCp4A
+         K5LlDsduDQhuHIZwqGaPynMi79PC3WUPu3gclwFmgrTl85ceQX9v+T7MUSt3E+Ni4mhR
+         PzHs1OqIoy/MaAUiOsRe1+iljA6ikgK8cPQJTUcQrCvvfx6l0qWxgoSuOVnQo9tj/D9M
+         Zlfg+hfCwLEH1/lAGpTXgdTughYytb6uaYSgdY6sHuQ4z5R3OOxSH+8ejyUXYLdONlGP
+         /sfrrvDytwnnz6o+BL6G4y9T8+q4lGOjVVUvBne3WwPDs404QTJgcFUWkN+pTUtNvDEf
+         1HAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4yR4ElxSmQKAvvG7liwNFfm8FLmxQ3u6hyl81BR6FRs=;
-        b=BZPFSdYxwNE3J1p7iNpDTuSpm0YTwVp7KUXLNvJfjy+KkJ+jEzR6hNrzBInw5t+P11
-         lI9l675Tw+wkWX2gx3O72C9ukLYqVa1wZyo56UlqMWVBmb6R9jgWtX4hZrIeQLl09J7/
-         /6T0x29AUKoJ73LbDYMkiaj3+jtvf5YG+bYCpXXxyVXFLaIrrbGVNvKnBo/JSRPNXGOc
-         ZzDKSghMoeSb8Xu4J4MSLudJE5eS8odxzgDj5DHJp7M5toeBlCGhvVwOAmA3f6WtuOX2
-         xa366upZ+PB1VcXozA9f1M3MdCp8aVTiKFVGnKSQEPjVEsy1wuVLud/wokYYPV1wXC3u
-         UQ/Q==
-X-Gm-Message-State: AOAM532JnGN5Iylnohx+3o98C25Wa7dIvkMACTtZCTV5KKCe9RNoT45V
-        1UcSqynbheb9T7Or+Mi3v9iuNsBinTLjFtL2QwU=
-X-Google-Smtp-Source: ABdhPJzAiuATMrQ3L3Wzx0z/E2edOMusL72tAS8Keix8xaYUMrn+jsnM9WeuOWdX2QI3hVGXp4039REikR5s1dmbWBE=
-X-Received: by 2002:a05:6402:1250:: with SMTP id l16mr84267646edw.362.1594478960548;
- Sat, 11 Jul 2020 07:49:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=+5YJ4BXyiVlwCev/UR7kk6fTDXZ3Zt+Tj2RKUuxL+a8=;
+        b=Xv1LVzWMRL/efn1Vdqy9Rm8TJcR1/6fL2QD7al6gTMcd9goDQLHlg9yU2S0c+A/Vi5
+         Q5hphy6miNrdaolFUvR+TZcT7KUeLOrqLq3Ul8AWZfZRWMC9sDFqL67s9pE+YfoEZlwT
+         gM9W6spaArPzC5GIuSPc5QSdKQngFukqn8xweCtqGAQXEEFD/OVQqXLeZtSdgq/ye5oP
+         Ox68GHbSsFQwvnItu4eZniuv0CeAf88tFMO/izv5ek1tHr/QD9gP3G9dGe9qLeYv46xX
+         Fu4IX9XdCGSDXzJNMAWlDOVqBcp26m/sG/K17x+Pru81Us2HYDtwqJ7J5GyEG0WT2nD8
+         K6iA==
+X-Gm-Message-State: AOAM531BUJwuj2noEIEfauI/S2aQd9NNd6z8FbBXlvYPG+0UGIfGKDvt
+        GMyPLgCHkhUDP4l0wV1Bd+vWeMo=
+X-Google-Smtp-Source: ABdhPJzTCmgbsceK42zcfVRe0huxYhnfmTSIbqUca//xWYfyNJKm4Tei1PSmOI8Y4d9+upaWrmhyfw==
+X-Received: by 2002:a5d:6802:: with SMTP id w2mr69479724wru.88.1594479597634;
+        Sat, 11 Jul 2020 07:59:57 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.249.169])
+        by smtp.gmail.com with ESMTPSA id p25sm13157545wmg.39.2020.07.11.07.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Jul 2020 07:59:56 -0700 (PDT)
+Date:   Sat, 11 Jul 2020 17:59:54 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] rwsem: fix commas in initialisation
+Message-ID: <20200711145954.GA1178171@localhost.localdomain>
 MIME-Version: 1.0
-References: <20200707203529.2098979-1-robdclark@gmail.com> <20200707203529.2098979-2-robdclark@gmail.com>
- <CACRpkdb0+V7AmvG0JXXETzayr4Q785OLhBWjU414tUJo1toJOQ@mail.gmail.com>
-In-Reply-To: <CACRpkdb0+V7AmvG0JXXETzayr4Q785OLhBWjU414tUJo1toJOQ@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Sat, 11 Jul 2020 07:49:52 -0700
-Message-ID: <CAF6AEGu3_qYWGKVmc2VrMVzU35svgxTEVKAMpNUZfy_jZg3euQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm/msm: sync generated headers
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Harigovindan P <harigovi@codeaurora.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        zhengbin <zhengbin13@huawei.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 4:49 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Tue, Jul 7, 2020 at 10:36 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > We haven't sync'd for a while.. pull in updates to get definitions for
-> > some fields in pkt7 payloads.
-> >
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
->
-> Out of curiosity : where are the syncs coming from? Mesa?
+Leading comma prevents arbitrary reordering of initialisation clauses.
+The whole point of C99 initialisation is to allow any such reordering.
 
-sometimes indirectly.. but they are generated from:
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-  https://github.com/freedreno/envytools/tree/master/rnndb
+ include/linux/rwsem.h |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-The cmdstream and devcoredump decoding tools (which also use the xml)
-are in the envytools tree as well.
-
-We have a copy of the gpu side xml in mesa, where we generate the
-headers at build time, but I guess doing that on the kernel side would
-introduce some build time dependencies that others wouldn't
-appreciate:
-
-  https://gitlab.freedesktop.org/mesa/mesa/-/tree/master/src/freedreno/registers
-
-Mesa already depends a lot on py generated headers, tables, etc.
-
-BR,
--R
-
-> Yours,
-> Linus Walleij
+--- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -66,22 +66,22 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ # define __RWSEM_DEP_MAP_INIT(lockname)			\
+-	, .dep_map = {					\
++	.dep_map = {					\
+ 		.name = #lockname,			\
+ 		.wait_type_inner = LD_WAIT_SLEEP,	\
+-	}
++	},
+ #else
+ # define __RWSEM_DEP_MAP_INIT(lockname)
+ #endif
+ 
+ #ifdef CONFIG_DEBUG_RWSEMS
+-# define __DEBUG_RWSEM_INITIALIZER(lockname) , .magic = &lockname
++# define __DEBUG_RWSEM_INITIALIZER(lockname) .magic = &lockname,
+ #else
+ # define __DEBUG_RWSEM_INITIALIZER(lockname)
+ #endif
+ 
+ #ifdef CONFIG_RWSEM_SPIN_ON_OWNER
+-#define __RWSEM_OPT_INIT(lockname) , .osq = OSQ_LOCK_UNLOCKED
++#define __RWSEM_OPT_INIT(lockname) .osq = OSQ_LOCK_UNLOCKED,
+ #else
+ #define __RWSEM_OPT_INIT(lockname)
+ #endif
+@@ -90,7 +90,7 @@ static inline int rwsem_is_locked(struct rw_semaphore *sem)
+ 	{ __RWSEM_INIT_COUNT(name),				\
+ 	  .owner = ATOMIC_LONG_INIT(0),				\
+ 	  .wait_list = LIST_HEAD_INIT((name).wait_list),	\
+-	  .wait_lock = __RAW_SPIN_LOCK_UNLOCKED(name.wait_lock)	\
++	  .wait_lock = __RAW_SPIN_LOCK_UNLOCKED(name.wait_lock),\
+ 	  __RWSEM_OPT_INIT(name)				\
+ 	  __DEBUG_RWSEM_INITIALIZER(name)			\
+ 	  __RWSEM_DEP_MAP_INIT(name) }
