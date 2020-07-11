@@ -2,108 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D93E21C4C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 17:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1446921C4C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 17:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728492AbgGKPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 11:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728330AbgGKPAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 11:00:12 -0400
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 869E7207D4
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 15:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594479611;
-        bh=thegBoeKlCc9Hando3InB6eZrnjks6/2imYKIUDsj1c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bZ63pOrjr5eKUWn8dQZuyIPwOgYa2XiDtiQShZ3B8VQFebj/7fuge8r257Ks89fua
-         WKrUpevn50vtknBnCfudJ1hWRBmqbUnZpKSR4oS04cmp/hh0vFJow6/0OzDQCgjuBh
-         W8ZawIdNYMJRMFVG0TzNGXuOuFJnopL4A9iyDLn4=
-Received: by mail-oi1-f180.google.com with SMTP id t4so7332005oij.9
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 08:00:11 -0700 (PDT)
-X-Gm-Message-State: AOAM533Lec92OWFz2yJJqgVX8N/8Fmr+teyb7eO8c8gNWJlZmBjnaIu1
-        35+qxVhEWyounzkLWBFvzGHR9x0lesoV+cRqM+M=
-X-Google-Smtp-Source: ABdhPJxiA3Ng3C1QlOJteaWU820bLOUDxyG0pH+nb6rnJ5QSgMiY25GSbFC08MRYgDF5yQ1UqufwrfKAUJcRrI0KQrA=
-X-Received: by 2002:aca:5516:: with SMTP id j22mr7652467oib.47.1594479610891;
- Sat, 11 Jul 2020 08:00:10 -0700 (PDT)
+        id S1728516AbgGKPIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 11:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728330AbgGKPIl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Jul 2020 11:08:41 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C328C08C5DD;
+        Sat, 11 Jul 2020 08:08:41 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x11so3441285plo.7;
+        Sat, 11 Jul 2020 08:08:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IQvs3fHvv9Fkjtgdt9Tsxnn3h6ei6m8hcchByCZR5HY=;
+        b=epAoZmB/f07JzI9Yc+QctLwKc0hvk4AvWpFa/BT9ZouzIYPP9i8z2n5NrA65EKv/ce
+         alBjQSbjOiB+jqnI+cxqp1TMFlqAP3VUWEe090EruPIhzL37jfFkvHgBiwL/p5+FJWOt
+         fHp9T37FE1Zcv3RMB9tP8hk692s9V3v4l+1K9BM6Jnjh49lpyaJ3X2qg5Rv813tHQ7Ne
+         xPLVV/UZ6yb8wXsbEWlqKroZNzQrWeUwwpY/DJ5OoURTpxvPvQ+203SexbO8wSW8MaAB
+         0dmn4p42I3uuQotJAAuy5tO4SgYKJmv0VfyHYCUOLINc/h2mWrpDfeJz6vy0rTfUf6GX
+         AtRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IQvs3fHvv9Fkjtgdt9Tsxnn3h6ei6m8hcchByCZR5HY=;
+        b=ao746FefwpbugGw2Hde4Y55rTx81sAwT7SI16UFyioxiqKFCntVokFujToEIbpqw2w
+         juxX3bDlh69xPC0lqdz8LrdjrlFWIdLcpPcSw6Oom6RkX5dPXMdwoGz6x7MnMdKuxBDl
+         OyKnGcR+VK+WAVYZCXecN23Smvv2UWKoSRQ8kfUzd1YWXfevGh/JMAlLqRpKnpy5wN1E
+         UK4TVC2M0igDvhKUUJdCnlS2+fqLBJIEJ63MgkQh0NYLIQJozHt54lTku3ide2x98isa
+         isyBBY65xSemy/0SlWaoDPp7B2xdRuv7IRLJjzJtyDVETMC+U0fbY5RByzssU6Xn7TlP
+         vSgQ==
+X-Gm-Message-State: AOAM532Y9TtHtkxMd/TCrBbgGau53FPjV5jgdQThEZ+F5kx1LPVawVKh
+        NdbX1PtaEQRKfIYDkEPRBxrdI7uMhX/B6ThrmmM=
+X-Google-Smtp-Source: ABdhPJxB7TW81S/w+nmuDCmaMiUAOIzAO7PFV1t2WxYhZWoZCzifxtm649ch0qn1OIqOD+IhxA6yZfMc2omHXRBZCZM=
+X-Received: by 2002:a17:902:7611:: with SMTP id k17mr63884975pll.255.1594480120624;
+ Sat, 11 Jul 2020 08:08:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <202007111901.282t0ZCv%lkp@intel.com> <20200711123025.GM1551@shell.armlinux.org.uk>
-In-Reply-To: <20200711123025.GM1551@shell.armlinux.org.uk>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 11 Jul 2020 17:59:59 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXG1OgFHmS2J=FODHNHgCbLWmmrAzn9jNpN2OmD9+c6__g@mail.gmail.com>
-Message-ID: <CAMj1kXG1OgFHmS2J=FODHNHgCbLWmmrAzn9jNpN2OmD9+c6__g@mail.gmail.com>
-Subject: Re: arm-linux-gnueabi-ld: section .rodata VMA overlaps section .bss VMA
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     kernel test robot <lkp@intel.com>,
-        Kees Cook <keescook@chromium.org>, kbuild-all@lists.01.org,
+References: <20200710161516.11625-1-brgl@bgdev.pl> <20200710161516.11625-2-brgl@bgdev.pl>
+In-Reply-To: <20200710161516.11625-2-brgl@bgdev.pl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 11 Jul 2020 18:08:24 +0300
+Message-ID: <CAHp75VfTDmyWWxAAky-CmuvO2ge0T1q+woJ8MxjdRQqNJwHS4w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] devres: provide devm_krealloc()
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(+ Arnd)
-
-On Sat, 11 Jul 2020 at 15:30, Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
+On Fri, Jul 10, 2020 at 7:17 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 >
-> I doubt anyone is going to fix this; it's an XIP kernel, and it looks
-> like the .data and .rodata sections are correctly placed as per the
-> configuration, but for some reason the .text (and sections that follow)
-> are incorrectly placed in VMA space.  The configuration file says that
-> the kernel should start at 0x00080000, and there's no way the .text
-> VMA should be starting at 0x3f0801a0.
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 >
-
-Note that only one of those lines has the >> prefix, and so this
-config was broken even before this patch got applied.
-
-> Unless one of the XIP using folk can debug this, I doubt there will be
-> any movement on it.  Especially as it's 5 months old...
+> Implement the managed variant of krealloc(). This function works with
+> all memory allocated by devm_kmalloc() (or devres functions using it
+> implicitly like devm_kmemdup(), devm_kstrdup() etc.).
 >
-> What do we do with bugs like this that people won't fix?  Remove XIP
-> support from the kernel?
->
+> Managed realloc'ed chunks can be manually released with devm_kfree().
 
-I fail to see the point of randconfig testing for xip kernels tbh, and
-i don't think it is fair to disable xip altogether if the configs that
-those people care about still build as expected.
+...
 
-But it would indeed be nice if we could at least get rid of these
-pointless build reports. Is there any way we can avoid xip from being
-selected by randconfig?
+>    devm_kfree()
+>    devm_kmalloc()
+>    devm_kmalloc_array()
+> +  devm_krealloc()
+>    devm_kmemdup()
+>    devm_kstrdup()
+>    devm_kvasprintf()
 
+Order?
 
-> On Sat, Jul 11, 2020 at 07:05:04PM +0800, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   1df0d8960499e58963fd6c8ac75e544f2b417b29
-> > commit: f87b1c49bc675da30d8e1e8f4b60b800312c7b90 ARM: 8958/1: rename missed uaccess .fixup section
-> > date:   5 months ago
-> > config: arm-randconfig-c004-20200711 (attached as .config)
-> > compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >    arm-linux-gnueabi-ld: section .data VMA [0000000040008000,00000000401e9edf] overlaps section .text VMA [000000003f0801a0,0000000040515887]
-> > >> arm-linux-gnueabi-ld: section .rodata VMA [0000000040516000,00000000409a24ee] overlaps section .bss VMA [0000000040208000,00000000409d80db]
-> >
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->
->
->
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+...
+
+> +void *devm_krealloc(struct device *dev, void *ptr, size_t new_size, gfp_t gfp)
+
+Do we really need the 'new_' prefix in the parameter?
+
+> +{
+> +       struct devres *old_dr, *new_dr;
+> +       struct list_head old_head;
+> +       unsigned long flags;
+> +       void *ret = NULL;
+> +       size_t tot_size;
+
+tot -> total.
+
+> +
+> +       if (unlikely(!new_size)) {
+> +               devm_kfree(dev, ptr);
+> +               return ZERO_SIZE_PTR;
+> +       }
+
+I guess here we need a comment of the possibilities below to have
+ZERO_SIZE_PTR as input.
+
+> +       if (unlikely(ZERO_OR_NULL_PTR(ptr)))
+> +               return devm_kmalloc(dev, new_size, gfp);
+> +
+> +       if (WARN_ON(is_kernel_rodata((unsigned long)ptr)))
+> +               /*
+> +                * We cannot reliably realloc a const string returned by
+> +                * devm_kstrdup_const().
+> +                */
+> +               return NULL;
+> +
+> +       if (!check_dr_size(new_size, &tot_size))
+> +               return NULL;
+> +
+> +       spin_lock_irqsave(&dev->devres_lock, flags);
+> +
+> +       old_dr = find_dr(dev, devm_kmalloc_release, devm_kmalloc_match, ptr);
+
+> +       if (WARN_ON(!old_dr))
+
+Under spin lock? I would rather see spin unlock followed by WARN.
+
+> +               /* Memory chunk not managed or managed by a different device. */
+> +               goto out;
+> +
+> +       old_head = old_dr->node.entry;
+> +
+> +       new_dr = krealloc(old_dr, tot_size, gfp);
+> +       if (!new_dr)
+> +               goto out;
+> +
+> +       if (new_dr != old_dr)
+> +               list_replace(&old_head, &new_dr->node.entry);
+> +
+> +       ret = new_dr->data;
+> +
+> +out:
+> +       spin_unlock_irqrestore(&dev->devres_lock, flags);
+> +       return ret;
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
