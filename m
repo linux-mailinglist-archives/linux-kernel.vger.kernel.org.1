@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C06021C617
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 22:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E432C21C61A
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 22:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgGKUYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 16:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727099AbgGKUYC (ORCPT
+        id S1727876AbgGKUYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 16:24:24 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:36066 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727099AbgGKUYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 16:24:02 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86729C08C5DD
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 13:24:02 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id l63so4081834pge.12
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 13:24:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=paG/UTKUPg8LNNMM5UIfbQX1NT/A+O79kxOkghupz2c=;
-        b=om7388ZRsX8MUL1apUipxboeW7eErLSG8gOfHTWrT6hzYJwAVJTbGU/WgJsN7byyz+
-         RhilSMP2KIoFZM5+qoCt7Hk/OSxDXHQyWzdzjyHrda8QUttUcv0PAN318Bx4mLQyTTW5
-         6UylyNpcmxq4ifBr+5iQY8y/+PtLN8eRJ/gFlA+OHJN/q4Mvqp+wvfKz6G5FNmgnXwSr
-         FBpQtowAX9ueYC4ZnpXt+SEfgX7baxkARbD8LQ5PqDVvzZaIDb4jtKlGkq8F282g6945
-         33gSUHGB/ZuAR36qv3uFKqjzYyOWvtOkHedEehET6iZC9m1sZ0WGTARVtVwWWa/g0FG1
-         lebw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=paG/UTKUPg8LNNMM5UIfbQX1NT/A+O79kxOkghupz2c=;
-        b=Zj8wOaE0QJJEuOlI7J5WJbnzwYtClUj1FXk4DyRAaBoJIUV7+j/dAx19fyfAoGsJRY
-         BhilP7Rz8LsRfCZjREWEncnj71kDG8+gK0xp4R9poKphRN1HzNePQkB3Y0nDbWLwv0L7
-         dfgxqVwnkVDtd+RQwHJ0da+VsrOZiCp2+Q57QHs2zH6xXU7q3S95i1fcQPp7HzSyIlnk
-         XbwVx5iZmVxoO6hl3BAabgPf4UAqd1rkyj8X6qHkY9E8mydt4dl0cn+VSAbv2wWAQmiS
-         cWsT4Csl8rMeCfowHBJ1VUP8D3xguydFyR4ofWyK2PkEzxXRdlowqqLrjRy+ZF7QDWH6
-         mXFg==
-X-Gm-Message-State: AOAM533/Y86TFF7lHHlfv9eB6tYkrdzOJJ2CTMyesAqiuvkvkdUCe3Fp
-        GXBJ+3q9gVbNGdXJ/S71+7xPtx5Cvjc=
-X-Google-Smtp-Source: ABdhPJxlIjk8lduBkdIXyv51+7bw5E4xwnJISJhykecgIyxhu0I7/UfrP/Cx3jA+e1ElRTlQMtNP6g==
-X-Received: by 2002:a63:310f:: with SMTP id x15mr64432364pgx.221.1594499041744;
-        Sat, 11 Jul 2020 13:24:01 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id g18sm9668435pfi.141.2020.07.11.13.24.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Jul 2020 13:24:01 -0700 (PDT)
-Date:   Sat, 11 Jul 2020 13:24:01 -0700 (PDT)
-X-Google-Original-Date: Sat, 11 Jul 2020 13:23:48 PDT (-0700)
-Subject: [GIT PULL] RISC-V Fixes for 5.8-rc5 (ideally)
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-f8b65a3e-17ea-448d-be82-0d1c42c0bf37@palmerdabbelt-glaptop1>
+        Sat, 11 Jul 2020 16:24:23 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 371561C0BD2; Sat, 11 Jul 2020 22:24:20 +0200 (CEST)
+Date:   Sat, 11 Jul 2020 22:24:19 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     Dan Murphy <dmurphy@ti.com>, robh@kernel.org,
+        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v29 13/16] leds: lp5523: Update the lp5523 code to add
+ multicolor brightness function
+Message-ID: <20200711202419.GA18347@duo.ucw.cz>
+References: <20200622185919.2131-1-dmurphy@ti.com>
+ <20200622185919.2131-14-dmurphy@ti.com>
+ <20200711155749.GB22715@amd>
+ <c9e20136-7226-2feb-b017-0a0742867f93@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
+Content-Disposition: inline
+In-Reply-To: <c9e20136-7226-2feb-b017-0a0742867f93@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit dcb7fd82c75ee2d6e6f9d8cc71c52519ed52e258:
 
-  Linux 5.8-rc4 (2020-07-05 16:20:22 -0700)
+--2fHTh5uZTiUOsy+g
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-are available in the Git repository at:
+On Sat 2020-07-11 19:19:22, Jacek Anaszewski wrote:
+> On 7/11/20 5:57 PM, Pavel Machek wrote:
+> > Hi!
+> >=20
+> > > Add the multicolor brightness call back to support the multicolor
+> > > framework.  This call back allows setting  brightness on grouped chan=
+nels
+> >=20
+> > Extra space before "brightness".
+>=20
+> And before "This".
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.8-rc5
+That one is intentional, I believe.
 
-for you to fetch changes up to 70ee5731a40b1f07f151e52c3c4ed27d70d4f9fe:
+https://www.independent.co.uk/life-style/gadgets-and-tech/news/one-space-or=
+-two-spaces-after-a-full-stop-scientists-have-finally-found-the-answer-a833=
+7646.html
 
-  riscv: Avoid kgdb.h including gdb_xml.h to solve unused-const-variable warning (2020-07-09 20:12:28 -0700)
+We are using fixed width fonts, so typewriter rules still apply here.
 
-----------------------------------------------------------------
-RISC-V Fixes for 5.8-rc5 (ideally)
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-I have a few KGDB-related fixes that I'd like to target for 5.8-rc5.  They're
-mostly fixes for build warnings, but there's also:
+--2fHTh5uZTiUOsy+g
+Content-Type: application/pgp-signature; name="signature.asc"
 
-* Support for the qSupported and qXfer packets, which are necessary to pass
-  around GDB XML information which we need for the RISC-V GDB port to fully
-  function.
-* Users can now select STRICT_KERNEL_RWX instead of forcing it on.
+-----BEGIN PGP SIGNATURE-----
 
-I know it's a bit late for rc5, as these are not critical it's not a big deal
-if they don't make it in.
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXwof8wAKCRAw5/Bqldv6
+8rAyAJ4hPt7IgHlyAtBRG2ArOmyZ8Mj29QCggA8ecmn08QOBVK7ziUsCW4evjuI=
+=RSa+
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Vincent Chen (5):
-      kgdb: enable arch to support XML packet.
-      riscv: enable the Kconfig prompt of STRICT_KERNEL_RWX
-      riscv: Fix "no previous prototype" compile warning in kgdb.c file
-      kgdb: Move the extern declaration kgdb_has_hit_break() to generic kgdb.h
-      riscv: Avoid kgdb.h including gdb_xml.h to solve unused-const-variable warning
-
- arch/riscv/Kconfig               |  2 ++
- arch/riscv/include/asm/gdb_xml.h |  3 +--
- arch/riscv/include/asm/kgdb.h    |  5 +++--
- arch/riscv/kernel/kgdb.c         | 10 +++++-----
- include/linux/kgdb.h             | 12 ++++++++++++
- kernel/debug/gdbstub.c           | 13 +++++++++++++
- lib/Kconfig.kgdb                 |  5 +++++
- 7 files changed, 41 insertions(+), 9 deletions(-)
+--2fHTh5uZTiUOsy+g--
