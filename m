@@ -2,79 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DF521C384
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 12:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C276221C38E
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 12:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgGKKHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 06:07:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgGKKHt (ORCPT
+        id S1726867AbgGKKKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 06:10:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53400 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbgGKKJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 06:07:49 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250D2C08C5DD
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 03:07:49 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id dp18so8643065ejc.8
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 03:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VvgPMzxaIWY8gu27wsl9NLTmMwdfSRe2LBQ+aoof43M=;
-        b=PbiCT6rnYpxjcdz78JSzc66U2jCPCKyCvdzn3eSBaprRlJVi0AoRb7r5GY28HdyQV8
-         0kzDCApIGdgRErMQYrTaNgOIeW7F+TnstVOfQnIBrJ74RW9Kp2lAyXtPSRwI3uYjnVdG
-         RQVkMbMwPbpZHLiAwg8k5GsMrWWHsanOzaPZ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VvgPMzxaIWY8gu27wsl9NLTmMwdfSRe2LBQ+aoof43M=;
-        b=UEoESDQ7G7GtTZ+82He+g0ZIK8ihfExOcUNh4ea0SOFpZV9QYeiQMrqOaE8WK87Wr/
-         c2cGgYn+SPFH/Ogb9Y38ZzOR5FWi4vaoZxQhHxhM1OcAHGhebmYeI4FaqanDFV85nFIU
-         bUDf1Mmgq23baFoucD0vdmeMuMSjcjVxoxM/dwkJFAZWSWY73vs6JKbbd6ARblAbJT/V
-         igFshgOWw4J/r8qD4V0GuXU1kUjydltedML+08JzRUw2w3wR4HtvFOqI0EVldtQG5/77
-         ZI3aYYXDvI9umPk3ojs51hv0VKRwKpCOPm/9h1UVnk06VBweL/if7AXY7J40Hr5Kvlb7
-         uCRw==
-X-Gm-Message-State: AOAM5302zfQyVZcq0e8ZVeAbsECW93/r0tefJRvrFxeqTO3ty9RypHMw
-        YElSQNQl3f+4c9VdgsQBxP5WsQ==
-X-Google-Smtp-Source: ABdhPJwDfkL/WJa2Dbdi6wpQKziY+VZNw5BInEihKFhEvNyxeYNGxcpd3iw/1vjMlfuO1RYGaRPc9g==
-X-Received: by 2002:a17:906:ca56:: with SMTP id jx22mr64001808ejb.494.1594462067714;
-        Sat, 11 Jul 2020 03:07:47 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:8860])
-        by smtp.gmail.com with ESMTPSA id y11sm5150377ejw.63.2020.07.11.03.07.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Jul 2020 03:07:47 -0700 (PDT)
-Date:   Sat, 11 Jul 2020 11:07:46 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: vmscan: consistent update to pgrefill
-Message-ID: <20200711100746.GA814207@chrisdown.name>
-References: <20200711011459.1159929-1-shakeelb@google.com>
+        Sat, 11 Jul 2020 06:09:57 -0400
+Date:   Sat, 11 Jul 2020 10:09:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594462194;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uzzUoAVFWAnmngIp2bYTeOvYwjM4Zcg+x/D/2o5U7x0=;
+        b=ufsSple3dCUm7qT8qS1SYcGipyN7KMLvKV3E3I2WEBbOnDPNRsgrTUSg/5cm20x2nY7Rmi
+        2zlpcC9nsL6M0YEpQLOsgt8KngSt38nOYPFC+pDYW1jv2KUlEVEZlMlfY3CBaaz/DMSJkR
+        USTwd2ntMKM6CTVlU8J+sZHxZ6QCLcqdcrNQ3Sir1dTzMgzrM1GKe7F0FlQA9UXLRdpN7q
+        a4qQXcdgAldZ3m1Mkzk6l8zlT9JPyJ1Qmlg7nHVpEnTNisASu9pfESMphi9nmQw5ATvSPO
+        xLo/Q8RHkH4MHabXnJl7uKXS/QBgv3ORYHUnUUif9U04xnsTe2hHns7/jmi7TA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594462194;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uzzUoAVFWAnmngIp2bYTeOvYwjM4Zcg+x/D/2o5U7x0=;
+        b=71E4SqGz8xYO3NiqkpHTfZM5eYKVklG620IX5VZbEOqJV6fJXnlXUFGLROwjOGn619GSnL
+        O7FwQ8OtlhRXgACw==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] lockdep: Remove
+ lockdep_hardirq{s_enabled,_context}() argument
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200623083721.571835311@infradead.org>
+References: <20200623083721.571835311@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200711011459.1159929-1-shakeelb@google.com>
-User-Agent: Mutt/1.14.5 (2020-06-23)
+Message-ID: <159446219309.4006.16573680750106787417.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shakeel Butt writes:
->The vmstat pgrefill is useful together with pgscan and pgsteal stats to
->measure the reclaim efficiency. However vmstat's pgrefill is not updated
->consistently at system level. It gets updated for both global and memcg
->reclaim however pgscan and pgsteal are updated for only global reclaim.
->So, update pgrefill only for global reclaim. If someone is interested in
->the stats representing both system level as well as memcg level reclaim,
->then consult the root memcg's memory.stat instead of /proc/vmstat.
->
->Signed-off-by: Shakeel Butt <shakeelb@google.com>
+The following commit has been merged into the locking/core branch of tip:
 
-Acked-by: Chris Down <chris@chrisdown.name>
+Commit-ID:     f9ad4a5f3f20bee022b1bdde94e5ece6dc0b0edc
+Gitweb:        https://git.kernel.org/tip/f9ad4a5f3f20bee022b1bdde94e5ece6dc0b0edc
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 27 May 2020 13:03:26 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 10 Jul 2020 12:00:02 +02:00
+
+lockdep: Remove lockdep_hardirq{s_enabled,_context}() argument
+
+Now that the macros use per-cpu data, we no longer need the argument.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lkml.kernel.org/r/20200623083721.571835311@infradead.org
+---
+ arch/x86/entry/common.c        |  2 +-
+ include/linux/irqflags.h       |  8 ++++----
+ include/linux/lockdep.h        |  2 +-
+ kernel/locking/lockdep.c       | 30 +++++++++++++++---------------
+ kernel/softirq.c               |  2 +-
+ tools/include/linux/irqflags.h |  4 ++--
+ 6 files changed, 24 insertions(+), 24 deletions(-)
+
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 63c607d..4ea6403 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -758,7 +758,7 @@ noinstr void idtentry_exit_user(struct pt_regs *regs)
+ 
+ noinstr bool idtentry_enter_nmi(struct pt_regs *regs)
+ {
+-	bool irq_state = lockdep_hardirqs_enabled(current);
++	bool irq_state = lockdep_hardirqs_enabled();
+ 
+ 	__nmi_enter();
+ 	lockdep_hardirqs_off(CALLER_ADDR0);
+diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
+index 255444f..5811ee8 100644
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -40,9 +40,9 @@ DECLARE_PER_CPU(int, hardirq_context);
+   extern void trace_hardirqs_off_finish(void);
+   extern void trace_hardirqs_on(void);
+   extern void trace_hardirqs_off(void);
+-# define lockdep_hardirq_context(p)	(this_cpu_read(hardirq_context))
++# define lockdep_hardirq_context()	(this_cpu_read(hardirq_context))
+ # define lockdep_softirq_context(p)	((p)->softirq_context)
+-# define lockdep_hardirqs_enabled(p)	(this_cpu_read(hardirqs_enabled))
++# define lockdep_hardirqs_enabled()	(this_cpu_read(hardirqs_enabled))
+ # define lockdep_softirqs_enabled(p)	((p)->softirqs_enabled)
+ # define lockdep_hardirq_enter()			\
+ do {							\
+@@ -109,9 +109,9 @@ do {						\
+ # define trace_hardirqs_off_finish()		do { } while (0)
+ # define trace_hardirqs_on()		do { } while (0)
+ # define trace_hardirqs_off()		do { } while (0)
+-# define lockdep_hardirq_context(p)	0
++# define lockdep_hardirq_context()	0
+ # define lockdep_softirq_context(p)	0
+-# define lockdep_hardirqs_enabled(p)	0
++# define lockdep_hardirqs_enabled()	0
+ # define lockdep_softirqs_enabled(p)	0
+ # define lockdep_hardirq_enter()	do { } while (0)
+ # define lockdep_hardirq_threaded()	do { } while (0)
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index be6cb17..fd04b9e 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -562,7 +562,7 @@ do {									\
+ 
+ # define lockdep_assert_RT_in_threaded_ctx() do {			\
+ 		WARN_ONCE(debug_locks && !current->lockdep_recursion &&	\
+-			  lockdep_hardirq_context(current) &&		\
++			  lockdep_hardirq_context() &&			\
+ 			  !(current->hardirq_threaded || current->irq_config),	\
+ 			  "Not in threaded context on PREEMPT_RT as expected\n");	\
+ } while (0)
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index ab4ffbe..c9ea05e 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -2062,9 +2062,9 @@ print_bad_irq_dependency(struct task_struct *curr,
+ 	pr_warn("-----------------------------------------------------\n");
+ 	pr_warn("%s/%d [HC%u[%lu]:SC%u[%lu]:HE%u:SE%u] is trying to acquire:\n",
+ 		curr->comm, task_pid_nr(curr),
+-		lockdep_hardirq_context(curr), hardirq_count() >> HARDIRQ_SHIFT,
++		lockdep_hardirq_context(), hardirq_count() >> HARDIRQ_SHIFT,
+ 		curr->softirq_context, softirq_count() >> SOFTIRQ_SHIFT,
+-		lockdep_hardirqs_enabled(curr),
++		lockdep_hardirqs_enabled(),
+ 		curr->softirqs_enabled);
+ 	print_lock(next);
+ 
+@@ -3331,9 +3331,9 @@ print_usage_bug(struct task_struct *curr, struct held_lock *this,
+ 
+ 	pr_warn("%s/%d [HC%u[%lu]:SC%u[%lu]:HE%u:SE%u] takes:\n",
+ 		curr->comm, task_pid_nr(curr),
+-		lockdep_hardirq_context(curr), hardirq_count() >> HARDIRQ_SHIFT,
++		lockdep_hardirq_context(), hardirq_count() >> HARDIRQ_SHIFT,
+ 		lockdep_softirq_context(curr), softirq_count() >> SOFTIRQ_SHIFT,
+-		lockdep_hardirqs_enabled(curr),
++		lockdep_hardirqs_enabled(),
+ 		lockdep_softirqs_enabled(curr));
+ 	print_lock(this);
+ 
+@@ -3658,7 +3658,7 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+ 	if (unlikely(current->lockdep_recursion & LOCKDEP_RECURSION_MASK))
+ 		return;
+ 
+-	if (unlikely(lockdep_hardirqs_enabled(current))) {
++	if (unlikely(lockdep_hardirqs_enabled())) {
+ 		/*
+ 		 * Neither irq nor preemption are disabled here
+ 		 * so this is racy by nature but losing one hit
+@@ -3686,7 +3686,7 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+ 	 * Can't allow enabling interrupts while in an interrupt handler,
+ 	 * that's general bad form and such. Recursion, limited stack etc..
+ 	 */
+-	if (DEBUG_LOCKS_WARN_ON(lockdep_hardirq_context(current)))
++	if (DEBUG_LOCKS_WARN_ON(lockdep_hardirq_context()))
+ 		return;
+ 
+ 	current->hardirq_chain_key = current->curr_chain_key;
+@@ -3724,7 +3724,7 @@ void noinstr lockdep_hardirqs_on(unsigned long ip)
+ 	if (unlikely(current->lockdep_recursion & LOCKDEP_RECURSION_MASK))
+ 		return;
+ 
+-	if (lockdep_hardirqs_enabled(curr)) {
++	if (lockdep_hardirqs_enabled()) {
+ 		/*
+ 		 * Neither irq nor preemption are disabled here
+ 		 * so this is racy by nature but losing one hit
+@@ -3783,7 +3783,7 @@ void noinstr lockdep_hardirqs_off(unsigned long ip)
+ 	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
+ 		return;
+ 
+-	if (lockdep_hardirqs_enabled(curr)) {
++	if (lockdep_hardirqs_enabled()) {
+ 		/*
+ 		 * We have done an ON -> OFF transition:
+ 		 */
+@@ -3832,7 +3832,7 @@ void lockdep_softirqs_on(unsigned long ip)
+ 	 * usage bit for all held locks, if hardirqs are
+ 	 * enabled too:
+ 	 */
+-	if (lockdep_hardirqs_enabled(curr))
++	if (lockdep_hardirqs_enabled())
+ 		mark_held_locks(curr, LOCK_ENABLED_SOFTIRQ);
+ 	lockdep_recursion_finish();
+ }
+@@ -3881,7 +3881,7 @@ mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
+ 	 */
+ 	if (!hlock->trylock) {
+ 		if (hlock->read) {
+-			if (lockdep_hardirq_context(curr))
++			if (lockdep_hardirq_context())
+ 				if (!mark_lock(curr, hlock,
+ 						LOCK_USED_IN_HARDIRQ_READ))
+ 					return 0;
+@@ -3890,7 +3890,7 @@ mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
+ 						LOCK_USED_IN_SOFTIRQ_READ))
+ 					return 0;
+ 		} else {
+-			if (lockdep_hardirq_context(curr))
++			if (lockdep_hardirq_context())
+ 				if (!mark_lock(curr, hlock, LOCK_USED_IN_HARDIRQ))
+ 					return 0;
+ 			if (curr->softirq_context)
+@@ -3928,7 +3928,7 @@ lock_used:
+ 
+ static inline unsigned int task_irq_context(struct task_struct *task)
+ {
+-	return LOCK_CHAIN_HARDIRQ_CONTEXT * !!lockdep_hardirq_context(task) +
++	return LOCK_CHAIN_HARDIRQ_CONTEXT * !!lockdep_hardirq_context() +
+ 	       LOCK_CHAIN_SOFTIRQ_CONTEXT * !!task->softirq_context;
+ }
+ 
+@@ -4021,7 +4021,7 @@ static inline short task_wait_context(struct task_struct *curr)
+ 	 * Set appropriate wait type for the context; for IRQs we have to take
+ 	 * into account force_irqthread as that is implied by PREEMPT_RT.
+ 	 */
+-	if (lockdep_hardirq_context(curr)) {
++	if (lockdep_hardirq_context()) {
+ 		/*
+ 		 * Check if force_irqthreads will run us threaded.
+ 		 */
+@@ -4864,11 +4864,11 @@ static void check_flags(unsigned long flags)
+ 		return;
+ 
+ 	if (irqs_disabled_flags(flags)) {
+-		if (DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled(current))) {
++		if (DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())) {
+ 			printk("possible reason: unannotated irqs-off.\n");
+ 		}
+ 	} else {
+-		if (DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled(current))) {
++		if (DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled())) {
+ 			printk("possible reason: unannotated irqs-on.\n");
+ 		}
+ 	}
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 342c53f..5e9aaa6 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -230,7 +230,7 @@ static inline bool lockdep_softirq_start(void)
+ {
+ 	bool in_hardirq = false;
+ 
+-	if (lockdep_hardirq_context(current)) {
++	if (lockdep_hardirq_context()) {
+ 		in_hardirq = true;
+ 		lockdep_hardirq_exit();
+ 	}
+diff --git a/tools/include/linux/irqflags.h b/tools/include/linux/irqflags.h
+index 67e01bb..501262a 100644
+--- a/tools/include/linux/irqflags.h
++++ b/tools/include/linux/irqflags.h
+@@ -2,9 +2,9 @@
+ #ifndef _LIBLOCKDEP_LINUX_TRACE_IRQFLAGS_H_
+ #define _LIBLOCKDEP_LINUX_TRACE_IRQFLAGS_H_
+ 
+-# define lockdep_hardirq_context(p)	0
++# define lockdep_hardirq_context()	0
+ # define lockdep_softirq_context(p)	0
+-# define lockdep_hardirqs_enabled(p)	0
++# define lockdep_hardirqs_enabled()	0
+ # define lockdep_softirqs_enabled(p)	0
+ # define lockdep_hardirq_enter()	do { } while (0)
+ # define lockdep_hardirq_exit()		do { } while (0)
