@@ -2,141 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CA721C3FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 13:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1574221C408
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 13:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgGKLbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 07:31:41 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:13526 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgGKLbl (ORCPT
+        id S1727004AbgGKLoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 07:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726342AbgGKLoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 07:31:41 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 11 Jul 2020 04:31:40 -0700
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 11 Jul 2020 04:31:38 -0700
-Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 11 Jul 2020 17:01:16 +0530
-Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
-        id 5534B21515; Sat, 11 Jul 2020 17:01:15 +0530 (IST)
-From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        rjliao@codeaurora.org, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Subject: [PATCH v1] Bluetooth: hci_qca: Bug fixes for SSR
-Date:   Sat, 11 Jul 2020 17:01:12 +0530
-Message-Id: <1594467072-13332-1-git-send-email-gubbaven@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Sat, 11 Jul 2020 07:44:30 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07326C08C5DD
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 04:44:30 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id 9so9291825ljv.5
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 04:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yaksYBcXaU35BrWyqrbVOlpaXmypFAxOvxS4CIm38Eo=;
+        b=UgOzISgwB+iq9LK3rjVylndJCiTmDXCP3ti/+oMkznveUyzcNPkkDtNYgNtk9LyPwr
+         aL87zwaVWR1x2iEMa2lH/wXwJeLHqJxPgfcDFmSW29JF8/jQ+eHg9BcsbXT4KV/WBnCE
+         XbWS8FW7jE3a1p3pOcrKUdTGf41rfhgyiul2xnEjCjlVTzq7n/FsJQMu1LzLvxX0TqPc
+         NI3/ANM5whNYHJveeOobX2Ut+X3nkC5y+MlGjgvhKKZuI6z4QW/tVt3Ic2X6a7uNMWxe
+         DhnctEzX2vz29ceNCKhXqnYgAgnJAHbPHIKNd4KnFiJhu8b7wzwCvw6JLeencoV/HnpV
+         ADXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yaksYBcXaU35BrWyqrbVOlpaXmypFAxOvxS4CIm38Eo=;
+        b=OXLu5VGvqkVOCAaFUTlqnO1VE5f/KdJmktpQ3tQIgwBDKKpjXSRuF5i0j5AK61DKyq
+         IH2CvmTVRsyde24KAl2necdyGbt1lPzVrksRlFt1rOkt1rgth1C6uHEQ/zKkjrI0s1b5
+         6KVj4gNzfJ/z8kn4rfLzoegzKhiHkIFDbjdz7TioAzao8yDOfY4u0Rj9zMosVftSnNqp
+         j1ZZBYmjQPDekvNFdFOWMFuXFA7WP9ll/qHRUtvW7U8eFgQpzCueFBBFQILMZnurlyG/
+         57VPvAHTgvr0slG2/MNGLCSfJwTaurm+xnHeSHFDpXoJ94H7rQ6MWJL+gRyw96ybxDTs
+         6fSA==
+X-Gm-Message-State: AOAM530+Vz8Pw2DlNoe4wnX9uBgpk2T4d++JeNl3SMag+y3AjV3gLCRl
+        qxzoUMqyE87oq+4dPvYWl58=
+X-Google-Smtp-Source: ABdhPJyrE3HbiP1To2RrFfr3NXJqFHhXPPtlwfqGM9v3UDGx1bOhiiVwhn62ptFs4aPYTAURd9QqUQ==
+X-Received: by 2002:a2e:9dd6:: with SMTP id x22mr24354663ljj.199.1594467868560;
+        Sat, 11 Jul 2020 04:44:28 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-228-147.NA.cust.bahnhof.se. [98.128.228.147])
+        by smtp.gmail.com with ESMTPSA id j25sm3080020lfh.95.2020.07.11.04.44.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Jul 2020 04:44:27 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     pihsun@chromium.org, lgirdwood@gmail.com, broonie@kernel.org,
+        bleung@chromium.org, enric.balletbo@collabora.com,
+        groeck@chromium.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] regulator: cros-ec: Constify cros_ec_regulator_voltage_ops
+Date:   Sat, 11 Jul 2020 13:44:09 +0200
+Message-Id: <20200711114409.9911-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.During SSR for command time out if BT SoC goes to inresponsive
-state, power cycling of BT SoC was not happening.Given the fix by
-sending hw error event to reset the BT SoC.
+It is never modified, so make it const to allow the compiler to put it
+in read-only memory.
 
-2.If SSR is triggered then ignore the transmit data requests to
-BT SoC until SSR is completed.
-
-Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/bluetooth/hci_qca.c | 40 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 36 insertions(+), 4 deletions(-)
+ drivers/regulator/cros-ec-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 7e39546..bfebefa 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -72,7 +72,8 @@ enum qca_flags {
- 	QCA_DROP_VENDOR_EVENT,
- 	QCA_SUSPENDING,
- 	QCA_MEMDUMP_COLLECTION,
--	QCA_HW_ERROR_EVENT
-+	QCA_HW_ERROR_EVENT,
-+	QCA_SSR_TRIGGERED
- };
- 
- enum qca_capabilities {
-@@ -854,6 +855,13 @@ static int qca_enqueue(struct hci_uart *hu, struct sk_buff *skb)
- 	BT_DBG("hu %p qca enq skb %p tx_ibs_state %d", hu, skb,
- 	       qca->tx_ibs_state);
- 
-+	if (test_bit(QCA_SSR_TRIGGERED, &qca->flags)) {
-+		/* As SSR is in progress,Ignore the packets */
-+		bt_dev_dbg(hu->hdev, "SSR is in progress");
-+		kfree_skb(skb);
-+		return 0;
-+	}
-+
- 	/* Prepend skb with frame type */
- 	memcpy(skb_push(skb, 1), &hci_skb_pkt_type(skb), 1);
- 
-@@ -1123,6 +1131,7 @@ static int qca_controller_memdump_event(struct hci_dev *hdev,
- 	struct hci_uart *hu = hci_get_drvdata(hdev);
- 	struct qca_data *qca = hu->priv;
- 
-+	set_bit(QCA_SSR_TRIGGERED, &qca->flags);
- 	skb_queue_tail(&qca->rx_memdump_q, skb);
- 	queue_work(qca->workqueue, &qca->ctrl_memdump_evt);
- 
-@@ -1481,6 +1490,7 @@ static void qca_hw_error(struct hci_dev *hdev, u8 code)
- 	struct hci_uart *hu = hci_get_drvdata(hdev);
- 	struct qca_data *qca = hu->priv;
- 
-+	set_bit(QCA_SSR_TRIGGERED, &qca->flags);
- 	set_bit(QCA_HW_ERROR_EVENT, &qca->flags);
- 	bt_dev_info(hdev, "mem_dump_status: %d", qca->memdump_state);
- 
-@@ -1529,10 +1539,30 @@ static void qca_cmd_timeout(struct hci_dev *hdev)
- 	struct hci_uart *hu = hci_get_drvdata(hdev);
- 	struct qca_data *qca = hu->priv;
- 
--	if (qca->memdump_state == QCA_MEMDUMP_IDLE)
-+	set_bit(QCA_SSR_TRIGGERED, &qca->flags);
-+	if (qca->memdump_state == QCA_MEMDUMP_IDLE) {
-+		set_bit(QCA_MEMDUMP_COLLECTION, &qca->flags);
- 		qca_send_crashbuffer(hu);
--	else
--		bt_dev_info(hdev, "Dump collection is in process");
-+		qca_wait_for_dump_collection(hdev);
-+	} else if (qca->memdump_state == QCA_MEMDUMP_COLLECTING) {
-+		/* Let us wait here until memory dump collected or
-+		 * memory dump timer expired.
-+		 */
-+		bt_dev_info(hdev, "waiting for dump to complete");
-+		qca_wait_for_dump_collection(hdev);
-+	}
-+
-+	mutex_lock(&qca->hci_memdump_lock);
-+	if (qca->memdump_state != QCA_MEMDUMP_COLLECTED) {
-+		qca->memdump_state = QCA_MEMDUMP_TIMEOUT;
-+		if (!test_bit(QCA_HW_ERROR_EVENT, &qca->flags)) {
-+			/* Inject hw error event to reset the device
-+			 * and driver.
-+			 */
-+			hci_reset_dev(hu->hdev);
-+		}
-+	}
-+	mutex_unlock(&qca->hci_memdump_lock);
+diff --git a/drivers/regulator/cros-ec-regulator.c b/drivers/regulator/cros-ec-regulator.c
+index 35f97246bc48..eeed5aac3f32 100644
+--- a/drivers/regulator/cros-ec-regulator.c
++++ b/drivers/regulator/cros-ec-regulator.c
+@@ -142,7 +142,7 @@ static int cros_ec_regulator_set_voltage(struct regulator_dev *dev, int min_uV,
+ 			   sizeof(cmd), NULL, 0);
  }
  
- static int qca_wcn3990_init(struct hci_uart *hu)
-@@ -1643,6 +1673,8 @@ static int qca_setup(struct hci_uart *hu)
- 	if (ret)
- 		return ret;
- 
-+	clear_bit(QCA_SSR_TRIGGERED, &qca->flags);
-+
- 	if (qca_is_wcn399x(soc_type)) {
- 		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
- 
+-static struct regulator_ops cros_ec_regulator_voltage_ops = {
++static const struct regulator_ops cros_ec_regulator_voltage_ops = {
+ 	.enable = cros_ec_regulator_enable,
+ 	.disable = cros_ec_regulator_disable,
+ 	.is_enabled = cros_ec_regulator_is_enabled,
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.27.0
 
