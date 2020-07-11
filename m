@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CB921C57B
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 19:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B29B921C57C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 19:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbgGKRT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 13:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgGKRT1 (ORCPT
+        id S1728693AbgGKRYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 13:24:18 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:50970 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728507AbgGKRYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 13:19:27 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B573C08C5DD;
-        Sat, 11 Jul 2020 10:19:26 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id o2so8957055wmh.2;
-        Sat, 11 Jul 2020 10:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BAY2/0J+ZmHyiIP5qBIYgvkyqh416isH8/DQ5Y+/lR4=;
-        b=Jn4vqjOe1vlXGpmpFkxEq/lsZBxq7vqbdHx5DuZWQWam7mPTJ0xoQ86fvLGKDTocWQ
-         4/mLwdfdrvdp6Enxgp4B7N4r2blG/USWai0/Tl+1pYAwzq2eH4j037KlyyT6v/Tmd26/
-         OFapOiV2ZPCpEPo1tfTUb6/s5fG69nP0bJrzvz5EfvUfjg2KeOpCKlzen4SBSK/++HR9
-         jaVJ2f/E7CWtGlf4f6rECZzxJazF2Xm91y4APFaxtFWu9V9Y95nnlTW29Vvw5U+15Icf
-         ql8XCGDXWP6Gf0AXNgeYV3VmHyyDif/tO4yipq0/Y0eWz+7ZlOqrR2XHjWgIx3xp8y9F
-         pZAg==
+        Sat, 11 Jul 2020 13:24:18 -0400
+Received: by mail-il1-f197.google.com with SMTP id l17so6010843ilj.17
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 10:24:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BAY2/0J+ZmHyiIP5qBIYgvkyqh416isH8/DQ5Y+/lR4=;
-        b=irEOOI9UmeYvihN/IGrftf8aSqqDnbVLYwXXm0TkSYgrAz6a9a8S7RtjcmPr6ac9Dx
-         8IOml6RJ2HhCDrnStnAPt6ZTJie/3Kib1gU8RVvTWVZTIArK1x2NqxkLyE0lFdb9SgPv
-         9TEPGrN3rBPvp3CY6TrrKJtBSzLMd53AvO2EupPgbhna7vpPyc3dlkTN2ALGTFkxJf+G
-         vnO1zqPvg0zGtONr6LMl4NV31mZ232CRmM1beUYZf3v5w9eSHEc8nyFPOw/xyWIvJDn+
-         oFltrpD/Ed64rfNpdM7wgg+eVnq3wn9v0LuH/p5fqYZh8DSGztVttY2/IPxw8JzYafW3
-         0n0w==
-X-Gm-Message-State: AOAM530dGwPINP7d1U1KIXEZt+qm/fgaE4L5DyoyFrJ+UCRJ89/gpyPc
-        q4AvEf/WUkN62qoQbQn9W18=
-X-Google-Smtp-Source: ABdhPJxv2OIE3YrK4OHjS2Mx+Yn4v1VlZsR6jW8FSXzwoxPCICSLQIr/RL1LUYfXVZufqX1/z7SL3w==
-X-Received: by 2002:a05:600c:21ca:: with SMTP id x10mr10638365wmj.63.1594487965310;
-        Sat, 11 Jul 2020 10:19:25 -0700 (PDT)
-Received: from ?IPv6:2a01:110f:b59:fd00:e1bd:5ced:59bb:4d37? ([2a01:110f:b59:fd00:e1bd:5ced:59bb:4d37])
-        by smtp.gmail.com with ESMTPSA id o29sm16760012wra.5.2020.07.11.10.19.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Jul 2020 10:19:24 -0700 (PDT)
-Subject: Re: [PATCH v29 13/16] leds: lp5523: Update the lp5523 code to add
- multicolor brightness function
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>
-Cc:     robh@kernel.org, devicetree@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200622185919.2131-1-dmurphy@ti.com>
- <20200622185919.2131-14-dmurphy@ti.com> <20200711155749.GB22715@amd>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <c9e20136-7226-2feb-b017-0a0742867f93@gmail.com>
-Date:   Sat, 11 Jul 2020 19:19:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=IeGXPwtj2lsocZhYj09imRNrIavWv4B/gviXUgmP6a4=;
+        b=piYJy3WoifS7zsXDx6nKDrM/ji3clNN1yMUZDmmioKDyw+CTsOOz2MdioqCcxbEfh+
+         SuXBx3oTyvkSw4YqvYkgwLHH/yG9z8daF7L5pNc85RBDYfQNH5yioXaFI2sJ8jQiBL2Z
+         8mHtuiZF4Q5g7I3H+Rk01RUEGeiyhIYIoINamD5l/v21zfFIw0rMGILS2JILbdjshYMA
+         PprkXkqH9DRYzO/EXJcudbU1iQEeWULZFCX27DSpk2FSNNpUclFLcqixd0sE657ExlPL
+         G3wWxWl+FDQns1A28FwOODvd5gZVt+7IRjm4dQzcZV4UAY1S57cdrqsT0aEJMGzJTLLY
+         nYEA==
+X-Gm-Message-State: AOAM530qjPf4yA4jf6BQOpotFLj9ef/8tzejt6Vk1t29OvZaGFJVX0C7
+        llR/gxT9wZc2E+OI2LN4xuxGQ7KVDQ4lUuIF+bK9WaFBtZjL
+X-Google-Smtp-Source: ABdhPJxaO1pCSySsaIduXc9iXrSEjRgRRv4V2aSfFjff9Q2pVX2H9MA/gZA7sif7lcNU5fsE2CTGnmSeDJcub/k2Df8CHeVubeIF
 MIME-Version: 1.0
-In-Reply-To: <20200711155749.GB22715@amd>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:5fc7:: with SMTP id i68mr16491282ill.126.1594488257247;
+ Sat, 11 Jul 2020 10:24:17 -0700 (PDT)
+Date:   Sat, 11 Jul 2020 10:24:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002c01a305aa2dba34@google.com>
+Subject: INFO: trying to register non-static key in addrconf_notify
+From:   syzbot <syzbot+bf9c23e0afdec81d9470@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/20 5:57 PM, Pavel Machek wrote:
-> Hi!
-> 
->> Add the multicolor brightness call back to support the multicolor
->> framework.  This call back allows setting  brightness on grouped channels
-> 
-> Extra space before "brightness".
+Hello,
 
-And before "This".
+syzbot found the following crash on:
 
--- 
-Best regards,
-Jacek Anaszewski
+HEAD commit:    7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=102d01a3100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=183dd243398ba7ec
+dashboard link: https://syzkaller.appspot.com/bug?extid=bf9c23e0afdec81d9470
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+bf9c23e0afdec81d9470@syzkaller.appspotmail.com
+
+INFO: trying to register non-static key.
+the code is fine but needs lockdep annotation.
+turning off the locking correctness validator.
+CPU: 1 PID: 317 Comm: kworker/u4:6 Not tainted 5.8.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1f0/0x31e lib/dump_stack.c:118
+ register_lock_class+0xf06/0x1520 kernel/locking/lockdep.c:893
+ __lock_acquire+0x102/0x2c30 kernel/locking/lockdep.c:4259
+ lock_acquire+0x160/0x720 kernel/locking/lockdep.c:4959
+ __raw_write_lock_bh include/linux/rwlock_api_smp.h:203 [inline]
+ _raw_write_lock_bh+0x31/0x40 kernel/locking/spinlock.c:319
+ addrconf_ifdown+0x5f8/0x1670 net/ipv6/addrconf.c:3734
+ addrconf_notify+0x3f9/0x3a60 net/ipv6/addrconf.c:3602
+ notifier_call_chain kernel/notifier.c:83 [inline]
+ __raw_notifier_call_chain kernel/notifier.c:361 [inline]
+ raw_notifier_call_chain+0xe7/0x170 kernel/notifier.c:368
+ call_netdevice_notifiers_info net/core/dev.c:2027 [inline]
+ call_netdevice_notifiers_extack net/core/dev.c:2039 [inline]
+ call_netdevice_notifiers net/core/dev.c:2053 [inline]
+ rollback_registered_many+0xbe3/0x14a0 net/core/dev.c:8968
+ unregister_netdevice_many+0x46/0x260 net/core/dev.c:10113
+ ip6gre_exit_batch_net+0x435/0x460 net/ipv6/ip6_gre.c:1608
+ ops_exit_list net/core/net_namespace.c:189 [inline]
+ cleanup_net+0x79c/0xba0 net/core/net_namespace.c:603
+ process_one_work+0x789/0xfc0 kernel/workqueue.c:2269
+ worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
+ kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
