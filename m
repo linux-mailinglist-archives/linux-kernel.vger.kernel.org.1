@@ -2,117 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E1421C5A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 20:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F60921C5A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 20:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728731AbgGKSQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 14:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728507AbgGKSQ2 (ORCPT
+        id S1728742AbgGKSQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 14:16:37 -0400
+Received: from smtprelay0185.hostedemail.com ([216.40.44.185]:45692 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728507AbgGKSQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 14:16:28 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB6AC08C5DD
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 11:16:28 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id h16so7800373ilj.11
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 11:16:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=geu2kZgahNe9b5KHjjbh7SFWlsAj55pE2E75iM1ych0=;
-        b=X0fjdQ810z3wTjdJay1KUkowDb+URPCThXgTUgZ5mxV3PJ/aSIF+bJ8IUiYLEQk/hj
-         rmwx5PF05Q+ZQtt3tlCafxCUtsZjGcrC2pjuB0JUr250pGqXsjAXx3JQKtnFs2ptrq+m
-         6TFqO0jMjPL/6Mw8cqInWtgJZ3VV2qOubS1m6JnkIPszLALgig0co7MQ6npyfWtRSjJp
-         cnWUSkaVlNuZYU40L8cyKAL2ozPDGuX9wuu/6+QfsfmxYgJE2oED3KA8HDmi65MtO50d
-         18j7CRCshuNJMX43CGDQj2UJ4gdPJadD8xOg1/CYUI6/h3NGL3EsQhY2ofFCVdgpagSt
-         YMqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=geu2kZgahNe9b5KHjjbh7SFWlsAj55pE2E75iM1ych0=;
-        b=RWh6s22NMU0lcgTefezj+EjSzNTVd08EQnKcX3sFxcsoyyCEuHLKe7NZ5vjw85+LRX
-         UhCtcepZ5Y1ujZlQfv5Tcxvc8QWFqwsrCT4FJruu4/Y81GudDl4c8ChAoR/Xy2NvFdth
-         iZ8OsNQnsmKpxGBqIS4UxlWamNOVyYAh6Y5CnXZQJ/W6Fwj5t8pTbnQeWP34dHrrEaPT
-         c9QJiCba5balDN4A6IO4VieYUfvfngZ++aKv+6MjFBqnV/Uuv4I+bP3XPaduUJryaMSL
-         odiKrv80z1tyAYmAA6Q09c3Cibkeesy6FCQ6n3IKyGW8Y1lqR9vi7mCVIEDRFqAqfS0U
-         VVuA==
-X-Gm-Message-State: AOAM532c0BNadh82rTbFp/jK0Pv6lMu+SpcHB2bJ10O7kDFJ4vvhhrSv
-        GhsenGDl7m1iCw08WK7JeO0V1mgdC6ZRuC8yQug=
-X-Google-Smtp-Source: ABdhPJwpw5572tWDlCz5wNVisy7er9T7PNOSVi4wAApd2GV67UhMooli2i5OYJk6kw5hqHKV56lQtFIw/W/A+/L8awY=
-X-Received: by 2002:a92:1547:: with SMTP id v68mr28974624ilk.294.1594491387694;
- Sat, 11 Jul 2020 11:16:27 -0700 (PDT)
+        Sat, 11 Jul 2020 14:16:37 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id EFC91180A7FFC;
+        Sat, 11 Jul 2020 18:16:35 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:966:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2525:2553:2560:2563:2682:2685:2828:2859:2895:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4385:4605:5007:6119:7903:9025:9592:10004:10400:10848:11026:11232:11658:11914:12043:12048:12296:12297:12555:12740:12760:12895:13018:13019:13439:14180:14659:14721:21060:21080:21433:21451:21627:21939:30054:30070:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: pear57_100d03026ed9
+X-Filterd-Recvd-Size: 3417
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 11 Jul 2020 18:16:34 +0000 (UTC)
+Message-ID: <04ce5199522b4136909fa4926282b7da8abddc4a.camel@perches.com>
+Subject: Re: [PATCH 0/4] drm: core: Convert logging to drm_* functions.
+From:   Joe Perches <joe@perches.com>
+To:     Suraj Upadhyay <usuraj35@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Date:   Sat, 11 Jul 2020 11:16:33 -0700
+In-Reply-To: <20200711151126.GA12262@blackclown>
+References: <cover.1594136880.git.usuraj35@gmail.com>
+         <20200710175643.GF17565@ravnborg.org> <20200711151126.GA12262@blackclown>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-References: <20200711070835.4855-1-navid.emamdoost@gmail.com> <s5htuye2zjn.wl-tiwai@suse.de>
-In-Reply-To: <s5htuye2zjn.wl-tiwai@suse.de>
-From:   Navid Emamdoost <navid.emamdoost@gmail.com>
-Date:   Sat, 11 Jul 2020 13:16:16 -0500
-Message-ID: <CAEkB2ESiSEt6Rhs7iyni7C79LEUSCiKvtfxXRHzHU+dmkSag0A@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: trident: Fix a memory leak in snd_trident_create
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>,
-        Navid Emamdoost <emamd001@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
-        Stephen McCamant <smccaman@umn.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 4:04 AM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Sat, 11 Jul 2020 09:08:30 +0200,
-> Navid Emamdoost wrote:
-> >
-> > In the implementation of snd_trident_create(), the allocated trident is
-> > leaked if snd_trident_mixer() fails. Release via snd_trident_free().
->
-> No, this patch would result in double-free.
->
-> The manual release of trident object isn't needed once after it gets
-> added via snd_device_new().  Then it'll be automatically released at
-> the error path (via snd_trident_dev_free()).
+On Sat, 2020-07-11 at 20:41 +0530, Suraj Upadhyay wrote:
+> On Fri, Jul 10, 2020 at 07:56:43PM +0200, Sam Ravnborg wrote:
+> > Hi Suraj.
+> > 
+> > On Tue, Jul 07, 2020 at 10:04:14PM +0530, Suraj Upadhyay wrote:
+> > > This patchset converts logging to drm_* functions in drm core.
+> > > 
+> > > The following functions have been converted to their respective
+> > > DRM alternatives :
+> > > dev_info()      --> drm_info()
+> > > dev_err()       --> drm_err()
+> > > dev_warn()      --> drm_warn()
+> > > dev_err_once()  --> drm_err_once().
+> > 
+> > I would prefer that DRM_* logging in the same files are converted in the
+> > same patch. So we have one logging conversion patch for each file you
+> > touches and that we do not need to re-vist the files later to change
+> > another set of logging functions.
+> 
+> Agreed.
+> 
+> > If possible WARN_* should also be converted to drm_WARN_*
+> > If patch is too large, then split them up but again lets have all
+> > logging updated when we touch a file.
+> > 
+> > Care to take a look at this approach?
+> > 
+> 
+> Hii,
+> 	The problem with WARN_* macros is that they are used without any
+> drm device context. For example [this use here](https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/drm_edid.c#n1667) in drm_edid.c,
+> doesn't have a drm device context and only has one argument (namely !raw_edid).
+> There are many more such use cases.
+> 
+> And also there were cases where dev_* logging functions didn't have any
+> drm_device context.
 
-Thanks for the clarification.
+Perhaps change the __drm_printk macro to not
+dereference the drm argument when NULL.
 
->
->
-> thanks,
->
-> Takashi
->
-> >
-> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-> > ---
-> >  sound/pci/trident/trident_main.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/sound/pci/trident/trident_main.c b/sound/pci/trident/trident_main.c
-> > index 6e50376163a2..e98c692f6aa9 100644
-> > --- a/sound/pci/trident/trident_main.c
-> > +++ b/sound/pci/trident/trident_main.c
-> > @@ -3582,8 +3582,11 @@ int snd_trident_create(struct snd_card *card,
-> >               return err;
-> >       }
-> >
-> > -     if ((err = snd_trident_mixer(trident, pcm_spdif_device)) < 0)
-> > +     err = snd_trident_mixer(trident, pcm_spdif_device);
-> > +     if (err < 0) {
-> > +             snd_trident_free(trident);
-> >               return err;
-> > +     }
-> >
-> >       /* initialise synth voices */
-> >       for (i = 0; i < 64; i++) {
-> > --
-> > 2.17.1
-> >
+A trivial but perhaps inefficient way might be
+used like:
+
+	drm_<level>(NULL, fmt, ...)
+
+---
+ include/drm/drm_print.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
+index 1c9417430d08..9323a8f46b3c 100644
+--- a/include/drm/drm_print.h
++++ b/include/drm/drm_print.h
+@@ -395,8 +395,8 @@ void drm_dev_dbg(const struct device *dev, enum drm_debug_category category,
+ 
+ /* Helper for struct drm_device based logging. */
+ #define __drm_printk(drm, level, type, fmt, ...)			\
+-	dev_##level##type((drm)->dev, "[drm] " fmt, ##__VA_ARGS__)
+-
++	dev_##level##type((drm) ? (drm)->dev : NULL, "[drm] " fmt,	\
++			  ##__VA_ARGS__)
+ 
+ #define drm_info(drm, fmt, ...)					\
+ 	__drm_printk((drm), info,, fmt, ##__VA_ARGS__)
 
 
 
--- 
-Navid.
+
