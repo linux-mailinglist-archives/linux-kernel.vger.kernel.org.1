@@ -2,90 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1574221C408
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 13:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5493A21C40A
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 13:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727004AbgGKLoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 07:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbgGKLoa (ORCPT
+        id S1727984AbgGKLrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 07:47:10 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12937 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbgGKLrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 07:44:30 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07326C08C5DD
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 04:44:30 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id 9so9291825ljv.5
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 04:44:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yaksYBcXaU35BrWyqrbVOlpaXmypFAxOvxS4CIm38Eo=;
-        b=UgOzISgwB+iq9LK3rjVylndJCiTmDXCP3ti/+oMkznveUyzcNPkkDtNYgNtk9LyPwr
-         aL87zwaVWR1x2iEMa2lH/wXwJeLHqJxPgfcDFmSW29JF8/jQ+eHg9BcsbXT4KV/WBnCE
-         XbWS8FW7jE3a1p3pOcrKUdTGf41rfhgyiul2xnEjCjlVTzq7n/FsJQMu1LzLvxX0TqPc
-         NI3/ANM5whNYHJveeOobX2Ut+X3nkC5y+MlGjgvhKKZuI6z4QW/tVt3Ic2X6a7uNMWxe
-         DhnctEzX2vz29ceNCKhXqnYgAgnJAHbPHIKNd4KnFiJhu8b7wzwCvw6JLeencoV/HnpV
-         ADXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yaksYBcXaU35BrWyqrbVOlpaXmypFAxOvxS4CIm38Eo=;
-        b=OXLu5VGvqkVOCAaFUTlqnO1VE5f/KdJmktpQ3tQIgwBDKKpjXSRuF5i0j5AK61DKyq
-         IH2CvmTVRsyde24KAl2necdyGbt1lPzVrksRlFt1rOkt1rgth1C6uHEQ/zKkjrI0s1b5
-         6KVj4gNzfJ/z8kn4rfLzoegzKhiHkIFDbjdz7TioAzao8yDOfY4u0Rj9zMosVftSnNqp
-         j1ZZBYmjQPDekvNFdFOWMFuXFA7WP9ll/qHRUtvW7U8eFgQpzCueFBBFQILMZnurlyG/
-         57VPvAHTgvr0slG2/MNGLCSfJwTaurm+xnHeSHFDpXoJ94H7rQ6MWJL+gRyw96ybxDTs
-         6fSA==
-X-Gm-Message-State: AOAM530+Vz8Pw2DlNoe4wnX9uBgpk2T4d++JeNl3SMag+y3AjV3gLCRl
-        qxzoUMqyE87oq+4dPvYWl58=
-X-Google-Smtp-Source: ABdhPJyrE3HbiP1To2RrFfr3NXJqFHhXPPtlwfqGM9v3UDGx1bOhiiVwhn62ptFs4aPYTAURd9QqUQ==
-X-Received: by 2002:a2e:9dd6:: with SMTP id x22mr24354663ljj.199.1594467868560;
-        Sat, 11 Jul 2020 04:44:28 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-228-147.NA.cust.bahnhof.se. [98.128.228.147])
-        by smtp.gmail.com with ESMTPSA id j25sm3080020lfh.95.2020.07.11.04.44.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Jul 2020 04:44:27 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     pihsun@chromium.org, lgirdwood@gmail.com, broonie@kernel.org,
-        bleung@chromium.org, enric.balletbo@collabora.com,
-        groeck@chromium.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] regulator: cros-ec: Constify cros_ec_regulator_voltage_ops
-Date:   Sat, 11 Jul 2020 13:44:09 +0200
-Message-Id: <20200711114409.9911-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Sat, 11 Jul 2020 07:47:09 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f09a64f0000>; Sat, 11 Jul 2020 04:45:19 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Sat, 11 Jul 2020 04:47:09 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Sat, 11 Jul 2020 04:47:09 -0700
+Received: from [10.26.72.26] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 11 Jul
+ 2020 11:47:06 +0000
+Subject: Re: [PATCH 15/23] seq_file: switch over direct seq_read method calls
+ to seq_read_iter
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200707174801.4162712-1-hch@lst.de>
+ <20200707174801.4162712-16-hch@lst.de>
+ <5a2a97f1-58b5-8068-3c69-bb06130ffb35@nvidia.com>
+ <20200711064857.GA29078@lst.de>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <b838bf55-bd1e-7ff8-fcf5-fe372944dc9f@nvidia.com>
+Date:   Sat, 11 Jul 2020 12:47:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20200711064857.GA29078@lst.de>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594467919; bh=YjartdxmO2Ad0/uwBSdPTgr7N6l+g/YEyWPmF+u3P6Y=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=MYAxXTbGMgtXmRbAqCTI1xHuhZ+jBhMxajcPgk7oOIlbM5E6ZxI7IBhFMLGEpxpuR
+         6GMkWwtlyo+rgXBPGf2gxg4Rcm1HNGsKvh7jpLPLn1ODf+7A6KvzGDQ4+DzhsMG+uZ
+         m/OonsizWyXvkhEiOA4p1sahWWTzlJK8Ti4OpBd5jw/qRAAkSlSoIteaDDvijSiYe3
+         A0gpO1+xw3KCzFjjWES/6ycNSQ59bJicO0587qYfpZlgM8Ks7B0PqCEAi69krf/R5r
+         FwYbXCiV0J4jppRWxQPx6kEsEfU51p2tyR5PeviIxmpvv9wF5rBI3MlVxIDrDqHoAA
+         TCyWFnEpU+s5A==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is never modified, so make it const to allow the compiler to put it
-in read-only memory.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/regulator/cros-ec-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 11/07/2020 07:48, Christoph Hellwig wrote:
+> Please try this one:
+> 
+> ---
+> From 5e86146296fbcd7593da1d9d39b9685a5e6b83be Mon Sep 17 00:00:00 2001
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Sat, 11 Jul 2020 08:46:10 +0200
+> Subject: debugfs: add a proxy stub for ->read_iter
+> 
+> debugfs registrations typically go through a set of proxy ops to deal
+> with refcounting, which need to support every method that can be
+> supported.  Add ->read_iter to the proxy ops to prepare for seq_file to
+> be switch to ->read_iter.
+> 
+> Reported-by: Jon Hunter <jonathanh@nvidia.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/debugfs/file.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+> index 8ba32c2feb1b73..dcd7bdaf67417f 100644
+> --- a/fs/debugfs/file.c
+> +++ b/fs/debugfs/file.c
+> @@ -231,6 +231,10 @@ FULL_PROXY_FUNC(read, ssize_t, filp,
+>  			loff_t *ppos),
+>  		ARGS(filp, buf, size, ppos));
+>  
+> +FULL_PROXY_FUNC(read_iter, ssize_t, iocb->ki_filp,
+> +		PROTO(struct kiocb *iocb, struct iov_iter *iter),
+> +		ARGS(iocb, iter));
+> +
+>  FULL_PROXY_FUNC(write, ssize_t, filp,
+>  		PROTO(struct file *filp, const char __user *buf, size_t size,
+>  			loff_t *ppos),
+> @@ -286,6 +290,8 @@ static void __full_proxy_fops_init(struct file_operations *proxy_fops,
+>  		proxy_fops->llseek = full_proxy_llseek;
+>  	if (real_fops->read)
+>  		proxy_fops->read = full_proxy_read;
+> +	if (real_fops->read_iter)
+> +		proxy_fops->read_iter = full_proxy_read_iter;
+>  	if (real_fops->write)
+>  		proxy_fops->write = full_proxy_write;
+>  	if (real_fops->poll)
+> 
 
-diff --git a/drivers/regulator/cros-ec-regulator.c b/drivers/regulator/cros-ec-regulator.c
-index 35f97246bc48..eeed5aac3f32 100644
---- a/drivers/regulator/cros-ec-regulator.c
-+++ b/drivers/regulator/cros-ec-regulator.c
-@@ -142,7 +142,7 @@ static int cros_ec_regulator_set_voltage(struct regulator_dev *dev, int min_uV,
- 			   sizeof(cmd), NULL, 0);
- }
- 
--static struct regulator_ops cros_ec_regulator_voltage_ops = {
-+static const struct regulator_ops cros_ec_regulator_voltage_ops = {
- 	.enable = cros_ec_regulator_enable,
- 	.disable = cros_ec_regulator_disable,
- 	.is_enabled = cros_ec_regulator_is_enabled,
+
+Thanks! Works for me.
+
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+
+Cheers
+Jon
+
 -- 
-2.27.0
-
+nvpublic
