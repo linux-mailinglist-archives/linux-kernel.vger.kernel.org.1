@@ -2,101 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC34A21C41E
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 14:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104AF21C421
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 14:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgGKMBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 08:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44878 "EHLO
+        id S1727924AbgGKMJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 08:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726523AbgGKMBp (ORCPT
+        with ESMTP id S1726480AbgGKMJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 08:01:45 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B395CC08C5DD
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 05:01:44 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id dp18so8862484ejc.8
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 05:01:44 -0700 (PDT)
+        Sat, 11 Jul 2020 08:09:03 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01812C08C5DD;
+        Sat, 11 Jul 2020 05:09:02 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id g2so4674420lfb.0;
+        Sat, 11 Jul 2020 05:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=oJcPlIH+ndnAcX6ydz9E2QWs8zSSeTzW4Bq9/jK0has=;
-        b=A9IAyp5RF7feYH8YL+pTQqkxPO88EQB5tZCPTj/YGq1NbOAdf5exVJuaLeDEEVw2uH
-         gQtaJM1+Y/ah/EH0pldPMq3bvkbv6r6vWz+t7sdRVI82uYkZfoU/zRS1Qc3SyuceNwDO
-         ngsY5o6tP2a33wKLuJUC7vYsTC62RzuqSawEoYOwMplb8nhAc4wk5hIAejIL6EZwTBEH
-         K2CHUj0CFk5Ks46C7bwuRCDhd8Q7A/Hpb7FVSFEi2zTRouUYptpDwZXzLKqner8pBvEy
-         3ttrvKWrACJxoZgNpP8hGAYsHrI7Hy4idWhushegsamzc/B/7f7naCY0ySjS5bAGOCwY
-         jpZw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WwdLWNBKzdjz++dbZsOrtCanbz1z5iZ74y8YlMyxvhY=;
+        b=UGiVgkX33zsA5zg0vtKXFB9vjLMYCixsqmKwVIAyiGdcpo6choVUzd6xPP6J6bFuTz
+         6MxlNtF+DpPQm6QFcjQU1S8Ig1IpTTfdd8Ocp3wSIswgssUwy5IjT5tXDN4pH6TkO02n
+         ofaySMRPnH9n4+v3v54U1DR3cI9dCiCb96zygDtQV6stl/sIxcd7ybG3pVX2sVXSgBqM
+         GmHOs05qO+xyOoTMQB20DqOfOnrxOV6UXAj197EDRFvLm6jWUFoknT9+sRHaPsJ8phFn
+         At18iW9JWc/iRLjtJtBxnnZzhREAEA5z12lTrv9WE8Ld5iAWQ6Jq1iJE31DGxxQeVvqr
+         M4Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to:content-transfer-encoding;
-        bh=oJcPlIH+ndnAcX6ydz9E2QWs8zSSeTzW4Bq9/jK0has=;
-        b=eo8N8M9CW3iCYeUZ/C62FxzkPu1x3mZCK+nZAxeXfM2LdQE/ysON3fZTac4GPHzYto
-         wA8eL8A0B2xzO5ilM5xRpq5Mum4Ievf7vlSEY88+XoxcyabIOCnjJRqnfT3bYbf5k5o9
-         /LfSsN3eMdOxWKtwzGYxouOMR9VmMkhjNkJgqRVc7yZXy/qQ06TbwqAwRI1OS9lC95F1
-         bvpsRkYKYQb0Uz3J3AwYTeVnj91ve82aOve5mirsIfuxlDQSwOXDwE3p2dKmcM3H6Z95
-         R/wNJkcShqNxXU5Zpi/NSsHdjNihApv9yZJycCOt2rwCbJDDVOBztwazwZpB3tdiUcQc
-         IFtw==
-X-Gm-Message-State: AOAM530YEhgIHBtlVIBdpaRjYf/wAwYB4iBcvQyY2SIz4T1Lzq0iJVpe
-        +M6hlhe8Oi3TaIm8RZUr4vMFlajKTp6QWazPJ7I=
-X-Google-Smtp-Source: ABdhPJwOz0629a+cIyPEC2d/D/F6z+fPgZnlNKv7gRp7uOWsDTleVdXrMrAp9JLJCTdt6d3WkX3PTEg/jpkX9w9Xl2U=
-X-Received: by 2002:a17:906:408c:: with SMTP id u12mr58544206ejj.162.1594468903310;
- Sat, 11 Jul 2020 05:01:43 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WwdLWNBKzdjz++dbZsOrtCanbz1z5iZ74y8YlMyxvhY=;
+        b=r2aAr0zrlsqfW7wbVPA9bjBCvBJNU4Qjj3jZlVYRie04VckOG/myUvqa8PWYz4lWmO
+         JxdOfOu67uxF4kdJt3EdQjedYnv0hP9v+HTX8XhECZfZRQwm48qxzfwgPDECohdgdgda
+         ihY//2iuX022uzIrXliK8tsWW3JIgeOVLUfMuJPpBr4UBpmHWKQfBLEfKZnpiFP2mEGV
+         peBZ286nTRpuzfCZSfhSFMiTlRfocwZNQuv9AAzKYWMWk+qXaBxo/AXPnGxm75plGIb+
+         UyNChGQCg4IcvHK08A2odI/t7jlHStSlSf3hxzdeIWFVVtbBNnBmblZYFn6TMJhpZcrY
+         nTTA==
+X-Gm-Message-State: AOAM530lMmJ8jBtfxKtn432dDIUC4sIY2H9Jir2wQ+JtNDsaCDPXyFFL
+        WlgrEtDDBRBq5V3iI0rtDQzXl+0m
+X-Google-Smtp-Source: ABdhPJx1LyWwIM/u3ZPjJPXz8P5aMR+vzKzgS9s2fpe2mSR5vzSjEUou2b/dcazr263T8ozRRGBp9Q==
+X-Received: by 2002:a05:6512:52a:: with SMTP id o10mr46421156lfc.137.1594469340841;
+        Sat, 11 Jul 2020 05:09:00 -0700 (PDT)
+Received: from osv.localdomain ([89.175.180.246])
+        by smtp.gmail.com with ESMTPSA id m14sm4581974lfp.18.2020.07.11.05.08.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Jul 2020 05:08:59 -0700 (PDT)
+From:   Sergey Organov <sorganov@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Sergey Organov <sorganov@gmail.com>
+Subject: [PATCH v2 net] net: fec: fix hardware time stamping by external devices
+Date:   Sat, 11 Jul 2020 15:08:42 +0300
+Message-Id: <20200711120842.2631-1-sorganov@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200706142616.25192-1-sorganov@gmail.com>
+References: <20200706142616.25192-1-sorganov@gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a50:66c2:0:0:0:0:0 with HTTP; Sat, 11 Jul 2020 05:01:42
- -0700 (PDT)
-Reply-To: banqueatlantiquetogobranch@gmail.com
-In-Reply-To: <CAG2bx3OMGWMB=UYR-C7rq6TuRtpq8moftORBAiTq6-UdiCoj7w@mail.gmail.com>
-References: <CAG2bx3Nj+iD9JF_-oge5FiatvASjgtjop2-jERh7LQ9vUn67qg@mail.gmail.com>
- <CAG2bx3OMGWMB=UYR-C7rq6TuRtpq8moftORBAiTq6-UdiCoj7w@mail.gmail.com>
-From:   dadjo grunitzky <roselynjohnson12@gmail.com>
-Date:   Sat, 11 Jul 2020 13:01:42 +0100
-Message-ID: <CAG2bx3P6cXySYG4eBGKBD01r32ZyQ1S-3gw_cGxzXSHSn04ffQ@mail.gmail.com>
-Subject: ATTN.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UE9aT1IgUFLDjUpFTUNBOg0KVsOhxb5lbsO9IHByw61qZW1jYS4gQWsgZG9zdGFuZXRlIHTDunRv
-IHNwcsOhdnUgU1BBTSAvIEJVTEssIGplIHRvIGt2w7RsaQ0Kb2JtZWR6ZW5pdSB1bG/FvmVuw6lt
-dSBwb3NreXRvdmF0ZcS+b20gaW50ZXJuZXRvdsO9Y2ggc2x1xb5pZWIsIHByZXRvIHbDoXMNCsW+
-aWFkYW1lLCBhYnkgc3RlIHNpIGp1IHByZcSNw610YWxpIHMgbMOhc2thdsO9bSBkb3ZvbGVuw61t
-LiBTa3V0b8SNbmUgc21lIGJvbGkNCmF1dG9yaXpvdmFuw60gbm92byBtZW5vdmFuw71tIHRham9t
-bsOta29tIE9yZ2FuaXrDoWNpZSBTcG9qZW7DvWNoIG7DoXJvZG92DQp2xaFlb2JlY25lIGEgcmlh
-ZGlhY2ltIG9yZ8Ohbm9tLiBNaW5pc3RlcnN0dmEgZmluYW5jacOtIEVrb25vbWlja8OpaG8NCnNw
-b2xvxI1lbnN0dmEgesOhcGFkbmVqIEFmcmlreSAoxaF0w6F0IEVDT1dBUykgcHJldmVyw60gemJ5
-dG/EjW7DqSBvbmVza29yZW5pZQ0KdmHFoWVqIMSNaWFzdG/EjW5laiBwbGF0Ynkgb2Rwb3LDusSN
-YW5laiBhIHNjaHbDoWxlbmVqIHZvIHbDocWhIHByb3NwZWNoLg0KDQpWIHByaWViZWh1IG7DocWh
-aG8gcHJpZXNrdW11IHNtZSB6aXN0aWxpLCDFvmUgamUgem5lcG9rb2p1asO6Y2UsIMW+ZSB2w6HF
-oSBmb25kDQpib2wgYmV6ZMO0dm9kbmUgb25lc2tvcmVuw70ga29ydXDEjW7DvW1pIMO6cmFkbsOt
-a21pIGJhbmt5LCBrdG9yw60gc2Egc25hxb5pYSB0ZW50bw0KZm9uZCBwcmVzbWVyb3ZhxaUgbmEg
-aWNoIHPDumtyb21uw6kgw7rEjXR5LiBTdmV0b3bDoSBiYW5rYSBhIE1lZHppbsOhcm9kbsO9IG1l
-bm92w70NCmZvbmQgKE1NRikgcG9za3l0bGkgbmEgdmHFoXUga29tcGVuesOhY2l1IG5ldnJhdG7D
-uiB6w6FydWt1LiBTIHBvdGXFoWVuw61tIHbFoWFrDQpvem5hbXVqZW1lLCDFvmUgdsOhxaEgY2Vs
-w70gZm9uZCB2IGhvZG5vdGUgOTAwIDAwMCBkb2zDoXJvdiBib2wgc2NodsOhbGVuw70gdm8gdsOh
-xaENCnByb3NwZWNoLCBhYnkgYm9sIHByZXZlZGVuw70gbmEgdsOhcyBwcm9zdHJlZG7DrWN0dm9t
-IGRlbm7DqWhvIHByZXZvZHUgV2VzdGVybg0KVW5pb24sIGtkZSBkb3N0YW5ldGUgNSAwMDAgZG9s
-w6Fyb3Yga2HFvmTDvSBkZcWILCBhxb4ga8O9bSBuZWRvc3RhbmV0ZSBjZWxrb3bDug0Kc3VtdSA5
-MDAgMDAwLDAwIFVTRA0KDQpUw6F0byBvc29iaXRuw6EgZG9ob2RhIGJvbGEgdXphdHZvcmVuw6Eg
-cyBjaWXEvm9tIHphYnLDoW5pxaUgbmV6w6Frb25uw6ltdSBkb3B5dHUNCnpvIHN0cmFueSB2bMOh
-ZHkgYSBpbmRpdmlkdcOhbG5laG8gb3Jnw6FudSwga8O9bSBuZWRvc3RhbmV0ZSBzdm9qIHbFoWVv
-YmVjbsO9DQpzY2h2w6FsZW7DvSBmb25kLCBwcmV0byBzYSBvZHBvcsO6xI1hIGtvbnRha3RvdmHF
-pSBwcm9mZXNvcmEgU3VzYW5hIFJvYmluc29uYSwNCnphaHJhbmnEjW7DqWhvIHJpYWRpdGXEvmEg
-cmVtaXRlbmNpZSBCYW5xdWUgQXRsYW50aXF1ZSBUb2dvIG5hIGUtbWFpbDoNCmJhbnF1ZWF0bGFu
-dGlxdWV0b2dvYnJhbmNoIEAgZ21haWwuIGNvbSAvIHRlbGVmw7NuIDIyODk4OTQyNDM4LCDEjW8g
-c2EgdMO9a2ENCjIyODkzOTE5NjczLg0KDQpQb3puw6Fta2E6IE11c8OtdGUgc2Egb2Jyw6F0acWl
-IG5hIHphaHJhbmnEjW7DqWhvIHJpYWRpdGXEvmEgcmVtaXRlbmNpZSBQcm9mLlN1c2FuDQpSb2Jp
-bnNvbiBzbyBzcHLDoXZueW1pIGluZm9ybcOhY2lhbWkgdXZlZGVuw71taSBuacW+xaFpZSwgYWJ5
-IHN0ZSBtb2hsaSB6w61za2HFpQ0Kc3ZvanUgcGxhdGJ1IC8gdnLDoXRlbsO6IHN1bXUgOTAwIDAw
-MCwwMCBVU0QgcHJvc3RyZWRuw61jdHZvbSBXZXN0ZXJuIFVuaW9uLg0KDQoxLiBWYcWhZSBjZWzD
-qSBtZW5vIOKApuKApuKApuKApuKApg0KMi4gVmHFoWEga3JhamluYSDigKbigKbigKbigKbigKbi
-gKYNCjMuIFZhxaFhIGFkcmVzYSDigKbigKbigKbigKbigKbigKbigKYuDQo0LiBWYcWhYSBwcm9m
-ZXNpYSDigKbigKbigKbigKbigKYgLi4NCjUuIFZhxaFlIHRlbGVmw7NubmUgxI3DrXNsbyDigKbi
-gKbigKbigKYuDQo2LiBWw6HFoSB2ZWsg4oCm4oCm4oCm4oCm4oCmIC4uDQoNClMgw7pjdG91DQpN
-ci5EYWRqbyBHcnVuaXR6a3kNCkhsYXZuw70gxaF0w6FiIE1NRi4NCg==
+Fix support for external PTP-aware devices such as DSA or PTP PHY:
+
+Make sure we never time stamp tx packets when hardware time stamping
+is disabled.
+
+Check for PTP PHY being in use and then pass ioctls related to time
+stamping of Ethernet packets to the PTP PHY rather than handle them
+ourselves. In addition, disable our own hardware time stamping in this
+case.
+
+Fixes: 6605b73 ("FEC: Add time stamping code and a PTP hardware clock")
+Signed-off-by: Sergey Organov <sorganov@gmail.com>
+---
+
+v2:
+  - Extracted from larger patch series
+  - Description/comments updated according to discussions
+  - Added Fixes: tag
+
+ drivers/net/ethernet/freescale/fec.h      |  1 +
+ drivers/net/ethernet/freescale/fec_main.c | 23 +++++++++++++++++------
+ drivers/net/ethernet/freescale/fec_ptp.c  | 12 ++++++++++++
+ 3 files changed, 30 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
+index d8d76da..832a217 100644
+--- a/drivers/net/ethernet/freescale/fec.h
++++ b/drivers/net/ethernet/freescale/fec.h
+@@ -590,6 +590,7 @@ struct fec_enet_private {
+ void fec_ptp_init(struct platform_device *pdev, int irq_idx);
+ void fec_ptp_stop(struct platform_device *pdev);
+ void fec_ptp_start_cyclecounter(struct net_device *ndev);
++void fec_ptp_disable_hwts(struct net_device *ndev);
+ int fec_ptp_set(struct net_device *ndev, struct ifreq *ifr);
+ int fec_ptp_get(struct net_device *ndev, struct ifreq *ifr);
+ 
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+index 3982285..cc7fbfc 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -1294,8 +1294,13 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
+ 			ndev->stats.tx_bytes += skb->len;
+ 		}
+ 
+-		if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS) &&
+-			fep->bufdesc_ex) {
++		/* NOTE: SKBTX_IN_PROGRESS being set does not imply it's we who
++		 * are to time stamp the packet, so we still need to check time
++		 * stamping enabled flag.
++		 */
++		if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS &&
++			     fep->hwts_tx_en) &&
++		    fep->bufdesc_ex) {
+ 			struct skb_shared_hwtstamps shhwtstamps;
+ 			struct bufdesc_ex *ebdp = (struct bufdesc_ex *)bdp;
+ 
+@@ -2723,10 +2728,16 @@ static int fec_enet_ioctl(struct net_device *ndev, struct ifreq *rq, int cmd)
+ 		return -ENODEV;
+ 
+ 	if (fep->bufdesc_ex) {
+-		if (cmd == SIOCSHWTSTAMP)
+-			return fec_ptp_set(ndev, rq);
+-		if (cmd == SIOCGHWTSTAMP)
+-			return fec_ptp_get(ndev, rq);
++		bool use_fec_hwts = !phy_has_hwtstamp(phydev);
++
++		if (cmd == SIOCSHWTSTAMP) {
++			if (use_fec_hwts)
++				return fec_ptp_set(ndev, rq);
++			fec_ptp_disable_hwts(ndev);
++		} else if (cmd == SIOCGHWTSTAMP) {
++			if (use_fec_hwts)
++				return fec_ptp_get(ndev, rq);
++		}
+ 	}
+ 
+ 	return phy_mii_ioctl(phydev, rq, cmd);
+diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
+index 945643c..f8a592c 100644
+--- a/drivers/net/ethernet/freescale/fec_ptp.c
++++ b/drivers/net/ethernet/freescale/fec_ptp.c
+@@ -452,6 +452,18 @@ static int fec_ptp_enable(struct ptp_clock_info *ptp,
+ 	return -EOPNOTSUPP;
+ }
+ 
++/**
++ * fec_ptp_disable_hwts - disable hardware time stamping
++ * @ndev: pointer to net_device
++ */
++void fec_ptp_disable_hwts(struct net_device *ndev)
++{
++	struct fec_enet_private *fep = netdev_priv(ndev);
++
++	fep->hwts_tx_en = 0;
++	fep->hwts_rx_en = 0;
++}
++
+ int fec_ptp_set(struct net_device *ndev, struct ifreq *ifr)
+ {
+ 	struct fec_enet_private *fep = netdev_priv(ndev);
+-- 
+2.10.0.1.g57b01a3
+
