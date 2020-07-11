@@ -2,160 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF6F21C117
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 02:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DDB21C11B
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 02:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726772AbgGKATv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 20:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726605AbgGKATu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 20:19:50 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA8DC08E6DC
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 17:19:50 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id p1so2907629pls.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 17:19:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HDzvrarpxVRGS3YI1+S4nP9wbQ6Ps5r9/+5rFRMDjq8=;
-        b=IFcve6QXslNsQGfmqE/73an1VOYWatTTYNa7djJPmdfkXnz7QzxDRDEI2T6lk6Ks/C
-         IBanZ0JUbgxgrJMHP6i94mnr9vSWHuzmbrD6fi+0Hnt79o3IGBxVW5q4+IlIm9cDU07o
-         vMuNSLlkuPSq9Lc6FtcCGeeOGMrDlt3808PiU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HDzvrarpxVRGS3YI1+S4nP9wbQ6Ps5r9/+5rFRMDjq8=;
-        b=AKdrB7CxNCEvVJekEyUnkYzD8qjamlucJoFIiZhKgkTDyoC00MEh9B2oCDCre4/Ao7
-         wWeIzLOKN77tmEekTm/bNN+H1YYF1xLxaU2huHjEAs5qf6afLebmS9yuyTL9kPsecrkr
-         QSsyVQM6m0jHZYKBzirSHt+G5xK55X+qqxjsZGDti/TQ5ImUI01IXwimkl2HsIlV/H+p
-         rctRV0fnWLYNx5wSH0EsQoHkaAsj5LowHyXw42hBFSdNTlJ+5uCmAOzKarVUI+2w2uwt
-         W61Pluiq5th786GMDY78nPb0At9fDzoj+OB0Hh7Pn6l/bMaFKUlLYicvEjuYc8GA0+Y+
-         Thqg==
-X-Gm-Message-State: AOAM530c87OB+W/g0/5L0FF2UoWnB7spTMa7ezpOflREAl9ag6u7NhjO
-        m5UHQznWmpTr9Jhbc4r+KYKGBA==
-X-Google-Smtp-Source: ABdhPJxFi77cHPi83WHZfNgIrYij0DkRVw+EOToKQ4xd0iL5C9vBPKqGVc+Lj2WDLhV4UXjevvGZ5A==
-X-Received: by 2002:a17:90a:4fa2:: with SMTP id q31mr8824190pjh.178.1594426790054;
-        Fri, 10 Jul 2020 17:19:50 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id x10sm6863017pfp.80.2020.07.10.17.19.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Jul 2020 17:19:49 -0700 (PDT)
-Date:   Fri, 10 Jul 2020 17:19:48 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
-        bjorn.andersson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V1] mmc: sdhci-msm: Set IO pins in low power state during
- suspend
-Message-ID: <20200711001948.GO3191083@google.com>
-References: <1594213888-2780-1-git-send-email-vbadigan@codeaurora.org>
- <1594213888-2780-2-git-send-email-vbadigan@codeaurora.org>
- <20200710005233.GN3191083@google.com>
- <63323fe2-e3a3-030f-5275-01fa6b04e23b@codeaurora.org>
+        id S1726819AbgGKAXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 20:23:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726605AbgGKAXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 20:23:23 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6238D20767;
+        Sat, 11 Jul 2020 00:23:21 +0000 (UTC)
+Date:   Fri, 10 Jul 2020 20:23:19 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mhiramat@kernel.org,
+        bristot@redhat.com, jbaron@akamai.com,
+        torvalds@linux-foundation.org, tglx@linutronix.de,
+        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
+        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
+        pbonzini@redhat.com, mathieu.desnoyers@efficios.com,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH v6 14/17] static_call: Handle tail-calls
+Message-ID: <20200710202319.3c3eec12@oasis.local.home>
+In-Reply-To: <20200710134336.977578032@infradead.org>
+References: <20200710133831.943894387@infradead.org>
+        <20200710134336.977578032@infradead.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <63323fe2-e3a3-030f-5275-01fa6b04e23b@codeaurora.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 10 Jul 2020 15:38:45 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-On Fri, Jul 10, 2020 at 04:28:36PM +0530, Veerabhadrarao Badiganti wrote:
-> Hi Mathias,
+> GCC can turn our static_call(name)(args...) into a tail call, in which
+> case we get a JMP.d32 into the trampoline (which then does a further
+> tail-call).
 > 
-> On 7/10/2020 6:22 AM, Matthias Kaehlcke wrote:
-> > Hi,
-> > 
-> > On Wed, Jul 08, 2020 at 06:41:20PM +0530, Veerabhadrarao Badiganti wrote:
-> > > Configure SDHC IO pins with low power configuration when the driver
-> > > is in suspend state.
-> > > 
-> > > Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-> > > ---
-> > >   drivers/mmc/host/sdhci-msm.c | 17 +++++++++++++++++
-> > >   1 file changed, 17 insertions(+)
-> > > 
-> > > diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> > > index 392d41d57a6e..efd2bae1430c 100644
-> > > --- a/drivers/mmc/host/sdhci-msm.c
-> > > +++ b/drivers/mmc/host/sdhci-msm.c
-> > > @@ -15,6 +15,7 @@
-> > >   #include <linux/iopoll.h>
-> > >   #include <linux/regulator/consumer.h>
-> > >   #include <linux/interconnect.h>
-> > > +#include <linux/pinctrl/consumer.h>
-> > >   #include "sdhci-pltfm.h"
-> > >   #include "cqhci.h"
-> > > @@ -1352,6 +1353,19 @@ static void sdhci_msm_set_uhs_signaling(struct sdhci_host *host,
-> > >   		sdhci_msm_hs400(host, &mmc->ios);
-> > >   }
-> > > +static int sdhci_msm_set_pincfg(struct sdhci_msm_host *msm_host, bool level)
-> > > +{
-> > > +	struct platform_device *pdev = msm_host->pdev;
-> > > +	int ret;
-> > > +
-> > > +	if (level)
-> > > +		ret = pinctrl_pm_select_default_state(&pdev->dev);
-> > > +	else
-> > > +		ret = pinctrl_pm_select_sleep_state(&pdev->dev);
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > >   static int sdhci_msm_set_vmmc(struct mmc_host *mmc)
-> > >   {
-> > >   	if (IS_ERR(mmc->supply.vmmc))
-> > > @@ -1596,6 +1610,9 @@ static void sdhci_msm_handle_pwr_irq(struct sdhci_host *host, int irq)
-> > >   			ret = sdhci_msm_set_vqmmc(msm_host, mmc,
-> > >   					pwr_state & REQ_BUS_ON);
-> > >   		if (!ret)
-> > > +			ret = sdhci_msm_set_pincfg(msm_host,
-> > > +					pwr_state & REQ_BUS_ON);
-> > > +		if (!ret)
-> > >   			irq_ack |= CORE_PWRCTL_BUS_SUCCESS;
-> > >   		else
-> > >   			irq_ack |= CORE_PWRCTL_BUS_FAIL;
-> > I happened to have a debug patch in my tree which logs when regulators
-> > are enabled/disabled, with this patch I see the SD card regulator
-> > toggling constantly after returning from the first system suspend.
-> > 
-> > I added more logs:
-> > 
-> > [ 1156.085819] DBG: sdhci_msm_set_pincfg: level = 0 (ret: 0)
-> > [ 1156.248936] DBG: sdhci_msm_set_pincfg: level = 1 (ret: 0)
-> > [ 1156.301989] DBG: sdhci_msm_set_pincfg: level = 0 (ret: 0)
-> > [ 1156.462383] DBG: sdhci_msm_set_pincfg: level = 1 (ret: 0)
-> > [ 1156.525988] DBG: sdhci_msm_set_pincfg: level = 0 (ret: 0)
-> > [ 1156.670372] DBG: sdhci_msm_set_pincfg: level = 1 (ret: 0)
-> > [ 1156.717935] DBG: sdhci_msm_set_pincfg: level = 0 (ret: 0)
-> > [ 1156.878122] DBG: sdhci_msm_set_pincfg: level = 1 (ret: 0)
-> > [ 1156.928134] DBG: sdhci_msm_set_pincfg: level = 0 (ret: 0)
-> > 
-> > This is on an SC7180 platform. It doesn't run an upstream kernel though,
-> > but v5.4 with plenty of upstream patches.
-> I have verified this on couple of sc7180 targets (on Chrome platform with
-> Chrome kernel).
-> But didn't see any issue. Its working as expected.
+> Teach objtool to recognise and mark these in .static_call_sites and
+> adjust the code patching to deal with this.
+> 
 
-Did you test system suspend too? At least in the Chrome OS kernel tree system
-suspend is not supported yet in the main branch, you'd need a pile of 30+
-extra patches to get it to work. This is expected to change soon though :)
+Hmm, were you able to trigger crashes before this patch?
 
-> Let me know if you are observing this issue constantly on multiple boards, I
-> will share you
-> a debug patch to check it further.
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/x86/kernel/static_call.c           |   21 ++++++++++++++++++---
+>  include/linux/static_call.h             |    4 ++--
+>  include/linux/static_call_types.h       |    7 +++++++
+>  kernel/static_call.c                    |   21 +++++++++++++--------
+>  tools/include/linux/static_call_types.h |    7 +++++++
+>  tools/objtool/check.c                   |   18 +++++++++++++-----
+>  6 files changed, 60 insertions(+), 18 deletions(-)
+> 
+> --- a/arch/x86/kernel/static_call.c
+> +++ b/arch/x86/kernel/static_call.c
+> @@ -41,15 +41,30 @@ static void __static_call_transform(void
+>  	text_poke_bp(insn, code, size, NULL);
+>  }
+>  
+> -void arch_static_call_transform(void *site, void *tramp, void *func)
+> +static inline enum insn_type __sc_insn(bool null, bool tail)
+> +{
+> +	/*
+> +	 * Encode the following table without branches:
+> +	 *
+> +	 *	tail	null	insn
+> +	 *	-----+-------+------
+> +	 *	  0  |   0   |  CALL
+> +	 *	  0  |   1   |  NOP
+> +	 *	  1  |   0   |  JMP
+> +	 *	  1  |   1   |  RET
+> +	 */
+> +	return 2*tail + null;
+> +}
+> +
+> +void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
+>  {
+>  	mutex_lock(&text_mutex);
+>  
+>  	if (tramp)
+> -		__static_call_transform(tramp, func ? JMP : RET, func);
+> +		__static_call_transform(tramp, __sc_insn(!func, true), func);
+>  
+>  	if (IS_ENABLED(CONFIG_HAVE_STATIC_CALL_INLINE) && site)
+> -		__static_call_transform(site, func ? CALL : NOP, func);
+> +		__static_call_transform(site, __sc_insn(!func, tail), func);
+>  
+>  	mutex_unlock(&text_mutex);
+>  }
+> --- a/include/linux/static_call.h
+> +++ b/include/linux/static_call.h
+> @@ -103,7 +103,7 @@
+>  /*
+>   * Either @site or @tramp can be NULL.
+>   */
+> -extern void arch_static_call_transform(void *site, void *tramp, void *func);
+> +extern void arch_static_call_transform(void *site, void *tramp, void *func, bool tail);
+>  
+>  #define STATIC_CALL_TRAMP_ADDR(name) &STATIC_CALL_TRAMP(name)
+>  
+> @@ -206,7 +206,7 @@ void __static_call_update(struct static_
+>  {
+>  	cpus_read_lock();
+>  	WRITE_ONCE(key->func, func);
+> -	arch_static_call_transform(NULL, tramp, func);
+> +	arch_static_call_transform(NULL, tramp, func, false);
+>  	cpus_read_unlock();
+>  }
+>  
+> --- a/include/linux/static_call_types.h
+> +++ b/include/linux/static_call_types.h
+> @@ -17,6 +17,13 @@
+>  #define STATIC_CALL_TRAMP_STR(name)	__stringify(STATIC_CALL_TRAMP(name))
+>  
+>  /*
+> + * Flags in the low bits of static_call_site::key.
+> + */
+> +#define STATIC_CALL_SITE_TAIL 1UL	/* tail call */
+> +#define STATIC_CALL_SITE_INIT 2UL	/* init section */
+> +#define STATIC_CALL_SITE_FLAGS 3UL
+> +
+> +/*
+>   * The static call site table needs to be created by external tooling (objtool
+>   * or a compiler plugin).
+>   */
+> --- a/kernel/static_call.c
+> +++ b/kernel/static_call.c
+> @@ -15,8 +15,6 @@ extern struct static_call_site __start_s
+>  
+>  static bool static_call_initialized;
+>  
+> -#define STATIC_CALL_INIT 1UL
+> -
+>  /* mutex to protect key modules/sites */
+>  static DEFINE_MUTEX(static_call_mutex);
+>  
+> @@ -39,18 +37,23 @@ static inline void *static_call_addr(str
+>  static inline struct static_call_key *static_call_key(const struct static_call_site *site)
+>  {
+>  	return (struct static_call_key *)
+> -		(((long)site->key + (long)&site->key) & ~STATIC_CALL_INIT);
+> +		(((long)site->key + (long)&site->key) & ~STATIC_CALL_SITE_FLAGS);
+>  }
+>  
+>  /* These assume the key is word-aligned. */
+>  static inline bool static_call_is_init(struct static_call_site *site)
+>  {
+> -	return ((long)site->key + (long)&site->key) & STATIC_CALL_INIT;
+> +	return ((long)site->key + (long)&site->key) & STATIC_CALL_SITE_INIT;
+> +}
+> +
+> +static inline bool static_call_is_tail(struct static_call_site *site)
+> +{
+> +	return ((long)site->key + (long)&site->key) & STATIC_CALL_SITE_TAIL;
+>  }
+>  
+>  static inline void static_call_set_init(struct static_call_site *site)
+>  {
+> -	site->key = ((long)static_call_key(site) | STATIC_CALL_INIT) -
+> +	site->key = ((long)static_call_key(site) | STATIC_CALL_SITE_INIT) -
+>  		    (long)&site->key;
+>  }
+>  
+> @@ -104,7 +107,7 @@ void __static_call_update(struct static_
+>  
+>  	key->func = func;
+>  
+> -	arch_static_call_transform(NULL, tramp, func);
+> +	arch_static_call_transform(NULL, tramp, func, false);
+>  
+>  	/*
+>  	 * If uninitialized, we'll not update the callsites, but they still
+> @@ -154,7 +157,8 @@ void __static_call_update(struct static_
+>  				continue;
+>  			}
+>  
+> -			arch_static_call_transform(site_addr, NULL, func);
+> +			arch_static_call_transform(site_addr, NULL, func,
+> +				static_call_is_tail(site));
+>  		}
+>  	}
+>  
+> @@ -198,7 +202,8 @@ static int __static_call_init(struct mod
+>  			key->mods = site_mod;
+>  		}
+>  
+> -		arch_static_call_transform(site_addr, NULL, key->func);
+> +		arch_static_call_transform(site_addr, NULL, key->func,
+> +				static_call_is_tail(site));
+>  	}
+>  
+>  	return 0;
+> --- a/tools/include/linux/static_call_types.h
+> +++ b/tools/include/linux/static_call_types.h
+> @@ -17,6 +17,13 @@
+>  #define STATIC_CALL_TRAMP_STR(name)	__stringify(STATIC_CALL_TRAMP(name))
+>  
+>  /*
+> + * Flags in the low bits of static_call_site::key.
+> + */
+> +#define STATIC_CALL_SITE_TAIL 1UL	/* tail call */
+> +#define STATIC_CALL_SITE_INIT 2UL	/* init section */
+> +#define STATIC_CALL_SITE_FLAGS 3UL
+> +
+> +/*
+>   * The static call site table needs to be created by external tooling (objtool
+>   * or a compiler plugin).
+>   */
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -511,7 +511,7 @@ static int create_static_call_sections(s
+>  		}
+>  		memset(reloc, 0, sizeof(*reloc));
+>  		reloc->sym = key_sym;
+> -		reloc->addend = 0;
+> +		reloc->addend = is_sibling_call(insn) ? STATIC_CALL_SITE_TAIL : 0;
+>  		reloc->type = R_X86_64_PC32;
+>  		reloc->offset = idx * sizeof(struct static_call_site) + 4;
+>  		reloc->sec = reloc_sec;
+> @@ -720,6 +720,10 @@ static int add_jump_destinations(struct
+>  		} else {
+>  			/* external sibling call */
+>  			insn->call_dest = reloc->sym;
+> +			if (insn->call_dest->static_call_tramp) {
+> +				list_add_tail(&insn->static_call_node,
+> +					      &file->static_call_list);
+> +			}
+>  			continue;
+>  		}
+>  
+> @@ -771,6 +775,10 @@ static int add_jump_destinations(struct
+>  
+>  				/* internal sibling call */
+>  				insn->call_dest = insn->jump_dest->func;
+> +				if (insn->call_dest->static_call_tramp) {
+> +					list_add_tail(&insn->static_call_node,
+> +						      &file->static_call_list);
+> +				}
+>  			}
+>  		}
+>  	}
+> @@ -1639,6 +1647,10 @@ static int decode_sections(struct objtoo
+>  	if (ret)
+>  		return ret;
+>  
+> +	ret = read_static_call_tramps(file);
+> +	if (ret)
+> +		return ret;
+> +
+>  	ret = add_jump_destinations(file);
+>  	if (ret)
+>  		return ret;
+> @@ -1671,10 +1683,6 @@ static int decode_sections(struct objtoo
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = read_static_call_tramps(file);
+> -	if (ret)
+> -		return ret;
 
-I currently have only one board with the SD card slot populated, I might
-get another one next week.
+Hmm, what's the reason for moving this above? Should we have a comment
+here if there's importance that read_static_call_trampoline() is done
+earlier?
 
-The toggling occurs only when no SD card is inserted.
+-- Steve
+
+
+> -
+>  	return 0;
+>  }
+>  
+> 
+
