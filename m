@@ -2,162 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091AA21C54D
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 18:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0B621C54F
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 18:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728645AbgGKQfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 12:35:52 -0400
-Received: from mail-dm6nam12olkn2061.outbound.protection.outlook.com ([40.92.22.61]:59744
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728412AbgGKQfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 12:35:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ctnmkzuqWa2ifaVPDrHArRa8SWSOV7DBLaIJaFKCVG0qENpcw1l6emYYe1XGAnk//1SpXVcl+8BHzozXgVn6vFNnqXsWWcqZr0oRXTymJLrd5aQzCM4NfNDvTzAzy3fk10XLjnAuMzSxAe1pHVKGwfc5JiKHEB+Jnim/fLqSMp16S6yVUnTWij7N23CfElCa/L/spY6fXjUa4sS02dOTNk2Ebn08MQxEqeo5ffcSXP9DxMVDdZDkDq7ulcWcjuY7EP502V4EtpyVyMVyApEsqHy0wONHRhqdBS2cgWY63KkiyCIPmDBQmP80H/g1oUjRyVTjNHpw9PBxPAGO4SpSvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qlE0wE0BjPDZXKakuHpbLrKoYSBgfFFm473HxGWgx3k=;
- b=DqrykRH9kawKlZH/Dbn7d01cP3xTwSHKDBKZ7LmKxjLaUGZaRdQLMRTVFJNkhJn4HoH6+TLmJT0tg60T4BhoueUwok90Rl2fdQhWd8Ku5K2T4ZymosqbYxtnPxtioxy23FO1baOkC64XWj5sygojnlLWOrlz1hLlpjuRQsYl/gqrYz5fsct4mkjA8uDwcUGnwbSa+e/45+g1Uk5YD7QtnsTfTqfmGX3JM4m4r988Rj4pE7B5XBs/i9FKtUyOogTzotzwimVDz2nuLfpCwZf5CIQ0WwyLPDSf7Z8azFcItm2hfVIqjDAyFozVM9fzKdLR2wvcAXrJM+jz0KWphvsCZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from DM6NAM12FT050.eop-nam12.prod.protection.outlook.com
- (2a01:111:e400:fc64::4f) by
- DM6NAM12HT250.eop-nam12.prod.protection.outlook.com (2a01:111:e400:fc64::119)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.9; Sat, 11 Jul
- 2020 16:35:49 +0000
-Received: from BN6PR04MB0660.namprd04.prod.outlook.com
- (2a01:111:e400:fc64::43) by DM6NAM12FT050.mail.protection.outlook.com
- (2a01:111:e400:fc64::215) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.9 via Frontend
- Transport; Sat, 11 Jul 2020 16:35:49 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:A882560E394E2329D217C52270E425F10E9F1F18CC620652F271CC63B53C2441;UpperCasedChecksum:686A9947B53828CAECA671679C8B7D00CACEED1BFB8ECE50DCB82CF2476DF592;SizeAsReceived:9366;Count:49
-Received: from BN6PR04MB0660.namprd04.prod.outlook.com
- ([fe80::b9c3:9bff:541d:f383]) by BN6PR04MB0660.namprd04.prod.outlook.com
- ([fe80::b9c3:9bff:541d:f383%9]) with mapi id 15.20.3174.024; Sat, 11 Jul 2020
- 16:35:49 +0000
-Subject: Re: [PATCH 04/11] media: exynos4-is: Correct missing entity function
- initialization
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>
-Cc:     kyungmin.park@samsung.com, mchehab@kernel.org, kgene@kernel.org,
-        krzk@kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200426022650.10355-1-xc-racer2@live.ca>
- <BN6PR04MB0660E680A4F69E3037D87E70A3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
- <CGME20200707180927eucas1p14bedf7f773c5e86c3e3234928ee347a4@eucas1p1.samsung.com>
- <20200707180917.GD2621465@chromium.org>
- <afe50670-2452-2fe6-d0cc-0e1f83497873@samsung.com>
-From:   Jonathan Bakker <xc-racer2@live.ca>
-Message-ID: <BN6PR04MB0660E85ABB4AFE75FF2CD58BA3620@BN6PR04MB0660.namprd04.prod.outlook.com>
-Date:   Sat, 11 Jul 2020 09:35:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-In-Reply-To: <afe50670-2452-2fe6-d0cc-0e1f83497873@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CO2PR04CA0010.namprd04.prod.outlook.com
- (2603:10b6:102:1::20) To BN6PR04MB0660.namprd04.prod.outlook.com
- (2603:10b6:404:d9::21)
-X-Microsoft-Original-Message-ID: <5ce0a6cc-9840-afae-83a4-bfec08bd9482@live.ca>
+        id S1728665AbgGKQiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 12:38:12 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:58620 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728412AbgGKQiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Jul 2020 12:38:12 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1juIVq-004dfe-Si; Sat, 11 Jul 2020 18:38:06 +0200
+Date:   Sat, 11 Jul 2020 18:38:06 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, min.li.xe@renesas.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] ptp: add debugfs support for IDT family of
+ timing devices
+Message-ID: <20200711163806.GM1014141@lunn.ch>
+References: <1594395685-25199-1-git-send-email-min.li.xe@renesas.com>
+ <20200710135844.58d76d44@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200711134601.GD20443@hoboy>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2001:569:fb68:9c00:8067:f823:1e15:7520] (2001:569:fb68:9c00:8067:f823:1e15:7520) by CO2PR04CA0010.namprd04.prod.outlook.com (2603:10b6:102:1::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22 via Frontend Transport; Sat, 11 Jul 2020 16:35:47 +0000
-X-Microsoft-Original-Message-ID: <5ce0a6cc-9840-afae-83a4-bfec08bd9482@live.ca>
-X-TMN:  [y1FMo+BkqPNhMRyzGFWM+Gu0iaaOAAhie7e9cPdCcHLFACteY9N7SmSGZVJFWDRw]
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 49
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 2b182859-05c1-48f6-6986-08d825b877cf
-X-MS-TrafficTypeDiagnostic: DM6NAM12HT250:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dusHB05cEeN27aaeUtACqHHEma0/Y0pzQRAEWUctfNxR19e/abShWj6IECaVKht37hGDrV36KhzPkG57nXA3DiLy5aWLoTdDgtda1QbIId42iyoMxfJbmTAy5vfkEIalmbhQb//ceeM9Gs3WYY0KV5Nr1iS4QbdAwz0xJnClxtqQhcrOGA+jQyugzYv0DX24pkA2J2RB/plGbtWKUAbzXA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR04MB0660.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
-X-MS-Exchange-AntiSpam-MessageData: i+BMy8OQS+kCwUvx4r3zMDB9gvecn8vZgV0d8gwStqHQ8vurlOZd4RPFO1A6NTOtodj1OX8sze3Dpv0l+bPnB5+qi5+rIPrHiaX/CWk4SrkqD/TbrWlKSXqpdWdMb/hx4Re7y0o1g5fmPoelCcfLmopyIN/jlwdgOMh5uH0gN0ZyCaUNYqINuDAHbwkgb7GhasJErcC0/yYsJ+o/TcMeSA==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b182859-05c1-48f6-6986-08d825b877cf
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2020 16:35:49.0435
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT050.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6NAM12HT250
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200711134601.GD20443@hoboy>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sylwester and Tomasz,
+On Sat, Jul 11, 2020 at 06:46:01AM -0700, Richard Cochran wrote:
+> On Fri, Jul 10, 2020 at 01:58:44PM -0700, Jakub Kicinski wrote:
+> > On Fri, 10 Jul 2020 11:41:25 -0400 min.li.xe@renesas.com wrote:
+> > > From: Min Li <min.li.xe@renesas.com>
+> > > 
+> > > This patch is to add debugfs support for ptp_clockmatrix and ptp_idt82p33.
+> > > It will create a debugfs directory called idtptp{x} and x is the ptp index.
+> > > Three inerfaces are present, which are cmd, help and regs. help is read
+> > > only and will display a brief help message. regs is read only amd will show
+> > > all register values. cmd is write only and will accept certain commands.
+> > > Currently, the accepted commands are combomode to set comobo mode and write
+> > > to write up to 4 registers.
+> > > 
+> > > Signed-off-by: Min Li <min.li.xe@renesas.com>
+> > 
+> > No private configuration interfaces in debugfs, please.
+> 
+> I suggested to Min to use debugfs for device-specific configuration
+> that would be out of place in the generic PTP Hardware Clock
+> interface.
+> 
+> > If what you're exposing is a useful feature it deserves a proper 
+> > uAPI interface.
+> 
+> Can you expand on what you mean by "proper uAPI interface" please?
 
-On 2020-07-08 8:34 a.m., Sylwester Nawrocki wrote:
-> Hi,
-> 
-> On 07.07.2020 20:09, Tomasz Figa wrote:
->> On Sat, Apr 25, 2020 at 07:26:43PM -0700, Jonathan Bakker wrote:
->>> Commit bae4500399c4 ("[media] exynos4-is: Add missing entity function
->>> initialization") tried to suppress the warnings such as
->>>
->>> s5p-fimc-md camera: Entity type for entity FIMC.0 was not initialized!
->>>
->>> However, this didn't work in all cases.  Correct this by calling the set
->>> function earlier.
->>>
->>> Fixes: bae4500399c4 ("exynos4-is: Add missing entity function initialization")
->>> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
->>> ---
->>>  drivers/media/platform/exynos4-is/fimc-capture.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
->> Thank you for the patch. Please see my comments inline.
-> 
->>> diff --git a/drivers/media/platform/exynos4-is/fimc-capture.c b/drivers/media/platform/exynos4-is/fimc-capture.c
->>> index 705f182330ca..86c233e2f2c9 100644
->>> --- a/drivers/media/platform/exynos4-is/fimc-capture.c
->>> +++ b/drivers/media/platform/exynos4-is/fimc-capture.c
->>> @@ -1799,7 +1799,6 @@ static int fimc_register_capture_device(struct fimc_dev *fimc,
->>>  	vid_cap->wb_fmt.code = fmt->mbus_code;
->>>  
->>>  	vid_cap->vd_pad.flags = MEDIA_PAD_FL_SINK;
->>> -	vfd->entity.function = MEDIA_ENT_F_PROC_VIDEO_SCALER;
-> 
-> I think we should leave above line as is, or perhaps change the function
-> to MEDIA_ENT_F_PROC_VIDEO_COMPOSER and...
-> 
->> Isn't vfd->entity above a different entity than sd->entity below? If so,
->> this line must stay.
->>
->>>  	ret = media_entity_pads_init(&vfd->entity, 1, &vid_cap->vd_pad);
->>>  	if (ret)
->>>  		goto err_free_ctx;
->>> @@ -1898,6 +1897,7 @@ int fimc_initialize_capture_subdev(struct fimc_dev *fimc)
->>>  		return ret;
->>>  
->>>  	sd->entity.ops = &fimc_sd_media_ops;
->>> +	sd->entity.function = MEDIA_ENT_F_PROC_VIDEO_SCALER;
-> 
-> ...also add an assignment like this.
-> 
-> vfd->entity and sd->entity are different entities, vfd->entity corresponds to
-> the capture video node and sd->entity is the capture subdevice media entity. 
-> 
+Hi Richard
 
-Whoops, I totally misinterpreted the fact that they are  different entities.  For v2
-I'll remove the removal from vfd and just add MEDIA_ENT_F_PROC_VIDEO_SCALER to the sd
-entity.
+Well, one obvious issues is that debugfs it totally optional, and
+often not built. You would not want the correct operation of a device
+to depend something which is optional. debugfs is also unstable. There
+are no ABI rules. So user space cannot rely on the API being the same
+from version to version. Again, not something you want for the correct
+operation of a device.
 
->> My understanding is that this is the capture subdev and not the scaler.
->> Looking at the other drivers, MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER
->> could be the right function to use here.
-> 
-> Scaling can also be configured on that subdev, actually both functions would
-> be valid.
-> 
+Allowing registers to be read, is a typical debug operation. So that
+part seems reasonable. A kernel developer/debugger has the skills to
+deal with unstable APIs, and rebuilding the kernel to actually have
+debugfs in the image.
 
-Thanks,
-Jonathan
+But configuration does not belong in debugfs. It would be good to
+explain what is being configured by these parameters, then we can
+maybe make a suggestion about the correct API to use.
+
+      Andrew
