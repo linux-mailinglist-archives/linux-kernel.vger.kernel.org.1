@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4088821C576
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 19:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAA821C575
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 19:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgGKROF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 13:14:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728674AbgGKROF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 13:14:05 -0400
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+        id S1728691AbgGKROB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 13:14:01 -0400
+Received: from pb-smtp21.pobox.com ([173.228.157.53]:51185 "EHLO
+        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728674AbgGKROB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Jul 2020 13:14:01 -0400
+Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id 2C1FADBA71;
+        Sat, 11 Jul 2020 13:13:59 -0400 (EDT)
+        (envelope-from geofft@ldpreload.com)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:in-reply-to:message-id:references:mime-version
+        :content-type; s=sasl; bh=hvv4yGX9p7fbVfRfcjSHbd4wTg0=; b=wzoZdz
+        hquq98qv3JmRfW52IsHxj5DNyMeUO0cF7NjeDBFTCFRhce0MFfDippKZ7ORAfEb1
+        3YXPXrrd5B5GWkC9KWBomJ/zNDv6CFq39cbs2HDuolxiDQOHt7ckiNffCLYjgIsg
+        +MeBh5hg5NI5LGTcUGlMoGZWkWbxp2OWaWR/o=
+Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id 24BACDBA70;
+        Sat, 11 Jul 2020 13:13:59 -0400 (EDT)
+        (envelope-from geofft@ldpreload.com)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=ldpreload.com;
+ h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=mesmtp; bh=YlipbSjz8/cmz3AyHS0eTbZ5XkkKCJDg/NrgpldKAPk=; b=oh97ADewY5hSUoLUX7UCBBjvUtsFzBi/GiMJ4iSHkEZlCjV85cOWPGxB21OmYNdZfPbu3SAgCOrmP1IruwQqkVVlUWotSdwhSKAlto014b6hypOSONwoE+QJTc5EPTM3Z2hHun4Wx0D/kz2da+/6cn8y9gWU8IpAr53LfaBSCww=
+Received: from cactuar.ldpreload.com (unknown [198.27.64.52])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96F492084C
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 17:14:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594487644;
-        bh=tFm00tYvn7vhjhKrCpNUrSPBZx/gcRTVNWRie6+SKEo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WicGKo/yazUFc3Y5sF4bpw33UAMasXR8qJdo+xdl92gcFmf/d45lFAjoIjU++1tP+
-         aGw+3o1AytpfprwyjLlL9IXJRnevuU054lx5VCKHOWpo0mYTcN15c5Kc8mpODIUZYN
-         Gg9y4XeCycGs3oK3CINOj1BGxUyOMM67mmPd5pdc=
-Received: by mail-wr1-f47.google.com with SMTP id f7so9010375wrw.1
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 10:14:04 -0700 (PDT)
-X-Gm-Message-State: AOAM532UZ0fo19tt8EIVbpSZBj7jl+b+xMSbKgSNA6FJX+C+gf94hA3y
-        ce3rSESP0luGTnMN1KEHvO7eKlbd2OIQHJPceZ1vRg==
-X-Google-Smtp-Source: ABdhPJxMh8vjF84E3/DntWMxXWeZPTgDvsTCHvRQyIrYebZSo08BFeR11MAYOMoWyO7UY+SzvZ1k4gm1HX+vVNrPrMQ=
-X-Received: by 2002:adf:f888:: with SMTP id u8mr31368677wrp.18.1594487643227;
- Sat, 11 Jul 2020 10:14:03 -0700 (PDT)
+        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id E869DDBA12;
+        Sat, 11 Jul 2020 13:13:55 -0400 (EDT)
+        (envelope-from geofft@ldpreload.com)
+Date:   Sat, 11 Jul 2020 13:13:54 -0400 (EDT)
+From:   Geoffrey Thomas <geofft@ldpreload.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+cc:     alex.gaynor@gmail.com, jbaublitz@redhat.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: Linux kernel in-tree Rust support
+In-Reply-To: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
+Message-ID: <alpine.DEB.2.11.2007111307100.4589@titan.ldpreload.com>
+References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
+User-Agent: Alpine 2.11 (DEB 23 2013-08-11)
 MIME-Version: 1.0
-References: <20200710224525.21966-1-bshanks@codeweavers.com>
-In-Reply-To: <20200710224525.21966-1-bshanks@codeweavers.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 11 Jul 2020 10:13:51 -0700
-X-Gmail-Original-Message-ID: <CALCETrU8==gUPD7TygK_dVZZnzirpLUCWQCgYmEDn2s2Y5U_gg@mail.gmail.com>
-Message-ID: <CALCETrU8==gUPD7TygK_dVZZnzirpLUCWQCgYmEDn2s2Y5U_gg@mail.gmail.com>
-Subject: Re: [PATCH v5] x86/umip: Add emulation/spoofing for SLDT and STR instructions
-To:     Brendan Shanks <bshanks@codeweavers.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andreas Rammhold <andi@notmuch.email>,
-        "Moger, Babu" <Babu.Moger@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+X-Pobox-Relay-ID: E6E95AD6-C399-11EA-9281-843F439F7C89-67873895!pb-smtp21.pobox.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 3:45 PM Brendan Shanks <bshanks@codeweavers.com> wrote:
->
-> Add emulation/spoofing of SLDT and STR for both 32- and 64-bit
-> processes.
->
-> Wine users have found a small number of Windows apps using SLDT that
-> were crashing when run on UMIP-enabled systems.
->
+On Thu, 9 Jul 2020, Nick Desaulniers wrote:
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+> Hello folks,
+> I'm working on putting together an LLVM "Micro Conference" for the
+> upcoming Linux Plumbers Conf
+> (https://www.linuxplumbersconf.org/event/7/page/47-attend).  It's not
+> solidified yet, but I would really like to run a session on support
+> for Rust "in tree."  I suspect we could cover technical aspects of
+> what that might look like (I have a prototype of that, was trivial to
+> wire up KBuild support), but also a larger question of "should we do
+> this?" or "how might we place limits on where this can be used?"
+>
+> Question to folks explicitly in To:, are you planning on attending plumbers?
+>
+> If so, would this be an interesting topic that you'd participate in?
 
-I tested this under KVM-emulated UMIP.  I don't have a real UMIP
-system handle to test STR.
+Like Alex - I hadn't decided yet but I'll definitely attend for this!
 
---Andy
+-- 
+Geoffrey Thomas
+https://ldpreload.com
+geofft@ldpreload.com
+
+
