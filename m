@@ -2,86 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9419421C39B
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 12:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF3821C3B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 12:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgGKKMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 06:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgGKKMQ (ORCPT
+        id S1728043AbgGKKWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 06:22:00 -0400
+Received: from o1.b.az.sendgrid.net ([208.117.55.133]:36785 "EHLO
+        o1.b.az.sendgrid.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726684AbgGKKV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 06:12:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50240C08C5DD
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 03:12:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=/ZZkHjnUQiwzKzc49pjz9+DN0KmiX6rc0tKOJ/e9x7U=; b=OcB4vLbZPsjjDuG3qcTlYR8x3y
-        6Ez4rFtH+E/r+Tpy/oXEQbQDmCvwvC/NT0/FVXHI+03BprdCLd7W/TbIsyCZ9D0lEjeBBOx8Ooov5
-        M3BVcQePcNmuiO0FrG4rgc+q/rumNoRzmgDhcVnotXWYhCFFIOa7CbJ+vJWKFGlREW72wQOIc1UfH
-        rq4vVJMDNOhevGtcBi7CUpN8JB5nxuVnsbcOrUvrUnCPlnMjHbZMBRqdn1PEKW8Np7422sRXJIClp
-        akHSAiE2iYsWova/qayuvdzMJPRl2QztFPs39rvq0Im/NFbKLC3vySdhd1ucHVeA6gebwgg6uLMp5
-        dCV/ZV+w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1juCTx-0007Aq-8J; Sat, 11 Jul 2020 10:11:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DACAC304D28;
-        Sat, 11 Jul 2020 12:11:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B936A2367CF59; Sat, 11 Jul 2020 12:11:43 +0200 (CEST)
-Date:   Sat, 11 Jul 2020 12:11:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mhiramat@kernel.org,
-        bristot@redhat.com, jbaron@akamai.com,
-        torvalds@linux-foundation.org, tglx@linutronix.de,
-        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
-        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
-        pbonzini@redhat.com, mathieu.desnoyers@efficios.com,
-        linux@rasmusvillemoes.dk
-Subject: Re: [PATCH v6 09/17] x86/static_call: Add out-of-line static call
- implementation
-Message-ID: <20200711101143.GB597537@hirez.programming.kicks-ass.net>
-References: <20200710133831.943894387@infradead.org>
- <20200710134336.679277058@infradead.org>
- <20200710181331.1ad69ef6@oasis.local.home>
+        Sat, 11 Jul 2020 06:21:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+        h=subject:references:from:mime-version:in-reply-to:to:cc:content-type:
+        content-transfer-encoding;
+        s=001; bh=hKkiZdQQQCV7LCEzPFLeR2jKYXURO3Db8fTbLBVLOzM=;
+        b=roI/CBDdvtdfO+tdrcxWtxXDQztqaWnyzVYdpzdfDAMLP9fn1JO/eSwez7VNlpymbCzl
+        5zzKbEjCgUMJTzboObIFpZguC1nI+zHsxmTEr1V7JbFtPFtHQFbOoA4ENbD0NTSAY/RQIr
+        342C2ZQrUqYAcRNHeI28ECV9r03gGtzPQ=
+Received: by filterdrecv-p3mdw1-75c584b9c6-jp7b2 with SMTP id filterdrecv-p3mdw1-75c584b9c6-jp7b2-18-5F0992C5-3E
+        2020-07-11 10:21:57.869390778 +0000 UTC m=+1271538.380795897
+Received: from [192.168.1.14] (unknown)
+        by ismtpd0005p1lon1.sendgrid.net (SG) with ESMTP
+        id 9PlySEwUR9ap1X6LQ-LTfQ
+        Sat, 11 Jul 2020 10:21:57.603 +0000 (UTC)
+Subject: Re: [RFC 07/12] media: uapi: h264: Add DPB entry field reference
+ flags
+References: <HE1PR06MB40117D0EE96E6FA638A04B78ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
+ <20190901124531.23645-1-jonas@kwiboo.se>
+ <HE1PR06MB4011559BF2447047C66285D2ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
+ <233509924f72d69824920d9312373eced68674c0.camel@collabora.com>
+ <20200710101333.05077f18@collabora.com>
+ <6232d8475e169ee53b5864959af21d14bf0fc620.camel@collabora.com>
+ <20200710140502.627b2b54@collabora.com>
+ <05b6cff6ba230c0ab6a562e17926d8503e2dfadd.camel@collabora.com>
+ <9a897ef99048077233685b121b03bd750e4d4a83.camel@collabora.com>
+From:   Jonas Karlman <jonas@kwiboo.se>
+Message-ID: <cf4a5d3f-934f-de59-b5df-97b23e30cb1b@kwiboo.se>
+Date:   Sat, 11 Jul 2020 10:21:57 +0000 (UTC)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <9a897ef99048077233685b121b03bd750e4d4a83.camel@collabora.com>
+X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0h=2F3MSfh0EOMJ0496t?=
+ =?us-ascii?Q?Jf=2F+iUqhESCgGvRvw6so+hSgvWFjaMthfbkbcQR?=
+ =?us-ascii?Q?g=2FAKU=2F=2F1LNxdwDk6bYbn=2FB5M6FbNNIU73Nunwl+?=
+ =?us-ascii?Q?eJWhuejsrRFpw8PoiJEc3yRjZYuts3FxOf4q2Hn?=
+ =?us-ascii?Q?OEfFOxvi4OsYOwDay3f8MLRGzpUIu+wYdgZyQEF?=
+ =?us-ascii?Q?tevuCaTnYRiX3Pzao8Y7g=3D=3D?=
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Language: sv
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200710181331.1ad69ef6@oasis.local.home>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 06:13:31PM -0400, Steven Rostedt wrote:
-> On Fri, 10 Jul 2020 15:38:40 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
+On 2020-07-10 23:49, Nicolas Dufresne wrote:
+> Le vendredi 10 juillet 2020 � 09:25 -0300, Ezequiel Garcia a �crit :
+>> +Nicolas
+>>
+>> On Fri, 2020-07-10 at 14:05 +0200, Boris Brezillon wrote:
+>>> On Fri, 10 Jul 2020 08:50:28 -0300
+>>> Ezequiel Garcia <ezequiel@collabora.com> wrote:
+>>>
+>>>> On Fri, 2020-07-10 at 10:13 +0200, Boris Brezillon wrote:
+>>>>> On Fri, 10 Jul 2020 01:21:07 -0300
+>>>>> Ezequiel Garcia <ezequiel@collabora.com> wrote:
+>>>>>   
+>>>>>> Hello Jonas,
+>>>>>>
+>>>>>> In the context of the uAPI cleanup,
+>>>>>> I'm revisiting this patch.
+>>>>>>
+>>>>>> On Sun, 2019-09-01 at 12:45 +0000, Jonas Karlman wrote:  
+>>>>>>> Add DPB entry flags to help indicate when a reference frame is a
+>>>>>>> field picture
+>>>>>>> and how the DPB entry is referenced, top or bottom field or full
+>>>>>>> frame.
+>>>>>>>
+>>>>>>> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+>>>>>>> ---
+>>>>>>>  Documentation/media/uapi/v4l/ext-ctrls-codec.rst | 12 ++++++++++++
+>>>>>>>  include/media/h264-ctrls.h                       |  4 ++++
+>>>>>>>  2 files changed, 16 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+>>>>>>> b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+>>>>>>> index bc5dd8e76567..eb6c32668ad7 100644
+>>>>>>> --- a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+>>>>>>> +++ b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+>>>>>>> @@ -2022,6 +2022,18 @@ enum
+>>>>>>> v4l2_mpeg_video_h264_hierarchical_coding_type -
+>>>>>>>      * - ``V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM``
+>>>>>>>        - 0x00000004
+>>>>>>>        - The DPB entry is a long term reference frame
+>>>>>>> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE``
+>>>>>>> +      - 0x00000008
+>>>>>>> +      - The DPB entry is a field picture
+>>>>>>> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_TOP``
+>>>>>>> +      - 0x00000010
+>>>>>>> +      - The DPB entry is a top field reference
+>>>>>>> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM``
+>>>>>>> +      - 0x00000020
+>>>>>>> +      - The DPB entry is a bottom field reference
+>>>>>>> +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME``
+>>>>>>> +      - 0x00000030
+>>>>>>> +      - The DPB entry is a reference frame
+>>>>>>>  
+>>>>>>>  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE (enum)``
+>>>>>>>      Specifies the decoding mode to use. Currently exposes slice-
+>>>>>>> based and
+>>>>>>> diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+>>>>>>> index e877bf1d537c..76020ebd1e6c 100644
+>>>>>>> --- a/include/media/h264-ctrls.h
+>>>>>>> +++ b/include/media/h264-ctrls.h
+>>>>>>> @@ -185,6 +185,10 @@ struct v4l2_ctrl_h264_slice_params {
+>>>>>>>  #define V4L2_H264_DPB_ENTRY_FLAG_VALID		0x01
+>>>>>>>  #define V4L2_H264_DPB_ENTRY_FLAG_ACTIVE		0x02
+>>>>>>>  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
+>>>>>>> +#define V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE	0x08
+>>>>>>> +#define V4L2_H264_DPB_ENTRY_FLAG_REF_TOP	0x10
+>>>>>>> +#define V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM	0x20
+>>>>>>> +#define V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME	0x30
+>>>>>>>      
+>>>>>>
+>>>>>> I've been going thru the H264 spec and I'm unsure,
+>>>>>> are all these flags semantically needed?
+>>>>>>
+>>>>>> For instance, if one of REF_BOTTOM or REF_TOP (or both)
+>>>>>> are set, doesn't that indicate it's a field picture?
+>>>>>>
+>>>>>> Or conversely, if neither REF_BOTTOM or REF_TOP are set,
+>>>>>> then it's a frame picture?  
+>>>>>
+>>>>> I think that's what I was trying to do here [1]
+>>>>>
+>>>>> [1]https://patchwork.kernel.org/patch/11392095/  
+>>>>
+>>>> Right. Aren't we missing a DPB_ENTRY_FLAG_TOP_FIELD?
+>>>>
+>>>> If I understand correctly, the DPB can contain:
+>>>>
+>>>> * frames (FLAG_FIELD not set)
+>>>> * a field pair, with a single field (FLAG_FIELD and either TOP or BOTTOM).
+>>>> * a field pair, with boths fields (FLAG_FIELD and both TOP or BOTTOM).
+>>>
+>>> Well, my understand is that, if the buffer contains both a TOP and
+>>> BOTTOM field, it actually becomes a full frame, so you actually have
+>>> those cases:
+>>>
+>>> * FLAG_FIELD not set: this a frame (note that a TOP/BOTTOM field
+>>>   decoded buffer can become of frame if it's complemented with the
+>>>   missing field later during the decoding)
+>>> * FLAG_FIELD set + BOTTOM_FIELD not set: this is a TOP field
+>>> * FLAG_FIELD set + BOTTOM_FIELD set: this is a BOTTOM field
+>>> * FLAG_FIELD not set + BOTTOM_FIELD set: invalid combination
 > 
-> > From: Josh Poimboeuf <jpoimboe@redhat.com>
-> > 
-> > Add the x86 out-of-line static call implementation.  For each key, a
-> > permanent trampoline is created which is the destination for all static
-> > calls for the given key.  The trampoline has a direct jump which gets
-> > patched by static_call_update() when the destination function changes.
+> Let's admit, while this work, it's odd. Can we just move to that instewad ?
 > 
-> FYI, I get the following warnings after applying this patch.
+>   FLAG_TOP_FIELD
+>   FLAG_BOTTOM_FIELD
+>   FLAG_FRAME = (FLAG_TOP_FIELD | FLAG_BOTTOM_FIELD)
 > 
-> /work/git/linux-test.git/arch/x86/kernel/static_call.c: In function ‘__static_call_transform’:
-> /work/git/linux-test.git/arch/x86/kernel/static_call.c:9:43: warning: passing argument 2 of ‘text_gen_insn’ makes pointer from integer without a cast [-Wint-conversion]
->     9 |  const void *code = text_gen_insn(opcode, (long)insn, (long)func);
->       |                                           ^~~~~~~~~~
->       |                                           |
->       |                                           long int
+> So it can be used as a flag, but also is a proper enum and there is no longer an
+> invalid combination.
+>   
+>>>
+>>> but I might be wrong.
 
-Hurmph, shows I haven't build the individual patches in a while I
-suppose. It was fixed in the next patch.
+There seems to be some misunderstanding here, the top/bottom flagging should
+not be used to describe if the picture is a field, field pair or frame, it
+should be used to flag if a frame or the top and/or bottom field (in case of
+a field pair) is "used for short-term reference".
 
-Fixed it up, thanks!
+FLAG_TOP_REF
+FLAG_BOTTOM_REF
+FLAG_FRAME_REF = (FLAG_TOP_REF | FLAG_BOTTOM_REF)
+
+Would be a more appropriate naming.
+
+The FIELD_PIC flag would then be used to describe if the picture is a
+reference frame or a complementary reference field pair.
+
+As described in hantro h264 driver [1] the MV buffer is split in two
+for field encoded frames, and I guess the rkvdec block does something
+similar and therefore the HW blocks probably needs to know if the reference
+picture is a reference frame or a complementary reference field pair.
+It should be possible to keep such state in driver but since such information
+was easily available in ffmpeg and the driver being "stateless" using a flag
+seamed like a good choice at the time.
+
+Please note that I have not done any test without the "field pic" flagging
+but both mpp and the imx/hantro reference code are configuring this bit.
+
+[1] https://git.linuxtv.org/media_tree.git/tree/drivers/staging/media/hantro/hantro_g1_h264_dec.c#n265
+
+Regards,
+Jonas
+
+>>
+>> Yes, perhaps that's correct. I was trying to think strictly
+>> in terms of the H264 semantics, to define a clean interface.
+>>
+>> From the mpp code, looks like the above is enough for rkvdec
+>> (although I haven't done any tests).
+>>
+>> Ezequiel
+>>
+>>
+>>
+> 
