@@ -2,58 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1630021C518
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 18:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67B021C51B
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 18:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728645AbgGKQNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 12:13:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52942 "EHLO mail.kernel.org"
+        id S1728597AbgGKQQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 12:16:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728556AbgGKQM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 12:12:59 -0400
+        id S1728390AbgGKQQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Jul 2020 12:16:12 -0400
 Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC7782075F;
-        Sat, 11 Jul 2020 16:12:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17F5F2075F;
+        Sat, 11 Jul 2020 16:16:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594483978;
-        bh=n2ktXL7Lm8tI8qYhwAOWKKE+CTtfAlysoQtFNBza8OQ=;
+        s=default; t=1594484172;
+        bh=+BSGlLJBW8PWM3+BVUVf02ZgKAnl9LalQ3SOruYoT0c=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=DICmeqXiU/xBy4RlrulZstDUbRxoW20fO2E8ZtP+r16L7btPxDHrkHlCP3HYReAV2
-         tMGbeUSXW3wSPy4OnpUbb3UWpr9WNPvWPkuVmvW0g1xuAF31dGANEVFc0POZBRBiHS
-         q8fVmNNvkyI5r0661FxoytvPCo4U3hEj4vK8yNck=
+        b=KYzV8/ZHzQUxOw0I+CMVF1wiT7uZvnhyd5eD8mS4uTYghTKVvoI1GyIKVUC5Xsr9w
+         hxDLexH9X30DWfBvlRbOmueols7wGfzk83ckeBTFqoqPdjxkSV7VkCQc5YavKKQX6I
+         pbm6ixyLjgSmjs1abybkS1DG68Ot/UF/1b2oLr8Q=
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1593940680-2363-5-git-send-email-sivaprak@codeaurora.org>
-References: <1593940680-2363-1-git-send-email-sivaprak@codeaurora.org> <1593940680-2363-5-git-send-email-sivaprak@codeaurora.org>
-Subject: Re: [PATCH 4/9] clk: qcom: ipq8074: Add missing clocks for pcie
+In-Reply-To: <20200709195706.12741-2-eajames@linux.ibm.com>
+References: <20200709195706.12741-1-eajames@linux.ibm.com> <20200709195706.12741-2-eajames@linux.ibm.com>
+Subject: Re: [PATCH 1/2] clk: AST2600: Add mux for EMMC clock
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
-To:     agross@kernel.org, bhelgaas@google.com, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, kishon@ti.com,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, mgautam@codeaurora.org,
-        mturquette@baylibre.com, p.zabel@pengutronix.de,
-        robh+dt@kernel.org, sivaprak@codeaurora.org,
-        smuthayy@codeaurora.org, svarbanov@mm-sol.com,
-        varada@codeaurora.org, vkoul@kernel.org
-Date:   Sat, 11 Jul 2020 09:12:57 -0700
-Message-ID: <159448397791.1987609.10974763524448652875@swboyd.mtv.corp.google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        linux-mmc@vger.kernel.org, andrew@aj.id.au, joel@jms.id.au,
+        ulf.hansson@linaro.org, adrian.hunter@intel.com,
+        mturquette@baylibre.com, eajames@linux.ibm.com
+To:     Eddie James <eajames@linux.ibm.com>, linux-clk@vger.kernel.org
+Date:   Sat, 11 Jul 2020 09:16:11 -0700
+Message-ID: <159448417133.1987609.8669229169177662950@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sivaprakash Murugesan (2020-07-05 02:17:55)
-> Add missing clocks and resets for pcie port0 of ipq8074 devices.
+Quoting Eddie James (2020-07-09 12:57:05)
+> The EMMC clock can be derived from either the HPLL or the MPLL. Register
+> a clock mux so that the rate is calculated correctly based upon the
+> parent.
 >=20
-> Co-developed-by: Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
-> Signed-off-by: Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
-> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
 > ---
 
-Applied to clk-next
+Applied to clk-fixes
