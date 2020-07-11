@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BC621C316
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 09:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876EF21C318
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 09:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728164AbgGKHp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 03:45:27 -0400
-Received: from mailomta21-sa.btinternet.com ([213.120.69.27]:53647 "EHLO
-        sa-prd-fep-044.btinternet.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726900AbgGKHp0 (ORCPT
+        id S1728207AbgGKHri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 03:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726958AbgGKHri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 03:45:26 -0400
-Received: from sa-prd-rgout-002.btmx-prd.synchronoss.net ([10.2.38.5])
-          by sa-prd-fep-044.btinternet.com with ESMTP
-          id <20200711074524.SVO3440.sa-prd-fep-044.btinternet.com@sa-prd-rgout-002.btmx-prd.synchronoss.net>;
-          Sat, 11 Jul 2020 08:45:24 +0100
-Authentication-Results: btinternet.com;
-    auth=pass (LOGIN) smtp.auth=j.oldman998@btinternet.com
-X-Originating-IP: [31.53.71.41]
-X-OWM-Source-IP: 31.53.71.41 (GB)
-X-OWM-Env-Sender: j.oldman998@btinternet.com
-X-VadeSecure-score: verdict=clean score=0/300, class=clean
-X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduiedrvddvgdduvdehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuueftkffvkffujffvgffngfevqffopdfqfgfvnecuuegrihhlohhuthemuceftddunecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkfhggtggujggfsehttdertddtredvnecuhfhrohhmpedfoeflohhhnhcuqfhlughmrghnqedfuceojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqeenucggtffrrghtthgvrhhnpeffveekffekffefhfevvdevieelvdduuedvteeviefgteetfeffffekieduieekveenucfkphepfedurdehfedrjedurdegudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopehhvghnrhihpdhinhgvthepfedurdehfedrjedurdeguddpmhgrihhlfhhrohhmpeeojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqedprhgtphhtthhopeeouggvvhgvlhesughrihhvvghruggvvhdrohhsuhhoshhlrdhorhhgqedprhgtphhtthhopeeoghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgqedprhgtphhtthhopeeoghhushhtrghvohesvghmsggvugguvgguohhrrdgtohhmqedprhgtphhtthhopeeolhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgqe
-X-RazorGate-Vade-Verdict: clean 0
-X-RazorGate-Vade-Classification: clean
-Received: from henry (31.53.71.41) by sa-prd-rgout-002.btmx-prd.synchronoss.net (5.8.340) (authenticated as j.oldman998@btinternet.com)
-        id 5ED9AA6E0630DA2A; Sat, 11 Jul 2020 08:45:24 +0100
-Date:   Sat, 11 Jul 2020 08:45:22 +0100
-From:   "<John Oldman>" <john.oldman@polehill.co.uk>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: core: Using comparison to true is
- error prone
-Message-ID: <20200711074522.GA20279@henry>
-References: <20200710201643.27322-1-john.oldman@polehill.co.uk>
- <69bf7931-7df2-a0f8-8329-929ccb6a2c20@embeddedor.com>
+        Sat, 11 Jul 2020 03:47:38 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51649C08C5DD;
+        Sat, 11 Jul 2020 00:47:38 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id ch3so3563958pjb.5;
+        Sat, 11 Jul 2020 00:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vVj5PLO8DWwXrIdgpAWOr+iuRE5LhehahqytWj2/7fQ=;
+        b=hDSb2sNvIipGw4oind1DIUmZ7pWoWmWG0jzZVbbiWW5Mo5Zjwg98cqGJfgiMI8VFMB
+         GtJmgwetBfTsfJqIcnZKU4sTLz0WVJoX6ns/LQu6LcEDpHSNqYfRLTQccPPHeq7uM+Lr
+         RH8y8qEuBlRofCc5r+qZv3KhJWTGDt+lxZ52mVboGqVSO6oP2rsgxo05cYt84xmLM18q
+         Q6sOfj3Wta2MFM7DijoTNwBZ+gBlcYCgknhT4srf2ABpetYuZgTF54LvLLvlQ4KhjROv
+         LzgpKYAa2bKI9AFbYT+LZay8KW4ubsE/B7kkeHBjt272KGaceXV7xN+SsxtFvyIyr8SS
+         AUjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vVj5PLO8DWwXrIdgpAWOr+iuRE5LhehahqytWj2/7fQ=;
+        b=hTZtl+zk4ehhfL9LEyK3hkbNtHZX/ln2JBIyceSTmMQQ4JOEU+QjFUZvmjlqXP5DvO
+         8fXurik/ossNzCnXOg0E5viGtWbrngcHZzWeYm4wTjPf8GgnicD2tStjjUgu25C3U0sL
+         N7AGNwW3XpItv2vnHnEWwXYQOZqFGBRoLIm+mHEMoFMEF7pbLjku5gYr235OPPhougKG
+         H6j+crhSicY7C1J+3+qxxY0alEMQlBXVS1YtttvDhfFzLSdHgRwyTwxY4O8NGU7chDj8
+         f4bZ03C3g4qL8q2BLeGDTNX177nz6l95QT6+543cdbMya/Xs7VrJW9kQ1wmoVmOOuD8G
+         gngg==
+X-Gm-Message-State: AOAM5303VzU5cdssXbiP8AABbR9GGD1XJldSPu3U82Qwe/Xnkf6mLFJr
+        pl7cv1ueJCap/r+pdHGeQokkHkmh
+X-Google-Smtp-Source: ABdhPJxlAglX382X0f1/g7QbU/5vlbVEeMt5hUYKqbYmx+IOUtoIvXwQrWvqL0CtYA5XKDqGmt264A==
+X-Received: by 2002:a17:90a:454f:: with SMTP id r15mr9530287pjm.6.1594453657844;
+        Sat, 11 Jul 2020 00:47:37 -0700 (PDT)
+Received: from localhost ([89.208.244.139])
+        by smtp.gmail.com with ESMTPSA id g8sm7823345pgr.70.2020.07.11.00.47.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 11 Jul 2020 00:47:37 -0700 (PDT)
+Date:   Sat, 11 Jul 2020 15:47:33 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        "Chocron, Jonathan" <jonnyc@amazon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v1] PCI: controller: Remove duplicate error message
+Message-ID: <20200711074733.GD3112@nuc8i5>
+References: <20200526150954.4729-1-zhengdejin5@gmail.com>
+ <1d7703d5c29dc9371ace3645377d0ddd9c89be30.camel@amazon.com>
+ <20200527132005.GA7143@nuc8i5>
+ <1b54c08f759c101a8db162f4f62c6b6a8a455d3f.camel@amazon.com>
+ <CAL_JsqJWKfShzb6r=pXFv03T4L+nmNrCHvt+NkEy5EFuuD1HAA@mail.gmail.com>
+ <20200706155847.GA32050@e121166-lin.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <69bf7931-7df2-a0f8-8329-929ccb6a2c20@embeddedor.com>
+In-Reply-To: <20200706155847.GA32050@e121166-lin.cambridge.arm.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Gustavo
-Thanks for the feedback.
-I'll re-submit the patch.
-Many thanks
-john
-
-
-
-On Fri, Jul 10, 2020 at 03:44:53PM -0500, Gustavo A. R. Silva wrote:
+On Mon, Jul 06, 2020 at 04:58:47PM +0100, Lorenzo Pieralisi wrote:
+> On Tue, Jun 02, 2020 at 09:01:13AM -0600, Rob Herring wrote:
 > 
+> [...]
 > 
-> On 7/10/20 15:16, John Oldman wrote:
-> > clear below issues reported by checkpatch.pl:
+> > > The other 2 error cases as well don't print the resource name as far as
+> > > I recall (they will at least print the resource start/end).
 > > 
-> > CHECK: Using comparison to true is error prone
+> > Start/end are what are important for why either of these functions
+> > failed.
 > > 
-> > Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
-> > ---
-> >  drivers/staging/rtl8723bs/core/rtw_ieee80211.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-> > index ca98274ae390..d9bdd4fb9dc3 100644
-> > --- a/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-> > +++ b/drivers/staging/rtl8723bs/core/rtw_ieee80211.c
-> > @@ -363,8 +363,9 @@ int rtw_generate_ie(struct registry_priv *pregistrypriv)
-> >  	}
-> >  
-> >  	/* HT Cap. */
-> > -	if (((pregistrypriv->wireless_mode&WIRELESS_11_5N) || (pregistrypriv->wireless_mode&WIRELESS_11_24N))
-> > -		&& (pregistrypriv->ht_enable == true)) {
-> > +	if (((pregistrypriv->wireless_mode & WIRELESS_11_5N)
-> > +	      || (pregistrypriv->wireless_mode & WIRELESS_11_24N))
-> > +	      && (pregistrypriv->ht_enable)) {
-> 		 ^			  ^
-> The enclosing parentheses are unnecessary.
+> > But sure, we could add 'name' here. That's a separate patch IMO.
+
+Hi Lorenzo, Bob and Jonathan:                                                                                                     
+
+Thank you very much for helping me review this patch, I sent a new patch
+for print the resource name when the request memory region or remapping
+of configuration space fails. and it is here:
+https://patchwork.kernel.org/patch/11657801/
+
+BR,
+Dejin
+
 > 
-> Also, if you run checkpatch.pl on your patch, you'll see
-> the following:
+> I agree. In sum, I think it is OK to proceed with this patch, provided
+> we send follow-ups as discussed here, are we in agreement ?
 > 
-> CHECK: Logical continuations should be on the previous line
-> #12: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:367:
-> +	if (((pregistrypriv->wireless_mode & WIRELESS_11_5N)
-> +	      || (pregistrypriv->wireless_mode & WIRELESS_11_24N))
-> 
-> CHECK: Logical continuations should be on the previous line
-> #13: FILE: drivers/staging/rtl8723bs/core/rtw_ieee80211.c:368:
-> +	      || (pregistrypriv->wireless_mode & WIRELESS_11_24N))
-> +	      && (pregistrypriv->ht_enable)) {
-> 
-> 
-> It'd be nice to fix the above, too. :)
-> 
-> --
-> Gustavo
-> 
-> >  		/* todo: */
-> >  	}
-> >  
-> > 
+> Lorenzo
