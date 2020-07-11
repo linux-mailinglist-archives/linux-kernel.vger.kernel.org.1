@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A32321C391
+	by mail.lfdr.de (Postfix) with ESMTP id B047221C392
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 12:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgGKKKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 06:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        id S1727984AbgGKKKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 06:10:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726628AbgGKKJ6 (ORCPT
+        with ESMTP id S1726829AbgGKKKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 06:09:58 -0400
+        Sat, 11 Jul 2020 06:10:00 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF6DC08C5DD;
-        Sat, 11 Jul 2020 03:09:58 -0700 (PDT)
-Date:   Sat, 11 Jul 2020 10:09:56 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8C8C08C5DD;
+        Sat, 11 Jul 2020 03:10:00 -0700 (PDT)
+Date:   Sat, 11 Jul 2020 10:09:57 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594462196;
+        s=2020; t=1594462198;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IqU8VwYSibpYg3tWi+UGqKlAPhy4X+KgTLQHOPME3cw=;
-        b=p52kyfBZfmkDP1LukvzMwGr6qnEETnaUUCPJqABW2d388SjuQYhWynqGpygCtQldq7hMk3
-        ogAYNzeq8Ht8xOLjGEeNLkJG6wUovuwF4C1QZyDoO6JrK/wvnbf7YrLB3N8gDmFgCeY/z4
-        Tivi+XMVd/UkIVc71oTG53cqOqEkmJzUDsf88p1h6lImzdkvJ5fXFoZc7nfdwmygmoHgkR
-        n159QZ8uU7eFl4IFVYZPc+unyxXOA+RGenCykkZSILhvMVC1T/Xc7tmDGym4vdZpsaCRkF
-        LV/gjTjxf5F19t4R8QwyTQOKVc/sxJZHuDKj1hXtOBdZDydnGARZyaAeAszpNQ==
+        bh=XJhx+S97F1+veS6j8aEiNWX/YWDZ0ndlNss5kMBbCi4=;
+        b=rIGCq9FE88ToE9FL5iinp17I+dfNBLyP8qEcgTQfLtuXXPG0YsCXlf25mnShd77e08A5bP
+        kOJgq2rntLfjOAeRuM0IMWFS17W4mAaur85fBGZ4pDsSD2W6M+G6eThejGlrxqifebm+qd
+        ph7JN22KLVpaZfw+FLANJQATbYgSj6SYCH7ye0ykD1MUZGRLYKu8atd+xScb23ingm6Jf/
+        99sxHGyHMJ6I0e3bZCQpvStOVTqrglk/Qs5Mw9Ibhwlb3WjJP3gpmeWx+8OpaPVrYccLIx
+        QcK9jvbzpkNegIDgS/WDIwxJCpD+sjNWRSKl1ycZtJldCt6wHnISvSP8b7VckQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594462196;
+        s=2020e; t=1594462198;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IqU8VwYSibpYg3tWi+UGqKlAPhy4X+KgTLQHOPME3cw=;
-        b=3fsNbhrBnvJ2Yf8RPxsgbwwzVSPRR+ME6lB1YokZeH5RFosI3KF/QZGDXQNIno9grj4TMa
-        WdLioNfdiC4jgGBg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=XJhx+S97F1+veS6j8aEiNWX/YWDZ0ndlNss5kMBbCi4=;
+        b=UUOy9kadE1/+txeRoTsHZyFwXF0G+Gcif6H/jspygOkeUBqnDM3TMcswPjaW66LHfw1zTv
+        zotSCzwESlQnn2Dw==
+From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] sparc64: Fix asm/percpu.h build error
+Subject: [tip: locking/core] kcsan: Make KCSAN compatible with new IRQ state tracking
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200623083721.277992771@infradead.org>
-References: <20200623083721.277992771@infradead.org>
+        Marco Elver <elver@google.com>, Ingo Molnar <mingo@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200624113246.GA170324@elver.google.com>
+References: <20200624113246.GA170324@elver.google.com>
 MIME-Version: 1.0
-Message-ID: <159446219606.4006.16923768828083285770.tip-bot2@tip-bot2>
+Message-ID: <159446219784.4006.13350341271966090231.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,51 +61,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     48017e5481ce85ba52c4cff082cad5f021c4b413
-Gitweb:        https://git.kernel.org/tip/48017e5481ce85ba52c4cff082cad5f021c4b413
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Fri, 29 May 2020 22:40:58 +02:00
+Commit-ID:     248591f5d257a19c1cba9ab9da3536bfbc2f0149
+Gitweb:        https://git.kernel.org/tip/248591f5d257a19c1cba9ab9da3536bfbc2f0149
+Author:        Marco Elver <elver@google.com>
+AuthorDate:    Wed, 24 Jun 2020 13:32:46 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 10 Jul 2020 12:00:01 +02:00
+CommitterDate: Fri, 10 Jul 2020 12:00:00 +02:00
 
-sparc64: Fix asm/percpu.h build error
+kcsan: Make KCSAN compatible with new IRQ state tracking
 
-In order to break a header dependency between lockdep and task_struct,
-I need per-cpu stuff from lockdep.
+The new IRQ state tracking code does not honor lockdep_off(), and as
+such we should again permit tracing by using non-raw functions in
+core.c. Update the lockdep_off() comment in report.c, to reflect the
+fact there is still a potential risk of deadlock due to using printk()
+from scheduler code.
 
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: David S. Miller <davem@davemloft.net>
-Link: https://lkml.kernel.org/r/20200623083721.277992771@infradead.org
+Link: https://lkml.kernel.org/r/20200624113246.GA170324@elver.google.com
 ---
- arch/sparc/include/asm/percpu_64.h  | 2 ++
- arch/sparc/include/asm/trap_block.h | 2 ++
- 2 files changed, 4 insertions(+)
+ kernel/kcsan/core.c   |  5 ++---
+ kernel/kcsan/report.c |  9 +++++----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/sparc/include/asm/percpu_64.h b/arch/sparc/include/asm/percpu_64.h
-index 32ef6f0..a8786a4 100644
---- a/arch/sparc/include/asm/percpu_64.h
-+++ b/arch/sparc/include/asm/percpu_64.h
-@@ -4,7 +4,9 @@
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index 15f6794..732623c 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -397,8 +397,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 	}
  
- #include <linux/compiler.h>
+ 	if (!kcsan_interrupt_watcher)
+-		/* Use raw to avoid lockdep recursion via IRQ flags tracing. */
+-		raw_local_irq_save(irq_flags);
++		local_irq_save(irq_flags);
  
-+#ifndef BUILD_VDSO
- register unsigned long __local_per_cpu_offset asm("g5");
-+#endif
+ 	watchpoint = insert_watchpoint((unsigned long)ptr, size, is_write);
+ 	if (watchpoint == NULL) {
+@@ -539,7 +538,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 	kcsan_counter_dec(KCSAN_COUNTER_USED_WATCHPOINTS);
+ out_unlock:
+ 	if (!kcsan_interrupt_watcher)
+-		raw_local_irq_restore(irq_flags);
++		local_irq_restore(irq_flags);
+ out:
+ 	user_access_restore(ua_flags);
+ }
+diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
+index ac5f834..6b2fb1a 100644
+--- a/kernel/kcsan/report.c
++++ b/kernel/kcsan/report.c
+@@ -606,10 +606,11 @@ void kcsan_report(const volatile void *ptr, size_t size, int access_type,
+ 		goto out;
  
- #ifdef CONFIG_SMP
- 
-diff --git a/arch/sparc/include/asm/trap_block.h b/arch/sparc/include/asm/trap_block.h
-index 0f6d0c4..ace0d48 100644
---- a/arch/sparc/include/asm/trap_block.h
-+++ b/arch/sparc/include/asm/trap_block.h
-@@ -2,6 +2,8 @@
- #ifndef _SPARC_TRAP_BLOCK_H
- #define _SPARC_TRAP_BLOCK_H
- 
-+#include <linux/threads.h>
-+
- #include <asm/hypervisor.h>
- #include <asm/asi.h>
+ 	/*
+-	 * With TRACE_IRQFLAGS, lockdep's IRQ trace state becomes corrupted if
+-	 * we do not turn off lockdep here; this could happen due to recursion
+-	 * into lockdep via KCSAN if we detect a race in utilities used by
+-	 * lockdep.
++	 * Because we may generate reports when we're in scheduler code, the use
++	 * of printk() could deadlock. Until such time that all printing code
++	 * called in print_report() is scheduler-safe, accept the risk, and just
++	 * get our message out. As such, also disable lockdep to hide the
++	 * warning, and avoid disabling lockdep for the rest of the kernel.
+ 	 */
+ 	lockdep_off();
  
