@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A59821C14E
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 02:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158BF21C181
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 03:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgGKAxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 20:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726588AbgGKAxl (ORCPT
+        id S1728140AbgGKBAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 21:00:23 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:48885 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726606AbgGKA7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 20:53:41 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB26C08C5DC;
-        Fri, 10 Jul 2020 17:53:41 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id y13so3488045ybj.10;
-        Fri, 10 Jul 2020 17:53:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=8piC8eyWkOL4tSqhN4DCNafK9zjiUyujtEU/DF7mbTs=;
-        b=pCl4GdBCfP2RiUnHVj35H9f4FDBAwQzvdUXXFYFivrfp0vpvEyDh+2wlwVsm/iymIf
-         FMY9S+DEcPerZ9nLkEikt1LoWxWTatFCE2ccIVD54U4AYN+7Y0zypyrhoIgV+Q2KNsZd
-         W+zLQf1XHndAhWz9P+xDCS4+bqYAxBu7lZCmvPtlQ6HFk+yhx2iRFZYrbnvN/RpxmZDP
-         LAbD9MQhgC+EYyLBXXRbCBC1Karr993BBetNEdHRwI6aiOMUQknRgw508Q7IJBTbXlIp
-         4nvH7fpplQIzEFH240pJMsWB0HxY/EO2tKzK+GxYEExKPpYAuFHfVTPZgy4QfXhT91Nu
-         vHVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=8piC8eyWkOL4tSqhN4DCNafK9zjiUyujtEU/DF7mbTs=;
-        b=PJIKOv9+N3vLnEo96WEkZ7qC3gczautoUDQMoi/F3h+Gd86Hh0vuI3m+GQXOosx2jw
-         38YLbdb4Zdthk4+Dkc/+/JgKoJind4wqm5R9Z9TuRpHV5NadoLNkZjsa1HaGS6cX+jwh
-         9xAGLVkrc2SU2p1oMf0Zeif1qI7CYZrb0SLdr7NOEyRkiqlL1ogSpRCnpvgYLtABR+rC
-         4qrtjYi7cauWfV1wBWDih7eXeQaEOH9iHqLt4t/OllvnptAthLsF1Wl7a+LpO0oqQJ/0
-         JcO1yGgni/t/G7tFGjptLHHj5YrWkAG4coXZ9ddZTt6ZEjCb3/Q4FwT8W6d8+5hWoX7R
-         paNg==
-X-Gm-Message-State: AOAM5304QGHxl1uI6zHrIEpKRHAvcmb2LF01MifDf032LUpckHAN41yL
-        3707l3RzT1vo/zqh/G1h66JPWpDXJwdKjDcLM6bN7nnH
-X-Google-Smtp-Source: ABdhPJxIcZ6E5g4edXcDQA6TvUE0tBhjDPw9AR3J7Z9omst+GfasyAsfFtBIMzPe6HxKMFoVCWwACaDzayYq4vqjW+g=
-X-Received: by 2002:a25:880e:: with SMTP id c14mr122297056ybl.376.1594428820878;
- Fri, 10 Jul 2020 17:53:40 -0700 (PDT)
+        Fri, 10 Jul 2020 20:59:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U2KGAZr_1594429139;
+Received: from alexshi-test.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2KGAZr_1594429139)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 11 Jul 2020 08:58:59 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name
+Subject: [PATCH v16 00/22] per memcg lru_lock 
+Date:   Sat, 11 Jul 2020 08:58:34 +0800
+Message-Id: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 10 Jul 2020 19:53:30 -0500
-Message-ID: <CAH2r5ms400MbvDKxUg+Z8MsyVPwiL6ZEjZDUgXNwuQGR+yMYbA@mail.gmail.com>
-Subject: [GIT PULL] SMB3 Fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-dcb7fd82c75ee2d6e6f9d8cc71c52519ed52e258:
+The new version which bases on v5.8-rc4. Add 2 more patchs:
+'mm/thp: remove code path which never got into'
+'mm/thp: add tail pages into lru anyway in split_huge_page()'
+and modified 'mm/mlock: reorder isolation sequence during munlock'
 
-  Linux 5.8-rc4 (2020-07-05 16:20:22 -0700)
+Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
+lru lists, but now we had moved the lru lists into memcg for long time. Still
+using per node lru_lock is clearly unscalable, pages on each of memcgs have
+to compete each others for a whole lru_lock. This patchset try to use per
+lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
+it scalable for memcgs and get performance gain.
 
-are available in the Git repository at:
+Currently lru_lock still guards both lru list and page's lru bit, that's ok.
+but if we want to use specific lruvec lock on the page, we need to pin down
+the page's lruvec/memcg during locking. Just taking lruvec lock first may be
+undermined by the page's memcg charge/migration. To fix this problem, we could
+take out the page's lru bit clear and use it as pin down action to block the
+memcg changes. That's the reason for new atomic func TestClearPageLRU.
+So now isolating a page need both actions: TestClearPageLRU and hold the
+lru_lock.
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.8-rc4-smb3-fixes
+The typical usage of this is isolate_migratepages_block() in compaction.c
+we have to take lru bit before lru lock, that serialized the page isolation
+in memcg page charge/migration which will change page's lruvec and new 
+lru_lock in it.
 
-for you to fetch changes up to a8dab63ea623610bb258d93649e30330dd1b7c8b:
+The above solution suggested by Johannes Weiner, and based on his new memcg 
+charge path, then have this patchset. (Hugh Dickins tested and contributed much
+code from compaction fix to general code polish, thanks a lot!).
 
-  cifs: update internal module version number (2020-07-09 10:07:09 -0500)
+The patchset includes 3 parts:
+1, some code cleanup and minimum optimization as a preparation.
+2, use TestCleanPageLRU as page isolation's precondition
+3, replace per node lru_lock with per memcg per node lru_lock
 
-----------------------------------------------------------------
-4 cifs/smb3 fixes: the three for stable fix problems found recently
-with change notification including a reference count leak
+Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
+containers on a 2s * 26cores * HT box with a modefied case:
+https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+With this patchset, the readtwice performance increased about 80%
+in concurrent containers.
 
-Regression test results:
-http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/367
-----------------------------------------------------------------
-Ronnie Sahlberg (1):
-      cifs: fix reference leak for tlink
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
 
-Steve French (3):
-      smb3: fix access denied on change notify request to some servers
-      smb3: fix unneeded error message on change notify
-      cifs: update internal module version number
+Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
 
-yangerkun (1):
-      cifs: remove the retry in cifs_poxis_lock_set
+Alex Shi (20):
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/page_idle: no unlikely double check for idle page counting
+  mm/compaction: correct the comments of compact_defer_shift
+  mm/compaction: rename compact_deferred as compact_should_defer
+  mm/thp: move lru_add_page_tail func to huge_memory.c
+  mm/thp: clean up lru_add_page_tail
+  mm/thp: remove code path which never got into
+  mm/thp: narrow lru locking
+  mm/memcg: add debug checking in lock_page_memcg
+  mm/swap: fold vm event PGROTATED into pagevec_move_tail_fn
+  mm/lru: move lru_lock holding in func lru_note_cost_page
+  mm/lru: move lock into lru_note_cost
+  mm/lru: introduce TestClearPageLRU
+  mm/thp: add tail pages into lru anyway in split_huge_page()
+  mm/compaction: do page isolation first in compaction
+  mm/mlock: reorder isolation sequence during munlock
+  mm/swap: serialize memcg changes during pagevec_lru_move_fn
+  mm/lru: replace pgdat lru_lock with lruvec lock
+  mm/lru: introduce the relock_page_lruvec function
+  mm/pgdat: remove pgdat lru_lock
 
- fs/cifs/cifsfs.h   |  2 +-
- fs/cifs/file.c     | 19 ++++++-------------
- fs/cifs/ioctl.c    |  9 ++++++++-
- fs/cifs/smb2misc.c |  8 ++++++--
- fs/cifs/smb2ops.c  |  2 +-
- 5 files changed, 22 insertions(+), 18 deletions(-)
+Hugh Dickins (2):
+  mm/vmscan: use relock for move_pages_to_lru
+  mm/lru: revise the comments of lru_lock
 
---
-Thanks,
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+ Documentation/admin-guide/cgroup-v1/memory.rst     |  21 +--
+ Documentation/trace/events-kmem.rst                |   2 +-
+ Documentation/vm/unevictable-lru.rst               |  22 +--
+ include/linux/compaction.h                         |   4 +-
+ include/linux/memcontrol.h                         |  98 +++++++++++
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/mmzone.h                             |   6 +-
+ include/linux/page-flags.h                         |   1 +
+ include/linux/swap.h                               |   4 +-
+ include/trace/events/compaction.h                  |   2 +-
+ mm/compaction.c                                    | 113 ++++++++----
+ mm/filemap.c                                       |   4 +-
+ mm/huge_memory.c                                   |  47 +++--
+ mm/memcontrol.c                                    |  71 +++++++-
+ mm/memory.c                                        |   3 -
+ mm/mlock.c                                         |  93 +++++-----
+ mm/mmzone.c                                        |   1 +
+ mm/page_alloc.c                                    |   1 -
+ mm/page_idle.c                                     |   8 -
+ mm/rmap.c                                          |   4 +-
+ mm/swap.c                                          | 189 ++++++++-------------
+ mm/swap_state.c                                    |   2 -
+ mm/vmscan.c                                        | 174 ++++++++++---------
+ mm/workingset.c                                    |   2 -
+ 25 files changed, 524 insertions(+), 365 deletions(-)
 
-Steve
+-- 
+1.8.3.1
+
