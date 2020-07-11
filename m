@@ -2,353 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525E721C5BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 20:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DC221C5B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 20:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbgGKSXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 14:23:11 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33385 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728640AbgGKSXD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 14:23:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594491780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=y8h94Bqz+BKftRH9Dx2xn18lhW8t9AdLeUZzkeRDIxw=;
-        b=K8lJiGnaIeTNVk/IqA3xncUg2ebTk/C1xmQOiPc44Z1bLAVpDV+WRqsGZCH9/9YdBazvQa
-        Txyup8eH714Z2fFdr0W75zXZvRNFsJEPn1jp2N6vXAfdq+1NvgoxW5wY9sadOk6JNCTSOI
-        EpXCMxzUG+6b5CLE2uGswKexjJ1pHhI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-450-1St-WQzEMG23PMApXIyeQw-1; Sat, 11 Jul 2020 14:22:56 -0400
-X-MC-Unique: 1St-WQzEMG23PMApXIyeQw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6DAC1800D42;
-        Sat, 11 Jul 2020 18:22:54 +0000 (UTC)
-Received: from llong.com (ovpn-112-135.rdu2.redhat.com [10.10.112.135])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 74A8F5D9CC;
-        Sat, 11 Jul 2020 18:22:53 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-arch@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH 2/2] locking/pvqspinlock: Optionally store lock holder cpu into lock
-Date:   Sat, 11 Jul 2020 14:21:28 -0400
-Message-Id: <20200711182128.29130-3-longman@redhat.com>
-In-Reply-To: <20200711182128.29130-1-longman@redhat.com>
-References: <20200711182128.29130-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S1728773AbgGKSVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 14:21:36 -0400
+Received: from mail-dm6nam11olkn2108.outbound.protection.outlook.com ([40.92.19.108]:19393
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728510AbgGKSVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Jul 2020 14:21:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X4LHSAfm3avZ8Nj2WQij35GiUzmEgl1UJApLY7iXJ/cHDBLJlk9k48Sp2052/8URrWKUCB7W59JhF9GvYS7cbXLM4YU+qC2MN2waCej2DNzKyzEyf3DMBpnH7cLgKSDkfHAuUYBZe5TxXDjbimno3mpunYy4oKsy4mSC63sfnCwXQHDb7wIWxUhulgApZZ+V5Mp2tECAuUCZghVEbnInCaHxPEtohaCI/QFEal+SjjMULw5PaQcIcjjwWLGLERa+BRoBWnwERWsoBytdLpI8eq2/7UBdzJLBgUl/WnLI4dXNNra2gkF22VAkCk9V6CcQq7kkP0n+tr6dG1fnvWaRVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OGriJv95yATnbS4sVrxygR5NyrbkkIytciwkZsldnyQ=;
+ b=WI7aJDK0T0N/zQAkBuEm1G4b7ItTuKSDFIKuh+EYOr5BKEwFGjQhx2xZbQjrxx3HJfqaMmtdibnAFUHMc9ffZL2iA2p/kvts4OMgo6eIX0EyUr7l+mqYweaINXn1MItqIHLJeppD6YxMqJhMT5zJVJqecK+KkYmDcyMLg3JXh0G1zpGnUslblG9176NLuL5hs4/sfOGdbHVOZ8uK6Q8AKSVC3/Zbm2o/NVZd3qR89XyrenMdLkWHkaqjhYsLQWJhEAfuy+z/LVT071Kr/x50mjzpbb7Aobxrn4Tk5ubWQ2LSKgMenq9uttULDw3Beif9Xf0dGYwjFp/mVInLDYuW+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DM6NAM11FT041.eop-nam11.prod.protection.outlook.com
+ (2a01:111:e400:fc4d::48) by
+ DM6NAM11HT091.eop-nam11.prod.protection.outlook.com (2a01:111:e400:fc4d::82)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Sat, 11 Jul
+ 2020 18:21:33 +0000
+Received: from BN6PR04MB0660.namprd04.prod.outlook.com
+ (2a01:111:e400:fc4d::43) by DM6NAM11FT041.mail.protection.outlook.com
+ (2a01:111:e400:fc4d::98) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend
+ Transport; Sat, 11 Jul 2020 18:21:33 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:5DD35D0466BA08A2D83EE7D50044417D79F1AC63B6B263F490182A05D10C926D;UpperCasedChecksum:AADE9ECD23B29ED177A5FF77E0E4428CB4AB2DBC8A49E0EA70C8F3A234350509;SizeAsReceived:9198;Count:49
+Received: from BN6PR04MB0660.namprd04.prod.outlook.com
+ ([fe80::b9c3:9bff:541d:f383]) by BN6PR04MB0660.namprd04.prod.outlook.com
+ ([fe80::b9c3:9bff:541d:f383%9]) with mapi id 15.20.3174.024; Sat, 11 Jul 2020
+ 18:21:33 +0000
+Subject: Re: [PATCH 05/11] media: exynos4-is: Improve support for sensors with
+ multiple pads
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     kyungmin.park@samsung.com, s.nawrocki@samsung.com,
+        mchehab@kernel.org, kgene@kernel.org, krzk@kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200426022650.10355-1-xc-racer2@live.ca>
+ <BN6PR04MB06604D29C9F66EB53FB17581A3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
+ <20200707181310.GE2621465@chromium.org>
+From:   Jonathan Bakker <xc-racer2@live.ca>
+Message-ID: <BN6PR04MB0660ECFE03B17B96FB3BAC34A3620@BN6PR04MB0660.namprd04.prod.outlook.com>
+Date:   Sat, 11 Jul 2020 11:21:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+In-Reply-To: <20200707181310.GE2621465@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW2PR2101CA0008.namprd21.prod.outlook.com
+ (2603:10b6:302:1::21) To BN6PR04MB0660.namprd04.prod.outlook.com
+ (2603:10b6:404:d9::21)
+X-Microsoft-Original-Message-ID: <bbaa5e62-2ae6-9e57-b9e9-693c0e0da5a7@live.ca>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2001:569:fb68:9c00:8067:f823:1e15:7520] (2001:569:fb68:9c00:8067:f823:1e15:7520) by MW2PR2101CA0008.namprd21.prod.outlook.com (2603:10b6:302:1::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.4 via Frontend Transport; Sat, 11 Jul 2020 18:21:31 +0000
+X-Microsoft-Original-Message-ID: <bbaa5e62-2ae6-9e57-b9e9-693c0e0da5a7@live.ca>
+X-TMN:  [q/mKHsnjZdljbYxyaYAKYkVav2cdtsDW8y4dWM0Ra+18p+DChneRoElNyr+2jD18]
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 49
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: df9210bd-e2b8-49bc-3140-08d825c73d85
+X-MS-TrafficTypeDiagnostic: DM6NAM11HT091:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SEN/cA2rVw4/uaSqCGyfAGsv3GWIj0FD69h4PzP+NuozgK5dDuAXCjjz+AwCWAbB/6bwW+0PfBcZ3K4An0THNT0eRgm/T2uzmAaePxt9O+aBqUZSMWoI+2JAoTuPMO/meFyI1wDJ1jfR3CsKvY5BGPnJIkvH46KXeJFJEMobBLgN8vzPKcDUlmC9C1JxIfnLAmGDdb9wXZWtYQkdq2h5aw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR04MB0660.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
+X-MS-Exchange-AntiSpam-MessageData: Zgeg5C4ndLZhm90nEU5CatEExnlI7KEpHOr2AvWkKgdNoxhE+ws+dn5j1bEo4lv92dkQ3BzdXNXEGwTTi4aqv7B9kvEgZxpY+OYSDNNhryJZnYMw9u77YEKmH43iULwbTE8N4E4aJWWDkd+yLXc+FGUFxsu3JlYjwI248G0HaMqlIKyO0L+T/hWC86yjo8XQ+2dJgqI5T19MEzz74QWutg==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: df9210bd-e2b8-49bc-3140-08d825c73d85
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2020 18:21:33.7492
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT041.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6NAM11HT091
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous patch enables native qspinlock to store lock holder cpu
-number into the lock word when the lock is acquired via the slowpath.
-Since PV qspinlock uses atomic unlock, allowing the fastpath and
-slowpath to put different values into the lock word will further slow
-down the performance. This is certainly undesirable.
+Hi Tomasz,
 
-The only way we can do that without too much performance impact is to
-make fastpath and slowpath put in the same value. Still there is a slight
-performance overhead in the additional access to a percpu variable in the
-fastpath as well as the less optimized x86-64 PV qspinlock unlock path.
+On 2020-07-07 11:13 a.m., Tomasz Figa wrote:
+> Hi Jonathan,
+> 
+> On Sat, Apr 25, 2020 at 07:26:44PM -0700, Jonathan Bakker wrote:
+>> Commit 1c9f5bd7cb8a ("[media] s5p-fimc: Add support for sensors with
+>> multiple pads") caught the case where a sensor with multiple pads was
+>> connected via CSIS, but missed the case where the sensor was directly
+>> connected to the FIMC.
+>>
+>> This still assumes that the last pad of a sensor is the source.
+>>
+>> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
+>> ---
+>>  drivers/media/platform/exynos4-is/media-dev.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+> 
+> Thank you for the patch. Please see my comments inline.
+> 
+>> diff --git a/drivers/media/platform/exynos4-is/media-dev.c b/drivers/media/platform/exynos4-is/media-dev.c
+>> index 5c32abc7251b..b38445219c72 100644
+>> --- a/drivers/media/platform/exynos4-is/media-dev.c
+>> +++ b/drivers/media/platform/exynos4-is/media-dev.c
+>> @@ -991,7 +991,8 @@ static int fimc_md_create_links(struct fimc_md *fmd)
+>>  
+>>  		case FIMC_BUS_TYPE_ITU_601...FIMC_BUS_TYPE_ITU_656:
+>>  			source = &sensor->entity;
+>> -			pad = 0;
+>> +			/* Assume the last pad is the source */
+>> +			pad = sensor->entity.num_pads - 1;
+> 
+> Is 0 really any worse than num_pads - 1? This sounds like quite an ugly
+> hack.
+> 
+> Could you iterate over the pads of the sensor entity and explicitly find
+> a source pad instead?
 
-A new config option QUEUED_SPINLOCKS_CPUINFO is now added to enable
-distros to decide if they want to enable lock holder cpu information in
-the lock itself for both native and PV qspinlocks across both fastpath
-and slowpath. If this option is not configureed, only native qspinlocks
-in the slowpath will put the lock holder cpu information in the lock
-word.
+Yes, iterating would work better.  This comes from when I was trying to integrate
+video-mux, before I realized I could connect multiple sensors.  I will drop this patch
+from v2 as it's not necessary.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- arch/Kconfig                              | 12 +++++++
- arch/x86/include/asm/qspinlock_paravirt.h |  9 +++--
- include/asm-generic/qspinlock.h           | 13 +++++--
- kernel/locking/qspinlock.c                |  5 ++-
- kernel/locking/qspinlock_paravirt.h       | 41 ++++++++++++-----------
- 5 files changed, 53 insertions(+), 27 deletions(-)
+> 
+> Best regards,
+> Tomasz
+> 
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 8cc35dc556c7..1e6fea12be41 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -954,6 +954,18 @@ config LOCK_EVENT_COUNTS
- 	  the chance of application behavior change because of timing
- 	  differences. The counts are reported via debugfs.
- 
-+config QUEUED_SPINLOCKS_CPUINFO
-+	bool "Store lock holder cpu information into queued spinlocks"
-+	depends on QUEUED_SPINLOCKS
-+	help
-+	  Enable queued spinlocks to encode (by adding 2) the lock holder
-+	  cpu number into the least significant 8 bits of the 32-bit
-+	  lock word as long as the cpu number is not larger than 252.
-+	  A value of 1 will be stored for larger cpu numbers. Having the
-+	  lock holder cpu information in the lock helps debugging and
-+	  crash dump analysis. There might be a very slight performance
-+	  overhead in enabling this option.
-+
- # Select if the architecture has support for applying RELR relocations.
- config ARCH_HAS_RELR
- 	bool
-diff --git a/arch/x86/include/asm/qspinlock_paravirt.h b/arch/x86/include/asm/qspinlock_paravirt.h
-index 159622ee0674..9897aedea660 100644
---- a/arch/x86/include/asm/qspinlock_paravirt.h
-+++ b/arch/x86/include/asm/qspinlock_paravirt.h
-@@ -7,8 +7,11 @@
-  * registers. For i386, however, only 1 32-bit register needs to be saved
-  * and restored. So an optimized version of __pv_queued_spin_unlock() is
-  * hand-coded for 64-bit, but it isn't worthwhile to do it for 32-bit.
-+ *
-+ * Accessing percpu variable when QUEUED_SPINLOCKS_CPUINFO is defined is
-+ * tricky. So disable this optimization for now.
-  */
--#ifdef CONFIG_64BIT
-+#if defined(CONFIG_64BIT) && !defined(CONFIG_QUEUED_SPINLOCKS_CPUINFO)
- 
- PV_CALLEE_SAVE_REGS_THUNK(__pv_queued_spin_unlock_slowpath);
- #define __pv_queued_spin_unlock	__pv_queued_spin_unlock
-@@ -26,13 +29,13 @@ PV_CALLEE_SAVE_REGS_THUNK(__pv_queued_spin_unlock_slowpath);
-  *
-  *	if (likely(lockval == _Q_LOCKED_VAL))
-  *		return;
-- *	pv_queued_spin_unlock_slowpath(lock, lockval);
-+ *	__pv_queued_spin_unlock_slowpath(lock, lockval);
-  * }
-  *
-  * For x86-64,
-  *   rdi = lock              (first argument)
-  *   rsi = lockval           (second argument)
-- *   rdx = internal variable (set to 0)
-+ *   rdx = internal variable for cmpxchg
-  */
- asm    (".pushsection .text;"
- 	".globl " PV_UNLOCK ";"
-diff --git a/include/asm-generic/qspinlock.h b/include/asm-generic/qspinlock.h
-index fde943d180e0..d5badc1e544e 100644
---- a/include/asm-generic/qspinlock.h
-+++ b/include/asm-generic/qspinlock.h
-@@ -12,6 +12,13 @@
- 
- #include <asm-generic/qspinlock_types.h>
- 
-+#ifdef CONFIG_QUEUED_SPINLOCKS_CPUINFO
-+DECLARE_PER_CPU_READ_MOSTLY(u8, pcpu_lockval);
-+#define QUEUED_LOCKED_VAL	this_cpu_read(pcpu_lockval)
-+#else
-+#define QUEUED_LOCKED_VAL	_Q_LOCKED_VAL
-+#endif
-+
- /**
-  * queued_spin_is_locked - is the spinlock locked?
-  * @lock: Pointer to queued spinlock structure
-@@ -20,7 +27,7 @@
- static __always_inline int queued_spin_is_locked(struct qspinlock *lock)
- {
- 	/*
--	 * Any !0 state indicates it is locked, even if _Q_LOCKED_VAL
-+	 * Any !0 state indicates it is locked, even if QUEUED_LOCKED_VAL
- 	 * isn't immediately observable.
- 	 */
- 	return atomic_read(&lock->val);
-@@ -62,7 +69,7 @@ static __always_inline int queued_spin_trylock(struct qspinlock *lock)
- 	if (unlikely(val))
- 		return 0;
- 
--	return likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL));
-+	return likely(atomic_try_cmpxchg_acquire(&lock->val, &val, QUEUED_LOCKED_VAL));
- }
- 
- extern void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val);
-@@ -75,7 +82,7 @@ static __always_inline void queued_spin_lock(struct qspinlock *lock)
- {
- 	u32 val = 0;
- 
--	if (likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL)))
-+	if (likely(atomic_try_cmpxchg_acquire(&lock->val, &val, QUEUED_LOCKED_VAL)))
- 		return;
- 
- 	queued_spin_lock_slowpath(lock, val);
-diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
-index 13feefa85db4..5d297901dda5 100644
---- a/kernel/locking/qspinlock.c
-+++ b/kernel/locking/qspinlock.c
-@@ -106,7 +106,10 @@ struct qnode {
-  * PV doubles the storage and uses the second cacheline for PV state.
-  */
- static DEFINE_PER_CPU_ALIGNED(struct qnode, qnodes[MAX_NODES]);
--static DEFINE_PER_CPU_READ_MOSTLY(u8, pcpu_lockval) = _Q_LOCKED_VAL;
-+DEFINE_PER_CPU_READ_MOSTLY(u8, pcpu_lockval) = _Q_LOCKED_VAL;
-+#ifdef CONFIG_QUEUED_SPINLOCKS_CPUINFO
-+EXPORT_PER_CPU_SYMBOL(pcpu_lockval);
-+#endif
- 
- /*
-  * We must be able to distinguish between no-tail and the tail at 0:0,
-diff --git a/kernel/locking/qspinlock_paravirt.h b/kernel/locking/qspinlock_paravirt.h
-index e84d21aa0722..d198916944c6 100644
---- a/kernel/locking/qspinlock_paravirt.h
-+++ b/kernel/locking/qspinlock_paravirt.h
-@@ -21,7 +21,7 @@
-  * native_queued_spin_unlock().
-  */
- 
--#define _Q_SLOW_VAL	(3U << _Q_LOCKED_OFFSET)
-+#define _Q_SLOW_VAL	(255U << _Q_LOCKED_OFFSET)
- 
- /*
-  * Queue Node Adaptive Spinning
-@@ -80,6 +80,8 @@ struct pv_node {
- #define queued_spin_trylock(l)	pv_hybrid_queued_unfair_trylock(l)
- static inline bool pv_hybrid_queued_unfair_trylock(struct qspinlock *lock)
- {
-+	u8 lockval = QUEUED_LOCKED_VAL;
-+
- 	/*
- 	 * Stay in unfair lock mode as long as queued mode waiters are
- 	 * present in the MCS wait queue but the pending bit isn't set.
-@@ -88,7 +90,7 @@ static inline bool pv_hybrid_queued_unfair_trylock(struct qspinlock *lock)
- 		int val = atomic_read(&lock->val);
- 
- 		if (!(val & _Q_LOCKED_PENDING_MASK) &&
--		   (cmpxchg_acquire(&lock->locked, 0, _Q_LOCKED_VAL) == 0)) {
-+		   (cmpxchg_acquire(&lock->locked, 0, lockval) == 0)) {
- 			lockevent_inc(pv_lock_stealing);
- 			return true;
- 		}
-@@ -112,15 +114,15 @@ static __always_inline void set_pending(struct qspinlock *lock)
- }
- 
- /*
-- * The pending bit check in pv_queued_spin_steal_lock() isn't a memory
-+ * The pending bit check in pv_hybrid_queued_unfair_trylock() isn't a memory
-  * barrier. Therefore, an atomic cmpxchg_acquire() is used to acquire the
-  * lock just to be sure that it will get it.
-  */
--static __always_inline int trylock_clear_pending(struct qspinlock *lock)
-+static __always_inline int trylock_clear_pending(struct qspinlock *lock, u8 lockval)
- {
- 	return !READ_ONCE(lock->locked) &&
- 	       (cmpxchg_acquire(&lock->locked_pending, _Q_PENDING_VAL,
--				_Q_LOCKED_VAL) == _Q_PENDING_VAL);
-+				lockval) == _Q_PENDING_VAL);
- }
- #else /* _Q_PENDING_BITS == 8 */
- static __always_inline void set_pending(struct qspinlock *lock)
-@@ -128,7 +130,7 @@ static __always_inline void set_pending(struct qspinlock *lock)
- 	atomic_or(_Q_PENDING_VAL, &lock->val);
- }
- 
--static __always_inline int trylock_clear_pending(struct qspinlock *lock)
-+static __always_inline int trylock_clear_pending(struct qspinlock *lock, u8 lockval)
- {
- 	int val = atomic_read(&lock->val);
- 
-@@ -142,7 +144,7 @@ static __always_inline int trylock_clear_pending(struct qspinlock *lock)
- 		 * Try to clear pending bit & set locked bit
- 		 */
- 		old = val;
--		new = (val & ~_Q_PENDING_MASK) | _Q_LOCKED_VAL;
-+		new = (val & ~_Q_PENDING_MASK) | lockval;
- 		val = atomic_cmpxchg_acquire(&lock->val, old, new);
- 
- 		if (val == old)
-@@ -280,9 +282,8 @@ static void pv_init_node(struct mcs_spinlock *node)
- 	struct pv_node *pn = (struct pv_node *)node;
- 
- 	BUILD_BUG_ON(sizeof(struct pv_node) > sizeof(struct qnode));
--
--	pn->cpu = smp_processor_id();
- 	pn->state = vcpu_running;
-+	pn->cpu = smp_processor_id();
- }
- 
- /*
-@@ -406,6 +407,7 @@ pv_wait_head_or_lock(struct qspinlock *lock, struct mcs_spinlock *node)
- 	struct qspinlock **lp = NULL;
- 	int waitcnt = 0;
- 	int loop;
-+	u8 lockval = QUEUED_LOCKED_VAL;
- 
- 	/*
- 	 * If pv_kick_node() already advanced our state, we don't need to
-@@ -432,7 +434,7 @@ pv_wait_head_or_lock(struct qspinlock *lock, struct mcs_spinlock *node)
- 		 */
- 		set_pending(lock);
- 		for (loop = SPIN_THRESHOLD; loop; loop--) {
--			if (trylock_clear_pending(lock))
-+			if (trylock_clear_pending(lock, lockval))
- 				goto gotlock;
- 			cpu_relax();
- 		}
-@@ -459,7 +461,7 @@ pv_wait_head_or_lock(struct qspinlock *lock, struct mcs_spinlock *node)
- 				 * Change the lock value back to _Q_LOCKED_VAL
- 				 * and unhash the table.
- 				 */
--				WRITE_ONCE(lock->locked, _Q_LOCKED_VAL);
-+				WRITE_ONCE(lock->locked, lockval);
- 				WRITE_ONCE(*lp, NULL);
- 				goto gotlock;
- 			}
-@@ -477,12 +479,10 @@ pv_wait_head_or_lock(struct qspinlock *lock, struct mcs_spinlock *node)
- 
- 	/*
- 	 * The cmpxchg() or xchg() call before coming here provides the
--	 * acquire semantics for locking. The dummy ORing of _Q_LOCKED_VAL
--	 * here is to indicate to the compiler that the value will always
--	 * be nozero to enable better code optimization.
-+	 * acquire semantics for locking.
- 	 */
- gotlock:
--	return (u32)(atomic_read(&lock->val) | _Q_LOCKED_VAL);
-+	return (u32)atomic_read(&lock->val);
- }
- 
- /*
-@@ -495,9 +495,10 @@ __pv_queued_spin_unlock_slowpath(struct qspinlock *lock, u8 locked)
- 	struct pv_node *node;
- 
- 	if (unlikely(locked != _Q_SLOW_VAL)) {
--		WARN(!debug_locks_silent,
-+		WARN_ONCE(!debug_locks_silent,
- 		     "pvqspinlock: lock 0x%lx has corrupted value 0x%x!\n",
- 		     (unsigned long)lock, atomic_read(&lock->val));
-+		smp_store_release(&lock->locked, 0);
- 		return;
- 	}
- 
-@@ -546,15 +547,15 @@ __pv_queued_spin_unlock_slowpath(struct qspinlock *lock, u8 locked)
- #ifndef __pv_queued_spin_unlock
- __visible void __pv_queued_spin_unlock(struct qspinlock *lock)
- {
--	u8 locked;
--
- 	/*
- 	 * We must not unlock if SLOW, because in that case we must first
- 	 * unhash. Otherwise it would be possible to have multiple @lock
- 	 * entries, which would be BAD.
- 	 */
--	locked = cmpxchg_release(&lock->locked, _Q_LOCKED_VAL, 0);
--	if (likely(locked == _Q_LOCKED_VAL))
-+	u8 lockval = QUEUED_LOCKED_VAL;
-+	u8 locked = cmpxchg_release(&lock->locked, lockval, 0);
-+
-+	if (likely(locked == lockval))
- 		return;
- 
- 	__pv_queued_spin_unlock_slowpath(lock, locked);
--- 
-2.18.1
-
+Thanks,
+Jonathan
