@@ -2,83 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5BC21C1E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 05:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B2121C1EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 05:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgGKDbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 23:31:49 -0400
-Received: from mga17.intel.com ([192.55.52.151]:35138 "EHLO mga17.intel.com"
+        id S1727847AbgGKDhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 23:37:16 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:53068 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726262AbgGKDbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 23:31:48 -0400
-IronPort-SDR: og6m0CsWNBUNmLM7e5Jx93pdS6K2tQaDpTqVPU3khvm7qDVGB1w/juQoFG5mDo46+4UrmsxOc9
- EQK68zCV3d2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9678"; a="128400296"
-X-IronPort-AV: E=Sophos;i="5.75,338,1589266800"; 
-   d="scan'208";a="128400296"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jul 2020 20:31:48 -0700
-IronPort-SDR: R27/5kAH4jxB5nKGWxbKWAGF3DUoXqlbh9j5uNEDeZAP60+BAeYUJ23ptSwG5IhclO9CNjOiCJ
- Rxems7J6o5vw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,338,1589266800"; 
-   d="scan'208";a="316792120"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Jul 2020 20:31:47 -0700
-Date:   Fri, 10 Jul 2020 20:31:47 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Hulk Robot <hulkci@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] device-dax: make dev_dax_kmem_probe() static
-Message-ID: <20200711033147.GA3008823@iweiny-DESK2.sc.intel.com>
-References: <20200707112340.9178-1-weiyongjun1@huawei.com>
+        id S1726829AbgGKDhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Jul 2020 23:37:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594438635; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=WYsZHFg0/evTrJYo5esTCdWPLshbWMTRzSMvct1drRA=; b=ljmlzhBPzPu7036pZqKfVGtWIPQHjF3UzEf27Dqy5kndgWwQutJNzw73Bw+AS0wSgSWdN+Ft
+ sV1Ae5Q7t9VDDvAyKJtnLguilNrOxk3SV4Fm8ho05lRaWVFmeKEz2A5j7QzBflTnqyIAPdqQ
+ ib2FI71Xo3mhUnmnPzBoJ6ENBrY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f0933ea427cd55766727867 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 11 Jul 2020 03:37:14
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2A91AC43387; Sat, 11 Jul 2020 03:37:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from Pillair (unknown [183.83.71.149])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2C9E3C433C6;
+        Sat, 11 Jul 2020 03:37:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2C9E3C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
+From:   "Rakesh Pillai" <pillair@codeaurora.org>
+To:     "'Doug Anderson'" <dianders@chromium.org>
+Cc:     "'open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS'" 
+        <devicetree@vger.kernel.org>,
+        "'Evan Green'" <evgreen@chromium.org>,
+        "'Andy Gross'" <agross@kernel.org>,
+        "'Bjorn Andersson'" <bjorn.andersson@linaro.org>,
+        "'Rob Herring'" <robh+dt@kernel.org>,
+        "'linux-arm-msm'" <linux-arm-msm@vger.kernel.org>,
+        "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'Sibi Sankar'" <sibis@codeaurora.org>
+References: <1594286253-32244-1-git-send-email-pillair@codeaurora.org> <CAD=FV=XQy17ZuKdJXPH20uGTrEtPrDacDXAg+rTA96HBm6hVVw@mail.gmail.com>
+In-Reply-To: <CAD=FV=XQy17ZuKdJXPH20uGTrEtPrDacDXAg+rTA96HBm6hVVw@mail.gmail.com>
+Subject: RE: [PATCH] arm64: dts: qcom: sc7180: Add missing properties for Wifi node
+Date:   Sat, 11 Jul 2020 09:07:05 +0530
+Message-ID: <007701d65734$90039c80$b00ad580$@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200707112340.9178-1-weiyongjun1@huawei.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFjyE5VI4l7cbK/b4BghJEFxZssywLCt6GuqdDCWpA=
+Content-Language: en-us
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 07, 2020 at 07:23:40PM +0800, Wei Yongjun wrote:
-> sparse report warning as follows:
-> 
-> drivers/dax/kmem.c:22:5: warning:
->  symbol 'dev_dax_kmem_probe' was not declared. Should it be static?
-> 
-> dev_dax_kmem_probe() is not used outside of kmem.c, so marks
-> it static.
-> 
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
-Seems ok,
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> -----Original Message-----
+> From: Doug Anderson <dianders@chromium.org>
+> Sent: Friday, July 10, 2020 1:36 AM
+> To: Rakesh Pillai <pillair@codeaurora.org>
+> Cc: open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+> <devicetree@vger.kernel.org>; Evan Green <evgreen@chromium.org>;
+> Andy Gross <agross@kernel.org>; Bjorn Andersson
+> <bjorn.andersson@linaro.org>; Rob Herring <robh+dt@kernel.org>; linux-
+> arm-msm <linux-arm-msm@vger.kernel.org>; LKML <linux-
+> kernel@vger.kernel.org>; Sibi Sankar <sibis@codeaurora.org>
+> Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Add missing properties =
+for
+> Wifi node
+>=20
+> Hi,
+>=20
+> On Thu, Jul 9, 2020 at 2:18 AM Rakesh Pillai <pillair@codeaurora.org> =
+wrote:
+> >
+> > The wlan firmware memory is statically mapped in
+> > the Trusted Firmware, hence the wlan driver does
+> > not need to map/unmap this region dynamically.
+> >
+> > Hence add the property to indicate the wlan driver
+> > to not map/unamp the firmware memory region
+> > dynamically.
+> >
+> > Also add the chain1 voltage supply for wlan.
+> >
+> > Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> > ---
+> > This patch is created on top of the change by
+> > Douglas Anderson.
+> > https://lkml.org/lkml/2020/6/25/817
+> >
+> > Also the dt-bindings for the chain1 voltage supply
+> > is added by the below patch series:
+> > =
+https://patchwork.kernel.org/project/linux-wireless/list/?series=3D309137=
 
-> ---
->  drivers/dax/kmem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-> index 275aa5f87399..87e271668170 100644
-> --- a/drivers/dax/kmem.c
-> +++ b/drivers/dax/kmem.c
-> @@ -19,7 +19,7 @@ static const char *kmem_name;
->  /* Set if any memory will remain added when the driver will be unloaded. */
->  static bool any_hotremove_failed;
->  
-> -int dev_dax_kmem_probe(struct device *dev)
-> +static int dev_dax_kmem_probe(struct device *dev)
->  {
->  	struct dev_dax *dev_dax = to_dev_dax(dev);
->  	struct resource *res = &dev_dax->region->res;
-> 
+> > ---
+> >  arch/arm64/boot/dts/qcom/sc7180-idp.dts | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> > index 472f7f4..4c64bc1 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> > @@ -391,10 +391,12 @@
+> >
+> >  &wifi {
+> >         status =3D "okay";
+> > +       qcom,msa-fixed-perm;
+>=20
+> At one point in time I thought +Sibi said that this wouldn't be needed
+> once the firmware was fixed.  ...afterwards you said that it was
+> needed for SSR (subsystem reset).  Would be good to get confirmation
+> from Sibi that this matches his understanding.
+
+Hi Doug,
+
+This is now needed as the firmware memory mapping was moved to Trusted =
+firmware.
+This region is now statically mapped to avoid access from driver.
+
+>=20
+>=20
+> >         vdd-0.8-cx-mx-supply =3D <&vreg_l9a_0p6>;
+> >         vdd-1.8-xo-supply =3D <&vreg_l1c_1p8>;
+> >         vdd-1.3-rfa-supply =3D <&vreg_l2c_1p3>;
+> >         vdd-3.3-ch0-supply =3D <&vreg_l10c_3p3>;
+> > +       vdd-3.3-ch1-supply =3D <&vreg_l11c_3p3>;
+> >         wifi-firmware {
+> >                 iommus =3D <&apps_smmu 0xc2 0x1>;
+> >         };
+>=20
+> Other than the one question this looks good to me.
+>=20
+> -Doug
+
