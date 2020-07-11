@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2D921C1DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 05:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6ADA21C1E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 05:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgGKDZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 23:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50660 "EHLO
+        id S1727795AbgGKDal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 23:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbgGKDZB (ORCPT
+        with ESMTP id S1726707AbgGKDal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 23:25:01 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC8D8C08C5DD
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 20:25:00 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id g139so4255687lfd.10
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 20:25:00 -0700 (PDT)
+        Fri, 10 Jul 2020 23:30:41 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18739C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 20:30:41 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id a11so6833717ilk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 20:30:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8CSoNKqf2/F0Tp9hw/Q3tOqmnKdqJohhTGwykA5078E=;
-        b=UI+5RvQlJ7Y4QrAO5eQmJs5SxFTK/evUap+folss4m3gXvNyiErzjs9cgqLbt1+WBw
-         jFy/83zKBi7lPpxgS651R89gffrCvA3YIJYDUiy4T5l8u91TUmrWw6Du5owAiBX1V5nF
-         M+QeZqFW4xn2glgMfN9eg/zIoq7cq38ThTMTnNkpNmICH6KQEiiO5aRdFkfY2mkwgceQ
-         oHiWi8S0q3tMRPAZmvpcTtzIWvwGh09/4B29R7CSsNMu4rWnN8kjhfojUi3aVnBfwBkX
-         qqTGf+nMWjW4wtY3Xq1+aAGAQNQ6Rqs0JZeaWIEWgI59Mf+0Kpinv/MU76AihdXgclva
-         F1hA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1xGtSn3GzgnnxnxHEMkxu4A5bFvBvCATbzs0GEZtET8=;
+        b=mrGcGC/l0RixNmVPT1JtgeSd/s2/az05bb9aOnqtWrfEKdYkAGtyRInDvcykJshFMg
+         B8df7EQ5c5ATVRYIWo6py9ViEZ/c3C/fECBpvukN90WABTHKicbWeG2hLJw2RK1me/Sj
+         FvClA1ssJz+sv3qxycUsjDQjckpzV3OqEN7wEcYyTl9T42VW0sMpxuVVx0k9Qu/qIY1G
+         PFB7RJ01gKqR81ohebqhB+TZ+RmGG2O804JKPcDkNAn3Lypem3oWc2Zn2Fs/dF1nmvh9
+         cGAJk3Y+FZB+9gGSa6RYiDbLCObod+JBFOW3zzwJWcoHRlzaLpee7MyhkesDJQCuMOL9
+         vFVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8CSoNKqf2/F0Tp9hw/Q3tOqmnKdqJohhTGwykA5078E=;
-        b=dL0hpyTrSnRDy727kgZehl07zfRcZ9RO7Gou/hz0Q/N/4z9XFxKx9VmO06ZVHA+vt8
-         Xqn3XFqacApnqn2DE+Zo2V/JciwUCBYIHS3P65uCuJS7/Yo7WqA/S8jbGQJW4OBAkyk/
-         BRRfICBf7+NtKz7JOQiykOD+CChiGuB/m7tnopi5W3BBdG7cr5bBGNN70/lLdmQHi03A
-         R55+3XHHQiGQxb3HeSkBLmkHdzCYL/Aal2iA4vnvp9xo2zchYdnB2x8I79MdY6jmd+GD
-         FX5q8i7DIC6h4B7eneNexASKM2OvHLASOz7wtpeuSxQ1BGV3epriJG62KsLpkOnQaB/n
-         AnTQ==
-X-Gm-Message-State: AOAM532ZaXa+VRvId34EvLBdtLqDX/x4HNIeWpE2qZ31ecuIZ9ZhSPJo
-        ogFtav9yQFcLlngbPVPWSrXXFCq8MUBPvhxC0qhDCA==
-X-Google-Smtp-Source: ABdhPJy0KtX0wD02BqHvdV4WP9jlGiyLFJKoXzUPvHEy9ODhEGagwn6D7dnj57cxdy/l3dIUlSkjrETKVulpVw/1HWQ=
-X-Received: by 2002:a05:6512:482:: with SMTP id v2mr44598950lfq.3.1594437899004;
- Fri, 10 Jul 2020 20:24:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1xGtSn3GzgnnxnxHEMkxu4A5bFvBvCATbzs0GEZtET8=;
+        b=Aa6DcjjkBtC5fiiAcrEI3YWdz06B5XK1vJNSblRU6rXG6zaJaz7K+YWPDU2X0FI8xd
+         /vusVtgAR+5WDsxQrJCglxNUhA0/XKxB4BIA7Y1SxlF8HFh53EE5NkqsxbZtukZxKXTH
+         chGsm1uHJIwJV9MkrqEcSOa7/LjTZ/lL8s7HEyC+b1uz+9LOsv8XIBB5J02rvwDYXNpJ
+         ei3tu6KErLTPBjwZ7jAvnO9xAwT6/qmj2lxWIDUal9adNWGB1F4M8bcwOCD6BFn9K+WC
+         2NiaDibTePPJU2jWYNAzSWUPVIYtEQODlegrjVEsIfLDEkdwN5q7xZ/F3RBeP2QNiWvG
+         gyCA==
+X-Gm-Message-State: AOAM533/bnee5Nuv3dELBowiB9XZ6e9I2BFDQ/S73UJzMdH+wzKXKlzT
+        h7QAe2+S9qiM5QdXyDMWtvI=
+X-Google-Smtp-Source: ABdhPJx2W29CCiPvn5uJf9cHVpmqBwFUZF7Zl/9tjYANUYzAmy7EHSWaFYfLC7lWWSDqSfSLr7Gb7g==
+X-Received: by 2002:a92:cf42:: with SMTP id c2mr9952649ilr.13.1594438240262;
+        Fri, 10 Jul 2020 20:30:40 -0700 (PDT)
+Received: from Ryzen-9-3900X.localdomain ([107.152.99.41])
+        by smtp.gmail.com with ESMTPSA id v62sm4506808ila.37.2020.07.10.20.30.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 20:30:39 -0700 (PDT)
+Date:   Fri, 10 Jul 2020 20:30:36 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Sven Van Asbroeck <thesven73@gmail.com>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: sound/soc/codecs/zl38060.c:614:34: warning: unused variable
+ 'zl38_dt_ids'
+Message-ID: <20200711033036.GA4486@Ryzen-9-3900X.localdomain>
+References: <20200710024100.GA2055744@ubuntu-n2-xlarge-x86>
+ <20200710122459.GE5653@sirena.org.uk>
 MIME-Version: 1.0
-References: <20200711011459.1159929-1-shakeelb@google.com> <20200711023151.GA388137@carbon.lan>
-In-Reply-To: <20200711023151.GA388137@carbon.lan>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 10 Jul 2020 20:24:47 -0700
-Message-ID: <CALvZod7vYmGBdfsJFxR5ZN_Ot_Qe7v2kHHiMt_+VXKPbhWZqqw@mail.gmail.com>
-Subject: Re: [PATCH] mm: vmscan: consistent update to pgrefill
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Chris Down <chris@chrisdown.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710122459.GE5653@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 7:32 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Fri, Jul 10, 2020 at 06:14:59PM -0700, Shakeel Butt wrote:
-> > The vmstat pgrefill is useful together with pgscan and pgsteal stats to
-> > measure the reclaim efficiency. However vmstat's pgrefill is not updated
-> > consistently at system level. It gets updated for both global and memcg
-> > reclaim however pgscan and pgsteal are updated for only global reclaim.
-> > So, update pgrefill only for global reclaim. If someone is interested in
-> > the stats representing both system level as well as memcg level reclaim,
-> > then consult the root memcg's memory.stat instead of /proc/vmstat.
-> >
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
->
-> So you went into the opposite direction from the "previous version"
-> ( https://lkml.org/lkml/2020/5/7/1464 ) ?
->
+On Fri, Jul 10, 2020 at 01:24:59PM +0100, Mark Brown wrote:
+> On Thu, Jul 09, 2020 at 07:41:00PM -0700, Nathan Chancellor wrote:
+> 
+> > When CONFIG_SND_SOC_ZL38060 is y, MODULE_DEVICE_TABLE expands to nothing
+> > so zl38_dt_ids will be unused. This is a pretty common construct in the
+> > kernel and the only way I can think of to resolve this through the code
+> > is by adding __used annotations to all of these variables, which I think
+> > is overkill for this.
+> 
+> > Personally, I think this warning should be downgraded to W=2, thoughts?
+> 
+> We've had that warning available for ever, we shouldn't need to disable
+> it now.  I had thought there was supposed to be magic which caused
+> of_match_ptr() to make things look referenced when !OF but don't seem to
+> actually see any sign of it.  The other thing is to just have ifdefs
+> around the table.
 
-Yes because we already had those stats in the root memcg and exposing
-root memcg's memory.stat resolved the issue.
+While it has been available, it's been hidden behind W=1, which is now
+default on for 0day.
 
-> Acked-by: Roman Gushchin <guro@fb.com>
+Sure, you could hide it behind an ifdef for either CONFIG_OF or MODULE
+(since you could build this as a module with CONFIG_OF disabled).
 
-Thanks a lot.
+I just figured this would be something frowned upon but if that is how
+you would prefer it to be fixed, then I have no objections to it.
+
+Cheers,
+Nathan
