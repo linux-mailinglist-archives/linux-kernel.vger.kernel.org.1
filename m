@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FAD21C1F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 05:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073A721C1F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Jul 2020 05:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbgGKDxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Jul 2020 23:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55006 "EHLO
+        id S1727856AbgGKD7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Jul 2020 23:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726671AbgGKDxP (ORCPT
+        with ESMTP id S1726707AbgGKD7T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Jul 2020 23:53:15 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626AEC08C5DD;
-        Fri, 10 Jul 2020 20:53:15 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id j10so6075893qtq.11;
-        Fri, 10 Jul 2020 20:53:15 -0700 (PDT)
+        Fri, 10 Jul 2020 23:59:19 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F77C08C5DD
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 20:59:19 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u18so3391175pfk.10
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Jul 2020 20:59:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z6AWxd/5FGxxwuquMSsRnXjurO0TQ1vFQCnKi381IDk=;
-        b=C6VcTj4xMiKCEMQoy5rLWrZmdNXOcvN+ZJWsPgA9F3KDPpSTwuPddnzlcvjzaKviDr
-         36i/TPtGiY1XVQCDCjvcjth6U2AL3ZxXYLYsQZSQ1recPIH7ulfuNjErU6j0rezNvOWM
-         5+GEBf+5tYDU3h9DQX5dC0ozoCRszTSkW6hoU2r+HeYbu8/JGVfZKxFFrzYOhJ6YQyxh
-         USF0vCFLTGo0LFcP91ac6lr7NIv1CICrork6aBlnlYwSIp5sVTUVSTJhhX7E9fh3v1xg
-         Yo8NotMYcQRJbM7zYazEa97OHP5uKQuXNsjTpCjrSg7KurH5U6wsmi1wdBCGJtSlD3q8
-         xTHA==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=nQXgV8O4lRQb70P/o8i8sx1P/L77B4PEEmlWpSmoN9o=;
+        b=azyMhcdNhgsabVX8AGiA4NE5+4GW+gtnYaTOcJBLfMD4YqA8nd/JT1USO5UC0nU65r
+         g0tXbqAy2ljCnhdn3OTOWNrznl5QSu36Np4TULfJQ5Qx0D3KELVDXAWNgZftpuYgkOnV
+         A+RFADNJ3kM1mzjcPDwoBHeo2SPVmNPLfTB5OC2dc9pbBbcbyDm70Zyl8egXkAV2VKd6
+         /9ykt6Ke74BE99AaAXy/cZDbwKyB7Gx1SkKpenyXP2WJMGU0zHub3/4XGHVw5maFexPN
+         VUd49BQ9OSFIJCLfwG2B2Mc7Ky8K+Z+chMp18ibg8P4eoAKnr4wmaFDNb9VG96GJ3jKL
+         uwng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z6AWxd/5FGxxwuquMSsRnXjurO0TQ1vFQCnKi381IDk=;
-        b=uBA/1EffQo+rn7sr0ClHhi+bJurc/YBs+MIul7ZpkhMDn0IZwHxm73+rc46ZRhKMiF
-         vJfJf1/pS1ibZMrbd3ajNpH/t4NnXYiB2DrvSeItYbM69mH17RNk9wiedb6xSBOWIpOq
-         ixDrAKs8yE2HT7+8QvcL0lXm/gFwQZ2DqfNn5KhZ/vDt07kertgGXxThWFkNDXD7f+lX
-         C50rTVP+lsJjJ9qhtt0MYS7RYotaDDd9fOsoqvh7bUxo1Dqf/iJdN4xn7OfUHUJjTRlj
-         FwXrORCSShB9du2pGC0btyMjDvM4lcefjQacYZaim/ps+8WVTavlIUxKoP9+NwzIMcV1
-         bONg==
-X-Gm-Message-State: AOAM530oXK5seH8HX5Bw7ox6hWSrm4Wmw5m0lfDBItC3payNoQVHhcE+
-        p2palbTGGpqHg44MbufZDmdc5Vmo/MnyKypbCVw=
-X-Google-Smtp-Source: ABdhPJwgVQL48QhDtJJQVaXSbLNISPQqNbnZ3eCE90UTFVul8XrkkQj4mMMjzfQjXuY4Ls28ymvubqCEz1Bz8OM/M94=
-X-Received: by 2002:ac8:1991:: with SMTP id u17mr71393499qtj.93.1594439594578;
- Fri, 10 Jul 2020 20:53:14 -0700 (PDT)
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=nQXgV8O4lRQb70P/o8i8sx1P/L77B4PEEmlWpSmoN9o=;
+        b=WBcP99hSviiWdsVxtr4CZJNRrWopqwXCWy9XCzhy6vNf+PcftzKn8IiGaihT4BZdZl
+         Tiukri4dN2/l93LaWpMxgM6CX9ukZQRR5+H9CMHXmV0mNcJaD9ahqTZjAamxQlR/SDGc
+         JMFbvh8CvEw1zAkmcdTWgq+BS/lPh6/5zSwe6GRqAR7bbw4lwHWLkoSl7VknmKVb9OUC
+         9gvxpP9xjQ0npw+iF8MDgCQDG9/h4CzZ0QJDMXR0gpt15dHKZ8KfQnhLfPWTpgcxOHf2
+         PUhwbMiZVoYCTmkH6JaM6L/Isk9B8pDV5blo+PPBWNX0F5G5cRIO4PGcB5g/CvIcmRB2
+         vgLw==
+X-Gm-Message-State: AOAM532hazbovZjVi70iruWbaAjLZlWqbhqTUwIk4cff67/Pc5pxkAKv
+        kxKVlY5CbBJZ6vZSYO0z7l7Y+Q==
+X-Google-Smtp-Source: ABdhPJywguU/IUhSzuP2RbS+qrBucQmxKH10+Ix1vOfHoCo7H+QXwLlRxZcK3x5u5q2cLOVKIx7zrA==
+X-Received: by 2002:a63:210c:: with SMTP id h12mr41776995pgh.152.1594439958721;
+        Fri, 10 Jul 2020 20:59:18 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id g19sm7436820pfb.152.2020.07.10.20.59.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jul 2020 20:59:17 -0700 (PDT)
+Subject: Add and use a generic copy_oldmem_page()
+Date:   Fri, 10 Jul 2020 20:55:41 -0700
+Message-Id: <20200711035544.2832154-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
 MIME-Version: 1.0
-References: <20200711012639.3429622-1-songliubraving@fb.com> <20200711012639.3429622-2-songliubraving@fb.com>
-In-Reply-To: <20200711012639.3429622-2-songliubraving@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 10 Jul 2020 20:53:03 -0700
-Message-ID: <CAEf4BzaHAFNdEPp38ZnKOYTy3CfRCwaxDykS_Xir_VqDm0Kiug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpf: block bpf_get_[stack|stackid] on
- perf_event with PEBS entries
-To:     Song Liu <songliubraving@fb.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Peter Ziljstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, rppt@linux.ibm.com,
+        akpm@linux-foundation.org, linus.walleij@linaro.org,
+        mchehab+samsung@kernel.org, gregory.0xf0@gmail.com,
+        masahiroy@kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        bgolaszewski@baylibre.com,
+        Palmer Dabbelt <palmerdabbelt@google.com>, mingo@kernel.org,
+        ben-linux@fluff.org, peterz@infradead.org, broonie@kernel.org,
+        davem@davemloft.net, rdunlap@infradead.org, uwe@kleine-koenig.org,
+        dan.j.williams@intel.com, mhiramat@kernel.org,
+        matti.vaittinen@fi.rohmeurope.com, zaslonko@linux.ibm.com,
+        willy@infradead.org, krzk@kernel.org, paulmck@kernel.org,
+        pmladek@suse.com, brendanhiggins@google.com, keescook@chromium.org,
+        glider@google.com, elver@google.com, davidgow@google.com,
+        mark.rutland@arm.com, ardb@kernel.org, takahiro.akashi@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     mick@ics.forth.gr
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 6:30 PM Song Liu <songliubraving@fb.com> wrote:
->
-> Calling get_perf_callchain() on perf_events from PEBS entries may cause
-> unwinder errors. To fix this issue, the callchain is fetched early. Such
-> perf_events are marked with __PERF_SAMPLE_CALLCHAIN_EARLY.
->
-> Similarly, calling bpf_get_[stack|stackid] on perf_events from PEBS may
-> also cause unwinder errors. To fix this, block bpf_get_[stack|stackid] on
-> these perf_events. Unfortunately, bpf verifier cannot tell whether the
-> program will be attached to perf_event with PEBS entries. Therefore,
-> block such programs during ioctl(PERF_EVENT_IOC_SET_BPF).
->
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
+While adding support for kexec, Nick recently copied the arm64
+copy_oldmem_page() into the RISC-V port.  Since this is shared verbatim with
+arm and arm64 already, I'd like to add a generic version and so we can use it
+instead.  I haven't converted over the MIPS, PPC, or SH ports: while I think we
+could figure out how to share a version, they're not exactly the same right
+now.  S/390 and x86 are definitely meaningfully different.
 
-Perhaps it's a stupid question, but why bpf_get_stack/bpf_get_stackid
-can't figure out automatically that they are called from
-__PERF_SAMPLE_CALLCHAIN_EARLY perf event and use different callchain,
-if necessary?
+Unless there are any objections I'll include the first patch along with the
+RISC-V kexec support, which I'm hoping to have for 5.9.  The code, based on
+5.8-rc4, is at
+ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git -b
+copy_oldmem_page .
 
-It is quite suboptimal from a user experience point of view to require
-two different BPF helpers depending on PEBS or non-PEBS perf events.
 
-[...]
