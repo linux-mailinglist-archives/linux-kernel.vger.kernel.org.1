@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D1C21CBB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 00:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF10721CBBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 00:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729516AbgGLWFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 18:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
+        id S1728273AbgGLWLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 18:11:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729020AbgGLWFs (ORCPT
+        with ESMTP id S1727946AbgGLWLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 18:05:48 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3E4C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 15:05:48 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id a14so4991110qvq.6
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 15:05:48 -0700 (PDT)
+        Sun, 12 Jul 2020 18:11:43 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4C7C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 15:11:43 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id r22so10488217qke.13
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 15:11:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=jcB+huYj0l0LbQtJUOWS2otYcMgoEC0yYEjN+YAq8sY=;
-        b=tAHHLtnqQX5ndIdJi7+GtljunjEdgt3lSN+jOb4LDTJWEffOrfv4M76QeHh0P1Jb3F
-         d5kBAPlMe2TPtGcM99r3aXbQPIpTc6Kl6HThztFh2AiEdln92CTaG8eu07nQgSztszwl
-         ylbQtCzzlo8S2n2uDj9Q4Z4wokRWWNO6XmUKE7CAKwS/28cVHjoKfJ1manUoBP9NJT9d
-         L6/o/ZzXAb/aRcsdfoW9IC5Ma2SYSzLMba7Fmp93cNQXtp8K01Q1aFQ0h5EfsXhLGB/5
-         bOm4ru1V8boWXvgHiKuAJ9CnGzZ46MiLRVYwaXg+RXXXn5k/YIXnpZeUQWFdJYljhOPR
-         BsPQ==
+        bh=6GIa+L4BMOnigUNxnfxqvTRE/iHNXj+4A+Wyg9Hp5YY=;
+        b=GoEmDd5o3b7KKq9FLx3p1mEyzfk18JtXgmbxh1wBT+AuBSsIPdJCIQhdEq+xkQOwtb
+         +nJOQNF2aBcaPNp6HiFzy6Uv7PmCrXRu2fGbM9p8ZW7KJoSIovm5fqYat6OA8DXJ0Xj7
+         YHsrweiGWpA7B/+Sf8sp6jyR+Wq/+kIA/Lv0wI2zKoEngjzw/1D7MMoGLHM19K8/xaMX
+         i41XlNTMfLcGTCNkHfvRbH+pM7zIusMBiAyLr8L46g1raBbK2v6b25u+3S/d8IBNmOp8
+         oxsPsWEVaWLP8V4p85xBUTkCv5anvAuQy3snh4I91yE37E42tssXhpqgI1LJJKdLZqJ6
+         vceg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=jcB+huYj0l0LbQtJUOWS2otYcMgoEC0yYEjN+YAq8sY=;
-        b=ptUOHyEF4LjFyYt/BXmsbcaIIu4o85StIDWpo3T3R037UGRZVYyVdoL6GIfK0o32MV
-         UlGCnQSssG9ZEy3NHbLmptuWubqYLVD2KFffquHVYRfVPml/Y17Ih0jolPBGAilAtlL/
-         YrRagjxJiqz/YYGFlCom2ItOYa9vss8mhtCIbmm+99RMD2AQCh0HagS2FEj8630UK3QX
-         UKoRPVzrmtD26qvaFwTSCszFJwF3P04JNL9izSRFYWSBKrtiDVKt0nMfjKjaBNn6P0uz
-         yp+IJS9whZsBZvC8SPUFHNvs0BYXBDv7WyyOU8K9epw2QlmfbKpbf04vE2TqnHN/GB8R
-         PqKQ==
-X-Gm-Message-State: AOAM532f1IsYAe+TELmBdzrzarAuwUlnkwtQFsIwZSEXoIR7xXKFXHJm
-        YJ6hyA3cO9JUwqN/tftC8H0=
-X-Google-Smtp-Source: ABdhPJxZboeLYvPQHsIcuJNgOvm11GuHFXfkASS3WF2CvtMIVKQDiD+gcdLk2sbid06pIK9ieYcbqQ==
-X-Received: by 2002:a05:6214:969:: with SMTP id do9mr77959625qvb.85.1594591547909;
-        Sun, 12 Jul 2020 15:05:47 -0700 (PDT)
+        bh=6GIa+L4BMOnigUNxnfxqvTRE/iHNXj+4A+Wyg9Hp5YY=;
+        b=K2UJdWD3gBjyaU/Ir5YZDA2/AYp1kS9Fo0Uz7/PqT4MoP/42C0TFrZGPTt/+GVruuP
+         ewZF433opY9czKApw64dTZjeqzMpnhKBohruzkVLhuJZU0CJdaNmavUTf5O4GmvpQVqc
+         ll2Fd7mix3if19Rz6jg7AbBk1pfqi8HMyiIF0N64IqGSZmEBEu6jNGzVbpmWylcNqIfm
+         eRik15OlEwqvGQDj2UB5EZV3iJ6tY6t0hGMTTE/83pM1ofLY+zhBhnGGl0p9lH3/GBoe
+         xI0Av/ZtCky8hJpZxP6ole1P3WdCxCdtjvWmGRdMu8lfD0vp/dcmTQFR7NUM0fV54cyD
+         S8Xw==
+X-Gm-Message-State: AOAM531rg36DWtxPZm4Vh1JYeLQG7H2uISof1/GQ15SSOYStXtUmH289
+        VbIzbhKI3GsfTxZYwWeXalw=
+X-Google-Smtp-Source: ABdhPJzQaaKRGivrc3/T8gulu3MyNqVAw7FrC2GLeaTrxt1shNYOgKH4DEdhaHFhrnaOBmww4rEHow==
+X-Received: by 2002:a37:bcb:: with SMTP id 194mr80843531qkl.103.1594591902504;
+        Sun, 12 Jul 2020 15:11:42 -0700 (PDT)
 Received: from smtp.gmail.com ([2607:fea8:56a0:8440::b10e])
-        by smtp.gmail.com with ESMTPSA id b53sm17136505qtc.65.2020.07.12.15.05.46
+        by smtp.gmail.com with ESMTPSA id z4sm16309498qkb.66.2020.07.12.15.11.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2020 15:05:46 -0700 (PDT)
-Date:   Sun, 12 Jul 2020 18:05:44 -0400
+        Sun, 12 Jul 2020 15:11:41 -0700 (PDT)
+Date:   Sun, 12 Jul 2020 18:11:40 -0400
 From:   Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
 To:     Melissa Wen <melissa.srw@gmail.com>
 Cc:     Haneen Mohammed <hamohammed.sa@gmail.com>,
@@ -58,83 +58,96 @@ Cc:     Haneen Mohammed <hamohammed.sa@gmail.com>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         kernel-usp@googlegroups.com, twoerner@gmail.com
 Subject: Re: [PATCH] drm/vkms: change the max cursor width/height
-Message-ID: <20200712220544.3zmyohuf7cj4y27y@smtp.gmail.com>
+Message-ID: <20200712221140.7vzjh4nwtszpffa2@smtp.gmail.com>
 References: <20200710160313.xjoz6ereyma5vkc3@smtp.gmail.com>
+ <20200712220544.3zmyohuf7cj4y27y@smtp.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4i736vmv6djksaji"
+        protocol="application/pgp-signature"; boundary="3p6wpas7gy73fiat"
 Content-Disposition: inline
-In-Reply-To: <20200710160313.xjoz6ereyma5vkc3@smtp.gmail.com>
+In-Reply-To: <20200712220544.3zmyohuf7cj4y27y@smtp.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---4i736vmv6djksaji
+--3p6wpas7gy73fiat
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Melissa,
+Applied to drm-misc-next.
 
-First of all, thanks a lot for your patch! This is a nice change since
-it increases the code coverage.
+Thanks
 
-Reviewed-by: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-
-On 07/10, Melissa Wen wrote:
-> This change expands the coverage for the IGT kms_cursor_crc test, where
-> the size varies between 64 and 512 for a square cursor. With this, in
-> addition to the cursor 64x64, this patch enables the test of cursors with
-> sizes: 128x128, 256x256, and 512x512.
+On 07/12, Rodrigo Siqueira wrote:
+> Hi Melissa,
 >=20
-> Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
-> ---
->  drivers/gpu/drm/vkms/vkms_drv.c | 2 ++
->  1 file changed, 2 insertions(+)
+> First of all, thanks a lot for your patch! This is a nice change since
+> it increases the code coverage.
 >=20
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_=
-drv.c
-> index 1e8b2169d834..57a8a397d5e8 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.c
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
-> @@ -133,6 +133,8 @@ static int vkms_modeset_init(struct vkms_device *vkms=
-dev)
->  	dev->mode_config.min_height =3D YRES_MIN;
->  	dev->mode_config.max_width =3D XRES_MAX;
->  	dev->mode_config.max_height =3D YRES_MAX;
-> +	dev->mode_config.cursor_width =3D 512;
-> +	dev->mode_config.cursor_height =3D 512;
->  	dev->mode_config.preferred_depth =3D 24;
->  	dev->mode_config.helper_private =3D &vkms_mode_config_helpers;
-> =20
+> Reviewed-by: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+>=20
+> On 07/10, Melissa Wen wrote:
+> > This change expands the coverage for the IGT kms_cursor_crc test, where
+> > the size varies between 64 and 512 for a square cursor. With this, in
+> > addition to the cursor 64x64, this patch enables the test of cursors wi=
+th
+> > sizes: 128x128, 256x256, and 512x512.
+> >=20
+> > Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
+> > ---
+> >  drivers/gpu/drm/vkms/vkms_drv.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >=20
+> > diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkm=
+s_drv.c
+> > index 1e8b2169d834..57a8a397d5e8 100644
+> > --- a/drivers/gpu/drm/vkms/vkms_drv.c
+> > +++ b/drivers/gpu/drm/vkms/vkms_drv.c
+> > @@ -133,6 +133,8 @@ static int vkms_modeset_init(struct vkms_device *vk=
+msdev)
+> >  	dev->mode_config.min_height =3D YRES_MIN;
+> >  	dev->mode_config.max_width =3D XRES_MAX;
+> >  	dev->mode_config.max_height =3D YRES_MAX;
+> > +	dev->mode_config.cursor_width =3D 512;
+> > +	dev->mode_config.cursor_height =3D 512;
+> >  	dev->mode_config.preferred_depth =3D 24;
+> >  	dev->mode_config.helper_private =3D &vkms_mode_config_helpers;
+> > =20
+> > --=20
+> > 2.27.0
+> >=20
+>=20
 > --=20
-> 2.27.0
->=20
+> Rodrigo Siqueira
+> https://siqueira.tech
+
+
 
 --=20
 Rodrigo Siqueira
 https://siqueira.tech
 
---4i736vmv6djksaji
+--3p6wpas7gy73fiat
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE4tZ+ii1mjMCMQbfkWJzP/comvP8FAl8LiTMACgkQWJzP/com
-vP+a4hAAhzqDRriWgEIVgNEePc5SENkHgaesIXCA/hVw4/JfnPSvX4HJZimZwh+g
-pGc+V5kX4iQBN9sryivDJvAc5nMoSgUENo+Ql4DYzUb078spWnZJOG3A5fQ73SAc
-tYbkxnxJawOub4Cx9gbJBrkRoby3o2xoi+v6KQNC2nR5DWUB0esnIiWKpyA+en5g
-IcokeXwVzwoDzfIdmYYtNA+Se4V1rbMfs/1z3GzQGZvP3NjKgt37y3r5uJanaZHH
-UZ11weGaODBAnMvYkUc1Si/Z2uMJPCDfCEWds0JAVxIWu0g5HEt/YugttjCOWQfr
-4nybiERjJb90aDaCc3Qd2OwV3AJcx1+B5lgnwyRNKddVdEt4ddnesr2Y8U9WoSX6
-3eh8xmGG1tPw7AmC/8hlT3OpydH+rqXgM1x7SCLLywUL1khw3g8T3FoAb3O3MQcr
-O/ajRY1ruba7qXHrSXXdoZBWaOJkdH//LKSpjU/OYza9viYh1VB5ZtB/5+3oytzT
-P0mbC92HJ7mD61qZ0Z50hsIf6CfYi0NKX9ufDZ/0aR8ERTgUb+J36mHzwqrrSPB9
-qp1rEIicbV3B6gz8B5ePwThtdSeLY5tdnF/8zMMPoqf8v0HU2693GtOoGc2KiyAj
-UO6flDn3BEmYBMP0uFG9YE6S4GhukiIzZBLuAAb4AqzPYFKnti8=
-=RSwA
+iQIzBAABCgAdFiEE4tZ+ii1mjMCMQbfkWJzP/comvP8FAl8LipsACgkQWJzP/com
+vP/WiA//Svh6voj1NWikmjHgoMHl5xOM2QcqXLBhpDs8XufEaKX1ZxXqiDIE10d7
+43Tted37/PEygaVkJglz8EDxteoV2eupe5y73fLAt0Lbg37HswCw65fTnEJFpooq
+wiauUTQPOH3JxJbxb2KaIDw2rHLUWiX7SY+ZFg7jSHUZhuatHq9V7SJahttl7JE/
+vM/uj73pLVs54fQpjj+i+VkKg52Cbe0hji2igXzgnnJEDynqO/2wGn5WY+lWERb6
+Rwk3V+W/fS+Y/7G9KSpSzcpGDeXMzZN4fEUpDTozpIcI3QiGM1of2Vgck8hmLQ2m
+COEIYUMRkdJYiUWmq0TFic1QL1DGu7OiQzsGcTYE6qXJVKNnr7nKkb3Ydz56U6Ji
+8k3DQhirnE4zozrsX4e4Q4TWOG2V+wDB69c6vwLwE8s5GEH56h5bHka2mKZjV2CN
+jWafM7IXVd6JuxXewzNfvackxq95Jq0gRXxCQx/sF8paLkfRf8Z+mgVoICbSBxJp
+Jh0nkaoZgPv+uaIQf7aDqbtq51opYaa8JG+wQbHVuAXeb5fYp73Lks3EFpAwA+kz
+b+z7rFSl8IBbZl718/xwzKTgpxEyIgPILjQqx/nVCvHi1yPcXwCxqhxjBoSId7vP
+39x1a5OSoeKz3lj0piZwMAoMCB4rzV0vP9EDemfe53rR1OXTsNw=
+=tCmt
 -----END PGP SIGNATURE-----
 
---4i736vmv6djksaji--
+--3p6wpas7gy73fiat--
