@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4567621C949
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 14:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01E121C954
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 15:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728830AbgGLMd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 08:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728339AbgGLMd1 (ORCPT
+        id S1728827AbgGLNAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 09:00:05 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29674 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728735AbgGLNAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 08:33:27 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440A1C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 05:33:27 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id k17so5674670lfg.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 05:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E6sNIw2XPzIq0VfJGAFCHOZVum8taNf/8D8Ge/FQ7ik=;
-        b=XTSQMi3c2DwdMBZx3YYbYBCEc30+2fs3vNdLDyjwOhV+mr8KgRWmX8+mEp0KCeVN5k
-         TpkbUndSDw17EVXMgUVfJmC5KFuPrrBsxgVpXZOBtwmmxqWpoKhgSwLTkV0bu508Eepz
-         AL9rzA1A/DVXvWRvaDYd05qss38pRCEd6nHKsYbkKOvnnai498K05vhkx+i/BUcLtMjD
-         n9g0XINzdoXEXhMH+TIAQpTHz6pl+8XccdClDoMcSmK6qToSgVcCs55uvwxtXm1ejElV
-         bOn+lKX6HDEdaxiI/OQWkgJx6ht3tZbT3eQjHtWUozeXELRUGgSTdRSdSu8r8w+63GDb
-         ukKQ==
+        Sun, 12 Jul 2020 09:00:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594558803;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=tP1p0y5VuFxAzgtXgy/goQauifZ0DIQKOQPjri03c2c=;
+        b=D+DKaYD8t1JKCyL/XUXUKGtTQHbBMt3PBUHC89aO7BQpTDudPO5zIL+um0w2SQkvQzyDOm
+        xjkVywbFHOximZ2sqCLrxwx72vZ6uCpB47hBf4QSWH4Lu3QA6hLw+f/uRzTzAjOUuRlii/
+        qg8iiDXfGQQC4HZugZwj4QRe5XGgYSc=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-421-MqFoSafQOrCaVd4cR1AbAg-1; Sun, 12 Jul 2020 09:00:00 -0400
+X-MC-Unique: MqFoSafQOrCaVd4cR1AbAg-1
+Received: by mail-qk1-f197.google.com with SMTP id j79so8656909qke.5
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 06:00:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E6sNIw2XPzIq0VfJGAFCHOZVum8taNf/8D8Ge/FQ7ik=;
-        b=b9JZTCtXEmOGMpo728kOjhHXCiEufFSuUw56Jopo8AIxcjSiG8jBOTwLPVwhnrVcAc
-         2/Bj0ThPGnEd2ASHuTIljTtFwOmKVIDERJOBGTssW+OhEXTHsXFtmgYePGniw4Wyh/iP
-         yWKpvVxGcL9335VXHZ01i4etSXyeqVtM8kcTiNzsKdYgoyGKtNn8bZGtrqJ2odH4Lw2f
-         Dyfm6hL2GXn+0FwdiypMACDLFTi6tD0uMQMYkfBTl/83q4CLaxJtLcrxqf5DFRghZaqz
-         QMd/iWG5sGPTf1kSq5O4K+C0QYuSdZggTmaUjY2h0NzfX2lwGQQPkK2PAEq5mw2x4hhe
-         V8Hg==
-X-Gm-Message-State: AOAM530EKtpMOuBJWQsJFa67FE4I9Acso238VaTyWWY4RZ1szKKkz6gT
-        2y9PGYX46H+5AbWCup1wMBZfgr5r
-X-Google-Smtp-Source: ABdhPJwn/U7bMpXBeJBWvB7sqdmC+drDGd/YsFLewuXZCGZrYjrcy6IAvPfbdXfK3E8gM7eBYCd1Aw==
-X-Received: by 2002:ac2:5593:: with SMTP id v19mr48799025lfg.43.1594557205710;
-        Sun, 12 Jul 2020 05:33:25 -0700 (PDT)
-Received: from alpha (10.177.smarthome.spb.ru. [109.71.177.10])
-        by smtp.gmail.com with ESMTPSA id e10sm3422877ljb.118.2020.07.12.05.33.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=tP1p0y5VuFxAzgtXgy/goQauifZ0DIQKOQPjri03c2c=;
+        b=PZz78ZXo3L83WSN7S/2gEXsBYpAvR+R0gDKhEj2ZQiPbKCxHjnocb/XsIxsLvx645q
+         c8Qnhdo6m0gEuSWO93TmOpgfP8b2V3dy+Bz3Q8uJUIksROHkfnjazS7csjdFEY5nNihj
+         KMTEfu2fj5qNwMNrFqJMvKBdzcqqrzmrWdcFv062SQANArghsvbihouqrSNmL9xCm3w4
+         N8nNhMCYs4Wbf365C+7MIbSamKiwlhwW2NXgIiZFzpiE0Cayl3JQ6Qvon/0k5cJPIkXt
+         +nXgqNGlyXJ5aI6B+mN/bj4z2xBeTp2h7Lwgn6YeC0HWyX0ubniSajdAzy5m5tf6XkwT
+         lBRw==
+X-Gm-Message-State: AOAM5325sVl5p9e14QAhi/rr4N7APmxT5vRfe30i6j+cdzZY/+o5nXhg
+        Qn526/TQskSXKZUyiWrWfyiXkjUtoSJK+7XhgUZyHWJEZ4P/1cKFrQkKJYKiZYsRh9lgA66zMdK
+        rA+d7jAEEWNL55KrowobNUrHe
+X-Received: by 2002:ac8:3544:: with SMTP id z4mr69890727qtb.68.1594558799663;
+        Sun, 12 Jul 2020 05:59:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCFScybhjUoE2d3Vzjj9N9mrsMuV/Nq5PadBwjJZI0XXcjVFovcX7MaSls1X0DteDOlq8Amw==
+X-Received: by 2002:ac8:3544:: with SMTP id z4mr69890709qtb.68.1594558799402;
+        Sun, 12 Jul 2020 05:59:59 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 21sm15294425qkj.56.2020.07.12.05.59.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2020 05:33:25 -0700 (PDT)
-Received: (nullmailer pid 553466 invoked by uid 1000);
-        Sun, 12 Jul 2020 12:38:30 -0000
-From:   Ivan Safonov <insafonov@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        Soumyajit Deb <debsoumyajit100@gmail.com>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Ivan Safonov <insafonov@gmail.com>
-Subject: [PATCH] staging: r8188eu: remove unused members of struct xmit_buf
-Date:   Sun, 12 Jul 2020 15:38:21 +0300
-Message-Id: <20200712123821.553420-1-insafonov@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 12 Jul 2020 05:59:58 -0700 (PDT)
+From:   trix@redhat.com
+To:     hpa@zytor.com, alain@knaff.lu
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] decompress_bunzip2: fix sizeof type in start_bunzip
+Date:   Sun, 12 Jul 2020 05:59:52 -0700
+Message-Id: <20200712125952.8809-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused members of struct xmit_buf: alloc_sz, ff_hwaddr,
-dma_transfer_addr, bpending and last.
+From: Tom Rix <trix@redhat.com>
 
-Signed-off-by: Ivan Safonov <insafonov@gmail.com>
+clang static analysis flags this error
+
+lib/decompress_bunzip2.c:671:13: warning: Result of 'malloc' is converted
+  to a pointer of type 'unsigned int', which is incompatible with sizeof
+  operand type 'int' [unix.MallocSizeof]
+        bd->dbuf = large_malloc(bd->dbufSize * sizeof(int));
+                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Reviewing the bunzip_data structure, the element dbuf is type
+
+	/* Intermediate buffer and its size (in bytes) */
+	unsigned int *dbuf, dbufSize;
+
+So change the type in sizeof to 'unsigned int'
+
+Fixes: bc22c17e12c1 ("bzip2/lzma: library support for gzip, bzip2 and lzma decompression")
+
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- drivers/staging/rtl8188eu/include/rtw_xmit.h  | 5 -----
- drivers/staging/rtl8188eu/os_dep/xmit_linux.c | 1 -
- 2 files changed, 6 deletions(-)
+ lib/decompress_bunzip2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8188eu/include/rtw_xmit.h b/drivers/staging/rtl8188eu/include/rtw_xmit.h
-index 12d16e98176a..3c03987c81a1 100644
---- a/drivers/staging/rtl8188eu/include/rtw_xmit.h
-+++ b/drivers/staging/rtl8188eu/include/rtw_xmit.h
-@@ -193,14 +193,9 @@ struct xmit_buf {
- 	void *priv_data;
- 	u16 ext_tag; /*  0: Normal xmitbuf, 1: extension xmitbuf. */
- 	u16 flags;
--	u32 alloc_sz;
- 	u32  len;
- 	struct submit_ctx *sctx;
--	u32	ff_hwaddr;
- 	struct urb *pxmit_urb[8];
--	dma_addr_t dma_transfer_addr;	/* (in) dma addr for transfer_buffer */
--	u8 bpending[8];
--	int last[8];
- };
+diff --git a/lib/decompress_bunzip2.c b/lib/decompress_bunzip2.c
+index 7c4932eed748..59ab76bda7a7 100644
+--- a/lib/decompress_bunzip2.c
++++ b/lib/decompress_bunzip2.c
+@@ -668,7 +668,7 @@ static int INIT start_bunzip(struct bunzip_data **bdp, void *inbuf, long len,
+ 	   uncompressed data.  Allocate intermediate buffer for block. */
+ 	bd->dbufSize = 100000*(i-BZh0);
  
- struct xmit_frame {
-diff --git a/drivers/staging/rtl8188eu/os_dep/xmit_linux.c b/drivers/staging/rtl8188eu/os_dep/xmit_linux.c
-index 017e1d628461..61ced1160951 100644
---- a/drivers/staging/rtl8188eu/os_dep/xmit_linux.c
-+++ b/drivers/staging/rtl8188eu/os_dep/xmit_linux.c
-@@ -24,7 +24,6 @@ int rtw_os_xmit_resource_alloc(struct adapter *padapter,
- 		return _FAIL;
- 
- 	pxmitbuf->pbuf = PTR_ALIGN(pxmitbuf->pallocated_buf, XMITBUF_ALIGN_SZ);
--	pxmitbuf->dma_transfer_addr = 0;
- 
- 	for (i = 0; i < 8; i++) {
- 		pxmitbuf->pxmit_urb[i] = usb_alloc_urb(0, GFP_KERNEL);
+-	bd->dbuf = large_malloc(bd->dbufSize * sizeof(int));
++	bd->dbuf = large_malloc(bd->dbufSize * sizeof(unsigned int));
+ 	if (!bd->dbuf)
+ 		return RETVAL_OUT_OF_MEMORY;
+ 	return RETVAL_OK;
 -- 
-2.26.2
+2.18.1
 
