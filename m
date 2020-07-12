@@ -2,174 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2FC21CBF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 01:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF7A21CBF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 00:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728370AbgGLXEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 19:04:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
+        id S1728137AbgGLW7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 18:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgGLXEr (ORCPT
+        with ESMTP id S1727785AbgGLW7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 19:04:47 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF62C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 16:04:47 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id dp18so13280439ejc.8
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 16:04:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yo0Mnk4z2ZKKeclS9nj/V3zBsAaD+8xk/39wn8faHH8=;
-        b=JgbUYhmWzr+3//UqU1Ua64whjD+TQo14a7RmhB8c633RX/QOiKcCQbsyY/hFuqiEZ5
-         BvLqBjYYHepAIfQNocZKo+mB3oyrODeGszIw3KMFLfUKLJ4N1S+uGMefleAq+uA7OUg5
-         DLKYfe4ZuClUyfP06Vewwx33e/+3F2kX7EtpE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yo0Mnk4z2ZKKeclS9nj/V3zBsAaD+8xk/39wn8faHH8=;
-        b=ee1ZJYydwWugLL9BB3kJA6Y0ANfu2UkH4pAsoIo7a+mgqt4a1QYs9D3fjXtYk+IG6i
-         AlNOAA+f4bGOYk3A2nr1OpQAkROgy6tquZsRgWSrIp0MHfTHBm+B3MUZ4vp9GKFOPPWq
-         JXwW7wyFOm37hkb1OlwAoTFJyYBd+n1kq1T5mfSfsdGLf0jE2JfxdQ6F7ZhD2YDOEGBw
-         DKvtA+DKtLTmSZ+jlTk8C5EMTkB5HHmpcd17kW1NNhHVR8sax9DLRdJtgbNIJ+9HzZe7
-         g8MNPPNqN4yZ7iy1plaMLXvmz5ycOKq/me0ptGEK/9LulAAYBOaL/Rv2YzDgpnEU/LrV
-         cm/g==
-X-Gm-Message-State: AOAM530+ummqK3lL/lPJlT4RwNeGFcBeV8jLCUUvrBHw+Zqs+hoBMLu2
-        a/L/xwwWXnPw2ivORfF4GAGolFHQZag=
-X-Google-Smtp-Source: ABdhPJzlD4QZKP6BRfbZRKyqXNE71wQ3tfIG7QXWY2uTG+Gk636OAfcNmnOvHrBuf5gqzbAJrsLuUw==
-X-Received: by 2002:a17:906:6b0c:: with SMTP id q12mr70965968ejr.525.1594595085507;
-        Sun, 12 Jul 2020 16:04:45 -0700 (PDT)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id u8sm8337336ejm.65.2020.07.12.16.04.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Jul 2020 16:04:45 -0700 (PDT)
-Received: by mail-ed1-f54.google.com with SMTP id dg28so10358562edb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 16:04:45 -0700 (PDT)
-X-Received: by 2002:a2e:9c92:: with SMTP id x18mr40507440lji.70.1594594702310;
- Sun, 12 Jul 2020 15:58:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYt+6OeibZMD0fP=O3nqFbcN3O4xcLkjq0mpQbZJ2uxB9w@mail.gmail.com>
- <CAHk-=wgRcFSnQt=T95S+1dPkyvCuVAVGQ37JDvRg41h8hRqO3Q@mail.gmail.com>
- <CA+G9fYuL=xJPLbQJVzDfXB8uNiCWdXpL=joDsnATEFCzyFh_1g@mail.gmail.com>
- <CAHk-=wgB6Ds6yqbZZmscKNuAiNR2J0Pf3a8UrbdfewYxHE7SbA@mail.gmail.com> <20200712215041.GA3644504@google.com>
-In-Reply-To: <20200712215041.GA3644504@google.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 12 Jul 2020 15:58:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whxP0Gj70pJN5R7Qec4qjrGr+G9Ex7FJi7=_fPcdQ2ocQ@mail.gmail.com>
-Message-ID: <CAHk-=whxP0Gj70pJN5R7Qec4qjrGr+G9Ex7FJi7=_fPcdQ2ocQ@mail.gmail.com>
-Subject: Re: WARNING: at mm/mremap.c:211 move_page_tables in i386
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux- stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        lkft-triage@lists.linaro.org, Chris Down <chris@chrisdown.name>,
-        Michel Lespinasse <walken@google.com>,
-        Fan Yang <Fan_Yang@sjtu.edu.cn>,
-        Brian Geffon <bgeffon@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, pugaowei@gmail.com,
-        Jerome Glisse <jglisse@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Hugh Dickins <hughd@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
+        Sun, 12 Jul 2020 18:59:32 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AA9C061794;
+        Sun, 12 Jul 2020 15:59:31 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 5603B27DFE1
+Message-ID: <c10bb0992a8bfb751edf66bdb7752da842877281.camel@collabora.com>
+Subject: Re: [RFC 07/12] media: uapi: h264: Add DPB entry field reference
+ flags
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Jonas Karlman <jonas@kwiboo.se>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Sun, 12 Jul 2020 19:59:07 -0300
+In-Reply-To: <cf4a5d3f-934f-de59-b5df-97b23e30cb1b@kwiboo.se>
+References: <HE1PR06MB40117D0EE96E6FA638A04B78ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
+         <20190901124531.23645-1-jonas@kwiboo.se>
+         <HE1PR06MB4011559BF2447047C66285D2ACBF0@HE1PR06MB4011.eurprd06.prod.outlook.com>
+         <233509924f72d69824920d9312373eced68674c0.camel@collabora.com>
+         <20200710101333.05077f18@collabora.com>
+         <6232d8475e169ee53b5864959af21d14bf0fc620.camel@collabora.com>
+         <20200710140502.627b2b54@collabora.com>
+         <05b6cff6ba230c0ab6a562e17926d8503e2dfadd.camel@collabora.com>
+         <9a897ef99048077233685b121b03bd750e4d4a83.camel@collabora.com>
+         <cf4a5d3f-934f-de59-b5df-97b23e30cb1b@kwiboo.se>
+Organization: Collabora
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 2:50 PM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> I reproduced Naresh's issue on a 32-bit x86 machine and the below patch fixes it.
-> The issue is solely within execve() itself and the way it allocates/copies the
-> temporary stack.
->
-> It is actually indeed an overlapping case because the length of the
-> stack is big enough to cause overlap. The VMA grows quite a bit because of
-> all the page faults that happen due to the copy of the args/env. Then during
-> the move of overlapped region, it finds that a PMD is already allocated.
+On Sat, 2020-07-11 at 10:21 +0000, Jonas Karlman wrote:
+> On 2020-07-10 23:49, Nicolas Dufresne wrote:
+> > Le vendredi 10 juillet 2020 à 09:25 -0300, Ezequiel Garcia a écrit :
+> > > +Nicolas
+> > > 
+> > > On Fri, 2020-07-10 at 14:05 +0200, Boris Brezillon wrote:
+> > > > On Fri, 10 Jul 2020 08:50:28 -0300
+> > > > Ezequiel Garcia <ezequiel@collabora.com> wrote:
+> > > > 
+> > > > > On Fri, 2020-07-10 at 10:13 +0200, Boris Brezillon wrote:
+> > > > > > On Fri, 10 Jul 2020 01:21:07 -0300
+> > > > > > Ezequiel Garcia <ezequiel@collabora.com> wrote:
+> > > > > >   
+> > > > > > > Hello Jonas,
+> > > > > > > 
+> > > > > > > In the context of the uAPI cleanup,
+> > > > > > > I'm revisiting this patch.
+> > > > > > > 
+> > > > > > > On Sun, 2019-09-01 at 12:45 +0000, Jonas Karlman wrote:  
+> > > > > > > > Add DPB entry flags to help indicate when a reference frame is a
+> > > > > > > > field picture
+> > > > > > > > and how the DPB entry is referenced, top or bottom field or full
+> > > > > > > > frame.
+> > > > > > > > 
+> > > > > > > > Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+> > > > > > > > ---
+> > > > > > > >  Documentation/media/uapi/v4l/ext-ctrls-codec.rst | 12 ++++++++++++
+> > > > > > > >  include/media/h264-ctrls.h                       |  4 ++++
+> > > > > > > >  2 files changed, 16 insertions(+)
+> > > > > > > > 
+> > > > > > > > diff --git a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+> > > > > > > > b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+> > > > > > > > index bc5dd8e76567..eb6c32668ad7 100644
+> > > > > > > > --- a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+> > > > > > > > +++ b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
+> > > > > > > > @@ -2022,6 +2022,18 @@ enum
+> > > > > > > > v4l2_mpeg_video_h264_hierarchical_coding_type -
+> > > > > > > >      * - ``V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM``
+> > > > > > > >        - 0x00000004
+> > > > > > > >        - The DPB entry is a long term reference frame
+> > > > > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE``
+> > > > > > > > +      - 0x00000008
+> > > > > > > > +      - The DPB entry is a field picture
+> > > > > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_TOP``
+> > > > > > > > +      - 0x00000010
+> > > > > > > > +      - The DPB entry is a top field reference
+> > > > > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM``
+> > > > > > > > +      - 0x00000020
+> > > > > > > > +      - The DPB entry is a bottom field reference
+> > > > > > > > +    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME``
+> > > > > > > > +      - 0x00000030
+> > > > > > > > +      - The DPB entry is a reference frame
+> > > > > > > >  
+> > > > > > > >  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE (enum)``
+> > > > > > > >      Specifies the decoding mode to use. Currently exposes slice-
+> > > > > > > > based and
+> > > > > > > > diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> > > > > > > > index e877bf1d537c..76020ebd1e6c 100644
+> > > > > > > > --- a/include/media/h264-ctrls.h
+> > > > > > > > +++ b/include/media/h264-ctrls.h
+> > > > > > > > @@ -185,6 +185,10 @@ struct v4l2_ctrl_h264_slice_params {
+> > > > > > > >  #define V4L2_H264_DPB_ENTRY_FLAG_VALID		0x01
+> > > > > > > >  #define V4L2_H264_DPB_ENTRY_FLAG_ACTIVE		0x02
+> > > > > > > >  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
+> > > > > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE	0x08
+> > > > > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_REF_TOP	0x10
+> > > > > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM	0x20
+> > > > > > > > +#define V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME	0x30
+> > > > > > > >      
+> > > > > > > 
+> > > > > > > I've been going thru the H264 spec and I'm unsure,
+> > > > > > > are all these flags semantically needed?
+> > > > > > > 
+> > > > > > > For instance, if one of REF_BOTTOM or REF_TOP (or both)
+> > > > > > > are set, doesn't that indicate it's a field picture?
+> > > > > > > 
+> > > > > > > Or conversely, if neither REF_BOTTOM or REF_TOP are set,
+> > > > > > > then it's a frame picture?  
+> > > > > > 
+> > > > > > I think that's what I was trying to do here [1]
+> > > > > > 
+> > > > > > [1]https://patchwork.kernel.org/patch/11392095/  
+> > > > > 
+> > > > > Right. Aren't we missing a DPB_ENTRY_FLAG_TOP_FIELD?
+> > > > > 
+> > > > > If I understand correctly, the DPB can contain:
+> > > > > 
+> > > > > * frames (FLAG_FIELD not set)
+> > > > > * a field pair, with a single field (FLAG_FIELD and either TOP or BOTTOM).
+> > > > > * a field pair, with boths fields (FLAG_FIELD and both TOP or BOTTOM).
+> > > > 
+> > > > Well, my understand is that, if the buffer contains both a TOP and
+> > > > BOTTOM field, it actually becomes a full frame, so you actually have
+> > > > those cases:
+> > > > 
+> > > > * FLAG_FIELD not set: this a frame (note that a TOP/BOTTOM field
+> > > >   decoded buffer can become of frame if it's complemented with the
+> > > >   missing field later during the decoding)
+> > > > * FLAG_FIELD set + BOTTOM_FIELD not set: this is a TOP field
+> > > > * FLAG_FIELD set + BOTTOM_FIELD set: this is a BOTTOM field
+> > > > * FLAG_FIELD not set + BOTTOM_FIELD set: invalid combination
+> > 
+> > Let's admit, while this work, it's odd. Can we just move to that instewad ?
+> > 
+> >   FLAG_TOP_FIELD
+> >   FLAG_BOTTOM_FIELD
+> >   FLAG_FRAME = (FLAG_TOP_FIELD | FLAG_BOTTOM_FIELD)
+> > 
+> > So it can be used as a flag, but also is a proper enum and there is no longer an
+> > invalid combination.
+> >   
+> > > > but I might be wrong.
+> 
+> There seems to be some misunderstanding here, the top/bottom flagging should
+> not be used to describe if the picture is a field, field pair or frame, it
+> should be used to flag if a frame or the top and/or bottom field (in case of
+> a field pair) is "used for short-term reference".
+> 
 
-Oh, ok, I think I see.
+I'm not sure why "used for short-term reference" instead
+of "used for reference".
 
-So the issue is that while move_normal_pmd() _itself_ will be clearing
-the old pmd entries when it copies them, the 4kB copies that happened
-_before_ this time will not have cleared the old pmd that they were
-in.
+> FLAG_TOP_REF
+> FLAG_BOTTOM_REF
+> FLAG_FRAME_REF = (FLAG_TOP_REF | FLAG_BOTTOM_REF)
+> 
+> Would be a more appropriate naming.
+> 
+> The FIELD_PIC flag would then be used to describe if the picture is a
+> reference frame or a complementary reference field pair.
+> 
+> As described in hantro h264 driver [1] the MV buffer is split in two
+> for field encoded frames, and I guess the rkvdec block does something
+> similar and therefore the HW blocks probably needs to know if the reference
+> picture is a reference frame or a complementary reference field pair.
+> It should be possible to keep such state in driver but since such information
+> was easily available in ffmpeg and the driver being "stateless" using a flag
+> seamed like a good choice at the time.
+> 
+> Please note that I have not done any test without the "field pic" flagging
+> but both mpp and the imx/hantro reference code are configuring this bit.
+> 
+> [1] https://git.linuxtv.org/media_tree.git/tree/drivers/staging/media/hantro/hantro_g1_h264_dec.c#n265
+> 
 
-So we've had a deeper stack, and we've already copied some of it one
-page at a time, and we're done with those 4kB entries, but now we hit
-a 2MB-aligned case and want to move that down. But when it does that,
-it hits the (by now hopefully empty) pmd that used to contain the 4kB
-entries we copied earlier.
+How about this:
 
-So we've cleared the page table, but we've simply never called
-pgtable_clear() here, because the page table got cleared in
-move_ptes() when it did that
+#define V4L2_H264_DPB_ENTRY_FLAG_VALID          0x01
+#define V4L2_H264_DPB_ENTRY_FLAG_ACTIVE         0x02
+#define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM      0x04
+#define V4L2_H264_DPB_ENTRY_FLAG_FIELD          0x08
 
-                pte = ptep_get_and_clear(mm, old_addr, old_pte);
+enum v4l2_h264_dpb_reference {
+        V4L2_H264_DPB_TOP_REF = 0x1,
+        V4L2_H264_DPB_BOTTOM_REF = 0x2,
+        V4L2_H264_DPB_FRAME_REF = 0x3,
+};
 
-on the previous old pte entries.
+With the following semantics (which should be
+specified in the documentation):
 
-That makes sense to me. Does that match what you see? Because when I
-said it wasn't overlapped, I was really talking about that one single
-pmd move itself not being overlapped.
+* VALID: non-empty DPB entry.
+* ACTIVE: picture is marked as "used for reference" (short-term or long-term).
+* LONG_TERM: picture is marked as "used for long-term".
+* FIELD: picture is a single field, or a complementary field pair. 
 
-> The below patch fixes it and is not warning anymore in 30 minutes of testing
-> so far.
+The v4l2_h264_dpb_reference enum would flag which
+of the fields as used for reference.
 
-So I'm not hugely happy with the patch, I have to admit.
+This enum seems less ambiguous and easier to use for both
+drivers and applications.
 
-Why?
+I am not exactly sure why a driver would ever need to
+configure an "unused for reference" decoded picture
+(i.e. VALID=1, ACTIVE=0), but I guess it's just clearer
+to include this in the interface.
 
-Because:
+Thanks,
+Ezequiel
 
-> +       /* Ensure the temporary stack is shifted by atleast its size */
-> +       if (stack_shift < (vma->vm_end - vma->vm_start))
-> +               stack_shift = (vma->vm_end - vma->vm_start);
+> Regards,
+> Jonas
+> 
+> > > Yes, perhaps that's correct. I was trying to think strictly
+> > > in terms of the H264 semantics, to define a clean interface.
+> > > 
+> > > From the mpp code, looks like the above is enough for rkvdec
+> > > (although I haven't done any tests).
+> > > 
+> > > Ezequiel
+> > > 
+> > > 
+> > > 
 
-This basically overrides the random stack shift done by arch_align_stack().
 
-Yeah, yeah, arch_align_stack() is kind of misnamed. It _used_ to do
-what the name implies it does, which on x86 is to just give the
-minimum ABI-specified 16-byte stack alignment.
-
-But these days, what it really does is say "align the stack pointer,
-but also shift it down by a random amount within 8kB so that the start
-of the stack isn't some repeatable thing that an attacker can
-trivially control with the right argv/envp size.."
-
-I don't think it works right anyway because we then PAGE_ALIGN() it,
-but whatever.
-
-But it looks like what you're doing means that now the size of the
-stack will override that shift, and that means that now the
-randomization is entirely undone. No?
-
-Plus you do it after we've also checked that we haven't grown the
-stack down to below mmap_min_addr().
-
-But maybe I misread that patch.
-
-But I do feel like you figured out why the bug happened, now we're
-just discussing whether the patch is the right thing to do.
-
-Maybe saying "doing the pmd copies for the initial stack isn't
-important, so let's just note this as a special case and get rid of
-the WARN_ON()" might be an alternative solution.
-
-The reason I worried was that I felt like we didn't understand why the
-WARN_ON() happened. Now that I do, I think we could just say "ok,
-don't warn, we know that this can happen, and it's harmless".
-
-Anybody else have any opinions?
-
-               Linus
