@@ -2,247 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED3E21CB30
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 21:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 508AF21CB32
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 21:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbgGLTyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 15:54:02 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:45725 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729249AbgGLTyC (ORCPT
+        id S1729412AbgGLTyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 15:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729249AbgGLTyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 15:54:02 -0400
-Received: from webmail.gandi.net (webmail15.sd4.0x35.net [10.200.201.15])
-        (Authenticated sender: contact@artur-rojek.eu)
-        by relay11.mail.gandi.net (Postfix) with ESMTPA id C3302100005;
-        Sun, 12 Jul 2020 19:53:57 +0000 (UTC)
+        Sun, 12 Jul 2020 15:54:09 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0D6C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 12:54:09 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id p205so2736439iod.8
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 12:54:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=de6iQrx/oRbMS+nuv4pabQpSy99MVLAPOirGXAvbf+0=;
+        b=r+z4HOkrlKCvcLOUJfy2EIVEot+aV6O7ap5LFcedeyiERmWAD0fTwJF4IfqWJIPkPF
+         42psHNnMApX66qFaV274vFXu5I6/+qZ2m/BYCKGtVBrQGPnCxpLuYSudbKs8bD5AgJ4u
+         d2JGgdDonNrxuBaqlYRxbqtHSCooQg9DMUiTCwyDqYjRnLGIW93q1WMuQGBkQU8UOVPi
+         +ll7JS0zD264ZdpR2AgBN9bRo8LOd8LivJEd1eVHp85Im0m9ngi0vVJq5rc74tVKDztP
+         YBFjq7U5oILKcriwGaO0jKl7FCYveudPaCIe6QA3WilL/5H5c5/18PHDFPlH5KK+XH8k
+         GRcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=de6iQrx/oRbMS+nuv4pabQpSy99MVLAPOirGXAvbf+0=;
+        b=eeDr81yT2fVg1IjxclfUButxF9z1A7ow9ujUW6WLmMySHJ89cSVChvOiwO9WrAf+9Z
+         r7Wgk82EWko0acHinEmS5Cua2Ltx+KusGSVokc6jsQgBvR/ShvQy10ixTgEDMsNln6TN
+         Q5A7s0te3zX0qfWEt5AJJpr67qLlHZHZYfPm3yF/pGI60xZzDWJ6+qlryGYKNi/Jp+p2
+         vi2LyFyIBz0hEdofCWnI9FlGOvq9l9z/ohLLCaTkdwPZvZh2gmj35EYVmMEJuw4uYg1s
+         96pBxkynKbfRluhnpoe/GryrHVv+2S6ShgFbQ1ZLiocFodf5820vbfYHO6gO3N07XBQk
+         H3Zg==
+X-Gm-Message-State: AOAM532urI3ODZp8j1AuO363wRaL3KP58EywobSTb8ekLhgjHDOyh0Z+
+        /dBbuxEA7rZqAawOSAZgEZEX5AsJVJDKw0mZTEc=
+X-Google-Smtp-Source: ABdhPJwZ9WCctrJalbxbOy7hOdU6Gw0wmFyc/V6f97/LGp6Y2cE71pnifMMr4A82szrskCFeCQT0RpsC+2KcSrgmMVM=
+X-Received: by 2002:a02:c903:: with SMTP id t3mr71000589jao.30.1594583648965;
+ Sun, 12 Jul 2020 12:54:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sun, 12 Jul 2020 21:53:57 +0200
-From:   Artur Rojek <contact@artur-rojek.eu>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 4/6] iio/adc: ingenic: Retrieve channels list from soc
- data struct
-In-Reply-To: <20200712131130.350fd3c7@archlinux>
-References: <20200709152200.10039-1-contact@artur-rojek.eu>
- <20200709152200.10039-5-contact@artur-rojek.eu>
- <20200712130713.64cd2bac@archlinux> <20200712131130.350fd3c7@archlinux>
-Message-ID: <3f9ced8ead2f13bc73c4345f7751b3d0@artur-rojek.eu>
-X-Sender: contact@artur-rojek.eu
-User-Agent: Roundcube Webmail/1.3.13
+Received: by 2002:a05:6638:1354:0:0:0:0 with HTTP; Sun, 12 Jul 2020 12:54:08
+ -0700 (PDT)
+Reply-To: fudakor@gmail.com
+From:   Pudik Viebeach <pudikviebeach2020@gmail.com>
+Date:   Sun, 12 Jul 2020 19:54:08 +0000
+Message-ID: <CACCkyoE29Fd3cgqjzockbThoz6bTaE4VpiZHYYr0E8xPCdJMNA@mail.gmail.com>
+Subject: I sent to you a message days ago waiting to hear from you urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-12 14:11, Jonathan Cameron wrote:
-> On Sun, 12 Jul 2020 13:07:13 +0100
-> Jonathan Cameron <jic23@kernel.org> wrote:
-> 
->> On Thu,  9 Jul 2020 17:21:58 +0200
->> Artur Rojek <contact@artur-rojek.eu> wrote:
->> 
->> > From: Paul Cercueil <paul@crapouillou.net>
->> >
->> > Instead of having one array of struct iio_chan_spec for all SoCs, and
->> > have some SoCs remove the last item of the array as they can't use it,
->> > have each SoC define its array of supported channels.
->> >
->> > Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->> > Tested-by: Artur Rojek <contact@artur-rojek.eu>
->> Applied to the togreg branch of iio.git and pushed out as testing for
->> autobuilders to play with it.
-> Actually removed from tree again.
-> 
-> Artur, as you sent this patch on to me, you need to sign-off on it
-> so we maintain the DCO related records of how this got to the kernel.
-> You can just reply here to give it.
-
-Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
-
-Thanks,
-Artur
-
-> 
-> Thanks,
-> 
-> Jonathan
-> 
->> 
->> Thanks,
->> 
->> Jonathan
->> 
->> > ---
->> >
->> >  Changes:
->> >
->> >  v8: new patch
->> >
->> >  drivers/iio/adc/ingenic-adc.c | 99 +++++++++++++++++++++++------------
->> >  1 file changed, 65 insertions(+), 34 deletions(-)
->> >
->> > diff --git a/drivers/iio/adc/ingenic-adc.c b/drivers/iio/adc/ingenic-adc.c
->> > index 89019fb59d48..0233a9055c86 100644
->> > --- a/drivers/iio/adc/ingenic-adc.c
->> > +++ b/drivers/iio/adc/ingenic-adc.c
->> > @@ -55,6 +55,8 @@ struct ingenic_adc_soc_data {
->> >  	size_t battery_scale_avail_size;
->> >  	unsigned int battery_vref_mode: 1;
->> >  	unsigned int has_aux2: 1;
->> > +	const struct iio_chan_spec *channels;
->> > +	unsigned int num_channels;
->> >  	int (*init_clk_div)(struct device *dev, struct ingenic_adc *adc);
->> >  };
->> >
->> > @@ -262,6 +264,61 @@ static int jz4770_adc_init_clk_div(struct device *dev, struct ingenic_adc *adc)
->> >  	return 0;
->> >  }
->> >
->> > +static const struct iio_chan_spec jz4740_channels[] = {
->> > +	{
->> > +		.extend_name = "aux",
->> > +		.type = IIO_VOLTAGE,
->> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->> > +				      BIT(IIO_CHAN_INFO_SCALE),
->> > +		.indexed = 1,
->> > +		.channel = INGENIC_ADC_AUX,
->> > +		.scan_index = -1,
->> > +	},
->> > +	{
->> > +		.extend_name = "battery",
->> > +		.type = IIO_VOLTAGE,
->> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->> > +				      BIT(IIO_CHAN_INFO_SCALE),
->> > +		.info_mask_separate_available = BIT(IIO_CHAN_INFO_RAW) |
->> > +						BIT(IIO_CHAN_INFO_SCALE),
->> > +		.indexed = 1,
->> > +		.channel = INGENIC_ADC_BATTERY,
->> > +		.scan_index = -1,
->> > +	},
->> > +};
->> > +
->> > +static const struct iio_chan_spec jz4770_channels[] = {
->> > +	{
->> > +		.extend_name = "aux",
->> > +		.type = IIO_VOLTAGE,
->> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->> > +				      BIT(IIO_CHAN_INFO_SCALE),
->> > +		.indexed = 1,
->> > +		.channel = INGENIC_ADC_AUX,
->> > +		.scan_index = -1,
->> > +	},
->> > +	{
->> > +		.extend_name = "battery",
->> > +		.type = IIO_VOLTAGE,
->> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->> > +				      BIT(IIO_CHAN_INFO_SCALE),
->> > +		.info_mask_separate_available = BIT(IIO_CHAN_INFO_RAW) |
->> > +						BIT(IIO_CHAN_INFO_SCALE),
->> > +		.indexed = 1,
->> > +		.channel = INGENIC_ADC_BATTERY,
->> > +		.scan_index = -1,
->> > +	},
->> > +	{
->> > +		.extend_name = "aux2",
->> > +		.type = IIO_VOLTAGE,
->> > +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->> > +				      BIT(IIO_CHAN_INFO_SCALE),
->> > +		.indexed = 1,
->> > +		.channel = INGENIC_ADC_AUX2,
->> > +		.scan_index = -1,
->> > +	},
->> > +};
->> > +
->> >  static const struct ingenic_adc_soc_data jz4725b_adc_soc_data = {
->> >  	.battery_high_vref = JZ4725B_ADC_BATTERY_HIGH_VREF,
->> >  	.battery_high_vref_bits = JZ4725B_ADC_BATTERY_HIGH_VREF_BITS,
->> > @@ -271,6 +328,8 @@ static const struct ingenic_adc_soc_data jz4725b_adc_soc_data = {
->> >  	.battery_scale_avail_size = ARRAY_SIZE(jz4725b_adc_battery_scale_avail),
->> >  	.battery_vref_mode = true,
->> >  	.has_aux2 = false,
->> > +	.channels = jz4740_channels,
->> > +	.num_channels = ARRAY_SIZE(jz4740_channels),
->> >  	.init_clk_div = jz4725b_adc_init_clk_div,
->> >  };
->> >
->> > @@ -283,6 +342,8 @@ static const struct ingenic_adc_soc_data jz4740_adc_soc_data = {
->> >  	.battery_scale_avail_size = ARRAY_SIZE(jz4740_adc_battery_scale_avail),
->> >  	.battery_vref_mode = true,
->> >  	.has_aux2 = false,
->> > +	.channels = jz4740_channels,
->> > +	.num_channels = ARRAY_SIZE(jz4740_channels),
->> >  	.init_clk_div = NULL, /* no ADCLK register on JZ4740 */
->> >  };
->> >
->> > @@ -295,6 +356,8 @@ static const struct ingenic_adc_soc_data jz4770_adc_soc_data = {
->> >  	.battery_scale_avail_size = ARRAY_SIZE(jz4770_adc_battery_scale_avail),
->> >  	.battery_vref_mode = false,
->> >  	.has_aux2 = true,
->> > +	.channels = jz4770_channels,
->> > +	.num_channels = ARRAY_SIZE(jz4770_channels),
->> >  	.init_clk_div = jz4770_adc_init_clk_div,
->> >  };
->> >
->> > @@ -427,35 +490,6 @@ static const struct iio_info ingenic_adc_info = {
->> >  	.of_xlate = ingenic_adc_of_xlate,
->> >  };
->> >
->> > -static const struct iio_chan_spec ingenic_channels[] = {
->> > -	{
->> > -		.extend_name = "aux",
->> > -		.type = IIO_VOLTAGE,
->> > -		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->> > -				      BIT(IIO_CHAN_INFO_SCALE),
->> > -		.indexed = 1,
->> > -		.channel = INGENIC_ADC_AUX,
->> > -	},
->> > -	{
->> > -		.extend_name = "battery",
->> > -		.type = IIO_VOLTAGE,
->> > -		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->> > -				      BIT(IIO_CHAN_INFO_SCALE),
->> > -		.info_mask_separate_available = BIT(IIO_CHAN_INFO_RAW) |
->> > -						BIT(IIO_CHAN_INFO_SCALE),
->> > -		.indexed = 1,
->> > -		.channel = INGENIC_ADC_BATTERY,
->> > -	},
->> > -	{ /* Must always be last in the array. */
->> > -		.extend_name = "aux2",
->> > -		.type = IIO_VOLTAGE,
->> > -		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->> > -				      BIT(IIO_CHAN_INFO_SCALE),
->> > -		.indexed = 1,
->> > -		.channel = INGENIC_ADC_AUX2,
->> > -	},
->> > -};
->> > -
->> >  static int ingenic_adc_probe(struct platform_device *pdev)
->> >  {
->> >  	struct device *dev = &pdev->dev;
->> > @@ -517,11 +551,8 @@ static int ingenic_adc_probe(struct platform_device *pdev)
->> >  	iio_dev->dev.parent = dev;
->> >  	iio_dev->name = "jz-adc";
->> >  	iio_dev->modes = INDIO_DIRECT_MODE;
->> > -	iio_dev->channels = ingenic_channels;
->> > -	iio_dev->num_channels = ARRAY_SIZE(ingenic_channels);
->> > -	/* Remove AUX2 from the list of supported channels. */
->> > -	if (!adc->soc_data->has_aux2)
->> > -		iio_dev->num_channels -= 1;
->> > +	iio_dev->channels = soc_data->channels;
->> > +	iio_dev->num_channels = soc_data->num_channels;
->> >  	iio_dev->info = &ingenic_adc_info;
->> >
->> >  	ret = devm_iio_device_register(dev, iio_dev);
->> 
+-- 
+ I sent to you a message days ago waiting to hear from you urgently
