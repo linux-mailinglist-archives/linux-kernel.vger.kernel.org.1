@@ -2,51 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E35F21CB1F
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 21:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B693C21CB1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 21:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729359AbgGLTaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 15:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51468 "EHLO mail.kernel.org"
+        id S1729318AbgGLTaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 15:30:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729235AbgGLTaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 15:30:05 -0400
-Subject: Re: [GIT PULL] io_uring fixes for 5.8-rc5
+        id S1729210AbgGLTaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 15:30:04 -0400
+Subject: Re: [GIT PULL] Btrfs fixes for 5.8-rc5, part 2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594582205;
-        bh=ZOTkUzcLVScT992ZTR9i+S0t2YR5xZZgsyFxESPBKWc=;
+        s=default; t=1594582204;
+        bh=SF5iAQeq/11QhFwI1nHYlrFH2RvER9fHSR60c0I3TM0=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=F/ZTLO5Q+YDYx3r642J+KOmsejIyp3Oe1YlwWfWPovjnao1q5fmhflJkGvZph1Q+Q
-         QkO1qHz9Vd0B7Zp8yaQaC3DH6pN1FiLXtbau/2bbVn1Wj/e9ex5tIMxIELDO175lse
-         FyTTFvCu1KvoTRdCpK+HhDQSm24cSTI4HGoIzQR0=
+        b=GJXGeUidSuIGFqE8Q2ehiS9utzXW3w8WDaL14yEOeXrcsfenZ8AHfc884nfTmD2PU
+         eMPKsgeLeeuCDvZtc9XObNv3XM3DBmqlW9wdcIFtU4jBfXqzvNBF3IaVkdA5ryztpO
+         2/bZVn3BejBTRaD/W08tf3C6uZMUKcKdaGvw8B7g=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <4583056e-bec6-f26a-5194-1add6f2b619f@kernel.dk>
-References: <4583056e-bec6-f26a-5194-1add6f2b619f@kernel.dk>
+In-Reply-To: <cover.1594548115.git.dsterba@suse.com>
+References: <cover.1594548115.git.dsterba@suse.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <4583056e-bec6-f26a-5194-1add6f2b619f@kernel.dk>
-X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git
- tags/io_uring-5.8-2020-07-12
-X-PR-Tracked-Commit-Id: 16d598030a37853a7a6b4384cad19c9c0af2f021
+X-PR-Tracked-Message-Id: <cover.1594548115.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.8-rc4-tag
+X-PR-Tracked-Commit-Id: d77765911385b65fc82d74ab71b8983cddfe0b58
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4437dd6e8f71e8b4b5546924a6e48e7edaf4a8dc
-Message-Id: <159458220499.16981.4084002522520617456.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 72c34e8d7099c329c2934c2ac9c886f638b6edaf
+Message-Id: <159458220443.16981.9962622832431601410.pr-tracker-bot@kernel.org>
 Date:   Sun, 12 Jul 2020 19:30:04 +0000
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 12 Jul 2020 10:30:40 -0600:
+The pull request you sent on Sun, 12 Jul 2020 12:14:58 +0200:
 
-> git://git.kernel.dk/linux-block.git tags/io_uring-5.8-2020-07-12
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.8-rc4-tag
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4437dd6e8f71e8b4b5546924a6e48e7edaf4a8dc
+https://git.kernel.org/torvalds/c/72c34e8d7099c329c2934c2ac9c886f638b6edaf
 
 Thank you!
 
