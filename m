@@ -2,70 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D9421C7D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 09:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB97321C7DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 09:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbgGLHMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 03:12:39 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:36458 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgGLHMj (ORCPT
+        id S1728318AbgGLHZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 03:25:58 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47008 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbgGLHZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 03:12:39 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06C73MtK102063
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 07:12:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : from :
- message-id : date : mime-version : content-type :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=z2gFosycv/4d8F4IH6M5EFvOMVfX/xiPl+lWjQfsKQI=;
- b=VwVQ9Z1/H+EhaNpYZ+KmtSUvStjd9CfjSRUMqjdBIzTmjfJTxRhvNYI9zBAp6HiwnBQJ
- jK6CbjYN6spfaeYdfhee10oquReDY/efQuYe15YtVSnqI/vRtGw+dYRoIxCLucgbOjt5
- Q57FVuVxutZahAUUl/azsygW8IDYvjlWtnxNaRGKLA4njntjhtgNb0AY1tHyXEvlyF8K
- jeaP3JMz2oJ+OcyhQv9bILaY9pYkfguh5Uq7C3MEoIiVy9qnldHuGMqDYuvZivM8PulF
- /relsLtQk9cXnFgbjUQH79TwThqyaXcv/Ty5o4hNutKOysXvav4BhAl/qLuuPeNdIuwm lg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 32762n2mty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 07:12:37 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06C73RDw046853
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 07:12:37 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 327q6nmrgh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 07:12:37 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06C7Caws016135
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 07:12:36 GMT
-Received: from [10.0.0.100] (/221.221.54.15)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 12 Jul 2020 00:12:35 -0700
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jacob Wen <jian.w.wen@oracle.com>
-Message-ID: <27b02b33-b713-1a64-c520-e8ce8905387a@oracle.com>
-Date:   Sun, 12 Jul 2020 15:12:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Sun, 12 Jul 2020 03:25:57 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 481441C0BD2; Sun, 12 Jul 2020 09:25:55 +0200 (CEST)
+Date:   Sun, 12 Jul 2020 09:25:54 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>
+Cc:     marek.behun@nic.cz
+Subject: Re: [PATCH RFC] leds: Add support for per-LED device triggers
+Message-ID: <20200712072554.GC4721@duo.ucw.cz>
+References: <20200702144712.1994685-1-megous@megous.com>
+ <20200711100409.GA18901@amd>
+ <20200711210111.5ysijhexgyzyr7u7@core.my.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9679 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=2
- phishscore=0 malwarescore=0 mlxlogscore=736 bulkscore=1 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007120054
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9679 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
- clxscore=1011 priorityscore=1501 mlxlogscore=733 lowpriorityscore=2
- bulkscore=2 suspectscore=2 phishscore=0 adultscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007120054
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="yLVHuoLXiP9kZBkt"
+Content-Disposition: inline
+In-Reply-To: <20200711210111.5ysijhexgyzyr7u7@core.my.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-unsubscribe linux-kernel
 
+--yLVHuoLXiP9kZBkt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat 2020-07-11 23:01:11, Ond=C5=99ej Jirman wrote:
+> Hello Pavel,
+>=20
+> On Sat, Jul 11, 2020 at 12:04:09PM +0200, Pavel Machek wrote:
+> > Hi!
+> >=20
+> > > Some LED controllers may come with an internal HW triggering mechanism
+> > > for the LED and an ability to switch between user control of the LED,
+> > > or the internal control. One such example is AXP20X PMIC, that allows
+> > > wither for user control of the LED, or for internal control based on
+> > > the state of the battery charger.
+> > >=20
+> > > Add support for registering per-LED device trigger.
+> > >=20
+> > > Names of private triggers need to be globally unique, but may clash
+> > > with other private triggers. This is enforced during trigger
+> > > registration. Developers can register private triggers just like
+> > > the normal triggers, by setting private_led to a classdev
+> > > of the LED the trigger is associated with.
+> >=20
+> > What about this? Should address Marek's concerns about resource use...
+>=20
+> What concerns? Marek's concerns seem to be about case where we register
+> a trigger for (each led * self-working configuration) which I admit
+> can be quite a lot of triggers if there are many functions. But that's
+> not my proposal.
+>=20
+> My proposal is to only register on trigger per LED at most. So on my
+> system that's 1 extra trigger and on Marek's system that'd be 48 new
+> triggers. Neither seems like a meaningful problem from resource
+> use perspective.
+
+So.. 48 triggers on Marek's systems means I'll not apply your patch.
+
+Please take a look at my version, it is as simple and avoids that
+problem.
+
+If it works for you, you can submit it properly and I'll likely accept
+it.
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--yLVHuoLXiP9kZBkt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXwq7AgAKCRAw5/Bqldv6
+8lvJAKCU/pM9yDor3xjFX40apgClgoYgeACgsGQ11cWstI1FTKDEPeMIUy2icKc=
+=DZKL
+-----END PGP SIGNATURE-----
+
+--yLVHuoLXiP9kZBkt--
