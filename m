@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10C521C8B4
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 13:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C5621C8E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 13:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728816AbgGLLLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 07:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728717AbgGLLL3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 07:11:29 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AB0C061794;
-        Sun, 12 Jul 2020 04:11:29 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 0B839BC06E;
-        Sun, 12 Jul 2020 11:11:24 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     ysato@users.sourceforge.jp, dalias@libc.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] sh: Replace HTTP links with HTTPS ones
-Date:   Sun, 12 Jul 2020 13:11:18 +0200
-Message-Id: <20200712111118.24916-1-grandmaster@al2klimov.de>
-In-Reply-To: <8b008a69-e73a-43cc-3dba-c1bce90c9902@landley.net>
-References: <8b008a69-e73a-43cc-3dba-c1bce90c9902@landley.net>
+        id S1729025AbgGLLRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 07:17:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725892AbgGLLRD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 07:17:03 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42DF22070B;
+        Sun, 12 Jul 2020 11:17:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594552623;
+        bh=FSu3XfSof6fYL9fVJl6MPhlfCQt1PNdefdPCtBXewlA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=h3oK9is4R7FsQnK9cutzQeCV1hdLg/q/Ie7UVDzbSIIv9y4Y8q9LNAeGtjjASHK3T
+         RsajjowAw1CzUGc0NCF8wjyNHh0yPHHaOj1f3/OUaR1qnqPqgchnNd+SoV1WebBaJT
+         Q1tx3feXbXAxD1f6nETuKC2/NAYoAj5g6TgoA6eA=
+Date:   Sun, 12 Jul 2020 12:16:59 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "charles.stanhope@gmail.com" <charles.stanhope@gmail.com>
+Subject: Re: [PATCH 1/3] iio: dac: ad5592r: fix unbalanced mutex unlocks in
+ ad5592r_read_raw()
+Message-ID: <20200712121659.1792a7dd@archlinux>
+In-Reply-To: <872263d31269c590c34b46ccb6517ec26a330c18.camel@analog.com>
+References: <20200706110259.23947-1-alexandru.ardelean@analog.com>
+        <872263d31269c590c34b46ccb6517ec26a330c18.camel@analog.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Mon, 6 Jul 2020 16:36:09 +0000
+"Ardelean, Alexandru" <alexandru.Ardelean@analog.com> wrote:
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+> On Mon, 2020-07-06 at 14:02 +0300, Alexandru Ardelean wrote:
+> > [External]
+> > 
+> > There are 2 exit paths where the lock isn't held, but try to unlock the
+> > mutex when exiting. In these places we should just return from the
+> > function.
+> > 
+> > A neater approach would be to cleanup the ad5592r_read_raw(), but that
+> > would make this patch more difficult to backport to stable versions.
+> >   
+> 
+> I was a bit too hasty with this.
+> Apologies.
+> I'd like to add a tag here.
+> 
+> Reported-by: Charles Stanhope <charles.stanhope@gmail.com>
+Applied to the fixes-togreg branch of iio.git.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Strange... it seems something went wrong while scanning.
- Now better?
+I'll have to wait for this to trickle through to the togreg branch though
+before I can do anything with the next two patches.  As ever, if I've
+clearly lost them give me a poke!
 
- arch/sh/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Jonathan
 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 9fc2b010e938..2fb9233f031e 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -630,7 +630,7 @@ config SMP
- 	  Y to "Enhanced Real Time Clock Support", below.
- 
- 	  See also <file:Documentation/admin-guide/lockup-watchdogs.rst> and the SMP-HOWTO
--	  available at <http://www.tldp.org/docs.html#howto>.
-+	  available at <https://www.tldp.org/docs.html#howto>.
- 
- 	  If you don't know what to do here, say N.
- 
--- 
-2.27.0
+> 
+> > Fixes 56ca9db862bf3: ("iio: dac: Add support for the AD5592R/AD5593R
+> > ADCs/DACs")
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/iio/dac/ad5592r-base.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iio/dac/ad5592r-base.c b/drivers/iio/dac/ad5592r-
+> > base.c
+> > index 5c4e5ff70380..cc4875660a69 100644
+> > --- a/drivers/iio/dac/ad5592r-base.c
+> > +++ b/drivers/iio/dac/ad5592r-base.c
+> > @@ -413,7 +413,7 @@ static int ad5592r_read_raw(struct iio_dev *iio_dev,
+> >  			s64 tmp = *val * (3767897513LL / 25LL);
+> >  			*val = div_s64_rem(tmp, 1000000000LL, val2);
+> >  
+> > -			ret = IIO_VAL_INT_PLUS_MICRO;
+> > +			return IIO_VAL_INT_PLUS_MICRO;
+> >  		} else {
+> >  			int mult;
+> >  
+> > @@ -444,7 +444,7 @@ static int ad5592r_read_raw(struct iio_dev *iio_dev,
+> >  		ret =  IIO_VAL_INT;
+> >  		break;
+> >  	default:
+> > -		ret = -EINVAL;
+> > +		return -EINVAL;
+> >  	}
+> >  
+> >  unlock:  
 
