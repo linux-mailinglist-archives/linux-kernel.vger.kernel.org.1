@@ -2,110 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D411B21C822
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 10:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62CD21C826
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 10:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728652AbgGLIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 04:44:19 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:36440 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728354AbgGLIoS (ORCPT
+        id S1728409AbgGLIvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 04:51:03 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:51972 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727777AbgGLIvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 04:44:18 -0400
-Received: by mail-io1-f70.google.com with SMTP id g17so6241496iob.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 01:44:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hNr1tIRlvbH20zaT/8dcl97UmNnkqXdA8xn65ajghas=;
-        b=gVE2AzvLzwznTaqfCzGZWeqFEyxxSHPXnCFQfNCmNJ4SZJDF+P47QUb3NMg+tQMSlt
-         CVO/r+jEny9YC3VSlef2HXGm/tgo2F61xiOOAcdLhzfibrojwS1W9xkYenEnWFYe+tWd
-         u95PVH5PLqd/bl4zkWw0ftN7phn2eacWrOD8KbaEYyiw23I+kjmqWIT7CRTS7P6UugBI
-         mVvk4QOWRztlwu3m8gI4P9CvE8oc8RvZRGPt6sqMRAz0XwrKxw7YU+BAVBkGb8h7r6u7
-         KKvOTRqqc9AAjIDf8M7AyRVqHV1R24Hs+q/YivENxNQ0i/sMNOO8Z+5yPTL7uM5zlb30
-         wcsw==
-X-Gm-Message-State: AOAM5325oR5x/9O/TpGVFwDrjjuPWJIsJUGPh/mb7vDFXVzR4Y5CSH7A
-        HQct9tE1s8O/7OuwDyNdZd04rJQdbYpvPqUO5MP+Ka7Lamv4
-X-Google-Smtp-Source: ABdhPJwkGhN2zTd+VnNCjMQ/aUmDoI4F0/coh3xZ0ddSMc0fv2nrT/LNkwAlbZj2Zk5PvNbTbuplIIDPg1K6yUtPrrbaV2gquIrw
+        Sun, 12 Jul 2020 04:51:02 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id AC08A1C0BD2; Sun, 12 Jul 2020 10:50:59 +0200 (CEST)
+Date:   Sun, 12 Jul 2020 10:50:59 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Jiri Slaby <jslaby@suse.com>,
+        kernel@pengutronix.de, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: Re: [PATCH v7 3/3] leds: trigger: implement a tty trigger
+Message-ID: <20200712085059.GA13495@amd>
+References: <20200707165958.16522-1-u.kleine-koenig@pengutronix.de>
+ <20200707165958.16522-4-u.kleine-koenig@pengutronix.de>
+ <20200712082453.GI8295@amd>
+ <20200712084352.GA175558@kroah.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:c80a:: with SMTP id y10mr55355839iof.67.1594543457754;
- Sun, 12 Jul 2020 01:44:17 -0700 (PDT)
-Date:   Sun, 12 Jul 2020 01:44:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000060e43005aa3a9476@google.com>
-Subject: KMSAN: uninit-value in path_openat
-From:   syzbot <syzbot+4191a44ad556eacc1a7a@syzkaller.appspotmail.com>
-To:     glider@google.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="9amGYk9869ThD9tj"
+Content-Disposition: inline
+In-Reply-To: <20200712084352.GA175558@kroah.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following crash on:
+--9amGYk9869ThD9tj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    f0d5ec90 kmsan: apply __no_sanitize_memory to dotraplinkag..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=159636b7100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=86e4f8af239686c6
-dashboard link: https://syzkaller.appspot.com/bug?extid=4191a44ad556eacc1a7a
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1073c0bd100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13974b2f100000
+On Sun 2020-07-12 10:43:52, Greg Kroah-Hartman wrote:
+> On Sun, Jul 12, 2020 at 10:24:53AM +0200, Pavel Machek wrote:
+> > > +++ b/drivers/leds/trigger/ledtrig-tty.c
+> > > @@ -0,0 +1,192 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> >=20
+> > 2.0+ is preffered.
+>=20
+> No it is not, that's up to the developer.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+4191a44ad556eacc1a7a@syzkaller.appspotmail.com
+For code I maintain, yes it is.
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-=====================================================
-BUG: KMSAN: uninit-value in may_create_in_sticky fs/namei.c:1060 [inline]
-BUG: KMSAN: uninit-value in do_open fs/namei.c:3207 [inline]
-BUG: KMSAN: uninit-value in path_openat+0x48be/0x5d50 fs/namei.c:3346
-CPU: 1 PID: 8815 Comm: syz-executor333 Not tainted 5.7.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1c9/0x220 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- may_create_in_sticky fs/namei.c:1060 [inline]
- do_open fs/namei.c:3207 [inline]
- path_openat+0x48be/0x5d50 fs/namei.c:3346
- do_file_open_root+0x469/0xb40 fs/namei.c:3401
- file_open_root+0x6f1/0x760 fs/open.c:1128
- do_handle_open+0xa11/0xe30 fs/fhandle.c:232
- __do_compat_sys_open_by_handle_at fs/fhandle.c:277 [inline]
- __se_compat_sys_open_by_handle_at+0x8e/0xa0 fs/fhandle.c:274
- __ia32_compat_sys_open_by_handle_at+0x4a/0x70 fs/fhandle.c:274
- do_syscall_32_irqs_on arch/x86/entry/common.c:339 [inline]
- do_fast_syscall_32+0x3bf/0x6d0 arch/x86/entry/common.c:398
- entry_SYSENTER_compat+0x68/0x77 arch/x86/entry/entry_64_compat.S:139
-RIP: 0023:0xf7f3bdd9
-Code: 90 e8 0b 00 00 00 f3 90 0f ae e8 eb f9 8d 74 26 00 89 3c 24 c3 90 90 90 90 90 90 90 90 90 90 90 90 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-RSP: 002b:00000000ff8507fc EFLAGS: 00000207 ORIG_RAX: 0000000000000156
-RAX: ffffffffffffffda RBX: 00000000ffffff9c RCX: 0000000020000200
-RDX: 0000000000002f40 RSI: 0000000000000001 RDI: 00000000080bb4c8
-RBP: 0000000000000012 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+--9amGYk9869ThD9tj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Local variable ----nd@do_file_open_root created at:
- do_file_open_root+0xa4/0xb40 fs/namei.c:3385
- do_file_open_root+0xa4/0xb40 fs/namei.c:3385
-=====================================================
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
+iEYEARECAAYFAl8KzvMACgkQMOfwapXb+vJg0gCgiaHo248bMnC/ER1wS0CSxqGG
+PR8Anjb6IckYrVJmK2nIuQvvbra8cq0L
+=0XQO
+-----END PGP SIGNATURE-----
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--9amGYk9869ThD9tj--
