@@ -2,355 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478E121CA70
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 18:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBD321CA24
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 18:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgGLQo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 12:44:27 -0400
-Received: from mga18.intel.com ([134.134.136.126]:54624 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729193AbgGLQoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 12:44:22 -0400
-IronPort-SDR: yHAFp0gwjvgjibAR84HMdoPbwwLC/kpa45WxUn63ho/yu2ePzxUzoRmWoZUxa8WUe/3jiCwIF5
- Ii7SwvPDvn5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9680"; a="135980317"
-X-IronPort-AV: E=Sophos;i="5.75,344,1589266800"; 
-   d="scan'208";a="135980317"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2020 09:44:20 -0700
-IronPort-SDR: 2SX8qQtmmZiVVonypGCUcwfovQaIwUDXjic/vZv/4W3zupTK7nJJ3W+VEs2kx/M+m2M7kJzbF4
- iwZOsfeO61Uw==
-X-IronPort-AV: E=Sophos;i="5.75,344,1589266800"; 
-   d="scan'208";a="359833040"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2020 09:44:20 -0700
-Subject: [PATCH v2 22/22] device-dax: Introduce 'mapping' devices
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-nvdimm@lists.01.org
-Cc:     Vishal Verma <vishal.l.verma@intel.com>, peterz@infradead.org,
-        dave.hansen@linux.intel.com, ard.biesheuvel@linaro.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, hch@lst.de, joao.m.martins@oracle.com
-Date:   Sun, 12 Jul 2020 09:28:04 -0700
-Message-ID: <159457128462.754248.10443613927921016089.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <159457116473.754248.7879464730875147365.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <159457116473.754248.7879464730875147365.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1729017AbgGLQao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 12:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728854AbgGLQan (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 12:30:43 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3593DC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 09:30:43 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id f2so4416942plr.8
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 09:30:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=fduEEX0FvmLvbjM6DjKUizgxNHtjjRTc20Yn5n2GOU4=;
+        b=uF/QHLQpIEkXpsDzG6f4pmhhE6qd8Z/6Z1lxRzQNgJES9td/xuPCsUWjaFhAlRoGqv
+         Kr10QnkY9xqNmEu++t1ZGnBUXDpGTw0i8nQrxwLGrm8IT/wcJXGtx3cDvFfLirVv/RRt
+         /xGMIujy+bPfN2tgXps+2+sid/uBaRwmZ49ZerJSk6VNeuftQP/y/6qPQqgcz/4V4YYL
+         WlwE/eiSuGFKqg6c3aEMg7l9p9Ti9D9MBTFSmuT6xlqiECAkCYWDomuUVEyPh+CSy4Jh
+         VkQ44y3grWAO7hLcaMg+fxkvEO5W/aq8zyoSQIltKTNC9yCKoOGN9+t4v5dn1r/60xDl
+         JTzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=fduEEX0FvmLvbjM6DjKUizgxNHtjjRTc20Yn5n2GOU4=;
+        b=JG6GTh4cHshkev4BiNtpVxngyFKKRC0z8zGPurG5IcI7sAgXH74BFTOBEhXzbaBTXM
+         7u9eIk3pkDJq+t4iIVH/4Uf88MUlj6QDKQexGdLoSM3UYNkP9PYSuPMnWcfnmD3kqSjS
+         Hq1dWcrQz4fMy2bpmR3bA6whrdsRX6MJQyZQewAXjXT9PDyN280f/eBUwodhOrrwP5mt
+         C1HO913OGWymUEdR3ip0RNsOpAo2MeQXofhFpd/TtrzHtPiRb3OpGI8/cNHjzqkV726J
+         z7E1c1BRxQCeToiB7F/DTb5u+pzq3HWK62iORWcLaAejgT0laRaW742BPCdD8g4dlhIf
+         RloQ==
+X-Gm-Message-State: AOAM5334cBh5AM9LsdpgTtqICOwV5lO7muq8qGCG/aGyDr26NkLmAB5E
+        JVkjVN1Acgixj7MtaX1JyOyn56T8k2RxGA==
+X-Google-Smtp-Source: ABdhPJwdHApLEQXID+EPdWAxQbWH/w7vmc3jSPVQLWW6Te77B3fnsXw+3basNFqIrvxZNLWQ0CJAMQ==
+X-Received: by 2002:a17:90a:30c2:: with SMTP id h60mr15281620pjb.23.1594571442362;
+        Sun, 12 Jul 2020 09:30:42 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id n2sm11176025pgv.37.2020.07.12.09.30.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Jul 2020 09:30:41 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [GIT PULL] io_uring fixes for 5.8-rc5
+Message-ID: <4583056e-bec6-f26a-5194-1add6f2b619f@kernel.dk>
+Date:   Sun, 12 Jul 2020 10:30:40 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In support of interrogating the physical address layout of a device with
-dis-contiguous ranges, introduce a sysfs directory with 'start', 'end',
-and 'page_offset' attributes. The alternative is trying to parse
-/proc/iomem, and that file will not reflect the extent layout until the
-device is enabled.
+Hi Linus,
 
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/dax/bus.c         |  191 +++++++++++++++++++++++++++++++++++++++++++++
- drivers/dax/dax-private.h |   14 +++
- 2 files changed, 203 insertions(+), 2 deletions(-)
+Two late fixes again, but they should make -rc5.
 
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index f342e36c69a1..8b6c4ddc5f42 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -579,6 +579,167 @@ struct dax_region *alloc_dax_region(struct device *parent, int region_id,
- }
- EXPORT_SYMBOL_GPL(alloc_dax_region);
- 
-+static void dax_mapping_release(struct device *dev)
-+{
-+	struct dax_mapping *mapping = to_dax_mapping(dev);
-+	struct dev_dax *dev_dax = to_dev_dax(dev->parent);
-+
-+	ida_free(&dev_dax->ida, mapping->id);
-+	kfree(mapping);
-+}
-+
-+static void unregister_dax_mapping(void *data)
-+{
-+	struct device *dev = data;
-+	struct dax_mapping *mapping = to_dax_mapping(dev);
-+	struct dev_dax *dev_dax = to_dev_dax(dev->parent);
-+	struct dax_region *dax_region = dev_dax->region;
-+
-+	dev_dbg(dev, "%s\n", __func__);
-+
-+	device_lock_assert(dax_region->dev);
-+
-+	dev_dax->ranges[mapping->range_id].mapping = NULL;
-+	mapping->range_id = -1;
-+
-+	device_del(dev);
-+	put_device(dev);
-+}
-+
-+static struct dev_dax_range *get_dax_range(struct device *dev)
-+{
-+	struct dax_mapping *mapping = to_dax_mapping(dev);
-+	struct dev_dax *dev_dax = to_dev_dax(dev->parent);
-+	struct dax_region *dax_region = dev_dax->region;
-+
-+	device_lock(dax_region->dev);
-+	if (mapping->range_id < 1) {
-+		device_unlock(dax_region->dev);
-+		return NULL;
-+	}
-+
-+	return &dev_dax->ranges[mapping->range_id];
-+}
-+
-+static void put_dax_range(struct dev_dax_range *dax_range)
-+{
-+	struct dax_mapping *mapping = dax_range->mapping;
-+	struct dev_dax *dev_dax = to_dev_dax(mapping->dev.parent);
-+	struct dax_region *dax_region = dev_dax->region;
-+
-+	device_unlock(dax_region->dev);
-+}
-+
-+static ssize_t start_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct dev_dax_range *dax_range;
-+	ssize_t rc;
-+
-+	dax_range = get_dax_range(dev);
-+	if (!dax_range)
-+		return -ENXIO;
-+	rc = sprintf(buf, "%#llx\n", dax_range->range.start);
-+	put_dax_range(dax_range);
-+
-+	return rc;
-+}
-+static DEVICE_ATTR(start, 0400, start_show, NULL);
-+
-+static ssize_t end_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct dev_dax_range *dax_range;
-+	ssize_t rc;
-+
-+	dax_range = get_dax_range(dev);
-+	if (!dax_range)
-+		return -ENXIO;
-+	rc = sprintf(buf, "%#llx\n", dax_range->range.end);
-+	put_dax_range(dax_range);
-+
-+	return rc;
-+}
-+static DEVICE_ATTR(end, 0400, end_show, NULL);
-+
-+static ssize_t pgoff_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct dev_dax_range *dax_range;
-+	ssize_t rc;
-+
-+	dax_range = get_dax_range(dev);
-+	if (!dax_range)
-+		return -ENXIO;
-+	rc = sprintf(buf, "%#lx\n", dax_range->pgoff);
-+	put_dax_range(dax_range);
-+
-+	return rc;
-+}
-+static DEVICE_ATTR(page_offset, 0400, pgoff_show, NULL);
-+
-+static struct attribute *dax_mapping_attributes[] = {
-+	&dev_attr_start.attr,
-+	&dev_attr_end.attr,
-+	&dev_attr_page_offset.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group dax_mapping_attribute_group = {
-+	.attrs = dax_mapping_attributes,
-+};
-+
-+static const struct attribute_group *dax_mapping_attribute_groups[] = {
-+	&dax_mapping_attribute_group,
-+	NULL,
-+};
-+
-+static struct device_type dax_mapping_type = {
-+	.release = dax_mapping_release,
-+	.groups = dax_mapping_attribute_groups,
-+};
-+
-+static int devm_register_dax_mapping(struct dev_dax *dev_dax, int range_id)
-+{
-+	struct dax_region *dax_region = dev_dax->region;
-+	struct dax_mapping *mapping;
-+	struct device *dev;
-+	int rc;
-+
-+	device_lock_assert(dax_region->dev);
-+
-+	if (dev_WARN_ONCE(&dev_dax->dev, !dax_region->dev->driver,
-+				"region disabled\n"))
-+		return -ENXIO;
-+
-+	mapping = kzalloc(sizeof(*mapping), GFP_KERNEL);
-+	if (!mapping)
-+		return -ENOMEM;
-+	mapping->range_id = range_id;
-+	mapping->id = ida_alloc(&dev_dax->ida, GFP_KERNEL);
-+	if (mapping->id < 0) {
-+		kfree(mapping);
-+		return -ENOMEM;
-+	}
-+	dev_dax->ranges[range_id].mapping = mapping;
-+	dev = &mapping->dev;
-+	device_initialize(dev);
-+	dev->parent = &dev_dax->dev;
-+	dev->type = &dax_mapping_type;
-+	dev_set_name(dev, "mapping%d", mapping->id);
-+	rc = device_add(dev);
-+	if (rc) {
-+		put_device(dev);
-+		return rc;
-+	}
-+
-+	rc = devm_add_action_or_reset(dax_region->dev, unregister_dax_mapping,
-+			dev);
-+	if (rc)
-+		return rc;
-+	return 0;
-+}
-+
- static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
- 		resource_size_t size)
- {
-@@ -588,7 +749,7 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
- 	struct dev_dax_range *ranges;
- 	unsigned long pgoff = 0;
- 	struct resource *alloc;
--	int i;
-+	int i, rc;
- 
- 	device_lock_assert(dax_region->dev);
- 
-@@ -630,6 +791,22 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
- 
- 	dev_dbg(dev, "alloc range[%d]: %pa:%pa\n", dev_dax->nr_range - 1,
- 			&alloc->start, &alloc->end);
-+	/*
-+	 * A dev_dax instance must be registered before mapping device
-+	 * children can be added. Defer to devm_create_dev_dax() to add
-+	 * the initial mapping device.
-+	 */
-+	if (!device_is_registered(&dev_dax->dev))
-+		return 0;
-+
-+	rc = devm_register_dax_mapping(dev_dax, dev_dax->nr_range - 1);
-+	if (rc) {
-+		dev_dbg(dev, "delete range[%d]: %pa:%pa\n", dev_dax->nr_range - 1,
-+				&alloc->start, &alloc->end);
-+		dev_dax->nr_range--;
-+		__release_region(res, alloc->start, resource_size(alloc));
-+		return rc;
-+	}
- 
- 	return 0;
- }
-@@ -698,11 +875,14 @@ static int dev_dax_shrink(struct dev_dax *dev_dax, resource_size_t size)
- 
- 	for (i = dev_dax->nr_range - 1; i >= 0; i--) {
- 		struct range *range = &dev_dax->ranges[i].range;
-+		struct dax_mapping *mapping = dev_dax->ranges[i].mapping;
- 		struct resource *adjust = NULL, *res;
- 		resource_size_t shrink;
- 
- 		shrink = min(to_shrink, range_len(range));
- 		if (shrink >= range_len(range)) {
-+			devm_release_action(dax_region->dev,
-+					unregister_dax_mapping, &mapping->dev);
- 			__release_region(&dax_region->res, range->start,
- 					range_len(range));
- 			dev_dax->nr_range--;
-@@ -1033,9 +1213,9 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
- 	/* a device_dax instance is dead while the driver is not attached */
- 	kill_dax(dax_dev);
- 
--	/* from here on we're committed to teardown via dev_dax_release() */
- 	dev_dax->dax_dev = dax_dev;
- 	dev_dax->target_node = dax_region->target_node;
-+	ida_init(&dev_dax->ida);
- 	kref_get(&dax_region->kref);
- 
- 	inode = dax_inode(dax_dev);
-@@ -1058,6 +1238,13 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
- 	if (rc)
- 		return ERR_PTR(rc);
- 
-+	/* register mapping device for the initial allocation range */
-+	if (dev_dax->nr_range && range_len(&dev_dax->ranges[0].range)) {
-+		rc = devm_register_dax_mapping(dev_dax, 0);
-+		if (rc)
-+			return ERR_PTR(rc);
-+	}
-+
- 	return dev_dax;
- 
- err_alloc_dax:
-diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-index f863287107fd..13780f62b95e 100644
---- a/drivers/dax/dax-private.h
-+++ b/drivers/dax/dax-private.h
-@@ -40,6 +40,12 @@ struct dax_region {
- 	struct device *youngest;
- };
- 
-+struct dax_mapping {
-+	struct device dev;
-+	int range_id;
-+	int id;
-+};
-+
- /**
-  * struct dev_dax - instance data for a subdivision of a dax region, and
-  * data while the device is activated in the driver.
-@@ -47,6 +53,7 @@ struct dax_region {
-  * @dax_dev - core dax functionality
-  * @target_node: effective numa node if dev_dax memory range is onlined
-  * @id: ida allocated id
-+ * @ida: mapping id allocator
-  * @dev - device core
-  * @pgmap - pgmap for memmap setup / lifetime (driver owned)
-  * @nr_range: size of @ranges
-@@ -57,12 +64,14 @@ struct dev_dax {
- 	struct dax_device *dax_dev;
- 	int target_node;
- 	int id;
-+	struct ida ida;
- 	struct device dev;
- 	struct dev_pagemap *pgmap;
- 	int nr_range;
- 	struct dev_dax_range {
- 		unsigned long pgoff;
- 		struct range range;
-+		struct dax_mapping *mapping;
- 	} *ranges;
- };
- 
-@@ -70,4 +79,9 @@ static inline struct dev_dax *to_dev_dax(struct device *dev)
- {
- 	return container_of(dev, struct dev_dax, dev);
- }
-+
-+static inline struct dax_mapping *to_dax_mapping(struct device *dev)
-+{
-+	return container_of(dev, struct dax_mapping, dev);
-+}
- #endif
+- Fix missing msg_name assignment in certain cases (Pavel)
+
+- Correct a previous fix for full coverage (Pavel)
+
+Please pull!
+
+
+The following changes since commit 309fc03a3284af62eb6082fb60327045a1dabf57:
+
+  io_uring: account user memory freed when exit has been queued (2020-07-10 09:18:35 -0600)
+
+are available in the Git repository at:
+
+  git://git.kernel.dk/linux-block.git tags/io_uring-5.8-2020-07-12
+
+for you to fetch changes up to 16d598030a37853a7a6b4384cad19c9c0af2f021:
+
+  io_uring: fix not initialised work->flags (2020-07-12 09:40:50 -0600)
+
+----------------------------------------------------------------
+io_uring-5.8-2020-07-12
+
+----------------------------------------------------------------
+Pavel Begunkov (2):
+      io_uring: fix missing msg_name assignment
+      io_uring: fix not initialised work->flags
+
+ fs/io_uring.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+-- 
+Jens Axboe
 
