@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31D221C978
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 15:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A1821C97B
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 15:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbgGLN1d convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 12 Jul 2020 09:27:33 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:20693 "EHLO
+        id S1729076AbgGLN1p convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 12 Jul 2020 09:27:45 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:53581 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729024AbgGLN1b (ORCPT
+        by vger.kernel.org with ESMTP id S1729038AbgGLN1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 09:27:31 -0400
+        Sun, 12 Jul 2020 09:27:35 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-GPdU_L7BOYmIuunEnC2YHw-1; Sun, 12 Jul 2020 09:27:26 -0400
-X-MC-Unique: GPdU_L7BOYmIuunEnC2YHw-1
+ us-mta-504-Fcc-h9I_OLC4Vyqx_nOcpQ-1; Sun, 12 Jul 2020 09:27:30 -0400
+X-MC-Unique: Fcc-h9I_OLC4Vyqx_nOcpQ-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3F471081;
-        Sun, 12 Jul 2020 13:27:24 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5163E1081;
+        Sun, 12 Jul 2020 13:27:28 +0000 (UTC)
 Received: from krava.redhat.com (unknown [10.40.192.78])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BEEB1944D;
-        Sun, 12 Jul 2020 13:27:21 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 44B871944D;
+        Sun, 12 Jul 2020 13:27:25 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     lkml <linux-kernel@vger.kernel.org>,
@@ -38,9 +38,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         "Paul A. Clarke" <pc@us.ibm.com>,
         Stephane Eranian <eranian@google.com>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCH 14/18] perf metric: Add cache_miss_cycles to metric parse test
-Date:   Sun, 12 Jul 2020 15:26:30 +0200
-Message-Id: <20200712132634.138901-15-jolsa@kernel.org>
+Subject: [PATCH 15/18] perf metric: Add DCache_L2 to metric parse test
+Date:   Sun, 12 Jul 2020 15:26:31 +0200
+Message-Id: <20200712132634.138901-16-jolsa@kernel.org>
 In-Reply-To: <20200712132634.138901-1-jolsa@kernel.org>
 References: <20200712132634.138901-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -54,66 +54,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding test that compute metric with other metrics in it.
-
-  cache_miss_cycles = metric:dcache_miss_cpi + metric:icache_miss_cycles
+Adding test that compute DCache_L2 metrics with other related metrics in it.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/tests/parse-metric.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ tools/perf/tests/parse-metric.c | 71 +++++++++++++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
 diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
-index 8c48251425e1..28f33893338b 100644
+index 28f33893338b..b50e2a3f3b73 100644
 --- a/tools/perf/tests/parse-metric.c
 +++ b/tools/perf/tests/parse-metric.c
-@@ -11,6 +11,8 @@
- #include "debug.h"
- #include "expr.h"
- #include "stat.h"
-+#include <perf/cpumap.h>
-+#include <perf/evlist.h>
- 
- static struct pmu_event pme_test[] = {
- {
-@@ -22,6 +24,18 @@ static struct pmu_event pme_test[] = {
- 			  "( 1 + cpu_clk_unhalted.one_thread_active / cpu_clk_unhalted.ref_xclk ) )))",
- 	.metric_name	= "Frontend_Bound_SMT",
+@@ -36,6 +36,27 @@ static struct pmu_event pme_test[] = {
+ 	.metric_expr	= "(dcache_miss_cpi + icache_miss_cycles)",
+ 	.metric_name	= "cache_miss_cycles",
  },
 +{
-+	.metric_expr	= "l1d\\-loads\\-misses / inst_retired.any",
-+	.metric_name	= "dcache_miss_cpi",
++	.metric_expr	= "L2_RQSTS.DEMAND_DATA_RD_HIT + L2_RQSTS.PF_HIT + L2_RQSTS.RFO_HIT",
++	.metric_name	= "DCache_L2_All_Hits",
 +},
 +{
-+	.metric_expr	= "l1i\\-loads\\-misses / inst_retired.any",
-+	.metric_name	= "icache_miss_cycles",
++	.metric_expr	= "max(L2_RQSTS.ALL_DEMAND_DATA_RD - L2_RQSTS.DEMAND_DATA_RD_HIT, 0) + "
++			  "L2_RQSTS.PF_MISS + L2_RQSTS.RFO_MISS",
++	.metric_name	= "DCache_L2_All_Miss",
 +},
 +{
-+	.metric_expr	= "(dcache_miss_cpi + icache_miss_cycles)",
-+	.metric_name	= "cache_miss_cycles",
++	.metric_expr	= "DCache_L2_All_Hits + DCache_L2_All_Miss",
++	.metric_name	= "DCache_L2_All",
++},
++{
++	.metric_expr	= "d_ratio(DCache_L2_All_Hits, DCache_L2_All)",
++	.metric_name	= "DCache_L2_Hits",
++},
++{
++	.metric_expr	= "d_ratio(DCache_L2_All_Miss, DCache_L2_All)",
++	.metric_name	= "DCache_L2_Misses",
 +},
  };
  
  static struct pmu_events_map map = {
-@@ -162,9 +176,28 @@ static int test_frontend(void)
+@@ -194,10 +215,60 @@ static int test_cache_miss_cycles(void)
  	return 0;
  }
  
-+static int test_cache_miss_cycles(void)
++
++/*
++ * DCache_L2_All_Hits = L2_RQSTS.DEMAND_DATA_RD_HIT + L2_RQSTS.PF_HIT + L2_RQSTS.RFO_HI
++ * DCache_L2_All_Miss = MAX(L2_RQSTS.ALL_DEMAND_DATA_RD - L2_RQSTS.DEMAND_DATA_RD_HIT, 0) +
++ *                      L2_RQSTS.PF_MISS + L2_RQSTS.RFO_MISS
++ * DCache_L2_All      = DCache_L2_All_Hits + DCache_L2_All_Miss
++ * DCache_L2_Hits     = d_ratio(DCache_L2_All_Hits, DCache_L2_All)
++ * DCache_L2_Misses   = d_ratio(DCache_L2_All_Miss, DCache_L2_All)
++ *
++ * L2_RQSTS.DEMAND_DATA_RD_HIT = 100
++ * L2_RQSTS.PF_HIT             = 200
++ * L2_RQSTS.RFO_HI             = 300
++ * L2_RQSTS.ALL_DEMAND_DATA_RD = 400
++ * L2_RQSTS.PF_MISS            = 500
++ * L2_RQSTS.RFO_MISS           = 600
++ *
++ * DCache_L2_All_Hits = 600
++ * DCache_L2_All_Miss = MAX(400 - 100, 0) + 500 + 600 = 1400
++ * DCache_L2_All      = 600 + 1400  = 2000
++ * DCache_L2_Hits     = 600 / 2000  = 0.3
++ * DCache_L2_Misses   = 1400 / 2000 = 0.7
++ */
++static int test_dcache_l2(void)
 +{
 +	double ratio;
 +	struct value vals[] = {
-+		{ .event = "l1d-loads-misses",  .val = 300 },
-+		{ .event = "l1i-loads-misses",  .val = 200 },
-+		{ .event = "inst_retired.any",  .val = 400 },
++		{ .event = "L2_RQSTS.DEMAND_DATA_RD_HIT", .val = 100 },
++		{ .event = "L2_RQSTS.PF_HIT",             .val = 200 },
++		{ .event = "L2_RQSTS.RFO_HIT",            .val = 300 },
++		{ .event = "L2_RQSTS.ALL_DEMAND_DATA_RD", .val = 400 },
++		{ .event = "L2_RQSTS.PF_MISS",            .val = 500 },
++		{ .event = "L2_RQSTS.RFO_MISS",           .val = 600 },
 +		{ 0 },
 +	};
 +
 +	TEST_ASSERT_VAL("failed to compute metric",
-+			compute_metric("cache_miss_cycles", vals, &ratio) == 0);
++			compute_metric("DCache_L2_Hits", vals, &ratio) == 0);
 +
-+	TEST_ASSERT_VAL("cache_miss_cycles failed, wrong ratio",
-+			ratio == 1.25);
++	TEST_ASSERT_VAL("DCache_L2_Hits failed, wrong ratio",
++			ratio == 0.3);
++
++	TEST_ASSERT_VAL("failed to compute metric",
++			compute_metric("DCache_L2_Misses", vals, &ratio) == 0);
++
++	TEST_ASSERT_VAL("DCache_L2_Misses failed, wrong ratio",
++			ratio == 0.7);
 +	return 0;
 +}
 +
@@ -121,7 +150,8 @@ index 8c48251425e1..28f33893338b 100644
  {
  	TEST_ASSERT_VAL("IPC failed", test_ipc() == 0);
  	TEST_ASSERT_VAL("frontend failed", test_frontend() == 0);
-+	TEST_ASSERT_VAL("cache_miss_cycles failed", test_cache_miss_cycles() == 0);
+ 	TEST_ASSERT_VAL("cache_miss_cycles failed", test_cache_miss_cycles() == 0);
++	TEST_ASSERT_VAL("DCache_L2 failed", test_dcache_l2() == 0);
  	return 0;
  }
 -- 
