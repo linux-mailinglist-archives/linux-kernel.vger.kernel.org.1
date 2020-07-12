@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2247121C942
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 14:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF4321C94B
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 14:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728799AbgGLMTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 08:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728339AbgGLMTQ (ORCPT
+        id S1728796AbgGLMkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 08:40:33 -0400
+Received: from mail.stusta.mhn.de ([141.84.69.5]:39686 "EHLO
+        mail.stusta.mhn.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728339AbgGLMkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 08:19:16 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527A6C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 05:19:16 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:8ac:86d7:cb55:d6b9] (port=56026)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe-C4rlyn@I-T-Shed-Studio.eu>)
-        id 1juawr-0003G7-Fr
-        for linux-kernel@vger.kernel.org; Sun, 12 Jul 2020 14:19:13 +0200
-Subject: SDX - breaks a vain cycle.
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe-C4rlyn@I-T-Shed-Studio.eu>
-To:     linux-kernel@vger.kernel.org
-References: <753149da-1411-ca9b-de11-da48e77cc016@I-T-Shed-Studio.eu>
- <395961d5-9198-d3bc-3cfb-aa69bc31c071@I-T-Shed-Studio.eu>
-Message-ID: <f6303475-0f3f-3bba-0242-61eaabdfdedd@I-T-Shed-Studio.eu>
-Date:   Sun, 12 Jul 2020 14:19:12 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 12 Jul 2020 08:40:33 -0400
+X-Greylist: delayed 514 seconds by postgrey-1.27 at vger.kernel.org; Sun, 12 Jul 2020 08:40:32 EDT
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        by mail.stusta.mhn.de (Postfix) with ESMTPSA id 4B4R3s1S8Hz1n;
+        Sun, 12 Jul 2020 14:31:52 +0200 (CEST)
+Date:   Sun, 12 Jul 2020 15:31:51 +0300
+From:   Adrian Bunk <bunk@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     alex.gaynor@gmail.com, geofft@ldpreload.com, jbaublitz@redhat.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: Linux kernel in-tree Rust support
+Message-ID: <20200712123151.GB25970@localhost>
+References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <395961d5-9198-d3bc-3cfb-aa69bc31c071@I-T-Shed-Studio.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An interesting observation I want to share with interested, is a problem 
-in democratic politics where politics end up in a vain cycle due to the 
-peoples interests but lack of knowledge.
+On Thu, Jul 09, 2020 at 11:41:47AM -0700, Nick Desaulniers wrote:
+>...
+> but also a larger question of "should we do
+> this?" or "how might we place limits on where this can be used?"
+>...
 
-Brexit seems to be such a thing, where supposedly people want to return 
-to a nations values, that is monarchic, that again in Englands case is 
-Bal, that again is the Bibles God, again Tor turned cider, and Jesus 
-water to wine scenarios.
+I won't attend, but I do have a topic that should be covered:
 
-In old mesopotamia it is a similar scenario called The Bal Cycle, where 
-kings cycle according to the definitions of their gods.
+Firefox always depends on recent Rust, which forces distributions to 
+update Rust in stable releases.
 
-If we rather focus on a supply and demand principles, which is 
-monotheistic, we break this cycle.
+As an example:
+Ubuntu LTS releases upgrade to a new Rust version every 1-2 months.
+Ubuntu 16.04 started with Rust 1.7.0 and is now at Rust 1.41.0.
 
-And then we also gain the adamic background on fair pay.
+It would not sound good to me if security updates of distribution
+kernels might additionally end up using a different version of the
+Rust compiler - the toolchain for the kernel should be stable.
 
-Serenity,
-Ywe Cærlyn.
+Would Rust usage in the kernel require distributions to ship
+a "Rust for Firefox" and a "Rust for the kernel"?
 
-Den 11.07.2020 17:30, skrev Ywe Cærlyn:
-> I discussed earlier also the monotheistic angle on this, and I think the 
-> easiest route is considering what latin alphabet supports, and using the 
-> four letter definite form, The Ilah here.
-> 
-> Since Islam is an intelligent religion, and the ban on Amanita is the 
-> beginning of civilized principles, and the root of written fair pay 
-> principles, I think this is very good for computing space.
-> 
-> Serenity,
-> Ywe Cærlyn.
-> https://www.youtube.com/channel/UCR3gmLVjHS5A702wo4bol_Q
-> 
-> Den 08.07.2020 13:48, skrev Ywe Cærlyn:
->> A complete correction of the unix name actually becomes SDX, supply 
->> and demand OS.
->>
->> So this is now what it is called, with all things discussed included.
->>
->> Supply and Demand being a monotheistic principle that decides what 
->> happens on the OS, like indeed school teaches.
->>
+> Thanks,
+> ~Nick Desaulniers
+
+cu
+Adrian
