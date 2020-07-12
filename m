@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DFC21CB87
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 23:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F48421CB82
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 23:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729473AbgGLVKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 17:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
+        id S1729445AbgGLVHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 17:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729020AbgGLVKu (ORCPT
+        with ESMTP id S1729339AbgGLVHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 17:10:50 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E65C061794;
-        Sun, 12 Jul 2020 14:10:50 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id u185so5071825pfu.1;
-        Sun, 12 Jul 2020 14:10:50 -0700 (PDT)
+        Sun, 12 Jul 2020 17:07:08 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70F6C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 14:07:07 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id q4so13318978lji.2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 14:07:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lUm4cLOAP9oD2S5sJi8gYSXH2QfTVX1GOTo0+hkX9Vw=;
-        b=O6F8mkCNKikIkJNPo8IyOR2P1aVobZP0JBcpPYikcOWdR66LKUkequBincy02tlLVy
-         hcAxeAoGq+5TjhwWDKaRP716hbMChV0VTPnjGKpbAqNBXei8oDMKRk5YPID0Bvpgomxi
-         TwPLqsGkWFsyaa1/nskgH15LdhQX0iy/0DsXFTrkfuccF6eqWxGbxlqiixcP+v9D0dpK
-         qMapDHxkhgfPi0O62NVbKzUklImQDWs+FNxt0fMVCseWHXNZQWB/8obwHHuqD9N/pSBj
-         o/4ynkYyIXaijTMou/mlVC3ievRIJtiIlRqp6Z4yaS68Of5WCao/vyl54IY1num1+f6X
-         vPPw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lS5XTrwedb/3nokz4lVo12gjMCK4Z6XI2hGCylgUL6I=;
+        b=EAia+4Ip1P74K7zvOGJQNCPkEkazJ01C3M3lYtd7RnTeJAHFGfX8gZ1A7e8HJoAQn1
+         OEmPVc5UaLa+X5RLXNONbvJWMmBnU4RAmlTLr3Uh6i50Q9HmEL3NMmHFxGo8+O871Cg1
+         38ewH3MDsUg0zK1F7CyX8Fy87RvwJSOjs0sz+tDC+0VVxcBwsT6FJBfKvChJTA67D9w3
+         KGphUmmi/vzO6oObyRp6GockyR1ca5LmtSyb0yIZQf2FEtDNEDTaI8h+80YoxCvqn8i6
+         C8R654bnc9RCb05PlLJAlFJxQKFBPLzkD0ZXMc7YrNXFSgrgtqVmgUkJeVshuEGbOuTZ
+         AUJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lUm4cLOAP9oD2S5sJi8gYSXH2QfTVX1GOTo0+hkX9Vw=;
-        b=d1sSnGdiqVmPsisNvSFxRGwACEq/7+EvweJDZT42Sn+a5CZszg/F2t7QgKj5D8zJ8N
-         LgBL/QO3E9aHWgwLsg/GNlh4shpDiDz+bIG8XjyjvZ0ebEdz2gUH0w49D9iPxj87TzTb
-         OM3uCPzeaFzeCauEa3KXMog41hCJCJF1WZQj4lp71oPn0v/cCdWtibn+hHGoTRR8YNN1
-         dTQwW5dBBWDSLSZ04gBFFbcYwVkvrmx2W5oVCb51Xvci5UyzUNV+2oXGHh3+G8WVhbgU
-         QT+WX4wKU3t0hz/HyNAxNvQ5f9M01qfzcwq5lRs2a7MacRN+5NLc+7JR5gZcySEQ4o58
-         /nyQ==
-X-Gm-Message-State: AOAM532QDTifoxkq58QpvDQAkDfowFVLo0alGq5seRCgMTxV3/4PgfpW
-        asJMB1mIzdIc6Up0Di2BBSY=
-X-Google-Smtp-Source: ABdhPJy3vL+y6+PJJgo91UvG6zi9x0U+Z/p1fmB+bUb9pJVVBrqWVjmhlbkhKbSU+d9auRivIZIbrA==
-X-Received: by 2002:a63:c603:: with SMTP id w3mr65777252pgg.284.1594588249757;
-        Sun, 12 Jul 2020 14:10:49 -0700 (PDT)
-Received: from austin-fedora (IP-168-124.cs.nctu.edu.tw. [140.113.168.124])
-        by smtp.gmail.com with ESMTPSA id 204sm12275757pfx.3.2020.07.12.14.10.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2020 14:10:49 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 05:10:45 +0800
-From:   Austin Chang <austin880625@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dm-cache: document zeroing metadata device step
-Message-ID: <20200712211045.GA332416@austin-fedora>
-References: <20200712194039.329035-1-austin880625@gmail.com>
- <20200712195932.GV12769@casper.infradead.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lS5XTrwedb/3nokz4lVo12gjMCK4Z6XI2hGCylgUL6I=;
+        b=HDqN2e9CvMnyQX7CB/wlAB5SCjaMPp99vXE4qfRvJ89tJgTVANumA6udc43rfReXG+
+         2ZKdk6swqf2gQe7X33yPzTDsS1W4z2QQgiU1/sKJM+dlFijPBiVG0f1YgWyCmPAEi+GZ
+         b28GehHgKrVrL205XFEQGOa7/wFXp/X4uQLOk+pNwvJISMkKuaf1rpyFsXP/6l10uu4X
+         iz4cbtInmQgY0Bf5QG9fGqXpHKVWi20kaaE3pBExMI22kkrivRha0uhjT9siDb3Gpcai
+         tt+DK5S2xDSAvNdbTkLzp2nDNfUMuareyvnd2F2++LphHFy2pOepcoAH/aEjWbaMsYkH
+         jyyg==
+X-Gm-Message-State: AOAM5338Smd+riaBjQ4en/cxVSWDvXRCIgzIH5JLYR+cnwdnRpBh7ViE
+        Gxn8rsU8zIwfFoJvocK+Nkf3GFHA
+X-Google-Smtp-Source: ABdhPJyCQwxcVr3RbS0QnV7knavaFbEEkYSPr8tJNJNzyTamoWqPzBwK6gVq1p1v7xkcpFNxYse1pg==
+X-Received: by 2002:a2e:7202:: with SMTP id n2mr22638166ljc.7.1594588024796;
+        Sun, 12 Jul 2020 14:07:04 -0700 (PDT)
+Received: from [192.168.0.160] (10.177.smarthome.spb.ru. [109.71.177.10])
+        by smtp.gmail.com with ESMTPSA id l14sm4175132lfj.13.2020.07.12.14.07.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Jul 2020 14:07:03 -0700 (PDT)
+Subject: Re: [PATCH] staging: r8188eu: remove unused members of struct
+ xmit_buf
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        Soumyajit Deb <debsoumyajit100@gmail.com>,
+        Nishka Dasgupta <nishkadg.linux@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20200712123821.553420-1-insafonov@gmail.com>
+ <895d5f76-832f-62a0-fc82-79b26ca104d4@lwfinger.net>
+From:   Ivan Safonov <insafonov@gmail.com>
+Message-ID: <5e3186e7-4b07-c119-2658-ebe5464a9fa7@gmail.com>
+Date:   Mon, 13 Jul 2020 00:11:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200712195932.GV12769@casper.infradead.org>
+In-Reply-To: <895d5f76-832f-62a0-fc82-79b26ca104d4@lwfinger.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 08:59:32PM +0100, Matthew Wilcox wrote:
-> On Mon, Jul 13, 2020 at 03:40:39AM +0800, Austin Chang wrote:
-> > +  # When using dmsetup directly instead of volume manager like lvm2,
-> > +  # the first 4k of the metadata device should be zeroed to indicate
-> > +  # empty metadata.
-> > +  dd if=/dev/zero of=/dev/mapper/metadata bs=4k conv=notrunc
+On 7/12/20 8:55 PM, Larry Finger wrote:
+> On 7/12/20 7:38 AM, Ivan Safonov wrote:
+>> Remove unused members of struct xmit_buf: alloc_sz, ff_hwaddr,
+>> dma_transfer_addr, bpending and last.
+>>
+>> Signed-off-by: Ivan Safonov <insafonov@gmail.com>
+>> ---
 > 
-> ... don't you need 'count=1' or you'll zero the entire device?
+> Have you tested this change? Previously with this driver, an unused 
+> quantity was removed from one of the structs and the driver failed. 
+> Apparently, the alignment of some other quantity was affected. I do not 
+> think that this change would have that affect; however, you should be 
+> testing whenever the changes are more than cosmetic.
+> 
+> Larry
+> 
 
-Oops, I copied the command I just used since zeroing the whole metadata
-device didn't harm. But 'count=1' should match what I've just written.
-I will send a v2 patch later
+I have not tested this patch.
+
+Ivan.
