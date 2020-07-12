@@ -2,80 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9022F21CABB
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 19:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF08A21CABC
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 19:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgGLRfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 13:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729292AbgGLRfE (ORCPT
+        id S1729292AbgGLRfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 13:35:48 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:17896 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729312AbgGLRfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 13:35:04 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C8FC061794;
-        Sun, 12 Jul 2020 10:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2P9s9WMHjuyrEVlD8c6vf66HLPRFfDPoW3FukDk9Arg=; b=ttG56pHqyraFByXHQtr1//3HmS
-        Jk3uOUBePyelh4BatScoFOFkK/APguqbt/FtLC2noBvglqUDMhf47ZvAa5gxxAqjvSYVqlWBMdaYz
-        xp6ODW9rUmRaMwsF9R8lcxj2Q02P4FXbFXlDxxOJJDjDJqnmy2Oxy09xvutYcbQEnqB3ZGgHFHAca
-        wJrDrqYX6cgzvkqUW0ySg9zPo/8wroo1LAk66uAWkDA4NzbjpUCz7/3gwPfWNxf+PF1ybYHdB9fD0
-        mJ6/M0025ALfYVNmHvEBC5IbhChYt9XAtBOxlKdPj2aO7eDmJMDXPJRbUOSQ1KdUACG1VpKM1r4Z8
-        U5yv19sQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jufsM-00010D-Gg; Sun, 12 Jul 2020 17:34:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B011730047A;
-        Sun, 12 Jul 2020 19:34:52 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A3BD4201C9154; Sun, 12 Jul 2020 19:34:52 +0200 (CEST)
-Date:   Sun, 12 Jul 2020 19:34:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will.deacon@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-arch@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [PATCH 2/2] locking/pvqspinlock: Optionally store lock holder
- cpu into lock
-Message-ID: <20200712173452.GB10769@hirez.programming.kicks-ass.net>
-References: <20200711182128.29130-1-longman@redhat.com>
- <20200711182128.29130-3-longman@redhat.com>
+        Sun, 12 Jul 2020 13:35:47 -0400
+Received: from localhost.localdomain ([93.22.148.52])
+        by mwinf5d89 with ME
+        id 2Hbh2300C183tQl03HbijK; Sun, 12 Jul 2020 19:35:44 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 12 Jul 2020 19:35:44 +0200
+X-ME-IP: 93.22.148.52
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] nl80211: Remove a misleading label in 'nl80211_trigger_scan()'
+Date:   Sun, 12 Jul 2020 19:35:39 +0200
+Message-Id: <20200712173539.274395-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200711182128.29130-3-longman@redhat.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 02:21:28PM -0400, Waiman Long wrote:
-> The previous patch enables native qspinlock to store lock holder cpu
-> number into the lock word when the lock is acquired via the slowpath.
-> Since PV qspinlock uses atomic unlock, allowing the fastpath and
-> slowpath to put different values into the lock word will further slow
-> down the performance. This is certainly undesirable.
-> 
-> The only way we can do that without too much performance impact is to
-> make fastpath and slowpath put in the same value. Still there is a slight
-> performance overhead in the additional access to a percpu variable in the
-> fastpath as well as the less optimized x86-64 PV qspinlock unlock path.
-> 
-> A new config option QUEUED_SPINLOCKS_CPUINFO is now added to enable
-> distros to decide if they want to enable lock holder cpu information in
-> the lock itself for both native and PV qspinlocks across both fastpath
-> and slowpath. If this option is not configureed, only native qspinlocks
-> in the slowpath will put the lock holder cpu information in the lock
-> word.
+Since commit 5fe231e87372 ("cfg80211: vastly simplify locking"), the
+'unlock' label at the end of 'nl80211_trigger_scan()' is useless and
+misleading, because nothing is unlocked there.
 
-And this kills it,.. if it doesn't make unconditional sense, we're not
-going to do this. It's just too ugly.
+Direct return can be used instead of 'err = -<error code>; goto unlock;'
+construction.
+
+Remove this label and simplify code accordingly.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ net/wireless/nl80211.c | 31 ++++++++++---------------------
+ 1 file changed, 10 insertions(+), 21 deletions(-)
+
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index 98bfc6a1c806..a671ee5f5da7 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -7774,10 +7774,8 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
+ 	if (!rdev->ops->scan)
+ 		return -EOPNOTSUPP;
+ 
+-	if (rdev->scan_req || rdev->scan_msg) {
+-		err = -EBUSY;
+-		goto unlock;
+-	}
++	if (rdev->scan_req || rdev->scan_msg)
++		return -EBUSY;
+ 
+ 	if (info->attrs[NL80211_ATTR_SCAN_FREQ_KHZ]) {
+ 		if (!wiphy_ext_feature_isset(wiphy,
+@@ -7790,10 +7788,8 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
+ 
+ 	if (scan_freqs) {
+ 		n_channels = validate_scan_freqs(scan_freqs);
+-		if (!n_channels) {
+-			err = -EINVAL;
+-			goto unlock;
+-		}
++		if (!n_channels)
++			return -EINVAL;
+ 	} else {
+ 		n_channels = ieee80211_get_num_supported_channels(wiphy);
+ 	}
+@@ -7802,29 +7798,23 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
+ 		nla_for_each_nested(attr, info->attrs[NL80211_ATTR_SCAN_SSIDS], tmp)
+ 			n_ssids++;
+ 
+-	if (n_ssids > wiphy->max_scan_ssids) {
+-		err = -EINVAL;
+-		goto unlock;
+-	}
++	if (n_ssids > wiphy->max_scan_ssids)
++		return -EINVAL;
+ 
+ 	if (info->attrs[NL80211_ATTR_IE])
+ 		ie_len = nla_len(info->attrs[NL80211_ATTR_IE]);
+ 	else
+ 		ie_len = 0;
+ 
+-	if (ie_len > wiphy->max_scan_ie_len) {
+-		err = -EINVAL;
+-		goto unlock;
+-	}
++	if (ie_len > wiphy->max_scan_ie_len)
++		return -EINVAL;
+ 
+ 	request = kzalloc(sizeof(*request)
+ 			+ sizeof(*request->ssids) * n_ssids
+ 			+ sizeof(*request->channels) * n_channels
+ 			+ ie_len, GFP_KERNEL);
+-	if (!request) {
+-		err = -ENOMEM;
+-		goto unlock;
+-	}
++	if (!request)
++		return -ENOMEM;
+ 
+ 	if (n_ssids)
+ 		request->ssids = (void *)&request->channels[n_channels];
+@@ -8013,7 +8003,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
+ 		kfree(request);
+ 	}
+ 
+- unlock:
+ 	return err;
+ }
+ 
+-- 
+2.25.1
+
