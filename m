@@ -2,101 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB8B21CBA4
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 23:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165F821CBA0
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 23:49:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729523AbgGLVvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 17:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729249AbgGLVvY (ORCPT
+        id S1729500AbgGLVtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 17:49:47 -0400
+Received: from smtprelay0237.hostedemail.com ([216.40.44.237]:48406 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729249AbgGLVtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 17:51:24 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79F2C061794;
-        Sun, 12 Jul 2020 14:51:24 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id x9so4596190plr.2;
-        Sun, 12 Jul 2020 14:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bRSG2fZqVT4UeuTbHHFbHUXJz86oOqdjBc6h69wvdUc=;
-        b=L3A+6gm/qGuAhnjgrHWu0oqNx2eS3AT7oikDojM4JII4c4BgBEIat3m7S10TmxMxHa
-         wp/YtZP75apPUfRqIbXxcAMMpurIsfUXXyUce/OA2Z9rXU+Imb7Y5mWh5bylEskNqqDS
-         hQrGXgdLeXFGcApZRRrASuE7C1oECkGkygnKn6WyLRRQk1LjT04V95ydK0QMflkIJGVe
-         Wnqi6D3SflhQ1XtIZsa4fxXpgT2TpQbx/fteqAArF5MpX1z10ccVGSI4xHIZR+CHfnYj
-         Itp04XZAnuMyIjOkoi7Ooz/adD/F7wqmk37Ly4+4iX5jAZOu7YzpBwddnDEJSrA1cbiT
-         8QjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bRSG2fZqVT4UeuTbHHFbHUXJz86oOqdjBc6h69wvdUc=;
-        b=NHQl5QY4C3z6oqNF9nl3ZFMmJOfsl3/HN7a2j2hRDA/0nkLKsFc+EEH9IZBJQrMP5V
-         6TvSW/y7jvAv/9iD9QhgJwariYhwoo33sCuWz8ZlxtX3UK28NmNUiux9WWMFz6GwFp8S
-         +ftendQNmuW2G+hIDaTIDxEURrRnuSxEU89QdvZhXmWvuSCrOEFqKBv9MUue1nAR0v6B
-         YaW+WIEF0mZXnSB0q8X7InB/w/oa3ho2uXwP7sNfEBCMpphpmXsEM8J+UDhsMu2TXV1h
-         x4qDRt2YFxEq1L1cUlcW4I4DtxSA3SG1W0WJ5BW7BkIj1dThvA6A6cEu7fpcdU+QknEW
-         K6cg==
-X-Gm-Message-State: AOAM530eWKt8N9pqCsKPwimVJjBZlt4uXBU2Z8wuWkXFK0cj9YAuR0d0
-        uLjTfDqfiS3PXI0j/c2psqyWcorV3tmspg==
-X-Google-Smtp-Source: ABdhPJzq/mlsVJQ8ODerlTyOAvWaF1gJn7w2kQbdx/KvRg3k1SXaWsgUMDIs2/feg500Rkmtx3tDKQ==
-X-Received: by 2002:a17:902:bb8a:: with SMTP id m10mr11610550pls.137.1594590684353;
-        Sun, 12 Jul 2020 14:51:24 -0700 (PDT)
-Received: from austin-fedora.cs.nctu.edu.tw (IP-168-124.cs.nctu.edu.tw. [140.113.168.124])
-        by smtp.googlemail.com with ESMTPSA id a68sm12800964pje.35.2020.07.12.14.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2020 14:51:23 -0700 (PDT)
-From:   Austin Chang <austin880625@gmail.com>
-To:     dm-devel@redhat.com
-Cc:     Austin Chang <austin880625@gmail.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dm-cache: document zeroing metadata device step
-Date:   Mon, 13 Jul 2020 05:47:00 +0800
-Message-Id: <20200712214700.337298-1-austin880625@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200712211045.GA332416@austin-fedora>
-References: <20200712211045.GA332416@austin-fedora>
+        Sun, 12 Jul 2020 17:49:47 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 4EAD8182CED28;
+        Sun, 12 Jul 2020 21:49:46 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6691:7576:7903:8603:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21627:30054:30056:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: silk82_3d001b926ee3
+X-Filterd-Recvd-Size: 1701
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 12 Jul 2020 21:49:45 +0000 (UTC)
+Message-ID: <27660a3e38af43c9e741a4dfcdec50757c32f409.camel@perches.com>
+Subject: Re: [PATCH] decompress_bunzip2: fix sizeof type in start_bunzip
+From:   Joe Perches <joe@perches.com>
+To:     Tom Rix <trix@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>,
+        alain@knaff.lu
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Date:   Sun, 12 Jul 2020 14:49:44 -0700
+In-Reply-To: <9af191c2-0f2c-7637-433a-b557a07590ca@redhat.com>
+References: <20200712125952.8809-1-trix@redhat.com>
+         <639c8ef5-2755-7172-fbb8-ce45c8637feb@zytor.com>
+         <9af191c2-0f2c-7637-433a-b557a07590ca@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inform dmsetup users to zero the first 4k of the metadata device at
-cache creation in examples, just as mentioned in thin-provisioning
-documentation. Instructions to use lvmcache for end users may be added
-as well.
+On Sun, 2020-07-12 at 08:12 -0700, Tom Rix wrote:
+> On 7/12/20 6:09 AM, H. Peter Anvin wrote:
+> > On 2020-07-12 05:59, trix@redhat.com wrote:
+> > > From: Tom Rix <trix@redhat.com>
+[]
+> > > So change the type in sizeof to 'unsigned int'
+> > You must be kidding.
+> > 
+> > If you want to change it, change it to sizeof(bd->dbuf) instead, but this flag
+> > is at least in my opinion a total joke. For sizeof(int) != sizeof(unsigned
+> > int) is beyond bizarre, no matter how stupid the platform.
+> 
+> Using the actual type is more correct that using a type of the same size.
 
-Link: https://www.redhat.com/archives/dm-devel/2013-April/msg00124.html
-Signed-off-by: Austin Chang <austin880625@gmail.com>
----
-Changes in v2:
-- Correct the dd arguments
+Sure.
 
- Documentation/admin-guide/device-mapper/cache.rst | 4 ++++
- 1 file changed, 4 insertions(+)
+But this hardly matters as this same type conversion
+from signed to unsigned or the other way round is
+_everywhere_ in the kernel.
 
-diff --git a/Documentation/admin-guide/device-mapper/cache.rst b/Documentation/admin-guide/device-mapper/cache.rst
-index f15e5254d05b..16a1c96946a6 100644
---- a/Documentation/admin-guide/device-mapper/cache.rst
-+++ b/Documentation/admin-guide/device-mapper/cache.rst
-@@ -330,6 +330,10 @@ https://github.com/jthornber/device-mapper-test-suite
- 
- ::
- 
-+  # When using dmsetup directly instead of volume manager like lvm2,
-+  # the first 4k of the metadata device should be zeroed to indicate
-+  # empty metadata.
-+  dd if=/dev/zero of=/dev/mapper/metadata bs=4k count=1
-   dmsetup create my_cache --table '0 41943040 cache /dev/mapper/metadata \
- 	  /dev/mapper/ssd /dev/mapper/origin 512 1 writeback default 0'
-   dmsetup create my_cache --table '0 41943040 cache /dev/mapper/metadata \
--- 
-2.26.2
+And especially the cc of stable is unnecessary.
+
 
