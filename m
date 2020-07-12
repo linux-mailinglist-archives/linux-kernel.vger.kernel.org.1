@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FC521C908
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 13:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBBB21C92E
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 13:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728888AbgGLLWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 07:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
+        id S1728782AbgGLLy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 07:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728851AbgGLLWO (ORCPT
+        with ESMTP id S1725765AbgGLLy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 07:22:14 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FB3C08C5DD
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 04:22:14 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id k18so9638833qke.4
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 04:22:14 -0700 (PDT)
+        Sun, 12 Jul 2020 07:54:27 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0464C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 04:54:26 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id e11so9703376qkm.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 04:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=landley-net.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=E8uIIGdZhBbt4P5nnZk6uO1gBzr10gvYnt0IgsMFtwA=;
-        b=iDNr7lScSy5HSPnOIvGjT67vtn/XV/mjkEMKKL9E+H+Sokl1bQU7aUHIXX/MWVY3jg
-         nNVrzTs7NVEFiNEt1QE45o9yOzxHr/CD9VbXiZDMYDMbCVIl66/VGhwot2HmJ6V5IOQo
-         wE9kY9jsu9gMIenWCc4Jf9InVdIxwpKQue8q1MMxrJn5evdxNHTLXH1yJA8y6tpmlyBD
-         bICbKgfL2ou6wrIVzODfEoxlLGqVhzx0xZh1yFMYIhhhsPMLlCMr0VuNYhkRaQw9coid
-         al5MOsPTf9ZMUJZ99HfoShOVJhs9OOY9zJKwgA5lsaxnLgrZuG8IbiAH3+zWH0hAqOR4
-         7BJg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=q5QJm9J9nDNxXYVMbEiSgnr/IUJGNJlCdft1RyxSbDE=;
+        b=iOnQjSpk3FBSF+UpSi6KeYqb2UQvDk4Tn99q2GKWtpFkyMQDG6T+XTzV70M1bGSPWP
+         liipHG4v8FWDu+sgf3YEG4nn+n9bvGKil++d135Em8V7y51en4KYYO2anfaicf5U8DjA
+         xq9bxFb95nxhkm95rlA84gO1hSLT/dF2nGQhOFNGXOddjVygerGX/8zgY6h6wHzb4+H3
+         0NjiQFv8lcivye2pdpPkWgXPl7i6fn/Tt5Ck5l8dXyrtXLEJyl8beONg8W8hL+ZZA5GS
+         gCMxn8e61k5sNbhh1XViE40rqOyWaveoVMLJ2otuj9HSDNOJAX88xQ2q1TorGtGpLeoV
+         BZfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E8uIIGdZhBbt4P5nnZk6uO1gBzr10gvYnt0IgsMFtwA=;
-        b=FaVLN1riu+W4T9XoQFdbkqzNiUyzKOsfoPjnznM/RTy7O3QY9dOoyQW+oAXfgm3cHe
-         RosEtxcMnKYg5NX+p9qCQBEGj9m+1eQtDaB9QRp2Y/JUS6OA7iW012SkhA9eFER1KSN+
-         xFIzYMEV8sTtRjcnI289BI5UF2OFTXRrIhHS9F+5X6O9U6p0g0aTOkqA8hI8obcjq/Bp
-         HDFVYwUnkupZnEvwM+MmLV/isb7j6L3U7a+rqfWzbDlL6n3/9GpJ+bZIGoU3KQD3K31C
-         ycUrnhKWKe7NrXHyR/in2BFZtGEVaxqcmWsOAEi0wKfysOG1T2Rj4Zgk3PTIqSzJZpIc
-         E8fw==
-X-Gm-Message-State: AOAM530Qsnpp+D0VvPBXRlZZ55WXO1aUNdeDW6h3wUt13jYaEpS9yUNe
-        KPyz6wQ72j2YxnHhuvfLIA4mXmtTDLdFcA==
-X-Google-Smtp-Source: ABdhPJwXIX/5PdSBHlaLzL5ZpjQeaRL0vF/bU9bzDwuxMCHJrW33wRDReDTH1nuTtATOSSmmX1BSSg==
-X-Received: by 2002:a37:451:: with SMTP id 78mr49538711qke.117.1594552933707;
-        Sun, 12 Jul 2020 04:22:13 -0700 (PDT)
-Received: from ?IPv6:2607:fb90:95b7:945a:fceb:31ff:fed3:9377? ([2607:fb90:95b7:945a:fceb:31ff:fed3:9377])
-        by smtp.gmail.com with ESMTPSA id g1sm16012505qkl.86.2020.07.12.04.22.12
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=q5QJm9J9nDNxXYVMbEiSgnr/IUJGNJlCdft1RyxSbDE=;
+        b=eDv+W5ARNY8pk2mpLIZWr/K1BsZLDrSLrPGEj5ucxZSjf4zVHhzuSRLxNHrgaPRbRF
+         KHXP/UT6z/hK46BNfkPRYUVai64uh8EQUPWSleqB5etJWRAdwX43ZS0CwTI1hglbOrIs
+         yj3vSnb0ZZ48nKWmXjpoK0k+RxhXlXP5IgKhPNPqjSWIw4uN7868NbTLHyBRup+0rSmH
+         H2OVlkwVlX38A3wXCvvMt3SD1IoebOMWCjqC5gi/HPmtwRkUv+rhbYG62pTbx8GqRp1g
+         8LeyKH0L9jC+Q7W4anMJm17qkWntKW2jjfKVn/mtgkyy+KRF9gitfoBOGZMqAGSb8swK
+         czLw==
+X-Gm-Message-State: AOAM530PfvT10hufQYO8Ap9bYvCD2F5mZMJjSH9kIpjOT4/H4IA4K4y3
+        qWlHKv/Mj1theGkUb28rlw==
+X-Google-Smtp-Source: ABdhPJz63yc32e0Lj5lfgL+ZI11bC/p7TlPXaoiJz6FA+MSyD12oHA7qUfkkSOZUWbAcToF+N3UvDA==
+X-Received: by 2002:a37:a80b:: with SMTP id r11mr77143493qke.474.1594554865895;
+        Sun, 12 Jul 2020 04:54:25 -0700 (PDT)
+Received: from [120.7.1.38] ([184.175.21.212])
+        by smtp.gmail.com with ESMTPSA id y16sm15257269qty.1.2020.07.12.04.54.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Jul 2020 04:22:12 -0700 (PDT)
-Subject: Re: [PATCH] sh: Replace HTTP links with HTTPS ones
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        ysato@users.sourceforge.jp, dalias@libc.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <8b008a69-e73a-43cc-3dba-c1bce90c9902@landley.net>
- <20200712111118.24916-1-grandmaster@al2klimov.de>
-From:   Rob Landley <rob@landley.net>
-Message-ID: <14fdab51-0197-1784-9ebb-356a0fd39952@landley.net>
-Date:   Sun, 12 Jul 2020 06:30:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Sun, 12 Jul 2020 04:54:25 -0700 (PDT)
+Subject: Re: kvm crash on 5.7-rc1 and later
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     pbonzini@redhat.com, LKML <linux-kernel@vger.kernel.org>,
+        fenghua.yu@intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <9178ae3e-db32-c64b-7caf-737f3bc3ba8e@gmail.com>
+ <20200711182158.GF597537@hirez.programming.kicks-ass.net>
+ <b1d4e747-0c6d-b9f8-d795-1f4ed9e2420b@intel.com>
+From:   Woody Suwalski <terraluna977@gmail.com>
+Message-ID: <1418b143-7563-9fd7-ad94-bfab86c0862c@gmail.com>
+Date:   Sun, 12 Jul 2020 07:54:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:60.0) Gecko/20100101 Firefox/60.0
+ SeaMonkey/2.53.2
 MIME-Version: 1.0
-In-Reply-To: <20200712111118.24916-1-grandmaster@al2klimov.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <b1d4e747-0c6d-b9f8-d795-1f4ed9e2420b@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/20 6:11 AM, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
+Xiaoyao Li wrote:
+> On 7/12/2020 2:21 AM, Peter Zijlstra wrote:
+>> On Fri, Jul 03, 2020 at 11:15:31AM -0400, Woody Suwalski wrote:
+>>> I am observing a 100% reproducible kvm crash on kernels starting with
+>>> 5.7-rc1, always with the same opcode 0000.
+>>> It happens during wake up from the host suspended state. Worked OK 
+>>> on 5.6
+>>> and older.
+>>> The host is based on Debian testing, Thinkpad T440, i5 cpu.
+>>>
+>>> [   61.576664] kernel BUG at arch/x86/kvm/x86.c:387!
+>>> [   61.576672] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+>>> [   61.576678] CPU: 0 PID: 3851 Comm: qemu-system-x86 Not tainted 
+>>> 5.7-pingu
+>>> #0
+>>> [   61.576680] Hardware name: LENOVO 20B6005JUS/20B6005JUS, BIOS 
+>>> GJETA4WW
+>>> (2.54 ) 03/27/2020
+>>> [   61.576700] RIP: 0010:kvm_spurious_fault+0xa/0x10 [kvm]
+>>>
+>>> Crash results in a dead kvm and occasionally a very unstable system.
+>>>
+>>> Bisecting the problem between v5.6 and v5.7-rc1 points to
+>>>
+>>> commit 6650cdd9a8ccf00555dbbe743d58541ad8feb6a7
+>>> Author: Peter Zijlstra (Intel) <peterz@infradead.org>
+>>> Date:   Sun Jan 26 12:05:35 2020 -0800
+>>>
+>>>      x86/split_lock: Enable split lock detection by kernel
+>>>
+>>> Reversing that patch seems to actually "cure" the issue.
+>>>
+>>> The problem is present in all kernels past 5.7-rc1, however the 
+>>> patch is not
+>>> reversing directly in later source trees, so can not retest the 
+>>> logic on
+>>> recent kernels.
+>>>
+>>> Peter, would you have idea how to debug that (or even better - would 
+>>> you
+>>> happen to know the fix)?
+>>>
+>>> I have attached dmesg logs from a "good" 5.6.9 kernel, and then 
+>>> "bad" 5.7.0
+>>> and 5.8-rc3
+>>
+>> I have no clue about kvm. Nor do I actually have hardware with SLD on.
+>> I've Cc'ed a bunch of folks who might have more ideas.
+>>
+>
+> I think this bug is the same as the one found by Sean, and is already 
+> fixed in 5.8-rc4.
+>
+> https://lore.kernel.org/kvm/20200605192605.7439-1-sean.j.christopherson@intel.com/ 
+>
 
-Trimmed just to the one site without the self-signed certficate: check.
+You are right, kvm works OK on 5.8-rc4.
+The fix will need to be backported to 5.7.
 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Thanks, Woody
 
-Acked-by: Rob Landley <rob@landley.net>
-
-Rob
