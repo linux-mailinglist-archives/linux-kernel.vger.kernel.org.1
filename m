@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7639A21CB56
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 22:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBA821CB65
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 22:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729434AbgGLUeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 16:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
+        id S1729450AbgGLUpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 16:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729050AbgGLUeR (ORCPT
+        with ESMTP id S1729338AbgGLUpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 16:34:17 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27689C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 13:34:17 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id s9so13144480ljm.11
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 13:34:17 -0700 (PDT)
+        Sun, 12 Jul 2020 16:45:15 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6528C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 13:45:14 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id g2so6786329lfb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 13:45:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=M5WjRrnyhLOSbHqzwifF7Te2n7vimCY08qC27XUzpXI=;
-        b=YMyGELxAtRmy9FjeeEk7uVwcYjYoq2mBvgisQy8JZOxvY4g3Bz0EEBukkIZB9h2WDt
-         o5f4gSFHlse0x52UYJ8dJF9LafvSlVPybKv1y9cmVH8Fejf1LwYD3ntamxSNJxh16R/b
-         +YwTWpc1gg7WyUVJiEH6tMOkH+xXjyU4nCVtg=
+        bh=Gl2ce7HaAsxftBSvHTYfVjHKxjss9sGSbVqe5rk7avY=;
+        b=XdGOzuYCMQf2MS3+YU13NwZGxK6zk35LUeoeXKnD4wgMvpsZR4f1qJiIA3edqzxUOI
+         APpAc1SkrdtdB1sVpR+nfZN5esJJgThGv9EAPSKom0yU+I4kNIz9avLhSfpeIbrUgO8N
+         jtms4zy/hQnftZTRS7OTXFDNvfm8EZQlT9LGQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=M5WjRrnyhLOSbHqzwifF7Te2n7vimCY08qC27XUzpXI=;
-        b=Bh64yNP15qtcTtph0ASi73UN2wCZNEFrOmZhZ7bhcXpxjQmD+qLJnzq8+4tQKVmMXk
-         8kQu3v84YcnqUT5WGd4TXsAOtqeTsp4f7RbQcWKmd9/bOZMtxSd/QvjqacK3y3/BfIQ7
-         K5nZBJYnYyD//hXLPqKmCO2UOXJeBHXeFzJEeAapx9LKhONTHh7/38ZoIx+3UKZDfjap
-         r+LaSA4Hk+OnL0y6kXtmKbYcG/KBLgJL5KuZSL6+kGjQZ9tKw5F+W3BjDz38rfp1dFec
-         tygBsOcYlcCYSvTbBoFQYmxa7DuVTwD+FZcFRtxsslR9rFCB0u148ZmOpKlvVBF8ElMl
-         SMUw==
-X-Gm-Message-State: AOAM530kCabDiVUyNx+VwyGXScmoZQf9nnvpHN/HtG3r6ZSwoVyAATK0
-        Ml7DaJZ4qZ2FFDcsN0t2p/sIHxnQues=
-X-Google-Smtp-Source: ABdhPJzpbys1ImyYl0UOXSBzzbD5bxGeeAjTUNxeE3I+bzoPJqLvoJfojPkLA+B0dlFgjbxxWqPrSw==
-X-Received: by 2002:a2e:8145:: with SMTP id t5mr43238190ljg.201.1594586055245;
-        Sun, 12 Jul 2020 13:34:15 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id u26sm5865143lfq.72.2020.07.12.13.34.13
+        bh=Gl2ce7HaAsxftBSvHTYfVjHKxjss9sGSbVqe5rk7avY=;
+        b=iaa2ynjhj/TDAItfxYQnIh4uki3G1M7hx0ehecXJTRCBz9KhUQTkh6VnaNISZ8CoJQ
+         Oc2DGYJCpU2c1oJbKfW3Dp4tNrStAsPQuJwVE+G4RDmZ8Q53So48GQLDhUa3Dr1/+a3y
+         efjQbNGUcLnHqoZt0Iwts4GnxCMa7hVqiB/dq5L2e31aWTfceLOsEOu3bCftNkT1bhDR
+         2sEFKD96IvLsRm9icnerEDWcIcw+RmpP62seVcw3xsXPIzq5y2TwDY1W+ChhuabFB12J
+         vLoQ1uBI5ikIBJFN64z3gvE99zBc7rV6BcDZKn58q8G0TRBAq1hxCWMPIyT6G2wrAT3n
+         Mb8Q==
+X-Gm-Message-State: AOAM531UoHWiNj8g6YOd1krg2kic67i8wZsERkanrfromekmdi+AAEkL
+        vExEuIDOBA32lxGp6c0HORtSTV76a2E=
+X-Google-Smtp-Source: ABdhPJyob8tu58ZTCEDWp7PpHw3zMZWLpoxSZuA8RYPxU4slD5DF5hO2r3eo3ZNZ0R79gRP44r/EGg==
+X-Received: by 2002:a19:ecc:: with SMTP id 195mr50836877lfo.71.1594586713192;
+        Sun, 12 Jul 2020 13:45:13 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id b16sm3630892ljp.124.2020.07.12.13.45.12
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Jul 2020 13:34:13 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id h22so13157237lji.9
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 13:34:13 -0700 (PDT)
-X-Received: by 2002:a2e:9c92:: with SMTP id x18mr40262320lji.70.1594586052886;
- Sun, 12 Jul 2020 13:34:12 -0700 (PDT)
+        Sun, 12 Jul 2020 13:45:12 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id q4so13249132lji.2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 13:45:12 -0700 (PDT)
+X-Received: by 2002:ac2:5a5e:: with SMTP id r30mr51001288lfn.30.1594586313808;
+ Sun, 12 Jul 2020 13:38:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
- <20200712123151.GB25970@localhost> <20200712193944.GA81641@localhost>
-In-Reply-To: <20200712193944.GA81641@localhost>
+References: <CA+G9fYt+6OeibZMD0fP=O3nqFbcN3O4xcLkjq0mpQbZJ2uxB9w@mail.gmail.com>
+ <CAHk-=wgRcFSnQt=T95S+1dPkyvCuVAVGQ37JDvRg41h8hRqO3Q@mail.gmail.com>
+ <CA+G9fYuL=xJPLbQJVzDfXB8uNiCWdXpL=joDsnATEFCzyFh_1g@mail.gmail.com>
+ <CAHk-=wgB6Ds6yqbZZmscKNuAiNR2J0Pf3a8UrbdfewYxHE7SbA@mail.gmail.com>
+ <CA+G9fYudT63yZrkWG+mfKHTcn5mP+Ay6hraEQy3G_4jufztrrA@mail.gmail.com>
+ <CAHk-=whPrCRZpXYKois-0t8MibxH9KVXn=+-O1YVvOA016fqhw@mail.gmail.com>
+ <CA+G9fYusSSrc5G_pZV6Lc-LjjkzQcc3EsLMo+ejSzvyRcMgbqw@mail.gmail.com>
+ <CAHk-=wj_Bqu5n3OJCnKiO_gs97fYEpdx6eSacEw2kv9YnnSv_w@mail.gmail.com> <20200712173052.GU12769@casper.infradead.org>
+In-Reply-To: <20200712173052.GU12769@casper.infradead.org>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 12 Jul 2020 13:33:57 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi=xTmhnL4go0v5BaYRz_81kranLvniA5X8_zq_uCkaOA@mail.gmail.com>
-Message-ID: <CAHk-=wi=xTmhnL4go0v5BaYRz_81kranLvniA5X8_zq_uCkaOA@mail.gmail.com>
-Subject: Re: Linux kernel in-tree Rust support
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     Adrian Bunk <bunk@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        alex.gaynor@gmail.com, geofft@ldpreload.com, jbaublitz@redhat.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+Date:   Sun, 12 Jul 2020 13:38:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiU1LR_H4zV6McCKHKJ0unX1zXLTRXfjSEW2HTDjTce0A@mail.gmail.com>
+Message-ID: <CAHk-=wiU1LR_H4zV6McCKHKJ0unX1zXLTRXfjSEW2HTDjTce0A@mail.gmail.com>
+Subject: Re: WARNING: at mm/mremap.c:211 move_page_tables in i386
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux- stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        lkft-triage@lists.linaro.org, Chris Down <chris@chrisdown.name>,
+        Michel Lespinasse <walken@google.com>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Brian Geffon <bgeffon@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, pugaowei@gmail.com,
+        Jerome Glisse <jglisse@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Hugh Dickins <hughd@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 12:39 PM Josh Triplett <josh@joshtriplett.org> wrote:
+On Sun, Jul 12, 2020 at 10:31 AM Matthew Wilcox <willy@infradead.org> wrote:
 >
-> Rust has hard stability guarantees when upgrading from one stable
-> version to the next.
+> But I don't see any other way to do it.  It's not like I can put THPs
+> in the page cache before fixing the things that won't work.
 
-I think the worry is more about actual compiler bugs, not the set of
-exposed features.
+I agree that sometimes there are bootstrapping issues. Incremental and
+explanatory commits are still better than one big commit that
+introduces a whole new feature and enables it.
 
-That's always been the biggest pain point. Compiler bugs are very
-rare, but they are so incredibly hard to debug when they happen that
-they end up being extra special.
+But if at all possible, at least limit the scope of the new feature
+first, enabling the simplest possible cases as they become possible so
+that there's some incremental testing, and so that bisection can say
+"ok, that baseline worked, but then when XYZ happened, things went
+sideways".
 
-Random "we need this compiler for this feature" is actually fairly
-rare. Yes, the most recent case of me just saying "let's use 4.9
-rather than 4.8" was due to that, but honestly, that's the exception
-rather than the rule, and is to occasionally simplify the code (and
-the test coverage).
+And even when it's a new feature - if it needs cleanup patches to
+other things first, please do that. In fact, please do that as a
+completely independent series that goes into a previous kernel release
+entirely, so that the cleanup and preparatory patches can be
+independently verified by a lot of people who run that _previous_
+kernel, so that the baseline of that cleanup phase is something as
+stable as possible.
 
-The most common case of compiler version checks are due to "compiler
-XYZ is known to mis-compile ABC on target IDK".
-
-                    Linus
+             Linus
