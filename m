@@ -2,94 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F53D21C7D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 09:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D9421C7D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 09:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728345AbgGLHGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 03:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727777AbgGLHGg (ORCPT
+        id S1728223AbgGLHMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 03:12:39 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:36458 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgGLHMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 03:06:36 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795F3C08C5DD
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 00:06:35 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id x11so4130214plo.7
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 00:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=1RQK81eHkq8yc1kfeadt5EYNtBGoEuKdAYto1gErhzc=;
-        b=A0MiyFddpyFuTHAgIm24ljX0OliA2LRGPrT4rgFhlZRP981ZJCrPmM/PDO50nc62e4
-         N/rhxwgbehdppico+uJVvsRJT9GlYP2fKVHP5Z5MVJBKvayG6qoqv6UGA6nEHzSTWixQ
-         vZPl1u5j1pdzi4AQ5mY7DvEaZ5G9CTraR628BLzAysBM8NxX0J7248dt1ctP3cdTGBdk
-         4ki6077MMSTgRqm6lPK9P6tjua8ucbOZ/LQ0tqhWI+k64ZJkdSAkTbe9yA81/eW2enWE
-         /K1jpszIdHOy5nZdvHh0BxyGIc/0mp5mALu5dh0nqHX8V6HzhYNVN3zUfH8SnB0eYmXo
-         whDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=1RQK81eHkq8yc1kfeadt5EYNtBGoEuKdAYto1gErhzc=;
-        b=fgugp6HAotYA3n52TL+XhVXq3Z1yyRgl0cjRlozau4XY+R2nDjLYZZ7q8UgsdtDiC8
-         JSk0Mz4YFmSlrEQcRbeaJPxxsKAv6OWV4LBTUG7pKrEzQVpncxTCAQE36QCWpHMn9y+k
-         aADYL30cA+BTVDua09hjbSHwKJ3JenYiQbOrPUWQaZehXMbEusb5B5sg3/T4IBCv5a6/
-         skPMKOtaF/S+XkEhaSKDjs0EnlHir8Zne8l7ljH3iYdPvbZpIbm/R7l/98f5MRylRi/0
-         oeT7QM1HGHrhl95uJnYNL0/USfyfcLqWa0sK8T8QeUbrTISWIAtiVmFEktVUy6Geg8eh
-         Zl6g==
-X-Gm-Message-State: AOAM531xS26NnyeNs92PAAVSWJDbUZaZNRUQ4fmPuJljspYoo5whXRTs
-        XpuupoBxrGbnTEd5zAI5taA=
-X-Google-Smtp-Source: ABdhPJygtYo9+UK8o8C4+DXRTtWC3sAw9KxKlFMCS9b4ib9pPE7diULd0c7YtsZYkelgaMh1SkiiFQ==
-X-Received: by 2002:a17:90a:fd12:: with SMTP id cv18mr14477227pjb.66.1594537594990;
-        Sun, 12 Jul 2020 00:06:34 -0700 (PDT)
-Received: from saurav ([203.187.233.95])
-        by smtp.gmail.com with ESMTPSA id g8sm10338465pgr.70.2020.07.12.00.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2020 00:06:34 -0700 (PDT)
-Date:   Sun, 12 Jul 2020 12:36:28 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        gregkh@linuxfoundation.org, saurav.girepunje@gmail.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] Staging: comedi: driver: Remove condition with no effect
-Message-ID: <20200712070628.GA18340@saurav>
+        Sun, 12 Jul 2020 03:12:39 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06C73MtK102063
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 07:12:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : from :
+ message-id : date : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=z2gFosycv/4d8F4IH6M5EFvOMVfX/xiPl+lWjQfsKQI=;
+ b=VwVQ9Z1/H+EhaNpYZ+KmtSUvStjd9CfjSRUMqjdBIzTmjfJTxRhvNYI9zBAp6HiwnBQJ
+ jK6CbjYN6spfaeYdfhee10oquReDY/efQuYe15YtVSnqI/vRtGw+dYRoIxCLucgbOjt5
+ Q57FVuVxutZahAUUl/azsygW8IDYvjlWtnxNaRGKLA4njntjhtgNb0AY1tHyXEvlyF8K
+ jeaP3JMz2oJ+OcyhQv9bILaY9pYkfguh5Uq7C3MEoIiVy9qnldHuGMqDYuvZivM8PulF
+ /relsLtQk9cXnFgbjUQH79TwThqyaXcv/Ty5o4hNutKOysXvav4BhAl/qLuuPeNdIuwm lg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 32762n2mty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 07:12:37 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06C73RDw046853
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 07:12:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 327q6nmrgh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 07:12:37 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06C7Caws016135
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 07:12:36 GMT
+Received: from [10.0.0.100] (/221.221.54.15)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 12 Jul 2020 00:12:35 -0700
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Jacob Wen <jian.w.wen@oracle.com>
+Message-ID: <27b02b33-b713-1a64-c520-e8ce8905387a@oracle.com>
+Date:   Sun, 12 Jul 2020 15:12:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9679 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=2
+ phishscore=0 malwarescore=0 mlxlogscore=736 bulkscore=1 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007120054
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9679 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ clxscore=1011 priorityscore=1501 mlxlogscore=733 lowpriorityscore=2
+ bulkscore=2 suspectscore=2 phishscore=0 adultscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007120054
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove below warning in das1800.c
-WARNING: possible condition with no effect (if == else)
-
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/comedi/drivers/das1800.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/drivers/staging/comedi/drivers/das1800.c b/drivers/staging/comedi/drivers/das1800.c
-index f16aa7e9f4f3..7ab72e83d3d0 100644
---- a/drivers/staging/comedi/drivers/das1800.c
-+++ b/drivers/staging/comedi/drivers/das1800.c
-@@ -1299,12 +1299,6 @@ static int das1800_attach(struct comedi_device *dev,
- 			outb(DAC(i), dev->iobase + DAS1800_SELECT);
- 			outw(0, dev->iobase + DAS1800_DAC);
- 		}
--	} else if (board->id == DAS1800_ID_AO) {
--		/*
--		 * 'ao' boards have waveform analog outputs that are not
--		 * currently supported.
--		 */
--		s->type		= COMEDI_SUBD_UNUSED;
- 	} else {
- 		s->type		= COMEDI_SUBD_UNUSED;
- 	}
--- 
-2.20.1
+unsubscribe linux-kernel
 
