@@ -2,105 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8570121C994
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 15:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D4E21C99E
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 15:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729013AbgGLNtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 09:49:14 -0400
-Received: from vps.xff.cz ([195.181.215.36]:55000 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728861AbgGLNtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 09:49:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1594561752; bh=XvLcOxUWR9hqFcJloysEBIdGyf9K07fFo/kigqU6iic=;
-        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
-        b=sFk1Nqx9YZy3QbA+VLrwwPKmXDszKuOWpY1PlORUBzNlAQRMRGSXHnxvyBIF12nbN
-         aBHd+8/m9Tbah/Hw0K/iZht8n9rB0jPDahT1rHNNw9awM/JNySNZ4OZ/lVjAvGoSz3
-         f/ieb8aHXWNRgzInQ8amSkDLXK1zX3ed2BmeaITE=
-Date:   Sun, 12 Jul 2020 15:49:11 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-kernel@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>,
-        marek.behun@nic.cz
-Subject: Re: [PATCH RFC] leds: Add support for per-LED device triggers
-Message-ID: <20200712134911.r3lig4hgyqhmslth@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>,
-        marek.behun@nic.cz
-References: <20200702144712.1994685-1-megous@megous.com>
- <20200711100409.GA18901@amd>
- <20200711210111.5ysijhexgyzyr7u7@core.my.home>
- <20200712072554.GC4721@duo.ucw.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200712072554.GC4721@duo.ucw.cz>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
+        id S1728903AbgGLN5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 09:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728844AbgGLN5w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 09:57:52 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF4EC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 06:57:52 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id d194so4814729pga.13
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 06:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=t1DD21hpudIl7FcxmIGxgkbZcJ2yGSiWAAezO5F79aU=;
+        b=CZUYXIBZoVXVChixa0O/K3kXm7Ewilu0RFQ7/4JPxQxJaX8gN28WnJm5kSrLnTpUsN
+         2KJbBZCFQ0tzbK1A/DjuWDwic1QLIYXrOpN19GqYSE4/k0C8Kada89vUPDEGb3Ik2opQ
+         RGauVFFXSonL5FOtD6hPw/SXjSbEtD6NkRjRcXYRBrhYLOrFQuJKRNlFSSHGyM/xtMnU
+         etnecfT2zZSfIaVJQqJnTymtuLYpBxi+dSoGcB5c5hemrNtV4j1S+qlL3LxA+70gDUKn
+         RIwGsPyQLjvqFEKa6IOStVyD04Ejj456//Ut7v7lyQ3FvjeBWYEeUDm1OQtfdrBDHGsT
+         zE8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=t1DD21hpudIl7FcxmIGxgkbZcJ2yGSiWAAezO5F79aU=;
+        b=iQPHtYRZXH+gOII/Jdyi4ZBnbY2TcbRVvBJTTy1Z5x90sgzM9Ye8f4SOB+kXCyQgFF
+         nSrXGwi0+lcrxhJ3QHLNra9k1vNu1RnU0dilChbOD+PyxHIUYmE8hDgYAnbGnRebd1/+
+         7BaFlkKTX5NCMik03dq0XojVJKRX1o1AwTmDZkSKlY2cAtX4AbdZc6O7M69os+acpitD
+         4/XSI8W1BHRFjYfesX6PBfNOrNRI0qaTIqKJLMh0qy6dD9iULNgcffLdh0H1OC8JDync
+         9aIAUQjLunJBaLe2oPCdvC7ESPMHZntJRczR1qrW9gTmLSVDITAJQn2f+GTbH4uQurO8
+         SILQ==
+X-Gm-Message-State: AOAM5329NGhYXLt4SrbT0GRSfc2i5hDwSveUOI/yL1CPDEjfv5KtM31V
+        l6HDsC5gMFEmVxxM7LswahY=
+X-Google-Smtp-Source: ABdhPJw7BzcwvU8d0O+5AuIwLNw0BQrrJ8O1PDi9wenGTXVIm6dEfVg1zNrbKn7/ozhP/RJYPCcM0w==
+X-Received: by 2002:a63:b546:: with SMTP id u6mr28953675pgo.381.1594562271696;
+        Sun, 12 Jul 2020 06:57:51 -0700 (PDT)
+Received: from rapsodo.Rapsodo.com ([101.100.171.87])
+        by smtp.gmail.com with ESMTPSA id o4sm11682022pjo.16.2020.07.12.06.57.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jul 2020 06:57:50 -0700 (PDT)
+From:   Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Shivamurthy Shastri <sshivamurthy@micron.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+Subject: [PATCH] mtd: spinand: micron: add support for MT29F2G01AAAED
+Date:   Sun, 12 Jul 2020 21:59:42 +0800
+Message-Id: <20200712135942.10904-1-nthirumalesha7@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The MT29F2G01AAAED is a single die, 2Gb Micron SPI NAND Flash with 4-bit
+ECC
 
-On Sun, Jul 12, 2020 at 09:25:54AM +0200, Pavel Machek wrote:
-> On Sat 2020-07-11 23:01:11, Ondřej Jirman wrote:
-> > Hello Pavel,
-> > 
-> > On Sat, Jul 11, 2020 at 12:04:09PM +0200, Pavel Machek wrote:
-> > > Hi!
-> > > 
-> > > > Some LED controllers may come with an internal HW triggering mechanism
-> > > > for the LED and an ability to switch between user control of the LED,
-> > > > or the internal control. One such example is AXP20X PMIC, that allows
-> > > > wither for user control of the LED, or for internal control based on
-> > > > the state of the battery charger.
-> > > > 
-> > > > Add support for registering per-LED device trigger.
-> > > > 
-> > > > Names of private triggers need to be globally unique, but may clash
-> > > > with other private triggers. This is enforced during trigger
-> > > > registration. Developers can register private triggers just like
-> > > > the normal triggers, by setting private_led to a classdev
-> > > > of the LED the trigger is associated with.
-> > > 
-> > > What about this? Should address Marek's concerns about resource use...
-> > 
-> > What concerns? Marek's concerns seem to be about case where we register
-> > a trigger for (each led * self-working configuration) which I admit
-> > can be quite a lot of triggers if there are many functions. But that's
-> > not my proposal.
-> > 
-> > My proposal is to only register on trigger per LED at most. So on my
-> > system that's 1 extra trigger and on Marek's system that'd be 48 new
-> > triggers. Neither seems like a meaningful problem from resource
-> > use perspective.
-> 
-> So.. 48 triggers on Marek's systems means I'll not apply your patch.
-> 
-> Please take a look at my version, it is as simple and avoids that
-> problem.
+Signed-off-by: Thirumalesha Narasimhappa <nthirumalesha7@gmail.com>
+---
+ drivers/mtd/nand/spi/micron.c | 77 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
 
-I would, but I don't see your version linked or mentioned in this thread.
-
-thank you and regards,
-	o.
-
-> If it works for you, you can submit it properly and I'll likely accept
-> it.
-> 
-> Best regards,
-> 									Pavel
-> -- 
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
-
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 5d370cfcdaaa..7e0b61d7b90f 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -17,6 +17,7 @@
+ #define MICRON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
+ #define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
+ #define MICRON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
++#define MICRON_STATUS_ECC_1TO4_BITFLIPS	(1 << 4)
+ 
+ #define MICRON_CFG_CR			BIT(0)
+ 
+@@ -44,6 +45,19 @@ static SPINAND_OP_VARIANTS(update_cache_variants,
+ 		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
+ 		SPINAND_PROG_LOAD(false, 0, NULL, 0));
+ 
++/* Micron  MT29F2G01AAAED Device */
++static SPINAND_OP_VARIANTS(read_cache_variants_mt29f2g01aaaed,
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants_mt29f2g01aaaed,
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants_mt29f2g01aaaed,
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
+ static int micron_8_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				  struct mtd_oob_region *region)
+ {
+@@ -69,11 +83,41 @@ static int micron_8_ooblayout_free(struct mtd_info *mtd, int section,
+ 	return 0;
+ }
+ 
++static int mt29f2g01aaaed_ooblayout_ecc(struct mtd_info *mtd, int section,
++					struct mtd_oob_region *region)
++{
++	if (section >= 4)
++		return -ERANGE;
++
++	region->offset = (section * 16) + 8;
++	region->length = 8;
++
++	return 0;
++}
++
++static int mt29f2g01aaaed_ooblayout_free(struct mtd_info *mtd, int section,
++					 struct mtd_oob_region *region)
++{
++	if (section >= 4)
++		return -ERANGE;
++
++	/* Reserve 2 bytes for the BBM. */
++	region->offset = (section * 16) + 2;
++	region->length = 6;
++
++	return 0;
++}
++
+ static const struct mtd_ooblayout_ops micron_8_ooblayout = {
+ 	.ecc = micron_8_ooblayout_ecc,
+ 	.free = micron_8_ooblayout_free,
+ };
+ 
++static const struct mtd_ooblayout_ops mt29f2g01aaaed_ooblayout = {
++	.ecc = mt29f2g01aaaed_ooblayout_ecc,
++	.free = mt29f2g01aaaed_ooblayout_free,
++};
++
+ static int micron_select_target(struct spinand_device *spinand,
+ 				unsigned int target)
+ {
+@@ -114,6 +158,27 @@ static int micron_8_ecc_get_status(struct spinand_device *spinand,
+ 	return -EINVAL;
+ }
+ 
++static int mt29f2g01aaaed_ecc_get_status(struct spinand_device *spinand,
++					 u8 status)
++{
++	switch (status & MICRON_STATUS_ECC_MASK) {
++	case STATUS_ECC_NO_BITFLIPS:
++		return 0;
++
++	case STATUS_ECC_UNCOR_ERROR:
++		return -EBADMSG;
++
++	/* 1 to 4-bit error detected and corrected */
++	case MICRON_STATUS_ECC_1TO4_BITFLIPS:
++		return 4;
++
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
++
+ static const struct spinand_info micron_spinand_table[] = {
+ 	/* M79A 2Gb 3.3V */
+ 	SPINAND_INFO("MT29F2G01ABAGD",
+@@ -217,6 +282,18 @@ static const struct spinand_info micron_spinand_table[] = {
+ 		     SPINAND_ECCINFO(&micron_8_ooblayout,
+ 				     micron_8_ecc_get_status),
+ 		     SPINAND_SELECT_TARGET(micron_select_target)),
++	/* M70A 2Gb 3.3V */
++	SPINAND_INFO("MT29F2G01AAAED",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x9F),
++		     NAND_MEMORG(1, 2048, 256, 64, 2048, 80, 2, 1, 1),
++		     NAND_ECCREQ(4, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants_mt29f2g01aaaed,
++					      &write_cache_variants_mt29f2g01aaaed,
++					      &update_cache_variants_mt29f2g01aaaed),
++		     0,
++		     SPINAND_ECCINFO(&mt29f2g01aaaed_ooblayout,
++				     mt29f2g01aaaed_ecc_get_status),
++		     SPINAND_SELECT_TARGET(micron_select_target)),
+ };
+ 
+ static int micron_spinand_init(struct spinand_device *spinand)
+-- 
+2.17.1
 
