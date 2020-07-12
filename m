@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEC621CA10
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 17:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59F421CA12
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 17:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbgGLP4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 11:56:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44890 "EHLO mail.kernel.org"
+        id S1729123AbgGLP6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 11:58:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728862AbgGLP4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 11:56:35 -0400
+        id S1728854AbgGLP6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 11:58:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C862B2068F;
-        Sun, 12 Jul 2020 15:56:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0F622068F;
+        Sun, 12 Jul 2020 15:58:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594569395;
-        bh=qytnBpeo5SVmmrKysDJrmaQrOV+4aUUXlH6YcA2atXo=;
+        s=default; t=1594569493;
+        bh=T50MoUDXCTgUobnkzSCiggjgrR6/+SkklTXlLKXrfnE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jLK9c0cwUji2AL9QM0O8ri9t+/eN7uc0xqTiv5xKlXcMek+++TydqAOy4wMJsy2MP
-         aUxAZazB2kdCCJWcLXBenUDqGT8Ir0aHfHuFv8LqrHq4WW9hag7otuCUoBGUKiS4pT
-         RguLSdz2S16fHqAYdlM6fWLphaBb1i8YLK+uG6zY=
-Date:   Sun, 12 Jul 2020 17:56:31 +0200
+        b=ZXvJSsggwPMy7Y3puVS98YxQihy52sRicDRsD/d4da0d1hbL9oiae8cSgkr7J84P7
+         1NYOLr1STd7dfl4QbnHE6uazOIuzyhqCUdeecWAkkV0A6xHCQ9pPJZOyTCKOnOStJj
+         WjpWYKKMXrMT44UG18ign8QOKm5OX5UAOr+LIWmw=
+Date:   Sun, 12 Jul 2020 17:58:10 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Gage Eads <gage.eads@intel.com>
 Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
         magnus.karlsson@intel.com, bjorn.topel@intel.com
 Subject: Re: [PATCH 01/20] dlb2: add skeleton for DLB 2.0 driver
-Message-ID: <20200712155631.GB186665@kroah.com>
+Message-ID: <20200712155810.GC186665@kroah.com>
 References: <20200712134331.8169-1-gage.eads@intel.com>
  <20200712134331.8169-2-gage.eads@intel.com>
 MIME-Version: 1.0
@@ -42,58 +42,20 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sun, Jul 12, 2020 at 08:43:12AM -0500, Gage Eads wrote:
-> +config INTEL_DLB2
-> +       tristate "Intel(R) Dynamic Load Balancer 2.0 Driver"
-> +       depends on 64BIT && PCI && X86
-
-Why just that platform?  What about CONFIG_TEST for everything else?
-
-> +       help
-> +         This driver supports the Intel(R) Dynamic Load Balancer 2.0 (DLB 2.0)
-> +         device.
-
-Are you sure you need the (R) in Kconfig texts everywhere?
-
-And a bit more info here would be nice, as no one knows if they have
-this or not, right?
-
-> --- /dev/null
-> +++ b/drivers/misc/dlb2/dlb2_hw_types.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-
-Why dual licensed?  I thought that Intel told me they were not going to
-do that anymore for any kernel code going forward as it was just such a
-pain and never actually helped anything.  Has that changed?
-
-
-> + * Copyright(c) 2016-2020 Intel Corporation
-> + */
+> +static int dlb2_probe(struct pci_dev *pdev,
+> +		      const struct pci_device_id *pdev_id)
+> +{
+> +	struct dlb2_dev *dlb2_dev;
+> +	int ret;
 > +
-> +#ifndef __DLB2_HW_TYPES_H
-> +#define __DLB2_HW_TYPES_H
-> +
-> +#define DLB2_MAX_NUM_VDEVS 16
-> +#define DLB2_MAX_NUM_DOMAINS 32
-> +#define DLB2_MAX_NUM_LDB_QUEUES 32 /* LDB == load-balanced */
-> +#define DLB2_MAX_NUM_DIR_QUEUES 64 /* DIR == directed */
-> +#define DLB2_MAX_NUM_LDB_PORTS 64
-> +#define DLB2_MAX_NUM_DIR_PORTS DLB2_MAX_NUM_DIR_QUEUES
-> +#define DLB2_MAX_NUM_LDB_CREDITS 8192
-> +#define DLB2_MAX_NUM_DIR_CREDITS 2048
-> +#define DLB2_MAX_NUM_HIST_LIST_ENTRIES 2048
-> +#define DLB2_MAX_NUM_AQED_ENTRIES 2048
-> +#define DLB2_MAX_NUM_QIDS_PER_LDB_CQ 8
-> +#define DLB2_MAX_NUM_SEQUENCE_NUMBER_GROUPS 2
-> +#define DLB2_MAX_NUM_SEQUENCE_NUMBER_MODES 5
-> +#define DLB2_QID_PRIORITIES 8
-> +#define DLB2_NUM_ARB_WEIGHTS 8
-> +#define DLB2_MAX_WEIGHT 255
-> +#define DLB2_NUM_COS_DOMAINS 4
-> +#define DLB2_MAX_CQ_COMP_CHECK_LOOPS 409600
-> +#define DLB2_MAX_QID_EMPTY_CHECK_LOOPS (32 * 64 * 1024 * (800 / 30))
-> +#define DLB2_HZ 800000000
+> +	dev_dbg(&pdev->dev, "probe\n");
 
-No tabs?  How easy is that to read?  :(
+ftrace is your friend.  Remove all of your debugging code now, you don't
+need it anymore, especially for stuff like this where you didn't even
+need it in the first place :(
+
+Same for everywhere else in all of these patches.  I'll stop reviewing
+now, someone at Intel should have caught basic stuff like this before
+now, sad...
 
 greg k-h
