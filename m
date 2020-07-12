@@ -2,408 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E5921C6E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 03:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E1C21C6ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 03:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgGLBLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 21:11:41 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:38560 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728138AbgGLBLk (ORCPT
+        id S1728093AbgGLB0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 21:26:10 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:44407 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726948AbgGLB0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 21:11:40 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U2P6M2K_1594516295;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U2P6M2K_1594516295)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 12 Jul 2020 09:11:36 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [Patch v2 4/4] tracing: make tracing_init_dentry() returns an integer instead of a d_entry pointer
-Date:   Sun, 12 Jul 2020 09:10:36 +0800
-Message-Id: <20200712011036.70948-5-richard.weiyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200712011036.70948-1-richard.weiyang@linux.alibaba.com>
-References: <20200712011036.70948-1-richard.weiyang@linux.alibaba.com>
+        Sat, 11 Jul 2020 21:26:08 -0400
+X-UUID: d61f647dba124a59b33ed1398bbd5501-20200712
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=5+Yrq9V4GhTf7cocU/ltdK++Qz2IRNUuCTCYC0FtTd4=;
+        b=bhH/g5V3ul2PR1nE7dMymRTKQcgi/CeVKg+RRuZL2Hg6WC1cZYWao3X1HpD8aYhsN1UB9QnEPA9oRsQUrNS+A9qxBHcChtd1qt0FLccH+9vs6WXQ4RSjGYO7iefqbyIvR2dlY6Y/ezs6Fq6zqvCYhnRt5PPUpcXG2rx4SFAC7Zo=;
+X-UUID: d61f647dba124a59b33ed1398bbd5501-20200712
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 59267435; Sun, 12 Jul 2020 09:26:01 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 12 Jul 2020 09:25:59 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 12 Jul 2020 09:25:59 +0800
+Message-ID: <1594517160.10600.33.camel@mtkswgap22>
+Subject: RE: [PATCH v3] scsi: ufs: Cleanup completed request without
+ interrupt notification
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Avri Altman <Avri.Altman@wdc.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
+Date:   Sun, 12 Jul 2020 09:26:00 +0800
+In-Reply-To: <SN6PR04MB4640BEAFE18BDC933FC7EC95FC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+References: <20200706132113.21096-1-stanley.chu@mediatek.com>
+         <SN6PR04MB4640BEAFE18BDC933FC7EC95FC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current tracing_init_dentry() return a d_entry pointer, while is not
-necessary. This function returns NULL on success or error on failure,
-which means there is no valid d_entry pointer return.
-
-Let's return 0 on success and negative value for error.
-
-Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
----
- kernel/trace/trace.c                 | 36 ++++++++++++++--------------
- kernel/trace/trace.h                 |  2 +-
- kernel/trace/trace_dynevent.c        |  8 +++----
- kernel/trace/trace_events_synth.c    |  9 +++----
- kernel/trace/trace_functions_graph.c |  8 +++----
- kernel/trace/trace_hwlat.c           |  8 +++----
- kernel/trace/trace_kprobe.c          | 10 ++++----
- kernel/trace/trace_printk.c          |  8 +++----
- kernel/trace/trace_stack.c           | 12 +++++-----
- kernel/trace/trace_stat.c            |  8 +++----
- kernel/trace/trace_uprobe.c          |  9 ++++---
- 11 files changed, 57 insertions(+), 61 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 547e1e01902a..41c3d75c34cc 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -8933,23 +8933,23 @@ static struct vfsmount *trace_automount(struct dentry *mntpt, void *ingore)
-  * directory. It is called via fs_initcall() by any of the boot up code
-  * and expects to return the dentry of the top level tracing directory.
-  */
--struct dentry *tracing_init_dentry(void)
-+int tracing_init_dentry(void)
- {
- 	struct trace_array *tr = &global_trace;
- 
- 	if (security_locked_down(LOCKDOWN_TRACEFS)) {
- 		pr_warn("Tracing disabled due to lockdown\n");
--		return ERR_PTR(-EPERM);
-+		return -EPERM;
- 	}
- 
- 	/* The top level trace array uses  NULL as parent */
- 	if (tr->dir)
--		return NULL;
-+		return 0;
- 
- 	if (WARN_ON(!tracefs_initialized()) ||
- 		(IS_ENABLED(CONFIG_DEBUG_FS) &&
- 		 WARN_ON(!debugfs_initialized())))
--		return ERR_PTR(-ENODEV);
-+		return -ENODEV;
- 
- 	/*
- 	 * As there may still be users that expect the tracing
-@@ -8960,7 +8960,7 @@ struct dentry *tracing_init_dentry(void)
- 	tr->dir = debugfs_create_automount("tracing", NULL,
- 					   trace_automount, NULL);
- 
--	return NULL;
-+	return 0;
- }
- 
- extern struct trace_eval_map *__start_ftrace_eval_maps[];
-@@ -9047,48 +9047,48 @@ static struct notifier_block trace_module_nb = {
- 
- static __init int tracer_init_tracefs(void)
- {
--	struct dentry *d_tracer;
-+	int ret;
- 
- 	trace_access_lock_init();
- 
--	d_tracer = tracing_init_dentry();
--	if (IS_ERR(d_tracer))
-+	ret = tracing_init_dentry();
-+	if (ret)
- 		return 0;
- 
- 	event_trace_init();
- 
--	init_tracer_tracefs(&global_trace, d_tracer);
--	ftrace_init_tracefs_toplevel(&global_trace, d_tracer);
-+	init_tracer_tracefs(&global_trace, NULL);
-+	ftrace_init_tracefs_toplevel(&global_trace, NULL);
- 
--	trace_create_file("tracing_thresh", 0644, d_tracer,
-+	trace_create_file("tracing_thresh", 0644, NULL,
- 			&global_trace, &tracing_thresh_fops);
- 
--	trace_create_file("README", 0444, d_tracer,
-+	trace_create_file("README", 0444, NULL,
- 			NULL, &tracing_readme_fops);
- 
--	trace_create_file("saved_cmdlines", 0444, d_tracer,
-+	trace_create_file("saved_cmdlines", 0444, NULL,
- 			NULL, &tracing_saved_cmdlines_fops);
- 
--	trace_create_file("saved_cmdlines_size", 0644, d_tracer,
-+	trace_create_file("saved_cmdlines_size", 0644, NULL,
- 			  NULL, &tracing_saved_cmdlines_size_fops);
- 
--	trace_create_file("saved_tgids", 0444, d_tracer,
-+	trace_create_file("saved_tgids", 0444, NULL,
- 			NULL, &tracing_saved_tgids_fops);
- 
- 	trace_eval_init();
- 
--	trace_create_eval_file(d_tracer);
-+	trace_create_eval_file(NULL);
- 
- #ifdef CONFIG_MODULES
- 	register_module_notifier(&trace_module_nb);
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
--	trace_create_file("dyn_ftrace_total_info", 0444, d_tracer,
-+	trace_create_file("dyn_ftrace_total_info", 0444, NULL,
- 			NULL, &tracing_dyn_info_fops);
- #endif
- 
--	create_trace_instances(d_tracer);
-+	create_trace_instances(NULL);
- 
- 	update_tracer_options(&global_trace);
- 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index def769df5bf1..afcef31ae76d 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -734,7 +734,7 @@ struct dentry *trace_create_file(const char *name,
- 				 void *data,
- 				 const struct file_operations *fops);
- 
--struct dentry *tracing_init_dentry(void);
-+int tracing_init_dentry(void);
- 
- struct ring_buffer_event;
- 
-diff --git a/kernel/trace/trace_dynevent.c b/kernel/trace/trace_dynevent.c
-index 9f2e8520b748..9442a9bb080e 100644
---- a/kernel/trace/trace_dynevent.c
-+++ b/kernel/trace/trace_dynevent.c
-@@ -206,14 +206,14 @@ static const struct file_operations dynamic_events_ops = {
- /* Make a tracefs interface for controlling dynamic events */
- static __init int init_dynamic_event(void)
- {
--	struct dentry *d_tracer;
- 	struct dentry *entry;
-+	int ret;
- 
--	d_tracer = tracing_init_dentry();
--	if (IS_ERR(d_tracer))
-+	ret = tracing_init_dentry();
-+	if (ret)
- 		return 0;
- 
--	entry = tracefs_create_file("dynamic_events", 0644, d_tracer,
-+	entry = tracefs_create_file("dynamic_events", 0644, NULL,
- 				    NULL, &dynamic_events_ops);
- 
- 	/* Event list interface */
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index c6cca0d1d584..f86a2aa0bccd 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -1757,7 +1757,6 @@ static const struct file_operations synth_events_fops = {
- static __init int trace_events_synth_init(void)
- {
- 	struct dentry *entry = NULL;
--	struct dentry *d_tracer;
- 	int err = 0;
- 
- 	err = dyn_event_register(&synth_event_ops);
-@@ -1766,13 +1765,11 @@ static __init int trace_events_synth_init(void)
- 		return err;
- 	}
- 
--	d_tracer = tracing_init_dentry();
--	if (IS_ERR(d_tracer)) {
--		err = PTR_ERR(d_tracer);
-+	err = tracing_init_dentry();
-+	if (err)
- 		goto err;
--	}
- 
--	entry = tracefs_create_file("synthetic_events", 0644, d_tracer,
-+	entry = tracefs_create_file("synthetic_events", 0644, NULL,
- 				    NULL, &synth_events_fops);
- 	if (!entry) {
- 		err = -ENODEV;
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index 4a9c49c08ec9..60d66278aa0d 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -1336,13 +1336,13 @@ static const struct file_operations graph_depth_fops = {
- 
- static __init int init_graph_tracefs(void)
- {
--	struct dentry *d_tracer;
-+	int ret;
- 
--	d_tracer = tracing_init_dentry();
--	if (IS_ERR(d_tracer))
-+	ret = tracing_init_dentry();
-+	if (ret)
- 		return 0;
- 
--	trace_create_file("max_graph_depth", 0644, d_tracer,
-+	trace_create_file("max_graph_depth", 0644, NULL,
- 			  NULL, &graph_depth_fops);
- 
- 	return 0;
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index e2be7bb7ef7e..4ddbad511b6d 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -538,14 +538,14 @@ static const struct file_operations window_fops = {
-  */
- static int init_tracefs(void)
- {
--	struct dentry *d_tracer;
-+	int ret;
- 	struct dentry *top_dir;
- 
--	d_tracer = tracing_init_dentry();
--	if (IS_ERR(d_tracer))
-+	ret = tracing_init_dentry();
-+	if (ret)
- 		return -ENOMEM;
- 
--	top_dir = tracefs_create_dir("hwlat_detector", d_tracer);
-+	top_dir = tracefs_create_dir("hwlat_detector", NULL);
- 	if (!top_dir)
- 		return -ENOMEM;
- 
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index ea8d0b094f1b..51de3a9ffd1c 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1901,14 +1901,14 @@ subsys_initcall(init_kprobe_trace_early);
- /* Make a tracefs interface for controlling probe points */
- static __init int init_kprobe_trace(void)
- {
--	struct dentry *d_tracer;
-+	int ret;
- 	struct dentry *entry;
- 
--	d_tracer = tracing_init_dentry();
--	if (IS_ERR(d_tracer))
-+	ret = tracing_init_dentry();
-+	if (ret)
- 		return 0;
- 
--	entry = tracefs_create_file("kprobe_events", 0644, d_tracer,
-+	entry = tracefs_create_file("kprobe_events", 0644, NULL,
- 				    NULL, &kprobe_events_ops);
- 
- 	/* Event list interface */
-@@ -1916,7 +1916,7 @@ static __init int init_kprobe_trace(void)
- 		pr_warn("Could not create tracefs 'kprobe_events' entry\n");
- 
- 	/* Profile interface */
--	entry = tracefs_create_file("kprobe_profile", 0444, d_tracer,
-+	entry = tracefs_create_file("kprobe_profile", 0444, NULL,
- 				    NULL, &kprobe_profile_ops);
- 
- 	if (!entry)
-diff --git a/kernel/trace/trace_printk.c b/kernel/trace/trace_printk.c
-index d4e31e969206..71b2e0fdc3e0 100644
---- a/kernel/trace/trace_printk.c
-+++ b/kernel/trace/trace_printk.c
-@@ -367,13 +367,13 @@ static const struct file_operations ftrace_formats_fops = {
- 
- static __init int init_trace_printk_function_export(void)
- {
--	struct dentry *d_tracer;
-+	int ret;
- 
--	d_tracer = tracing_init_dentry();
--	if (IS_ERR(d_tracer))
-+	ret = tracing_init_dentry();
-+	if (ret)
- 		return 0;
- 
--	trace_create_file("printk_formats", 0444, d_tracer,
-+	trace_create_file("printk_formats", 0444, NULL,
- 				    NULL, &ftrace_formats_fops);
- 
- 	return 0;
-diff --git a/kernel/trace/trace_stack.c b/kernel/trace/trace_stack.c
-index c557f42a9397..67711269184b 100644
---- a/kernel/trace/trace_stack.c
-+++ b/kernel/trace/trace_stack.c
-@@ -555,20 +555,20 @@ __setup("stacktrace", enable_stacktrace);
- 
- static __init int stack_trace_init(void)
- {
--	struct dentry *d_tracer;
-+	int ret;
- 
--	d_tracer = tracing_init_dentry();
--	if (IS_ERR(d_tracer))
-+	ret = tracing_init_dentry();
-+	if (ret)
- 		return 0;
- 
--	trace_create_file("stack_max_size", 0644, d_tracer,
-+	trace_create_file("stack_max_size", 0644, NULL,
- 			&stack_trace_max_size, &stack_max_size_fops);
- 
--	trace_create_file("stack_trace", 0444, d_tracer,
-+	trace_create_file("stack_trace", 0444, NULL,
- 			NULL, &stack_trace_fops);
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
--	trace_create_file("stack_trace_filter", 0644, d_tracer,
-+	trace_create_file("stack_trace_filter", 0644, NULL,
- 			  &trace_ops, &stack_trace_filter_fops);
- #endif
- 
-diff --git a/kernel/trace/trace_stat.c b/kernel/trace/trace_stat.c
-index d1fa19773cc8..8d141c3825a9 100644
---- a/kernel/trace/trace_stat.c
-+++ b/kernel/trace/trace_stat.c
-@@ -276,13 +276,13 @@ static const struct file_operations tracing_stat_fops = {
- 
- static int tracing_stat_init(void)
- {
--	struct dentry *d_tracing;
-+	int ret;
- 
--	d_tracing = tracing_init_dentry();
--	if (IS_ERR(d_tracing))
-+	ret = tracing_init_dentry();
-+	if (ret)
- 		return -ENODEV;
- 
--	stat_dir = tracefs_create_dir("trace_stat", d_tracing);
-+	stat_dir = tracefs_create_dir("trace_stat", NULL);
- 	if (!stat_dir) {
- 		pr_warn("Could not create tracefs 'trace_stat' entry\n");
- 		return -ENOMEM;
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 2a8e8e9c1c75..502dbecf6c9f 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -1626,21 +1626,20 @@ void destroy_local_trace_uprobe(struct trace_event_call *event_call)
- /* Make a trace interface for controling probe points */
- static __init int init_uprobe_trace(void)
- {
--	struct dentry *d_tracer;
- 	int ret;
- 
- 	ret = dyn_event_register(&trace_uprobe_ops);
- 	if (ret)
- 		return ret;
- 
--	d_tracer = tracing_init_dentry();
--	if (IS_ERR(d_tracer))
-+	ret = tracing_init_dentry();
-+	if (ret)
- 		return 0;
- 
--	trace_create_file("uprobe_events", 0644, d_tracer,
-+	trace_create_file("uprobe_events", 0644, NULL,
- 				    NULL, &uprobe_events_ops);
- 	/* Profile interface */
--	trace_create_file("uprobe_profile", 0444, d_tracer,
-+	trace_create_file("uprobe_profile", 0444, NULL,
- 				    NULL, &uprobe_profile_ops);
- 	return 0;
- }
--- 
-2.20.1 (Apple Git-117)
+SGkgQXZyaSwNCg0KT24gVGh1LCAyMDIwLTA3LTA5IGF0IDA4OjMxICswMDAwLCBBdnJpIEFsdG1h
+biB3cm90ZToNCj4gPiANCj4gPiBJZiBzb21laG93IG5vIGludGVycnVwdCBub3RpZmljYXRpb24g
+aXMgcmFpc2VkIGZvciBhIGNvbXBsZXRlZCByZXF1ZXN0DQo+ID4gYW5kIGl0cyBkb29yYmVsbCBi
+aXQgaXMgY2xlYXJlZCBieSBob3N0LCBVRlMgZHJpdmVyIG5lZWRzIHRvIGNsZWFudXANCj4gPiBp
+dHMgb3V0c3RhbmRpbmcgYml0IGluIHVmc2hjZF9hYm9ydCgpLg0KPiBUaGVvcmV0aWNhbGx5LCB0
+aGlzIGNhc2UgaXMgYWxyZWFkeSBhY2NvdW50ZWQgZm9yIC0gDQo+IFNlZSBsaW5lIDY0MDc6IGEg
+cHJvcGVyIGVycm9yIGlzIGlzc3VlZCBhbmQgZXZlbnR1YWxseSBvdXRzdGFuZGluZyByZXEgaXMg
+Y2xlYXJlZC4NCj4gDQo+IENhbiB5b3UgZ28gb3ZlciB0aGUgc2NlbmFyaW8geW91IGFyZSBhdHRl
+bmRpbmcgbGluZSBieSBsaW5lLA0KPiBBbmQgZXhwbGFpbiB3aHkgdWZzaGNkX2Fib3J0IGRvZXMg
+bm90IGFjY291bnQgZm9yIGl0Pw0KDQpTdXJlLg0KDQpJZiBhIHJlcXVlc3QgdXNpbmcgdGFnIE4g
+aXMgY29tcGxldGVkIGJ5IFVGUyBkZXZpY2Ugd2l0aG91dCBpbnRlcnJ1cHQNCm5vdGlmaWNhdGlv
+biB0aWxsIHRpbWVvdXQgaGFwcGVucywgdWZzaGNkX2Fib3J0KCkgd2lsbCBiZSBpbnZva2VkLg0K
+DQpTaW5jZSByZXF1ZXN0IGNvbXBsZXRpb24gZmxvdyBpcyBub3QgZXhlY3V0ZWQsIGN1cnJlbnQg
+c3RhdHVzIG1heSBiZQ0KDQotIFRhZyBOIGluIGhiYS0+b3V0c3RhbmRpbmdfcmVxcyBpcyBzZXQN
+Ci0gVGFnIE4gaW4gZG9vcmJlbGwgcmVnaXN0ZXIgaXMgbm90IHNldA0KDQpJbiB0aGlzIGNhc2Us
+IHVmc2hjZF9hYm9ydCgpIGZsb3cgd291bGQgYmUNCg0KLSBUaGlzIGxvZyBpcyBwcmludGVkOiAi
+dWZzaGNkX2Fib3J0OiBjbWQgd2FzIGNvbXBsZXRlZCwgYnV0IHdpdGhvdXQgYQ0Kbm90aWZ5aW5n
+IGludHIsIHRhZyA9IE4iDQotIFRoaXMgbG9nIGlzIHByaW50ZWQ6ICJ1ZnNoY2RfYWJvcnQ6IERl
+dmljZSBhYm9ydCB0YXNrIGF0IHRhZyBOIg0KLSBJZiBoYmEtPnJlcV9hYm9ydF9za2lwIGlzIHpl
+cm8sIFFVRVJZX1RBU0sgY29tbWFuZCBpcyBzZW50DQotIERldmljZSByZXNwb25kcyAiVVBJVV9U
+QVNLX01BTkFHRU1FTlRfRlVOQ19DT01QTCINCi0gVGhpcyBsb2cgaXMgcHJpbnRlZDogInVmc2hj
+ZF9hYm9ydDogY21kIGF0IHRhZyBOIG5vdCBwZW5kaW5nIGluIHRoZQ0KZGV2aWNlLiINCi0gRG9v
+cmJlbGwgdGVsbHMgdGhhdCB0YWcgTiBpcyBub3Qgc2V0LCBzbyB0aGUgZHJpdmVyIGdvZXMgdG8g
+bGFiZWwNCiJvdXQiIHdpdGggdGhpcyBsb2cgcHJpbnRlZDogInVmc2hjZF9hYm9ydDogY21kIGF0
+IHRhZyAlZCBzdWNjZXNzZnVsbHkNCmNsZWFyZWQgZnJvbSBEQi4iDQotIEluIGxhYmVsICJvdXQi
+IHNlY3Rpb24sIG5vIGNsZWFudXAgd2lsbCBiZSBtYWRlLCBhbmQgdGhlbiB1ZnNoY2RfYWJvcnQN
+CmV4aXRzDQotIFRoaXMgcmVxdWVzdCB3aWxsIGJlIHJlLXF1ZXVlZCB0byByZXF1ZXN0IHF1ZXVl
+IGJ5IFNDU0kgdGltZW91dA0KaGFuZGxlcg0KDQpOb3csIEluY29uc2lzdGVudCBzdGF0ZSBzaG93
+cy11cDogQSByZXF1ZXN0IGlzICJyZS1xdWV1ZWQiIGJ1dCBpdHMNCmNvcnJlc3BvbmRpbmcgcmVz
+b3VyY2UgaW4gVUZTIGxheWVyIGlzIG5vdCBjbGVhcmVkLCBiZWxvdyBmbG93IHdpbGwNCnRyaWdn
+ZXIgYmFkIHRoaW5ncywNCg0KLSBBIG5ldyByZXF1ZXN0IHdpdGggdGFnIE0gaXMgZmluaXNoZWQN
+Ci0gSW50ZXJydXB0IGlzIHJhaXNlZCBhbmQgdWZzaGNkX3RyYW5zZmVyX3JlcV9jb21wbCgpIGZv
+dW5kIGJvdGggdGFnIE4NCmFuZCBNIGNhbiBwcm9jZXNzIHRoZSBjb21wbGV0aW9uIGZsb3cNCi0g
+VGhlIHBvc3QtcHJvY2Vzc2luZyBmbG93IGZvciB0YWcgTiB3aWxsIGJlIGV4ZWN1dGVkIHdoaWxl
+IGl0cyByZXF1ZXN0DQppcyBzdGlsbCBhbGl2ZQ0KDQpJIGFtIHNvcnJ5IHRoYXQgYmVsb3cgbWVz
+c2FnZXMgYXJlIG9ubHkgZm9yIG9sZCBrZXJuZWwgaW4gbm9uLWJsay1tcQ0KY2FzZS4gSG93ZXZl
+ciBhYm92ZSBzY2VuYXJpbyB3aWxsIGFsc28gdHJpZ2dlciBiYWQgdGhpbmcgaW4gYmxrLW1xIGNh
+c2UuDQoNCj4gDQo+ID4gDQo+ID4gT3RoZXJ3aXNlLCBzeXN0ZW0gbWF5IGNyYXNoIGJ5IGJlbG93
+IGFibm9ybWFsIGZsb3c6DQo+ID4gDQo+ID4gQWZ0ZXIgdGhpcyByZXF1ZXN0IGlzIHJlcXVldWVk
+IGJ5IFNDU0kgbGF5ZXIgd2l0aCBpdHMNCj4gPiBvdXRzdGFuZGluZyBiaXQgc2V0LCB0aGUgbmV4
+dCBjb21wbGV0ZWQgcmVxdWVzdCB3aWxsIHRyaWdnZXINCj4gPiB1ZnNoY2RfdHJhbnNmZXJfcmVx
+X2NvbXBsKCkgdG8gaGFuZGxlIGFsbCAiY29tcGxldGVkIG91dHN0YW5kaW5nDQo+ID4gYml0cyIu
+IEluIHRoaXMgdGltZSwgdGhlICJhYm5vcm1hbCBvdXRzdGFuZGluZyBiaXQiIHdpbGwgYmUgZGV0
+ZWN0ZWQNCj4gPiBhbmQgdGhlICJyZXF1ZXVlZCByZXF1ZXN0IiB3aWxsIGJlIGNob3NlbiB0byBl
+eGVjdXRlIHJlcXVlc3QNCj4gPiBwb3N0LXByb2Nlc3NpbmcgZmxvdy4gVGhpcyBpcyB3cm9uZyBh
+bmQgYmxrX2ZpbmlzaF9yZXF1ZXN0KCkgd2lsbA0KPiA+IEJVR19PTiBiZWNhdXNlIHRoaXMgcmVx
+dWVzdCBpcyBzdGlsbCAiYWxpdmUiLg0KPiA+IA0KPiA+IEl0IGlzIHdvcnRoIG1lbnRpb25pbmcg
+dGhhdCBiZWZvcmUgdWZzaGNkX2Fib3J0KCkgY2xlYW5zIHRoZSB0aW1lZC1vdXQNCj4gPiByZXF1
+ZXN0LCBkcml2ZXIgbmVlZCB0byBjaGVjayBhZ2FpbiBpZiB0aGlzIHJlcXVlc3QgaXMgcmVhbGx5
+IG5vdA0KPiA+IGhhbmRsZWQgYnkgX191ZnNoY2RfdHJhbnNmZXJfcmVxX2NvbXBsKCkgeWV0IGJl
+Y2F1c2UgaXQgbWF5IGJlDQo+ID4gcG9zc2libGUgdGhhdCB0aGUgaW50ZXJydXB0IGNvbWVzIHZl
+cnkgbGF0ZWx5IGJlZm9yZSB0aGUgY2xlYW5pbmcuDQo+IFdoYXQgZG8geW91IG1lYW4/IFdoeSBj
+aGVja2luZyB0aGUgb3V0c3RhbmRpbmcgcmVxcyBpc24ndCBlbm91Z2g/DQo+IA0KPiA+IA0KPiA+
+IFNpZ25lZC1vZmYtYnk6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRlay5jb20+DQo+
+ID4gLS0tDQo+ID4gIGRyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgfCA5ICsrKysrKystLQ0KPiA+
+ICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+IA0K
+PiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIGIvZHJpdmVycy9zY3Np
+L3Vmcy91ZnNoY2QuYw0KPiA+IGluZGV4IDg2MDNiMDcwNDVhNi4uZjIzZmIxNGRmOWY2IDEwMDY0
+NA0KPiA+IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gPiArKysgYi9kcml2ZXJz
+L3Njc2kvdWZzL3Vmc2hjZC5jDQo+ID4gQEAgLTY0NjIsNyArNjQ2Miw3IEBAIHN0YXRpYyBpbnQg
+dWZzaGNkX2Fib3J0KHN0cnVjdCBzY3NpX2NtbmQgKmNtZCkNCj4gPiAgICAgICAgICAgICAgICAg
+ICAgICAgICAvKiBjb21tYW5kIGNvbXBsZXRlZCBhbHJlYWR5ICovDQo+ID4gICAgICAgICAgICAg
+ICAgICAgICAgICAgZGV2X2VycihoYmEtPmRldiwgIiVzOiBjbWQgYXQgdGFnICVkIHN1Y2Nlc3Nm
+dWxseSBjbGVhcmVkIGZyb20NCj4gPiBEQi5cbiIsDQo+ID4gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBfX2Z1bmNfXywgdGFnKTsNCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICBn
+b3RvIG91dDsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBnb3RvIGNsZWFudXA7DQo+IEJ1
+dCB5b3UndmUgYXJyaXZlZCBoZXJlIG9ubHkgaWYgKCEodGVzdF9iaXQodGFnLCAmaGJhLT5vdXRz
+dGFuZGluZ19yZXFzKSkpIC0gDQo+IFNlZSBsaW5lIDY0MDAuIA0KPiANCj4gPiAgICAgICAgICAg
+ICAgICAgfSBlbHNlIHsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBkZXZfZXJyKGhiYS0+
+ZGV2LA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIiVzOiBubyByZXNwb25z
+ZSBmcm9tIGRldmljZS4gdGFnID0gJWQsIGVyciAlZFxuIiwNCj4gPiBAQCAtNjQ5Niw5ICs2NDk2
+LDE0IEBAIHN0YXRpYyBpbnQgdWZzaGNkX2Fib3J0KHN0cnVjdCBzY3NpX2NtbmQgKmNtZCkNCj4g
+PiAgICAgICAgICAgICAgICAgZ290byBvdXQ7DQo+ID4gICAgICAgICB9DQo+ID4gDQo+ID4gK2Ns
+ZWFudXA6DQo+ID4gKyAgICAgICBzcGluX2xvY2tfaXJxc2F2ZShob3N0LT5ob3N0X2xvY2ssIGZs
+YWdzKTsNCj4gPiArICAgICAgIGlmICghdGVzdF9iaXQodGFnLCAmaGJhLT5vdXRzdGFuZGluZ19y
+ZXFzKSkgew0KPiA+ICsgICAgICAgICAgICAgICBzcGluX3VubG9ja19pcnFyZXN0b3JlKGhvc3Qt
+Pmhvc3RfbG9jaywgZmxhZ3MpOw0KPiA+ICsgICAgICAgICAgICAgICBnb3RvIG91dDsNCj4gPiAr
+ICAgICAgIH0NCj4gPiAgICAgICAgIHNjc2lfZG1hX3VubWFwKGNtZCk7DQo+ID4gDQo+ID4gLSAg
+ICAgICBzcGluX2xvY2tfaXJxc2F2ZShob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsNCj4gPiAgICAg
+ICAgIHVmc2hjZF9vdXRzdGFuZGluZ19yZXFfY2xlYXIoaGJhLCB0YWcpOw0KPiA+ICAgICAgICAg
+aGJhLT5scmJbdGFnXS5jbWQgPSBOVUxMOw0KPiA+ICAgICAgICAgc3Bpbl91bmxvY2tfaXJxcmVz
+dG9yZShob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsNCj4gPiAtLQ0KPiA+IDIuMTguMA0KDQo=
 
