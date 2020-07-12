@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F56721C991
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 15:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE7821C990
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 15:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbgGLNrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 09:47:18 -0400
+        id S1729009AbgGLNrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 09:47:19 -0400
 Received: from mga11.intel.com ([192.55.52.93]:8461 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728881AbgGLNrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728970AbgGLNrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 12 Jul 2020 09:47:17 -0400
-IronPort-SDR: xXWYgoEIGb4UyyGEM0IcAYjZ8kyFuAqofNR0V+gVYFgWAUuExkkThyJBWM7+YDNNei6UZbx9DE
- ZYytBaq/kz5Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9680"; a="146540895"
+IronPort-SDR: V9qtZth8hWlLce4PfSPwPbxmEtBoqIePt4r6dpFMAPxdeIb2hO7iNUIn4ZbHHhfcMA1hvUJPbc
+ exnNkm6gEILA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9680"; a="146540898"
 X-IronPort-AV: E=Sophos;i="5.75,343,1589266800"; 
-   d="scan'208";a="146540895"
+   d="scan'208";a="146540898"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2020 06:46:46 -0700
-IronPort-SDR: wzg9uA78Opovfv5Et3mFuYBkKgu5RH9DjqJGlCoOBPMgXD5s/mZIhRbZhKj98LnvDWwdsxjf7n
- 1M7wybvYQNmA==
+IronPort-SDR: UMgfe8EheEmPKH6JHfOSFPPjyCtWglGWnREENK4Eq0dtABXm4O9g1s/U7vehXu4TPKYO0LN8q+
+ W4eXTldPmmmw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,343,1589266800"; 
-   d="scan'208";a="307148609"
+   d="scan'208";a="307148612"
 Received: from txasoft-yocto.an.intel.com ([10.123.72.192])
-  by fmsmga004.fm.intel.com with ESMTP; 12 Jul 2020 06:46:45 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 12 Jul 2020 06:46:46 -0700
 From:   Gage Eads <gage.eads@intel.com>
 To:     linux-kernel@vger.kernel.org, arnd@arndb.de,
         gregkh@linuxfoundation.org
 Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com
-Subject: [PATCH 06/20] dlb2: add ioctl to get sched domain fd
-Date:   Sun, 12 Jul 2020 08:43:17 -0500
-Message-Id: <20200712134331.8169-7-gage.eads@intel.com>
+Subject: [PATCH 07/20] dlb2: add runtime power-management support
+Date:   Sun, 12 Jul 2020 08:43:18 -0500
+Message-Id: <20200712134331.8169-8-gage.eads@intel.com>
 X-Mailer: git-send-email 2.13.6
 In-Reply-To: <20200712134331.8169-1-gage.eads@intel.com>
 References: <20200712134331.8169-1-gage.eads@intel.com>
@@ -42,166 +42,234 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To create the file and install it in the current process's file table, the
-driver uses anon_inode_getfd(). The calling process can then use this fd
-to issue ioctls for configuration of the scheduilng domain's resources (to
-be added in an upcoming commit).
-
-This design means that any application with sufficient permissions to
-access the /dev/dlb<N> file can request the fd of any scheduling domain --
-potentially one that was created by another process. One way to ensure that
-dlb applications cannot access each other's scheduling domains is to use
-virtualization; that is, create multiple virtual functions -- and thus
-multiple /dev/dlb<N> nodes -- each using unique file permissions.
+The driver's power-management policy is to put the device in D0 when in use
+(when there are any open device files or memory mappings, or there are any
+virtual devices), and leave it in D3Hot otherwise. This includes
+resume/suspend callbacks; when the device resumes, the driver resets the
+hardware to a known good state.
 
 Signed-off-by: Gage Eads <gage.eads@intel.com>
 Reviewed-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- drivers/misc/dlb2/dlb2_ioctl.c | 68 ++++++++++++++++++++++++++++++++++++++++++
- include/uapi/linux/dlb2_user.h | 30 +++++++++++++++++++
- 2 files changed, 98 insertions(+)
+ drivers/misc/dlb2/dlb2_ioctl.c  |  2 ++
+ drivers/misc/dlb2/dlb2_main.c   | 79 +++++++++++++++++++++++++++++++++++++++++
+ drivers/misc/dlb2/dlb2_main.h   |  2 ++
+ drivers/misc/dlb2/dlb2_pf_ops.c | 30 ++++++++++++++++
+ 4 files changed, 113 insertions(+)
 
 diff --git a/drivers/misc/dlb2/dlb2_ioctl.c b/drivers/misc/dlb2/dlb2_ioctl.c
-index 8ad3391b63d4..eef9b824b276 100644
+index eef9b824b276..b36e255e8d35 100644
 --- a/drivers/misc/dlb2/dlb2_ioctl.c
 +++ b/drivers/misc/dlb2/dlb2_ioctl.c
-@@ -147,6 +147,73 @@ static int dlb2_ioctl_create_sched_domain(struct dlb2_dev *dev,
- 	return ret;
+@@ -197,6 +197,8 @@ static int dlb2_ioctl_get_sched_domain_fd(struct dlb2_dev *dev,
+ 	if (ret >= 0) {
+ 		kref_get(&domain->refcnt);
+ 
++		dev->ops->inc_pm_refcnt(dev->pdev, true);
++
+ 		ret = 0;
+ 	}
+ 
+diff --git a/drivers/misc/dlb2/dlb2_main.c b/drivers/misc/dlb2/dlb2_main.c
+index eb716587e738..8ace8e1edbcb 100644
+--- a/drivers/misc/dlb2/dlb2_main.c
++++ b/drivers/misc/dlb2/dlb2_main.c
+@@ -69,11 +69,21 @@ static int dlb2_open(struct inode *i, struct file *f)
+ 
+ 	f->private_data = dev;
+ 
++	dev->ops->inc_pm_refcnt(dev->pdev, true);
++
+ 	return 0;
  }
  
-+static int dlb2_ioctl_get_sched_domain_fd(struct dlb2_dev *dev,
-+					  unsigned long user_arg,
-+					  u16 size)
+ static int dlb2_close(struct inode *i, struct file *f)
+ {
++	struct dlb2_dev *dev;
++
++	dev = container_of(f->f_inode->i_cdev, struct dlb2_dev, cdev);
++
++	dev_dbg(dev->dlb2_device, "Closing DLB device file\n");
++
++	dev->ops->dec_pm_refcnt(dev->pdev);
++
+ 	return 0;
+ }
+ 
+@@ -120,6 +130,8 @@ int dlb2_init_domain(struct dlb2_dev *dlb2_dev, u32 domain_id)
+ 
+ 	dlb2_dev->sched_domains[domain_id] = domain;
+ 
++	dlb2_dev->ops->inc_pm_refcnt(dlb2_dev->pdev, true);
++
+ 	return 0;
+ }
+ 
+@@ -293,6 +305,15 @@ static int dlb2_probe(struct pci_dev *pdev,
+ 	list_add(&dlb2_dev->list, &dlb2_dev_list);
+ 	mutex_unlock(&dlb2_driver_lock);
+ 
++	/*
++	 * The driver puts the device to sleep (D3hot) while there are no
++	 * scheduling domains to service. The usage counter of a PCI device at
++	 * probe time is 2, so decrement it twice here. (The PCI layer has
++	 * already called pm_runtime_enable().)
++	 */
++	dlb2_dev->ops->dec_pm_refcnt(pdev);
++	dlb2_dev->ops->dec_pm_refcnt(pdev);
++
+ 	return 0;
+ 
+ init_driver_state_fail:
+@@ -330,6 +351,10 @@ static void dlb2_remove(struct pci_dev *pdev)
+ 	list_del(&dlb2_dev->list);
+ 	mutex_unlock(&dlb2_driver_lock);
+ 
++	/* Undo the PM operations in dlb2_probe(). */
++	dlb2_dev->ops->inc_pm_refcnt(pdev, false);
++	dlb2_dev->ops->inc_pm_refcnt(pdev, false);
++
+ 	dlb2_dev->ops->free_driver_state(dlb2_dev);
+ 
+ 	dlb2_resource_free(&dlb2_dev->hw);
+@@ -351,17 +376,71 @@ static void dlb2_remove(struct pci_dev *pdev)
+ 	devm_kfree(&pdev->dev, dlb2_dev);
+ }
+ 
++#ifdef CONFIG_PM
++static void dlb2_reset_hardware_state(struct dlb2_dev *dev)
 +{
-+	struct dlb2_get_sched_domain_fd_args arg;
-+	struct dlb2_cmd_response response = {0};
-+	struct dlb2_domain *domain;
-+	int ret;
++	dlb2_reset_device(dev->pdev);
 +
-+	dev_dbg(dev->dlb2_device, "Entering %s()\n", __func__);
-+
-+	ret = dlb2_copy_from_user(dev, user_arg, size, &arg, sizeof(arg));
-+	if (ret)
-+		return ret;
-+
-+	/* Copy zeroes to verify the user-provided response pointer */
-+	ret = dlb2_copy_resp_to_user(dev, arg.response, &response);
-+	if (ret)
-+		return ret;
-+
-+	if (arg.domain_id >= DLB2_MAX_NUM_DOMAINS) {
-+		dev_err(dev->dlb2_device,
-+			"[%s()] Invalid domain id %u\n",
-+			__func__, arg.domain_id);
-+		response.status = DLB2_ST_INVALID_DOMAIN_ID;
-+		ret = -EINVAL;
-+		goto copy;
-+	}
-+
-+	mutex_lock(&dev->resource_mutex);
-+
-+	domain = dev->sched_domains[arg.domain_id];
-+
-+	if (!domain) {
-+		dev_err(dev->dlb2_device,
-+			"[%s()] Domain %u not configured\n",
-+			__func__, arg.domain_id);
-+		response.status = DLB2_ST_DOMAIN_UNAVAILABLE;
-+		ret = -ENOENT;
-+		goto unlock;
-+	}
-+
-+	ret = anon_inode_getfd("[dlb2domain]", &dlb2_domain_fops,
-+			       domain, O_RDWR);
-+
-+	response.id = ret;
-+
-+	if (ret >= 0) {
-+		kref_get(&domain->refcnt);
-+
-+		ret = 0;
-+	}
-+
-+unlock:
-+	mutex_unlock(&dev->resource_mutex);
-+
-+copy:
-+	if (copy_to_user((void __user *)arg.response,
-+			 &response,
-+			 sizeof(response)))
-+		return -EFAULT;
-+
-+	dev_dbg(dev->dlb2_device, "Exiting %s()\n", __func__);
-+
-+	return ret;
++	/* Reinitialize any other hardware state */
++	dev->ops->init_hardware(dev);
 +}
 +
- static int dlb2_ioctl_get_num_resources(struct dlb2_dev *dev,
- 					unsigned long user_arg,
- 					u16 size)
-@@ -205,6 +272,7 @@ typedef int (*dlb2_ioctl_callback_fn_t)(struct dlb2_dev *dev,
- static dlb2_ioctl_callback_fn_t dlb2_ioctl_callback_fns[NUM_DLB2_CMD] = {
- 	dlb2_ioctl_get_device_version,
- 	dlb2_ioctl_create_sched_domain,
-+	dlb2_ioctl_get_sched_domain_fd,
- 	dlb2_ioctl_get_num_resources,
- 	dlb2_ioctl_get_driver_version,
- };
-diff --git a/include/uapi/linux/dlb2_user.h b/include/uapi/linux/dlb2_user.h
-index 37b0a7b98a86..95e0d2672abf 100644
---- a/include/uapi/linux/dlb2_user.h
-+++ b/include/uapi/linux/dlb2_user.h
-@@ -239,6 +239,31 @@ struct dlb2_create_sched_domain_args {
- };
- 
- /*
-+ * DLB2_CMD_GET_SCHED_DOMAIN_FD: Get an anonymous scheduling domain fd.
-+ *
-+ *	The domain must have been previously created with the ioctl
-+ *	DLB2_CMD_CREATE_SCHED_DOMAIN. The domain is reset when all
-+ *	its open files and memory mappings are closed.
-+ *
-+ * Input parameters:
-+ * - domain_id: Domain ID.
-+ * - padding0: Reserved for future use.
-+ *
-+ * Output parameters:
-+ * - response: pointer to a struct dlb2_cmd_response.
-+ *	response.status: Detailed error code. In certain cases, such as if the
-+ *		response pointer is invalid, the driver won't set status.
-+ *	response.id: domain fd.
-+ */
-+struct dlb2_get_sched_domain_fd_args {
-+	/* Output parameters */
-+	__u64 response;
-+	/* Input parameters */
-+	__u32 domain_id;
-+	__u32 padding0;
-+};
++static int dlb2_runtime_suspend(struct device *dev)
++{
++	struct pci_dev *pdev = container_of(dev, struct pci_dev, dev);
++	struct dlb2_dev *dlb2_dev = pci_get_drvdata(pdev);
 +
-+/*
-  * DLB2_CMD_GET_NUM_RESOURCES: Return the number of available resources
-  *	(queues, ports, etc.) that this device owns.
-  *
-@@ -275,6 +300,7 @@ struct dlb2_get_num_resources_args {
- enum dlb2_user_interface_commands {
- 	DLB2_CMD_GET_DEVICE_VERSION,
- 	DLB2_CMD_CREATE_SCHED_DOMAIN,
-+	DLB2_CMD_GET_SCHED_DOMAIN_FD,
- 	DLB2_CMD_GET_NUM_RESOURCES,
- 	DLB2_CMD_GET_DRIVER_VERSION,
++	dev_dbg(dlb2_dev->dlb2_device, "Suspending device operation\n");
++
++	/* Return and let the PCI subsystem put the device in D3hot. */
++
++	return 0;
++}
++
++static int dlb2_runtime_resume(struct device *dev)
++{
++	struct pci_dev *pdev = container_of(dev, struct pci_dev, dev);
++	struct dlb2_dev *dlb2_dev = pci_get_drvdata(pdev);
++	int ret;
++
++	/*
++	 * The PCI subsystem put the device in D0, but the device may not have
++	 * completed powering up. Wait until the device is ready before
++	 * proceeding.
++	 */
++	ret = dlb2_dev->ops->wait_for_device_ready(dlb2_dev, pdev);
++	if (ret)
++		return ret;
++
++	dev_dbg(dlb2_dev->dlb2_device, "Resuming device operation\n");
++
++	/* Now reinitialize the device state. */
++	dlb2_reset_hardware_state(dlb2_dev);
++
++	return 0;
++}
++#endif
++
+ static struct pci_device_id dlb2_id_table[] = {
+ 	{ PCI_DEVICE_DATA(INTEL, DLB2_PF, DLB2_PF) },
+ 	{ 0 }
+ };
+ MODULE_DEVICE_TABLE(pci, dlb2_id_table);
  
-@@ -296,6 +322,10 @@ enum dlb2_user_interface_commands {
- 		_IOWR(DLB2_IOC_MAGIC,				\
- 		      DLB2_CMD_CREATE_SCHED_DOMAIN,		\
- 		      struct dlb2_create_sched_domain_args)
-+#define DLB2_IOC_GET_SCHED_DOMAIN_FD				\
-+		_IOWR(DLB2_IOC_MAGIC,				\
-+		      DLB2_CMD_GET_SCHED_DOMAIN_FD,		\
-+		      struct dlb2_get_sched_domain_fd_args)
- #define DLB2_IOC_GET_NUM_RESOURCES				\
- 		_IOWR(DLB2_IOC_MAGIC,				\
- 		      DLB2_CMD_GET_NUM_RESOURCES,		\
++#ifdef CONFIG_PM
++static const struct dev_pm_ops dlb2_pm_ops = {
++	SET_RUNTIME_PM_OPS(dlb2_runtime_suspend, dlb2_runtime_resume, NULL)
++};
++#endif
++
+ static struct pci_driver dlb2_pci_driver = {
+ 	.name		 = (char *)dlb2_driver_name,
+ 	.id_table	 = dlb2_id_table,
+ 	.probe		 = dlb2_probe,
+ 	.remove		 = dlb2_remove,
++#ifdef CONFIG_PM
++	.driver.pm	 = &dlb2_pm_ops,
++#endif
+ };
+ 
+ static int __init dlb2_init_module(void)
+diff --git a/drivers/misc/dlb2/dlb2_main.h b/drivers/misc/dlb2/dlb2_main.h
+index 81795754c070..76380f0ca51b 100644
+--- a/drivers/misc/dlb2/dlb2_main.h
++++ b/drivers/misc/dlb2/dlb2_main.h
+@@ -41,6 +41,8 @@ struct dlb2_device_ops {
+ 	int (*map_pci_bar_space)(struct dlb2_dev *dev, struct pci_dev *pdev);
+ 	void (*unmap_pci_bar_space)(struct dlb2_dev *dev,
+ 				    struct pci_dev *pdev);
++	void (*inc_pm_refcnt)(struct pci_dev *pdev, bool resume);
++	void (*dec_pm_refcnt)(struct pci_dev *pdev);
+ 	int (*init_driver_state)(struct dlb2_dev *dev);
+ 	void (*free_driver_state)(struct dlb2_dev *dev);
+ 	int (*device_create)(struct dlb2_dev *dlb2_dev,
+diff --git a/drivers/misc/dlb2/dlb2_pf_ops.c b/drivers/misc/dlb2/dlb2_pf_ops.c
+index ae83a2feb3f9..e4de46eccf87 100644
+--- a/drivers/misc/dlb2/dlb2_pf_ops.c
++++ b/drivers/misc/dlb2/dlb2_pf_ops.c
+@@ -2,11 +2,39 @@
+ /* Copyright(c) 2017-2020 Intel Corporation */
+ 
+ #include <linux/delay.h>
++#include <linux/pm_runtime.h>
+ 
+ #include "dlb2_main.h"
+ #include "dlb2_regs.h"
+ #include "dlb2_resource.h"
+ 
++/***********************************/
++/****** Runtime PM management ******/
++/***********************************/
++
++static void
++dlb2_pf_pm_inc_refcnt(struct pci_dev *pdev, bool resume)
++{
++	if (resume)
++		/*
++		 * Increment the device's usage count and immediately wake it
++		 * if it was suspended.
++		 */
++		pm_runtime_get_sync(&pdev->dev);
++	else
++		pm_runtime_get_noresume(&pdev->dev);
++}
++
++static void
++dlb2_pf_pm_dec_refcnt(struct pci_dev *pdev)
++{
++	/*
++	 * Decrement the device's usage count and suspend it if the
++	 * count reaches zero.
++	 */
++	pm_runtime_put_sync_suspend(&pdev->dev);
++}
++
+ /********************************/
+ /****** PCI BAR management ******/
+ /********************************/
+@@ -226,6 +254,8 @@ dlb2_pf_reset_domain(struct dlb2_hw *hw, u32 id)
+ struct dlb2_device_ops dlb2_pf_ops = {
+ 	.map_pci_bar_space = dlb2_pf_map_pci_bar_space,
+ 	.unmap_pci_bar_space = dlb2_pf_unmap_pci_bar_space,
++	.inc_pm_refcnt = dlb2_pf_pm_inc_refcnt,
++	.dec_pm_refcnt = dlb2_pf_pm_dec_refcnt,
+ 	.init_driver_state = dlb2_pf_init_driver_state,
+ 	.free_driver_state = dlb2_pf_free_driver_state,
+ 	.device_create = dlb2_pf_device_create,
 -- 
 2.13.6
 
