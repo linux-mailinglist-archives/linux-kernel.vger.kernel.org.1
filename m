@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC0321C716
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9BC21C717
 	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 05:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbgGLDbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 23:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45664 "EHLO
+        id S1728258AbgGLDbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 23:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728206AbgGLDbn (ORCPT
+        with ESMTP id S1728206AbgGLDbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 23:31:43 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71285C08C5DD
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 20:31:43 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id i14so4458181pfu.13
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 20:31:43 -0700 (PDT)
+        Sat, 11 Jul 2020 23:31:47 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7E1C08C5DD
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 20:31:47 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id cv18so5676287pjb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Jul 2020 20:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Z3iLvmsALgpeKkdpuNL17/HM7clfrVNQ9KU9ARLG1y0=;
-        b=V4JjtjKfiTieITrJU1+IsNVyCXTofXiYb1IBwVWUF0NhkJZwo2pn4KSii2ojXEDJUI
-         66oIhsD0yr8miUbgs/hnkZguouIlQFh57D8QELabHjbdW1UxLxGLLNBkzNIsKUoO8gQJ
-         hI8vluoROpyGtD3WEqXuxsbWXfeiLkK/6UD16CPnJbJHi0BlLgXvWM25njV3H3Hm/6s+
-         NwUxqQK575Tft3dW74YgxV38tHrMXyq+M4eIrmalxNhNHumwd5n531ub6o9lXtqZWAhu
-         qqUOfZZHNjqwmn+xR0U4aefx1Joq7fTfTsBq4TT7aT6Qe32Y3aocPzm27rqmGh1kc35U
-         jGSw==
+        bh=CSSDnsVzCbm4HJvWsVbXXkGEs9xedyGKl/Rt6nKFdOE=;
+        b=dbumPayO/fDTRmwmbfWoGMopnkBa2rTRRdhdRZxImMg+IAEJ4iJ8xxqnf4pNPHIBg1
+         Twl174xM19B2sWzwefd5I9eq27cj5l4WVLLgvH8RrIDAYsmA5AKM/GXypd5+wBM+d3m0
+         b34IyrConj/4kSOSkZLRoYbZzX/ILotrFvuLHy95osDmsX2ON1+iwKFO8738TKSReZYJ
+         2C7jOsaov4l/WQlCt1iLyoWVRE7qOPoZ20O3E9H/PPRrrQd7alB/0C/ybSJlCGcI7Ou3
+         aoh4/zO9wrDfQLZg6SgO+lQTHtcB2q2Xm6GAxchCvbsre8RS+cGwptniFoffEJI5O9D6
+         h6OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Z3iLvmsALgpeKkdpuNL17/HM7clfrVNQ9KU9ARLG1y0=;
-        b=NElBbNrgw9LTdYDFGYyIvPGBfJsNaOL+A/ytTlI4JnFaybkB542dnEU7CGzBOw+q11
-         2tEJ8ddm5ghkH08Nf8MC3W0hAcSx0VqMWRcb/ZUukjv+Rsg1w3GMNPPp6++eWR5PDcdX
-         qAdkFOEnIttv3Jqr2LhAPCHzFE7WZIr6UQf7qv39xWrwu1kdHf1Keeo6s+IYufd6TQ/I
-         uMqC1lwv7dQevajXy8+1D+H30XdS7icYItI2yISUFxIzJfvW/q/zL90NMIFpBdQo4Hb8
-         1LoNDjZDBaP0++R8/ccrvHY5PN84QDzeEvUNXaYHERdxUD9U+cOXlRblHVZ14DXj6KN9
-         rTqQ==
-X-Gm-Message-State: AOAM533zGRKgG8KiM13pQhbPaV0IbMPfBZNituOVhPDeL5vN7TaNthSS
-        oEv+vVPvQj/9Kmpw4lT/jdk=
-X-Google-Smtp-Source: ABdhPJxXbi9KSZF/o0irOMdLPlhjV3pV92Mf5shXsy1/+Fp0VJiHmbskE4DYeA/T1f3pXWChiRQDSA==
-X-Received: by 2002:a62:3583:: with SMTP id c125mr21856884pfa.158.1594524701949;
-        Sat, 11 Jul 2020 20:31:41 -0700 (PDT)
+        bh=CSSDnsVzCbm4HJvWsVbXXkGEs9xedyGKl/Rt6nKFdOE=;
+        b=qzOfGsutkt3b+mspsD/Ekuuu8d+YAyMsvannPA32m381Nmea+VBf65GNKUlL1UUi1u
+         /8An//91mq2x4ahiJfj9uWGmOEC8B1peNmtnb84HZJP+gJIsWrSKYZqUJeMF1bT1PjBn
+         nzfdvJmqL5STeJYdshbu5/w3V4n7ec5SFxVtUah/zdo38GuVmLUulV7ziP6bnviUTuk3
+         u/MmSy2eXdcDPB7aJv+0ThtfNlmEvI+zUz67Wb3bctMdY7ubgkbmEFDBPpquMXlAHfbq
+         XVjg2E4MPGbrVR1Z/yAb3+GD/OhtxNwrr4qQa9B1kle0l57RGjAgJGxUAVBPriM1fTQ6
+         O5KA==
+X-Gm-Message-State: AOAM531011BHhTfNo4Vi6JZ1tIPT9Y4r1CKtY0E7A5AUCp4YxZ7I2zOU
+        zJNcz+cSqZR5iIL6TfVVUEE=
+X-Google-Smtp-Source: ABdhPJxjvGahtoyXNSccUhl0AeaffkZO4kJLPbsRyYmRclGhUYpFdroi35MHWOJWvCcdaQoqJ6BZFw==
+X-Received: by 2002:a17:902:904c:: with SMTP id w12mr22660155plz.147.1594524707025;
+        Sat, 11 Jul 2020 20:31:47 -0700 (PDT)
 Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.224.89])
-        by smtp.gmail.com with ESMTPSA id s89sm9750271pjj.28.2020.07.11.20.31.39
+        by smtp.gmail.com with ESMTPSA id s89sm9750271pjj.28.2020.07.11.20.31.44
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 11 Jul 2020 20:31:41 -0700 (PDT)
+        Sat, 11 Jul 2020 20:31:46 -0700 (PDT)
 From:   Souptick Joarder <jrdr.linux@gmail.com>
 To:     boris.ostrovsky@oracle.com, jgross@suse.com, sstabellini@kernel.org
 Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
         Souptick Joarder <jrdr.linux@gmail.com>,
         John Hubbard <jhubbard@nvidia.com>,
         Paul Durrant <xadimgnik@gmail.com>
-Subject: [PATCH v3 2/3] xen/privcmd: Mark pages as dirty
-Date:   Sun, 12 Jul 2020 09:09:54 +0530
-Message-Id: <1594525195-28345-3-git-send-email-jrdr.linux@gmail.com>
+Subject: [PATCH v3 3/3] xen/privcmd: Convert get_user_pages*() to pin_user_pages*()
+Date:   Sun, 12 Jul 2020 09:09:55 +0530
+Message-Id: <1594525195-28345-4-git-send-email-jrdr.linux@gmail.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1594525195-28345-1-git-send-email-jrdr.linux@gmail.com>
 References: <1594525195-28345-1-git-send-email-jrdr.linux@gmail.com>
@@ -64,33 +64,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pages need to be marked as dirty before unpinned it in
-unlock_pages() which was oversight. This is fixed now.
+In 2019, we introduced pin_user_pages*() and now we are converting
+get_user_pages*() to the new API as appropriate. [1] & [2] could
+be referred for more information. This is case 5 as per document [1].
+
+[1] Documentation/core-api/pin_user_pages.rst
+
+[2] "Explicit pinning of user-space pages":
+        https://lwn.net/Articles/807108/
 
 Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Suggested-by: John Hubbard <jhubbard@nvidia.com>
 Reviewed-by: Juergen Gross <jgross@suse.com>
 Cc: John Hubbard <jhubbard@nvidia.com>
 Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Cc: Paul Durrant <xadimgnik@gmail.com>
 ---
- drivers/xen/privcmd.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/xen/privcmd.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
-index b001673..079d35b 100644
+index 079d35b..63abe6c 100644
 --- a/drivers/xen/privcmd.c
 +++ b/drivers/xen/privcmd.c
-@@ -611,8 +611,11 @@ static void unlock_pages(struct page *pages[], unsigned int nr_pages)
- {
- 	unsigned int i;
+@@ -593,7 +593,7 @@ static int lock_pages(
+ 		if (requested > nr_pages)
+ 			return -ENOSPC;
  
--	for (i = 0; i < nr_pages; i++)
-+	for (i = 0; i < nr_pages; i++) {
-+		if (!PageDirty(pages[i]))
-+			set_page_dirty_lock(pages[i]);
- 		put_page(pages[i]);
-+	}
+-		page_count = get_user_pages_fast(
++		page_count = pin_user_pages_fast(
+ 			(unsigned long) kbufs[i].uptr,
+ 			requested, FOLL_WRITE, pages);
+ 		if (page_count < 0)
+@@ -609,13 +609,7 @@ static int lock_pages(
+ 
+ static void unlock_pages(struct page *pages[], unsigned int nr_pages)
+ {
+-	unsigned int i;
+-
+-	for (i = 0; i < nr_pages; i++) {
+-		if (!PageDirty(pages[i]))
+-			set_page_dirty_lock(pages[i]);
+-		put_page(pages[i]);
+-	}
++	unpin_user_pages_dirty_lock(pages, nr_pages, true);
  }
  
  static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
