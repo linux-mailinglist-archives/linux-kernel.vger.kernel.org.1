@@ -2,187 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757FA21C6CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 02:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D6021C6D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 02:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgGLAJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Jul 2020 20:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726939AbgGLAJE (ORCPT
+        id S1727998AbgGLAcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Jul 2020 20:32:39 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:52939 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727063AbgGLAcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Jul 2020 20:09:04 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60ACC08C5DD;
-        Sat, 11 Jul 2020 17:09:03 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id e12so7376117qtr.9;
-        Sat, 11 Jul 2020 17:09:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=pou8Xfe98lnWE/rbRKHVE6SyHdTXSqWjqH3LyMm2g1g=;
-        b=VS6vv99Vg+bqf95zuX4c+7cQB4qH9c0v2nf/YVV/5Qq7W4TIfgoKhTyLLt6gllzaD2
-         2sDIc+gSeKdyaeH2/4iMGWnT8plbBkjDfLgFjWYViZMWB9YKL4GtSkZz70yQFAZAG8F2
-         opo6cytCGbpzgnKdVEI2SGN+iIsXI4eU6XpBF1rWFlKxUtShEQYcsVEub/ttLfOP2cvw
-         bklV724Jb7ZwSBei3wih3mzvvEvZ+YHxRc/+syR53QZY7B1+mMf8qr6TWML9wNpHoX2Y
-         DFgWis5Phn93qJ3N9gOPk1mbtexwwRcKzyev5tpM9UO+t4bWtWEJ3h2vcNNjX8HbzcDU
-         oLgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=pou8Xfe98lnWE/rbRKHVE6SyHdTXSqWjqH3LyMm2g1g=;
-        b=RxFq4MDKn5EPmRWwDXyKf3tdWoVn+Usj4W3AJBnuOafkgPP20eA4M001LJyGFbxBtA
-         /Q2M21i0Y42ocC+xHfhnaDlTbRYSefksmH/ohPR3hgTZZcDTu0qDHRq8MuIJ1qdFbI05
-         A5FRAoEJH4RQglYYyIH9yUsMkeCkFr13op+RkiFI1DN/RxLZP6VLIqRgpQTfOaTJo69n
-         +onCZ74frtEo6qg9CrrxMY7p8FKiyHdGh7zs+8UKih1H2YGcq5QcKquh+o3bCtwM3/am
-         zmj76KjaLxmqZBnpdMqXOUkL1dfmkKNIgZsTJoHcbqZ3Lm4n/gRccnofAz2zZHklHNML
-         2n9Q==
-X-Gm-Message-State: AOAM531RjuJNpgjrQL8bu9Qy1fEldOiUxCAYgm2fR+3QmldHK+WVLtB/
-        8F2TLeQTy8u0rEhlKqnjgqeQsd1oGqcKZehKBPI=
-X-Google-Smtp-Source: ABdhPJwGbWSe6AmUoeoFkZuqf2GX8tN/l1kTz2CbVY36DMOxeSmlg58d0fnBi/IgFdweYfqb4tDywCSMUJqdan/2aY4=
-X-Received: by 2002:ac8:518b:: with SMTP id c11mr76434264qtn.195.1594512542683;
- Sat, 11 Jul 2020 17:09:02 -0700 (PDT)
+        Sat, 11 Jul 2020 20:32:39 -0400
+X-UUID: 118926be064b4de9ae4b29d484b4e5e9-20200712
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Z1SuMVtx7OA9n2jgiMCXVQ8y0m5FxirhJO+d41akUHw=;
+        b=VXspkkWVh+oPvp4y2s+TqUobjolG2QZ23C9mGeuk2KwW9/wJbl0RrDl2ZqFMD+YbrXcmEqhYKlUsfRTp4aTRvPoJtPRZSMbeKaaKUg3MA0NwymTsxr+zGyHOTKCthuZBeTY/F1TbqpbbFmY+BqkRPVjT0/u6lOwWaehbCbvfivA=;
+X-UUID: 118926be064b4de9ae4b29d484b4e5e9-20200712
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 434282081; Sun, 12 Jul 2020 08:32:30 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 12 Jul 2020 08:32:27 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 12 Jul 2020 08:32:27 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <ebiggers@kernel.org>, <satyat@google.com>
+CC:     <matthias.bgg@gmail.com>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v3] scsi: ufs-mediatek: Add inline encryption support
+Date:   Sun, 12 Jul 2020 08:32:26 +0800
+Message-ID: <20200712003226.7593-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <CACK8Z6F-8OZNJU8wqWuZq=moCaOi+3W=CzBeppfO31VZnkqBrg@mail.gmail.com>
- <20200711195346.GA132330@bjorn-Precision-5520>
-In-Reply-To: <20200711195346.GA132330@bjorn-Precision-5520>
-Reply-To: rajatxjain@gmail.com
-From:   Rajat Jain <rajatxjain@gmail.com>
-Date:   Sat, 11 Jul 2020 17:08:51 -0700
-Message-ID: <CAA93t1rjzTYmag1vTDT==7GQ8LLduc9Ne06btEEwiyBRtCeTNg@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] PCI/ACS: Enable PCI_ACS_TB for untrusted/external-facing
- devices
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Rajat Jain <rajatja@google.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 9CC95F33B94D9D190BA186BDF462498E3A2DC36E666D567D6896CF24781C8EFC2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 12:53 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Fri, Jul 10, 2020 at 03:53:59PM -0700, Rajat Jain wrote:
-> > On Fri, Jul 10, 2020 at 2:29 PM Raj, Ashok <ashok.raj@intel.com> wrote:
-> > > On Fri, Jul 10, 2020 at 03:29:22PM -0500, Bjorn Helgaas wrote:
-> > > > On Tue, Jul 07, 2020 at 03:46:04PM -0700, Rajat Jain wrote:
-> > > > > When enabling ACS, enable translation blocking for external facing ports
-> > > > > and untrusted devices.
-> > > > >
-> > > > > Signed-off-by: Rajat Jain <rajatja@google.com>
-> > > > > ---
-> > > > > v4: Add braces to avoid warning from kernel robot
-> > > > >     print warning for only external-facing devices.
-> > > > > v3: print warning if ACS_TB not supported on external-facing/untrusted ports.
-> > > > >     Minor code comments fixes.
-> > > > > v2: Commit log change
-> > > > >
-> > > > >  drivers/pci/pci.c    |  8 ++++++++
-> > > > >  drivers/pci/quirks.c | 15 +++++++++++++++
-> > > > >  2 files changed, 23 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > > > index 73a8627822140..a5a6bea7af7ce 100644
-> > > > > --- a/drivers/pci/pci.c
-> > > > > +++ b/drivers/pci/pci.c
-> > > > > @@ -876,6 +876,14 @@ static void pci_std_enable_acs(struct pci_dev *dev)
-> > > > >     /* Upstream Forwarding */
-> > > > >     ctrl |= (cap & PCI_ACS_UF);
-> > > > >
-> > > > > +   /* Enable Translation Blocking for external devices */
-> > > > > +   if (dev->external_facing || dev->untrusted) {
-> > > > > +           if (cap & PCI_ACS_TB)
-> > > > > +                   ctrl |= PCI_ACS_TB;
-> > > > > +           else if (dev->external_facing)
-> > > > > +                   pci_warn(dev, "ACS: No Translation Blocking on external-facing dev\n");
-> > > > > +   }
-> > > >
-> > > > IIUC, this means that external devices can *never* use ATS and
-> > > > can never cache translations.
-> >
-> > Yes, but it already exists today (and this patch doesn't change that):
-> > 521376741b2c2 "PCI/ATS: Only enable ATS for trusted devices"
-> >
-> > IMHO any external device trying to send ATS traffic despite having ATS
-> > disabled should count as a bad intent. And this patch is trying to
-> > plug that loophole, by blocking the AT traffic from devices that we do
-> > not expect to see AT from anyway.
->
-> Thinking about this some more, I wonder if Linux should:
->
->   - Explicitly disable ATS for every device at enumeration-time, e.g.,
->     in pci_init_capabilities(),
->
->   - Enable PCI_ACS_TB for every device (not just external-facing or
->     untrusted ones),
->
->   - Disable PCI_ACS_TB for the relevant devices along the path only
->     when enabling ATS.
->
-> One nice thing about doing that is that the "untrusted" test would be
-> only in pci_enable_ats(), and we wouldn't need one in
-> pci_std_enable_acs().
+QWRkIGlubGluZSBlbmNyeXB0aW9uIHN1cHBvcnQgdG8gdWZzLW1lZGlhdGVrLg0KDQpUaGUgc3Rh
+bmRhcmRzLWNvbXBsaWFudCBwYXJ0cywgc3VjaCBhcyBxdWVyeWluZyB0aGUgY3J5cHRvIGNhcGFi
+aWxpdGllcw0KYW5kIGVuYWJsaW5nIGNyeXB0byBmb3IgaW5kaXZpZHVhbCBVRlMgcmVxdWVzdHMs
+IGFyZSBhbHJlYWR5IGhhbmRsZWQgYnkNCnVmc2hjZC1jcnlwdG8uYywgd2hpY2ggaXRzZWxmIGlz
+IHdpcmVkIGludG8gdGhlIGJsay1jcnlwdG8gZnJhbWV3b3JrLg0KDQpIb3dldmVyIE1lZGlhVGVr
+IFVGUyBob3N0IHJlcXVpcmVzIGEgdmVuZG9yLXNwZWNpZmljIGhjZV9lbmFibGUgb3BlcmF0aW9u
+DQp0byBhbGxvdyBjcnlwdG8tcmVsYXRlZCByZWdpc3RlcnMgYmVpbmcgYWNjZXNzZWQgbm9ybWFs
+bHkgaW4ga2VybmVsLg0KQWZ0ZXIgdGhpcyBzdGVwLCBNZWRpYVRlayBVRlMgaG9zdCBjYW4gd29y
+ayBhcyBzdGFuZGFyZC1jb21wbGlhbnQgaG9zdA0KZm9yIGlubGluZS1lbmNyeXB0aW9uIHJlbGF0
+ZWQgZnVuY3Rpb25zLg0KDQpTaWduZWQtb2ZmLWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVA
+bWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYyB8IDIy
+ICsrKysrKysrKysrKysrKysrKysrKysNCiBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5o
+IHwgIDEgKw0KIDIgZmlsZXMgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZz
+LW1lZGlhdGVrLmMNCmluZGV4IGFkOTI5MjM1YzE5My4uMzFhZjhiM2QyYjUzIDEwMDY0NA0KLS0t
+IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KKysrIGIvZHJpdmVycy9zY3NpL3Vm
+cy91ZnMtbWVkaWF0ZWsuYw0KQEAgLTE2LDYgKzE2LDcgQEANCiAjaW5jbHVkZSA8bGludXgvc29j
+L21lZGlhdGVrL210a19zaXBfc3ZjLmg+DQogDQogI2luY2x1ZGUgInVmc2hjZC5oIg0KKyNpbmNs
+dWRlICJ1ZnNoY2QtY3J5cHRvLmgiDQogI2luY2x1ZGUgInVmc2hjZC1wbHRmcm0uaCINCiAjaW5j
+bHVkZSAidWZzX3F1aXJrcy5oIg0KICNpbmNsdWRlICJ1bmlwcm8uaCINCkBAIC0yNSw2ICsyNiw5
+IEBADQogCWFybV9zbWNjY19zbWMoTVRLX1NJUF9VRlNfQ09OVFJPTCwgXA0KIAkJICAgICAgY21k
+LCB2YWwsIDAsIDAsIDAsIDAsIDAsICYocmVzKSkNCiANCisjZGVmaW5lIHVmc19tdGtfY3J5cHRv
+X2N0cmwocmVzLCBlbmFibGUpIFwNCisJdWZzX210a19zbWMoVUZTX01US19TSVBfQ1JZUFRPX0NU
+UkwsIGVuYWJsZSwgcmVzKQ0KKw0KICNkZWZpbmUgdWZzX210a19yZWZfY2xrX25vdGlmeShvbiwg
+cmVzKSBcDQogCXVmc19tdGtfc21jKFVGU19NVEtfU0lQX1JFRl9DTEtfTk9USUZJQ0FUSU9OLCBv
+biwgcmVzKQ0KIA0KQEAgLTczLDYgKzc3LDE4IEBAIHN0YXRpYyB2b2lkIHVmc19tdGtfY2ZnX3Vu
+aXByb19jZyhzdHJ1Y3QgdWZzX2hiYSAqaGJhLCBib29sIGVuYWJsZSkNCiAJfQ0KIH0NCiANCitz
+dGF0aWMgdm9pZCB1ZnNfbXRrX2NyeXB0b19lbmFibGUoc3RydWN0IHVmc19oYmEgKmhiYSkNCit7
+DQorCXN0cnVjdCBhcm1fc21jY2NfcmVzIHJlczsNCisNCisJdWZzX210a19jcnlwdG9fY3RybChy
+ZXMsIDEpOw0KKwlpZiAocmVzLmEwKSB7DQorCQlkZXZfaW5mbyhoYmEtPmRldiwgIiVzOiBjcnlw
+dG8gZW5hYmxlIGZhaWxlZCwgZXJyOiAlbHVcbiIsDQorCQkJIF9fZnVuY19fLCByZXMuYTApOw0K
+KwkJaGJhLT5jYXBzICY9IH5VRlNIQ0RfQ0FQX0NSWVBUTzsNCisJfQ0KK30NCisNCiBzdGF0aWMg
+aW50IHVmc19tdGtfaGNlX2VuYWJsZV9ub3RpZnkoc3RydWN0IHVmc19oYmEgKmhiYSwNCiAJCQkJ
+ICAgICBlbnVtIHVmc19ub3RpZnlfY2hhbmdlX3N0YXR1cyBzdGF0dXMpDQogew0KQEAgLTgzLDYg
+Kzk5LDkgQEAgc3RhdGljIGludCB1ZnNfbXRrX2hjZV9lbmFibGVfbm90aWZ5KHN0cnVjdCB1ZnNf
+aGJhICpoYmEsDQogCQkJaGJhLT52cHMtPmhiYV9lbmFibGVfZGVsYXlfdXMgPSAwOw0KIAkJZWxz
+ZQ0KIAkJCWhiYS0+dnBzLT5oYmFfZW5hYmxlX2RlbGF5X3VzID0gNjAwOw0KKw0KKwkJaWYgKGhi
+YS0+Y2FwcyAmIFVGU0hDRF9DQVBfQ1JZUFRPKQ0KKwkJCXVmc19tdGtfY3J5cHRvX2VuYWJsZSho
+YmEpOw0KIAl9DQogDQogCXJldHVybiAwOw0KQEAgLTMxNyw2ICszMzYsOSBAQCBzdGF0aWMgaW50
+IHVmc19tdGtfaW5pdChzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KIAkvKiBFbmFibGUgY2xvY2stZ2F0
+aW5nICovDQogCWhiYS0+Y2FwcyB8PSBVRlNIQ0RfQ0FQX0NMS19HQVRJTkc7DQogDQorCS8qIEVu
+YWJsZSBpbmxpbmUgZW5jcnlwdGlvbiAqLw0KKwloYmEtPmNhcHMgfD0gVUZTSENEX0NBUF9DUllQ
+VE87DQorDQogCS8qIEVuYWJsZSBXcml0ZUJvb3N0ZXIgKi8NCiAJaGJhLT5jYXBzIHw9IFVGU0hD
+RF9DQVBfV0JfRU47DQogCWhiYS0+dnBzLT53Yl9mbHVzaF90aHJlc2hvbGQgPSBVRlNfV0JfQlVG
+X1JFTUFJTl9QRVJDRU5UKDgwKTsNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1t
+ZWRpYXRlay5oIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuaA0KaW5kZXggNjA1MmVj
+MTA1YWJhLi44ZWQyNGQ1ZmNmZjkgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1t
+ZWRpYXRlay5oDQorKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5oDQpAQCAtNzAs
+NiArNzAsNyBAQCBlbnVtIHsNCiAgKi8NCiAjZGVmaW5lIE1US19TSVBfVUZTX0NPTlRST0wgICAg
+ICAgICAgICAgICBNVEtfU0lQX1NNQ19DTUQoMHgyNzYpDQogI2RlZmluZSBVRlNfTVRLX1NJUF9E
+RVZJQ0VfUkVTRVQgICAgICAgICAgQklUKDEpDQorI2RlZmluZSBVRlNfTVRLX1NJUF9DUllQVE9f
+Q1RSTCAgICAgICAgICAgQklUKDIpDQogI2RlZmluZSBVRlNfTVRLX1NJUF9SRUZfQ0xLX05PVElG
+SUNBVElPTiAgQklUKDMpDQogDQogLyoNCi0tIA0KMi4xOC4wDQo=
 
-Yes, this could work.
-
-I think I had thought about this but I'm blanking out on why I had
-given it up. I think it was because of the possibility that some
-bridges may have "Translation blocking" disabled, even if not all
-their descendents were trusted enough to enable ATS on them. But now
-thinking about this again, as long as we retain the policy of not
-enabling ATS on external devices (and thus enable TB for sure on
-them), this should not be a problem. WDYT?
-
->
-> It's possible BIOS gives us devices with ATS enabled, and this might
-> break them, but that seems like something we'd want to find out about.
->
-
-Why would they break? We'd disable ATS on each device as we enumerate
-them, so they'd be functional, just with ATS disabled until it is
-enabled again on internal devices as needed. Which would be WAI
-behavior?
-
-Thanks,
-,
-Rajat
-
-
-
-
-> Bjorn
