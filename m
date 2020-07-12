@@ -2,183 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9BC21CC11
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 01:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC0A21CC20
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 01:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728896AbgGLXPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 19:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728617AbgGLXPu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 19:15:50 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084B7C061794;
-        Sun, 12 Jul 2020 16:15:50 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id a8so10421369edy.1;
-        Sun, 12 Jul 2020 16:15:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ufXlWsSbQjgi4oIUlNgGwOevOPgtDjD5Z0wxS+QyBqs=;
-        b=gIyFzsDcvDoFbqmY8MNNEoFc4zyHlEt7W5KBJnNGbEY2rsjYLkCDxC0V3W4XvwZERd
-         ZJY/uzU1K1rSDmaruC0TtCzCFLIoGe6QwaIHlz+WN/Mj+0LqUV45+qKeJDrs4dnlKDxU
-         QNp5FxpR3+7DZ+N6Xf4qWyMlnvucUwb3wfhfl18HoEJZPH9NtALg7de5Lshv2fM/5+2R
-         cDXX0LqNxXJJhM6LpUiVFvA1kZKY35tAtgWJZsQ1mddy4qDlkxQ23H7QANaNyyhbo8Lx
-         K046lwZUKIlkDlJA0gSjfLy90ECJWxCqJ5BpqtwWxGHq8Qad7DXuN7MydTKhTjbhSuQJ
-         xzSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ufXlWsSbQjgi4oIUlNgGwOevOPgtDjD5Z0wxS+QyBqs=;
-        b=ljET0AV6Owr756/zidz51/J7hT9DNI6ZgSmhp1ADZp4eP5ltAF+ehD6+2F4GrKrzUR
-         QymROaKFj2C5IQk6G6vZHdssXfqpubHZqCBVs1EAHtMJA9EpjRaHjFX8J4i+Al8NBPjj
-         QFrZq8eYCcd+FBJ2O63mlL/KbVCtBAFBk81MOS7rb0Lk83c/z5jkJuoSGGKPV4n6EVEl
-         7+v077siAeNUrgxYYrcAXvdfP6LLpsf3n/uUxgJUhD/G9lZn+PogEdK3x3y7vQaC31JT
-         r+dlFk7KXS4kM2PTf8Plrv1zkyVLi5hrFcHJhB9zNXZz23MytH1NtxyEIWAKv0htjFVi
-         SOoA==
-X-Gm-Message-State: AOAM532k2Px7KJO65WG5dLdNqlLpwavLj8JHA10RJmfA6I8mzU3deBo9
-        4Hys06QDdrQ5zT02pvOkf2qG42sx
-X-Google-Smtp-Source: ABdhPJzYsShQzcoTdZHEXG8NR5IOJV9+SW4PEDBQTFQt/rFG6kH4qrNhToHHe92JRfJbCJMhOryToA==
-X-Received: by 2002:a50:f149:: with SMTP id z9mr90011386edl.167.1594595748632;
-        Sun, 12 Jul 2020 16:15:48 -0700 (PDT)
-Received: from skbuf ([188.25.219.134])
-        by smtp.gmail.com with ESMTPSA id o17sm8502946ejb.105.2020.07.12.16.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2020 16:15:48 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 02:15:46 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Sergey Organov <sorganov@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fugang Duan <fugang.duan@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v2 net] net: fec: fix hardware time stamping by external
- devices
-Message-ID: <20200712231546.4k6qyaiq2cgok3ep@skbuf>
-References: <20200706142616.25192-1-sorganov@gmail.com>
- <20200711120842.2631-1-sorganov@gmail.com>
- <20200711231937.wu2zrm5spn7a6u2o@skbuf>
- <87wo387r8n.fsf@osv.gnss.ru>
- <20200712150151.55jttxaf4emgqcpc@skbuf>
- <87r1tg7ib9.fsf@osv.gnss.ru>
- <20200712193344.bgd5vpftaikwcptq@skbuf>
- <87365wgyae.fsf@osv.gnss.ru>
+        id S1728738AbgGLXTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 19:19:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:59674 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727785AbgGLXT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 19:19:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1465130E;
+        Sun, 12 Jul 2020 16:19:29 -0700 (PDT)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BAA443F7C3;
+        Sun, 12 Jul 2020 16:19:27 -0700 (PDT)
+Subject: Re: [PATCH v5 10/10] arm64: dts: actions: Add uSD support for
+ Cubieboard7
+To:     Amit Tomer <amittomer25@gmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+        Rob Herring <robh+dt@kernel.org>, cristian.ciocaltea@gmail.com,
+        linux-kernel@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
+References: <1593701576-28580-1-git-send-email-amittomer25@gmail.com>
+ <1593701576-28580-11-git-send-email-amittomer25@gmail.com>
+ <20200712173044.GL6110@Mani-XPS-13-9360>
+ <CABHD4K8+cZMwA=pQx4Gvv5Z4xLof8Ln6fUNrB0=-SS2M_0_3aw@mail.gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <5e2eb92e-eada-9b14-3f15-38717284bc92@arm.com>
+Date:   Mon, 13 Jul 2020 00:17:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87365wgyae.fsf@osv.gnss.ru>
+In-Reply-To: <CABHD4K8+cZMwA=pQx4Gvv5Z4xLof8Ln6fUNrB0=-SS2M_0_3aw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 01:32:09AM +0300, Sergey Organov wrote:
-> >
-> > If you run "ethtool -T eth0" on a FEC network interface, it will always
-> > report its own PHC, and never the PHC of a PHY. So, you cannot claim
-> > that you are fixing PHY timestamping, since PHY timestamping is not
-> > advertised. That's not what a bug fix is, at least not around here, with
-> > its associated backporting efforts.
->
-> You can't actually try it as you don't have the hardware, right? As for
-> me, rather than running exactly ethtool, I do corresponding ioctl() in
-> my program, and the kernel does report features of my external PTP PHY,
-> not of internal one of the FEC, without my patches!
->
-> > The only way you could have claimed that this was fixing PHY
-> > timestamping was if "ethtool -T eth0" was reporting a PHY PHC, however
-> > timestamps were not coming from the PHY.
->
-> That's /exactly/ the case! Moreover, my original work is on 4.9.146
-> kernel, so ethtool works correctly at least since then. Here is quote from
-> my original question that I already gave reference to:
->
-> <quote>
-> Almost everything works fine out of the box, except hardware
-> timestamping. The problems are that I apparently get timestamps from fec
-> built-in PTP instead of external PHY, and that
->
->   ioctl(fd, SIOCSHWTSTAMP, &ifr)
->
-> ends up being executed by fec1 built-in PTP code instead of being
-> forwarded to the external PHY, and that this happens despite the call to
->
->    info.cmd = ETHTOOL_GET_TS_INFO;
->    ioctl(fd, SIOCETHTOOL, &ifr);
->
-> returning phc_index = 1 that corresponds to external PHY, and reports
-> features of the external PHY, leading to major inconsistency as seen
-> from user-space.
-> </quote>
->
-> You see? This is exactly the case where I could claim fixing PHY time
-> stamping even according to your own expertise!
->
-> > From the perspective of the mainline kernel, that can never happen.
->
-> Yet in happened to me, and in some way because of the UAPI deficiencies
-> I've mentioned, as ethtool has entirely separate code path, that happens
-> to be correct for a long time already.
->
+On 12/07/2020 19:45, Amit Tomer wrote:
 
-Yup, you are right:
+Hi,
 
-int __ethtool_get_ts_info(struct net_device *dev, struct ethtool_ts_info *info)
-{
-	const struct ethtool_ops *ops = dev->ethtool_ops;
-	struct phy_device *phydev = dev->phydev;
+> On Sun, Jul 12, 2020 at 11:00 PM Manivannan Sadhasivam
+> <manivannan.sadhasivam@linaro.org> wrote:
+>>
+>> On Thu, Jul 02, 2020 at 08:22:56PM +0530, Amit Singh Tomar wrote:
+>>> This commit adds uSD support for Cubieboard7 board based on Actions Semi
+>>> S700 SoC. SD0 is connected to uSD slot. Since there is no PMIC support
+>>> added yet, fixed regulator has been used as a regulator node.
+>>>
+>>> Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
+>>> ---
+>>> Changes since v4:
+>>>       * No change.
+>>> Changes since v3:
+>>>         * No change.
+>>> Changes since v2:
+>>>         * No change.
+>>> Changes since v1:
+>>>         * No change.
+>>> Changes since RFC:
+>>>         * No change.
+>>> ---
+>>>  arch/arm64/boot/dts/actions/s700-cubieboard7.dts | 41 ++++++++++++++++++++++++
+>>>  arch/arm64/boot/dts/actions/s700.dtsi            |  1 +
+>>>  2 files changed, 42 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
+>>> index 63e375cd9eb4..ec117eb12f3a 100644
+>>> --- a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
+>>> +++ b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
+>>> @@ -13,6 +13,7 @@
+>>>
+>>>       aliases {
+>>>               serial3 = &uart3;
+>>> +             mmc0 = &mmc0;
+>>>       };
+>>>
+>>>       chosen {
+>>> @@ -28,6 +29,23 @@
+>>>               device_type = "memory";
+>>>               reg = <0x1 0xe0000000 0x0 0x0>;
+>>>       };
+>>> +
+>>> +     /* Fixed regulator used in the absence of PMIC */
+>>> +     vcc_3v1: vcc-3v1 {
+>>> +             compatible = "regulator-fixed";
+>>> +             regulator-name = "fixed-3.1V";
+>>> +             regulator-min-microvolt = <3100000>;
+>>> +             regulator-max-microvolt = <3100000>;
+>>> +     };
+>>
+>> Is this regulator used somewhere?
+> 
+> This is something I copied from bubblegum dts as I wasn't sure what is right way
+> to include these regulators.
 
-	memset(info, 0, sizeof(*info));
-	info->cmd = ETHTOOL_GET_TS_INFO;
+But this regulator is only used for the eMMC there, which we apparently
+don't have on the Cubieboard 7?
 
-	if (phy_has_tsinfo(phydev))
-		return phy_ts_info(phydev, info);
-	if (ops->get_ts_info)
-		return ops->get_ts_info(dev, info);
+> Also, another day tested it without having these regulators in , and
+> still it seems to
+> work.  So should these be removed ?
 
-	info->so_timestamping = SOF_TIMESTAMPING_RX_SOFTWARE |
-				SOF_TIMESTAMPING_SOFTWARE;
-	info->phc_index = -1;
+If there are not even referenced in the .dts, then fixed regulators are
+rather pointless. So yes, please remove this vcc-3v1 one.
 
-	return 0;
-}
+What is the story with the other regulator? Is there a PMIC or a power
+switch for the SD card? Or is the power supply actually hardwired?
 
-Very bad design choice indeed...
-Given the fact that the PHY timestamping needs massaging from MAC driver
-for plenty of other reasons, now of all things, ethtool just decided
-it's not going to consult the MAC driver about the PHC it intends to
-expose to user space, and just say "here's the PHY, deal with it". This
-is a structural bug, I would say.
-
-> > From your perspective as a developer, in your private work tree, where
-> > _you_ added the necessary wiring for PHY timestamping, I fully
-> > understand that this is exactly what happened _to_you_.
-> > I am not saying that PHY timestamping doesn't need this issue fixed. It
-> > does, and if it weren't for DSA, it would have simply been a "new
-> > feature", and it would have been ok to have everything in the same
-> > patch.
->
-> Except that it's not a "new feature", but a bug-fix of an existing one,
-> as I see it.
->
-
-See above. It's clear that the intention of the PHY timestamping support
-is for MAC drivers to opt-in, otherwise some mechanism would have been
-devised such that not every single one of them would need to check for
-phy_has_hwtstamp() in .ndo_do_ioctl(). That simply doesn't scale. Also,
-it seems that automatically calling phy_ts_info from
-__ethtool_get_ts_info is not coherent with that intention.
-
-I need to think more about this. Anyway, if your aim is to "reduce
-confusion" for others walking in your foot steps, I think this is much
-worthier of your time: avoiding the inconsistent situation where the MAC
-driver is obviously not ready for PHY timestamping, however not all
-parts of the kernel are in agreement with that, and tell the user
-something else.
-
-Thanks,
--Vladimir
+Cheers,
+Andre
