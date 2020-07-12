@@ -2,129 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DFE21CB02
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 20:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF36021CB04
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 20:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729142AbgGLSqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 14:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
+        id S1729197AbgGLSyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 14:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727966AbgGLSqG (ORCPT
+        with ESMTP id S1729080AbgGLSy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 14:46:06 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DECC061794;
-        Sun, 12 Jul 2020 11:46:06 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id n26so12460770ejx.0;
-        Sun, 12 Jul 2020 11:46:06 -0700 (PDT)
+        Sun, 12 Jul 2020 14:54:26 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8E6C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 11:54:26 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id q17so4978150pfu.8
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 11:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d6Qek2fkCB/2CxHUEUFljSHTbzdbT53VAPl6aQJ65nc=;
-        b=U/N/BqnUCvWI0p7yxG2u7x1vPloQ9p/Em95pZUJPFerIQ2ouVRXGI8hZUnMn/VABwx
-         TXKgQCLaH7No+8qniaeGoOxzVPHABpfGm/urW4tnTUdewTx14NpliaxCjWWpfT1mtqYh
-         BQeNTcszQ7vOke9OlkuoxsGkDlZ4IAYdfrq3DQ2WGE8LjvWF1h2WFSmc1uoT6sGvaTdT
-         4IQQus/LxyRsRZMkQILkKsKUy5MhfM0USJIcMgPV4N51Jd5ZCwXkiKttJM5JfyDBBLUA
-         h08Qv9sQ9chSfLi1rwMSDtIgTEDxaXNiUCiEuC8a7gHt6lwSVkI0q1ToIgMwf/9F53CZ
-         DRlw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=n32EN2ylhUwy1ghntvoX1CHEHXLSWX9Bi5IxzncMNMI=;
+        b=nuuR4XSJJ3pEKcLfOKloPVp3SXKRx0h0Cu52boGomkqOORU5EYxnYVs+Ay3ak6UBRC
+         HtgZqysyH+8XrFIjPeOVKQ3Cz3VYLVAsyvLotSJFhdmDqWg/jnKQtAi8fAk8qEsM7cyz
+         rPzMt6PD6TP15r5hsE+F9eyTVhoyh1hBQpRkpPGc67aaocK0p61a148Kqc0p2i0+oI3K
+         5dE20wnNUBIyShmkfZuq3b1eOxlk2T2H+WlbjtrKNoAwAmVCH1lJPy8dx/0qYB+BTN6w
+         V6SDRUpDx4qS+kKUmS9YIyz0Qzi7SQw9yPBUSbL20z9SselPLBXOuLwlyhhBiP6MHiI3
+         Z2Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d6Qek2fkCB/2CxHUEUFljSHTbzdbT53VAPl6aQJ65nc=;
-        b=LTlksg3dK3iAO2bJnbk/hmcuk+7Wj0ZNK0TN4CDQqRNNJWkyABVVQj5ye9J3y7863I
-         Z/7CUOp5X+gb2UHsxC/S9vjUJ8XNTB48Bxk+yMEhyfRNdcVpjKCE0UAM0nlTLXv5j+6p
-         FrqvLPwXRRFeuqNvzuDxq2QE29IkL9cKBD17WklOEBWHiLbQC17QR4BmYBmtJ1hLv3/m
-         lADIIhqG10acUHwaMTo2t2Cda6EUjtARm6qkq5NYpq85F2tVgameGZsysbxzEp43z4U4
-         jYgcv6OW/us+B49dRIc+xLjJgR2jT8jYC+UcjIq185bCQ55gJXB4zG/sVY/vapuhJNFh
-         o4NA==
-X-Gm-Message-State: AOAM531XZRrHCis/mwSxqMoeb9i/HH4g49tK3+SSG86QLZZ3D+idlQql
-        uv6+9SdhnvMSLBMSDwDdOueJq25de0HyU3saRJQ=
-X-Google-Smtp-Source: ABdhPJwPn7kb6uSoDv+CUpFNn4npaWHCyaF2trLzwY77zvp/DeuKhGJnpDPtyB12EiCtBA3gqLudJYd+2yBlgvEE3k0=
-X-Received: by 2002:a17:906:1414:: with SMTP id p20mr69197044ejc.247.1594579564886;
- Sun, 12 Jul 2020 11:46:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=n32EN2ylhUwy1ghntvoX1CHEHXLSWX9Bi5IxzncMNMI=;
+        b=fIrb5pHKMLn0PrXz9MYX9z9VSMHOvjUXHvDUIKOHGOgGFefHRY/7tB2e2+oV5S+TxL
+         9JSdRYg4kl0NfJ/OTSgpAYd3yKdga1mSH9NwWm12IS3+5XakDdQwkTtI0lA2pxRGS2q6
+         GJHn7iL4o4qfAymf1zymfXyNBCpgM/n4xkO+FZGZwwr2WvTGLxtgOAvrX3SyFAejgoyG
+         NNHtjhdtgUgrYLt8l/KblSyHiY7iLEA9JcMY3UDo+3JDu5aYppih6sH+p3PILe+1L7+U
+         PNGz83O/3Ze1pcoNDh0Dz5Nc54Ql4BL64bQHdjbxkUYxhriaKKM+ZjSkY9gjFdpVRAps
+         4OYg==
+X-Gm-Message-State: AOAM531M3/3Xz9e/T5HL2EsQKY9g/lUNUOsLkhA+xsC/NVhNZenKx2DC
+        VVQ7a2XWvNWzfe70uec1pTw=
+X-Google-Smtp-Source: ABdhPJzUVRCNub7yfyzNy0oAepww7YlSL6cOD8vM16LjGvvoFUjcBqWRdkxdmYDiSsyjmtI1zpSzIg==
+X-Received: by 2002:a62:f202:: with SMTP id m2mr60977323pfh.157.1594580066066;
+        Sun, 12 Jul 2020 11:54:26 -0700 (PDT)
+Received: from blackclown ([103.88.82.220])
+        by smtp.gmail.com with ESMTPSA id t20sm12532065pfc.158.2020.07.12.11.54.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 12 Jul 2020 11:54:25 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 00:24:16 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     Joe Perches <joe@perches.com>, sam@ravnborg.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 0/4] drm: core: Convert logging to drm_* functions.
+Message-ID: <20200712185416.GC12262@blackclown>
+References: <cover.1594136880.git.usuraj35@gmail.com>
+ <20200710175643.GF17565@ravnborg.org>
+ <20200711151126.GA12262@blackclown>
+ <04ce5199522b4136909fa4926282b7da8abddc4a.camel@perches.com>
 MIME-Version: 1.0
-References: <1593701576-28580-1-git-send-email-amittomer25@gmail.com>
- <1593701576-28580-11-git-send-email-amittomer25@gmail.com> <20200712173044.GL6110@Mani-XPS-13-9360>
-In-Reply-To: <20200712173044.GL6110@Mani-XPS-13-9360>
-From:   Amit Tomer <amittomer25@gmail.com>
-Date:   Mon, 13 Jul 2020 00:15:28 +0530
-Message-ID: <CABHD4K8+cZMwA=pQx4Gvv5Z4xLof8Ln6fUNrB0=-SS2M_0_3aw@mail.gmail.com>
-Subject: Re: [PATCH v5 10/10] arm64: dts: actions: Add uSD support for Cubieboard7
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Rob Herring <robh+dt@kernel.org>, cristian.ciocaltea@gmail.com,
-        linux-kernel@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bAmEntskrkuBymla"
+Content-Disposition: inline
+In-Reply-To: <04ce5199522b4136909fa4926282b7da8abddc4a.camel@perches.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Sun, Jul 12, 2020 at 11:00 PM Manivannan Sadhasivam
-<manivannan.sadhasivam@linaro.org> wrote:
->
-> On Thu, Jul 02, 2020 at 08:22:56PM +0530, Amit Singh Tomar wrote:
-> > This commit adds uSD support for Cubieboard7 board based on Actions Semi
-> > S700 SoC. SD0 is connected to uSD slot. Since there is no PMIC support
-> > added yet, fixed regulator has been used as a regulator node.
-> >
-> > Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
-> > ---
-> > Changes since v4:
-> >       * No change.
-> > Changes since v3:
-> >         * No change.
-> > Changes since v2:
-> >         * No change.
-> > Changes since v1:
-> >         * No change.
-> > Changes since RFC:
-> >         * No change.
-> > ---
-> >  arch/arm64/boot/dts/actions/s700-cubieboard7.dts | 41 ++++++++++++++++++++++++
-> >  arch/arm64/boot/dts/actions/s700.dtsi            |  1 +
-> >  2 files changed, 42 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-> > index 63e375cd9eb4..ec117eb12f3a 100644
-> > --- a/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-> > +++ b/arch/arm64/boot/dts/actions/s700-cubieboard7.dts
-> > @@ -13,6 +13,7 @@
-> >
-> >       aliases {
-> >               serial3 = &uart3;
-> > +             mmc0 = &mmc0;
-> >       };
-> >
-> >       chosen {
-> > @@ -28,6 +29,23 @@
-> >               device_type = "memory";
-> >               reg = <0x1 0xe0000000 0x0 0x0>;
-> >       };
-> > +
-> > +     /* Fixed regulator used in the absence of PMIC */
-> > +     vcc_3v1: vcc-3v1 {
-> > +             compatible = "regulator-fixed";
-> > +             regulator-name = "fixed-3.1V";
-> > +             regulator-min-microvolt = <3100000>;
-> > +             regulator-max-microvolt = <3100000>;
-> > +     };
->
-> Is this regulator used somewhere?
+--bAmEntskrkuBymla
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is something I copied from bubblegum dts as I wasn't sure what is right way
-to include these regulators.
+On Sat, Jul 11, 2020 at 11:16:33AM -0700, Joe Perches wrote:
+> On Sat, 2020-07-11 at 20:41 +0530, Suraj Upadhyay wrote:
+> > On Fri, Jul 10, 2020 at 07:56:43PM +0200, Sam Ravnborg wrote:
+> > > Hi Suraj.
+> > >=20
+> > > On Tue, Jul 07, 2020 at 10:04:14PM +0530, Suraj Upadhyay wrote:
+> > > > This patchset converts logging to drm_* functions in drm core.
+> > > >=20
+> > > > The following functions have been converted to their respective
+> > > > DRM alternatives :
+> > > > dev_info()      --> drm_info()
+> > > > dev_err()       --> drm_err()
+> > > > dev_warn()      --> drm_warn()
+> > > > dev_err_once()  --> drm_err_once().
+> > >=20
+> > > I would prefer that DRM_* logging in the same files are converted in =
+the
+> > > same patch. So we have one logging conversion patch for each file you
+> > > touches and that we do not need to re-vist the files later to change
+> > > another set of logging functions.
+> >=20
+> > Agreed.
+> >=20
+> > > If possible WARN_* should also be converted to drm_WARN_*
+> > > If patch is too large, then split them up but again lets have all
+> > > logging updated when we touch a file.
+> > >=20
+> > > Care to take a look at this approach?
+> > >=20
+> >=20
+> > Hii,
+> > 	The problem with WARN_* macros is that they are used without any
+> > drm device context. For example [this use here](https://cgit.freedeskto=
+p.org/drm/drm-misc/tree/drivers/gpu/drm/drm_edid.c#n1667) in drm_edid.c,
+> > doesn't have a drm device context and only has one argument (namely !ra=
+w_edid).
+> > There are many more such use cases.
+> >=20
+> > And also there were cases where dev_* logging functions didn't have any
+> > drm_device context.
+>=20
+> Perhaps change the __drm_printk macro to not
+> dereference the drm argument when NULL.
+>=20
+> A trivial but perhaps inefficient way might be
+> used like:
+>=20
+> 	drm_<level>(NULL, fmt, ...)
+>=20
+> ---
+>  include/drm/drm_print.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/include/drm/drm_print.h b/include/drm/drm_print.h
+> index 1c9417430d08..9323a8f46b3c 100644
+> --- a/include/drm/drm_print.h
+> +++ b/include/drm/drm_print.h
+> @@ -395,8 +395,8 @@ void drm_dev_dbg(const struct device *dev, enum drm_d=
+ebug_category category,
+> =20
+>  /* Helper for struct drm_device based logging. */
+>  #define __drm_printk(drm, level, type, fmt, ...)			\
+> -	dev_##level##type((drm)->dev, "[drm] " fmt, ##__VA_ARGS__)
+> -
+> +	dev_##level##type((drm) ? (drm)->dev : NULL, "[drm] " fmt,	\
+> +			  ##__VA_ARGS__)
+> =20
+>  #define drm_info(drm, fmt, ...)					\
+>  	__drm_printk((drm), info,, fmt, ##__VA_ARGS__)
+>=20
 
-Also, another day tested it without having these regulators in , and
-still it seems to
-work.  So should these be removed ?
+Hi Joe,
+	Thanks for your input.
+But I don't think that this change would be a good idea as we are
+supposed to find or make a substitute of WARN_* macros which
+take a `condition` as an argument and check for its truth.
+And I guess passing a NULL to dev_<level> would cause a format warning.
 
-Thanks
--Amit
+Also, the WARN_* macros are doing their job fine, and passing a NULL
+value everytime you want to warn about a certain condition at a
+particular line, doesn't seem good to me.
+
+Thus, I think that WARN_* macros should be untouched.
+
+I would like to hear what the MAINTAINERS think.
+
+Thanks and Cheers,
+
+Suraj Upadhyay.
+
+
+--bAmEntskrkuBymla
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8LXE4ACgkQ+gRsbIfe
+745luw//XyPTBf7oQOkicJ4KxNNtyTCASs6bhytn8IYynA1Xx6AZ0rAxED3RNegH
+oNQ5Iaf/thg65FjD6hv8luJn+vai+rpwwwyJWQSYHdJ1Voa3I9o1umRz38+6AOtD
+Xi/Udi3dTm7sRA6e3hVfEdw8Oro08kSkiAQyqaAQjY+cA19FnCjx+zCBBWbSRPd4
+i2LemGcIGTdOF7zS5An8+eV6D2mtO+CFidoCLNNEoubBiOqJxYrgAtxEmsIWt5FW
+U5g9pQ4eTkAwpPpfbXWq2azG6anxd1IIA04GlIkercseoWviKtQEv7VmGuToUnEu
+ViSmIF3/sFwBWpTmkpoPz0DXMK4RWtxLORV/xGevFcdBY/pSSjHGD9brQ8apGtq6
+LO9GBGlrXl0MnJsk73jADc2mpFfHevRoiz+DjY6o6D59wCDdNTR0MK3nhBr/aFth
+iC30g1yNFPcYal8Lt0g98SeVB1ytQXdXVOefEqhkwLBjv7RcRLs/OovACUQaq3XQ
+GO5baQN6oTbfV6ToZdpWkN9foP8wDFFHLw4sJ/JSj+bkJ2tFOoEe32nm7OtinqQs
+PROgh9fkRDPSHwYf/17/KtJf1XrOLO6xJtEpLKIi4tfENvilYxZMaRcbp3TgLd7U
+2QtxC1i78zDIz1Kifug8j18f+QLrlGmTQyaV8SckZ7ulH5phSuI=
+=v7Do
+-----END PGP SIGNATURE-----
+
+--bAmEntskrkuBymla--
