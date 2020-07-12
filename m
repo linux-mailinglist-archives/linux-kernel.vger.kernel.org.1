@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB97321C7DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 09:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0E821C7E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 09:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgGLHZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 03:25:58 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47008 "EHLO
+        id S1728397AbgGLHqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 03:46:12 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48354 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbgGLHZ5 (ORCPT
+        with ESMTP id S1725974AbgGLHqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 03:25:57 -0400
+        Sun, 12 Jul 2020 03:46:12 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 481441C0BD2; Sun, 12 Jul 2020 09:25:55 +0200 (CEST)
-Date:   Sun, 12 Jul 2020 09:25:54 +0200
+        id 385BE1C0BD5; Sun, 12 Jul 2020 09:46:09 +0200 (CEST)
+Date:   Sun, 12 Jul 2020 09:46:08 +0200
 From:   Pavel Machek <pavel@ucw.cz>
-To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>
-Cc:     marek.behun@nic.cz
-Subject: Re: [PATCH RFC] leds: Add support for per-LED device triggers
-Message-ID: <20200712072554.GC4721@duo.ucw.cz>
-References: <20200702144712.1994685-1-megous@megous.com>
- <20200711100409.GA18901@amd>
- <20200711210111.5ysijhexgyzyr7u7@core.my.home>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Miao-chen Chou <mcchou@chromium.org>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        Alain Michaud <alainm@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v1] Bluetooth: Fix kernel oops triggered by
+ hci_adv_monitors_clear()
+Message-ID: <20200712074608.GA8295@amd>
+References: <20200629201441.v1.1.I162e3c6c4f4d963250c37733c3428329110c5989@changeid>
+ <8174F3F7-52C5-4F15-8BF5-E005B44A55C0@holtmann.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="yLVHuoLXiP9kZBkt"
+        protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
 Content-Disposition: inline
-In-Reply-To: <20200711210111.5ysijhexgyzyr7u7@core.my.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <8174F3F7-52C5-4F15-8BF5-E005B44A55C0@holtmann.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---yLVHuoLXiP9kZBkt
-Content-Type: text/plain; charset=utf-8
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat 2020-07-11 23:01:11, Ond=C5=99ej Jirman wrote:
-> Hello Pavel,
+On Tue 2020-07-07 17:38:46, Marcel Holtmann wrote:
+> Hi Miao-chen,
 >=20
-> On Sat, Jul 11, 2020 at 12:04:09PM +0200, Pavel Machek wrote:
-> > Hi!
+> > This fixes the kernel oops by removing unnecessary background scan
+> > update from hci_adv_monitors_clear() which shouldn't invoke any work
+> > queue.
 > >=20
-> > > Some LED controllers may come with an internal HW triggering mechanism
-> > > for the LED and an ability to switch between user control of the LED,
-> > > or the internal control. One such example is AXP20X PMIC, that allows
-> > > wither for user control of the LED, or for internal control based on
-> > > the state of the battery charger.
-> > >=20
-> > > Add support for registering per-LED device trigger.
-> > >=20
-> > > Names of private triggers need to be globally unique, but may clash
-> > > with other private triggers. This is enforced during trigger
-> > > registration. Developers can register private triggers just like
-> > > the normal triggers, by setting private_led to a classdev
-> > > of the LED the trigger is associated with.
+> > The following test was performed.
+> > - Run "rmmod btusb" and verify that no kernel oops is triggered.
 > >=20
-> > What about this? Should address Marek's concerns about resource use...
+> > Signed-off-by: Miao-chen Chou <mcchou@chromium.org>
+> > Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> > Reviewed-by: Alain Michaud <alainm@chromium.org>
+> > ---
+> >=20
+> > net/bluetooth/hci_core.c | 2 --
+> > 1 file changed, 2 deletions(-)
 >=20
-> What concerns? Marek's concerns seem to be about case where we register
-> a trigger for (each led * self-working configuration) which I admit
-> can be quite a lot of triggers if there are many functions. But that's
-> not my proposal.
->=20
-> My proposal is to only register on trigger per LED at most. So on my
-> system that's 1 extra trigger and on Marek's system that'd be 48 new
-> triggers. Neither seems like a meaningful problem from resource
-> use perspective.
+> patch has been applied to bluetooth-next tree.
 
-So.. 48 triggers on Marek's systems means I'll not apply your patch.
+Bluetooth no longer seems to oops for me... but there's different
+showstopper in next (graphics -- i915 -- related). Oh well :-(.
 
-Please take a look at my version, it is as simple and avoids that
-problem.
-
-If it works for you, you can submit it properly and I'll likely accept
-it.
-
-Best regards,
 									Pavel
+
 --=20
 (english) http://www.livejournal.com/~pavelmachek
 (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
 g.html
 
---yLVHuoLXiP9kZBkt
+--7AUc2qLy4jB3hD7Z
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXwq7AgAKCRAw5/Bqldv6
-8lvJAKCU/pM9yDor3xjFX40apgClgoYgeACgsGQ11cWstI1FTKDEPeMIUy2icKc=
-=DZKL
+iEYEARECAAYFAl8Kv8AACgkQMOfwapXb+vJVggCgt4XZsqZWkWHltL/8Ca4hKtqg
+10wAoMAfyUwKIh0H74EAgooNTS6ABM6D
+=nbI4
 -----END PGP SIGNATURE-----
 
---yLVHuoLXiP9kZBkt--
+--7AUc2qLy4jB3hD7Z--
