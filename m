@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D589F21CB77
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 23:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6707A21CB7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Jul 2020 23:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbgGLVCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 17:02:53 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:59304 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729020AbgGLVCw (ORCPT
+        id S1729494AbgGLVEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 17:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729020AbgGLVEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 17:02:52 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 100401C0BE0; Sun, 12 Jul 2020 23:02:50 +0200 (CEST)
-Date:   Sun, 12 Jul 2020 23:02:43 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 10/16] exec: Remove do_execve_file
-Message-ID: <20200712210243.GB983@bug>
-References: <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
- <20200702164140.4468-10-ebiederm@xmission.com>
+        Sun, 12 Jul 2020 17:04:50 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3809CC061794;
+        Sun, 12 Jul 2020 14:04:50 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id j80so10454800qke.0;
+        Sun, 12 Jul 2020 14:04:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xB9P1wmbKeeyGS/z1ZCD7IZWuMRQKqcVFyeZviDeTF0=;
+        b=NiNxFzwnf3pELLNi+/CIlQqfbXNr7H16z5BHXH5kkodlEvROo9/iAZifwe7BThm76S
+         kNWGhLJ89ZIiRt5B51xcNkA4HsHsonTugEyfCteaEqYygkwKlb4Yd69yqM7QzJ6Nd62m
+         xAi565EnbbOZpGsoBheMv/zziCII/fnv5JJD6aOylOESlvh0+Vc+XKolg0eY9ZPukpbl
+         Mj1m9TgCYE9ljDUV2gQSxvynT6+6DTIT2iSAoRH7D8nq1LiRYNSMLMhLskRjP5En+QA6
+         OtFmHw9QgtvY/3Ry0jAhQdugFkiZ06/u9tnQ1QZpnGCNv6qIomrefuf4HF19KupReuWV
+         029Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xB9P1wmbKeeyGS/z1ZCD7IZWuMRQKqcVFyeZviDeTF0=;
+        b=imED+U6SzL8oif/v5sP1sfBzRcnCj5nA57LPw5D8ZVXiN9qufeGKAfVCBIubOaJ5Yl
+         Rajs5noZItxZuLOnaMcT5Sqr1flb2OPF4Rczk+CQw4UEd3pfmZHrqbtdC08yXo+0PhPv
+         ot4M6jKpTZN9BaRvjmDl1o1LXpcU/H5AHqLsZD5BvaGBGm5yIhXVgHDnoL7UUv3wNlIh
+         LnP0HmD5SzU5PXME2weS5FZyztK9jzDZmMXNwSeRC1SA20joXZLKvfSA7MjNAjowQnuD
+         wwBlfKoZGDLMg64RQwwnonJkzEUNNpbGQMYeTRzUda0gpYfboXGDh5R3oC2JfY4MM+Sw
+         bt1Q==
+X-Gm-Message-State: AOAM530IL2EhTRCaanciOTO9QVYl8XuIHWAUgj4WIOOKJselti9ETeDl
+        QkFJo8S7oEcuE5tA1WoJKg==
+X-Google-Smtp-Source: ABdhPJz3KAfgxTv/Jz3QogwquKWxsuDv4eP6g8PYHyijMocJTXCI97XiB2Jnvi12qsq3mYhdkvAqOA==
+X-Received: by 2002:a37:7b83:: with SMTP id w125mr76348212qkc.6.1594587889513;
+        Sun, 12 Jul 2020 14:04:49 -0700 (PDT)
+Received: from localhost.localdomain ([209.94.141.207])
+        by smtp.gmail.com with ESMTPSA id o21sm16894766qtt.25.2020.07.12.14.04.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jul 2020 14:04:48 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH net] qrtr: Fix ZERO_SIZE_PTR deref in qrtr_tun_write_iter()
+Date:   Sun, 12 Jul 2020 17:03:00 -0400
+Message-Id: <20200712210300.200399-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200702164140.4468-10-ebiederm@xmission.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-07-02 11:41:34, Eric W. Biederman wrote:
-> Now that the last callser has been removed remove this code from exec.
+qrtr_tun_write_iter() is dereferencing `ZERO_SIZE_PTR`s when `from->count`
+equals to zero. Fix it by rejecting zero-length kzalloc() requests.
 
-Typo "caller".
+This patch fixes the following syzbot bug:
 
-> For anyone thinking of resurrecing do_execve_file please note that
+    https://syzkaller.appspot.com/bug?id=f56bbe6668873ee245986bbd23312b895fa5a50a
 
-resurrecting?
+Reported-by: syzbot+03e343dbccf82a5242a2@syzkaller.appspotmail.com
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+ net/qrtr/tun.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> the code was buggy in several fundamental ways.
-> 
-> - It did not ensure the file it was passed was read-only and that
->   deny_write_access had been called on it.  Which subtlely breaks
->   invaniants in exec.
-
-subtly, invariants?
-
-									Pavel
+diff --git a/net/qrtr/tun.c b/net/qrtr/tun.c
+index 15ce9b642b25..5465e94ba8e5 100644
+--- a/net/qrtr/tun.c
++++ b/net/qrtr/tun.c
+@@ -80,6 +80,9 @@ static ssize_t qrtr_tun_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 	ssize_t ret;
+ 	void *kbuf;
+ 
++	if (!len)
++		return -EINVAL;
++
+ 	kbuf = kzalloc(len, GFP_KERNEL);
+ 	if (!kbuf)
+ 		return -ENOMEM;
 -- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+2.25.1
+
