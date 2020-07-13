@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF50A21D8B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA7221D8B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729845AbgGMOjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:39:12 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:56962 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729644AbgGMOjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:39:12 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id B186E45549ECF17A744D;
-        Mon, 13 Jul 2020 22:39:09 +0800 (CST)
-Received: from [127.0.0.1] (10.174.186.75) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 13 Jul 2020
- 22:39:01 +0800
-Subject: Re: [PATCH v2 2/2] arm64: tlb: Use the TLBI RANGE feature in arm64
-To:     Jon Hunter <jonathanh@nvidia.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <suzuki.poulose@arm.com>, <maz@kernel.org>,
-        <steven.price@arm.com>, <guohanjun@huawei.com>, <olof@lixom.net>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
-        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
-        <kuhn.chenqun@huawei.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200710094420.517-1-yezhenyu2@huawei.com>
- <20200710094420.517-3-yezhenyu2@huawei.com>
- <4040f429-21c8-0825-2ad4-97786c3fe7c1@nvidia.com>
-From:   Zhenyu Ye <yezhenyu2@huawei.com>
-Message-ID: <cee60718-ced2-069f-8dad-48941c6fc09b@huawei.com>
-Date:   Mon, 13 Jul 2020 22:39:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1729871AbgGMOlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:41:15 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:49808 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729689AbgGMOlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 10:41:15 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 27E98BC0E4;
+        Mon, 13 Jul 2020 14:41:11 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] kobject: documentation: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 16:41:03 +0200
+Message-Id: <20200713144103.35049-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-In-Reply-To: <4040f429-21c8-0825-2ad4-97786c3fe7c1@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.186.75]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jon,
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-On 2020/7/13 22:27, Jon Hunter wrote:
-> After this change I am seeing the following build errors ...
-> 
-> /tmp/cckzq3FT.s: Assembler messages:
-> /tmp/cckzq3FT.s:854: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
-> /tmp/cckzq3FT.s:870: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
-> /tmp/cckzq3FT.s:1095: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
-> /tmp/cckzq3FT.s:1111: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
-> /tmp/cckzq3FT.s:1964: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
-> /tmp/cckzq3FT.s:1980: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
-> /tmp/cckzq3FT.s:2286: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
-> /tmp/cckzq3FT.s:2302: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
-> /tmp/cckzq3FT.s:4833: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
-> /tmp/cckzq3FT.s:4849: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
-> /tmp/cckzq3FT.s:5090: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
-> /tmp/cckzq3FT.s:5106: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
-> /tmp/cckzq3FT.s:874: Error: attempt to move .org backwards
-> /tmp/cckzq3FT.s:1115: Error: attempt to move .org backwards
-> /tmp/cckzq3FT.s:1984: Error: attempt to move .org backwards
-> /tmp/cckzq3FT.s:2306: Error: attempt to move .org backwards
-> /tmp/cckzq3FT.s:4853: Error: attempt to move .org backwards
-> /tmp/cckzq3FT.s:5110: Error: attempt to move .org backwards
-> scripts/Makefile.build:280: recipe for target 'arch/arm64/mm/hugetlbpage.o' failed
-> make[3]: *** [arch/arm64/mm/hugetlbpage.o] Error 1
-> scripts/Makefile.build:497: recipe for target 'arch/arm64/mm' failed
-> make[2]: *** [arch/arm64/mm] Error 2
-> 
-> Cheers
-> Jon
-> 
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-The code must be built with binutils >= 2.30.
-Maybe I should add  a check on whether binutils supports ARMv8.4-a instructions...
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-Thanks,
-Zhenyu
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ Documentation/core-api/kobject.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/core-api/kobject.rst b/Documentation/core-api/kobject.rst
+index e93dc8cf52dd..2739f8b72575 100644
+--- a/Documentation/core-api/kobject.rst
++++ b/Documentation/core-api/kobject.rst
+@@ -6,7 +6,7 @@ Everything you never wanted to know about kobjects, ksets, and ktypes
+ :Last updated: December 19, 2007
+ 
+ Based on an original article by Jon Corbet for lwn.net written October 1,
+-2003 and located at http://lwn.net/Articles/51437/
++2003 and located at https://lwn.net/Articles/51437/
+ 
+ Part of the difficulty in understanding the driver model - and the kobject
+ abstraction upon which it is built - is that there is no obvious starting
+-- 
+2.27.0
 
