@@ -2,178 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6104221CCF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 04:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653E121CCED
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgGMCAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 22:00:10 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45525 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726262AbgGMCAJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 22:00:09 -0400
-Received: by mail-wr1-f66.google.com with SMTP id s10so12972104wrw.12
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 19:00:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pOgl4SH27K+97UgMx/iVFLrnmEiMUn5Mog1smCrys0g=;
-        b=YivLVJU1vVYavts6sNdChWdEFi0iw6FHfIbGkqFwxtjRSIf5saDk14MsHRbdAWNqhR
-         v7ucFaDSpRc0i0ECCqGvoQHvS4SF8AB5e11FBtxizRpNXq/Nni4RxamvReK1+0mL/Yjg
-         kNRYzCDe4dIgyom/AoYiZsb2k0CgWxEWGv4f4iGsIzRFMKAznpc9Jgt5nuzrbX6MnLQY
-         UlE0Gq9kjPMH8aenJw1TtH3P01sG8L7F91Dg+TZWMlK0A3kshtTknfmgfeP5YY/No/wc
-         JY1UnjQg+wAhhyyaIr2wb8Lz6l9CIDGFiNVTnsvqpD7neBTd44QF1CIIxLah0yj7B95V
-         wlvQ==
-X-Gm-Message-State: AOAM532ims/OT/zHvf+BHa3W4W8lT3LZ2V2m2eRPzjQKQi9oMdciIeCm
-        Ala5b3CKY6fDSqGUsOvXJK77ng7NfzQg0FZbRCo=
-X-Google-Smtp-Source: ABdhPJznmPa+xG/aLTXTMC8Z/lIamQwbwwtg+rep3pvOAMR+B6wZApYux6VsBeyDvIiM0PYXP81FyC7lQ+OfpXAtsZs=
-X-Received: by 2002:a05:6000:1006:: with SMTP id a6mr74050306wrx.332.1594605607353;
- Sun, 12 Jul 2020 19:00:07 -0700 (PDT)
+        id S1728252AbgGMB4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 21:56:07 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:33366 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726261AbgGMB4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 21:56:07 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 24DAEECCCE5C44844222;
+        Mon, 13 Jul 2020 09:56:05 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 13 Jul 2020 09:55:54 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] remoteproc: qcom: Add missing slab.h
+Date:   Mon, 13 Jul 2020 10:00:03 +0800
+Message-ID: <20200713020003.134039-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200711124035.6513-1-changbin.du@gmail.com> <20200711124035.6513-8-changbin.du@gmail.com>
-In-Reply-To: <20200711124035.6513-8-changbin.du@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 13 Jul 2020 10:59:56 +0900
-Message-ID: <CAM9d7cgBeHW_Ot2nfBAzbV73gNKiOzp7K5KoTO=V4k=MGrZS6Q@mail.gmail.com>
-Subject: Re: [PATCH v5 07/17] perf ftrace: add option '--inherit' to trace
- children processes
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 9:42 PM Changbin Du <changbin.du@gmail.com> wrote:
->
-> This adds an option '--inherit' to allow us trace children
-> processes spawned by our target.
->
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
->
-> ---
-> v2: option name '--trace-children' -> '--inherit'.
-> ---
->  tools/perf/Documentation/perf-ftrace.txt |  3 ++
->  tools/perf/builtin-ftrace.c              | 38 ++++++++++++++++++++++++
->  2 files changed, 41 insertions(+)
->
-> diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-> index 98fe01d354d1..fd632bd9b2c1 100644
-> --- a/tools/perf/Documentation/perf-ftrace.txt
-> +++ b/tools/perf/Documentation/perf-ftrace.txt
-> @@ -61,6 +61,9 @@ OPTIONS
->         Set the size of per-cpu tracing buffer, <size> is expected to
->         be a number with appended unit character - B/K/M/G.
->
-> +--inherit::
-> +       Trace children processes spawned by our target.
-> +
->  -T::
->  --trace-funcs=::
->         Only trace functions given by the argument.  Multiple functions
-> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> index 887e78b23a82..4efaa7b6a906 100644
-> --- a/tools/perf/builtin-ftrace.c
-> +++ b/tools/perf/builtin-ftrace.c
-> @@ -39,6 +39,7 @@ struct perf_ftrace {
->         struct list_head        nograph_funcs;
->         int                     graph_depth;
->         unsigned long           percpu_buffer_size;
-> +       bool                    inherit;
->  };
->
->  struct filter_entry {
-> @@ -177,9 +178,27 @@ static int write_tracing_file_int(const char *name, int value)
->         return 0;
->  }
->
-> +static int write_tracing_option_file(const char *name, const char *val)
-> +{
-> +       char *file;
-> +       int ret;
-> +
-> +       if (asprintf(&file, "options/%s", name) < 0)
-> +               return -1;
-> +
-> +       ret = __write_tracing_file(file, val, false);
-> +       free(file);
-> +       return ret;
-> +}
-> +
->  static int reset_tracing_cpu(void);
->  static void reset_tracing_filters(void);
->
-> +static void reset_tracing_options(struct perf_ftrace *ftrace __maybe_unused)
-> +{
-> +       write_tracing_option_file("function-fork", "0");
-> +}
-> +
->  static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
->  {
->         if (write_tracing_file("tracing_on", "0") < 0)
-> @@ -198,6 +217,7 @@ static int reset_tracing_files(struct perf_ftrace *ftrace __maybe_unused)
->                 return -1;
->
->         reset_tracing_filters();
-> +       reset_tracing_options(ftrace);
->         return 0;
->  }
->
-> @@ -336,6 +356,17 @@ static int set_tracing_percpu_buffer_size(struct perf_ftrace *ftrace)
->         return 0;
->  }
->
-> +static int set_tracing_trace_inherit(struct perf_ftrace *ftrace)
-> +{
-> +       if (!ftrace->inherit)
-> +               return 0;
-> +
-> +       if (write_tracing_option_file("function-fork", "1") < 0)
-> +               return -1;
-> +
-> +       return 0;
-> +}
-> +
->  static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
->  {
->         char *trace_file;
-> @@ -405,6 +436,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
->                 goto out_reset;
->         }
->
-> +       if (set_tracing_trace_inherit(ftrace) < 0) {
-> +               pr_err("failed to set tracing option function-fork\n");
-> +               goto out_reset;
-> +       }
+drivers/remoteproc/qcom_common.c: In function ‘qcom_ssr_get_subsys’:
+drivers/remoteproc/qcom_common.c:210:9: error: implicit declaration of function ‘kzalloc’; did you mean ‘vzalloc’?
+[-Werror=implicit-function-declaration]
+  info = kzalloc(sizeof(*info), GFP_KERNEL);
+         ^~~~~~~
+         vzalloc
 
-Can we have set_tracing_options() here instead to make
-the __cmd_ftrace() shorter?  It'd set other options added later.
-It's also symmetric to reset_tracing_options().
+kzalloc() is declared in linux/slab.h, add include to fix build issue.
 
-Thanks
-Namhyung
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ drivers/remoteproc/qcom_common.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> +
->         if (write_tracing_file("current_tracer", ftrace->tracer) < 0) {
->                 pr_err("failed to set current_tracer to %s\n", ftrace->tracer);
->                 goto out_reset;
-> @@ -599,6 +635,8 @@ int cmd_ftrace(int argc, const char **argv)
->                     "Max depth for function graph tracer"),
->         OPT_CALLBACK('m', "buffer-size", &ftrace.percpu_buffer_size, "size",
->                      "size of per cpu buffer", parse_buffer_size),
-> +       OPT_BOOLEAN(0, "inherit", &ftrace.inherit,
-> +                   "trace children processes"),
->         OPT_END()
->         };
->
-> --
-> 2.25.1
->
+diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
+index 2f45f0c79914e..085fd73fa23ae 100644
+--- a/drivers/remoteproc/qcom_common.c
++++ b/drivers/remoteproc/qcom_common.c
+@@ -15,6 +15,7 @@
+ #include <linux/remoteproc/qcom_rproc.h>
+ #include <linux/rpmsg/qcom_glink.h>
+ #include <linux/rpmsg/qcom_smd.h>
++#include <linux/slab.h>
+ #include <linux/soc/qcom/mdt_loader.h>
+ 
+ #include "remoteproc_internal.h"
+-- 
+2.26.2
+
