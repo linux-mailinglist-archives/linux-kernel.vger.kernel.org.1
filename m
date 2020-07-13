@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9191121DE0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F3B21DDEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730377AbgGMQ7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:59:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730185AbgGMQ7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:59:10 -0400
-Received: from gaia (unknown [95.146.230.158])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1AA4B20738;
-        Mon, 13 Jul 2020 16:59:06 +0000 (UTC)
-Date:   Mon, 13 Jul 2020 17:59:04 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Zhenyu Ye <yezhenyu2@huawei.com>
-Cc:     maz@kernel.org, steven.price@arm.com, guohanjun@huawei.com,
-        will@kernel.org, olof@lixom.net, suzuki.poulose@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        zhangshaokun@hisilicon.com, prime.zeng@hisilicon.com,
-        linux-arch@vger.kernel.org, kuhn.chenqun@huawei.com,
-        xiexiangyou@huawei.com, linux-mm@kvack.org, arm@kernel.org
-Subject: Re: [PATCH v2 0/2] arm64: tlb: add support for TLBI RANGE
- instructions
-Message-ID: <20200713165903.GD15829@gaia>
-References: <20200710094420.517-1-yezhenyu2@huawei.com>
- <159440712962.27784.4664678472466095995.b4-ty@arm.com>
- <20200713122123.GC15829@gaia>
- <2edcf1ce-38d4-82b2-e500-51f742cae357@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2edcf1ce-38d4-82b2-e500-51f742cae357@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1730262AbgGMQzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729969AbgGMQzM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 12:55:12 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D900C061755;
+        Mon, 13 Jul 2020 09:55:12 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id n2so14278600edr.5;
+        Mon, 13 Jul 2020 09:55:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=TkNyGhVGg6gVUCzpTd9OAFstGgg/MKOfxToRs2GSfBQ=;
+        b=On/rLQmicINxtBadu57xIG7YClMaLhAuYyqGOWK0VWZeuVm3nzNHkYxBhM7+pqw2M+
+         7m8Q1icCJMMhuHmHo3kSwPbHgZGXy0UiwvZD12pqIzpd2CDKU57S8LCMyEP3yURnJjfv
+         myqn7MQi0idmjaLsLHcssx7seM009f8dFGz8gWyiVZqcD5qUm8elVVT7gu1QW1s/6bdk
+         rm4q6KVqW3pAYu0Ss9kPbeBtHzXqspcsRxr6CuQxPyzrSlfShcDamTPe84b80t9/oIvn
+         OMkyMrn+y8k4CWVQwg9NyLJXhVSIgNXPEAHc3gYjxrjtcgTYGQ0bXgJvnCKrobicfPUG
+         39jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=TkNyGhVGg6gVUCzpTd9OAFstGgg/MKOfxToRs2GSfBQ=;
+        b=Pcxh4gt953w085I4EhztjO3sAAIW0aIRgG6hJw6EzaATRC1x2z+d+opuCDPlGxR6vx
+         os/42eVgucHxsXtMJJ3lFLQT1wJ5QU1I+6tYq0YIWRAnFSeZ718cvuMvBWzfSqNZADP3
+         fvGmvGx/VsmDqzu85nzH4wi0v+VdLVQjH6T4UBjgODCkV2gjeTXf8mQN+8km5qnJOG5C
+         8TykKVjqmMm8krTi3UjgsCAMGXgKWpZUh1DUEmNPqKWZl58QSiwRy8d3MeXafrM0PmQD
+         XgUPDdRME9+39t0nUVRTXg7kRGAkSfi3IfRnt1CS9V3GRumwAj82sNNhnFQRDFyawb+v
+         3cxQ==
+X-Gm-Message-State: AOAM530vE6cvyMnVHcePXAbYny3PPM094iDhdD37sHbpoo+qfbCZDwkt
+        QhYHnRqlEZF6NZt7j2tqHHM=
+X-Google-Smtp-Source: ABdhPJyMCnsUp9Wj1A7Ygk/lw7FDwznI2xdPP4+uz9bNiAb1owWHZffQG+VupT2yXc4MjZgCEMmQVA==
+X-Received: by 2002:aa7:d90f:: with SMTP id a15mr340801edr.86.1594659310905;
+        Mon, 13 Jul 2020 09:55:10 -0700 (PDT)
+Received: from net.saheed (54007186.dsl.pool.telekom.hu. [84.0.113.134])
+        by smtp.gmail.com with ESMTPSA id w3sm11838938edq.65.2020.07.13.09.55.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 09:55:10 -0700 (PDT)
+From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+To:     skhan@linuxfoundation.org, linux-rdma@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+Subject: [PATCH 1/14 v3] IB/hfi1: Check the return value of pcie_capability_read_*()
+Date:   Mon, 13 Jul 2020 19:55:25 +0200
+Message-Id: <20200713175529.29715-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.18.2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 08:41:31PM +0800, Zhenyu Ye wrote:
-> On 2020/7/13 20:21, Catalin Marinas wrote:
-> > On Fri, Jul 10, 2020 at 08:11:19PM +0100, Catalin Marinas wrote:
-> >> On Fri, 10 Jul 2020 17:44:18 +0800, Zhenyu Ye wrote:
-> >>> NOTICE: this series are based on the arm64 for-next/tlbi branch:
-> >>> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/tlbi
-> >>>
-> >>> --
-> >>> ARMv8.4-TLBI provides TLBI invalidation instruction that apply to a
-> >>> range of input addresses. This series add support for this feature.
-> >>>
-> >>> [...]
-> >>
-> >> Applied to arm64 (for-next/tlbi), thanks!
-> >>
-> >> [1/2] arm64: tlb: Detect the ARMv8.4 TLBI RANGE feature
-> >>       https://git.kernel.org/arm64/c/a2fd755f77ff
-> >> [2/2] arm64: tlb: Use the TLBI RANGE feature in arm64
-> >>       https://git.kernel.org/arm64/c/db34a081d273
-> > 
-> > I'm dropping these two patches from for-next/tlbi and for-next/core.
-> > They need a check on whether binutils supports the new "tlbi rva*"
-> > instructions, otherwise the build mail fail.
-> > 
-> > I kept the latest incarnation of these patches on devel/tlbi-range for
-> > reference.
-> 
-> Should we add a check for the binutils version? Just like:
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index fad573883e89..d5fb6567e0d2 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1300,6 +1300,20 @@ config ARM64_AMU_EXTN
->  	  correctly reflect reality. Most commonly, the value read will be 0,
->  	  indicating that the counter is not enabled.
-> 
-> +config ARM64_TLBI_RANGE
-> +	bool "Enable support for tlbi range feature"
-> +	default y
-> +	depends on AS_HAS_TLBI_RANGE
-> +	help
-> +	  ARMv8.4-TLBI provides TLBI invalidation instruction that apply to a
-> +	  range of input addresses.
-> +
-> +	  The feature introduces new assembly instructions, and they were
-> +	  support when binutils >= 2.30.
+From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
 
-It looks like 2.30. I tracked it down to this commit:
+On failure pcie_capability_read_dword() sets it's last parameter,
+val to 0. In this case dn and up will be 0, so aspm_hw_l1_supported()
+will return false.
+However, with Patch 14/14, it is possible that val is set to ~0 on
+failure. This would introduce a bug because (x & x) == (~0 & x). So with
+dn and up being 0x02, a true value is return when the read has actually
+failed.
 
-https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=793a194839bc8add71fdc7429c58b10f0667a6f6;hp=1a7ed57c840dcb0401f1a67c6763a89f7d2686d2
+This bug can be avoided if the return value of pcie_capability_read_dword
+is checked to confirm success. The behaviour of the function remains
+intact.
 
-> +config AS_HAS_TLBI_RANGE
-> +	def_bool $(as-option, -Wa$(comma)-march=armv8.4-a)
-> +
->  endmenu
+Check the return value of pcie_capability_read_dword() to ensure success.
 
-The problem is that we don't pass -Wa,-march=armv8.4-a to gas. AFAICT,
-we only set an 8.3 for PAC but I'm not sure how passing two such options
-goes.
+Suggested-by: Bjorn Helgaas <bjorn@helgaas.com>
+Signed-off-by: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+---
+ drivers/infiniband/hw/hfi1/aspm.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-I'm slightly surprised that my toolchains (and yours) did not complain
-about these instructions. Looking at the binutils code, I think it
-should have complained if -march=armv8.4-a wasn't passed but works fine.
-I thought gas doesn't enable the maximum arch feature by default.
-
-An alternative would be to check for a specific instruction (untested):
-
-	def_bool $(as-instr,tlbi rvae1is, x0)
-
-but we need to figure out whether gas not requiring -march=armv8.4-a is
-a bug (which may be fixed) or that gas accepts all TLBI instructions.
-
-A safer bet may be to simply encode the instructions by hand:
-
-#define SYS_TLBI_RVAE1IS(Rt) \
-	__emit_inst(0xd5000000 | sys_insn(1, 0, 8, 2, 1) | ((Rt) & 0x1f))
-#define SYS_TLBI_RVALE1IS(Rt) \
-	__emit_inst(0xd5000000 | sys_insn(1, 0, 8, 2, 5) | ((Rt) & 0x1f))
-
-(please check that they are correct)
-
+diff --git a/drivers/infiniband/hw/hfi1/aspm.c b/drivers/infiniband/hw/hfi1/aspm.c
+index a3c53be4072c..80d0b3edd983 100644
+--- a/drivers/infiniband/hw/hfi1/aspm.c
++++ b/drivers/infiniband/hw/hfi1/aspm.c
+@@ -24,6 +24,7 @@ static bool aspm_hw_l1_supported(struct hfi1_devdata *dd)
+ {
+ 	struct pci_dev *parent = dd->pcidev->bus->self;
+ 	u32 up, dn;
++	int ret_up, ret_dn;
+ 
+ 	/*
+ 	 * If the driver does not have access to the upstream component,
+@@ -32,14 +33,14 @@ static bool aspm_hw_l1_supported(struct hfi1_devdata *dd)
+ 	if (!parent)
+ 		return false;
+ 
+-	pcie_capability_read_dword(dd->pcidev, PCI_EXP_LNKCAP, &dn);
++	ret_dn = pcie_capability_read_dword(dd->pcidev, PCI_EXP_LNKCAP, &dn);
+ 	dn = ASPM_L1_SUPPORTED(dn);
+ 
+-	pcie_capability_read_dword(parent, PCI_EXP_LNKCAP, &up);
++	ret_up = pcie_capability_read_dword(parent, PCI_EXP_LNKCAP, &up);
+ 	up = ASPM_L1_SUPPORTED(up);
+ 
+ 	/* ASPM works on A-step but is reported as not supported */
+-	return (!!dn || is_ax(dd)) && !!up;
++	return !!ret_dn && !!ret_up && (!!dn || is_ax(dd)) && !!up;
+ }
+ 
+ /* Set L1 entrance latency for slower entry to L1 */
 -- 
-Catalin
+2.18.2
+
