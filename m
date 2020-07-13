@@ -2,84 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E9E21D089
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719BB21D084
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728714AbgGMHl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 03:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbgGMHl6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 03:41:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB75C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=bPajX5Treeh+4bzoV47DvWM3Nc4JTIylifw8GbEyYCY=; b=U8VX1SUmg6mZHS7Qi7ZHqI9e3w
-        gp7+f4MM6XnAW2BsqGIbm9m/JQfNSMjepGbHUuF+cBPqmDvPDPHlY3r9OloxnqMLXZVFd9PDhrPej
-        sZUJ/YLhMtpF9OO5EDlk/hXbV+RbuZGuFKFgXTK7a8vWjsH/yN41yH17btq+Hi+7RF0U5f9VAPgXO
-        zrfiraxSyz7UPx5VLmZOQyyhJK8JsP+ytuFqqFlZvnC8GN/D95uKOWjOjCmY4qGwCHq5nj+4wB12J
-        U0Cc/79e6qQrWY68vdotjpCvEMC8VRgEJIsQaQ3AwV/Sj88Pyn5Y1jtWX3HWKOpK3IjGLXmLkZK76
-        1F3NSm5A==;
-Received: from 089144201169.atnat0010.highway.a1.net ([89.144.201.169] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jut63-0000nj-6g; Mon, 13 Jul 2020 07:41:55 +0000
+        id S1728198AbgGMHiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 03:38:10 -0400
+Received: from verein.lst.de ([213.95.11.211]:49118 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725818AbgGMHiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 03:38:10 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B741F68B02; Mon, 13 Jul 2020 09:38:06 +0200 (CEST)
+Date:   Mon, 13 Jul 2020 09:38:06 +0200
 From:   Christoph Hellwig <hch@lst.de>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH] debugfs: add a proxy stub for ->read_iter
-Date:   Mon, 13 Jul 2020 09:37:29 +0200
-Message-Id: <20200713073729.875584-2-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200713073729.875584-1-hch@lst.de>
-References: <20200713073729.875584-1-hch@lst.de>
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Doug Nazar <nazard@nazar.ca>, Christoph Hellwig <hch@lst.de>,
+        ericvh@gmail.com, lucho@ionkov.net,
+        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+e6f77e16ff68b2434a2c@syzkaller.appspotmail.com
+Subject: Re: [PATCH] net/9p: validate fds in p9_fd_open
+Message-ID: <20200713073806.GA14676@lst.de>
+References: <20200710085722.435850-1-hch@lst.de> <5bee3e33-2400-2d85-080e-d10cd82b0d85@nazar.ca> <20200711104923.GA6584@nautica>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200711104923.GA6584@nautica>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-debugfs registrations typically go through a set of proxy ops to deal
-with refcounting, which need to support every method that can be
-supported.  Add ->read_iter to the proxy ops to prepare for seq_file to
-be switch to ->read_iter.
+On Sat, Jul 11, 2020 at 12:49:23PM +0200, Dominique Martinet wrote:
+> > >diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
+> > >index 13cd683a658ab6..1cd8ea0e493617 100644
+> > >--- a/net/9p/trans_fd.c
+> > >+++ b/net/9p/trans_fd.c
+> > >@@ -803,20 +803,28 @@ static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
+> > >  		return -ENOMEM;
+> > >  	ts->rd = fget(rfd);
+> > >+	if (!ts->rd)
+> > >+		goto out_free_ts;
+> > >+	if (!(ts->rd->f_mode & FMODE_READ))
+> > >+		goto out_put_wr;
+> > 
+> > 		goto out_put_rd;
+> > 
+> > unless I'm mistaken.
+> 
+> Good catch, I've amended the commit so feel free to skip resending
+> unless want to change something
+> https://github.com/martinetd/linux/commit/28e987a0dc66744fb119e18150188fd8e3debd40
 
-Reported-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/debugfs/file.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-index 8ba32c2feb1b73..dcd7bdaf67417f 100644
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -231,6 +231,10 @@ FULL_PROXY_FUNC(read, ssize_t, filp,
- 			loff_t *ppos),
- 		ARGS(filp, buf, size, ppos));
- 
-+FULL_PROXY_FUNC(read_iter, ssize_t, iocb->ki_filp,
-+		PROTO(struct kiocb *iocb, struct iov_iter *iter),
-+		ARGS(iocb, iter));
-+
- FULL_PROXY_FUNC(write, ssize_t, filp,
- 		PROTO(struct file *filp, const char __user *buf, size_t size,
- 			loff_t *ppos),
-@@ -286,6 +290,8 @@ static void __full_proxy_fops_init(struct file_operations *proxy_fops,
- 		proxy_fops->llseek = full_proxy_llseek;
- 	if (real_fops->read)
- 		proxy_fops->read = full_proxy_read;
-+	if (real_fops->read_iter)
-+		proxy_fops->read_iter = full_proxy_read_iter;
- 	if (real_fops->write)
- 		proxy_fops->write = full_proxy_write;
- 	if (real_fops->poll)
--- 
-2.26.2
-
+Thanks, this looks good to me.
