@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38FD21D4CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D4821D4CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729697AbgGMLXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 07:23:54 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:33613 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728714AbgGMLXx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 07:23:53 -0400
-Received: by mail-oi1-f196.google.com with SMTP id k22so10702430oib.0;
-        Mon, 13 Jul 2020 04:23:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t0c5/AlvHBtEdtRei7U/gPNfoy0qpSsHEDnU5efW7LQ=;
-        b=QAX++xtorYkssSzDni1/eDKuz98dXoz6jbPhLTY/ck/D97Qlg0Xo9aFrgL/ftHyBYO
-         5oP3EmvfJBEooI+8rM4ca6xmSNR9Ml7TlswbUQuDTAoCqsGyiVLFgwyhoIz3zkQBUOaf
-         QxAe8NQTL76DYvrYXv40LZXoPzn5IlTSedRrUr4F107hlGOuahX5SA8B5jw1YKeiTm4+
-         ytnYHbHFDqnd188BaEH2tUDj7Rc+7yGE4vvJ6TVKxA1+4UTmWQwMNw/+qHCN9q02puMe
-         OaE3h7SIGo5zYQOsVfvOFaglzEoNsk6HlAqyujjDf8N4akpvgfw1DoGKKhnr7tdqbEQT
-         3VwQ==
-X-Gm-Message-State: AOAM530by5+4NxKZcXt1jyzNyFqlXJ4u6PLREKJUsMiri7sR2wI1z/Uz
-        eqagbcU4Gv3/ICI+hDHrDxz3HtrJPvGibrnKw3Q=
-X-Google-Smtp-Source: ABdhPJxpNlgDeDuBZWvoF2yBqvFfeg9xo/UBJLiMa1zcD4QIP4g207kFYL2Jsaai2+C1jcjtJtL3Ks7vlyCzIuxIFdo=
-X-Received: by 2002:aca:5c41:: with SMTP id q62mr13054270oib.148.1594639432252;
- Mon, 13 Jul 2020 04:23:52 -0700 (PDT)
+        id S1729655AbgGMLYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 07:24:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727890AbgGMLYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 07:24:50 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03421206F0;
+        Mon, 13 Jul 2020 11:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594639489;
+        bh=2ihvV64TmJUeECvFxw3ZTKel8EzPxIPDdARcWIR7/Hk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fe+q4zLT5dkZGcDoyt9Fo1bSr4SrOo6+Jru+U1b+8rRHrVRBKK2GqFiBynA4vpBqU
+         nC8/pjLXbdwVjj5JAsJIPvgY4YsidZnnfIQ8XY9L0K9eOCiC11gBRdJyQa8atRFOny
+         IVu00pxGoCwueYoc0sisi011TsGVrF+RmO0Cq1fw=
+Date:   Mon, 13 Jul 2020 16:54:45 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Greg KH <greg@kroah.com>
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        chenyu56@huawei.com, wangbinghui@hisilicon.com, kishon@ti.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB IP DRIVER FOR HISILICON KIRIN: Replace HTTP links
+ with HTTPS ones
+Message-ID: <20200713112445.GJ34333@vkoul-mobl>
+References: <20200709210933.27359-1-grandmaster@al2klimov.de>
+ <20200710070613.GA1176018@kroah.com>
 MIME-Version: 1.0
-References: <1594230511-24790-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594230511-24790-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1594230511-24790-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 13 Jul 2020 13:23:41 +0200
-Message-ID: <CAMuHMdUoQxQ90uD0D4jV695S7weN5whZV=ypq7pUOW+q3DHW_g@mail.gmail.com>
-Subject: Re: [PATCH 1/8] dt-bindings: serial: renesas,scif: Document r8a774e1 bindings
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710070613.GA1176018@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 8, 2020 at 7:48 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> RZ/G2H (R8A774E1) SoC also has the R-Car gen3 compatible SCIF ports,
-> so document the SoC specific bindings.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 10-07-20, 09:06, Greg KH wrote:
+> On Thu, Jul 09, 2020 at 11:09:33PM +0200, Alexander A. Klimov wrote:
+> > Rationale:
+> > Reduces attack surface on kernel devs opening the links for MITM
+> > as HTTPS traffic is much harder to manipulate.
+> > 
+> > Deterministic algorithm:
+> > For each file:
+> >   If not .svg:
+> >     For each line:
+> >       If doesn't contain `\bxmlns\b`:
+> >         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> > 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+> >             If both the HTTP and HTTPS versions
+> >             return 200 OK and serve the same content:
+> >               Replace HTTP with HTTPS.
+> > 
+> > Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> > ---
+> >  Continuing my work started at 93431e0607e5.
+> >  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+> >  (Actually letting a shell for loop submit all this stuff for me.)
+> > 
+> >  If there are any URLs to be removed completely or at least not HTTPSified:
+> >  Just clearly say so and I'll *undo my change*.
+> >  See also: https://lkml.org/lkml/2020/6/27/64
+> > 
+> >  If there are any valid, but yet not changed URLs:
+> >  See: https://lkml.org/lkml/2020/6/26/837
+> > 
+> >  If you apply the patch, please let me know.
+> 
+> Again, please fix your subject line.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Is there any rationale for these patches? They replace documentation
+link of vendors, am not sure if that is super helpful to kernel devs and
+does it really protect :)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+~Vinod
