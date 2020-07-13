@@ -2,126 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80B721DA28
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE48521DA22
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730136AbgGMPe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 11:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729920AbgGMPe6 (ORCPT
+        id S1729917AbgGMPeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:34:07 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:47533 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729581AbgGMPeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 11:34:58 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2152EC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:34:58 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id di5so5931254qvb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:34:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dS/t0yiexaZCrqeV5/e3m7On60/CA6XnE/8+DugAd3o=;
-        b=xhQXZmL6pVITnzChn/H4Xl7FN0rJWCuhMPQ2vGTPA/AIAUtsBpDMnNQwxyheYPKGk/
-         B6+Y7DliDAxAiU2tZU4gzJ8giSUJRogsQGl3+pMMtNKAu6vzwh0jiB48C8x59kfmj6iT
-         lLvnvrNpdDPbBqI1ZVoD16TSzIoIGIsGb2iXd3aQ4WfYYYsLsbnA/iTWCVv3lYTJ+4AG
-         imFFHrVgTCnugO4wxWbKVSjpUcacpIhnVpeOj0iG6jgBeGLQ6vt4qUwEuBVdTMbUUlbH
-         d9SRbMt8i2uPOkDyVLaau3Z3TDxsTBmKFbjNtY1ti7tuNpV+0GRUAn6JjAR3ILXPkuVo
-         pDuw==
+        Mon, 13 Jul 2020 11:34:07 -0400
+Received: by mail-il1-f200.google.com with SMTP id o2so9694606ilg.14
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:34:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dS/t0yiexaZCrqeV5/e3m7On60/CA6XnE/8+DugAd3o=;
-        b=YYitdCTanEe98IpQpzs+o9rrs3BttZ1o4K6rp6MTD9ffy3IAMpYL1ujIzdJ+gaOiVZ
-         QxXbVG4ENSLNPCv+0lfdwagGIEu5rSmq8j40PaCUcsZfZ6V8O0sND5cfVeRvSmuJUPD4
-         DUce8SWZePF+ebW9diCd8c8Qw7qhFFJv6bmI1DqLhzJVEexwSyQgaDlPbiSScOvhhr9G
-         LVdwPSOd4uS8YF//btySNMWy4tC1LNOEmsM2SjkU7/GvHFDhccuaZDf/HwVv5o/JhFi6
-         b5RRs+ceUVNr0pDP66FR8tdTPgNZRYX8/XugQin/GB/EDwQfy4GWGBae79qSWLpThFUa
-         xL1A==
-X-Gm-Message-State: AOAM531Al5wCRQLByODzCBm7Y2emItkJuFuIMGU35unaNyGSmb45bF4r
-        1q9uow4wsWco/5G2LhGF8a5Kpg==
-X-Google-Smtp-Source: ABdhPJyBUaGS6buzVXPID50rG0JvO7x5+eFVDVsq9yIhY/8e/yNNVmJqXmePEKjoThhiDzsbBZ70GQ==
-X-Received: by 2002:a05:6214:18f2:: with SMTP id ep18mr51647qvb.96.1594654497166;
-        Mon, 13 Jul 2020 08:34:57 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id 21sm19500226qkj.56.2020.07.13.08.34.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 08:34:56 -0700 (PDT)
-Subject: Re: [RFC PATCH] interconnect: qcom: add functions to query addr/cmds
- for a path
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        kbuild test robot <lkp@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        "open list:INTERCONNECT API" <linux-pm@vger.kernel.org>
-References: <20200701042528.12321-1-jonathan@marek.ca>
- <3063d037-a781-6327-ef88-37b626c552e1@linaro.org>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <9f0628df-26b2-6ec8-3868-b2f72f0c8918@marek.ca>
-Date:   Mon, 13 Jul 2020 11:33:39 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=PuwK5sOU81rM/XoQcuJqMMPHQ+Gr8re6yhX7o7C4muQ=;
+        b=bB6sbdWDu/vmXZQc5ekvPSilnf/IuoQjTsBPQfZG5ODDd9yh2GvfU/aRyCtDwbA/fM
+         2cvA+kIzpmjqoHsRZ4enwErQRi9cjeMF1H9uQj0Gs9Wei9ZzgROVKsIQJ4f2elTXYjx/
+         7CFoeCdaSyP9CxXvI1Lp+OLsMU10O+RsiHbKvw0v9Slir/eJ8kzTRqp8FtPhl/BFjl1x
+         8t5qXb2JYZp7XpwCbb8H0AERE0OHges7eU9vjo4GvTOdi+z40Y3w7/HEWNr2qyHna+uA
+         HpaaLVymzYyDABIZqochqTgf3RjQRpyRfOaLyUmCh21WuzDgKJsT1lT5ZmwMkp44zdfB
+         nzQA==
+X-Gm-Message-State: AOAM530CWBds2mWVwOw5AbC+AiiDeG/1ooLpoc0uKu80tmz3kPyAHZCw
+        F5hWoaGlHA80YIA6OTQkXn/Jh+GEt0yfC8wEeKrTmek951yP
+X-Google-Smtp-Source: ABdhPJydbjbFEZskX61aECXgpw3Hf5lQrLPxhVEfS8LhGnBo3W5qg9pPTvobj6Hs8ic5kEJcDP2fXDOcy5fkMgW8HBxuPOvZeySr
 MIME-Version: 1.0
-In-Reply-To: <3063d037-a781-6327-ef88-37b626c552e1@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:1bd5:: with SMTP id f82mr225494ill.121.1594654446305;
+ Mon, 13 Jul 2020 08:34:06 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 08:34:06 -0700
+In-Reply-To: <0000000000001bbb6705aa49635a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cfc8ff05aa546b84@google.com>
+Subject: Re: KASAN: use-after-free Read in userfaultfd_release (2)
+From:   syzbot <syzbot+75867c44841cb6373570@syzkaller.appspotmail.com>
+To:     Markus.Elfring@web.de, casey@schaufler-ca.com, dancol@google.com,
+        hdanton@sina.com, jmorris@namei.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stephen.smalley.work@gmail.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/20 11:24 AM, Georgi Djakov wrote:
-> On 7/1/20 07:25, Jonathan Marek wrote:
->> The a6xx GMU can vote for ddr and cnoc bandwidth, but it needs to be able
->> to query the interconnect driver for bcm addresses and commands.
-> 
-> It's not very clear to me how the GMU firmware would be dealing with this? Does
-> anyone have an idea whether the GMU makes any bandwidth decisions? Or is it just
-> a static configuration and it just enables/disables a TCS?
-> 
+syzbot has bisected this bug to:
 
-The GMU is able to vote for bandwidth, and presumably RPMh is 
-aggregating those votes with the votes from the interconnect driver. We 
-need to be able to fill out the "struct a6xx_hfi_msg_bw_table" in 
-drivers/gpu/drm/msm/adreno/a6xx_hfi.h, which has a table of DDR 
-bandwidth cmds which can be selected when changing the GPU frequency 
-(the bw field in a6xx_hfi_gx_bw_perf_vote_cmd).
+commit d08ac70b1e0dc71ac2315007bcc3efb283b2eae4
+Author: Daniel Colascione <dancol@google.com>
+Date:   Wed Apr 1 21:39:03 2020 +0000
 
- From Jordan: "the GMU registers a bus vote directly with the hardware. 
-It should handle aggregation for us."
+    Wire UFFD up to SELinux
 
-> I think that we can query the address from the cmd-db, but we have to know the
-> bcm names and the path. All the BCM/TCS information looks to be very low-level
-> and implementation specific, so exposing it through an API is not very good,
-> but hard-coding all this information is not good either.
-> 
-> Thanks,
-> Georgi
-> 
->>
->> I'm not sure what is the best way to go about implementing this, this is
->> what I came up with.
->>
->> I included a quick example of how this can be used by the a6xx driver to
->> fill out the GMU bw_table (two ddr bandwidth levels in this example, note
->> this would be using the frequency table in dts and not hardcoded values).
->>
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
->>   drivers/gpu/drm/msm/adreno/a6xx_hfi.c | 20 ++++-------
->>   drivers/interconnect/qcom/icc-rpmh.c  | 50 +++++++++++++++++++++++++++
->>   include/soc/qcom/icc.h                | 11 ++++++
->>   3 files changed, 68 insertions(+), 13 deletions(-)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a79d13100000
+start commit:   89032636 Add linux-next specific files for 20200708
+git tree:       linux-next
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=16a79d13100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a79d13100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=64a250ebabc6c320
+dashboard link: https://syzkaller.appspot.com/bug?extid=75867c44841cb6373570
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c4c8db100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12cbb68f100000
+
+Reported-by: syzbot+75867c44841cb6373570@syzkaller.appspotmail.com
+Fixes: d08ac70b1e0d ("Wire UFFD up to SELinux")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
