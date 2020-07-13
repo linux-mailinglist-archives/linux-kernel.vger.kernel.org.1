@@ -2,172 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F00B21D0EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2DF21D0F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729239AbgGMHvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 03:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbgGMHvS (ORCPT
+        id S1728942AbgGMHxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 03:53:16 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:34990 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbgGMHxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 03:51:18 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175DBC061755;
-        Mon, 13 Jul 2020 00:51:18 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 00FF2BC0CB;
-        Mon, 13 Jul 2020 07:51:14 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     gerrit@erg.abdn.ac.uk, davem@davemloft.net, kuba@kernel.org,
-        masahiroy@kernel.org, dccp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] [DCCP]: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 09:51:08 +0200
-Message-Id: <20200713075108.32143-1-grandmaster@al2klimov.de>
+        Mon, 13 Jul 2020 03:53:16 -0400
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 06D7qprL021691;
+        Mon, 13 Jul 2020 16:52:52 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 06D7qprL021691
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1594626772;
+        bh=QRmgCLz55pGAiYJ6IPSUrsAwdIpDl1h9v5capnjYD6s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RzaEuixqZ4VGYkgY0LqBtba7nieyXeP+KM51Dnu4vjg9EOttoUbJ1NbRZmy5CP/OT
+         4AgXqeMG8mlXGn0NWZ7/TBJslwWX0D/oKfZ0qvxxDYR4zoc7PnCyWpuXzXXAOXhpEk
+         uckL3Ve2i5lFKHo2Hxjw3m1KOQQeYKiLpgQvSWkHHeHnBd6tN5+FJxLiDTp7WFMHN0
+         hd/HSHVm9dNlH4at3hPynk/hFP6caP5xquaZvDfxqV9xzqU65+BQ4XzI9Fd70w9VPg
+         aBhBHL3MejLkkSbjCdkUoKfZbI1/LoxDioq/n0FJliGHN/vNYITtg419qb7xyIZUwd
+         8yjlvNN9myZlA==
+X-Nifty-SrcIP: [209.85.221.182]
+Received: by mail-vk1-f182.google.com with SMTP id g22so2578169vke.9;
+        Mon, 13 Jul 2020 00:52:51 -0700 (PDT)
+X-Gm-Message-State: AOAM531ExoYbhuDxJtQN0X8isVhC98ymp/voz111OH2jt1P9waowaAkP
+        IErvuoJiN2ylhWlOksmu72t+gE0YGolENF8Yuro=
+X-Google-Smtp-Source: ABdhPJxNFyJ8q8WNzZnAYfoUMz6NpZVD2Cwf3rJ/k4h8+eaFQ7YUe7R9b9rSUc8J692BZ2OVzipzRSlmQIBQotaT270=
+X-Received: by 2002:a1f:a616:: with SMTP id p22mr41700565vke.96.1594626770912;
+ Mon, 13 Jul 2020 00:52:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+References: <20200707170720.55be721f@canb.auug.org.au> <20200713115618.5e07a783@canb.auug.org.au>
+In-Reply-To: <20200713115618.5e07a783@canb.auug.org.au>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 13 Jul 2020 16:52:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARoPNi-QbT=4Odap9LtP9dpMUh9TExtD5gOaaktwdY3Aw@mail.gmail.com>
+Message-ID: <CAK7LNARoPNi-QbT=4Odap9LtP9dpMUh9TExtD5gOaaktwdY3Aw@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the kbuild tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Hi Stephen,
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
+On Mon, Jul 13, 2020 at 10:56 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> On Tue, 7 Jul 2020 17:07:20 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Hi all,
+> >
+> > After merging the kbuild tree, today's linux-next build (powerpc
+> > ppc44x_defconfig) failed like this:
+> >
+> > cc1: fatal error: opening output file arch/powerpc/boot/dts/.ebony.dtb.dts.tmp: No such file or directory
+> >
+> > and directory arch/powerpc/boot/dts/ does, indeed, not exist in the
+> > separate object directory.
+> >
+> > Caused by commit
+> >
+> >   ea4679253288 ("kbuild: always create directories of targets")
+> >
+> > at least, reverting that commit makes the build work again.
+>
+> I am still reverting that commit.
 
 
- net/dccp/Kconfig                    | 2 +-
- net/dccp/ccids/Kconfig              | 4 ++--
- net/dccp/ccids/ccid3.c              | 2 +-
- net/dccp/ccids/ccid3.h              | 2 +-
- net/dccp/ccids/lib/packet_history.c | 2 +-
- net/dccp/ccids/lib/packet_history.h | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+Sorry, I missed the previous email.
+I will fix it soon.
 
-diff --git a/net/dccp/Kconfig b/net/dccp/Kconfig
-index 51ac2631fb48..0c7d2f66ba27 100644
---- a/net/dccp/Kconfig
-+++ b/net/dccp/Kconfig
-@@ -5,7 +5,7 @@ menuconfig IP_DCCP
- 	help
- 	  Datagram Congestion Control Protocol (RFC 4340)
- 
--	  From http://www.ietf.org/rfc/rfc4340.txt:
-+	  From https://www.ietf.org/rfc/rfc4340.txt:
- 
- 	  The Datagram Congestion Control Protocol (DCCP) is a transport
- 	  protocol that implements bidirectional, unicast connections of
-diff --git a/net/dccp/ccids/Kconfig b/net/dccp/ccids/Kconfig
-index 4d7771f36eff..a3eeb84d16f9 100644
---- a/net/dccp/ccids/Kconfig
-+++ b/net/dccp/ccids/Kconfig
-@@ -26,13 +26,13 @@ config IP_DCCP_CCID3
- 	  relatively smooth sending rate is of importance.
- 
- 	  CCID-3 is further described in RFC 4342,
--	  http://www.ietf.org/rfc/rfc4342.txt
-+	  https://www.ietf.org/rfc/rfc4342.txt
- 
- 	  The TFRC congestion control algorithms were initially described in
- 	  RFC 5348.
- 
- 	  This text was extracted from RFC 4340 (sec. 10.2),
--	  http://www.ietf.org/rfc/rfc4340.txt
-+	  https://www.ietf.org/rfc/rfc4340.txt
- 
- 	  If in doubt, say N.
- 
-diff --git a/net/dccp/ccids/ccid3.c b/net/dccp/ccids/ccid3.c
-index 9ef9bee9610f..aef72f6a2829 100644
---- a/net/dccp/ccids/ccid3.c
-+++ b/net/dccp/ccids/ccid3.c
-@@ -7,7 +7,7 @@
-  *  An implementation of the DCCP protocol
-  *
-  *  This code has been developed by the University of Waikato WAND
-- *  research group. For further information please see http://www.wand.net.nz/
-+ *  research group. For further information please see https://www.wand.net.nz/
-  *
-  *  This code also uses code from Lulea University, rereleased as GPL by its
-  *  authors:
-diff --git a/net/dccp/ccids/ccid3.h b/net/dccp/ccids/ccid3.h
-index 081c195e7f7d..02e0fc9f6334 100644
---- a/net/dccp/ccids/ccid3.h
-+++ b/net/dccp/ccids/ccid3.h
-@@ -6,7 +6,7 @@
-  *  An implementation of the DCCP protocol
-  *
-  *  This code has been developed by the University of Waikato WAND
-- *  research group. For further information please see http://www.wand.net.nz/
-+ *  research group. For further information please see https://www.wand.net.nz/
-  *  or e-mail Ian McDonald - ian.mcdonald@jandi.co.nz
-  *
-  *  This code also uses code from Lulea University, rereleased as GPL by its
-diff --git a/net/dccp/ccids/lib/packet_history.c b/net/dccp/ccids/lib/packet_history.c
-index 2d41bb036271..0bef57b908fb 100644
---- a/net/dccp/ccids/lib/packet_history.c
-+++ b/net/dccp/ccids/lib/packet_history.c
-@@ -6,7 +6,7 @@
-  *  An implementation of the DCCP protocol
-  *
-  *  This code has been developed by the University of Waikato WAND
-- *  research group. For further information please see http://www.wand.net.nz/
-+ *  research group. For further information please see https://www.wand.net.nz/
-  *  or e-mail Ian McDonald - ian.mcdonald@jandi.co.nz
-  *
-  *  This code also uses code from Lulea University, rereleased as GPL by its
-diff --git a/net/dccp/ccids/lib/packet_history.h b/net/dccp/ccids/lib/packet_history.h
-index a157d874840b..159cc9326eab 100644
---- a/net/dccp/ccids/lib/packet_history.h
-+++ b/net/dccp/ccids/lib/packet_history.h
-@@ -6,7 +6,7 @@
-  *  Copyright (c) 2005-6 The University of Waikato, Hamilton, New Zealand.
-  *
-  *  This code has been developed by the University of Waikato WAND
-- *  research group. For further information please see http://www.wand.net.nz/
-+ *  research group. For further information please see https://www.wand.net.nz/
-  *  or e-mail Ian McDonald - ian.mcdonald@jandi.co.nz
-  *
-  *  This code also uses code from Lulea University, rereleased as GPL by its
+
 -- 
-2.27.0
-
+Best Regards
+Masahiro Yamada
