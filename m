@@ -2,74 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F81B21E2B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 23:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678A921E2B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 23:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbgGMVzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 17:55:17 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:47562 "EHLO smtp.al2klimov.de"
+        id S1726619AbgGMV5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 17:57:33 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:46559 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbgGMVzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 17:55:16 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 28AF3BC097;
-        Mon, 13 Jul 2020 21:55:12 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     tony.luck@intel.com, fenghua.yu@intel.com, corbet@lwn.net,
-        linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH v2] ia64: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 23:55:06 +0200
-Message-Id: <20200713215506.44327-1-grandmaster@al2klimov.de>
-In-Reply-To: <20200713083408.38154746@lwn.net>
-References: <20200713083408.38154746@lwn.net>
+        id S1726150AbgGMV5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 17:57:32 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B5HZ16f7rz9sRK;
+        Tue, 14 Jul 2020 07:57:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594677450;
+        bh=AsUmxseH5BnH3garHqf+P/Tp9k4EnP/BQK2s7sSigaM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nfJ/VJzZQiSxfLSzyqBxpgmrPVT4faoDz66WsMFnIDrcycdNS2nyps9IsJBYT1WTy
+         HlgZJOaJgY7/8Jt3R/2G6/DQjMIuQyuYBGdeJs++nFWp10kbLAUG/2p/YvP8Rtfp+m
+         xYFDXaMBAR13lirY9X+tV7H7dbpIufl+Tcc6dpnMpbXtna9tRfBgoK4/v/xsl4Pr8G
+         0XcvH2GftdqgDFczFNpZ9/QEWNuUCb5iXct9bmdrsSXFX4mkXBbCIUl7E+kwjE/E/0
+         KkVa3YX1n82fdlE/D+qMwvyAxu8Q5l7P/4ZyH8OtmhmQ8KgPt8T2yJc6723QRFkVWL
+         ix8O+ziDApQGA==
+Date:   Tue, 14 Jul 2020 07:57:29 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: linux-next: Fixes tags need some work in the arm-soc-fixes tree
+Message-ID: <20200714075729.68b92239@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: multipart/signed; boundary="Sig_/vqTgWJ30.lxte2gY6BSQ4yy";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+--Sig_/vqTgWJ30.lxte2gY6BSQ4yy
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+Hi all,
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- As you said I should not HTTPSify broken links...
+In commit
 
- Documentation/ia64/xen.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  3e189a193471 ("ARM: dts: socfpga: Align L2 cache-controller nodename with=
+ dtschema")
 
-diff --git a/Documentation/ia64/xen.rst b/Documentation/ia64/xen.rst
-index 831339c74441..9da6abb02a2c 100644
---- a/Documentation/ia64/xen.rst
-+++ b/Documentation/ia64/xen.rst
-@@ -28,7 +28,7 @@ Getting and Building Xen and Dom0
- 
- 	# hg clone http://xenbits.xensource.com/ext/ia64/xen-unstable.hg
- 	# cd xen-unstable.hg
--	# hg clone http://xenbits.xensource.com/ext/ia64/linux-2.6.18-xen.hg
-+	# hg clone https://xenbits.xensource.com/ext/ia64/linux-2.6.18-xen.hg
- 
-  2. # make world
- 
--- 
-2.27.0
+Fixes tag
 
+  Fixes: 475dc86d08de ("arm: dts: socfpga: Add a base DTSI for Altera's Arr=
+ia10
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+In commit
+
+  8e343e71b092 ("arm64: dts: stratix10: increase QSPI reg address in nand d=
+ts file")
+
+Fixes tag
+
+  Fixes: 80f132d73709 ("arm64: dts: increase the QSPI reg address for Strat=
+ix10
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+In commit
+
+  c188c8348836 ("arm64: dts: stratix10: add status to qspi dts node")
+
+Fixes tag
+
+  Fixes: 0cb140d07fc75 ("arm64: dts: stratix10: Add QSPI support for
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+In commit
+
+  390a90089db5 ("arm64: dts: agilex: add status to qspi dts node")
+
+Fixes tag
+
+  Fixes: c4c8757b2d895 ("arm64: dts: agilex: add QSPI support for Intel
+
+has these problem(s):
+
+  - Subject has leading but no trailing parentheses
+  - Subject has leading but no trailing quotes
+
+Please do not split Fixes tags over more than one line.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/vqTgWJ30.lxte2gY6BSQ4yy
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8M2MkACgkQAVBC80lX
+0Gzg3Qf8Dl8JMliIWTydxbP+rQP3eJC+jTJomQOaSjLzaLA7B/ttRQ1EPHEtgqAj
+SnITsJl9MxvGP+9ZtIgREUqg3Vt3HM2KV2EENwjqhfHzIYj4GGhEllK7zeJwEiaH
+eXgCNgabYbEI/JTib5r2Sr7o39LT6I48Pzmb/V792ZspcxU70H4tzXInAc7W/x1n
+b4TcysaJFce5DvOBwAnquvqU6bMk1Qw7ISICNZ5fAIh9x/gDvx7aw6F7iYUKggJt
+F0C9sD9yRmCmc76PgDdKIsU/kJiKuh+pZDppkq3Z/U5ug4R7QK3qZj7ZW3dkqFyE
+/bbLqyDxwAWFxcvc2P1PZOBSWpUdgA==
+=JKHq
+-----END PGP SIGNATURE-----
+
+--Sig_/vqTgWJ30.lxte2gY6BSQ4yy--
