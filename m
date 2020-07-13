@@ -2,122 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C36E321D878
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27AD421D885
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730100AbgGMO2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:28:43 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2056 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729782AbgGMO2m (ORCPT
+        id S1730011AbgGMOaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:30:18 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12190 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729659AbgGMOaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:28:42 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06DE3bC7109961;
-        Mon, 13 Jul 2020 10:28:36 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 328s0c8tjp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jul 2020 10:28:36 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06DE4UES114776;
-        Mon, 13 Jul 2020 10:28:35 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 328s0c8thf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jul 2020 10:28:35 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06DEETXs015468;
-        Mon, 13 Jul 2020 14:28:34 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma02wdc.us.ibm.com with ESMTP id 327urs9mkj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jul 2020 14:28:34 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06DESUi730998968
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Jul 2020 14:28:30 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6018A78064;
-        Mon, 13 Jul 2020 14:28:33 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0455D7805C;
-        Mon, 13 Jul 2020 14:28:32 +0000 (GMT)
-Received: from [9.163.41.130] (unknown [9.163.41.130])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 13 Jul 2020 14:28:32 +0000 (GMT)
-Subject: Re: [PATCH 1/2] dt-bindings: leds: pca955x: Add IBM implementation
- compatible string
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org, dmurphy@ti.com,
-        jacek.anaszewski@gmail.com, vishwa@linux.ibm.com
-References: <20200709201220.13736-1-eajames@linux.ibm.com>
- <20200709201220.13736-2-eajames@linux.ibm.com> <20200711134814.GB6407@amd>
-From:   Eddie James <eajames@linux.ibm.com>
-Message-ID: <ad50a2a7-0b06-420e-baa7-dec2787ab30d@linux.ibm.com>
-Date:   Mon, 13 Jul 2020 09:28:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 13 Jul 2020 10:30:18 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0c6fed0000>; Mon, 13 Jul 2020 07:30:05 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 13 Jul 2020 07:30:17 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 13 Jul 2020 07:30:17 -0700
+Received: from [10.24.37.103] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 13 Jul
+ 2020 14:30:09 +0000
+Subject: Re: [TEGRA194_CPUFREQ PATCH v4 3/4] cpufreq: Add Tegra194 cpufreq
+ driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <rjw@rjwysocki.net>, <catalin.marinas@arm.com>, <will@kernel.org>,
+        <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <jonathanh@nvidia.com>,
+        <talho@nvidia.com>, <linux-pm@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <bbasu@nvidia.com>,
+        <mperttunen@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>,
+        <mirq-linux@rere.qmqm.pl>
+References: <1593186236-12760-1-git-send-email-sumitg@nvidia.com>
+ <1593186236-12760-4-git-send-email-sumitg@nvidia.com>
+ <20200629061639.7cwxfi64drkof6yu@vireshk-i7>
+From:   Sumit Gupta <sumitg@nvidia.com>
+Message-ID: <0d04d2c8-8f87-ecc7-9bd6-633d84b60e8b@nvidia.com>
+Date:   Mon, 13 Jul 2020 19:59:28 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200711134814.GB6407@amd>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200629061639.7cwxfi64drkof6yu@vireshk-i7>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-13_11:2020-07-13,2020-07-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- suspectscore=0 spamscore=0 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 clxscore=1015 impostorscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007130102
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594650605; bh=cczukomO7UcCHwxyADg2/yNUOTAA7Ksj6A5ikRcdVSA=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=ZseOkDY3VI8BBpYTwAQpZqe6ktLrz0X4KF9iKWlMzXm81N5tZVCx7P9cwtXlKw/V/
+         cdls1zrdFWpmKpSv/v0ICmHIx5ZjCiVT2ViSPXqCvbuxRBZZYZJOJqL/XQ9lIBDYBt
+         Jlj+THatHHPaGH1xG8du4Xi13uygwwJWLIMAFtFyk6znhBTGcu4+TzmSDFDx/yHnPG
+         QSlAlx2JA0WOKpgdJY9RSv5UF8Ftc9mHWFobovQ05rfoLMRVQsEOGUFpekhZSh3WBi
+         /cUvhBKOlKDxYhxF3BxI0qnLLZ1TCDz0QoSyRAPEBcvwXFwWL0XnR4/4QK/iUFkXoj
+         7GOq0EISwKABw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/11/20 8:48 AM, Pavel Machek wrote:
-> Hi!
->
->> IBM created an implementation of the PCA9552 on a PIC16F
->> microcontroller. Document the new compatible string for this device.
-> Is the implementation opensource?
 
+> 
+> On 26-06-20, 21:13, Sumit Gupta wrote:
+>> +static int tegra194_cpufreq_probe(struct platform_device *pdev)
+>> +{
+>> +     struct tegra194_cpufreq_data *data;
+>> +     struct tegra_bpmp *bpmp;
+>> +     int err, i;
+>> +
+>> +     data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+>> +     if (!data)
+>> +             return -ENOMEM;
+>> +
+>> +     data->num_clusters = MAX_CLUSTERS;
+>> +     data->tables = devm_kcalloc(&pdev->dev, data->num_clusters,
+>> +                                 sizeof(*data->tables), GFP_KERNEL);
+>> +     if (!data->tables)
+>> +             return -ENOMEM;
+>> +
+>> +     platform_set_drvdata(pdev, data);
+>> +
+>> +     bpmp = tegra_bpmp_get(&pdev->dev);
+>> +     if (IS_ERR(bpmp))
+>> +             return PTR_ERR(bpmp);
+>> +
+>> +     read_counters_wq = alloc_workqueue("read_counters_wq", __WQ_LEGACY, 1);
+>> +     if (!read_counters_wq) {
+>> +             dev_err(&pdev->dev, "fail to create_workqueue\n");
+>> +             err = -EINVAL;
+>> +             goto put_bpmp;
+> 
+> This will call destroy_workqueue() eventually and it will crash your
+> kernel.
+> 
+> Apart from this, this stuff looks okay. Don't resend the patch just
+> yet (and if required, send only this patch using --in-reply-to flag
+> for git send email). Lets wait for an Ack from Rob for the first two
+> patches.
+> 
+Sorry for the delayed response as i was on PTO.
+Thank you for the feedback.
 
-Hi, no it is not.
+Have posted a v5 based on v4 patch set.
 
-
->
->> Signed-off-by: Eddie James <eajames@linux.ibm.com>
->> +++ b/Documentation/devicetree/bindings/leds/leds-pca955x.txt
->> @@ -9,6 +9,7 @@ Required properties:
->>   	"nxp,pca9550"
->>   	"nxp,pca9551"
->>   	"nxp,pca9552"
->> +	"nxp,pca9552-ibm"
->>   	"nxp,pca9553"
-> Is it good idea to use nxp prefix for something that is
-> software-defined and not built by nxp?
-
-
-Yea I suppose not...
-
->
-> Would ibm,pca9552 be better, or maybe even sw,pca9552 to indicate that
-> is not real hardware, but software emulation?
-
-
-How about ibm,pca9552-sw? Someone suggested that just adding "sw" could 
-be a problem if another company does the same thing but it isn't compatible.
-
-
-Thanks for taking a look!
-
-Eddie
-
-
->
-> Best regards,
-> 									Pavel
+>> +     }
+>> +
+> 
+> --
+> viresh
+> 
