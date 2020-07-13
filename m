@@ -2,109 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A800121E179
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 22:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CF621E17C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 22:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgGMUcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 16:32:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726150AbgGMUcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 16:32:43 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4959420720;
-        Mon, 13 Jul 2020 20:32:41 +0000 (UTC)
-Date:   Mon, 13 Jul 2020 16:32:39 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mhiramat@kernel.org,
-        bristot@redhat.com, jbaron@akamai.com,
-        torvalds@linux-foundation.org, tglx@linutronix.de,
-        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
-        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
-        pbonzini@redhat.com, mathieu.desnoyers@efficios.com,
-        linux@rasmusvillemoes.dk
-Subject: Re: [PATCH v6 13/17] static_call: Add static_call_cond()
-Message-ID: <20200713163239.5701f5d1@oasis.local.home>
-In-Reply-To: <20200711104930.GE597537@hirez.programming.kicks-ass.net>
-References: <20200710133831.943894387@infradead.org>
-        <20200710134336.918547865@infradead.org>
-        <20200710190825.02c75c04@oasis.local.home>
-        <20200711104930.GE597537@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727047AbgGMUcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 16:32:53 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:36770 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726150AbgGMUcw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 16:32:52 -0400
+Received: from [10.0.0.249] (c-24-19-135-168.hsd1.wa.comcast.net [24.19.135.168])
+        by linux.microsoft.com (Postfix) with ESMTPSA id CAADF20B4909;
+        Mon, 13 Jul 2020 13:32:50 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CAADF20B4909
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1594672371;
+        bh=VeWN4l0WTivLpVxHyd7AaFSTibjlEMzXV0jVP3Zo+E4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=cHdBGMUwa6d7vQELISebugbZOJJPgfylgs+Ow4juQxNZlH84Uew4znIMhI1ctPIqj
+         H3I0N3rghH+OPS5b0/jhoIQBL8VUHOjGPpO6T+NSQaCMWJ5VU3jNPyjiJGtaOjHTVC
+         7dGIyN+NRs9Dp/ZrXQdYTJ5ocXPgoEQ4OChP6Zbc=
+Subject: Re: [V2 PATCH 2/3] dt-bindings: chosen: Document ima-kexec-buffer
+To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, masahiroy@kernel.org, james.morse@arm.com,
+        bhsharma@redhat.com, mbrugger@suse.com, hsinyi@chromium.org,
+        tao.li@vivo.com, christophe.leroy@c-s.fr,
+        gregkh@linuxfoundation.org, nramas@linux.microsoft.com,
+        tusharsu@linux.microsoft.com, balajib@linux.microsoft.com
+References: <20200618071045.471131-1-prsriva@linux.microsoft.com>
+ <20200618071045.471131-3-prsriva@linux.microsoft.com>
+ <87mu4yr2k2.fsf@morokweng.localdomain>
+From:   Prakhar Srivastava <prsriva@linux.microsoft.com>
+Message-ID: <80813a16-be43-3fc4-4812-33c60095a423@linux.microsoft.com>
+Date:   Mon, 13 Jul 2020 13:32:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <87mu4yr2k2.fsf@morokweng.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 11 Jul 2020 12:49:30 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+
+
+On 6/19/20 5:41 PM, Thiago Jung Bauermann wrote:
 > 
-> Something like so (on top of the next patch) ?
+> Prakhar Srivastava <prsriva@linux.microsoft.com> writes:
 > 
-> I'm not convinced it actually helps much, but if it makes you feel
-> better :-)
-
-After you have bricked a bunch of people's NICs, you would be paranoid
-about this too!
-
-You work for Intel, next time you go to an office, see if you can find
-my picture on any dartboards in there ;-)
-
-
+>> Integrity measurement architecture(IMA) validates if files
+>> have been accidentally or maliciously altered, both remotely and
+>> locally, appraise a file's measurement against a "good" value stored
+>> as an extended attribute, and enforce local file integrity.
+>>
+>> IMA also measures singatures of kernel and initrd during kexec along with
+>> the command line used for kexec.
+>> These measurements are critical to verify the seccurity posture of the OS.
+>>
+>> Resering memory and adding the memory information to a device tree node
+>> acts as the mechanism to carry over IMA measurement logs.
+>>
+>> Update devicetree documentation to reflect the addition of new property
+>> under the chosen node.
+> 
+> Thank you for writing this documentation patch. It's something I should
+> have done when I added the powerpc IMA kexec support.
+> 
+> You addressed Rob Herring's comments regarding the commit message, but
+> not the ones regarding the patch contents.
+> 
+> When posting a new version of the patches, make sure to address all
+> comments made so far. Addressing a comment doesn't necessarily mean
+> implementing the requested change. If you don't then you should at least
+> explain why you chose a different path.
+> 
+> I mention it because this has occurred before with this patch series,
+> and it's hard to make forward progress if review comments get ignored.
+> 
+>> ---
+>>   Documentation/devicetree/bindings/chosen.txt | 17 +++++++++++++++++
+>>   1 file changed, 17 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/chosen.txt b/Documentation/devicetree/bindings/chosen.txt
+>> index 45e79172a646..a15f70c007ef 100644
+>> --- a/Documentation/devicetree/bindings/chosen.txt
+>> +++ b/Documentation/devicetree/bindings/chosen.txt
+>> @@ -135,3 +135,20 @@ e.g.
+>>   		linux,initrd-end = <0x82800000>;
+>>   	};
+>>   };
+>> +
+>> +linux,ima-kexec-buffer
+>> +----------------------
+>> +
+>> +This property(currently used by powerpc, arm64) holds the memory range,
+> 
+> space before the parenthesis.
+> 
+>> +the address and the size, of the IMA measurement logs that are being carried
+> 
+> Maybe it's because English isn't my first language, but IMHO it's
+> clearer if "the address and the size" is between parentheses rather than
+> commas.
+> 
+>> +over to the kexec session.
+> 
+> I don't think there's a "kexec session", but I'm not sure what a good
+> term would be. "linux,booted-from-kexec" uses "new kernel" so perhaps
+> that's a good option to use instead of "kexec session".
+> 
+>> +
+>> +/ {
+>> +	chosen {
+>> +		linux,ima-kexec-buffer = <0x9 0x82000000 0x0 0x00008000>;
+>> +	};
+>> +};
+>> +
+>> +This porperty does not represent real hardware, but the memory allocated for
+>> +carrying the IMA measurement logs. The address and the suze are expressed in
+>> +#address-cells and #size-cells, respectively of the root node.
 > 
 > 
-> --- a/arch/x86/kernel/static_call.c
-> +++ b/arch/x86/kernel/static_call.c
-> @@ -56,15 +56,36 @@ static inline enum insn_type __sc_insn(b
->  	return 2*tail + null;
->  }
->  
-> +static void __static_call_validate(void *insn, bool tail)
-> +{
-> +	u8 opcode = *(u8 *)insn;
-> +
-> +	if (tail) {
-> +		if (opcode == JMP32_INSN_OPCODE ||
-> +		    opcode == RET_INSN_OPCODE)
-> +			return;
-> +	} else {
-> +		if (opcode == CALL_INSN_OPCODE ||
-> +		    !memcmp(insn, ideal_nops[NOP_ATOMIC5], 5))
-> +			return;
-> +	}
-> +
-> +	WARN_ONCE(1, "unexpected static_call insn opcode 0x%x at %pS\n", opcode, insn);
-> +}
-> +
->  void arch_static_call_transform(void *site, void *tramp, void *func, bool tail)
->  {
->  	mutex_lock(&text_mutex);
->  
-> -	if (tramp)
-> +	if (tramp) {
-> +		__static_call_validate(tramp, true);
->  		__static_call_transform(tramp, __sc_insn(!func, true), func);
-> +	}
->  
-> -	if (IS_ENABLED(CONFIG_HAVE_STATIC_CALL_INLINE) && site)
-> +	if (IS_ENABLED(CONFIG_HAVE_STATIC_CALL_INLINE) && site) {
-> +		__static_call_validate(site, tail);
+I will update the descriptions and ack the comments/changes in the 
+patches as well.
 
-I'd feel even more better if the validate failed, we just don't do the
-update.
-
--- Steve
-
-
->  		__static_call_transform(site, __sc_insn(!func, tail), func);
-> +	}
->  
->  	mutex_unlock(&text_mutex);
->  }
-
+Thankyou,
+Prakhar Srivastava
+> --
+> Thiago Jung Bauermann
+> IBM Linux Technology Center
+> 
