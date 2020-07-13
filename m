@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD3821CF0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 07:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE4321CFA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728965AbgGMFzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 01:55:17 -0400
-Received: from mga17.intel.com ([192.55.52.151]:3187 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725859AbgGMFzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 01:55:17 -0400
-IronPort-SDR: TrnXLB5T8KV+6qQv0ENLLvAZ9/0e9joomVOf8lKioxsixYlBLoCk8f3qUcR1ovOKGbu1aF1Mnx
- 0vj4Lg642EIA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9680"; a="128616161"
-X-IronPort-AV: E=Sophos;i="5.75,346,1589266800"; 
-   d="scan'208";a="128616161"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2020 22:55:16 -0700
-IronPort-SDR: 04Y8FVYlgaJqSU6R0QtpvvyRPt6Sq04lDLvVlOD42KuZCEXulWehfJyfFs0IGn8RvD7NIpp/5x
- APD5EBedfLQg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,346,1589266800"; 
-   d="scan'208";a="281287992"
-Received: from lgrunert-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.52.195])
-  by orsmga003.jf.intel.com with ESMTP; 12 Jul 2020 22:55:04 -0700
-Date:   Mon, 13 Jul 2020 08:55:03 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>, Alexandre Ghiti <alex@ghiti.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, hch@lst.de
-Subject: Re: [PATCH RFC] kprobes: Remove MODULES dependency
-Message-ID: <20200713055503.GE956284@linux.intel.com>
-References: <20200709234521.194005-1-jarkko.sakkinen@linux.intel.com>
- <20200710193257.4eeb19e9cd042d99cbca7f9a@kernel.org>
- <20200710113238.GH4800@hirez.programming.kicks-ass.net>
- <20200710221802.da2f4cf077ce1bb51c7e11ca@kernel.org>
- <20200710092243.076e9b44@oasis.local.home>
+        id S1729344AbgGMG3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:29:00 -0400
+Received: from twhmllg3.macronix.com ([122.147.135.201]:18501 "EHLO
+        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728926AbgGMG3A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 02:29:00 -0400
+X-Greylist: delayed 2027 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Jul 2020 02:28:59 EDT
+Received: from TWHMLLG3.macronix.com (localhost [127.0.0.2] (may be forged))
+        by TWHMLLG3.macronix.com with ESMTP id 06D5tCA6073386
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 13:55:12 +0800 (GMT-8)
+        (envelope-from masonccyang@mxic.com.tw)
+Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
+        by TWHMLLG3.macronix.com with ESMTP id 06D5t8fH073343;
+        Mon, 13 Jul 2020 13:55:08 +0800 (GMT-8)
+        (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
+        by Forcepoint Email with ESMTP id CF4E7C58ADF7B5E3F802;
+        Mon, 13 Jul 2020 13:55:08 +0800 (CST)
+In-Reply-To: <1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw>
+References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw> <1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw>
+To:     ycllin@mxic.com.tw
+Cc:     boris.brezillon@collabora.com, broonie@kernel.org,
+        juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+        matthias.bgg@gmail.com, miquel.raynal@bootlin.com, p.yadav@ti.com,
+        richard@nod.at, tudor.ambarus@microchip.com, vigneshr@ti.com
+Subject: Re: [PATCH v4 3/7] mtd: spi-nor: sfdp: parse command sequences to change
+ octal DTR mode
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710092243.076e9b44@oasis.local.home>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-KeepSent: 95EC2283:12FD5203-482585A4:00204E4A;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF95EC2283.12FD5203-ON482585A4.00204E4A-482585A4.002083A3@mxic.com.tw>
+From:   masonccyang@mxic.com.tw
+Date:   Mon, 13 Jul 2020 13:55:08 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
+ 2020/07/13 PM 01:55:08,
+        Serialize complete at 2020/07/13 PM 01:55:08
+Content-Type: text/plain; charset="US-ASCII"
+X-MAIL: TWHMLLG3.macronix.com 06D5t8fH073343
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 09:22:43AM -0400, Steven Rostedt wrote:
-> On Fri, 10 Jul 2020 22:18:02 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > 
-> > Agreed. As far as I know, ftrace and bpf also depends on module_alloc(),
-> > so text_alloc() will help them too.
-> > 
-> 
-> Yes please.
-> 
-> arch/x86/kernel/ftrace.c:
-> 
-> #ifdef CONFIG_MODULES
-> #include <linux/moduleloader.h>
-> /* Module allocation simplifies allocating memory for code */
-> static inline void *alloc_tramp(unsigned long size)
-> {
-> 	return module_alloc(size);
-> }
-> static inline void tramp_free(void *tramp)
-> {
-> 	module_memfree(tramp);
-> }
-> #else
-> /* Trampolines can only be created if modules are supported */
-> static inline void *alloc_tramp(unsigned long size)
-> {
-> 	return NULL;
-> }
-> static inline void tramp_free(void *tramp) { }
-> #endif
-> 
-> -- Steve
 
-Thanks, note taken. I'll take this into account in the next version.
++ YC Lin in loop,
 
-/Jarkko
+--
+> Subject
+> 
+> [PATCH v4 3/7] mtd: spi-nor: sfdp: parse command sequences to change 
+octal DTR mode
+> 
+> A set of simple command sequences is provided which can be executed
+> directly by the host controller to enable octal DTR mode.
+> 
+> Each command sequence is 8 per byte for single SPI mode.
+> 
+> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> ---
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
