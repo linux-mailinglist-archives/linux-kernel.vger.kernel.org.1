@@ -2,223 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276EE21DF7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A7F21DF7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726372AbgGMSVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 14:21:48 -0400
-Received: from mga07.intel.com ([134.134.136.100]:34624 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726364AbgGMSVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 14:21:47 -0400
-IronPort-SDR: 4zl5akwv0CHx6HkbCYN0s6gB8AE4tacjbeAizwFGqMInHrCF21Jg+Q377EGbXT8vpwUxIjZL7i
- TQMvPYo8xsyg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="213520108"
-X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
-   d="scan'208";a="213520108"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 11:21:47 -0700
-IronPort-SDR: i3gjZw8MEb6BcvEbigSe/N+i1JQpXzB3wXV7nLMnpOOsBwaGwNK2dfb3tjoxabDfDwSgfUC2dc
- 8cMDxgslYZoA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
-   d="scan'208";a="299283619"
-Received: from bcope-mobl.ger.corp.intel.com (HELO localhost) ([10.249.32.223])
-  by orsmga002.jf.intel.com with ESMTP; 13 Jul 2020 11:21:37 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Jessica Yu <jeyu@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Deacon <will@kernel.org>, Alexandre Ghiti <alex@ghiti.fr>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 3/3] kprobes: Flag out CONFIG_MODULES dependent code
-Date:   Mon, 13 Jul 2020 21:19:39 +0300
-Message-Id: <20200713182030.1418041-3-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200713182030.1418041-1-jarkko.sakkinen@linux.intel.com>
-References: <20200713182030.1418041-1-jarkko.sakkinen@linux.intel.com>
+        id S1726420AbgGMSWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 14:22:35 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41302 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726364AbgGMSWf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 14:22:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594664553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2oYyaWcgfJiqLq1WHDsrJOK0cX6P8HhkN2BpaAn4h60=;
+        b=BWUE/yBTMYFRJM5nFQESxauTdpZWLrG4G5ZreG1guhEqxS4iBJGN2bOfpctislp/rKpVNI
+        qkAKvH5qVztzwRQ0Se0YI2sBkFCt3Yiu3pmj6VZ8Ji4bJ30EvRBQ93QglPNCzA4v7UVYcD
+        Uv6PYmDkM8zv3lPiNyj2gxDW4kqyhNg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-347-WZBatit_NiGP-1IXs3KhyA-1; Mon, 13 Jul 2020 14:22:31 -0400
+X-MC-Unique: WZBatit_NiGP-1IXs3KhyA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 023648014D4;
+        Mon, 13 Jul 2020 18:22:30 +0000 (UTC)
+Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AD65779222;
+        Mon, 13 Jul 2020 18:22:28 +0000 (UTC)
+Date:   Mon, 13 Jul 2020 12:22:26 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Xiong Zhang <xiong.y.zhang@intel.com>,
+        Wayne Boyer <wayne.boyer@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Add capability to zap only sptes for the
+ affected memslot
+Message-ID: <20200713122226.28188f93@x1.home>
+In-Reply-To: <20200710042922.GA24919@linux.intel.com>
+References: <20200703025047.13987-1-sean.j.christopherson@intel.com>
+        <51637a13-f23b-8b76-c93a-76346b4cc982@redhat.com>
+        <20200709211253.GW24919@linux.intel.com>
+        <49c7907a-3ab4-b5db-ccb4-190b990c8be3@redhat.com>
+        <20200710042922.GA24919@linux.intel.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove CONFIG_MODULES dependency by flagging out the dependent code. This
-allows to use kprobes in a kernel without support for loadable modules,
-which could be useful for a test kernel or perhaps an embedded kernel.
+On Thu, 9 Jul 2020 21:29:22 -0700
+Sean Christopherson <sean.j.christopherson@intel.com> wrote:
 
-Cc: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- arch/Kconfig                |  1 -
- include/linux/module.h      | 14 +++++++-------
- kernel/kprobes.c            |  9 +++++++++
- kernel/trace/trace_kprobe.c | 16 +++++++++++++++-
- 4 files changed, 31 insertions(+), 9 deletions(-)
+> +Alex, whom I completely spaced on Cc'ing.
+> 
+> Alex, this is related to the dreaded VFIO memslot zapping issue from last
+> year.  Start of thread: https://patchwork.kernel.org/patch/11640719/.
+> 
+> The TL;DR of below: can you try the attached patch with your reproducer
+> from the original bug[*]?  I honestly don't know whether it has a legitimate
+> chance of working, but it's the one thing in all of this that I know was
+> definitely a bug.  I'd like to test it out if only to sate my curiosity.
+> Absolutely no rush.
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 8cc35dc556c7..bb59cdf335ab 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -61,7 +61,6 @@ config OPROFILE_NMI_TIMER
- 
- config KPROBES
- 	bool "Kprobes"
--	depends on MODULES
- 	depends on HAVE_KPROBES
- 	select KALLSYMS
- 	help
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 857b84bf9e90..eaa8ad02f75c 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -290,6 +290,13 @@ extern typeof(name) __mod_##type##__##name##_device_table		\
- 
- struct notifier_block;
- 
-+enum module_state {
-+	MODULE_STATE_LIVE,	/* Normal state. */
-+	MODULE_STATE_COMING,	/* Full formed, running module_init. */
-+	MODULE_STATE_GOING,	/* Going away. */
-+	MODULE_STATE_UNFORMED,	/* Still setting it up. */
-+};
-+
- #ifdef CONFIG_MODULES
- 
- extern int modules_disabled; /* for sysctl */
-@@ -305,13 +312,6 @@ struct module_use {
- 	struct module *source, *target;
- };
- 
--enum module_state {
--	MODULE_STATE_LIVE,	/* Normal state. */
--	MODULE_STATE_COMING,	/* Full formed, running module_init. */
--	MODULE_STATE_GOING,	/* Going away. */
--	MODULE_STATE_UNFORMED,	/* Still setting it up. */
--};
--
- struct mod_tree_node {
- 	struct module *mod;
- 	struct latch_tree_node node;
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index bbe3423cb2b8..047353008cb6 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1608,6 +1608,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
- 			goto out;
- 		}
- 
-+#ifdef CONFIG_MODULES
- 		/*
- 		 * If the module freed .init.text, we couldn't insert
- 		 * kprobes in there.
-@@ -1618,6 +1619,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
- 			*probed_mod = NULL;
- 			ret = -ENOENT;
- 		}
-+#endif
- 	}
- out:
- 	preempt_enable();
-@@ -2214,6 +2216,7 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
- 	return 0;
- }
- 
-+#ifdef CONFIG_MODULES
- /* Remove all symbols in given area from kprobe blacklist */
- static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
- {
-@@ -2231,6 +2234,7 @@ static void kprobe_remove_ksym_blacklist(unsigned long entry)
- {
- 	kprobe_remove_area_blacklist(entry, entry + 1);
- }
-+#endif
- 
- int __init __weak arch_populate_kprobe_blacklist(void)
- {
-@@ -2274,6 +2278,7 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
- 	return ret ? : arch_populate_kprobe_blacklist();
- }
- 
-+#ifdef CONFIG_MODULES
- static void add_module_kprobe_blacklist(struct module *mod)
- {
- 	unsigned long start, end;
-@@ -2319,6 +2324,10 @@ static void remove_module_kprobe_blacklist(struct module *mod)
- 		kprobe_remove_area_blacklist(start, end);
- 	}
- }
-+#else
-+static void add_module_kprobe_blacklist(struct module *mod) {}
-+static void remove_module_kprobe_blacklist(struct module *mod) {}
-+#endif /* CONFIG_MODULES */
- 
- /* Module notifier call back, checking kprobes on the module */
- static int kprobes_module_callback(struct notifier_block *nb,
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 710ec6a6aa8f..7fcd1bf2d96e 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -103,8 +103,9 @@ static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
- 	return !!(kprobe_gone(&tk->rp.kp));
- }
- 
-+#ifdef CONFIG_MODULES
- static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
--						 struct module *mod)
-+						       struct module *mod)
- {
- 	int len = strlen(mod->name);
- 	const char *name = trace_kprobe_symbol(tk);
-@@ -129,6 +130,17 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
- 
- 	return ret;
- }
-+#else
-+static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
-+						       struct module *mod)
-+{
-+	return false;
-+}
-+static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
-+{
-+	return false;
-+}
-+#endif
- 
- static bool trace_kprobe_is_busy(struct dyn_event *ev)
- {
-@@ -685,10 +697,12 @@ static int trace_kprobe_module_callback(struct notifier_block *nb,
- 			/* Don't need to check busy - this should have gone. */
- 			__unregister_trace_kprobe(tk);
- 			ret = __register_trace_kprobe(tk);
-+#ifdef CONFIG_MODULES
- 			if (ret)
- 				pr_warn("Failed to re-register probe %s on %s: %d\n",
- 					trace_probe_name(&tk->tp),
- 					mod->name, ret);
-+#endif
- 		}
- 	}
- 	mutex_unlock(&event_mutex);
--- 
-2.25.1
+Mixed results, maybe you can provide some guidance.  Running this
+against v5.8-rc4, I haven't reproduced the glitch.  But it's been a
+long time since I tested this previously, so I went back to v5.3-rc5 to
+make sure I still have a recipe to trigger it.  I can still get the
+failure there as the selective flush commit was reverted in rc6.  Then
+I wondered, can I take broken v5.3-rc5 and apply this fix to prove that
+it works?  No, v5.3-rc5 + this patch still glitches.  So I thought
+maybe I could make v5.8-rc4 break by s/true/false/ in this patch.
+Nope.  Then I applied the original patch from[1] to try to break it.
+Nope.  So if anything, I think the evidence suggests this was broken
+elsewhere and is now fixed, or maybe it is a timing issue that I can't
+trigger on newer kernels.  If the reproducer wasn't so touchy and time
+consuming, I'd try to bisect, but I don't have that sort of bandwidth.
+Thanks,
+
+Alex
+
+[1] https://patchwork.kernel.org/patch/10798453/
 
