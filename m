@@ -2,52 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C097E21D3FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C05521D3F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbgGMKwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 06:52:18 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:42935 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728883AbgGMKwP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:52:15 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R281e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U2ZrLm8_1594637531;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2ZrLm8_1594637531)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 13 Jul 2020 18:52:12 +0800
-Subject: Re: [PATCH] doc/zh_CN: add Chinese translation prefer section
-To:     corbet@lwn.net
-Cc:     Harry Wei <harryxiyou@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200713093123.45269-1-alex.shi@linux.alibaba.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <3d618299-9b45-7aca-afbd-8513fba021b4@linux.alibaba.com>
-Date:   Mon, 13 Jul 2020 18:51:27 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1729564AbgGMKwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 06:52:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729027AbgGMKwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 06:52:14 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0353A20758;
+        Mon, 13 Jul 2020 10:52:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594637533;
+        bh=lvbFaXFQbR/7umDrIr1GanWR2tymD8YjdnO6h+nUkkw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ocP4Ux2CUAYvjXjjQsB9zFl0IWNu+EQRqcrvcsAdVW3Z9zY8JwQAQAi5bobGb9ASq
+         6ZURIa/5HK/mNNKQpYKvNvZKs5eK4du3/lGgDNK2a5xidsQWUf9bRFnMjPnIhhS8iS
+         Bnm9LVG5hXtV12uvHOLPzHf5xfU/cZtDlsnvEXXs=
+Date:   Mon, 13 Jul 2020 11:52:04 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Agrawal, Akshu" <aagrawal2@amd.com>
+Cc:     Akshu Agrawal <akshu.agrawal@amd.com>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: rt5682: Add fmw property to get name of mclk
+Message-ID: <20200713105204.GA4420@sirena.org.uk>
+References: <20200707100825.24792-1-akshu.agrawal@amd.com>
+ <20200707103053.GF4870@sirena.org.uk>
+ <a2cf09b4-5f49-ba74-060f-bec9a49d21a6@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20200713093123.45269-1-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="M9NhX3UHpAaciwkO"
+Content-Disposition: inline
+In-Reply-To: <a2cf09b4-5f49-ba74-060f-bec9a49d21a6@amd.com>
+X-Cookie: Fast, cheap, good: pick two.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--M9NhX3UHpAaciwkO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-在 2020/7/13 下午5:31, Alex Shi 写道:
-> diff --git a/Documentation/conf.py b/Documentation/conf.py
-> index c503188880d9..b5b2be8eec22 100644
-> --- a/Documentation/conf.py
-> +++ b/Documentation/conf.py
-> @@ -36,7 +36,7 @@ needs_sphinx = '1.3'
->  # Add any Sphinx extension module names here, as strings. They can be
->  # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
->  # ones.
-> -extensions = ['kerneldoc', 'rstFlatTable', 'kernel_include', 'cdomain',
-> +extensions = ['kerneldoc', 'rstFlatTable', 'kernel_include',
+On Mon, Jul 13, 2020 at 06:46:29AM +0530, Agrawal, Akshu wrote:
 
-Sorry, this part was included mistaken. I will remove it in next version.
-Thanks!
+> clk binding is present for AMD ST platform and using the same.
+
+This is something you should be doing through UEFI forum as a generic
+ACPI thing, and if you need to read the name from the firmware that
+really does sound like something that should be raising red flags as a
+binding.
+
+> With recent submitted patches I am making them generic for all AMD
+> platforms.
+
+> Please refer patches:
+
+> https://patchwork.kernel.org/patch/11658505/
+
+> https://patchwork.kernel.org/patch/11658507/
+
+It looks like there's clock names hard coded into the driver?
+
+--M9NhX3UHpAaciwkO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8MPNMACgkQJNaLcl1U
+h9Cm5Qf9HSdUmLAUKpOpEqWwQEPxscyY/1nC+8x22/phOhDS2GHVlDxezrpymhGg
+ge5ftP74TKyK0vbz4mzL8tkaHuQoAGx8vfzUQl/ei4d6XyuW2YDA7g3/Q4mzJbEg
+dVamLafpcr2dOl0dA/SsOxjgJBuUi25izLhYtvBakigGFYgs884gck6+XB0pgJ4V
+CnumvVcUglSVbx90fxuhmKHyR9CcvKETocFjdFp7a8H462o7fSEKNXkbnsBwY3K6
+VbBmF0lveiNZh5QlCoIyc8ie5B4tb9sMLvt9uVKGoeP/PCCCbhM4jQxIf7P9yh1D
+D6fXetAl84iaEuHHIyRONHcCClXfiA==
+=lj5n
+-----END PGP SIGNATURE-----
+
+--M9NhX3UHpAaciwkO--
