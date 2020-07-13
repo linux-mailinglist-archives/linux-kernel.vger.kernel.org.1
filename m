@@ -2,98 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00AB21CECA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 07:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D81321CED0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 07:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728935AbgGMFXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 01:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgGMFX2 (ORCPT
+        id S1728979AbgGMFYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 01:24:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24712 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725804AbgGMFYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 01:23:28 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADE7C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 22:23:28 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id m9so5522153pfh.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 22:23:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:references:in-reply-to:mime-version:message-id
-         :content-transfer-encoding;
-        bh=8HTpo0rLAbXQ9sJmED8h5spUCrEX7xc2cH23pVXei/c=;
-        b=VsPMs39WKpM0JSOhcFGXdH9t/tCGCCpJEGsF1vTCw8+UNA5nMg6xZPPEZzO/anZPpC
-         rzhUt+jLNHMlV7n/IMmqTgltf3WX7SfGPMpwDEvjb7nZ3mIcJpAbeZQqOxAvX7HLc94C
-         8jSCVmUWSZ8cwecHfZz9HrTB3fB9MHrdVoxMQ66rZ9uHC/G1uMKcllLeMFJG6uvG9T/k
-         zYMNxqQQLGq1QPgHvsYrwhEmdOrmDLTlrP/KUuw5Zar+SLbi4SDKEDZan8K/yyrTepnI
-         qpbAh8QOiOjJYTbKlsN7Lv+d7QI1yDlFn6sPrT8f1ChKaQosFxOK9LNTcGI3EGidJy7H
-         vTfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=8HTpo0rLAbXQ9sJmED8h5spUCrEX7xc2cH23pVXei/c=;
-        b=mlpjJMtgO+bA8Xe3E29qx4ptvqyhg7sg6JRON/i/PqRKiZeBGIH00Y5YRBkgfcV1uR
-         POnKX88Z40B/l6v51meYTEyQh9uLhGu1ciW6MYIhhyfPzmnKPrjFjmyjjj0hghtnsOWs
-         qGGKAFo84QUTTQnP4Y10cxf5uQQNJMtSCZjOXqKS/yuXzTjUsRanTFMkjCGzoDnlSAoU
-         ZODlXgiP8+AS31ypK0icVsMKeIJZ1u9Q/YGVV34CBZvWZV670vgyPTAhuV+JhE+Ex6SM
-         6nPCOlWYyNAD7vMU5SbYfy3gVNKP4308NgVFUpeJrCg1ytn9MEAV484XwvtkpwFDBxeU
-         IE8w==
-X-Gm-Message-State: AOAM530yHYQURrbU+2nHVAsHIrZpbKBsGO96kand7oDNj5tJMBOwlCCe
-        qK5688IlWkzKFUk7BznrG5g=
-X-Google-Smtp-Source: ABdhPJwJbVRh3lz7pO+zhlE9p9BHDFomi7Q38ZynCP+xUInus4jUuggHpQQg9GCais0r5Nr6eovRdA==
-X-Received: by 2002:a63:5412:: with SMTP id i18mr54386771pgb.63.1594617807820;
-        Sun, 12 Jul 2020 22:23:27 -0700 (PDT)
-Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id 16sm13359573pjb.48.2020.07.12.22.23.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2020 22:23:27 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 15:23:21 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 0/3] Power10 basic energy management
-To:     benh@kernel.crashing.org, ego@linux.vnet.ibm.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mikey@neuling.org, mpe@ellerman.id.au, paulus@samba.org,
-        pratik.r.sampat@gmail.com,
-        Pratik Rajesh Sampat <psampat@linux.ibm.com>,
-        ravi.bangoria@linux.ibm.com, svaidy@linux.ibm.com
-References: <20200710052207.12003-1-psampat@linux.ibm.com>
-In-Reply-To: <20200710052207.12003-1-psampat@linux.ibm.com>
+        Mon, 13 Jul 2020 01:24:53 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06D52NSF180904;
+        Mon, 13 Jul 2020 01:24:48 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32771wj11j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jul 2020 01:24:47 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06D5OkOI014335;
+        Mon, 13 Jul 2020 05:24:46 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 327527stsb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jul 2020 05:24:46 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06D5Ohdk63832220
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Jul 2020 05:24:44 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4AAA4C044;
+        Mon, 13 Jul 2020 05:24:43 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3CB34C050;
+        Mon, 13 Jul 2020 05:24:40 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.102.23.34])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 13 Jul 2020 05:24:40 +0000 (GMT)
+From:   Sourabh Jain <sourabhjain@linux.ibm.com>
+To:     mpe@ellerman.id.au
+Cc:     hbathini@linux.ibm.com, mahesh@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org
+Subject: [PATCH v6] powerpc/fadump: fix race between pstore write and fadump crash trigger
+Date:   Mon, 13 Jul 2020 10:54:35 +0530
+Message-Id: <20200713052435.183750-1-sourabhjain@linux.ibm.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Message-Id: <1594617564.57k8bsyfd0.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-13_03:2020-07-10,2020-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ mlxlogscore=999 impostorscore=0 malwarescore=0 suspectscore=0 adultscore=0
+ clxscore=1015 bulkscore=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007130034
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Pratik Rajesh Sampat's message of July 10, 2020 3:22 pm:
-> Changelog v1 --> v2:
-> 1. Save-restore DAWR and DAWRX unconditionally as they are lost in
-> shallow idle states too
-> 2. Rename pnv_first_spr_loss_level to pnv_first_fullstate_loss_level to
-> correct naming terminology
->=20
-> Pratik Rajesh Sampat (3):
->   powerpc/powernv/idle: Exclude mfspr on HID1,4,5 on P9 and above
->   powerpc/powernv/idle: save-restore DAWR0,DAWRX0 for P10
->   powerpc/powernv/idle: Rename pnv_first_spr_loss_level variable
->=20
->  arch/powerpc/platforms/powernv/idle.c | 34 +++++++++++++++++----------
->  1 file changed, 22 insertions(+), 12 deletions(-)
+When we enter into fadump crash path via system reset we fail to update
+the pstore.
 
-These look okay to me, but the CPU_FTR_ARCH_300 test for=20
-pnv_power9_idle_init() is actually wrong, it should be a PVR test=20
-because idle is not completely architected (not even shallow stop=20
-states, unfortunately).
+On the system reset path we first update the pstore then we go for fadump
+crash. But the problem here is when all the CPUs try to get the pstore
+lock to initiate the pstore write, only one CPUs will acquire the lock
+and proceed with the pstore write. Since it in NMI context CPUs that fail
+to get lock do not wait for their turn to write to the pstore and simply
+proceed with the next operation which is fadump crash. One of the CPU who
+proceeded with fadump crash path triggers the crash and does not wait for
+the CPU who gets the pstore lock to complete the pstore update.
 
-It doesn't look like we support POWER10 idle correctly yet, and on older
-kernels it wouldn't work even if we fixed newer, so ideally the PVR=20
-check would be backported as a fix in the front of the series.
+Timeline diagram to depicts the sequence of events that leads to an
+unsuccessful pstore update when we hit fadump crash path via system reset.
 
-Sadly, we have no OPAL idle driver yet. Hopefully we will before the
-next processor shows up :P
+                 1    2     3    ...      n   CPU Threads
+                 |    |     |             |
+                 |    |     |             |
+ Reached to   -->|--->|---->| ----------->|
+ system reset    |    |     |             |
+ path            |    |     |             |
+                 |    |     |             |
+ Try to       -->|--->|---->|------------>|
+ acquire the     |    |     |             |
+ pstore lock     |    |     |             |
+                 |    |     |             |
+                 |    |     |             |
+ Got the      -->| +->|     |             |<-+
+ pstore lock     | |  |     |             |  |-->  Didn't get the
+                 | --------------------------+     lock and moving
+                 |    |     |             |        ahead on fadump
+                 |    |     |             |        crash path
+                 |    |     |             |
+  Begins the  -->|    |     |             |
+  process to     |    |     |             |<-- Got the chance to
+  update the     |    |     |             |    trigger the crash
+  pstore         | -> |     |    ... <-   |
+                 | |  |     |         |   |
+                 | |  |     |         |   |<-- Triggers the
+                 | |  |     |         |   |    crash
+                 | |  |     |         |   |      ^
+                 | |  |     |         |   |      |
+  Writing to  -->| |  |     |         |   |      |
+  pstore         | |  |     |         |   |      |
+                   |                  |          |
+       ^           |__________________|          |
+       |               CPU Relax                 |
+       |                                         |
+       +-----------------------------------------+
+                          |
+                          v
+            Race: crash triggered before pstore
+                  update completes
 
-Thanks,
-Nick
+To avoid this race condition a barrier is added on crash_fadump path, it
+prevents the CPU to trigger the crash until all the online CPUs completes
+their task.
+
+A barrier is added to make sure all the secondary CPUs hit the
+crash_fadump function before we initiates the crash. A timeout is kept to
+ensure the primary CPU (one who initiates the crash) do not wait for
+secondary CPUs indefinitely.
+
+Signed-off-by: Sourabh Jain <sourabhjain@linux.ibm.com>
+---
+ arch/powerpc/kernel/fadump.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+---
+Chanagelog:
+
+v1 -> v3:
+   - https://lists.ozlabs.org/pipermail/linuxppc-dev/2020-April/208267.html
+
+v3 -> v4:
+
+   - Now the primary CPU (one who triggers dump) waits for all secondary
+     CPUs to enter and then initiates the crash.
+
+v4 -> v5:
+    - Fixed a build failure reported by kernel test robot <lkp at intel.com>
+      Now the cpus_in_crash variable is defined outside CONFIG_CMA
+      config option.
+
+v5 -> v6
+    - Changed a variable name cpus_in_crash -> cpus_in_fadump.
+---
+
+diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
+index 78ab9a6ee6ac..1858896d6809 100644
+--- a/arch/powerpc/kernel/fadump.c
++++ b/arch/powerpc/kernel/fadump.c
+@@ -32,11 +32,20 @@
+ #include <asm/fadump-internal.h>
+ #include <asm/setup.h>
+ 
++/*
++ * The CPU who acquired the lock to trigger the fadump crash should
++ * wait for other CPUs to enter.
++ *
++ * The timeout is in milliseconds.
++ */
++#define CRASH_TIMEOUT		500
++
+ static struct fw_dump fw_dump;
+ 
+ static void __init fadump_reserve_crash_area(u64 base);
+ 
+ struct kobject *fadump_kobj;
++static atomic_t cpus_in_fadump;
+ 
+ #ifndef CONFIG_PRESERVE_FA_DUMP
+ static DEFINE_MUTEX(fadump_mutex);
+@@ -668,8 +677,11 @@ early_param("fadump_reserve_mem", early_fadump_reserve_mem);
+ 
+ void crash_fadump(struct pt_regs *regs, const char *str)
+ {
++	unsigned int msecs;
+ 	struct fadump_crash_info_header *fdh = NULL;
+ 	int old_cpu, this_cpu;
++	/* Do not include first CPU */
++	unsigned int ncpus = num_online_cpus() - 1;
+ 
+ 	if (!should_fadump_crash())
+ 		return;
+@@ -685,6 +697,8 @@ void crash_fadump(struct pt_regs *regs, const char *str)
+ 	old_cpu = cmpxchg(&crashing_cpu, -1, this_cpu);
+ 
+ 	if (old_cpu != -1) {
++		atomic_inc(&cpus_in_fadump);
++
+ 		/*
+ 		 * We can't loop here indefinitely. Wait as long as fadump
+ 		 * is in force. If we race with fadump un-registration this
+@@ -708,6 +722,16 @@ void crash_fadump(struct pt_regs *regs, const char *str)
+ 
+ 	fdh->online_mask = *cpu_online_mask;
+ 
++	/*
++	 * If we came in via system reset, wait a while for the secondary
++	 * CPUs to enter.
++	 */
++	if (TRAP(&(fdh->regs)) == 0x100) {
++		msecs = CRASH_TIMEOUT;
++		while ((atomic_read(&cpus_in_fadump) < ncpus) && (--msecs > 0))
++			mdelay(1);
++	}
++
+ 	fw_dump.ops->fadump_trigger(fdh, str);
+ }
+ 
+-- 
+2.25.4
+
