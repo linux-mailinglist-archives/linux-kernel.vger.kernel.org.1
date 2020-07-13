@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1C321E043
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE4A21E049
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726850AbgGMSzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 14:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
+        id S1726820AbgGMS4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 14:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgGMSzm (ORCPT
+        with ESMTP id S1726339AbgGMS4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 14:55:42 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680E9C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 11:55:42 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id t4so12151395iln.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 11:55:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XP/PixppecPyJeek74vVeXNv27GEoFsZpYZck+u8ljI=;
-        b=PtgkL3+JYH7+vY8lGekTR7/pacCYHGwLyTJZMyI9rsFk4j2tKX9G+bdKkplfI2iSGG
-         CMxgX1mdmZmhyPhJB9vcZfBBUq0xHj0xRMroXfhsVhnV5kjEouJMEbmFgYwQB6zyUM1U
-         oNIutMLpw8Yb6gADT0GnvW3rpPhrK55AHsW5E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XP/PixppecPyJeek74vVeXNv27GEoFsZpYZck+u8ljI=;
-        b=I/ZoRpRGhQ33GH4PgW19u8J4j9EBOx/HrCIAfj9Psx2qc5WVPemUhqzfyKtxH9JLJf
-         kg8CuQLC/BstaEkYsogx6UJrnmPlvAaH2fZfy6VHz8VXwk7Zb1bkue4IdqKjQIXlmAH7
-         0VXxOBAmdeFwrYqRGX0GWBnZ0KcoWElobRWha2slldrUPoiw3K//er03gDQVvh61jUTY
-         53GDwcSKA/JA+I01wWMx+Aut7gOHV5XFp3EfJFqdiG/ZmPMxpsTIVsxKtsD8/KRuwTv/
-         O/ltEtpw0eOILrZyluw0d6RFa2/CW6SIq9Yfg7B9QlIVJ78Tqb2gs565qZbFyl48vKsZ
-         JuvQ==
-X-Gm-Message-State: AOAM533L4CN47HWwPME3t6UfDXJzAvwDbhegq7ydenMHmUtBG4WjcChB
-        8bjMQ1MP5U+X1nEQdApy8PbOLwL7aqI=
-X-Google-Smtp-Source: ABdhPJz5rYET9xdYZ11Fp4bKSMiHgHPuc7LkmFRIqrstQwCpKXO0XspSoREBkjI3IW7rPC8sO6jKqg==
-X-Received: by 2002:a05:6e02:f42:: with SMTP id y2mr1188594ilj.264.1594666541707;
-        Mon, 13 Jul 2020 11:55:41 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id 13sm8805387ilj.81.2020.07.13.11.55.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 11:55:40 -0700 (PDT)
-Subject: Re: [PATCH -next] remoteproc: qcom: Add missing slab.h
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Hulk Robot <hulkci@huawei.com>
-References: <20200713020003.134039-1-wangkefeng.wang@huawei.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <1c40a878-bd3b-8364-3bc4-ef3f2b75edbf@ieee.org>
-Date:   Mon, 13 Jul 2020 13:55:39 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 13 Jul 2020 14:56:30 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50687C061755;
+        Mon, 13 Jul 2020 11:56:30 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id D7174BC07E;
+        Mon, 13 Jul 2020 18:56:26 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     peter@piie.net, dvhart@infradead.org, andy@infradead.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] platform/x86: acerhdf: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 20:56:16 +0200
+Message-Id: <20200713185616.37104-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-In-Reply-To: <20200713020003.134039-1-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/12/20 9:00 PM, Kefeng Wang wrote:
-> drivers/remoteproc/qcom_common.c: In function ‘qcom_ssr_get_subsys’:
-> drivers/remoteproc/qcom_common.c:210:9: error: implicit declaration of function ‘kzalloc’; did you mean ‘vzalloc’?
-> [-Werror=implicit-function-declaration]
->   info = kzalloc(sizeof(*info), GFP_KERNEL);
->          ^~~~~~~
->          vzalloc
-> 
-> kzalloc() is declared in linux/slab.h, add include to fix build issue.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  drivers/remoteproc/qcom_common.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
-> index 2f45f0c79914e..085fd73fa23ae 100644
-> --- a/drivers/remoteproc/qcom_common.c
-> +++ b/drivers/remoteproc/qcom_common.c
-> @@ -15,6 +15,7 @@
->  #include <linux/remoteproc/qcom_rproc.h>
->  #include <linux/rpmsg/qcom_glink.h>
->  #include <linux/rpmsg/qcom_smd.h>
-> +#include <linux/slab.h>
->  #include <linux/soc/qcom/mdt_loader.h>
->  
->  #include "remoteproc_internal.h"
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-You beat me to it.  I just build-tested this fix on linux-next/master
-and can confirm the build fails without it, succeeds with it.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-					-Alex
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ drivers/platform/x86/acerhdf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/platform/x86/acerhdf.c b/drivers/platform/x86/acerhdf.c
+index 4df7609b4aa9..a7a0b2e0ceb9 100644
+--- a/drivers/platform/x86/acerhdf.c
++++ b/drivers/platform/x86/acerhdf.c
+@@ -5,7 +5,7 @@
+  *           as soon as the upper/lower threshold is reached.
+  *
+  * (C) 2009 - Peter Kaestle     peter (a) piie.net
+- *                              http://piie.net
++ *                              https://piie.net
+  *     2009 Borislav Petkov	bp (a) alien8.de
+  *
+  * Inspired by and many thanks to:
+-- 
+2.27.0
 
