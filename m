@@ -2,125 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B714421E0B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5361F21E0B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726850AbgGMT1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 15:27:10 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27661 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726356AbgGMT1K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 15:27:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594668427;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xO+Un2OH0Ygd9pT8h3KUtvCPfFokvondlCdEbacpId0=;
-        b=By574Lp8wCORNo9JKeepjFrmY2P73E/rF8w0jtYy9l/Kt0+jSAEQgYItDjfduE9D7uyx1q
-        T1YXSUCW4C+61peleIYDQjYNxfo8d2J/c69QhraZFDAo1mncqeASXlFDkkr6KK8yGXMtth
-        kCCYfV8ltjH3GUw4y6zm8U0Z7kocLIk=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-5kXlGHyIMGOvI031kAFNMA-1; Mon, 13 Jul 2020 15:27:06 -0400
-X-MC-Unique: 5kXlGHyIMGOvI031kAFNMA-1
-Received: by mail-qk1-f197.google.com with SMTP id i145so11528991qke.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:27:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=xO+Un2OH0Ygd9pT8h3KUtvCPfFokvondlCdEbacpId0=;
-        b=iJDC+qwV9SDD8oqZbo6jK+c1B9yUAHBB60WqAZLBkiiOo1cqdtOZu0cKIeztfGLoyY
-         +SgUlB4FyqKLNYLcanrs5471SMyp5Hsa8vwMtkpkPLtBQUXqdNCZHgzeLMjFJKGn9RJv
-         xJ2zc7V6N7S9JjuVesyccjTv6OHNjwhcL07itVl8aJtBNlf1q+u3iLFIvMiZ+Lc+dMgt
-         lgMLorSdQ+TJZftJcqHtU8hFD4DlGBBdld/E2Lf9uj80ygcE3i61zryX/RqeKw032Top
-         zc7E/DmxEfdSMCZXUDfYRWIt9ajsSmzG5i8HA+5ijm7LPvxMR91IY/RKf1hBlqj9WWFE
-         IaNw==
-X-Gm-Message-State: AOAM530tntrI6cmKUMA6hnn5yzNAH55MJPcnlrCv4f2xHXvBgx0+GLQN
-        5YoxHBcwFUL5iSMM6sSoIIfCU6VMeu0xztpk/H1aN3ksEZW1iy+u1T2nWJPfx6/MSGa/bVnUdkX
-        Q0QVUG5/2GjargJ/qsYDNUtQm
-X-Received: by 2002:ae9:ee06:: with SMTP id i6mr1184264qkg.132.1594668425452;
-        Mon, 13 Jul 2020 12:27:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyQ1kpy/BZm1NeI0BzQS5sxow+0BkG/MrwnEXJ+rAqrAzjkoAgFIMtaKwTN1WNEEJnqzXDJKA==
-X-Received: by 2002:ae9:ee06:: with SMTP id i6mr1184254qkg.132.1594668425165;
-        Mon, 13 Jul 2020 12:27:05 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id p186sm20172406qkf.33.2020.07.13.12.27.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 12:27:04 -0700 (PDT)
-Subject: Re: [PATCH] decompress_bunzip2: fix sizeof type in start_bunzip
-To:     hpa@zytor.com, alain@knaff.lu
-Cc:     linux-kernel@vger.kernel.org
-References: <20200712125952.8809-1-trix@redhat.com>
- <639c8ef5-2755-7172-fbb8-ce45c8637feb@zytor.com>
- <9af191c2-0f2c-7637-433a-b557a07590ca@redhat.com>
- <EE11D4F0-8DA4-4030-800E-516423293987@zytor.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <6a73bb96-1390-ecca-2429-12b71e2aefc2@redhat.com>
-Date:   Mon, 13 Jul 2020 12:27:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726617AbgGMT3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 15:29:04 -0400
+Received: from mga12.intel.com ([192.55.52.136]:33435 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726339AbgGMT3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 15:29:04 -0400
+IronPort-SDR: mrhf7rNUC2PxeAUSiRbHkUa6TJXARkYUVczThuZRGn4ISqvksSUu8os3hD30XRXalc7CPEpdZx
+ MSUwJGITUQ5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="128278626"
+X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
+   d="scan'208";a="128278626"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 12:29:04 -0700
+IronPort-SDR: 7nnU7K24gRkjFEh2UkU1jeypUQx/rdcI1r7cJKYuqWXmY/BpvD9uFLeYYhdapQ2GcjQoBslpu0
+ A9E/PUCiX57A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
+   d="scan'208";a="485605105"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005.fm.intel.com with ESMTP; 13 Jul 2020 12:29:01 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jv48L-001eBY-Aq; Mon, 13 Jul 2020 22:29:01 +0300
+Date:   Mon, 13 Jul 2020 22:29:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v4 1/3] devres: provide devm_krealloc()
+Message-ID: <20200713192901.GD3703480@smile.fi.intel.com>
+References: <20200713145934.18243-1-brgl@bgdev.pl>
+ <20200713145934.18243-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-In-Reply-To: <EE11D4F0-8DA4-4030-800E-516423293987@zytor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713145934.18243-2-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 13, 2020 at 04:59:32PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> Implement the managed variant of krealloc(). This function works with
+> all memory allocated by devm_kmalloc() (or devres functions using it
+> implicitly like devm_kmemdup(), devm_kstrdup() etc.).
+> 
+> Managed realloc'ed chunks can be manually released with devm_kfree().
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  .../driver-api/driver-model/devres.rst        |  1 +
+>  drivers/base/devres.c                         | 67 +++++++++++++++++++
+>  include/linux/device.h                        |  2 +
+>  3 files changed, 70 insertions(+)
+> 
+> diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
+> index eaaaafc21134f..f318a5c0033c1 100644
+> --- a/Documentation/driver-api/driver-model/devres.rst
+> +++ b/Documentation/driver-api/driver-model/devres.rst
+> @@ -354,6 +354,7 @@ MEM
+>    devm_kmalloc()
+>    devm_kmalloc_array()
+>    devm_kmemdup()
+> +  devm_krealloc()
+>    devm_kstrdup()
+>    devm_kvasprintf()
+>    devm_kzalloc()
+> diff --git a/drivers/base/devres.c b/drivers/base/devres.c
+> index ed615d3b9cf15..1775d35462300 100644
+> --- a/drivers/base/devres.c
+> +++ b/drivers/base/devres.c
+> @@ -837,6 +837,73 @@ void *devm_kmalloc(struct device *dev, size_t size, gfp_t gfp)
+>  }
+>  EXPORT_SYMBOL_GPL(devm_kmalloc);
+>  
+> +/**
+> + * devm_krealloc - Resource-managed krealloc()
+> + * @dev: Device to re-allocate memory for
+> + * @ptr: Pointer to the memory chunk to re-allocate
+> + * @new_size: New allocation size
+> + * @gfp: Allocation gfp flags
+> + *
+> + * Managed krealloc(). Resizes the memory chunk allocated with devm_kmalloc().
+> + * Behaves similarly to regular krealloc(): if @ptr is NULL or ZERO_SIZE_PTR,
+> + * it's the equivalent of devm_kmalloc(). If new_size is zero, it returns
 
-On 7/12/20 3:21 PM, hpa@zytor.com wrote:
-> On July 12, 2020 8:12:43 AM PDT, Tom Rix <trix@redhat.com> wrote:
->> On 7/12/20 6:09 AM, H. Peter Anvin wrote:
->>> On 2020-07-12 05:59, trix@redhat.com wrote:
->>>> From: Tom Rix <trix@redhat.com>
->>>>
->>>> clang static analysis flags this error
->>>>
->>>> lib/decompress_bunzip2.c:671:13: warning: Result of 'malloc' is
->> converted
->>>>   to a pointer of type 'unsigned int', which is incompatible with
->> sizeof
->>>>   operand type 'int' [unix.MallocSizeof]
->>>>         bd->dbuf = large_malloc(bd->dbufSize * sizeof(int));
->>>>                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>
->>>> Reviewing the bunzip_data structure, the element dbuf is type
->>>>
->>>> 	/* Intermediate buffer and its size (in bytes) */
->>>> 	unsigned int *dbuf, dbufSize;
->>>>
->>>> So change the type in sizeof to 'unsigned int'
->>>>
->>> You must be kidding.
->>>
->>> If you want to change it, change it to sizeof(bd->dbuf) instead, but
->> this flag
->>> is at least in my opinion a total joke. For sizeof(int) !=
->> sizeof(unsigned
->>> int) is beyond bizarre, no matter how stupid the platform.
->> Using the actual type is more correct that using a type of the same
->> size.
->>
->> trix
->>
->>> 	-hpa
->>>
-> "More correct?" All it is is more verbose.
->
-> Using the sizeof of the actual object at least adds some actual safety.
+'it frees the previously allocated memory and returns'
 
-Sorry, I am being pedantic, I mean anything that produces the correct assembly is correct. But there are different path to being correct.  The path I was suggesting to follow the type of the element/final pointer when allocating an memory.
+> + * ZERO_SIZE_PTR. This function doesn't change the order in which the release
+> + * callback for the re-alloc'ed devres will be called (except when falling back
+> + * to devm_kmalloc()
 
-large_malloc(bd->dbufSize * sizeof(*bd->dbuf)) would also work
+'or when freeing resources when new_size is zero'
 
-I will respin.
+> ). The contents of the memory are preserved up to the
+> + * lesser of new and old sizes.
+> + */
+> +void *devm_krealloc(struct device *dev, void *ptr, size_t new_size, gfp_t gfp)
+> +{
+> +	struct devres *old_dr, *new_dr;
+> +	struct list_head old_head;
+> +	unsigned long flags;
+> +	size_t total_size;
+> +	void *ret = NULL;
+> +
+> +	if (unlikely(!new_size)) {
+> +		devm_kfree(dev, ptr);
+> +		return ZERO_SIZE_PTR;
+> +	}
+> +
+> +	if (unlikely(ZERO_OR_NULL_PTR(ptr)))
+> +		return devm_kmalloc(dev, new_size, gfp);
+> +
+> +	if (WARN_ON(is_kernel_rodata((unsigned long)ptr)))
+> +		/*
+> +		 * We cannot reliably realloc a const string returned by
+> +		 * devm_kstrdup_const().
+> +		 */
+> +		return NULL;
+> +
+> +	if (!check_dr_size(new_size, &total_size))
+> +		return NULL;
+> +
+> +	spin_lock_irqsave(&dev->devres_lock, flags);
+> +
+> +	old_dr = find_dr(dev, devm_kmalloc_release, devm_kmalloc_match, ptr);
+> +	if (!old_dr) {
+> +		spin_unlock_irqrestore(&dev->devres_lock, flags);
+> +		WARN(1, "Memory chunk not managed or managed by a different device.");
+> +		return NULL;
+> +	}
+> +
+> +	old_head = old_dr->node.entry;
+> +
+> +	new_dr = krealloc(old_dr, total_size, gfp);
+> +	if (!new_dr) {
+> +		spin_unlock_irqrestore(&dev->devres_lock, flags);
+> +		return NULL;
+> +	}
+> +
+> +	if (new_dr != old_dr)
+> +		list_replace(&old_head, &new_dr->node.entry);
+> +
+> +	ret = new_dr->data;
+> +	spin_unlock_irqrestore(&dev->devres_lock, flags);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_krealloc);
+> +
+>  /**
+>   * devm_kstrdup - Allocate resource managed space and
+>   *                copy an existing string into that.
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 7322c51e9c0c7..f64f408431593 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -206,6 +206,8 @@ int devres_release_group(struct device *dev, void *id);
+>  
+>  /* managed devm_k.alloc/kfree for device drivers */
+>  void *devm_kmalloc(struct device *dev, size_t size, gfp_t gfp) __malloc;
 
-trix
+> +void *devm_krealloc(struct device *dev, void *ptr, size_t size,
+> +		    gfp_t gfp) __must_check;
+
+Strange indentation, also you can move __must_check to the beginning of the
+declaration.
+
+
+>  __printf(3, 0) char *devm_kvasprintf(struct device *dev, gfp_t gfp,
+>  				     const char *fmt, va_list ap) __malloc;
+>  __printf(3, 4) char *devm_kasprintf(struct device *dev, gfp_t gfp,
+> -- 
+> 2.26.1
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
