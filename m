@@ -2,128 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083CD21D3EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B631921D563
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgGMKsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 06:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgGMKsU (ORCPT
+        id S1729616AbgGML4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 07:56:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31884 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728714AbgGML4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:48:20 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3A6C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 03:48:20 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z15so15773283wrl.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 03:48:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5bHtRaUlLsvF5kQSlI5SGY+rxlkl09WZX0Y9N5VT6eY=;
-        b=AL08sAvz5D7mQ0jO2w9ZYfbGWktviB95wSp9dceUKhEiOhZPwmB3Wm1KinN4RzvUcl
-         +SSr0cuJLYYFC1AlMNiO+zu+jWHEORACYoo9z6PbKsHgc8XcEjzpdQBieU2RnAyMyeeA
-         SRkFEj1wnrJDZHWRVllm7Y3UMhxeTDIjGyRpaJX943uib6YOSf+/ihOnoFul7xJuGwI8
-         ZJ5f7U0cCv38lsHdK0337tc1pXUy5d6Wy/79xoHFdrTA8tr4DXchBo6XkYppQe9aTp2F
-         8+/lWDY2jwo/6qHN3Ss3voHvKBq8Fl5qYGKaSOpu9K7l9y+e3BNO/Oi1S+Lpde2e/JRf
-         dDAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5bHtRaUlLsvF5kQSlI5SGY+rxlkl09WZX0Y9N5VT6eY=;
-        b=IoeaMVyKS4HAzbKlZhShznMTkq159cvB7fzBiRF6JYPZ0Iaic1FDY4gsI1dZnA7S0d
-         DwriaB08f2wnRMrqIINxsf7SbT0i+JfLOZvlAUWANzagvokWnmo4h7YVWjXb/R1s/es4
-         oz6jCd9WTDDTZ0b5pahUhHmbwbi8cP+cwfqhtFSw2SvTTrxjVW4jMu63k6u6+elm1x1y
-         YFoOUtZgK0v0EVd4+zL1/xXbrTyKJSZjNJa5nCOJnIWgldsoZKRTbB3RsaoJjQHJYeK9
-         CKE4FIe/YRNMB1n4pvVQTbUHCIfJtHbUkziAm9JyPutjFXc9+MkFfmwgpdeIMbXRpaRv
-         ZOXA==
-X-Gm-Message-State: AOAM532FQchoeghyQYzUSJx0gQswTqYpMiY2Miqx4q941wYYgFszOpi+
-        t5DEVLfzVHJioVU+cWSTuGNEbg==
-X-Google-Smtp-Source: ABdhPJx7pyReXo1pStdRlzwAyeGpLPJW8L0Gp4kWOkffUi9qRF+WHeffZ0olYz7X7slJzdrvAfkakg==
-X-Received: by 2002:a5d:56c7:: with SMTP id m7mr78292690wrw.223.1594637298900;
-        Mon, 13 Jul 2020 03:48:18 -0700 (PDT)
-Received: from dell ([2.31.163.6])
-        by smtp.gmail.com with ESMTPSA id l1sm23647155wrb.12.2020.07.13.03.48.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 03:48:18 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 11:48:16 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>, shufan_lee@richtek.com,
-        cy_huang@richtek.com, benjamin.chao@mediatek.com
-Subject: Re: [PATCH 1/4] mfd: mt6360: Refactor and fix code style
-Message-ID: <20200713104816.GD3500@dell>
-References: <1594117856-14343-1-git-send-email-gene.chen.richtek@gmail.com>
- <1594117856-14343-2-git-send-email-gene.chen.richtek@gmail.com>
- <b9540dc6-4d43-45e4-8878-15d2df24a268@gmail.com>
- <20200713065110.GB3500@dell>
- <CAE+NS36uRRqHetQE5QVJ94WX4g7CdQzvD-0VOnLfKAbqdHs3Sg@mail.gmail.com>
+        Mon, 13 Jul 2020 07:56:42 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06DBs4eL195413;
+        Mon, 13 Jul 2020 07:56:25 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32792u0mrw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jul 2020 07:56:24 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06DBWsxO133872;
+        Mon, 13 Jul 2020 07:56:23 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32792u0mrg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jul 2020 07:56:23 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06DBsNEp002462;
+        Mon, 13 Jul 2020 11:56:22 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma01dal.us.ibm.com with ESMTP id 327528bhpc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jul 2020 11:56:22 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06DBuLve50659752
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Jul 2020 11:56:22 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE660AC059;
+        Mon, 13 Jul 2020 11:56:21 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8B97AAC05B;
+        Mon, 13 Jul 2020 11:56:21 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.77.204.163])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 13 Jul 2020 11:56:21 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id B1C1E2E4ACB; Mon, 13 Jul 2020 16:18:37 +0530 (IST)
+Date:   Mon, 13 Jul 2020 16:18:37 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     benh@kernel.crashing.org, ego@linux.vnet.ibm.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mikey@neuling.org, mpe@ellerman.id.au, paulus@samba.org,
+        pratik.r.sampat@gmail.com,
+        Pratik Rajesh Sampat <psampat@linux.ibm.com>,
+        ravi.bangoria@linux.ibm.com, svaidy@linux.ibm.com
+Subject: Re: [PATCH v2 0/3] Power10 basic energy management
+Message-ID: <20200713104837.GG24866@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20200710052207.12003-1-psampat@linux.ibm.com>
+ <1594617564.57k8bsyfd0.astroid@bobo.none>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAE+NS36uRRqHetQE5QVJ94WX4g7CdQzvD-0VOnLfKAbqdHs3Sg@mail.gmail.com>
+In-Reply-To: <1594617564.57k8bsyfd0.astroid@bobo.none>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-13_07:2020-07-13,2020-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 clxscore=1015
+ adultscore=0 impostorscore=0 spamscore=0 malwarescore=0 bulkscore=0
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007130084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Jul 2020, Gene Chen wrote:
-
-> Lee Jones <lee.jones@linaro.org> 於 2020年7月13日 週一 下午2:51寫道：
-> >
-> > On Fri, 10 Jul 2020, Matthias Brugger wrote:
-> >
-> > >
-> > >
-> > > On 07/07/2020 12:30, Gene Chen wrote:
-> > > > From: Gene Chen <gene_chen@richtek.com>
-> > > >
-> > > > Rearrange include file.
-> > > > Remove brackets around raw numbers.
-> > > > Indicate sub-dev compatible name by using "-"
-> > > > Combine mt6360 pmic/ldo resouces into mt6360 regulator resources.
-> > > > Rename mt6360_pmu_data by mt6360_data.
-> > > > Rename mt6360_pmu by mt6360.
-> > >
-> > > That seems like a lot of cosmetics. Why is this needed?
-> > > If you think that's needed it should be split up in different commits, each
-> > > explaining in the commit message why you do that.
-> >
-> > Agreed.  This set is still not broken up enough.
-> >
-> > Please place each logical change into its own patch for review.
-> >
+On Mon, Jul 13, 2020 at 03:23:21PM +1000, Nicholas Piggin wrote:
+> Excerpts from Pratik Rajesh Sampat's message of July 10, 2020 3:22 pm:
+> > Changelog v1 --> v2:
+> > 1. Save-restore DAWR and DAWRX unconditionally as they are lost in
+> > shallow idle states too
+> > 2. Rename pnv_first_spr_loss_level to pnv_first_fullstate_loss_level to
+> > correct naming terminology
+> > 
+> > Pratik Rajesh Sampat (3):
+> >   powerpc/powernv/idle: Exclude mfspr on HID1,4,5 on P9 and above
+> >   powerpc/powernv/idle: save-restore DAWR0,DAWRX0 for P10
+> >   powerpc/powernv/idle: Rename pnv_first_spr_loss_level variable
+> > 
+> >  arch/powerpc/platforms/powernv/idle.c | 34 +++++++++++++++++----------
+> >  1 file changed, 22 insertions(+), 12 deletions(-)
 > 
-> 1. Rearrange include file.
-> After check serveral file about coding style, include file seems sort
-> by architecture, not by alphabet
-> 2. Remove brackets around raw numbers.
-> Due to redundant brackets, another reviewer recommended to delete them.
-> 3. Indicate sub-dev compatible name by using "-"
-> Suggestion by Lees when review mfd binding document.
-> 4. Combine mt6360 pmic/ldo resouces into mt6360 regulator resources.
-> Simplify the similar resources object.
-> 5. Rename mt6360_pmu_data by mt6360_data.
-> Not only include pmu part, but also entire MT6360 IC.
-> 6. Rename mt6360_pmu by mt6360.
-> Same reason as above.
+> These look okay to me, but the CPU_FTR_ARCH_300 test for 
+> pnv_power9_idle_init() is actually wrong, it should be a PVR test 
+> because idle is not completely architected (not even shallow stop 
+> states, unfortunately).
 > 
-> We try to make code more simpler and easier to understand
-> We can also discard changes if patch 1,2,4,5,6 doesn't make any difference.
+> It doesn't look like we support POWER10 idle correctly yet, and on older
+> kernels it wouldn't work even if we fixed newer, so ideally the PVR 
+> check would be backported as a fix in the front of the series.
+> 
+> Sadly, we have no OPAL idle driver yet. Hopefully we will before the
+> next processor shows up :P
 
-I'm not sure what you're trying to say.
+Abhishek posted a version recently :
+https://patchwork.ozlabs.org/project/skiboot/patch/20200706043533.76539-1-huntbag@linux.vnet.ibm.com/
 
-Please place each on of these changes into their own patch.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> 
+> Thanks,
+> Nick
+
+--
+Thanks and Regards
+gautham.
