@@ -2,177 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D6F21E1FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 23:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3FC21E205
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 23:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbgGMVVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 17:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726416AbgGMVVW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 17:21:22 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542E1C061755;
-        Mon, 13 Jul 2020 14:21:22 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id j19so6592707pgm.11;
-        Mon, 13 Jul 2020 14:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=ABF/kSJ7GZyTbibG8EMm3ujzxwiwSYQQuEfE9U6jw1s=;
-        b=A6Qz9He4HdllJ76p8Kxuf4DBMs2r3GvMpumwrMS+pZrhuZ6g8wVMoM69tEhPKoW3V7
-         hy9eQvvd41eylP67IxVGu3V5VvRzmGUx+87y+F9PoaMWCjUh7UEOTU4RxBbeXSoDEgYQ
-         fTbzLQ/4rHvU9sgjghxvXUBeu32kcRSmPFWkx1VrDSPlG9jS8T1xkDal0sn90ERqcblm
-         8gXQMA0f6gpQADh+9AXZNd3YQ4oapp6tB/Gal1K7cw6+fduWn2f6lW3sdAcAkcwo1nQt
-         CncVIAkv9WSH4E/xWXyqdhJf3BABXCFYHd8lyoOr4Q5CSGVXioGxZs9NaFi0AkZjk9UD
-         ZU/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ABF/kSJ7GZyTbibG8EMm3ujzxwiwSYQQuEfE9U6jw1s=;
-        b=PxYqrieRb3OJPEYeNUlhte5O91QwueYwHQhyEyYKLi+qhI5YAZpBNMAQPEHNi4UBxW
-         lRRoJL7AjfiW1dSUD9eG6xEFJjtPQ6TdJJkDVdPu+nEwpGItecVXjkdwyNsrgpsA9VGg
-         NiWaXntkySCmdIj5T2WeGFTYlPwybHfsYKQF8o/lBo+UoGLFUZRT+elQjnfO/SVFNgfr
-         VxhzqrNFhXVhKV/RjJcZ7fulA7P4iXLimjRZlWjpQgjwJjPf3xz4VUnpPRDyBwELz0FR
-         t64VJPhzBwfkAUaJszuE9tWNUVTcsMFYce9iBT3mTqDP4Cl62gJtIMpux2vXKYBpVmgQ
-         QbNA==
-X-Gm-Message-State: AOAM533FMvNvZbkhGaEg0UwnQ1I7MTbYtUQpBMo7isuOeajEnhxJIPZW
-        Xy7uSuAqeTsIwpkOuNxZ5K1tcQdZ
-X-Google-Smtp-Source: ABdhPJwNAx6zk/9vxInegSvSaW/luicXQSuqpwuYJGgMYuomcZ6hjq9GhwPrDxBRXRzOPXmOG5qTZg==
-X-Received: by 2002:aa7:9155:: with SMTP id 21mr1466155pfi.306.1594675281319;
-        Mon, 13 Jul 2020 14:21:21 -0700 (PDT)
-Received: from [10.1.10.11] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id bx18sm436031pjb.49.2020.07.13.14.21.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 14:21:20 -0700 (PDT)
-Subject: Re: [PATCH] drivers/net/wan/x25_asy: Fix to make it work
-To:     Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-x25@vger.kernel.org
-References: <20200708043754.46554-1-xie.he.0141@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <4b46b0f6-8424-5a6e-a4ae-3729f54c5d4b@gmail.com>
-Date:   Mon, 13 Jul 2020 14:21:18 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726758AbgGMV03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 17:26:29 -0400
+Received: from mga04.intel.com ([192.55.52.120]:63516 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726416AbgGMV02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 17:26:28 -0400
+IronPort-SDR: y+v7CrR6hX72XtDjVYxSzwN1LklNNeowvNrq9/7wUm48ZlgcvPbmTR8lQMG6ZhgFVlrKa7kArP
+ QA+jCz3AJnyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="146213709"
+X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
+   d="scan'208";a="146213709"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 14:26:28 -0700
+IronPort-SDR: wl6dTmbNOz5n9G3weeYoKBT1IgauYfprPYVf8slN86O+c9kPvftuaseYdwg/g/Gm0/gS+0CdwF
+ MBp6gZHTxhSA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
+   d="scan'208";a="285534434"
+Received: from lkp-server02.sh.intel.com (HELO fb03a464a2e3) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 13 Jul 2020 14:26:25 -0700
+Received: from kbuild by fb03a464a2e3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jv5xw-0000zQ-Cf; Mon, 13 Jul 2020 21:26:24 +0000
+Date:   Tue, 14 Jul 2020 05:25:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     kbuild-all@lists.01.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-arm-msm@vger.kernel.org
+Subject: [RFC PATCH] iommu/arm-smmu: arm_smmu_setup_identity() can be static
+Message-ID: <20200713212530.GA87620@1f5a2ab6ad98>
+References: <20200709050145.3520931-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200708043754.46554-1-xie.he.0141@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709050145.3520931-2-bjorn.andersson@linaro.org>
+X-Patchwork-Hint: ignore
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Signed-off-by: kernel test robot <lkp@intel.com>
+---
+ arm-smmu.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 7/7/20 9:37 PM, Xie He wrote:
-> This driver is not working because of problems of its receiving code.
-> This patch fixes it to make it work.
-> 
-> When the driver receives an LAPB frame, it should first pass the frame
-> to the LAPB module to process. After processing, the LAPB module passes
-> the data (the packet) back to the driver, the driver should then add a
-> one-byte pseudo header and pass the data to upper layers.
-> 
-> The changes to the "x25_asy_bump" function and the
-> "x25_asy_data_indication" function are to correctly implement this
-> procedure.
-> 
-> Also, the "x25_asy_unesc" function ignores any frame that is shorter
-> than 3 bytes. However the shortest frames are 2-byte long. So we need
-> to change it to allow 2-byte frames to pass.
-> 
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
-> ---
->  drivers/net/wan/x25_asy.c | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/wan/x25_asy.c b/drivers/net/wan/x25_asy.c
-> index 69773d228ec1..3fd8938e591b 100644
-> --- a/drivers/net/wan/x25_asy.c
-> +++ b/drivers/net/wan/x25_asy.c
-> @@ -183,7 +183,7 @@ static inline void x25_asy_unlock(struct x25_asy *sl)
->  	netif_wake_queue(sl->dev);
->  }
->  
-> -/* Send one completely decapsulated IP datagram to the IP layer. */
-> +/* Send an LAPB frame to the LAPB module to process. */
->  
->  static void x25_asy_bump(struct x25_asy *sl)
->  {
-> @@ -195,13 +195,12 @@ static void x25_asy_bump(struct x25_asy *sl)
->  	count = sl->rcount;
->  	dev->stats.rx_bytes += count;
->  
-> -	skb = dev_alloc_skb(count+1);
-> +	skb = dev_alloc_skb(count);
->  	if (skb == NULL) {
->  		netdev_warn(sl->dev, "memory squeeze, dropping packet\n");
->  		dev->stats.rx_dropped++;
->  		return;
->  	}
-> -	skb_push(skb, 1);	/* LAPB internal control */
->  	skb_put_data(skb, sl->rbuff, count);
->  	skb->protocol = x25_type_trans(skb, sl->dev);
->  	err = lapb_data_received(skb->dev, skb);
-> @@ -209,7 +208,6 @@ static void x25_asy_bump(struct x25_asy *sl)
->  		kfree_skb(skb);
->  		printk(KERN_DEBUG "x25_asy: data received err - %d\n", err);
->  	} else {
-> -		netif_rx(skb);
->  		dev->stats.rx_packets++;
->  	}
->  }
-> @@ -356,12 +354,16 @@ static netdev_tx_t x25_asy_xmit(struct sk_buff *skb,
->   */
->  
->  /*
-> - *	Called when I frame data arrives. We did the work above - throw it
-> - *	at the net layer.
-> + *	Called when I frame data arrives. We add a pseudo header for upper
-> + *	layers and pass it to upper layers.
->   */
->  
->  static int x25_asy_data_indication(struct net_device *dev, struct sk_buff *skb)
->  {
-
-It is not clear to me what guarantee we have to have one byte of headroom in the skb
-at this point.
-
-You might add to be safe : (as done in lapbeth_data_indication(), but after the skb_push() which seems wrong)
-
-      if (skb_cow(skb, 1)) {
-            kfree_skb(skb); /* This line I am not sure, but looking at
-                             * lapb_data_indication() this might be needed.
-                             */
-	    return NET_RX_DROP;
-      }
-
-> +	skb_push(skb, 1);
-> +	skb->data[0] = X25_IFACE_DATA;
-> +	skb->protocol = x25_type_trans(skb, dev);
-> +
->  	return netif_rx(skb);
->  }
->  
-> @@ -657,7 +659,7 @@ static void x25_asy_unesc(struct x25_asy *sl, unsigned char s)
->  	switch (s) {
->  	case X25_END:
->  		if (!test_and_clear_bit(SLF_ERROR, &sl->flags) &&
-> -		    sl->rcount > 2)
-> +		    sl->rcount >= 2)
->  			x25_asy_bump(sl);
->  		clear_bit(SLF_ESCAPE, &sl->flags);
->  		sl->rcount = 0;
-> 
+diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+index 2e27cf9815ab6..fb85e716ae9ac 100644
+--- a/drivers/iommu/arm-smmu.c
++++ b/drivers/iommu/arm-smmu.c
+@@ -1924,7 +1924,7 @@ static int arm_smmu_device_cfg_probe(struct arm_smmu_device *smmu)
+ 	return 0;
+ }
+ 
+-int arm_smmu_setup_identity(struct arm_smmu_device *smmu)
++static int arm_smmu_setup_identity(struct arm_smmu_device *smmu)
+ {
+ 	int i;
+ 
