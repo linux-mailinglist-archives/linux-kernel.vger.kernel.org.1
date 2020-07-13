@@ -2,114 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DE821D4C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA26C21D4C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729607AbgGMLXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 07:23:30 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35470 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728714AbgGMLX2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 07:23:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594639405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cp13jJuIIl8muXNVHzNvpxZz6DmTE1jSSxstK7LrSuw=;
-        b=I3YD8cpEE4+NDUiKJZs0nC847r4KvTlXO5w+cYdNCz+RB7DA8nBMVFq5U5oA0C2vP7ilN4
-        1k00JdZlNvegDiGid8fBmAQMLoZK41kC7W6zXQUD9re9jvSDfRqRqyWc7uPdFwTuy+YGPS
-        v5nOrzgpFjA04oerRdCrjUnVpQjj1rA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-467-N0aoTgdMOd-JZm0_ISRZ5w-1; Mon, 13 Jul 2020 07:23:23 -0400
-X-MC-Unique: N0aoTgdMOd-JZm0_ISRZ5w-1
-Received: by mail-wr1-f70.google.com with SMTP id b8so17416519wro.19
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 04:23:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cp13jJuIIl8muXNVHzNvpxZz6DmTE1jSSxstK7LrSuw=;
-        b=tZHbhH1kfiIJm1J5rryG8LuuXf8ZVMHLsk6IjBS5JxTNjzUGhjniNEcVCOqjkGDu+r
-         YtruVXOlETRK8YJro4LYd3/p1mDo6zdn08nY9GMVjwjhZq+pCwDSvJ/brRRzq0vVdBPG
-         b5uZBctVinWUoYof/LcunVw/bnzfI2oPurQClSs00HR45k3au5Jas9YbAnG03UsKrj4v
-         L5TCHkNoMu9QkBUTiqE0f5cLiRH2p3EqgGUcxVvB8p2OoktDrqt83SGPMRmJdRVjv7Ub
-         kfuoLr+sqtM8KsPa/mI2LbHpWvbMNAJEAJJpm2nz5Jb2QEq762VqQYt+0DFSoIPDmpTk
-         SW6g==
-X-Gm-Message-State: AOAM530yUzB8c4x6nKz1xRSccMuXR9qDGQkl5t54HOHLxI7fQx/0PHs9
-        K4kLvRQ7ErD9h80hQ/YrRMo8L3dU9JLr1MkayY8Z56vvUl0btOKfdEKB4xy4JjM/qM6aDMVbrKA
-        SZeq8kHx06y2VY4nPD+lWPbny
-X-Received: by 2002:adf:84e2:: with SMTP id 89mr82610821wrg.139.1594639402329;
-        Mon, 13 Jul 2020 04:23:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxzoCrHCmvHA+9tYCCZvkKCKZhV/F4YlMxW4KU+tbDXUAXf+8nTnhjTJ8IHP6HmlwcPSxo1PQ==
-X-Received: by 2002:adf:84e2:: with SMTP id 89mr82610801wrg.139.1594639402164;
-        Mon, 13 Jul 2020 04:23:22 -0700 (PDT)
-Received: from redhat.com (bzq-79-180-10-140.red.bezeqint.net. [79.180.10.140])
-        by smtp.gmail.com with ESMTPSA id m16sm25473869wro.0.2020.07.13.04.23.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 04:23:21 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 07:23:13 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2 12/24] scsi: virtio_scsi: Demote seemingly
- unintentional kerneldoc header
-Message-ID: <20200713071453-mutt-send-email-mst@kernel.org>
-References: <20200713080001.128044-1-lee.jones@linaro.org>
- <20200713080001.128044-13-lee.jones@linaro.org>
+        id S1729683AbgGMLXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 07:23:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:56216 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728714AbgGMLXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 07:23:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EC2831B;
+        Mon, 13 Jul 2020 04:23:33 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9709E3F7D8;
+        Mon, 13 Jul 2020 04:23:31 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 12:23:25 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] PCI: aardvark: Don't touch PCIe registers if no card
+ connected
+Message-ID: <20200713112325.GA25865@e121166-lin.cambridge.arm.com>
+References: <20200528143141.29956-1-pali@kernel.org>
+ <20200702083036.12230-1-pali@kernel.org>
+ <20200709113509.GB19638@e121166-lin.cambridge.arm.com>
+ <20200709122208.rmfeuu6zgbwh3fr5@pali>
+ <20200709144701.GA21760@e121166-lin.cambridge.arm.com>
+ <20200709150959.wq6zfkcy4m6hvvpl@pali>
+ <20200710091800.GA3419@e121166-lin.cambridge.arm.com>
+ <20200713082747.e3q3ml3wpbszn4j7@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200713080001.128044-13-lee.jones@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200713082747.e3q3ml3wpbszn4j7@pali>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 08:59:49AM +0100, Lee Jones wrote:
-> This is the only use of kerneldoc in the sourcefile and no
-> descriptions are provided.
+On Mon, Jul 13, 2020 at 10:27:47AM +0200, Pali Rohár wrote:
+> On Friday 10 July 2020 10:18:00 Lorenzo Pieralisi wrote:
+> > On Thu, Jul 09, 2020 at 05:09:59PM +0200, Pali Rohár wrote:
+> > > > I understand that but the bridge bus resource can be trimmed to just
+> > > > contain the root bus because that's the only one where there is a
+> > > > chance you can enumerate a device.
+> > > 
+> > > It is possible to register only root bridge without endpoint?
+> > 
+> > It is possible to register the root bridge with a trimmed IORESOURCE_BUS
+> > so that you don't enumerate anything other than the root port.
 > 
-> Fixes the following W=1 kernel build warning(s):
+> Hello Lorenzo! I really do not know how to achieve it. From code it
+> looks like that pci/probe.c scans child buses unconditionally.
 > 
->  drivers/scsi/virtio_scsi.c:109: warning: Function parameter or member 'vscsi' not described in 'virtscsi_complete_cmd'
->  drivers/scsi/virtio_scsi.c:109: warning: Function parameter or member 'buf' not described in 'virtscsi_complete_cmd'
+> pci-aardvark.c calls pci_host_probe() which calls functions
+> pci_scan_root_bus_bridge() which calls pci_scan_child_bus() which calls
+> pci_scan_child_bus_extend() which calls pci_scan_bridge_extend() (bridge
+> needs to be reconfigured) which then try to probe child bus via
+> pci_scan_child_bus_extend() because bridge is not card bus.
 > 
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Stefan Hajnoczi <stefanha@redhat.com>
-> Cc: virtualization@lists.linux-foundation.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-
-Pls merge with the rest of the patches (which tree is this for?)
-
-> ---
->  drivers/scsi/virtio_scsi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> In function pci_scan_bridge_extend() I do not see a way how to skip
+> probing for child buses which would avoid enumerating aardvark root
+> bridge when PCIe device is not connected.
 > 
-> diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
-> index 0e0910c5b9424..56875467e4984 100644
-> --- a/drivers/scsi/virtio_scsi.c
-> +++ b/drivers/scsi/virtio_scsi.c
-> @@ -100,7 +100,7 @@ static void virtscsi_compute_resid(struct scsi_cmnd *sc, u32 resid)
->  		scsi_set_resid(sc, resid);
->  }
->  
-> -/**
-> +/*
->   * virtscsi_complete_cmd - finish a scsi_cmd and invoke scsi_done
->   *
->   * Called with vq_lock held.
-> -- 
-> 2.25.1
+> dmesg output contains:
+> 
+>   advk-pcie d0070000.pcie: link never came up
+>   advk-pcie d0070000.pcie: PCI host bridge to bus 0000:00
+>   pci_bus 0000:00: root bus resource [bus 00-ff]
 
+This resource can be limited to the root bus number only before calling
+pci_host_probe() (ie see pci_parse_request_of_pci_ranges() and code in
+pci_scan_bridge_extend() that programs primary/secondary/subordinate
+busses) but I think that only papers over the issue, it does not fix it.
+
+I will go over the thread again but I suspect I can merge the patch even
+though I still believe there is work to be done to understand the issue
+we are facing.
+
+Lorenzo
+
+>   pci_bus 0000:00: root bus resource [mem 0xe8000000-0xe8ffffff]
+>   pci_bus 0000:00: root bus resource [io  0x0000-0xffff] (bus address [0xe9000000-0xe900ffff])
+>   pci_bus 0000:00: scanning bus
+>   pci 0000:00:00.0: [1b4b:0100] type 01 class 0x060400
+>   pci 0000:00:00.0: reg 0x38: [mem 0x00000000-0x000007ff pref]
+>   pci_bus 0000:00: fixups for bus
+>   pci 0000:00:00.0: scanning [bus 00-00] behind bridge, pass 0
+>   pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]), reconfiguring
+>   pci 0000:00:00.0: scanning [bus 00-00] behind bridge, pass 1
+>   pci_bus 0000:01: scanning bus
+>   advk-pcie d0070000.pcie: advk_pcie_valid_device
