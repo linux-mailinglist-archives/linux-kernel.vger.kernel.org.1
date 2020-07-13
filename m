@@ -2,275 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D9C21DCDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824A621DCE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730697AbgGMQfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:35:14 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:51181 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730411AbgGMQfJ (ORCPT
+        id S1730709AbgGMQfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:35:30 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:11090 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730411AbgGMQfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:35:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594658107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rVenIhoN1kPnORHI5PqF7aNOKItyyL3fIQiCBHDCBTc=;
-        b=DWgpG2uvE6f3FD1R6KWpY64mex3Ssl0IMXQqekL/+bJgjyTW5H622pUKoxh7XWwr5jNTvY
-        7cwPiOuyaEJHA32gAnRETKbnPaKAjuYdk7WCRU2B2hSLM85Bi+6KJ2QehPchyuNLn/Mdkp
-        wpdO7etDngUHn41CMZlsRm3L/PUNZC8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-uyg96JPGOSKroSyJJz1-4w-1; Mon, 13 Jul 2020 12:35:05 -0400
-X-MC-Unique: uyg96JPGOSKroSyJJz1-4w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 13 Jul 2020 12:35:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594658124; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: To: Subject:
+ From: Sender; bh=l6qBwk/nDrs1cZgDmy4aPIdPLM4bZMpN+mrbFN0PmqU=; b=mhdFJbXnQSH9X74fSGPGtpBd6wnaR7IIt95ybfKsgN5FIejnaEaw1EhpdMgwxXEspvbK7r6y
+ cBux8BBsIyJdRgSGTYPdrLVoIKmU8EPsPpWfJJzG8CR9rcU7DsE7Snz2UQ06t3rOsKR/P5TU
+ emuL1ffnuz/rCHBYiW/9kn0Uqw8=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f0c8d378e36ecda30614b01 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Jul 2020 16:35:03
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4DAC6C433C6; Mon, 13 Jul 2020 16:35:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.179] (cpe-76-167-231-33.san.res.rr.com [76.167.231.33])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B7251009441;
-        Mon, 13 Jul 2020 16:35:03 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-113.rdu2.redhat.com [10.10.112.113])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C3B7310021B3;
-        Mon, 13 Jul 2020 16:34:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 23/32] cachefiles: Add I/O tracepoints
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jeff Layton <jlayton@redhat.com>,
-        Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 13 Jul 2020 17:34:57 +0100
-Message-ID: <159465809699.1376674.8132002248953593870.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk>
-References: <159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.22
+        (Authenticated sender: eberman)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2F87EC433C8;
+        Mon, 13 Jul 2020 16:35:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2F87EC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=eberman@codeaurora.org
+From:   Elliot Berman <eberman@codeaurora.org>
+Subject: Re: [PATCH] firmware: qcom_scm: Fix legacy convention SCM accessors
+To:     Jonathan McDowell <noodles@earth.li>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200704172334.GA759@earth.li>
+Message-ID: <d38c8e7c-443c-33f0-be8d-dedd58dd4fe1@codeaurora.org>
+Date:   Mon, 13 Jul 2020 09:35:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200704172334.GA759@earth.li>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For the Qualcomm TrustZone firmwares which I am familiar with:
 
----
+Reviewed-by: Elliot Berman <eberman@codeaurora.org>
 
- fs/cachefiles/interface.c         |   16 +++--
- fs/cachefiles/io.c                |    2 +
- include/trace/events/cachefiles.h |  123 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 136 insertions(+), 5 deletions(-)
+On 7/4/2020 10:23 AM, Jonathan McDowell wrote:
+> The move to a combined driver for the QCOM SCM hardware changed the
+> io_writel and io_readl helpers to use non-atomic calls, despite the
+> commit message saying that atomic was a better option. This breaks these
+> helpers on hardware that uses the old legacy convention (access fails
+> with a -95 return code). Switch back to using the atomic calls.
+> 
+> Observed as a failure routing GPIO interrupts to the Apps processor on
+> an IPQ8064; fix is confirmed as correctly allowing the interrupts to be
+> routed and observed.
+> 
+> Fixes: 57d3b816718c ("firmware: qcom_scm: Remove thin wrappers")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Jonathan McDowell <noodles@earth.li>
+> ---
+>  drivers/firmware/qcom_scm.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+> index 0e7233a20f34..d4fda210adfe 100644
+> --- a/drivers/firmware/qcom_scm.c
+> +++ b/drivers/firmware/qcom_scm.c
+> @@ -391,7 +391,7 @@ static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
+>  
+>  	desc.args[1] = enable ? QCOM_SCM_BOOT_SET_DLOAD_MODE : 0;
+>  
+> -	return qcom_scm_call(__scm->dev, &desc, NULL);
+> +	return qcom_scm_call_atomic(__scm->dev, &desc, NULL);
+>  }
+>  
+>  static void qcom_scm_set_download_mode(bool enable)
+> @@ -650,7 +650,7 @@ int qcom_scm_io_readl(phys_addr_t addr, unsigned int *val)
+>  	int ret;
+>  
+>  
+> -	ret = qcom_scm_call(__scm->dev, &desc, &res);
+> +	ret = qcom_scm_call_atomic(__scm->dev, &desc, &res);
+>  	if (ret >= 0)
+>  		*val = res.result[0];
+>  
+> @@ -669,8 +669,7 @@ int qcom_scm_io_writel(phys_addr_t addr, unsigned int val)
+>  		.owner = ARM_SMCCC_OWNER_SIP,
+>  	};
+>  
+> -
+> -	return qcom_scm_call(__scm->dev, &desc, NULL);
+> +	return qcom_scm_call_atomic(__scm->dev, &desc, NULL);
+>  }
+>  EXPORT_SYMBOL(qcom_scm_io_writel);
+>  
+> 
 
-diff --git a/fs/cachefiles/interface.c b/fs/cachefiles/interface.c
-index 054d5cc794b5..e73de62d0e73 100644
---- a/fs/cachefiles/interface.c
-+++ b/fs/cachefiles/interface.c
-@@ -160,7 +160,8 @@ static void cachefiles_update_object(struct fscache_object *_object)
- 	struct cachefiles_object *object;
- 	struct cachefiles_cache *cache;
- 	const struct cred *saved_cred;
--	loff_t object_size;
-+	struct inode *inode;
-+	loff_t object_size, i_size;
- 	int ret;
- 
- 	_enter("{OBJ%x}", _object->debug_id);
-@@ -172,12 +173,15 @@ static void cachefiles_update_object(struct fscache_object *_object)
- 	cachefiles_begin_secure(cache, &saved_cred);
- 
- 	object_size = object->fscache.cookie->object_size;
--	if (i_size_read(d_inode(object->dentry)) > object_size) {
-+	inode = d_inode(object->dentry);
-+	i_size = i_size_read(inode);
-+	if (i_size > object_size) {
- 		struct path path = {
- 			.mnt	= cache->mnt,
- 			.dentry	= object->dentry
- 		};
--		_debug("trunc %llx -> %llx", i_size_read(d_inode(object->dentry)), object_size);
-+		_debug("trunc %llx -> %llx", i_size, object_size);
-+		trace_cachefiles_trunc(object, inode, i_size, object_size);
- 		ret = vfs_truncate(&path, object_size);
- 		if (ret < 0) {
- 			cachefiles_io_error_obj(object, "Trunc-to-size failed");
-@@ -186,8 +190,10 @@ static void cachefiles_update_object(struct fscache_object *_object)
- 		}
- 
- 		object_size = round_up(object_size, CACHEFILES_DIO_BLOCK_SIZE);
--		_debug("trunc %llx -> %llx", i_size_read(d_inode(object->dentry)), object_size);
--		if (i_size_read(d_inode(object->dentry)) < object_size) {
-+		i_size = i_size_read(inode);
-+		_debug("trunc %llx -> %llx", i_size, object_size);
-+		if (i_size < object_size) {
-+			trace_cachefiles_trunc(object, inode, i_size, object_size);
- 			ret = vfs_truncate(&path, object_size);
- 			if (ret < 0) {
- 				cachefiles_io_error_obj(object, "Trunc-to-dio-size failed");
-diff --git a/fs/cachefiles/io.c b/fs/cachefiles/io.c
-index 42e0d620d778..268e6f69ba9c 100644
---- a/fs/cachefiles/io.c
-+++ b/fs/cachefiles/io.c
-@@ -88,6 +88,7 @@ int cachefiles_read(struct fscache_object *obj,
- 		goto presubmission_error_free;
- 
- 	fscache_get_io_request(req);
-+	trace_cachefiles_read(object, file_inode(file), req);
- 	ret = call_read_iter(file, &ki->iocb, iter);
- 	switch (ret) {
- 	case -EIOCBQUEUED:
-@@ -198,6 +199,7 @@ int cachefiles_write(struct fscache_object *obj,
- 	__sb_writers_release(inode->i_sb, SB_FREEZE_WRITE);
- 
- 	fscache_get_io_request(req);
-+	trace_cachefiles_write(object, inode, req);
- 	ret = call_write_iter(file, &ki->iocb, iter);
- 	switch (ret) {
- 	case -EIOCBQUEUED:
-diff --git a/include/trace/events/cachefiles.h b/include/trace/events/cachefiles.h
-index e7af1d683009..d83568e8fee8 100644
---- a/include/trace/events/cachefiles.h
-+++ b/include/trace/events/cachefiles.h
-@@ -351,6 +351,129 @@ TRACE_EVENT(cachefiles_coherency,
- 		      __entry->content)
- 	    );
- 
-+TRACE_EVENT(cachefiles_read,
-+	    TP_PROTO(struct cachefiles_object *obj,
-+		     struct inode *backer,
-+		     struct fscache_io_request *req),
-+
-+	    TP_ARGS(obj, backer, req),
-+
-+	    TP_STRUCT__entry(
-+		    __field(unsigned int,			obj	)
-+		    __field(unsigned int,			backer	)
-+		    __field(unsigned int,			len	)
-+		    __field(loff_t,				pos	)
-+			     ),
-+
-+	    TP_fast_assign(
-+		    __entry->obj	= obj->fscache.debug_id;
-+		    __entry->backer	= backer->i_ino;
-+		    __entry->pos	= req->pos;
-+		    __entry->len	= req->len;
-+			   ),
-+
-+	    TP_printk("o=%08x b=%08x p=%llx l=%x",
-+		      __entry->obj,
-+		      __entry->backer,
-+		      __entry->pos,
-+		      __entry->len)
-+	    );
-+
-+TRACE_EVENT(cachefiles_write,
-+	    TP_PROTO(struct cachefiles_object *obj,
-+		     struct inode *backer,
-+		     struct fscache_io_request *req),
-+
-+	    TP_ARGS(obj, backer, req),
-+
-+	    TP_STRUCT__entry(
-+		    __field(unsigned int,			obj	)
-+		    __field(unsigned int,			backer	)
-+		    __field(unsigned int,			len	)
-+		    __field(loff_t,				pos	)
-+			     ),
-+
-+	    TP_fast_assign(
-+		    __entry->obj	= obj->fscache.debug_id;
-+		    __entry->backer	= backer->i_ino;
-+		    __entry->pos	= req->pos;
-+		    __entry->len	= req->len;
-+			   ),
-+
-+	    TP_printk("o=%08x b=%08x p=%llx l=%x",
-+		      __entry->obj,
-+		      __entry->backer,
-+		      __entry->pos,
-+		      __entry->len)
-+	    );
-+
-+TRACE_EVENT(cachefiles_trunc,
-+	    TP_PROTO(struct cachefiles_object *obj, struct inode *backer,
-+		     loff_t from, loff_t to),
-+
-+	    TP_ARGS(obj, backer, from, to),
-+
-+	    TP_STRUCT__entry(
-+		    __field(unsigned int,			obj	)
-+		    __field(unsigned int,			backer	)
-+		    __field(loff_t,				from	)
-+		    __field(loff_t,				to	)
-+			     ),
-+
-+	    TP_fast_assign(
-+		    __entry->obj	= obj->fscache.debug_id;
-+		    __entry->backer	= backer->i_ino;
-+		    __entry->from	= from;
-+		    __entry->to		= to;
-+			   ),
-+
-+	    TP_printk("o=%08x b=%08x l=%llx->%llx",
-+		      __entry->obj,
-+		      __entry->backer,
-+		      __entry->from,
-+		      __entry->to)
-+	    );
-+
-+TRACE_EVENT(cachefiles_tmpfile,
-+	    TP_PROTO(struct cachefiles_object *obj, struct inode *backer),
-+
-+	    TP_ARGS(obj, backer),
-+
-+	    TP_STRUCT__entry(
-+		    __field(unsigned int,			obj	)
-+		    __field(unsigned int,			backer	)
-+			     ),
-+
-+	    TP_fast_assign(
-+		    __entry->obj	= obj->fscache.debug_id;
-+		    __entry->backer	= backer->i_ino;
-+			   ),
-+
-+	    TP_printk("o=%08x b=%08x",
-+		      __entry->obj,
-+		      __entry->backer)
-+	    );
-+
-+TRACE_EVENT(cachefiles_link,
-+	    TP_PROTO(struct cachefiles_object *obj, struct inode *backer),
-+
-+	    TP_ARGS(obj, backer),
-+
-+	    TP_STRUCT__entry(
-+		    __field(unsigned int,			obj	)
-+		    __field(unsigned int,			backer	)
-+			     ),
-+
-+	    TP_fast_assign(
-+		    __entry->obj	= obj->fscache.debug_id;
-+		    __entry->backer	= backer->i_ino;
-+			   ),
-+
-+	    TP_printk("o=%08x b=%08x",
-+		      __entry->obj,
-+		      __entry->backer)
-+	    );
-+
- #endif /* _TRACE_CACHEFILES_H */
- 
- /* This part must be outside protection */
-
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
