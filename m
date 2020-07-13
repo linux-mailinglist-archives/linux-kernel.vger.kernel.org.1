@@ -2,148 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0860621D554
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1267021D560
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729739AbgGMLyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 07:54:01 -0400
-Received: from mail-eopbgr80131.outbound.protection.outlook.com ([40.107.8.131]:19854
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729594AbgGMLyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 07:54:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EdwWzLcDO+Oz9WhWtfUJ63HzlvwrzMhQgLRoQCCC80j5FHGrZPan5d3znjULt/+GWt5xM73EZDm1aZYB3Vx1/SYjppFLY4Xk1Fx/uMxzMVdcBJNDtOAqWqF2LsPkG4IgHmL6J85/CtGvuVc5Sa/abcoHWqyX1qJ9mC8FdFKiioxgMTMwbnOWNqSQvSNg7st2OfzEn/fJ9iJWlXU8Sjm0LZ+jGtLnfcuT64FRBDN/qNpwMUa/zRNXEXOFii+tiNKmicNLMvE+fgArCbc0whwk54aqy5nKY7lYKxb+f6eOgPV4Pz51wD4qG35nVI4DJuNbrAWZY78NFIu8JozIYWG74g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EdsE6j6dUjw3aV9Rc0azsl7B5uTW+zuUl6suh82K40A=;
- b=nUHRAVNcXeVemtOUjRminvZK+LKH4PYN4iOFyIEgGAxXP3WGvxv6d6DBj+L9wVD1HSV46Wcu49uivMR0iJmfl318zmIC3ysbHsX3toKVDQLGaG193W03qm2LzhbIYpj2OzGgAopnIxTBbGyJ9Nmyxu9yW13zfQw/I7Ff4i6i0HHJw7HyJ2F5F37s3nnk//EUijRUj1Gbi+ObwTcqy2vhQdHO6/nwYOuQQNK75ygsn6lWBSeqKKi10ANksBIWwupTpzGEovuDHISJege/TGuZ/E54MPr0sPvhQglfl7WcJBbivDva5kxYBdrLHd6VTX4wwWdGmGKxCbImrdJFPJUyWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
- dkim=pass header.d=toradex.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EdsE6j6dUjw3aV9Rc0azsl7B5uTW+zuUl6suh82K40A=;
- b=aF5ymyb60iBxbTWwTu0Oumkh/Gd9AXk5rwnl5I+UtYTwzvdTQGq6zjVhVVWAwnD+EI398f7iSw2HmFM4B52Ka8OYeXtrUwAAR/5aLCE0WiZabcrQIvAeHLrLrsdPvPcEtgBPVYfLIS3npnhXdZaIYhDuhcDMrd7OCi+lK3MM7dg=
-Received: from AM6PR05MB6120.eurprd05.prod.outlook.com (2603:10a6:20b:a8::25)
- by AM7PR05MB7058.eurprd05.prod.outlook.com (2603:10a6:20b:1ab::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Mon, 13 Jul
- 2020 11:53:56 +0000
-Received: from AM6PR05MB6120.eurprd05.prod.outlook.com
- ([fe80::1d81:6a9b:8c26:3b7d]) by AM6PR05MB6120.eurprd05.prod.outlook.com
- ([fe80::1d81:6a9b:8c26:3b7d%4]) with mapi id 15.20.3174.025; Mon, 13 Jul 2020
- 11:53:56 +0000
-From:   Philippe Schenker <philippe.schenker@toradex.com>
-To:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "a.fatoum@pengutronix.de" <a.fatoum@pengutronix.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>
-CC:     "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-imx@nxp.com" <linux-imx@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH 3/3] ARM: dts: colibri-imx7: add usb dual-role switch
- capability
-Thread-Topic: [PATCH 3/3] ARM: dts: colibri-imx7: add usb dual-role switch
- capability
-Thread-Index: AQHWVr15sZvxLwnO3E+b+KcqajdLWakFR14AgAAjuQA=
-Date:   Mon, 13 Jul 2020 11:53:56 +0000
-Message-ID: <c76c0fd056512a3f8e24bf06e7bb7e1650090609.camel@toradex.com>
-References: <20200710132423.497230-1-philippe.schenker@toradex.com>
-         <20200710132423.497230-3-philippe.schenker@toradex.com>
-         <73240ab0-5069-40c5-4ade-7fcc2207dfaf@pengutronix.de>
-In-Reply-To: <73240ab0-5069-40c5-4ade-7fcc2207dfaf@pengutronix.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.3 
-authentication-results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=toradex.com;
-x-originating-ip: [31.10.206.124]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b14ada26-8e83-4170-d27e-08d827236c6c
-x-ms-traffictypediagnostic: AM7PR05MB7058:
-x-microsoft-antispam-prvs: <AM7PR05MB705850D253279F80E277989DF4600@AM7PR05MB7058.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ij+W7air9s/kEB2bArfX9ruaDuswsR35GLwV5RfPYjsXZmkK+L4f5TP3Vc+0gm4lCWlnEAp4NUgqk7Rx4eMO+tB63Licr71chFxcaR7OdLSFjzSEjiofAv42K+XgTJc0WsXMOoByxdTwX7PxS8hItfjdjI9Wv72694tRkFa+Y0YiVtEz0uf10CgycdrZC3IavQ7p+8x57cdXrrXxBWNfxO9vH0v32exhYfuD6woJhRG0F0EaYB8dpVjscDDsy1LAItpjbGoEtdUp0+u8eJgTWQAbvzkl9YavYlGHLjR4EIldB5etO/g5LO4MfhiVvlUHlL42rrU3cucLeG7YBHegJA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6120.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(376002)(136003)(346002)(366004)(39840400004)(66446008)(4326008)(26005)(316002)(64756008)(6512007)(71200400001)(8676002)(8936002)(186003)(83380400001)(6486002)(86362001)(2616005)(44832011)(478600001)(110136005)(66556008)(66476007)(54906003)(66946007)(2906002)(6506007)(91956017)(76116006)(53546011)(7416002)(36756003)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: Mdzd/gmYKCYCzcxe6ig3G9lIZfBd68xSmlZUPhvfkCROo2QxmO2bPksZNkeMbpaPKJkfAjMwqUlrfldw6XFP1G+d2WItlytCjMKsb/fhJ8itpg7XCSyepxpaKBn+YQoJEqmIqCNlpq/q/zXf7IqL65/rKpSw+Re9SYs1eJq6UlNp4nnQHZpG9r5zO8Zzk79z5nBOchtur7xwcoX1vSnQZi9Ri8OaJgd0zAeYjwSUW/By7lnKz2FpIG7iRiVV3yn/NqXoTAmgVn6T8kWXneRSPz975LxY3ioHmp7dX6dr+j6nzbrzBYueOLQNFgEwsCWofcKK1ArJ0npuSYAeYMngHVq5IKGWZ0xA2bP7C4C4O2eqjMq9uGk7a0YNdE2qeqcqw5pbvzuPCpWdNk+6bqEC17us/tQtJ0dF/4pN4GxNnrd74OL3GW44kjIQXN2a37kK2sr2CSffzz/vPerkwDTEiqLGKys9CtJwLYraebUgcvQ=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <8064FA273BFAA841AC63E113A8B17019@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1729695AbgGMLzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 07:55:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:57966 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728714AbgGMLzs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 07:55:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2636630E;
+        Mon, 13 Jul 2020 04:55:47 -0700 (PDT)
+Received: from [10.57.62.178] (unknown [10.57.62.178])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 957063F887;
+        Mon, 13 Jul 2020 04:55:44 -0700 (PDT)
+Subject: Re: [PATCH 1/4] dma-mapping: Add bounced DMA ops
+To:     Claire Chang <tientzu@chromium.org>, robh+dt@kernel.org,
+        frowand.list@gmail.com, hch@lst.de, m.szyprowski@samsung.com
+Cc:     treding@nvidia.com, gregkh@linuxfoundation.org,
+        saravanak@google.com, suzuki.poulose@arm.com,
+        dan.j.williams@intel.com, heikki.krogerus@linux.intel.com,
+        bgolaszewski@baylibre.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        tfiga@chromium.org, drinkcat@chromium.org
+References: <20200713091211.2183368-1-tientzu@chromium.org>
+ <20200713091211.2183368-2-tientzu@chromium.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <4a2451f9-57d8-2e83-e1d6-f144f37173c0@arm.com>
+Date:   Mon, 13 Jul 2020 12:55:43 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: toradex.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB6120.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b14ada26-8e83-4170-d27e-08d827236c6c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2020 11:53:56.8785
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d9995866-0d9b-4251-8315-093f062abab4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7Fp7GyqaXroRjWYG7iARvmKmMa98peHMkPdSYm0ArwUyhNc18lP+QlFus1GvyJcMdJhP7tWtixOf288d8baiGkUgtRlTRjIu1RqBZcrisFE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR05MB7058
+In-Reply-To: <20200713091211.2183368-2-tientzu@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA3LTEzIGF0IDExOjQ2ICswMjAwLCBBaG1hZCBGYXRvdW0gd3JvdGU6DQo+
-IEhlbGxvIFBoaWxpcHBlLA0KPiANCj4gT24gNy8xMC8yMCAzOjI0IFBNLCBQaGlsaXBwZSBTY2hl
-bmtlciB3cm90ZToNCj4gPiBTaW5jZSB0aGUgcnVudGltZS1wbSB3YWtldXAgYnVnIHdhcyBmaXhl
-ZCBpbg0KPiA+IGRyaXZlcnMvdXNiL2NoaXBpZGVhL2NvcmUuYyB1c2IgZHVhbC1yb2xlIGhvc3Qv
-ZGV2aWNlIHN3aXRjaGluZyBpcw0KPiA+IHdvcmtpbmcuIFNvIG1ha2UgdXNlIG9mIGl0Lg0KPiA+
-IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFBoaWxpcHBlIFNjaGVua2VyIDxwaGlsaXBwZS5zY2hlbmtl
-ckB0b3JhZGV4LmNvbT4NCj4gPiANCj4gPiAtLS0NCj4gPiANCj4gPiAgYXJjaC9hcm0vYm9vdC9k
-dHMvaW14Ny1jb2xpYnJpLWV2YWwtdjMuZHRzaSB8IDkgKysrKysrKysrDQo+ID4gIGFyY2gvYXJt
-L2Jvb3QvZHRzL2lteDctY29saWJyaS5kdHNpICAgICAgICAgfCA0ICsrLS0NCj4gPiAgMiBmaWxl
-cyBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRp
-ZmYgLS1naXQgYS9hcmNoL2FybS9ib290L2R0cy9pbXg3LWNvbGlicmktZXZhbC12My5kdHNpDQo+
-ID4gYi9hcmNoL2FybS9ib290L2R0cy9pbXg3LWNvbGlicmktZXZhbC12My5kdHNpDQo+ID4gaW5k
-ZXggOTc2MDEzNzVmMjY0Li5kYjU2YTUzMmEzNGEgMTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC9hcm0v
-Ym9vdC9kdHMvaW14Ny1jb2xpYnJpLWV2YWwtdjMuZHRzaQ0KPiA+ICsrKyBiL2FyY2gvYXJtL2Jv
-b3QvZHRzL2lteDctY29saWJyaS1ldmFsLXYzLmR0c2kNCj4gPiBAQCAtMjAsNiArMjAsMTQgQEAg
-Y2xrMTZtOiBjbGsxNm0gew0KPiA+ICAJCWNsb2NrLWZyZXF1ZW5jeSA9IDwxNjAwMDAwMD47DQo+
-ID4gIAl9Ow0KPiA+ICANCj4gPiArCWV4dGNvbl91c2JjX2RldDogdXNiY19kZXQgew0KPiA+ICsJ
-CWNvbXBhdGlibGUgPSAibGludXgsZXh0Y29uLXVzYi1ncGlvIjsNCj4gDQo+IEFjY29yZGluZyB0
-byA0NjAyZjNiZmYyNjYgKCJ1c2I6IGNvbW1vbjogYWRkIFVTQiBHUElPIGJhc2VkIGNvbm5lY3Rp
-b24NCj4gZGV0ZWN0aW9uIGRyaXZlciIpOg0KPiAidGhlIG9sZCB3YXkgdXNpbmcgZXh0Y29uIHRv
-IHN1cHBvcnQgVVNCIER1YWwtUm9sZSBzd2l0Y2ggaXMgbm93DQo+IGRlcHJlY2F0ZWQNCj4gIHdo
-ZW4gdXNlIFR5cGUtQiBjb25uZWN0b3IuIg0KPiANCj4gSGF2ZSB5b3UgY29uc2lkZXJlZCB1c2lu
-ZyBhIGNvbXBhdGlibGUgPSAiZ3Bpby11c2ItYi1jb25uZWN0b3IiIGNoaWxkDQo+IG5vZGUgaW5z
-dGVhZD8NCj4gDQo+IENoZWVycywNCj4gQWhtYWQNCg0KVGhhbmtzIGZvciB0aGUgSGludCBBaG1h
-ZCwNCg0KSSBhbHJlYWR5IHRyaWVkIGFuZCBqdXN0IG5vdyB0cmllZCBhZ2FpbiBidXQgaXQgZG9l
-c24ndCB3b3JrIG9uIG91cg0KaGFyZHdhcmUuIEFyZSB5b3Ugc3VyZSB0aGlzIHdvcmtzIHdpdGgg
-Y2hpcGlkZWEgZHJpdmVyPw0KDQpTaG91bGQgdGhpcyBuZXcgdXNiLWNvbm5lY3RvciBzdHVmZiB3
-b3JrIGluIGdlbmVyYWwgd2l0aCBldmVyeSBvbGQNCmRyaXZlcj8NCg0KUGhpbGlwcGUNCg0KPiAN
-Cj4gPiArCQlpZC1ncGlvID0gPCZncGlvNyAxNCBHUElPX0FDVElWRV9ISUdIPjsNCj4gPiArCQlw
-aW5jdHJsLW5hbWVzID0gImRlZmF1bHQiOw0KPiA+ICsJCXBpbmN0cmwtMCA9IDwmcGluY3RybF91
-c2JjX2RldD47DQo+ID4gKwl9Ow0KPiA+ICsNCj4gPiArDQo+ID4gIAlncGlvLWtleXMgew0KPiA+
-ICAJCWNvbXBhdGlibGUgPSAiZ3Bpby1rZXlzIjsNCj4gPiAgCQlwaW5jdHJsLW5hbWVzID0gImRl
-ZmF1bHQiOw0KPiA+IEBAIC0xNzQsNiArMTgyLDcgQEAgJnVhcnQzIHsNCj4gPiAgfTsNCj4gPiAg
-DQo+ID4gICZ1c2JvdGcxIHsNCj4gPiArCWV4dGNvbiA9IDwwPiwgPCZleHRjb25fdXNiY19kZXQ+
-Ow0KPiA+ICAJc3RhdHVzID0gIm9rYXkiOw0KPiA+ICB9Ow0KPiA+ICANCj4gPiBkaWZmIC0tZ2l0
-IGEvYXJjaC9hcm0vYm9vdC9kdHMvaW14Ny1jb2xpYnJpLmR0c2kNCj4gPiBiL2FyY2gvYXJtL2Jv
-b3QvZHRzL2lteDctY29saWJyaS5kdHNpDQo+ID4gaW5kZXggZTE4ZTg5ZGVjODc5Li5jYWVhOTBk
-MjQyMWYgMTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMvaW14Ny1jb2xpYnJpLmR0
-c2kNCj4gPiArKysgYi9hcmNoL2FybS9ib290L2R0cy9pbXg3LWNvbGlicmkuZHRzaQ0KPiA+IEBA
-IC00NTcsNyArNDU3LDcgQEAgJnVhcnQzIHsNCj4gPiAgfTsNCj4gPiAgDQo+ID4gICZ1c2JvdGcx
-IHsNCj4gPiAtCWRyX21vZGUgPSAiaG9zdCI7DQo+ID4gKwlkcl9tb2RlID0gIm90ZyI7DQo+ID4g
-IH07DQo+ID4gIA0KPiA+ICAmdXNkaGMxIHsNCj4gPiBAQCAtNDg2LDcgKzQ4Niw3IEBAICZ1c2Ro
-YzMgew0KPiA+ICAmaW9tdXhjIHsNCj4gPiAgCXBpbmN0cmwtbmFtZXMgPSAiZGVmYXVsdCI7DQo+
-ID4gIAlwaW5jdHJsLTAgPSA8JnBpbmN0cmxfZ3BpbzEgJnBpbmN0cmxfZ3BpbzIgJnBpbmN0cmxf
-Z3BpbzMNCj4gPiAmcGluY3RybF9ncGlvNA0KPiA+IC0JCSAgICAgJnBpbmN0cmxfZ3BpbzcgJnBp
-bmN0cmxfdXNiY19kZXQ+Ow0KPiA+ICsJCSAgICAgJnBpbmN0cmxfZ3Bpbzc+Ow0KPiA+ICANCj4g
-PiAgCXBpbmN0cmxfZ3BpbzE6IGdwaW8xLWdycCB7DQo+ID4gIAkJZnNsLHBpbnMgPSA8DQo+ID4g
-DQo=
+On 2020-07-13 10:12, Claire Chang wrote:
+> The bounced DMA ops provide an implementation of DMA ops that bounce
+> streaming DMA in and out of a specially allocated region. Only the
+> operations relevant to streaming DMA are supported.
+
+I think there are too many implicit assumptions here - apparently that 
+coherent allocations will always be intercepted by 
+dma_*_from_dev_coherent(), and that calling into dma-direct won't 
+actually bounce things a second time beyond where you thought they were 
+going, manage coherency for a different address, and make it all go 
+subtly wrong. Consider "swiotlb=force", for instance...
+
+Again, plumbing this straight into dma-direct so that SWIOTLB can simply 
+target a different buffer and always bounce regardless of masks would 
+seem a far better option.
+
+Robin.
+
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> ---
+>   include/linux/device.h      |   3 +
+>   include/linux/dma-mapping.h |   1 +
+>   kernel/dma/Kconfig          |  17 +++
+>   kernel/dma/Makefile         |   1 +
+>   kernel/dma/bounced.c        | 215 ++++++++++++++++++++++++++++++++++++
+>   5 files changed, 237 insertions(+)
+>   create mode 100644 kernel/dma/bounced.c
+> 
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 7322c51e9c0c..868b9a364003 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -588,6 +588,9 @@ struct device {
+>   
+>   	struct list_head	dma_pools;	/* dma pools (if dma'ble) */
+>   
+> +#ifdef CONFIG_DMA_BOUNCED
+> +	struct dma_bounced_mem  *dma_bounced_mem;
+> +#endif
+>   #ifdef CONFIG_DMA_DECLARE_COHERENT
+>   	struct dma_coherent_mem	*dma_mem; /* internal for coherent mem
+>   					     override */
+> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+> index 2328f451a45d..86089424dafd 100644
+> --- a/include/linux/dma-mapping.h
+> +++ b/include/linux/dma-mapping.h
+> @@ -135,6 +135,7 @@ struct dma_map_ops {
+>   
+>   extern const struct dma_map_ops dma_virt_ops;
+>   extern const struct dma_map_ops dma_dummy_ops;
+> +extern const struct dma_map_ops dma_bounced_ops;
+>   
+>   #define DMA_BIT_MASK(n)	(((n) == 64) ? ~0ULL : ((1ULL<<(n))-1))
+>   
+> diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
+> index 1da3f44f2565..148734c8748b 100644
+> --- a/kernel/dma/Kconfig
+> +++ b/kernel/dma/Kconfig
+> @@ -88,6 +88,23 @@ config DMA_DIRECT_REMAP
+>   	select DMA_REMAP
+>   	select DMA_COHERENT_POOL
+>   
+> +config DMA_BOUNCED
+> +	bool "DMA Bounced"
+> +	depends on !HIGHMEM
+> +	select OF_RESERVED_MEM
+> +	help
+> +	  This enables support for bounced DMA pools which provide a level of
+> +	  DMA memory protection on systems with limited hardware protection
+> +	  capabilities, such as those lacking an IOMMU. It does so by bouncing
+> +	  the data to a specially allocated DMA-accessible protected region
+> +	  before mapping and unmapping. One can assign the protected memory
+> +	  region in the device tree by using reserved-memory.
+> +
+> +	  For more information see
+> +	  <Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt>
+> +	  and <kernel/dma/bounced.c>.
+> +	  If unsure, say "n".
+> +
+>   config DMA_CMA
+>   	bool "DMA Contiguous Memory Allocator"
+>   	depends on HAVE_DMA_CONTIGUOUS && CMA
+> diff --git a/kernel/dma/Makefile b/kernel/dma/Makefile
+> index 370f63344e9c..f5fb4f42326a 100644
+> --- a/kernel/dma/Makefile
+> +++ b/kernel/dma/Makefile
+> @@ -1,6 +1,7 @@
+>   # SPDX-License-Identifier: GPL-2.0
+>   
+>   obj-$(CONFIG_HAS_DMA)			+= mapping.o direct.o dummy.o
+> +obj-$(CONFIG_DMA_BOUNCED)		+= bounced.o
+>   obj-$(CONFIG_DMA_CMA)			+= contiguous.o
+>   obj-$(CONFIG_DMA_DECLARE_COHERENT)	+= coherent.o
+>   obj-$(CONFIG_DMA_VIRT_OPS)		+= virt.o
+> diff --git a/kernel/dma/bounced.c b/kernel/dma/bounced.c
+> new file mode 100644
+> index 000000000000..fcaabb5eccf2
+> --- /dev/null
+> +++ b/kernel/dma/bounced.c
+> @@ -0,0 +1,215 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Bounced DMA support.
+> + *
+> + * This implements the mitigations for lack of IOMMU by bouncing the data to a
+> + * specially allocated region before mapping and unmapping.
+> + *
+> + * Copyright 2020 Google LLC.
+> + */
+> +#include <linux/dma-direct.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/dma-noncoherent.h>
+> +#include <linux/io.h>
+> +#include <linux/genalloc.h>
+> +#include <linux/slab.h>
+> +
+> +struct dma_bounced_mem {
+> +	void		**orig_addr;
+> +	void		*virt_base;
+> +	dma_addr_t	device_base;
+> +	dma_addr_t	device_end;
+> +	struct gen_pool	*pool;
+> +	size_t		size;
+> +};
+> +
+> +static void dma_bounced_set_orig_virt(struct device *dev, dma_addr_t dma_addr,
+> +				      void *orig_addr)
+> +{
+> +	struct dma_bounced_mem *mem = dev->dma_bounced_mem;
+> +	int idx = (dma_addr - mem->device_base) >> PAGE_SHIFT;
+> +
+> +	if (dma_addr < mem->device_base || dma_addr >= mem->device_end)
+> +		return;
+> +
+> +	mem->orig_addr[idx] = orig_addr;
+> +}
+> +
+> +static void *dma_bounced_get_orig_virt(struct device *dev, dma_addr_t dma_addr)
+> +{
+> +	struct dma_bounced_mem *mem = dev->dma_bounced_mem;
+> +	int idx = (dma_addr - mem->device_base) >> PAGE_SHIFT;
+> +
+> +	if (dma_addr < mem->device_base || dma_addr >= mem->device_end)
+> +		return NULL;
+> +
+> +	return mem->orig_addr[idx];
+> +}
+> +
+> +static void *dma_bounced_get_virt(struct device *dev, dma_addr_t dma_addr)
+> +{
+> +	struct dma_bounced_mem *mem = dev->dma_bounced_mem;
+> +
+> +	if (dma_addr < mem->device_base || dma_addr >= mem->device_end)
+> +		return NULL;
+> +
+> +	return (dma_addr - mem->device_base) + mem->virt_base;
+> +}
+> +
+> +static void dma_bounced_sync_single_for_cpu(struct device *dev,
+> +					    dma_addr_t dma_addr, size_t size,
+> +					    enum dma_data_direction dir)
+> +{
+> +	void *orig_virt = dma_bounced_get_orig_virt(dev, dma_addr);
+> +	void *bounced_virt = dma_bounced_get_virt(dev, dma_addr);
+> +
+> +	if (!orig_virt || !bounced_virt)
+> +		return;
+> +
+> +	dma_direct_sync_single_for_cpu(dev, dma_addr, size, dir);
+> +
+> +	if (dir == DMA_FROM_DEVICE || dir == DMA_BIDIRECTIONAL)
+> +		memcpy(orig_virt, bounced_virt, size);
+> +}
+> +
+> +static void dma_bounced_sync_single_for_device(struct device *dev,
+> +					       dma_addr_t dma_addr, size_t size,
+> +					       enum dma_data_direction dir)
+> +{
+> +	void *orig_virt = dma_bounced_get_orig_virt(dev, dma_addr);
+> +	void *bounced_virt = dma_bounced_get_virt(dev, dma_addr);
+> +
+> +	if (!orig_virt || !bounced_virt)
+> +		return;
+> +
+> +	if (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL)
+> +		memcpy(bounced_virt, orig_virt, size);
+> +
+> +	dma_direct_sync_single_for_device(dev, dma_addr, size, dir);
+> +}
+> +
+> +static void dma_bounced_sync_sg_for_cpu(struct device *dev,
+> +					struct scatterlist *sgl, int nents,
+> +					enum dma_data_direction dir)
+> +{
+> +	struct scatterlist *sg;
+> +	int i;
+> +
+> +	for_each_sg(sgl, sg, nents, i) {
+> +		dma_bounced_sync_single_for_cpu(dev, sg->dma_address,
+> +						sg->length, dir);
+> +	}
+> +}
+> +
+> +static void dma_bounced_sync_sg_for_device(struct device *dev,
+> +					   struct scatterlist *sgl, int nents,
+> +					   enum dma_data_direction dir)
+> +{
+> +	struct scatterlist *sg;
+> +	int i;
+> +
+> +	for_each_sg(sgl, sg, nents, i) {
+> +		dma_bounced_sync_single_for_device(dev, sg->dma_address,
+> +						   sg->length, dir);
+> +	}
+> +}
+> +
+> +static void dma_bounced_unmap_page(struct device *dev, dma_addr_t dma_addr,
+> +				   size_t size, enum dma_data_direction dir,
+> +				   unsigned long attrs)
+> +{
+> +	struct dma_bounced_mem *mem = dev->dma_bounced_mem;
+> +
+> +	if (dma_addr < mem->device_base || dma_addr >= mem->device_end)
+> +		return;
+> +
+> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> +		dma_bounced_sync_single_for_cpu(dev, dma_addr, size, dir);
+> +
+> +	dma_bounced_set_orig_virt(dev, dma_addr, NULL);
+> +	gen_pool_free(mem->pool,
+> +		      (unsigned long)dma_bounced_get_virt(dev, dma_addr), size);
+> +}
+> +
+> +static dma_addr_t dma_bounced_map_page(struct device *dev, struct page *page,
+> +				       unsigned long offset, size_t size,
+> +				       enum dma_data_direction dir,
+> +				       unsigned long attrs)
+> +{
+> +	struct dma_bounced_mem *mem = dev->dma_bounced_mem;
+> +	dma_addr_t dma_addr;
+> +	void *orig_virt;
+> +
+> +	if (unlikely(!gen_pool_dma_alloc(mem->pool, size, &dma_addr)))
+> +		return DMA_MAPPING_ERROR;
+> +
+> +	orig_virt = page_to_virt(page) + offset;
+> +	dma_bounced_set_orig_virt(dev, dma_addr, orig_virt);
+> +
+> +	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+> +		dma_bounced_sync_single_for_device(dev, dma_addr, size, dir);
+> +
+> +	return dma_addr;
+> +}
+> +
+> +static void dma_bounced_unmap_sg(struct device *dev, struct scatterlist *sgl,
+> +				 int nents, enum dma_data_direction dir,
+> +				 unsigned long attrs)
+> +{
+> +	struct scatterlist *sg;
+> +	int i;
+> +
+> +	for_each_sg(sgl, sg, nents, i) {
+> +		dma_bounced_unmap_page(dev, sg->dma_address, sg_dma_len(sg),
+> +				       dir, attrs);
+> +	}
+> +}
+> +
+> +static int dma_bounced_map_sg(struct device *dev, struct scatterlist *sgl,
+> +			      int nents, enum dma_data_direction dir,
+> +			      unsigned long attrs)
+> +{
+> +	int i;
+> +	struct scatterlist *sg;
+> +
+> +	for_each_sg(sgl, sg, nents, i) {
+> +		sg->dma_address = dma_bounced_map_page(
+> +			dev, sg_page(sg), sg->offset, sg->length, dir, attrs);
+> +		if (sg->dma_address == DMA_MAPPING_ERROR)
+> +			goto out_unmap;
+> +		sg_dma_len(sg) = sg->length;
+> +	}
+> +
+> +	return nents;
+> +
+> +out_unmap:
+> +	dma_bounced_unmap_sg(dev, sgl, i, dir, attrs | DMA_ATTR_SKIP_CPU_SYNC);
+> +	return 0;
+> +}
+> +
+> +static size_t dma_bounced_max_mapping_size(struct device *dev)
+> +{
+> +	return dev->dma_bounced_mem->size;
+> +}
+> +
+> +const struct dma_map_ops dma_bounced_ops = {
+> +	.alloc			= NULL,
+> +	.free			= NULL,
+> +	.mmap			= NULL,
+> +	.get_sgtable		= NULL,
+> +	.sync_single_for_cpu	= dma_bounced_sync_single_for_cpu,
+> +	.sync_single_for_device = dma_bounced_sync_single_for_device,
+> +	.sync_sg_for_cpu	= dma_bounced_sync_sg_for_cpu,
+> +	.sync_sg_for_device	= dma_bounced_sync_sg_for_device,
+> +	.map_page		= dma_bounced_map_page,
+> +	.unmap_page		= dma_bounced_unmap_page,
+> +	.map_sg			= dma_bounced_map_sg,
+> +	.unmap_sg		= dma_bounced_unmap_sg,
+> +	.unmap_resource		= NULL,
+> +	.map_resource		= NULL,
+> +	.cache_sync		= NULL,
+> +	.dma_supported		= dma_direct_supported,
+> +	.get_required_mask	= dma_direct_get_required_mask,
+> +	.max_mapping_size	= dma_bounced_max_mapping_size,
+> +	.get_merge_boundary	= NULL,
+> +};
+> 
