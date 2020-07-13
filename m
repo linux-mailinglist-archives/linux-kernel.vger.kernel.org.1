@@ -2,76 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C283B21D03E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B2221D045
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgGMHLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 03:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbgGMHLs (ORCPT
+        id S1728957AbgGMHM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 03:12:58 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53478 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbgGMHM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 03:11:48 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A95C061794;
-        Mon, 13 Jul 2020 00:11:48 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id t27so10257907ill.9;
-        Mon, 13 Jul 2020 00:11:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=2mnaiTo0qGcxFq6+IdGd44zv8ruDj4yCsqDxq42cVIE=;
-        b=lh9vyhfD/gQLtRklaoZwaMnc+pg6vafrhhSbbdJrlmaWEQwxaM6368jQOyDsJ53a7S
-         iXsU+1M5MIXR0V6FAo+PlYFqSiYjjSQlIw36K02f50JuJu6BbCRy/qB9rdIj7wLX+y5O
-         b9qiX75PQoPcFi0D3Vwkyi9FZLTWFakkrF24fMpsyhswPPiCj2TA+1+Ds2GxKn0nXU2z
-         OpNbpDBIPj0zN3UlBFJRuyTAafXzTZ7Jb0yEUkwCJhQLZCII+RL/gurTUfx/jw+C+jrP
-         lh40S1YlckFMR+uQvp0oq7HaHPLrl7jWGyWce/YXbZOJE1gLrjOgIJW61ymBzPhz+nW8
-         i0xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=2mnaiTo0qGcxFq6+IdGd44zv8ruDj4yCsqDxq42cVIE=;
-        b=RBJ8pFROCH2wNC7ADpasVsZOX9BnJbibN7Sfg+yk28Rox9QoNvq/F81z201dxRos1U
-         OgBoSaySQ4vjoU4bQw8DUtrXCNi1hvzjQeRwyxp/+54DCYTftpOfQsWamaHETFXBdO9z
-         SgxHl0JKwCIfB8710mLAyZK7naW8JBhr5vySC1wjBOC6MNnPx9CUuuvIcnooF+U62JJa
-         0itFBIBwRFyoj+svmJO4OytWLTYS8CU3sDmZqmJEqY2eYxDU/VVSCgmvapYIWgXf1Vyz
-         NScJh/IdXJ0cwT64aPuAjZhbKTvUETryUfzYLhVT4zy6jnX6bqGUp1L0CNc6SFmyK0a+
-         OjgA==
-X-Gm-Message-State: AOAM533TArFTC6pa45BNrBwVc8drO6aPfsdIqALSUQr39BcPcZ/imnVH
-        tvee0iUECMJR1aXVTmSRweQxx1PmQhEGMCr3xgnmPCR3W0Y=
-X-Google-Smtp-Source: ABdhPJzM4AQOKnlqaA6HZcec9ptnZzQHqqGvZCkaM4HYxAtDxf4PS4f+0Tj/jzdwNy8KC1VDj83DjesLV+jaEheyXRw=
-X-Received: by 2002:a92:dc4a:: with SMTP id x10mr64252865ilq.111.1594624307565;
- Mon, 13 Jul 2020 00:11:47 -0700 (PDT)
+        Mon, 13 Jul 2020 03:12:58 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 321031C0BDD; Mon, 13 Jul 2020 09:12:56 +0200 (CEST)
+Date:   Mon, 13 Jul 2020 09:12:55 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>
+Subject: Re: [PATCH RFC] leds: Add support for per-LED device triggers
+Message-ID: <20200713071255.GB30654@amd>
+References: <20200702144712.1994685-1-megous@megous.com>
+ <20200711100409.GA18901@amd>
+ <20200711210111.5ysijhexgyzyr7u7@core.my.home>
+ <20200712072554.GC4721@duo.ucw.cz>
+ <20200712134911.r3lig4hgyqhmslth@core.my.home>
+ <20200712191111.GA20592@amd>
+ <20200712223821.742ljr4qxdrx3aqv@core.my.home>
+ <20200713011544.0adc51f1@nic.cz>
+ <20200713011841.25904273@nic.cz>
 MIME-Version: 1.0
-References: <CABXGCsPPoeja2WxWQ7yhX+3EF1gtCHfjdFjx1CwuAyJcSVzz1g@mail.gmail.com>
-In-Reply-To: <CABXGCsPPoeja2WxWQ7yhX+3EF1gtCHfjdFjx1CwuAyJcSVzz1g@mail.gmail.com>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Mon, 13 Jul 2020 12:11:36 +0500
-Message-ID: <CABXGCsP3ytiGTt4bepZp2A=rzZzOKbMv62dXpe26f57OCYPnvQ@mail.gmail.com>
-Subject: Re: [5.8RC4][bugreport]WARNING: CPU: 28 PID: 211236 at
- fs/fuse/file.c:1684 tree_insert+0xaf/0xc0 [fuse]
-To:     linux-fsdevel@vger.kernel.org,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        mpatlasov@virtuozzo.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="s/l3CgOIzMHHjg/5"
+Content-Disposition: inline
+In-Reply-To: <20200713011841.25904273@nic.cz>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Jul 2020 at 03:28, Mikhail Gavrilov
-<mikhail.v.gavrilov@gmail.com> wrote:
->
-> Hi folks.
-> While testing 5.8 RCs I founded that kernel log flooded by the message
-> "WARNING: CPU: 28 PID: 211236 at fs/fuse/file.c:1684 tree
-> insert+0xaf/0xc0 [fuse]" when I start podman container.
-> In kernel 5.7 not has such a problem.
 
-Maxim, I suppose you leave `WARN_ON(!wpa->ia.ap.num_pages);` for debug purpose?
-Now this line is often called when I start the container.
+--s/l3CgOIzMHHjg/5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---
-Best Regards,
-Mike Gavrilov.
+On Mon 2020-07-13 01:18:41, Marek Behun wrote:
+> On Mon, 13 Jul 2020 01:15:44 +0200
+> Marek Behun <marek.behun@nic.cz> wrote:
+>=20
+> > On Mon, 13 Jul 2020 00:38:21 +0200
+> > Ond=C5=99ej Jirman <megous@megous.com> wrote:
+> >=20
+> > > So after trying to use this, this seems to disallow the use of multip=
+le HW
+> > > triggers per LED. That's fine by me, because using one HW sysfs confi=
+gured
+> > > trigger per LED that use case is my proposal, but is it desireable in=
+ general? =20
+> >=20
+> > Why? If you register one LED and several triggers, all sharing the same
+> > trigger_type pointer, I think it should work.
+> >=20
+> > Marek
+>=20
+> The problem arises when I have two LEDs and two HW triggers, and the
+> hardware allows setting one HW trigger on both LEDs and other HW
+> trigger only on one LED. But this could simply be ignored - the
+> set_trigger function could simply return -ENOTSUPP or something.
+
+In this case you should have two trigger_type pointers (since two LEDs
+are different), and yes, you'll have duplication for one of the
+triggers. I don't think thats a problem.
+
+Best regards,
+
+								Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--s/l3CgOIzMHHjg/5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl8MCXcACgkQMOfwapXb+vI3EACfTTWAUjxR+z+O0wW07CTZg6nY
+OyQAnRovoM7dyl5LTNqQyJETm6JPstLb
+=M34O
+-----END PGP SIGNATURE-----
+
+--s/l3CgOIzMHHjg/5--
