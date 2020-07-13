@@ -2,145 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E4B21D8CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EA221D8D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730105AbgGMOnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:43:40 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:53532 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729689AbgGMOng (ORCPT
+        id S1730119AbgGMOo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:44:28 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9541 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729703AbgGMOo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:43:36 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200713144334euoutp02470b76ff453d30f86168cedd18c5251c~hVwNA4lsw2796527965euoutp02J
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 14:43:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200713144334euoutp02470b76ff453d30f86168cedd18c5251c~hVwNA4lsw2796527965euoutp02J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1594651414;
-        bh=B440VBDLdLWidVVzamEgT8cxdzc8DwUiqZOX84CTZVs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gWjASbmbzzb+8uuz9RTlTZQcDi0fhhyVDMZjKdKi8ug5c5H41YeN4+baOD8bEaITp
-         jN6NXnKCX+xGKfkBvywaUqCug2WDiokHY/HLjkLKWMZAgZAVEqR8MWJMZIwtd/Qmu8
-         hjx8xis0wpMsEZjgHD71J166gg88itkA3/ihSkWw=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200713144334eucas1p27b8c28229a62306997a8cb3666d284a2~hVwMqhWLH0713507135eucas1p2p;
-        Mon, 13 Jul 2020 14:43:34 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 9E.E5.06456.6137C0F5; Mon, 13
-        Jul 2020 15:43:34 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200713144333eucas1p1f393b280cda5eead4e7ca0a005c8a4db~hVwMVP1Mg0193801938eucas1p1I;
-        Mon, 13 Jul 2020 14:43:33 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200713144333eusmtrp11e6d448603f5183dfba243d4ffaf27d4~hVwMUj-y90993409934eusmtrp1a;
-        Mon, 13 Jul 2020 14:43:33 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-ba-5f0c73169e88
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 56.5A.06017.5137C0F5; Mon, 13
-        Jul 2020 15:43:33 +0100 (BST)
-Received: from AMDC3748.digital.local (unknown [106.120.51.74]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200713144333eusmtip13cba26d8ef88fbfed56cb041248967a4~hVwLmbChd1900919009eusmtip1u;
-        Mon, 13 Jul 2020 14:43:32 +0000 (GMT)
-From:   Andrzej Hajda <a.hajda@samsung.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        andy.shevchenko@gmail.com, Mark Brown <broonie@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
-Subject: [PATCH v9 4/4] drm/bridge: lvds-codec: simplify error handling
-Date:   Mon, 13 Jul 2020 16:43:24 +0200
-Message-Id: <20200713144324.23654-5-a.hajda@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200713144324.23654-1-a.hajda@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA0WSe0gUURTGuTuzM+PiyrRKHiwyNyINzKT+uJJERdFUkIKlmJRtNVjkmuxo
-        5RplL3XNbEskn2TrmmbmY9estpdtsRa2Wr7QyDSKYDOTfFRr9HAaq/+++53fOd+5l8sQKqfc
-        j9mXlMLrkjSJakpBNjvcHcGzBc/4pWMmEr+sa5djl/ERwo2F9XJc8OYdhX81nydw9+QohU9W
-        1FO456uLwE8/9pDYcN5MY8vbXjnuspVS2F5wD+HrjwdobM+Lw2UTBcQqluvqfUFwo32nae7e
-        l3KSu108QHMl2UVyzlJjoLgnxk4Z96CsluYGz7TKOKv5GJfXVIO4lrP5JDdumRep3KYI38Mn
-        7jvI60JW7lTsLbS+liWXKQ4bv7yWZaBeJgd5MMAuhy5zkSwHKRgVW43AVO2eOUwg+G58T4uU
-        ih1HcPxEyN+OZ19bkARVITAPmql/HaXuKlKkKDYIflj7KVH7sMvgnLOYFiGCnSKhJytTLha8
-        2fVQfNPxR5PsQpi6WzE9lmGULIYrQ4elNH+41tBCiLYHGwaX8mLEMcCO0FAxeZOUmLVQZCpF
-        kvaGD61NtKTnQlt+7gxzDAarTxFSczaCGw23CamwAl61T1FiADG9dL1t5parYaq8RCbawHpB
-        38gs0Sam5YXmi4RkKyE7UyXRATDovDEz0Bcqn09SkubAMdxBSM+Ti8BmcsqNyL/4f1g5QjXI
-        l08VtAm8EJrEH1oiaLRCalLCkt0HtBY0/cnafraO3UKTnbvsiGWQ2lMJEZ7xKrnmoJCmtSNg
-        CLWPco2zbYdKuUeTpud1B+J1qYm8YEdzGFLtq1xmcm1XsQmaFH4/zyfzur9VGePhl4E2z6t8
-        mKEPLKpp9B7QG8LfbDJn2tbpvw0Fe230dXyKOho8XutY4RcbJ1AbDFsT/INc433D+T9icn82
-        pAZmvVVYIrvnL7oaZv8MZaFu7RFrkz5q4vKFdH9tdIDVkNPh8skaSo+K3hKzoe5uSP8dd93S
-        8Agq7aktGseu3jLr2ckF99WksFcTupjQCZrfsgv4t2ADAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsVy+t/xu7qixTzxBi3ftS1urTvHavFywmFG
-        i40z1rNaTH34hM3i/7aJzBZXvr5ns2hevJ7N4ur3l8wWJ99cZbHonLiE3WLT42usFpd3zWGz
-        ODR1L6PF2iN32S0O9UVbzP0yldlBwOPytYvMHu9vtLJ77P22gMVj56y77B6zO2ayemxa1cnm
-        cWLCJSaP/XPXsHvc7z7O5LF5Sb1H35ZVjB4HeiezeHzeJBfAG6VnU5RfWpKqkJFfXGKrFG1o
-        YaRnaGmhZ2RiqWdobB5rZWSqpG9nk5Kak1mWWqRvl6CXMWPzPaaCuVwVE77dY2pgvMbRxcjJ
-        ISFgInHm+wFGEFtIYCmjxJ6WUoi4uMTu+W+ZIWxhiT/Xutggaj4xSnxeJwxiswloSvzdfBMs
-        LiJgLNF/dhZ7FyMXB7NAG6vE3PNP2EESwgLuErO2H2MFsVkEVCV+7VkMtIyDg1fAQmLZgwqI
-        +fISqzccYAYJcwpYSszvCwcxhYAqTrz1nMDIt4CRYRWjSGppcW56brGRXnFibnFpXrpecn7u
-        JkZgTG079nPLDsaud8GHGAU4GJV4eCX8eeKFWBPLiitzDzFKcDArifA6nT0dJ8SbklhZlVqU
-        H19UmpNafIjRFOiiicxSosn5wHjPK4k3NDU0t7A0NDc2NzazUBLn7RA4GCMkkJ5YkpqdmlqQ
-        WgTTx8TBKdXAmFkYWFG89Hq5hO2Mp1vPnVk56efMrDd7482rWXR3J8ROP/p1zqnQY+v3ej1O
-        id92TVfI4dlSzeeWErIL80I3+XvOzPj3ZJ+b8yXtJ0sOvsxmd24LdzfN+bYwbDNH3uH3usJ/
-        H7knNUXolx7dN2fWSr17ExdxLtefd3ThNl1+SbWfMsdvfVH5fkuJpTgj0VCLuag4EQCVaDmR
-        vwIAAA==
-X-CMS-MailID: 20200713144333eucas1p1f393b280cda5eead4e7ca0a005c8a4db
-X-Msg-Generator: CA
+        Mon, 13 Jul 2020 10:44:28 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0c72dc0000>; Mon, 13 Jul 2020 07:42:36 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 13 Jul 2020 07:44:28 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 13 Jul 2020 07:44:28 -0700
+Received: from [10.26.72.101] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 13 Jul
+ 2020 14:44:18 +0000
+Subject: Re: [PATCH v2 2/2] arm64: tlb: Use the TLBI RANGE feature in arm64
+To:     Zhenyu Ye <yezhenyu2@huawei.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <suzuki.poulose@arm.com>, <maz@kernel.org>,
+        <steven.price@arm.com>, <guohanjun@huawei.com>, <olof@lixom.net>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
+        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
+        <kuhn.chenqun@huawei.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200710094420.517-1-yezhenyu2@huawei.com>
+ <20200710094420.517-3-yezhenyu2@huawei.com>
+ <4040f429-21c8-0825-2ad4-97786c3fe7c1@nvidia.com>
+ <cee60718-ced2-069f-8dad-48941c6fc09b@huawei.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <7237888d-2168-cd8b-c83d-c8e54871793d@nvidia.com>
+Date:   Mon, 13 Jul 2020 15:44:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+MIME-Version: 1.0
+In-Reply-To: <cee60718-ced2-069f-8dad-48941c6fc09b@huawei.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200713144333eucas1p1f393b280cda5eead4e7ca0a005c8a4db
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200713144333eucas1p1f393b280cda5eead4e7ca0a005c8a4db
-References: <20200713144324.23654-1-a.hajda@samsung.com>
-        <CGME20200713144333eucas1p1f393b280cda5eead4e7ca0a005c8a4db@eucas1p1.samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594651356; bh=GMqdGNMQAH4AHg5hTa7waqJrHwyKyA4TXJmzHNKG13w=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=X0D1DS8Q43SgE5F9IDdU432zVIipKfOXH09pQUdZ9nwA/5YJw5NgTcaeOTeDp1MbU
+         ZtFrObX3/F6AItK2Kaz/Jdj5ln5HbEbuqjOpJwaB97qoVpRmi4eRHG0RAgY/w+qBO6
+         O83/VWEQOAHYks9bxeUkSDB0FMoXhXsn4MX9rmJ2TcqXT1xdefUZgAVlGNDLe2vAMI
+         LHblN/7vNqKTDmUaPDmThJlWenrobGwK1npattjHleKBjjVrwIU8LIRTbCPFjgveeQ
+         ljgVMQFJWxJBsbLsK8mvDDjQE2jrZ6uET1MeXoy3Vy2Y3ZM78D81s9qTAwEGsOEGbC
+         E7AzNNZBDWqDw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using dev_err_probe code has following advantages:
-- shorter code,
-- recorded defer probe reason for debugging,
-- uniform error code logging.
 
-Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
----
- drivers/gpu/drm/bridge/lvds-codec.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+On 13/07/2020 15:39, Zhenyu Ye wrote:
+> Hi Jon,
+> 
+> On 2020/7/13 22:27, Jon Hunter wrote:
+>> After this change I am seeing the following build errors ...
+>>
+>> /tmp/cckzq3FT.s: Assembler messages:
+>> /tmp/cckzq3FT.s:854: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
+>> /tmp/cckzq3FT.s:870: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
+>> /tmp/cckzq3FT.s:1095: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
+>> /tmp/cckzq3FT.s:1111: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
+>> /tmp/cckzq3FT.s:1964: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
+>> /tmp/cckzq3FT.s:1980: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
+>> /tmp/cckzq3FT.s:2286: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
+>> /tmp/cckzq3FT.s:2302: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
+>> /tmp/cckzq3FT.s:4833: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
+>> /tmp/cckzq3FT.s:4849: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
+>> /tmp/cckzq3FT.s:5090: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
+>> /tmp/cckzq3FT.s:5106: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
+>> /tmp/cckzq3FT.s:874: Error: attempt to move .org backwards
+>> /tmp/cckzq3FT.s:1115: Error: attempt to move .org backwards
+>> /tmp/cckzq3FT.s:1984: Error: attempt to move .org backwards
+>> /tmp/cckzq3FT.s:2306: Error: attempt to move .org backwards
+>> /tmp/cckzq3FT.s:4853: Error: attempt to move .org backwards
+>> /tmp/cckzq3FT.s:5110: Error: attempt to move .org backwards
+>> scripts/Makefile.build:280: recipe for target 'arch/arm64/mm/hugetlbpage.o' failed
+>> make[3]: *** [arch/arm64/mm/hugetlbpage.o] Error 1
+>> scripts/Makefile.build:497: recipe for target 'arch/arm64/mm' failed
+>> make[2]: *** [arch/arm64/mm] Error 2
+>>
+>> Cheers
+>> Jon
+>>
+> 
+> The code must be built with binutils >= 2.30.
+> Maybe I should add  a check on whether binutils supports ARMv8.4-a instructions...
 
-diff --git a/drivers/gpu/drm/bridge/lvds-codec.c b/drivers/gpu/drm/bridge/lvds-codec.c
-index 24fb1befdfa2..f19d9f7a5db2 100644
---- a/drivers/gpu/drm/bridge/lvds-codec.c
-+++ b/drivers/gpu/drm/bridge/lvds-codec.c
-@@ -71,13 +71,9 @@ static int lvds_codec_probe(struct platform_device *pdev)
- 	lvds_codec->connector_type = (uintptr_t)of_device_get_match_data(dev);
- 	lvds_codec->powerdown_gpio = devm_gpiod_get_optional(dev, "powerdown",
- 							     GPIOD_OUT_HIGH);
--	if (IS_ERR(lvds_codec->powerdown_gpio)) {
--		int err = PTR_ERR(lvds_codec->powerdown_gpio);
--
--		if (err != -EPROBE_DEFER)
--			dev_err(dev, "powerdown GPIO failure: %d\n", err);
--		return err;
--	}
-+	if (IS_ERR(lvds_codec->powerdown_gpio))
-+		return dev_err_probe(dev, PTR_ERR(lvds_codec->powerdown_gpio),
-+				     "powerdown GPIO failure\n");
- 
- 	/* Locate the panel DT node. */
- 	panel_node = of_graph_get_remote_node(dev->of_node, 1, 0);
+Yes I believe so.
+
+Cheers
+Jon
+
 -- 
-2.17.1
-
+nvpublic
