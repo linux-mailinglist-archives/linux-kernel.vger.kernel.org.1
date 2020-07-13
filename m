@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9621021D711
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7525C21D718
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729979AbgGMN0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:26:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:34636 "EHLO foss.arm.com"
+        id S1729788AbgGMN2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 09:28:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:34816 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729613AbgGMN0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:26:04 -0400
+        id S1729649AbgGMN2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 09:28:33 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 973A930E;
-        Mon, 13 Jul 2020 06:26:03 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74A2430E;
+        Mon, 13 Jul 2020 06:28:32 -0700 (PDT)
 Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B07D83F887;
-        Mon, 13 Jul 2020 06:26:02 -0700 (PDT)
-References: <20200701190656.10126-1-valentin.schneider@arm.com> <20200701190656.10126-7-valentin.schneider@arm.com> <20200713123959.GI10769@hirez.programming.kicks-ass.net>
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B6773F7C3;
+        Mon, 13 Jul 2020 06:28:31 -0700 (PDT)
+References: <20200701190656.10126-1-valentin.schneider@arm.com> <20200701190656.10126-8-valentin.schneider@arm.com> <20200713125543.GJ10769@hirez.programming.kicks-ass.net>
 User-agent: mu4e 0.9.17; emacs 26.3
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
         vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
         morten.rasmussen@arm.com
-Subject: Re: [PATCH v3 6/7] sched/topology: Introduce SD metaflag for flags needing > 1 groups
-In-reply-to: <20200713123959.GI10769@hirez.programming.kicks-ass.net>
-Date:   Mon, 13 Jul 2020 14:25:56 +0100
-Message-ID: <jhjk0z7lf6j.mognet@arm.com>
+Subject: Re: [PATCH v3 7/7] sched/topology: Use prebuilt SD flag degeneration mask
+In-reply-to: <20200713125543.GJ10769@hirez.programming.kicks-ass.net>
+Date:   Mon, 13 Jul 2020 14:28:29 +0100
+Message-ID: <jhjimerlf2a.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -36,25 +36,65 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 13/07/20 13:39, Peter Zijlstra wrote:
-> On Wed, Jul 01, 2020 at 08:06:54PM +0100, Valentin Schneider wrote:
->> +/* Generate a mask of SD flags with the SDF_NEEDS_GROUPS metaflag */
->> +#define SD_FLAG(name, idx, mflags) (BIT(idx) * (((mflags) & SDF_NEEDS_GROUPS) / SDF_NEEDS_GROUPS)) |
->
-> #define SD_FLAGS(name, idx, mflags) (!!((mflags) & SDF_NEEDS_GROUPS) * BIT(idx))
->
-
-Was paranoid about really getting a 1 or a 0, but AFAICT the standard
-does agree with you!
-
->> +static const int SD_DEGENERATE_GROUPS_MASK =
->> +#include<linux/sched/sd_flags.h>
->> +0;
->> +#undef SD_FLAG
->> +
->>  #ifdef CONFIG_SCHED_DEBUG
->>  #define SD_FLAG(_name, idx, mflags) [idx] = {.meta_flags = mflags, .name = #_name},
->>  static const struct {
->> --
->> 2.27.0
+On 13/07/20 13:55, Peter Zijlstra wrote:
+> On Wed, Jul 01, 2020 at 08:06:55PM +0100, Valentin Schneider wrote:
+>> Leverage SD_DEGENERATE_GROUPS_MASK in sd_degenerate() and
+>> sd_degenerate_parent().
 >>
+>> Note that this changes sd_degenerate() somewhat: I'm using the negation of
+>> SD_DEGENERATE_GROUPS_MASK as the mask of flags not requiring groups, which
+>> is equivalent to:
+>>
+>> SD_WAKE_AFFINE | SD_SERIALIZE | SD_NUMA
+>>
+>> whereas the current mask for that is simply
+>>
+>> SD_WAKE_AFFINE
+>>
+>> I played with a few toy NUMA topologies on QEMU and couldn't cause a
+>> different degeneration than what mainline does currently. If that is deemed
+>> too risky, we can go back to using SD_WAKE_AFFINE explicitly.
+>
+> Arguably SD_SERIALIZE needs groups, note how we're only having that
+> effective for machines with at least 2 nodes. It's a bit shit how we end
+> up there, but IIRC that's what it ends up as.
+>
+
+Right, AFAICT we get SD_SERIALIZE wherever we have SD_NUMA, which is any
+level above NODE.
+
+> SD_NUMA is descriptive, and not marking a group as degenerates because
+> it has SD_NUMA seems a bit silly.
+
+It does, although we can still degenerate it, see below.
+
+> But then, it would be the top domain
+> and would survive anyway?
+
+So from what I've tested we still get rid of those via
+sd_parent_degenerate(): child and parent have the same flags and same span,
+so parent goes out.
+
+That happens in the middle of the NUMA topology levels on that borked
+topology with weird distances, aka
+
+  node distances:
+  node   0   1   2   3
+    0:  10  12  20  22
+    1:  12  10  22  24
+    2:  20  22  10  12
+    3:  22  24  12  10
+
+which ought to look something like (+local distance to end result)
+
+      2      10      2
+  1 <---> 0 <---> 2 <---> 3
+
+We end up with the following NUMA levels (i.e. deduplicated distances)
+  NUMA (<= 12)
+  NUMA (<= 20)
+  NUMA (<= 22)
+  NUMA (<= 24)
+
+For e.g. any CPU of node1, NUMA(<=20) is gonna have the same span as
+NUMA(<=12), so we'll degenerate it.
