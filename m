@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F7921DF80
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A8021DF8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgGMSXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 14:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgGMSXR (ORCPT
+        id S1726600AbgGMSYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 14:24:00 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:37333 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgGMSX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 14:23:17 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF825C061755;
-        Mon, 13 Jul 2020 11:23:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=lO9SNS6YsfaUQOCZkP1HtouHsm7dL5FEWnQ2Zsu00Fw=; b=VnzPzzMIRvVltLkYbCmYOLEgN
-        yN2UHvTCldbDymh3fso14zkGiBaHSAOKn9VT8tjBWYFVNTdFF4a1lM494fV2f+RZt8cSpM86p+BHs
-        ZH+NkaC4bi4p2EpBuM/LHOCT2MSqEddufJR7isXfoQo9Ea2QzTXyM6SVSjzT5ubInR+vSq8M6uix3
-        nb6VeeWZqT/+r5n8zDTqld9vPlm0ycx7ijUvi36gXw6AvDK8vib6ODW9SkW/+OjF5fWfd3r74dHo/
-        3/tIZEz/3VJatDOwEnkvrlUxsNMLOrjZzmRyFSLVeG1tTdBl63WDlPBJNuM1/nEqla9xZC/zipFiQ
-        SrR/7ijTQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39074)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jv36g-0004Dv-L8; Mon, 13 Jul 2020 19:23:14 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jv36g-0006V0-4S; Mon, 13 Jul 2020 19:23:14 +0100
-Date:   Mon, 13 Jul 2020 19:23:14 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Michael Walle <michael@walle.cc>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alex Marginean <alexandru.marginean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v6 1/4] net: phy: add USXGMII link partner
- ability constants
-Message-ID: <20200713182314.GW1551@shell.armlinux.org.uk>
-References: <20200709213526.21972-1-michael@walle.cc>
- <20200709213526.21972-2-michael@walle.cc>
+        Mon, 13 Jul 2020 14:23:59 -0400
+Received: by mail-io1-f66.google.com with SMTP id v6so14554187iob.4;
+        Mon, 13 Jul 2020 11:23:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ifx3aALNuF7rKl8vX3SdTnNE70Q3qXp0lBlunsaf+O4=;
+        b=VPOOTJhoLj5Cb150y6p1TwenBQzNfDKOJ5wyIUWq4XesRghFuTupXuNDC6XNt5OrZa
+         Y2mvcXADpPiRngSgJJMkFr1gD3AYhLU7GsEGv8Yk1NjjGhs0PShMjaoA0yiZ9Vj3bHHI
+         f0tHrDuUtWjy0YmU2DPTP72NHuzF2htDmG+Xv3vspo1FQn28gbZBbCsFlWFJA5UbdEE2
+         tKMAaZp1qC+gDMfv2kJqggJI5H/WvroU6A/Pv1xt2X1IRwbyMxsjC6GDQho6qnrG8rCG
+         jv+p0WXJsc5kYMuXSj/fBo3dLxk3e4kUc/sSHhG2fi9RMkU9le6t9UnLvXXhu1dm1mg7
+         DJWA==
+X-Gm-Message-State: AOAM531xcWgCijWFCMHSfaq2+gqfDJ4IR4U1yAwOsPTsPXK2TLW17jM4
+        aFtGB5nmVKZljP8THAO4sQ==
+X-Google-Smtp-Source: ABdhPJya3sqMPQiW2H/b993RNfsrgt3J2EBCVEUsT+0P5mubEbH1CLbcW6JdVEJ2qL9zNx+NokQEPw==
+X-Received: by 2002:a5e:dd4c:: with SMTP id u12mr1090199iop.14.1594664638827;
+        Mon, 13 Jul 2020 11:23:58 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id t1sm8159994iob.16.2020.07.13.11.23.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 11:23:58 -0700 (PDT)
+Received: (nullmailer pid 493759 invoked by uid 1000);
+        Mon, 13 Jul 2020 18:23:56 -0000
+Date:   Mon, 13 Jul 2020 12:23:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     f.fainelli@gmail.com, gregkh@linuxfoundation.org, wahrenst@gmx.net,
+        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Eric Anholt <eric@anholt.net>, linux-usb@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, tim.gover@raspberrypi.org,
+        linux-pci@vger.kernel.org, helgaas@kernel.org,
+        andy.shevchenko@gmail.com, mathias.nyman@linux.intel.com,
+        lorenzo.pieralisi@arm.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/9] dt-bindings: reset: Add a binding for the RPi
+ Firmware reset controller
+Message-ID: <20200713182356.GA413630@bogus>
+References: <20200612171334.26385-1-nsaenzjulienne@suse.de>
+ <20200612171334.26385-2-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200709213526.21972-2-michael@walle.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200612171334.26385-2-nsaenzjulienne@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 11:35:23PM +0200, Michael Walle wrote:
-> The constants are taken from the USXGMII Singleport Copper Interface
-> specification. The naming are based on the SGMII ones, but with an MDIO_
-> prefix.
+On Fri, Jun 12, 2020 at 07:13:25PM +0200, Nicolas Saenz Julienne wrote:
+> The firmware running on the RPi VideoCore can be used to reset and
+> initialize HW controlled by the firmware.
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> 
 > ---
->  include/uapi/linux/mdio.h | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
+> Changes since v2:
+>  - Add include file for reset IDs
 > 
-> diff --git a/include/uapi/linux/mdio.h b/include/uapi/linux/mdio.h
-> index 4bcb41c71b8c..784723072578 100644
-> --- a/include/uapi/linux/mdio.h
-> +++ b/include/uapi/linux/mdio.h
-> @@ -324,4 +324,30 @@ static inline __u16 mdio_phy_id_c45(int prtad, int devad)
->  	return MDIO_PHY_ID_C45 | (prtad << 5) | devad;
->  }
+> Changes since v1:
+>  - Correct cells binding as per Florian's comment
+>  - Change compatible string to be more generic
+> 
+>  .../arm/bcm/raspberrypi,bcm2835-firmware.yaml | 21 +++++++++++++++++++
+>  .../reset/raspberrypi,firmware-reset.h        | 13 ++++++++++++
+>  2 files changed, 34 insertions(+)
+>  create mode 100644 include/dt-bindings/reset/raspberrypi,firmware-reset.h
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
+> index b48ed875eb8e..23a885af3a28 100644
+> --- a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
+> +++ b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-firmware.yaml
+> @@ -39,6 +39,22 @@ properties:
+>        - compatible
+>        - "#clock-cells"
 >  
-> +/* UsxgmiiChannelInfo[15:0] for USXGMII in-band auto-negotiation.*/
-> +#define MDIO_LPA_USXGMII_EEE_CLK_STP	0x0080	/* EEE clock stop supported */
-> +#define MDIO_LPA_USXGMII_EEE		0x0100	/* EEE supported */
-> +#define MDIO_LPA_USXGMII_SPD_MASK	0x0e00	/* USXGMII speed mask */
-> +#define MDIO_LPA_USXGMII_FULL_DUPLEX	0x1000	/* USXGMII full duplex */
-> +#define MDIO_LPA_USXGMII_DPX_SPD_MASK	0x1e00	/* USXGMII duplex and speed bits */
-> +#define MDIO_LPA_USXGMII_10		0x0000	/* 10Mbps */
-> +#define MDIO_LPA_USXGMII_10HALF		0x0000	/* 10Mbps half-duplex */
-> +#define MDIO_LPA_USXGMII_10FULL		0x1000	/* 10Mbps full-duplex */
-> +#define MDIO_LPA_USXGMII_100		0x0200	/* 100Mbps */
-> +#define MDIO_LPA_USXGMII_100HALF	0x0200	/* 100Mbps half-duplex */
-> +#define MDIO_LPA_USXGMII_100FULL	0x1200	/* 100Mbps full-duplex */
-> +#define MDIO_LPA_USXGMII_1000		0x0400	/* 1000Mbps */
-> +#define MDIO_LPA_USXGMII_1000HALF	0x0400	/* 1000Mbps half-duplex */
-> +#define MDIO_LPA_USXGMII_1000FULL	0x1400	/* 1000Mbps full-duplex */
-> +#define MDIO_LPA_USXGMII_10G		0x0600	/* 10Gbps */
-> +#define MDIO_LPA_USXGMII_10GHALF	0x0600	/* 10Gbps half-duplex */
-> +#define MDIO_LPA_USXGMII_10GFULL	0x1600	/* 10Gbps full-duplex */
-> +#define MDIO_LPA_USXGMII_2500		0x0800	/* 2500Mbps */
-> +#define MDIO_LPA_USXGMII_2500HALF	0x0800	/* 2500Mbps half-duplex */
-> +#define MDIO_LPA_USXGMII_2500FULL	0x1800	/* 2500Mbps full-duplex */
-> +#define MDIO_LPA_USXGMII_5000		0x0a00	/* 5000Mbps */
-> +#define MDIO_LPA_USXGMII_5000HALF	0x0a00	/* 5000Mbps half-duplex */
-> +#define MDIO_LPA_USXGMII_5000FULL	0x1a00	/* 5000Mbps full-duplex */
-> +#define MDIO_LPA_USXGMII_LINK		0x8000	/* PHY link with copper-side partner */
+> +  reset:
 
-btw, the only thing which is missing from this is bit 0.
+I'm not really thrilled how this is evolving with a node per provider. 
+There's no reason you can't just add #clock-cells and #reset-cells to 
+the parent firmware node.
 
-One other point - in the USXGMII specification, this appears to be
-somewhat symmetrical - the same definitions are listed as being
-used for PHY to MAC as for MAC to PHY (presumably as part of the
-acknowledgement that the MAC actually switched to that speed.)
-So, it probably makes sense to drop the LPA_ infix.
+I probably should have complained with the clocks node, but that's only 
+pending for 5.9.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+The bigger issue is this stuff is just trickling in one bit at a time 
+which gives no context for review. What's next? Is it really a mystery 
+as to what functions the firmware provides? You don't have to have a 
+driver in place for every function.
+
+Rob
