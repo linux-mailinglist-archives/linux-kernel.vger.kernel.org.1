@@ -2,96 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5B821CCE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2039E21CCEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728100AbgGMByV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 21:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgGMByU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 21:54:20 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F507C061794;
-        Sun, 12 Jul 2020 18:54:20 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B4msg4jsVz9sDX;
-        Mon, 13 Jul 2020 11:54:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594605256;
-        bh=jrjCvMTcjkrp5HFa2/PbO/nfMjWZFR1zrU8zP/HMwc8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ktLlyuBotZxHsUbyZRb3/GDvW4tQf1Y+agM2xcPvX1Hc03y4I9lVefnD3HQX0rBAy
-         srXolpUTtxa+F+yXhZOVBqg2G1nOV+BlZRiw1mOWxTaucYpxZrT7c2+RKqWJ8+IEj6
-         vdPjZRtezUJFS1zGHvMclv7y6nxzCM6+5QHXERnwb3kNqjcSod7dWch4BcV/9GosPI
-         LdCTz5ZYt9Y4wDs4x3CuwGTK/Swq+jM3Bv/Th9up1UOGR/qvWahUcRsoWCQbiyzlBJ
-         s6CaSTgsQhltPvHI8jlXgyp35ceNmzpfgMfoniqZIMJ/Ndp1mjLOjISKK1LeNTzebV
-         aquSggRVxW8Ug==
-Date:   Mon, 13 Jul 2020 11:54:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Subject: linux-next: build failure after merge of the net-next tree
-Message-ID: <20200713115412.28aac287@canb.auug.org.au>
+        id S1728298AbgGMB4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 21:56:17 -0400
+Received: from vps.xff.cz ([195.181.215.36]:34152 "EHLO vps.xff.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgGMB4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 21:56:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1594605374; bh=gdZ3L0fVux68kDxio9119EDiHzxmA4TjQjhbhQ4czvE=;
+        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
+        b=cy5PcgTQu8i9lsZhTxxDX+7Yv+rsSYFKlkTIirreGfpV9uAyTkhiiIkolj7GXzsX3
+         jHkLjZ0dIFAa6PkPG7qz1ARepmtzP5oq1OMMh+rRNax93tVC4ZSVPdl1nkUKXNX4Si
+         XqwzwGfdBhhgi2ZNPWU5HqbStXj6Zl63leIr3hEc=
+Date:   Mon, 13 Jul 2020 03:56:13 +0200
+From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-kernel@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>,
+        marek.behun@nic.cz
+Subject: Re: [PATCH RFC] leds: Add support for per-LED device triggers
+Message-ID: <20200713015613.tr6l5svn6ddkktbo@core.my.home>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>,
+        marek.behun@nic.cz
+References: <20200702144712.1994685-1-megous@megous.com>
+ <20200711100409.GA18901@amd>
+ <20200711210111.5ysijhexgyzyr7u7@core.my.home>
+ <20200712072554.GC4721@duo.ucw.cz>
+ <20200712134911.r3lig4hgyqhmslth@core.my.home>
+ <20200712191111.GA20592@amd>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vrR5qWedZlO8KpSvwGFY_D4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200712191111.GA20592@amd>
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vrR5qWedZlO8KpSvwGFY_D4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello Pavel,
 
-Hi all,
+On Sun, Jul 12, 2020 at 09:11:11PM +0200, Pavel Machek wrote:
+> > > So.. 48 triggers on Marek's systems means I'll not apply your patch.
+> > > 
+> > > Please take a look at my version, it is as simple and avoids that
+> > > problem.
+> > 
+> > I would, but I don't see your version linked or mentioned in this
+> > thread.
+> 
+> Ah! Sorry about that. Here it is. (I verified it compiles in the
+> meantime).
 
-After merging the net-next tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+I tried implementing a driver using this API:
 
-net/bridge/br_netlink_tunnel.c: In function '__vlan_tunnel_handle_range':
-net/bridge/br_netlink_tunnel.c:271:26: error: implicit declaration of funct=
-ion 'br_vlan_can_enter_range'; did you mean 'br_vlan_valid_range'? [-Werror=
-=3Dimplicit-function-declaration]
-  271 |  if (v && curr_change && br_vlan_can_enter_range(v, *v_end)) {
-      |                          ^~~~~~~~~~~~~~~~~~~~~~~
-      |                          br_vlan_valid_range
+https://megous.com/git/linux/commit/?h=tbs-a711-5.8&id=adda29f57685155ac35bd810b51befbfb266da48
 
-Caused by commit
+and it works pretty nicely for me.
 
-  94339443686b ("net: bridge: notify on vlan tunnel changes done via the ol=
-d api")
-
-CONFIG_BRIDGE_VLAN_FILTERING is not set for this build.
-
-I have reverted that commit for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/vrR5qWedZlO8KpSvwGFY_D4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8LvsQACgkQAVBC80lX
-0GwFMAf9FF94vzPkkmTbIMN1a7Mer6wM9dgJZSXTtE7xSs7QwgLnYFd8HKiAJwLs
-O9sCFHO3RETmYnjqy4h3qWXzbTfakDBIRDABGZdJ9I/h0FHZXjp8LGWdid2B/Pw6
-ftmBG0ckgAgfW+k5/MpK9eTMMbRozi1eBTtgJBoqH69VNrdAt6V6YinxB2F2xbXg
-sIfv1DENzsggguY3v72cXiU4YfUUnwXJooiXQaxW40rmHlncm9XJnMJOKbwpNxnv
-INLZSEy0y+0j2AzdoCsSTJcrHbiIujexGKeMmnlXeXxNPwvjfGCp08448aCaxdgc
-VxFwm6+uFoqOe0BmQEwFtcYyAoYj6g==
-=z+Mo
------END PGP SIGNATURE-----
-
---Sig_/vrR5qWedZlO8KpSvwGFY_D4--
+thank you and regards,
+	o.
