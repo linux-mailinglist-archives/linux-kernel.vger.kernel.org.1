@@ -2,107 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE1021E060
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32DB21E051
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgGMTDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 15:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgGMTDP (ORCPT
+        id S1726456AbgGMTBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 15:01:12 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:40506 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726321AbgGMTBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 15:03:15 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7140BC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:03:15 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id k71so330188pje.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/OwblBkyUz9U0R8zbXyE33PVpwL2KrxM/SNh//IN4cg=;
-        b=T/tDzBSf1dlGGChdUJkNUHI8vqRPvUL5q6Gsr04CuMxTatssWeCfyiVk9U5RecA/qy
-         FWg9w814lsFZXlVZIuLenpZK/xioGTsnrBY/Vfi3oJbcnJRhLvdxbze/cRoaWaPS5Up9
-         OdyRIhkj7eQ6fsmn7Q8CBKB1yz1FpvKH3iBKSHgtMOdd5E3e2Vv+Zoi/MY8vnJ9+QVW7
-         jh904BgGE+HcgaIGVgTztKqaVdK9GQ+mbbtarb7xkMENf2bttvBfEL43YOd/r0f6ArxW
-         Ff6OT9fTmnP8rugEf9/5OZg0/oLF3paxKJkMqS3bN2WhcdNP6PrJ6bCcnJ3TOvpOb5M9
-         8b0g==
+        Mon, 13 Jul 2020 15:01:11 -0400
+Received: by mail-io1-f66.google.com with SMTP id l17so3155848iok.7;
+        Mon, 13 Jul 2020 12:01:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=/OwblBkyUz9U0R8zbXyE33PVpwL2KrxM/SNh//IN4cg=;
-        b=fMwpp8pIOyxQwXjpBM3REvocGgHGpdIBc7YDUW9Skc+pbks0XBMaJrxbVnLoh0nYS5
-         Py13ZjP1rb5PyNVRYJ4mwInSXmjRkPGP8ykOCMI8kFheBhPvnp0lZ+jHbq4F4yXdVtWo
-         +hHdOCkBc6pgB9pAIC5DWgJDGvSsowa/ptGMS5MUiTyt//Nbf7m4Rk1o6mDb5tg0BPb8
-         NtcA7eL4NM3pvBXzRA5eh1N6Kp/d+Qd6SwNgp5IO0hElnvGL1qmTGVOEz15NSQmxtDay
-         dBIfjpTxaTb+UcmVTmvZhSMwfvooWHQ5jUDluvnvfHK1BKj/syCcGfyh+p6BiaalEh1P
-         +Jfw==
-X-Gm-Message-State: AOAM5320zizRYaEdb9AjTb3EdLl43AzwSdQ7+VASkqsyp17OXPs3RlPB
-        Om9cvIBkCr3NmYwyaH9RGnp/+A==
-X-Google-Smtp-Source: ABdhPJzFfsedhaLX8n8bpSfxSbNRN3zzyxCHlaOIOS6tyKoZxnAuPBXgwGAGxjCR5kPFKzVVcR4THw==
-X-Received: by 2002:a17:902:a504:: with SMTP id s4mr847143plq.177.1594666994828;
-        Mon, 13 Jul 2020 12:03:14 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id y198sm15123103pfg.116.2020.07.13.12.03.13
+         :mime-version:content-disposition:in-reply-to;
+        bh=/PWhrPGWNyWZTiLQ2bidZ/laPwZFcNcW60Kk6Tdy/kk=;
+        b=Q9cYwPuiL0WnusH1Q0XMlgS2aDm+gG/Uh+QmeXGklAXSFfz10jhyrZUTlDQwl3tDRC
+         ydePMkkEwHjneV89Y61LA/TrdgMtJJ00SEwwJNG0LbCg4Y3DxW4OzL9D4daYX67FJ234
+         Jj4Ghm0/zMHm/Gi3xku4EbVqneLQsl2889EXa/+jnj6DBLDsjmcZnHeuA7R1oYMmeMlB
+         Bw+H7W/zZRjNRqA/bEbj0POjFumn0TcwIE85SDh2HZICzCH9rcNtkeDkGojhc51lLwUg
+         g2uwKrQIRLdqvZrMAHQaooxFELsYLWWuwB/pYQ9GhZHG4roa0YSTs3sCsSuV/rGip17N
+         u27g==
+X-Gm-Message-State: AOAM5301Fbc8Fi/V+cHqOQiksxFy5fqXFiwlAze897G/Nur8BkgGlusv
+        g0+xSXtmACK4qnDgT/qNBQT3Co8SWA==
+X-Google-Smtp-Source: ABdhPJyfWSr+1YeWhcSIcED1aI/M6uEpq8MSvXybejQY06oAURXrIPqw0GhVRTxwRnIK6AFe0h8GEg==
+X-Received: by 2002:a5e:cb42:: with SMTP id h2mr1191433iok.43.1594666868544;
+        Mon, 13 Jul 2020 12:01:08 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id l22sm7935953ioc.24.2020.07.13.12.01.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 12:03:14 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 12:01:06 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next] remoteproc: qcom: Add missing slab.h
-Message-ID: <20200713190106.GA2161373@builder.lan>
-References: <20200713020003.134039-1-wangkefeng.wang@huawei.com>
+        Mon, 13 Jul 2020 12:01:07 -0700 (PDT)
+Received: (nullmailer pid 544567 invoked by uid 1000);
+        Mon, 13 Jul 2020 19:01:07 -0000
+Date:   Mon, 13 Jul 2020 13:01:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Keerthy <j-keerthy@ti.com>, Axel Lin <axel.lin@ingics.com>
+Subject: Re: [PATCH v3 2/4] dt-bindings: mfd: lp87565: convert to yaml
+Message-ID: <20200713190107.GA538448@bogus>
+References: <20200622204329.11147-1-luca@lucaceresoli.net>
+ <20200622204329.11147-3-luca@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200713020003.134039-1-wangkefeng.wang@huawei.com>
+In-Reply-To: <20200622204329.11147-3-luca@lucaceresoli.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 12 Jul 19:00 PDT 2020, Kefeng Wang wrote:
-
-> drivers/remoteproc/qcom_common.c: In function ‘qcom_ssr_get_subsys’:
-> drivers/remoteproc/qcom_common.c:210:9: error: implicit declaration of function ‘kzalloc’; did you mean ‘vzalloc’?
-> [-Werror=implicit-function-declaration]
->   info = kzalloc(sizeof(*info), GFP_KERNEL);
->          ^~~~~~~
->          vzalloc
+On Mon, Jun 22, 2020 at 10:43:27PM +0200, Luca Ceresoli wrote:
+> The definition of "xxx-in-supply" was generic, thus define in detail the
+> possible cases for each chip variant.
 > 
-> kzalloc() is declared in linux/slab.h, add include to fix build issue.
+> Also document that the only possible I2C slave address is 0x60 as per the
+> datasheet and fix the second example accordingly.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-
-Thank Kefeng, patch applied.
-
-Regards,
-Bjorn
-
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> 
 > ---
->  drivers/remoteproc/qcom_common.c | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
-> index 2f45f0c79914e..085fd73fa23ae 100644
-> --- a/drivers/remoteproc/qcom_common.c
-> +++ b/drivers/remoteproc/qcom_common.c
-> @@ -15,6 +15,7 @@
->  #include <linux/remoteproc/qcom_rproc.h>
->  #include <linux/rpmsg/qcom_glink.h>
->  #include <linux/rpmsg/qcom_smd.h>
-> +#include <linux/slab.h>
->  #include <linux/soc/qcom/mdt_loader.h>
->  
->  #include "remoteproc_internal.h"
+> Changes in v3:
+>  - fix yaml errors
+> 
+> Changes in v2:
+>  - this patch replaces patch "regulator: lp87565: dt: remove duplicated
+>    section" in RFC,v1 (Rob Herring)
+>  - use capital letters consistently (Lee Jones)
+>  - replace "regulator" -> "mfd" in subject line (Lee Jones)
+>  - replace "dt:" suffix with "dt-bindings:" prefix in subject line
+> ---
+>  .../devicetree/bindings/mfd/lp87565.txt       |  79 ----------
+>  .../devicetree/bindings/mfd/ti,lp875xx.yaml   | 142 ++++++++++++++++++
+>  2 files changed, 142 insertions(+), 79 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/lp87565.txt
+>  create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp875xx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/lp87565.txt b/Documentation/devicetree/bindings/mfd/lp87565.txt
+> deleted file mode 100644
+> index 41671e0dc26b..000000000000
+> --- a/Documentation/devicetree/bindings/mfd/lp87565.txt
+> +++ /dev/null
+> @@ -1,79 +0,0 @@
+> -TI LP87565 PMIC MFD driver
+> -
+> -Required properties:
+> -  - compatible:	"ti,lp87565", "ti,lp87565-q1"
+> -  - reg:		I2C slave address.
+> -  - gpio-controller:	Marks the device node as a GPIO Controller.
+> -  - #gpio-cells:	Should be two.  The first cell is the pin number and
+> -			the second cell is used to specify flags.
+> -			See ../gpio/gpio.txt for more information.
+> -  - xxx-in-supply:	Phandle to parent supply node of each regulator
+> -			populated under regulators node. xxx should match
+> -			the supply_name populated in driver.
+> -Example:
+> -
+> -lp87565_pmic: pmic@60 {
+> -	compatible = "ti,lp87565-q1";
+> -	reg = <0x60>;
+> -	gpio-controller;
+> -	#gpio-cells = <2>;
+> -
+> -	buck10-in-supply = <&vsys_3v3>;
+> -	buck23-in-supply = <&vsys_3v3>;
+> -
+> -	regulators: regulators {
+> -		buck10_reg: buck10 {
+> -			/* VDD_MPU */
+> -			regulator-name = "buck10";
+> -			regulator-min-microvolt = <850000>;
+> -			regulator-max-microvolt = <1250000>;
+> -			regulator-always-on;
+> -			regulator-boot-on;
+> -		};
+> -
+> -		buck23_reg: buck23 {
+> -			/* VDD_GPU */
+> -			regulator-name = "buck23";
+> -			regulator-min-microvolt = <850000>;
+> -			regulator-max-microvolt = <1250000>;
+> -			regulator-boot-on;
+> -			regulator-always-on;
+> -		};
+> -	};
+> -};
+> -
+> -TI LP87561 PMIC:
+> -
+> -This is a single output 4-phase regulator configuration
+> -
+> -Required properties:
+> -  - compatible:	"ti,lp87561-q1"
+> -  - reg:		I2C slave address.
+> -  - gpio-controller:	Marks the device node as a GPIO Controller.
+> -  - #gpio-cells:	Should be two.  The first cell is the pin number and
+> -			the second cell is used to specify flags.
+> -			See ../gpio/gpio.txt for more information.
+> -  - xxx-in-supply:	Phandle to parent supply node of each regulator
+> -			populated under regulators node. xxx should match
+> -			the supply_name populated in driver.
+> -Example:
+> -
+> -lp87561_pmic: pmic@62 {
+> -	compatible = "ti,lp87561-q1";
+> -	reg = <0x62>;
+> -	gpio-controller;
+> -	#gpio-cells = <2>;
+> -
+> -	buck3210-in-supply = <&vsys_3v3>;
+> -
+> -	regulators: regulators {
+> -		buck3210_reg: buck3210 {
+> -			/* VDD_CORE */
+> -			regulator-name = "buck3210";
+> -			regulator-min-microvolt = <800000>;
+> -			regulator-max-microvolt = <800000>;
+> -			regulator-always-on;
+> -			regulator-boot-on;
+> -		};
+> -	};
+> -};
+> diff --git a/Documentation/devicetree/bindings/mfd/ti,lp875xx.yaml b/Documentation/devicetree/bindings/mfd/ti,lp875xx.yaml
+> new file mode 100644
+> index 000000000000..2da703918d6a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/ti,lp875xx.yaml
+> @@ -0,0 +1,142 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/ti,lp875xx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TI LP875xx PMIC MFD driver
+> +
+> +maintainers:
+> +  - Keerthy <j-keerthy@ti.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: ti,lp87565
+> +      - const: ti,lp87565-q1
+> +      - const: ti,lp87561-q1
+> +
+> +  reg:
+> +    description: I2C slave address
+> +    const: 0x60
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    description:
+> +      The first cell is the pin number.
+> +      The second cell is is used to specify flags.
+> +      See ../gpio/gpio.txt for more information.
+> +    const: 2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - ti,lp87565
+> +              - ti,lp87565-q1
+> +    then:
+> +      properties:
+> +        buck10-in-supply:
+> +          description:
+> +            Phandle to parent supply node for BUCK0 and BUCK1 converters.
+> +
+> +        buck23-in-supply:
+> +          description:
+> +            Phandle to parent supply node for BUCK2 and BUCK3 converters.
+> +
+> +      required:
+> +        - buck10-in-supply
+> +        - buck23-in-supply
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - ti,lp87561-q1
+> +    then:
+> +      properties:
+> +        buck3210-in-supply:
+> +          description:
+> +            Phandle to parent supply node for all the four BUCK converters.
+> +
+> +      required:
+> +        - buck3210-in-supply
+
+I think this should probably be 2 schema documents (and a 3rd for the 
+next patch)...
+
+> +
+> +examples:
+> +  - |
+> +    /* TI LP87565-Q1 PMIC (dual 2-phase output configuration) */
+> +    i2c@0 {
+> +        reg = <0x0 0x100>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        pmic@60 {
+> +            compatible = "ti,lp87565-q1";
+> +            reg = <0x60>;
+> +            gpio-controller;
+> +            #gpio-cells = <2>;
+> +
+> +            buck10-in-supply = <&vsys_3v3>;
+> +            buck23-in-supply = <&vsys_3v3>;
+> +
+> +            regulators {
+> +                buck10_reg: buck10 {
+
+The regulators also need to be documented.
+
+> +                    /* VDD_MPU */
+> +                    regulator-name = "buck10";
+> +                    regulator-min-microvolt = <850000>;
+> +                    regulator-max-microvolt = <1250000>;
+> +                    regulator-always-on;
+> +                    regulator-boot-on;
+> +                };
+> +
+> +                buck23_reg: buck23 {
+> +                    /* VDD_GPU */
+> +                    regulator-name = "buck23";
+> +                    regulator-min-microvolt = <850000>;
+> +                    regulator-max-microvolt = <1250000>;
+> +                    regulator-boot-on;
+> +                    regulator-always-on;
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +  - |
+> +    /* TI LP87561 PMIC (single 4-phase output configuration) */
+> +    i2c@0 {
+> +        reg = <0x0 0x100>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        pmic@60 {
+> +            compatible = "ti,lp87561-q1";
+> +            reg = <0x60>;
+> +            gpio-controller;
+> +            #gpio-cells = <2>;
+> +
+> +            buck3210-in-supply = <&vsys_3v3>;
+> +
+> +            regulators {
+> +                buck3210_reg: buck3210 {
+> +                    /* VDD_CORE */
+> +                    regulator-name = "buck3210";
+> +                    regulator-min-microvolt = <800000>;
+> +                    regulator-max-microvolt = <800000>;
+> +                    regulator-always-on;
+> +                    regulator-boot-on;
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +...
 > -- 
-> 2.26.2
+> 2.27.0
 > 
