@@ -2,135 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4E821DA19
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD49D21DA1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730039AbgGMPcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 11:32:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729027AbgGMPcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 11:32:45 -0400
-Received: from kernel.org (unknown [87.71.40.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DDF7206F0;
-        Mon, 13 Jul 2020 15:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594654364;
-        bh=BA45Q6AEXkFERQL4GWwTgvIF0IN9KuWDZxv/KQt11c8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gVM/ydYDODojWV7K+3vNvNLN+EKvGQkS3Wv873nQ3Y8rb7pos3CJPwsM5S5AzA+Ly
-         +r5f0oRFGnA6lPVLS7c0V5NxoIKpRC5qad/DicL/4kl2Rwmze9mgeFjr6B8bwEbwJ2
-         kzS1ewxoSnmTO/0xk1ne6SJpwagrdfTaxmlkA1rA=
-Date:   Mon, 13 Jul 2020 18:32:34 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     linux-kernel@vger.kernel.org, Alan Cox <alan@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christopher Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Idan Yaniv <idan.yaniv@ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 4/5] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20200713153234.GC707159@kernel.org>
-References: <20200706172051.19465-1-rppt@kernel.org>
- <20200706172051.19465-5-rppt@kernel.org>
- <20200713110505.mesvinqjbj7imsdz@box>
+        id S1730081AbgGMPcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:32:55 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:45578 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729846AbgGMPcy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 11:32:54 -0400
+Received: by mail-il1-f194.google.com with SMTP id o3so11494916ilo.12;
+        Mon, 13 Jul 2020 08:32:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D1tx9I3fZDjlF0pxo8uh6cSHEqys5YBQnDDIQmH6Gw8=;
+        b=aWQXgk+a+3hMUX6tClqQXyCZEoibqPW9ETtNkBR1CjbCNI4dgwf0H7WmC86JM35los
+         3nbOVcW3Gm3TEeeUSesOh/V/H97EKccv/DJuwm1P1YbXPhM9QLSiQ4ljxVjqmd5E49AC
+         Fya3r9PA7c3wjVSfl8+URViqaGQBxd8Gs065rg6mxq0fA7KbK7npCx5xLbqjgDs8QWzS
+         qopDDwPqhf4y+6e+iUDP0LXel9sH5RYR+kPUxmUy4zgHxIxcjnDznhLv7jrc4KmRpAQx
+         WA2sp4oXAkq2chmIqMCY/3xJ2FvW24ZVpx32QtjU4ohJAkWo17A6UzlA4szx8tdJtiOI
+         xzDQ==
+X-Gm-Message-State: AOAM5313youHmHf9UlkC7ImkNuk24/2MYJC5Gn5JKqiAPrX7zyhj0bdd
+        NYqyLJEAR17wwExaZs8eemZGe0xvDg==
+X-Google-Smtp-Source: ABdhPJxKTHA7bNx4G/OWSSgNsTP8b05VDOnDOIJQcqflQPpRVeP2ky7Ls2heOxKe88WifuGN+VIkRQ==
+X-Received: by 2002:a92:40d1:: with SMTP id d78mr266816ill.14.1594654373965;
+        Mon, 13 Jul 2020 08:32:53 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id w10sm8450823ilo.10.2020.07.13.08.32.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 08:32:53 -0700 (PDT)
+Received: (nullmailer pid 238882 invoked by uid 1000);
+        Mon, 13 Jul 2020 15:32:52 -0000
+Date:   Mon, 13 Jul 2020 09:32:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Linus Walleij <linus.walleij@linaro.org>, od@zcrc.me,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v2] dt-bindings: pinctrl: Convert
+ ingenic,pinctrl.txt to YAML
+Message-ID: <20200713153252.GA234029@bogus>
+References: <20200622113740.46450-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200713110505.mesvinqjbj7imsdz@box>
+In-Reply-To: <20200622113740.46450-1-paul@crapouillou.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 02:05:05PM +0300, Kirill A. Shutemov wrote:
-> On Mon, Jul 06, 2020 at 08:20:50PM +0300, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Removing a PAGE_SIZE page from the direct map every time such page is
-> > allocated for a secret memory mapping will cause severe fragmentation of
-> > the direct map. This fragmentation can be reduced by using PMD-size pages
-> > as a pool for small pages for secret memory mappings.
-> > 
-> > Add a gen_pool per secretmem inode and lazily populate this pool with
-> > PMD-size pages.
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >  mm/secretmem.c | 107 ++++++++++++++++++++++++++++++++++++++++---------
-> >  1 file changed, 88 insertions(+), 19 deletions(-)
-> > 
-> > diff --git a/mm/secretmem.c b/mm/secretmem.c
-> > index df8f8c958cc2..c6fcf6d76951 100644
-> > --- a/mm/secretmem.c
-> > +++ b/mm/secretmem.c
-> > @@ -5,6 +5,7 @@
-> >  #include <linux/memfd.h>
-> >  #include <linux/printk.h>
-> >  #include <linux/pagemap.h>
-> > +#include <linux/genalloc.h>
-> >  #include <linux/pseudo_fs.h>
-> >  #include <linux/set_memory.h>
-> >  #include <linux/sched/signal.h>
-> > @@ -23,24 +24,66 @@
-> >  #define SECRETMEM_UNCACHED	0x2
-> >  
-> >  struct secretmem_ctx {
-> > +	struct gen_pool *pool;
-> >  	unsigned int mode;
-> >  };
-> >  
-> > -static struct page *secretmem_alloc_page(gfp_t gfp)
-> > +static int secretmem_pool_increase(struct secretmem_ctx *ctx, gfp_t gfp)
-> >  {
-> > -	/*
-> > -	 * FIXME: use a cache of large pages to reduce the direct map
-> > -	 * fragmentation
-> > -	 */
-> > -	return alloc_page(gfp);
-> > +	unsigned long nr_pages = (1 << HPAGE_PMD_ORDER);
-> > +	struct gen_pool *pool = ctx->pool;
-> > +	unsigned long addr;
-> > +	struct page *page;
-> > +	int err;
-> > +
-> > +	page = alloc_pages(gfp, HPAGE_PMD_ORDER);
-> > +	if (!page)
-> > +		return -ENOMEM;
-> > +
-> > +	addr = (unsigned long)page_address(page);
-> > +	split_page(page, HPAGE_PMD_ORDER);
-> > +
-> > +	err = gen_pool_add(pool, addr, HPAGE_PMD_SIZE, NUMA_NO_NODE);
-> > +	if (err) {
-> > +		__free_pages(page, HPAGE_PMD_ORDER);
-> > +		return err;
-> > +	}
-> > +
-> > +	__kernel_map_pages(page, nr_pages, 0);
+On Mon, Jun 22, 2020 at 01:37:40PM +0200, Paul Cercueil wrote:
+> Convert the ingenic,pinctrl.txt doc file to ingenic,pinctrl.yaml.
 > 
-> It's worth nothing that unlike flush_tlb_kernel_range(),
-> __kernel_map_pages() only flushed local TLB, so other CPU may still have
-> access to the page. It's shouldn't be a blocker, but deserve a comment.
+> In the process, some compatible strings now require a fallback, as the
+> corresponding SoCs are pin-compatible with their fallback variant.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+> 
+> Notes:
+>     v2: - Use 'pinctrl' instead of 'pin-controller' as the node name
+>         - remove 'additionalProperties: false' since we will have pin conf nodes
 
-Sure.
- 
-> > +
-> > +	return 0;
-> > +}
-> > +
+What do those look like? They need to be described, but that can be a 
+follow-up. 
 
--- 
-Sincerely yours,
-Mike.
+Rob
