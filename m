@@ -2,54 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE3D21D71B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D944721D735
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729826AbgGMN3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:29:32 -0400
-Received: from 8bytes.org ([81.169.241.247]:52564 "EHLO theia.8bytes.org"
+        id S1730001AbgGMNaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 09:30:11 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:53850 "EHLO smtp.al2klimov.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729564AbgGMN3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:29:32 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 3E90736B; Mon, 13 Jul 2020 15:29:31 +0200 (CEST)
-Date:   Mon, 13 Jul 2020 15:29:29 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Chao Hao <chao.hao@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        FY Yang <fy.yang@mediatek.com>, TH Yang <th.yang@mediatek.com>,
-        ming-fan.chen@mediatek.com, youlin.pei@mediatek.com,
-        anan.sun@mediatek.com
-Subject: Re: [PATCH v6 00/10] MT6779 IOMMU SUPPORT
-Message-ID: <20200713132929.GR27672@8bytes.org>
-References: <20200703044127.27438-1-chao.hao@mediatek.com>
- <20200710141349.GJ27672@8bytes.org>
- <1594451493.16172.6.camel@mhfsdcap03>
+        id S1729872AbgGMNaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 09:30:09 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 62C54BC0B5;
+        Mon, 13 Jul 2020 13:30:07 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     akinobu.mita@gmail.com, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] fault-inject: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 15:30:01 +0200
+Message-Id: <20200713133001.34555-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594451493.16172.6.camel@mhfsdcap03>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 03:11:33PM +0800, Yong Wu wrote:
-> The SMI part always go with the IOMMU, Could you also help apply the
-> mt6779 SMI basical part [1][2]. Both has already got reviewed-by from
-> Rob and Matthias. and the [3] in that patchset is for performance
-> improvement, it's not so necessary, it can be send in another patchset.
-> 
-> 
-> [1] https://lore.kernel.org/patchwork/patch/1176833/
-> [2] https://lore.kernel.org/patchwork/patch/1176831/
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Okay, applied these two to the arm/mediatek branch.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
 
 
-	Joerg
+ lib/fault-inject.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/fault-inject.c b/lib/fault-inject.c
+index ce12621b4275..9b3a2ca496f6 100644
+--- a/lib/fault-inject.c
++++ b/lib/fault-inject.c
+@@ -97,7 +97,7 @@ static inline bool fail_stacktrace(struct fault_attr *attr)
+ 
+ /*
+  * This code is stolen from failmalloc-1.0
+- * http://www.nongnu.org/failmalloc/
++ * https://www.nongnu.org/failmalloc/
+  */
+ 
+ bool should_fail(struct fault_attr *attr, ssize_t size)
+-- 
+2.27.0
+
