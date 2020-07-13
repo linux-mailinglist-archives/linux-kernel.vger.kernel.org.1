@@ -2,122 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7281121CCF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E55A21CCEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgGMB4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 21:56:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:11551 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgGMB4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 21:56:33 -0400
-IronPort-SDR: fSTj7bQRcEsB1XtstARi7P2B3kqSy4Cgy1UudQq4NUtd2Coiv/Q5lEc9ArK1pJ8Fgrwi2IZXUJ
- MZgujUHND89w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9680"; a="136718378"
-X-IronPort-AV: E=Sophos;i="5.75,345,1589266800"; 
-   d="scan'208";a="136718378"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2020 18:56:32 -0700
-IronPort-SDR: Zs6lenS7Wgpo3n8w5Vp2sagKfsqwSr7MBh4M5MGPbpuwx84FK+KuMJAKbgXVDysn5amjPIxRj7
- cfW9QpGNYa4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,345,1589266800"; 
-   d="scan'208";a="317223746"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga002.fm.intel.com with ESMTP; 12 Jul 2020 18:56:30 -0700
-Date:   Mon, 13 Jul 2020 09:52:24 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     "Wu, Hao" <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        id S1728177AbgGMBzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 21:55:11 -0400
+Received: from mail-vi1eur05on2047.outbound.protection.outlook.com ([40.107.21.47]:60993
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726261AbgGMBzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 21:55:11 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LruRMIOJFrkQOpMYDRd1yBY/0DXM3V6+A1bEDdoxc9RmaRwS9HBRvq5Hoo8xHILQZW5LkamzP69XibMXDNBMw8uz5gAEJZCjk5XcroVB/x0vmXZxf0EdxhDZ+SnC4ga775AoPClrV2YFkPP2nX5x0yQdBA0CQ6qEGFNLiupejdNV+bD+2V/QSs0TVAGo419en+wm72yiZaZTnoWJW5dnfrABUesjhRfwqEmX7KqUr0B+AJ42xNCigcv42m3enWoyH3jYGja6s4+Uxwu+yYH47lKX8iqZVTAzGAR5C7N2Vc6Ez5uwcmuiWJgt3NdYuaqCN3Hfhy0C+p2ZmR5yRSiLyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0GABxCLbPG/InTruHWRpo4qulx4rYnvByLeP8nYru0E=;
+ b=YjkUykQ71iQuSBu4BfIcWg+2KGefoG+bOWCDyA7KR2I5eb3EzcO4TnGTidRM51/GAwwcFHzOhVDLN0P7GSpzxCrbrG5ZUdGpwZ2ACv1y8Ckvp1pIl/sAa0MQVk3zZRT8y9Q0qn8tcjCU8cm+ZOwW/N3TgPeWiiUMUZ3EKH07PmrLdu0xF5h8D3e5oYhrwpBejTMB/TdejTxbDV+dtLxN7l1NoIsKDzgLs6N/WxGevp5Cg2slHo5qMqkjcjBhXYdJhSNAD7vdQ2qyY2k6nzTlfPrqQ/rc379jBqoSjd72nhoCFmOeiZzBlwYHG+DgSZB3lVBaQb2zXQOlwKcMBfQ6yA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0GABxCLbPG/InTruHWRpo4qulx4rYnvByLeP8nYru0E=;
+ b=heSq42g8WHT6NiBV2e/XNCtUZpyt80CMWW/KlzGxuWhXKHsOY5GLi5GhgTP2lifKD5lRveY7y65FuZcKKfacA5WFDt+MQOBE9BmSPh58C0EN4mN65PPF51KMh9fOZtD9JyrEYy/jC2TwsFdW1roXU1na/IPUOsPO9cUNhvalgE0=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR0402MB2934.eurprd04.prod.outlook.com (2603:10a6:4:9b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.23; Mon, 13 Jul
+ 2020 01:53:47 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::2d36:b569:17c:7701]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::2d36:b569:17c:7701%4]) with mapi id 15.20.3174.025; Mon, 13 Jul 2020
+ 01:53:46 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Stefano Stabellini <sstabellini@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+CC:     "jgross@suse.com" <jgross@suse.com>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        "Weight, Russell H" <russell.h.weight@intel.com>,
-        yilun.xu@intel.com
-Subject: Re: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
-Message-ID: <20200713015224.GA2624@yilunxu-OptiPlex-7050>
-References: <1594282705-32289-1-git-send-email-yilun.xu@intel.com>
- <DM6PR11MB3819117029F124067F7EA8B985640@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20200709093527.GA32541@yilunxu-OptiPlex-7050>
- <DM6PR11MB3819D07348C347B5BB8F86C085640@DM6PR11MB3819.namprd11.prod.outlook.com>
- <2d7919d5-a320-58f4-5c9d-7ef868ad8676@redhat.com>
- <20200710052443.GB8689@yilunxu-OptiPlex-7050>
- <DM6PR11MB3819BF1B54D64AD706BF832E85650@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20200710154616.GA130068@epycbox.lan>
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH] xen: introduce xen_vring_use_dma
+Thread-Topic: [PATCH] xen: introduce xen_vring_use_dma
+Thread-Index: AQHWSgTusARd8c8cRkWwDit233DtZajneYoAgACU6oCAAC7QAIAAEpoAgAAGSwCAAUK2gIABcSaAgAVA3oCAAnnkAIAAQwqAgAA/4wCADeHhAIADsWjQ
+Date:   Mon, 13 Jul 2020 01:53:46 +0000
+Message-ID: <DB6PR0402MB2760A98A427AA48FA325635288600@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20200624050355-mutt-send-email-mst@kernel.org>
+ <alpine.DEB.2.21.2006241047010.8121@sstabellini-ThinkPad-T480s>
+ <20200624163940-mutt-send-email-mst@kernel.org>
+ <alpine.DEB.2.21.2006241351430.8121@sstabellini-ThinkPad-T480s>
+ <20200624181026-mutt-send-email-mst@kernel.org>
+ <alpine.DEB.2.21.2006251014230.8121@sstabellini-ThinkPad-T480s>
+ <20200626110629-mutt-send-email-mst@kernel.org>
+ <alpine.DEB.2.21.2006291621300.8121@sstabellini-ThinkPad-T480s>
+ <20200701133456.GA23888@infradead.org>
+ <alpine.DEB.2.21.2007011020320.8121@sstabellini-ThinkPad-T480s>
+ <20200701172219-mutt-send-email-mst@kernel.org>
+ <alpine.DEB.2.21.2007101019340.4124@sstabellini-ThinkPad-T480s>
+In-Reply-To: <alpine.DEB.2.21.2007101019340.4124@sstabellini-ThinkPad-T480s>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [92.121.68.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 99a7de08-78dc-4b39-c1f7-08d826cf94d4
+x-ms-traffictypediagnostic: DB6PR0402MB2934:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR0402MB293480B64104501E330E226088600@DB6PR0402MB2934.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HNjTjTjWrIzXfE6ltpWdBR2DeplyC5i9JvzDPZQia160JH+4EpFBFzUBzaTYh+uNrM/VAFmAV3PbNhBJHmw4II1QBugVpSYd+ZkN3p/kF1yaQTw4pm/RfS3uD0WGoDkSTdS79kgwDookFi9BKKxCd10mfxdveukGFFsjh/BIVkUj48h+STYHB61GG8gkXTt6ITZV0OnndJ8ZhM6eTVmusVfqT4VGMIOba0QJ7G5tYI+xecyBwKWGL5LPqc2bRxVYTRFcQlD97nLK37PDGgCUsc7osct3GMyYTmmMbUfTR9BNamWstINU8Hh7Y9Zp4MCrITQOw3eHM8GlxxprJogzeQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(39860400002)(376002)(136003)(396003)(66476007)(66556008)(64756008)(66446008)(66946007)(76116006)(2906002)(86362001)(478600001)(8936002)(8676002)(4326008)(83380400001)(71200400001)(26005)(7696005)(33656002)(44832011)(9686003)(55016002)(110136005)(7416002)(6506007)(316002)(54906003)(186003)(5660300002)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Iun8yMXMvh1uJny1TTawzz+RrjDW6kn8ygbIzjr3Mw6Ca8T8w5/hMDadUD5xBFjCFBsj4QPIiReVKRta2T+kh2YkRdvG58bGxrewzphSpr8HT6vhsCU/1QmupGEgZaPVUseO/ppaC+y0yTT/POW9E40JnMMr0/uKZrcYxKazMrOMAZ5quH6xrF2sj8N35RRCDqhDLSO7PVwhVKOtExLwKPDhV3juJVIk4L/5+OAIO7iJ7QreF5xC50QYFLi4bgA8BVNNt2Zqu/LbiiW+hmOWV5wVog8ablQmmxHgJkE0xIk3grgQ7hQoDvcj7g5k+s0oaD80LLjXhzmt3qHbTr4j9jD6/shsyW94xYVPdTW/caw5dVIQXvMhI5QcGOe78Yf5tKAlBryF38etGJEkPrvsO8ReuhJj6/l9q4SeAjyMwFrrWlJ5zkv4Z6OHWS60F8GC4mGuHGqOxZeHW8OwvsxL9Uw/dBc3P99uO6gTD+BH168=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710154616.GA130068@epycbox.lan>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99a7de08-78dc-4b39-c1f7-08d826cf94d4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2020 01:53:46.8602
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: nhMchUJ1LWLK4MCDdWLbSri36Ld+/UF1kdGDfCfQG+NsyzpEL7vFL5ZnooxMhdUBejFSfT+ZNO67zUrafCM7YA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2934
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 08:46:16AM -0700, Moritz Fischer wrote:
-> On Fri, Jul 10, 2020 at 06:14:19AM +0000, Wu, Hao wrote:
-> > > On Thu, Jul 09, 2020 at 06:00:40AM -0700, Tom Rix wrote:
-> > > >
-> > > > On 7/9/20 3:14 AM, Wu, Hao wrote:
-> > > > >> On Thu, Jul 09, 2020 at 05:10:49PM +0800, Wu, Hao wrote:
-> > > > >>>> Subject: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
-> > > > >>>>
-> > > > >>>> Add PCIe Device ID for Intel FPGA PAC N3000.
-> > > > >>>>
-> > > > >>>> Signed-off-by: Wu Hao <hao.wu@intel.com>
-> > > > >>>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > > >>>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > > >>>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > > > >>>> ---
-> > > > >>>>  drivers/fpga/dfl-pci.c | 2 ++
-> > > > >>>>  1 file changed, 2 insertions(+)
-> > > > >>>>
-> > > > >>>> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-> > > > >>>> index 73b5153..824aecf 100644
-> > > > >>>> --- a/drivers/fpga/dfl-pci.c
-> > > > >>>> +++ b/drivers/fpga/dfl-pci.c
-> > > > >>>> @@ -64,6 +64,7 @@ static void cci_pci_free_irq(struct pci_dev
-> > > *pcidev)
-> > > > >>>>  #define PCIE_DEVICE_ID_PF_INT_5_X0xBCBD
-> > > > >>>>  #define PCIE_DEVICE_ID_PF_INT_6_X0xBCC0
-> > > > >>>>  #define PCIE_DEVICE_ID_PF_DSC_1_X0x09C4
-> > > > >>>> +#define PCIE_DEVICE_ID_PF_PAC_N3000 0x0B30
-> > > > >>> Should we drop _PF_ here? and also do you want _INTEL_ here?
-> > > > >> I think we could keep _PF_, also there is no need to support VF of pac
-> > > > >> n3000 in product now, but it does exist (ID: 0x0b31).
-> > > >
-> > > > I was wondering about the vf id, thanks!
-> > > >
-> > > > >>
-> > > > >> And add _INTEL_ is good to me.
-> > > > >>
-> > > > >> Then how about this one:
-> > > > >>   #define PCIE_DEVICE_ID_PF_INTEL_PAC_N3000	0x0B30
-> > > > > I am just considering the alignment with ids defined in
-> > > include/linux/pci_ids.h
-> > > > > So drop _PF_ before _INTEL_ would be better? : )
-> > > >
-> > > > To be consistent, all the id's are intel and all could drop pf.
-> > > 
-> > > That's good to me after checking the pci_ids.h. So we have:
-> > > 
-> > > #define PCIE_DEVICE_ID_INTEL_PAC_N3000        0x0B30
-> > 
-> > Sounds good to me.
-> > 
-> > Hao
-> 
-> Heads up I was gonna send out the PR early next week. I can fix this up
-> myself if you want if you want or you can resend it?
+> Subject: Re: [PATCH] xen: introduce xen_vring_use_dma
+>=20
+> Sorry for the late reply -- a couple of conferences kept me busy.
+>=20
+>=20
+> On Wed, 1 Jul 2020, Michael S. Tsirkin wrote:
+> > On Wed, Jul 01, 2020 at 10:34:53AM -0700, Stefano Stabellini wrote:
+> > > Would you be in favor of a more flexible check along the lines of
+> > > the one proposed in the patch that started this thread:
+> > >
+> > >     if (xen_vring_use_dma())
+> > >             return true;
+> > >
+> > >
+> > > xen_vring_use_dma would be implemented so that it returns true when
+> > > xen_swiotlb is required and false otherwise.
+> >
+> > Just to stress - with a patch like this virtio can *still* use DMA API
+> > if PLATFORM_ACCESS is set. So if DMA API is broken on some platforms
+> > as you seem to be saying, you guys should fix it before doing
+> > something like this..
+>=20
+> Yes, DMA API is broken with some interfaces (specifically: rpmesg and tru=
+sty),
+> but for them PLATFORM_ACCESS is never set. That is why the errors weren't
+> reported before. Xen special case aside, there is no problem under normal
+> circumstances.
+>=20
+>=20
+> If you are OK with this patch (after a little bit of clean-up), Peng, are=
+ you OK
+> with sending an update or do you want me to?
 
-I sent the v2 patch for this. Please help check it.
+If you could help, that would be great. You have more expertise in knowing
+the whole picture.
 
 Thanks,
-Yilun
+Peng.
 
-> 
-> Thanks,
-> Moritz
