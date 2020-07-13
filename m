@@ -2,164 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E541421D3DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C30C21D3D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729545AbgGMKiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 06:38:07 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:32617 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727890AbgGMKiG (ORCPT
+        id S1729408AbgGMKei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 06:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727035AbgGMKeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:38:06 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200713103802epoutp010eb1634b3097c8c39bb4b5ebd429602c~hSZ1Bs80Q1932219322epoutp01i
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 10:38:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200713103802epoutp010eb1634b3097c8c39bb4b5ebd429602c~hSZ1Bs80Q1932219322epoutp01i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1594636682;
-        bh=TsllOloAjz1ijwnKXX/vl6usMGPlqLbq3iNQKSuyKIQ=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=adIJPSf/0ULO9450sUAMA7MIwduztNetgm3ATGc7TZ8kZWiSGDaE7A0KRN5mJ0Lsd
-         +QOhVEcz6+7VdJvjbgL4UjMX6dWn6YVP80NHvU75al83GsZRfOVKqALXYlRZ4L42EA
-         NbE6sYQSytawMsPw+1M5u8aY/LATOfTjchhAjjSI=
-Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p1.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200713103802epcas1p1a53731734d59978cc980b40df641d0a3~hSZ0ahT_T0591705917epcas1p1Y;
-        Mon, 13 Jul 2020 10:38:02 +0000 (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
-Date:   Mon, 13 Jul 2020 19:34:23 +0900
-X-CMS-MailID: 20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8
-References: <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p8>
+        Mon, 13 Jul 2020 06:34:37 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651BFC061755;
+        Mon, 13 Jul 2020 03:34:37 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 07976BC06E;
+        Mon, 13 Jul 2020 10:34:34 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     serge@hallyn.com, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] capabilities: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 12:34:28 +0200
+Message-Id: <20200713103428.33342-1-grandmaster@al2klimov.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changelog:
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-v5 -> v6
-Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-v4 -> v5
-Delete unused macro define.
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-v3 -> v4
-1. Cleanup.
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
 
-v2 -> v3
-1. Add checking input module parameter value.
-2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
-3. Cleanup for unused variables and label.
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
 
-v1 -> v2
-1. Change the full boilerplate text to SPDX style.
-2. Adopt dynamic allocation for sub-region data structure.
-3. Cleanup.
+ If you apply the patch, please let me know.
 
-NAND flash memory-based storage devices use Flash Translation Layer (FTL)
-to translate logical addresses of I/O requests to corresponding flash
-memory addresses. Mobile storage devices typically have RAM with
-constrained size, thus lack in memory to keep the whole mapping table.
-Therefore, mapping tables are partially retrieved from NAND flash on
-demand, causing random-read performance degradation.
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
 
-To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
-(Host Performance Booster) which uses host system memory as a cache for the
-FTL mapping table. By using HPB, FTL data can be read from host memory
-faster than from NAND flash memory. 
 
-The current version only supports the DCM (device control mode).
-This patch consists of 4 parts to support HPB feature.
+ kernel/capability.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-1) UFS-feature layer
-2) HPB probe and initialization process
-3) READ -> HPB READ using cached map information
-4) L2P (logical to physical) map management
-
-The UFS-feature is an additional layer to avoid the structure in which the
-UFS-core driver and the UFS-feature are entangled with each other in a 
-single module.
-By adding the layer, UFS-features composed of various combinations can be
-supported. Also, even if a new feature is added, modification of the 
-UFS-core driver can be minimized.
-
-In the HPB probe and init process, the device information of the UFS is
-queried. After checking supported features, the data structure for the HPB
-is initialized according to the device information.
-
-A read I/O in the active sub-region where the map is cached is changed to
-HPB READ by the HPB module.
-
-The HPB module manages the L2P map using information received from the
-device. For active sub-region, the HPB module caches through ufshpb_map
-request. For the in-active region, the HPB module discards the L2P map.
-When a write I/O occurs in an active sub-region area, associated dirty
-bitmap checked as dirty for preventing stale read.
-
-HPB is shown to have a performance improvement of 58 - 67% for random read
-workload. [1]
-
-This series patches are based on the 5.9/scsi-queue branch.
-
-[1]:
-https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
-
-Daejun park (5):
- scsi: ufs: Add UFS feature related parameter
- scsi: ufs: Add UFS feature layer
- scsi: ufs: Introduce HPB module
- scsi: ufs: L2P map management for HPB read
- scsi: ufs: Prepare HPB read for cached sub-region
+diff --git a/kernel/capability.c b/kernel/capability.c
+index 1444f3954d75..a8a20ebc43ee 100644
+--- a/kernel/capability.c
++++ b/kernel/capability.c
+@@ -40,7 +40,7 @@ __setup("no_file_caps", file_caps_disable);
+ /*
+  * More recent versions of libcap are available from:
+  *
+- *   http://www.kernel.org/pub/linux/libs/security/linux-privs/
++ *   https://www.kernel.org/pub/linux/libs/security/linux-privs/
+  */
  
- drivers/scsi/ufs/Kconfig      |    9 +
- drivers/scsi/ufs/Makefile     |    3 +-
- drivers/scsi/ufs/ufs.h        |   12 +
- drivers/scsi/ufs/ufsfeature.c |  148 +++
- drivers/scsi/ufs/ufsfeature.h |   69 ++
- drivers/scsi/ufs/ufshcd.c     |   19 +
- drivers/scsi/ufs/ufshcd.h     |    2 +
- drivers/scsi/ufs/ufshpb.c     | 1997 ++++++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufshpb.h     |  232 +++++
- 9 files changed, 2490 insertions(+), 1 deletion(-)
- created mode 100644 drivers/scsi/ufs/ufsfeature.c
- created mode 100644 drivers/scsi/ufs/ufsfeature.h
- created mode 100644 drivers/scsi/ufs/ufshpb.c
- created mode 100644 drivers/scsi/ufs/ufshpb.h
+ static void warn_legacy_capability_use(void)
+-- 
+2.27.0
+
