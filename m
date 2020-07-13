@@ -2,382 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292AA21D250
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBB121D243
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgGMI5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 04:57:16 -0400
-Received: from mga03.intel.com ([134.134.136.65]:17823 "EHLO mga03.intel.com"
+        id S1727890AbgGMIzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 04:55:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:48364 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726077AbgGMI5P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 04:57:15 -0400
-IronPort-SDR: oC3Mv8AC3GhMyLOIJrAvmNNl9/uL9uZqyY9fB/eOCugCevvVpK02ydvXn4lWmExvFTquJmFFPm
- OfAcCHyUF0lQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9680"; a="148575788"
-X-IronPort-AV: E=Sophos;i="5.75,346,1589266800"; 
-   d="scan'208";a="148575788"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 01:57:11 -0700
-IronPort-SDR: tMXhB/zNAc0hJKJrMb+EegCdwREEF3y/9LtIi8lKsGiqVcnADN67N/fuc6a0qeGfQHQihvgSEG
- bRl4fdWy5W5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,347,1589266800"; 
-   d="scan'208";a="315999162"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga008.jf.intel.com with ESMTP; 13 Jul 2020 01:57:08 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     kishon@ti.com, linux-kernel@vger.kernel.org
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        andriy.shevchenko@intel.com, balbi@kernel.org,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v5 2/2] phy: Add USB3 PHY support for Intel LGM SoC
-Date:   Mon, 13 Jul 2020 16:54:53 +0800
-Message-Id: <20200713085453.7353-3-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200713085453.7353-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20200713085453.7353-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1726077AbgGMIza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 04:55:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0267E30E;
+        Mon, 13 Jul 2020 01:55:30 -0700 (PDT)
+Received: from [10.37.12.45] (unknown [10.37.12.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95A343F7D8;
+        Mon, 13 Jul 2020 01:55:26 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/2] PM / devfreq: Add delayed timer for polling
+To:     Willy Wolff <willy.mh.wolff.ml@gmail.com>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>, k.konieczny@samsung.com,
+        krzk@kernel.org, kgene@kernel.org, s.nawrocki@samsung.com,
+        b.zolnierkie@samsung.com, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <CGME20200703061508epcas1p171aa3c0ab832b77e5837d8bd1e563742@epcas1p1.samsung.com>
+ <20200703062622.11773-1-cw00.choi@samsung.com>
+ <20200703123346.6fy6i33ks6nox46a@macmini.local>
+ <a3339c58-6350-9298-6053-9dc021170048@arm.com>
+ <20200710151233.ci5c4rgwb64eswy7@macmini.local>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <fd482a4b-305b-5332-2f3e-f204018cc7b1@arm.com>
+Date:   Mon, 13 Jul 2020 09:55:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200710151233.ci5c4rgwb64eswy7@macmini.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+Hi Willy
 
-Add support for USB PHY on Intel LGM SoC.
+On 7/10/20 4:12 PM, Willy Wolff wrote:
+> Hi Lukasz,
+> 
+> On 2020-07-08-15-25-03, Lukasz Luba wrote:
+>> Hi Willy,
+>>
+>> On 7/3/20 1:33 PM, Willy Wolff wrote:
+>>> Hi Chanwoo,
+>>>
+>>> I think it doesn't help on the benchmark I suggested that is doing only memory
+>>> accesses. With both timer, I have the same timing.
+>>>
+>>> To test the benchmark with these new patches about timer:
+>>>
+>>> git clone https://github.com/wwilly/benchmark.git \
+>>>     && cd benchmark \
+>>>     && source env.sh \
+>>>     && ./bench_build.sh \
+>>>     && bash source/scripts/test_dvfs_mem_patched.sh
+>>>
+>>> The benchmark is set by default to run for 1s, but you can increase this by
+>>> tweaking the script as:
+>>>
+>>> taskset 8 ./bench_install/bin/microbe_cache 33554431 0 9722222 <TIME in sec> ${little_freq}
+>>>
+>>>
+>>> Also, as I reported the issue, would it be possible to add a
+>>> Reported-by: Willy Wolff <willy.mh.wolff.ml@gmail.com> ?
+>>> Many thanks in advance.
+>>
+>> Thank you for your good work and the benchmark. I hope you will continue
+>> to use it and report some issues. I am going to send a follow up patches
+>> for the DMC and I will add your 'Reported-by'. In the tests I can see
+>> the improvements, but it's worth to consult with you if I understand
+>> the new results correctly.
+>>
+> 
+> Thanks for that. I will follow on the other patch thread discussion.
+> 
+>> I think there is still some area for improvements in the devfreq and you
+>> could find the interesting bits to contribute.
+> 
+> In fact, this benchmark is motivated about part of my PhD research that has just
+> been accepted at LCTES2020: "Performance Optimization on big.LITTLE Architectures:
+> A Memory-latency Aware Approach" at https://dl.acm.org/doi/10.1145/3372799.3394370
+> 
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
----
- drivers/phy/Kconfig       |  11 ++
- drivers/phy/Makefile      |   1 +
- drivers/phy/phy-lgm-usb.c | 278 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 290 insertions(+)
- create mode 100644 drivers/phy/phy-lgm-usb.c
+Congrats and thank you for the link (I will read it).
 
-diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-index b3ed94b98d9b..43ff5943f513 100644
---- a/drivers/phy/Kconfig
-+++ b/drivers/phy/Kconfig
-@@ -49,6 +49,17 @@ config PHY_XGENE
- 	help
- 	  This option enables support for APM X-Gene SoC multi-purpose PHY.
- 
-+config USB_LGM_PHY
-+	tristate "INTEL Lightning Mountain USB PHY Driver"
-+	depends on USB_SUPPORT
-+	select USB_PHY
-+	select REGULATOR
-+	select REGULATOR_FIXED_VOLTAGE
-+	help
-+	  Enable this to support Intel DWC3 PHY USB phy. This driver provides
-+	  interface to interact with USB GEN-II and USB 3.x PHY that is part
-+	  of the Intel network SOC.
-+
- source "drivers/phy/allwinner/Kconfig"
- source "drivers/phy/amlogic/Kconfig"
- source "drivers/phy/broadcom/Kconfig"
-diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
-index 310c149a9df5..c2cd6d756f5f 100644
---- a/drivers/phy/Makefile
-+++ b/drivers/phy/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_GENERIC_PHY_MIPI_DPHY)	+= phy-core-mipi-dphy.o
- obj-$(CONFIG_PHY_LPC18XX_USB_OTG)	+= phy-lpc18xx-usb-otg.o
- obj-$(CONFIG_PHY_XGENE)			+= phy-xgene.o
- obj-$(CONFIG_PHY_PISTACHIO_USB)		+= phy-pistachio-usb.o
-+obj-$(CONFIG_USB_LGM_PHY)		+= phy-lgm-usb.o
- obj-$(CONFIG_ARCH_SUNXI)		+= allwinner/
- obj-$(CONFIG_ARCH_MESON)		+= amlogic/
- obj-$(CONFIG_ARCH_MEDIATEK)		+= mediatek/
-diff --git a/drivers/phy/phy-lgm-usb.c b/drivers/phy/phy-lgm-usb.c
-new file mode 100644
-index 000000000000..1ec9ab266e08
---- /dev/null
-+++ b/drivers/phy/phy-lgm-usb.c
-@@ -0,0 +1,278 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Intel LGM USB PHY driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/delay.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/reset.h>
-+#include <linux/usb/phy.h>
-+#include <linux/workqueue.h>
-+
-+#define CTRL1_OFFSET		0x14
-+#define SRAM_EXT_LD_DONE	BIT(25)
-+#define SRAM_INIT_DONE		BIT(26)
-+
-+#define TCPC_OFFSET		0x1014
-+#define TCPC_MUX_CTL		GENMASK(1, 0)
-+#define MUX_NC			0
-+#define MUX_USB			1
-+#define MUX_DP			2
-+#define MUX_USBDP		3
-+#define TCPC_FLIPPED		BIT(2)
-+#define TCPC_LOW_POWER_EN	BIT(3)
-+#define TCPC_VALID		BIT(4)
-+#define TCPC_CONN		\
-+	(TCPC_VALID | FIELD_PREP(TCPC_MUX_CTL, MUX_USB))
-+#define TCPC_DISCONN		\
-+	(TCPC_VALID | FIELD_PREP(TCPC_MUX_CTL, MUX_NC) | TCPC_LOW_POWER_EN)
-+
-+static const char *const PHY_RESETS[] = { "phy31", "phy", };
-+static const char *const CTL_RESETS[] = { "apb", "ctrl", };
-+
-+struct tca_apb {
-+	struct reset_control *resets[ARRAY_SIZE(PHY_RESETS)];
-+	struct regulator *vbus;
-+	struct work_struct wk;
-+	struct usb_phy phy;
-+
-+	bool phy_initialized;
-+	bool connected;
-+};
-+
-+static int get_flipped(struct tca_apb *ta, bool *flipped)
-+{
-+	union extcon_property_value property;
-+	int ret;
-+
-+	ret = extcon_get_property(ta->phy.edev, EXTCON_USB_HOST,
-+				  EXTCON_PROP_USB_TYPEC_POLARITY, &property);
-+	if (ret) {
-+		dev_err(ta->phy.dev, "no polarity property from extcon\n");
-+		return ret;
-+	}
-+
-+	*flipped = property.intval;
-+
-+	return ret;
-+}
-+
-+static int phy_init(struct usb_phy *phy)
-+{
-+	struct tca_apb *ta = container_of(phy, struct tca_apb, phy);
-+	void __iomem *ctrl1 = phy->io_priv + CTRL1_OFFSET;
-+	int val, ret, i;
-+
-+	if (ta->phy_initialized)
-+		return 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(PHY_RESETS); i++)
-+		reset_control_deassert(ta->resets[i]);
-+
-+	ret = readl_poll_timeout(ctrl1, val, val & SRAM_INIT_DONE, 10, 10 * 1000);
-+	if (ret) {
-+		dev_err(ta->phy.dev, "SRAM init failed, 0x%x\n", val);
-+		return ret;
-+	}
-+
-+	writel(readl(ctrl1) | SRAM_EXT_LD_DONE, ctrl1);
-+
-+	ta->phy_initialized = true;
-+	if (!ta->phy.edev) {
-+		writel(TCPC_CONN, ta->phy.io_priv + TCPC_OFFSET);
-+		return phy->set_vbus(phy, true);
-+	}
-+
-+	schedule_work(&ta->wk);
-+
-+	return ret;
-+}
-+
-+static void phy_shutdown(struct usb_phy *phy)
-+{
-+	struct tca_apb *ta = container_of(phy, struct tca_apb, phy);
-+	int i;
-+
-+	if (!ta->phy_initialized)
-+		return;
-+
-+	ta->phy_initialized = false;
-+	flush_work(&ta->wk);
-+	ta->phy.set_vbus(&ta->phy, false);
-+
-+	ta->connected = false;
-+	writel(TCPC_DISCONN, ta->phy.io_priv + TCPC_OFFSET);
-+
-+	for (i = 0; i < ARRAY_SIZE(PHY_RESETS); i++)
-+		reset_control_assert(ta->resets[i]);
-+}
-+
-+static int phy_set_vbus(struct usb_phy *phy, int on)
-+{
-+	struct tca_apb *ta = container_of(phy, struct tca_apb, phy);
-+	int ret;
-+
-+	if (on) {
-+		ret = regulator_enable(ta->vbus);
-+		if (ret)
-+			dev_err(ta->phy.dev, "regulator not enabled\n");
-+	} else {
-+		ret = regulator_disable(ta->vbus);
-+		if (ret)
-+			dev_err(ta->phy.dev, "regulator not disabled\n");
-+	}
-+
-+	return ret;
-+}
-+
-+static void tca_work(struct work_struct *work)
-+{
-+	struct tca_apb *ta = container_of(work, struct tca_apb, wk);
-+	bool connected;
-+	bool flipped = false;
-+	u32 val;
-+	int ret;
-+
-+	ret = get_flipped(ta, &flipped);
-+	connected = extcon_get_state(ta->phy.edev, EXTCON_USB_HOST) && !ret;
-+	if (connected == ta->connected)
-+		return;
-+
-+	ta->connected = connected;
-+	if (connected) {
-+		val = TCPC_CONN;
-+		if (flipped)
-+			val |= TCPC_FLIPPED;
-+		dev_info(ta->phy.dev, "connected%s\n", flipped ? " flipped" : "");
-+	} else {
-+		val = TCPC_DISCONN;
-+		dev_info(ta->phy.dev, "disconnected\n");
-+	}
-+
-+	writel(val, ta->phy.io_priv + TCPC_OFFSET);
-+
-+	ret = ta->phy.set_vbus(&ta->phy, connected);
-+	if (ret)
-+		dev_err(ta->phy.dev, "failed to set VBUS\n");
-+}
-+
-+static int id_notifier(struct notifier_block *nb, unsigned long event, void *ptr)
-+{
-+	struct tca_apb *ta = container_of(nb, struct tca_apb, phy.id_nb);
-+
-+	if (ta->phy_initialized)
-+		schedule_work(&ta->wk);
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static int vbus_notifier(struct notifier_block *nb, unsigned long evnt, void *ptr)
-+{
-+	return NOTIFY_DONE;
-+}
-+
-+static int phy_probe(struct platform_device *pdev)
-+{
-+	struct reset_control *resets[ARRAY_SIZE(CTL_RESETS)];
-+	struct device *dev = &pdev->dev;
-+	struct usb_phy *phy;
-+	struct tca_apb *ta;
-+	int i;
-+
-+	ta = devm_kzalloc(dev, sizeof(*ta), GFP_KERNEL);
-+	if (!ta)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, ta);
-+	INIT_WORK(&ta->wk, tca_work);
-+
-+	phy = &ta->phy;
-+	phy->dev = dev;
-+	phy->label = dev_name(dev);
-+	phy->type = USB_PHY_TYPE_USB3;
-+	phy->init = phy_init;
-+	phy->shutdown = phy_shutdown;
-+	phy->set_vbus = phy_set_vbus;
-+	phy->id_nb.notifier_call = id_notifier;
-+	phy->vbus_nb.notifier_call = vbus_notifier;
-+
-+	phy->io_priv = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(phy->io_priv))
-+		return PTR_ERR(phy->io_priv);
-+
-+	ta->vbus = devm_regulator_get(dev, "vbus");
-+	if (IS_ERR(ta->vbus))
-+		return PTR_ERR(ta->vbus);
-+
-+	for (i = 0; i < ARRAY_SIZE(CTL_RESETS); i++) {
-+		resets[i] = devm_reset_control_get_exclusive(dev, CTL_RESETS[i]);
-+		if (IS_ERR(resets[i])) {
-+			dev_err(dev, "%s reset not found\n", CTL_RESETS[i]);
-+			return PTR_ERR(resets[i]);
-+		}
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(PHY_RESETS); i++) {
-+		ta->resets[i] = devm_reset_control_get_exclusive(dev, PHY_RESETS[i]);
-+		if (IS_ERR(ta->resets[i])) {
-+			dev_err(dev, "%s reset not found\n", PHY_RESETS[i]);
-+			return PTR_ERR(ta->resets[i]);
-+		}
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(CTL_RESETS); i++)
-+		reset_control_assert(resets[i]);
-+
-+	for (i = 0; i < ARRAY_SIZE(PHY_RESETS); i++)
-+		reset_control_assert(ta->resets[i]);
-+	/*
-+	 * Out-of-band reset of the controller after PHY reset will cause
-+	 * controller malfunctioning, so we should use in-band controller
-+	 * reset only and leave the controller de-asserted here.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(CTL_RESETS); i++)
-+		reset_control_deassert(resets[i]);
-+
-+	/* Need to wait at least 20us after de-assert the controller */
-+	usleep_range(20, 100);
-+
-+	return usb_add_phy_dev(phy);
-+}
-+
-+static int phy_remove(struct platform_device *pdev)
-+{
-+	struct tca_apb *ta = platform_get_drvdata(pdev);
-+
-+	usb_remove_phy(&ta->phy);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id intel_usb_phy_dt_ids[] = {
-+	{ .compatible = "intel,lgm-usb-phy" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, intel_usb_phy_dt_ids);
-+
-+static struct platform_driver lgm_phy_driver = {
-+	.driver = {
-+		.name = "lgm-usb-phy",
-+		.of_match_table = intel_usb_phy_dt_ids,
-+	},
-+	.probe = phy_probe,
-+	.remove = phy_remove,
-+};
-+
-+module_platform_driver(lgm_phy_driver);
-+
-+MODULE_DESCRIPTION("Intel LGM USB PHY driver");
-+MODULE_AUTHOR("Li Yin <yin1.li@intel.com>");
-+MODULE_AUTHOR("Vadivel Murugan R <vadivel.muruganx.ramuthevar@linux.intel.com>");
-+MODULE_LICENSE("GPL v2");
--- 
-2.11.0
+> Basically, it's about snooping latency with "bad" CPU DVFS choice on big.LITTLE
+> systems or more generally SMP/AMP architecture. I'm cleaning up my code and will
+> propose patches as an RFC later. It introduces a new CPU DVFS governor to limit
+> snooping latency.
 
+This is interesting, please add me on CC in the patch set.
+
+Regards,
+Lukasz
