@@ -2,179 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBEE21D055
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC1621D075
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729004AbgGMHTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 03:19:51 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:37859 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728942AbgGMHTu (ORCPT
+        id S1728968AbgGMHbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 03:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgGMHbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 03:19:50 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200713071946epoutp010b1ca3cf7cc303728dcd7dfcf73189aa~hPsuIQKam1025510255epoutp014
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:19:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200713071946epoutp010b1ca3cf7cc303728dcd7dfcf73189aa~hPsuIQKam1025510255epoutp014
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1594624786;
-        bh=T2NFV6aDiWcdlpfPV04JlC6pzkdoFqVotNneudFkf5E=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=JvH/KqBGdDENB0dCeIb12NvkI9manvTB+0f0zGVCbM/yFMQH3i+lJvRHgLSn1QFjn
-         BIGKc577z8h9AYx9M+4hX+txxhIY0tSkWib1SJ0Wc/x8NUKqU0Voo4Cw88y31BiTnn
-         Nfz8V8h3ydOsosKUZ5I/WU3GgrdVT6tq9FfSByYs=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200713071946epcas1p1fa28a4f4ed866798785fc37805b1aa21~hPstgrUb90770907709epcas1p1b;
-        Mon, 13 Jul 2020 07:19:46 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4B4w5C2w7czMqYkq; Mon, 13 Jul
-        2020 07:19:43 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3C.E8.18978.F0B0C0F5; Mon, 13 Jul 2020 16:19:43 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200713071942epcas1p14a9a1d2017e2e5005f7146f5bed09c82~hPsqOyail0774007740epcas1p1R;
-        Mon, 13 Jul 2020 07:19:42 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200713071942epsmtrp2fac249b59d75accf1d54cddeb267490c~hPsqOKOM32359023590epsmtrp2O;
-        Mon, 13 Jul 2020 07:19:42 +0000 (GMT)
-X-AuditID: b6c32a35-5edff70000004a22-d7-5f0c0b0fd948
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        86.ED.08303.E0B0C0F5; Mon, 13 Jul 2020 16:19:42 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200713071942epsmtip1cf2dd598ec869b849267405ada4f543a~hPsp9sadM2443624436epsmtip1I;
-        Mon, 13 Jul 2020 07:19:42 +0000 (GMT)
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     cw00.choi@samsung.com, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        stable@vger.kernel.org
-Subject: [PATCH] PM / devfrq: Fix indentaion of devfreq_summary debugfs node
-Date:   Mon, 13 Jul 2020 16:31:12 +0900
-Message-Id: <20200713073112.6297-1-cw00.choi@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGKsWRmVeSWpSXmKPExsWy7bCmvi4/N0+8wdu/QhYTb1xhsbj+5Tmr
-        xdmmN+wWl3fNYbP43HuE0eJ24wo2iwUbHzE6sHtsWtXJ5tG3ZRWjx+dNcgHMUdk2GamJKalF
-        Cql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUDLlRTKEnNKgUIBicXF
-        Svp2NkX5pSWpChn5xSW2SqkFKTkFlgV6xYm5xaV56XrJ+blWhgYGRqZAhQnZGQfbNzIX3Fau
-        +N3WzdLAeE+si5GTQ0LAROJ19xXGLkYuDiGBHYwS7Z9vQTmfGCV6frQwQTifGSUWz/zACtNy
-        ZP5xdojELkaJT3/nMUM4XxglFrxbyQhSxSagJbH/xQ02EFtEwEri9P8OZhCbWaBGYkLjIrBJ
-        wgI+EiteTQCrZxFQlXhx9TALiM0rYCmx6f1cFoht8hKrNxwAWyAhsIhd4tb0dUwQCReJY5vf
-        QBUJS7w6voUdwpaS+PxuLxuEXS2x8uQRNojmDkaJLfsvQP1gLLF/6WSgQRxAF2lKrN+lDxFW
-        lNj5ey4jxKF8Eu++9rCClEgI8Ep0tAlBlChLXH5wF+oESYnF7Z1sECUeEn8XyYGEhQRiJWZv
-        3cA0gVF2FsL8BYyMqxjFUguKc9NTiw0LDJFjaRMjOEFpme5gnPj2g94hRiYOxkOMEhzMSiK8
-        0aKc8UK8KYmVValF+fFFpTmpxYcYTYHhNZFZSjQ5H5gi80riDU2NjI2NLUwMzUwNDZXEef+d
-        ZY8XEkhPLEnNTk0tSC2C6WPi4JRqYOrY9WERY1dZ8Oldrk4Kx6Q+5ynN+WP6pHT5hJpZKu16
-        C1dyW+/TNFGafex+xN78JMPEhen2F1Rljc7/1w/x0ph94dnF78/OfGPWdJHmV2Bone00ZSPb
-        YYcXnev+TAyccmjr3l9esy9tSVxqcS3lyFqFOn2nk6KySxPXapRMNAhv+3t9wTm9SEW9Y++v
-        Mif2/XpqLlH5wGSZhEHPCY6naXyS5/7cq+/LUn52W0+LN/HL4aZWkxtbO0zOaqYq7LpbMe/f
-        dzUBHptnGar+FbxZL62eR69a4JHuFffpy/FEo6y0j2vzPiQeNU6cdiSnhcPQMzj8cUTfsZfK
-        3Q1FvkHzz4n7P7x41XjtJAuFmt2nLiqxFGckGmoxFxUnAgBArucw2QMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKJMWRmVeSWpSXmKPExsWy7bCSnC4fN0+8wZZPKhYTb1xhsbj+5Tmr
-        xdmmN+wWl3fNYbP43HuE0eJ24wo2iwUbHzE6sHtsWtXJ5tG3ZRWjx+dNcgHMUVw2Kak5mWWp
-        Rfp2CVwZB9s3MhfcVq743dbN0sB4T6yLkZNDQsBE4sj84+xdjFwcQgI7GCX6n3axQyQkJaZd
-        PMrcxcgBZAtLHD5cDFHziVHi+PKPYDVsAloS+1/cYAOxRQRsJO4uvsYCUsQs0MQoMXHeQUaQ
-        hLCAj8SKVxPAbBYBVYkXVw+zgNi8ApYSm97PZYFYJi+xesMB5gmMPAsYGVYxSqYWFOem5xYb
-        FhjlpZbrFSfmFpfmpesl5+duYgSHjJbWDsY9qz7oHWJk4mA8xCjBwawkwhstyhkvxJuSWFmV
-        WpQfX1Sak1p8iFGag0VJnPfrrIVxQgLpiSWp2ampBalFMFkmDk6pBiYrX9/pB6bJbp4h9irb
-        bdYro56DLAesDdlV30av6ZVw8T7DXVvTm5mToyqwr7FdWX7F/huVdoHx37d4zOGxaL7LutIp
-        0fjUg/uX7ZIj3qUZbm+VjpaMCM09s/W2VE3elh3hJ4I+iouf2fb6zbbnYo07eCv+9Px/Ovv9
-        /qxdHAv8z4kozLkvq2Td+2Z1nfQrHc2GB6H+5tvVjmqosbEuuliywHFD6dZdzHdEn+0/ciBT
-        oanhMd/2uw6SYRVrNAvsl6xKZk43iJFSCdkX92g/a3VRZ2sl97f/H30Vsu/FObNVlFhV/FRe
-        9XnKp7/s5y5f5DdIFrt/2frFNDPbwJIlhvf8Nm8427Ml+EWxW307oxJLcUaioRZzUXEiAGd+
-        yhWIAgAA
-X-CMS-MailID: 20200713071942epcas1p14a9a1d2017e2e5005f7146f5bed09c82
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200713071942epcas1p14a9a1d2017e2e5005f7146f5bed09c82
-References: <CGME20200713071942epcas1p14a9a1d2017e2e5005f7146f5bed09c82@epcas1p1.samsung.com>
+        Mon, 13 Jul 2020 03:31:48 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD37C061794;
+        Mon, 13 Jul 2020 00:31:48 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id br7so1391690ejb.5;
+        Mon, 13 Jul 2020 00:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cBGepcoKhFbXDRKew9pLyH1Mee+5SLNwBkC3/ifCZ0I=;
+        b=si4Be0xIDbX668zLGIX0oFnTUeK+GpxJu0+xCUecosDIG1/eo1at875powKezrq1O2
+         2cS36aj3iYelc4cW0RHgRlmFtRRpx7yrYA6fCQpD/xJxTrlpKj7qwq0McMuN6eWVKG9K
+         dyvpGfCyr/I8P3NyX9ezZIecxNFiPOkEMqO+kjzqkj07iCmqwIw4Tgc9SB2ekHUWjccI
+         NF5UqWqJkZFgoskbFRxBcMIfDPfdQeCccaSQMjEjFqumHzYneN3CNTlwO175QjAnfwRV
+         sgqFzIe7V+CT4SpcB0GxP9PH3lSXjDmv3bjxnHo/AmVEiPgkv67YpY1PLAGQG/BwpGiH
+         w0qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cBGepcoKhFbXDRKew9pLyH1Mee+5SLNwBkC3/ifCZ0I=;
+        b=dict6rysSiAU1PdwHp/hbZ9/BFEHLWaicCnmARHeHB+dWaAv9iSB6pFrTOVgmeYsoi
+         QD8Rdo74BlSwNJbJJEzT3sq9Zp6+0QfRfQe04ehuU18+KugWoEQkww1Sk2Pzyy31WIy5
+         1sSc0BbrcyBNFrj66s97Qwv50HWZd6ruWv3xyWIeFbmztbPcGA2GbWl/XYQj2paegNlU
+         ooHmSu3gYLQrAd4uD5+tVBbMDXAHI9VJt2QBE1AzHRQGfOu4KQA+158bLzg9WUUZyUQa
+         nu2t10sEkB6ghEdAk6OUcHKvMiAOeGxNAP21AKf5FdOy3aTcZ9rCEMt1gidH7oZemeHe
+         1bSw==
+X-Gm-Message-State: AOAM532GOiS4stKu2vS4LKMtyJOjse284Tkwd+EYhcyN/0a0Q/K8NjMS
+        sFGWqyMreqAlMtoWG+dF1RrbwLi4ObcXgKq6leg=
+X-Google-Smtp-Source: ABdhPJzN7TuXIpctaa3HLvrc2CzyCMEVfu1H3O0lORN6qEghCZZEm8HDYb5hMhFFwx8hJflSUdAKl1AWux/0FtAs6ko=
+X-Received: by 2002:a17:906:dbe5:: with SMTP id yd5mr73142204ejb.328.1594625507103;
+ Mon, 13 Jul 2020 00:31:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200629114927.17379-1-bruno.thomsen@gmail.com>
+ <20200629114927.17379-3-bruno.thomsen@gmail.com> <20200713025559.GZ21277@dragon>
+ <da52724655ff2161add7fb27fea8fc673028b9fc.camel@perches.com>
+ <20200713071342.GK12113@dragon> <855b5a01416dfe42d89018450a1c791ccb48e500.camel@perches.com>
+In-Reply-To: <855b5a01416dfe42d89018450a1c791ccb48e500.camel@perches.com>
+From:   Bruno Thomsen <bruno.thomsen@gmail.com>
+Date:   Mon, 13 Jul 2020 09:31:31 +0200
+Message-ID: <CAH+2xPBF7g18XTO_2jUqB2WLkLRWk1gOKHnkWCcz4xZ8636ASw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] MAINTAINERS: Add Bruno Thomsen as reviewer of
+ Kamstrup DTS
+To:     Joe Perches <joe@perches.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Bruno Thomsen <bth@kamstrup.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 66d0e797bf09 ("Revert "PM / devfreq: Modify the device name
-as devfreq(X) for sysfs"") roll back the device name from 'devfreqX'
-to device name explained in DT. After applied commit 66d0e797bf09,
-the indentation of devfreq_summary debugfs node was broken.
+Den man. 13. jul. 2020 kl. 09.26 skrev Joe Perches <joe@perches.com>:
+>
+> On Mon, 2020-07-13 at 15:13 +0800, Shawn Guo wrote:
+> > On Sun, Jul 12, 2020 at 10:22:50PM -0700, Joe Perches wrote:
+> []
+> > > diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
+> []
+> > > @@ -436,7 +436,7 @@ sub maintainers_in_file {
+> > >
+> > >      return if ($file =~ m@\bMAINTAINERS$@);
+> > >
+> > > -    if (-f $file && ($email_file_emails || $file =~ /\.yaml$/)) {
+> > > +    if (-f $file && ($email_file_emails || $file =~ /\.(?:yaml|dtsi?)$/)) {
+> >
+> > It should cover .dts file too?
+>
+> It does as dtsi? means the i is optional.
 
-So, fix indentaion of devfreq_summary debugfs node as following:
+It sounds like a good idea for handling dts reviewers.
 
-For example on Exynos5422-based Odroid-XU3 board,
-$ cat /sys/kernel/debug/devfreq/devfreq_summary
-dev                            parent_dev                     governor        polling_ms  cur_freq_Hz  min_freq_Hz  max_freq_Hz
------------------------------- ------------------------------ --------------- ---------- ------------ ------------ ------------
-10c20000.memory-controller     null                           simple_ondemand          0    413000000    165000000    825000000
-soc:bus_wcore                  null                           simple_ondemand         50     88700000     88700000    532000000
-soc:bus_noc                    soc:bus_wcore                  passive                  0     66600000     66600000    111000000
-soc:bus_fsys_apb               soc:bus_wcore                  passive                  0    111000000    111000000    222000000
-soc:bus_fsys                   soc:bus_wcore                  passive                  0     75000000     75000000    200000000
-soc:bus_fsys2                  soc:bus_wcore                  passive                  0     75000000     75000000    200000000
-soc:bus_mfc                    soc:bus_wcore                  passive                  0     83250000     83250000    333000000
-soc:bus_gen                    soc:bus_wcore                  passive                  0     88700000     88700000    266000000
-soc:bus_peri                   soc:bus_wcore                  passive                  0     66600000     66600000     66600000
-soc:bus_g2d                    soc:bus_wcore                  passive                  0     83250000     83250000    333000000
-soc:bus_g2d_acp                soc:bus_wcore                  passive                  0            0     66500000    266000000
-soc:bus_jpeg                   soc:bus_wcore                  passive                  0            0     75000000    300000000
-soc:bus_jpeg_apb               soc:bus_wcore                  passive                  0            0     83250000    166500000
-soc:bus_disp1_fimd             soc:bus_wcore                  passive                  0            0    120000000    200000000
-soc:bus_disp1                  soc:bus_wcore                  passive                  0            0    120000000    300000000
-soc:bus_gscl_scaler            soc:bus_wcore                  passive                  0            0    150000000    300000000
-soc:bus_mscl                   soc:bus_wcore                  passive                  0            0     84000000    666000000
+Maybe we could also update script/checkpatch.pl to ignore
+new dts/dtsi files and not suggest updating MAINTAINERS
+file.
 
-Cc: stable@vger.kernel.org
-Fixes: commit 66d0e797bf09 ("Revert "PM / devfreq: Modify the device name as devfreq(X) for sysfs"")
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
----
- drivers/devfreq/devfreq.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index ce82bdb5fa5c..2ff35ec1b53b 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -1839,8 +1839,7 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
- 	unsigned long cur_freq, min_freq, max_freq;
- 	unsigned int polling_ms;
- 
--	seq_printf(s, "%-30s %-10s %-10s %-15s %10s %12s %12s %12s\n",
--			"dev_name",
-+	seq_printf(s, "%-30s %-30s %-15s %10s %12s %12s %12s\n",
- 			"dev",
- 			"parent_dev",
- 			"governor",
-@@ -1848,10 +1847,9 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
- 			"cur_freq_Hz",
- 			"min_freq_Hz",
- 			"max_freq_Hz");
--	seq_printf(s, "%30s %10s %10s %15s %10s %12s %12s %12s\n",
-+	seq_printf(s, "%30s %30s %15s %10s %12s %12s %12s\n",
-+			"------------------------------",
- 			"------------------------------",
--			"----------",
--			"----------",
- 			"---------------",
- 			"----------",
- 			"------------",
-@@ -1880,8 +1878,7 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
- 		mutex_unlock(&devfreq->lock);
- 
- 		seq_printf(s,
--			"%-30s %-10s %-10s %-15s %10d %12ld %12ld %12ld\n",
--			dev_name(devfreq->dev.parent),
-+			"%-30s %-30s %-15s %10d %12ld %12ld %12ld\n",
- 			dev_name(&devfreq->dev),
- 			p_devfreq ? dev_name(&p_devfreq->dev) : "null",
- 			devfreq->governor_name,
--- 
-2.17.1
-
+/Bruno
