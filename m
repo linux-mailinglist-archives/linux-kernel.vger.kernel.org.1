@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6CC21E2EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 00:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81DB21E2F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 00:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgGMWTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 18:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
+        id S1726149AbgGMWX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 18:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbgGMWRs (ORCPT
+        with ESMTP id S1726517AbgGMWRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Jul 2020 18:17:48 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9540CC08C5DF
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:17:34 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id j186so7473950vsd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:17:34 -0700 (PDT)
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3AFC08C5E0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:17:39 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id z63so13836930qkb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:17:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KyzzzEfQ3Uc/t+bUav/3x8lC62pgjGuDPMIXbn4bZbw=;
-        b=InUYU/sUXni6t/s3Y0tEzsg6QRkbF8CdHi29QeizGklCp2wPj8fVd34LQ23a0P4iuU
-         nDGgnyMb2+gOlkblxRAG3WGfZEczi+XzLqzr3/WSm+8/OTockDZ0K70oggBRR7nwiPQZ
-         WlrLXTDfpeFBc2CMm04EkptdN+M89zgyRIiPQ=
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8mP0/ymvYdWX4Ld0g89D/EXAhNhPehRLoxYuTMnOItM=;
+        b=eOzwig1MEKj6WwbUfNm+F7dSk4yDh93j3Yi6iCNKuIez0XT9IKb8IognTEJcIDtDr0
+         gwZEBXqf840eO7XynL2UX+VvKkMZRa4gt2FxjpDgLMo/YCSRDUw/GSvt92R3s0hd1wEW
+         ViPs7L4vuiTXlyXqNk3pq3JU72yKOs1X4fA5s0ha01KJpwR1Vc3xBRjO65kFkBGtjk1C
+         ps6CB4c8OGM7zLzp4xykhq52kk1R+TFrYb7fEi/wrQsvrjYAsK296yNtgtsd28QdxSFu
+         e+uHTJSywgRkgJ8ciRr0fGkpB9mqMDNLfsjRa2k4zEEaih+z7KvzjF0AJGHSslzHmgAy
+         5YNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KyzzzEfQ3Uc/t+bUav/3x8lC62pgjGuDPMIXbn4bZbw=;
-        b=LNCD7sDVg6RrmXtuQ6rWAbzzyIRdLpEK+4h8eZPYqYyLZxPmDjNYxH+Vd0TiQGxTMb
-         bDM1sQhuFMIS2z5sSbi+9r7E722lpVwm2dyENXAq3LhWm1cF07Y4wxdTTdTxcIZW9M2q
-         M3C0aaeOsJldauksEqw8+2y8+nTUe+zg1IyuHzR9+c7wLKz13P6+KLct8d2roBAYzlO+
-         /s/2GusBoX6ZljQ3E1T4BQes2Q+paJ98HmZB1MSMPpIjYsTVmZkaIWtLT/XJwDfTqI/j
-         Ltjqx5ikt5XLJThEYJBIsZBdmsKTbCAQP8zfUQINWAJWv7Lu7/cEorQVz6Pc1IYxt0W+
-         RUog==
-X-Gm-Message-State: AOAM531Ws/9Su6yoZTI7B6eFxDyyVHKd9Bg9yCxpFHJ+qDxk4VlwdogU
-        vYJHcYrO3szIUFt0Ry2TTtm0RkbnsnM=
-X-Google-Smtp-Source: ABdhPJxqoDxujbBZWUTlb6TPkaiSogJD4M/0HwYUgFH4D0pO2Uazueq60ioPs8Kf4rV1Jmvj18CvNQ==
-X-Received: by 2002:a67:ce08:: with SMTP id s8mr1241749vsl.103.1594678653618;
-        Mon, 13 Jul 2020 15:17:33 -0700 (PDT)
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
-        by smtp.gmail.com with ESMTPSA id t67sm2208040vkd.38.2020.07.13.15.17.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 15:17:32 -0700 (PDT)
-Received: by mail-vs1-f48.google.com with SMTP id j186so7473903vsd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:17:31 -0700 (PDT)
-X-Received: by 2002:a67:ec0f:: with SMTP id d15mr1113618vso.121.1594678651291;
- Mon, 13 Jul 2020 15:17:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <1592818308-23001-1-git-send-email-mkshah@codeaurora.org> <1592818308-23001-4-git-send-email-mkshah@codeaurora.org>
-In-Reply-To: <1592818308-23001-4-git-send-email-mkshah@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 13 Jul 2020 15:17:20 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Xfi+5ms_pRyGjOG2EhkkGf9jCzXvEt=cHkBQMn1wkU7g@mail.gmail.com>
-Message-ID: <CAD=FV=Xfi+5ms_pRyGjOG2EhkkGf9jCzXvEt=cHkBQMn1wkU7g@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] pinctrl: qcom: Use return value from irq_set_wake call
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        LinusW <linus.walleij@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Evan Green <evgreen@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=8mP0/ymvYdWX4Ld0g89D/EXAhNhPehRLoxYuTMnOItM=;
+        b=ceeTOJ00FcHt4r2pHoCY9cGUCWzanGd6EMSdRSJxyHzfUiU91AM8QEINRa95bxfGLx
+         o69DxHodbM37C/17L8ATN9pAgv1REFUgKetgNYo5Y/ENEXhOEblBL/gCN85tvwkJqpO1
+         0R/pq9pT5vyPKUBz0UHMA2dGyXZSxHk/L52a2sUwb5HBkRczu6REaXpmmKCCJsSYf5gh
+         So0sPZVCympsn2BXQjTdhQnxbVo/3Cmu7OLwilFwZ7RfJakC63HuEUAOEBHhQ4CYe8PD
+         9qsiB6cafC67ZHwBFO2tTIrjlYSQ8HoytoJnjTNsLY/cV/iREhEqdjQa0x/zFK4B3lrO
+         6sWg==
+X-Gm-Message-State: AOAM530Mvkg8VTRrMnsll8XwYwcMVAmbf3euB7xYOwqdOeWJUFTv5947
+        2ioZjp9kwW2D/dW5g6j0Xlc=
+X-Google-Smtp-Source: ABdhPJyued74AMBeYTSae/krqvjOPAeZcMvZFKgr1Ct9UOmmNgGEc/uOW+zkCn7kB3gbXBEg+NL36A==
+X-Received: by 2002:a05:620a:24cc:: with SMTP id m12mr1779104qkn.318.1594678659036;
+        Mon, 13 Jul 2020 15:17:39 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id d14sm20694364qti.41.2020.07.13.15.17.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 15:17:38 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Mon, 13 Jul 2020 18:17:36 -0400
+To:     Jian Cai <caij2003@gmail.com>
+Cc:     jiancai@google.com, ndesaulniers@google.com, manojgupta@google.com,
+        sedat.dilek@gmail.com, Brian Gerst <brgerst@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Srinivas Rao L <lsrao@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] x86/entry: add compatibility with IAS
+Message-ID: <20200713221736.GA1904448@rani.riverdale.lan>
+References: <20200713012428.1039487-1-caij2003@gmail.com>
+ <20200713213803.1274795-1-caij2003@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200713213803.1274795-1-caij2003@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Jun 22, 2020 at 2:32 AM Maulik Shah <mkshah@codeaurora.org> wrote:
->
-> msmgpio irqchip is not using return value of irq_set_wake call.
-> Start using it.
->
-> Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+On Mon, Jul 13, 2020 at 02:38:01PM -0700, Jian Cai wrote:
+> Clang's integrated assembler does not allow symbols with non-absolute
+> values to be reassigned. This patch allows the affected code to be
+> compatible with IAS.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1043
+> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Suggested-by: Brian Gerst <brgerst@gmail.com>
+> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Jian Cai <caij2003@gmail.com>
 > ---
->  drivers/pinctrl/qcom/pinctrl-msm.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
+>  arch/x86/include/asm/idtentry.h | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+> index f3d70830bf2a..7d22684eafdf 100644
+> --- a/arch/x86/include/asm/idtentry.h
+> +++ b/arch/x86/include/asm/idtentry.h
+> @@ -469,16 +469,15 @@ __visible noinstr void func(struct pt_regs *regs,			\
+>  	.align 8
+>  SYM_CODE_START(irq_entries_start)
+>      vector=FIRST_EXTERNAL_VECTOR
+> -    pos = .
+>      .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
+> +0 :
+>  	UNWIND_HINT_IRET_REGS
 
-Seems right to me.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+I know I had it this way, but I think it may be slightly safer to put
+the label immediately after UNWIND_HINT_IRET_REGS instead of before,
+just in case anyone adds a 0: inside that macro.
