@@ -2,180 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A497221D94A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DF421D959
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729993AbgGMO6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
+        id S1730011AbgGMO7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729649AbgGMO6x (ORCPT
+        with ESMTP id S1729758AbgGMO7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:58:53 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5814C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:58:52 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id u5so6114227pfn.7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:58:52 -0700 (PDT)
+        Mon, 13 Jul 2020 10:59:48 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22B8C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:59:47 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z13so16909233wrw.5
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:59:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=idB200zkk4M6w9/S7/x4u9pjVtl7D3vW0TITJbchsNw=;
-        b=MGhljGuEzLpygi69eidMBOHf8JA7D5si19uxVWcDC6Wy1Ds3uBLnXz+J8pmK1Apf4C
-         rMmUlG6BbNE4/eHlD2XU9eX/SsqTtl43LhMyugFG9ueLoLh8na9gJF9gzHZi2RsHIAp4
-         6pesbK3XrTP9JIQRWJEoKp6puC2JSUW19qeZrksHqiwiKMbntIEIK16tGnrB5kP4T66g
-         ZT/J+hRlu+6DCemfhm1vsgZdBrFLrrpBJeVu4nhLxLLp0MHoQvvA3dHs9EOzuPYjNbUS
-         By46/6ScZW9bi40KVfwRLM0C/czPMJALxG9Lxbl337r5C17bgkkNmVWQvXxZ81iY9y5u
-         W+eg==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hiVSo3xlj6ss4Z1I13IdfwQU+nfjMMT6+mU8Bg5YKmM=;
+        b=rSp1ckUHPmHljClMQoIDDSw1ZCB7+ygalxtu5lHGTlN5T3q2RVoH60LPL6a4oxo/ty
+         z0HQV95Z9mU86Vd/A/IUFtH/uJjLYmNuqYNKD2NYrejOVpNvFarZV+J0Ec+pnQT/Abgb
+         HpclKpTNjEG/gl3XYssuh1rDjk5AjdDUrI8OuRabw5IccTvCHZGuWSTAi6tGsC2/FQVF
+         nEBBDzZbPQXKqoIyz6Ltu3poOOlhxF3n8CguwS4Q8Xc0MSO0dHDE9sNxR/Y3ADBUUksn
+         pu6EXZbVF4tml637IPR+2tIrGMvndreNuw6dnTpm28gZLa9qxm/+P+SfiwGENPndp3P4
+         AiNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=idB200zkk4M6w9/S7/x4u9pjVtl7D3vW0TITJbchsNw=;
-        b=NlFk9OxbcJ+Wk3n9qm1hZmdxXt2NTjtY8uHEik/gStJeqEgXnLl6rIBoB1MqgYxWJN
-         pqkmWDIhPGxaGUkB+r10gPo0weN3S6Pv5Rt1+y7NOJuE/XerTjkRmeA5wQJI9kawFjUB
-         rAoYTDKkAg22vdIQ74j/pU9g8S1JdHtl7+BwMGHtDiq1pd1olYaU1GTM8Tg43fe7noDp
-         213IpZSbguNQjUZB7f02wMSJZs9lXybD/PrUAv03Sbq7hJ5X3ZnAnQWCJglwjA9eDbmP
-         bPAV48gVxM3fIBdfnrozWxjmIx4BeZkytOEB0YgwHwoG4s5mnxAY/jm1A15HfsSynR6O
-         Zpkw==
-X-Gm-Message-State: AOAM532IPSl7STovzyHuAqF6UafsiL8p4LabBGjw0yXL2uTetRkqbkdX
-        yxIbYbe5WTWsPOEbXKmhkdHmapo7SwALa5e8pl8=
-X-Google-Smtp-Source: ABdhPJzSyfGH2iI/Q+3QHtm6sw7B/R49Wh2d9hhEuP9TMUliSNgAwNMZgJjgLyFsLds0c5NgdCISMsDDBLwbg/1t0bM=
-X-Received: by 2002:a63:a05f:: with SMTP id u31mr61913148pgn.4.1594652332426;
- Mon, 13 Jul 2020 07:58:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hiVSo3xlj6ss4Z1I13IdfwQU+nfjMMT6+mU8Bg5YKmM=;
+        b=NhhLhLkFlWSn+vEPjjgBSlBBfcnL/oo4H7N6Wq6WpVeFF9/8v1bgUn6zn3gQQAjJ7Y
+         WUNeFMUDXGN4EYqcBeKzwbpqr1fsidLxgrZdvjkmyLydkW/hVQ01MDdZUHU1jcJd1IcT
+         T5geAMiKcuIPn6N85lcQMzCgvTM8T5iEpyDUZ5ek+/wfSSiu6JtpYw52VWYrcamYEKAP
+         OKGwzZ48yj3paL6x0cOUsdY1ZNtebx76MnL/nyBZXvrS8t99tgDvswaA7+U382AHNeHc
+         nYR0HUooNSXvBOmZS8tBsSI6bIL8ufuymG03lEQUIwQh6WozVdkzCuUsdGqGq4YNrEx1
+         Uq+w==
+X-Gm-Message-State: AOAM533YfvquHhC2jKVngGY8b2/d9ZdQzo1zeH6En+BvWG3NoTTHdiTi
+        Ml996T6iosQrQvkK35NymcEQOQ==
+X-Google-Smtp-Source: ABdhPJzJvIhOZM1tW3JbhqV6XyxG2YJWfklQ1nvdDw0QVKBI2giA+0EpuZ7a9S9IT9ipoa2QgtDwsQ==
+X-Received: by 2002:a5d:4710:: with SMTP id y16mr82938978wrq.189.1594652385764;
+        Mon, 13 Jul 2020 07:59:45 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id u20sm21991145wmm.15.2020.07.13.07.59.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 07:59:45 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH v4 0/3] devres: provide and use devm_krealloc()
+Date:   Mon, 13 Jul 2020 16:59:31 +0200
+Message-Id: <20200713145934.18243-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-References: <CGME20200713144331eucas1p24107a30783dacc92887b80cf082be9fb@eucas1p2.samsung.com>
- <20200713144324.23654-1-a.hajda@samsung.com> <20200713144324.23654-2-a.hajda@samsung.com>
-In-Reply-To: <20200713144324.23654-2-a.hajda@samsung.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 13 Jul 2020 17:58:35 +0300
-Message-ID: <CAHp75VdgMgBy2no77YZrAm6p_BCSo9oxpvSrOJMKeBD13SDW=Q@mail.gmail.com>
-Subject: Re: [PATCH v9 1/4] driver core: add device probe log helper
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Mark Brown <broonie@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 5:43 PM Andrzej Hajda <a.hajda@samsung.com> wrote:
->
-> During probe every time driver gets resource it should usually check for
-> error printk some message if it is not -EPROBE_DEFER and return the error.
-> This pattern is simple but requires adding few lines after any resource
-> acquisition code, as a result it is often omitted or implemented only
-> partially.
-> dev_err_probe helps to replace such code sequences with simple call,
-> so code:
->         if (err != -EPROBE_DEFER)
->                 dev_err(dev, ...);
->         return err;
-> becomes:
->         return dev_err_probe(dev, err, ...);
->
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-FWIW,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Regular krealloc() obviously can't work with managed memory. This series
+implements devm_krealloc() and adds the first users with hope that this
+helper will be adopted by other drivers currently using non-managed
+krealloc().
 
-> Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
-> Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> ---
->  drivers/base/core.c    | 42 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/device.h |  3 +++
->  2 files changed, 45 insertions(+)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 67d39a90b45c..3a827c82933f 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -3953,6 +3953,48 @@ define_dev_printk_level(_dev_info, KERN_INFO);
->
->  #endif
->
-> +/**
-> + * dev_err_probe - probe error check and log helper
-> + * @dev: the pointer to the struct device
-> + * @err: error value to test
-> + * @fmt: printf-style format string
-> + * @...: arguments as specified in the format string
-> + *
-> + * This helper implements common pattern present in probe functions for error
-> + * checking: print debug or error message depending if the error value is
-> + * -EPROBE_DEFER and propagate error upwards.
-> + * It replaces code sequence:
-> + *     if (err != -EPROBE_DEFER)
-> + *             dev_err(dev, ...);
-> + *     else
-> + *             dev_dbg(dev, ...);
-> + *     return err;
-> + * with
-> + *     return dev_err_probe(dev, err, ...);
-> + *
-> + * Returns @err.
-> + *
-> + */
-> +int dev_err_probe(const struct device *dev, int err, const char *fmt, ...)
-> +{
-> +       struct va_format vaf;
-> +       va_list args;
-> +
-> +       va_start(args, fmt);
-> +       vaf.fmt = fmt;
-> +       vaf.va = &args;
+Some additional changes to the code modified by main patches are included.
 
-> +       if (err != -EPROBE_DEFER)
+v1 -> v2:
+- remove leftover call to hwmon_device_unregister() from pmbus_core.c
+- add a patch extending devm_kmalloc() to handle zero size case
+- use WARN_ON() instead of WARN_ONCE() in devm_krealloc() when passed
+  a pointer to non-managed memory
+- correctly handle the case when devm_krealloc() is passed a pointer to
+  memory in .rodata (potentially returned by devm_kstrdup_const())
+- correctly handle ZERO_SIZE_PTR passed as the ptr argument in devm_krealloc()
 
-I would rather see positive conditional (slightly better to parse when
-read), but here I think it's more or less equal.
+v2 -> v3:
+- drop already applied patches
+- collect Acks
+- add an additional user in iio
 
-> +               dev_err(dev, "error %d: %pV", err, &vaf);
-> +       else
-> +               dev_dbg(dev, "error %d: %pV", err, &vaf);
+v3 -> v4:
+- add the kerneldoc for devm_krealloc()
+- WARN() outside of spinlock
+- rename local variable
 
-> +       va_end(args);
-> +
-> +       return err;
-> +}
-> +EXPORT_SYMBOL_GPL(dev_err_probe);
-> +
->  static inline bool fwnode_is_primary(struct fwnode_handle *fwnode)
->  {
->         return fwnode && !IS_ERR(fwnode->secondary);
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 15460a5ac024..6b2272ae9af8 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -964,6 +964,9 @@ void device_link_remove(void *consumer, struct device *supplier);
->  void device_links_supplier_sync_state_pause(void);
->  void device_links_supplier_sync_state_resume(void);
->
-> +extern __printf(3, 4)
-> +int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
-> +
->  /* Create alias, so I can be autoloaded. */
->  #define MODULE_ALIAS_CHARDEV(major,minor) \
->         MODULE_ALIAS("char-major-" __stringify(major) "-" __stringify(minor))
-> --
-> 2.17.1
->
+Bartosz Golaszewski (3):
+  devres: provide devm_krealloc()
+  hwmon: pmbus: use more devres helpers
+  iio: adc: xilinx-xadc: use devm_krealloc()
 
+ .../driver-api/driver-model/devres.rst        |  1 +
+ drivers/base/devres.c                         | 67 +++++++++++++++++++
+ drivers/hwmon/pmbus/pmbus_core.c              | 28 +++-----
+ drivers/iio/adc/xilinx-xadc-core.c            | 16 ++---
+ include/linux/device.h                        |  2 +
+ 5 files changed, 87 insertions(+), 27 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.26.1
+
