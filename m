@@ -2,109 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD8921D226
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6E321D1F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbgGMIrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 04:47:15 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:3848 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725969AbgGMIrO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 04:47:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1594630034; x=1626166034;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=OWmTAivnL9SQn0XNqsqxJpd04WW5pUTx+oA+xMMh53g=;
-  b=bPmJUMaCFu4yZFaTnhxX6E1Buv7Q4k2sBLHiuQ9I+Laqa7rrKvAWFrt/
-   uQkDp5Z3G3fORVhb7snhYIbgCSfPUZ25yrqzL8HuyE6THKkImaF3TqQlX
-   JxPGUvtm3iFDxdd5LNn5huEBYUWAgXjtcvAnZDHnR81iaAst7BGQqCupM
-   c=;
-IronPort-SDR: ITBzci0azYolweRVNj3USPh5FNDsT3+fIfGtEAdXaXoCfedwvlpPTpCd98IV1/bdG68A73hfOt
- 3ZIFCPTpbjmA==
-X-IronPort-AV: E=Sophos;i="5.75,346,1589241600"; 
-   d="scan'208";a="41595537"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 13 Jul 2020 08:47:09 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id 45CA8A1BFD;
-        Mon, 13 Jul 2020 08:47:06 +0000 (UTC)
-Received: from EX13D31EUA004.ant.amazon.com (10.43.165.161) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 13 Jul 2020 08:47:05 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.146) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 13 Jul 2020 08:46:49 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <foersleo@amazon.de>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v18 14/14] MAINTAINERS: Update for DAMON
-Date:   Mon, 13 Jul 2020 10:41:44 +0200
-Message-ID: <20200713084144.4430-15-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200713084144.4430-1-sjpark@amazon.com>
-References: <20200713084144.4430-1-sjpark@amazon.com>
+        id S1729166AbgGMImD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 04:42:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727834AbgGMImD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 04:42:03 -0400
+Received: from localhost (unknown [84.241.194.92])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 430ED2065D;
+        Mon, 13 Jul 2020 08:42:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594629723;
+        bh=LB10Hpmj34rIYqpojE3tjMY5Wd0jXgunZo/7a/Bdx4s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sBsrH+ChkJC1OsMwtxYqPtV4cdidDnE9+YMOyB83YvCXN0N3eNk/yqMpqeim6xS16
+         Ji8yD26y/SmIgXaUrPhlPKUJkgOtrU2wjOA9rEuxoI9846VYCw+js05Vm3RGUlSGFB
+         N/ANtkAKuMF7PmEtPMpizPaFGfQfGAxx0HtjHNPM=
+Date:   Mon, 13 Jul 2020 10:42:00 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Qiwu Huang <yanziily@gmail.com>
+Cc:     sre@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jiangfei1@xiaomi.com,
+        Qiwu Huang <huangqiwu@xiaomi.com>
+Subject: Re: [PATCH v2 2/5] power: supply: core: add wireless charger adapter
+ type property
+Message-ID: <20200713084200.GD215949@kroah.com>
+References: <cover.1594612572.git.huangqiwu@xiaomi.com>
+ <b20548fc825241c69878bfb05464b0e4f378f4ce.1594612572.git.huangqiwu@xiaomi.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.146]
-X-ClientProxiedBy: EX13P01UWA002.ant.amazon.com (10.43.160.46) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b20548fc825241c69878bfb05464b0e4f378f4ce.1594612572.git.huangqiwu@xiaomi.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Mon, Jul 13, 2020 at 12:03:37PM +0800, Qiwu Huang wrote:
+> From: Qiwu Huang <huangqiwu@xiaomi.com>
+> 
+> Reports what type of wireless adapter connection is
+> currently active forthe supply.
+> for example it can show if ADAPTER_PD capable source is attached.
+> 
+> Signed-off-by: Qiwu Huang <huangqiwu@xiaomi.com>
+> ---
+>  Documentation/ABI/testing/sysfs-class-power | 11 +++++++++++
+>  drivers/power/supply/power_supply_sysfs.c   |  1 +
+>  include/linux/power_supply.h                |  1 +
+>  3 files changed, 13 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/ABI/testing/sysfs-class-power
+> index d3169d47e359..cd07d3f4e8b1 100644
+> --- a/Documentation/ABI/testing/sysfs-class-power
+> +++ b/Documentation/ABI/testing/sysfs-class-power
+> @@ -718,3 +718,14 @@ Contact:	Fei Jiang <jiangfei1@xiaomi.com>
+>  		Access: Read-Only
+>  		Valid values: Reported as integer
+>  
+> +===== Wireless Charger Properties =====
+> +What:		/sys/class/power_supply/<supply_name>/tx_adapter
+> +Date:		Jul 2020
+> +Contact:	Fei Jiang <jiangfei1@xiaomi.com>
+> +Description:
+> +		Reports what type of wireless adapter connection is currently active for
+> +		the supply, for example it can show if ADAPTER_PD capable source
+> +		is attached.
 
-This commit updates MAINTAINERS file for DAMON related files.
+Same question as before, what are the allowed types here?
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- MAINTAINERS | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+> +
+> +		Access: Read-Only
+> +		Valid values: Reported as integer
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 50659d76976b..23348005f5bd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4686,6 +4686,19 @@ F:	net/ax25/ax25_out.c
- F:	net/ax25/ax25_timer.c
- F:	net/ax25/sysctl_net_ax25.c
- 
-+DATA ACCESS MONITOR
-+M:	SeongJae Park <sjpark@amazon.de>
-+L:	linux-mm@kvack.org
-+S:	Maintained
-+F:	Documentation/admin-guide/mm/damon/*
-+F:	Documentation/vm/damon/*
-+F:	include/linux/damon.h
-+F:	include/trace/events/damon.h
-+F:	mm/damon-test.h
-+F:	mm/damon.c
-+F:	tools/damon/*
-+F:	tools/testing/selftests/damon/*
-+
- DAVICOM FAST ETHERNET (DMFE) NETWORK DRIVER
- L:	netdev@vger.kernel.org
- S:	Orphan
--- 
-2.17.1
+What integer maps to what values?
 
+thanks,
+
+greg k-h
