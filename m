@@ -2,61 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4E821DD6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FD021DD77
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730805AbgGMQig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:38:36 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:47939 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730652AbgGMQid (ORCPT
+        id S1730451AbgGMQir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:38:47 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:35918 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730482AbgGMQio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:38:33 -0400
-Received: from marcel-macbook.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 82B46CECC9;
-        Mon, 13 Jul 2020 18:48:29 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v1] Bluetooth: hci_qca: Bug fixes for SSR
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <1594467072-13332-1-git-send-email-gubbaven@codeaurora.org>
-Date:   Mon, 13 Jul 2020 18:38:31 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>, hemantg@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        rjliao@codeaurora.org, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org
+        Mon, 13 Jul 2020 12:38:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594658322;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sL3hQiLEAPYlRGXT83j6gzNW7fCSVrdyHgkgU/ju4ks=;
+        b=Z5Maz9ED4bYMu/Rqo49vxAqA943i5AtbJZg7qYSOoeZuCE8mPwNEqQNtZRpncXkHlZ969t
+        1WAa2U9t1Hga/137jZmQovBb3bmsLt8fYj1pNd9yIRx5t5eeOjo3YGqueY+5VoI7cJX2g2
+        K8KUuHP0omyETbESmUI6I0/+OwPRzHs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166--kgTRIfMOL-pA7rXZyEOTQ-1; Mon, 13 Jul 2020 12:38:40 -0400
+X-MC-Unique: -kgTRIfMOL-pA7rXZyEOTQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDB6380183C;
+        Mon, 13 Jul 2020 16:38:38 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-113.rdu2.redhat.com [10.10.112.113])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B0D5110013C0;
+        Mon, 13 Jul 2020 16:38:33 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 08/13] afs: Note the amount transferred in fetch-data delivery
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Jeff Layton <jlayton@redhat.com>,
+        Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 13 Jul 2020 17:38:32 +0100
+Message-ID: <159465831290.1377938.10075677476527399814.stgit@warthog.procyon.org.uk>
+In-Reply-To: <159465821598.1377938.2046362270225008168.stgit@warthog.procyon.org.uk>
+References: <159465821598.1377938.2046362270225008168.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.22
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <CA0DAEA3-F02E-44A6-B8C9-C22EA9507FC4@holtmann.org>
-References: <1594467072-13332-1-git-send-email-gubbaven@codeaurora.org>
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Venkata,
+Note the amount of data transferred in the fscache request op structure in
+the delivery/decode routines for the various FetchData operations.
 
-> 1.During SSR for command time out if BT SoC goes to inresponsive
-> state, power cycling of BT SoC was not happening.Given the fix by
-> sending hw error event to reset the BT SoC.
-> 
-> 2.If SSR is triggered then ignore the transmit data requests to
-> BT SoC until SSR is completed.
-> 
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-> ---
-> drivers/bluetooth/hci_qca.c | 40 ++++++++++++++++++++++++++++++++++++----
-> 1 file changed, 36 insertions(+), 4 deletions(-)
+Also, we need to exclude the excess from this value and then we need to use
+this in directory read rather than actual_len.
 
-patch has been applied to bluetooth-next tree.
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-Regards
+ fs/afs/dir.c       |    9 ++++-----
+ fs/afs/fsclient.c  |    5 +++++
+ fs/afs/yfsclient.c |    5 +++++
+ 3 files changed, 14 insertions(+), 5 deletions(-)
 
-Marcel
+diff --git a/fs/afs/dir.c b/fs/afs/dir.c
+index 9d47df15c790..03ef09330d10 100644
+--- a/fs/afs/dir.c
++++ b/fs/afs/dir.c
+@@ -209,9 +209,8 @@ static void afs_dir_dump(struct afs_vnode *dvnode, struct afs_read *req)
+ 	pr_warn("DIR %llx:%llx f=%llx l=%llx al=%llx\n",
+ 		dvnode->fid.vid, dvnode->fid.vnode,
+ 		req->file_size, req->cache.len, req->actual_len);
+-	pr_warn("DIR %llx %x %zx %zx\n",
+-		req->cache.pos, req->cache.nr_pages,
+-		req->iter->iov_offset,  iov_iter_count(req->iter));
++	pr_warn("DIR %llx %x %llx\n",
++		req->cache.pos, req->cache.nr_pages, req->cache.transferred);
+ 
+ 	xas_for_each(&xas, page, last) {
+ 		if (xas_retry(&xas, page))
+@@ -321,7 +320,7 @@ static struct afs_read *afs_read_dir(struct afs_vnode *dvnode, struct key *key)
+ 
+ 	nr_pages = (i_size + PAGE_SIZE - 1) / PAGE_SIZE;
+ 
+-	req->actual_len = i_size; /* May change */
++	req->cache.transferred = i_size; /* May change */
+ 	req->cache.len = nr_pages * PAGE_SIZE; /* We can ask for more than there is */
+ 	req->data_version = dvnode->status.data_version; /* May change */
+ 	iov_iter_mapping(&req->def_iter, READ, dvnode->vfs_inode.i_mapping,
+@@ -546,7 +545,7 @@ static int afs_dir_iterate(struct inode *dir, struct dir_context *ctx,
+ 
+ 	/* walk through the blocks in sequence */
+ 	ret = 0;
+-	while (ctx->pos < req->actual_len) {
++	while (ctx->pos < req->cache.transferred) {
+ 		blkoff = ctx->pos & ~(sizeof(union afs_xdr_dir_block) - 1);
+ 
+ 		/* Fetch the appropriate page from the directory and re-add it
+diff --git a/fs/afs/fsclient.c b/fs/afs/fsclient.c
+index d6a8066e666d..e729a19f28c5 100644
+--- a/fs/afs/fsclient.c
++++ b/fs/afs/fsclient.c
+@@ -393,6 +393,11 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
+ 		break;
+ 	}
+ 
++	/* Pass the call's ref on the read request descriptor to the completion
++	 * handler.
++	 */
++	req->cache.transferred = min(req->actual_len, req->cache.len);
++	set_bit(FSCACHE_IO_DATA_FROM_SERVER, &req->cache.flags);
+ 	if (req->cache.io_done)
+ 		req->cache.io_done(&req->cache);
+ 
+diff --git a/fs/afs/yfsclient.c b/fs/afs/yfsclient.c
+index 30621f4fffc0..4ead0c1f9014 100644
+--- a/fs/afs/yfsclient.c
++++ b/fs/afs/yfsclient.c
+@@ -450,6 +450,11 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
+ 		break;
+ 	}
+ 
++	/* Pass the call's ref on the read request descriptor to the completion
++	 * handler.
++	 */
++	req->cache.transferred = min(req->actual_len, req->cache.len);
++	set_bit(FSCACHE_IO_DATA_FROM_SERVER, &req->cache.flags);
+ 	if (req->cache.io_done)
+ 		req->cache.io_done(&req->cache);
+ 
+
 
