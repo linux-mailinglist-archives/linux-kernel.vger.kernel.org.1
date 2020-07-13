@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA1B21D842
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E95421D849
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730102AbgGMOUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729695AbgGMOUz (ORCPT
+        id S1730119AbgGMOVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:21:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3894 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729659AbgGMOVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:20:55 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F542C061755;
-        Mon, 13 Jul 2020 07:20:55 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 5CAF6BC0FD;
-        Mon, 13 Jul 2020 14:20:51 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     bvanassche@acm.org, dledford@redhat.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] ib_srp: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 16:20:45 +0200
-Message-Id: <20200713142045.34909-1-grandmaster@al2klimov.de>
+        Mon, 13 Jul 2020 10:21:55 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06DE4MNw099007;
+        Mon, 13 Jul 2020 10:21:44 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3276afrvpt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jul 2020 10:21:44 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06DEFCSp003644;
+        Mon, 13 Jul 2020 14:21:43 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma01wdc.us.ibm.com with ESMTP id 3275288j40-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jul 2020 14:21:43 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06DELgI443975114
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Jul 2020 14:21:42 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7393F7805E;
+        Mon, 13 Jul 2020 14:21:42 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B90A78063;
+        Mon, 13 Jul 2020 14:21:42 +0000 (GMT)
+Received: from [9.163.41.130] (unknown [9.163.41.130])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 13 Jul 2020 14:21:41 +0000 (GMT)
+Subject: Re: [PATCH] fsi: fsi-occ: fix return value check in occ_probe()
+To:     Xu Wang <vulab@iscas.ac.cn>, jk@ozlabs.org, joel@jms.id.au,
+        alistair@popple.id.au, linux-fsi@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20200713033313.21487-1-vulab@iscas.ac.cn>
+From:   Eddie James <eajames@linux.ibm.com>
+Message-ID: <f2a70c79-15c4-339a-92c5-173d9303dc30@linux.ibm.com>
+Date:   Mon, 13 Jul 2020 09:21:41 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+In-Reply-To: <20200713033313.21487-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-13_11:2020-07-13,2020-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 priorityscore=1501
+ clxscore=1011 lowpriorityscore=0 suspectscore=21 spamscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007130106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
+On 7/12/20 10:33 PM, Xu Wang wrote:
+> In case of error, the function platform_device_register_full()
+> returns ERR_PTR() and never returns NULL. The NULL test in the
+> return value check should be replaced with IS_ERR().
 
 
- drivers/infiniband/ulp/srp/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/drivers/infiniband/ulp/srp/Kconfig b/drivers/infiniband/ulp/srp/Kconfig
-index 67cd63d1399c..c33f4e5fa4d7 100644
---- a/drivers/infiniband/ulp/srp/Kconfig
-+++ b/drivers/infiniband/ulp/srp/Kconfig
-@@ -9,5 +9,5 @@ config INFINIBAND_SRP
- 	  InfiniBand.
- 
- 	  The SRP protocol is defined by the INCITS T10 technical
--	  committee.  See <http://www.t10.org/>.
-+	  committee.  See <https://www.t10.org/>.
- 
--- 
-2.27.0
+Reviewed-by: Eddie James <eajames@linux.ibm.com>
 
+
+>
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
+>   drivers/fsi/fsi-occ.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/fsi/fsi-occ.c b/drivers/fsi/fsi-occ.c
+> index 7da9c81759ac..9eeb856c8905 100644
+> --- a/drivers/fsi/fsi-occ.c
+> +++ b/drivers/fsi/fsi-occ.c
+> @@ -555,7 +555,7 @@ static int occ_probe(struct platform_device *pdev)
+>   
+>   	hwmon_dev_info.id = occ->idx;
+>   	hwmon_dev = platform_device_register_full(&hwmon_dev_info);
+> -	if (!hwmon_dev)
+> +	if (IS_ERR(hwmon_dev))
+>   		dev_warn(dev, "failed to create hwmon device\n");
+>   
+>   	return 0;
