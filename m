@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8728521CECC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 07:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F4E21CEDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 07:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbgGMFYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 01:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725767AbgGMFYs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 01:24:48 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD59C061794;
-        Sun, 12 Jul 2020 22:24:48 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1728488AbgGMFdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 01:33:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725804AbgGMFdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 01:33:01 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B4sXX4fR0z9sDX;
-        Mon, 13 Jul 2020 15:24:44 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594617886;
-        bh=JLMrLsEFZFAdmvA4txh24SkbKNk+Xj+qzEtYAUIFtUc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sA0I0YtvSMhmE8SOA7Yh2tCmHmV4g4KpBfqo4rblBVRgNADwvjgCHP4yNibGpBJH+
-         yXOuOqS97P1naQUy56kJvulZOkUG6cpW/AjLsDNDvX4Jvs11IeXRkQWpFVuM2s/XER
-         yNloHjnb9TvY/7bQRxc3BYduxEj2ZTzhpOPLqnrM7Wq2A+j+x2T34TpE+sPIiJNIhG
-         jZbxB2pvqtgO906fwdydFYcGtwr0yRCuotMa2BlrnNXM72VgrMO+JMF2Xw+cYXLCkG
-         CuXrrSxENfm2VBfaV59d6i3I6XrBiSyU+kqdFOAG+S4X/Ksu7iS6V/IXrIW+Ltm6ve
-         RF2Wd+qm2kb3Q==
-Date:   Mon, 13 Jul 2020 15:24:43 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: linux-next: manual merge of the tty tree with the drm-misc tree
-Message-ID: <20200713152443.12a5449a@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id CC5402068F;
+        Mon, 13 Jul 2020 05:32:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594618380;
+        bh=xHhlhOG2O5smTAneN0ZnuiRbm7rrhPP60vF/0+KOSM0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SDy5y0Xs12hnjkGWFqhjDKbEIXVc0CnyWy7cI5B9idC9gkLt1ktAu0W7oQJ7e4lwY
+         MC/rNJ+kVDnhp2yca4crjhjsgxbqRDpeZdamgs2IX9jbiAU9BChpzBrEp69QcInYHg
+         tyaay/MDgtmEWuDRUSVStCAy25Etw+IG0ywLx6lA=
+Date:   Mon, 13 Jul 2020 11:02:55 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@codeaurora.org>,
+        Jonathan McDowell <noodles@earth.li>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [RESEND PATCH v7 1/2] phy: qualcomm: add qcom ipq806x dwc usb
+ phy driver
+Message-ID: <20200713053255.GY34333@vkoul-mobl>
+References: <20200615205333.20747-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/haWNAIYhOEWfM4Dw6SlggMf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615205333.20747-1-ansuelsmth@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/haWNAIYhOEWfM4Dw6SlggMf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 15-06-20, 22:53, Ansuel Smith wrote:
 
-Hi all,
+> @@ -0,0 +1,593 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2014-2015, Code Aurora Forum. All rights reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 and
+> + * only version 2 as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
 
-Today's linux-next merge of the tty tree got a conflict in:
+You have SPDX tag, so we dont need the license text, please remove this.
+Also we are in 2020 now so Copyright looks incorrect
 
-  drivers/video/fbdev/core/fbcon.c
+> +static int qcom_ipq806x_usb_ss_phy_init(struct phy *phy)
+> +{
+> +	struct usb_phy *phy_dwc3 = phy_get_drvdata(phy);
+> +	int ret;
+> +	u32 data = 0;
 
-between commit:
+Superfluous init
 
-  fcf918b96662 ("fbcon: Use array3_size() helper in scr_memcpyw()")
+> +static int qcom_ipq806x_usb_phy_probe(struct platform_device *pdev)
+> +{
+> +	struct usb_phy	*phy_dwc3;
+> +	struct phy_provider		*phy_provider;
+> +	struct phy			*generic_phy;
+> +	const struct of_device_id *match;
+> +	const struct phy_drvdata *data;
+> +	struct resource			*res;
+> +	resource_size_t			size;
 
-from the drm-misc tree and commit:
+Pls pick one, tabs or single spaces, not both. and reverse christmas
+looks better :)
 
-  28bc24fc46f9 ("vc: separate state")
+> +	struct device_node *np;
+> +
+> +	phy_dwc3 = devm_kzalloc(&pdev->dev, sizeof(*phy_dwc3), GFP_KERNEL);
+> +	if (!phy_dwc3)
+> +		return -ENOMEM;
+> +
+> +	match = of_match_node(qcom_ipq806x_usb_phy_table, pdev->dev.of_node);
+> +	data = match->data;
 
-from the tty tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/video/fbdev/core/fbcon.c
-index af9f5ab96f74,86fe41b1deb8..000000000000
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@@ -676,8 -676,8 +676,8 @@@ static void fbcon_prepare_logo(struct v
-  		q =3D (unsigned short *) (vc->vc_origin +
-  					vc->vc_size_row *
-  					rows);
- -		scr_memcpyw(q, save, logo_lines * new_cols * 2);
- +		scr_memcpyw(q, save, array3_size(logo_lines, new_cols, 2));
-- 		vc->vc_y +=3D logo_lines;
-+ 		vc->state.y +=3D logo_lines;
-  		vc->vc_pos +=3D logo_lines * vc->vc_size_row;
-  		kfree(save);
-  	}
-
---Sig_/haWNAIYhOEWfM4Dw6SlggMf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8L8BsACgkQAVBC80lX
-0GzyDQgAhscNOpxmGNkv4WeNqnKFiLiF64IREaN7Eq/NRR/Pc7wLupLwkb/WUpID
-yxY1NvgGr16W/J5ovPJEN1PnbOTtm/R0WoVp51tYHWD9BFwowrhtxLyX+ukRlSCN
-NE8yC+wH7BzLQJR8uPdonWKdg4kVKf7Yc7cGtYPajJvCHy/Zru+Z7Bi6djmQTx+M
-/G7/+MlVr3945SyWh3LTv+0/koHi4QflMMnSENQrG4n672S1Pk02NuMI2SmYEVTZ
-O56BcypkSGXuSz+Pl7c4ZPsMusponpNNdVa1EXGL1wHO4EMvKhKR/T9D4OkrUYwS
-5VL9bF24IDfGLEmWpM6pL3DLbISRkg==
-=B9WA
------END PGP SIGNATURE-----
-
---Sig_/haWNAIYhOEWfM4Dw6SlggMf--
+How about using of_device_get_match_data() instead?
+-- 
+~Vinod
