@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D1621CFC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C0C21CFE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbgGMGiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:38:50 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:47236 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725969AbgGMGit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:38:49 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 01BA0BC0D1;
-        Mon, 13 Jul 2020 06:38:46 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     vgupta@synopsys.com, arnd@arndb.de, palmer@dabbelt.com,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] ARC: io.h: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 08:38:40 +0200
-Message-Id: <20200713063840.31570-1-grandmaster@al2klimov.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+        id S1728341AbgGMGmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgGMGmR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 02:42:17 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FD0C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:42:16 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id o13so5629775pgf.0
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xZcJpPVurLpF2R6ERLd9Bv0+pjW0oNaNoGLeOeK6As0=;
+        b=hUq0akRxK+b1u+RVUmJQqCczhkyfN73GCfrkypfbNaCa4Gk5cTtoEeVhZCesNkboGV
+         j432akK6NnI8/tr8zgYn+1eKTb2lrT2fkAFO4y91K1jXKidR2oaDookctgCYz1CyoEvC
+         cDo82JqQYerphv21fk1Ph96Ct1LLw0heBrN41PMUI3D6Rc3KfAPY7/YPgaJCQBli77Wm
+         BLLnWynd5yebQS8mUsRp7h9MMeCOh1fhmGCFi12gCBpRb30ccEIvaM3PjeIqGS7FYuCp
+         JHbFnd4lhBPgftC3ZscphoNV/sWui/zJ18BJYm9xx4q/5lwpl6zW2dn7q0VrbJOuC5ia
+         J66Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xZcJpPVurLpF2R6ERLd9Bv0+pjW0oNaNoGLeOeK6As0=;
+        b=JXazoDA/GzZ+vh9Ea27RKqfUCKCqeZVY4fc5yT17mnzlo/otXAMdl49brmxqWzGxhh
+         liBc+GaBose6mdwG5Iq5ynToUQST4mmgRuNPzODOQGTF28O54hr176lz32vu1UKTodf/
+         ELemsud9QpMeP/wBL8Kw/rpP2YkZh3nkyVZXJMMUpMt15XXucWX9DcLyQfQa/BgYx8WN
+         pq3nzp/ohDuA7+5CGsNgHyyNgLmOwF8qYUVOOB/Y8s5WycQB3mWCJNs6MM62xTiEQ+53
+         aAIXHHWRZqBr60/RZRguUfxKIPuSErAgpPRnQWAvMsBAQ9JA3IdUCt8su4q1wNqOqr4R
+         QBLA==
+X-Gm-Message-State: AOAM532zl2h7iXLSxYDfFYhoqC4LAMPTTVysVbKW5ZYZB/cF2TnnK73k
+        /I3DEQMFMure6ysCe3uowFUzCFUv
+X-Google-Smtp-Source: ABdhPJx5a0jLPBWyMbEJv7QlTZnVxSYGwAlAhrh1isrTw55i5OaPwY4iGtwoPj9AeSDAa1L+1cAtMQ==
+X-Received: by 2002:a63:2b93:: with SMTP id r141mr67293886pgr.171.1594622536338;
+        Sun, 12 Jul 2020 23:42:16 -0700 (PDT)
+Received: from localhost.localdomain ([114.206.198.176])
+        by smtp.gmail.com with ESMTPSA id l134sm12448695pga.50.2020.07.12.23.42.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 12 Jul 2020 23:42:15 -0700 (PDT)
+From:   js1304@gmail.com
+X-Google-Original-From: iamjoonsoo.kim@lge.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@lge.com, Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: [PATCH v5 0/9] clean-up the migration target allocation functions
+Date:   Mon, 13 Jul 2020 15:41:48 +0900
+Message-Id: <1594622517-20681-1-git-send-email-iamjoonsoo.kim@lge.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+This patchset clean-up the migration target allocation functions.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+* Changes on v5
+- remove new_non_cma_page() related patches
+(implementation for memalloc_nocma_{save,restore} has a critical bug that
+cannot exclude CMA memory in some cases so cannot use them here. Need to
+fix them first.)
+- introduce a wrapper to handle gfp_mask for hugetlb use it
 
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+* Changes on v4
+- use full gfp_mask
+- use memalloc_nocma_{save,restore} to exclude CMA memory
+- separate __GFP_RECLAIM handling for THP allocation
+- remove more wrapper functions
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
+* Changes on v3
+- As Vlastimil suggested, do not introduce alloc_control for hugetlb functions
+- do not change the signature of migrate_pages()
+- rename alloc_control to migration_target_control
 
- If you apply the patch, please let me know.
+* Changes on v2
+- add acked-by tags
+- fix missing compound_head() call for patch #3
+- remove thisnode field on alloc_control and use __GFP_THISNODE directly
+- fix missing __gfp_mask setup for patch
+"mm/hugetlb: do not modify user provided gfp_mask"
 
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
+* Cover-letter
 
+Contributions of this patchset are:
 
- arch/arc/include/asm/io.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+1. unify two hugetlb alloc functions. As a result, one is remained.
+2. remove one implementation for migration target allocaion
+3. remove three wrapper for migration target allocation
 
-diff --git a/arch/arc/include/asm/io.h b/arch/arc/include/asm/io.h
-index 8f777d6441a5..cb381371a196 100644
---- a/arch/arc/include/asm/io.h
-+++ b/arch/arc/include/asm/io.h
-@@ -195,7 +195,7 @@ __raw_writesx(32, l)
-  *	<readl MMIO "status" reg>
-  *	<LD [DMA buffer]>
-  *
-- * http://lkml.kernel.org/r/20150622133656.GG1583@arm.com
-+ * https://lkml.kernel.org/r/20150622133656.GG1583@arm.com
-  */
- #define readb(c)		({ u8  __v = readb_relaxed(c); __iormb(); __v; })
- #define readw(c)		({ u16 __v = readw_relaxed(c); __iormb(); __v; })
-@@ -218,7 +218,7 @@ __raw_writesx(32, l)
-  * To provide the typical device register semantics of fixed endian,
-  * swap the byte order for Big Endian
-  *
-- * http://lkml.kernel.org/r/201603100845.30602.arnd@arndb.de
-+ * https://lkml.kernel.org/r/201603100845.30602.arnd@arndb.de
-  */
- #define readb_relaxed(c)	__raw_readb(c)
- #define readw_relaxed(c) ({ u16 __r = le16_to_cpu((__force __le16) \
+The patchset is based on next-20200703 + revert following commits.
+ddc017c727e429488cccd401a7794c8152e50a5b~1..583c2617fd3244fff79ba3b445964884c5cd7780
+
+The patchset is available on:
+
+https://github.com/JoonsooKim/linux/tree/cleanup-migration-target-allocation-v5.00-next-20200703
+
+Thanks.
+Joonsoo Kim (9):
+  mm/page_isolation: prefer the node of the source page
+  mm/migrate: move migration helper from .h to .c
+  mm/hugetlb: unify migration callbacks
+  mm/migrate: clear __GFP_RECLAIM to make the migration callback
+    consistent with regular THP allocations
+  mm/migrate: make a standard migration target allocation function
+  mm/mempolicy: use a standard migration target allocation callback
+  mm/page_alloc: remove a wrapper for alloc_migration_target()
+  mm/memory-failure: remove a wrapper for alloc_migration_target()
+  mm/memory_hotplug: remove a wrapper for alloc_migration_target()
+
+ include/linux/hugetlb.h | 41 +++++++++++++++++++++++++++++++--------
+ include/linux/migrate.h | 34 ++++++---------------------------
+ mm/hugetlb.c            | 35 ++-------------------------------
+ mm/internal.h           |  8 +++++++-
+ mm/memory-failure.c     | 15 ++++++---------
+ mm/memory_hotplug.c     | 42 +++++++++++++++++++++-------------------
+ mm/mempolicy.c          | 29 ++++++----------------------
+ mm/migrate.c            | 51 +++++++++++++++++++++++++++++++++++++++++++++++--
+ mm/page_alloc.c         |  8 ++++++--
+ mm/page_isolation.c     |  5 -----
+ 10 files changed, 137 insertions(+), 131 deletions(-)
+
 -- 
-2.27.0
+2.7.4
 
