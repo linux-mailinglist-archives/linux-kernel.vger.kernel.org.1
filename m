@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570E821CEF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 07:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE4521CEF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 07:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728926AbgGMFq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 01:46:29 -0400
-Received: from enterprise01.smtp.diehl.com ([193.201.238.219]:43256 "EHLO
-        enterprise01.smtp.diehl.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725804AbgGMFq2 (ORCPT
+        id S1728889AbgGMFqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 01:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725830AbgGMFqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 01:46:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=diehl.com; i=@diehl.com; q=dns/txt; s=default;
-  t=1594619187; x=1626155187;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=575HEkwvnGuRpevqUYYJMxN0/FnyosKPT8D7C6Z2IB4=;
-  b=HHyYCo372VU93e47WWKvcHykNP6EuSTTTCaylavKIsaLWe7WOw7sWByH
-   LU9hjMniKdTv82jXVews37r6dfycIwrftxncAKdTygrJW/fyfoCh13d7m
-   GPZ3kZN22JtRDaRDmU3LvUUDjQybNdGJjIjuzvZcBTIEbFTyWL9UrBSJZ
-   VlDtuSczWB0SfdJXIK0q+6OY6RxPSDAzQTNu+bqhbHQJZUJ2zBE//2ddv
-   Si79+e+wH1p2n2tCaJ36Pty/nqO1BWHTlX55ymeteFoXepDTlTblmhUoT
-   Ol6urXRpVbjbV7bxtAJZvi738DXm++y/ydKEJpHBPBBHmdofmeJTKoBNu
-   Q==;
-IronPort-SDR: Riw7ZFQkJ1fIB0RG6fMld0k2GJxFi0nmfCfTM4ws2pdbirTW4O46hj1lcagwsN2z/J7J4sYwG6
- MHjtjJjB90fw==
-X-IronPort-AV: E=Sophos;i="5.75,346,1589234400"; 
-   d="scan'208";a="39432166"
-From:   Denis Osterland-Heim <denis.osterland@diehl.com>
-To:     "dmurphy@ti.com" <dmurphy@ti.com>, "pavel@ucw.cz" <pavel@ucw.cz>,
-        "jacek.anaszewski@gmail.com" <jacek.anaszewski@gmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: [PATCH v6 0/2] leds: pwm: add support for default-state device
-Thread-Topic: [PATCH v6 0/2] leds: pwm: add support for default-state device
-Thread-Index: AQHWWNjSOiDq5TcOv0aTFx6++gy85w==
-Date:   Mon, 13 Jul 2020 05:45:32 +0000
-Message-ID: <20200713054259.7608-1-Denis.Osterland@diehl.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-x-ms-exchange-messagesentrepresentingtype: 1
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 13 Jul 2020 01:46:03 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB911C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 22:46:02 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id l17so665889iok.7
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 22:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9wI/wahgrpcGGXwEJI6DDCVP4TgfBXzG5ONbrhMQCAQ=;
+        b=Q/3YJatCQENPGHS3j5tNO8vIdrAr/Qb/GXSSJGSyhFkZ/Efn01VyEar9dCNhyrrOFd
+         +dc10pETc3Fjn0EDw3Nl+trFhYN8QixvXsMvwWuWhL4LCHrj3g5cF+d+igOFyOpvM9MN
+         WyPt43JgTpuFMGbO2JLD2ze1SGUcMaESOLOGbabaCnKnvNK12tAZeJoea2VJHAZ/G74e
+         c/3lvFJhRZOg7bcxSNlZY+FBE/Qi3sU7JqHe345umpKi0q4EEO332e1B6dFCyd2MEhgb
+         kw5m4UFAGpK4ASBwOVwF///WgGyPrUknn2OrOwX60YZ/FX7wKCWvMdUjHQx1Zwz8+kHc
+         x5oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9wI/wahgrpcGGXwEJI6DDCVP4TgfBXzG5ONbrhMQCAQ=;
+        b=L8LfPFHU1rL9Yi1CaKa8svh/gVZed7It6z6IwycFarxo/8cosZcfQAi+JUYS8sbioL
+         ysF2vbE2yG8gwjrUSUfZi1wZwg7HJMSatMHbzDhYgFKgdjUe6gzTMa+Tl6KYUEOTHDYN
+         ue/Krv7DhJyXvr32RW4gLkj8KFfWCcCqYk/s+m/oSv7bH4AgU6Au60lRKv6C+h9xtT61
+         zKVDiPNKTIeQIuMdEPXvQ8z4i5iqNAUhrpARchK2ILMv4+RPSC+G/QNfl7gKEBE4n81M
+         NleU1eOuorAB1k4ySK64nXkp39WHIg2ZevHjcCrYTnew6kXs+TXuQv2LwZMq8EEJDek9
+         cHjw==
+X-Gm-Message-State: AOAM5325mKu9iZtI+QqHjb72F3PfTNX3JeOQPAxudRn19QYV7JJ8X7Cl
+        yYoc+qFkf+SDY/68WiK+nmoMMI52khHfq45TVjzH1dA5Eto=
+X-Google-Smtp-Source: ABdhPJxneK0E/u9NuBzLyxX0TgWKQwmJ5eiGW2UkW8SLWZtbJTL1gF2g1hQ69vgKn9Zz3yk2Pcq4l6wiNe59DXySLRE=
+X-Received: by 2002:a6b:bb43:: with SMTP id l64mr59127682iof.191.1594619162048;
+ Sun, 12 Jul 2020 22:46:02 -0700 (PDT)
 MIME-Version: 1.0
-X-TrailerSkip: 1
-X-GBS-PROC: 415AWy8o668fDtCxszluz/YUUpbtbZKv9hhwd+iOvDKuI0HiOHUkk6gbb3ZKKrmq
+References: <CABXGCsN2-TTemU8JOnh3YErxe2GH7xtG+EZrF9gn_JWLmMxRag@mail.gmail.com>
+ <98b1ba96fca2c6e1a90ce4120b3f3201a3cefd43.camel@tsoy.me>
+In-Reply-To: <98b1ba96fca2c6e1a90ce4120b3f3201a3cefd43.camel@tsoy.me>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Mon, 13 Jul 2020 10:45:51 +0500
+Message-ID: <CABXGCsPUeH=YuxjWVd8Fx7j57qtNuBsoxDfO5aE-D3rwC08foA@mail.gmail.com>
+Subject: Re: Beginning 5.8rc1 kernel USB headsets (ASUS ROG Delta and HyperX
+ Cloud Orbit S) play sound as if in slow-motion.
+To:     Alexander Tsoy <alexander@tsoy.me>
+Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v5 -> v6: tested the rebase to v5.8-rc2 based for-next
+On Fri, 10 Jul 2020 at 17:15, Alexander Tsoy <alexander@tsoy.me> wrote:
+>
+> You've probably hit this bug:
+> https://bugzilla.kernel.org/show_bug.cgi?id=208353
+>
 
- .../devicetree/bindings/leds/leds-pwm.txt          |  2 +
- drivers/leds/leds-pwm.c                            | 54 ++++++++++++++++=
-+++---
- 2 files changed, 50 insertions(+), 6 deletions(-)
+The issue already not reproduced at least on commit git 0bddd227f3dc
 
-Message-Id: <20200421130644.16059-1-Denis.Osterland@diehl.com>
-base-commit: cf1a1a6a7d81d73bcb5568b23572d6fd593add87
-
-
-
-
-
-Diehl Connectivity Solutions GmbH
-Gesch=E4ftsf=FChrung: Horst Leonberger
-Sitz der Gesellschaft: N=FCrnberg - Registergericht: Amtsgericht
-N=FCrnberg: HRB 32315
-_________________________________________________________________________=
-__________________________
-
-Der Inhalt der vorstehenden E-Mail ist nicht rechtlich bindend. Diese E-M=
-ail enthaelt vertrauliche und/oder rechtlich geschuetzte Informationen.
-Informieren Sie uns bitte, wenn Sie diese E-Mail faelschlicherweise erhal=
-ten haben. Bitte loeschen Sie in diesem Fall die Nachricht.
-Jede unerlaubte Form der Reproduktion, Bekanntgabe, Aenderung, Verteilung=
- und/oder Publikation dieser E-Mail ist strengstens untersagt.
-- Informationen zum Datenschutz, insbesondere zu Ihren Rechten, erhalten =
-Sie unter https://www.diehl.com/group/de/transparenz-und-informationspfli=
-chten/
-
-The contents of the above mentioned e-mail is not legally binding. This e=
--mail contains confidential and/or legally protected information. Please =
-inform us if you have received this e-mail by
-mistake and delete it in such a case. Each unauthorized reproduction, dis=
-closure, alteration, distribution and/or publication of this e-mail is st=
-rictly prohibited.=20
-- For general information on data protection and your respective rights p=
-lease visit https://www.diehl.com/group/en/transparency-and-information-o=
-bligations/
+--
+Best Regards,
+Mike Gavrilov.
