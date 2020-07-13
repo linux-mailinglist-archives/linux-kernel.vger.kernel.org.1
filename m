@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA7221D8B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9769221D8BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729871AbgGMOlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:41:15 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:49808 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729689AbgGMOlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:41:15 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 27E98BC0E4;
-        Mon, 13 Jul 2020 14:41:11 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] kobject: documentation: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 16:41:03 +0200
-Message-Id: <20200713144103.35049-1-grandmaster@al2klimov.de>
+        id S1729967AbgGMOmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:42:00 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:59598 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729689AbgGMOmA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 10:42:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594651319; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=njq6ToEc9s/UCKrW6LoyB1yXjuQt4PugDt/wNabnWog=; b=gRf3asfSf2u09CNPEHTt37McXPlxONpVi6hrvmT9b1p+ZqXXAhIOFe+DFEWl+6gtQ/0wSt1I
+ M5y93HHSxexMMAWdd7gPanZO5m0mgLYRltcloVB4UIsq6JpOLb2JwWwysCCgIB6OMgGRnkjc
+ 6IY8n+NulRBHlwgifZNUSSX8C34=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f0c72ad512812c070389aac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Jul 2020 14:41:49
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 62636C43395; Mon, 13 Jul 2020 14:41:49 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D14A4C433C8;
+        Mon, 13 Jul 2020 14:41:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D14A4C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH v1 0/2] ipw2x00: use generic power management
+References: <20200629072525.156154-1-vaibhavgupta40@gmail.com>
+Date:   Mon, 13 Jul 2020 17:41:44 +0300
+In-Reply-To: <20200629072525.156154-1-vaibhavgupta40@gmail.com> (Vaibhav
+        Gupta's message of "Mon, 29 Jun 2020 12:55:23 +0530")
+Message-ID: <87a703xys7.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Vaibhav Gupta <vaibhavgupta40@gmail.com> writes:
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+> Linux Kernel Mentee: Remove Legacy Power Management.
+>
+> The purpose of this patch series is to remove legacy power management callbacks
+> from amd ethernet drivers.
+>
+> The callbacks performing suspend() and resume() operations are still calling
+> pci_save_state(), pci_set_power_state(), etc. and handling the power management
+> themselves, which is not recommended.
+>
+> The conversion requires the removal of the those function calls and change the
+> callback definition accordingly and make use of dev_pm_ops structure.
+>
+> All patches are compile-tested only.
+>
+> Vaibhav Gupta (2):
+>   ipw2100: use generic power management
+>   ipw2200: use generic power management
+>
+>  drivers/net/wireless/intel/ipw2x00/ipw2100.c | 31 +++++---------------
+>  drivers/net/wireless/intel/ipw2x00/ipw2200.c | 30 +++++--------------
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+amd ethernet drivers? That must be a copy paste error. But no need to
+resend because of this.
 
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- Documentation/core-api/kobject.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/core-api/kobject.rst b/Documentation/core-api/kobject.rst
-index e93dc8cf52dd..2739f8b72575 100644
---- a/Documentation/core-api/kobject.rst
-+++ b/Documentation/core-api/kobject.rst
-@@ -6,7 +6,7 @@ Everything you never wanted to know about kobjects, ksets, and ktypes
- :Last updated: December 19, 2007
- 
- Based on an original article by Jon Corbet for lwn.net written October 1,
--2003 and located at http://lwn.net/Articles/51437/
-+2003 and located at https://lwn.net/Articles/51437/
- 
- Part of the difficulty in understanding the driver model - and the kobject
- abstraction upon which it is built - is that there is no obvious starting
 -- 
-2.27.0
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
