@@ -2,108 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDF321D0C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6E021D0A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgGMHrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 03:47:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50346 "EHLO
+        id S1729304AbgGMHrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 03:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729119AbgGMHq7 (ORCPT
+        with ESMTP id S1729129AbgGMHrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 03:46:59 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985F3C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:46:58 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z13so14666099wrw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:46:58 -0700 (PDT)
+        Mon, 13 Jul 2020 03:47:00 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A688FC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:46:59 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z15so14647726wrl.8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:46:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8R5JqiLjYcza4fbV6goyYqcdxR7v8Q2JkVSQFyfGqhI=;
-        b=udRqTFtVMJHrG8FeYyUiq433O2fFQWC945bPEuJp10f4RrlpzSBC3G1uT3JrWYA1z+
-         KkuTTQHCBdHe1LYCAy/Iu3gl9yKuqzR0//GRW+h8lH+KZWAZK605JeIx5pB2kAKHOSXI
-         V335Wh3pK7UbDMZzCDpcb1FmsQkI8K+4bAYGhygGqjF9tBjGZSaj7UJQVmYRRKniBfXr
-         SCBIkyICY6k35WAoLl9qqCFZJfpliOIQY1ByScnoV6kBjLvUTTfL9aJVq/QlI5KXWYzP
-         VMQdVskZjbYEcfJ7cJY+OgjrxcgZjB6XG39HbAY8rYrFvKZnFv+LkC0PtP30tOSv65uW
-         AZqg==
+        bh=Uxo2DH0sWgHFikhlDzsPIQecz45jNH2LIUT7ZFPJRdc=;
+        b=GOrvNZyGD/PoyYcKlVxeUmDl6NKujK+VozGRKnT3zzrkL/K+gDrsH3ctdT5eT7xjON
+         CI8WLL8IO54NfYHE3fA1PKqWCzxHUOPO0kEoBGt8xKczCtNVVVQWmakkIWJoHWG/RI81
+         AzEj8CAToo56PyuMUBzcNY4aBlYAOHp8uetE7mrx0DR4P1ITJB0buL05HPW9DzzNCXeR
+         M4icB1yrctRI8HC+zYv+RejU7jRJOCWso8hGU7uORogO5uHkiqcV8JwXa9ZJWYvzIZtC
+         ZxgXj5QEtmpzu94HC2QYmQzKef5UbIVr9AIRZfNorDYl7Vb0AcO+sfwYwZdrBaUmUXzT
+         BxDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8R5JqiLjYcza4fbV6goyYqcdxR7v8Q2JkVSQFyfGqhI=;
-        b=OWXcYp1XNXr/6Lc+ougQxypTH09kXMl+/8GgMgpgc/If0Cg69iPFth5aerCSSldJBp
-         3VKq7zZ6uj5vAVhlZZ4fSQAG1XV58HDMaalV9JEBPsPxNFeJyZ057CU5HQIErPpETuxr
-         gH88eAGlIPPpC7QTsEpUPgZu0xQcCe4R+0HHg08AWpYr4kFHE2kWn5VIl+eEMqCHZzF4
-         3p5ZsiceN+Zgsbui6wNX1eFaMvMePFiupvw5Nm8M6BfnxnUFu+hzQHdE36jlPI8uKlnB
-         DpA36mT7mUJ52qIAIwtzeGO7Ju30cvuApMq7TtIpOu17ZFh+pC0o+qjFrUWu6dOIg0U9
-         hxRQ==
-X-Gm-Message-State: AOAM531xFE+9i8baubswvtyb0DNg6haEZQnCuosKnLGfX1Ln1cz9bgZw
-        6HuPr9hk7+c9QXaJj9vCd3Ghhw==
-X-Google-Smtp-Source: ABdhPJzSaAiAW3pCxf6bHROZk6HR9qPvG3gRkewkP6qZUrfb7C/flDBz3JdziBfir+fa/ZfAKDVxNQ==
-X-Received: by 2002:a5d:664e:: with SMTP id f14mr78870952wrw.6.1594626417338;
-        Mon, 13 Jul 2020 00:46:57 -0700 (PDT)
+        bh=Uxo2DH0sWgHFikhlDzsPIQecz45jNH2LIUT7ZFPJRdc=;
+        b=qap9HOwmROOmChxBZ4qtL/GAVyXYSydQWc6IH5Wa35K5Cv52G/qblZuK+9FT6F3owy
+         vFV+vtohh0x2pSqNnwfHlIVgHPT3051NKhVE9mBFhG6q2vaKjtqGuecKC3TrdI7SKbkX
+         dK+zP/OEymSIspSoNvQ5xQMLXJ/aaWDWvFp+vu/L2fMu6L2oTWTO6rGBlmYymYzhhQL/
+         fZ+YqXG6ueG3Zn5kwuiZhARXgn2pzkDbP432EdNLSkJ8mcIaIBOIm2P3kdQg8qfpAvP7
+         YyeZaKMirdJrpdl2wTAqjm/Lm/ZfQsw9GKWPCUDbYDYKfv87XfjqJFSXVezfo9PucnNe
+         XNdw==
+X-Gm-Message-State: AOAM533Tq2lh80vNjkTXEWu7xJvUnFoRhrW5AjLIM29oDIK0+SK415nx
+        YCp0pBslQQ3y+83o1qxuE/R11/WmeEc=
+X-Google-Smtp-Source: ABdhPJyLQGOD11n3K0Dn7RXnp5axnbqb5mW/JmFabQxC/B3pAqylPcRRFM9rhr2eMJG2NFlgSsbaQQ==
+X-Received: by 2002:adf:f20a:: with SMTP id p10mr83082724wro.41.1594626418436;
+        Mon, 13 Jul 2020 00:46:58 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.6])
-        by smtp.gmail.com with ESMTPSA id k11sm25142488wrd.23.2020.07.13.00.46.56
+        by smtp.gmail.com with ESMTPSA id k11sm25142488wrd.23.2020.07.13.00.46.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 00:46:56 -0700 (PDT)
+        Mon, 13 Jul 2020 00:46:57 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        QLogic-Storage-Upstream@cavium.com
-Subject: [PATCH v2 09/29] scsi: qedf: qedf_main: Remove set but not checked variable 'tmp'
-Date:   Mon, 13 Jul 2020 08:46:25 +0100
-Message-Id: <20200713074645.126138-10-lee.jones@linaro.org>
+        Hannes Reinecke <hare@suse.de>
+Subject: [PATCH v2 10/29] scsi: libfc: fc_lport: Repair function parameter documentation
+Date:   Mon, 13 Jul 2020 08:46:26 +0100
+Message-Id: <20200713074645.126138-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200713074645.126138-1-lee.jones@linaro.org>
 References: <20200713074645.126138-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like the return value of readw() has never been checked.
+Either misdocumentation and/or bitrot.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/qedf/qedf_main.c: In function ‘__qedf_probe’:
- drivers/scsi/qedf/qedf_main.c:3203:6: warning: variable ‘tmp’ set but not used [-Wunused-but-set-variable]
+ drivers/scsi/libfc/fc_lport.c:412: warning: Function parameter or member 'in_fp' not described in 'fc_lport_recv_echo_req'
+ drivers/scsi/libfc/fc_lport.c:412: warning: Excess function parameter 'fp' description in 'fc_lport_recv_echo_req'
+ drivers/scsi/libfc/fc_lport.c:447: warning: Function parameter or member 'in_fp' not described in 'fc_lport_recv_rnid_req'
+ drivers/scsi/libfc/fc_lport.c:447: warning: Excess function parameter 'fp' description in 'fc_lport_recv_rnid_req'
+ drivers/scsi/libfc/fc_lport.c:1330: warning: Function parameter or member 'state' not described in 'fc_lport_enter_ns'
+ drivers/scsi/libfc/fc_lport.c:1428: warning: Function parameter or member 'state' not described in 'fc_lport_enter_ms'
+ drivers/scsi/libfc/fc_lport.c:1939: warning: Function parameter or member 'tov' not described in 'fc_lport_els_request'
 
-Cc: QLogic-Storage-Upstream@cavium.com
+Cc: Hannes Reinecke <hare@suse.de>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/qedf/qedf_main.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/scsi/libfc/fc_lport.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index a77a74fad6a7e..47fc14f5ed9d7 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -3199,7 +3199,6 @@ static int __qedf_probe(struct pci_dev *pdev, int mode)
- 	void *task_start, *task_end;
- 	struct qed_slowpath_params slowpath_params;
- 	struct qed_probe_params qed_params;
--	u16 tmp;
- 
- 	/*
- 	 * When doing error recovery we didn't reap the lport so don't try
-@@ -3393,9 +3392,9 @@ static int __qedf_probe(struct pci_dev *pdev, int mode)
- 	    "Writing %d to primary and secondary BDQ doorbell registers.\n",
- 	    qedf->bdq_prod_idx);
- 	writew(qedf->bdq_prod_idx, qedf->bdq_primary_prod);
--	tmp = readw(qedf->bdq_primary_prod);
-+	readw(qedf->bdq_primary_prod);
- 	writew(qedf->bdq_prod_idx, qedf->bdq_secondary_prod);
--	tmp = readw(qedf->bdq_secondary_prod);
-+	readw(qedf->bdq_secondary_prod);
- 
- 	qed_ops->common->set_power_state(qedf->cdev, PCI_D0);
- 
+diff --git a/drivers/scsi/libfc/fc_lport.c b/drivers/scsi/libfc/fc_lport.c
+index 684c5e361a286..b84dbc316df15 100644
+--- a/drivers/scsi/libfc/fc_lport.c
++++ b/drivers/scsi/libfc/fc_lport.c
+@@ -405,7 +405,7 @@ static void fc_lport_recv_rlir_req(struct fc_lport *lport, struct fc_frame *fp)
+ /**
+  * fc_lport_recv_echo_req() - Handle received ECHO request
+  * @lport: The local port receiving the ECHO
+- * @fp:	   ECHO request frame
++ * @in_fp: ECHO request frame
+  */
+ static void fc_lport_recv_echo_req(struct fc_lport *lport,
+ 				   struct fc_frame *in_fp)
+@@ -440,7 +440,7 @@ static void fc_lport_recv_echo_req(struct fc_lport *lport,
+ /**
+  * fc_lport_recv_rnid_req() - Handle received Request Node ID data request
+  * @lport: The local port receiving the RNID
+- * @fp:	   The RNID request frame
++ * @in_fp: The RNID request frame
+  */
+ static void fc_lport_recv_rnid_req(struct fc_lport *lport,
+ 				   struct fc_frame *in_fp)
+@@ -1325,6 +1325,7 @@ static void fc_lport_enter_scr(struct fc_lport *lport)
+ /**
+  * fc_lport_enter_ns() - register some object with the name server
+  * @lport: Fibre Channel local port to register
++ * @state: Local port state
+  */
+ static void fc_lport_enter_ns(struct fc_lport *lport, enum fc_lport_state state)
+ {
+@@ -1423,6 +1424,7 @@ static void fc_lport_enter_dns(struct fc_lport *lport)
+ /**
+  * fc_lport_enter_ms() - management server commands
+  * @lport: Fibre Channel local port to register
++ * @state: Local port state
+  */
+ static void fc_lport_enter_ms(struct fc_lport *lport, enum fc_lport_state state)
+ {
+@@ -1932,6 +1934,7 @@ static void fc_lport_bsg_resp(struct fc_seq *sp, struct fc_frame *fp,
+  * @job:   The BSG Passthrough job
+  * @lport: The local port sending the request
+  * @did:   The destination port id
++ * @tov:   The timeout period (in ms)
+  */
+ static int fc_lport_els_request(struct bsg_job *job,
+ 				struct fc_lport *lport,
 -- 
 2.25.1
 
