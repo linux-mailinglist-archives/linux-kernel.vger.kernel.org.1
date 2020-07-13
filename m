@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4443821D751
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EECC21D760
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729871AbgGMNgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729747AbgGMNgU (ORCPT
+        id S1729855AbgGMNis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 09:38:48 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53262 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729885AbgGMNip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:36:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE84C061755;
-        Mon, 13 Jul 2020 06:36:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9EMK+UYrL6jQjzlvQppNu91JO3Sh4jNLd4V1M4+eiGU=; b=dTUuatlg0KVwBCRqwtaZ2s9TzC
-        1S/HjNyZfYj0F/RACCE/EfF8yeNRRyX3JpVsCeOkBljoXS5FXUnkL/FIjBK9E3s4X1QURF42QlC7p
-        NGr+4XNrY5lYFQCUci4QxnnwIhzXqvMwNIVSXsERBSscAex+gjl2AKhs/ioLo6wxTZZW/kpW8Fgg5
-        I6k9W19UFGSMyqxEGoaiRs2H4D/UEDYi79TrTIegUYGyJegtVlwPlSw4Np5fDb1jDyS++RYAiR1rm
-        YGuXazd/Yx3LRTgX950c4nQkTEpXCb+BII+dwqc3+LOG1OMcOs5oIhIq1zBKP+yY+ZwMu2f7iuE/V
-        c8ufUVgQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1juych-0002Nc-Oz; Mon, 13 Jul 2020 13:36:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8AD2D300F7A;
-        Mon, 13 Jul 2020 15:35:58 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 70EF820D27C6B; Mon, 13 Jul 2020 15:35:58 +0200 (CEST)
-Date:   Mon, 13 Jul 2020 15:35:58 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] sched/uclamp: Add a new sysctl to control RT
- default boost value
-Message-ID: <20200713133558.GK10769@hirez.programming.kicks-ass.net>
-References: <20200706142839.26629-1-qais.yousef@arm.com>
- <20200706142839.26629-2-qais.yousef@arm.com>
- <20200713112125.GG10769@hirez.programming.kicks-ass.net>
- <20200713121246.xjif3g4zpja25o5r@e107158-lin.cambridge.arm.com>
+        Mon, 13 Jul 2020 09:38:45 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06DDaqx3082343;
+        Mon, 13 Jul 2020 13:38:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=fUB2CdLSMqMXDoa0rGVYHlfcTSEUJl4Bs0VPYA4d0cs=;
+ b=VK9um5eTZliMznZwPnRO+JHHFtIRSuSGXU9L77MxUelBXXaZHUKX9SbwVL1/wOl2Llia
+ 7tQzswh1pMWFIxPy7EGG5I4XdGA5tCxQ05xL7grGK1aYpJC9taOiinZ8QGUxu5n2o9LW
+ fQiCbxIipFRt51heOyAXMUAaPixQF6oRzvUCtw9/ijpoBMn26aA9HmCpGm9zb+1h1ros
+ Mdgeby5pvHKIPoxTvAwBZAkmgnXtKvbc2FnF+Ad88f5ciPtPAuusNJsGeUu61M8Rcja9
+ lFk1E+uViOEwnzqro6yS6pz5b7/OGnqR3G3lJRUH+g+BQBkiHVWmu2x8nvpoG9iVR+Go sw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 3275cky1pr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 13 Jul 2020 13:38:35 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06DDcYxl173248;
+        Mon, 13 Jul 2020 13:38:35 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 327qbvkc0q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Jul 2020 13:38:35 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06DDcTNP026658;
+        Mon, 13 Jul 2020 13:38:29 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 13 Jul 2020 06:38:28 -0700
+Date:   Mon, 13 Jul 2020 16:38:21 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Baidyanath Kundu <kundubaidya99@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH] Staging: vc04_services: Fix code indent error
+Message-ID: <20200713133821.GS2549@kadam>
+References: <20200713072224.7648-1-kundubaidya99@gmail.com>
+ <20200713133527.GB3122574@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200713121246.xjif3g4zpja25o5r@e107158-lin.cambridge.arm.com>
+In-Reply-To: <20200713133527.GB3122574@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9680 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 mlxscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007130102
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9680 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007130102
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 01:12:46PM +0100, Qais Yousef wrote:
-> On 07/13/20 13:21, Peter Zijlstra wrote:
-
-> > It's monday, and I cannot get my brain working.. I cannot decipher the
-> > comments you have with the smp_[rw]mb(), what actual ordering do they
-> > enforce?
-> 
-> It was a  bit of a paranoia to ensure that readers on other cpus see the new
-> value after this point.
-
-IIUC that's not something any barrier can provide.
-
-Barriers can only order between (at least) two memory operations:
-
-	X = 1;		y = Y;
-	smp_wmb();	smp_rmb();
-	Y = 1;		x = X;
-
-guarantees that if y == 1, then x must also be 1. Because the left hand
-side orders the store of Y after the store of X, while the right hand
-side order the load of X after the load of Y. Therefore, if the first
-load observes the last store, the second load must observe the first
-store.
-
-Without a second variable, barriers can't guarantee _anything_. Which is
-why any barrier comment should refer to at least two variables.
-
-> > Also, your synchronize_rcu() relies on write_lock() beeing
-> > non-preemptible, which isn't true on PREEMPT_RT.
+On Mon, Jul 13, 2020 at 03:35:27PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Jul 13, 2020 at 12:52:24PM +0530, Baidyanath Kundu wrote:
+> > This patch fixes the checkpatch.pl error:
 > > 
-> > The below seems simpler...
-
-> Hmm maybe I am missing something obvious, but beside the race with fork; I was
-> worried about another race and that's what the synchronize_rcu() is trying to
-> handle.
+> > ERROR: code indent should use tabs where possible
+> > 
+> > Signed-off-by: Baidyanath Kundu <kundubaidya99@gmail.com>
+> > ---
+> >  .../staging/vc04_services/vchiq-mmal/mmal-vchiq.c  | 14 +++++++-------
+> >  1 file changed, 7 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+> > index a075cd63da7f..86c00b68f099 100644
+> > --- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+> > +++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+> > @@ -294,13 +294,13 @@ static void buffer_to_host_work_cb(struct work_struct *work)
+> >  	/* queue the bulk submission */
+> >  	vchiq_use_service(instance->service_handle);
+> >  	ret = vchiq_bulk_receive(instance->service_handle,
+> > -				 msg_context->u.bulk.buffer->buffer,
+> > -			         /* Actual receive needs to be a multiple
+> > -			          * of 4 bytes
+> > -			          */
+> > -			         (len + 3) & ~3,
+> > -			         msg_context,
+> > -			         VCHIQ_BULK_MODE_CALLBACK);
+> > +				msg_context->u.bulk.buffer->buffer,
+> > +				/* Actual receive needs to be a multiple
+> > +				 * of 4 bytes
+> > +				 */
+> > +				(len + 3) & ~3,
+> > +				msg_context,
+> > +				VCHIQ_BULK_MODE_CALLBACK);
 > 
-> It's the classic preemption in the middle of RMW operation race.
-> 
-> 		copy_process()			sysctl_uclamp
-> 
-> 		  sched_post_fork()
-> 		    __uclamp_sync_rt()
-> 		      // read sysctl
-> 		      // PREEMPT
-> 						  for_each_process_thread()
-> 		      // RESUME
-> 		      // write syctl to p
+> Close, you need one more space for these lines, right?
 > 
 
-> 	2. sysctl_uclamp happens *during* sched_post_fork()
-> 
-> There's the risk of the classic preemption in the middle of RMW where another
-> CPU could have changed the shared variable after the current CPU has already
-> read it, but before writing it back.
+Yeah.  The original has the space and looks correct.
 
-Aah.. I see.
-
-> I protect this with rcu_read_lock() which as far as I know synchronize_rcu()
-> will ensure if we do the update during this section; we'll wait for it to
-> finish. New forkees entering the rcu_read_lock() section will be okay because
-> they should see the new value.
-> 
-> spinlocks() and mutexes seemed inferior to this approach.
-
-Well, didn't we just write in another patch that p->uclamp_* was
-protected by both rq->lock and p->pi_lock?
-
+regards,
+dan carpenter
 
