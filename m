@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0FF21D775
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120F621D780
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729921AbgGMNpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51086 "EHLO
+        id S1729932AbgGMNsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 09:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729873AbgGMNpi (ORCPT
+        with ESMTP id S1728950AbgGMNsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:45:38 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89652C061755;
-        Mon, 13 Jul 2020 06:45:38 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id n2so13738111edr.5;
-        Mon, 13 Jul 2020 06:45:38 -0700 (PDT)
+        Mon, 13 Jul 2020 09:48:31 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E43FC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:48:31 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id w27so9893610qtb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:48:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qhevLNzqIY18aN/wr6u6dhwAFYFM0C8iq2L8OEb+kGs=;
-        b=Zco6WLh1gHLq9ofieCcTsVnVgxGxMSvX5PMVP8dScAEfSEcZIM6fzvoI2YCUiTr953
-         E0+6tQCtFpYLamgC7BJpN1bH4rJWf2vFJ/hN+z5CkAd5wN78F9Ug5OUX+zTkdJOYoQ/W
-         r4gk2qpTW2sV0FeMHlTZS/uid7ltOJpq9BGS3MfLJPIpMz2ZPRRd7NXz9yFkXihCPo9x
-         Q009oqUiWBL24xy3wxUGX7NjLj9TJAgokQ/XlNj8QZs2zGDv9kL5ScadFMWXfPBnHzKu
-         7r/5BVy/aiMJJuytWkgd8QvxYC3afecfyvK1UM3OnbnG1Ixkw4tuzppAF7x4Dr3GD/31
-         JDcg==
+        bh=whfCCmO7TNNcabn6+SFR27U2aTuxTD9IQzPOWcIz0mw=;
+        b=AsDVnUJkW8wZ4111n1Q2nBdNdYPimCzz0UVZq8a8y3pPyw4jKLDeAIPjYRjwIHz8a4
+         KymFI69PumnZQljIoO+ffRr5sAfyxh9Tx3H1ihNSu6xSBNqO32qk+tcxIRdtO31UIC4H
+         LfQPmrPeG2vYkt7eSxE72k5v70O4W2b8JbCF6T6KzqZREOUTQk3C6bc/sJ4+OyzvDOWC
+         9UszW5zQUhKDyNdZy5X9IeMqKunocanY56DVBsN64wX96hrvHQFXjEXE9h39GyZUsmfU
+         UUIJmZHpfHr85GsHMS24mZR7WE8AusHSUW94rzZc5Cp0HhgwM31f5Sr6pAtjCOMFo0Hy
+         iNgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=qhevLNzqIY18aN/wr6u6dhwAFYFM0C8iq2L8OEb+kGs=;
-        b=aNvJcNAHZTZuqeC5d79R+CiP6MFm/q78/ofy+wViO3u7H5voz54ZvacXO90eT6H6zT
-         fDfLnzpjftsPvG5fe69Ln6buZy/g1mA/MrRlL4B1oDK2pJdkSzkE10kvj1wrUEIgz4ZT
-         +QUdntPFWf0VKczssj+ri8x689ZzYEqAgut9QQ5u0HQlUgt72hphhsocgiTFhd/DlpYY
-         r8QRzkgmxfiyhtc5k8tDmd2oJel3EwU6vHHs24C9/jd5JHldCf8b4IA46/iwK+eJ3LV1
-         +zmpRRvK1OFrUYqpd+dow94Ea95cahMOdjCitxVTu647ANRIIJq5qVfcCrP7r/PHXi47
-         OHmA==
-X-Gm-Message-State: AOAM5336MKzbYFjpFEsJKEjRpZBAIpuA7KdBzHhixySW+G5XuZMIKmCM
-        1MrtDrSlUI9DVJuA4CDWu+i9fuGZoA8=
-X-Google-Smtp-Source: ABdhPJw8tcl7JEi/xxx+7c1G1kruZxLTgevyq466t9suOvpPgeEnjCnFABfVtglpp72QMrlY9qInqQ==
-X-Received: by 2002:a05:6402:b4c:: with SMTP id bx12mr33646902edb.157.1594647937071;
-        Mon, 13 Jul 2020 06:45:37 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f23:5700:d1f7:b47e:ecba:b607? (p200300ea8f235700d1f7b47eecbab607.dip0.t-ipconnect.de. [2003:ea:8f23:5700:d1f7:b47e:ecba:b607])
-        by smtp.googlemail.com with ESMTPSA id gr15sm9522994ejb.84.2020.07.13.06.45.35
+        bh=whfCCmO7TNNcabn6+SFR27U2aTuxTD9IQzPOWcIz0mw=;
+        b=k0H+MLqDu60HMOijU0ghzPnvjWlo8AtVGvimQpclmFcp468SI0tjiOQ8rk4YIw38Jt
+         wWoSvaaIqlBda0VCfcgNRxV0D1KEitHXks6X3/qPqHYdgFSawdMx+vvNPBNL0xxrpO/m
+         8I69mQ6zBEukNo5Xc8bNbIBUyVEJyeOcqAen3Js6J++c9bAuTOG8K9PAdeS1V7hr/K51
+         eoGfz7fbmj8iUGRwdV7Q/rWECmCdOrQovZpIgHnT2I8/QNhSFuNpv/jhJ8gWmzPKxdBk
+         jywt9lAE9feHSbOWegAohL0jWZ4D9p8h3kJbLTOuR8QyOcKKvWc9XPemWfoa4u4me9tt
+         FGcA==
+X-Gm-Message-State: AOAM531oTv+veahHJ+Q0JTGoRnVEQJpQthNfJ+3fAM0WM8Ih5aUkQ1DS
+        FBHhRRnzAO6KJj239uB3GjiHDA==
+X-Google-Smtp-Source: ABdhPJxx00W1Vp+MsZHSypI4tIxcsugNKbIon/mXh6bzEpDLyfmXuCLJZ4RJS3bp+btXAF773E+ZRw==
+X-Received: by 2002:ac8:3ff9:: with SMTP id v54mr84259416qtk.352.1594648110322;
+        Mon, 13 Jul 2020 06:48:30 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id r7sm18415476qtm.66.2020.07.13.06.48.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 06:45:36 -0700 (PDT)
-Subject: Re: [RFC PATCH 12/35] r8169: Tidy Success/Failure checks
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        helgaas@kernel.org,
-        Realtek linux nic maintainers <nic_swsd@realtek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     bjorn@helgaas.com, skhan@linuxfoundation.org,
-        linux-pci@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-References: <20200713122247.10985-1-refactormyself@gmail.com>
- <20200713122247.10985-13-refactormyself@gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <e6610668-4d16-cbaa-8513-9ca335b06225@gmail.com>
-Date:   Mon, 13 Jul 2020 15:45:26 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 13 Jul 2020 06:48:29 -0700 (PDT)
+Subject: Re: [PATCH 4/6] interconnect: qcom: Add SM8250 interconnect provider
+ driver
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+References: <20200701134259.8055-1-jonathan@marek.ca>
+ <20200701134259.8055-5-jonathan@marek.ca>
+ <5a0eca0e-d496-d8af-ca41-0f07e9a3e01d@linaro.org>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <5074d900-da92-0b8a-a7c6-1ebfe4ae2d56@marek.ca>
+Date:   Mon, 13 Jul 2020 09:47:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20200713122247.10985-13-refactormyself@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <5a0eca0e-d496-d8af-ca41-0f07e9a3e01d@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -77,29 +74,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.07.2020 14:22, Saheed O. Bolarinwa wrote:
-> Remove unnecessary check for 0.
+On 7/13/20 9:30 AM, Georgi Djakov wrote:
+> Hi Jonathan,
 > 
-> Signed-off-by: "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-> ---
-> This patch depends on PATCH 11/35
+> Thanks for posting these patches!
 > 
->  drivers/net/ethernet/realtek/r8169_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 7/1/20 16:42, Jonathan Marek wrote:
+>> Add driver for the Qualcomm interconnect buses found in SM8250 based
+>> platforms. The topology consists of several NoCs that are controlled by
+>> a remote processor that collects the aggregated bandwidth for each
+>> master-slave pairs.
+>>
+>> Based on SC7180 driver and generated from downstream dts.
+>>
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+> [..]
+>> +
+>> +static const struct of_device_id qnoc_of_match[] = {
+>> +	{ .compatible = "qcom,sm8250-aggre1-noc",
+>> +	  .data = &sm8250_aggre1_noc},
+>> +	{ .compatible = "qcom,sm8250-aggre2-noc",
+>> +	  .data = &sm8250_aggre2_noc},
+>> +	{ .compatible = "qcom,sm8250-compute-noc",
+>> +	  .data = &sm8250_compute_noc},
+>> +	{ .compatible = "qcom,sm8250-config-noc",
+>> +	  .data = &sm8250_config_noc},
+>> +	{ .compatible = "qcom,sm8250-dc-noc",
+>> +	  .data = &sm8250_dc_noc},
+>> +	{ .compatible = "qcom,sm8250-gem-noc",
+>> +	  .data = &sm8250_gem_noc},
+>> +	{ .compatible = "qcom,sm8250-ipa-virt",
+>> +	  .data = &sm8250_ipa_virt},
+>> +	{ .compatible = "qcom,sm8250-mc-virt",
+>> +	  .data = &sm8250_mc_virt},
+>> +	{ .compatible = "qcom,sm8250-mmss-noc",
+>> +	  .data = &sm8250_mmss_noc},
+>> +	{ .compatible = "qcom,sm8250-npu-noc",
+>> +	  .data = &sm8250_npu_noc},
+>> +	{ .compatible = "qcom,sm8250-system-noc",
+>> +	  .data = &sm8250_system_noc},
+>> +	{ .compatible = "qcom,sm8250-gem-noc-display",
+>> +	  .data = &sm8250_gem_noc_display},
+>> +	{ .compatible = "qcom,sm8250-mc-virt-display",
+>> +	  .data = &sm8250_mc_virt_display},
+>> +	{ .compatible = "qcom,sm8250-mmss-noc-display",
+>> +	  .data = &sm8250_mmss_noc_display},
+>> +	{ }
 > 
-> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> index 206dac958cb2..79edbc0c4476 100644
-> --- a/drivers/net/ethernet/realtek/r8169_main.c
-> +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> @@ -2656,7 +2656,7 @@ static void rtl_csi_access_enable(struct rtl8169_private *tp, u8 val)
->  	 * first and if it fails fall back to CSI.
->  	 */
->  	if (pdev->cfg_size > 0x070f &&
-> -	    pci_write_config_byte(pdev, 0x070f, val) == 0)
-> +	    !pci_write_config_byte(pdev, 0x070f, val))
->  		return;
->  
->  	netdev_notice_once(tp->dev,
+> My main concern here are the display RSC nodes. We should not add the nodes
+> for voting on the display RSC, but use the "qcom,bcm-voters" property in DT
+> to list both "hlos" and "disp" as bcm voters for gem-noc, mc-virt and
+> mmss-noc.
 > 
-Patches 11 and 12 are both trivial, wouldn't it make sense to merge them?
-Apart from that: Acked-by: Heiner Kallweit <hkallweit1@gmail.com>
+
+Would it be OK to just drop the display RSC parts from this series then? 
+Not sure if anything needs it to work, but I'm not using it currently.
+
+Though if you can provide details for a solution, I could implement it 
+(qcom_icc_provider needs to have a list of voters, but I'm not sure how 
+to deal with everything else).
+
+> Thanks,
+> Georgi
+> 
