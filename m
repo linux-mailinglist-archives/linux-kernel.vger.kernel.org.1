@@ -2,133 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C7521D84F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDFD21D812
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729983AbgGMOXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:23:20 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38114 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729649AbgGMOXT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:23:19 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06DEGrGb130500;
-        Mon, 13 Jul 2020 14:23:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=YEAfbMaiJQNUK2CZcdliAlyWaSUy6CyK7Y8B/WS5gRc=;
- b=Flus2iJ+y1ks2p8psdjbUGD8p6yoT2UfipH8SnPyUruCadbYc/yF0kkwM+t41u7COU22
- rJQ6Ddun3CVRPMwqz5tQQWZyPMEC3uJMghfmVpEgnEmNs4/lZQ6JkkNZkQGwyN71K2yv
- UCUxYFGWWjtJsEq5ROiallikO1BGJtnf6BOSZ0JQYyfMYNlLBqbfckJu+nU6QIccvQjp
- pmdeq6iHygDvsHm0B6BMkyjhtXoIVmE3FyUWSS5RKsu1l7ZSa5SGuycvTvDDWhUOiZ1I
- FXQ2Xmzvv3EWO3WLrbBJsa/2gy6i1LgXY+eXKmYgOTQ4UkP3NBIJQEbfV1+B9hvUF37C yw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 32762n76ys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 13 Jul 2020 14:23:14 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06DEIZED145532;
-        Mon, 13 Jul 2020 14:23:13 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 327qbvngfa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Jul 2020 14:23:13 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06DENCne013570;
-        Mon, 13 Jul 2020 14:23:12 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 13 Jul 2020 07:23:12 -0700
-Date:   Mon, 13 Jul 2020 17:23:05 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Ivan Safonov <insafonov@gmail.com>
-Cc:     devel@driverdev.osuosl.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Soumyajit Deb <debsoumyajit100@gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: remove unused members of struct
- xmit_buf
-Message-ID: <20200713142305.GV2549@kadam>
-References: <20200712123821.553420-1-insafonov@gmail.com>
- <20200713131607.GR2549@kadam>
+        id S1730046AbgGMOOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:14:24 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:34292 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729649AbgGMOOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 10:14:24 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 7FA5BE96C51B5F35A2B5;
+        Mon, 13 Jul 2020 22:14:21 +0800 (CST)
+Received: from kernelci-master.huawei.com (10.175.101.6) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 13 Jul 2020 22:14:12 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Hulk Robot <hulkci@huawei.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Ingo Molnar" <mingo@redhat.com>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] ftrace: Make ftrace_profile_pages_init() static
+Date:   Mon, 13 Jul 2020 22:24:16 +0800
+Message-ID: <20200713142416.50180-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713131607.GR2549@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9680 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- mlxlogscore=977 bulkscore=0 malwarescore=0 mlxscore=0 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007130108
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9680 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=991 lowpriorityscore=0
- bulkscore=0 suspectscore=0 phishscore=0 adultscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007130108
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 04:16:07PM +0300, Dan Carpenter wrote:
-> On Sun, Jul 12, 2020 at 03:38:21PM +0300, Ivan Safonov wrote:
-> > Remove unused members of struct xmit_buf: alloc_sz, ff_hwaddr,
-> > dma_transfer_addr, bpending and last.
-> > 
-> > Signed-off-by: Ivan Safonov <insafonov@gmail.com>
-> > ---
-> >  drivers/staging/rtl8188eu/include/rtw_xmit.h  | 5 -----
-> >  drivers/staging/rtl8188eu/os_dep/xmit_linux.c | 1 -
-> >  2 files changed, 6 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8188eu/include/rtw_xmit.h b/drivers/staging/rtl8188eu/include/rtw_xmit.h
-> > index 12d16e98176a..3c03987c81a1 100644
-> > --- a/drivers/staging/rtl8188eu/include/rtw_xmit.h
-> > +++ b/drivers/staging/rtl8188eu/include/rtw_xmit.h
-> > @@ -193,14 +193,9 @@ struct xmit_buf {
-> >  	void *priv_data;
-> >  	u16 ext_tag; /*  0: Normal xmitbuf, 1: extension xmitbuf. */
-> >  	u16 flags;
-> > -	u32 alloc_sz;
-> >  	u32  len;
-> >  	struct submit_ctx *sctx;
-> > -	u32	ff_hwaddr;
-> >  	struct urb *pxmit_urb[8];
-> > -	dma_addr_t dma_transfer_addr;	/* (in) dma addr for transfer_buffer */
-> > -	u8 bpending[8];
-> > -	int last[8];
-> >  };
-> >  
-> >  struct xmit_frame {
-> > diff --git a/drivers/staging/rtl8188eu/os_dep/xmit_linux.c b/drivers/staging/rtl8188eu/os_dep/xmit_linux.c
-> > index 017e1d628461..61ced1160951 100644
-> > --- a/drivers/staging/rtl8188eu/os_dep/xmit_linux.c
-> > +++ b/drivers/staging/rtl8188eu/os_dep/xmit_linux.c
-> > @@ -24,7 +24,6 @@ int rtw_os_xmit_resource_alloc(struct adapter *padapter,
-> >  		return _FAIL;
-> >  
-> >  	pxmitbuf->pbuf = PTR_ALIGN(pxmitbuf->pallocated_buf, XMITBUF_ALIGN_SZ);
-> 
-> Not related to this patch but kmalloc always returns data which is at
-> least ARCH_KMALLOC_MINALIGN aligned which is never less than
-> XMITBUF_ALIGN_SZ (4) so this is a no-op.
+The sparse tool complains as follows:
 
-The alignment in the driver is pretty crazy because it's all unnecessary
-and so complicated.  Every allocation is 4 bytes extra so we can align
-it later.
+kernel/trace/ftrace.c:587:5: warning:
+ symbol 'ftrace_profile_pages_init' was not declared. Should it be static?
 
-Also every buffer is called "pbuf" which stands for pointer to buffer.
-"pallocated_buf" is not really useful either.
+ftrace_profile_pages_init() is not used out of ftrace.c, so
+marks it static.
 
-I tried to look at this to see if we could change the alignment, and
-it's complicated because of the naming and the alignment.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ kernel/trace/ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-regards,
-dan carpenter
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index a3093a84bae3..3e9369935cb3 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -584,7 +584,7 @@ static void ftrace_profile_reset(struct ftrace_profile_stat *stat)
+ 	       FTRACE_PROFILE_HASH_SIZE * sizeof(struct hlist_head));
+ }
+ 
+-int ftrace_profile_pages_init(struct ftrace_profile_stat *stat)
++static int ftrace_profile_pages_init(struct ftrace_profile_stat *stat)
+ {
+ 	struct ftrace_profile_page *pg;
+ 	int functions;
 
