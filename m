@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABC221DB10
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE1521DB19
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730069AbgGMQAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
+        id S1729917AbgGMQC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730258AbgGMQAi (ORCPT
+        with ESMTP id S1729027AbgGMQC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:00:38 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE214C061755;
-        Mon, 13 Jul 2020 09:00:38 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id b4so12647255qkn.11;
-        Mon, 13 Jul 2020 09:00:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1ojmtWuhoXE+10Oa37xZFid38Sh0C/r73ASNaf7SWHQ=;
-        b=BcFsCnGYuhwgC0vVkdD/AnoRcC7YBT5Yjs0ZBhG9O2O/o2aF4ReqQps/ZfiOOvBgqA
-         7TdbWPHptfqtgF9lXpYr4UxcFudH5gBaIH/lvw9V3sn3BS+xUBL02sVcjXSB2YuZKw4L
-         Qg3Brl1eV+oFR0a/Suuw6b7G80waQicfv/86XRVeTZxW+RLHsvp0kR5BvFzhduGoQP4y
-         DfgQ0jH1/4ZG5a8Rosa40+gmhV1/SyAP869DHnNzsAM6MKWO4WJlgqklInJV7BNe/yBt
-         HaTlBYiY64hQcsMNoCWwXEJW8X72aeF7M4Dx9PXWA6r29kq2Of84dHw49ndrZklGetjK
-         FQZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1ojmtWuhoXE+10Oa37xZFid38Sh0C/r73ASNaf7SWHQ=;
-        b=sEHoXYHv084Pfzm1OaO/tPXb/S3puYfaR90/KmWbfABztkS5ZvUnUIIMlUvc9nvVMt
-         XS+aPRgjYM9fvwabgwEq7/ckaLIWihTxqSsQ7LnjzOzjxnP3qkTSTBCEkUQP4Esoivc1
-         VBGMp27D8ZnPVpWc8OWafBglZY6mmHAKI15wFQTcTQ9OUD82eqgFFgZwhesrfHm/Yz5p
-         yY4WxlUpMPbA1xzUqUkHXqRwfOaMyp/SmXU52z2ujBo8FwM2BuQKP5XA9TFyMjpYAWAt
-         uyZt2aALJ12xVKlRLeEXC+VxLHfkDgVNtIyr8wJQWMDieJwU32OJ4LWgYBLt41bXKanA
-         T32w==
-X-Gm-Message-State: AOAM5330HL44k6df1aB1NoqtVzW9ZIoZ8/k/wdWNakwC1V136TAAR4nl
-        j2dxxm0G+YbHkDFM00JzpR8pGSMqg4eCwJrDZqw=
-X-Google-Smtp-Source: ABdhPJwhM3ZE0lj3C9bvbV7DNY7AXaVeMAwiOMd7/7ldDQfk666wq76gTljckR5j86QwsbuotoGufWvliS8VdCV7FaY=
-X-Received: by 2002:a05:620a:1674:: with SMTP id d20mr248343qko.131.1594656038015;
- Mon, 13 Jul 2020 09:00:38 -0700 (PDT)
+        Mon, 13 Jul 2020 12:02:29 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4292CC061755;
+        Mon, 13 Jul 2020 09:02:29 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 2F40DBC0CA;
+        Mon, 13 Jul 2020 16:02:26 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     maintainers@bluecherrydvr.com, anton@corp.bluecherry.net,
+        andrey.utkin@corp.bluecherry.net, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] [media] tw5864-core: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 18:02:19 +0200
+Message-Id: <20200713160219.35612-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-References: <20200705195110.405139-1-anarsoul@gmail.com> <20200705195110.405139-2-anarsoul@gmail.com>
- <DF6CC01A-0282-45E2-A437-2E3E58CC2883@holtmann.org> <CA+E=qVeYT41Wpp4wHgoVFMa9ty-FPsxxvUB-DJDnj07SpWhpjQ@mail.gmail.com>
- <70578F86-20D3-41C7-A968-83B0605D3526@holtmann.org>
-In-Reply-To: <70578F86-20D3-41C7-A968-83B0605D3526@holtmann.org>
-From:   Vasily Khoruzhick <anarsoul@gmail.com>
-Date:   Mon, 13 Jul 2020 09:00:11 -0700
-Message-ID: <CA+E=qVf_8-nXP=nSbtb49bF8SxF6P_A+5ntsUHKKmONccwkSwA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] Bluetooth: Add new quirk for broken local ext
- features max_page
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-linux <linux-arm-kernel@lists.infradead.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        Ondrej Jirman <megous@megous.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 11:28 PM Marcel Holtmann <marcel@holtmann.org> wrote:
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Hi Marcel,
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-> maybe just the read sync train params command is broken? Can you change the init code and not send it and see if the rest of the init phase proceeds. I would rather have the secure connections actually tested before dismissing it altogether.
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-I don't think that I have any devices that support secure connections
-to test, I've got only a bluetooth mouse and headphones, both are from
-the 2.0 era.
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
 
-FWIW unofficial recommendation from Realtek to Pine64 was to avoid
-using any 4.1+ features on this chip. Unfortunately I don't have any
-contacts with Realtek, so I can't confirm that.
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
 
-> Mind you, there were broken Broadcom implementation of connectionless slave broadcast as well. Maybe this is similar.
+ If you apply the patch, please let me know.
 
-I'd prefer to stick to what works unless there's some comprehensive
-test that can figure out what's broken.
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
 
-Regards,
-Vasily
+
+ drivers/media/pci/tw5864/tw5864-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/pci/tw5864/tw5864-core.c b/drivers/media/pci/tw5864/tw5864-core.c
+index 66f2a5cabc6e..282f7dfb7aaf 100644
+--- a/drivers/media/pci/tw5864/tw5864-core.c
++++ b/drivers/media/pci/tw5864/tw5864-core.c
+@@ -65,7 +65,7 @@ module_param_array(video_nr, int, NULL, 0444);
+ MODULE_PARM_DESC(video_nr, "video devices numbers array");
+ 
+ /*
+- * Please add any new PCI IDs to: http://pci-ids.ucw.cz.  This keeps
++ * Please add any new PCI IDs to: https://pci-ids.ucw.cz.  This keeps
+  * the PCI ID database up to date.  Note that the entries must be
+  * added under vendor 0x1797 (Techwell Inc.) as subsystem IDs.
+  */
+-- 
+2.27.0
+
