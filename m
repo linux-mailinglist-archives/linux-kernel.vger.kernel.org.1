@@ -2,54 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BDC21DAE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6957621DAEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730204AbgGMP4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 11:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729700AbgGMP4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 11:56:18 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68189C061755;
-        Mon, 13 Jul 2020 08:56:18 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
+        id S1730183AbgGMP5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:57:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729027AbgGMP5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 11:57:53 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 004B960C;
-        Mon, 13 Jul 2020 15:56:17 +0000 (UTC)
-Date:   Mon, 13 Jul 2020 09:56:16 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Driver-API: Documentation: Replace deprecated :c:func:
- Usage
-Message-ID: <20200713095616.36ab2d3b@lwn.net>
-In-Reply-To: <20200707053252.32703-1-puranjay12@gmail.com>
-References: <20200707053252.32703-1-puranjay12@gmail.com>
-Organization: LWN.net
+        by mail.kernel.org (Postfix) with ESMTPSA id D55FE2068F;
+        Mon, 13 Jul 2020 15:57:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594655872;
+        bh=yaIr3W3gRNyeiwvDjKU5N+IKZQj4ZrZ+IUKbWI+E60o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EJ1fJ3vuXCvpwl6tcgdeYo4tlGvtfPRux44gveEKYvl3IWk4CHicfRtfCLpBRtoQU
+         KoyR1iF6qU4nEtMY2hNBipSi2CGBHJ84s01SADiHpMRIIHJhNAa1M71YfuU33M2t3K
+         RFSGyjA2mvNotQOghu16p04fvi5NhuyVGse6O7AA=
+Date:   Mon, 13 Jul 2020 17:57:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai,
+        Ofir Bitton <obitton@habana.ai>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [PATCH 1/3] habanalabs: implement dma-fence mechanism
+Message-ID: <20200713155752.GC267581@kroah.com>
+References: <20200713155424.24721-1-oded.gabbay@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713155424.24721-1-oded.gabbay@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Jul 2020 11:02:52 +0530
-Puranjay Mohan <puranjay12@gmail.com> wrote:
-
-> Replace :c:func: with func() as the previous usage is deprecated.
+On Mon, Jul 13, 2020 at 06:54:22PM +0300, Oded Gabbay wrote:
+> From: Ofir Bitton <obitton@habana.ai>
 > 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  Documentation/driver-api/device-io.rst | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
+> Instead of using standard dma-fence mechanism designed for GPU's, we
+> introduce our own implementation based on the former one. This
+> implementation is much more sparse than the original, contains only
+> mandatory functionality required by the driver.
 
-Applied, thanks.
+Sad you can't use the in-kernel code for this, I really don't understand
+what's wrong with using it as-is.
 
-jon
+Daniel, why do we need/want duplicate code floating around in the tree
+like this?
+
+Copying code leads to errors, here's some documentation ones:
+
+> --- /dev/null
+> +++ b/drivers/misc/habanalabs/hl_dma_fence.c
+> @@ -0,0 +1,338 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Fence mechanism for dma-buf and to allow for asynchronous dma access
+
+Is that what this still does?
+
+> + *
+> + * Copyright (C) 2012 Canonical Ltd
+> + * Copyright (C) 2012 Texas Instruments
+> + *
+> + * Authors:
+> + * Rob Clark <robdclark@gmail.com>
+> + * Maarten Lankhorst <maarten.lankhorst@canonical.com>
+> + *
+> + * The dma_fence module is a copy of dma-fence at drivers/dma-buf.
+
+"The hl_dma_fence" module...
+
+And is it a stand-alone module?  Or just a single file?
+
+> + * This was done due to an explicit request by GPU developers who asked not
+> + * to use the dma-buf module because we aren't part of DRM subsystem.
+
+Why is dma-buf only for use for DRM?
+
+If it is, should the symbol namespace be set to that to catch users that
+want to use it for their own code?
+
+> + * This copy was stripped from all extra features that habanalabs driver
+> + * doesn't use, including the uapi interface dma-buf exposes.
+> + * In addition, we removed the callbacks because the only usage is from inside
+> + * habanalabs driver
+> + */
+> +
+> +#include "hl_dma_fence.h"
+> +#include "habanalabs.h"
+> +#include <linux/slab.h>
+> +#include <linux/export.h>
+> +#include <linux/atomic.h>
+> +#include <linux/sched/signal.h>
+> +
+> +/**
+> + * DOC: DMA fences overview
+> + *
+> + * DMA fences, represented by &struct hl_dma_fence, are the kernel internal
+> + * synchronization primitive for DMA operations like GPU rendering, video
+> + * encoding/decoding, or displaying buffers on a screen.
+
+I don't think this is correct anymore, right?  :(
+
+> --- /dev/null
+> +++ b/drivers/misc/habanalabs/hl_dma_fence.h
+> @@ -0,0 +1,148 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Fence mechanism for dma-buf to allow for asynchronous dma access
+> + *
+> + * Copyright (C) 2012 Canonical Ltd
+> + * Copyright (C) 2012 Texas Instruments
+> + *
+> + * Authors:
+> + * Rob Clark <robdclark@gmail.com>
+> + * Maarten Lankhorst <maarten.lankhorst@canonical.com>
+> + *
+> + * The dma_fence module is a copy of dma-fence at drivers/dma-buf.
+
+Same comments here for the .h file.
+
+thanks,
+
+greg k-h
