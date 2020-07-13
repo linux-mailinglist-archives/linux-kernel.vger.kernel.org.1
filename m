@@ -2,101 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C8821CFA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9209821CF27
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729318AbgGMG2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:28:43 -0400
-Received: from twhmllg4.macronix.com ([211.75.127.132]:10358 "EHLO
-        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729294AbgGMG2l (ORCPT
+        id S1729046AbgGMGGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726571AbgGMGGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:28:41 -0400
-Received: from TWHMLLG4.macronix.com (localhost [127.0.0.2] (may be forged))
-        by TWHMLLG4.macronix.com with ESMTP id 06D5xAaM020756
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 13:59:10 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
-        by TWHMLLG4.macronix.com with ESMTP id 06D5x5Mq020705;
-        Mon, 13 Jul 2020 13:59:05 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
-        by Forcepoint Email with ESMTP id DC87BBD116A1B78852C0;
-        Mon, 13 Jul 2020 13:59:05 +0800 (CST)
-In-Reply-To: <1590737775-4798-8-git-send-email-masonccyang@mxic.com.tw>
-References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw> <1590737775-4798-8-git-send-email-masonccyang@mxic.com.tw>
-To:     ycllin@mxic.com.tw
-Cc:     boris.brezillon@collabora.com, broonie@kernel.org,
-        juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        matthias.bgg@gmail.com, miquel.raynal@bootlin.com, p.yadav@ti.com,
-        richard@nod.at, tudor.ambarus@microchip.com, vigneshr@ti.com
-Subject: Re: [PATCH v4 7/7] mtd: spi-nor: macronix: Add Octal 8D-8D-8D supports for
- Macronix mx25uw51245g
+        Mon, 13 Jul 2020 02:06:05 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170C0C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:06:05 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id gc15so6131746pjb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:06:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessm-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MlERMPe6fGAvj4w5/nTL9cv57borO+mmI3Hl4AGrcc4=;
+        b=jTrxQ6IyNq2Ysc69R/0IFeTQFBhkhM0+6xrEYqZyvO9DhGt1rl0E/hhiqEgkxY08Bf
+         KZku6pqYZMch1MugMhTHA9MPFe6EzZgd/czxeNolMSnMBLKs7eJsFVQzl9DCXYwi0OXp
+         l6Kg7F0OmcZxmWNtiVrxOues0aaX3OHFetjsgKIUZFXm/iAObzoIrJjy3k1c3/5GArWg
+         aV5tX29fakQCIq3Ihc+JooBiqRGxOFximFhH6gQ7dkd97IE3jwxlp80gGioeedBEwoZB
+         exXJM7MHv9a3ZTmZ1cEYsdDzUcP3Xlf/RqT0ssE0YJNnH/Yl3maoHQyuHGIuOI4CR/T7
+         AgNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MlERMPe6fGAvj4w5/nTL9cv57borO+mmI3Hl4AGrcc4=;
+        b=OPbiSfYZKdmYJaQ4Ad0aSvmD6EnrSIFLUGhJryhenT2YSUQujayJluVFfjHPLB/8LY
+         /2gSw91xWllaNNBh7ep20XjGBGtTUBvCrdI4awv2/wpL+pQ6JJnzGC5WxxwHaTFd0mLZ
+         4PhGz/cV1xdqG+5DoapDiR+1I2sEARYTTmOa2NxTzucK/gs4WIjFOYFg13dIwazPr7ck
+         SRHOzSR3xColqa56UAN3iDo+Yh3iJSjfYkAVQjW8BZNJ0HnKb4kPwEPmIQdffVr7Vts0
+         potOcDPjs8r0gn3g5sM8fgd/dNQH5mQfvCt3UZLNubc21tWCXro5HgDU2+diH95wd4B+
+         5aFA==
+X-Gm-Message-State: AOAM533KAkj/Cbh6f5cIHUwxBLSopM6HE47dnG5ahCp9WwB4VNN3SDZB
+        7/oQjUX/GpYZQqEFU1qAsG4VyXuypxbWHA==
+X-Google-Smtp-Source: ABdhPJxx0ea7ecSDl4FCc5Y25WmO9d3urI7HLdgrZJ05S+ydYUvbkx/eCtceyh2sg1fo2wzE8XjCMA==
+X-Received: by 2002:a17:902:c24a:: with SMTP id 10mr64821849plg.82.1594620364526;
+        Sun, 12 Jul 2020 23:06:04 -0700 (PDT)
+Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
+        by smtp.googlemail.com with ESMTPSA id g6sm13317525pfr.129.2020.07.12.23.06.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jul 2020 23:06:04 -0700 (PDT)
+From:   Jian-Hong Pan <jian-hong@endlessm.com>
+To:     Takashi Iwai <tiwai@suse.com>
+Cc:     Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux@endlessm.com,
+        Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: [PATCH] ALSA: hda/realtek: Enable headset mic of Acer TravelMate B311R-31 with ALC256
+Date:   Mon, 13 Jul 2020 14:04:22 +0800
+Message-Id: <20200713060421.62435-1-jian-hong@endlessm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-KeepSent: 3CE6C67C:BAFFA8E9-482585A4:0020D721;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF3CE6C67C.BAFFA8E9-ON482585A4.0020D721-482585A4.0020E03B@mxic.com.tw>
-From:   masonccyang@mxic.com.tw
-Date:   Mon, 13 Jul 2020 13:59:05 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2020/07/13 PM 01:59:05,
-        Serialize complete at 2020/07/13 PM 01:59:05
-Content-Type: text/plain; charset="US-ASCII"
-X-MAIL: TWHMLLG4.macronix.com 06D5x5Mq020705
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Acer TravelMate B311R-31 laptop's audio (1025:1430) with ALC256
+cannot detect the headset microphone until
+ALC256_FIXUP_ACER_MIC_NO_PRESENCE quirk maps the NID 0x19 as the headset
+mic pin.
 
-+ YC Lin in loop,
+Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+---
+Re-send for wrong email address
 
---
-> 
-> Subject
-> 
-> [PATCH v4 7/7] mtd: spi-nor: macronix: Add Octal 8D-8D-8D supports for 
-> Macronix mx25uw51245g
-> 
-> Macronix mx25uw51245g is a SPI NOR that supports 1-1-1/8-8-8 mode.
-> 
-> Correct the dummy cycles to device for various frequencies
-> after xSPI profile 1.0 table parsed.
-> 
-> Enable mx25uw51245g to Octal DTR mode by executing the command sequences
-> to change to octal DTR mode.
-> 
-> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
-> ---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 194ffa8c66ce..0585ac97faf4 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6152,6 +6152,7 @@ enum {
+ 	ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS,
+ 	ALC269VC_FIXUP_ACER_HEADSET_MIC,
+ 	ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE,
++	ALC256_FIXUP_ACER_MIC_NO_PRESENCE,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7359,6 +7360,15 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MIC
+ 	},
++	[ALC256_FIXUP_ACER_MIC_NO_PRESENCE] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x02a11120 }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC256_FIXUP_ASUS_HEADSET_MODE
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -7387,6 +7397,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
++	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
+ 	SND_PCI_QUIRK(0x1028, 0x054b, "Dell XPS one 2710", ALC275_FIXUP_DELL_XPS),
+ 	SND_PCI_QUIRK(0x1028, 0x05bd, "Dell Latitude E6440", ALC292_FIXUP_DELL_E7X),
+-- 
+2.27.0
 
