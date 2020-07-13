@@ -2,128 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4332021E08A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861E421E08D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgGMTNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 15:13:18 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:57892 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726582AbgGMTNR (ORCPT
+        id S1726460AbgGMTPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 15:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726347AbgGMTPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 15:13:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594667597; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=8fx4I85o6Wf3cmctscltFFb3YOaN1s6FZjMVuu5Dadc=; b=qqRsA0sMHKXDgjjlvd2WyKoDqgGEOYKBCgCs0UW9c4BD4oNj6hMdtxvM8irMees11XZlQsUC
- px9/SSAzpAm1kbncc7A86VcduaoASSyMsFhm9vRr3bON5RfDOKe0ueAuU51Op+ofIrPwogCe
- G7+f6oZAntpuSRe22/1qI4brsRE=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f0cb24b75eeb235f6b9860a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Jul 2020 19:13:15
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 493AEC43391; Mon, 13 Jul 2020 19:13:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4B6FC433C8;
-        Mon, 13 Jul 2020 19:13:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C4B6FC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 13 Jul 2020 13:13:10 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        freedreno@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [Freedreno] [PATCH] iommu/arm-smmu: Add a init_context_bank
- implementation hook
-Message-ID: <20200713191310.GD3815@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Will Deacon <will@kernel.org>,
-        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        freedreno@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200611223656.4724-1-jcrouse@codeaurora.org>
- <20200713151123.GB3072@willie-the-truck>
- <20200713170032.GH21059@jcrouse1-lnx.qualcomm.com>
- <20200713190331.GA3444@willie-the-truck>
+        Mon, 13 Jul 2020 15:15:52 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E63EC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:15:52 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id j18so875498wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qLRZ9qpTJixANaJXhzQcebqMHUZZudD8UhTxU+6Cj1A=;
+        b=vJYNe2yQUDGkF+YAq88b5Obetolzl9a59Km8DPVhMwrLlxjULOKQF0ykX0/T063BKe
+         M7xoQENya6e2mAHycpH/22g6vAyms6e4MCOrnL3KO7N/KiKiEg+8RVg2kzEiGe3+FHA+
+         yId+MWYKSD13yxXKGveazWhKGqq9ya8GUZaeDbTpA+3/QM+HnVxPikAe5QDtur9fsgXN
+         PJdUJvPLGdYo7ze5DnfpBkpuxpQjOowT43eaAbdCXLrwbK8t/D5Msl6yh1mUPrM/L/It
+         iONewwidWdtacdyjaASW50/VL0eGiguIHiu0WKuevBQi0/0A7B9fFWU4VGGHah192mbT
+         6cOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qLRZ9qpTJixANaJXhzQcebqMHUZZudD8UhTxU+6Cj1A=;
+        b=DN7svnDp9NZ4D7urmzk17aXwob3XtlKB9rG4i2wwQhfZREz0cWjT2OxaNbW6q4pnk+
+         s97uo0q8e/8q4+sYxQGLj0ZGjCL5aKwY4PYMcMK+015i6RW8d4A6GQHIEQxTPO24Z8Zy
+         GyyN6W/wPz6MB2FB0/iWwXOBUx4YV8HjAbMe3VOkS+KJI3+8oKJqdp0l13dFuPK1GlfY
+         vcvg12suo0878sS6nN8ZR7eTk76BwUqBmpOILw22Y184lhpRagS6vPRkdz2m8gmRJZCm
+         76WOaASb4RRTAeDS1TjksaPsbx5OujY/feHpZDJPKeDFaEY/evQcWX85VFRGMa+PoRZD
+         Ua9A==
+X-Gm-Message-State: AOAM533439+c7GSMkQboMDLb3N2AxchJ2tBqOct5tDeHkTluIWZzanZy
+        PZIsTTPiEoCpIbrZrplQupw=
+X-Google-Smtp-Source: ABdhPJxHFwCKiZIWJgCMrB6VK9Qn4soHdbhhqubKZCErj4fWR2AFQL1EiFvZUn2oVMEIY+nuoaTO4A==
+X-Received: by 2002:a1c:345:: with SMTP id 66mr846794wmd.31.1594667750842;
+        Mon, 13 Jul 2020 12:15:50 -0700 (PDT)
+Received: from garrit-VirtualBox.fritz.box ([94.31.102.44])
+        by smtp.gmail.com with ESMTPSA id z1sm25407600wru.30.2020.07.13.12.15.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 12:15:50 -0700 (PDT)
+From:   Garrit Franke <garritfranke@gmail.com>
+To:     rafael@kernel.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Garrit Franke <garritfranke@gmail.com>
+Subject: [PATCH] kobject: remove unused kobject action
+Date:   Mon, 13 Jul 2020 21:15:10 +0200
+Message-Id: <20200713191509.342466-1-garritfranke@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713190331.GA3444@willie-the-truck>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 08:03:32PM +0100, Will Deacon wrote:
-> On Mon, Jul 13, 2020 at 11:00:32AM -0600, Jordan Crouse wrote:
-> > On Mon, Jul 13, 2020 at 04:11:23PM +0100, Will Deacon wrote:
-> > > On Thu, Jun 11, 2020 at 04:36:56PM -0600, Jordan Crouse wrote:
-> > > > Add a new implementation hook to allow the implementation specific code
-> > > > to tweek the context bank configuration just before it gets written.
-> > > > The first user will be the Adreno GPU implementation to turn on
-> > > > SCTLR.HUPCF to ensure that a page fault doesn't terminating pending
-> > > > transactions. Doing so could hang the GPU if one of the terminated
-> > > > transactions is a CP read.
-> > > > 
-> > > > This depends on the arm-smmu adreno SMMU implementation [1].
-> > > > 
-> > > > [1] https://patchwork.kernel.org/patch/11600943/
-> > > > 
-> > > > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> > > > ---
-> > > > 
-> > > >  drivers/iommu/arm-smmu-qcom.c | 13 +++++++++++++
-> > > >  drivers/iommu/arm-smmu.c      | 28 +++++++++++++---------------
-> > > >  drivers/iommu/arm-smmu.h      | 11 +++++++++++
-> > > >  3 files changed, 37 insertions(+), 15 deletions(-)
-> > > 
-> > > This looks straightforward enough, but I don't want to merge this without
-> > > a user and Sai's series has open questions afaict.
-> > 
-> > Not sure what you mean by a user in this context?
-> > Are you referring to https://patchwork.kernel.org/patch/11628541/?
-> 
-> Right, this post was just a single patch in isolation, whereas it was
-> reposted over at:
-> 
-> https://lore.kernel.org/r/cdcc6a1c95a84e774790389dc8b3b7feeee490dc.1593344119.git.saiprakash.ranjan@codeaurora.org
-> 
-> so I'll ignore this one. Sorry, I'm just really struggling to keep track
-> of what is targetting 5.9, and I don't have tonnes of time to sift through
-> the backlog of duplicate postings :(
+I noticed that the KOBJ_MAX action is never used. Does it serve any
+purpose, or can it be removed? As far as I know, Kobjects shouldn't be
+used for drivers and more higher level abstraction layers, so I figured
+it isn't used by user-provided code either.
 
-Yeah, that is our fault. There are too many cooks in the kitchen.
+Regards
+Garrit Franke
 
-We need to pick either system cache or split pagetable and serialize
-the other on top of it to get the impl code going and then build from there. 
-This particular patch can happily hang out in the background until the rest is
-resolved.
+Signed-off-by: Garrit Franke <garritfranke@gmail.com>
+---
+ include/linux/kobject.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Jordan
-
-> Will
-> _______________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
-
+diff --git a/include/linux/kobject.h b/include/linux/kobject.h
+index 6cba088bee24..fd99c5d2d8b7 100644
+--- a/include/linux/kobject.h
++++ b/include/linux/kobject.h
+@@ -58,8 +58,7 @@ enum kobject_action {
+ 	KOBJ_ONLINE,
+ 	KOBJ_OFFLINE,
+ 	KOBJ_BIND,
+-	KOBJ_UNBIND,
+-	KOBJ_MAX
++	KOBJ_UNBIND
+ };
+ 
+ struct kobject {
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.25.1
+
