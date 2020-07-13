@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E918421DD52
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F2821DD5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730507AbgGMQhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:37:41 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6947 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729969AbgGMQhk (ORCPT
+        id S1730617AbgGMQh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:37:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60193 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730409AbgGMQhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:37:40 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f0c8dc60001>; Mon, 13 Jul 2020 09:37:26 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 13 Jul 2020 09:37:39 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 13 Jul 2020 09:37:39 -0700
-Received: from [10.26.72.101] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 13 Jul
- 2020 16:37:38 +0000
-Subject: Re: [PATCH 1/2] cpufreq: tegra186: Fix initial frequency
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200712100645.13927-1-jonathanh@nvidia.com>
- <20200713032554.cykywnygxln6ukrl@vireshk-i7>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <3d6091f2-6b04-185f-6c23-e39a34b87877@nvidia.com>
-Date:   Mon, 13 Jul 2020 17:37:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 13 Jul 2020 12:37:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594658274;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FFeMgMH6/qMZ3nIQyi9/O1g4FNmz8A5J8WnvntZKDog=;
+        b=LKj7HVglmT31TFErXELyCDFykyQqvsz5z0nj6KM2ACT+EM+GlVIxk7XdskfLGnsrAYhytF
+        bLzFzAeSrKvd9PRiaTtlmphgEGd00VifEVYJKZb97IAPivegHOkhllq3kG2bVzbdi5etrf
+        sHxjG14PgrrZ5xTzoW2TBjeZlQJRIp8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-119-6AapF4vjMmSlnJOdYKoFXw-1; Mon, 13 Jul 2020 12:37:50 -0400
+X-MC-Unique: 6AapF4vjMmSlnJOdYKoFXw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC1EB100CCC0;
+        Mon, 13 Jul 2020 16:37:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-113.rdu2.redhat.com [10.10.112.113])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 52D155BAD5;
+        Mon, 13 Jul 2020 16:37:43 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 04/13] afs: Log remote unmarshalling errors
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Jeff Layton <jlayton@redhat.com>,
+        Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 13 Jul 2020 17:37:42 +0100
+Message-ID: <159465826250.1377938.16372395422217583913.stgit@warthog.procyon.org.uk>
+In-Reply-To: <159465821598.1377938.2046362270225008168.stgit@warthog.procyon.org.uk>
+References: <159465821598.1377938.2046362270225008168.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.22
 MIME-Version: 1.0
-In-Reply-To: <20200713032554.cykywnygxln6ukrl@vireshk-i7>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594658246; bh=j07fRsUya2Rkr0o3lWYTAHPyUTT7NzlNKWFyMy2w+FU=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=B64PHnnmjFFJzm6tcGsqHpZuxv/g2nvXhUgeOJl2Vbd+GAiwAIHLWiM3cdlBb1DDp
-         s6e9UVM3Vv3e+J2Otc1z73T2hyJcDOxxRhwdenoQqYuzGfXvvmKxiqhtmbgi60tmqp
-         +Yjn6B1jZP2WdTmE2JczxR5P+243Ls+0ZE9lpJG0l+txfFhRFOupM3mpAq0CNmOYSW
-         QR4kLrJPx9Z1LUQW3yiK7Vc9/+lWxMQnLpS5U3tgTIliil8Fx6Gdz3bGQFJddTjzex
-         3epeuegOs+m0eIdtMY3rrT5j6h54uubqQ+cOX7Qs4Q+dXs0HsTXpLaX5c2QR4QDnlc
-         o/w3C6XcmPlkw==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Log unmarshalling errors reported by the peer (ie. it can't parse what we
+sent it).  Limit the maximum number of messages to 3.
 
-On 13/07/2020 04:25, Viresh Kumar wrote:
-> On 12-07-20, 11:06, Jon Hunter wrote:
->> Commit 6cc3d0e9a097 ("cpufreq: tegra186: add
->> CPUFREQ_NEED_INITIAL_FREQ_CHECK flag") fixed CPUFREQ support for
->> Tegra186 but as a consequence the following warnings are now seen on
->> boot ...
->>
->>  cpufreq: cpufreq_online: CPU0: Running at unlisted freq: 0 KHz
->>  cpufreq: cpufreq_online: CPU0: Unlisted initial frequency changed to: 2035200 KHz
->>  cpufreq: cpufreq_online: CPU1: Running at unlisted freq: 0 KHz
->>  cpufreq: cpufreq_online: CPU1: Unlisted initial frequency changed to: 2035200 KHz
->>  cpufreq: cpufreq_online: CPU2: Running at unlisted freq: 0 KHz
->>  cpufreq: cpufreq_online: CPU2: Unlisted initial frequency changed to: 2035200 KHz
->>  cpufreq: cpufreq_online: CPU3: Running at unlisted freq: 0 KHz
->>  cpufreq: cpufreq_online: CPU3: Unlisted initial frequency changed to: 2035200 KHz
->>  cpufreq: cpufreq_online: CPU4: Running at unlisted freq: 0 KHz
->>  cpufreq: cpufreq_online: CPU4: Unlisted initial frequency changed to: 2035200 KHz
->>  cpufreq: cpufreq_online: CPU5: Running at unlisted freq: 0 KHz
->>  cpufreq: cpufreq_online: CPU5: Unlisted initial frequency changed to: 2035200 KHz
->>
->> Although we could fix this by adding a 'get' operator for the Tegra186
->> CPUFREQ driver, there is really little point because the CPUFREQ on
->> Tegra186 is set by writing a value stored in the frequency table to a
->> register and we just need to set the initial frequency.
-> 
-> The hardware still runs at the frequency requested by cpufreq core here, right ?
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-Yes.
+ fs/afs/rxrpc.c |   34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-> It is better to provide the get() callback as it is also used to show the
-> current frequency in userspace.
+diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
+index 3b90ecf7958d..48361bbd4859 100644
+--- a/fs/afs/rxrpc.c
++++ b/fs/afs/rxrpc.c
+@@ -500,6 +500,39 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
+ 	_leave(" = %d", ret);
+ }
+ 
++/*
++ * Log remote abort codes that indicate that we have a protocol disagreement
++ * with the server.
++ */
++static void afs_log_error(struct afs_call *call, s32 remote_abort)
++{
++	static int max = 0;
++	const char *msg;
++	int m;
++
++	switch (remote_abort) {
++	case RX_EOF:		 msg = "unexpected EOF";	break;
++	case RXGEN_CC_MARSHAL:	 msg = "client marshalling";	break;
++	case RXGEN_CC_UNMARSHAL: msg = "client unmarshalling";	break;
++	case RXGEN_SS_MARSHAL:	 msg = "server marshalling";	break;
++	case RXGEN_SS_UNMARSHAL: msg = "server unmarshalling";	break;
++	case RXGEN_DECODE:	 msg = "opcode decode";		break;
++	case RXGEN_SS_XDRFREE:	 msg = "server XDR cleanup";	break;
++	case RXGEN_CC_XDRFREE:	 msg = "client XDR cleanup";	break;
++	case -32:		 msg = "insufficient data";	break;
++	default:
++		return;
++	}
++
++	m = max;
++	if (m < 3) {
++		max = m + 1;
++		pr_notice("kAFS: Peer reported %s failure on %s [%pISp]\n",
++			  msg, call->type->name,
++			  &call->alist->addrs[call->addr_ix].transport);
++	}
++}
++
+ /*
+  * deliver messages to a call
+  */
+@@ -563,6 +596,7 @@ static void afs_deliver_to_call(struct afs_call *call)
+ 			goto out;
+ 		case -ECONNABORTED:
+ 			ASSERTCMP(state, ==, AFS_CALL_COMPLETE);
++			afs_log_error(call, call->abort_code);
+ 			goto done;
+ 		case -ENOTSUPP:
+ 			abort_code = RXGEN_OPCODE;
 
-I looked at that and I saw that if the get() callback is not provided,
-the current frequency showed by userspace is policy->cur. For this
-device, policy->cur is accurate and so if we added the get() callback we
-essentially just going to return policy->cur. Therefore, given that we
-already know policy->cur, I did not see the point in adding a device
-specific handler to do the same thing.
 
-Cheers
-Jon
-
--- 
-nvpublic
