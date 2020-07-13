@@ -2,149 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C238B21D3DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AA521D3E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729566AbgGMKhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 06:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729191AbgGMKhP (ORCPT
+        id S1729318AbgGMKkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 06:40:06 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:30989 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728883AbgGMKkF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:37:15 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA40C061755;
-        Mon, 13 Jul 2020 03:37:14 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id h22so16928443lji.9;
-        Mon, 13 Jul 2020 03:37:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V2wzk0nXU0h78C8JoXPc0o3B8umh3R1NSlPKrClAK2A=;
-        b=TyhHhG8j/g6D1lSP/mCH5hOH6d9SmAX5lAOb/D5HgVekJMckmZRR8I+EfaS5IV0XKf
-         oXo/1/gCZ3zeTexVUDX9oxOIMR/p63F+auwHIO1hoX/xDfITGS2hwkz7lmUcB+5Ai7vW
-         T+Nc4ZCMqYd3yIRLU9kAx8LZZVUXOy/fgZJq6Kj4Hw7r3VQsPdcY4fqQ5j5Lx1WBlCAJ
-         JvWIK0c34qhyPT3kAGXV6R2LlvqYsWH3CVMUN4tnHmve6g5+K9+axWbb5fA8cE24Onjk
-         ht2Tp6Ujud9eydh3mFYNqi32syvnJQH5283rbP6UCdQcgO35oq7tq4QF3D/+aEFoQxuD
-         qg5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V2wzk0nXU0h78C8JoXPc0o3B8umh3R1NSlPKrClAK2A=;
-        b=dCLV1NC09E4bGDFWkrNbcVnCaELiK5vAQ+YbctI8rNl+lqm0L6AFItzvyeVzhdfe/e
-         lrH65EZZ5XEBRg5wQxKlh8YWflKkWUeDOdYO1gtngxXx1lvzrm0lu0rRYbHU1EZ1Mt8G
-         W5khGz8WCxFUh0c680AWFUel361eEsrzelA7NTInlcI8IMkwGMnRn+PNCOyMBph05Muz
-         par+bCU7EP/EThK1UMwAWbaImunfkEboWLL8qsRopfo/bpqxdzRbL6DzLJt8bXdzUNA6
-         SpvXG9MavF8vyp76Ds22Rh0va03yCaJbpU9Z4nDTCJcbaEXts04tN/7Gig4EBSlEAOnh
-         SgAA==
-X-Gm-Message-State: AOAM5307ZAbUxDMoWXD557PWsZyjz9WGjv2+PPcfg+UVySn9IHDDOkkz
-        eY4DhAJPxLttWzjOKIINU3dzb81m
-X-Google-Smtp-Source: ABdhPJw1mX+th01sqvBL0LiigLJOOcm7zQ4+2MSaYxvjj+Se4p5aTPeFDDQKmosYyI4JaFgfju0m4w==
-X-Received: by 2002:a05:651c:21a:: with SMTP id y26mr32660693ljn.106.1594636633051;
-        Mon, 13 Jul 2020 03:37:13 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-79-162-105.pppoe.mtu-net.ru. [91.79.162.105])
-        by smtp.googlemail.com with ESMTPSA id k20sm3978640ljc.111.2020.07.13.03.37.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 03:37:12 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] PM / devfreq: Add governor flags to clarify the
- features
-To:     Chanwoo Choi <cw00.choi@samsung.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     leonard.crestez@nxp.com, lukasz.luba@arm.com,
-        enric.balletbo@collabora.com, hl@rock-chips.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, abel.vesa@nxp.com,
-        chanwoo@kernel.org, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <20200713083113.5595-1-cw00.choi@samsung.com>
- <CGME20200713081944epcas1p22871b6d8a9455226e6cccd08ac0baa73@epcas1p2.samsung.com>
- <20200713083113.5595-3-cw00.choi@samsung.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <746837bc-6734-3e52-453f-2b59bbca0230@gmail.com>
-Date:   Mon, 13 Jul 2020 13:37:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200713083113.5595-3-cw00.choi@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Mon, 13 Jul 2020 06:40:05 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200713104002epoutp043d35a29566034056dad5c410176ae34c~hSbkRicuG0118901189epoutp04j
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 10:40:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200713104002epoutp043d35a29566034056dad5c410176ae34c~hSbkRicuG0118901189epoutp04j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594636802;
+        bh=+nonInlvRNBBiK+G9+3XuizcDOKbPFL5nOJ1JXlgR9k=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=EfEnHR8T8SJKVuVjmcCdOGoG3ZW29sQ6B5PYVwvQmrbdxYuPXxMe0a6yvA7+A4crE
+         +fjdPkKzXC3RgYT2TzZDYpxHm5vMLqqhGeDUzSzqOzm2SaerH+hvSFcVNyACoc/L6T
+         INIRTmVHnaWN2BUkuZ/fgdJ7AnQosmXHj8kOXYFI=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p1.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200713104001epcas1p1d1fe6bbec6a0c041dddb7ef975fbda98~hSbjqMPVp0441904419epcas1p18;
+        Mon, 13 Jul 2020 10:40:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [PATCH v6 1/5] scsi: ufs: Add UFS feature related parameter
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01594636801601.JavaMail.epsvc@epcpadp1>
+Date:   Mon, 13 Jul 2020 19:38:52 +0900
+X-CMS-MailID: 20200713103852epcms2p3014120adf9233da2be1efa8835cd9d34
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8
+References: <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
+        <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p3>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-13.07.2020 11:31, Chanwoo Choi пишет:
-> DEVFREQ supports the default governors like performance, powersave and also
-> allows the devfreq driver to add their own governor like tegra30-devfreq.c
-> according to their requirement. In result, some sysfs attributes are
-> useful or not useful. Prior to that the user can access all sysfs attributes
-> regardless of availability.
-> 
-> So, clarify the access permission of sysfs attributes according to governor.
-> When adding the devfreq governor, can specify the available attribute
-> information by using DEVFREQ_GOV_ATTR_* constant variable. The user can
-> read or write the sysfs attributes in accordance to the specified attributes.
-> 
-> /* Devfreq governor flags for attributes and features */
-> [Definition for sysfs attributes]
-> - DEVFREQ_GOV_ATTR_GOVERNOR
-> - DEVFREQ_GOV_ATTR_AVAIL_GOVERNORS
-> - DEVFREQ_GOV_ATTR_AVAIL_FREQUENCIES
-> - DEVFREQ_GOV_ATTR_CUR_FREQ
-> - DEVFREQ_GOV_ATTR_TARGET_FREQ
-> - DEVFREQ_GOV_ATTR_MIN_FREQ
-> - DEVFREQ_GOV_ATTR_MAX_FREQ
-> - DEVFREQ_GOV_ATTR_TRANS_STAT
-> - DEVFREQ_GOV_ATTR_POLLING_INTERVAL
-> - DEVFREQ_GOV_ATTR_TIMER
-> 
-> Also, the devfreq governor is able to have the specific flag as follows
-> in order to implement the specific feature. For example, Devfreq allows
-> user to change the governors on runtime via sysfs interface.
-> But, if devfreq device uses 'passive' governor, don't allow user to change
-> the governor. For this case, define the DEVFREQ_GOV_FLAT_IMMUTABLE
-> and set it to flag of passive governor.
-> 
-> [Definition for governor flag]
-> - DEVFREQ_GOV_FLAG_IMMUTABLE
-> : If immutable flag is set, governor is never changeable to other governors.
-> - DEVFREQ_GOV_FLAG_IRQ_DRIVEN
-> : Devfreq core won't schedule polling work for this governor if value is set.
-> 
-> [Table of governor flag for devfreq governors]
-> ------------------------------------------------------------------------------
->                       | simple    | perfor | power | user | passive | tegra30
-> 		      | ondemand  | mance  | save  | space|         |
-> ------------------------------------------------------------------------------
-> governor              | O         | O      | O     | O    | O       | O
-> available_governors   | O         | O      | O     | O    | O       | O
-> available_frequencies | O         | O      | O     | O    | O       | O
-> cur_freq              | O         | O      | O     | O    | O       | O
-> target_freq           | O         | O      | O     | O    | O       | O
-> min_freq              | O         | O      | O     | O    | O       | O
-> max_freq              | O         | O      | O     | O    | O       | O
-> trans_stat            | O         | O      | O     | O    | O       | O
->                       --------------------------------------------------------
-> polling_interval      | O         | X      | X     | X    | X       | O
-> timer                 | O         | X      | X     | X    | X       | X
-> ------------------------------------------------------------------------------
-> immutable             | X         | X      | X     | X    | O       | O
-> interrupt_driven      | X(polling)| X      | X     | X    | X       | O (irq)
-> ------------------------------------------------------------------------------
-> 
-> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
-> ---
+This is a patch for parameters to be used for UFS features layer and HPB
+module.
 
-Hello, Chanwoo! I tested this series on NVIDIA Tegra30 and everything
-working fine!
+Tested-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufs.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
+diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+index f8ab16f30fdc..ae557b8d3eba 100644
+--- a/drivers/scsi/ufs/ufs.h
++++ b/drivers/scsi/ufs/ufs.h
+@@ -122,6 +122,7 @@ enum flag_idn {
+ 	QUERY_FLAG_IDN_WB_EN                            = 0x0E,
+ 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN                 = 0x0F,
+ 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_DURING_HIBERN8     = 0x10,
++	QUERY_FLAG_IDN_HPB_RESET                        = 0x11,
+ };
+ 
+ /* Attribute idn for Query requests */
+@@ -195,6 +196,9 @@ enum unit_desc_param {
+ 	UNIT_DESC_PARAM_PHY_MEM_RSRC_CNT	= 0x18,
+ 	UNIT_DESC_PARAM_CTX_CAPABILITIES	= 0x20,
+ 	UNIT_DESC_PARAM_LARGE_UNIT_SIZE_M1	= 0x22,
++	UNIT_DESC_HPB_LU_MAX_ACTIVE_REGIONS	= 0x23,
++	UNIT_DESC_HPB_LU_PIN_REGION_START_OFFSET	= 0x25,
++	UNIT_DESC_HPB_LU_NUM_PIN_REGIONS	= 0x27,
+ 	UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS	= 0x29,
+ };
+ 
+@@ -235,6 +239,8 @@ enum device_desc_param {
+ 	DEVICE_DESC_PARAM_PSA_MAX_DATA		= 0x25,
+ 	DEVICE_DESC_PARAM_PSA_TMT		= 0x29,
+ 	DEVICE_DESC_PARAM_PRDCT_REV		= 0x2A,
++	DEVICE_DESC_PARAM_HPB_VER		= 0x40,
++	DEVICE_DESC_PARAM_HPB_CONTROL		= 0x42,
+ 	DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP	= 0x4F,
+ 	DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN	= 0x53,
+ 	DEVICE_DESC_PARAM_WB_TYPE		= 0x54,
+@@ -283,6 +289,10 @@ enum geometry_desc_param {
+ 	GEOMETRY_DESC_PARAM_ENM4_MAX_NUM_UNITS	= 0x3E,
+ 	GEOMETRY_DESC_PARAM_ENM4_CAP_ADJ_FCTR	= 0x42,
+ 	GEOMETRY_DESC_PARAM_OPT_LOG_BLK_SIZE	= 0x44,
++	GEOMETRY_DESC_HPB_REGION_SIZE		= 0x48,
++	GEOMETRY_DESC_HPB_NUMBER_LU		= 0x49,
++	GEOMETRY_DESC_HPB_SUBREGION_SIZE	= 0x4A,
++	GEOMETRY_DESC_HPB_DEVICE_MAX_ACTIVE_REGIONS	= 0x4B,
+ 	GEOMETRY_DESC_PARAM_WB_MAX_ALLOC_UNITS	= 0x4F,
+ 	GEOMETRY_DESC_PARAM_WB_MAX_WB_LUNS	= 0x53,
+ 	GEOMETRY_DESC_PARAM_WB_BUFF_CAP_ADJ	= 0x54,
+@@ -327,6 +337,7 @@ enum {
+ 
+ /* Possible values for dExtendedUFSFeaturesSupport */
+ enum {
++	UFS_DEV_HPB_SUPPORT		= BIT(7),
+ 	UFS_DEV_WRITE_BOOSTER_SUP	= BIT(8),
+ };
+ 
+@@ -537,6 +548,7 @@ struct ufs_dev_info {
+ 	u8 *model;
+ 	u16 wspecversion;
+ 	u32 clk_gating_wait_us;
++	u8 b_ufs_feature_sup;
+ 	u32 d_ext_ufs_feature_sup;
+ 	u8 b_wb_buffer_type;
+ 	u32 d_wb_alloc_units;
+
+base-commit: b53293fa662e28ae0cdd40828dc641c09f133405
+-- 
+2.17.1
 
 
-BTW, I'm curious what do you think about hiding the unsupported debugfs
-attributes per-device instead of returning the -EACCES?
