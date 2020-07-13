@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A813321DDEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9770E21DE1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 19:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730386AbgGMQzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730343AbgGMQzR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:55:17 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B9AC061755;
-        Mon, 13 Jul 2020 09:55:17 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id z17so14273825edr.9;
-        Mon, 13 Jul 2020 09:55:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Vg5seoeyahxUOJ1a2of2OSXbNHc8+N6IhRiLy4XR8Ps=;
-        b=QThq7T/NhE4spupA48w9flKBPIUZMsJ+uy1wChEjqmd9cLUhJNeozt9BNv1EslTKul
-         9FzUYVh1psv92TVnmY05kmXxx7YOjo4zsDzZUATn9e4zIhaa/IU/l64wBzjWvrwDbAdT
-         yMVtRLi35HfG89vS3VWmX51PcL78Kumuk1a4Y+mb2X5zojZOcrMRGnHmOxMBpNMDphyn
-         WM6skKGt7eauq9PMF4fMY/WlqUw991iJ1Ytz1rk4085GlJxA7KXFCo39uIxgjXQ9fuJN
-         3z5H1aRueRaa67gizAbiKT/8yQ6CvE9P5qTMm1ibl2NWyp9eZcuTPcv+4+0VHPs7z+dy
-         9v1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Vg5seoeyahxUOJ1a2of2OSXbNHc8+N6IhRiLy4XR8Ps=;
-        b=p9vjV2MKRvlqajgS93jCup4a4AxeGVHwFFW7YNsz3qfg6oMFr8TqULjK49VgeYZIeV
-         3zVorZouWzQyOnQbSOmxf5I2j0IcMwU6RUmToHdmkmfxBNb0K1e5qu2HJVj4ncagDN6Y
-         NUn5MP72QBQ1NxMHk2p4qNLHmun/H/liXRM6WJR+VxUV/8SkS4kha7gmalUtcqIzXvyl
-         pwn9oRMz0QpojhV1/zFU3M0Wz+wA9jbgom4P7FGMdTLdpSwKDCK/eICWV2+YXtdSkkhW
-         ak4iOEPN8B9Pqvw7d+dNXZhGd5erxl9R3yaiPF+rmGQiuIm0zfPERr+x7zxrzA7WinL7
-         5RzQ==
-X-Gm-Message-State: AOAM532YEcQPprq+ll+v4y50QS9T7QBXFhDLJd7CT3QNAG960gK5QsFh
-        YHT3HZcMG2dzaOCpOGn0izM=
-X-Google-Smtp-Source: ABdhPJwiuJGYBhFGQzVTlihXWfzHv/j6TtpsUC2ukWbQvIDZs82x6qtdrhI4g0KTxQkpdk5UBwbo4Q==
-X-Received: by 2002:aa7:d58c:: with SMTP id r12mr365600edq.160.1594659316271;
-        Mon, 13 Jul 2020 09:55:16 -0700 (PDT)
-Received: from net.saheed (54007186.dsl.pool.telekom.hu. [84.0.113.134])
-        by smtp.gmail.com with ESMTPSA id w3sm11838938edq.65.2020.07.13.09.55.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 09:55:15 -0700 (PDT)
-From:   "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-To:     skhan@linuxfoundation.org, linux-pci@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
-Subject: [PATCH 12/14 v3] PCI/AER: Check the return value of pcie_capability_read_*()
-Date:   Mon, 13 Jul 2020 19:55:29 +0200
-Message-Id: <20200713175529.29715-5-refactormyself@gmail.com>
-X-Mailer: git-send-email 2.18.2
-In-Reply-To: <20200713175529.29715-1-refactormyself@gmail.com>
-References: <20200713175529.29715-1-refactormyself@gmail.com>
+        id S1730385AbgGMRBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 13:01:45 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24456 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730206AbgGMRBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 13:01:45 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594659704; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=KRdL10OGiMuFb36lTpuRBRxlxK8Gr9DMI+wG0F30ZmI=; b=TOHtutDiYcpYtTllGxbuY4ebBSOr2HQocy4kLd8vuwtt+zU6aTGvfpKz5+Noq3IfJzPy4uZN
+ fEDlEgh1WRSYV2vucQEM/Ak4qJFnmDvW8K1YrafTzDlEAliGzFM2m1e3h7fjkTOFuAg5aCgj
+ 6RL3FIRu2PMa9FIJ89Xk08XT0c8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5f0c933d8423214e13976960 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Jul 2020 17:00:45
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ED482C4339C; Mon, 13 Jul 2020 17:00:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C255C433C6;
+        Mon, 13 Jul 2020 17:00:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C255C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 13 Jul 2020 11:00:32 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        freedreno@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/arm-smmu: Add a init_context_bank implementation
+ hook
+Message-ID: <20200713170032.GH21059@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Will Deacon <will@kernel.org>,
+        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        freedreno@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200611223656.4724-1-jcrouse@codeaurora.org>
+ <20200713151123.GB3072@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713151123.GB3072@willie-the-truck>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+On Mon, Jul 13, 2020 at 04:11:23PM +0100, Will Deacon wrote:
+> On Thu, Jun 11, 2020 at 04:36:56PM -0600, Jordan Crouse wrote:
+> > Add a new implementation hook to allow the implementation specific code
+> > to tweek the context bank configuration just before it gets written.
+> > The first user will be the Adreno GPU implementation to turn on
+> > SCTLR.HUPCF to ensure that a page fault doesn't terminating pending
+> > transactions. Doing so could hang the GPU if one of the terminated
+> > transactions is a CP read.
+> > 
+> > This depends on the arm-smmu adreno SMMU implementation [1].
+> > 
+> > [1] https://patchwork.kernel.org/patch/11600943/
+> > 
+> > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> > ---
+> > 
+> >  drivers/iommu/arm-smmu-qcom.c | 13 +++++++++++++
+> >  drivers/iommu/arm-smmu.c      | 28 +++++++++++++---------------
+> >  drivers/iommu/arm-smmu.h      | 11 +++++++++++
+> >  3 files changed, 37 insertions(+), 15 deletions(-)
+> 
+> This looks straightforward enough, but I don't want to merge this without
+> a user and Sai's series has open questions afaict.
 
-On failure pcie_capability_read_dword() sets it's last parameter,
-val to 0.
-However, with Patch 14/14, it is possible that val is set to ~0 on
-failure. This would introduce a bug because (x & x) == (~0 & x).
+Not sure what you mean by a user in this context?
+Are you referring to https://patchwork.kernel.org/patch/11628541/?
 
-This bug can be avoided if the return value of pcie_capability_read_word
-is checked to confirm success.
+> Will
 
-Check the return value of pcie_capability_read_word() to ensure success.
-
-Suggested-by: Bjorn Helgaas <bjorn@helgaas.com>
-Signed-off-by: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
----
- drivers/pci/pcie/aer.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index 3acf56683915..f4beb47c622c 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -800,6 +800,7 @@ static bool is_error_source(struct pci_dev *dev, struct aer_err_info *e_info)
- 	int aer = dev->aer_cap;
- 	u32 status, mask;
- 	u16 reg16;
-+	int ret;
- 
- 	/*
- 	 * When bus id is equal to 0, it might be a bad id
-@@ -828,8 +829,8 @@ static bool is_error_source(struct pci_dev *dev, struct aer_err_info *e_info)
- 		return false;
- 
- 	/* Check if AER is enabled */
--	pcie_capability_read_word(dev, PCI_EXP_DEVCTL, &reg16);
--	if (!(reg16 & PCI_EXP_AER_FLAGS))
-+	ret = pcie_capability_read_word(dev, PCI_EXP_DEVCTL, &reg16);
-+	if (ret || !(reg16 & PCI_EXP_AER_FLAGS))
- 		return false;
- 
- 	if (!aer)
 -- 
-2.18.2
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
