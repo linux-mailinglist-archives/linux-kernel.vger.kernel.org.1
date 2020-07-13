@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CD121DA55
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5958021DA5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729933AbgGMPmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 11:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
+        id S1730128AbgGMPm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729492AbgGMPmK (ORCPT
+        with ESMTP id S1730029AbgGMPmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 11:42:10 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC510C061755;
-        Mon, 13 Jul 2020 08:42:10 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 0F45BBC0C2;
-        Mon, 13 Jul 2020 15:42:07 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     awalls@md.metrocast.net, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] [media] ivtv: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 17:42:01 +0200
-Message-Id: <20200713154201.35478-1-grandmaster@al2klimov.de>
+        Mon, 13 Jul 2020 11:42:53 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041FBC08C5DE
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:42:53 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id w6so17736295ejq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KYHsayQ+qnaeJrGEqb3AbWD3OCs6eDEgmK0sEjz5stk=;
+        b=shNHxqlEshcLM+d6HS5/rUuF/G7IfTpZe/gUMK2OQCtYZavKPmFx9lPmSy+8XWB0KK
+         35jBVVrUdNO+Jfvrrp+eIP/JvR08WY9U0DdkU6T89bTgCxQCuK1PVuWJIjGMTLjE8rE3
+         XTJ5PHCfIDj2m3E204SFtns5sNa6dcgofuJWbiwgwOmwi0NipOUB6QrkLZ+DoEueqmMB
+         PgWCgNO4So36JTX6IgokxC3NYAKVD194ZFfivEOk1MU5Ch8Hq+JnhQK68aoXqc58zKh0
+         6H4qLbRrffd4vFYKWrXDmxbjRxZ7jEpY4zZCg4XrAX2YN8jpDHcMkBByyN832GpItPwM
+         QGlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KYHsayQ+qnaeJrGEqb3AbWD3OCs6eDEgmK0sEjz5stk=;
+        b=WiNFarKIGmEr4dqvYq8IKTFFM3N+1JTwj3hh17V+Lebnhj5QcU7l/5045tCqWyWW4C
+         b1zyvcNeTMPiGHPRaWyFCJ5w/uxRT/OtH1pBZbd0iO/x9x9Wp3Duu3juCz567fPPAZda
+         zeR0GrZKcOXmSfnKwrwtefhXw0Pht5dSWYZALhiAebTBvd6Kx4sNntKawk5jbwKD1+af
+         YJ6b8A4d6D6ZJ2lq7gT/UdRMy6xq1lMfqjB2PkmCLoYBB+Wss7Hy2Ywtee1PqCZEGugI
+         xnWJhgK2HGSpFX68nA7ITwzBa96nAl0oy14QqqdJh8F4eQGLBhOFBDd/jKm7nN9A42eJ
+         Smnw==
+X-Gm-Message-State: AOAM530MAC3ebxS0NxWTNc/W3GmuOZdTmt8qTUIpHair9MmVKYy+pS8i
+        RAlIIFZLd75n11yfWBs1MKRJwa+N5+g8Hgc/6yYRvOWQ
+X-Google-Smtp-Source: ABdhPJxUImaKchQhePlG2M01YtnBmwJfKXSrMtOhR08dhoQCgRWcxaVYGh90/4tQIBcAr8wpwsrZSqeoZAyg7POGAfM=
+X-Received: by 2002:a17:907:20af:: with SMTP id pw15mr393528ejb.204.1594654971733;
+ Mon, 13 Jul 2020 08:42:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+References: <159457116473.754248.7879464730875147365.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <159457120334.754248.12908401960465408733.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20200713065801.GB11000@linux.ibm.com>
+In-Reply-To: <20200713065801.GB11000@linux.ibm.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 13 Jul 2020 08:42:41 -0700
+Message-ID: <CAPcyv4gBgCptZupxhzbDN3qscnuJ9HNWHHvfhH6z+z84VE1cPg@mail.gmail.com>
+Subject: Re: [PATCH v2 07/22] numa: Introduce a generic memory_add_physaddr_to_nid()
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Jia He <justin.he@arm.com>, Will Deacon <will@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Joao Martins <joao.m.martins@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Sun, Jul 12, 2020 at 11:58 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+>
+> Hi Dan,
+>
+> On Sun, Jul 12, 2020 at 09:26:43AM -0700, Dan Williams wrote:
+> > For architectures that opt into storing their numa data in memblock
+> > (only ARM64 currently), add a memblock generic way to interrogate that
+> > data for memory_add_physaddr_to_nid(). This requires ARCH_KEEP_MEMBLOCK
+> > to keep memblock text and data around after boot.
+>
+> I afraid we are too far from using memblock as a generic placeholder for
+> numa data. Although all architectures now have the numa info in
+> memblock, only arm64 uses memblock as the primary source of that data.
+>
+> I'd rather prefer Jia's solution [1] to have a weak default for
+> memory_add_physaddr_to_nid() and let architectures override it.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+I'm ok with that as long as we do the same for phys_to_target_node().
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- drivers/media/pci/ivtv/ivtv-cards.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/pci/ivtv/ivtv-cards.c b/drivers/media/pci/ivtv/ivtv-cards.c
-index ca6daba3a34a..c8f4ed7ff2c6 100644
---- a/drivers/media/pci/ivtv/ivtv-cards.c
-+++ b/drivers/media/pci/ivtv/ivtv-cards.c
-@@ -53,7 +53,7 @@ static struct ivtv_card_tuner_i2c ivtv_i2c_tda8290 = {
- 
- /********************** card configuration *******************************/
- 
--/* Please add new PCI IDs to: http://pci-ids.ucw.cz/
-+/* Please add new PCI IDs to: https://pci-ids.ucw.cz/
-    This keeps the PCI ID database up to date. Note that the entries
-    must be added under vendor 0x4444 (Conexant) as subsystem IDs.
-    New vendor IDs should still be added to the vendor ID list. */
--- 
-2.27.0
-
+Will had the concern about adding a generic numa-info facility the
+last I tried this. I just don't see a practical way to get there in
+the near term.
