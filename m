@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5236521E3B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 01:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DFE21E3BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 01:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgGMXkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 19:40:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51880 "EHLO mail.kernel.org"
+        id S1727034AbgGMXkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 19:40:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726918AbgGMXkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 19:40:10 -0400
+        id S1726962AbgGMXkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 19:40:14 -0400
 Received: from localhost.localdomain (unknown [89.208.247.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DD4221534;
-        Mon, 13 Jul 2020 23:40:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7476421473;
+        Mon, 13 Jul 2020 23:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594683610;
-        bh=gfiBNxjR3Ije6ZlghFkYiWaABdRxamBVhDTguxNo3ww=;
+        s=default; t=1594683613;
+        bh=LTUxesNq1UwUu08plRKou+fIY4FYxuRbFZAqwfrRB5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WWInZ+X9msP3OXY3dt9mRDT/KbF6UgYWTCgpOR8YK9KD5bXO0/uANpfP3fEBqGOo3
-         1ubDB+NekKQP/wJWbI5NFwQZ00GwFTqtBTahVO6c5QrjLQEMt9AZTQ1rbKh2Rwe2zL
-         0dE4bsMxX8jE5W1erjGw/YYM3ii8rBeYchtVeMPc=
+        b=gW3UX9U+WaFezKzUKJzbxMTbeRK459xQFUZ2qJFQQoIur14/mHmsB2Yzmexa+N0lS
+         eadKGobio2lIZszav8qZ4L36iSroSxO0qecudnQK06Lhhd2d2ZUxZw67h2TqX/huCK
+         h5X5A3f74RRHZEZbdVmGk/PrlCdbOe1q5c2d9PWI=
 From:   guoren@kernel.org
 To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
         mhiramat@kernel.org, oleg@redhat.com
@@ -30,17 +30,13 @@ Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         anup@brainfault.org, linux-csky@vger.kernel.org,
         greentime.hu@sifive.com, zong.li@sifive.com, guoren@kernel.org,
         me@packi.ch, bjorn.topel@gmail.com,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Pekka Enberg <penberg@kernel.org>
-Subject: [PATCH v3 6/7] riscv: Add KPROBES_ON_FTRACE supported
-Date:   Mon, 13 Jul 2020 23:39:21 +0000
-Message-Id: <1594683562-68149-7-git-send-email-guoren@kernel.org>
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH v3 7/7] riscv: Add support for function error injection
+Date:   Mon, 13 Jul 2020 23:39:22 +0000
+Message-Id: <1594683562-68149-8-git-send-email-guoren@kernel.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1594683562-68149-1-git-send-email-guoren@kernel.org>
 References: <1594683562-68149-1-git-send-email-guoren@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,145 +44,103 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-This patch adds support for kprobes on ftrace call sites to avoids
-much of the overhead with regular kprobes. Try it with simple
-steps:
+Inspired by the commit 42d038c4fb00 ("arm64: Add support for function
+error injection"), this patch supports function error injection for
+riscv.
 
-1. Get _do_fork ftrace call site.
-Dump of assembler code for function _do_fork:
-   0xffffffe00020af64 <+0>:     addi    sp,sp,-128
-   0xffffffe00020af66 <+2>:     sd      s0,112(sp)
-   0xffffffe00020af68 <+4>:     sd      ra,120(sp)
-   0xffffffe00020af6a <+6>:     addi    s0,sp,128
-   0xffffffe00020af6c <+8>:     sd      s1,104(sp)
-   0xffffffe00020af6e <+10>:    sd      s2,96(sp)
-   0xffffffe00020af70 <+12>:    sd      s3,88(sp)
-   0xffffffe00020af72 <+14>:    sd      s4,80(sp)
-   0xffffffe00020af74 <+16>:    sd      s5,72(sp)
-   0xffffffe00020af76 <+18>:    sd      s6,64(sp)
-   0xffffffe00020af78 <+20>:    sd      s7,56(sp)
-   0xffffffe00020af7a <+22>:    mv      s4,a0
-   0xffffffe00020af7c <+24>:    mv      a0,ra
-   0xffffffe00020af7e <+26>:    nop	<<<<<<<< here!
-   0xffffffe00020af82 <+30>:    nop
-   0xffffffe00020af86 <+34>:    ld      s3,0(s4)
+This patch mainly support two functions: one is regs_set_return_value()
+which is used to overwrite the return value; the another function is
+override_function_with_return() which is to override the probed
+function returning and jump to its caller.
 
-2. Set _do_fork+26 as the kprobe.
-  echo 'p:myprobe _do_fork+26 dfd=%a0 filename=%a1 flags=%a2 mode=+4($stack)' > /sys/kernel/debug/tracing/kprobe_events
-  echo 1 > /sys/kernel/debug/tracing/events/kprobes/enable
-  cat /sys/kernel/debug/tracing/trace
-  tracer: nop
-
-  entries-in-buffer/entries-written: 3/3   #P:1
-
-                               _-----=> irqs-off
-                              / _----=> need-resched
-                             | / _---=> hardirq/softirq
-                             || / _--=> preempt-depth
-                             ||| /     delay
-            TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-               | |       |   ||||       |         |
-              sh-87    [000] ....   551.557031: myprobe: (_do_fork+0x1a/0x2e6) dfd=0xffffffe00020af7e filename=0xffffffe00020b34e flags=0xffffffe00101e7c0 mode=0x20af86ffffffe0
-
-  cat /sys/kernel/debug/kprobes/list
-ffffffe00020af7e  k  _do_fork+0x1a    [FTRACE]
-                                       ^^^^^^
+Test log:
+ cd /sys/kernel/debug/fail_function
+ echo sys_clone > inject
+ echo 100 > probability
+ echo 1 > interval
+ ls /
+[  313.176875] FAULT_INJECTION: forcing a failure.
+[  313.176875] name fail_function, interval 1, probability 100, space 0, times 1
+[  313.184357] CPU: 0 PID: 87 Comm: sh Not tainted 5.8.0-rc5-00007-g6a758cc #117
+[  313.187616] Call Trace:
+[  313.189100] [<ffffffe0002036b6>] walk_stackframe+0x0/0xc2
+[  313.191626] [<ffffffe00020395c>] show_stack+0x40/0x4c
+[  313.193927] [<ffffffe000556c60>] dump_stack+0x7c/0x96
+[  313.194795] [<ffffffe0005522e8>] should_fail+0x140/0x142
+[  313.195923] [<ffffffe000299ffc>] fei_kprobe_handler+0x2c/0x5a
+[  313.197687] [<ffffffe0009e2ec4>] kprobe_breakpoint_handler+0xb4/0x18a
+[  313.200054] [<ffffffe00020357e>] do_trap_break+0x36/0xca
+[  313.202147] [<ffffffe000201bca>] ret_from_exception+0x0/0xc
+[  313.204556] [<ffffffe000201bbc>] ret_from_syscall+0x0/0x2
+-sh: can't fork: Invalid argument
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Cc: Palmer Dabbelt <palmerdabbelt@google.com>
 Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Björn Töpel <bjorn.topel@gmail.com>
-Cc: Zong Li <zong.li@sifive.com>
-Cc: Pekka Enberg <penberg@kernel.org>
 ---
- arch/riscv/Kconfig                |  1 +
- arch/riscv/kernel/probes/Makefile |  1 +
- arch/riscv/kernel/probes/ftrace.c | 52 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 54 insertions(+)
- create mode 100644 arch/riscv/kernel/probes/ftrace.c
+ arch/riscv/Kconfig              |  1 +
+ arch/riscv/include/asm/ptrace.h |  6 ++++++
+ arch/riscv/lib/Makefile         |  2 ++
+ arch/riscv/lib/error-inject.c   | 10 ++++++++++
+ 4 files changed, 19 insertions(+)
+ create mode 100644 arch/riscv/lib/error-inject.c
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index a41b785..0e9f5eb 100644
+index 0e9f5eb..ad73174 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
-@@ -60,6 +60,7 @@ config RISCV
+@@ -58,6 +58,7 @@ config RISCV
+ 	select HAVE_DMA_CONTIGUOUS if MMU
+ 	select HAVE_EBPF_JIT if MMU
  	select HAVE_FUTEX_CMPXCHG if FUTEX
++	select HAVE_FUNCTION_ERROR_INJECTION
  	select HAVE_GENERIC_VDSO if MMU && 64BIT
  	select HAVE_KPROBES
-+	select HAVE_KPROBES_ON_FTRACE
- 	select HAVE_KRETPROBES
- 	select HAVE_PCI
- 	select HAVE_PERF_EVENTS
-diff --git a/arch/riscv/kernel/probes/Makefile b/arch/riscv/kernel/probes/Makefile
-index cb62991..7f0840d 100644
---- a/arch/riscv/kernel/probes/Makefile
-+++ b/arch/riscv/kernel/probes/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_KPROBES)		+= kprobes.o decode-insn.o simulate-insn.o
- obj-$(CONFIG_KPROBES)		+= kprobes_trampoline.o
-+obj-$(CONFIG_KPROBES_ON_FTRACE)	+= ftrace.o
- obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o simulate-insn.o
- CFLAGS_REMOVE_simulate-insn.o = $(CC_FLAGS_FTRACE)
-diff --git a/arch/riscv/kernel/probes/ftrace.c b/arch/riscv/kernel/probes/ftrace.c
+ 	select HAVE_KPROBES_ON_FTRACE
+diff --git a/arch/riscv/include/asm/ptrace.h b/arch/riscv/include/asm/ptrace.h
+index 23372bb..cb4abb6 100644
+--- a/arch/riscv/include/asm/ptrace.h
++++ b/arch/riscv/include/asm/ptrace.h
+@@ -109,6 +109,12 @@ static inline unsigned long regs_return_value(struct pt_regs *regs)
+ 	return regs->a0;
+ }
+ 
++static inline void regs_set_return_value(struct pt_regs *regs,
++					 unsigned long val)
++{
++	regs->a0 = val;
++}
++
+ extern int regs_query_register_offset(const char *name);
+ extern unsigned long regs_get_kernel_stack_nth(struct pt_regs *regs,
+ 					       unsigned int n);
+diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
+index 0d0db80..04baa93 100644
+--- a/arch/riscv/lib/Makefile
++++ b/arch/riscv/lib/Makefile
+@@ -4,3 +4,5 @@ lib-y			+= memcpy.o
+ lib-y			+= memset.o
+ lib-y			+= uaccess.o
+ lib-$(CONFIG_64BIT)	+= tishift.o
++
++obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+diff --git a/arch/riscv/lib/error-inject.c b/arch/riscv/lib/error-inject.c
 new file mode 100644
-index 00000000..e0fe58a
+index 00000000..d667ade
 --- /dev/null
-+++ b/arch/riscv/kernel/probes/ftrace.c
-@@ -0,0 +1,52 @@
++++ b/arch/riscv/lib/error-inject.c
+@@ -0,0 +1,10 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
++#include <linux/error-injection.h>
 +#include <linux/kprobes.h>
 +
-+/* Ftrace callback handler for kprobes -- called under preepmt disabed */
-+void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
-+			   struct ftrace_ops *ops, struct pt_regs *regs)
++void override_function_with_return(struct pt_regs *regs)
 +{
-+	struct kprobe *p;
-+	struct kprobe_ctlblk *kcb;
-+
-+	p = get_kprobe((kprobe_opcode_t *)ip);
-+	if (unlikely(!p) || kprobe_disabled(p))
-+		return;
-+
-+	kcb = get_kprobe_ctlblk();
-+	if (kprobe_running()) {
-+		kprobes_inc_nmissed_count(p);
-+	} else {
-+		unsigned long orig_ip = instruction_pointer(regs);
-+		instruction_pointer_set(regs, ip);
-+
-+		__this_cpu_write(current_kprobe, p);
-+		kcb->kprobe_status = KPROBE_HIT_ACTIVE;
-+		if (!p->pre_handler || !p->pre_handler(p, regs)) {
-+			/*
-+			 * Emulate singlestep (and also recover regs->pc)
-+			 * as if there is a nop
-+			 */
-+			instruction_pointer_set(regs,
-+				(unsigned long)p->addr + MCOUNT_INSN_SIZE);
-+			if (unlikely(p->post_handler)) {
-+				kcb->kprobe_status = KPROBE_HIT_SSDONE;
-+				p->post_handler(p, regs, 0);
-+			}
-+			instruction_pointer_set(regs, orig_ip);
-+		}
-+
-+		/*
-+		 * If pre_handler returns !0, it changes regs->pc. We have to
-+		 * skip emulating post_handler.
-+		 */
-+		__this_cpu_write(current_kprobe, NULL);
-+	}
++	instruction_pointer_set(regs, regs->ra);
 +}
-+NOKPROBE_SYMBOL(kprobe_ftrace_handler);
-+
-+int arch_prepare_kprobe_ftrace(struct kprobe *p)
-+{
-+	p->ainsn.api.insn = NULL;
-+	return 0;
-+}
++NOKPROBE_SYMBOL(override_function_with_return);
 -- 
 2.7.4
 
