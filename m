@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080BF21DEB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 19:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DEBF21DEB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 19:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730178AbgGMR2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 13:28:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53312 "EHLO mail.kernel.org"
+        id S1730366AbgGMR2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 13:28:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729644AbgGMR2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 13:28:06 -0400
+        id S1730192AbgGMR2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 13:28:12 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C86E320663;
-        Mon, 13 Jul 2020 17:28:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B161B206F0;
+        Mon, 13 Jul 2020 17:28:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594661286;
-        bh=mda1KYJa8jMzutT3sFOkf1x3bT2HgB0n+bFgHnA9638=;
+        s=default; t=1594661292;
+        bh=zvLNW8f4wGUz+XcJL0EtXl3kUQZfrdDQBCaDlrynNBY=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=obeGCXoXN6quEH5ACDh21ZkU0lBtu/kT5WLlSmQpiBmCoT4t13GPZ9tBUsBNjmAqT
-         cOUhkzz2gpAe4HIy1eV35BNid0Tro44dksgbDgm5i/2k09DLw9UYhJd+eUaq2O4q5A
-         MvVn1PO9/zUP6l2fwKCrZ0dltYJ+zBVtqaDNQveg=
-Date:   Mon, 13 Jul 2020 18:27:57 +0100
+        b=Q7K3RYUFQCIZh3rtuoPTXuNL9q73jKqOyT2ltaE+5v2OrdfROvUtxP7e2VIpxxRum
+         nbmFvWvh3B7ShU/zmdNK3APFutIBOy0VBXNbyD0BD7dYIDj/N+r4TWLP7Ia63qRBZT
+         1w5Vb6+VJV8fi4ZHZaCzl3BrRXdMyOhoc1w91wsg=
+Date:   Mon, 13 Jul 2020 18:28:03 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, Takashi Iwai <tiwai@suse.com>
-In-Reply-To: <1594635960-67855-1-git-send-email-sugar.zhang@rock-chips.com>
-References: <1594635960-67855-1-git-send-email-sugar.zhang@rock-chips.com>
-Subject: Re: [PATCH] ASoC: rockchip: spdif: Handle clk by pm runtime
-Message-Id: <159466127771.57184.7108021750802359859.b4-ty@kernel.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     groeck@chromium.org, pihsun@chromium.org,
+        enric.balletbo@collabora.com, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com, bleung@chromium.org
+In-Reply-To: <20200711114409.9911-1-rikard.falkeborn@gmail.com>
+References: <20200711114409.9911-1-rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH] regulator: cros-ec: Constify cros_ec_regulator_voltage_ops
+Message-Id: <159466128351.418.2225672839034503942.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Jul 2020 18:26:00 +0800, Sugar Zhang wrote:
-> This patch handle the clk by pm runtime mechanism to simplify
-> the clk management.
+On Sat, 11 Jul 2020 13:44:09 +0200, Rikard Falkeborn wrote:
+> It is never modified, so make it const to allow the compiler to put it
+> in read-only memory.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] ASoC: rockchip: spdif: Handle clk by pm runtime
-      commit: f50d67f9eff62f8078fe6e98ede3f4fb1defc361
+[1/1] regulator: cros-ec: Constify cros_ec_regulator_voltage_ops
+      commit: 308e65ad060dca2f0187731a7916c71521ce6c25
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
