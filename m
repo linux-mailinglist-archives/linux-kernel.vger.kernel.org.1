@@ -2,90 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1F021D2B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 11:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2914521D2B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 11:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729043AbgGMJXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 05:23:24 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:51716 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726360AbgGMJXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 05:23:24 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 3C9F8BC0CA;
-        Mon, 13 Jul 2020 09:23:21 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     stern@rowland.harvard.edu, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] USB: ohci: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 11:23:14 +0200
-Message-Id: <20200713092314.32774-1-grandmaster@al2klimov.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+        id S1729219AbgGMJYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 05:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726360AbgGMJYC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 05:24:02 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15072C061755;
+        Mon, 13 Jul 2020 02:24:02 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id p20so15820393ejd.13;
+        Mon, 13 Jul 2020 02:24:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=sofQEr77nb5Ely19uo5I4O8yF49URxlzQJXvD20UsaM=;
+        b=jqjOU+yGnniOCBRAVDqOKYRcKSkWuB5y2Mg2AReSnpmzCReczYmKiwpFjTQJS4MKCz
+         KTMyOnKxP8KqW/CdAKR/oIgNhgysH4RUeCQZ61SPYzJkqk3N/3S4KGefN8MyyCIvdP04
+         tOWPtPS6h+hXvFVbo97jkUj/xLdU6++lLAXqJCelAHgxVZk9/WGggx41DKh97u8KoCzg
+         enRUqaaNoKe9lcGGVQk0UGbLlHSdRruopDzvLvGoQuhGDuuj1U855oBDxmtKDSJtrzkb
+         R2qqf82jRmJEUyCjXgipsQ/psyciOeuo3/q1HhNugvp/cggah0XPnmwoA8pQ41B6UwQb
+         sliw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=sofQEr77nb5Ely19uo5I4O8yF49URxlzQJXvD20UsaM=;
+        b=Wov0RJDsWTUo57r4E7I5yWwmiFvMgo+jLo5K4LbXLOHYO/Nn5uLrP1iooyJmj3EB9J
+         pbnukd3g26AGGhrUojCMccMVsgJampI6xo5p6ftuO4lzw7YZFgFYoKHHwSyt4RAbD/9l
+         +1zl1bn6u7eE5sxr7DEaO0XBK9IEM2x0gUedb1LBt1ILpfe5O2zVxtkQG03jhLf4lNIH
+         ZxXqY9LPHDrnHr77LlIBjVUqREhslGftujs7jSzS4KIXg8GlQcIQZS4w/9o+Jl9WAqfy
+         iF0IOPy7+5cc/zaE8JPPgKpN4rXzWA+WM9tTk06Tf89sjvJKW8N6B/WeoXe7esMFYjT0
+         mmpA==
+X-Gm-Message-State: AOAM530KvDqE8YYcCqKfeJOg23ySSYZefwMrcgOUBCVglh1zwOM/M3kg
+        aSgfrkIHMmjjpTDC8seN5yo=
+X-Google-Smtp-Source: ABdhPJxXvnR2RE6nAjCq0int+k3+MO50374W4zcpVHBgcH2ksNPYtLBLUQPJ/5A2CdO9k4XT3K/wcA==
+X-Received: by 2002:a17:906:6a4f:: with SMTP id n15mr71246081ejs.378.1594632240598;
+        Mon, 13 Jul 2020 02:24:00 -0700 (PDT)
+Received: from ubuntu-laptop ([2a01:598:b890:27f4:19a2:9a9c:4216:daf1])
+        by smtp.googlemail.com with ESMTPSA id o17sm9366918ejb.105.2020.07.13.02.23.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 13 Jul 2020 02:24:00 -0700 (PDT)
+Message-ID: <65b3b5bb56d2be8e365aae2163227aac7a71e600.camel@gmail.com>
+Subject: Re: [PATCH v5 0/5] scsi: ufs: Add Host Performance Booster Support
+From:   Bean Huo <huobean@gmail.com>
+To:     daejun7.park@samsung.com, Bart Van Assche <bvanassche@acm.org>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Mon, 13 Jul 2020 11:23:52 +0200
+In-Reply-To: <963815509.21594603681971.JavaMail.epsvc@epcpadp2>
+References: <91dcecde-dd0d-c930-7c45-56ba144e748c@acm.org>
+         <SN6PR04MB464097E646395C000C2DCAC3FC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+         <963815509.21593732182531.JavaMail.epsvc@epcpadp2>
+         <231786897.01594251001808.JavaMail.epsvc@epcpadp1>
+         <336371513.41594280882718.JavaMail.epsvc@epcpadp2>
+         <SN6PR04MB464021F98E8EDF7C79D6CB4FFC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+         <CGME20200702231936epcms2p81557f83504ef1c1e81bfc81a0143a5b4@epcms2p7>
+         <963815509.21594603681971.JavaMail.epsvc@epcpadp2>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Mon, 2020-07-13 at 10:27 +0900, Daejun Park wrote:
+> Hi Bart,
+> 
+> > > Bart - how do you want to proceed?
+> > 
+> > Hi Avri and Daejun,
+> > 
+> > As far as I can see none of the five patches have Reviewed-by tags
+> > yet. I
+> > think that Martin expects formal reviews for this patch series from
+> > one or
+> > more reviewers who are not colleagues of the author of this patch
+> > series.
+> > 
+> > Note: recently I have been more busy than usual, hence the delayed
+> > reply.
+> 
+> Thank you for replying to the email even though you are busy.
+> 
+> Arvi, Bean - if patches looks ok, can this series have your reviewed-
+> by tag?
+> 
+> Thanks,
+> Daejun
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
+Hi Daejun
 
 
- drivers/usb/host/ohci-hcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I only can give my tested-by tag since I preliminary tested it and it
+works. However, as I said in the previous email, there is performance
+downgrade comparing to the direct submission approach, also, we should
+think about HPB 2.0.
 
-diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
-index 4de91653a2c7..17374c17f331 100644
---- a/drivers/usb/host/ohci-hcd.c
-+++ b/drivers/usb/host/ohci-hcd.c
-@@ -16,7 +16,7 @@
-  * OHCI is the main "non-Intel/VIA" standard for USB 1.1 host controller
-  * interfaces (though some non-x86 Intel chips use it).  It supports
-  * smarter hardware than UHCI.  A download link for the spec available
-- * through the http://www.usb.org website.
-+ * through the https://www.usb.org website.
-  *
-  * This file is licenced under the GPL.
-  */
--- 
-2.27.0
+Anyway, if Avri wants firstly make this series patch mainlined,
+performance fixup later, this is fine to me. I can add and fix it
+later.
+
+BTW, you should rebase your this series set patch since there are
+conflicts with latest Martin' git repo, after that, you can add my
+tested-by tag.
+
+
+Tested-by: Bean Huo <beanhuo@micron.com>
+
+
+Thanks,
+Bean
+
+
 
