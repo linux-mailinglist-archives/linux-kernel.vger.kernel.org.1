@@ -2,137 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8922A21D12F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB5321D109
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbgGMIAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 04:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
+        id S1729003AbgGMIAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 04:00:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725985AbgGMIAK (ORCPT
+        with ESMTP id S1726077AbgGMIAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Jul 2020 04:00:10 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F362DC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:00:09 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s10so14700859wrw.12
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A1AC08C5DB
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:00:10 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z2so14766649wrp.2
         for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:00:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g0025PyTY/eWJewtXJ8I/jkg/HPx62AopbKf5qsThd0=;
-        b=shosgGIqEV5Mi43/el0Qv3n5SrwGOeatsv60Jx9hdx9avXnYhxdW+EndMvsg1rCMjv
-         shGen7E57TNPkoGMqud+THaV6Pxm5a1cFSN6eJHKBEgy7yv4jFRHSFf7f/eI9o8m9zNx
-         fQ6UB5BXKUASSQZX4ijyMpS7qqQ7EtQqCB4U4PFCY5Z3UAtutQ3ZPu9eccfAugAxDvzy
-         A7cVnIeVlLgB7VEEpche2qEH/rMQNUvpv+jsED0gn2TRhxSWffJUk5M/R2dbASwUvjaF
-         X1lLwy4wo3Bv//etcDgghdkUqRB+Xy1/GjvCTbSuCMnajegNbsvInGm5DwUue+WQJFea
-         0ZXQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+HM3pvSE2JuDZ5Kc5EJ0B/qyBhrrEM7iialxYUUhb/4=;
+        b=u90mu1uENJfv42WQrr4sPLX09MrjDa6vroB7o+MEKc0HVsOVjzzYhFRBmi4LomvAHJ
+         19XJjQxmv/FGSKG4HiGnLg93xo/JlRpijQz94rqfPzTApnPD7Em6lAZKb93CaoNhvwKh
+         vXyE70gCKUaQhtl0J7ye9p7SY6Bx1VsBj9pXMxkL+SPqPlvszcneSFaxPbMcX6fPTLb8
+         4TM58j9gsBFH7mKR6xZewVmGNIeWsjiJdcpd5CBCkNn7+1PMIUu4pqLqSKsYqC2PpNln
+         WVnPwiXP5f0o6E/sLPnCbFPKW4YulHfMnddz/bXDuTcKGhH1zbpqKVeF8cEcq+EulVwm
+         zUVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=g0025PyTY/eWJewtXJ8I/jkg/HPx62AopbKf5qsThd0=;
-        b=iorK9MjoTQCwwdEH+k3ygkpNWblBV5lOtwhOY4yqKQIOKfPInCoJJ4T7YgdIPiKJ8O
-         TpjEwnx7SNJlGgN48VTcPb/rltqdNQisLxEySjKMrLJGCNXUriOOJgYjTcEudCmElNG7
-         Ra+SaYr2IHc5Ivhk1XYH8inx3WbucOVfe/olDs1V//vv7Wy50upnhxdIwP2fPctGhgpU
-         g3OjXjhl6g+NZ2N+PkEE2zuh2UO6XwN+IJ8VCIZ+CwlejiXjMCuaTKiWVdo3C+D8NEef
-         SO08LOq/hCDVBOVMBIAQdZC5bxjDQiV+CTtS2WHxsZ7HaKy9eCDBelyMSS1uc5aaTP5u
-         d1Zw==
-X-Gm-Message-State: AOAM530+pA9gDw4Q/QzJbYFOOgK02eUe++d3ViT0bsmMpxeTXUfNdyo+
-        /vCltqmqg6ggdQgecc96hXcVDA==
-X-Google-Smtp-Source: ABdhPJwOcTyhG/RhUEn4cJVs5ajgV1jbVXvClhi9FjHPoCdiHUpma4xUuuP55L87YUuycheYAyP02A==
-X-Received: by 2002:a5d:464e:: with SMTP id j14mr78277009wrs.393.1594627207673;
-        Mon, 13 Jul 2020 01:00:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+HM3pvSE2JuDZ5Kc5EJ0B/qyBhrrEM7iialxYUUhb/4=;
+        b=FkK3mIwlN1/cfqngZhhc67ML6fKp41cUe+36ENjraBDFwU7vcSNAz/Eeh2kkvalVYe
+         bPvqpr6IWql2GtaJAWRhFFiSkLaCsuxNRrHXmMtPlCbYtPaITkkHLJi5Dc7y/ubrz1FL
+         3tCiLMOp9Y+dilzcYJboIYCY1HPu+pxZGCxuAYFNEI6i3+vE1p0w01pAouFfVEI1hU8p
+         AHwrmiKdVfbUua1kcsNxsCQseJvXcJHYXBoHajRfaNlQtYTR6cFWgHZXDqN7EtRKb3eF
+         wS0V7Zrw75Ikb7JGMjol+szsOirweTn1+f9xnczmtEIFZ6FLlmjNGYtooys2IkCgjYjc
+         pbsg==
+X-Gm-Message-State: AOAM530mWTnHk0910CrNSnfTykCODomiFEihF06IpX2Cs4FagkBSnW9R
+        UWmB1cZxpVTWS0HOBWXtjKYu/LRNQ9s=
+X-Google-Smtp-Source: ABdhPJwq1WiUMeXrjichLdO4rSnqr9PqPnI9d1e3unEYlTcbaL8MMSizXuzJG4lfZkLLNgl4n3WlhQ==
+X-Received: by 2002:a5d:4a01:: with SMTP id m1mr77435792wrq.250.1594627208654;
+        Mon, 13 Jul 2020 01:00:08 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.6])
-        by smtp.gmail.com with ESMTPSA id 33sm24383549wri.16.2020.07.13.01.00.06
+        by smtp.gmail.com with ESMTPSA id 33sm24383549wri.16.2020.07.13.01.00.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 01:00:06 -0700 (PDT)
+        Mon, 13 Jul 2020 01:00:08 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH v2 00/24] Set 3: Fix another set of SCSI related W=1 warnings
-Date:   Mon, 13 Jul 2020 08:59:37 +0100
-Message-Id: <20200713080001.128044-1-lee.jones@linaro.org>
+        Lee Jones <lee.jones@linaro.org>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
+Subject: [PATCH v2 01/24] scsi: aacraid: aachba: Repair two kerneldoc headers
+Date:   Mon, 13 Jul 2020 08:59:38 +0100
+Message-Id: <20200713080001.128044-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200713080001.128044-1-lee.jones@linaro.org>
+References: <20200713080001.128044-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+The function headers for aac_get_config_status() and aac_get_containers()
+have suffered bitrot where the documentation hasn't kept up with the API.
 
-Slowly working through the SCSI related ones.  There are many.
+Fixes the following W=1 kernel build warning(s):
 
-This brings the total of W=1 SCSI wanings from 1690 in v5.8-rc1 to 1109.
+ drivers/scsi/aacraid/aachba.c:358: warning: Function parameter or member 'dev' not described in 'aac_get_config_status'
+ drivers/scsi/aacraid/aachba.c:358: warning: Function parameter or member 'commit_flag' not described in 'aac_get_config_status'
+ drivers/scsi/aacraid/aachba.c:358: warning: Excess function parameter 'common' description in 'aac_get_config_status'
+ drivers/scsi/aacraid/aachba.c:450: warning: Function parameter or member 'dev' not described in 'aac_get_containers'
+ drivers/scsi/aacraid/aachba.c:450: warning: Excess function parameter 'common' description in 'aac_get_containers'
 
-Changelog:
+Cc: Adaptec OEM Raid Solutions <aacraid@microsemi.com>
+Cc: "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/scsi/aacraid/aachba.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-v1 => v2
- - Collected *-bys
- - Removed inert function-calls when removing unused variables
-   - As suggested by James Bottomley
+diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
+index 7ae1e545a255c..769af4ca9ca97 100644
+--- a/drivers/scsi/aacraid/aachba.c
++++ b/drivers/scsi/aacraid/aachba.c
+@@ -350,7 +350,8 @@ static inline int aac_valid_context(struct scsi_cmnd *scsicmd,
  
-Lee Jones (24):
-  scsi: aacraid: aachba: Repair two kerneldoc headers
-  scsi: aacraid: commctrl: Fix a few kerneldoc issues
-  scsi: aacraid: dpcsup: Fix logical bug when !DBG
-  scsi: aacraid: dpcsup: Remove unused variable 'status'
-  scsi: aacraid: dpcsup: Demote partially documented function header
-  scsi: aic94xx: aic94xx_seq: Document 'lseq' and repair
-    asd_update_port_links() header
-  scsi: aacraid: commsup: Fix a bunch of function header issues
-  scsi: aic94xx: aic94xx_scb: Fix a couple of formatting and bitrot
-    issues
-  scsi: aacraid: rx: Fill in the very parameter descriptions for
-    rx_sync_cmd()
-  scsi: pm8001: pm8001_ctl: Provide descriptions for the many
-    undocumented 'attr's
-  scsi: ipr: Fix a mountain of kerneldoc misdemeanours
-  scsi: virtio_scsi: Demote seemingly unintentional kerneldoc header
-  scsi: ipr: Remove a bunch of set but checked variables
-  scsi: ipr: Fix struct packed-not-aligned issues
-  scsi: myrs: Demote obvious misuse of kerneldoc to standard comment
-    blocks
-  scsi: megaraid: Fix a whole bunch of function header formatting issues
-  scsi: be2iscsi: be_iscsi: Fix API/documentation slip
-  scsi: be2iscsi: be_main: Fix misdocumentation of 'pcontext'
-  scsi: be2iscsi: be_mgmt: Add missing function parameter description
-  scsi: lpfc: lpfc_nvme: Correct some pretty obvious misdocumentation
-  scsi: aic7xxx: aic79xx_osm: Remove unused variable 'ahd'
-  scsi: aic7xxx: aic79xx_osm: Remove unused variables 'wait' and
-    'paused'
-  scsi: aic7xxx: aic79xx_osm: Fix 'amount_xferred' set but not used
-    issue
-  scsi: aic7xxx: aic79xx_osm: Remove set but unused variabes
-    'saved_scsiid' and 'saved_modes'
-
- drivers/scsi/aacraid/aachba.c      |   5 +-
- drivers/scsi/aacraid/commctrl.c    |  14 +-
- drivers/scsi/aacraid/commsup.c     |  12 +-
- drivers/scsi/aacraid/dpcsup.c      |  15 +-
- drivers/scsi/aacraid/rx.c          |  12 +-
- drivers/scsi/aic7xxx/aic79xx_osm.c |  14 +-
- drivers/scsi/aic94xx/aic94xx_scb.c |   6 +-
- drivers/scsi/aic94xx/aic94xx_seq.c |   6 +-
- drivers/scsi/be2iscsi/be_iscsi.c   |  11 +-
- drivers/scsi/be2iscsi/be_main.c    |   4 +-
- drivers/scsi/be2iscsi/be_mgmt.c    |   3 +-
- drivers/scsi/ipr.c                 |  90 +++++++-----
- drivers/scsi/ipr.h                 |   4 +-
- drivers/scsi/lpfc/lpfc_nvme.c      |  38 +++--
- drivers/scsi/megaraid.c            | 218 ++++++++++++++---------------
- drivers/scsi/myrs.c                |  34 ++---
- drivers/scsi/pm8001/pm8001_ctl.c   |  14 ++
- drivers/scsi/virtio_scsi.c         |   2 +-
- 18 files changed, 273 insertions(+), 229 deletions(-)
-
+ /**
+  *	aac_get_config_status	-	check the adapter configuration
+- *	@common: adapter to query
++ *	@dev: aac driver data
++ *	@commit_flag: force sending CT_COMMIT_CONFIG
+  *
+  *	Query config status, and commit the configuration if needed.
+  */
+@@ -442,7 +443,7 @@ static void aac_expose_phy_device(struct scsi_cmnd *scsicmd)
+ 
+ /**
+  *	aac_get_containers	-	list containers
+- *	@common: adapter to probe
++ *	@dev: aac driver data
+  *
+  *	Make a list of all containers on this controller
+  */
 -- 
 2.25.1
 
