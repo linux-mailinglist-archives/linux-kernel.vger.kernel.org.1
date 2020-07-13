@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6798021D141
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBFF21D140
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729660AbgGMIBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 04:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52478 "EHLO
+        id S1729651AbgGMIBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 04:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729005AbgGMIAO (ORCPT
+        with ESMTP id S1729142AbgGMIAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 04:00:14 -0400
+        Mon, 13 Jul 2020 04:00:15 -0400
 Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557C9C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:00:14 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id a6so12752751wmm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:00:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C87CC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:00:15 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l2so12211057wmf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Xgee6VNOxowtnDCzKQ+Sz5+2OlEHHNxO9R7xXG9/C34=;
-        b=EnuMeIkLRXbcHAmZyKSMoyDHXFlOUhJEv0EIOT8hrJcFl/4pELjdiQWPho0lPd23Rc
-         jkUmAmhdgDgroJ1tQAfHaLUiaiPjjWH0EM1nK/vs8kblYcgOrXcwmezMWKFymkwy49fr
-         nrOGwRmAZmwRzm3g92DMV0TLuHmE0WRqbOnig99I+y/pDUR2FDJox74V/4G6mSGcOMLX
-         8S9ZQGOY5cBXgdItMs+L3tXdk/xkwckvx4cnMz1ZhmQUd3gYaZw6hfdd5rGLgleYv+0R
-         9GdftZnknWdTor0YbOIl6hoDwlC0d/8nrtfxHLbU91EcUDWMpI+V9iLmQArUNNB8Dd4N
-         6pkw==
+        bh=RfY0NWdcaY2EP3FmoORbq4kbjZDAFhNLFjss0f92Lio=;
+        b=O9xRYkKfJFOUSu6r6sulvmymmV/K0Q48jvoehWofsopiMUzkbVLj/jQtjzkQQgZS4W
+         I70gNWxE74qk5fb0fPDjkZiRMbH+BEVIDJRzoM0YWFiDNDhtVj8z7wjYR39SmFBntJDB
+         RTyinMEu4DZIKP5iSiTLdZ9rjo4Eso4pEhONj+dwWQxLErHb07mWAXkSrJvgdArSei6l
+         k6O7QW2vrRlDj5tAk1Akio7Uwmo5sqAhxtB2TBJ14pjmuT95LntdC4NtuPWjIqMkDZqq
+         ZPl3ECDb+i6LP7rJqb8WZIgsjLwVfXMVKr222PEiC7UAnuoiVnlA3ILEjYxJVFFyh6oa
+         Bc8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Xgee6VNOxowtnDCzKQ+Sz5+2OlEHHNxO9R7xXG9/C34=;
-        b=NE8dietjh6Pakq2lYK6KpT4Yl3gWpcAmJPti6NM2e/25aoH1JGieV2ctSbslYklwp6
-         l1UUWJ06Vc0NFUg+mhZNFeqgdq7pvGaDBszi6pLRZiVAQEs7eocix+V5NcWSR/kfXxQJ
-         wcgFDhVT9uqc+yEEZ/rXwYoBPqw6MYHDhOSkp1LJJUT2BaUrD6Al5BFbHUBWNQLmKLWz
-         gpVGIHboOzfb0dV7REsr5IVILpraYxCt6roZ/AbB3P4CnoJPYB62aHaLmMNuYtHHqPRl
-         2V47gcagtDJRaUL/Q+LtIt1jVBXGgoBJjaLwMhu8VyaTjgJsZH/xH3ZvdMQmYnzCYXqm
-         /3CQ==
-X-Gm-Message-State: AOAM530JJi/G9xeOH2cn4axVZ7GFdBjzQChGduPUTwjWdYoAPn9ThPcn
-        pSSKV/IwnX0wzqIautfi0nNlIw==
-X-Google-Smtp-Source: ABdhPJworCLuCDsiBSx9rWrhUHVut6jsWQTo/sIKqpn3toMKqCUhgHxPR+Gg8A9YO/7FbHOfZYdqFA==
-X-Received: by 2002:a7b:c4d8:: with SMTP id g24mr16749450wmk.127.1594627213060;
-        Mon, 13 Jul 2020 01:00:13 -0700 (PDT)
+        bh=RfY0NWdcaY2EP3FmoORbq4kbjZDAFhNLFjss0f92Lio=;
+        b=bXC9w3gFtetrvipCCdWIFWn+UpGjodlCt7m3UN+kqSX3bu6dH8C51eK/5h2sDwU9+V
+         f/bs51MbmgqF4PLQ40kXfTwSCPj98shOwUcfTaSyB1wFfyoUFW5GQLiX09iXgBhuIuF5
+         8jUAuDiltjT7Ya3mbs1doN9mgvey8w6E10bTaO17Sm3AmJamCb4NaY7GcRJzKgxQcamy
+         hgWcRLEZYtdhzNMEEXv/fz+Upnj/qTBXBHFSzJGCK22+B12iEJCX18TAPpic2XT+jAWa
+         35i98LAw3iCZVbkZcUPUtYM6cDhf+31PlRuDvq+bMSto26itFAZckhSOaS7Mfpbe3XuE
+         87eQ==
+X-Gm-Message-State: AOAM532INTo8p7as9eomC4PD7W8uW/A+Sq1IakhY587iVoCaAx6N98Gh
+        pq0xAsQK1p3hUpos/Y9tYBnSUA==
+X-Google-Smtp-Source: ABdhPJxXd85K+swID9T4RkK43CBRG3ojcaY5XxDJZVBFei+PqLdZeUuO9fArANTpD3xoZn2O+8MnIA==
+X-Received: by 2002:a1c:5418:: with SMTP id i24mr17024203wmb.47.1594627214244;
+        Mon, 13 Jul 2020 01:00:14 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.6])
-        by smtp.gmail.com with ESMTPSA id 33sm24383549wri.16.2020.07.13.01.00.12
+        by smtp.gmail.com with ESMTPSA id 33sm24383549wri.16.2020.07.13.01.00.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 01:00:12 -0700 (PDT)
+        Mon, 13 Jul 2020 01:00:13 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
-Subject: [PATCH v2 05/24] scsi: aacraid: dpcsup: Demote partially documented function header
-Date:   Mon, 13 Jul 2020 08:59:42 +0100
-Message-Id: <20200713080001.128044-6-lee.jones@linaro.org>
+        Luben Tuikov <luben_tuikov@adaptec.com>
+Subject: [PATCH v2 06/24] scsi: aic94xx: aic94xx_seq: Document 'lseq' and repair asd_update_port_links() header
+Date:   Mon, 13 Jul 2020 08:59:43 +0100
+Message-Id: <20200713080001.128044-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200713080001.128044-1-lee.jones@linaro.org>
 References: <20200713080001.128044-1-lee.jones@linaro.org>
@@ -67,34 +66,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This should be populated by someone who knows the meaning of all the params.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/aacraid/dpcsup.c:272: warning: Function parameter or member 'isAif' not described in 'aac_intr_normal'
- drivers/scsi/aacraid/dpcsup.c:272: warning: Function parameter or member 'isFastResponse' not described in 'aac_intr_normal'
- drivers/scsi/aacraid/dpcsup.c:272: warning: Function parameter or member 'aif_fib' not described in 'aac_intr_normal'
+ drivers/scsi/aic94xx/aic94xx_seq.c:587: warning: Function parameter or member 'lseq' not described in 'asd_init_lseq_mip'
+ drivers/scsi/aic94xx/aic94xx_seq.c:674: warning: Function parameter or member 'lseq' not described in 'asd_init_lseq_mdp'
+ drivers/scsi/aic94xx/aic94xx_seq.c:958: warning: Function parameter or member 'lseq' not described in 'asd_init_lseq_cio'
+ drivers/scsi/aic94xx/aic94xx_seq.c:1364: warning: Function parameter or member 'asd_ha' not described in 'asd_update_port_links'
+ drivers/scsi/aic94xx/aic94xx_seq.c:1364: warning: Function parameter or member 'phy' not described in 'asd_update_port_links'
+ drivers/scsi/aic94xx/aic94xx_seq.c:1364: warning: Excess function parameter 'sas_phy' description in 'asd_update_port_links'
 
-Cc: Adaptec OEM Raid Solutions <aacraid@microsemi.com>
-Cc: "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
+Cc: Luben Tuikov <luben_tuikov@adaptec.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/aacraid/dpcsup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/aic94xx/aic94xx_seq.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/aacraid/dpcsup.c b/drivers/scsi/aacraid/dpcsup.c
-index 749f8e740ece1..fbe334c59f376 100644
---- a/drivers/scsi/aacraid/dpcsup.c
-+++ b/drivers/scsi/aacraid/dpcsup.c
-@@ -258,7 +258,7 @@ static void aac_aif_callback(void *context, struct fib * fibptr)
- }
+diff --git a/drivers/scsi/aic94xx/aic94xx_seq.c b/drivers/scsi/aic94xx/aic94xx_seq.c
+index 11853ec29d87a..c0f685c86851b 100644
+--- a/drivers/scsi/aic94xx/aic94xx_seq.c
++++ b/drivers/scsi/aic94xx/aic94xx_seq.c
+@@ -582,6 +582,7 @@ static void asd_init_cseq_scratch(struct asd_ha_struct *asd_ha)
+ /**
+  * asd_init_lseq_mip -- initialize LSEQ Mode independent pages 0-3
+  * @asd_ha: pointer to host adapter structure
++ * @lseq:  link sequencer
+  */
+ static void asd_init_lseq_mip(struct asd_ha_struct *asd_ha, u8 lseq)
+ {
+@@ -669,6 +670,7 @@ static void asd_init_lseq_mip(struct asd_ha_struct *asd_ha, u8 lseq)
+ /**
+  * asd_init_lseq_mdp -- initialize LSEQ mode dependent pages.
+  * @asd_ha: pointer to host adapter structure
++ * @lseq:  link sequencer
+  */
+ static void asd_init_lseq_mdp(struct asd_ha_struct *asd_ha,  int lseq)
+ {
+@@ -953,6 +955,7 @@ static void asd_init_cseq_cio(struct asd_ha_struct *asd_ha)
+ /**
+  * asd_init_lseq_cio -- initialize LmSEQ CIO registers
+  * @asd_ha: pointer to host adapter structure
++ * @lseq:  link sequencer
+  */
+ static void asd_init_lseq_cio(struct asd_ha_struct *asd_ha, int lseq)
+ {
+@@ -1345,7 +1348,8 @@ int asd_start_seqs(struct asd_ha_struct *asd_ha)
  
- 
--/**
-+/*
-  *	aac_intr_normal	-	Handle command replies
-  *	@dev: Device
-  *	@index: completion reference
+ /**
+  * asd_update_port_links -- update port_map_by_links and phy_is_up
+- * @sas_phy: pointer to the phy which has been added to a port
++ * @asd_ha: pointer to host adapter structure
++ * @phy: pointer to the phy which has been added to a port
+  *
+  * 1) When a link reset has completed and we got BYTES DMAED with a
+  * valid frame we call this function for that phy, to indicate that
 -- 
 2.25.1
 
