@@ -2,82 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4137B21D13A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FEB21D13C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729626AbgGMIB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 04:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52738 "EHLO
+        id S1729632AbgGMIBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 04:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727891AbgGMIBZ (ORCPT
+        with ESMTP id S1729612AbgGMIB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 04:01:25 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23253C061755;
-        Mon, 13 Jul 2020 01:01:25 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id EBC6136B; Mon, 13 Jul 2020 10:01:19 +0200 (CEST)
-Date:   Mon, 13 Jul 2020 10:01:15 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Rajat Jain <rajatxjain@gmail.com>, Rajat Jain <rajatja@google.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:AMD IOMMU (AMD-VI)" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v4 4/4] PCI/ACS: Enable PCI_ACS_TB for
- untrusted/external-facing devices
-Message-ID: <20200713080115.GN27672@8bytes.org>
-References: <CAA93t1rjzTYmag1vTDT==7GQ8LLduc9Ne06btEEwiyBRtCeTNg@mail.gmail.com>
- <20200712025838.GA147150@bjorn-Precision-5520>
+        Mon, 13 Jul 2020 04:01:27 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46562C061755;
+        Mon, 13 Jul 2020 01:01:27 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id F3EC4BC0CB;
+        Mon, 13 Jul 2020 08:01:23 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     mchehab@kernel.org, bp@alien8.de, tony.luck@intel.com,
+        james.morse@arm.com, rrichter@marvell.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] EDAC: i5400_edac: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 10:01:17 +0200
+Message-Id: <20200713080117.32216-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200712025838.GA147150@bjorn-Precision-5520>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 09:58:38PM -0500, Bjorn Helgaas wrote:
-> If BIOS handed off with ATS enabled and we somehow relied on it being
-> already enabled, something might break if we start disabling ATS.
-> Just a theoretical possibility, doesn't seem likely to me.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-I don't think this will be a problem. When the BIOS enables ATS for a
-device it also needs to enable the IOMMU already, an we are not handling
-an already enabled IOMMU (outside of kdump kernels) very well.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
 
 
-Regards,
+ drivers/edac/i5400_edac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-	Joerg
+diff --git a/drivers/edac/i5400_edac.c b/drivers/edac/i5400_edac.c
+index f131c05ade9f..92d63eb533ae 100644
+--- a/drivers/edac/i5400_edac.c
++++ b/drivers/edac/i5400_edac.c
+@@ -8,7 +8,7 @@
+  *	 Ben Woodard <woodard@redhat.com>
+  *	 Mauro Carvalho Chehab
+  *
+- * Red Hat Inc. http://www.redhat.com
++ * Red Hat Inc. https://www.redhat.com
+  *
+  * Forked and adapted from the i5000_edac driver which was
+  * written by Douglas Thompson Linux Networx <norsk5@xmission.com>
+@@ -1460,7 +1460,7 @@ module_exit(i5400_exit);
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Ben Woodard <woodard@redhat.com>");
+ MODULE_AUTHOR("Mauro Carvalho Chehab");
+-MODULE_AUTHOR("Red Hat Inc. (http://www.redhat.com)");
++MODULE_AUTHOR("Red Hat Inc. (https://www.redhat.com)");
+ MODULE_DESCRIPTION("MC Driver for Intel I5400 memory controllers - "
+ 		   I5400_REVISION);
+ 
+-- 
+2.27.0
+
