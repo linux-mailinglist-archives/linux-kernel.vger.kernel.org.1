@@ -2,173 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ADB721D668
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 14:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7995221D65E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 14:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729814AbgGMM4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 08:56:47 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:51140 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729683AbgGMM4q (ORCPT
+        id S1729662AbgGMMzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 08:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbgGMMzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 08:56:46 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06DCt7Tw084177;
-        Mon, 13 Jul 2020 07:55:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594644907;
-        bh=gquUXcLiNeoXPFXE6SRFUPAtfnoWAv417aPFshr32s4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=U9hrP4mrbp4UVRZnO5yN8lwt0JUVdJitXtKfJEKGJTVa1msPeAbSWbJo7Z5vpZ8ar
-         Ph3johXHrRGYz0hxk3xA5TKXp8nnDhlU/Pp/gOadRK4QtGFXaXZeO6+GZoIVHtTH26
-         AjqsYZLKFQJY2qnIeVNbOQcfHQ6w6LW0InUmfMww=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06DCt659054119
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 13 Jul 2020 07:55:07 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 13
- Jul 2020 07:55:06 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 13 Jul 2020 07:55:06 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06DCt4hj098291;
-        Mon, 13 Jul 2020 07:55:05 -0500
-Subject: Re: [PATCHv2 4/5] watchdog: rti-wdt: attach to running watchdog
- during probe
-To:     Guenter Roeck <linux@roeck-us.net>, <wim@linux-watchdog.org>,
-        <linux-watchdog@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jan.kiszka@siemens.com>
-References: <20200703120406.7092-1-t-kristo@ti.com>
- <20200703120406.7092-5-t-kristo@ti.com>
- <8eecaa6a-2e0e-14b3-473a-0674f9b2be26@roeck-us.net>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <9b3f383f-b3fe-3995-7fe6-b34121e79a71@ti.com>
-Date:   Mon, 13 Jul 2020 15:55:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 13 Jul 2020 08:55:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D84CC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 05:55:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Bgjmm0RTwkjol3u3Vm3ArdMHTSLlmvv1aOs6GxS+xr4=; b=jz8sMEjNED4cY6W4gU0jsBwP88
+        glS/1dqvwaIuZB19kJd+HQ4CioMubFAhYLuJ8rNVR/EfgCHtQtWWUyfIIDZ0/vxfi17jWpTMLCPES
+        OQfPJTN07rV3lBuI9P3V1IhTZw/MLJ62WF95PDPGhk5ytvpoAZgTyu4wEUPU6j5/jywpy3nVPI+q6
+        GtCe+HexwdKZDggYx4JXjwfeUgCwl1J+0qbxPd7McuwGShoNcqv5zDgE/zHJvloOkZWEWlUrItzbz
+        vb9+z2XAIxc1Z5R3OlyRbcKOJ1Ohr4e4cPxxcHtKS8atoMi6bjLXxEiQ0zk5hGvnSWGaYN2Rt+3DL
+        8z14O8gQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1juxzm-00087v-VW; Mon, 13 Jul 2020 12:55:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1AAF9303A02;
+        Mon, 13 Jul 2020 14:55:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CFCD120D27C74; Mon, 13 Jul 2020 14:55:43 +0200 (CEST)
+Date:   Mon, 13 Jul 2020 14:55:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        morten.rasmussen@arm.com
+Subject: Re: [PATCH v3 7/7] sched/topology: Use prebuilt SD flag degeneration
+ mask
+Message-ID: <20200713125543.GJ10769@hirez.programming.kicks-ass.net>
+References: <20200701190656.10126-1-valentin.schneider@arm.com>
+ <20200701190656.10126-8-valentin.schneider@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <8eecaa6a-2e0e-14b3-473a-0674f9b2be26@roeck-us.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701190656.10126-8-valentin.schneider@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/07/2020 18:07, Guenter Roeck wrote:
-> On 7/3/20 5:04 AM, Tero Kristo wrote:
->> If the RTI watchdog is running already during probe, the driver must
->> configure itself to match the HW. Window size and timeout is probed from
->> hardware, and the last keepalive ping is adjusted to match it also.
->>
->> Signed-off-by: Tero Kristo <t-kristo@ti.com>
->> ---
->>   drivers/watchdog/rti_wdt.c | 26 +++++++++++++++++++++++---
->>   1 file changed, 23 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
->> index 110bfc8d0bb3..987e5a798cb4 100644
->> --- a/drivers/watchdog/rti_wdt.c
->> +++ b/drivers/watchdog/rti_wdt.c
->> @@ -213,6 +213,7 @@ static int rti_wdt_probe(struct platform_device *pdev)
->>   	struct watchdog_device *wdd;
->>   	struct rti_wdt_device *wdt;
->>   	struct clk *clk;
->> +	u32 last_ping = 0;
->>   
->>   	wdt = devm_kzalloc(dev, sizeof(*wdt), GFP_KERNEL);
->>   	if (!wdt)
->> @@ -258,11 +259,8 @@ static int rti_wdt_probe(struct platform_device *pdev)
->>   	wdd->min_timeout = 1;
->>   	wdd->max_hw_heartbeat_ms = (WDT_PRELOAD_MAX << WDT_PRELOAD_SHIFT) /
->>   		wdt->freq * 1000;
->> -	wdd->timeout = DEFAULT_HEARTBEAT;
+On Wed, Jul 01, 2020 at 08:06:55PM +0100, Valentin Schneider wrote:
+> Leverage SD_DEGENERATE_GROUPS_MASK in sd_degenerate() and
+> sd_degenerate_parent().
 > 
-> What if the watchdog is not running ?
-
-Configuring wdd->timeout seems redundant, it gets set by the 
-watchdog_init_timeout call done later. I just moved that post the check 
-for a running watchdog so that the same call is used for both cases.
-
+> Note that this changes sd_degenerate() somewhat: I'm using the negation of
+> SD_DEGENERATE_GROUPS_MASK as the mask of flags not requiring groups, which
+> is equivalent to:
 > 
->>   	wdd->parent = dev;
->>   
->> -	watchdog_init_timeout(wdd, heartbeat, dev);
->> -
->>   	watchdog_set_drvdata(wdd, wdt);
->>   	watchdog_set_nowayout(wdd, 1);
->>   	watchdog_set_restart_priority(wdd, 128);
->> @@ -274,12 +272,34 @@ static int rti_wdt_probe(struct platform_device *pdev)
->>   		goto err_iomap;
->>   	}
->>   
->> +	if (readl(wdt->base + RTIDWDCTRL) == WDENABLE_KEY) {
->> +		u32 time_left;
->> +
->> +		set_bit(WDOG_HW_RUNNING, &wdd->status);
->> +		time_left = rti_wdt_get_timeleft(wdd);
->> +		heartbeat = readl(wdt->base + RTIDWDPRLD);
->> +		heartbeat <<= WDT_PRELOAD_SHIFT;
->> +		heartbeat /= wdt->freq;
->> +
+> SD_WAKE_AFFINE | SD_SERIALIZE | SD_NUMA
 > 
-> This ignores any heartbeat configured as module parameter, which most
-> people will consider unexpected. It might be worthwhile documenting that.
-
-I'll add a dev_warn for this case.
-
+> whereas the current mask for that is simply
 > 
->> +		wsize = readl(wdt->base + RTIWWDSIZECTRL);
->> +		ret = rti_wdt_setup_hw_hb(wdd);
->> +		if (ret)
->> +			goto err_iomap;
->> +
->> +		last_ping = -(time_left - heartbeat) * 1000;
+> SD_WAKE_AFFINE
 > 
-> Why the double negation ?
-> 
-> 		last_ping = (heartbeat - time_left) * 1000;
-> 
-> seems simpler. Also, what if heartbeat - time_left is negative for whatever
-> reason ?
+> I played with a few toy NUMA topologies on QEMU and couldn't cause a
+> different degeneration than what mainline does currently. If that is deemed
+> too risky, we can go back to using SD_WAKE_AFFINE explicitly.
 
-Will fix. I'll add a dev_warn for that case and assume last ping to be zero.
+Arguably SD_SERIALIZE needs groups, note how we're only having that
+effective for machines with at least 2 nodes. It's a bit shit how we end
+up there, but IIRC that's what it ends up as.
 
-> 
-> I am not sure if it is a good idea to call rti_wdt_get_timeleft()
-> here. It might be better to add a helper function such as
-> rti_wdt_get_timeleft_ms() to return the time left in milli-seconds
-> for improved accuracy.
-
-Will add that.
-
--Tero
-
-> 
->> +	}
->> +
->> +	watchdog_init_timeout(wdd, heartbeat, dev);
->> +
->>   	ret = watchdog_register_device(wdd);
->>   	if (ret) {
->>   		dev_err(dev, "cannot register watchdog device\n");
->>   		goto err_iomap;
->>   	}
->>   
->> +	if (last_ping)
->> +		watchdog_set_last_hw_keepalive(wdd, last_ping);
->> +
->>   	return 0;
->>   
->>   err_iomap:
->>
-> 
-
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+SD_NUMA is descriptive, and not marking a group as degenerates because
+it has SD_NUMA seems a bit silly. But then, it would be the top domain
+and would survive anyway?
