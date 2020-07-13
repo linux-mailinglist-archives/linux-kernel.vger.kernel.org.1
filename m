@@ -2,93 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BF121D8AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCC221D8AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729837AbgGMOgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:36:32 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:44567 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729695AbgGMOgc (ORCPT
+        id S1729857AbgGMOhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729644AbgGMOhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:36:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594650991;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=utDsxiJbHEkm2Fob90PfdlUV1I68F8zwYkv/4x3NbvE=;
-        b=Z9nkb3sv/6SfKD1iioN/w6ugrRbxyP8xTZurh4Iyc53k2OJaBqkZC3SvSITvzspq7vOOMb
-        1AbL7lq7n1QhPjJCD6kDfG6JJZElKQWynUTNPg4jThXiKXOvkvobM6ltrE5OkO/MJCX13d
-        KmsoA0ZR3ncOm+HYRH+WzVO/JKMoV2A=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-hqfeB6laNreoEjaa1iWBoQ-1; Mon, 13 Jul 2020 10:36:29 -0400
-X-MC-Unique: hqfeB6laNreoEjaa1iWBoQ-1
-Received: by mail-qt1-f197.google.com with SMTP id l53so10241869qtl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:36:29 -0700 (PDT)
+        Mon, 13 Jul 2020 10:37:16 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1554DC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:37:16 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id p1so5597544pls.4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:37:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=6h4nc4PcIrIUv15+ByYYiTsFlJJxjA7wtMBBwHQX5v0=;
+        b=BXkjoQfx48H2e6nBUni5xxwkx5mRQrvIrPnoDE+R8Qva8vJwI+BS0BPVCEmsH2q+yr
+         I461L736DFMAP+3S4jPi5ynyR4LyBhETmOpXzWTiiqyk4YmxNBwsq0WEd7oO3+VhErRV
+         KgrrHOYFYzLdSRBB2j/v9xLwH3OW5YWoNyrbPKjI29gNCrTPxpsUaYZwSPPZ0Z8pq02M
+         YjiCkTmMqXlm5j4kXJARs4goGChtn3lzj25n4TcqDtII8yUu78H+SZnMSq68BFAFOBon
+         mlZfie0wJtmVDmzqmRxXeiCsHE5S5v1g9drYRQGuj6IdyRPTxwrIzGsxDYLqZJ+yxZWU
+         tFvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=utDsxiJbHEkm2Fob90PfdlUV1I68F8zwYkv/4x3NbvE=;
-        b=hi0DU2MusO+K9sLYALbin3EI96eB0K6ct9jTU1Hiuu+PFHRxyOBgp2WYQrAUO1bbAw
-         YoS+pxYHcDGu1yyTS7Tv1eVMnGKOVPrSgjzCOXyu6hW0zMQl595Xr4H1juNgQAQNU97U
-         IFl8JA+2awm1AijvvuVkuACl3aOIqCMTE7hgYoR50kii6jLTk7xL4SHM7vmoawCGluNv
-         AsKO5VdnrhDIFo4o9euH1QlhKRGh1vWJR2pxBaf4oL/NVgG6kt8afIkBlQT2KYWQt6ZC
-         qQ7Jh+OMjm8xkF9m5T1YTKdhKMsPOsyWfoBTts5CGptZSbPjO3Iejv4K9Hcgcmsr9fTs
-         1SKQ==
-X-Gm-Message-State: AOAM532QNzeARgrlvFQMXMmnL9SQycboUZtbXTqJJ3tXxTz49SMiD6kt
-        JtQFpeoOPSpOl85wbairszRtEH97Z2JAeVz3i47w/ap/+ms0oOeSG9sugmvfX8w61fR6BBm80xL
-        p97QI5nfRK3bqOuEUgpogvrWS
-X-Received: by 2002:a37:6503:: with SMTP id z3mr78457624qkb.439.1594650989243;
-        Mon, 13 Jul 2020 07:36:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyntha6qH4OqLYs+Aw/+Ul63oVHCE5s/a6MbC4bAbOEfy0jDN0mdDBf5bhWChHo+7pbRt1Y/Q==
-X-Received: by 2002:a37:6503:: with SMTP id z3mr78457606qkb.439.1594650989040;
-        Mon, 13 Jul 2020 07:36:29 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id k6sm17845686qki.123.2020.07.13.07.36.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 07:36:28 -0700 (PDT)
-Subject: Re: [PATCH v2] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
-To:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, Wu Hao <hao.wu@intel.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        Russ Weight <russell.h.weight@intel.com>
-References: <1594604866-30877-1-git-send-email-yilun.xu@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <4efe6ee9-4e88-5b31-01a2-414f752a3d2e@redhat.com>
-Date:   Mon, 13 Jul 2020 07:36:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <1594604866-30877-1-git-send-email-yilun.xu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6h4nc4PcIrIUv15+ByYYiTsFlJJxjA7wtMBBwHQX5v0=;
+        b=HJ17lgkHnb0Hv8JeF4N4dtXji+ahpGXm5i6nhPBiiyDJV8OavYVIzM8AV9ouYZxcCu
+         npWt8jtzhioaU8T4NAxOkAzb8fIUTZI2psl5waZD7VVq1MQXWaxbyAJfbaewUR8ULNut
+         VejDBZFzwzl10hZ/rFhLJD3qJbr1EUaOwgfR3jh2VK2KNZ23/m4mQ6gutNcWxoEaRMBQ
+         rFRKtPJLi0ytX2KV8LNe3+XnJKAK4K9W2lmkjJt25FGqNxaHBxu8TTWsD3b/k2+Y4K0P
+         pA9myfNur6O3OLLP3gloLzrD/xx+7DPEAxNQqDnrvFdAuCjqreRFtq6xdMtKNYt9m17J
+         Hg2Q==
+X-Gm-Message-State: AOAM530Vw94oCXWM9sbjoM2clL+R2dE5dBBGeKwPD7oEzBXp+pp0FUT+
+        nllJ28qVSYDfmTn6X/rhax4=
+X-Google-Smtp-Source: ABdhPJxlYOPflhEqsOIGOMz/15FQEGURw1GaUxETKRiOmGKPsMhrDUr8X9XyvRWLjRPkZMdC/uXvvQ==
+X-Received: by 2002:a17:902:b113:: with SMTP id q19mr1388plr.170.1594651035151;
+        Mon, 13 Jul 2020 07:37:15 -0700 (PDT)
+Received: from localhost.localdomain ([103.88.59.5])
+        by smtp.googlemail.com with ESMTPSA id b13sm15094820pjl.7.2020.07.13.07.37.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 07:37:14 -0700 (PDT)
+From:   Baidyanath Kundu <kundubaidya99@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Baidyanath Kundu <kundubaidya99@gmail.com>
+Subject: [PATCH] Staging: vc04_services: Fix unsigned int warnings
+Date:   Mon, 13 Jul 2020 20:06:53 +0530
+Message-Id: <20200713143653.32332-1-kundubaidya99@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch fixes the checkpatch.pl warning:
 
-> @@ -64,6 +64,7 @@ static void cci_pci_free_irq(struct pci_dev *pcidev)
->  #define PCIE_DEVICE_ID_PF_INT_5_X	0xBCBD
->  #define PCIE_DEVICE_ID_PF_INT_6_X	0xBCC0
->  #define PCIE_DEVICE_ID_PF_DSC_1_X	0x09C4
-> +#define PCIE_DEVICE_ID_INTEL_PAC_N3000	0x0B30
+WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
 
-My point about consistency.  These are all intel  and all should have their pf parts removed.
+Signed-off-by: Baidyanath Kundu <kundubaidya99@gmail.com>
+---
+ .../staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c   | 4 ++--
+ .../vc04_services/include/linux/raspberrypi/vchiq.h       | 8 ++++----
+ .../vc04_services/interface/vchiq_arm/vchiq_core.c        | 6 +++---
+ drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c     | 4 ++--
+ 4 files changed, 11 insertions(+), 11 deletions(-)
 
- #define PCIE_DEVICE_ID_INTEL_INT_5_X	0xBCBD
- #define PCIE_DEVICE_ID_INTEL_INT_6_X	0xBCC0
- #define PCIE_DEVICE_ID_INTEL_DSC_1_X	0x09C4
-
-Let's revisit this for the d5005.
-
-trix
-
+diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
+index 8c9ddd86fbbd..292fcee9d6f2 100644
+--- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
++++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
+@@ -9,7 +9,7 @@
+ 
+ struct bcm2835_audio_instance {
+ 	struct device *dev;
+-	unsigned service_handle;
++	unsigned int service_handle;
+ 	struct completion msg_avail_comp;
+ 	struct mutex vchi_mutex;
+ 	struct bcm2835_alsa_stream *alsa_stream;
+@@ -91,7 +91,7 @@ static int bcm2835_audio_send_simple(struct bcm2835_audio_instance *instance,
+ 
+ static enum vchiq_status audio_vchi_callback(enum vchiq_reason reason,
+ 					     struct vchiq_header *header,
+-					     unsigned handle, void *userdata)
++					     unsigned int handle, void *userdata)
+ {
+ 	struct bcm2835_audio_instance *instance = vchiq_get_service_userdata(handle);
+ 	struct vc_audio_msg *m;
+diff --git a/drivers/staging/vc04_services/include/linux/raspberrypi/vchiq.h b/drivers/staging/vc04_services/include/linux/raspberrypi/vchiq.h
+index cb9ef9a4150b..18d63df368c4 100644
+--- a/drivers/staging/vc04_services/include/linux/raspberrypi/vchiq.h
++++ b/drivers/staging/vc04_services/include/linux/raspberrypi/vchiq.h
+@@ -84,11 +84,11 @@ extern enum vchiq_status vchiq_open_service(struct vchiq_instance *instance,
+ extern enum vchiq_status vchiq_close_service(unsigned int service);
+ extern enum vchiq_status vchiq_use_service(unsigned int service);
+ extern enum vchiq_status vchiq_release_service(unsigned int service);
+-extern void vchiq_msg_queue_push(unsigned handle, struct vchiq_header *header);
++extern void vchiq_msg_queue_push(unsigned int handle, struct vchiq_header *header);
+ extern void           vchiq_release_message(unsigned int service,
+ 	struct vchiq_header *header);
+-extern int vchiq_queue_kernel_message(unsigned handle, void *data,
+-				      unsigned size);
++extern int vchiq_queue_kernel_message(unsigned int handle, void *data,
++				      unsigned int size);
+ extern enum vchiq_status vchiq_bulk_transmit(unsigned int service,
+ 	const void *data, unsigned int size, void *userdata,
+ 	enum vchiq_bulk_mode mode);
+@@ -98,6 +98,6 @@ extern enum vchiq_status vchiq_bulk_receive(unsigned int service,
+ extern void *vchiq_get_service_userdata(unsigned int service);
+ extern enum vchiq_status vchiq_get_peer_version(unsigned int handle,
+       short *peer_version);
+-extern struct vchiq_header *vchiq_msg_hold(unsigned handle);
++extern struct vchiq_header *vchiq_msg_hold(unsigned int handle);
+ 
+ #endif /* VCHIQ_H */
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+index 1bc4ce577614..af64cde82d36 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+@@ -2275,7 +2275,7 @@ vchiq_init_state(struct vchiq_state *state, struct vchiq_slot_zero *slot_zero)
+ 	return VCHIQ_ERROR;
+ }
+ 
+-void vchiq_msg_queue_push(unsigned handle, struct vchiq_header *header)
++void vchiq_msg_queue_push(unsigned int handle, struct vchiq_header *header)
+ {
+ 	struct vchiq_service *service = find_service_by_handle(handle);
+ 	int pos;
+@@ -2293,7 +2293,7 @@ void vchiq_msg_queue_push(unsigned handle, struct vchiq_header *header)
+ }
+ EXPORT_SYMBOL(vchiq_msg_queue_push);
+ 
+-struct vchiq_header *vchiq_msg_hold(unsigned handle)
++struct vchiq_header *vchiq_msg_hold(unsigned int handle)
+ {
+ 	struct vchiq_service *service = find_service_by_handle(handle);
+ 	struct vchiq_header *header;
+@@ -3214,7 +3214,7 @@ vchiq_queue_message(unsigned int handle,
+ 	return status;
+ }
+ 
+-int vchiq_queue_kernel_message(unsigned handle, void *data, unsigned size)
++int vchiq_queue_kernel_message(unsigned int handle, void *data, unsigned int size)
+ {
+ 	enum vchiq_status status;
+ 
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+index a075cd63da7f..dc767730db43 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+@@ -163,7 +163,7 @@ struct mmal_msg_context {
+ };
+ 
+ struct vchiq_mmal_instance {
+-	unsigned service_handle;
++	unsigned int service_handle;
+ 
+ 	/* ensure serialised access to service */
+ 	struct mutex vchiq_mutex;
+@@ -548,7 +548,7 @@ static void bulk_abort_cb(struct vchiq_mmal_instance *instance,
+ /* incoming event service callback */
+ static enum vchiq_status service_callback(enum vchiq_reason reason,
+ 					  struct vchiq_header *header,
+-					  unsigned handle, void *bulk_ctx)
++					  unsigned int handle, void *bulk_ctx)
+ {
+ 	struct vchiq_mmal_instance *instance = vchiq_get_service_userdata(handle);
+ 	u32 msg_len;
+-- 
+2.17.1
 
