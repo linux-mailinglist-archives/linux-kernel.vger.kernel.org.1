@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F2D21CCF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C77B21CCF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728378AbgGMB4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 21:56:22 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45925 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgGMB4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 21:56:21 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B4mw32SB4z9sR4;
-        Mon, 13 Jul 2020 11:56:19 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594605379;
-        bh=S3DekknS5Db3vpTQmHZCmzd6fKM7tj2AAD3xpwqxj5Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WAgRrgmTeiC+TXfTyPQKiTy6kC7yo4oUOLMCSh5S2GUJ/GImballElNTWqzIujDu8
-         z7MBGkWdS0OHBjdQ0vKUu5ATbgVX11CWiWZQt14y8YBwRcUOQk7sjsqjBf1jdrwg/O
-         aeE4oItXqOCg+oUCeULYdaSqIn3LCpBWzd1+P+M12iULppkHrjgnCu3eT1VK/TjsXP
-         ZvIcmQlFkvm3GEKJGMRHM/ybTIOwG17xkPt3Ys2uphDmdleO7B4cSeGNJ+NcwCcJPX
-         v9oXvTtF3zDsHEBMMdDlGQmsdM1MBf66HJbfXfnKc9SQr9SDuRSguxLQYIW6n8tSrt
-         LvwsfhhlGmKwA==
-Date:   Mon, 13 Jul 2020 11:56:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the kbuild tree
-Message-ID: <20200713115618.5e07a783@canb.auug.org.au>
-In-Reply-To: <20200707170720.55be721f@canb.auug.org.au>
-References: <20200707170720.55be721f@canb.auug.org.au>
+        id S1728422AbgGMB5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 21:57:25 -0400
+Received: from mail.synology.com ([211.23.38.101]:33456 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726261AbgGMB5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 21:57:25 -0400
+Subject: Re: [PATCH] mm : fix pte _PAGE_DIRTY bit when fallback migrate page
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1594605443; bh=dMt+4j48OGNWxlYU555z1xu2wQ1GhECOEHBMhx3gXYc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=PlIuW+KcQCXbqf+KNuT0az7wI1UjNfW25kD3FT1JxChhMBgqDffloSHQ8PGVw/iKS
+         nF8wf6FNSEVt/U6Mq8eNHkttyvN9i/ySllUUdH8WXHrOS+S/QedOAfybYCdXZ9hhLV
+         ZbpTyC4D0r6dYOqwjOYhtYtkESYfK/CcsDlzzDBM=
+To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20200709024808.18466-1-robbieko@synology.com>
+ <859c810e-376e-5e8b-e8a5-0da3f83315d1@suse.cz>
+From:   Robbie Ko <robbieko@synology.com>
+Message-ID: <80b55fcf-def1-8a83-8f53-a22f2be56244@synology.com>
+Date:   Mon, 13 Jul 2020 09:57:23 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/SqpINmfPhut1RqXugvzbqg1";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <859c810e-376e-5e8b-e8a5-0da3f83315d1@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/SqpINmfPhut1RqXugvzbqg1
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Vlastimil Babka 於 2020/7/10 下午11:31 寫道:
+> On 7/9/20 4:48 AM, robbieko wrote:
+>> From: Robbie Ko <robbieko@synology.com>
+>>
+>> When a migrate page occurs, we first create a migration entry
+>> to replace the original pte, and then go to fallback_migrate_page
+>> to execute a writeout if the migratepage is not supported.
+>>
+>> In the writeout, we will clear the dirty bit of the page and use
+>> page_mkclean to clear the dirty bit along with the corresponding pte,
+>> but page_mkclean does not support migration entry.
+>>
+>> The page ditry bit is cleared, but the dirty bit of the pte still exists,
+>> so if mmap continues to write, it will result in data loss.
+> Curious, did you observe this data loss? What filesystem? If yes, it seems
+> serious enough to
+> CC stable and determine a Fixes: tag?
 
-On Tue, 7 Jul 2020 17:07:20 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
+Yes, there is data loss.
+I'm using a btrfs environment, but not the following patch
+btrfs: implement migratepage callback for data pages
+https://git.kernel.org/pub/scm/linux/kernel 
+/git/torvalds/linux.git/commit/?h=v5.8-rc5& 
+id=f8e6608180a31cc72a23b74969da428da236dbd1
+
+
+>> We fix the by first remove the migration entry and then clearing
+>> the dirty bits of the page, which also clears the pte's dirty bits.
+>>
+>> Signed-off-by: Robbie Ko <robbieko@synology.com>
+>> ---
+>>   mm/migrate.c | 8 ++++----
+>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/mm/migrate.c b/mm/migrate.c
+>> index f37729673558..5c407434b9ba 100644
+>> --- a/mm/migrate.c
+>> +++ b/mm/migrate.c
+>> @@ -875,10 +875,6 @@ static int writeout(struct address_space *mapping, struct page *page)
+>>   		/* No write method for the address space */
+>>   		return -EINVAL;
+>>   
+>> -	if (!clear_page_dirty_for_io(page))
+>> -		/* Someone else already triggered a write */
+>> -		return -EAGAIN;
+>> -
+>>   	/*
+>>   	 * A dirty page may imply that the underlying filesystem has
+>>   	 * the page on some queue. So the page must be clean for
+>> @@ -889,6 +885,10 @@ static int writeout(struct address_space *mapping, struct page *page)
+>>   	 */
+>>   	remove_migration_ptes(page, page, false);
+>>   
+>> +	if (!clear_page_dirty_for_io(page))
+>> +		/* Someone else already triggered a write */
+>> +		return -EAGAIN;
+>> +
+>>   	rc = mapping->a_ops->writepage(page, &wbc);
+>>   
+>>   	if (rc != AOP_WRITEPAGE_ACTIVATE)
+>>
 >
-> Hi all,
->=20
-> After merging the kbuild tree, today's linux-next build (powerpc
-> ppc44x_defconfig) failed like this:
->=20
-> cc1: fatal error: opening output file arch/powerpc/boot/dts/.ebony.dtb.dt=
-s.tmp: No such file or directory
->=20
-> and directory arch/powerpc/boot/dts/ does, indeed, not exist in the
-> separate object directory.
->=20
-> Caused by commit
->=20
->   ea4679253288 ("kbuild: always create directories of targets")
->=20
-> at least, reverting that commit makes the build work again.
-
-I am still reverting that commit.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/SqpINmfPhut1RqXugvzbqg1
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8Lv0IACgkQAVBC80lX
-0GzUsQf/V4yY7O8fRZ0Qnj6y/90EZHvwRSyV2ru1AqBN4k3gyskZyo5+AWZUT7Tt
-b9y8XYsc7u5cXlDN4zW89xQ4N2TpPeLtBn5Yq296y9MMyIfYuvEHuM/Ga65/BC/H
-1C64QGpqE+9ogBLZNL5g5Tx87nTMcD2L7HWQlhnEuwbwwTFuwW73ZZbRWxYAUk1j
-QQ972y/rGzyZ5wtrQswpVLH32oHuhLrLR+W9A6sAyI1C4NYd3pWp6rJyfJyeNKkQ
-hdihvj/nI3LKuGaru53mzDI8BB1p2hu2dKRg8X0Zf/7D+IOZQZ8u5rcKaO37dzv2
-taySdLnWCl5KFQLhAwbGLX0t4hNxsw==
-=B9n/
------END PGP SIGNATURE-----
-
---Sig_/SqpINmfPhut1RqXugvzbqg1--
