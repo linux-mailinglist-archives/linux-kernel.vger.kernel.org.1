@@ -2,137 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942D721CD81
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 05:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9000C21CD8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 05:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728552AbgGMDH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 23:07:29 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:35605 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725892AbgGMDH3 (ORCPT
+        id S1727107AbgGMDNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 23:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgGMDNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 23:07:29 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0U2UhFSb_1594609639;
-Received: from 30.25.206.74(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U2UhFSb_1594609639)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 13 Jul 2020 11:07:21 +0800
-Subject: Re: [PATCH v4 5/7] KVM: PPC: clean up redundant kvm_run parameters in
- assembly
-To:     Paul Mackerras <paulus@ozlabs.org>
-Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
-        chenhuacai@gmail.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200427043514.16144-1-tianjia.zhang@linux.alibaba.com>
- <20200427043514.16144-6-tianjia.zhang@linux.alibaba.com>
- <20200526055924.GD282305@thinks.paulus.ozlabs.org>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <c3540a4b-a568-3428-0427-ae2a1f30dbe2@linux.alibaba.com>
-Date:   Mon, 13 Jul 2020 11:07:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 12 Jul 2020 23:13:01 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E18DC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 20:13:01 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id k4so4876778pld.12
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 20:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=psxzbrOp99J5mngwlPoMiQAT+alHBEBXUBDoOJ1/0T0=;
+        b=bMkxg68pIh+RvX2AC4XXKe6pe1QOex4aB1n7ujCqFRZd69+OnuEEgrE4tbSiQHzr2w
+         HUONe3Rz9kqrSbjvW1EW7ygCDQ/aWO1wdWhs3MyPk8wX/x/ejLAIA2GGvf5BPpEdxpUK
+         xboFHzonjwMPK3n9xEddAHBnE6DMrvun0X5PBgA59sAi87sum89ri+yl19ri98UFYIrz
+         RhmOZAmNgecT2cwN+1+yJWn5QLeyeeBvAe85s+moYqIXda9vTBgiueAIHIYf70nqgLGB
+         ABFcbyIbOa6l2P83EU6Ak68QAD2KGHrHF/zaKiPrPHqgGBnSirLubl0ZLyJMl4w+YAVF
+         4oXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=psxzbrOp99J5mngwlPoMiQAT+alHBEBXUBDoOJ1/0T0=;
+        b=mwiNdhgBBwyedhQfQ82Y6xVOJIC/22/WOYAQcAoQWshxC9T4dVEoRMDrMWK40OcFWg
+         CYsFgksl3D6+at5QOvTH6a/AUYY5BHi+CKRWhx0a72t84O5JbZ0XPi3Ugmkxppbsjm3P
+         /FiS8bil4EUGkz6oGFAKpt+Nuifr8Vqe5yc9jkxoc/cAAp/mRZoqKp+RnZk5qPeNpkGN
+         4VzgADtozoBldktjBsjtU9zUGJuhzYlgxDmqGR88jdhLbyFfpzx1giPE0OI2MZbZuRv4
+         oX3bPtydkr3heSLibD1Pu7JefAlgM8HsdlvH1F3RE+kkolWg5LoyKpMTrVN7V14DoYa+
+         aMDQ==
+X-Gm-Message-State: AOAM533pi3eBplZJAzEEymbPJaosWfieLtV3oyA1BZfXh+3J/LzJiNbS
+        b5Ddr08fHD9IJc513YuAd52wUmCy
+X-Google-Smtp-Source: ABdhPJwWlxM5jkFHf6rPbXsTiEijCyx0KGUV3hHGgDVb+KR9EnkUi27lPfgLbJA7ICFZ7bgXL6pYMQ==
+X-Received: by 2002:a17:902:b905:: with SMTP id bf5mr37221828plb.250.1594609980408;
+        Sun, 12 Jul 2020 20:13:00 -0700 (PDT)
+Received: from daehojeong1.seo.corp.google.com ([172.30.115.29])
+        by smtp.gmail.com with ESMTPSA id cl17sm12635508pjb.50.2020.07.12.20.12.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jul 2020 20:12:59 -0700 (PDT)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v2] f2fs: change the way of handling range.len in F2FS_IOC_SEC_TRIM_FILE
+Date:   Mon, 13 Jul 2020 12:12:52 +0900
+Message-Id: <20200713031252.3873546-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
 MIME-Version: 1.0
-In-Reply-To: <20200526055924.GD282305@thinks.paulus.ozlabs.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Daeho Jeong <daehojeong@google.com>
 
+Changed the way of handling range.len of F2FS_IOC_SEC_TRIM_FILE.
+ 1. Added -1 value support for range.len to secure trim the whole blocks
+    starting from range.start regardless of i_size.
+ 2. If the end of the range passes over the end of file, it means until
+    the end of file (i_size).
+ 3. ignored the case of that range.len is zero to prevent the function
+    from making end_addr zero and triggering different behaviour of
+    the function.
 
-On 2020/5/26 13:59, Paul Mackerras wrote:
-> On Mon, Apr 27, 2020 at 12:35:12PM +0800, Tianjia Zhang wrote:
->> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
->> structure. For historical reasons, many kvm-related function parameters
->> retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time. This
->> patch does a unified cleanup of these remaining redundant parameters.
-> 
-> Some of these changes don't look completely correct to me, see below.
-> If you're expecting these patches to go through my tree, I can fix up
-> the patch and commit it (with you as author), noting the changes I
-> made in the commit message.  Do you want me to do that?
-> 
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+Changes in v2:
+ - Changed -1 range.len option to mean the whole blocks starting from
+   range.start regardless of i_size
+---
+ fs/f2fs/file.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-I am very glad for you to do so, although I have submitted a new version 
-of patch, I still prefer you to fix up and commit it.
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 368c80f8e2a1..2485841e3b2d 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -3792,7 +3792,7 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+ 	pgoff_t index, pg_end;
+ 	block_t prev_block = 0, len = 0;
+ 	loff_t end_addr;
+-	bool to_end;
++	bool to_end = false;
+ 	int ret = 0;
+ 
+ 	if (!(filp->f_mode & FMODE_WRITE))
+@@ -3813,23 +3813,23 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+ 	file_start_write(filp);
+ 	inode_lock(inode);
+ 
+-	if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode)) {
++	if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode) ||
++			range.start >= inode->i_size) {
+ 		ret = -EINVAL;
+ 		goto err;
+ 	}
+ 
+-	if (range.start >= inode->i_size) {
+-		ret = -EINVAL;
++	if (range.len == 0)
+ 		goto err;
+-	}
+ 
+-	if (inode->i_size - range.start < range.len) {
+-		ret = -E2BIG;
+-		goto err;
++	if (inode->i_size - range.start > range.len) {
++		end_addr = range.start + range.len;
++	} else {
++		end_addr = range.len == (u64)-1 ?
++			sbi->sb->s_maxbytes : inode->i_size;
++		to_end = true;
+ 	}
+-	end_addr = range.start + range.len;
+ 
+-	to_end = (end_addr == inode->i_size);
+ 	if (!IS_ALIGNED(range.start, F2FS_BLKSIZE) ||
+ 			(!to_end && !IS_ALIGNED(end_addr, F2FS_BLKSIZE))) {
+ 		ret = -EINVAL;
+@@ -3846,7 +3846,8 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+ 	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+ 	down_write(&F2FS_I(inode)->i_mmap_sem);
+ 
+-	ret = filemap_write_and_wait_range(mapping, range.start, end_addr - 1);
++	ret = filemap_write_and_wait_range(mapping, range.start,
++			to_end ? LLONG_MAX : end_addr - 1);
+ 	if (ret)
+ 		goto out;
+ 
+-- 
+2.27.0.383.g050319c2ae-goog
 
-Thanks and best,
-Tianjia
-
->> diff --git a/arch/powerpc/kvm/book3s_interrupts.S b/arch/powerpc/kvm/book3s_interrupts.S
->> index f7ad99d972ce..0eff749d8027 100644
->> --- a/arch/powerpc/kvm/book3s_interrupts.S
->> +++ b/arch/powerpc/kvm/book3s_interrupts.S
->> @@ -55,8 +55,7 @@
->>    ****************************************************************************/
->>   
->>   /* Registers:
->> - *  r3: kvm_run pointer
->> - *  r4: vcpu pointer
->> + *  r3: vcpu pointer
->>    */
->>   _GLOBAL(__kvmppc_vcpu_run)
->>   
->> @@ -68,8 +67,8 @@ kvm_start_entry:
->>   	/* Save host state to the stack */
->>   	PPC_STLU r1, -SWITCH_FRAME_SIZE(r1)
->>   
->> -	/* Save r3 (kvm_run) and r4 (vcpu) */
->> -	SAVE_2GPRS(3, r1)
->> +	/* Save r3 (vcpu) */
->> +	SAVE_GPR(3, r1)
->>   
->>   	/* Save non-volatile registers (r14 - r31) */
->>   	SAVE_NVGPRS(r1)
->> @@ -82,11 +81,11 @@ kvm_start_entry:
->>   	PPC_STL	r0, _LINK(r1)
->>   
->>   	/* Load non-volatile guest state from the vcpu */
->> -	VCPU_LOAD_NVGPRS(r4)
->> +	VCPU_LOAD_NVGPRS(r3)
->>   
->>   kvm_start_lightweight:
->>   	/* Copy registers into shadow vcpu so we can access them in real mode */
->> -	mr	r3, r4
->> +	mr	r4, r3
-> 
-> This mr doesn't seem necessary.
-> 
->>   	bl	FUNC(kvmppc_copy_to_svcpu)
->>   	nop
->>   	REST_GPR(4, r1)
-> 
-> This should be loading r4 from GPR3(r1), not GPR4(r1) - which is what
-> REST_GPR(4, r1) will do.
-> 
-> Then, in the file but not in the patch context, there is this line:
-> 
-> 	PPC_LL	r3, GPR4(r1)		/* vcpu pointer */
-> 
-> where once again GPR4 needs to be GPR3.
-> 
->> @@ -191,10 +190,10 @@ after_sprg3_load:
->>   	PPC_STL	r31, VCPU_GPR(R31)(r7)
->>   
->>   	/* Pass the exit number as 3rd argument to kvmppc_handle_exit */
-> 
-> The comment should be modified to say "2nd" instead of "3rd",
-> otherwise it is confusing.
-> 
-> The rest of the patch looks OK.
-> 
-> Paul.
-> 
