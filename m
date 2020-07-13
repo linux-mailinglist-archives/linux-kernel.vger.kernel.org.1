@@ -2,158 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8539421D8DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7984221D8EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729889AbgGMOqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:46:44 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:41204 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729523AbgGMOqo (ORCPT
+        id S1729845AbgGMOtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729649AbgGMOte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:46:44 -0400
-Received: by mail-io1-f66.google.com with SMTP id p205so5178660iod.8;
-        Mon, 13 Jul 2020 07:46:43 -0700 (PDT)
+        Mon, 13 Jul 2020 10:49:34 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1EFC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:34 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id k6so16864991wrn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c6KODDu7f11jd3niq7W/zAdz/lhZIgV18jMn++N0dmk=;
+        b=ziDxCI60DN39PM3RJGP30ojYL2Y3TGAxLsIq/FctTLe1wm269+IzqFClnsGIrxXzrZ
+         jszWZM1RgKTZkNOqH1vdh/VgIjgb7ldg4fQ7OMXUormprt1oO+etW+BwEsPB1D0PNjkJ
+         2BxkDLoCQJvbPQwi490dK2xEIPOHALdTYlVCBd6G3orMtcZEvSvf7nRev9xqxPGVm8Ww
+         2rgJZDBJ8sbdaWZjmvzZEqzvcR8sXkeA4UYZPwu5X7rh4uQ7tBbKRVeYtib+PnBEgUpl
+         9PFBRhn4Hk2PR/qK4CuNn6v8DN6cQuLghH75grBKX2cQW4Hje+mVPDP+jx0ESpvL3HTc
+         +sOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nbDwnmZqExm0GJ0AQBPbfTfEhmeWr4XCe+A+8/PM6M0=;
-        b=T5+4jJYQlZ5hUHd84SckU3rKPK7CClh70W5uYAWcrpD9ssDeB3QErZxptmwPRGy1HQ
-         4WvN3oBwXakKPlwT2ygLIM0OGQeXSgttBR6eJZzB2JGAfW2K7eoOsk4ROpEHerEUWJXq
-         DJD6nU4dsC14/HW6+stbG7dN4axGQsmzWn2fkIUiFe2/rzmDUmUyBL8I/kHspXQvjDYg
-         7FOIYd5J0g9f7i1ueqaHmm3wlscR2Qc4uV3qPmvgmOcb0+c4xqBmiTvGIsimkLFA6r8J
-         fFSjQv53fYvFtbUhtZV1cJ3KKWwN5+RRsgTbd1cDTg5a1jTvnEaUqOCywaQWaG4i0YRS
-         yi7A==
-X-Gm-Message-State: AOAM533Y3+xWv+OEHt1KTm8MPBbjuW8Ab1LgnQuYE6VWPpSsbGku1g0b
-        2lXrckrw4Z6c2YfBtnRmug==
-X-Google-Smtp-Source: ABdhPJyC5hljtwK8AI4NvIkZ9UF+F6cv86WbaPgrtAlXxynhWmF1sbz5QKxouIpA7c6uyqRQqrL5Nw==
-X-Received: by 2002:a05:6638:2615:: with SMTP id m21mr394291jat.134.1594651603099;
-        Mon, 13 Jul 2020 07:46:43 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id s11sm8669417ili.79.2020.07.13.07.46.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c6KODDu7f11jd3niq7W/zAdz/lhZIgV18jMn++N0dmk=;
+        b=D/MiYfdsOVcEyEVhLLJFl7istURwzp/iyThifIaY/or+tuD5QG4j5inZe/7gryxnMw
+         TpQ0qF1BLxzIXsJlvuX2tD5BIPF/RjYELfEbUm9PExZGwnCVfxyxmvmhsU1vPtTQEXF8
+         wPb8k2GB3GaEgQF/jbHuR0OGyym0L9YHSshaQ2xcodkoHViU0vVKqvz/+YltrjBufR8+
+         JJ18tbLsQfPGVFGhgjf1hgIHxBwXWd8jWMG6n+rQ7rK4+WVWo8Vmr6XGp6QLHJ9z+6nC
+         d+3fKMqf7ydSLNa0vac5JNeyFrOjz24L59zxZhob6TVcXlTaVFESZjaxefkaHLLVKItv
+         v9+w==
+X-Gm-Message-State: AOAM531VxedZd7a2X2zm1oB/FWGVXRGNm7AyJaFeP2IgDwJFcK7CwyE0
+        oYOZ/tQvgaUeLkjGOiJ3YF3rVw==
+X-Google-Smtp-Source: ABdhPJwBN+7FNRB5e10ikfDcEOXPB9oZvVzsMu9gdAu4L2NQ8gP1Yq1xz451vmi1hanVhy7AZxDirg==
+X-Received: by 2002:adf:fc90:: with SMTP id g16mr79196427wrr.42.1594651772925;
+        Mon, 13 Jul 2020 07:49:32 -0700 (PDT)
+Received: from localhost.localdomain ([2.31.163.6])
+        by smtp.gmail.com with ESMTPSA id o29sm26207756wra.5.2020.07.13.07.49.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 07:46:42 -0700 (PDT)
-Received: (nullmailer pid 157351 invoked by uid 1000);
-        Mon, 13 Jul 2020 14:46:40 -0000
-Date:   Mon, 13 Jul 2020 08:46:40 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krishna Manikandan <mkrishn@codeaurora.org>
-Cc:     kalyan_t@codeaurora.org, seanpaul@chromium.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        robdclark@gmail.com, hoegsberg@chromium.org,
-        linux-kernel@vger.kernel.org, freedreno@lists.freedesktop.org,
-        nganji@codeaurora.org, devicetree@vger.kernel.org
-Subject: Re: [v5] dt-bindings: msm: disp: add yaml schemas for DPU and DSI
- bindings
-Message-ID: <20200713144640.GA155367@bogus>
-References: <1594389469-2573-1-git-send-email-mkrishn@codeaurora.org>
+        Mon, 13 Jul 2020 07:49:32 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linus.walleij@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 00/25] Rid W=1 warnings in Pinctrl
+Date:   Mon, 13 Jul 2020 15:49:05 +0100
+Message-Id: <20200713144930.1034632-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594389469-2573-1-git-send-email-mkrishn@codeaurora.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Jul 2020 19:27:49 +0530, Krishna Manikandan wrote:
-> MSM Mobile Display Subsytem (MDSS) encapsulates sub-blocks
-> like DPU display controller, DSI etc. Add YAML schema
-> for the device tree bindings for the same.
-> 
-> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-> 
-> Changes in v2:
-> 	- Changed dpu to DPU (Sam Ravnborg)
-> 	- Fixed indentation issues (Sam Ravnborg)
-> 	- Added empty line between different properties (Sam Ravnborg)
-> 	- Replaced reference txt files with  their corresponding
-> 	  yaml files (Sam Ravnborg)
-> 	- Modified the file to use "|" only when it is
-> 	  necessary (Sam Ravnborg)
-> 
-> Changes in v3:
-> 	- Corrected the license used (Rob Herring)
-> 	- Added maxItems for properties (Rob Herring)
-> 	- Dropped generic descriptions (Rob Herring)
-> 	- Added ranges property (Rob Herring)
-> 	- Corrected the indendation (Rob Herring)
-> 	- Added additionalProperties (Rob Herring)
-> 	- Split dsi file into two, one for dsi controller
-> 	  and another one for dsi phy per target (Rob Herring)
-> 	- Corrected description for pinctrl-names (Rob Herring)
-> 	- Corrected the examples used in yaml file (Rob Herring)
-> 	- Delete dsi.txt and dpu.txt (Rob Herring)
-> 
-> Changes in v4:
-> 	- Move schema up by one level (Rob Herring)
-> 	- Add patternProperties for mdp node (Rob Herring)
-> 	- Corrected description of some properties (Rob Herring)
-> 
-> Changes in v5:
-> 	- Correct the indentation (Rob Herring)
-> 	- Remove unnecessary description from properties (Rob Herring)
-> 	- Correct the number of interconnect entries (Rob Herring)
-> 	- Add interconnect names for sc7180 (Rob Herring)
-> 	- Add description for ports (Rob Herring)
-> 	- Remove common properties (Rob Herring)
-> 	- Add unevalutatedProperties (Rob Herring)
-> 	- Reference existing dsi controller yaml in the common
-> 	  dsi controller file (Rob Herring)
-> 	- Correct the description of clock names to include only the
-> 	  clocks that are required (Rob Herring)
-> 	- Remove properties which are already covered under the common
-> 	  binding (Rob Herring)
-> 	- Add dsi phy supply nodes which are required for sc7180 and
-> 	  sdm845 targets (Rob Herring)
-> 	- Add type ref for syscon-sfpb (Rob Herring)
-> ---
->  .../bindings/display/dsi-controller.yaml           |   4 +-
->  .../bindings/display/msm/dpu-sc7180.yaml           | 230 +++++++++++++++++++
->  .../bindings/display/msm/dpu-sdm845.yaml           | 210 ++++++++++++++++++
->  .../devicetree/bindings/display/msm/dpu.txt        | 141 ------------
->  .../display/msm/dsi-common-controller.yaml         | 178 +++++++++++++++
->  .../display/msm/dsi-controller-sc7180.yaml         | 115 ++++++++++
->  .../display/msm/dsi-controller-sdm845.yaml         | 115 ++++++++++
->  .../bindings/display/msm/dsi-phy-sc7180.yaml       |  79 +++++++
->  .../bindings/display/msm/dsi-phy-sdm845.yaml       |  81 +++++++
->  .../devicetree/bindings/display/msm/dsi-phy.yaml   |  79 +++++++
->  .../devicetree/bindings/display/msm/dsi.txt        | 246 ---------------------
->  11 files changed, 1089 insertions(+), 389 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dpu-sc7180.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dpu-sdm845.yaml
->  delete mode 100644 Documentation/devicetree/bindings/display/msm/dpu.txt
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-common-controller.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-controller-sc7180.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-controller-sdm845.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-sc7180.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-sdm845.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy.yaml
->  delete mode 100644 Documentation/devicetree/bindings/display/msm/dsi.txt
-> 
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
+After these patches are applied, the build system no longer
+complains about any W=0 nor W=1 level warnings in drivers/pinctrl.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Hurrah!
 
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/msm/dsi-controller-sc7180.example.dt.yaml: example-0: dsi@ae94000:reg:0: [0, 183058432, 0, 1024] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/msm/dpu-sdm845.example.dt.yaml: example-0: mdss@ae00000:reg:0: [0, 182452224, 0, 4096] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/msm/dsi-phy-sc7180.example.dt.yaml: example-0: dsi-phy@ae94400:reg:0: [0, 183059456, 0, 512] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/msm/dsi-phy-sc7180.example.dt.yaml: example-0: dsi-phy@ae94400:reg:1: [0, 183059968, 0, 640] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/msm/dsi-phy-sc7180.example.dt.yaml: example-0: dsi-phy@ae94400:reg:2: [0, 183060992, 0, 480] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/msm/dpu-sc7180.example.dt.yaml: example-0: mdss@ae00000:reg:0: [0, 182452224, 0, 4096] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/msm/dsi-phy-sdm845.example.dt.yaml: example-0: dsi-phy@ae94400:reg:0: [0, 183059456, 0, 512] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/msm/dsi-phy-sdm845.example.dt.yaml: example-0: dsi-phy@ae94400:reg:1: [0, 183059968, 0, 640] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/msm/dsi-phy-sdm845.example.dt.yaml: example-0: dsi-phy@ae94400:reg:2: [0, 183060992, 0, 480] is too long
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/msm/dsi-controller-sdm845.example.dt.yaml: example-0: dsi@ae94000:reg:0: [0, 183058432, 0, 1024] is too long
+Lee Jones (25):
+  pinctrl: actions: pinctrl-owl: Supply missing 'struct owl_pinctrl'
+    attribute descriptions
+  pinctrl: sirf: pinctrl-atlas7: Fix a bunch of documentation
+    misdemeanours
+  pinctrl: bcm: pinctrl-bcm281xx: Demote obvious misuse of kerneldoc to
+    standard comment blocks
+  pinctrl: bcm: pinctrl-iproc-gpio: Rename incorrectly documented
+    function param
+  pinctrl: qcom: pinctrl-msm: Complete 'struct msm_pinctrl'
+    documentation
+  pinctrl: samsung: pinctrl-samsung: Demote obvious misuse of kerneldoc
+    to standard comment blocks
+  pinctrl: samsung: pinctrl-s3c24xx: Fix formatting issues
+  pinctrl: samsung: pinctrl-s3c64xx: Fix formatting issues
+  pinctrl: qcom: pinctrl-msm8976: Remove unused variable
+    'nav_tsync_groups'
+  pinctrl: mediatek: pinctrl-mtk-common-v2: Mark
+    'mtk_default_register_base_names' as __maybe_unused
+  pinctrl: core: Fix a bunch of kerneldoc issues
+  pinctrl: pinmux: Add some missing parameter descriptions
+  pinctrl: devicetree: Add one new attribute description and rename
+    another two
+  pinctrl: pinconf-generic: Add function parameter description 'pctldev'
+  pinctrl: pinctrl-at91-pio4: PM related attribute descriptions
+  arch: arm: mach-at91: pm: Move prototypes to mutually included header
+  pinctrl: pinctrl-at91: Demote non-kerneldoc header and complete
+    another
+  pinctrl: pinctrl-bm1880: Rename ill documented struct attribute
+    entries
+  pinctrl: pinctrl-rockchip: Fix a bunch of kerneldoc misdemeanours
+  pinctrl: pinctrl-rza1: Demote some kerneldoc headers and fix others
+  pinctrl: pinctrl-single: Fix struct/function documentation blocks
+  pinctrl: tegra: pinctrl-tegra194: Do not initialise field twice
+  pinctrl: meson: pinctrl-meson-a1: Remove unused const variable
+    'i2c_slave_groups'
+  pinctrl: mvebu: pinctrl-armada-37xx: Update documentation block for
+    'struct armada_37xx_pin_group'
+  pinctrl: pinctrl-amd: Do not define 'struct acpi_device_id' when
+    !CONFIG_ACPI
 
+ arch/arm/mach-at91/pm.c                       | 17 +++++--------
+ drivers/pinctrl/actions/pinctrl-owl.c         |  4 ++++
+ drivers/pinctrl/bcm/pinctrl-bcm281xx.c        |  6 ++---
+ drivers/pinctrl/bcm/pinctrl-iproc-gpio.c      |  2 +-
+ drivers/pinctrl/core.c                        | 12 +++++-----
+ drivers/pinctrl/devicetree.c                  |  5 ++--
+ .../pinctrl/mediatek/pinctrl-mtk-common-v2.h  |  2 +-
+ drivers/pinctrl/meson/pinctrl-meson-a1.c      |  5 ----
+ drivers/pinctrl/mvebu/pinctrl-armada-37xx.c   |  7 +++---
+ drivers/pinctrl/pinconf-generic.c             |  3 ++-
+ drivers/pinctrl/pinctrl-amd.c                 |  2 ++
+ drivers/pinctrl/pinctrl-at91-pio4.c           |  2 ++
+ drivers/pinctrl/pinctrl-at91.c                |  7 +++++-
+ drivers/pinctrl/pinctrl-bm1880.c              |  4 ++--
+ drivers/pinctrl/pinctrl-rockchip.c            | 22 +++++++++--------
+ drivers/pinctrl/pinctrl-rza1.c                | 24 +++++++++----------
+ drivers/pinctrl/pinctrl-single.c              | 13 +++++++---
+ drivers/pinctrl/pinmux.c                      |  5 +++-
+ drivers/pinctrl/qcom/pinctrl-msm.c            |  6 ++++-
+ drivers/pinctrl/qcom/pinctrl-msm8976.c        |  3 ---
+ drivers/pinctrl/samsung/pinctrl-s3c24xx.c     |  6 ++---
+ drivers/pinctrl/samsung/pinctrl-s3c64xx.c     |  6 ++---
+ drivers/pinctrl/samsung/pinctrl-samsung.c     |  4 ++--
+ drivers/pinctrl/sirf/pinctrl-atlas7.c         | 21 +++++++---------
+ drivers/pinctrl/tegra/pinctrl-tegra194.c      |  1 -
+ include/linux/platform_data/atmel.h           |  5 ++++
+ 26 files changed, 107 insertions(+), 87 deletions(-)
 
-See https://patchwork.ozlabs.org/patch/1326868
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
+-- 
+2.25.1
 
