@@ -2,56 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B815E21E47F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 02:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669AD21E4E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 02:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726750AbgGNA3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 20:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgGNA3e (ORCPT
+        id S1727042AbgGNA5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 20:57:12 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:53443 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726257AbgGNA5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 20:29:34 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69135C061755;
-        Mon, 13 Jul 2020 17:29:34 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 2901F12983237;
-        Mon, 13 Jul 2020 17:29:33 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 17:29:32 -0700 (PDT)
-Message-Id: <20200713.172932.834602346972307208.davem@davemloft.net>
-To:     brgl@bgdev.pl
-Cc:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bgolaszewski@baylibre.com,
-        lkp@intel.com
-Subject: Re: [PATCH] net: phy: fix mdio-mscc-miim build
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200713151207.29451-1-brgl@bgdev.pl>
-References: <20200713151207.29451-1-brgl@bgdev.pl>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 13 Jul 2020 17:29:33 -0700 (PDT)
+        Mon, 13 Jul 2020 20:57:11 -0400
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200714005707epoutp034d148bc1daff0ed1e8217ae17f620662~heH6HWDzm2480824808epoutp03P
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 00:57:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200714005707epoutp034d148bc1daff0ed1e8217ae17f620662~heH6HWDzm2480824808epoutp03P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594688227;
+        bh=HCa46d8xYQI4DLHreMXbh3X5Yj5CBNQoIEHru9jul4s=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=f/qcZwifksZCfYC3SVpwRF04fNyJu6abMGmYXNbrBYViV9i3KXrCkWBCUiwNQtxKx
+         AyHBSBgw/XpINoGkksmtOtLwKVvrWXWPZAYFPKO0WbAc8nAtP3PF3Lq/2kHQVX7rfN
+         iHSzde0j7TsyA5ETIQ1UCGyE4b0f1+Y6Tbmo4cDo=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20200714005706epcas5p489bc537e618131984632492682815724~heH5OZSwy2121121211epcas5p4r;
+        Tue, 14 Jul 2020 00:57:06 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        8A.C5.09703.2E20D0F5; Tue, 14 Jul 2020 09:57:06 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200713141655epcas5p2cdd83477e4fc024457a2b08d8ebfbad0~hVY8IEjLS2843428434epcas5p2t;
+        Mon, 13 Jul 2020 14:16:55 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200713141655epsmtrp22c16dd67baefea9442d69e62ceb2de73~hVY8HVl4b1585115851epsmtrp2k;
+        Mon, 13 Jul 2020 14:16:55 +0000 (GMT)
+X-AuditID: b6c32a4a-4b5ff700000025e7-f6-5f0d02e216c3
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1D.2D.08303.7DC6C0F5; Mon, 13 Jul 2020 23:16:55 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200713141654epsmtip144ff6a620f47b0b2e38e30453215c13e~hVY6nWmMt2095220952epsmtip1X;
+        Mon, 13 Jul 2020 14:16:54 +0000 (GMT)
+From:   Tamseel Shams <m.shams@samsung.com>
+To:     kgene@kernel.org, krzk@kernel.org, gregkh@linuxfoundation.org,
+        jslaby@suse.com
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
+        Tamseel Shams <m.shams@samsung.com>
+Subject: [PATCH v4] serial: samsung: change to platform_get_irq_optional
+Date:   Mon, 13 Jul 2020 19:25:31 +0530
+Message-Id: <20200713135531.68583-1-m.shams@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNIsWRmVeSWpSXmKPExsWy7bCmhu4jJt54g5c/DC0ezNvGZtG8eD2b
+        xZQNH5gs+h+/ZrY4f34Du8Wmx9dYLS7vmsNmMeP8PiaLM4t72S3uti5md+Dy2LSqk81j/9w1
+        7B6bl9R79G1ZxeixfstVFo/Pm+QC2KK4bFJSczLLUov07RK4Mg7uX8ZesJ2z4va1g4wNjB/Y
+        uxg5OSQETCT2nJkLZgsJ7GaUeL3UrYuRC8j+xCjRN38RC4TzmVFi2aF7jDAdU5sWM0MkdjFK
+        /Dq0nhHCaWGS+DtlDZDDwcEmoClx/Dw3SIOIQIjEu7NbwGqYBU4ySuzd3MACkhAW8JC48fge
+        K4jNIqAqcXRKP1icV8BCYtfyTawQ2+QlVm84ALZNQuAcu8S2Aw1QCReJY7vvQz0hLPHq+BYo
+        W0ri87u9bBB2vsT8eauYIewKiZUX3kDZ9hIHrsxhATmUGejQ9bv0IcKyElNPrWMCsZkF+CR6
+        fz9hgojzSuyYB2MrSvzf3Q+1Slzi3YopUOd4SMxcdpMJEo6xEg8aXrBPYJSdhbBhASPjKkbJ
+        1ILi3PTUYtMCo7zUcr3ixNzi0rx0veT83E2M4PSg5bWD8eGDD3qHGJk4GA8xSnAwK4nwRoty
+        xgvxpiRWVqUW5ccXleakFh9ilOZgURLnVfpxJk5IID2xJDU7NbUgtQgmy8TBKdXA1D/tgn64
+        TJ2V18WsXuF5G+R6LwoZXjvKEviYkXHt5u+ylz+ZFjc994oI+B33/d9et4mvI2abZunHHL1Y
+        ectuwfVf+/WPn7oswXYoqjn5/wTF3JrAzhlL9F9z6ldc55248WbGSr3FTqt/mGnYTV07eaOU
+        3SGPHbOOSSuI8PL+O/JGNvhY7pkt9r32FR1lJekuM7YFnL206ZJl8Peb1ro+J5K2/wtdnCsd
+        9Si/JzW37DHbu5ffJJ34gzotDxi/tTXr+MD5V6gh/lDEMaU3P2y8V7nGVFnc5/8YmWK5V9NX
+        s9SpYfPejoeefEv/Lw/h0ykzmnPof1iJ8+FU55DDsyLXWJp4bWVLto/7esrDK+6LEktxRqKh
+        FnNRcSIAQkSkGH4DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprILMWRmVeSWpSXmKPExsWy7bCSnO71HJ54g+Z+PYsH87axWTQvXs9m
+        MWXDByaL/sevmS3On9/AbrHp8TVWi8u75rBZzDi/j8nizOJedou7rYvZHbg8Nq3qZPPYP3cN
+        u8fmJfUefVtWMXqs33KVxePzJrkAtigum5TUnMyy1CJ9uwSujIP7l7EXbOesuH3tIGMD4wf2
+        LkZODgkBE4mpTYuZuxi5OIQEdjBKXOq6ygaREJeY9ms/I4QtLLHy33N2iKImJokfh3+zdDFy
+        cLAJaEocP88NYooIREjM/FgDUsIscJ5RYufx1UwgvcICHhI3Ht9jBbFZBFQljk7pZwGxeQUs
+        JHYt38QKMV9eYvWGA8wTGHkWMDKsYpRMLSjOTc8tNiwwykst1ytOzC0uzUvXS87P3cQIDjUt
+        rR2Me1Z90DvEyMTBeIhRgoNZSYQ3WpQzXog3JbGyKrUoP76oNCe1+BCjNAeLkjjv11kL44QE
+        0hNLUrNTUwtSi2CyTBycUg1MPA9n9uxXvBHIf/93/DKW52+sc/tWRs3eGH5x38o1bDFsRa57
+        d1bdPht5w+O1K6tX710d7ZQysTn/wnJvN8tH6k9/ssmVtXAX/5RFtnPqfi2TXM99qlyCqfxq
+        Qvm/k2+u3JM56V7BWqShwrQhxCJkrvPMpdvvur5si2o1er1HUCRJUmHqAZlp8/jzpCYG7fJ8
+        vPnUn2+HBDh5Z50wS7p65JwOg7/nk6XPn13UP6vs/JtFfz+rolZ07nP/q2wdUhxSXie4Hh//
+        Vhq/0nlr6K4Ka/vSR8d3nt+QVLzgAtPXF9m9Sabxp35d380WfVDt/Uk7pjk33cuUY1+ZmJZK
+        GL05yeDPat/AY3uY53/CqZnxSizFGYmGWsxFxYkAj29EvqQCAAA=
+X-CMS-MailID: 20200713141655epcas5p2cdd83477e4fc024457a2b08d8ebfbad0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200713141655epcas5p2cdd83477e4fc024457a2b08d8ebfbad0
+References: <CGME20200713141655epcas5p2cdd83477e4fc024457a2b08d8ebfbad0@epcas5p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 13 Jul 2020 17:12:07 +0200
+In few older Samsung SoCs like s3c2410, s3c2412
+and s3c2440, UART IP is having 2 interrupt lines.
+However, in other SoCs like s3c6400, s5pv210,
+exynos5433, and exynos4210 UART is having only 1
+interrupt line. Due to this, "platform_get_irq(platdev, 1)"
+call in the driver gives the following false-positive error:
+"IRQ index 1 not found" on recent platforms.
 
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> PHYLIB is not selected by mdio-mscc-miim but it uses mdio devres helpers.
-> Explicitly select MDIO_DEVRES in this driver's Kconfig entry.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 1814cff26739 ("net: phy: add a Kconfig option for mdio_devres")
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+This patch replaces the platform_get_irq() call with
+platform_get_irq_optional() and hence avoiding the
+false-positive error.
 
-Applied to net-next, thanks.
+Signed-off-by: Tamseel Shams <m.shams@samsung.com>
+---
+Commit message is changed.
+Addressed Krzysztof's previous comment.
+ 
+ drivers/tty/serial/samsung_tty.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+index 6ef614d8648c..c44582011b9b 100644
+--- a/drivers/tty/serial/samsung_tty.c
++++ b/drivers/tty/serial/samsung_tty.c
+@@ -1911,7 +1911,7 @@ static int s3c24xx_serial_init_port(struct s3c24xx_uart_port *ourport,
+ 		ourport->tx_irq = ret + 1;
+ 	}
+ 
+-	ret = platform_get_irq(platdev, 1);
++	ret = platform_get_irq_optional(platdev, 1);
+ 	if (ret > 0)
+ 		ourport->tx_irq = ret;
+ 	/*
+-- 
+2.17.1
+
