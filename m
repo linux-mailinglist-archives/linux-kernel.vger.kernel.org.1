@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73C621E05E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB51021E061
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgGMTDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 15:03:13 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:37736 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgGMTDM (ORCPT
+        id S1726844AbgGMTDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 15:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726338AbgGMTDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 15:03:12 -0400
-Received: by mail-il1-f196.google.com with SMTP id r12so12151790ilh.4;
-        Mon, 13 Jul 2020 12:03:12 -0700 (PDT)
+        Mon, 13 Jul 2020 15:03:34 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D45BC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:03:34 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a24so805815pfc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:03:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=sHxhQAK9LuDavbBz6xN+mD6z/1m9f7zdjELv2spH1pY=;
+        b=05j+BnjlorcJPySlCT/ivZ5MViO89ApDtowq3wqQUo8El1N6cvn570cw125ycyN3kK
+         5yJQIbQPS10yRu4LAFau/igdow96BuAsVDc/wZbjNeZnm/kZg4D87bNXyaNrHGLYZBPz
+         AT98bVgUq2M60/W2D5wyUkj4A+OIsjd0hAlDHNf9I0b6mxmBppiahxTVyhCI6574WoiB
+         1WnQ8TZWliQquHmGXSvIc8D4WeCQeovAzbCEqOYX+kyhPxVHtYmD9L/+jjSGrr70txh8
+         xAD9DTup1vHxJhl7hC+OYsvtxX7ZVyQoqT70TdB23XeCVsHLmjN2dEZ+YvkvYB50ioKH
+         DPKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l5rWVgnnCloHt41CFPCxRV5qmnmySbxOsQcq4blbDZU=;
-        b=ZMUT17gJPmBGA6zePd0uFpkmKqt59ITqHZGlUtkyL4JtM1vo28ypmBUssz7LhSrHDr
-         ohGPxkcUcDziTjb5llGP7U/UP0uBNHjmXJSMeloKbkVCj8OdNDa9x7jxhUugJqi+xMh3
-         qE+kJdGuJjyfYQk10LdLf0yYXhrx2Vl5R38CzshG611ol0Q2CNffl9ftDeuIRj1txGpl
-         Od1niqW1icvujCGxGFkGk2R2Az9dBzHAsfIgOrmcWwThPnpV0nUJqzGeoVU2jIJHhru3
-         wWa2oCVZqlrKqWA3OsOInzDHN0tr/yOU2Qj+51Q1OrP2x96GVmHF5vq6r59SAftj6cya
-         4XDw==
-X-Gm-Message-State: AOAM530zoQHoTgCEp0NyYrBMdHYz0QLTMkRaSidrFuAr/SvD54Uv5zQJ
-        7brQJpTG5VXorvW0cOUES6LuBJ1ueg==
-X-Google-Smtp-Source: ABdhPJyFU3OO/ANkI1WfClMonQPuMZQFkzhvvt9yHjYL0J26xn464hZPF3poCvPXO+hMPxbus5uE0g==
-X-Received: by 2002:a92:6a02:: with SMTP id f2mr1110656ilc.68.1594666991695;
-        Mon, 13 Jul 2020 12:03:11 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id x12sm1175218iov.43.2020.07.13.12.03.10
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=sHxhQAK9LuDavbBz6xN+mD6z/1m9f7zdjELv2spH1pY=;
+        b=L7jcrWl7GzA1DkBQTWGVm9BA/pZO9eCn2aeWH5bG2Le9Y/z1kk8HiYuJ79132iKgXY
+         RDITbBguO20IajvIHGvCrgfiCB2ljPSAzEpqM/zbUvajSj1Jpm8dFgX81cBaSiRKVd5d
+         RnGYh/J4VkqfVzAIwHwEHkBgs88uxWKqaEOusXAlTxE/lwA9Z6PNTJDvkBKYRPEg6zlJ
+         hCGItcdgbQKYVe9ac7irdwNDZe/geA966j9kyPg1D1PkYTxt1GWcWP2rPynyPEdTVMdw
+         /szxP2egtFUW7LMB8wdH3NIKA/Y5kvtJaZPTGhboP9+L8vvNXBU3u+YPFSQGj7D1XelA
+         fE2Q==
+X-Gm-Message-State: AOAM530Kh6+k6tDeMkAa65Is3tZx6wSzEsIS16aWUMiaeHNfL5jkXhC4
+        AZNYrRDWlJqQOll4uF4O5wOt7A==
+X-Google-Smtp-Source: ABdhPJwOT5rZ1S0GznDd+GMpG7ahpacIwFQXvwa4kPwp5tRxMqgDkXigFS7p16td6wzZcb4YnUbiCg==
+X-Received: by 2002:a62:3582:: with SMTP id c124mr1144852pfa.288.1594667013653;
+        Mon, 13 Jul 2020 12:03:33 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id k8sm16551380pfu.68.2020.07.13.12.03.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 12:03:10 -0700 (PDT)
-Received: (nullmailer pid 547640 invoked by uid 1000);
-        Mon, 13 Jul 2020 19:03:10 -0000
-Date:   Mon, 13 Jul 2020 13:03:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-Subject: Re: [PATCH v3 2/6] dt-bindings: power: supply: Extend max17040
- compatibility
-Message-ID: <20200713190310.GA546410@bogus>
-References: <20200624155633.3557401-1-iskren.chernev@gmail.com>
- <20200624155633.3557401-3-iskren.chernev@gmail.com>
+        Mon, 13 Jul 2020 12:03:32 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     linux-amlogic@lists.infradead.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] ARM: dts: use the SDHC MMC controller for eMMC
+Date:   Mon, 13 Jul 2020 12:03:29 -0700
+Message-Id: <159466696386.22745.6301055317421562776.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200620163654.37207-1-martin.blumenstingl@googlemail.com>
+References: <20200620163654.37207-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200624155633.3557401-3-iskren.chernev@gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 06:56:29PM +0300, Iskren Chernev wrote:
-> Maxim max17040 is a fuel gauge from a larger family utilising the Model
-> Gauge technology. Document all different compatible strings that the
-> max17040 driver recognizes.
+On Sat, 20 Jun 2020 18:36:51 +0200, Martin Blumenstingl wrote:
+> Amlogic Meson6/8/8b/8m2 SoCs have two built-in MMC controllers:
+> - SDIO (which is supported on mainline for a long time now but is
+>   limited to ~40MHz bus frequency)
+> - SDHC (which supports up to HS-200 modes at ~100MHz bus frequency but
+>   for which we didn't have a driver)
 > 
-> Some devices in the wild report double the capacity. The
-> maxim,double-soc (from State-Of-Charge) property fixes that.
+> Boards with NAND flash will now be able to use the SDIO controller for
+> SDIO based wifi cards and the SDHC controller for the SD card slot.
+> Boards with eMMC, SD card and SDIO wifi can only use two out of three
+> MMC based devices for now until the MMC core and Meson SDIO driver gain
+> support for multiple "mmc-slots" per controller.
 > 
-> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-> ---
->  .../bindings/power/supply/max17040_battery.txt    | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/power/supply/max17040_battery.txt b/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
-> index 4e0186b8380fa..554bce82a08e6 100644
-> --- a/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
-> +++ b/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
-> @@ -2,7 +2,9 @@ max17040_battery
->  ~~~~~~~~~~~~~~~~
->  
->  Required properties :
-> - - compatible : "maxim,max17040" or "maxim,max77836-battery"
-> + - compatible : "maxim,max17040", "maxim,max17041", "maxim,max17043",
-> + 		"maxim,max17044", "maxim,max17048", "maxim,max17049",
-> +		"maxim,max17058", "maxim,max17059" or "maxim,max77836-battery"
->   - reg: i2c slave address
->  
->  Optional properties :
-> @@ -11,6 +13,10 @@ Optional properties :
->  				generated. Can be configured from 1 up to 32
->  				(%). If skipped the power up default value of
->  				4 (%) will be used.
-> +- maxim,double-soc : 		Certain devices return double the capacity.
-> +				Specify this boolean property to divide the
-> +				reported value in 2 and thus normalize it.
-> +				SOC == State of Charge == Capacity.
+> [...]
 
-This can't be implied by the compatible string?
+Applied, thanks!
 
->  - interrupts : 			Interrupt line see Documentation/devicetree/
->  				bindings/interrupt-controller/interrupts.txt
->  - wakeup-source :		This device has wakeup capabilities. Use this
-> @@ -31,3 +37,10 @@ Example:
->  		interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
->  		wakeup-source;
->  	};
-> +
-> +	battery-fuel-gauge@36 {
-> +		compatible = "maxim,max17048";
-> +		reg = <0x36>;
-> +		maxim,alert-low-soc-level = <10>;
-> +		maxim,double-soc;
-> +	};
-> -- 
-> 2.27.0
-> 
+[1/3] ARM: dts: meson: add the SDHC MMC controller
+      commit: 73106f75bf9498ff5d50f1052ad3cf03730d806d
+[2/3] ARM: dts: meson8b: ec100: enable the SDHC controller
+      commit: 73501b890a6f15460613878b463319d0e0cd1632
+[3/3] ARM: dts: meson8b: odroidc1: enable the SDHC controller
+      commit: d6a3873c7be6d58914ea5584dc7875f2045d6721
+
+Best regards,
+-- 
+Kevin Hilman <khilman@baylibre.com>
