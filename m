@@ -2,157 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9117621D86E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36E321D878
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730066AbgGMO2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:28:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:38166 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729881AbgGMO2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:28:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2E2E30E;
-        Mon, 13 Jul 2020 07:27:59 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CA813F7BB;
-        Mon, 13 Jul 2020 07:27:57 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 15:27:55 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] sched/uclamp: Add a new sysctl to control RT
- default boost value
-Message-ID: <20200713142754.tri5jljnrzjst2oe@e107158-lin.cambridge.arm.com>
-References: <20200706142839.26629-1-qais.yousef@arm.com>
- <20200706142839.26629-2-qais.yousef@arm.com>
- <20200713112125.GG10769@hirez.programming.kicks-ass.net>
- <20200713121246.xjif3g4zpja25o5r@e107158-lin.cambridge.arm.com>
- <20200713133558.GK10769@hirez.programming.kicks-ass.net>
+        id S1730100AbgGMO2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:28:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2056 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729782AbgGMO2m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 10:28:42 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06DE3bC7109961;
+        Mon, 13 Jul 2020 10:28:36 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 328s0c8tjp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jul 2020 10:28:36 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06DE4UES114776;
+        Mon, 13 Jul 2020 10:28:35 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 328s0c8thf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jul 2020 10:28:35 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06DEETXs015468;
+        Mon, 13 Jul 2020 14:28:34 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma02wdc.us.ibm.com with ESMTP id 327urs9mkj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Jul 2020 14:28:34 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06DESUi730998968
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Jul 2020 14:28:30 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6018A78064;
+        Mon, 13 Jul 2020 14:28:33 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0455D7805C;
+        Mon, 13 Jul 2020 14:28:32 +0000 (GMT)
+Received: from [9.163.41.130] (unknown [9.163.41.130])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 13 Jul 2020 14:28:32 +0000 (GMT)
+Subject: Re: [PATCH 1/2] dt-bindings: leds: pca955x: Add IBM implementation
+ compatible string
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, dmurphy@ti.com,
+        jacek.anaszewski@gmail.com, vishwa@linux.ibm.com
+References: <20200709201220.13736-1-eajames@linux.ibm.com>
+ <20200709201220.13736-2-eajames@linux.ibm.com> <20200711134814.GB6407@amd>
+From:   Eddie James <eajames@linux.ibm.com>
+Message-ID: <ad50a2a7-0b06-420e-baa7-dec2787ab30d@linux.ibm.com>
+Date:   Mon, 13 Jul 2020 09:28:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200713133558.GK10769@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20200711134814.GB6407@amd>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-13_11:2020-07-13,2020-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 spamscore=0 malwarescore=0 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 clxscore=1015 impostorscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007130102
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/13/20 15:35, Peter Zijlstra wrote:
-> On Mon, Jul 13, 2020 at 01:12:46PM +0100, Qais Yousef wrote:
-> > On 07/13/20 13:21, Peter Zijlstra wrote:
-> 
-> > > It's monday, and I cannot get my brain working.. I cannot decipher the
-> > > comments you have with the smp_[rw]mb(), what actual ordering do they
-> > > enforce?
-> > 
-> > It was a  bit of a paranoia to ensure that readers on other cpus see the new
-> > value after this point.
-> 
-> IIUC that's not something any barrier can provide.
-> 
-> Barriers can only order between (at least) two memory operations:
-> 
-> 	X = 1;		y = Y;
-> 	smp_wmb();	smp_rmb();
-> 	Y = 1;		x = X;
-> 
-> guarantees that if y == 1, then x must also be 1. Because the left hand
-> side orders the store of Y after the store of X, while the right hand
-> side order the load of X after the load of Y. Therefore, if the first
-> load observes the last store, the second load must observe the first
-> store.
-> 
-> Without a second variable, barriers can't guarantee _anything_. Which is
-> why any barrier comment should refer to at least two variables.
 
-Hmmm okay. I thought this will order the write with the read. In my head if,
-for example, the write was stuck in the write buffer of CPU0, then a read on
-CPU1 would wait for this to be committed before carrying on and issue a read.
+On 7/11/20 8:48 AM, Pavel Machek wrote:
+> Hi!
+>
+>> IBM created an implementation of the PCA9552 on a PIC16F
+>> microcontroller. Document the new compatible string for this device.
+> Is the implementation opensource?
 
-So I was reading this as don't issue new reads before current writes are done.
 
-I need to go back and read memory-barriers.rst. It's been 10 years since I last
-read it..
+Hi, no it is not.
 
-> 
-> > > Also, your synchronize_rcu() relies on write_lock() beeing
-> > > non-preemptible, which isn't true on PREEMPT_RT.
-> > > 
-> > > The below seems simpler...
-> 
-> > Hmm maybe I am missing something obvious, but beside the race with fork; I was
-> > worried about another race and that's what the synchronize_rcu() is trying to
-> > handle.
-> > 
-> > It's the classic preemption in the middle of RMW operation race.
-> > 
-> > 		copy_process()			sysctl_uclamp
-> > 
-> > 		  sched_post_fork()
-> > 		    __uclamp_sync_rt()
-> > 		      // read sysctl
-> > 		      // PREEMPT
-> > 						  for_each_process_thread()
-> > 		      // RESUME
-> > 		      // write syctl to p
-> > 
-> 
-> > 	2. sysctl_uclamp happens *during* sched_post_fork()
-> > 
-> > There's the risk of the classic preemption in the middle of RMW where another
-> > CPU could have changed the shared variable after the current CPU has already
-> > read it, but before writing it back.
-> 
-> Aah.. I see.
-> 
-> > I protect this with rcu_read_lock() which as far as I know synchronize_rcu()
-> > will ensure if we do the update during this section; we'll wait for it to
-> > finish. New forkees entering the rcu_read_lock() section will be okay because
-> > they should see the new value.
-> > 
-> > spinlocks() and mutexes seemed inferior to this approach.
-> 
-> Well, didn't we just write in another patch that p->uclamp_* was
-> protected by both rq->lock and p->pi_lock?
 
-__setscheduler_uclamp() path is holding these locks, not sure by design or it
-just happened this path holds the lock. I can't see the lock in the
-uclamp_fork() path. But it's hard sometimes to unfold the layers of callers,
-especially not all call sites are annotated for which lock is assumed to be
-held.
+>
+>> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+>> +++ b/Documentation/devicetree/bindings/leds/leds-pca955x.txt
+>> @@ -9,6 +9,7 @@ Required properties:
+>>   	"nxp,pca9550"
+>>   	"nxp,pca9551"
+>>   	"nxp,pca9552"
+>> +	"nxp,pca9552-ibm"
+>>   	"nxp,pca9553"
+> Is it good idea to use nxp prefix for something that is
+> software-defined and not built by nxp?
 
-Is it safe to hold the locks in uclamp_fork() while the task is still being
-created? My new code doesn't hold it of course.
 
-We can enforce this rule if you like. Though rcu critical section seems lighter
-weight to me.
+Yea I suppose not...
 
-If all of this does indeed start looking messy we can put the update in
-a delayed worker and schedule that instead of doing synchronous setup.
+>
+> Would ibm,pca9552 be better, or maybe even sw,pca9552 to indicate that
+> is not real hardware, but software emulation?
 
-Or go back to task_woken_rt() with a cached per-rq variable of
-sysctl_util_min_rt that is more likely to be cache hot compared to the global
-sysctl_util_min_rt variable.
 
-Thanks
+How about ibm,pca9552-sw? Someone suggested that just adding "sw" could 
+be a problem if another company does the same thing but it isn't compatible.
 
---
-Qais Yousef
+
+Thanks for taking a look!
+
+Eddie
+
+
+>
+> Best regards,
+> 									Pavel
