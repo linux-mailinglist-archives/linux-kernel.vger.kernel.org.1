@@ -2,116 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BF321DF6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CD221DF64
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730437AbgGMSOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 14:14:08 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:49998 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729687AbgGMSOI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 14:14:08 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jv2xn-0007Rg-FJ; Mon, 13 Jul 2020 12:14:03 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jv2xm-0007g5-AT; Mon, 13 Jul 2020 12:14:03 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     alex.gaynor@gmail.com, geofft@ldpreload.com, jbaublitz@redhat.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
-Date:   Mon, 13 Jul 2020 13:11:13 -0500
-In-Reply-To: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
-        (Nick Desaulniers's message of "Thu, 9 Jul 2020 11:41:47 -0700")
-Message-ID: <875zarb7zy.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1730279AbgGMSLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 14:11:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729689AbgGMSLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 14:11:53 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1DC92067D;
+        Mon, 13 Jul 2020 18:11:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594663912;
+        bh=EU4XBUKixkiBQkaZjve6Zl3d8EFVm2Xr3DvAAaRr9v8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u3FM4191eqbzPrCOk4wonTAFKU839z1y72CQ7CG/VQrqIhDysamckyPYvP2M5CG9x
+         QqUkL6WCl4ZUrs6hVIJkYShQ346si7hwOtESi9PWTx43Q0inHqphIWL2KRkYcKBkUs
+         i79cEVoYHX/hPgGFKVqMSjQgQaC9iV6lqbANXEms=
+Date:   Mon, 13 Jul 2020 11:11:52 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [PATCH v2] f2fs: change the way of handling range.len in
+ F2FS_IOC_SEC_TRIM_FILE
+Message-ID: <20200713181152.GC2910046@google.com>
+References: <20200713031252.3873546-1-daeho43@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jv2xm-0007g5-AT;;;mid=<875zarb7zy.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+fZqLDEdkWFk+UGPM1iZj0UVDopGAeX9M=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Nick Desaulniers <ndesaulniers@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 770 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 11 (1.4%), b_tie_ro: 9 (1.2%), parse: 0.92 (0.1%),
-         extract_message_metadata: 12 (1.5%), get_uri_detail_list: 1.33 (0.2%),
-         tests_pri_-1000: 5 (0.7%), tests_pri_-950: 1.49 (0.2%),
-        tests_pri_-900: 1.22 (0.2%), tests_pri_-90: 295 (38.3%), check_bayes:
-        286 (37.2%), b_tokenize: 7 (0.9%), b_tok_get_all: 158 (20.5%),
-        b_comp_prob: 2.3 (0.3%), b_tok_touch_all: 116 (15.0%), b_finish: 0.80
-        (0.1%), tests_pri_0: 431 (55.9%), check_dkim_signature: 0.50 (0.1%),
-        check_dkim_adsp: 2.2 (0.3%), poll_dns_idle: 0.63 (0.1%), tests_pri_10:
-        2.3 (0.3%), tests_pri_500: 8 (1.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: Linux kernel in-tree Rust support
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713031252.3873546-1-daeho43@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nick Desaulniers <ndesaulniers@google.com> writes:
+Hi Daeho,
 
-> Hello folks,
-> I'm working on putting together an LLVM "Micro Conference" for the
-> upcoming Linux Plumbers Conf
-> (https://www.linuxplumbersconf.org/event/7/page/47-attend).  It's not
-> solidified yet, but I would really like to run a session on support
-> for Rust "in tree."  I suspect we could cover technical aspects of
-> what that might look like (I have a prototype of that, was trivial to
-> wire up KBuild support), but also a larger question of "should we do
-> this?" or "how might we place limits on where this can be used?"
->
-> Question to folks explicitly in To:, are you planning on attending plumbers?
->
-> If so, would this be an interesting topic that you'd participate in?
+Please take a look at this.
 
-I have two big concerns about actually using rust.
+https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=35245180459aebf6d70fde88a538f0400a794aa6
 
-1) How large is the rust language support, and will each rust module
-   need to duplicate it.  I seem to remember someone mentioning it is
-   noticable in size.
+Thanks,
 
-2) What is rust usable for?  The rust type system will not admit
-   doubly linked lists (or anything where two pointers point at the
-   same memory) unless you are using an unsafe block.
-
-   Now maybe all of that can be wrapped up in libraries written in
-   C that Rust can just call, so rust might be useful for building
-   drivers.
-
-   What I am certain of is that in the core kernel where I tend to spend
-   my time not being able to use doubly linked lists looks like a
-   non-starter.
-
-Eric
-
-
+On 07/13, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> Changed the way of handling range.len of F2FS_IOC_SEC_TRIM_FILE.
+>  1. Added -1 value support for range.len to secure trim the whole blocks
+>     starting from range.start regardless of i_size.
+>  2. If the end of the range passes over the end of file, it means until
+>     the end of file (i_size).
+>  3. ignored the case of that range.len is zero to prevent the function
+>     from making end_addr zero and triggering different behaviour of
+>     the function.
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> ---
+> Changes in v2:
+>  - Changed -1 range.len option to mean the whole blocks starting from
+>    range.start regardless of i_size
+> ---
+>  fs/f2fs/file.c | 23 ++++++++++++-----------
+>  1 file changed, 12 insertions(+), 11 deletions(-)
+> 
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 368c80f8e2a1..2485841e3b2d 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -3792,7 +3792,7 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+>  	pgoff_t index, pg_end;
+>  	block_t prev_block = 0, len = 0;
+>  	loff_t end_addr;
+> -	bool to_end;
+> +	bool to_end = false;
+>  	int ret = 0;
+>  
+>  	if (!(filp->f_mode & FMODE_WRITE))
+> @@ -3813,23 +3813,23 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+>  	file_start_write(filp);
+>  	inode_lock(inode);
+>  
+> -	if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode)) {
+> +	if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode) ||
+> +			range.start >= inode->i_size) {
+>  		ret = -EINVAL;
+>  		goto err;
+>  	}
+>  
+> -	if (range.start >= inode->i_size) {
+> -		ret = -EINVAL;
+> +	if (range.len == 0)
+>  		goto err;
+> -	}
+>  
+> -	if (inode->i_size - range.start < range.len) {
+> -		ret = -E2BIG;
+> -		goto err;
+> +	if (inode->i_size - range.start > range.len) {
+> +		end_addr = range.start + range.len;
+> +	} else {
+> +		end_addr = range.len == (u64)-1 ?
+> +			sbi->sb->s_maxbytes : inode->i_size;
+> +		to_end = true;
+>  	}
+> -	end_addr = range.start + range.len;
+>  
+> -	to_end = (end_addr == inode->i_size);
+>  	if (!IS_ALIGNED(range.start, F2FS_BLKSIZE) ||
+>  			(!to_end && !IS_ALIGNED(end_addr, F2FS_BLKSIZE))) {
+>  		ret = -EINVAL;
+> @@ -3846,7 +3846,8 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+>  	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>  	down_write(&F2FS_I(inode)->i_mmap_sem);
+>  
+> -	ret = filemap_write_and_wait_range(mapping, range.start, end_addr - 1);
+> +	ret = filemap_write_and_wait_range(mapping, range.start,
+> +			to_end ? LLONG_MAX : end_addr - 1);
+>  	if (ret)
+>  		goto out;
+>  
+> -- 
+> 2.27.0.383.g050319c2ae-goog
