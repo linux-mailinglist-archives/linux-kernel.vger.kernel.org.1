@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 268AE21D8F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EC221D91C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730155AbgGMOtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
+        id S1730332AbgGMOux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730139AbgGMOto (ORCPT
+        with ESMTP id S1730144AbgGMOtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:49:44 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084D0C08C5DB
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:44 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id f18so13445132wml.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:43 -0700 (PDT)
+        Mon, 13 Jul 2020 10:49:45 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4D7C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:45 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id w3so13438569wmi.4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CLuyrhW1Ep4UqvYQzgiCgMPgEzGrhSBhnQKWSj6/aQI=;
-        b=rodZuMheOaiuJ6ysjx6ilt8n3oIFeHyyJQvyszrQaBH/ZMKq6ZNgOwolHB/N1nLCey
-         GDOHdRy2iqJG26wPbpMoZMUVy7vU06RWHv/WhoSXqFiHSF1Kw3kgMc0lLhajbTlG7MMv
-         jpnVkEkSM/bKfUdYZLNOAsTOARnhiQkf7HQGA+r/uqY0/fgW6Ps6FTW17gSrRfMZWQem
-         zloaHCQcyTMc383ovLgCzPrNQ2+j/JP4aQEe2rBO9ZcMKvwX1rIBoJxSCfAEwJg6JNp6
-         tpKpvjjIu3NBSCW9vwwXuawtF+VIEPb2jEhvv3x9vVKsafRumWWxagDQObXQjO79AAx4
-         cToA==
+        bh=4tW5IFgDDqy7qyYDWJ2VHhOu5cDN/GOhkX5hDm+X0KA=;
+        b=WjClSL1n2aF+iDQnyRNBBuqCOZEhWicWvABW9Y8n0ov9NCQi2T/5ZDyNbEbMC7NP4L
+         gLKJ/VyZFokhHMKwL1I5ZkRbNsutDxl40DWjr7FLj53d0G3Uc4v/jZvzcCgJa7RAaa78
+         X/gvNjcxjE3WvbULnI1iDQKcK7NBquO/2uRMuBzxL+zDjXbwCOs6xEHHiURiyeiZFbLh
+         dIIEYNY38n3ovFlJHQCXVnRuIbfvoCaUwGoEVhgzxpuhPwMs+jOKfKNn5T02n9JrJRs3
+         6VVnu31yidyKhClTtm7F1yqAh6E+hTVa2ZoJLWSP1fgL3/Xk0L6mPHWs2TP09tsqcWSS
+         24kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CLuyrhW1Ep4UqvYQzgiCgMPgEzGrhSBhnQKWSj6/aQI=;
-        b=je94LVS1tARwdDWiExPO0hFMc5tambmQQ0Hy5nmvIi9KUF68/GMNvVoeuVngwfoNuD
-         Kez4dAymZWk5PgSn+NMCaNgX5EDwQYI3zZLjadCx3kIXRWZKboW3YJAvFL08NFT4tzdl
-         Vh9LXIlHL2083caf/+6QdlzF+b+ruzRKeo5d0XFME9e7U1usEa0/cRwJvFbRaP1/JRrw
-         N9yGA+y3zPCFpWrCi/ag5pWZDAp8TCXBv9nSMqGAFGgLRyCw0bnBIcXzWVGSj7QrS+U6
-         dLGfboIf0MG7dIx8f4pd9kd95LStEHhODMiEWsng8OFDQPFNEiQk5hfyC2OS7k6IW8rD
-         Kmrw==
-X-Gm-Message-State: AOAM532Ohbhsy8REIeunDgleGpxN3XYyh2mCHj84EyfbZY3i5ypMYthb
-        h1CSYqfUsJI45tVg1axbrAJSfA==
-X-Google-Smtp-Source: ABdhPJwNCN9IKrrBQRXxfQyO4DBNoD0hRSiA2S/GsibhAVbnDvY8RU02RNJDtcsp8xzBWa+YyE4XtQ==
-X-Received: by 2002:a7b:cb92:: with SMTP id m18mr313387wmi.94.1594651782718;
-        Mon, 13 Jul 2020 07:49:42 -0700 (PDT)
+        bh=4tW5IFgDDqy7qyYDWJ2VHhOu5cDN/GOhkX5hDm+X0KA=;
+        b=BW3ywgRwsv1f0ueih5pcIn7lZIxf7EhK32AFQjogqlKsDmr9Xah+tVEp1NIBdn2E/D
+         n6UShbzEiO8yQ9b3wNpYRyO6++dAbjrOGvnhF6cwqhsQm4RQ/qqGEI/u4tRq0WNoWmHK
+         X8IdWpffSmMH+wKoriEKblkYLZM8VzoxkLTpIj22f7naaJFccY2k9FHZg0DAI56ld3ty
+         4A6dyDsU4RYyzj+GXleP+/Tz6n+SFNECjKX4aXDDQxtwGWAYi9fUSheH3XEwIq89Tdp3
+         d7ohHgotcDLesWTUSb9elxvuu3XjYDD/xUUU4GpuQ7pkqoIpJedRWSfCAFvYtT2CNeSS
+         ALew==
+X-Gm-Message-State: AOAM530HcPnin950cLQaBuEM7vXcICAkzaKfp9oRlL2RtyprTHvNFadb
+        xyIQ2BCMzdCkA+fAbfZLMIWGLUYMirE=
+X-Google-Smtp-Source: ABdhPJy3KLnpKINijttBB8YhzPj7oorwUByKOTrROJQQy1EK6e62RsYUX/R0V2tT2CZQ54QxZ8iOCQ==
+X-Received: by 2002:a1c:3546:: with SMTP id c67mr329914wma.102.1594651783867;
+        Mon, 13 Jul 2020 07:49:43 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.6])
-        by smtp.gmail.com with ESMTPSA id o29sm26207756wra.5.2020.07.13.07.49.41
+        by smtp.gmail.com with ESMTPSA id o29sm26207756wra.5.2020.07.13.07.49.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 07:49:42 -0700 (PDT)
+        Mon, 13 Jul 2020 07:49:43 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     linus.walleij@linaro.org
 Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Del Regno <kholk11@gmail.com>, linux-arm-msm@vger.kernel.org
-Subject: [PATCH 09/25] pinctrl: qcom: pinctrl-msm8976: Remove unused variable 'nav_tsync_groups'
-Date:   Mon, 13 Jul 2020 15:49:14 +0100
-Message-Id: <20200713144930.1034632-10-lee.jones@linaro.org>
+        Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 10/25] pinctrl: mediatek: pinctrl-mtk-common-v2: Mark 'mtk_default_register_base_names' as __maybe_unused
+Date:   Mon, 13 Jul 2020 15:49:15 +0100
+Message-Id: <20200713144930.1034632-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200713144930.1034632-1-lee.jones@linaro.org>
 References: <20200713144930.1034632-1-lee.jones@linaro.org>
@@ -69,36 +69,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Not all sourcefiles which end up including pinctrl-mtk-common-v2.h make use
+of 'mtk_default_register_base_names' and there is nowhere we can place the
+definition to void the need for __maybe_unused except its own headerfile,
+which seems like overkill.  So instead we tell the compiler that it's okay
+for it to be unused by some of the consumers.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/pinctrl/qcom/pinctrl-msm8976.c:802:27: warning: ‘nav_tsync_groups’ defined but not used [-Wunused-const-variable=]
- 802 | static const char
- const nav_tsync_groups[] = {
- | ^~~~~~~~~~~~~~~~
+ In file included from drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c:19:
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h:83:27: warning: ‘mtk_default_register_base_names’ defined but not used [-Wunused-const-variable=]
+ 83 | static const char const mtk_default_register_base_names[] = {
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ In file included from drivers/pinctrl/mediatek/pinctrl-moore.h:25,
+ from drivers/pinctrl/mediatek/pinctrl-moore.c:12:
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h:83:27: warning: ‘mtk_default_register_base_names’ defined but not used [-Wunused-const-variable=]
+ 83 | static const char const mtk_default_register_base_names[] = {
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ In file included from drivers/pinctrl/mediatek/pinctrl-paris.h:27,
+ from drivers/pinctrl/mediatek/pinctrl-paris.c:15:
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h:83:27: warning: ‘mtk_default_register_base_names’ defined but not used [-Wunused-const-variable=]
+ 83 | static const char const mtk_default_register_base_names[] = {
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ In file included from drivers/pinctrl/mediatek/pinctrl-paris.h:27,
+ from drivers/pinctrl/mediatek/pinctrl-mtk-mt6797.h:15,
+ from drivers/pinctrl/mediatek/pinctrl-mt6797.c:13:
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h:83:27: warning: ‘mtk_default_register_base_names’ defined but not used [-Wunused-const-variable=]
+ 83 | static const char const mtk_default_register_base_names[] = {
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ In file included from drivers/pinctrl/mediatek/pinctrl-paris.h:27,
+ from drivers/pinctrl/mediatek/pinctrl-mtk-mt8183.h:12,
+ from drivers/pinctrl/mediatek/pinctrl-mt8183.c:9:
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h:83:27: warning: ‘mtk_default_register_base_names’ defined but not used [-Wunused-const-variable=]
+ 83 | static const char const mtk_default_register_base_names[] = {
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ In file included from drivers/pinctrl/mediatek/pinctrl-paris.h:27,
+ from drivers/pinctrl/mediatek/pinctrl-mtk-mt6765.h:12,
+ from drivers/pinctrl/mediatek/pinctrl-mt6765.c:10:
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h:83:27: warning: ‘mtk_default_register_base_names’ defined but not used [-Wunused-const-variable=]
+ 83 | static const char const mtk_default_register_base_names[] = {
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Del Regno <kholk11@gmail.com>
-Cc: linux-arm-msm@vger.kernel.org
+Cc: Sean Wang <sean.wang@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: linux-mediatek@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/pinctrl/qcom/pinctrl-msm8976.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm8976.c b/drivers/pinctrl/qcom/pinctrl-msm8976.c
-index 183f0b2d9f8e8..ec43edf9b660a 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm8976.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm8976.c
-@@ -799,9 +799,6 @@ static const char * const pa_indicator_groups[] = {
- static const char * const modem_tsync_groups[] = {
- 	"gpio93",
+diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
+index 27df087363960..45aa0fdbe3306 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
++++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
+@@ -80,7 +80,7 @@ enum {
+ 	DRV_GRP_MAX,
  };
--static const char * const nav_tsync_groups[] = {
--	"gpio93",
--};
- static const char * const ssbi_wtr1_groups[] = {
- 	"gpio79", "gpio94",
+ 
+-static const char * const mtk_default_register_base_names[] = {
++static const char * const mtk_default_register_base_names[] __maybe_unused = {
+ 	"base",
  };
+ 
 -- 
 2.25.1
 
