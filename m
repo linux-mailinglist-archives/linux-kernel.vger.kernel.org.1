@@ -2,94 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E547721E142
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 22:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F36121E14C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 22:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgGMUNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 16:13:11 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:58364 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgGMUNL (ORCPT
+        id S1726798AbgGMUR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 16:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726506AbgGMUR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 16:13:11 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 51EBA8030866;
-        Mon, 13 Jul 2020 20:13:08 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RqU2vW_Nx0sU; Mon, 13 Jul 2020 23:13:07 +0300 (MSK)
-Date:   Mon, 13 Jul 2020 23:13:06 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, <linux-mips@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 05/11] dmaengine: Introduce DMA-device device_caps
- callback
-Message-ID: <20200713201306.4rfmvtjzklcldajc@mobilestation>
-References: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
- <20200709224550.15539-6-Sergey.Semin@baikalelectronics.ru>
- <20200710084503.GE3703480@smile.fi.intel.com>
- <20200710093834.su3nsjesnhntpd6d@mobilestation>
- <20200713065131.GG34333@vkoul-mobl>
+        Mon, 13 Jul 2020 16:17:56 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDB4C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 13:17:56 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 559CBBC0B5;
+        Mon, 13 Jul 2020 20:17:54 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] uio: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 22:17:47 +0200
+Message-Id: <20200713201747.37955-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200713065131.GG34333@vkoul-mobl>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Vinod,
-  
-Could you please keep on this patchset review? Really, the patchset isn't that
-big and complicated to be working on it for such a long time. I've sent it out
-at the time of the kernel 5.6. I've considered all the Andy's comments since
-then. There is going to be 5.9 merge window soon, but the patchset still under
-review procedure, while I still have some work, which depends on the changes
-provided by this patchset. It would be great to at least submit it for review
-before the next merge window, and super-great have it merged in before that.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-There is a Peter Ujfalusi comment to the patch
-"[PATCH v7 04/11] dmaengine: Introduce max SG list entries capability", which
-needs your attention. Could you please take a look at that? So I could submit
-the next patchset revision if you agree with the Peter' suggestion.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
--Sergey
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-On Mon, Jul 13, 2020 at 12:21:31PM +0530, Vinod Koul wrote:
-> On 10-07-20, 12:38, Serge Semin wrote:
-> > On Fri, Jul 10, 2020 at 11:45:03AM +0300, Andy Shevchenko wrote:
-> > > On Fri, Jul 10, 2020 at 01:45:44AM +0300, Serge Semin wrote:
-> > > > There are DMA devices (like ours version of Synopsys DW DMAC) which have
-> > > > DMA capabilities non-uniformly redistributed between the device channels.
-> > > > In order to provide a way of exposing the channel-specific parameters to
-> > > > the DMA engine consumers, we introduce a new DMA-device callback. In case
-> > > > if provided it gets called from the dma_get_slave_caps() method and is
-> > > > able to override the generic DMA-device capabilities.
-> > > 
-> > 
-> > > In light of recent developments consider not to add 'slave' and a such words to the kernel.
-> > 
-> > As long as the 'slave' word is used in the name of the dma_slave_caps
-> > structure and in the rest of the DMA-engine subsystem, it will be ambiguous
-> > to use some else terminology. If renaming needs to be done, then it should be
-> > done synchronously for the whole subsystem.
-> 
-> Right, I have plans to tackle that during next merge window and have
-> started changes. Thankfully slave_dma can be replaced by peripheral dma
-> easily. But getting that in would be tricky as we need to change users
-> too.
-> 
-> -- 
-> ~Vinod
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ drivers/uio/Kconfig     | 6 +++---
+ drivers/uio/uio_netx.c  | 2 +-
+ drivers/uio/uio_pruss.c | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
+index 202ee81cfc2b..cdad8dc66b5e 100644
+--- a/drivers/uio/Kconfig
++++ b/drivers/uio/Kconfig
+@@ -81,7 +81,7 @@ config UIO_SERCOS3
+ 	  available for download from the Automata GmbH web site.
+ 
+ 	  Automata GmbH:        http://www.automataweb.com
+-	  Sercos III interface: http://www.sercos.com
++	  Sercos III interface: https://www.sercos.com
+ 
+ 	  If you compile this as a module, it will be called uio_sercos3.
+ 
+@@ -100,7 +100,7 @@ config UIO_NETX
+ 	help
+ 	  Driver for Hilscher NetX based fieldbus cards (cifX, comX).
+ 	  This driver requires a userspace component that comes with the card
+-	  or is available from Hilscher (http://www.hilscher.com).
++	  or is available from Hilscher (https://www.hilscher.com).
+ 
+ 	  To compile this driver as a module, choose M here; the module
+ 	  will be called uio_netx.
+@@ -123,7 +123,7 @@ config UIO_FSL_ELBC_GPCM_NETX5152
+ 	  together with the userspace netX stack from Hilscher.
+ 
+ 	  Information about this hardware can be found at:
+-	  http://www.hilscher.com/netx
++	  https://www.hilscher.com/netx
+ 
+ config UIO_PRUSS
+ 	tristate "Texas Instruments PRUSS driver"
+diff --git a/drivers/uio/uio_netx.c b/drivers/uio/uio_netx.c
+index 9ae29ffde410..3d5a92daa0b1 100644
+--- a/drivers/uio/uio_netx.c
++++ b/drivers/uio/uio_netx.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+  * UIO driver for Hilscher NetX based fieldbus cards (cifX, comX).
+- * See http://www.hilscher.com for details.
++ * See https://www.hilscher.com for details.
+  *
+  * (C) 2007 Hans J. Koch <hjk@hansjkoch.de>
+  * (C) 2008 Manuel Traut <manut@linutronix.de>
+diff --git a/drivers/uio/uio_pruss.c b/drivers/uio/uio_pruss.c
+index 1cc175d3c25c..64e5dfa92a0d 100644
+--- a/drivers/uio/uio_pruss.c
++++ b/drivers/uio/uio_pruss.c
+@@ -4,7 +4,7 @@
+  * This driver exports PRUSS host event out interrupts and PRUSS, L3 RAM,
+  * and DDR RAM to user space for applications interacting with PRUSS firmware
+  *
+- * Copyright (C) 2010-11 Texas Instruments Incorporated - http://www.ti.com/
++ * Copyright (C) 2010-11 Texas Instruments Incorporated - https://www.ti.com/
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License as
+-- 
+2.27.0
+
