@@ -2,294 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EBF21DD55
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E918421DD52
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730676AbgGMQhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:37:46 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:39741 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730522AbgGMQho (ORCPT
+        id S1730507AbgGMQhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:37:41 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6947 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729969AbgGMQhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:37:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594658261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HTqELeE3psnsv4vKlzTz9cvjP0XhH36aOWb0J65Pzhs=;
-        b=iWhpoSFLqla7dz7IfGLlKpFYW8Jz8qsrS7+C+OD93SUDZaW/YusQpTfl3eTJPYQaZjEbdC
-        ydle7gjDFWAFBwn65FKbGKdGRG23KP/OaPV3w2JxleF+bAvVbk1o/GSaQNhS5nOG8nV0Ku
-        qNXkMNXW7ZwnSdrYDCmf9qTJ+7vcS10=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-l2pKWbqAMGmKDNrbNj3G-g-1; Mon, 13 Jul 2020 12:37:39 -0400
-X-MC-Unique: l2pKWbqAMGmKDNrbNj3G-g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A720800FED;
-        Mon, 13 Jul 2020 16:37:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-113.rdu2.redhat.com [10.10.112.113])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5ADE560C87;
-        Mon, 13 Jul 2020 16:37:31 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 03/13] afs: Don't truncate iter during data fetch
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jeff Layton <jlayton@redhat.com>,
-        Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 13 Jul 2020 17:37:30 +0100
-Message-ID: <159465825061.1377938.14403904452300909320.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159465821598.1377938.2046362270225008168.stgit@warthog.procyon.org.uk>
-References: <159465821598.1377938.2046362270225008168.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.22
+        Mon, 13 Jul 2020 12:37:40 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0c8dc60001>; Mon, 13 Jul 2020 09:37:26 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 13 Jul 2020 09:37:39 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 13 Jul 2020 09:37:39 -0700
+Received: from [10.26.72.101] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 13 Jul
+ 2020 16:37:38 +0000
+Subject: Re: [PATCH 1/2] cpufreq: tegra186: Fix initial frequency
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     Thierry Reding <thierry.reding@gmail.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200712100645.13927-1-jonathanh@nvidia.com>
+ <20200713032554.cykywnygxln6ukrl@vireshk-i7>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <3d6091f2-6b04-185f-6c23-e39a34b87877@nvidia.com>
+Date:   Mon, 13 Jul 2020 17:37:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200713032554.cykywnygxln6ukrl@vireshk-i7>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
 Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594658246; bh=j07fRsUya2Rkr0o3lWYTAHPyUTT7NzlNKWFyMy2w+FU=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=B64PHnnmjFFJzm6tcGsqHpZuxv/g2nvXhUgeOJl2Vbd+GAiwAIHLWiM3cdlBb1DDp
+         s6e9UVM3Vv3e+J2Otc1z73T2hyJcDOxxRhwdenoQqYuzGfXvvmKxiqhtmbgi60tmqp
+         +Yjn6B1jZP2WdTmE2JczxR5P+243Ls+0ZE9lpJG0l+txfFhRFOupM3mpAq0CNmOYSW
+         QR4kLrJPx9Z1LUQW3yiK7Vc9/+lWxMQnLpS5U3tgTIliil8Fx6Gdz3bGQFJddTjzex
+         3epeuegOs+m0eIdtMY3rrT5j6h54uubqQ+cOX7Qs4Q+dXs0HsTXpLaX5c2QR4QDnlc
+         o/w3C6XcmPlkw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't truncate the iterator to correspond to the actual data size when
-fetching the data from the server - rather, pass the length we want to read
-to rxrpc.
 
-This will allow the clear-after-read code in future to simply clear the
-remaining iterator capacity rather than having to reinitialise the
-iterator.
+On 13/07/2020 04:25, Viresh Kumar wrote:
+> On 12-07-20, 11:06, Jon Hunter wrote:
+>> Commit 6cc3d0e9a097 ("cpufreq: tegra186: add
+>> CPUFREQ_NEED_INITIAL_FREQ_CHECK flag") fixed CPUFREQ support for
+>> Tegra186 but as a consequence the following warnings are now seen on
+>> boot ...
+>>
+>>  cpufreq: cpufreq_online: CPU0: Running at unlisted freq: 0 KHz
+>>  cpufreq: cpufreq_online: CPU0: Unlisted initial frequency changed to: 2035200 KHz
+>>  cpufreq: cpufreq_online: CPU1: Running at unlisted freq: 0 KHz
+>>  cpufreq: cpufreq_online: CPU1: Unlisted initial frequency changed to: 2035200 KHz
+>>  cpufreq: cpufreq_online: CPU2: Running at unlisted freq: 0 KHz
+>>  cpufreq: cpufreq_online: CPU2: Unlisted initial frequency changed to: 2035200 KHz
+>>  cpufreq: cpufreq_online: CPU3: Running at unlisted freq: 0 KHz
+>>  cpufreq: cpufreq_online: CPU3: Unlisted initial frequency changed to: 2035200 KHz
+>>  cpufreq: cpufreq_online: CPU4: Running at unlisted freq: 0 KHz
+>>  cpufreq: cpufreq_online: CPU4: Unlisted initial frequency changed to: 2035200 KHz
+>>  cpufreq: cpufreq_online: CPU5: Running at unlisted freq: 0 KHz
+>>  cpufreq: cpufreq_online: CPU5: Unlisted initial frequency changed to: 2035200 KHz
+>>
+>> Although we could fix this by adding a 'get' operator for the Tegra186
+>> CPUFREQ driver, there is really little point because the CPUFREQ on
+>> Tegra186 is set by writing a value stored in the frequency table to a
+>> register and we just need to set the initial frequency.
+> 
+> The hardware still runs at the frequency requested by cpufreq core here, right ?
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+Yes.
 
- fs/afs/fsclient.c      |    6 ++++--
- fs/afs/internal.h      |    6 ++++++
- fs/afs/rxrpc.c         |   13 +++++++++----
- fs/afs/yfsclient.c     |    6 ++++--
- include/net/af_rxrpc.h |    2 +-
- net/rxrpc/recvmsg.c    |    9 +++++----
- 6 files changed, 29 insertions(+), 13 deletions(-)
+> It is better to provide the get() callback as it is also used to show the
+> current frequency in userspace.
 
-diff --git a/fs/afs/fsclient.c b/fs/afs/fsclient.c
-index acb4d0ca2649..3ed95f3e47be 100644
---- a/fs/afs/fsclient.c
-+++ b/fs/afs/fsclient.c
-@@ -305,8 +305,9 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
- 	unsigned int size;
- 	int ret;
- 
--	_enter("{%u,%zu/%llu}",
--	       call->unmarshall, iov_iter_count(call->iter), req->actual_len);
-+	_enter("{%u,%zu,%zu/%llu}",
-+	       call->unmarshall, call->iov_len, iov_iter_count(call->iter),
-+	       req->actual_len);
- 
- 	switch (call->unmarshall) {
- 	case 0:
-@@ -343,6 +344,7 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
- 			size = PAGE_SIZE - req->offset;
- 		else
- 			size = req->remain;
-+		call->iov_len = size;
- 		call->bvec[0].bv_len = size;
- 		call->bvec[0].bv_offset = req->offset;
- 		call->bvec[0].bv_page = req->pages[req->index];
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 644a04ce83a3..bf26fd28ccbd 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -104,6 +104,7 @@ struct afs_call {
- 	struct afs_server	*server;	/* The fileserver record if fs op (pins ref) */
- 	struct afs_vlserver	*vlserver;	/* The vlserver record if vl op */
- 	void			*request;	/* request data (first part) */
-+	size_t			iov_len;	/* Size of *iter to be used */
- 	struct iov_iter		def_iter;	/* Default buffer/data iterator */
- 	struct iov_iter		*iter;		/* Iterator currently in use */
- 	union {	/* Convenience for ->def_iter */
-@@ -1194,6 +1195,7 @@ static inline void afs_make_op_call(struct afs_operation *op, struct afs_call *c
- 
- static inline void afs_extract_begin(struct afs_call *call, void *buf, size_t size)
- {
-+	call->iov_len = size;
- 	call->kvec[0].iov_base = buf;
- 	call->kvec[0].iov_len = size;
- 	iov_iter_kvec(&call->def_iter, READ, call->kvec, 1, size);
-@@ -1201,21 +1203,25 @@ static inline void afs_extract_begin(struct afs_call *call, void *buf, size_t si
- 
- static inline void afs_extract_to_tmp(struct afs_call *call)
- {
-+	call->iov_len = sizeof(call->tmp);
- 	afs_extract_begin(call, &call->tmp, sizeof(call->tmp));
- }
- 
- static inline void afs_extract_to_tmp64(struct afs_call *call)
- {
-+	call->iov_len = sizeof(call->tmp64);
- 	afs_extract_begin(call, &call->tmp64, sizeof(call->tmp64));
- }
- 
- static inline void afs_extract_discard(struct afs_call *call, size_t size)
- {
-+	call->iov_len = size;
- 	iov_iter_discard(&call->def_iter, READ, size);
- }
- 
- static inline void afs_extract_to_buf(struct afs_call *call, size_t size)
- {
-+	call->iov_len = size;
- 	afs_extract_begin(call, call->buffer, size);
- }
- 
-diff --git a/fs/afs/rxrpc.c b/fs/afs/rxrpc.c
-index 8fc8fb406a5a..3b90ecf7958d 100644
---- a/fs/afs/rxrpc.c
-+++ b/fs/afs/rxrpc.c
-@@ -363,6 +363,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
- 	struct rxrpc_call *rxcall;
- 	struct msghdr msg;
- 	struct kvec iov[1];
-+	size_t len;
- 	s64 tx_total_len;
- 	int ret;
- 
-@@ -466,9 +467,10 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
- 		rxrpc_kernel_abort_call(call->net->socket, rxcall,
- 					RX_USER_ABORT, ret, "KSD");
- 	} else {
-+		len = 0;
- 		iov_iter_kvec(&msg.msg_iter, READ, NULL, 0, 0);
- 		rxrpc_kernel_recv_data(call->net->socket, rxcall,
--				       &msg.msg_iter, false,
-+				       &msg.msg_iter, &len, false,
- 				       &call->abort_code, &call->service_id);
- 		ac->abort_code = call->abort_code;
- 		ac->responded = true;
-@@ -504,6 +506,7 @@ void afs_make_call(struct afs_addr_cursor *ac, struct afs_call *call, gfp_t gfp)
- static void afs_deliver_to_call(struct afs_call *call)
- {
- 	enum afs_call_state state;
-+	size_t len;
- 	u32 abort_code, remote_abort = 0;
- 	int ret;
- 
-@@ -516,10 +519,11 @@ static void afs_deliver_to_call(struct afs_call *call)
- 	       state == AFS_CALL_SV_AWAIT_ACK
- 	       ) {
- 		if (state == AFS_CALL_SV_AWAIT_ACK) {
-+			len = 0;
- 			iov_iter_kvec(&call->def_iter, READ, NULL, 0, 0);
- 			ret = rxrpc_kernel_recv_data(call->net->socket,
- 						     call->rxcall, &call->def_iter,
--						     false, &remote_abort,
-+						     &len, false, &remote_abort,
- 						     &call->service_id);
- 			trace_afs_receive_data(call, &call->def_iter, false, ret);
- 
-@@ -929,10 +933,11 @@ int afs_extract_data(struct afs_call *call, bool want_more)
- 	u32 remote_abort = 0;
- 	int ret;
- 
--	_enter("{%s,%zu},%d", call->type->name, iov_iter_count(iter), want_more);
-+	_enter("{%s,%zu,%zu},%d",
-+	       call->type->name, call->iov_len, iov_iter_count(iter), want_more);
- 
- 	ret = rxrpc_kernel_recv_data(net->socket, call->rxcall, iter,
--				     want_more, &remote_abort,
-+				     &call->iov_len, want_more, &remote_abort,
- 				     &call->service_id);
- 	if (ret == 0 || ret == -EAGAIN)
- 		return ret;
-diff --git a/fs/afs/yfsclient.c b/fs/afs/yfsclient.c
-index 8c24fdc899e3..a53bcea8740c 100644
---- a/fs/afs/yfsclient.c
-+++ b/fs/afs/yfsclient.c
-@@ -363,8 +363,9 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
- 	unsigned int size;
- 	int ret;
- 
--	_enter("{%u,%zu/%llu}",
--	       call->unmarshall, iov_iter_count(call->iter), req->actual_len);
-+	_enter("{%u,%zu, %zu/%llu}",
-+	       call->unmarshall, call->iov_len, iov_iter_count(call->iter),
-+	       req->actual_len);
- 
- 	switch (call->unmarshall) {
- 	case 0:
-@@ -396,6 +397,7 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
- 			size = PAGE_SIZE - req->offset;
- 		else
- 			size = req->remain;
-+		call->iov_len = size;
- 		call->bvec[0].bv_len = size;
- 		call->bvec[0].bv_offset = req->offset;
- 		call->bvec[0].bv_page = req->pages[req->index];
-diff --git a/include/net/af_rxrpc.h b/include/net/af_rxrpc.h
-index 91eacbdcf33d..076bf895be1d 100644
---- a/include/net/af_rxrpc.h
-+++ b/include/net/af_rxrpc.h
-@@ -53,7 +53,7 @@ int rxrpc_kernel_send_data(struct socket *, struct rxrpc_call *,
- 			   struct msghdr *, size_t,
- 			   rxrpc_notify_end_tx_t);
- int rxrpc_kernel_recv_data(struct socket *, struct rxrpc_call *,
--			   struct iov_iter *, bool, u32 *, u16 *);
-+			   struct iov_iter *, size_t *, bool, u32 *, u16 *);
- bool rxrpc_kernel_abort_call(struct socket *, struct rxrpc_call *,
- 			     u32, int, const char *);
- void rxrpc_kernel_end_call(struct socket *, struct rxrpc_call *);
-diff --git a/net/rxrpc/recvmsg.c b/net/rxrpc/recvmsg.c
-index 2989742a4aa1..ea3c42c417b3 100644
---- a/net/rxrpc/recvmsg.c
-+++ b/net/rxrpc/recvmsg.c
-@@ -703,6 +703,7 @@ int rxrpc_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-  * @sock: The socket that the call exists on
-  * @call: The call to send data through
-  * @iter: The buffer to receive into
-+ * @_len: The amount of data we want to receive (decreased on return)
-  * @want_more: True if more data is expected to be read
-  * @_abort: Where the abort code is stored if -ECONNABORTED is returned
-  * @_service: Where to store the actual service ID (may be upgraded)
-@@ -718,7 +719,7 @@ int rxrpc_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-  * *_abort should also be initialised to 0.
-  */
- int rxrpc_kernel_recv_data(struct socket *sock, struct rxrpc_call *call,
--			   struct iov_iter *iter,
-+			   struct iov_iter *iter, size_t *_len,
- 			   bool want_more, u32 *_abort, u16 *_service)
- {
- 	size_t offset = 0;
-@@ -726,7 +727,7 @@ int rxrpc_kernel_recv_data(struct socket *sock, struct rxrpc_call *call,
- 
- 	_enter("{%d,%s},%zu,%d",
- 	       call->debug_id, rxrpc_call_states[call->state],
--	       iov_iter_count(iter), want_more);
-+	       *_len, want_more);
- 
- 	ASSERTCMP(call->state, !=, RXRPC_CALL_SERVER_ACCEPTING);
- 
-@@ -737,8 +738,8 @@ int rxrpc_kernel_recv_data(struct socket *sock, struct rxrpc_call *call,
- 	case RXRPC_CALL_SERVER_RECV_REQUEST:
- 	case RXRPC_CALL_SERVER_ACK_REQUEST:
- 		ret = rxrpc_recvmsg_data(sock, call, NULL, iter,
--					 iov_iter_count(iter), 0,
--					 &offset);
-+					 *_len, 0, &offset);
-+		*_len -= offset;
- 		if (ret < 0)
- 			goto out;
- 
+I looked at that and I saw that if the get() callback is not provided,
+the current frequency showed by userspace is policy->cur. For this
+device, policy->cur is accurate and so if we added the get() callback we
+essentially just going to return policy->cur. Therefore, given that we
+already know policy->cur, I did not see the point in adding a device
+specific handler to do the same thing.
 
+Cheers
+Jon
 
+-- 
+nvpublic
