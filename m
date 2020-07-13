@@ -2,53 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D97C21CCDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 081F921CCE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbgGMBoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 21:44:03 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:52540 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726262AbgGMBoD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 21:44:03 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1167423|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0681111-0.00041438-0.931475;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03273;MF=frank@allwinnertech.com;NM=1;PH=DW;RN=9;RT=9;SR=0;TI=W4_5899425_DEFAULT_0A9326FC_1594604587689_o7001c2454m;
-Received: from WS-web (frank@allwinnertech.com[W4_5899425_DEFAULT_0A9326FC_1594604587689_o7001c2454m]) by e01l07394.eu6 at Mon, 13 Jul 2020 09:43:59 +0800
-Date:   Mon, 13 Jul 2020 09:43:59 +0800
-From:   "=?UTF-8?B?5p2O5oms6Z+s?=" <frank@allwinnertech.com>
-To:     "Maxime Ripard" <maxime@cerno.tech>
-Cc:     "robh+dt" <robh+dt@kernel.org>, "wens" <wens@csie.org>,
-        "tiny.windzz" <tiny.windzz@gmail.com>,
-        "devicetree" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel" <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "=?UTF-8?B?6buE54OB55Sf?=" <huangshuosheng@allwinnertech.com>,
-        "=?UTF-8?B?5p2O5YuH?=" <liyong@allwinnertech.com>
-Reply-To: "=?UTF-8?B?5p2O5oms6Z+s?=" <frank@allwinnertech.com>
-Message-ID: <687f6b72-d5c6-4ea4-81d9-e91612cd75d5.frank@allwinnertech.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2MyAxNC8xNl0gYXJtNjQ6IGFsbHdpbm5lcjogQTEwMDogYWRkIHRoZSBi?=
-  =?UTF-8?B?YXNpY2FsIEFsbHdpbm5lciBBMTAwIERUU0kgZmlsZQ==?=
-X-Mailer: [Alimail-Mailagent][W4_5899425][DEFAULT][Chrome]
-MIME-Version: 1.0
-References: <20200708082505.28910-1-frank@allwinnertech.com>,<20200710123306.wlqadpz4tuy2r3jc@gilmour.lan>
-In-Reply-To: <20200710123306.wlqadpz4tuy2r3jc@gilmour.lan>
-x-aliyun-mail-creator: W4_5899425_DEFAULT_LjMTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzU2LjAuMjkyNC44NyBTYWZhcmkvNTM3LjM2TM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+        id S1727901AbgGMBv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 21:51:57 -0400
+Received: from mga14.intel.com ([192.55.52.115]:20262 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgGMBv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 21:51:57 -0400
+IronPort-SDR: 0e71ysOWhlUbK/qYthGl6qXBCi2ZW2UwmGNcXNmRS33mIn6c5j1aNaKSd3dCQvCsDHPguSVTej
+ Dr1sare8bq0g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9680"; a="147660851"
+X-IronPort-AV: E=Sophos;i="5.75,345,1589266800"; 
+   d="scan'208";a="147660851"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2020 18:51:56 -0700
+IronPort-SDR: T3rQIr2AvbUkUYA0Lr1/+D8PwdSqBWaDwtZ7A0BFDgFJoEgilqL0zg0V6QkI0sQuVjbE+rCC3L
+ KqS7DZnOoSCQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,345,1589266800"; 
+   d="scan'208";a="484847589"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by fmsmga006.fm.intel.com with ESMTP; 12 Jul 2020 18:51:54 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        Wu Hao <hao.wu@intel.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v2] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
+Date:   Mon, 13 Jul 2020 09:47:46 +0800
+Message-Id: <1594604866-30877-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PkhpLAo+Cj5UaGFua3MgZm9yIHNlbmRpbmcgYSBuZXcgc2VyaWVzCj4KPk9uIFdlZCwgSnVsIDA4
-LCAyMDIwIGF0IDA0OjI1OjA1UE0gKzA4MDAsIEZyYW5rIExlZSB3cm90ZToKPj4gKyB0aGVybWFs
-LXpvbmVzIHsKPj4gKyAgY3B1X3RoZXJtYWxfem9uZSB7Cj4+ICsgICBwb2xsaW5nLWRlbGF5LXBh
-c3NpdmUgPSA8MD47Cj4+ICsgICBwb2xsaW5nLWRlbGF5ID0gPDA+Owo+PiArICAgdGhlcm1hbC1z
-ZW5zb3JzID0gPCZ0aHMgMD47Cj4+ICsgIH07Cj4+ICsKPj4gKyAgZ3B1X3RoZXJtYWxfem9uZSB7
-Cj4+ICsgICBwb2xsaW5nLWRlbGF5LXBhc3NpdmUgPSA8MD47Cj4+ICsgICBwb2xsaW5nLWRlbGF5
-ID0gPDA+Owo+PiArICAgdGhlcm1hbC1zZW5zb3JzID0gPCZ0aHMgMT47Cj4+ICsgIH07Cj4+ICsK
-Pj4gKyAgZGRyX3RoZXJtYWxfem9uZSB7Cj4+ICsgICBwb2xsaW5nLWRlbGF5LXBhc3NpdmUgPSA8
-MD47Cj4+ICsgICBwb2xsaW5nLWRlbGF5ID0gPDA+Owo+PiArICAgdGhlcm1hbC1zZW5zb3JzID0g
-PCZ0aHMgMj47Cj4+ICsgIH07Cj4+ICsgfTsKPj4gK307Cj4KPlRoZSBub2RlIG5hbWVzIHNob3Vs
-ZG4ndCBoYXZlIGFueSB1bmRlcnNjb3JlLCBvdGhlcndpc2UgaXQgd2lsbCBnZW5lcmF0ZSBhIERU
-QyB3YXJuaW5nLgoKWWVhaCwgSSBpZ25vcmVkIHRoaXMuCgpZYW5ndGFv
+Add PCIe Device ID for Intel FPGA PAC N3000.
+
+Signed-off-by: Wu Hao <hao.wu@intel.com>
+Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+Reviewed-by: Wu Hao <hao.wu@intel.com>
+Reviewed-by: Tom Rix <trix@redhat.com>
+---
+ drivers/fpga/dfl-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+index 73b5153..e220bec 100644
+--- a/drivers/fpga/dfl-pci.c
++++ b/drivers/fpga/dfl-pci.c
+@@ -64,6 +64,7 @@ static void cci_pci_free_irq(struct pci_dev *pcidev)
+ #define PCIE_DEVICE_ID_PF_INT_5_X	0xBCBD
+ #define PCIE_DEVICE_ID_PF_INT_6_X	0xBCC0
+ #define PCIE_DEVICE_ID_PF_DSC_1_X	0x09C4
++#define PCIE_DEVICE_ID_INTEL_PAC_N3000	0x0B30
+ /* VF Device */
+ #define PCIE_DEVICE_ID_VF_INT_5_X	0xBCBF
+ #define PCIE_DEVICE_ID_VF_INT_6_X	0xBCC1
+@@ -76,6 +77,7 @@ static struct pci_device_id cci_pcie_id_tbl[] = {
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_VF_INT_6_X),},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_PF_DSC_1_X),},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_VF_DSC_1_X),},
++	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCIE_DEVICE_ID_INTEL_PAC_N3000),},
+ 	{0,}
+ };
+ MODULE_DEVICE_TABLE(pci, cci_pcie_id_tbl);
+-- 
+2.7.4
+
