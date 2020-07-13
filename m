@@ -2,193 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB48F21DA67
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CD121DA55
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730212AbgGMPnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 11:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
+        id S1729933AbgGMPmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730183AbgGMPnA (ORCPT
+        with ESMTP id S1729492AbgGMPmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 11:43:00 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C65C08C5DD
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:43:00 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id e13so12622452qkg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:43:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SefBkkTKXeYctWnwpQcS5vaISiY7Do8N46ytSx3YzJ4=;
-        b=jMbkVBYY+NXCLG9hbB+gMll4sw7qmTcsdy7tJwrMLZkoblHO09UR9DY6VZQrD5hy+9
-         H+g/+KAY/XFzFbaABAMkRpPY6NU16DDTJNcGXFriLN7JIeTKi1ZCY6q50FZJ7+M+B7+x
-         E97k3CHLlWYn7h5a3tW0cT2krLmPMBVSqLKyVUtlTDHpqbJNm2W7kxHybVCjP13WkVp4
-         7xc651Xao1+dUsD4NAe/9qHUZoKqo0wJ3AW5AkMS3QJqsbhYm8F4WcLmNc/WQsAIFvKn
-         56p/u264l25q129gOnT2fRq9NlzTsbj8EqhyogG6bV6tRIOjfdqYqzrQnPIS5sQCMHda
-         Ra9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SefBkkTKXeYctWnwpQcS5vaISiY7Do8N46ytSx3YzJ4=;
-        b=ucpAsEnsiIXkWCk2IobQpzZXrf4GneJqqEQ65x3RZBiGhoQQA5Me7E2RpG1GNsiIQZ
-         KnK+UPbouHygK9xQnwSaBAsnasnTZszzDsv4SJ5ReLi3uywhpfo8QOx+A2DRmTl7pUEt
-         1nsmAf+Sfb7gqep6ZhOGWiNP+Kr8dlrnMYCVFaK0Q7bds0CHtMqGJwfT9p41LvZiKXRD
-         UMZu1iFb0c+a+v+bcKYQ4K7tIWra4/t76yuVuj0y3IAz3ybfl4F39l/VAzH3Xzg4glnj
-         sdpPoz66fema4ICHDEVAPMYYvXzK+iDxhcGgzhczyg0NgIpaYnZNO9e65YJzv+kwPr5Q
-         rCzQ==
-X-Gm-Message-State: AOAM531QIb7AOyX+EqprBTSrFcqpaUzJ4k6MtVhZv/1hENs8/eiryUz+
-        bytDKZJt01TszykazLnqWrU/sA==
-X-Google-Smtp-Source: ABdhPJx1zGPaXKf+KbTHBqCK7f+OtWWxHy/aBw7q2ZmMFpDzVBrlTF4P7kXfB529C6L8XKJg94jnSA==
-X-Received: by 2002:a05:620a:2492:: with SMTP id i18mr199672qkn.414.1594654980043;
-        Mon, 13 Jul 2020 08:43:00 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id l1sm19806371qtk.18.2020.07.13.08.42.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 08:42:59 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 7/7] arm64: dts: qcom: sm8250: add interconnect nodes
-Date:   Mon, 13 Jul 2020 11:41:16 -0400
-Message-Id: <20200713154121.22094-8-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200713154121.22094-1-jonathan@marek.ca>
-References: <20200713154121.22094-1-jonathan@marek.ca>
+        Mon, 13 Jul 2020 11:42:10 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC510C061755;
+        Mon, 13 Jul 2020 08:42:10 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 0F45BBC0C2;
+        Mon, 13 Jul 2020 15:42:07 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     awalls@md.metrocast.net, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] [media] ivtv: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 17:42:01 +0200
+Message-Id: <20200713154201.35478-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the interconnect dts nodes for sm8250.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 ---
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 82 ++++++++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 636e2196138c..dfc1b7fa7d85 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -11,6 +11,7 @@
- #include <dt-bindings/power/qcom-aoss-qmp.h>
- #include <dt-bindings/power/qcom-rpmpd.h>
- #include <dt-bindings/soc/qcom,rpmh-rsc.h>
-+#include <dt-bindings/interconnect/qcom,sm8250.h>
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ drivers/media/pci/ivtv/ivtv-cards.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/pci/ivtv/ivtv-cards.c b/drivers/media/pci/ivtv/ivtv-cards.c
+index ca6daba3a34a..c8f4ed7ff2c6 100644
+--- a/drivers/media/pci/ivtv/ivtv-cards.c
++++ b/drivers/media/pci/ivtv/ivtv-cards.c
+@@ -53,7 +53,7 @@ static struct ivtv_card_tuner_i2c ivtv_i2c_tda8290 = {
  
- / {
- 	interrupt-parent = <&intc>;
-@@ -978,6 +979,55 @@ spi13: spi@a94000 {
- 			};
- 		};
+ /********************** card configuration *******************************/
  
-+		config_noc: interconnect@1500000 {
-+			compatible = "qcom,sm8250-config-noc";
-+			reg = <0 0x01500000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		ipa_virt: interconnect@1620000 {
-+			compatible = "qcom,sm8250-ipa-virt";
-+			reg = <0 0x01620000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		system_noc: interconnect@1632000 {
-+			compatible = "qcom,sm8250-system-noc";
-+			reg = <0 0x01632000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		aggre1_noc: interconnect@16e2000 {
-+			compatible = "qcom,sm8250-aggre1-noc";
-+			reg = <0 0x016e2000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		aggre2_noc: interconnect@1703000 {
-+			compatible = "qcom,sm8250-aggre2-noc";
-+			reg = <0 0x01703000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		compute_noc: interconnect@1733000 {
-+			compatible = "qcom,sm8250-compute-noc";
-+			reg = <0 0x01733000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		mmss_noc: interconnect@174a000 {
-+			compatible = "qcom,sm8250-mmss-noc";
-+			reg = <0 0x0174a000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
- 		ufs_mem_hc: ufshc@1d84000 {
- 			compatible = "qcom,sm8250-ufshc", "qcom,ufshc",
- 				     "jedec,ufs-2.0";
-@@ -1364,6 +1414,34 @@ usb_2_ssphy: lane@88eb200 {
- 			};
- 		};
- 
-+		dc_noc: interconnect@90c0000 {
-+			compatible = "qcom,sm8250-dc-noc";
-+			reg = <0 0x090c0000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		mc_virt: interconnect@9100000 {
-+			compatible = "qcom,sm8250-mc-virt";
-+			reg = <0 0x09100000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		gem_noc: interconnect@9121000 {
-+			compatible = "qcom,sm8250-gem-noc";
-+			reg = <0 0x09121000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		npu_noc: interconnect@9990000 {
-+			compatible = "qcom,sm8250-npu-noc";
-+			reg = <0 0x09990000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
- 		usb_1: usb@a6f8800 {
- 			compatible = "qcom,sm8250-dwc3", "qcom,dwc3";
- 			reg = <0 0x0a6f8800 0 0x400>;
-@@ -2359,6 +2437,10 @@ rpmhpd_opp_turbo_l1: opp10 {
- 					};
- 				};
- 			};
-+
-+			apps_bcm_voter: bcm_voter {
-+				compatible = "qcom,bcm-voter";
-+			};
- 		};
- 	};
- 
+-/* Please add new PCI IDs to: http://pci-ids.ucw.cz/
++/* Please add new PCI IDs to: https://pci-ids.ucw.cz/
+    This keeps the PCI ID database up to date. Note that the entries
+    must be added under vendor 0x4444 (Conexant) as subsystem IDs.
+    New vendor IDs should still be added to the vendor ID list. */
 -- 
-2.26.1
+2.27.0
 
