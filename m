@@ -2,96 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9769221D8BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A373221D8D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729967AbgGMOmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:42:00 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:59598 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729689AbgGMOmA (ORCPT
+        id S1730033AbgGMOne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:43:34 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:42530 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729649AbgGMOnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:42:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594651319; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=njq6ToEc9s/UCKrW6LoyB1yXjuQt4PugDt/wNabnWog=; b=gRf3asfSf2u09CNPEHTt37McXPlxONpVi6hrvmT9b1p+ZqXXAhIOFe+DFEWl+6gtQ/0wSt1I
- M5y93HHSxexMMAWdd7gPanZO5m0mgLYRltcloVB4UIsq6JpOLb2JwWwysCCgIB6OMgGRnkjc
- 6IY8n+NulRBHlwgifZNUSSX8C34=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f0c72ad512812c070389aac (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Jul 2020 14:41:49
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 62636C43395; Mon, 13 Jul 2020 14:41:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D14A4C433C8;
-        Mon, 13 Jul 2020 14:41:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D14A4C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH v1 0/2] ipw2x00: use generic power management
-References: <20200629072525.156154-1-vaibhavgupta40@gmail.com>
-Date:   Mon, 13 Jul 2020 17:41:44 +0300
-In-Reply-To: <20200629072525.156154-1-vaibhavgupta40@gmail.com> (Vaibhav
-        Gupta's message of "Mon, 29 Jun 2020 12:55:23 +0530")
-Message-ID: <87a703xys7.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        Mon, 13 Jul 2020 10:43:33 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200713144332euoutp016bb3f622219e047293b92895bbcecce0~hVwK9u9lY0074100741euoutp012
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 14:43:32 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200713144332euoutp016bb3f622219e047293b92895bbcecce0~hVwK9u9lY0074100741euoutp012
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594651412;
+        bh=pGtxLhf3D/I7exmkosULiTrSasKk7Et803J5a7lKHWQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=dRFHLhlWd8x7rNCzp22pRQ66M7CvO7xyJxKoI35zAzcNhccsoKf6dP5245U5NpeZE
+         I0gIdT9digqFGrIgMqcREOgUmLrXYLtav26YBenMRBtp9/YrifRhSKI4MIZjGL0+HX
+         bmglo1fcBx5uGZNFYtcXJcEx9NvElJtuCCw5fMwc=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200713144331eucas1p2eab7cb0246c95111fdc37b9a8fcc8c5f~hVwKXfhQY0713507135eucas1p2l;
+        Mon, 13 Jul 2020 14:43:31 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 90.69.06318.3137C0F5; Mon, 13
+        Jul 2020 15:43:31 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200713144331eucas1p25911c4ffa9315f632d8f6dd833588981~hVwJuU8YP0294302943eucas1p2N;
+        Mon, 13 Jul 2020 14:43:31 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200713144331eusmtrp1e152860e9a3934e08996b37ca9052f6c~hVwJtg29y0993509935eusmtrp1X;
+        Mon, 13 Jul 2020 14:43:31 +0000 (GMT)
+X-AuditID: cbfec7f5-371ff700000018ae-f3-5f0c7313e449
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 62.5A.06017.2137C0F5; Mon, 13
+        Jul 2020 15:43:30 +0100 (BST)
+Received: from AMDC3748.digital.local (unknown [106.120.51.74]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200713144330eusmtip1330a0b9f23242ed312f9f7a2f63ed02b~hVwI-MLT71900919009eusmtip1t;
+        Mon, 13 Jul 2020 14:43:30 +0000 (GMT)
+From:   Andrzej Hajda <a.hajda@samsung.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        andy.shevchenko@gmail.com, Mark Brown <broonie@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS)
+Subject: [PATCH v9 0/4] driver core: add probe error check helper
+Date:   Mon, 13 Jul 2020 16:43:20 +0200
+Message-Id: <20200713144324.23654-1-a.hajda@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA0VSfUyMcRzf757Xbnc8XdFvsUs3Ni95W/74zdscyjP/MGM2LTl6VNNduadS
+        NqutJFFKEiWSzIlTXdel29LtSLg6KeWUdrNYMgrXi/J65zn89/l9Xn6fzx9fGpNZiUA6TpPE
+        aTWqeAUpxk0Pp+xL/XhJ1Ipzd+ajvjt2Ag0X3Aeo7kINgYpfvyHRL1Mhhp6Pj5Io81oNiXom
+        hzH0+EMPjk4WVlHIMNhLoG7zJRJZi5sB0j8YoJA1PwKVjxVjGxi2u/cZxo46jlNs80QFzjaV
+        DlBsWc5FgjVUnyTZRwVdIral/DbFOk+1idj6qnQ231gNWEteEc66DPLt0j3itdFcfFwKp12+
+        fp841jx6hUp8MjP1U2sfyAAVklzgQ0NmFfzQ9RXPBWJaxugA/P7lMyE8xgBsbZ/2Ki4AXSNv
+        qL+R99Ysr3ADQLtzSPQvohuaID0uklkEf9S//IP9mVB4pqOU8pgwZhqHPSey3SU07ccood4k
+        93hwZgHUdxZjHixlEGw3OAmhLQjeqrVgnixk7BQsc2WQgrAZtpjHgYD94Ps2o3feXGgrOo0L
+        OB06dVnecA6ADbVNmCCsga/s06RnBOZeWmNeLtBKOHF5CPPQkJkBHR99PTTmhmdNJV5aCnOy
+        ZYI7GDo7GrwfBsDrnePeZSysq5z+g2VMJDw7cgkrAPLS/10VAFSDAC6ZV8dwfKiGO7KMV6n5
+        ZE3MsgMJagNwX5btZ9v4XXDv+34rYGigkEjhNkmUjFCl8GlqK4A0pvCXbuyw7ZVJo1VpRzlt
+        QpQ2OZ7jrWAOjSsCpKGVw5EyJkaVxB3iuERO+1cV0T6BGWDLLNdUY/oYlpG3xxIWFLgktuHo
+        25LzNyaJFTqp7eY7/7XyhHnKiFR9+GGZr/EtmPkxc9fW4G+52VO7JSd+LXxaqXP0G1dvDwnR
+        dzXv3LRjpDqs3EzeHPwZ3h/ckR+z8Bh99et9eSNd8DlsUYM8XIErZzheXFtXZMmbnXWw3sZ1
+        ShQ4H6tauRjT8qrf3EBpP1UDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRmVeSWpSXmKPExsVy+t/xu7pCxTzxBie+mVncWneO1eLlhMOM
+        FhtnrGe1mPrwCZvF/20TmS2ufH3PZtG8eD2bxdXvL5ktTr65ymLROXEJu8Wmx9dYLS7vmsNm
+        cWjqXkaLtUfuslsc6ou2mPtlKrODgMflaxeZPd7faGX32PttAYvHzll32T1md8xk9di0qpPN
+        48SES0we++euYfe4332cyWPzknqPvi2rGD0O9E5m8fi8SS6AN0rPpii/tCRVISO/uMRWKdrQ
+        wkjP0NJCz8jEUs/Q2DzWyshUSd/OJiU1J7MstUjfLkEvY9f7+ewFp/grPhy9xdjAuICni5GT
+        Q0LAROLVoRaWLkYuDiGBpYwSJ2ccY4VIiEvsnv+WGcIWlvhzrYsNougTUNHUW0wgCTYBTYm/
+        m2+ygdgiAsYS/WdnsYMUMQu0sUrMPf8EyOHgEBZwlFi7TQ6khkVAVWLthalgQ3kFLCTObLoP
+        tUxeYvWGA8wTGHkWMDKsYhRJLS3OTc8tNtIrTswtLs1L10vOz93ECIyVbcd+btnB2PUu+BCj
+        AAejEg+vhD9PvBBrYllxZe4hRgkOZiURXqezp+OEeFMSK6tSi/Lji0pzUosPMZoCLZ/ILCWa
+        nA+M47ySeENTQ3MLS0NzY3NjMwslcd4OgYMxQgLpiSWp2ampBalFMH1MHJxSDYzJ6SfeKTR/
+        ur9yc0RMRsKRPqW481K9lQftJpcy1ZVeleA76zgvN2P2u9aOINNFb65eV043Ou7U90LVxyJU
+        sqixPDW0aEr2AoM1QZ+i9bMt6leW77/vuF/fVK7sxrnc2i1JuZVnDptZlD5/05co/VZ2+dk8
+        C+kibp6tr2fqzUjZWWi8vcDEXImlOCPRUIu5qDgRAG53aYyrAgAA
+X-CMS-MailID: 20200713144331eucas1p25911c4ffa9315f632d8f6dd833588981
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200713144331eucas1p25911c4ffa9315f632d8f6dd833588981
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200713144331eucas1p25911c4ffa9315f632d8f6dd833588981
+References: <CGME20200713144331eucas1p25911c4ffa9315f632d8f6dd833588981@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vaibhav Gupta <vaibhavgupta40@gmail.com> writes:
+Hi All,
 
-> Linux Kernel Mentee: Remove Legacy Power Management.
->
-> The purpose of this patch series is to remove legacy power management callbacks
-> from amd ethernet drivers.
->
-> The callbacks performing suspend() and resume() operations are still calling
-> pci_save_state(), pci_set_power_state(), etc. and handling the power management
-> themselves, which is not recommended.
->
-> The conversion requires the removal of the those function calls and change the
-> callback definition accordingly and make use of dev_pm_ops structure.
->
-> All patches are compile-tested only.
->
-> Vaibhav Gupta (2):
->   ipw2100: use generic power management
->   ipw2200: use generic power management
->
->  drivers/net/wireless/intel/ipw2x00/ipw2100.c | 31 +++++---------------
->  drivers/net/wireless/intel/ipw2x00/ipw2200.c | 30 +++++--------------
+Thanks for comments.
 
-amd ethernet drivers? That must be a copy paste error. But no need to
-resend because of this.
+Changes since v8:
+- fixed typo in function name,
+- removed cocci script (added by mistake)
+
+Changes since v7:
+- improved commit message
+- added R-Bs
+
+Changes since v6:
+- removed leftovers from old naming scheme in commit descritions,
+- added R-Bs.
+
+Changes since v5:
+- removed patch adding macro, dev_err_probe(dev, PTR_ERR(ptr), ...) should be used instead,
+- added dev_dbg logging in case of -EPROBE_DEFER,
+- renamed functions and vars according to comments,
+- extended docs,
+- cosmetics.
+
+Original message (with small adjustments):
+
+Recently I took some time to re-check error handling in drivers probe code,
+and I have noticed that number of incorrect resource acquisition error handling
+increased and there are no other propositions which can cure the situation.
+
+So I have decided to resend my old proposition of probe_err helper which should
+simplify resource acquisition error handling, it also extend it with adding defer
+probe reason to devices_deferred debugfs property, which should improve debugging
+experience for developers/testers.
+
+I have also added two patches showing usage and benefits of the helper.
+
+My dirty/ad-hoc cocci scripts shows that this helper can be used in at least 2700 places
+saving about 3500 lines of code.
+
+Regards
+Andrzej
+
+
+Andrzej Hajda (4):
+  driver core: add device probe log helper
+  driver core: add deferring probe reason to devices_deferred property
+  drm/bridge/sii8620: fix resource acquisition error handling
+  drm/bridge: lvds-codec: simplify error handling
+
+ drivers/base/base.h                  |  3 ++
+ drivers/base/core.c                  | 46 ++++++++++++++++++++++++++++
+ drivers/base/dd.c                    | 23 +++++++++++++-
+ drivers/gpu/drm/bridge/lvds-codec.c  | 10 ++----
+ drivers/gpu/drm/bridge/sil-sii8620.c | 21 ++++++-------
+ include/linux/device.h               |  3 ++
+ 6 files changed, 86 insertions(+), 20 deletions(-)
 
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.17.1
+
