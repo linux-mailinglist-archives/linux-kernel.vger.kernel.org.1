@@ -2,112 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3709821D8E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0196C21DAD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbgGMOsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729772AbgGMOsS (ORCPT
+        id S1729946AbgGMPy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:54:59 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:56304 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729644AbgGMPy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:48:18 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D4A8C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:48:18 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k6so16860532wrn.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=SqLpNbrWbVZ1ZcHNvqUNkPn7eaBYfUTrAesyLzeaaYk=;
-        b=OavEDpb0LRY6G1J+nhTH6zmCvIPkcUpsy7v/Jf+/PjPbGNj+AWgbJCfAFA9N1C+yBK
-         n2VxAtw3IajL9I0XEXRaEdsB8FkgEBBX4kEHm06tvJ0ji3FITv1OE8tnNWnPnnBMnUrj
-         BUM9O5J5vghrq5zsSmxaqQnTeLnGV04q4+9HxZdMeBZ0+zS9MXnq7ZU8KyY0eJqbRFFE
-         W1tfFGTAbPBNPOfa9nFekDi5tjcp0QlJOl4JDXrzFsB5bkaAYJL53HxqQ/tj6jISt4Xf
-         6iGUNVAmSwmszzkYjoIDsygaKitJmqnSVJIxXVSOyrQlW22uZaRo/7JbEpVjLZ3/9XVE
-         UjMw==
+        Mon, 13 Jul 2020 11:54:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594655697;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c4HkFhEtHUd4HflwBh60DMnTvo0/5vgOKgf0NAOSu2Q=;
+        b=iba9h+bfhStZOx1rlFOSfi8tp+8Yzp5dIv/jPje8GhFUcbgk61/xupx5XAUrYBao7zpIWH
+        f4RHp//8dTf461aHnMc7L+dNFIgy4Olw9BlmZTISBnixdTxB/PtLlAyCS/5RxiGFSJgiZa
+        OSCmWUc7JV5/kfHy7WSU06AtfXXUl0c=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-Hj59kba0OJyXJ-E7ulODWQ-1; Mon, 13 Jul 2020 11:54:55 -0400
+X-MC-Unique: Hj59kba0OJyXJ-E7ulODWQ-1
+Received: by mail-ed1-f69.google.com with SMTP id x20so21485965edr.20
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:54:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references;
-        bh=SqLpNbrWbVZ1ZcHNvqUNkPn7eaBYfUTrAesyLzeaaYk=;
-        b=IXxgUO6VvU4T0MZXsn9i0SZI1F8JDKAQmnKmsO9AVek4qxIxEUZlIWPBCtP9a6usCX
-         rkYwKH1dReX3p4r9XI9qPlEBW/brZ66ZvDKoRhy8nM8StwJtR/OJVM7v1Kb4zLA3i2+F
-         b+1Zn3hw0rbp6r7I2e0Rgxdy3FfdPwVcLGUetXbUq2yVq2l2E5VJtm5/NzkwXzTk6OBb
-         DbeWxxOo57qmoKjuHhJ4JFB8xAQS6FlfaVF7YEfiv6ZRz+bshEMjZxVb1XSzppDJjRVx
-         mbmc0zLTaixaroY1SO3pQ0/B2U+AiogIPynViK6yEN4S0ltP3E0jVtHsrXi+jWtnoczR
-         /RDg==
-X-Gm-Message-State: AOAM532ropvkZ5CYLHsMKHiX1zrNDbWHUkFf75bnZqT9l3FH0HH+jbrF
-        IXTLpgqp0KnUDJXqissqtNPyv6dR
-X-Google-Smtp-Source: ABdhPJz6OYaI9f9AbQQUklXdfTvoboI7v15Jwy6JRK/aFx/FGtqZ4n2oviWBpCFzVE+GFP8PJTCJzg==
-X-Received: by 2002:adf:eec8:: with SMTP id a8mr81009818wrp.421.1594651692234;
-        Mon, 13 Jul 2020 07:48:12 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id u17sm23369080wrp.70.2020.07.13.07.48.09
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=c4HkFhEtHUd4HflwBh60DMnTvo0/5vgOKgf0NAOSu2Q=;
+        b=d0pG+jQ/ZTDJ+7Scg6qV4LBE0u5EBOlRQhapqlApkP4mdNa+RwliYDdUaOrwCKyDAo
+         cP8HtkOarySSXV+bIQ/Eqb0zrBiM5tblcsLzsf3QwCpm/QkqEkCFWzN6A7FLp+H9fw6F
+         IGhb2r1QE007yLJyNpDHldNSChusJGjGrr6FQNuLrHFZx6p67l6R82O0oDrieyI0Deyx
+         aPdlZyvLP10vbWCZZuxUjxXiqgk4Lbq/2ANP18McBcX0s4O1Y4PHELCqxQQURqM1/ZBD
+         m2J98mXIys4rMVG70vmkzbARvSrvf1Svw+ic5zk/RdB70wB0xgZpRtEqnkOfYS2LKM4E
+         XUdA==
+X-Gm-Message-State: AOAM533IKEjKkZ3YkORFz3Ung+5CpwU4Kqln8sKoI6iitTTZbyDN98UB
+        SEbn2ojE0ZdGprL/1ny9HBWNZrzEvE2IHf5W7P1RoSMxODvBduzq/mH6Z2t55Fhi+wqiuAUu7i0
+        7LyXZ30XdvhlYuazXboHUr/QV
+X-Received: by 2002:a05:6402:706:: with SMTP id w6mr65696edx.326.1594655694268;
+        Mon, 13 Jul 2020 08:54:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJznVVkXb8tZQBC8cUiPuWf5rzFbZC7jNTHiR2OBCPWlvuAADZEY+tKdQhcJDKWq866mlZGEww==
+X-Received: by 2002:a05:6402:706:: with SMTP id w6mr65681edx.326.1594655694076;
+        Mon, 13 Jul 2020 08:54:54 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id l22sm10021336ejr.98.2020.07.13.08.54.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 07:48:10 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Subject: [PATCH 3/3] habanalabs: update hl_boot_if.h from firmware
-Date:   Mon, 13 Jul 2020 18:54:24 +0300
-Message-Id: <20200713155424.24721-3-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200713155424.24721-1-oded.gabbay@gmail.com>
-References: <20200713155424.24721-1-oded.gabbay@gmail.com>
+        Mon, 13 Jul 2020 08:54:53 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: nVMX: properly pad struct kvm_vmx_nested_state_hdr
+In-Reply-To: <20200713151750.GA29901@linux.intel.com>
+References: <20200713082824.1728868-1-vkuznets@redhat.com> <20200713151750.GA29901@linux.intel.com>
+Date:   Mon, 13 Jul 2020 17:54:52 +0200
+Message-ID: <878sfntnoz.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the boot interface file from the latest version from firmware.
-Defines for secure boot were added.
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
----
- .../misc/habanalabs/include/common/hl_boot_if.h    | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+> On Mon, Jul 13, 2020 at 10:28:24AM +0200, Vitaly Kuznetsov wrote:
+>> Holes in structs which are userspace ABI are undesireable.
+>> 
+>> Fixes: 83d31e5271ac ("KVM: nVMX: fixes for preemption timer migration")
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  Documentation/virt/kvm/api.rst  | 2 +-
+>>  arch/x86/include/uapi/asm/kvm.h | 2 +-
+>>  2 files changed, 2 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+>> index 320788f81a05..7beccda11978 100644
+>> --- a/Documentation/virt/kvm/api.rst
+>> +++ b/Documentation/virt/kvm/api.rst
+>> @@ -4345,7 +4345,7 @@ Errors:
+>>  	struct {
+>>  		__u16 flags;
+>>  	} smm;
+>> -
+>> +	__u16 pad;
+>
+> I don't think this is sufficient.  Before 83d31e5271ac, the struct was:
+>
 
-diff --git a/drivers/misc/habanalabs/include/common/hl_boot_if.h b/drivers/misc/habanalabs/include/common/hl_boot_if.h
-index c22d134e73af..bb67cafc6e00 100644
---- a/drivers/misc/habanalabs/include/common/hl_boot_if.h
-+++ b/drivers/misc/habanalabs/include/common/hl_boot_if.h
-@@ -44,6 +44,15 @@
-  *					The NIC FW loading and initialization
-  *					failed. This means NICs are not usable.
-  *
-+ * CPU_BOOT_ERR0_SECURITY_NOT_RDY	Chip security initialization has been
-+ *					started, but is not ready yet - chip
-+ *					cannot be accessed.
-+ *
-+ * CPU_BOOT_ERR0_SECURITY_FAIL		Security related tasks have failed.
-+ *					The tasks are security init (root of
-+ *					trust), boot authentication (chain of
-+ *					trust), data packets authentication.
-+ *
-  * CPU_BOOT_ERR0_ENABLED		Error registers enabled.
-  *					This is a main indication that the
-  *					running FW populates the error
-@@ -57,6 +66,8 @@
- #define CPU_BOOT_ERR0_BMC_WAIT_SKIPPED		(1 << 4)
- #define CPU_BOOT_ERR0_NIC_DATA_NOT_RDY		(1 << 5)
- #define CPU_BOOT_ERR0_NIC_FW_FAIL		(1 << 6)
-+#define CPU_BOOT_ERR0_SECURITY_NOT_RDY		(1 << 7)
-+#define CPU_BOOT_ERR0_SECURITY_FAIL		(1 << 8)
- #define CPU_BOOT_ERR0_ENABLED			(1 << 31)
- 
- enum cpu_boot_status {
-@@ -79,7 +90,10 @@ enum cpu_boot_status {
- 	CPU_BOOT_STATUS_BMC_WAITING_SKIPPED, /* deprecated - will be removed */
- 	/* Last boot loader progress status, ready to receive commands */
- 	CPU_BOOT_STATUS_READY_TO_BOOT = 15,
-+	/* Internal Boot finished, ready for boot-fit */
- 	CPU_BOOT_STATUS_WAITING_FOR_BOOT_FIT = 16,
-+	/* Internal Security has been initialized, device can be accessed */
-+	CPU_BOOT_STATUS_SECURITY_READY = 17,
- };
- 
- enum kmd_msg {
+Before 850448f35aaf. Thanks, I was too lazy to check that.
+
+> 	struct kvm_vmx_nested_state_hdr {
+> 		__u64 vmxon_pa;
+> 		__u64 vmcs12_pa;
+>
+> 		struct {
+> 			__u16 flags;
+> 		} smm;
+> 	};
+>
+> which most/all compilers will pad out to 24 bytes on a 64-bit system.  And
+> although smm.flags is padded to 8 bytes, it's initialized as a 2 byte value.
+>
+> 714             struct kvm_vmx_nested_state_hdr boo;
+> 715             u64 val;
+> 716
+> 717             BUILD_BUG_ON(sizeof(boo) != 3*8);
+> 718             boo.smm.flags = 0;
+>    0xffffffff810148a9 <+41>:    xor    %eax,%eax
+>    0xffffffff810148ab <+43>:    mov    %ax,0x18(%rsp)
+>
+> 719
+> 720             val = *((volatile u64 *)(&boo.smm.flags));
+>    0xffffffff810148b0 <+48>:    mov    0x18(%rsp),%rax
+>
+>
+> Which means that userspace built for the old kernel will potentially send in
+> garbage for the new 'flags' field due to it being uninitialized stack data,
+> even with the layout after this patch.
+>
+> 	struct kvm_vmx_nested_state_hdr {
+> 		__u64 vmxon_pa;
+> 		__u64 vmcs12_pa;
+>
+> 		struct {
+> 			__u16 flags;
+> 		} smm;
+> 		__u16 pad;
+> 		__u32 flags;
+> 		__u64 preemption_timer_deadline;
+> 	};
+>
+> So to be backwards compatible I believe we need to add a __u32 pad as well,
+> and to not cause internal padding issues, either make the new 'flags' a
+> __u64 or pad that as well (or add and check a reserved __32).  Making flags
+> a __64 seems like the least wasteful approach, e.g.
+>
+> 	struct kvm_vmx_nested_state_hdr {
+> 		__u64 vmxon_pa;
+> 		__u64 vmcs12_pa;
+>
+> 		struct {
+> 			__u16 flags;
+> 		} smm;
+> 		__u16 pad16;
+> 		__u32 pad32;
+> 		__u64 flags;
+> 		__u64 preemption_timer_deadline;
+> 	};
+
+I see and I agree but the fix like that needs to get into 5.8 or an ABI
+breakage is guaranteed. I'll send v2 immediately, hope Paolo will take a
+look.
+
+>
+>
+>>  	__u32 flags;
+>>  	__u64 preemption_timer_deadline;
+>>    };
+>> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+>> index 0780f97c1850..aae3df1cbd01 100644
+>> --- a/arch/x86/include/uapi/asm/kvm.h
+>> +++ b/arch/x86/include/uapi/asm/kvm.h
+>> @@ -414,7 +414,7 @@ struct kvm_vmx_nested_state_hdr {
+>>  	struct {
+>>  		__u16 flags;
+>>  	} smm;
+>> -
+>> +	__u16 pad;
+>>  	__u32 flags;
+>>  	__u64 preemption_timer_deadline;
+>>  };
+>> -- 
+>> 2.25.4
+>> 
+>
+
 -- 
-2.17.1
+Vitaly
 
