@@ -2,69 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E160E21D9DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BA821D9E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729969AbgGMPL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 11:11:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38142 "EHLO mail.kernel.org"
+        id S1730043AbgGMPLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:11:46 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:59858 "EHLO smtp.al2klimov.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729308AbgGMPL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 11:11:28 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62FEC2065D;
-        Mon, 13 Jul 2020 15:11:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594653087;
-        bh=I6Vfs7pD+NK7NatL7bVzCuvg+VwzAetuiVaLfgSNDAc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=raavrl3WdV/gjrwIT6jXPmi7d598ZzBVpbJbp9TE8L1/4mL44XtWlTNEUHGlk22bU
-         aq5EJWlXQCRohdHmlaPI6zmkuKZLBrq1IjlBa+/+wijh3AQ5d4D7X1ntkV6eeCToJA
-         OqmV/TgXiGeqmqJTPFMLFbwR5J8WgtgyMY/8Yt+M=
-Date:   Mon, 13 Jul 2020 16:11:23 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Jordan Crouse <jcrouse@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        freedreno@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iommu/arm-smmu: Add a init_context_bank implementation
- hook
-Message-ID: <20200713151123.GB3072@willie-the-truck>
-References: <20200611223656.4724-1-jcrouse@codeaurora.org>
+        id S1729308AbgGMPLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 11:11:46 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id EE8AEBC0E4;
+        Mon, 13 Jul 2020 15:11:43 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     jassisinghbrar@gmail.com, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] mailbox: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 17:11:37 +0200
+Message-Id: <20200713151137.35259-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200611223656.4724-1-jcrouse@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 04:36:56PM -0600, Jordan Crouse wrote:
-> Add a new implementation hook to allow the implementation specific code
-> to tweek the context bank configuration just before it gets written.
-> The first user will be the Adreno GPU implementation to turn on
-> SCTLR.HUPCF to ensure that a page fault doesn't terminating pending
-> transactions. Doing so could hang the GPU if one of the terminated
-> transactions is a CP read.
-> 
-> This depends on the arm-smmu adreno SMMU implementation [1].
-> 
-> [1] https://patchwork.kernel.org/patch/11600943/
-> 
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> ---
-> 
->  drivers/iommu/arm-smmu-qcom.c | 13 +++++++++++++
->  drivers/iommu/arm-smmu.c      | 28 +++++++++++++---------------
->  drivers/iommu/arm-smmu.h      | 11 +++++++++++
->  3 files changed, 37 insertions(+), 15 deletions(-)
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-This looks straightforward enough, but I don't want to merge this without
-a user and Sai's series has open questions afaict.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-Will
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ drivers/mailbox/omap-mailbox.c | 2 +-
+ drivers/mailbox/ti-msgmgr.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mailbox/omap-mailbox.c b/drivers/mailbox/omap-mailbox.c
+index 5978a35aac6d..93fe08aef3ca 100644
+--- a/drivers/mailbox/omap-mailbox.c
++++ b/drivers/mailbox/omap-mailbox.c
+@@ -3,7 +3,7 @@
+  * OMAP mailbox driver
+  *
+  * Copyright (C) 2006-2009 Nokia Corporation. All rights reserved.
+- * Copyright (C) 2013-2019 Texas Instruments Incorporated - http://www.ti.com
++ * Copyright (C) 2013-2019 Texas Instruments Incorporated - https://www.ti.com
+  *
+  * Contact: Hiroshi DOYU <Hiroshi.DOYU@nokia.com>
+  *          Suman Anna <s-anna@ti.com>
+diff --git a/drivers/mailbox/ti-msgmgr.c b/drivers/mailbox/ti-msgmgr.c
+index 88047d835211..0130628f4d9d 100644
+--- a/drivers/mailbox/ti-msgmgr.c
++++ b/drivers/mailbox/ti-msgmgr.c
+@@ -2,7 +2,7 @@
+ /*
+  * Texas Instruments' Message Manager Driver
+  *
+- * Copyright (C) 2015-2017 Texas Instruments Incorporated - http://www.ti.com/
++ * Copyright (C) 2015-2017 Texas Instruments Incorporated - https://www.ti.com/
+  *	Nishanth Menon
+  */
+ 
+-- 
+2.27.0
+
