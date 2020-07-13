@@ -2,124 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C429421CCC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3993E21CCC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgGMBQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 21:16:46 -0400
-Received: from mail-bn8nam11on2067.outbound.protection.outlook.com ([40.107.236.67]:6054
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725765AbgGMBQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 21:16:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T0sRBJxy2uBAubkomYwxwZVI9YqlU6n3eoHoKEHLp+aX+NZu8TtgPjhg1sGnrm6hF9dRGJsHLpTYf0Jjw/Vlr8Kv94FuPJEZTYYaBF9f3jjuIBRSxT2DPLYN4VMTGXuP5dBshidI/FhZmgN1DJfesqLZ5z/TxbK+KmW9oajr7U5sj/eZIEjPVlDDfCkZlB6tKfuEaFPQkkd34abo4zyal97MGpLcvJ2ez+BJAWcePWhqJ5V+/DvMqtRrbUS15lPZ+BOxyMyI+QdDOTeejjXGvUS4KnXTzuV7OHmqYFGtyiuALYpCnmki7c0hftUbB3cfoBo9Z39rbvtzAm1BMvwhAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XpDrshVHXqNAA06mJqpKdST8NgabgdfvCB6qbi01dHI=;
- b=PrmKNDr6j7QwGmsC9XmxOeGRPxD9eKlxOHgGY6vDWRaM8Ydw59ZVuiHBt4DN1c7Bo8het4cuVzlXc4ISZs8ddEQflfqPOPvEItQDtnIg8g30R73o3QRaqBDA+XSME93a/h4rgP8bkB49T2Ws/Yz4u6Uafy8AL0dH4sWfJ7I3cNGyrvG/Z8HPHeGMFsZ5MG+DJKweWCC9AwSuHzbrjlA2gn69qpiGWlkN/WwvWH7RT150LAOfVfywdrPB4vn000heRFomHBgKkd1fDF4ViBj/V8yENgy7FZKnEoT0Uj0fgrFCj7GKg0v3Hmba7c4VTaMN9p9g0wZA0xoSXEKahvw80w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1727098AbgGMBZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 21:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726261AbgGMBZk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 21:25:40 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC39AC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 18:25:39 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id v8so11794087iox.2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 18:25:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XpDrshVHXqNAA06mJqpKdST8NgabgdfvCB6qbi01dHI=;
- b=qMk5iC49UkhwDs3cDe8IAeqWzZl0INoEukJk3Xeg1DKbol5mhuCTq6+EeOiwPo8XyNPNIp8d0KY0XYQvdwyqmuR6v6gt9HlYV4Kxrwh/4INkAickN+psr6F0s7kL8rZ0/RsIbi1GXnzl4/G9a7ibAyJfRUJu30p13ZZMimCwGT0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR12MB1599.namprd12.prod.outlook.com (2603:10b6:301:10::12)
- by MW2PR12MB2523.namprd12.prod.outlook.com (2603:10b6:907:11::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Mon, 13 Jul
- 2020 01:16:40 +0000
-Received: from MWHPR12MB1599.namprd12.prod.outlook.com
- ([fe80::25b9:83b0:4b17:2c63]) by MWHPR12MB1599.namprd12.prod.outlook.com
- ([fe80::25b9:83b0:4b17:2c63%12]) with mapi id 15.20.3174.025; Mon, 13 Jul
- 2020 01:16:40 +0000
-Subject: Re: [PATCH] ASoC: rt5682: Add fmw property to get name of mclk
-To:     Mark Brown <broonie@kernel.org>,
-        Akshu Agrawal <akshu.agrawal@amd.com>
-Cc:     Oder Chiou <oder_chiou@realtek.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200707100825.24792-1-akshu.agrawal@amd.com>
- <20200707103053.GF4870@sirena.org.uk>
-From:   "Agrawal, Akshu" <aagrawal2@amd.com>
-Message-ID: <a2cf09b4-5f49-ba74-060f-bec9a49d21a6@amd.com>
-Date:   Mon, 13 Jul 2020 06:46:29 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-In-Reply-To: <20200707103053.GF4870@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: PN1PR0101CA0012.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c00:e::22) To MWHPR12MB1599.namprd12.prod.outlook.com
- (2603:10b6:301:10::12)
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u7Jop7cZN8wbIaggddxP3/Gu6w2p7TP7pCxcVgLAycg=;
+        b=TNvRaDkf2mNdHTgEYOeus2qvzdfiLqm+VbESKIBr7EBw/IZ/sqvI+1191+eFf+7EiC
+         rVj8pcEsB1QN+q7vqP9nYhS4rgOb0P3DlV/pRSe9A1bRkO8OIaf9hVrC2tzI25uD2BcJ
+         N1Ph5vZoiX+NdsqPosOwqaYhTbs5XOUaJOIdNt7sJ74cTcOoNGk25++mg8KrhxRT43j3
+         2scUjHA6RABc8hZ5KHpr01pNjkuL7REhHIvG0eZb5CCCwZcDEEhVoOrmHWC6tFYdZMtr
+         6gv/VglbfbwMJSCIZ/ZuLcyi5jKHxeOKtDB15RXZSDHYy/61gVndW1OKZSmGIyFCDLsf
+         2MCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u7Jop7cZN8wbIaggddxP3/Gu6w2p7TP7pCxcVgLAycg=;
+        b=nXAwUDTQCnC0ab1/dFFT/AKaQJARZNPkbqbnnvJbr/eF88uujnkrGbnfifg88tjbqC
+         RS5v4Y7fzWyc5tWdUAm4xFzYSQC1x1o4cEJuuHycTqNRzm2XS2AC1yAZ/eh3aFq8bwrp
+         NbNBTDfwsm+c0QZf+nc8znHhIVetXHQRzcOAIWd6mV7EbI/SONJJUOEvxEsK24FJpx3O
+         SB5FJHcVDmhFZRwIGP1QUdN7nl/lRCbQfmGJm3lX0/BkedTb8l2S31LRWUzXvuxrqyrd
+         ZxDQwiVoJaLPDF4xI/uGSTd/RvkalsKEDKhcPcBsiBgmLlVLXpO/zZLz5emkCrpkl0zm
+         4Eug==
+X-Gm-Message-State: AOAM530HoHGzQrWMgLu2qPqS+nsQu5H9xQE4czegqWFlaFuoleyPOaTY
+        VfPgctvt5QbRcWUvwv2Txug=
+X-Google-Smtp-Source: ABdhPJx/Zyg7LupxAresBF+Q+aCyViNFsox+I9rjXxZ4tvJlel8knMGPudomsLg3Leck8IJbCNfLEQ==
+X-Received: by 2002:a05:6638:d05:: with SMTP id q5mr87613435jaj.2.1594603538565;
+        Sun, 12 Jul 2020 18:25:38 -0700 (PDT)
+Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:f693:9fff:fef4:238b])
+        by smtp.googlemail.com with ESMTPSA id k3sm7436436ils.8.2020.07.12.18.25.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jul 2020 18:25:38 -0700 (PDT)
+From:   Jian Cai <caij2003@gmail.com>
+Cc:     caij2003@gmail.com, jiancai@google.com, ndesaulniers@google.com,
+        manojgupta@google.com, sedat.dilek@gmail.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] x86/entry: add compatibility with IAS
+Date:   Sun, 12 Jul 2020 18:24:22 -0700
+Message-Id: <20200713012428.1039487-1-caij2003@gmail.com>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.32.35] (165.204.159.242) by PN1PR0101CA0012.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c00:e::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20 via Frontend Transport; Mon, 13 Jul 2020 01:16:37 +0000
-X-Originating-IP: [165.204.159.242]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 25408979-4206-43f3-b3c5-08d826ca657b
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2523:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW2PR12MB25230F5E97CE571E0303B864F8600@MW2PR12MB2523.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9fJ2Gt1sBxkgeM7qRjZnwVj5rsghPESa+b9qCs/mHiocx9yhfMohqxjj9tIcaXiXUOozllHe2hw13PA5KPHQPGm8Zmvc8gYG0/Y+XbfmPMwn2DCCr7yYhvU2IwGrpvTC46U5EwUPjtnFGJPpYAKxviFkc4UJJTNFEZNRD51Sv/ORIYps/uhGWEz3bi/+bT7iFA2EDUQxswe09+nu5RhTPMgNL4ONRIIBqE83SFhHsPuQINTwZjLTtxRuPtKH1adAHM4rTVC6cT7eYmQlBR9EKtKGX6Z5WCeEymCMj5Y1qCIOasZnXjJieSHwL1fY7gi5RoL7W8SvT1bPGxOCMeO2JaqOyZ8yYTcg7/aq6egvSKO6Y46YTZGfqZx3bzIE/GYQs0EwqQ6UPrSV0Og+esKYjFY0XfUcBvWVn8GpGgmoOEl8qZF7HfdPw/bhrx5RYlcBRO/SMYuTN52N2GGu5svgwg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1599.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(396003)(376002)(346002)(136003)(366004)(316002)(5660300002)(52116002)(31696002)(966005)(186003)(16526019)(2906002)(26005)(53546011)(478600001)(36756003)(6636002)(66556008)(66476007)(6486002)(956004)(4326008)(66946007)(2616005)(4744005)(6666004)(83380400001)(31686004)(8936002)(16576012)(110136005)(8676002)(54906003)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ZUCYnmpM4FKn+lyoWADz77KNHRpUqucm4j2jrO7EKpEUgLJH5+m1J+oqe1aV8SpNuR17uuLXJo17WB7ZkXhoc+JJbCs+t+ISdsM4Wl8qK4um81PKJ5Sffi1WndzA99+YFtAOD8d93USFOQudTD00d+tbzoWyGLIW0lBzLdLkW9GIL/TwLQwOVthsTcqhosS0d10H0KajoufswyCO0+UkWPBhGSSNi2jCmRPIuomHEEFKwGmCbeJzWxIdLNYeAa6YQdTzDRA7t+gm4lh/UwA7gjw2HSnvEf4GtX5BsnsASlObv+gVYkFFv2rgMqmr8r8AY2wnbh6GTFuTu/2D9YAzDYPO4X1pLyFDNfhPJbRgE5Q32HtSh4nTPOAaCergsuZF9e3LDkMDx/+vQNnc0P80TRU1E6p4VsFVVccnE2WkmN4TWwHZavQXB5ME1+MOZryyy5JzHo+GFfhlVVcFQ7RJ7qIU0TohnuYLP4TCkoTMNPc=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25408979-4206-43f3-b3c5-08d826ca657b
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1599.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2020 01:16:40.4538
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rkbt+3nxlmteEWi7bf+CAWtXjg+EXViD3EOV+vgd97DSn1lLIICvknwuy9gWvdmetg2kIJLc+RF7zuUHzMLv3A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2523
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Clang's integrated assembler does not allow symbols with non-absolute
+values to be reassigned. This patch allows the affected code to be
+compatible with IAS.
 
-On 7/7/2020 4:00 PM, Mark Brown wrote:
-> On Tue, Jul 07, 2020 at 03:38:25PM +0530, Akshu Agrawal wrote:
->> Non-dts based systems can use ACPI DSDT to pass on the mclk.
->> Thus add fmw property mclk-name to get the name of the system clk
->> and link it to rt5682 mclk.
-> ACPI doesn't support clocks at all, you need to add a clock binding to
-> ACPI first.  The idiomatic way to do this would be to have board
-> specific quirks.
+Link: https://github.com/ClangBuiltLinux/linux/issues/1043
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Jian Cai <caij2003@gmail.com>
+---
+ arch/x86/include/asm/idtentry.h | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-clk binding is present for AMD ST platform and using the same.
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index f3d70830bf2a..77beed2cd6d9 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -468,34 +468,32 @@ __visible noinstr void func(struct pt_regs *regs,			\
+  */
+ 	.align 8
+ SYM_CODE_START(irq_entries_start)
+-    vector=FIRST_EXTERNAL_VECTOR
+-    pos = .
++    i = 1
++    pos1 = .
+     .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
+ 	UNWIND_HINT_IRET_REGS
+-	.byte	0x6a, vector
++	.byte	0x6a, FIRST_EXTERNAL_VECTOR + i - 1
+ 	jmp	asm_common_interrupt
+ 	nop
+ 	/* Ensure that the above is 8 bytes max */
+-	. = pos + 8
+-    pos=pos+8
+-    vector=vector+1
++	. = pos1 + 8 * i
++	i = i + 1
+     .endr
+ SYM_CODE_END(irq_entries_start)
+ 
+ #ifdef CONFIG_X86_LOCAL_APIC
+ 	.align 8
+ SYM_CODE_START(spurious_entries_start)
+-    vector=FIRST_SYSTEM_VECTOR
+-    pos = .
++    i = 1
++    pos2 = .
+     .rept (NR_VECTORS - FIRST_SYSTEM_VECTOR)
+ 	UNWIND_HINT_IRET_REGS
+-	.byte	0x6a, vector
++	.byte	0x6a, FIRST_SYSTEM_VECTOR + i - 1
+ 	jmp	asm_spurious_interrupt
+ 	nop
+ 	/* Ensure that the above is 8 bytes max */
+-	. = pos + 8
+-    pos=pos+8
+-    vector=vector+1
++	. = pos2 + 8 * i
++	i = i + 1
+     .endr
+ SYM_CODE_END(spurious_entries_start)
+ #endif
+-- 
+2.27.0.383.g050319c2ae-goog
 
-With recent submitted patches I am making them generic for all AMD 
-platforms.
-
-Please refer patches:
-
-https://patchwork.kernel.org/patch/11658505/
-
-https://patchwork.kernel.org/patch/11658507/
-
-Thanks,
-
-Akshu
-
->
->> +	device_property_read_string(dev, "realtek,mclk-name", &rt5682->pdata.mclk_name);
->> +
-> No, this is not at all OK - you're adding this via a device property
-> which means that this will show up in the DT bindings too.
