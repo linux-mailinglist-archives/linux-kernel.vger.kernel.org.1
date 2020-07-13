@@ -2,85 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA65721CF2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E489521CF35
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgGMGIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
+        id S1729083AbgGMGJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgGMGIH (ORCPT
+        with ESMTP id S1726571AbgGMGJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:08:07 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3088BC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:08:07 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id b92so5706774pjc.4
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:08:07 -0700 (PDT)
+        Mon, 13 Jul 2020 02:09:10 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20277C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:09:10 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id z5so5577649pgb.6
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:09:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=z/f/JdaD7B9OptJVP+D83s9CjevqGzX1paaoJaaTiL4=;
-        b=MUk5eR9gmbZ+q2XjgXjWsGpnCh2PQacDaMSNE2Em5/km2ZR+EGwqi35xnVO+7hf3UP
-         WMpbSvQPTFJHGOq007Io8yzMBFVGDL0WTu/ZJFIdjtn1jQufDH6Vd8nMvdvRFSIMXRTf
-         IycBG41/WWSMt30gO0DTQzBpQph+G/3NXDf7ASW3n+s6+c8cMl6MCNY6p94Wf1m1Lzom
-         Tqc7+81mE3txN1rTbyxUWTy8XdtYHFscORTAV3NR0mOSUwUepY9cplZ5RdIngh2t6Z+Z
-         jbnXNwXtf4eKFaG1xS3rUWUjkdubTkR9W8BNF/DHzW1P13WBOIkIa6XretwtyJOmqvmf
-         Tl+A==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rj/eX87Yry4bMawv7goL3V6HwtUE4PbCYaJFfOPa4n0=;
+        b=cfUC2mwAl/yFCEEpI2JTWLQR07oRL3/ZK1qOLOpHaBBaXdr1Cot3d4xtkUn/ua0OuI
+         vx2FsPXISp0gVgegbBXR4y8hzXsCrnuQt7gYCsBbJt94R/kwk4CQK8FEbbNbVSIe90Cq
+         jAUarPk+6bOIy+1Cm4T7+tDD5vWHgjOe+GHKs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=z/f/JdaD7B9OptJVP+D83s9CjevqGzX1paaoJaaTiL4=;
-        b=VAH9y4WCq4bElQUfLfilki1aMr1eKaNxWNAgdfqBkI7miyGQ8JbeMINSMi8jbpm2sV
-         xV38hF7Vg2ROZRPTTEJqw9Z6x+dDTCRBDEwV5hZD0U88GVI/qI2SIZRyxDakxuuk67+j
-         X7bSMbeFsxQYrvRvY5FLxJdsy/uecdv8W1+Dlq4hsxNDGYYCxX8TlskXcBsloEr+t/jp
-         rXbe3+N98acNmPAmv1wCl0FIEJwLSsB+eb34D1WsW2UVhq7xYCBMlvb3VJL6LDc/GVcD
-         YBduXSKXgAtUOLLgDuRO0MP3+LZaMZiaLAYgftmBL1cXm31PWMo+xs5KO59J5PgxuOw4
-         hLPA==
-X-Gm-Message-State: AOAM5333XYzVO0VMZXImkZVIwrMRZZBcuPzLRaT2leps10hi/FcTZWC4
-        bI/rQM2mwY+ICN/S0Ng72ow2fWxXDsXyGw==
-X-Google-Smtp-Source: ABdhPJzIBiA+iECxB70iS9Jx0pjXE7SxZczFgrIhvWNR2DeyeoBU91eAVRoJW279mfSq3HoWmtjcHQ==
-X-Received: by 2002:a17:902:ab94:: with SMTP id f20mr27044914plr.232.1594620486740;
-        Sun, 12 Jul 2020 23:08:06 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id r70sm13761646pfc.109.2020.07.12.23.08.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 12 Jul 2020 23:08:06 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 14:08:00 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        mingo@redhat.com, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        daniel.lezcano@linaro.org, tglx@linutronix.de,
-        sboyd@codeaurora.org, john.stultz@linaro.org
-Subject: Re: [PATCH 0/5] arm64: perf: Proper cap_user_time* support
-Message-ID: <20200713060800.GA15400@leoy-ThinkPad-X240s>
-References: <20200512124058.833263033@infradead.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rj/eX87Yry4bMawv7goL3V6HwtUE4PbCYaJFfOPa4n0=;
+        b=ReTXkjFGN413H6c+DSI++Y/EXi3tSaa3H1k/xEshvsTswkZ83A3iUmVq4qnO5iy8+f
+         4j6eOGk9f7626RsfL8Cj2BHnynycrFttyFgYX3bfKJDVd8F90R9YNazmyVIlTEHg0bjk
+         nBo58wv+GVSsR1xDf4DkwFJtzvI1rwH5i3YidvkL8AHLxduBw2xyU2sp9NRDiAtT3JCb
+         EsnNfTSrM2WLjWpwpkWxww02khpFbgfwsN3m03mDNXMovBaKb0lAxFxswAEoSVf+bWmk
+         EujgeJOSeCqsmz0ZZhjwpusMR6AZ/DaEPga1WeohYCLAKlITW1JH049k44qReZopyt+m
+         R+BA==
+X-Gm-Message-State: AOAM5305zML3xu9+NEUAow5rkIPMi8q01dVs6lKVdwSa0yNH7tqaABre
+        fkCZiafRA5O3aaekQmbv0kH9ceu+WBE=
+X-Google-Smtp-Source: ABdhPJwF8zIyl43VHuHmuurPhhu5gPK9zQSRIVs0CZLKEdAaJwNtmStknGde5p+nOZk/leF1JQ7C+A==
+X-Received: by 2002:aa7:9a92:: with SMTP id w18mr30369024pfi.233.1594620549625;
+        Sun, 12 Jul 2020 23:09:09 -0700 (PDT)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
+        by smtp.gmail.com with ESMTPSA id c134sm13134934pfc.115.2020.07.12.23.09.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jul 2020 23:09:08 -0700 (PDT)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Maoguang Meng <maoguang.meng@mediatek.com>
+Cc:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: [PATCH v3 00/16] mtk-vcodec: venc: support for MT8183 and v4l2-compliance fixes
+Date:   Mon, 13 Jul 2020 15:08:26 +0900
+Message-Id: <20200713060842.471356-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200512124058.833263033@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+This is the third version of the series adding support for the MT8183
+encoder (1-9) and fixing v4l2-compliance tests (10-16).
 
-On Tue, May 12, 2020 at 02:40:58PM +0200, Peter Zijlstra wrote:
-> Prompted by Leo's patches, here a series that corrects the arm64 perf cap_user_time situation.
+Changes since v2:
+* Carried new Acked-bys from mtk-vcodec maintainer,
+* Removed 2 patches that addressed what was in fact a bug in
+  v4l2-compliance,
+* Moved DT bindings patches before the code implementing them as
 
-I checked the latest mainline kernel code base, found this patch set
-are missed to merge into it.
+Changes since v1:
+* Checked that no regressions against v4l2-compliance were introduced,
+* Fixed 9 failing v4l2-compliance tests,
+* Removed 1 cleanup patch of contested utility,
+* Carried Acked-bys and Reviewed-bys from mtk-vcodec maintainer.
 
-Could you confirm if this is missed or any other reasons to hold on it?
+Alexandre Courbot (12):
+  dt-bindings: media: mtk-vcodec: document SCP node
+  media: mtk-vcodec: venc: handle firmware version field
+  media: mtk-vcodec: venc: specify bitrate range per-chip
+  media: mtk-vcodec: venc: specify supported formats per-chip
+  dt-bindings: media: document mediatek,mt8183-vcodec-enc
+  Revert "media: mtk-vcodec: Remove extra area allocation in an input
+    buffer on encoding"
+  media: mtk-vcodec: venc support MIN_OUTPUT_BUFFERS control
+  media: mtk-vcodec: venc: set OUTPUT buffers field to V4L2_FIELD_NONE
+  media: mtk-vcodec: venc: use platform data for ENUM_FRAMESIZES
+  media: mtk-vcodec: venc: support ENUM_FRAMESIZES on OUTPUT formats
+  media: mtk-vcodec: venc: set default time per frame
+  media: mtk-vcodec: venc: fix invalid time per frame in S_PARM
 
-Thanks,
-Leo
+Yunfei Dong (4):
+  media: mtk-vcodec: abstract firmware interface
+  media: mtk-vcodec: add SCP firmware ops
+  media: mtk-vcodec: venc: support SCP firmware
+  media: mtk-vcodec: add support for MT8183 encoder
+
+ .../bindings/media/mediatek-vcodec.txt        |   9 +-
+ drivers/media/platform/Kconfig                |   1 +
+ drivers/media/platform/mtk-vcodec/Makefile    |   4 +-
+ .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  53 ++--
+ .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   |   1 -
+ .../platform/mtk-vcodec/mtk_vcodec_drv.h      |  38 ++-
+ .../platform/mtk-vcodec/mtk_vcodec_enc.c      | 211 ++++++++--------
+ .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  | 149 ++++++++----
+ .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   |   2 -
+ .../media/platform/mtk-vcodec/mtk_vcodec_fw.c | 228 ++++++++++++++++++
+ .../media/platform/mtk-vcodec/mtk_vcodec_fw.h |  38 +++
+ .../platform/mtk-vcodec/mtk_vcodec_util.c     |   1 -
+ .../platform/mtk-vcodec/vdec/vdec_h264_if.c   |   1 -
+ .../platform/mtk-vcodec/vdec/vdec_vp8_if.c    |   1 -
+ .../platform/mtk-vcodec/vdec/vdec_vp9_if.c    |   1 -
+ .../media/platform/mtk-vcodec/vdec_drv_base.h |   2 -
+ .../media/platform/mtk-vcodec/vdec_drv_if.c   |   1 -
+ .../media/platform/mtk-vcodec/vdec_vpu_if.c   |  12 +-
+ .../media/platform/mtk-vcodec/vdec_vpu_if.h   |  11 +-
+ .../platform/mtk-vcodec/venc/venc_h264_if.c   |  80 ++++--
+ .../platform/mtk-vcodec/venc/venc_vp8_if.c    |  11 +-
+ .../media/platform/mtk-vcodec/venc_drv_if.c   |   1 -
+ .../media/platform/mtk-vcodec/venc_drv_if.h   |   6 +
+ .../media/platform/mtk-vcodec/venc_ipi_msg.h  |  24 +-
+ .../media/platform/mtk-vcodec/venc_vpu_if.c   | 141 ++++++++---
+ .../media/platform/mtk-vcodec/venc_vpu_if.h   |   8 +-
+ 26 files changed, 756 insertions(+), 279 deletions(-)
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
+ create mode 100644 drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.h
+
+--
+2.27.0.383.g050319c2ae-goog
+
