@@ -2,134 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62B021CCCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6CE21CCD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgGMB3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 21:29:51 -0400
-Received: from relay3.mymailcheap.com ([217.182.119.155]:39489 "EHLO
-        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgGMB3u (ORCPT
+        id S1727919AbgGMBja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 21:39:30 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:46561 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbgGMBj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 21:29:50 -0400
-X-Greylist: delayed 171818 seconds by postgrey-1.27 at vger.kernel.org; Sun, 12 Jul 2020 21:29:48 EDT
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id 537D43F1CC;
-        Mon, 13 Jul 2020 03:29:46 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 30D9D2A8BF;
-        Mon, 13 Jul 2020 03:29:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1594603786;
-        bh=DzARRrthKRNYxBkHCyNw7Uw/T70usSbNBg4MU6C4hEA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=atIIb9266zB7mZ5nb5Qkxm7bodxDyGsaFXLKbMbdeb1lGdLMzzalIxJYYmRTg3232
-         tPg2rViYVK4SYpAMnTolhNGGoLCVmmujM8hwh8SSaYP9QX1CQyFxCJvZesx9IO/aV7
-         uAsbcQCPbhs7Eq7W6R0oo5x1Yz25rAo3sBSYRfCY=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xFHZdzoDGxTk; Mon, 13 Jul 2020 03:29:44 +0200 (CEST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Mon, 13 Jul 2020 03:29:44 +0200 (CEST)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id EDA1E4013E;
-        Mon, 13 Jul 2020 01:29:41 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="RKBl6Ztq";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [0.0.0.0] (unknown [203.86.239.89])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 0CD8A4013E;
-        Mon, 13 Jul 2020 01:29:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
-        s=default; t=1594603779;
-        bh=DzARRrthKRNYxBkHCyNw7Uw/T70usSbNBg4MU6C4hEA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=RKBl6ZtqeDEqk8COpA4GInyYpTDhbFfTxnoz816sBdFjWa8kK0if0iGaMmFqA4YKE
-         3lyuMGzdsAwUjorJJn1IpAzs33hga4tKDcRfVX6VJ1MVYztEyM1c7dKOk0qvSAtWy0
-         l4ABvFvaR/cON+zl7QcvNGT3CRuG7dIYdq2fI8Fw=
-Subject: Re:
- arch/mips/alchemy/devboards/db1300.c:(.text.db1300_wm97xx_probe+0x2c):
- undefined reference to `wm97xx_config_gpio'
-To:     linux-mips@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        manuel.lauss@gmail.com
-References: <202007121804.QJogPzGx%lkp@intel.com>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <45336876-6739-e23d-5c02-81d14ee7fb54@flygoat.com>
-Date:   Mon, 13 Jul 2020 09:29:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Sun, 12 Jul 2020 21:39:29 -0400
+Received: by mail-pl1-f195.google.com with SMTP id k5so4779967plk.13;
+        Sun, 12 Jul 2020 18:39:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=2hoCXmRUkmSAyEgVETfaP+qlFXIyx2KPK0JhSxhlAFQ=;
+        b=Iz3Q5Cr2PUlppj0bHpxo4QtSjOBG6jxjPVn+VWDXvoi+7FFf06H/xdcZmC1t23Fj/P
+         UBr/3cIlaQQd7RsLI99Gffn7sW+/Bvvs9qycmiv7jqXE8nEJUugnxOwFxwAHKZnp4I2W
+         8+PBJeO8CEWsA4qf6p/OmAJ/gX4+XHNpY8ZcsZU0cXte9oi0KFXpInwxgxBO5EItnHCs
+         g85IUumwq9NLf+hI5bTauNoAjzQ2gU6/89MUFi4rXftMXOzIlK8FeGKb4Ad4g/VHPIPE
+         /Tx/EfYW4kZYXBV6nD7TdplWEZpiWm2z8Prml44bU6tOQAF68PGjFjuFqDxAznAkzEE0
+         PkpQ==
+X-Gm-Message-State: AOAM532+C1PIAILD/hlx+91la6O5aoifmpvFJSrwmTr0Xd0UIxRnNPSG
+        3QZpHiGuNbCib+F4DseAHmU=
+X-Google-Smtp-Source: ABdhPJzdDeA2xlKZ1yna59khRDATChQUzpmgQPewoUCIxQ+qmCV51cmLCQn6MTNl1wknjsieUJRCKA==
+X-Received: by 2002:a17:902:a50d:: with SMTP id s13mr59728593plq.149.1594604368866;
+        Sun, 12 Jul 2020 18:39:28 -0700 (PDT)
+Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id m31sm13186578pjb.52.2020.07.12.18.39.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Jul 2020 18:39:28 -0700 (PDT)
+Subject: Re: [PATCH v3] scsi: ufs: Cleanup completed request without interrupt
+ notification
+To:     Stanley Chu <stanley.chu@mediatek.com>, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, avri.altman@wdc.com,
+        alim.akhtar@samsung.com, jejb@linux.ibm.com
+Cc:     beanhuo@micron.com, asutoshd@codeaurora.org, cang@codeaurora.org,
+        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com
+References: <20200706132113.21096-1-stanley.chu@mediatek.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <3d509c4b-d66d-2a4a-5fbd-a50a0610ad31@acm.org>
+Date:   Sun, 12 Jul 2020 18:39:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <202007121804.QJogPzGx%lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: EDA1E4013E
-X-Spamd-Result: default: False [1.40 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         RCPT_COUNT_FIVE(0.00)[5];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[flygoat.com:+];
-         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
-         RCVD_IN_DNSWL_NONE(0.00)[213.133.102.83:from];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         FREEMAIL_CC(0.00)[lists.01.org,vger.kernel.org,alpha.franken.de,gmail.com];
-         SUSPICIOUS_RECIPS(1.50)[];
-         RCVD_COUNT_TWO(0.00)[2]
-X-Rspamd-Server: mail20.mymailcheap.com
+In-Reply-To: <20200706132113.21096-1-stanley.chu@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020/7/12 18:01, kernel test robot 写道:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   0aea6d5c5be33ce94c16f9ab2f64de1f481f424b
-> commit: ff487d41036035376e47972c7c522490b839ab37 MIPS: Truncate link address into 32bit for 32bit kernel
-> date:   9 weeks ago
-> config: mips-randconfig-c023-20200712 (attached as .config)
-> compiler: mipsel-linux-gcc (GCC) 9.3.0
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->     mipsel-linux-ld: arch/mips/alchemy/devboards/db1300.o: in function `db1300_wm97xx_probe':
+On 2020-07-06 06:21, Stanley Chu wrote:
+> If somehow no interrupt notification is raised for a completed request
+> and its doorbell bit is cleared by host, UFS driver needs to cleanup
+> its outstanding bit in ufshcd_abort().
 
-Well this seems unrelated with my changes.
+How is it possible that no interrupt notification is raised for a completed
+request? Is this the result of a hardware shortcoming or rather the result
+of how the UFS driver works? In the latter case, is this patch perhaps a
+workaround? If so, has it been considered to fix the root cause instead of
+implementing a workaround?
 
-Just wonder if alchemy still alive?
-Should I fix it or just drop alchemy support?
+In section 7.2.3 of the UFS specification I found the following about how
+to process request completions: "Software determines if new TRs have
+completed since step #2, by repeating one of the two methods described in
+step #2. If new TRs have completed, software repeats the sequence from step
+#3." Is such a loop perhaps missing from the Linux UFS driver?
 
-- Jiaxun
+Thanks,
 
->>> arch/mips/alchemy/devboards/db1300.c:(.text.db1300_wm97xx_probe+0x2c): undefined reference to `wm97xx_config_gpio'
->>> mipsel-linux-ld: arch/mips/alchemy/devboards/db1300.c:(.text.db1300_wm97xx_probe+0x4c): undefined reference to `wm97xx_config_gpio'
->>> mipsel-linux-ld: arch/mips/alchemy/devboards/db1300.c:(.text.db1300_wm97xx_probe+0x74): undefined reference to `wm97xx_register_mach_ops'
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Bart.
