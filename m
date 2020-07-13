@@ -2,91 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F5521E31B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 00:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3A621E323
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 00:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726582AbgGMWkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 18:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgGMWkj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 18:40:39 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC67C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:40:39 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y18so10147555lfh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:40:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HnJWx12hVJg3iJ15gjLaMo6h/qhb59V4NN6hR9JaCZg=;
-        b=eb+hINqXmN77iclaBvgzj7oKTDFR5ZM04xBhfglNmVlDSPcSKYlOucCKVU/Y+fOqyF
-         q7nuuQfOytXG4TvlsZs3ifjK68z+xAf23viuOENQPIWTMHJ6tagpGQvg7HjmxfsByic+
-         LLxLOg4FvHKTAVeuFcSKe4/SW5iR44uDXKk+4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HnJWx12hVJg3iJ15gjLaMo6h/qhb59V4NN6hR9JaCZg=;
-        b=pQR5l7mMNHdrjhw+e1D9eG8dOfOHv14i/sHVE7j39YUE1+10926VOwaJ6GY70+6t3r
-         J2lQDWPE9HNkRfVqbUnitwY4vOz9sOSm6SqL8uiWIamyzLXRqHa64LI1XcbXG8cuGafi
-         iAJAB0TuKoBfVuWbHR/ZYW/InTk0E+JEOsKlk9qmGRbZvLpB6fVAESwQHdwRy3gHDmQt
-         7vtwcR1OKLByqgZxYVYZjpfxGnHhgCcNQrZlRSXx17ct9xa/c71DuqMqTPieJAI1FTgi
-         o72Mx8rJMWnWwLjO7Ib3wcs3/zQDeY/FNOgwSiFmn0oHnXReb5+5YqrbQiT82ITy/vYC
-         hN2w==
-X-Gm-Message-State: AOAM532NrKShSV3KDX224gIkjzANeRgVc1b1nmBqU/DjW/oAGR1pyJbl
-        f+AQhfpA3sSgc7UZTtc4ANNONNqt9Ik=
-X-Google-Smtp-Source: ABdhPJxLCS/fWZ+/aN8Lz37xeAuot5ujmcfLlrIMxbn0X6CxYUEIvqVkkR9FufaPhZJ41ZLcuibCgw==
-X-Received: by 2002:ac2:5e6e:: with SMTP id a14mr636611lfr.79.1594680037482;
-        Mon, 13 Jul 2020 15:40:37 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id s4sm4872521lfc.71.2020.07.13.15.40.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 15:40:35 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id f5so20048582ljj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:40:35 -0700 (PDT)
-X-Received: by 2002:a2e:760b:: with SMTP id r11mr877324ljc.285.1594680035133;
- Mon, 13 Jul 2020 15:40:35 -0700 (PDT)
+        id S1726793AbgGMWmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 18:42:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726150AbgGMWmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 18:42:10 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D762620DD4;
+        Mon, 13 Jul 2020 22:42:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594680130;
+        bh=JbDCK7D2/GsBT9H83GAKXMujtpxLqJNPChMfE6ajF7E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XMsXBO305T47S20vtjueEv7N4nprQ2ZKXM8/nOJvrIT+gpOjlqxlvae0J9pUxEKvv
+         PGS8DhPhv8PsDLX5bh3RpqUYAhlnAllGzBBXrlpcg0D/fvFsoq45doNQUtKH5J1q3b
+         mw+vL8vouJTWcgPaIQpTpSEptjJWDbbjdNgavvtA=
+Date:   Mon, 13 Jul 2020 15:42:08 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Luo bin <luobin9@huawei.com>
+Cc:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
+        <chiqijun@huawei.com>
+Subject: Re: [PATCH net-next v1] hinic: add firmware update support
+Message-ID: <20200713154208.7d123d5e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200713140522.14600-1-luobin9@huawei.com>
+References: <20200713140522.14600-1-luobin9@huawei.com>
 MIME-Version: 1.0
-References: <20200530221127.459704-1-brgerst@gmail.com> <CAKwvOdn7Ugu_687b9CnOnL8RA9hbi+ONCb10gS=3VqtkTsmduw@mail.gmail.com>
- <CAKwvOdm4gMe_-DcB_H4mDGm8Yy++_7G20sg9xuZoom-rF2j1Sw@mail.gmail.com> <CAKwvOdmGtZtqF5f-5x0n4GNCWLOnrk2r6e3X2XHGmoOL7f7u0g@mail.gmail.com>
-In-Reply-To: <CAKwvOdmGtZtqF5f-5x0n4GNCWLOnrk2r6e3X2XHGmoOL7f7u0g@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 13 Jul 2020 15:40:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=winDAeDTAe33QVoRvTJELMDjQpYPqSPcNwSk+SwPrav=g@mail.gmail.com>
-Message-ID: <CAHk-=winDAeDTAe33QVoRvTJELMDjQpYPqSPcNwSk+SwPrav=g@mail.gmail.com>
-Subject: Re: [PATCH v2 00/10] x86: Clean up percpu operations
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Alistair Delva <adelva@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 3:24 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Otherwise, is there any additional feedback on this series or is it good to go?
+On Mon, 13 Jul 2020 22:05:22 +0800 Luo bin wrote:
+> add support to update firmware by the devlink flashing API
+> 
+> Signed-off-by: Luo bin <luobin9@huawei.com>
+> ---
+> V0~V1: remove the implementation from ethtool to devlink
 
-I've lost sight of the series. I'm sure it is fine, but maybe you can
-resend it to me (in private, if it's already been going out on the
-mailing lists and everybody else is completely fed up with it).
+Thanks!
 
-And no, pointing to the "plus this hunk" with a web link isn't what I
-was looking for ;)
+> +static int check_image_device_type(struct hinic_dev *nic_dev,
+> +				   u32 image_device_type)
+> +{
+> +	struct hinic_comm_board_info board_info = {0};
+> +
+> +	if (image_device_type) {
+> +		if (!hinic_get_board_info(nic_dev->hwdev, &board_info)) {
+> +			if (image_device_type == board_info.info.board_type)
+> +				return true;
 
-             Linus
+Please simplify this, you shouldn't need more than 1 indentation level
+here.
+
+> +			dev_err(&nic_dev->hwdev->hwif->pdev->dev, "The device type of upgrade file doesn't match the device type of current firmware, please check the upgrade file\n");
+> +			dev_err(&nic_dev->hwdev->hwif->pdev->dev, "The image device type: 0x%x, firmware device type: 0x%x\n",
+> +				image_device_type, board_info.info.board_type);
+> +
+> +			return false;
+> +		}
+> +	}
+> +
+> +	return false;
+> +}
+> +
+> +static int hinic_flash_fw(struct hinic_dev *nic_dev, const u8 *data,
+> +			  struct host_image_st *host_image, u32 boot_flag)
+
+You seem to always pass boot_flag = 0, AFAICT, please remove the
+parameter and related code.
+
+> +{
+> +	u32 section_remain_send_len, send_fragment_len, send_pos, up_total_len;
+> +	struct hinic_cmd_update_fw *fw_update_msg = NULL;
+> +	u32 section_type, section_crc, section_version;
+> +	u32 i, len, section_len, section_offset;
+> +	u16 out_size = sizeof(*fw_update_msg);
+> +	int total_len_flag = 0;
+> +	int err;
+
+> +int hinic_devlink_register(struct devlink *devlink, struct device *dev)
+> +{
+> +	int err;
+> +
+> +	err = devlink_register(devlink, dev);
+> +
+> +	return err;
+
+No need for temporary variable.
+
+> +}
+> +
+> +void hinic_devlink_unregister(struct devlink *devlink)
+> +{
+> +	devlink_unregister(devlink);
+> +}
+
+> diff --git a/drivers/net/ethernet/huawei/hinic/hinic_main.c b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+> index 834a20a0043c..1dfa09411590 100644
+> --- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
+> +++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/semaphore.h>
+>  #include <linux/workqueue.h>
+>  #include <net/ip.h>
+> +#include <net/devlink.h>
+>  #include <linux/bitops.h>
+>  #include <linux/bitmap.h>
+>  #include <linux/delay.h>
+> @@ -25,6 +26,7 @@
+>  
+>  #include "hinic_hw_qp.h"
+>  #include "hinic_hw_dev.h"
+> +#include "hinic_devlink.h"
+>  #include "hinic_port.h"
+>  #include "hinic_tx.h"
+>  #include "hinic_rx.h"
+> @@ -1075,9 +1077,11 @@ static int nic_dev_init(struct pci_dev *pdev)
+>  	struct hinic_rx_mode_work *rx_mode_work;
+>  	struct hinic_txq_stats *tx_stats;
+>  	struct hinic_rxq_stats *rx_stats;
+> +	struct hinic_dev *devlink_dev;
+>  	struct hinic_dev *nic_dev;
+>  	struct net_device *netdev;
+>  	struct hinic_hwdev *hwdev;
+> +	struct devlink *devlink;
+>  	int err, num_qps;
+>  
+>  	hwdev = hinic_init_hwdev(pdev);
+> @@ -1086,6 +1090,15 @@ static int nic_dev_init(struct pci_dev *pdev)
+>  		return PTR_ERR(hwdev);
+>  	}
+>  
+> +	devlink = hinic_devlink_alloc();
+> +	if (!devlink) {
+> +		dev_err(&pdev->dev, "Hinic devlink alloc failed\n");
+> +		err = -ENOMEM;
+> +		goto err_devlink_alloc;
+> +	}
+> +
+> +	devlink_dev = devlink_priv(devlink);
+> +
+>  	num_qps = hinic_hwdev_num_qps(hwdev);
+>  	if (num_qps <= 0) {
+>  		dev_err(&pdev->dev, "Invalid number of QPS\n");
+> @@ -1121,6 +1134,7 @@ static int nic_dev_init(struct pci_dev *pdev)
+>  	nic_dev->sriov_info.hwdev = hwdev;
+>  	nic_dev->sriov_info.pdev = pdev;
+>  	nic_dev->max_qps = num_qps;
+> +	nic_dev->devlink = devlink;
+>  
+>  	hinic_set_ethtool_ops(netdev);
+>  
+> @@ -1146,6 +1160,11 @@ static int nic_dev_init(struct pci_dev *pdev)
+>  		goto err_workq;
+>  	}
+>  
+> +	memcpy(devlink_dev, nic_dev, sizeof(*nic_dev));
+
+Please create a separate structure for the devlink-level priv.
+This doesn't look right.
+
+> +	err = hinic_devlink_register(devlink, &pdev->dev);
+> +	if (err)
+> +		goto err_devlink_reg;
+> +
+>  	pci_set_drvdata(pdev, netdev);
+>  
+>  	err = hinic_port_get_mac(nic_dev, netdev->dev_addr);
+
