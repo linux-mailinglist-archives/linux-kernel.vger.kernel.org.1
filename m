@@ -2,112 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EA221D8D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4260821D967
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730119AbgGMOo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:44:28 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9541 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729703AbgGMOo2 (ORCPT
+        id S1729869AbgGMPDX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Jul 2020 11:03:23 -0400
+Received: from mail.fireflyinternet.com ([77.68.26.236]:62706 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729593AbgGMPDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:44:28 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f0c72dc0000>; Mon, 13 Jul 2020 07:42:36 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 13 Jul 2020 07:44:28 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 13 Jul 2020 07:44:28 -0700
-Received: from [10.26.72.101] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 13 Jul
- 2020 14:44:18 +0000
-Subject: Re: [PATCH v2 2/2] arm64: tlb: Use the TLBI RANGE feature in arm64
-To:     Zhenyu Ye <yezhenyu2@huawei.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <suzuki.poulose@arm.com>, <maz@kernel.org>,
-        <steven.price@arm.com>, <guohanjun@huawei.com>, <olof@lixom.net>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
-        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
-        <kuhn.chenqun@huawei.com>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200710094420.517-1-yezhenyu2@huawei.com>
- <20200710094420.517-3-yezhenyu2@huawei.com>
- <4040f429-21c8-0825-2ad4-97786c3fe7c1@nvidia.com>
- <cee60718-ced2-069f-8dad-48941c6fc09b@huawei.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <7237888d-2168-cd8b-c83d-c8e54871793d@nvidia.com>
-Date:   Mon, 13 Jul 2020 15:44:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <cee60718-ced2-069f-8dad-48941c6fc09b@huawei.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
+        Mon, 13 Jul 2020 11:03:23 -0400
+X-Greylist: delayed 962 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Jul 2020 11:03:22 EDT
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 21804978-1500050 
+        for multiple; Mon, 13 Jul 2020 15:46:35 +0100
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594651356; bh=GMqdGNMQAH4AHg5hTa7waqJrHwyKyA4TXJmzHNKG13w=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=X0D1DS8Q43SgE5F9IDdU432zVIipKfOXH09pQUdZ9nwA/5YJw5NgTcaeOTeDp1MbU
-         ZtFrObX3/F6AItK2Kaz/Jdj5ln5HbEbuqjOpJwaB97qoVpRmi4eRHG0RAgY/w+qBO6
-         O83/VWEQOAHYks9bxeUkSDB0FMoXhXsn4MX9rmJ2TcqXT1xdefUZgAVlGNDLe2vAMI
-         LHblN/7vNqKTDmUaPDmThJlWenrobGwK1npattjHleKBjjVrwIU8LIRTbCPFjgveeQ
-         ljgVMQFJWxJBsbLsK8mvDDjQE2jrZ6uET1MeXoy3Vy2Y3ZM78D81s9qTAwEGsOEGbC
-         E7AzNNZBDWqDw==
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200713142551.423649-1-colin.king@canonical.com>
+References: <20200713142551.423649-1-colin.king@canonical.com>
+Subject: Re: [PATCH][next] drm/i915/selftest: fix an error return path where err is not being set
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Colin King <colin.king@canonical.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org
+Date:   Mon, 13 Jul 2020 15:46:35 +0100
+Message-ID: <159465159599.23097.17150763550392763778@build.alporthouse.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 13/07/2020 15:39, Zhenyu Ye wrote:
-> Hi Jon,
+Quoting Colin King (2020-07-13 15:25:51)
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> On 2020/7/13 22:27, Jon Hunter wrote:
->> After this change I am seeing the following build errors ...
->>
->> /tmp/cckzq3FT.s: Assembler messages:
->> /tmp/cckzq3FT.s:854: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
->> /tmp/cckzq3FT.s:870: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
->> /tmp/cckzq3FT.s:1095: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
->> /tmp/cckzq3FT.s:1111: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
->> /tmp/cckzq3FT.s:1964: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
->> /tmp/cckzq3FT.s:1980: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
->> /tmp/cckzq3FT.s:2286: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
->> /tmp/cckzq3FT.s:2302: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x7'
->> /tmp/cckzq3FT.s:4833: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
->> /tmp/cckzq3FT.s:4849: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
->> /tmp/cckzq3FT.s:5090: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
->> /tmp/cckzq3FT.s:5106: Error: unknown or missing operation name at operand 1 -- `tlbi rvae1is,x6'
->> /tmp/cckzq3FT.s:874: Error: attempt to move .org backwards
->> /tmp/cckzq3FT.s:1115: Error: attempt to move .org backwards
->> /tmp/cckzq3FT.s:1984: Error: attempt to move .org backwards
->> /tmp/cckzq3FT.s:2306: Error: attempt to move .org backwards
->> /tmp/cckzq3FT.s:4853: Error: attempt to move .org backwards
->> /tmp/cckzq3FT.s:5110: Error: attempt to move .org backwards
->> scripts/Makefile.build:280: recipe for target 'arch/arm64/mm/hugetlbpage.o' failed
->> make[3]: *** [arch/arm64/mm/hugetlbpage.o] Error 1
->> scripts/Makefile.build:497: recipe for target 'arch/arm64/mm' failed
->> make[2]: *** [arch/arm64/mm] Error 2
->>
->> Cheers
->> Jon
->>
+> There is an error condition where err is not being set and an uninitialized
+> garbage value in err is being returned.  Fix this by assigning err to an
+> appropriate error return value before taking the error exit path.
 > 
-> The code must be built with binutils >= 2.30.
-> Maybe I should add  a check on whether binutils supports ARMv8.4-a instructions...
+> Addresses-Coverity: ("Uninitialized scalar value")
+> Fixes: ed2690a9ca89 ("drm/i915/selftest: Check that GPR are restored across noa_wait")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Yes I believe so.
-
-Cheers
-Jon
-
--- 
-nvpublic
+Thanks, pushed.
+-Chris
