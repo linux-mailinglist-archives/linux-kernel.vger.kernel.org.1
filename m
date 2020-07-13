@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA26C21D4C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38FD21D4CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729683AbgGMLXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 07:23:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:56216 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728714AbgGMLXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 07:23:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EC2831B;
-        Mon, 13 Jul 2020 04:23:33 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9709E3F7D8;
-        Mon, 13 Jul 2020 04:23:31 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 12:23:25 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] PCI: aardvark: Don't touch PCIe registers if no card
- connected
-Message-ID: <20200713112325.GA25865@e121166-lin.cambridge.arm.com>
-References: <20200528143141.29956-1-pali@kernel.org>
- <20200702083036.12230-1-pali@kernel.org>
- <20200709113509.GB19638@e121166-lin.cambridge.arm.com>
- <20200709122208.rmfeuu6zgbwh3fr5@pali>
- <20200709144701.GA21760@e121166-lin.cambridge.arm.com>
- <20200709150959.wq6zfkcy4m6hvvpl@pali>
- <20200710091800.GA3419@e121166-lin.cambridge.arm.com>
- <20200713082747.e3q3ml3wpbszn4j7@pali>
+        id S1729697AbgGMLXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 07:23:54 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:33613 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728714AbgGMLXx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 07:23:53 -0400
+Received: by mail-oi1-f196.google.com with SMTP id k22so10702430oib.0;
+        Mon, 13 Jul 2020 04:23:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t0c5/AlvHBtEdtRei7U/gPNfoy0qpSsHEDnU5efW7LQ=;
+        b=QAX++xtorYkssSzDni1/eDKuz98dXoz6jbPhLTY/ck/D97Qlg0Xo9aFrgL/ftHyBYO
+         5oP3EmvfJBEooI+8rM4ca6xmSNR9Ml7TlswbUQuDTAoCqsGyiVLFgwyhoIz3zkQBUOaf
+         QxAe8NQTL76DYvrYXv40LZXoPzn5IlTSedRrUr4F107hlGOuahX5SA8B5jw1YKeiTm4+
+         ytnYHbHFDqnd188BaEH2tUDj7Rc+7yGE4vvJ6TVKxA1+4UTmWQwMNw/+qHCN9q02puMe
+         OaE3h7SIGo5zYQOsVfvOFaglzEoNsk6HlAqyujjDf8N4akpvgfw1DoGKKhnr7tdqbEQT
+         3VwQ==
+X-Gm-Message-State: AOAM530by5+4NxKZcXt1jyzNyFqlXJ4u6PLREKJUsMiri7sR2wI1z/Uz
+        eqagbcU4Gv3/ICI+hDHrDxz3HtrJPvGibrnKw3Q=
+X-Google-Smtp-Source: ABdhPJxpNlgDeDuBZWvoF2yBqvFfeg9xo/UBJLiMa1zcD4QIP4g207kFYL2Jsaai2+C1jcjtJtL3Ks7vlyCzIuxIFdo=
+X-Received: by 2002:aca:5c41:: with SMTP id q62mr13054270oib.148.1594639432252;
+ Mon, 13 Jul 2020 04:23:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200713082747.e3q3ml3wpbszn4j7@pali>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1594230511-24790-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594230511-24790-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594230511-24790-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 13 Jul 2020 13:23:41 +0200
+Message-ID: <CAMuHMdUoQxQ90uD0D4jV695S7weN5whZV=ypq7pUOW+q3DHW_g@mail.gmail.com>
+Subject: Re: [PATCH 1/8] dt-bindings: serial: renesas,scif: Document r8a774e1 bindings
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 10:27:47AM +0200, Pali Rohár wrote:
-> On Friday 10 July 2020 10:18:00 Lorenzo Pieralisi wrote:
-> > On Thu, Jul 09, 2020 at 05:09:59PM +0200, Pali Rohár wrote:
-> > > > I understand that but the bridge bus resource can be trimmed to just
-> > > > contain the root bus because that's the only one where there is a
-> > > > chance you can enumerate a device.
-> > > 
-> > > It is possible to register only root bridge without endpoint?
-> > 
-> > It is possible to register the root bridge with a trimmed IORESOURCE_BUS
-> > so that you don't enumerate anything other than the root port.
-> 
-> Hello Lorenzo! I really do not know how to achieve it. From code it
-> looks like that pci/probe.c scans child buses unconditionally.
-> 
-> pci-aardvark.c calls pci_host_probe() which calls functions
-> pci_scan_root_bus_bridge() which calls pci_scan_child_bus() which calls
-> pci_scan_child_bus_extend() which calls pci_scan_bridge_extend() (bridge
-> needs to be reconfigured) which then try to probe child bus via
-> pci_scan_child_bus_extend() because bridge is not card bus.
-> 
-> In function pci_scan_bridge_extend() I do not see a way how to skip
-> probing for child buses which would avoid enumerating aardvark root
-> bridge when PCIe device is not connected.
-> 
-> dmesg output contains:
-> 
->   advk-pcie d0070000.pcie: link never came up
->   advk-pcie d0070000.pcie: PCI host bridge to bus 0000:00
->   pci_bus 0000:00: root bus resource [bus 00-ff]
+On Wed, Jul 8, 2020 at 7:48 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> RZ/G2H (R8A774E1) SoC also has the R-Car gen3 compatible SCIF ports,
+> so document the SoC specific bindings.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-This resource can be limited to the root bus number only before calling
-pci_host_probe() (ie see pci_parse_request_of_pci_ranges() and code in
-pci_scan_bridge_extend() that programs primary/secondary/subordinate
-busses) but I think that only papers over the issue, it does not fix it.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-I will go over the thread again but I suspect I can merge the patch even
-though I still believe there is work to be done to understand the issue
-we are facing.
+Gr{oetje,eeting}s,
 
-Lorenzo
+                        Geert
 
->   pci_bus 0000:00: root bus resource [mem 0xe8000000-0xe8ffffff]
->   pci_bus 0000:00: root bus resource [io  0x0000-0xffff] (bus address [0xe9000000-0xe900ffff])
->   pci_bus 0000:00: scanning bus
->   pci 0000:00:00.0: [1b4b:0100] type 01 class 0x060400
->   pci 0000:00:00.0: reg 0x38: [mem 0x00000000-0x000007ff pref]
->   pci_bus 0000:00: fixups for bus
->   pci 0000:00:00.0: scanning [bus 00-00] behind bridge, pass 0
->   pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]), reconfiguring
->   pci 0000:00:00.0: scanning [bus 00-00] behind bridge, pass 1
->   pci_bus 0000:01: scanning bus
->   advk-pcie d0070000.pcie: advk_pcie_valid_device
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
