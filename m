@@ -2,103 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B349121E26E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 23:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E7B21E291
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 23:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727883AbgGMVgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 17:36:13 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:34745 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727858AbgGMVgI (ORCPT
+        id S1726801AbgGMVjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 17:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgGMVjG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 17:36:08 -0400
-Received: by mail-io1-f67.google.com with SMTP id q74so15174456iod.1;
-        Mon, 13 Jul 2020 14:36:07 -0700 (PDT)
+        Mon, 13 Jul 2020 17:39:06 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776BFC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 14:39:06 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id q74so15181650iod.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 14:39:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Iq2cIgsTsK4a36l68O3I/cXrAGU91DqNfuss40tsJ6I=;
+        b=bRJ0qbYpXO9yAjWYS7iPPH49f4w0kjVvS8XJXYg9oY/XVLRuGqYK8BSRSbNnhLJqMr
+         xiH2AQk7xWvGGfpwa2xoIya5jcinTac2EI3aPpihaiN3/8qfljBdmtot7LVrWVmB3yS5
+         kTob3BNRuktJhE+rPzg4+A6U3SSqh2CS+WNgHhO1rL+i3+G+8wXTzxpX/0ZJIjBY33HL
+         2h5AFSiCrfcSAVw0j1ymrWbHuH8b3g4HcPM5TaMF/a4RJ89WKyaiA1kkRDexvS9hbA6b
+         C+Lwe9lkzg6s6hTOGf9QG1R27BJPHSTkm52B1LVHMvfgplpR7EM8fY+CK12eM36dymAP
+         37mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Ds31A3g/zm7RWz12Mdt2xEVw3TUuXdV7t8TgREVUS5k=;
-        b=qVge8KVvAM6QAy5d5o3+KwDY3lnpJ6p/zSIJw+ag0cEZwur0Xg7mGDuIyBoQ6UYcDj
-         FqEuMev3blcgS4S4s3c04sbC5DlzjshkGqkNiVxd1SJ4/0HI2vqXv9XcMEqDGCqHw+no
-         jat3IiCL95DiFwxlOWyTYEUyAUQHtfPqt+ssrSGUleVyPTvDtX33IK4F1izdshVoV2Pe
-         X/XpJGLZyZ894R4KEwBaYAaRSNqHmnKRc2hMlrKCkYT0LSkRam3Cj9B4cBQLL/UnKzWg
-         1sFw/RGxPKsvXOU6RdZs0S4kqUQFA4Nsug/IK3KpHV2fVocLU+ypru8ZV79lmJNPa1rm
-         v9Ow==
-X-Gm-Message-State: AOAM531x0MxAxzmLgYXqHQV6iQt1M4i8BUyNtjVBZdZoktJuFRlzZqjt
-        4WubjDoWu4ZCM7cY9ArGVA==
-X-Google-Smtp-Source: ABdhPJzIjXhyFFB2gzub0W2jM/rvGAFEwl9LO8mdLyLFlXaE/U0x+bzAY8WF8WzxMPhaHpWDEwsegA==
-X-Received: by 2002:a02:10c1:: with SMTP id 184mr2288036jay.135.1594676167287;
-        Mon, 13 Jul 2020 14:36:07 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id x19sm1372922ioh.38.2020.07.13.14.36.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Iq2cIgsTsK4a36l68O3I/cXrAGU91DqNfuss40tsJ6I=;
+        b=cMqJPZakJQLk48n0U+DQCNNlyduA9vDUPw+Rk+T8FX4q2zObJnM4ohXFTMxoNK0U1H
+         oj1WWYAaFYVnP5NzwWaGDxL9Yut4Hq9NkdgFeBgTfn7N0EKwLuZ7zkwWOJ1We1Y6uLUQ
+         NFFbRYV0UlaqwyfmtHdDTkz8bKDq5d5kvzDzaFQdwZaUscikt6owGagDYlUO+BXqkHqG
+         Syc38yN9zFjpNgycesHSrDm9GAUHqVC67VgAci5hb43fT+b9VbusvooO4SwUUI+vCy2w
+         45v9gQAgnaUeqyko1WIUx0Lw5yQwI1JlrC5MZ3VY06FePwkUL7h91qBVJbENHVzdSe/S
+         55xA==
+X-Gm-Message-State: AOAM5337SNei7X3yZjDuIchvBjatHFbffLYrOqsuKyIFS1F0jl8Zcdsr
+        mSYeAnP+Bv8pXB458/Cu5fg=
+X-Google-Smtp-Source: ABdhPJyrsoOpp6XMtTE8POeoMwbFO10ynLauyWhp85xlFTUq+F8JjkoVpF7Yz6OmJJUktqmWSAMNqw==
+X-Received: by 2002:a05:6638:381:: with SMTP id y1mr2390716jap.85.1594676345783;
+        Mon, 13 Jul 2020 14:39:05 -0700 (PDT)
+Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:f693:9fff:fef4:238b])
+        by smtp.googlemail.com with ESMTPSA id b2sm9053703ilf.0.2020.07.13.14.39.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 14:36:06 -0700 (PDT)
-Received: (nullmailer pid 769509 invoked by uid 1000);
-        Mon, 13 Jul 2020 21:36:05 -0000
-Date:   Mon, 13 Jul 2020 15:36:05 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Tomasz Nowicki <tn@semihalf.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, will@kernel.org,
-        joro@8bytes.org, gregory.clement@bootlin.com, hannah@marvell.com,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        devicetree@vger.kernel.org, catalin.marinas@arm.com,
-        nadavh@marvell.com, linux-arm-kernel@lists.infradead.org,
-        mw@semihalf.com
-Subject: Re: [PATCH v3 3/4] dt-bindings: arm-smmu: add compatible string for
- Marvell Armada-AP806 SMMU-500
-Message-ID: <20200713213605.GA766184@bogus>
-References: <20200702201633.22693-1-tn@semihalf.com>
- <20200702201633.22693-4-tn@semihalf.com>
- <3172ec21-d773-7fcb-f1ee-f557f72f20c5@arm.com>
- <972f5cbd-705b-e18a-7477-5f6922804361@semihalf.com>
+        Mon, 13 Jul 2020 14:39:05 -0700 (PDT)
+From:   Jian Cai <caij2003@gmail.com>
+Cc:     caij2003@gmail.com, jiancai@google.com, ndesaulniers@google.com,
+        manojgupta@google.com, sedat.dilek@gmail.com,
+        Brian Gerst <brgerst@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] x86/entry: add compatibility with IAS
+Date:   Mon, 13 Jul 2020 14:38:01 -0700
+Message-Id: <20200713213803.1274795-1-caij2003@gmail.com>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
+In-Reply-To: <20200713012428.1039487-1-caij2003@gmail.com>
+References: <20200713012428.1039487-1-caij2003@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <972f5cbd-705b-e18a-7477-5f6922804361@semihalf.com>
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 11:26:32AM +0200, Tomasz Nowicki wrote:
-> On 03.07.2020 11:05, Robin Murphy wrote:
-> > On 2020-07-02 21:16, Tomasz Nowicki wrote:
-> > > Add specific compatible string for Marvell usage due to errata of
-> > > accessing 64bits registers of ARM SMMU, in AP806.
-> > > 
-> > > AP806 SoC uses the generic ARM-MMU500, and there's no specific
-> > > implementation of Marvell, this compatible is used for errata only.
-> > > 
-> > > Signed-off-by: Hanna Hawa <hannah@marvell.com>
-> > > Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> > > Signed-off-by: Tomasz Nowicki <tn@semihalf.com>
-> > > ---
-> > >   Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 5 +++++
-> > >   1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> > > b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> > > index d7ceb4c34423..7beca9c00b12 100644
-> > > --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> > > +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
-> > > @@ -38,6 +38,11 @@ properties:
-> > >                 - qcom,sc7180-smmu-500
-> > >                 - qcom,sdm845-smmu-500
-> > >             - const: arm,mmu-500
-> > > +      - description: Marvell SoCs implementing "arm,mmu-500"
-> > > +        items:
-> > > +          - enum:
-> > > +              - marvell,ap806-smmu-500
-> > 
-> > Isn't a single-valued enum just a constant? :P
-> 
-> That's how copy-paste engineering ends up :)
+Clang's integrated assembler does not allow symbols with non-absolute
+values to be reassigned. This patch allows the affected code to be
+compatible with IAS.
 
-It's fine like this if you expect more SoCs to be added.
+Link: https://github.com/ClangBuiltLinux/linux/issues/1043
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+Suggested-by: Brian Gerst <brgerst@gmail.com>
+Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Jian Cai <caij2003@gmail.com>
+---
+ arch/x86/include/asm/idtentry.h | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-Either way,
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index f3d70830bf2a..7d22684eafdf 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -469,16 +469,15 @@ __visible noinstr void func(struct pt_regs *regs,			\
+ 	.align 8
+ SYM_CODE_START(irq_entries_start)
+     vector=FIRST_EXTERNAL_VECTOR
+-    pos = .
+     .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
++0 :
+ 	UNWIND_HINT_IRET_REGS
+ 	.byte	0x6a, vector
+ 	jmp	asm_common_interrupt
+ 	nop
+ 	/* Ensure that the above is 8 bytes max */
+-	. = pos + 8
+-    pos=pos+8
+-    vector=vector+1
++	. = 0b + 8
++	vector = vector+1
+     .endr
+ SYM_CODE_END(irq_entries_start)
+ 
+@@ -486,16 +485,15 @@ SYM_CODE_END(irq_entries_start)
+ 	.align 8
+ SYM_CODE_START(spurious_entries_start)
+     vector=FIRST_SYSTEM_VECTOR
+-    pos = .
+     .rept (NR_VECTORS - FIRST_SYSTEM_VECTOR)
++0 :
+ 	UNWIND_HINT_IRET_REGS
+-	.byte	0x6a, vector
++	.byte	0x6a, FIRST_SYSTEM_VECTOR + i
+ 	jmp	asm_spurious_interrupt
+ 	nop
+ 	/* Ensure that the above is 8 bytes max */
+-	. = pos + 8
+-    pos=pos+8
+-    vector=vector+1
++	. = 0b + 8
++	vector = vector+1
+     .endr
+ SYM_CODE_END(spurious_entries_start)
+ #endif
+-- 
+2.27.0.383.g050319c2ae-goog
 
-Reviewed-by: Rob Herring <robh@kernel.org>
