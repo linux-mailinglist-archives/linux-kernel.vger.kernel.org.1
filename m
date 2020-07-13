@@ -2,137 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484C021D645
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 14:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4F621D64A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 14:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729681AbgGMMpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 08:45:13 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:41768 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729267AbgGMMpN (ORCPT
+        id S1729722AbgGMMr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 08:47:27 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:50190 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726586AbgGMMr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 08:45:13 -0400
-Received: by mail-oi1-f193.google.com with SMTP id y22so10820955oie.8;
-        Mon, 13 Jul 2020 05:45:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aljxsgKwzsCh4HKBPDRBFN6aAU1M4l9yokMVAmNF5/M=;
-        b=fQgZF8tejXcqNlHHJnvUgvHsiIXENY8SpJSYdr1nqBlRRlh+/XNPLTYFIYY75Y/GZj
-         e7bUzFnq9eedJT87mYiwaIxfa4bIUbRAdyB5CRmuavfe1i41MWlHClWJPQD4YNEssOjs
-         nX0Bh/ejkvMEtZgsPgr5ki5uEy6LJ3iLVy+dIxC6V56xZwqiq7MseVThv7OyKXgKrVob
-         NDLUbOQY78qdqsnrMZ4iIeAJmZjksNlP/c6tAOe/3Wj/9f/nsVqCIdshfR7xg3deJrMg
-         GD6Gylom5fklkfwOBSvQ5fwjK9d3BYLms+4UMuMa/Ks13NsoSURE4GcD4ykltwZg/slf
-         O2Mg==
-X-Gm-Message-State: AOAM530YdkMiLzwY5OLXtWOX1/TrA6HDDskz7xp0x3Pjxd8GLqGF30yE
-        4c3+m7QtOXqe+N3HEBbXTjfn2+THHmbM1zfhg8g=
-X-Google-Smtp-Source: ABdhPJzp2NIcDW3ySmiQvENCT3/a35iWUrdCt5bn4W0aULLvRFTL+huDV91eAgE9TFRYXnr0A2GEBYK12mclgEQP7mI=
-X-Received: by 2002:aca:5c41:: with SMTP id q62mr13311228oib.148.1594644311938;
- Mon, 13 Jul 2020 05:45:11 -0700 (PDT)
+        Mon, 13 Jul 2020 08:47:26 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06DCjMF1081857;
+        Mon, 13 Jul 2020 07:45:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594644322;
+        bh=JDddS/CKP2aCXQxfKTiZYR2CGGt0uUybu6BJkOhnB5c=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=eoHLS5q4DfkBay2eQllhJynAnyjaqY6KLYu+GkV+FlhcYH7SAFvJEJU7XE7GvkaYY
+         p0a48Z7vDuocQAIIWNnLPO5fDCF9nVv6Al2OHkSBmbAGyuymaPavfi0gqFr13KZfSw
+         7tacFAbnzbzfJ2W7IUN/IrQM98FsnZp9uyj+Tobg=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06DCjMkf121480
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 13 Jul 2020 07:45:22 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 13
+ Jul 2020 07:45:22 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 13 Jul 2020 07:45:22 -0500
+Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06DCjJKb020275;
+        Mon, 13 Jul 2020 07:45:21 -0500
+Subject: Re: [PATCHv2 2/5] watchdog: add support for adjusting last known HW
+ keepalive time
+To:     Guenter Roeck <linux@roeck-us.net>, <wim@linux-watchdog.org>,
+        <linux-watchdog@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jan.kiszka@siemens.com>
+References: <20200703120406.7092-1-t-kristo@ti.com>
+ <20200703120406.7092-3-t-kristo@ti.com>
+ <faeebfbb-cb8c-e31e-50ef-af42e1b11e0e@roeck-us.net>
+From:   Tero Kristo <t-kristo@ti.com>
+Message-ID: <43dcd981-806a-dda5-39f6-6a0e42081d76@ti.com>
+Date:   Mon, 13 Jul 2020 15:45:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200617120510.25071-1-aford173@gmail.com> <CAMuHMdWjpyi6QiGTHkwXcepMzP8hN7MkXSJ=Xnxn40VkRU9OXg@mail.gmail.com>
- <CAHCN7xJWbP16SA-Ok-5syNnqOZAt8OFJo2_rtg5VrNVsN2-eiQ@mail.gmail.com> <CAHCN7xLygG5YRG0wt0b9JWW3PHDwMV_kiLRpJqPdSAx7gOoc9w@mail.gmail.com>
-In-Reply-To: <CAHCN7xLygG5YRG0wt0b9JWW3PHDwMV_kiLRpJqPdSAx7gOoc9w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 13 Jul 2020 14:45:00 +0200
-Message-ID: <CAMuHMdWzcKa1xXdQ8W=fmjTKvPRN68GNVhBi4pFD5OW1_R_aAw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: Introduce r8a774a1-beacon-rzg2m-kit
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <faeebfbb-cb8c-e31e-50ef-af42e1b11e0e@roeck-us.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+On 05/07/2020 17:58, Guenter Roeck wrote:
+> On 7/3/20 5:04 AM, Tero Kristo wrote:
+>> Certain watchdogs require the watchdog only to be pinged within a
+>> specific time window, pinging too early or too late cause the watchdog
+>> to fire. In cases where this sort of watchdog has been started before
+>> kernel comes up, we must adjust the watchdog keepalive window to match
+>> the actually running timer, so add a new driver API for this purpose.
+>>
+>> Signed-off-by: Tero Kristo <t-kristo@ti.com>
+>> ---
+>>   drivers/watchdog/watchdog_dev.c | 23 +++++++++++++++++++++++
+>>   include/linux/watchdog.h        |  2 ++
+>>   2 files changed, 25 insertions(+)
+>>
+>> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+>> index bc1cfa288553..5848551cf29d 100644
+>> --- a/drivers/watchdog/watchdog_dev.c
+>> +++ b/drivers/watchdog/watchdog_dev.c
+>> @@ -1138,6 +1138,29 @@ void watchdog_dev_unregister(struct watchdog_device *wdd)
+>>   	watchdog_cdev_unregister(wdd);
+>>   }
+>>   
+>> +/*
+>> + *	watchdog_set_last_hw_keepalive: set last HW keepalive time for watchdog
+>> + *
+>> + *	Adjusts the last known HW keepalive time for a watchdog timer.
+>> + *	This is needed in case where watchdog has been started before
+>> + *	kernel by someone like bootloader, and it can't be pinged
+> 
+> ... needed if the watchdog is already running when the probe function
+> is called, and ...
+> 
+>> + *	immediately. This adjusts the watchdog ping period to match
+>> + *	the currently running timer.
+> 
+> It doesn't adjust the ping period.
+> 
+>> + */
+> 
+> last_ping_ms needs to be documented (the last heartbeat was last_ping_ms
+> milliseconds ago ?), both here and in Documentation/watchdog/watchdog-kernel-api.rst.
+> It needs to be documented that the function must be called immediately
+> after watchdog registration, and that min_hw_heartbeat_ms must
+> be set for it to be useful.
+> 
+>> +int watchdog_set_last_hw_keepalive(struct watchdog_device *wdd,
+>> +				   unsigned int last_ping_ms)
+>> +{
+>> +	struct watchdog_core_data *wd_data = wdd->wd_data;
+> 
+> This needs a NULL check, in case it is called before watchdog driver
+> registration.
 
-CC Stephen
+Ok will fix all the above in next revision.
 
-On Thu, Jul 9, 2020 at 12:00 AM Adam Ford <aford173@gmail.com> wrote:
-> On Wed, Jul 8, 2020 at 4:53 PM Adam Ford <aford173@gmail.com> wrote:
-> > On Mon, Jun 22, 2020 at 8:20 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Wed, Jun 17, 2020 at 2:05 PM Adam Ford <aford173@gmail.com> wrote:
-> > > > Beacon EmebddedWorks, formerly Logic PD is introducing a new
-> > > > SOM and development kit based on the RZ/G2M SoC from Renesas.
-> > > >
-> > > > The SOM supports eMMC, WiFi and Bluetooth, along with a Cat-M1
-> > > > cellular radio.
-> > > >
-> > > > The Baseboard has Ethernet, USB, HDMI, stereo audio in and out,
-> > > > along with a vareity of push buttons and LED's.
+-Tero
 
-> > > > --- /dev/null
-> > > > +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-> > > > @@ -0,0 +1,733 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > +/*
-> > > > + * Copyright 2020, Compass Electronics Group, LLC
-> > > > + */
-> > > > +
-> > > > +#include <dt-bindings/gpio/gpio.h>
-> > > > +#include <dt-bindings/input/input.h>
-> > > > +#include <dt-bindings/clk/versaclock.h>
-> > >
-> > > This depends on "[PATCH V3 2/3] dt: Add additional option bindings for
-> > > IDT VersaClock", which hasn't been accepted yet, AFAIK.
->
-> Geert,
->
-> I forgot to ask.  What is the protocol for something when new bindings
-> have been accepted in one branch, but another branch where I want to
-> reference them hasn't merged with the other branch?  I'd really like
-> to get this board into the next kernel.  I could remove these
-> references and the calling functions, but that may cause instability
-> due to undefined behaviour of some of the versaclock functions because
-> they are not programmed.
+> 
+>> +	ktime_t now;
+>> +
+>> +	now = ktime_get();
+>> +
+>> +	wd_data->last_hw_keepalive = ktime_sub(now, ms_to_ktime(last_ping_ms));
+>> +
+>> +	return __watchdog_ping(wdd);
+>> +}
+>> +EXPORT_SYMBOL_GPL(watchdog_set_last_hw_keepalive);
+>> +
+>>   /*
+>>    *	watchdog_dev_init: init dev part of watchdog core
+>>    *
+>> diff --git a/include/linux/watchdog.h b/include/linux/watchdog.h
+>> index 1464ce6ffa31..9b19e6bb68b5 100644
+>> --- a/include/linux/watchdog.h
+>> +++ b/include/linux/watchdog.h
+>> @@ -210,6 +210,8 @@ extern int watchdog_init_timeout(struct watchdog_device *wdd,
+>>   extern int watchdog_register_device(struct watchdog_device *);
+>>   extern void watchdog_unregister_device(struct watchdog_device *);
+>>   
+>> +int watchdog_set_last_hw_keepalive(struct watchdog_device *, unsigned int);
+>> +
+>>   /* devres register variant */
+>>   int devm_watchdog_register_device(struct device *dev, struct watchdog_device *);
+>>   
+>>
+> 
 
-As soon as a binding update has been accepted into the maintainer's
-for-next branch, I happily accept DTS patches that start using it,
-unless doing so would introduce a regression.
-In this case, it's not a pure binding update, but also an update to
-binding definitions in a header file, thus creating a hard dependency.
-Usually this is mitigated by committing the header file change to an
-immutable branch, to be shared by driver and DTS, and to be pulled by
-all maintainers affected by the dependency.
-
-As Stephen has already applied the binding update to his clk-next
-branch, it's too late to go for the immutable branch approach.  Hence
-the simplest solution would be to postpone your DTS patch to v5.10.
-
-> However, I would rather have the board mostly work if it means getting
-> it accepted into the kernel.  Beacon hasn't shipped any outside of the
-> company yet, so I am not really worried about people seeing problems.
-> If the board gets accepted without these, I could apply some 'fixes'
-> at a late date to correct the undefined behavior.  Let me know what
-> the best way to proceed should be, and I'll send a V2 patch.
-
-An alternative would be for me to cherry-pick commit 34662f6e30846ae0
-("dt: Add additional option bindings for IDT VersaClock") from the
-clk-next branch into renesas-devel, before applying your patch.
-While that would help you, it may introduce a merge conflict for
-linux-next and for upstream later, as Luca has already posted multiple
-patches for idt,versaclock5.txt, to fix typos and do the json-schema
-conversion.  These may or may not land in v5.9.
-
-Stephen: what do you think?
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
