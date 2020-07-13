@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7525C21D718
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B89721D71F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729788AbgGMN2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:28:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:34816 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729649AbgGMN2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:28:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74A2430E;
-        Mon, 13 Jul 2020 06:28:32 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8B6773F7C3;
-        Mon, 13 Jul 2020 06:28:31 -0700 (PDT)
-References: <20200701190656.10126-1-valentin.schneider@arm.com> <20200701190656.10126-8-valentin.schneider@arm.com> <20200713125543.GJ10769@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        morten.rasmussen@arm.com
-Subject: Re: [PATCH v3 7/7] sched/topology: Use prebuilt SD flag degeneration mask
-In-reply-to: <20200713125543.GJ10769@hirez.programming.kicks-ass.net>
-Date:   Mon, 13 Jul 2020 14:28:29 +0100
-Message-ID: <jhjimerlf2a.mognet@arm.com>
+        id S1729847AbgGMN3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 09:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729613AbgGMN3l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 09:29:41 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28930C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:29:41 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z2so16570354wrp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8M2es7HHouzmCUpyAYFqBmq/VXXAGiCHzbOor1SAZdY=;
+        b=eZztk7O7rf+DFBdXysVaFW4Q6svK0fGNMvSOeDFuBZn/YGHCVDHChUbKn5LhBskGZF
+         z4kFVrudVva1mgg1mPIwMgG/zOElB0ulSNlJAWaXR4twxVMVl3if3wzh4Jerf2NIhpy9
+         ZgYZpN1qdb1PX8A36OK7S2FYxhqRzMqWnhli036pECPg1gVa6H+PclsfMX1+zivylIBh
+         EdcoHIsqNvh00CBTbSgfCw04YoJLD5d00c8lG8RVo0q06XZ1R2AfjmaXvoXcZiRPu0I+
+         TnQBMfQZVhJf8vwoGnfJyVRgxYMSADJXe6+/E4ouhnfFeOQD3BoMi4SN7/c/DPG7Jt5h
+         uUmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8M2es7HHouzmCUpyAYFqBmq/VXXAGiCHzbOor1SAZdY=;
+        b=pFqBVz3uj6PAXk/mkLf/BWV8PvRZpsTVGheenWJ+xvxku0/AGrZ92fdDy930gmkwix
+         Osm9CD+Q0D4v2Yo8gO+LGj+sx/gZgN7grL0ZCq8QXKzPn3mciBc60mRLgym5G7ARdFAG
+         nv3JjJU7T4Nir/z++b8Slj2B5bY7w5rfoUW/jpiEndSTrcwU3n8Ni7G3tn7vBTfdA/Rc
+         mXe2GxodgYzZss7vLTKv/pWx7jKGgMsB1t29UjapsovJGUA3OhRnjPPhW0lEz29VmCmo
+         hywC9CDSKgWvf/WBvD3KwiJftwWWY8bMupfZCP09SRnoLq3ETXRSsiS/jDJ/S/Yb+hop
+         nthQ==
+X-Gm-Message-State: AOAM531OV2AS9dTdS5UhQMZfMHKBlfI62iqYpgBwfeVVeqTHeISsd6Y3
+        NmFcyBa0lf83BHkLPDInxHOPqg==
+X-Google-Smtp-Source: ABdhPJxMEwQ8RYMjAHEW54Z1j94xXKNRmix+I5953GVI4mfW5CH5zrllY5eazKO4pgPCsaIsWRN1NA==
+X-Received: by 2002:adf:e40e:: with SMTP id g14mr86432689wrm.271.1594646979741;
+        Mon, 13 Jul 2020 06:29:39 -0700 (PDT)
+Received: from linux.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id j14sm23896642wrs.75.2020.07.13.06.29.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 06:29:38 -0700 (PDT)
+From:   Alexandre Bailon <abailon@baylibre.com>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alexandre Bailon <abailon@baylibre.com>
+Subject: [PATCH 0/6] Add support of mt8183 APU
+Date:   Mon, 13 Jul 2020 15:29:21 +0200
+Message-Id: <20200713132927.24925-1-abailon@baylibre.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some Mediatek's SoC have an Accelerated Processing Unit.
+This adds support of the one available in the mt8183
+(aswell some derivative SoC).
 
-On 13/07/20 13:55, Peter Zijlstra wrote:
-> On Wed, Jul 01, 2020 at 08:06:55PM +0100, Valentin Schneider wrote:
->> Leverage SD_DEGENERATE_GROUPS_MASK in sd_degenerate() and
->> sd_degenerate_parent().
->>
->> Note that this changes sd_degenerate() somewhat: I'm using the negation of
->> SD_DEGENERATE_GROUPS_MASK as the mask of flags not requiring groups, which
->> is equivalent to:
->>
->> SD_WAKE_AFFINE | SD_SERIALIZE | SD_NUMA
->>
->> whereas the current mask for that is simply
->>
->> SD_WAKE_AFFINE
->>
->> I played with a few toy NUMA topologies on QEMU and couldn't cause a
->> different degeneration than what mainline does currently. If that is deemed
->> too risky, we can go back to using SD_WAKE_AFFINE explicitly.
->
-> Arguably SD_SERIALIZE needs groups, note how we're only having that
-> effective for machines with at least 2 nodes. It's a bit shit how we end
-> up there, but IIRC that's what it ends up as.
->
+This series depends on two other series:
+- Mediatek MT8183 scpsys support  
+- arm64: dts: Add m4u and smi-larbs nodes for mt8183 
 
-Right, AFAICT we get SD_SERIALIZE wherever we have SD_NUMA, which is any
-level above NODE.
+Notes:
+This series include two workarounds:
+- remoteproc: mtk_vpu_rproc: Don't try to load empty PT_LOAD segment
+- rproc: mtk_apu: Don't try to use local APU RAM
 
-> SD_NUMA is descriptive, and not marking a group as degenerates because
-> it has SD_NUMA seems a bit silly.
+The first one is required to load malformed firmwares.
+This is probably caused by the toolchain we are using (a fork of gcc 4.2).
+It would be better to fix the firmwares but I don't know how to fix it.
 
-It does, although we can still degenerate it, see below.
+The second one prevents the CPU to access to the APU local RAM.
+If the CPU tries to read or write the APU local RAM, then the CPU will
+hang. I'm still looking for a solution, but until, we must prevent
+remoteproc to write something (usually, to initialize data section).
+Because of that issue, the current driver doesn't map the the local RAM.
 
-> But then, it would be the top domain
-> and would survive anyway?
+Alexandre Bailon (6):
+  dt bindings: remoteproc: Add bindings for MT8183 APU
+  remoteproc: Add a remoteproc driver for the MT8183's APU
+  remoteproc: mtk_vpu_rproc: Add support of JTAG
+  remoteproc: mtk_vpu_rproc: Don't try to load empty PT_LOAD segment
+  remoteproc: mtk_apu: Don't try to use the APU local RAM
+  ARM64: mt8183: Add support of APU to mt8183
 
-So from what I've tested we still get rid of those via
-sd_parent_degenerate(): child and parent have the same flags and same span,
-so parent goes out.
+ .../bindings/remoteproc/mtk,apu.yaml          | 121 +++++
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  42 ++
+ drivers/remoteproc/Kconfig                    |  19 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/mtk_apu_rproc.c            | 501 ++++++++++++++++++
+ 5 files changed, 684 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/mtk,apu.yaml
+ create mode 100644 drivers/remoteproc/mtk_apu_rproc.c
 
-That happens in the middle of the NUMA topology levels on that borked
-topology with weird distances, aka
+-- 
+2.26.2
 
-  node distances:
-  node   0   1   2   3
-    0:  10  12  20  22
-    1:  12  10  22  24
-    2:  20  22  10  12
-    3:  22  24  12  10
-
-which ought to look something like (+local distance to end result)
-
-      2      10      2
-  1 <---> 0 <---> 2 <---> 3
-
-We end up with the following NUMA levels (i.e. deduplicated distances)
-  NUMA (<= 12)
-  NUMA (<= 20)
-  NUMA (<= 22)
-  NUMA (<= 24)
-
-For e.g. any CPU of node1, NUMA(<=20) is gonna have the same span as
-NUMA(<=12), so we'll degenerate it.
