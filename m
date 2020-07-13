@@ -2,158 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413D421D354
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D629221D356
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729494AbgGMKB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 06:01:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:51572 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729394AbgGMKBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:01:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D6F631B;
-        Mon, 13 Jul 2020 03:01:23 -0700 (PDT)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C28DA3F7D8;
-        Mon, 13 Jul 2020 03:01:21 -0700 (PDT)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 2/2] arm64: kvm: Introduce MTE VCPU feature
-Date:   Mon, 13 Jul 2020 11:01:02 +0100
-Message-Id: <20200713100102.53664-3-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200713100102.53664-1-steven.price@arm.com>
-References: <20200713100102.53664-1-steven.price@arm.com>
+        id S1729529AbgGMKB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 06:01:59 -0400
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:34455 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728950AbgGMKB6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 06:01:58 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id uvHTj6d52GLmCuvHXjAusU; Mon, 13 Jul 2020 12:01:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1594634516; bh=Qvmhkqy8a9fuPe1CeKmBjQ4cwdl+ZofLMoa2K+Ph6Jw=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=dSNDq5fq0noaKLmUIOxNZXt4OQrZfN0Rr0TxTQIi+DVUwGWLEPXyfct+USQuhYe1J
+         DSU9NMQMNd44ekjlUOtNHvDkj3N75EQkV0dK0eB9JN2V2AXm1m+YPrGj8aBtSKz2yI
+         55RCKsNFrn97ONJ1k76E1/bbH1ApaSHnX/yltJDGwIL4VLMJhi58SzX8Hqwn0ouEFi
+         JiNhxgjcY4vpdT8wfxzhE9cJWat75KjROnvAMMXW02pxqDWo1lVmnjy0VO3268g4iQ
+         +2rYLjhuBIkgsXoGkvn3msJJw7tErLsrk4RSQ6yeosChTXWsDXn6Lz19AL43Rj/FB1
+         bA1zduNYFQnXw==
+Subject: Re: [PATCH v1 2/6] [media] cx23885: use generic power management
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org
+References: <20200629073604.205478-1-vaibhavgupta40@gmail.com>
+ <20200629073604.205478-3-vaibhavgupta40@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <c4a46846-208f-c834-56d7-02543c395795@xs4all.nl>
+Date:   Mon, 13 Jul 2020 12:01:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200629073604.205478-3-vaibhavgupta40@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfEgDG4469ro2DKZtOFm+RMAiztJsuP9cXotS0TmKFGSp+9SgAmFhYVWhxx8yl1HV3fhJ0MUp67jAVE65zOxo52NzY9xIlIT4UHuJ5eIKrEQOM4LDUySb
+ NgT01kC82efUbFUt0D2pfcDAlO7NOj0g1HAx5eODA2118fHYGLTjGvV65hvujMh1Kz/ZBgGV1FJERCgwknLrHWRkb68/0KqJkSjmLUSh8rlupLyIlpXI1sxL
+ pttMKR+pabmKYUydmGw3JtBPaxZv1SXfsUcriO17OD3CRQIt17Ib15JgVW/GXbPYpnYofun0Y0Fv1JCXIKXN+d4QGY8N/y07yAUMW9B5Sz3PwiFf+8X+Aloc
+ pSF3EBCnXi4bNNx+oG6C1AoUys5Tvw1Vtm1qy0OWsP3+AuOUISE5qP0/Dt/BXyILhVLlgj/HAywqgLGUhCxJkcfkE1zx+YW9DITON62v++oNDWzT4xUlHbxO
+ vjB81y8ZqBQaG2D4Dz4+/X/8JASOUyBBLQwR0MF2PnoBAZ/hlQKxyCKT0ok=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new VCPU features 'KVM_ARM_VCPU_MTE' which enables memory tagging
-on a VCPU. When enabled on any VCPU in the virtual machine this causes
-all pages that are faulted into the VM to have the PG_mte_tagged flag
-set (and the tag storage cleared if this is the first use).
+On 29/06/2020 09:36, Vaibhav Gupta wrote:
+> The .suspend() and .resume() callbacks are not defined for this driver.
+> Still, their power managemgement stucture can be easily upgraded to
 
-Signed-off-by: Steven Price <steven.price@arm.com>
----
- arch/arm64/include/asm/kvm_emulate.h |  3 +++
- arch/arm64/include/asm/kvm_host.h    |  2 +-
- arch/arm64/include/uapi/asm/kvm.h    |  1 +
- arch/arm64/kvm/mmu.c                 | 15 +++++++++++++++
- arch/arm64/kvm/reset.c               |  8 ++++++++
- arch/arm64/kvm/sys_regs.c            |  3 ++-
- 6 files changed, 30 insertions(+), 2 deletions(-)
+management structure
 
-diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
-index 4d0f8ea600ba..1e4280f9a5ce 100644
---- a/arch/arm64/include/asm/kvm_emulate.h
-+++ b/arch/arm64/include/asm/kvm_emulate.h
-@@ -79,6 +79,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
- 	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
- 	    vcpu_el1_is_32bit(vcpu))
- 		vcpu->arch.hcr_el2 |= HCR_TID2;
-+
-+	if (test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features))
-+		vcpu->arch.hcr_el2 |= HCR_ATA;
- }
- 
- static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 1fc306705193..586b250f683b 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -37,7 +37,7 @@
- 
- #define KVM_MAX_VCPUS VGIC_V3_MAX_CPUS
- 
--#define KVM_VCPU_MAX_FEATURES 7
-+#define KVM_VCPU_MAX_FEATURES 8
- 
- #define KVM_REQ_SLEEP \
- 	KVM_ARCH_REQ_FLAGS(0, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
-diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
-index ba85bb23f060..2677e1ab8c16 100644
---- a/arch/arm64/include/uapi/asm/kvm.h
-+++ b/arch/arm64/include/uapi/asm/kvm.h
-@@ -106,6 +106,7 @@ struct kvm_regs {
- #define KVM_ARM_VCPU_SVE		4 /* enable SVE for this CPU */
- #define KVM_ARM_VCPU_PTRAUTH_ADDRESS	5 /* VCPU uses address authentication */
- #define KVM_ARM_VCPU_PTRAUTH_GENERIC	6 /* VCPU uses generic authentication */
-+#define KVM_ARM_VCPU_MTE		7 /* VCPU supports Memory Tagging */
- 
- struct kvm_vcpu_init {
- 	__u32 target;
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 8c0035cab6b6..8d405701f534 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -1940,6 +1940,21 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	if (vma_pagesize == PAGE_SIZE && !force_pte)
- 		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
- 							   &pfn, &fault_ipa);
-+	if (system_supports_mte() && kvm->arch.vcpu_has_mte && pfn_valid(pfn)) {
-+		/*
-+		 * VM will be able to see the page's tags, so we must ensure
-+		 * they have been initialised.
-+		 */
-+		struct page *page = pfn_to_page(pfn);
-+		long i, nr_pages = compound_nr(page);
-+
-+		/* if PG_mte_tagged is set, tags have already been initialised */
-+		for (i = 0; i < nr_pages; i++, page++) {
-+			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-+				mte_clear_page_tags(page_address(page));
-+		}
-+	}
-+
- 	if (writable)
- 		kvm_set_pfn_dirty(pfn);
- 
-diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-index 6ed36be51b4b..39fdd95441df 100644
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -275,6 +275,14 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
- 		}
- 	}
- 
-+	if (test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features)) {
-+		if (!system_supports_mte()) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+		vcpu->kvm->arch.vcpu_has_mte = true;
-+	}
-+
- 	switch (vcpu->arch.target) {
- 	default:
- 		if (test_bit(KVM_ARM_VCPU_EL1_32BIT, vcpu->arch.features)) {
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index 5ca974c93bd4..0c3c577f98fe 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1105,7 +1105,8 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
- 			val &= ~(0xfUL << ID_AA64PFR0_SVE_SHIFT);
- 		val &= ~(0xfUL << ID_AA64PFR0_AMU_SHIFT);
- 	} else if (id == SYS_ID_AA64PFR1_EL1) {
--		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
-+		if (!test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features))
-+			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
- 	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
- 		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
- 			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
--- 
-2.20.1
+> gemeric, without affecting its normal behaviour.
+
+generic
+
+> 
+> Hence, define them NULL and use struct dev_pm_ops type to bind them.
+> 
+> Compile-tested only.
+> 
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> ---
+>  drivers/media/pci/cx23885/cx23885-core.c | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
+> index 7e0b0b7cc2a3..da9ee7270dfd 100644
+> --- a/drivers/media/pci/cx23885/cx23885-core.c
+> +++ b/drivers/media/pci/cx23885/cx23885-core.c
+> @@ -2230,14 +2230,18 @@ static const struct pci_device_id cx23885_pci_tbl[] = {
+>  };
+>  MODULE_DEVICE_TABLE(pci, cx23885_pci_tbl);
+>  
+> +#define cx23885_suspend NULL
+> +#define cx23885_resume NULL
+> +
+> +static SIMPLE_DEV_PM_OPS(cx23885_pm_ops, cx23885_suspend, cx23885_resume);
+> +
+>  static struct pci_driver cx23885_pci_driver = {
+> -	.name     = "cx23885",
+> -	.id_table = cx23885_pci_tbl,
+> -	.probe    = cx23885_initdev,
+> -	.remove   = cx23885_finidev,
+> +	.name      = "cx23885",
+> +	.id_table  = cx23885_pci_tbl,
+> +	.probe     = cx23885_initdev,
+> +	.remove    = cx23885_finidev,
+>  	/* TODO */
+> -	.suspend  = NULL,
+> -	.resume   = NULL,
+> +	.driver.pm = &cx23885_pm_ops,
+
+I don't entirely understand this. Wouldn't it be sufficient to just
+drop the .suspend/.resume assignments here? It is now required for
+driver.pm to be non-NULL?
+
+I'm not up to speed on the changes, but normally you can leave things
+NULL if you don't support a feature (PM in this case).
+
+Regards,
+
+	Hans
+
+>  };
+>  
+>  static int __init cx23885_init(void)
+> 
 
