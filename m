@@ -2,173 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B405621E094
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0676121E09B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbgGMTR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 15:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
+        id S1726545AbgGMTVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 15:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgGMTR2 (ORCPT
+        with ESMTP id S1726400AbgGMTVe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 15:17:28 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A86C061755;
-        Mon, 13 Jul 2020 12:17:27 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o1so5937045plk.1;
-        Mon, 13 Jul 2020 12:17:27 -0700 (PDT)
+        Mon, 13 Jul 2020 15:21:34 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBB9C08C5DD
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:21:34 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id k27so6460385pgm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:21:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v5U6F41TkrmuFMdMBZZCA57RfJVOhnudyCPli5pfjRs=;
-        b=USyMiXvoNPiMCCop7qertDsazIIU+3jR2JLEgjshl4JNxoDALxJ/lUUN604xtEAG5w
-         avXkgdCT5xXSJOLJ0L+17MxbCyM1X+6q5aHui70iVXuHx3VGw62uaLl04iF6klkz5FR4
-         lW8B+E5FQsH1ZvbjyZiL5m+wu7XjqO9uYq1n+vibGLp2UKgH0c3h3pDkXKnj9nsYvEpM
-         H3gHmCgO983PwSz2G9m4xiD5ryR/DG8HL06fcgpb/9c0zR8vkX0vBpMQZBEu/6zimYcs
-         CikDfZlSSHVg42QzE4kZ/YelvCaLtqLRh1aLlHyvCjBoFDGvEzS5eyyva7nwCkTd3rNF
-         b2Sg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lnlvSS8yRTjaa31L4bdqfl6S2JOUPE+8vLPyFLQzIA0=;
+        b=Os6izMQO5HU2C9KMSKfCwZQxDgXOjXhkpAFRF2xk9FvopUV1KIpH3xyunGonqiRihD
+         YJDPvYc1aFxRAMGvPN5QPXG3IG86/9ascA8OlOT68leWXeVDnTfdbbBA6ZZiG68UdNac
+         QNzEtglbjw/alG4spZBMMxLRrFL8lgUlvHV7ERnck8TjIQSqwfXUmLIRjp+0zI/kFq0r
+         UdWsXlpULiynQmoeYVzMUgp+Srg/ZqSXqXh3QOkrUbnARBtNAO5mJLFLk4UVJU3o5SBC
+         dFfI3065HWFu8sUAD4e3lYGsD2YzmGKDNkatjLTAXI5tOTuyjRIAsnNZNpPOp4fgrK3S
+         gu0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v5U6F41TkrmuFMdMBZZCA57RfJVOhnudyCPli5pfjRs=;
-        b=d3+wUUdzdr8Ga9WTM9IeHDDIIJi4oQGBf38QBCzuAGJ8yrSbG6iDfc9fzfMvbaKUkN
-         X9TbyissGSeYiNZcvLLhYd5YF+oYDfs1sCoaMQTNlytQiZzgnZtSXLE07WlQi0t4ouhg
-         wYvxXcfpkErWlsLoJc1XlS7pCrqXWNKtlgBDg42buKbu4CRtNXqSuOjDQxyXqy9a/Rmt
-         LqObBLL5s6a3g64yEO+hVyOrB8nJR36CryYJitlIuvtuGckuRxjm8jUCHYqtcDZsTzMP
-         EgDwZ9ZW0xOKAi8IcwDALJizUNzI9B0JWiluahYY/HPWH3B5rkG5xCOTaSjvbWjzt2F5
-         YWGQ==
-X-Gm-Message-State: AOAM5309Wu0MdCQiYbbMHxUrLb7Qlj3KfayFI7+XLnoQYQ2KmpzqaOe3
-        dQiyL4bM1/7FFH2dAFoVUctFXkOq1Sw/1WSULJg=
-X-Google-Smtp-Source: ABdhPJzBe4Z0IIVCnp2VDfH3SltGa57BzPspnJlSjUB2gW4zz73hNPrxa7Tqrenphov1bJgTQ3bGgnPJ9nN36fGhsLA=
-X-Received: by 2002:a17:902:8491:: with SMTP id c17mr914342plo.262.1594667847297;
- Mon, 13 Jul 2020 12:17:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lnlvSS8yRTjaa31L4bdqfl6S2JOUPE+8vLPyFLQzIA0=;
+        b=pnBUaxQVY8RrZHly0SUx5orUS4VJKL/tR3uFZjlRz0sYkdj02CV5xwpglMcp+bxar+
+         GJzIk/SB5kmgSyycaWEFd65CdqHrdG/K67M3d3SALeOvI7/0jJ80pkdvxbH1iQ6/+Hqt
+         ZpdeTVbzxR0K0Bp+zsRzyOXvk6rT4twbWl2b1GgQovwQufVzOGYHRYab2/8uorPKN9t7
+         cANHxybaLIEZ8oM6+3r3+4LH/IQG5ogGwKj62eJn0UVXIzFi8ZOHVLJ0ZGdybSTh99lA
+         L4Z6hFfP7c8AyVrVwPfbgpGQ9XcXUZq1F96uMWyXs1lnsTyf2wOVrF/2ohz9QuOwEPzX
+         5pTQ==
+X-Gm-Message-State: AOAM532KpZzyfpI0PZT3oBVrsQxey6ttCcpvZU45jaARygtXYC3bZz5O
+        yOoU/BTswmrMOr8jxihyxHtCxw==
+X-Google-Smtp-Source: ABdhPJwGB1uxYOzm+iqLQAWuBTRahO/IW3KpbEcEwDkgmZiU7vjTTS+yyUzAEByjIHvJZETQz2iCaQ==
+X-Received: by 2002:a63:564e:: with SMTP id g14mr550912pgm.326.1594668093886;
+        Mon, 13 Jul 2020 12:21:33 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id z10sm15863750pfr.90.2020.07.13.12.21.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 12:21:33 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 12:19:25 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Alexey Minnekhanov <alexey.min@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Konrad Dybcio <konradybcio@gmail.com>, skrzynka@konradybcio.pl,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v3 7/7] mailbox: qcom: Add sdm660 hmss compatible
+Message-ID: <20200713191925.GD388985@builder.lan>
+References: <20200622192558.152828-1-konradybcio@gmail.com>
+ <20200622192558.152828-8-konradybcio@gmail.com>
+ <20200623072535.GX128451@builder.lan>
+ <CANi4RBQY8dXU=74JfB3hHZYMqMgVwtHoQsLZXV7CpwZ8ue2icw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200713184606.37033-1-grandmaster@al2klimov.de>
-In-Reply-To: <20200713184606.37033-1-grandmaster@al2klimov.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 13 Jul 2020 22:17:10 +0300
-Message-ID: <CAHp75Ve2pPGN3BtMw6x1xR5Cyv8VP=KMJMMJ9qao29ArrxPo9w@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: Replace HTTP links with HTTPS ones
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Ayman Bagabas <ayman.bagabas@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANi4RBQY8dXU=74JfB3hHZYMqMgVwtHoQsLZXV7CpwZ8ue2icw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 9:46 PM Alexander A. Klimov
-<grandmaster@al2klimov.de> wrote:
->
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
->
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
->           If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
+On Fri 26 Jun 08:48 PDT 2020, Alexey Minnekhanov wrote:
 
-Please split per driver basis.
+> Tue, 23 Jun. 2020. 10:29, Bjorn Andersson <bjorn.andersson@linaro.org>:
+> >
+> > On Mon 22 Jun 12:25 PDT 2020, Konrad Dybcio wrote:
+> >
+> > > Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+> >
+> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >
+> 
+> Hi, I can see dts file in linux-next using compatible
+> "qcom,sdm660-apcs-hmss-global",
+> but not this patch that adds it into the driver?
 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->  Continuing my work started at 93431e0607e5.
->  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
->  (Actually letting a shell for loop submit all this stuff for me.)
->
->  If there are any URLs to be removed completely or at least not just HTTPSified:
->  Just clearly say so and I'll *undo my change*.
->  See also: https://lkml.org/lkml/2020/6/27/64
->
->  If there are any valid, but yet not changed URLs:
->  See: https://lkml.org/lkml/2020/6/26/837
->
->  If you apply the patch, please let me know.
->
->  Sorry again to all maintainers who complained about subject lines.
->  Now I realized that you want an actually perfect prefixes,
->  not just subsystem ones.
->  I tried my best...
->  And yes, *I could* (at least half-)automate it.
->  Impossible is nothing! :)
->
->
->  drivers/platform/x86/Kconfig      |  2 +-
->  drivers/platform/x86/apple-gmux.c | 16 ++++++++--------
->  2 files changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 0581a54cf562..1d96e07b2a02 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -140,7 +140,7 @@ config ACERHDF
->           in the same node directory will tell you if it is "acerhdf".
->
->           For more information about this driver see
-> -         <http://piie.net/files/acerhdf_README.txt>
-> +         <https://piie.net/files/acerhdf_README.txt>
->
->           If you have an Acer Aspire One netbook, say Y or M
->           here.
-> diff --git a/drivers/platform/x86/apple-gmux.c b/drivers/platform/x86/apple-gmux.c
-> index 7e3083deb1c5..9aae45a45200 100644
-> --- a/drivers/platform/x86/apple-gmux.c
-> +++ b/drivers/platform/x86/apple-gmux.c
-> @@ -277,8 +277,8 @@ static bool gmux_is_indexed(struct apple_gmux_data *gmux_data)
->   * MBP5 2008/09 uses a `TI LP8543`_ backlight driver. All newer models
->   * use a `TI LP8545`_.
->   *
-> - * .. _TI LP8543: http://www.ti.com/lit/ds/symlink/lp8543.pdf
-> - * .. _TI LP8545: http://www.ti.com/lit/ds/symlink/lp8545.pdf
-> + * .. _TI LP8543: https://www.ti.com/lit/ds/symlink/lp8543.pdf
-> + * .. _TI LP8545: https://www.ti.com/lit/ds/symlink/lp8545.pdf
->   */
->
->  static int gmux_get_brightness(struct backlight_device *bd)
-> @@ -373,14 +373,14 @@ static const struct backlight_ops gmux_bl_ops = {
->   * switch the panel and the external DP connector and allocates a framebuffer
->   * for the selected GPU.
->   *
-> - * .. _US 8,687,007 B2: http://pimg-fpiw.uspto.gov/fdd/07/870/086/0.pdf
-> - * .. _NXP CBTL06141:   http://www.nxp.com/documents/data_sheet/CBTL06141.pdf
-> - * .. _NXP CBTL06142:   http://www.nxp.com/documents/data_sheet/CBTL06141.pdf
-> - * .. _TI HD3SS212:     http://www.ti.com/lit/ds/symlink/hd3ss212.pdf
-> + * .. _US 8,687,007 B2: https://pimg-fpiw.uspto.gov/fdd/07/870/086/0.pdf
-> + * .. _NXP CBTL06141:   https://www.nxp.com/documents/data_sheet/CBTL06141.pdf
-> + * .. _NXP CBTL06142:   https://www.nxp.com/documents/data_sheet/CBTL06141.pdf
-> + * .. _TI HD3SS212:     https://www.ti.com/lit/ds/symlink/hd3ss212.pdf
->   * .. _Pericom PI3VDP12412: https://www.pericom.com/assets/Datasheets/PI3VDP12412.pdf
-> - * .. _TI SN74LV4066A:  http://www.ti.com/lit/ds/symlink/sn74lv4066a.pdf
-> + * .. _TI SN74LV4066A:  https://www.ti.com/lit/ds/symlink/sn74lv4066a.pdf
->   * .. _NXP CBTL03062:   http://pdf.datasheetarchive.com/indexerfiles/Datasheets-SW16/DSASW00308511.pdf
-> - * .. _TI TS3DS10224:   http://www.ti.com/lit/ds/symlink/ts3ds10224.pdf
-> + * .. _TI TS3DS10224:   https://www.ti.com/lit/ds/symlink/ts3ds10224.pdf
->   */
->
->  static void gmux_read_switch_state(struct apple_gmux_data *gmux_data)
-> --
-> 2.27.0
->
+I take the dts patches through the Qualcomm tree, but the driver patch
+should go through the mailbox tree.
 
-
--- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Bjorn
