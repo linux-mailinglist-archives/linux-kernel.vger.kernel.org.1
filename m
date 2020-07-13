@@ -2,142 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C96521E35F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 01:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E03F21E362
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 01:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgGMXCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 19:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726798AbgGMXCE (ORCPT
+        id S1726908AbgGMXCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 19:02:14 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:39939 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726765AbgGMXCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 19:02:04 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC698C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 16:02:03 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id t15so594673pjq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 16:02:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NL3F9IdRTwUV/ohOarjJNv1tgfWhRANdIZblqTPgQE4=;
-        b=DhUEEM1u0vzXTaeeqjVUNNQPl3YxCgQHnRlU4mTXrCcP9wdXRBp5OncZ73+JYp2iU9
-         BHe7m1wKgvltYJ3JO+OhQJkIbK5Nm+den0mTvXGBnjxOLjXqCUI+pIcokN9MXzcpWcmc
-         VCOII1IYjV+Yzpp0W9F3wqqxPACabnIlG078rg5RQsdHLPdwxlSMch18+dA0azggRiVW
-         IFAAFJ+QZ14xeG5YBbY3IYC+ciQUL3rqoBcakxR4vdIfr2oy3NLpz1ayc0LtTuQECnL+
-         QyJQbHngLR+BjjiLGUqzYNzHKf5daRCGRMNmkEZljVIed7iEkE+rJhNKeNwL429FA5tE
-         UEPw==
+        Mon, 13 Jul 2020 19:02:13 -0400
+Received: by mail-il1-f193.google.com with SMTP id e18so12662638ilr.7;
+        Mon, 13 Jul 2020 16:02:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=NL3F9IdRTwUV/ohOarjJNv1tgfWhRANdIZblqTPgQE4=;
-        b=XXfqx7CaudoGXO2Or2+hidogaGlf7KTnCcOO3rK7vroUcW2XMKoNzxDfNcji+JPbHo
-         vyZhleNe6T33HN6DUARNFfPugXMJcWmhAbPPWRrVCp/kwkXEp+G9zQVt8xFSO/Pxxl3P
-         tzorICTvJy1xVI5EzaEIBae0q1crF0Cs+dfgLEW+KBTy7bTvg3XnoOkWeG/cIztiLhGw
-         Ffk4h4U1jiqXbdillAC+V3/3Gov8dgqXh1RZ288Wy3Fw1XqGKnKleCqWuPPandh+8B8S
-         rrLgkcqBBT+F/my95DvpE2SmIAv5Izusi9FtGIeA6e/NW/UkinpS5YY2htoxr9/Z6Sp/
-         HLYA==
-X-Gm-Message-State: AOAM532QVCQrgdP6so/TncRPhHAwI+ziLTeRjc8IHlryNW1RlhApSUc4
-        1/R+QCf13UKUnXgSF3lAKrGcuA==
-X-Google-Smtp-Source: ABdhPJwOqEfS8iN03p8MO6UR4stKIF/D0XwZj5+unRESovBGwUEnpb1+mFMtrSDIDR/8Nygzc6WMCQ==
-X-Received: by 2002:a17:90a:24ed:: with SMTP id i100mr1796777pje.22.1594681323100;
-        Mon, 13 Jul 2020 16:02:03 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id a17sm13436706pgw.60.2020.07.13.16.02.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0JkY/IydW/gEv8qHIx3b5ShKlXszMgynuLTSr7LPSiY=;
+        b=V095K5swDUq+zOcrhks/UeoKKIutafug3bYIxlOYHDh5GLanYYWq2J2WOzxfpHit0g
+         eEC3+2gjmdMD32JLrGjm64wACOpqueT3fwwTeScqFn5lvoI3Vsm7q+eqL/qNx+C8eEFY
+         RLjYQNxHdyvEtXVkD6jCz+WUVK2BBtEPjc273h/fouXJnCPI15gtyko+c5Z8NnR2vdpV
+         wCVL4UFghLmsXF5Cr3Vf6EjGqvHdzRrvWciXuJYGhN/MR36b18dKOWiaLM50d004UlKh
+         RVdbbnVnRHOR8nN9JHQVrwB9TDXg3hv/rxjcnvQFIAT6KTdD9fLtf7MDgvFjzERX4kgt
+         Dt4w==
+X-Gm-Message-State: AOAM530BiJIqL5Z6v+YZfwnnjwh8tGNDLTPYcpEVFwum43ZlAZiaIHg0
+        Cu4FXQ2y9aRiEter2eUSAQ==
+X-Google-Smtp-Source: ABdhPJxe9k1suva8aVWluB0pMau2ihw31/IveMFIbqWcliLeoU1S1b8L1Guy6UtfWOj37Ipt2k6A/w==
+X-Received: by 2002:a92:b6d4:: with SMTP id m81mr2123220ill.72.1594681331730;
+        Mon, 13 Jul 2020 16:02:11 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id c3sm8887100ilj.31.2020.07.13.16.02.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 16:02:01 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 16:02:01 -0700 (PDT)
-X-Google-Original-Date: Mon, 13 Jul 2020 16:01:35 PDT (-0700)
-Subject:     Re: [PATCH v2 0/5] Dedicated CLINT timer driver
-In-Reply-To: <20200627161957.134376-1-anup.patel@wdc.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        robh+dt@kernel.org, daniel.lezcano@linaro.org, tglx@linutronix.de,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        anup@brainfault.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Anup Patel <Anup.Patel@wdc.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Anup Patel <Anup.Patel@wdc.com>
-Message-ID: <mhng-4d70be69-ef20-4d38-bda4-ec4101530c0a@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Mon, 13 Jul 2020 16:02:11 -0700 (PDT)
+Received: (nullmailer pid 884155 invoked by uid 1000);
+        Mon, 13 Jul 2020 23:02:06 -0000
+Date:   Mon, 13 Jul 2020 17:02:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Frank Lee <frank@allwinnertech.com>
+Cc:     mturquette@baylibre.com, devicetree@vger.kernel.org,
+        linux-i2c@vger.kernel.org, mripard@kernel.org,
+        lee.jones@linaro.org, sboyd@kernel.org, liyong@allwinnertech.com,
+        daniel.lezcano@linaro.org, anarsoul@gmail.com,
+        linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
+        megous@megous.com, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, rui.zhang@intel.com,
+        srinivas.kandagatla@linaro.org, linux-pm@vger.kernel.org,
+        gregory.clement@bootlin.com, icenowy@aosc.io,
+        tiny.windzz@gmail.com, jason@lakedaemon.net, stefan@olimex.com,
+        maz@kernel.org, tglx@linutronix.de, wens@csie.org,
+        bage@linutronix.de, huangshuosheng@allwinnertech.com,
+        amit.kucheria@verdurent.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, clabbe@baylibre.com, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v3 07/16] dt-bindings: thermal: sun8i: Add binding for
+ A100's THS controller
+Message-ID: <20200713230206.GA884103@bogus>
+References: <20200708071942.22595-1-frank@allwinnertech.com>
+ <20200708071942.22595-8-frank@allwinnertech.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708071942.22595-8-frank@allwinnertech.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 27 Jun 2020 09:19:52 PDT (-0700), Anup Patel wrote:
-> The current RISC-V timer driver is convoluted and implements two
-> distinct timers:
->  1. S-mode timer: This is for Linux RISC-V S-mode with MMU. The
->     clocksource is implemented using TIME CSR and clockevent device
->     is implemented using SBI Timer calls.
->  2. M-mode timer: This is for Linux RISC-V M-mode without MMU. The
->     clocksource is implemented using CLINT MMIO time register and
->     clockevent device is implemented using CLINT MMIO timecmp registers.
->
-> This patchset removes clint related code from RISC-V timer driver and
-> arch/riscv directory. Instead, the series adds a dedicated MMIO based
-> CLINT driver under drivers/clocksource directory which can be used by
-> Linux RISC-V M-mode (i.e NoMMU Linux RISC-V).
->
-> The patchset is based up Linux-5.8-rc2 and can be found at riscv_clint_v2
-> branch of: https://github.com/avpatel/linux.git
->
-> This series is tested on:
->  1. QEMU RV64 virt machine using Linux RISC-V S-mode
->  2. QEMU RV32 virt machine using Linux RISC-V S-mode
->  3. QEMU RV64 virt machine using Linux RISC-V M-mode (i.e. NoMMU)
->
-> Changes since v1:
->  - Rebased series on Linux-5.8-rc2
->  - Added pr_warn() for case where ipi_ops not available in PATCH1
->  - Updated ipi_inject() prototype to use "struct cpumask *" in PATCH1
->  - Updated CLINT_TIMER kconfig option to depend on RISCV_M_MODE in PATCH4
->  - Added riscv,clint0 compatible string in DT bindings document
->
-> Anup Patel (5):
->   RISC-V: Add mechanism to provide custom IPI operations
->   RISC-V: Remove CLINT related code
->   clocksource/drivers/timer-riscv: Remove MMIO related stuff
->   clocksource/drivers: Add CLINT timer driver
->   dt-bindings: timer: Add CLINT bindings
+On Wed, 08 Jul 2020 15:19:33 +0800, Frank Lee wrote:
+> Add a binding for A100's ths controller.
+> 
+> Signed-off-by: Frank Lee <frank@allwinnertech.com>
+> Reviewed-by: Yangtao Li <tiny.windzz@gmail.com>
+> ---
+>  .../devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml       | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
 
-This all generally LGTM, though I haven't been through the code line-by-line
-yet.  It touches a bunch of trees, so I'd prefer to have some Acks before
-merging -- I'll dig through the RISC-V specific stuff, but the new CLINT driver
-probhably deserves a look from one of the clocksource folks.
-
-I think the only issue is that the port will be broken between patch 2 and 4,
-as at that point we won't have an M-mode timer driver.  I think it shouldn't be
-too much to just reorder these, LMK if you want to do it or you want me to.
-
-Thanks!
-
->
->  .../bindings/timer/sifive,clint.txt           |  34 +++
->  arch/riscv/Kconfig                            |   2 +-
->  arch/riscv/include/asm/clint.h                |  39 ---
->  arch/riscv/include/asm/smp.h                  |  11 +
->  arch/riscv/include/asm/timex.h                |  28 +--
->  arch/riscv/kernel/Makefile                    |   2 +-
->  arch/riscv/kernel/clint.c                     |  44 ----
->  arch/riscv/kernel/sbi.c                       |  14 ++
->  arch/riscv/kernel/setup.c                     |   2 -
->  arch/riscv/kernel/smp.c                       |  44 ++--
->  arch/riscv/kernel/smpboot.c                   |   4 +-
->  drivers/clocksource/Kconfig                   |  12 +-
->  drivers/clocksource/Makefile                  |   1 +
->  drivers/clocksource/timer-clint.c             | 229 ++++++++++++++++++
->  drivers/clocksource/timer-riscv.c             |  17 +-
->  include/linux/cpuhotplug.h                    |   1 +
->  16 files changed, 337 insertions(+), 147 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/timer/sifive,clint.txt
->  delete mode 100644 arch/riscv/include/asm/clint.h
->  delete mode 100644 arch/riscv/kernel/clint.c
->  create mode 100644 drivers/clocksource/timer-clint.c
+Reviewed-by: Rob Herring <robh@kernel.org>
