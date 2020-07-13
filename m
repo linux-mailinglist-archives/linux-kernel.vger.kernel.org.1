@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59AC221CD3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 04:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C7021CD3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 04:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgGMCcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 22:32:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726534AbgGMCcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 22:32:20 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3497B2068F;
-        Mon, 13 Jul 2020 02:32:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594607540;
-        bh=dNg0UZZ/8+CcNFqVQfTmfbOA5NESFUJcg9zEIihcTn0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NSSuH5LOuslQU1pKMaZ4HKvnkQDcR7mFP+6r2sFZQ/vfd3s5Mo0axkw4VraXzqNks
-         1qX2FWR1N9Dbx9R7E/TM2Wf57ReZdo7njkmmngyG+2cm++mwduKLgAJtAKsJD/K2eK
-         b29DER03KctwDqS2e/XCBv/G8actedChFCY6O/6g=
-Date:   Mon, 13 Jul 2020 10:32:15 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Bruno Thomsen <bruno.thomsen@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>, bth@kamstrup.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: ARM: imx: add kamstrup flex
- concentrator to schema
-Message-ID: <20200713023214.GX21277@dragon>
-References: <20200629114927.17379-1-bruno.thomsen@gmail.com>
+        id S1728511AbgGMCcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 22:32:47 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:39925 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726523AbgGMCcr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 22:32:47 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3801421|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.491549-0.0395456-0.468906;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03297;MF=frank@allwinnertech.com;NM=1;PH=DW;RN=32;RT=32;SR=0;TI=W4_5899425_DEFAULT_0AB1015F_1594607535272_o7001c3r;
+Received: from WS-web (frank@allwinnertech.com[W4_5899425_DEFAULT_0AB1015F_1594607535272_o7001c3r]) by e01l07423.eu6 at Mon, 13 Jul 2020 10:32:39 +0800
+Date:   Mon, 13 Jul 2020 10:32:39 +0800
+From:   "Frank Lee" <frank@allwinnertech.com>
+To:     "=?UTF-8?B?T25kxZllaiBKaXJtYW4=?=" <megous@megous.com>,
+        "robh+dt" <robh+dt@kernel.org>, "wens" <wens@csie.org>,
+        "mturquette" <mturquette@baylibre.com>, "sboyd" <sboyd@kernel.org>,
+        "gregory.clement" <gregory.clement@bootlin.com>,
+        "tglx" <tglx@linutronix.de>, "jason" <jason@lakedaemon.net>,
+        "maz" <maz@kernel.org>,
+        "srinivas.kandagatla" <srinivas.kandagatla@linaro.org>,
+        "linus.walleij" <linus.walleij@linaro.org>,
+        "anarsoul" <anarsoul@gmail.com>,
+        "tiny.windzz" <tiny.windzz@gmail.com>,
+        "rui.zhang" <rui.zhang@intel.com>,
+        "daniel.lezcano" <daniel.lezcano@linaro.org>,
+        "amit.kucheria" <amit.kucheria@verdurent.com>,
+        "lee.jones" <lee.jones@linaro.org>,
+        "p.zabel" <p.zabel@pengutronix.de>, "clabbe" <clabbe@baylibre.com>,
+        "icenowy" <icenowy@aosc.io>, "stefan" <stefan@olimex.com>,
+        "bage" <bage@linutronix.de>,
+        "devicetree" <devicetree@vger.kernel.org>,
+        "linux-pm" <linux-pm@vger.kernel.org>,
+        "=?UTF-8?B?5p2O5YuH?=" <liyong@allwinnertech.com>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "linux-gpio" <linux-gpio@vger.kernel.org>,
+        "=?UTF-8?B?6buE54OB55Sf?=" <huangshuosheng@allwinnertech.com>,
+        "linux-i2c" <linux-i2c@vger.kernel.org>,
+        "linux-clk" <linux-clk@vger.kernel.org>,
+        "linux-arm-kernel" <linux-arm-kernel@lists.infradead.org>,
+        "Maxime Ripard" <maxime@cerno.tech>
+Reply-To: "Frank Lee" <frank@allwinnertech.com>
+Message-ID: <9e4f4ebf-77ec-4fb5-902f-1e2a7c4b0f1d.frank@allwinnertech.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2MyAwNC8xNl0gZHQtYmluZGluZ3M6IHBpbmN0cmw6IHN1bnhpOiBtYWtl?=
+  =?UTF-8?B?IGdwaW8gYmFua3Mgc3VwcGxpZXMgcmVxdWlyZWQ=?=
+X-Mailer: [Alimail-Mailagent][W4_5899425][DEFAULT][Chrome]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200629114927.17379-1-bruno.thomsen@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200708071942.22595-1-frank@allwinnertech.com> <20200708071942.22595-5-frank@allwinnertech.com> <20200709171713.tutnlchji4e6i5pv@core.my.home>,<20200710123718.mrvtk6rzkfuno5kn@gilmour.lan>
+In-Reply-To: <20200710123718.mrvtk6rzkfuno5kn@gilmour.lan>
+x-aliyun-mail-creator: W4_5899425_DEFAULT_LjMTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzU2LjAuMjkyNC44NyBTYWZhcmkvNTM3LjM2TM
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 01:49:25PM +0200, Bruno Thomsen wrote:
-> Add Kamstrup flex concentrator compatibles to the schema so we can
-> make use of them for the validation.
-> 
-> Signed-off-by: Bruno Thomsen <bruno.thomsen@gmail.com>
-
-'dt-bindings: fsl: ...' should be just fine as subject prefix.
-
-Shawn
-
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index 05906e291e38..66627b272e40 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -299,6 +299,8 @@ properties:
->            - enum:
->                - fsl,imx7d-sdb             # i.MX7 SabreSD Board
->                - fsl,imx7d-sdb-reva        # i.MX7 SabreSD Rev-A Board
-> +              - kam,imx7d-flex-concentrator       # Kamstrup OMNIA Flex Concentrator
-> +              - kam,imx7d-flex-concentrator-mfg   # Kamstrup OMNIA Flex Concentrator in manufacturing mode
->                - novtech,imx7d-meerkat96   # i.MX7 Meerkat96 Board
->                - technexion,imx7d-pico-dwarf   # TechNexion i.MX7D Pico-Dwarf
->                - technexion,imx7d-pico-hobbit  # TechNexion i.MX7D Pico-Hobbit
-> 
-> base-commit: 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68
-> -- 
-> 2.26.2
-> 
+TWF5YmUgd2UgcHV0IHRoaXMgd29yayBiYWNrd2FyZHMgYW5kIGxldCBhMTAwIGpvaW4gdGhlIG1h
+aW5saW5lIGFzIHNvb24gYXMgcG9zc2libGUu
