@@ -2,151 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A1021E3CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 01:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5C521E3D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 01:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbgGMXoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 19:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726823AbgGMXn7 (ORCPT
+        id S1727052AbgGMXp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 19:45:58 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:26407 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727037AbgGMXp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 19:43:59 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDEEC061794;
-        Mon, 13 Jul 2020 16:43:58 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id f12so19447265eja.9;
-        Mon, 13 Jul 2020 16:43:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=7FE6Gq0R+rbH37mVjTE37qvA0VNf6iTNJ2JVteVF6QY=;
-        b=ChjWzhUTFd3ZWontlFJUbIF1bCDJZWVrCnVutln+mX2nl95ya2shljj1f1hqfyJOmP
-         BNNsbGFDrEGeYn/hZNLG3tydF2lKzNXrNvf+er/gNd6Bs+7D85rTOEkPtAwCK03tG3ly
-         rxfZJiLbUKrOAgYMsnmHfVjtu9XlLbX178S77sZDICn+EnR4IytJ9BVKUQ2SbhG28n7s
-         LlO84BOizTGlKehwTr8dKmICV7sApijJCBhP7XvCzZm/UVQDZQPukhrEal8BYxWTGloL
-         uHtUrdrOe44pdqe5UonTt2lSKPFyr8WbA33WehsX47NZ0SZsKWpncj+ML5B7oRwtdU9e
-         6cOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7FE6Gq0R+rbH37mVjTE37qvA0VNf6iTNJ2JVteVF6QY=;
-        b=JCkk4s/VUZ4ijGjiHRtVS52h8zAc1iPu2v8E9lecG6hMp783nMJkVy98wPUlfKqxUG
-         ty9hu0ShQGNZU3GtcKTVNxWondRGrkCgC4MJWbBjFlg/ezZp0My/govpXor0bCN5jwRM
-         ZlFmvkZvNogfCNkc5cDvH9J14hRItmw6JohXLkGLRbaApMkonT5mGB1k1ikXWun/dXqB
-         4v/Lks9c5xK58TsQC6voH9JfSEZO0t18H6zb6L5N6s8PZwtjsILddW8MGtIb9adSUXma
-         GYkrM5fTzLvmsL5MEAVwEIdXRMepDoXAxNiSA68wD0kXhxDZW8030tqYtMFrqcSem1ET
-         Zzwg==
-X-Gm-Message-State: AOAM530b10UhypvOFytlDEKFZZmrHPjySv0NfDRZUKDRDL9AmKnUoQHp
-        +v3tVPJOm1GBVpJFgf++b15x1mbO
-X-Google-Smtp-Source: ABdhPJyCydA993JsuDAmn2drmLzjH1PmbTOTUxyKBVW5K902aURzPlnlRHO0JYKt1ahzZndqQg8Bvg==
-X-Received: by 2002:a17:906:4dd4:: with SMTP id f20mr2127738ejw.170.1594683837571;
-        Mon, 13 Jul 2020 16:43:57 -0700 (PDT)
-Received: from localhost.localdomain ([5.100.193.69])
-        by smtp.gmail.com with ESMTPSA id a13sm12964712edk.58.2020.07.13.16.43.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 16:43:57 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] io_uring: batch put_task_struct()
-Date:   Tue, 14 Jul 2020 02:41:56 +0300
-Message-Id: <15a2db7fa57e5e78ed2677d21bb70dd3d32f8deb.1594683622.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1594683622.git.asml.silence@gmail.com>
-References: <cover.1594683622.git.asml.silence@gmail.com>
+        Mon, 13 Jul 2020 19:45:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594683957; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=xRE5cE+HELeOkE681nuM7JY4je2wJ10eEFI/T4uvlMc=; b=tsYSVg/7nGLYhN3rnugksl8CshwqLmGwq0m9eamUrPWPcbnKiIBkkNWbg1Zi5QHml0xjnJ64
+ gigGi0ijRGR71HSAVsSnyPzBWoHcuKxLDdnu8g+J48JQUoBw/ShddFHni3o/9LRN9vfRmkSA
+ iRHdY0S7+yoODBcznvY6cc7ulsY=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f0cf21c65270fa595949df1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Jul 2020 23:45:32
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8A91CC433A1; Mon, 13 Jul 2020 23:45:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B6048C433C8;
+        Mon, 13 Jul 2020 23:45:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B6048C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 13 Jul 2020 17:45:26 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/3] drm/msm: fix unbalanced pm_runtime_enable in
+ adreno_gpu_{init,cleanup}
+Message-ID: <20200713234526.GA24345@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Jonathan Marek <jonathan@marek.ca>,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200713225345.20556-1-jonathan@marek.ca>
+ <20200713225345.20556-2-jonathan@marek.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713225345.20556-2-jonathan@marek.ca>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each put_task_struct() is an atomic_dec. Do that in batches.
+On Mon, Jul 13, 2020 at 06:53:40PM -0400, Jonathan Marek wrote:
+> adreno_gpu_init calls pm_runtime_enable, so adreno_gpu_cleanup needs to
+> call pm_runtime_disable.
 
-Tested io_uring-bench(iopoll,QD=128) with a custom nullblk, where
-added ->iopoll() is not optimised at all:
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
 
-before: 529504 IOPS
-after: 	538415 IOPS
-diff:	~1.8%
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> index 89673c7ed473..ad64d4b7e8d7 100644
+> --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> @@ -1021,11 +1021,14 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>  void adreno_gpu_cleanup(struct adreno_gpu *adreno_gpu)
+>  {
+>  	struct msm_gpu *gpu = &adreno_gpu->base;
+> +	struct msm_drm_private *priv = gpu->dev->dev_private;
+>  	unsigned int i;
+>  
+>  	for (i = 0; i < ARRAY_SIZE(adreno_gpu->info->fw); i++)
+>  		release_firmware(adreno_gpu->fw[i]);
+>  
+> +	pm_runtime_disable(&priv->gpu_pdev->dev);
+> +
+>  	icc_put(gpu->icc_path);
+>  	icc_put(gpu->ocmem_icc_path);
+>  
+> -- 
+> 2.26.1
+> 
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io_uring.c | 28 ++++++++++++++++++++++++++--
- 1 file changed, 26 insertions(+), 2 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 6f767781351f..3216cc00061b 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1761,8 +1761,18 @@ static void io_free_req(struct io_kiocb *req)
- struct req_batch {
- 	void *reqs[IO_IOPOLL_BATCH];
- 	int to_free;
-+
-+	struct task_struct	*task;
-+	int			task_refs;
- };
- 
-+static void io_init_req_batch(struct req_batch *rb)
-+{
-+	rb->to_free = 0;
-+	rb->task_refs = 0;
-+	rb->task = NULL;
-+}
-+
- static void __io_req_free_batch_flush(struct io_ring_ctx *ctx,
- 				      struct req_batch *rb)
- {
-@@ -1776,6 +1786,10 @@ static void io_req_free_batch_finish(struct io_ring_ctx *ctx,
- {
- 	if (rb->to_free)
- 		__io_req_free_batch_flush(ctx, rb);
-+	if (rb->task) {
-+		put_task_struct_many(rb->task, rb->task_refs);
-+		rb->task = NULL;
-+	}
- }
- 
- static void io_req_free_batch(struct req_batch *rb, struct io_kiocb *req)
-@@ -1787,6 +1801,16 @@ static void io_req_free_batch(struct req_batch *rb, struct io_kiocb *req)
- 	if (req->flags & REQ_F_LINK_HEAD)
- 		io_queue_next(req);
- 
-+	if (req->flags & REQ_F_TASK_PINNED) {
-+		if (req->task != rb->task && rb->task) {
-+			put_task_struct_many(rb->task, rb->task_refs);
-+			rb->task = req->task;
-+			rb->task_refs = 0;
-+		}
-+		rb->task_refs++;
-+		req->flags &= ~REQ_F_TASK_PINNED;
-+	}
-+
- 	io_dismantle_req(req);
- 	rb->reqs[rb->to_free++] = req;
- 	if (unlikely(rb->to_free == ARRAY_SIZE(rb->reqs)))
-@@ -1809,7 +1833,7 @@ static void io_submit_flush_completions(struct io_comp_state *cs)
- 	spin_unlock_irq(&ctx->completion_lock);
- 	io_cqring_ev_posted(ctx);
- 
--	rb.to_free = 0;
-+	io_init_req_batch(&rb);
- 	for (i = 0; i < nr; ++i) {
- 		req = cs->reqs[i];
- 		if (refcount_dec_and_test(&req->refs))
-@@ -1973,7 +1997,7 @@ static void io_iopoll_complete(struct io_ring_ctx *ctx, unsigned int *nr_events,
- 	/* order with ->result store in io_complete_rw_iopoll() */
- 	smp_rmb();
- 
--	rb.to_free = 0;
-+	io_init_req_batch(&rb);
- 	while (!list_empty(done)) {
- 		int cflags = 0;
- 
 -- 
-2.24.0
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
