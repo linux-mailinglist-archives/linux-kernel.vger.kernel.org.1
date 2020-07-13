@@ -2,229 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D64B21E359
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 01:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C96521E35F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 01:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgGMXBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 19:01:36 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:35525 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbgGMXBf (ORCPT
+        id S1726836AbgGMXCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 19:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726798AbgGMXCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 19:01:35 -0400
-Received: by mail-io1-f65.google.com with SMTP id v8so15347354iox.2;
-        Mon, 13 Jul 2020 16:01:34 -0700 (PDT)
+        Mon, 13 Jul 2020 19:02:04 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC698C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 16:02:03 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id t15so594673pjq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 16:02:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NL3F9IdRTwUV/ohOarjJNv1tgfWhRANdIZblqTPgQE4=;
+        b=DhUEEM1u0vzXTaeeqjVUNNQPl3YxCgQHnRlU4mTXrCcP9wdXRBp5OncZ73+JYp2iU9
+         BHe7m1wKgvltYJ3JO+OhQJkIbK5Nm+den0mTvXGBnjxOLjXqCUI+pIcokN9MXzcpWcmc
+         VCOII1IYjV+Yzpp0W9F3wqqxPACabnIlG078rg5RQsdHLPdwxlSMch18+dA0azggRiVW
+         IFAAFJ+QZ14xeG5YBbY3IYC+ciQUL3rqoBcakxR4vdIfr2oy3NLpz1ayc0LtTuQECnL+
+         QyJQbHngLR+BjjiLGUqzYNzHKf5daRCGRMNmkEZljVIed7iEkE+rJhNKeNwL429FA5tE
+         UEPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rEM2k8uDu6wNpoJYOHurqvj/7if6gaGt94wx89r0Kh8=;
-        b=lAfKnpXEr3WfP+2wUNJVEDLzJub/bHUvv0Je9YsEHrPxwya2zi0IogKtuku1QLKXi1
-         ylL7w41LuWc1V8mKPTAF7e3iW1nukwX4mFdoUApyjv8taNbtyi/t1Xsi15F0UCprhfm3
-         ZA0D1zrASo8xqL2bbkiHjocb1iuIMOprQammmmaI8PP9YeuhSgWpzYjPSzOovvRCXM63
-         RRWfNIVjkBq0cZoH8O4mEwtSSzaNJhKRVVQYowAb1NTJnDiRbh7TSXKqfjOTgo4tgKOC
-         otOs93e6w/6rdNrieWCS3gNNjWtpVSy1a2boJ2kl8G0KCjLO89p+npUMiutSj6+Ivkq/
-         DF9Q==
-X-Gm-Message-State: AOAM5315V8GkLoWxVs1uEX8J0YUvN1ZQI70xaVcntK+pJH0RJliIdp3n
-        bpfHnrOzDRHpkDm/Li9/uHiFDDu5Ym1G
-X-Google-Smtp-Source: ABdhPJzitorPXcF0bFX7xRNpmgTS4ftYPc0PfK6f0HOeq7fu4Bmtfs4az6Nwch3uwiUL5xTcLGCWcA==
-X-Received: by 2002:a05:6602:2fd5:: with SMTP id v21mr2073969iow.41.1594681293949;
-        Mon, 13 Jul 2020 16:01:33 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id t1sm8482566iob.16.2020.07.13.16.01.30
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=NL3F9IdRTwUV/ohOarjJNv1tgfWhRANdIZblqTPgQE4=;
+        b=XXfqx7CaudoGXO2Or2+hidogaGlf7KTnCcOO3rK7vroUcW2XMKoNzxDfNcji+JPbHo
+         vyZhleNe6T33HN6DUARNFfPugXMJcWmhAbPPWRrVCp/kwkXEp+G9zQVt8xFSO/Pxxl3P
+         tzorICTvJy1xVI5EzaEIBae0q1crF0Cs+dfgLEW+KBTy7bTvg3XnoOkWeG/cIztiLhGw
+         Ffk4h4U1jiqXbdillAC+V3/3Gov8dgqXh1RZ288Wy3Fw1XqGKnKleCqWuPPandh+8B8S
+         rrLgkcqBBT+F/my95DvpE2SmIAv5Izusi9FtGIeA6e/NW/UkinpS5YY2htoxr9/Z6Sp/
+         HLYA==
+X-Gm-Message-State: AOAM532QVCQrgdP6so/TncRPhHAwI+ziLTeRjc8IHlryNW1RlhApSUc4
+        1/R+QCf13UKUnXgSF3lAKrGcuA==
+X-Google-Smtp-Source: ABdhPJwOqEfS8iN03p8MO6UR4stKIF/D0XwZj5+unRESovBGwUEnpb1+mFMtrSDIDR/8Nygzc6WMCQ==
+X-Received: by 2002:a17:90a:24ed:: with SMTP id i100mr1796777pje.22.1594681323100;
+        Mon, 13 Jul 2020 16:02:03 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id a17sm13436706pgw.60.2020.07.13.16.02.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 16:01:33 -0700 (PDT)
-Received: (nullmailer pid 883186 invoked by uid 1000);
-        Mon, 13 Jul 2020 23:01:29 -0000
-Date:   Mon, 13 Jul 2020 17:01:29 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     mripard@kernel.org, wens@csie.org, mturquette@baylibre.com,
-        sboyd@kernel.org, gregory.clement@bootlin.com, tglx@linutronix.de,
-        jason@lakedaemon.net, maz@kernel.org,
-        srinivas.kandagatla@linaro.org, linus.walleij@linaro.org,
-        anarsoul@gmail.com, tiny.windzz@gmail.com, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
-        lee.jones@linaro.org, p.zabel@pengutronix.de, clabbe@baylibre.com,
-        icenowy@aosc.io, megous@megous.com, stefan@olimex.com,
-        bage@linutronix.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
-        huangshuosheng@allwinnertech.com, liyong@allwinnertech.com
-Subject: Re: [PATCH v3 03/16] dt-bindings: pinctrl: sunxi: Add A100 pinctrl
- bindings
-Message-ID: <20200713230129.GA875173@bogus>
-References: <20200708071942.22595-1-frank@allwinnertech.com>
- <20200708071942.22595-4-frank@allwinnertech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708071942.22595-4-frank@allwinnertech.com>
+        Mon, 13 Jul 2020 16:02:01 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 16:02:01 -0700 (PDT)
+X-Google-Original-Date: Mon, 13 Jul 2020 16:01:35 PDT (-0700)
+Subject:     Re: [PATCH v2 0/5] Dedicated CLINT timer driver
+In-Reply-To: <20200627161957.134376-1-anup.patel@wdc.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        robh+dt@kernel.org, daniel.lezcano@linaro.org, tglx@linutronix.de,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        anup@brainfault.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Anup Patel <Anup.Patel@wdc.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Anup Patel <Anup.Patel@wdc.com>
+Message-ID: <mhng-4d70be69-ef20-4d38-bda4-ec4101530c0a@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 03:19:29PM +0800, Frank Lee wrote:
-> Add device tree binding Documentation details for A100 pinctrl driver,
-> whic has an r pin controller and a pin controller with more irq lines.
+On Sat, 27 Jun 2020 09:19:52 PDT (-0700), Anup Patel wrote:
+> The current RISC-V timer driver is convoluted and implements two
+> distinct timers:
+>  1. S-mode timer: This is for Linux RISC-V S-mode with MMU. The
+>     clocksource is implemented using TIME CSR and clockevent device
+>     is implemented using SBI Timer calls.
+>  2. M-mode timer: This is for Linux RISC-V M-mode without MMU. The
+>     clocksource is implemented using CLINT MMIO time register and
+>     clockevent device is implemented using CLINT MMIO timecmp registers.
+>
+> This patchset removes clint related code from RISC-V timer driver and
+> arch/riscv directory. Instead, the series adds a dedicated MMIO based
+> CLINT driver under drivers/clocksource directory which can be used by
+> Linux RISC-V M-mode (i.e NoMMU Linux RISC-V).
+>
+> The patchset is based up Linux-5.8-rc2 and can be found at riscv_clint_v2
+> branch of: https://github.com/avpatel/linux.git
+>
+> This series is tested on:
+>  1. QEMU RV64 virt machine using Linux RISC-V S-mode
+>  2. QEMU RV32 virt machine using Linux RISC-V S-mode
+>  3. QEMU RV64 virt machine using Linux RISC-V M-mode (i.e. NoMMU)
+>
+> Changes since v1:
+>  - Rebased series on Linux-5.8-rc2
+>  - Added pr_warn() for case where ipi_ops not available in PATCH1
+>  - Updated ipi_inject() prototype to use "struct cpumask *" in PATCH1
+>  - Updated CLINT_TIMER kconfig option to depend on RISCV_M_MODE in PATCH4
+>  - Added riscv,clint0 compatible string in DT bindings document
+>
+> Anup Patel (5):
+>   RISC-V: Add mechanism to provide custom IPI operations
+>   RISC-V: Remove CLINT related code
+>   clocksource/drivers/timer-riscv: Remove MMIO related stuff
+>   clocksource/drivers: Add CLINT timer driver
+>   dt-bindings: timer: Add CLINT bindings
 
-s/whic/which/
+This all generally LGTM, though I haven't been through the code line-by-line
+yet.  It touches a bunch of trees, so I'd prefer to have some Acks before
+merging -- I'll dig through the RISC-V specific stuff, but the new CLINT driver
+probhably deserves a look from one of the clocksource folks.
 
-'an r pin controller'?
+I think the only issue is that the port will be broken between patch 2 and 4,
+as at that point we won't have an M-mode timer driver.  I think it shouldn't be
+too much to just reorder these, LMK if you want to do it or you want me to.
 
-> 
-> Signed-off-by: Frank Lee <frank@allwinnertech.com>
-> ---
->  .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml       | 74 +++++++++++++---------
->  1 file changed, 44 insertions(+), 30 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-> index bfefd09..226aba0 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
-> @@ -48,6 +48,8 @@ properties:
->        - allwinner,sun9i-a80-r-pinctrl
->        - allwinner,sun50i-a64-pinctrl
->        - allwinner,sun50i-a64-r-pinctrl
-> +      - allwinner,sun50i-a100-pinctrl
-> +      - allwinner,sun50i-a100-r-pinctrl
->        - allwinner,sun50i-h5-pinctrl
->        - allwinner,sun50i-h6-pinctrl
->        - allwinner,sun50i-h6-r-pinctrl
-> @@ -59,7 +61,7 @@ properties:
->  
->    interrupts:
->      minItems: 1
-> -    maxItems: 5
-> +    maxItems: 7
->      description:
->        One interrupt per external interrupt bank supported on the
->        controller, sorted by bank number ascending order.
-> @@ -144,75 +146,87 @@ allOf:
->    # FIXME: We should have the pin bank supplies here, but not a lot of
->    # boards are defining it at the moment so it would generate a lot of
->    # warnings.
-> -
->    - if:
->        properties:
->          compatible:
->            enum:
-> -            - allwinner,sun9i-a80-pinctrl
-> +            - allwinner,sun50i-a100-pinctrl
->  
->      then:
->        properties:
->          interrupts:
-> -          minItems: 5
-> -          maxItems: 5
-> +          minItems: 7
-> +          maxItems: 7
->  
->      else:
->        if:
+Thanks!
 
-This diff is hard to follow. Rather than a continual nesting of 'else' 
-clauses, just make each 'if' a new entry under 'allOf' and get rid of 
-the else. Perhaps do that in a separate patch first, then this change 
-will be easier to review.
-
->          properties:
->            compatible:
->              enum:
-> -              - allwinner,sun6i-a31-pinctrl
-> -              - allwinner,sun6i-a31s-pinctrl
-> -              - allwinner,sun50i-h6-pinctrl
-> +              - allwinner,sun9i-a80-pinctrl
->  
->        then:
->          properties:
->            interrupts:
-> -            minItems: 4
-> -            maxItems: 4
-> +            minItems: 5
-> +            maxItems: 5
->  
->        else:
->          if:
->            properties:
->              compatible:
->                enum:
-> -                - allwinner,sun8i-a23-pinctrl
-> -                - allwinner,sun8i-a83t-pinctrl
-> -                - allwinner,sun50i-a64-pinctrl
-> -                - allwinner,sun50i-h5-pinctrl
-> -                - allwinner,suniv-f1c100s-pinctrl
-> +                - allwinner,sun6i-a31-pinctrl
-> +                - allwinner,sun6i-a31s-pinctrl
-> +                - allwinner,sun50i-h6-pinctrl
->  
->          then:
->            properties:
->              interrupts:
-> -              minItems: 3
-> -              maxItems: 3
-> +              minItems: 4
-> +              maxItems: 4
->  
->          else:
->            if:
->              properties:
->                compatible:
->                  enum:
-> -                  - allwinner,sun6i-a31-r-pinctrl
-> -                  - allwinner,sun8i-a33-pinctrl
-> -                  - allwinner,sun8i-h3-pinctrl
-> -                  - allwinner,sun8i-v3-pinctrl
-> -                  - allwinner,sun8i-v3s-pinctrl
-> -                  - allwinner,sun9i-a80-r-pinctrl
-> -                  - allwinner,sun50i-h6-r-pinctrl
-> +                  - allwinner,sun8i-a23-pinctrl
-> +                  - allwinner,sun8i-a83t-pinctrl
-> +                  - allwinner,sun50i-a64-pinctrl
-> +                  - allwinner,sun50i-h5-pinctrl
-> +                  - allwinner,suniv-f1c100s-pinctrl
->  
->            then:
->              properties:
->                interrupts:
-> -                minItems: 2
-> -                maxItems: 2
-> +                minItems: 3
-> +                maxItems: 3
->  
->            else:
-> -            properties:
-> -              interrupts:
-> -                minItems: 1
-> -                maxItems: 1
-> +            if:
-> +              properties:
-> +                compatible:
-> +                  enum:
-> +                    - allwinner,sun6i-a31-r-pinctrl
-> +                    - allwinner,sun8i-a33-pinctrl
-> +                    - allwinner,sun8i-h3-pinctrl
-> +                    - allwinner,sun8i-v3-pinctrl
-> +                    - allwinner,sun8i-v3s-pinctrl
-> +                    - allwinner,sun9i-a80-r-pinctrl
-> +                    - allwinner,sun50i-h6-r-pinctrl
-> +
-> +            then:
-> +              properties:
-> +                interrupts:
-> +                  minItems: 2
-> +                  maxItems: 2
-> +
-> +            else:
-> +              properties:
-> +                interrupts:
-> +                  minItems: 1
-> +                  maxItems: 1
->  
->  additionalProperties: false
->  
-> -- 
-> 1.9.1
-> 
+>
+>  .../bindings/timer/sifive,clint.txt           |  34 +++
+>  arch/riscv/Kconfig                            |   2 +-
+>  arch/riscv/include/asm/clint.h                |  39 ---
+>  arch/riscv/include/asm/smp.h                  |  11 +
+>  arch/riscv/include/asm/timex.h                |  28 +--
+>  arch/riscv/kernel/Makefile                    |   2 +-
+>  arch/riscv/kernel/clint.c                     |  44 ----
+>  arch/riscv/kernel/sbi.c                       |  14 ++
+>  arch/riscv/kernel/setup.c                     |   2 -
+>  arch/riscv/kernel/smp.c                       |  44 ++--
+>  arch/riscv/kernel/smpboot.c                   |   4 +-
+>  drivers/clocksource/Kconfig                   |  12 +-
+>  drivers/clocksource/Makefile                  |   1 +
+>  drivers/clocksource/timer-clint.c             | 229 ++++++++++++++++++
+>  drivers/clocksource/timer-riscv.c             |  17 +-
+>  include/linux/cpuhotplug.h                    |   1 +
+>  16 files changed, 337 insertions(+), 147 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/timer/sifive,clint.txt
+>  delete mode 100644 arch/riscv/include/asm/clint.h
+>  delete mode 100644 arch/riscv/kernel/clint.c
+>  create mode 100644 drivers/clocksource/timer-clint.c
