@@ -2,193 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7AA21DC94
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC42021DCA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730626AbgGMQd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730194AbgGMQd0 (ORCPT
+        id S1730642AbgGMQdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:33:43 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50018 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730372AbgGMQdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:33:26 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD270C061755;
-        Mon, 13 Jul 2020 09:33:25 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id n26so17964616ejx.0;
-        Mon, 13 Jul 2020 09:33:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ychIRptdstMkkJKoImCG9Y7RbnRSRh80JgCAkhzxkSs=;
-        b=OZCc5S23rCiTeSjlJXE1Zr5xv8geoZGQiPcazXiStEmJciJGyFZuujbONmZ3eE0/yk
-         V0lzBVL8NIyYEkb7SAMZpfEnf7sTKf4DLFxBJ7OLNmrY1etyRaEBwjNcmDsXxY8Cfab+
-         rNRR1C1+z4pzFUP4TQtAveMJVitxjXixlNS6LLEjMNlgujXunkHJZSkfBYCCeOJMwZtK
-         m6ZBZBdY+qDby1eTiToaaOtZ5qFFdvxb0J9ABu90d3KW1MdTazoBMHStsfUn5uvQDsCw
-         5EOTaAzN13f5DRFeZgMfqqirSX6odtRME5I9rSBA9NxZSAWcmTUWo+kekD5BQkfh0VxX
-         j2cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ychIRptdstMkkJKoImCG9Y7RbnRSRh80JgCAkhzxkSs=;
-        b=NHjsbgRoVRvC8I4XEcGA3h+O0gkhGlEGEFbz4lA97UQ1k4gjHhUdhEkxSYYpXnS+Ma
-         GFQU/+HMdgrjK5bPo599puXBYy7BYaeSUwpBJeE4D50e2x3GDjrKxpSd/Yb7DIiYBGbB
-         O/yC3d0oQhqivVfY49SV7gYBkts3WrBqIyZqYBUUcePpI9mtcqjS7RKjkm5Es7H90t6m
-         uPrmGkaN3X0iVGyTWj8G2F+jWUjW/Z5keYRZPUlVXL6Fn7rb0nDXD2cvYmMOfvbe/I6v
-         BUIXGCSF3fK2YH/ZNVSw1mOwOoxWyMNIegz9a3PFt+X49NijeqygmGfQEslZxNQnXCHI
-         0fKA==
-X-Gm-Message-State: AOAM533r0zeDSGFT46rJIhvkpk3V5/T8uLVWxuvyF0Xm6tXJuRNurlts
-        Z/gZtBShY8uPMIITzSEsQ/U=
-X-Google-Smtp-Source: ABdhPJwYdQKIRCnUaToJoITFPULDi1TRTE2JaB0aezgBFQuz8Mzxvf0JB0NOlhphjV+sHd9wcQGjfg==
-X-Received: by 2002:a17:906:538a:: with SMTP id g10mr599771ejo.354.1594658004599;
-        Mon, 13 Jul 2020 09:33:24 -0700 (PDT)
-Received: from skbuf ([188.25.219.134])
-        by smtp.gmail.com with ESMTPSA id v19sm12145888eda.70.2020.07.13.09.33.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 09:33:24 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 19:33:21 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Alex Marginean <alexandru.marginean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v6 2/4] net: dsa: felix: (re)use already
- existing constants
-Message-ID: <20200713163321.5mvc7k6td3t7b4qo@skbuf>
-References: <20200709213526.21972-1-michael@walle.cc>
- <20200709213526.21972-3-michael@walle.cc>
+        Mon, 13 Jul 2020 12:33:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594658020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RsKlZPL79lsVIpqG5GEJIOHq0XzcTHkHZqx9vAFcpIs=;
+        b=W2+5ISbyyT6lGjMealOkLVZrIAUgUMqAbFKJ91lOgOVCcyrCYMIY1CxSnHxQo+rL/TxBcb
+        nYyYQpcVFsQhCKIcT1wSQKLBbcr9wVXJXZUAhmPJQzz+hsn78msINUyQ5s0j/ofd548oq/
+        3weESqJrZ6iUKaJtTQk9d8l7Palq6Y0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-TF_sxZHTPhqKDZsdug7vmg-1; Mon, 13 Jul 2020 12:33:35 -0400
+X-MC-Unique: TF_sxZHTPhqKDZsdug7vmg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A12A8027F3;
+        Mon, 13 Jul 2020 16:33:33 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-113.rdu2.redhat.com [10.10.112.113])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 36A045D9DC;
+        Mon, 13 Jul 2020 16:33:30 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 15/32] cachefiles: trace: Log coherency checks
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Jeff Layton <jlayton@redhat.com>,
+        Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 13 Jul 2020 17:33:29 +0100
+Message-ID: <159465800942.1376674.11074050532334474977.stgit@warthog.procyon.org.uk>
+In-Reply-To: <159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk>
+References: <159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.22
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200709213526.21972-3-michael@walle.cc>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 11:35:24PM +0200, Michael Walle wrote:
-> Now that there are USXGMII constants available, drop the old definitions
-> and reuse the generic ones.
-> 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
+Add a cachefiles tracepoint that logs the result of coherency management
+when the coherency data on a file in the cache is checked or committed.
 
-I did regression-testing of this on an LS1028A-QDS with SerDes protocol
-0x13bb.
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+ fs/cachefiles/xattr.c             |   45 ++++++++++++++++++++++--------
+ include/trace/events/cachefiles.h |   56 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 89 insertions(+), 12 deletions(-)
 
-There was a regression, but it wasn't caused by you.
+diff --git a/fs/cachefiles/xattr.c b/fs/cachefiles/xattr.c
+index 5b2f6da91cc8..17c16c2bd07e 100644
+--- a/fs/cachefiles/xattr.c
++++ b/fs/cachefiles/xattr.c
+@@ -125,12 +125,21 @@ int cachefiles_set_object_xattr(struct cachefiles_object *object,
+ 	ret = vfs_setxattr(dentry, cachefiles_xattr_cache,
+ 			   buf, sizeof(struct cachefiles_xattr) + len,
+ 			   xattr_flags);
+-	kfree(buf);
+-	if (ret < 0 && ret != -ENOMEM)
+-		cachefiles_io_error_obj(
+-			object,
+-			"Failed to set xattr with error %d", ret);
++	if (ret < 0) {
++		trace_cachefiles_coherency(object, d_inode(dentry)->i_ino,
++					   0,
++					   cachefiles_coherency_set_fail);
++		if (ret != -ENOMEM)
++			cachefiles_io_error_obj(
++				object,
++				"Failed to set xattr with error %d", ret);
++	} else {
++		trace_cachefiles_coherency(object, d_inode(dentry)->i_ino,
++					   0,
++					   cachefiles_coherency_set_ok);
++	}
+ 
++	kfree(buf);
+ 	_leave(" = %d", ret);
+ 	return ret;
+ }
+@@ -144,7 +153,9 @@ int cachefiles_check_auxdata(struct cachefiles_object *object)
+ 	struct dentry *dentry = object->dentry;
+ 	unsigned int len = object->fscache.cookie->aux_len, tlen;
+ 	const void *p = fscache_get_aux(object->fscache.cookie);
+-	ssize_t ret;
++	enum cachefiles_coherency_trace why;
++	ssize_t xlen;
++	int ret = -ESTALE;
+ 
+ 	ASSERT(dentry);
+ 	ASSERT(d_backing_inode(dentry));
+@@ -154,14 +165,24 @@ int cachefiles_check_auxdata(struct cachefiles_object *object)
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	ret = vfs_getxattr(dentry, cachefiles_xattr_cache, buf, tlen);
+-	if (ret == tlen &&
+-	    buf->type == object->fscache.cookie->type &&
+-	    memcmp(buf->data, p, len) == 0)
++	xlen = vfs_getxattr(dentry, cachefiles_xattr_cache, buf, tlen);
++	if (xlen != tlen) {
++		if (xlen == -EIO)
++			cachefiles_io_error_obj(
++				object,
++				"Failed to read aux with error %zd", xlen);
++		why = cachefiles_coherency_check_xattr;
++	} else if (buf->type != object->fscache.cookie->type) {
++		why = cachefiles_coherency_check_type;
++	} else if (memcmp(buf->data, p, len) != 0) {
++		why = cachefiles_coherency_check_aux;
++	} else {
++		why = cachefiles_coherency_check_ok;
+ 		ret = 0;
+-	else
+-		ret = -ESTALE;
++	}
+ 
++	trace_cachefiles_coherency(object, d_inode(dentry)->i_ino,
++				   0, why);
+ 	kfree(buf);
+ 	return ret;
+ }
+diff --git a/include/trace/events/cachefiles.h b/include/trace/events/cachefiles.h
+index 0aa3f3126f6e..bf588c3f4a07 100644
+--- a/include/trace/events/cachefiles.h
++++ b/include/trace/events/cachefiles.h
+@@ -24,6 +24,19 @@ enum cachefiles_obj_ref_trace {
+ 	cachefiles_obj_ref__nr_traces
+ };
+ 
++enum cachefiles_coherency_trace {
++	cachefiles_coherency_check_aux,
++	cachefiles_coherency_check_content,
++	cachefiles_coherency_check_dirty,
++	cachefiles_coherency_check_len,
++	cachefiles_coherency_check_objsize,
++	cachefiles_coherency_check_ok,
++	cachefiles_coherency_check_type,
++	cachefiles_coherency_check_xattr,
++	cachefiles_coherency_set_fail,
++	cachefiles_coherency_set_ok,
++};
++
+ #endif
+ 
+ /*
+@@ -56,6 +69,18 @@ enum cachefiles_obj_ref_trace {
+ 	EM(cachefiles_obj_put_wait_retry,	"PUT wait_retry")	\
+ 	E_(cachefiles_obj_put_wait_timeo,	"PUT wait_timeo")
+ 
++#define cachefiles_coherency_traces					\
++	EM(cachefiles_coherency_check_aux,	"BAD aux ")		\
++	EM(cachefiles_coherency_check_content,	"BAD cont")		\
++	EM(cachefiles_coherency_check_dirty,	"BAD dirt")		\
++	EM(cachefiles_coherency_check_len,	"BAD len ")		\
++	EM(cachefiles_coherency_check_objsize,	"BAD osiz")		\
++	EM(cachefiles_coherency_check_ok,	"OK      ")		\
++	EM(cachefiles_coherency_check_type,	"BAD type")		\
++	EM(cachefiles_coherency_check_xattr,	"BAD xatt")		\
++	EM(cachefiles_coherency_set_fail,	"SET fail")		\
++	E_(cachefiles_coherency_set_ok,		"SET ok  ")
++
+ /*
+  * Export enum symbols via userspace.
+  */
+@@ -66,6 +91,7 @@ enum cachefiles_obj_ref_trace {
+ 
+ cachefiles_obj_kill_traces;
+ cachefiles_obj_ref_traces;
++cachefiles_coherency_traces;
+ 
+ /*
+  * Now redefine the EM() and E_() macros to map the enums to the strings that
+@@ -295,6 +321,36 @@ TRACE_EVENT(cachefiles_mark_buried,
+ 		      __print_symbolic(__entry->why, cachefiles_obj_kill_traces))
+ 	    );
+ 
++TRACE_EVENT(cachefiles_coherency,
++	    TP_PROTO(struct cachefiles_object *obj,
++		     ino_t ino,
++		     int content,
++		     enum cachefiles_coherency_trace why),
++
++	    TP_ARGS(obj, ino, content, why),
++
++	    /* Note that obj may be NULL */
++	    TP_STRUCT__entry(
++		    __field(unsigned int,			obj	)
++		    __field(enum cachefiles_coherency_trace,	why	)
++		    __field(int,				content	)
++		    __field(u64,				ino	)
++			     ),
++
++	    TP_fast_assign(
++		    __entry->obj	= obj->fscache.debug_id;
++		    __entry->why	= why;
++		    __entry->content	= content;
++		    __entry->ino	= ino;
++			   ),
++
++	    TP_printk("o=%08x %s i=%llx c=%u",
++		      __entry->obj,
++		      __print_symbolic(__entry->why, cachefiles_coherency_traces),
++		      __entry->ino,
++		      __entry->content)
++	    );
++
+ #endif /* _TRACE_CACHEFILES_H */
+ 
+ /* This part must be outside protection */
 
->  drivers/net/dsa/ocelot/felix_vsc9959.c | 45 +++++++-------------------
->  1 file changed, 12 insertions(+), 33 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> index 19614537b1ba..a3ddb1394540 100644
-> --- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-> +++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> @@ -10,35 +10,15 @@
->  #include <soc/mscc/ocelot.h>
->  #include <net/pkt_sched.h>
->  #include <linux/iopoll.h>
-> +#include <linux/mdio.h>
->  #include <linux/pci.h>
->  #include "felix.h"
->  
->  #define VSC9959_VCAP_IS2_CNT		1024
->  #define VSC9959_VCAP_IS2_ENTRY_WIDTH	376
->  #define VSC9959_VCAP_PORT_CNT		6
-> -
-> -/* TODO: should find a better place for these */
-> -#define USXGMII_BMCR_RESET		BIT(15)
-> -#define USXGMII_BMCR_AN_EN		BIT(12)
-> -#define USXGMII_BMCR_RST_AN		BIT(9)
-> -#define USXGMII_BMSR_LNKS(status)	(((status) & GENMASK(2, 2)) >> 2)
-> -#define USXGMII_BMSR_AN_CMPL(status)	(((status) & GENMASK(5, 5)) >> 5)
-> -#define USXGMII_ADVERTISE_LNKS(x)	(((x) << 15) & BIT(15))
-> -#define USXGMII_ADVERTISE_FDX		BIT(12)
-> -#define USXGMII_ADVERTISE_SPEED(x)	(((x) << 9) & GENMASK(11, 9))
-> -#define USXGMII_LPA_LNKS(lpa)		((lpa) >> 15)
-> -#define USXGMII_LPA_DUPLEX(lpa)		(((lpa) & GENMASK(12, 12)) >> 12)
-> -#define USXGMII_LPA_SPEED(lpa)		(((lpa) & GENMASK(11, 9)) >> 9)
-> -
->  #define VSC9959_TAS_GCL_ENTRY_MAX	63
->  
-> -enum usxgmii_speed {
-> -	USXGMII_SPEED_10	= 0,
-> -	USXGMII_SPEED_100	= 1,
-> -	USXGMII_SPEED_1000	= 2,
-> -	USXGMII_SPEED_2500	= 4,
-> -};
-> -
->  static const u32 vsc9959_ana_regmap[] = {
->  	REG(ANA_ADVLEARN,			0x0089a0),
->  	REG(ANA_VLANMASK,			0x0089a4),
-> @@ -787,11 +767,10 @@ static void vsc9959_pcs_config_usxgmii(struct phy_device *pcs,
->  {
->  	/* Configure device ability for the USXGMII Replicator */
->  	phy_write_mmd(pcs, MDIO_MMD_VEND2, MII_ADVERTISE,
-> -		      USXGMII_ADVERTISE_SPEED(USXGMII_SPEED_2500) |
-> -		      USXGMII_ADVERTISE_LNKS(1) |
-> +		      MDIO_LPA_USXGMII_2500FULL |
-> +		      MDIO_LPA_USXGMII_LINK |
->  		      ADVERTISE_SGMII |
-> -		      ADVERTISE_LPACK |
-> -		      USXGMII_ADVERTISE_FDX);
-> +		      ADVERTISE_LPACK);
->  }
->  
->  static void vsc9959_pcs_config(struct ocelot *ocelot, int port,
-> @@ -1005,8 +984,8 @@ static void vsc9959_pcs_link_state_usxgmii(struct phy_device *pcs,
->  		return;
->  
->  	pcs->autoneg = true;
-> -	pcs->autoneg_complete = USXGMII_BMSR_AN_CMPL(status);
-> -	pcs->link = USXGMII_BMSR_LNKS(status);
-> +	pcs->autoneg_complete = !!(status & BMSR_ANEGCOMPLETE);
-> +	pcs->link = !!(status & BMSR_LSTATUS);
->  
->  	if (!pcs->link || !pcs->autoneg_complete)
->  		return;
-> @@ -1015,24 +994,24 @@ static void vsc9959_pcs_link_state_usxgmii(struct phy_device *pcs,
->  	if (lpa < 0)
->  		return;
->  
-> -	switch (USXGMII_LPA_SPEED(lpa)) {
-> -	case USXGMII_SPEED_10:
-> +	switch (lpa & MDIO_LPA_USXGMII_SPD_MASK) {
-> +	case MDIO_LPA_USXGMII_10:
->  		pcs->speed = SPEED_10;
->  		break;
-> -	case USXGMII_SPEED_100:
-> +	case MDIO_LPA_USXGMII_100:
->  		pcs->speed = SPEED_100;
->  		break;
-> -	case USXGMII_SPEED_1000:
-> +	case MDIO_LPA_USXGMII_1000:
->  		pcs->speed = SPEED_1000;
->  		break;
-> -	case USXGMII_SPEED_2500:
-> +	case MDIO_LPA_USXGMII_2500:
->  		pcs->speed = SPEED_2500;
->  		break;
->  	default:
->  		break;
->  	}
->  
-> -	if (USXGMII_LPA_DUPLEX(lpa))
-> +	if (lpa & MDIO_LPA_USXGMII_FULL_DUPLEX)
->  		pcs->duplex = DUPLEX_FULL;
->  	else
->  		pcs->duplex = DUPLEX_HALF;
-> -- 
-> 2.20.1
-> 
+
