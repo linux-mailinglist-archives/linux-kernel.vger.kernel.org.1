@@ -2,287 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171C421CF72
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D34021CFDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729127AbgGMGPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:15:39 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:35028 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgGMGPj (ORCPT
+        id S1729513AbgGMGjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:39:48 -0400
+Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.122]:36385 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727834AbgGMGjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:15:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1594620938; x=1626156938;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=Qff+WQLzK03WMkZJrwepDKwNiYuViV1I2cwgyR+o71k=;
-  b=sMktZppuvlluRJbKrC5DqbUlvwgiewu4Sp6uRJ3zEDt68W4VjV+OHrQB
-   5a0NTGf+GWE12YhrHceBXT4wXw/5VquUloN1zI/9/+M0AXtSbxzhBnhlk
-   1js6N9jvNzfvWesDNk9H4l8iUav5aSMhApSVfnuqSk7eWQR4oj9d3JJIx
-   8mpKaFay1lMdhCsDE4KgVmf34AvoEeB9Bfc0T7dpqbUZM8MB4yzVrEWlI
-   ku4AL4/b9wUuoqkA5brFK4rW+66NWVHxFCKxqnHKLZ2G7Q6qDyJt0Ft3R
-   elMBMU/bTcX7tLB2dg5YRtM8mpw77SxxtwNdN/BKMxujG98ShHn0AfJOu
-   w==;
-IronPort-SDR: s0EBudUGrxHZ6LomiTxd489bH32q9Yr6oa38Ynsc/Qy2Hlj9oCS1nLV0hi2noDtVZFXMHqMBq5
- BySEfoqY94zky/keJthrrbMaN5VWPy19xZ5JkqsYc9aPR0TdUxjjx+ZrSYrZlC4z7VrVNaZnN7
- TFABFuNFFbqnudYO7+6B6R3zpdMkH09ummNSalZaJs+D5ZnkvQY14z7z0JES/7XNbbDxf1uLuO
- J+7OeTvKSPjgyN0zK4jQ+wpQjQ32ZnttIb1gS/a46IiQ/5XKt+IyPTo/K21zKYxgzuPQcKBAdS
- w+c=
-X-IronPort-AV: E=Sophos;i="5.75,346,1589266800"; 
-   d="scan'208";a="83574246"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Jul 2020 23:15:38 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 12 Jul 2020 23:15:37 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Sun, 12 Jul 2020 23:15:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M99HBuU0etMf+pVOmx+eDDHjEPTnQDRrPPeE0VrafOkndp5LQQyKKtLlueE6/zsTEmu9fYUgfDsjogRcI/zICVzmkZ2ikkzDEmHNE1n4UA+nzhv2HtOwyRYOA+R0GW9TLLYLiiCWoyQBHuflhCoHDT1ScidRTWnRhx0xY4gyw8GJa1kNVvzci8Mo9bmzAE6Z7nWaDGTWpc7V79gj3GsTn9U7z31DEEbHVDZKcnl/sjwTBXQw8kddx6m5gJcZ2FUt8Xy2m/AHSAqB+1ewvCSsnLXogH/RlGbWsFPlcX0woqk9cMIRRfP6sh4c89KbyKiBGYlOHnyAuJEzcdoY4N2r9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qff+WQLzK03WMkZJrwepDKwNiYuViV1I2cwgyR+o71k=;
- b=CygdUQAPbvE4Hh7IR+McSr2wwGec1LShEYge7/QwdKvm6lotXgcUQIFD3BaXMi7T0omoymGwZL1UkJ2usmo8b3IiQCR11s/lSrj6QGLW/y1hoj0TBT/gzmVxs2DnQ778gvFGPE+H9oChaikJyEZSLcKgE1VxBNejB4uqRhJmRfhkl1kY9yIHidyzFAUPRuRdBnIx4AeAYyLED6lgs4cZLsPkNCj5f6wAZndFMGAZMqDkx22bBjS0tqeU5Yyobs7OyWupcKGW4OyTy6/5gNO2PcqkdIoiynuSy0XGt1yO9afrENf86+L8AIR5g64GGkvLz6s3b9O9AB7f5YaFGw4D+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qff+WQLzK03WMkZJrwepDKwNiYuViV1I2cwgyR+o71k=;
- b=f2VwxjCoSEtur62cGLQktTjeMfuakia/HEffIKAMCdKY9pNfh3pGnUimGNDhr+SXd45iABxfg4dfQSj98kwolWy9JcEKas4Ghb24W842GAiaIepO0pAGa99ojU2bLFubX1bTuJIu8Ll/Jc2Rvt3QWMHnPkxnaL5YMoaSynyiGpU=
-Received: from BYAPR11MB2856.namprd11.prod.outlook.com (2603:10b6:a02:bd::11)
- by BYAPR11MB2693.namprd11.prod.outlook.com (2603:10b6:a02:cc::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Mon, 13 Jul
- 2020 06:15:32 +0000
-Received: from BYAPR11MB2856.namprd11.prod.outlook.com
- ([fe80::f1d5:60ca:d163:c1b3]) by BYAPR11MB2856.namprd11.prod.outlook.com
- ([fe80::f1d5:60ca:d163:c1b3%3]) with mapi id 15.20.3174.025; Mon, 13 Jul 2020
- 06:15:32 +0000
-From:   <Tudor.Ambarus@microchip.com>
-To:     <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <broonie@kernel.org>,
-        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <Ludovic.Desroches@microchip.com>, <matthias.bgg@gmail.com>,
-        <michal.simek@xilinx.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     <nsekhar@ti.com>, <boris.brezillon@collabora.com>
-Subject: Re: [PATCH v10 02/17] spi: spi-mem: allow specifying a command's
- extension
-Thread-Topic: [PATCH v10 02/17] spi: spi-mem: allow specifying a command's
- extension
-Thread-Index: AQHWWN0Cwq3UvT6ajkaqtGSmj3sXog==
-Date:   Mon, 13 Jul 2020 06:15:32 +0000
-Message-ID: <0e7ce8fc-b3aa-b93a-d717-fce968686bb3@microchip.com>
-References: <20200623183030.26591-1-p.yadav@ti.com>
- <20200623183030.26591-3-p.yadav@ti.com>
-In-Reply-To: <20200623183030.26591-3-p.yadav@ti.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-authentication-results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [86.120.242.181]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0f0c1bdf-89a8-4882-036a-08d826f42631
-x-ms-traffictypediagnostic: BYAPR11MB2693:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB269372E06E7F3B4F24CFB502F0600@BYAPR11MB2693.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4IcjUO0KAZcHiNM1mnIc3qdVv92lB3DuhdxSyzyFLmw1uResUJaV9nPXVhYApBaeFaNhaJQ9ZOSmCXXoZHTUDcAjSC7mfnpLHifOsmd4s/zbFGHeUJApjtiaZBKn/Bz42Rhp6Xxc6n5FJNvfwFEjaAcjyi633dMmsvkLRTPVdKuE7o3Tp1tj6guXyWzR0HXXjCnf+izXk5J7VaKaRdCrJh5hrdH4X4tWs3YvwSA0ButB7XO56ARa7RlJp1Q+Ms3HuG+qK+1Ue9UnRjWnz4BKX9ajwI6IPD2s4s+Z4avRnZx6/qdTkxTxe4Ggqg0QBwCc2gjUWgJxMvodz7jSNJrjDQfwsBjQbChuQPui2FQkVn3lwZNSHQJ+usQMJ5U9QBkU/LsV1ni9m3As52w7G+VT2w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2856.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(366004)(396003)(39860400002)(136003)(376002)(26005)(83380400001)(31686004)(36756003)(478600001)(5660300002)(86362001)(7416002)(31696002)(2616005)(66446008)(64756008)(66556008)(6512007)(4326008)(186003)(6506007)(53546011)(66946007)(91956017)(2906002)(66476007)(71200400001)(76116006)(8936002)(8676002)(316002)(6486002)(110136005)(54906003)(921003)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 1HaKMz/nm+yIaJRKBOjkC5DtzZnia78pmLuc9QVhzs35EZr64wjWtX0KMpAdVkL0DSv7zAGIDHfJ59qpCObzNBpXjBN6SXZQgZXwEmZXWpFeZiFcGGR0Wlfa34LOTUES0OAGqLlqV5dnf7CWNuD44+svD4cjx8VfEKqgUfAttfYjWKiU8HGC3B3gsBNyU4AeXEiwSf3NV7PUh77jVuM0jeBMVvvdhxPxkNtJBRBYnjdRGF+P4b6DSFDnbSLnj4g+vHeRXz6ZiNa3LXykzDUNd7bBVY0yQS57Yi0TuneAYQeCTjGjWbB30lK/XpNFbSzBQ7ZleCoo/DPgen+RFyzPMf7t3X1YI21OCdalgNgsme+y8xtOVFnN/OyoZl6rdmGe5DKk582nbHxvErWZL7Og0+p/9tLEaXgk1Unxkz8JFsTvhq2UcWswuqLaHeFii9f5Eetnhro1Q/gJBOe4gSWzv/zoioTAHs+auKoAvlcxxOK1ZDG8Mv/GTNEO208W2eSp
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5FA253D76E84014ABDD7D3036FFA00F2@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 13 Jul 2020 02:39:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1594622348;
+        s=strato-dkim-0002; d=chronox.de;
+        h=Message-ID:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=aYUBjNiDRxrdFoNt5qpqED1H1eUYHW6+Yxa+sDj2Vd0=;
+        b=YNnqXfp7xy0mgKY2G9fUHz5nbjw5tQWDv+UKRCK1IL2ssr7rQP/cPEzBa7sVdD2LoB
+        M9AkxL/beR9veWwbw7HinCHu+fT6C9QWp1Z2fIUA9jOHYpCsyVCo6aXHT8aW8i3+NeZu
+        qWrcWM/B++tUiiL3ZtHOdlaNggiPlbvEhxExOKAh/UJRLkb1cN9Es2rI/TqqNgNRedrI
+        z5MIVVkZFh8gD5rf+OF8hAVbi050XN+4/dzpSY/alXvX3nXoKVrwPJzxO65f1wv7ikBD
+        XRLDYQiL7EXi3ucsEah2mQP4ky+eQOSI66QxuPlFZf/NB0PCkEZ5nOe/+cD0zsNY/+dO
+        dOsw==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSfHReW"
+X-RZG-CLASS-ID: mo00
+Received: from positron.chronox.de
+        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
+        with ESMTPSA id y0546bw6D6c0k2V
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Mon, 13 Jul 2020 08:38:00 +0200 (CEST)
+From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Nicolai Stange <nstange@suse.de>,
+        "Peter, Matthias" <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Roman Drahtmueller <draht@schaltsekun.de>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH v31 00/12] /dev/random - a new approach with full SP800-90B
+Date:   Mon, 13 Jul 2020 08:17:26 +0200
+Message-ID: <2050754.Mh6RI2rZIc@positron.chronox.de>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2856.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0f0c1bdf-89a8-4882-036a-08d826f42631
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2020 06:15:32.5948
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uXBlDWhbqnNdXvRJanw521w0EClGCobwstUV9jmN+JwLkVLnqTYy+ETb50Vy7A5QI1tCIZvZrK+vMxrW7GRy9axYmciWydACExKzUb3hrQI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2693
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gNi8yMy8yMCA5OjMwIFBNLCBQcmF0eXVzaCBZYWRhdiB3cm90ZToNCj4gRVhURVJOQUwgRU1B
-SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
-dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBJbiB4U1BJIG1vZGUsIGZsYXNoZXMgZXhwZWN0
-IDItYnl0ZSBvcGNvZGVzLiBUaGUgc2Vjb25kIGJ5dGUgaXMgY2FsbGVkDQo+IHRoZSAiY29tbWFu
-ZCBleHRlbnNpb24iLiBUaGVyZSBjYW4gYmUgMyB0eXBlcyBvZiBleHRlbnNpb25zIGluIHhTUEk6
-DQo+IHJlcGVhdCwgaW52ZXJ0LCBhbmQgaGV4LiBXaGVuIHRoZSBleHRlbnNpb24gdHlwZSBpcyAi
-cmVwZWF0IiwgdGhlIHNhbWUNCj4gb3Bjb2RlIGlzIHNlbnQgdHdpY2UuIFdoZW4gaXQgaXMgImlu
-dmVydCIsIHRoZSBzZWNvbmQgYnl0ZSBpcyB0aGUNCj4gaW52ZXJzZSBvZiB0aGUgb3Bjb2RlLiBX
-aGVuIGl0IGlzICJoZXgiIGFuIGFkZGl0aW9uYWwgb3Bjb2RlIGJ5dGUgYmFzZWQNCj4gaXMgc2Vu
-dCB3aXRoIHRoZSBjb21tYW5kIHdob3NlIHZhbHVlIGNhbiBiZSBhbnl0aGluZy4NCj4gDQo+IFNv
-LCBtYWtlIG9wY29kZSBhIDE2LWJpdCB2YWx1ZSBhbmQgYWRkIGEgJ25ieXRlcycsIHNpbWlsYXIg
-dG8gaG93DQo+IG11bHRpcGxlIGFkZHJlc3Mgd2lkdGhzIGFyZSBoYW5kbGVkLg0KPiANCj4gU29t
-ZSBwbGFjZXMgdXNlIHNpemVvZihvcC0+Y21kLm9wY29kZSkuIFJlcGxhY2UgdGhlbSB3aXRoIG9w
-LT5jbWQubmJ5dGVzDQo+IA0KPiBUaGUgc3BpLW14aWMgYW5kIHNwaS16eW5xLXFzcGkgZHJpdmVy
-cyBkaXJlY3RseSB1c2Ugb3AtPmNtZC5vcGNvZGUgYXMgYQ0KPiBidWZmZXIuIE5vdyB0aGF0IG9w
-Y29kZSBpcyBhIDItYnl0ZSBmaWVsZCwgdGhpcyBjYW4gcmVzdWx0IGluIGRpZmZlcmVudA0KPiBi
-ZWhhdmlvdXIgZGVwZW5kaW5nIG9uIGlmIHRoZSBtYWNoaW5lIGlzIGxpdHRsZSBlbmRpYW4gb3Ig
-YmlnIGVuZGlhbi4NCj4gRXh0cmFjdCB0aGUgb3Bjb2RlIGluIGEgbG9jYWwgMS1ieXRlIHZhcmlh
-YmxlIGFuZCB1c2UgdGhhdCBhcyB0aGUgYnVmZmVyDQo+IGluc3RlYWQuIEJvdGggdGhlc2UgZHJp
-dmVycyB3b3VsZCByZWplY3QgbXVsdGktYnl0ZSBvcGNvZGVzIGluIHRoZWlyDQo+IHN1cHBvcnRz
-X29wKCkgaG9vayBhbnl3YXksIHNvIHdlIG9ubHkgbmVlZCB0byB3b3JyeSBhYm91dCBzaW5nbGUt
-Ynl0ZQ0KPiBvcGNvZGVzIGZvciBub3cuDQo+IA0KPiBUaGUgYWJvdmUgdHdvIGNoYW5nZXMgYXJl
-IHB1dCBpbiB0aGlzIGNvbW1pdCB0byBrZWVwIHRoZSBzZXJpZXMNCj4gYmlzZWN0YWJsZS4NCj4g
-DQo+IFNpZ25lZC1vZmYtYnk6IFByYXR5dXNoIFlhZGF2IDxwLnlhZGF2QHRpLmNvbT4NCj4gLS0t
-DQo+ICBkcml2ZXJzL3NwaS9zcGktbWVtLmMgICAgICAgfCAxMyArKysrKysrLS0tLS0tDQo+ICBk
-cml2ZXJzL3NwaS9zcGktbXRrLW5vci5jICAgfCAgNCArKy0tDQo+ICBkcml2ZXJzL3NwaS9zcGkt
-bXhpYy5jICAgICAgfCAgMyArKy0NCj4gIGRyaXZlcnMvc3BpL3NwaS16eW5xLXFzcGkuYyB8IDEx
-ICsrKysrKy0tLS0tDQo+ICBpbmNsdWRlL2xpbnV4L3NwaS9zcGktbWVtLmggfCAgNiArKysrKy0N
-Cj4gIDUgZmlsZXMgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKSwgMTUgZGVsZXRpb25zKC0pDQo+
-IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zcGkvc3BpLW1lbS5jIGIvZHJpdmVycy9zcGkvc3Bp
-LW1lbS5jDQo+IGluZGV4IDkzZTI1NTI4N2FiOS4uZWY1MzI5MGI3ZDI0IDEwMDY0NA0KPiAtLS0g
-YS9kcml2ZXJzL3NwaS9zcGktbWVtLmMNCj4gKysrIGIvZHJpdmVycy9zcGkvc3BpLW1lbS5jDQo+
-IEBAIC0xNTksNiArMTU5LDkgQEAgYm9vbCBzcGlfbWVtX2RlZmF1bHRfc3VwcG9ydHNfb3Aoc3Ry
-dWN0IHNwaV9tZW0gKm1lbSwNCj4gICAgICAgICBpZiAob3AtPmNtZC5kdHIgfHwgb3AtPmFkZHIu
-ZHRyIHx8IG9wLT5kdW1teS5kdHIgfHwgb3AtPmRhdGEuZHRyKQ0KPiAgICAgICAgICAgICAgICAg
-cmV0dXJuIGZhbHNlOw0KPiANCj4gKyAgICAgICBpZiAob3AtPmNtZC5uYnl0ZXMgIT0gMSkNCj4g
-KyAgICAgICAgICAgICAgIHJldHVybiBmYWxzZTsNCg0KSSB3b3VsZCBwdXQgdGhpcyBpbWVkaWF0
-ZWx5IGJlZm9yZToNCg0KaWYgKHNwaV9jaGVja19idXN3aWR0aF9yZXEobWVtLCBvcC0+Y21kLmJ1
-c3dpZHRoLCB0cnVlKSkgIA0KDQp0byBzcGVlZCB1cCB0aGUgZXhpdCBhbmQgYXZvaWQgdGhlIHJl
-c3Qgb2YgdGhlIGNoZWNrcyB0aGF0IHdvdWxkDQpiZWNvbWUgc3VwZXJmbG91cy4NCg0KDQo+ICsN
-Cj4gICAgICAgICByZXR1cm4gdHJ1ZTsNCj4gIH0NCj4gIEVYUE9SVF9TWU1CT0xfR1BMKHNwaV9t
-ZW1fZGVmYXVsdF9zdXBwb3J0c19vcCk7DQo+IEBAIC0xNzMsNyArMTc2LDcgQEAgc3RhdGljIGJv
-b2wgc3BpX21lbV9idXN3aWR0aF9pc192YWxpZCh1OCBidXN3aWR0aCkNCj4gDQo+ICBzdGF0aWMg
-aW50IHNwaV9tZW1fY2hlY2tfb3AoY29uc3Qgc3RydWN0IHNwaV9tZW1fb3AgKm9wKQ0KPiAgew0K
-PiAtICAgICAgIGlmICghb3AtPmNtZC5idXN3aWR0aCkNCj4gKyAgICAgICBpZiAoIW9wLT5jbWQu
-YnVzd2lkdGggfHwgIW9wLT5jbWQubmJ5dGVzKQ0KDQp3ZSB3b3VsZCBiZSBtb3JlIGV4cGxpY2l0
-IHdpdGg6DQppZiAoIW9wLT5jbWQuYnVzd2lkdGggfHwgIW9wLT5jbWQubmJ5dGVzIHx8IG9wLT5j
-bWQubmJ5dGVzID4gMikNCg0KV2l0aCB0aGVzZSBhZGRyZXNzZWQ6DQoNClJldmlld2VkLWJ5OiBU
-dWRvciBBbWJhcnVzIDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+DQoNCj4gICAgICAgICAg
-ICAgICAgIHJldHVybiAtRUlOVkFMOw0KPiANCj4gICAgICAgICBpZiAoKG9wLT5hZGRyLm5ieXRl
-cyAmJiAhb3AtPmFkZHIuYnVzd2lkdGgpIHx8DQo+IEBAIC0zMDksOCArMzEyLDcgQEAgaW50IHNw
-aV9tZW1fZXhlY19vcChzdHJ1Y3Qgc3BpX21lbSAqbWVtLCBjb25zdCBzdHJ1Y3Qgc3BpX21lbV9v
-cCAqb3ApDQo+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+ICAgICAgICAg
-fQ0KPiANCj4gLSAgICAgICB0bXBidWZzaXplID0gc2l6ZW9mKG9wLT5jbWQub3Bjb2RlKSArIG9w
-LT5hZGRyLm5ieXRlcyArDQo+IC0gICAgICAgICAgICAgICAgICAgIG9wLT5kdW1teS5uYnl0ZXM7
-DQo+ICsgICAgICAgdG1wYnVmc2l6ZSA9IG9wLT5jbWQubmJ5dGVzICsgb3AtPmFkZHIubmJ5dGVz
-ICsgb3AtPmR1bW15Lm5ieXRlczsNCj4gDQo+ICAgICAgICAgLyoNCj4gICAgICAgICAgKiBBbGxv
-Y2F0ZSBhIGJ1ZmZlciB0byB0cmFuc21pdCB0aGUgQ01ELCBBRERSIGN5Y2xlcyB3aXRoIGttYWxs
-b2MoKSBzbw0KPiBAQCAtMzI1LDcgKzMyNyw3IEBAIGludCBzcGlfbWVtX2V4ZWNfb3Aoc3RydWN0
-IHNwaV9tZW0gKm1lbSwgY29uc3Qgc3RydWN0IHNwaV9tZW1fb3AgKm9wKQ0KPiANCj4gICAgICAg
-ICB0bXBidWZbMF0gPSBvcC0+Y21kLm9wY29kZTsNCj4gICAgICAgICB4ZmVyc1t4ZmVycG9zXS50
-eF9idWYgPSB0bXBidWY7DQo+IC0gICAgICAgeGZlcnNbeGZlcnBvc10ubGVuID0gc2l6ZW9mKG9w
-LT5jbWQub3Bjb2RlKTsNCj4gKyAgICAgICB4ZmVyc1t4ZmVycG9zXS5sZW4gPSBvcC0+Y21kLm5i
-eXRlczsNCj4gICAgICAgICB4ZmVyc1t4ZmVycG9zXS50eF9uYml0cyA9IG9wLT5jbWQuYnVzd2lk
-dGg7DQo+ICAgICAgICAgc3BpX21lc3NhZ2VfYWRkX3RhaWwoJnhmZXJzW3hmZXJwb3NdLCAmbXNn
-KTsNCj4gICAgICAgICB4ZmVycG9zKys7DQo+IEBAIC00MjcsOCArNDI5LDcgQEAgaW50IHNwaV9t
-ZW1fYWRqdXN0X29wX3NpemUoc3RydWN0IHNwaV9tZW0gKm1lbSwgc3RydWN0IHNwaV9tZW1fb3Ag
-Km9wKQ0KPiAgICAgICAgICAgICAgICAgcmV0dXJuIGN0bHItPm1lbV9vcHMtPmFkanVzdF9vcF9z
-aXplKG1lbSwgb3ApOw0KPiANCj4gICAgICAgICBpZiAoIWN0bHItPm1lbV9vcHMgfHwgIWN0bHIt
-Pm1lbV9vcHMtPmV4ZWNfb3ApIHsNCj4gLSAgICAgICAgICAgICAgIGxlbiA9IHNpemVvZihvcC0+
-Y21kLm9wY29kZSkgKyBvcC0+YWRkci5uYnl0ZXMgKw0KPiAtICAgICAgICAgICAgICAgICAgICAg
-b3AtPmR1bW15Lm5ieXRlczsNCj4gKyAgICAgICAgICAgICAgIGxlbiA9IG9wLT5jbWQubmJ5dGVz
-ICsgb3AtPmFkZHIubmJ5dGVzICsgb3AtPmR1bW15Lm5ieXRlczsNCj4gDQo+ICAgICAgICAgICAg
-ICAgICBpZiAobGVuID4gc3BpX21heF90cmFuc2Zlcl9zaXplKG1lbS0+c3BpKSkNCj4gICAgICAg
-ICAgICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L3NwaS9zcGktbXRrLW5vci5jIGIvZHJpdmVycy9zcGkvc3BpLW10ay1ub3IuYw0KPiBpbmRleCA3
-YmMzMDJiNTAzOTYuLmQ1ZjM5Mzg3MTYxOSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9zcGkvc3Bp
-LW10ay1ub3IuYw0KPiArKysgYi9kcml2ZXJzL3NwaS9zcGktbXRrLW5vci5jDQo+IEBAIC0xOTUs
-NyArMTk1LDcgQEAgc3RhdGljIGludCBtdGtfbm9yX2FkanVzdF9vcF9zaXplKHN0cnVjdCBzcGlf
-bWVtICptZW0sIHN0cnVjdCBzcGlfbWVtX29wICpvcCkNCj4gICAgICAgICAgICAgICAgIH0NCj4g
-ICAgICAgICB9DQo+IA0KPiAtICAgICAgIGxlbiA9IE1US19OT1JfUFJHX01BWF9TSVpFIC0gc2l6
-ZW9mKG9wLT5jbWQub3Bjb2RlKSAtIG9wLT5hZGRyLm5ieXRlcyAtDQo+ICsgICAgICAgbGVuID0g
-TVRLX05PUl9QUkdfTUFYX1NJWkUgLSBvcC0+Y21kLm5ieXRlcyAtIG9wLT5hZGRyLm5ieXRlcyAt
-DQo+ICAgICAgICAgICAgICAgb3AtPmR1bW15Lm5ieXRlczsNCj4gICAgICAgICBpZiAob3AtPmRh
-dGEubmJ5dGVzID4gbGVuKQ0KPiAgICAgICAgICAgICAgICAgb3AtPmRhdGEubmJ5dGVzID0gbGVu
-Ow0KPiBAQCAtMjE5LDcgKzIxOSw3IEBAIHN0YXRpYyBib29sIG10a19ub3Jfc3VwcG9ydHNfb3Ao
-c3RydWN0IHNwaV9tZW0gKm1lbSwNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChv
-cC0+ZHVtbXkuYnVzd2lkdGggPT0gMCkgJiYNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIChvcC0+ZGF0YS5idXN3aWR0aCA9PSAxKTsNCj4gICAgICAgICB9DQo+IC0gICAgICAgbGVu
-ID0gc2l6ZW9mKG9wLT5jbWQub3Bjb2RlKSArIG9wLT5hZGRyLm5ieXRlcyArIG9wLT5kdW1teS5u
-Ynl0ZXM7DQo+ICsgICAgICAgbGVuID0gb3AtPmNtZC5uYnl0ZXMgKyBvcC0+YWRkci5uYnl0ZXMg
-KyBvcC0+ZHVtbXkubmJ5dGVzOw0KPiAgICAgICAgIGlmICgobGVuID4gTVRLX05PUl9QUkdfTUFY
-X1NJWkUpIHx8DQo+ICAgICAgICAgICAgICgob3AtPmRhdGEubmJ5dGVzKSAmJiAobGVuID09IE1U
-S19OT1JfUFJHX01BWF9TSVpFKSkpDQo+ICAgICAgICAgICAgICAgICByZXR1cm4gZmFsc2U7DQo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9zcGktbXhpYy5jIGIvZHJpdmVycy9zcGkvc3BpLW14
-aWMuYw0KPiBpbmRleCA2OTQ5MWYzYTUxNWQuLjhjNjMwYWNiMDExMCAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy9zcGkvc3BpLW14aWMuYw0KPiArKysgYi9kcml2ZXJzL3NwaS9zcGktbXhpYy5jDQo+
-IEBAIC0zNTYsNiArMzU2LDcgQEAgc3RhdGljIGludCBteGljX3NwaV9tZW1fZXhlY19vcChzdHJ1
-Y3Qgc3BpX21lbSAqbWVtLA0KPiAgICAgICAgIGludCBuaW8gPSAxLCBpLCByZXQ7DQo+ICAgICAg
-ICAgdTMyIHNzX2N0cmw7DQo+ICAgICAgICAgdTggYWRkcls4XTsNCj4gKyAgICAgICB1OCBvcGNv
-ZGUgPSBvcC0+Y21kLm9wY29kZTsNCj4gDQo+ICAgICAgICAgcmV0ID0gbXhpY19zcGlfc2V0X2Zy
-ZXEobXhpYywgbWVtLT5zcGktPm1heF9zcGVlZF9oeik7DQo+ICAgICAgICAgaWYgKHJldCkNCj4g
-QEAgLTM5Myw3ICszOTQsNyBAQCBzdGF0aWMgaW50IG14aWNfc3BpX21lbV9leGVjX29wKHN0cnVj
-dCBzcGlfbWVtICptZW0sDQo+ICAgICAgICAgd3JpdGVsKHJlYWRsKG14aWMtPnJlZ3MgKyBIQ19D
-RkcpIHwgSENfQ0ZHX01BTl9DU19BU1NFUlQsDQo+ICAgICAgICAgICAgICAgIG14aWMtPnJlZ3Mg
-KyBIQ19DRkcpOw0KPiANCj4gLSAgICAgICByZXQgPSBteGljX3NwaV9kYXRhX3hmZXIobXhpYywg
-Jm9wLT5jbWQub3Bjb2RlLCBOVUxMLCAxKTsNCj4gKyAgICAgICByZXQgPSBteGljX3NwaV9kYXRh
-X3hmZXIobXhpYywgJm9wY29kZSwgTlVMTCwgMSk7DQo+ICAgICAgICAgaWYgKHJldCkNCj4gICAg
-ICAgICAgICAgICAgIGdvdG8gb3V0Ow0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3BpL3Nw
-aS16eW5xLXFzcGkuYyBiL2RyaXZlcnMvc3BpL3NwaS16eW5xLXFzcGkuYw0KPiBpbmRleCAxNzY0
-MTE1NzM1NGQuLmJiZjNkOTA1NjFmNSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9zcGkvc3BpLXp5
-bnEtcXNwaS5jDQo+ICsrKyBiL2RyaXZlcnMvc3BpL3NwaS16eW5xLXFzcGkuYw0KPiBAQCAtNTI3
-LDIwICs1MjcsMjEgQEAgc3RhdGljIGludCB6eW5xX3FzcGlfZXhlY19tZW1fb3Aoc3RydWN0IHNw
-aV9tZW0gKm1lbSwNCj4gICAgICAgICBzdHJ1Y3QgenlucV9xc3BpICp4cXNwaSA9IHNwaV9jb250
-cm9sbGVyX2dldF9kZXZkYXRhKG1lbS0+c3BpLT5tYXN0ZXIpOw0KPiAgICAgICAgIGludCBlcnIg
-PSAwLCBpOw0KPiAgICAgICAgIHU4ICp0bXBidWY7DQo+ICsgICAgICAgdTggb3Bjb2RlID0gb3At
-PmNtZC5vcGNvZGU7DQo+IA0KPiAgICAgICAgIGRldl9kYmcoeHFzcGktPmRldiwgImNtZDolI3gg
-bW9kZTolZC4lZC4lZC4lZFxuIiwNCj4gLSAgICAgICAgICAgICAgIG9wLT5jbWQub3Bjb2RlLCBv
-cC0+Y21kLmJ1c3dpZHRoLCBvcC0+YWRkci5idXN3aWR0aCwNCj4gKyAgICAgICAgICAgICAgIG9w
-Y29kZSwgb3AtPmNtZC5idXN3aWR0aCwgb3AtPmFkZHIuYnVzd2lkdGgsDQo+ICAgICAgICAgICAg
-ICAgICBvcC0+ZHVtbXkuYnVzd2lkdGgsIG9wLT5kYXRhLmJ1c3dpZHRoKTsNCj4gDQo+ICAgICAg
-ICAgenlucV9xc3BpX2NoaXBzZWxlY3QobWVtLT5zcGksIHRydWUpOw0KPiAgICAgICAgIHp5bnFf
-cXNwaV9jb25maWdfb3AoeHFzcGksIG1lbS0+c3BpKTsNCj4gDQo+IC0gICAgICAgaWYgKG9wLT5j
-bWQub3Bjb2RlKSB7DQo+ICsgICAgICAgaWYgKG9wLT5jbWQubmJ5dGVzKSB7DQo+ICAgICAgICAg
-ICAgICAgICByZWluaXRfY29tcGxldGlvbigmeHFzcGktPmRhdGFfY29tcGxldGlvbik7DQo+IC0g
-ICAgICAgICAgICAgICB4cXNwaS0+dHhidWYgPSAodTggKikmb3AtPmNtZC5vcGNvZGU7DQo+ICsg
-ICAgICAgICAgICAgICB4cXNwaS0+dHhidWYgPSAmb3Bjb2RlOw0KPiAgICAgICAgICAgICAgICAg
-eHFzcGktPnJ4YnVmID0gTlVMTDsNCj4gLSAgICAgICAgICAgICAgIHhxc3BpLT50eF9ieXRlcyA9
-IHNpemVvZihvcC0+Y21kLm9wY29kZSk7DQo+IC0gICAgICAgICAgICAgICB4cXNwaS0+cnhfYnl0
-ZXMgPSBzaXplb2Yob3AtPmNtZC5vcGNvZGUpOw0KPiArICAgICAgICAgICAgICAgeHFzcGktPnR4
-X2J5dGVzID0gb3AtPmNtZC5uYnl0ZXM7DQo+ICsgICAgICAgICAgICAgICB4cXNwaS0+cnhfYnl0
-ZXMgPSBvcC0+Y21kLm5ieXRlczsNCj4gICAgICAgICAgICAgICAgIHp5bnFfcXNwaV93cml0ZV9v
-cCh4cXNwaSwgWllOUV9RU1BJX0ZJRk9fREVQVEgsIHRydWUpOw0KPiAgICAgICAgICAgICAgICAg
-enlucV9xc3BpX3dyaXRlKHhxc3BpLCBaWU5RX1FTUElfSUVOX09GRlNFVCwNCj4gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBaWU5RX1FTUElfSVhSX1JYVFhfTUFTSyk7DQo+IGRpZmYg
-LS1naXQgYS9pbmNsdWRlL2xpbnV4L3NwaS9zcGktbWVtLmggYi9pbmNsdWRlL2xpbnV4L3NwaS9z
-cGktbWVtLmgNCj4gaW5kZXggZTNkY2I5NTZiZjYxLi4xNTk0NjNjYzY1OWMgMTAwNjQ0DQo+IC0t
-LSBhL2luY2x1ZGUvbGludXgvc3BpL3NwaS1tZW0uaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L3Nw
-aS9zcGktbWVtLmgNCj4gQEAgLTE3LDYgKzE3LDcgQEANCj4gICAgICAgICB7ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwNCj4gICAgICAgICAg
-ICAgICAgIC5idXN3aWR0aCA9IF9fYnVzd2lkdGgsICAgICAgICAgICAgICAgICAgICAgICAgIFwN
-Cj4gICAgICAgICAgICAgICAgIC5vcGNvZGUgPSBfX29wY29kZSwgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIFwNCj4gKyAgICAgICAgICAgICAgIC5uYnl0ZXMgPSAxLCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIFwNCj4gICAgICAgICB9DQo+IA0KPiAgI2RlZmluZSBTUElf
-TUVNX09QX0FERFIoX19uYnl0ZXMsIF9fdmFsLCBfX2J1c3dpZHRoKSAgICAgICAgICAgXA0KPiBA
-QCAtNjksNiArNzAsOCBAQCBlbnVtIHNwaV9tZW1fZGF0YV9kaXIgew0KPiANCj4gIC8qKg0KPiAg
-ICogc3RydWN0IHNwaV9tZW1fb3AgLSBkZXNjcmliZXMgYSBTUEkgbWVtb3J5IG9wZXJhdGlvbg0K
-PiArICogQGNtZC5uYnl0ZXM6IG51bWJlciBvZiBvcGNvZGUgYnl0ZXMgKG9ubHkgMSBvciAyIGFy
-ZSB2YWxpZCkuIFRoZSBvcGNvZGUgaXMNCj4gKyAqICAgICAgICAgICAgIHNlbnQgTVNCLWZpcnN0
-Lg0KPiAgICogQGNtZC5idXN3aWR0aDogbnVtYmVyIG9mIElPIGxpbmVzIHVzZWQgdG8gdHJhbnNt
-aXQgdGhlIGNvbW1hbmQNCj4gICAqIEBjbWQub3Bjb2RlOiBvcGVyYXRpb24gb3Bjb2RlDQo+ICAg
-KiBAY21kLmR0cjogd2hldGhlciB0aGUgY29tbWFuZCBvcGNvZGUgc2hvdWxkIGJlIHNlbnQgaW4g
-RFRSIG1vZGUgb3Igbm90DQo+IEBAIC05NCw5ICs5NywxMCBAQCBlbnVtIHNwaV9tZW1fZGF0YV9k
-aXIgew0KPiAgICovDQo+ICBzdHJ1Y3Qgc3BpX21lbV9vcCB7DQo+ICAgICAgICAgc3RydWN0IHsN
-Cj4gKyAgICAgICAgICAgICAgIHU4IG5ieXRlczsNCj4gICAgICAgICAgICAgICAgIHU4IGJ1c3dp
-ZHRoOw0KPiAgICAgICAgICAgICAgICAgdTggZHRyIDogMTsNCj4gLSAgICAgICAgICAgICAgIHU4
-IG9wY29kZTsNCj4gKyAgICAgICAgICAgICAgIHUxNiBvcGNvZGU7DQo+ICAgICAgICAgfSBjbWQ7
-DQo+IA0KPiAgICAgICAgIHN0cnVjdCB7DQo+IC0tDQo+IDIuMjcuMA0KPiANCg0K
+Hi,
+
+The following patch set provides a different approach to /dev/random which =
+is
+called Linux Random Number Generator (LRNG) to collect entropy within the L=
+inux
+kernel. The main improvements compared to the existing /dev/random is to pr=
+ovide
+sufficient entropy during boot time as well as in virtual environments and =
+when
+using SSDs. A secondary design goal is to limit the impact of the entropy
+collection on massive parallel systems and also allow the use accelerated
+cryptographic primitives. Also, all steps of the entropic data processing a=
+re
+testable.
+
+The LRNG patch set allows a user to select use of the existing /dev/random =
+or
+the LRNG during compile time. As the LRNG provides API and ABI compatible
+interfaces to the existing /dev/random implementation, the user can freely =
+chose
+the RNG implementation without affecting kernel or user space operations.
+
+This patch set provides early boot-time entropy which implies that no
+additional flags to the getrandom(2) system call discussed recently on
+the LKML is considered to be necessary. Yet, if additional flags are
+introduced to cover special hardware, the LRNG implementation will also
+provide them to be fully ABI and API compliant as already discussed on
+LKML.
+
+The LRNG is fully compliant to SP800-90B requirements and is shipped with a
+full SP800-90B assessment and all required test tools. The existing /dev/ra=
+ndom
+implementation on the other hand has architectural limitations which
+does not easily allow to bring the implementation in compliance with
+SP800-90B. The key statement that causes concern is SP800-90B section
+3.1.6. This section denies crediting entropy to multiple similar noise
+sources. This section explicitly references different noise sources resting
+on the timing of events and their derivatives (i.e. it is a direct complaint
+to the existing existing /dev/random implementation). Therefore, SP800-90B
+now denies the very issue mentioned in [1] with the existing /dev/random
+implementation for a long time: crediting entropy to interrupts as well as
+crediting entropy to derivatives of interrupts (HID and disk events). This =
+is
+not permissible with SP800-90B.
+
+SP800-90B specifies various requirements for the noise source(s) that seed =
+any
+DRNG including SP800-90A DRBGs. In about a year from now, SP800-90B will be
+mandated for all noise sources that provide entropy to DRBGs as part of a F=
+IPS
+140-[2|3] validation or other evaluation types. That means, if we there are=
+ no
+solutions to comply with the requirements of SP800-90B found till one year
+from now, any random number generation and ciphers based on random numbers
+on Linux will be considered and treated as not applicable and delivering
+no entropy! As /dev/urandom, getrandom(2) and /dev/random are the most
+common and prevalent noise sources for DRNGs, all these DRNGs are affected.
+This applies across the board for all validations of cryptography executing=
+ on
+Linux (kernel and user space modules).
+
+=46or users that are not interested in SP800-90B, the entire code for the
+compliance as well as test interfaces can be deselected at compile time.
+
+The design and implementation is driven by a set of goals described in [1]
+that the LRNG completely implements. Furthermore, [1] includes the full
+assessment of the SP800-90B compliance as well as a comparison with RNG
+design suggestions of SP800-90C, and AIS20/31.
+
+The LRNG provides a complete separation of the noise source maintenance
+and the collection of entropy into an entropy pool from the post-processing
+using a pseudo-random number generator. Different DRNGs are supported,
+including:
+
+* The LRNG can be compile-time enabled to replace the existing /dev/random
+  implementation. When not selecting the LRNG at compile time (default), the
+  existing /dev/random implementation is built.
+
+* Built-in ChaCha20 DRNG which has no dependency to other kernel
+  frameworks.
+
+* SP800-90A DRBG using the kernel crypto API including its accelerated
+  raw cipher implementations. This implies that the output of /dev/random,
+  getrandom(2), /dev/urandom or get_random_bytes is fully compliant to
+  SP800-90A.
+
+* Arbitrary DRNGs registered with the kernel crypto API
+
+* Full compliance with SP800-90B which covers the startup and runtime health
+  tests mandated by SP800-90B as well as providing the test tools and test
+  interfaces to obtain raw noise data securely. The test tools are provided=
+ at
+  [1].
+
+Booting the patch with the kernel command line option
+"dyndbg=3Dfile drivers/char/lrng/* +p" generates logs indicating the operat=
+ion
+of the LRNG. Each log is pre-pended with "lrng".
+
+The LRNG has a flexible design by allowing an easy replacement of the
+deterministic random number generator component.
+
+Compared to the existing /dev/random implementation, the compiled binary
+is smaller when the LRNG is compiled with all options equal to the
+existing /dev/random (i.e. only CONFIG_LRNG is set): random.o is 52.5 kBytes
+whereas all LRNG object files are in 49 kBytes in size. The fully
+SP800-90A/SP800-90B compliant binary code (CONFIG_LRNG,
+CONFIG_LRNG_DRNG_SWITCH, CONFIG_LRNG_DRBG, CONFIG_LRNG_HEALTH_TESTS)
+uses some 61 kBytes. In addition, the LRNG is about 50% faster in the
+performance critical interrupt handler code path compared to the existing
+/dev/random implementation.
+
+=46ull SP800-90B testing is performed on the following systems - details
+are given in [2] appendix C:
+
+* x86 KVM virtualized guest 32 and 64 bit systems
+
+* x86 bare metal
+
+* older and newer ARMv7 system
+
+* ARM64
+
+* POWER7 LE and POWER 8 BE
+
+* IBM Z System mainframe
+
+* old MIPS embedded device
+
+[1] https://www.chronox.de/lrng.html - If the patch is accepted, I would
+be volunteering to convert the documentation into RST format and
+contribute it to the Linux kernel documentation directory.
+
+[2] https://www.chronox.de/lrng/doc/lrng.pdf
+
+Changes (compared to the previous patch set):
+
+* Port to v5.8-rc5 including updated initialization of static Jitter RNG
+  instance
+
+* Add latent_entropy GCC compiler plugin annotations
+
+* Add test interfaces to validate performance of interrupt handler
+  and time stamp concatenation
+
+* Fix memleak during rmmod lrng_drbg.ko which was missing deallocation
+  of cipher handles
+
+* Remove seeding from CPU noise sources for get_random_u64/u32 compliant
+  to random.c
+
+* Use of arch_get_random_seed_long_early / arch_get_random_long_early for
+  initialization of LFSR state and ChaCha20 DRNG state.
+
+As a side node: With the switchable DRNG support offered in this patch set,
+the following areas could be removed. As the existing /dev/random has no su=
+pport
+for switchable DRNGs, however, this is not yet feasible though.
+
+* remove lrng_ready_list and all code around it in lrng_interfaces.c
+
+* remove the kernel crypto API RNG API to avoid having two random number
+  providing APIs - this would imply that all RNGs developed for this API wo=
+uld
+  be converted to the LRNG interface
+
+CC: "Eric W. Biederman" <ebiederm@xmission.com>
+CC: "Alexander E. Patrakov" <patrakov@gmail.com>
+CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
+CC: "Theodore Y. Ts'o" <tytso@mit.edu>
+CC: Willy Tarreau <w@1wt.eu>
+CC: Matthew Garrett <mjg59@srcf.ucam.org>
+CC: Vito Caputo <vcaputo@pengaru.com>
+CC: Andreas Dilger <adilger.kernel@dilger.ca>
+CC: Jan Kara <jack@suse.cz>
+CC: Ray Strode <rstrode@redhat.com>
+CC: William Jon McCann <mccann@jhu.edu>
+CC: zhangjs <zachary@baishancloud.com>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Florian Weimer <fweimer@redhat.com>
+CC: Lennart Poettering <mzxreary@0pointer.de>
+CC: Nicolai Stange <nstange@suse.de>
+Tested-by: Roman Drahtm=FCller <draht@schaltsekun.de>
+Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+
+Stephan Mueller (12):
+  Linux Random Number Generator
+  LRNG - allocate one DRNG instance per NUMA node
+  LRNG - sysctls and /proc interface
+  LRNG - add switchable DRNG support
+  crypto: DRBG - externalize DRBG functions for LRNG
+  LRNG - add SP800-90A DRBG extension
+  LRNG - add kernel crypto API PRNG extension
+  crypto: provide access to a static Jitter RNG state
+  LRNG - add Jitter RNG fast noise source
+  LRNG - add SP800-90B compliant health tests
+  LRNG - add interface for gathering of raw entropy
+  LRNG - add power-on and runtime self-tests
+
+ MAINTAINERS                                   |   7 +
+ crypto/drbg.c                                 |  16 +-
+ crypto/jitterentropy-kcapi.c                  |   3 +-
+ crypto/jitterentropy.c                        |  31 +-
+ drivers/char/Kconfig                          |   2 +
+ drivers/char/Makefile                         |   9 +-
+ drivers/char/lrng/Kconfig                     | 249 +++++++
+ drivers/char/lrng/Makefile                    |  19 +
+ drivers/char/lrng/lrng_archrandom.c           |  93 +++
+ drivers/char/lrng/lrng_aux.c                  | 136 ++++
+ drivers/char/lrng/lrng_chacha20.c             | 285 ++++++++
+ drivers/char/lrng/lrng_chacha20.h             |  29 +
+ drivers/char/lrng/lrng_drbg.c                 | 259 +++++++
+ drivers/char/lrng/lrng_drng.c                 | 409 +++++++++++
+ drivers/char/lrng/lrng_health.c               | 407 +++++++++++
+ drivers/char/lrng/lrng_interfaces.c           | 647 ++++++++++++++++++
+ drivers/char/lrng/lrng_internal.h             | 318 +++++++++
+ drivers/char/lrng/lrng_jent.c                 |  88 +++
+ drivers/char/lrng/lrng_kcapi.c                | 321 +++++++++
+ drivers/char/lrng/lrng_lfsr.h                 | 152 ++++
+ drivers/char/lrng/lrng_numa.c                 | 101 +++
+ drivers/char/lrng/lrng_pool.c                 | 589 ++++++++++++++++
+ drivers/char/lrng/lrng_proc.c                 | 163 +++++
+ drivers/char/lrng/lrng_selftest.c             | 437 ++++++++++++
+ drivers/char/lrng/lrng_sw_noise.c             | 125 ++++
+ drivers/char/lrng/lrng_sw_noise.h             |  57 ++
+ drivers/char/lrng/lrng_switch.c               | 189 +++++
+ drivers/char/lrng/lrng_testing.c              | 393 +++++++++++
+ include/crypto/drbg.h                         |   7 +
+ .../crypto/internal}/jitterentropy.h          |   3 +
+ include/linux/lrng.h                          |  63 ++
+ 31 files changed, 5597 insertions(+), 10 deletions(-)
+ create mode 100644 drivers/char/lrng/Kconfig
+ create mode 100644 drivers/char/lrng/Makefile
+ create mode 100644 drivers/char/lrng/lrng_archrandom.c
+ create mode 100644 drivers/char/lrng/lrng_aux.c
+ create mode 100644 drivers/char/lrng/lrng_chacha20.c
+ create mode 100644 drivers/char/lrng/lrng_chacha20.h
+ create mode 100644 drivers/char/lrng/lrng_drbg.c
+ create mode 100644 drivers/char/lrng/lrng_drng.c
+ create mode 100644 drivers/char/lrng/lrng_health.c
+ create mode 100644 drivers/char/lrng/lrng_interfaces.c
+ create mode 100644 drivers/char/lrng/lrng_internal.h
+ create mode 100644 drivers/char/lrng/lrng_jent.c
+ create mode 100644 drivers/char/lrng/lrng_kcapi.c
+ create mode 100644 drivers/char/lrng/lrng_lfsr.h
+ create mode 100644 drivers/char/lrng/lrng_numa.c
+ create mode 100644 drivers/char/lrng/lrng_pool.c
+ create mode 100644 drivers/char/lrng/lrng_proc.c
+ create mode 100644 drivers/char/lrng/lrng_selftest.c
+ create mode 100644 drivers/char/lrng/lrng_sw_noise.c
+ create mode 100644 drivers/char/lrng/lrng_sw_noise.h
+ create mode 100644 drivers/char/lrng/lrng_switch.c
+ create mode 100644 drivers/char/lrng/lrng_testing.c
+ rename {crypto =3D> include/crypto/internal}/jitterentropy.h (84%)
+ create mode 100644 include/linux/lrng.h
+
+=2D-=20
+2.26.2
+
+
+
+
