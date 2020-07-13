@@ -2,362 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB23721E16B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 22:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF6021E177
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 22:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgGMUbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 16:31:04 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:36476 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgGMUbD (ORCPT
+        id S1727025AbgGMUc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 16:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726150AbgGMUc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 16:31:03 -0400
-Received: from [10.0.0.249] (c-24-19-135-168.hsd1.wa.comcast.net [24.19.135.168])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3468820B4908;
-        Mon, 13 Jul 2020 13:31:00 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3468820B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1594672261;
-        bh=/alYulr7TfHdtnQcnR5ksYNOj4rEKwjLZlm8tyeN/ig=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=HKGa5xriPaJtfUMOGKAdDEmNm530YOlnYSEACRiZ3qek6FvrL/gO2JzOlCjjVpaES
-         wr6E6LV/9mSxj+YP7UlkZ8qn3zs9VPhh9ADbVFJKR8LajLESGVLVlMgtnguuVmFup0
-         Kmtw0sgUMtC7d96W9/rPiy8/xnK4YEXPkWFcs8aE=
-Subject: Re: [V2 PATCH 1/3] Refactoring powerpc code for carrying over IMA
- measurement logs, to move non architecture specific code to security/ima.
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, masahiroy@kernel.org, james.morse@arm.com,
-        bhsharma@redhat.com, mbrugger@suse.com, hsinyi@chromium.org,
-        tao.li@vivo.com, christophe.leroy@c-s.fr,
-        gregkh@linuxfoundation.org, nramas@linux.microsoft.com,
-        tusharsu@linux.microsoft.com, balajib@linux.microsoft.com
-References: <20200618071045.471131-1-prsriva@linux.microsoft.com>
- <20200618071045.471131-2-prsriva@linux.microsoft.com>
- <87o8per3m0.fsf@morokweng.localdomain>
-From:   Prakhar Srivastava <prsriva@linux.microsoft.com>
-Message-ID: <1385c8bb-cd25-8dc4-7224-8e27135f3356@linux.microsoft.com>
-Date:   Mon, 13 Jul 2020 13:30:59 -0700
+        Mon, 13 Jul 2020 16:32:28 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA4EC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 13:32:27 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id j4so18261369wrp.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 13:32:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NjuXsku+N7s+/ZkGgNtwqS2FMyOCE2m5xwXnbqoU004=;
+        b=VaS7443KrsutnWzhmjukOyEatB1jcEm5/VfgW2lPX/lwVScwUMEu8gwW8F/cDRqv57
+         dV9k6+gC1exYI7Jnf1f06CNH6FWa2QorqFT5631H98oZZxNYha/DLWsT8jiZ4ox+rXRP
+         jrJGww60DVwOJBcjHEd/UdOaygoXW5fuTw+N1wV9EzJ8dlfPv7C/nhTmUtFlfmR8f7Yg
+         azhfQYqkXwUN8/0+Z/YD5qmKF2grqhRzzDT566wbUMQPSasaP1fB1QMkwEdspeuZgO5U
+         3piw8aaNIkiOM/z7grOJv6lp+iTO8vJ+Aq/dkwdm3JCL7LevtBFejWx+N/l8OckWrFEq
+         MNEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NjuXsku+N7s+/ZkGgNtwqS2FMyOCE2m5xwXnbqoU004=;
+        b=BZF83Feqv4447z32MWt3LlGFM63M9aCtFH5XDburdxZyPpVMfCP6nJq3DuKz6iRDQK
+         hxdEgFJHfmYv1Oh0wq1zbayJdEEggctzg9i7IDOMxCCX2zpGf9j6CcK/ajbhBUlCd5tR
+         hM1A1aBEuP/hnZV3j4V8EG5GcSo7M8+I98pPn+vMWjuzTCV+BrlWG1b3GPd2K7Oq0cxk
+         JJxWaeQgzNq9C34jIEM/KurVneqjoB/ieR3zCS0NzNqX7kWhi8Ngh1CbcN7aSfHoCFnF
+         H+VkW1WNTFwhMtB1bYp/V72dx8kzOEkB6eqzBkhl1otqEEI1brV8/AE2B/Pgl2G54ozD
+         YbAA==
+X-Gm-Message-State: AOAM5318tJmuTgxDBoKq/GLOoM21Ec/cud+zsCbkkAugFRHF6xVxg0AM
+        cExbZQmh6h3/bZlp0UaYV1s5qg==
+X-Google-Smtp-Source: ABdhPJzsvDtuurvLedud1UFOHfSRMnYumi0+nz9RdUX8W20T/R/KErEwOQDZwTF+AWYP66P8j+Z1dQ==
+X-Received: by 2002:a5d:408c:: with SMTP id o12mr1277936wrp.412.1594672346487;
+        Mon, 13 Jul 2020 13:32:26 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:ace8:1637:36d9:9311? ([2a01:e34:ed2f:f020:ace8:1637:36d9:9311])
+        by smtp.googlemail.com with ESMTPSA id 51sm27253320wrc.44.2020.07.13.13.32.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jul 2020 13:32:25 -0700 (PDT)
+Subject: Re: [PATCH v4 4/4] thermal: core: Add notifications call in the
+ framework
+To:     Marek Szyprowski <m.szyprowski@samsung.com>, rui.zhang@intel.com
+Cc:     srinivas.pandruvada@linux.intel.com, rkumbako@codeaurora.org,
+        amit.kucheria@linaro.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+References: <20200706105538.2159-1-daniel.lezcano@linaro.org>
+ <20200706105538.2159-4-daniel.lezcano@linaro.org>
+ <CGME20200706131708eucas1p1487955a7632584c17df724399f48825a@eucas1p1.samsung.com>
+ <c7ed6c63-cbb5-07dc-c292-2c473af8c4fb@samsung.com>
+ <23c5830d-0a7c-9e87-e859-821d2dccb200@linaro.org>
+ <8a34e9c4-6457-cfd2-3d05-05f80a630a0d@samsung.com>
+ <41466d5a-24fb-b861-93ae-3ed190af7174@samsung.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <75683b75-6e1b-6e4e-2354-477c487a5f5f@linaro.org>
+Date:   Mon, 13 Jul 2020 22:32:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <87o8per3m0.fsf@morokweng.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <41466d5a-24fb-b861-93ae-3ed190af7174@samsung.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/07/2020 11:31, Marek Szyprowski wrote:
+> Hi
+> 
+> On 07.07.2020 11:15, Marek Szyprowski wrote:
+>> On 06.07.2020 15:46, Daniel Lezcano wrote:
+>>> On 06/07/2020 15:17, Marek Szyprowski wrote:
+>>>> On 06.07.2020 12:55, Daniel Lezcano wrote:
+>>>>> The generic netlink protocol is implemented but the different
+>>>>> notification functions are not yet connected to the core code.
+>>>>>
+>>>>> These changes add the notification calls in the different
+>>>>> corresponding places.
+>>>>>
+>>>>> Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+>>>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>>>> This patch landed in today's linux-next 20200706 as commit 5df786e46560
+>>>> ("thermal: core: Add notifications call in the framework"). Sadly it
+>>>> breaks booting various Samsung Exynos based boards. Here is an example
+>>>> log from Odroid U3 board:
+>>>>
+>>>> Unable to handle kernel NULL pointer dereference at virtual address 
+>>>> 00000010
+>>>> pgd = (ptrval)
+>>>> [00000010] *pgd=00000000
+>>>> Internal error: Oops: 5 [#1] PREEMPT SMP ARM
+>>>> Modules linked in:
+>>>> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc3-00015-g5df786e46560
+>>>> #1146
+>>>> Hardware name: Samsung Exynos (Flattened Device Tree)
+>>>> PC is at kmem_cache_alloc+0x13c/0x418
+>>>> LR is at kmem_cache_alloc+0x48/0x418
+>>>> pc : [<c02b5cac>]    lr : [<c02b5bb8>]    psr: 20000053
+>>>> ...
+>>>> Flags: nzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment none
+>>>> Control: 10c5387d  Table: 4000404a  DAC: 00000051
+>>>> Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
+>>>> Stack: (0xee8f1cf8 to 0xee8f2000)
+>>>> ...
+>>>> [<c02b5cac>] (kmem_cache_alloc) from [<c08cd170>] 
+>>>> (__alloc_skb+0x5c/0x170)
+>>>> [<c08cd170>] (__alloc_skb) from [<c07ec19c>]
+>>>> (thermal_genl_send_event+0x24/0x174)
+>>>> [<c07ec19c>] (thermal_genl_send_event) from [<c07ec648>]
+>>>> (thermal_notify_tz_create+0x58/0x74)
+>>>> [<c07ec648>] (thermal_notify_tz_create) from [<c07e9058>]
+>>>> (thermal_zone_device_register+0x358/0x650)
+>>>> [<c07e9058>] (thermal_zone_device_register) from [<c1028d34>]
+>>>> (of_parse_thermal_zones+0x304/0x7a4)
+>>>> [<c1028d34>] (of_parse_thermal_zones) from [<c1028964>]
+>>>> (thermal_init+0xdc/0x154)
+>>>> [<c1028964>] (thermal_init) from [<c0102378>] 
+>>>> (do_one_initcall+0x8c/0x424)
+>>>> [<c0102378>] (do_one_initcall) from [<c1001158>]
+>>>> (kernel_init_freeable+0x190/0x204)
+>>>> [<c1001158>] (kernel_init_freeable) from [<c0ab85f4>]
+>>>> (kernel_init+0x8/0x118)
+>>>> [<c0ab85f4>] (kernel_init) from [<c0100114>] (ret_from_fork+0x14/0x20)
+>>>>
+>>>> Reverting it on top of linux-next fixes the boot issue. I will
+>>>> investigate it further soon.
+>>> Thanks for reporting this.
+>>>
+>>> Can you send the addr2line result and code it points to ?
+>>
+>> addr2line of c02b5cac (kmem_cache_alloc+0x13c/0x418) points to 
+>> mm/slub.c +2839, but I'm not sure if we can trust it. imho it looks 
+>> like some trashed memory somewhere, but I don't have time right now to 
+>> analyze it further now...
+> 
+> Just one more thing I've noticed. The crash happens only if the kernel 
+> is compiled with old GCC (tested with arm-linux-gnueabi-gcc (Linaro GCC 
+> 4.9-2017.01) 4.9.4). If I compile kernel with newed GCC (like 
+> arm-linux-gnueabi-gcc (Linaro GCC 6.4-2017.11) 6.4.1 20171012), it works 
+> fine...
+> 
+> This happens also with Linux next-20200710, which again got this commit.
+
+So I finally succeed to reproduce on an ARM64 with a recent compiler,
+earlycon, and the option CONFIG_INIT_ON_ALLOC_DEFAULT_ON.
 
 
-On 6/19/20 5:19 PM, Thiago Jung Bauermann wrote:
-> 
-> Prakhar Srivastava <prsriva@linux.microsoft.com> writes:
-> 
->> Powerpc has support to carry over the IMA measurement logs. Refatoring the
->> non-architecture specific code out of arch/powerpc and into security/ima.
->>
->> The code adds support for reserving and freeing up of memory for IMA measurement
->> logs.
-> 
-> Last week, Mimi provided this feedback:
-> 
-> "From your patch description, this patch should be broken up.  Moving
-> the non-architecture specific code out of powerpc should be one patch.
->   Additional support should be in another patch.  After each patch, the
-> code should work properly."
-> 
-> That's not what you do here. You move the code, but you also make other
-> changes at the same time. This has two problems:
-> 
-> 1. It makes the patch harder to review, because it's very easy to miss a
->     change.
-> 
-> 2. If in the future a git bisect later points to this patch, it's not
->     clear whether the problem is because of the code movement, or because
->     of the other changes.
-> 
-> When you move code, ideally the patch should only make the changes
-> necessary to make the code work at its new location. The patch which
-> does code movement should not cause any change in behavior.
-> 
-> Other changes should go in separate patches, either before or after the
-> one moving the code.
-> 
-> More comments below.
-> 
-Hi Thiago,
 
-Apologies for the delayed response i was away for a few days.
-I am working on breaking up the changes so that its easier to review and 
-update as well.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Thanks,
-Prakhar Srivastava
-
->>
->> ---
->>   arch/powerpc/include/asm/ima.h     |  10 ---
->>   arch/powerpc/kexec/ima.c           | 126 ++---------------------------
->>   security/integrity/ima/ima_kexec.c | 116 ++++++++++++++++++++++++++
->>   3 files changed, 124 insertions(+), 128 deletions(-)
->>
->> diff --git a/arch/powerpc/include/asm/ima.h b/arch/powerpc/include/asm/ima.h
->> index ead488cf3981..c29ec86498f8 100644
->> --- a/arch/powerpc/include/asm/ima.h
->> +++ b/arch/powerpc/include/asm/ima.h
->> @@ -4,15 +4,6 @@
->>
->>   struct kimage;
->>
->> -int ima_get_kexec_buffer(void **addr, size_t *size);
->> -int ima_free_kexec_buffer(void);
->> -
->> -#ifdef CONFIG_IMA
->> -void remove_ima_buffer(void *fdt, int chosen_node);
->> -#else
->> -static inline void remove_ima_buffer(void *fdt, int chosen_node) {}
->> -#endif
->> -
->>   #ifdef CONFIG_IMA_KEXEC
->>   int arch_ima_add_kexec_buffer(struct kimage *image, unsigned long load_addr,
->>   			      size_t size);
->> @@ -22,7 +13,6 @@ int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node);
->>   static inline int setup_ima_buffer(const struct kimage *image, void *fdt,
->>   				   int chosen_node)
->>   {
->> -	remove_ima_buffer(fdt, chosen_node);
->>   	return 0;
->>   }
-> 
-> This is wrong. Even if the currently running kernel doesn't have
-> CONFIG_IMA_KEXEC, it should remove the IMA buffer property and memory
-> reservation from the FDT that is being prepared for the next kernel.
-> 
-> This is because the IMA kexec buffer is useless for the next kernel,
-> regardless of whether the current kernel supports CONFIG_IMA_KEXEC or
-> not. Keeping it around would be a waste of memory.
-> 
-I will keep it in my next revision.
-My understanding was the reserved memory is freed and property removed 
-when IMA loads the logs on init. During setup_fdt in kexec, a duplicate 
-copy of the dt is used, but memory still needs to be allocated, thus the 
-property itself indicats presence of reserved memory.
-
-
->> @@ -179,13 +64,18 @@ int setup_ima_buffer(const struct kimage *image, void *fdt, int chosen_node)
->>   	int ret, addr_cells, size_cells, entry_size;
->>   	u8 value[16];
->>
->> -	remove_ima_buffer(fdt, chosen_node);
-> 
-> This is wrong, for the same reason stated above.
-> 
->>   	if (!image->arch.ima_buffer_size)
->>   		return 0;
->>
->> -	ret = get_addr_size_cells(&addr_cells, &size_cells);
->> -	if (ret)
->> +	ret = fdt_address_cells(fdt, chosen_node);
->> +	if (ret < 0)
->> +		return ret;
->> +	addr_cells = ret;
->> +
->> +	ret = fdt_size_cells(fdt, chosen_node);
->> +	if (ret < 0)
->>   		return ret;
->> +	size_cells = ret;
->>
->>   	entry_size = 4 * (addr_cells + size_cells);
->>
-> 
-> I liked this change. Thanks! I agree it's better to use
-> fdt_address_cells() and fdt_size_cells() here.
-> 
-> But it should be in a separate patch. Either before or after the one
-> moving the code.
-> 
->> diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
->> index 121de3e04af2..e1e6d6154015 100644
->> --- a/security/integrity/ima/ima_kexec.c
->> +++ b/security/integrity/ima/ima_kexec.c
->> @@ -10,8 +10,124 @@
->>   #include <linux/seq_file.h>
->>   #include <linux/vmalloc.h>
->>   #include <linux/kexec.h>
->> +#include <linux/of.h>
->> +#include <linux/memblock.h>
->> +#include <linux/libfdt.h>
->>   #include "ima.h"
->>
->> +static int get_addr_size_cells(int *addr_cells, int *size_cells)
->> +{
->> +	struct device_node *root;
->> +
->> +	root = of_find_node_by_path("/");
->> +	if (!root)
->> +		return -EINVAL;
->> +
->> +	*addr_cells = of_n_addr_cells(root);
->> +	*size_cells = of_n_size_cells(root);
->> +
->> +	of_node_put(root);
->> +
->> +	return 0;
->> +}
->> +
->> +static int do_get_kexec_buffer(const void *prop, int len, unsigned long *addr,
->> +			       size_t *size)
->> +{
->> +	int ret, addr_cells, size_cells;
->> +
->> +	ret = get_addr_size_cells(&addr_cells, &size_cells);
->> +	if (ret)
->> +		return ret;
->> +
->> +	if (len < 4 * (addr_cells + size_cells))
->> +		return -ENOENT;
->> +
->> +	*addr = of_read_number(prop, addr_cells);
->> +	*size = of_read_number(prop + 4 * addr_cells, size_cells);
->> +
->> +	return 0;
->> +}
->> +
->> +/**
->> + * ima_get_kexec_buffer - get IMA buffer from the previous kernel
->> + * @addr:	On successful return, set to point to the buffer contents.
->> + * @size:	On successful return, set to the buffer size.
->> + *
->> + * Return: 0 on success, negative errno on error.
->> + */
->> +int ima_get_kexec_buffer(void **addr, size_t *size)
->> +{
->> +	int ret, len;
->> +	unsigned long tmp_addr;
->> +	size_t tmp_size;
->> +	const void *prop;
->> +
->> +	prop = of_get_property(of_chosen, "linux,ima-kexec-buffer", &len);
->> +	if (!prop)
->> +		return -ENOENT;
->> +
->> +	ret = do_get_kexec_buffer(prop, len, &tmp_addr, &tmp_size);
->> +	if (ret)
->> +		return ret;
->> +
->> +	*addr = __va(tmp_addr);
->> +	*size = tmp_size;
->> +
->> +	return 0;
->> +}
-> 
-> The functions above were moved without being changed. Good.
-> 
->> +/**
->> + * ima_free_kexec_buffer - free memory used by the IMA buffer
->> + */
->> +int ima_free_kexec_buffer(void)
->> +{
->> +	int ret;
->> +	unsigned long addr;
->> +	size_t size;
->> +	struct property *prop;
->> +
->> +	prop = of_find_property(of_chosen, "linux,ima-kexec-buffer", NULL);
->> +	if (!prop)
->> +		return -ENOENT;
->> +
->> +	ret = do_get_kexec_buffer(prop->value, prop->length, &addr, &size);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = of_remove_property(of_chosen, prop);
->> +	if (ret)
->> +		return ret;
->> +
->> +	return memblock_free(__pa(addr), size);
-> 
-> Here you added a __pa() call. Do you store a virtual address in
-> linux,ima-kexec-buffer property? Doesn't it make more sense to store a
-> physical address?
-> 
-trying to minimize the changes here as do_get_kexec_buffer return the va.
-I will refactor this to remove the double translation.
-
-> Even if making this change is the correct thing to do, it should be a
-> separate patch, unless it can't be avoided. And if that is the case,
-> then it should be explained in the commit message.
-> 
->> +
->> +}
->> +
->> +/**
->> + * remove_ima_buffer - remove the IMA buffer property and reservation from @fdt
->> + *
->> + * The IMA measurement buffer is of no use to a subsequent kernel, so we always
->> + * remove it from the device tree.
->> + */
->> +void remove_ima_buffer(void *fdt, int chosen_node)
->> +{
->> +	int ret, len;
->> +	unsigned long addr;
->> +	size_t size;
->> +	const void *prop;
->> +
->> +	prop = fdt_getprop(fdt, chosen_node, "linux,ima-kexec-buffer", &len);
->> +	if (!prop)
->> +		return;
->> +
->> +	do_get_kexec_buffer(prop, len, &addr, &size);
->> +	ret = fdt_delprop(fdt, chosen_node, "linux,ima-kexec-buffer");
->> +	if (ret < 0)
->> +		return;
->> +
->> +	memblock_free(addr, size);
->> +}
-> 
-> Here is another function that changed when moved. This one I know to be
-> wrong. You're confusing the purposes of remove_ima_buffer() and
-> ima_free_kexec_buffer().
-> 
-> You did send me a question about them nearly three weeks ago which I
-> only answered today, so I apologize. Also, their names could more
-> clearly reflect their differences, so it's bad naming on my part.
-> 
-> With IMA kexec buffers, there are two kernels (and thus their two
-> respective, separate device trees) to be concerned about:
-> 
-> 1. the currently running kernel, which uses the live device tree
-> (accessed with the of_* functions) and the memblock subsystem;
-> 
-> 2. the kernel which is being loaded by kexec, which will use the FDT
-> blob being passed around as argument to these functions, and the memory
-> reservations in the memory reservation table of the FDT blob.
-> 
-> ima_free_kexec_buffer() is used by IMA in the currently running kernel.
-> Therefore the device tree it is concerned about is the live one, and
-> thus uses the of_* functions to access it. And uses memblock to change
-> the memory reservation.
-> 
-> remove_ima_buffer() on the other hand is used by the kexec code to
-> prepare an FDT blob for the kernel that is being loaded. It should not
-> make any changes to live device tree, nor to memblock allocations. It
-> should only make changes to the FDT blob.
-> 
-Thank you for this, greatly appreciate clearing my misunderstandings.
-> --
-> Thiago Jung Bauermann
-> IBM Linux Technology Center
-> 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
