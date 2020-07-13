@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120F621D780
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4676421D77C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729932AbgGMNsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
+        id S1729884AbgGMNrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 09:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728950AbgGMNsb (ORCPT
+        with ESMTP id S1728950AbgGMNrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:48:31 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E43FC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:48:31 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id w27so9893610qtb.7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:48:31 -0700 (PDT)
+        Mon, 13 Jul 2020 09:47:23 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF19AC061755;
+        Mon, 13 Jul 2020 06:47:23 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p3so6052206pgh.3;
+        Mon, 13 Jul 2020 06:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=whfCCmO7TNNcabn6+SFR27U2aTuxTD9IQzPOWcIz0mw=;
-        b=AsDVnUJkW8wZ4111n1Q2nBdNdYPimCzz0UVZq8a8y3pPyw4jKLDeAIPjYRjwIHz8a4
-         KymFI69PumnZQljIoO+ffRr5sAfyxh9Tx3H1ihNSu6xSBNqO32qk+tcxIRdtO31UIC4H
-         LfQPmrPeG2vYkt7eSxE72k5v70O4W2b8JbCF6T6KzqZREOUTQk3C6bc/sJ4+OyzvDOWC
-         9UszW5zQUhKDyNdZy5X9IeMqKunocanY56DVBsN64wX96hrvHQFXjEXE9h39GyZUsmfU
-         UUIJmZHpfHr85GsHMS24mZR7WE8AusHSUW94rzZc5Cp0HhgwM31f5Sr6pAtjCOMFo0Hy
-         iNgA==
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=mRbOWPWSQUmvbKy0Vhub198si/9PqoOoJ0fQEFD1GNw=;
+        b=CtIxbjVvQWa4NtOA2BUa9bC75CZlL25vYzXPl0w/DuaxfU7K7Mef69GwIEcJ/9v5p6
+         OyTNMFwhm1f7HQM2uGsZmLP6xjXBKRuhMQ9hjYqV97z8vDpzvMPKqVrCZulwKV7l0ws5
+         K3UvPYHj/ywEJNqexpv9wcG57oWMcuiEgeUfm8PlVDi9B4tbFzDLz+RsIOz47QLajLgr
+         bl4VArfJGMgjlFM+VPivRlfKklIGQka+bNxVx5kmcekxM4Un3QInWNH/VVOGvCzsetup
+         O936Idv00TK0lxrJMmpDZv2HzgcR7mQsgOx8oeQ7xRjaoRoTVDzsffuYhhhu9CHwevtT
+         ptHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=whfCCmO7TNNcabn6+SFR27U2aTuxTD9IQzPOWcIz0mw=;
-        b=k0H+MLqDu60HMOijU0ghzPnvjWlo8AtVGvimQpclmFcp468SI0tjiOQ8rk4YIw38Jt
-         wWoSvaaIqlBda0VCfcgNRxV0D1KEitHXks6X3/qPqHYdgFSawdMx+vvNPBNL0xxrpO/m
-         8I69mQ6zBEukNo5Xc8bNbIBUyVEJyeOcqAen3Js6J++c9bAuTOG8K9PAdeS1V7hr/K51
-         eoGfz7fbmj8iUGRwdV7Q/rWECmCdOrQovZpIgHnT2I8/QNhSFuNpv/jhJ8gWmzPKxdBk
-         jywt9lAE9feHSbOWegAohL0jWZ4D9p8h3kJbLTOuR8QyOcKKvWc9XPemWfoa4u4me9tt
-         FGcA==
-X-Gm-Message-State: AOAM531oTv+veahHJ+Q0JTGoRnVEQJpQthNfJ+3fAM0WM8Ih5aUkQ1DS
-        FBHhRRnzAO6KJj239uB3GjiHDA==
-X-Google-Smtp-Source: ABdhPJxx00W1Vp+MsZHSypI4tIxcsugNKbIon/mXh6bzEpDLyfmXuCLJZ4RJS3bp+btXAF773E+ZRw==
-X-Received: by 2002:ac8:3ff9:: with SMTP id v54mr84259416qtk.352.1594648110322;
-        Mon, 13 Jul 2020 06:48:30 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id r7sm18415476qtm.66.2020.07.13.06.48.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 06:48:29 -0700 (PDT)
-Subject: Re: [PATCH 4/6] interconnect: qcom: Add SM8250 interconnect provider
- driver
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20200701134259.8055-1-jonathan@marek.ca>
- <20200701134259.8055-5-jonathan@marek.ca>
- <5a0eca0e-d496-d8af-ca41-0f07e9a3e01d@linaro.org>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <5074d900-da92-0b8a-a7c6-1ebfe4ae2d56@marek.ca>
-Date:   Mon, 13 Jul 2020 09:47:13 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=mRbOWPWSQUmvbKy0Vhub198si/9PqoOoJ0fQEFD1GNw=;
+        b=lgNHXKOJ8zllkJIzBxx24sq0d5JyWO8mQocRF1uwr3MCWPv36+rO6Y0R5KiQS1eVZ3
+         GMBq8h/LIgnWSWX5RfKL9Fp1brO3OaFyjXFmtypdKaAqI9EgGlhjr7XYA6hEzczwvAkm
+         JS+TNDP3kqhx1b2t925k0RhCOqrgiFuyhhBRQmU4RXSYNjo12qN6HpZaQtZIvvAGiWQh
+         AMKiTbQ85zfw98hE8KxI1S2F77+A6TT/bnAvQvq7BBXMXoN8gFaYlBJz9vHluetVN2fy
+         46LP1rvCADxawynHnf9B7a3lpkkyd1M08XZ3ZZZTKPNz/H2flTJZ6TKAzrlkGQnEmTCA
+         +6ug==
+X-Gm-Message-State: AOAM530J2fmChkXtmDXFPrQV/h2/aW1ZYyPQNr6LbnU9yrQcLI5Jkdps
+        AwhjzxhUKUqRJJlZ8JjE9bY=
+X-Google-Smtp-Source: ABdhPJy5mkqYezxWFiByUdDFyfgS7gHSAPhE+WWD7boFv7QO+6zf4EAUVlnl8xvc6AjqSYD9L+nxnA==
+X-Received: by 2002:a63:e057:: with SMTP id n23mr67589534pgj.368.1594648043180;
+        Mon, 13 Jul 2020 06:47:23 -0700 (PDT)
+Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
+        by smtp.gmail.com with ESMTPSA id h15sm15368954pjc.14.2020.07.13.06.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 06:47:20 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 23:47:14 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
+ membarrier_mm_sync_core_before_usermode
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
+References: <20200710015646.2020871-1-npiggin@gmail.com>
+        <20200710015646.2020871-5-npiggin@gmail.com>
+        <CALCETrVqHDLo09HcaoeOoAVK8w+cNWkSNTLkDDU=evUhaXkyhQ@mail.gmail.com>
+        <1594613902.1wzayj0p15.astroid@bobo.none>
+In-Reply-To: <1594613902.1wzayj0p15.astroid@bobo.none>
 MIME-Version: 1.0
-In-Reply-To: <5a0eca0e-d496-d8af-ca41-0f07e9a3e01d@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-Id: <1594647408.wmrazhwjzb.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/20 9:30 AM, Georgi Djakov wrote:
-> Hi Jonathan,
-> 
-> Thanks for posting these patches!
-> 
-> On 7/1/20 16:42, Jonathan Marek wrote:
->> Add driver for the Qualcomm interconnect buses found in SM8250 based
->> platforms. The topology consists of several NoCs that are controlled by
->> a remote processor that collects the aggregated bandwidth for each
->> master-slave pairs.
->>
->> Based on SC7180 driver and generated from downstream dts.
->>
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
-> [..]
->> +
->> +static const struct of_device_id qnoc_of_match[] = {
->> +	{ .compatible = "qcom,sm8250-aggre1-noc",
->> +	  .data = &sm8250_aggre1_noc},
->> +	{ .compatible = "qcom,sm8250-aggre2-noc",
->> +	  .data = &sm8250_aggre2_noc},
->> +	{ .compatible = "qcom,sm8250-compute-noc",
->> +	  .data = &sm8250_compute_noc},
->> +	{ .compatible = "qcom,sm8250-config-noc",
->> +	  .data = &sm8250_config_noc},
->> +	{ .compatible = "qcom,sm8250-dc-noc",
->> +	  .data = &sm8250_dc_noc},
->> +	{ .compatible = "qcom,sm8250-gem-noc",
->> +	  .data = &sm8250_gem_noc},
->> +	{ .compatible = "qcom,sm8250-ipa-virt",
->> +	  .data = &sm8250_ipa_virt},
->> +	{ .compatible = "qcom,sm8250-mc-virt",
->> +	  .data = &sm8250_mc_virt},
->> +	{ .compatible = "qcom,sm8250-mmss-noc",
->> +	  .data = &sm8250_mmss_noc},
->> +	{ .compatible = "qcom,sm8250-npu-noc",
->> +	  .data = &sm8250_npu_noc},
->> +	{ .compatible = "qcom,sm8250-system-noc",
->> +	  .data = &sm8250_system_noc},
->> +	{ .compatible = "qcom,sm8250-gem-noc-display",
->> +	  .data = &sm8250_gem_noc_display},
->> +	{ .compatible = "qcom,sm8250-mc-virt-display",
->> +	  .data = &sm8250_mc_virt_display},
->> +	{ .compatible = "qcom,sm8250-mmss-noc-display",
->> +	  .data = &sm8250_mmss_noc_display},
->> +	{ }
-> 
-> My main concern here are the display RSC nodes. We should not add the nodes
-> for voting on the display RSC, but use the "qcom,bcm-voters" property in DT
-> to list both "hlos" and "disp" as bcm voters for gem-noc, mc-virt and
-> mmss-noc.
-> 
+Excerpts from Nicholas Piggin's message of July 13, 2020 2:45 pm:
+> Excerpts from Andy Lutomirski's message of July 11, 2020 3:04 am:
+>> Also, as it stands, I can easily see in_irq() ceasing to promise to
+>> serialize.  There are older kernels for which it does not promise to
+>> serialize.  And I have plans to make it stop serializing in the
+>> nearish future.
+>=20
+> You mean x86's return from interrupt? Sounds fun... you'll konw where to=20
+> update the membarrier sync code, at least :)
 
-Would it be OK to just drop the display RSC parts from this series then? 
-Not sure if anything needs it to work, but I'm not using it currently.
+Oh, I should actually say Mathieu recently clarified a return from
+interrupt doesn't fundamentally need to serialize in order to support
+membarrier sync core.
 
-Though if you can provide details for a solution, I could implement it 
-(qcom_icc_provider needs to have a list of voters, but I'm not sure how 
-to deal with everything else).
+https://lists.ozlabs.org/pipermail/linuxppc-dev/2020-July/214171.html
 
-> Thanks,
-> Georgi
-> 
+So you may not need to do anything more if you relaxed it.
+
+Thanks,
+Nick
