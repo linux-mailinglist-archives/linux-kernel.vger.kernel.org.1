@@ -2,137 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C26521D9C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B821021D9CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729840AbgGMPIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 11:08:22 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:45597 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729027AbgGMPIV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 11:08:21 -0400
-Received: by mail-il1-f194.google.com with SMTP id o3so11415593ilo.12;
-        Mon, 13 Jul 2020 08:08:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v4cXggTd/OPPGdKO38hIkkIvGUA2vA7so39nPLvitDw=;
-        b=K6jL4bdAhMP+NGxs3Iqf/kCjq71C4OhDmDJ0QC7Zi00pAqIQ8Xdoxtcubx3fBpAtLO
-         e073YRr/VK0/BoIKaiBVDbT8RQTfezw8lfjmiNLcRF6T59VqbvdqN5UXydn+DoMHFj64
-         IMrIUKRm3nKLfCMTJYRFGM8vhyNRHpxd1L2fhPMNwU6Trghu4odaPK0YAE5tP3sH/Q60
-         eVDzsRZdmqJPbTyTcFH5eTuyUeq1o975AmQLsD9R3f6+ROj7WzrhHksZqIkMBPqv7Tj1
-         fDnpruJdWNiQGOo0XH3g100OcGzaGFV7jsm4dT1E9unZ3EBYCj4HiYiljiD8HhR6onKS
-         cd4A==
-X-Gm-Message-State: AOAM530yv0LPxpTSP4ow/H8lJZfGyLMCH+qv1ro2XOGE/rsDJEYYPWhQ
-        D3jmKWvV2d1/FBDszeLNqQ==
-X-Google-Smtp-Source: ABdhPJwPQ8bhYRoCPDiPVwwo9RBAq8+lRRZzacUL0wjjOUAg8glIn4/s22/EEIfQTI4XfYdqhSP8KQ==
-X-Received: by 2002:a92:bb84:: with SMTP id x4mr99368ilk.177.1594652900880;
-        Mon, 13 Jul 2020 08:08:20 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id e21sm7889088ioe.11.2020.07.13.08.08.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 08:08:20 -0700 (PDT)
-Received: (nullmailer pid 186365 invoked by uid 1000);
-        Mon, 13 Jul 2020 15:08:18 -0000
-Date:   Mon, 13 Jul 2020 09:08:18 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     kishon@ti.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, andriy.shevchenko@intel.com,
-        balbi@kernel.org, cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        yin1.li@intel.com
-Subject: Re: [PATCH v5 1/2] dt-bindings: phy: Add USB PHY support for Intel
- LGM SoC
-Message-ID: <20200713150818.GB184301@bogus>
-References: <20200713085453.7353-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200713085453.7353-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1729940AbgGMPJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:09:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34766 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729782AbgGMPJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 11:09:07 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8A14205CB;
+        Mon, 13 Jul 2020 15:09:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594652947;
+        bh=vngHFPy6JLQna7o2+Dx1IPDqHMOEQth8MnxQOxW04yA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E040T9qhClnKRLJxdVpFYW9R6VpwPxG9f7y42Fa2tHvqsGskw4NuW6j0cd3ObUudq
+         C88NkzK3mA+1rIsiiflU4VV5PwpEa7I2V/YQEyD1t8Tu42WQKdA1ZFog36C6ESpbNV
+         57ZOU5atVZ7mjGB1ufC8p0H5F1tiOPa8sFPjAVqs=
+Date:   Mon, 13 Jul 2020 16:09:02 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        John Stultz <john.stultz@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        freedreno@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 4/7] iommu/arm-smmu: Add a pointer to the attached
+ device to smmu_domain
+Message-ID: <20200713150901.GA3072@willie-the-truck>
+References: <20200626200042.13713-1-jcrouse@codeaurora.org>
+ <20200626200042.13713-5-jcrouse@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200713085453.7353-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+In-Reply-To: <20200626200042.13713-5-jcrouse@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 04:54:52PM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+On Fri, Jun 26, 2020 at 02:00:38PM -0600, Jordan Crouse wrote:
+> Add a link to the pointer to the struct device that is attached to a
+> domain. This makes it easy to get the pointer if it is needed in the
+> implementation specific code.
 > 
-> Add the dt-schema to support USB PHY on Intel LGM SoC
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
 > ---
->  .../devicetree/bindings/phy/intel,lgm-usb-phy.yaml | 53 ++++++++++++++++++++++
->  1 file changed, 53 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/intel,lgm-usb-phy.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/phy/intel,lgm-usb-phy.yaml b/Documentation/devicetree/bindings/phy/intel,lgm-usb-phy.yaml
-> new file mode 100644
-> index 000000000000..0fc76cd23774
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/intel,lgm-usb-phy.yaml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/usb/intel,lgm-usb-phy.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Intel LGM USB PHY Device Tree Bindings
-> +
-> +maintainers:
-> +  - Vadivel Murugan Ramuthevar <vadivel.muruganx.ramuthevar@linux.intel.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: intel,lgm-usb-phy
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    items:
-> +      - description: USB PHY and Host controller reset
-> +      - description: APB BUS reset
-> +      - description: General Hardware reset
-> +
-> +  reset-names:
-> +    items:
-> +      - const: phy
-> +      - const: apb
-> +      - const: phy31
-> +
-> +required:
-> +  - compatible
-> +  - clocks
-> +  - reg
-> +  - resets
-> +  - reset-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    usb_phy: usb_phy@e7e00000 {
-
-usb-phy@...
-
-> +        compatible = "intel,lgm-usb-phy";
-> +        reg = <0xe7e00000 0x10000>;
-> +        clocks = <&cgu0 153>;
-> +        resets = <&rcu 0x70 0x24>,
-> +                 <&rcu 0x70 0x26>,
-> +                 <&rcu 0x70 0x28>;
-> +        reset-names = "phy", "apb", "phy31";
-> +    };
-> -- 
-> 2.11.0
+>  drivers/iommu/arm-smmu.c | 6 ++++--
+>  drivers/iommu/arm-smmu.h | 1 +
+>  2 files changed, 5 insertions(+), 2 deletions(-)
 > 
+> diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+> index 048de2681670..060139452c54 100644
+> --- a/drivers/iommu/arm-smmu.c
+> +++ b/drivers/iommu/arm-smmu.c
+> @@ -668,7 +668,8 @@ static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
+>  }
+>  
+>  static int arm_smmu_init_domain_context(struct iommu_domain *domain,
+> -					struct arm_smmu_device *smmu)
+> +					struct arm_smmu_device *smmu,
+> +					struct device *dev)
+>  {
+>  	int irq, start, ret = 0;
+>  	unsigned long ias, oas;
+> @@ -801,6 +802,7 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
+>  		cfg->asid = cfg->cbndx;
+>  
+>  	smmu_domain->smmu = smmu;
+> +	smmu_domain->dev = dev;
+>  
+>  	pgtbl_cfg = (struct io_pgtable_cfg) {
+>  		.pgsize_bitmap	= smmu->pgsize_bitmap,
+> @@ -1190,7 +1192,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+>  		return ret;
+>  
+>  	/* Ensure that the domain is finalised */
+> -	ret = arm_smmu_init_domain_context(domain, smmu);
+> +	ret = arm_smmu_init_domain_context(domain, smmu, dev);
+>  	if (ret < 0)
+>  		goto rpm_put;
+>  
+> diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
+> index 5f2de20e883b..d33cfe26b2f5 100644
+> --- a/drivers/iommu/arm-smmu.h
+> +++ b/drivers/iommu/arm-smmu.h
+> @@ -345,6 +345,7 @@ struct arm_smmu_domain {
+>  	struct mutex			init_mutex; /* Protects smmu pointer */
+>  	spinlock_t			cb_lock; /* Serialises ATS1* ops and TLB syncs */
+>  	struct iommu_domain		domain;
+> +	struct device			*dev;	/* Device attached to this domain */
+
+This really doesn't feel right to me -- you can generally have multiple
+devices attached to a domain and they can come and go without the domain
+being destroyed. Perhaps you could instead identify the GPU during
+cfg_probe() and squirrel that information away somewhere?
+
+The rest of the series looks ok to me.
+
+Will
