@@ -2,62 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2ECD21DA4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28CF21DA59
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730098AbgGMPk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 11:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
+        id S1729946AbgGMPmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729644AbgGMPk4 (ORCPT
+        with ESMTP id S1729806AbgGMPmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 11:40:56 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99D3C061755;
-        Mon, 13 Jul 2020 08:40:56 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 8887E60C;
-        Mon, 13 Jul 2020 15:40:56 +0000 (UTC)
-Date:   Mon, 13 Jul 2020 09:40:55 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] doc: yama: Swap HTTP for HTTPS and replace dead link
-Message-ID: <20200713094055.2fa4d033@lwn.net>
-In-Reply-To: <202007091141.C008B89EC@keescook>
-References: <202007091141.C008B89EC@keescook>
-Organization: LWN.net
+        Mon, 13 Jul 2020 11:42:49 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B16AC08C5DB
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:42:49 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id u12so10229043qth.12
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o6mVIteS5H22xj7K9FbgllDWoWh0dWKcuZiDimv8WT0=;
+        b=PWuqcgBxjYScsRLGOLnb7Muj06nTih8BeA2wxRUzz65ls/OgusFE+hlPsst9WP7HSl
+         0wbLJmYCzmvh57Itn/lK1AWfozL4MPIcAdPDZV7lupW5RvF3pkuafSA2sQNkM6/hqZtY
+         qQ4NPXtZUw5pXwb1Xj2IPAY8uHSEfhXfEVSEe3sxsvn9hssb/iaxp+EbEo50Ou1k6Vka
+         T0NCu5E/Xs+oZnort4PcU5yEmqjWsr56TC4r9K+kCGtIZehRrxSMXNVk8vg8XHKv4aXi
+         /32B36zBejkNQ6VA+C5FQU9i4t4HBbFH2GYLmR1lUwNIKq7WPl62vAy/VCAvd+aSzn3g
+         R4Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o6mVIteS5H22xj7K9FbgllDWoWh0dWKcuZiDimv8WT0=;
+        b=dMaN8KLHvlTFi4lOAsSx1PJ2J2nUZ+cXx+ZyUjffVvDXm/8gn2FLgZXEPymg99UW/u
+         HULcHS8cE6dTClTyWeIZbNN1XbFA0JjqOGfquh1gfKYnm73/cKnkQmJcIMjJUmwGV0gW
+         HBVbzB4H6JU4VvbeZMGWpZfafENsJylly1Dc+VuewQ+ph/AwUHR194AS1jN4W0hYf4LU
+         i+YV/o0LS/ZW11lSDz3TT9sB34z0cjPsqhPNo1UnJNSqR/M5ZDGEh7ceNaV1C/xcl2Qw
+         ouURFkfmr0LbJJM+SzWjC8doRY6RMypZhrVeN+s6STu5rWoF2upwmkY8RYk8YPsKVpRa
+         A6vQ==
+X-Gm-Message-State: AOAM530Z0XUPICi1dKP8ts23HLLEcF5g1bAAiztfwGWKRivGe2xwFCf0
+        tCRZvv6WJ/lbT+QhLLKxKSMTjQ==
+X-Google-Smtp-Source: ABdhPJxV2KKXGOQ10kOUx+nUwR0+7ahOgBJa7GfDP+fROft5m6+JqIu5v0A9I3+GFGxVzwGxo7V3eQ==
+X-Received: by 2002:ac8:45d1:: with SMTP id e17mr88246364qto.159.1594654968159;
+        Mon, 13 Jul 2020 08:42:48 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id l1sm19806371qtk.18.2020.07.13.08.42.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 08:42:47 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-pm@vger.kernel.org (open list:INTERCONNECT API),
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v2 0/7] Add SM8150 and SM8250 interconnect drivers
+Date:   Mon, 13 Jul 2020 11:41:09 -0400
+Message-Id: <20200713154121.22094-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Jul 2020 11:51:35 -0700
-Kees Cook <keescook@chromium.org> wrote:
+Most of this is generated from downstream dts using a script.
 
-> Replace one dead link for the same person's original presentation on the
-> topic and swap an HTTP URL with HTTPS. While here, linkify the text to
-> make it more readable when rendered.
-> 
-> Link: https://lore.kernel.org/lkml/20200708073346.13177-1-grandmaster@al2klimov.de/
-> Co-developed-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v2:
-> - replace storm.net.nz url (kees)
-> - refactor with descriptive text (kees)
-> v1: https://lore.kernel.org/lkml/20200708073346.13177-1-grandmaster@al2klimov.de/
-> ---
->  Documentation/admin-guide/LSM/Yama.rst | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+There are a couple things I'm still not sure about:
+* When to set keepalive in DEFINE_QBCM macro (set to all false)
+* Size for the reg fields. For the size I just used 0x1000.
 
-Applied, thanks.
+v2: single yaml file for RPMh interconnect bindings, drop display RSC
 
-jon
+Jonathan Marek (7):
+  dt-bindings: interconnect: single yaml file for RPMh interconnect
+    drivers
+  dt-bindings: interconnect: Add Qualcomm SM8150 DT bindings
+  dt-bindings: interconnect: Add Qualcomm SM8250 DT bindings
+  interconnect: qcom: Add SM8150 interconnect provider driver
+  interconnect: qcom: Add SM8250 interconnect provider driver
+  arm64: dts: qcom: sm8150: add interconnect nodes
+  arm64: dts: qcom: sm8250: add interconnect nodes
+
+ .../{qcom,sc7180.yaml => qcom,rpmh.yaml}      |  55 +-
+ .../bindings/interconnect/qcom,sdm845.yaml    |  74 --
+ arch/arm64/boot/dts/qcom/sm8150.dtsi          |  82 +++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi          |  82 +++
+ drivers/interconnect/qcom/Kconfig             |  20 +
+ drivers/interconnect/qcom/Makefile            |   4 +
+ drivers/interconnect/qcom/sm8150.c            | 639 +++++++++++++++++
+ drivers/interconnect/qcom/sm8150.h            | 153 ++++
+ drivers/interconnect/qcom/sm8250.c            | 655 ++++++++++++++++++
+ drivers/interconnect/qcom/sm8250.h            | 163 +++++
+ .../dt-bindings/interconnect/qcom,sm8150.h    | 163 +++++
+ .../dt-bindings/interconnect/qcom,sm8250.h    | 173 +++++
+ 12 files changed, 2186 insertions(+), 77 deletions(-)
+ rename Documentation/devicetree/bindings/interconnect/{qcom,sc7180.yaml => qcom,rpmh.yaml} (56%)
+ delete mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm845.yaml
+ create mode 100644 drivers/interconnect/qcom/sm8150.c
+ create mode 100644 drivers/interconnect/qcom/sm8150.h
+ create mode 100644 drivers/interconnect/qcom/sm8250.c
+ create mode 100644 drivers/interconnect/qcom/sm8250.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,sm8150.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,sm8250.h
+
+-- 
+2.26.1
+
