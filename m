@@ -2,185 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A1D21CCB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7293A21CCBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgGMBCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 21:02:22 -0400
-Received: from mail-eopbgr700043.outbound.protection.outlook.com ([40.107.70.43]:43169
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726291AbgGMBCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 21:02:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nhp/BNkufHMCxpUIy6t/aIl+8wnU3B+Dcq2Di1OnocFjw2q8GBlGGrt+FnO+Bc70Oj/u1/6Uru/ih5WpgwWMbpHCqp6GQZh05++mkyYmc+B+IPo3aLAc9RozS0EcSrjDa05NBbGI/TLnQdv2ENeNDTLa2JbEODz26R456OA1k0PLzchXUPlJ1u97K1BkZkez354SVYo4lXVUxjfbvZMrg8DekzWUMl4HpsSrRxkfnMe4v4a6zKZJmkxj9Eg6KqJ3tPzP0maEbiG4GGJ5RVwNQpocWselzb7V1ciIvR0wwCth5E0aF6EJjFg/aePtmsnAkYakGluDdmgXWBmQXYyYmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4RXym5GdcMdYlUPqs250F52UawgGfJ5MNazCXgGbSvE=;
- b=UwYeMVu8Y0nl8lzL6S+0oy5ht8tLbuEt5wHO50l9btt7xSrfozlI5S5D9reaQ9fY26FNuyN4lPyhL2QNbRXInaNyc5QEpVSylEOrETgUhgRdbBNfJAvn6TYou5YmsV+Vg5S49oCYZf76iL8sEz0nDRF325gvxpqhas1vjWD5wpDAL/l7KWBY8HZ8bhl3jzx/yVVPpkq41fV52vMPMgWx2e1PfMRvZBLf0qvwzmChgqpJvXmohwMWS6ng6IBz2FLBNdR1lk1v8MBgFHcJrJdprzIafUzd1dnd/IYCJpKN13N/f0i/lfOAvaBSDsMALjhFmAxwEoaL7lisDTao20tj+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4RXym5GdcMdYlUPqs250F52UawgGfJ5MNazCXgGbSvE=;
- b=PRBN4Jm0dKQ6I8ifR/JDpAlkvNxubrR6Y1JxYrMiPWyvWS0+pnuZd7Njou3t2sBq1hF+SqN+Os3DTMzjghPU97EUINUnwsDRl5l6gqAcgYUuCVd6Jpz2c54lz9emwKVHYDziSPl2WjTgl3VpGcxh5dfZjJX5X8T67Cn3iiwg/FA=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR12MB1599.namprd12.prod.outlook.com (2603:10b6:301:10::12)
- by MWHPR12MB1600.namprd12.prod.outlook.com (2603:10b6:301:f::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Mon, 13 Jul
- 2020 01:02:19 +0000
-Received: from MWHPR12MB1599.namprd12.prod.outlook.com
- ([fe80::25b9:83b0:4b17:2c63]) by MWHPR12MB1599.namprd12.prod.outlook.com
- ([fe80::25b9:83b0:4b17:2c63%12]) with mapi id 15.20.3174.025; Mon, 13 Jul
- 2020 01:02:18 +0000
-From:   Akshu Agrawal <akshu.agrawal@amd.com>
-To:     akshu.agrawal@amd.com
-Cc:     sboyd@kernel.org, Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 4/5] clk: x86: Support RV architecture
-Date:   Mon, 13 Jul 2020 06:29:52 +0530
-Message-Id: <20200713010001.18976-4-akshu.agrawal@amd.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200713010001.18976-1-akshu.agrawal@amd.com>
-References: <20200713010001.18976-1-akshu.agrawal@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MAXPR0101CA0056.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:e::18) To MWHPR12MB1599.namprd12.prod.outlook.com
- (2603:10b6:301:10::12)
+        id S1727107AbgGMBI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 21:08:26 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:42302 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbgGMBI0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 21:08:26 -0400
+Received: by mail-pl1-f195.google.com with SMTP id q17so4753473pls.9;
+        Sun, 12 Jul 2020 18:08:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ZSKvScJU+wbuSvVor07f0hETNMOnHQlWZsghH5yIHi4=;
+        b=T5jqAsF61TG4b/FpbPk12Csb6JLPJF9C/FP8/PjiVbmlU58w9UM3XqB0RHSr/wqBWT
+         EfMjpsT0Vhe/2qNY8MNZw3eoTxRlZ0AJEjj0iK0A7GbEpN28VGhwEexWVmz9vvkPlzU2
+         Odq435722CgCKRsyr9wJ5aptPXlBioF3MoUPXD7oCTGU6Dr865hG97RNL1kbagbXuqu1
+         H2aqsElPRD0lkGUrpCpjiIstTvQLVxLmfCzMXp1ndwfaISax7KyXZYvlRRL3JKpHfMtW
+         gM15EYL0P7Y5P5fwrDJQo6jhLVFDW9oPupeIYV/3Ckke+AUjBkG+9ZLfQI4LWGv12yJz
+         pyjA==
+X-Gm-Message-State: AOAM532Y41Co3zFXFXTEF/+Bd798HOppvv8cfQO3f3NjumUM/VOS+bZ4
+        wEAfefC0wozId52gKfeTfPI=
+X-Google-Smtp-Source: ABdhPJwvzj8rQ8Y4AlJ4uAaleA/uPu73kNt5y61o1YMnm2fhpdMwIlLWQJSvX+ykqklyX2Bofq8ztw==
+X-Received: by 2002:a17:90a:fd12:: with SMTP id cv18mr18217848pjb.66.1594602505362;
+        Sun, 12 Jul 2020 18:08:25 -0700 (PDT)
+Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id ng12sm13090491pjb.15.2020.07.12.18.08.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Jul 2020 18:08:24 -0700 (PDT)
+Subject: Re: [PATCH v5 0/5] scsi: ufs: Add Host Performance Booster Support
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+References: <SN6PR04MB464097E646395C000C2DCAC3FC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+ <963815509.21593732182531.JavaMail.epsvc@epcpadp2>
+ <231786897.01594251001808.JavaMail.epsvc@epcpadp1>
+ <CGME20200702231936epcms2p81557f83504ef1c1e81bfc81a0143a5b4@epcms2p4>
+ <336371513.41594280882718.JavaMail.epsvc@epcpadp2>
+ <SN6PR04MB464021F98E8EDF7C79D6CB4FFC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <91dcecde-dd0d-c930-7c45-56ba144e748c@acm.org>
+Date:   Sun, 12 Jul 2020 18:08:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from local.mshome.net (122.167.38.75) by MAXPR0101CA0056.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:e::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20 via Frontend Transport; Mon, 13 Jul 2020 01:02:16 +0000
-X-Mailer: git-send-email 2.20.1
-X-Originating-IP: [122.167.38.75]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 8bd550f6-776c-46a1-40d1-08d826c863e7
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1600:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR12MB16008EAC02C8A1B14BCFD462F8600@MWHPR12MB1600.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: deGG4i/RxM0Ql5SNaJbflsxiPyZrfrg/WTBAI3vR7GFyzihNU69I6Y3w5U4JorIW+uc+GU4L04QBTz5ldoAVhu8r3EJPyIJaLpb9uwQWppkTNJ7pCGULWSSyZToZDPrjxWe9F3X0GpOlf8GZ0Nq5xLZ2fKAQGEoZVE38HOW8Dxmnrpw/tjVPuGBUBMzGvFhBWPcFZivDz9to/iJ5TIQiz1bdouMP3VpjRLKAPEOypyQAOS0QAk4MNUAAPalwzjAAQgeBKtvUImX02lLCfxP09zlLLuj++mXv5PZ9bL6/7w44fEkhXGXyqGuKhQ0NuK1Rp0y3Ak/aBAMa7IsfbEJEJw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1599.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(346002)(376002)(396003)(39860400002)(52116002)(478600001)(2906002)(1076003)(316002)(6666004)(34206002)(4326008)(8936002)(6506007)(37006003)(5660300002)(186003)(956004)(83380400001)(2616005)(16526019)(44832011)(6512007)(36756003)(26005)(66556008)(66476007)(86362001)(66946007)(8676002)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: o2rtTkqxj44QJBPPxf0dGapEfhMLZHH1p+8nsMbSxr4MSZysFFeblhcxIYZSYrQCVBDZwb/qGIvakzyRtzp1eR0E8i0Y2i+Zg+QyZz6cqgYvjsPph7qoKd3YtjG9+AoAjVqLkbRiAZFhX63Gbg2rpqBERvGsf7LgwG14JobtPfcwqQ6KEGdZ3G6mc/eiEfAAqNbyBAT8B0/QxaOvryebIVGwN0UynTBs7EKCsqRoAoA54ZtLvb6yIhcXqTvOZhvXhF83SXQZRi+88dguw+kW/quYYxJ0qzUsHECvkpVdHuZFGPicwen8WC2WMG1yYPp2kqTbiaYTgdTylePml7wjaOjFwUsB7ffqC0w6F3TpGPGoJG1I3n20iiuMJ21iKxejynUkQx7B5yNQydrMvvCg/+VChX08xvGoKUyMzFAtS+Wx2W3adFkRLDKflfEKuzaiNAb2IkLxvPb0ejd0y8s4oAEucFgGkzkWaDRmGuDP5lg=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bd550f6-776c-46a1-40d1-08d826c863e7
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1599.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2020 01:02:18.8437
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ecIDYDnpOXfFfOgj6B76hJRl5YTZ65SxgONBYbwgbBicYHYiWxVX75sAlxh9nq8nL3Ma6Su8f/2HY9Id8f6PgQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1600
+In-Reply-To: <SN6PR04MB464021F98E8EDF7C79D6CB4FFC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is minor difference between previous family of SoC and
-the current one. Which is the there is only 48Mh fixed clk.
-There is no mux and no option to select another freq as there in previous.
+On 2020-07-09 01:40, Avri Altman wrote:
+> Bart - how do you want to proceed?
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
----
- drivers/clk/x86/clk-fch.c | 55 ++++++++++++++++++++++++++++-----------
- 1 file changed, 40 insertions(+), 15 deletions(-)
+Hi Avri and Daejun,
 
-diff --git a/drivers/clk/x86/clk-fch.c b/drivers/clk/x86/clk-fch.c
-index b252f0cf0628..a8aac71a3b65 100644
---- a/drivers/clk/x86/clk-fch.c
-+++ b/drivers/clk/x86/clk-fch.c
-@@ -26,6 +26,10 @@
- #define ST_CLK_GATE	3
- #define ST_MAX_CLKS	4
- 
-+#define RV_CLK_48M	0
-+#define RV_CLK_GATE	1
-+#define RV_MAX_CLKS	2
-+
- static const char * const clk_oscout1_parents[] = { "clk48MHz", "clk25MHz" };
- static struct clk_hw *hws[ST_MAX_CLKS];
- 
-@@ -37,23 +41,36 @@ static int fch_clk_probe(struct platform_device *pdev)
- 	if (!fch_data || !fch_data->base)
- 		return -EINVAL;
- 
--	hws[ST_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz", NULL, 0,
--						     48000000);
--	hws[ST_CLK_25M] = clk_hw_register_fixed_rate(NULL, "clk25MHz", NULL, 0,
--						     25000000);
-+	if (!fch_data->is_rv) {
-+		hws[ST_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz",
-+			NULL, 0, 48000000);
-+		hws[ST_CLK_25M] = clk_hw_register_fixed_rate(NULL, "clk25MHz",
-+			NULL, 0, 25000000);
-+
-+		hws[ST_CLK_MUX] = clk_hw_register_mux(NULL, "oscout1_mux",
-+			clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
-+			0, fch_data->base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0,
-+			NULL);
-+
-+		clk_set_parent(hws[ST_CLK_MUX]->clk, hws[ST_CLK_48M]->clk);
- 
--	hws[ST_CLK_MUX] = clk_hw_register_mux(NULL, "oscout1_mux",
--		clk_oscout1_parents, ARRAY_SIZE(clk_oscout1_parents),
--		0, fch_data->base + CLKDRVSTR2, OSCOUT1CLK25MHZ, 3, 0, NULL);
-+		hws[ST_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1",
-+			"oscout1_mux", 0, fch_data->base + MISCCLKCNTL1,
-+			OSCCLKENB, CLK_GATE_SET_TO_DISABLE, NULL);
- 
--	clk_set_parent(hws[ST_CLK_MUX]->clk, hws[ST_CLK_48M]->clk);
-+		devm_clk_hw_register_clkdev(&pdev->dev, hws[ST_CLK_GATE],
-+			"oscout1", NULL);
-+	} else {
-+		hws[RV_CLK_48M] = clk_hw_register_fixed_rate(NULL, "clk48MHz",
-+			NULL, 0, 48000000);
- 
--	hws[ST_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1", "oscout1_mux",
--		0, fch_data->base + MISCCLKCNTL1, OSCCLKENB,
--		CLK_GATE_SET_TO_DISABLE, NULL);
-+		hws[RV_CLK_GATE] = clk_hw_register_gate(NULL, "oscout1",
-+			"clk48MHz", 0, fch_data->base + MISCCLKCNTL1,
-+			OSCCLKENB, CLK_GATE_SET_TO_DISABLE, NULL);
- 
--	devm_clk_hw_register_clkdev(&pdev->dev, hws[ST_CLK_GATE], "oscout1",
--				    NULL);
-+		devm_clk_hw_register_clkdev(&pdev->dev, hws[RV_CLK_GATE],
-+			"oscout1", NULL);
-+	}
- 
- 	return 0;
- }
-@@ -61,9 +78,17 @@ static int fch_clk_probe(struct platform_device *pdev)
- static int fch_clk_remove(struct platform_device *pdev)
- {
- 	int i;
-+	struct fch_clk_data *fch_data;
-+
-+	fch_data = dev_get_platdata(&pdev->dev);
- 
--	for (i = 0; i < ST_MAX_CLKS; i++)
--		clk_hw_unregister(hws[i]);
-+	if (!fch_data->is_rv) {
-+		for (i = 0; i < ST_MAX_CLKS; i++)
-+			clk_hw_unregister(hws[i]);
-+	} else {
-+		for (i = 0; i < RV_MAX_CLKS; i++)
-+			clk_hw_unregister(hws[i]);
-+	}
- 	return 0;
- }
- 
--- 
-2.20.1
+As far as I can see none of the five patches have Reviewed-by tags yet. I
+think that Martin expects formal reviews for this patch series from one or
+more reviewers who are not colleagues of the author of this patch series.
 
+Note: recently I have been more busy than usual, hence the delayed reply.
+
+Bart.
