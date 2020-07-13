@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FB921E06C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7ED21E070
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgGMTEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 15:04:48 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:33299 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbgGMTEs (ORCPT
+        id S1726788AbgGMTFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 15:05:45 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:46095 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726321AbgGMTFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 15:04:48 -0400
-Received: by mail-io1-f67.google.com with SMTP id d18so14711768ion.0;
-        Mon, 13 Jul 2020 12:04:47 -0700 (PDT)
+        Mon, 13 Jul 2020 15:05:45 -0400
+Received: by mail-il1-f193.google.com with SMTP id p15so4531258ilh.13;
+        Mon, 13 Jul 2020 12:05:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9Y5DNiwAmGhm3HKzfpsHejLrXSZAto6ZRm11P2NdgXA=;
-        b=sTcnz3v+zPwlxWhmeMydjHN73LWV0xRpNdlaj0PmBt6ulMy9V3QdnGnz46UnRtZNOL
-         PFq4GVP1ikJy+3MgkgHe9dGZsNO/wUNsVuB6HDmQhVwPgbu/y88c0q7f//uxxqIi26wX
-         vbQfLXNKcoyDFcbzCNTSdwGwDPriq8oFLOMsERrYCF9RVvakD1WOuwTeyw1+/QL4cgT3
-         9w2yHO9YQSeU8VE8PGMA7A21dKQqELq6OvuPezmlMyaq00TtJBIXX6wrGT2hK3fNOVMm
-         AX7yVnlIFdR1wNGSE67j0DI5UcFAWl+b8ELovdUQVzjPGpZSD9XHXzl52itw/Jnn+QmP
-         anlg==
-X-Gm-Message-State: AOAM530T1CtUUg2ai31mxetSh6Z97y3urGQismLkV/GcDot3I0B8NfXk
-        zYdyCivpfl7qDZ5rqAw3zg==
-X-Google-Smtp-Source: ABdhPJzCZ2ShnGuQdGALu+LVtZuGO9ZYNT0pBJbHbB9eI23ej5zGDsQEo3GuSkzG87PksqB5cCwIQA==
-X-Received: by 2002:a6b:ce01:: with SMTP id p1mr1199862iob.19.1594667087573;
-        Mon, 13 Jul 2020 12:04:47 -0700 (PDT)
+        bh=KrvcQ3XXk1KzrgC6nT6teiKkOx2wvAzWo3+7umnWakI=;
+        b=Ezjx3XcsktzLE4tXb/dpKq8DtswUPJY5SBdG4LKQPHMdXvasLnddjw2SgNSq3ePfIq
+         UHDJLvtFxwsSHV0wK2HWD4KPpBzw1Bp0T7INIuCRV+ukWodcZkQ7brgH9S/hU+SzIaCh
+         wRcFYfH4lN5ou1covnr7ivzQ3YWUvTWy4z4BsvGGEEEARxCYTmgqaBeTF5orvieELpuo
+         48CU3vKHs06SmBo+cseO8+smkrKPZCeDVrjPzM9Nni6it0O/pyMvmiRqObGFw/BKpmE9
+         VyCtzOkbp5jTB4+LecOGW50zE6y2OpdC2X9RpRSWVP2ROxvb0wRBXMgeIYv54aIIWz/Y
+         1ofw==
+X-Gm-Message-State: AOAM531hWL2LjH4+8uVq6hY0HoNW0mSeYI5gsv4/kgfiHhehpuoPmrsI
+        9FJ08ViVmWhYSof0fuJ9+Q==
+X-Google-Smtp-Source: ABdhPJzI5P2l/De91UCc2ApLOJll02gpiZ1KuuMFwDXuiZHOiQC9FRAd9TMA2QCnxrkIHZs5vlNOqA==
+X-Received: by 2002:a92:bb0b:: with SMTP id w11mr1278077ili.238.1594667144105;
+        Mon, 13 Jul 2020 12:05:44 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id y8sm8720000ilq.21.2020.07.13.12.04.46
+        by smtp.gmail.com with ESMTPSA id c9sm8627870ilm.57.2020.07.13.12.05.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 12:04:47 -0700 (PDT)
-Received: (nullmailer pid 549846 invoked by uid 1000);
-        Mon, 13 Jul 2020 19:04:46 -0000
-Date:   Mon, 13 Jul 2020 13:04:46 -0600
+        Mon, 13 Jul 2020 12:05:43 -0700 (PDT)
+Received: (nullmailer pid 551183 invoked by uid 1000);
+        Mon, 13 Jul 2020 19:05:42 -0000
+Date:   Mon, 13 Jul 2020 13:05:42 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
-        devicetree@vger.kernel.org, Jonathan Bakker <xc-racer2@live.ca>,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v3 4/6] dt-bindings: power: supply: max17040: Add
- maxim,rcomp
-Message-ID: <20200713190446.GA549816@bogus>
-References: <20200624155633.3557401-1-iskren.chernev@gmail.com>
- <20200624155633.3557401-5-iskren.chernev@gmail.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-iio@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Hartmut Knaack <knaack.h@gmx.de>, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: iio: bmc150_magn: Document and fix
+ missing compatibles
+Message-ID: <20200713190542.GA551135@bogus>
+References: <20200629100537.20365-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200624155633.3557401-5-iskren.chernev@gmail.com>
+In-Reply-To: <20200629100537.20365-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Jun 2020 18:56:31 +0300, Iskren Chernev wrote:
-> To compensate for the battery chemistry and operating conditions the
-> chips support a compensation value. Specify one or two byte compensation
-> via the maxim,rcomp byte array.
+On Mon, 29 Jun 2020 12:05:36 +0200, Krzysztof Kozlowski wrote:
+> The driver supports also BMC156B and BMM150B.  Add existing compatibles
+> marking the BMM150B one as deprecated (due to redundant suffix "_magn"
+> because the device unlike two others is a magnetometer only).  Introduce
+> a new, proper compatible for the deprecated one.
 > 
-> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
 > ---
->  .../devicetree/bindings/power/supply/max17040_battery.txt   | 6 ++++++
->  1 file changed, 6 insertions(+)
+> 
+> Changes since v2:
+> 1. Add compatible only for bmm150.
+> 
+> Changes since v1:
+> 1. Mark old compatibles as deprecated, add new one.
+> ---
+>  .../devicetree/bindings/iio/magnetometer/bmc150_magn.txt    | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
