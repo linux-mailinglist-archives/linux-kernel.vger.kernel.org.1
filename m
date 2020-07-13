@@ -2,170 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D507A21E1C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 22:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5841921E1CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 22:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726675AbgGMU53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 16:57:29 -0400
-Received: from mga07.intel.com ([134.134.136.100]:49428 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726325AbgGMU53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 16:57:29 -0400
-IronPort-SDR: o3A608ekfjNc5dPH9f0I2Sck/Ef41jagYkUDwBwAsuXkrcaj+D884EHZqyBSy5XNAw0LP17rTH
- 4hDfmTOTaD1w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="213545938"
-X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
-   d="scan'208";a="213545938"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 13:57:25 -0700
-IronPort-SDR: IlhdM+NGDZW1h2RjwG/6dq1Ukn48CdCpzdoF83Xno+A3i0qrsSZf5KveIrUGaUZymvThVIgqFR
- JV0GNMhmHEZg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
-   d="scan'208";a="268467769"
-Received: from bcope-mobl.ger.corp.intel.com (HELO localhost) ([10.249.32.223])
-  by fmsmga007.fm.intel.com with ESMTP; 13 Jul 2020 13:57:20 -0700
-Date:   Mon, 13 Jul 2020 23:57:19 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Ard Biesheuvel <ardb@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Petr Vandrovec <petr@vmware.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        linux-integrity@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Jones <pjones@redhat.com>
-Subject: Re: [PATCH v2] tpm: Require that all digests are present in
- TCG_PCR_EVENT2 structures
-Message-ID: <20200713205719.GA1419951@linux.intel.com>
-References: <20200710192955.23333-1-tyhicks@linux.microsoft.com>
+        id S1726762AbgGMU6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 16:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726325AbgGMU6b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 16:58:31 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60859C061755;
+        Mon, 13 Jul 2020 13:58:31 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 347F8BC07E;
+        Mon, 13 Jul 2020 20:58:27 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] watchdog: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 22:58:21 +0200
+Message-Id: <20200713205821.38223-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710192955.23333-1-tyhicks@linux.microsoft.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 02:29:55PM -0500, Tyler Hicks wrote:
-> Require that the TCG_PCR_EVENT2.digests.count value strictly matches the
-> value of TCG_EfiSpecIdEvent.numberOfAlgorithms in the event field of the
-> TCG_PCClientPCREvent event log header. Also require that
-> TCG_EfiSpecIdEvent.numberOfAlgorithms is non-zero.
-> 
-> The TCG PC Client Platform Firmware Profile Specification section 9.1
-> (Family "2.0", Level 00 Revision 1.04) states:
-> 
->  For each Hash algorithm enumerated in the TCG_PCClientPCREvent entry,
->  there SHALL be a corresponding digest in all TCG_PCR_EVENT2 structures.
->  Note: This includes EV_NO_ACTION events which do not extend the PCR.
-> 
-> Section 9.4.5.1 provides this description of
-> TCG_EfiSpecIdEvent.numberOfAlgorithms:
-> 
->  The number of Hash algorithms in the digestSizes field. This field MUST
->  be set to a value of 0x01 or greater.
-> 
-> Enforce these restrictions, as required by the above specification, in
-> order to better identify and ignore invalid sequences of bytes at the
-> end of an otherwise valid TPM2 event log. Firmware doesn't always have
-> the means necessary to inform the kernel of the actual event log size so
-> the kernel's event log parsing code should be stringent when parsing the
-> event log for resiliency against firmware bugs. This is true, for
-> example, when firmware passes the event log to the kernel via a reserved
-> memory region described in device tree.
-> 
-> POWER and some ARM systems use the "linux,sml-base" and "linux,sml-size"
-> device tree properties to describe the memory region used to pass the
-> event log from firmware to the kernel. Unfortunately, the
-> "linux,sml-size" property describes the size of the entire reserved
-> memory region rather than the size of the event long within the memory
-> region and the event log format does not include information describing
-> the size of the event log.
-> 
-> tpm_read_log_of(), in drivers/char/tpm/eventlog/of.c, is where the
-> "linux,sml-size" property is used. At the end of that function,
-> log->bios_event_log_end is pointing at the end of the reserved memory
-> region. That's typically 0x10000 bytes offset from "linux,sml-base",
-> depending on what's defined in the device tree source.
-> 
-> The firmware event log only fills a portion of those 0x10000 bytes and
-> the rest of the memory region should be zeroed out by firmware. Even in
-> the case of a properly zeroed bytes in the remainder of the memory
-> region, the only thing allowing the kernel's event log parser to detect
-> the end of the event log is the following conditional in
-> __calc_tpm2_event_size():
-> 
->         if (event_type == 0 && event_field->event_size == 0)
->                 size = 0;
-> 
-> If that wasn't there, __calc_tpm2_event_size() would think that a 16
-> byte sequence of zeroes, following an otherwise valid event log, was
-> a valid event.
-> 
-> However, problems can occur if a single bit is set in the offset
-> corresponding to either the TCG_PCR_EVENT2.eventType or
-> TCG_PCR_EVENT2.eventSize fields, after the last valid event log entry.
-> This could confuse the parser into thinking that an additional entry is
-> present in the event log and exposing this invalid entry to userspace in
-> the /sys/kernel/security/tpm0/binary_bios_measurements file. Such
-> problems have been seen if firmware does not fully zero the memory
-> region upon a warm reboot.
-> 
-> This patch significantly raises the bar on how difficult it is for
-> stale/invalid memory to confuse the kernel's event log parser but
-> there's still, ultimately, a reliance on firmware to properly initialize
-> the remainder of the memory region reserved for the event log as the
-> parser cannot be expected to detect a stale but otherwise properly
-> formatted firmware event log entry.
-> 
-> Fixes: fd5c78694f3f ("tpm: fix handling of the TPM 2.0 event logs")
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> ---
-> 
-> * v2
->   - Rebase the patch on top of the TPM next branch, commit 786a2aa281f4
->     ("Revert commit e918e570415c ("tpm_tis: Remove the HID IFX0102")")
->   - Expand on the technical reasoning for needing strict event
->     validation in the commit message
->   - Improve the inline comment explaining the need for detecting
->     malformed events
-> 
->  include/linux/tpm_eventlog.h | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/tpm_eventlog.h b/include/linux/tpm_eventlog.h
-> index 64356b199e94..739ba9a03ec1 100644
-> --- a/include/linux/tpm_eventlog.h
-> +++ b/include/linux/tpm_eventlog.h
-> @@ -211,9 +211,16 @@ static inline int __calc_tpm2_event_size(struct tcg_pcr_event2_head *event,
->  
->  	efispecid = (struct tcg_efi_specid_event_head *)event_header->event;
->  
-> -	/* Check if event is malformed. */
-> +	/*
-> +	 * Perform validation of the event in order to identify malformed
-> +	 * events. This function may be asked to parse arbitrary byte sequences
-> +	 * immediately following a valid event log. The caller expects this
-> +	 * function to recognize that the byte sequence is not a valid event
-> +	 * and to return an event size of 0.
-> +	 */
->  	if (memcmp(efispecid->signature, TCG_SPECID_SIG,
-> -		   sizeof(TCG_SPECID_SIG)) || count > efispecid->num_algs) {
-> +		   sizeof(TCG_SPECID_SIG)) ||
-> +	    !efispecid->num_algs || count != efispecid->num_algs) {
->  		size = 0;
->  		goto out;
->  	}
-> -- 
-> 2.25.1
-> 
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
+
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
 
 
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+ Documentation/devicetree/bindings/watchdog/davinci-wdt.txt | 4 ++--
+ drivers/watchdog/Kconfig                                   | 2 +-
+ drivers/watchdog/dw_wdt.c                                  | 2 +-
+ drivers/watchdog/nv_tco.c                                  | 2 +-
+ drivers/watchdog/nv_tco.h                                  | 2 +-
+ drivers/watchdog/sp5100_tco.c                              | 2 +-
+ 6 files changed, 7 insertions(+), 7 deletions(-)
 
-/Jarkko
+diff --git a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt b/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
+index e60b9a13bdcb..aa10b8ec36e2 100644
+--- a/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
++++ b/Documentation/devicetree/bindings/watchdog/davinci-wdt.txt
+@@ -11,8 +11,8 @@ Optional properties:
+ 	   See clock-bindings.txt
+ 
+ Documentation:
+-Davinci DM646x - http://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
+-Keystone - http://www.ti.com/lit/ug/sprugv5a/sprugv5a.pdf
++Davinci DM646x - https://www.ti.com/lit/ug/spruer5b/spruer5b.pdf
++Keystone - https://www.ti.com/lit/ug/sprugv5a/sprugv5a.pdf
+ 
+ Examples:
+ 
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index 4f4687c46d38..ab7aad5a1e69 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -1027,7 +1027,7 @@ config ADVANTECH_WDT
+ 	  If you are configuring a Linux kernel for the Advantech single-board
+ 	  computer, say `Y' here to support its built-in watchdog timer
+ 	  feature. More information can be found at
+-	  <http://www.advantech.com.tw/products/>
++	  <https://www.advantech.com.tw/products/>
+ 
+ config ALIM1535_WDT
+ 	tristate "ALi M1535 PMU Watchdog Timer"
+diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
+index fba21de2bbad..57bbc1434341 100644
+--- a/drivers/watchdog/dw_wdt.c
++++ b/drivers/watchdog/dw_wdt.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+  * Copyright 2010-2011 Picochip Ltd., Jamie Iles
+- * http://www.picochip.com
++ * https://www.picochip.com
+  *
+  * This file implements a driver for the Synopsys DesignWare watchdog device
+  * in the many subsystems. The watchdog has 16 different timeout periods
+diff --git a/drivers/watchdog/nv_tco.c b/drivers/watchdog/nv_tco.c
+index d7a560e348d5..179fb9aa3cf4 100644
+--- a/drivers/watchdog/nv_tco.c
++++ b/drivers/watchdog/nv_tco.c
+@@ -7,7 +7,7 @@
+  *	Based off i8xx_tco.c:
+  *	(c) Copyright 2000 kernel concepts <nils@kernelconcepts.de>, All Rights
+  *	Reserved.
+- *				http://www.kernelconcepts.de
++ *				https://www.kernelconcepts.de
+  *
+  *	TCO timer driver for NV chipsets
+  *	based on softdog.c by Alan Cox <alan@redhat.com>
+diff --git a/drivers/watchdog/nv_tco.h b/drivers/watchdog/nv_tco.h
+index d325e528010f..c65f82588386 100644
+--- a/drivers/watchdog/nv_tco.h
++++ b/drivers/watchdog/nv_tco.h
+@@ -9,7 +9,7 @@
+  *
+  *	(c) Copyright 2000 kernel concepts <nils@kernelconcepts.de>, All Rights
+  *	Reserved.
+- *				http://www.kernelconcepts.de
++ *				https://www.kernelconcepts.de
+  *
+  *	Neither kernel concepts nor Nils Faerber admit liability nor provide
+  *	warranty for any of this software. This material is provided
+diff --git a/drivers/watchdog/sp5100_tco.c b/drivers/watchdog/sp5100_tco.c
+index 93bd302ae7c5..85e9664318c9 100644
+--- a/drivers/watchdog/sp5100_tco.c
++++ b/drivers/watchdog/sp5100_tco.c
+@@ -7,7 +7,7 @@
+  *	Based on i8xx_tco.c:
+  *	(c) Copyright 2000 kernel concepts <nils@kernelconcepts.de>, All Rights
+  *	Reserved.
+- *				http://www.kernelconcepts.de
++ *				https://www.kernelconcepts.de
+  *
+  *	See AMD Publication 43009 "AMD SB700/710/750 Register Reference Guide",
+  *	    AMD Publication 45482 "AMD SB800-Series Southbridges Register
+-- 
+2.27.0
+
