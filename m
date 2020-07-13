@@ -2,92 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA54A21CFC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D1621CFC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729270AbgGMGgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58750 "EHLO mail.kernel.org"
+        id S1728520AbgGMGiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:38:50 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:47236 "EHLO smtp.al2klimov.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725969AbgGMGgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:36:20 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E42C20720;
-        Mon, 13 Jul 2020 06:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594622179;
-        bh=UT7xCgBr7XTK0g96nMID4egnSzqW6jseo+avRrShlUc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u8k47lCLPPTQIhGZPWfJiSk2yvJ8A4JPnhgOjfHlKjK0sxYQ0ohoHESYQlkoLy9Nl
-         p0wwkt6LSxfmr5qx/r6Tt/QII9QRTS/sEVclyFWTfZd0B+m4FvulQfvyFltSc8dUtk
-         P7MZBLAdxg1EOkClpqPtKp8PUfYyXx11frYsrh7o=
-Date:   Mon, 13 Jul 2020 14:36:15 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Chris Healy <cphealy@gmail.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Stefan Agner <stefan@agner.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux ARM <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH] ARM: dts: vf610-zii-ssmb-dtu: Pass "no-sdio"/"no-sd"
- properties
-Message-ID: <20200713063611.GF12113@dragon>
-References: <CAFXsbZoovWBavRFaEWEFcSkVjNx26BkKOkhcutNfzL8MrHwMTw@mail.gmail.com>
+        id S1725969AbgGMGit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 02:38:49 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 01BA0BC0D1;
+        Mon, 13 Jul 2020 06:38:46 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     vgupta@synopsys.com, arnd@arndb.de, palmer@dabbelt.com,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] ARC: io.h: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 08:38:40 +0200
+Message-Id: <20200713063840.31570-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFXsbZoovWBavRFaEWEFcSkVjNx26BkKOkhcutNfzL8MrHwMTw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 04, 2020 at 08:16:10PM -0700, Chris Healy wrote:
-> esdhc0 is connected to an eMMC, so it is safe to pass the "no-sdio"/"no-sd"
-> properties.
-> 
-> esdhc1 is wired to a standard SD socket, so pass the "no-sdio" property.
-> 
-> Signed-off-by: Chris Healy <cphealy@gmail.com>
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-I would suggest something like below for patch subject.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-  ARM: dts: vf610-zii-ssmb-dtu: Add no-sdio/no-sd properties
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-Also the patch doesn't apply to my branch.
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
 
-Shawn
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
 
-> ---
->  arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts
-> b/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts
-> index 0bb3dcff0b79..7d4ddfb6b5b5 100644
-> --- a/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts
-> +++ b/arch/arm/boot/dts/vf610-zii-ssmb-dtu.dts
-> @@ -81,6 +81,8 @@
->      non-removable;
->      no-1-8-v;
->      keep-power-in-suspend;
-> +    no-sdio;
-> +    no-sd;
->      status = "okay";
->  };
-> 
-> @@ -88,6 +90,7 @@
->      pinctrl-names = "default";
->      pinctrl-0 = <&pinctrl_esdhc1>;
->      bus-width = <4>;
-> +    no-sdio;
->      status = "okay";
->  };
-> 
-> -- 
-> 2.21.3
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ arch/arc/include/asm/io.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arc/include/asm/io.h b/arch/arc/include/asm/io.h
+index 8f777d6441a5..cb381371a196 100644
+--- a/arch/arc/include/asm/io.h
++++ b/arch/arc/include/asm/io.h
+@@ -195,7 +195,7 @@ __raw_writesx(32, l)
+  *	<readl MMIO "status" reg>
+  *	<LD [DMA buffer]>
+  *
+- * http://lkml.kernel.org/r/20150622133656.GG1583@arm.com
++ * https://lkml.kernel.org/r/20150622133656.GG1583@arm.com
+  */
+ #define readb(c)		({ u8  __v = readb_relaxed(c); __iormb(); __v; })
+ #define readw(c)		({ u16 __v = readw_relaxed(c); __iormb(); __v; })
+@@ -218,7 +218,7 @@ __raw_writesx(32, l)
+  * To provide the typical device register semantics of fixed endian,
+  * swap the byte order for Big Endian
+  *
+- * http://lkml.kernel.org/r/201603100845.30602.arnd@arndb.de
++ * https://lkml.kernel.org/r/201603100845.30602.arnd@arndb.de
+  */
+ #define readb_relaxed(c)	__raw_readb(c)
+ #define readw_relaxed(c) ({ u16 __r = le16_to_cpu((__force __le16) \
+-- 
+2.27.0
+
