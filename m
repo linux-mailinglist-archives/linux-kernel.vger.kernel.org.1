@@ -2,105 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B60321D8EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2A021D8EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730066AbgGMOtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
+        id S1730108AbgGMOtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729649AbgGMOtf (ORCPT
+        with ESMTP id S1729997AbgGMOtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:49:35 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71288C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:35 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 17so13431381wmo.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:35 -0700 (PDT)
+        Mon, 13 Jul 2020 10:49:36 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA72C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:36 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id g75so13576941wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1vzOm+Wxxl66itaxak6yGc68arwrZOiyNRd2hReQUvM=;
-        b=bxE70Uh4AXsVWAKo2T/XG7xcyZ+wYk/UE1Oj1K9VheDTBBbntgw6I9aN6Ryi7YN7Hd
-         6A/lzM75vKOg0Rg/hp2HH+KfpCdQWtpMbivGS+KZiryf00AIWPO5b4ml+6JbAUxG4YDX
-         bKrQytCckcWMV4+BR6JXl8+eE2NhiSSgRXwLROGl0lLVHpbu+AR5OUTFkQlfEKH4lHRL
-         ne2dSkONSTP6gT8rCuD6mxOyMe6Vfag456jJXcvCWCSf2EI8wUPnMbKKxGTmvqKCumMj
-         a5PJIUWXaAnsLpHnPMb45J+SuCWO8KLCHYkQt5Q+CiIltc44bST5yeme+9ecSrDDB8GY
-         zBng==
+        bh=BDQo0AmW/wRqsDL2beQj5GgZo90S5+xYNYVa82ZvelY=;
+        b=GoRSkBxS/tnbpEU8KW8mepOxP/TVgSZbKxeDQfb1oEnG4csHx4qgPKtw1Dpch1UzMu
+         6g6z3ry4DE6sORZjwGWlJ1wuPVGeu0GlPBSTfXy2Ikx2dr3U54PkfYnhJnY8jAi1ZE1N
+         j+Oeczc9kTqHziWxpVqMo6x/pdMF9PFXB/K6zJh9dQ5CmyyPITOmzo+win3AbA2SmG/A
+         rKbhrZ1lpGQwKRiKrKyxkIJmluCboFzEbi02fEDhmuaZQWcQ67BOwHPpTljpSLqQTeq7
+         si2L97FkbLl1Q10+xLOD2nS+7mOQeM/04ztAslVRuYKXnSSaoTpulqjXSZhXR4/L93j0
+         ZDeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1vzOm+Wxxl66itaxak6yGc68arwrZOiyNRd2hReQUvM=;
-        b=mh5cnj/P8cdMgS0jr9RtcLaNBPJ7aBCplj+FkNK8dZi4F8lFXCsH1tUocHpENDdm+s
-         EXELIFgjEz5zch1Ut6JPdnQBJQRl+61XnDiuq4R+jhRouUZpRIElmLT1cxLjeMZSOvk+
-         S1aX0si5C1k+GdnV//CSmVb9P18HrlM/Loi4qvUBdbbYYosJKIWnIT0mUa6S4m273oSe
-         Qao1mwB4KuU9q5pwJJhWE8VXi6ki6foDxmLRfroore5swQcqhYrejxEzPVhGDx/sFGFh
-         p5Ai3URmRLFu71Q/lnaaDFqX3LrUUJQDqvwsHS3MA/XPuxqLHnx1HIzCvpqxEDJJm4uS
-         dg4A==
-X-Gm-Message-State: AOAM532Zr795744sQjJClPnYFTI471h/MgnvWzzmU5Ol8oHmMHTtPr5V
-        0CBKwp35ZspRCR8gP2GK18ZiXw==
-X-Google-Smtp-Source: ABdhPJxw1sWGNmpSzrakQy8c0E8EiVET1wI4zlCcDuNthed/Tk9AxB5PCD73LubEHuDLzgs51Mw6zQ==
-X-Received: by 2002:a1c:2095:: with SMTP id g143mr267721wmg.113.1594651774136;
-        Mon, 13 Jul 2020 07:49:34 -0700 (PDT)
+        bh=BDQo0AmW/wRqsDL2beQj5GgZo90S5+xYNYVa82ZvelY=;
+        b=ix3sYX5IHC2MLvVt/gMtULVzVqIJFGD9lrxahzufpNRvqhYv/TwXPw+lQFjKvKlBQv
+         aJ7hehAWM1HtZO/SM4eIKgTg1iAkNkxhANu0GaYu+EvDWlNkx/nYQ1Hx7KEQZM//pknU
+         ujV/NNh4TkqUPLHCWMDZfocvlhpSnZrDH/LGm8U2V+BXSOIij0rXAU5zZ0K77DFmuHnb
+         skvNpUE/ZkVTyoVP50mS9LNgOBxNQ5gUX7NlYH9a6H25Tczsw2kYNIcvj+3uMZVtHBYI
+         JrrSLTKErITb2Qcxn/owEVADcCvl1tolzMfXMKOldxARPYuXOB3MH3vGkTyc0OsuYd3j
+         9h6g==
+X-Gm-Message-State: AOAM532r9WXhJQij90knUHG0XE01bcqvWGWwjd9zPs+6v3EJtxLRe4EM
+        SMnaSUQwEkzgzBVRiZaLsxL5ww==
+X-Google-Smtp-Source: ABdhPJyxjPXyrITvonbGSDpgcAIA2SxE1HKmSbCG/9Vl4N/MI4NmSZ7my4z4TL/3FhV7XwfdjkOjzA==
+X-Received: by 2002:a1c:3546:: with SMTP id c67mr329431wma.102.1594651775115;
+        Mon, 13 Jul 2020 07:49:35 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.6])
-        by smtp.gmail.com with ESMTPSA id o29sm26207756wra.5.2020.07.13.07.49.33
+        by smtp.gmail.com with ESMTPSA id o29sm26207756wra.5.2020.07.13.07.49.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 07:49:33 -0700 (PDT)
+        Mon, 13 Jul 2020 07:49:34 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     linus.walleij@linaro.org
 Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        David Liu <liuwei@actions-semi.com>
-Subject: [PATCH 01/25] pinctrl: actions: pinctrl-owl: Supply missing 'struct owl_pinctrl' attribute descriptions
-Date:   Mon, 13 Jul 2020 15:49:06 +0100
-Message-Id: <20200713144930.1034632-2-lee.jones@linaro.org>
+        Barry Song <baohua@kernel.org>
+Subject: [PATCH 02/25] pinctrl: sirf: pinctrl-atlas7: Fix a bunch of documentation misdemeanours
+Date:   Mon, 13 Jul 2020 15:49:07 +0100
+Message-Id: <20200713144930.1034632-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200713144930.1034632-1-lee.jones@linaro.org>
 References: <20200713144930.1034632-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From ill formatted kerneldoc, to incomplete *and* incorrect struct headers,
+through to formatting issues and missing attribute descriptions.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/pinctrl/actions/pinctrl-owl.c:52: warning: Function parameter or member 'clk' not described in 'owl_pinctrl'
- drivers/pinctrl/actions/pinctrl-owl.c:52: warning: Function parameter or member 'irq_chip' not described in 'owl_pinctrl'
- drivers/pinctrl/actions/pinctrl-owl.c:52: warning: Function parameter or member 'num_irq' not described in 'owl_pinctrl'
- drivers/pinctrl/actions/pinctrl-owl.c:52: warning: Function parameter or member 'irq' not described in 'owl_pinctrl'
+ drivers/pinctrl/sirf/pinctrl-atlas7.c:197: warning: Function parameter or member 'id' not described in 'atlas7_pad_config'
+ drivers/pinctrl/sirf/pinctrl-atlas7.c:221: warning: Function parameter or member 'func' not described in 'atlas7_pad_status'
+ drivers/pinctrl/sirf/pinctrl-atlas7.c:221: warning: Function parameter or member 'pull' not described in 'atlas7_pad_status'
+ drivers/pinctrl/sirf/pinctrl-atlas7.c:221: warning: Function parameter or member 'dstr' not described in 'atlas7_pad_status'
+ drivers/pinctrl/sirf/pinctrl-atlas7.c:221: warning: Function parameter or member 'reserved' not described in 'atlas7_pad_status'
+ drivers/pinctrl/sirf/pinctrl-atlas7.c:359: warning: Cannot understand  * @dev: a pointer back to containing device
+ on line 359 - I thought it was a doc line
+ drivers/pinctrl/sirf/pinctrl-atlas7.c:4794: warning: Function parameter or member 'pad_type' not described in 'atlas7_pull_info'
+ drivers/pinctrl/sirf/pinctrl-atlas7.c:4917: warning: Function parameter or member 'reserved' not described in 'atlas7_ds_info'
+ drivers/pinctrl/sirf/pinctrl-atlas7.c:5617: warning: Function parameter or member 'a7gc' not described in 'atlas7_gpio_to_bank'
+ drivers/pinctrl/sirf/pinctrl-atlas7.c:5617: warning: Function parameter or member 'gpio' not described in 'atlas7_gpio_to_bank'
 
-Cc: "Andreas Färber" <afaerber@suse.de>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: David Liu <liuwei@actions-semi.com>
+Cc: Barry Song <baohua@kernel.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/pinctrl/actions/pinctrl-owl.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/pinctrl/sirf/pinctrl-atlas7.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/pinctrl/actions/pinctrl-owl.c b/drivers/pinctrl/actions/pinctrl-owl.c
-index 5a0c8e87aa7cd..7efdfb4f3e9ba 100644
---- a/drivers/pinctrl/actions/pinctrl-owl.c
-+++ b/drivers/pinctrl/actions/pinctrl-owl.c
-@@ -35,8 +35,12 @@
-  * @pctrldev: pinctrl handle
-  * @chip: gpio chip
-  * @lock: spinlock to protect registers
-+ * @clk: clock control
-  * @soc: reference to soc_data
-  * @base: pinctrl register base address
-+ * @irq_chip: IRQ chip information
-+ * @num_irq: number of possible interrupts
-+ * @irq: interrupt numbers
+diff --git a/drivers/pinctrl/sirf/pinctrl-atlas7.c b/drivers/pinctrl/sirf/pinctrl-atlas7.c
+index 50df9e0844142..e54a6e3cafd23 100644
+--- a/drivers/pinctrl/sirf/pinctrl-atlas7.c
++++ b/drivers/pinctrl/sirf/pinctrl-atlas7.c
+@@ -169,7 +169,7 @@ struct dt_params {
+ 
+ /**
+  * struct atlas7_pad_conf - Atlas7 Pad Configuration
+- * @id			The ID of this Pad.
++ * @id:			The ID of this Pad.
+  * @type:		The type of this Pad.
+  * @mux_reg:		The mux register offset.
+  *			This register contains the mux.
+@@ -210,7 +210,7 @@ struct atlas7_pad_config {
+ 		.ad_ctrl_bit = adb,				\
+ 	}
+ 
+-/**
++/*
+  * struct atlas7_pad_status - Atlas7 Pad status
   */
- struct owl_pinctrl {
+ struct atlas7_pad_status {
+@@ -355,10 +355,6 @@ struct atlas7_gpio_chip {
+ 	struct atlas7_gpio_bank banks[];
+ };
+ 
+-/**
+- * @dev: a pointer back to containing device
+- * @virtbase: the offset to the controller in virtual memory
+- */
+ struct atlas7_pmx {
  	struct device *dev;
+ 	struct pinctrl_dev *pctl;
+@@ -376,7 +372,7 @@ struct atlas7_pmx {
+  * refer to A7DA IO Summary - CS-314158-DD-4E.xls
+  */
+ 
+-/*Pads in IOC RTC & TOP */
++/* Pads in IOC RTC & TOP */
+ static const struct pinctrl_pin_desc atlas7_ioc_pads[] = {
+ 	/* RTC PADs */
+ 	PINCTRL_PIN(0, "rtc_gpio_0"),
+@@ -4781,10 +4777,10 @@ struct map_data {
+ 
+ /**
+  * struct atlas7_pull_info - Atlas7 Pad pull info
+- * @type:The type of this Pad.
+- * @mask:The mas value of this pin's pull bits.
+- * @v2s: The map of pull register value to pull status.
+- * @s2v: The map of pull status to pull register value.
++ * @pad_type:	The type of this Pad.
++ * @mask:	The mas value of this pin's pull bits.
++ * @v2s:	The map of pull register value to pull status.
++ * @s2v:	The map of pull status to pull register value.
+  */
+ struct atlas7_pull_info {
+ 	u8 pad_type;
+@@ -4908,6 +4904,7 @@ static const struct atlas7_ds_ma_info atlas7_ma2ds_map[] = {
+  * @type:		The type of this Pad.
+  * @mask:		The mask value of this pin's pull bits.
+  * @imval:		The immediate value of drives trength register.
++ * @reserved:		Reserved space
+  */
+ struct atlas7_ds_info {
+ 	u8 type;
+@@ -5609,7 +5606,7 @@ static int __init atlas7_pinmux_init(void)
+ arch_initcall(atlas7_pinmux_init);
+ 
+ 
+-/**
++/*
+  * The Following is GPIO Code
+  */
+ static inline struct
 -- 
 2.25.1
 
