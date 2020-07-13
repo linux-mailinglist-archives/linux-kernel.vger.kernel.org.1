@@ -2,240 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B8921D89C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBFD21D8A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730105AbgGMOdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58378 "EHLO
+        id S1729992AbgGMOeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729659AbgGMOdI (ORCPT
+        with ESMTP id S1729780AbgGMOeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:33:08 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9850C061755;
-        Mon, 13 Jul 2020 07:33:08 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id s26so6086584pfm.4;
-        Mon, 13 Jul 2020 07:33:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=64N8ajKPQ1vBpOMBvGwdnl++9di4450VUjADg8oTM3Q=;
-        b=gnu3o+e28aD/jJDGN8pZ4qsyWOFZWl/4dnKr/JDTjGBvNghPIyJ1MEvjQwD9Bl8mcJ
-         I8ZSHSqYG1wGbmXJQGRT5qv8kEFdN1Q6nOC00BkydiG4r0rTVfVc+8HHRoXhmGmCkWrV
-         aSSBFarnQkhg06U4dAgPCKbQyE5+ncptD2VZtHF/ezs3NF2sRNKhOzCpeLItUKZxUSy1
-         M/bNeSG5A6MnpTlsaj+sWTsNOh0Azvmq4m45tBN8Ys2Xvt3cnGjSj/NJBk0co3Gy4dmz
-         weHJDl8bBm3u3P8G7r6MKISQ+ur5/rhmJzaYBOIDF39NlyrdHEaBNw+lXaNo1EIKD+jG
-         YHaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=64N8ajKPQ1vBpOMBvGwdnl++9di4450VUjADg8oTM3Q=;
-        b=CupwbIugOTMhlkqi3cYpEi6lLQyokkaZMwQZ/Jm/SAoBQSYINqNKF4mgWYuN8fEBK3
-         Nd2MEsfkyADWnWc3SQ2c2kaFFVirZrmFzoEDr7VjoGBv405rd3gyewFVBGg+41XQQM8m
-         zRSm/IXhiiT/oS++BCRoC9p5gfx6le2PEIb6Xe38XGMUNUF2MCkqwmGeut3BLJERVxi0
-         xKZ748gku2gli83s+OfeEpLJnCMUUaMO+g5KkXdDLSTr9wt62C0Oi68f9CWU4l3eWhTE
-         Nw5HeJEhibr80Zv/c3FlBkBnyfOHGEXT23vP1sTM3naMNGb40oLK0QXFTcFvz7Qn3HZP
-         uO2w==
-X-Gm-Message-State: AOAM5317ZGE037TzJ1saVckkpHPwl0qUON7+yg0mjnuVix+8SSPdcHjH
-        vACxWkC4yJJiNISE/Vl6fUY=
-X-Google-Smtp-Source: ABdhPJxHThv3eBgMu7kxLLJoEQ+q6EDrylQALkR9gGd7yJ6o7hKCm8Aw7TMjtHr0F8UJgMMYQbeJ1g==
-X-Received: by 2002:a62:640a:: with SMTP id y10mr186933pfb.190.1594650788159;
-        Mon, 13 Jul 2020 07:33:08 -0700 (PDT)
-Received: from blackclown ([103.88.82.220])
-        by smtp.gmail.com with ESMTPSA id p10sm13608743pgn.6.2020.07.13.07.33.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 13 Jul 2020 07:33:06 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 20:02:53 +0530
-From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     gregkh@linuxfoundation.org, abbotti@mev.co.uk,
-        hsweeten@visionengravers.com, christophe.jaillet@wanadoo.fr
-Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH v2] staging: comedi: s626: Remove pci-dma-compat wrapper APIs.
-Message-ID: <20200713143253.GA14953@blackclown>
+        Mon, 13 Jul 2020 10:34:11 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78414C061755;
+        Mon, 13 Jul 2020 07:34:11 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id C7D2260C;
+        Mon, 13 Jul 2020 14:34:09 +0000 (UTC)
+Date:   Mon, 13 Jul 2020 08:34:08 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     tony.luck@intel.com, fenghua.yu@intel.com,
+        linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ia64: Replace HTTP links with HTTPS ones
+Message-ID: <20200713083408.38154746@lwn.net>
+In-Reply-To: <20200713141036.34841-1-grandmaster@al2klimov.de>
+References: <20200713141036.34841-1-grandmaster@al2klimov.de>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 13 Jul 2020 16:10:36 +0200
+"Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
 
---6c2NcOVqGQ03X4Wi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+> index 1fa2fe2ef053..f21f121a8f42 100644
+> --- a/arch/ia64/Kconfig
+> +++ b/arch/ia64/Kconfig
+> @@ -223,7 +223,7 @@ config SMP
+>  	  will run faster if you say N here.
+>  
+>  	  See also the SMP-HOWTO available at
+> -	  <http://www.tldp.org/docs.html#howto>.
+> +	  <https://www.tldp.org/docs.html#howto>.
 
-The legacy API wrappers in include/linux/pci-dma-compat.h
-should go away as it creates unnecessary midlayering
-for include/linux/dma-mapping.h APIs, instead use dma-mapping.h
-APIs directly.
+No such HOWTO exists; far better to just delete this sentence entirely.
 
-The patch has been generated with the coccinelle script below
-and compile-tested.
-
-@@@@
-- PCI_DMA_BIDIRECTIONAL
-+ DMA_BIDIRECTIONAL
-
-@@@@
-- PCI_DMA_TODEVICE
-+ DMA_TO_DEVICE
-
-@@@@
-- PCI_DMA_FROMDEVICE
-+ DMA_FROM_DEVICE
-
-@@@@
-- PCI_DMA_NONE
-+ DMA_NONE
-
-@@ expression E1, E2, E3; @@
-- pci_alloc_consistent(E1, E2, E3)
-+ dma_alloc_coherent(&E1->dev, E2, E3, GFP_ATOMIC)
-
-@@ expression E1, E2, E3; @@
-- pci_zalloc_consistent(E1, E2, E3)
-+ dma_alloc_coherent(&E1->dev, E2, E3, GFP_ATOMIC)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_free_consistent(E1, E2, E3, E4)
-+ dma_free_coherent(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_map_single(E1, E2, E3, E4)
-+ dma_map_single(&E1->dev, E2, E3, (enum dma_data_direction)E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_unmap_single(E1, E2, E3, E4)
-+ dma_unmap_single(&E1->dev, E2, E3, (enum dma_data_direction)E4)
-
-@@ expression E1, E2, E3, E4, E5; @@
-- pci_map_page(E1, E2, E3, E4, E5)
-+ dma_map_page(&E1->dev, E2, E3, E4, (enum dma_data_direction)E5)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_unmap_page(E1, E2, E3, E4)
-+ dma_unmap_page(&E1->dev, E2, E3, (enum dma_data_direction)E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_map_sg(E1, E2, E3, E4)
-+ dma_map_sg(&E1->dev, E2, E3, (enum dma_data_direction)E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_unmap_sg(E1, E2, E3, E4)
-+ dma_unmap_sg(&E1->dev, E2, E3, (enum dma_data_direction)E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_single_for_cpu(E1, E2, E3, E4)
-+ dma_sync_single_for_cpu(&E1->dev, E2, E3, (enum dma_data_direction)E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_single_for_device(E1, E2, E3, E4)
-+ dma_sync_single_for_device(&E1->dev, E2, E3, (enum dma_data_direction)E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_sg_for_cpu(E1, E2, E3, E4)
-+ dma_sync_sg_for_cpu(&E1->dev, E2, E3, (enum dma_data_direction)E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_sg_for_device(E1, E2, E3, E4)
-+ dma_sync_sg_for_device(&E1->dev, E2, E3, (enum dma_data_direction)E4)
-
-@@ expression E1, E2; @@
-- pci_dma_mapping_error(E1, E2)
-+ dma_mapping_error(&E1->dev, E2)
-
-@@ expression E1, E2; @@
-- pci_set_consistent_dma_mask(E1, E2)
-+ dma_set_coherent_mask(&E1->dev, E2)
-
-@@ expression E1, E2; @@
-- pci_set_dma_mask(E1, E2)
-+ dma_set_mask(&E1->dev, E2)
-
-Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
----
-Changes:
-	v2: Converted the GFP_ATOMIC flag to GFP_KERNEL to suit for the
-	context. On reviewer's advise.
-
- drivers/staging/comedi/drivers/s626.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/staging/comedi/drivers/s626.c b/drivers/staging/comedi=
-/drivers/s626.c
-index 084a8e7b9fc2..e7aba937d896 100644
---- a/drivers/staging/comedi/drivers/s626.c
-+++ b/drivers/staging/comedi/drivers/s626.c
-@@ -2130,13 +2130,15 @@ static int s626_allocate_dma_buffers(struct comedi_=
-device *dev)
- 	void *addr;
- 	dma_addr_t appdma;
-=20
--	addr =3D pci_alloc_consistent(pcidev, S626_DMABUF_SIZE, &appdma);
-+	addr =3D dma_alloc_coherent(&pcidev->dev, S626_DMABUF_SIZE, &appdma,
-+				  GFP_KERNEL);
- 	if (!addr)
- 		return -ENOMEM;
- 	devpriv->ana_buf.logical_base =3D addr;
- 	devpriv->ana_buf.physical_base =3D appdma;
-=20
--	addr =3D pci_alloc_consistent(pcidev, S626_DMABUF_SIZE, &appdma);
-+	addr =3D dma_alloc_coherent(&pcidev->dev, S626_DMABUF_SIZE, &appdma,
-+				  GFP_KERNEL);
- 	if (!addr)
- 		return -ENOMEM;
- 	devpriv->rps_buf.logical_base =3D addr;
-@@ -2154,13 +2156,13 @@ static void s626_free_dma_buffers(struct comedi_dev=
-ice *dev)
- 		return;
-=20
- 	if (devpriv->rps_buf.logical_base)
--		pci_free_consistent(pcidev, S626_DMABUF_SIZE,
--				    devpriv->rps_buf.logical_base,
--				    devpriv->rps_buf.physical_base);
-+		dma_free_coherent(&pcidev->dev, S626_DMABUF_SIZE,
-+				  devpriv->rps_buf.logical_base,
-+				  devpriv->rps_buf.physical_base);
- 	if (devpriv->ana_buf.logical_base)
--		pci_free_consistent(pcidev, S626_DMABUF_SIZE,
--				    devpriv->ana_buf.logical_base,
--				    devpriv->ana_buf.physical_base);
-+		dma_free_coherent(&pcidev->dev, S626_DMABUF_SIZE,
-+				  devpriv->ana_buf.logical_base,
-+				  devpriv->ana_buf.physical_base);
- }
-=20
- static int s626_initialize(struct comedi_device *dev)
---=20
-2.17.1
-
-
---6c2NcOVqGQ03X4Wi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8McIcACgkQ+gRsbIfe
-747WIQ/7BdADpPXhYh4IdHYtyRfgR/Kma0OpFegNzOM2kJ5I5c9VX0g90U2ZQCVS
-JYO/OgeJDFcj3fdX6JnN2cTTh5UItDsQeh0m35KXqUk1F2AxyPb63DyweF15z53U
-sQA9w/o6xgTgcjTpUI83QyllrVbJ0gwYvN59nTenZYPE0j2lvkbnEURDjaziFrkt
-z2TQfpVoxNCgGYdkO310R5qFpEaJj/pVtx1ZENI+WPYD0gQ8ywSDyhdN5IBX6RhZ
-vqjv/A6LnbBuRg7A9JwmR4eJa9l4DIAfom4rJjk4t2KDHLz2sbNbsPS/G2xPhCVY
-cqxqLVqRkWbTdgs8wmov2BAZDV2ZIAGA3jhLz1Ug/oMxBAeUgGSevwTTBcoQfXkq
-wwMW8lJ58htd7Fiv96Eti+rzPz0CQRZvOF8zKiQIllAqcInm7LcoooKK8JGREvI8
-PVrRk8Qq7XW+FwQP+RVDnLoJp7YIAWa7vpaKgWZR6cKs/cWAbyhUorn8KLT8qRx1
-LGVsR0RVP5IQj1U60h8hlpN0Z09/nfBMMLand81mjOQzFl2KD30z0g+A4n0Lcsei
-Kfdnez8/h75g+r109BrfCEv/LZWBjTPlkO4rVpcEv2pxlyOXXogIxjezcRxNG3cY
-5aQQo6vfWUVPCVTXOhSeh5hM3p7W53F3B0l5o9VypIOTQ9pcmME=
-=fF19
------END PGP SIGNATURE-----
-
---6c2NcOVqGQ03X4Wi--
+jon
