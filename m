@@ -2,57 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A947421E086
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4332021E08A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgGMTMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 15:12:31 -0400
-Received: from a8-71.smtp-out.amazonses.com ([54.240.8.71]:50386 "EHLO
-        a8-71.smtp-out.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726339AbgGMTMb (ORCPT
+        id S1726845AbgGMTNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 15:13:18 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:57892 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726582AbgGMTNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 15:12:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=224i4yxa5dv7c2xz3womw6peuasteono; d=amazonses.com; t=1594667549;
-        h=Reply-To:From:Subject:Date:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-ID:Feedback-ID;
-        bh=/qnvchjnt2H9q7cec01rn/bDvx95KhhHpIKHbQaU6q4=;
-        b=OAmFblEzkeLZXzOEuj6WJSLuaUatP4wfQKpDfSvB7sH95aN9uVERVWXBT2KHmi01
-        KmcY36APR+gMeivrstUThQcVnpV1qv9YSejUmzy04zTYZZVXTHmILEO0zl3bZ/sbFB7
-        +igdtn9nuFA/tkoTGrwi/E7VFBQf344xbu6og9r0=
-Reply-To: <kweisowusu@hotmail.com>
-From:   "Mr kweis owusu" <greg@hewgill.com>
-Subject: Re WE HAVE GOLD DUST AND BAR FOR SALE LOOKING FOR RELIABLE BUYER
-Date:   Mon, 13 Jul 2020 19:12:29 +0000
+        Mon, 13 Jul 2020 15:13:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594667597; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=8fx4I85o6Wf3cmctscltFFb3YOaN1s6FZjMVuu5Dadc=; b=qqRsA0sMHKXDgjjlvd2WyKoDqgGEOYKBCgCs0UW9c4BD4oNj6hMdtxvM8irMees11XZlQsUC
+ px9/SSAzpAm1kbncc7A86VcduaoASSyMsFhm9vRr3bON5RfDOKe0ueAuU51Op+ofIrPwogCe
+ G7+f6oZAntpuSRe22/1qI4brsRE=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f0cb24b75eeb235f6b9860a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 13 Jul 2020 19:13:15
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 493AEC43391; Mon, 13 Jul 2020 19:13:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C4B6FC433C8;
+        Mon, 13 Jul 2020 19:13:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C4B6FC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 13 Jul 2020 13:13:10 -0600
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        freedreno@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [Freedreno] [PATCH] iommu/arm-smmu: Add a init_context_bank
+ implementation hook
+Message-ID: <20200713191310.GD3815@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Will Deacon <will@kernel.org>,
+        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        freedreno@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200611223656.4724-1-jcrouse@codeaurora.org>
+ <20200713151123.GB3072@willie-the-truck>
+ <20200713170032.GH21059@jcrouse1-lnx.qualcomm.com>
+ <20200713190331.GA3444@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <010001734997c3f2-70be1941-bcba-422b-b45e-e21e82304fcf-000000@email.amazonses.com>
-X-SES-Outgoing: 2020.07.13-54.240.8.71
-Feedback-ID: 1.us-east-1.630JBX467boNS2mTWuMRWd/bBfEMz/cSI0K2UDbIfus=:AmazonSES
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713190331.GA3444@willie-the-truck>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Sir
+On Mon, Jul 13, 2020 at 08:03:32PM +0100, Will Deacon wrote:
+> On Mon, Jul 13, 2020 at 11:00:32AM -0600, Jordan Crouse wrote:
+> > On Mon, Jul 13, 2020 at 04:11:23PM +0100, Will Deacon wrote:
+> > > On Thu, Jun 11, 2020 at 04:36:56PM -0600, Jordan Crouse wrote:
+> > > > Add a new implementation hook to allow the implementation specific code
+> > > > to tweek the context bank configuration just before it gets written.
+> > > > The first user will be the Adreno GPU implementation to turn on
+> > > > SCTLR.HUPCF to ensure that a page fault doesn't terminating pending
+> > > > transactions. Doing so could hang the GPU if one of the terminated
+> > > > transactions is a CP read.
+> > > > 
+> > > > This depends on the arm-smmu adreno SMMU implementation [1].
+> > > > 
+> > > > [1] https://patchwork.kernel.org/patch/11600943/
+> > > > 
+> > > > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> > > > ---
+> > > > 
+> > > >  drivers/iommu/arm-smmu-qcom.c | 13 +++++++++++++
+> > > >  drivers/iommu/arm-smmu.c      | 28 +++++++++++++---------------
+> > > >  drivers/iommu/arm-smmu.h      | 11 +++++++++++
+> > > >  3 files changed, 37 insertions(+), 15 deletions(-)
+> > > 
+> > > This looks straightforward enough, but I don't want to merge this without
+> > > a user and Sai's series has open questions afaict.
+> > 
+> > Not sure what you mean by a user in this context?
+> > Are you referring to https://patchwork.kernel.org/patch/11628541/?
+> 
+> Right, this post was just a single patch in isolation, whereas it was
+> reposted over at:
+> 
+> https://lore.kernel.org/r/cdcc6a1c95a84e774790389dc8b3b7feeee490dc.1593344119.git.saiprakash.ranjan@codeaurora.org
+> 
+> so I'll ignore this one. Sorry, I'm just really struggling to keep track
+> of what is targetting 5.9, and I don't have tonnes of time to sift through
+> the backlog of duplicate postings :(
 
-WE HAVE GOLD DUST AND BAR FOR SALE LOOKING FOR RELIABLE BUYER
-WORLDWIDE. YOU CAN HELP TO CONNECT US WITH ANY BUYER AND TAKE
-YOUR
-COMMISSION AS AGENT. We have 800 kilogrammes gold dust and gold
-for sale now.follows: Commodity:Gold
-Form: Alluvial Dust Quality: 22+ Carat (94%) Price: 28,000.00$US
-per
-kilogram Origin: Ghana Deleterious
+Yeah, that is our fault. There are too many cooks in the kitchen.
 
-Yours faithfully
+We need to pick either system cache or split pagetable and serialize
+the other on top of it to get the impl code going and then build from there. 
+This particular patch can happily hang out in the background until the rest is
+resolved.
 
-Mr kweis owusu
-Email...owusukweis1@outlook.com ,
-my whatsAPP ONLY,,, +233547336751
+Jordan
+
+> Will
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
