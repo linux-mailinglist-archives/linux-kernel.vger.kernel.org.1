@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181E521CFA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E7721CF00
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 07:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729264AbgGMG2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:28:35 -0400
-Received: from twhmllg4.macronix.com ([211.75.127.132]:10347 "EHLO
-        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgGMG2e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:28:34 -0400
-Received: from TWHMLLG4.macronix.com (localhost [127.0.0.2] (may be forged))
-        by TWHMLLG4.macronix.com with ESMTP id 06D5nlTk014805
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 13:49:47 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
-        by TWHMLLG4.macronix.com with ESMTP id 06D5ngOb014751;
-        Mon, 13 Jul 2020 13:49:42 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
-        by Forcepoint Email with ESMTP id C0180E87A54F503C5AB1;
-        Mon, 13 Jul 2020 13:49:42 +0800 (CST)
-In-Reply-To: <1590737775-4798-2-git-send-email-masonccyang@mxic.com.tw>
-References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw> <1590737775-4798-2-git-send-email-masonccyang@mxic.com.tw>
-To:     ycllin@mxic.com.tw
-Cc:     boris.brezillon@collabora.com, broonie@kernel.org,
-        juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        matthias.bgg@gmail.com, miquel.raynal@bootlin.com, p.yadav@ti.com,
-        richard@nod.at, tudor.ambarus@microchip.com, vigneshr@ti.com
-Subject: Re: [PATCH v4 1/7] mtd: spi-nor: sfdp: get octal mode maximum speed from
- BFPT
+        id S1728341AbgGMFuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 01:50:08 -0400
+Received: from mga07.intel.com ([134.134.136.100]:29538 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725804AbgGMFuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 01:50:08 -0400
+IronPort-SDR: JthMtGqQswJy9r80Jp7eXbc4jFX4oxKXYlB2sKgJrzeNNLWr7RVCHlAjqae1xaIrCt5CfrjWI2
+ jrzPZJTFBCeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9680"; a="213400818"
+X-IronPort-AV: E=Sophos;i="5.75,346,1589266800"; 
+   d="scan'208";a="213400818"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2020 22:50:07 -0700
+IronPort-SDR: gvlq76t3+7qCNocMnaC4XiuGc3FehCzMlX/qS7rGtw0QJXh731jIvSMoVW9sOsSriB2V9UnT+/
+ 0X8NqiRRZnbw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,346,1589266800"; 
+   d="scan'208";a="307333756"
+Received: from lgrunert-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.52.195])
+  by fmsmga004.fm.intel.com with ESMTP; 12 Jul 2020 22:49:56 -0700
+Date:   Mon, 13 Jul 2020 08:49:55 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, Alexandre Ghiti <alex@ghiti.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, hch@lst.de
+Subject: Re: [PATCH RFC] kprobes: Remove MODULES dependency
+Message-ID: <20200713054955.GC956284@linux.intel.com>
+References: <20200709234521.194005-1-jarkko.sakkinen@linux.intel.com>
+ <20200710193257.4eeb19e9cd042d99cbca7f9a@kernel.org>
+ <20200710113238.GH4800@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-KeepSent: 6CD9DC0F:A413B514-482585A4:001FE90A;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF6CD9DC0F.A413B514-ON482585A4.001FE90A-482585A4.0020044A@mxic.com.tw>
-From:   masonccyang@mxic.com.tw
-Date:   Mon, 13 Jul 2020 13:49:42 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2020/07/13 PM 01:49:42,
-        Serialize complete at 2020/07/13 PM 01:49:42
-Content-Type: text/plain; charset="US-ASCII"
-X-MAIL: TWHMLLG4.macronix.com 06D5ngOb014751
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710113238.GH4800@hirez.programming.kicks-ass.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-+ YC Lin in loop,
-
+On Fri, Jul 10, 2020 at 01:32:38PM +0200, Peter Zijlstra wrote:
+> On Fri, Jul 10, 2020 at 07:32:57PM +0900, Masami Hiramatsu wrote:
+> > > -	page = module_alloc(PAGE_SIZE);
+> > > +	page = vmalloc(PAGE_SIZE);
+> > 
+> > No, you can not use vmalloc here. The reason why we use module_alloc()
+> > is to allocate the executable memory for trampoline code.
+> > So, you need to use vmalloc_exec() instead.
 > 
-> Subject
+> vmalloc_exec() would be broken too, also hch recently got rid of that
+> thing.
 > 
-> [PATCH v4 1/7] mtd: spi-nor: sfdp: get octal mode maximum speed from 
-BFPT
+> module_alloc() really is the only sane choice here.
 > 
-> Get maximum operation speed of device in octal mode from
-> BFPT 20th DWORD.
-> 
-> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
-> ---
+> We should make module_alloc() unconditionally available, and maybe even
+> rename it to text_alloc().
 
+Thanks for the remarks.
 
-CONFIDENTIALITY NOTE:
+The current module_alloc looks like this:
 
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
+void * __weak module_alloc(unsigned long size)
+{
+	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+			GFP_KERNEL, PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS,
+			NUMA_NO_NODE, __builtin_return_address(0));
+}
 
-Macronix International Co., Ltd.
+What if I create inline functions for text_alloc() and text_memfree() and
+convert this function as:
 
-=====================================================================
+void * __weak module_alloc(unsigned long size)
+{
+	return text_alloc(size);
+}
 
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+/Jarkko
