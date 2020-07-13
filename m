@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEB621D925
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A31021D920
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730335AbgGMOvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
+        id S1730337AbgGMOu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730122AbgGMOtm (ORCPT
+        with ESMTP id S1730130AbgGMOtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:49:42 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA035C08C5DE
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:41 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z2so16885366wrp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:41 -0700 (PDT)
+        Mon, 13 Jul 2020 10:49:43 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB36C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:43 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id o2so13447509wmh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:49:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=P+J7h3HQX+/joqPOy6WiQHR4eToAn/yJ8zMEtEk80iA=;
-        b=DbeFOb5vGhFBYRRXUN3KuTiXpQyQb3lNhA1qOhQUiHC1bngSe4WmjRro0MewmO5SvA
-         nU2LN9gEPVX+pqlbP3P/6gx85OWfPOTlSSL5eIOSiqO+xx8m+3sk/8jDl1P5ToG6v4iV
-         xzohAIXFSKqEnzj8P8sAjTkMJDk7vXufjDAJNitdG7U7ZqCNMd1cw71tgP5dsF4+neFo
-         4QGFwMEkoZgQreEWsEAO1Apoc2zj4HTbRKtE03gaHTRxV/xqxVbhULD+La1zvby6h47N
-         q6x3zcpwTLs4SEtqV+P488sD/Q7iBq7XP+vpVTEANGL4+8Bk9dQJGqkYc5Ttqy1ae81V
-         zmcA==
+        bh=we+FYdI1lkoYeqfH+hTSe6pNVLsfmTg5CRQP3bOvglU=;
+        b=U1WN0X53vbT4MvhLNRle/Pi49aoyXp8l/FZ9qbfpELXVGRvwteyYQ59YIS581Rx0Xp
+         q5UQZNPMwm4gbhy2sGnmyUhu+w/WSyDy8SZwq5gc7YFHp11qt2IevOUpEE0bd15DH/8G
+         F0tLllXkjBOGT94L/jRw4tRXmh6xUXZ42RV3KnfYe23GHPr8WB7Izy+DlVxJwv3uNcH3
+         spPTiORGerSbhn1gcD3+8ZhgKGlr3WTLewuQPjCmNoxXAWdMLet04UicbcIPSh9F7Dh8
+         3s3nrgW8efZiHQaPyILOHhsm0gTtGvlZ75SUX8Oby7yTHrd4vKHUhLfTND2frhv/Mv0y
+         EjZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=P+J7h3HQX+/joqPOy6WiQHR4eToAn/yJ8zMEtEk80iA=;
-        b=GnVyPOBKMw4+2hhEJg8b7mX6/yzRveKuMapSbLepH1qgKoZA5UR/XqXq+z8oRP0JZ6
-         Z24K0D34+1/86VnwmB77SBtt+N/YPdeSAm1NBnQb+ZHsLlGutjvpwaGtYOEMSIrUToXj
-         OZ+0t/9Ov8uCrnwUzKtToTcw2tCfCWi3cbYMOVuixAZmM+r33x+D0QyorhV98b+6v9dv
-         7XGcIba0SaOH050jm3Fj6da0ylcDhEr3UCY/N/jGkP7LBj3v1FKbGcuVe5exI38VXUY0
-         app1KFoHA4J4utUSJavjY+msJw/qZhCMRxChHezpt+oBftaPMHOvJ7tnT6N92x2X/oBL
-         GsCA==
-X-Gm-Message-State: AOAM532qzQHdgpit3UfTosJg5q0zHqV1MBT3KznbxzXUKtaB7/zYwkQx
-        f5PQB0nypbnNqRfujMg7ZT+2Ew==
-X-Google-Smtp-Source: ABdhPJynb3r4L6mscx+7FfoIIg3IVDr+bEskwUShaCmWgKsXhKMf81Y2wb/k1/OuQoXOJOxjXBXLpg==
-X-Received: by 2002:adf:e3c5:: with SMTP id k5mr80764064wrm.121.1594651780552;
-        Mon, 13 Jul 2020 07:49:40 -0700 (PDT)
+        bh=we+FYdI1lkoYeqfH+hTSe6pNVLsfmTg5CRQP3bOvglU=;
+        b=T6n7ieFeJSGHmu827vSLEx7dsi3oegDAXcj7p8996RQ6YwTU6sVUNVcEb1j/eT5lrm
+         XxlL+zxGCACa8PiYCPlj6PL/oYEpwO85FkpLokj7PeCqZdlLmBUrs6bxmnUeDg6wqNl4
+         QSRoX42l3n7MRf8i7O9JbM+LXTTBEpEaXjCITYN7uTMztwrffVAMIvy++FHV4DIVVOwB
+         1PAhnVI+9mRC/GogYk6LfzULF19spD/nISdOooQEv+Chr9tBE36UmIwljpdL2t+KgXmk
+         3W13xTO/qxVqfHj3bg4y8YHeV7EUomc/ulz+iYV2qg0jjwHk6dHyngV6pIoVyL0/k/UJ
+         CvMA==
+X-Gm-Message-State: AOAM530SicOekFkiiM4R1CgXvH7ZWJNOtrPzcBA2AD1t3GaPdI9VffOE
+        Frs/H/Mk7unbpbmPlVStfzbUqg==
+X-Google-Smtp-Source: ABdhPJxoVsuUxdjQrc3CM3WbousZGi/1/+jQn4P+0A7iaqIru6LA4EJm04rEqpNRn1DujBpLMkOpjw==
+X-Received: by 2002:a1c:c242:: with SMTP id s63mr311154wmf.146.1594651781752;
+        Mon, 13 Jul 2020 07:49:41 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.6])
-        by smtp.gmail.com with ESMTPSA id o29sm26207756wra.5.2020.07.13.07.49.39
+        by smtp.gmail.com with ESMTPSA id o29sm26207756wra.5.2020.07.13.07.49.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 07:49:40 -0700 (PDT)
+        Mon, 13 Jul 2020 07:49:41 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     linus.walleij@linaro.org
 Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
         Tomasz Figa <tomasz.figa@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Heiko Stuebner <heiko@sntech.de>,
         linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 07/25] pinctrl: samsung: pinctrl-s3c24xx: Fix formatting issues
-Date:   Mon, 13 Jul 2020 15:49:12 +0100
-Message-Id: <20200713144930.1034632-8-lee.jones@linaro.org>
+Subject: [PATCH 08/25] pinctrl: samsung: pinctrl-s3c64xx: Fix formatting issues
+Date:   Mon, 13 Jul 2020 15:49:13 +0100
+Message-Id: <20200713144930.1034632-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200713144930.1034632-1-lee.jones@linaro.org>
 References: <20200713144930.1034632-1-lee.jones@linaro.org>
@@ -71,50 +69,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc struct titles must be followed by whitespace.  Also attributes
-need to be in the format '@.*: ' else the checker gets confused.
+Kerneldoc struct titles must be followed by whitespace else the
+checker gets confused.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/pinctrl/samsung/pinctrl-s3c24xx.c:100: warning: cannot understand function prototype: 'struct s3c24xx_eint_domain_data '
+ drivers/pinctrl/samsung/pinctrl-s3c64xx.c:212: warning: cannot understand function prototype: 'struct s3c64xx_eint0_domain_data '
 
-Cc: Kukjin Kim <kgene@kernel.org>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
 Cc: Tomasz Figa <tomasz.figa@gmail.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
 Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Heiko Stuebner <heiko@sntech.de>
 Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/pinctrl/samsung/pinctrl-s3c24xx.c | 6 +++---
+ drivers/pinctrl/samsung/pinctrl-s3c64xx.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/samsung/pinctrl-s3c24xx.c b/drivers/pinctrl/samsung/pinctrl-s3c24xx.c
-index 9bd0a3de101dd..5e24838a582f5 100644
---- a/drivers/pinctrl/samsung/pinctrl-s3c24xx.c
-+++ b/drivers/pinctrl/samsung/pinctrl-s3c24xx.c
-@@ -80,7 +80,7 @@ static const struct samsung_pin_bank_type bank_type_2bit = {
+diff --git a/drivers/pinctrl/samsung/pinctrl-s3c64xx.c b/drivers/pinctrl/samsung/pinctrl-s3c64xx.c
+index f97f8179f2b1b..b8166e3fe4cef 100644
+--- a/drivers/pinctrl/samsung/pinctrl-s3c64xx.c
++++ b/drivers/pinctrl/samsung/pinctrl-s3c64xx.c
+@@ -193,7 +193,7 @@ static const struct samsung_pin_bank_type bank_type_2bit_alive = {
  	}
  
  /**
-- * struct s3c24xx_eint_data: EINT common data
-+ * struct s3c24xx_eint_data - EINT common data
+- * struct s3c64xx_eint0_data: EINT0 common data
++ * struct s3c64xx_eint0_data - EINT0 common data
   * @drvdata: pin controller driver data
-  * @domains: IRQ domains of particular EINT interrupts
-  * @parents: mapped parent irqs in the main interrupt controller
-@@ -92,10 +92,10 @@ struct s3c24xx_eint_data {
+  * @domains: IRQ domains of particular EINT0 interrupts
+  * @pins: pin offsets inside of banks of particular EINT0 interrupts
+@@ -205,7 +205,7 @@ struct s3c64xx_eint0_data {
  };
  
  /**
-- * struct s3c24xx_eint_domain_data: per irq-domain data
-+ * struct s3c24xx_eint_domain_data - per irq-domain data
+- * struct s3c64xx_eint0_domain_data: EINT0 per-domain data
++ * struct s3c64xx_eint0_domain_data - EINT0 per-domain data
   * @bank: pin bank related to the domain
-  * @eint_data: common data
-- * eint0_3_parent_only: live eints 0-3 only in the main intc
-+ * @eint0_3_parent_only: live eints 0-3 only in the main intc
+  * @eints: EINT0 interrupts related to the domain
   */
- struct s3c24xx_eint_domain_data {
- 	struct samsung_pin_bank *bank;
+@@ -215,7 +215,7 @@ struct s3c64xx_eint0_domain_data {
+ };
+ 
+ /**
+- * struct s3c64xx_eint_gpio_data: GPIO EINT data
++ * struct s3c64xx_eint_gpio_data - GPIO EINT data
+  * @drvdata: pin controller driver data
+  * @domains: array of domains related to EINT interrupt groups
+  */
 -- 
 2.25.1
 
