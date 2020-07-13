@@ -2,73 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499D921DF6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1746621DF71
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730423AbgGMSN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 14:13:28 -0400
-Received: from mga03.intel.com ([134.134.136.65]:6122 "EHLO mga03.intel.com"
+        id S1730179AbgGMSPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 14:15:34 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:37278 "EHLO smtp.al2klimov.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729687AbgGMSN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 14:13:28 -0400
-IronPort-SDR: R2xRdxz1m1sS00SvpfTfPgsuxzKDyrPanOBlewZhF5AzV6gt0wS2ONONbSoRy7XNvGIuIOCJPp
- sJp8wFcv4C3Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="148688639"
-X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
-   d="scan'208";a="148688639"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 11:13:27 -0700
-IronPort-SDR: r+qLI/6ZnsIf5qrW4sEmosy4IYMrsya7VCmF8S5EaMHbmJoeturrVrsX4dhHZrMlx6k5JkvWKt
- iBLCuKrflSZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
-   d="scan'208";a="316134668"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga008.jf.intel.com with ESMTP; 13 Jul 2020 11:13:26 -0700
-Date:   Mon, 13 Jul 2020 11:13:26 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, jmattson@google.com,
-        yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v13 00/11] Introduce support for guest CET feature
-Message-ID: <20200713181326.GC29725@linux.intel.com>
-References: <20200701080411.5802-1-weijiang.yang@intel.com>
+        id S1729687AbgGMSPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 14:15:34 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 6FE74BC09D;
+        Mon, 13 Jul 2020 18:15:31 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] parisc: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 20:15:25 +0200
+Message-Id: <20200713181525.36812-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701080411.5802-1-weijiang.yang@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 04:04:00PM +0800, Yang Weijiang wrote:
-> Control-flow Enforcement Technology (CET) provides protection against
-> Return/Jump-Oriented Programming (ROP/JOP) attack. There're two CET
-> sub-features: Shadow Stack (SHSTK) and Indirect Branch Tracking (IBT).
-> SHSTK is to prevent ROP programming and IBT is to prevent JOP programming.
-> 
-> Several parts in KVM have been updated to provide VM CET support, including:
-> CPUID/XSAVES config, MSR pass-through, user space MSR access interface, 
-> vmentry/vmexit config, nested VM etc. These patches have dependency on CET
-> kernel patches for xsaves support and CET definitions, e.g., MSR and related
-> feature flags.
-> 
-> CET kernel patches are here:
-> https://lkml.kernel.org/r/20200429220732.31602-1-yu-cheng.yu@intel.com
-> 
-> v13:
-> - Added CET definitions as a separate patch to facilitate KVM test.
-> - Disabled CET support in KVM if unrestricted_guest is turned off since
->   in this case CET related instructions/infrastructure cannot be emulated
->   well.
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-This needs to be rebased, I can't get it to apply on any kvm branch nor on
-any 5.8 rc.  And when you send series, especially large series that touch
-lots of code, please explicitly state what commit the series is based on to
-make it easy for reviewers to apply the patches, even if the series needs a
-rebase.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ arch/parisc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 8e4c3708773d..c2454c153a6c 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -285,7 +285,7 @@ config SMP
+ 	  On a uniprocessor machine, the kernel will run faster if you say N.
+ 
+ 	  See also <file:Documentation/admin-guide/lockup-watchdogs.rst> and the SMP-HOWTO
+-	  available at <http://www.tldp.org/docs.html#howto>.
++	  available at <https://www.tldp.org/docs.html#howto>.
+ 
+ 	  If you don't know what to do here, say N.
+ 
+-- 
+2.27.0
+
