@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C526121D804
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FE621D809
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730085AbgGMOMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:12:52 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:33314 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729649AbgGMOMv (ORCPT
+        id S1730088AbgGMONX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:13:23 -0400
+Received: from mail.efficios.com ([167.114.26.124]:37366 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729649AbgGMONW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:12:51 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06DECJdl098089;
-        Mon, 13 Jul 2020 14:12:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=WyYsli8fqJKfYyX1azr1UjWckt1Wk+/8MvW65fU7r7g=;
- b=f+s0XeUdUgOROnrFZx0wvSX/DtX0Kds3Xhe8Y8RLQudTyx1+a3JCnbacI/6Qjw98vf1q
- e1+2IYleEmEhvrZMi5jbvTeOsDj7ZKNVRzE0eQM/nyQj0r6iB6wIlnqNVgvxVjfR3WkP
- qe5fyweGu3rVirj4+unHdrKs2wr1X6Jl/XeRdb7kjM7q0Zza4pKgG8x39zvqVM4Ltmi2
- Ng34zT/vX/fVQMWLqMVoBUpR1sfGdyw74vigwXSX3Vj1qXu+QoaB111FK6i/AkVOeRXU
- naSiTl8TKs5DCvIzGBil6f8+6LOUqF/ub32MlFjVvipkZwkFSv9Q+CI0Sp6z6B4pvbGj MQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 3274uqyacb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 13 Jul 2020 14:12:43 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06DE3YqJ146361;
-        Mon, 13 Jul 2020 14:12:43 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 327q6qbgmc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Jul 2020 14:12:43 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06DECglu012869;
-        Mon, 13 Jul 2020 14:12:42 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 13 Jul 2020 07:12:41 -0700
-Date:   Mon, 13 Jul 2020 17:12:35 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Suraj Upadhyay <usuraj35@gmail.com>
-Cc:     manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] staging: qlge: qlge_main: Simplify while statements.
-Message-ID: <20200713141235.GT2549@kadam>
-References: <cover.1594642213.git.usuraj35@gmail.com>
- <1bb472c5595d832221fd142dddb68907feeeecbe.1594642213.git.usuraj35@gmail.com>
+        Mon, 13 Jul 2020 10:13:22 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 0BA312A2098;
+        Mon, 13 Jul 2020 10:13:22 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id S1h_oqHPAlK4; Mon, 13 Jul 2020 10:13:21 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id A10902A2097;
+        Mon, 13 Jul 2020 10:13:21 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com A10902A2097
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1594649601;
+        bh=XqbvFKyVtrLGiel3RNeXGdRx+Uy0i/kVfU8B2yF1Vps=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Qd1+LkijOFRpXZ/hXeFVcIG1XDUyqXzMXheUxr4ymNDATWBtzeRngQgvcgj1UN/wQ
+         a9IWntemPvANBJkCv+ERziZWUMAWLW9cP3K2yHa0C4iZse4IBq+mcswHdB4yV1Cg8K
+         6D/h9sOILkANM3IpHWbJhPJIf2sPpUglCT5mgqXufzzgoLEtwLI2fVzhds7D2JYmJ2
+         kozUnFllcUdECvQnMyCBRLCcx80bHdl0oKGXL1s1m8v++a/xNb2jFnua9X23Kw4kta
+         KoKqnpbNCDTT6DbG6m+7xwuBBzaT9X3McZ5iKcLDXTeNqD4ZRR/bwS+QaU/QuK5WWE
+         H81CVMOQJRUDw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gnjQutJ2gIVJ; Mon, 13 Jul 2020 10:13:21 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 91AC42A2095;
+        Mon, 13 Jul 2020 10:13:21 -0400 (EDT)
+Date:   Mon, 13 Jul 2020 10:13:21 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>
+Message-ID: <284592761.9860.1594649601492.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1594647408.wmrazhwjzb.astroid@bobo.none>
+References: <20200710015646.2020871-1-npiggin@gmail.com> <20200710015646.2020871-5-npiggin@gmail.com> <CALCETrVqHDLo09HcaoeOoAVK8w+cNWkSNTLkDDU=evUhaXkyhQ@mail.gmail.com> <1594613902.1wzayj0p15.astroid@bobo.none> <1594647408.wmrazhwjzb.astroid@bobo.none>
+Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
+ membarrier_mm_sync_core_before_usermode
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1bb472c5595d832221fd142dddb68907feeeecbe.1594642213.git.usuraj35@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9680 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- phishscore=0 malwarescore=0 mlxlogscore=949 bulkscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007130106
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9680 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=970 malwarescore=0
- mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007130107
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
+Thread-Topic: x86: use exit_lazy_tlb rather than membarrier_mm_sync_core_before_usermode
+Thread-Index: T7nLE24o9VdoF/eNvu+hhgTHKlctBA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 05:50:14PM +0530, Suraj Upadhyay wrote:
-> Simplify while loops into more readable and simple for loops.
+----- On Jul 13, 2020, at 9:47 AM, Nicholas Piggin npiggin@gmail.com wrote:
+
+> Excerpts from Nicholas Piggin's message of July 13, 2020 2:45 pm:
+>> Excerpts from Andy Lutomirski's message of July 11, 2020 3:04 am:
+>>> Also, as it stands, I can easily see in_irq() ceasing to promise to
+>>> serialize.  There are older kernels for which it does not promise to
+>>> serialize.  And I have plans to make it stop serializing in the
+>>> nearish future.
+>> 
+>> You mean x86's return from interrupt? Sounds fun... you'll konw where to
+>> update the membarrier sync code, at least :)
 > 
+> Oh, I should actually say Mathieu recently clarified a return from
+> interrupt doesn't fundamentally need to serialize in order to support
+> membarrier sync core.
 
-I don't think either is more clear that the other.  Walter Harms hates
-count down loops and he's not entirely wrong...
+Clarification to your statement:
 
-regards,
-dan carpenter
+Return from interrupt to kernel code does not need to be context serializing
+as long as kernel serializes before returning to user-space.
 
+However, return from interrupt to user-space needs to be context serializing.
+
+Thanks,
+
+Mathieu
+
+> 
+> https://lists.ozlabs.org/pipermail/linuxppc-dev/2020-July/214171.html
+> 
+> So you may not need to do anything more if you relaxed it.
+> 
+> Thanks,
+> Nick
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
