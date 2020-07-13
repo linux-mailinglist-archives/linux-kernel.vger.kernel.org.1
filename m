@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3806821D4E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9BE21D4E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729665AbgGML1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 07:27:04 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:35799 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729143AbgGML1D (ORCPT
+        id S1729696AbgGML1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 07:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727890AbgGML1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 07:27:03 -0400
-Received: by mail-oi1-f195.google.com with SMTP id k4so10663442oik.2;
-        Mon, 13 Jul 2020 04:27:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hZfdrESmTkh44pExrcL33u4SHqgxscd/TdxVBNeiFI8=;
-        b=M+fYUSfKfzooFJwQIN5/nEiopIrHweW3vPgROyrfqGWxKax1a7W9qe/zKdZPwKMy5m
-         8WAkBNHHxRcZnMSZrcNGCf+9Xbcg6HLBzy3TB8vPjJNSJ6OAKF0r0MY0nbnoROXnoLHJ
-         OTqdkMoqje3rVDgJmv+O10KZhoIJip+yq4/OXIBUSVBA/0BMfG7kIaAs6SrlCZl9QO8h
-         x+ypS2hruvc2zUOetIaqrIzwvcxBdJVjUqz4kmXELbgjywFYXt98YAAW6E4ZrnOUoo7r
-         UI+sGPJZ3rGvLOIt9qCTempoMqXvVMjslxWzGKRaIbJt11y1WiR+WI5CzpTK9eJ888+w
-         YK8w==
-X-Gm-Message-State: AOAM530gdG5dn8vqBYMhUkZxi29vPEnrDGC/f2AaYpIRz3tMSML9+4RA
-        MBYnRNUYMXUsqww4zejj/yshQ38l16Bx5l71kjM=
-X-Google-Smtp-Source: ABdhPJwAa+vsekdcbdiwbMA9snm8YofJa4TUmXKKH+oZAM2R4RD3MZVuzCKpKjtvYCyXBAHd59NorvzkCCAiGn3OcEM=
-X-Received: by 2002:a05:6808:64a:: with SMTP id z10mr13558051oih.54.1594639622718;
- Mon, 13 Jul 2020 04:27:02 -0700 (PDT)
+        Mon, 13 Jul 2020 07:27:07 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F600C061755;
+        Mon, 13 Jul 2020 04:27:07 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 653FEBC069;
+        Mon, 13 Jul 2020 11:27:03 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     bbrezillon@kernel.org, corbet@lwn.net,
+        linux-i3c@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] docs: driver-api: i3c: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 13:26:57 +0200
+Message-Id: <20200713112657.33694-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-References: <1594230511-24790-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594230511-24790-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1594230511-24790-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 13 Jul 2020 13:26:51 +0200
-Message-ID: <CAMuHMdXppLj2Fc4AyNOoSrF9Vb5GJTZKJui3ahmGnTy533qp=A@mail.gmail.com>
-Subject: Re: [PATCH 4/8] dt-bindings: mmc: renesas,sdhi: Add r8a774e1 support
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 8, 2020 at 7:48 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Document SDHI controller for RZ/G2H (R8A774E1) SoC, which is compatible
-> with R-Car Gen3 SoC family.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
 
-                        Geert
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
 
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ Documentation/driver-api/i3c/protocol.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/driver-api/i3c/protocol.rst b/Documentation/driver-api/i3c/protocol.rst
+index dae3b6d32c6b..02653defa011 100644
+--- a/Documentation/driver-api/i3c/protocol.rst
++++ b/Documentation/driver-api/i3c/protocol.rst
+@@ -14,7 +14,7 @@ collisions are prevented, ...) please have a look at the I3C specification.
+ This document is just a brief introduction to the I3C protocol and the concepts
+ it brings to the table. If you need more information, please refer to the MIPI
+ I3C specification (can be downloaded here
+-http://resources.mipi.org/mipi-i3c-v1-download).
++https://resources.mipi.org/mipi-i3c-v1-download).
+ 
+ Introduction
+ ============
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.27.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
