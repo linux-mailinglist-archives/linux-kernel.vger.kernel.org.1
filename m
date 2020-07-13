@@ -2,78 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0818321D6A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED4221D6A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729784AbgGMNWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:22:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:34254 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729564AbgGMNWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:22:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0D2130E;
-        Mon, 13 Jul 2020 06:22:02 -0700 (PDT)
-Received: from bogus (unknown [10.37.8.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10A2F3F887;
-        Mon, 13 Jul 2020 06:22:00 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 14:21:53 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Dien Pham <dien.pham.ry@renesas.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] clk: scmi: Fix min and max rate when registering
- clocks with discrete rates
-Message-ID: <20200713132153.GA30377@bogus>
-References: <20200709081705.46084-1-sudeep.holla@arm.com>
- <20200709081705.46084-2-sudeep.holla@arm.com>
- <159442504011.1987609.3990897866011325023@swboyd.mtv.corp.google.com>
+        id S1729867AbgGMNWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 09:22:20 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31741 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729722AbgGMNWT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 09:22:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594646538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IHiDVAN+/NpycJ9K1bAeFKAt7d8Zl7wvOhlXnD93E/I=;
+        b=bh2dnYUivoXpTmPdjGeMHaKdHsF0ny5TqFvR+aRQGbKItrmWfYRsSKw9VILvcxnqfX2mCa
+        Jm9hDZnZWtcyN1EpEqcX0ftoGrt4g4de13y6W4c7WW4LDpPQ7hXzAJK/bdR1LaLzwxiX8t
+        gZ8olusHcxjwIJHiOwPi+HeTpNQ1oug=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-2lBuCZ7-NwiFq_YntMkDLg-1; Mon, 13 Jul 2020 09:22:15 -0400
+X-MC-Unique: 2lBuCZ7-NwiFq_YntMkDLg-1
+Received: by mail-wm1-f69.google.com with SMTP id g138so18600593wme.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:22:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IHiDVAN+/NpycJ9K1bAeFKAt7d8Zl7wvOhlXnD93E/I=;
+        b=AdnPqaK4xCqjDae/NcOovjdMYg/mqU3O6zmpja4ylUkD1+QtAyXk5ye5TMyHF7EF4X
+         a7FMwJ17PnDR1cFcCzNzAiogBLUTK9ERm6K0hPf7czdGFn1MD1qrZ6j9SWqix9QNV+Fl
+         oVsYSXhAfAZ71bql2eeKsOtZe6t/SQBJ1+6/gS5Jl19g0o1XONV4jtOTkiaktjvKXSX1
+         7p+91lJjFgsiATcvuJ8mMAMM40vFJo/5s4JiytlEDhWE4U1M3L6MrjiwkJh2YA99SQUC
+         zTY4L40tDOybnR8i+v66fc9DxofAestAUj5OkhCv2l/eDNE4jsuolhA3L4OHl5Ssl0k8
+         MIOg==
+X-Gm-Message-State: AOAM5304aFO7netBQqQSRyT4tedwoVGAfLqYEICUiG/6MbWqWx6wV0aI
+        C7pXC8azgOaQWtGdV9gngHy7FiLNYH28vjGnDif9MdDlxHoe2ZB36HJAHoYLmx5JuKSZ+KGSScC
+        goJmHZcnTJH+T2G/+ghStx4/C
+X-Received: by 2002:adf:f10a:: with SMTP id r10mr48337313wro.406.1594646533911;
+        Mon, 13 Jul 2020 06:22:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzm0qOT27kCpMTY1OC3xFic2ZegzyQksmisJV4C1SdGMg3ljlJkc6raT64MWjktjjJwMxmcUg==
+X-Received: by 2002:adf:f10a:: with SMTP id r10mr48337287wro.406.1594646533607;
+        Mon, 13 Jul 2020 06:22:13 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.94.4])
+        by smtp.gmail.com with ESMTPSA id m4sm21994076wmi.48.2020.07.13.06.22.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 06:22:13 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 15:22:11 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     He Zhe <zhe.he@windriver.com>
+Cc:     viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] eventfd: Enlarge recursion limit to allow vhost to work
+Message-ID: <20200713132211.GB5564@localhost.localdomain>
+References: <20200410114720.24838-1-zhe.he@windriver.com>
+ <20200703081209.GN9670@localhost.localdomain>
+ <cbecaad6-48fc-3c52-d764-747ea91dc3fa@windriver.com>
+ <20200706064557.GA26135@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <159442504011.1987609.3990897866011325023@swboyd.mtv.corp.google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200706064557.GA26135@localhost.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 04:50:40PM -0700, Stephen Boyd wrote:
-> Quoting Sudeep Holla (2020-07-09 01:17:05)
-> > Currently we are not initializing the scmi clock with discrete rates
-> > correctly. We fetch the min_rate and max_rate value only for clocks with
-> > ranges and ignore the ones with discrete rates. This will lead to wrong
-> > initialization of rate range when clock supports discrete rate.
+Hi,
+
+On 06/07/20 08:45, Juri Lelli wrote:
+> On 03/07/20 19:11, He Zhe wrote:
 > > 
-> > Fix this by using the first and the last rate in the sorted list of the
-> > discrete clock rates while registering the clock.
 > > 
-> > Link: https://lore.kernel.org/r/20200708110725.18017-2-sudeep.holla@arm.com
-> > Fixes: 6d6a1d82eaef7 ("clk: add support for clocks provided by SCMI")
-> > Reported-by: Dien Pham <dien.pham.ry@renesas.com>
-> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > ---
-> >  drivers/clk/clk-scmi.c | 22 +++++++++++++++++++---
-> >  1 file changed, 19 insertions(+), 3 deletions(-)
+> > On 7/3/20 4:12 PM, Juri Lelli wrote:
+> > > Hi,
+> > >
+> > > On 10/04/20 19:47, zhe.he@windriver.com wrote:
+> > >> From: He Zhe <zhe.he@windriver.com>
+> > >>
+> > >> commit b5e683d5cab8 ("eventfd: track eventfd_signal() recursion depth")
+> > >> introduces a percpu counter that tracks the percpu recursion depth and
+> > >> warn if it greater than zero, to avoid potential deadlock and stack
+> > >> overflow.
+> > >>
+> > >> However sometimes different eventfds may be used in parallel. Specifically,
+> > >> when heavy network load goes through kvm and vhost, working as below, it
+> > >> would trigger the following call trace.
+> > >>
+> > >> -  100.00%
+> > >>    - 66.51%
+> > >>         ret_from_fork
+> > >>         kthread
+> > >>       - vhost_worker
+> > >>          - 33.47% handle_tx_kick
+> > >>               handle_tx
+> > >>               handle_tx_copy
+> > >>               vhost_tx_batch.isra.0
+> > >>               vhost_add_used_and_signal_n
+> > >>               eventfd_signal
+> > >>          - 33.05% handle_rx_net
+> > >>               handle_rx
+> > >>               vhost_add_used_and_signal_n
+> > >>               eventfd_signal
+> > >>    - 33.49%
+> > >>         ioctl
+> > >>         entry_SYSCALL_64_after_hwframe
+> > >>         do_syscall_64
+> > >>         __x64_sys_ioctl
+> > >>         ksys_ioctl
+> > >>         do_vfs_ioctl
+> > >>         kvm_vcpu_ioctl
+> > >>         kvm_arch_vcpu_ioctl_run
+> > >>         vmx_handle_exit
+> > >>         handle_ept_misconfig
+> > >>         kvm_io_bus_write
+> > >>         __kvm_io_bus_write
+> > >>         eventfd_signal
+> > >>
+> > >> 001: WARNING: CPU: 1 PID: 1503 at fs/eventfd.c:73 eventfd_signal+0x85/0xa0
+> > >> ---- snip ----
+> > >> 001: Call Trace:
+> > >> 001:  vhost_signal+0x15e/0x1b0 [vhost]
+> > >> 001:  vhost_add_used_and_signal_n+0x2b/0x40 [vhost]
+> > >> 001:  handle_rx+0xb9/0x900 [vhost_net]
+> > >> 001:  handle_rx_net+0x15/0x20 [vhost_net]
+> > >> 001:  vhost_worker+0xbe/0x120 [vhost]
+> > >> 001:  kthread+0x106/0x140
+> > >> 001:  ? log_used.part.0+0x20/0x20 [vhost]
+> > >> 001:  ? kthread_park+0x90/0x90
+> > >> 001:  ret_from_fork+0x35/0x40
+> > >> 001: ---[ end trace 0000000000000003 ]---
+> > >>
+> > >> This patch enlarges the limit to 1 which is the maximum recursion depth we
+> > >> have found so far.
+> > >>
+> > >> Signed-off-by: He Zhe <zhe.he@windriver.com>
+> > >> ---
+> > > Not sure if this approch can fly, but I also encountered the same
+> > > warning (which further caused hangs during VM install) and this change
+> > > addresses that.
+> > >
+> > > I'd be interested in understanding what is the status of this problem/fix.
 > > 
-> > Hi Stephen,
-> > 
-> > If you are fine, I can take this via ARM SoC along with the change in
-> > firmware driver. However it is also fine if you want to merge this
-> > independently as there is no strict dependency. Let me know either way.
+> > This is actually v2 of the patch and has not got any reply yet. Here is the v1. FYI.
+> > https://lore.kernel.org/lkml/1586257192-58369-1-git-send-email-zhe.he@windriver.com/
 > 
-> I don't mind either way. If you want to send it in along with the
-> firmware change then that's fine.
->
+> I see, thanks. Hope this gets reviewed soon! :-)
+> 
+> > > On a side note, by looking at the code, I noticed that (apart from
+> > > samples) all callers don't actually check eventfd_signal() return value
+> > > and I'm wondering why is that the case and if is it safe to do so.
+> > 
+> > Checking the return value right after sending the signal can tell us if the
+> > event counter has just overflowed, that is, exceeding ULLONG_MAX. I guess the
+> > authors of the callers listed in the commit log just don't worry about that,
+> > since they add only one to a dedicated eventfd.
+> 
+> OK. I was mostly wondering if returning early in case the WARN_ON_ONCE
+> fires would cause a missing wakeup for the eventfd_ctx wait queue.
 
-OK I have now queued and will send it to arm-soc.
+Gentle ping about this issue (mainly addressing relevant maintainers and
+potential reviewers). It's easily reproducible with PREEMPT_RT.
 
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Thanks,
 
-Thanks for the review.
+Juri
 
--- 
-Regards,
-Sudeep
