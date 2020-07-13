@@ -2,259 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4F121CFCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA5121CF81
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729418AbgGMGjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:39:16 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.121]:12708 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728847AbgGMGjJ (ORCPT
+        id S1729184AbgGMGSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:18:41 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39218 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgGMGSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:39:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1594622344;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=W8XWGywEHjeEqflXCEDqtmVtYoGX8m2qdX4UnTuSI4I=;
-        b=AwJa+kgsDK/w6IMC7a1oS7E8XknbGol5YWmvZAsHWSQyFWLuyoNsOAHh9kGkpRltI9
-        PxycGy+drj6DETGQBWMGnhKLwyjNtlkO1siidPPMAdruDj20NoLlvffylnDZ+yXH/phw
-        /AHpMnhZDTr4RN0HZdUzklqJ0oJgdrBdhcdG0ISIGF9OYk85/frJ+JmOYThMnrkauP4p
-        BO+sGW56RwO0n5FyGSafhT1OVCprKOB4x1xDlibc6zC1OxSNIb/zvu64tGA/wyyIOF18
-        n+QmmYWyIpg9+t+5qUKuSEm1e6UDDZ9WeIkF09V1RVoQK4Oi2OSYML67PGN4G7A+g535
-        1FPw==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSfHReW"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
-        with ESMTPSA id y0546bw6D6bwk2Q
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 13 Jul 2020 08:37:58 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Nicolai Stange <nstange@suse.de>,
-        "Peter, Matthias" <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Roman Drahtmueller <draht@schaltsekun.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH v31 02/12] LRNG - allocate one DRNG instance per NUMA node
-Date:   Mon, 13 Jul 2020 08:18:19 +0200
-Message-ID: <1742579.atdPhlSkOF@positron.chronox.de>
-In-Reply-To: <2050754.Mh6RI2rZIc@positron.chronox.de>
-References: <2050754.Mh6RI2rZIc@positron.chronox.de>
+        Mon, 13 Jul 2020 02:18:41 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06D6IP73016334;
+        Mon, 13 Jul 2020 01:18:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594621105;
+        bh=D5Sliar+y7yEU28bb90V7Ozp3UAZgIVTWqJbKqXmdvQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=WS/g6GmXZkq+VG20d2LTXIUEqSWFliOQultgiQHpWsRPuBu0fpV9Ff5eFJzaM5FKe
+         D+KbZzVG7r0bLrs4hv0k7NqtKvED5W4AQSf5OX7UkPmyPMP+k88wYgcB175k8kT9JF
+         TI+C1v/M7NhNTNjgtBLTpfVJoprgVSntWPcamL4Q=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06D6IPgP103912;
+        Mon, 13 Jul 2020 01:18:25 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 13
+ Jul 2020 01:18:25 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 13 Jul 2020 01:18:25 -0500
+Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06D6ILWb050033;
+        Mon, 13 Jul 2020 01:18:22 -0500
+Subject: Re: [PATCH v6 08/14] PCI: cadence: Fix updating Vendor ID and
+ Subsystem Vendor ID register
+To:     Rob Herring <robh@kernel.org>
+CC:     Tom Joseph <tjoseph@cadence.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200708093018.28474-1-kishon@ti.com>
+ <20200708093018.28474-9-kishon@ti.com> <20200709214555.GA939109@bogus>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <9e9dd21b-7626-ef06-4b63-f801a297082e@ti.com>
+Date:   Mon, 13 Jul 2020 11:48:21 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+In-Reply-To: <20200709214555.GA939109@bogus>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to improve NUMA-locality when serving getrandom(2) requests,
-allocate one DRNG instance per node.
+Hi Rob,
 
-The DRNG instance that is present right from the start of the kernel is
-reused as the first per-NUMA-node DRNG. For all remaining online NUMA
-nodes a new DRNG instance is allocated.
+On 7/10/2020 3:15 AM, Rob Herring wrote:
+> On Wed, Jul 08, 2020 at 03:00:12PM +0530, Kishon Vijay Abraham I wrote:
+>> Commit 1b79c5284439 ("PCI: cadence: Add host driver for Cadence PCIe
+>> controller") in order to update Vendor ID, directly wrote to
+>> PCI_VENDOR_ID register. However PCI_VENDOR_ID in root port configuration
+>> space is read-only register and writing to it will have no effect.
+>> Use local management register to configure Vendor ID and Subsystem Vendor
+>> ID.
+>>
+>> Fixes: 1b79c5284439 ("PCI: cadence: Add host driver for Cadence PCIe controller")
+>> Reviewed-by: Rob Herring <robh@kernel.org>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>  drivers/pci/controller/cadence/pcie-cadence-host.c | 9 +++++++--
+>>  1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+>> index 10127ea71b83..8935f7a37e5a 100644
+>> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+>> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+>> @@ -82,6 +82,7 @@ static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
+>>  {
+>>  	struct cdns_pcie *pcie = &rc->pcie;
+>>  	u32 value, ctrl;
+>> +	u32 id;
+>>  
+>>  	/*
+>>  	 * Set the root complex BAR configuration register:
+>> @@ -101,8 +102,12 @@ static int cdns_pcie_host_init_root_port(struct cdns_pcie_rc *rc)
+>>  	cdns_pcie_writel(pcie, CDNS_PCIE_LM_RC_BAR_CFG, value);
+>>  
+>>  	/* Set root port configuration space */
+>> -	if (rc->vendor_id != 0xffff)
+>> -		cdns_pcie_rp_writew(pcie, PCI_VENDOR_ID, rc->vendor_id);
+> 
+> If this is read-only, then...
+> 
+>> +	if (rc->vendor_id != 0xffff) {
+>> +		id = CDNS_PCIE_LM_ID_VENDOR(rc->vendor_id) |
+>> +			CDNS_PCIE_LM_ID_SUBSYS(rc->vendor_id);
+>> +		cdns_pcie_writel(pcie, CDNS_PCIE_LM_ID, id);
+>> +	}
+>> +
+>>  	if (rc->device_id != 0xffff)
+>>  		cdns_pcie_rp_writew(pcie, PCI_DEVICE_ID, rc->device_id);
+> 
+> ...isn't this read-only too?
 
-During boot time, the multiple DRNG instances are seeded sequentially.
-With this, the first DRNG instance (referenced as the initial DRNG
-in the code) is completely seeded with 256 bits of entropy before the
-next DRNG instance is completely seeded.
+Apparently no. There is local management register only for vendor ID and
+subsystem vendorID. It could be because this same IP is used EP mode and in
+case of multi-function device, different deviceID could be required for each
+independent function whereas vendor ID should be same, they could have given a
+single local management register for vendorID and not for deviceID.
 
-When random numbers are requested, the NUMA-node-local DRNG is checked
-whether it has been already fully seeded. If this is not the case, the
-initial DRNG is used to serve the request.
-
-CC: "Eric W. Biederman" <ebiederm@xmission.com>
-CC: "Alexander E. Patrakov" <patrakov@gmail.com>
-CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
-CC: "Theodore Y. Ts'o" <tytso@mit.edu>
-CC: Willy Tarreau <w@1wt.eu>
-CC: Matthew Garrett <mjg59@srcf.ucam.org>
-CC: Vito Caputo <vcaputo@pengaru.com>
-CC: Andreas Dilger <adilger.kernel@dilger.ca>
-CC: Jan Kara <jack@suse.cz>
-CC: Ray Strode <rstrode@redhat.com>
-CC: William Jon McCann <mccann@jhu.edu>
-CC: zhangjs <zachary@baishancloud.com>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: Florian Weimer <fweimer@redhat.com>
-CC: Lennart Poettering <mzxreary@0pointer.de>
-CC: Nicolai Stange <nstange@suse.de>
-Reviewed-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-Reviewed-by: Roman Drahtmueller <draht@schaltsekun.de>
-Tested-by: Roman Drahtm=FCller <draht@schaltsekun.de>
-Tested-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-Tested-by: Neil Horman <nhorman@redhat.com>
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
-=2D--
- drivers/char/lrng/Makefile        |   2 +
- drivers/char/lrng/lrng_internal.h |   5 ++
- drivers/char/lrng/lrng_numa.c     | 101 ++++++++++++++++++++++++++++++
- 3 files changed, 108 insertions(+)
- create mode 100644 drivers/char/lrng/lrng_numa.c
-
-diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
-index 1d2a0211973d..0a32f22c2c1a 100644
-=2D-- a/drivers/char/lrng/Makefile
-+++ b/drivers/char/lrng/Makefile
-@@ -7,3 +7,5 @@ obj-y				+=3D lrng_pool.o lrng_aux.o \
- 				   lrng_sw_noise.o lrng_archrandom.o \
- 				   lrng_drng.o lrng_chacha20.o \
- 				   lrng_interfaces.o \
-+
-+obj-$(CONFIG_NUMA)		+=3D lrng_numa.o
-diff --git a/drivers/char/lrng/lrng_internal.h b/drivers/char/lrng/lrng_int=
-ernal.h
-index 80cc287fa60f..e82a60a5336d 100644
-=2D-- a/drivers/char/lrng/lrng_internal.h
-+++ b/drivers/char/lrng/lrng_internal.h
-@@ -247,8 +247,13 @@ int lrng_drng_get_sleep(u8 *outbuf, u32 outbuflen);
- void lrng_drng_force_reseed(void);
- void lrng_drng_seed_work(struct work_struct *dummy);
-=20
-+#ifdef CONFIG_NUMA
-+struct lrng_drng **lrng_drng_instances(void);
-+void lrng_drngs_numa_alloc(void);
-+#else	/* CONFIG_NUMA */
- static inline struct lrng_drng **lrng_drng_instances(void) { return NULL; }
- static inline void lrng_drngs_numa_alloc(void) { return; }
-+#endif /* CONFIG_NUMA */
-=20
- /************************** Health Test linking code *********************=
-*****/
-=20
-diff --git a/drivers/char/lrng/lrng_numa.c b/drivers/char/lrng/lrng_numa.c
-new file mode 100644
-index 000000000000..947c5b3ed517
-=2D-- /dev/null
-+++ b/drivers/char/lrng/lrng_numa.c
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+/*
-+ * LRNG NUMA support
-+ *
-+ * Copyright (C) 2016 - 2020, Stephan Mueller <smueller@chronox.de>
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/lrng.h>
-+#include <linux/slab.h>
-+
-+#include "lrng_internal.h"
-+
-+static struct lrng_drng **lrng_drng __read_mostly =3D NULL;
-+
-+struct lrng_drng **lrng_drng_instances(void)
-+{
-+	return lrng_drng;
-+}
-+
-+/* Allocate the data structures for the per-NUMA node DRNGs */
-+static void _lrng_drngs_numa_alloc(struct work_struct *work)
-+{
-+	struct lrng_drng **drngs;
-+	struct lrng_drng *lrng_drng_init =3D lrng_drng_init_instance();
-+	u32 node;
-+	bool init_drng_used =3D false;
-+
-+	mutex_lock(&lrng_crypto_cb_update);
-+
-+	/* per-NUMA-node DRNGs are already present */
-+	if (lrng_drng)
-+		goto unlock;
-+
-+	drngs =3D kcalloc(nr_node_ids, sizeof(void *), GFP_KERNEL|__GFP_NOFAIL);
-+	for_each_online_node(node) {
-+		struct lrng_drng *drng;
-+
-+		if (!init_drng_used) {
-+			drngs[node] =3D lrng_drng_init;
-+			init_drng_used =3D true;
-+			continue;
-+		}
-+
-+		drng =3D kmalloc_node(sizeof(struct lrng_drng),
-+				     GFP_KERNEL|__GFP_NOFAIL, node);
-+		memset(drng, 0, sizeof(lrng_drng));
-+
-+		drng->crypto_cb =3D lrng_drng_init->crypto_cb;
-+		drng->drng =3D drng->crypto_cb->lrng_drng_alloc(
-+					LRNG_DRNG_SECURITY_STRENGTH_BYTES);
-+		if (IS_ERR(drng->drng)) {
-+			kfree(drng);
-+			goto err;
-+		}
-+
-+		mutex_init(&drng->lock);
-+		spin_lock_init(&drng->spin_lock);
-+
-+		/*
-+		 * No reseeding of NUMA DRNGs from previous DRNGs as this
-+		 * would complicate the code. Let it simply reseed.
-+		 */
-+		lrng_drng_reset(drng);
-+		drngs[node] =3D drng;
-+
-+		lrng_pool_inc_numa_node();
-+		pr_info("DRNG for NUMA node %d allocated\n", node);
-+	}
-+
-+	/* Ensure that all NUMA nodes receive changed memory here. */
-+	mb();
-+
-+	if (!cmpxchg(&lrng_drng, NULL, drngs))
-+		goto unlock;
-+
-+err:
-+	for_each_online_node(node) {
-+		struct lrng_drng *drng =3D drngs[node];
-+
-+		if (drng =3D=3D lrng_drng_init)
-+			continue;
-+
-+		if (drng) {
-+			drng->crypto_cb->lrng_drng_dealloc(drng->drng);
-+			kfree(drng);
-+		}
-+	}
-+	kfree(drngs);
-+
-+unlock:
-+	mutex_unlock(&lrng_crypto_cb_update);
-+}
-+
-+static DECLARE_WORK(lrng_drngs_numa_alloc_work, _lrng_drngs_numa_alloc);
-+
-+void lrng_drngs_numa_alloc(void)
-+{
-+	schedule_work(&lrng_drngs_numa_alloc_work);
-+}
-=2D-=20
-2.26.2
-
-
-
-
+Thanks
+Kishon
