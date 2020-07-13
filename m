@@ -2,157 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D73421D4E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AE421D4EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729730AbgGML1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 07:27:14 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:32776 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729715AbgGML1K (ORCPT
+        id S1729742AbgGML1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 07:27:21 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:52884 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729733AbgGML1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 07:27:10 -0400
+        Mon, 13 Jul 2020 07:27:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594639629;
+        s=mimecast20190719; t=1594639639;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=NndF9MqDcvO4KNH3w4Ig8XfoceRFDUTb0+wABisiArU=;
-        b=EB4Lvqc6e1NF8IVwya9HpaiiUsY7R84Wbq/hfHZM0+zEPVj4MvEdc2xVOhtvhqwb6pHvkw
-        ZnE7HHi4vKdPoYKGid70k+p7m0rDKY41rUsctZewr1EPlsaOLTvVpUk5dcZGD6FtPoUf+k
-        CrKW0jYCX5Ep1opgsx7ks2K2REssphg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-424-nyhzc9MkOkaGmQzc1wpoAg-1; Mon, 13 Jul 2020 07:27:07 -0400
-X-MC-Unique: nyhzc9MkOkaGmQzc1wpoAg-1
-Received: by mail-wr1-f72.google.com with SMTP id y18so17503159wrq.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 04:27:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NndF9MqDcvO4KNH3w4Ig8XfoceRFDUTb0+wABisiArU=;
-        b=feDMwvpJ0YFiOpuE3dMo9eNfjC3pWdln3Puutya3QjLDtGMLT3v+rdDKvZneMIgft2
-         CGv7rX4HnDUNqlk4deZhLPjMMXU1Ntc0leMmnvEaRT0TVY9Wcogz/o5ITVT4SqqWcrJJ
-         OKKKh74pJ3nIqBUGTfCE0IeMZajm7cR4KTb5+Kbsw4uSIkvq0vaJcC6b5rkKFxVuOezo
-         X1lzkQJRssM6DY+t3O6vDYb7CUBbxJrFrOYrK7cK9awirD0QpYNNmRVXZuVSHm8/lef/
-         x6z5F2TIM2sExot6uGXNpM5y04hnbMeXxPL0yHlchdgZoLXTOuAOU8uGtXLVS9DJnu/B
-         MY5w==
-X-Gm-Message-State: AOAM532YtNMJyDYzOuHa+0SbgfYtUm67I4+qLBeT1p8gGRRa3IBu380g
-        NPFC8CG1iYGYMbsOxeiz57vqajCsEQdCJIntHya0Y4ts35Gderzo8bKPX6Dr+xni89bps0eBIwp
-        V36USKNxA42ZUEdI92mpEqaWV
-X-Received: by 2002:adf:e40e:: with SMTP id g14mr85945111wrm.271.1594639626487;
-        Mon, 13 Jul 2020 04:27:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzoQoJFGLmA7IKeh1vfhF4LpR1itbcrQH3486CQtGPbzU10VTecZ0k8Yt5A6ZRHstGlY191xQ==
-X-Received: by 2002:adf:e40e:: with SMTP id g14mr85945083wrm.271.1594639626252;
-        Mon, 13 Jul 2020 04:27:06 -0700 (PDT)
-Received: from redhat.com (bzq-79-180-10-140.red.bezeqint.net. [79.180.10.140])
-        by smtp.gmail.com with ESMTPSA id z132sm23730810wmb.21.2020.07.13.04.27.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 04:27:05 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 07:27:01 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Joel Fernandes <joelaf@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Richard Henderson <rth@twiddle.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Jason Wang <jasowang@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kernel-team@android.com
-Subject: Re: [PATCH v3 07/19] vhost: Remove redundant use of
- read_barrier_depends() barrier
-Message-ID: <20200713072618-mutt-send-email-mst@kernel.org>
-References: <20200710165203.31284-1-will@kernel.org>
- <20200710165203.31284-8-will@kernel.org>
+        bh=ULXPizC4QpMXiH/m+vt5cJw3j5X+r11yFN4y9j1a/Uc=;
+        b=TadlYO8e0Md+9BIzyQgwbJC/6yYzbGhM2a3PtP1JUU3ZJX60PKwoP6vuvfl0JKtzfDkfUg
+        w3IazYKCXqVDGsppXT2JgjDmMYNSvV/3vxJKGXCxOZsFujW0XbdWHgsQJMOWveEblI8OK+
+        ACppOU92Z67nPKLlf1yZQhEO2YGP7AA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-101-3yevu0RaPAu9IXKn2RsD0A-1; Mon, 13 Jul 2020 07:27:15 -0400
+X-MC-Unique: 3yevu0RaPAu9IXKn2RsD0A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4F1D1096;
+        Mon, 13 Jul 2020 11:27:13 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-114-87.ams2.redhat.com [10.36.114.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BE70174F47;
+        Mon, 13 Jul 2020 11:27:12 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [selftests] 7cb32086e5: kernel-selftests.x86.check_initial_reg_state_32.fail
+References: <20200709064946.GQ3874@shao2-debian>
+        <9cfe8123-9cd7-a6ec-f73b-3252d695a387@linuxfoundation.org>
+        <CANoWswkjNnyBi68HL6VjX9dWt6VdjxycXV09j5L+jkCAbnrHrg@mail.gmail.com>
+        <8316a170-4aee-eb57-9038-3afb91c6f0e2@linuxfoundation.org>
+Date:   Mon, 13 Jul 2020 14:27:10 +0300
+In-Reply-To: <8316a170-4aee-eb57-9038-3afb91c6f0e2@linuxfoundation.org> (Shuah
+        Khan's message of "Fri, 10 Jul 2020 08:18:49 -0600")
+Message-ID: <xunyzh831wq9.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710165203.31284-8-will@kernel.org>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 05:51:51PM +0100, Will Deacon wrote:
-> Since commit 76ebbe78f739 ("locking/barriers: Add implicit
-> smp_read_barrier_depends() to READ_ONCE()"), there is no need to use
-> smp_read_barrier_depends() outside of the Alpha architecture code.
-> 
-> Unfortunately, there is precisely _one_ user in the vhost code, and
-> there isn't an obvious READ_ONCE() access making the barrier
-> redundant. However, on closer inspection (thanks, Jason), it appears
-> that vring synchronisation between the producer and consumer occurs via
-> the 'avail_idx' field, which is followed up by an rmb() in
-> vhost_get_vq_desc(), making the read_barrier_depends() redundant on
-> Alpha.
-> 
-> Jason says:
-> 
->   | I'm also confused about the barrier here, basically in driver side
->   | we did:
->   |
->   | 1) allocate pages
->   | 2) store pages in indirect->addr
->   | 3) smp_wmb()
->   | 4) increase the avail idx (somehow a tail pointer of vring)
->   |
->   | in vhost we did:
->   |
->   | 1) read avail idx
->   | 2) smp_rmb()
->   | 3) read indirect->addr
->   | 4) read from indirect->addr
->   |
->   | It looks to me even the data dependency barrier is not necessary
->   | since we have rmb() which is sufficient for us to the correct
->   | indirect->addr and driver are not expected to do any writing to
->   | indirect->addr after avail idx is increased
-> 
-> Remove the redundant barrier invocation.
-> 
-> Suggested-by: Jason Wang <jasowang@redhat.com>
-> Acked-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Will Deacon <will@kernel.org>
+Hi, Shuah!
+
+>>>>> On Fri, 10 Jul 2020 08:18:49 -0600, Shuah Khan  wrote:
+
+ > On 7/10/20 12:02 AM, Yauheni Kaliuta wrote:
+ >> On Thu, Jul 9, 2020 at 6:36 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+ >>> 
+ >>> On 7/9/20 12:49 AM, kernel test robot wrote:
+ >>>> Greeting,
+ >>>> 
+ >>>> FYI, we noticed the following commit (built with gcc-9):
+ >>>> 
+ >>>> commit: 7cb32086e59b514a832a3e11f5370d37e7cfe022 ("selftests:
+ >>>> simplify run_tests")
+ >>>> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+ >>>> 
+ >>>> 
+ >>> 
+ >>> Thanks for the report. I will drop this patch for now from next.
+ >>> 
+ >>> Yauheni,
+ >>> 
+ >>> This patch broke x86 32-bit test run
+ >>> make run_tests -C x86
+ >>> 
+ >>> Please resubmit the patch with the fix.
+ >> 
+ >> I did not check carefully the report, but isn't it expected that some
+ >> tests are moved after the patch since they originally were placed
+ >> incorrectly?
+ >> 
+ >> 
+ > The failure doesn't have anything to do with test being moved. You can
+ > reproduce this very easily by running make as shown below in x86 dir
+ > under tools/testing/selftests
+
+ > make run_tests -C x86
+
+ > I reproduced the problem with your and patch and verified that the
+ > problem tracks your patch. I dropped the patch from linux-next
+ > Your other two patches in the series are fine.
+
+ > In any case, this patch isn't really adding any functionality and
+ > is a good cleanup. Let's do the cleanup right or not.
 
 
-I agree
+Checked.
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+That is because with the patch both lib.mk and x86/Makefile add
+the $(OUTPUT) prefix.
 
-Pls merge with the rest of the patchset.
+So the question is to agree about the convention, should lib.mk
+targets expect short test names for TEST_PROGS or full path from
+the subtests' Makefiles.
 
-> ---
->  drivers/vhost/vhost.c | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> index d7b8df3edffc..74d135ee7e26 100644
-> --- a/drivers/vhost/vhost.c
-> +++ b/drivers/vhost/vhost.c
-> @@ -2092,11 +2092,6 @@ static int get_indirect(struct vhost_virtqueue *vq,
->  		return ret;
->  	}
->  	iov_iter_init(&from, READ, vq->indirect, ret, len);
-> -
-> -	/* We will use the result as an address to read from, so most
-> -	 * architectures only need a compiler barrier here. */
-> -	read_barrier_depends();
-> -
->  	count = len / sizeof desc;
->  	/* Buffers are chained via a 16 bit next field, so
->  	 * we can have at most 2^16 of these. */
-> -- 
-> 2.27.0.383.g050319c2ae-goog
+The existing code is hackish (incorrectly -- adding $(OUTPUT)
+only to the first list members -- tries to handle it only for
+out-of-tree build).
+
+I can make the patch without adding $(OUTPUT). It will require to
+fix possible tests which provided only one test and rely on that
+behaviour for the OOT build. Do you have an easy way to get a
+list of such tests?
+
+
+-- 
+WBR,
+Yauheni Kaliuta
 
