@@ -2,168 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB6521D739
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C09021D73C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730023AbgGMNa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729852AbgGMNaZ (ORCPT
+        id S1729948AbgGMNa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 09:30:58 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:52538 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729735AbgGMNa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:30:25 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD46C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:30:24 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 22so13327606wmg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:autocrypt:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gbYmFCX/Ar69E0IhWMGtfk9Pb1qAWqNwvIoVlNOYA2A=;
-        b=AP9wM0piyA/Z0ONPdL/Cr2K6XME27CaBJLTfgYFHac/Exv5jv+xjM4QvDDxvLuKwqN
-         zbFaqJU0fQr0RAX8ebtCPhKE3mrD7F0958tJfYqxhO0FpL7porzzwkfhyz50DrXfqz1N
-         5rR+8eLA7zHtEQNqTY6WC33QVR+RFhZCYvDDbTlnFscWbxqw+dVsH9C4IyGuuI6KBw6T
-         LY+t/qe17lfyFeQLFvJHud9MSVg7p0DSY86PfOnj2sPm9TspmQxmTJy1IzkejP/6n3tt
-         Q2Y61lIVydNzmYqu12fKTxtf/XN+sbFKLqwt68WHfwgmDvf+4rCIh8ofcjSltcDqvbym
-         lMJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gbYmFCX/Ar69E0IhWMGtfk9Pb1qAWqNwvIoVlNOYA2A=;
-        b=mARcLLc7SVtkW0g8Z3pRUJQIKtBMba+kw04N3ECU/i4zoceP9B5S+XZ0fzLeML/du3
-         EHXIWxEuz2iZagrDjHoxrtVHd3RVlOZhkvGhVcVuG7/GX91iO6ZW98OZU4SpJbXXf0un
-         P76PYTvrxY9C5VdLC2yabxjBlh5SI6AHF9+77+3mRffhBXgyFLV5VjRLPVGl94sXzyT0
-         4aOy5m5qzMUb4LzEAH3e9TXqtuD959xaww+iR99pRgpTBsbmq8NZQPeDzZ699ZU+lek8
-         ElobHkrSPWIPVE0uJ1yCqZ/hDRIE8dTyHGIV3y1g0XcSFDNxKrGzA1Cv/eFrt2Ewfb+9
-         Ftbg==
-X-Gm-Message-State: AOAM530zzHhE2A6y/pjZQC5IiC4VTi8tEmTkhUNrdvR+vP8i3iUbdj/S
-        Zj1mv9YGwq4TYXlbt/psd/A+zg==
-X-Google-Smtp-Source: ABdhPJyaZSEh5KhM1jhyc45sWKfw/RFe5p0tMtiIA4bhFyomRIulSGzqbOgyFOA6yYTfQ6wqvIyQmQ==
-X-Received: by 2002:a05:600c:2108:: with SMTP id u8mr20431603wml.189.1594647023604;
-        Mon, 13 Jul 2020 06:30:23 -0700 (PDT)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id m4sm22022713wmi.48.2020.07.13.06.30.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 06:30:22 -0700 (PDT)
-Subject: Re: [PATCH 4/6] interconnect: qcom: Add SM8250 interconnect provider
- driver
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20200701134259.8055-1-jonathan@marek.ca>
- <20200701134259.8055-5-jonathan@marek.ca>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Autocrypt: addr=georgi.djakov@linaro.org; prefer-encrypt=mutual; keydata=
- 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
- KEmKjLDvB0pePJkdTw==
-Message-ID: <5a0eca0e-d496-d8af-ca41-0f07e9a3e01d@linaro.org>
-Date:   Mon, 13 Jul 2020 16:30:21 +0300
+        Mon, 13 Jul 2020 09:30:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594647056;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mE434XxwP5PyRWK73J9DHyYPMWNnnmIgbcOoIUclI7Y=;
+        b=MgyQBc6viKaoWUCGmN00h3bVNdpTJbhnV51FeDPxGp4aDsKwheujAkLGP4fv05+V8cbs7s
+        C9plRdop7ygmFJj+GmVqeXceL2Y1ySHBBdywjITFMaMM9OPsFZhjiLcc/JDXO/r+K7CkmD
+        cKQ1bWZ9q87XKdVBb5O7QrgHsti4vaw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-92-iIkJF5WuNCizTUn0qGtMwg-1; Mon, 13 Jul 2020 09:30:43 -0400
+X-MC-Unique: iIkJF5WuNCizTUn0qGtMwg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5956419200C1;
+        Mon, 13 Jul 2020 13:30:42 +0000 (UTC)
+Received: from localhost (ovpn-116-148.gru2.redhat.com [10.97.116.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C36385D9DC;
+        Mon, 13 Jul 2020 13:30:41 +0000 (UTC)
+Date:   Mon, 13 Jul 2020 10:30:40 -0300
+From:   Bruno Meneguele <bmeneg@redhat.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        Jason@zx2c4.com
+Subject: Re: [PATCH v2] doc:kmsg: explictly state the return value in case of
+ SEEK_CUR
+Message-ID: <20200713133040.GB4730@glitch>
+References: <20200710174423.10480-1-bmeneg@redhat.com>
+ <20200713022558.GC491026@jagdpanzerIV.localdomain>
+ <20200713131509.GC20226@alley>
 MIME-Version: 1.0
-In-Reply-To: <20200701134259.8055-5-jonathan@marek.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200713131509.GC20226@alley>
+X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bmeneg@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+--neYutvxvOLaeuPCA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for posting these patches!
+On Mon, Jul 13, 2020 at 03:15:09PM +0200, Petr Mladek wrote:
+> On Mon 2020-07-13 11:25:58, Sergey Senozhatsky wrote:
+> > On (20/07/10 14:44), Bruno Meneguele wrote:
+> > > The commit 625d3449788f ("Revert "kernel/printk: add kmsg SEEK_CUR
+> > > handling"") reverted a change done to the return value in case a SEEK=
+_CUR
+> > > operation was performed for kmsg buffer based on the fact that differ=
+ent
+> > > userspace apps were handling the new return value (-ESPIPE) in differ=
+ent
+> > > ways, breaking them.
+> > >=20
+> > > At the same time -ESPIPE was the wrong decision because kmsg /does su=
+pport/
+> > > seek() but doesn't follow the "normal" behavior userspace is used to.
+> > > Because of that and also considering the time -EINVAL has been used, =
+it was
+> > > decided to keep this way to avoid more userspace breakage.
+> > >=20
+> > > This patch adds an official statement to the kmsg documentation point=
+ing to
+> > > the current return value for SEEK_CUR, -EINVAL, thus userspace librar=
+ies
+> > > and apps can refer to it for a definitive guide on what to expect.
+> > >=20
+> > > Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
+> >=20
+> > Looks good to me,
+> > Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+>=20
+> The patch is committed in printk/linux.git, branch for-5.9.
+>=20
+> Thanks for v2.
+>=20
+> Best Regards,
+> Petr
+>=20
 
-On 7/1/20 16:42, Jonathan Marek wrote:
-> Add driver for the Qualcomm interconnect buses found in SM8250 based
-> platforms. The topology consists of several NoCs that are controlled by
-> a remote processor that collects the aggregated bandwidth for each
-> master-slave pairs.
-> 
-> Based on SC7180 driver and generated from downstream dts.
-> 
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
-[..]
-> +
-> +static const struct of_device_id qnoc_of_match[] = {
-> +	{ .compatible = "qcom,sm8250-aggre1-noc",
-> +	  .data = &sm8250_aggre1_noc},
-> +	{ .compatible = "qcom,sm8250-aggre2-noc",
-> +	  .data = &sm8250_aggre2_noc},
-> +	{ .compatible = "qcom,sm8250-compute-noc",
-> +	  .data = &sm8250_compute_noc},
-> +	{ .compatible = "qcom,sm8250-config-noc",
-> +	  .data = &sm8250_config_noc},
-> +	{ .compatible = "qcom,sm8250-dc-noc",
-> +	  .data = &sm8250_dc_noc},
-> +	{ .compatible = "qcom,sm8250-gem-noc",
-> +	  .data = &sm8250_gem_noc},
-> +	{ .compatible = "qcom,sm8250-ipa-virt",
-> +	  .data = &sm8250_ipa_virt},
-> +	{ .compatible = "qcom,sm8250-mc-virt",
-> +	  .data = &sm8250_mc_virt},
-> +	{ .compatible = "qcom,sm8250-mmss-noc",
-> +	  .data = &sm8250_mmss_noc},
-> +	{ .compatible = "qcom,sm8250-npu-noc",
-> +	  .data = &sm8250_npu_noc},
-> +	{ .compatible = "qcom,sm8250-system-noc",
-> +	  .data = &sm8250_system_noc},
-> +	{ .compatible = "qcom,sm8250-gem-noc-display",
-> +	  .data = &sm8250_gem_noc_display},
-> +	{ .compatible = "qcom,sm8250-mc-virt-display",
-> +	  .data = &sm8250_mc_virt_display},
-> +	{ .compatible = "qcom,sm8250-mmss-noc-display",
-> +	  .data = &sm8250_mmss_noc_display},
-> +	{ }
+Thanks Sergey and Petr.
 
-My main concern here are the display RSC nodes. We should not add the nodes
-for voting on the display RSC, but use the "qcom,bcm-voters" property in DT
-to list both "hlos" and "disp" as bcm voters for gem-noc, mc-virt and
-mmss-noc.
+--=20
+bmeneg=20
+PGP Key: http://bmeneg.com/pubkey.txt
 
-Thanks,
-Georgi
+--neYutvxvOLaeuPCA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl8MYf4ACgkQYdRkFR+R
+okO59wf5AYv1JZs5ZKpnv12HJJ1eEtnHywi+AUGzH+TDmlXLq8IE1mwqw+Nfj1TI
+k7whD+BozqecifygMC/5yVO166N/D+Aco3kI1LgySTlMXuojuL0OEvrdcKW596Us
+A4kDcZrtuzx4fwmKj+SjL07ga2WfE8G8uOtUPtmNl7I4zswayu6Ujh7sJ4trq+1T
+wLwU19MzcXw43Xs50lIJNd287SFzrEWQ27Eeif3zYGWFQFZX5VSUkGoRtNudMyCd
+kiBvXrzLphGa2hdHLChKGrqwBgKIpQ2GfBUmS5LBQdDkCHgtFfJxNxwrBQBx9NY1
+f7TXJmGbxfxEVaAkUpX2E/AkzgUpug==
+=jeqx
+-----END PGP SIGNATURE-----
+
+--neYutvxvOLaeuPCA--
+
