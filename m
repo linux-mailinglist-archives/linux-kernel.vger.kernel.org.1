@@ -2,269 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0B421E408
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 01:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F349621E410
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 01:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgGMXuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 19:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726750AbgGMXuW (ORCPT
+        id S1726545AbgGMX6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 19:58:22 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:5394 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbgGMX6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 19:50:22 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A3AC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 16:50:21 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id m18so2804149vkk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 16:50:21 -0700 (PDT)
+        Mon, 13 Jul 2020 19:58:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1594684701; x=1626220701;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=HAJsM7p3yWWbZecr/YgR+Y7RjgEW/A+Q1KqtkulViMo=;
+  b=mg3AZMB4fQ2jltNEy/3MacZO8VkvWfSiPW9BCh5BeOSdFrTVGan71DuQ
+   gGhbWRBL17b03Q96VKFJjcr7rW3v/Qkj4pP8x7xeiXbdIrgN67DBQoXPJ
+   OIbTjYyxGxMOKETUy6CFdbi9IBy/K/h3TT0f5wAQjLwpObv860DDIBQml
+   zDJxtq19fOq71F8bN2cUhHmUQNFWiydfbFchx9ScNK4OLd6vZwCcpMuHq
+   BWT6uRZOHIuV4QU8TvDHnY48AskrLXcK69wJRMrUlfWnVFYiBQi+oWjFf
+   bJEixzNeV2oFWo5Qajt7ED8+3kWoK0mKccTJrmvG1Jtp8AP38kd4ALcyH
+   g==;
+IronPort-SDR: +zgTvq1jYazdqFL9i4YBdxgh1Bog+uJb3Oysxn8mUxCgtxI2U4lYQLHuxlS+j9polN7UKhTKNY
+ MkWPBDkw2b5LXfCqz+lMC7CmLALGLWvj1MCpe9LlsjCcZlwTyH2JqSWjphkjIn68ZxlCcCgjE2
+ up710bLSleEtgYPVFOzHP9NxF63/2Dvd+P1mx1r9L5Vj6F0CoCTVuQcsvJ8E7h2W3/Nkwwjjgh
+ lyu9aBdJkVhTErWD2cCytqDty9qVT9IyxaJnBwOSHlpbYFFpjdGYoJQ/sWxKf/sDtmUK3v3DyK
+ /zs=
+X-IronPort-AV: E=Sophos;i="5.75,349,1589212800"; 
+   d="scan'208";a="142509185"
+Received: from mail-co1nam04lp2051.outbound.protection.outlook.com (HELO NAM04-CO1-obe.outbound.protection.outlook.com) ([104.47.45.51])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Jul 2020 07:58:20 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gAStohHlD1tNhrAkEyCEQIonqlU1CNdN2+6e9QG1wA11+Q/3khaVUoR6ZDhiirflWf7L+vEeuX4hVEUE6boHrk/2yOJ5hs/3mbkx5ULfOlHJ5TGEX1LHhmI6boKmXavNkF27LEOMMWxC/HebtNdxbgA5qo3uGniHH+mclSPQf5MaVQ2TBKBO1hYES778X0b2MQUlmtLyQhCmaasFsj2gIGeTHQ6hrhWu22+vdL5DaADIILVFz7C0sPBGrAYN2vB7qM80x1g6BTbZG5qRwk3KX+vAOJeH+OzO13h0RjIwTkpgdA5krz0eoG+Xpenw+diHSSnKEx95/AXfjdM/bopuKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=InDBfV4kQvJs7Jw4ECirMpO9f0ffhZxguX/LQAjAgSA=;
+ b=h+A2H+UGFSPWnYGp8B8gbnllP+I09pgctbB8MuF2FmKlN0CUvrtozmtCT5iz01YSI/leilXGUTHFq11fu5Dg/3SLc1bOKxIWfPz1NGXzQY5wVd+XPRb540brvuTI4zSrhExNwHJtHi/pEvFzRSMQeyp+u4J9/Vncn4II1KhqANQaSPUfmZxGiGOxezbW64PxtpmIMciIoxBSmgjwNh4kecX7sr4WNVefHLLMpUobNWxav/feq7iUxzMo/mIWRiqLknh1gulB4oUad/4HEC1cVmKnj/Iut5EfoUGMTlLNUygaxKQxhhOpkERfK9JD7ryINwbitezxcMWVL+GcaDtRkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lgQxQmARP/WE6n3KhyJoHJScnBfxrcZWoBTb7IbtaYk=;
-        b=jDDqNQnukw3/jTvoDdQxsgPYnc09gQPyF5K0qy/UhVucw3DS9HxKg1SYyelotW/K45
-         qOdrLfSboMjsvxgycfLXv3JBl7ukD1KxhYZmxYKsBHwjy1VHnLMuAyhSCnrgetyJ8AY4
-         56EPZUh/dh58M0HU25ec9t3lMoR89BBrVJ2cc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lgQxQmARP/WE6n3KhyJoHJScnBfxrcZWoBTb7IbtaYk=;
-        b=r9HbdvtIwcB8OX6Ja45Z6cYRAQkXKBWZ9TLyfc5Dp7agXULVj+vs/U8vcddD8HMLI1
-         XQ0zF6YnP/ix1daf2rnTWlnL+yholC+L/Zr0ISNm/y2e1fsennipzECAPLgb4x7dkV3W
-         IiZ1EASAmf8fS+8ZoEJHS3JUA2DWJG9JN/rwyB8wo60IEpROSJ/pRRtRREzPXv3NG+Hz
-         NHyiD9Sn2gGF4oxcZs4r2acBNXIzJ/KaLG+rFlhVMO15OjEZjhFdhMca4GKxK8VAO+OW
-         6DaGbsFBy+CJQmV0/xf0FRa2GbT2xc72hy8HJxwTYD3gm7mXly7DOQiAKwLmSxaahOXt
-         SQEg==
-X-Gm-Message-State: AOAM533NfUtp3OuzPzpr4G6wdeJ7dwhGxSAUqyXNgYVwpoR0WLZG5VaD
-        6CPyWcsU5anaQWcZVPXegt0SkEvAjBg=
-X-Google-Smtp-Source: ABdhPJzb6fEv+AKlZLY7qIpxokamgJsgRY/JQgvVBjHdZ5g87fSCJDa47VpQjg6rEzB6ySsIF4P+hg==
-X-Received: by 2002:a1f:4d41:: with SMTP id a62mr1851884vkb.41.1594684220808;
-        Mon, 13 Jul 2020 16:50:20 -0700 (PDT)
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
-        by smtp.gmail.com with ESMTPSA id x201sm1956061vsc.27.2020.07.13.16.50.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 16:50:19 -0700 (PDT)
-Received: by mail-ua1-f54.google.com with SMTP id h18so4859966uao.6
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 16:50:18 -0700 (PDT)
-X-Received: by 2002:ab0:6e8e:: with SMTP id b14mr1803461uav.0.1594684217995;
- Mon, 13 Jul 2020 16:50:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200710230224.2265647-1-dianders@chromium.org>
- <CAL_JsqKC5WtHb-coMCxMTDJ7CJcjVXcAxDT4J9N-Xyr=0uuURA@mail.gmail.com>
- <CAD=FV=XWKoTd_t2uRGpw3oa0Nij2EPeAJpOHhUipXFW07JN2qw@mail.gmail.com> <CAL_JsqLJM5nwNSdugMBLDVtjP97dikCm_AiHjnDs1jqBOFoaaQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqLJM5nwNSdugMBLDVtjP97dikCm_AiHjnDs1jqBOFoaaQ@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 13 Jul 2020 16:50:06 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UP0AHWr22U69TKcwwAefPCYMsfzymobczqmrdB6BOOhA@mail.gmail.com>
-Message-ID: <CAD=FV=UP0AHWr22U69TKcwwAefPCYMsfzymobczqmrdB6BOOhA@mail.gmail.com>
-Subject: Re: [PATCH 0/9] drm/msm: Avoid possible infinite probe deferral and
- speed booting
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=InDBfV4kQvJs7Jw4ECirMpO9f0ffhZxguX/LQAjAgSA=;
+ b=XCaVo5YkhxhzIdV8TzDEINpg+UzoJ4euLHHkg6hVdlUPdQqmpO0yEL2QZijtuIRnBnvGSZhsiSlr/wUPCxwbjWdAs9g4XwRIczr2k3sMTUmEBfTnwhiW9LWW+PFdNC+tgNEN7ddiL1OEpnYM3N9TT3Iw84N9ZVJc+/dA4KpnnIU=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by BY5PR04MB6549.namprd04.prod.outlook.com (2603:10b6:a03:1d2::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Mon, 13 Jul
+ 2020 23:58:18 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::4d72:27c:c075:c5e6]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::4d72:27c:c075:c5e6%7]) with mapi id 15.20.3174.026; Mon, 13 Jul 2020
+ 23:58:18 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
+        "sagi@grimberg.me" <sagi@grimberg.me>
+CC:     "baolin.wang7@gmail.com" <baolin.wang7@gmail.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] nvme: Remove redundant validation in nvme_start_ctrl()
+Thread-Topic: [PATCH] nvme: Remove redundant validation in nvme_start_ctrl()
+Thread-Index: AQHWWN9KvInmw7yU802p8iILluvbIQ==
+Date:   Mon, 13 Jul 2020 23:58:18 +0000
+Message-ID: <BYAPR04MB49655C05950BC7BDAD30629F86600@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <710eb90d9c1c125bdb37aae31ddc41a0f9782fa6.1594621435.git.baolin.wang@linux.alibaba.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [199.255.45.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1127165b-a821-4467-a63a-08d827889d9e
+x-ms-traffictypediagnostic: BY5PR04MB6549:
+x-microsoft-antispam-prvs: <BY5PR04MB65497D2A3FAA9D7F246E3CE386600@BY5PR04MB6549.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LohTDdsy7Hl+mHtq7YZHnwKz39l39fD5JFBPICYqF9zG7x5Rm0EBtRwy0CvK45X1OuV92G16GNZGdc3f1Dt/IjaIeW0b3kUuOnCI+90V676XvYqCodJhMOpjEYpPJVA1CFAvRFTtGmKp/MEvWtJ0sujy6losjQiQrr23ezMouy7AJ6pnu66gDAvzVJVdqLU4b9CfrgoTrL2tjaci8qxLh6Udl4E5FZdyiHy8+WCwN9MkxCijLC2lk+lH76UZoSJEt8l4IozbntxK0Pqhd4yvmDEDD+A7k454FjbCEvaKWbCS8laAyU9g4itu4H8JwCuxa92zWDSfKBzrePQHe/w3hA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(396003)(346002)(376002)(136003)(66476007)(8936002)(478600001)(9686003)(4326008)(55016002)(86362001)(110136005)(8676002)(54906003)(66446008)(26005)(6506007)(83380400001)(66946007)(2906002)(33656002)(52536014)(53546011)(5660300002)(7696005)(316002)(186003)(71200400001)(76116006)(66556008)(64756008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: JbScmvP6X2lthZzqK0ZQEYcxrhTIW+xFQhDy7NQyqSWbmqAB4I4YCQSs2yEi3rQuuKWqTlPWS15S2jZb1ZtRjOfhV1ISCKpVPGRMwctTgfyyJuIB48Xcv4daWK3FLyWALiaaVJ//HQcCr+/JzzjXQHpOz0kN8I5qjdeXs/n+UyuFT9uAuplTc1A1kBE3gzqoAxocnmRNciRu5LNERx8q29oviPbBJd2qs0XHGmNwZNzVuhAOBxtRF+U26JNNuFNJhAFdmwcUHYS6Tj41mw/Y7SRe0DlG//RkLYG4gtN2xM0vpP9v92n8JKi8l/dU1vqyfHmhn4lUTCaKywUYvYxIF7x1kHoVLrCQ4RVhyUwC1Eqo34C7djjrrmTLWrOBe7NrD4BZXVsnIE7Ut4Bok5905mwAWtrQvmkqYywn+xnZ7pPUaR8vJjDmrXOlCTH8imEH6hBwDGymTDl5xk7FE7O88jSoMOkXozrtN+gGEQvhkHE=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1127165b-a821-4467-a63a-08d827889d9e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2020 23:58:18.3952
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IzbIoHQIBCfmH9/Eim4nLpUMtjFRmCVJ57JXjzS5T9SwCPQ//SvGnpQpZGVExCnKZSxlCD/lw1lsSTsekILZaQR6VSeZI5Crw48Mvw5CqkU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6549
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Jul 13, 2020 at 1:25 PM Rob Herring <robh+dt@kernel.org> wrote:
->
-> On Mon, Jul 13, 2020 at 9:08 AM Doug Anderson <dianders@chromium.org> wrote:
-> >
-> > Hi,
-> >
-> > On Mon, Jul 13, 2020 at 7:11 AM Rob Herring <robh+dt@kernel.org> wrote:
-> > >
-> > > On Fri, Jul 10, 2020 at 5:02 PM Douglas Anderson <dianders@chromium.org> wrote:
-> > > >
-> > > > I found that if I ever had a little mistake in my kernel config,
-> > > > or device tree, or graphics driver that my system would sit in a loop
-> > > > at bootup trying again and again and again.  An example log was:
-> > >
-> > > Why do we care about optimizing the error case?
-> >
-> > It actually results in a _fully_ infinite loop.  That is: if anything
-> > small causes a component of DRM to fail to probe then the whole system
-> > doesn't boot because it just loops trying to probe over and over
-> > again.  The messages I put in the commit message are printed over and
-> > over and over again.
->
-> Sounds like a bug as that's not what should happen.
->
-> If you defer during boot (initcalls), then you'll be on the deferred
-> list until late_initcall and everything is retried. After
-> late_initcall, only devices getting added should trigger probing. But
-> maybe the adding and then removing a device is causing a re-trigger.
-
-Right, I'm nearly certain that the adding and then removing is causing
-a re-trigger.  I believe the loop would happen for any case where we
-have a probe function that:
-
-1. Adds devices.
-2. After adding devices it decides that it needs to defer.
-3. Removes the devices it added.
-4. Return -EPROBE_DEFER from its probe function.
-
-Specifically from what I know about how -EPROBE_DEFER works I'm not
-sure how it wouldn't cause an infinite loop in that case.
-
-Perhaps the missing part of my explanation, though, is why it never
-gets out of this infinite loop.  In my case I purposely made the
-bridge chip "ti-sn65dsi86.c" return an error (-EINVAL) in its probe
-every time.  Obviously I wasn't going to get a display up like this,
-but I just wanted to not loop forever at bootup.  I tracked down
-exactly why we get an - EPROBE_DEFER over and over in this case.
-
-You can see it in msm_dsi_host_register().  If some components haven't
-shown up when that function runs it will _always_ return
--EPROBE_DEFER.
-
-In my case, since I caused the bridge to fail to probe, those
-components will _never_ show up.  That means that
-msm_dsi_host_register() will _always_ return -EPROBE_DEFER.
-
-I haven't dug through all the DRM code enough, but it doesn't
-necessarily seem like the wrong behavior.  If the bridge driver or a
-panel was a module then (presumably) they could show up later and so
-it should be OK for it to defer, right?
-
-So with all that, it doesn't really feel like this is a bug so much as
-it's an unsupported use case.  The current deferral logic simply can't
-handle the case we're throwing at it.  You cannot return -EPROBE_DEFER
-if your probe function adds devices each time through the probe
-function.
-
-Assuming all the above makes sense, that means we're stuck with:
-
-a) This patch series, which makes us not add devices.
-
-b) Some other patch series which rearchitects the MSM graphics stack
-to not return -EPROBE_DEFER in this case.
-
-c) Smarten up the deferral system to somehow detect this loop.  I'm
-really not sure how to do this.  You'd have to somehow know that you
-keep adding the same devices over and over again and they didn't get
-us out of the deferral loop last time and so you should eventually
-give up.
-
-
-> > > >   msm ae00000.mdss: bound ae01000.mdp (ops 0xffffffe596e951f8)
-> > > >   msm_dsi ae94000.dsi: ae94000.dsi supply gdsc not found, using dummy regulator
-> > > >   msm_dsi_manager_register: failed to register mipi dsi host for DSI 0
-> > > >   [drm:ti_sn_bridge_probe] *ERROR* could not find any panel node
-> > > >   ...
-> > > >
-> > > > I finally tracked it down where this was happening:
-> > > >   - msm_pdev_probe() is called.
-> > > >   - msm_pdev_probe() registers drivers.  Registering drivers kicks
-> > > >     off processing of probe deferrals.
-> > > >   - component_master_add_with_match() could return -EPROBE_DEFER.
-> > > >     making msm_pdev_probe() return -EPROBE_DEFER.
-> > > >   - When msm_pdev_probe() returned the processing of probe deferrals
-> > > >     happens.
-> > > >   - Loop back to the start.
-> > > >
-> > > > It looks like we can fix this by marking "mdss" as a "simple-bus".
-> > > > I have no idea if people consider this the right thing to do or a
-> > > > hack.  Hopefully it's the right thing to do.  :-)
-> > >
-> > > It's a simple test. Do the child devices have any dependency on the
-> > > parent to probe and/or function? If so, not a simple-bus.
-> >
-> > Great!  You can see in the earlier patch in the series that the very
-> > first thing that happens when the parent device probes is that it
-> > calls devm_of_platform_populate().  That means no dependencies, right?
->
-> It should. But then I reviewed the MDSS binding today and it looks
-> like the MDSS is the interrupt parent for at least some child devices?
-
-Hrm.  How does that work?  Let's see...
-
-...ah, I believe it works because we don't try to grab interrupts in
-the probe path of our sub-components.  That means we probe them just
-fine without the parent.  I guess it has to be like this because
-otherwise we end up with circular dependencies.
-
-So there is a dependency of the child on the parent and of the parent
-on the child (the parent won't really probe until the children do).
-No idea if this means that the whole thing was architected in a
-non-optimal way or if it's just really hard to fit the DRM Component
-model into the Linux Driver model (or both).  Where does that leave us
-about whether "simple-bus" is OK, though?
-
-
-
-> >  So that means it's fine/correct to add "simple-bus" here?
-> >
-> >
-> > > > Once I do this I notice that my boot gets marginally faster (you
-> > > > don't need to probe the sub devices over and over) and also if I
-> > >
-> > > Can you quantify that?
-> >
-> > I'd say < 100 us.  I can try to quantify more if needed, but it wasn't
-> > the point of this patch.
-> >
-> >
-> > > Have you run with devlinks enabled. You need a command line option to
-> > > enable. That too should reduce deferred probes.
-> >
-> > Ah, good idea!  I will try it.  However, even with devlinks, if there
-> > is any chance of deferred probes then we need a fix like this.  The
-> > point of the patch isn't about speeding things up but about avoiding
-> > an infinite loop at bootup due to a small bug.
->
-> I think a deferred probe would only happen if there's a dependency we
-> don't track (but we're tracking about everything that's common). But
-> if there's some error, I'm not sure what would happen. Seems like a
-> good test case. :)
-
-Maybe now that I've pointed at msm_dsi_host_register() it will help
-clarify.  I don't know a ton about the MSM DRM world (mostly I just
-jumped in here because I was sick of getting stuck in this infinite
-loop), but I'm not sure how we can get around the problems.
-
-I guess in my specific case we could maybe determine that the bridge
-chip returned -EINVAL and thus would never probe, but what about if I
-put the bridge chip driver in a loadable kernel module?
-
-My device links knowledge is super weak (and I'm currently mostly
-focused on the slightly older 5.4 kernel if that matters) but are you
-saying that the system should just know which device would eventually
-provide the bridge/panel and would know not to probe the main DRM
-driver until after it probes?
-
-
-> > > > have a problem it doesn't loop forever (on my system it still
-> > > > gets upset about some stuck clocks in that case, but at least I
-> > > > can boot up).
-> > >
-> > > Deferred probe only runs when a device is added, so it's not like it
-> > > is continually running.
-> >
-> > If you don't mind looking at the code patch, see:
-> >
-> > https://lore.kernel.org/r/20200710160131.4.I358ea82de218ea5f4406572ade23f5e121297555@changeid/
-> >
-> > Specifically you can see that each time we try to probe we were
-> > calling of_platform_populate().  That appeared to be enough to trigger
-> > things.
->
-> Like I said, sounds like a bug. Even if 'simple-bus' is the
-> appropriate thing to do here, it should be fixed or at least
-> understood.
->
-> Rob
+On 7/12/20 23:31, Baolin Wang wrote:=0A=
+> We've already validated the 'kato' in nvme_start_keep_alive(), thus no=0A=
+> need to validate it again in nvme_start_ctrl(). Remove it.=0A=
+> =0A=
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>=0A=
+> ---=0A=
+>   drivers/nvme/host/core.c | 3 +--=0A=
+>   1 file changed, 1 insertion(+), 2 deletions(-)=0A=
+> =0A=
+> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c=0A=
+> index 3d00ea4..a95e26e 100644=0A=
+> --- a/drivers/nvme/host/core.c=0A=
+> +++ b/drivers/nvme/host/core.c=0A=
+> @@ -4313,8 +4313,7 @@ void nvme_stop_ctrl(struct nvme_ctrl *ctrl)=0A=
+>   =0A=
+>   void nvme_start_ctrl(struct nvme_ctrl *ctrl)=0A=
+>   {=0A=
+> -	if (ctrl->kato)=0A=
+> -		nvme_start_keep_alive(ctrl);=0A=
+> +	nvme_start_keep_alive(ctrl);=0A=
+>   =0A=
+>   	nvme_enable_aen(ctrl);=0A=
+>   =0A=
+> =0A=
+=0A=
+Since start keep alive is so small to make a function call how about we =0A=
+in-line the call ? untested patch :-=0A=
+=0A=
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c=0A=
+index 09abf2ca33f5..c7289c23658a 100644=0A=
+--- a/drivers/nvme/host/core.c=0A=
++++ b/drivers/nvme/host/core.c=0A=
+@@ -4311,8 +4311,9 @@ EXPORT_SYMBOL_GPL(nvme_stop_ctrl);=0A=
+=0A=
+  void nvme_start_ctrl(struct nvme_ctrl *ctrl)=0A=
+  {=0A=
++       /* if ctrl keep alive time out is set start keep alive */=0A=
+         if (ctrl->kato)=0A=
+-               nvme_start_keep_alive(ctrl);=0A=
++               queue_delayed_work(nvme_wq, &ctrl->ka_work, ctrl->kato * =
+=0A=
+HZ);=0A=
+=0A=
+         nvme_enable_aen(ctrl);=0A=
+=0A=
+root@iouring nvme (xarray) # git diff=0A=
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c=0A=
+index 09abf2ca33f5..08e1a6826b08 100644=0A=
+--- a/drivers/nvme/host/core.c=0A=
++++ b/drivers/nvme/host/core.c=0A=
+@@ -1031,14 +1031,6 @@ static void nvme_keep_alive_work(struct =0A=
+work_struct *work)=0A=
+         }=0A=
+  }=0A=
+=0A=
+-static void nvme_start_keep_alive(struct nvme_ctrl *ctrl)=0A=
+-{=0A=
+-       if (unlikely(ctrl->kato =3D=3D 0))=0A=
+-               return;=0A=
+-=0A=
+-       queue_delayed_work(nvme_wq, &ctrl->ka_work, ctrl->kato * HZ);=0A=
+-}=0A=
+-=0A=
+  void nvme_stop_keep_alive(struct nvme_ctrl *ctrl)=0A=
+  {=0A=
+         if (unlikely(ctrl->kato =3D=3D 0))=0A=
+@@ -4311,8 +4303,9 @@ EXPORT_SYMBOL_GPL(nvme_stop_ctrl);=0A=
+=0A=
+  void nvme_start_ctrl(struct nvme_ctrl *ctrl)=0A=
+  {=0A=
++       /* if ctrl keep alive time out is set start keep alive */=0A=
+         if (ctrl->kato)=0A=
+-               nvme_start_keep_alive(ctrl);=0A=
++               queue_delayed_work(nvme_wq, &ctrl->ka_work, ctrl->kato * =
+=0A=
+HZ);=0A=
+=0A=
+         nvme_enable_aen(ctrl);=0A=
+=0A=
+=0A=
