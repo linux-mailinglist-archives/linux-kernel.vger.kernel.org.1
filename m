@@ -2,138 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E51121DFA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8245121DF8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726506AbgGMS2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 14:28:37 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:39842 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbgGMS2g (ORCPT
+        id S1726660AbgGMSYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 14:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgGMSYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 14:28:36 -0400
-Received: by mail-io1-f67.google.com with SMTP id f23so14565713iof.6;
-        Mon, 13 Jul 2020 11:28:36 -0700 (PDT)
+        Mon, 13 Jul 2020 14:24:04 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C4DC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 11:24:03 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id q4so19170327lji.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 11:24:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HxoMMP+GmR1MWhGQitmQoUdOlu7DI+nmxZW7vTrxTMc=;
+        b=YWLazNttpXz7U6yf7fRrPaMpAVJSnGSy3J4OKIjP+wbGlwW8/bxlvRRJMw9uTNyLgz
+         44jsFV0dscbDiFmfO9Qg9C+CwM0denJs9ln4PoSarH5g3NUupUtouVYOlvKI0Y6IyoRM
+         XeoFH7x9TcixsKoqDl5c9lcm3xahj31hTNXiSauikd7S9e5AhB5giFcNGblxvLPWRT5M
+         /jfDeT66tRA5nivfQPr+CF8QUP35MSgLvIMpfJnHTzyA6fwjh26V0RgECmldn3C9WMTc
+         FMaPQ+LwksyO+fpmZBvmJ8Uavg0DDuuEuwJ52ibbAfhcuJs7f5XYxOCk6mOa6jAPRD6R
+         xqRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=exzPzBz5rQz6yIUMzfndVvT7Bt4rufTcgf1jSTFAjaU=;
-        b=WvoJAVlGVQAUNKrA8YzN3PZiILhesDuMKo4jqH0SIQRVc0uKD01lz9s6XK7MApJLZG
-         c1sFI4496/a2DjvkrAfv4TPkDmloUOt+omY93H8HQHybODGQ/WQDi1xGr1iv8FhQdrvA
-         NEQgt7BXkzQA1GEXIkMdqjsNWxk+AbVcpcjxhhJtGsGwIyZynry5QppOdwalzq1vDU98
-         ZefP0oS47cH4HL1KAtBdkWMDr9Zs2LQRI96HKxn5R5z17so/2LDvIMHWVxW+DcKwLmVL
-         eVvE97Q4IZRQUPOh7iQg+/h1YoGcv0ktDJp7GBkZSOfLpBgQ7i1xqfM0Qhm/P+7PURrq
-         Hciw==
-X-Gm-Message-State: AOAM530lEzF5W+Ocgbu9T/8DclkGZZ8X1uEL6SRpC5juHTqX6+CWPzQ5
-        rNZsN7xPxAkcGvSaT0NVDl4E8kp9nw==
-X-Google-Smtp-Source: ABdhPJx/RSgVGDz76Jr+1HIdObjieMEVPnIaoLCgXhk0khUXgjR8OPb24ZvuverYsFMOBnulNbjmyA==
-X-Received: by 2002:a05:6638:11cb:: with SMTP id g11mr1566054jas.14.1594664915892;
-        Mon, 13 Jul 2020 11:28:35 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id o16sm8451566ilt.59.2020.07.13.11.28.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 11:28:35 -0700 (PDT)
-Received: (nullmailer pid 499962 invoked by uid 1000);
-        Mon, 13 Jul 2020 18:28:34 -0000
-Date:   Mon, 13 Jul 2020 12:28:34 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] dt-bindings: remoteproc: Add common TI SCI rproc
- bindings
-Message-ID: <20200713182834.GA494208@bogus>
-References: <20200612224914.7634-1-s-anna@ti.com>
- <20200612224914.7634-4-s-anna@ti.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HxoMMP+GmR1MWhGQitmQoUdOlu7DI+nmxZW7vTrxTMc=;
+        b=g3eimCFlXoYAx9205DAfMgNBWjMS/9f5BnQeXT91zYCQxu1d3sMfe8lFdLub2RsVoj
+         jsIDGzNWXRvj0Ky9CkUvdbi0+iLeRnv5uyWPkDCo0ETzVDV/1PVdV2sZDPv54Ryt+15o
+         4Zu676tcGpyDDWSMAzms/WHoYz0tqOp1NN7MgEovgo+JPmL1ESEW5g39Af64B8GEwFFg
+         yZL6jSBJutQOzoU3/k4EegJaAah8NVPB5X6nThDpk22iig6I0T8qOtJ/o85WkKxieloS
+         cK6zX8+uv9F8Vel2+FKcYweMrmBEMbVeady/beM6mgxk1EGw1QowQtuUui0h6jvMPcOS
+         gzWg==
+X-Gm-Message-State: AOAM530MtqmG7ThNat/p+2Q0AWheoIwBe/EHE44NHOshD5GIYLAXvA9V
+        TH1T6yAn4vBFqG8id3Gipec=
+X-Google-Smtp-Source: ABdhPJx8FToCxY+SLBzkQJdlkSftBwCRV7YPXcRy9mW6kD2inBLKAN8BTmRzXkZwl7qJHqaNeImZUg==
+X-Received: by 2002:a2e:8794:: with SMTP id n20mr429972lji.359.1594664642274;
+        Mon, 13 Jul 2020 11:24:02 -0700 (PDT)
+Received: from [192.168.0.160] (10.177.smarthome.spb.ru. [109.71.177.10])
+        by smtp.gmail.com with ESMTPSA id c14sm4773868lfb.69.2020.07.13.11.24.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jul 2020 11:24:01 -0700 (PDT)
+Subject: Re: [PATCH] staging: r8188eu: remove unused members of struct
+ xmit_buf
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     devel@driverdev.osuosl.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Nishka Dasgupta <nishkadg.linux@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Soumyajit Deb <debsoumyajit100@gmail.com>
+References: <20200712123821.553420-1-insafonov@gmail.com>
+ <20200713131607.GR2549@kadam> <20200713142305.GV2549@kadam>
+From:   Ivan Safonov <insafonov@gmail.com>
+Message-ID: <5fdeb963-2729-dbc5-3fba-85998e28d8d5@gmail.com>
+Date:   Mon, 13 Jul 2020 21:28:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200612224914.7634-4-s-anna@ti.com>
+In-Reply-To: <20200713142305.GV2549@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 05:49:11PM -0500, Suman Anna wrote:
-> Add a bindings document that lists the common TI SCI properties
-> used by the K3 R5F and DSP remoteproc devices.
-> 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
-> v3: New Patch refactoring out the common ti-sci-proc properties
-> 
->  .../bindings/remoteproc/ti,k3-sci-proc.yaml   | 51 +++++++++++++++++++
->  1 file changed, 51 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-sci-proc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-sci-proc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-sci-proc.yaml
-> new file mode 100644
-> index 000000000000..883b6e9b5282
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-sci-proc.yaml
-> @@ -0,0 +1,51 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/remoteproc/ti,k3-sci-proc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Common TI K3 remote processor device bindings
-> +
-> +maintainers:
-> +  - Suman Anna <s-anna@ti.com>
-> +
-> +description: |
-> +  The TI K3 family of SoCs usually have one or more remote processor sub-systems
-> +  like the dual-core R5F sub-system or a C66x or C71x DSP processor subsystem.
-> +  The device management of these remote processors is managed by a dedicated
-> +  System Processor, and the communication with that processor is managed through
-> +  the TI-SCI protocol.
-> +
-> +  Each remote processor device node should define a common set of properties
-> +  that allows the System Processor firmware to perform the device management
-> +  such as powering the IPs, asserting/deasserting the resets for each of these
-> +  processors.
-> +
-> +properties:
-> +  ti,sci:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Should be a phandle to the TI-SCI System Controller node
-> +
-> +  ti,sci-dev-id:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      Should contain the TI-SCI device id corresponding to the remote processor
-> +      core. Please refer to the corresponding System Controller documentation
-> +      for valid values.
-> +
-> +  ti,sci-proc-ids:
-> +    description: Should contain a single tuple of <proc_id host_id>.
-> +    allOf:
+On 7/13/20 5:23 PM, Dan Carpenter wrote:
+> On Mon, Jul 13, 2020 at 04:16:07PM +0300, Dan Carpenter wrote:
+>> On Sun, Jul 12, 2020 at 03:38:21PM +0300, Ivan Safonov wrote:
+>>> Remove unused members of struct xmit_buf: alloc_sz, ff_hwaddr,
+>>> dma_transfer_addr, bpending and last.
+>>>
+>>> Signed-off-by: Ivan Safonov <insafonov@gmail.com>
+>>> ---
+>>>   drivers/staging/rtl8188eu/include/rtw_xmit.h  | 5 -----
+>>>   drivers/staging/rtl8188eu/os_dep/xmit_linux.c | 1 -
+>>>   2 files changed, 6 deletions(-)
+>>>
+>>> diff --git a/drivers/staging/rtl8188eu/include/rtw_xmit.h b/drivers/staging/rtl8188eu/include/rtw_xmit.h
+>>> index 12d16e98176a..3c03987c81a1 100644
+>>> --- a/drivers/staging/rtl8188eu/include/rtw_xmit.h
+>>> +++ b/drivers/staging/rtl8188eu/include/rtw_xmit.h
+>>> @@ -193,14 +193,9 @@ struct xmit_buf {
+>>>   	void *priv_data;
+>>>   	u16 ext_tag; /*  0: Normal xmitbuf, 1: extension xmitbuf. */
+>>>   	u16 flags;
+>>> -	u32 alloc_sz;
+>>>   	u32  len;
+>>>   	struct submit_ctx *sctx;
+>>> -	u32	ff_hwaddr;
+>>>   	struct urb *pxmit_urb[8];
+>>> -	dma_addr_t dma_transfer_addr;	/* (in) dma addr for transfer_buffer */
+>>> -	u8 bpending[8];
+>>> -	int last[8];
+>>>   };
+>>>   
+>>>   struct xmit_frame {
+>>> diff --git a/drivers/staging/rtl8188eu/os_dep/xmit_linux.c b/drivers/staging/rtl8188eu/os_dep/xmit_linux.c
+>>> index 017e1d628461..61ced1160951 100644
+>>> --- a/drivers/staging/rtl8188eu/os_dep/xmit_linux.c
+>>> +++ b/drivers/staging/rtl8188eu/os_dep/xmit_linux.c
+>>> @@ -24,7 +24,6 @@ int rtw_os_xmit_resource_alloc(struct adapter *padapter,
+>>>   		return _FAIL;
+>>>   
+>>>   	pxmitbuf->pbuf = PTR_ALIGN(pxmitbuf->pallocated_buf, XMITBUF_ALIGN_SZ);
+>>
+>> Not related to this patch but kmalloc always returns data which is at
+>> least ARCH_KMALLOC_MINALIGN aligned which is never less than
+>> XMITBUF_ALIGN_SZ (4) so this is a no-op.
 
-You can drop allOf now.
+4-byte alignment for 8-byte pointer (for example void *priv_data) on 
+64-bit arch is an _error_. It’s good that kmalloc (and vmalloc) is 
+already aligned to 8 bytes.
 
-> +      - $ref: /schemas/types.yaml#/definitions/uint32-array
-> +      - maxItems: 1
-> +        items:
-
-You don't need 'maxItems' or 1st 'items' here.
-
-> +          items:
-> +            - description: TI-SCI processor id for the remote processor device
-> +            - description: TI-SCI host id to which processor control
-> +                           ownership should be transferred to
-> +
-> +required:
-> +  - ti,sci
-> +  - ti,sci-dev-id
-> +  - ti,sci-proc-ids
-> -- 
-> 2.26.0
 > 
+> The alignment in the driver is pretty crazy because it's all unnecessary
+> and so complicated.  Every allocation is 4 bytes extra so we can align
+> it later.
+> 
+> Also every buffer is called "pbuf" which stands for pointer to buffer.
+> "pallocated_buf" is not really useful either.
+> 
+> I tried to look at this to see if we could change the alignment, and
+> it's complicated because of the naming and the alignment.
+> 
+> regards,
+> dan carpenter
+> 
+
+I have already fixed 4 places with unnecessary alignment, but, alas, 
+there is no great desire to test them on real hardware.
+
+Ivan.
