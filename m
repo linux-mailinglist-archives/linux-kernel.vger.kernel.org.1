@@ -2,69 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC7321D1E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23FD21D1EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729108AbgGMIjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 04:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgGMIjx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 04:39:53 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B174C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:39:53 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id b9so5220677plx.6
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:39:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=w1m5r1SnQlVKdfmNoCQzl7LVA11uPmOGK6mae5T5VDQ=;
-        b=lZLLeojpPOHjwMVR95OCSkQPAIq5YNTEgnyI+XfXmOWneUHVuffwyXCdoBdkJ9v5N5
-         7k1GFMABHPW9JoZKBK1e9CFCoD943K6d7jtEwIF9qtfsSgzAtQraEfLWrxws0IYpJbIb
-         ADIitL7IyMuux8L3CSHFY1BlF3IyXQlpvn/DXPh+fGDRAHddVTyznZVCjtORGZ07qF1H
-         tAS6Zz/geb8fzAjVQA+Vmd0bBKs+NBxMTnOj6Gc/u3Su0FNaKKo1s/eNUwiM7q75dgRX
-         TvRGk+8/1YTbbijZ0tWlprPF2Mkq2CN98dZGY00TCWhKR9F0meRmLhg3nSnw9o8o6ZkR
-         0INw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=w1m5r1SnQlVKdfmNoCQzl7LVA11uPmOGK6mae5T5VDQ=;
-        b=d+kx4/3Upuzzq9cq76x4JIJqD2pc/kyub4tJ6PGqwL0h5aYvX6K8JfhuGlZ2CHgoP1
-         wqBU+MHV/3CMpqBCTWVXPDXtlkugL9Zf3sD+e+frl6mJi6EC7EZgGvyTCdci0cnl0Hyj
-         WYlGHtsjlr4/4T1gjFO8vdFloa7w9A60/Mp5TIXaMEl4P7IWYf+XVIM+HKVlVcLSumoV
-         Pxe0lkn7rJP/2q23B1r1o0rAzpttmP+nzJKXNSTcAOpOmsMDVdR100cuwWhLpl5lzhtn
-         u7QxeFE706sBvDTxdxHtCBskrxWsuwLF2YqoJKhBANpCwuNl1iNojMuzlaRmhswTFExa
-         4iLg==
-X-Gm-Message-State: AOAM530ripJWY0Zr4VI9dq8C3/0u594qZmDSXgz6QYoZiYxqLWKd7EGs
-        vLQT+zMClUIAJQ2i0e6jEpqvSfeZ47j7JX9i0VM=
-X-Google-Smtp-Source: ABdhPJza7ksF0Bxzp4CvUgia17XIf3OItb68u58j1lOY6+lQjVc5pktVVQeJAa0M7+FZPV5Fjmsm+Z8R+DRvvW3QZMQ=
-X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr17977247pjp.24.1594629592677;
- Mon, 13 Jul 2020 01:39:52 -0700 (PDT)
+        id S1729003AbgGMIlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 04:41:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725830AbgGMIlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 04:41:16 -0400
+Received: from localhost (unknown [84.241.194.92])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D6692065D;
+        Mon, 13 Jul 2020 08:41:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594629676;
+        bh=MsAb3MjB616bGxcV0JPjDtRGwlS8I2nFDbRd+BfX26c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MXm0KiOxO2k0zw4i2ze76Wz8PqM4Kkrf6Uog/SNndD8gcGntR7kRRQVZgZlQFIOZG
+         za2aAZ1FPtawtQLofe5zuUB+WQ0mxquf+CseShjLkc7AiZyGjCC8zK8C0diQs949aJ
+         6UhMmliBHcdc6eyWokws5haM/VBd5pjlxDLeVkGg=
+Date:   Mon, 13 Jul 2020 10:41:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Qiwu Huang <yanziily@gmail.com>
+Cc:     sre@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jiangfei1@xiaomi.com,
+        Qiwu Huang <huangqiwu@xiaomi.com>
+Subject: Re: [PATCH v2 1/5] power: supply: core: add quick charge type
+ property
+Message-ID: <20200713084113.GC215949@kroah.com>
+References: <cover.1594612572.git.huangqiwu@xiaomi.com>
+ <38b7b1dc10cf608faceae923374791a52a450919.1594612572.git.huangqiwu@xiaomi.com>
 MIME-Version: 1.0
-Received: by 2002:a17:90a:b00d:0:0:0:0 with HTTP; Mon, 13 Jul 2020 01:39:52
- -0700 (PDT)
-Reply-To: mrsfatimakargbo@outlook.com
-From:   Mr Suleman Bello <drericp276@gmail.com>
-Date:   Mon, 13 Jul 2020 01:39:52 -0700
-Message-ID: <CAO2Re2H0hpC0Pf7OhxM6C3n81hoAxSiJ-LjDFPY+Mp8rQ9T6_w@mail.gmail.com>
-Subject: BE MY PARTNER IN THIS BUSINESS
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <38b7b1dc10cf608faceae923374791a52a450919.1594612572.git.huangqiwu@xiaomi.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear Friend,
+On Mon, Jul 13, 2020 at 12:03:36PM +0800, Qiwu Huang wrote:
+> From: Qiwu Huang <huangqiwu@xiaomi.com>
+> 
+> Reports the kind of quick charge type based on
+> different adapter power. UI will show different
+> animation effect for different quick charge type.
+> 
+> Signed-off-by: Qiwu Huang <huangqiwu@xiaomi.com>
+> ---
+>  Documentation/ABI/testing/sysfs-class-power | 10 ++++++++++
+>  drivers/power/supply/power_supply_sysfs.c   |  1 +
+>  include/linux/power_supply.h                |  1 +
+>  3 files changed, 12 insertions(+)
 
-I am Mr.Suleman Bello from Burkina faso in West Africa, I have an
-important business discussion I wish to share with you which I believe
-will interest you, and you are going to benefit from it. We shall go
-over the details once i receive your urgent response. let me know you
-receive my email, so i can explain more.
+What changed from v1 of this patch?  SHouldn't that always be below the
+--- line?
 
-Regards,
-Mr.Suleman Bello.
+
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/ABI/testing/sysfs-class-power
+> index 216d61a22f1e..d3169d47e359 100644
+> --- a/Documentation/ABI/testing/sysfs-class-power
+> +++ b/Documentation/ABI/testing/sysfs-class-power
+> @@ -708,3 +708,13 @@ Description:
+>  
+>  		Access: Read
+>  		Valid values: 1-31
+> +
+> +What:		/sys/class/power_supply/<supply_name>/quick_charge_type
+> +Date:		Jul 2020
+> +Contact:	Fei Jiang <jiangfei1@xiaomi.com>
+> +		Description:
+> +		Reports the kind of quick charge type based on different adapter power.
+
+What are the allowed types here?  Shouldn't that also be an enumerated
+type with a predefined string?
+
+thanks,
+
+greg k-h
