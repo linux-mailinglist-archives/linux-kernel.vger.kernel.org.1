@@ -2,196 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D26F21D0FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8922A21D12F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728488AbgGMH5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 03:57:03 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9092 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725818AbgGMH5C (ORCPT
+        id S1728599AbgGMIAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 04:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbgGMIAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 03:57:02 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06D757K7081399;
-        Mon, 13 Jul 2020 03:56:57 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3279a9u8e1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jul 2020 03:56:56 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06D7tM6T005302;
-        Mon, 13 Jul 2020 07:56:55 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 327527syan-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jul 2020 07:56:55 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06D7uqqp59244560
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Jul 2020 07:56:52 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C2B2952057;
-        Mon, 13 Jul 2020 07:56:52 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.53.244])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 935C25204F;
-        Mon, 13 Jul 2020 07:56:51 +0000 (GMT)
-From:   latha@linux.vnet.ibm.com
-To:     trenn@suse.com, shuah@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
-Subject: [PATCH] cpupower: Provide offline CPU information for cpuidle-set and cpufreq-set options
-Date:   Mon, 13 Jul 2020 13:26:47 +0530
-Message-Id: <20200713075647.70036-1-latha@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.19.1
+        Mon, 13 Jul 2020 04:00:10 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F362DC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:00:09 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id s10so14700859wrw.12
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g0025PyTY/eWJewtXJ8I/jkg/HPx62AopbKf5qsThd0=;
+        b=shosgGIqEV5Mi43/el0Qv3n5SrwGOeatsv60Jx9hdx9avXnYhxdW+EndMvsg1rCMjv
+         shGen7E57TNPkoGMqud+THaV6Pxm5a1cFSN6eJHKBEgy7yv4jFRHSFf7f/eI9o8m9zNx
+         fQ6UB5BXKUASSQZX4ijyMpS7qqQ7EtQqCB4U4PFCY5Z3UAtutQ3ZPu9eccfAugAxDvzy
+         A7cVnIeVlLgB7VEEpche2qEH/rMQNUvpv+jsED0gn2TRhxSWffJUk5M/R2dbASwUvjaF
+         X1lLwy4wo3Bv//etcDgghdkUqRB+Xy1/GjvCTbSuCMnajegNbsvInGm5DwUue+WQJFea
+         0ZXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g0025PyTY/eWJewtXJ8I/jkg/HPx62AopbKf5qsThd0=;
+        b=iorK9MjoTQCwwdEH+k3ygkpNWblBV5lOtwhOY4yqKQIOKfPInCoJJ4T7YgdIPiKJ8O
+         TpjEwnx7SNJlGgN48VTcPb/rltqdNQisLxEySjKMrLJGCNXUriOOJgYjTcEudCmElNG7
+         Ra+SaYr2IHc5Ivhk1XYH8inx3WbucOVfe/olDs1V//vv7Wy50upnhxdIwP2fPctGhgpU
+         g3OjXjhl6g+NZ2N+PkEE2zuh2UO6XwN+IJ8VCIZ+CwlejiXjMCuaTKiWVdo3C+D8NEef
+         SO08LOq/hCDVBOVMBIAQdZC5bxjDQiV+CTtS2WHxsZ7HaKy9eCDBelyMSS1uc5aaTP5u
+         d1Zw==
+X-Gm-Message-State: AOAM530+pA9gDw4Q/QzJbYFOOgK02eUe++d3ViT0bsmMpxeTXUfNdyo+
+        /vCltqmqg6ggdQgecc96hXcVDA==
+X-Google-Smtp-Source: ABdhPJwOcTyhG/RhUEn4cJVs5ajgV1jbVXvClhi9FjHPoCdiHUpma4xUuuP55L87YUuycheYAyP02A==
+X-Received: by 2002:a5d:464e:: with SMTP id j14mr78277009wrs.393.1594627207673;
+        Mon, 13 Jul 2020 01:00:07 -0700 (PDT)
+Received: from localhost.localdomain ([2.31.163.6])
+        by smtp.gmail.com with ESMTPSA id 33sm24383549wri.16.2020.07.13.01.00.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 01:00:06 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH v2 00/24] Set 3: Fix another set of SCSI related W=1 warnings
+Date:   Mon, 13 Jul 2020 08:59:37 +0100
+Message-Id: <20200713080001.128044-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-13_04:2020-07-10,2020-07-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 impostorscore=0 priorityscore=1501 suspectscore=2
- clxscore=1011 spamscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007130053
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-When a user tries to modify cpuidle or cpufreq properties on offline
-CPUs, the tool returns success (exit status 0) but also does not provide
-any warning message regarding offline cpus that may have been specified
-but left unchanged. In case of all or a few CPUs being offline, it can be
-difficult to keep track of which CPUs didn't get the new frequency or idle
-state set. Silent failures are difficult to keep track of when there are a
-huge number of CPUs on which the action is performed.
+Slowly working through the SCSI related ones.  There are many.
 
-This patch adds an additional message if the user attempts to modify
-offline cpus.
+This brings the total of W=1 SCSI wanings from 1690 in v5.8-rc1 to 1109.
 
-Reported-by: Pavithra R. Prakash <pavrampu@in.ibm.com>
-Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
----
- tools/power/cpupower/utils/cpufreq-set.c | 24 ++++++++++++++++++++++--
- tools/power/cpupower/utils/cpuidle-set.c | 21 ++++++++++++++++++++-
- 2 files changed, 42 insertions(+), 3 deletions(-)
+Changelog:
 
-diff --git a/tools/power/cpupower/utils/cpufreq-set.c b/tools/power/cpupower/utils/cpufreq-set.c
-index 6ed82fba5aaa..87031120582a 100644
---- a/tools/power/cpupower/utils/cpufreq-set.c
-+++ b/tools/power/cpupower/utils/cpufreq-set.c
-@@ -195,10 +195,14 @@ int cmd_freq_set(int argc, char **argv)
- 	extern int optind, opterr, optopt;
- 	int ret = 0, cont = 1;
- 	int double_parm = 0, related = 0, policychange = 0;
-+	int str_len = 0;
- 	unsigned long freq = 0;
- 	char gov[20];
-+	char *offline_cpus_str = NULL;
- 	unsigned int cpu;
+v1 => v2
+ - Collected *-bys
+ - Removed inert function-calls when removing unused variables
+   - As suggested by James Bottomley
  
-+	struct bitmask *offline_cpus = NULL;
-+
- 	struct cpufreq_policy new_pol = {
- 		.min = 0,
- 		.max = 0,
-@@ -311,14 +315,21 @@ int cmd_freq_set(int argc, char **argv)
- 		}
- 	}
- 
-+	offline_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
-+	str_len = sysconf(_SC_NPROCESSORS_CONF) * 5;
-+	offline_cpus_str = malloc(sizeof(char) * str_len);
- 
- 	/* loop over CPUs */
- 	for (cpu = bitmask_first(cpus_chosen);
- 	     cpu <= bitmask_last(cpus_chosen); cpu++) {
- 
--		if (!bitmask_isbitset(cpus_chosen, cpu) ||
--		    cpupower_is_cpu_online(cpu) != 1)
-+		if (!bitmask_isbitset(cpus_chosen, cpu))
-+			continue;
-+
-+		if (cpupower_is_cpu_online(cpu) != 1) {
-+			bitmask_setbit(offline_cpus, cpu);
- 			continue;
-+		}
- 
- 		printf(_("Setting cpu: %d\n"), cpu);
- 		ret = do_one_cpu(cpu, &new_pol, freq, policychange);
-@@ -328,5 +339,14 @@ int cmd_freq_set(int argc, char **argv)
- 		}
- 	}
- 
-+	if (!bitmask_isallclear(offline_cpus)) {
-+		bitmask_displaylist(offline_cpus_str, str_len, offline_cpus);
-+		printf(_("Following CPUs are offline:\n%s\n"),
-+			 offline_cpus_str);
-+		printf(_("cpupower set operation was not performed on them\n"));
-+	}
-+	free(offline_cpus_str);
-+	bitmask_free(offline_cpus);
-+
- 	return 0;
- }
-diff --git a/tools/power/cpupower/utils/cpuidle-set.c b/tools/power/cpupower/utils/cpuidle-set.c
-index 569f268f4c7f..adf6543fd3d6 100644
---- a/tools/power/cpupower/utils/cpuidle-set.c
-+++ b/tools/power/cpupower/utils/cpuidle-set.c
-@@ -27,9 +27,12 @@ int cmd_idle_set(int argc, char **argv)
- 	extern char *optarg;
- 	extern int optind, opterr, optopt;
- 	int ret = 0, cont = 1, param = 0, disabled;
-+	int str_len = 0;
- 	unsigned long long latency = 0, state_latency;
- 	unsigned int cpu = 0, idlestate = 0, idlestates = 0;
- 	char *endptr;
-+	char *offline_cpus_str = NULL;
-+	struct bitmask *offline_cpus = NULL;
- 
- 	do {
- 		ret = getopt_long(argc, argv, "d:e:ED:", info_opts, NULL);
-@@ -99,14 +102,20 @@ int cmd_idle_set(int argc, char **argv)
- 	if (bitmask_isallclear(cpus_chosen))
- 		bitmask_setall(cpus_chosen);
- 
-+	offline_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
-+	str_len = sysconf(_SC_NPROCESSORS_CONF) * 5;
-+	offline_cpus_str = (void *)malloc(sizeof(char) * str_len);
-+
- 	for (cpu = bitmask_first(cpus_chosen);
- 	     cpu <= bitmask_last(cpus_chosen); cpu++) {
- 
- 		if (!bitmask_isbitset(cpus_chosen, cpu))
- 			continue;
- 
--		if (cpupower_is_cpu_online(cpu) != 1)
-+		if (cpupower_is_cpu_online(cpu) != 1) {
-+			bitmask_setbit(offline_cpus, cpu);
- 			continue;
-+		}
- 
- 		idlestates = cpuidle_state_count(cpu);
- 		if (idlestates <= 0)
-@@ -181,5 +190,15 @@ int cmd_idle_set(int argc, char **argv)
- 			break;
- 		}
- 	}
-+
-+	if (!bitmask_isallclear(offline_cpus)) {
-+		bitmask_displaylist(offline_cpus_str, str_len, offline_cpus);
-+		printf(_("Following CPUs are offline:\n%s\n"),
-+			 offline_cpus_str);
-+		printf(_("CPU idle operation was not performed on them\n"));
-+	}
-+	free(offline_cpus_str);
-+	bitmask_free(offline_cpus);
-+
- 	return EXIT_SUCCESS;
- }
+Lee Jones (24):
+  scsi: aacraid: aachba: Repair two kerneldoc headers
+  scsi: aacraid: commctrl: Fix a few kerneldoc issues
+  scsi: aacraid: dpcsup: Fix logical bug when !DBG
+  scsi: aacraid: dpcsup: Remove unused variable 'status'
+  scsi: aacraid: dpcsup: Demote partially documented function header
+  scsi: aic94xx: aic94xx_seq: Document 'lseq' and repair
+    asd_update_port_links() header
+  scsi: aacraid: commsup: Fix a bunch of function header issues
+  scsi: aic94xx: aic94xx_scb: Fix a couple of formatting and bitrot
+    issues
+  scsi: aacraid: rx: Fill in the very parameter descriptions for
+    rx_sync_cmd()
+  scsi: pm8001: pm8001_ctl: Provide descriptions for the many
+    undocumented 'attr's
+  scsi: ipr: Fix a mountain of kerneldoc misdemeanours
+  scsi: virtio_scsi: Demote seemingly unintentional kerneldoc header
+  scsi: ipr: Remove a bunch of set but checked variables
+  scsi: ipr: Fix struct packed-not-aligned issues
+  scsi: myrs: Demote obvious misuse of kerneldoc to standard comment
+    blocks
+  scsi: megaraid: Fix a whole bunch of function header formatting issues
+  scsi: be2iscsi: be_iscsi: Fix API/documentation slip
+  scsi: be2iscsi: be_main: Fix misdocumentation of 'pcontext'
+  scsi: be2iscsi: be_mgmt: Add missing function parameter description
+  scsi: lpfc: lpfc_nvme: Correct some pretty obvious misdocumentation
+  scsi: aic7xxx: aic79xx_osm: Remove unused variable 'ahd'
+  scsi: aic7xxx: aic79xx_osm: Remove unused variables 'wait' and
+    'paused'
+  scsi: aic7xxx: aic79xx_osm: Fix 'amount_xferred' set but not used
+    issue
+  scsi: aic7xxx: aic79xx_osm: Remove set but unused variabes
+    'saved_scsiid' and 'saved_modes'
+
+ drivers/scsi/aacraid/aachba.c      |   5 +-
+ drivers/scsi/aacraid/commctrl.c    |  14 +-
+ drivers/scsi/aacraid/commsup.c     |  12 +-
+ drivers/scsi/aacraid/dpcsup.c      |  15 +-
+ drivers/scsi/aacraid/rx.c          |  12 +-
+ drivers/scsi/aic7xxx/aic79xx_osm.c |  14 +-
+ drivers/scsi/aic94xx/aic94xx_scb.c |   6 +-
+ drivers/scsi/aic94xx/aic94xx_seq.c |   6 +-
+ drivers/scsi/be2iscsi/be_iscsi.c   |  11 +-
+ drivers/scsi/be2iscsi/be_main.c    |   4 +-
+ drivers/scsi/be2iscsi/be_mgmt.c    |   3 +-
+ drivers/scsi/ipr.c                 |  90 +++++++-----
+ drivers/scsi/ipr.h                 |   4 +-
+ drivers/scsi/lpfc/lpfc_nvme.c      |  38 +++--
+ drivers/scsi/megaraid.c            | 218 ++++++++++++++---------------
+ drivers/scsi/myrs.c                |  34 ++---
+ drivers/scsi/pm8001/pm8001_ctl.c   |  14 ++
+ drivers/scsi/virtio_scsi.c         |   2 +-
+ 18 files changed, 273 insertions(+), 229 deletions(-)
+
 -- 
-2.19.1
+2.25.1
 
