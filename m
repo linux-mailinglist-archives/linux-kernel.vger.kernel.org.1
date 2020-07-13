@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C30C21D3D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3325F21D3D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgGMKei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 06:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
+        id S1729494AbgGMKfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 06:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgGMKeh (ORCPT
+        with ESMTP id S1727035AbgGMKfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:34:37 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651BFC061755;
-        Mon, 13 Jul 2020 03:34:37 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 07976BC06E;
-        Mon, 13 Jul 2020 10:34:34 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     serge@hallyn.com, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] capabilities: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 12:34:28 +0200
-Message-Id: <20200713103428.33342-1-grandmaster@al2klimov.de>
+        Mon, 13 Jul 2020 06:35:04 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DCBC061755;
+        Mon, 13 Jul 2020 03:35:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=INXvaMVTxBym4z/fKJuakqyDRZOcv2j8dD0l03DIIOk=; b=SG6VIgfVujIJwV1bkl//5xt+9g
+        GLP/+l5nCGy7FOXXJBltMRU67LYncxDKPW6XsBHqK5/7I+gwAZZAeIi4Fw+AU9EP/1AStl19tAaLC
+        SfbNHamPt4X0L+rDd63gUKANJkUMuOF7Pl9RtdotmVNYk2uice1ic0JG1iXWOkPm+uBxb3DNG+iMu
+        WBQD3crMEPQqSfLG0NJ363PhffAs9/YPu277+hE0NShjZJpTyx12XnfZwkkoHATqijESikkzytS65
+        d4z7k9jTm4g7VM/nUtS3uougp6mu4u9g36XTFN6DBr/Hme/NNU3thCLE+pHtDGeIM5w+F+NxASdO6
+        4MG6AvCA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1juvnM-0000vE-10; Mon, 13 Jul 2020 10:34:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5FAA3300DB4;
+        Mon, 13 Jul 2020 12:34:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 449F220D27C88; Mon, 13 Jul 2020 12:34:43 +0200 (CEST)
+Date:   Mon, 13 Jul 2020 12:34:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Joel Fernandes <joelaf@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Matt Turner <mattst88@gmail.com>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Richard Henderson <rth@twiddle.net>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kernel-team@android.com
+Subject: Re: [PATCH 00/18] Allow architectures to override __READ_ONCE()
+Message-ID: <20200713103443.GE10769@hirez.programming.kicks-ass.net>
+References: <20200710165203.31284-1-will@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710165203.31284-1-will@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Fri, Jul 10, 2020 at 05:51:44PM +0100, Will Deacon wrote:
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+> SeongJae Park (1):
+>   Documentation/barriers/kokr: Remove references to
+>     [smp_]read_barrier_depends()
+> 
+> Will Deacon (18):
+>   tools: bpf: Use local copy of headers including uapi/linux/filter.h
+>   compiler.h: Split {READ,WRITE}_ONCE definitions out into rwonce.h
+>   asm/rwonce: Allow __READ_ONCE to be overridden by the architecture
+>   alpha: Override READ_ONCE() with barriered implementation
+>   asm/rwonce: Remove smp_read_barrier_depends() invocation
+>   asm/rwonce: Don't pull <asm/barrier.h> into 'asm-generic/rwonce.h'
+>   vhost: Remove redundant use of read_barrier_depends() barrier
+>   alpha: Replace smp_read_barrier_depends() usage with smp_[r]mb()
+>   locking/barriers: Remove definitions for [smp_]read_barrier_depends()
+>   Documentation/barriers: Remove references to
+>     [smp_]read_barrier_depends()
+>   tools/memory-model: Remove smp_read_barrier_depends() from informal
+>     doc
+>   include/linux: Remove smp_read_barrier_depends() from comments
+>   checkpatch: Remove checks relating to [smp_]read_barrier_depends()
+>   arm64: Reduce the number of header files pulled into vmlinux.lds.S
+>   arm64: alternatives: Split up alternative.h
+>   arm64: cpufeatures: Add capability for LDAPR instruction
+>   arm64: alternatives: Remove READ_ONCE() usage during patch operation
+>   arm64: lto: Strengthen READ_ONCE() to acquire when CONFIG_LTO=y
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- kernel/capability.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/capability.c b/kernel/capability.c
-index 1444f3954d75..a8a20ebc43ee 100644
---- a/kernel/capability.c
-+++ b/kernel/capability.c
-@@ -40,7 +40,7 @@ __setup("no_file_caps", file_caps_disable);
- /*
-  * More recent versions of libcap are available from:
-  *
-- *   http://www.kernel.org/pub/linux/libs/security/linux-privs/
-+ *   https://www.kernel.org/pub/linux/libs/security/linux-privs/
-  */
- 
- static void warn_legacy_capability_use(void)
--- 
-2.27.0
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
