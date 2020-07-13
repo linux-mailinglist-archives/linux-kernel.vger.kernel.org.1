@@ -2,149 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC6721D67A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2ED921D7E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729695AbgGMNHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:07:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:33504 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729523AbgGMNHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:07:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7C7630E;
-        Mon, 13 Jul 2020 06:07:52 -0700 (PDT)
-Received: from e119603-lin.cambridge.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF5443F887;
-        Mon, 13 Jul 2020 06:07:51 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 14:07:49 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        arnd@arndb.de, sudeep.holla@arm.com
-Subject: Re: [PATCH 2/3] firmware: arm_scmi: Remove unneeded __packed
- attribute
-Message-ID: <20200713130749.GA31938@e119603-lin.cambridge.arm.com>
-References: <20200710133919.39792-1-cristian.marussi@arm.com>
- <20200710133919.39792-2-cristian.marussi@arm.com>
- <751ee628-ff38-a383-5832-aab4905af32b@arm.com>
+        id S1730074AbgGMOIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729689AbgGMOIs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 10:08:48 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19F3C061755;
+        Mon, 13 Jul 2020 07:08:48 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id l12so17341857ejn.10;
+        Mon, 13 Jul 2020 07:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=jFx3xxix0F8ETQCtd//YrBkRHyNpSKt8DUbehu81nM0=;
+        b=hiQgbcp1vIlX39x6+QVdnLHGJ77oa5e1fwPasSS2+sV8zK6rqOW6JJ5Z0pNLWQ3fyH
+         odx7b6feIbBRhv8AmdyCvjpu0Er3BjW++icYFpMcdLmYGXMb77ApdSCFPHQ7PYZx99Pk
+         I8Mkstkgkprd7gWz2X1JGLeP0HTASvNy6CqmbcfoqDEDZQChTyxcj63JpPe2R9IPFeT2
+         /H1agutVggOmAMHTMBd1fVRznJhJOpwoIKMNSwMgPNuLntSS4oJmPdK6ISJkxSSBE833
+         eVGo5j4lAbf7jgdbIbwlcZJzo8zXY3jvhHGQazORWLnEKzUgjRXdpzLO50YpqLvoskPU
+         1YgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=jFx3xxix0F8ETQCtd//YrBkRHyNpSKt8DUbehu81nM0=;
+        b=kD7MaVRXN9n2i/OypgDP4Fmg0zWlPtBbDbm4xk6d5F/0u7tey1nc/1iru5L0kBqTMx
+         pVrWpsPBb3BLC8rj3bYFPAiaDsjO8xLe1RAsaDXbOasi347A+ECN+p8+8IpK+/NI3cAr
+         UNWSpyDTCRGbimiOibjm1RTxUGHkkkHNo6SQaMAVbWogjwwb3mkYgslB65MSotnvLPsn
+         kYnkv3qq464uEN1Z1mlFndLp/6EKm5hYpLYtYDGbYdeiEjBn2vA3J6qndcYDDoHgXRqG
+         9Srp1GU8Ig4b/ItdAF7CQncEtmSb+Z8yEIC1bdrGtJ6fQtUErYIYfReSPo5BB1rWd3Bt
+         AjEw==
+X-Gm-Message-State: AOAM533VKLkC2bSbeMWfgFSc9cbR8HvdSXBqryh0elIdqkaBtxbVXghw
+        dDmACm/OZbSaht8nAp/3Unbnaj2Y9UL7eA==
+X-Google-Smtp-Source: ABdhPJx6tmdfVPPqPXF73jvefigbV9HS5iNfnxRnmUOs/bTLDWDUL20JfnLrxQhjKR+rCuUnUBZ6NA==
+X-Received: by 2002:a17:906:7017:: with SMTP id n23mr56573249ejj.262.1594649326677;
+        Mon, 13 Jul 2020 07:08:46 -0700 (PDT)
+Received: from net.saheed (54007186.dsl.pool.telekom.hu. [84.0.113.134])
+        by smtp.gmail.com with ESMTPSA id p4sm9800064eja.9.2020.07.13.07.08.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jul 2020 07:08:45 -0700 (PDT)
+Subject: Re: [RFC PATCH 12/35] r8169: Tidy Success/Failure checks
+To:     Heiner Kallweit <hkallweit1@gmail.com>, helgaas@kernel.org,
+        Realtek linux nic maintainers <nic_swsd@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     bjorn@helgaas.com, skhan@linuxfoundation.org,
+        linux-pci@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <20200713122247.10985-1-refactormyself@gmail.com>
+ <20200713122247.10985-13-refactormyself@gmail.com>
+ <e6610668-4d16-cbaa-8513-9ca335b06225@gmail.com>
+From:   Saheed Bolarinwa <refactormyself@gmail.com>
+Message-ID: <c42ddef7-d6b0-158d-8278-80a582d2cca4@gmail.com>
+Date:   Mon, 13 Jul 2020 15:09:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <751ee628-ff38-a383-5832-aab4905af32b@arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <e6610668-4d16-cbaa-8513-9ca335b06225@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven
+Thank you for the review.
 
-thanks for the review.
+On 7/13/20 3:45 PM, Heiner Kallweit wrote:
+>
+> Patches 11 and 12 are both trivial, wouldn't it make sense to merge them?
+> Apart from that: Acked-by: Heiner Kallweit <hkallweit1@gmail.com>
 
-On Mon, Jul 13, 2020 at 12:20:43PM +0100, Steven Price wrote:
-> On 10/07/2020 14:39, Cristian Marussi wrote:
-> >Remove __packed attribute from struct scmi_event_header.
-> >
-> >Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> 
-> A drive-by review. But this doesn't look safe to me. sizeof(struct
-> scmi_event_header) is used in several places and this change will modify
-> that from 13 to 16, but leave the structure members at the same offset (as
-> the members are naturally aligned). In particular the naïve header size is
-> now bigger than the offset to payld.
-> 
-> What is the justification for __packed being 'unneeded'?
-> 
+I separated them for easy review, I will merge them in the next version.
 
-Arnd pointed out at first that this structure in the original series had a mix of
-fixed and non-fixed types in its fields and that the __packed rendered some fields
-misaglined.
+- Saheed
 
-Removing that as it is, in fact left also some unexplained implicit padding which is
-at odd for a struct containing fixed-sized types.
-
-In a following fix in the series I have indeed moved this struct's fields  and others
-to generic non fixed type fields and shuffled around the fields to avoid misalignment
-and implicit internal padding (except for the trailing padding due to the variable
-size array)
-
-It was probably better to squash also this patch in that following patch.
-
-This structure is used internally to push variable-sized (through the means of the payld[])
-events descriptors through a fifo from the ISR to the deferred workqueus, so that's whhy I
-originally thought to avoid to carry around unneeded padding into the fifos and use the
-__packed.
-
-On the correctness side, as you pointed out, the header with padding is now 16 so when
-I push thorugh the kfifos this header and the payload there's a hole in the data as
-represented in the fifo buffer as such
-
-@end_of hdr+payld kfifo writes:
-  kifo_in(fifo, h, sizeof(*h)) + kfifo_in(fifo, payld, h->payld_sz)
-
-0       14   16
-+-------+----+------------
-|header - pad| payload...
--------------------------
-        ^
-	|
-	.payld
-
-(Note that header and payload comes from two distinct place so I have push it with two kfifo_in()
-in order to avoid a redundant memcpy on an intermediate buffer to collate them...thing
-that was pointed out as undesirable in a review)
-
-and when I read it back from the fifo such hole is just transparently overwritten:
-
-@header read:
- kfifo_out(fifo, h, sizeof(*h))
-
-0       14   16
-+-------+----+--------------
-|header - pad| 
-----------------------------
-
-@payload_read:
- kfifo_out(fifo, h->payld, h->payld_sz)
-
-0       14   
-+-------+----+--------------
-|header | payload....
-----------------------------
-        ^
-	|
-	.payld
-
-So since anyway the drawback of packing is that the misaglined access potentially slows down the
-reads, I was not sure anymore it was worth to pack and misalign, and, given that it seemed not
-to be liked so much, I dropped it and moved to generic non-fixed types without packing.
-
-A better (and shorter) explanation of all of the above is possibly needed (but I'd still prefer
-the fixed sized typing and __packed 'holeless' approach...)
-
-Thanks
-
-Cristian
-
-
-> Steve
-> 
-> >---
-> >  drivers/firmware/arm_scmi/notify.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> >diff --git a/drivers/firmware/arm_scmi/notify.c b/drivers/firmware/arm_scmi/notify.c
-> >index c4d006cfde88..752415367305 100644
-> >--- a/drivers/firmware/arm_scmi/notify.c
-> >+++ b/drivers/firmware/arm_scmi/notify.c
-> >@@ -258,7 +258,7 @@ struct scmi_event_header {
-> >  	u8	evt_id;
-> >  	size_t	payld_sz;
-> >  	u8	payld[];
-> >-} __packed;
-> >+};
-> >  struct scmi_registered_event;
-> >
-> 
