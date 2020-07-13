@@ -2,137 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BAC21DEF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 19:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFB9921DF25
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 19:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730377AbgGMRpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 13:45:07 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:55568 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729747AbgGMRpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 13:45:07 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id C4622BC07E;
-        Mon, 13 Jul 2020 17:45:03 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        corbet@lwn.net, ocfs2-devel@oss.oracle.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] ocfs2: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 19:44:56 +0200
-Message-Id: <20200713174456.36596-1-grandmaster@al2klimov.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+        id S1730328AbgGMRtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 13:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729700AbgGMRtB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 13:49:01 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C050C061755;
+        Mon, 13 Jul 2020 10:49:01 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id w2so6332304pgg.10;
+        Mon, 13 Jul 2020 10:49:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=X/UxR11zWpZM3dbb73YevVQANqUAYVi8RjwQuOTkMCo=;
+        b=qt1TWq5QiAZsW+kN/girNvQwxa3x0b4OAYSIpoeUCUafTZd4E5czr1zKjYGoCJFSub
+         kjTJtt6rwWcQdZGl+rcusVj1KS387Fz5RnTthae1+U6pj4QrQwsBTriLvFsPyNOSGN2a
+         ngUzt+ukykhkRKLN/Qv06eR8AlUbiq2qZlaUK7Kh74YiCqjihvyH7shr+F5FwfGsHgma
+         b3FYbJXy07F+N/I2PQ01CQugQ/aXuchwgjwgkGJ0Rr8E7RbeAms+f7ubcsJI9Yb0a3n9
+         WvUQB0a1hFtmMKe+4YY+00KfsTuDl2E2CcRC4l5w2FtfxgBg4qXuvMRj1+38fCaHjzET
+         yOtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=X/UxR11zWpZM3dbb73YevVQANqUAYVi8RjwQuOTkMCo=;
+        b=b+tHvHRNT8rVdtCN0OX6BpDfeMZ07pON5fftLtusT11uOdwR0f8sm9ccNxMWYn0CvU
+         2fe5HZMBUqxfulOQmyyLFlUWH9zdzVUtYV1Xga4FhrWG2EeYEol2+pm5U9ZHUDYz5FBP
+         67mOId8sEmm1aCQSN0qcV2CC6e0jenOfMPrQgmoBAW81OLu39QXtswgg13/0mQ//vKCU
+         DgAXIMxNrfTk4amFKoqc5KLqG0fKSnrOGQQqYBwRB1ikIhvF5n3jntluXUy6LuTjwrjb
+         0Kl/LPqFBbQtI4NDvgNzHreKlwpW/YNb6uSmkujba+zDFI6F0nVZ3LB0rB1lqr+5R450
+         4UFA==
+X-Gm-Message-State: AOAM5326OcyD/YzqOqHKy898QYWEROXfG9bpdOVXo0OUMOPle+4U2QXN
+        L25vBxfWSC2kxqUgCUeq5A==
+X-Google-Smtp-Source: ABdhPJw936w1c/xiB+NeR+z/vaLStkZCWsDmuwxIveK4yIDPUBtWVB3kDrhG/GkdlS48rj+DKoqHfQ==
+X-Received: by 2002:a63:1119:: with SMTP id g25mr287078pgl.126.1594662540867;
+        Mon, 13 Jul 2020 10:49:00 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4071:200a:9520:4919:edd3:5dbd:ffec])
+        by smtp.gmail.com with ESMTPSA id e10sm230186pjw.22.2020.07.13.10.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 10:48:59 -0700 (PDT)
+From:   madhuparnabhowmik10@gmail.com
+To:     paulmck@kernel.org
+Cc:     joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Subject: [PATCH] rculist: Fix _list_check_srcu() macro
+Date:   Mon, 13 Jul 2020 23:18:46 +0530
+Message-Id: <20200713174846.8681-1-madhuparnabhowmik10@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+This patch fixes the macro _list_check_srcu() for CONFIG_PROVE_RCU_LIST =
+False.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 ---
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+ include/linux/rculist.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- Documentation/filesystems/dlmfs.rst | 2 +-
- Documentation/filesystems/ocfs2.rst | 2 +-
- fs/ocfs2/Kconfig                    | 6 +++---
- fs/ocfs2/blockcheck.c               | 2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/filesystems/dlmfs.rst b/Documentation/filesystems/dlmfs.rst
-index 68daaa7facf9..28dd41a63be2 100644
---- a/Documentation/filesystems/dlmfs.rst
-+++ b/Documentation/filesystems/dlmfs.rst
-@@ -12,7 +12,7 @@ dlmfs is built with OCFS2 as it requires most of its infrastructure.
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index 516b4feb2682..a435ad62b90b 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -73,7 +73,7 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
+ #define __list_check_rcu(dummy, cond, extra...)				\
+ 	({ check_arg_count_one(extra); })
  
- :Project web page:    http://ocfs2.wiki.kernel.org
- :Tools web page:      https://github.com/markfasheh/ocfs2-tools
--:OCFS2 mailing lists: http://oss.oracle.com/projects/ocfs2/mailman/
-+:OCFS2 mailing lists: https://oss.oracle.com/projects/ocfs2/mailman/
+-#define __list_check_srcu(cond)
++#define __list_check_srcu(cond)	TRUE
+ #endif
  
- All code copyright 2005 Oracle except when otherwise noted.
- 
-diff --git a/Documentation/filesystems/ocfs2.rst b/Documentation/filesystems/ocfs2.rst
-index 412386bc6506..42ca9a3d4c6e 100644
---- a/Documentation/filesystems/ocfs2.rst
-+++ b/Documentation/filesystems/ocfs2.rst
-@@ -14,7 +14,7 @@ get "mount.ocfs2" and "ocfs2_hb_ctl".
- 
- Project web page:    http://ocfs2.wiki.kernel.org
- Tools git tree:      https://github.com/markfasheh/ocfs2-tools
--OCFS2 mailing lists: http://oss.oracle.com/projects/ocfs2/mailman/
-+OCFS2 mailing lists: https://oss.oracle.com/projects/ocfs2/mailman/
- 
- All code copyright 2005 Oracle except when otherwise noted.
- 
-diff --git a/fs/ocfs2/Kconfig b/fs/ocfs2/Kconfig
-index aca16624b370..5d11380d8724 100644
---- a/fs/ocfs2/Kconfig
-+++ b/fs/ocfs2/Kconfig
-@@ -16,9 +16,9 @@ config OCFS2_FS
- 	  You'll want to install the ocfs2-tools package in order to at least
- 	  get "mount.ocfs2".
- 
--	  Project web page:    http://oss.oracle.com/projects/ocfs2
--	  Tools web page:      http://oss.oracle.com/projects/ocfs2-tools
--	  OCFS2 mailing lists: http://oss.oracle.com/projects/ocfs2/mailman/
-+	  Project web page:    https://oss.oracle.com/projects/ocfs2
-+	  Tools web page:      https://oss.oracle.com/projects/ocfs2-tools
-+	  OCFS2 mailing lists: https://oss.oracle.com/projects/ocfs2/mailman/
- 
- 	  For more information on OCFS2, see the file
- 	  <file:Documentation/filesystems/ocfs2.rst>.
-diff --git a/fs/ocfs2/blockcheck.c b/fs/ocfs2/blockcheck.c
-index eaf042feaf5e..6e07ddb0e3c0 100644
---- a/fs/ocfs2/blockcheck.c
-+++ b/fs/ocfs2/blockcheck.c
-@@ -124,7 +124,7 @@ u32 ocfs2_hamming_encode(u32 parity, void *data, unsigned int d, unsigned int nr
- 		 * parity bits that are part of the bit number
- 		 * representation.  Huh?
- 		 *
--		 * <wikipedia href="http://en.wikipedia.org/wiki/Hamming_code">
-+		 * <wikipedia href="https://en.wikipedia.org/wiki/Hamming_code">
- 		 * In other words, the parity bit at position 2^k
- 		 * checks bits in positions having bit k set in
- 		 * their binary representation.  Conversely, for
+ /*
 -- 
-2.27.0
+2.17.1
 
