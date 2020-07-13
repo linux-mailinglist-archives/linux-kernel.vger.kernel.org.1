@@ -2,98 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE4321CFA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F73321CF10
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 07:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgGMG3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:29:00 -0400
-Received: from twhmllg3.macronix.com ([122.147.135.201]:18501 "EHLO
-        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728926AbgGMG3A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:29:00 -0400
-X-Greylist: delayed 2027 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Jul 2020 02:28:59 EDT
-Received: from TWHMLLG3.macronix.com (localhost [127.0.0.2] (may be forged))
-        by TWHMLLG3.macronix.com with ESMTP id 06D5tCA6073386
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 13:55:12 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
-        by TWHMLLG3.macronix.com with ESMTP id 06D5t8fH073343;
-        Mon, 13 Jul 2020 13:55:08 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.mxic.com.tw [172.17.14.55])
-        by Forcepoint Email with ESMTP id CF4E7C58ADF7B5E3F802;
-        Mon, 13 Jul 2020 13:55:08 +0800 (CST)
-In-Reply-To: <1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw>
-References: <1590737775-4798-1-git-send-email-masonccyang@mxic.com.tw> <1590737775-4798-4-git-send-email-masonccyang@mxic.com.tw>
-To:     ycllin@mxic.com.tw
-Cc:     boris.brezillon@collabora.com, broonie@kernel.org,
-        juliensu@mxic.com.tw, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
-        matthias.bgg@gmail.com, miquel.raynal@bootlin.com, p.yadav@ti.com,
-        richard@nod.at, tudor.ambarus@microchip.com, vigneshr@ti.com
-Subject: Re: [PATCH v4 3/7] mtd: spi-nor: sfdp: parse command sequences to change
- octal DTR mode
+        id S1729018AbgGMF4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 01:56:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727107AbgGMF4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 01:56:03 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 217812073A;
+        Mon, 13 Jul 2020 05:56:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594619762;
+        bh=gXFwq43ohUgKZA8gAkhAymCG+JyohqjJf0fM3HTHIZs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=paFGk7uJF66m93nyveVPcYNj/dGkVDvY1u8K9A/2rvKSlO0MBabNq/m+/4CmMR6Ff
+         L3J6QduoGk6i58NoIF1rhO3v2QX4kAL49CKLIzXdfBbn9rvtWgf4FJh/EgiUXlZ+sg
+         Df7mie1gP/c+V3+RqnTFL0MqOir01L2jDMVQjrns=
+Date:   Mon, 13 Jul 2020 11:25:58 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sivaprakash Murugesan <sivaprak@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, kishon@ti.com, mturquette@baylibre.com,
+        sboyd@kernel.org, svarbanov@mm-sol.com, lorenzo.pieralisi@arm.com,
+        p.zabel@pengutronix.de, mgautam@codeaurora.org,
+        smuthayy@codeaurora.org, varada@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, stable@vger.kernel.org,
+        Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
+Subject: Re: [PATCH 5/9] phy: qcom-qmp: use correct values for ipq8074 gen2
+ pcie phy init
+Message-ID: <20200713055558.GB34333@vkoul-mobl>
+References: <1593940680-2363-1-git-send-email-sivaprak@codeaurora.org>
+ <1593940680-2363-6-git-send-email-sivaprak@codeaurora.org>
 MIME-Version: 1.0
-X-KeepSent: 95EC2283:12FD5203-482585A4:00204E4A;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OF95EC2283.12FD5203-ON482585A4.00204E4A-482585A4.002083A3@mxic.com.tw>
-From:   masonccyang@mxic.com.tw
-Date:   Mon, 13 Jul 2020 13:55:08 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2020/07/13 PM 01:55:08,
-        Serialize complete at 2020/07/13 PM 01:55:08
-Content-Type: text/plain; charset="US-ASCII"
-X-MAIL: TWHMLLG3.macronix.com 06D5t8fH073343
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593940680-2363-6-git-send-email-sivaprak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05-07-20, 14:47, Sivaprakash Murugesan wrote:
+> There were some problem in ipq8074 gen2 pcie phy init sequence, fix
 
-+ YC Lin in loop,
+Can you please describe these problems, it would help review to
+understand the issues and also for future reference to you
 
---
-> Subject
+> these to make gen2 pcie port on ipq8074 to work.
 > 
-> [PATCH v4 3/7] mtd: spi-nor: sfdp: parse command sequences to change 
-octal DTR mode
+> Fixes: eef243d04b2b6 ("phy: qcom-qmp: Add support for IPQ8074")
 > 
-> A set of simple command sequences is provided which can be executed
-> directly by the host controller to enable octal DTR mode.
-> 
-> Each command sequence is 8 per byte for single SPI mode.
-> 
-> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> Cc: stable@vger.kernel.org
+> Co-developed-by: Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
+> Signed-off-by: Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
+> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
 > ---
+>  drivers/phy/qualcomm/phy-qcom-qmp.c | 16 +++++++++-------
+>  drivers/phy/qualcomm/phy-qcom-qmp.h |  2 ++
+>  2 files changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> index e91040af3394..ba277136f52b 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> @@ -504,8 +504,8 @@ static const struct qmp_phy_init_tbl ipq8074_pcie_serdes_tbl[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_BG_TRIM, 0xf),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_LOCK_CMP_EN, 0x1),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_VCO_TUNE_MAP, 0x0),
+> -	QMP_PHY_INIT_CFG(QSERDES_COM_VCO_TUNE_TIMER1, 0x1f),
+> -	QMP_PHY_INIT_CFG(QSERDES_COM_VCO_TUNE_TIMER2, 0x3f),
+> +	QMP_PHY_INIT_CFG(QSERDES_COM_VCO_TUNE_TIMER1, 0xff),
+> +	QMP_PHY_INIT_CFG(QSERDES_COM_VCO_TUNE_TIMER2, 0x1f),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_CMN_CONFIG, 0x6),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_PLL_IVCO, 0xf),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_HSCLK_SEL, 0x0),
+> @@ -531,7 +531,6 @@ static const struct qmp_phy_init_tbl ipq8074_pcie_serdes_tbl[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_INTEGLOOP_GAIN1_MODE0, 0x0),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_INTEGLOOP_GAIN0_MODE0, 0x80),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_BIAS_EN_CTRL_BY_PSM, 0x1),
+> -	QMP_PHY_INIT_CFG(QSERDES_COM_VCO_TUNE_CTRL, 0xa),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_EN_CENTER, 0x1),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_PER1, 0x31),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_PER2, 0x1),
+> @@ -540,7 +539,6 @@ static const struct qmp_phy_init_tbl ipq8074_pcie_serdes_tbl[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_STEP_SIZE1, 0x2f),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_STEP_SIZE2, 0x19),
+>  	QMP_PHY_INIT_CFG(QSERDES_COM_CLK_EP_DIV, 0x19),
+> -	QMP_PHY_INIT_CFG(QSERDES_RX_SIGDET_CNTRL, 0x7),
+>  };
+>  
+>  static const struct qmp_phy_init_tbl ipq8074_pcie_tx_tbl[] = {
+> @@ -548,6 +546,8 @@ static const struct qmp_phy_init_tbl ipq8074_pcie_tx_tbl[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_TX_LANE_MODE, 0x6),
+>  	QMP_PHY_INIT_CFG(QSERDES_TX_RES_CODE_LANE_OFFSET, 0x2),
+>  	QMP_PHY_INIT_CFG(QSERDES_TX_RCV_DETECT_LVL_2, 0x12),
+> +	QMP_PHY_INIT_CFG(QSERDES_TX_EMP_POST1_LVL, 0x36),
+> +	QMP_PHY_INIT_CFG(QSERDES_TX_SLEW_CNTL, 0x0a),
+>  };
+>  
+>  static const struct qmp_phy_init_tbl ipq8074_pcie_rx_tbl[] = {
+> @@ -558,7 +558,6 @@ static const struct qmp_phy_init_tbl ipq8074_pcie_rx_tbl[] = {
+>  	QMP_PHY_INIT_CFG(QSERDES_RX_RX_EQU_ADAPTOR_CNTRL4, 0xdb),
+>  	QMP_PHY_INIT_CFG(QSERDES_RX_UCDR_SO_SATURATION_AND_ENABLE, 0x4b),
+>  	QMP_PHY_INIT_CFG(QSERDES_RX_UCDR_SO_GAIN, 0x4),
+> -	QMP_PHY_INIT_CFG(QSERDES_RX_UCDR_SO_GAIN_HALF, 0x4),
+>  };
+>  
+>  static const struct qmp_phy_init_tbl ipq8074_pcie_pcs_tbl[] = {
+> @@ -1673,6 +1672,9 @@ static const struct qmp_phy_cfg msm8996_usb3phy_cfg = {
+>  	.pwrdn_ctrl		= SW_PWRDN,
+>  };
+>  
+> +static const char * const ipq8074_pciephy_clk_l[] = {
+> +	"aux", "cfg_ahb",
+> +};
+>  /* list of resets */
+>  static const char * const ipq8074_pciephy_reset_l[] = {
+>  	"phy", "common",
+> @@ -1690,8 +1692,8 @@ static const struct qmp_phy_cfg ipq8074_pciephy_cfg = {
+>  	.rx_tbl_num		= ARRAY_SIZE(ipq8074_pcie_rx_tbl),
+>  	.pcs_tbl		= ipq8074_pcie_pcs_tbl,
+>  	.pcs_tbl_num		= ARRAY_SIZE(ipq8074_pcie_pcs_tbl),
+> -	.clk_list		= NULL,
+> -	.num_clks		= 0,
+> +	.clk_list		= ipq8074_pciephy_clk_l,
+> +	.num_clks		= ARRAY_SIZE(ipq8074_pciephy_clk_l),
 
+I see patch is modifying some register values and then adding clks, in
+the absence of proper patch description it is extremely hard to
+understand what is going on..
 
-CONFIDENTIALITY NOTE:
+>  	.reset_list		= ipq8074_pciephy_reset_l,
+>  	.num_resets		= ARRAY_SIZE(ipq8074_pciephy_reset_l),
+>  	.vreg_list		= NULL,
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.h b/drivers/phy/qualcomm/phy-qcom-qmp.h
+> index 6d017a0c0c8d..832b3d098403 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp.h
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.h
+> @@ -77,6 +77,8 @@
+>  #define QSERDES_COM_CORECLK_DIV_MODE1			0x1bc
+>  
+>  /* Only for QMP V2 PHY - TX registers */
+> +#define QSERDES_TX_EMP_POST1_LVL			0x018
+> +#define QSERDES_TX_SLEW_CNTL				0x040
+>  #define QSERDES_TX_RES_CODE_LANE_OFFSET			0x054
+>  #define QSERDES_TX_DEBUG_BUS_SEL			0x064
+>  #define QSERDES_TX_HIGHZ_TRANSCEIVEREN_BIAS_DRVR_EN	0x068
+> -- 
+> 2.7.4
 
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+-- 
+~Vinod
