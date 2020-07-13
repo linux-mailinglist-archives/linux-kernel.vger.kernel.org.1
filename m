@@ -2,126 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9217021D78B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3DB21D793
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbgGMNug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729873AbgGMNue (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:50:34 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34C6C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:50:33 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id g13so9916337qtv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 06:50:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=vlrDlUYUKGml5UggZTrPldaeCrJJpueT2vaP2F68WPk=;
-        b=CMkxtAGi5opCIFDLDXatbH+st+eB5Ijn5qpYvzvMWfQ90tknvaEy3MWVjkhemIW8eG
-         U5/7yxTthqhhWaMF/SpDUkLPGfC8wmS+ZoPJxCjfWU4vs+KvgGotLhm8u/F79uArh6vf
-         1Ds0opoMWMhCcpz6uuq1Ant+g33AgkPod8rY6ovOdjQnv8ZkjVJBbP5HvcAIVonbgi6+
-         940mziew1e1lRJYw16UpuD1W1jd+ofNNjVqHZvyIf8Dxe0jyq4mjBrXTtjfA4Gy45JyL
-         mxhnBofUAvf8q4M4qCdC5UnJ4rTOMRmGIXxgyz/SWGDdf5yxktbW9ueC4//mrcduf65f
-         sCDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=vlrDlUYUKGml5UggZTrPldaeCrJJpueT2vaP2F68WPk=;
-        b=AmAF9bMgC5igplKHaPRmKjQ7o9uUCkf+tbIdrRUjrmdPD/zMwr595I5w94Rsa8czCh
-         3PyOScg92B+GtgflN4vM+He63xDY8dmEHEld95Ja9PvytUrtyfa+nSdNAT6JOAw9lDdi
-         n2My9RXJDEkJ3+WSy5mQwxTqQb0k8KTz/cyfBww1otpsLkX8Bbp/ckVgUEdY1An5tc5q
-         J8syqF7c81nxv/bYTKtmh0BFz44sNfpK63OZV3HTY/mGL1U5Z41vaqsw/rKl7iS3LzCK
-         UwizW2vu60anx6gOdf9idB9vLbD+Y6QWPz4EY1WBcibnvHGR/RL6Ly5Od8GWMtkkgFjn
-         qwgQ==
-X-Gm-Message-State: AOAM531wr3XDh9JaiSAIUCVJj25C9ZZXAnrO6bUJFyhXFxYXw99h6x2o
-        60rnH9yWT4IIiSFdmPELYi5HY3asTe3ZWg==
-X-Google-Smtp-Source: ABdhPJwLXMUyr7KJNqN8opqxSnS0V/qOb48twXlcI7xQ5LwDgvA+ZzNgxKc5tOh2DjVsaADIqEy1Gw==
-X-Received: by 2002:ac8:4588:: with SMTP id l8mr85227289qtn.189.1594648232276;
-        Mon, 13 Jul 2020 06:50:32 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id a185sm18070623qkg.3.2020.07.13.06.50.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 06:50:31 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1juyql-009hrJ-6b; Mon, 13 Jul 2020 10:50:31 -0300
-Date:   Mon, 13 Jul 2020 10:50:31 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     Bart Van Assche <bvanassche@acm.org>, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] SCSI RDMA PROTOCOL (SRP) TARGET: Replace HTTP links with
- HTTPS ones
-Message-ID: <20200713135031.GA25301@ziepe.ca>
-References: <20200709194820.27032-1-grandmaster@al2klimov.de>
- <3d230abd-752e-8ac1-e18d-b64561b409ff@acm.org>
- <8fca4633-41ad-7e86-2354-36381bf5c734@al2klimov.de>
- <bf85e454-cccc-37ef-d55f-d44a5c5c51df@acm.org>
- <c6b97005-e4c7-0a46-37eb-b5bb187ee919@al2klimov.de>
+        id S1729895AbgGMNwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 09:52:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:36156 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729457AbgGMNwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 09:52:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A3EC30E;
+        Mon, 13 Jul 2020 06:52:41 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A387E3F7BB;
+        Mon, 13 Jul 2020 06:52:40 -0700 (PDT)
+References: <20200701190656.10126-1-valentin.schneider@arm.com> <20200701190656.10126-8-valentin.schneider@arm.com> <20200713125543.GJ10769@hirez.programming.kicks-ass.net> <jhjimerlf2a.mognet@arm.com> <20200713134347.GL10769@hirez.programming.kicks-ass.net>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        morten.rasmussen@arm.com
+Subject: Re: [PATCH v3 7/7] sched/topology: Use prebuilt SD flag degeneration mask
+In-reply-to: <20200713134347.GL10769@hirez.programming.kicks-ass.net>
+Date:   Mon, 13 Jul 2020 14:52:38 +0100
+Message-ID: <jhjh7ubldy1.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c6b97005-e4c7-0a46-37eb-b5bb187ee919@al2klimov.de>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 10:15:29PM +0200, Alexander A. Klimov wrote:
-> 
-> 
-> Am 12.07.20 um 21:52 schrieb Bart Van Assche:
-> > On 2020-07-10 11:12, Alexander A. Klimov wrote:
-> > > Am 10.07.20 um 16:22 schrieb Bart Van Assche:
-> > > > On 2020-07-09 12:48, Alexander A. Klimov wrote:
-> > > > > diff --git a/drivers/infiniband/ulp/srpt/Kconfig b/drivers/infiniband/ulp/srpt/Kconfig
-> > > > > index 4b5d9b792cfa..f63b34d9ae32 100644
-> > > > > +++ b/drivers/infiniband/ulp/srpt/Kconfig
-> > > > > @@ -10,4 +10,4 @@ config INFINIBAND_SRPT
-> > > > >          that supports the RDMA protocol. Currently the RDMA protocol is
-> > > > >          supported by InfiniBand and by iWarp network hardware. More
-> > > > >          information about the SRP protocol can be found on the website
-> > > > > -      of the INCITS T10 technical committee (http://www.t10.org/).
-> > > > > +      of the INCITS T10 technical committee (https://www.t10.org/).
-> > > > 
-> > > > It is not clear to me how modifying an URL in a Kconfig file helps to
-> > > > reduce the attack surface on kernel devs?
-> > > 
-> > > Not on all, just on the ones who open it.
-> > 
-> > Is changing every single HTTP URL in the kernel into a HTTPS URL the best
-> > solution? Is this the only solution? Has it been considered to recommend
-> > kernel developers who are concerned about MITM attacks to install a browser
-> > extension like HTTPS Everywhere instead?
-> I've installed that addon myself.
-> But IMAO it's just a workaround which is (not available to all browsers, not
-> installed by default in any of them and) not even 100% secure unless you
-> tick a particular checkbox.
-> 
-> Anyway the majority of maintainers and Torvalds himself agree with my
-> solution.
-> 
-> I mean, just look at
-> git log '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' \
-> 
-> Or (better) wait for v5.9-rc1 (and all the yet just applied patches it will
-> consist of) *and then* run the command.
 
-Well, if you are going to do this please send just one patch for all
-of drivers/infiniband/ and include/rdma
+On 13/07/20 14:43, Peter Zijlstra wrote:
+> On Mon, Jul 13, 2020 at 02:28:29PM +0100, Valentin Schneider wrote:
+>>
+>> On 13/07/20 13:55, Peter Zijlstra wrote:
+>> > On Wed, Jul 01, 2020 at 08:06:55PM +0100, Valentin Schneider wrote:
+>> >> Leverage SD_DEGENERATE_GROUPS_MASK in sd_degenerate() and
+>> >> sd_degenerate_parent().
+>> >>
+>> >> Note that this changes sd_degenerate() somewhat: I'm using the negation of
+>> >> SD_DEGENERATE_GROUPS_MASK as the mask of flags not requiring groups, which
+>> >> is equivalent to:
+>> >>
+>> >> SD_WAKE_AFFINE | SD_SERIALIZE | SD_NUMA
+>> >>
+>> >> whereas the current mask for that is simply
+>> >>
+>> >> SD_WAKE_AFFINE
+>> >>
+>> >> I played with a few toy NUMA topologies on QEMU and couldn't cause a
+>> >> different degeneration than what mainline does currently. If that is deemed
+>> >> too risky, we can go back to using SD_WAKE_AFFINE explicitly.
+>> >
+>> > Arguably SD_SERIALIZE needs groups, note how we're only having that
+>> > effective for machines with at least 2 nodes. It's a bit shit how we end
+>> > up there, but IIRC that's what it ends up as.
+>> >
+>>
+>> Right, AFAICT we get SD_SERIALIZE wherever we have SD_NUMA, which is any
+>> level above NODE.
+>
+> Oh, right, I forgot we have NODE, d'0h. But in that case these lines:
+>
+>       if (nr_node_ids == 1)
+>               pflags &= ~SD_SERIALIZE;
+>
+> are dead code, right?
+>
 
-I don't need to see it broken up any more than that
+Uuuuh right, that does sound like something made obsolete by having NODE;
+we didn't have it back then:
 
-Jason
+5436499e6098 ("sched: fix sd_parent_degenerate on non-numa smp machine")
+
+I'll fold that in (and test it, just to be sure :-)).
+
+>> > SD_NUMA is descriptive, and not marking a group as degenerates because
+>> > it has SD_NUMA seems a bit silly.
+>>
+>> It does, although we can still degenerate it, see below.
+>>
+>> > But then, it would be the top domain
+>> > and would survive anyway?
+>>
+>> So from what I've tested we still get rid of those via
+>> sd_parent_degenerate(): child and parent have the same flags and same span,
+>> so parent goes out.
+>>
+>> That happens in the middle of the NUMA topology levels on that borked
+>> topology with weird distances, aka
+>>
+>>   node distances:
+>>   node   0   1   2   3
+>>     0:  10  12  20  22
+>>     1:  12  10  22  24
+>>     2:  20  22  10  12
+>>     3:  22  24  12  10
+>>
+>> which ought to look something like (+local distance to end result)
+>>
+>>       2      10      2
+>>   1 <---> 0 <---> 2 <---> 3
+>>
+>> We end up with the following NUMA levels (i.e. deduplicated distances)
+>>   NUMA (<= 12)
+>>   NUMA (<= 20)
+>>   NUMA (<= 22)
+>>   NUMA (<= 24)
+>>
+>> For e.g. any CPU of node1, NUMA(<=20) is gonna have the same span as
+>> NUMA(<=12), so we'll degenerate it.
+>
+> Man, that's horrible :-)
+
+It is :(
+
+> OK, fair enough, keep it as is, we'll see what
+> if anything breaks.
