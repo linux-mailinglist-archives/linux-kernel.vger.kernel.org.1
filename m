@@ -2,107 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394D121DC87
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5800621DC91
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730594AbgGMQdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730433AbgGMQdG (ORCPT
+        id S1730614AbgGMQdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:33:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33770 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730585AbgGMQdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:33:06 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF30AC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 09:33:05 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 7D15ABC070;
-        Mon, 13 Jul 2020 16:33:03 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     ssantosh@kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] memory: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 18:32:55 +0200
-Message-Id: <20200713163255.35830-1-grandmaster@al2klimov.de>
+        Mon, 13 Jul 2020 12:33:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594657998;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UAVOFIpflnrDTDC4tc7UBSxnZ+7A5gGjq40lYeIbzs8=;
+        b=Sg7yqX44qqk04qqr7K1MgANimsxNTq4b1Hy1YADwcbcIq6kr2oVbPMPjQILAQqluzVw7E3
+        eqaHm52TeDPbzKDgXxljFOUtbR+kwVUdT/22SczOd+p26CmvUmdjqzxQNJuBRVpCDIEIwW
+        wJYsKI7ffcHNQFIlN1XYQDz4jRlhv4s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-CTesaysMOqm-GmYkPqXWxw-1; Mon, 13 Jul 2020 12:33:14 -0400
+X-MC-Unique: CTesaysMOqm-GmYkPqXWxw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B754B100978C;
+        Mon, 13 Jul 2020 16:33:12 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-113.rdu2.redhat.com [10.10.112.113])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 46D7319D7D;
+        Mon, 13 Jul 2020 16:33:07 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH 13/32] fscache: Recast assertion in terms of cookie not being
+ an index
+From:   David Howells <dhowells@redhat.com>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Jeff Layton <jlayton@redhat.com>,
+        Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 13 Jul 2020 17:33:06 +0100
+Message-ID: <159465798650.1376674.16738070178705686097.stgit@warthog.procyon.org.uk>
+In-Reply-To: <159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk>
+References: <159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.22
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Recast assertion in terms of cookie not being an index rather than being a
+datafile.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
 
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+ fs/fscache/cookie.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
+diff --git a/fs/fscache/cookie.c b/fs/fscache/cookie.c
+index 5c53027d3f53..2d9d147411cd 100644
+--- a/fs/fscache/cookie.c
++++ b/fs/fscache/cookie.c
+@@ -485,7 +485,7 @@ void __fscache_invalidate(struct fscache_cookie *cookie, loff_t new_size)
+ 	 * there, and if it's doing that, it may as well just retire the
+ 	 * cookie.
+ 	 */
+-	ASSERTCMP(cookie->type, ==, FSCACHE_COOKIE_TYPE_DATAFILE);
++	ASSERTCMP(cookie->type, !=, FSCACHE_COOKIE_TYPE_INDEX);
+ 
+ 	spin_lock(&cookie->lock);
+ 	cookie->object_size = new_size;
 
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- drivers/memory/ti-aemif.c        | 2 +-
- drivers/memory/ti-emif-sram-pm.S | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
-index db526dbf71ee..b41ca225f25c 100644
---- a/drivers/memory/ti-aemif.c
-+++ b/drivers/memory/ti-aemif.c
-@@ -2,7 +2,7 @@
- /*
-  * TI AEMIF driver
-  *
-- * Copyright (C) 2010 - 2013 Texas Instruments Incorporated. http://www.ti.com/
-+ * Copyright (C) 2010 - 2013 Texas Instruments Incorporated. https://www.ti.com/
-  *
-  * Authors:
-  * Murali Karicheri <m-karicheri2@ti.com>
-diff --git a/drivers/memory/ti-emif-sram-pm.S b/drivers/memory/ti-emif-sram-pm.S
-index d1c83bd5b98e..7310fa97e624 100644
---- a/drivers/memory/ti-emif-sram-pm.S
-+++ b/drivers/memory/ti-emif-sram-pm.S
-@@ -1,7 +1,7 @@
- /*
-  * Low level PM code for TI EMIF
-  *
-- * Copyright (C) 2016-2017 Texas Instruments Incorporated - http://www.ti.com/
-+ * Copyright (C) 2016-2017 Texas Instruments Incorporated - https://www.ti.com/
-  *	Dave Gerlach
-  *
-  * This program is free software; you can redistribute it and/or
--- 
-2.27.0
 
