@@ -2,108 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B70321D965
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0FA21D96C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729826AbgGMPDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 11:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729581AbgGMPDI (ORCPT
+        id S1729877AbgGMPEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:04:15 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24560 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729593AbgGMPEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 11:03:08 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FB2C08C5DB
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:03:08 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id f139so13493357wmf.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 08:03:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hj7ei/4/U37aYVFzIdiyRob1Gsg4Hui2K44614n1iwI=;
-        b=i2jn9oc2zspqjTVmpnmwS8848CCRuvu5xsFu2vw3OlfkIRw7Fr77HxcgYjRAE3Mcyt
-         XR7yS0fAqYT11ZspWkctOR1T6sUV0edIcASIZGPkgG5KiUkwqfj4mxdtR24+h1qNsXxN
-         mSKEpGM4GcfiIjZwQvj1SesY0iKuwzcXeoZhrGx0oOfDhVnYzgdcyPwn93Esm1bxPHPR
-         +Rjuax6h6eB+6Z/9CbF4kMjHffa8MbtXlMJrTqUNHOwHy15TFfWSSaHhqTzuRgLYLDSF
-         oUm93NAXxBB6D2mhQntN0BOXU96MYVIZlw0MrXH2jTFNgO34gR1B/1beSyJUIS6ml78h
-         iN5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hj7ei/4/U37aYVFzIdiyRob1Gsg4Hui2K44614n1iwI=;
-        b=nGYGogoquweoFLdqFHZLNtoYRZ6CE04y+wpmWjk8WFREmJKz97aI6hj+QNHyn7Nx9n
-         Wa7DWWqB60wLPA5TDvea88evFWSH2u1RtuwV946tKJ8i7OP1waFC1DyO2eBpeUcFOTUA
-         nA4a3ys7C0OnPzKlv+f2ccdur7T2+roVdx254d6qwpPl/mn9woHUV8on4Nq1Y6h11++6
-         AUOWoonMMOmmt9yp2VfHQ4WuKjs1lXpb8Xym7hfduWu/1Bv6+gSiFcAGJEv/gjLLztgx
-         imQv80TOavmCkGmcGee+0jFykdkMOS5K/gO//c5k3jNoHO6Cu7JbglDyyVoyr+B8kReb
-         9rBQ==
-X-Gm-Message-State: AOAM5332+tt586IunC9Djjp+fDuhZmTP/+NsnC2VfOvMHbNBSJaymjFW
-        rWckdQajZVQcOtKAO7OgNSaKAZd46Bs=
-X-Google-Smtp-Source: ABdhPJw65cTT/euYaJOY4JshtT6+GDtwu+71TCGdRUmekWqgIVNWBBETTu76zAOQEbJHhJLgbIME6w==
-X-Received: by 2002:a1c:e285:: with SMTP id z127mr353808wmg.162.1594652586275;
-        Mon, 13 Jul 2020 08:03:06 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:501b:b12d:3463:93f8? ([2a01:e34:ed2f:f020:501b:b12d:3463:93f8])
-        by smtp.googlemail.com with ESMTPSA id v6sm24316475wrr.85.2020.07.13.08.03.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 08:03:05 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/4] thermal: Introduce support for monitoring falling
- temperature
-To:     Thara Gopinath <thara.gopinath@linaro.org>, rui.zhang@intel.com,
-        robh+dt@kernel.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200710135154.181454-1-thara.gopinath@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <7437ee89-e76d-0c82-9860-5c6076ad8a30@linaro.org>
-Date:   Mon, 13 Jul 2020 17:03:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 13 Jul 2020 11:04:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594652652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=y5LgY+HXOyC1qLXaav2qwG6qSNorPKc5IVKdxzKAFRE=;
+        b=ah/jukWR2gva3u+hRAIHkcCJFPn98XImdQkyzQ054p/0o+up2szerv+GwCVtGT8N2+QLiN
+        JcUBW5mABrYpRceQXh+Ve287B6LcMqDd/JTPu3bL9lkQ88WZPeSOfDEF9lWXc6w3vKrmp4
+        bsmP0fheJlyGNRxpuASivXnF2V+Loxs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-434-O4iVewDkOQWpoMSBO_vvTQ-1; Mon, 13 Jul 2020 11:03:55 -0400
+X-MC-Unique: O4iVewDkOQWpoMSBO_vvTQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66D4D1083E84;
+        Mon, 13 Jul 2020 15:03:53 +0000 (UTC)
+Received: from localhost (ovpn-116-148.gru2.redhat.com [10.97.116.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B5BD619D7D;
+        Mon, 13 Jul 2020 15:03:52 +0000 (UTC)
+Date:   Mon, 13 Jul 2020 12:03:51 -0300
+From:   Bruno Meneguele <bmeneg@redhat.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-integrity@vger.kernel.org, erichte@linux.ibm.com,
+        nayna@linux.ibm.com, stable@vger.kernel.org
+Subject: Re: [PATCH v5] ima: move APPRAISE_BOOTPARAM dependency on
+ ARCH_POLICY to runtime
+Message-ID: <20200713150351.GC4730@glitch>
+References: <20200709164647.45153-1-bmeneg@redhat.com>
+ <1594401804.14405.8.camel@linux.ibm.com>
+ <20200710180338.GA10547@glitch>
+ <20200710183420.GB10547@glitch>
+ <1594407288.14405.36.camel@linux.ibm.com>
+ <20200710192516.GC10547@glitch>
 MIME-Version: 1.0
-In-Reply-To: <20200710135154.181454-1-thara.gopinath@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200710192516.GC10547@glitch>
+X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/e2eDi0V/xtL+Mc8"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/07/2020 15:51, Thara Gopinath wrote:
-> Thermal framework today supports monitoring for rising temperatures and
-> subsequently initiating cooling action in case of a thermal trip point
-> being crossed. There are scenarios where a SoC need some warming action to
-> be activated if the temperature falls below a cetain permissible limit.
-> Since warming action can be considered mirror opposite of cooling action,
-> most of the thermal framework can be re-used to achieve this.
-> 
-> This patch series is yet another attempt to add support for monitoring
-> falling temperature in thermal framework. Unlike the first attempt[1]
-> (where a new property was added to thermal trip point binding to indicate
-> direction of temperature monitoring), this series introduces a new trip
-> point type (THERMAL_TRIP_COLD) to indicate a trip point at which falling
-> temperature monitoring must be triggered. This patch series uses Daniel
-> Lezcano's recently added thermal genetlink interface[2] to notify userspace
-> of falling temperature and rising temperature at the cold trip point. This
-> will enable a user space engine to trigger the relevant mitigation for
-> falling temperature. At present, no support is added to any of the thermal
-> governors to monitor and mitigate falling temperature at the cold trip
-> point;rather all governors return doing nothing if triggered for a cold
-> trip point. As future extension, monitoring of falling temperature can be
-> added to the relevant thermal governor. 
+--/e2eDi0V/xtL+Mc8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I agree we need a cold trip point in order to introduce the functioning
-temperature range in the thermal framework.
+On Fri, Jul 10, 2020 at 04:25:16PM -0300, Bruno Meneguele wrote:
+> On Fri, Jul 10, 2020 at 02:54:48PM -0400, Mimi Zohar wrote:
+> > On Fri, 2020-07-10 at 15:34 -0300, Bruno Meneguele wrote:
+> > > On Fri, Jul 10, 2020 at 03:03:38PM -0300, Bruno Meneguele wrote:
+> > > > On Fri, Jul 10, 2020 at 01:23:24PM -0400, Mimi Zohar wrote:
+> > > > > On Thu, 2020-07-09 at 13:46 -0300, Bruno Meneguele wrote:
+> > > > > > APPRAISE_BOOTPARAM has been marked as dependent on !ARCH_POLICY=
+ in compile
+> > > > > > time, enforcing the appraisal whenever the kernel had the arch =
+policy option
+> > > > > > enabled.
+> > > > >=20
+> > > > > > However it breaks systems where the option is set but the syste=
+m didn't
+> > > > > > boot in a "secure boot" platform. In this scenario, anytime an =
+appraisal
+> > > > > > policy (i.e. ima_policy=3Dappraisal_tcb) is used it will be for=
+ced, without
+> > > > > > giving the user the opportunity to label the filesystem, before=
+ enforcing
+> > > > > > integrity.
+> > > > > >=20
+> > > > > > Considering the ARCH_POLICY is only effective when secure boot =
+is actually
+> > > > > > enabled this patch remove the compile time dependency and move =
+it to a
+> > > > > > runtime decision, based on the secure boot state of that platfo=
+rm.
+> > > > >=20
+> > > > > Perhaps we could simplify this patch description a bit?
+> > > > >=20
+> > > > > The IMA_APPRAISE_BOOTPARAM config allows enabling different
+> > > > > "ima_appraise=3D" modes - log, fix, enforce - at run time, but no=
+t when
+> > > > > IMA architecture specific policies are enabled. =A0This prevents
+> > > > > properly labeling the filesystem on systems where secure boot is
+> > > > > supported, but not enabled on the platform. =A0Only when secure b=
+oot is
+> > > > > enabled, should these IMA appraise modes be disabled.
+> > > > >=20
+> > > > > This patch removes the compile time dependency and makes it a run=
+time
+> > > > > decision, based on the secure boot state of that platform.
+> > > > >=20
+> > > >=20
+> > > > Sounds good to me.
+> > > >=20
+> > > > > <snip>
+> > > > >=20
+> > > > > > diff --git a/security/integrity/ima/ima_appraise.c b/security/i=
+ntegrity/ima/ima_appraise.c
+> > > > > > index a9649b04b9f1..884de471b38a 100644
+> > > > > > --- a/security/integrity/ima/ima_appraise.c
+> > > > > > +++ b/security/integrity/ima/ima_appraise.c
+> > > > > > @@ -19,6 +19,11 @@
+> > > > > >  static int __init default_appraise_setup(c
+> > > > >=20
+> > > > > > har *str)
+> > > > > >  {
+> > > > > >  #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
+> > > > > > +=09if (arch_ima_get_secureboot()) {
+> > > > > > +=09=09pr_info("appraise boot param ignored: secure boot enable=
+d");
+> > > > >=20
+> > > > > Instead of a generic statement, is it possible to include the act=
+ual
+> > > > > option being denied? =A0Perhaps something like: "Secure boot enab=
+led,
+> > > > > ignoring %s boot command line option"
+> > > > >=20
+> > > > > Mimi
+> > > > >=20
+> > > >=20
+> > > > Yes, sure.
+> > > >=20
+> > >=20
+> > > Btw, would it make sense to first make sure we have a valid "str"
+> > > option and not something random to print?
+> > > =20
+> > > diff --git a/security/integrity/ima/ima_appraise.c b/security/integri=
+ty/ima/ima_appraise.c
+> > > index a9649b04b9f1..1f1175531d3e 100644
+> > > --- a/security/integrity/ima/ima_appraise.c
+> > > +++ b/security/integrity/ima/ima_appraise.c
+> > > @@ -25,6 +25,16 @@ static int __init default_appraise_setup(char *str=
+)
+> > >                 ima_appraise =3D IMA_APPRAISE_LOG;
+> > >         else if (strncmp(str, "fix", 3) =3D=3D 0)
+> > >                 ima_appraise =3D IMA_APPRAISE_FIX;
+> > > +       else
+> > > +               pr_info("invalid \"%s\" appraise option");
+> > > +
+> > > +       if (arch_ima_get_secureboot()) {
+> > > +               if (!is_ima_appraise_enabled()) {
+> > > +                       pr_info("Secure boot enabled: ignoring ima_ap=
+praise=3D%s boot parameter option",
+> > > +                               str);
+> > > +                       ima_appraise =3D IMA_APPRAISE_ENFORCE;
+> > > +               }
+> > > +       }
+> >=20
+> > Providing feedback is probably a good idea. =A0However, the
+> > "arch_ima_get_secureboot" test can't come after setting
+> > "ima_appraise."
+> >=20
+>=20
+> Sorry, but I'm not sure if I got the reason to why it can't be done
+> after: would it be basically to prevent any further processing about
+> ima_appraise as a matter of security principle? Or maybe to keep the
+> dependency between secureboot and bootparam truly strict?=20
+>=20
+> Or are there something else I'm missing?
+>=20
 
-Rui, what is your opinion ?
+I'm going to send a v6 with the pr_info() placed in the beginning
+directly printing 'str', thus we can have the actual issue solved.=20
+
+Then later I send another patches to handle the other cases of limiting
+'str' printing and also giving the user a feedback about invalid
+ima_appraise=3D options. So we can discuss further on that.
+
+Thanks Mimi.
+
+> > Mimi
+> >=20
+> > >  #endif
+> > >         return 1;
+> > >  }
+> > >=20
+> > >=20
+> > > The "else" there I think would make sense as well, at least to give t=
+he
+> > > user some feedback about a possible mispelling of him (as a separate
+> > > patch).
+> > >=20
+> > > And "if(!is_ima_appraise_enabled())" would avoid to print anything ab=
+out
+> > > "ignoring the option" to the user in case he explicitly set "enforce"=
+,
+> > > which we know there isn't any real effect but is allowed and shown in
+> > > kernel-parameters.txt.
+> > >=20
+> > > > Thanks!
+> > > >=20
+> > > > > > +=09=09return 1;
+> > > > > > +=09}
+> > > > > > +
+> > > > > >  =09if (strncmp(str, "off", 3) =3D=3D 0)
+> > > > > >  =09=09ima_appraise =3D 0;
+> > > > > >  =09else if (strncmp(str, "log", 3) =3D=3D 0)
+> > > > >=20
+> > > >=20
+> > > > --=20
+> > > > bmeneg=20
+> > > > PGP Key: http://bmeneg.com/pubkey.txt
+> > >=20
+> > >=20
+> > >=20
+> >=20
+>=20
+> --=20
+> bmeneg=20
+> PGP Key: http://bmeneg.com/pubkey.txt
 
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+--=20
+bmeneg=20
+PGP Key: http://bmeneg.com/pubkey.txt
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+--/e2eDi0V/xtL+Mc8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl8Md9cACgkQYdRkFR+R
+okMtIQf8DZC6eBugwiFWL2eAc5ePgbdsvuo5aPMkQvTR20E/jr44coEpbyLHg4dI
+v3/6Rl0NqtJpe+qXbBBQDneG5H3BmfV/fa34ie39pwc36ExkHsMEzlM8XWqK6pfW
+fjlP16BYuwEcReffrmXPYOpDT0Ohl9tMqX6CVY16o2/8TELnTaWSY1Iq7ot+oPet
+PnTIIFqFQ41o4nS31BssLtEChs1ZhPwiTCTWBQnDWOaFfL0IZAkaCdp13J8WRTEK
+poTKWGTcw1TqtiRdppy7Gbs1ysCTrpAVlTRJyZKHIECFm3I/HH5breKFbom0GjWT
+UgzMxlFa2Fwt5uTeSR8xvmVzIZXR+g==
+=QwKI
+-----END PGP SIGNATURE-----
+
+--/e2eDi0V/xtL+Mc8--
+
