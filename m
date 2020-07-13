@@ -2,138 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA38F21DC80
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDA621DC81
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730564AbgGMQcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:32:51 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:55292 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730388AbgGMQco (ORCPT
+        id S1730570AbgGMQcx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Jul 2020 12:32:53 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:48827 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730366AbgGMQco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Jul 2020 12:32:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594657963;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D1wPsoBbNSccmnM5FewiFx0xZyD377Fb6Hp+rWU3DnI=;
-        b=dFDrs7x13G3yiGpJLZuYd9j+Ci6nkLywiRgZS2DO6YXFgbHYMeWnaSYepDggPDGXMbqM/O
-        DR4z2f0zRNXK5MwilIYrfoiSIopSyNkNQvtSUZX6tz0/N40uOjxRR2x69SNbzPhizhePfz
-        Widj8+CWh78QZ1fitKk7Jzz6GAdxu00=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-236-aVjucGd_MIeHprorq-cBOQ-1; Mon, 13 Jul 2020 12:32:39 -0400
-X-MC-Unique: aVjucGd_MIeHprorq-cBOQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97D8110059B5;
-        Mon, 13 Jul 2020 16:32:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-113.rdu2.redhat.com [10.10.112.113])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 25C8760BF3;
-        Mon, 13 Jul 2020 16:32:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 10/32] fscache: Remove fscache_wait_on_invalidate()
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jeff Layton <jlayton@redhat.com>,
-        Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 13 Jul 2020 17:32:31 +0100
-Message-ID: <159465795136.1376674.599056208279354471.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk>
-References: <159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.22
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Received: from marcel-macbook.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 1EE46CECC9;
+        Mon, 13 Jul 2020 18:42:40 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH 1/3] Bluetooth: Add new quirk for broken local ext
+ features max_page
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <CA+E=qVf_8-nXP=nSbtb49bF8SxF6P_A+5ntsUHKKmONccwkSwA@mail.gmail.com>
+Date:   Mon, 13 Jul 2020 18:32:41 +0200
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        arm-linux <linux-arm-kernel@lists.infradead.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        Ondrej Jirman <megous@megous.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <BD312721-96F1-4E12-914B-6F3C0C398E57@holtmann.org>
+References: <20200705195110.405139-1-anarsoul@gmail.com>
+ <20200705195110.405139-2-anarsoul@gmail.com>
+ <DF6CC01A-0282-45E2-A437-2E3E58CC2883@holtmann.org>
+ <CA+E=qVeYT41Wpp4wHgoVFMa9ty-FPsxxvUB-DJDnj07SpWhpjQ@mail.gmail.com>
+ <70578F86-20D3-41C7-A968-83B0605D3526@holtmann.org>
+ <CA+E=qVf_8-nXP=nSbtb49bF8SxF6P_A+5ntsUHKKmONccwkSwA@mail.gmail.com>
+To:     Vasily Khoruzhick <anarsoul@gmail.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove fscache_wait_on_invalidate() as the invalidation wait is now built into
-the I/O path.
+Hi Vasily,
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+>> maybe just the read sync train params command is broken? Can you change the init code and not send it and see if the rest of the init phase proceeds. I would rather have the secure connections actually tested before dismissing it altogether.
+> 
+> I don't think that I have any devices that support secure connections
+> to test, I've got only a bluetooth mouse and headphones, both are from
+> the 2.0 era.
+> 
+> FWIW unofficial recommendation from Realtek to Pine64 was to avoid
+> using any 4.1+ features on this chip. Unfortunately I don't have any
+> contacts with Realtek, so I can't confirm that.
+> 
+>> Mind you, there were broken Broadcom implementation of connectionless slave broadcast as well. Maybe this is similar.
+> 
+> I'd prefer to stick to what works unless there's some comprehensive
+> test that can figure out what's broken.
 
- fs/fscache/cookie.c     |   14 --------------
- include/linux/fscache.h |   17 -----------------
- 2 files changed, 31 deletions(-)
+check if removing the read sync trains params command makes the controller initialize and usable. Then we see about the rest.
 
-diff --git a/fs/fscache/cookie.c b/fs/fscache/cookie.c
-index a8aa1639e93b..a1eba3be9ce8 100644
---- a/fs/fscache/cookie.c
-+++ b/fs/fscache/cookie.c
-@@ -492,20 +492,6 @@ void __fscache_invalidate(struct fscache_cookie *cookie)
- }
- EXPORT_SYMBOL(__fscache_invalidate);
- 
--/*
-- * Wait for object invalidation to complete.
-- */
--void __fscache_wait_on_invalidate(struct fscache_cookie *cookie)
--{
--	_enter("%p", cookie);
--
--	wait_on_bit(&cookie->flags, FSCACHE_COOKIE_INVALIDATING,
--		    TASK_UNINTERRUPTIBLE);
--
--	_leave("");
--}
--EXPORT_SYMBOL(__fscache_wait_on_invalidate);
--
- /*
-  * Update the index entries backing a cookie.  The writeback is done lazily.
-  */
-diff --git a/include/linux/fscache.h b/include/linux/fscache.h
-index aec75fc0d297..56fdd0e74a88 100644
---- a/include/linux/fscache.h
-+++ b/include/linux/fscache.h
-@@ -217,7 +217,6 @@ extern void __fscache_unuse_cookie(struct fscache_cookie *, const void *, const
- extern void __fscache_relinquish_cookie(struct fscache_cookie *, bool);
- extern void __fscache_update_cookie(struct fscache_cookie *, const void *, const loff_t *);
- extern void __fscache_invalidate(struct fscache_cookie *);
--extern void __fscache_wait_on_invalidate(struct fscache_cookie *);
- extern void __fscache_shape_request(struct fscache_cookie *, struct fscache_request_shape *);
- extern void __fscache_init_io_request(struct fscache_io_request *,
- 				      struct fscache_cookie *);
-@@ -466,22 +465,6 @@ void fscache_invalidate(struct fscache_cookie *cookie)
- 		__fscache_invalidate(cookie);
- }
- 
--/**
-- * fscache_wait_on_invalidate - Wait for invalidation to complete
-- * @cookie: The cookie representing the cache object
-- *
-- * Wait for the invalidation of an object to complete.
-- *
-- * See Documentation/filesystems/caching/netfs-api.rst for a complete
-- * description.
-- */
--static inline
--void fscache_wait_on_invalidate(struct fscache_cookie *cookie)
--{
--	if (fscache_cookie_valid(cookie))
--		__fscache_wait_on_invalidate(cookie);
--}
--
- /**
-  * fscache_init_io_request - Initialise an I/O request
-  * @req: The I/O request to initialise
+Regards
 
+Marcel
 
