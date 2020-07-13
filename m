@@ -2,367 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF4821E333
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 00:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038C921E337
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 00:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726624AbgGMWvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 18:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgGMWvI (ORCPT
+        id S1726762AbgGMWxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 18:53:33 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:34757 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726347AbgGMWxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 18:51:08 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A7BC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:51:08 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id j19so6683718pgm.11
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Yxq+7dE6xEVUHxQe706vzk/qOVJY6KeawtslG9XNswQ=;
-        b=IQYbkY+ke4pMQVMfhjtud9t2hEkfeqMEine2CKmMCX6J0YcdSYkkUniqSU9NU2ta3T
-         4fUf6hI2VmuQZRZZC5fwnJxfP1/NS9DWvki14kLhmdFudf3LDxj/qK+lZGgTOT0NkzaS
-         DZBPlYbh3UdftpbzWH4Kw8A/E91xvDsMVarj+iZP/E4MbATJ+gxQMDg9SfX/Wqr3A/SK
-         Owh2tt5wlRvwFjlxO1YjNQawx1/mGqAmTHlBBeORNCjVJ5VVolIc58Qb8Pupv/Q0dPNO
-         Bm7WHlbOrhz+6cQryiZU/VgsPLd2q0TX8lpCSEQaimOpGR5lcwG4dW6/VLuCErT+tjW0
-         TpuQ==
+        Mon, 13 Jul 2020 18:53:32 -0400
+Received: by mail-io1-f68.google.com with SMTP id q74so15355764iod.1;
+        Mon, 13 Jul 2020 15:53:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Yxq+7dE6xEVUHxQe706vzk/qOVJY6KeawtslG9XNswQ=;
-        b=q39TVtuwEb4GfHjkaAr0iVbd+CinqBNLsmCH2NcAJPTOX3/9ATAdmQVBUgNHYnU2DE
-         hSKaV55DSBIByVtzKYFVjVi9EwXiDqwmKoDRF9kwEw9YQ26je+RQ15DNCRu9p3J0q9rn
-         78eLIdUIn0uZC4t6h6uVt23zQ0Ff9h49Y2oqG3JlSS+zEy0POE8YL5hQY4sPq/c6Yt2d
-         72z5iU64BQ/Y2q6smlLCbL4Slobdm2nreL2as8TAtvESRwUCf8JN88dmhnXH89Cb64QW
-         HhsmzHEVYy+dnqrgpZCUIgk6tDtsJ1z1MBu36GDsHTNyMkb08cFFDvWExBTL/qhDsO7F
-         iVJw==
-X-Gm-Message-State: AOAM531BbdkLD5V285TleOosIKOF4D9PibkiybFYbycB/2KCUSqOHFBE
-        VfXXGWBhwW6Wrti4qFwzXJC32A==
-X-Google-Smtp-Source: ABdhPJy7gGzzIXb6g+DdNRqNKIS2jm1T8j45qN3AlRcPOwcovsWyEgFuf5/JbZgrn/Ri3Kkznjio0A==
-X-Received: by 2002:a65:6884:: with SMTP id e4mr1036008pgt.283.1594680667940;
-        Mon, 13 Jul 2020 15:51:07 -0700 (PDT)
-Received: from google.com ([2620:0:1008:1101:7220:84ff:fe09:dc21])
-        by smtp.gmail.com with ESMTPSA id c1sm526129pje.9.2020.07.13.15.51.06
+        bh=i7bl8lVozvsdgE9YS/29f2AjrQyXq5IegzpDYAlFKDk=;
+        b=lMACpud/B/zpOXyooCHGMRNwYQ7mPbz1ZZPxpC2WtVAfevER5cmDu56t00rNLoBQu8
+         XtZS1PZQmoeE9UuGR8DHwlRwqV9lZRvQl1gNBLe1uL3sxBSpnd/hGDXSaI4bIMOe7BSl
+         F+a5VtmTe9xUrl/Mwjtx7jEjLzUMTyasaeNN5LSDcX96d7tZNkOkhOQK31GgioIe+YXV
+         Qzo7MXQki0RtKFcVpbkrgO9EBJkaSdEgFD/PEXhyIS3wolXlr2fXcqXa08/JTtIaba6h
+         UkNRQBT1KsQAmDC8gFRstYUnYeIbp7+9KwiZCDNp0t6XHE/eEzA3r2lyLUgbTzz2Du5k
+         Fjew==
+X-Gm-Message-State: AOAM532QJ5a+T6FmpJzdKRdtcuvSzC6B41IhychG3ioTjKvRfiZppcAC
+        0T/ncWlWDEqtj1zaRgUasQ==
+X-Google-Smtp-Source: ABdhPJzBmSzmcOPXxwclfcbkJAWg4Hx9r7duDiLMl+AGttmUoSZszkVUBupxhl6WuMml7z/UOFnRDg==
+X-Received: by 2002:a6b:640e:: with SMTP id t14mr2061843iog.39.1594680811094;
+        Mon, 13 Jul 2020 15:53:31 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id b13sm8316626iof.21.2020.07.13.15.53.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 15:51:07 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 15:51:03 -0700
-From:   Tom Roeder <tmroeder@google.com>
-To:     Nathan Huckleberry <nhuck@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Bill Wendling <morbo@google.com>,
-        Pirama Arumuga Nainar <pirama@google.com>
-Subject: Re: [PATCH v2] Makefile: Add clang-tidy and static analyzer support
- to makefile
-Message-ID: <20200713225103.GA1095851@google.com>
-References: <20200708181905.257691-1-nhuck@google.com>
- <CAKwvOdmKsCedU=Vt_SBSGnf4gKc9Ae4sknn_Lj+kw9f0HY5MMA@mail.gmail.com>
- <CAJkfWY58JwBqxjHcaQDwpUMrfG_hLiBkskrTfC4EeQvDrz5Q1g@mail.gmail.com>
+        Mon, 13 Jul 2020 15:53:30 -0700 (PDT)
+Received: (nullmailer pid 872292 invoked by uid 1000);
+        Mon, 13 Jul 2020 22:53:28 -0000
+Date:   Mon, 13 Jul 2020 16:53:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Rohit kumar <rohitkr@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
+        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ajit Pandey <ajitp@codeaurora.org>
+Subject: Re: [PATCH v3 8/8] dt-bindings: sound: lpass-cpu: Move to yaml format
+Message-ID: <20200713225328.GA778183@bogus>
+References: <1594184896-10629-1-git-send-email-rohitkr@codeaurora.org>
+ <1594184896-10629-9-git-send-email-rohitkr@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJkfWY58JwBqxjHcaQDwpUMrfG_hLiBkskrTfC4EeQvDrz5Q1g@mail.gmail.com>
+In-Reply-To: <1594184896-10629-9-git-send-email-rohitkr@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 12:56:07PM -0500, Nathan Huckleberry wrote:
->On Wed, Jul 8, 2020 at 2:11 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->>
->> On Wed, Jul 8, 2020 at 11:21 AM 'Nathan Huckleberry' via Clang Built
->> Linux <clang-built-linux@googlegroups.com> wrote:
->> >
->> > This patch adds clang-tidy and the clang static-analyzer as make
->> > targets. The goal of this patch is to make static analysis tools
->> > usable and extendable by any developer or researcher who is familiar
->> > with basic c++.
->> >
->> > The current static analysis tools require intimate knowledge of the internal
->> > workings of the static analysis.  Clang-tidy and the clang static analyzers
->> > expose an easy to use api and allow users unfamiliar with clang to
->> > write new checks with relative ease.
->> >
->> > ===Clang-tidy===
->> >
->> > Clang-tidy is an easily extendable 'linter' that runs on the AST.
->> > Clang-tidy checks are easy to write and understand. A check consists of
->> > two parts, a matcher and a checker. The matcher is created using a
->> > domain specific language that acts on the AST
->> > (https://clang.llvm.org/docs/LibASTMatchersReference.html).  When AST
->> > nodes are found by the matcher a callback is made to the checker. The
->> > checker can then execute additional checks and issue warnings.
->> >
->> > Here is an example clang-tidy check to report functions that have calls
->> > to local_irq_disable without calls to local_irq_enable and vice-versa.
->> > Functions flagged with __attribute((annotation("ignore_irq_balancing")))
->> > are ignored for analysis. (https://reviews.llvm.org/D65828)
->> >
->> > ===Clang static analyzer===
->> >
->> > The clang static analyzer is a more powerful static analysis tool that
->> > uses symbolic execution to find bugs. Currently there is a check that
->> > looks for potential security bugs from invalid uses of kmalloc and
->> > kfree. There are several more general purpose checks that are useful for
->> > the kernel.
->> >
->> > The clang static analyzer is well documented and designed to be
->> > extensible.
->> > (https://clang-analyzer.llvm.org/checker_dev_manual.html)
->> > (https://github.com/haoNoQ/clang-analyzer-guide/releases/download/v0.1/clang-analyzer-guide-v0.1.pdf)
->> >
->> > The main draw of the clang tools is how accessible they are. The clang
->> > documentation is very nice and these tools are built specifically to be
->> > easily extendable by any developer. They provide an accessible method of
->> > bug-finding and research to people who are not overly familiar with the
->> > kernel codebase.
->> >
->> > Signed-off-by: Nathan Huckleberry <nhuck@google.com>
->> > ---
->> > Changes V1 -> V2:
->> > * Remove dependencies on GNU Parallel
->> > * * Clang-tidy/analyzer now invoked directly from python
->> > Link: https://lkml.org/lkml/2019/8/6/941
->> >
->> >  Makefile                                      |  3 +
->> >  scripts/clang-tools/Makefile.clang-tools      | 23 ++++++
->> >  .../{ => clang-tools}/gen_compile_commands.py |  0
->>
->> + Tom for the rename.
+On Wed, Jul 08, 2020 at 10:38:16AM +0530, Rohit kumar wrote:
+> From: Ajit Pandey <ajitp@codeaurora.org>
+> 
+> Update lpass-cpu binding with yaml formats.
+> 
+> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,lpass-cpu.txt   |  80 -----------
+>  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 154 +++++++++++++++++++++
+>  2 files changed, 154 insertions(+), 80 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+> deleted file mode 100644
+> index 04e34cc..00000000
+> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+> +++ /dev/null
+> @@ -1,80 +0,0 @@
+> -* Qualcomm Technologies LPASS CPU DAI
+> -
+> -This node models the Qualcomm Technologies Low-Power Audio SubSystem (LPASS).
+> -
+> -Required properties:
+> -
+> -- compatible		: "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu" or
+> -			  "qcom,lpass-cpu-sc7180"
+> -- clocks		: Must contain an entry for each entry in clock-names.
+> -- clock-names		: A list which must include the following entries:
+> -				* "ahbix-clk"
+> -				* "mi2s-osr-clk"
+> -				* "mi2s-bit-clk"
+> -			: required clocks for "qcom,lpass-cpu-apq8016"
+> -				* "ahbix-clk"
+> -				* "mi2s-bit-clk0"
+> -				* "mi2s-bit-clk1"
+> -				* "mi2s-bit-clk2"
+> -				* "mi2s-bit-clk3"
+> -				* "pcnoc-mport-clk"
+> -				* "pcnoc-sway-clk"
+> -
+> -- interrupts		: Must contain an entry for each entry in
+> -			  interrupt-names.
+> -- interrupt-names	: A list which must include the following entries:
+> -				* "lpass-irq-lpaif"
+> -- pinctrl-N		: One property must exist for each entry in
+> -			  pinctrl-names.  See ../pinctrl/pinctrl-bindings.txt
+> -			  for details of the property values.
+> -- pinctrl-names		: Must contain a "default" entry.
+> -- reg			: Must contain an address for each entry in reg-names.
+> -- reg-names		: A list which must include the following entries:
+> -				* "lpass-lpaif"
+> -- #address-cells	: Must be 1
+> -- #size-cells		: Must be 0
+> -
+> -
+> -
+> -Optional properties:
+> -
+> -- qcom,adsp		: Phandle for the audio DSP node
+> -
+> -By default, the driver uses up to 4 MI2S SD lines, for a total of 8 channels.
+> -The SD lines to use can be configured by adding subnodes for each of the DAIs.
+> -
+> -Required properties for each DAI (represented by a subnode):
+> -- reg			: Must be one of the DAI IDs
+> -			  (usually part of dt-bindings header)
+> -- qcom,playback-sd-lines: List of serial data lines to use for playback
+> -			  Each SD line should be represented by a number from 0-3.
+> -- qcom,capture-sd-lines	: List of serial data lines to use for capture
+> -			  Each SD line should be represented by a number from 0-3.
+> -
+> -Note that adding a subnode changes the default to "no lines configured",
+> -so both playback and capture lines should be configured when a subnode is added.
+> -
+> -Example:
+> -
+> -lpass@28100000 {
+> -	compatible = "qcom,lpass-cpu";
+> -	clocks = <&lcc AHBIX_CLK>, <&lcc MI2S_OSR_CLK>, <&lcc MI2S_BIT_CLK>;
+> -	clock-names = "ahbix-clk", "mi2s-osr-clk", "mi2s-bit-clk";
+> -	interrupts = <0 85 1>;
+> -	interrupt-names = "lpass-irq-lpaif";
+> -	pinctrl-names = "default", "idle";
+> -	pinctrl-0 = <&mi2s_default>;
+> -	pinctrl-1 = <&mi2s_idle>;
+> -	reg = <0x28100000 0x10000>;
+> -	reg-names = "lpass-lpaif";
+> -	qcom,adsp = <&adsp>;
+> -
+> -	#address-cells = <1>;
+> -	#size-cells = <0>;
+> -
+> -	/* Optional to set different MI2S SD lines */
+> -	dai@3 {
+> -		reg = <MI2S_QUATERNARY>;
+> -		qcom,playback-sd-lines = <0 1>;
+> -	};
+> -};
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> new file mode 100644
+> index 00000000..9c350bc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+> @@ -0,0 +1,154 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/qcom,lpass-cpu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm LPASS CPU dai driver bindings
+> +
+> +maintainers:
+> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> +  - Rohit kumar <rohitkr@codeaurora.org>
+> +
+> +description:
+> +  Qualcomm SOC Low-Power Audio SubSystem (LPASS) that consist of MI2S interface
+> +  for audio data transfer on external codecs. LPASS cpu driver is a module to
+> +  configure Low-Power Audio Interface(LPAIF) core registers across different
+> +  IP versions.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,lpass-cpu
+> +      - qcom,apq8016-lpass-cpu
+> +      - qcom,lpass-cpu-sc7180
+> +
+> +  reg:
+> +    items:
+> +      - description: LPAIF core registers
 
-The rename is fine with me.
+Just: 'maxItems: 1' for a single entry.
 
->>
->> I think we should add scripts/clang-tools/ to MAINTAINERS under
->> CLANG/LLVM SUPPORT:
->> ```
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index c87b94e6b2f6..42602231929c 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -4211,6 +4211,7 @@ W:        https://clangbuiltlinux.github.io/
->>  B:     https://github.com/ClangBuiltLinux/linux/issues
->>  C:     irc://chat.freenode.net/clangbuiltlinux
->>  F:     Documentation/kbuild/llvm.rst
->> +F:     scripts/clang-tools/
->>  K:     \b(?i:clang|llvm)\b
->>
->>  CLEANCACHE API
->> ```
->> that way we get cc'ed properly on proposed changes (should folks use
->> scripts/get_maintainer.pl).
->>
->> >  scripts/clang-tools/run-clang-tools.py        | 77 +++++++++++++++++++
->> >  4 files changed, 103 insertions(+)
->> >  create mode 100644 scripts/clang-tools/Makefile.clang-tools
->> >  rename scripts/{ => clang-tools}/gen_compile_commands.py (100%)
->> >  create mode 100755 scripts/clang-tools/run-clang-tools.py
->> >
->> > diff --git a/Makefile b/Makefile
->> > index fe0164a654c7..3e2df010b342 100644
->> > --- a/Makefile
->> > +++ b/Makefile
->> > @@ -747,6 +747,7 @@ KBUILD_CFLAGS       += $(call cc-option,-fno-allow-store-data-races)
->> >
->> >  include scripts/Makefile.kcov
->> >  include scripts/Makefile.gcc-plugins
->> > +include scripts/clang-tools/Makefile.clang-tools
->> >
->> >  ifdef CONFIG_READABLE_ASM
->> >  # Disable optimizations that make assembler listings hard to read.
->> > @@ -1543,6 +1544,8 @@ help:
->> >         @echo  '  export_report   - List the usages of all exported symbols'
->> >         @echo  '  headerdep       - Detect inclusion cycles in headers'
->> >         @echo  '  coccicheck      - Check with Coccinelle'
->> > +       @echo  '  clang-analyzer  - Check with clang static analyzer'
->> > +       @echo  '  clang-tidy      - Check with clang-tidy'
->> >         @echo  ''
->> >         @echo  'Tools:'
->> >         @echo  '  nsdeps          - Generate missing symbol namespace dependencies'
->> > diff --git a/scripts/clang-tools/Makefile.clang-tools b/scripts/clang-tools/Makefile.clang-tools
->> > new file mode 100644
->> > index 000000000000..e09dc1a8efff
->> > --- /dev/null
->> > +++ b/scripts/clang-tools/Makefile.clang-tools
->> > @@ -0,0 +1,23 @@
->> > +# SPDX-License-Identifier: GPL-2.0
->> > +#
->> > +# Copyright (C) Google LLC, 2020
->> > +#
->> > +# Author: Nathan Huckleberry <nhuck@google.com>
->> > +#
->> > +PHONY += clang-tidy
->> > +clang-tidy:
->> > +ifdef CONFIG_CC_IS_CLANG
->> > +       $(PYTHON3) scripts/clang-tools/gen_compile_commands.py
->> > +       $(PYTHON3) scripts/clang-tools/run-clang-tools.py clang-tidy compile_commands.json
->> > +else
->> > +       $(error Clang-tidy requires CC=clang)
->>
->> s/Clang/clang/ to match the case of the target.
->>
->> > +endif
->> > +
->> > +PHONY += clang-analyzer
->> > +clang-analyzer:
->> > +ifdef CONFIG_CC_IS_CLANG
->> > +       $(PYTHON3) scripts/clang-tools/gen_compile_commands.py
->> > +       $(PYTHON3) scripts/clang-tools/run-clang-tools.py static-analyzer compile_commands.json
->> > +else
->> > +       $(error Clang-analyzer requires CC=clang)
->>
->> s/Clang/clang/ to match the case of the target.
->>
->> > +endif
->> > diff --git a/scripts/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
->> > similarity index 100%
->> > rename from scripts/gen_compile_commands.py
->> > rename to scripts/clang-tools/gen_compile_commands.py
->> > diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
->> > new file mode 100755
->> > index 000000000000..d429a150e23a
->> > --- /dev/null
->> > +++ b/scripts/clang-tools/run-clang-tools.py
->> > @@ -0,0 +1,77 @@
->> > +#!/usr/bin/env python
->> > +# SPDX-License-Identifier: GPL-2.0
->> > +#
->> > +# Copyright (C) Google LLC, 2020
->> > +#
->> > +# Author: Nathan Huckleberry <nhuck@google.com>
->> > +#
->> > +"""A helper routine run clang-tidy and the clang static-analyzer on
->> > +compile_commands.json."""
->> > +
->> > +import argparse
->> > +import json
->> > +import logging
->> > +import multiprocessing
->> > +import os
->> > +import re
->> > +import subprocess
->> > +
->> > +def parse_arguments():
->> > +  """Set up and parses command-line arguments.
->> > +  Returns:
->> > +    args: Dict of parsed args
->> > +      Has keys 'file' and 'type'
->> > +  """
->> > +  usage = """Run clang-tidy or the clang static-analyzer on a
->> > +  compilation database."""
->> > +  parser = argparse.ArgumentParser(description=usage)
->> > +
->> > +  type_help = ('Type of analysis to be performed')
->> > +  parser.add_argument('type', choices=['clang-tidy', 'static-analyzer'],
->> > +                      help=type_help)
->> > +  file_path_help = ('Path to the compilation database to parse')
->> > +  parser.add_argument('file',  type=str, help=file_path_help)
->>
->> I don't know if the kernel has a preferred style for Python, but I
->> think it would be good to be consistent in the use of single vs double
->> quotes for strings.  My preference is for double quotes, but I don't
->> know enough about the various PEPs for style or if the kernel has a
->> preferred style for these.
->>
->> + Bill who knows a bit about Python style.
->>
->> > +
->> > +  args = parser.parse_args()
->> > +
->> > +  return args
->> > +
->> > +def init(l,t):
->> > +  global lock
->> > +  global analysis_type
->> > +  lock = l
->> > +  analysis_type = t
->>
->> Is this canonical Python?  Maybe wrap these functions into methods of
->> an object you construct, that way you can assign these as instance
->> variables against `self`, rather than using global variables.
->
->I did this to allow shared locks between processes, see
->https://stackoverflow.com/questions/25557686/python-sharing-a-lock-between-processes
->
->>
->> > +
->> > +def run_analysis(entry):
->> > +  filename = entry['file']
->> > +  p = None
->> > +  if(analysis_type == "clang-tidy"):
->> > +    p = subprocess.run(["clang-tidy", "-p", os.getcwd(),
->> > +                        "-checks=-*,linuxkernel-*", filename],
->> > +                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
->> > +  if(analysis_type == "static-analyzer"):
->> > +    p = subprocess.run(["clang-tidy", "-p", os.getcwd(),
->> > +                        "-checks=-*,clang-analyzer-*", filename],
->> > +                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
->>
->> When you have a fair amount of duplication between two branches of an
->> if/else (for instance, same method invocation and number of
->> parameters, just slight differences in parameter values), consider if
->> you can use a ternary to simplify or make the code more concise. That
->> would also help avoid initializing `p` to `None`:
->>
->> checks = "-checks=-*,linuxkernel-*" if analysis_type == "clang-tidy"
->> else "-checks=-*,clang-analyzer-*"
->> p = subprocess.run(["clang-tidy", "-p", os.getcwd(), checks,
->>     stdout=subprocess.PIPE, stderr=subprocess.PIPE]
->>
->> then maybe do some validation of the analysis_type when validating
->> command line arguments earlier.
->
->Argparse should already handle validation of the analysis type.
->
->>
->> > +  lock.acquire()
->> > +  print(entry['file'])
->> > +  os.write(1, p.stdout)
->> > +  os.write(2, p.stderr)
->>
->> Please use sys.stdout and sys.stderr rather than magic constants for
->> their file descriptors.
->>
->> > +  lock.release()
->> > +
->> > +
->> > +def main():
->> > +  args = parse_arguments()
->> > +  filename = args.file
->> > +
->> > +  #Read JSON data into the datastore variable
->> > +  if filename:
->>
->> Isn't there a way to make command line arguments required with
->> Argparse? In that case, would you still need the conditional?
->>
->> > +    with open(filename, 'r') as f:
->> > +      datastore = json.load(f)
->> > +
->> > +      lock = multiprocessing.Lock()
->> > +      pool = multiprocessing.Pool(initializer=init, initargs=(lock,args.type,))
->> > +      pool.map(run_analysis,datastore)
->>
->> Please use a space to separate parameters in a parameter list.
->>
->> > +
->> > +if __name__ == '__main__':
->> > +    main()
->>
->> So rather than call a function named main, you could simply construct
->> an object, then call a method on it or have the constructor simply
->> kick off the analysis (essentially a mix of `main` and `init`).
->>
->> --
->> Thanks,
->> ~Nick Desaulniers
->
->Thanks,
->Nathan Huckleberry
+> +
+> +  reg-names:
+> +    items:
+> +      - const: lpass-lpaif
+
+Not all that useful with only 1.
+
+> +
+> +  clocks:
+> +    items:
+> +      - description: AHBIX core clock
+> +      - description: oscillator clock for MI2S external interfaces
+> +      - description: Bit clock for single MI2S dai
+> +      - description: Bit clock for MI2S_PRIMARY dai interface
+> +      - description: Bit clock for MI2S_SECONDARY dai interface
+> +      - description: Bit clock for MI2S_TERTIARY dai interface
+> +      - description: Bit clock for MI2S_QUATERNARY dai interface
+> +      - description: NOC MPORT clock of LPASS core
+> +      - description: NOC SWAY clock of LPASS core
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ahbix-clk
+> +      - const: mi2s-osr-clk
+> +      - const: mi2s-bit-clk
+> +      - const: mi2s-bit-clk0
+> +      - const: mi2s-bit-clk1
+> +      - const: mi2s-bit-clk2
+> +      - const: mi2s-bit-clk3
+> +      - const: pcnoc-mport-clk
+> +      - const: pcnoc-sway-clk
+> +
+> +  interrupts:
+> +    items:
+> +      - description: LPAIF DMA buffer interrupt
+
+maxItems: 1
+
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: lpass-irq-lpaif
+> +
+> +  qcom,adsp:
+> +    maxItems: 1
+> +    description: Phandle for the audio DSP node
+
+Needs a type $ref. And if just a phandle, 'maxItems: 1' is not 
+appropriate.
+
+> +
+> +  iommus:
+> +    maxItems: 1
+> +    description: Phandle to apps_smmu node with sid mask
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +    description: Phandle for power domain node
+
+Drop. That's every 'power-domains' property.
+
+> +
+> +  '#sound-dai-cells':
+> +    const: 1
+> +
+> +  child-node:
+
+I'm sure I said this on some review recently, but you are defining a 
+child node named 'child-node'. You need this under patternProperties 
+with the actual child node name.
+
+> +    description: Required properties for each DAI
+> +    type: object
+> +    properties:
+> +      reg:
+> +        description: Must be one of the DAI ID
+> +                     (Usually part of dtbindings header)
+
+Ideally, you'd define the range of values here.
+
+> +      qcom,playback-sd-lines:
+> +        description: List of serial data lines to use for playback
+> +                     Each SD line should be represented by a number from 0-3.
+
+Needs a type $ref and 0-3 should be expressed as a schema.
+
+'make dt_binding_check' should complain about this. You did run that, 
+right?
+
+> +      qcom,capture-sd-lines :
+> +        description: List of serial data lines to use for capture
+> +                     Each SD line should be represented by a number from 0-3.
+
+ditto
+
+> +    required:
+> +      -reg
+
+space     ^
+
+> +    # Note that adding a subnode changes the default to "no lines configured",
+> +    # so both playback and capture lines should be configured when a subnode
+> +    # is added.
+> +
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +  - interrupt-names
+> +  - sound-dai-cells
+
+Not a valid property.
+
+> +
+> +optional:
+> +  - qcom,adsp
+> +
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        const: qcom,lpass-cpu-sc7180
+> +
+> +then:
+> +  required:
+> +    - iommus
+> +    - power-domains
+> +
+> +examples:
+> +  lpass@28100000 {
+
+This is not valid. 'examples' should be a list.
+
+> +	compatible = "qcom,lpass-cpu";
+> +	clocks = <&lcc AHBIX_CLK>,
+> +		 <&lcc MI2S_OSR_CLK>,
+> +		 <&lcc MI2S_BIT_CLK>;
+
+The example will not build because the includes are missing.
+
+> +
+> +	clock-names = "ahbix-clk",
+> +		      "mi2s-osr-clk",
+> +		      "mi2s-bit-clk";
+> +
+> +	interrupts = <0 85 1>;
+> +        interrupt-names = "lpass-irq-lpaif";
+> +
+> +	iommus = <&apps_smmu 0x1020 0>;
+> +	power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
+> +
+> +	reg = <0x28100000 0x10000>;
+> +	reg-names = "lpass-lpaif";
+> +	#sound-dai-cells = <1>;
+> +	qcom,adsp = <&adsp>;
+> +
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	/* Optional to set different MI2S SD lines */
+> +	mi2s-quaternary@3 {
+> +		reg = <MI2S_QUATERNARY>;
+> +		qcom,playback-sd-lines = <0 1>;
+> +  };
+> -- 
+> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
