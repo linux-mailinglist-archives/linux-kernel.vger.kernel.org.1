@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673E421DF67
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248F021DFB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730324AbgGMSMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 14:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729687AbgGMSMp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 14:12:45 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32444C061755;
-        Mon, 13 Jul 2020 11:12:45 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id ga4so18339914ejb.11;
-        Mon, 13 Jul 2020 11:12:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=wX50ijN1MvREDIsGS5xeUvOvHwSnksvK2NAsbuf3LdM=;
-        b=ialw/PlEbuLKxjnilT/9gcUOn1JvXuhjogH2KPopW+8zGMTyzC4cccPQ2FhBzMhUA6
-         SNwjeU+EIfxwY/PQbyIFoyIJ9DrYSuGnVOG46YUkzjEVGP10RxniYxGtbY7KAyPLh8np
-         3ks1NrAHC9p2laTyrUpynDLUQ4C4srYgNq4XxjIbJAa+fCZN4Wv1ABG2lIMOdRae6RxN
-         6PynVm1ZogXPdCp2QG3tT+fIpL3Ev/0RATDhAdeszNZ4Qq4Vztyizti8cBNIONgkDW34
-         4l7YLA2wE1qvnxOe6QCLxDJ9gfiLdQa8XUjHs3zkY+qiN6g2AZSgKbJt32PMLYH5bhK0
-         1mDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=wX50ijN1MvREDIsGS5xeUvOvHwSnksvK2NAsbuf3LdM=;
-        b=NXy4cISQwoOTFwKR8cbHiyobAW6d65vZLLKz1xVyuvt+gCH1kCiETaKku9XfGSDs8G
-         FAudzL4GqijXxrGlnKeRbcFleuEyrE4Wf5QLMepaWIHcYWjJwI8eBj2X5a/hgFHVlqA6
-         4OhLSXXpiRoBy3O6dLYtRL8fThMsTYQqMFRDu15guyx4Du1lVL81Hj+oed47MkcuQrhC
-         Uyx5ZD3oImq6X1OaUfNt32cNL97tWDcYxhB80CCS79F57cVLYByrzR+4fhzOFCXCBsfG
-         HAS2wc/khfVNJoFrRH7LdEiyJU+tiDkegrjTlj5szSQyb70EumsJonqbB6SBCSDGFv2v
-         iCnw==
-X-Gm-Message-State: AOAM532ya+Y46mquRp2C/uorgCX378Qkehun9qibpPtw8fp54RM9fAvU
-        Lfou9nyX9cczd1/Shn/3TGuEPE9Ic41KqQ==
-X-Google-Smtp-Source: ABdhPJz/75L97OnteHurSRENk3PzKuEuZsidiUh+ImYU1G4fo56ylorIqQZv+42Mr706DdN0J+VEIA==
-X-Received: by 2002:a17:906:57c6:: with SMTP id u6mr945004ejr.194.1594663963454;
-        Mon, 13 Jul 2020 11:12:43 -0700 (PDT)
-Received: from net.saheed (54007186.dsl.pool.telekom.hu. [84.0.113.134])
-        by smtp.gmail.com with ESMTPSA id z5sm7364786ejw.114.2020.07.13.11.12.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 11:12:42 -0700 (PDT)
-Subject: Re: [RFC PATCH 02/35] ssb: Change PCIBIOS_SUCCESSFUL to 0
-To:     Larry Finger <Larry.Finger@lwfinger.net>, helgaas@kernel.org,
-        Michael Buesch <m@bues.ch>
-Cc:     bjorn@helgaas.com, skhan@linuxfoundation.org,
-        linux-pci@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-References: <20200713122247.10985-1-refactormyself@gmail.com>
- <20200713122247.10985-3-refactormyself@gmail.com>
- <70e57af0-6a8c-a893-67c9-0181af16ae2b@lwfinger.net>
-From:   Saheed Bolarinwa <refactormyself@gmail.com>
-Message-ID: <78b52ad5-015f-4452-0cd0-dbb2c8597672@gmail.com>
-Date:   Mon, 13 Jul 2020 21:13:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726482AbgGMSbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 14:31:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726058AbgGMSbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 14:31:15 -0400
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D6A62075D;
+        Mon, 13 Jul 2020 18:31:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594665075;
+        bh=Q+HK1Q7zVRO6bPfXYi5jwqYnO9t8ua0qhLDmv/SMT90=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Diq5Pb/QksKWa4fHMqMPg9ZyVIdPDDMzIycugVPMsSAg9QyZjauVpT4K/Z+wiJMKD
+         LenahMasZS38qRigWgWHRym685l3wZBBZQ6asMjH99kNRvLsLNIxCxtXN+sHWsY9Vz
+         /0Q4u6CGlAisL7ZGmWWFUhkHzdmjwztkRfTS49OY=
+Received: by mail-oi1-f178.google.com with SMTP id k6so11759179oij.11;
+        Mon, 13 Jul 2020 11:31:15 -0700 (PDT)
+X-Gm-Message-State: AOAM531tJ9zJY+pSaSahWliUQD3P8svxU5Zmp6znrYi2mg5G+XIouAJz
+        CKClKZDSeOM9Qtu5HJui/biDKUOjwzNanSc3RQ==
+X-Google-Smtp-Source: ABdhPJwD3DPdHbzTuxLSVpY1ZFpk34ZdgtVY1onVvRra1UjjLWAFSnTbuXzcHV7Q3WMvOKzCnlYkge/bnGcwgolP8W4=
+X-Received: by 2002:aca:4844:: with SMTP id v65mr677170oia.152.1594665074595;
+ Mon, 13 Jul 2020 11:31:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <70e57af0-6a8c-a893-67c9-0181af16ae2b@lwfinger.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200612224914.7634-1-s-anna@ti.com> <20200612224914.7634-4-s-anna@ti.com>
+ <20200713183007.GA501995@bogus>
+In-Reply-To: <20200713183007.GA501995@bogus>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 13 Jul 2020 12:31:02 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLN8sb+FS3Sh5YmHLvF=Mm_DngNPKv1Sb8pwcAwOnd1Fw@mail.gmail.com>
+Message-ID: <CAL_JsqLN8sb+FS3Sh5YmHLvF=Mm_DngNPKv1Sb8pwcAwOnd1Fw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] dt-bindings: remoteproc: Add common TI SCI rproc bindings
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Larry,
-
-On 7/13/20 7:16 PM, Larry Finger wrote:
-> On 7/13/20 7:22 AM, Saheed O. Bolarinwa wrote:
->> In reference to the PCI spec (Chapter 2), PCIBIOS* is an x86 concept.
->> Their scope should be limited within arch/x86.
->>
->> Change all PCIBIOS_SUCCESSFUL to 0
->>
->> Signed-off-by: "Saheed O. Bolarinwa" <refactormyself@gmail.com>
+On Mon, Jul 13, 2020 at 12:30 PM Rob Herring <robh@kernel.org> wrote:
 >
-> Could you please tell me what difference this makes? It looks like 
-> source churn rather than a substantive change. The symbol is defined 
-> in pci.h and is used in many architures. Certainly, PCIBIOS_SUCCESSFUL 
-> indicates success even more clearly than 0 does.
+> On Fri, 12 Jun 2020 17:49:11 -0500, Suman Anna wrote:
+> > Add a bindings document that lists the common TI SCI properties
+> > used by the K3 R5F and DSP remoteproc devices.
+> >
+> > Signed-off-by: Suman Anna <s-anna@ti.com>
+> > ---
+> > v3: New Patch refactoring out the common ti-sci-proc properties
+> >
+> >  .../bindings/remoteproc/ti,k3-sci-proc.yaml   | 51 +++++++++++++++++++
+> >  1 file changed, 51 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-sci-proc.yaml
+> >
 >
-It is a trivial first step towards a probably significant task. I 
-explained in the Cover Letter, I can see it didn't get through but I Cc 
-linux-wireless (properly this time). Probably, too many addresses.
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-I have resent it. It is here 
-https://lore.kernel.org/linux-wireless/20200713185559.31967-1-refactormyself@gmail.com/T/#u
-
-> Why is your name inside quotes in your s-o-b?
->
-To keep me company before I get to know my way within the kernel.
-
-I saw people with >2 names do it, so I did! Please let me know if it is odd.
-
-Thank you.
-
-- Saheed
-
+Oops, wrong patch.
