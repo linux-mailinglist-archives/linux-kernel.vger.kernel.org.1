@@ -2,105 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2254521D444
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CB521D42F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729698AbgGMLCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 07:02:24 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56840 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729668AbgGMLCS (ORCPT
+        id S1729318AbgGMLBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 07:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727035AbgGMLBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 07:02:18 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06DB29G9101133;
-        Mon, 13 Jul 2020 06:02:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594638129;
-        bh=78wWOd3ZsPARwxc3JQyFkWSrWhbfEtK3ytyjWuF48qg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=qiMHLkrBKlg7E2/FI2hGsxpuZtqFYY+jM1jXyNSR+bQtJQvm+lTJ2o+8RDzeX/eeI
-         gG3meQG7klcVSPoxrCuldKkPg77krn3tDA2+OiH+LN1LS4mOSgpkyV5VOzjOSGcVup
-         8YOuqEC+3+VL5ucz4uV7fVGbaKsL+JYFFEqhCg+w=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06DB29TL005479;
-        Mon, 13 Jul 2020 06:02:09 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 13
- Jul 2020 06:02:08 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 13 Jul 2020 06:02:08 -0500
-Received: from a0393678ub.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06DB1gVg031460;
-        Mon, 13 Jul 2020 06:02:05 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v7 06/14] dt-bindings: PCI: cadence: Remove "mem" from reg binding
-Date:   Mon, 13 Jul 2020 16:31:33 +0530
-Message-ID: <20200713110141.13156-7-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200713110141.13156-1-kishon@ti.com>
-References: <20200713110141.13156-1-kishon@ti.com>
+        Mon, 13 Jul 2020 07:01:50 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56377C061755;
+        Mon, 13 Jul 2020 04:01:50 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id e8so5870294pgc.5;
+        Mon, 13 Jul 2020 04:01:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PLDTOUjo+Us4PRzbHAHkncjVeQotYYWeKuV0fTxuxQE=;
+        b=P3a0aMxZX57xTDDVtevvhPbtILAUCdoVYemwr5tYof8eC9gmOilvR8DRwo2TSxiimi
+         2o3mzJYJtaAfcMRFswp6OA/hCdzUdg6y7CHIwZ7qlFIX/BvG43K2wWxroIzpPQ172sVj
+         qSQiGi02tzfySYjmmZWQuHB+0x49TXjbvo9oJNOeyEVx9jj9iF5XrgFkP1xc1lph4lev
+         3z0ZUWJC2xEsUA0/XKy2y6xhnmD00BaOz4ULqB/6E/GzZVzZxAaR2Iz9HRmxKnoyMOUH
+         yUFRLuwCxTvOI4cz0B0IDvIfmvgurWAi5go9mCNtFOmBMlWdP8sQ3COujb3TBUAAXOrK
+         8t3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PLDTOUjo+Us4PRzbHAHkncjVeQotYYWeKuV0fTxuxQE=;
+        b=pNy8jjEhbExphgs36K3P0QP/SwF7n3MxtrcXUm7KyQWJSX3neeeOhxYsUfZP7Kv6UU
+         3+OYCIoYl5c8/f5UcMjNiyQ5S/FZP9D1SXujmxBGoAg4yjPqi40lkqqMXrSCkwo87PU2
+         iJTixOSn3c43ykFfw6Biv/RbzU9t+my9o4A7pyGy7fXQpDfZqs3wanEVdTsTHUmRpWVB
+         k9TK+y0MJyrbtauXI/pEUQ64CWV01np9lihLcdNxbdWGB7+9fQTOEIGx9oRuJG8Iphz8
+         yoLa7Imv30O923Ox2L4ZrApjYGu58bNtg8vQuyEt3qqyqTpux2vULU4weyK5YTuxYPpR
+         sTaQ==
+X-Gm-Message-State: AOAM530AnlGMgW1HHcSlcFV0byuJ84wPMA/9xwlD0B51cvR9+xlKQFoB
+        JhI5JepxkUMa5v2JotR5zz94lQvzx90aEbalVO4=
+X-Google-Smtp-Source: ABdhPJztjlzZ8I15mA4ZUtzxH6wmgoWCnIb3FoBThQCtQHqaa9n4qxq2ugmElZ2h3BA113XeuRp2rLN8RtucOjJLSZk=
+X-Received: by 2002:a62:7657:: with SMTP id r84mr71646218pfc.130.1594638109708;
+ Mon, 13 Jul 2020 04:01:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200710183318.7b808092@canb.auug.org.au> <20200712155604.GA342822@smile.fi.intel.com>
+ <20200713080152.63ee1246@canb.auug.org.au> <e519f1c2-9761-4866-4878-09cc3da23d1f@infradead.org>
+ <CAHk-=wib+gfHwo0zADm-rMXuBaHMdosudtBXeUk0qfQEna9Hjw@mail.gmail.com> <f5a764f8-74d9-c11f-c1d7-2b22fc42f6c6@infradead.org>
+In-Reply-To: <f5a764f8-74d9-c11f-c1d7-2b22fc42f6c6@infradead.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 13 Jul 2020 14:01:33 +0300
+Message-ID: <CAHp75VeTrktumdYOpyHSdO4kFY=73BTEe2N460oAHWSY+FuWmA@mail.gmail.com>
+Subject: Re: linux-next: Tree for Jul 10
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"mem" is not a memory resource and it overlaps with PCIe config space
-and memory region. Remove "mem" from reg binding.
+On Mon, Jul 13, 2020 at 5:37 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 7/12/20 7:27 PM, Linus Torvalds wrote:
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/pci/cdns,cdns-pcie-host.yaml      | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
-index 84a8f095d031..6d67067843bf 100644
---- a/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
-+++ b/Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml
-@@ -18,13 +18,12 @@ properties:
-     const: cdns,cdns-pcie-host
- 
-   reg:
--    maxItems: 3
-+    maxItems: 2
- 
-   reg-names:
-     items:
-       - const: reg
-       - const: cfg
--      - const: mem
- 
-   msi-parent: true
- 
-@@ -49,9 +48,8 @@ examples:
-             device-id = <0x0200>;
- 
-             reg = <0x0 0xfb000000  0x0 0x01000000>,
--                  <0x0 0x41000000  0x0 0x00001000>,
--                  <0x0 0x40000000  0x0 0x04000000>;
--            reg-names = "reg", "cfg", "mem";
-+                  <0x0 0x41000000  0x0 0x00001000>;
-+            reg-names = "reg", "cfg";
- 
-             ranges = <0x02000000 0x0 0x42000000  0x0 0x42000000  0x0 0x1000000>,
-                      <0x01000000 0x0 0x43000000  0x0 0x43000000  0x0 0x0010000>;
+> Thanks for replying.
+>
+> I've already got it built & working.
+
+Me too. 0.6.2 works for me.
+
+
 -- 
-2.17.1
-
+With Best Regards,
+Andy Shevchenko
