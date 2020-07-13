@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270EB21D0AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A3521D0B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729482AbgGMHrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 03:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50446 "EHLO
+        id S1729548AbgGMHrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 03:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729374AbgGMHrP (ORCPT
+        with ESMTP id S1729394AbgGMHrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 03:47:15 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EBBC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:47:14 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a6so14661796wrm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:47:14 -0700 (PDT)
+        Mon, 13 Jul 2020 03:47:16 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C46C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:47:15 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id s10so14621650wrw.12
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:47:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=oQ4WvRwPDFUcNrh06O2K9jOUxxfeZulaKjQ0ybDc5os=;
-        b=bUcu1mtJaYXv0rh5cEHC/NbY4/26cuQSnsGFXLA/v1BBuA3R1qfK7CaKBSmp+NQQy3
-         7md3AfU1fH0fr9k4TgyHrvcSh9ygvPY7leVg+ShqTC18ad+y7UCITOUYFtm2PQRp8AZU
-         dhEQNC1q8PBtwArgX7Zd99DCkX75OybT13BC9bwj09cEKuQcIRHwjEGypxBq48DQBLec
-         SaMxU+jhk2QGCyJNwiGMyiQNoFZJEXFp298UMjbXfBGxe2almnz231E8HarbSlo2QFRh
-         pEwX0Z1AFLdFnKqQUxqmStTpHBCLMktPi0IYyXZLjkSJ6lm1oketJhhE/6Dd6fEQJsjq
-         GJJA==
+        bh=ERoz3fkdfBzQNDlM4+cYEX1ahP8otbMKTg0c52YoDQM=;
+        b=yYUh48KN0Zmb3XwIAmWYhxedT6tKiKsH7prVn9xUAC5ez7airPPFOcLdygthJXRRvV
+         I5vpKwHL6zlkGBu+4n7ddEcH6UocXT6wzUb2QbjnP6Jbsb+A+ZVtFe4ICd1zi6jdaHR6
+         bERwig5lB+KrLPSzAi3zfPFjXVzHNSPbarzwJ/oyKnZwseEGT6qxygnnmUlyttFimk55
+         /VIrwboCqRRQj6LodED8DN19y2h+fzZT+CiXie518pOrpl8q7jULg9pYHkGkA36MvFIC
+         PuyPl+FfcYRJpRyMut3MtSyvVmvvbnErXmF1/+qW3fohRNTTkyGodjt5mEUhqJtLlrbX
+         t48A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oQ4WvRwPDFUcNrh06O2K9jOUxxfeZulaKjQ0ybDc5os=;
-        b=IRZLM5GVjwFWm+TYRfUtPGDCEUOIQUxOvAtmBLooMm7XqzELQYphVv/jL8wyGe1ZG6
-         rXKw6LA4L3FrgnwGNYJI06HceTQQR61OSi3ZGu/ifaNBtvcOSQNAbVFlXqAdNHq1p/iH
-         tOhHRjGNRd9GYM+GZ7jCgt4DyApH1RQTHsBgH+G8amq6ZxEOFSy0G9ifjmqVuOp7CydK
-         4eS7XrBR+8K+RsH7VXFT8pUYTth0l19EP/9Ywnw1foBa3wnWXfIcJAv4j7AJMR8K/xSV
-         nT0OaqE9FIcELdiO8L/M8DWhhRFbGOb8ujj0D0IrT2DJKy0pwwDCmDLdtRp0TA0u+Lmz
-         iASQ==
-X-Gm-Message-State: AOAM532UXFNeK8WSB990YsXy3Mg/M9hRmNd9XS50KjGua4eU7jmgwc24
-        +1jr2W+HzdkczanvCbUC8DoYpw==
-X-Google-Smtp-Source: ABdhPJy6RpS9ZC9BVht0XLiAt356TcBAMpjPseMYjz3KUEjghzC5DOIW8//i2A6SUG+flGinxVVO2g==
-X-Received: by 2002:a05:6000:86:: with SMTP id m6mr45539519wrx.173.1594626433513;
-        Mon, 13 Jul 2020 00:47:13 -0700 (PDT)
+        bh=ERoz3fkdfBzQNDlM4+cYEX1ahP8otbMKTg0c52YoDQM=;
+        b=Cqz5EXcDby9COOKthR+HSzHcL4MILfyYMCbGVld4Ye5awxCLmX9GOSZeesCQ2UgI7i
+         DieUEFbwJclS5G57J1Ld+Lkqjh0n6dc8q0t0F7cPOhpv5hTCVYiVzSO3P4p8lu5MjNdi
+         tSkt7cvoYDdysfHmKQH+EQiMqT/w6/T6Uf+ty9MeXrxU7feuPYD5bhkETDroCpZ9wfjp
+         6KXIQSTCWdHXUZ0qk5VdVksh9tWiU3cL9hqJ4DvmsFjqO7rVQVznFIz/7y5NcIzLgBld
+         nGTLWj3HuogyhzvoHIsMwIo35yd16wuzfnxA0ZtIhsvW71CNe3+cEewDWrv5l60YY8gO
+         IcJQ==
+X-Gm-Message-State: AOAM531IfcI7DdhhetN9+40q8eN+BBcsyecdfOneA8K5u2z1LNos7ZKc
+        XZUjkzoUB8Vs/RlD/55gJDYDlA==
+X-Google-Smtp-Source: ABdhPJxQyqXPz1y6vSze5cvmbtAH7bBLRqoz9XwPG2ZTG7RY3evXm6mZqbEgVT7UGWcPpjd+bu0ZrQ==
+X-Received: by 2002:a5d:658a:: with SMTP id q10mr78337337wru.220.1594626434536;
+        Mon, 13 Jul 2020 00:47:14 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.6])
-        by smtp.gmail.com with ESMTPSA id k11sm25142488wrd.23.2020.07.13.00.47.12
+        by smtp.gmail.com with ESMTPSA id k11sm25142488wrd.23.2020.07.13.00.47.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 00:47:12 -0700 (PDT)
+        Mon, 13 Jul 2020 00:47:14 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
-Subject: [PATCH v2 24/29] scsi: aacraid: linit: Fix a couple of small kerneldoc issues
-Date:   Mon, 13 Jul 2020 08:46:40 +0100
-Message-Id: <20200713074645.126138-25-lee.jones@linaro.org>
+        YueHaibing <yuehaibing@huawei.com>,
+        Luben Tuikov <luben_tuikov@adaptec.com>
+Subject: [PATCH v2 25/29] scsi: aic94xx: aic94xx_init: Demote seemingly unintentional kerneldoc header
+Date:   Mon, 13 Jul 2020 08:46:41 +0100
+Message-Id: <20200713074645.126138-26-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200713074645.126138-1-lee.jones@linaro.org>
 References: <20200713074645.126138-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most likely caused by bitrot (docs not keeping in sync with API).
+This is the only use of kerneldoc in the sourcefile and no
+descriptions are provided.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/aacraid/linit.c: In function ‘aac_biosparm’:
- drivers/scsi/aacraid/linit.c:368:41: warning: suggest braces around empty body in an ‘if’ statement [-Wempty-body]
- drivers/scsi/aacraid/linit.c:243: warning: Function parameter or member 'shost' not described in 'aac_queuecommand'
- drivers/scsi/aacraid/linit.c:243: warning: Excess function parameter 'done' description in 'aac_queuecommand'
- drivers/scsi/aacraid/linit.c:1176: warning: Excess function parameter 'inode' description in 'aac_cfg_ioctl'
+ drivers/scsi/aic94xx/aic94xx_init.c:538: warning: Function parameter or member 'asd_ha' not described in 'asd_free_edbs'
 
-Cc: Adaptec OEM Raid Solutions <aacraid@microsemi.com>
-Cc: "PMC-Sierra, Inc" <aacraid@pmc-sierra.com>
+Cc: YueHaibing <yuehaibing@huawei.com>
+Cc: Luben Tuikov <luben_tuikov@adaptec.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/aacraid/linit.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/scsi/aic94xx/aic94xx_init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
-index 734dd6e67246d..f043e378652c1 100644
---- a/drivers/scsi/aacraid/linit.c
-+++ b/drivers/scsi/aacraid/linit.c
-@@ -230,8 +230,8 @@ static struct aac_driver_ident aac_drivers[] = {
+diff --git a/drivers/scsi/aic94xx/aic94xx_init.c b/drivers/scsi/aic94xx/aic94xx_init.c
+index bef47f38dd0db..a195bfe9eccc0 100644
+--- a/drivers/scsi/aic94xx/aic94xx_init.c
++++ b/drivers/scsi/aic94xx/aic94xx_init.c
+@@ -530,7 +530,7 @@ static int asd_create_ha_caches(struct asd_ha_struct *asd_ha)
+ 	return 0;
+ }
  
- /**
-  *	aac_queuecommand	-	queue a SCSI command
-+ *	@shost:		Scsi host to queue command on
-  *	@cmd:		SCSI command to queue
-- *	@done:		Function to call on command completion
-  *
-  *	Queues a command for execution by the associated Host Adapter.
-  *
-@@ -1160,7 +1160,6 @@ static int aac_cfg_open(struct inode *inode, struct file *file)
- 
- /**
-  *	aac_cfg_ioctl		-	AAC configuration request
-- *	@inode: inode of device
-  *	@file: file handle
-  *	@cmd: ioctl command code
-  *	@arg: argument
+-/**
++/*
+  * asd_free_edbs -- free empty data buffers
+  * asd_ha: pointer to host adapter structure
+  */
 -- 
 2.25.1
 
