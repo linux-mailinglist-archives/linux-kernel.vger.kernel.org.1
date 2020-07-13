@@ -2,128 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D4321E07D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1306A21E085
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgGMTJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 15:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
+        id S1726894AbgGMTLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 15:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgGMTJH (ORCPT
+        with ESMTP id S1726850AbgGMTLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 15:09:07 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7A3C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:09:07 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id h13so10421230otr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:09:07 -0700 (PDT)
+        Mon, 13 Jul 2020 15:11:20 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D529C08C5DB
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:11:20 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x8so5914499plm.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 12:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Csf/7rx4gaZR2B7YhjrBbyppyMnO+n7zmvX5ufPGpCo=;
-        b=IfIObDJQskKnHqAruRqptjka9NXRlz+z1M5/eujPB310PpBqdu4COPAIN/Cr0RgkZe
-         csL9JdoKQYyrRvJt6w2L//Zdtbri5Wn/D/1NrGUm7XvQLvUaf7dbdQZ2gYaCigz73Kd9
-         8ZuqNIO57QJGtRy75QjfDNaXsZytH4slodRVw=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K9bKl04TiecTHi6yQKqCyqcVhVmkhlQgjawYP95KECc=;
+        b=azmxqowhmZE5KngzFQMGOBQ+Tzr0C4orCvrkc8i+1TNQhK4UD5u6WbIXsiaZrinfho
+         YqV3lwuEyPXSAQewrmFlPQgUWmtrHpAPGQS+Ma5LOVe53dlRPc2ez0sRCVCRwdi4UB8g
+         EaMlJ9/1ocA7q3nuR8ZiwzkeMLdEnErKm1N7VQdUOn8z7aDPPilrdUdByHzXkWAK7CKD
+         jo6KVLNXhzRMEInsC6VvUki7cD9sgl43mnJhNXDsKp10UdkqkbAu1vRHi/B4HbOWXKwj
+         YHKVZukc+esKATGUTvUEm2tHVS3v0hE5rJJhW3QYD6tiPRUlNj4hxa3ZCIrAtBJX1HA0
+         vBzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Csf/7rx4gaZR2B7YhjrBbyppyMnO+n7zmvX5ufPGpCo=;
-        b=Ebmwy7H19uGxxM5FJKBzvhxmNEHKzETGnreRPIciC+KWwMMrSf4ethqEwceQj0sH9K
-         HNGfHWOdeIdtnEnO6gfMjeHqs3fCrSCxSdfNXp74c0ufaeWndD29GR0ikOvBW5x7RFMO
-         pwg+AAZqR0X45ou00PPqasHIkoYFx/ZWrrO9TQwJu7B+xlPUJx1/wtZymL9bYUry8+QX
-         RjD1FNtVs1sgV0H9Gw31J4u6UraZfgjcgzdAwU3VXopkxXik6rHlAL0RnpLk/A6c4HbW
-         SgFwo9YM4u0SFISLF92zhpy+2DUsmc0CbTRp0edZ1UorVtKGU+UElMSTdg6c7gF8Hesu
-         Oufg==
-X-Gm-Message-State: AOAM531xw7I8enCXHYdRmzyuFVrLrGdxaKM8SGu2uLqoh8/smLf89wvJ
-        i7q6sBD9Hj4g1Z8ex/bP//liVpJXRRMKW1UX4DXrSg==
-X-Google-Smtp-Source: ABdhPJyUfjDCoS33Guu3UGdJfWIASBtZ5qzt0D41zU5mOfrQiEfUP0Rwo7HwfanvcEVn/gWsmUZcNMm1enh6woEinEg=
-X-Received: by 2002:a9d:d55:: with SMTP id 79mr1005030oti.281.1594667346774;
- Mon, 13 Jul 2020 12:09:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K9bKl04TiecTHi6yQKqCyqcVhVmkhlQgjawYP95KECc=;
+        b=ufl1ordffRiXLWI7Q3dOvGbK64Tj1q5bCpp7PUNAOWsXlW4mlZ3L3PBG2pFnSTAtVK
+         +JFAiTknY7jealaP72rSViBl3Mpik2m3QY6qXZprfe/F5bpoiAkhtSn/0KgpDS6s2jHE
+         aJJMmDxfw6/laQoJ2B5G/GLrvitfl6cnb7aj0c5E3JJrdLgX4I3RyE5hz98cIkCKV3s3
+         Yx/9WX+urvtVavs/olqBrp2uYBPDWyiWAsWGDmwnYpri0BOVDnmZwZEeW+hmsl0+JpSW
+         pvKOWGT7B2D9fQ/LH8KP587mlsm3ccU3Ew6NHCxxj54Nt2Ljbt8sHtrTLMH0/MK9bbGx
+         Igvw==
+X-Gm-Message-State: AOAM530P+4CQZzFdByHgFZUEmC8Sy790EGn8Q+ke5IeDGN10JMRLPg4G
+        +evO5tP9W/WflQFc2y93Pb+QsA==
+X-Google-Smtp-Source: ABdhPJw0rLJdisr5uZlBE8ctgvrHmM+uwk53TpBTBJnI6WzxJkkgGNrd04RLKcWzKeNdyPokvfvd4g==
+X-Received: by 2002:a17:90b:4ac7:: with SMTP id mh7mr914250pjb.158.1594667479834;
+        Mon, 13 Jul 2020 12:11:19 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id j17sm13472951pgn.87.2020.07.13.12.11.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 12:11:19 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 12:09:11 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org, elder@ieee.org,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v6 1/2] remoteproc: qcom: Add per subsystem SSR
+ notification
+Message-ID: <20200713190911.GC388985@builder.lan>
+References: <1592965408-16908-1-git-send-email-rishabhb@codeaurora.org>
+ <1592965408-16908-2-git-send-email-rishabhb@codeaurora.org>
+ <98e3a18e-1491-6f20-6507-d6e6817b76fe@nvidia.com>
 MIME-Version: 1.0
-References: <20200713155424.24721-1-oded.gabbay@gmail.com> <20200713155752.GC267581@kroah.com>
- <CAKMK7uH=Ch4ce-9D5e-RvVwq_oK6Doqtq5QbvpmQ8uPWkMCi2w@mail.gmail.com> <20200713190357.GC25301@ziepe.ca>
-In-Reply-To: <20200713190357.GC25301@ziepe.ca>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Mon, 13 Jul 2020 21:08:55 +0200
-Message-ID: <CAKMK7uEvehX2CV3Q5FJrF49-_Xe9gXJ11wDo7xyVsipyuZm23Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] habanalabs: implement dma-fence mechanism
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        SW_Drivers@habana.ai, Ofir Bitton <obitton@habana.ai>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98e3a18e-1491-6f20-6507-d6e6817b76fe@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 9:03 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Mon, Jul 13, 2020 at 08:34:12PM +0200, Daniel Vetter wrote:
-> > On Mon, Jul 13, 2020 at 5:57 PM Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Mon, Jul 13, 2020 at 06:54:22PM +0300, Oded Gabbay wrote:
-> > > > From: Ofir Bitton <obitton@habana.ai>
-> > > >
-> > > > Instead of using standard dma-fence mechanism designed for GPU's, we
-> > > > introduce our own implementation based on the former one. This
-> > > > implementation is much more sparse than the original, contains only
-> > > > mandatory functionality required by the driver.
-> > >
-> > > Sad you can't use the in-kernel code for this, I really don't understand
-> > > what's wrong with using it as-is.
-> > >
-> > > Daniel, why do we need/want duplicate code floating around in the tree
-> > > like this?
-> >
-> > The rules around dma-fence are ridiculously strict, and it only makes
-> > sense to inflict that upon you if you actually want to participate in
-> > the cross driver uapi built up around dma-buf and dma-fence.
-> >
-> > I've recently started some lockdep annotations to better enforce these
-> > rules (and document them), and it's finding tons of subtle bugs even
-> > in drivers/gpu (and I only just started with annotating drivers:
-> >
-> > https://lore.kernel.org/dri-devel/20200707201229.472834-1-daniel.vetter@ffwll.ch/
-> >
-> > You really don't want to deal with this if you don't have to. If
-> > drivers/gpu folks (who created this) aren't good enough to understand
-> > it, maybe it's not a good idea to sprinkle this all over the tree. And
-> > fundamentally all this is is a slightly fancier struct completion. Use
-> > that one instead, or a wait_queue.
-> >
-> > I discussed this a bit with Oded, and he thinks it's easier to
-> > copypaste and simplify, but given that all other drivers seem to get
-> > by perfectly well with completion or wait_queue, I'm not sure that's a
-> > solid case.
-> >
-> > Also adding Jason Gunthorpe, who very much suggested this should be
-> > limited to dma-buf/gpu related usage only.
->
-> Without all the cross-driver stuff dma_fence is just a
-> completion. Using dma_fence to get a completion is big abuse of what
-> it is intended for.
->
-> I think the only problem with this patch is that it keeps too much of
-> the dma_fence stuff around. From what I could tell it really just
-> wants to add a kref and completion to struct hl_cs_compl and delete
-> everything to do with dma_fence.
+On Mon 13 Jul 09:26 PDT 2020, Jon Hunter wrote:
 
-Yeah, that's what I recommended doing too. error flag might be needed
-too I think, but that's it.
--Daniel
+> 
+> On 24/06/2020 03:23, Rishabh Bhatnagar wrote:
+> > Currently there is a single notification chain which is called whenever any
+> > remoteproc shuts down. This leads to all the listeners being notified, and
+> > is not an optimal design as kernel drivers might only be interested in
+> > listening to notifications from a particular remoteproc. Create a global
+> > list of remoteproc notification info data structures. This will hold the
+> > name and notifier_list information for a particular remoteproc. The API
+> > to register for notifications will use name argument to retrieve the
+> > notification info data structure and the notifier block will be added to
+> > that data structure's notification chain. Also move from blocking notifier
+> > to srcu notifer based implementation to support dynamic notifier head
+> > creation.
+> > 
+> > Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> > Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+> > ---
+> >  drivers/remoteproc/qcom_common.c      | 90 ++++++++++++++++++++++++++++++-----
+> >  drivers/remoteproc/qcom_common.h      |  5 +-
+> >  include/linux/remoteproc/qcom_rproc.h | 20 ++++++--
+> >  3 files changed, 95 insertions(+), 20 deletions(-)
+> > 
+> > diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
+> > index 9028cea..7a7384c 100644
+> > --- a/drivers/remoteproc/qcom_common.c
+> > +++ b/drivers/remoteproc/qcom_common.c
+> > @@ -12,6 +12,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/notifier.h>
+> >  #include <linux/remoteproc.h>
+> > +#include <linux/remoteproc/qcom_rproc.h>
+> >  #include <linux/rpmsg/qcom_glink.h>
+> >  #include <linux/rpmsg/qcom_smd.h>
+> >  #include <linux/soc/qcom/mdt_loader.h>
+> > @@ -23,7 +24,14 @@
+> >  #define to_smd_subdev(d) container_of(d, struct qcom_rproc_subdev, subdev)
+> >  #define to_ssr_subdev(d) container_of(d, struct qcom_rproc_ssr, subdev)
+> >  
+> > -static BLOCKING_NOTIFIER_HEAD(ssr_notifiers);
+> > +struct qcom_ssr_subsystem {
+> > +	const char *name;
+> > +	struct srcu_notifier_head notifier_list;
+> > +	struct list_head list;
+> > +};
+> > +
+> > +static LIST_HEAD(qcom_ssr_subsystem_list);
+> > +static DEFINE_MUTEX(qcom_ssr_subsys_lock);
+> >  
+> >  static int glink_subdev_start(struct rproc_subdev *subdev)
+> >  {
+> > @@ -189,37 +197,83 @@ void qcom_remove_smd_subdev(struct rproc *rproc, struct qcom_rproc_subdev *smd)
+> >  }
+> >  EXPORT_SYMBOL_GPL(qcom_remove_smd_subdev);
+> >  
+> > +static struct qcom_ssr_subsystem *qcom_ssr_get_subsys(const char *name)
+> > +{
+> > +	struct qcom_ssr_subsystem *info;
+> > +
+> > +	mutex_lock(&qcom_ssr_subsys_lock);
+> > +	/* Match in the global qcom_ssr_subsystem_list with name */
+> > +	list_for_each_entry(info, &qcom_ssr_subsystem_list, list)
+> > +		if (!strcmp(info->name, name))
+> > +			goto out;
+> > +
+> > +	info = kzalloc(sizeof(*info), GFP_KERNEL);
+> > +	if (!info) {
+> > +		info = ERR_PTR(-ENOMEM);
+> > +		goto out;
+> > +	}
+> 
+> 
+> The above appears to be breaking the ARM64 build on the latest -next
+> when building the modules  ...
+>  
+>   CC [M]  drivers/remoteproc/qcom_common.o
+> drivers/remoteproc/qcom_common.c: In function 'qcom_ssr_get_subsys':
+> remoteproc/qcom_common.c:210:9: error: implicit declaration of function 'kzalloc' [-Werror=implicit-function-declaration]
+>   info = kzalloc(sizeof(*info), GFP_KERNEL);
+>          ^~~~~~~
+> drivers/remoteproc/qcom_common.c:210:7: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+>   info = kzalloc(sizeof(*info), GFP_KERNEL);
+> 
 
-> Not even sure the kref is needed ;)
->
-> Jason
+You're right, not sure why the test build completes successfully for
+me...
 
+I've applied a fix from Kefeng Wang for this, sorry for the disruption.
 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Regards,
+Bjorn
