@@ -2,159 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366F921D158
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C266F21D166
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbgGMIHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 04:07:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:45621 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726360AbgGMIHj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 04:07:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594627657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=thokzV2lTPzLARMZ2GmJNDEymlOB144wptcD2yJ3eYo=;
-        b=Tgg8ByCxPgAW6x6k/Pxla+AwCeYhQ4fjL45v5n0B9HihP6R1bfYcYK/uVjP+qzSPS6Q6UV
-        dMFMIlu+ir+OEUeidzqmIThyPfYpP0nqsBv+0kp8E3NaCOXimeV5cNCOJ9zSy2IrznkAdh
-        mS+XjsPYamhfW01Ob6e59iGPjPEiVm4=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-109-S60BqLIBPCa18PpvdAtrTA-1; Mon, 13 Jul 2020 04:07:34 -0400
-X-MC-Unique: S60BqLIBPCa18PpvdAtrTA-1
-Received: by mail-wm1-f72.google.com with SMTP id z11so17729742wmg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:07:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=thokzV2lTPzLARMZ2GmJNDEymlOB144wptcD2yJ3eYo=;
-        b=S72Y1u6DG0s7YVjHHBTRWTndPJJ/6d2MEDEcDwPSKVXs6c4rzMpOVEOFOt8nYwgKem
-         ccNxZP1TfmBoLWOUrUjnaLBn+yUoDbEX6iNjl/M29bOEQtSzbjx1kxx2KRpYuH/Psptl
-         IZ5dbqx6RcsPmH+cxnCll67ml3fBm5Qd3nuSJXQ3voygGyhcz4f8yartZpdCFTqfdlAa
-         dvaJm05fWqKE/NBZxmetO/KSfPEdeWTD63yZKpYmilvfCF3vHQ3zoUy2QXxMgIXduc6z
-         KicNnVM/0oVjw9mdYMkatf6h6gVKBgtQN5mgp8HhZFG0FMEtruuto8Vui+V9YGKxnUci
-         oGrQ==
-X-Gm-Message-State: AOAM531IM+oBwZ+E7QWPTsjwhZ+v2U2LBei7UA3GNe1Ix1NfK18H9rbc
-        wkM+cZaGceNa18LIx3BlhVyxCudd2U0ItFHYjoMipl6KcTKOHzN66L5eWFh5+KC45iX1wf4FDhV
-        cPG67ybAkvZSPluq+73VqI6+G
-X-Received: by 2002:adf:9051:: with SMTP id h75mr84159394wrh.152.1594627652976;
-        Mon, 13 Jul 2020 01:07:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw6ugR4SJYyS+JyXgFpzVLUdQEd9gIqid8od/rTaiAEg/puVly9toFCtHHU1aU3hfbT+UQRmQ==
-X-Received: by 2002:adf:9051:: with SMTP id h75mr84159371wrh.152.1594627652750;
-        Mon, 13 Jul 2020 01:07:32 -0700 (PDT)
-Received: from steredhat (host-79-49-203-52.retail.telecomitalia.it. [79.49.203.52])
-        by smtp.gmail.com with ESMTPSA id w16sm26837072wrg.95.2020.07.13.01.07.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 01:07:32 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 10:07:29 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Jann Horn <jannh@google.com>, Aleksa Sarai <asarai@suse.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        io-uring@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Moyer <jmoyer@redhat.com>
-Subject: Re: [PATCH RFC 2/3] io_uring: add IOURING_REGISTER_RESTRICTIONS
- opcode
-Message-ID: <20200713080729.gttt3ymk7aqumle4@steredhat>
-References: <20200710141945.129329-1-sgarzare@redhat.com>
- <20200710141945.129329-3-sgarzare@redhat.com>
- <f39fe84d-1353-1066-c7fc-770054f7129e@kernel.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f39fe84d-1353-1066-c7fc-770054f7129e@kernel.dk>
+        id S1728599AbgGMIKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 04:10:19 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:37964 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726077AbgGMIKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 04:10:19 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowAAXmQBWFgxfpA1mAA--.47566S2;
+        Mon, 13 Jul 2020 16:07:50 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        chris@chris-wilson.co.uk, mika.kuoppala@linux.intel.com,
+        tvrtko.ursulin@intel.com, andi.shyti@intel.com,
+        matthew.auld@intel.com, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] f2fs: gc: fix the variable used in PTR_ERR()
+Date:   Mon, 13 Jul 2020 08:07:49 +0000
+Message-Id: <20200713080749.21782-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowAAXmQBWFgxfpA1mAA--.47566S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gr4UCr15AF1rGF4DWFWkCrg_yoWxuFXEkr
+        47Jrs3WFy2kF90vFnFvwsxZF90ya909F48Aw10q34ftFy2yr4UXa9xur1UXw1xXa13JrZr
+        u3W8uFySvrn3WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
+        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
+        cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v26F4UJVW0owAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+        n2IY04v7MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VU1r-BtUUUUU==
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAw4QA13qZNpZSQAAsH
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 11:52:48AM -0600, Jens Axboe wrote:
-> On 7/10/20 8:19 AM, Stefano Garzarella wrote:
-> > The new io_uring_register(2) IOURING_REGISTER_RESTRICTIONS opcode
-> > permanently installs a feature whitelist on an io_ring_ctx.
-> > The io_ring_ctx can then be passed to untrusted code with the
-> > knowledge that only operations present in the whitelist can be
-> > executed.
-> > 
-> > The whitelist approach ensures that new features added to io_uring
-> > do not accidentally become available when an existing application
-> > is launched on a newer kernel version.
-> 
-> Keeping with the trend of the times, you should probably use 'allowlist'
-> here instead of 'whitelist'.
+PTR_ERR should access the value just tested by IS_ERR, so fix
+the variable used in PTR_ERR().
 
-Sure, it is better!
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/gpu/drm/i915/gt/selftest_lrc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > 
-> > Currently is it possible to restrict sqe opcodes and register
-> > opcodes. It is also possible to allow only fixed files.
-> > 
-> > IOURING_REGISTER_RESTRICTIONS can only be made once. Afterwards
-> > it is not possible to change restrictions anymore.
-> > This prevents untrusted code from removing restrictions.
-> 
-> A few comments below.
-> 
-> > @@ -337,6 +344,7 @@ struct io_ring_ctx {
-> >  	struct llist_head		file_put_llist;
-> >  
-> >  	struct work_struct		exit_work;
-> > +	struct io_restriction		restrictions;
-> >  };
-> >  
-> >  /*
-> 
-> Since very few will use this feature, was going to suggest that we make
-> it dynamically allocated. But it's just 32 bytes, currently, so probably
-> not worth the effort...
-> 
-
-Yeah, I'm not sure it will grow in the future, so I'm tempted to leave it
-as it is, but I can easily change it if you prefer.
-
-> > @@ -5491,6 +5499,11 @@ static int io_req_set_file(struct io_submit_state *state, struct io_kiocb *req,
-> >  	if (unlikely(!fixed && io_async_submit(req->ctx)))
-> >  		return -EBADF;
-> >  
-> > +	if (unlikely(!fixed && req->ctx->restrictions.enabled &&
-> > +		     test_bit(IORING_RESTRICTION_FIXED_FILES_ONLY,
-> > +			      req->ctx->restrictions.restriction_op)))
-> > +		return -EACCES;
-> > +
-> >  	return io_file_get(state, req, fd, &req->file, fixed);
-> >  }
-> 
-> This one hurts, though. I don't want any extra overhead from the
-> feature, and you're digging deep in ctx here to figure out of we need to
-> check.
-> 
-> Generally, all the checking needs to be out-of-line, and it needs to
-> base the decision on whether to check something or not on a cache hot
-> piece of data. So I'd suggest to turn all of these into some flag.
-> ctx->flags generally mirrors setup flags, so probably just add a:
-> 
-> 	unsigned int restrictions : 1;
-> 
-> after eventfd_async : 1 in io_ring_ctx. That's free, plenty of room
-> there and that cacheline is already pulled in for reading.
-> 
-
-Thanks for the clear explanation!
-
-I left a TODO comment near the 'enabled' field to look for something better,
-and what you're suggesting is what I was looking for :-)
-
-I'll change it!
-
-Thanks,
-Stefano
+diff --git a/drivers/gpu/drm/i915/gt/selftest_lrc.c b/drivers/gpu/drm/i915/gt/selftest_lrc.c
+index 924bc01ef526..d2587e46afe9 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_lrc.c
++++ b/drivers/gpu/drm/i915/gt/selftest_lrc.c
+@@ -1349,7 +1349,7 @@ static int live_timeslice_nopreempt(void *arg)
+ 
+ 		ce = intel_context_create(engine);
+ 		if (IS_ERR(ce)) {
+-			err = PTR_ERR(rq);
++			err = PTR_ERR(ce);
+ 			goto out_spin;
+ 		}
+ 
+-- 
+2.17.1
 
