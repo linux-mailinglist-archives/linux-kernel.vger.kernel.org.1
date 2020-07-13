@@ -2,90 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC60C21D7B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9365721D7B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729994AbgGMOAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:00:37 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:36166 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729457AbgGMOAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:00:37 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 7B0B8BC071;
-        Mon, 13 Jul 2020 14:00:34 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] hwmon: (adm1025) Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 16:00:28 +0200
-Message-Id: <20200713140028.34775-1-grandmaster@al2klimov.de>
+        id S1729919AbgGMOBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:01:12 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:43272 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729703AbgGMOBM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 10:01:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1594648871; x=1626184871;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=cKO2gBV4NFrCBzkjEMtV2yh0g8suBsg50yMtHIjBQVE=;
+  b=nuoWT8CFOmSTgKITxcjMIisJSSB+dvF85X40gIB7xtayxQZOZMicXfki
+   zmKWzXjXk6IxfITSYjVo1eGWghjDV+B5a+8CKDMcB1DTiJRdv6woEGGvn
+   S3qFjaEkdoSciI3KiswyH2tQfBfNzOjREQ8wZO1qzA6PKrTwSGzd2vGaT
+   kSwF9AdYCfE5dYpFe5JaW9VlJ55/6q7k/hiKdO1BTjChCcu3aP+CHw/l9
+   zcMj4kKEGYPi8uOdtPH31pDDBMoTPA9Y4tFBg2NF5lNNVKpacCkChfMEr
+   MYveXiyHil6ofUBrDJM3tXIwnyQWpkV2st/cRS60S2eKPLlneK7jv0YgJ
+   g==;
+IronPort-SDR: TUXjNBF38FIw09OvsLhvbAGrd2n7mxa4PzIM+v9MPM0S2motDq23JJAz459vDeru1gdpCMIse0
+ OmZsSz3YiW1PXvY6gLctRMyaE3JpwjzhwcV51CfvS7NfMFBNFA1MpkhSsrFC18jYXt53BzmeCR
+ zBI5jYvSrICbNsSp7FNncMjnFx8fKe5eMhEeROmVZ7XL6SqsITP1XZ1H54Jjpa56jzLM4qywca
+ MgcA/4sXrL1vsC80F4njto9WSpIWF4+hJ2V9tTvn1u/ycYwQ5azFTd5dWyhUzvBEfbXmt96u6j
+ LfY=
+X-IronPort-AV: E=Sophos;i="5.75,347,1589266800"; 
+   d="scan'208";a="83627572"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Jul 2020 07:01:11 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 13 Jul 2020 07:00:40 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 13 Jul 2020 07:01:08 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <john.stultz@linaro.org>, <tglx@linutronix.de>, <sboyd@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] timekeeping: correct typo
+Date:   Mon, 13 Jul 2020 17:00:45 +0300
+Message-ID: <1594648845-17200-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Correct typo in logarithmic_accumulation() description.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
-
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- drivers/hwmon/adm1025.c | 2 +-
+ kernel/time/timekeeping.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/adm1025.c b/drivers/hwmon/adm1025.c
-index ae7b96945185..ed15185fa60f 100644
---- a/drivers/hwmon/adm1025.c
-+++ b/drivers/hwmon/adm1025.c
-@@ -13,7 +13,7 @@
-  * resolution of about 0.5% of the nominal value). Temperature values are
-  * reported with a 1 deg resolution and a 3 deg accuracy. Complete
-  * datasheet can be obtained from Analog's website at:
-- *   http://www.onsemi.com/PowerSolutions/product.do?id=ADM1025
-+ *   https://www.onsemi.com/PowerSolutions/product.do?id=ADM1025
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index d20d489841c8..6b436d7a751f 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -2001,7 +2001,7 @@ static inline unsigned int accumulate_nsecs_to_secs(struct timekeeper *tk)
+  * logarithmic_accumulation - shifted accumulation of cycles
   *
-  * This driver also supports the ADM1025A, which differs from the ADM1025
-  * only in that it has "open-drain VID inputs while the ADM1025 has
+  * This functions accumulates a shifted interval of cycles into
+- * into a shifted interval nanoseconds. Allows for O(log) accumulation
++ * a shifted interval nanoseconds. Allows for O(log) accumulation
+  * loop.
+  *
+  * Returns the unconsumed cycles.
 -- 
-2.27.0
+2.7.4
 
