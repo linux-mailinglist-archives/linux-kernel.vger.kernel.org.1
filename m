@@ -2,154 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0AF21D955
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7432E21D95B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730094AbgGMO74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730061AbgGMO7v (ORCPT
+        id S1729747AbgGMPAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:00:25 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:35352 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729027AbgGMPAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:59:51 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09681C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:59:51 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z2so16920491wrp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:59:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9PXD4vP8fC6/t9fZb9g5coIXGjPw+6LiW/rcHcw4O0Y=;
-        b=zuaeamKd2MOWNbcgimVgdWbMCvRNXeFqsGveoccXf9UiMRMyp2Eh64VIogpLrTZbbv
-         en7AsCseJgjsgYtIkuMlaGuViO8O84ylg4R94V5el2S2MFL3E15S2zRJWH6JfgqeemH5
-         nBmpSUDN+SlS6ahmpO8sRK9pviEegd8FUhAOG7Kio53ocuDxaTchRh7Kec/ZfY8rAQNF
-         v8jwG9nbg3vGNPRudk7wqbyTDopPLKAQKVlQ7cKB32+F/X5O/WFOKQcTAfHrU5L5BjWY
-         WHrNvfD+1mA00Hj4DQa/f8QuBc8ZOuPD0sxJ2OxIcrgz1yhDFswT8MiSlIz2emY5apE8
-         97Zw==
+        Mon, 13 Jul 2020 11:00:25 -0400
+Received: by mail-io1-f67.google.com with SMTP id v8so13796065iox.2;
+        Mon, 13 Jul 2020 08:00:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9PXD4vP8fC6/t9fZb9g5coIXGjPw+6LiW/rcHcw4O0Y=;
-        b=E/AU84erQWywsDVc13hWeDvkbM9MGNdFyuuoJ4PZ7hGfJi9mAqJKzhUzIAuG/r9RrP
-         ooP2b7gvydVs/NYIgipow8fGprMvm65jFjs0iaAQ+Ia+p2k7UFsNyf7aEis6XOBKse1n
-         N1A4QmAVmBZ8tRWq9nK/ob1s0Olab9Ot+8qBagX7zqjgfXwbrckNWDCxvb2TmV2TMLsR
-         Z56bITLLnet7Hlhd7PkLVyRUiSEpnfacocmHZsbuuLhhkn0aU7I3VRXEpAz1wTB2m/LF
-         wxLSkuHjciz9mBhxIr4OElQcyMmsdAXN8RXDGrvA19xyIr7WQCexY0Z1fkS0UdRz3LbF
-         mNwQ==
-X-Gm-Message-State: AOAM531f+0lR/fb1Fuh2snw+5u075m77TCn1GGoxVHi6fmh/VmWHWXEn
-        qA5YOkPtDkoej3McB1vE+rb/BQ==
-X-Google-Smtp-Source: ABdhPJzjTMedChvGhWLYNaMyNCNGnKnwYsdLQG+HFCPhfJxEYwUA9Oy8TIQFHPUl0BfOjyPN0jjZ7g==
-X-Received: by 2002:adf:dfcd:: with SMTP id q13mr80164558wrn.295.1594652389817;
-        Mon, 13 Jul 2020 07:59:49 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id u20sm21991145wmm.15.2020.07.13.07.59.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MM2yTv6DinfgqMVw8u+xsXUDt72qpAhR1wtad/uJxSs=;
+        b=QXYE0BR/YPgl8jWfleDo3Fwwqm61a8gIX1v9FFh24MhZc0dgvkLBxASHP4ZQmOW0Ux
+         je6Jy5mhL+xvp0DhfKhcbHtQ4BC2VWievBWIPcBhP2oe7s1LNOAso8rUoUUjI3VchWAV
+         DW9xUq6429ITYDzjBffHhRjGSiGwwVpdej2j9KH731YeWFeCccNr3Bz3Codv1txm23B4
+         L+Wu+OuuDHyJvHDFdi+ZQm6ZkrL83M46ySmwfEXeGFKhkdqhummYd9hzSW4MUWK15qE6
+         IpLhodGfdAjxn9w2Fk7DmXUMOOQ4osB+oEeh0kAzWvHjExmyviUgVsYRBSJQeh7HVR1a
+         UW8w==
+X-Gm-Message-State: AOAM533p+eOefYBPpHQxLFIbzgcPhtBgnlTgJ6FTW+sGwZf3cjDHzAtL
+        Lr1d2EaEHZLY3O1WKRHRZA==
+X-Google-Smtp-Source: ABdhPJw9dH7GkiyHKPqotimBI3XEZeBw0QpeeQPxAZCZiPuu3Ko3Ig3bhS7yI9kTEPmDk7sFb4DFGw==
+X-Received: by 2002:a5e:840b:: with SMTP id h11mr102578ioj.106.1594652424139;
+        Mon, 13 Jul 2020 08:00:24 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id v10sm8394512ilj.40.2020.07.13.08.00.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 07:59:49 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mon, 13 Jul 2020 08:00:23 -0700 (PDT)
+Received: (nullmailer pid 175663 invoked by uid 1000);
+        Mon, 13 Jul 2020 15:00:22 -0000
+Date:   Mon, 13 Jul 2020 09:00:22 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
         Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v4 3/3] iio: adc: xilinx-xadc: use devm_krealloc()
-Date:   Mon, 13 Jul 2020 16:59:34 +0200
-Message-Id: <20200713145934.18243-4-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200713145934.18243-1-brgl@bgdev.pl>
-References: <20200713145934.18243-1-brgl@bgdev.pl>
+        Jack Lo <jack.lo@gtsys.com.hk>, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>
+Subject: Re: [PATCH v6 2/2] devicetree: hwmon: shtc1: Add sensirion,shtc1.yaml
+Message-ID: <20200713150022.GA175274@bogus>
+References: <20200712044411.23323-1-chris.ruehl@gtsys.com.hk>
+ <20200712044411.23323-3-chris.ruehl@gtsys.com.hk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200712044411.23323-3-chris.ruehl@gtsys.com.hk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Sun, 12 Jul 2020 12:44:10 +0800, Chris Ruehl wrote:
+> Add documentation for the newly added DTS support in the shtc1 driver.
+> To align with the drivers logic to have high precision by default
+> a boolean sensirion,low_precision is used to switch to low precision.
+> 
+> Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+> ---
+>  .../bindings/hwmon/sensirion,shtc1.yaml       | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/sensirion,shtc1.yaml
+> 
 
-Use the managed variant of krealloc() and shrink the code a bit.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/iio/adc/xilinx-xadc-core.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+My bot found errors running 'make dt_binding_check' on your patch:
 
-diff --git a/drivers/iio/adc/xilinx-xadc-core.c b/drivers/iio/adc/xilinx-xadc-core.c
-index d7fecab9252e4..5bdbe502e983a 100644
---- a/drivers/iio/adc/xilinx-xadc-core.c
-+++ b/drivers/iio/adc/xilinx-xadc-core.c
-@@ -1094,6 +1094,7 @@ MODULE_DEVICE_TABLE(of, xadc_of_match_table);
- static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
- 	unsigned int *conf)
- {
-+	struct device *dev = indio_dev->dev.parent;
- 	struct xadc *xadc = iio_priv(indio_dev);
- 	struct iio_chan_spec *channels, *chan;
- 	struct device_node *chan_node, *child;
-@@ -1138,7 +1139,8 @@ static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
- 		*conf |= XADC_CONF0_MUX | XADC_CONF0_CHAN(ext_mux_chan);
- 	}
- 
--	channels = kmemdup(xadc_channels, sizeof(xadc_channels), GFP_KERNEL);
-+	channels = devm_kmemdup(dev, xadc_channels,
-+				sizeof(xadc_channels), GFP_KERNEL);
- 	if (!channels)
- 		return -ENOMEM;
- 
-@@ -1174,8 +1176,9 @@ static int xadc_parse_dt(struct iio_dev *indio_dev, struct device_node *np,
- 	of_node_put(chan_node);
- 
- 	indio_dev->num_channels = num_channels;
--	indio_dev->channels = krealloc(channels, sizeof(*channels) *
--					num_channels, GFP_KERNEL);
-+	indio_dev->channels = devm_krealloc(dev, channels,
-+					    sizeof(*channels) * num_channels,
-+					    GFP_KERNEL);
- 	/* If we can't resize the channels array, just use the original */
- 	if (!indio_dev->channels)
- 		indio_dev->channels = channels;
-@@ -1229,14 +1232,14 @@ static int xadc_probe(struct platform_device *pdev)
- 
- 	ret = xadc_parse_dt(indio_dev, pdev->dev.of_node, &conf0);
- 	if (ret)
--		goto err_device_free;
-+		return ret;
- 
- 	if (xadc->ops->flags & XADC_FLAGS_BUFFERED) {
- 		ret = iio_triggered_buffer_setup(indio_dev,
- 			&iio_pollfunc_store_time, &xadc_trigger_handler,
- 			&xadc_buffer_ops);
- 		if (ret)
--			goto err_device_free;
-+			return ret;
- 
- 		xadc->convst_trigger = xadc_alloc_trigger(indio_dev, "convst");
- 		if (IS_ERR(xadc->convst_trigger)) {
-@@ -1354,8 +1357,6 @@ static int xadc_probe(struct platform_device *pdev)
- err_triggered_buffer_cleanup:
- 	if (xadc->ops->flags & XADC_FLAGS_BUFFERED)
- 		iio_triggered_buffer_cleanup(indio_dev);
--err_device_free:
--	kfree(indio_dev->channels);
- 
- 	return ret;
- }
-@@ -1375,7 +1376,6 @@ static int xadc_remove(struct platform_device *pdev)
- 	cancel_delayed_work_sync(&xadc->zynq_unmask_work);
- 	clk_disable_unprepare(xadc->clk);
- 	kfree(xadc->data);
--	kfree(indio_dev->channels);
- 
- 	return 0;
- }
--- 
-2.26.1
+Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dts:24.13-26: Warning (reg_format): /example-0/i2c1/shtc3@70:reg: property has invalid length (4 bytes) (#address-cells == 2, #size-cells == 1)
+Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
+Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dts:22.20-26.13: Warning (avoid_default_addr_size): /example-0/i2c1/shtc3@70: Relying on default #address-cells value
+Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dts:22.20-26.13: Warning (avoid_default_addr_size): /example-0/i2c1/shtc3@70: Relying on default #size-cells value
+Documentation/devicetree/bindings/hwmon/sensirion,shtc1.example.dt.yaml: Warning (unique_unit_address): Failed prerequisite 'avoid_default_addr_size'
+
+
+See https://patchwork.ozlabs.org/patch/1327453
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
 
