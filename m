@@ -2,115 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C3D21CD95
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 05:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B5E21CD97
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 05:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgGMDVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 23:21:13 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:39815 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgGMDVM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 23:21:12 -0400
-Received: by mail-wm1-f65.google.com with SMTP id w3so11640408wmi.4
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 20:21:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FqBhf/wXork2iz5ZmVBFIfxYI4swpxPYsb+Goh/x6l0=;
-        b=SzhzeiZ8LexEMPUmBrTiZkFpY9+vjTGGVO4WEzIS0BrNl2mUGpQTRyqaTzSyMXHnj5
-         mLqCv95VTcHg7jMKqrkE5ms9K6sYbm7G12HjLkAn/6xCUlaZaR6PYhLUSveY5qUnFHzI
-         vJTJyG1EX+I/psq0Jlky8avdG6XlTvECeW5+DB/39narMiH0BTpIfVOTTodeW1gIyKPf
-         07x3zwAjPR6fcjV9KDuNb3w0muG9yRGLwQY8Rdh3x8vq8W+dMkyU0WaQgW8zbueq90jo
-         xHNQHFKFzMaoewfj320OsPj2EYBTo7pbXOVEGv4jSF/x1eRY+F/Wi6M/cl9oMErG/1bu
-         68Rg==
-X-Gm-Message-State: AOAM531o2tmYaJy+h0E+E9NOlHYnKFzyP3r/bhUjzzR5MX6/m2Cjt43O
-        hmmsjJoN49QTg3IH4lloNSR5dskov9s3+xt3wq4=
-X-Google-Smtp-Source: ABdhPJy1FO+WUcH3wmEtuF/7FfmwEHqE6D+WLDjCoR/VGguOTadqb8eIZkWiMOIi8Z374q1gDfOD588OXr0CC1tVg+w=
-X-Received: by 2002:a1c:7d56:: with SMTP id y83mr17722620wmc.154.1594610470272;
- Sun, 12 Jul 2020 20:21:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <4af50c95-36f6-7a61-5a22-2949970fe7a5@linux.intel.com> <93e1c3b1-ee77-a94d-8806-049e0245fab7@linux.intel.com>
-In-Reply-To: <93e1c3b1-ee77-a94d-8806-049e0245fab7@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 13 Jul 2020 12:20:59 +0900
-Message-ID: <CAM9d7cikDcaLaUv8+xh9fp_KVHFVQD+eRYGAR5kN4A7ppPHmBQ@mail.gmail.com>
-Subject: Re: [PATCH v10 05/15] perf evlist: implement control command handling functions
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728580AbgGMDV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 23:21:56 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:43320 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726261AbgGMDV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 23:21:56 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-01 (Coremail) with SMTP id qwCowAAHT5tI0wtft15aAA--.63616S2;
+        Mon, 13 Jul 2020 11:21:45 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     mturquette@baylibre.com, sboyd@kernel.org, baohua@kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] clk: clk-atlas6: fix return value check in atlas6_clk_init()
+Date:   Mon, 13 Jul 2020 03:21:43 +0000
+Message-Id: <20200713032143.21362-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowAAHT5tI0wtft15aAA--.63616S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7JrW7WFykXF48ZFWrurWrGrg_yoWfWwcEgF
+        4rKFnxXw1rCw1SyrW5Aa4xZryFvFn5ur4xZa4xKFsxJa48WrykWFZIv34DAr9rKrWkJryD
+        tw1kGryfCw1akjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJV
+        W0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUf-B_UUU
+        UU=
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAw0QA13qZNmYiQAAsG
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 8, 2020 at 4:50 PM Alexey Budankov
-<alexey.budankov@linux.intel.com> wrote:
->
->
-> Implement functions of initialization, finalization and processing
-> of control command messages coming from control file descriptors.
-> Allocate control file descriptor as descriptor at struct pollfd
-> object of evsel_list for atomic poll() operation.
->
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> ---
-[SNIP]
-> +static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
-> +                             char *cmd_data, size_t data_size)
-> +{
-> +       int err;
-> +       char c;
-> +       size_t bytes_read = 0;
-> +
-> +       memset(cmd_data, 0, data_size--);
+In case of error, the function clk_register() returns ERR_PTR()
+and never returns NULL. The NULL test in the return value check
+should be replaced with IS_ERR().
 
-I overlooked the '--' at the end and thought there might be
-buffer overflow..  Care to add a comment?
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/clk/sirf/clk-atlas6.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +
-> +       do {
-> +               err = read(evlist->ctl_fd.fd, &c, 1);
+diff --git a/drivers/clk/sirf/clk-atlas6.c b/drivers/clk/sirf/clk-atlas6.c
+index c84d5bab7ac2..b95483bb6a5e 100644
+--- a/drivers/clk/sirf/clk-atlas6.c
++++ b/drivers/clk/sirf/clk-atlas6.c
+@@ -135,7 +135,7 @@ static void __init atlas6_clk_init(struct device_node *np)
+ 
+ 	for (i = pll1; i < maxclk; i++) {
+ 		atlas6_clks[i] = clk_register(NULL, atlas6_clk_hw_array[i]);
+-		BUG_ON(!atlas6_clks[i]);
++		BUG_ON(IS_ERR(atlas6_clks[i]));
+ 	}
+ 	clk_register_clkdev(atlas6_clks[cpu], NULL, "cpu");
+ 	clk_register_clkdev(atlas6_clks[io],  NULL, "io");
+-- 
+2.17.1
 
-Maybe I missed earlier discussion, but do we really want
-this 1 byte read in a loop?
-
-Thanks
-Namhyung
-
-
-> +               if (err > 0) {
-> +                       if (c == '\n' || c == '\0')
-> +                               break;
-> +                       cmd_data[bytes_read++] = c;
-> +                       if (bytes_read == data_size)
-> +                               break;
-> +               } else {
-> +                       if (err == -1)
-> +                               pr_err("Failed to read from ctlfd %d: %m\n", evlist->ctl_fd.fd);
-> +                       break;
-> +               }
-> +       } while (1);
-> +
-> +       pr_debug("Message from ctl_fd: \"%s%s\"\n", cmd_data,
-> +                bytes_read == data_size ? "" : c == '\n' ? "\\n" : "\\0");
-> +
-> +       if (err > 0) {
-> +               if (!strncmp(cmd_data, EVLIST_CTL_CMD_ENABLE_TAG,
-> +                            (sizeof(EVLIST_CTL_CMD_ENABLE_TAG)-1))) {
-> +                       *cmd = EVLIST_CTL_CMD_ENABLE;
-> +               } else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_TAG,
-> +                                   (sizeof(EVLIST_CTL_CMD_DISABLE_TAG)-1))) {
-> +                       *cmd = EVLIST_CTL_CMD_DISABLE;
-> +               }
-> +       }
-> +
-> +       return err;
-> +}
