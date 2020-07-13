@@ -2,137 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3993E21CCC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0439521CCCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgGMBZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 21:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgGMBZk (ORCPT
+        id S1727932AbgGMB2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 21:28:06 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:54652 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbgGMB2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 21:25:40 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC39AC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 18:25:39 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id v8so11794087iox.2
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 18:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u7Jop7cZN8wbIaggddxP3/Gu6w2p7TP7pCxcVgLAycg=;
-        b=TNvRaDkf2mNdHTgEYOeus2qvzdfiLqm+VbESKIBr7EBw/IZ/sqvI+1191+eFf+7EiC
-         rVj8pcEsB1QN+q7vqP9nYhS4rgOb0P3DlV/pRSe9A1bRkO8OIaf9hVrC2tzI25uD2BcJ
-         N1Ph5vZoiX+NdsqPosOwqaYhTbs5XOUaJOIdNt7sJ74cTcOoNGk25++mg8KrhxRT43j3
-         2scUjHA6RABc8hZ5KHpr01pNjkuL7REhHIvG0eZb5CCCwZcDEEhVoOrmHWC6tFYdZMtr
-         6gv/VglbfbwMJSCIZ/ZuLcyi5jKHxeOKtDB15RXZSDHYy/61gVndW1OKZSmGIyFCDLsf
-         2MCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u7Jop7cZN8wbIaggddxP3/Gu6w2p7TP7pCxcVgLAycg=;
-        b=nXAwUDTQCnC0ab1/dFFT/AKaQJARZNPkbqbnnvJbr/eF88uujnkrGbnfifg88tjbqC
-         RS5v4Y7fzWyc5tWdUAm4xFzYSQC1x1o4cEJuuHycTqNRzm2XS2AC1yAZ/eh3aFq8bwrp
-         NbNBTDfwsm+c0QZf+nc8znHhIVetXHQRzcOAIWd6mV7EbI/SONJJUOEvxEsK24FJpx3O
-         SB5FJHcVDmhFZRwIGP1QUdN7nl/lRCbQfmGJm3lX0/BkedTb8l2S31LRWUzXvuxrqyrd
-         ZxDQwiVoJaLPDF4xI/uGSTd/RvkalsKEDKhcPcBsiBgmLlVLXpO/zZLz5emkCrpkl0zm
-         4Eug==
-X-Gm-Message-State: AOAM530HoHGzQrWMgLu2qPqS+nsQu5H9xQE4czegqWFlaFuoleyPOaTY
-        VfPgctvt5QbRcWUvwv2Txug=
-X-Google-Smtp-Source: ABdhPJx/Zyg7LupxAresBF+Q+aCyViNFsox+I9rjXxZ4tvJlel8knMGPudomsLg3Leck8IJbCNfLEQ==
-X-Received: by 2002:a05:6638:d05:: with SMTP id q5mr87613435jaj.2.1594603538565;
-        Sun, 12 Jul 2020 18:25:38 -0700 (PDT)
-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:f693:9fff:fef4:238b])
-        by smtp.googlemail.com with ESMTPSA id k3sm7436436ils.8.2020.07.12.18.25.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2020 18:25:38 -0700 (PDT)
-From:   Jian Cai <caij2003@gmail.com>
-Cc:     caij2003@gmail.com, jiancai@google.com, ndesaulniers@google.com,
-        manojgupta@google.com, sedat.dilek@gmail.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] x86/entry: add compatibility with IAS
-Date:   Sun, 12 Jul 2020 18:24:22 -0700
-Message-Id: <20200713012428.1039487-1-caij2003@gmail.com>
-X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        Sun, 12 Jul 2020 21:28:05 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200713012802epoutp03aa0244700c210333695484e2151ff6f3~hK5nECVfy0437304373epoutp03g
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:28:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200713012802epoutp03aa0244700c210333695484e2151ff6f3~hK5nECVfy0437304373epoutp03g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594603682;
+        bh=CLT1OPkpGw1YjUHnIfrbYqXwcJBpjvqV4GFZIs43Tkc=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=PAtzzUaOfXzSe3lfvOa9VgpIjXXFqlgYp1tBMjxNAB08alge2F0XaEnA0zRNW4spL
+         l/0zr11UMd9GYLdzufQmXDoo3aQl8t6nOzCNT2N5/1xsgQdiG+pcRp5DUqtx2nVVKg
+         jAm+z3690rxz4SfI2xWKZxEeWa/MaJ40YeOuop/4=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p4.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200713012801epcas1p4b12b1038a5f2c4f926a5aa7eb88d13e1~hK5mm-H4Z0233102331epcas1p44;
+        Mon, 13 Jul 2020 01:28:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: Re: [PATCH v5 0/5] scsi: ufs: Add Host Performance Booster Support
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <91dcecde-dd0d-c930-7c45-56ba144e748c@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <963815509.21594603681971.JavaMail.epsvc@epcpadp2>
+Date:   Mon, 13 Jul 2020 10:27:17 +0900
+X-CMS-MailID: 20200713012717epcms2p78e1607a05f5aa19a2aa22399f10f116c
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200702231936epcms2p81557f83504ef1c1e81bfc81a0143a5b4
+References: <91dcecde-dd0d-c930-7c45-56ba144e748c@acm.org>
+        <SN6PR04MB464097E646395C000C2DCAC3FC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <963815509.21593732182531.JavaMail.epsvc@epcpadp2>
+        <231786897.01594251001808.JavaMail.epsvc@epcpadp1>
+        <336371513.41594280882718.JavaMail.epsvc@epcpadp2>
+        <SN6PR04MB464021F98E8EDF7C79D6CB4FFC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <CGME20200702231936epcms2p81557f83504ef1c1e81bfc81a0143a5b4@epcms2p7>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang's integrated assembler does not allow symbols with non-absolute
-values to be reassigned. This patch allows the affected code to be
-compatible with IAS.
+Hi Bart,
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1043
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Jian Cai <caij2003@gmail.com>
----
- arch/x86/include/asm/idtentry.h | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+> > Bart - how do you want to proceed?
+> 
+> Hi Avri and Daejun,
+> 
+> As far as I can see none of the five patches have Reviewed-by tags yet. I
+> think that Martin expects formal reviews for this patch series from one or
+> more reviewers who are not colleagues of the author of this patch series.
+> 
+> Note: recently I have been more busy than usual, hence the delayed reply.
+Thank you for replying to the email even though you are busy.
 
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index f3d70830bf2a..77beed2cd6d9 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -468,34 +468,32 @@ __visible noinstr void func(struct pt_regs *regs,			\
-  */
- 	.align 8
- SYM_CODE_START(irq_entries_start)
--    vector=FIRST_EXTERNAL_VECTOR
--    pos = .
-+    i = 1
-+    pos1 = .
-     .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
- 	UNWIND_HINT_IRET_REGS
--	.byte	0x6a, vector
-+	.byte	0x6a, FIRST_EXTERNAL_VECTOR + i - 1
- 	jmp	asm_common_interrupt
- 	nop
- 	/* Ensure that the above is 8 bytes max */
--	. = pos + 8
--    pos=pos+8
--    vector=vector+1
-+	. = pos1 + 8 * i
-+	i = i + 1
-     .endr
- SYM_CODE_END(irq_entries_start)
- 
- #ifdef CONFIG_X86_LOCAL_APIC
- 	.align 8
- SYM_CODE_START(spurious_entries_start)
--    vector=FIRST_SYSTEM_VECTOR
--    pos = .
-+    i = 1
-+    pos2 = .
-     .rept (NR_VECTORS - FIRST_SYSTEM_VECTOR)
- 	UNWIND_HINT_IRET_REGS
--	.byte	0x6a, vector
-+	.byte	0x6a, FIRST_SYSTEM_VECTOR + i - 1
- 	jmp	asm_spurious_interrupt
- 	nop
- 	/* Ensure that the above is 8 bytes max */
--	. = pos + 8
--    pos=pos+8
--    vector=vector+1
-+	. = pos2 + 8 * i
-+	i = i + 1
-     .endr
- SYM_CODE_END(spurious_entries_start)
- #endif
--- 
-2.27.0.383.g050319c2ae-goog
+Arvi, Bean - if patches looks ok, can this series have your reviewed-by tag?
 
+Thanks,
+Daejun
