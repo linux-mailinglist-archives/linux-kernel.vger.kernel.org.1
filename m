@@ -2,180 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626C621CCE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7281121CCF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 03:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728118AbgGMBty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 21:49:54 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:35242 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726261AbgGMBty (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 21:49:54 -0400
-Received: by mail-wr1-f68.google.com with SMTP id z2so13001290wrp.2
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 18:49:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uPCoDa/hl3D7os23tsfhl2dMGhOJx2saiX6o3VaIndM=;
-        b=rx5TBS/3ZQd7y5jrIHtbb1UVUjpbcuTZSEqyddv8UZgu1qXxJmPBiDix9NRLEPW5yX
-         Nj7zPaMorlbelFfLLwL2tz8jvnijp2/RzlO0xxps9WRbaVibzxWYxE0C4GjNvGISTyCi
-         GXN6dPuhH5nM9Dn7pK5IGKyWkoFZPt6tBJKNoP2kUf4EzIQLvZ7kS3odxKjxuFzaiNDU
-         M41nOgsPyCuBLH5Ofna24uCsksxYXmyaoqrmOd5d+clZ/UspxbIky3eOCBSx8cOPdOWr
-         5es2qNN6G+cIfvBGwmPFRefb84TFEJ9r9oN46iTJt+wCE1hnXoajAVhHiHVhYmapcMcW
-         sgHg==
-X-Gm-Message-State: AOAM531NmNmLCKlvbZH4OqWFtqGLs5POU9avLNameme246fFkzhLyM0H
-        Xla1Arrj8Lcd11fpBGe94lo6PnjqFFq4u36zoLM=
-X-Google-Smtp-Source: ABdhPJw6dfHqTrsIZwFz8ax+HmvOqeLyGm9EvQKawugOEXJrtDCqn5Yl4nwJ9Ui4zr410yeakY7rDib/jkz/HvHyBf8=
-X-Received: by 2002:a05:6000:1006:: with SMTP id a6mr74029766wrx.332.1594604991928;
- Sun, 12 Jul 2020 18:49:51 -0700 (PDT)
+        id S1728408AbgGMB4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 21:56:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:11551 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgGMB4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 21:56:33 -0400
+IronPort-SDR: fSTj7bQRcEsB1XtstARi7P2B3kqSy4Cgy1UudQq4NUtd2Coiv/Q5lEc9ArK1pJ8Fgrwi2IZXUJ
+ MZgujUHND89w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9680"; a="136718378"
+X-IronPort-AV: E=Sophos;i="5.75,345,1589266800"; 
+   d="scan'208";a="136718378"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2020 18:56:32 -0700
+IronPort-SDR: Zs6lenS7Wgpo3n8w5Vp2sagKfsqwSr7MBh4M5MGPbpuwx84FK+KuMJAKbgXVDysn5amjPIxRj7
+ cfW9QpGNYa4A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,345,1589266800"; 
+   d="scan'208";a="317223746"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga002.fm.intel.com with ESMTP; 12 Jul 2020 18:56:30 -0700
+Date:   Mon, 13 Jul 2020 09:52:24 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     "Wu, Hao" <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lgoncalv@redhat.com" <lgoncalv@redhat.com>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        "Weight, Russell H" <russell.h.weight@intel.com>,
+        yilun.xu@intel.com
+Subject: Re: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
+Message-ID: <20200713015224.GA2624@yilunxu-OptiPlex-7050>
+References: <1594282705-32289-1-git-send-email-yilun.xu@intel.com>
+ <DM6PR11MB3819117029F124067F7EA8B985640@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <20200709093527.GA32541@yilunxu-OptiPlex-7050>
+ <DM6PR11MB3819D07348C347B5BB8F86C085640@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <2d7919d5-a320-58f4-5c9d-7ef868ad8676@redhat.com>
+ <20200710052443.GB8689@yilunxu-OptiPlex-7050>
+ <DM6PR11MB3819BF1B54D64AD706BF832E85650@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <20200710154616.GA130068@epycbox.lan>
 MIME-Version: 1.0
-References: <20200711124035.6513-1-changbin.du@gmail.com> <20200711124035.6513-3-changbin.du@gmail.com>
-In-Reply-To: <20200711124035.6513-3-changbin.du@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 13 Jul 2020 10:49:40 +0900
-Message-ID: <CAM9d7cjdMQzt6RXOnugoZ77Psu4Y=j9w07quxvtWqo0XagxL6A@mail.gmail.com>
-Subject: Re: [PATCH v5 02/17] perf ftrace: add option '-F/--funcs' to list
- available functions
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710154616.GA130068@epycbox.lan>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Jul 10, 2020 at 08:46:16AM -0700, Moritz Fischer wrote:
+> On Fri, Jul 10, 2020 at 06:14:19AM +0000, Wu, Hao wrote:
+> > > On Thu, Jul 09, 2020 at 06:00:40AM -0700, Tom Rix wrote:
+> > > >
+> > > > On 7/9/20 3:14 AM, Wu, Hao wrote:
+> > > > >> On Thu, Jul 09, 2020 at 05:10:49PM +0800, Wu, Hao wrote:
+> > > > >>>> Subject: [PATCH] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
+> > > > >>>>
+> > > > >>>> Add PCIe Device ID for Intel FPGA PAC N3000.
+> > > > >>>>
+> > > > >>>> Signed-off-by: Wu Hao <hao.wu@intel.com>
+> > > > >>>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > >>>> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > > > >>>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> > > > >>>> ---
+> > > > >>>>  drivers/fpga/dfl-pci.c | 2 ++
+> > > > >>>>  1 file changed, 2 insertions(+)
+> > > > >>>>
+> > > > >>>> diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+> > > > >>>> index 73b5153..824aecf 100644
+> > > > >>>> --- a/drivers/fpga/dfl-pci.c
+> > > > >>>> +++ b/drivers/fpga/dfl-pci.c
+> > > > >>>> @@ -64,6 +64,7 @@ static void cci_pci_free_irq(struct pci_dev
+> > > *pcidev)
+> > > > >>>>  #define PCIE_DEVICE_ID_PF_INT_5_X0xBCBD
+> > > > >>>>  #define PCIE_DEVICE_ID_PF_INT_6_X0xBCC0
+> > > > >>>>  #define PCIE_DEVICE_ID_PF_DSC_1_X0x09C4
+> > > > >>>> +#define PCIE_DEVICE_ID_PF_PAC_N3000 0x0B30
+> > > > >>> Should we drop _PF_ here? and also do you want _INTEL_ here?
+> > > > >> I think we could keep _PF_, also there is no need to support VF of pac
+> > > > >> n3000 in product now, but it does exist (ID: 0x0b31).
+> > > >
+> > > > I was wondering about the vf id, thanks!
+> > > >
+> > > > >>
+> > > > >> And add _INTEL_ is good to me.
+> > > > >>
+> > > > >> Then how about this one:
+> > > > >>   #define PCIE_DEVICE_ID_PF_INTEL_PAC_N3000	0x0B30
+> > > > > I am just considering the alignment with ids defined in
+> > > include/linux/pci_ids.h
+> > > > > So drop _PF_ before _INTEL_ would be better? : )
+> > > >
+> > > > To be consistent, all the id's are intel and all could drop pf.
+> > > 
+> > > That's good to me after checking the pci_ids.h. So we have:
+> > > 
+> > > #define PCIE_DEVICE_ID_INTEL_PAC_N3000        0x0B30
+> > 
+> > Sounds good to me.
+> > 
+> > Hao
+> 
+> Heads up I was gonna send out the PR early next week. I can fix this up
+> myself if you want if you want or you can resend it?
 
-On Sat, Jul 11, 2020 at 9:42 PM Changbin Du <changbin.du@gmail.com> wrote:
->
-> This adds an option '-F/--funcs' to list all available functions to trace,
-> which is read from tracing file 'available_filter_functions'.
->
-> $ sudo ./perf ftrace -F | head
-> trace_initcall_finish_cb
-> initcall_blacklisted
-> do_one_initcall
-> do_one_initcall
-> trace_initcall_start_cb
-> run_init_process
-> try_to_run_init_process
-> match_dev_by_label
-> match_dev_by_uuid
-> rootfs_init_fs_context
->
-> Signed-off-by: Changbin Du <changbin.du@gmail.com>
->
-> ---
-> v2: option name '-l/--list-functions' -> '-F/--funcs'
-> ---
->  tools/perf/Documentation/perf-ftrace.txt |  4 +++
->  tools/perf/builtin-ftrace.c              | 43 ++++++++++++++++++++++++
->  2 files changed, 47 insertions(+)
->
-> diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
-> index 952e46669168..d79560dea19f 100644
-> --- a/tools/perf/Documentation/perf-ftrace.txt
-> +++ b/tools/perf/Documentation/perf-ftrace.txt
-> @@ -30,6 +30,10 @@ OPTIONS
->  --verbose=::
->          Verbosity level.
->
-> +-F::
-> +--funcs::
-> +        List all available functions to trace.
-> +
->  -p::
->  --pid=::
->         Trace on existing process id (comma separated list).
-> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> index 5f53da87040d..244cc8e6bd60 100644
-> --- a/tools/perf/builtin-ftrace.c
-> +++ b/tools/perf/builtin-ftrace.c
-> @@ -32,6 +32,7 @@ struct perf_ftrace {
->         struct evlist           *evlist;
->         struct target           target;
->         const char              *tracer;
-> +       bool                    list_avail_functions;
->         struct list_head        filters;
->         struct list_head        notrace;
->         struct list_head        graph_funcs;
-> @@ -127,6 +128,43 @@ static int append_tracing_file(const char *name, const char *val)
->         return __write_tracing_file(name, val, true);
->  }
->
-> +static int read_tracing_file_to_stdout(const char *name)
-> +{
-> +       char buf[4096];
-> +       char *file;
-> +       int fd;
-> +       int ret = -1;
-> +
-> +       file = get_tracing_file(name);
-> +       if (!file) {
-> +               pr_debug("cannot get tracing file: %s\n", name);
-> +               return -1;
-> +       }
-> +
-> +       fd = open(file, O_RDONLY);
-> +       if (fd < 0) {
-> +               pr_debug("cannot open tracing file: %s: %s\n",
-> +                        name, str_error_r(errno, buf, sizeof(buf)));
-> +               goto out;
-> +       }
-> +
-> +       /* read contents to stdout */
-> +       while (true) {
-> +               int n = read(fd, buf, sizeof(buf));
-> +               if (n <= 0)
-> +                       goto out_close;
-> +               if (fwrite(buf, n, 1, stdout) != 1)
-> +                       goto out_close;
-> +       }
-> +       ret = 0;
+I sent the v2 patch for this. Please help check it.
 
-As I said before, there's no break in the loop above
-so the ret can never be 0.
+Thanks,
+Yilun
 
-Thanks
-Namhyung
-
-> +
-> +out_close:
-> +       close(fd);
-> +out:
-> +       put_tracing_file(file);
-> +       return ret;
-> +}
-> +
->  static int reset_tracing_cpu(void);
->  static void reset_tracing_filters(void);
->
-> @@ -301,6 +339,9 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
->         signal(SIGCHLD, sig_handler);
->         signal(SIGPIPE, sig_handler);
->
-> +       if (ftrace->list_avail_functions)
-> +               return read_tracing_file_to_stdout("available_filter_functions");
-> +
->         if (reset_tracing_files(ftrace) < 0) {
->                 pr_err("failed to reset ftrace\n");
->                 goto out;
-> @@ -470,6 +511,8 @@ int cmd_ftrace(int argc, const char **argv)
->         const struct option ftrace_options[] = {
->         OPT_STRING('t', "tracer", &ftrace.tracer, "tracer",
->                    "tracer to use: function or function_graph (This option is deprecated)"),
-> +       OPT_BOOLEAN('F', "funcs", &ftrace.list_avail_functions,
-> +                   "Show available functions to filter"),
->         OPT_STRING('p', "pid", &ftrace.target.pid, "pid",
->                    "trace on existing process id"),
->         OPT_INCR('v', "verbose", &verbose,
-> --
-> 2.25.1
->
+> 
+> Thanks,
+> Moritz
