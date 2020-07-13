@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3325F21D3D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7E321D3D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729494AbgGMKfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 06:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48180 "EHLO
+        id S1729531AbgGMKfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 06:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgGMKfE (ORCPT
+        with ESMTP id S1727035AbgGMKfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:35:04 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DCBC061755;
-        Mon, 13 Jul 2020 03:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=INXvaMVTxBym4z/fKJuakqyDRZOcv2j8dD0l03DIIOk=; b=SG6VIgfVujIJwV1bkl//5xt+9g
-        GLP/+l5nCGy7FOXXJBltMRU67LYncxDKPW6XsBHqK5/7I+gwAZZAeIi4Fw+AU9EP/1AStl19tAaLC
-        SfbNHamPt4X0L+rDd63gUKANJkUMuOF7Pl9RtdotmVNYk2uice1ic0JG1iXWOkPm+uBxb3DNG+iMu
-        WBQD3crMEPQqSfLG0NJ363PhffAs9/YPu277+hE0NShjZJpTyx12XnfZwkkoHATqijESikkzytS65
-        d4z7k9jTm4g7VM/nUtS3uougp6mu4u9g36XTFN6DBr/Hme/NNU3thCLE+pHtDGeIM5w+F+NxASdO6
-        4MG6AvCA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1juvnM-0000vE-10; Mon, 13 Jul 2020 10:34:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5FAA3300DB4;
-        Mon, 13 Jul 2020 12:34:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 449F220D27C88; Mon, 13 Jul 2020 12:34:43 +0200 (CEST)
-Date:   Mon, 13 Jul 2020 12:34:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Joel Fernandes <joelaf@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Richard Henderson <rth@twiddle.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-alpha@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kernel-team@android.com
-Subject: Re: [PATCH 00/18] Allow architectures to override __READ_ONCE()
-Message-ID: <20200713103443.GE10769@hirez.programming.kicks-ass.net>
-References: <20200710165203.31284-1-will@kernel.org>
+        Mon, 13 Jul 2020 06:35:45 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C19C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 03:35:45 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id k23so12833748iom.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 03:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zkd7AusD5Iqi8emk4XGpAIzvYnOlGsGXoaeynxJlNps=;
+        b=e+ds4Mxu02ZFxQAYVNOw7TqENK6NWoaPkZJ15GsOh6O8+qF/2/IJdeL+TkFXUDfabx
+         MdmX8Y29Ljpzf7o42/z88a87iCOrAlwbwT9raV+Vk/b1FtIiFPvM75tVAQ5hRHxZC5Xs
+         x+DcYR4yZzlNozDzLblRRiJ1/IBVLe8BJ1F25p/qHDgnfKOuWYMKAhwvPoaqRb/Uv8qy
+         Aw7AHkdJaol8wmK2jCh+TCQ6AwqEMxK8PHvv4isbIpHrp0HJsV8o1jzpzwaY642WNrn6
+         WGH6B2Hi1tlaV7nor1zz9hHmwAfQZp+NnQcR0AW0wYUaa2y8GdQXW/BsK3WbNoxCKoge
+         aCxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zkd7AusD5Iqi8emk4XGpAIzvYnOlGsGXoaeynxJlNps=;
+        b=GZq+PQxaLZBFajfY4d0JgBjHde6wnYZPdh0Dzxnm8li+sjne0VmLI4c33/WMNLbvlw
+         O/DWYTCEhCA4z0fXT/yTLRbeymzB8SZiQEZlrlNBSyavM2/47aCKCvnT026D3C5bvxAF
+         R3m94V+X4H6zdQ/XxaA+54c+Op9otr68nyXiBWfHifQFFTE7gj8jZNf+TzUb+9re9PKl
+         Aev5H2jl8xNu4hRTIrHmR27LaufJNefvIfnl3y4zXpojuQH1GzZLJd8BWcSDM7VReGnN
+         9I53csXHHe7WpbqNih8FO7IydhyT9ZrHzbCAw2IJQIXKyVDD2p8FTgU+M/7HReoNb8jM
+         9kYw==
+X-Gm-Message-State: AOAM533O2TwqGLiHizlfM+0ftVJUyg6CGvkrxsEtnmEV/Q0aLs0jUNrs
+        CLl4sZ027i1F7Xyl0iTrbvJyrGOKo4zyoqgu5AY=
+X-Google-Smtp-Source: ABdhPJzCmPsUGSvqCwTgYsZRB+rx9MhwO4tdPSLLlrvlSMY+XJnd1AwtddubSmc8ksVG2gIZUma0ne8j5LMP6u/LfAk=
+X-Received: by 2002:a5d:8f0b:: with SMTP id f11mr59878361iof.200.1594636544674;
+ Mon, 13 Jul 2020 03:35:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710165203.31284-1-will@kernel.org>
+References: <1594117856-14343-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1594117856-14343-2-git-send-email-gene.chen.richtek@gmail.com>
+ <b9540dc6-4d43-45e4-8878-15d2df24a268@gmail.com> <20200713065110.GB3500@dell>
+In-Reply-To: <20200713065110.GB3500@dell>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Mon, 13 Jul 2020 18:35:32 +0800
+Message-ID: <CAE+NS36uRRqHetQE5QVJ94WX4g7CdQzvD-0VOnLfKAbqdHs3Sg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] mfd: mt6360: Refactor and fix code style
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gene Chen <gene_chen@richtek.com>, shufan_lee@richtek.com,
+        cy_huang@richtek.com, benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 05:51:44PM +0100, Will Deacon wrote:
+Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B47=E6=9C=8813=E6=97=
+=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=882:51=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Fri, 10 Jul 2020, Matthias Brugger wrote:
+>
+> >
+> >
+> > On 07/07/2020 12:30, Gene Chen wrote:
+> > > From: Gene Chen <gene_chen@richtek.com>
+> > >
+> > > Rearrange include file.
+> > > Remove brackets around raw numbers.
+> > > Indicate sub-dev compatible name by using "-"
+> > > Combine mt6360 pmic/ldo resouces into mt6360 regulator resources.
+> > > Rename mt6360_pmu_data by mt6360_data.
+> > > Rename mt6360_pmu by mt6360.
+> >
+> > That seems like a lot of cosmetics. Why is this needed?
+> > If you think that's needed it should be split up in different commits, =
+each
+> > explaining in the commit message why you do that.
+>
+> Agreed.  This set is still not broken up enough.
+>
+> Please place each logical change into its own patch for review.
+>
 
-> SeongJae Park (1):
->   Documentation/barriers/kokr: Remove references to
->     [smp_]read_barrier_depends()
-> 
-> Will Deacon (18):
->   tools: bpf: Use local copy of headers including uapi/linux/filter.h
->   compiler.h: Split {READ,WRITE}_ONCE definitions out into rwonce.h
->   asm/rwonce: Allow __READ_ONCE to be overridden by the architecture
->   alpha: Override READ_ONCE() with barriered implementation
->   asm/rwonce: Remove smp_read_barrier_depends() invocation
->   asm/rwonce: Don't pull <asm/barrier.h> into 'asm-generic/rwonce.h'
->   vhost: Remove redundant use of read_barrier_depends() barrier
->   alpha: Replace smp_read_barrier_depends() usage with smp_[r]mb()
->   locking/barriers: Remove definitions for [smp_]read_barrier_depends()
->   Documentation/barriers: Remove references to
->     [smp_]read_barrier_depends()
->   tools/memory-model: Remove smp_read_barrier_depends() from informal
->     doc
->   include/linux: Remove smp_read_barrier_depends() from comments
->   checkpatch: Remove checks relating to [smp_]read_barrier_depends()
->   arm64: Reduce the number of header files pulled into vmlinux.lds.S
->   arm64: alternatives: Split up alternative.h
->   arm64: cpufeatures: Add capability for LDAPR instruction
->   arm64: alternatives: Remove READ_ONCE() usage during patch operation
->   arm64: lto: Strengthen READ_ONCE() to acquire when CONFIG_LTO=y
+1. Rearrange include file.
+After check serveral file about coding style, include file seems sort
+by architecture, not by alphabet
+2. Remove brackets around raw numbers.
+Due to redundant brackets, another reviewer recommended to delete them.
+3. Indicate sub-dev compatible name by using "-"
+Suggestion by Lees when review mfd binding document.
+4. Combine mt6360 pmic/ldo resouces into mt6360 regulator resources.
+Simplify the similar resources object.
+5. Rename mt6360_pmu_data by mt6360_data.
+Not only include pmu part, but also entire MT6360 IC.
+6. Rename mt6360_pmu by mt6360.
+Same reason as above.
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+We try to make code more simpler and easier to understand
+We can also discard changes if patch 1,2,4,5,6 doesn't make any difference.
+
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
