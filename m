@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2201A21D0C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15B321D0A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729574AbgGMHsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 03:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50418 "EHLO
+        id S1728833AbgGMHrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 03:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729284AbgGMHrJ (ORCPT
+        with ESMTP id S1729307AbgGMHrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 03:47:09 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77971C08C5DD
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:47:09 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id q5so14682778wru.6
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:47:09 -0700 (PDT)
+        Mon, 13 Jul 2020 03:47:10 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6F2C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:47:10 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g75so12302046wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 00:47:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Sy/K8f8HsXXHV/Uh8PtUz+jEUwEZnfQCudyYCgnVPrY=;
-        b=kt6jQe7UWHbiVRqqHAaPcHsfaVUEXSIAcl/9X9mskmqMpLpuREDcN7aUNNwfe7SHm4
-         G5Vi3tz3xcp2BtKvJ4qP5zBWiKA17OHpjW1AnQISAYP+lbm0isTG48B4QqG3RNz9bDsW
-         ZXpKQkU9qVkOQRqTppnAx+oa+jj/Djxk9+LbNn0pb6Q7Ia47s7JRMV8CIpEDn6UyL45R
-         +vJZ5hgQlbbw2TTVWL0fdg9FojpzLGyY0J5LrgyU4TRhACyrGjMHERkR3T/3s4xDICCK
-         PLmfvl+a9vHtgJX+16ASFKwI9Eaa6zFMQ2zOtQIffq+/Yh7EUqu3xQUgQzlvccHx9EIj
-         ccxg==
+        bh=cqbTOjU/FsSc/cHhe4oGvv9xN2ZDzn7IWu0NGLngM90=;
+        b=E9Nk6MmLMhgrZz8qU9tuzg3glTjGkXnr/niB1TyY/fTrlnVs71sCgumacmSdGvGHkm
+         ZA777PveMNU+wJKYfcxon91UkP+MxOFi15Tmgk8LvwGpo88LSBr9Zm/uwWWAAkAkc9K4
+         1o8NeNKYjt+dRhvC2ui+sXHgTgE9LRDoGvNZB8IG4S+7BCNocIhR0xJLeni+TDiAgpj+
+         I7rxuvHk3DcJSxLSDFT8lJ8qo0EVLaHRBFWkWAhDYtQmFp8euody7NnsN1D9liTfun4R
+         QLdZxrsCDvyqeZhnRSuRNDiz1W+zDuZPnJYgBQDOkQuW9aILooI9eB9N9fpCxaSduIYv
+         TUXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Sy/K8f8HsXXHV/Uh8PtUz+jEUwEZnfQCudyYCgnVPrY=;
-        b=SDr/+mfZyhWhtwHiStOqoVepFJFtcvAlmy2pPtjEE0P3ia8d1xust4BpbNRIaxVfB5
-         pvRcFQ7GH4IJ+1DIXHDtMrL9nrpry7x7a0D3cO2dtAFldwPwznVvBD16LJv/9phxQG/3
-         oQNlgApv6oljlebR+CyAGscjVb58yciZUsb+SFcWmkWC1i3CHU+kMzabuwT5r7rHf50W
-         02zny4Oa55DM1dV8EsJrNKeEkwGVWHjbfN9wetwEfPfqSlNHPgeToHIyTQoEpX7UY31B
-         N5C1Fl10nRIM4pEnOKUB8RAsfnHvb1i9jeDgv+p+TAJEzSoqf+Wv5WVpn8ILK3mA3q+b
-         W5/w==
-X-Gm-Message-State: AOAM532QqjT2QFvHQtJxUKETWAaJJAhKmvdWxMzbyS5QpC5xOy//L13u
-        TFh+dfetpEBDm214LLdhCXH9vA==
-X-Google-Smtp-Source: ABdhPJwFTSTf7Ywa1zYhk/JfUL8jHuWt4NWPQfjanjCq/oXBWN4ntrKoRwxHXCLGoDLZofOuTo1gow==
-X-Received: by 2002:adf:9286:: with SMTP id 6mr78950566wrn.361.1594626428201;
-        Mon, 13 Jul 2020 00:47:08 -0700 (PDT)
+        bh=cqbTOjU/FsSc/cHhe4oGvv9xN2ZDzn7IWu0NGLngM90=;
+        b=Y9LMtW8TlFMWItLJeGKsrV12jPj4wSnXfMNroatCUPhnn2A8lF24y6vGy/8LklbuiS
+         Mto36189oqgGsoviTJRh4kAw7OsFwRqe2QQTVAVQ3m7SlL6LJcoDyJh4WaFpguWv7EJM
+         6tvaY1jNbNBdeLbYa4N5BlIH2cMa/Q4iv0WYL1MkVGoXfeFJPwowhkzfRV3Y7qL8IaLQ
+         zqDMC/2cM/bMkdK061wnscmaeFVG8ZCCsdUrLxkTbx4zPzxASIxewS6Bl7iX6vQanQfk
+         7uli5pZiiGYmtcE49HiW0GuKYETD+8FuBl5LZse8EGqdCoRMMvAb5yI9AXTF3PhW0MIV
+         /FLg==
+X-Gm-Message-State: AOAM532BOyYyyeN7CRzfJPWbBhH+x0V5eDQxewf7hvv8Rr5JrjvGmEf3
+        /JZ24DF1wDFm6fxAzkVecgovuQ==
+X-Google-Smtp-Source: ABdhPJxiPjcTfkHVPcB5q845qkR0jjP5cBYwnnCidt2bZ8Thh385k/O+TNBtXG84YL2RHTiQBo7PSg==
+X-Received: by 2002:a1c:5646:: with SMTP id k67mr18275780wmb.61.1594626429223;
+        Mon, 13 Jul 2020 00:47:09 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.6])
-        by smtp.gmail.com with ESMTPSA id k11sm25142488wrd.23.2020.07.13.00.47.07
+        by smtp.gmail.com with ESMTPSA id k11sm25142488wrd.23.2020.07.13.00.47.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 00:47:07 -0700 (PDT)
+        Mon, 13 Jul 2020 00:47:08 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Hannes Reinecke <hare@suse.com>,
         "Daniel M. Eischen" <deischen@iworks.InterWorks.org>,
         Doug Ledford <dledford@redhat.com>
-Subject: [PATCH v2 19/29] scsi: aic7xxx: aic7xxx_osm: Remove unused variable 'ahc'
-Date:   Mon, 13 Jul 2020 08:46:35 +0100
-Message-Id: <20200713074645.126138-20-lee.jones@linaro.org>
+Subject: [PATCH v2 20/29] scsi: aic7xxx: aic7xxx_osm: Remove unused variable 'targ'
+Date:   Mon, 13 Jul 2020 08:46:36 +0100
+Message-Id: <20200713074645.126138-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200713074645.126138-1-lee.jones@linaro.org>
 References: <20200713074645.126138-1-lee.jones@linaro.org>
@@ -69,38 +69,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks as though 'ahc' hasn't been used since 2005.
+Looks like checking the 'targ' was removed in 2005.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/aic7xxx/aic7xxx_osm.c: In function ‘ahc_linux_slave_configure’:
- drivers/scsi/aic7xxx/aic7xxx_osm.c:674:20: warning: variable ‘ahc’ set but not used [-Wunused-but-set-variable]
- 674 | struct ahc_softc *ahc;
- | ^~~
+ drivers/scsi/aic7xxx/aic7xxx_osm.c: In function ‘ahc_send_async’:
+ drivers/scsi/aic7xxx/aic7xxx_osm.c:1604:28: warning: variable ‘targ’ set but not used [-Wunused-but-set-variable]
+ 1604 | struct ahc_linux_target *targ;
+ | ^~~~
 
 Cc: Hannes Reinecke <hare@suse.com>
 Cc: "Daniel M. Eischen" <deischen@iworks.InterWorks.org>
 Cc: Doug Ledford <dledford@redhat.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/aic7xxx/aic7xxx_osm.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/scsi/aic7xxx/aic7xxx_osm.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/scsi/aic7xxx/aic7xxx_osm.c b/drivers/scsi/aic7xxx/aic7xxx_osm.c
-index 32bfe20d79cc1..cc4c7b1781466 100644
+index cc4c7b1781466..ed437c16de881 100644
 --- a/drivers/scsi/aic7xxx/aic7xxx_osm.c
 +++ b/drivers/scsi/aic7xxx/aic7xxx_osm.c
-@@ -666,10 +666,6 @@ ahc_linux_slave_alloc(struct scsi_device *sdev)
- static int
- ahc_linux_slave_configure(struct scsi_device *sdev)
- {
--	struct	ahc_softc *ahc;
--
--	ahc = *((struct ahc_softc **)sdev->host->hostdata);
--
- 	if (bootverbose)
- 		sdev_printk(KERN_INFO, sdev, "Slave Configure\n");
+@@ -1592,7 +1592,6 @@ ahc_send_async(struct ahc_softc *ahc, char channel,
+ 	case AC_TRANSFER_NEG:
+ 	{
+ 		struct	scsi_target *starget;
+-		struct	ahc_linux_target *targ;
+ 		struct	ahc_initiator_tinfo *tinfo;
+ 		struct	ahc_tmode_tstate *tstate;
+ 		int	target_offset;
+@@ -1626,7 +1625,6 @@ ahc_send_async(struct ahc_softc *ahc, char channel,
+ 		starget = ahc->platform_data->starget[target_offset];
+ 		if (starget == NULL)
+ 			break;
+-		targ = scsi_transport_target_data(starget);
  
+ 		target_ppr_options =
+ 			(spi_dt(starget) ? MSG_EXT_PPR_DT_REQ : 0)
 -- 
 2.25.1
 
