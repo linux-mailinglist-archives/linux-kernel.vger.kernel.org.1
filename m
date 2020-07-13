@@ -2,556 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D025421DD73
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B83921DD66
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730274AbgGMQim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:38:42 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:49462 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730641AbgGMQif (ORCPT
+        id S1730606AbgGMQiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730523AbgGMQiX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:38:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594658312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aqsuThQyrz5PWdn5FrEmtBoz4GkNq4lYhgOSsa46qsI=;
-        b=NKeutwIzcS/T2TQ/9X7BSiGNjjftN0Bn3T28b1QFwgGRGFLR7yI4hDuP3qMwFp8oYsolEf
-        ITj2wmxZxK8/nL8yq7wPffrwvj2LUq/Qb6/Bzzs0VM5DBcsoNzNDNiOlszfmcFUkE7G0mS
-        TJj9gr9oi3eE+0g5ino41fJJndTsm+8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-74-odU2Z691OkOWWnnbTqZgyw-1; Mon, 13 Jul 2020 12:38:29 -0400
-X-MC-Unique: odU2Z691OkOWWnnbTqZgyw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB46280183C;
-        Mon, 13 Jul 2020 16:38:27 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-113.rdu2.redhat.com [10.10.112.113])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 637785BAD5;
-        Mon, 13 Jul 2020 16:38:18 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 07/13] afs: Interpose struct fscache_io_request into struct
- afs_read
-From:   David Howells <dhowells@redhat.com>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Jeff Layton <jlayton@redhat.com>,
-        Dave Wysochanski <dwysocha@redhat.com>, dhowells@redhat.com,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 13 Jul 2020 17:38:17 +0100
-Message-ID: <159465829760.1377938.2449766049160139188.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159465821598.1377938.2046362270225008168.stgit@warthog.procyon.org.uk>
-References: <159465821598.1377938.2046362270225008168.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.22
+        Mon, 13 Jul 2020 12:38:23 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E50C061755;
+        Mon, 13 Jul 2020 09:38:23 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id lx13so17952598ejb.4;
+        Mon, 13 Jul 2020 09:38:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ycdL8oVWbM+Oq87WaeorDM/hVkvLhqX9x6yYbZqoB6U=;
+        b=HtOG6A1SyQY0JrPQZ1Yl8I4D91WDQCqtdXiCfxAK+BA0u3Qb681LblOWUwAB4ieMX9
+         7/V8fu/0nbep6VIQGSa3HxR91Pfi95dzKbwHDWxFcK0YJQ4HTxSNFJYpGT2+955Ql4ld
+         xLPQ2n0MCqwUSt9SUHuGSepsx9+jEjO8cHGezH6970ImCIan2d7rQeB3IilFn7/JBJUp
+         f/h97T5fwSxpW2M4giJyuUktdk2ZB0V1BAbkfvQPW+hKUIrxF/j3+htWESQzMMdApKDV
+         JMy46112S9Ps5cWpNxhv776ULLPD2wGIrGHT9Uyz+b68BgBF5FLSWMJYCiu4yEHS1Gdh
+         3JGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ycdL8oVWbM+Oq87WaeorDM/hVkvLhqX9x6yYbZqoB6U=;
+        b=aLq2IxmdF5o7uXCt/lk3jm4IidtaD9AZd0BJ0CT2BcU9z4o4DhNjXUbwLPGJ/oltuY
+         99PzlvVrd39pI5ZY2HwSIl3USZ569eeX9FtnlvDk5O2xg/GEGk7kIwKlH/CXqP/Oan5x
+         gien5NJkoVk5B1HEMIdqyfK4ReNvh1a6IR4OvcyMDxmQgRvMP8JuaKCGAXx+/2nFMA88
+         4tpjMDIeij6dy3JnB+dTrEA7/sQ1dbB/sCqY5/jMCWG8sPYeNY0HwjQMu0GwAFH9Khm7
+         KIZRaWpSAlUTOPEvu3+78x5g7UntCSo94rYo3Y3paynxtODspxItq/q19dRjphUWuFNa
+         zPoA==
+X-Gm-Message-State: AOAM531eSGek1vfQM0xwvsPVjbAbdVFtRMEU3yJJKpaPFMs34h7L0nPp
+        Sbo7+OYSDbxkJAS4hgLnn3vvXysa
+X-Google-Smtp-Source: ABdhPJzmRSiuWF4dj2ayKFimAwSZa2ooMZkXBaxLi+oSgit6zh4hge4aw1/KN17nzyHUOSbBoRz2vQ==
+X-Received: by 2002:a17:906:b888:: with SMTP id hb8mr600558ejb.124.1594658302180;
+        Mon, 13 Jul 2020 09:38:22 -0700 (PDT)
+Received: from skbuf ([188.25.219.134])
+        by smtp.gmail.com with ESMTPSA id c15sm12578174edm.47.2020.07.13.09.38.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 09:38:21 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 19:38:19 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Alex Marginean <alexandru.marginean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next v6 3/4] net: enetc: Initialize SerDes for SGMII
+ and USXGMII protocols
+Message-ID: <20200713163819.uwb6rxlapexkoyre@skbuf>
+References: <20200709213526.21972-1-michael@walle.cc>
+ <20200709213526.21972-4-michael@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709213526.21972-4-michael@walle.cc>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Embed an fscache_io_request struct into struct afs_read and remove some of
-the redundant members from the latter.
+On Thu, Jul 09, 2020 at 11:35:25PM +0200, Michael Walle wrote:
+> ENETC has ethernet MACs capable of SGMII, 2500BaseX and USXGMII. But in
+> order to use these protocols some SerDes configurations need to be
+> performed. The SerDes is configurable via an internal PCS PHY which is
+> connected to an internal MDIO bus at address 0.
+> 
+> This patch basically removes the dependency on bootloader regarding
+> SerDes initialization.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> Reviewed-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+> ---
 
-Change all references to those removed members to use the fscache ones
-instead.
+As mentioned earlier, this works for SGMII. For USXGMII, it would also
+need this patch to work (something which is also true of Felix):
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+https://patchwork.ozlabs.org/project/netdev/patch/20200712164815.1763532-1-olteanv@gmail.com/
 
- fs/afs/dir.c       |   38 ++++++++++++++++++++++++--------------
- fs/afs/file.c      |   48 +++++++++++++++++++++++++-----------------------
- fs/afs/fsclient.c  |   28 ++++++++++++++--------------
- fs/afs/internal.h  |   12 ++++--------
- fs/afs/write.c     |   18 ++++++++++--------
- fs/afs/yfsclient.c |   18 +++++++++---------
- 6 files changed, 86 insertions(+), 76 deletions(-)
+Considering that patch as external to this series:
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index 56991bb01f62..9d47df15c790 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -108,13 +108,14 @@ struct afs_lookup_cookie {
-  */
- static void afs_dir_read_cleanup(struct afs_read *req)
- {
--	struct address_space *mapping = req->iter->mapping;
-+	struct afs_vnode *vnode = req->vnode;
-+	struct address_space *mapping = vnode->vfs_inode.i_mapping;
- 	struct page *page;
--	pgoff_t last = req->nr_pages - 1;
-+	pgoff_t last = req->cache.nr_pages - 1;
- 
- 	XA_STATE(xas, &mapping->i_pages, 0);
- 
--	if (unlikely(!req->nr_pages))
-+	if (unlikely(!req->cache.nr_pages))
- 		return;
- 
- 	rcu_read_lock();
-@@ -131,6 +132,13 @@ static void afs_dir_read_cleanup(struct afs_read *req)
- 	rcu_read_unlock();
- }
- 
-+/*
-+ * Do nothing upon completion of the request.
-+ */
-+static void afs_dir_read_done(struct fscache_io_request *fsreq)
-+{
-+}
-+
- /*
-  * check that a directory page is valid
-  */
-@@ -194,15 +202,15 @@ static void afs_dir_dump(struct afs_vnode *dvnode, struct afs_read *req)
- 	struct address_space *mapping = dvnode->vfs_inode.i_mapping;
- 	struct page *page;
- 	unsigned int i, qty = PAGE_SIZE / sizeof(union afs_xdr_dir_block);
--	pgoff_t last = req->nr_pages - 1;
-+	pgoff_t last = req->cache.nr_pages - 1;
- 
- 	XA_STATE(xas, &mapping->i_pages, 0);
- 
- 	pr_warn("DIR %llx:%llx f=%llx l=%llx al=%llx\n",
- 		dvnode->fid.vid, dvnode->fid.vnode,
--		req->file_size, req->len, req->actual_len);
-+		req->file_size, req->cache.len, req->actual_len);
- 	pr_warn("DIR %llx %x %zx %zx\n",
--		req->pos, req->nr_pages,
-+		req->cache.pos, req->cache.nr_pages,
- 		req->iter->iov_offset,  iov_iter_count(req->iter));
- 
- 	xas_for_each(&xas, page, last) {
-@@ -229,12 +237,12 @@ static int afs_dir_check(struct afs_vnode *dvnode, struct afs_read *req)
- {
- 	struct address_space *mapping = dvnode->vfs_inode.i_mapping;
- 	struct page *page;
--	pgoff_t last = req->nr_pages - 1;
-+	pgoff_t last = req->cache.nr_pages - 1;
- 	int ret = 0;
- 
- 	XA_STATE(xas, &mapping->i_pages, 0);
- 
--	if (unlikely(!req->nr_pages))
-+	if (unlikely(!req->cache.nr_pages))
- 		return 0;
- 
- 	rcu_read_lock();
-@@ -293,7 +301,9 @@ static struct afs_read *afs_read_dir(struct afs_vnode *dvnode, struct key *key)
- 
- 	refcount_set(&req->usage, 1);
- 	req->key = key_get(key);
-+	req->vnode = dvnode;
- 	req->cleanup = afs_dir_read_cleanup;
-+	req->cache.io_done = afs_dir_read_done;
- 
- expand:
- 	i_size = i_size_read(&dvnode->vfs_inode);
-@@ -312,7 +322,7 @@ static struct afs_read *afs_read_dir(struct afs_vnode *dvnode, struct key *key)
- 	nr_pages = (i_size + PAGE_SIZE - 1) / PAGE_SIZE;
- 
- 	req->actual_len = i_size; /* May change */
--	req->len = nr_pages * PAGE_SIZE; /* We can ask for more than there is */
-+	req->cache.len = nr_pages * PAGE_SIZE; /* We can ask for more than there is */
- 	req->data_version = dvnode->status.data_version; /* May change */
- 	iov_iter_mapping(&req->def_iter, READ, dvnode->vfs_inode.i_mapping,
- 			 0, i_size);
-@@ -322,7 +332,7 @@ static struct afs_read *afs_read_dir(struct afs_vnode *dvnode, struct key *key)
- 	 * been at work and pin all the pages.  If there are any gaps, we will
- 	 * need to reread the entire directory contents.
- 	 */
--	i = req->nr_pages;
-+	i = req->cache.nr_pages;
- 	while (i < nr_pages) {
- 		struct page *pages[8], *page;
- 
-@@ -351,10 +361,10 @@ static struct afs_read *afs_read_dir(struct afs_vnode *dvnode, struct key *key)
- 			set_page_private(page, 1);
- 			SetPagePrivate(page);
- 			unlock_page(page);
--			req->nr_pages++;
-+			req->cache.nr_pages++;
- 			i++;
- 		} else {
--			req->nr_pages += n;
-+			req->cache.nr_pages += n;
- 			i += n;
- 		}
- 	}
-@@ -379,9 +389,9 @@ static struct afs_read *afs_read_dir(struct afs_vnode *dvnode, struct key *key)
- 		if (ret < 0)
- 			goto error_unlock;
- 
--		task_io_account_read(PAGE_SIZE * req->nr_pages);
-+		task_io_account_read(PAGE_SIZE * req->cache.nr_pages);
- 
--		if (req->len < req->file_size) {
-+		if (req->cache.len < req->file_size) {
- 			/* The content has grown, so we need to expand the
- 			 * buffer.
- 			 */
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index 4a429b3a5f2f..8baafe655433 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -199,12 +199,13 @@ int afs_release(struct inode *inode, struct file *file)
- /*
-  * Handle completion of a read operation.
-  */
--static void afs_file_read_done(struct afs_read *req)
-+static void afs_file_read_done(struct fscache_io_request *fsreq)
- {
-+	struct afs_read *req = container_of(fsreq, struct afs_read, cache);
- 	struct afs_vnode *vnode = req->vnode;
- 	struct page *page;
--	pgoff_t index = req->pos >> PAGE_SHIFT;
--	pgoff_t last = index + req->nr_pages - 1;
-+	pgoff_t index = req->cache.pos >> PAGE_SHIFT;
-+	pgoff_t last = index + req->cache.nr_pages - 1;
- 
- 	XA_STATE(xas, &vnode->vfs_inode.i_mapping->i_pages, index);
- 
-@@ -213,7 +214,7 @@ static void afs_file_read_done(struct afs_read *req)
- 		_debug("afterclear %zx %zx %llx/%llx",
- 		       req->iter->iov_offset,
- 		       iov_iter_count(req->iter),
--		       req->actual_len, req->len);
-+		       req->actual_len, req->cache.len);
- 		iov_iter_zero(iov_iter_count(req->iter), req->iter);
- 	}
- 
-@@ -224,7 +225,7 @@ static void afs_file_read_done(struct afs_read *req)
- 	}
- 	rcu_read_unlock();
- 
--	task_io_account_read(req->len);
-+	task_io_account_read(req->cache.len);
- 	req->cleanup = NULL;
- }
- 
-@@ -234,20 +235,21 @@ static void afs_file_read_done(struct afs_read *req)
- static void afs_file_read_cleanup(struct afs_read *req)
- {
- 	struct page *page;
--	pgoff_t index = req->pos >> PAGE_SHIFT;
--	pgoff_t last = index + req->nr_pages - 1;
-+	pgoff_t index = req->cache.pos >> PAGE_SHIFT;
-+	pgoff_t last = index + req->cache.nr_pages - 1;
- 
- 	if (req->iter) {
- 		XA_STATE(xas, &req->iter->mapping->i_pages, index);
- 
--		_enter("%lu,%u,%zu", index, req->nr_pages, iov_iter_count(req->iter));
-+		_enter("%lu,%u,%zu",
-+		       index, req->cache.nr_pages, iov_iter_count(req->iter));
- 
- 		rcu_read_lock();
- 		xas_for_each(&xas, page, last) {
- 			BUG_ON(xa_is_value(page));
- 			BUG_ON(PageCompound(page));
- 
--			page_endio(page, false, req->error);
-+			page_endio(page, false, req->cache.error);
- 			put_page(page);
- 		}
- 		rcu_read_unlock();
-@@ -279,7 +281,7 @@ static void afs_fetch_data_success(struct afs_operation *op)
- 
- static void afs_fetch_data_put(struct afs_operation *op)
- {
--	op->fetch.req->error = op->error;
-+	op->fetch.req->cache.error = op->error;
- 	afs_put_read(op->fetch.req);
- }
- 
-@@ -341,15 +343,15 @@ static int afs_page_filler(struct key *key, struct page *page)
- 	refcount_set(&req->usage, 1);
- 	req->vnode		= vnode;
- 	req->key		= key_get(key);
--	req->pos		= (loff_t)page->index << PAGE_SHIFT;
--	req->len		= PAGE_SIZE;
--	req->nr_pages		= 1;
--	req->done		= afs_file_read_done;
-+	req->cache.nr_pages	= 1;
-+	req->cache.pos		= (loff_t)page->index << PAGE_SHIFT;
-+	req->cache.len		= PAGE_SIZE;
-+	req->cache.io_done	= afs_file_read_done;
- 	req->cleanup		= afs_file_read_cleanup;
- 
- 	get_page(page);
- 	iov_iter_mapping(&req->def_iter, READ, page->mapping,
--			 req->pos, req->len);
-+			 req->cache.pos, req->cache.len);
- 	req->iter = &req->def_iter;
- 
- 	ret = afs_fetch_data(vnode, req);
-@@ -448,10 +450,10 @@ static int afs_readpages_one(struct file *file, struct address_space *mapping,
- 	refcount_set(&req->usage, 1);
- 	req->vnode = vnode;
- 	req->key = key_get(afs_file_key(file));
--	req->done = afs_file_read_done;
- 	req->cleanup = afs_file_read_cleanup;
--	req->pos = first->index;
--	req->pos <<= PAGE_SHIFT;
-+	req->cache.io_done = afs_file_read_done;
-+	req->cache.pos = first->index;
-+	req->cache.pos <<= PAGE_SHIFT;
- 
- 	/* Add pages to the LRU until it fails.  We keep the pages ref'd and
- 	 * locked until the read is complete.
-@@ -471,17 +473,17 @@ static int afs_readpages_one(struct file *file, struct address_space *mapping,
- 			break;
- 		}
- 
--		req->nr_pages++;
--	} while (req->nr_pages < n);
-+		req->cache.nr_pages++;
-+	} while (req->cache.nr_pages < n);
- 
--	if (req->nr_pages == 0) {
-+	if (req->cache.nr_pages == 0) {
- 		afs_put_read(req);
- 		return 0;
- 	}
- 
--	req->len = req->nr_pages * PAGE_SIZE;
-+	req->cache.len = req->cache.nr_pages * PAGE_SIZE;
- 	iov_iter_mapping(&req->def_iter, READ, file->f_mapping,
--			 req->pos, req->len);
-+			 req->cache.pos, req->cache.len);
- 	req->iter = &req->def_iter;
- 
- 	ret = afs_fetch_data(vnode, req);
-diff --git a/fs/afs/fsclient.c b/fs/afs/fsclient.c
-index c0c91079e76b..d6a8066e666d 100644
---- a/fs/afs/fsclient.c
-+++ b/fs/afs/fsclient.c
-@@ -339,7 +339,7 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
- 
- 		call->unmarshall++;
- 		call->iter = req->iter;
--		call->iov_len = min(req->actual_len, req->len);
-+		call->iov_len = min(req->actual_len, req->cache.len);
- 		/* Fall through */
- 
- 		/* extract the returned data */
-@@ -352,17 +352,17 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
- 			return ret;
- 
- 		call->iter = &call->def_iter;
--		if (req->actual_len <= req->len)
-+		if (req->actual_len <= req->cache.len)
- 			goto no_more_data;
- 
- 		/* Discard any excess data the server gave us */
--		afs_extract_discard(call, req->actual_len - req->len);
-+		afs_extract_discard(call, req->actual_len - req->cache.len);
- 		call->unmarshall = 3;
- 		/* Fall through */
- 
- 	case 3:
- 		_debug("extract discard %zu/%llu",
--		       iov_iter_count(call->iter), req->actual_len - req->len);
-+		       iov_iter_count(call->iter), req->actual_len - req->cache.len);
- 
- 		ret = afs_extract_data(call, true);
- 		if (ret < 0)
-@@ -393,8 +393,8 @@ static int afs_deliver_fs_fetch_data(struct afs_call *call)
- 		break;
- 	}
- 
--	if (req->done)
--		req->done(req);
-+	if (req->cache.io_done)
-+		req->cache.io_done(&req->cache);
- 
- 	_leave(" = 0 [done]");
- 	return 0;
-@@ -439,10 +439,10 @@ static void afs_fs_fetch_data64(struct afs_operation *op)
- 	bp[1] = htonl(vp->fid.vid);
- 	bp[2] = htonl(vp->fid.vnode);
- 	bp[3] = htonl(vp->fid.unique);
--	bp[4] = htonl(upper_32_bits(req->pos));
--	bp[5] = htonl(lower_32_bits(req->pos));
-+	bp[4] = htonl(upper_32_bits(req->cache.pos));
-+	bp[5] = htonl(lower_32_bits(req->cache.pos));
- 	bp[6] = 0;
--	bp[7] = htonl(lower_32_bits(req->len));
-+	bp[7] = htonl(lower_32_bits(req->cache.len));
- 
- 	trace_afs_make_fs_call(call, &vp->fid);
- 	afs_make_op_call(op, call, GFP_NOFS);
-@@ -458,9 +458,9 @@ void afs_fs_fetch_data(struct afs_operation *op)
- 	struct afs_read *req = op->fetch.req;
- 	__be32 *bp;
- 
--	if (upper_32_bits(req->pos) ||
--	    upper_32_bits(req->len) ||
--	    upper_32_bits(req->pos + req->len))
-+	if (upper_32_bits(req->cache.pos) ||
-+	    upper_32_bits(req->cache.len) ||
-+	    upper_32_bits(req->cache.pos + req->cache.len))
- 		return afs_fs_fetch_data64(op);
- 
- 	_enter("");
-@@ -477,8 +477,8 @@ void afs_fs_fetch_data(struct afs_operation *op)
- 	bp[1] = htonl(vp->fid.vid);
- 	bp[2] = htonl(vp->fid.vnode);
- 	bp[3] = htonl(vp->fid.unique);
--	bp[4] = htonl(lower_32_bits(req->pos));
--	bp[5] = htonl(lower_32_bits(req->len));
-+	bp[4] = htonl(lower_32_bits(req->cache.pos));
-+	bp[5] = htonl(lower_32_bits(req->cache.len));
- 
- 	trace_afs_make_fs_call(call, &vp->fid);
- 	afs_make_op_call(op, call, GFP_NOFS);
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 3d0aa1e46539..d55ea1904a27 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -201,8 +201,9 @@ static inline struct key *afs_file_key(struct file *file)
-  * Record of an outstanding read operation on a vnode.
-  */
- struct afs_read {
--	loff_t			pos;		/* Where to start reading */
--	loff_t			len;		/* How much we're asking for */
-+	struct fscache_io_request cache;
-+	struct iov_iter		def_iter;	/* Default iterator */
-+	struct iov_iter		*iter;		/* Iterator to use */
- 	loff_t			actual_len;	/* How much we're actually getting */
- 	loff_t			file_size;	/* File size returned by server */
- 	struct key		*key;		/* The key to use to reissue the read */
-@@ -210,12 +211,7 @@ struct afs_read {
- 	afs_dataversion_t	data_version;	/* Version number returned by server */
- 	refcount_t		usage;
- 	unsigned int		call_debug_id;
--	unsigned int		nr_pages;
--	int			error;
--	void (*done)(struct afs_read *);
--	void (*cleanup)(struct afs_read *);
--	struct iov_iter		*iter;		/* Iterator representing the buffer */
--	struct iov_iter		def_iter;	/* Default iterator */
-+	void (*cleanup)(struct afs_read *req);
- };
- 
- /*
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 37c968b9c89b..d9de0dc877ca 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -25,8 +25,10 @@ int afs_set_page_dirty(struct page *page)
- /*
-  * Handle completion of a read operation to fill a page.
-  */
--static void afs_fill_hole(struct afs_read *req)
-+static void afs_fill_hole(struct fscache_io_request *fsreq)
- {
-+	struct afs_read *req = container_of(fsreq, struct afs_read, cache);
-+
- 	if (iov_iter_count(req->iter) > 0)
- 		/* The read was short - clear the excess buffer. */
- 		iov_iter_zero(iov_iter_count(req->iter), req->iter);
-@@ -60,13 +62,13 @@ static int afs_fill_page(struct file *file,
- 		return -ENOMEM;
- 
- 	refcount_set(&req->usage, 1);
--	req->vnode	= vnode;
--	req->done	= afs_fill_hole;
--	req->key	= afs_file_key(file);
--	req->pos	= pos;
--	req->len	= len;
--	req->nr_pages	= 1;
--	req->iter	= &req->def_iter;
-+	req->vnode		= vnode;
-+	req->key		= afs_file_key(file);
-+	req->cache.io_done	= afs_fill_hole;
-+	req->cache.pos		= pos;
-+	req->cache.len		= len;
-+	req->cache.nr_pages	= 1;
-+	req->iter		= &req->def_iter;
- 	iov_iter_mapping(&req->def_iter, READ, vnode->vfs_inode.i_mapping,
- 			 pos, len);
- 
-diff --git a/fs/afs/yfsclient.c b/fs/afs/yfsclient.c
-index ac3541773e7c..30621f4fffc0 100644
---- a/fs/afs/yfsclient.c
-+++ b/fs/afs/yfsclient.c
-@@ -392,7 +392,7 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
- 
- 		call->unmarshall++;
- 		call->iter = req->iter;
--		call->iov_len = min(req->actual_len, req->len);
-+		call->iov_len = min(req->actual_len, req->cache.len);
- 		/* Fall through */
- 
- 		/* extract the returned data */
-@@ -405,17 +405,17 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
- 			return ret;
- 
- 		call->iter = &call->def_iter;
--		if (req->actual_len <= req->len)
-+		if (req->actual_len <= req->cache.len)
- 			goto no_more_data;
- 
- 		/* Discard any excess data the server gave us */
--		afs_extract_discard(call, req->actual_len - req->len);
-+		afs_extract_discard(call, req->actual_len - req->cache.len);
- 		call->unmarshall = 3;
- 		/* Fall through */
- 
- 	case 3:
- 		_debug("extract discard %zu/%llu",
--		       iov_iter_count(call->iter), req->actual_len - req->len);
-+		       iov_iter_count(call->iter), req->actual_len - req->cache.len);
- 
- 		ret = afs_extract_data(call, true);
- 		if (ret < 0)
-@@ -450,8 +450,8 @@ static int yfs_deliver_fs_fetch_data64(struct afs_call *call)
- 		break;
- 	}
- 
--	if (req->done)
--		req->done(req);
-+	if (req->cache.io_done)
-+		req->cache.io_done(&req->cache);
- 
- 	_leave(" = 0 [done]");
- 	return 0;
-@@ -479,7 +479,7 @@ void yfs_fs_fetch_data(struct afs_operation *op)
- 
- 	_enter(",%x,{%llx:%llu},%llx,%llx",
- 	       key_serial(op->key), vp->fid.vid, vp->fid.vnode,
--	       req->pos, req->len);
-+	       req->cache.pos, req->cache.len);
- 
- 	call = afs_alloc_flat_call(op->net, &yfs_RXYFSFetchData64,
- 				   sizeof(__be32) * 2 +
-@@ -498,8 +498,8 @@ void yfs_fs_fetch_data(struct afs_operation *op)
- 	bp = xdr_encode_u32(bp, YFSFETCHDATA64);
- 	bp = xdr_encode_u32(bp, 0); /* RPC flags */
- 	bp = xdr_encode_YFSFid(bp, &vp->fid);
--	bp = xdr_encode_u64(bp, req->pos);
--	bp = xdr_encode_u64(bp, req->len);
-+	bp = xdr_encode_u64(bp, req->cache.pos);
-+	bp = xdr_encode_u64(bp, req->cache.len);
- 	yfs_check_req(call, bp);
- 
- 	trace_afs_make_fs_call(call, &vp->fid);
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-
+>  .../net/ethernet/freescale/enetc/enetc_hw.h   |   3 +
+>  .../net/ethernet/freescale/enetc/enetc_pf.c   | 135 ++++++++++++++++++
+>  .../net/ethernet/freescale/enetc/enetc_pf.h   |   2 +
+>  3 files changed, 140 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_hw.h b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
+> index fc357bc56835..135bf46354ea 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc_hw.h
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
+> @@ -224,6 +224,9 @@ enum enetc_bdr_type {TX, RX};
+>  #define ENETC_PM0_MAXFRM	0x8014
+>  #define ENETC_SET_TX_MTU(val)	((val) << 16)
+>  #define ENETC_SET_MAXFRM(val)	((val) & 0xffff)
+> +
+> +#define ENETC_PM_IMDIO_BASE	0x8030
+> +
+>  #define ENETC_PM0_IF_MODE	0x8300
+>  #define ENETC_PMO_IFM_RG	BIT(2)
+>  #define ENETC_PM0_IFM_RLP	(BIT(5) | BIT(11))
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> index 4fac57dbb3c8..662740874841 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+>  /* Copyright 2017-2019 NXP */
+>  
+> +#include <linux/mdio.h>
+>  #include <linux/module.h>
+>  #include <linux/fsl/enetc_mdio.h>
+>  #include <linux/of_mdio.h>
+> @@ -833,6 +834,135 @@ static void enetc_of_put_phy(struct enetc_ndev_priv *priv)
+>  		of_node_put(priv->phy_node);
+>  }
+>  
+> +static int enetc_imdio_init(struct enetc_pf *pf, bool is_c45)
+> +{
+> +	struct device *dev = &pf->si->pdev->dev;
+> +	struct enetc_mdio_priv *mdio_priv;
+> +	struct phy_device *pcs;
+> +	struct mii_bus *bus;
+> +	int err;
+> +
+> +	bus = mdiobus_alloc_size(sizeof(*mdio_priv));
+> +	if (!bus)
+> +		return -ENOMEM;
+> +
+> +	bus->name = "Freescale ENETC internal MDIO Bus";
+> +	bus->read = enetc_mdio_read;
+> +	bus->write = enetc_mdio_write;
+> +	bus->parent = dev;
+> +	bus->phy_mask = ~0;
+> +	mdio_priv = bus->priv;
+> +	mdio_priv->hw = &pf->si->hw;
+> +	mdio_priv->mdio_base = ENETC_PM_IMDIO_BASE;
+> +	snprintf(bus->id, MII_BUS_ID_SIZE, "%s-imdio", dev_name(dev));
+> +
+> +	err = mdiobus_register(bus);
+> +	if (err) {
+> +		dev_err(dev, "cannot register internal MDIO bus (%d)\n", err);
+> +		goto free_mdio_bus;
+> +	}
+> +
+> +	pcs = get_phy_device(bus, 0, is_c45);
+> +	if (IS_ERR(pcs)) {
+> +		err = PTR_ERR(pcs);
+> +		dev_err(dev, "cannot get internal PCS PHY (%d)\n", err);
+> +		goto unregister_mdiobus;
+> +	}
+> +
+> +	pf->imdio = bus;
+> +	pf->pcs = pcs;
+> +
+> +	return 0;
+> +
+> +unregister_mdiobus:
+> +	mdiobus_unregister(bus);
+> +free_mdio_bus:
+> +	mdiobus_free(bus);
+> +	return err;
+> +}
+> +
+> +static void enetc_imdio_remove(struct enetc_pf *pf)
+> +{
+> +	if (pf->pcs)
+> +		put_device(&pf->pcs->mdio.dev);
+> +	if (pf->imdio) {
+> +		mdiobus_unregister(pf->imdio);
+> +		mdiobus_free(pf->imdio);
+> +	}
+> +}
+> +
+> +static void enetc_configure_sgmii(struct phy_device *pcs)
+> +{
+> +	/* SGMII spec requires tx_config_Reg[15:0] to be exactly 0x4001
+> +	 * for the MAC PCS in order to acknowledge the AN.
+> +	 */
+> +	phy_write(pcs, MII_ADVERTISE, ADVERTISE_SGMII | ADVERTISE_LPACK);
+> +
+> +	phy_write(pcs, ENETC_PCS_IF_MODE,
+> +		  ENETC_PCS_IF_MODE_SGMII_EN |
+> +		  ENETC_PCS_IF_MODE_USE_SGMII_AN);
+> +
+> +	/* Adjust link timer for SGMII */
+> +	phy_write(pcs, ENETC_PCS_LINK_TIMER1, ENETC_PCS_LINK_TIMER1_VAL);
+> +	phy_write(pcs, ENETC_PCS_LINK_TIMER2, ENETC_PCS_LINK_TIMER2_VAL);
+> +
+> +	phy_write(pcs, MII_BMCR, BMCR_ANRESTART | BMCR_ANENABLE);
+> +}
+> +
+> +static void enetc_configure_2500basex(struct phy_device *pcs)
+> +{
+> +	phy_write(pcs, ENETC_PCS_IF_MODE,
+> +		  ENETC_PCS_IF_MODE_SGMII_EN |
+> +		  ENETC_PCS_IF_MODE_SGMII_SPEED(ENETC_PCS_SPEED_2500));
+> +
+> +	phy_write(pcs, MII_BMCR, BMCR_SPEED1000 | BMCR_FULLDPLX | BMCR_RESET);
+> +}
+> +
+> +static void enetc_configure_usxgmii(struct phy_device *pcs)
+> +{
+> +	/* Configure device ability for the USXGMII Replicator */
+> +	phy_write_mmd(pcs, MDIO_MMD_VEND2, MII_ADVERTISE,
+> +		      ADVERTISE_SGMII | ADVERTISE_LPACK |
+> +		      MDIO_LPA_USXGMII_FULL_DUPLEX);
+> +
+> +	/* Restart PCS AN */
+> +	phy_write_mmd(pcs, MDIO_MMD_VEND2, MII_BMCR,
+> +		      BMCR_RESET | BMCR_ANENABLE | BMCR_ANRESTART);
+> +}
+> +
+> +static int enetc_configure_serdes(struct enetc_ndev_priv *priv)
+> +{
+> +	bool is_c45 = priv->if_mode == PHY_INTERFACE_MODE_USXGMII;
+> +	struct enetc_pf *pf = enetc_si_priv(priv->si);
+> +	int err;
+> +
+> +	if (priv->if_mode != PHY_INTERFACE_MODE_SGMII &&
+> +	    priv->if_mode != PHY_INTERFACE_MODE_2500BASEX &&
+> +	    priv->if_mode != PHY_INTERFACE_MODE_USXGMII)
+> +		return 0;
+> +
+> +	err = enetc_imdio_init(pf, is_c45);
+> +	if (err)
+> +		return err;
+> +
+> +	switch (priv->if_mode) {
+> +	case PHY_INTERFACE_MODE_SGMII:
+> +		enetc_configure_sgmii(pf->pcs);
+> +		break;
+> +	case PHY_INTERFACE_MODE_2500BASEX:
+> +		enetc_configure_2500basex(pf->pcs);
+> +		break;
+> +	case PHY_INTERFACE_MODE_USXGMII:
+> +		enetc_configure_usxgmii(pf->pcs);
+> +		break;
+> +	default:
+> +		dev_err(&pf->si->pdev->dev, "Unsupported link mode %s\n",
+> +			phy_modes(priv->if_mode));
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int enetc_pf_probe(struct pci_dev *pdev,
+>  			  const struct pci_device_id *ent)
+>  {
+> @@ -897,6 +1027,10 @@ static int enetc_pf_probe(struct pci_dev *pdev,
+>  	if (err)
+>  		dev_warn(&pdev->dev, "Fallback to PHY-less operation\n");
+>  
+> +	err = enetc_configure_serdes(priv);
+> +	if (err)
+> +		dev_warn(&pdev->dev, "Attempted SerDes config but failed\n");
+> +
+>  	err = register_netdev(ndev);
+>  	if (err)
+>  		goto err_reg_netdev;
+> @@ -932,6 +1066,7 @@ static void enetc_pf_remove(struct pci_dev *pdev)
+>  	priv = netdev_priv(si->ndev);
+>  	unregister_netdev(si->ndev);
+>  
+> +	enetc_imdio_remove(pf);
+>  	enetc_mdio_remove(pf);
+>  	enetc_of_put_phy(priv);
+>  
+> diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.h b/drivers/net/ethernet/freescale/enetc/enetc_pf.h
+> index 59e65a6f6c3e..2cb922b59f46 100644
+> --- a/drivers/net/ethernet/freescale/enetc/enetc_pf.h
+> +++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.h
+> @@ -44,6 +44,8 @@ struct enetc_pf {
+>  	DECLARE_BITMAP(active_vlans, VLAN_N_VID);
+>  
+>  	struct mii_bus *mdio; /* saved for cleanup */
+> +	struct mii_bus *imdio;
+> +	struct phy_device *pcs;
+>  };
+>  
+>  int enetc_msg_psi_init(struct enetc_pf *pf);
+> -- 
+> 2.20.1
+> 
