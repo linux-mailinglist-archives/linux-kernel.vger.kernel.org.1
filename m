@@ -2,112 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EF621CFAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C3D21CFB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729373AbgGMG3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:29:04 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:42031 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728656AbgGMG3C (ORCPT
+        id S1729013AbgGMGcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725804AbgGMGcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:29:02 -0400
-X-UUID: 9a50178f7b1a490d86b7c429d9e75fb9-20200713
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=u1YVFUhNBChKn3hVAOGio4nlm710e7A413UQV7bi/Ys=;
-        b=mBna305ZK72/GAJFpSATHv/bBo7ihIxjO/BiQjY68gvNJjMyTwZaYxhg1gg7hlVcufyTnx4jLrnPx0lG9BafwVyIYu7l2fvDbBUEDf4rb9L86GcJWC68uuLLJfnYS6/aCjNYW28ECjTDwbI3aimpbmD1V4Ze0fkIRSIjMd4NAd4=;
-X-UUID: 9a50178f7b1a490d86b7c429d9e75fb9-20200713
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1851266747; Mon, 13 Jul 2020 14:28:53 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 13 Jul
- 2020 14:28:51 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 13 Jul 2020 14:28:51 +0800
-Message-ID: <1594621684.16172.22.camel@mhfsdcap03>
-Subject: Re: [PATCH 01/21] dt-binding: memory: mediatek: Add a common
- larb-port header file
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Pi-Hsun Shih <pihsun@chromium.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>,
-        Youlin Pei =?UTF-8?Q?=28=E8=A3=B4=E5=8F=8B=E6=9E=97=29?= 
-        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
-        <anan.sun@mediatek.com>, <cui.zhang@mediatek.com>,
-        <chao.hao@mediatek.com>, <ming-fan.chen@mediatek.com>
-Date:   Mon, 13 Jul 2020 14:28:04 +0800
-In-Reply-To: <CANdKZ0dwsaP=s8AgRbDx2_0y4JmPnF-X0Rb=4vor2MWCYWfGKw@mail.gmail.com>
-References: <20200711064846.16007-1-yong.wu@mediatek.com>
-         <20200711064846.16007-2-yong.wu@mediatek.com>
-         <9e21288c-07da-88b0-2dbb-bd9a2a4d529b@gmail.com>
-         <CANdKZ0dwsaP=s8AgRbDx2_0y4JmPnF-X0Rb=4vor2MWCYWfGKw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 13 Jul 2020 02:32:35 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0ABC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:32:35 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 17so11977753wmo.1
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:32:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QPb+Ou4Nfbq4PIi1UZykCwKUnQ4n6w1QsHNkKepASo0=;
+        b=Tc6qMqUSO9yd+No46p+3VZaiCkQz7TQoaa22nRESfECs3FcRYRYWx5jNliEHlP+zNF
+         IMvTogJaSYmij/+yfydYGi+rNp9UTz64flg38oVBRgVFRKC1kSUNqQ0Ko4WjTwTimMsI
+         dtgjceO895GYTE8QT3BEKwUj8jY/e996chWgQ46DVMsdXU7oJNAATnKyp4E7Bap2V8h9
+         J18/cGH/b7LhMkB2rFeYqMEkDdgBX59fzkMltQLmVaiGrUTEy67lOban27BiG7iSwHT3
+         vk8xP9TK4z+jdbr7OVW/awV8Xcxuq7bNnO2oh51ql4howEUmOPsNi/w6NrFkyZ5ZvmS8
+         2JDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QPb+Ou4Nfbq4PIi1UZykCwKUnQ4n6w1QsHNkKepASo0=;
+        b=TLcmxV5ArrfUxJNgkwHdlfaVwmoStRv9iq0KR57IZi4KF3ARqVkJCEoZWQNcZ3Kulg
+         b899GeSa9KkOFwLliRugI2mqSy+/PPh2RudsTNpikpcGfE5tmZIOR10O+lwrxeyZ1lBo
+         GrkalSzl7wFJToLsrqg9hz0Db+GD3yBpzfXY+XGiHxjq/eYlSbrAIoQhhwGcLZMRFydU
+         fm/h/V53LUeC4M7u5IHMRlIpTxQewVZ1JRbzUKSIAmcL+3yxEFvRbX1KP54Oif8M7+Bs
+         M/1srcWU0K07Op5XwX96vCQpXZrlhLKesdRqlzqzpqqxPsWZRQZFo8LHCJdDKo+T+Rmu
+         nKDQ==
+X-Gm-Message-State: AOAM531I1cU/YEasmZeVk+NO4L+wDnsLIzn14CuB5TigFheFY+LD4hQa
+        nfoCmiuj55rkkGZRX95zf/d/QEx8y9VuCNWlYxM=
+X-Google-Smtp-Source: ABdhPJwtmLkoBDFIQzDYJKb3x7imJR9/4fT8sbqz0NflsoC92ZNtel0WsaIODvDBCqb6eUTNh09dKdSGkvFcLp4fFb0=
+X-Received: by 2002:a1c:2602:: with SMTP id m2mr18229896wmm.50.1594621954326;
+ Sun, 12 Jul 2020 23:32:34 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: B2F7F870170CA2A9C5CE3E2AE2DE382AD28F42E6BD22B1BEE765926AC2E33B272000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <CAKGbVbtYusvURFcUyQtgUycNJPAQyDGDaLXW8qw-x49DqfKmQA@mail.gmail.com>
+ <20200619075900.3030696-1-andrey.lebedev@gmail.com> <bd4370f5-6fb4-d32f-5ca4-02e56526f47d@gmail.com>
+In-Reply-To: <bd4370f5-6fb4-d32f-5ca4-02e56526f47d@gmail.com>
+From:   Qiang Yu <yuq825@gmail.com>
+Date:   Mon, 13 Jul 2020 14:32:23 +0800
+Message-ID: <CAKGbVbt3ahDqYNC3jCYe19A2PmEk6iS9bT44XPfr0gfWoWjHjA@mail.gmail.com>
+Subject: Re: [PATCH] drm/lima: Expose job_hang_limit module parameter
+To:     Andrey Lebedev <andrey.lebedev@gmail.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lima@lists.freedesktop.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrey Lebedev <andrey@lebedev.lt>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA3LTEzIGF0IDEzOjQzICswODAwLCBQaS1Ic3VuIFNoaWggd3JvdGU6DQo+
-IE9uIE1vbiwgSnVsIDEzLCAyMDIwIGF0IDI6MDYgQU0gTWF0dGhpYXMgQnJ1Z2dlciA8bWF0dGhp
-YXMuYmdnQGdtYWlsLmNvbT4gd3JvdGU6DQo+ID4NCj4gPg0KPiA+DQo+ID4gT24gMTEvMDcvMjAy
-MCAwODo0OCwgWW9uZyBXdSB3cm90ZToNCj4gPiA+IFB1dCBhbGwgdGhlIG1hY3JvcyBhYm91dCBz
-bWkgbGFyYi9wb3J0IHRvZ2V0aGVycywgdGhpcyBpcyBhIHByZXBhcmluZw0KPiA+ID4gcGF0Y2gg
-Zm9yIGV4dGVuZGluZyBMQVJCX05SIGFuZCBhZGRpbmcgbmV3IGRvbS1pZCBzdXBwb3J0Lg0KPiA+
-ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0K
-PiA+ID4gLS0tDQo+ID4gPiAgIGluY2x1ZGUvZHQtYmluZGluZ3MvbWVtb3J5L210MjcxMi1sYXJi
-LXBvcnQuaCAgfCAgMiArLQ0KPiA+ID4gICBpbmNsdWRlL2R0LWJpbmRpbmdzL21lbW9yeS9tdDY3
-NzktbGFyYi1wb3J0LmggIHwgIDIgKy0NCj4gPiA+ICAgaW5jbHVkZS9kdC1iaW5kaW5ncy9tZW1v
-cnkvbXQ4MTczLWxhcmItcG9ydC5oICB8ICAyICstDQo+ID4gPiAgIGluY2x1ZGUvZHQtYmluZGlu
-Z3MvbWVtb3J5L210ODE4My1sYXJiLXBvcnQuaCAgfCAgMiArLQ0KPiA+ID4gICBpbmNsdWRlL2R0
-LWJpbmRpbmdzL21lbW9yeS9tdGstc21pLWxhcmItcG9ydC5oIHwgMTUgKysrKysrKysrKysrKysr
-DQo+ID4gPiAgIDUgZmlsZXMgY2hhbmdlZCwgMTkgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMo
-LSkNCj4gPiA+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvZHQtYmluZGluZ3MvbWVtb3J5
-L210ay1zbWktbGFyYi1wb3J0LmgNCj4gPiA+DQo+ID4gPiAuLi4NCj4gPiA+IGRpZmYgLS1naXQg
-YS9pbmNsdWRlL2R0LWJpbmRpbmdzL21lbW9yeS9tdGstc21pLWxhcmItcG9ydC5oIGIvaW5jbHVk
-ZS9kdC1iaW5kaW5ncy9tZW1vcnkvbXRrLXNtaS1sYXJiLXBvcnQuaA0KPiA+ID4gbmV3IGZpbGUg
-bW9kZSAxMDA2NDQNCj4gPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uMmVjN2ZlNWNlNGU5DQo+ID4g
-PiAtLS0gL2Rldi9udWxsDQo+ID4gPiArKysgYi9pbmNsdWRlL2R0LWJpbmRpbmdzL21lbW9yeS9t
-dGstc21pLWxhcmItcG9ydC5oDQo+ID4gPiBAQCAtMCwwICsxLDE1IEBADQo+ID4gPiArLyogU1BE
-WC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAtb25seSAqLw0KPiA+ID4gKy8qDQo+ID4gPiAr
-ICogQ29weXJpZ2h0IChjKSAyMDIwIE1lZGlhVGVrIEluYy4NCj4gPiA+ICsgKiBBdXRob3I6IFlv
-bmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0KPiA+ID4gKyAqLw0KPiA+ID4gKyNpZm5kZWYg
-X19EVFNfTVRLX0lPTU1VX1BPUlRfSF8NCj4gPiA+ICsjZGVmaW5lIF9fRFRTX01US19JT01NVV9Q
-T1JUX0hfDQo+ID4gPiArDQo+ID4gPiArI2RlZmluZSBNVEtfTEFSQl9OUl9NQVggICAgICAgICAg
-ICAgICAgICAgICAgMTYNCj4gPg0KPiA+IGluY2x1ZGUvc29jL21lZGlhdGVrL3NtaS5oIGhhcyB0
-aGUgdmVyeSBzYW1lIGRlZmluZS4NCj4gPiBTaG91bGQgc21pLmggaW5jbHVkZSB0aGlzIGZpbGU/
-DQo+ID4NCj4gPiBSZWdhcmRzLA0KPiA+IE1hdHRoaWFzDQo+ID4NCj4gDQo+IExvb2tzIGxpa2Ug
-dGhpcyBpcyBiZWluZyBhZGRyZXNzZWQgaW4gcGF0Y2ggNSBpbiB0aGlzIHNlcmllcyAoWzA1LzIx
-XQ0KPiBpb21tdS9tZWRpYXRlazogVXNlIHRoZSBjb21tb24gbXRrLXNtaS1sYXJiLXBvcnQuaCkN
-Cj4gVGhhdCBzYWlkLCBzaG91bGQgdGhhdCBwYXRjaCBiZSBtZXJnZWQgaW50byB0aGlzIG9uZT8N
-Cg0KQXQgdGhlIGJlZ2lubmluZywgSSByZWFsbHkgZGlkIGxpa2UgdGhpcy4gQnV0IGNoZWNrcGF0
-Y2ggd2lsbCBjb21wbGFpbg0KbGlrZSB0aGF0Og0KDQpXQVJOSU5HOkRUX1NQTElUX0JJTkRJTkdf
-UEFUQ0g6IERUIGJpbmRpbmcgZG9jcyBhbmQgaW5jbHVkZXMgc2hvdWxkIGJlIGENCnNlcGFyYXRl
-IHBhdGNoLiBTZWU6DQpEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc3VibWl0dGlu
-Zy1wYXRjaGVzLnJzdA0KDQo+IA0KPiANCj4gDQo+ID4gPiArDQo+ID4gPiArI2RlZmluZSBNVEtf
-TTRVX0lEKGxhcmIsIHBvcnQpICAgICAgICAgICAgICAgKCgobGFyYikgPDwgNSkgfCAocG9ydCkp
-DQo+ID4gPiArI2RlZmluZSBNVEtfTTRVX1RPX0xBUkIoaWQpICAgICAgICAgICgoKGlkKSA+PiA1
-KSAmIDB4ZikNCj4gPiA+ICsjZGVmaW5lIE1US19NNFVfVE9fUE9SVChpZCkgICAgICAgICAgKChp
-ZCkgJiAweDFmKQ0KPiA+ID4gKw0KPiA+ID4gKyNlbmRpZg0KPiA+ID4NCg0K
+Applied to drm-misc-next:
+https://cgit.freedesktop.org/drm/drm-misc/
 
+Sorry for the late response.
+
+Regards,
+Qiang
+
+On Tue, Jul 7, 2020 at 12:17 AM Andrey Lebedev <andrey.lebedev@gmail.com> wrote:
+>
+> Hello guys,
+>
+> What is the status of this patch? Was this committed to any branch? Is
+> it pending for merge to the mainline? Do I have to do anything in order
+> to make it mergeable?
+>
+> On 6/19/20 10:58 AM, Andrey Lebedev wrote:
+> > From: Andrey Lebedev <andrey@lebedev.lt>
+> >
+> > Some pp or gp jobs can be successfully repeated even after they time outs.
+> > Introduce lima module parameter to specify number of times a job can hang
+> > before being dropped.
+> >
+> > Signed-off-by: Andrey Lebedev <andrey@lebedev.lt>
+> > ---
+> >
+> > Now all types are correct (uint).
+> >
+> >   drivers/gpu/drm/lima/lima_drv.c   | 4 ++++
+> >   drivers/gpu/drm/lima/lima_drv.h   | 1 +
+> >   drivers/gpu/drm/lima/lima_sched.c | 5 +++--
+> >   3 files changed, 8 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/lima/lima_drv.c b/drivers/gpu/drm/lima/lima_drv.c
+> > index a831565af813..ab460121fd52 100644
+> > --- a/drivers/gpu/drm/lima/lima_drv.c
+> > +++ b/drivers/gpu/drm/lima/lima_drv.c
+> > @@ -19,6 +19,7 @@
+> >   int lima_sched_timeout_ms;
+> >   uint lima_heap_init_nr_pages = 8;
+> >   uint lima_max_error_tasks;
+> > +uint lima_job_hang_limit;
+> >
+> >   MODULE_PARM_DESC(sched_timeout_ms, "task run timeout in ms");
+> >   module_param_named(sched_timeout_ms, lima_sched_timeout_ms, int, 0444);
+> > @@ -29,6 +30,9 @@ module_param_named(heap_init_nr_pages, lima_heap_init_nr_pages, uint, 0444);
+> >   MODULE_PARM_DESC(max_error_tasks, "max number of error tasks to save");
+> >   module_param_named(max_error_tasks, lima_max_error_tasks, uint, 0644);
+> >
+> > +MODULE_PARM_DESC(job_hang_limit, "number of times to allow a job to hang before dropping it (default 0)");
+> > +module_param_named(job_hang_limit, lima_job_hang_limit, uint, 0444);
+> > +
+> >   static int lima_ioctl_get_param(struct drm_device *dev, void *data, struct drm_file *file)
+> >   {
+> >       struct drm_lima_get_param *args = data;
+> > diff --git a/drivers/gpu/drm/lima/lima_drv.h b/drivers/gpu/drm/lima/lima_drv.h
+> > index fdbd4077c768..c738d288547b 100644
+> > --- a/drivers/gpu/drm/lima/lima_drv.h
+> > +++ b/drivers/gpu/drm/lima/lima_drv.h
+> > @@ -11,6 +11,7 @@
+> >   extern int lima_sched_timeout_ms;
+> >   extern uint lima_heap_init_nr_pages;
+> >   extern uint lima_max_error_tasks;
+> > +extern uint lima_job_hang_limit;
+> >
+> >   struct lima_vm;
+> >   struct lima_bo;
+> > diff --git a/drivers/gpu/drm/lima/lima_sched.c b/drivers/gpu/drm/lima/lima_sched.c
+> > index e6cefda00279..1602985dfa04 100644
+> > --- a/drivers/gpu/drm/lima/lima_sched.c
+> > +++ b/drivers/gpu/drm/lima/lima_sched.c
+> > @@ -503,8 +503,9 @@ int lima_sched_pipe_init(struct lima_sched_pipe *pipe, const char *name)
+> >
+> >       INIT_WORK(&pipe->recover_work, lima_sched_recover_work);
+> >
+> > -     return drm_sched_init(&pipe->base, &lima_sched_ops, 1, 0,
+> > -                           msecs_to_jiffies(timeout), name);
+> > +     return drm_sched_init(&pipe->base, &lima_sched_ops, 1,
+> > +                           lima_job_hang_limit, msecs_to_jiffies(timeout),
+> > +                           name);
+> >   }
+> >
+> >   void lima_sched_pipe_fini(struct lima_sched_pipe *pipe)
+> >
+>
+> --
+> Andrey Lebedev aka -.- . -.. -.. . .-.
+> Software engineer
+> Homepage: http://lebedev.lt/
