@@ -2,124 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD29A21D926
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E32321D937
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 16:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730357AbgGMOvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 10:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33020 "EHLO
+        id S1730393AbgGMOvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 10:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730122AbgGMOvE (ORCPT
+        with ESMTP id S1729659AbgGMOv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 10:51:04 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED61C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:51:04 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id u25so9226450lfm.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xUKZlCYinai0Luu2hOdm2qnhIZ2lqYBnLnpnyrbTn3I=;
-        b=qu2t9/SUqzkLaYFEwlQpODBK/nnlgLwz7l2VJYTrR/DC+v3zsZaCKn56tElzWPtcHn
-         /Q0rjazMjk+yHC1rwE1i8nQL9hhJXzlcyXtEAtlmk9i3HxETJsnHiDlivYKSIbc56wK/
-         8vm0kqjPm0gBZH2MdJQMaQ5byy/UHj4ypCn6Iu2V1CFGE83BYFlgkmJS557gdfQUsRz3
-         YCMy6tBmB+wtWOtLsa5DPlxcueem/ZeE7vP6YDeQQ//bYUkOA57A027j5wKUEAQ6LZem
-         gCLVAA+bEN8QBxtkQksQwh1Z7ionO2BfUakJra1klkKve+16G5WCJ3i2xVXyCdXj5tKF
-         OcBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xUKZlCYinai0Luu2hOdm2qnhIZ2lqYBnLnpnyrbTn3I=;
-        b=t8YAH7KDuToYGGTCHsREwJ7idYGPBfh4v9ovdVDUHcduHjCKIC0t2zB+4iq1L/JBU+
-         mNruvLgLt52pCygHVI6Ki0OIbjHJkl6KJi6vxvosKiHaOOd+QXWpsYnoybjxZz8VCSur
-         RbB3YU5C3yqpe/qYKXK0HiF4fBhbBAOrcnWKuMs/RZN6dhTZZW/lot2M5CjGMWfa2edi
-         es22zGkeyKGEXn02eA9SZIsoY0wyDUlXcAuE5L38t1f+FQRxmkhDmbMDmxlJi4MJ6CfB
-         tgytmfHxJRNV828mB0a+UGkVcIOF1KUsAuj4UMRRtszZU9Dxj/O3qVl2Xjai97L/hKr/
-         F/jQ==
-X-Gm-Message-State: AOAM533CDXpLaUt568upmZyjLXkwJP7Jm8cgZDQc4vvZ1Rh367sWLHPR
-        9Y55tKi82ytoFSY0IX2INQv8UttgMJuGvDy4h8pmRQ==
-X-Google-Smtp-Source: ABdhPJwNsAK/CvIXssjQkfKmEI8SIz4CvARlnMPg9iz3ip4AYuZHOz+ZuUOX/MXzLaMOcYrwbWlCf5fUMZQ0vnAJXFI=
-X-Received: by 2002:a19:e61a:: with SMTP id d26mr47379303lfh.96.1594651862566;
- Mon, 13 Jul 2020 07:51:02 -0700 (PDT)
+        Mon, 13 Jul 2020 10:51:27 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A09CC061755;
+        Mon, 13 Jul 2020 07:51:27 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 2AAAEBC09E;
+        Mon, 13 Jul 2020 14:51:24 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     jacek.anaszewski@gmail.com, pavel@ucw.cz, dmurphy@ti.com,
+        robh+dt@kernel.org, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] leds: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 16:51:15 +0200
+Message-Id: <20200713145115.35121-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-References: <cover.1594640214.git.chris@chrisdown.name> <a4e23b59e9ef499b575ae73a8120ee089b7d3373.1594640214.git.chris@chrisdown.name>
-In-Reply-To: <a4e23b59e9ef499b575ae73a8120ee089b7d3373.1594640214.git.chris@chrisdown.name>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 13 Jul 2020 07:50:51 -0700
-Message-ID: <CALvZod5BKXs52A2R-d=aOsjB7idBejsMDgQUKc1H_6y=PuBsew@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mm, memcg: reclaim more aggressively before high
- allocator throttling
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 4:42 AM Chris Down <chris@chrisdown.name> wrote:
->
-> In Facebook production, we've seen cases where cgroups have been put
-> into allocator throttling even when they appear to have a lot of slack
-> file caches which should be trivially reclaimable.
->
-> Looking more closely, the problem is that we only try a single cgroup
-> reclaim walk for each return to usermode before calculating whether or
-> not we should throttle. This single attempt doesn't produce enough
-> pressure to shrink for cgroups with a rapidly growing amount of file
-> caches prior to entering allocator throttling.
->
-> As an example, we see that threads in an affected cgroup are stuck in
-> allocator throttling:
->
->     # for i in $(cat cgroup.threads); do
->     >     grep over_high "/proc/$i/stack"
->     > done
->     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
->     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
->     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
->
-> ...however, there is no I/O pressure reported by PSI, despite a lot of
-> slack file pages:
->
->     # cat memory.pressure
->     some avg10=78.50 avg60=84.99 avg300=84.53 total=5702440903
->     full avg10=78.50 avg60=84.99 avg300=84.53 total=5702116959
->     # cat io.pressure
->     some avg10=0.00 avg60=0.00 avg300=0.00 total=78051391
->     full avg10=0.00 avg60=0.00 avg300=0.00 total=78049640
->     # grep _file memory.stat
->     inactive_file 1370939392
->     active_file 661635072
->
-> This patch changes the behaviour to retry reclaim either until the
-> current task goes below the 10ms grace period, or we are making no
-> reclaim progress at all. In the latter case, we enter reclaim throttling
-> as before.
->
-> To a user, there's no intuitive reason for the reclaim behaviour to
-> differ from hitting memory.high as part of a new allocation, as opposed
-> to hitting memory.high because someone lowered its value. As such this
-> also brings an added benefit: it unifies the reclaim behaviour between
-> the two.
->
-> There's precedent for this behaviour: we already do reclaim retries when
-> writing to memory.{high,max}, in max reclaim, and in the page allocator
-> itself.
->
-> Signed-off-by: Chris Down <chris@chrisdown.name>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ Documentation/devicetree/bindings/leds/leds-lm3532.txt  | 2 +-
+ Documentation/devicetree/bindings/leds/leds-lm3601x.txt | 4 ++--
+ Documentation/devicetree/bindings/leds/leds-lm36274.txt | 2 +-
+ Documentation/devicetree/bindings/leds/leds-lm3692x.txt | 2 +-
+ Documentation/devicetree/bindings/leds/leds-lm3697.txt  | 2 +-
+ Documentation/devicetree/bindings/leds/leds-lp8860.txt  | 2 +-
+ drivers/leds/leds-lm3532.c                              | 4 ++--
+ drivers/leds/leds-lm3601x.c                             | 2 +-
+ drivers/leds/leds-lm36274.c                             | 2 +-
+ drivers/leds/leds-lm3692x.c                             | 2 +-
+ drivers/leds/leds-lm3697.c                              | 2 +-
+ 11 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/leds/leds-lm3532.txt b/Documentation/devicetree/bindings/leds/leds-lm3532.txt
+index 53793213dd52..097490a5ff91 100644
+--- a/Documentation/devicetree/bindings/leds/leds-lm3532.txt
++++ b/Documentation/devicetree/bindings/leds/leds-lm3532.txt
+@@ -102,4 +102,4 @@ led-controller@38 {
+ };
+ 
+ For more product information please see the links below:
+-http://www.ti.com/product/LM3532
++https://www.ti.com/product/LM3532
+diff --git a/Documentation/devicetree/bindings/leds/leds-lm3601x.txt b/Documentation/devicetree/bindings/leds/leds-lm3601x.txt
+index 095dafb6ec7f..17e940025dc2 100644
+--- a/Documentation/devicetree/bindings/leds/leds-lm3601x.txt
++++ b/Documentation/devicetree/bindings/leds/leds-lm3601x.txt
+@@ -47,5 +47,5 @@ led-controller@64 {
+ }
+ 
+ For more product information please see the links below:
+-http://www.ti.com/product/LM36010
+-http://www.ti.com/product/LM36011
++https://www.ti.com/product/LM36010
++https://www.ti.com/product/LM36011
+diff --git a/Documentation/devicetree/bindings/leds/leds-lm36274.txt b/Documentation/devicetree/bindings/leds/leds-lm36274.txt
+index 39c230d59a4d..de6f4931fb31 100644
+--- a/Documentation/devicetree/bindings/leds/leds-lm36274.txt
++++ b/Documentation/devicetree/bindings/leds/leds-lm36274.txt
+@@ -82,4 +82,4 @@ lm36274@11 {
+ };
+ 
+ For more product information please see the link below:
+-http://www.ti.com/lit/ds/symlink/lm36274.pdf
++https://www.ti.com/lit/ds/symlink/lm36274.pdf
+diff --git a/Documentation/devicetree/bindings/leds/leds-lm3692x.txt b/Documentation/devicetree/bindings/leds/leds-lm3692x.txt
+index 501468aa4d38..b1103d961d6c 100644
+--- a/Documentation/devicetree/bindings/leds/leds-lm3692x.txt
++++ b/Documentation/devicetree/bindings/leds/leds-lm3692x.txt
+@@ -62,4 +62,4 @@ led-controller@36 {
+ }
+ 
+ For more product information please see the link below:
+-http://www.ti.com/lit/ds/snvsa29/snvsa29.pdf
++https://www.ti.com/lit/ds/snvsa29/snvsa29.pdf
+diff --git a/Documentation/devicetree/bindings/leds/leds-lm3697.txt b/Documentation/devicetree/bindings/leds/leds-lm3697.txt
+index 63992d732959..221b37b6049b 100644
+--- a/Documentation/devicetree/bindings/leds/leds-lm3697.txt
++++ b/Documentation/devicetree/bindings/leds/leds-lm3697.txt
+@@ -70,4 +70,4 @@ led-controller@36 {
+ }
+ 
+ For more product information please see the link below:
+-http://www.ti.com/lit/ds/symlink/lm3697.pdf
++https://www.ti.com/lit/ds/symlink/lm3697.pdf
+diff --git a/Documentation/devicetree/bindings/leds/leds-lp8860.txt b/Documentation/devicetree/bindings/leds/leds-lp8860.txt
+index 9863220db4ba..8bb25749a3da 100644
+--- a/Documentation/devicetree/bindings/leds/leds-lp8860.txt
++++ b/Documentation/devicetree/bindings/leds/leds-lp8860.txt
+@@ -47,4 +47,4 @@ led-controller@2d {
+ }
+ 
+ For more product information please see the link below:
+-http://www.ti.com/product/lp8860-q1
++https://www.ti.com/product/lp8860-q1
+diff --git a/drivers/leds/leds-lm3532.c b/drivers/leds/leds-lm3532.c
+index aa9bf8cda673..946ad67eaecb 100644
+--- a/drivers/leds/leds-lm3532.c
++++ b/drivers/leds/leds-lm3532.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // TI LM3532 LED driver
+-// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
+-// http://www.ti.com/lit/ds/symlink/lm3532.pdf
++// Copyright (C) 2019 Texas Instruments Incorporated - https://www.ti.com/
++// https://www.ti.com/lit/ds/symlink/lm3532.pdf
+ 
+ #include <linux/i2c.h>
+ #include <linux/leds.h>
+diff --git a/drivers/leds/leds-lm3601x.c b/drivers/leds/leds-lm3601x.c
+index fce89f2a2d92..d0e1d4814042 100644
+--- a/drivers/leds/leds-lm3601x.c
++++ b/drivers/leds/leds-lm3601x.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Flash and torch driver for Texas Instruments LM3601X LED
+ // Flash driver chip family
+-// Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
++// Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+ 
+ #include <linux/delay.h>
+ #include <linux/i2c.h>
+diff --git a/drivers/leds/leds-lm36274.c b/drivers/leds/leds-lm36274.c
+index 836b60c9a2b8..59360482e7ba 100644
+--- a/drivers/leds/leds-lm36274.c
++++ b/drivers/leds/leds-lm36274.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // TI LM36274 LED chip family driver
+-// Copyright (C) 2019 Texas Instruments Incorporated - http://www.ti.com/
++// Copyright (C) 2019 Texas Instruments Incorporated - https://www.ti.com/
+ 
+ #include <linux/bitops.h>
+ #include <linux/device.h>
+diff --git a/drivers/leds/leds-lm3692x.c b/drivers/leds/leds-lm3692x.c
+index 28a51aeb28de..e1e2d2b64a56 100644
+--- a/drivers/leds/leds-lm3692x.c
++++ b/drivers/leds/leds-lm3692x.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // TI LM3692x LED chip family driver
+-// Copyright (C) 2017-18 Texas Instruments Incorporated - http://www.ti.com/
++// Copyright (C) 2017-18 Texas Instruments Incorporated - https://www.ti.com/
+ 
+ #include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+diff --git a/drivers/leds/leds-lm3697.c b/drivers/leds/leds-lm3697.c
+index 872d26f9706a..024983088d59 100644
+--- a/drivers/leds/leds-lm3697.c
++++ b/drivers/leds/leds-lm3697.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // TI LM3697 LED chip family driver
+-// Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
++// Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+ 
+ #include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+-- 
+2.27.0
+
