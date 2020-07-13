@@ -2,138 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2AC21E316
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 00:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8DD21E31C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 00:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgGMWiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 18:38:16 -0400
-Received: from mga04.intel.com ([192.55.52.120]:5700 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726345AbgGMWiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 18:38:15 -0400
-IronPort-SDR: 44qvSvFyo2lKePg1IkSrTkh6K5bjZHrKtX7eDSAFhv+QIGKhPskQLOqp/pk2qRQvcBcJAFSORs
- gJ6Evsj2karQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="146224462"
-X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
-   d="scan'208";a="146224462"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 15:38:15 -0700
-IronPort-SDR: IpyIMX0t1rB8a1TTalxn/v1J7mpdLo6d6Z5VYqRXv0StGB90ulFvBo7C0zNAGwuavejuV4PmA3
- OlO8yrVixS9w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
-   d="scan'208";a="429551992"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga004.jf.intel.com with ESMTP; 13 Jul 2020 15:38:14 -0700
-Date:   Mon, 13 Jul 2020 15:38:14 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 5/9] KVM: nSVM: introduce
- nested_svm_load_cr3()/nested_npt_enabled()
-Message-ID: <20200713223814.GG29725@linux.intel.com>
-References: <20200710141157.1640173-1-vkuznets@redhat.com>
- <20200710141157.1640173-6-vkuznets@redhat.com>
+        id S1726729AbgGMWkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 18:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726356AbgGMWko (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 18:40:44 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDA4C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:40:43 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id e18so12626605ilr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:40:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=FQ7NMKo03W54NhNsLDg4XkthULZUgCOASFezEvTt0gQ=;
+        b=r9kfI48QueoI2xnPKErUlFJe4TFAsoH/tgaYcs5PDdJNxT8sIIbsvppbdKtlNIlZ53
+         J3ZupCPqsJmvcmW4h3uCEq8he6qaks+5cWuq780V9Fk5TbioU6F8rgWCw4UxpT8Dl6l/
+         U31Fgto5J1dCJa7v6kN8xnTLvY1A8FdjGFJNiPD6eCA7MkHMQB9CY78Qobpr04rkjMCM
+         WJQrjmgK6L3LqQEntQVd/j9Q2CPdLPaTuiY12ENiVERS1c0151T3xV91y0idhQsS840+
+         tkXAHNFF2AvC5/4dp5F7p2tJnCz0GBbY5KbhP1q/0uMmBjnqZjyGX5HSTL/Sskozrnuj
+         w5GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FQ7NMKo03W54NhNsLDg4XkthULZUgCOASFezEvTt0gQ=;
+        b=AXpTL0hNp5Hj0QZZlvKPTn+8lKrZM+56mKw0qroAfFPaRkmmJd623ROfK4irjm1/45
+         YIHdpSezNPZyfPfpOUUKC8NNj82meWFLJPEMGC6bPsnEpVZe/ecyCtA/HCJL+YLxtFZa
+         NNoSAZLvAi18gbH5RZAuAIvoo3hyAHF22PpaGAyl7Kh3wOKLNZPRbbtFlttKW4jnX1q4
+         0WCqAfnly5k1F2LBeMYlB/4KT4FKcB62WQDMNZOpZJv8hXO+LfxvhcRek/2a+DwWi31H
+         1UHzJsHkKXW7fuHGOgCKWte/fAL8FWNMy2FjaPuI2+nggLU3liFeGb31FBUBb4VWC5Vc
+         nh9w==
+X-Gm-Message-State: AOAM5323JXqj9UoxyQPwqnWc5uITUrLvIhSw36kqCJIEIPClLl8e36Kp
+        DluEsRYRISPNF64FuACE1jQ=
+X-Google-Smtp-Source: ABdhPJxlxbx2b5wcxcKQ9JmOKqbhQV9nDIdjv1nR+bkTkzgItTS42Z794b/2/sqsCAtmgwuR3XOKRw==
+X-Received: by 2002:a92:3311:: with SMTP id a17mr2059950ilf.210.1594680043340;
+        Mon, 13 Jul 2020 15:40:43 -0700 (PDT)
+Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:f693:9fff:fef4:238b])
+        by smtp.googlemail.com with ESMTPSA id i6sm9123152ilj.61.2020.07.13.15.40.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 15:40:42 -0700 (PDT)
+From:   Jian Cai <caij2003@gmail.com>
+Cc:     caij2003@gmail.com, jiancai@google.com, ndesaulniers@google.com,
+        manojgupta@google.com, sedat.dilek@gmail.com,
+        Brian Gerst <brgerst@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] x86/entry: add compatibility with IAS
+Date:   Mon, 13 Jul 2020 15:40:18 -0700
+Message-Id: <20200713224020.1297154-1-caij2003@gmail.com>
+X-Mailer: git-send-email 2.27.0.383.g050319c2ae-goog
+In-Reply-To: <20200713012428.1039487-1-caij2003@gmail.com>
+References: <20200713012428.1039487-1-caij2003@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200710141157.1640173-6-vkuznets@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 04:11:53PM +0200, Vitaly Kuznetsov wrote:
-> As a preparatory change for implementing nested specifig PGD switch for
+Clang's integrated assembler does not allow symbols with non-absolute
+values to be reassigned. This patch allows the affected code to be
+compatible with IAS.
 
-s/specifig/specific
+Link: https://github.com/ClangBuiltLinux/linux/issues/1043
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+Suggested-by: Brian Gerst <brgerst@gmail.com>
+Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Jian Cai <caij2003@gmail.com>
+---
+ arch/x86/include/asm/idtentry.h | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-> nSVM (following nVMX' nested_vmx_load_cr3()) instead of relying on
+diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+index f3d70830bf2a..5efaaed34eda 100644
+--- a/arch/x86/include/asm/idtentry.h
++++ b/arch/x86/include/asm/idtentry.h
+@@ -469,16 +469,15 @@ __visible noinstr void func(struct pt_regs *regs,			\
+ 	.align 8
+ SYM_CODE_START(irq_entries_start)
+     vector=FIRST_EXTERNAL_VECTOR
+-    pos = .
+     .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
+ 	UNWIND_HINT_IRET_REGS
++0 :
+ 	.byte	0x6a, vector
+ 	jmp	asm_common_interrupt
+ 	nop
+ 	/* Ensure that the above is 8 bytes max */
+-	. = pos + 8
+-    pos=pos+8
+-    vector=vector+1
++	. = 0b + 8
++	vector = vector+1
+     .endr
+ SYM_CODE_END(irq_entries_start)
+ 
+@@ -486,16 +485,15 @@ SYM_CODE_END(irq_entries_start)
+ 	.align 8
+ SYM_CODE_START(spurious_entries_start)
+     vector=FIRST_SYSTEM_VECTOR
+-    pos = .
+     .rept (NR_VECTORS - FIRST_SYSTEM_VECTOR)
+ 	UNWIND_HINT_IRET_REGS
++0 :
+ 	.byte	0x6a, vector
+ 	jmp	asm_spurious_interrupt
+ 	nop
+ 	/* Ensure that the above is 8 bytes max */
+-	. = pos + 8
+-    pos=pos+8
+-    vector=vector+1
++	. = 0b + 8
++	vector = vector+1
+     .endr
+ SYM_CODE_END(spurious_entries_start)
+ #endif
+-- 
+2.27.0.383.g050319c2ae-goog
 
-nVMX's
-
-> kvm_set_cr3() introduce nested_svm_load_cr3().
-
-The changelog isn't all that helpful to understanding the actual change.
-All this is doing is wrapping kvm_set_cr3(), but that's not at all obvious
-from reading the above.
-
-E.g.
-
-  Add nested_svm_load_cr3() as a pass-through to kvm_set_cr3() as a
-  preparatory change for implementing nested specific PGD switch for nSVM,
-  (following nVMx's nested_vmx_load_cr3()).
-
-> No functional change intended.
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/kvm/svm/nested.c | 21 +++++++++++++++++++--
->  1 file changed, 19 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index 5e6c988a4e6b..180929f3dbef 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -311,6 +311,21 @@ static void nested_vmcb_save_pending_event(struct vcpu_svm *svm,
->  	nested_vmcb->control.exit_int_info = exit_int_info;
->  }
->  
-> +static inline bool nested_npt_enabled(struct vcpu_svm *svm)
-> +{
-> +	return svm->nested.ctl.nested_ctl & SVM_NESTED_CTL_NP_ENABLE;
-> +}
-> +
-> +/*
-> + * Load guest's cr3 at nested entry. @nested_npt is true if we are
-> + * emulating VM-Entry into a guest with NPT enabled.
-> + */
-> +static int nested_svm_load_cr3(struct kvm_vcpu *vcpu, unsigned long cr3,
-> +			       bool nested_npt)
-
-IMO the addition of nested_npt_enabled() should be a separate patch, and
-the additoin of @nested_npt should be in patch 7.
-
-Hypothetically speaking, if nested_npt_enabled() is inaccurate at the call
-site in nested_prepare_vmcb_save(), then this patch is technically wrong
-even though it doesn't introduce a bug.  Given that the call site of
-nested_svm_load_cr3() is moved in patch 7, I don't see any value in adding
-the placeholder parameter early.
-
-> +{
-> +	return kvm_set_cr3(vcpu, cr3);
-> +}
-> +
->  static void nested_prepare_vmcb_save(struct vcpu_svm *svm, struct vmcb *nested_vmcb)
->  {
->  	/* Load the nested guest state */
-> @@ -324,7 +339,8 @@ static void nested_prepare_vmcb_save(struct vcpu_svm *svm, struct vmcb *nested_v
->  	svm_set_efer(&svm->vcpu, nested_vmcb->save.efer);
->  	svm_set_cr0(&svm->vcpu, nested_vmcb->save.cr0);
->  	svm_set_cr4(&svm->vcpu, nested_vmcb->save.cr4);
-> -	(void)kvm_set_cr3(&svm->vcpu, nested_vmcb->save.cr3);
-> +	(void)nested_svm_load_cr3(&svm->vcpu, nested_vmcb->save.cr3,
-> +				  nested_npt_enabled(svm));
->  
->  	svm->vmcb->save.cr2 = svm->vcpu.arch.cr2 = nested_vmcb->save.cr2;
->  	kvm_rax_write(&svm->vcpu, nested_vmcb->save.rax);
-> @@ -343,7 +359,8 @@ static void nested_prepare_vmcb_save(struct vcpu_svm *svm, struct vmcb *nested_v
->  static void nested_prepare_vmcb_control(struct vcpu_svm *svm)
->  {
->  	const u32 mask = V_INTR_MASKING_MASK | V_GIF_ENABLE_MASK | V_GIF_MASK;
-> -	if (svm->nested.ctl.nested_ctl & SVM_NESTED_CTL_NP_ENABLE)
-> +
-> +	if (nested_npt_enabled(svm))
->  		nested_svm_init_mmu_context(&svm->vcpu);
->  
->  	/* Guest paging mode is active - reset mmu */
-> -- 
-> 2.25.4
-> 
