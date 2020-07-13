@@ -2,87 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F9A21D070
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBEE21D055
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729085AbgGMHaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 03:30:24 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:39570 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725830AbgGMHaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 03:30:24 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id E75F7BC097;
-        Mon, 13 Jul 2020 07:30:21 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     linux@armlinux.org.uk, vz@mleia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] ARM: lpc18xx: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 09:30:15 +0200
-Message-Id: <20200713073015.31985-1-grandmaster@al2klimov.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+        id S1729004AbgGMHTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 03:19:51 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:37859 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728942AbgGMHTu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 03:19:50 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200713071946epoutp010b1ca3cf7cc303728dcd7dfcf73189aa~hPsuIQKam1025510255epoutp014
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:19:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200713071946epoutp010b1ca3cf7cc303728dcd7dfcf73189aa~hPsuIQKam1025510255epoutp014
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594624786;
+        bh=T2NFV6aDiWcdlpfPV04JlC6pzkdoFqVotNneudFkf5E=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=JvH/KqBGdDENB0dCeIb12NvkI9manvTB+0f0zGVCbM/yFMQH3i+lJvRHgLSn1QFjn
+         BIGKc577z8h9AYx9M+4hX+txxhIY0tSkWib1SJ0Wc/x8NUKqU0Voo4Cw88y31BiTnn
+         Nfz8V8h3ydOsosKUZ5I/WU3GgrdVT6tq9FfSByYs=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200713071946epcas1p1fa28a4f4ed866798785fc37805b1aa21~hPstgrUb90770907709epcas1p1b;
+        Mon, 13 Jul 2020 07:19:46 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.153]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4B4w5C2w7czMqYkq; Mon, 13 Jul
+        2020 07:19:43 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3C.E8.18978.F0B0C0F5; Mon, 13 Jul 2020 16:19:43 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200713071942epcas1p14a9a1d2017e2e5005f7146f5bed09c82~hPsqOyail0774007740epcas1p1R;
+        Mon, 13 Jul 2020 07:19:42 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200713071942epsmtrp2fac249b59d75accf1d54cddeb267490c~hPsqOKOM32359023590epsmtrp2O;
+        Mon, 13 Jul 2020 07:19:42 +0000 (GMT)
+X-AuditID: b6c32a35-5edff70000004a22-d7-5f0c0b0fd948
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        86.ED.08303.E0B0C0F5; Mon, 13 Jul 2020 16:19:42 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200713071942epsmtip1cf2dd598ec869b849267405ada4f543a~hPsp9sadM2443624436epsmtip1I;
+        Mon, 13 Jul 2020 07:19:42 +0000 (GMT)
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     cw00.choi@samsung.com, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        stable@vger.kernel.org
+Subject: [PATCH] PM / devfrq: Fix indentaion of devfreq_summary debugfs node
+Date:   Mon, 13 Jul 2020 16:31:12 +0900
+Message-Id: <20200713073112.6297-1-cw00.choi@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGKsWRmVeSWpSXmKPExsWy7bCmvi4/N0+8wdu/QhYTb1xhsbj+5Tmr
+        xdmmN+wWl3fNYbP43HuE0eJ24wo2iwUbHzE6sHtsWtXJ5tG3ZRWjx+dNcgHMUdk2GamJKalF
+        Cql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUDLlRTKEnNKgUIBicXF
+        Svp2NkX5pSWpChn5xSW2SqkFKTkFlgV6xYm5xaV56XrJ+blWhgYGRqZAhQnZGQfbNzIX3Fau
+        +N3WzdLAeE+si5GTQ0LAROJ19xXGLkYuDiGBHYwS7Z9vQTmfGCV6frQwQTifGSUWz/zACtNy
+        ZP5xdojELkaJT3/nMUM4XxglFrxbyQhSxSagJbH/xQ02EFtEwEri9P8OZhCbWaBGYkLjIrBJ
+        wgI+EiteTQCrZxFQlXhx9TALiM0rYCmx6f1cFoht8hKrNxwAWyAhsIhd4tb0dUwQCReJY5vf
+        QBUJS7w6voUdwpaS+PxuLxuEXS2x8uQRNojmDkaJLfsvQP1gLLF/6WSgQRxAF2lKrN+lDxFW
+        lNj5ey4jxKF8Eu++9rCClEgI8Ep0tAlBlChLXH5wF+oESYnF7Z1sECUeEn8XyYGEhQRiJWZv
+        3cA0gVF2FsL8BYyMqxjFUguKc9NTiw0LDJFjaRMjOEFpme5gnPj2g94hRiYOxkOMEhzMSiK8
+        0aKc8UK8KYmVValF+fFFpTmpxYcYTYHhNZFZSjQ5H5gi80riDU2NjI2NLUwMzUwNDZXEef+d
+        ZY8XEkhPLEnNTk0tSC2C6WPi4JRqYOrY9WERY1dZ8Oldrk4Kx6Q+5ynN+WP6pHT5hJpZKu16
+        C1dyW+/TNFGafex+xN78JMPEhen2F1Rljc7/1w/x0ph94dnF78/OfGPWdJHmV2Bone00ZSPb
+        YYcXnev+TAyccmjr3l9esy9tSVxqcS3lyFqFOn2nk6KySxPXapRMNAhv+3t9wTm9SEW9Y++v
+        Mif2/XpqLlH5wGSZhEHPCY6naXyS5/7cq+/LUn52W0+LN/HL4aZWkxtbO0zOaqYq7LpbMe/f
+        dzUBHptnGar+FbxZL62eR69a4JHuFffpy/FEo6y0j2vzPiQeNU6cdiSnhcPQMzj8cUTfsZfK
+        3Q1FvkHzz4n7P7x41XjtJAuFmt2nLiqxFGckGmoxFxUnAgBArucw2QMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKJMWRmVeSWpSXmKPExsWy7bCSnC4fN0+8wZZPKhYTb1xhsbj+5Tmr
+        xdmmN+wWl3fNYbP43HuE0eJ24wo2iwUbHzE6sHtsWtXJ5tG3ZRWjx+dNcgHMUVw2Kak5mWWp
+        Rfp2CVwZB9s3MhfcVq743dbN0sB4T6yLkZNDQsBE4sj84+xdjFwcQgI7GCX6n3axQyQkJaZd
+        PMrcxcgBZAtLHD5cDFHziVHi+PKPYDVsAloS+1/cYAOxRQRsJO4uvsYCUsQs0MQoMXHeQUaQ
+        hLCAj8SKVxPAbBYBVYkXVw+zgNi8ApYSm97PZYFYJi+xesMB5gmMPAsYGVYxSqYWFOem5xYb
+        FhjlpZbrFSfmFpfmpesl5+duYgSHjJbWDsY9qz7oHWJk4mA8xCjBwawkwhstyhkvxJuSWFmV
+        WpQfX1Sak1p8iFGag0VJnPfrrIVxQgLpiSWp2ampBalFMFkmDk6pBiYrX9/pB6bJbp4h9irb
+        bdYro56DLAesDdlV30av6ZVw8T7DXVvTm5mToyqwr7FdWX7F/huVdoHx37d4zOGxaL7LutIp
+        0fjUg/uX7ZIj3qUZbm+VjpaMCM09s/W2VE3elh3hJ4I+iouf2fb6zbbnYo07eCv+9Px/Ovv9
+        /qxdHAv8z4kozLkvq2Td+2Z1nfQrHc2GB6H+5tvVjmqosbEuuliywHFD6dZdzHdEn+0/ciBT
+        oanhMd/2uw6SYRVrNAvsl6xKZk43iJFSCdkX92g/a3VRZ2sl97f/H30Vsu/FObNVlFhV/FRe
+        9XnKp7/s5y5f5DdIFrt/2frFNDPbwJIlhvf8Nm8427Ml+EWxW307oxJLcUaioRZzUXEiAGd+
+        yhWIAgAA
+X-CMS-MailID: 20200713071942epcas1p14a9a1d2017e2e5005f7146f5bed09c82
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200713071942epcas1p14a9a1d2017e2e5005f7146f5bed09c82
+References: <CGME20200713071942epcas1p14a9a1d2017e2e5005f7146f5bed09c82@epcas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+The commit 66d0e797bf09 ("Revert "PM / devfreq: Modify the device name
+as devfreq(X) for sysfs"") roll back the device name from 'devfreqX'
+to device name explained in DT. After applied commit 66d0e797bf09,
+the indentation of devfreq_summary debugfs node was broken.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+So, fix indentaion of devfreq_summary debugfs node as following:
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+For example on Exynos5422-based Odroid-XU3 board,
+$ cat /sys/kernel/debug/devfreq/devfreq_summary
+dev                            parent_dev                     governor        polling_ms  cur_freq_Hz  min_freq_Hz  max_freq_Hz
+------------------------------ ------------------------------ --------------- ---------- ------------ ------------ ------------
+10c20000.memory-controller     null                           simple_ondemand          0    413000000    165000000    825000000
+soc:bus_wcore                  null                           simple_ondemand         50     88700000     88700000    532000000
+soc:bus_noc                    soc:bus_wcore                  passive                  0     66600000     66600000    111000000
+soc:bus_fsys_apb               soc:bus_wcore                  passive                  0    111000000    111000000    222000000
+soc:bus_fsys                   soc:bus_wcore                  passive                  0     75000000     75000000    200000000
+soc:bus_fsys2                  soc:bus_wcore                  passive                  0     75000000     75000000    200000000
+soc:bus_mfc                    soc:bus_wcore                  passive                  0     83250000     83250000    333000000
+soc:bus_gen                    soc:bus_wcore                  passive                  0     88700000     88700000    266000000
+soc:bus_peri                   soc:bus_wcore                  passive                  0     66600000     66600000     66600000
+soc:bus_g2d                    soc:bus_wcore                  passive                  0     83250000     83250000    333000000
+soc:bus_g2d_acp                soc:bus_wcore                  passive                  0            0     66500000    266000000
+soc:bus_jpeg                   soc:bus_wcore                  passive                  0            0     75000000    300000000
+soc:bus_jpeg_apb               soc:bus_wcore                  passive                  0            0     83250000    166500000
+soc:bus_disp1_fimd             soc:bus_wcore                  passive                  0            0    120000000    200000000
+soc:bus_disp1                  soc:bus_wcore                  passive                  0            0    120000000    300000000
+soc:bus_gscl_scaler            soc:bus_wcore                  passive                  0            0    150000000    300000000
+soc:bus_mscl                   soc:bus_wcore                  passive                  0            0     84000000    666000000
+
+Cc: stable@vger.kernel.org
+Fixes: commit 66d0e797bf09 ("Revert "PM / devfreq: Modify the device name as devfreq(X) for sysfs"")
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 ---
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+ drivers/devfreq/devfreq.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
-
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- arch/arm/mach-lpc18xx/Makefile.boot | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/mach-lpc18xx/Makefile.boot b/arch/arm/mach-lpc18xx/Makefile.boot
-index cec195d4fcba..5dde7328a7a9 100644
---- a/arch/arm/mach-lpc18xx/Makefile.boot
-+++ b/arch/arm/mach-lpc18xx/Makefile.boot
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- # Empty file waiting for deletion once Makefile.boot isn't needed any more.
- # Patch waits for application at
--# http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=7889/1 .
-+# https://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=7889/1 .
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index ce82bdb5fa5c..2ff35ec1b53b 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -1839,8 +1839,7 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
+ 	unsigned long cur_freq, min_freq, max_freq;
+ 	unsigned int polling_ms;
+ 
+-	seq_printf(s, "%-30s %-10s %-10s %-15s %10s %12s %12s %12s\n",
+-			"dev_name",
++	seq_printf(s, "%-30s %-30s %-15s %10s %12s %12s %12s\n",
+ 			"dev",
+ 			"parent_dev",
+ 			"governor",
+@@ -1848,10 +1847,9 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
+ 			"cur_freq_Hz",
+ 			"min_freq_Hz",
+ 			"max_freq_Hz");
+-	seq_printf(s, "%30s %10s %10s %15s %10s %12s %12s %12s\n",
++	seq_printf(s, "%30s %30s %15s %10s %12s %12s %12s\n",
++			"------------------------------",
+ 			"------------------------------",
+-			"----------",
+-			"----------",
+ 			"---------------",
+ 			"----------",
+ 			"------------",
+@@ -1880,8 +1878,7 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
+ 		mutex_unlock(&devfreq->lock);
+ 
+ 		seq_printf(s,
+-			"%-30s %-10s %-10s %-15s %10d %12ld %12ld %12ld\n",
+-			dev_name(devfreq->dev.parent),
++			"%-30s %-30s %-15s %10d %12ld %12ld %12ld\n",
+ 			dev_name(&devfreq->dev),
+ 			p_devfreq ? dev_name(&p_devfreq->dev) : "null",
+ 			devfreq->governor_name,
 -- 
-2.27.0
+2.17.1
 
