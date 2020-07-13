@@ -2,78 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E689A21E33D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 00:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABCA21E34B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 00:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgGMWy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 18:54:59 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:39590 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgGMWy5 (ORCPT
+        id S1726898AbgGMWz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 18:55:28 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:53152 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726829AbgGMWzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 18:54:57 -0400
-Received: by mail-il1-f195.google.com with SMTP id k6so12673972ili.6;
-        Mon, 13 Jul 2020 15:54:56 -0700 (PDT)
+        Mon, 13 Jul 2020 18:55:23 -0400
+Received: by mail-il1-f199.google.com with SMTP id o17so10724785ilt.19
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 15:55:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Lx27nXKsEHDAQ3zBwCOzlK62p9t1j+kSDxv2fkLBnl0=;
-        b=omMEP7ix62sxfXYmZON9ompwOwJNPJ54PXm7iQ/l02jxQVcl/DBzLjFg3ULfadJeqn
-         RAvoVohi4oCVIWPfRG0BJxLmm7GTWUE+bKyJ+CqvDtk+G6XnNyiksO2NbTXJMtiPDYKy
-         ncivOCPxMNbhCfoBjRsjmbUDmbOEag6BAQpvnP71ti0FudDRVkHVIwln2swv/Q5YMF1G
-         1hlpd7WEWZW5E1lwjeasJg/c7UsQHxTaXQF+tFunHVCN/K9SxY7pcLVQnoWLS6drc1xH
-         YMnO7fYFMLYkuGCtExs3plDnqPZs6iYmOWyTivnccKl68dtqxAVhipvdL2uJZg9SuXjE
-         05gw==
-X-Gm-Message-State: AOAM533rw92vFKakVDVO0Oxj4DKBtI3vlLUVbN5CsnbWzhvT0yGpz9wm
-        Ejj0GN5xuT6lwEdQsti3YQ==
-X-Google-Smtp-Source: ABdhPJxKGIcBl7P0g7fSqwC5X3R2fzaMf2mpBeKTxIr+o8fUnEkwxEhRcUXiVhulNMpWIs3AEYRpIg==
-X-Received: by 2002:a92:58d6:: with SMTP id z83mr2086323ilf.186.1594680896394;
-        Mon, 13 Jul 2020 15:54:56 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id t5sm8807373iov.53.2020.07.13.15.54.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 15:54:55 -0700 (PDT)
-Received: (nullmailer pid 874330 invoked by uid 1000);
-        Mon, 13 Jul 2020 22:54:53 -0000
-Date:   Mon, 13 Jul 2020 16:54:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Frank Lee <frank@allwinnertech.com>
-Cc:     mturquette@baylibre.com, linus.walleij@linaro.org,
-        clabbe@baylibre.com, liyong@allwinnertech.com,
-        srinivas.kandagatla@linaro.org, icenowy@aosc.io,
-        p.zabel@pengutronix.de, linux-i2c@vger.kernel.org,
-        gregory.clement@bootlin.com, sboyd@kernel.org,
-        amit.kucheria@verdurent.com, bage@linutronix.de,
-        tglx@linutronix.de, linux-pm@vger.kernel.org,
-        daniel.lezcano@linaro.org, anarsoul@gmail.com, megous@megous.com,
-        tiny.windzz@gmail.com, lee.jones@linaro.org, rui.zhang@intel.com,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        wens@csie.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-gpio@vger.kernel.org, mripard@kernel.org, stefan@olimex.com,
-        huangshuosheng@allwinnertech.com, jason@lakedaemon.net
-Subject: Re: [PATCH v3 01/16] dt-bindings: clk: sunxi-ccu: add compatible
- string for A100 CCU and R-CCU
-Message-ID: <20200713225453.GA874275@bogus>
-References: <20200708071942.22595-1-frank@allwinnertech.com>
- <20200708071942.22595-2-frank@allwinnertech.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=jj1P8fWj+QmBL3oVWARuXgxqUpoC+v1KVkS2xZgmtoo=;
+        b=V/DHnWyMq2qMS29g0l4zOWQPmVBJSGcUJCd4S/RMde5fU37vGkeYawPwU5HIvyZrKR
+         EXEQbbGXm8ULk8LlzClqM2xYYkJoIjDaq2mthsK5g19uiduQieKbCzQjlY3OKIH7k8La
+         XCERtgkaKD00EwDAQrPaz6gdNaBoxD7u6qwWAfoMhDRGCFZeOLXGAgfezdjxeWJQ+1nR
+         erR/HMu00Ske8rQh5BGMsgnAVvfNfTeB3iGL8e2elTCP68Os9SyVbqxnx8xesJFyWdEd
+         7+fBn/dJjK5Eye1OiHETZDkfH6uS0EVS8gSpP/ZcDCG5HzoX9K3/j4icT2rozu1CqLkk
+         DJdA==
+X-Gm-Message-State: AOAM533C/6/+obAW8twh4xArbKUUDCvB8VB6CR/rY+crY1WGipvZJYS2
+        K7NF954Zdl+8ke/n/x3OcYUz/HFGwAWcORkA0sGFcSx2u9SI
+X-Google-Smtp-Source: ABdhPJyLihBN/zrOc2+4DcQ75Lu3lXRHgDuni0saKo5qorRgL58EKUMvVYYpOi/K9c0EoAZ7agMwKX7nIyOyB7ALfV3d216GOxZM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708071942.22595-2-frank@allwinnertech.com>
+X-Received: by 2002:a6b:640e:: with SMTP id t14mr2067545iog.39.1594680921636;
+ Mon, 13 Jul 2020 15:55:21 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 15:55:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dd436905aa5a9533@google.com>
+Subject: KASAN: use-after-free Read in devlink_health_reporter_destroy
+From:   syzbot <syzbot+dd0040db0d77d52f98a5@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jiri@mellanox.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Jul 2020 15:19:27 +0800, Frank Lee wrote:
-> This patch adds binding to a100's ccu clock and r-ccu clock.
-> 
-> Signed-off-by: Frank Lee <frank@allwinnertech.com>
-> ---
->  .../devicetree/bindings/clock/allwinner,sun4i-a10-ccu.yaml         | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
+Hello,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+syzbot found the following crash on:
+
+HEAD commit:    71930d61 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c8d157100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4c5bc87125719cf4
+dashboard link: https://syzkaller.appspot.com/bug?extid=dd0040db0d77d52f98a5
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1421cd3f100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ccfe4f100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+dd0040db0d77d52f98a5@syzkaller.appspotmail.com
+
+netdevsim netdevsim3 netdevsim0 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
+==================================================================
+BUG: KASAN: use-after-free in devlink_health_reporter_destroy+0x184/0x1d0 net/core/devlink.c:5476
+Read of size 8 at addr ffff88808ca11c20 by task kworker/u4:1/21
+
+CPU: 1 PID: 21 Comm: kworker/u4:1 Not tainted 5.8.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ devlink_health_reporter_destroy+0x184/0x1d0 net/core/devlink.c:5476
+ nsim_dev_health_exit+0x8b/0xe0 drivers/net/netdevsim/health.c:317
+ nsim_dev_reload_destroy+0x132/0x1e0 drivers/net/netdevsim/dev.c:1134
+ nsim_dev_reload_down+0x6e/0xd0 drivers/net/netdevsim/dev.c:712
+ devlink_reload+0xc1/0x3a0 net/core/devlink.c:2952
+ devlink_pernet_pre_exit+0xfb/0x190 net/core/devlink.c:9622
+ ops_pre_exit_list net/core/net_namespace.c:176 [inline]
+ cleanup_net+0x451/0xa00 net/core/net_namespace.c:591
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+
+Allocated by task 6819:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
+ kmem_cache_alloc_trace+0x14f/0x2d0 mm/slab.c:3551
+ kmalloc include/linux/slab.h:555 [inline]
+ kzalloc include/linux/slab.h:669 [inline]
+ __devlink_health_reporter_create+0x91/0x2f0 net/core/devlink.c:5359
+ devlink_health_reporter_create+0xa1/0x1d0 net/core/devlink.c:5431
+ nsim_dev_health_init+0x95/0x3a0 drivers/net/netdevsim/health.c:279
+ nsim_dev_probe+0xada/0xf80 drivers/net/netdevsim/dev.c:1086
+ really_probe+0x282/0x8a0 drivers/base/dd.c:525
+ driver_probe_device+0xfe/0x1d0 drivers/base/dd.c:701
+ __device_attach_driver+0x1c2/0x220 drivers/base/dd.c:807
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x28d/0x3f0 drivers/base/dd.c:873
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
+ device_add+0xacf/0x1b00 drivers/base/core.c:2680
+ nsim_bus_dev_new drivers/net/netdevsim/bus.c:336 [inline]
+ new_device_store+0x374/0x5c0 drivers/net/netdevsim/bus.c:215
+ bus_attr_store+0x72/0xa0 drivers/base/bus.c:122
+ sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:138
+ kernfs_fop_write+0x268/0x490 fs/kernfs/file.c:315
+ vfs_write+0x2b0/0x6b0 fs/read_write.c:576
+ ksys_write+0x12d/0x250 fs/read_write.c:631
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 21:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x103/0x2c0 mm/slab.c:3757
+ devlink_health_reporter_free net/core/devlink.c:5449 [inline]
+ devlink_health_reporter_put+0xb7/0xf0 net/core/devlink.c:5456
+ __devlink_health_reporter_destroy net/core/devlink.c:5463 [inline]
+ devlink_health_reporter_destroy+0x143/0x1d0 net/core/devlink.c:5475
+ nsim_dev_health_exit+0x8b/0xe0 drivers/net/netdevsim/health.c:317
+ nsim_dev_reload_destroy+0x132/0x1e0 drivers/net/netdevsim/dev.c:1134
+ nsim_dev_reload_down+0x6e/0xd0 drivers/net/netdevsim/dev.c:712
+ devlink_reload+0xc1/0x3a0 net/core/devlink.c:2952
+ devlink_pernet_pre_exit+0xfb/0x190 net/core/devlink.c:9622
+ ops_pre_exit_list net/core/net_namespace.c:176 [inline]
+ cleanup_net+0x451/0xa00 net/core/net_namespace.c:591
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+
+The buggy address belongs to the object at ffff88808ca11c00
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 32 bytes inside of
+ 512-byte region [ffff88808ca11c00, ffff88808ca11e00)
+The buggy address belongs to the page:
+page:ffffea0002328440 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88808ca11000
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00024ba648 ffffea0002a32788 ffff8880aa000a80
+raw: ffff88808ca11000 ffff88808ca11000 0000000100000003 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88808ca11b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88808ca11b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88808ca11c00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                               ^
+ ffff88808ca11c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88808ca11d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
