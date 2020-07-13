@@ -2,119 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404BB21D3B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007EA21D3C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgGMK0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 06:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
+        id S1729424AbgGMK3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 06:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727890AbgGMK0I (ORCPT
+        with ESMTP id S1728883AbgGMK3C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:26:08 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520ADC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 03:26:08 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1juves-0006lX-6S; Mon, 13 Jul 2020 12:26:02 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1juver-0008D8-6D; Mon, 13 Jul 2020 12:26:01 +0200
-Date:   Mon, 13 Jul 2020 12:26:00 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     kernel@pengutronix.de,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
-        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v7 3/3] leds: trigger: implement a tty trigger
-Message-ID: <20200713102600.ts672o72krjky5gi@pengutronix.de>
-References: <20200707165958.16522-1-u.kleine-koenig@pengutronix.de>
- <20200707165958.16522-4-u.kleine-koenig@pengutronix.de>
- <20200712082453.GI8295@amd>
+        Mon, 13 Jul 2020 06:29:02 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07EEC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 03:29:01 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id f18so15697767wrs.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 03:29:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3MJX5x5YwOBMETG5rGZnV0iZGjYD8NtnFnnMSRYbSiA=;
+        b=wbrqOCwaE5Lrdh5sth6gvUV9+kdt8nDAVw6kTEFQEoIr6lB9BhI8hULrjO4swEcZ71
+         CyTJo6bPo7TDNfcXoobVGcX1n2DjDv5d/lVO1S6QZPqS77ANfajhhN3OtL8rxAkD/Ryn
+         R86Drdxu5CHmRmxYuL3T2gGccFaa1dNZAxNRQGgUZZ515YCGkOBKUrP2+6WXgj1UQAUf
+         qJzIO0dzIWp+rlOvctUbAYkEOSZasleU1SMYxsybVMPoiRqJk2P1XOnuk9Xs07yzauA7
+         zuCGVAaLRMWnX3DjcT6C8OTcn4+cVD4xdMiHrjNtKfMwj+9ZgABItg9FKzTyhs0IEzg2
+         qxCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3MJX5x5YwOBMETG5rGZnV0iZGjYD8NtnFnnMSRYbSiA=;
+        b=YQXlQ6b1/DOMD/n+1NDNw0QZhQfDOXBLDI4KDR/GXpCqmnijB/x5UhRFMdIZt7nJcH
+         b+YuEOBtoqR9q0K02dOI6NA3p88gO+PNAvOMxZGWwsWlcHyr5vPpE2cLPCoZzhNDUjSs
+         UNtIcEe9OH9RayDbYp3pJMm6npAw+TcmuIt293lzxUK3WyXlxCETX03Oz4Px/eJ6fx2l
+         5JNVyWxEA/P3JpFqHxskF8qGzpygBnfO4iTbVbRzFHsy5IXpXlASyyNMRHyxyvHEXIkL
+         5idTU9fhFL7rKfxl6j8yhAZa9nIDbJXTQmN0pjxIJkMNWKXAbdvMqsbh40EUp6yqTzpe
+         PAwQ==
+X-Gm-Message-State: AOAM531WWmjsc3p0h6dSmSzG623845KGnqfzzBFXq4DFTgmKEPAG2YVe
+        yH580pn8WtmFfN/8E/0BTrupyw==
+X-Google-Smtp-Source: ABdhPJx5eiayCX5gKHrF27TtdrsfGxYcPWYLSfX24i9X7ZnmB1weVmvQ2a9Sinp8q04khH2B8N/Sog==
+X-Received: by 2002:a5d:6912:: with SMTP id t18mr77882766wru.411.1594636140316;
+        Mon, 13 Jul 2020 03:29:00 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:501b:b12d:3463:93f8? ([2a01:e34:ed2f:f020:501b:b12d:3463:93f8])
+        by smtp.googlemail.com with ESMTPSA id u23sm25191253wru.94.2020.07.13.03.28.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jul 2020 03:28:59 -0700 (PDT)
+Subject: Re: [PATCH v4 4/4] thermal: core: Add notifications call in the
+ framework
+To:     Marek Szyprowski <m.szyprowski@samsung.com>, rui.zhang@intel.com
+Cc:     srinivas.pandruvada@linux.intel.com, rkumbako@codeaurora.org,
+        amit.kucheria@linaro.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+References: <20200706105538.2159-1-daniel.lezcano@linaro.org>
+ <20200706105538.2159-4-daniel.lezcano@linaro.org>
+ <CGME20200706131708eucas1p1487955a7632584c17df724399f48825a@eucas1p1.samsung.com>
+ <c7ed6c63-cbb5-07dc-c292-2c473af8c4fb@samsung.com>
+ <23c5830d-0a7c-9e87-e859-821d2dccb200@linaro.org>
+ <8a34e9c4-6457-cfd2-3d05-05f80a630a0d@samsung.com>
+ <41466d5a-24fb-b861-93ae-3ed190af7174@samsung.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <adfbb6a5-4cce-a1f3-c6a7-a56a72ac38ba@linaro.org>
+Date:   Mon, 13 Jul 2020 12:28:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p7sgu6f4s3srokfq"
-Content-Disposition: inline
-In-Reply-To: <20200712082453.GI8295@amd>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <41466d5a-24fb-b861-93ae-3ed190af7174@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/07/2020 11:31, Marek Szyprowski wrote:
+> Hi
+> 
+> On 07.07.2020 11:15, Marek Szyprowski wrote:
+>> On 06.07.2020 15:46, Daniel Lezcano wrote:
+>>> On 06/07/2020 15:17, Marek Szyprowski wrote:
+>>>> On 06.07.2020 12:55, Daniel Lezcano wrote:
+>>>>> The generic netlink protocol is implemented but the different
+>>>>> notification functions are not yet connected to the core code.
+>>>>>
+>>>>> These changes add the notification calls in the different
+>>>>> corresponding places.
+>>>>>
+>>>>> Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+>>>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>>>> This patch landed in today's linux-next 20200706 as commit 5df786e46560
+>>>> ("thermal: core: Add notifications call in the framework"). Sadly it
+>>>> breaks booting various Samsung Exynos based boards. Here is an example
+>>>> log from Odroid U3 board:
 
---p7sgu6f4s3srokfq
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Does it break also arm64 platforms?
 
-Hello Pavel,
 
-On Sun, Jul 12, 2020 at 10:24:53AM +0200, Pavel Machek wrote:
-> > +++ b/drivers/leds/trigger/ledtrig-tty.c
-> > @@ -0,0 +1,192 @@
-> > +// SPDX-License-Identifier: GPL-2.0
->=20
-> 2.0+ is preffered.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-My employer requests GPL-2.0-only for kernel code.
-
-> > +	while (firstrun ||
-> > +	       icount.rx !=3D trigger_data->rx ||
-> > +	       icount.tx !=3D trigger_data->tx) {
-> > +
-> > +		led_set_brightness(trigger_data->led_cdev, LED_ON);
-> > +
-> > +		msleep(100);
-> > +
-> > +		led_set_brightness(trigger_data->led_cdev, LED_OFF);
->=20
-> Is this good idea inside workqueue?
-
-What is "this"? The msleep? Calling led_set_brightness? What would you
-recommend instead? Maybe led_set_brightness_nosleep()?
-
-> > +		trigger_data->rx =3D icount.rx;
-> > +		trigger_data->tx =3D icount.tx;
-> > +		firstrun =3D false;
-> > +
-> > +		ret =3D tty_get_icount(trigger_data->tty, &icount);
-> > +		if (ret)
-> > +			return;
->=20
-> Unbalanced locking.
-
-indeed, will fix and resend after the above issues are resolved.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---p7sgu6f4s3srokfq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8MNrYACgkQwfwUeK3K
-7AmjaAgAhJ4ZfU4c7r1CzUjNGOMKD/u6/lkeH+6PbKNRLQA7PLSdkfAvfUitzLVH
-p7CsYj4YavhWXRO9i3p7PDgMUUPeUWdpMq1pYBPOKspahP5hSDjI7ncvgOwhI4Ot
-ANXhLG4jvYlMXa5054nHcPzSkPi5d30If4bg9et+F0+2dTRuVgiIibc5SDXHeOpJ
-a0XKR6gLIog9F4ufu8H71Rz+eA/qK26xbvksv8OWpupLmi+EIg4ijsXiA1Iqgc4R
-gnHYG7cu2oeyXJSXrHitK0415ZT0S//vMZrMPRQvWHiiLhjpYqJTHHpiP3oFTTyu
-REWG/lIOh2q0yDn7dE7+yFG4oQt8sg==
-=lxZ0
------END PGP SIGNATURE-----
-
---p7sgu6f4s3srokfq--
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
