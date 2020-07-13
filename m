@@ -2,490 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433B521D421
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204FF21D467
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729564AbgGMK6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 06:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727890AbgGMK6M (ORCPT
+        id S1729811AbgGMLDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 07:03:07 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:28154 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729801AbgGMLDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:58:12 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54A9C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 03:58:11 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z24so17059499ljn.8
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 03:58:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Y+6FGw1qznfKpAGXrRMSqYtEBkMRI54CtWT4fn/sFv8=;
-        b=jIaPlYyd7DP0poylVF/Mjq3ObQy2f0UnHe/DEDdJyfndnshJbm/Q/uIC2kk/XP1qG0
-         E88KPwyGv2Mks+cPduozS7Cz7LGwHQMzVEQ5CYqsiOrEnJ5mwtA90AxMxHIIKrfMrG54
-         OwC2BBfD3t49vYjcOY5d9yzYP4qFFqCzyWXAY/lONsSTL0COycLOddJnbJuOh9dZB3Hl
-         JM83bK00CGK2kCQMDIIAIG5DZ0+LzOTlGquVw7VVz8dF6MJqXTgv5AC+ZkZshndxHL4x
-         JRXBENpO4HI7pRzBCVlPPSUz3BMMbeUvo/U9ZLccGUA0i0yeU7lLx9nGmKy9Tsep4uk/
-         aXHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y+6FGw1qznfKpAGXrRMSqYtEBkMRI54CtWT4fn/sFv8=;
-        b=sVD6L5QYWkAsE0K2C0mqBXwBDTIdA219qOrqLncmfZ0eSZDWmo/uRug1PE6qLWFCuL
-         IRQFHQQvJvVTIKrLBajsSGTfnFwHw0iOOyBacs/z0EgQVfDHQ1BvDnbpFS7f9uzFz0s4
-         /b3+4hX5QYPOzRiSSHo1OaHxPizi/iJa6nXHmVrb+7thvtBoJnODWCGlS96YL143FxJO
-         Jy0jbfzD+f/pdZc9LN5O3iUsKdj/Wveh3U//b29s1CKm7N9yJB7dnK94TBc6gW1zS0l/
-         agRVImHhnDCYCBsIB7mouPpc+keCYJj2OWbcSHGzKyo0aaoi+H8Egr+PqqT5nXIhMKFw
-         00VA==
-X-Gm-Message-State: AOAM533I07Gq/XjFkbJKmfdXBH9RfXLpJTKKmutCyz6uWox0ibyNy9nN
-        6/2t1bYVgvAIy1I7GhmlYRnFDg==
-X-Google-Smtp-Source: ABdhPJwj8oQyM+Okq3r2k93ZBL0yReDd2DglY1xvHKph8jkY7NPMoLMyHsz3GZukmme0P32haqhJug==
-X-Received: by 2002:a2e:8ed6:: with SMTP id e22mr46401781ljl.426.1594637890288;
-        Mon, 13 Jul 2020 03:58:10 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id u26sm6355194lfq.72.2020.07.13.03.58.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 03:58:09 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id EB74E1018FF; Mon, 13 Jul 2020 13:58:12 +0300 (+03)
-Date:   Mon, 13 Jul 2020 13:58:12 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Alan Cox <alan@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christopher Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Idan Yaniv <idan.yaniv@ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 3/5] mm: extend memfd with ability to create
- "secret" memory areas
-Message-ID: <20200713105812.dnwtdhsuyj3xbh4f@box>
-References: <20200706172051.19465-1-rppt@kernel.org>
- <20200706172051.19465-4-rppt@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706172051.19465-4-rppt@kernel.org>
+        Mon, 13 Jul 2020 07:03:05 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200713110302epoutp027ec97397b5574cd47d0c8ab9e92011e5~hSvpZnFWB2652126521epoutp02R
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 11:03:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200713110302epoutp027ec97397b5574cd47d0c8ab9e92011e5~hSvpZnFWB2652126521epoutp02R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594638182;
+        bh=w86spwHftZcaltPW4Jt2BNK0RzUuiuzMJ7cLsg6el1I=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=U88pRapG19Oshoiac61dBthBrTn2+afB2Gn6mIN8MS9bAQ/t8GsZXVkE+dYPzHSB5
+         vLYaIHyvP97lPVwlA4XAQ8ZQ0ZzeKaBLVfNAG8p40WJLn0V1gCrmPjuQqb8lGyGcJ5
+         foKjyrHcy5/IsuXxEhVAitGV7PrtjuXv+jZR1bcU=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p1.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200713110301epcas1p1581c1affbabe2de1d842b9810c1d09cf~hSvpAxaxn2177621776epcas1p1p;
+        Mon, 13 Jul 2020 11:03:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [PATCH v6 5/5] scsi: ufs: Prepare HPB read for cached sub-region
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <231786897.01594637881536.JavaMail.epsvc@epcpadp2>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <963815509.21594638181758.JavaMail.epsvc@epcpadp2>
+Date:   Mon, 13 Jul 2020 19:58:44 +0900
+X-CMS-MailID: 20200713105844epcms2p3c289747549d27e2e239168bed024a1e4
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8
+References: <231786897.01594637881536.JavaMail.epsvc@epcpadp2>
+        <231786897.01594637581589.JavaMail.epsvc@epcpadp2>
+        <231786897.01594637401708.JavaMail.epsvc@epcpadp1>
+        <231786897.01594636801601.JavaMail.epsvc@epcpadp1>
+        <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
+        <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p3>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 08:20:49PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Extend memfd_create() system call with the ability to create memory areas
-> visible only in the context of the owning process and not mapped not only
-> to other processes but in the kernel page tables as well.
-> 
-> The user will create a file descriptor using the memfd_create system call.
-> The user than has to use ioctl() to define the desired protection mode for
-> the memory associated with that file descriptor and only when the mode is
-> set it is possible to mmap() the memory. For instance, the following
-> exapmple will create an uncached mapping (error handling is omitted):
-> 
->         fd = memfd_create("secret", MFD_SECRET);
+This patch changes the read I/O to the HPB read I/O.
 
-I'm not convinced that it belong to memfd. You don't share anything with
-memfd, but the syscall.
+If the logical address of the read I/O belongs to active sub-region, the
+HPB driver modifies the read I/O command to HPB read. It modifies the upiu
+command of UFS instead of modifying the existing SCSI command.
 
->         ioctl(fd, MFD_SECRET_UNCACHED);
-> 	ftruncate(fd. MAP_SIZE);
+In the HPB version 1.0, the maximum read I/O size that can be converted to
+HPB read is 4KB.
 
-Mix of tabs and spaces?
+The dirty map of the active sub-region prevents an incorrect HPB read that
+has stale physical page number which is updated by previous write I/O.
 
->         ptr = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED,
-> 		   fd, 0);
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  include/linux/memfd.h      |   9 ++
->  include/uapi/linux/magic.h |   1 +
->  include/uapi/linux/memfd.h |   6 +
->  mm/Kconfig                 |   3 +
->  mm/Makefile                |   1 +
->  mm/memfd.c                 |  10 +-
->  mm/secretmem.c             | 247 +++++++++++++++++++++++++++++++++++++
->  7 files changed, 275 insertions(+), 2 deletions(-)
->  create mode 100644 mm/secretmem.c
-> 
-> diff --git a/include/linux/memfd.h b/include/linux/memfd.h
-> index 4f1600413f91..d3ca7285f51a 100644
-> --- a/include/linux/memfd.h
-> +++ b/include/linux/memfd.h
-> @@ -13,4 +13,13 @@ static inline long memfd_fcntl(struct file *f, unsigned int c, unsigned long a)
->  }
->  #endif
->  
-> +#ifdef CONFIG_MEMFD_SECRETMEM
-> +extern struct file *secretmem_file_create(const char *name, unsigned int flags);
-> +#else
-> +static inline struct file *secretmem_file_create(const char *name, unsigned int flags)
-> +{
-> +	return ERR_PTR(-EINVAL);
-> +}
-> +#endif
-> +
->  #endif /* __LINUX_MEMFD_H */
-> diff --git a/include/uapi/linux/magic.h b/include/uapi/linux/magic.h
-> index f3956fc11de6..35687dcb1a42 100644
-> --- a/include/uapi/linux/magic.h
-> +++ b/include/uapi/linux/magic.h
-> @@ -97,5 +97,6 @@
->  #define DEVMEM_MAGIC		0x454d444d	/* "DMEM" */
->  #define Z3FOLD_MAGIC		0x33
->  #define PPC_CMM_MAGIC		0xc7571590
-> +#define SECRETMEM_MAGIC		0x5345434d	/* "SECM" */
->  
->  #endif /* __LINUX_MAGIC_H__ */
-> diff --git a/include/uapi/linux/memfd.h b/include/uapi/linux/memfd.h
-> index 7a8a26751c23..3320a79b638d 100644
-> --- a/include/uapi/linux/memfd.h
-> +++ b/include/uapi/linux/memfd.h
-> @@ -8,6 +8,12 @@
->  #define MFD_CLOEXEC		0x0001U
->  #define MFD_ALLOW_SEALING	0x0002U
->  #define MFD_HUGETLB		0x0004U
-> +#define MFD_SECRET		0x0008U
-> +
-> +/* ioctls for secret memory */
-> +#define MFD_SECRET_IOCTL '-'
-> +#define MFD_SECRET_EXCLUSIVE	_IOW(MFD_SECRET_IOCTL, 0x13, unsigned long)
-> +#define MFD_SECRET_UNCACHED	_IOW(MFD_SECRET_IOCTL, 0x14, unsigned long)
->  
->  /*
->   * Huge page size encoding when MFD_HUGETLB is specified, and a huge page
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index f2104cc0d35c..20dfcc54cc7a 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -872,4 +872,7 @@ config ARCH_HAS_HUGEPD
->  config MAPPING_DIRTY_HELPERS
->          bool
->  
-> +config MEMFD_SECRETMEM
-> +        def_bool MEMFD_CREATE && ARCH_HAS_SET_DIRECT_MAP
-> +
->  endmenu
-> diff --git a/mm/Makefile b/mm/Makefile
-> index 6e9d46b2efc9..a9459c8a655a 100644
-> --- a/mm/Makefile
-> +++ b/mm/Makefile
-> @@ -121,3 +121,4 @@ obj-$(CONFIG_MEMFD_CREATE) += memfd.o
->  obj-$(CONFIG_MAPPING_DIRTY_HELPERS) += mapping_dirty_helpers.o
->  obj-$(CONFIG_PTDUMP_CORE) += ptdump.o
->  obj-$(CONFIG_PAGE_REPORTING) += page_reporting.o
-> +obj-$(CONFIG_MEMFD_SECRETMEM) += secretmem.o
-> diff --git a/mm/memfd.c b/mm/memfd.c
-> index 2647c898990c..3e1cc37e0389 100644
-> --- a/mm/memfd.c
-> +++ b/mm/memfd.c
-> @@ -245,7 +245,8 @@ long memfd_fcntl(struct file *file, unsigned int cmd, unsigned long arg)
->  #define MFD_NAME_PREFIX_LEN (sizeof(MFD_NAME_PREFIX) - 1)
->  #define MFD_NAME_MAX_LEN (NAME_MAX - MFD_NAME_PREFIX_LEN)
->  
-> -#define MFD_ALL_FLAGS (MFD_CLOEXEC | MFD_ALLOW_SEALING | MFD_HUGETLB)
-> +#define MFD_SECRET_MASK (MFD_CLOEXEC | MFD_SECRET)
-> +#define MFD_ALL_FLAGS (MFD_CLOEXEC | MFD_ALLOW_SEALING | MFD_HUGETLB | MFD_SECRET)
->  
->  SYSCALL_DEFINE2(memfd_create,
->  		const char __user *, uname,
-> @@ -257,6 +258,9 @@ SYSCALL_DEFINE2(memfd_create,
->  	char *name;
->  	long len;
->  
-> +	if (flags & ~(unsigned int)MFD_SECRET_MASK)
-> +		return -EINVAL;
-> +
+Tested-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 235 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 235 insertions(+)
 
-Didn't you just broke MFD_ALLOW_SEALING and MFD_HUGETLB with this?
-I guess the check has to be under 'if (flags & MFD_SECRET) {' check, no?
-
-And (unsigned int) case looks redundant to me.
-
->  	if (!(flags & MFD_HUGETLB)) {
->  		if (flags & ~(unsigned int)MFD_ALL_FLAGS)
->  			return -EINVAL;
-> @@ -296,7 +300,9 @@ SYSCALL_DEFINE2(memfd_create,
->  		goto err_name;
->  	}
->  
-> -	if (flags & MFD_HUGETLB) {
-> +	if (flags & MFD_SECRET) {
-> +		file = secretmem_file_create(name, flags);
-> +	} else if (flags & MFD_HUGETLB) {
->  		struct user_struct *user = NULL;
->  
->  		file = hugetlb_file_setup(name, 0, VM_NORESERVE, &user,
-> diff --git a/mm/secretmem.c b/mm/secretmem.c
-> new file mode 100644
-> index 000000000000..df8f8c958cc2
-> --- /dev/null
-> +++ b/mm/secretmem.c
-> @@ -0,0 +1,247 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/mm.h>
-> +#include <linux/fs.h>
-> +#include <linux/mount.h>
-> +#include <linux/memfd.h>
-> +#include <linux/printk.h>
-> +#include <linux/pagemap.h>
-> +#include <linux/pseudo_fs.h>
-> +#include <linux/set_memory.h>
-> +#include <linux/sched/signal.h>
-> +
-> +#include <uapi/linux/memfd.h>
-> +#include <uapi/linux/magic.h>
-> +
-> +#include <asm/tlbflush.h>
-> +
-> +#include "internal.h"
-> +
-> +#undef pr_fmt
-> +#define pr_fmt(fmt) "secretmem: " fmt
-> +
-> +#define SECRETMEM_EXCLUSIVE	0x1
-> +#define SECRETMEM_UNCACHED	0x2
-> +
-> +struct secretmem_ctx {
-> +	unsigned int mode;
-> +};
-> +
-> +static struct page *secretmem_alloc_page(gfp_t gfp)
-> +{
-> +	/*
-> +	 * FIXME: use a cache of large pages to reduce the direct map
-> +	 * fragmentation
-> +	 */
-> +	return alloc_page(gfp);
-> +}
-> +
-> +static vm_fault_t secretmem_fault(struct vm_fault *vmf)
-> +{
-> +	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
-> +	struct inode *inode = file_inode(vmf->vma->vm_file);
-> +	pgoff_t offset = vmf->pgoff;
-> +	unsigned long addr;
-> +	struct page *page;
-> +	int ret = 0;
-> +
-> +	if (((loff_t)vmf->pgoff << PAGE_SHIFT) >= i_size_read(inode))
-> +		return vmf_error(-EINVAL);
-> +
-> +	page = find_get_entry(mapping, offset);
-> +	if (!page) {
-> +		page = secretmem_alloc_page(vmf->gfp_mask);
-> +		if (!page)
-> +			return vmf_error(-ENOMEM);
-> +
-> +		ret = add_to_page_cache_lru(page, mapping, offset, vmf->gfp_mask);
-> +		if (unlikely(ret))
-> +			goto err_put_page;
-
-What the reason to add it to LRU? These pages never evictable. Do we have
-some PageLRU() check that needs to be satisfied or what?
-
-> +
-> +		ret = set_direct_map_invalid_noflush(page);
-> +		if (ret)
-> +			goto err_del_page_cache;
-> +
-> +		addr = (unsigned long)page_address(page);
-> +		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-> +
-> +		__SetPageUptodate(page);
-> +
-> +		ret = VM_FAULT_LOCKED;
-> +	}
-> +
-> +	vmf->page = page;
-> +	return ret;
-> +
-> +err_del_page_cache:
-> +	delete_from_page_cache(page);
-> +err_put_page:
-> +	put_page(page);
-> +	return vmf_error(ret);
-> +}
-> +
-> +static const struct vm_operations_struct secretmem_vm_ops = {
-> +	.fault = secretmem_fault,
-> +};
-> +
-> +static int secretmem_mmap(struct file *file, struct vm_area_struct *vma)
-> +{
-> +	struct secretmem_ctx *ctx = file->private_data;
-> +	unsigned long mode = ctx->mode;
-> +	unsigned long len = vma->vm_end - vma->vm_start;
-> +
-> +	if (!mode)
-> +		return -EINVAL;
-> +
-> +	if (mlock_future_check(vma->vm_mm, vma->vm_flags | VM_LOCKED, len))
-> +		return -EAGAIN;
-> +
-> +	switch (mode) {
-> +	case SECRETMEM_UNCACHED:
-> +		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> +		fallthrough;
-> +	case SECRETMEM_EXCLUSIVE:
-> +		vma->vm_ops = &secretmem_vm_ops;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	vma->vm_flags |= VM_LOCKED;
-> +
-> +	return 0;
-> +}
-> +
-> +static long secretmem_ioctl(struct file *file, unsigned cmd, unsigned long arg)
-> +{
-> +	struct secretmem_ctx *ctx = file->private_data;
-> +	unsigned long mode = ctx->mode;
-> +
-> +	if (mode)
-> +		return -EINVAL;
-> +
-> +	switch (cmd) {
-> +	case MFD_SECRET_EXCLUSIVE:
-> +		mode = SECRETMEM_EXCLUSIVE;
-> +		break;
-> +	case MFD_SECRET_UNCACHED:
-> +		mode = SECRETMEM_UNCACHED;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	ctx->mode = mode;
-> +
-> +	return 0;
-> +}
-> +
-> +const struct file_operations secretmem_fops = {
-> +	.mmap		= secretmem_mmap,
-> +	.unlocked_ioctl = secretmem_ioctl,
-> +	.compat_ioctl	= secretmem_ioctl,
-> +};
-> +
-> +static bool secretmem_isolate_page(struct page *page, isolate_mode_t mode)
-> +{
-> +	return false;
-> +}
-> +
-> +static int secretmem_migratepage(struct address_space *mapping,
-> +				 struct page *newpage, struct page *page,
-> +				 enum migrate_mode mode)
-> +{
-> +	return -EBUSY;
-> +}
-> +
-> +static void secretmem_freepage(struct page *page)
-> +{
-> +	set_direct_map_default_noflush(page);
-> +}
-> +
-> +static const struct address_space_operations secretmem_aops = {
-> +	.freepage	= secretmem_freepage,
-> +	.migratepage	= secretmem_migratepage,
-> +	.isolate_page	= secretmem_isolate_page,
-> +};
-> +
-> +static struct vfsmount *secretmem_mnt;
-> +
-> +struct file *secretmem_file_create(const char *name, unsigned int flags)
-> +{
-> +	struct inode *inode = alloc_anon_inode(secretmem_mnt->mnt_sb);
-> +	struct file *file = ERR_PTR(-ENOMEM);
-> +	struct secretmem_ctx *ctx;
-> +
-> +	if (IS_ERR(inode))
-> +		return ERR_CAST(inode);
-> +
-> +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-> +	if (!ctx)
-> +		goto err_free_inode;
-> +
-> +	file = alloc_file_pseudo(inode, secretmem_mnt, "secretmem",
-> +				 O_RDWR, &secretmem_fops);
-> +	if (IS_ERR(file))
-> +		goto err_free_ctx;
-> +
-> +	mapping_set_unevictable(inode->i_mapping);
-> +
-> +	inode->i_mapping->private_data = ctx;
-> +	inode->i_mapping->a_ops = &secretmem_aops;
-> +
-> +	/* pretend we are a normal file with zero size */
-> +	inode->i_mode |= S_IFREG;
-> +	inode->i_size = 0;
-> +
-> +	file->private_data = ctx;
-> +
-> +	return file;
-> +
-> +err_free_ctx:
-> +	kfree(ctx);
-> +err_free_inode:
-> +	iput(inode);
-> +	return file;
-> +}
-> +
-> +static void secretmem_evict_inode(struct inode *inode)
-> +{
-> +	struct secretmem_ctx *ctx = inode->i_private;
-> +
-> +	truncate_inode_pages_final(&inode->i_data);
-> +	clear_inode(inode);
-> +	kfree(ctx);
-> +}
-> +
-> +static const struct super_operations secretmem_super_ops = {
-> +	.evict_inode = secretmem_evict_inode,
-> +};
-> +
-> +static int secretmem_init_fs_context(struct fs_context *fc)
-> +{
-> +	struct pseudo_fs_context *ctx = init_pseudo(fc, SECRETMEM_MAGIC);
-> +
-> +	if (!ctx)
-> +		return -ENOMEM;
-> +	ctx->ops = &secretmem_super_ops;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct file_system_type secretmem_fs = {
-> +	.name		= "secretmem",
-> +	.init_fs_context = secretmem_init_fs_context,
-> +	.kill_sb	= kill_anon_super,
-> +};
-> +
-> +static int secretmem_init(void)
-> +{
-> +	int ret = 0;
-> +
-> +	secretmem_mnt = kern_mount(&secretmem_fs);
-> +	if (IS_ERR(secretmem_mnt))
-> +		ret = PTR_ERR(secretmem_mnt);
-> +
-> +	return ret;
-> +}
-> +fs_initcall(secretmem_init);
-> -- 
-> 2.26.2
-> 
-
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 45510c207a98..8e8b273d88d9 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -26,6 +26,22 @@ static inline int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
+ 		srgn->srgn_state == HPB_SRGN_VALID;
+ }
+ 
++static inline bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
++{
++	return req_op(cmd->request) == REQ_OP_READ;
++}
++
++static inline bool ufshpb_is_write_discard_cmd(struct scsi_cmnd *cmd)
++{
++	return op_is_write(req_op(cmd->request)) ||
++	       op_is_discard(req_op(cmd->request));
++}
++
++static inline bool ufshpb_is_support_chunk(int transfer_len)
++{
++	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
++}
++
+ static inline bool ufshpb_is_general_lun(int lun)
+ {
+ 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
+@@ -117,6 +133,224 @@ static inline void ufshpb_lu_put(struct ufshpb_lu *hpb)
+ 	put_device(&hpb->hpb_lu_dev);
+ }
+ 
++static inline u32 ufshpb_get_lpn(struct scsi_cmnd *cmnd)
++{
++	return blk_rq_pos(cmnd->request) >>
++		(ilog2(cmnd->device->sector_size) - 9);
++}
++
++static inline unsigned int ufshpb_get_len(struct scsi_cmnd *cmnd)
++{
++	return blk_rq_sectors(cmnd->request) >>
++		(ilog2(cmnd->device->sector_size) - 9);
++}
++
++static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
++			     int srgn_idx, int srgn_offset, int cnt)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int set_bit_len;
++	int bitmap_len = hpb->entries_per_srgn;
++
++next_srgn:
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	if ((srgn_offset + cnt) > bitmap_len)
++		set_bit_len = bitmap_len - srgn_offset;
++	else
++		set_bit_len = cnt;
++
++	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
++	    srgn->srgn_state == HPB_SRGN_VALID)
++		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
++
++	srgn_offset = 0;
++	if (++srgn_idx == hpb->srgns_per_rgn) {
++		srgn_idx = 0;
++		rgn_idx++;
++	}
++
++	cnt -= set_bit_len;
++	if (cnt > 0)
++		goto next_srgn;
++
++	WARN_ON(cnt < 0);
++}
++
++static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
++				   int srgn_idx, int srgn_offset, int cnt)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int bitmap_len = hpb->entries_per_srgn;
++	int bit_len;
++
++next_srgn:
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	if (!ufshpb_is_valid_srgn(rgn, srgn))
++		return true;
++
++	/*
++	 * If the region state is active, mctx must be allocated.
++	 * In this case, check whether the region is evicted or
++	 * mctx allcation fail.
++	 */
++	WARN_ON(!srgn->mctx);
++
++	if ((srgn_offset + cnt) > bitmap_len)
++		bit_len = bitmap_len - srgn_offset;
++	else
++		bit_len = cnt;
++
++	if (find_next_bit(srgn->mctx->ppn_dirty,
++			  bit_len, srgn_offset) >= srgn_offset)
++		return true;
++
++	srgn_offset = 0;
++	if (++srgn_idx == hpb->srgns_per_rgn) {
++		srgn_idx = 0;
++		rgn_idx++;
++	}
++
++	cnt -= bit_len;
++	if (cnt > 0)
++		goto next_srgn;
++
++	return false;
++}
++
++static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
++			  struct ufshpb_map_ctx *mctx, int pos, int *error)
++{
++	u64 *ppn_table;
++	struct page *page;
++	int index, offset;
++
++	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
++	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
++
++	page = mctx->m_page[index];
++	if (unlikely(!page)) {
++		*error = -ENOMEM;
++		dev_err(&hpb->hpb_lu_dev,
++			"error. cannot find page in mctx\n");
++		return 0;
++	}
++
++	ppn_table = page_address(page);
++	if (unlikely(!ppn_table)) {
++		*error = -ENOMEM;
++		dev_err(&hpb->hpb_lu_dev, "error. cannot get ppn_table\n");
++		return 0;
++	}
++
++	return ppn_table[offset];
++}
++
++static inline void
++ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
++			int *srgn_idx, int *offset)
++{
++	int rgn_offset;
++
++	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
++	rgn_offset = lpn & hpb->entries_per_rgn_mask;
++	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
++	*offset = rgn_offset & hpb->entries_per_srgn_mask;
++}
++
++static void
++ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
++				  u32 lpn, u64 ppn,  unsigned int transfer_len)
++{
++	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
++
++	cdb[0] = UFSHPB_READ;
++
++	put_unaligned_be64(ppn, &cdb[6]);
++	cdb[14] = transfer_len;
++}
++
++/* routine : READ10 -> HPB_READ  */
++static void ufshpb_prep_fn(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
++{
++	struct ufshpb_lu *hpb;
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	struct scsi_cmnd *cmd = lrbp->cmd;
++	u32 lpn;
++	u64 ppn;
++	unsigned long flags;
++	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
++	int err = 0;
++
++	hpb = ufshpb_get_hpb_data(cmd);
++	err = ufshpb_lu_get(hpb);
++	if (unlikely(err))
++		return;
++
++	WARN_ON(hpb->lun != cmd->device->lun);
++	if (!ufshpb_is_write_discard_cmd(cmd) &&
++	    !ufshpb_is_read_cmd(cmd))
++		goto put_hpb;
++
++	transfer_len = ufshpb_get_len(cmd);
++	if (unlikely(!transfer_len))
++		goto put_hpb;
++
++	lpn = ufshpb_get_lpn(cmd);
++	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	/* If command type is WRITE or DISCARD, set bitmap as drity */
++	if (ufshpb_is_write_discard_cmd(cmd)) {
++		spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
++				 transfer_len);
++		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++		goto put_hpb;
++	}
++
++	WARN_ON(!ufshpb_is_read_cmd(cmd));
++
++	if (!ufshpb_is_support_chunk(transfer_len))
++		goto put_hpb;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
++				   transfer_len)) {
++		atomic_inc(&hpb->stats.miss_cnt);
++		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++		goto put_hpb;
++	}
++
++	ppn = ufshpb_get_ppn(hpb, srgn->mctx, srgn_offset, &err);
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++	if (unlikely(err)) {
++		/*
++		 * In this case, the region state is active,
++		 * but the ppn table is not allocated.
++		 * Make sure that ppn table must be allocated on
++		 * active state.
++		 */
++		WARN_ON(true);
++		dev_err(&hpb->hpb_lu_dev,
++			"ufshpb_get_ppn failed. err %d\n", err);
++		goto put_hpb;
++	}
++
++	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
++
++	atomic_inc(&hpb->stats.hit_cnt);
++put_hpb:
++	ufshpb_lu_put(hpb);
++}
++
+ static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
+ 					     struct ufshpb_subregion *srgn)
+ {
+@@ -1672,6 +1906,7 @@ static struct ufshpb_driver ufshpb_drv = {
+ 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+ 	},
+ 	.ufshpb_ops = {
++		.prep_fn = ufshpb_prep_fn,
+ 		.reset = ufshpb_reset,
+ 		.reset_host = ufshpb_reset_host,
+ 		.suspend = ufshpb_suspend,
 -- 
- Kirill A. Shutemov
+2.17.1
+
+
