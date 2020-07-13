@@ -2,128 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C09021D73C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9577921D73F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 15:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729948AbgGMNa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 09:30:58 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:52538 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729735AbgGMNa6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 09:30:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594647056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mE434XxwP5PyRWK73J9DHyYPMWNnnmIgbcOoIUclI7Y=;
-        b=MgyQBc6viKaoWUCGmN00h3bVNdpTJbhnV51FeDPxGp4aDsKwheujAkLGP4fv05+V8cbs7s
-        C9plRdop7ygmFJj+GmVqeXceL2Y1ySHBBdywjITFMaMM9OPsFZhjiLcc/JDXO/r+K7CkmD
-        cKQ1bWZ9q87XKdVBb5O7QrgHsti4vaw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-iIkJF5WuNCizTUn0qGtMwg-1; Mon, 13 Jul 2020 09:30:43 -0400
-X-MC-Unique: iIkJF5WuNCizTUn0qGtMwg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729780AbgGMNdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 09:33:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729564AbgGMNdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 09:33:31 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5956419200C1;
-        Mon, 13 Jul 2020 13:30:42 +0000 (UTC)
-Received: from localhost (ovpn-116-148.gru2.redhat.com [10.97.116.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C36385D9DC;
-        Mon, 13 Jul 2020 13:30:41 +0000 (UTC)
-Date:   Mon, 13 Jul 2020 10:30:40 -0300
-From:   Bruno Meneguele <bmeneg@redhat.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        Jason@zx2c4.com
-Subject: Re: [PATCH v2] doc:kmsg: explictly state the return value in case of
- SEEK_CUR
-Message-ID: <20200713133040.GB4730@glitch>
-References: <20200710174423.10480-1-bmeneg@redhat.com>
- <20200713022558.GC491026@jagdpanzerIV.localdomain>
- <20200713131509.GC20226@alley>
+        by mail.kernel.org (Postfix) with ESMTPSA id CD012206F0;
+        Mon, 13 Jul 2020 13:33:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594647211;
+        bh=V6r4Vd0ntf60ms9BvuVNTsa0FkIV6RXDVM+LwGICXLw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jebLbqpU9BkeoVARZiIrMIIpbl3sUjLWNqnwQQ2WDCSlwQ8i8dKzW/gqYFKA7+bGw
+         DxLSazw26HbvtDAtyGTI7VXXv5Y3D+wk9lZlsQ7tOz8E8EB0qoNnbAp4RJ6Np/AmmA
+         1P2GA7GUN8Nbuzv6Kvic8JC292fM30ZxjLrlEK2k=
+Date:   Mon, 13 Jul 2020 14:33:26 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jordan Crouse <jcrouse@codeaurora.org>, joro@8bytes.org
+Cc:     linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iommu/arm-smmu: Mark qcom_smmu_client_of_match as
+ possibly unused
+Message-ID: <20200713133326.GB2739@willie-the-truck>
+References: <20200604203905.31964-1-jcrouse@codeaurora.org>
+ <20200608151308.GB8060@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <20200713131509.GC20226@alley>
-X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bmeneg@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20200608151308.GB8060@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---neYutvxvOLaeuPCA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jun 08, 2020 at 04:13:08PM +0100, Will Deacon wrote:
+> On Thu, Jun 04, 2020 at 02:39:04PM -0600, Jordan Crouse wrote:
+> > When CONFIG_OF=n of_match_device() gets pre-processed out of existence
+> > leaving qcom-smmu_client_of_match unused. Mark it as possibly unused to
+> > keep the compiler from warning in that case.
+> > 
+> > Fixes: 0e764a01015d ("iommu/arm-smmu: Allow client devices to select direct mapping")
+> > Reported-by: kbuild test robot <lkp@intel.com>
+> > Acked-by: Will Deacon <will@kernel.org>
+> > Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+> > ---
+> > 
+> >  drivers/iommu/arm-smmu-qcom.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
+> > index cf01d0215a39..be4318044f96 100644
+> > --- a/drivers/iommu/arm-smmu-qcom.c
+> > +++ b/drivers/iommu/arm-smmu-qcom.c
+> > @@ -12,7 +12,7 @@ struct qcom_smmu {
+> >  	struct arm_smmu_device smmu;
+> >  };
+> >  
+> > -static const struct of_device_id qcom_smmu_client_of_match[] = {
+> > +static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+> >  	{ .compatible = "qcom,adreno" },
+> >  	{ .compatible = "qcom,mdp4" },
+> >  	{ .compatible = "qcom,mdss" },
+> 
+> Thanks. Joerg -- can you pick this one up, please? I don't have any other
+> SMMU fixes pending at the moment.
 
-On Mon, Jul 13, 2020 at 03:15:09PM +0200, Petr Mladek wrote:
-> On Mon 2020-07-13 11:25:58, Sergey Senozhatsky wrote:
-> > On (20/07/10 14:44), Bruno Meneguele wrote:
-> > > The commit 625d3449788f ("Revert "kernel/printk: add kmsg SEEK_CUR
-> > > handling"") reverted a change done to the return value in case a SEEK=
-_CUR
-> > > operation was performed for kmsg buffer based on the fact that differ=
-ent
-> > > userspace apps were handling the new return value (-ESPIPE) in differ=
-ent
-> > > ways, breaking them.
-> > >=20
-> > > At the same time -ESPIPE was the wrong decision because kmsg /does su=
-pport/
-> > > seek() but doesn't follow the "normal" behavior userspace is used to.
-> > > Because of that and also considering the time -EINVAL has been used, =
-it was
-> > > decided to keep this way to avoid more userspace breakage.
-> > >=20
-> > > This patch adds an official statement to the kmsg documentation point=
-ing to
-> > > the current return value for SEEK_CUR, -EINVAL, thus userspace librar=
-ies
-> > > and apps can refer to it for a definitive guide on what to expect.
-> > >=20
-> > > Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
-> >=20
-> > Looks good to me,
-> > Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
->=20
-> The patch is committed in printk/linux.git, branch for-5.9.
->=20
-> Thanks for v2.
->=20
-> Best Regards,
-> Petr
->=20
+I can't see this in Joerg's tree or in linux-next. Joerg: did you pick this
+one up? (I thought you did, but I can't find it!).
 
-Thanks Sergey and Petr.
-
---=20
-bmeneg=20
-PGP Key: http://bmeneg.com/pubkey.txt
-
---neYutvxvOLaeuPCA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl8MYf4ACgkQYdRkFR+R
-okO59wf5AYv1JZs5ZKpnv12HJJ1eEtnHywi+AUGzH+TDmlXLq8IE1mwqw+Nfj1TI
-k7whD+BozqecifygMC/5yVO166N/D+Aco3kI1LgySTlMXuojuL0OEvrdcKW596Us
-A4kDcZrtuzx4fwmKj+SjL07ga2WfE8G8uOtUPtmNl7I4zswayu6Ujh7sJ4trq+1T
-wLwU19MzcXw43Xs50lIJNd287SFzrEWQ27Eeif3zYGWFQFZX5VSUkGoRtNudMyCd
-kiBvXrzLphGa2hdHLChKGrqwBgKIpQ2GfBUmS5LBQdDkCHgtFfJxNxwrBQBx9NY1
-f7TXJmGbxfxEVaAkUpX2E/AkzgUpug==
-=jeqx
------END PGP SIGNATURE-----
-
---neYutvxvOLaeuPCA--
-
+Will
