@@ -2,141 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2556821DDE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35FE21DDF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730129AbgGMQzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
+        id S1730203AbgGMQzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729659AbgGMQzC (ORCPT
+        with ESMTP id S1729659AbgGMQzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:55:02 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE47C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 09:55:01 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id d16so14266967edz.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 09:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HgOXhDZaQ0Vm8QAO9SEojO+HqYa4R2CkQWkXTg5E7NY=;
-        b=gtc+M+tWYcQvh1sK797pkjo7WfNXIE8olCSzxehn9iEfDXPy4UnYyp2+rSeemkOHd9
-         3YCD1bGiwRH6cQssBiZxingdGDUwZDouqVsreN1+gJuIGG6p5wdMSWJUxTsfZgJsaSP/
-         EKUruPSgSi5imDehnJ0OoKNYarRo4grmHiicSB3YKJASTXyGDOGVaFs1Xtu7/0rRGn5l
-         W9+vrC+x0eOE026JlZDzAPRS9I7c7ZrINzB0baTS0Fv4LSjRTfPGrURIPHkOUcVtnaEy
-         84Ykd5bPtW/7cJhsDtttHYS1i4aFielTGd+j2sm60fnPvc5Fai51ccDG/VbXOrStWecV
-         ncaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HgOXhDZaQ0Vm8QAO9SEojO+HqYa4R2CkQWkXTg5E7NY=;
-        b=g87ElBcdKlrD2QkmkIS7djSq99eNssEaZgBDBtWLwOOTeWCnXrc4GpyCcPikj4mF5p
-         +sh5MB5lSWkdMCuTXKsnN8QhGNnGxGWrfcpN8NdbDaEVdJx0J2L6EAVJCvmxvgBJgXuP
-         3PCXFIavuwLwSHJoc66s0Po10On2XSMTmx+v0M6lkdQfVYMUKzTMnsKKxpf38XxTJ5pn
-         b5mBo9N+o2sxvpKHEAAJmvazWz0mkXfsAeZbTJT2p/pxaAHjsilu4tC98Kn2a83GKI1a
-         Ml6dDoqDVMZhp5HuWmESK4U9aw1joS0JzdBoILMlgmIaX0Jx5g84zPI1GRAelYUHZOib
-         c3mQ==
-X-Gm-Message-State: AOAM530CaznY36s/oevD+VBYDgcWhgGoNXaVqtennoCU+4YCrmMam1Kz
-        5t8RhMFGE4WmxKPZptMj8wuLljizSNF7xapb/puFAw==
-X-Google-Smtp-Source: ABdhPJy2i/ttAyiKjR1qbX0QvV/QhWFNtJPFDiAHrxVvIXYFYUkb5Tgr0e/mIqA9cSxtejueFDTinGXoBIyHGcdsgj8=
-X-Received: by 2002:a50:d9cb:: with SMTP id x11mr299675edj.93.1594659300586;
- Mon, 13 Jul 2020 09:55:00 -0700 (PDT)
+        Mon, 13 Jul 2020 12:55:12 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB39C061794;
+        Mon, 13 Jul 2020 09:55:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HuDdCAe7E/MURwBsmW1Ls9iUs+3VUz9I3ziwdok6E+A=; b=LWb7VIGpl0H9u+jUhBSNqsfnkh
+        bI7HOZD2MHbpne8P2z3FF2pANyq/O8ttXKz04u7N2xaiedmLEqGd7qOcFY968v9TUKHQcTqqL20Pj
+        xg7dow/Qn1uV2dvTd1URZW80j6On7agD3JZkY64Vl13C7EVuq5rvK8R3oosHdsHeal3ejwztgJoAq
+        QlFoNCgY1gQ5BnT1IW9JY3YBcnbg78ejezNjzOSS3rtMjNoBARVCMx5ckbwcX3Ig7VBuWikmnkQEI
+        GBZE8bahcF2hRsRXOQeIN67F1ZxxHaiCnIX0mnSlZoZdfbE0vIseds6GoqtLPbjxMMHoM7S1LZr7s
+        ro7N6bwA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jv1jA-00043K-2o; Mon, 13 Jul 2020 16:54:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E60EE303A02;
+        Mon, 13 Jul 2020 18:54:49 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CCBF020D28BB0; Mon, 13 Jul 2020 18:54:49 +0200 (CEST)
+Date:   Mon, 13 Jul 2020 18:54:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] sched/uclamp: Add a new sysctl to control RT
+ default boost value
+Message-ID: <20200713165449.GM10769@hirez.programming.kicks-ass.net>
+References: <20200706142839.26629-1-qais.yousef@arm.com>
+ <20200706142839.26629-2-qais.yousef@arm.com>
+ <20200713112125.GG10769@hirez.programming.kicks-ass.net>
+ <20200713121246.xjif3g4zpja25o5r@e107158-lin.cambridge.arm.com>
+ <20200713133558.GK10769@hirez.programming.kicks-ass.net>
+ <20200713142754.tri5jljnrzjst2oe@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-References: <159457116473.754248.7879464730875147365.stgit@dwillia2-desk3.amr.corp.intel.com>
- <159457126779.754248.3575056680831729751.stgit@dwillia2-desk3.amr.corp.intel.com>
- <52e00a67-b686-8554-8b92-a172ba9f34b6@nvidia.com>
-In-Reply-To: <52e00a67-b686-8554-8b92-a172ba9f34b6@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 13 Jul 2020 09:54:49 -0700
-Message-ID: <CAPcyv4gQpAjkQ2j9D0pU-0UrmJzf9eLqtFsmqd8v5=+kyR3ZSg@mail.gmail.com>
-Subject: Re: [PATCH v2 19/22] mm/memremap_pages: Convert to 'struct range'
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Joao Martins <joao.m.martins@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713142754.tri5jljnrzjst2oe@e107158-lin.cambridge.arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 9:36 AM Ralph Campbell <rcampbell@nvidia.com> wrote:
->
->
-> On 7/12/20 9:27 AM, Dan Williams wrote:
-> > The 'struct resource' in 'struct dev_pagemap' is only used for holding
-> > resource span information. The other fields, 'name', 'flags', 'desc',
-> > 'parent', 'sibling', and 'child' are all unused wasted space.
-> >
-> > This is in preparation for introducing a multi-range extension of
-> > devm_memremap_pages().
-> >
-> > The bulk of this change is unwinding all the places internal to
-> > libnvdimm that used 'struct resource' unnecessarily.
-> >
-> > P2PDMA had a minor usage of the flags field, but only to report failures
-> > with "%pR". That is replaced with an open coded print of the range.
-> >
-> > Cc: Paul Mackerras <paulus@ozlabs.org>
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > Cc: Dan Williams <dan.j.williams@intel.com>
-> > Cc: Vishal Verma <vishal.l.verma@intel.com>
-> > Cc: Dave Jiang <dave.jiang@intel.com>
-> > Cc: Ben Skeggs <bskeggs@redhat.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Ira Weiny <ira.weiny@intel.com>
-> > Cc: Jason Gunthorpe <jgg@mellanox.com>
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > ---
-> >   arch/powerpc/kvm/book3s_hv_uvmem.c     |   13 +++--
-> >   drivers/dax/bus.c                      |   10 ++--
-> >   drivers/dax/bus.h                      |    2 -
-> >   drivers/dax/dax-private.h              |    5 --
-> >   drivers/dax/device.c                   |    3 -
-> >   drivers/dax/hmem/hmem.c                |    5 ++
-> >   drivers/dax/pmem/core.c                |   12 ++---
-> >   drivers/gpu/drm/nouveau/nouveau_dmem.c |    3 +
-> >   drivers/nvdimm/badrange.c              |   26 +++++------
-> >   drivers/nvdimm/claim.c                 |   13 +++--
-> >   drivers/nvdimm/nd.h                    |    3 +
-> >   drivers/nvdimm/pfn_devs.c              |   12 ++---
-> >   drivers/nvdimm/pmem.c                  |   26 ++++++-----
-> >   drivers/nvdimm/region.c                |   21 +++++----
-> >   drivers/pci/p2pdma.c                   |   11 ++---
-> >   include/linux/memremap.h               |    5 +-
-> >   include/linux/range.h                  |    6 ++
-> >   mm/memremap.c                          |   77 ++++++++++++++++----------------
-> >   tools/testing/nvdimm/test/iomap.c      |    2 -
-> >   19 files changed, 135 insertions(+), 120 deletions(-)
->
-> I think you are missing a call to memremap_pages() in lib/test_hmm.c
-> and a call to release_mem_region() that need to be converted too.
-> Try setting CONFIG_TEST_HMM=m.
+On Mon, Jul 13, 2020 at 03:27:55PM +0100, Qais Yousef wrote:
+> On 07/13/20 15:35, Peter Zijlstra wrote:
+> > > I protect this with rcu_read_lock() which as far as I know synchronize_rcu()
+> > > will ensure if we do the update during this section; we'll wait for it to
+> > > finish. New forkees entering the rcu_read_lock() section will be okay because
+> > > they should see the new value.
+> > > 
+> > > spinlocks() and mutexes seemed inferior to this approach.
+> > 
+> > Well, didn't we just write in another patch that p->uclamp_* was
+> > protected by both rq->lock and p->pi_lock?
+> 
+> __setscheduler_uclamp() path is holding these locks, not sure by design or it
+> just happened this path holds the lock. I can't see the lock in the
+> uclamp_fork() path. But it's hard sometimes to unfold the layers of callers,
+> especially not all call sites are annotated for which lock is assumed to be
+> held.
+> 
+> Is it safe to hold the locks in uclamp_fork() while the task is still being
+> created? My new code doesn't hold it of course.
+> 
+> We can enforce this rule if you like. Though rcu critical section seems lighter
+> weight to me.
+> 
+> If all of this does indeed start looking messy we can put the update in
+> a delayed worker and schedule that instead of doing synchronous setup.
 
-Thanks Ralph, looks like I overlooked these changes since the rebase.
-
-> Also, what about the call to release_mem_region() in
-> drivers/gpu/drm/nouveau/nouveau_dmem.c? Doesn't that need a small change too?
-
-I'll double check my config, that one should have been flagged at build time.
+sched_fork() doesn't need the locks, because at that point the task
+isn't visible yet. HOWEVER, sched_post_fork() is after pid-hash (per
+design) and thus the task is visible, so we can race against
+sched_setattr(), so we'd better hold those locks anyway.
