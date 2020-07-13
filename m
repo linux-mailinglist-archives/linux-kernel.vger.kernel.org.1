@@ -2,249 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08EF21DBA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E440921DBAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 18:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbgGMQ0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 12:26:07 -0400
-Received: from muru.com ([72.249.23.125]:36640 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729027AbgGMQ0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 12:26:07 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id B05BB8106;
-        Mon, 13 Jul 2020 16:26:02 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, Carlos Hernandez <ceh@ti.com>
-Subject: [PATCH] clocksource/drivers/timer-ti-dm: Fix suspend and resume for am3 and am4
-Date:   Mon, 13 Jul 2020 09:26:01 -0700
-Message-Id: <20200713162601.6829-1-tony@atomide.com>
-X-Mailer: git-send-email 2.27.0
+        id S1730066AbgGMQ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 12:26:47 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12629 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729593AbgGMQ0r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 12:26:47 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0c8b0d0000>; Mon, 13 Jul 2020 09:25:49 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 13 Jul 2020 09:26:46 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 13 Jul 2020 09:26:46 -0700
+Received: from [10.26.72.101] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 13 Jul
+ 2020 16:26:44 +0000
+Subject: Re: [PATCH v6 1/2] remoteproc: qcom: Add per subsystem SSR
+ notification
+To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <bjorn.andersson@linaro.org>, <tsoni@codeaurora.org>,
+        <psodagud@codeaurora.org>, <sidgup@codeaurora.org>,
+        <elder@ieee.org>, linux-tegra <linux-tegra@vger.kernel.org>
+References: <1592965408-16908-1-git-send-email-rishabhb@codeaurora.org>
+ <1592965408-16908-2-git-send-email-rishabhb@codeaurora.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <98e3a18e-1491-6f20-6507-d6e6817b76fe@nvidia.com>
+Date:   Mon, 13 Jul 2020 17:26:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1592965408-16908-2-git-send-email-rishabhb@codeaurora.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594657549; bh=n+W/fHPjiMLdifX49gddUCYGAELEgIBFfQAWGVbyyE8=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=WvP9QjqA1apj6IdMTqNWwQW8Mv+jSmgZuhsua2WWsJluO8QGxsdYFR0P3cbkPk2ZJ
+         Db9PDdGwAGhKyCtYnv0kEdeUbHIk2stgK52SzcgJoUEkjIvINh7mQM/FHi8Y981w0m
+         TAP+RtpFSWn9HGhhFrirKiVErYUsHI9O3JFcMgDUApXKfnt1dtJM9dH8f7rm4FJfb1
+         u4yM9+QmvpI7O9VZB550oy2yBrPYpFb2YziyZcLCELiYxznS9ZZwLCbWWDCm9uF6Jv
+         Wjr1x+JZUx8U/6wRy5Xv6TQo7vUcZ7x+WWVhcx4JYfp/qsPFW9g3vlqg1HW7MY4arz
+         iVBSiB9DTLXtA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Carlos Hernandez <ceh@ti.com> reported that we now have a suspend and
-resume regresssion on am3 and am4 compared to the earlier kernels. While
-suspend and resume works with v5.8-rc3, we now get errors with rtcwake:
 
-pm33xx pm33xx: PM: Could not transition all powerdomains to target state
-...
-rtcwake: write error
+On 24/06/2020 03:23, Rishabh Bhatnagar wrote:
+> Currently there is a single notification chain which is called whenever any
+> remoteproc shuts down. This leads to all the listeners being notified, and
+> is not an optimal design as kernel drivers might only be interested in
+> listening to notifications from a particular remoteproc. Create a global
+> list of remoteproc notification info data structures. This will hold the
+> name and notifier_list information for a particular remoteproc. The API
+> to register for notifications will use name argument to retrieve the
+> notification info data structure and the notifier block will be added to
+> that data structure's notification chain. Also move from blocking notifier
+> to srcu notifer based implementation to support dynamic notifier head
+> creation.
+> 
+> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+> ---
+>  drivers/remoteproc/qcom_common.c      | 90 ++++++++++++++++++++++++++++++-----
+>  drivers/remoteproc/qcom_common.h      |  5 +-
+>  include/linux/remoteproc/qcom_rproc.h | 20 ++++++--
+>  3 files changed, 95 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
+> index 9028cea..7a7384c 100644
+> --- a/drivers/remoteproc/qcom_common.c
+> +++ b/drivers/remoteproc/qcom_common.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/module.h>
+>  #include <linux/notifier.h>
+>  #include <linux/remoteproc.h>
+> +#include <linux/remoteproc/qcom_rproc.h>
+>  #include <linux/rpmsg/qcom_glink.h>
+>  #include <linux/rpmsg/qcom_smd.h>
+>  #include <linux/soc/qcom/mdt_loader.h>
+> @@ -23,7 +24,14 @@
+>  #define to_smd_subdev(d) container_of(d, struct qcom_rproc_subdev, subdev)
+>  #define to_ssr_subdev(d) container_of(d, struct qcom_rproc_ssr, subdev)
+>  
+> -static BLOCKING_NOTIFIER_HEAD(ssr_notifiers);
+> +struct qcom_ssr_subsystem {
+> +	const char *name;
+> +	struct srcu_notifier_head notifier_list;
+> +	struct list_head list;
+> +};
+> +
+> +static LIST_HEAD(qcom_ssr_subsystem_list);
+> +static DEFINE_MUTEX(qcom_ssr_subsys_lock);
+>  
+>  static int glink_subdev_start(struct rproc_subdev *subdev)
+>  {
+> @@ -189,37 +197,83 @@ void qcom_remove_smd_subdev(struct rproc *rproc, struct qcom_rproc_subdev *smd)
+>  }
+>  EXPORT_SYMBOL_GPL(qcom_remove_smd_subdev);
+>  
+> +static struct qcom_ssr_subsystem *qcom_ssr_get_subsys(const char *name)
+> +{
+> +	struct qcom_ssr_subsystem *info;
+> +
+> +	mutex_lock(&qcom_ssr_subsys_lock);
+> +	/* Match in the global qcom_ssr_subsystem_list with name */
+> +	list_for_each_entry(info, &qcom_ssr_subsystem_list, list)
+> +		if (!strcmp(info->name, name))
+> +			goto out;
+> +
+> +	info = kzalloc(sizeof(*info), GFP_KERNEL);
+> +	if (!info) {
+> +		info = ERR_PTR(-ENOMEM);
+> +		goto out;
+> +	}
 
-This is because we now fail to idle the system timer clocks that the
-idle code checks and the error gets propagated to the rtcwake.
 
-Turns out there are several issues that need to be fixed:
+The above appears to be breaking the ARM64 build on the latest -next
+when building the modules  ...
+ 
+  CC [M]  drivers/remoteproc/qcom_common.o
+drivers/remoteproc/qcom_common.c: In function 'qcom_ssr_get_subsys':
+remoteproc/qcom_common.c:210:9: error: implicit declaration of function 'kzalloc' [-Werror=implicit-function-declaration]
+  info = kzalloc(sizeof(*info), GFP_KERNEL);
+         ^~~~~~~
+drivers/remoteproc/qcom_common.c:210:7: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+  info = kzalloc(sizeof(*info), GFP_KERNEL);
 
-1. Ignore no-idle and no-reset configured timers for the ti-sysc
-   interconnect target driver as otherwise it will keep the system timer
-   clocks enabled
+Cheers
+Jon
 
-2. Toggle the system timer functional clock for suspend for am3 and am4
-   (but not for clocksource on am3)
-
-3. Only reconfigure type1 timers in dmtimer_systimer_disable()
-
-4. Use of_machine_is_compatible() instead of of_device_is_compatible()
-   for checking the SoC type
-
-Fixes: 52762fbd1c47 ("clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support")
-Reported-by: Carlos Hernandez <ceh@ti.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/bus/ti-sysc.c                      | 22 +++++++++++
- drivers/clocksource/timer-ti-dm-systimer.c | 46 +++++++++++++++++-----
- 2 files changed, 58 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -2877,6 +2877,24 @@ static int sysc_check_disabled_devices(struct sysc *ddata)
- 	return error;
- }
- 
-+/*
-+ * Ignore timers tagged with no-reset and no-idle. These are likely in use,
-+ * for example by drivers/clocksource/timer-ti-dm-systimer.c. If more checks
-+ * are needed, we could also look at the timer register configuration.
-+ */
-+static int sysc_check_active_timer(struct sysc *ddata)
-+{
-+	if (ddata->cap->type != TI_SYSC_OMAP2_TIMER &&
-+	    ddata->cap->type != TI_SYSC_OMAP4_TIMER)
-+		return 0;
-+
-+	if ((ddata->cfg.quirks & SYSC_QUIRK_NO_RESET_ON_INIT) &&
-+	    (ddata->cfg.quirks & SYSC_QUIRK_NO_IDLE))
-+		return -EBUSY;
-+
-+	return 0;
-+}
-+
- static const struct of_device_id sysc_match_table[] = {
- 	{ .compatible = "simple-bus", },
- 	{ /* sentinel */ },
-@@ -2933,6 +2951,10 @@ static int sysc_probe(struct platform_device *pdev)
- 	if (error)
- 		return error;
- 
-+	error = sysc_check_active_timer(ddata);
-+	if (error)
-+		return error;
-+
- 	error = sysc_get_clocks(ddata);
- 	if (error)
- 		return error;
-diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
---- a/drivers/clocksource/timer-ti-dm-systimer.c
-+++ b/drivers/clocksource/timer-ti-dm-systimer.c
-@@ -19,7 +19,7 @@
- /* For type1, set SYSC_OMAP2_CLOCKACTIVITY for fck off on idle, l4 clock on */
- #define DMTIMER_TYPE1_ENABLE	((1 << 9) | (SYSC_IDLE_SMART << 3) | \
- 				 SYSC_OMAP2_ENAWAKEUP | SYSC_OMAP2_AUTOIDLE)
--
-+#define DMTIMER_TYPE1_DISABLE	(SYSC_OMAP2_SOFTRESET | SYSC_OMAP2_AUTOIDLE)
- #define DMTIMER_TYPE2_ENABLE	(SYSC_IDLE_SMART_WKUP << 2)
- #define DMTIMER_RESET_WAIT	100000
- 
-@@ -44,6 +44,8 @@ struct dmtimer_systimer {
- 	u8 ctrl;
- 	u8 wakeup;
- 	u8 ifctrl;
-+	struct clk *fck;
-+	struct clk *ick;
- 	unsigned long rate;
- };
- 
-@@ -298,16 +300,20 @@ static void __init dmtimer_systimer_select_best(void)
- }
- 
- /* Interface clocks are only available on some SoCs variants */
--static int __init dmtimer_systimer_init_clock(struct device_node *np,
-+static int __init dmtimer_systimer_init_clock(struct dmtimer_systimer *t,
-+					      struct device_node *np,
- 					      const char *name,
- 					      unsigned long *rate)
- {
- 	struct clk *clock;
- 	unsigned long r;
-+	bool is_ick = false;
- 	int error;
- 
-+	is_ick = !strncmp(name, "ick", 3);
-+
- 	clock = of_clk_get_by_name(np, name);
--	if ((PTR_ERR(clock) == -EINVAL) && !strncmp(name, "ick", 3))
-+	if ((PTR_ERR(clock) == -EINVAL) && is_ick)
- 		return 0;
- 	else if (IS_ERR(clock))
- 		return PTR_ERR(clock);
-@@ -320,6 +326,11 @@ static int __init dmtimer_systimer_init_clock(struct device_node *np,
- 	if (!r)
- 		return -ENODEV;
- 
-+	if (is_ick)
-+		t->ick = clock;
-+	else
-+		t->fck = clock;
-+
- 	*rate = r;
- 
- 	return 0;
-@@ -339,7 +350,10 @@ static void dmtimer_systimer_enable(struct dmtimer_systimer *t)
- 
- static void dmtimer_systimer_disable(struct dmtimer_systimer *t)
- {
--	writel_relaxed(0, t->base + t->sysc);
-+	if (!dmtimer_systimer_revision1(t))
-+		return;
-+
-+	writel_relaxed(DMTIMER_TYPE1_DISABLE, t->base + t->sysc);
- }
- 
- static int __init dmtimer_systimer_setup(struct device_node *np,
-@@ -366,13 +380,13 @@ static int __init dmtimer_systimer_setup(struct device_node *np,
- 		pr_err("%s: clock source init failed: %i\n", __func__, error);
- 
- 	/* For ti-sysc, we have timer clocks at the parent module level */
--	error = dmtimer_systimer_init_clock(np->parent, "fck", &rate);
-+	error = dmtimer_systimer_init_clock(t, np->parent, "fck", &rate);
- 	if (error)
- 		goto err_unmap;
- 
- 	t->rate = rate;
- 
--	error = dmtimer_systimer_init_clock(np->parent, "ick", &rate);
-+	error = dmtimer_systimer_init_clock(t, np->parent, "ick", &rate);
- 	if (error)
- 		goto err_unmap;
- 
-@@ -496,12 +510,18 @@ static void omap_clockevent_idle(struct clock_event_device *evt)
- 	struct dmtimer_systimer *t = &clkevt->t;
- 
- 	dmtimer_systimer_disable(t);
-+	clk_disable(t->fck);
- }
- 
- static void omap_clockevent_unidle(struct clock_event_device *evt)
- {
- 	struct dmtimer_clockevent *clkevt = to_dmtimer_clockevent(evt);
- 	struct dmtimer_systimer *t = &clkevt->t;
-+	int error;
-+
-+	error = clk_enable(t->fck);
-+	if (error)
-+		pr_err("could not enable timer fck on resume: %i\n", error);
- 
- 	dmtimer_systimer_enable(t);
- 	writel_relaxed(OMAP_TIMER_INT_OVERFLOW, t->base + t->irq_ena);
-@@ -570,8 +590,8 @@ static int __init dmtimer_clockevent_init(struct device_node *np)
- 					3, /* Timer internal resynch latency */
- 					0xffffffff);
- 
--	if (of_device_is_compatible(np, "ti,am33xx") ||
--	    of_device_is_compatible(np, "ti,am43")) {
-+	if (of_machine_is_compatible("ti,am33xx") ||
-+	    of_machine_is_compatible("ti,am43")) {
- 		dev->suspend = omap_clockevent_idle;
- 		dev->resume = omap_clockevent_unidle;
- 	}
-@@ -616,12 +636,18 @@ static void dmtimer_clocksource_suspend(struct clocksource *cs)
- 
- 	clksrc->loadval = readl_relaxed(t->base + t->counter);
- 	dmtimer_systimer_disable(t);
-+	clk_disable(t->fck);
- }
- 
- static void dmtimer_clocksource_resume(struct clocksource *cs)
- {
- 	struct dmtimer_clocksource *clksrc = to_dmtimer_clocksource(cs);
- 	struct dmtimer_systimer *t = &clksrc->t;
-+	int error;
-+
-+	error = clk_enable(t->fck);
-+	if (error)
-+		pr_err("could not enable timer fck on resume: %i\n", error);
- 
- 	dmtimer_systimer_enable(t);
- 	writel_relaxed(clksrc->loadval, t->base + t->counter);
-@@ -653,8 +679,8 @@ static int __init dmtimer_clocksource_init(struct device_node *np)
- 	dev->mask = CLOCKSOURCE_MASK(32);
- 	dev->flags = CLOCK_SOURCE_IS_CONTINUOUS;
- 
--	if (of_device_is_compatible(np, "ti,am33xx") ||
--	    of_device_is_compatible(np, "ti,am43")) {
-+	/* Unlike for clockevent, legacy code sets suspend only for am4 */
-+	if (of_machine_is_compatible("ti,am43")) {
- 		dev->suspend = dmtimer_clocksource_suspend;
- 		dev->resume = dmtimer_clocksource_resume;
- 	}
 -- 
-2.27.0
+nvpublic
