@@ -2,641 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002D321CFD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D18421CF96
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729466AbgGMGjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:39:23 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:22406 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729352AbgGMGjU (ORCPT
+        id S1728985AbgGMGYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:24:42 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:23706 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728463AbgGMGYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:39:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1594622352;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=w/0DbeTacaeEizW5Hhm6Sp74ZfqX1akCZ5yAL47coh0=;
-        b=jR7pp+cRM6Grom/jNr9TGBoZyEIPu4dxYyzIzail+z8x4iQ5S5qj9BFZidgUAhRpO2
-        ZEZeCi+HvXJFu51I7SdILriHkS9sQbrOwCXF6dBPU01ndJwa3h11BzqfBo6eKaSeQUP1
-        2hoVdrcE2jqpha47EikV1VP1QA1mLiq8K905UcxvdILuL8fyKvpub5ggs0pRYDfQsc6h
-        MQK1Fs4EJWg6kU90dBlB0hestVzeJI/or0NyBvOB4D38CnwF+auSeaprq83ibcBFn4Pb
-        75plEJ6BfqFrloxIGqVy7EzPErve+2NAplR9oNrvA5D5LGovX7BhR/ytz/8xXSvL1BB2
-        VeHw==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9xmwdNnzGHXPaIvSfHReW"
-X-RZG-CLASS-ID: mo00
-Received: from positron.chronox.de
-        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
-        with ESMTPSA id y0546bw6D6bhk2E
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Mon, 13 Jul 2020 08:37:43 +0200 (CEST)
-From:   Stephan =?ISO-8859-1?Q?M=FCller?= <smueller@chronox.de>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-api@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Nicolai Stange <nstange@suse.de>,
-        "Peter, Matthias" <matthias.peter@bsi.bund.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Roman Drahtmueller <draht@schaltsekun.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH v31 12/12] LRNG - add power-on and runtime self-tests
-Date:   Mon, 13 Jul 2020 08:22:13 +0200
-Message-ID: <2508394.X9hSmTKtgW@positron.chronox.de>
-In-Reply-To: <2050754.Mh6RI2rZIc@positron.chronox.de>
-References: <2050754.Mh6RI2rZIc@positron.chronox.de>
+        Mon, 13 Jul 2020 02:24:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1594621480; x=1626157480;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=JevabZdcZ/K49lBtfjW4K2P4+aSSGDP4/z2Q52i1vSs=;
+  b=ThPJP0im/UYpLcr0m3JF48gLGFLSMWp6PzXR/T0VcupuHqlheLmqjGN8
+   HiS6I6kLN3UOFrs6qx3t/XM/H+K9un8ZMD3Fvd12X5A/H3L9dmVSMVcpj
+   k91xMpdrC3cRIWanSLtZtal+B2eg/GWlN/v4j0SJ8IBpJ16fc+NiQ9IAX
+   BBO+dIibY5+oegyEZ9wkeIrUPAHjd/6+AAw6zKvewgQv4yewEQlbxBYR6
+   2vsCqIYi0YYDleg9WDSo21UqU+nATZ+Lkt+0Y7/EC7IayvdhNc1V3Bg2o
+   NztsQ/OXP6LeMUIdaToEt7mztLy5ede0zAl043QPKRq3nKBlU+Rf6u+Pk
+   w==;
+IronPort-SDR: XqDggY6UzpA8cHwbIDNum15wnxBsF1TSCEgZFOsuTpCi4EgRAydLkdp4YsGeJO/DaZj/m/10Ez
+ P1ULVD7YguLW179PzdWmbt4HR3aD4qvSdEQFjkzQqDiqtBkL+zUz0/rP4bAXt4QZdxznKL/kqt
+ 4HSkkdEq8NxjVZ9GNVcZfq/XMASMxHNc4namYnzfregYjLBRC8jz6mZaqJBRFUWse9zfCXx8Qu
+ xOGmrpGzbrIXc8rDJL0ykO0FwZuP59qnNfV1ik9ojc+wANK65kRs/ngFbciA3PgdM3mmtoeNe1
+ I9M=
+X-IronPort-AV: E=Sophos;i="5.75,346,1589266800"; 
+   d="scan'208";a="87286966"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Jul 2020 23:24:40 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sun, 12 Jul 2020 23:24:08 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Sun, 12 Jul 2020 23:24:10 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V8zohyIh3cjb+4D4qk1lyAfI4sLygOqdzItfitpTffqqa0QWb1fJdqlKR6ALkVIlY8pIX6NGfxzCdarZoB07MfHi/a4+6nqCUm8tfgDXMU1cxm8LRrkrjipXL7lzyuFXKqr+P10fyJ0v6eeabeGznP3z1OZdvu0JkUhliP6LXsUtQKvSppk9Nsk+y2aNplbKrdOpPwbYY8H9JISOodGpdgDDymniaWbAVd2ZKB+NyniOIo/fmmaDP54IY+jJf5knmYPD5Y4C+Z2TulD+AXJWTvMtrgHYOfzBeECSDeKBRMd8L00pTHrli62MWwc+3s0HGDcetrH7RNKdnj406d1IBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JevabZdcZ/K49lBtfjW4K2P4+aSSGDP4/z2Q52i1vSs=;
+ b=Gep1w5GSLgdWIfEoapsPd69TkGWFEj9N6THxtCZ2KwEbSJFzsHV2xgs/a6Dl0SyqJtHPz8/+yGlxefzZFnYTnLLO+azcjSjmoE1b3t14tYJafln75HLcQsuCz2jHXzXevVqnwN953JrbRbXtJcCAIs05puVSj88wiJshiDwu34XdVqzmjV6cGsedQHAmRBaHd/eYh6OOTGdwlUx9isOrTNtWfAPp/kaNkDVNB9nl6BHMGUxw994z6JxTfHerl+g1MaxCAPSKrDcX5I57FXH7e150tPjWb2CkXkivALfqfrhlSrRzZzZ8tc9Js0s++cKfJ7c3BNA3He6qAIPDAsLwXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JevabZdcZ/K49lBtfjW4K2P4+aSSGDP4/z2Q52i1vSs=;
+ b=gE1Ju3ZSV/I+/ps1Jd05X7guiGbT8R52F65c4xATV57k2G2qzhUsO0j9SDf4mOoG4zwPFTDKgYjmDnc2CUw7Z0uiBccgosv3denfoNkQPFLTZsEcExPfVdMAU7s/8sZw8k0gGwG3lcFSbL7UcbmcLCS/lIqgC7Q2AX8QwnIiOWk=
+Received: from BYAPR11MB2856.namprd11.prod.outlook.com (2603:10b6:a02:bd::11)
+ by BYAPR11MB3576.namprd11.prod.outlook.com (2603:10b6:a03:b4::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.24; Mon, 13 Jul
+ 2020 06:24:37 +0000
+Received: from BYAPR11MB2856.namprd11.prod.outlook.com
+ ([fe80::f1d5:60ca:d163:c1b3]) by BYAPR11MB2856.namprd11.prod.outlook.com
+ ([fe80::f1d5:60ca:d163:c1b3%3]) with mapi id 15.20.3174.025; Mon, 13 Jul 2020
+ 06:24:37 +0000
+From:   <Tudor.Ambarus@microchip.com>
+To:     <p.yadav@ti.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+        <vigneshr@ti.com>, <broonie@kernel.org>,
+        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <Ludovic.Desroches@microchip.com>, <matthias.bgg@gmail.com>,
+        <michal.simek@xilinx.com>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     <nsekhar@ti.com>, <boris.brezillon@collabora.com>
+Subject: Re: [PATCH v10 04/17] spi: spi-mtk-nor: reject DTR ops
+Thread-Topic: [PATCH v10 04/17] spi: spi-mtk-nor: reject DTR ops
+Thread-Index: AQHWWN5HTvB91P8nH0ODLTeFKdlZcQ==
+Date:   Mon, 13 Jul 2020 06:24:37 +0000
+Message-ID: <b0e86071-2808-ec4b-e09c-3614bc9c205a@microchip.com>
+References: <20200623183030.26591-1-p.yadav@ti.com>
+ <20200623183030.26591-5-p.yadav@ti.com>
+In-Reply-To: <20200623183030.26591-5-p.yadav@ti.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+authentication-results: ti.com; dkim=none (message not signed)
+ header.d=none;ti.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [86.120.242.181]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2be7e176-fb07-43df-a9d1-08d826f56ac3
+x-ms-traffictypediagnostic: BYAPR11MB3576:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR11MB357640DF67F7B762301963ACF0600@BYAPR11MB3576.namprd11.prod.outlook.com>
+x-bypassexternaltag: True
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MmQiZpziSInvudUIawGfdeHeTM07DHlBxxtz2Xt+Qczl05ou1xP9LGIIk3E5MhTlnQXV9PU8LWgjd21S4FwBD0+JJ0xVtCCwKS5qHedCBCOzf9llQWVCGanuM2gaJ3ZTDnZvOLyk8+7sEFQRxH1tc3rG9RRaSKbEwXVL00OpGWhRv5VBmGrUyuWy7LoEG3czbXRPp+GRhnnbDJnR6uL6WszwQh/IKK9rn43uWV3X/hku6eLg06ADtDfatW2HkTN55nZ/+a0Zh6xWifmQUfZsBnOhAMqqwzt2HTzwjjgGptDJ1J4RAmP4HMSUjkPPUs9JW1LwqnIsUDzx73HHevsdEK5gQ21plXouRVcIEO8yH3uZqqeaWprH84euVge0yw9xvP30pAfiVcL7bTSfLLsvdQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2856.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(366004)(376002)(136003)(39860400002)(396003)(26005)(31686004)(8676002)(2906002)(86362001)(186003)(71200400001)(66476007)(316002)(66556008)(91956017)(64756008)(66446008)(36756003)(6506007)(53546011)(7416002)(478600001)(66946007)(76116006)(4326008)(2616005)(8936002)(54906003)(6486002)(6512007)(110136005)(5660300002)(31696002)(921003)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 5wwQbZEH24EPqmBAcSW8RkisuKuqo5OEDrjnfVCTKKOqd03Wz76C7E9c+Lc3tE2Ossi7asw6EkRUqvGtyBE5bPBWn1bDGmMYZ8ECpfqTIpXO4eu10IMMBVBTNGsrAovD5Q7fzV1GD362Zzkzc6WSjyG0tyxUdHjGh/dzL0VlMk//ekQyBLSaAp7VbI2gGl9RDBsbTz37iKxi7sF+/VgvrcvJgo6Cydbpxn6sCTMuTePWxOOrP7n7Pnndd+DBl95ejuG3F6QmIJWOhvCa/oVkYzYQLAiI0c0e2t/Hop5T/OVIwudSSwRPN6GoFmXBXx5QltLhFDqKpjPzT2CxJXxi9HYfjd4GVga5OZJJZMCYKXClKdNRY0jzsJbJLg6uDdC6ym0d8VFokUXh+HEvs4QN9OMfCrbMgsgq9Twr3OsfLySRiFQIaC/aYmWHf0yuuHG6lmH8cWo5fjEIKZnMaH+EqqQLHrEuj3J6KYtrD4vmMIx8GJ7/4Vb3uebzZNkXvgFb
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AB1940F37E9DE64D91DA79EE22BE5869@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2856.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2be7e176-fb07-43df-a9d1-08d826f56ac3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2020 06:24:37.1117
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dWa+02RctGgK3t13eefo1T+yNnUnZ8WIwCJ+GRpbPDqpUyv7B6Di92mDDrplQnCtsPU3wvNmA5ittFdOEkjdlBpdreqjD88KHrz6Xt0b8ss=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3576
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Parts of the LRNG are already covered by self-tests, including:
-
-* Self-test of SP800-90A DRBG provided by the Linux kernel crypto API.
-
-* Self-test of the PRNG provided by the Linux kernel crypto API.
-
-* Raw noise source data testing including SP800-90B compliant
-  tests when enabling CONFIG_LRNG_HEALTH_TESTS
-
-This patch adds the self-tests for the remaining critical functions of
-the LRNG that are essential to maintain entropy and provide
-cryptographic strong random numbers. The following self-tests are
-implemented:
-
-* Self-test of the time array maintenance. This test verifies whether
-the time stamp array management to store multiple values in one integer
-implements a concatenation of the data.
-
-* Self-test of the LFSR operation. This test injects a monotonic
-increasing counter into the LFSR. After completion of the injection of
-the counter, 3 pool words are compared with known good values. The known
-good values are calculated with the newly-developed tool
-lfsr_testvector_generation provided as part of the LRNG test tool set at
-[1].
-
-* Self-test of the Hash_DF operation ensures that this function operates
-compliant to the specification. The self-test performs a Hash_DF
-operation of a zeroized entropy pool state. The test vectors are
-generated using the newly-developed tool hash_df_testvector_generation
-provided as part of the LRNG test tool set at [1].
-
-* Self-test of the ChaCha20 DRNG is based on the self-tests that are
-already present and implemented with the stand-alone user space
-ChaCha20 DRNG implementation available at [2]. The self-tests cover
-different use cases of the DRNG seeded with known seed data.
-
-The status of the LRNG self-tests is provided with the selftest_status
-SysFS file. If the file contains a zero, the self-tests passed. The
-value 0xffffffff means that the self-tests were not executed. Any other
-value indicates a self-test failure.
-
-The self-test may be compiled to panic the system if the self-test
-fails.
-
-All self-tests operate on private state data structures. This implies
-that none of the self-tests have any impact on the regular LRNG
-operations. This allows the self-tests to be repeated at runtime by
-writing anything into the selftest_status SysFS file.
-
-[1] https://www.chronox.de/lrng.html
-[2] https://www.chronox.de/chacha20.html
-
-CC: "Eric W. Biederman" <ebiederm@xmission.com>
-CC: "Alexander E. Patrakov" <patrakov@gmail.com>
-CC: "Ahmed S. Darwish" <darwish.07@gmail.com>
-CC: "Theodore Y. Ts'o" <tytso@mit.edu>
-CC: Willy Tarreau <w@1wt.eu>
-CC: Matthew Garrett <mjg59@srcf.ucam.org>
-CC: Vito Caputo <vcaputo@pengaru.com>
-CC: Andreas Dilger <adilger.kernel@dilger.ca>
-CC: Jan Kara <jack@suse.cz>
-CC: Ray Strode <rstrode@redhat.com>
-CC: William Jon McCann <mccann@jhu.edu>
-CC: zhangjs <zachary@baishancloud.com>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: Florian Weimer <fweimer@redhat.com>
-CC: Lennart Poettering <mzxreary@0pointer.de>
-CC: Nicolai Stange <nstange@suse.de>
-CC: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-CC: Neil Horman <nhorman@redhat.com>
-Signed-off-by: Stephan Mueller <smueller@chronox.de>
----
- drivers/char/lrng/Kconfig         |  25 ++
- drivers/char/lrng/Makefile        |   1 +
- drivers/char/lrng/lrng_selftest.c | 437 ++++++++++++++++++++++++++++++
- 3 files changed, 463 insertions(+)
- create mode 100644 drivers/char/lrng/lrng_selftest.c
-
-diff --git a/drivers/char/lrng/Kconfig b/drivers/char/lrng/Kconfig
-index 1e5f28b8face..a58147aa797d 100644
---- a/drivers/char/lrng/Kconfig
-+++ b/drivers/char/lrng/Kconfig
-@@ -221,4 +221,29 @@ config LRNG_TESTING
- 
- endif #LRNG_TESTING_MENU
- 
-+config LRNG_SELFTEST
-+	bool "Enable power-on and on-demand self-tests"
-+	help
-+	  The power-on self-tests are executed during boot time
-+	  covering the ChaCha20 DRNG, the LFSR processing and the
-+	  time stamp management of the LRNG.
-+
-+	  The on-demand self-tests are triggered by writing any
-+	  value into the SysFS file selftest_status. At the same
-+	  time, when reading this file, the test status is
-+	  returned. A zero indicates that all tests were executed
-+	  successfully.
-+
-+	  If unsure, say Y.
-+
-+if LRNG_SELFTEST
-+
-+config LRNG_SELFTEST_PANIC
-+	bool "Panic the kernel upon self-test failure"
-+	help
-+	  If the option is enabled, the kernel is terminated if an
-+	  LRNG power-on self-test failure is detected.
-+
-+endif # LRNG_SELFTEST
-+
- endif # LRNG
-diff --git a/drivers/char/lrng/Makefile b/drivers/char/lrng/Makefile
-index b2ce1979dc4b..92219c565f66 100644
---- a/drivers/char/lrng/Makefile
-+++ b/drivers/char/lrng/Makefile
-@@ -16,3 +16,4 @@ obj-$(CONFIG_LRNG_KCAPI)	+= lrng_kcapi.o
- obj-$(CONFIG_LRNG_JENT)		+= lrng_jent.o
- obj-$(CONFIG_LRNG_HEALTH_TESTS)	+= lrng_health.o
- obj-$(CONFIG_LRNG_TESTING)	+= lrng_testing.o
-+obj-$(CONFIG_LRNG_SELFTEST)	+= lrng_selftest.o
-diff --git a/drivers/char/lrng/lrng_selftest.c b/drivers/char/lrng/lrng_selftest.c
-new file mode 100644
-index 000000000000..2914b4c87d84
---- /dev/null
-+++ b/drivers/char/lrng/lrng_selftest.c
-@@ -0,0 +1,437 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+/*
-+ * LRNG power-on and on-demand self-test
-+ *
-+ * Copyright (C) 2016 - 2020, Stephan Mueller <smueller@chronox.de>
-+ */
-+
-+/*
-+ * In addition to the self-tests below, the following LRNG components
-+ * are covered with self-tests during regular operation:
-+ *
-+ * * power-on self-test: SP800-90A DRBG provided by the Linux kernel crypto API
-+ * * power-on self-test: PRNG provided by the Linux kernel crypto API
-+ * * runtime test: Raw noise source data testing including SP800-90B compliant
-+ *		   tests when enabling CONFIG_LRNG_HEALTH_TESTS
-+ *
-+ * Additional developer tests present with LRNG code:
-+ * * SP800-90B APT and RCT test enforcement validation when enabling
-+ *   CONFIG_LRNG_APT_BROKEN or CONFIG_LRNG_RCT_BROKEN.
-+ * * Collection of raw entropy from the interrupt noise source when enabling
-+ *   CONFIG_LRNG_TESTING and pulling the data from the kernel with the provided
-+ *   interface.
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/module.h>
-+#include <linux/lrng.h>
-+#include <linux/slab.h>
-+
-+#include "lrng_chacha20.h"
-+#include "lrng_internal.h"
-+#include "lrng_lfsr.h"
-+#include "lrng_sw_noise.h"
-+
-+#define LRNG_SELFTEST_PASSED		0
-+#define LRNG_SEFLTEST_ERROR_TIME	(1 << 0)
-+#define LRNG_SEFLTEST_ERROR_LFSR	(1 << 1)
-+#define LRNG_SEFLTEST_ERROR_CHACHA20	(1 << 2)
-+#define LRNG_SEFLTEST_ERROR_HASHDF	(1 << 3)
-+#define LRNG_SELFTEST_NOT_EXECUTED	0xffffffff
-+
-+static u32 lrng_time_selftest[LRNG_TIME_ARRAY_SIZE];
-+
-+static unsigned int lrng_selftest_status = LRNG_SELFTEST_NOT_EXECUTED;
-+
-+static inline void lrng_selftest_bswap32(u32 *ptr, u32 words)
-+{
-+	u32 i;
-+
-+	/* Byte-swap data which is an LE representation */
-+	for (i = 0; i < words; i++) {
-+		*ptr = cpu_to_le32(*ptr);
-+		ptr++;
-+	}
-+}
-+
-+static inline void lrng_time_process_selftest_insert(u32 time)
-+{
-+	static u32 lrng_time_selftest_ptr = 0;
-+	u32 ptr = lrng_time_selftest_ptr++ & LRNG_TIME_WORD_MASK;
-+
-+	lrng_time_selftest[lrng_time_idx2array(ptr)] |=
-+		lrng_time_slot_val(time & LRNG_TIME_SLOTSIZE_MASK,
-+				   lrng_time_idx2slot(ptr));
-+}
-+
-+static unsigned int lrng_time_process_selftest(void)
-+{
-+	u32 time;
-+	u32 idx_zero_compare = (0 << 0) | (1 << 8) | (2 << 16) | (3 << 24);
-+	u32 idx_one_compare  = (4 << 0) | (5 << 8) | (6 << 16) | (7 << 24);
-+	u32 idx_last_compare = ((LRNG_TIME_NUM_VALUES - 4) << 0)  |
-+			       ((LRNG_TIME_NUM_VALUES - 3) << 8)  |
-+			       ((LRNG_TIME_NUM_VALUES - 2) << 16) |
-+			       ((LRNG_TIME_NUM_VALUES - 1) << 24);
-+
-+	(void)idx_one_compare;
-+
-+	for (time = 0; time < LRNG_TIME_NUM_VALUES; time++)
-+		lrng_time_process_selftest_insert(time);
-+
-+	if ((lrng_time_selftest[0] != idx_zero_compare) ||
-+#if (LRNG_TIME_ARRAY_SIZE > 1)
-+	    (lrng_time_selftest[1] != idx_one_compare)  ||
-+#endif
-+	    (lrng_time_selftest[LRNG_TIME_ARRAY_SIZE - 1] != idx_last_compare))
-+	{
-+		pr_err("LRNG time array self-test FAILED\n");
-+		return LRNG_SEFLTEST_ERROR_TIME;
-+	}
-+
-+	return LRNG_SELFTEST_PASSED;
-+}
-+
-+/*
-+ * The test vectors are generated with the lfsr_testvector_generation tool
-+ * provided as part of the test tool set of the LRNG.
-+ */
-+static unsigned int lrng_pool_lfsr_selftest(void)
-+{
-+	/*
-+	 * First, 67th and last entry of entropy pool.
-+	 *
-+	 * The 67th entry is picked because this one is the first to receive
-+	 * an entry. As we start with 1 to inject into the LFSR, the
-+	 * 67th entry should be equal to rol(1, 7) >> 3 considering that
-+	 * all other values of the LFSR are zero and the the twist value of 0
-+	 * is applied.
-+	 */
-+	static const u32 lrng_lfsr_selftest_result[][3] = {
-+		{ 0xf56df24a, 0x00000010, 0x0e014939 },
-+		{ 0x4b130726, 0x00000010, 0x2802f509 },
-+		{ 0x87279152, 0x00000010, 0x00150000 },
-+		{ 0x0b67f997, 0x00000010, 0x00150000 },
-+		{ 0x4fea174f, 0x00000010, 0xcbf4a6ae },
-+		{ 0x77149108, 0x00000010, 0x77bfadf2 },
-+		{ 0x1e96037e, 0x00000010, 0x18017e79 },
-+		{ 0xc84acef2, 0x00000010, 0x6345f7a8 },
-+		{ 0x6a2eb6df, 0x00000010, 0x03950000 },
-+	};
-+	struct lrng_pool *lrng_pool, *lrng_pool_aligned;
-+	u32 i, ret = LRNG_SELFTEST_PASSED;
-+
-+	BUILD_BUG_ON(ARRAY_SIZE(lrng_lfsr_selftest_result) <
-+							CONFIG_LRNG_POOL_SIZE);
-+
-+	lrng_pool = kzalloc(sizeof(struct lrng_pool) + LRNG_KCAPI_ALIGN,
-+			    GFP_KERNEL);
-+	if (!lrng_pool)
-+		return LRNG_SEFLTEST_ERROR_LFSR;
-+	lrng_pool_aligned = PTR_ALIGN(lrng_pool, sizeof(u32));
-+
-+	for (i = 1; i <= LRNG_POOL_SIZE; i++)
-+		_lrng_pool_lfsr_u32(lrng_pool_aligned, i);
-+
-+	if ((atomic_read_u32(&lrng_pool_aligned->pool[0]) !=
-+	     lrng_lfsr_selftest_result[CONFIG_LRNG_POOL_SIZE][0]) ||
-+	    (atomic_read_u32(&lrng_pool_aligned->pool[67 &
-+						      (LRNG_POOL_SIZE - 1)]) !=
-+	     lrng_lfsr_selftest_result[CONFIG_LRNG_POOL_SIZE][1]) ||
-+	    (atomic_read_u32(&lrng_pool_aligned->pool[LRNG_POOL_SIZE - 1]) !=
-+	     lrng_lfsr_selftest_result[CONFIG_LRNG_POOL_SIZE][2])) {
-+		pr_err("LRNG LFSR self-test FAILED\n");
-+		ret = LRNG_SEFLTEST_ERROR_LFSR;
-+	}
-+
-+	kfree(lrng_pool);
-+	return ret;
-+}
-+
-+/*
-+ * The test vectors are generated with the hash_df_testvector_generation tool
-+ * provided as part of the test tool set of the LRNG.
-+ */
-+static unsigned int lrng_hash_df_selftest(void)
-+{
-+	const struct lrng_crypto_cb *crypto_cb = &lrng_cc20_crypto_cb;
-+
-+	/*
-+	 * The size of 44 bytes is chosen arbitrarily. Yet, this size should
-+	 * ensure that we have at least two hash blocks plus some fraction
-+	 * of a hash block generated.
-+	 */
-+	static const u8 lrng_hash_df_selftest_result[][44] = {
-+		{
-+			0x65, 0x48, 0xc4, 0xb3, 0x4d, 0x9c, 0xec, 0xd7,
-+			0x69, 0x72, 0xf7, 0x8b, 0x35, 0x23, 0xa8, 0x9a,
-+			0xb2, 0xe8, 0x83, 0xf8, 0xba, 0x32, 0x76, 0xae,
-+			0xed, 0xe2, 0x94, 0x6a, 0x93, 0x99, 0x6e, 0xce,
-+			0xd5, 0xb5, 0xc5, 0x16, 0xa7, 0x8d, 0xc8, 0xd3,
-+			0xe9, 0xdd, 0x4f, 0xca,
-+		}, {
-+			0x50, 0xcc, 0x6f, 0xe9, 0x40, 0x20, 0x40, 0x3e,
-+			0xce, 0x42, 0x3e, 0x30, 0x87, 0xf1, 0x3d, 0x60,
-+			0x75, 0xdd, 0x4f, 0x33, 0x06, 0x75, 0xbf, 0x5e,
-+			0x4c, 0x88, 0xc0, 0x60, 0x0f, 0x9d, 0xf9, 0xa5,
-+			0x63, 0xb1, 0xac, 0xc7, 0x32, 0x22, 0x60, 0xea,
-+			0x88, 0xe7, 0x61, 0x8b,
-+		}, {
-+			0x09, 0x96, 0xbe, 0x89, 0x16, 0x5e, 0x41, 0x82,
-+			0xf3, 0xab, 0xf6, 0x11, 0xef, 0x45, 0x0e, 0x87,
-+			0x72, 0x38, 0x40, 0xe4, 0x21, 0x0b, 0x1c, 0x45,
-+			0x25, 0x9c, 0x26, 0x34, 0x7e, 0xad, 0x25, 0x33,
-+			0xf2, 0xb0, 0xc5, 0xa7, 0x0b, 0x38, 0xd9, 0x89,
-+			0x02, 0x08, 0xa2, 0x5b,
-+		}, {
-+			0x10, 0x5b, 0xf4, 0x5b, 0xa9, 0xfc, 0x83, 0x2d,
-+			0x82, 0xf8, 0xa1, 0x17, 0x34, 0xe2, 0x67, 0xb7,
-+			0x95, 0xe2, 0x63, 0x2d, 0x1b, 0xf6, 0x59, 0x05,
-+			0x49, 0x9a, 0x3f, 0xa1, 0x16, 0xf7, 0x42, 0xd1,
-+			0x9c, 0x29, 0x5e, 0x31, 0xc9, 0x42, 0xf8, 0x9d,
-+			0x9b, 0x35, 0xd2, 0x30,
-+		}, {
-+			0x1e, 0x43, 0xfe, 0x8a, 0x66, 0x53, 0x2d, 0x94,
-+			0x68, 0xbe, 0xfc, 0xc6, 0xfa, 0x95, 0x4a, 0xca,
-+			0xa7, 0x54, 0xcd, 0x92, 0xc9, 0xca, 0xcc, 0x4f,
-+			0xb2, 0xc5, 0xc5, 0xb6, 0x17, 0xd7, 0xb5, 0x41,
-+			0xa0, 0x8e, 0xef, 0x75, 0x00, 0x96, 0x8e, 0x13,
-+			0x8c, 0x9f, 0xd6, 0xce,
-+		}, {
-+			0x70, 0x14, 0x94, 0x45, 0xa3, 0xb6, 0xac, 0xef,
-+			0x22, 0xe3, 0xe4, 0x2a, 0x38, 0x8c, 0x0e, 0x45,
-+			0x17, 0x61, 0x4e, 0x1d, 0xb3, 0xaf, 0xc1, 0xee,
-+			0x60, 0x31, 0x4d, 0xdc, 0xe1, 0x83, 0x8b, 0x85,
-+			0x97, 0x27, 0x30, 0x24, 0x57, 0xc2, 0xfd, 0xc0,
-+			0x99, 0x4b, 0xad, 0xb1,
-+		}, {
-+			0x12, 0x87, 0x51, 0x68, 0x28, 0xab, 0xa9, 0xd1,
-+			0x91, 0x64, 0x5e, 0x38, 0x7f, 0xf3, 0xaf, 0xd5,
-+			0x93, 0xbc, 0x31, 0xfd, 0xae, 0x19, 0x45, 0xd7,
-+			0x1f, 0xe8, 0x0c, 0x24, 0xa6, 0x6d, 0x09, 0x0b,
-+			0x17, 0x44, 0xdb, 0xce, 0x1c, 0x0a, 0xdb, 0x73,
-+			0x7a, 0x91, 0x33, 0x4c,
-+		}, {
-+			0x14, 0x81, 0x76, 0x37, 0x27, 0x19, 0x8d, 0x71,
-+			0xcc, 0x2e, 0xa3, 0x71, 0x92, 0x46, 0x6e, 0x3a,
-+			0xac, 0x87, 0xd6, 0x1e, 0xa7, 0xa9, 0x2e, 0x1e,
-+			0xd9, 0x6c, 0xea, 0xbe, 0x1a, 0x2e, 0xe9, 0x8a,
-+			0x96, 0x2a, 0xe3, 0xee, 0xd2, 0x25, 0xb2, 0xae,
-+			0xc6, 0xba, 0xe7, 0xef,
-+		}, {
-+			0x58, 0x78, 0xce, 0xcb, 0xcf, 0x61, 0xc2, 0x3d,
-+			0x00, 0x80, 0x74, 0x57, 0x56, 0x44, 0xc7, 0xe2,
-+			0x9a, 0xed, 0x30, 0x02, 0x3f, 0x9a, 0xf5, 0xcc,
-+			0xf7, 0x7b, 0x40, 0xf7, 0x10, 0x97, 0x8d, 0x8f,
-+			0x58, 0xa4, 0x80, 0x88, 0x87, 0x30, 0x87, 0x7b,
-+			0xac, 0x2e, 0xce, 0x0d,
-+		}
-+	};
-+	struct lrng_pool *lrng_pool, *lrng_pool_aligned;
-+	u8 hash_df[sizeof(lrng_hash_df_selftest_result[0])]
-+							__aligned(sizeof(u32));
-+	u32 generated;
-+	int ret = 0;
-+
-+	BUILD_BUG_ON(ARRAY_SIZE(lrng_hash_df_selftest_result) <
-+							CONFIG_LRNG_POOL_SIZE);
-+	/* Calculated data needs to be byte-swapped */
-+	BUILD_BUG_ON(sizeof(lrng_hash_df_selftest_result[0]) % sizeof(32));
-+
-+	lrng_pool = kzalloc(sizeof(struct lrng_pool) + LRNG_KCAPI_ALIGN,
-+			    GFP_KERNEL);
-+	if (!lrng_pool)
-+		return LRNG_SEFLTEST_ERROR_HASHDF;
-+	lrng_pool_aligned = PTR_ALIGN(lrng_pool, sizeof(u32));
-+
-+	generated = __lrng_pool_hash_df(crypto_cb, NULL, lrng_pool_aligned,
-+					hash_df, sizeof(hash_df) << 3);
-+
-+	lrng_selftest_bswap32((u32 *)hash_df,
-+			sizeof(lrng_hash_df_selftest_result[0]) / sizeof(u32));
-+
-+	if ((generated >> 3) != sizeof(hash_df) ||
-+	    memcmp(hash_df, lrng_hash_df_selftest_result[CONFIG_LRNG_POOL_SIZE],
-+		   sizeof(hash_df))) {
-+		pr_err("LRNG Hash DF self-test FAILED\n");
-+		ret = LRNG_SEFLTEST_ERROR_HASHDF;
-+	}
-+
-+	kfree(lrng_pool);
-+	return ret;
-+}
-+
-+/*
-+ * The test vectors were generated using the ChaCha20 DRNG from
-+ * https://www.chronox.de/chacha20.html
-+ */
-+static unsigned int lrng_chacha20_drng_selftest(void)
-+{
-+	const struct lrng_crypto_cb *crypto_cb = &lrng_cc20_crypto_cb;
-+	u8 seed[CHACHA_KEY_SIZE * 2] = {
-+		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-+		0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-+		0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-+		0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
-+		0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27,
-+		0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f,
-+		0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
-+		0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f,
-+	};
-+	struct chacha20_block chacha20;
-+	int ret;
-+	u8 outbuf[CHACHA_KEY_SIZE * 2] __aligned(sizeof(u32));
-+
-+	/*
-+	 * Expected result when ChaCha20 DRNG state is zero:
-+	 *	* constants are set to "expand 32-byte k"
-+	 *	* remaining state is 0
-+	 * and pulling one half ChaCha20 DRNG block.
-+	 */
-+	static const u8 expected_halfblock[CHACHA_KEY_SIZE] = {
-+		0x76, 0xb8, 0xe0, 0xad, 0xa0, 0xf1, 0x3d, 0x90,
-+		0x40, 0x5d, 0x6a, 0xe5, 0x53, 0x86, 0xbd, 0x28,
-+		0xbd, 0xd2, 0x19, 0xb8, 0xa0, 0x8d, 0xed, 0x1a,
-+		0xa8, 0x36, 0xef, 0xcc, 0x8b, 0x77, 0x0d, 0xc7 };
-+
-+	/*
-+	 * Expected result when ChaCha20 DRNG state is zero:
-+	 *	* constants are set to "expand 32-byte k"
-+	 *	* remaining state is 0
-+	 * followed by a reseed with two keyblocks
-+	 *	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-+	 *	0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-+	 *	0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-+	 *	0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
-+	 *	0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27,
-+	 *	0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f,
-+	 *	0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
-+	 *	0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f
-+	 * and pulling one ChaCha20 DRNG block.
-+	 */
-+	static const u8 expected_oneblock[CHACHA_KEY_SIZE * 2] = {
-+		0xf5, 0xb4, 0xb6, 0x5a, 0xec, 0xcd, 0x5a, 0x65,
-+		0x87, 0x56, 0xe3, 0x86, 0x51, 0x54, 0xfc, 0x90,
-+		0x56, 0xff, 0x5e, 0xae, 0x58, 0xf2, 0x01, 0x88,
-+		0xb1, 0x7e, 0xb8, 0x2e, 0x17, 0x9a, 0x27, 0xe6,
-+		0x86, 0xb3, 0xed, 0x33, 0xf7, 0xb9, 0x06, 0x05,
-+		0x8a, 0x2d, 0x1a, 0x93, 0xc9, 0x0b, 0x80, 0x04,
-+		0x03, 0xaa, 0x60, 0xaf, 0xd5, 0x36, 0x40, 0x11,
-+		0x67, 0x89, 0xb1, 0x66, 0xd5, 0x88, 0x62, 0x6d };
-+
-+	/*
-+	 * Expected result when ChaCha20 DRNG state is zero:
-+	 *	* constants are set to "expand 32-byte k"
-+	 *	* remaining state is 0
-+	 * followed by a reseed with one key block plus one byte
-+	 *	0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-+	 *	0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
-+	 *	0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-+	 *	0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
-+	 *	0x20
-+	 * and pulling less than one ChaCha20 DRNG block.
-+	 */
-+	static const u8 expected_block_nonalinged[CHACHA_KEY_SIZE + 4] = {
-+		0x9d, 0xdd, 0x4f, 0xbe, 0x97, 0xcd, 0x8e, 0x15,
-+		0xb3, 0xc4, 0x1a, 0x17, 0x49, 0x29, 0x32, 0x7c,
-+		0xb3, 0x84, 0xa4, 0x9b, 0xa7, 0x14, 0xb3, 0xc1,
-+		0x5b, 0x3b, 0xfb, 0xa1, 0xe4, 0x23, 0x42, 0x8e,
-+		0x08, 0x1f, 0x53, 0xa2 };
-+
-+	BUILD_BUG_ON(sizeof(seed) % sizeof(u32));
-+
-+	memset(&chacha20, 0, sizeof(chacha20));
-+	lrng_cc20_init_rfc7539(&chacha20);
-+	lrng_selftest_bswap32((u32 *)seed, sizeof(seed) / sizeof(u32));
-+
-+	/* Generate with zero state */
-+	ret = crypto_cb->lrng_drng_generate_helper(&chacha20, outbuf,
-+						   sizeof(expected_halfblock));
-+	if (ret != sizeof(expected_halfblock))
-+		goto err;
-+	if (memcmp(outbuf, expected_halfblock, sizeof(expected_halfblock)))
-+		goto err;
-+
-+	/* Clear state of DRNG */
-+	memset(&chacha20.key.u[0], 0, 48);
-+
-+	/* Reseed with 2 key blocks */
-+	ret = crypto_cb->lrng_drng_seed_helper(&chacha20, seed,
-+					       sizeof(expected_oneblock));
-+	if (ret < 0)
-+		goto err;
-+	ret = crypto_cb->lrng_drng_generate_helper(&chacha20, outbuf,
-+						   sizeof(expected_oneblock));
-+	if (ret != sizeof(expected_oneblock))
-+		goto err;
-+	if (memcmp(outbuf, expected_oneblock, sizeof(expected_oneblock)))
-+		goto err;
-+
-+	/* Clear state of DRNG */
-+	memset(&chacha20.key.u[0], 0, 48);
-+
-+	/* Reseed with 1 key block and one byte */
-+	ret = crypto_cb->lrng_drng_seed_helper(&chacha20, seed,
-+					sizeof(expected_block_nonalinged));
-+	if (ret < 0)
-+		goto err;
-+	ret = crypto_cb->lrng_drng_generate_helper(&chacha20, outbuf,
-+					sizeof(expected_block_nonalinged));
-+	if (ret != sizeof(expected_block_nonalinged))
-+		goto err;
-+	if (memcmp(outbuf, expected_block_nonalinged,
-+		   sizeof(expected_block_nonalinged)))
-+		goto err;
-+
-+	return LRNG_SELFTEST_PASSED;
-+
-+err:
-+	pr_err("LRNG ChaCha20 DRNG self-test FAILED\n");
-+	return LRNG_SEFLTEST_ERROR_CHACHA20;
-+}
-+
-+static int lrng_selftest(void)
-+{
-+	unsigned int ret = lrng_time_process_selftest();
-+
-+	ret |= lrng_pool_lfsr_selftest();
-+	ret |= lrng_chacha20_drng_selftest();
-+	ret |= lrng_hash_df_selftest();
-+
-+	if (ret) {
-+		if (IS_ENABLED(CONFIG_LRNG_SELFTEST_PANIC))
-+			panic("LRNG self-tests failed: %u\n", ret);
-+	} else {
-+		pr_info("LRNG self-tests passed\n");
-+	}
-+
-+	lrng_selftest_status = ret;
-+
-+	if (lrng_selftest_status)
-+		return -EFAULT;
-+	return 0;
-+}
-+
-+#ifdef CONFIG_SYSFS
-+/* Re-perform self-test when any value is written to the sysfs file. */
-+static int lrng_selftest_sysfs_set(const char *val,
-+				   const struct kernel_param *kp)
-+{
-+	return lrng_selftest();
-+}
-+
-+static const struct kernel_param_ops lrng_selftest_sysfs = {
-+	.set = lrng_selftest_sysfs_set,
-+	.get = param_get_uint,
-+};
-+module_param_cb(selftest_status, &lrng_selftest_sysfs, &lrng_selftest_status,
-+		0644);
-+#endif	/* CONFIG_SYSFS */
-+
-+static int __init lrng_selftest_init(void)
-+{
-+	return lrng_selftest();
-+}
-+
-+module_init(lrng_selftest_init);
--- 
-2.26.2
-
-
-
-
+T24gNi8yMy8yMCA5OjMwIFBNLCBQcmF0eXVzaCBZYWRhdiB3cm90ZToNCj4gRVhURVJOQUwgRU1B
+SUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3Uga25v
+dyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBEb3VibGUgVHJhbnNmZXIgUmF0ZSAoRFRSKSBv
+cHMgYXJlIGFkZGVkIGluIHNwaS1tZW0uIEJ1dCB0aGlzIGNvbnRyb2xsZXINCj4gZG9lc24ndCBz
+dXBwb3J0IERUUiB0cmFuc2FjdGlvbnMuIFNpbmNlIHdlIGRvbid0IHVzZSB0aGUgZGVmYXVsdA0K
+PiBzdXBwb3J0c19vcCgpLCB3aGljaCByZWplY3RzIGFsbCBEVFIgb3BzLCBkbyB0aGF0IGV4cGxp
+Y2l0bHkgaW4gb3VyDQo+IHN1cHBvcnRzX29wKCkuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBQcmF0
+eXVzaCBZYWRhdiA8cC55YWRhdkB0aS5jb20+DQoNClJldmlld2VkLWJ5OiBUdWRvciBBbWJhcnVz
+IDx0dWRvci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+DQoNCj4gLS0tDQo+ICBkcml2ZXJzL3NwaS9z
+cGktbXRrLW5vci5jIHwgNiArKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMo
+KykNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9zcGktbXRrLW5vci5jIGIvZHJpdmVy
+cy9zcGkvc3BpLW10ay1ub3IuYw0KPiBpbmRleCBkNWYzOTM4NzE2MTkuLmIwOGQ4ZTlhOGVlOSAx
+MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9zcGkvc3BpLW10ay1ub3IuYw0KPiArKysgYi9kcml2ZXJz
+L3NwaS9zcGktbXRrLW5vci5jDQo+IEBAIC0yMTEsNiArMjExLDEyIEBAIHN0YXRpYyBib29sIG10
+a19ub3Jfc3VwcG9ydHNfb3Aoc3RydWN0IHNwaV9tZW0gKm1lbSwNCj4gICAgICAgICBpZiAob3At
+PmNtZC5idXN3aWR0aCAhPSAxKQ0KPiAgICAgICAgICAgICAgICAgcmV0dXJuIGZhbHNlOw0KPiAN
+Cj4gKyAgICAgICAvKiBEVFIgb3BzIG5vdCBzdXBwb3J0ZWQuICovDQo+ICsgICAgICAgaWYgKG9w
+LT5jbWQuZHRyIHx8IG9wLT5hZGRyLmR0ciB8fCBvcC0+ZHVtbXkuZHRyIHx8IG9wLT5kYXRhLmR0
+cikNCj4gKyAgICAgICAgICAgICAgIHJldHVybiBmYWxzZTsNCj4gKyAgICAgICBpZiAob3AtPmNt
+ZC5uYnl0ZXMgIT0gMSkNCj4gKyAgICAgICAgICAgICAgIHJldHVybiBmYWxzZTsNCj4gKw0KPiAg
+ICAgICAgIGlmICgob3AtPmFkZHIubmJ5dGVzID09IDMpIHx8IChvcC0+YWRkci5uYnl0ZXMgPT0g
+NCkpIHsNCj4gICAgICAgICAgICAgICAgIGlmICgob3AtPmRhdGEuZGlyID09IFNQSV9NRU1fREFU
+QV9JTikgJiYgbXRrX25vcl9tYXRjaF9yZWFkKG9wKSkNCj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgcmV0dXJuIHRydWU7DQo+IC0tDQo+IDIuMjcuMA0KPiANCg0K
