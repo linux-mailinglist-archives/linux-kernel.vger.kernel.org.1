@@ -2,108 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA7B21CD8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 05:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3232A21CD8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 05:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgGMDNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 23:13:47 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:41444 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgGMDNr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 23:13:47 -0400
-Received: by mail-wr1-f66.google.com with SMTP id z15so13318505wrl.8
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 20:13:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YLnrLBJ5kAqFkLfTkdCmiKFDQ8GCKWsQrIBx+rJIfFU=;
-        b=t7JemFm0Xh0U257Q2Fhp5VnRJfRNSGyoLDCJ/PZ+rWizpXTzH5qnwjp6ZxV1vd/fQV
-         cn219BmFvuCaddOhcVo+1FxOgR6BgShMnBqJw+mSPB3E0DU1Nm+sVn4j4zRwm7rbkdcl
-         aMsH+tNjB09J7kLexmrtOXvKuMON8XsJScnKd2CYCB9NQhjb+Z0YlwdB0myC3GNjdqOr
-         tqbjdYAOtnaaCzEnuGLcmqYWfGxgSAbI/qnu127es/2DCKx8sDMefaCm5LILund1cN+w
-         VJhG/xDA4Feg2+EaKZdJ/I7mtrEdbY8Ok9mC6hPv83V3cX2nY+RPUP5zr1ikJ65tBAkA
-         8DgA==
-X-Gm-Message-State: AOAM5327l+Xj7WjeCTDct/dZbhEttswo3JZ5HagxFV+zvkSy0Ulb6tCu
-        GQmNXc3emZbxwxYmISNvmHapZ9+/fkTqhpyHJHE=
-X-Google-Smtp-Source: ABdhPJwCq3z3JxOjbqdlgYe/7N/SWf315ySdmztrM4Ob5tQwBds+NoFzYglmQvb1F7rSfVd21aRabkFnXuMrQX2Hvg8=
-X-Received: by 2002:adf:e901:: with SMTP id f1mr77862227wrm.80.1594610025296;
- Sun, 12 Jul 2020 20:13:45 -0700 (PDT)
+        id S1728048AbgGMDP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Jul 2020 23:15:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgGMDP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Jul 2020 23:15:57 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C85BD2068F;
+        Mon, 13 Jul 2020 03:15:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594610157;
+        bh=YZzIW+KZpc0vqOCl/7oVkW5+VX1XWYHsXl9tcGS26FI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xMmz1NIH59pJQvE4XDhJ3Kpk649kZPlGk9O7qg4Vuc1zWSWbssqppShAXVmmG/Hck
+         oEo/vvn3AqVIwk96fgF3BLYIxapJ9KiQ5zv7Sr84cY4Wnd2RFEe87mJ18+bLKfuNM7
+         I9Cam+LsrYGcHTdTyioj1bn0cagJT0JOvJ+/84aE=
+Date:   Mon, 13 Jul 2020 11:15:52 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Andy Tang <andy.tang@nxp.com>
+Cc:     Leo Li <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+        lakml <linux-arm-kernel@lists.infradead.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [EXT] Re: [PATCH 1/2] arm64: dts: ls1088a: add more thermal zone
+ support
+Message-ID: <20200713031551.GB21277@dragon>
+References: <20200630032014.22956-1-andy.tang@nxp.com>
+ <CAHLCerO3B4Z67KP8VaF957Jkid21gLvzhS49gNeqUC+6muPkjA@mail.gmail.com>
+ <DBBPR04MB609085CD69E4CCBDD49CCF66F36F0@DBBPR04MB6090.eurprd04.prod.outlook.com>
+ <CAP245DV-_+5Ht=yP9Mnzb2vUqXDJSEeBPfbNh48mEt62PmBeWA@mail.gmail.com>
+ <DBBPR04MB60907EC06EAABC949DD42E3EF36F0@DBBPR04MB6090.eurprd04.prod.outlook.com>
+ <CAP245DUzQBmKvg9oit8StKyfvp==eVZZ7dh0DUAwKkQnjSL_yw@mail.gmail.com>
+ <DBBPR04MB6090001AA0A668A924EEB0FCF36D0@DBBPR04MB6090.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <4af50c95-36f6-7a61-5a22-2949970fe7a5@linux.intel.com> <92aa73c7-4148-a45d-6964-983fe1654d1e@linux.intel.com>
-In-Reply-To: <92aa73c7-4148-a45d-6964-983fe1654d1e@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 13 Jul 2020 12:13:34 +0900
-Message-ID: <CAM9d7cj86U7xcmAdiKjEKNp+qS_YAP72xKusAjLWGo2frxpL_A@mail.gmail.com>
-Subject: Re: [PATCH v10 04/15] perf evlist: introduce control file descriptors
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DBBPR04MB6090001AA0A668A924EEB0FCF36D0@DBBPR04MB6090.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Jul 02, 2020 at 03:33:59AM +0000, Andy Tang wrote:
+> Hi Shawn,
+> 
+> Do you think it is ok if the cooling devices are shared between thermal zones?
 
-On Wed, Jul 8, 2020 at 4:47 PM Alexey Budankov
-<alexey.budankov@linux.intel.com> wrote:
->
->
-> Define and initialize control file descriptors.
->
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> ---
->  tools/perf/util/evlist.c | 3 +++
->  tools/perf/util/evlist.h | 5 +++++
->  2 files changed, 8 insertions(+)
->
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index bcbe0cb8482e..36eb50aba1f5 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -63,6 +63,9 @@ void evlist__init(struct evlist *evlist, struct perf_cpu_map *cpus,
->         perf_evlist__set_maps(&evlist->core, cpus, threads);
->         evlist->workload.pid = -1;
->         evlist->bkw_mmap_state = BKW_MMAP_NOTREADY;
-> +       evlist->ctl_fd.fd = -1;
-> +       evlist->ctl_fd.ack = -1;
-> +       evlist->ctl_fd.pos = -1;
->  }
->
->  struct evlist *evlist__new(void)
-> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-> index 38901c0d1599..2caf19fb87a8 100644
-> --- a/tools/perf/util/evlist.h
-> +++ b/tools/perf/util/evlist.h
-> @@ -74,6 +74,11 @@ struct evlist {
->                 pthread_t               th;
->                 volatile int            done;
->         } thread;
-> +       struct {
-> +               int     fd;
-> +               int     ack;
-> +               int     pos;
-> +       } ctl_fd;
+Yeah, Amit has the authority on thermal support, so follow his
+suggestion, I would say :)
 
-Could you please add brief descriptions for each field
-in the comment?  It's not obvious to me other than fd.
-
-Thanks
-Namhyung
-
-
->  };
->
->  struct evsel_str_handler {
-> --
-> 2.24.1
->
->
+Shawn
