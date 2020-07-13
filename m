@@ -2,139 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4909521E215
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 23:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EF321E23F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 23:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgGMVat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 17:30:49 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:55590 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726768AbgGMVar (ORCPT
+        id S1726848AbgGMVc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 17:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgGMVc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 17:30:47 -0400
-Received: from pps.filterd (m0150244.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06DLDwHD015943;
-        Mon, 13 Jul 2020 21:30:00 GMT
-Received: from g2t2352.austin.hpe.com (g2t2352.austin.hpe.com [15.233.44.25])
-        by mx0b-002e3701.pphosted.com with ESMTP id 32763kbeng-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jul 2020 21:30:00 +0000
-Received: from stormcage.eag.rdlabs.hpecorp.net (stormcage.eag.rdlabs.hpecorp.net [128.162.236.70])
-        by g2t2352.austin.hpe.com (Postfix) with ESMTP id DF6CA63;
-        Mon, 13 Jul 2020 21:29:59 +0000 (UTC)
-Received: by stormcage.eag.rdlabs.hpecorp.net (Postfix, from userid 200934)
-        id 1EEEB200FA7B1; Mon, 13 Jul 2020 16:29:56 -0500 (CDT)
-Message-ID: <20200713212956.019149227@hpe.com>
-User-Agent: quilt/0.66
-Date:   Mon, 13 Jul 2020 16:30:07 -0500
-From:   steve.wahl@hpe.com
-To:     Steve Wahl <steve.wahl@hpe.com>, Jonathan Corbet <corbet@lwn.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Benjamin Thiel <b.thiel@posteo.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        James Morris <jmorris@namei.org>,
-        David Howells <dhowells@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dave Young <dyoung@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Austin Kim <austindh.kim@gmail.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-Cc:     Russ Anderson <rja@hpe.com>
-Subject: [patch v3 13/13] x86: Remove (now unused) EFI_UV1_MEMMAP from efi.h
-References: <20200713212954.444086564@hpe.com>
+        Mon, 13 Jul 2020 17:32:28 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A027C061755;
+        Mon, 13 Jul 2020 14:32:28 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id p20so19065652ejd.13;
+        Mon, 13 Jul 2020 14:32:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9xk5002gZ5H7JGOgsHs7h731etRLB6WtyENiHxGGu7I=;
+        b=bLpTnFR30/+CWwAe8tAwcO+WU+hkSYANQdbkuElT0SAIi6ujeM1TQRDW+tCw7AICBj
+         5kCIWw6YVvqgCI3mI7R3rV4p4D/H1krl4pX5fIqkagHlyiEFyV329SLTFtsSHwii5Pvs
+         NeEcqyvNhCmv006c7RAJd1CQDhlH02TJpBBVtkzWG3QMAyS8lhgPxRzgN6IKJvk8TKPT
+         iOYrzrUHpGNz96WU9SoDtgqNIGpwQAbG5CIzoGQbtjCl4cby+ZNa9qJtkEVVg7PL+93M
+         vusMQSDo7Z272nWxnOj7FItu1oUHIplSVGK/K9ov0C0pGx+tmdVKK6E4IM28vEMhl+Ku
+         EEsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9xk5002gZ5H7JGOgsHs7h731etRLB6WtyENiHxGGu7I=;
+        b=QRBpNhtO7CwTYgvyvtY7Sm8pmgRxgEnvOpjePIiWbEYtPl14Jz0hsIMpCl+88SdSFZ
+         R7tSzHMKRQ3IHlNsaMLdRoMjUsFcv/ZJcyWbzo7f/1ccxUwKGas4xsErFeM/HgsA1VeQ
+         3JBv3aNnHp0IvPQUctZzDJNvVX76g7vPGwPbMaxtkIVdPqQrs3iH/TcY5BTjWK2vQOYC
+         K8Nh7ebV/27LzJ79USmOTMvvvm4ZJeFYstX9t+1qh/GhY6oWJjkcWhvbNowl+AurnvZQ
+         X7qJXoMBIR+yrJ1z0JnbksNaWkaEgrOq00BJd3BqGjl7npFfuwmAvQR2OiLfhfl1Lpqi
+         jahg==
+X-Gm-Message-State: AOAM532v6zO/9Gx9xo91LxkjFks/Csm3stAgLX+ODHjq/Mh9bqqC5xwy
+        nR3RL0tdCJO/Uc3W2LV4YClU+WEOhf16yXbtuQA=
+X-Google-Smtp-Source: ABdhPJwMoWogKyu+hB7N/OXDUjzYJXatIjRK36LwG1lOC44kvht0iMkOGCJlZyw4lHZLCW+pL24HAecjyLLmYhlZNWg=
+X-Received: by 2002:a17:906:ca4c:: with SMTP id jx12mr1508481ejb.231.1594675946837;
+ Mon, 13 Jul 2020 14:32:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-13_17:2020-07-13,2020-07-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=2
- priorityscore=1501 bulkscore=0 clxscore=1015 lowpriorityscore=0
- malwarescore=0 phishscore=0 mlxlogscore=999 adultscore=0 impostorscore=0
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007130153
+References: <20200710230224.2265647-1-dianders@chromium.org>
+ <CAL_JsqKC5WtHb-coMCxMTDJ7CJcjVXcAxDT4J9N-Xyr=0uuURA@mail.gmail.com>
+ <CAD=FV=XWKoTd_t2uRGpw3oa0Nij2EPeAJpOHhUipXFW07JN2qw@mail.gmail.com> <CAL_JsqLJM5nwNSdugMBLDVtjP97dikCm_AiHjnDs1jqBOFoaaQ@mail.gmail.com>
+In-Reply-To: <CAL_JsqLJM5nwNSdugMBLDVtjP97dikCm_AiHjnDs1jqBOFoaaQ@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 13 Jul 2020 14:32:59 -0700
+Message-ID: <CAF6AEGufuFW3ba3u3A+mY+Gw0ouH2x9xY-9A+OtVff+iXdix9A@mail.gmail.com>
+Subject: Re: [PATCH 0/9] drm/msm: Avoid possible infinite probe deferral and
+ speed booting
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Doug Anderson <dianders@chromium.org>, Sean Paul <sean@poorly.run>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With UV1 support removed, EFI_UV1_MEMMAP is no longer used.
+On Mon, Jul 13, 2020 at 1:25 PM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Mon, Jul 13, 2020 at 9:08 AM Doug Anderson <dianders@chromium.org> wrote:
+> >
+> > Hi,
+> >
+> > On Mon, Jul 13, 2020 at 7:11 AM Rob Herring <robh+dt@kernel.org> wrote:
+> > >
+> > > On Fri, Jul 10, 2020 at 5:02 PM Douglas Anderson <dianders@chromium.org> wrote:
+> > > >
+> > > > I found that if I ever had a little mistake in my kernel config,
+> > > > or device tree, or graphics driver that my system would sit in a loop
+> > > > at bootup trying again and again and again.  An example log was:
+> > >
+> > > Why do we care about optimizing the error case?
+> >
+> > It actually results in a _fully_ infinite loop.  That is: if anything
+> > small causes a component of DRM to fail to probe then the whole system
+> > doesn't boot because it just loops trying to probe over and over
+> > again.  The messages I put in the commit message are printed over and
+> > over and over again.
+>
+> Sounds like a bug as that's not what should happen.
+>
+> If you defer during boot (initcalls), then you'll be on the deferred
+> list until late_initcall and everything is retried. After
+> late_initcall, only devices getting added should trigger probing. But
+> maybe the adding and then removing a device is causing a re-trigger.
+>
+> > > >   msm ae00000.mdss: bound ae01000.mdp (ops 0xffffffe596e951f8)
+> > > >   msm_dsi ae94000.dsi: ae94000.dsi supply gdsc not found, using dummy regulator
+> > > >   msm_dsi_manager_register: failed to register mipi dsi host for DSI 0
+> > > >   [drm:ti_sn_bridge_probe] *ERROR* could not find any panel node
+> > > >   ...
+> > > >
+> > > > I finally tracked it down where this was happening:
+> > > >   - msm_pdev_probe() is called.
+> > > >   - msm_pdev_probe() registers drivers.  Registering drivers kicks
+> > > >     off processing of probe deferrals.
+> > > >   - component_master_add_with_match() could return -EPROBE_DEFER.
+> > > >     making msm_pdev_probe() return -EPROBE_DEFER.
+> > > >   - When msm_pdev_probe() returned the processing of probe deferrals
+> > > >     happens.
+> > > >   - Loop back to the start.
+> > > >
+> > > > It looks like we can fix this by marking "mdss" as a "simple-bus".
+> > > > I have no idea if people consider this the right thing to do or a
+> > > > hack.  Hopefully it's the right thing to do.  :-)
+> > >
+> > > It's a simple test. Do the child devices have any dependency on the
+> > > parent to probe and/or function? If so, not a simple-bus.
+> >
+> > Great!  You can see in the earlier patch in the series that the very
+> > first thing that happens when the parent device probes is that it
+> > calls devm_of_platform_populate().  That means no dependencies, right?
+>
+> It should. But then I reviewed the MDSS binding today and it looks
+> like the MDSS is the interrupt parent for at least some child devices?
+>
 
-Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/x86/include/asm/efi.h |   20 ++------------------
- 1 file changed, 2 insertions(+), 18 deletions(-)
+yes, that is correct
 
---- linux.orig/arch/x86/include/asm/efi.h	2020-07-07 10:49:49.753511000 -0500
-+++ linux/arch/x86/include/asm/efi.h	2020-07-07 10:56:15.821045006 -0500
-@@ -22,17 +22,7 @@ extern unsigned long efi_fw_vendor, efi_
-  *
-  * This is the main reason why we're doing stable VA mappings for RT
-  * services.
-- *
-- * SGI UV1 machines are known to be incompatible with this scheme, so we
-- * provide an opt-out for these machines via a DMI quirk that sets the
-- * attribute below.
-  */
--#define EFI_UV1_MEMMAP         EFI_ARCH_1
--
--static inline bool efi_have_uv1_memmap(void)
--{
--	return IS_ENABLED(CONFIG_X86_UV) && efi_enabled(EFI_UV1_MEMMAP);
--}
- 
- #define EFI32_LOADER_SIGNATURE	"EL32"
- #define EFI64_LOADER_SIGNATURE	"EL64"
-@@ -122,9 +112,7 @@ struct efi_scratch {
- 	efi_sync_low_kernel_mappings();					\
- 	kernel_fpu_begin();						\
- 	firmware_restrict_branch_speculation_start();			\
--									\
--	if (!efi_have_uv1_memmap())					\
--		efi_switch_mm(&efi_mm);					\
-+	efi_switch_mm(&efi_mm);						\
- })
- 
- #define arch_efi_call_virt(p, f, args...)				\
-@@ -132,9 +120,7 @@ struct efi_scratch {
- 
- #define arch_efi_call_virt_teardown()					\
- ({									\
--	if (!efi_have_uv1_memmap())					\
--		efi_switch_mm(efi_scratch.prev_mm);			\
--									\
-+	efi_switch_mm(efi_scratch.prev_mm);				\
- 	firmware_restrict_branch_speculation_end();			\
- 	kernel_fpu_end();						\
- })
-@@ -176,8 +162,6 @@ extern void efi_delete_dummy_variable(vo
- extern void efi_switch_mm(struct mm_struct *mm);
- extern void efi_recover_from_page_fault(unsigned long phys_addr);
- extern void efi_free_boot_services(void);
--extern pgd_t * __init efi_uv1_memmap_phys_prolog(void);
--extern void __init efi_uv1_memmap_phys_epilog(pgd_t *save_pgd);
- 
- /* kexec external ABI */
- struct efi_setup_data {
-
+BR,
+-R
