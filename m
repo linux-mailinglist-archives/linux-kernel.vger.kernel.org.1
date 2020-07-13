@@ -2,109 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F1521E0FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDA821E107
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 21:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgGMTw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 15:52:29 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:58310 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbgGMTw2 (ORCPT
+        id S1726891AbgGMTzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 15:55:17 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:58692 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726546AbgGMTzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 15:52:28 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 4C99B8030866;
-        Mon, 13 Jul 2020 19:52:23 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hCNLeNlOrJwS; Mon, 13 Jul 2020 22:52:21 +0300 (MSK)
-Date:   Mon, 13 Jul 2020 22:52:19 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Rob Herring <robh@kernel.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 5/8] dt-bindings: snps,dw-apb-ssi: Add sparx5 support,
- plus snps,rx-sample-delay-ns property
-Message-ID: <20200713195219.xfvqknioqw7yyr74@mobilestation>
-References: <20200702101331.26375-1-lars.povlsen@microchip.com>
- <20200702101331.26375-6-lars.povlsen@microchip.com>
- <20200713192259.GA553903@bogus>
+        Mon, 13 Jul 2020 15:55:16 -0400
+Received: from localhost.localdomain ([93.22.151.12])
+        by mwinf5d22 with ME
+        id 2jv52300C0GHuWt03jv6A5; Mon, 13 Jul 2020 21:55:10 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 13 Jul 2020 21:55:10 +0200
+X-ME-IP: 93.22.151.12
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     davem@davemloft.net, kuba@kernel.org, leon@kernel.org,
+        natechancellor@gmail.com, snelson@pensando.io,
+        vaibhavgupta40@gmail.com, mst@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] amd8111e: switch from 'pci_' to 'dma_' API
+Date:   Mon, 13 Jul 2020 21:55:03 +0200
+Message-Id: <20200713195503.281339-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200713192259.GA553903@bogus>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 01:22:59PM -0600, Rob Herring wrote:
-> On Thu, Jul 02, 2020 at 12:13:28PM +0200, Lars Povlsen wrote:
-...
-> 
-> > +
-> >  patternProperties:
-> >    "^.*@[0-9a-f]+$":
-> >      type: object
-> > @@ -107,6 +122,14 @@ patternProperties:
-> >        spi-tx-bus-width:
-> >          const: 1
-> > 
-> > +      snps,rx-sample-delay-ns:
-> 
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-> We already have 'rx-sample-delay-ns' from Rockchip SPI, so use that. But 
-> note that it applies to the SPI node. Does this need to be per SPI 
-> child?
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GPF_ with a correct flag.
+It has been compile tested.
 
-It was me, who suggested to Lars to have that parameter moved to the SPI
-sub-nodes. As I see it the property is highly dependent on the SPI slave device
-the controller is communicating to. Some of the them may need the delay some
-may not. It's not always the capacitance thing, but also depends on how good
-the MISO signal a particular slave generates. So IMO the Rockchip SPI driver
-developer should have moved that property to the sub-nodes too.
+When memory is allocated in 'amd8111e_init_ring()', GFP_ATOMIC must be used
+because a spin_lock is hold.
+One of the call chains is:
+   amd8111e_open
+   ** spin_lock_irq(&lp->lock);
+   --> amd8111e_restart
+      --> amd8111e_init_ring
+   ** spin_unlock_irq(&lp->lock);
 
-On the other hand if the Rx errors are caused by the MISO lane capacitance,
-then it will be cumbersome to have the same property duplicated for each
-sub-node. Then what about having the property supported by both the SPI
-controller and the SPI-child nodes? For instance the SPI-controller
-"rx-sample-delay-ns" will provide a default sample delay for each sub-node
-instead of zero by default, while the individual sub-node "rx-sample-delay-ns"
-property can be used to override the default value.
+The rest of the patch is produced by coccinelle with a few adjustments to
+please checkpatch.pl.
 
--Sergey
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
 
-> 
-> BTW, the Rockchip controller appears to be a version of the DW 
-> controller.
-> 
-> > +        description: SPI Rx sample delay offset, unit is nanoseconds.
-> > +          The delay from the default sample time before the actual
-> > +          sample of the rxd input signal occurs. The "rx_sample_delay"
-> > +          is an optional feature of the designware controller, and the
-> > +          upper limit is also subject to controller configuration.
-> > +        $ref: /schemas/types.yaml#/definitions/uint32
-> > +
-> >  unevaluatedProperties: false
-> > 
-> >  required:
-> > @@ -129,5 +152,10 @@ examples:
-> >        num-cs = <2>;
-> >        cs-gpios = <&gpio0 13 0>,
-> >                   <&gpio0 14 0>;
-> > +      spi-flash@1 {
-> > +        compatible = "spi-nand";
-> > +        reg = <1>;
-> > +        snps,rx-sample-delay-ns = <7>;
-> > +      };
-> >      };
-> >  ...
-> > --
-> > 2.27.0
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/ethernet/amd/amd8111e.c | 81 ++++++++++++++++-------------
+ 1 file changed, 44 insertions(+), 37 deletions(-)
+
+diff --git a/drivers/net/ethernet/amd/amd8111e.c b/drivers/net/ethernet/amd/amd8111e.c
+index 5d389a984394..b6c43b58ed3d 100644
+--- a/drivers/net/ethernet/amd/amd8111e.c
++++ b/drivers/net/ethernet/amd/amd8111e.c
+@@ -226,7 +226,9 @@ static int amd8111e_free_skbs(struct net_device *dev)
+ 	/* Freeing transmit skbs */
+ 	for(i = 0; i < NUM_TX_BUFFERS; i++){
+ 		if(lp->tx_skbuff[i]){
+-			pci_unmap_single(lp->pci_dev,lp->tx_dma_addr[i],					lp->tx_skbuff[i]->len,PCI_DMA_TODEVICE);
++			dma_unmap_single(&lp->pci_dev->dev,
++					 lp->tx_dma_addr[i],
++					 lp->tx_skbuff[i]->len, DMA_TO_DEVICE);
+ 			dev_kfree_skb (lp->tx_skbuff[i]);
+ 			lp->tx_skbuff[i] = NULL;
+ 			lp->tx_dma_addr[i] = 0;
+@@ -236,8 +238,9 @@ static int amd8111e_free_skbs(struct net_device *dev)
+ 	for (i = 0; i < NUM_RX_BUFFERS; i++){
+ 		rx_skbuff = lp->rx_skbuff[i];
+ 		if(rx_skbuff != NULL){
+-			pci_unmap_single(lp->pci_dev,lp->rx_dma_addr[i],
+-				  lp->rx_buff_len - 2,PCI_DMA_FROMDEVICE);
++			dma_unmap_single(&lp->pci_dev->dev,
++					 lp->rx_dma_addr[i],
++					 lp->rx_buff_len - 2, DMA_FROM_DEVICE);
+ 			dev_kfree_skb(lp->rx_skbuff[i]);
+ 			lp->rx_skbuff[i] = NULL;
+ 			lp->rx_dma_addr[i] = 0;
+@@ -287,20 +290,20 @@ static int amd8111e_init_ring(struct net_device *dev)
+ 		amd8111e_free_skbs(dev);
+ 
+ 	else{
+-		 /* allocate the tx and rx descriptors */
+-	     	if((lp->tx_ring = pci_alloc_consistent(lp->pci_dev,
+-			sizeof(struct amd8111e_tx_dr)*NUM_TX_RING_DR,
+-			&lp->tx_ring_dma_addr)) == NULL)
+-
++		/* allocate the tx and rx descriptors */
++		lp->tx_ring = dma_alloc_coherent(&lp->pci_dev->dev,
++			sizeof(struct amd8111e_tx_dr) * NUM_TX_RING_DR,
++			&lp->tx_ring_dma_addr, GFP_ATOMIC);
++		if (!lp->tx_ring)
+ 			goto err_no_mem;
+ 
+-	     	if((lp->rx_ring = pci_alloc_consistent(lp->pci_dev,
+-			sizeof(struct amd8111e_rx_dr)*NUM_RX_RING_DR,
+-			&lp->rx_ring_dma_addr)) == NULL)
+-
++		lp->rx_ring = dma_alloc_coherent(&lp->pci_dev->dev,
++			sizeof(struct amd8111e_rx_dr) * NUM_RX_RING_DR,
++			&lp->rx_ring_dma_addr, GFP_ATOMIC);
++		if (!lp->rx_ring)
+ 			goto err_free_tx_ring;
+-
+ 	}
++
+ 	/* Set new receive buff size */
+ 	amd8111e_set_rx_buff_len(dev);
+ 
+@@ -318,8 +321,10 @@ static int amd8111e_init_ring(struct net_device *dev)
+ 	}
+         /* Initilaizing receive descriptors */
+ 	for (i = 0; i < NUM_RX_BUFFERS; i++) {
+-		lp->rx_dma_addr[i] = pci_map_single(lp->pci_dev,
+-			lp->rx_skbuff[i]->data,lp->rx_buff_len-2, PCI_DMA_FROMDEVICE);
++		lp->rx_dma_addr[i] = dma_map_single(&lp->pci_dev->dev,
++						    lp->rx_skbuff[i]->data,
++						    lp->rx_buff_len - 2,
++						    DMA_FROM_DEVICE);
+ 
+ 		lp->rx_ring[i].buff_phy_addr = cpu_to_le32(lp->rx_dma_addr[i]);
+ 		lp->rx_ring[i].buff_count = cpu_to_le16(lp->rx_buff_len-2);
+@@ -338,15 +343,15 @@ static int amd8111e_init_ring(struct net_device *dev)
+ 
+ err_free_rx_ring:
+ 
+-	pci_free_consistent(lp->pci_dev,
+-		sizeof(struct amd8111e_rx_dr)*NUM_RX_RING_DR,lp->rx_ring,
+-		lp->rx_ring_dma_addr);
++	dma_free_coherent(&lp->pci_dev->dev,
++			  sizeof(struct amd8111e_rx_dr) * NUM_RX_RING_DR,
++			  lp->rx_ring, lp->rx_ring_dma_addr);
+ 
+ err_free_tx_ring:
+ 
+-	pci_free_consistent(lp->pci_dev,
+-		 sizeof(struct amd8111e_tx_dr)*NUM_TX_RING_DR,lp->tx_ring,
+-		 lp->tx_ring_dma_addr);
++	dma_free_coherent(&lp->pci_dev->dev,
++			  sizeof(struct amd8111e_tx_dr) * NUM_TX_RING_DR,
++			  lp->tx_ring, lp->tx_ring_dma_addr);
+ 
+ err_no_mem:
+ 	return -ENOMEM;
+@@ -612,16 +617,16 @@ static void amd8111e_free_ring(struct amd8111e_priv *lp)
+ {
+ 	/* Free transmit and receive descriptor rings */
+ 	if(lp->rx_ring){
+-		pci_free_consistent(lp->pci_dev,
+-			sizeof(struct amd8111e_rx_dr)*NUM_RX_RING_DR,
+-			lp->rx_ring, lp->rx_ring_dma_addr);
++		dma_free_coherent(&lp->pci_dev->dev,
++				  sizeof(struct amd8111e_rx_dr) * NUM_RX_RING_DR,
++				  lp->rx_ring, lp->rx_ring_dma_addr);
+ 		lp->rx_ring = NULL;
+ 	}
+ 
+ 	if(lp->tx_ring){
+-		pci_free_consistent(lp->pci_dev,
+-			sizeof(struct amd8111e_tx_dr)*NUM_TX_RING_DR,
+-			lp->tx_ring, lp->tx_ring_dma_addr);
++		dma_free_coherent(&lp->pci_dev->dev,
++				  sizeof(struct amd8111e_tx_dr) * NUM_TX_RING_DR,
++				  lp->tx_ring, lp->tx_ring_dma_addr);
+ 
+ 		lp->tx_ring = NULL;
+ 	}
+@@ -649,9 +654,10 @@ static int amd8111e_tx(struct net_device *dev)
+ 
+ 		/* We must free the original skb */
+ 		if (lp->tx_skbuff[tx_index]) {
+-			pci_unmap_single(lp->pci_dev, lp->tx_dma_addr[tx_index],
+-				  	lp->tx_skbuff[tx_index]->len,
+-					PCI_DMA_TODEVICE);
++			dma_unmap_single(&lp->pci_dev->dev,
++					 lp->tx_dma_addr[tx_index],
++					 lp->tx_skbuff[tx_index]->len,
++					 DMA_TO_DEVICE);
+ 			dev_consume_skb_irq(lp->tx_skbuff[tx_index]);
+ 			lp->tx_skbuff[tx_index] = NULL;
+ 			lp->tx_dma_addr[tx_index] = 0;
+@@ -737,14 +743,14 @@ static int amd8111e_rx_poll(struct napi_struct *napi, int budget)
+ 
+ 		skb_reserve(new_skb, 2);
+ 		skb = lp->rx_skbuff[rx_index];
+-		pci_unmap_single(lp->pci_dev,lp->rx_dma_addr[rx_index],
+-				 lp->rx_buff_len-2, PCI_DMA_FROMDEVICE);
++		dma_unmap_single(&lp->pci_dev->dev, lp->rx_dma_addr[rx_index],
++				 lp->rx_buff_len - 2, DMA_FROM_DEVICE);
+ 		skb_put(skb, pkt_len);
+ 		lp->rx_skbuff[rx_index] = new_skb;
+-		lp->rx_dma_addr[rx_index] = pci_map_single(lp->pci_dev,
++		lp->rx_dma_addr[rx_index] = dma_map_single(&lp->pci_dev->dev,
+ 							   new_skb->data,
+-							   lp->rx_buff_len-2,
+-							   PCI_DMA_FROMDEVICE);
++							   lp->rx_buff_len - 2,
++							   DMA_FROM_DEVICE);
+ 
+ 		skb->protocol = eth_type_trans(skb, dev);
+ 
+@@ -1270,7 +1276,8 @@ static netdev_tx_t amd8111e_start_xmit(struct sk_buff *skb,
+ 	}
+ #endif
+ 	lp->tx_dma_addr[tx_index] =
+-	    pci_map_single(lp->pci_dev, skb->data, skb->len, PCI_DMA_TODEVICE);
++	    dma_map_single(&lp->pci_dev->dev, skb->data, skb->len,
++			   DMA_TO_DEVICE);
+ 	lp->tx_ring[tx_index].buff_phy_addr =
+ 	    cpu_to_le32(lp->tx_dma_addr[tx_index]);
+ 
+@@ -1773,7 +1780,7 @@ static int amd8111e_probe_one(struct pci_dev *pdev,
+ 	}
+ 
+ 	/* Initialize DMA */
+-	if (pci_set_dma_mask(pdev, DMA_BIT_MASK(32)) < 0) {
++	if (dma_set_mask(&pdev->dev, DMA_BIT_MASK(32)) < 0) {
+ 		dev_err(&pdev->dev, "DMA not supported\n");
+ 		err = -ENODEV;
+ 		goto err_free_reg;
+-- 
+2.25.1
+
