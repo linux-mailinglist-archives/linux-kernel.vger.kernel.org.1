@@ -2,75 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C266F21D166
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D4121D15C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 10:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbgGMIKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 04:10:19 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:37964 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726077AbgGMIKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 04:10:19 -0400
-Received: from localhost (unknown [159.226.5.99])
-        by APP-03 (Coremail) with SMTP id rQCowAAXmQBWFgxfpA1mAA--.47566S2;
-        Mon, 13 Jul 2020 16:07:50 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        chris@chris-wilson.co.uk, mika.kuoppala@linux.intel.com,
-        tvrtko.ursulin@intel.com, andi.shyti@intel.com,
-        matthew.auld@intel.com, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
-Subject: [PATCH] f2fs: gc: fix the variable used in PTR_ERR()
-Date:   Mon, 13 Jul 2020 08:07:49 +0000
-Message-Id: <20200713080749.21782-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowAAXmQBWFgxfpA1mAA--.47566S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gr4UCr15AF1rGF4DWFWkCrg_yoWxuFXEkr
-        47Jrs3WFy2kF90vFnFvwsxZF90ya909F48Aw10q34ftFy2yr4UXa9xur1UXw1xXa13JrZr
-        u3W8uFySvrn3WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-        cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE14v26F4UJVW0owAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-        n2IY04v7MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VU1r-BtUUUUU==
-X-Originating-IP: [159.226.5.99]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAw4QA13qZNpZSQAAsH
+        id S1728571AbgGMIIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 04:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726077AbgGMIIJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 04:08:09 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC68CC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:08:08 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f18so14818522wrs.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 01:08:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:reply-to:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:content-language
+         :thread-index;
+        bh=n0kxcs6gNGs9FJbIs3Lc7T0KsS0d3xL066fOjGqZegk=;
+        b=pcjaFOmOWH7bFsme46lfUzgiDMH76YUAcKrxY/kWWwAMFaTOK1EmHZlPDKfvD4LqAH
+         4blcM1nrhzcvamHkZjtv2KCa8he/ylRAPTPVNfVLgziX8YdA5pQEVv+w0J+RydwcGzm6
+         tw5AdBLeQ5Uz7FGfe2vzx7v9sDfeGtYZw3CoEau0WOf8iCRpchJ23m65JR+oRaH4Y1mw
+         0QHtR3c2QqUHhCTy/ClyvX16VoddM0RzMmyhglPZl+vYVY82+IhZoTzQIXpBZ6At7W5S
+         y2zcFt6XbooWaVXBLQBVPdlskr+GaxmNnedVbh6QcQVOBMIsmyTwfR9/uMQ96jY3BZOQ
+         lB1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:reply-to:to:cc:references:in-reply-to
+         :subject:date:message-id:mime-version:content-transfer-encoding
+         :content-language:thread-index;
+        bh=n0kxcs6gNGs9FJbIs3Lc7T0KsS0d3xL066fOjGqZegk=;
+        b=Oz9zJ6YgNu+CtG0NrEsPElUI5rV81H5h1xK9Im38LYta0TpgEIBRwqtXg/Ge5f8Rj3
+         WZLrCkZKJjZ898uLEIh97Pzvjy39zaFT2BwFD/1io2InPpliMLWUMQGCFqLy6GKrjCUw
+         u1OFqcBDvdQK30y6RZL5tGBc8mNWbNgazDkAUfHELZ8Irg7hYsCIAx2+K9IxWzRTK9V8
+         vjeapucAcFH+LWI9C3oTk9J5M/3oybYbf5GjXNKS6gTRAfajktXrtNTKGs7a+01/SWcJ
+         6mDqgQ9KvRhOmMNpoBK/+tCoEtof8QDP9zXjgCBZyYeCQsKAMKhpCdJ8Vsn9auDGVBMW
+         oTWg==
+X-Gm-Message-State: AOAM5338YXIlCUUwcJjen0Js8dNzOIGPg/MoJ4fzDikaye2b4koYq0JH
+        R5ZhQhFEjAXV/KZlI+zD9h8=
+X-Google-Smtp-Source: ABdhPJytfL/cIdT+33/hj/QLy5PvtlQ6lTN3tAN0bJF3PHbH20eU5KnmkWKiks/uAreR0c/RFyjo9Q==
+X-Received: by 2002:a5d:4845:: with SMTP id n5mr76883891wrs.353.1594627687426;
+        Mon, 13 Jul 2020 01:08:07 -0700 (PDT)
+Received: from CBGR90WXYV0 (54-240-197-236.amazon.com. [54.240.197.236])
+        by smtp.gmail.com with ESMTPSA id v3sm22686177wrq.57.2020.07.13.01.08.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 13 Jul 2020 01:08:06 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: "Paul Durrant" <paul@xen.org>
+Reply-To: <paul@xen.org>
+To:     "'Souptick Joarder'" <jrdr.linux@gmail.com>,
+        <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
+        <sstabellini@kernel.org>
+Cc:     <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>,
+        "'John Hubbard'" <jhubbard@nvidia.com>,
+        "'Paul Durrant'" <xadimgnik@gmail.com>
+References: <1594525195-28345-1-git-send-email-jrdr.linux@gmail.com> <1594525195-28345-2-git-send-email-jrdr.linux@gmail.com>
+In-Reply-To: <1594525195-28345-2-git-send-email-jrdr.linux@gmail.com>
+Subject: RE: [PATCH v3 1/3] xen/privcmd: Corrected error handling path
+Date:   Mon, 13 Jul 2020 09:08:04 +0100
+Message-ID: <003801d658ec$bd526c70$37f74550$@xen.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-gb
+Thread-Index: AQGQUUjbM0hB7euxJ1kpRMo6FNfk+gI2hbljqX+CmZA=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PTR_ERR should access the value just tested by IS_ERR, so fix
-the variable used in PTR_ERR().
+> -----Original Message-----
+> From: Souptick Joarder <jrdr.linux@gmail.com>
+> Sent: 12 July 2020 04:40
+> To: boris.ostrovsky@oracle.com; jgross@suse.com; sstabellini@kernel.org
+> Cc: xen-devel@lists.xenproject.org; linux-kernel@vger.kernel.org; Souptick Joarder
+> <jrdr.linux@gmail.com>; John Hubbard <jhubbard@nvidia.com>; Paul Durrant <xadimgnik@gmail.com>
+> Subject: [PATCH v3 1/3] xen/privcmd: Corrected error handling path
+> 
+> Previously, if lock_pages() end up partially mapping pages, it used
+> to return -ERRNO due to which unlock_pages() have to go through
+> each pages[i] till *nr_pages* to validate them. This can be avoided
+> by passing correct number of partially mapped pages & -ERRNO separately,
+> while returning from lock_pages() due to error.
+> 
+> With this fix unlock_pages() doesn't need to validate pages[i] till
+> *nr_pages* for error scenario and few condition checks can be ignored.
+> 
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> Reviewed-by: Juergen Gross <jgross@suse.com>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> Cc: Paul Durrant <xadimgnik@gmail.com>
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/gpu/drm/i915/gt/selftest_lrc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Paul Durrant <paul@xen.org>
 
-diff --git a/drivers/gpu/drm/i915/gt/selftest_lrc.c b/drivers/gpu/drm/i915/gt/selftest_lrc.c
-index 924bc01ef526..d2587e46afe9 100644
---- a/drivers/gpu/drm/i915/gt/selftest_lrc.c
-+++ b/drivers/gpu/drm/i915/gt/selftest_lrc.c
-@@ -1349,7 +1349,7 @@ static int live_timeslice_nopreempt(void *arg)
- 
- 		ce = intel_context_create(engine);
- 		if (IS_ERR(ce)) {
--			err = PTR_ERR(rq);
-+			err = PTR_ERR(ce);
- 			goto out_spin;
- 		}
- 
--- 
-2.17.1
+> ---
+>  drivers/xen/privcmd.c | 31 +++++++++++++++----------------
+>  1 file changed, 15 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
+> index 5dfc59f..b001673 100644
+> --- a/drivers/xen/privcmd.c
+> +++ b/drivers/xen/privcmd.c
+> @@ -579,13 +579,13 @@ static long privcmd_ioctl_mmap_batch(
+> 
+>  static int lock_pages(
+>  	struct privcmd_dm_op_buf kbufs[], unsigned int num,
+> -	struct page *pages[], unsigned int nr_pages)
+> +	struct page *pages[], unsigned int nr_pages, unsigned int *pinned)
+>  {
+>  	unsigned int i;
+> 
+>  	for (i = 0; i < num; i++) {
+>  		unsigned int requested;
+> -		int pinned;
+> +		int page_count;
+> 
+>  		requested = DIV_ROUND_UP(
+>  			offset_in_page(kbufs[i].uptr) + kbufs[i].size,
+> @@ -593,14 +593,15 @@ static int lock_pages(
+>  		if (requested > nr_pages)
+>  			return -ENOSPC;
+> 
+> -		pinned = get_user_pages_fast(
+> +		page_count = get_user_pages_fast(
+>  			(unsigned long) kbufs[i].uptr,
+>  			requested, FOLL_WRITE, pages);
+> -		if (pinned < 0)
+> -			return pinned;
+> +		if (page_count < 0)
+> +			return page_count;
+> 
+> -		nr_pages -= pinned;
+> -		pages += pinned;
+> +		*pinned += page_count;
+> +		nr_pages -= page_count;
+> +		pages += page_count;
+>  	}
+> 
+>  	return 0;
+> @@ -610,13 +611,8 @@ static void unlock_pages(struct page *pages[], unsigned int nr_pages)
+>  {
+>  	unsigned int i;
+> 
+> -	if (!pages)
+> -		return;
+> -
+> -	for (i = 0; i < nr_pages; i++) {
+> -		if (pages[i])
+> -			put_page(pages[i]);
+> -	}
+> +	for (i = 0; i < nr_pages; i++)
+> +		put_page(pages[i]);
+>  }
+> 
+>  static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
+> @@ -629,6 +625,7 @@ static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
+>  	struct xen_dm_op_buf *xbufs = NULL;
+>  	unsigned int i;
+>  	long rc;
+> +	unsigned int pinned = 0;
+> 
+>  	if (copy_from_user(&kdata, udata, sizeof(kdata)))
+>  		return -EFAULT;
+> @@ -682,9 +679,11 @@ static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
+>  		goto out;
+>  	}
+> 
+> -	rc = lock_pages(kbufs, kdata.num, pages, nr_pages);
+> -	if (rc)
+> +	rc = lock_pages(kbufs, kdata.num, pages, nr_pages, &pinned);
+> +	if (rc < 0) {
+> +		nr_pages = pinned;
+>  		goto out;
+> +	}
+> 
+>  	for (i = 0; i < kdata.num; i++) {
+>  		set_xen_guest_handle(xbufs[i].h, kbufs[i].uptr);
+> --
+> 1.9.1
+
 
