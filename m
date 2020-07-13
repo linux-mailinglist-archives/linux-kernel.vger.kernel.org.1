@@ -2,96 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB18B21D2D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 11:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F11E21D2DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 11:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729166AbgGMJck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 05:32:40 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:52755 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726523AbgGMJck (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 05:32:40 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-34-hnUZbe6hOp242FF6k1bHag-1; Mon, 13 Jul 2020 10:32:36 +0100
-X-MC-Unique: hnUZbe6hOp242FF6k1bHag-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 13 Jul 2020 10:32:32 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 13 Jul 2020 10:32:32 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: objtool clac/stac handling change..
-Thread-Topic: objtool clac/stac handling change..
-Thread-Index: AQHWUaiHCXC7llURSE6cKT9wSRp9Xaj8B+9wgAVZSACAA+U7gA==
-Date:   Mon, 13 Jul 2020 09:32:32 +0000
-Message-ID: <88850c316ed14c7b8391cea05d875406@AcuMS.aculab.com>
-References: <CAHk-=wj-CYhKZR8ZKQgi=VTx=o7n6dtwPXikvgkJ3SdiqRPd8A@mail.gmail.com>
- <87lfk26nx4.fsf@mpe.ellerman.id.au>
- <CAHk-=wicOPQwuDUzFyDTBgr4UvQJHPdCX7_6BLaK6cve6CqBSg@mail.gmail.com>
- <20200702201755.GO2786714@ZenIV.linux.org.uk>
- <CAHk-=whW7qYEK-MJMS9gKf-K4cBNGTq0pv-5wo4bqE_QtUfkDw@mail.gmail.com>
- <20200702205902.GP2786714@ZenIV.linux.org.uk>
- <CAHk-=whm66UhcEQgXHr8hPkzyDTOdbGikLbSg0zJ4-b93aSg8w@mail.gmail.com>
- <20200703013328.GQ2786714@ZenIV.linux.org.uk>
- <20200703210237.GS2786714@ZenIV.linux.org.uk>
- <20200704004959.GY2786714@ZenIV.linux.org.uk>
- <20200704021157.GZ2786714@ZenIV.linux.org.uk>
- <b95ffa72db83431b95597a35f63d8e33@AcuMS.aculab.com>
- <CAHk-=wjQJjZX3cgX6vLp6ntTiBG+a6md64J+e74SDntoTi+q4A@mail.gmail.com>
-In-Reply-To: <CAHk-=wjQJjZX3cgX6vLp6ntTiBG+a6md64J+e74SDntoTi+q4A@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1729475AbgGMJdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 05:33:37 -0400
+Received: from smtp.al2klimov.de ([78.46.175.9]:55354 "EHLO smtp.al2klimov.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726380AbgGMJdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 05:33:36 -0400
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id DDA56BC09E;
+        Mon, 13 Jul 2020 09:33:32 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     khc@pm.waw.pl, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] WAN: Replace HTTP links with HTTPS ones
+Date:   Mon, 13 Jul 2020 11:33:23 +0200
+Message-Id: <20200713093323.32841-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTAgSnVseSAyMDIwIDIzOjM3DQo+IE9uIFR1
-ZSwgSnVsIDcsIDIwMjAgYXQgNTozNSBBTSBEYXZpZCBMYWlnaHQgPERhdmlkLkxhaWdodEBhY3Vs
-YWIuY29tPiB3cm90ZToNCj4gPg0KPiA+DQo+ID4gU28gc2VwYXJhdGUgY29weSBhbmQgY2hlY2tz
-dW0gcGFzc2VzIHNob3VsZCBlYXNpbHkgZXhjZWVkIDQgYnl0ZXMvY2xvY2ssDQo+ID4gYnV0IEkg
-c3VzcGVjdCB0aGF0IGRvaW5nIHRoZW0gdG9nZXRoZXIgbmV2ZXIgZG9lcy4NCj4gPiAoVW5sZXNz
-IHRoZSBidWZmZXIgaXMgdG9vIGJpZyBmb3IgdGhlIEwxIGNhY2hlLikNCj4gDQo+IEl0cycgdGhl
-ICJ0b3VjaCB0aGUgY2FjaGVzIHR3aWNlIiB0aGF0IGlzIHRoZSBwcm9ibGVtIi4NCj4gDQo+IEFu
-ZCBpdCdzIG5vdCB0aGUgImJ1ZmZlciBpcyB0b28gYmlnIGZvciBMMSIsIGl0J3MgInRoZSBzb3Vy
-Y2UsIHRoZQ0KPiBkZXN0aW5hdGlvbiBhbmQgYW55IGluY2lkZW50YWxzIGFyZSB0b28gYmlnIGZv
-ciBMMSIgd2l0aCB0aGUNCj4gYWRkaXRpb25hbCBub2lzZSBmcm9tIHJlcGxhY2VtZW50IHBvbGlj
-aWVzIGV0Yy4NCg0KVGhhdCdzIHJlYWxseSB3aGF0IEkgbWVhbnQuDQpMMUQgaXMgYWN0dWFsbHkg
-KHByb2JhYmx5KSBvbmx5IDMya0IuDQpJIGd1ZXNzIHRoYXQgZ2l2ZXMgeW91IDhrIGZvciB0aGUg
-YnVmZmVyLg0KDQpJdCBpcyBhIHNoYW1lIHlvdSBjYW4ndCB1c2UgdGhlIEFWWCBpbnN0cnVjdGlv
-bnMgaW4ga2VybmVsLg0KKEFsdGhvdWdoIHNhdmluZyB0aGVtIHByb2JhYmx5IGNvc3RzIG1vcmUg
-dGhhbiB0aGUgZ2Fpbi4pDQpUaGVuIHlvdSBjb3VsZCB1c2Ugc29tZXRoaW5nIGJhc2VkIG9uOg0K
-MTA6CWxvYWQgeW1tLHNyYytpZHggICAvLyAzMiBieXRlcw0KCXN0b3JlIHltbSx0Z3QraWR4DQoJ
-YWRkcSBzdW0wLHltbSAgIC8vIGVpZ2h0IDMyYml0IGFkZHMNCglyb3RhdGUgeW1tLDE2ICAgLy8g
-UHJldHR5IHN1cmUgdGhlcmUgaW4gYW4gaW5zdHJ1Y3Rpb24gZm9yIHRoaXMhDQoJYWRkcSBzdW0x
-LHltbQ0KCWFkZCBpZHgsMzINCglqbnogMTBiDQpJdCBpcyB0aGVuIHBvc3NpYmx5IHRvIGRldGVy
-bWluZSB0aGUgY29ycmVjdCByZXN1bHQgZnJvbSBzdW0wL3N1bTEuDQpPbiB2ZXJ5IHJlY2VudCBJ
-bnRlbCBjcHUgdGhhdCBtaWdodCBldmVuIHJ1biBhdCAxIGl0ZXJhdGlvbi9jbG9jayENCihQcm9i
-YWJseSBuZWVkcyBhbmQgdW5yb2xsIGFuZCBleHBsaWNpdCBpbnRlcmxlYXZlLikNCkF0IG9uZSBp
-dGVyYXRpb24gZXZlcnkgMiBjbG9ja3MgaXQgbWF0Y2hlcyB0aGUgQUREWFtPQ10gbG9vcA0KYnV0
-IGluY2x1ZGVzIHRoZSB3cml0ZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBM
-YWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBU
-LCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
+
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5.
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely or at least not just HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
+
+ Sorry again to all maintainers who complained about subject lines.
+ Now I realized that you want an actually perfect prefixes,
+ not just subsystem ones.
+ I tried my best...
+ And yes, *I could* (at least half-)automate it.
+ Impossible is nothing! :)
+
+
+ drivers/net/wan/c101.c      | 2 +-
+ drivers/net/wan/n2.c        | 2 +-
+ drivers/net/wan/pc300too.c  | 2 +-
+ drivers/net/wan/pci200syn.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wan/c101.c b/drivers/net/wan/c101.c
+index cb57f9124ab1..c354a5143e99 100644
+--- a/drivers/net/wan/c101.c
++++ b/drivers/net/wan/c101.c
+@@ -4,7 +4,7 @@
+  *
+  * Copyright (C) 2000-2003 Krzysztof Halasa <khc@pm.waw.pl>
+  *
+- * For information see <http://www.kernel.org/pub/linux/utils/net/hdlc/>
++ * For information see <https://www.kernel.org/pub/linux/utils/net/hdlc/>
+  *
+  * Sources of information:
+  *    Hitachi HD64570 SCA User's Manual
+diff --git a/drivers/net/wan/n2.c b/drivers/net/wan/n2.c
+index f9e7fc7e9978..5bf4463873b1 100644
+--- a/drivers/net/wan/n2.c
++++ b/drivers/net/wan/n2.c
+@@ -4,7 +4,7 @@
+  *
+  * Copyright (C) 1998-2003 Krzysztof Halasa <khc@pm.waw.pl>
+  *
+- * For information see <http://www.kernel.org/pub/linux/utils/net/hdlc/>
++ * For information see <https://www.kernel.org/pub/linux/utils/net/hdlc/>
+  *
+  * Note: integrated CSU/DSU/DDS are not supported by this driver
+  *
+diff --git a/drivers/net/wan/pc300too.c b/drivers/net/wan/pc300too.c
+index 190735604b2e..001fd378d417 100644
+--- a/drivers/net/wan/pc300too.c
++++ b/drivers/net/wan/pc300too.c
+@@ -4,7 +4,7 @@
+  *
+  * Copyright (C) 2000-2008 Krzysztof Halasa <khc@pm.waw.pl>
+  *
+- * For information see <http://www.kernel.org/pub/linux/utils/net/hdlc/>.
++ * For information see <https://www.kernel.org/pub/linux/utils/net/hdlc/>.
+  *
+  * Sources of information:
+  *    Hitachi HD64572 SCA-II User's Manual
+diff --git a/drivers/net/wan/pci200syn.c b/drivers/net/wan/pci200syn.c
+index b5f8aaca5f06..d0062224b216 100644
+--- a/drivers/net/wan/pci200syn.c
++++ b/drivers/net/wan/pci200syn.c
+@@ -4,7 +4,7 @@
+  *
+  * Copyright (C) 2002-2008 Krzysztof Halasa <khc@pm.waw.pl>
+  *
+- * For information see <http://www.kernel.org/pub/linux/utils/net/hdlc/>
++ * For information see <https://www.kernel.org/pub/linux/utils/net/hdlc/>
+  *
+  * Sources of information:
+  *    Hitachi HD64572 SCA-II User's Manual
+-- 
+2.27.0
 
