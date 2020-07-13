@@ -2,145 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4583221E001
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D4021DFF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgGMSmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 14:42:46 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:49670 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgGMSmp (ORCPT
+        id S1726602AbgGMSkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 14:40:24 -0400
+Received: from mail.efficios.com ([167.114.26.124]:58328 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgGMSkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 14:42:45 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jv3PU-0007mD-OF; Mon, 13 Jul 2020 12:42:41 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jv3PR-0001ur-HK; Mon, 13 Jul 2020 12:42:40 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Matt Bennett <Matt.Bennett@alliedtelesis.co.nz>
-Cc:     "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "zbr\@ioremap.net" <zbr@ioremap.net>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "containers\@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>
-References: <20200702002635.8169-1-matt.bennett@alliedtelesis.co.nz>
-        <87k0zlspxs.fsf@x220.int.ebiederm.org>
-        <94defa61204731d7dce37edeb98069c8647722c2.camel@alliedtelesis.co.nz>
-Date:   Mon, 13 Jul 2020 13:39:48 -0500
-In-Reply-To: <94defa61204731d7dce37edeb98069c8647722c2.camel@alliedtelesis.co.nz>
-        (Matt Bennett's message of "Sun, 5 Jul 2020 22:31:25 +0000")
-Message-ID: <87lfjn9s3v.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 13 Jul 2020 14:40:23 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id F269A2A4A07;
+        Mon, 13 Jul 2020 14:40:21 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id l2LzFfAbobEV; Mon, 13 Jul 2020 14:40:21 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3D1A42A4A06;
+        Mon, 13 Jul 2020 14:40:21 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3D1A42A4A06
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1594665621;
+        bh=OtJcpQT6Tlw3emHPtltrgY/B5bBauqAWAQxOtZu6g8E=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=pvgpEFdwme+7Hs0kX58yiYRT3p/YssMZK5NU/c+JWr/cb7cl8xwcPIJuJ568RXGoV
+         guEvYtpKFjy78AcvOCMeEQfLf9ChHjvVUJWwoOG+RgNkG8Ra2Slg5etOFXBibjK10u
+         0sK5w4Cphqd7o2uQLmgQtRLi2GV5QMfjviGixvmmmekca7axZaQYzZ6IcX8oHEk5fG
+         RVCp0ezZUKY6D4PiGplGMtcWiJPsS3WvpFwfXrflvxQT+tjo43lN0Bobtlc0ZsPdeO
+         /0FCD6qHmhqGu3CB8EQGEBIJhqc0nmRghxCCYJy2TmACGPinorYuEiRxfDink4iUVH
+         d3bE/vTRagICQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id worjRc0Quwiy; Mon, 13 Jul 2020 14:40:21 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 1669C2A473D;
+        Mon, 13 Jul 2020 14:40:21 -0400 (EDT)
+Date:   Mon, 13 Jul 2020 14:40:20 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Florian Weimer <fw@deneb.enyo.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        carlos <carlos@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@linux.ibm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api <linux-api@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Neel Natu <neelnatu@google.com>
+Message-ID: <1305865358.10354.1594665620975.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200711155459.4mswacrvosw377tk@wittgenstein>
+References: <20200706204913.20347-1-mathieu.desnoyers@efficios.com> <87zh8bw158.fsf@mid.deneb.enyo.de> <1448906726.3717.1594222431276.JavaMail.zimbra@efficios.com> <20200708162247.txdleelcalxkrfjy@wittgenstein> <1565638541.5051.1594229688015.JavaMail.zimbra@efficios.com> <20200709124941.u4quvvaiabx36ee3@wittgenstein> <1197598149.7002.1594307757307.JavaMail.zimbra@efficios.com> <20200711155459.4mswacrvosw377tk@wittgenstein>
+Subject: Re: [RFC PATCH for 5.8 3/4] rseq: Introduce
+ RSEQ_FLAG_RELIABLE_CPU_ID
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jv3PR-0001ur-HK;;;mid=<87lfjn9s3v.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+bSAA2WjgwsAy+DqUrSJ23WR2oUHPLg1M=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: ***
-X-Spam-Status: No, score=3.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,NO_DNS_FOR_FROM,T_TM2_M_HEADER_IN_MSG,XMNoVowels,
-        XMSubLong,XM_B_SpammyTLD autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4361]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 NO_DNS_FOR_FROM DNS: Envelope sender has no MX or A DNS records
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 0; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 XM_B_SpammyTLD Contains uncommon/spammy TLD
-X-Spam-DCC: ; sa01 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Matt Bennett <Matt.Bennett@alliedtelesis.co.nz>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 2718 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 4.4 (0.2%), b_tie_ro: 3.0 (0.1%), parse: 1.07
-        (0.0%), extract_message_metadata: 12 (0.5%), get_uri_detail_list: 2.6
-        (0.1%), tests_pri_-1000: 2.6 (0.1%), tests_pri_-950: 1.10 (0.0%),
-        tests_pri_-900: 0.83 (0.0%), tests_pri_-90: 94 (3.5%), check_bayes: 93
-        (3.4%), b_tokenize: 6 (0.2%), b_tok_get_all: 7 (0.3%), b_comp_prob:
-        2.0 (0.1%), b_tok_touch_all: 75 (2.8%), b_finish: 0.77 (0.0%),
-        tests_pri_0: 2591 (95.3%), check_dkim_signature: 0.61 (0.0%),
-        check_dkim_adsp: 2277 (83.8%), poll_dns_idle: 2267 (83.4%),
-        tests_pri_10: 1.80 (0.1%), tests_pri_500: 6 (0.2%), rewrite_mail: 0.00
-        (0.0%)
-Subject: Re: [PATCH 0/5] RFC: connector: Add network namespace awareness
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
+Thread-Topic: rseq: Introduce RSEQ_FLAG_RELIABLE_CPU_ID
+Thread-Index: H9RtQhQ5vu1lETOVJqIpDy4KpmVemg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matt Bennett <Matt.Bennett@alliedtelesis.co.nz> writes:
+----- On Jul 11, 2020, at 11:54 AM, Christian Brauner christian.brauner@ubuntu.com wrote:
 
-> On Thu, 2020-07-02 at 13:59 -0500, Eric W. Biederman wrote:
->> Matt Bennett <matt.bennett@alliedtelesis.co.nz> writes:
->> 
->> > Previously the connector functionality could only be used by processes running in the
->> > default network namespace. This meant that any process that uses the connector functionality
->> > could not operate correctly when run inside a container. This is a draft patch series that
->> > attempts to now allow this functionality outside of the default network namespace.
->> > 
->> > I see this has been discussed previously [1], but am not sure how my changes relate to all
->> > of the topics discussed there and/or if there are any unintended side
->> > effects from my draft
->> 
->> In a quick skim this patchset does not look like it approaches a correct
->> conversion to having code that works in multiple namespaces.
->> 
->> I will take the changes to proc_id_connector for example.
->> You report the values in the callers current namespaces.
->> 
->> Which means an unprivileged user can create a user namespace and get
->> connector to report whichever ids they want to users in another
->> namespace.  AKA lie.
->> 
->> So this appears to make connector completely unreliable.
->> 
->> Eric
->> 
->
-> Hi Eric,
->
-> Thank you for taking the time to review. I wrote these patches in an
-> attempt to show that I was willing to do the work myself rather than
-> simply asking for someone else to do it for me. The changes worked for
-> my use cases when I tested them, but I expected that some of the
-> changes would be incorrect and that I would need some guidance. I can
-> spend some time to really dig in and fully understand the changes I am
-> trying to make (I have limited kernel development experience) but
-> based on the rest of the discussion threads it seems that there is
-> likely no appetite to ever support namespaces with the connector.
+> 
+> The registration is a thread-group property I'll assume, right, i.e. all
+> threads will have rseq TLS or no thread will have it?
 
-Good approach to this.
+No, rseq registration is a per-thread property, but it would arguably be
+a bit weird for a thread-group to observe different registration states
+for different threads.
 
-My sense is that there are few enough uses of connector that if don't
-mind changing your code so that it works in a container (and the pidfd
-support appears to already provide what you need) that is probably the
-past of least resistance.
+> Some things I seem to be able to assume (correct me if I'm wrong):
+> - rseq registration is expected to be done at thread creation time
 
-I don't think it maintaining connector support would be much more work
-than it is now, if someone went through and did the work to carefully
-convert the code.  So if someone really wants to use connector we can
-namespace the code.
+True.
 
-Otherwise it is probably makes sense to let the few users gradually stop
-using connector so the code can eventually be removed.
+> - rseq registration _should_ only be done once, i.e. if a caller detects
+>  that rseq is already registered for a thread, then they could
+>  technically re-register rseq - risking a feature mismatch if doing so
+>  - but they shouldn't re-register but simply assume that someone else
+>  is in control of rseq. If they violate that assumption than you're
+>  hosed anyway.
 
-Please checkout out the pidfd support and tell us how it meets your
-needs.  If there is something that connector really does better it would
-be good to know.
+Right.
 
-Thank you,
-Eric
+> So it seems as long as callers leave rseq registration alone whenever
+> they detect that it is already registered then one can assume that rseq
+> is under consistent control of a single library/program. If that's the
+> case it should safe to assume that the library will use the same rseq
+> registration for all threads bounded by the available kernel features or
+> by the set of features it is aware of.
+
+The rseq registration is per-thread. But yes, as soon as one user registers
+rseq, other users for that thread are expected to piggy-back on that
+registration.
+
+> I proposed that specific scheme because I was under the impression that
+> you are in need of a mechanism for a caller (at thread creation I
+> assume) to check what feature set is supported by rseq _without_
+> issung a system call. If you were to record the requested flags in
+> struct rseq or in some other way, then another library which tries to
+> register rseq for a thread but detects it has already been registered
+> can look at e.g. whether the reliable cpu feature is around and then
+> adjust it's behavior accordingly.
+> Another reason why this seems worthwhile is because of how rseq works in
+> general. Since it registers a piece of userspace memory which userspace
+> can trivially access enforcing that userspace issue a syscall to get at
+> the feature list seems odd when you can just record it in the struct.
+> But that's a matter of style, I guess.
+
+Good points.
+
+> 
+> Also, I'm thinking about the case of adding one or two new features that
+> introduce mutually exclusive behavior for rseq, i.e. if you register
+> rseq with FEAT1 and someone else registers it with FEAT2 and FEAT1 and
+> FEAT2 would lead to incompatible behavior for an aspect or all of rseq.
+> Even if you had a way to query the kernel for FEAT1 and FEAT2 in the
+> rseq syscall it still be a problem since a caller wouldn't know at rseq
+> registration time whether the library registered rseq with FEAT1 or
+> FEAT2. If you record the behavior somewhere - kernel_flags or whatever -
+> then the caller could check at registration time "ah, rseq is registered
+> with this behavior" I need to adjust my behavior.
+
+I think what we want here is to be able to extend the feature set, but not
+"pick and choose" different incompatible features.
+
+[...]
+>> 
+>> One additional thing to keep in mind: the application can itself choose
+>> to define the __rseq_abi TLS, which AFAIU (please let me know if I am
+>> wrong) would take precedence over glibc's copy. So extending the
+> 
+> You mean either that an application could simply choose to ignore that e.g.
+> glibc has already registered rseq and e.g. unregister it and register
+> it's own or that it registers it's own rseq before glibc comes into the
+> play?
+
+No quite.
+
+I mean that an application binary or a preloaded library is allowed to
+interpose with glibc and expose a __rseq_abi symbol with a size smaller
+than glibc's __rseq_abi. The issue is that glibc (or other library
+responsible for rseq registration) is unaware of that symbol's size.
+
+This means that extending __rseq_abi cannot be done by means of additional
+flags or parameters passed directly from the registration owner to the
+rseq system call.
+
+> I mean, if I interpreted what you're trying to say correctly, I think
+> one needs to work under the assumption that if someone else has already
+> registered rseq than it becomes the single source of truth. I think that
+> basically needs to be the contract. Same way you expect a user of
+> pthreads to not suddenly go and call clone3() with CLONE_THREAD |
+> CLONE_VM | [...] and assume that this won't mess with glibc's internal
+> state.
+
+Right. The issue is not about which library owns the registration, but
+rather making sure everyone agree on the size of __rseq_abi, including
+interposition scenarios.
+
+[...]
+>> 
+>> For both approaches, we could either pass them as parameters with rseq
+>> registration, and make rseq registration success conditional on the
+>> kernel implementing those feature/fix-version, or validate the flag/version
+>> separately from registration.
+>> 
+>> If this is done on registration, it means glibc will eventually have to
+>> handle this. This prevents user libraries with specific needs to query
+>> whether their features are available. Doing the feature/version validation
+>> separately from registration allows each user library to make its own
+>> queries and take advantage of new kernel features before glibc is
+>> upgraded to be made aware of them.
+> 
+> Why isn't there a "dual scheme"? I.e. you record the features somewhere
+> in struct rseq or some other place so userspace can query an already
+> registered thread for the features it was registered with and have a way
+> to query the kernel for the supported features through the system call
+> (See what I suggested above with the feature checking flags.).
+
+This discussion got my head into gears over the weekend, and I think
+I came up with something that could elegantly solve all the "rseq extensibility"
+problem. More below.
+
+[...]
+
+> I really think this is not an rseq specific problem. This seems to be a
+> generic problem any interface has when it e.g. makes use of an extended
+> struct and e.g. decides to make its own syscalls without going through
+> the glibc wrappers (If there are any...). That's the reality right now
+> and will likely always be that way short of us blocking non-libc
+> syscalls similar to some bsds at which point we need a 1:1 kernel + libc
+> development. :) That's not going to happen. The problem ranges from
+> struct statx to struct clone_args and struct open_how and so on.
+
+AFAIU the only "special" thing about rseq is that its __rseq_abi is
+a TLS symbol shared between application/libraries, and interposition is
+allowed.
+
+> 
+> But one question. Musn't the assumption be that all threads in a
+> thread-group if they have registered rseq then the same
+> application/library has done that registration?
+
+No, __rseq_abi is a TLS, and the registration is per-thread.
+
+> And if that's the case
+> then the application/library doing the registration is what defines the
+> layout for that thread-group and becomes the one source of truth.
+> Basically, if an application uses it's own rseq then glibc must be out
+> of the picture. If that's not part of the contract then it feels to me
+> that rseq cannot be extended (for now).
+
+Indeed, the new scheme I have in mind for rseq extensibility would allow
+new features to be used between new application/library and kernel even
+with an older glibc which would contain the rseq registration code, but
+be unaware of those new features.
+
+[...]
+> 
+> Wouldn't the non-updated application just access fields and methods of
+> the smaller struct? The way struct extensions work is that we only
+> extend them after the last member and always correctly 64 bit aligned.
+> And as long as you only extend the struct at the end wouldn't that be
+> ok? An application with a non-updated/smaller struct rseq would just
+> access fields that the larger struct supports, no?
+
+The issue is symbol interposition, as discussed above.
+
+So here is the idea which emerged through the weekend as I was thinking
+about your email:
+
+* Current technical constraints
+  - struct rseq __rseq_abi can be interposed by preloaded libraries and
+    application, without knowledge from the registration "owner" (typically
+    glibc).
+
+* Objectives:
+  - Allow extending the size of struct rseq to add additional features,
+    such as node_id field, signal-disabling fields, and so on.
+  - Allow extending this size without requiring an upgrade of the library
+    performing rseq registration. Simply upgrading the rseq "user" application
+    or library and the kernel should suffice.
+
+* Proposed ABI
+  - Reserve a bit in the field (struct rseq *)->flags of the TLS __rseq_abi,
+    named e.g.: RSEQ_CS_FLAG_SIZE = (1U << 3).
+  - A definition wishing to extend struct rseq would be required to initialize
+    __rseq_abi with this bit set in the flags field.
+  - When RSEQ_CS_FLAG_SIZE is set, struct rseq is guaranteed to have two new
+    fields after the flags field: a __u32 user_size and a __u32 kernel_size field.
+  - The user_size field is meant to be initialized to sizeof(struct rseq) by the
+    __rseq_abi definition. In an interposition scenario, a kernel supporting this
+    size feature will know about the size of the symbol by checking both the
+    RSEQ_CS_FLAG_SIZE flag and the user_size field.
+  - On registration, if the __rseq_abi.flags RSEQ_CS_FLAG_SIZE flag is set (and this
+    flag is supported by the kernel), the kernel updates the kernel_size field to
+    min(sizeof(struct rseq), __rseq_abi.user_size), effectively the subset of size
+    supported by both the user-space __rseq_abi definition and by the kernel.
+  - Users wishing to use additional fields beyond __rseq_abi.flags would need to check
+    that __rseq_abi->flags & RSEQ_CS_FLAG_SIZE is true, and that
+    __rseq_abi.kernel_size >= offsetof(struct rseq, feature_field) + sizeof(__rseq_abi.feature_field)
+    This would ensure the fields are only used if the symbol is large enough to
+    hold them *and* the kernel supports them.
+
+With this kind of scheme, we could then easily extend struct rseq to cover additional
+use-cases such as:
+
+- adding a new "node_id" field to speed up getcpu(3), user-space locking on NUMA,
+  and possibly memory allocators,
+- adding fields allowing to quickly disable/enable signals,
+- adding a "__u64 features" field, which would contain for instance
+  RSEQ_FEATURE_RELIABLE_CPU_ID.
+
+I'm not sure why I did not think of this earlier, but it all seems to fit nicely.
+
+Any comments ?
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
