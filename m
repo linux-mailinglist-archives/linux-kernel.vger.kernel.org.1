@@ -2,59 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF2E21DE1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 19:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2697F21DE24
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 19:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730306AbgGMRBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 13:01:24 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:33076 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729751AbgGMRBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 13:01:23 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jv1pP-004tYR-Cs; Mon, 13 Jul 2020 19:01:19 +0200
-Date:   Mon, 13 Jul 2020 19:01:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Michael Walle <michael@walle.cc>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alex Marginean <alexandru.marginean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v6 1/4] net: phy: add USXGMII link partner
- ability constants
-Message-ID: <20200713170119.GI1078057@lunn.ch>
-References: <20200709213526.21972-1-michael@walle.cc>
- <20200709213526.21972-2-michael@walle.cc>
- <20200713163416.3fegjdbrp6ccoqdm@skbuf>
+        id S1730007AbgGMRDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 13:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729854AbgGMRDn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 13:03:43 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA370C08C5DB
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 10:03:42 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id q5so17364879wru.6
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 10:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CPSWw64mXOwsZCsijrwvsAEz1b4GFJuj5M6D0TIa2Y4=;
+        b=sqYyZCjlzGtKUdjQ8mhJhTfzzemy2MkNKIWqAUalFwRGpbEYxDschPntoZzktQOiAu
+         K+h53t1qzpSeSlG7jIs+5itZw7L3aoHSXonlpbOcTIk4FcPQgaLjOU+sz74Dr8PCz+So
+         gpMoAdFgVaZUl4nWgwg5rrx+GaRcaIsUVl+KHwGU1xC4+e0FvK4AoW5bfyO6KnJ/MlTg
+         nWomACfGj8IQL7NQCAS8To/F62fE9GAqBkiw32JXvgfE9zvZ5Vp1ZOzPzWLrKZVCWrfq
+         OoFVAiW6pdBdKGXZJK6UQBrqlM7d0egxtWC+Au3kS/B2IUd7UQ0FhsnW7x6JGGHiEwGC
+         hGgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CPSWw64mXOwsZCsijrwvsAEz1b4GFJuj5M6D0TIa2Y4=;
+        b=EaIlMlYMgV1bJBETNAuwYMlHyHgYXpiVovM2Z7NJrfGbIjpz/DiOw2fuVv9kTG/QTz
+         Nkg69IbtsXvnZ9C0lFZUu6kNJ8ueR2HfoAHtso/3Gx0rL+kkNOK3384zHvVElb8RzZ8a
+         iWpoB1jqMtng/BKIg575Pfz1xNW4ZkpoUEbS3PIe3B1706LrApPZ6KP4uHcZD6uybHDQ
+         9qksBW2zejzYWUi8hSPm5QV72VsfQ2JmM3LvZFeOxtM7IU8MSQzdRaIltSFU27uw2JLL
+         JHDA5ae4YGvH2WdnBMFFWwG2M/5VVFTX3KxZHaG+i7QgoUSoHk82iox3PwR0O6IeNkls
+         4t8g==
+X-Gm-Message-State: AOAM530fr4DrW46kM+8Cr/XayoJjH6LYI2nbIbGGI6XtdkXFr4k+Ga6N
+        6v+TuhqW33bb7QWpFVBhNEVDcB6GDc8=
+X-Google-Smtp-Source: ABdhPJxwQBfsNMkNI4xGLvZYHPzk1Tka3WLrm/vB852YmxjUd1eWVokbCzi7pGH2UsnflDHI2l+6iw==
+X-Received: by 2002:adf:cf0c:: with SMTP id o12mr307750wrj.265.1594659821364;
+        Mon, 13 Jul 2020 10:03:41 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:501b:b12d:3463:93f8? ([2a01:e34:ed2f:f020:501b:b12d:3463:93f8])
+        by smtp.googlemail.com with ESMTPSA id a22sm304308wmj.9.2020.07.13.10.03.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jul 2020 10:03:40 -0700 (PDT)
+Subject: Re: [RFC PATCH 1/4] dt-bindings:thermal:Add cold trip point type
+To:     Thara Gopinath <thara.gopinath@linaro.org>, rui.zhang@intel.com,
+        robh+dt@kernel.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200710135154.181454-1-thara.gopinath@linaro.org>
+ <20200710135154.181454-2-thara.gopinath@linaro.org>
+ <08503e0c-c8db-6d03-9692-5339dadf6c4f@linaro.org>
+ <2b845792-41f0-7fb1-122e-a77aa70c9a3c@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <b1ee5a73-863b-c6d2-5d09-1ac231f40fe2@linaro.org>
+Date:   Mon, 13 Jul 2020 19:03:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713163416.3fegjdbrp6ccoqdm@skbuf>
+In-Reply-To: <2b845792-41f0-7fb1-122e-a77aa70c9a3c@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 07:34:16PM +0300, Vladimir Oltean wrote:
-> On Thu, Jul 09, 2020 at 11:35:23PM +0200, Michael Walle wrote:
-> > The constants are taken from the USXGMII Singleport Copper Interface
-> > specification. The naming are based on the SGMII ones, but with an MDIO_
-> > prefix.
-> > 
-> > Signed-off-by: Michael Walle <michael@walle.cc>
-> > ---
+On 13/07/2020 19:01, Thara Gopinath wrote:
 > 
-> Somebody would need to review this patch, as it is introducing UAPI.
+> 
+> On 7/13/20 11:05 AM, Daniel Lezcano wrote:
+>> On 10/07/2020 15:51, Thara Gopinath wrote:
+>>> Extend thermal trip point type property to include "cold" trip type
+>>> indicating point in the temperature domain below which a warming action
+>>> must be intiated.
+>>>
+>>> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+>>> ---
+>>>   Documentation/devicetree/bindings/thermal/thermal.txt | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/thermal/thermal.txt
+>>> b/Documentation/devicetree/bindings/thermal/thermal.txt
+>>> index f78bec19ca35..1689d9ba1471 100644
+>>> --- a/Documentation/devicetree/bindings/thermal/thermal.txt
+>>> +++ b/Documentation/devicetree/bindings/thermal/thermal.txt
+>>> @@ -87,6 +87,7 @@ Required properties:
+>>>       "active":    A trip point to enable active cooling
+>>>       "passive":    A trip point to enable passive cooling
+>>>       "hot":        A trip point to notify emergency
+>>> +    "cold":        A trip point to enable warming
+>>>       "critical":    Hardware not reliable.
+>>>     Type: string
+>>
+>>
+>> thermal.txt should have been removed. Perhaps, a patch is missing. The
+>> thermal.txt has been converted into 3 yaml schema.
+>>
+>> The change should be in thermal-zones.yaml.
+> 
+> Hi Daniel..
+> 
+> Thanks for the review. My bad.. I will fix this in the next version.
+> I can send a patch removing thermal.txt as well
 
-Anybody have a link to the "USXGMII Singleport Copper Interface"
-specification.
+Yes, sure.
 
 Thanks
-	Andrew
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
