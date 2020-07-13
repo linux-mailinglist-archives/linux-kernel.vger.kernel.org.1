@@ -2,68 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7A621CFFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A5221D00E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729260AbgGMGs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:48:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725804AbgGMGs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:48:56 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE58F20720;
-        Mon, 13 Jul 2020 06:48:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594622936;
-        bh=WWEEuVhlr2nW3XjCI9KWOEj+kLW17f+JdDGC2Rl8byI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Btl/Tp+izk7mtTssyKlrQDvxZIBkan5DgFkSatsaRXKuQGxSbrbsqfIqtCgfNW20F
-         zZjx3bwL8cB7VNTxMWuQgKnbEkJo7lU/ch2HJji90PU1nDYSnRMc8YT6OUSaLtNzAu
-         kBG1U39LzQonJRP9b1CqWA4eDPNUINYz3SdyaFPM=
-Date:   Mon, 13 Jul 2020 14:48:52 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: imx6qdl: only enable pcie in the pcie dts file
-Message-ID: <20200713064851.GH12113@dragon>
-References: <1594025081-2353-1-git-send-email-hongxing.zhu@nxp.com>
+        id S1728912AbgGMGvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728628AbgGMGvO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 02:51:14 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB71C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:51:14 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id f18so12031904wml.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XtqBoIrlR/rKjGKe/kJfJA9m7jssET7vVTff1SRKfT4=;
+        b=Iz1kpOyXeERVc160JxW7TBcIMts9gBt6OzZQ42NyzP7L65h8SiePRFEfs707PyxatA
+         r42kEqzFhLAsoY2mu7wmHpSOaN6PeM0w3rYTnO9V1vKq09ZHG6LgmUJwBjYXfjFegJsf
+         hJEKYFPJGRs7aJdfkFT5wJSXgqo9OSRDJ3KVhIE+6Cf0GkriovHjFIKBzPsD0SEPPMqg
+         49C5LIMpFYW8THARpmq21W+xRCQmrvf5/bJ+Q8xn/fbn/U40oHFzxPbh17EVRuFF+PAJ
+         X51qp7Bkkz4cbe9aQLLZ9o/UvF3K3x64HOLbASb/HzW64cIMgKHsrCGLvC6Mr3xehxgk
+         ve6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XtqBoIrlR/rKjGKe/kJfJA9m7jssET7vVTff1SRKfT4=;
+        b=M2Wfzy54pLAWLxNBT9tS9g6XeRHF3czFxkyyU8f6Z5s1hfzKo+cInAtnwirWfrD9y4
+         DvnNgV0wevSKq1e+eGDxmAab2kkMpZViW1Q0oy9yQ8hvpfL+9VjQpp0COetCoa3ZYkQZ
+         lyittIY75N1Tpb3fKnkjp4hruQgapji0qqpPjHq06S+FaxleKcZTkuPmfpIMJ9Hd7MrQ
+         rXI/2T4iKhEnWf4rdLtSvqX4Mo9nDwIlEPE3cGk/BE9xDurquILfITiP39htyDlrEwwS
+         snZ4lNGM4mQC5HrSesS35j56yAvT7gTDBrLwvG6Phl89DBkRhH6pwS9ea8GnnaYndwzq
+         isYw==
+X-Gm-Message-State: AOAM5338RQBbfp0It2wT7hhfjKHhCy3EOVk3uw9eRpr/r7vkrKVWxRMI
+        KogMk5XZirSjxexYf1kVrF2KPQ==
+X-Google-Smtp-Source: ABdhPJy8OEkwK2hosu91yGd1UjKt6vgKwMfNBMFBiiqF6YAhQ7DiMfBX6YGkHs1p4KY5vObROeab5Q==
+X-Received: by 2002:a1c:a7c4:: with SMTP id q187mr17053090wme.0.1594623073259;
+        Sun, 12 Jul 2020 23:51:13 -0700 (PDT)
+Received: from dell ([2.31.163.6])
+        by smtp.gmail.com with ESMTPSA id z16sm22066765wrr.35.2020.07.12.23.51.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jul 2020 23:51:12 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 07:51:10 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Gene Chen <gene.chen.richtek@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, shufan_lee@richtek.com,
+        cy_huang@richtek.com, benjamin.chao@mediatek.com
+Subject: Re: [PATCH 1/4] mfd: mt6360: Refactor and fix code style
+Message-ID: <20200713065110.GB3500@dell>
+References: <1594117856-14343-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1594117856-14343-2-git-send-email-gene.chen.richtek@gmail.com>
+ <b9540dc6-4d43-45e4-8878-15d2df24a268@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1594025081-2353-1-git-send-email-hongxing.zhu@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b9540dc6-4d43-45e4-8878-15d2df24a268@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 06, 2020 at 04:44:41PM +0800, Richard Zhu wrote:
-> Since iMX6Q/DL PCIe has the PM limitation (ERR005723 "PCIe PCIe does
-> not support L2 Power Down").
-> System suspend/resume would be broken by PCIe, if PCIe is enabled.
-> Only enable PCIe in the xxx-pcie.dts files to avoid the brokens when
-> other xxx.dtb files are used on sabresd and sabreauto boards.
+On Fri, 10 Jul 2020, Matthias Brugger wrote:
+
 > 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
->  arch/arm/boot/dts/Makefile                  |  4 ++++
->  arch/arm/boot/dts/imx6dl-sabreauto-pcie.dts | 12 ++++++++++++
->  arch/arm/boot/dts/imx6dl-sabresd-pcie.dts   | 12 ++++++++++++
->  arch/arm/boot/dts/imx6q-sabreauto-pcie.dts  | 12 ++++++++++++
->  arch/arm/boot/dts/imx6q-sabresd-pcie.dts    | 12 ++++++++++++
->  arch/arm/boot/dts/imx6qdl-sabreauto.dtsi    |  4 ----
->  arch/arm/boot/dts/imx6qdl-sabresd.dtsi      |  1 -
->  7 files changed, 52 insertions(+), 5 deletions(-)
->  create mode 100644 arch/arm/boot/dts/imx6dl-sabreauto-pcie.dts
->  create mode 100644 arch/arm/boot/dts/imx6dl-sabresd-pcie.dts
->  create mode 100644 arch/arm/boot/dts/imx6q-sabreauto-pcie.dts
->  create mode 100644 arch/arm/boot/dts/imx6q-sabresd-pcie.dts
+> 
+> On 07/07/2020 12:30, Gene Chen wrote:
+> > From: Gene Chen <gene_chen@richtek.com>
+> > 
+> > Rearrange include file.
+> > Remove brackets around raw numbers.
+> > Indicate sub-dev compatible name by using "-"
+> > Combine mt6360 pmic/ldo resouces into mt6360 regulator resources.
+> > Rename mt6360_pmu_data by mt6360_data.
+> > Rename mt6360_pmu by mt6360.
+> 
+> That seems like a lot of cosmetics. Why is this needed?
+> If you think that's needed it should be split up in different commits, each
+> explaining in the commit message why you do that.
 
-No.  There are hundreds of boards based on i.MX6Q/DL.  We are not going
-to maintain a -pcie.dts for every single one of them.
+Agreed.  This set is still not broken up enough.
 
-Shawn
+Please place each logical change into its own patch for review.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
