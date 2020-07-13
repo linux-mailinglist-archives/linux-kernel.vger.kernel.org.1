@@ -2,116 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9209821CF27
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FB321CF1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 08:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729046AbgGMGGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 02:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgGMGGF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 02:06:05 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170C0C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:06:05 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc15so6131746pjb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Jul 2020 23:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessm-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MlERMPe6fGAvj4w5/nTL9cv57borO+mmI3Hl4AGrcc4=;
-        b=jTrxQ6IyNq2Ysc69R/0IFeTQFBhkhM0+6xrEYqZyvO9DhGt1rl0E/hhiqEgkxY08Bf
-         KZku6pqYZMch1MugMhTHA9MPFe6EzZgd/czxeNolMSnMBLKs7eJsFVQzl9DCXYwi0OXp
-         l6Kg7F0OmcZxmWNtiVrxOues0aaX3OHFetjsgKIUZFXm/iAObzoIrJjy3k1c3/5GArWg
-         aV5tX29fakQCIq3Ihc+JooBiqRGxOFximFhH6gQ7dkd97IE3jwxlp80gGioeedBEwoZB
-         exXJM7MHv9a3ZTmZ1cEYsdDzUcP3Xlf/RqT0ssE0YJNnH/Yl3maoHQyuHGIuOI4CR/T7
-         AgNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MlERMPe6fGAvj4w5/nTL9cv57borO+mmI3Hl4AGrcc4=;
-        b=OPbiSfYZKdmYJaQ4Ad0aSvmD6EnrSIFLUGhJryhenT2YSUQujayJluVFfjHPLB/8LY
-         /2gSw91xWllaNNBh7ep20XjGBGtTUBvCrdI4awv2/wpL+pQ6JJnzGC5WxxwHaTFd0mLZ
-         4PhGz/cV1xdqG+5DoapDiR+1I2sEARYTTmOa2NxTzucK/gs4WIjFOYFg13dIwazPr7ck
-         SRHOzSR3xColqa56UAN3iDo+Yh3iJSjfYkAVQjW8BZNJ0HnKb4kPwEPmIQdffVr7Vts0
-         potOcDPjs8r0gn3g5sM8fgd/dNQH5mQfvCt3UZLNubc21tWCXro5HgDU2+diH95wd4B+
-         5aFA==
-X-Gm-Message-State: AOAM533KAkj/Cbh6f5cIHUwxBLSopM6HE47dnG5ahCp9WwB4VNN3SDZB
-        7/oQjUX/GpYZQqEFU1qAsG4VyXuypxbWHA==
-X-Google-Smtp-Source: ABdhPJxx0ea7ecSDl4FCc5Y25WmO9d3urI7HLdgrZJ05S+ydYUvbkx/eCtceyh2sg1fo2wzE8XjCMA==
-X-Received: by 2002:a17:902:c24a:: with SMTP id 10mr64821849plg.82.1594620364526;
-        Sun, 12 Jul 2020 23:06:04 -0700 (PDT)
-Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
-        by smtp.googlemail.com with ESMTPSA id g6sm13317525pfr.129.2020.07.12.23.06.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jul 2020 23:06:04 -0700 (PDT)
-From:   Jian-Hong Pan <jian-hong@endlessm.com>
-To:     Takashi Iwai <tiwai@suse.com>
-Cc:     Kailang Yang <kailang@realtek.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux@endlessm.com,
-        Jian-Hong Pan <jian-hong@endlessm.com>
-Subject: [PATCH] ALSA: hda/realtek: Enable headset mic of Acer TravelMate B311R-31 with ALC256
-Date:   Mon, 13 Jul 2020 14:04:22 +0800
-Message-Id: <20200713060421.62435-1-jian-hong@endlessm.com>
-X-Mailer: git-send-email 2.27.0
+        id S1728866AbgGMGEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 02:04:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726571AbgGMGEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 02:04:30 -0400
+Received: from localhost (unknown [122.182.251.219])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92D0C2075D;
+        Mon, 13 Jul 2020 06:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594620269;
+        bh=2atuB8aZhPPsAa97doguEGb426FUovZ+elviGsOi3o8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V0V+eJwrv/h7RwYhJn6GRcyKZbOCAnsumurOHUhd0l/9fe7xXuhqJ6OEpzfJ5qqNq
+         pbbxcm+ziRHHDSiL0QI7ZNWVJDz1rp1+1awKBVivm7yO6LAHyyr7pmeY7muNaaS59y
+         IIV66d04UPDSuZ3WuGCRBZYh8oili9lnGrE/9QVQ=
+Date:   Mon, 13 Jul 2020 11:34:25 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sivaprakash Murugesan <sivaprak@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, kishon@ti.com, mturquette@baylibre.com,
+        sboyd@kernel.org, svarbanov@mm-sol.com, lorenzo.pieralisi@arm.com,
+        p.zabel@pengutronix.de, mgautam@codeaurora.org,
+        smuthayy@codeaurora.org, varada@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
+Subject: Re: [PATCH 6/9] phy: qcom-qmp: Add compatible for ipq8074 pcie gen3
+ qmp phy
+Message-ID: <20200713060425.GC34333@vkoul-mobl>
+References: <1593940680-2363-1-git-send-email-sivaprak@codeaurora.org>
+ <1593940680-2363-7-git-send-email-sivaprak@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593940680-2363-7-git-send-email-sivaprak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Acer TravelMate B311R-31 laptop's audio (1025:1430) with ALC256
-cannot detect the headset microphone until
-ALC256_FIXUP_ACER_MIC_NO_PRESENCE quirk maps the NID 0x19 as the headset
-mic pin.
+On 05-07-20, 14:47, Sivaprakash Murugesan wrote:
+> ipq8074 has two pcie ports, one gen2 and one gen3 ports. with phy
+> support already available for gen2 pcie ports add support for pcie gen3
+> port phy.
+> 
+> Co-developed-by: Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
+> Signed-off-by: Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
+> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-pcie3-qmp.h | 137 ++++++++++++++++++++++++
+>  drivers/phy/qualcomm/phy-qcom-qmp.c       | 172 +++++++++++++++++++++++++++++-
+>  2 files changed, 307 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/phy/qualcomm/phy-qcom-pcie3-qmp.h
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-pcie3-qmp.h b/drivers/phy/qualcomm/phy-qcom-pcie3-qmp.h
+> new file mode 100644
+> index 000000000000..bb567673d9b5
+> --- /dev/null
+> +++ b/drivers/phy/qualcomm/phy-qcom-pcie3-qmp.h
+> @@ -0,0 +1,137 @@
+> +/* SPDX-License-Identifier: GPL-2.0*
 
-Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
----
-Re-send for wrong email address
+Trailing * at the end, it would make sense to split the spdx and
+copyright parts to two single lines
 
- sound/pci/hda/patch_realtek.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+> @@ -2550,8 +2707,16 @@ static int phy_pipe_clk_register(struct qcom_qmp *qmp, struct device_node *np)
+>  
+>  	init.ops = &clk_fixed_rate_ops;
+>  
+> -	/* controllers using QMP phys use 125MHz pipe clock interface */
+> -	fixed->fixed_rate = 125000000;
+> +	/*
+> +	 * controllers using QMP phys use 125MHz pipe clock interface unless
+> +	 * other frequency is specified in dts
+> +	 */
+> +	ret = of_property_read_u32(np, "clock-output-rate",
+> +				   (u32 *)&fixed->fixed_rate);
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 194ffa8c66ce..0585ac97faf4 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6152,6 +6152,7 @@ enum {
- 	ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS,
- 	ALC269VC_FIXUP_ACER_HEADSET_MIC,
- 	ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE,
-+	ALC256_FIXUP_ACER_MIC_NO_PRESENCE,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7359,6 +7360,15 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MIC
- 	},
-+	[ALC256_FIXUP_ACER_MIC_NO_PRESENCE] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x02a11120 }, /* use as headset mic, without its own jack detect */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC256_FIXUP_ASUS_HEADSET_MODE
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -7387,6 +7397,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_FIXUP_ACER_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_FIXUP_ACER_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x1025, 0x1430, "Acer TravelMate B311R-31", ALC256_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
- 	SND_PCI_QUIRK(0x1028, 0x054b, "Dell XPS one 2710", ALC275_FIXUP_DELL_XPS),
- 	SND_PCI_QUIRK(0x1028, 0x05bd, "Dell Latitude E6440", ALC292_FIXUP_DELL_E7X),
+is this cast required?
+
+> +	if (ret)
+> +		fixed->fixed_rate = 125000000;
+> +
+> +	dev_info(qmp->dev, "fixed freq %lu\n", fixed->fixed_rate);
+
+debug?
+
 -- 
-2.27.0
-
+~Vinod
