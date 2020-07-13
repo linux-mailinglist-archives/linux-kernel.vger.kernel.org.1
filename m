@@ -2,141 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CBD21DF78
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3864421DF7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 20:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729969AbgGMSTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 14:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729687AbgGMSTF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 14:19:05 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1665C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 11:19:05 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ls15so264432pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 11:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=DMv6KVcfwWuUfVxq/TG9jnHiUvzjJiD3obg8ZekXyMs=;
-        b=u4CmsHwa7xaCe3zDb4jrOUPoyQAwVMb0GO0GgYreE3k9fxWU5POmlIk30LPDTgAQUj
-         UXSamG1nn5bzlmnsItQRLjFVeTX9jNNZSWB3UwJkV82kO9sw8mlCK+8QA2A6XZi7xW2p
-         cYw26U3rmfF6mijGvSDefylxiQCOhgYcxL7pxRoq9V/UTMxzAkw29s2tnGqbRpV7VXiB
-         xUZoWpQGSZUmOzxEuR/l0sY53x7ZhIn9xs7ai2/qJ8GwCFJdnk5CAStVEdHSJJZOWF44
-         QORefjrjcSrzgiOPOEdXNRfrCTZl39dyw6LhXayUWrSOVuTaE7f9koQ+xXXMyR2rQ5bk
-         e1xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=DMv6KVcfwWuUfVxq/TG9jnHiUvzjJiD3obg8ZekXyMs=;
-        b=TBx/M07vuoyHW5ho37HFt/xf4xJbseN8hmsplBuV/LgNMOBcXdld71dpXYtqSzCTrp
-         bY69ocYx3YUG+xbVQpsiCvMyvsNLet2R0N1aZiKMkNjfAPp+AN6nmutVAEFdJgIXDd08
-         CQOHfWQ1Y7Lw6zRZuVCdlGVlghM7RaZ94g8XADZ1c/IUm8+4zNidlrVPxcu2BagCdTfw
-         BOAoT2xoipPtE6wcpKeOgs3yX74TAHYzEeMoAPkAW4jIpJ0UiJU2wpKpUtpvhdmyG4bv
-         HMGHWDx3G1+Mh9slgAI7gDyi6gAVr2MpkWDi6g26hq9dlFcHfY9RLlsng5guLTZUsJjj
-         nE5g==
-X-Gm-Message-State: AOAM5334u3WjudFUmU6BnUj2rOheC8Lm9znKQ7s2T0BelPhnBTJXwYe/
-        1H3kbda3w1PC3PDz1HHG2msQ+w==
-X-Google-Smtp-Source: ABdhPJxyhASCLIINvghsf6QoRE0SwaPQ4do1QD3z/4f/3BAYiXHFhS0sGlAWxIM465D2lRN3W0sD0g==
-X-Received: by 2002:a17:90a:ba86:: with SMTP id t6mr719906pjr.10.1594664345260;
-        Mon, 13 Jul 2020 11:19:05 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:3071:afe7:f805:6350? ([2601:646:c200:1ef2:3071:afe7:f805:6350])
-        by smtp.gmail.com with ESMTPSA id j5sm15051298pfa.5.2020.07.13.11.19.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 11:19:04 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC PATCH 7/7] lazy tlb: shoot lazies, a non-refcounting lazy tlb option
-Date:   Mon, 13 Jul 2020 11:18:57 -0700
-Message-Id: <010054C3-7FFF-4FB5-BDA8-D2B80F7B1A5D@amacapital.net>
-References: <1594658283.qabzoxga67.astroid@bobo.none>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
-In-Reply-To: <1594658283.qabzoxga67.astroid@bobo.none>
-To:     Nicholas Piggin <npiggin@gmail.com>
-X-Mailer: iPhone Mail (17F80)
+        id S1726332AbgGMSVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 14:21:35 -0400
+Received: from mga07.intel.com ([134.134.136.100]:34586 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726276AbgGMSVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 14:21:35 -0400
+IronPort-SDR: DDW5ykUjGJrxDzi+jQh27AB0pLKpcDBeQpkN+e8sfvL+Xf7ZvEvKvhB0PxD2Ka/1Zh0EEi2rBE
+ OCPLbNTndL0g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="213520086"
+X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
+   d="scan'208";a="213520086"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 11:21:33 -0700
+IronPort-SDR: gAeHmLmzdafsv77/MM1yhicrx3qvSADMhFRvI6YaIUkiJ277Bu+b4jzQv/KfPdrCtDL6Gpv5qO
+ Dnqs+TVrmm/Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,348,1589266800"; 
+   d="scan'208";a="299283576"
+Received: from bcope-mobl.ger.corp.intel.com (HELO localhost) ([10.249.32.223])
+  by orsmga002.jf.intel.com with ESMTP; 13 Jul 2020 11:21:26 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        live-patching@vger.kernel.org (open list:LIVE PATCHING)
+Subject: [PATCH 2/3] module: Add lock_modules() and unlock_modules()
+Date:   Mon, 13 Jul 2020 21:19:38 +0300
+Message-Id: <20200713182030.1418041-2-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200713182030.1418041-1-jarkko.sakkinen@linux.intel.com>
+References: <20200713182030.1418041-1-jarkko.sakkinen@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add wrappers to take the modules "big lock" in order to encapsulate
+conditional compilation (CONFIG_MODULES) inside the wrapper.
 
-> On Jul 13, 2020, at 9:48 AM, Nicholas Piggin <npiggin@gmail.com> wrote:
->=20
-> =EF=BB=BFExcerpts from Andy Lutomirski's message of July 14, 2020 1:59 am:=
+Cc: Andi Kleen <ak@linux.intel.com>
+Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+---
+ include/linux/module.h      | 15 ++++++++++
+ kernel/kprobes.c            |  4 +--
+ kernel/livepatch/core.c     |  8 ++---
+ kernel/module.c             | 60 ++++++++++++++++++-------------------
+ kernel/trace/trace_kprobe.c |  4 +--
+ 5 files changed, 53 insertions(+), 38 deletions(-)
 
->>> On Thu, Jul 9, 2020 at 6:57 PM Nicholas Piggin <npiggin@gmail.com> wrote=
-:
->>>=20
->>> On big systems, the mm refcount can become highly contented when doing
->>> a lot of context switching with threaded applications (particularly
->>> switching between the idle thread and an application thread).
->>>=20
->>> Abandoning lazy tlb slows switching down quite a bit in the important
->>> user->idle->user cases, so so instead implement a non-refcounted scheme
->>> that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot down
->>> any remaining lazy ones.
->>>=20
->>> On a 16-socket 192-core POWER8 system, a context switching benchmark
->>> with as many software threads as CPUs (so each switch will go in and
->>> out of idle), upstream can achieve a rate of about 1 million context
->>> switches per second. After this patch it goes up to 118 million.
->>>=20
->>=20
->> I read the patch a couple of times, and I have a suggestion that could
->> be nonsense.  You are, effectively, using mm_cpumask() as a sort of
->> refcount.  You're saying "hey, this mm has no more references, but it
->> still has nonempty mm_cpumask(), so let's send an IPI and shoot down
->> those references too."  I'm wondering whether you actually need the
->> IPI.  What if, instead, you actually treated mm_cpumask as a refcount
->> for real?  Roughly, in __mmdrop(), you would only free the page tables
->> if mm_cpumask() is empty.  And, in the code that removes a CPU from
->> mm_cpumask(), you would check if mm_users =3D=3D 0 and, if so, check if
->> you just removed the last bit from mm_cpumask and potentially free the
->> mm.
->>=20
->> Getting the locking right here could be a bit tricky -- you need to
->> avoid two CPUs simultaneously exiting lazy TLB and thinking they
->> should free the mm, and you also need to avoid an mm with mm_users
->> hitting zero concurrently with the last remote CPU using it lazily
->> exiting lazy TLB.  Perhaps this could be resolved by having mm_count
->> =3D=3D 1 mean "mm_cpumask() is might contain bits and, if so, it owns the=
+diff --git a/include/linux/module.h b/include/linux/module.h
+index 2e6670860d27..857b84bf9e90 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -902,4 +902,19 @@ static inline bool module_sig_ok(struct module *module)
+ }
+ #endif	/* CONFIG_MODULE_SIG */
+ 
++#ifdef CONFIG_MODULES
++static inline void lock_modules(void)
++{
++	mutex_lock(&module_mutex);
++}
++
++static inline void unlock_modules(void)
++{
++	mutex_unlock(&module_mutex);
++}
++#else
++static inline void lock_modules(void) { }
++static inline void unlock_modules(void) { }
++#endif
++
+ #endif /* _LINUX_MODULE_H */
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index d1c354ec89de..bbe3423cb2b8 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -564,7 +564,7 @@ static void kprobe_optimizer(struct work_struct *work)
+ 	cpus_read_lock();
+ 	mutex_lock(&text_mutex);
+ 	/* Lock modules while optimizing kprobes */
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 
+ 	/*
+ 	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
+@@ -589,7 +589,7 @@ static void kprobe_optimizer(struct work_struct *work)
+ 	/* Step 4: Free cleaned kprobes after quiesence period */
+ 	do_free_cleaned_kprobes();
+ 
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 	mutex_unlock(&text_mutex);
+ 	cpus_read_unlock();
+ 
+diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
+index f76fdb925532..d9d9d4973e6b 100644
+--- a/kernel/livepatch/core.c
++++ b/kernel/livepatch/core.c
+@@ -57,7 +57,7 @@ static void klp_find_object_module(struct klp_object *obj)
+ 	if (!klp_is_module(obj))
+ 		return;
+ 
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	/*
+ 	 * We do not want to block removal of patched modules and therefore
+ 	 * we do not take a reference here. The patches are removed by
+@@ -74,7 +74,7 @@ static void klp_find_object_module(struct klp_object *obj)
+ 	if (mod && mod->klp_alive)
+ 		obj->mod = mod;
+ 
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ }
+ 
+ static bool klp_initialized(void)
+@@ -163,12 +163,12 @@ static int klp_find_object_symbol(const char *objname, const char *name,
+ 		.pos = sympos,
+ 	};
+ 
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	if (objname)
+ 		module_kallsyms_on_each_symbol(klp_find_callback, &args);
+ 	else
+ 		kallsyms_on_each_symbol(klp_find_callback, &args);
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 
+ 	/*
+ 	 * Ensure an address was found. If sympos is 0, ensure symbol is unique;
+diff --git a/kernel/module.c b/kernel/module.c
+index bdb3773f3668..3c7001cf754c 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -895,7 +895,7 @@ static void module_unload_free(struct module *mod)
+ {
+ 	struct module_use *use, *tmp;
+ 
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	list_for_each_entry_safe(use, tmp, &mod->target_list, target_list) {
+ 		struct module *i = use->target;
+ 		pr_debug("%s unusing %s\n", mod->name, i->name);
+@@ -904,7 +904,7 @@ static void module_unload_free(struct module *mod)
+ 		list_del(&use->target_list);
+ 		kfree(use);
+ 	}
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ }
+ 
+ #ifdef CONFIG_MODULE_FORCE_UNLOAD
+@@ -1024,7 +1024,7 @@ SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+ 	if (ret != 0)
+ 		goto out;
+ 
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 	/* Final destruction now no one is using it. */
+ 	if (mod->exit != NULL)
+ 		mod->exit();
+@@ -1043,7 +1043,7 @@ SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+ 	wake_up_all(&module_wq);
+ 	return 0;
+ out:
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 	return ret;
+ }
+ 
+@@ -1448,7 +1448,7 @@ static const struct kernel_symbol *resolve_symbol(struct module *mod,
+ 	 * in the wait_event_interruptible(), which is harmless.
+ 	 */
+ 	sched_annotate_sleep();
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	sym = find_symbol(name, &owner, &crc,
+ 			  !(mod->taints & (1 << TAINT_PROPRIETARY_MODULE)), true);
+ 	if (!sym)
+@@ -1475,7 +1475,7 @@ static const struct kernel_symbol *resolve_symbol(struct module *mod,
+ 	/* We must make copy under the lock if we failed to get ref. */
+ 	strncpy(ownername, module_name(owner), MODULE_NAME_LEN);
+ unlock:
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 	return sym;
+ }
+ 
+@@ -1727,10 +1727,10 @@ static void del_usage_links(struct module *mod)
+ #ifdef CONFIG_MODULE_UNLOAD
+ 	struct module_use *use;
+ 
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	list_for_each_entry(use, &mod->target_list, target_list)
+ 		sysfs_remove_link(use->target->holders_dir, mod->name);
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ #endif
+ }
+ 
+@@ -1740,14 +1740,14 @@ static int add_usage_links(struct module *mod)
+ #ifdef CONFIG_MODULE_UNLOAD
+ 	struct module_use *use;
+ 
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	list_for_each_entry(use, &mod->target_list, target_list) {
+ 		ret = sysfs_create_link(use->target->holders_dir,
+ 					&mod->mkobj.kobj, mod->name);
+ 		if (ret)
+ 			break;
+ 	}
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 	if (ret)
+ 		del_usage_links(mod);
+ #endif
+@@ -2158,9 +2158,9 @@ static void free_module(struct module *mod)
+ 
+ 	/* We leave it in list to prevent duplicate loads, but make sure
+ 	 * that noone uses it while it's being deconstructed. */
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	mod->state = MODULE_STATE_UNFORMED;
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 
+ 	/* Remove dynamic debug info */
+ 	ddebug_remove_module(mod->name);
+@@ -2178,7 +2178,7 @@ static void free_module(struct module *mod)
+ 		free_module_elf(mod);
+ 
+ 	/* Now we can delete it from the lists */
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	/* Unlink carefully: kallsyms could be walking list. */
+ 	list_del_rcu(&mod->list);
+ 	mod_tree_remove(mod);
+@@ -2186,7 +2186,7 @@ static void free_module(struct module *mod)
+ 	module_bug_cleanup(mod);
+ 	/* Wait for RCU-sched synchronizing before releasing mod->list and buglist. */
+ 	synchronize_rcu();
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 
+ 	/* This may be empty, but that's OK */
+ 	module_arch_freeing_init(mod);
+@@ -3474,10 +3474,10 @@ static bool finished_loading(const char *name)
+ 	 * in the wait_event_interruptible(), which is harmless.
+ 	 */
+ 	sched_annotate_sleep();
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	mod = find_module_all(name, strlen(name), true);
+ 	ret = !mod || mod->state == MODULE_STATE_LIVE;
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 
+ 	return ret;
+ }
+@@ -3589,7 +3589,7 @@ static noinline int do_init_module(struct module *mod)
+ 
+ 	ftrace_free_mem(mod, mod->init_layout.base, mod->init_layout.base +
+ 			mod->init_layout.size);
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	/* Drop initial reference. */
+ 	module_put(mod);
+ 	trim_init_extable(mod);
+@@ -3621,7 +3621,7 @@ static noinline int do_init_module(struct module *mod)
+ 	if (llist_add(&freeinit->node, &init_free_list))
+ 		schedule_work(&init_free_wq);
+ 
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 	wake_up_all(&module_wq);
+ 
+ 	return 0;
+@@ -3663,12 +3663,12 @@ static int add_unformed_module(struct module *mod)
+ 	mod->state = MODULE_STATE_UNFORMED;
+ 
+ again:
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	old = find_module_all(mod->name, strlen(mod->name), true);
+ 	if (old != NULL) {
+ 		if (old->state != MODULE_STATE_LIVE) {
+ 			/* Wait in case it fails to load. */
+-			mutex_unlock(&module_mutex);
++			unlock_modules();
+ 			err = wait_event_interruptible(module_wq,
+ 					       finished_loading(mod->name));
+ 			if (err)
+@@ -3684,7 +3684,7 @@ static int add_unformed_module(struct module *mod)
+ 	err = 0;
+ 
+ out:
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ out_unlocked:
+ 	return err;
+ }
+@@ -3693,7 +3693,7 @@ static int complete_formation(struct module *mod, struct load_info *info)
+ {
+ 	int err;
+ 
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 
+ 	/* Find duplicate symbols (must be called under lock). */
+ 	err = verify_exported_symbols(mod);
+@@ -3710,12 +3710,12 @@ static int complete_formation(struct module *mod, struct load_info *info)
+ 	/* Mark state as coming so strong_try_module_get() ignores us,
+ 	 * but kallsyms etc. can see us. */
+ 	mod->state = MODULE_STATE_COMING;
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 
+ 	return 0;
+ 
+ out:
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 	return err;
+ }
+ 
+@@ -3913,9 +3913,9 @@ static int load_module(struct load_info *info, const char __user *uargs,
+ 	klp_module_going(mod);
+  bug_cleanup:
+ 	/* module_bug_cleanup needs module_mutex protection */
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	module_bug_cleanup(mod);
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 
+  ddebug_cleanup:
+ 	ftrace_release_mod(mod);
+@@ -3929,14 +3929,14 @@ static int load_module(struct load_info *info, const char __user *uargs,
+  free_unload:
+ 	module_unload_free(mod);
+  unlink_mod:
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	/* Unlink carefully: kallsyms could be walking list. */
+ 	list_del_rcu(&mod->list);
+ 	mod_tree_remove(mod);
+ 	wake_up_all(&module_wq);
+ 	/* Wait for RCU-sched synchronizing before releasing mod->list. */
+ 	synchronize_rcu();
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+  free_module:
+ 	/* Free lock-classes; relies on the preceding sync_rcu() */
+ 	lockdep_free_key_range(mod->core_layout.base, mod->core_layout.size);
+@@ -4292,7 +4292,7 @@ static char *module_flags(struct module *mod, char *buf)
+ /* Called by the /proc file system to return a list of modules. */
+ static void *m_start(struct seq_file *m, loff_t *pos)
+ {
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	return seq_list_start(&modules, *pos);
+ }
+ 
+@@ -4303,7 +4303,7 @@ static void *m_next(struct seq_file *m, void *p, loff_t *pos)
+ 
+ static void m_stop(struct seq_file *m, void *p)
+ {
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ }
+ 
+ static int m_show(struct seq_file *m, void *p)
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index aefb6065b508..710ec6a6aa8f 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -122,9 +122,9 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+ 	if (!p)
+ 		return true;
+ 	*p = '\0';
+-	mutex_lock(&module_mutex);
++	lock_modules();
+ 	ret = !!find_module(tk->symbol);
+-	mutex_unlock(&module_mutex);
++	unlock_modules();
+ 	*p = ':';
+ 
+ 	return ret;
+-- 
+2.25.1
 
->> mm" and mm_count =3D=3D 0 meaning "now it's dead" and using some careful
->> cmpxchg or dec_return to make sure that only one CPU frees it.
->>=20
->> Or maybe you'd need a lock or RCU for this, but the idea would be to
->> only ever take the lock after mm_users goes to zero.
->=20
-> I don't think it's nonsense, it could be a good way to avoid IPIs.
->=20
-> I haven't seen much problem here that made me too concerned about IPIs=20
-> yet, so I think the simple patch may be good enough to start with
-> for powerpc. I'm looking at avoiding/reducing the IPIs by combining the
-> unlazying with the exit TLB flush without doing anything fancy with
-> ref counting, but we'll see.
-
-I would be cautious with benchmarking here. I would expect that the nasty ca=
-ses may affect power consumption more than performance =E2=80=94 the specifi=
-c issue is IPIs hitting idle cores, and the main effects are to slow down ex=
-it() a bit but also to kick the idle core out of idle. Although, if the idle=
- core is in a deep sleep, that IPI could be *very* slow.
-
-So I think it=E2=80=99s worth at least giving this a try.
-
->=20
-> Thanks,
-> Nick
