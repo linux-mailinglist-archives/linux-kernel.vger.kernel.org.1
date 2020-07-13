@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E1A21CD7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 05:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD8421D476
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 13:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728354AbgGMDFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Jul 2020 23:05:43 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:59498 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726261AbgGMDFm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Jul 2020 23:05:42 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id B6D92AF74B0C189A1CBE;
-        Mon, 13 Jul 2020 11:05:39 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Mon, 13 Jul 2020
- 11:05:34 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <b.zolnierkie@samsung.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yangyingliang@huawei.com>
-Subject: [PATCH] vgacon: fix a UAF in do_update_region()
-Date:   Mon, 13 Jul 2020 11:04:45 +0000
-Message-ID: <20200713110445.553974-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S1729523AbgGMLFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 07:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729303AbgGMLE7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 07:04:59 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF76C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 04:04:58 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id g20so13154215edm.4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 04:04:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=nN3m2m7pEWJxxgE22EVhuHKcD4TrCFPuvsPIp3KGX9k=;
+        b=RqGITRMKNmMiYRdu6+vlFczkTYWFJp1c6+1yOC3ohAOzxc8vpAusqQEaQ0E2axiD3D
+         QON4GHysm7Te5zUXV4Lz0GiISjc4xgU5T3b391ZpRcwJGbZ1amHXgAgqFQDjhLNJfgyG
+         eX0sdzLY1TPzVvZ6Y5DHPyyoWITelQBhUSBaE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=nN3m2m7pEWJxxgE22EVhuHKcD4TrCFPuvsPIp3KGX9k=;
+        b=ElJHNfDOokTv3+di8wba5xkBAoYohChuZ38OiaAR0dlaA+lQmNIQcM0vEzKoEYdSwm
+         vEYVJZXhponDyYttaMkbNn5IZaO7R84ePSDoRPfR5QF+NkTVZ0a6AmZFA9kt2oEw+pQ3
+         6/fDlkjnOcu70940mQvzMgRpo3XPnxiX8a6KJ8nabqQfdfT7iVR7oYcEEtIG7/y9tw4+
+         VTBfL5znDWVuoTAK/P6VBh5/jx/8FTRDH5CZ1F76pDamcqPBpQndNlILVxswazvZM/1l
+         zZdox4+Nj07AZgrfbQYOpox64ks9svM9KbfU5csGgnn00ffzxvjyQugRZBmEuGYqJoTb
+         ZLFw==
+X-Gm-Message-State: AOAM532PUZN1RkHvu6muTybrWp8I1hQISQ1gVrKJmb1zMcsSEr5QiM7g
+        5IpCpOayfNsIF2obm54+FV23aw==
+X-Google-Smtp-Source: ABdhPJxJ/mazTAbJfCnV5ZLs6gKzw7Mb01cM+wDRYPldnGl3iBlU+mkR/ggy29bNiaIxfIFLSI4DFw==
+X-Received: by 2002:a50:b5e3:: with SMTP id a90mr50641671ede.381.1594638297371;
+        Mon, 13 Jul 2020 04:04:57 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:ef88])
+        by smtp.gmail.com with ESMTPSA id j21sm11395375edq.20.2020.07.13.04.04.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 04:04:56 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 12:04:56 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/2] mm, memcg: memory.{low,min} reclaim fix & cleanup
+Message-ID: <cover.1594638158.git.chris@chrisdown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.14.5 (2020-06-23)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a UAF report in do_update_region() when I doing fuzz test.
+This series contains a fix for a edge case in my earlier protection
+calculation patches, and a patch to make the area overall a little more
+robust to hopefully help avoid this in future.
 
-[   51.161905] BUG: KASAN: use-after-free in do_update_region+0x579/0x600
-[   51.161918] Read of size 2 at addr ffff888000100000 by task test/295
+Changes in v4:
 
-[   51.161957] CPU: 2 PID: 295 Comm: test Not tainted 5.7.0+ #975
-[   51.161969] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-[   51.161976] Call Trace:
-[   51.162001]  dump_stack+0xc6/0x11e
-[   51.162019]  ? do_update_region+0x579/0x600
-[   51.162047]  print_address_description.constprop.6+0x1a/0x220
-[   51.162083]  ? vprintk_func+0x66/0xed
-[   51.162100]  ? do_update_region+0x579/0x600
-[   51.162112]  ? do_update_region+0x579/0x600
-[   51.162128]  kasan_report.cold.9+0x37/0x7c
-[   51.162151]  ? do_update_region+0x579/0x600
-[   51.162173]  do_update_region+0x579/0x600
-[   51.162207]  ? con_get_trans_old+0x230/0x230
-[   51.162229]  ? retint_kernel+0x10/0x10
-[   51.162278]  csi_J+0x557/0xa00
-[   51.162307]  do_con_trol+0x49af/0x5cc0
-[   51.162330]  ? lock_downgrade+0x720/0x720
-[   51.162347]  ? reset_palette+0x1b0/0x1b0
-[   51.162369]  ? lockdep_hardirqs_on_prepare+0x379/0x540
-[   51.162393]  ? notifier_call_chain+0x11b/0x160
-[   51.162438]  do_con_write.part.24+0xb0a/0x1a30
-[   51.162501]  ? do_con_trol+0x5cc0/0x5cc0
-[   51.162522]  ? console_unlock+0x7b8/0xb00
-[   51.162555]  ? __mutex_unlock_slowpath+0xd4/0x670
-[   51.162574]  ? this_tty+0xe0/0xe0
-[   51.162589]  ? console_unlock+0x559/0xb00
-[   51.162605]  ? wait_for_completion+0x260/0x260
-[   51.162638]  con_write+0x31/0xb0
-[   51.162658]  n_tty_write+0x4fa/0xd40
-[   51.162710]  ? n_tty_read+0x1800/0x1800
-[   51.162730]  ? prepare_to_wait_exclusive+0x270/0x270
-[   51.162754]  ? __might_fault+0x175/0x1b0
-[   51.162783]  tty_write+0x42b/0x8d0
-[   51.162795]  ? n_tty_read+0x1800/0x1800
-[   51.162825]  ? tty_lookup_driver+0x450/0x450
-[   51.162848]  __vfs_write+0x7c/0x100
-[   51.162875]  vfs_write+0x1c9/0x510
-[   51.162901]  ksys_write+0xff/0x200
-[   51.162918]  ? __ia32_sys_read+0xb0/0xb0
-[   51.162940]  ? do_syscall_64+0x1a/0x520
-[   51.162957]  ? lockdep_hardirqs_on_prepare+0x379/0x540
-[   51.162984]  do_syscall_64+0xa1/0x520
-[   51.163008]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+- Fix premature OOM when checking protection on root memcg. Thanks
+  Naresh and Michal for helping debug.
 
-After vgacon_set_origin() is called in set_origin(), the vc_origin is
-set to vga_vram_base, the vc_pos should between vga_vram_base and
-vga_vram_end. But we still use vc_screenbuf_size, if the vga_vram_size
-is smaller than vc_screenbuf_size, vc_pos may be out of bound, using it
-will cause a use-after-free(or out-of-bounds). Fix this by calling
-vc_resize() if vga_vram_size is smaller than vc_screenbuf_size.
+Chris Down (1):
+  mm, memcg: Decouple e{low,min} state mutations from protection checks
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/video/console/vgacon.c | 3 +++
- 1 file changed, 3 insertions(+)
+Yafang Shao (1):
+  mm, memcg: Avoid stale protection values when cgroup is above
+    protection
 
-diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
-index b51ffb9a208d..2eabb86bb0dd 100644
---- a/drivers/video/console/vgacon.c
-+++ b/drivers/video/console/vgacon.c
-@@ -1341,6 +1341,9 @@ static int vgacon_set_origin(struct vc_data *c)
- 	if (vga_is_gfx ||	/* We don't play origin tricks in graphic modes */
- 	    (console_blanked && !vga_palette_blanked))	/* Nor we write to blanked screens */
- 		return 0;
-+
-+	if (c->vc_screenbuf_size > vga_vram_size)
-+		vc_resize(c, screen_info.orig_video_cols, screen_info.orig_video_lines);
- 	c->vc_origin = c->vc_visible_origin = vga_vram_base;
- 	vga_set_mem_top(c);
- 	vga_rolled_over = 0;
+ include/linux/memcontrol.h | 95 ++++++++++++++++++++++++++++++++------
+ mm/memcontrol.c            | 36 ++++++---------
+ mm/vmscan.c                | 20 +++-----
+ 3 files changed, 103 insertions(+), 48 deletions(-)
+
 -- 
-2.25.1
+2.27.0
 
