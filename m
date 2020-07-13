@@ -2,569 +2,610 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753FC21DE86
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 19:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC9921DE81
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 19:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730522AbgGMRWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 13:22:31 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50256 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730510AbgGMRW3 (ORCPT
+        id S1730490AbgGMRWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 13:22:19 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:36999 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730466AbgGMRWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 13:22:29 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06DH2L33174971;
-        Mon, 13 Jul 2020 13:22:18 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32771x672t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jul 2020 13:22:17 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06DH4WhT182306;
-        Mon, 13 Jul 2020 13:22:17 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32771x671m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jul 2020 13:22:17 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06DHLPhP032544;
-        Mon, 13 Jul 2020 17:22:15 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 327527h7t3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Jul 2020 17:22:15 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06DHKnhs56099190
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Jul 2020 17:20:50 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 431644C04A;
-        Mon, 13 Jul 2020 17:22:12 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 759724C044;
-        Mon, 13 Jul 2020 17:22:08 +0000 (GMT)
-Received: from hbathini.in.ibm.com (unknown [9.102.3.11])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 13 Jul 2020 17:22:08 +0000 (GMT)
-Subject: [PATCH v3 06/12] ppc64/kexec_file: restrict memory usage of kdump
- kernel
-From:   Hari Bathini <hbathini@linux.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Pingfan Liu <piliu@redhat.com>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
-Date:   Mon, 13 Jul 2020 22:52:07 +0530
-Message-ID: <159466091925.24747.6840028682768745598.stgit@hbathini.in.ibm.com>
-In-Reply-To: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com>
-References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com>
-User-Agent: StGit/0.17.1-dirty
+        Mon, 13 Jul 2020 13:22:15 -0400
+Received: by mail-io1-f66.google.com with SMTP id v6so14339945iob.4;
+        Mon, 13 Jul 2020 10:22:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FAYVmeaTjbP9PM2hhH+3TrdY0mM7tf66eJ0OMReiSrY=;
+        b=TlRQ1ZBP05J4mrdrUCiy/ov8QkvqxvG/FaoBuK0nUZ2+nPyuftIc3kazinjoewuPnh
+         QtjQkjoXadj4mZYBuLj83qxdIAVElcNzuCgBrXNZAUbNWtqyHgSBn5aBDyfaQxW5hsaW
+         Qxfts2kHnGVkOz13ObIm/TAayJf4cdp+tuwtvJMJYQj3dv6XRKEZWXvM73wV1bmsifN0
+         AdxNVsokJghPPin4p8Hq66L1EFXbu45SyxXlXGNnSZxFDz+YNHsyCsAyT67ej7CT2sYK
+         PqQAAFEiV6cX4eArgtClwMUrRhYjRdNTnfSG+tYeIZt+/4cgmkBOKr53SdhYTlpntHAh
+         WGfQ==
+X-Gm-Message-State: AOAM532EtdExCDSWiNIG20qqr4lBBoladPQHyCr2goyHn8EGXLqbeS1P
+        DrPUbpEx9wAvgzZkM/L4PQ==
+X-Google-Smtp-Source: ABdhPJwDUALPZYwFPjGTkKi2LzQxxp7TOOBMuFLe4NML1D2AN78cA+DtcN+bHhJPYACa+CEyUWYNDA==
+X-Received: by 2002:a5d:9752:: with SMTP id c18mr829426ioo.10.1594660933235;
+        Mon, 13 Jul 2020 10:22:13 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id s12sm8953517ilk.58.2020.07.13.10.22.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 10:22:12 -0700 (PDT)
+Received: (nullmailer pid 411927 invoked by uid 1000);
+        Mon, 13 Jul 2020 17:22:11 -0000
+Date:   Mon, 13 Jul 2020 11:22:11 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
+Cc:     "Langer, Thomas" <thomas.langer@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "chuanhua.lei@linux.intel.com" <chuanhua.lei@linux.intel.com>,
+        "Kim, Cheol Yong" <cheol.yong.kim@intel.com>,
+        "Wu, Qiming" <qi-ming.wu@intel.com>,
+        "malliamireddy009@gmail.com" <malliamireddy009@gmail.com>,
+        mallikarjunax.reddy@intel.com
+Subject: Re: [PATCH v4 1/2] dt-bindings: dma: Add bindings for intel LGM SOC
+Message-ID: <20200713172211.GA391669@bogus>
+References: <cover.1594273437.git.mallikarjunax.reddy@linux.intel.com>
+ <ad6c511dc027b7989acebbce77ca739e22e2123e.1594273437.git.mallikarjunax.reddy@linux.intel.com>
+ <DM6PR11MB3227DE41730A08B57B9C14DCFE640@DM6PR11MB3227.namprd11.prod.outlook.com>
+ <1f90d37c-d029-ae80-40f5-7d99b486dbd3@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-13_15:2020-07-13,2020-07-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- mlxlogscore=999 impostorscore=0 malwarescore=0 suspectscore=0 adultscore=0
- clxscore=1015 bulkscore=0 phishscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007130120
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f90d37c-d029-ae80-40f5-7d99b486dbd3@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kdump kernel, used for capturing the kernel core image, is supposed
-to use only specific memory regions to avoid corrupting the image to
-be captured. The regions are crashkernel range - the memory reserved
-explicitly for kdump kernel, memory used for the tce-table, the OPAL
-region and RTAS region as applicable. Restrict kdump kernel memory
-to use only these regions by setting up usable-memory DT property.
-Also, tell the kdump kernel to run at the loaded address by setting
-the magic word at 0x5c.
+On Mon, Jul 13, 2020 at 11:39:49AM +0800, Reddy, MallikarjunaX wrote:
+> Hi Thomas,
+> 
+> Thanks for the review. My comments inline.
+> 
+> On 7/9/2020 3:54 PM, Langer, Thomas wrote:
+> > 
+> > > -----Original Message-----
+> > > From: devicetree-owner@vger.kernel.org <devicetree-
+> > > owner@vger.kernel.org> On Behalf Of Amireddy Mallikarjuna reddy
+> > > Sent: Donnerstag, 9. Juli 2020 08:01
+> > > To: dmaengine@vger.kernel.org; vkoul@kernel.org;
+> > > devicetree@vger.kernel.org; robh+dt@kernel.org
+> > > Cc: linux-kernel@vger.kernel.org; Shevchenko, Andriy
+> > > <andriy.shevchenko@intel.com>; chuanhua.lei@linux.intel.com; Kim, Cheol
+> > > Yong <cheol.yong.kim@intel.com>; Wu, Qiming <qi-ming.wu@intel.com>;
+> > > malliamireddy009@gmail.com; Amireddy Mallikarjuna reddy
+> > > <mallikarjunax.reddy@linux.intel.com>
+> > > Subject: [PATCH v4 1/2] dt-bindings: dma: Add bindings for intel LGM SOC
+> > > 
+> > > Add DT bindings YAML schema for DMA controller driver
+> > > of Lightning Mountain(LGM) SoC.
+> > > 
+> > > Signed-off-by: Amireddy Mallikarjuna reddy
+> > > <mallikarjunax.reddy@linux.intel.com>
+> > > ---
+> > > v1:
+> > > - Initial version.
+> > > 
+> > > v2:
+> > > - Fix bot errors.
+> > > 
+> > > v3:
+> > > - No change.
+> > > 
+> > > v4:
+> > > - Address Thomas langer comments
+> > Please read my comments again and then respond about the topics you ignored.
+> > I added some hints below again.
+> > 
+> > Thanks.
+> > 
+> > > ---
+> > >   .../devicetree/bindings/dma/intel,ldma.yaml        | 416
+> > > +++++++++++++++++++++
+> > >   1 file changed, 416 insertions(+)
+> > >   create mode 100644
+> > > Documentation/devicetree/bindings/dma/intel,ldma.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/dma/intel,ldma.yaml
+> > > b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
+> > > new file mode 100644
+> > > index 000000000000..7f666b9812e4
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/dma/intel,ldma.yaml
+> > > @@ -0,0 +1,416 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/dma/intel,ldma.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Lightning Mountain centralized low speed DMA and high speed DMA
+> > > controllers.
+> > > +
+> > > +maintainers:
+> > > +  - chuanhua.lei@intel.com
+> > > +  - mallikarjunax.reddy@intel.com
+> > > +
+> > > +properties:
+> > > + $nodename:
+> > > +   pattern: "^dma(@.*)?$"
+> > Please explain the difference to the common dma binding.
+> No difference. we can use "^dma-controller(@.*)?$" as in the common binding.
+> Its My bad. I missed the changes to include in this patch. Surely update in
+> the upcoming patch.
+> > 
+> > > +
+> > > + "#dma-cells":
+> > > +   const: 1
+> > > +
+> > > + compatible:
+> > > +  anyOf:
+> > > +   - const: intel,lgm-cdma
+> > > +   - const: intel,lgm-dma2tx
+> > > +   - const: intel,lgm-dma1rx
+> > > +   - const: intel,lgm-dma1tx
+> > > +   - const: intel,lgm-dma0tx
+> > > +   - const: intel,lgm-dma3
+> > > +   - const: intel,lgm-toe-dma30
+> > > +   - const: intel,lgm-toe-dma31
+> > Please explain why you need so many different compatible strings.
+> This hw dma has 7 DMA instances.
+> Some for datapath, some for memcpy  and some for TOE.
+> Some for TX only, some for RX only, and some for TX/RX(memcpy and ToE).
+> 
+> dma TX/RX type we considered as driver specific data of each instance and
+> used different compatible strings for each instance.
+> And also idea is in future if any driver specific data of any particular
+> instance we can handle.
+> 
+> Here if dma name and type(tx or rx) will be accepted as devicetree
+> attributes then we can move .name = "toe_dma31", & .type = DMA_TYPE_MCPY
+> to devicetree. So that the compatible strings can be limited to two.
+> intel,lgm-cdma & intel,lgm-hdma .
 
-Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
-Tested-by: Pingfan Liu <piliu@redhat.com>
----
+Different compatibles are okay if the instances are different and we 
+don't have properties to describe the differences.
 
-v2 -> v3:
-* Unchanged. Added Tested-by tag from Pingfan.
+For some of what you have in this binding, I think it should be part of 
+the consumer cells.
 
-v1 -> v2:
-* Fixed off-by-one error while setting up usable-memory properties.
-* Updated add_rtas_mem_range() & add_opal_mem_range() callsites based on
-  the new prototype for these functions.
+> 
+> please suggest us the better proposal.
+> > 
+> > > +
+> > > + reg:
+> > > +  maxItems: 1
+> > > +
+> > > + clocks:
+> > > +  maxItems: 1
+> > > +
+> > > + resets:
+> > > +  maxItems: 1
+> > > +
+> > > + interrupts:
+> > > +  maxItems: 1
+> > > +
+> > > + intel,dma-poll-cnt:
+> > > +   $ref: /schemas/types.yaml#definitions/uint32
+> > > +   description:
+> > > +     DMA descriptor polling counter. It may need fine tune according
+> > > +     to the system application scenario.
+> > > +
+> > > + intel,dma-byte-en:
+> > > +   type: boolean
+> > > +   description:
+> > > +     DMA byte enable is only valid for DMA write(RX).
+> > > +     Byte enable(1) means DMA write will be based on the number of
+> > > dwords
+> > > +     instead of the whole burst.
+> > > +
+> > > + intel,dma-drb:
+> > > +    type: boolean
+> > > +    description:
+> > > +      DMA descriptor read back to make sure data and desc
+> > > synchronization.
+> > > +
+> > > + intel,dma-burst:
+> > > +    $ref: /schemas/types.yaml#definitions/uint32
+> > > +    description:
+> > > +       Specifiy the DMA burst size(in dwords), the valid value will be
+> > > 8, 16, 32.
+> > > +       Default is 16 for data path dma, 32 is for memcopy DMA.
+> > > +
+> > > + intel,dma-polling-cnt:
 
+What's the difference with intel,dma-poll-cnt?
 
- arch/powerpc/kexec/file_load_64.c |  401 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 399 insertions(+), 2 deletions(-)
+> > > +    $ref: /schemas/types.yaml#definitions/uint32
+> > > +    description:
+> > > +       DMA descriptor polling counter. It may need fine tune according
+> > > to
+> > > +       the system application scenario.
+> > > +
+> > > + intel,dma-desc-in-sram:
+> > > +    type: boolean
+> > > +    description:
+> > > +       DMA descritpors in SRAM or not. Some old controllers descriptors
+> > > +       can be in DRAM or SRAM. The new ones are all in SRAM.
+> > > +
+> > > + intel,dma-orrc:
+> > > +    $ref: /schemas/types.yaml#definitions/uint32
+> > > +    description:
+> > > +       DMA outstanding read counter. The maximum value is 16, and it
+> > > may
+> > > +       need fine tune according to the system application scenarios.
+> > > +
+> > > + intel,dma-dburst-wr:
+> > > +    type: boolean
+> > > +    description:
+> > > +       Enable RX dynamic burst write. It only applies to RX DMA and
+> > > memcopy DMA.
+> > > +
+> > > +
+> > > + dma-ports:
+> > > +    type: object
+> > > +    description:
+> > > +       This sub-node must contain a sub-node for each DMA port.
 
-diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
-index 7673481..1c4e3eb 100644
---- a/arch/powerpc/kexec/file_load_64.c
-+++ b/arch/powerpc/kexec/file_load_64.c
-@@ -17,10 +17,22 @@
- #include <linux/kexec.h>
- #include <linux/of_fdt.h>
- #include <linux/libfdt.h>
-+#include <linux/of_device.h>
- #include <linux/memblock.h>
-+#include <linux/slab.h>
-+#include <asm/drmem.h>
- #include <asm/kexec_ranges.h>
- #include <asm/crashdump-ppc64.h>
- 
-+struct umem_info {
-+	uint64_t *buf; /* data buffer for usable-memory property */
-+	uint32_t idx;  /* current index */
-+	uint32_t size; /* size allocated for the data buffer */
-+
-+	/* usable memory ranges to look up */
-+	const struct crash_mem *umrngs;
-+};
-+
- const struct kexec_file_ops * const kexec_file_loaders[] = {
- 	&kexec_elf64_ops,
- 	NULL
-@@ -76,6 +88,38 @@ static int get_exclude_memory_ranges(struct crash_mem **mem_ranges)
- }
- 
- /**
-+ * get_usable_memory_ranges - Get usable memory ranges. This list includes
-+ *                            regions like crashkernel, opal/rtas & tce-table,
-+ *                            that kdump kernel could use.
-+ * @mem_ranges:               Range list to add the memory ranges to.
-+ *
-+ * Returns 0 on success, negative errno on error.
-+ */
-+static int get_usable_memory_ranges(struct crash_mem **mem_ranges)
-+{
-+	int ret;
-+
-+	/* First memory block & crashkernel region */
-+	ret = add_mem_range(mem_ranges, 0, crashk_res.end + 1);
-+	if (ret)
-+		goto out;
-+
-+	ret = add_rtas_mem_range(mem_ranges);
-+	if (ret)
-+		goto out;
-+
-+	ret = add_opal_mem_range(mem_ranges);
-+	if (ret)
-+		goto out;
-+
-+	ret = add_tce_mem_ranges(mem_ranges);
-+out:
-+	if (ret)
-+		pr_err("Failed to setup usable memory ranges\n");
-+	return ret;
-+}
-+
-+/**
-  * __locate_mem_hole_top_down - Looks top down for a large enough memory hole
-  *                              in the memory regions between buf_min & buf_max
-  *                              for the buffer. If found, sets kbuf->mem.
-@@ -261,6 +305,322 @@ static int locate_mem_hole_bottom_up_ppc64(struct kexec_buf *kbuf,
- }
- 
- /**
-+ * check_realloc_usable_mem - Reallocate buffer if it can't accommodate entries
-+ * @um_info:                  Usable memory buffer and ranges info.
-+ * @cnt:                      No. of entries to accommodate.
-+ *
-+ * Returns 0 on success, negative errno on error.
-+ */
-+static uint64_t *check_realloc_usable_mem(struct umem_info *um_info, int cnt)
-+{
-+	void *tbuf;
-+
-+	if (um_info->size >=
-+	    ((um_info->idx + cnt) * sizeof(*(um_info->buf))))
-+		return um_info->buf;
-+
-+	um_info->size += MEM_RANGE_CHUNK_SZ;
-+	tbuf = krealloc(um_info->buf, um_info->size, GFP_KERNEL);
-+	if (!tbuf) {
-+		um_info->size -= MEM_RANGE_CHUNK_SZ;
-+		return NULL;
-+	}
-+
-+	memset(tbuf + um_info->idx, 0, MEM_RANGE_CHUNK_SZ);
-+	return tbuf;
-+}
-+
-+/**
-+ * add_usable_mem - Add the usable memory ranges within the given memory range
-+ *                  to the buffer
-+ * @um_info:        Usable memory buffer and ranges info.
-+ * @base:           Base address of memory range to look for.
-+ * @end:            End address of memory range to look for.
-+ * @cnt:            No. of usable memory ranges added to buffer.
-+ *
-+ * Returns 0 on success, negative errno on error.
-+ */
-+static int add_usable_mem(struct umem_info *um_info, uint64_t base,
-+			  uint64_t end, int *cnt)
-+{
-+	uint64_t loc_base, loc_end, *buf;
-+	const struct crash_mem *umrngs;
-+	int i, add;
-+
-+	*cnt = 0;
-+	umrngs = um_info->umrngs;
-+	for (i = 0; i < umrngs->nr_ranges; i++) {
-+		add = 0;
-+		loc_base = umrngs->ranges[i].start;
-+		loc_end = umrngs->ranges[i].end;
-+		if (loc_base >= base && loc_end <= end)
-+			add = 1;
-+		else if (base < loc_end && end > loc_base) {
-+			if (loc_base < base)
-+				loc_base = base;
-+			if (loc_end > end)
-+				loc_end = end;
-+			add = 1;
-+		}
-+
-+		if (add) {
-+			buf = check_realloc_usable_mem(um_info, 2);
-+			if (!buf)
-+				return -ENOMEM;
-+
-+			um_info->buf = buf;
-+			buf[um_info->idx++] = cpu_to_be64(loc_base);
-+			buf[um_info->idx++] =
-+					cpu_to_be64(loc_end - loc_base + 1);
-+			(*cnt)++;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * kdump_setup_usable_lmb - This is a callback function that gets called by
-+ *                          walk_drmem_lmbs for every LMB to set its
-+ *                          usable memory ranges.
-+ * @lmb:                    LMB info.
-+ * @usm:                    linux,drconf-usable-memory property value.
-+ * @data:                   Pointer to usable memory buffer and ranges info.
-+ *
-+ * Returns 0 on success, negative errno on error.
-+ */
-+static int kdump_setup_usable_lmb(struct drmem_lmb *lmb, const __be32 **usm,
-+				  void *data)
-+{
-+	struct umem_info *um_info;
-+	uint64_t base, end, *buf;
-+	int cnt, tmp_idx, ret;
-+
-+	/*
-+	 * kdump load isn't supported on kernels already booted with
-+	 * linux,drconf-usable-memory property.
-+	 */
-+	if (*usm) {
-+		pr_err("Trying kdump load from a kdump kernel?\n");
-+		return -EINVAL;
-+	}
-+
-+	um_info = data;
-+	tmp_idx = um_info->idx;
-+	buf = check_realloc_usable_mem(um_info, 1);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	um_info->idx++;
-+	um_info->buf = buf;
-+	base = lmb->base_addr;
-+	end = base + drmem_lmb_size() - 1;
-+	ret = add_usable_mem(um_info, base, end, &cnt);
-+	if (!ret)
-+		um_info->buf[tmp_idx] = cpu_to_be64(cnt);
-+
-+	return ret;
-+}
-+
-+/**
-+ * get_node_path - Get the full path of the given node.
-+ * @dn:            Node.
-+ * @path:          Updated with the full path of the node.
-+ *
-+ * Returns nothing.
-+ */
-+static void get_node_path(struct device_node *dn, char *path)
-+{
-+	if (!dn)
-+		return;
-+
-+	get_node_path(dn->parent, path);
-+	sprintf(path, "/%s", dn->full_name);
-+}
-+
-+/**
-+ * get_node_pathlen - Get the full path length of the given node.
-+ * @dn:               Node.
-+ *
-+ * Returns the length of the full path of the node.
-+ */
-+static int get_node_pathlen(struct device_node *dn)
-+{
-+	int len = 0;
-+
-+	while (dn) {
-+		len += strlen(dn->full_name) + 1;
-+		dn = dn->parent;
-+	}
-+	len++;
-+
-+	return len;
-+}
-+
-+/**
-+ * add_usable_mem_property - Add usable memory property for the given
-+ *                           memory node.
-+ * @fdt:                     Flattened device tree for the kdump kernel.
-+ * @dn:                      Memory node.
-+ * @um_info:                 Usable memory buffer and ranges info.
-+ *
-+ * Returns 0 on success, negative errno on error.
-+ */
-+static int add_usable_mem_property(void *fdt, struct device_node *dn,
-+				   struct umem_info *um_info)
-+{
-+	int n_mem_addr_cells, n_mem_size_cells, node;
-+	int i, len, ranges, cnt, ret;
-+	uint64_t base, end, *buf;
-+	const __be32 *prop;
-+	char *pathname;
-+
-+	/* Allocate memory for node path */
-+	pathname = kzalloc(ALIGN(get_node_pathlen(dn), 8), GFP_KERNEL);
-+	if (!pathname)
-+		return -ENOMEM;
-+
-+	/* Get the full path of the memory node */
-+	get_node_path(dn, pathname);
-+	pr_debug("Memory node path: %s\n", pathname);
-+
-+	/* Now that we know the path, find its offset in kdump kernel's fdt */
-+	node = fdt_path_offset(fdt, pathname);
-+	if (node < 0) {
-+		pr_err("Malformed device tree: error reading %s\n",
-+		       pathname);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	/* Get the address & size cells */
-+	n_mem_addr_cells = of_n_addr_cells(dn);
-+	n_mem_size_cells = of_n_size_cells(dn);
-+	pr_debug("address cells: %d, size cells: %d\n", n_mem_addr_cells,
-+		 n_mem_size_cells);
-+
-+	um_info->idx  = 0;
-+	buf = check_realloc_usable_mem(um_info, 2);
-+	if (!buf) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	um_info->buf = buf;
-+
-+	prop = of_get_property(dn, "reg", &len);
-+	if (!prop || len <= 0) {
-+		ret = 0;
-+		goto out;
-+	}
-+
-+	/*
-+	 * "reg" property represents sequence of (addr,size) duples
-+	 * each representing a memory range.
-+	 */
-+	ranges = (len >> 2) / (n_mem_addr_cells + n_mem_size_cells);
-+
-+	for (i = 0; i < ranges; i++) {
-+		base = of_read_number(prop, n_mem_addr_cells);
-+		prop += n_mem_addr_cells;
-+		end = base + of_read_number(prop, n_mem_size_cells) - 1;
-+
-+		ret = add_usable_mem(um_info, base, end, &cnt);
-+		if (ret) {
-+			ret = ret;
-+			goto out;
-+		}
-+	}
-+
-+	/*
-+	 * No kdump kernel usable memory found in this memory node.
-+	 * Write (0,0) duple in linux,usable-memory property for
-+	 * this region to be ignored.
-+	 */
-+	if (um_info->idx == 0) {
-+		um_info->buf[0] = 0;
-+		um_info->buf[1] = 0;
-+		um_info->idx = 2;
-+	}
-+
-+	ret = fdt_setprop(fdt, node, "linux,usable-memory", um_info->buf,
-+			  (um_info->idx * sizeof(*(um_info->buf))));
-+
-+out:
-+	kfree(pathname);
-+	return ret;
-+}
-+
-+
-+/**
-+ * update_usable_mem_fdt - Updates kdump kernel's fdt with linux,usable-memory
-+ *                         and linux,drconf-usable-memory DT properties as
-+ *                         appropriate to restrict its memory usage.
-+ * @fdt:                   Flattened device tree for the kdump kernel.
-+ * @usable_mem:            Usable memory ranges for kdump kernel.
-+ *
-+ * Returns 0 on success, negative errno on error.
-+ */
-+static int update_usable_mem_fdt(void *fdt, struct crash_mem *usable_mem)
-+{
-+	struct umem_info um_info;
-+	struct device_node *dn;
-+	int node, ret = 0;
-+
-+	if (!usable_mem) {
-+		pr_err("Usable memory ranges for kdump kernel not found\n");
-+		return -ENOENT;
-+	}
-+
-+	node = fdt_path_offset(fdt, "/ibm,dynamic-reconfiguration-memory");
-+	if (node == -FDT_ERR_NOTFOUND)
-+		pr_debug("No dynamic reconfiguration memory found\n");
-+	else if (node < 0) {
-+		pr_err("Malformed device tree: error reading /ibm,dynamic-reconfiguration-memory.\n");
-+		return -EINVAL;
-+	}
-+
-+	um_info.size = 0;
-+	um_info.idx  = 0;
-+	um_info.buf  = NULL;
-+	um_info.umrngs = usable_mem;
-+
-+	dn = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
-+	if (dn) {
-+		ret = walk_drmem_lmbs(dn, &um_info, kdump_setup_usable_lmb);
-+		of_node_put(dn);
-+
-+		if (ret)
-+			goto out;
-+
-+		ret = fdt_setprop(fdt, node, "linux,drconf-usable-memory",
-+				  um_info.buf,
-+				  (um_info.idx * sizeof(*(um_info.buf))));
-+		if (ret) {
-+			pr_err("Failed to set linux,drconf-usable-memory property");
-+			goto out;
-+		}
-+	}
-+
-+	/*
-+	 * Walk through each memory node and set linux,usable-memory property
-+	 * for the corresponding node in kdump kernel's fdt.
-+	 */
-+	for_each_node_by_type(dn, "memory") {
-+		ret = add_usable_mem_property(fdt, dn, &um_info);
-+		if (ret) {
-+			pr_err("Failed to set linux,usable-memory property for %s node",
-+			       dn->full_name);
-+			goto out;
-+		}
-+	}
-+
-+out:
-+	kfree(um_info.buf);
-+	return ret;
-+}
-+
-+/**
-  * setup_purgatory_ppc64 - initialize PPC64 specific purgatory's global
-  *                         variables and call setup_purgatory() to initialize
-  *                         common global variable.
-@@ -281,6 +641,25 @@ int setup_purgatory_ppc64(struct kimage *image, const void *slave_code,
- 	ret = setup_purgatory(image, slave_code, fdt, kernel_load_addr,
- 			      fdt_load_addr);
- 	if (ret)
-+		goto out;
-+
-+	if (image->type == KEXEC_TYPE_CRASH) {
-+		uint32_t my_run_at_load = 1;
-+
-+		/*
-+		 * Tell relocatable kernel to run at load address
-+		 * via the word meant for that at 0x5c.
-+		 */
-+		ret = kexec_purgatory_get_set_symbol(image, "run_at_load",
-+						     &my_run_at_load,
-+						     sizeof(my_run_at_load),
-+						     false);
-+		if (ret)
-+			goto out;
-+	}
-+
-+out:
-+	if (ret)
- 		pr_err("Failed to setup purgatory symbols");
- 	return ret;
- }
-@@ -301,6 +680,7 @@ int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
- 			unsigned long initrd_load_addr,
- 			unsigned long initrd_len, const char *cmdline)
- {
-+	struct crash_mem *umem = NULL;
- 	int chosen_node, ret;
- 
- 	/* Remove memory reservation for the current device tree. */
-@@ -313,15 +693,32 @@ int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
- 		return ret;
- 	}
- 
-+	/*
-+	 * Restrict memory usage for kdump kernel by setting up
-+	 * usable memory ranges.
-+	 */
-+	if (image->type == KEXEC_TYPE_CRASH) {
-+		ret = get_usable_memory_ranges(&umem);
-+		if (ret)
-+			goto out;
-+
-+		ret = update_usable_mem_fdt(fdt, umem);
-+		if (ret) {
-+			pr_err("Error setting up usable-memory property for kdump kernel\n");
-+			goto out;
-+		}
-+	}
-+
- 	ret = setup_new_fdt(image, fdt, initrd_load_addr, initrd_len,
- 			    cmdline, &chosen_node);
- 	if (ret)
--		return ret;
-+		goto out;
- 
- 	ret = fdt_setprop(fdt, chosen_node, "linux,booted-from-kexec", NULL, 0);
- 	if (ret)
- 		pr_err("Failed to update device-tree with linux,booted-from-kexec\n");
--
-+out:
-+	kfree(umem);
- 	return ret;
- }
- 
+What's a DMA port?
 
+> > > +    properties:
+> > > +      '#address-cells':
+> > > +        const: 1
+> > > +      '#size-cells':
+> > > +        const: 0
+> > > +
+> > > +    patternProperties:
+> > > +      "^dma-ports@[0-9]+$":
+> > > +          type: object
+> > > +
+> > > +          properties:
+> > > +            reg:
+> > > +              items:
+> > > +                - enum: [0, 1, 2, 3, 4, 5]
+> > > +              description:
+> > > +                 Which port this node refers to.
+> > > +
+> > > +            intel,name:
+> > > +              $ref: /schemas/types.yaml#definitions/string-array
+> > > +              description:
+> > > +                 Port name of each DMA port.
+
+Why do you need this?
+
+> > > +
+> > > +            intel,chans:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32-array
+> > > +              description:
+> > > +                 The channels included on this port. Format is channel
+> > > start
+> > > +                 number and how many channels on this port.
+
+We already have standard properties for defining channels.
+
+> > > +
+> > > +            intel,burst:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32
+> > > +              description:
+> > > +                 Specify the DMA port burst size, the valid value will
+> > > be
+> > > +                 2, 4, 8. Default is 2 for data path dma.
+
+This would normally be in the consumer cells.
+
+> > > +
+> > > +            intel,txwgt:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32
+> > > +              description:
+> > > +                 Specify the port transmit weight for QoS purpose. The
+> > > valid
+> > > +                 value is 1~7. Default value is 1.
+> > > +
+> > > +            intel,endian:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32
+> > > +              description:
+> > > +                 Specify the DMA port endiannes conversion due to SoC
+> > > endianness difference.
+> > > +
+> > > +          required:
+> > > +            - reg
+> > > +            - intel,name
+> > > +            - intel,chans
+> > > +
+> > > +
+> > > + dma-channels:
+> > > +    type: object
+> > > +    description:
+> > > +       This sub-node must contain a sub-node for each DMA channel.
+> > > +    properties:
+> > > +      '#address-cells':
+> > > +        const: 1
+> > > +      '#size-cells':
+> > > +        const: 0
+> > > +
+> > > +    patternProperties:
+> > > +      "^dma-channels@[0-9]+$":
+> > > +          type: object
+> > > +
+> > > +          properties:
+> > > +            reg:
+> > > +              items:
+> > > +                - enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+> > > 14, 15]
+> > > +              description:
+> > > +                 Which channel this node refers to.
+> > > +
+> > > +            intel,desc_num:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32
+> > > +              description:
+> > > +                 Per channel maximum descriptor number. The max value
+> > > is 255.
+> > > +
+> > > +            intel,pkt_sz:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32
+> > > +              description:
+> > > +                 Channel buffer packet size. It must be power of 2.
+> > > +                 The maximum size is 4096.
+> > > +
+> > > +            intel,desc-rx-nonpost:
+> > > +              type: boolean
+> > > +              description:
+> > > +                 Write non-posted type for DMA RX last data beat of
+> > > every descriptor.
+> > > +
+> > > +            intel,data-endian:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32
+> > > +              description:
+> > > +                 Per channel data endianness configuration according to
+> > > SoC requirement.
+> > > +
+> > > +            intel,desc-endian:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32
+> > > +              description:
+> > > +                 Per channel descriptor endianness configuration
+> > > according to SoC requirement.
+> > > +
+> > > +            intel,data-endian-en:
+> > > +              type: boolean
+> > > +              description:
+> > > +                 Per channel data endianness enabled.
+> > > +
+> > > +            intel,desc-endian-en:
+> > > +              type: boolean
+> > > +              description:
+> > > +                 Per channel descriptor endianness enabled.
+> > > +
+> > > +            intel,byte-offset:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32
+> > > +              description:
+> > > +                 Per channel byte offset(0~128).
+> > > +
+> > > +            intel,hdr-mode:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32-array
+> > > +              description:
+> > > +                 The first parameter is header mode size, the second
+> > > +                 parameter is checksum enable or disable. If enabled,
+> > > +                 header mode size is ignored. If disabled, header mode
+> > > +                 size must be provided.
+> > > +
+> > > +            intel,non-arb-cnt:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32
+> > > +              description:
+> > > +                 Per channel non arbitration counter while polling
+> > > +
+> > > +            intel,arb-cnt:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32
+> > > +              description:
+> > > +                 Per channel arbitration counter while polling.
+> > > +                 arb_cnt must be greater than non_arb_cnt
+> > > +
+> > > +            intel,pkt-drop:
+> > > +              type: boolean
+> > > +              description:
+> > > +                 Channel packet drop enabled or disabled.
+> > > +
+> > > +            intel,hw-desc:
+> > > +              $ref: /schemas/types.yaml#/definitions/uint32-array
+> > > +              description:
+> > > +                 Per channel dma hardware descriptor configuration.
+> > > +                 The first parameter is descriptor physical address and
+> > > the
+> > > +                 second parameter hardware descriptor number.
+
+All/most of these seem like client/consumer settings.
+
+> > > +
+> > > +          required:
+> > > +            - reg
+> > > +
+> > > +required:
+> > > + - compatible
+> > > + - reg
+> > > + - '#dma-cells'
+> > > +
+> > > +examples:
+> > > + - |
+> > > +   dma0: dma@e0e00000 {
+> > > +     compatible = "intel,lgm-cdma";
+> > > +     reg = <0xe0e00000 0x1000>;
+> > > +     #dma-cells = <1>;
+> > > +     interrupt-parent = <&ioapic1>;
+> > > +     interrupts = <82 1>;
+> > > +     resets = <&rcu0 0x30 0>;
+> > > +     reset-names = "ctrl";
+> > > +     clocks = <&cgu0 80>;
+> > > +     intel,dma-poll-cnt = <4>;
+> > > +     intel,dma-byte-en;
+> > > +     intel,dma-drb;
+> > > +     dma-ports {
+> > > +       #address-cells = <1>;
+> > > +       #size-cells = <0>;
+> > > +
+> > > +       dma-ports@0 {
+> > > +           reg = <0>;
+> > > +           intel,name = "SPI0";
+> > > +           intel,chans = <0 2>;
+> > > +           intel,burst = <2>;
+> > > +           intel,txwgt = <1>;
+
+Yeah, based on the names, it definitely seems like these belong as cells 
+in 'dmas' properties.
+
+> > > +       };
+> > > +       dma-ports@1 {
+> > > +           reg = <1>;
+> > > +           intel,name = "SPI1";
+> > > +           intel,chans = <2 2>;
+> > > +           intel,burst = <2>;
+> > > +           intel,txwgt = <1>;
+> > > +       };
+> > > +       dma-ports@2 {
+> > > +           reg = <2>;
+> > > +           intel,name = "SPI2";
+> > > +           intel,chans = <4 2>;
+> > > +           intel,burst = <2>;
+> > > +           intel,txwgt = <1>;
+> > > +       };
+> > > +       dma-ports@3 {
+> > > +           reg = <3>;
+> > > +           intel,name = "SPI3";
+> > > +           intel,chans = <6 2>;
+> > > +           intel,burst = <2>;
+> > > +           intel,endian = <0>;
+> > > +           intel,txwgt = <1>;
+> > > +       };
+> > > +       dma-ports@4 {
+> > > +           reg = <4>;
+> > > +           intel,name = "HSNAND";
+> > > +           intel,chans = <8 2>;
+> > > +           intel,burst = <8>;
+> > > +           intel,txwgt = <1>;
+> > > +       };
+> > > +       dma-ports@5 {
+> > > +           reg = <5>;
+> > > +           intel,name = "PCM";
+> > > +           intel,chans = <10 6>;
+> > > +           intel,burst = <8>;
+> > > +           intel,txwgt = <1>;
+> > > +       };
+> > > +     };
+> > > +     dma-channels {
+> > > +       #address-cells = <1>;
+> > > +       #size-cells = <0>;
+> > > +
+> > > +       dma-channels@0 {
+> > > +           reg = <0>;
+> > > +           intel,desc_num = <1>;
+> > > +       };
+> > > +       dma-channels@1 {
+> > > +           reg = <1>;
+> > > +           intel,desc_num = <1>;
+> > > +       };
+> > > +       dma-channels@2 {
+> > > +           reg = <2>;
+> > > +           intel,desc_num = <1>;
+> > > +       };
+> > > +       dma-channels@3 {
+> > > +           reg = <3>;
+> > > +           intel,desc_num = <1>;
+> > > +       };
+> > > +       dma-channels@4 {
+> > > +           reg = <4>;
+> > > +           intel,desc_num = <1>;
+> > > +       };
+> > > +       dma-channels@5 {
+> > > +           reg = <5>;
+> > > +           intel,desc_num = <1>;
+> > > +       };
+> > > +       dma-channels@6 {
+> > > +           reg = <6>;
+> > > +           intel,desc_num = <1>;
+> > > +       };
+> > > +       dma-channels@7 {
+> > > +           reg = <7>;
+> > > +           intel,desc_num = <1>;
+> > > +       };
+> > > +       dma-channels@8 {
+> > > +           reg = <8>;
+> > > +       };
+> > > +       dma-channels@9 {
+> > > +           reg = <9>;
+> > > +       };
+> > > +       dma-channels@10 {
+> > > +           reg = <10>;
+> > > +       };
+> > > +       dma-channels@11 {
+> > > +           reg = <11>;
+> > > +       };
+> > > +       dma-channels@12 {
+> > > +           reg = <12>;
+> > > +       };
+> > > +       dma-channels@13 {
+> > > +           reg = <13>;
+> > > +       };
+> > > +       dma-channels@14 {
+> > > +           reg = <14>;
+> > > +       };
+> > > +       dma-channels@15 {
+> > > +           reg = <15>;
+> > > +       };
+> > > +     };
+> > > +   };
+> > > + - |
+> > > +   dma3: dma@ec800000 {
+> > > +     compatible = "intel,lgm-dma3";
+> > > +     reg = <0xec800000 0x1000>;
+> > > +     clocks = <&cgu0 71>;
+> > > +     resets = <&rcu0 0x10 9>;
+> > > +     #dma-cells = <1>;
+> > > +     intel,dma-burst = <32>;
+> > > +     intel,dma-polling-cnt = <16>;
+> > > +     intel,dma-desc-in-sram;
+> > > +     intel,dma-orrc = <16>;
+> > > +     intel,dma-byte-en;
+> > > +     intel,dma-dburst-wr;
+> > > +     dma-channels {
+> > > +         #address-cells = <1>;
+> > > +         #size-cells = <0>;
+> > > +
+> > > +         dma-channels@12 {
+> > > +             reg = <12>;
+> > > +             intel,pkt_sz = <4096>;
+> > > +             intel,desc-rx-nonpost;
+> > > +             intel,data-endian = <0>;
+> > > +             intel,desc-endian = <0>;
+> > > +             intel,data-endian-en;
+> > > +             intel,desc-endian-en;
+> > > +             intel,byte-offset = <0>;
+> > > +             intel,hdr-mode = <128 0>;
+> > > +             intel,non-arb-cnt = <0>;
+> > > +             intel,arb-cnt = <0>;
+> > > +             intel,hw-desc = <0x20000000 8>;
+> > > +         };
+> > > +         dma-channels@13 {
+> > > +             reg = <13>;
+> > > +             intel,pkt-drop;
+> > > +             intel,pkt_sz = <4096>;
+> > > +             intel,data-endian = <0>;
+> > > +             intel,desc-endian = <0>;
+> > > +             intel,data-endian-en;
+> > > +             intel,desc-endian-en;
+> > > +             intel,byte-offset = <0>;
+> > > +             intel,hdr-mode = <128 0>;
+> > > +             intel,non-arb-cnt = <0>;
+> > > +             intel,arb-cnt = <0>;
+> > > +         };
+> > > +     };
+> > > +   };
+> > > --
+> > > 2.11.0
