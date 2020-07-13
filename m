@@ -2,203 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826C321D9D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597AE21D9E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 17:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729884AbgGMPK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 11:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729308AbgGMPK0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 11:10:26 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD50C061755;
-        Mon, 13 Jul 2020 08:10:26 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id h16so11412034ilj.11;
-        Mon, 13 Jul 2020 08:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0aLviF1Tp3qA2WKh5TL8kBFDCcYaBAEuv96ryJ3BdEQ=;
-        b=D/QxOz4WvIUD4B3lvyIkXS7SAxqk0KrEw76vSE31m21XfLI1cegHHImvvF+qnfZzcd
-         JaG5NzQJvqKNc9Dl+lQrD5TNco65lp04gJqJCfVB1t1nPN/3lnzwtk17EhR2ow/XIwhM
-         lbwHRGsF+Shk9P3STfL2y6N9Vu6d1qPBjQS8E+rQroQa7fYNBA3uvzdQQ02T3BfAJrlS
-         PfhhLQS8IA/tRuFgaNOgoYwN3adcsEAbjJX8AlAz+LO04Am3SqhL69WdkNlICCAx4vAH
-         D/pIj3pyS22Q5KDpgUqJF0AKw8J+SILPn0Ga7E2/wLxBae/MWIFCb2r9GG2vivkhw5bl
-         Ta/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0aLviF1Tp3qA2WKh5TL8kBFDCcYaBAEuv96ryJ3BdEQ=;
-        b=UEF+M/FYf/eXvvjA5W5hhyroySc0DJrxozk3Lg9XJCjq/JDfHAEqtXS5thLpcQw8/9
-         tZDUm7TYdDX67tt1RXsh5hZiJ4sq+izjsSwxADV0nXg74IA7CtY7SHfdXRwIpGQKg4lr
-         NcR7EV8e1i5BRAFWnmY+LpuGRElzLov/MVGeNp0w01TFOId9YPKLcqSFZt6VK/FN9wX8
-         zD79bf94HYoLg0jDY++Xt+mxzUiY/bPp+yHnyW4Q2AZi+yL4JgTMzekbeHHgrx8vNMFP
-         o3EwYbjJikZrFRC5CTyuS8M6+CizxwtOai7lg8EZyN8Ce2UP+xl/bPWyjqm4p7GITibu
-         cIYg==
-X-Gm-Message-State: AOAM5320mnpTrpjlFmYey1cCbKrPz/ly1mPrPOkOlhzgymzIfbViJF8U
-        MdpYQaOQFUQa4a/foFPfWsJMb6Y+OQFD9sy82W4Up6Sb
-X-Google-Smtp-Source: ABdhPJz7fEoAdjaSgaCNKEkg33tHudeh5sEOS1URoEDTxPr92qH0X2OfEk+7e2oQcfcZ76Rxra0Ar6VviU2oCqYGB8c=
-X-Received: by 2002:a92:bd0f:: with SMTP id c15mr113475ile.95.1594653025301;
- Mon, 13 Jul 2020 08:10:25 -0700 (PDT)
+        id S1730023AbgGMPLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 11:11:33 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2462 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729308AbgGMPLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 11:11:30 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id A47418D06EA995A5DDF2;
+        Mon, 13 Jul 2020 16:11:27 +0100 (IST)
+Received: from lhrphicprd00229.huawei.com (10.123.41.22) by
+ lhreml710-chm.china.huawei.com (10.201.108.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 13 Jul 2020 16:11:27 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To:     <linux-mm@kvack.org>, <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>
+CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <martin@geanix.com>, Ingo Molnar <mingo@redhat.com>,
+        <linux-ia64@vger.kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>, <linuxarm@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH] ACPI: Only create numa nodes from entries in SRAT or SRAT emulation.
+Date:   Mon, 13 Jul 2020 23:10:18 +0800
+Message-ID: <20200713151018.2267079-1-Jonathan.Cameron@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-References: <20200710113046.421366-1-mst@redhat.com> <CAKgT0UeZN+mOWNhgiT0btZTyki3TPoj7pbqA+__GkCxoifPqeg@mail.gmail.com>
- <20200712105926-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20200712105926-mutt-send-email-mst@kernel.org>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 13 Jul 2020 08:10:14 -0700
-Message-ID: <CAKgT0UdY1xpEH1Hg4HWJEkGwH5s64sm1y4O_XmHe8P_f=tDhpg@mail.gmail.com>
-Subject: Re: [PATCH] virtio_balloon: clear modern features under legacy
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.123.41.22]
+X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 8:10 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Fri, Jul 10, 2020 at 09:13:41AM -0700, Alexander Duyck wrote:
-> > On Fri, Jul 10, 2020 at 4:31 AM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > >
-> > > Page reporting features were never supported by legacy hypervisors.
-> > > Supporting them poses a problem: should we use native endian-ness (like
-> > > current code assumes)? Or little endian-ness like the virtio spec says?
-> > > Rather than try to figure out, and since results of
-> > > incorrect endian-ness are dire, let's just block this configuration.
-> > >
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> >
-> > So I am not sure about the patch description. In the case of page
-> > poison and free page reporting I don't think we are defining anything
-> > that doesn't already have a definition of how to use in legacy.
-> > Specifically the virtio_balloon_config is already defined as having
-> > all fields as little endian in legacy mode, and there is a definition
-> > for all of the fields in a virtqueue and how they behave in legacy
-> > mode.
-> >
-> > As far as I can see the only item that may be an issue is the command
-> > ID being supplied via the virtqueue for free page hinting, which
-> > appears to be in native endian-ness. Otherwise it would have fallen
-> > into the same category since it is making use of virtio_balloon_config
-> > and a virtqueue for supplying the page location and length.
->
->
->
-> So as you point out correctly balloon spec says all fields are little
-> endian.  Fair enough.
-> Problem is when virtio 1 is not negotiated, then this is not what the
-> driver assumes for any except a handlful of fields.
->
-> But yes it mostly works out.
->
-> For example:
->
->
-> static void update_balloon_size(struct virtio_balloon *vb)
-> {
->         u32 actual = vb->num_pages;
->
->         /* Legacy balloon config space is LE, unlike all other devices. */
->         if (!virtio_has_feature(vb->vdev, VIRTIO_F_VERSION_1))
->                 actual = (__force u32)cpu_to_le32(actual);
->
->         virtio_cwrite(vb->vdev, struct virtio_balloon_config, actual,
->                       &actual);
-> }
->
->
-> this is LE even without VIRTIO_F_VERSION_1, so matches spec.
->
->                 /* Start with poison val of 0 representing general init */
->                 __u32 poison_val = 0;
->
->                 /*
->                  * Let the hypervisor know that we are expecting a
->                  * specific value to be written back in balloon pages.
->                  */
->                 if (!want_init_on_free())
->                         memset(&poison_val, PAGE_POISON, sizeof(poison_val));
->
->                 virtio_cwrite(vb->vdev, struct virtio_balloon_config,
->                               poison_val, &poison_val);
->
->
-> actually this writes a native endian-ness value. All bytes happen to be
-> the same though, and host only cares about 0 or non 0 ATM.
+Here, I will use the term Proximity Domains for the ACPI description and
+Numa Nodes for the in kernel representation.
 
-So we are safe assuming it is a repeating value, but for correctness
-maybe we should make certain to cast this as a le32 value. I can
-submit a patch to do that.
+Until ACPI 6.3 it was arguably possible to interpret the specification as
+allowing _PXM in DSDT and similar to define additional Proximity Domains.
 
-> As you say correctly the command id is actually assumed native endian:
->
->
-> static u32 virtio_balloon_cmd_id_received(struct virtio_balloon *vb)
-> {
->         if (test_and_clear_bit(VIRTIO_BALLOON_CONFIG_READ_CMD_ID,
->                                &vb->config_read_bitmap))
->                 virtio_cread(vb->vdev, struct virtio_balloon_config,
->                              free_page_hint_cmd_id,
->                              &vb->cmd_id_received_cache);
->
->         return vb->cmd_id_received_cache;
-> }
->
->
-> So guest assumes native, host assumes LE.
+The reality was that was never the intent, and a 'clarification' was added
+in ACPI 6.3 [1].  In practice I think the kernel has never allowed any other
+interpretaion, except possibly on adhoc base within some out of tree driver
+(using it very very carefully given potential to crash when using various
+standard calls such as devm_kzalloc).
 
-This wasn't even the one I was talking about, but now that you point
-it out this is definately bug. The command ID I was talking about was
-the one being passed via the descriptor ring. That one I believe is
-native on both sides.
+Proximity Domains are always defined in SRAT.  In ACPI, there are methods
+defined in ACPI to allow their characteristics to be tweaked later but
+Proximity Domains have to be referenced in this table at boot, thus
+allowing Linux to instantiate relevant Numa Node data structures.
 
->
->
->
-> > > ---
-> > >  drivers/virtio/virtio_balloon.c | 9 +++++++++
-> > >  1 file changed, 9 insertions(+)
-> > >
-> > > diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> > > index 5d4b891bf84f..b9bc03345157 100644
-> > > --- a/drivers/virtio/virtio_balloon.c
-> > > +++ b/drivers/virtio/virtio_balloon.c
-> > > @@ -1107,6 +1107,15 @@ static int virtballoon_restore(struct virtio_device *vdev)
-> > >
-> > >  static int virtballoon_validate(struct virtio_device *vdev)
-> > >  {
-> > > +       /*
-> > > +        * Legacy devices never specified how modern features should behave.
-> > > +        * E.g. which endian-ness to use? Better not to assume anything.
-> > > +        */
-> > > +       if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1)) {
-> > > +               __virtio_clear_bit(vdev, VIRTIO_BALLOON_F_FREE_PAGE_HINT);
-> > > +               __virtio_clear_bit(vdev, VIRTIO_BALLOON_F_PAGE_POISON);
-> > > +               __virtio_clear_bit(vdev, VIRTIO_BALLOON_F_REPORTING);
-> > > +       }
-> > >         /*
-> > >          * Inform the hypervisor that our pages are poisoned or
-> > >          * initialized. If we cannot do that then we should disable
-> >
-> > The patch content itself I am fine with since odds are nobody would
-> > expect to use these features with a legacy device.
-> >
-> > Acked-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
->
-> Hmm so now you pointed out it's just cmd id, maybe I should just fix it
-> instead? what do you say?
+We ran into a problem when enabling _PXM handling for PCI devices and found
+there were boards out there advertising devices in proximity domains that
+didn't exist [2].
 
-So the config issues are bugs, but I don't think you saw the one I was
-talking about. In the function send_cmd_id_start the cmd_id_active
-value which is initialized as a virtio32 is added as a sg entry and
-then sent as an outbuf to the device. I'm assuming virtio32 is a host
-native byte ordering.
+The fix suggested here is to modfiy the function acpi_map_pxm_to_node.
+This function is both used to create and lookup proximity domains.
+A parameter is added to specify whether it should create a new
+proximity domain when it encounters a Proximity Domain ID that it
+hasn't seen before.
+
+Naturally there is a quirk.  For SRAT ITS entries on ARM64 the handling is
+done with an additional pass of SRAT, potentially later in the boot. We
+could modify that behaviour so we could identify the existence of Proximity
+Domains unique to the ITS structures, and handle them as a special case
+of a Genric Initiator (once support for those merges) however...
+
+Currently (5.8-rc2) setting the Proximity Domain of an ITS to one that hasn't
+been instantiated by being specified in another type of SRAT resource entry
+results in:
+
+ITS [mem 0x202100000-0x20211ffff]
+ITS@0x0000000202100000: Using ITS number 0
+Unable to handle kernel paging request at virtual address 0000000000001a08
+Mem abort info:
+ESR = 0x96000004
+EC = 0x25: DABT (current EL), IL = 32 bits
+SET = 0, FnV = 0
+EA = 0, S1PTW = 0
+Data abort info:
+ISV = 0, ISS = 0x00000004
+CM = 0, WnR = 0
+[0000000000001a08] user address but active_mm is swapper
+Internal error: Oops: 96000004 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper/0 Tainted: G       A          5.8.0-rc2 #483
+pstate: 80000089 (Nzcv daIf -PAN -UAO BTYPE=--)
+pc : __alloc_pages_nodemask+0xe8/0x338
+lr : __alloc_pages_nodemask+0xc0/0x338
+sp : ffffa81540c139b0
+x29: ffffa81540c139b0 x28: 0000000000000001
+x27: 0000000000000100 x26: ffffa81540c1ad38
+x25: 0000000000000000 x24: 0000000000000000
+x23: ffffa81540c23c00 x22: 0000000000000004
+x21: 0000000000000002 x20: 0000000000001a00
+x19: 0000000000000100 x18: 0000000000000010
+x17: 000000000001f000 x16: 000000000000007f
+x15: ffffa81540c24070 x14: ffffffffffffffff
+x13: ffffa815c0c137d7 x12: ffffa81540c137e4
+x11: ffffa81540c3e000 x10: ffffa81540ecee68
+x9 : ffffa8153f0f61d8 x8 : ffffa81540ecf000
+x7 : 0000000000000141 x6 : ffffa81540ecf401
+x5 : 0000000000000000 x4 : 0000000000000000
+x3 : 0000000000000000 x2 : 0000000000000000
+x1 : 0000000000000081 x0 : 0000000000001a00
+Call trace:
+ __alloc_pages_nodemask+0xe8/0x338
+ alloc_pages_node.constprop.0+0x34/0x40
+ its_probe_one+0x2f8/0xb18
+ gic_acpi_parse_madt_its+0x108/0x150
+ acpi_table_parse_entries_array+0x17c/0x264
+ acpi_table_parse_entries+0x48/0x6c
+ acpi_table_parse_madt+0x30/0x3c
+ its_init+0x1c4/0x644
+ gic_init_bases+0x4b8/0x4ec
+ gic_acpi_init+0x134/0x264
+ acpi_match_madt+0x4c/0x84
+ acpi_table_parse_entries_array+0x17c/0x264
+ acpi_table_parse_entries+0x48/0x6c
+ acpi_table_parse_madt+0x30/0x3c
+ __acpi_probe_device_table+0x8c/0xe8
+ irqchip_init+0x3c/0x48
+ init_IRQ+0xcc/0x100
+ start_kernel+0x33c/0x548
+
+As we die in this case in existing kernels, we can be fairly sure that no one
+actually has such a firmware in production.  As such this patch avoids the
+complexity that would be needed to handle this corner case, and simply does
+not allow the ITS entry parsing code to instantiate new Numa Nodes.  If one
+is encountered that does not already exist, then NO_NUMA_NODE is assigned
+and a warning printed just as if the value had been greater than allowed
+Numa Nodes.
+
+"SRAT: Invalid NUMA node -1 in ITS affinity"
+
+I have only tested this for now on our ARM64 Kunpeng920 servers and
+a range of qemu x86 and arm64 configurations.
+
+Note minor merge issue with Dan William's series [3].  Merge fixes should be
+straight forward.
+
+[1] Note in ACPI Specification 6.3 5.2.16 System Resource Affinity Table (SRAT)
+[2] https://patchwork.kernel.org/patch/10597777/
+[3] https://lore.kernel.org/patchwork/cover/1271398/
+
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+---
+
+Possible open questions:
+* should we warn about a broken firmware trying to assign any device
+  to a non existent Proximity Domain?
+* previously an smmuv3 in IORT with a Proximity Domain set to a non existent
+  value would have resulted in a failure to add the device. After this change
+  it will be added to the default node.  Is that a problem?
+* for the smmuv3 we print that we have successfully mapped to a node even if
+  we have not.  Would making this clear be useful?
+  Perhaps this is a topic for a separate patch.
+
+ Changes since RFC
+ * Fixed missing parameter in dmar.c
+ * Tested on some Qemu x86 models so confident enough to drop the RFC.
+
+ arch/arm64/kernel/acpi_numa.c    | 2 +-
+ arch/ia64/kernel/acpi.c          | 2 +-
+ arch/x86/mm/srat.c               | 4 ++--
+ drivers/acpi/arm64/iort.c        | 2 +-
+ drivers/acpi/nfit/core.c         | 2 +-
+ drivers/acpi/numa/hmat.c         | 2 +-
+ drivers/acpi/numa/srat.c         | 8 ++++----
+ drivers/iommu/intel/dmar.c       | 2 +-
+ drivers/irqchip/irq-gic-v3-its.c | 7 ++++++-
+ include/acpi/acpi_numa.h         | 2 +-
+ include/linux/acpi.h             | 6 +++---
+ 11 files changed, 22 insertions(+), 17 deletions(-)
+
+diff --git a/arch/arm64/kernel/acpi_numa.c b/arch/arm64/kernel/acpi_numa.c
+index 7ff800045434..6ed47b058d76 100644
+--- a/arch/arm64/kernel/acpi_numa.c
++++ b/arch/arm64/kernel/acpi_numa.c
+@@ -107,7 +107,7 @@ void __init acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa)
+ 		return;
+ 
+ 	pxm = pa->proximity_domain;
+-	node = acpi_map_pxm_to_node(pxm);
++	node = acpi_map_pxm_to_node(pxm, true);
+ 
+ 	if (node == NUMA_NO_NODE || node >= MAX_NUMNODES) {
+ 		pr_err("SRAT: Too many proximity domains %d\n", pxm);
+diff --git a/arch/ia64/kernel/acpi.c b/arch/ia64/kernel/acpi.c
+index a5636524af76..760a468864b7 100644
+--- a/arch/ia64/kernel/acpi.c
++++ b/arch/ia64/kernel/acpi.c
+@@ -456,7 +456,7 @@ void __init acpi_numa_fixup(void)
+ 	nodes_clear(node_online_map);
+ 	for (i = 0; i < MAX_PXM_DOMAINS; i++) {
+ 		if (pxm_bit_test(i)) {
+-			int nid = acpi_map_pxm_to_node(i);
++			int nid = acpi_map_pxm_to_node(i, true);
+ 			node_set_online(nid);
+ 		}
+ 	}
+diff --git a/arch/x86/mm/srat.c b/arch/x86/mm/srat.c
+index dac07e4f5834..6497d7c241ec 100644
+--- a/arch/x86/mm/srat.c
++++ b/arch/x86/mm/srat.c
+@@ -45,7 +45,7 @@ acpi_numa_x2apic_affinity_init(struct acpi_srat_x2apic_cpu_affinity *pa)
+ 			 pxm, apic_id);
+ 		return;
+ 	}
+-	node = acpi_map_pxm_to_node(pxm);
++	node = acpi_map_pxm_to_node(pxm, true);
+ 	if (node < 0) {
+ 		printk(KERN_ERR "SRAT: Too many proximity domains %x\n", pxm);
+ 		bad_srat();
+@@ -80,7 +80,7 @@ acpi_numa_processor_affinity_init(struct acpi_srat_cpu_affinity *pa)
+ 	pxm = pa->proximity_domain_lo;
+ 	if (acpi_srat_revision >= 2)
+ 		pxm |= *((unsigned int*)pa->proximity_domain_hi) << 8;
+-	node = acpi_map_pxm_to_node(pxm);
++	node = acpi_map_pxm_to_node(pxm, true);
+ 	if (node < 0) {
+ 		printk(KERN_ERR "SRAT: Too many proximity domains %x\n", pxm);
+ 		bad_srat();
+diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+index 28a6b387e80e..8133e7e6f9e3 100644
+--- a/drivers/acpi/arm64/iort.c
++++ b/drivers/acpi/arm64/iort.c
+@@ -1293,7 +1293,7 @@ static int  __init arm_smmu_v3_set_proximity(struct device *dev,
+ 
+ 	smmu = (struct acpi_iort_smmu_v3 *)node->node_data;
+ 	if (smmu->flags & ACPI_IORT_SMMU_V3_PXM_VALID) {
+-		int dev_node = acpi_map_pxm_to_node(smmu->pxm);
++		int dev_node = acpi_map_pxm_to_node(smmu->pxm, false);
+ 
+ 		if (dev_node != NUMA_NO_NODE && !node_online(dev_node))
+ 			return -EINVAL;
+diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+index 7c138a4edc03..6cb44bbaa71f 100644
+--- a/drivers/acpi/nfit/core.c
++++ b/drivers/acpi/nfit/core.c
+@@ -2948,7 +2948,7 @@ static int acpi_nfit_register_region(struct acpi_nfit_desc *acpi_desc,
+ 		ndr_desc->numa_node = acpi_map_pxm_to_online_node(
+ 						spa->proximity_domain);
+ 		ndr_desc->target_node = acpi_map_pxm_to_node(
+-				spa->proximity_domain);
++				spa->proximity_domain, false);
+ 	} else {
+ 		ndr_desc->numa_node = NUMA_NO_NODE;
+ 		ndr_desc->target_node = NUMA_NO_NODE;
+diff --git a/drivers/acpi/numa/hmat.c b/drivers/acpi/numa/hmat.c
+index 2c32cfb72370..3c0414816772 100644
+--- a/drivers/acpi/numa/hmat.c
++++ b/drivers/acpi/numa/hmat.c
+@@ -666,7 +666,7 @@ static void hmat_register_target_device(struct memory_target *target,
+ 
+ 	pdev->dev.numa_node = acpi_map_pxm_to_online_node(target->memory_pxm);
+ 	info = (struct memregion_info) {
+-		.target_node = acpi_map_pxm_to_node(target->memory_pxm),
++		.target_node = acpi_map_pxm_to_node(target->memory_pxm, false),
+ 	};
+ 	rc = platform_device_add_data(pdev, &info, sizeof(info));
+ 	if (rc < 0) {
+diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+index 5be5a977da1b..ed7d31795f4d 100644
+--- a/drivers/acpi/numa/srat.c
++++ b/drivers/acpi/numa/srat.c
+@@ -52,7 +52,7 @@ static void __acpi_map_pxm_to_node(int pxm, int node)
+ 		node_to_pxm_map[node] = pxm;
+ }
+ 
+-int acpi_map_pxm_to_node(int pxm)
++int acpi_map_pxm_to_node(int pxm, bool create)
+ {
+ 	int node;
+ 
+@@ -62,7 +62,7 @@ int acpi_map_pxm_to_node(int pxm)
+ 	node = pxm_to_node_map[pxm];
+ 
+ 	if (node == NUMA_NO_NODE) {
+-		if (nodes_weight(nodes_found_map) >= MAX_NUMNODES)
++		if (nodes_weight(nodes_found_map) >= MAX_NUMNODES || !create)
+ 			return NUMA_NO_NODE;
+ 		node = first_unset_node(nodes_found_map);
+ 		__acpi_map_pxm_to_node(pxm, node);
+@@ -229,7 +229,7 @@ acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
+ 	if (acpi_srat_revision <= 1)
+ 		pxm &= 0xff;
+ 
+-	node = acpi_map_pxm_to_node(pxm);
++	node = acpi_map_pxm_to_node(pxm, true);
+ 	if (node == NUMA_NO_NODE || node >= MAX_NUMNODES) {
+ 		pr_err("SRAT: Too many proximity domains.\n");
+ 		goto out_err_bad_srat;
+@@ -444,6 +444,6 @@ int acpi_get_node(acpi_handle handle)
+ 
+ 	pxm = acpi_get_pxm(handle);
+ 
+-	return acpi_map_pxm_to_node(pxm);
++	return acpi_map_pxm_to_node(pxm, false);
+ }
+ EXPORT_SYMBOL(acpi_get_node);
+diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+index 683b812c5c47..fec90800381e 100644
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -473,7 +473,7 @@ static int dmar_parse_one_rhsa(struct acpi_dmar_header *header, void *arg)
+ 	rhsa = (struct acpi_dmar_rhsa *)header;
+ 	for_each_drhd_unit(drhd) {
+ 		if (drhd->reg_base_addr == rhsa->base_address) {
+-			int node = acpi_map_pxm_to_node(rhsa->proximity_domain);
++			int node = acpi_map_pxm_to_node(rhsa->proximity_domain, false);
+ 
+ 			if (!node_online(node))
+ 				node = NUMA_NO_NODE;
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 6a5a87fc4601..44cb53fa6afe 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -5248,7 +5248,12 @@ static int __init gic_acpi_parse_srat_its(union acpi_subtable_headers *header,
+ 		return -EINVAL;
+ 	}
+ 
+-	node = acpi_map_pxm_to_node(its_affinity->proximity_domain);
++	/*
++	 * Note that in theory a new proximity node could be created by this
++	 * entry as it is an SRAT resource allocation structure.
++	 * We do not currently support doing so.
++	 */
++	node = acpi_map_pxm_to_node(its_affinity->proximity_domain, false);
+ 
+ 	if (node == NUMA_NO_NODE || node >= MAX_NUMNODES) {
+ 		pr_err("SRAT: Invalid NUMA node %d in ITS affinity\n", node);
+diff --git a/include/acpi/acpi_numa.h b/include/acpi/acpi_numa.h
+index fdebcfc6c8df..6935c7516262 100644
+--- a/include/acpi/acpi_numa.h
++++ b/include/acpi/acpi_numa.h
+@@ -15,7 +15,7 @@
+ 
+ extern int pxm_to_node(int);
+ extern int node_to_pxm(int);
+-extern int acpi_map_pxm_to_node(int);
++extern int acpi_map_pxm_to_node(int, bool);
+ extern unsigned char acpi_srat_revision;
+ extern int acpi_numa __initdata;
+ 
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index d661cd0ee64d..1414b7e0a486 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -416,7 +416,7 @@ extern void acpi_osi_setup(char *str);
+ extern bool acpi_osi_is_win8(void);
+ 
+ #ifdef CONFIG_ACPI_NUMA
+-int acpi_map_pxm_to_node(int pxm);
++int acpi_map_pxm_to_node(int pxm, bool create);
+ int acpi_get_node(acpi_handle handle);
+ 
+ /**
+@@ -436,7 +436,7 @@ int acpi_get_node(acpi_handle handle);
+  */
+ static inline int acpi_map_pxm_to_online_node(int pxm)
+ {
+-	int node = acpi_map_pxm_to_node(pxm);
++	int node = acpi_map_pxm_to_node(pxm, false);
+ 
+ 	return numa_map_to_online_node(node);
+ }
+@@ -445,7 +445,7 @@ static inline int acpi_map_pxm_to_online_node(int pxm)
+ {
+ 	return 0;
+ }
+-static inline int acpi_map_pxm_to_node(int pxm)
++static inline int acpi_map_pxm_to_node(int pxm, bool create)
+ {
+ 	return 0;
+ }
+-- 
+2.19.1
+
