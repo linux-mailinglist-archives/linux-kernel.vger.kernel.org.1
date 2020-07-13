@@ -2,104 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D63921D3B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB14A21D3BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 12:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729191AbgGMKY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 06:24:29 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:45180 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgGMKY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 06:24:29 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id C3EE4BC0E4;
-        Mon, 13 Jul 2020 10:24:25 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] atm: Replace HTTP links with HTTPS ones
-Date:   Mon, 13 Jul 2020 12:24:18 +0200
-Message-Id: <20200713102418.33201-1-grandmaster@al2klimov.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
-X-Spamd-Bar: /
+        id S1729390AbgGMK2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 06:28:07 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:26156 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727035AbgGMK2F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 06:28:05 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200713102801epoutp04a297a82181827a5b28e9e381e750cec7~hSRFagcBz2407524075epoutp04V
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 10:28:01 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200713102801epoutp04a297a82181827a5b28e9e381e750cec7~hSRFagcBz2407524075epoutp04V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594636081;
+        bh=wr0TSnSOYDrnW0OXmJJItmyosy7uPnji9OSa71BR9MQ=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=Nh6bhDXlPywZVIXnBTnzFcxuxU7cGtUmpMYSTWXpGa5eFEUpxA7U0YDv7VixOhZEP
+         KibD8Y8HNDexrl2p3fXKkfBS9jXXsNWd5HBfLUYR+QAuO+0dKzGYrB60dUkPVbZ5mA
+         yzp+dgAqq62cZzuk/Qqp/uN+dk/0exm9TKxkzmO4=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p1.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200713102801epcas1p1c32b511ae839b91532ad5e29c8eb2277~hSRFChy_V1773917739epcas1p1I;
+        Mon, 13 Jul 2020 10:28:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: Re: [PATCH v5 0/5] scsi: ufs: Add Host Performance Booster Support
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bean Huo <huobean@gmail.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <65b3b5bb56d2be8e365aae2163227aac7a71e600.camel@gmail.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01594636081523.JavaMail.epsvc@epcpadp2>
+Date:   Mon, 13 Jul 2020 19:25:20 +0900
+X-CMS-MailID: 20200713102520epcms2p5834b14ea70637529588802a11cabe94c
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200702231936epcms2p81557f83504ef1c1e81bfc81a0143a5b4
+References: <65b3b5bb56d2be8e365aae2163227aac7a71e600.camel@gmail.com>
+        <91dcecde-dd0d-c930-7c45-56ba144e748c@acm.org>
+        <SN6PR04MB464097E646395C000C2DCAC3FC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <963815509.21593732182531.JavaMail.epsvc@epcpadp2>
+        <231786897.01594251001808.JavaMail.epsvc@epcpadp1>
+        <336371513.41594280882718.JavaMail.epsvc@epcpadp2>
+        <SN6PR04MB464021F98E8EDF7C79D6CB4FFC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <963815509.21594603681971.JavaMail.epsvc@epcpadp2>
+        <CGME20200702231936epcms2p81557f83504ef1c1e81bfc81a0143a5b4@epcms2p5>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Hi Bean
+> > Hi Bart,
+> > 
+> > > > Bart - how do you want to proceed?
+> > > 
+> > > Hi Avri and Daejun,
+> > > 
+> > > As far as I can see none of the five patches have Reviewed-by tags
+> > > yet. I
+> > > think that Martin expects formal reviews for this patch series from
+> > > one or
+> > > more reviewers who are not colleagues of the author of this patch
+> > > series.
+> > > 
+> > > Note: recently I have been more busy than usual, hence the delayed
+> > > reply.
+> > 
+> > Thank you for replying to the email even though you are busy.
+> > 
+> > Arvi, Bean - if patches looks ok, can this series have your reviewed-
+> > by tag?
+> > 
+> > Thanks,
+> > Daejun
+> 
+> Hi Daejun
+> 
+> 
+> I only can give my tested-by tag since I preliminary tested it and it
+> works. However, as I said in the previous email, there is performance
+> downgrade comparing to the direct submission approach, also, we should
+> think about HPB 2.0.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+I plan to add your direct submission approach with HPB 2.0.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- Continuing my work started at 93431e0607e5.
- See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
- (Actually letting a shell for loop submit all this stuff for me.)
+> Anyway, if Avri wants firstly make this series patch mainlined,
+> performance fixup later, this is fine to me. I can add and fix it
+> later.
+> 
+> BTW, you should rebase your this series set patch since there are
+> conflicts with latest Martin' git repo, after that, you can add my
+> tested-by tag.
+> 
+OK, I will. Thanks!
 
- If there are any URLs to be removed completely or at least not just HTTPSified:
- Just clearly say so and I'll *undo my change*.
- See also: https://lkml.org/lkml/2020/6/27/64
+> Tested-by: Bean Huo <beanhuo@micron.com>
+> 
+> 
+> Thanks,
+> Bean
+> 
 
- If there are any valid, but yet not changed URLs:
- See: https://lkml.org/lkml/2020/6/26/837
-
- If you apply the patch, please let me know.
-
- Sorry again to all maintainers who complained about subject lines.
- Now I realized that you want an actually perfect prefixes,
- not just subsystem ones.
- I tried my best...
- And yes, *I could* (at least half-)automate it.
- Impossible is nothing! :)
-
-
- drivers/atm/solos-pci.c     | 2 +-
- include/uapi/linux/atmioc.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/atm/solos-pci.c b/drivers/atm/solos-pci.c
-index c32f7dd9879a..b7646ae55942 100644
---- a/drivers/atm/solos-pci.c
-+++ b/drivers/atm/solos-pci.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-  * Driver for the Solos PCI ADSL2+ card, designed to support Linux by
-- *  Traverse Technologies -- http://www.traverse.com.au/
-+ *  Traverse Technologies -- https://www.traverse.com.au/
-  *  Xrio Limited          -- http://www.xrio.com/
-  *
-  * Copyright © 2008 Traverse Technologies
-diff --git a/include/uapi/linux/atmioc.h b/include/uapi/linux/atmioc.h
-index cd7655e40c77..a9030bcc8d56 100644
---- a/include/uapi/linux/atmioc.h
-+++ b/include/uapi/linux/atmioc.h
-@@ -5,7 +5,7 @@
- 
- 
- /*
-- * See http://icawww1.epfl.ch/linux-atm/magic.html for the complete list of
-+ * See https://icawww1.epfl.ch/linux-atm/magic.html for the complete list of
-  * "magic" ioctl numbers.
-  */
- 
--- 
-2.27.0
-
+Thanks,
+Daejun
