@@ -2,153 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2448021D046
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74F121D05E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Jul 2020 09:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728990AbgGMHNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 03:13:23 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:33803 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728714AbgGMHNW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 03:13:22 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200713071320epoutp0196f0512d3d786f01d64d7e552336f5a4~hPnGEsKQ20460704607epoutp01H
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 07:13:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200713071320epoutp0196f0512d3d786f01d64d7e552336f5a4~hPnGEsKQ20460704607epoutp01H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1594624400;
-        bh=6Ad1pb4JX816o4fM1DBUhs+HDCb9B16r4xRMa5wAt3c=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=eqrI1fsHTgbSUzctQTJZXuDp3TqIOuO7kwMM70MD4Va+c5agOAZH00EHIFKNgDnXk
-         RMI5tN3C4rgRm0VRlghJvg1VA/MEknYkqrDUR2a8PaScL6j3SeTNXuiAqgJ5rFQ78/
-         aPT5WRiGKIckEn5ZwU4QiunmNtJRhf/DW1SpmANU=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200713071319epcas1p4cd94e53771ba78d1873e46b7cd196cd5~hPnFpTVqf1823818238epcas1p4a;
-        Mon, 13 Jul 2020 07:13:19 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.157]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4B4vxn70y5zMqYkn; Mon, 13 Jul
-        2020 07:13:17 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AF.A2.28578.B890C0F5; Mon, 13 Jul 2020 16:13:15 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200713071315epcas1p3e533b02feb2f6a80cb655440e9175a81~hPnBmbFxS0162901629epcas1p3p;
-        Mon, 13 Jul 2020 07:13:15 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200713071315epsmtrp21616d82417c358eb56f99f9f85545c7c~hPnBloV9-2052020520epsmtrp2v;
-        Mon, 13 Jul 2020 07:13:15 +0000 (GMT)
-X-AuditID: b6c32a39-8c9ff70000006fa2-74-5f0c098b6768
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        50.D6.08382.B890C0F5; Mon, 13 Jul 2020 16:13:15 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200713071315epsmtip17da4e1533c42078276d211f6393027ac~hPnBSk1jL2351623516epsmtip1t;
-        Mon, 13 Jul 2020 07:13:15 +0000 (GMT)
-Subject: Re: [PATCH v2 0/2] PM / devfreq: Add delayed timer for polling
-To:     lukasz.luba@arm.com, k.konieczny@samsung.com, krzk@kernel.org,
-        kgene@kernel.org
-Cc:     s.nawrocki@samsung.com, willy.mh.wolff.ml@gmail.com,
-        b.zolnierkie@samsung.com, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <a6fb8011-40b5-b88a-e667-eb4926f7d5a6@samsung.com>
-Date:   Mon, 13 Jul 2020 16:24:46 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
-MIME-Version: 1.0
-In-Reply-To: <20200709054504.656-1-cw00.choi@samsung.com>
+        id S1728737AbgGMHY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 03:24:59 -0400
+Received: from mail-eopbgr70115.outbound.protection.outlook.com ([40.107.7.115]:40512
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725830AbgGMHY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 03:24:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bQ1Zf90ua3t3sqBT0NYAbvTaaTbrMMa/lu/d8cpGNqZw7t2npkFNSWy+rKljzU2zqkLgYbuDi65kFQgI1W1f25vbXWdA1qvypEiYQm+6tUkVStKpHDg2i89eRF1536dTNoYAadXBmstODJjMq3stcx1pC9ya934baev1JfsAHXmERyVk7tv1rHBmrKCA16fat6kgHGQnCm057F5mnPgSLCi5YhYIrJOws339CzuJVyEz+L5ZTwrFCQnypP+9DWtgIvqpVZ2UUGpL35m8LJPrjF9D7M4jOXLbfN+YGY7L3VB47ZyIYUjSSKa63uCsUE8RX7WizylSS6G8wWzPhWUr3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xhFRwQ/4dvszuYlnKEA8tLmZMosdshBAKeKfdk0i5Pk=;
+ b=DAAXu4mnO0PRrxwKEhDzM5Q9SQHLldgb+bPVZtW1pcrd3yluKejxNh7Nelr67ZqCQSoFq1MJ1+UFShy1JGM0hrls0+cyU3XKvHOQEAp5fzR392OwwtjScZBwaRxi1yrU8BtH3/lLVTwk5zGoGu0pCDrX05YsxbGhgBz5Gd64SRO+yUQTu4T7/4WZtQLKIqRVD3BEO6BvRgzTK5ar68H6FMJPK9VJm6/myDU6E63MVEtmayEWE1E6LcWvPiqNI1/7UXgjtPaxLoZBxhcGfDUR1NG4j4IqD7/ZyGbB2rw5kqOad07hFq18pHxG4Xja0VvMLRCvbYOZGdNQPt3uFyLpnw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=habana.ai; dmarc=pass action=none header.from=habana.ai;
+ dkim=pass header.d=habana.ai; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=habanalabs.onmicrosoft.com; s=selector2-habanalabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xhFRwQ/4dvszuYlnKEA8tLmZMosdshBAKeKfdk0i5Pk=;
+ b=K00SxNyMJH3peOKZ7P5EjkcUTFHOOZMISh4gY8KtlCCF2ZkMI0nRqEGlwQJXnrPL216csyiT49+ZrhKBg8x9WivGcwPf22q7EWPkxiulGfPoOn1Iv56iOlGxgEPCmRK5nJr94O/DUuKBg+QgQYVZpzvJDMLHmGS8/89K8+xmWUU=
+Received: from DB8PR02MB5468.eurprd02.prod.outlook.com (2603:10a6:10:ef::22)
+ by DB7PR02MB4505.eurprd02.prod.outlook.com (2603:10a6:10:68::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Mon, 13 Jul
+ 2020 07:24:54 +0000
+Received: from DB8PR02MB5468.eurprd02.prod.outlook.com
+ ([fe80::68d4:6b:d077:19a9]) by DB8PR02MB5468.eurprd02.prod.outlook.com
+ ([fe80::68d4:6b:d077:19a9%4]) with mapi id 15.20.3174.025; Mon, 13 Jul 2020
+ 07:24:54 +0000
+From:   Tomer Tayar <ttayar@habana.ai>
+To:     Oded Gabbay <oded.gabbay@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        SW_Drivers <SW_Drivers@habana.ai>
+Subject: RE: [PATCH 1/4] habanalabs: halt device CPU only upon certain reset
+Thread-Topic: [PATCH 1/4] habanalabs: halt device CPU only upon certain reset
+Thread-Index: AQHWVuCx1c9bP1ERmUmNs+bwrU0OHakFHydQ
+Date:   Mon, 13 Jul 2020 07:24:54 +0000
+Message-ID: <DB8PR02MB5468F9E41DA0EFA9FC1FB7C7D2600@DB8PR02MB5468.eurprd02.prod.outlook.com>
+References: <20200710173652.31039-1-oded.gabbay@gmail.com>
+In-Reply-To: <20200710173652.31039-1-oded.gabbay@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAJsWRmVeSWpSXmKPExsWy7bCmrm43J0+8QfN/I4uNM9azWky8cYXF
-        YsGnGawW/Y9fM1ucP7+B3eJs0xt2i02Pr7FaXN41h83ic+8RRosZ5/cxWSxsamG3uN24gs3i
-        8Jt2VotvJx4xOvB5rJm3htFj56y77B6bVnWyeWxeUu/Rt2UVo8fnTXIBbFHZNhmpiSmpRQqp
-        ecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlA1yoplCXmlAKFAhKLi5X0
-        7WyK8ktLUhUy8otLbJVSC1JyCiwL9IoTc4tL89L1kvNzrQwNDIxMgQoTsjMuHZrMXHCSs2Lh
-        vvVMDYyr2bsYOTgkBEwklp3U6mLk4hAS2MEo0XHtGjuE84lRYvmNjVDON0aJ8y/72boYOcE6
-        ph5uYIVI7GWUeLiglw3Cec8ose/5JVaQKmEBd4n5306xgNgiAqESs+9NZQYpYhZYzCRx8f1T
-        ZpAEm4CWxP4XN8DG8gsoSlz98ZgRxOYVsJM48fQ7WJxFQFVi+eKn7CC2qECYxMltLVA1ghIn
-        Zz4BW8ApYCmx5cY0sMXMAuISt57MZ4Kw5SW2v50DtlhC4AaHxKVf3SwQP7hINK7bwwRhC0u8
-        Or6FHcKWkvj8bi/Un9USK08eYYNo7mCU2LL/AitEwlhi/9LJTKDgYxbQlFi/Sx8irCix8/dc
-        RojFfBLvvvawQkKYV6KjTQiiRFni8oO7UGslJRa3d7JNYFSaheSdWUhemIXkhVkIyxYwsqxi
-        FEstKM5NTy02LDBFju5NjOCkrGW5g3H62w96hxiZOBgPMUpwMCuJ8EaLcsYL8aYkVlalFuXH
-        F5XmpBYfYjQFBvBEZinR5HxgXsgriTc0NTI2NrYwMTQzNTRUEuf9d5Y9XkggPbEkNTs1tSC1
-        CKaPiYNTqoEpxujGWc+wit3Ki5yZFB9OKWE9UhfhvcNdgk1199MMdUf1+7NMfneLbWxJmjRt
-        WcR21bUMZTWT3bxc/nq9mp0yh9fr9z/W7rmGh/68OaLYnBu5dF+gJKuRmJjeFJWXTM3fOd8d
-        q31ZvW+51J05npq7joRYVF5c8JhTxlF5b5XFvEdfalwrSlMnW9w5vGh1kAGLAuvzTdPjjpS1
-        J+q9sf0T2WZyR3TZjduZ789ffzwzj3fPyzOJ5ysV3rUsMIl7tihk2TbOXXstF7/bvOHUoyMv
-        JDjvnFViCVj5rf+9dQWz9u9Cvtt7hLe+ivT3bs/Q45Fi9SxmvlE2oXtV8caDepfFX7lnnKxh
-        2d/vvv5R9QEBJZbijERDLeai4kQAu9D341MEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsWy7bCSnG43J0+8wbwV4hYbZ6xntZh44wqL
-        xYJPM1gt+h+/ZrY4f34Du8XZpjfsFpseX2O1uLxrDpvF594jjBYzzu9jsljY1MJucbtxBZvF
-        4TftrBbfTjxidODzWDNvDaPHzll32T02repk89i8pN6jb8sqRo/Pm+QC2KK4bFJSczLLUov0
-        7RK4Mi4dmsxccJKzYuG+9UwNjKvZuxg5OSQETCSmHm5g7WLk4hAS2M0o8ap7ElRCUmLaxaPM
-        XYwcQLawxOHDxSBhIYG3jBJNexVAbGEBd4n5306xgNgiAqESrd/fsYPMYRZYzCSx5NIsNoih
-        PYwSbzYfZAKpYhPQktj/4gYbiM0voChx9cdjRhCbV8BO4sTT72BxFgFVieWLn4IdISoQJrFz
-        yWMmiBpBiZMzn4Bt4xSwlNhyYxoriM0soC7xZ94lZghbXOLWk/lMELa8xPa3c5gnMArPQtI+
-        C0nLLCQts5C0LGBkWcUomVpQnJueW2xYYJiXWq5XnJhbXJqXrpecn7uJERydWpo7GLev+qB3
-        iJGJg/EQowQHs5IIb7QoZ7wQb0piZVVqUX58UWlOavEhRmkOFiVx3huFC+OEBNITS1KzU1ML
-        UotgskwcnFINTNUvXJax8iyasDFCLvDVskSPHTm9yxs5Jv7zWhCn4rgno+Kz2dzzi55LqSxc
-        eWiafecCsyPe3AZu5WfSj5/smPqjpuWtYPNaLgmPnWr3lsRVuTw4UBeVmGak+re0fqLzu5LN
-        pcWVof8cBKwfxhvwl86ev2lawKZ4ibfuu0J3SmS87TphKb9V+ZnNkha3qyoLmgNLitfvzZTy
-        uxa094HIztNzZ+1+/DenM/akyKEr6fLP3wn4nvofo7lYp//lCWmbvm1X5pm3n38XZnThVdp2
-        EcYTr14f1O3eLbu7fe7CxhN1wqZJd3Z+vKngPaUxrl23QcDk1o4rc+r6q6xzRRP6ROpn9Ob8
-        dzcKFm4/G9PipsRSnJFoqMVcVJwIADEorhM9AwAA
-X-CMS-MailID: 20200713071315epcas1p3e533b02feb2f6a80cb655440e9175a81
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200709053339epcas1p23fb1c080b21c758940514c4672949cfa
-References: <CGME20200709053339epcas1p23fb1c080b21c758940514c4672949cfa@epcas1p2.samsung.com>
-        <20200709054504.656-1-cw00.choi@samsung.com>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=habana.ai;
+x-originating-ip: [31.154.181.186]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8d799a77-7074-4fe4-cc6f-08d826fdd6b0
+x-ms-traffictypediagnostic: DB7PR02MB4505:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR02MB45059C59ACADED20C0D249BCD2600@DB7PR02MB4505.eurprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pnZchrHkugE9CvekuJeS4EcfP+Bz9EUAvATWzAPLyANhfcLokd8SQJSq8UFLqGhJhgw+T5CquOV2plSloM0bRFbuVc3SX+dNUiXVr/oIlpPN8FQOu+DjQIwQGI8stn0Y49n6Wi45uRxjU6Ai6V1W+CWQbwL+9LLdHJiBn4XT5wJrEDrcy/5xAlgatqrv5qwPAzBzveimab57CzX82R4/c6zyB8ftYjYAY+7em0UDq3uaTU6b5KrHvoCOGr+3NZshWxggQmWmcEyYk8PG4GXhaPC+rKQvKkPpZXTX+argPzN5UKHTvMjQJMtJAMKrzw9T
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5468.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(136003)(346002)(376002)(366004)(39850400004)(83380400001)(6636002)(478600001)(4744005)(110136005)(26005)(52536014)(186003)(71200400001)(5660300002)(316002)(55016002)(9686003)(6506007)(53546011)(2906002)(86362001)(7696005)(8676002)(33656002)(66476007)(76116006)(66556008)(64756008)(66446008)(8936002)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: MgzUBUyL9iby7evXqrej7dDwC4sZatmISbQrDreN+KALIvJLMPzQS/6WBoZefsMeO/Gpz/pLUvaAxfOMNJpnlUugZA7RS/ECJ5jiAH9UuHw5NUrg/xfCI4iirzIxcRlIAPBWKzqQylXC8SelGHwcUWil4kCKsvIiFmUfOoHB3rFG6M6hBSeIkHRx44engxJyg/gEJaBfUioU1F6Uy0AEEWTPKp17/5Cu0zY3XmT6+yH4e4zrgYcs2CUy0Ol8Dz3ArZbPHGRaPRxmWNLHChQDu7PVZI1+PK7iyRNmoBsm5J1LuDdxG3JWclCuhRXXGdXeiemFDjDlc7xBlk5U/ebHRSKLh5VT/TyrnE/q4294LY0mkMQc9Tv8sCTWuj63huH1+R9sRGwKI/QyuEyaLqhDq20hRo9ecpeoNTwD/YqnbcGpphlK9CJvdwGVQhGodaxMQrzuBJZgxMXlk0nEgN5BB7SiTe/Qo65jLCXhd+RXZP7dtClMbnvs+2pcHjSs7IKd
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: habana.ai
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5468.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d799a77-7074-4fe4-cc6f-08d826fdd6b0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2020 07:24:54.2288
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4d4539-213c-4ed8-a251-dc9766ba127a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dMjJ9SmSEKZQ642tyL1FSlX+zomh+RdKzXVfQ/9E9HR8cNurN3jfjwaujfH9OP5o5dKc7/ii7ttn2tCh19UqIQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR02MB4505
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear all,
+On Fri, Jul 10, 2020 at 20:37 AM Oded Gabbay <oded.gabbay@gmail.com> wrote:
+> Currently the driver halts the device CPU in the halt engines function,
+> which halts all the engines of the ASIC. The problem is that if later on =
+we
+> stop the reset process (due to inability to clean memory mappings in time=
+),
+> the CPU will remain in halt mode. This creates many issues, such as
+> thermal/power control and FLR handling.
+>=20
+> Therefore, move the halting of the device CPU to the very end of the rese=
+t
+> process, just before writing to the registers to initiate the reset. In
+> addition, the driver now needs to send a message to the device F/W to
+> disable it from sending interrupts to the host machine because during hal=
+t
+> engines function the driver disables the MSI/MSI-X interrupts.
+>=20
+> Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 
-On 7/9/20 2:45 PM, Chanwoo Choi wrote:
-> Add the delayed timer to devfreq framework in order to support
-> the periodical polling mode without stop caused by CPU idle state.
-> Some Non-CPU device must need to monitor the device status like
-> utilization regardless of CPU state.
-> 
-> - patch1 explains the detailed reason why the delayed timer is required.
-> - patch2 initializes that exynos5422-dmc device use delayed timer as default
-> instead of deferrable timer.
-> 
-> Changes from v2:
-> - Add reviewed-by tag
-> - Fix typo on patch description
-> - Remove 'RFC' work from patch title
-> - Check whether 'df->governor' is NULL or not on timer_store()
-> 
-> Chanwoo Choi (2):
->   PM / devfreq: Add support delayed timer for polling mode
->   memory: samsung: exynos5422-dmc: Use delayed timer as default
-> 
->  Documentation/ABI/testing/sysfs-class-devfreq | 12 +++
->  drivers/devfreq/devfreq.c                     | 86 ++++++++++++++++++-
->  drivers/memory/samsung/exynos5422-dmc.c       |  1 +
->  include/linux/devfreq.h                       |  9 ++
->  4 files changed, 107 insertions(+), 1 deletion(-)
-> 
-
-Applied them. Thanks.
-
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Reviewed-by: Tomer Tayar <ttayar@habana.ai>
