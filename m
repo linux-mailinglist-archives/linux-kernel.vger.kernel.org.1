@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099FA21FC3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2014621FB70
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730666AbgGNTHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48070 "EHLO mail.kernel.org"
+        id S1731248AbgGNS6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:58:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730406AbgGNSve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:51:34 -0400
+        id S1731226AbgGNS6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:58:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A898207F5;
-        Tue, 14 Jul 2020 18:51:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E94CB22507;
+        Tue, 14 Jul 2020 18:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752694;
-        bh=qiFM/BxMOjkslEgFa0Oc0P/NOeX/xVHdll8hGt151nA=;
+        s=default; t=1594753118;
+        bh=EdnW4CLBQnFmAtrJiSFWIfqAi2rXfDL9+rm6fgdqO1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0F02kR+Ds3av8uJuFFq77EId30T9qDkSltMZHCPLZ/btsKdfs4PZaqoFrEg1w4Xzs
-         WPwdyzdzJve0Kw68S3RSMfFVSP4VMnNN5sUDclqhZU4c7C48cGNsC9XovZVVsc0Avd
-         7JEQnrAkYUagJOLmYzn0rikJRjtIBmdoXKI6lnsM=
+        b=JhfqR1o13XRALEGB7RcEGLQF5igya/xd2rCdChz3UrvoD5J0wzzTQbvkp2ZqGRemO
+         S3XlLXO62pnctdxUvkQs4iT3L2wguLNVifWC3xyAAjElOspXpZFemvX279G47EAURB
+         GntpNPUDW47Lm3aUj8r4f6+6lq0mt3oY+rNLdcJU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 073/109] ALSA: hda - let hs_mic be picked ahead of hp_mic
-Date:   Tue, 14 Jul 2020 20:44:16 +0200
-Message-Id: <20200714184109.043237551@linuxfoundation.org>
+        stable@vger.kernel.org, Aya Levin <ayal@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 096/166] net/mlx5e: Fix CPU mapping after function reload to avoid aRFS RX crash
+Date:   Tue, 14 Jul 2020 20:44:21 +0200
+Message-Id: <20200714184120.444355652@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,59 +45,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Aya Levin <ayal@mellanox.com>
 
-commit 6a6ca7881b1ab1c13fe0d70bae29211a65dd90de upstream.
+[ Upstream commit f4aebbfb56ed0c186adbeb2799df836da50f78e3 ]
 
-We have a Dell AIO, there is neither internal speaker nor internal
-mic, only a multi-function audio jack on it.
+After function reload, CPU mapping used by aRFS RX is broken, leading to
+a kernel panic. Fix by moving initialization of rx_cpu_rmap from
+netdev_init to netdev_attach. IRQ table is re-allocated on mlx5_load,
+but netdev is not re-initialize.
 
-Users reported that after freshly installing the OS and plug
-a headset to the audio jack, the headset can't output sound. I
-reproduced this bug, at that moment, the Input Source is as below:
-Simple mixer control 'Input Source',0
-  Capabilities: cenum
-  Items: 'Headphone Mic' 'Headset Mic'
-  Item0: 'Headphone Mic'
+Trace of the panic:
+[ 22.055672] general protection fault, probably for non-canonical address 0x785634120000ff1c: 0000 [#1] SMP PTI
+[ 22.065010] CPU: 4 PID: 0 Comm: swapper/4 Not tainted 5.7.0-rc2-for-upstream-perf-2020-04-21_16-34-03-31 #1
+[ 22.067967] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+[ 22.071174] RIP: 0010:get_rps_cpu+0x267/0x300
+[ 22.075692] RSP: 0018:ffffc90000244d60 EFLAGS: 00010202
+[ 22.076888] RAX: ffff888459b0e400 RBX: 0000000000000000 RCX:0000000000000007
+[ 22.078364] RDX: 0000000000008884 RSI: ffff888467cb5b00 RDI:0000000000000000
+[ 22.079815] RBP: 00000000ff342b27 R08: 0000000000000007 R09:0000000000000003
+[ 22.081289] R10: ffffffffffffffff R11: 00000000000070cc R12:ffff888454900000
+[ 22.082767] R13: ffffc90000e5a950 R14: ffffc90000244dc0 R15:0000000000000007
+[ 22.084190] FS: 0000000000000000(0000) GS:ffff88846fc80000(0000)knlGS:0000000000000000
+[ 22.086161] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 22.087427] CR2: ffffffffffffffff CR3: 0000000464426003 CR4:0000000000760ee0
+[ 22.088888] DR0: 0000000000000000 DR1: 0000000000000000 DR2:0000000000000000
+[ 22.090336] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:0000000000000400
+[ 22.091764] PKRU: 55555554
+[ 22.092618] Call Trace:
+[ 22.093442] <IRQ>
+[ 22.094211] ? kvm_clock_get_cycles+0xd/0x10
+[ 22.095272] netif_receive_skb_list_internal+0x258/0x2a0
+[ 22.096460] gro_normal_list.part.137+0x19/0x40
+[ 22.097547] napi_complete_done+0xc6/0x110
+[ 22.098685] mlx5e_napi_poll+0x190/0x670 [mlx5_core]
+[ 22.099859] net_rx_action+0x2a0/0x400
+[ 22.100848] __do_softirq+0xd8/0x2a8
+[ 22.101829] irq_exit+0xa5/0xb0
+[ 22.102750] do_IRQ+0x52/0xd0
+[ 22.103654] common_interrupt+0xf/0xf
+[ 22.104641] </IRQ>
 
-That is because the patch_realtek will set this audio jack as mic_in
-mode if Input Source's value is hp_mic.
-
-If it is not fresh installing, this issue will not happen since the
-systemd will run alsactl restore -f /var/lib/alsa/asound.state, this
-will set the 'Input Source' according to history value.
-
-If there is internal speaker or internal mic, this issue will not
-happen since there is valid sink/source in the pulseaudio, the PA will
-set the 'Input Source' according to active_port.
-
-To fix this issue, change the parser function to let the hs_mic be
-stored ahead of hp_mic.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20200625083833.11264-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 4383cfcc65e7 ("net/mlx5: Add devlink reload")
+Signed-off-by: Aya Levin <ayal@mellanox.com>
+Reviewed-by: Eran Ben Elisha <eranbe@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_auto_parser.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/sound/pci/hda/hda_auto_parser.c
-+++ b/sound/pci/hda/hda_auto_parser.c
-@@ -72,6 +72,12 @@ static int compare_input_type(const void
- 	if (a->type != b->type)
- 		return (int)(a->type - b->type);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index 02f6b6bd2847c..bc54913c58618 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -5119,6 +5119,10 @@ static int mlx5e_init_nic_rx(struct mlx5e_priv *priv)
+ 	if (err)
+ 		goto err_destroy_flow_steering;
  
-+	/* If has both hs_mic and hp_mic, pick the hs_mic ahead of hp_mic. */
-+	if (a->is_headset_mic && b->is_headphone_mic)
-+		return -1; /* don't swap */
-+	else if (a->is_headphone_mic && b->is_headset_mic)
-+		return 1; /* swap */
++#ifdef CONFIG_MLX5_EN_ARFS
++	priv->netdev->rx_cpu_rmap =  mlx5_eq_table_get_rmap(priv->mdev);
++#endif
 +
- 	/* In case one has boost and the other one has not,
- 	   pick the one with boost first. */
- 	return (int)(b->has_boost_on_pin - a->has_boost_on_pin);
+ 	return 0;
+ 
+ err_destroy_flow_steering:
+@@ -5296,10 +5300,6 @@ int mlx5e_netdev_init(struct net_device *netdev,
+ 	/* netdev init */
+ 	netif_carrier_off(netdev);
+ 
+-#ifdef CONFIG_MLX5_EN_ARFS
+-	netdev->rx_cpu_rmap =  mlx5_eq_table_get_rmap(mdev);
+-#endif
+-
+ 	return 0;
+ 
+ err_free_cpumask:
+-- 
+2.25.1
+
 
 
