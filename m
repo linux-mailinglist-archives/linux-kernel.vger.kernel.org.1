@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFA821F7CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3329A21F7CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728565AbgGNRCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
+        id S1728688AbgGNRDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbgGNRCh (ORCPT
+        with ESMTP id S1726062AbgGNRDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:02:37 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ED6C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:02:36 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id y10so22948203eje.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:02:36 -0700 (PDT)
+        Tue, 14 Jul 2020 13:03:00 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDED8C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:02:59 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id x9so14820132ila.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:02:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=d4AfpBcJtLpXBHVrNAgFwXc98hoQuW1HknqHrsLWIxQ=;
-        b=sDACcKkBwX7u/hQ290Jc4o4VF3R0GDlQ5ghAIxoKl/McdLfrAD4pTbBNfsHJk3gsDf
-         HaS+v0OxOjH2jMncWgaLaEa3OnebdG0T0TNA4ofWWXbCtzqLExvrjfWVzu4M8Rxx9qIS
-         XeEwxdxRe/d04KxB7q1kB8Iiz/FzKu80P8PUc=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hb+jD9n5+9xpnE7B/LBnTZz9Tl2kSY4iRvV+XR2VR9s=;
+        b=prGW8xYMA3U04VmXt/eqhzdeGjMwKu65HwSHkGIj+wEvYFI235boc9nAFR8Kh5+BuD
+         DE1tiGT753DF0+h+x/TZAbpQWdNj/JsItTtkZOEQLfulddZvDFim4Q/lnE8y16sid+Jn
+         WlxBeY4Zd9l8m+Y1C51TEax1lLSIYWaeaKyMsnlVREGJYiA8PyaRZhCfb9c2baSYx8qc
+         zW80kyN4umJ2slIK3oS/0YpFZRTZsQbvPubPlBFr7M/y9JmHyRteURxm1L72f3Itqrni
+         ynYs2IaL5y8qGnHhneu9oDsNiYvfBVu37d56DibxNAm4pUEKTR8eiGH2IB4ht6hzO9tY
+         Ws4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=d4AfpBcJtLpXBHVrNAgFwXc98hoQuW1HknqHrsLWIxQ=;
-        b=sENLZ27XPmbvOp3DSyM8H/104cUdsaitn5MWE9+8tmJ5J8SH9+YFeh4rDmPcSLH1CO
-         HAywNQjMFB/qTVpop6L4+94b/9t0t2L4Myc+M2Q6+k3bdkOgFUV46fsOd5WqOH0sgHm+
-         I4HpAo864/eZTJH5s8auesjRgo1L0RDQ8ClnnQ1ASHBvkyo/pQH/UvdazIHC80SWK9Bq
-         uKU0ffZmWzUNbYBnLijQVAgX35P8b133MwyX67vKzZajAIDpL5WInRVJxNYSVOUnshhG
-         q1VrCvFFb1F4ir16IwCMBmr7nu5d2pLxljEybdkC15iNU+fCuM8hQPmGZ0+4DPENQhyc
-         sUfg==
-X-Gm-Message-State: AOAM530ZS3j6uUjIVudkOspLFAPbCGA/QwltwTC3AF7oxTTNx3TNvMJx
-        4dyaZbeDkfEI4z6EwJAFB6y3ag==
-X-Google-Smtp-Source: ABdhPJzdOWvYGPmhQzsBsLACrB3xWiEVfkblIbkKkgWV3dmSgVtTGDpCnC31d8DbjRAUnxyBfE/mDQ==
-X-Received: by 2002:a17:906:178b:: with SMTP id t11mr5172970eje.489.1594746155300;
-        Tue, 14 Jul 2020 10:02:35 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:6f85])
-        by smtp.gmail.com with ESMTPSA id h15sm12893261eja.44.2020.07.14.10.02.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 10:02:34 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 18:02:34 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        sean.j.christopherson@intel.com, torvalds@linux-foundation.org,
-        x86@kernel.org, kernel-team@fb.com,
-        Matthew Garrett <matthewgarrett@google.com>
-Subject: Re: [PATCH -v2.1] x86/msr: Filter MSR writes
-Message-ID: <20200714170234.GD2080@chrisdown.name>
-References: <20200615063837.GA14668@zn.tnic>
- <20200714121955.GA2080@chrisdown.name>
- <20200714154728.GA3101@nazgul.tnic>
- <20200714160448.GC2080@chrisdown.name>
- <20200714164612.GA28474@agluck-desk2.amr.corp.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hb+jD9n5+9xpnE7B/LBnTZz9Tl2kSY4iRvV+XR2VR9s=;
+        b=toBNjHB9wjpKo0ehBkrOggZfV3lr6OHaJZhxwi1c6ixoJvWZK2dsM0CXavdra24Z0n
+         NJ+gXj4svz6EXvf2y1SMUEeUIPr8qDucw+uPN8lXXdr1YmmfD2SK2ooxZjp6TNWc4iLm
+         U1z3lLVHZRol9G+e2xQ3eiMvuIgvJfDeH34h3nvrzBjO1V2Ge1AvVkJ6/rmSEWEzZdMU
+         co4FHXzLpYGiVhWuqD279LVQ94je5/QBtVwwoO2JdHUTnGmKqkDZIBs1iMaCXEPxcpja
+         14ic2qlWldYo+mkfmV0iGZcNQJNgZFkKumirW8AufCVCXIaZo6xFExr49fd0AVvOHog2
+         CUqQ==
+X-Gm-Message-State: AOAM5306OhsZLW9eymjopSVkSZhCRl6gTFtMMDDGirZP9v8hgQPMNKWe
+        +AyFHhZdXhxFhC5HrhLpzGibNs7FnGkPrxkDCuWQXWI=
+X-Google-Smtp-Source: ABdhPJyGa8ZTsGJ1rTjvuFyI+vq7yVyouhUYqqdgxcAfBDqGIXiA5MxfNCvwwWxAkPqoeXkX07nGAV5m91nAOyDVsQ0=
+X-Received: by 2002:a05:6e02:e43:: with SMTP id l3mr5478271ilk.11.1594746179266;
+ Tue, 14 Jul 2020 10:02:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200714164612.GA28474@agluck-desk2.amr.corp.intel.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+References: <20200616142315.375918-1-brgerst@gmail.com> <20200714064004.GA32655@lst.de>
+In-Reply-To: <20200714064004.GA32655@lst.de>
+From:   Brian Gerst <brgerst@gmail.com>
+Date:   Tue, 14 Jul 2020 13:02:48 -0400
+Message-ID: <CAMzpN2gg4H5qnU8Dk=bCaEm2WdRF-synfpf_yUaK8L6vyuo=zQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] X32 syscall cleanups
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Luck, Tony writes:
->On Tue, Jul 14, 2020 at 05:04:48PM +0100, Chris Down wrote:
->> Borislav Petkov writes:
->> > On Tue, Jul 14, 2020 at 01:19:55PM +0100, Chris Down wrote:
->> > > That is, even with pr_err_ratelimited, we still end up logging on basically
->> > > every single write, even though it's from the same TGID writing to the same
->> > > MSRs, and end up becoming >80% of kmsg.
->> > >
->> > > Of course, one can boot with `allow_writes=1` to avoid these messages at
->> >
->> > Yes, use that.
->> >
->> > From a quick scan over that "tool" you pointed me at, it pokes at some
->> > MSRs from userspace which the kernel *also* writes to and this is
->> > exactly what should not be allowed.
->>
->> I don't think we're in disagreement about that. My concern is strictly about
->> the amount of spam caused for some of those existing use cases during the
->> transition phase. People should know that their tools would break, but there
->> shouldn't be so many messages generated that it inevitably pushes other
->> useful information out of the kmsg buffer.
+On Tue, Jul 14, 2020 at 2:40 AM Christoph Hellwig <hch@lst.de> wrote:
 >
->Maybe we just need smarter filtering of warnings.  It doesn't
->seem at all useful to warn for the same MSR 1000's of times.
->Maybe keep a count of warnings for each MSR and just stop
->all reports when reach a threshold?
+> On Tue, Jun 16, 2020 at 10:23:13AM -0400, Brian Gerst wrote:
+> > Christoph Hellwig uncovered an issue with how we currently handle X32
+> > syscalls.  Currently, we can only use COMPAT_SYS_DEFINEx() for X32
+> > specific syscalls.  These changes remove that restriction and allow
+> > native syscalls.
+>
+> Did this go anywhere?
 
-That also a fine good solution, albeit more complex than just using the 
-existing custom ratelimit_state infrastructure. Doing so probably also means 
-we'd miss out on some of the other stuff that comes for free with it.
+This approach wasn't well received, so I'd just go with this as the
+simplest solution:
+https://lore.kernel.org/lkml/CAK8P3a17h782gO65qJ9Mmz0EuiTSKQPEyr_=nvqOtnmQZuh9Kw@mail.gmail.com/
 
-My only other concern with ratelimiting per-TGID or per-MSR was that the 
-ratelimit cache table could become unwieldy, but if we keep it simple by 
-limiting the size and not printing after we reach that, that sounds fine too.
-
-Any solution which means that we avoid saturating kmsg for workloads which 
-currently twiddle MSRs sounds fine to me. People should know that we don't 
-support or encourage this, but it shouldn't be at the cost of potentially 
-pushing everything else out of the kmsg buffer.
+--
+Brian Gerst
