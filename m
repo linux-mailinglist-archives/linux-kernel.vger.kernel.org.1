@@ -2,93 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8CD21EE84
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCD921EE95
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgGNK7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 06:59:46 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:58017 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgGNK7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 06:59:45 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B5cwb2qV0z9s1x;
-        Tue, 14 Jul 2020 20:59:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594724383;
-        bh=CaU7hMehrwH/u8zCbwdV66QNc3iG4evLpsX9iI3ZC+Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZcQVvzY6KQEMk0CwfGUxxOYjXPcK05VLW5I2bcw0XwQMqWOhqm6jKRXo+4sgLJbOP
-         yM0KlqRrUQkLiyLqm02ksHByF9A5aOtFP+TOsGyOb1Zow5kHOLTLNzvlu3OKSdFi8t
-         tV05dE6Axo7cVmGMe5TqV8n7a6KbN/3dtE/27Upz/8gHWmlcjpKeZaPajR/7hof0JQ
-         DCeOMEDgGKmaogRoBbT/CDPXFhsGAfrj6kj5wtUuOPDqNoC1N0gKLSsqzxNzhyR62U
-         VTUkpWaKFcVb2BuxXj4glqiwmM28ExAdlKO1kDbSvHuH7XGIOHZWe3FDD1hDryslnb
-         XflqvL8ic4caw==
-Date:   Tue, 14 Jul 2020 20:59:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        Wireless <linux-wireless@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joseph Chuang <joseph.chuang@cypress.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>
-Subject: linux-next: Fixes tag needs some work in the wireless-drivers-next
- tree
-Message-ID: <20200714205942.26248f1c@canb.auug.org.au>
+        id S1727814AbgGNLAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 07:00:35 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:25407 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726545AbgGNLAe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 07:00:34 -0400
+Received: from localhost.localdomain ([93.22.39.234])
+        by mwinf5d70 with ME
+        id 2z0V23009537AcD03z0W7a; Tue, 14 Jul 2020 13:00:32 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 14 Jul 2020 13:00:32 +0200
+X-ME-IP: 93.22.39.234
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     jes@trained-monkey.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-hippi@sunsite.dk, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] hippi: Fix a size used in a 'pci_free_consistent()' in an error handling path
+Date:   Tue, 14 Jul 2020 13:00:27 +0200
+Message-Id: <20200714110027.301728-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/OiDA8Ai=f6igcds2bDJuwLA";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/OiDA8Ai=f6igcds2bDJuwLA
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The size used when calling 'pci_alloc_consistent()' and
+'pci_free_consistent()' should match.
 
-Hi all,
+Fix it and have it consistent with the corresponding call in 'rr_close()'.
 
-In commit
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/net/hippi/rrunner.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  ad96bc27032c ("brcmfmac: initialize the requested dwell time")
+diff --git a/drivers/net/hippi/rrunner.c b/drivers/net/hippi/rrunner.c
+index 2a6ec5394966..d0d5100eeb0c 100644
+--- a/drivers/net/hippi/rrunner.c
++++ b/drivers/net/hippi/rrunner.c
+@@ -1242,7 +1242,7 @@ static int rr_open(struct net_device *dev)
+ 		rrpriv->info = NULL;
+ 	}
+ 	if (rrpriv->rx_ctrl) {
+-		pci_free_consistent(pdev, sizeof(struct ring_ctrl),
++		pci_free_consistent(pdev, 256 * sizeof(struct ring_ctrl),
+ 				    rrpriv->rx_ctrl, rrpriv->rx_ctrl_dma);
+ 		rrpriv->rx_ctrl = NULL;
+ 	}
+-- 
+2.25.1
 
-Fixes tag
-
-  Fixes: 4905432b28b7 ("brcmfmac: Fix P2P Group Formation failure via Go-ne=
-g method")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-
-Maybe you meant
-
-Fixes: 9c29da3f4e7e ("brcmfmac: Fix P2P Group Formation failure via Go-neg =
-method")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/OiDA8Ai=f6igcds2bDJuwLA
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8NkB4ACgkQAVBC80lX
-0Gw50Af+LW7WJB3/+r+ZbjDE806XKes7SJGPe6XT5WjrV4ULYecYAKRr0v+IZTJr
-V6GzRRJZzQ2KeIeCHSFjekWjsefCRn/Wdd8woFly/lAqWLGXA+t5ma/q4gAFxVOD
-FnER451dMzVpAYyUVI7hcwaQd+W3S1eGBcWNGPDpQ8RU5f/ECQ8N1ushy2Mj0z+L
-5a0XXn6W8DBJLON87dQYBmSubg+d68UMTz0JWP0pPcaoCLGZ/KrGhoHB+VGsMtEi
-zZdk+kGLwpOnm3VACO2OCLd/rMwYB1kdean/n70wt1cJ2lpxxV152QZLCjbKNzbo
-HS07Kz+w01ZP4GK0b50+dzodOiE0IQ==
-=3u/W
------END PGP SIGNATURE-----
-
---Sig_/OiDA8Ai=f6igcds2bDJuwLA--
