@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545BE21FA63
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADA221FAFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730483AbgGNSwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:52:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48746 "EHLO mail.kernel.org"
+        id S1731121AbgGNS5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:57:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730476AbgGNSwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:52:07 -0400
+        id S1731105AbgGNS5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:57:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2CF122B48;
-        Tue, 14 Jul 2020 18:52:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93C1A207F5;
+        Tue, 14 Jul 2020 18:57:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752726;
-        bh=pqw5UfEYGYT8ol4RNywBnTNu1KP+OoGQYk4BTsvHyYU=;
+        s=default; t=1594753061;
+        bh=JYfOiBOUm4P3pjmchGUH5VzRPMLgcMzZNY+DU8Pm3rA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nBUJUNV5UMzefvehC/cW7s6dF+qatrRhF64/+MxaQWviF1UBMH5+qNbeGYuJwJrJB
-         ZTsLD9YTC33TrKPQUZ0B61l2bY+yWDo5ldOTyEQfY2OWqJ9An4AAq4P8onP+0UAIfO
-         zeMfviOkrZY/n9HFKypsbjnuzRCz7MajPM4f63YM=
+        b=wSn2fB4ALrq6EQ2SXzKytjzNH5XxPDHkyQUxensCk5jj1ulKIY3UVivSupgR2cdP4
+         roSXI3wd53lGVk/IEJTNW4nHe82sAj4OuG7z48eAKmeAwiH1unnc7weCuQB+eJxkDe
+         HSLPrDSGoMkUmS/iGtxmCXajZQGoRdLoVZ66RPwg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.4 087/109] kallsyms: Refactor kallsyms_show_value() to take cred
+        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 105/166] mlxsw: spectrum_router: Remove inappropriate usage of WARN_ON()
 Date:   Tue, 14 Jul 2020 20:44:30 +0200
-Message-Id: <20200714184109.715957926@linuxfoundation.org>
+Message-Id: <20200714184120.871876432@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,142 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Ido Schimmel <idosch@mellanox.com>
 
-commit 160251842cd35a75edfb0a1d76afa3eb674ff40a upstream.
+[ Upstream commit d9d5420273997664a1c09151ca86ac993f2f89c1 ]
 
-In order to perform future tests against the cred saved during open(),
-switch kallsyms_show_value() to operate on a cred, and have all current
-callers pass current_cred(). This makes it very obvious where callers
-are checking the wrong credential in their "read" contexts. These will
-be fixed in the coming patches.
+We should not trigger a warning when a memory allocation fails. Remove
+the WARN_ON().
 
-Additionally switch return value to bool, since it is always used as a
-direct permission check, not a 0-on-success, negative-on-error style
-function return.
+The warning is constantly triggered by syzkaller when it is injecting
+faults:
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[ 2230.758664] FAULT_INJECTION: forcing a failure.
+[ 2230.758664] name failslab, interval 1, probability 0, space 0, times 0
+[ 2230.762329] CPU: 3 PID: 1407 Comm: syz-executor.0 Not tainted 5.8.0-rc2+ #28
+...
+[ 2230.898175] WARNING: CPU: 3 PID: 1407 at drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c:6265 mlxsw_sp_router_fib_event+0xfad/0x13e0
+[ 2230.898179] Kernel panic - not syncing: panic_on_warn set ...
+[ 2230.898183] CPU: 3 PID: 1407 Comm: syz-executor.0 Not tainted 5.8.0-rc2+ #28
+[ 2230.898190] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
 
+Fixes: 3057224e014c ("mlxsw: spectrum_router: Implement FIB offload in deferred work")
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/filter.h   |    2 +-
- include/linux/kallsyms.h |    5 +++--
- kernel/kallsyms.c        |   17 +++++++++++------
- kernel/kprobes.c         |    4 ++--
- kernel/module.c          |    2 +-
- 5 files changed, 18 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -858,7 +858,7 @@ static inline bool bpf_dump_raw_ok(void)
- 	/* Reconstruction of call-sites is dependent on kallsyms,
- 	 * thus make dump the same restriction.
- 	 */
--	return kallsyms_show_value() == 1;
-+	return kallsyms_show_value(current_cred());
- }
- 
- struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
---- a/include/linux/kallsyms.h
-+++ b/include/linux/kallsyms.h
-@@ -18,6 +18,7 @@
- #define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s]") + (KSYM_NAME_LEN - 1) + \
- 			 2*(BITS_PER_LONG*3/10) + (MODULE_NAME_LEN - 1) + 1)
- 
-+struct cred;
- struct module;
- 
- static inline int is_kernel_inittext(unsigned long addr)
-@@ -98,7 +99,7 @@ int lookup_symbol_name(unsigned long add
- int lookup_symbol_attrs(unsigned long addr, unsigned long *size, unsigned long *offset, char *modname, char *name);
- 
- /* How and when do we show kallsyms values? */
--extern int kallsyms_show_value(void);
-+extern bool kallsyms_show_value(const struct cred *cred);
- 
- #else /* !CONFIG_KALLSYMS */
- 
-@@ -158,7 +159,7 @@ static inline int lookup_symbol_attrs(un
- 	return -ERANGE;
- }
- 
--static inline int kallsyms_show_value(void)
-+static inline bool kallsyms_show_value(const struct cred *cred)
- {
- 	return false;
- }
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -645,19 +645,20 @@ static inline int kallsyms_for_perf(void
-  * Otherwise, require CAP_SYSLOG (assuming kptr_restrict isn't set to
-  * block even that).
-  */
--int kallsyms_show_value(void)
-+bool kallsyms_show_value(const struct cred *cred)
- {
- 	switch (kptr_restrict) {
- 	case 0:
- 		if (kallsyms_for_perf())
--			return 1;
-+			return true;
- 	/* fallthrough */
- 	case 1:
--		if (has_capability_noaudit(current, CAP_SYSLOG))
--			return 1;
-+		if (security_capable(cred, &init_user_ns, CAP_SYSLOG,
-+				     CAP_OPT_NOAUDIT) == 0)
-+			return true;
- 	/* fallthrough */
- 	default:
--		return 0;
-+		return false;
- 	}
- }
- 
-@@ -674,7 +675,11 @@ static int kallsyms_open(struct inode *i
- 		return -ENOMEM;
- 	reset_iter(iter, 0);
- 
--	iter->show_value = kallsyms_show_value();
-+	/*
-+	 * Instead of checking this on every s_show() call, cache
-+	 * the result here at open time.
-+	 */
-+	iter->show_value = kallsyms_show_value(file->f_cred);
- 	return 0;
- }
- 
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2362,7 +2362,7 @@ static void report_probe(struct seq_file
- 	else
- 		kprobe_type = "k";
- 
--	if (!kallsyms_show_value())
-+	if (!kallsyms_show_value(current_cred()))
- 		addr = NULL;
- 
- 	if (sym)
-@@ -2463,7 +2463,7 @@ static int kprobe_blacklist_seq_show(str
- 	 * If /proc/kallsyms is not showing kernel address, we won't
- 	 * show them here either.
- 	 */
--	if (!kallsyms_show_value())
-+	if (!kallsyms_show_value(current_cred()))
- 		seq_printf(m, "0x%px-0x%px\t%ps\n", NULL, NULL,
- 			   (void *)ent->start_addr);
- 	else
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -4391,7 +4391,7 @@ static int modules_open(struct inode *in
- 
- 	if (!err) {
- 		struct seq_file *m = file->private_data;
--		m->private = kallsyms_show_value() ? NULL : (void *)8ul;
-+		m->private = kallsyms_show_value(current_cred()) ? NULL : (void *)8ul;
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+index d5bca1be3ef53..84b3d78a9dd84 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+@@ -6256,7 +6256,7 @@ static int mlxsw_sp_router_fib_event(struct notifier_block *nb,
  	}
  
- 	return err;
+ 	fib_work = kzalloc(sizeof(*fib_work), GFP_ATOMIC);
+-	if (WARN_ON(!fib_work))
++	if (!fib_work)
+ 		return NOTIFY_BAD;
+ 
+ 	fib_work->mlxsw_sp = router->mlxsw_sp;
+-- 
+2.25.1
+
 
 
