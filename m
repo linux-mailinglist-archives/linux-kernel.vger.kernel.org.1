@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE8421FC61
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A7A21FC55
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730258AbgGNSuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:50:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46038 "EHLO mail.kernel.org"
+        id S1729138AbgGNSuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:50:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729663AbgGNSuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:50:01 -0400
+        id S1730284AbgGNSuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:50:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF55022AAA;
-        Tue, 14 Jul 2020 18:50:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 000AA22AAA;
+        Tue, 14 Jul 2020 18:50:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752601;
-        bh=EAz4seBjivztUDkIMKifhMhzenT9iqxoaHQ5/wp543c=;
+        s=default; t=1594752613;
+        bh=ZaXnKVv036WIEZxAKuXBF80BGpN2iXc9gZtAy+/Mtrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X5gJyLeKXaItj71TDPaOevLq9j6RTfq6Zai0EWCCr2t3Cqa1q7qlnOOnDEsyYEt4X
-         lf1hnd+G1M9jaAy/PXtr1+yFGMz2/QPlZXGbrEqoza7vHJXlfRPIQfKknJzXkHsVHB
-         upubbLVtDc0eClmOA3rlCzzGS12NXzKzu9TWOHSw=
+        b=qRvfGjH1RQOurOG7FqsxpJdAAUPzxRCBsCrBFe9eXi1Yg9Z0+rwRDwwzs4hAu2gvQ
+         xk+eI+DQ3oxsC/gTtIL1YTEcZQN+THQKvXzW+Lmme+lOL8RMQ/acW8lsQFxkDlSFvh
+         LQlFs05AdKY/g56o1q1avHG8rhISDc8jSEop/5b8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 012/109] ASoC: SOF: Intel: add PCI ID for CometLake-S
-Date:   Tue, 14 Jul 2020 20:43:15 +0200
-Message-Id: <20200714184106.108948035@linuxfoundation.org>
+Subject: [PATCH 5.4 014/109] spi: spidev: fix a race between spidev_release and spidev_remove
+Date:   Tue, 14 Jul 2020 20:43:17 +0200
+Message-Id: <20200714184106.203830082@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
 References: <20200714184105.507384017@linuxfoundation.org>
@@ -47,35 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Zhenzhong Duan <zhenzhong.duan@gmail.com>
 
-[ Upstream commit 258fb4f4c34a0db9d3834aba6784d7b322176bb9 ]
+[ Upstream commit abd42781c3d2155868821f1b947ae45bbc33330d ]
 
-Mirror ID added for legacy HDaudio
+Imagine below scene, spidev is referenced after it's freed.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200617164755.18104-3-pierre-louis.bossart@linux.intel.com
+spidev_release()                spidev_remove()
+...
+                                spin_lock_irq(&spidev->spi_lock);
+                                    spidev->spi = NULL;
+                                spin_unlock_irq(&spidev->spi_lock);
+mutex_lock(&device_list_lock);
+dofree = (spidev->spi == NULL);
+if (dofree)
+    kfree(spidev);
+mutex_unlock(&device_list_lock);
+                                mutex_lock(&device_list_lock);
+                                list_del(&spidev->device_entry);
+                                device_destroy(spidev_class, spidev->devt);
+                                clear_bit(MINOR(spidev->devt), minors);
+                                if (spidev->users == 0)
+                                    kfree(spidev);
+                                mutex_unlock(&device_list_lock);
+
+Fix it by resetting spidev->spi in device_list_lock's protection.
+
+Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Link: https://lore.kernel.org/r/20200618032125.4650-1-zhenzhong.duan@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/sof-pci-dev.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/spi/spidev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index d66412a778739..3f79cd03507c9 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -420,6 +420,8 @@ static const struct pci_device_id sof_pci_ids[] = {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_COMETLAKE_H)
- 	{ PCI_DEVICE(0x8086, 0x06c8),
- 		.driver_data = (unsigned long)&cml_desc},
-+	{ PCI_DEVICE(0x8086, 0xa3f0), /* CML-S */
-+		.driver_data = (unsigned long)&cml_desc},
- #endif
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_TIGERLAKE)
- 	{ PCI_DEVICE(0x8086, 0xa0c8),
+diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+index ab2c3848f5bf8..88d0976215fac 100644
+--- a/drivers/spi/spidev.c
++++ b/drivers/spi/spidev.c
+@@ -783,13 +783,13 @@ static int spidev_remove(struct spi_device *spi)
+ {
+ 	struct spidev_data	*spidev = spi_get_drvdata(spi);
+ 
++	/* prevent new opens */
++	mutex_lock(&device_list_lock);
+ 	/* make sure ops on existing fds can abort cleanly */
+ 	spin_lock_irq(&spidev->spi_lock);
+ 	spidev->spi = NULL;
+ 	spin_unlock_irq(&spidev->spi_lock);
+ 
+-	/* prevent new opens */
+-	mutex_lock(&device_list_lock);
+ 	list_del(&spidev->device_entry);
+ 	device_destroy(spidev_class, spidev->devt);
+ 	clear_bit(MINOR(spidev->devt), minors);
 -- 
 2.25.1
 
