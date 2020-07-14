@@ -2,204 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2370021EF75
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40BC21EF7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgGNLig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 07:38:36 -0400
-Received: from mga03.intel.com ([134.134.136.65]:34288 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725905AbgGNLif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 07:38:35 -0400
-IronPort-SDR: SmvZ08RtyydZXGJnnJTsFwDnBKv28WdZXHL5z/8frNKEpjvNNa7/hdnQHzUIQzSvaqIB/r2v0b
- UtvkHKJmavvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="148877249"
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="148877249"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 04:38:34 -0700
-IronPort-SDR: TfN49Isde+x9FpipDxnhPjJBAtBS+4rw3tXDearN898DYP7ezRDo28sNxqWY3Pt6CXz8FhjjIV
- 7Yo8qBKK+w/w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="459659896"
-Received: from pipper-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.46.185])
-  by orsmga005.jf.intel.com with ESMTP; 14 Jul 2020 04:38:22 -0700
-Date:   Tue, 14 Jul 2020 14:38:21 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Jethro Beekman <jethro@fortanix.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v35 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20200714113821.GA1463346@linux.intel.com>
-References: <20200707033747.142828-1-jarkko.sakkinen@linux.intel.com>
- <20200707033747.142828-22-jarkko.sakkinen@linux.intel.com>
- <dcebec2e-ea46-48ec-e49b-292b10282373@fortanix.com>
- <20200714095649.GC1442951@linux.intel.com>
- <dedb73fd-f543-e0e3-dff8-b4150c22bd94@fortanix.com>
+        id S1728084AbgGNLi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 07:38:58 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:56845 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728066AbgGNLiy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 07:38:54 -0400
+Received: from mail-qt1-f170.google.com ([209.85.160.170]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MiagR-1kXvwq33Zf-00fi3t for <linux-kernel@vger.kernel.org>; Tue, 14 Jul
+ 2020 13:38:51 +0200
+Received: by mail-qt1-f170.google.com with SMTP id e12so12449305qtr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:38:51 -0700 (PDT)
+X-Gm-Message-State: AOAM530DEuxulI3a9zzNeLwgdaKv+dHaUObPQ/oSTTO7QqGdE7fCOllU
+        XIdJFAtaVRIZMGT2rLJxZn6u2ZxQdi1QDC3V+ko=
+X-Google-Smtp-Source: ABdhPJyFjloVdWL5jLo3wyeFmexBh1mXWt1AZPEWS1RiOfnRkATYWBbKic8D8zZyvKZOoNe2ZbcLezwA1um2pe10fnA=
+X-Received: by 2002:ac8:4ccb:: with SMTP id l11mr4063189qtv.18.1594726730621;
+ Tue, 14 Jul 2020 04:38:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dedb73fd-f543-e0e3-dff8-b4150c22bd94@fortanix.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200711035544.2832154-1-palmer@dabbelt.com> <20200711035544.2832154-2-palmer@dabbelt.com>
+ <20200713130632.GA29945@infradead.org> <CAK8P3a0F4JSBAG5B=GRFF9Aw0kJaNd=cph86sHqjAtiONUA-Bw@mail.gmail.com>
+ <20200714110549.GA22613@infradead.org>
+In-Reply-To: <20200714110549.GA22613@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 14 Jul 2020 13:38:34 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0VEsshmF0d9AhRurME8Jca5MxG3eAsvXYmwfexMrutLg@mail.gmail.com>
+Message-ID: <CAK8P3a0VEsshmF0d9AhRurME8Jca5MxG3eAsvXYmwfexMrutLg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] lib: Add a generic copy_oldmem_page()
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Gregory Fong <gregory.0xf0@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        "Uwe Kleine-K??nig" <uwe@kleine-koenig.org>,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Petr Mladek <pmladek@suse.com>, zaslonko@linux.ibm.com,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Vaittinen, Matti" <matti.vaittinen@fi.rohmeurope.com>,
+        Ben Dooks <ben-linux@fluff.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        David Gow <davidgow@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:xTSe9ZnQH+hN5QBL1xtuZR/mvbjHEgz1GcNtYWBs0BJ7uGndA/0
+ jk4BDkb4H4OR3xc7y4itgU7TB/hHVN+nhITZ5BY3271w36JKrxWnhcEW4cWlcM4VC1lxkz+
+ lwFc3t9YKzTt1FyOJBWc+CqQGYVNHLl80y2hvdWRqlfi9/wKiDpcdMuNSjqhL1yLkxYb0ut
+ M8uwZsQ9U/U027xzQf3BA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YVeQ19yVhMU=:VP0j4YRuvsGfc4uFIXX6pY
+ EAQ6HosxpPft81Gg4D2QxCQkfj162rwmWFKFAqTZbpGIUIR89eqE4rMY2tRrXdIJ2SdChdWKp
+ zY7VUA+moJ2U0BjQmYdbLW4TcDPKtDmBrTv0a5LaOHBO2ErDjSrByeduUMD152mqgRTnk1VSZ
+ H6VTEAVCLq5ctqjz8uyyXqZWTJEyDYxbzaTae2khRa+3dSGgFSbxAQdAsUOOwGYiuG1+yYLRm
+ n+JFbsvqWMEYXx446dhK2M/vFGyNXS7trzVHOHM+yKmzY8tjt2CQ6DAi67IW9lT4zMhPPjEfp
+ O0s/y6OJ01SRztS7RxGH2NC2EzBjnFmDsI9JYV/PhVJo+PjURrM4AeSQW4F+tnyT2fftUhMgq
+ RqPQIheOwCjXvMNMz1ttrqjnK2vikcXUKrug5O6SnebctlfthHzsaJuE9/WfjUjRCUdg5k3j3
+ DUUMyz0EciFTE2jKpqv94tM9EljVw3scZJ6TVqH3eDJqLKHQY3DrWbgXxR8gdKATYmsRER1sK
+ y0AijqFozUW81bwg1LVyZ3pThsB8xHnxbj0FfjNWB/3lLAfNxoJBjehGGBUQXStwnS9GrXJsT
+ E6ygE+xXxsqKcEuLqyaVh6OPUdk8al+BIoT1AJ1E/5Kb36smObaJAueXI+MWtLHEDWdFYDLHc
+ VCfEnyDnLnvh27ObjH3nF1eLwrU/1RHucBXMCLLwHv08JkqfqqygaQhgdSHX2QLVCn34sG+j6
+ ZWPRkq8PpI7Ws0AEcJCgR9eXaD6CLFQpp+ScFS6nl9Xg4TYDxCHYMSYKEYm3N8stTZJJU68xl
+ Z7XHRvsVMr2yoh23fLb9feNOB4ZdlBf9ax8/j9PqWYkIWvLvNkjrPOxWMB6+XZooxK+iW49+/
+ 8StSi/cLwh6+XPo9wDHD3o1JuP2Fetj6t0/uPCrQYBdempplJNOjotUdRdmwNawCe+XUwzA54
+ uhzovxkQyw34VPaH9CtUxPmUKr+dv5OtNf6WIelcsQw5sqLPZxjik
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 12:07:54PM +0200, Jethro Beekman wrote:
-> On 2020-07-14 11:56, Jarkko Sakkinen wrote:
-> > On Tue, Jul 14, 2020 at 09:30:03AM +0200, Jethro Beekman wrote:
-> >> On 2020-07-07 05:37, Jarkko Sakkinen wrote:
-> >>> From: Sean Christopherson <sean.j.christopherson@intel.com>
-> >>>
-> >>> An SGX runtime must be aware of the exceptions, which happen inside an
-> >>> enclave. Introduce a vDSO call that wraps EENTER/ERESUME cycle and returns
-> >>> the CPU exception back to the caller exactly when it happens.
-> >>>
-> >>> Kernel fixups the exception information to RDI, RSI and RDX. The SGX call
-> >>> vDSO handler fills this information to the user provided buffer or
-> >>> alternatively trigger user provided callback at the time of the exception.
-> >>>
-> >>> The calling convention is custom and does not follow System V x86-64 ABI.
-> >>>
-> >>> Suggested-by: Andy Lutomirski <luto@amacapital.net>
-> >>> Acked-by: Jethro Beekman <jethro@fortanix.com>
-> >>> Tested-by: Jethro Beekman <jethro@fortanix.com>
-> >>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> >>> Co-developed-by: Cedric Xing <cedric.xing@intel.com>
-> >>> Signed-off-by: Cedric Xing <cedric.xing@intel.com>
-> >>> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> >>> ---
-> >>>  arch/x86/entry/vdso/Makefile             |   2 +
-> >>>  arch/x86/entry/vdso/vdso.lds.S           |   1 +
-> >>>  arch/x86/entry/vdso/vsgx_enter_enclave.S | 131 +++++++++++++++++++++++
-> >>>  arch/x86/include/asm/enclu.h             |   8 ++
-> >>>  arch/x86/include/uapi/asm/sgx.h          |  98 +++++++++++++++++
-> >>>  5 files changed, 240 insertions(+)
-> >>>  create mode 100644 arch/x86/entry/vdso/vsgx_enter_enclave.S
-> >>>  create mode 100644 arch/x86/include/asm/enclu.h
-> >>>
-> >>> diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-> >>> index ebe82b7aecda..f71ad5ebd0c4 100644
-> >>> --- a/arch/x86/entry/vdso/Makefile
-> >>> +++ b/arch/x86/entry/vdso/Makefile
-> >>> @@ -29,6 +29,7 @@ VDSO32-$(CONFIG_IA32_EMULATION)	:= y
-> >>>  vobjs-y := vdso-note.o vclock_gettime.o vgetcpu.o
-> >>>  vobjs32-y := vdso32/note.o vdso32/system_call.o vdso32/sigreturn.o
-> >>>  vobjs32-y += vdso32/vclock_gettime.o
-> >>> +vobjs-$(VDSO64-y)		+= vsgx_enter_enclave.o
-> >>>  
-> >>>  # files to link into kernel
-> >>>  obj-y				+= vma.o extable.o
-> >>> @@ -100,6 +101,7 @@ $(vobjs): KBUILD_CFLAGS := $(filter-out $(GCC_PLUGINS_CFLAGS) $(RETPOLINE_CFLAGS
-> >>>  CFLAGS_REMOVE_vclock_gettime.o = -pg
-> >>>  CFLAGS_REMOVE_vdso32/vclock_gettime.o = -pg
-> >>>  CFLAGS_REMOVE_vgetcpu.o = -pg
-> >>> +CFLAGS_REMOVE_vsgx_enter_enclave.o = -pg
-> >>>  
-> >>>  #
-> >>>  # X32 processes use x32 vDSO to access 64bit kernel data.
-> >>> diff --git a/arch/x86/entry/vdso/vdso.lds.S b/arch/x86/entry/vdso/vdso.lds.S
-> >>> index 36b644e16272..4bf48462fca7 100644
-> >>> --- a/arch/x86/entry/vdso/vdso.lds.S
-> >>> +++ b/arch/x86/entry/vdso/vdso.lds.S
-> >>> @@ -27,6 +27,7 @@ VERSION {
-> >>>  		__vdso_time;
-> >>>  		clock_getres;
-> >>>  		__vdso_clock_getres;
-> >>> +		__vdso_sgx_enter_enclave;
-> >>>  	local: *;
-> >>>  	};
-> >>>  }
-> >>> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> >>> new file mode 100644
-> >>> index 000000000000..be7e467e1efb
-> >>> --- /dev/null
-> >>> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> >>> @@ -0,0 +1,131 @@
-> >>> +/* SPDX-License-Identifier: GPL-2.0 */
-> >>> +
-> >>> +#include <linux/linkage.h>
-> >>> +#include <asm/export.h>
-> >>> +#include <asm/errno.h>
-> >>> +#include <asm/enclu.h>
-> >>> +
-> >>> +#include "extable.h"
-> >>> +
-> >>> +#define EX_LEAF		0*8
-> >>> +#define EX_TRAPNR	0*8+4
-> >>> +#define EX_ERROR_CODE	0*8+6
-> >>> +#define EX_ADDRESS	1*8
-> >>> +
-> >>> +.code64
-> >>> +.section .text, "ax"
-> >>> +
-> >>> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
-> >>> +	/* Prolog */
-> >>> +	.cfi_startproc
-> >>> +	push	%rbp
-> >>> +	.cfi_adjust_cfa_offset	8
-> >>> +	.cfi_rel_offset		%rbp, 0
-> >>> +	mov	%rsp, %rbp
-> >>> +	.cfi_def_cfa_register	%rbp
-> >>> +	push	%rbx
-> >>> +	.cfi_rel_offset		%rbx, -8
-> >>> +
-> >>> +	mov	%ecx, %eax
-> >>> +.Lenter_enclave:
-> >>> +	/* EENTER <= leaf <= ERESUME */
-> >>> +	cmp	$EENTER, %eax
-> >>> +	jb	.Linvalid_leaf
-> >>> +	cmp	$ERESUME, %eax
-> >>> +	ja	.Linvalid_leaf
-> >>> +
-> >>> +	/* Load TCS and AEP */
-> >>> +	mov	0x10(%rbp), %rbx
-> >>> +	lea	.Lasync_exit_pointer(%rip), %rcx
-> >>> +
-> >>> +	/* Single ENCLU serving as both EENTER and AEP (ERESUME) */
-> >>> +.Lasync_exit_pointer:
-> >>> +.Lenclu_eenter_eresume:
-> >>> +	enclu
-> >>
-> >> After thinking about this some more, I'd like to come back to this
-> >> setup. Prior discussion at https://lkml.org/lkml/2018/11/2/597 . I
-> >> hope I'm not derailing the discussion so much as to delay the patch
-> >> set :(
-> >>
-> >> I previously mentioned “Userspace may want fine-grained control over
-> >> enclave scheduling” as a reason userspace may want to specify a
-> >> different AEP, but gave a bad example. Here's a better example: If I'm
-> >> running my enclave in an M:N threading model (where M user threads run
-> >> N TCSs, with N > M), an AEX is a good oppurtunity to switch contexts.
-> >> Yes, I could implement this with alarm() or so, but that adds overhead
-> >> while missing out on a lot of opportunities for context switching.
-> > 
-> > The vDSO interface also provides optional callback. Wonder if that
-> > works for this or can it be refined to work for this?
-> 
-> Yeah I think if the callback was called instead of ENCLU, the callback
-> has the opportunity to return non-positive which will trigger a return
-> from __vdso_sgx_enter_enclave. Moving .Lasync_exit_pointer to
-> .Lhandle_exit might be sufficient. But I imagine not all users would
-> want this behavior (although calling the few userspace instructions is
-> likely negligible compared to the actual ERESUME).
+On Tue, Jul 14, 2020 at 1:06 PM Christoph Hellwig <hch@infradead.org> wrote:
+> On Mon, Jul 13, 2020 at 03:39:17PM +0200, Arnd Bergmann wrote:
+> > On Mon, Jul 13, 2020 at 3:07 PM Christoph Hellwig <hch@infradead.org> wrote:
+> > > On Fri, Jul 10, 2020 at 08:55:42PM -0700, Palmer Dabbelt wrote:
+> > > > +ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+> > > > +                      size_t csize, unsigned long offset,
+> > > > +                      int userbuf)
+> > > > +{
+> > > > +     void *vaddr;
+> > > > +
+> > > > +     if (!csize)
+> > > > +             return 0;
+> > > > +
+> > > > +     vaddr = memremap(__pfn_to_phys(pfn), PAGE_SIZE, MEMREMAP_WB);
+> > > > +     if (!vaddr)
+> > > > +             return -ENOMEM;
+> > >
+> > > Doing a memremap for every page is very inefficient.  Also I don't see
+> > > why you'd want to even do that.  All memory is in the direct mapping
+> > > for RISC-V.  For other architecture that support highmem kmap_atomic_pfn
+> > > would do the job, which is what I'd use in a generic version.
+> >
+> > I would expect the 'oldmem' data to not have a 'struct page', which would
+> > be a problem at least for the generic implementation of kmap_atomic_pfn()
+>
+> Why do you expect it to not have a struct page?
 
-Have you tried the callback interface if it suits for your workload?
+I was under the impression that the kdump kernel only accesses a small
+amount of memory itself and would allocate its mem_map to fit that but
+not pages of that were used by the kernel it is dumping.
 
-/Jarkko
+       Arnd
