@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D1F21F270
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A6C21F275
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbgGNNZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727863AbgGNNY7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:24:59 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3F6C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 06:24:59 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z2so21583307wrp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 06:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cumulusnetworks.com; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Aj4QKKJojEodXlG0rvLUNxVoPZ5Fr2yPYro2NiVUoeE=;
-        b=ZCEEJ384Iu1DGQxnvlhX72M4mccDWl5ldcoVeiCEHr08wVI+D8Q5hSZH2B9pZ6bUcE
-         ue6vH3qGR35NPbHd13201SO7tYLiwSm+t3EwJNAmINb0vvzEh2KSOlIlqNoPF6YXfpW+
-         /C17pnz3hPkxbrQ96By5VAGCS0+66sxIVXvyM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Aj4QKKJojEodXlG0rvLUNxVoPZ5Fr2yPYro2NiVUoeE=;
-        b=pJrf7Oz06AcIoWDHMobc9tt1frXRT7xqMtcMz0ICBdy5QSAQubPEUGKid6jGWB8QMh
-         aFzwCQdYVIxNl9lWj9IHaXAbVlQsCTB8H+m+W78XRpUS/J2+C07ZxlfgBsnUq7uJNsEp
-         GWM/DPctdBw5pg8vWT4si0Qe+nPnJfixMhezQ02jBhQKy5Sm5j0J6GNEy03d+IqvOvAp
-         x9IWNXBhdRsapDOgBh/x812JaBjJSDSufB3s7RLwXRToGDrVAbH1+Kj4f4WAU5M27INb
-         CnZ6D1EBqZIaIYNkTmEtoAher6zGjzRpv+4Ucm4/QPxQ9bpUwHxO036AbKj/e6G1lQ2a
-         HNNQ==
-X-Gm-Message-State: AOAM530wzGCJrvWQWhN6N4XTqP3eE/u05UVowjsRcrZINAHPzgxt0HzC
-        nBlweyOCUDzXycyraC8RvLGlzA==
-X-Google-Smtp-Source: ABdhPJxfYCnUzieYF2XQSYACq4ky+aYgmc2GjwcyD9wVgHGUQeJ272sYluyQFMzuOSGk8Mo5Hxhlvw==
-X-Received: by 2002:a5d:55ca:: with SMTP id i10mr2854011wrw.225.1594733098176;
-        Tue, 14 Jul 2020 06:24:58 -0700 (PDT)
-Received: from [192.168.0.109] (84-238-136-197.ip.btc-net.bg. [84.238.136.197])
-        by smtp.gmail.com with ESMTPSA id t4sm4598552wmf.4.2020.07.14.06.24.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 06:24:57 -0700 (PDT)
-Subject: Re: [PATCH net-next v4 11/12] bridge: mrp: Extend br_mrp_fill_info
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>,
-        roopa@cumulusnetworks.com, davem@davemloft.net, kuba@kernel.org,
-        jiri@resnulli.us, ivecera@redhat.com, andrew@lunn.ch,
-        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org
-References: <20200714073458.1939574-1-horatiu.vultur@microchip.com>
- <20200714073458.1939574-12-horatiu.vultur@microchip.com>
-From:   Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Message-ID: <dd1e615d-6390-e521-28d3-98f01308df42@cumulusnetworks.com>
-Date:   Tue, 14 Jul 2020 16:24:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200714073458.1939574-12-horatiu.vultur@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1727024AbgGNN0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:26:31 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:58262 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726461AbgGNN0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 09:26:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594733190; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ZuuVvtXOSn5P69Z0eecIOVwDd77Y6Cz0UPcGzE05C34=; b=MI3lnda/Y9Y12wRUZDd+/vRTr4uho7fDLHMNAYdb6IHy28N/Lfb/pjiIB1ZAzOIfWFhJdemh
+ keyLAR6YrSjNuRd2JhkH1YnSw1VUbzkJHLSv0GLVKe3Jv0AAc3cQmI+8J2wtZje+JoFIOB0N
+ i4UQ+FVULLfDxjs8L9apZyN0at4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5f0db2551e603dbb44145967 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 14 Jul 2020 13:25:41
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6ABBDC43391; Tue, 14 Jul 2020 13:25:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DDDF8C433CA;
+        Tue, 14 Jul 2020 13:25:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DDDF8C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org
+Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jcrouse@codeaurora.org,
+        devicetree@vger.kernel.org, mka@chromium.org, jonathan@marek.ca,
+        robdclark@gmail.com, rnayak@codeaurora.org
+Subject: [PATCH] drm: msm: a6xx: fix gpu failure after system resume
+Date:   Tue, 14 Jul 2020 18:55:30 +0530
+Message-Id: <1594733130-398-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2020 10:34, Horatiu Vultur wrote:
-> This patch extends the function br_mrp_fill_info to return also the
-> status for the interconnect ring.
-> 
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> ---
->  net/bridge/br_mrp_netlink.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/net/bridge/br_mrp_netlink.c b/net/bridge/br_mrp_netlink.c
-> index a006e0771e8d3..2a2fdf3500c5b 100644
-> --- a/net/bridge/br_mrp_netlink.c
-> +++ b/net/bridge/br_mrp_netlink.c
-> @@ -474,6 +474,11 @@ int br_mrp_fill_info(struct sk_buff *skb, struct net_bridge *br)
->  				     p->dev->ifindex))
->  			goto nla_put_failure;
->  
-> +		p = rcu_dereference(mrp->i_port);
-> +		if (p && nla_put_u32(skb, IFLA_BRIDGE_MRP_INFO_I_IFINDEX,
-> +				     p->dev->ifindex))
-> +			goto nla_put_failure;
-> +
->  		if (nla_put_u16(skb, IFLA_BRIDGE_MRP_INFO_PRIO,
->  				mrp->prio))
->  			goto nla_put_failure;
-> @@ -493,6 +498,19 @@ int br_mrp_fill_info(struct sk_buff *skb, struct net_bridge *br)
->  				mrp->test_monitor))
->  			goto nla_put_failure;
->  
-> +		if (nla_put_u32(skb, IFLA_BRIDGE_MRP_INFO_IN_STATE,
-> +				mrp->in_state))
-> +			goto nla_put_failure;
-> +		if (nla_put_u32(skb, IFLA_BRIDGE_MRP_INFO_IN_ROLE,
-> +				mrp->in_role))
-> +			goto nla_put_failure;
-> +		if (nla_put_u32(skb, IFLA_BRIDGE_MRP_INFO_IN_TEST_INTERVAL,
-> +				mrp->in_test_interval))
-> +			goto nla_put_failure;
-> +		if (nla_put_u32(skb, IFLA_BRIDGE_MRP_INFO_IN_TEST_MAX_MISS,
-> +				mrp->in_test_max_miss))
-> +			goto nla_put_failure;
-> +
->  		nla_nest_end(skb, tb);
->  	}
->  	nla_nest_end(skb, mrp_tb);
-> 
+On targets where GMU is available, GMU takes over the ownership of GX GDSC
+during its initialization. So, take a refcount on the GX PD on behalf of
+GMU before we initialize it. This makes sure that nobody can collapse the
+GX GDSC once GMU owns the GX GDSC. This patch fixes some weird failures
+during GPU wake up during system resume.
 
-Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+index a6f43ff..5b2df7d 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+@@ -873,10 +873,19 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+ 	/* Turn on the resources */
+ 	pm_runtime_get_sync(gmu->dev);
+ 
++	/*
++	 * "enable" the GX power domain which won't actually do anything but it
++	 * will make sure that the refcounting is correct in case we need to
++	 * bring down the GX after a GMU failure
++	 */
++	if (!IS_ERR_OR_NULL(gmu->gxpd))
++		pm_runtime_get_sync(gmu->gxpd);
++
+ 	/* Use a known rate to bring up the GMU */
+ 	clk_set_rate(gmu->core_clk, 200000000);
+ 	ret = clk_bulk_prepare_enable(gmu->nr_clocks, gmu->clocks);
+ 	if (ret) {
++		pm_runtime_put(gmu->gxpd);
+ 		pm_runtime_put(gmu->dev);
+ 		return ret;
+ 	}
+@@ -919,19 +928,12 @@ int a6xx_gmu_resume(struct a6xx_gpu *a6xx_gpu)
+ 	/* Set the GPU to the current freq */
+ 	a6xx_gmu_set_initial_freq(gpu, gmu);
+ 
+-	/*
+-	 * "enable" the GX power domain which won't actually do anything but it
+-	 * will make sure that the refcounting is correct in case we need to
+-	 * bring down the GX after a GMU failure
+-	 */
+-	if (!IS_ERR_OR_NULL(gmu->gxpd))
+-		pm_runtime_get(gmu->gxpd);
+-
+ out:
+ 	/* On failure, shut down the GMU to leave it in a good state */
+ 	if (ret) {
+ 		disable_irq(gmu->gmu_irq);
+ 		a6xx_rpmh_stop(gmu);
++		pm_runtime_put(gmu->gxpd);
+ 		pm_runtime_put(gmu->dev);
+ 	}
+ 
+-- 
+2.7.4
+
