@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3030921F627
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7BE21F62C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgGNP2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 11:28:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725280AbgGNP2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 11:28:21 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35C4F221EF;
-        Tue, 14 Jul 2020 15:28:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594740500;
-        bh=0qquT16fbcjpcUrLJKMrlKrFGQbbIFMbuB4UG5jOkoQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=s1oowI9A4zRjsuRhByPYU2IrrGnkDzB0e+M9tL3W4uY4Rz+xdKSfXXT4Ue6GjN2qv
-         k3EdVfrMqa/6dnaH9VVyFBbnQlhp00QqYfN6yPhYsbyjQnA/oiP9zs3o9bygbRQqsm
-         +6CcnZaGf485FQr8AgvdkPuTOpEYayWlrnj6c85k=
-Date:   Tue, 14 Jul 2020 10:28:18 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc:     alex.williamson@redhat.com, herbert@gondor.apana.org.au,
-        cohuck@redhat.com, nhorman@redhat.com, vdronov@redhat.com,
-        bhelgaas@google.com, mark.a.chambers@intel.com,
-        gordon.mcfadden@intel.com, ahsan.atta@intel.com,
-        qat-linux@intel.com, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] PCI: Add Intel QuickAssist device IDs
-Message-ID: <20200714152818.GA395763@bjorn-Precision-5520>
+        id S1726794AbgGNPaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 11:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgGNPaE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 11:30:04 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34482C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:30:03 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id m26so12002859lfo.13
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:30:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VvONWUUx+ge2aRqADFFqhcoKfa3RbBALz1DV1ooGJ/Y=;
+        b=XijJsNpSPPnejytiYcdHjB1XQVu8uaH3j6/gEPYZl+pAI0TcIHWcBLqvOFrhR7jXBP
+         9cveXgeLbceG8D7dAL+Zepto6GIlhPMkZ8CJdbQEnOtls2STHYWDEB8MFah9uo0hpegd
+         YSVwiX5OVwFQLLXykgySPxhz+QTAG24MkW3WE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VvONWUUx+ge2aRqADFFqhcoKfa3RbBALz1DV1ooGJ/Y=;
+        b=Mqm/MNIq+JRjAywsiDrEBzcEkCw82Oz8Pxjr9FFiZL9fLf7LWe/Ok2QINa1E1wQ+fR
+         gW6iR/4PL0xc2UNoxgOBWu3E7iofKzMfQs8g4d67l2Y8sz7k5REyn0J9P5yGzbutJ+A1
+         RG+S8mQwuBL0PJAhjGMI+hvRHXUZFM1yQYpoVW0cBL/n0VpNMKCqcPch/bEpzOgBBhGv
+         gHHo4yf0gWKLbj6rusGz9CItPGPa3WjaRS/PKd8p4zGAHIg2aHcTekDw2sehjkn6w1nS
+         PBd9zezWow55s8bDJ1IZ/0V6qOtugJ1bkDA714kDQsg/TIwAp4VJdYmgPu5dXCrCNSbh
+         Bzlw==
+X-Gm-Message-State: AOAM532/DaoVYo05l/JCC1bvMcBJ6sNjG/9acDbY52yox6Eh5h2DLwV/
+        KmkJXUZUoYATRxYqUc31XFtkQ4irf10=
+X-Google-Smtp-Source: ABdhPJyTYS66sgl+WsQmBPala5jfxGfktif+2nnRUbvaU8CQEYRQOOaXUXTt68kHfHHsUE9/1JG2GA==
+X-Received: by 2002:ac2:51a1:: with SMTP id f1mr2480766lfk.173.1594740601264;
+        Tue, 14 Jul 2020 08:30:01 -0700 (PDT)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id r13sm5335710lfp.80.2020.07.14.08.29.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 08:30:00 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id h22so23294384lji.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:29:59 -0700 (PDT)
+X-Received: by 2002:a2e:760b:: with SMTP id r11mr2752959ljc.285.1594740599299;
+ Tue, 14 Jul 2020 08:29:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714063610.849858-2-giovanni.cabiddu@intel.com>
+References: <20200714105505.935079-1-hch@lst.de> <20200714105505.935079-6-hch@lst.de>
+In-Reply-To: <20200714105505.935079-6-hch@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 14 Jul 2020 08:29:43 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whvwd9AWMCoUidO8pT3iw6e6NXCKThqbpDQOoz1=WTP7g@mail.gmail.com>
+Message-ID: <CAHk-=whvwd9AWMCoUidO8pT3iw6e6NXCKThqbpDQOoz1=WTP7g@mail.gmail.com>
+Subject: Re: [PATCH 5/6] uaccess: add force_uaccess_{begin,end} helpers
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-riscv@lists.infradead.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 07:36:06AM +0100, Giovanni Cabiddu wrote:
-> Add device IDs for the following Intel QuickAssist devices: DH895XCC,
-> C3XXX and C62X.
-> 
-> The defines in this patch are going to be referenced in two independent
-> drivers, qat and vfio-pci.
-> 
-> Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+On Tue, Jul 14, 2020 at 4:08 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Add helpers to wrap the get_fs/set_fs magic for undoing any damange done
+> by set_fs(KERNEL_DS).  There is no real functional benefit, but this
+> documents the intent of these calls better, and will allow stubbing the
+> functions out easily for kernels builds that do not allow address space
+> overrides in the future.
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+It would perhaps have been nicer to rename the save variabel too
+(neither "seg" nor "oldfs" make much sense once you get rid of the old
+x86-inspired name).
 
-> ---
->  include/linux/pci_ids.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-> index 0ad57693f392..f3166b1425ca 100644
-> --- a/include/linux/pci_ids.h
-> +++ b/include/linux/pci_ids.h
-> @@ -2659,6 +2659,8 @@
->  #define PCI_DEVICE_ID_INTEL_80332_1	0x0332
->  #define PCI_DEVICE_ID_INTEL_80333_0	0x0370
->  #define PCI_DEVICE_ID_INTEL_80333_1	0x0372
-> +#define PCI_DEVICE_ID_INTEL_QAT_DH895XCC	0x0435
-> +#define PCI_DEVICE_ID_INTEL_QAT_DH895XCC_VF	0x0443
->  #define PCI_DEVICE_ID_INTEL_82375	0x0482
->  #define PCI_DEVICE_ID_INTEL_82424	0x0483
->  #define PCI_DEVICE_ID_INTEL_82378	0x0484
-> @@ -2708,6 +2710,8 @@
->  #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_NHI     0x1577
->  #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_BRIDGE  0x1578
->  #define PCI_DEVICE_ID_INTEL_80960_RP	0x1960
-> +#define PCI_DEVICE_ID_INTEL_QAT_C3XXX	0x19e2
-> +#define PCI_DEVICE_ID_INTEL_QAT_C3XXX_VF	0x19e3
->  #define PCI_DEVICE_ID_INTEL_82840_HB	0x1a21
->  #define PCI_DEVICE_ID_INTEL_82845_HB	0x1a30
->  #define PCI_DEVICE_ID_INTEL_IOAT	0x1a38
-> @@ -2924,6 +2928,8 @@
->  #define PCI_DEVICE_ID_INTEL_IOAT_JSF7	0x3717
->  #define PCI_DEVICE_ID_INTEL_IOAT_JSF8	0x3718
->  #define PCI_DEVICE_ID_INTEL_IOAT_JSF9	0x3719
-> +#define PCI_DEVICE_ID_INTEL_QAT_C62X	0x37c8
-> +#define PCI_DEVICE_ID_INTEL_QAT_C62X_VF	0x37c9
->  #define PCI_DEVICE_ID_INTEL_ICH10_0	0x3a14
->  #define PCI_DEVICE_ID_INTEL_ICH10_1	0x3a16
->  #define PCI_DEVICE_ID_INTEL_ICH10_2	0x3a18
-> -- 
-> 2.26.2
-> 
+But from a greppability standpoint and a doc standpoint, I guess just
+renaming the function is sufficient (and certainly easier).
+
+               Linus
