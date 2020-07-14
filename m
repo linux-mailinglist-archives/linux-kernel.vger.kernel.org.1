@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32B221F9F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F7C21FA42
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729906AbgGNSsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:48:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43470 "EHLO mail.kernel.org"
+        id S1730354AbgGNSvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:51:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729891AbgGNSsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:48:09 -0400
+        id S1729862AbgGNSu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:50:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8511822AAA;
-        Tue, 14 Jul 2020 18:48:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C144D22B3F;
+        Tue, 14 Jul 2020 18:50:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752489;
-        bh=UfXNsBsfnQgCDV33rI/M8yD/l2RhfKKPlSjWyT9d7M8=;
+        s=default; t=1594752655;
+        bh=Ph/2Lcc+Ow4U1icyFt7+6fCPl1Qqh/+7JBO2gz2tJC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xQPwMzzZJB8xC60B5+8GXM/qml7dTD/30LhdEuRGIWVntqDbOnPwnjNVLVTD5TdT7
-         KdxyH6+5232j+h2GmFVbYdYwv730k3K7aYv2/ElQEQ1WwWQUAvv2V0N5uVBEqIZTyl
-         MsRNEl6r/GREignNqLaq+J7gTZ4Pt6Nf7JDfCx5s=
+        b=Pes5UVphFE/wDzVvq0HPhjVtUP0JDpgS2TmG6Ykly68rtt/G5vDpUkRDTQZPT677y
+         7b6nqn+8imC50lFyZa7fX5OXEo+CeC6r3kjAPXdksK+zs0oJhzaUvqI+vJIPulHQIB
+         6za96a33r/riDcvHNVVqTkYMc8C9OQjcSQ7zgHio=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Vinod Koul <vkoul@kernel.org>, Takashi Iwai <tiwai@suse.de>,
+        Sudarsana Reddy Kalluru <skalluru@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 31/58] ALSA: compress: fix partial_drain completion state
+Subject: [PATCH 5.4 061/109] qed: Populate nvm-file attributes while reading nvm config partition.
 Date:   Tue, 14 Jul 2020 20:44:04 +0200
-Message-Id: <20200714184057.680149937@linuxfoundation.org>
+Message-Id: <20200714184108.445486727@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,88 +46,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
+From: Sudarsana Reddy Kalluru <skalluru@marvell.com>
 
-[ Upstream commit f79a732a8325dfbd570d87f1435019d7e5501c6d ]
+[ Upstream commit 13cf8aab7425a253070433b5a55b4209ceac8b19 ]
 
-On partial_drain completion we should be in SNDRV_PCM_STATE_RUNNING
-state, so set that for partially draining streams in
-snd_compr_drain_notify() and use a flag for partially draining streams
+NVM config file address will be modified when the MBI image is upgraded.
+Driver would return stale config values if user reads the nvm-config
+(via ethtool -d) in this state. The fix is to re-populate nvm attribute
+info while reading the nvm config values/partition.
 
-While at it, add locks for stream state change in
-snd_compr_drain_notify() as well.
+Changes from previous version:
+-------------------------------
+v3: Corrected the formatting in 'Fixes' tag.
+v2: Added 'Fixes' tag.
 
-Fixes: f44f2a5417b2 ("ALSA: compress: fix drain calls blocking other compress functions (v6)")
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20200629134737.105993-4-vkoul@kernel.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 1ac4329a1cff ("qed: Add configuration information to register dump and debug data")
+Signed-off-by: Sudarsana Reddy Kalluru <skalluru@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/compress_driver.h | 10 +++++++++-
- sound/core/compress_offload.c   |  4 ++++
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/qlogic/qed/qed_debug.c |  4 ++++
+ drivers/net/ethernet/qlogic/qed/qed_dev.c   | 12 +++---------
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c   |  7 +++++++
+ drivers/net/ethernet/qlogic/qed/qed_mcp.h   |  7 +++++++
+ 4 files changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index 127c2713b543a..99855d1c74766 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -57,6 +57,7 @@ struct snd_compr_runtime {
-  * @direction: stream direction, playback/recording
-  * @metadata_set: metadata set flag, true when set
-  * @next_track: has userspace signal next track transition, true when set
-+ * @partial_drain: undergoing partial_drain for stream, true when set
-  * @private_data: pointer to DSP private data
-  */
- struct snd_compr_stream {
-@@ -68,6 +69,7 @@ struct snd_compr_stream {
- 	enum snd_compr_direction direction;
- 	bool metadata_set;
- 	bool next_track;
-+	bool partial_drain;
- 	void *private_data;
- };
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_debug.c b/drivers/net/ethernet/qlogic/qed/qed_debug.c
+index 859caa6c1a1fb..8e7be214f9598 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_debug.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_debug.c
+@@ -8197,6 +8197,10 @@ int qed_dbg_all_data(struct qed_dev *cdev, void *buffer)
+ 		DP_ERR(cdev, "qed_dbg_mcp_trace failed. rc = %d\n", rc);
+ 	}
  
-@@ -171,7 +173,13 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
- 	if (snd_BUG_ON(!stream))
- 		return;
- 
--	stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-+	/* for partial_drain case we are back to running state on success */
-+	if (stream->partial_drain) {
-+		stream->runtime->state = SNDRV_PCM_STATE_RUNNING;
-+		stream->partial_drain = false; /* clear this flag as well */
-+	} else {
-+		stream->runtime->state = SNDRV_PCM_STATE_SETUP;
-+	}
- 
- 	wake_up(&stream->runtime->sleep);
++	/* Re-populate nvm attribute info */
++	qed_mcp_nvm_info_free(p_hwfn);
++	qed_mcp_nvm_info_populate(p_hwfn);
++
+ 	/* nvm cfg1 */
+ 	rc = qed_dbg_nvm_image(cdev,
+ 			       (u8 *)buffer + offset + REGDUMP_HEADER_SIZE,
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_dev.c b/drivers/net/ethernet/qlogic/qed/qed_dev.c
+index ecd14474a6031..638047b937c65 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_dev.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_dev.c
+@@ -4423,12 +4423,6 @@ static int qed_get_dev_info(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt)
+ 	return 0;
  }
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index 509038d6bccdb..68f016e4929ac 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -723,6 +723,9 @@ static int snd_compr_stop(struct snd_compr_stream *stream)
  
- 	retval = stream->ops->trigger(stream, SNDRV_PCM_TRIGGER_STOP);
- 	if (!retval) {
-+		/* clear flags and stop any drain wait */
-+		stream->partial_drain = false;
-+		stream->metadata_set = false;
- 		snd_compr_drain_notify(stream);
- 		stream->runtime->total_bytes_available = 0;
- 		stream->runtime->total_bytes_transferred = 0;
-@@ -880,6 +883,7 @@ static int snd_compr_partial_drain(struct snd_compr_stream *stream)
- 	if (stream->next_track == false)
- 		return -EPERM;
+-static void qed_nvm_info_free(struct qed_hwfn *p_hwfn)
+-{
+-	kfree(p_hwfn->nvm_info.image_att);
+-	p_hwfn->nvm_info.image_att = NULL;
+-}
+-
+ static int qed_hw_prepare_single(struct qed_hwfn *p_hwfn,
+ 				 void __iomem *p_regview,
+ 				 void __iomem *p_doorbells,
+@@ -4513,7 +4507,7 @@ static int qed_hw_prepare_single(struct qed_hwfn *p_hwfn,
+ 	return rc;
+ err3:
+ 	if (IS_LEAD_HWFN(p_hwfn))
+-		qed_nvm_info_free(p_hwfn);
++		qed_mcp_nvm_info_free(p_hwfn);
+ err2:
+ 	if (IS_LEAD_HWFN(p_hwfn))
+ 		qed_iov_free_hw_info(p_hwfn->cdev);
+@@ -4574,7 +4568,7 @@ int qed_hw_prepare(struct qed_dev *cdev,
+ 		if (rc) {
+ 			if (IS_PF(cdev)) {
+ 				qed_init_free(p_hwfn);
+-				qed_nvm_info_free(p_hwfn);
++				qed_mcp_nvm_info_free(p_hwfn);
+ 				qed_mcp_free(p_hwfn);
+ 				qed_hw_hwfn_free(p_hwfn);
+ 			}
+@@ -4608,7 +4602,7 @@ void qed_hw_remove(struct qed_dev *cdev)
  
-+	stream->partial_drain = true;
- 	retval = stream->ops->trigger(stream, SND_COMPR_TRIGGER_PARTIAL_DRAIN);
- 	if (retval) {
- 		pr_debug("Partial drain returned failure\n");
+ 	qed_iov_free_hw_info(cdev);
+ 
+-	qed_nvm_info_free(p_hwfn);
++	qed_mcp_nvm_info_free(p_hwfn);
+ }
+ 
+ static void qed_chain_free_next_ptr(struct qed_dev *cdev,
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_mcp.c b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
+index 36ddb89856a86..9401b49275f0a 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_mcp.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_mcp.c
+@@ -3149,6 +3149,13 @@ int qed_mcp_nvm_info_populate(struct qed_hwfn *p_hwfn)
+ 	return rc;
+ }
+ 
++void qed_mcp_nvm_info_free(struct qed_hwfn *p_hwfn)
++{
++	kfree(p_hwfn->nvm_info.image_att);
++	p_hwfn->nvm_info.image_att = NULL;
++	p_hwfn->nvm_info.valid = false;
++}
++
+ int
+ qed_mcp_get_nvm_image_att(struct qed_hwfn *p_hwfn,
+ 			  enum qed_nvm_images image_id,
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_mcp.h b/drivers/net/ethernet/qlogic/qed/qed_mcp.h
+index 9c4c2763de8d7..e38297383b007 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_mcp.h
++++ b/drivers/net/ethernet/qlogic/qed/qed_mcp.h
+@@ -1192,6 +1192,13 @@ void qed_mcp_read_ufp_config(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt);
+  */
+ int qed_mcp_nvm_info_populate(struct qed_hwfn *p_hwfn);
+ 
++/**
++ * @brief Delete nvm info shadow in the given hardware function
++ *
++ * @param p_hwfn
++ */
++void qed_mcp_nvm_info_free(struct qed_hwfn *p_hwfn);
++
+ /**
+  * @brief Get the engine affinity configuration.
+  *
 -- 
 2.25.1
 
