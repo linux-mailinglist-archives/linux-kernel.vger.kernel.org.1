@@ -2,95 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18EF21FAD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA1321FAE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729633AbgGNS4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730930AbgGNSz6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:55:58 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDDCC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:55:57 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id d18so18460579ion.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IwJUAiA8BpGrXQ3dlTzGVWDeFkGjuEAAOtgnYtpstag=;
-        b=r4bMcrj+DSWRX7zW5bEHa64p7BZKCexjM5C4F9d6hvYG8IFfMmB4cCzIi/uwzjXpLL
-         2wIMBo0RJEmz/dP13ZjdgKfDTzbgglyD/ChLlc75bmsM+GfDL4uaBba7dmOrzsimJ2fv
-         mYX8o5YlWF67g7gb04WcxMWJ5IybOK47ZP8FKo2YoDzLx3o2rkgVxpIcC2Is+ZmU5bg+
-         H2lNsMgB33s6V5s5pSj4VGXILNQRkaRYYMTQG0pqRiCtDNKIKER0bBcnz1s2ntTyM3rV
-         n812s2eeZ2rB9k++XZb556z2QXI9NauLo9sgEZEFt9JX7DQRPwdOR6nRt2Sx73ojA0Fz
-         oulg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IwJUAiA8BpGrXQ3dlTzGVWDeFkGjuEAAOtgnYtpstag=;
-        b=uMW/O90C59OpovZmAze7BFu+WSXsL366WX3BgbPhsMcwdRB0APck9y9VL+b/judNYQ
-         wEyHQhq1tjNTrkFGezmWBWD2mtSbqrLV4NvU/MK6uzVPYs9ubnqq10KSAM2aKm76WlYV
-         KFhY0HXH8SFDlVpY/1GTbDyRVPo0wygZE+jALx+7nCBZNWRn+1szVMFjhMO25x7WgH8V
-         /rdjQhrmT8w6zFgs75N092gyPVlhGaHcyH/Wh+SZ/849kmhfAoiKbCuxnjXwi8q0lkho
-         X9hB5snFSsBkbFBQ0lKHxyXC3dg4h039496W3urEseP4jfL6AHbsre4c348wN+oh6yIV
-         4nRg==
-X-Gm-Message-State: AOAM5307MoYboUTrPEJ29HBr6BhMjOU6MBRgaXuZtACwJSfL8YGKo+Sp
-        ear3TuEBenj5b/wFhEnnnTYEKamMgJnycYbHdjHBkA==
-X-Google-Smtp-Source: ABdhPJzXOZOKkN0bh6O7BSXC9478lsDVT3KH6Z0MLS3oc5Y1KTkC/sprReNUZ4+9oQ8cDYDBfWIXZrUdPNW/oCsLVxU=
-X-Received: by 2002:a05:6638:118:: with SMTP id x24mr7612352jao.48.1594752956875;
- Tue, 14 Jul 2020 11:55:56 -0700 (PDT)
+        id S1731021AbgGNS4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:56:43 -0400
+Received: from mga01.intel.com ([192.55.52.88]:49953 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730999AbgGNS4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:56:35 -0400
+IronPort-SDR: snGeDQgmVWJMp5Fd4iWp+X+iE7IP8ko+KX4rCf228/RKrBt3yAhE9iTiJvFI2kxQn36/2t6Gaz
+ lfu3lyONKQiA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="167126375"
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="167126375"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 11:56:35 -0700
+IronPort-SDR: IBWiob855Z3wYeyY46vW1ObsQ+wys7Mln78uQlOhp2EiQ01Fsay7tpG8V8Gs0Tggk8AaRJWFha
+ eaz80B1wi4fw==
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="459796243"
+Received: from calinapo-mobl.amr.corp.intel.com (HELO [10.255.6.204]) ([10.255.6.204])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 11:56:32 -0700
+Subject: Re: [RFC PATCH 04/15] x86/pks: Preserve the PKRS MSR on context
+ switch
+To:     Ira Weiny <ira.weiny@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+References: <20200714070220.3500839-1-ira.weiny@intel.com>
+ <20200714070220.3500839-5-ira.weiny@intel.com>
+ <20200714082701.GO10769@hirez.programming.kicks-ass.net>
+ <20200714185322.GB3008823@iweiny-DESK2.sc.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <17c6ebbc-ffa4-7c60-f5e8-faca062c59d1@intel.com>
+Date:   Tue, 14 Jul 2020 11:56:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200714015732.32426-1-sean.j.christopherson@intel.com>
-In-Reply-To: <20200714015732.32426-1-sean.j.christopherson@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 14 Jul 2020 11:55:45 -0700
-Message-ID: <CALMp9eQ1-6GEiSh55-NXgjuq3EOwP9VWNMeriH_J64p9JMjN0g@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Don't attempt to load PDPTRs when 64-bit mode
- is enabled
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oliver Upton <oupton@google.com>,
-        Peter Shier <pshier@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200714185322.GB3008823@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 6:57 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Don't attempt to load PDPTRs if EFER.LME=1, i.e. if 64-bit mode is
-> enabled.  A recent change to reload the PDTPRs when CR0.CD or CR0.NW is
-> toggled botched the EFER.LME handling and sends KVM down the PDTPR path
-> when is_paging() is true, i.e. when the guest toggles CD/NW in 64-bit
-> mode.
+On 7/14/20 11:53 AM, Ira Weiny wrote:
+>>> The PKRS MSR is defined as a per-core register.
 
-Oops!
-
-I don't think "is_paging()" is relevant here, so much as "EFER.LME=1."
-As you note below, KVM *should* go down the PDPTR path when
-is_paging() is true and EFER.LME=0.
-
-> Split the CR0 checks for 64-bit vs. 32-bit PAE into separate paths.  The
-> 64-bit path is specifically checking state when paging is toggled on,
-> i.e. CR0.PG transititions from 0->1.  The PDPTR path now needs to run if
-> the new CR0 state has paging enabled, irrespective of whether paging was
-> already enabled.  Trying to shave a few cycles to make the PDPTR path an
-> "else if" case is a mess.
->
-> Fixes: d42e3fae6faed ("kvm: x86: Read PDPTEs on CR0.CD and CR0.NW changes")
-> Cc: Jim Mattson <jmattson@google.com>
-> Cc: Oliver Upton <oupton@google.com>
-> Cc: Peter Shier <pshier@google.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
+Just to be clear, PKRS is a per-logical-processor register, just like
+PKRU.  The "per-core" thing here is a typo.
