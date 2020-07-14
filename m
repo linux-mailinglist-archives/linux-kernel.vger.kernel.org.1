@@ -2,136 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4147321E967
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF3C21E9B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgGNHFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:05:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41638 "EHLO mx2.suse.de"
+        id S1726863AbgGNHML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:12:11 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:45060 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725997AbgGNHFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:05:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A7422AD1E;
-        Tue, 14 Jul 2020 07:05:43 +0000 (UTC)
-Subject: Re: [PATCH v2 12/29] scsi: libfc: fc_fcp: Provide missing and repair
- existing function documentation
-To:     Lee Jones <lee.jones@linaro.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-References: <20200713074645.126138-1-lee.jones@linaro.org>
- <20200713074645.126138-13-lee.jones@linaro.org>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <4fa77049-9134-d0b5-5408-66330fdcbd03@suse.de>
-Date:   Tue, 14 Jul 2020 09:05:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200713074645.126138-13-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1725876AbgGNHML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:12:11 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BBBB3200161;
+        Tue, 14 Jul 2020 09:12:09 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 45668200ED4;
+        Tue, 14 Jul 2020 09:12:06 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9435D402BB;
+        Tue, 14 Jul 2020 15:12:01 +0800 (SGT)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     leoyang.li@nxp.com, shawnguo@kernel.org, robh+dt@kernel.org,
+        meenakshi.aggarwal@nxp.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, Biwen Li <biwen.li@nxp.com>
+Subject: [v2 PATCH] dts: arm64: lx2160a-rdb: fix shunt-resistor value
+Date:   Tue, 14 Jul 2020 15:05:45 +0800
+Message-Id: <20200714070545.2051-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/20 9:46 AM, Lee Jones wrote:
-> Mostly due to descriptions not keeping up with API changes.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/scsi/libfc/fc_fcp.c:299: warning: Function parameter or member 'status_code' not described in 'fc_fcp_retry_cmd'
->   drivers/scsi/libfc/fc_fcp.c:595: warning: Function parameter or member 'seq' not described in 'fc_fcp_send_data'
->   drivers/scsi/libfc/fc_fcp.c:595: warning: Excess function parameter 'sp' description in 'fc_fcp_send_data'
->   drivers/scsi/libfc/fc_fcp.c:1289: warning: Function parameter or member 't' not described in 'fc_lun_reset_send'
->   drivers/scsi/libfc/fc_fcp.c:1289: warning: Excess function parameter 'data' description in 'fc_lun_reset_send'
->   drivers/scsi/libfc/fc_fcp.c:1422: warning: Function parameter or member 't' not described in 'fc_fcp_timeout'
->   drivers/scsi/libfc/fc_fcp.c:1422: warning: Excess function parameter 'data' description in 'fc_fcp_timeout'
->   drivers/scsi/libfc/fc_fcp.c:1696: warning: Function parameter or member 'code' not described in 'fc_fcp_recovery'
->   drivers/scsi/libfc/fc_fcp.c:1716: warning: Function parameter or member 'offset' not described in 'fc_fcp_srr'
->   drivers/scsi/libfc/fc_fcp.c:1859: warning: Function parameter or member 'sc_cmd' not described in 'fc_queuecommand'
->   drivers/scsi/libfc/fc_fcp.c:1859: warning: Excess function parameter 'cmd' description in 'fc_queuecommand'
-> 
-> Cc: Hannes Reinecke <hare@suse.de>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->   drivers/scsi/libfc/fc_fcp.c | 11 +++++++----
->   1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/scsi/libfc/fc_fcp.c b/drivers/scsi/libfc/fc_fcp.c
-> index bf2cc9656e191..e11d4f002bd49 100644
-> --- a/drivers/scsi/libfc/fc_fcp.c
-> +++ b/drivers/scsi/libfc/fc_fcp.c
-> @@ -289,6 +289,7 @@ static int fc_fcp_send_abort(struct fc_fcp_pkt *fsp)
->   /**
->    * fc_fcp_retry_cmd() - Retry a fcp_pkt
->    * @fsp: The FCP packet to be retried
-> + * @status_code: The FCP status code to set
->    *
->    * Sets the status code to be FC_ERROR and then calls
->    * fc_fcp_complete_locked() which in turn calls fc_io_compl().
-> @@ -580,7 +581,7 @@ static void fc_fcp_recv_data(struct fc_fcp_pkt *fsp, struct fc_frame *fp)
->   /**
->    * fc_fcp_send_data() - Send SCSI data to a target
->    * @fsp:      The FCP packet the data is on
-> - * @sp:	      The sequence the data is to be sent on
-> + * @seq:      The sequence the data is to be sent on
->    * @offset:   The starting offset for this data request
->    * @seq_blen: The burst length for this data request
->    *
-> @@ -1283,7 +1284,7 @@ static int fc_fcp_pkt_abort(struct fc_fcp_pkt *fsp)
->   
->   /**
->    * fc_lun_reset_send() - Send LUN reset command
-> - * @data: The FCP packet that identifies the LUN to be reset
-> + * @t: Timer context used to fetch the FSP packet
->    */
->   static void fc_lun_reset_send(struct timer_list *t)
->   {
-> @@ -1409,7 +1410,7 @@ static void fc_fcp_cleanup(struct fc_lport *lport)
->   
->   /**
->    * fc_fcp_timeout() - Handler for fcp_pkt timeouts
-> - * @data: The FCP packet that has timed out
-> + * @t: Timer context used to fetch the FSP packet
->    *
->    * If REC is supported then just issue it and return. The REC exchange will
->    * complete or time out and recovery can continue at that point. Otherwise,
-> @@ -1691,6 +1692,7 @@ static void fc_fcp_rec_error(struct fc_fcp_pkt *fsp, struct fc_frame *fp)
->   /**
->    * fc_fcp_recovery() - Handler for fcp_pkt recovery
->    * @fsp: The FCP pkt that needs to be aborted
-> + * @code: The FCP status code to set
->    */
->   static void fc_fcp_recovery(struct fc_fcp_pkt *fsp, u8 code)
->   {
-> @@ -1709,6 +1711,7 @@ static void fc_fcp_recovery(struct fc_fcp_pkt *fsp, u8 code)
->    * fc_fcp_srr() - Send a SRR request (Sequence Retransmission Request)
->    * @fsp:   The FCP packet the SRR is to be sent on
->    * @r_ctl: The R_CTL field for the SRR request
-> + * @offset: The SRR relative offset
->    * This is called after receiving status but insufficient data, or
->    * when expecting status but the request has timed out.
->    */
-> @@ -1851,7 +1854,7 @@ static inline int fc_fcp_lport_queue_ready(struct fc_lport *lport)
->   /**
->    * fc_queuecommand() - The queuecommand function of the SCSI template
->    * @shost: The Scsi_Host that the command was issued to
-> - * @cmd:   The scsi_cmnd to be executed
-> + * @sc_cmd:   The scsi_cmnd to be executed
->    *
->    * This is the i/o strategy routine, called by the SCSI layer.
->    */
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+From: Biwen Li <biwen.li@nxp.com>
 
-Cheers,
+Fix value of shunt-resistor property.
+The LX2160A-RDB has 500 uOhm shunt for
+the INA220, not 1000 uOhm. Unless
+it will get wrong power consumption(1/2)
 
-Hannes
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+---
+v2:
+	- update description
+
+ arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+index 22d0308..54fe8cd 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+@@ -121,7 +121,7 @@
+ 			power-monitor@40 {
+ 				compatible = "ti,ina220";
+ 				reg = <0x40>;
+-				shunt-resistor = <1000>;
++				shunt-resistor = <500>;
+ 			};
+ 		};
+ 
 -- 
-Dr. Hannes Reinecke            Teamlead Storage & Networking
-hare@suse.de                               +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+2.7.4
+
