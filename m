@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE41D21E43F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 02:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF20421E444
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 02:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgGNAC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 20:02:28 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42419 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726629AbgGNAC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 20:02:27 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B5LL869l6z9sQt;
-        Tue, 14 Jul 2020 10:02:24 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594684945;
-        bh=Xp+Eo/m3I8eKIUvfRsFIWO3rOV+11Cuyv/nck9WM+1k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iyGCw9x7WPqiMb/+Ny/AL533qX2ZAITiJp5jcnrBsWXJxmzi8Qe/SaUCEtgI/jf5a
-         0gx11CyiNe5OoRM3PiPBZMQ7rUzC+0ndD5Pu3cCPLUwHQefkwyHFFgVorQXz+q0XB+
-         POOYHPNb0b0ndM2QTQnSpJSnRLfCt2YXh0L+uN29mP9XVEOBKd74L3r244E+f/Jaom
-         tT1dS5PDZTOcZAcP0idp0smLbwzU8Mj54rzWGYuaWuPNRw2rt6+ZOCqtgL9L+quGSq
-         9TTWLwto5GVFadE9zXZqth8NfLDKsdB42vnJ/hE54AffrfhI57ByCk9CUbpxjd0d9Y
-         YhGwyOD0fp3Cw==
-Date:   Tue, 14 Jul 2020 10:02:22 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <seanpaul@chromium.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>
-Subject: linux-next: Fixes tag needs some work in the drm-msm tree
-Message-ID: <20200714100222.46632daa@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/CWVboPbRpdIQzY+9SpYhZlC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726850AbgGNADk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 20:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726150AbgGNADj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 20:03:39 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB51C061755;
+        Mon, 13 Jul 2020 17:03:39 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 43BF71297FB30;
+        Mon, 13 Jul 2020 17:03:39 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 17:03:38 -0700 (PDT)
+Message-Id: <20200713.170338.67090817978996414.davem@davemloft.net>
+To:     geert@linux-m68k.org
+Cc:     kuba@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: hso: Fix debug compile warning on sparc32
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200713110513.10651-1-geert@linux-m68k.org>
+References: <20200713110513.10651-1-geert@linux-m68k.org>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=iso-8859-7
+Content-Transfer-Encoding: base64
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 13 Jul 2020 17:03:39 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/CWVboPbRpdIQzY+9SpYhZlC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-In commit
-
-  736fe23d544f ("drm/msm/dpu: request for display color blocks based on hw =
-catalog entry")
-
-Fixes tag
-
-  Fixes: e47616df008b ("drm/msm/dpu: add support for color processing
-
-has these problem(s):
-
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
-
-Please do not truncate or split Fixes tag lines.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/CWVboPbRpdIQzY+9SpYhZlC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8M9g4ACgkQAVBC80lX
-0Gx/qQf/Y0gIaG1+QSAWd63BiAFiwNhPDvltXSLUT2gjT4LdpKQjCfWFxHjAjmPI
-8nZpg1hlLYvUfH0x7FYM6+oyZSsO2oyz4rS2dThr+ccYGI4fLcUuhT+CdhY9tag8
-PBfMedWdA6Ue2WCXcOoEIWE2pKWk5Rxtuct+icn1F+sjpP3VifWJlnTnPmhkxcIB
-wf/tUmRdJXBHh+kdRqtdvjDeQziAln19DpzmwNl+JIQPNSzTAZ84ayWLGKOSqGxk
-LQq89/IFmdm2BKMEyoh3h3VGyuFXx5tWOEqzltB6j8GFBHBWeIZSsEudZILMWLrW
-CJ6r9Xsc4tMbJ5u6sV4IC1tSQ5oQMg==
-=iaYL
------END PGP SIGNATURE-----
-
---Sig_/CWVboPbRpdIQzY+9SpYhZlC--
+RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4NCkRhdGU6IE1v
+biwgMTMgSnVsIDIwMjAgMTM6MDU6MTMgKzAyMDANCg0KPiBPbiBzcGFyYzMyLCB0Y2ZsYWdfdCBp
+cyAidW5zaWduZWQgbG9uZyIsIHVubGlrZSBvbiBhbGwgb3RoZXINCj4gYXJjaGl0ZWN0dXJlcywg
+d2hlcmUgaXQgaXMgInVuc2lnbmVkIGludCI6DQo+IA0KPiAgICAgZHJpdmVycy9uZXQvdXNiL2hz
+by5jOiBJbiBmdW5jdGlvbiChaHNvX3NlcmlhbF9zZXRfdGVybWlvc6I6DQo+ICAgICBpbmNsdWRl
+L2xpbnV4L2tlcm5fbGV2ZWxzLmg6NToxODogd2FybmluZzogZm9ybWF0IKElZKIgZXhwZWN0cyBh
+cmd1bWVudCBvZiB0eXBlIKF1bnNpZ25lZCBpbnSiLCBidXQgYXJndW1lbnQgNCBoYXMgdHlwZSCh
+dGNmbGFnX3Qge2FrYSBsb25nIHVuc2lnbmVkIGludH2iIFstV2Zvcm1hdD1dDQo+ICAgICBkcml2
+ZXJzL25ldC91c2IvaHNvLmM6MTM5MzozOiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8goWhz
+b19kYmeiDQo+ICAgICAgICBoc29fZGJnKDB4MTYsICJUZXJtaW9zIGNhbGxlZCB3aXRoOiBjZmxh
+Z3MgbmV3WyVkXSAtIG9sZFslZF1cbiIsDQo+ICAgICAgICBefn5+fn5+DQo+ICAgICBpbmNsdWRl
+L2xpbnV4L2tlcm5fbGV2ZWxzLmg6NToxODogd2FybmluZzogZm9ybWF0IKElZKIgZXhwZWN0cyBh
+cmd1bWVudCBvZiB0eXBlIKF1bnNpZ25lZCBpbnSiLCBidXQgYXJndW1lbnQgNSBoYXMgdHlwZSCh
+dGNmbGFnX3Qge2FrYSBsb25nIHVuc2lnbmVkIGludH2iIFstV2Zvcm1hdD1dDQo+ICAgICBkcml2
+ZXJzL25ldC91c2IvaHNvLmM6MTM5MzozOiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8goWhz
+b19kYmeiDQo+ICAgICAgICBoc29fZGJnKDB4MTYsICJUZXJtaW9zIGNhbGxlZCB3aXRoOiBjZmxh
+Z3MgbmV3WyVkXSAtIG9sZFslZF1cbiIsDQo+ICAgICAgICBefn5+fn5+DQo+IA0KPiBBcyAidW5z
+aWduZWQgbG9uZyIgaXMgMzItYml0IG9uIHNwYXJjMzIsIGZpeCB0aGlzIGJ5IGNhc3RpbmcgYWxs
+IHRjZmxhZ190DQo+IHBhcmFtZXRlcnMgdG8gInVuc2lnbmVkIGludCIuDQo+IFdoaWxlIGF0IGl0
+LCB1c2UgIiV1IiB0byBmb3JtYXQgdW5zaWduZWQgbnVtYmVycy4NCj4gDQo+IFNpZ25lZC1vZmYt
+Ynk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+DQoNCkFwcGxpZWQs
+IHRoYW5rcy4NCg==
