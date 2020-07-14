@@ -2,117 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B42721EBF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9019B21EC08
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgGNIzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 04:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgGNIzP (ORCPT
+        id S1726859AbgGNJB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:01:58 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:35646 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgGNJB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 04:55:15 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463CCC061794;
-        Tue, 14 Jul 2020 01:55:15 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id dp18so20680888ejc.8;
-        Tue, 14 Jul 2020 01:55:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BYpCX/p81FQOHpa4gqb+UE0SHcspB7H1zWvoCgfKkuU=;
-        b=cAYTZqW8l+uFf2mrwz8ziuGrMu/fOroZuQlZenYADb6Bjbyd7idbvTE3Iozi7BrznA
-         JIEZkDHiyh7tA3LztNUWuoONszuymZTJNtOXrh6er5WWJLUPBFniox7NBz4kPhAD1/tI
-         5rMYD/SP/IHfHFb5zjsPvk4yftUgFDiYGnyCMLeoG0o+BDDVB+wKO069x6/14j2dWSt8
-         sVkWzOi7nh4p3XwtNQhpqtWLi4JfDuf9v0wOU8AoYmkJM9kaH8B6ZMBGoQWJsXiBpfy9
-         6ASZ6gX9BgYdn5ojXMV5Z8QolKqrV7aoVAN4GCqnDAxCe9qNfeQg0euYp37EXLY0e+0Q
-         VJGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BYpCX/p81FQOHpa4gqb+UE0SHcspB7H1zWvoCgfKkuU=;
-        b=nPfFsqrRYocy0Qu/m03LNLUoxZRnvLc6sVjFjCNCbQhcBBfLqaOyYguwO1BJH5cZOx
-         PyJcG1Zmbb96NNTOtomPlDPcsliwDWRHylZi4gFXsKeqqEohSiz7MEe3XBxTvp+AjLc8
-         twb5COJFSNlRTV5V3R4EynUcmckWO7HfSXY7FO22+gIztvwK0pKxGj/zdmzuAsit44XI
-         bAuLMQZ1pCgcpW2cCEPzJM9M34mU3fyQHacWOTvQAO7i3bSrf8JW32yxV33GfzeKmljB
-         NmCobFuA1ZhId8C9h89hZGpruqrLLPjT30wIFnWpn03ZCuiaYhpdPu8sFbUGcV224IlU
-         PBRg==
-X-Gm-Message-State: AOAM533r6XyVH5rLX/Tq8OCG+D+JF0iuxrrrf3jS3fZY4KzUqqIN/PLH
-        Cq/FhcoKRdSgvAGxlmslnms=
-X-Google-Smtp-Source: ABdhPJycnijtvoHofHTPhh5AKxCI5zDgniYWn7cKHiQYJNanzDYohFgfiNCy1BVH50hsgdN4yVaCsw==
-X-Received: by 2002:a17:906:81d2:: with SMTP id e18mr3431938ejx.341.1594716913971;
-        Tue, 14 Jul 2020 01:55:13 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id jo25sm11922404ejb.116.2020.07.14.01.55.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 01:55:12 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 10:55:11 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     robh+dt@kernel.org, treding@nvidia.com, jonathanh@nvidia.com,
-        lorenzo.pieralisi@arm.com, amurray@thegoodpenguin.co.uk,
-        bhelgaas@google.com, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH] arm64: tegra: Re-order PCIe aperture mappings
-Message-ID: <20200714085511.GB141356@ulmo>
-References: <20200706171454.11316-1-vidyas@nvidia.com>
+        Tue, 14 Jul 2020 05:01:56 -0400
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 14F9E8011F;
+        Tue, 14 Jul 2020 21:01:53 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1594717313;
+        bh=QZhAokAJFsC6uIiQS0wezeU8N66XgeQ4QescCeZU9us=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=iR8qyw0JVnHCYF0qT+HKOSZVqQ+bwMjPzy253eF1XtD2w4+5qL+5BBN4vQsfFCK8x
+         EBtIVCjwT0faaUxDL8EQgayYEo4soJeTeqOXQD3y20JcrG/l1HkAIkd4N7Y3QoO1A/
+         pm61enhuUIbpEqj6+jddx+PwJbuWrJNoeRO3vc9FuV1JEnekELWBzYyviBNoAIOcKi
+         MYY/Ln0D4K4suz6nnze2bXQIOp8eSFIAGSFZoshBki0/mdpKsAnPtyjcICy7vXrS5I
+         mxb0K+97RRNFnT89JojqsymFJVgw6K/QFTFGbc6Xg/REIbgHesAQD1wMgcn3ve+3kO
+         zOvwvXSbGUEew==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f0d74720002>; Tue, 14 Jul 2020 21:01:38 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Tue, 14 Jul 2020 20:45:25 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.006; Tue, 14 Jul 2020 20:45:25 +1200
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: procfs VmFlags table missing from online docs
+Thread-Topic: procfs VmFlags table missing from online docs
+Thread-Index: AQHWWZ04Axuc9KTu2km08OQff6fL16kFzV0AgAAseoA=
+Date:   Tue, 14 Jul 2020 08:45:25 +0000
+Message-ID: <a8747dde-32d8-bbfd-fe73-662827abd60e@alliedtelesis.co.nz>
+References: <8abafee9-e34b-45f6-19a7-3f043ceb5537@alliedtelesis.co.nz>
+ <6ee41c18-934e-26c2-a875-3d9e4c700c6c@infradead.org>
+In-Reply-To: <6ee41c18-934e-26c2-a875-3d9e4c700c6c@infradead.org>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <171F16C1FB480043918082C088BBED02@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5/uDoXvLw7AC5HRs"
-Content-Disposition: inline
-In-Reply-To: <20200706171454.11316-1-vidyas@nvidia.com>
-User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---5/uDoXvLw7AC5HRs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jul 06, 2020 at 10:44:54PM +0530, Vidya Sagar wrote:
-> Re-order Tegra194's PCIe aperture mappings to have IO window moved to
-> 64-bit aperture and have the entire 32-bit aperture used for accessing
-> the configuration space. This makes it to use the entire 32MB of the 32-b=
-it
-> aperture for ECAM purpose while booting through ACPI.
->=20
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> ---
->  arch/arm64/boot/dts/nvidia/tegra194.dtsi | 36 ++++++++++++------------
->  1 file changed, 18 insertions(+), 18 deletions(-)
-
-I've had to manually apply this because it conflicts with some of the
-cleanups I've been doing to the DTS files. I'll push it out later, so
-it'd be good if you could check that I've applied it correctly.
-
-Thanks,
-Thierry
-
---5/uDoXvLw7AC5HRs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl8Ncu0ACgkQ3SOs138+
-s6E9+w/+JjZPchwPj6idBmuMBbMOr4W0imsNtOOmtge31wagIjngpHj1pNYFjZ42
-qAgefyMb30w8IWMP8tkKHby4+UOXYE9mb6lqiertUynhPRCQDVu1+o3oWPRnmFd6
-ajnTN7/9ZhXJ83NmYm/h+0Zqk/2mvg6P2DjAdOkw2ioYGmfI9g6gBh6E5ypoC+sV
-Lr5VntibAYLU8+zGjkfg4yyMHHM/ljG4h6F/ybVdfkM0kqomUMkE7TcustiXXosy
-pdwUv53VDf2z1FRs7UbXzZSXY8G7Xo9ZarbUtjpf5+iOr1uys484/PU60qtAY0MC
-gaWp7qRtkYVDjJUNrWKGF8H0P5BNKRPQ8Nd9dyBP/QMhos8e78C6SaWHTbdCJhXr
-FHys9ND/Lvv9lBEq8zG+WvDuhZlbAzjYv0mQ0qn1lDQS45ObJsxnj2Ztg8q91K4W
-gWBmNyiltbRGlSYMFDeWSbvSK7PBNzrg0If3GOh2Ok5nQb3DlxQIBjmnTGeVPrv7
-lS5VjzyLQgxhsoTGURMBLqFICKV5gtNBhMc6FGMzK5QCcjgzdzlP6HeO/feXhYnn
-28gsh8VzOVdIkoyMLZljOp4XsNiQi2sEnG6jGJZjaIB/bt3di/hT0IZkSVt+EjK/
-ilRWmKI08vgWXbM+EnVILaUJDVHN50Zqi41IYhWhyEMaReFdf6s=
-=jJwZ
------END PGP SIGNATURE-----
-
---5/uDoXvLw7AC5HRs--
+DQpPbiAxNC8wNy8yMCA2OjA2IHBtLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+IE9uIDcvMTMvMjAg
+MTA6MTEgUE0sIENocmlzIFBhY2toYW0gd3JvdGU6DQo+PiBIaSwNCj4+DQo+PiBJIHdhcyBqdXN0
+IGJyb3dzaW5nDQo+PiBodHRwczovL3d3dy5rZXJuZWwub3JnL2RvYy9odG1sL2xhdGVzdC9maWxl
+c3lzdGVtcy9wcm9jLmh0bWwNCj4+DQo+PiBUaGUgIlZtRmxhZ3MiIGRlc2NyaXB0aW9uIHNlZW1z
+IHRvIGJlIG1pc3NpbmcgYSB0YWJsZS4gSXQncyB0aGVyZSBpbg0KPj4gRG9jdW1lbnRhdGlvbi9m
+aWxlc3lzdGVtcy9wcm9jLnJzdCBzbyBJIGFzc3VtZSBpdCdzIHNvbWUgc3BoaW54L3JzdA0KPj4g
+cHJvYmxlbS4gUG9zc2libHkgdGhlIHRhYmxlIGlzIG92ZXIgaW5kZW50ZWQ/DQo+IFdvdy4gSXQg
+c2tpcHMgdGhlIHRhYmxlIGNvbXBsZXRlbHkuDQo+DQo+IEkgdHJpZWQgYSBjb3VwbGUgb2YgdGhp
+bmdzIHRoYXQgZGlkIG5vdCBoZWxwLg0KSSB0aGluayBpdCdzIGp1c3QgdGhlIHN0cmF5IC0gaW4g
+dGhlICJidCAtIGFybTY0IiBsaW5lIHBhdGNoIGluY29taW5nLg0KPj4gQW55d2F5IEkgdGhvdWdo
+dCBJJ2QgbGV0IHNvbWVvbmUga25vdy4NCj4gVGhhbmtzLg0KPg0KPj4gUmVnYXJkcywNCj4+IENo
+cmlzDQo+
