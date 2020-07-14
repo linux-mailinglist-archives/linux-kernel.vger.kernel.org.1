@@ -2,135 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DDC21E666
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 05:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF0821E662
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 05:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgGNDid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 23:38:33 -0400
-Received: from mx06.melco.co.jp ([192.218.140.146]:52982 "EHLO
-        mx06.melco.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgGNDid (ORCPT
+        id S1726782AbgGNDhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 23:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbgGNDhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 23:38:33 -0400
-Received: from mr06.melco.co.jp (mr06 [133.141.98.164])
-        by mx06.melco.co.jp (Postfix) with ESMTP id 68FCE3A4497;
-        Tue, 14 Jul 2020 12:38:31 +0900 (JST)
-Received: from mr06.melco.co.jp (unknown [127.0.0.1])
-        by mr06.imss (Postfix) with ESMTP id 4B5R7W2chpzRjpb;
-        Tue, 14 Jul 2020 12:38:31 +0900 (JST)
-Received: from mf03_second.melco.co.jp (unknown [192.168.20.183])
-        by mr06.melco.co.jp (Postfix) with ESMTP id 4B5R7W2JXMzRk9B;
-        Tue, 14 Jul 2020 12:38:31 +0900 (JST)
-Received: from mf03.melco.co.jp (unknown [133.141.98.183])
-        by mf03_second.melco.co.jp (Postfix) with ESMTP id 4B5R7W2D8pzRjwN;
-        Tue, 14 Jul 2020 12:38:31 +0900 (JST)
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (unknown [104.47.125.58])
-        by mf03.melco.co.jp (Postfix) with ESMTP id 4B5R7V6l9QzRjw6;
-        Tue, 14 Jul 2020 12:38:30 +0900 (JST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OiM19rwF4jQQbQr/2u+uEmPHaU+LFGrCngaTZZC9PC7YgVFrQ1oDuHekoVLKolo8LbgWM6dYR15/9HfpDsmhZcAJx7FcxLQWDRX9vHb5muL4Q3kkVZuRnwQp+c1bwlp6CCIHgCIyn5BzJclLgenwqxepPQd4bMQSLSrhAu57tFkuvIwlquED2VqkGRT9h4IPYfW4Kp64Y+Qn82fS4OjZLSJ8l+aPlQSE04U96e2Rkwgdq/FkKU97dpBYkM9QWtWkk0PcG34gUTLr7Hgm/qR3F09La9lnmKpJz5WkFVNyuaovgM5EmllcojEC4yoM236B7rxIjKyCQIQBXKlPH5HLrQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vhB7ud2Xu9rJsJecsm3x5bP9VkLaZ1GXmA/UUYNG6B4=;
- b=YexOxTBTJ2jBBDhGqJfUvRqI856Lj3iq06CpGxZcmF11keMZ+M1VliJQvfRqk8h11CtL4PfQiyilo+sIDDHcMFsXLrhiOIxKA+X2WWA3QP78SS43K/YRGPp7eFVtZxrvdb0J7TeUKsooeWxzQWLeU8c4Yxap1IOcFzCjKlS0d0ieaJy9LnTzDV0lTZvuZDnnmgJ1LzxBfJQ2FEpCbeWr444OTDIFLUXUd5iyV3gTofMLPdGFdoD00Sjv62Ki4CPhjInNt0ITJcOxSZ4zYNfqLgiH4vOyMpsHCkSTG/tm0lq4KU/EPcwTyEhe8IdezJemun5DIujoRXyNRM1EVQ1BZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dc.mitsubishielectric.co.jp; dmarc=pass action=none
- header.from=dc.mitsubishielectric.co.jp; dkim=pass
- header.d=dc.mitsubishielectric.co.jp; arc=none
+        Mon, 13 Jul 2020 23:37:43 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621F7C061755;
+        Mon, 13 Jul 2020 20:37:43 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id t4so13113061iln.1;
+        Mon, 13 Jul 2020 20:37:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mitsubishielectricgroup.onmicrosoft.com;
- s=selector2-mitsubishielectricgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vhB7ud2Xu9rJsJecsm3x5bP9VkLaZ1GXmA/UUYNG6B4=;
- b=Ym4MJsGvYziYF4yh/YOGRIwjiWIEcX+tSh4Vs37y6gEReIBVkLS0+7UwQ+aVgYPKKYdv9oUnUrWCMIX0oZp+lEYY3/e0eatuRLN+GlKZBGvHoTnxKzZmpiiDBe/l89CHZlH/Hxw6BuDzLg1tHeSAAKSb9kDlaM7AH+Fo2ianPKQ=
-Received: from TY2PR01MB2875.jpnprd01.prod.outlook.com (2603:1096:404:6b::11)
- by TY2PR01MB4425.jpnprd01.prod.outlook.com (2603:1096:404:11c::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Tue, 14 Jul
- 2020 03:38:29 +0000
-Received: from TY2PR01MB2875.jpnprd01.prod.outlook.com
- ([fe80::51f8:6ee3:3a68:20e6]) by TY2PR01MB2875.jpnprd01.prod.outlook.com
- ([fe80::51f8:6ee3:3a68:20e6%3]) with mapi id 15.20.3174.025; Tue, 14 Jul 2020
- 03:38:29 +0000
-From:   "Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp" 
-        <Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
-To:     'Sungjong Seo' <sj1557.seo@samsung.com>
-CC:     "Mori.Takahiro@ab.MitsubishiElectric.co.jp" 
-        <Mori.Takahiro@ab.MitsubishiElectric.co.jp>,
-        "Motai.Hirotaka@aj.MitsubishiElectric.co.jp" 
-        <Motai.Hirotaka@aj.MitsubishiElectric.co.jp>,
-        'Namjae Jeon' <namjae.jeon@samsung.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC]PATCH] exfat: integrates dir-entry getting and validation
-Thread-Topic: [RFC]PATCH] exfat: integrates dir-entry getting and validation
-Thread-Index: AQHWWLwPRt+8581iI0We4lRfkrRHoKkGVDbQ
-Date:   Tue, 14 Jul 2020 03:35:57 +0000
-Deferred-Delivery: Tue, 14 Jul 2020 03:38:00 +0000
-Message-ID: <TY2PR01MB2875E617CBA988EEF65A7DD390610@TY2PR01MB2875.jpnprd01.prod.outlook.com>
-References: <CGME20200626061009epcas1p24585a6472e7103dc878bf9fc1d0f7d12@epcas1p2.samsung.com>
-        <20200626060947.24709-1-kohada.t2@gmail.com>
- <4a6201d658bc$09e3fa80$1dabef80$@samsung.com>
-In-Reply-To: <4a6201d658bc$09e3fa80$1dabef80$@samsung.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-melpop: 1
-authentication-results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none
- header.from=dc.MitsubishiElectric.co.jp;
-x-originating-ip: [121.80.0.163]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7827d877-6a80-4ed3-8a20-08d827a7600f
-x-ms-traffictypediagnostic: TY2PR01MB4425:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TY2PR01MB44251C748C04CA5A4F5BF13590610@TY2PR01MB4425.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: M8AwGQhcbGEF5bsJN+ZcuNN05UzjhNcIUJAPSyiBbmH+VvTDkkDdIlX9vy2s5QdmSMxjosdd0HfuUtH/Jb5vmFLuNWrDCj6SKrdR0tZiZ+b7bM5aJHn9fVEScG+Dm4BFaFfl7yavM8HnJUqjpPQaGrVtR/A6YqXpecSno6lvmJUJZK1EjOeDcteetpZjowxVic8KionoO2dk6hJsjNhxW6jA44t/r9FfV0xbnr7SuR6xkjb07kMtLTIQn9Fx9o+e6E+ot6PO7mx9ZGn8QpdLKdCRcRkfkEwzRPxmJDTliIoC65BWSdthVqMlWQH7wjytvKZFyq6jmHydjn2UEEQnww==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB2875.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(396003)(376002)(366004)(346002)(136003)(9686003)(83380400001)(186003)(86362001)(66556008)(66476007)(64756008)(76116006)(66946007)(26005)(66446008)(8676002)(54906003)(71200400001)(316002)(6666004)(478600001)(55016002)(6506007)(33656002)(7696005)(2906002)(6916009)(5660300002)(52536014)(8936002)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 3mgQEe71m9MZ2qC7aEBNbdjl663nw/FLjYWB9ELR1NeSizcQ2aHMPthSagWxYa5NCKH2vGvB709HFp/RZADlpcqQmWQR/6anM1+lXXmQUgvxsVrXaEm4QlQAQ0Zh9YfoQEPKNaCa3z6Eb2PCvofecsPdzv1KPP11l+MuvbOFje7jd03IW49ywKue5l+6Eek+gTGgvB/xRMXs4n/Ko5xIIoblRDiCR0ofJgu9qjrazzdB80EOUYU6LaAm1TFtCxwVD+zzICLoBermGUjbzMtL6RBpSzdTcdR2L0t+9ZbxCA664iUYeBid18NBlX6PRowvfsDBIyuEXTTI8tnQWy/xWJyf/oNTWmuRxMHnKYhhFMKIUuo/AYd/mpqCeKTKWWsej26TeHiRhwn56MgyXx84H8lZsMOd8W27RyiPL5CU6shT/fGeRvuU2/CGT2YBDpIHd+8W4rpN+IVJ17c14LIdlWRy7U5La3nVqY8eaFHGrHg=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=x5kA50WCYmAo+Q8432Sy1VWAEloJEHU1E0inGU7UJt4=;
+        b=NFadGpuFjJ3tv7FOJrDxOb09SxgAqSP6xTut0HFSaivRjSIvWM4zedl+yOsvzbHyGp
+         GZ6V8je0HHQQ/gAH4Ajffl0VN8ZchHbXb8mj+jkCQvVV9ymE5qlRxXvdFzVA6CJu1qCL
+         3Q2HvrpVvjDeviw41DVzRWAyMqRI+/Hu33o7yypqALpNrQz3i2GSaO0Vju0oGbucTSDm
+         C4YO1Sb2E1/qkZ+MoLUFnSRdc6Tg8n3SbvkV+yKtNIixJvvtJc2yPGP2P30xWvBB/dKc
+         0hxWjARpQYsrxL8c6dYfo7Wea3UrF6zqRUhXAbflAcf+HaGEGFC0VdFpPZnVv09CEtP7
+         7BZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=x5kA50WCYmAo+Q8432Sy1VWAEloJEHU1E0inGU7UJt4=;
+        b=MVWK2ypUrAEARPY/oAMPjxIhsyK3aBAaAf/1QTY6B2AmS8SCknJQ89l5Xts2SVWx0a
+         P/eFPK2RScorPnoFrPKcxAQvQq0yS7mSmLEFT3S4aBHyK5O1vzqEGxa5VUCu1FW5/YM5
+         vDmV/OSEWPKks0oesZnpBQlrnS8dXhJYZD+Fi2NBfCY8oA6xZLF2U4JsUCt27f/Ehjxe
+         Di5JidEKpaaO99hsZeUjfQyfkCv//TpqC5dmVLlQkQ2n/cQJHZFTae6A47ZhgtJwjYjV
+         WpQl1R0UjlObgbf5x6mwU/QQZxOkjB8Dvo6qJbvExlXbX87utKCMyp6NWjbaBRWK9/6F
+         SebA==
+X-Gm-Message-State: AOAM530C9SMd6XH3yIGXApUmChY30uJ1/+oFPw15rxK8ic6DuufZM/++
+        NH3Nl8EjKo3JTw9bH04sjhJ+T76KYTMTjHkB3yMhLTWzYo00/A==
+X-Google-Smtp-Source: ABdhPJwt2i4uMXnI/aDf/IMCkp+fkfiR8T1ZV0Xq5jPXfVkLqk1/z6xJceU91wFxGtS0OwHxE8OGOEvpPZuhVEc/yDo=
+X-Received: by 2002:a92:d6d2:: with SMTP id z18mr2855668ilp.272.1594697862742;
+ Mon, 13 Jul 2020 20:37:42 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: dc.MitsubishiElectric.co.jp
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB2875.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7827d877-6a80-4ed3-8a20-08d827a7600f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2020 03:38:29.6438
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c5a75b62-4bff-4c96-a720-6621ce9978e5
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sAiAT1+0dZHru98OHd/XcHYjTQ7ARkK3pjUNH/TBy2kUqBo0wcRK34mpzR/rN4O1TDDRM12+cOxmoT/rxOAwUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB4425
+References: <20200702172714.158786-1-pop.adrian61@gmail.com> <20200702172714.158786-2-pop.adrian61@gmail.com>
+In-Reply-To: <20200702172714.158786-2-pop.adrian61@gmail.com>
+From:   Hua Dillon <dillonhua@gmail.com>
+Date:   Tue, 14 Jul 2020 11:37:30 +0800
+Message-ID: <CAPTRvHm0gX=myLBeztq-7q8hMGZ+a0pH_ZB8hH+RZtSSsqVGDw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ARM: dts: stm32: Enable MIPI DSI display support.
+To:     Adrian Pop <pop.adrian61@gmail.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGZvciB5b3VyIHJlcGx5Lg0KDQo+ID4NCj4gPiAgCS8qIHZhbGlkaWF0ZSBjYWNoZWQg
-ZGVudHJpZXMgKi8NCj4gPiAtCWZvciAoaSA9IDE7IGkgPCBudW1fZW50cmllczsgaSsrKSB7DQo+
-ID4gLQkJZXAgPSBleGZhdF9nZXRfZGVudHJ5X2NhY2hlZChlcywgaSk7DQo+ID4gLQkJaWYgKCFl
-eGZhdF92YWxpZGF0ZV9lbnRyeShleGZhdF9nZXRfZW50cnlfdHlwZShlcCksICZtb2RlKSkNCj4g
-DQo+ID4gKwlmb3IgKGkgPSAxOyBpIDwgZXMtPm51bV9lbnRyaWVzOyBpKyspIHsNCj4gPiArCQlp
-ZiAoIWV4ZmF0X2dldF92YWxpZGF0ZWRfZGVudHJ5KGVzLCBpLCBUWVBFX1NFQ09OREFSWSkpDQo+
-ID4gIAkJCWdvdG8gZnJlZV9lczsNCj4gPiAgCX0NCj4gPiArCWlmICghZXhmYXRfZ2V0X3ZhbGlk
-YXRlZF9kZW50cnkoZXMsIDEsIFRZUEVfU1RSRUFNKSkNCj4gPiArCQlnb3RvIGZyZWVfZXM7DQo+
-IA0KPiBJdCBsb29rcyBiZXR0ZXIgdG8gbW92ZSBjaGVja2luZyBUWVBFX1NUUkVBTSBhYm92ZSB0
-aGUgZm9yLWxvb3AuDQo+IEFuZCB0aGVuIGZvci1sb29wIHNob3VsZCBzdGFydCBmcm9tIGluZGV4
-IDIuDQoNCk9LLiBJJ2xsIGNoYW5nZSB0aGF0LiANCkhvd2V2ZXIsIHRoaXMgZm9yLWxvb3AgaXMg
-Y29uc2lkZXJpbmcgY2hhbmdpbmcgdG8gY2hlY2tzdW0gdmVyaWZpY2F0aW9uLg0KDQoNCj4gQlRX
-LCBkbyB5b3UgdGhpbmsgaXQgaXMgZW5vdWdoIHRvIGNoZWNrIG9ubHkgVFlQRV9TRUNPTkRBUlkg
-bm90IFRZUEUgTkFNRT8NCj4gQXMgeW91IG1pZ2h0IGtub3csIEZJTEUsIFNUUkVBTSBhbmQgTkFN
-RSBlbnRyaWVzIG11c3QgYmUgY29uc2VjdXRpdmUgaW4gb3JkZXIuDQoNCkkgdGhpbmsgaXQgaXMg
-YXBwcm9wcmlhdGUgYXMgYSBjaGVjayBoZXJlLg0KVFlQRV9OQU1FIHN0YXJ0aW5nIHdpdGhvdXQg
-aW5kZXg9MiBkb2Vzbid0IGFjY2VwdCBpbiBleGZhdF9nZXRfdW5pbmFtZV9mcm9tX2V4dF9lbnRy
-eSgpLg0KSG93ZXZlciwgSSB0aGluayB0aGlzIGlzIG5vdCBlbm91Z2guDQpUaGlzIGlzIGJlY2F1
-c2UgdGhlcmUgaXMgbm8gY2hlY2sgZm9yIG5hbWUtbGVuZ3RoLiAoc2FtZSB3aXRoIG9yIHdpdGhv
-dXQgcGF0Y2gpDQoNCkkgd2lsbCBjaGVjayB0aGUgbmFtZS1sZW5ndGggaW4gdGhlIG5leHQob3Ig
-YWZ0ZXIgbmV4dCkgcGF0Y2guDQoNCg0KQlINCi0tLQ0KS29oYWRhIFRldHN1aGlybyA8S29oYWRh
-LlRldHN1aGlyb0BkYy5NaXRzdWJpc2hpRWxlY3RyaWMuY28uanA+DQo=
+Hi, Adrian,
+
+Just one suggestion for you.
+
+Adrian Pop <pop.adrian61@gmail.com> =E4=BA=8E2020=E5=B9=B47=E6=9C=883=E6=97=
+=A5=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=881:30=E5=86=99=E9=81=93=EF=BC=9A
+>
+> STM32f769-disco features a 4" MIPI DSI display: add support for it.
+> On Cortex-M7 DMA can't use cached memory. For this reason I use a dedicat=
+ed
+> memory pool for DMA with no-cache attribute which is located at the end o=
+f
+>  RAM.
+>
+> Signed-off-by: Adrian Pop <pop.adrian61@gmail.com>
+> ---
+>  arch/arm/boot/dts/stm32f746.dtsi      | 34 +++++++++++++++++++
+>  arch/arm/boot/dts/stm32f769-disco.dts | 49 +++++++++++++++++++++++++++
+>  2 files changed, 83 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/stm32f746.dtsi b/arch/arm/boot/dts/stm32f7=
+46.dtsi
+> index 93c063796780..577a812ca01c 100644
+> --- a/arch/arm/boot/dts/stm32f746.dtsi
+> +++ b/arch/arm/boot/dts/stm32f746.dtsi
+> @@ -48,6 +48,19 @@ / {
+>         #address-cells =3D <1>;
+>         #size-cells =3D <1>;
+>
+> +       reserved-memory {
+> +               #address-cells =3D <1>;
+> +               #size-cells =3D <1>;
+> +               ranges;
+> +
+> +               linux,dma {
+> +                       compatible =3D "shared-dma-pool";
+> +                       linux,dma-default;
+> +                       no-map;
+> +                       reg =3D <0xc0f00000 0x100000>;
+> +               };
+> +       };
+> +
+Christoph Hellwig was submit a patch for !CONFIG_MMU platforms to support m=
+map.
+the patch is : 1fbf57d05302 dma-direct: re-enable mmap for !CONFIG_MMU
+i thought there is no need to create a reserved-memory for it.
+
+>         clocks {
+>                 clk_hse: clk-hse {
+>                         #clock-cells =3D <0>;
+> @@ -75,6 +88,27 @@ clk_i2s_ckin: clk-i2s-ckin {
+>         };
+>
+>         soc {
+> +               ltdc: display-controller@40016800 {
+> +                       compatible =3D "st,stm32-ltdc";
+> +                       reg =3D <0x40016800 0x200>;
+> +                       interrupts =3D <88>, <89>;
+> +                       resets =3D <&rcc STM32F7_APB2_RESET(LTDC)>;
+> +                       clocks =3D <&rcc 1 CLK_LCD>;
+> +                       clock-names =3D "lcd";
+> +                       status =3D "disabled";
+> +               };
+> +
+> +               dsi: dsi@40016c00 {
+> +                       compatible =3D "st,stm32-dsi";
+> +                       reg =3D <0x40016c00 0x800>;
+> +                       interrupts =3D <98>;
+> +                       clocks =3D <&rcc 1 CLK_F769_DSI>, <&clk_hse>;
+> +                       clock-names =3D "pclk", "ref";
+> +                       resets =3D <&rcc STM32F7_APB2_RESET(DSI)>;
+> +                       reset-names =3D "apb";
+> +                       status =3D "disabled";
+> +               };
+> +
+>                 timer2: timer@40000000 {
+>                         compatible =3D "st,stm32-timer";
+>                         reg =3D <0x40000000 0x400>;
+> diff --git a/arch/arm/boot/dts/stm32f769-disco.dts b/arch/arm/boot/dts/st=
+m32f769-disco.dts
+> index 1626e00bb2cb..a9e81b49809c 100644
+> --- a/arch/arm/boot/dts/stm32f769-disco.dts
+> +++ b/arch/arm/boot/dts/stm32f769-disco.dts
+> @@ -153,3 +153,52 @@ &usbotg_hs {
+>         pinctrl-names =3D "default";
+>         status =3D "okay";
+>  };
+> +
+> +&dsi {
+> +       #address-cells =3D <1>;
+> +       #size-cells =3D <0>;
+> +       status =3D "okay";
+> +
+> +       ports {
+> +               #address-cells =3D <1>;
+> +               #size-cells =3D <0>;
+> +
+> +               port@0 {
+> +                       reg =3D <0>;
+> +                       dsi_in: endpoint {
+> +                               remote-endpoint =3D <&ltdc_out_dsi>;
+> +                       };
+> +               };
+> +
+> +               port@1 {
+> +                       reg =3D <1>;
+> +                       dsi_out: endpoint {
+> +                               remote-endpoint =3D <&dsi_in_panel>;
+> +                       };
+> +               };
+> +
+> +       };
+> +
+> +       panel: panel {
+> +               compatible =3D "orisetech,otm8009a";
+> +               reg =3D <0>;
+> +               reset-gpios =3D <&gpioj 15 GPIO_ACTIVE_LOW>;
+> +               status =3D "okay";
+> +
+> +               port {
+> +                       dsi_in_panel: endpoint {
+> +                               remote-endpoint =3D <&dsi_out>;
+> +                       };
+> +               };
+> +       };
+> +};
+> +
+> +&ltdc {
+> +       status =3D "okay";
+> +
+> +       port {
+> +               ltdc_out_dsi: endpoint {
+> +                       remote-endpoint =3D <&dsi_in>;
+> +               };
+> +       };
+> +};
+> --
+> 2.27.0
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
