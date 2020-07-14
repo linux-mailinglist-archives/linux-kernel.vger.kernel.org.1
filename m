@@ -2,153 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C9D21F2DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E1D21F2E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgGNNoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
+        id S1727037AbgGNNpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725981AbgGNNoO (ORCPT
+        with ESMTP id S1726050AbgGNNpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:44:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CC5C061755;
-        Tue, 14 Jul 2020 06:44:14 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 15:44:10 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594734252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tUdCMtCp1Gj3QLfmNOfgEwGCdQpToQuLKLSiq+Be9z0=;
-        b=evFcMbPvdfhG2mR+vp7Rf2lOWv3E2tWYqPH7GibmsRf68V8QGi5qE+toNq3obNDbY4DTCQ
-        tlijGD47H6v1a8CzwV4gE7bovFyu2fJZ2qVoPAouZOawUalMy5B/Chi1vvI6e0ywJFaBHl
-        aPbD+oDWuGq9ftrgZ4YLJZfmZi1rrYkYevzK53pJsbvO1g8jpIGge+hEqNyDqenDvAOgwg
-        3xkdXfrrtAr37SYzttkmcQoBf4/XbrnvF0bPbZAXrwlsIrS9QMmn8VgYm+golg3iPZBt+A
-        Qzzv6DMSjrH7BO91TEON+SmZysR1SjWHSd699TUnuRpFsx1uhP29G3FliTiXfg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594734252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tUdCMtCp1Gj3QLfmNOfgEwGCdQpToQuLKLSiq+Be9z0=;
-        b=n49Wsx7DyIEJ8wLPjvnuyiy4ej330Y3xqfY/rkav27T70w6CDVTkJdFL8CKjrE1juqKjQh
-        H7zTNtiSoTvPceDg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Stephen Berman <stephen.berman@gmx.net>, devel@acpica.org
-Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
-Message-ID: <20200714134410.3odqfvjq6rndjjf6@linutronix.de>
-References: <20200615145130.bcdidqkp6w23xb6c@linutronix.de>
- <87tuzbh482.fsf@gmx.net>
- <20200616073827.vysntufld3ves666@linutronix.de>
- <87o8pjh1i0.fsf@gmx.net>
- <20200616155501.psduxnisltitodme@linutronix.de>
- <871rmesqkk.fsf@gmx.net>
- <20200617142734.mxwfoblufmo6li5e@linutronix.de>
- <87ftatqu07.fsf@gmx.net>
- <20200624201156.xu6hel3drnhno6c3@linutronix.de>
- <87ftak2kxr.fsf@rub.de>
+        Tue, 14 Jul 2020 09:45:11 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1284C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 06:45:10 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f18so6128467wml.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 06:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=smSfqWzZJxpTQw/VqREmipLrv4Sx7Dys34CbnDlAU7E=;
+        b=o7Zg0weyxdSjrD0g+eqgXHWEfH1xUQCcFTXIZpziuL+Ae/jug80qQ+38INEd+CeNk3
+         OUVkxKRnZx5Z+CCK0LlUJpo2dx5CtPOE/PFy4Y0lIrP7fVs5Zn6L2h+f1Be3FKlF2Vj9
+         EgBToUVUcXEue4hVPV5YVs1mCyJRsct0jGA23IhQyB/fVLwQ+hBt7d3acmjW4eIyOi5y
+         HgpArNzY9DLbtCP5MG7D5EviZLSLvoQvGJ8BklMgjmnU26hb2iWIlp7lUPpYjJUWOkSu
+         3QXpJh7UZ2HMKB5/6TLKPoDaNWwSm6u8QqF+KQRI9FxzdpxYmieTSTXacwN8CGQB4Zzz
+         S2dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=smSfqWzZJxpTQw/VqREmipLrv4Sx7Dys34CbnDlAU7E=;
+        b=e0+EbS/LMn+34IsYVIqz4ksT5kSYgrLtZGqrf8+YeSY6TLD+6IXA4QNKyMzfUEiJpp
+         FD1ro0uL5Oc5kAYni6nM+GjVt2p3wUkHMGMnVSqLB/2ShajLEupbioZnFka/z1U1YP2o
+         8M7QJQX2yEBbP4srdR51xo/8TjIQxL3utQQQAMfWh0Nd6/w12KNr72hYzU0NpEWHNSA5
+         9hr5kPaKhHM2DCRAF0GfLcxvLrRtt5aLDfyYo2qu/ibvW5Z+ALJj0e4B/Pm/4hvRfue5
+         P0NkmOdkcYxwJc7GzLvYkVbvsB54OjrkkHYYkWLW6sOnTC5Vxz1/611NYdGe2zCHqeZ5
+         LOrw==
+X-Gm-Message-State: AOAM530QvCZ4ZFylvBwUd7+Uz2ddReUwbxBEvblFJx6e/n/BdUXHXepf
+        dcxY6A8GDvw333YUShUbNDbKIQ==
+X-Google-Smtp-Source: ABdhPJziCnTeG9/CGGJq5nJ2MGQ74Vd+XsXnjOYZY5B8Y+Ou8W9YV+1+WO3chgu59IGqHE4wX6r9Lg==
+X-Received: by 2002:a05:600c:2249:: with SMTP id a9mr4415026wmm.163.1594734308586;
+        Tue, 14 Jul 2020 06:45:08 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id z132sm4901605wmb.21.2020.07.14.06.45.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 06:45:07 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 14:45:04 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jacopo Mondi <jacopo@jmondi.org>
+Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH 20/25] pinctrl: pinctrl-rza1: Demote some kerneldoc
+ headers and fix others
+Message-ID: <20200714134504.GA1398296@dell>
+References: <20200713144930.1034632-1-lee.jones@linaro.org>
+ <20200713144930.1034632-21-lee.jones@linaro.org>
+ <20200714131403.eguxpnzsioxfzzko@uno.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87ftak2kxr.fsf@rub.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200714131403.eguxpnzsioxfzzko@uno.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-24 23:49:52 [+0200], Stephen Berman wrote:
+On Tue, 14 Jul 2020, Jacopo Mondi wrote:
 
-Let me summarize the thread here:
+> Hi Lee,
+> 
+> On Mon, Jul 13, 2020 at 03:49:25PM +0100, Lee Jones wrote:
+> > Some description blocks are void of any description/documentation,
+> > others are missing 'struct' identifiers, there are also a couple of
+> > misspellings of function parameter names.  Fix all of them.
+> >
+> > Fixes the following W=1 kernel build warning(s):
+> >
+> >  drivers/pinctrl/pinctrl-rza1.c:81: warning: cannot understand function prototype: 'struct rza1_bidir_pin '
+> >  drivers/pinctrl/pinctrl-rza1.c:90: warning: cannot understand function prototype: 'struct rza1_bidir_entry '
+> >  drivers/pinctrl/pinctrl-rza1.c:98: warning: cannot understand function prototype: 'struct rza1_swio_pin '
+> >  drivers/pinctrl/pinctrl-rza1.c:108: warning: cannot understand function prototype: 'struct rza1_swio_entry '
+> >  drivers/pinctrl/pinctrl-rza1.c:116: warning: cannot understand function prototype: 'struct rza1_pinmux_conf '
+> >  drivers/pinctrl/pinctrl-rza1.c:443: warning: cannot understand function prototype: 'struct rza1_mux_conf '
+> >  drivers/pinctrl/pinctrl-rza1.c:462: warning: cannot understand function prototype: 'struct rza1_port '
+> >  drivers/pinctrl/pinctrl-rza1.c:482: warning: cannot understand function prototype: 'struct rza1_pinctrl '
+> >  drivers/pinctrl/pinctrl-rza1.c:546: warning: Function parameter or member 'port' not described in 'rza1_pinmux_get_flags'
+> >  drivers/pinctrl/pinctrl-rza1.c:546: warning: Function parameter or member 'pin' not described in 'rza1_pinmux_get_flags'
+> >  drivers/pinctrl/pinctrl-rza1.c:546: warning: Function parameter or member 'func' not described in 'rza1_pinmux_get_flags'
+> >  drivers/pinctrl/pinctrl-rza1.c:546: warning: Function parameter or member 'rza1_pctl' not described in 'rza1_pinmux_get_flags'
+> >  drivers/pinctrl/pinctrl-rza1.c:575: warning: Function parameter or member 'port' not described in 'rza1_set_bit'
+> >  drivers/pinctrl/pinctrl-rza1.c:575: warning: Function parameter or member 'reg' not described in 'rza1_set_bit'
+> >  drivers/pinctrl/pinctrl-rza1.c:575: warning: Function parameter or member 'bit' not described in 'rza1_set_bit'
+> >  drivers/pinctrl/pinctrl-rza1.c:575: warning: Function parameter or member 'set' not described in 'rza1_set_bit'
+> >  drivers/pinctrl/pinctrl-rza1.c:672: warning: Function parameter or member 'rza1_pctl' not described in 'rza1_pin_mux_single'
+> >  drivers/pinctrl/pinctrl-rza1.c:672: warning: Excess function parameter 'pinctrl' description in 'rza1_pin_mux_single'
+> >
+> > Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> > Cc: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > Cc: linux-renesas-soc@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> Thanks, at the time I had no real idea about the implications of
+> documenting with kerneldoc :)
 
-On Stephen's system, ACPI informs the thermal zone driver to poll the
-temperature every second and the driver does so.
-The driver queries the temperature by invoking acpi_evaluate_integer()
-which invokes (at some point) acpi_ev_queue_notify_request(). 
-This then invokes acpi_os_execute_deferred() via
-    queue_work_on(, kacpi_notify_wq, )
- 
-acpi_os_execute_deferred() invokes acpi_ev_notify_dispatch() and this is
-no longer synchronised with the initial acpi_evaluate_integer() request.
+You and 1000 others! :D
 
-Before commit
-   6d25be5782e48 ("sched/core, workqueues: Distangle worker accounting from rq lock")
+Don't lose any sleep over it.
 
-that function took on average 1.023993 seconds to complete. The
-interval when the thermal driver invokes acpi_evaluate_integer() isn't
-exactly 1 second but almost (it is not an absolute timer so). Still it
-looks that one function slowly overtakes the other. After 5 Minutes
-uptime there is:
+> Acked-by: Jacopo Mondi <jacopo@jmondi.org>
 
-| kworker/0:1-12 [000] 312.315565: acpi_ev_queue_notify_request: Dispatching Notify on [TZ10] (Thermal) Value 0x81 (Information Change) Node ffff9935ab20f7a8
-| kworker/0:1-12 [000] 312.315567: acpi_os_execute: Adding acpi_ev_notify_dispatch+0x0/0x5a ffff9935a6c64050 <ffff9935a7eb5e00>
+Thanks.
 
-Enqueue worker with job ffff9935a7eb5e00
-
-| kworker/0:1-12 [000] 312.315596: acpi_os_execute_deferred_notify: End ffff9935a7eb5c80 acpi_ev_notify_dispatch+0x0/0x5a(ffff9935a6c64c80)
-| kworker/0:1-12 [000] 312.315607: acpi_os_execute_deferred_notify: Start ffff9935a7eb5d80 acpi_ev_notify_dispatch+0x0/0x5a(ffff9935a6c64dc0)
-
-previous worker completed, another (already enqueued) started.
-
-| kworker/0:1-12 [000] 313.339564: acpi_ev_queue_notify_request: Dispatching Notify on [TZ10] (Thermal) Value 0x81 (Information Change) Node ffff9935ab20f7a8
-| kworker/0:1-12 [000] 313.339566: acpi_os_execute: Adding acpi_ev_notify_dispatch+0x0/0x5a ffff9935a6c64f00 <ffff9935a7eb5c80>
-
-another one enqueued.
-
-| kworker/0:1-12 [000] 313.339595: acpi_os_execute_deferred_notify: End ffff9935a7eb5d80 acpi_ev_notify_dispatch+0x0/0x5a(ffff9935a6c64dc0)
-| kworker/0:1-12 [000] 313.339597: acpi_os_execute_deferred_notify: Start ffff9935a7eb5e00 acpi_ev_notify_dispatch+0x0/0x5a(ffff9935a6c64050)
-
-finally, job ffff9935a7eb5e00 started (one second after enqueue).
-
-| kworker/0:1-12 [000] 314.363571: acpi_ev_queue_notify_request: Dispatching Notify on [TZ10] (Thermal) Value 0x81 (Information Change) Node ffff9935ab20f7a8
-| kworker/0:1-12 [000] 314.363574: acpi_os_execute: Adding acpi_ev_notify_dispatch+0x0/0x5a ffff9935a6c646e0 <ffff9935a7eb5d80>
-| kworker/0:1-12 [000] 314.363608: acpi_os_execute_deferred_notify: End ffff9935a7eb5e00 acpi_ev_notify_dispatch+0x0/0x5a(ffff9935a6c64050)
-
-and ended, two seconds after enqueue. Before it ended, the system
-enqueued two more jobs. And this just within 5 Minutes of uptime. The
-worker pile slowly up.
-
-According to Stephen, after previously mentioned commit the situation
-gets worse. According to tracing the execution time of
-acpi_ev_notify_dispatch() varies between 1.023990 (like before) and
-2.048005 seconds. While I don't have an explanation for the changed
-behaviour (or see anything wrong the commit in question), the pile up of
-worker increased.
-Stephen noticed this because system shutdown flushes kacpi_notify_wq
-and this takes quite some time (with that amount of worker pending).
-
-I tried a few test cases to reproduce that behaviour but failed.
-However, even before that commit in question the situation is far from
-perfect: 
-- There is the lack of synchronisation between thermal driver's
-  requests and its tail (that acpi_ev_notify_dispatch() part). 
-- Do we have to respect ACPI interval of one seconds. Is the hardware
-  really so accurate that it can change noticeable in one second.
-- The requests are already back to back which keeps the CPU busy (maybe
-  sched-switch will reveal that the CPU is idle most of the time).
-
-So...
-
-Is there a simple way to synchronize the ACPI part? The obvious thing
-would be
-
-	flush_workqueue(kacpi_notify_wq);
-or
-	acpi_os_wait_events_complete()
-
-in thermal_get_temp().
-Would it make sense to ensure that the polling interval is no less than
-10 seconds?
-
-> Steve Berman
-
-Sebastian
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
