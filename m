@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A78021F5A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF76D21F5A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgGNPCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 11:02:37 -0400
-Received: from mga09.intel.com ([134.134.136.24]:40152 "EHLO mga09.intel.com"
+        id S1727021AbgGNPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 11:04:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:37904 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbgGNPCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 11:02:36 -0400
-IronPort-SDR: MuQtLfp5wUQR8AQ+Xzhkgxy18QVAH6s/W6u4B+UEFAcNkJLAiD7Lh+kmr2MscKWDChvmjigKqU
- aqA55BMtpkfg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="150342742"
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="150342742"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 07:58:10 -0700
-IronPort-SDR: vSELINP7Oka841b1XQ5v0T1yejLWoHKcTeuMZInm+KpwF7plU6OAN89HR0vw7g7DJV83rweBeN
- 1ZmvFmAmP9oQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="307898089"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.209.140.223]) ([10.209.140.223])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Jul 2020 07:58:09 -0700
-Subject: Re: [PATCH -next] dmaengine: idxd: fix PCI_MSI build errors
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>
-References: <9dee3f46-70d9-ea75-10cb-5527ab297d1d@infradead.org>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <46ae481e-3213-f1e0-604b-177bc876bb93@intel.com>
-Date:   Tue, 14 Jul 2020 07:58:09 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725876AbgGNPET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 11:04:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C93D430E;
+        Tue, 14 Jul 2020 08:04:18 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E13C53F792;
+        Tue, 14 Jul 2020 08:04:17 -0700 (PDT)
+References: <20200714124556.20294-1-sudeep.holla@arm.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH] rtc: pl031: fix set_alarm by adding back call to alarm_irq_enable
+In-reply-to: <20200714124556.20294-1-sudeep.holla@arm.com>
+Date:   Tue, 14 Jul 2020 16:04:08 +0100
+Message-ID: <jhjo8oijfyv.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <9dee3f46-70d9-ea75-10cb-5527ab297d1d@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 14/07/20 13:45, Sudeep Holla wrote:
+> Commit c8ff5841a90b ("rtc: pl031: switch to rtc_time64_to_tm/rtc_tm_to_time64")
+> seemed to have accidentally removed the call to pl031_alarm_irq_enable
+> from pl031_set_alarm while switching to 64-bit apis.
+>
+> Let us add back the same to get the set alarm functionality back.
+>
+> Fixes: c8ff5841a90b ("rtc: pl031: switch to rtc_time64_to_tm/rtc_tm_to_time64")
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 
-On 7/13/2020 11:35 PM, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix build errors when CONFIG_PCI_MSI is not enabled by making the
-> driver depend on PCI_MSI:
-> 
-> ld: drivers/dma/idxd/device.o: in function `idxd_mask_msix_vector':
-> device.c:(.text+0x26f): undefined reference to `pci_msi_mask_irq'
-> ld: drivers/dma/idxd/device.o: in function `idxd_unmask_msix_vector':
-> device.c:(.text+0x2af): undefined reference to `pci_msi_unmask_irq'
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Dave Jiang <dave.jiang@intel.com>
-> Cc: dmaengine@vger.kernel.org
-> Cc: Vinod Koul <vkoul@kernel.org>
+Thanks for looking into this!
 
-Vinod, I submitted this fix patch last week:
-https://patchwork.kernel.org/patch/11649231/
+CONFIG_TEST_SUSPEND with test_suspend=mem now behaves correctly (i.e. comes
+back out of suspend), and
 
-But I think maybe Randy's patch may be more preferable? You can apply this one 
-and ignore my submission.
+  $ rtcwake -d /dev/rtc0 -s 2 -m no
+
+shows an increase in RTC interrupts (which remains at 0 before this patch).
+
+Tested-by: Valentin Schneider <valentin.schneider@arm.com>
 
 > ---
->   drivers/dma/Kconfig |    1 +
->   1 file changed, 1 insertion(+)
-> 
-> --- mmotm-2020-0713-1949.orig/drivers/dma/Kconfig
-> +++ mmotm-2020-0713-1949/drivers/dma/Kconfig
-> @@ -285,6 +285,7 @@ config INTEL_IDMA64
->   config INTEL_IDXD
->   	tristate "Intel Data Accelerators support"
->   	depends on PCI && X86_64
-> +	depends on PCI_MSI
->   	depends on SBITMAP
->   	select DMA_ENGINE
->   	help
-> 
-> 
+>  drivers/rtc/rtc-pl031.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/rtc/rtc-pl031.c b/drivers/rtc/rtc-pl031.c
+> index 40d7450a1ce4..c6b89273feba 100644
+> --- a/drivers/rtc/rtc-pl031.c
+> +++ b/drivers/rtc/rtc-pl031.c
+> @@ -275,6 +275,7 @@ static int pl031_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+>       struct pl031_local *ldata = dev_get_drvdata(dev);
+>
+>       writel(rtc_tm_to_time64(&alarm->time), ldata->base + RTC_MR);
+> +	pl031_alarm_irq_enable(dev, alarm->enabled);
+>
+>       return 0;
+>  }
