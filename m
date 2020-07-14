@@ -2,120 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC32220000
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B549021FFAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgGNV0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726446AbgGNV0O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:26:14 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D2FC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:26:14 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c80so926136wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:26:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6fRLYpXTjUG7Lueiak9yUWNoWwRQrJnBa6oSKFtWg8E=;
-        b=GBtqBw0Em7d28Clr2HE7epER9Kd1HFANvHKbk7pStrPbKPJv6RQchJwkr9FVFWlUX+
-         win/zFORjiQ5ujugNAdmZMP0H15vXjLjrBGrW/w6KcapflDra/KoIMiKaI3Jjx02G2vB
-         /LiCugvUwh2//YQphHlWhh89cR3jaY6BZ7uln3kaFG27Htcg8BVUS4x82mYTG9kVA8Cn
-         Kzd2L5c8NDoK5rrxTeKYlz9xG0tuD2xvjdqZrBXOpsQQzxCYa1qz2AoTjZzKpRvCd2n1
-         B376DmakjeuKX9RPB414AV3RnDBp5hVV0Cy9+QeAw+deO+ZpylBpW3EdeStV6TiSztZJ
-         QlDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6fRLYpXTjUG7Lueiak9yUWNoWwRQrJnBa6oSKFtWg8E=;
-        b=HadSToanvEwSJ+PVWSHDGi3h5q9dyVN2iQzdH1FWDBVhN950dzjtzyjG7MU9LgZYS5
-         4s4Af2mMsAPh0u9Qr4euAJftaUFM/ujzXnbkh8WGOfdW7sR5ZI889aOK24vw/4eonlTM
-         HifpujafF9QODAE4GIi4M3QqxPW8rdYE6QKr8UGJjxkq8BHFb8rg5nHWlKKYgGG6Ql2w
-         0ybEqa1Bkfh0J3sWHmCwMdNHY51ldTWWJAa9xR6RteOi+ddyJDFD8TGC7KkuFhII+VSW
-         /ZjQYUkrIprtU0iVKK2yctWHzYBsf6ZlCytG5nDv8v9KmR+Twy/v2L39aGO6ij+VbH4/
-         FfLA==
-X-Gm-Message-State: AOAM530fY2CVERz3ml9ua72wfxSUgfbFdb6SDhGkTKGJgJK79FZYke8m
-        lS4H0a4j31Up0ylJnKJSYE002v+ASlPJCg==
-X-Google-Smtp-Source: ABdhPJzUpRcDwEsXYmLPaS6DkjCLEof0ShwsP8rsPx4113jnMsq2sgj3x5w2ZeBVI/fQ+uxbtv+gHA==
-X-Received: by 2002:a1c:4d11:: with SMTP id o17mr5506692wmh.134.1594760588532;
-        Tue, 14 Jul 2020 14:03:08 -0700 (PDT)
-Received: from dell ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id a84sm6040573wmh.47.2020.07.14.14.03.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 14:03:08 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 22:03:06 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Dirk Brandewie <dirk.j.brandewie@intel.com>
-Subject: Re: [PATCH 12/13] cpufreq: intel_pstate: Supply struct attribute
- description for get_aperf_mperf_shift()
-Message-ID: <20200714210306.GI1398296@dell>
-References: <20200714145049.2496163-1-lee.jones@linaro.org>
- <20200714145049.2496163-13-lee.jones@linaro.org>
- <CAJZ5v0jkDWD6Ea2_oEDtFfPDWh5ByphUqEa=3jE2ZbnW0DVEcQ@mail.gmail.com>
+        id S1728206AbgGNVKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:10:42 -0400
+Received: from mga18.intel.com ([134.134.136.126]:65232 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726803AbgGNVKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 17:10:42 -0400
+IronPort-SDR: 6+s5bw4acGe2g7m+sK+NOJt3pf2ba2KvZwJEV+Eo+yf1P2P9vC7GeBE88It1S6OJ6baFctxNHX
+ nCST0cCqfniA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="136484542"
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="136484542"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 14:10:37 -0700
+IronPort-SDR: mRkXTVY8FE9FnwRg6IsgUfaEkC8DpaHNd/BqpxFkylEOZPR+MChTgPVgZnEjcYDnaI8aFQ4di4
+ gSW6y8eJWUvA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="390597299"
+Received: from guptapadev.jf.intel.com (HELO guptapadev.amr) ([10.54.74.188])
+  by fmsmga001.fm.intel.com with ESMTP; 14 Jul 2020 14:10:34 -0700
+Date:   Tue, 14 Jul 2020 14:04:42 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Gomez Iglesias, Antonio" <antonio.gomez.iglesias@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Waiman Long <longman@redhat.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] x86/bugs/multihit: Fix mitigation reporting when KVM is
+ not in use
+Message-ID: <20200714210442.GA10488@guptapadev.amr>
+References: <267631f4db4fd7e9f7ca789c2efaeab44103f68e.1594689154.git.pawan.kumar.gupta@linux.intel.com>
+ <20200714014540.GH29725@linux.intel.com>
+ <099d6985-9e9f-1d9f-7098-58a9e26e4450@intel.com>
+ <20200714191759.GA7116@guptapadev.amr>
+ <ba442a51-294e-8624-9a69-5613ff050551@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jkDWD6Ea2_oEDtFfPDWh5ByphUqEa=3jE2ZbnW0DVEcQ@mail.gmail.com>
+In-Reply-To: <ba442a51-294e-8624-9a69-5613ff050551@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020, Rafael J. Wysocki wrote:
-
-> On Tue, Jul 14, 2020 at 4:51 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > Fixes the following W=1 kernel build warning(s):
-> >
-> >  drivers/cpufreq/intel_pstate.c:293: warning: Function parameter or member 'get_aperf_mperf_shift' not described in 'pstate_funcs'
-> >
-> > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> > Cc: Len Brown <lenb@kernel.org>
-> > Cc: Dirk Brandewie <dirk.j.brandewie@intel.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/cpufreq/intel_pstate.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-> > index 44c7b4677675d..f92fc69c87269 100644
-> > --- a/drivers/cpufreq/intel_pstate.c
-> > +++ b/drivers/cpufreq/intel_pstate.c
-> > @@ -275,6 +275,8 @@ static struct cpudata **all_cpu_data;
-> >   * @get_min:           Callback to get minimum P state
-> >   * @get_turbo:         Callback to get turbo P state
-> >   * @get_scaling:       Callback to get frequency scaling factor
-> > + * @get_aperf_mperf_shift: Callback to get the number of clock cycles after
-> > + *                     aperf, merf is incremented
+On Tue, Jul 14, 2020 at 12:54:26PM -0700, Dave Hansen wrote:
+> On 7/14/20 12:17 PM, Pawan Gupta wrote:
+> > On Tue, Jul 14, 2020 at 07:57:53AM -0700, Dave Hansen wrote:
+> >> Let's stick to things which are at least static per reboot.  Checking
+> >> for X86_FEATURE_VMX or even CONFIG_KVM_INTEL seems like a good stopping
+> >> point.  "Could this kernel run a naughty guest?"  If so, report
+> >> "Vulnerable".  It's the same as Meltdown: "Could this kernel run
+> >> untrusted code?"  If so, report "Vulnerable".
+> > 
+> > Thanks, These are good inputs. So what I need to add is a boot time
+> > check for VMX feature and report "Vulnerable" or "Not
+> > affected(VMX disabled)".
+> > 
+> > Are you suggesting to not change the reporting when KVM deploys the
+> > "Split huge pages" mitigation? Is this because VMX can still be used by
+> > other VMMs?
+> > 
+> > The current mitigation reporting is very specific to KVM:
+> > 
+> > 	- "KVM: Vulnerable"
+> > 	- "KVM: Mitigation: Split huge pages"
+> > 
+> > As the kernel doesn't know about the mitigation state of out-of-tree
+> > VMMs can we add VMX reporting to always say vulnerable when VMX is
+> > enabled:
+> > 
+> > 	- "VMX: Vulnerable, KVM: Vulnerable"
+> > 	- "VMX: Vulnerable, KVM: Mitigation: Split huge pages"
+> > 
+> > And if VMX is disabled report:
+> > 
+> > 	- "VMX: Not affected(VMX disabled)"
 > 
-> This added description is inaccurate.  It should be something like
-> "Callback to get the APERF vs MPERF frequency difference".
+> I see three inputs and four possible states (sorry for the ugly table,
+> it was this or a spreadsheet :):
+> 
+> X86_FEATURE_VMX	CONFIG_KVM_*	hpage split  Result	   Reason
+> 	N			x	    x	     Not Affected  No VMX
+> 	Y			N	    x	     Not affected  No KVM
+> 	Y			Y	    Y	     Mitigated	   hpage split
+> 	Y			Y	    N	     Vulnerable
 
-Does that mean the description of @aperf_mperf_shift above is also
-incorrect?
+Thank you.
 
-> >   * @get_val:           Callback to convert P state to actual MSR write value
-> >   * @get_vid:           Callback to get VID data for Atom platforms
-> >   *
-> > --
+Just a note... for the last 2 cases kernel wont know about "hpage split"
+mitigation until KVM is loaded. So for these cases reporting at boot
+will be "Vulnerable" and would change to "Mitigated" once KVM is loaded
+and deploys the mitigation. This is the current behavior.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Pawan
