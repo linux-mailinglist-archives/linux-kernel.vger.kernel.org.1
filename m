@@ -2,186 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD6021E5AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D9A21E59F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgGNC35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 22:29:57 -0400
-Received: from mx0a-00190b01.pphosted.com ([67.231.149.131]:38990 "EHLO
-        mx0a-00190b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726150AbgGNC35 (ORCPT
+        id S1726582AbgGNC2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 22:28:20 -0400
+Received: from labrats.qualcomm.com ([199.106.110.90]:26314 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726364AbgGNC2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 22:29:57 -0400
-Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
-        by m0050093.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id 06E2Pgf7028288;
-        Tue, 14 Jul 2020 03:26:36 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=jan2016.eng;
- bh=CMcWgeN70W9yzJtbKSXSLvUJZMguz5JGKLMRefnJ8lw=;
- b=geoh4f3TugKozfQ9Cfy3aRtr+995DFFBaOKo0APSihxXRXFCe+FPFSSWNX8MyP3I1TcE
- /npw2P0wBD0pXnTQjLVjdpentHTmJI1tsUEAJnk+H7LaMUte+RfHXjnjDkXsjTX1f8WH
- BYp0ItB6UiJifUoZA2tWRktRg2jkmAPo2oJrPxmSW8Ct0v2lVs4zlRfSvKfvp1XsNXb8
- 4Zm7fup2nuFtt+4zC1jfWHCGHNMx/DLoSAAn5q5i0EMCXNhKydpOv45BJWqcrQDFOi3D
- 0ez6EyK4YAcl3/bpoujT5kawQ1/aYsBBQmDsWkNIY8gzfWczyz6q/8okxN21KxGOe/9o tw== 
-Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19] (may be forged))
-        by m0050093.ppops.net-00190b01. with ESMTP id 328kc6gxan-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Jul 2020 03:26:36 +0100
-Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
-        by prod-mail-ppoint2.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 06E2HXAA023075;
-        Mon, 13 Jul 2020 22:26:34 -0400
-Received: from prod-mail-relay11.akamai.com ([172.27.118.250])
-        by prod-mail-ppoint2.akamai.com with ESMTP id 3278rx7aq1-1;
-        Mon, 13 Jul 2020 22:26:34 -0400
-Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
-        by prod-mail-relay11.akamai.com (Postfix) with ESMTP id 1996F229E9;
-        Tue, 14 Jul 2020 02:26:34 +0000 (GMT)
-Subject: Re: [PATCH v4 13/17] dyndbg: accept 'file foo.c:func1' and 'file
- foo.c:10-100'
-To:     Jim Cromie <jim.cromie@gmail.com>, linux-kernel@vger.kernel.org,
-        akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Orson Zhai <orson.zhai@unisoc.com>,
-        Will Deacon <will@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        linux-doc@vger.kernel.org
-References: <20200620180643.887546-1-jim.cromie@gmail.com>
- <20200620180643.887546-14-jim.cromie@gmail.com>
-From:   Jason Baron <jbaron@akamai.com>
-Message-ID: <30de6359-e56b-0915-5742-a360ef1b2814@akamai.com>
-Date:   Mon, 13 Jul 2020 22:26:34 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200620180643.887546-14-jim.cromie@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-13_17:2020-07-13,2020-07-13 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007140014
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-13_17:2020-07-13,2020-07-13 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 priorityscore=1501
- mlxscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0 spamscore=0
- suspectscore=0 impostorscore=0 malwarescore=0 clxscore=1015 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007140017
+        Mon, 13 Jul 2020 22:28:20 -0400
+IronPort-SDR: A87NJChYtSQopguNtv4r8EhhJOIUm9vFIMxCy/hVqWZHHGnf+xdnl0gGAMCQlZW4ZPPBJKcoQ5
+ N2sHEtChEfOUZhxF7PC2jZkdrb7HuktG5jRQxth/fwR2Izs5A1n/KEdvJUOQZbqgG2/Eb3r79I
+ a6eO2yHvjNJqV5MTuF7cLNhIFuoxMU54a3mEhL5dSGLg4Ev/zZ0FBq1b/sBZnLNjbMO19vrFtT
+ ijKIrcQqCXQn/eX5DMLB8ea0c0HAMs1Zj2tS87so/707Xpj9bFYnNSbK9vGuce3f3fAYlTGgE6
+ 2SU=
+X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
+   d="scan'208";a="47216744"
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by labrats.qualcomm.com with ESMTP; 13 Jul 2020 19:28:19 -0700
+Received: from pacamara-linux.qualcomm.com ([192.168.140.135])
+  by ironmsg03-sd.qualcomm.com with ESMTP; 13 Jul 2020 19:28:18 -0700
+Received: by pacamara-linux.qualcomm.com (Postfix, from userid 359480)
+        id DEE8D22DC2; Mon, 13 Jul 2020 19:28:18 -0700 (PDT)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/4] scsi: ufs: Add checks before setting clk-gating states
+Date:   Mon, 13 Jul 2020 19:28:09 -0700
+Message-Id: <1594693693-22466-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1594693693-22466-1-git-send-email-cang@codeaurora.org>
+References: <1594693693-22466-1-git-send-email-cang@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Clock gating features can be turned on/off selectively which means its
+state information is only important if it is enabled. This change makes
+sure that we only look at state of clk-gating if it is enabled.
 
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-On 6/20/20 2:06 PM, Jim Cromie wrote:
-> Accept these additional query forms:
-> 
->    echo "file $filestr +_" > control
-> 
->        path/to/file.c:100	# as from control, column 1
->        path/to/file.c:1-100	# or any legal line-range
->        path/to/file.c:func_A	# as from an editor/browser
->        path/to/file.c:drm_\*	# wildcards still work
->        path/to/file.c:*_foo	# lead wildcard too
-> 
-> 1st 2 examples are treated as line-ranges, 3,4 are treated as func's
-> 
-> Doc these changes, and sprinkle in a few extra wild-card examples and
-> trailing # explanation texts.
-> 
-> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> ---
->  .../admin-guide/dynamic-debug-howto.rst       |  5 +++++
->  lib/dynamic_debug.c                           | 20 ++++++++++++++++++-
->  2 files changed, 24 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-> index 1423af580bed..6c04aea8f4cd 100644
-> --- a/Documentation/admin-guide/dynamic-debug-howto.rst
-> +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
-> @@ -164,6 +164,7 @@ func
->      of each callsite.  Example::
->  
->  	func svc_tcp_accept
-> +	func *recv*		# in rfcomm, bluetooth, ping, tcp
->  
->  file
->      The given string is compared against either the src-root relative
-> @@ -172,6 +173,9 @@ file
->  
->  	file svcsock.c
->  	file kernel/freezer.c	# ie column 1 of control file
-> +	file drivers/usb/*	# all callsites under it
-> +	file inode.c:start_*	# parse :tail as a func (above)
-> +	file inode.c:1-100	# parse :tail as a line-range (above)
->  
->  module
->      The given string is compared against the module name
-> @@ -181,6 +185,7 @@ module
->  
->  	module sunrpc
->  	module nfsd
-> +	module drm*	# both drm, drm_kms_helper
->  
->  format
->      The given string is searched for in the dynamic debug format
-> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-> index ae6e523fdecd..7eb963b1bd11 100644
-> --- a/lib/dynamic_debug.c
-> +++ b/lib/dynamic_debug.c
-> @@ -321,6 +321,8 @@ static int parse_linerange(struct ddebug_query *query, const char *first)
->  	} else {
->  		query->last_lineno = query->first_lineno;
->  	}
-> +	vpr_info("parsed line %d-%d\n", query->first_lineno,
-> +		 query->last_lineno);
->  	return 0;
->  }
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index efc0a6c..ebf7a95 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1839,6 +1839,8 @@ static void ufshcd_init_clk_gating(struct ufs_hba *hba)
+ 	if (!ufshcd_is_clkgating_allowed(hba))
+ 		return;
+ 
++	hba->clk_gating.state = CLKS_ON;
++
+ 	hba->clk_gating.delay_ms = 150;
+ 	INIT_DELAYED_WORK(&hba->clk_gating.gate_work, ufshcd_gate_work);
+ 	INIT_WORK(&hba->clk_gating.ungate_work, ufshcd_ungate_work);
+@@ -2538,7 +2540,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
+ 		err = SCSI_MLQUEUE_HOST_BUSY;
+ 		goto out;
+ 	}
+-	WARN_ON(hba->clk_gating.state != CLKS_ON);
++	if (ufshcd_is_clkgating_allowed(hba))
++		WARN_ON(hba->clk_gating.state != CLKS_ON);
+ 
+ 	lrbp = &hba->lrb[tag];
+ 
+@@ -8315,8 +8318,11 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		/* If link is active, device ref_clk can't be switched off */
+ 		__ufshcd_setup_clocks(hba, false, true);
+ 
+-	hba->clk_gating.state = CLKS_OFF;
+-	trace_ufshcd_clk_gating(dev_name(hba->dev), hba->clk_gating.state);
++	if (ufshcd_is_clkgating_allowed(hba)) {
++		hba->clk_gating.state = CLKS_OFF;
++		trace_ufshcd_clk_gating(dev_name(hba->dev),
++					hba->clk_gating.state);
++	}
+ 
+ 	/* Put the host controller in low power mode if possible */
+ 	ufshcd_hba_vreg_set_lpm(hba);
+@@ -8456,6 +8462,11 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (hba->clk_scaling.is_allowed)
+ 		ufshcd_suspend_clkscaling(hba);
+ 	ufshcd_setup_clocks(hba, false);
++	if (ufshcd_is_clkgating_allowed(hba)) {
++		hba->clk_gating.state = CLKS_OFF;
++		trace_ufshcd_clk_gating(dev_name(hba->dev),
++					hba->clk_gating.state);
++	}
+ out:
+ 	hba->pm_op_in_progress = 0;
+ 	if (ret)
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-This bit seems like its unrelated to this patch and makes more sense in the
-previous patch, or as separate patch...
-
-Thanks,
-
--Jason
-
-
->  
-> @@ -357,6 +359,7 @@ static int ddebug_parse_query(char *words[], int nwords,
->  {
->  	unsigned int i;
->  	int rc = 0;
-> +	char *fline;
->  
->  	/* check we have an even number of words */
->  	if (nwords % 2 != 0) {
-> @@ -372,7 +375,22 @@ static int ddebug_parse_query(char *words[], int nwords,
->  		if (!strcmp(words[i], "func")) {
->  			rc = check_set(&query->function, words[i+1], "func");
->  		} else if (!strcmp(words[i], "file")) {
-> -			rc = check_set(&query->filename, words[i+1], "file");
-> +			if (check_set(&query->filename, words[i+1], "file"))
-> +				return -EINVAL;
-> +
-> +			/* tail :$info is function or line-range */
-> +			fline = strchr(query->filename, ':');
-> +			if (!fline)
-> +				break;
-> +			*fline++ = '\0';
-> +			if (isalpha(*fline) || *fline == '*' || *fline == '?') {
-> +				/* take as function name */
-> +				if (check_set(&query->function, fline, "func"))
-> +					return -EINVAL;
-> +			} else {
-> +				if (parse_linerange(query, fline))
-> +					return -EINVAL;
-> +			}
->  		} else if (!strcmp(words[i], "module")) {
->  			rc = check_set(&query->module, words[i+1], "module");
->  		} else if (!strcmp(words[i], "format")) {
-> 
