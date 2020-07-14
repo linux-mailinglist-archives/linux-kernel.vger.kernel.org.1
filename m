@@ -2,64 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D95F21EF08
+	by mail.lfdr.de (Postfix) with ESMTP id 3087721EF07
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgGNLTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 07:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
+        id S1728179AbgGNLS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 07:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgGNLQs (ORCPT
+        with ESMTP id S1727869AbgGNLQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 07:16:48 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7021BC08C5FC
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:16:03 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f18so20906778wrs.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:16:03 -0700 (PDT)
+        Tue, 14 Jul 2020 07:16:49 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8537AC08E6DC
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:16:04 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j4so20883956wrp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:16:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NnI1Hr8cN1xgbEvUxkhLUJ4OsaPQfVlLvMmqI8pCO3s=;
-        b=NQ/hVm91tDxmABEPbH0rNFSS8NGb/3PLnnApSOyHhscglrmoLOMyFWz5wtrlv5WEAc
-         w7NAY2gdTBxkp94u7rS0Tgl3QOcWWldpWa1sZatsmBy4bkojuQ84zuqlGEmm43TZlNhe
-         7e3tzwADI4qKPfm21AmneVuYTXCGvYdl6nXLIBiAbNSxYm48Go5/XJhJbknaO85600l/
-         TzbhOUwbnb14+TgiQxeYmoqM4xnXjKW+V62qGrdsT14LaW6eknTWW9U8wx+FLbneGpIQ
-         tr/AyMKX9X+pZ6WHkzUes84iQtVh7eyenP5X+cqfAeZa6IUYaorMUth/P/mYblGq+9S0
-         DidQ==
+        bh=NG9Wo5yoqPGjiyqodzKSv+oNiGoDZQc2LrtiOZLw/AM=;
+        b=QMwhtxDa+JsIYLGkUIZnWg3AJTpgFH0ficDCJzPtKLoaZCg8YduENGKsRoTzfb0QTz
+         Gyu3Cqsat4DTRiNwff9MhhGJxWAsooiZxVz2Yp/6x0RpBecs9ejTuRPUEpJUZG75fi3X
+         +P6gjwJGwpRpgD6jnp7+9mxe0EtP29RHfFxLUFtSXHH/C+je3VQ7E40NHqdEoGoiuWAD
+         bIbdmUhQEcsv+lomE5TNhgItLBYNn65TwW9BP3v2Bw4Ie4p4y+BC0M4QzjX5NB01jxyG
+         VlD9mWRFwKCxJVSb/6HyXNPrS6UmSuXj9Ya3O8ddMBXpU5Ree0hlB8zVke5Id4lo3q6n
+         u0Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NnI1Hr8cN1xgbEvUxkhLUJ4OsaPQfVlLvMmqI8pCO3s=;
-        b=d722fVY6N40qDTyw3cVjAzTJGF0x9ib3Zg3U6DRd1AV3D10N/IgcV6ix0LvPVTaptP
-         CF0maNd6qH0ZSzXxWDQPTQX6TudNQuddsQwBUUmq7pcqouY4wBl8CDmerVaCdaeYE/79
-         i+1y6OaUSPhMaZ3xo2kt+B6Du0X6maE6BDq04EvWYplIYSIIzJ9ADb0XSB6Vreu47spH
-         IwT4p/Grhai1qhkmwqdVUGv8bLcKdjpRDRw7RlHTqp/EnwXCrg/FT+r3MnhV5gFUCjWW
-         znLk5Z2N/PXXQl+93UPQc14yAbtOKygaBImp2fB8xwZP7m04rR5NBHmRyfH8pS50Nxgr
-         XANQ==
-X-Gm-Message-State: AOAM530soj7mMXPEO4yoSxJIckVrREhzB24puSvVNI1f/sCFeY4Y8gJq
-        yXcgX4u4dmb0uYYG7YhtYp9W+A==
-X-Google-Smtp-Source: ABdhPJzYlJ+XLLzRSmvIFCs1WJ2WYX+Cwdno9y3SVmnqqB4jRMVHTnl+GSY47lUzMwCDxwwOni3Ziw==
-X-Received: by 2002:adf:db86:: with SMTP id u6mr4773505wri.27.1594725362227;
-        Tue, 14 Jul 2020 04:16:02 -0700 (PDT)
+        bh=NG9Wo5yoqPGjiyqodzKSv+oNiGoDZQc2LrtiOZLw/AM=;
+        b=RZ95E4IiSspYm3ZO57h6ib67huLwFQ/tZLXWByCrwrnKnb2jI9XaGtIVL5vePwHrgy
+         P2PiPrOt4pbvXNgdY4CkSulFRpOKPMfSQZ94oQYT67ei/pCoM0qiu9oU7GFyZTyKrBXM
+         S2rf2eQzhYoFliDBCR2CDDLfAGRqRfj0Hr0u8gc0sQBopI3UKQwXjhJ6qRYcFFSVEzEQ
+         7kFiGu8VhGxGLNloTC322z7D7GPBquqb7XmlNfN7ubj20NxzIuPetDuhQ5uOcYv24Xj0
+         DjbSfFAKNHFHcUTxpxD1htUDejHXhOrPDHYkhZr9ZstunG1W/DDi5hY0HZwS+zMWI7H8
+         OFtQ==
+X-Gm-Message-State: AOAM5334CTlg3i/wzo4ocQpiNzKzYf6Ip4MsQ+gLacKBydrTKefwhoa5
+        7GK3bI0OMunf3P9QgcdUnPqN/A==
+X-Google-Smtp-Source: ABdhPJzQhzUPxkgJqMX4nrpyi4zj2gxa+lDyykGrb8nrWKpjpsCsNGmOs+AiZhWEbBSh2KpnpmRSug==
+X-Received: by 2002:adf:f388:: with SMTP id m8mr4801297wro.338.1594725363325;
+        Tue, 14 Jul 2020 04:16:03 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.16.01
+        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.16.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 04:16:01 -0700 (PDT)
+        Tue, 14 Jul 2020 04:16:02 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     dan.j.williams@intel.com, vkoul@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH 11/17] dma: imx-sdma: Correct formatting issue and provide 2 new descriptions
-Date:   Tue, 14 Jul 2020 12:15:40 +0100
-Message-Id: <20200714111546.1755231-12-lee.jones@linaro.org>
+        dmaengine@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 12/17] dma: iop-adma: Function parameter documentation must adhere to correct formatting
+Date:   Tue, 14 Jul 2020 12:15:41 +0100
+Message-Id: <20200714111546.1755231-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200714111546.1755231-1-lee.jones@linaro.org>
 References: <20200714111546.1755231-1-lee.jones@linaro.org>
@@ -70,46 +65,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Also remove superfluous entry.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/dma/imx-sdma.c:383: warning: Function parameter or member 'slave_config' not described in 'sdma_channel'
- drivers/dma/imx-sdma.c:383: warning: Function parameter or member 'context_loaded' not described in 'sdma_channel'
- drivers/dma/imx-sdma.c:383: warning: Function parameter or member 'terminate_worker' not described in 'sdma_channel'
+ drivers/dma/iop-adma.c:418: warning: Function parameter or member 'chan' not described in 'iop_adma_alloc_chan_resources'
 
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: NXP Linux Team <linux-imx@nxp.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/dma/imx-sdma.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/dma/iop-adma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-index 270992c4fe475..4f8d8f5e11329 100644
---- a/drivers/dma/imx-sdma.c
-+++ b/drivers/dma/imx-sdma.c
-@@ -335,7 +335,7 @@ struct sdma_desc {
-  * @sdma:		pointer to the SDMA engine for this channel
-  * @channel:		the channel number, matches dmaengine chan_id + 1
-  * @direction:		transfer type. Needed for setting SDMA script
-- * @slave_config	Slave configuration
-+ * @slave_config:	Slave configuration
-  * @peripheral_type:	Peripheral type. Needed for setting SDMA script
-  * @event_id0:		aka dma request line
-  * @event_id1:		for channels that use 2 events
-@@ -354,8 +354,10 @@ struct sdma_desc {
-  * @shp_addr:		value for gReg[6]
-  * @per_addr:		value for gReg[2]
-  * @status:		status of dma channel
-+ * @context_loaded:	ensure context is only loaded once
-  * @data:		specific sdma interface structure
-  * @bd_pool:		dma_pool for bd
-+ * @terminate_worker:	used to call back into terminate work function
-  */
- struct sdma_channel {
- 	struct virt_dma_chan		vc;
+diff --git a/drivers/dma/iop-adma.c b/drivers/dma/iop-adma.c
+index db0e274126fb7..3350bffb2e937 100644
+--- a/drivers/dma/iop-adma.c
++++ b/drivers/dma/iop-adma.c
+@@ -406,8 +406,7 @@ static void iop_chan_start_null_xor(struct iop_adma_chan *iop_chan);
+ 
+ /**
+  * iop_adma_alloc_chan_resources -  returns the number of allocated descriptors
+- * @chan - allocate descriptor resources for this channel
+- * @client - current client requesting the channel be ready for requests
++ * @chan: allocate descriptor resources for this channel
+  *
+  * Note: We keep the slots for 1 operation on iop_chan->chain at all times.  To
+  * avoid deadlock, via async_xor, num_descs_in_pool must at a minimum be
 -- 
 2.25.1
 
