@@ -2,144 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6365021FF93
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E770121FF8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgGNVHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728075AbgGNVHV (ORCPT
+        id S1728036AbgGNVHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:07:12 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:45095 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727813AbgGNVHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:07:21 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFE8C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:07:21 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z2so237256wrp.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:07:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sYFj9/i+aUbs/mCeLmpyFo7UqQJ2JsN4UUIr9kbw2Aw=;
-        b=rywsZE8M6HmZZx8BUzKG7f8USqXKuzqtTTBdSOVOq9PfcUDN4TQq2S0zYrbDxaE2WM
-         cwXoTaSLY5gXyxk+BI5wUN9vOzFmDzQimnepQueuv/xy1D600yK++bFQImfF/vczUkja
-         fX37ngssdzPaI0bcqxt3fOqacIfOSxPuwcru0NaiKFG4zHV5Mp7SZwBk+RQh1AXtANwF
-         TI2PM4Vz0GwyIpsCQJzXFvFmv3iPLdZ6B3sOP/TppkcJECYam1VfhrjC+DZJh07ipkb2
-         i/DNjl5KYdKSKlxw7HCuDo0tvKNZCmmIpc25QcO32wA9IOuzrg+GqYc33ihRaFKgU204
-         s3bQ==
+        Tue, 14 Jul 2020 17:07:11 -0400
+Received: by mail-il1-f193.google.com with SMTP id o3so28430ilo.12;
+        Tue, 14 Jul 2020 14:07:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sYFj9/i+aUbs/mCeLmpyFo7UqQJ2JsN4UUIr9kbw2Aw=;
-        b=mAZVIK59ChHwlNU8UNS6BImMPl+vvxvZpFxcJpqSQkqHsiJNh31pJsTnSgLtIJg2V3
-         /aq+Q04XkdM2STl6VYCttWQGBkmTgBPsfWyp3PAaohpakUinLDCHsmr+dh7q5KeE3XZf
-         EwEgvoQYSv2hEBvN0KZYhWlCK9dm9L7rPSEm3UAwczqBETi/LSQZgEe8ANTF2aD7OUVC
-         oMqwdoq8m0a016baJVWJGCKtpmZBR2/9wcaSPxVKyEcSfCx32Hlwyk7Qk7Isb7ldGWct
-         OQ3Cbds8KSaXYxKVvrVgyOI5o40sigyRqCM42wOrBu9392iLPLIDH1+KxSH1OzX8lUnw
-         Mrsg==
-X-Gm-Message-State: AOAM531eJuitMx3RP2kjsHDYqKen0qeE7y4ghUBWu7mlAxnVNHb3pGdQ
-        s9vlfnOyPiCVsumYQ5pY15TqLJ88Pkdwcn/kvYf+IVU9ufdONw==
-X-Google-Smtp-Source: ABdhPJwDzDaDsQB8APRfzYyupV70rs9H0ijoNO2+CqK9d2rIzlBSj+qumRJ5mY+ZOVzgmHf1j5i2B5Q2UWNdUhzHSqk=
-X-Received: by 2002:adf:82e1:: with SMTP id 88mr7596337wrc.376.1594760839869;
- Tue, 14 Jul 2020 14:07:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=44rgaqhFkzmsZwbVO86LUWD8tYa+oZDKAUnPu8DtF0A=;
+        b=obyH1Wp8YCGaEV/1EhBs5wXCpuYHcJ8+/XgClIxH2yTWpF1UTSQ66pmkvIUHz2BRSa
+         +NNwLC3pOetrscJ+6JIKGWMOa+H9CRkM/aq63yDZZIuW884piqWfvWgicizmNhREURkp
+         7QWIwpIU2px1xqSQAFj1j1cGxilXpr+dUWY3IS+mce4bWYurOQpQDPfotbtkXXjaVWqs
+         YSXWIA6wSCiWYEpxAQwxunbErBMNgmB6GvmylZsxisfss8jkZojk5rLzgbn/vCbjRiL7
+         0bwptpWKrHnVESj2dndSXVyVYqe+rL9eQR2wGUnfTJeymFD53EuAGO9YIBi1XeLzXBYf
+         K5JQ==
+X-Gm-Message-State: AOAM532MplrqRt+Ywfzx+4ye8EMxT+HoFyEgq/mjd2p9MoCvUUOjAMqO
+        Tx4XJwqAFz2sZHGrMyBwHw==
+X-Google-Smtp-Source: ABdhPJwRUCmm6JdxtWi64zjLurr/8NPWpWA7Tt02AKgPi/2ixQ9QM1CkDUriigx8+xKYEukMuEniJQ==
+X-Received: by 2002:a92:c530:: with SMTP id m16mr6856827ili.300.1594760830527;
+        Tue, 14 Jul 2020 14:07:10 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id w82sm52739ili.42.2020.07.14.14.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 14:07:09 -0700 (PDT)
+Received: (nullmailer pid 2917820 invoked by uid 1000);
+        Tue, 14 Jul 2020 21:07:08 -0000
+Date:   Tue, 14 Jul 2020 15:07:08 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     f.fainelli@gmail.com, gregkh@linuxfoundation.org, wahrenst@gmx.net,
+        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Eric Anholt <eric@anholt.net>, linux-usb@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, tim.gover@raspberrypi.org,
+        linux-pci@vger.kernel.org, helgaas@kernel.org,
+        andy.shevchenko@gmail.com, mathias.nyman@linux.intel.com,
+        lorenzo.pieralisi@arm.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/9] dt-bindings: reset: Add a binding for the RPi
+ Firmware reset controller
+Message-ID: <20200714210708.GA2897216@bogus>
+References: <20200612171334.26385-1-nsaenzjulienne@suse.de>
+ <20200612171334.26385-2-nsaenzjulienne@suse.de>
+ <20200713182356.GA413630@bogus>
+ <ed42e27eaf48fd19cc8ccccd15b0b25ba1d836ae.camel@suse.de>
 MIME-Version: 1.0
-References: <20200712132634.138901-1-jolsa@kernel.org> <20200712132634.138901-6-jolsa@kernel.org>
-In-Reply-To: <20200712132634.138901-6-jolsa@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 14 Jul 2020 14:07:08 -0700
-Message-ID: <CAP-5=fX4pjM70pdaUJPqv1x_YWyk2Ua44Q7qVCz-jbtOcwBNAw@mail.gmail.com>
-Subject: Re: [PATCH 05/18] perf metric: Add expr__del_id function
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed42e27eaf48fd19cc8ccccd15b0b25ba1d836ae.camel@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 6:27 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding expr__del_id function to remove ID from hashmap.
-> It will save us few lines in following changes.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On Tue, Jul 14, 2020 at 01:59:21PM +0200, Nicolas Saenz Julienne wrote:
+> On Mon, 2020-07-13 at 12:23 -0600, Rob Herring wrote:
+> > On Fri, Jun 12, 2020 at 07:13:25PM +0200, Nicolas Saenz Julienne wrote:
+> > > The firmware running on the RPi VideoCore can be used to reset and
+> > > initialize HW controlled by the firmware.
+> > > 
+> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > > Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> > > 
+> > > ---
+> > > Changes since v2:
+> > >  - Add include file for reset IDs
+> > > 
+> > > Changes since v1:
+> > >  - Correct cells binding as per Florian's comment
+> > >  - Change compatible string to be more generic
+> > > 
+> > >  .../arm/bcm/raspberrypi,bcm2835-firmware.yaml | 21 +++++++++++++++++++
+> > >  .../reset/raspberrypi,firmware-reset.h        | 13 ++++++++++++
+> > >  2 files changed, 34 insertions(+)
+> > >  create mode 100644 include/dt-bindings/reset/raspberrypi,firmware-reset.h
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-
+> > > firmware.yaml
+> > > b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-
+> > > firmware.yaml
+> > > index b48ed875eb8e..23a885af3a28 100644
+> > > --- a/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-
+> > > firmware.yaml
+> > > +++ b/Documentation/devicetree/bindings/arm/bcm/raspberrypi,bcm2835-
+> > > firmware.yaml
+> > > @@ -39,6 +39,22 @@ properties:
+> > >        - compatible
+> > >        - "#clock-cells"
+> > >  
+> > > +  reset:
+> > 
+> > I'm not really thrilled how this is evolving with a node per provider. 
+> > There's no reason you can't just add #clock-cells and #reset-cells to 
+> > the parent firmware node.
+> 
+> What are the downsides? The way I see it there is not much difference. And this
+> way of handling things is feels more intuitive and flexible (overlays can
+> control what to enable easily, we can take advantage of the platform device
+> core).
 
-Acked-by: Ian Rogers <irogers@google.com>
+What the OS wants can evolve, so designing around the current needs of 
+the OS is not how bindings should be done.
 
-Thanks,
-Ian
+Using overlays to add clocks or resets wouldn't really work given they 
+are spread out over the tree. And with clocks in particular, you'd have 
+to replace dummy fixed clocks with actual firmware clocks. Sounds 
+fragile and messy...
 
-> ---
->  tools/perf/util/expr.c | 21 +++++++++++++--------
->  tools/perf/util/expr.h |  1 +
->  2 files changed, 14 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-> index 7d02d29286bc..91142d4c3419 100644
-> --- a/tools/perf/util/expr.c
-> +++ b/tools/perf/util/expr.c
-> @@ -75,6 +75,17 @@ int expr__get_id(struct expr_parse_ctx *ctx, const char *id,
->         return hashmap__find(&ctx->ids, id, (void **)data) ? 0 : -1;
->  }
->
-> +void expr__del_id(struct expr_parse_ctx *ctx, const char *id)
-> +{
-> +       struct expr_id_data *old_val = NULL;
-> +       char *old_key = NULL;
-> +
-> +       hashmap__delete(&ctx->ids, id,
-> +                       (const void **)&old_key, (void **)&old_val);
-> +       free(old_key);
-> +       free(old_val);
-> +}
-> +
->  void expr__ctx_init(struct expr_parse_ctx *ctx)
->  {
->         hashmap__init(&ctx->ids, key_hash, key_equal, NULL);
-> @@ -132,16 +143,10 @@ int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
->  int expr__find_other(const char *expr, const char *one,
->                      struct expr_parse_ctx *ctx, int runtime)
->  {
-> -       struct expr_id_data *old_val = NULL;
-> -       char *old_key = NULL;
->         int ret = __expr__parse(NULL, ctx, expr, EXPR_OTHER, runtime);
->
-> -       if (one) {
-> -               hashmap__delete(&ctx->ids, one,
-> -                               (const void **)&old_key, (void **)&old_val);
-> -               free(old_key);
-> -               free(old_val);
-> -       }
-> +       if (one)
-> +               expr__del_id(ctx, one);
->
->         return ret;
->  }
-> diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
-> index f38292fdab19..2462abd0ac65 100644
-> --- a/tools/perf/util/expr.h
-> +++ b/tools/perf/util/expr.h
-> @@ -26,6 +26,7 @@ struct expr_scanner_ctx {
->
->  void expr__ctx_init(struct expr_parse_ctx *ctx);
->  void expr__ctx_clear(struct expr_parse_ctx *ctx);
-> +void expr__del_id(struct expr_parse_ctx *ctx, const char *id);
->  int expr__add_id(struct expr_parse_ctx *ctx, const char *id);
->  int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val);
->  int expr__get_id(struct expr_parse_ctx *ctx, const char *id,
-> --
-> 2.25.4
->
+> > I probably should have complained with the clocks node, but that's only 
+> > pending for 5.9.
+> 
+> Note that there are more users for this pattern: "raspberrypi,firmware-ts" and
+> "raspberrypi,firmware-gpio". Actually you were the one to originally propose
+> this it[1]. :P
+
+Sigh, this is why I dislike incomplete examples...
+
+Based on that,
+
+Acked-by: Rob Herring <robh@kernel.org>
+
+And please get gpio and ts converted to schema and referenced here 
+before the next time I look at this.
+
+> There already is a fair amount of churn in these drivers because of all the DT
+> changes we did in the past, and if we need to change how we integrate these
+> again, I'd really like it to be for good.
+> 
+> > The bigger issue is this stuff is just trickling in one bit at a time 
+> > which gives no context for review. What's next? Is it really a mystery 
+> > as to what functions the firmware provides?
+> 
+> We have no control over it, RPi engineers integrate new designs and new
+> firmware interfaces show up. This is a good example of it.
+> 
+> I proposed them to use SCMI as it covers most of what they are already
+> providing here. But no luck so far.
+
+Once we get tired of supporting all the different firmware interfaces 
+and the mess they become, we'll just have to start refusing custom ones. 
+Worked for PSCI.
+
+> > You don't have to have a driver in place for every function.
+> 
+> I see your point, it could be more monolithic, that said, having a driver is
+> essential. See the reverts I managed to pull off at the end of the series.
+> 
+> [1] https://patchwork.kernel.org/patch/10166783/#21421571
+> 
+
+
