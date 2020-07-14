@@ -2,46 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075D421EC56
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AB921EC58
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727045AbgGNJKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:10:54 -0400
-Received: from mx.socionext.com ([202.248.49.38]:30094 "EHLO mx.socionext.com"
+        id S1727024AbgGNJLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:11:12 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46758 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725793AbgGNJKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:10:53 -0400
-Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 14 Jul 2020 18:10:51 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 9ACA460060;
-        Tue, 14 Jul 2020 18:10:51 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Tue, 14 Jul 2020 18:10:51 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by kinkan.css.socionext.com (Postfix) with ESMTP id 2AC731A0508;
-        Tue, 14 Jul 2020 18:10:51 +0900 (JST)
-Received: from [10.212.0.26] (unknown [10.212.0.26])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id C7F8F12012F;
-        Tue, 14 Jul 2020 18:10:50 +0900 (JST)
-Subject: Re: [PATCH v2 2/2] phy: socionext: Add UniPhier AHCI PHY driver
- support
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <1593507574-10007-1-git-send-email-hayashi.kunihiko@socionext.com>
- <1593507574-10007-3-git-send-email-hayashi.kunihiko@socionext.com>
- <20200713050527.GR34333@vkoul-mobl>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <9f358850-eb2a-769c-be57-866d77183a7f@socionext.com>
-Date:   Tue, 14 Jul 2020 18:10:50 +0900
+        id S1725793AbgGNJLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 05:11:11 -0400
+IronPort-SDR: z03tTkhtc1eF/6sQa0q8o2EKIdwzcLvYp5BTnNuvkdrTiD6AXKTxwpRn1Yi8cgUtZ/vWk3WhNy
+ FYo5JvkGwqHA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="128412143"
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="128412143"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 02:11:11 -0700
+IronPort-SDR: +quqQ8AoB6l1/clKGjr/Ost3L2MAOgZ9HPmGoRHsNitdy+o/+CPmH1PGJiEXpN8W1VX0abxXuQ
+ 0zQnXtGWLGsQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="281689249"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP; 14 Jul 2020 02:11:11 -0700
+Received: from [10.249.230.149] (abudanko-mobl.ccr.corp.intel.com [10.249.230.149])
+        by linux.intel.com (Postfix) with ESMTP id 05710580810;
+        Tue, 14 Jul 2020 02:11:08 -0700 (PDT)
+Subject: [PATCH v11 13/15] perf record: extend -D,--delay option with -1 value
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <037d737f-0ada-a9f0-9686-f7521ca6fbc3@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <7723c606-cbd8-ae21-9f61-9fa116bc65d0@linux.intel.com>
+Date:   Tue, 14 Jul 2020 12:11:07 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200713050527.GR34333@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <037d737f-0ada-a9f0-9686-f7521ca6fbc3@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -49,142 +55,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
 
-On 2020/07/13 14:05, Vinod Koul wrote:
-> On 30-06-20, 17:59, Kunihiko Hayashi wrote:
-> 
->> +++ b/drivers/phy/socionext/phy-uniphier-ahci.c
->> @@ -0,0 +1,335 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * phy-uniphier-ahci.c - PHY driver for UniPhier AHCI controller
->> + * Copyright 2016-2018, Socionext Inc.
-> 
-> we are in 2020 now!
+Extend -D,--delay option with -1 to start collection with events
+disabled to be enabled later by 'enable' command provided via
+control file descriptor.
 
-Oops, I'll adjust it.
-
->> +static int uniphier_ahciphy_pxs2_power_on(struct uniphier_ahciphy_priv *priv)
->> +{
->> +	int ret;
->> +	u32 val;
->> +
->> +	/* enable reference clock for PHY */
->> +	val = readl(priv->base + CKCTRL);
->> +	val |= CKCTRL_REF_SSP_EN;
->> +	writel(val, priv->base + CKCTRL);
->> +
->> +	/* release port reset */
->> +	val = readl(priv->base + CKCTRL);
->> +	val &= ~CKCTRL_P0_RESET;
->> +	writel(val, priv->base + CKCTRL);
->> +
->> +	/* wait until PLL is ready */
->> +	if (priv->data->is_ready_high)
->> +		ret = readl_poll_timeout(priv->base + CKCTRL, val,
->> +					 (val & CKCTRL_P0_READY), 200, 400);
->> +	else
->> +		ret = readl_poll_timeout(priv->base + CKCTRL, val,
->> +					 !(val & CKCTRL_P0_READY), 200, 400);
->> +	if (ret) {
->> +		dev_err(priv->dev, "Failed to check whether PHY PLL is ready\n");
->> +		goto out_disable_clock;
->> +	}
->> +
->> +	return 0;
->> +
->> +out_disable_clock:
->> +	/* assert port reset */
->> +	val = readl(priv->base + CKCTRL);
->> +	val |= CKCTRL_P0_RESET;
->> +	writel(val, priv->base + CKCTRL);
->> +
->> +	/* disable reference clock for PHY */
->> +	val = readl(priv->base + CKCTRL);
->> +	val &= ~CKCTRL_REF_SSP_EN;
->> +	writel(val, priv->base + CKCTRL);
-> 
-> this seems to be repeated patter, why not add a modifyl() helper here..
-
-Hmm, I try to add helpers for modifying P0_RESET and REF_SSP_EN bits.
-
-> 
->> +static int uniphier_ahciphy_pxs3_init(struct uniphier_ahciphy_priv *priv)
->> +{
->> +	int i;
->> +	u32 val;
->> +
->> +	/* setup port parameter */
->> +	val = readl(priv->base + TXCTRL0);
->> +	val &= ~TXCTRL0_AMP_G3_MASK;
->> +	val |= FIELD_PREP(TXCTRL0_AMP_G3_MASK, 0x73);
->> +	val &= ~TXCTRL0_AMP_G2_MASK;
->> +	val |= FIELD_PREP(TXCTRL0_AMP_G2_MASK, 0x46);
->> +	val &= ~TXCTRL0_AMP_G1_MASK;
->> +	val |= FIELD_PREP(TXCTRL0_AMP_G1_MASK, 0x42);
->> +	writel(val, priv->base + TXCTRL0);
->> +
->> +	val = readl(priv->base + TXCTRL1);
->> +	val &= ~TXCTRL1_DEEMPH_G3_MASK;
->> +	val |= FIELD_PREP(TXCTRL1_DEEMPH_G3_MASK, 0x23);
->> +	val &= ~TXCTRL1_DEEMPH_G2_MASK;
->> +	val |= FIELD_PREP(TXCTRL1_DEEMPH_G2_MASK, 0x05);
->> +	val &= ~TXCTRL1_DEEMPH_G1_MASK;
->> +	val |= FIELD_PREP(TXCTRL1_DEEMPH_G1_MASK, 0x05);
->> +
->> +	val = readl(priv->base + RXCTRL);
->> +	val &= ~RXCTRL_LOS_LVL_MASK;
->> +	val |= FIELD_PREP(RXCTRL_LOS_LVL_MASK, 0x9);
->> +	val &= ~RXCTRL_LOS_BIAS_MASK;
->> +	val |= FIELD_PREP(RXCTRL_LOS_BIAS_MASK, 0x2);
->> +	val &= ~RXCTRL_RX_EQ_MASK;
->> +	val |= FIELD_PREP(RXCTRL_RX_EQ_MASK, 0x1);
->> +
->> +	/* dummy read 25 times */
-> 
-> why?
-
-According to the specification document,
-these 25 read accesses make a wait time for the phy to stablize.
-I'll add the reason as comment.
-
-> 
->> +static int uniphier_ahciphy_init(struct phy *phy)
->> +{
->> +	struct uniphier_ahciphy_priv *priv = phy_get_drvdata(phy);
->> +	int ret;
->> +
->> +	ret = clk_prepare_enable(priv->clk_parent);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = reset_control_deassert(priv->rst_parent);
->> +	if (ret)
->> +		goto out_clk_disable;
->> +
->> +	if (priv->data->init) {
->> +		ret = priv->data->init(priv);
->> +		if (ret)
->> +			goto out_rst_assert;
->> +	}
->> +
->> +	return ret;
-> 
-> return 0?
-
-Yes, I'll fix it.
-
-> 
->> +static const struct uniphier_ahciphy_soc_data uniphier_pxs2_data = {
->> +	.init = NULL,
-> 
-> Isn't this superfluous ?
-
-Indeed, this can be removed.
-
-Thank you,
-
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
-Best Regards
-Kunihiko Hayashi
+ tools/perf/Documentation/perf-record.txt |  5 +++--
+ tools/perf/builtin-record.c              | 12 ++++++++----
+ tools/perf/builtin-trace.c               |  2 +-
+ tools/perf/util/record.h                 |  2 +-
+ 4 files changed, 13 insertions(+), 8 deletions(-)
+
+diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+index fa8a5fcd27ab..a84376605805 100644
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -407,8 +407,9 @@ if combined with -a or -C options.
+ 
+ -D::
+ --delay=::
+-After starting the program, wait msecs before measuring. This is useful to
+-filter out the startup phase of the program, which is often very different.
++After starting the program, wait msecs before measuring (-1: start with events
++disabled). This is useful to filter out the startup phase of the program, which
++is often very different.
+ 
+ -I::
+ --intr-regs::
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 19b1d5effb7a..cd1892c4844b 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1749,8 +1749,12 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 	}
+ 
+ 	if (opts->initial_delay) {
+-		usleep(opts->initial_delay * USEC_PER_MSEC);
+-		evlist__enable(rec->evlist);
++		pr_info(EVLIST_DISABLED_MSG);
++		if (opts->initial_delay > 0) {
++			usleep(opts->initial_delay * USEC_PER_MSEC);
++			evlist__enable(rec->evlist);
++			pr_info(EVLIST_ENABLED_MSG);
++		}
+ 	}
+ 
+ 	trigger_ready(&auxtrace_snapshot_trigger);
+@@ -2462,8 +2466,8 @@ static struct option __record_options[] = {
+ 	OPT_CALLBACK('G', "cgroup", &record.evlist, "name",
+ 		     "monitor event in cgroup name only",
+ 		     parse_cgroups),
+-	OPT_UINTEGER('D', "delay", &record.opts.initial_delay,
+-		  "ms to wait before starting measurement after program start"),
++	OPT_INTEGER('D', "delay", &record.opts.initial_delay,
++		  "ms to wait before starting measurement after program start (-1: start with events disabled)"),
+ 	OPT_BOOLEAN(0, "kcore", &record.opts.kcore, "copy /proc/kcore"),
+ 	OPT_STRING('u', "uid", &record.opts.target.uid_str, "user",
+ 		   "user to profile"),
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index a333a9a64f27..bea461b6f937 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -4812,7 +4812,7 @@ int cmd_trace(int argc, const char **argv)
+ 			"per thread proc mmap processing timeout in ms"),
+ 	OPT_CALLBACK('G', "cgroup", &trace, "name", "monitor event in cgroup name only",
+ 		     trace__parse_cgroups),
+-	OPT_UINTEGER('D', "delay", &trace.opts.initial_delay,
++	OPT_INTEGER('D', "delay", &trace.opts.initial_delay,
+ 		     "ms to wait before starting measurement after program "
+ 		     "start"),
+ 	OPTS_EVSWITCH(&trace.evswitch),
+diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+index 39d1de4b2a36..da138dcb4d34 100644
+--- a/tools/perf/util/record.h
++++ b/tools/perf/util/record.h
+@@ -61,7 +61,7 @@ struct record_opts {
+ 	const char    *auxtrace_snapshot_opts;
+ 	const char    *auxtrace_sample_opts;
+ 	bool	      sample_transaction;
+-	unsigned      initial_delay;
++	int	      initial_delay;
+ 	bool	      use_clockid;
+ 	clockid_t     clockid;
+ 	u64	      clockid_res_ns;
+-- 
+2.24.1
+
+
