@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B1E21EB93
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA0D21EB91
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgGNIkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726766AbgGNIkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 14 Jul 2020 04:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726384AbgGNIkf (ORCPT
+Received: from mail29.static.mailgun.info ([104.130.122.29]:32992 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725816AbgGNIkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Jul 2020 04:40:35 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C543C061755;
-        Tue, 14 Jul 2020 01:40:35 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id md7so1196827pjb.1;
-        Tue, 14 Jul 2020 01:40:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nYA5e7ARxM6LIN4taGv+yFcdrKzm+MTO5NvTdpW41Ro=;
-        b=T2lOnTLdKYH6OO1hKVWnOfUuo1+qOtx6+BTH4Z1JtU+qqoH+iYiR71ofLyjdn1Hq2d
-         +mgYi4dVqEidffxZhXdFLx824uYHihWjHM7oqNoRfisNq3ZQt4zPA6ZUf9T4yN2dzeXN
-         W4HZLj/2n/czW7sVpgBSyMWqlKX2zXbmgYF0GxYvoG2BPPtu5yf4FqbP0asJUSwnvahc
-         0E0x+XLsSKsfvoj5PA8+NGNMIXtPmQvVZ9oBU+nym+MJ/5wz1ETBDXlVe6+2dCeFG9nW
-         y/jnhzfD8//SByShVty8xDksD8PKBqj9WS5guPELcOy6ivddE7+lokHZUXcGvVFcbFyq
-         Ycsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nYA5e7ARxM6LIN4taGv+yFcdrKzm+MTO5NvTdpW41Ro=;
-        b=f3vbucVaeO60cAcCZiHM7T/D/ME64Wzu5GenEyDUwaTMYyzGjfDLsySzXAptOTkdbv
-         QP/5/XscI87T/b8b7LnIksXvBBm1o0/47v1RPSOZp9QR8XALrK5BJF6c2JfqGIt8Vuhc
-         2P14WIX269MoTq/fmHtHleswgs6ejbNIjzQD9RrjtddyPG8Zksj+981xOuyDRw6G43j6
-         EYknnVoiyIGAaFbQdBiJz4DlE3QdDiqB5t8RaTbCrqTLQ5q6ezB1vB6O9SobSqsRLV/K
-         b+RZ1X90YfgUK6Qmtuz0ZRcfOz47Yq24c2x+EEbHkg2anf/l/DesF8653XnGllQrQ7wl
-         f8Yw==
-X-Gm-Message-State: AOAM5308aNHcJ6lLBT9R5BiuI1iU1pFY6G4PP+D8jAeUwJzms8DPw8OV
-        7vJ7iztxCD5Zb+ku2rEEFr0xYrszWZpRI6smIeg=
-X-Google-Smtp-Source: ABdhPJwyHSC2MglEc3MU1qW3Ba6mSuojPSrl7xxdg6zyyzvWhZHwZROYnhBDgZqucI3YJBIFjtYrDUxvZ8yZANTLbkE=
-X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr3597107pjp.228.1594716035169;
- Tue, 14 Jul 2020 01:40:35 -0700 (PDT)
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594716035; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=VnSMU06GceCsRYOOdGyZP1O5FA/lUKd375PdgWf8H4Y=; b=pa1ECT1MGSAW2pzlOtTsIpCr70anrzhochu+Eewg6csrSxLFb6NauvTnoDt53U6Yhkhv155J
+ kEwNmUt2tD7/25/CVit/BUYy4A0xSZeIhqHuCShpi/OjRtevvQYs/jjChEgas2qoEv8i+VEE
+ yzwzN1u+PmCxuy3XG23h9jW/SuQ=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5f0d6f7f2991e765cd01e415 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 14 Jul 2020 08:40:31
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 28531C43395; Tue, 14 Jul 2020 08:40:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B3F55C433CA;
+        Tue, 14 Jul 2020 08:40:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B3F55C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     m@bues.ch, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ssb: Replace HTTP links with HTTPS ones
+References: <CACna6ryNBH7ZSie985YV9zXaEa_XmTXX2S2XH5LC8WfMZNFuAg@mail.gmail.com>
+        <20200710062151.28871-1-grandmaster@al2klimov.de>
+Date:   Tue, 14 Jul 2020 11:40:27 +0300
+In-Reply-To: <20200710062151.28871-1-grandmaster@al2klimov.de> (Alexander A.
+        Klimov's message of "Fri, 10 Jul 2020 08:21:51 +0200")
+Message-ID: <87mu42cww4.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20200508021844.6911-1-david.e.box@linux.intel.com> <20200714062323.19990-2-david.e.box@linux.intel.com>
-In-Reply-To: <20200714062323.19990-2-david.e.box@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 14 Jul 2020 11:40:18 +0300
-Message-ID: <CAHp75VezDB5HqNn+rw72z2yt0buGh+szi4ytOMPejtQWMwr0+w@mail.gmail.com>
-Subject: Re: [PATCH V3 1/3] PCI: Add defines for Designated Vendor-Specific Capability
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 9:22 AM David E. Box
-<david.e.box@linux.intel.com> wrote:
->
-> Add PCIe DVSEC extended capability ID and defines for the header offsets.
-> Defined in PCIe r5.0, sec 7.9.6.
->
+"Alexander A. Klimov" <grandmaster@al2klimov.de> writes:
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+>
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+>
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 > ---
->  include/uapi/linux/pci_regs.h | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-> index f9701410d3b5..09daa9f07b6b 100644
-> --- a/include/uapi/linux/pci_regs.h
-> +++ b/include/uapi/linux/pci_regs.h
-> @@ -720,6 +720,7 @@
->  #define PCI_EXT_CAP_ID_DPC     0x1D    /* Downstream Port Containment */
->  #define PCI_EXT_CAP_ID_L1SS    0x1E    /* L1 PM Substates */
->  #define PCI_EXT_CAP_ID_PTM     0x1F    /* Precision Time Measurement */
-> +#define PCI_EXT_CAP_ID_DVSEC   0x23    /* Designated Vendor-Specific */
->  #define PCI_EXT_CAP_ID_DLF     0x25    /* Data Link Feature */
->  #define PCI_EXT_CAP_ID_PL_16GT 0x26    /* Physical Layer 16.0 GT/s */
->  #define PCI_EXT_CAP_ID_MAX     PCI_EXT_CAP_ID_PL_16GT
-> @@ -1062,6 +1063,10 @@
->  #define  PCI_L1SS_CTL1_LTR_L12_TH_SCALE        0xe0000000  /* LTR_L1.2_THRESHOLD_Scale */
->  #define PCI_L1SS_CTL2          0x0c    /* Control 2 Register */
->
-> +/* Designated Vendor-Specific (DVSEC, PCI_EXT_CAP_ID_DVSEC) */
-> +#define PCI_DVSEC_HEADER1              0x4 /* Vendor-Specific Header1 */
-> +#define PCI_DVSEC_HEADER2              0x8 /* Vendor-Specific Header2 */
-> +
->  /* Data Link Feature */
->  #define PCI_DLF_CAP            0x04    /* Capabilities Register */
->  #define  PCI_DLF_EXCHANGE_ENABLE       0x80000000  /* Data Link Feature Exchange Enable */
-> --
-> 2.20.1
->
+>  Better?
 
+When you submit a new version of the patch you should mark it as v2 and
+add a changelog what changed since v1, see link below for more. But this
+is for the future, no need to resend because of this.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
