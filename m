@@ -2,228 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC2E21EE68
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C770621EE7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbgGNKzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 06:55:03 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24879 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726041AbgGNKzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 06:55:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594724100; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=l+PMrsBEotyAY188agVyUbHI6J4WW3/QMEFx1brNrwA=; b=n6tiwRQKzfLpiKLx2oLzgR1fVw8ZbY7vpA1cZwhyOchs5wvmrKN+923xlVsyU/CuKz6p+Dpi
- 6Dl7KvzOoWKbnSIckCqmXPsrB3fqC2Vsm+lOTpY7jDIJGHYbd6uXgt4W1qP4DLKROlpS63Ni
- e9bcjo/GhjQgUEBLC1xiztBQBPE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n15.prod.us-east-1.postgun.com with SMTP id
- 5f0d8ee11e603dbb44c5e489 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 14 Jul 2020 10:54:25
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D1420C43395; Tue, 14 Jul 2020 10:54:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.75.62])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 80BEBC433C8;
-        Tue, 14 Jul 2020 10:54:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 80BEBC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH v3 4/5] irqchip: qcom-pdc: Introduce irq_set_wake call
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        LinusW <linus.walleij@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Evan Green <evgreen@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Srinivas Rao L <lsrao@codeaurora.org>
-References: <1592818308-23001-1-git-send-email-mkshah@codeaurora.org>
- <1592818308-23001-5-git-send-email-mkshah@codeaurora.org>
- <CAD=FV=Wa6mUAM_bMN7E-D1Wi9qbFNJWWjfVsgcAVUBmwGqBhSg@mail.gmail.com>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <339f24ce-8114-2008-87d4-0e3772487f10@codeaurora.org>
-Date:   Tue, 14 Jul 2020 16:24:15 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727866AbgGNK5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 06:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726352AbgGNK5Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 06:57:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F32C061755;
+        Tue, 14 Jul 2020 03:57:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=QjLbdVL2r17ekhZyVULwOjBowlYS4Ek6fmzcrzp6+qM=; b=ckXveiKAmxhqd2uG+mC3yk5NdZ
+        1CaPppiRhZQ44Z943jG5+27ZkyVawPXW34uCC20nz/d8LwO1IiItolK1wDTb3YI1xiIShyF8CnXE4
+        hEHT0lqKgAM+SkJ3I8CMIlK4Hco8jqS1bZIS8D+gCenKpI/sPD9BcKxBZw4iexdYXPui6xyJUPsRN
+        JPm6W+pmqYK9s02ucbyswztOwQl52ysQ9zbjYBlDCYE5naq6+sywq3wasRid1iTUCcejTEUO93o/P
+        gjN8PbaKJYba7pEXm6ybtvmBhE4rcvAdP0jIj5KBbtPNx94p6SjYZtq+iA1Ifxl9zBP4Ug2yuf36y
+        eziHGzJA==;
+Received: from 089144201169.atnat0010.highway.a1.net ([89.144.201.169] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvIcf-0005s3-G7; Tue, 14 Jul 2020 10:57:17 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: clean up address limit helpers v2
+Date:   Tue, 14 Jul 2020 12:54:59 +0200
+Message-Id: <20200714105505.935079-1-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=Wa6mUAM_bMN7E-D1Wi9qbFNJWWjfVsgcAVUBmwGqBhSg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi all,
 
-On 7/14/2020 3:46 AM, Doug Anderson wrote:
-> Hi,
->
-> On Mon, Jun 22, 2020 at 2:33 AM Maulik Shah <mkshah@codeaurora.org> wrote:
->> Remove irq_disable callback to allow lazy disable for pdc interrupts.
->>
->> Add irq_set_wake callback that unmask interrupt in HW when drivers
->> mark interrupt for wakeup. Interrupt will be cleared in HW during
->> lazy disable if its not marked for wakeup.
->>
->> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
->> ---
->>   drivers/irqchip/qcom-pdc.c | 34 ++++++++++++++++------------------
->>   1 file changed, 16 insertions(+), 18 deletions(-)
->>
->> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
->> index 6ae9e1f..8beb6f7 100644
->> --- a/drivers/irqchip/qcom-pdc.c
->> +++ b/drivers/irqchip/qcom-pdc.c
->> @@ -36,6 +36,7 @@ struct pdc_pin_region {
->>          u32 cnt;
->>   };
->>
->> +static DECLARE_BITMAP(pdc_wake_irqs, PDC_MAX_IRQS);
->>   static DEFINE_RAW_SPINLOCK(pdc_lock);
->>   static void __iomem *pdc_base;
->>   static struct pdc_pin_region *pdc_region;
->> @@ -87,22 +88,17 @@ static void pdc_enable_intr(struct irq_data *d, bool on)
->>          raw_spin_unlock(&pdc_lock);
->>   }
->>
->> -static void qcom_pdc_gic_disable(struct irq_data *d)
->> +static int qcom_pdc_gic_set_wake(struct irq_data *d, unsigned int on)
->>   {
->> -       if (d->hwirq == GPIO_NO_WAKE_IRQ)
->> -               return;
->> -
->> -       pdc_enable_intr(d, false);
->> -       irq_chip_disable_parent(d);
->> -}
->> -
->> -static void qcom_pdc_gic_enable(struct irq_data *d)
->> -{
->> -       if (d->hwirq == GPIO_NO_WAKE_IRQ)
->> -               return;
->> +       if (on) {
->> +               pdc_enable_intr(d, true);
->> +               irq_chip_enable_parent(d);
->> +               set_bit(d->hwirq, pdc_wake_irqs);
->> +       } else {
->> +               clear_bit(d->hwirq, pdc_wake_irqs);
->> +       }
->>
->> -       pdc_enable_intr(d, true);
->> -       irq_chip_enable_parent(d);
->> +       return irq_chip_set_wake_parent(d, on);
->>   }
->>
->>   static void qcom_pdc_gic_mask(struct irq_data *d)
->> @@ -111,6 +107,9 @@ static void qcom_pdc_gic_mask(struct irq_data *d)
->>                  return;
->>
->>          irq_chip_mask_parent(d);
->> +
->> +       if (!test_bit(d->hwirq, pdc_wake_irqs))
->> +               pdc_enable_intr(d, false);
-> I _think_ this will break masking, right?  In other words, consider
-> the following (having nothing to do with suspend/resume):
->
-> 1. Driver requests an interrupt.
-> 2. Driver masks interrupt (calls disable_irq())
-> 3. Interrupt fires while it is masked.
-> 4. Driver unmasks interrupt (calls enable_irq().
->
-> After step #4 the interrupt should fire since it was only masked, not
-> disabled (yes, it's super confusing that the driver calls
-> disable_irq() but it expecting it to be masked--as I understand it
-> that's just how it is).  I haven't tested, but I suspect that's broken
-> for you now (assuming you're working on a pin that wasn't a wakeup
-> pin) because you won't track edges when you're "disabled".
-No its not broken, it works as expected. after step #4, interrupt will fire.
->
-> I suspect that the right thing to do here is to:
->
-> a) Make qcom_pdc_gic_set_wake() just keep "pdc_wake_irqs" up to date
-> and then call parent.
->
-> b) Implement irq_suspend and irq_resume.  In irq_suspend() you disable
-> all interrupts that aren't in "pdc_wake_irqs".  In irq_resume() you
-> just re-enable all of them (masking will be handled by the parent).
->
-> Would that work?
->
-> ...oh, drat!  The .irq_suspend() callback is only there if you're
-> using "irq/generic-chip.c".  OK, well unless we want to move over to
-> using generic-chip we can just register for syscore ourselves.  OK, I
-> tested and <https://crrev.com/c/2296160> works.
+in preparation for eventually phasing out direct use of set_fs(), this
+series removes the segment_eq() arch helper that is only used to
+implement or duplicate the uaccess_kernel() API, and then adds
+descriptive helpers to force the kernel address limit.
 
-I too thought of using syscore ops earlier, but syscore ops won't work 
-if device chooses to enter "s2idle" suspend state since they are not 
-invoked in s2idle entry path.
 
-even if you register for "irq/generic-chip.c" , this driver too 
-registers for syscore ops only, it won't work if you enter s2idle 
-suspend state.
+Changes since v1:
+ - drop to incorrect hunks
+ - fix a commit log typo
 
-Current patch works fine with both s2idle and deep suspend states.
-
-Thanks,
-Maulik
->
->
->
->>   }
->>
->>   static void qcom_pdc_gic_unmask(struct irq_data *d)
->> @@ -118,6 +117,7 @@ static void qcom_pdc_gic_unmask(struct irq_data *d)
->>          if (d->hwirq == GPIO_NO_WAKE_IRQ)
->>                  return;
->>
->> +       pdc_enable_intr(d, true);
->>          irq_chip_unmask_parent(d);
->>   }
->>
->> @@ -197,15 +197,13 @@ static struct irq_chip qcom_pdc_gic_chip = {
->>          .irq_eoi                = irq_chip_eoi_parent,
->>          .irq_mask               = qcom_pdc_gic_mask,
->>          .irq_unmask             = qcom_pdc_gic_unmask,
->> -       .irq_disable            = qcom_pdc_gic_disable,
->> -       .irq_enable             = qcom_pdc_gic_enable,
->>          .irq_get_irqchip_state  = qcom_pdc_gic_get_irqchip_state,
->>          .irq_set_irqchip_state  = qcom_pdc_gic_set_irqchip_state,
->>          .irq_retrigger          = irq_chip_retrigger_hierarchy,
->>          .irq_set_type           = qcom_pdc_gic_set_type,
->> +       .irq_set_wake           = qcom_pdc_gic_set_wake,
->>          .flags                  = IRQCHIP_MASK_ON_SUSPEND |
->> -                                 IRQCHIP_SET_TYPE_MASKED |
->> -                                 IRQCHIP_SKIP_SET_WAKE,
->> +                                 IRQCHIP_SET_TYPE_MASKED,
->>          .irq_set_vcpu_affinity  = irq_chip_set_vcpu_affinity_parent,
->>          .irq_set_affinity       = irq_chip_set_affinity_parent,
->>   };
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->> of Code Aurora Forum, hosted by The Linux Foundation
->>
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-
+Diffstat:
+ arch/alpha/include/asm/uaccess.h      |    2 +-
+ arch/arc/include/asm/segment.h        |    3 +--
+ arch/arm/include/asm/uaccess.h        |    4 ++--
+ arch/arm64/include/asm/uaccess.h      |    2 +-
+ arch/arm64/kernel/sdei.c              |    2 +-
+ arch/csky/include/asm/segment.h       |    2 +-
+ arch/h8300/include/asm/segment.h      |    2 +-
+ arch/ia64/include/asm/uaccess.h       |    2 +-
+ arch/m68k/include/asm/segment.h       |    2 +-
+ arch/m68k/include/asm/tlbflush.h      |    6 +++---
+ arch/microblaze/include/asm/uaccess.h |    2 +-
+ arch/mips/include/asm/uaccess.h       |    2 +-
+ arch/mips/kernel/unaligned.c          |   27 +++++++++++++--------------
+ arch/nds32/include/asm/uaccess.h      |    2 +-
+ arch/nds32/kernel/process.c           |    2 +-
+ arch/nds32/mm/alignment.c             |    7 +++----
+ arch/nios2/include/asm/uaccess.h      |    2 +-
+ arch/openrisc/include/asm/uaccess.h   |    2 +-
+ arch/parisc/include/asm/uaccess.h     |    2 +-
+ arch/powerpc/include/asm/uaccess.h    |    3 +--
+ arch/riscv/include/asm/uaccess.h      |    6 +++---
+ arch/s390/include/asm/uaccess.h       |    2 +-
+ arch/sh/include/asm/segment.h         |    3 +--
+ arch/sh/kernel/traps_32.c             |   12 +++++-------
+ arch/sparc/include/asm/uaccess_32.h   |    2 +-
+ arch/sparc/include/asm/uaccess_64.h   |    2 +-
+ arch/x86/include/asm/uaccess.h        |    2 +-
+ arch/xtensa/include/asm/uaccess.h     |    2 +-
+ drivers/firmware/arm_sdei.c           |    5 ++---
+ fs/exec.c                             |    7 ++++++-
+ include/asm-generic/uaccess.h         |    4 ++--
+ include/linux/syscalls.h              |    2 +-
+ include/linux/uaccess.h               |   20 ++++++++++++++++++--
+ kernel/events/callchain.c             |    5 ++---
+ kernel/events/core.c                  |    5 ++---
+ kernel/exit.c                         |    2 +-
+ kernel/kthread.c                      |    5 ++---
+ kernel/stacktrace.c                   |    5 ++---
+ mm/maccess.c                          |   22 ++++++++++------------
+ 39 files changed, 99 insertions(+), 92 deletions(-)
