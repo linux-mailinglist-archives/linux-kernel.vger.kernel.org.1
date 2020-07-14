@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4E421FA0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFBC21FA98
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730006AbgGNSsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:48:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44314 "EHLO mail.kernel.org"
+        id S1730714AbgGNSyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:54:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729992AbgGNSsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:48:42 -0400
+        id S1729726AbgGNSx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:53:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AE5722B2B;
-        Tue, 14 Jul 2020 18:48:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92DF622B45;
+        Tue, 14 Jul 2020 18:53:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752521;
-        bh=QoEuy0hJIJikJq+yXPq8PDA+ZuxirAj2PA6pqi5aF04=;
+        s=default; t=1594752839;
+        bh=SDsC3WYUWbDqFtf8OSpck0pZHtY5L6+8Nqok/8gyQcQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZpF4+QNweGyDzM97Ubp/+3RpQVVo1ph2Bm/2Qh0lYLdBD0tqsYAv40kYBhqkiL6NF
-         EwlXLBwvIrInf3+aJllFyVC0XwJQW9zPLwIyZi/2y+uL/OBgcItRA6t9BZrq5DUKv6
-         zsmqsb2JRqkBXA1FQTtbhFtoZCe/wzwMJ9FA92oQ=
+        b=I2j4PzFEFF2pNW+dl5xUmDIplZV9l/HB0C99f5xaCryqAQqiKfyyDuIJ0p0OXU57J
+         Se7dFqhFdGPlIaVz0f84AeOoe8XEP6/bIxjNJJIqg04uhA3cufLGMAWF5zT5XCTAgQ
+         ad+p9ZRb1MyBOcbOWVBnLCmWp6FLkETq1MQvV+7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 001/109] KVM: s390: reduce number of IO pins to 1
-Date:   Tue, 14 Jul 2020 20:43:04 +0200
-Message-Id: <20200714184105.587874411@linuxfoundation.org>
+Subject: [PATCH 5.7 020/166] net: ethernet: mvneta: Fix Serdes configuration for SoCs without comphy
+Date:   Tue, 14 Jul 2020 20:43:05 +0200
+Message-Id: <20200714184116.861499127@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,71 +45,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Borntraeger <borntraeger@de.ibm.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
 
-[ Upstream commit 774911290c589e98e3638e73b24b0a4d4530e97c ]
+[ Upstream commit b4748553f53f2971e07d2619f13d461daac0f3bb ]
 
-The current number of KVM_IRQCHIP_NUM_PINS results in an order 3
-allocation (32kb) for each guest start/restart. This can result in OOM
-killer activity even with free swap when the memory is fragmented
-enough:
+The MVNETA_SERDES_CFG register is only available on older SoCs like the
+Armada XP. On newer SoCs like the Armada 38x the fields are moved to
+comphy. This patch moves the writes to this register next to the comphy
+initialization, so that depending on the SoC either comphy or
+MVNETA_SERDES_CFG is configured.
+With this we no longer write to the MVNETA_SERDES_CFG on SoCs where it
+doesn't exist.
 
-kernel: qemu-system-s39 invoked oom-killer: gfp_mask=0x440dc0(GFP_KERNEL_ACCOUNT|__GFP_COMP|__GFP_ZERO), order=3, oom_score_adj=0
-kernel: CPU: 1 PID: 357274 Comm: qemu-system-s39 Kdump: loaded Not tainted 5.4.0-29-generic #33-Ubuntu
-kernel: Hardware name: IBM 8562 T02 Z06 (LPAR)
-kernel: Call Trace:
-kernel: ([<00000001f848fe2a>] show_stack+0x7a/0xc0)
-kernel:  [<00000001f8d3437a>] dump_stack+0x8a/0xc0
-kernel:  [<00000001f8687032>] dump_header+0x62/0x258
-kernel:  [<00000001f8686122>] oom_kill_process+0x172/0x180
-kernel:  [<00000001f8686abe>] out_of_memory+0xee/0x580
-kernel:  [<00000001f86e66b8>] __alloc_pages_slowpath+0xd18/0xe90
-kernel:  [<00000001f86e6ad4>] __alloc_pages_nodemask+0x2a4/0x320
-kernel:  [<00000001f86b1ab4>] kmalloc_order+0x34/0xb0
-kernel:  [<00000001f86b1b62>] kmalloc_order_trace+0x32/0xe0
-kernel:  [<00000001f84bb806>] kvm_set_irq_routing+0xa6/0x2e0
-kernel:  [<00000001f84c99a4>] kvm_arch_vm_ioctl+0x544/0x9e0
-kernel:  [<00000001f84b8936>] kvm_vm_ioctl+0x396/0x760
-kernel:  [<00000001f875df66>] do_vfs_ioctl+0x376/0x690
-kernel:  [<00000001f875e304>] ksys_ioctl+0x84/0xb0
-kernel:  [<00000001f875e39a>] __s390x_sys_ioctl+0x2a/0x40
-kernel:  [<00000001f8d55424>] system_call+0xd8/0x2c8
-
-As far as I can tell s390x does not use the iopins as we bail our for
-anything other than KVM_IRQ_ROUTING_S390_ADAPTER and the chip/pin is
-only used for KVM_IRQ_ROUTING_IRQCHIP. So let us use a small number to
-reduce the memory footprint.
-
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Link: https://lore.kernel.org/r/20200617083620.5409-1-borntraeger@de.ibm.com
+Suggested-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/kvm_host.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/marvell/mvneta.c | 80 +++++++++++++++------------
+ 1 file changed, 44 insertions(+), 36 deletions(-)
 
-diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-index abe60268335d2..0fe5600a037e4 100644
---- a/arch/s390/include/asm/kvm_host.h
-+++ b/arch/s390/include/asm/kvm_host.h
-@@ -31,12 +31,12 @@
- #define KVM_USER_MEM_SLOTS 32
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index 43b44a1e8f69e..401eeeca89660 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -106,6 +106,7 @@
+ #define      MVNETA_TX_IN_PRGRS                  BIT(1)
+ #define      MVNETA_TX_FIFO_EMPTY                BIT(8)
+ #define MVNETA_RX_MIN_FRAME_SIZE                 0x247c
++/* Only exists on Armada XP and Armada 370 */
+ #define MVNETA_SERDES_CFG			 0x24A0
+ #define      MVNETA_SGMII_SERDES_PROTO		 0x0cc7
+ #define      MVNETA_QSGMII_SERDES_PROTO		 0x0667
+@@ -3523,26 +3524,55 @@ static int mvneta_setup_txqs(struct mvneta_port *pp)
+ 	return 0;
+ }
  
- /*
-- * These seem to be used for allocating ->chip in the routing table,
-- * which we don't use. 4096 is an out-of-thin-air value. If we need
-- * to look at ->chip later on, we'll need to revisit this.
-+ * These seem to be used for allocating ->chip in the routing table, which we
-+ * don't use. 1 is as small as we can get to reduce the needed memory. If we
-+ * need to look at ->chip later on, we'll need to revisit this.
-  */
- #define KVM_NR_IRQCHIPS 1
--#define KVM_IRQCHIP_NUM_PINS 4096
-+#define KVM_IRQCHIP_NUM_PINS 1
- #define KVM_HALT_POLL_NS_DEFAULT 50000
+-static int mvneta_comphy_init(struct mvneta_port *pp)
++static int mvneta_comphy_init(struct mvneta_port *pp, phy_interface_t interface)
+ {
+ 	int ret;
  
- /* s390-specific vcpu->requests bit members */
+-	if (!pp->comphy)
+-		return 0;
+-
+-	ret = phy_set_mode_ext(pp->comphy, PHY_MODE_ETHERNET,
+-			       pp->phy_interface);
++	ret = phy_set_mode_ext(pp->comphy, PHY_MODE_ETHERNET, interface);
+ 	if (ret)
+ 		return ret;
+ 
+ 	return phy_power_on(pp->comphy);
+ }
+ 
++static int mvneta_config_interface(struct mvneta_port *pp,
++				   phy_interface_t interface)
++{
++	int ret = 0;
++
++	if (pp->comphy) {
++		if (interface == PHY_INTERFACE_MODE_SGMII ||
++		    interface == PHY_INTERFACE_MODE_1000BASEX ||
++		    interface == PHY_INTERFACE_MODE_2500BASEX) {
++			ret = mvneta_comphy_init(pp, interface);
++		}
++	} else {
++		switch (interface) {
++		case PHY_INTERFACE_MODE_QSGMII:
++			mvreg_write(pp, MVNETA_SERDES_CFG,
++				    MVNETA_QSGMII_SERDES_PROTO);
++			break;
++
++		case PHY_INTERFACE_MODE_SGMII:
++		case PHY_INTERFACE_MODE_1000BASEX:
++			mvreg_write(pp, MVNETA_SERDES_CFG,
++				    MVNETA_SGMII_SERDES_PROTO);
++			break;
++		default:
++			return -EINVAL;
++		}
++	}
++
++	pp->phy_interface = interface;
++
++	return ret;
++}
++
+ static void mvneta_start_dev(struct mvneta_port *pp)
+ {
+ 	int cpu;
+ 
+-	WARN_ON(mvneta_comphy_init(pp));
++	WARN_ON(mvneta_config_interface(pp, pp->phy_interface));
+ 
+ 	mvneta_max_rx_size_set(pp, pp->pkt_size);
+ 	mvneta_txq_max_tx_size_set(pp, pp->pkt_size);
+@@ -3920,14 +3950,10 @@ static void mvneta_mac_config(struct phylink_config *config, unsigned int mode,
+ 	if (state->speed == SPEED_2500)
+ 		new_ctrl4 |= MVNETA_GMAC4_SHORT_PREAMBLE_ENABLE;
+ 
+-	if (pp->comphy && pp->phy_interface != state->interface &&
+-	    (state->interface == PHY_INTERFACE_MODE_SGMII ||
+-	     state->interface == PHY_INTERFACE_MODE_1000BASEX ||
+-	     state->interface == PHY_INTERFACE_MODE_2500BASEX)) {
+-		pp->phy_interface = state->interface;
+-
+-		WARN_ON(phy_power_off(pp->comphy));
+-		WARN_ON(mvneta_comphy_init(pp));
++	if (pp->phy_interface != state->interface) {
++		if (pp->comphy)
++			WARN_ON(phy_power_off(pp->comphy));
++		WARN_ON(mvneta_config_interface(pp, state->interface));
+ 	}
+ 
+ 	if (new_ctrl0 != gmac_ctrl0)
+@@ -4971,20 +4997,10 @@ static void mvneta_conf_mbus_windows(struct mvneta_port *pp,
+ }
+ 
+ /* Power up the port */
+-static int mvneta_port_power_up(struct mvneta_port *pp, int phy_mode)
++static void mvneta_port_power_up(struct mvneta_port *pp, int phy_mode)
+ {
+ 	/* MAC Cause register should be cleared */
+ 	mvreg_write(pp, MVNETA_UNIT_INTR_CAUSE, 0);
+-
+-	if (phy_mode == PHY_INTERFACE_MODE_QSGMII)
+-		mvreg_write(pp, MVNETA_SERDES_CFG, MVNETA_QSGMII_SERDES_PROTO);
+-	else if (phy_mode == PHY_INTERFACE_MODE_SGMII ||
+-		 phy_interface_mode_is_8023z(phy_mode))
+-		mvreg_write(pp, MVNETA_SERDES_CFG, MVNETA_SGMII_SERDES_PROTO);
+-	else if (!phy_interface_mode_is_rgmii(phy_mode))
+-		return -EINVAL;
+-
+-	return 0;
+ }
+ 
+ /* Device initialization routine */
+@@ -5170,11 +5186,7 @@ static int mvneta_probe(struct platform_device *pdev)
+ 	if (err < 0)
+ 		goto err_netdev;
+ 
+-	err = mvneta_port_power_up(pp, phy_mode);
+-	if (err < 0) {
+-		dev_err(&pdev->dev, "can't power up port\n");
+-		goto err_netdev;
+-	}
++	mvneta_port_power_up(pp, phy_mode);
+ 
+ 	/* Armada3700 network controller does not support per-cpu
+ 	 * operation, so only single NAPI should be initialized.
+@@ -5328,11 +5340,7 @@ static int mvneta_resume(struct device *device)
+ 		}
+ 	}
+ 	mvneta_defaults_set(pp);
+-	err = mvneta_port_power_up(pp, pp->phy_interface);
+-	if (err < 0) {
+-		dev_err(device, "can't power up port\n");
+-		return err;
+-	}
++	mvneta_port_power_up(pp, pp->phy_interface);
+ 
+ 	netif_device_attach(dev);
+ 
 -- 
 2.25.1
 
