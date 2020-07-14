@@ -2,51 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEC621E99C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B66421E9B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgGNHKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:10:00 -0400
-Received: from verein.lst.de ([213.95.11.211]:53012 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgGNHJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:09:58 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id C6A0468CFE; Tue, 14 Jul 2020 09:09:55 +0200 (CEST)
-Date:   Tue, 14 Jul 2020 09:09:55 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-riscv@lists.infradead.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: clean up address limit helpers
-Message-ID: <20200714070955.GB776@lst.de>
-References: <20200710135706.537715-1-hch@lst.de> <CAHk-=wjGjwtgYJvLOd5aO2dWyPsC-6ED2Hthoxm1Eerf-Ahd-w@mail.gmail.com>
+        id S1726777AbgGNHL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:11:58 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:40818 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726892AbgGNHL6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:11:58 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.4868273|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00592741-0.000606278-0.993466;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03306;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.I1U1W7._1594710707;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.I1U1W7._1594710707)
+          by smtp.aliyun-inc.com(10.147.40.44);
+          Tue, 14 Jul 2020 15:11:51 +0800
+From:   Frank Lee <frank@allwinnertech.com>
+To:     anarsoul@gmail.com, tiny.windzz@gmail.com, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
+        robh+dt@kernel.org, mripard@kernel.org, wens@csie.org,
+        linux-pm@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, huangshuosheng@allwinnertech.com,
+        liyong@allwinnertech.com, Yangtao Li <frank@allwinnertech.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 07/16] dt-bindings: thermal: sun8i: Add binding for A100's THS controller
+Date:   Tue, 14 Jul 2020 15:11:40 +0800
+Message-Id: <da4026f02eb93193f63201a9d6654a870ada9dc7.1594708864.git.frank@allwinnertech.com>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <cover.1594708863.git.frank@allwinnertech.com>
+References: <cover.1594708863.git.frank@allwinnertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjGjwtgYJvLOd5aO2dWyPsC-6ED2Hthoxm1Eerf-Ahd-w@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 08:25:35AM -0700, Linus Torvalds wrote:
-> On Fri, Jul 10, 2020 at 6:57 AM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > in preparation for eventually phasing out direct use of set_fs(), this
-> > series removes the segment_eq() arch helper that is only used to
-> > implement or duplicate the uaccess_kernel() API, and then adds
-> > descriptive helpers to force the kernel address limit.
-> 
-> Ack. All the patches looked like no-ops to me, but with better naming
-> and clarity.
+From: Yangtao Li <frank@allwinnertech.com>
 
-Is that a formal Acked-by?
+Add a binding for A100's ths controller.
+
+Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+Reviewed-by: Yangtao Li <tiny.windzz@gmail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml          | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml b/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml
+index 87369264feb9..9d40fc7ff6fd 100644
+--- a/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml
++++ b/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml
+@@ -17,6 +17,7 @@ properties:
+       - allwinner,sun8i-h3-ths
+       - allwinner,sun8i-r40-ths
+       - allwinner,sun50i-a64-ths
++      - allwinner,sun50i-a100-ths
+       - allwinner,sun50i-h5-ths
+       - allwinner,sun50i-h6-ths
+ 
+@@ -61,7 +62,9 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            const: allwinner,sun50i-h6-ths
++            enum:
++              - allwinner,sun50i-a100-ths
++              - allwinner,sun50i-h6-ths
+ 
+     then:
+       properties:
+@@ -103,6 +106,7 @@ allOf:
+               - const: allwinner,sun8i-h3-ths
+               - const: allwinner,sun8i-r40-ths
+               - const: allwinner,sun50i-a64-ths
++              - const: allwinner,sun50i-a100-ths
+               - const: allwinner,sun50i-h5-ths
+               - const: allwinner,sun50i-h6-ths
+ 
+-- 
+2.24.0
+
