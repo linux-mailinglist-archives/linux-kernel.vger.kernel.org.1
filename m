@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F4C21F3A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D82921F3AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728144AbgGNOPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 10:15:09 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:33610 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbgGNOPJ (ORCPT
+        id S1728284AbgGNOPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 10:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725803AbgGNOPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 10:15:09 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id A21E68030867;
-        Tue, 14 Jul 2020 14:15:06 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3m-kbe7wnLov; Tue, 14 Jul 2020 17:15:06 +0300 (MSK)
-Date:   Tue, 14 Jul 2020 17:15:04 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 5/6] bus: cdmm: Add MIPS R5 arch support
-Message-ID: <20200714141504.oybqzaii5hcdy7cq@mobilestation>
-References: <20200714125753.22466-1-Sergey.Semin@baikalelectronics.ru>
- <20200714125753.22466-6-Sergey.Semin@baikalelectronics.ru>
- <CAK8P3a09RW+zCMJ9Luh2C3NkYPdY4Esu6EKk_QX_i4faV-rUjg@mail.gmail.com>
+        Tue, 14 Jul 2020 10:15:49 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D6AC061755;
+        Tue, 14 Jul 2020 07:15:49 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id a24so2024611pfc.10;
+        Tue, 14 Jul 2020 07:15:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DAio3TnNTOjPe9yDwDItXd0o7RC8Gehby5x/FyQbpyQ=;
+        b=rOAffERfaz2UrV/aTpHlw3LE+qz20urqxX+6me5hpwJ2HDvmNztB9cRc0EXprWkEdM
+         Jlj3whEQl2yiERo84RsgSSoBDw8op80X+CguyWpDzcdtdPIoJNgCQjYSkBQf+pi/RwIG
+         8BfylvHePmpveogaOzrmzbJLa5JX1tKimMPPJHh5X9manHtwJ4pFy7Gr8P0Zv4CMKjJo
+         o49vk16JtSQP8TshZDf7MIOorbkkALU6B6J54U8BPnXpLHclWDfDB3WWQk+W6w4JJuQM
+         /oedkiRJAu+TBuyAIFvy+4DmQcSp0C5gGWc2sGILREgdr3J7Gs53S6OkLm0ifNPALVlL
+         kcJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DAio3TnNTOjPe9yDwDItXd0o7RC8Gehby5x/FyQbpyQ=;
+        b=djmKuisxoltQoD/a/qWrXWGvjNjQ2vjSQO5ny18gi8VQzXzI/T//ddfFFZmVcgF3GW
+         4oVuxd/D48LmXAC23Zp61xY+LCsV5LjycbATky23wHtpL8jet1dt6/OxSGA1hxu4lNpK
+         0/jsPTDDVAVmAnUl6DZWrikvxmLyV1fw+ejj4nVUq6cPSCHhu+LzALci7CXyLbT1s0co
+         HwMsIymQ19WxG5SPl10TyUQIkEFbWUuhMKZP/KRrsluV/K865w3TvAHj8DKOsp/SrxKX
+         jiKY1HGImlXepOqoVK596JRhffjcH2Jt8ICwoqTN51b0Beb15m8dj4ozzSaBkc9T6CuJ
+         c9jg==
+X-Gm-Message-State: AOAM531xur5WeyDUGGAuEBOfiU+q6qd4HN8YMWiifS3s4US+HLAniRI+
+        lEu2AxW4+dBuY7Hx6cpcilLnniyQ
+X-Google-Smtp-Source: ABdhPJyo3khVV52XT8MCJLPQdOIgAWkQukLAnutLjv1b+w0ozzXXf31UXmKYsEbgAsae5AM27N437w==
+X-Received: by 2002:a05:6a00:2bb:: with SMTP id q27mr4723037pfs.176.1594736148707;
+        Tue, 14 Jul 2020 07:15:48 -0700 (PDT)
+Received: from [10.1.10.11] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id p5sm16337570pgi.83.2020.07.14.07.15.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 07:15:47 -0700 (PDT)
+Subject: Re: [PATCH v2] tipc: Don't using smp_processor_id() in preemptible
+ code
+To:     qiang.zhang@windriver.com, jmaloy@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, tuong.t.lien@dektech.com.au,
+        eric.dumazet@gmail.com, ying.xue@windriver.com
+Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20200714080559.9617-1-qiang.zhang@windriver.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <bf395370-219a-7c87-deee-7f3edce8c9dc@gmail.com>
+Date:   Tue, 14 Jul 2020 07:15:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a09RW+zCMJ9Luh2C3NkYPdY4Esu6EKk_QX_i4faV-rUjg@mail.gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200714080559.9617-1-qiang.zhang@windriver.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 03:28:30PM +0200, Arnd Bergmann wrote:
-> On Tue, Jul 14, 2020 at 2:58 PM Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
-> >
-> >  config MIPS_CDMM
-> >         bool "MIPS Common Device Memory Map (CDMM) Driver"
-> > -       depends on CPU_MIPSR2
-> > +       depends on CPU_MIPSR2 || CPU_MIPSR5
-> >         help
+
+
+On 7/14/20 1:05 AM, qiang.zhang@windriver.com wrote:
+> From: Zhang Qiang <qiang.zhang@windriver.com>
+> 
+> CPU: 0 PID: 6801 Comm: syz-executor201 Not tainted 5.8.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine,
+> BIOS Google 01/01/2011
+> 
+> Fixes: fc1b6d6de2208 ("tipc: introduce TIPC encryption & authentication")
+> Reported-by: syzbot+263f8c0d007dc09b2dda@syzkaller.appspotmail.com
+> Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+> ---
+>  v1->v2:
+>  add fixes tags.
+> 
+>  net/tipc/crypto.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c
+> index 8c47ded2edb6..520af0afe1b3 100644
+> --- a/net/tipc/crypto.c
+> +++ b/net/tipc/crypto.c
+> @@ -399,9 +399,10 @@ static void tipc_aead_users_set(struct tipc_aead __rcu *aead, int val)
+>   */
+>  static struct crypto_aead *tipc_aead_tfm_next(struct tipc_aead *aead)
+>  {
+> -	struct tipc_tfm **tfm_entry = this_cpu_ptr(aead->tfm_entry);
+> +	struct tipc_tfm **tfm_entry = get_cpu_ptr(aead->tfm_entry);
+>  
+>  	*tfm_entry = list_next_entry(*tfm_entry, list);
+> +	put_cpu_ptr(tfm_entry);
+>  	return (*tfm_entry)->tfm;
+>  }
+>  
 > 
 
-> Wouldn't a kernel built for P5600 have CPU_MIPSR2 set already?
+You have not explained why this was safe.
 
-No. P5600 core is based on MIPS32 r5, for which since 5.8 there has been a
-dedicated kernel config CPU_MIPSR5 available. 
+This seems to hide a real bug.
 
-> I thought R5 was just a backwards-compatible extension of R2.
+Presumably callers of this function should have disable preemption, and maybe interrupts as well.
 
-Yes, it's an extension and they are compatible in most of aspects, but
-there are still differences, which when activated/used make kernel built
-for R5 being incompatible with R2. For instance there is an ISA
-extension in R5 which hasn't been available in R5 like "eretnc"
-(return from exceptions with no atomic flag cleared), "mfhc/mthc0"
-(extended C0 register move instructions), etc. There is some other
-features/optimizations available since R5. Please see commit
-ab7c01fdc3cf ("mips: Add MIPS Release 5 support") for details.
+Right after put_cpu_ptr(tfm_entry), this thread could migrate to another cpu, and still access
+data owned by the old cpu.
 
-> 
-> If not, what about R3?
 
-Currently if some chip is equipped with R3, then the kernel must be built
-for R2 with features like EVA enabled if it's required.
-
--Sergey
-
-> 
->       Arnd
