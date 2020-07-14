@@ -2,220 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5F421FF88
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC32220000
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbgGNVCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59660 "EHLO
+        id S1728157AbgGNV0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727935AbgGNVCm (ORCPT
+        with ESMTP id S1726446AbgGNV0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:02:42 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509C5C061755;
-        Tue, 14 Jul 2020 14:02:42 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id r12so53018ilh.4;
-        Tue, 14 Jul 2020 14:02:42 -0700 (PDT)
+        Tue, 14 Jul 2020 17:26:14 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D2FC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:26:14 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id c80so926136wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:26:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=2npQXh+dkmWmSHKIQodxnxIAaeJj1A/FFr2Ll6AD3Hs=;
-        b=cUVYKmbuMquj1tPPomJ3QAhJreggNlTpwsACBo1UIJy8ABrEJRvYcUBJ+BzMm+B8Pw
-         MqSqKdxiUZLp3/SF8aRm3MPFEOcuXTXzReaF83C04QfRQHgm5C83Tljo6P1xGnktBhzD
-         OT+ejuCCRxGNB8MkOVi2pHeVYazL4B1RPNhoCnI8kHFaP6uAtl1cDWerw9s1oH2TTw0B
-         LM7J/Ue++Hb1A6pAPvTDsxvbkSlC8xNFDSx4dnf7ckP1Hwf+uHJfUVUzdHq5jQZARzeY
-         kP3Kn/qUbeuD8v9JUHRLTRkHEjvJZJQ63Z+mmdiHUET6RLX7HxZvg2kwWAFQoo3rA3v3
-         6aTw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6fRLYpXTjUG7Lueiak9yUWNoWwRQrJnBa6oSKFtWg8E=;
+        b=GBtqBw0Em7d28Clr2HE7epER9Kd1HFANvHKbk7pStrPbKPJv6RQchJwkr9FVFWlUX+
+         win/zFORjiQ5ujugNAdmZMP0H15vXjLjrBGrW/w6KcapflDra/KoIMiKaI3Jjx02G2vB
+         /LiCugvUwh2//YQphHlWhh89cR3jaY6BZ7uln3kaFG27Htcg8BVUS4x82mYTG9kVA8Cn
+         Kzd2L5c8NDoK5rrxTeKYlz9xG0tuD2xvjdqZrBXOpsQQzxCYa1qz2AoTjZzKpRvCd2n1
+         B376DmakjeuKX9RPB414AV3RnDBp5hVV0Cy9+QeAw+deO+ZpylBpW3EdeStV6TiSztZJ
+         QlDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=2npQXh+dkmWmSHKIQodxnxIAaeJj1A/FFr2Ll6AD3Hs=;
-        b=qwBz6cpTztDr+VsGfHlbeUB1eDw8ra2ncX7HmEGbwMpDo565vKQDn1MPAzT1am94md
-         LK0aVCDISIFjPj0yuE89IddNKThF9Fg+6bi0ubiqT2IID4+0SLTDdA2CopsNWR9e2jA/
-         um/tbkClS1JBWdMtQfdsxQGV+7VXkisi/7QMPcTGYnB/cw5T57y2VVQhs60rswriMXRs
-         lUDJ7rNe42+dcDkpGdh0WQMohRI48velBOYLyEUXhNFYz+1ErDHMEqgZ1Oj42wcJ6rM4
-         R7se7cqCgPVF6Q1enrZN1uBpA9FsYZoQO26Y4rTCpX4XvjeTdzV4mE+bb53JKUrEq+nf
-         zSng==
-X-Gm-Message-State: AOAM533mMYWOKUMz7bmVwC3qJr/yQHnFDBikiTIxepo8TP/t5Kn6z1vE
-        zkeOmrh60EoyH7PSDV+QogmQwxyd5E3EalmviHk=
-X-Google-Smtp-Source: ABdhPJwkddnl6FvRyOMdkmyyDRG9lWADdbl/Rct2E+/PQzsVJk9f8CH9Av6NUhTRswYDc3FssSb6pCSldchYVLW9F38=
-X-Received: by 2002:a92:9a4f:: with SMTP id t76mr6568425ili.174.1594760561627;
- Tue, 14 Jul 2020 14:02:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6fRLYpXTjUG7Lueiak9yUWNoWwRQrJnBa6oSKFtWg8E=;
+        b=HadSToanvEwSJ+PVWSHDGi3h5q9dyVN2iQzdH1FWDBVhN950dzjtzyjG7MU9LgZYS5
+         4s4Af2mMsAPh0u9Qr4euAJftaUFM/ujzXnbkh8WGOfdW7sR5ZI889aOK24vw/4eonlTM
+         HifpujafF9QODAE4GIi4M3QqxPW8rdYE6QKr8UGJjxkq8BHFb8rg5nHWlKKYgGG6Ql2w
+         0ybEqa1Bkfh0J3sWHmCwMdNHY51ldTWWJAa9xR6RteOi+ddyJDFD8TGC7KkuFhII+VSW
+         /ZjQYUkrIprtU0iVKK2yctWHzYBsf6ZlCytG5nDv8v9KmR+Twy/v2L39aGO6ij+VbH4/
+         FfLA==
+X-Gm-Message-State: AOAM530fY2CVERz3ml9ua72wfxSUgfbFdb6SDhGkTKGJgJK79FZYke8m
+        lS4H0a4j31Up0ylJnKJSYE002v+ASlPJCg==
+X-Google-Smtp-Source: ABdhPJzUpRcDwEsXYmLPaS6DkjCLEof0ShwsP8rsPx4113jnMsq2sgj3x5w2ZeBVI/fQ+uxbtv+gHA==
+X-Received: by 2002:a1c:4d11:: with SMTP id o17mr5506692wmh.134.1594760588532;
+        Tue, 14 Jul 2020 14:03:08 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id a84sm6040573wmh.47.2020.07.14.14.03.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 14:03:08 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 22:03:06 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Dirk Brandewie <dirk.j.brandewie@intel.com>
+Subject: Re: [PATCH 12/13] cpufreq: intel_pstate: Supply struct attribute
+ description for get_aperf_mperf_shift()
+Message-ID: <20200714210306.GI1398296@dell>
+References: <20200714145049.2496163-1-lee.jones@linaro.org>
+ <20200714145049.2496163-13-lee.jones@linaro.org>
+ <CAJZ5v0jkDWD6Ea2_oEDtFfPDWh5ByphUqEa=3jE2ZbnW0DVEcQ@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6602:21d8:0:0:0:0 with HTTP; Tue, 14 Jul 2020 14:02:40
- -0700 (PDT)
-In-Reply-To: <20200714184550.GA397277@bjorn-Precision-5520>
-References: <CAK8P3a3NWSZw6678k1O2eJ6-c5GuW7484PRvEzU9MEPPrCD-yw@mail.gmail.com>
- <20200714184550.GA397277@bjorn-Precision-5520>
-From:   Kjetil Oftedal <oftedal@gmail.com>
-Date:   Tue, 14 Jul 2020 23:02:40 +0200
-Message-ID: <CALMQjD9OVTbLVPGX-9+GDekZ02Wsqdz57-k1uCBMXC7cT3K_7w@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/35] Move all PCIBIOS* definitions into arch/x86
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        bjorn@helgaas.com, Shuah Khan <skhan@linuxfoundation.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Toan Le <toan@os.amperecomputing.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0jkDWD6Ea2_oEDtFfPDWh5ByphUqEa=3jE2ZbnW0DVEcQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2020, Bjorn Helgaas <helgaas@kernel.org> wrote:
+On Tue, 14 Jul 2020, Rafael J. Wysocki wrote:
 
->>
->> a) callers of the high-level config space accessors
->>    pci_{write,read}_config_{byte,word,dword}, mostly in device
->>    drivers.
->> b) low-level implementation of the config space accessors
->>     through struct pci_ops
->> c) all other occurrences of these constants
->>
->> Starting with a), my first question is whether any high-level
->> drivers even need to care about errors from these functions. I see
->> 4913 callers that ignore the return code, and 576 that actually
->> check it, and almost none care about the specific error (as you
->> found as well). Unless we conclude that most PCI drivers are wrong,
->> could we just change the return type to 'void' and assume they never
->> fail for valid arguments on a valid pci_device* ?
->
-> I really like this idea.
->
-> pci_write_config_*() has one return value, and only 100ish of 2500
-> callers check for errors.  It's sometimes possible for config
-> accessors to detect PCI errors and return failure, e.g., device was
-> removed or didn't respond, but most of them don't, and detecting these
-> errors is not really that valuable.
->
-> pci_read_config_*() is much more interesting because it returns two
-> things, the function return value and the value read from the PCI
-> device, and it's complicated to check both.
->
-> Again it's sometimes possible for config read accessors to detect PCI
-> errors, but in most cases a PCI error means the accessor returns
-> success and the value from PCI is ~0.
->
-> Checking the function return value catches programming errors (bad
-> alignment, etc) but misses most of the interesting errors (device was
-> unplugged or reported a PCI error).
->
-> Checking the value returned from PCI is tricky because ~0 is a valid
-> value for some config registers, and only the driver knows for sure.
-> If the driver knows that ~0 is a possible value, it would have to do
-> something else, e.g., another config read of a register that *cannot*
-> be ~0, to see whether it's really an error.
->
-> I suspect that if we had a single value to look at it would be easier
-> to get right.  Error checking with current interface would look like
-> this:
->
->   err = pci_read_config_word(dev, addr, &val);
->   if (err)
->     return -EINVAL;
->
->   if (PCI_POSSIBLE_ERROR(val)) {
->     /* if driver knows ~0 is invalid */
->     return -EINVAL;
->
->     /* if ~0 is potentially a valid value */
->     err = pci_read_config_word(dev, PCI_VENDOR_ID, &val2);
->     if (err)
->       return -EINVAL;
->
->     if (PCI_POSSIBLE_ERROR(val2))
->       return -EINVAL;
->   }
->
-> Error checking with a possible interface that returned only a single
-> value could look like this:
->
->   val = pci_config_read_word(dev, addr);
->   if (PCI_POSSIBLE_ERROR(val)) {
->     /* if driver knows ~0 is invalid */
->     return -EINVAL;
->
->     /* if ~0 is potentially a valid value */
->     val2 = pci_config_read_word(dev, PCI_VENDOR_ID);
->     if (PCI_POSSIBLE_ERROR(val2))
->       return -EINVAL;
->   }
->
-> Am I understanding you correctly?
+> On Tue, Jul 14, 2020 at 4:51 PM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > Fixes the following W=1 kernel build warning(s):
+> >
+> >  drivers/cpufreq/intel_pstate.c:293: warning: Function parameter or member 'get_aperf_mperf_shift' not described in 'pstate_funcs'
+> >
+> > Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> > Cc: Len Brown <lenb@kernel.org>
+> > Cc: Dirk Brandewie <dirk.j.brandewie@intel.com>
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/cpufreq/intel_pstate.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> > index 44c7b4677675d..f92fc69c87269 100644
+> > --- a/drivers/cpufreq/intel_pstate.c
+> > +++ b/drivers/cpufreq/intel_pstate.c
+> > @@ -275,6 +275,8 @@ static struct cpudata **all_cpu_data;
+> >   * @get_min:           Callback to get minimum P state
+> >   * @get_turbo:         Callback to get turbo P state
+> >   * @get_scaling:       Callback to get frequency scaling factor
+> > + * @get_aperf_mperf_shift: Callback to get the number of clock cycles after
+> > + *                     aperf, merf is incremented
+> 
+> This added description is inaccurate.  It should be something like
+> "Callback to get the APERF vs MPERF frequency difference".
 
-Let us not do this. Reading config space is really expensive on some
-architectures. Requiring a driver to do it twice on some values does not
-improve upon that situation. And is quite redundant if the Root Complex
-driver already knows that the first access has failed.
+Does that mean the description of @aperf_mperf_shift above is also
+incorrect?
 
-Additionally since multiple config accesses to the same devices is not
-allowed in the spec, the hardware must block and wait for a timeout if
-a config access does not get a response.
-(Can happen if a intermediate link between the RC and endpoint has to retrain)
-Having to block twice is very much not ideal. And in the case with
-retraining the secondary access might even succeed. As the link might
-recover between reading the first config word and reading PCI_VENDOR_ID.
-Thus allowing the driver to accept invalid data from the device.
+> >   * @get_val:           Callback to convert P state to actual MSR write value
+> >   * @get_vid:           Callback to get VID data for Atom platforms
+> >   *
+> > --
 
->
->> For b), it might be nice to also change other aspects of the
->> interface, e.g. passing a pci_host_bridge pointer plus bus number
->> instead of a pci_bus pointer, or having the callback in the
->> pci_host_bridge structure.
->
-> I like this idea a lot, too.  I think the fact that
-> pci_bus_read_config_word() requires a pci_bus * complicates things in
-> a few places.
->
-> I think it's completely separate, as you say, and we should defer it
-> for now because even part a) is a lot of work.  I added it to my list
-> of possible future projects.
->
-
-What about strange PCI devices such as Non-Transparent bridges?
-They will require their own PCI Config space accessors that is not
-connected to a host bridge if one wants to do some sort of
-punch-through enumeration.
-I guess the kernel doesn't care much about them?
-
-Best regards,
-Kjetil Oftedal
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
