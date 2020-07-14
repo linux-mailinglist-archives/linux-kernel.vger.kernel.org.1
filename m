@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A2221F27C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B071421F280
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgGNN1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:27:52 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:42115 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726766AbgGNN1v (ORCPT
+        id S1728274AbgGNN2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:28:50 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:58533 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726661AbgGNN2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:27:51 -0400
-Received: by mail-oi1-f194.google.com with SMTP id t4so13892886oij.9;
-        Tue, 14 Jul 2020 06:27:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Co+8zho8E5dTiD8cmg9/ZPavIQVoRg7kJl84C1fgX4o=;
-        b=Ak9rNiX58SVp3TwDXHkgLVMlvgVRokwbqMW6fzzw5RNsaFtIHKYJCHapp+PhKvXx5q
-         c+tyQf6H3zW3IU7YIGzxoSspg1ZMNrvhPr8VvlcJrmPyfV/w3w1KXHD9ebDk/sTIij/X
-         /foWTxlOrHmpPODKPrjxMTzRsXYttF2kvT80OV4cyjzyn2H9a/OHC6bKrmyjffJ8bXRU
-         XMBYJpa1FubjV3wB5RsI2MRHh15bpznOoeLuPB5BwrNXHYnRkBMjx6ZiRuKGawmANhiQ
-         oXYGnGr72PODH5NtfHBVvy7xExgD1+Q8e3CVWkJOIq1JK36G6X2GfxT1KRJFeutH8Zw4
-         J5pg==
-X-Gm-Message-State: AOAM533sZufFYQ/PG1NgUlIttecXG7r6ttGXBXgWEsA4WC2G/XzxBjeM
-        7qXENwWJSmZJCvlgDAQk3e6z2ZKMulTqvubMOa0=
-X-Google-Smtp-Source: ABdhPJzZCW5CAcdX22oZWNLapJZK91sy3IBs2TtUsKH0mXhc58jY+otLhQKYqyJqpqYGmfziPk7jXv4Of2khk72Y9k0=
-X-Received: by 2002:aca:4a89:: with SMTP id x131mr3775944oia.103.1594733270598;
- Tue, 14 Jul 2020 06:27:50 -0700 (PDT)
+        Tue, 14 Jul 2020 09:28:49 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1Mn2eN-1kcL7X03RH-00k5oM; Tue, 14 Jul 2020 15:28:48 +0200
+Received: by mail-qk1-f174.google.com with SMTP id j80so15536709qke.0;
+        Tue, 14 Jul 2020 06:28:47 -0700 (PDT)
+X-Gm-Message-State: AOAM531qKUh7ffI+aZwsrrvalHeMo6Kw2FghBcGwH/7htbL574Rjtx/H
+        wgykE67Hijc2xPNjOM1j6wW9NlxQX2TjuvDZqMo=
+X-Google-Smtp-Source: ABdhPJxHPIXfmlqcGBqu9OXRIk6erH/D8djWlmD0b3P/vROxLbkhNRC4oaHHQrBV5XAH3EWaILtop2qaNksWBICgIYg=
+X-Received: by 2002:a37:a496:: with SMTP id n144mr4552372qke.286.1594733326751;
+ Tue, 14 Jul 2020 06:28:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200713175529.29715-1-refactormyself@gmail.com> <20200713175529.29715-4-refactormyself@gmail.com>
-In-Reply-To: <20200713175529.29715-4-refactormyself@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 14 Jul 2020 15:27:38 +0200
-Message-ID: <CAJZ5v0gDwtZ+oYSrj_Ta56QPSeW3OSq4XHkiubOHr4xki7muPw@mail.gmail.com>
-Subject: Re: [PATCH 8/14 v3] PCI/ACPI: Check the return value of pcie_capability_read_*()
-To:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200714125753.22466-1-Sergey.Semin@baikalelectronics.ru> <20200714125753.22466-6-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200714125753.22466-6-Sergey.Semin@baikalelectronics.ru>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 14 Jul 2020 15:28:30 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a09RW+zCMJ9Luh2C3NkYPdY4Esu6EKk_QX_i4faV-rUjg@mail.gmail.com>
+Message-ID: <CAK8P3a09RW+zCMJ9Luh2C3NkYPdY4Esu6EKk_QX_i4faV-rUjg@mail.gmail.com>
+Subject: Re: [PATCH v5 5/6] bus: cdmm: Add MIPS R5 arch support
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:vSOlFJOMQtdcJW89Ot+xnzfTZOdqBnZJxvDGkZWxoieSiauq1Op
+ TvKnJgap7NWslsMnVLDKFa79aabknwkWqafsgAlp1tDn/DGziuHYcYcjgwiUKhvV7T9rcWo
+ fM2xHMb7zUXmGw9vfG8OHy1S2//lUWhDxvtsurupdW+FDKk3LUoP2SYn7cHzjUHxfNRWa6P
+ LTLKkz8F1HIYaOzr2k3vw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jfoq56SE9Eg=:FVzCfhKgZlrrfI14j/B23F
+ VlKbX2/PArHmzzmT95EvRA5ecpEwrE7S9JHf66okVxVIbTdy3OmGoWb/MpMfAHHVcQYUWY9sO
+ 6Ltwc3+3zOg4uTfy2yJHN9KqSufBohHgnySm5bKCGybyybpUuBSA7UJt0MbqtQA15veNGYLAn
+ OEMZ2CETRQ14pCcRCqnz/9p4vLP00LsYgp+Qh7PrtAJDsoqcwkj1uUmYtvNgv2JQOct29nPM7
+ mH2i6lyYHKEuRnh5IrbFUn8rvQf9frSoCqyZfWmc7RBPqPghps0/WJUi5Z6Ds4tZs+Se+Ttfi
+ ef/ScXnCmi6HOgHtVu9fKuH5s+VEjzvhkeXqimwuipX3t9l7QGwleGEBkypHhSGlt5k1h1c/0
+ lJl4+96LY2LvbwY1HNUe9o0UBf1BQp73pj5tddwMr8VGWt9fhes2q22zCptGuCtrnhlrdotN5
+ YSxWSUMqRRfzD9r08/DEXssmqQLZ3380LESWWaM+HBLXJO5tGZsDj7K5fkcADkz3ACn2gvIWQ
+ 8Fq8O2y4dqE5LxxpVmBN/Ndf4K0Ruo52Is+jaH+9an9ORv8g5yCeaBwQ1zwvZ4aYEFn6qJnL7
+ hEoJnoK11mf6mwTIWMIFKFv2rqSYuv2vbsmdIhU2Tk3/tzHEQ86ZCG/shO5wqqhYr9oxVOkoE
+ 9TGvSp1IU+1a3ih+YIKnIy99sxsxox/JS4Hx5AXj4tNltY5/B3DZ37ZNz/5/6rOwpFCnfV6V9
+ vluyZTgkTE5XamkC0fh8thJEIaeeekMho2IbV4owJUSbFfS2aMqOBKtdAwk8WftIJSWPQNCta
+ KAVjMitGUB6/OTMXees0ctH2rUsib8XNrQ4jaf8EWUEUZylNNQMMBFDG9fFITZPZVPwnJlr4+
+ afBEunCKaJ3PyJYaLMAXyyWyOvzfH/hBMkzhHLKOrEJG6uWYG6lT7rbtoSecJwXAB6WT63b1n
+ DZb/gxcqyErWgzFLjgcHEnv7AN5AEQsQ2fxd73VaFCGCZEUcNy15g
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 6:55 PM Saheed O. Bolarinwa
-<refactormyself@gmail.com> wrote:
+On Tue, Jul 14, 2020 at 2:58 PM Serge Semin
+<Sergey.Semin@baikalelectronics.ru> wrote:
 >
-> From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
->
-> On failure pcie_capability_read_dword() sets it's last parameter,
-> val to 0.
-> However, with Patch 14/14, it is possible that val is set to ~0 on
-> failure. This would introduce a bug because (x & x) == (~0 & x).
->
-> This bug can be avoided if the return value of pcie_capability_read_word
-> is checked to confirm success.
->
-> Check the return value of pcie_capability_read_word() to ensure success.
->
-> Suggested-by: Bjorn Helgaas <bjorn@helgaas.com>
-> Signed-off-by: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
+>  config MIPS_CDMM
+>         bool "MIPS Common Device Memory Map (CDMM) Driver"
+> -       depends on CPU_MIPSR2
+> +       depends on CPU_MIPSR2 || CPU_MIPSR5
+>         help
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Wouldn't a kernel built for P5600 have CPU_MIPSR2 set already?
+I thought R5 was just a backwards-compatible extension of R2.
 
-> ---
->  drivers/pci/pci-acpi.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index 7224b1e5f2a8..39eb816bc3b8 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -248,12 +248,13 @@ static bool pcie_root_rcb_set(struct pci_dev *dev)
->  {
->         struct pci_dev *rp = pcie_find_root_port(dev);
->         u16 lnkctl;
-> +       int ret;
->
->         if (!rp)
->                 return false;
->
-> -       pcie_capability_read_word(rp, PCI_EXP_LNKCTL, &lnkctl);
-> -       if (lnkctl & PCI_EXP_LNKCTL_RCB)
-> +       ret = pcie_capability_read_word(rp, PCI_EXP_LNKCTL, &lnkctl);
-> +       if (!ret && (lnkctl & PCI_EXP_LNKCTL_RCB))
->                 return true;
->
->         return false;
-> @@ -792,12 +793,13 @@ bool pciehp_is_native(struct pci_dev *bridge)
->  {
->         const struct pci_host_bridge *host;
->         u32 slot_cap;
-> +       int ret;
->
->         if (!IS_ENABLED(CONFIG_HOTPLUG_PCI_PCIE))
->                 return false;
->
-> -       pcie_capability_read_dword(bridge, PCI_EXP_SLTCAP, &slot_cap);
-> -       if (!(slot_cap & PCI_EXP_SLTCAP_HPC))
-> +       ret = pcie_capability_read_dword(bridge, PCI_EXP_SLTCAP, &slot_cap);
-> +       if (ret || !(slot_cap & PCI_EXP_SLTCAP_HPC))
->                 return false;
->
->         if (pcie_ports_native)
-> --
-> 2.18.2
->
+If not, what about R3?
+
+      Arnd
