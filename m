@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C214921F016
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB5A21F07D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728109AbgGNMJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        id S1728848AbgGNMNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727867AbgGNMJs (ORCPT
+        with ESMTP id S1728252AbgGNMNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:09:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A43C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:09:48 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594728586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sd6FY7HyKBhACYNltviUNZjUxd7/V5m5zWZgt4T/m9Q=;
-        b=RUqv8y8sPePXSkyq+Rn4hmSWmuiz+TQvQasZ1VMTEj/noj7LQpgIhkjXzjHwHulWrGpAN1
-        HCV/kg+18Uv9n+r6pw8L3x286QT3LOIP/ysGaV/c08dZe7iPTRAZ1HdzHfP/jN4a3wUZNw
-        tiEd8ahMAN1mMU0ZmJLSy5wTrWAFFz7lED9i7cs9VxZLRAbhaDEbvxCj3gGPwFN+DMulg4
-        gmuaytAh91WHqNu1b1LS1c3EwSiCuoaFZhXlXUZwKR5b+soo00IIdICDWm+a78kHlc92GA
-        7MXGKlSqOqL875MumHSNA3Uw1382LWHYcJOLLKejgfe545Nf10kpPPqE9lGAbQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594728586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sd6FY7HyKBhACYNltviUNZjUxd7/V5m5zWZgt4T/m9Q=;
-        b=FCR/1LnlZFw9wBBdwn7/QZ1PiZSb98DEKIeGUs1qiUOvAh4HZDr6ffCO37QnRT0wDgCTPm
-        0lflNyFrC50WhVDg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAIERS: Add John Ogness as printk reviewer
-In-Reply-To: <20200714072337.GE20226@alley>
-References: <20200710094432.19655-1-pmladek@suse.com> <20200714072337.GE20226@alley>
-Date:   Tue, 14 Jul 2020 14:15:45 +0206
-Message-ID: <87v9iqmh6e.fsf@jogness.linutronix.de>
+        Tue, 14 Jul 2020 08:13:07 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E16C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:13:06 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id C9AB1C01B; Tue, 14 Jul 2020 14:13:04 +0200 (CEST)
+Date:   Tue, 14 Jul 2020 14:12:49 +0200
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Victor Hsieh <victorhsieh@google.com>
+Cc:     v9fs-developer@lists.sourceforge.net,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] fs/9p: Fix TCREATE's fid in protocol
+Message-ID: <20200714121249.GA21928@nautica>
+References: <20200713215759.3701482-1-victorhsieh@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200713215759.3701482-1-victorhsieh@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-10, Petr Mladek <pmladek@suse.com> wrote:
-> John Ogness has started major rework of the printk code. Add him
-> as reviewer so that he is aware of all other coming changes and
-> could influence their integration.
+Victor Hsieh wrote on Mon, Jul 13, 2020:
+> The fid parameter of TCREATE represents the directory that the file
+
+This is not TCREATE, this is TLCREATE.
+The fid represents the directory before the call, but on success
+represents the file that has been created.
+
+> should be created at. The current implementation mistakenly passes a
+> locally created fid for the file. The correct file fid is usually
+> retrieved by another WALK call, which does happen right after.
 > 
-> Signed-off-by: Petr Mladek <pmladek@suse.com>
+> The problem happens when a new created fd is read from (i.e. where
+> private_data->fid is used), but not write to.
 
-The rework still has a long road ahead of it, but I am happy to formerly
-assist with future printk work. It is an honor to work together with you
-guys.
+I'm not sure why the code currently does a 2nd walk from the directory
+with the name which is prone to a race instead of cloning ofid without a
+path, but I fail to see the problem you ran into - file->private_data is
+a fid pointing to the file as it should be.
 
-Acked-by: John Ogness <john.ogness@linutronix.de>
+Could you describe what kind of errors you get and if possible how to
+reproduce?
+
+> Fixes: 5643135a2846 ("fs/9p: This patch implements TLCREATE for 9p2000.L protocol.")
+> Signed-off-by: Victor Hsieh <victorhsieh@google.com>
+> Cc: stable@vger.kernel.org
+
+(afaiu it is normally frowned upon for developers to add this cc (I can
+understand stable@ not wanting spam discussing issues left and right
+before maintainers agreed on them!) ; I can add it to the commit itself
+if requested but they normally pick most such fixes pretty nicely for
+backport anyway; I see most 9p patches backported as long as the patch
+applies cleanly which is pretty much all the time.
+Please let me know if I understood that incorrectly)
 
 > ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
+>  fs/9p/vfs_inode_dotl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 1d4aa7f942de..8e82d9db2a21 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13770,6 +13770,7 @@ PRINTK
->  M:	Petr Mladek <pmladek@suse.com>
->  M:	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
->  R:	Steven Rostedt <rostedt@goodmis.org>
-> +R:	John Ogness <john.ogness@linutronix.de>
->  S:	Maintained
->  F:	include/linux/printk.h
->  F:	kernel/printk/
-> -- 
-> 2.26.2
+> diff --git a/fs/9p/vfs_inode_dotl.c b/fs/9p/vfs_inode_dotl.c
+> index 60328b21c5fb..90a7aaea918d 100644
+> --- a/fs/9p/vfs_inode_dotl.c
+> +++ b/fs/9p/vfs_inode_dotl.c
+> @@ -285,7 +285,7 @@ v9fs_vfs_atomic_open_dotl(struct inode *dir, struct dentry *dentry,
+>  			 err);
+>  		goto error;
+>  	}
+> -	err = p9_client_create_dotl(ofid, name, v9fs_open_to_dotl_flags(flags),
+> +	err = p9_client_create_dotl(dfid, name, v9fs_open_to_dotl_flags(flags),
+>  				    mode, gid, &qid);
+>  	if (err < 0) {
+>  		p9_debug(P9_DEBUG_VFS, "p9_client_open_dotl failed in creat %d\n",
