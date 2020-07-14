@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC9021F9F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6816D21FA61
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729856AbgGNSr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:47:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43180 "EHLO mail.kernel.org"
+        id S1730477AbgGNSwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:52:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729841AbgGNSry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:47:54 -0400
+        id S1730448AbgGNSwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:52:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A65D22B2E;
-        Tue, 14 Jul 2020 18:47:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81E9922B45;
+        Tue, 14 Jul 2020 18:52:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752473;
-        bh=fqGRKodDfAmRZ3jBF24oNzEycjzTMB88crVtKJQoM9Y=;
+        s=default; t=1594752721;
+        bh=2tzLPYymZ+SPgvAJBgfgZt5Grrz9/AAZo6OAnnOuI/4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZvO/8bpMvpc0JZzUOMSYU2JWpbzP37aF6yl9Jh2ul1uW+s7VvhS796q9cPE7o3HJ7
-         A5mUreo/B+PDs6VKUsj0d3OEHXRBHgeyZKEc+c07uQGCwfBq2CLVCBviSHst8ZiM97
-         6Q8xdzIU2giiL69mV95E/i4uTZzhf2LsRJi/Ycj8=
+        b=hB6+cK8THDBc35RyiSID8iX/RTTXvGyhnQ6MS7Gf4ihE9WSyFRoyvSQ5BK5694Jrw
+         q9fN8q6CdW3pMv87Qen+ZH2Je4eCDOzf9NAAozzwXX8ukgaqzpOQ3HV1EqOKofSXpF
+         dF5SBSPjtxjd7w/lYTDqrFsMkI7UscVlkMjMqMQY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 4.19 54/58] drm/radeon: fix double free
-Date:   Tue, 14 Jul 2020 20:44:27 +0200
-Message-Id: <20200714184058.858942716@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.4 085/109] KVM: x86: Mark CR4.TSD as being possibly owned by the guest
+Date:   Tue, 14 Jul 2020 20:44:28 +0200
+Message-Id: <20200714184109.619867462@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,81 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit 41855a898650803e24b284173354cc3e44d07725 upstream.
+commit 7c83d096aed055a7763a03384f92115363448b71 upstream.
 
-clang static analysis flags this error
+Mark CR4.TSD as being possibly owned by the guest as that is indeed the
+case on VMX.  Without TSD being tagged as possibly owned by the guest, a
+targeted read of CR4 to get TSD could observe a stale value.  This bug
+is benign in the current code base as the sole consumer of TSD is the
+emulator (for RDTSC) and the emulator always "reads" the entirety of CR4
+when grabbing bits.
 
-drivers/gpu/drm/radeon/ci_dpm.c:5652:9: warning: Use of memory after it is freed [unix.Malloc]
-                kfree(rdev->pm.dpm.ps[i].ps_priv);
-                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/radeon/ci_dpm.c:5654:2: warning: Attempt to free released memory [unix.Malloc]
-        kfree(rdev->pm.dpm.ps);
-        ^~~~~~~~~~~~~~~~~~~~~~
+Add a build-time assertion in to ensure VMX doesn't hand over more CR4
+bits without also updating x86.
 
-problem is reported in ci_dpm_fini, with these code blocks.
-
-	for (i = 0; i < rdev->pm.dpm.num_ps; i++) {
-		kfree(rdev->pm.dpm.ps[i].ps_priv);
-	}
-	kfree(rdev->pm.dpm.ps);
-
-The first free happens in ci_parse_power_table where it cleans up locally
-on a failure.  ci_dpm_fini also does a cleanup.
-
-	ret = ci_parse_power_table(rdev);
-	if (ret) {
-		ci_dpm_fini(rdev);
-		return ret;
-	}
-
-So remove the cleanup in ci_parse_power_table and
-move the num_ps calculation to inside the loop so ci_dpm_fini
-will know how many array elements to free.
-
-Fixes: cc8dbbb4f62a ("drm/radeon: add dpm support for CI dGPUs (v2)")
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 52ce3c21aec3 ("x86,kvm,vmx: Don't trap writes to CR4.TSD")
 Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200703040422.31536-2-sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/radeon/ci_dpm.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ arch/x86/kvm/kvm_cache_regs.h |    2 +-
+ arch/x86/kvm/vmx/vmx.c        |    2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/radeon/ci_dpm.c
-+++ b/drivers/gpu/drm/radeon/ci_dpm.c
-@@ -5574,6 +5574,7 @@ static int ci_parse_power_table(struct r
- 	if (!rdev->pm.dpm.ps)
- 		return -ENOMEM;
- 	power_state_offset = (u8 *)state_array->states;
-+	rdev->pm.dpm.num_ps = 0;
- 	for (i = 0; i < state_array->ucNumEntries; i++) {
- 		u8 *idx;
- 		power_state = (union pplib_power_state *)power_state_offset;
-@@ -5583,10 +5584,8 @@ static int ci_parse_power_table(struct r
- 		if (!rdev->pm.power_state[i].clock_info)
- 			return -EINVAL;
- 		ps = kzalloc(sizeof(struct ci_ps), GFP_KERNEL);
--		if (ps == NULL) {
--			kfree(rdev->pm.dpm.ps);
-+		if (ps == NULL)
- 			return -ENOMEM;
--		}
- 		rdev->pm.dpm.ps[i].ps_priv = ps;
- 		ci_parse_pplib_non_clock_info(rdev, &rdev->pm.dpm.ps[i],
- 					      non_clock_info,
-@@ -5608,8 +5607,8 @@ static int ci_parse_power_table(struct r
- 			k++;
- 		}
- 		power_state_offset += 2 + power_state->v2.ucNumDPMLevels;
-+		rdev->pm.dpm.num_ps = i + 1;
- 	}
--	rdev->pm.dpm.num_ps = state_array->ucNumEntries;
+--- a/arch/x86/kvm/kvm_cache_regs.h
++++ b/arch/x86/kvm/kvm_cache_regs.h
+@@ -7,7 +7,7 @@
+ #define KVM_POSSIBLE_CR0_GUEST_BITS X86_CR0_TS
+ #define KVM_POSSIBLE_CR4_GUEST_BITS				  \
+ 	(X86_CR4_PVI | X86_CR4_DE | X86_CR4_PCE | X86_CR4_OSFXSR  \
+-	 | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_PGE)
++	 | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_PGE | X86_CR4_TSD)
  
- 	/* fill in the vce power states */
- 	for (i = 0; i < RADEON_MAX_VCE_LEVELS; i++) {
+ #define BUILD_KVM_GPR_ACCESSORS(lname, uname)				      \
+ static __always_inline unsigned long kvm_##lname##_read(struct kvm_vcpu *vcpu)\
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -3913,6 +3913,8 @@ void vmx_set_constant_host_state(struct
+ 
+ void set_cr4_guest_host_mask(struct vcpu_vmx *vmx)
+ {
++	BUILD_BUG_ON(KVM_CR4_GUEST_OWNED_BITS & ~KVM_POSSIBLE_CR4_GUEST_BITS);
++
+ 	vmx->vcpu.arch.cr4_guest_owned_bits = KVM_CR4_GUEST_OWNED_BITS;
+ 	if (enable_ept)
+ 		vmx->vcpu.arch.cr4_guest_owned_bits |= X86_CR4_PGE;
 
 
