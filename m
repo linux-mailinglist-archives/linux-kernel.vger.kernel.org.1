@@ -2,202 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81D921F85B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABBE21F85E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgGNRjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:39:25 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43542 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726817AbgGNRjX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:39:23 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06EHVg71006972
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:39:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=BVn4I8AIX9oqcbM7NHzQzswap0P9x2xl+MMQO5TJB2o=;
- b=arxBHLO6VAZkrL7CgJ2QGAxlFCDkj9GswxHT+/3EqAxj/5kRLhzGpviv/tnZEBucTarL
- nl2BeT4xuL9z+nWKHEVwI8hnXbD3aK1q3FKlFMYL9Vl5h6IzW+ZE61ADGhTauM89ZMVJ
- 1mQJ/Esn4DLj+YrDVXcVVZjvUEgbCeMr4H8= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 327wd8ke8k-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:39:22 -0700
-Received: from intmgw002.06.prn3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 14 Jul 2020 10:39:22 -0700
-Received: by devvm1096.prn0.facebook.com (Postfix, from userid 111017)
-        id 62B9711D9EAD; Tue, 14 Jul 2020 10:39:21 -0700 (PDT)
-Smtp-Origin-Hostprefix: devvm
-From:   Roman Gushchin <guro@fb.com>
-Smtp-Origin-Hostname: devvm1096.prn0.facebook.com
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>
-Smtp-Origin-Cluster: prn0c01
-Subject: [PATCH v2] mm: vmstat: fix /proc/sys/vm/stat_refresh generating false warnings
-Date:   Tue, 14 Jul 2020 10:39:20 -0700
-Message-ID: <20200714173920.3319063-1-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1728224AbgGNRm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:42:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725951AbgGNRm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 13:42:29 -0400
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7666F22519
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:42:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594748548;
+        bh=UYSzTeAGbFgBNNEZdY6cVueTgpx/4wjOzCgBidnhIzo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t8Vn5QubLFjkxoPTzw3UVzMVkbfAhMSe3PvnnO1r/3m1FbnckmRuvZ31AVCnNX2sM
+         5hUCz2adAqj6z23qniZB8Fo4xKm/VyMswZqulBD6ipF+PfnSltgYK+4TAi2V0DOYF1
+         zSFUQzr5OfbNBdBarJ9A0NvurJi1mQIwmzox0VyI=
+Received: by mail-ot1-f52.google.com with SMTP id h13so13676726otr.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:42:28 -0700 (PDT)
+X-Gm-Message-State: AOAM532abMA/WBSknDhxcq2UDvhSvhKAFxBbVQLsVTZpUO+sZdpmRBmr
+        Sn5J/R4T0ME8/2yDa4CqYMs+8f+c0A+7JoqZWg==
+X-Google-Smtp-Source: ABdhPJzYZz+VgDT8uruGleSybj6j3KFM7WUrqtCXZ04004fhkD9xWdUXVWJ6bfi4eU+IQ7BOkrnJJICi5Vy9+M1z5a8=
+X-Received: by 2002:a9d:2646:: with SMTP id a64mr4828206otb.107.1594748547877;
+ Tue, 14 Jul 2020 10:42:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-14_07:2020-07-14,2020-07-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- mlxlogscore=999 clxscore=1015 spamscore=0 impostorscore=0 malwarescore=0
- phishscore=0 suspectscore=2 priorityscore=1501 bulkscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007140129
-X-FB-Internal: deliver
+References: <20200714094141.147418-1-thierry.reding@gmail.com>
+ <CAL_Jsq+c5+QFpdiNK4K=ROPAhxp=SMYS6iRFuJKooin=NbCiXw@mail.gmail.com> <8d7ebe02cfbff19f31f6ac1ce098f98d8ba1850a.camel@perches.com>
+In-Reply-To: <8d7ebe02cfbff19f31f6ac1ce098f98d8ba1850a.camel@perches.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 14 Jul 2020 11:42:15 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+HUUXRVoLN1OH3YXNYG=z4jyBJu_Z9qMb6L3K6vwXZiA@mail.gmail.com>
+Message-ID: <CAL_Jsq+HUUXRVoLN1OH3YXNYG=z4jyBJu_Z9qMb6L3K6vwXZiA@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch.pl: Allow '+' in compatible strings
+To:     Joe Perches <joe@perches.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've noticed a number of warnings like "vmstat_refresh: nr_free_cma
--5" or "vmstat_refresh: nr_zone_write_pending -11" on our production
-hosts. The numbers of these warnings were relatively low and stable,
-so it didn't look like we are systematically leaking the counters.
-The corresponding vmstat counters also looked sane.
+On Tue, Jul 14, 2020 at 11:12 AM Joe Perches <joe@perches.com> wrote:
+>
+> On Tue, 2020-07-14 at 10:21 -0600, Rob Herring wrote:
+> > On Tue, Jul 14, 2020 at 3:41 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+> > > From: Thierry Reding <treding@nvidia.com>
+> > >
+> > > The current checks will interpret a '+' character as special because
+> > > they use regular expression matching. Escape the '+' character if it
+> > > appears in a compatible string.
+> >
+> > Ugg, looks like c6x really liked using '+'. Might need to be added in
+> > schema checks, too. Not sure offhand.
+>
+> These are the non alphanumeric characters used in .dts and .dtsi files
+> with 'compatible=' strings
+>
+> - 44115
+> , 32035
+> . 1131
+> _ 259
+> + 46
+> / 18
+> ) 5
+> ( 5
+>
+> So it looks like
+>
+>         "("
+>         ")"
+>
+> need to be added and escaped too
+>
+> ?
 
-These warnings are generated by the vmstat_refresh() function, which
-assumes that atomic zone and numa counters can't go below zero.
-However, on a SMP machine it's not quite right: due to per-cpu
-caching it can in theory be as low as -(zone threshold) * NR_CPUs.
+No, those are 'regulator-compatible' AFAICT which is something else
+and deprecated.
 
-For instance, let's say all cma pages are in use and NR_FREE_CMA_PAGES
-reached 0. Then we've reclaimed a small number of cma pages on each
-CPU except CPU0, so that most percpu NR_FREE_CMA_PAGES counters are
-slightly positive (the atomic counter is still 0). Then somebody on
-CPU0 consumes all these pages. The number of pages can easily exceed
-the threshold and a negative value will be committed to the atomic
-counter.
-
-To fix the problem and avoid generating false warnings, let's just
-relax the condition and warn only if the value is less than minus
-the maximum theoretically possible drift value, which is 125 *
-number of online CPUs. It will still allow to catch systematic leaks,
-but will not generate bogus warnings.
-
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Cc: Hugh Dickins <hughd@google.com>
----
- Documentation/admin-guide/sysctl/vm.rst |  4 ++--
- mm/vmstat.c                             | 30 ++++++++++++++++---------
- 2 files changed, 21 insertions(+), 13 deletions(-)
-
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admi=
-n-guide/sysctl/vm.rst
-index 4b9d2e8e9142..95fb80d0c606 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -822,8 +822,8 @@ e.g. cat /proc/sys/vm/stat_refresh /proc/meminfo
-=20
- As a side-effect, it also checks for negative totals (elsewhere reported
- as 0) and "fails" with EINVAL if any are found, with a warning in dmesg.
--(At time of writing, a few stats are known sometimes to be found negativ=
-e,
--with no ill effects: errors and warnings on these stats are suppressed.)
-+(On a SMP machine some stats can temporarily become negative, with no il=
-l
-+effects: errors and warnings on these stats are suppressed.)
-=20
-=20
- numa_stat
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index a21140373edb..8f0ef8aaf8ee 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -169,6 +169,8 @@ EXPORT_SYMBOL(vm_node_stat);
-=20
- #ifdef CONFIG_SMP
-=20
-+#define MAX_THRESHOLD 125
-+
- int calculate_pressure_threshold(struct zone *zone)
- {
- 	int threshold;
-@@ -186,11 +188,9 @@ int calculate_pressure_threshold(struct zone *zone)
- 	threshold =3D max(1, (int)(watermark_distance / num_online_cpus()));
-=20
- 	/*
--	 * Maximum threshold is 125
-+	 * Threshold is capped by MAX_THRESHOLD
- 	 */
--	threshold =3D min(125, threshold);
--
--	return threshold;
-+	return min(MAX_THRESHOLD, threshold);
- }
-=20
- int calculate_normal_threshold(struct zone *zone)
-@@ -610,6 +610,9 @@ void dec_node_page_state(struct page *page, enum node=
-_stat_item item)
- }
- EXPORT_SYMBOL(dec_node_page_state);
- #else
-+
-+#define MAX_THRESHOLD 0
-+
- /*
-  * Use interrupt disable to serialize counter updates
-  */
-@@ -1810,7 +1813,7 @@ static void refresh_vm_stats(struct work_struct *wo=
-rk)
- int vmstat_refresh(struct ctl_table *table, int write,
- 		   void *buffer, size_t *lenp, loff_t *ppos)
- {
--	long val;
-+	long val, max_drift;
- 	int err;
- 	int i;
-=20
-@@ -1821,17 +1824,22 @@ int vmstat_refresh(struct ctl_table *table, int w=
-rite,
- 	 * pages, immediately after running a test.  /proc/sys/vm/stat_refresh,
- 	 * which can equally be echo'ed to or cat'ted from (by root),
- 	 * can be used to update the stats just before reading them.
--	 *
--	 * Oh, and since global_zone_page_state() etc. are so careful to hide
--	 * transiently negative values, report an error here if any of
--	 * the stats is negative, so we know to go looking for imbalance.
- 	 */
- 	err =3D schedule_on_each_cpu(refresh_vm_stats);
- 	if (err)
- 		return err;
-+
-+	/*
-+	 * Since global_zone_page_state() etc. are so careful to hide
-+	 * transiently negative values, report an error here if any of
-+	 * the stats is negative and are less than the maximum drift value,
-+	 * so we know to go looking for imbalance.
-+	 */
-+	max_drift =3D num_online_cpus() * MAX_THRESHOLD;
-+
- 	for (i =3D 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
- 		val =3D atomic_long_read(&vm_zone_stat[i]);
--		if (val < 0) {
-+		if (val < -max_drift) {
- 			pr_warn("%s: %s %ld\n",
- 				__func__, zone_stat_name(i), val);
- 			err =3D -EINVAL;
-@@ -1840,7 +1848,7 @@ int vmstat_refresh(struct ctl_table *table, int wri=
-te,
- #ifdef CONFIG_NUMA
- 	for (i =3D 0; i < NR_VM_NUMA_STAT_ITEMS; i++) {
- 		val =3D atomic_long_read(&vm_numa_stat[i]);
--		if (val < 0) {
-+		if (val < -max_drift) {
- 			pr_warn("%s: %s %ld\n",
- 				__func__, numa_stat_name(i), val);
- 			err =3D -EINVAL;
---=20
-2.26.2
-
+Rob
