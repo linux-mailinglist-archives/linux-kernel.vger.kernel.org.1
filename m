@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCE121FBA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E4A21FC33
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731159AbgGNTDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:03:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55900 "EHLO mail.kernel.org"
+        id S1730684AbgGNTH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:07:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731099AbgGNS5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:57:36 -0400
+        id S1729859AbgGNSwE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:52:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1F6A7207F5;
-        Tue, 14 Jul 2020 18:57:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3AA1922B49;
+        Tue, 14 Jul 2020 18:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753055;
-        bh=Y4vXQKe7mtBW2sC8bi/lqBkpZsVxlG9RqnJgmezmESQ=;
+        s=default; t=1594752723;
+        bh=xJ5eRZ2PiIgyAhVGGbcA8cN/Vr9pXMazVtnNM1VMiA4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WbCPD67aONpLOpcDa7XWq+Ld/+Bu+duqqSIjbswGUQWUoW1+pEWai3fu7/gsNLNeO
-         ToF4OYXRu0M8hLPzwRXxAoQ6miHqBfqTqE1fCxGV/h/n+7GYXRrZG2hAcxZMIC9PC2
-         oqxkNBKGxbDEW9bUuZ9E8JbYreeGVCbHXhEILaMQ=
+        b=jY9963bqEJZueQ04s/nUzajOqj19TJLjUgIfLrwtVFziYdDdAQi5ctiDVCNaVOf3A
+         2k6MGZ4O5o7gzeuwFvMiJp+B6EwEQUoQ6j+2b9duTNtQI4OK2KYPK9/2WT4dQ2w75X
+         oBZcmAiU7rxYHMlgb68sPnSfHi8ZT3INI0eUxvRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Harini Katakam <harini.katakam@xilinx.com>,
-        Antoine Tenart <antoine.tenart@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 103/166] net: macb: fix macb_suspend() by removing call to netif_carrier_off()
-Date:   Tue, 14 Jul 2020 20:44:28 +0200
-Message-Id: <20200714184120.775125901@linuxfoundation.org>
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 086/109] KVM: arm64: Fix kvm_reset_vcpu() return code being incorrect with SVE
+Date:   Tue, 14 Jul 2020 20:44:29 +0200
+Message-Id: <20200714184109.668790444@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,40 +44,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+From: Steven Price <steven.price@arm.com>
 
-[ Upstream commit 64febc5e56c9a748162f206dcc5be1a44436087a ]
+If SVE is enabled then 'ret' can be assigned the return value of
+kvm_vcpu_enable_sve() which may be 0 causing future "goto out" sites to
+erroneously return 0 on failure rather than -EINVAL as expected.
 
-As we now use the phylink call to phylink_stop() in the non-WoL path,
-there is no need for this call to netif_carrier_off() anymore. It can
-disturb the underlying phylink FSM.
+Remove the initialisation of 'ret' and make setting the return value
+explicit to avoid this situation in the future.
 
-Fixes: 7897b071ac3b ("net: macb: convert to phylink")
-Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc: Harini Katakam <harini.katakam@xilinx.com>
-Cc: Antoine Tenart <antoine.tenart@bootlin.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 9a3cdf26e336 ("KVM: arm64/sve: Allow userspace to enable SVE for vcpus")
+Cc: stable@vger.kernel.org
+Reported-by: James Morse <james.morse@arm.com>
+Signed-off-by: Steven Price <steven.price@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200617105456.28245-1-steven.price@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cadence/macb_main.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm64/kvm/reset.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 79c2fe0543038..548815255e22b 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -4604,7 +4604,6 @@ static int __maybe_unused macb_suspend(struct device *dev)
- 			bp->pm_data.scrt2 = gem_readl_n(bp, ETHT, SCRT2_ETHT);
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -258,7 +258,7 @@ static int kvm_vcpu_enable_ptrauth(struc
+ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ {
+ 	const struct kvm_regs *cpu_reset;
+-	int ret = -EINVAL;
++	int ret;
+ 	bool loaded;
+ 
+ 	/* Reset PMU outside of the non-preemptible section */
+@@ -281,15 +281,19 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu
+ 
+ 	if (test_bit(KVM_ARM_VCPU_PTRAUTH_ADDRESS, vcpu->arch.features) ||
+ 	    test_bit(KVM_ARM_VCPU_PTRAUTH_GENERIC, vcpu->arch.features)) {
+-		if (kvm_vcpu_enable_ptrauth(vcpu))
++		if (kvm_vcpu_enable_ptrauth(vcpu)) {
++			ret = -EINVAL;
+ 			goto out;
++		}
  	}
  
--	netif_carrier_off(netdev);
- 	if (bp->ptp_info)
- 		bp->ptp_info->ptp_remove(netdev);
- 	pm_runtime_force_suspend(dev);
--- 
-2.25.1
-
+ 	switch (vcpu->arch.target) {
+ 	default:
+ 		if (test_bit(KVM_ARM_VCPU_EL1_32BIT, vcpu->arch.features)) {
+-			if (!cpu_has_32bit_el1())
++			if (!cpu_has_32bit_el1()) {
++				ret = -EINVAL;
+ 				goto out;
++			}
+ 			cpu_reset = &default_regs_reset32;
+ 		} else {
+ 			cpu_reset = &default_regs_reset;
 
 
