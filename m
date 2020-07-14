@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D27421F9CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBD921FAD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729602AbgGNSqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:46:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41612 "EHLO mail.kernel.org"
+        id S1730939AbgGNS4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:56:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729587AbgGNSqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:46:46 -0400
+        id S1730927AbgGNSz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:55:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E77A222E9;
-        Tue, 14 Jul 2020 18:46:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A3FF0229CA;
+        Tue, 14 Jul 2020 18:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752405;
-        bh=0PE/ZEegeyQ50KVBzDMMsCfxPGXZ/ksQVk9m47noOKU=;
+        s=default; t=1594752957;
+        bh=R6f4U+OYaJFFxN9ZSs50CqruOxIj0i8N5fkIQB0UPt8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xYyZDXu7ae1cZi4JHSoRHmuwKF2uw57VkA1kDtbM4WFUOwh9b8UoSD1bLxxq20+ZC
-         nhHta3CT2o8197rg4DxwYXiwlCJNq3+QYgWROT351iSISfzFdrwqhastLbBXXuMyHZ
-         1qJWFT6N/i9H9h6ebTHdd1zhmFoNcxZO5z/hQS5o=
+        b=XsCrNNLtskVrQlzsGm0qc7WaIWjWzrxF6LPPPYWXcuTNYc+EISoFrQXF59S0JurGR
+         FBaFAgiK54cLkydb/gtiPyCDn7/aAxoxts7cc4Nw8mmbnwBhvofV8V26LFHXDTVEbu
+         dYsGZckQMRW8V/TVXwIsDLJIdxcCqsHYTEbbpv3s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 09/58] gpu: host1x: Detach driver on unregister
+Subject: [PATCH 5.7 057/166] nl80211: fix memory leak when parsing NL80211_ATTR_HE_BSS_COLOR
 Date:   Tue, 14 Jul 2020 20:43:42 +0200
-Message-Id: <20200714184056.599981424@linuxfoundation.org>
+Message-Id: <20200714184118.604391839@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,53 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-[ Upstream commit d9a0a05bf8c76e6dc79230669a8b5d685b168c30 ]
+[ Upstream commit 60a0121f8fa64b0f4297aa6fef8207500483a874 ]
 
-Currently when a host1x device driver is unregistered, it is not
-detached from the host1x controller, which means that the device
-will stay around and when the driver is registered again, it may
-bind to the old, stale device rather than the new one that was
-created from scratch upon driver registration. This in turn can
-cause various weird crashes within the driver core because it is
-confronted with a device that was already deleted.
+If there is an error when parsing the NL80211_ATTR_HE_BSS_COLOR
+attribute, we return immediately without freeing param.acl.  Fit it by
+using goto out instead of returning immediately.
 
-Fix this by detaching the driver from the host1x controller when
-it is unregistered. This ensures that the deleted device also is
-no longer present in the device list that drivers will bind to.
-
-Reported-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Tested-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Fixes: 5c5e52d1bb96 ("nl80211: add handling for BSS color")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20200626124931.7ad2a3eb894f.I60905fb70bd20389a3b170db515a07275e31845e@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/host1x/bus.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ net/wireless/nl80211.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/host1x/bus.c b/drivers/gpu/host1x/bus.c
-index 0121fe7a4548d..02f896b50ed07 100644
---- a/drivers/gpu/host1x/bus.c
-+++ b/drivers/gpu/host1x/bus.c
-@@ -632,8 +632,17 @@ EXPORT_SYMBOL(host1x_driver_register_full);
-  */
- void host1x_driver_unregister(struct host1x_driver *driver)
- {
-+	struct host1x *host1x;
-+
- 	driver_unregister(&driver->driver);
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index a56ede64e70fc..7ae6b90e0d264 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -5013,7 +5013,7 @@ static int nl80211_start_ap(struct sk_buff *skb, struct genl_info *info)
+ 					info->attrs[NL80211_ATTR_HE_BSS_COLOR],
+ 					&params.he_bss_color);
+ 		if (err)
+-			return err;
++			goto out;
+ 	}
  
-+	mutex_lock(&devices_lock);
-+
-+	list_for_each_entry(host1x, &devices, list)
-+		host1x_detach_driver(host1x, driver);
-+
-+	mutex_unlock(&devices_lock);
-+
- 	mutex_lock(&drivers_lock);
- 	list_del_init(&driver->list);
- 	mutex_unlock(&drivers_lock);
+ 	nl80211_calculate_ap_params(&params);
 -- 
 2.25.1
 
