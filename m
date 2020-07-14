@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129F321FADA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C331B21F9DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730971AbgGNS4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:56:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54248 "EHLO mail.kernel.org"
+        id S1729736AbgGNSrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:47:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730970AbgGNS4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:56:20 -0400
+        id S1729723AbgGNSrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:47:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACD4A222B9;
-        Tue, 14 Jul 2020 18:56:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D62ED22B2A;
+        Tue, 14 Jul 2020 18:47:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752980;
-        bh=uH0PDz0zA3uX9zg+dvKMu8xWqiGXeFBXQbz58FsVmRs=;
+        s=default; t=1594752441;
+        bh=nc5ptVElFyhbVAD0wGK3yfRVj/HVSHjTkRwZoBI3fVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TqVC7l7MRPMI7gN4HUTb1KwoFUJMTmYZBIy0N72NwjZsvROTGk4v27AVkBqokM5Uq
-         fcqOW3UqnBsno8u0O50N95BLBRCbE3T62hStwC0XlDtRc+F+QgdKH4FxdaJ1xrncyq
-         9LTq5cbusgchT0OzeDLj8xw5b9mYSjLv5NR1l934=
+        b=nT+Dff9iHyv+aauKu3SriRpjaaWVLvA8MYgzup7wKh/fmOPN3SNmXEcNUTkAzNnWt
+         ghqsg1Y0erXAvsKmSQWSmvF2OxvZSEgz2VKWo+7FDH4GgqiwbW2P0RB7c/xVTPlUyA
+         th3JpqaihwovnXaMCQQHwmWmnER7BDkDLx7rhuj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Luwei Kang <luwei.kang@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 074/166] perf intel-pt: Fix PEBS sample for XMM registers
+Subject: [PATCH 4.19 26/58] drm/mediatek: Check plane visibility in atomic_update
 Date:   Tue, 14 Jul 2020 20:43:59 +0200
-Message-Id: <20200714184119.398711366@linuxfoundation.org>
+Message-Id: <20200714184057.440381152@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,47 +45,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit 4c95ad261cfac120dd66238fcae222766754c219 ]
+[ Upstream commit c0b8892e2461b5fa740e47efbb1269a487b04020 ]
 
-The condition to add XMM registers was missing, the regs array needed to
-be in the outer scope, and the size of the regs array was too small.
+Disable the plane if it's not visible. Otherwise mtk_ovl_layer_config()
+would proceed with invalid plane and we may see vblank timeout.
 
-Fixes: 143d34a6b387b ("perf intel-pt: Add XMM registers to synthesized PEBS sample")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Luwei Kang <luwei.kang@intel.com>
-Link: http://lore.kernel.org/lkml/20200630133935.11150-4-adrian.hunter@intel.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT8173.")
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/intel-pt.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_drm_plane.c | 25 ++++++++++++++----------
+ 1 file changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index 23c8289c2472d..545d1cdc0ec87 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -1731,6 +1731,7 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
- 	u64 sample_type = evsel->core.attr.sample_type;
- 	u64 id = evsel->core.id[0];
- 	u8 cpumode;
-+	u64 regs[8 * sizeof(sample.intr_regs.mask)];
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+index f7e6aa1b5b7d1..83d4a710601db 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
+@@ -108,6 +108,16 @@ static int mtk_plane_atomic_check(struct drm_plane *plane,
+ 						   true, true);
+ }
  
- 	if (intel_pt_skip_event(pt))
- 		return 0;
-@@ -1780,8 +1781,8 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
- 	}
++static void mtk_plane_atomic_disable(struct drm_plane *plane,
++				     struct drm_plane_state *old_state)
++{
++	struct mtk_plane_state *state = to_mtk_plane_state(plane->state);
++
++	state->pending.enable = false;
++	wmb(); /* Make sure the above parameter is set before update */
++	state->pending.dirty = true;
++}
++
+ static void mtk_plane_atomic_update(struct drm_plane *plane,
+ 				    struct drm_plane_state *old_state)
+ {
+@@ -122,6 +132,11 @@ static void mtk_plane_atomic_update(struct drm_plane *plane,
+ 	if (!crtc || WARN_ON(!fb))
+ 		return;
  
- 	if (sample_type & PERF_SAMPLE_REGS_INTR &&
--	    items->mask[INTEL_PT_GP_REGS_POS]) {
--		u64 regs[sizeof(sample.intr_regs.mask)];
-+	    (items->mask[INTEL_PT_GP_REGS_POS] ||
-+	     items->mask[INTEL_PT_XMM_POS])) {
- 		u64 regs_mask = evsel->core.attr.sample_regs_intr;
- 		u64 *pos;
++	if (!plane->state->visible) {
++		mtk_plane_atomic_disable(plane, old_state);
++		return;
++	}
++
+ 	gem = fb->obj[0];
+ 	mtk_gem = to_mtk_gem_obj(gem);
+ 	addr = mtk_gem->dma_addr;
+@@ -143,16 +158,6 @@ static void mtk_plane_atomic_update(struct drm_plane *plane,
+ 	state->pending.dirty = true;
+ }
  
+-static void mtk_plane_atomic_disable(struct drm_plane *plane,
+-				     struct drm_plane_state *old_state)
+-{
+-	struct mtk_plane_state *state = to_mtk_plane_state(plane->state);
+-
+-	state->pending.enable = false;
+-	wmb(); /* Make sure the above parameter is set before update */
+-	state->pending.dirty = true;
+-}
+-
+ static const struct drm_plane_helper_funcs mtk_plane_helper_funcs = {
+ 	.atomic_check = mtk_plane_atomic_check,
+ 	.atomic_update = mtk_plane_atomic_update,
 -- 
 2.25.1
 
