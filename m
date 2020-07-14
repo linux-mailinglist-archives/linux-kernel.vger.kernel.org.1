@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C9721FA6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3636321F9E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730530AbgGNSwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:52:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49174 "EHLO mail.kernel.org"
+        id S1729778AbgGNSrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:47:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730519AbgGNSw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:52:27 -0400
+        id S1729723AbgGNSrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:47:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B859223B0;
-        Tue, 14 Jul 2020 18:52:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB80F22AAA;
+        Tue, 14 Jul 2020 18:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752746;
-        bh=0Xrp3e7cgjtiKwpBv8X81MrVr9eYVuOABMXE5NdW4mo=;
+        s=default; t=1594752452;
+        bh=YZXuyh1eSZoyDT5f0ILiSyJB2BJsH+OqjQCOv45XoIA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dwZl2/cu6VdtK5IcaAWA4Pa0ndfIoZG2YoMwQi5B5JDbH9ozg8dDFgksFvEhKT+s5
-         knbiMsQXeQoVYkG01lsPeKVB/Jf9wrAeX4juEQ6g9lMvTGyAJNAkpra8ufTyTFO90g
-         JPmhzAqljzLZBN6pXJU/+Ql5HvMb8J6br0zjZid0=
+        b=qI4EB0PZvxNCDFg9u2JaL9BY7kUnDcxos64vA0MVoB47tRMu4yKqG9zLzmkD/Aeff
+         kUU6uTLhYtznCH9JxC/CnxbpaDFWL2UZXQQptcqT8YHavdsS0Q6oC6hGB8UdkoRCAI
+         UV8iXQe6GULt/LXCq/ItIx+sro8qTBfVAZ6p9PyI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jian-Hong Pan <jian-hong@endlessm.com>,
-        Chris Chiu <chiu@endlessm.com>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 077/109] ALSA: hda/realtek - Enable audio jacks of Acer vCopperbox with ALC269VC
+        stable@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: [PATCH 4.19 47/58] kernel: module: Use struct_size() helper
 Date:   Tue, 14 Jul 2020 20:44:20 +0200
-Message-Id: <20200714184109.229556637@linuxfoundation.org>
+Message-Id: <20200714184058.494015284@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,60 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian-Hong Pan <jian-hong@endlessm.com>
+From: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-commit 8eae7e9b3967f08efaa4d70403aec513cbe45ad0 upstream.
+commit 8d1b73dd25ff92c3fa9807a20c22fa2b44c07336 upstream.
 
-The Acer desktop vCopperbox with ALC269VC cannot detect the MIC of
-headset, the line out and internal speaker until
-ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS quirk applied.
+One of the more common cases of allocation size calculations is finding
+the size of a structure that has a zero-sized array at the end, along
+with memory for some number of elements for that array. For example:
 
-Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
-Signed-off-by: Chris Chiu <chiu@endlessm.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200706071826.39726-1-jian-hong@endlessm.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+struct module_sect_attrs {
+	...
+        struct module_sect_attr attrs[0];
+};
+
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
+
+So, replace the following form:
+
+sizeof(*sect_attrs) + nloaded * sizeof(sect_attrs->attrs[0]
+
+with:
+
+struct_size(sect_attrs, attrs, nloaded)
+
+This code was detected with the help of Coccinelle.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ kernel/module.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6114,6 +6114,7 @@ enum {
- 	ALC236_FIXUP_HP_MUTE_LED,
- 	ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET,
- 	ALC295_FIXUP_ASUS_MIC_NO_PRESENCE,
-+	ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7292,6 +7293,17 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MODE
- 	},
-+	[ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x14, 0x90100120 }, /* use as internal speaker */
-+			{ 0x18, 0x02a111f0 }, /* use as headset mic, without its own jack detect */
-+			{ 0x1a, 0x01011020 }, /* use as line out */
-+			{ },
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MIC
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -7311,6 +7323,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1025, 0x1099, "Acer Aspire E5-523G", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x110e, "Acer Aspire ES1-432", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500", ALC299_FIXUP_PREDATOR_SPK),
-+	SND_PCI_QUIRK(0x1025, 0x1247, "Acer vCopperbox", ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS),
- 	SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP_ACER_AIO_HEADSET_MIC),
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1491,8 +1491,7 @@ static void add_sect_attrs(struct module
+ 	for (i = 0; i < info->hdr->e_shnum; i++)
+ 		if (!sect_empty(&info->sechdrs[i]))
+ 			nloaded++;
+-	size[0] = ALIGN(sizeof(*sect_attrs)
+-			+ nloaded * sizeof(sect_attrs->attrs[0]),
++	size[0] = ALIGN(struct_size(sect_attrs, attrs, nloaded),
+ 			sizeof(sect_attrs->grp.attrs[0]));
+ 	size[1] = (nloaded + 1) * sizeof(sect_attrs->grp.attrs[0]);
+ 	sect_attrs = kzalloc(size[0] + size[1], GFP_KERNEL);
 
 
