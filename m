@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D2F21FA28
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F85721FADE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730266AbgGNSuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:50:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46070 "EHLO mail.kernel.org"
+        id S1730987AbgGNS42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:56:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730256AbgGNSuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:50:04 -0400
+        id S1730187AbgGNS40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:56:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D9FF22AAA;
-        Tue, 14 Jul 2020 18:50:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 219C322CBB;
+        Tue, 14 Jul 2020 18:56:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752603;
-        bh=DuP8lxtR7cMel6KrJOFaubAILbH4Zwjad03QHuumfco=;
+        s=default; t=1594752985;
+        bh=Vtv5mLkCI6qiMehxAsixw06K2d7dfO/qJO4vvMJqHxY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P0T6LIuIwr2pzoE9b8SO69gIjmb0F2TaG++6022CxeIgLOuEF22chjuNw6Otnf5ef
-         icMXnoTFtYqwcPnlmr3U922IBTW4hjsb/8RFHa6KOz9FhFi6NpKND5iyMfnJ4b13WF
-         0zANZIcXI+sangk6wYbW83bECDX1bE0Ja7VdwtsU=
+        b=YIJPY0UohxvE2LGG82yLmo28oI0R7eTYyFQ01Qs1sgIvXkTCTF/Pe0UIaR+EYLHFU
+         0hdCQPG6EMrK2rx1pNSHF7zIchf7LFdhcAU48dvFtytu77Pde5hOHwHpSCIC2zlo41
+         L9z88191AnzNQR3bfV4V4lPf16FConRGGtuTwttw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Tomasz Figa <tfiga@chromium.org>,
         Chun-Kuang Hu <chunkuang.hu@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 039/109] drm/mediatek: Check plane visibility in atomic_update
-Date:   Tue, 14 Jul 2020 20:43:42 +0200
-Message-Id: <20200714184107.392673396@linuxfoundation.org>
+Subject: [PATCH 5.7 058/166] drm/mediatek: Check plane visibility in atomic_update
+Date:   Tue, 14 Jul 2020 20:43:43 +0200
+Message-Id: <20200714184118.649480206@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -62,10 +62,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 15 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/gpu/drm/mediatek/mtk_drm_plane.c b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-index 584a9ecadce62..b7592b16ea940 100644
+index c2bd683a87c82..92141a19681b9 100644
 --- a/drivers/gpu/drm/mediatek/mtk_drm_plane.c
 +++ b/drivers/gpu/drm/mediatek/mtk_drm_plane.c
-@@ -101,6 +101,16 @@ static int mtk_plane_atomic_check(struct drm_plane *plane,
+@@ -164,6 +164,16 @@ static int mtk_plane_atomic_check(struct drm_plane *plane,
  						   true, true);
  }
  
@@ -82,7 +82,7 @@ index 584a9ecadce62..b7592b16ea940 100644
  static void mtk_plane_atomic_update(struct drm_plane *plane,
  				    struct drm_plane_state *old_state)
  {
-@@ -115,6 +125,11 @@ static void mtk_plane_atomic_update(struct drm_plane *plane,
+@@ -178,6 +188,11 @@ static void mtk_plane_atomic_update(struct drm_plane *plane,
  	if (!crtc || WARN_ON(!fb))
  		return;
  
@@ -94,7 +94,7 @@ index 584a9ecadce62..b7592b16ea940 100644
  	gem = fb->obj[0];
  	mtk_gem = to_mtk_gem_obj(gem);
  	addr = mtk_gem->dma_addr;
-@@ -136,16 +151,6 @@ static void mtk_plane_atomic_update(struct drm_plane *plane,
+@@ -200,16 +215,6 @@ static void mtk_plane_atomic_update(struct drm_plane *plane,
  	state->pending.dirty = true;
  }
  
