@@ -2,121 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBB921E568
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 03:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D813D21E56F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgGNB5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 21:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgGNB5s (ORCPT
+        id S1726505AbgGNCJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 22:09:38 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:41404 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgGNCJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 21:57:48 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7B9C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 18:57:48 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id w2so6875493pgg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 18:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nXOSB0ZRPuQ9A1WyrVeJbOY3UGyrJ9rRxSkxDn9MEyE=;
-        b=eIHVyT3adtlj2h9JYse58LLJWVui34c0wGDIWHBfaBpq/wDq697wU/8Enw+qHGz7Ca
-         VDXtNoGCbVzYdceUil0j3FdtRrj6ITD4AZKUm9SLSUHP9bJHKMabvueXMXR4UABfpMZB
-         kZLinypET8hCIJrfsiqtY2tl3PH+ZxMCqw7nHUylXg7hioiR75tK5KhNypydhA/zjE8l
-         Mi/0ToxeE7M1iOsLdo/FmPoxzhvbphWc74tyb6CdCH4diH3RlQrSoNUS+ZweZu8k7DUL
-         LbE2X7aFhPtjVLUgYjCOF88zbiZIve1wq4Rntr6IV4ape8zrprLI0auxDrMbgJc1Red8
-         IGcA==
+        Mon, 13 Jul 2020 22:09:38 -0400
+Received: by mail-il1-f193.google.com with SMTP id q3so12959121ilt.8;
+        Mon, 13 Jul 2020 19:09:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=nXOSB0ZRPuQ9A1WyrVeJbOY3UGyrJ9rRxSkxDn9MEyE=;
-        b=IcIDSKPrR6uG4f8rPetGYx4jbkkm8qSZMPCcKCaTAeGcfygvS3ZHYXWLh2d1wrIA+l
-         Jm9KgIThiAxi7XyaNFn3lwELWxEmESZKdSUt+tHHc0+InJXVvmMrTbZlkiXcnr9NwVSj
-         minLdN0gu2QjDvtiqmNBFudU6wAfNKoqkOYt90cbafp9mzRimJlHAzMUhEpcWaZbKw+A
-         S65BaFPAFeRVq+NQe1Ojci4PaiEk5+8A2LtpV+svrB7ngEoqVuVRRrCf8mdp87wCT/l8
-         s4jHNy3NWOXN8/yVWfIrf9ivt6ZRDIujsU7sOH5nGI5zThoqdSa1ow67yDfL8O1QlH3i
-         rOdA==
-X-Gm-Message-State: AOAM530E17Qp9gj7nhJ7rdQLcRbn1unqaasOR2dcQO2+cho2bHyHcoZ9
-        jHcnAvJMD0YH/jhAmxlojwA=
-X-Google-Smtp-Source: ABdhPJxSqYOpqSYqWpNHoiL1CUeek2IzHty8XoVDrr9WqzlnX+GW7bpH58jk1kffpPFnhJpo4Cvn2g==
-X-Received: by 2002:aa7:9906:: with SMTP id z6mr2407642pff.60.1594691867136;
-        Mon, 13 Jul 2020 18:57:47 -0700 (PDT)
-Received: from gmail.com ([2601:600:9b7f:872e:a655:30fb:7373:c762])
-        by smtp.gmail.com with ESMTPSA id y19sm16772203pfc.135.2020.07.13.18.57.44
+        bh=KPcWWEFayVvDQVr24WFW0Iat95lCbS98CRPSzZcM2HA=;
+        b=SFw4/AYH1AOcgtAYPf/CYXijucCTKs8V3pYvuOoGzFYnnC7dL4IWKNgcNXqGig9SYG
+         2UAzJH6bSCRKaLV7lqepn4A8Iu5snRSgJyDZvXpCUW+9aC7CXtXcZzpoK2SZc9hz73e4
+         usXczK10ylDV/UlDan+yWVJwXbwrPdZC+Zzvwt/WWPzAufzMfUQk1Sb1tAhAv7ZSxHFv
+         w8io4QeYjJmPNQHDjTIoS7mX1Mx9AUaDhbgsIu76StJSnYsxpBScNO4X6iT+NVrwCdjf
+         LN4oVQHlVbPCjxusTSRTKzFUj0pQ5DrahopfOHOxvv7YiHASbwoMONXnY4JnCUGGpAJp
+         w6rA==
+X-Gm-Message-State: AOAM533bosifZDzRHTrmwdqk1KlevyfjHmRGZTcTFFF4Wfz/K5KEteue
+        7sDKEBt3gtShBSaYykEydg==
+X-Google-Smtp-Source: ABdhPJzQQad0wTSDAMPA9ATJ9hA1u98WVgnzC9LLhonu5X2eHqH93+QPB4bNhmGqkdB13vmALMiaJw==
+X-Received: by 2002:a05:6e02:14c2:: with SMTP id o2mr2669736ilk.54.1594692576834;
+        Mon, 13 Jul 2020 19:09:36 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id i84sm9534158ill.30.2020.07.13.19.09.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 18:57:46 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 18:57:43 -0700
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Safonov <dima@arista.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v5 0/6] arm64: add the time namespace support
-Message-ID: <20200714015743.GA843937@gmail.com>
-References: <20200624083321.144975-1-avagin@gmail.com>
- <20200705064055.GA28894@gmail.com>
+        Mon, 13 Jul 2020 19:09:36 -0700 (PDT)
+Received: (nullmailer pid 1132789 invoked by uid 1000);
+        Tue, 14 Jul 2020 02:09:35 -0000
+Date:   Mon, 13 Jul 2020 20:09:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Baolin Wang <baolin.wang7@gmail.com>,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-kernel@vger.kernel.org,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        Andy Gross <agross@kernel.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: hwlock: qcom: Migrate binding to YAML
+Message-ID: <20200714020935.GA1122169@bogus>
+References: <20200622075956.171058-1-bjorn.andersson@linaro.org>
+ <20200622075956.171058-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200705064055.GA28894@gmail.com>
+In-Reply-To: <20200622075956.171058-2-bjorn.andersson@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 04, 2020 at 11:40:55PM -0700, Andrei Vagin wrote:
-> On Wed, Jun 24, 2020 at 01:33:15AM -0700, Andrei Vagin wrote:
-> > Allocate the time namespace page among VVAR pages and add the logic
-> > to handle faults on VVAR properly.
-> > 
-> > If a task belongs to a time namespace then the VVAR page which contains
-> > the system wide VDSO data is replaced with a namespace specific page
-> > which has the same layout as the VVAR page. That page has vdso_data->seq
-> > set to 1 to enforce the slow path and vdso_data->clock_mode set to
-> > VCLOCK_TIMENS to enforce the time namespace handling path.
-> > 
-> > The extra check in the case that vdso_data->seq is odd, e.g. a concurrent
-> > update of the VDSO data is in progress, is not really affecting regular
-> > tasks which are not part of a time namespace as the task is spin waiting
-> > for the update to finish and vdso_data->seq to become even again.
-> > 
-> > If a time namespace task hits that code path, it invokes the corresponding
-> > time getter function which retrieves the real VVAR page, reads host time
-> > and then adds the offset for the requested clock which is stored in the
-> > special VVAR page.
-> > 
+On Mon, 22 Jun 2020 00:59:53 -0700, Bjorn Andersson wrote:
+> Migrate the Qualcomm TCSR mutex binding to YAML to allow validation.
 > 
-> > v2: Code cleanups suggested by Vincenzo.
-> > v3: add a comment in __arch_get_timens_vdso_data.
-> > v4: - fix an issue reported by the lkp robot.
-> >     - vvar has the same size with/without CONFIG_TIME_NAMESPACE, but the
-> >       timens page isn't allocated on !CONFIG_TIME_NAMESPACE. This
-> >       simplifies criu/vdso migration between different kernel configs.
-> > v5: - Code cleanups suggested by Mark Rutland.
-> >     - In vdso_join_timens, mmap_write_lock is downgraded to
-> >       mmap_read_lock. The VMA list isn't changed there, zap_page_range
-> >       doesn't require mmap_write_lock.
-> > 
-> > Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > Reviewed-by: Dmitry Safonov <dima@arista.com>
+> Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
 > 
-> Hello Will and Catalin,
+> Changes since v1:
+> - Actually remove the old binding doc
 > 
-> Have you had a chance to look at this patch set? I think it is ready to be
-> merged. Let me know if you have any questions.
+>  .../bindings/hwlock/qcom-hwspinlock.txt       | 39 --------------
+>  .../bindings/hwlock/qcom-hwspinlock.yaml      | 51 +++++++++++++++++++
+>  2 files changed, 51 insertions(+), 39 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.txt
+>  create mode 100644 Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
+> 
 
-*friendly ping*
-
-If I am doing something wrong, let me know.
-
-> 
-> Thanks,
-> Andrei
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
