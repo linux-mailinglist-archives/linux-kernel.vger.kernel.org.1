@@ -2,99 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79F921FE8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09DF21FE91
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgGNU2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 16:28:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726788AbgGNU2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 16:28:03 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B09CD206F5;
-        Tue, 14 Jul 2020 20:28:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594758483;
-        bh=O20GcOLOg0ZHMThXbLDLtb0d8nA0bfVDYgFNb7RkvkQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QwYkfz5vHa0na1sEdlHRsjcxFA5xtFj89EgYrkqMn8rPUwU1u4UiTYO2ESyrq0LT7
-         xE8GWdhqU8LkgcYvIcZPd9abQDDz8/RcPwC8Ly/ViIawesFSdMhUb/PTzEKCtFsNWv
-         3H2HCwuRbAh86KdqQ+bhjXpeRZkITDAH9/eKWpmw=
-Date:   Tue, 14 Jul 2020 21:27:53 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     Arnaud Ferraris <arnaud.ferraris@collabora.com>,
-        alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
-        Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, kernel@collabora.com,
-        Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 0/4] ASoC: fsl_asrc: allow selecting arbitrary clocks
-Message-ID: <20200714202753.GM4900@sirena.org.uk>
-References: <20200702142235.235869-1-arnaud.ferraris@collabora.com>
- <20200702184226.GA23935@Asurada-Nvidia>
- <3f39a0bb-a766-f646-28b3-a51cf9983c6b@collabora.com>
- <3fea8912-63df-ff27-0c29-6284a85107ab@collabora.com>
- <20200714201544.GA10501@Asurada-Nvidia>
+        id S1726898AbgGNU3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 16:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726694AbgGNU3o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 16:29:44 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D6EC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 13:29:44 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id o18so24317958eje.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 13:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hjKqA7umLRIxRuItN1sl62t5J7bejaeQmEpJ3yltvGM=;
+        b=KlCZJK6fnRyegRYdJsWobHx2FV+Gq4Lh2SUzql483UhqoCJEh6JLqFtbOec+0frSiX
+         zQZ7Uvf6ywQAmz37ByMEJQCut+/2KeRpVWLF/B4HMPXIY37MWBkBf8L/PAGwrEAcorhY
+         hQUb4QbVM1E0oKiV8leScI7elEWX8895FKiMIU6CcOrwCt2sIn6uGs3DvG1C+sZpOxBy
+         Cb8cp9ml+N5SZcW54mKdnF0S/ictRXPjAWScNhuxQFEDNVn3UHdtbkwjghfe8aJTFqX9
+         eYqMXl44Eps/FNcyxmDV+qinADEyKwJxHyXL/YN5cRGorW+PF5r42LkPoN1JyPcSamwg
+         HBgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hjKqA7umLRIxRuItN1sl62t5J7bejaeQmEpJ3yltvGM=;
+        b=MUlTKgcoQpHzNM4Q3XHeBx0md7Hv9x+0qr3a6vvigYOKgasl56FGe+4+T3Ouud5SYr
+         3pDAF6dotxL7a5i4HWaCEmKtyJqTLIwb/Wp3CrMDat0CRzbWLHDf7NxnsU4mVKFnj0hB
+         fEpF+IW5yGwk/Uv7tC26Cn0NSxiAiY5eZGIItDa3btRIMGG9rq6z+kmYkM9IKKERLict
+         W6DPtIZjru+VX+QzTUAj6485j/boxkQQbPfqXev0lGppF0foLqVttGx1pOeedxLaRgz0
+         3SN8whUtktSUDfUjH7u+23GHwWHBhleeP6JT3+P9ZRkVcl6l7sxQvYvYHCEOtNomui9/
+         PsLw==
+X-Gm-Message-State: AOAM530m3AiLsicYiXUa/Q6lghBFy/lJO/KoRmAalgU0d0/u+0XC+l0k
+        W8/JG9NNT7lNM3OkpWzvgyl/Z2KJsQnBRGJtLY4R
+X-Google-Smtp-Source: ABdhPJxvq7nppS25v1q/HDU5+iaADhxEqtCisqHD/Sqd9FpL1k9JSG25kraTuC2F3qavCtm5M30uvWwWkhoUSOMQTYI=
+X-Received: by 2002:a17:906:456:: with SMTP id e22mr6132963eja.178.1594758582843;
+ Tue, 14 Jul 2020 13:29:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Nj4mAaUCx+wbOcQD"
-Content-Disposition: inline
-In-Reply-To: <20200714201544.GA10501@Asurada-Nvidia>
-X-Cookie: Your password is pitifully obvious.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <6effbbd4574407d6af21162e57d9102d5f8b02ed.1594664015.git.rgb@redhat.com>
+ <CAHC9VhSyq7yKQqwvHL5syU9+TFki6-__WfCrvqewbnU3xpND4Q@mail.gmail.com> <20200714174353.ds7lj3iisy67t2zu@madcap2.tricolour.ca>
+In-Reply-To: <20200714174353.ds7lj3iisy67t2zu@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 14 Jul 2020 16:29:30 -0400
+Message-ID: <CAHC9VhQusQsdQc7EfdjdH5mp6qqqYVPHnG9nNhUhf3DS_cdWwA@mail.gmail.com>
+Subject: Re: [PATCH ghak84 v4] audit: purge audit_log_string from the
+ intra-kernel audit API
+To:     Richard Guy Briggs <rgb@redhat.com>, john.johansen@canonical.com
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Eric Paris <eparis@parisplace.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 14, 2020 at 1:44 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2020-07-14 12:21, Paul Moore wrote:
+> > On Mon, Jul 13, 2020 at 3:52 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > >
+> > > audit_log_string() was inteded to be an internal audit function and
+> > > since there are only two internal uses, remove them.  Purge all external
+> > > uses of it by restructuring code to use an existing audit_log_format()
+> > > or using audit_log_format().
+> > >
+> > > Please see the upstream issue
+> > > https://github.com/linux-audit/audit-kernel/issues/84
+> > >
+> > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > > ---
+> > > Passes audit-testsuite.
+> > >
+> > > Changelog:
+> > > v4
+> > > - use double quotes in all replaced audit_log_string() calls
+> > >
+> > > v3
+> > > - fix two warning: non-void function does not return a value in all control paths
+> > >         Reported-by: kernel test robot <lkp@intel.com>
+> > >
+> > > v2
+> > > - restructure to piggyback on existing audit_log_format() calls, checking quoting needs for each.
+> > >
+> > > v1 Vlad Dronov
+> > > - https://github.com/nefigtut/audit-kernel/commit/dbbcba46335a002f44b05874153a85b9cc18aebf
+> > >
+> > >  include/linux/audit.h     |  5 -----
+> > >  kernel/audit.c            |  4 ++--
+> > >  security/apparmor/audit.c | 10 ++++------
+> > >  security/apparmor/file.c  | 25 +++++++------------------
+> > >  security/apparmor/ipc.c   | 46 +++++++++++++++++++++++-----------------------
+> > >  security/apparmor/net.c   | 14 ++++++++------
+> > >  security/lsm_audit.c      |  4 ++--
+> > >  7 files changed, 46 insertions(+), 62 deletions(-)
+> >
+> > Thanks for restoring the quotes, just one question below ...
+> >
+> > > diff --git a/security/apparmor/ipc.c b/security/apparmor/ipc.c
+> > > index 4ecedffbdd33..fe36d112aad9 100644
+> > > --- a/security/apparmor/ipc.c
+> > > +++ b/security/apparmor/ipc.c
+> > > @@ -20,25 +20,23 @@
+> > >
+> > >  /**
+> > >   * audit_ptrace_mask - convert mask to permission string
+> > > - * @buffer: buffer to write string to (NOT NULL)
+> > >   * @mask: permission mask to convert
+> > > + *
+> > > + * Returns: pointer to static string
+> > >   */
+> > > -static void audit_ptrace_mask(struct audit_buffer *ab, u32 mask)
+> > > +static const char *audit_ptrace_mask(u32 mask)
+> > >  {
+> > >         switch (mask) {
+> > >         case MAY_READ:
+> > > -               audit_log_string(ab, "read");
+> > > -               break;
+> > > +               return "read";
+> > >         case MAY_WRITE:
+> > > -               audit_log_string(ab, "trace");
+> > > -               break;
+> > > +               return "trace";
+> > >         case AA_MAY_BE_READ:
+> > > -               audit_log_string(ab, "readby");
+> > > -               break;
+> > > +               return "readby";
+> > >         case AA_MAY_BE_TRACED:
+> > > -               audit_log_string(ab, "tracedby");
+> > > -               break;
+> > > +               return "tracedby";
+> > >         }
+> > > +       return "";
+> >
+> > Are we okay with this returning an empty string ("") in this case?
+> > Should it be a question mark ("?")?
+> >
+> > My guess is that userspace parsing should be okay since it still has
+> > quotes, I'm just not sure if we wanted to use a question mark as we do
+> > in other cases where the field value is empty/unknown.
+>
+> Previously, it would have been an empty value, not even double quotes.
+> "?" might be an improvement.
 
---Nj4mAaUCx+wbOcQD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Did you want to fix that now in this patch, or leave it to later?  As
+I said above, I'm not too bothered by it with the quotes so either way
+is fine by me.
 
-On Tue, Jul 14, 2020 at 01:15:45PM -0700, Nicolin Chen wrote:
-> On Tue, Jul 14, 2020 at 06:20:32PM +0200, Arnaud Ferraris wrote:
+John, I'm assuming you are okay with this patch?
 
-> > Here's some background about my use case: the i.MX6 board acts as a
-> > Bluetooth proxy between a phone and a headset. It has 2 Bluetooth
-> > modules (one for each connected device), with audio connected to SSI1 &
-> > SSI2. Audio sample rate can be either 8 or 16kHz, and bclk can be either
-> > 512 or 1024kHz, all depending of the capabilities of the headset and phone.
-> > In our case we want SSI2 to be the input clock to the ASRC and SSI1 the
-> > output clock, but there is no way to force that with auto-selection:
-> > both clocks are multiples of both 8k and 16k, so the algorithm will
-> > always select the SSI1 clock.
-
-> Anything wrong with ASRC selecting SSI1 clock for both cases? The
-> driver calculates the divisors based on the given clock rate, so
-> the final internal rate should be the same. If there's a problem,
-> I feel that's a separate bug.
-
-The nominal rate might be the same but if they're in different clock
-domains then the actual rates might be different (hence the desire for
-an ASRC I guess).  I can see the system wanting to choose one clock or
-the other on the basis of some system specific property (quality of the
-clock sources, tolerances of the devices involved or something) though
-it's a rather fun edge case configuration :/ .
-
---Nj4mAaUCx+wbOcQD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8OFUkACgkQJNaLcl1U
-h9DuHAf/TDGYWuygKrfJ8bywVG9u74SpJ9heHBWUzyeOwBeMmD2EcIZQTbcYbFy0
-R2f5uRyhd5nQrLyrkVLq/o5HEgVV8Zpfi0OGQ25q5ehRQU3ni+8fkcHYtq3/uaI7
-z8tQG2zuZiUDmN+thLC9a/H6SWEZSySVThHUsyFg+zU7WXVTmrMGnCIcjV5IlXPf
-ErlMV1E0eWVn+Ti6rIYbG3RhGi7B4ATv3AY+0BT628Bel2zqknmTkFYH+SXMPspc
-FzT/bvTQxCOOFl75BY8+qSS2H2MEVzdVSrhEEvopDBXCvspyHMMBX50CqcNJnFHc
-4q3Oyckri7vWm5rmbqcwsCwbohRa0w==
-=/XN2
------END PGP SIGNATURE-----
-
---Nj4mAaUCx+wbOcQD--
+-- 
+paul moore
+www.paul-moore.com
