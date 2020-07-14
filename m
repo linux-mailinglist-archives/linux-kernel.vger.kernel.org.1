@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9454D220002
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F55D22000C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgGNV1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:27:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
+        id S1728385AbgGNV3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726446AbgGNV1F (ORCPT
+        with ESMTP id S1728013AbgGNV27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:27:05 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448FBC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:27:05 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o1so7613780plk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:27:05 -0700 (PDT)
+        Tue, 14 Jul 2020 17:28:59 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C79DC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:28:59 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id k6so276124wrn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:28:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=sender:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=VQGQidYI0HuOTJB5SyluznwAshWCGJHDKysMMkUDPn4=;
-        b=ZS6AcdqKzLWc3bUzqs3TEDBMIlFYbIkPNHSbBeDM3U/3BJMaKti7q73i7A2usl3gqD
-         x/3AhLYZGMSCE2xdZFhfopvEZGLkImAUfTAwlT70/mgJeW7FDYCjQZaaybi6poymMScf
-         7DKMmtz1w29yQodxqGxZrD6NYXuSj4hBC7/Klw8numcOagIldTz7zvROVMGgUllyel47
-         Tm/Pllyhw2K7y47phPHFf7QL2EIeS+o1+rE6IvgbaRCxotIY3HZjQdDwswWYEzISiAIQ
-         Ti34Klj0UhRY3Hu+7O2y88OPqm1nRGurEJI7Qd+IWwLlEYnH9BLqEVPKPPpSgYBv2Ak4
-         IDbw==
+        bh=PKU5uergA0Aa1mhqo6EMw5cD+1UW22BLT1dbrl2IsxA=;
+        b=lLvThvo4B331bayf7/2UW/PMnmk32xtN+AvUwEC3DxxqKKvgNziNafJzo9DEoIK0QG
+         QKzBqXuBmcpralubgX51+CUBI4c0b46M9Ab1xI2BIHwMtO/otjajXJRIIx+txB5bTezH
+         B9ODKxO/tX+X0KC1G81RMh04/C8nJ1AFRV2l3DDQOXKPrdD87xWKVoO6E6a708A9Fm8J
+         RiGwBvNR45fgSkPjgHAhjrwzGIBkuUmJRfdJgV4s1C1mnH7z5nTGkl4y2CboFC0VRsU7
+         lym13gI8bIQ4BX5ttI0t32u4r9GpBJl5jCo5Vb53DvR7Ib8lscUatlxLiBbQvQ63Yzdc
+         doPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VQGQidYI0HuOTJB5SyluznwAshWCGJHDKysMMkUDPn4=;
-        b=KxWIU8zX+cDFhHN+hm53uutAJT4P7gWsum1rhmunIlZufTZ+M7qqL64Tm8L7DYDPFe
-         U0ZWPlDN9erGI3b1IBOEsn23IWdtQjqZ6T98HapnIMRmUON9GuSxjdsKRsZPRC0gaST6
-         65QPMBuHdVfOxnGdClHiTOtbyna3hbbx80A7LoHDo+qYMUg+kgPNIk5YhHeQoqm9eUzN
-         9PxtAB612faoronGKSILr0IRLXuF3pL/u6/knwTvDocf788ta0hfI5ijCs/ESCYU6E4N
-         pW1a0Fz0oXFX1DsujZtrTJtMoQOy5KNGQbkt8UHgJ71qoFv0bq0xtXyeEMKrgJ90gkXg
-         uFTw==
-X-Gm-Message-State: AOAM533pPcDxeUEdR0OzM7SA6BnNIsPa5ktSgH2sqx9/oenlvZiOhExX
-        WHDAyEBt0urfsxxV9+DhYlQ=
-X-Google-Smtp-Source: ABdhPJwWT1SaRmSOH2iD3vjhVUNof8OdjC75JYNDBceQLWgdCplk5YYEca45LTvYmpfMdRwDlpiolw==
-X-Received: by 2002:a17:90a:c003:: with SMTP id p3mr6678167pjt.120.1594762024854;
-        Tue, 14 Jul 2020 14:27:04 -0700 (PDT)
-Received: from arpitha-Inspiron-7570.lan ([49.206.11.188])
-        by smtp.gmail.com with ESMTPSA id np5sm31274pjb.43.2020.07.14.14.27.02
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=PKU5uergA0Aa1mhqo6EMw5cD+1UW22BLT1dbrl2IsxA=;
+        b=lS4B487y4mBmnGafF75eJAM9N3I/UxfaMOwzTgjPMDoFuF9w/cqeAd/U0qgevLYrxu
+         zKU0mEOPJIN8PpDwIOIQMBHH6+c9jhUHL/HHw+QE+HjjeqpTmU63NTZ8jh66mDsdGe/B
+         5rJGMzgFDnlEOVqr5jvgD/EKQ+hGgYQbEpAd/1AhYNjkH3ElO6rcCjZjwIlxBeHBO7S0
+         +hrVz0f8FEIojoK1CoXTXtr6xse0PGn7G7UYorJjUTRv8Fb8QEiDfUt0OgtJ+MJnRC6z
+         ij8em1+BfhdLD4HVaiSUJpmQ/CVTrpWtV/FLu+hfEkILgsOgLoZYiMwcqnseEx+y3rN8
+         KxUQ==
+X-Gm-Message-State: AOAM531OJAlV4N/hLLJS0KK1HHiIhZ9NRRc38skUXzkV8F45Hd17HYaL
+        NAbuLKR+JGPp0v6zwl7sl3U=
+X-Google-Smtp-Source: ABdhPJx/YmiJpiV9bcRcVFcElAJEvBJY+hvPpl6tbRljDQF0airtIeNgs192Zz5AkAazHZVyNC8OSA==
+X-Received: by 2002:adf:e801:: with SMTP id o1mr8186529wrm.54.1594762137484;
+        Tue, 14 Jul 2020 14:28:57 -0700 (PDT)
+Received: from localhost.localdomain ([80.71.140.73])
+        by smtp.gmail.com with ESMTPSA id s8sm345wru.38.2020.07.14.14.28.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 14:27:04 -0700 (PDT)
-From:   Arpitha <98.arpi@gmail.com>
-To:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
-        puranjay12@gmail.com, yepeilin.cs@gmail.com
-Cc:     Arpitha <98.arpi@gmail.com>, devel@driverdev.osuosl.org,
+        Tue, 14 Jul 2020 14:28:56 -0700 (PDT)
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     linux-riscv@lists.infradead.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8188eu: core: fix coding style issues
-Date:   Wed, 15 Jul 2020 02:55:59 +0530
-Message-Id: <20200714212559.57584-1-98.arpi@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Subject: [PATCH] riscv: Select ARCH_HAS_DEBUG_VM_PGTABLE
+Date:   Tue, 14 Jul 2020 23:26:11 +0200
+Message-Id: <20200714212611.19692-1-kernel@esmil.dk>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,60 +66,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixing WARNING: Prefer using '"%s...", __func__' to using 'function_name'
-in a string in rtw_ioctl_set.c
+This allows the pgtable tests to be built.
 
-Signed-off-by: Arpitha <98.arpi@gmail.com>
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
 ---
- drivers/staging/rtl8188eu/core/rtw_ioctl_set.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c b/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
-index 9cc77ab4fd6b..fa88e8b2852d 100644
---- a/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_ioctl_set.c
-@@ -44,12 +44,12 @@ u8 rtw_do_join(struct adapter *padapter)
- 
- 		if (!pmlmepriv->LinkDetectInfo.bBusyTraffic ||
- 		    pmlmepriv->to_roaming > 0) {
--			RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_info_, ("rtw_do_join(): site survey if scanned_queue is empty\n."));
-+			RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_info_, ("%s: site survey if scanned_queue is empty\n.", __func__));
- 			/*  submit site_survey_cmd */
- 			ret = rtw_sitesurvey_cmd(padapter, &pmlmepriv->assoc_ssid, 1, NULL, 0);
- 			if (ret != _SUCCESS) {
- 				pmlmepriv->to_join = false;
--				RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_err_, ("rtw_do_join(): site survey return error\n."));
-+				RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_err_, ("%s: site survey return error\n.", __func__));
- 			}
- 		} else {
- 			pmlmepriv->to_join = false;
-@@ -313,7 +313,7 @@ u8 rtw_set_802_11_infrastructure_mode(struct adapter *padapter,
- 	enum ndis_802_11_network_infra *pold_state = &cur_network->network.InfrastructureMode;
- 
- 	RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_notice_,
--		 ("+rtw_set_802_11_infrastructure_mode: old =%d new =%d fw_state = 0x%08x\n",
-+		 ("+%s: old =%d new =%d fw_state = 0x%08x\n", __func__,
- 		  *pold_state, networktype, get_fwstate(pmlmepriv)));
- 
- 	if (*pold_state != networktype) {
-@@ -496,7 +496,7 @@ u8 rtw_set_802_11_add_wep(struct adapter *padapter, struct ndis_802_11_wep *wep)
- 		break;
- 	}
- 	RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_info_,
--		 ("rtw_set_802_11_add_wep:before memcpy, wep->KeyLength = 0x%x wep->KeyIndex = 0x%x  keyid =%x\n",
-+		 ("%s:before memcpy, wep->KeyLength = 0x%x wep->KeyIndex = 0x%x  keyid =%x\n", __func__,
- 		 wep->KeyLength, wep->KeyIndex, keyid));
- 
- 	memcpy(&psecuritypriv->dot11DefKey[keyid].skey[0],
-@@ -507,7 +507,7 @@ u8 rtw_set_802_11_add_wep(struct adapter *padapter, struct ndis_802_11_wep *wep)
- 	psecuritypriv->dot11PrivacyKeyIndex = keyid;
- 
- 	RT_TRACE(_module_rtl871x_ioctl_set_c_, _drv_info_,
--		 ("rtw_set_802_11_add_wep:security key material : %x %x %x %x %x %x %x %x %x %x %x %x %x\n",
-+		 ("%s:security key material : %x %x %x %x %x %x %x %x %x %x %x %x %x\n", __func__,
- 		 psecuritypriv->dot11DefKey[keyid].skey[0],
- 		 psecuritypriv->dot11DefKey[keyid].skey[1],
- 		 psecuritypriv->dot11DefKey[keyid].skey[2],
+The tests seem to succeed both in Qemu and on the HiFive Unleashed
+
+Both with and without the recent additions in
+https://lore.kernel.org/linux-riscv/1594610587-4172-1-git-send-email-anshuman.khandual@arm.com/
+
+ Documentation/features/debug/debug-vm-pgtable/arch-support.txt | 2 +-
+ arch/riscv/Kconfig                                             | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/features/debug/debug-vm-pgtable/arch-support.txt b/Documentation/features/debug/debug-vm-pgtable/arch-support.txt
+index c527d05c0459..c9a764c3c795 100644
+--- a/Documentation/features/debug/debug-vm-pgtable/arch-support.txt
++++ b/Documentation/features/debug/debug-vm-pgtable/arch-support.txt
+@@ -23,7 +23,7 @@
+     |    openrisc: | TODO |
+     |      parisc: | TODO |
+     |     powerpc: |  ok  |
+-    |       riscv: | TODO |
++    |       riscv: |  ok  |
+     |        s390: |  ok  |
+     |          sh: | TODO |
+     |       sparc: | TODO |
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 3230c1d48562..b4e674b1e857 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -15,6 +15,7 @@ config RISCV
+ 	select ARCH_CLOCKSOURCE_INIT
+ 	select ARCH_HAS_BINFMT_FLAT
+ 	select ARCH_HAS_DEBUG_VIRTUAL if MMU
++	select ARCH_HAS_DEBUG_VM_PGTABLE
+ 	select ARCH_HAS_DEBUG_WX
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_GIGANTIC_PAGE
 -- 
-2.25.1
+2.27.0
 
