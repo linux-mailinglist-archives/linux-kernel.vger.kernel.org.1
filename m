@@ -2,84 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A8821EA5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF6921EA7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgGNHjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:39:47 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:41212 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727119AbgGNHjk (ORCPT
+        id S1726670AbgGNHoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgGNHoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:39:40 -0400
-Received: by mail-oi1-f193.google.com with SMTP id y22so13188853oie.8;
-        Tue, 14 Jul 2020 00:39:39 -0700 (PDT)
+        Tue, 14 Jul 2020 03:44:02 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92B4C061755;
+        Tue, 14 Jul 2020 00:44:01 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l2so3826993wmf.0;
+        Tue, 14 Jul 2020 00:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ggXdkn23ixk1Eve60r7XsjTKStmlo12q+Yq1AjF/zbA=;
+        b=sV9A8Wyw30q66lBJw75cNAYblVVxR1Ju0crsh9peDxz10t/CMyrWUzW6lfU9EvJe+q
+         2jE815KHbIiAMgITgukjEU3bUFXUZ+MJiz8dBjCT4RPfyeTrUCUzZ7T77BASyy3lfVyt
+         wxI/2DgTfW7E3AoviAOzGx7njKtYrfm6Cn49beXITRrgDvi6NX3FJodC6GeW1G/laOyl
+         oQf6FAbTCGr4RMI23L+42PAwIdxSQkKB91wLs8SwHNYxkCK8MFRzviiWc0IbrJCweUoh
+         5MvLjdtjGbyOWdT8isHBEUWM9HDA7x/HJafsBOVo/3hOvnh33KA2YC6g/k0Uwn0ffBzD
+         KQUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dCYnWiBfrUG0V4QV9bfy3mtM9Gw/6z5cymsRyqfOxPU=;
-        b=qH/1FIlN+DJH4FNmhUoS7tmmK6M/URGpHYWNJAy3Mb44wZiS8hmILq834C2QfxiBev
-         5wxeR/tplU0cLeQwL7TOwORTx/No9dbYn/O12Ben4/WH6T2x+l7f2jjmmyc7cV+gykT2
-         7lGobbFVkO0qGam55RFFxM/fv/oNdLJDtwqYjoI/oEivY9y2xdGNE2KML9la63CrzeQ9
-         EbiBQWVhMZSafn2O0Mv6Ub1fZQgMymQ8dmBXLuU9UygADKTYbbz+YzsyeNdDlw1TiCM+
-         wfYhL2VoViWMzpQGMCmYq12J3CQILK5yXMWscylb8Te0URo+EaSkWnnc09LMK0nZHfAh
-         EIAg==
-X-Gm-Message-State: AOAM53284iKjupKdrQ1a0mF9Os3HxzeD1yPYYctW9K9oAaD0F2TfCtv7
-        VM0H6Z96FW4XYXy3kqjsG8ftuuzCC9n/hgIgt9A=
-X-Google-Smtp-Source: ABdhPJx5dphEyeiFZMm6iXlEYQPyjm7HBBuh4FxBXEBpFTIMln0CZySUEMQ/80bez3KevRXtht7yiFFsC0OTtXhX8oU=
-X-Received: by 2002:aca:5c41:: with SMTP id q62mr2546599oib.148.1594712379512;
- Tue, 14 Jul 2020 00:39:39 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=ggXdkn23ixk1Eve60r7XsjTKStmlo12q+Yq1AjF/zbA=;
+        b=GNz0r9jeBkbnk9/LS90P2Jg1+A9r9WXTwmIjINvVmF+CBL+6eCbyNtubydUxlvcFSL
+         ysg0wjaAxHA5gaAPldQZ83r2ehdsHM7AqwXp9QLu61b2MehJLNEk5EsKpPHpEVvvVzrn
+         gZmTdtFQJ/H4nxLIkU5zQgdpD5R9orV02DpdfpjQN3iI8zwUvV+c2u4toOl+MhfKKBGK
+         hwtgw7209JjnkHkXiober8lyTdoilcJ9bSc6phXOpHuB1zQOElcAyLLSRkCg+55lyRhw
+         yU/SwecG+U8OgAhQ/SuAvCT31zo60+NtqrnBWUWN4Fl2BFXh4U4qtIQHl08MuQDL3VR9
+         pPfw==
+X-Gm-Message-State: AOAM531shZtqJrBYLg5ul3oASclU7Gv/h+EvP1xf277V/MaJWcmDpIYw
+        0cm/M0ZfKGhWhO92CIRM1pIhGTSc3mo=
+X-Google-Smtp-Source: ABdhPJwgLr6/ik4l/zvr0ggsE8Od1DP35wwSRZ5i7xL33XAbT6BgrVkW4V/iAqZEsGT5XXC881P39w==
+X-Received: by 2002:a7b:c38c:: with SMTP id s12mr2982303wmj.136.1594712640353;
+        Tue, 14 Jul 2020 00:44:00 -0700 (PDT)
+Received: from localhost.localdomain ([80.71.140.73])
+        by smtp.gmail.com with ESMTPSA id l132sm3226956wmf.6.2020.07.14.00.43.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 00:43:59 -0700 (PDT)
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     linux-riscv@lists.infradead.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] riscv: Support R_RISCV_ADD64 and R_RISCV_SUB64 relocs
+Date:   Tue, 14 Jul 2020 09:40:43 +0200
+Message-Id: <20200714074044.10031-1-kernel@esmil.dk>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <1594676120-5862-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594676120-5862-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1594676120-5862-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 14 Jul 2020 09:39:28 +0200
-Message-ID: <CAMuHMdVyJTZ2-YS-WvjAr0ca_EfNdLk3+PEOSK8L5vShd97VWg@mail.gmail.com>
-Subject: Re: [PATCH 4/9] dt-bindings: dma: renesas,rcar-dmac: Document
- R8A774E1 bindings
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 11:35 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Renesas RZ/G2H (R8A774E1) SoC also has the R-Car gen3 compatible
-> DMA controllers, therefore document RZ/G2H specific bindings.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+These are needed for the __jump_table in modules using
+static keys/jump-labels with the layout from
+HAVE_ARCH_JUMP_LABEL_RELATIVE on 64bit kernels.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+Reviewed-by: Björn Töpel <bjorn.topel@gmail.com>
+Tested-by: Björn Töpel <bjorn.topel@gmail.com>
+---
+Tested on the HiFive Unleashed board.
 
-Gr{oetje,eeting}s,
+No changes since v2.
 
-                        Geert
+This patch is new in v2. It fixes an error loading modules
+containing static keys found by Björn Töpel.
 
+ arch/riscv/kernel/module.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+index 7191342c54da..104fba889cf7 100644
+--- a/arch/riscv/kernel/module.c
++++ b/arch/riscv/kernel/module.c
+@@ -263,6 +263,13 @@ static int apply_r_riscv_add32_rela(struct module *me, u32 *location,
+ 	return 0;
+ }
+ 
++static int apply_r_riscv_add64_rela(struct module *me, u32 *location,
++				    Elf_Addr v)
++{
++	*(u64 *)location += (u64)v;
++	return 0;
++}
++
+ static int apply_r_riscv_sub32_rela(struct module *me, u32 *location,
+ 				    Elf_Addr v)
+ {
+@@ -270,6 +277,13 @@ static int apply_r_riscv_sub32_rela(struct module *me, u32 *location,
+ 	return 0;
+ }
+ 
++static int apply_r_riscv_sub64_rela(struct module *me, u32 *location,
++				    Elf_Addr v)
++{
++	*(u64 *)location -= (u64)v;
++	return 0;
++}
++
+ static int (*reloc_handlers_rela[]) (struct module *me, u32 *location,
+ 				Elf_Addr v) = {
+ 	[R_RISCV_32]			= apply_r_riscv_32_rela,
+@@ -290,7 +304,9 @@ static int (*reloc_handlers_rela[]) (struct module *me, u32 *location,
+ 	[R_RISCV_RELAX]			= apply_r_riscv_relax_rela,
+ 	[R_RISCV_ALIGN]			= apply_r_riscv_align_rela,
+ 	[R_RISCV_ADD32]			= apply_r_riscv_add32_rela,
++	[R_RISCV_ADD64]			= apply_r_riscv_add64_rela,
+ 	[R_RISCV_SUB32]			= apply_r_riscv_sub32_rela,
++	[R_RISCV_SUB64]			= apply_r_riscv_sub64_rela,
+ };
+ 
+ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.27.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
