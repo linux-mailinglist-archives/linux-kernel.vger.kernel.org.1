@@ -2,125 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4F721EB3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B386421EB39
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgGNIZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 04:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
+        id S1726479AbgGNIZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 04:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgGNIZw (ORCPT
+        with ESMTP id S1725793AbgGNIZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 04:25:52 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AD0C061755;
-        Tue, 14 Jul 2020 01:25:52 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id k27so7291378pgm.2;
-        Tue, 14 Jul 2020 01:25:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZWUwJu20ntegLxeLLUqqY9GoM4PIf6WDr0U1QRPCyz8=;
-        b=Darf2Q0a0jpRgttYMoFvMgwq+LwapC98MDClJbfjYU8niFJTsvIYg6qqG7+YyGSl4g
-         BVANOvMGHizpFJIsXFlORc9YkqZfSREZPfQLDljPrd7WdN//n51wc8ZJ2z6bJZCuYdP4
-         JfhNJ7sK5U/fsWuDuMkaknhLm0fmeiLZrOhJl5rer8nGCqprfezgCAsgCaP86lWGd/RD
-         rz5h0+PEC7Fnob8KbAu/ELHee03RVnZHqTaarQbQcpTjzIm7dXudutq+AT812XR4rye2
-         JWfMWoZkhXeBCrKavWJswfO1LkV6ma0ssNQxlxNEG8NPUQBYt5v9y459teksLszUzRjl
-         yrVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZWUwJu20ntegLxeLLUqqY9GoM4PIf6WDr0U1QRPCyz8=;
-        b=Vp1qHrWE7u27JgmPkKDYhJdYiyJtDX7CDTmoqDRFOCnMIL/lEaxIWp4wCi8/LiVZ5n
-         D9krTzUSGt1vPq4THjGo6XwjpeFMHmxwzWqh1D4YAQha3IWQsQ6DlqRoJ4BCFw0dnl/H
-         l6qvntsytDvvwX0fA7/BYrM/bhYVpAsAm4czbpfECBbplnaXYVvvOfUt/LSoBLIUSkLT
-         Z02+xoUdbayL7wyRW5DVtGX6zMxpFr2EZK8yg8M0ICyArAMCaZVSKBr06ojQyW5M1aSo
-         b4QR7elzQEfkMlOJjj3+Qb0b+egYhYf+4B3+d7E2WTvMw6/NDeohVE+rynTjmVh832Qj
-         qRIQ==
-X-Gm-Message-State: AOAM531dFlJpMTi0hLC2QBcaskf9dRnJnny6L5bS0DqYrmzPa+Sk0QYY
-        jyVuWOjfT1khO1wp8T13dV1LcTg5aMs=
-X-Google-Smtp-Source: ABdhPJygF5X1M5e9T6GC2BhRd2ugrdwtEBpQe4L+h8fYZn97BoUouscBcjxQDAIzI2+9+Tnii+xgvQ==
-X-Received: by 2002:a63:9342:: with SMTP id w2mr2554954pgm.20.1594715152238;
-        Tue, 14 Jul 2020 01:25:52 -0700 (PDT)
-Received: from gmail.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id i21sm16683167pfa.18.2020.07.14.01.25.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 01:25:51 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 13:54:26 +0530
-From:   Vaibhav Gupta <vaibhav.varodek@gmail.com>
-To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, linux-ide@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] drivers: ide: use generic power management
-Message-ID: <20200714082426.GA5817@gmail.com>
-References: <20200713173613.2095-1-vaibhavgupta40@gmail.com>
- <CGME20200714073256eucas1p13ebe9585c29b766e48506400ba91a8ed@eucas1p1.samsung.com>
- <3b26bfff-7a42-7bbe-2050-51fe1ce96d4e@samsung.com>
- <20200714075247.GA4859@gmail.com>
- <834eb293-bd4f-626c-4558-fbf71a5999f0@samsung.com>
+        Tue, 14 Jul 2020 04:25:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3F8C061755;
+        Tue, 14 Jul 2020 01:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NEZwXm7zIVwhexgTBK1mEJLmzgEMI2bgToX51xgqmB0=; b=qnPEx8f4QgxTMq/2KZsUkeDNlG
+        lZfLmt7MLBU63aX/MGMi+nxcE1QmuHryMIyjOczvhvnFS2J/cvl3KN3OmqTbIpeFbsYS1m6vjNQhq
+        KbFw214YQziN+ILm/P83k8PuU46L9xdltVo4jheS3j5Q/kf1Yv/4RyUh03ezKx5wAYRaR4E4FRbmx
+        7C6WoeDC6sflqomvZ0IF9pum3PatfKWKCaOToAiEtg37L9MJiZZabBYb+Rh/J0xvENC+uFmi/562u
+        tHd/YE9sQs3rul9Hj+lm8f6624cznt1/ZH9P7/Qo8KVTpr4xRS6Ks5E2gSrLRDQSWET7Jr3s6+CL+
+        na47ColA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvGFW-00084s-HT; Tue, 14 Jul 2020 08:25:14 +0000
+Date:   Tue, 14 Jul 2020 09:25:14 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v3 4/4] vfio/type1: Use iommu_aux_at(de)tach_group() APIs
+Message-ID: <20200714082514.GA30622@infradead.org>
+References: <20200714055703.5510-1-baolu.lu@linux.intel.com>
+ <20200714055703.5510-5-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <834eb293-bd4f-626c-4558-fbf71a5999f0@samsung.com>
+In-Reply-To: <20200714055703.5510-5-baolu.lu@linux.intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 10:19:06AM +0200, Bartlomiej Zolnierkiewicz wrote:
-> 
-> On 7/14/20 9:52 AM, Vaibhav Gupta wrote:
-> > On Tue, Jul 14, 2020 at 09:32:56AM +0200, Bartlomiej Zolnierkiewicz wrote:
-> >>
-> >>
-> >> IDE subsystem (drivers/ide/) is deprecated and has been superseded by libata
-> >> subsystem (drivers/ata/).
-> >>
-> >> libata drivers have the same issue so please concentrate on fixing them
-> >> first. Later (if desirable) changes can be back-ported to drivers/ide/.
-> >>
-> > Hello, (drivers/ide) and (drivers/ata) are the two major families, I am working
-> > on, for generic PM upgradation. I was bit unaware about priority, and also in
-> > the last, both ide and ata drivers have to be upgraded.
-> 
-> Well, drivers/ide/ is scheduled for removal in 2021
-> (it even prints the warning during initialization of
-> every host driver)..
-Okay then, I will start with ata family.
+On Tue, Jul 14, 2020 at 01:57:03PM +0800, Lu Baolu wrote:
+> Replace iommu_aux_at(de)tach_device() with iommu_aux_at(de)tach_group().
+> It also saves the IOMMU_DEV_FEAT_AUX-capable physcail device in the
+> vfio_group data structure so that it could be reused in other places.
 
-Thanks,
-Vaibhav Gupta
-> 
-> Best regards,
-> --
-> Bartlomiej Zolnierkiewicz
-> Samsung R&D Institute Poland
-> Samsung Electronics
-> 
-> >>> All patches are compile-tested only.
-> >>
-> >> This patchset needs (at least) some basic testing. It should be easier with
-> >> libata subsystem as it also support SATA controllers and devices.
-> > To upgrade PM in (drivers/ide) I have made .suspend() and .resume() static. Then
-> > bind them in "struct dev_pm_ops" variable (ide_pci_pm_ops) and expose it using
-> > EXPORT_SYMBOL_GPL(). This has affected 30 drivers. I was hoping if ide changes
-> > can be tested/verified, specially [PATCH 1/3]. As then, I will be sure about
-> > similar change in ata, as it also requires similar alteration.
-> > 
-> > Thanks
-> > Vaibhav Gupta
-> > 
-> >>
-> >> Best regards,
-> >> --
-> >> Bartlomiej Zolnierkiewicz
-> >> Samsung R&D Institute Poland
-> >> Samsung Electronics
-> >>
+This removes the last user of iommu_aux_attach_device and
+iommu_aux_detach_device, which can be removed now.
