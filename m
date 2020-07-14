@@ -2,239 +2,372 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E10A21E851
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE54021E863
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgGNGhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 02:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727105AbgGNGhH (ORCPT
+        id S1726750AbgGNGid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 02:38:33 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60808 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725788AbgGNGic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 02:37:07 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FE3C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 23:37:07 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id ch3so1098361pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 23:37:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vW6KQNy5+oCCRnnC1Q8VPuviXyfCEPdbUReZkc1RE18=;
-        b=sLBXfe3ttAMfTz75e+ERY2AsS9FIU/c552V9ylpEOSE595ixwhhjeZhxlfNesV9IpO
-         zd1NGnpeih9vKO0Ey8fZYmRTyORhlacRU/MgWpoRfzpGqYElumOD7eSFPh59pYLuGEK3
-         gZfMOMDdFRSyiieGMIN3sCqenjPsCuZZlpENJSzJxTEJ705jrtNUjYGrjdL1dUxsoJCA
-         0tprF+BFztmbNPUljlXaGezagsiaXi+fFroI3A2f29TfxwEBXXZ5C7DnyOj2avvbU1qY
-         ALmw1/oaZbDi0TwM+vg/OfRM5A9Lfck0pVdeneS1Z7q4cdRwt5K+A2Uxz2fnaJ8OWLKX
-         lVUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vW6KQNy5+oCCRnnC1Q8VPuviXyfCEPdbUReZkc1RE18=;
-        b=O/v/0is64Hjw6EESjGF4wBdFB4oEZh1wQjTiQkWzVqrR6aCKuc3N0Rw84nnflkJdM9
-         N6+PxAkUqVxmstW5gpmZWwB5+iy94Vllpqq8X092b2CtJAP6goo+U+sbexwu8OZaCo/5
-         nR0kcIfg2LqXHNiq7wsU6kJ59mNmrNuLAtLRFkitCnf+HyXH3zRKbcXRKW2vUPXNEwqo
-         BpKuTZohCpyrZxAm5491Md+x31NJnj1X/ehpkpiZn9O3EdLS5tOr0i1v9bZ9ZV3HXnWI
-         0lVCaxBcOCN5FKdMTOUr11R44DpHnBO+JzYTnYOz7qzmO6Zti4sLyaHHTdGY6lnzL9fp
-         u0Lw==
-X-Gm-Message-State: AOAM530T7NW8+4mZMAR3sXuNg9j+cT9QWxP+HcaOKUMixJeo8nC3Q6Bb
-        +zT6G02p2FrdUP/aPpssv8pnug==
-X-Google-Smtp-Source: ABdhPJzHeXdnI5gFF/5mblIM3hDic3jPtUw/UvPtLtB98l/KOSBrvn3KNrfDcm7rgkIe8jSo2pMjXQ==
-X-Received: by 2002:a17:902:e901:: with SMTP id k1mr2847764pld.130.1594708626463;
-        Mon, 13 Jul 2020 23:37:06 -0700 (PDT)
-Received: from localhost ([122.172.34.142])
-        by smtp.gmail.com with ESMTPSA id hg13sm1331299pjb.21.2020.07.13.23.37.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 13 Jul 2020 23:37:05 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>
-Cc:     linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
-Subject: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
-Date:   Tue, 14 Jul 2020 12:06:53 +0530
-Message-Id: <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1594707424.git.viresh.kumar@linaro.org>
-References: <cover.1594707424.git.viresh.kumar@linaro.org>
+        Tue, 14 Jul 2020 02:38:32 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06E6cMrg005962;
+        Tue, 14 Jul 2020 01:38:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594708702;
+        bh=E6XLSTEMp1cR4YzAIPgti1IZa4bpe311JjazS/NnXuE=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=Ah+p8bhkTYz1WDNEkqRZFOkcY3jtmgikJLuAjr8Jril9i3cm10DDYpJTVILuWwLVt
+         bvOkqklBZFl7cnSVdvCqfHXzTdSoOGHuUZgm5L+dM3YnjGtFT6H1DQhWm4155riHSe
+         eyYU6BjlhO4T9r4m0gzXOciSk9kJHxCd+rlnqM0g=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06E6cMht087751
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Jul 2020 01:38:22 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 14
+ Jul 2020 01:38:22 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 14 Jul 2020 01:38:22 -0500
+Received: from [10.250.219.243] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06E6cIX4029748;
+        Tue, 14 Jul 2020 01:38:19 -0500
+Subject: Re: [PATCH] drm/tidss: Replace HTTP links with HTTPS ones
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        <tomi.valkeinen@ti.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20200713123913.34205-1-grandmaster@al2klimov.de>
+From:   Jyri Sarha <jsarha@ti.com>
+Autocrypt: addr=jsarha@ti.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <a51d529c-37ed-5198-70ff-38886b8bdab3@ti.com>
+Date:   Tue, 14 Jul 2020 09:38:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200713123913.34205-1-grandmaster@al2klimov.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several parts of the kernel are already using the effective CPU
-utilization to get the current load on the CPU, do the same here instead
-of depending on the idle time of the CPU, which isn't that accurate
-comparatively.
+On 13/07/2020 15:39, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>  If there are any URLs to be removed completely or at least not just HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+> 
+>  If you apply the patch, please let me know.
+> 
+>  Sorry again to all maintainers who complained about subject lines.
+>  Now I realized that you want an actually perfect prefixes,
+>  not just subsystem ones.
+>  I tried my best...
+>  And yes, *I could* (at least half-)automate it.
+>  Impossible is nothing! :)
+> 
 
-Note that, this (and CPU frequency scaling in general) doesn't work that
-well with idle injection as that is done from rt threads and is counted
-as load while it tries to do quite the opposite. That should be solved
-separately though.
+Acked-by: Jyri Sarha <jsarha@ti.com>
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/thermal/cpufreq_cooling.c | 65 +++++++------------------------
- 1 file changed, 15 insertions(+), 50 deletions(-)
+> 
+>  drivers/gpu/drm/tidss/tidss_crtc.c        | 2 +-
+>  drivers/gpu/drm/tidss/tidss_crtc.h        | 2 +-
+>  drivers/gpu/drm/tidss/tidss_dispc.c       | 2 +-
+>  drivers/gpu/drm/tidss/tidss_dispc.h       | 2 +-
+>  drivers/gpu/drm/tidss/tidss_dispc_regs.h  | 2 +-
+>  drivers/gpu/drm/tidss/tidss_drv.c         | 2 +-
+>  drivers/gpu/drm/tidss/tidss_drv.h         | 2 +-
+>  drivers/gpu/drm/tidss/tidss_encoder.c     | 2 +-
+>  drivers/gpu/drm/tidss/tidss_encoder.h     | 2 +-
+>  drivers/gpu/drm/tidss/tidss_irq.c         | 2 +-
+>  drivers/gpu/drm/tidss/tidss_irq.h         | 2 +-
+>  drivers/gpu/drm/tidss/tidss_kms.c         | 2 +-
+>  drivers/gpu/drm/tidss/tidss_kms.h         | 2 +-
+>  drivers/gpu/drm/tidss/tidss_plane.c       | 2 +-
+>  drivers/gpu/drm/tidss/tidss_plane.h       | 2 +-
+>  drivers/gpu/drm/tidss/tidss_scale_coefs.c | 2 +-
+>  drivers/gpu/drm/tidss/tidss_scale_coefs.h | 2 +-
+>  17 files changed, 17 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/tidss/tidss_crtc.c b/drivers/gpu/drm/tidss/tidss_crtc.c
+> index 89a226912de8..a591c70b8386 100644
+> --- a/drivers/gpu/drm/tidss/tidss_crtc.c
+> +++ b/drivers/gpu/drm/tidss/tidss_crtc.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_crtc.h b/drivers/gpu/drm/tidss/tidss_crtc.h
+> index 09e773666228..040d1205496b 100644
+> --- a/drivers/gpu/drm/tidss/tidss_crtc.h
+> +++ b/drivers/gpu/drm/tidss/tidss_crtc.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_dispc.c b/drivers/gpu/drm/tidss/tidss_dispc.c
+> index 629dd06393f6..e7d28ec8f7f3 100644
+> --- a/drivers/gpu/drm/tidss/tidss_dispc.c
+> +++ b/drivers/gpu/drm/tidss/tidss_dispc.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (C) 2016-2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Jyri Sarha <jsarha@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_dispc.h b/drivers/gpu/drm/tidss/tidss_dispc.h
+> index 902e612ff7ac..5984e0de2cd9 100644
+> --- a/drivers/gpu/drm/tidss/tidss_dispc.h
+> +++ b/drivers/gpu/drm/tidss/tidss_dispc.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_dispc_regs.h b/drivers/gpu/drm/tidss/tidss_dispc_regs.h
+> index 88a83a41b6e3..13feedfe5d6d 100644
+> --- a/drivers/gpu/drm/tidss/tidss_dispc_regs.h
+> +++ b/drivers/gpu/drm/tidss/tidss_dispc_regs.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (C) 2016-2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2016-2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Jyri Sarha <jsarha@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
+> index 99edc66ebdef..f00fadbead3e 100644
+> --- a/drivers/gpu/drm/tidss/tidss_drv.c
+> +++ b/drivers/gpu/drm/tidss/tidss_drv.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_drv.h b/drivers/gpu/drm/tidss/tidss_drv.h
+> index 3b0a3d87b7c4..7de4bba52e6f 100644
+> --- a/drivers/gpu/drm/tidss/tidss_drv.h
+> +++ b/drivers/gpu/drm/tidss/tidss_drv.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_encoder.c b/drivers/gpu/drm/tidss/tidss_encoder.c
+> index 30bf2a65949c..e278a9c89476 100644
+> --- a/drivers/gpu/drm/tidss/tidss_encoder.c
+> +++ b/drivers/gpu/drm/tidss/tidss_encoder.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_encoder.h b/drivers/gpu/drm/tidss/tidss_encoder.h
+> index 06854d66e7e6..ace877c0e0fd 100644
+> --- a/drivers/gpu/drm/tidss/tidss_encoder.h
+> +++ b/drivers/gpu/drm/tidss/tidss_encoder.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_irq.c b/drivers/gpu/drm/tidss/tidss_irq.c
+> index 1b80f2d62e0a..a5ec7931ef6b 100644
+> --- a/drivers/gpu/drm/tidss/tidss_irq.c
+> +++ b/drivers/gpu/drm/tidss/tidss_irq.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_irq.h b/drivers/gpu/drm/tidss/tidss_irq.h
+> index aa92db403cca..4aaad5dfd7c2 100644
+> --- a/drivers/gpu/drm/tidss/tidss_irq.h
+> +++ b/drivers/gpu/drm/tidss/tidss_irq.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_kms.c b/drivers/gpu/drm/tidss/tidss_kms.c
+> index 4b99e9fa84a5..71dbd331640f 100644
+> --- a/drivers/gpu/drm/tidss/tidss_kms.c
+> +++ b/drivers/gpu/drm/tidss/tidss_kms.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_kms.h b/drivers/gpu/drm/tidss/tidss_kms.h
+> index 99aaff099f22..632d79f5983f 100644
+> --- a/drivers/gpu/drm/tidss/tidss_kms.h
+> +++ b/drivers/gpu/drm/tidss/tidss_kms.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_plane.c b/drivers/gpu/drm/tidss/tidss_plane.c
+> index 0a563eabcbb9..43e72d0b2d84 100644
+> --- a/drivers/gpu/drm/tidss/tidss_plane.c
+> +++ b/drivers/gpu/drm/tidss/tidss_plane.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_plane.h b/drivers/gpu/drm/tidss/tidss_plane.h
+> index 80ff1c5a2535..e933e158b617 100644
+> --- a/drivers/gpu/drm/tidss/tidss_plane.h
+> +++ b/drivers/gpu/drm/tidss/tidss_plane.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Tomi Valkeinen <tomi.valkeinen@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_scale_coefs.c b/drivers/gpu/drm/tidss/tidss_scale_coefs.c
+> index 5ec68389cc68..c2b84fea89a5 100644
+> --- a/drivers/gpu/drm/tidss/tidss_scale_coefs.c
+> +++ b/drivers/gpu/drm/tidss/tidss_scale_coefs.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Jyri Sarha <jsarha@ti.com>
+>   */
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_scale_coefs.h b/drivers/gpu/drm/tidss/tidss_scale_coefs.h
+> index 64b5af5b5361..9c560d0fdac0 100644
+> --- a/drivers/gpu/drm/tidss/tidss_scale_coefs.h
+> +++ b/drivers/gpu/drm/tidss/tidss_scale_coefs.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
+> + * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com/
+>   * Author: Jyri Sarha <jsarha@ti.com>
+>   */
+>  
+> 
 
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index 6c0e1b053126..74340b2b0da7 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -23,6 +23,7 @@
- #include <linux/thermal.h>
- 
- #include <trace/events/thermal.h>
-+#include "../../kernel/sched/sched.h"
- 
- /*
-  * Cooling state <-> CPUFreq frequency
-@@ -38,16 +39,6 @@
-  *	...
-  */
- 
--/**
-- * struct time_in_idle - Idle time stats
-- * @time: previous reading of the absolute time that this cpu was idle
-- * @timestamp: wall time of the last invocation of get_cpu_idle_time_us()
-- */
--struct time_in_idle {
--	u64 time;
--	u64 timestamp;
--};
--
- /**
-  * struct cpufreq_cooling_device - data for cooling device with cpufreq
-  * @id: unique integer value corresponding to each cpufreq_cooling_device
-@@ -62,7 +53,6 @@ struct time_in_idle {
-  *	registered cooling device.
-  * @policy: cpufreq policy.
-  * @node: list_head to link all cpufreq_cooling_device together.
-- * @idle_time: idle time stats
-  * @qos_req: PM QoS contraint to apply
-  *
-  * This structure is required for keeping information of each registered
-@@ -76,7 +66,6 @@ struct cpufreq_cooling_device {
- 	struct em_perf_domain *em;
- 	struct cpufreq_policy *policy;
- 	struct list_head node;
--	struct time_in_idle *idle_time;
- 	struct freq_qos_request qos_req;
- };
- 
-@@ -132,34 +121,21 @@ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
- }
- 
- /**
-- * get_load() - get load for a cpu since last updated
-+ * get_load() - get current load for a cpu
-  * @cpufreq_cdev:	&struct cpufreq_cooling_device for this cpu
-  * @cpu:	cpu number
-- * @cpu_idx:	index of the cpu in time_in_idle*
-+ * @cpu_idx:	index of the cpu
-  *
-- * Return: The average load of cpu @cpu in percentage since this
-- * function was last called.
-+ * Return: The current load of cpu @cpu in percentage.
-  */
- static u32 get_load(struct cpufreq_cooling_device *cpufreq_cdev, int cpu,
- 		    int cpu_idx)
- {
--	u32 load;
--	u64 now, now_idle, delta_time, delta_idle;
--	struct time_in_idle *idle_time = &cpufreq_cdev->idle_time[cpu_idx];
--
--	now_idle = get_cpu_idle_time(cpu, &now, 0);
--	delta_idle = now_idle - idle_time->time;
--	delta_time = now - idle_time->timestamp;
-+	unsigned long util = cpu_util_cfs(cpu_rq(cpu));
-+	unsigned long max = arch_scale_cpu_capacity(cpu);
- 
--	if (delta_time <= delta_idle)
--		load = 0;
--	else
--		load = div64_u64(100 * (delta_time - delta_idle), delta_time);
--
--	idle_time->time = now_idle;
--	idle_time->timestamp = now;
--
--	return load;
-+	util = effective_cpu_util(cpu, util, max, ENERGY_UTIL, NULL);
-+	return (util * 100) / max;
- }
- 
- /**
-@@ -192,13 +168,12 @@ static u32 get_dynamic_power(struct cpufreq_cooling_device *cpufreq_cdev,
-  * Instead, we calculate the current power on the assumption that the
-  * immediate future will look like the immediate past.
-  *
-- * We use the current frequency and the average load since this
-- * function was last called.  In reality, there could have been
-- * multiple opps since this function was last called and that affects
-- * the load calculation.  While it's not perfectly accurate, this
-- * simplification is good enough and works.  REVISIT this, as more
-- * complex code may be needed if experiments show that it's not
-- * accurate enough.
-+ * We use the current frequency and the current load.  In reality,
-+ * there could have been multiple opps since this function was last
-+ * called and that affects the load calculation.  While it's not
-+ * perfectly accurate, this simplification is good enough and works.
-+ * REVISIT this, as more complex code may be needed if experiments show
-+ * that it's not accurate enough.
-  *
-  * Return: 0 on success, -E* if getting the static power failed.
-  */
-@@ -523,13 +498,6 @@ __cpufreq_cooling_register(struct device_node *np,
- 
- 	cpufreq_cdev->policy = policy;
- 	num_cpus = cpumask_weight(policy->related_cpus);
--	cpufreq_cdev->idle_time = kcalloc(num_cpus,
--					 sizeof(*cpufreq_cdev->idle_time),
--					 GFP_KERNEL);
--	if (!cpufreq_cdev->idle_time) {
--		cdev = ERR_PTR(-ENOMEM);
--		goto free_cdev;
--	}
- 
- 	/* max_level is an index, not a counter */
- 	cpufreq_cdev->max_level = i - 1;
-@@ -537,7 +505,7 @@ __cpufreq_cooling_register(struct device_node *np,
- 	ret = ida_simple_get(&cpufreq_ida, 0, 0, GFP_KERNEL);
- 	if (ret < 0) {
- 		cdev = ERR_PTR(ret);
--		goto free_idle_time;
-+		goto free_cdev;
- 	}
- 	cpufreq_cdev->id = ret;
- 
-@@ -586,8 +554,6 @@ __cpufreq_cooling_register(struct device_node *np,
- 	freq_qos_remove_request(&cpufreq_cdev->qos_req);
- remove_ida:
- 	ida_simple_remove(&cpufreq_ida, cpufreq_cdev->id);
--free_idle_time:
--	kfree(cpufreq_cdev->idle_time);
- free_cdev:
- 	kfree(cpufreq_cdev);
- 	return cdev;
-@@ -680,7 +646,6 @@ void cpufreq_cooling_unregister(struct thermal_cooling_device *cdev)
- 	thermal_cooling_device_unregister(cdev);
- 	freq_qos_remove_request(&cpufreq_cdev->qos_req);
- 	ida_simple_remove(&cpufreq_ida, cpufreq_cdev->id);
--	kfree(cpufreq_cdev->idle_time);
- 	kfree(cpufreq_cdev);
- }
- EXPORT_SYMBOL_GPL(cpufreq_cooling_unregister);
+
 -- 
-2.25.0.rc1.19.g042ed3e048af
-
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
