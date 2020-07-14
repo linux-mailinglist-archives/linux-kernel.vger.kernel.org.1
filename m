@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7CA21FB16
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC4921F9E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731223AbgGNS6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:58:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56972 "EHLO mail.kernel.org"
+        id S1729767AbgGNSrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:47:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729731AbgGNS6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:58:31 -0400
+        id S1729738AbgGNSr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:47:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4441D22AAF;
-        Tue, 14 Jul 2020 18:58:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E81322AAA;
+        Tue, 14 Jul 2020 18:47:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753110;
-        bh=RT8SnblZPxY4b+OdOEcKbtPwUcpxAo4yfWM5wPnqJwk=;
+        s=default; t=1594752447;
+        bh=cYOpxKAoXkdPePsgbV3CLteCZS+Kk1WupGIBIWeo6Aw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hCuBVsChzWJUC658n27glzGyE88I3HsylLEa5C4zCOSc+J1lFkJ8QVESDED/DTYoJ
-         ldwrwiQc7qQuxdqMvjeludXpg6X1nYmJMvo0cEFLzAjWevbj3Gl1FnlrQ6KJGPzxNA
-         g0p7ZKP968dvZdetSHtNWayRk9ZPg5ps1jMHrHrU=
+        b=WwNWyU9DVHuS8jN27EMobr15pkpb7EXuF90jV3ODuyFwYL9E4TEMv3NufDJwd0mGJ
+         B9olLmo7OiSV8SVjOnW8VhXKJ9ZTpMoymrFt1XxLPrhUGf3Ynes7utHrie0rTpUxF8
+         87YKW7+1d48r8ww8GBMTCj74mt5sBHryH5MGx+UA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 093/166] selftests: bpf: Fix detach from sockmap tests
+        stable@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.19 45/58] KVM: x86: Mark CR4.TSD as being possibly owned by the guest
 Date:   Tue, 14 Jul 2020 20:44:18 +0200
-Message-Id: <20200714184120.295897188@linuxfoundation.org>
+Message-Id: <20200714184058.398101684@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,79 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenz Bauer <lmb@cloudflare.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-[ Upstream commit f43cb0d672aa8eb09bfdb779de5900c040487d1d ]
+commit 7c83d096aed055a7763a03384f92115363448b71 upstream.
 
-Fix sockmap tests which rely on old bpf_prog_dispatch behaviour.
-In the first case, the tests check that detaching without giving
-a program succeeds. Since these are not the desired semantics,
-invert the condition. In the second case, the clean up code doesn't
-supply the necessary program fds.
+Mark CR4.TSD as being possibly owned by the guest as that is indeed the
+case on VMX.  Without TSD being tagged as possibly owned by the guest, a
+targeted read of CR4 to get TSD could observe a stale value.  This bug
+is benign in the current code base as the sole consumer of TSD is the
+emulator (for RDTSC) and the emulator always "reads" the entirety of CR4
+when grabbing bits.
 
-Fixes: bb0de3131f4c ("bpf: sockmap: Require attach_bpf_fd when detaching a program")
-Reported-by: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
-Link: https://lore.kernel.org/bpf/20200709115151.75829-1-lmb@cloudflare.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Add a build-time assertion in to ensure VMX doesn't hand over more CR4
+bits without also updating x86.
+
+Fixes: 52ce3c21aec3 ("x86,kvm,vmx: Don't trap writes to CR4.TSD")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200703040422.31536-2-sean.j.christopherson@intel.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/testing/selftests/bpf/test_maps.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/x86/kvm/kvm_cache_regs.h |    2 +-
+ arch/x86/kvm/vmx.c            |    2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index c6766b2cff853..9990e91c18dff 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -789,19 +789,19 @@ static void test_sockmap(unsigned int tasks, void *data)
- 	}
+--- a/arch/x86/kvm/kvm_cache_regs.h
++++ b/arch/x86/kvm/kvm_cache_regs.h
+@@ -5,7 +5,7 @@
+ #define KVM_POSSIBLE_CR0_GUEST_BITS X86_CR0_TS
+ #define KVM_POSSIBLE_CR4_GUEST_BITS				  \
+ 	(X86_CR4_PVI | X86_CR4_DE | X86_CR4_PCE | X86_CR4_OSFXSR  \
+-	 | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_PGE)
++	 | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_PGE | X86_CR4_TSD)
  
- 	err = bpf_prog_detach(fd, BPF_SK_SKB_STREAM_PARSER);
--	if (err) {
-+	if (!err) {
- 		printf("Failed empty parser prog detach\n");
- 		goto out_sockmap;
- 	}
+ static inline unsigned long kvm_register_read(struct kvm_vcpu *vcpu,
+ 					      enum kvm_reg reg)
+--- a/arch/x86/kvm/vmx.c
++++ b/arch/x86/kvm/vmx.c
+@@ -6335,6 +6335,8 @@ static void vmx_set_constant_host_state(
  
- 	err = bpf_prog_detach(fd, BPF_SK_SKB_STREAM_VERDICT);
--	if (err) {
-+	if (!err) {
- 		printf("Failed empty verdict prog detach\n");
- 		goto out_sockmap;
- 	}
- 
- 	err = bpf_prog_detach(fd, BPF_SK_MSG_VERDICT);
--	if (err) {
-+	if (!err) {
- 		printf("Failed empty msg verdict prog detach\n");
- 		goto out_sockmap;
- 	}
-@@ -1090,19 +1090,19 @@ static void test_sockmap(unsigned int tasks, void *data)
- 		assert(status == 0);
- 	}
- 
--	err = bpf_prog_detach(map_fd_rx, __MAX_BPF_ATTACH_TYPE);
-+	err = bpf_prog_detach2(parse_prog, map_fd_rx, __MAX_BPF_ATTACH_TYPE);
- 	if (!err) {
- 		printf("Detached an invalid prog type.\n");
- 		goto out_sockmap;
- 	}
- 
--	err = bpf_prog_detach(map_fd_rx, BPF_SK_SKB_STREAM_PARSER);
-+	err = bpf_prog_detach2(parse_prog, map_fd_rx, BPF_SK_SKB_STREAM_PARSER);
- 	if (err) {
- 		printf("Failed parser prog detach\n");
- 		goto out_sockmap;
- 	}
- 
--	err = bpf_prog_detach(map_fd_rx, BPF_SK_SKB_STREAM_VERDICT);
-+	err = bpf_prog_detach2(verdict_prog, map_fd_rx, BPF_SK_SKB_STREAM_VERDICT);
- 	if (err) {
- 		printf("Failed parser prog detach\n");
- 		goto out_sockmap;
--- 
-2.25.1
-
+ static void set_cr4_guest_host_mask(struct vcpu_vmx *vmx)
+ {
++	BUILD_BUG_ON(KVM_CR4_GUEST_OWNED_BITS & ~KVM_POSSIBLE_CR4_GUEST_BITS);
++
+ 	vmx->vcpu.arch.cr4_guest_owned_bits = KVM_CR4_GUEST_OWNED_BITS;
+ 	if (enable_ept)
+ 		vmx->vcpu.arch.cr4_guest_owned_bits |= X86_CR4_PGE;
 
 
