@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DE121FA65
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5839721FB02
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730497AbgGNSwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:52:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48814 "EHLO mail.kernel.org"
+        id S1730535AbgGNS5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:57:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730480AbgGNSwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:52:09 -0400
+        id S1731120AbgGNS5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:57:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66FFF22B42;
-        Tue, 14 Jul 2020 18:52:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5CF88207F5;
+        Tue, 14 Jul 2020 18:57:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752729;
-        bh=3tzB6AKeDEjrsEjBIXQkHHynvnQ1xdrC3D6f0+nPplM=;
+        s=default; t=1594753063;
+        bh=KU9WAil+YqGeJB6dX1RxcmZ1Lyeryj+Fn1vXKePkQBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SzL6TVBOlHK6sZqRlyUMnBdADoY5yiByQzyKLRYiP0Pk1Sh6LzP7TjVYwEiDLpOXf
-         mPIm/bH0qLETEl4maOuino1UFoYLOPxriQS5i5OkE1H3/k7caai0MxJ9znZRMmC30F
-         TNEmT1r7hVFZonVRHq2dUmcl+6Hwf34Pys9N1X6E=
+        b=cM0Li3FWK0DrwXL0Eh+RuWFwDygAANy4zvjCzz2SWkIbqG1UULSdQAB3010IG8YgX
+         dMBUMPK24AXPnAXIRQDO+f9ATVKypFjtaSLScoxrg8Jp9egEZq7jTpz5/TSfN04Ztu
+         SIUCTMfezPUW3E0V82TSPXSUgld3NVIHwC4BL6lc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.4 088/109] module: Refactor section attr into bin attribute
+        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 106/166] mlxsw: pci: Fix use-after-free in case of failed devlink reload
 Date:   Tue, 14 Jul 2020 20:44:31 +0200
-Message-Id: <20200714184109.763764086@linuxfoundation.org>
+Message-Id: <20200714184120.919429441@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,131 +45,195 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Ido Schimmel <idosch@mellanox.com>
 
-commit ed66f991bb19d94cae5d38f77de81f96aac7813f upstream.
+[ Upstream commit c4317b11675b99af6641662ebcbd3c6010600e64 ]
 
-In order to gain access to the open file's f_cred for kallsym visibility
-permission checks, refactor the module section attributes to use the
-bin_attribute instead of attribute interface. Additionally removes the
-redundant "name" struct member.
+In case devlink reload failed, it is possible to trigger a
+use-after-free when querying the kernel for device info via 'devlink dev
+info' [1].
 
-Cc: stable@vger.kernel.org
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Tested-by: Jessica Yu <jeyu@kernel.org>
-Acked-by: Jessica Yu <jeyu@kernel.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This happens because as part of the reload error path the PCI command
+interface is de-initialized and its mailboxes are freed. When the
+devlink '->info_get()' callback is invoked the device is queried via the
+command interface and the freed mailboxes are accessed.
 
+Fix this by initializing the command interface once during probe and not
+during every reload.
+
+This is consistent with the other bus used by mlxsw (i.e., 'mlxsw_i2c')
+and also allows user space to query the running firmware version (for
+example) from the device after a failed reload.
+
+[1]
+BUG: KASAN: use-after-free in memcpy include/linux/string.h:406 [inline]
+BUG: KASAN: use-after-free in mlxsw_pci_cmd_exec+0x177/0xa60 drivers/net/ethernet/mellanox/mlxsw/pci.c:1675
+Write of size 4096 at addr ffff88810ae32000 by task syz-executor.1/2355
+
+CPU: 1 PID: 2355 Comm: syz-executor.1 Not tainted 5.8.0-rc2+ #29
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xf6/0x16e lib/dump_stack.c:118
+ print_address_description.constprop.0+0x1c/0x250 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0x14e/0x1b0 mm/kasan/generic.c:192
+ memcpy+0x39/0x60 mm/kasan/common.c:106
+ memcpy include/linux/string.h:406 [inline]
+ mlxsw_pci_cmd_exec+0x177/0xa60 drivers/net/ethernet/mellanox/mlxsw/pci.c:1675
+ mlxsw_cmd_exec+0x249/0x550 drivers/net/ethernet/mellanox/mlxsw/core.c:2335
+ mlxsw_cmd_access_reg drivers/net/ethernet/mellanox/mlxsw/cmd.h:859 [inline]
+ mlxsw_core_reg_access_cmd drivers/net/ethernet/mellanox/mlxsw/core.c:1938 [inline]
+ mlxsw_core_reg_access+0x2f6/0x540 drivers/net/ethernet/mellanox/mlxsw/core.c:1985
+ mlxsw_reg_query drivers/net/ethernet/mellanox/mlxsw/core.c:2000 [inline]
+ mlxsw_devlink_info_get+0x17f/0x6e0 drivers/net/ethernet/mellanox/mlxsw/core.c:1090
+ devlink_nl_info_fill.constprop.0+0x13c/0x2d0 net/core/devlink.c:4588
+ devlink_nl_cmd_info_get_dumpit+0x246/0x460 net/core/devlink.c:4648
+ genl_lock_dumpit+0x85/0xc0 net/netlink/genetlink.c:575
+ netlink_dump+0x515/0xe50 net/netlink/af_netlink.c:2245
+ __netlink_dump_start+0x53d/0x830 net/netlink/af_netlink.c:2353
+ genl_family_rcv_msg_dumpit.isra.0+0x296/0x300 net/netlink/genetlink.c:638
+ genl_family_rcv_msg net/netlink/genetlink.c:733 [inline]
+ genl_rcv_msg+0x78d/0x9d0 net/netlink/genetlink.c:753
+ netlink_rcv_skb+0x152/0x440 net/netlink/af_netlink.c:2469
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:764
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x53a/0x750 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x850/0xd90 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0x150/0x190 net/socket.c:672
+ ____sys_sendmsg+0x6d8/0x840 net/socket.c:2363
+ ___sys_sendmsg+0xff/0x170 net/socket.c:2417
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2450
+ do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fixes: a9c8336f6544 ("mlxsw: core: Add support for devlink info command")
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/module.c |   45 ++++++++++++++++++++++++---------------------
- 1 file changed, 24 insertions(+), 21 deletions(-)
+ drivers/net/ethernet/mellanox/mlxsw/pci.c | 54 ++++++++++++++++-------
+ 1 file changed, 38 insertions(+), 16 deletions(-)
 
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1507,8 +1507,7 @@ static inline bool sect_empty(const Elf_
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/pci.c b/drivers/net/ethernet/mellanox/mlxsw/pci.c
+index fd0e97de44e7a..c04ec1a928260 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/pci.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/pci.c
+@@ -1414,23 +1414,12 @@ static int mlxsw_pci_init(void *bus_priv, struct mlxsw_core *mlxsw_core,
+ 	u16 num_pages;
+ 	int err;
+ 
+-	mutex_init(&mlxsw_pci->cmd.lock);
+-	init_waitqueue_head(&mlxsw_pci->cmd.wait);
+-
+ 	mlxsw_pci->core = mlxsw_core;
+ 
+ 	mbox = mlxsw_cmd_mbox_alloc();
+ 	if (!mbox)
+ 		return -ENOMEM;
+ 
+-	err = mlxsw_pci_mbox_alloc(mlxsw_pci, &mlxsw_pci->cmd.in_mbox);
+-	if (err)
+-		goto mbox_put;
+-
+-	err = mlxsw_pci_mbox_alloc(mlxsw_pci, &mlxsw_pci->cmd.out_mbox);
+-	if (err)
+-		goto err_out_mbox_alloc;
+-
+ 	err = mlxsw_pci_sw_reset(mlxsw_pci, mlxsw_pci->id);
+ 	if (err)
+ 		goto err_sw_reset;
+@@ -1537,9 +1526,6 @@ static int mlxsw_pci_init(void *bus_priv, struct mlxsw_core *mlxsw_core,
+ 	mlxsw_pci_free_irq_vectors(mlxsw_pci);
+ err_alloc_irq:
+ err_sw_reset:
+-	mlxsw_pci_mbox_free(mlxsw_pci, &mlxsw_pci->cmd.out_mbox);
+-err_out_mbox_alloc:
+-	mlxsw_pci_mbox_free(mlxsw_pci, &mlxsw_pci->cmd.in_mbox);
+ mbox_put:
+ 	mlxsw_cmd_mbox_free(mbox);
+ 	return err;
+@@ -1553,8 +1539,6 @@ static void mlxsw_pci_fini(void *bus_priv)
+ 	mlxsw_pci_aqs_fini(mlxsw_pci);
+ 	mlxsw_pci_fw_area_fini(mlxsw_pci);
+ 	mlxsw_pci_free_irq_vectors(mlxsw_pci);
+-	mlxsw_pci_mbox_free(mlxsw_pci, &mlxsw_pci->cmd.out_mbox);
+-	mlxsw_pci_mbox_free(mlxsw_pci, &mlxsw_pci->cmd.in_mbox);
  }
  
- struct module_sect_attr {
--	struct module_attribute mattr;
--	char *name;
-+	struct bin_attribute battr;
- 	unsigned long address;
+ static struct mlxsw_pci_queue *
+@@ -1776,6 +1760,37 @@ static const struct mlxsw_bus mlxsw_pci_bus = {
+ 	.features		= MLXSW_BUS_F_TXRX | MLXSW_BUS_F_RESET,
  };
  
-@@ -1518,11 +1517,16 @@ struct module_sect_attrs {
- 	struct module_sect_attr attrs[0];
- };
- 
--static ssize_t module_sect_show(struct module_attribute *mattr,
--				struct module_kobject *mk, char *buf)
-+static ssize_t module_sect_read(struct file *file, struct kobject *kobj,
-+				struct bin_attribute *battr,
-+				char *buf, loff_t pos, size_t count)
++static int mlxsw_pci_cmd_init(struct mlxsw_pci *mlxsw_pci)
++{
++	int err;
++
++	mutex_init(&mlxsw_pci->cmd.lock);
++	init_waitqueue_head(&mlxsw_pci->cmd.wait);
++
++	err = mlxsw_pci_mbox_alloc(mlxsw_pci, &mlxsw_pci->cmd.in_mbox);
++	if (err)
++		goto err_in_mbox_alloc;
++
++	err = mlxsw_pci_mbox_alloc(mlxsw_pci, &mlxsw_pci->cmd.out_mbox);
++	if (err)
++		goto err_out_mbox_alloc;
++
++	return 0;
++
++err_out_mbox_alloc:
++	mlxsw_pci_mbox_free(mlxsw_pci, &mlxsw_pci->cmd.in_mbox);
++err_in_mbox_alloc:
++	mutex_destroy(&mlxsw_pci->cmd.lock);
++	return err;
++}
++
++static void mlxsw_pci_cmd_fini(struct mlxsw_pci *mlxsw_pci)
++{
++	mlxsw_pci_mbox_free(mlxsw_pci, &mlxsw_pci->cmd.out_mbox);
++	mlxsw_pci_mbox_free(mlxsw_pci, &mlxsw_pci->cmd.in_mbox);
++	mutex_destroy(&mlxsw_pci->cmd.lock);
++}
++
+ static int mlxsw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
  {
- 	struct module_sect_attr *sattr =
--		container_of(mattr, struct module_sect_attr, mattr);
-+		container_of(battr, struct module_sect_attr, battr);
+ 	const char *driver_name = pdev->driver->name;
+@@ -1831,6 +1846,10 @@ static int mlxsw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	mlxsw_pci->pdev = pdev;
+ 	pci_set_drvdata(pdev, mlxsw_pci);
+ 
++	err = mlxsw_pci_cmd_init(mlxsw_pci);
++	if (err)
++		goto err_pci_cmd_init;
 +
-+	if (pos != 0)
-+		return -EINVAL;
-+
- 	return sprintf(buf, "0x%px\n", kptr_restrict < 2 ?
- 		       (void *)sattr->address : NULL);
- }
-@@ -1532,7 +1536,7 @@ static void free_sect_attrs(struct modul
- 	unsigned int section;
+ 	mlxsw_pci->bus_info.device_kind = driver_name;
+ 	mlxsw_pci->bus_info.device_name = pci_name(mlxsw_pci->pdev);
+ 	mlxsw_pci->bus_info.dev = &pdev->dev;
+@@ -1848,6 +1867,8 @@ static int mlxsw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	return 0;
  
- 	for (section = 0; section < sect_attrs->nsections; section++)
--		kfree(sect_attrs->attrs[section].name);
-+		kfree(sect_attrs->attrs[section].battr.attr.name);
- 	kfree(sect_attrs);
- }
+ err_bus_device_register:
++	mlxsw_pci_cmd_fini(mlxsw_pci);
++err_pci_cmd_init:
+ 	iounmap(mlxsw_pci->hw_addr);
+ err_ioremap:
+ err_pci_resource_len_check:
+@@ -1865,6 +1886,7 @@ static void mlxsw_pci_remove(struct pci_dev *pdev)
+ 	struct mlxsw_pci *mlxsw_pci = pci_get_drvdata(pdev);
  
-@@ -1541,42 +1545,41 @@ static void add_sect_attrs(struct module
- 	unsigned int nloaded = 0, i, size[2];
- 	struct module_sect_attrs *sect_attrs;
- 	struct module_sect_attr *sattr;
--	struct attribute **gattr;
-+	struct bin_attribute **gattr;
- 
- 	/* Count loaded sections and allocate structures */
- 	for (i = 0; i < info->hdr->e_shnum; i++)
- 		if (!sect_empty(&info->sechdrs[i]))
- 			nloaded++;
- 	size[0] = ALIGN(struct_size(sect_attrs, attrs, nloaded),
--			sizeof(sect_attrs->grp.attrs[0]));
--	size[1] = (nloaded + 1) * sizeof(sect_attrs->grp.attrs[0]);
-+			sizeof(sect_attrs->grp.bin_attrs[0]));
-+	size[1] = (nloaded + 1) * sizeof(sect_attrs->grp.bin_attrs[0]);
- 	sect_attrs = kzalloc(size[0] + size[1], GFP_KERNEL);
- 	if (sect_attrs == NULL)
- 		return;
- 
- 	/* Setup section attributes. */
- 	sect_attrs->grp.name = "sections";
--	sect_attrs->grp.attrs = (void *)sect_attrs + size[0];
-+	sect_attrs->grp.bin_attrs = (void *)sect_attrs + size[0];
- 
- 	sect_attrs->nsections = 0;
- 	sattr = &sect_attrs->attrs[0];
--	gattr = &sect_attrs->grp.attrs[0];
-+	gattr = &sect_attrs->grp.bin_attrs[0];
- 	for (i = 0; i < info->hdr->e_shnum; i++) {
- 		Elf_Shdr *sec = &info->sechdrs[i];
- 		if (sect_empty(sec))
- 			continue;
-+		sysfs_bin_attr_init(&sattr->battr);
- 		sattr->address = sec->sh_addr;
--		sattr->name = kstrdup(info->secstrings + sec->sh_name,
--					GFP_KERNEL);
--		if (sattr->name == NULL)
-+		sattr->battr.attr.name =
-+			kstrdup(info->secstrings + sec->sh_name, GFP_KERNEL);
-+		if (sattr->battr.attr.name == NULL)
- 			goto out;
- 		sect_attrs->nsections++;
--		sysfs_attr_init(&sattr->mattr.attr);
--		sattr->mattr.show = module_sect_show;
--		sattr->mattr.store = NULL;
--		sattr->mattr.attr.name = sattr->name;
--		sattr->mattr.attr.mode = S_IRUSR;
--		*(gattr++) = &(sattr++)->mattr.attr;
-+		sattr->battr.read = module_sect_read;
-+		sattr->battr.size = 3 /* "0x", "\n" */ + (BITS_PER_LONG / 4);
-+		sattr->battr.attr.mode = 0400;
-+		*(gattr++) = &(sattr++)->battr;
- 	}
- 	*gattr = NULL;
- 
-@@ -1666,7 +1669,7 @@ static void add_notes_attrs(struct modul
- 			continue;
- 		if (info->sechdrs[i].sh_type == SHT_NOTE) {
- 			sysfs_bin_attr_init(nattr);
--			nattr->attr.name = mod->sect_attrs->attrs[loaded].name;
-+			nattr->attr.name = mod->sect_attrs->attrs[loaded].battr.attr.name;
- 			nattr->attr.mode = S_IRUGO;
- 			nattr->size = info->sechdrs[i].sh_size;
- 			nattr->private = (void *) info->sechdrs[i].sh_addr;
+ 	mlxsw_core_bus_device_unregister(mlxsw_pci->core, false);
++	mlxsw_pci_cmd_fini(mlxsw_pci);
+ 	iounmap(mlxsw_pci->hw_addr);
+ 	pci_release_regions(mlxsw_pci->pdev);
+ 	pci_disable_device(mlxsw_pci->pdev);
+-- 
+2.25.1
+
 
 
