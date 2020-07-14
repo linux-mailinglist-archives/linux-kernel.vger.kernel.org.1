@@ -2,91 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E077A21E990
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A053C21E9D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgGNHIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:08:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42754 "EHLO mx2.suse.de"
+        id S1726932AbgGNHOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:14:55 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:47314 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbgGNHIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:08:17 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2DE6BB771;
-        Tue, 14 Jul 2020 07:08:18 +0000 (UTC)
-Subject: Re: [PATCH v2 21/29] scsi: aic7xxx: aic7xxx_osm: Fix 'amount_xferred'
- set but not used issue
-To:     Lee Jones <lee.jones@linaro.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Hannes Reinecke <hare@suse.com>,
-        "Daniel M. Eischen" <deischen@iworks.InterWorks.org>,
-        Doug Ledford <dledford@redhat.com>
-References: <20200713074645.126138-1-lee.jones@linaro.org>
- <20200713074645.126138-22-lee.jones@linaro.org>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <097d4f3f-3d98-4bdc-b31f-5276a8160539@suse.de>
-Date:   Tue, 14 Jul 2020 09:08:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200713074645.126138-22-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1725905AbgGNHOy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:14:54 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7C594200ED3;
+        Tue, 14 Jul 2020 09:14:52 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0F08C200154;
+        Tue, 14 Jul 2020 09:14:49 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 65627402E4;
+        Tue, 14 Jul 2020 15:14:44 +0800 (SGT)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     leoyang.li@nxp.com, shawnguo@kernel.org, robh+dt@kernel.org,
+        meenakshi.aggarwal@nxp.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, Biwen Li <biwen.li@nxp.com>
+Subject: [RESEND v2] arm64: dts: lx2160a-rdb: fix shunt-resistor value
+Date:   Tue, 14 Jul 2020 15:08:28 +0800
+Message-Id: <20200714070828.3177-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/20 9:46 AM, Lee Jones wrote:
-> 'amount_xferred' is used, but only in certain circumstances.  Place
-> the same stipulations on the defining/allocating of 'amount_xferred'
-> as is placed when using it.
-> 
-> We've been careful not to change any of the ordering semantics here.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/scsi/aic7xxx/aic7xxx_osm.c: In function ‘ahc_done’:
->   drivers/scsi/aic7xxx/aic7xxx_osm.c:1725:12: warning: variable ‘amount_xferred’ set but not used [-Wunused-but-set-variable]
->   1725 | uint32_t amount_xferred;
->   | ^~~~~~~~~~~~~~
-> 
-> Cc: Hannes Reinecke <hare@suse.com>
-> Cc: "Daniel M. Eischen" <deischen@iworks.InterWorks.org>
-> Cc: Doug Ledford <dledford@redhat.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->   drivers/scsi/aic7xxx/aic7xxx_osm.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/scsi/aic7xxx/aic7xxx_osm.c b/drivers/scsi/aic7xxx/aic7xxx_osm.c
-> index ed437c16de881..e7ccb8b80fc19 100644
-> --- a/drivers/scsi/aic7xxx/aic7xxx_osm.c
-> +++ b/drivers/scsi/aic7xxx/aic7xxx_osm.c
-> @@ -1711,10 +1711,12 @@ ahc_done(struct ahc_softc *ahc, struct scb *scb)
->   	 */
->   	cmd->sense_buffer[0] = 0;
->   	if (ahc_get_transaction_status(scb) == CAM_REQ_INPROG) {
-> +#ifdef AHC_REPORT_UNDERFLOWS
->   		uint32_t amount_xferred;
->   
->   		amount_xferred =
->   		    ahc_get_transfer_length(scb) - ahc_get_residual(scb);
-> +#endif
->   		if ((scb->flags & SCB_TRANSMISSION_ERROR) != 0) {
->   #ifdef AHC_DEBUG
->   			if ((ahc_debug & AHC_SHOW_MISC) != 0) {
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+From: Biwen Li <biwen.li@nxp.com>
 
-Cheers,
+Fix value of shunt-resistor property.
+The LX2160A-RDB has 500 uOhm shunt for
+the INA220, not 1000 uOhm. Unless
+it will get wrong power consumption(1/2)
 
-Hannes
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+index 22d0308..54fe8cd 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
+@@ -121,7 +121,7 @@
+ 			power-monitor@40 {
+ 				compatible = "ti,ina220";
+ 				reg = <0x40>;
+-				shunt-resistor = <1000>;
++				shunt-resistor = <500>;
+ 			};
+ 		};
+ 
 -- 
-Dr. Hannes Reinecke            Teamlead Storage & Networking
-hare@suse.de                               +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+2.7.4
+
