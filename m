@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C146121FD63
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9609821FD6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbgGNTbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728428AbgGNTbX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:31:23 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E1AC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:31:22 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id e4so24968091ljn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cPk5LMoGoThBA0eFxbivhO2pS56bC/86EhKFPKHKu4c=;
-        b=VLmnr+RKkXZkAascGHD+AaCNa6Y2XPywcyp6v/mdbuMkz/hf+hhfE1/nd7RM0JXapm
-         cVYAMBvwJI3Gd5pMjW+DZXpL4Lk84F0PSZHOcvKhlEII13xTPasta+T1CpQkTxCpx6DR
-         hsyOPnSmMSJKICLP2tLHfz+bnE3r2Zf/mvQgo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cPk5LMoGoThBA0eFxbivhO2pS56bC/86EhKFPKHKu4c=;
-        b=J32LLnDh/amBZ1xOQ1t+vlpbl3cXBft/+zd4YbtCsy0VJA7/3IguE8SB6HEqzqX35Y
-         SUYBS94sHsI5FCiJqj70fGg7x2s/g3Cy/jTamLnL86idPdWPLCVvMIL9nuAwrUGL7Oq8
-         EjK0FREbB4NTzK62lBmxGqRug9yKICeaTAMM6nv0heZo7ZWws96EgWjmTdxVT96kIQv8
-         sCk8+eJ352fciO5m0WSFy4Y6QsOCi+dxOH+SEPj5zePuX9oVCz4vhQ6dU0WgSx43v/M/
-         26fhJpTaPb+alLAfn8a9UiqkXQMCzNUp/dqmaqSe3OPklewS49w65aHWaR0ecIkNcduS
-         svrg==
-X-Gm-Message-State: AOAM530ympgcDq5r23Ae9R6VXEL0AI7c+yF1AL59C+eC96HjRGq5HoQL
-        S6pBHa8Yi9/ezdHbOTJ147a9i1QmiTY=
-X-Google-Smtp-Source: ABdhPJxIgVv920VvRzsqbcR4uSLCPepgQCUsjCkLg9FdKn8dHWn83KUEyvZammItA6oEPBrnfOfg9A==
-X-Received: by 2002:a05:651c:30b:: with SMTP id a11mr1570468ljp.126.1594755080559;
-        Tue, 14 Jul 2020 12:31:20 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id i16sm1759ljn.50.2020.07.14.12.31.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 12:31:19 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id h19so24972009ljg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:31:18 -0700 (PDT)
-X-Received: by 2002:a2e:86c4:: with SMTP id n4mr3168247ljj.312.1594755078276;
- Tue, 14 Jul 2020 12:31:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200714190427.4332-1-hch@lst.de> <20200714190427.4332-18-hch@lst.de>
-In-Reply-To: <20200714190427.4332-18-hch@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 14 Jul 2020 12:31:01 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whDbHL7x5Jx-CSz97=nVg4V_q45DsokX+X-Y-yZV4rPvw@mail.gmail.com>
-Message-ID: <CAHk-=whDbHL7x5Jx-CSz97=nVg4V_q45DsokX+X-Y-yZV4rPvw@mail.gmail.com>
-Subject: Re: [PATCH 17/23] initramfs: switch initramfs unpacking to struct
- file based APIs
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Song Liu <song@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-raid@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+        id S1729751AbgGNTbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:31:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728428AbgGNTbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:31:43 -0400
+Received: from tzanussi-mobl (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0598122AB9;
+        Tue, 14 Jul 2020 19:31:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594755102;
+        bh=8KHF2h/g6QZX6HAOpadCNV8iYbCZQg/UJbT2TwRfoDA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=RLMI3IT5XftXXkKdJdfZsBqaY7vC7WmySxrU00Iq19joSNpzUzYKyJ5+HiRNXmn4c
+         u6BLKnNZHXJ0zOf4bzdB62cA9aOppH4ZRIA0Nvmj4saPt7OWS39IHBXfdGDcTwExaA
+         cE1tifWjTvatN0qcRSK0DHnMEXO5WTQfaKQ4jfuU=
+Message-ID: <a9444792fd48b67493902b50a66a287fda0fb2c6.camel@kernel.org>
+Subject: Re: [ANNOUNCE] 4.19.132-rt59
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Clark Williams <williams@redhat.com>
+Date:   Tue, 14 Jul 2020 14:31:41 -0500
+In-Reply-To: <20200714183512.GA18816@duo.ucw.cz>
+References: <82932b48972f38fccf9920e2ec75b555c2b2494a.camel@kernel.org>
+         <20200714183512.GA18816@duo.ucw.cz>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 12:09 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> There is no good reason to mess with file descriptors from in-kernel
-> code, switch the initramfs unpacking to struct file based write
-> instead.
+Hi Pavel,
 
-Looking at this diff, I realized this really should be cleaned up more.
+On Tue, 2020-07-14 at 20:35 +0200, Pavel Machek wrote:
+> Hi!
+> 
+> > 
+> > I'm pleased to announce the 4.19.132-rt59 stable release.
+> > 
+> > This release is just an update to the new stable 4.19.132
+> > version and no RT specific changes have been made.
+> > 
+> > You can get this release via the git tree at:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-
+> > rt.git
+> > 
+> >   branch: v4.19-rt
+> >   Head SHA1: 1eebf4069aa37e54330cce9a42608517ea6996fe
+> > 
+> > Or to build 4.19.132-rt59 directly, the following patches should be
+> > applied:
+> 
+> Thanks a lot.
+> 
+> But now I am confused, I completely missed announcements for
+> v4.19.127-rt55 to v4.19.131-rt58.
+> 
+> And for example -rt56 is not listed in
+> 
+> 
+https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/4.19/older/sha256sums.asc
+> 
 
- +                       wfile = filp_open(collected, openflags, mode);
-> +                       if (IS_ERR(wfile))
-> +                               return 0;
-> +
-> +                       vfs_fchown(wfile, uid, gid);
-> +                       vfs_fchmod(wfile, mode);
-> +                       if (body_len)
-> +                               vfs_truncate(&wfile->f_path, body_len);
-> +                       vcollected = kstrdup(collected, GFP_KERNEL);
+Right, this is because we up the rt version every time we merge a
+stable version and have conflicts, and in this release there were a
+lot, so it jumped from -rt55 to -rt59.  We only announce the releases
+and not the intervening version bumps, which is why you couldn't find
+any announcements for them. 
 
-That "vcollected" is ugly and broken, and seems oh-so-wrong.
+There are more details about exactly how the version numbers change
+here:
 
-Because it's only use is:
+  https://wiki.linuxfoundation.org/realtime/documentation/start
 
+> ...aha, and the versions do not have signed tags, either:
+> 
+> pavel@amd:~/cip/k$ git show v4.19.131-rt58
+> fatal: ambiguous argument 'v4.19.131-rt58': unknown revision or path
+> not in the working tree.
+> 
 
-> -               ksys_close(wfd);
-> +               fput(wfile);
->                 do_utime(vcollected, mtime);
->                 kfree(vcollected);
+Yeah, thanks for pointing that out.  Looks like my script doesn't push
+the intervening tags correctly, but I've pushed them out now.
 
-which should just have done the exact same thing that you did with
-vfs_chown() and friends: we already have a "utimes_common()" that
-takes a path, and it could have been made into "vfs_utimes()", and
-then this whole vcollected confusion would go away and be replaced by
+> Is that because they were created just as quick steps towards -rt59?
+> 
 
-        vfs_truncate(&wfile->f_path, mtime);
+Yeah, pretty much.
 
-(ok, with all the "timespec64 t[2]" things going on that do_utime()
-does now, but you get the idea).
+Thanks,
 
-Talk about de-crufting that initramfs unpacking..
+Tom
 
-But I don't hate this patch, I'm just pointing out that there's room
-for improvement.
+> Best regards,
+> 							Pavel
 
-             Linus
