@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8BB21F9B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7442521FAF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729322AbgGNSqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:46:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40498 "EHLO mail.kernel.org"
+        id S1730692AbgGNS5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:57:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729312AbgGNSqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:46:00 -0400
+        id S1730643AbgGNS5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:57:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93568222E9;
-        Tue, 14 Jul 2020 18:45:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 828C322A99;
+        Tue, 14 Jul 2020 18:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752359;
-        bh=tdq/pSImsj8wbS1K54WzGZDd6FUgFcwxktbu9Tbo1o0=;
+        s=default; t=1594753024;
+        bh=sbRmsv14hG+c/knYd16JUaQzs0Ea5HPaKXNDJTSuOz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fmIYQjoRLYlj9D0/YBb0gz9hb8uoUp7U5SKet+k+GpAHji0wbxO4MEbMbmh8io7sj
-         Roiq/4wTVx1JF0GGu9D4qH+K6SPbc4H29KBU438ihpiAcymSUfYIZFn5xmAl1hsdL9
-         pJ1kCEc0rF/4QOAgdtVW14VELGsmF8m19uafCDF0=
+        b=iQUV/CmMLPTMtGfMGtGCAuTeWpiyF0N/UE+A9LNqhnU86O723DX6eDEVOY60/7k30
+         xFpOz6upKPKfkta3i17vjR9WD1IcgoCO8MhqNFtvUt7jGY4n8GYBFdR324s7y6c2kY
+         5MsvmkwlXnPSsPzP11+HM3a/kEGeC/NkXJAqgucY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ciara Loftus <ciara.loftus@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 12/58] ixgbe: protect ring accesses with READ- and WRITE_ONCE
+Subject: [PATCH 5.7 060/166] bpf, sockmap: RCU dereferenced psock may be used outside RCU block
 Date:   Tue, 14 Jul 2020 20:43:45 +0200
-Message-Id: <20200714184056.747503600@linuxfoundation.org>
+Message-Id: <20200714184118.747651916@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,110 +45,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ciara Loftus <ciara.loftus@intel.com>
+From: John Fastabend <john.fastabend@gmail.com>
 
-[ Upstream commit f140ad9fe2ae16f385f8fe4dc9cf67bb4c51d794 ]
+[ Upstream commit 8025751d4d55a2f32be6bdf825b6a80c299875f5 ]
 
-READ_ONCE should be used when reading rings prior to accessing the
-statistics pointer. Introduce this as well as the corresponding WRITE_ONCE
-usage when allocating and freeing the rings, to ensure protected access.
+If an ingress verdict program specifies message sizes greater than
+skb->len and there is an ENOMEM error due to memory pressure we
+may call the rcv_msg handler outside the strp_data_ready() caller
+context. This is because on an ENOMEM error the strparser will
+retry from a workqueue. The caller currently protects the use of
+psock by calling the strp_data_ready() inside a rcu_read_lock/unlock
+block.
 
-Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+But, in above workqueue error case the psock is accessed outside
+the read_lock/unlock block of the caller. So instead of using
+psock directly we must do a look up against the sk again to
+ensure the psock is available.
+
+There is an an ugly piece here where we must handle
+the case where we paused the strp and removed the psock. On
+psock removal we first pause the strparser and then remove
+the psock. If the strparser is paused while an skb is
+scheduled on the workqueue the skb will be dropped on the
+flow and kfree_skb() is called. If the workqueue manages
+to get called before we pause the strparser but runs the rcvmsg
+callback after the psock is removed we will hit the unlikely
+case where we run the sockmap rcvmsg handler but do not have
+a psock. For now we will follow strparser logic and drop the
+skb on the floor with skb_kfree(). This is ugly because the
+data is dropped. To date this has not caused problems in practice
+because either the application controlling the sockmap is
+coordinating with the datapath so that skbs are "flushed"
+before removal or we simply wait for the sock to be closed before
+removing it.
+
+This patch fixes the describe RCU bug and dropping the skb doesn't
+make things worse. Future patches will improve this by allowing
+the normal case where skbs are not merged to skip the strparser
+altogether. In practice many (most?) use cases have no need to
+merge skbs so its both a code complexity hit as seen above and
+a performance issue. For example, in the Cilium case we always
+set the strparser up to return sbks 1:1 without any merging and
+have avoided above issues.
+
+Fixes: e91de6afa81c1 ("bpf: Fix running sk_skb program types with ktls")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/159312679888.18340.15248924071966273998.stgit@john-XPS-13-9370
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 12 ++++++------
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 14 +++++++++++---
- 2 files changed, 17 insertions(+), 9 deletions(-)
+ net/core/skmsg.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-index d361f570ca37b..952630cb882c2 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-@@ -923,7 +923,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
- 		ring->queue_index = txr_idx;
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index c41ab6906b210..6a32a1fd34f8c 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -781,11 +781,18 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
  
- 		/* assign ring to adapter */
--		adapter->tx_ring[txr_idx] = ring;
-+		WRITE_ONCE(adapter->tx_ring[txr_idx], ring);
+ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
+ {
+-	struct sk_psock *psock = sk_psock_from_strp(strp);
++	struct sk_psock *psock;
+ 	struct bpf_prog *prog;
+ 	int ret = __SK_DROP;
++	struct sock *sk;
  
- 		/* update count and index */
- 		txr_count--;
-@@ -950,7 +950,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
- 		set_ring_xdp(ring);
- 
- 		/* assign ring to adapter */
--		adapter->xdp_ring[xdp_idx] = ring;
-+		WRITE_ONCE(adapter->xdp_ring[xdp_idx], ring);
- 
- 		/* update count and index */
- 		xdp_count--;
-@@ -993,7 +993,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
- 		ring->queue_index = rxr_idx;
- 
- 		/* assign ring to adapter */
--		adapter->rx_ring[rxr_idx] = ring;
-+		WRITE_ONCE(adapter->rx_ring[rxr_idx], ring);
- 
- 		/* update count and index */
- 		rxr_count--;
-@@ -1022,13 +1022,13 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
- 
- 	ixgbe_for_each_ring(ring, q_vector->tx) {
- 		if (ring_is_xdp(ring))
--			adapter->xdp_ring[ring->queue_index] = NULL;
-+			WRITE_ONCE(adapter->xdp_ring[ring->queue_index], NULL);
- 		else
--			adapter->tx_ring[ring->queue_index] = NULL;
-+			WRITE_ONCE(adapter->tx_ring[ring->queue_index], NULL);
+ 	rcu_read_lock();
++	sk = strp->sk;
++	psock = sk_psock(sk);
++	if (unlikely(!psock)) {
++		kfree_skb(skb);
++		goto out;
++	}
+ 	prog = READ_ONCE(psock->progs.skb_verdict);
+ 	if (likely(prog)) {
+ 		skb_orphan(skb);
+@@ -794,6 +801,7 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
+ 		ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
  	}
+ 	sk_psock_verdict_apply(psock, skb, ret);
++out:
+ 	rcu_read_unlock();
+ }
  
- 	ixgbe_for_each_ring(ring, q_vector->rx)
--		adapter->rx_ring[ring->queue_index] = NULL;
-+		WRITE_ONCE(adapter->rx_ring[ring->queue_index], NULL);
- 
- 	adapter->q_vector[v_idx] = NULL;
- 	napi_hash_del(&q_vector->napi);
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 7d723b70fcf6d..4243ff4ec4b1d 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -7005,7 +7005,10 @@ void ixgbe_update_stats(struct ixgbe_adapter *adapter)
- 	}
- 
- 	for (i = 0; i < adapter->num_rx_queues; i++) {
--		struct ixgbe_ring *rx_ring = adapter->rx_ring[i];
-+		struct ixgbe_ring *rx_ring = READ_ONCE(adapter->rx_ring[i]);
-+
-+		if (!rx_ring)
-+			continue;
- 		non_eop_descs += rx_ring->rx_stats.non_eop_descs;
- 		alloc_rx_page += rx_ring->rx_stats.alloc_rx_page;
- 		alloc_rx_page_failed += rx_ring->rx_stats.alloc_rx_page_failed;
-@@ -7026,15 +7029,20 @@ void ixgbe_update_stats(struct ixgbe_adapter *adapter)
- 	packets = 0;
- 	/* gather some stats to the adapter struct that are per queue */
- 	for (i = 0; i < adapter->num_tx_queues; i++) {
--		struct ixgbe_ring *tx_ring = adapter->tx_ring[i];
-+		struct ixgbe_ring *tx_ring = READ_ONCE(adapter->tx_ring[i]);
-+
-+		if (!tx_ring)
-+			continue;
- 		restart_queue += tx_ring->tx_stats.restart_queue;
- 		tx_busy += tx_ring->tx_stats.tx_busy;
- 		bytes += tx_ring->stats.bytes;
- 		packets += tx_ring->stats.packets;
- 	}
- 	for (i = 0; i < adapter->num_xdp_queues; i++) {
--		struct ixgbe_ring *xdp_ring = adapter->xdp_ring[i];
-+		struct ixgbe_ring *xdp_ring = READ_ONCE(adapter->xdp_ring[i]);
- 
-+		if (!xdp_ring)
-+			continue;
- 		restart_queue += xdp_ring->tx_stats.restart_queue;
- 		tx_busy += xdp_ring->tx_stats.tx_busy;
- 		bytes += xdp_ring->stats.bytes;
 -- 
 2.25.1
 
