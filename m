@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BA421EAF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD62021EB14
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgGNIHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 04:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726609AbgGNIHP (ORCPT
+        id S1726431AbgGNINm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 04:13:42 -0400
+Received: from host-88-217-225-28.customer.m-online.net ([88.217.225.28]:33747
+        "EHLO mail.dev.tdt.de" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725816AbgGNINl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 04:07:15 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081CCC08C5DE
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 01:07:15 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id a1so10709580edt.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 01:07:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VxG136uE7k/7DQKw2dWH82lAeA2t/fDkcPS0g4RMW9A=;
-        b=El1qSrVlx5j8OzqWY+jAkGIyxjaAfYH+cAXX/jS9K9Nm7LDsD7Ow20X6ZI/9L4i34m
-         i6WsR0CtSO9QTmeXYDIWsjH1tlcEOcfyjR+Yn6OuRbJMAlEjvHkjEtfJJvDtJKZFb57q
-         UXgWM5FxsZRScs6IL4dz92fo4cR62DnQk6wXY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VxG136uE7k/7DQKw2dWH82lAeA2t/fDkcPS0g4RMW9A=;
-        b=OzOnvbYggekxSyK+TihYgwHZVwDKwPLTKTMvq1vltAsq6Dg/jrEHnpFagHFs2wwADu
-         MCN9OUmoYcU7MJNd5ofO6eCuFnCRCh9xGuPOlmfuyS2lcteypV9pLHt7T9A9YfM+sv9N
-         5ThVXKmJyIVAnIm4qTz982ZJlIU5vt0WYNDes6sJLnKE17m8M7gedOxLEwcp2RkWDdRO
-         EXg9obk/YOCQQPIoybzlopEydK5IEf+6pGIsrP/jzAzDLc2Q6ZnLqLuGLrUt9z+TH5wV
-         X5r3d/57LaplPYl8zgLfhdt+6R1KSI1sChQJ5yT201BYOoVLfDH249PWWbLXcWzYja8U
-         1NIg==
-X-Gm-Message-State: AOAM532dke4HHwZGx1pt92Rw9RJXKQURohUkYicyWw6juk/W9mXwMaZ2
-        Vu9NbU73zxJgVHAW2j9L6ZnO53F3USoBKUlWE4kL0A==
-X-Google-Smtp-Source: ABdhPJzWasYoseKAcvHkcWBtEYPiZDeYidABizN8Y9lJDS4GoTapol5Yea6vIlDc4ozwIskC2c/AS3sLTWFc+1jaNwk=
-X-Received: by 2002:a05:6402:1687:: with SMTP id a7mr3263957edv.358.1594714033497;
- Tue, 14 Jul 2020 01:07:13 -0700 (PDT)
+        Tue, 14 Jul 2020 04:13:41 -0400
+X-Greylist: delayed 388 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Jul 2020 04:13:41 EDT
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 373D420D83;
+        Tue, 14 Jul 2020 08:07:10 +0000 (UTC)
 MIME-Version: 1.0
-References: <CAODFU0q6CrUB_LkSdrbp5TQ4Jm6Sw=ZepZwD-B7-aFudsOvsig@mail.gmail.com>
- <20200705115021.GA1227929@kroah.com> <20200714065110.GA8047@amd>
-In-Reply-To: <20200714065110.GA8047@amd>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 14 Jul 2020 10:07:02 +0200
-Message-ID: <CAJfpegu8AXZWQh3W39PriqxVna+t3D2pz23t_4xEVxGcNf1AUA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] readfile(2): a new syscall to make open/read/close faster
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jan Ziak <0xe2.0x9a.0x9b@gmail.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-man <linux-man@vger.kernel.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>, shuah@kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>, io-uring@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 14 Jul 2020 10:07:10 +0200
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Martin Habets <mhabets@solarflare.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Linux X25 <linux-x25@vger.kernel.org>
+Subject: Re: [PATCH] drivers/net/wan/x25_asy: Fix to make it work
+Organization: TDT AG
+In-Reply-To: <CAJht_EOqgWh0dShG258C3uoYdQga+EUae34tvL9HhqpztAv1PQ@mail.gmail.com>
+References: <20200708043754.46554-1-xie.he.0141@gmail.com>
+ <20200708.101321.1049330296069021543.davem@davemloft.net>
+ <CAJht_EOqgWh0dShG258C3uoYdQga+EUae34tvL9HhqpztAv1PQ@mail.gmail.com>
+Message-ID: <490146353e9225245d8165b6edade1a9@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.1.5
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 8:51 AM Pavel Machek <pavel@denx.de> wrote:
->
-> Hi!
->
-> > > At first, I thought that the proposed system call is capable of
-> > > reading *multiple* small files using a single system call - which
-> > > would help increase HDD/SSD queue utilization and increase IOPS (I/O
-> > > operations per second) - but that isn't the case and the proposed
-> > > system call can read just a single file.
-> >
-> > If you want to do this for multple files, use io_ring, that's what it
-> > was designed for.  I think Jens was going to be adding support for the
-> > open/read/close pattern to it as well, after some other more pressing
-> > features/fixes were finished.
->
-> What about... just using io_uring for single file, too? I'm pretty
-> sure it can be wrapped in a library that is simple to use, avoiding
-> need for new syscall.
+On 2020-07-08 21:04, Xie He wrote:
+> From: David Miller <davem@davemloft.net>
+> Date: Wed, Jul 8, 2020 at 10:13 AM -0700
+>> Something's not right, because I find it hard to believe this has been
+>> so fundamentally broken for such a long period of time.
+>> 
+>> Maybe the drivers all handle things differently, and whilst your 
+>> change
+>> might fix some drivers, it will break others.
+>> 
+>> I'm not applying this until this situation is better understood.
+> 
+> Yes, it was hard for me to believe, too.
+> 
+> At first when I tried this driver, it was silently not able to 
+> establish
+> LAPB connections, I found that it was because it was ignoring
+> 2-byte frames. I changed it to make 2-byte frames pass. Then I
+> encountered kernel panic. I don't know how to solve it, so I looked
+> at the way "lapbether" does things and changed this driver according
+> to the "lapbether" driver. And it worked.
+> 
+> The "lapbether" driver and this driver both use the "lapb" module to
+> implement the LAPB protocol, so they should implement LAPB-related
+> code in the same way.
+> 
+> This patch only changes this driver and does not affect other drivers.
+> 
+> I don't know how I can better explain this situation. Please tell me
+> anything I can do to help. Thanks!
 
-Just wondering:  is there a plan to add strace support to io_uring?
-And I don't just mean the syscalls associated with io_uring, but
-tracing the ring itself.
+It really seems very strange that this driver seems to contain such
+fundamental errors. I have never used it.
 
-I think that's quite important as io_uring becomes mainstream.
-
-Thanks,
-Miklos
+But the explanations and fixes look plausible to me.
