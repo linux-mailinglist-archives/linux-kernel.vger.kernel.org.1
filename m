@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED0721FA5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B74A21F9B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730457AbgGNSwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:52:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48494 "EHLO mail.kernel.org"
+        id S1729339AbgGNSqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:46:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730020AbgGNSv5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:51:57 -0400
+        id S1729312AbgGNSqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:46:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B25022B48;
-        Tue, 14 Jul 2020 18:51:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB31B2231B;
+        Tue, 14 Jul 2020 18:46:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752716;
-        bh=/i/L+QXEIyiTeQwGZtEm3vN+93SIRsNOgz5dGm0N9jg=;
+        s=default; t=1594752361;
+        bh=+VzMihOcflKyBhJLRK+iXixmPZ+aRhDOslFb+/ZKxFA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IGvskTe9NnOhiZqYPuypxNZXYgz5GG3Knc719Opw4bPW2O3ToR/KIo6W/hLLIh2Qq
-         xcKumh++rlgrlhAZAuECTuzsZG1f1nDevwGMnEQ/ghSGF6fC2bTPF0V/xDC3dWaZYT
-         G/qh3h9wC6n5ENkgn3Xq8p6ys4fnh4t91T0ux3gE=
+        b=kFXMzuh55rwrFjewswGicMZeRupoMDZG6c487kzO+2+nQBeoYZCUMXZgSH2y2o/kI
+         WDxu8Z1rPt42H1N98xpWmXfk6ygV0UQUgFinPMfUeg9waGMfXaZv2dgr4J3rqHkvyO
+         xWf4qAlWVN0+1UpsenE8buNMEaBQ8UUnKgwQxB1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Ciara Loftus <ciara.loftus@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 042/109] netfilter: ipset: call ip_set_free() instead of kfree()
-Date:   Tue, 14 Jul 2020 20:43:45 +0200
-Message-Id: <20200714184107.535209568@linuxfoundation.org>
+Subject: [PATCH 4.19 13/58] i40e: protect ring accesses with READ- and WRITE_ONCE
+Date:   Tue, 14 Jul 2020 20:43:46 +0200
+Message-Id: <20200714184056.800412889@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,132 +45,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Ciara Loftus <ciara.loftus@intel.com>
 
-[ Upstream commit c4e8fa9074ad94f80e5c0dcaa16b313e50e958c5 ]
+[ Upstream commit d59e267912cd90b0adf33b4659050d831e746317 ]
 
-Whenever ip_set_alloc() is used, allocated memory can either
-use kmalloc() or vmalloc(). We should call kvfree() or
-ip_set_free()
+READ_ONCE should be used when reading rings prior to accessing the
+statistics pointer. Introduce this as well as the corresponding WRITE_ONCE
+usage when allocating and freeing the rings, to ensure protected access.
 
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 21935 Comm: syz-executor.3 Not tainted 5.8.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__phys_addr+0xa7/0x110 arch/x86/mm/physaddr.c:28
-Code: 1d 7a 09 4c 89 e3 31 ff 48 d3 eb 48 89 de e8 d0 58 3f 00 48 85 db 75 0d e8 26 5c 3f 00 4c 89 e0 5b 5d 41 5c c3 e8 19 5c 3f 00 <0f> 0b e8 12 5c 3f 00 48 c7 c0 10 10 a8 89 48 ba 00 00 00 00 00 fc
-RSP: 0000:ffffc900018572c0 EFLAGS: 00010046
-RAX: 0000000000040000 RBX: 0000000000000001 RCX: ffffc9000fac3000
-RDX: 0000000000040000 RSI: ffffffff8133f437 RDI: 0000000000000007
-RBP: ffffc90098aff000 R08: 0000000000000000 R09: ffff8880ae636cdb
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000408018aff000
-R13: 0000000000080000 R14: 000000000000001d R15: ffffc900018573d8
-FS:  00007fc540c66700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fc9dcd67200 CR3: 0000000059411000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- virt_to_head_page include/linux/mm.h:841 [inline]
- virt_to_cache mm/slab.h:474 [inline]
- kfree+0x77/0x2c0 mm/slab.c:3749
- hash_net_create+0xbb2/0xd70 net/netfilter/ipset/ip_set_hash_gen.h:1536
- ip_set_create+0x6a2/0x13c0 net/netfilter/ipset/ip_set_core.c:1128
- nfnetlink_rcv_msg+0xbe8/0xea0 net/netfilter/nfnetlink.c:230
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
- nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:564
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45cb19
-Code: Bad RIP value.
-RSP: 002b:00007fc540c65c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004fed80 RCX: 000000000045cb19
-RDX: 0000000000000000 RSI: 0000000020001080 RDI: 0000000000000003
-RBP: 000000000078bf00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 000000000000095e R14: 00000000004cc295 R15: 00007fc540c666d4
-
-Fixes: f66ee0410b1c ("netfilter: ipset: Fix "INFO: rcu detected stall in hash_xxx" reports")
-Fixes: 03c8b234e61a ("netfilter: ipset: Generalize extensions support")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/ipset/ip_set_bitmap_ip.c    | 2 +-
- net/netfilter/ipset/ip_set_bitmap_ipmac.c | 2 +-
- net/netfilter/ipset/ip_set_bitmap_port.c  | 2 +-
- net/netfilter/ipset/ip_set_hash_gen.h     | 4 ++--
- 4 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 29 ++++++++++++++-------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/net/netfilter/ipset/ip_set_bitmap_ip.c b/net/netfilter/ipset/ip_set_bitmap_ip.c
-index d934384f31ad6..6e3cf4d19ce88 100644
---- a/net/netfilter/ipset/ip_set_bitmap_ip.c
-+++ b/net/netfilter/ipset/ip_set_bitmap_ip.c
-@@ -314,7 +314,7 @@ bitmap_ip_create(struct net *net, struct ip_set *set, struct nlattr *tb[],
- 	set->variant = &bitmap_ip;
- 	if (!init_map_ip(set, map, first_ip, last_ip,
- 			 elements, hosts, netmask)) {
--		kfree(map);
-+		ip_set_free(map);
- 		return -ENOMEM;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index 23b31b2ff5ccd..a74b01bf581e9 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -446,11 +446,15 @@ static void i40e_get_netdev_stats_struct(struct net_device *netdev,
+ 		i40e_get_netdev_stats_struct_tx(ring, stats);
+ 
+ 		if (i40e_enabled_xdp_vsi(vsi)) {
+-			ring++;
++			ring = READ_ONCE(vsi->xdp_rings[i]);
++			if (!ring)
++				continue;
+ 			i40e_get_netdev_stats_struct_tx(ring, stats);
+ 		}
+ 
+-		ring++;
++		ring = READ_ONCE(vsi->rx_rings[i]);
++		if (!ring)
++			continue;
+ 		do {
+ 			start   = u64_stats_fetch_begin_irq(&ring->syncp);
+ 			packets = ring->stats.packets;
+@@ -793,6 +797,8 @@ static void i40e_update_vsi_stats(struct i40e_vsi *vsi)
+ 	for (q = 0; q < vsi->num_queue_pairs; q++) {
+ 		/* locate Tx ring */
+ 		p = READ_ONCE(vsi->tx_rings[q]);
++		if (!p)
++			continue;
+ 
+ 		do {
+ 			start = u64_stats_fetch_begin_irq(&p->syncp);
+@@ -806,8 +812,11 @@ static void i40e_update_vsi_stats(struct i40e_vsi *vsi)
+ 		tx_linearize += p->tx_stats.tx_linearize;
+ 		tx_force_wb += p->tx_stats.tx_force_wb;
+ 
+-		/* Rx queue is part of the same block as Tx queue */
+-		p = &p[1];
++		/* locate Rx ring */
++		p = READ_ONCE(vsi->rx_rings[q]);
++		if (!p)
++			continue;
++
+ 		do {
+ 			start = u64_stats_fetch_begin_irq(&p->syncp);
+ 			packets = p->stats.packets;
+@@ -10196,10 +10205,10 @@ static void i40e_vsi_clear_rings(struct i40e_vsi *vsi)
+ 	if (vsi->tx_rings && vsi->tx_rings[0]) {
+ 		for (i = 0; i < vsi->alloc_queue_pairs; i++) {
+ 			kfree_rcu(vsi->tx_rings[i], rcu);
+-			vsi->tx_rings[i] = NULL;
+-			vsi->rx_rings[i] = NULL;
++			WRITE_ONCE(vsi->tx_rings[i], NULL);
++			WRITE_ONCE(vsi->rx_rings[i], NULL);
+ 			if (vsi->xdp_rings)
+-				vsi->xdp_rings[i] = NULL;
++				WRITE_ONCE(vsi->xdp_rings[i], NULL);
+ 		}
  	}
- 	if (tb[IPSET_ATTR_TIMEOUT]) {
-diff --git a/net/netfilter/ipset/ip_set_bitmap_ipmac.c b/net/netfilter/ipset/ip_set_bitmap_ipmac.c
-index e8532783b43aa..ae7cdc0d0f29a 100644
---- a/net/netfilter/ipset/ip_set_bitmap_ipmac.c
-+++ b/net/netfilter/ipset/ip_set_bitmap_ipmac.c
-@@ -363,7 +363,7 @@ bitmap_ipmac_create(struct net *net, struct ip_set *set, struct nlattr *tb[],
- 	map->memsize = BITS_TO_LONGS(elements) * sizeof(unsigned long);
- 	set->variant = &bitmap_ipmac;
- 	if (!init_map_ipmac(set, map, first_ip, last_ip, elements)) {
--		kfree(map);
-+		ip_set_free(map);
- 		return -ENOMEM;
+ }
+@@ -10233,7 +10242,7 @@ static int i40e_alloc_rings(struct i40e_vsi *vsi)
+ 		if (vsi->back->hw_features & I40E_HW_WB_ON_ITR_CAPABLE)
+ 			ring->flags = I40E_TXR_FLAGS_WB_ON_ITR;
+ 		ring->itr_setting = pf->tx_itr_default;
+-		vsi->tx_rings[i] = ring++;
++		WRITE_ONCE(vsi->tx_rings[i], ring++);
+ 
+ 		if (!i40e_enabled_xdp_vsi(vsi))
+ 			goto setup_rx;
+@@ -10251,7 +10260,7 @@ static int i40e_alloc_rings(struct i40e_vsi *vsi)
+ 			ring->flags = I40E_TXR_FLAGS_WB_ON_ITR;
+ 		set_ring_xdp(ring);
+ 		ring->itr_setting = pf->tx_itr_default;
+-		vsi->xdp_rings[i] = ring++;
++		WRITE_ONCE(vsi->xdp_rings[i], ring++);
+ 
+ setup_rx:
+ 		ring->queue_index = i;
+@@ -10264,7 +10273,7 @@ setup_rx:
+ 		ring->size = 0;
+ 		ring->dcb_tc = 0;
+ 		ring->itr_setting = pf->rx_itr_default;
+-		vsi->rx_rings[i] = ring;
++		WRITE_ONCE(vsi->rx_rings[i], ring);
  	}
- 	if (tb[IPSET_ATTR_TIMEOUT]) {
-diff --git a/net/netfilter/ipset/ip_set_bitmap_port.c b/net/netfilter/ipset/ip_set_bitmap_port.c
-index e3ac914fff1a5..d4a14750f5c42 100644
---- a/net/netfilter/ipset/ip_set_bitmap_port.c
-+++ b/net/netfilter/ipset/ip_set_bitmap_port.c
-@@ -247,7 +247,7 @@ bitmap_port_create(struct net *net, struct ip_set *set, struct nlattr *tb[],
- 	map->memsize = BITS_TO_LONGS(elements) * sizeof(unsigned long);
- 	set->variant = &bitmap_port;
- 	if (!init_map_port(set, map, first_port, last_port)) {
--		kfree(map);
-+		ip_set_free(map);
- 		return -ENOMEM;
- 	}
- 	if (tb[IPSET_ATTR_TIMEOUT]) {
-diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/ip_set_hash_gen.h
-index 2389c9f89e481..a7a982a3e6761 100644
---- a/net/netfilter/ipset/ip_set_hash_gen.h
-+++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -682,7 +682,7 @@ mtype_resize(struct ip_set *set, bool retried)
- 	}
- 	t->hregion = ip_set_alloc(ahash_sizeof_regions(htable_bits));
- 	if (!t->hregion) {
--		kfree(t);
-+		ip_set_free(t);
- 		ret = -ENOMEM;
- 		goto out;
- 	}
-@@ -1533,7 +1533,7 @@ IPSET_TOKEN(HTYPE, _create)(struct net *net, struct ip_set *set,
- 	}
- 	t->hregion = ip_set_alloc(ahash_sizeof_regions(hbits));
- 	if (!t->hregion) {
--		kfree(t);
-+		ip_set_free(t);
- 		kfree(h);
- 		return -ENOMEM;
- 	}
+ 
+ 	return 0;
 -- 
 2.25.1
 
