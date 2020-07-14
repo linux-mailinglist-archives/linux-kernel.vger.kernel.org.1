@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A4621FB22
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BF721FB27
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730777AbgGNS7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:59:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57522 "EHLO mail.kernel.org"
+        id S1730047AbgGNS7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:59:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730154AbgGNS7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:59:00 -0400
+        id S1731067AbgGNS7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:59:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B56E22B2B;
-        Tue, 14 Jul 2020 18:58:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93ACE229CA;
+        Tue, 14 Jul 2020 18:59:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753139;
-        bh=Tf7Ys4DJj3+tqhy6HZ6SoxXADmO3OI/lTItEAJWcBtc=;
+        s=default; t=1594753142;
+        bh=/SwL4lhyb9H479yrYfVEdAQXaqBeWOFBvjRzYCTP14M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2hS2QH8svYLnpmUGSWlTJSuedoXvnj1jHNB8g7ecs89E7CfMdMyqrxKAszgKFltWf
-         jm3ri/MdqSOz17hYLRSYInNHnVjGpRIZCxKKtrqPQj1ZFkSVy59+31Qx7qYXUJTPmz
-         +Egy7M9dmaL5L9qR+k79apWuat1kSO0pH92YypCQ=
+        b=NYPk0qNhqoNvX2WHbor0HWuhyARbH8n5oGNT8GcV1RL661+k+GKTyEMzApIN44oXA
+         pDm3GbozZbUZJpymm65mSXTvJi+jltUu2myfQ2r1OniGuWOkATcseGbKD0zpYC9roO
+         63TZRCl+Jjf0xvVnbcqR5tpciPkd+Q9lBfsb1zpY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Sandeen <sandeen@redhat.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
+        stable@vger.kernel.org, Marcos Paulo de Souza <mpdesouza@suse.com>,
+        Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.7 135/166] btrfs: reset tree root pointer after error in init_tree_roots
-Date:   Tue, 14 Jul 2020 20:45:00 +0200
-Message-Id: <20200714184122.294065688@linuxfoundation.org>
+Subject: [PATCH 5.7 136/166] btrfs: discard: add missing put when grabbing block group from unused list
+Date:   Tue, 14 Jul 2020 20:45:01 +0200
+Message-Id: <20200714184122.344961940@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
 References: <20200714184115.844176932@linuxfoundation.org>
@@ -45,74 +44,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Qu Wenruo <wqu@suse.com>
 
-commit 0465337c5599bbe360cdcff452992a1a6b7ed2d4 upstream.
+commit 04e484c5973ed0f9234c97685c3c5e1ebf0d6eb6 upstream.
 
-Eric reported an issue where mounting -o recovery with a fuzzed fs
-resulted in a kernel panic.  This is because we tried to free the tree
-node, except it was an error from the read.  Fix this by properly
-resetting the tree_root->node == NULL in this case.  The panic was the
-following
+[BUG]
+The following small test script can trigger ASSERT() at unmount time:
 
-  BTRFS warning (device loop0): failed to read tree root
-  BUG: kernel NULL pointer dereference, address: 000000000000001f
-  RIP: 0010:free_extent_buffer+0xe/0x90 [btrfs]
+  mkfs.btrfs -f $dev
+  mount $dev $mnt
+  mount -o remount,discard=async $mnt
+  umount $mnt
+
+The call trace:
+  assertion failed: atomic_read(&block_group->count) == 1, in fs/btrfs/block-group.c:3431
+  ------------[ cut here ]------------
+  kernel BUG at fs/btrfs/ctree.h:3204!
+  invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+  CPU: 4 PID: 10389 Comm: umount Tainted: G           O      5.8.0-rc3-custom+ #68
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
   Call Trace:
-   free_root_extent_buffers.part.0+0x11/0x30 [btrfs]
-   free_root_pointers+0x1a/0xa2 [btrfs]
-   open_ctree+0x1776/0x18a5 [btrfs]
-   btrfs_mount_root.cold+0x13/0xfa [btrfs]
-   ? selinux_fs_context_parse_param+0x37/0x80
-   legacy_get_tree+0x27/0x40
-   vfs_get_tree+0x25/0xb0
-   fc_mount+0xe/0x30
-   vfs_kern_mount.part.0+0x71/0x90
-   btrfs_mount+0x147/0x3e0 [btrfs]
-   ? cred_has_capability+0x7c/0x120
-   ? legacy_get_tree+0x27/0x40
-   legacy_get_tree+0x27/0x40
-   vfs_get_tree+0x25/0xb0
-   do_mount+0x735/0xa40
-   __x64_sys_mount+0x8e/0xd0
-   do_syscall_64+0x4d/0x90
+   btrfs_free_block_groups.cold+0x22/0x55 [btrfs]
+   close_ctree+0x2cb/0x323 [btrfs]
+   btrfs_put_super+0x15/0x17 [btrfs]
+   generic_shutdown_super+0x72/0x110
+   kill_anon_super+0x18/0x30
+   btrfs_kill_super+0x17/0x30 [btrfs]
+   deactivate_locked_super+0x3b/0xa0
+   deactivate_super+0x40/0x50
+   cleanup_mnt+0x135/0x190
+   __cleanup_mnt+0x12/0x20
+   task_work_run+0x64/0xb0
+   __prepare_exit_to_usermode+0x1bc/0x1c0
+   __syscall_return_slowpath+0x47/0x230
+   do_syscall_64+0x64/0xb0
    entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Nik says: this is problematic only if we fail on the last iteration of
-the loop as this results in init_tree_roots returning err value with
-tree_root->node = -ERR. Subsequently the caller does: fail_tree_roots
-which calls free_root_pointers on the bogus value.
+The code:
+                ASSERT(atomic_read(&block_group->count) == 1);
+                btrfs_put_block_group(block_group);
 
-Reported-by: Eric Sandeen <sandeen@redhat.com>
-Fixes: b8522a1e5f42 ("btrfs: Factor out tree roots initialization during mount")
-CC: stable@vger.kernel.org # 5.5+
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+[CAUSE]
+Obviously it's some btrfs_get_block_group() call doesn't get its put
+call.
+
+The offending btrfs_get_block_group() happens here:
+
+  void btrfs_mark_bg_unused(struct btrfs_block_group *bg)
+  {
+  	if (list_empty(&bg->bg_list)) {
+  		btrfs_get_block_group(bg);
+		list_add_tail(&bg->bg_list, &fs_info->unused_bgs);
+  	}
+  }
+
+So every call sites removing the block group from unused_bgs list should
+reduce the ref count of that block group.
+
+However for async discard, it didn't follow the call convention:
+
+  void btrfs_discard_punt_unused_bgs_list(struct btrfs_fs_info *fs_info)
+  {
+  	list_for_each_entry_safe(block_group, next, &fs_info->unused_bgs,
+  				 bg_list) {
+  		list_del_init(&block_group->bg_list);
+  		btrfs_discard_queue_work(&fs_info->discard_ctl, block_group);
+  	}
+  }
+
+And in btrfs_discard_queue_work(), it doesn't call
+btrfs_put_block_group() either.
+
+[FIX]
+Fix the problem by reducing the reference count when we grab the block
+group from unused_bgs list.
+
+Reported-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Fixes: 6e80d4f8c422 ("btrfs: handle empty block_group removal for async discard")
+CC: stable@vger.kernel.org # 5.6+
+Tested-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
-[ add details how the pointer gets dereferenced ]
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/disk-io.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/btrfs/discard.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2583,10 +2583,12 @@ static int __cold init_tree_roots(struct
- 		    !extent_buffer_uptodate(tree_root->node)) {
- 			handle_error = true;
- 
--			if (IS_ERR(tree_root->node))
-+			if (IS_ERR(tree_root->node)) {
- 				ret = PTR_ERR(tree_root->node);
--			else if (!extent_buffer_uptodate(tree_root->node))
-+				tree_root->node = NULL;
-+			} else if (!extent_buffer_uptodate(tree_root->node)) {
- 				ret = -EUCLEAN;
-+			}
- 
- 			btrfs_warn(fs_info, "failed to read tree root");
- 			continue;
+--- a/fs/btrfs/discard.c
++++ b/fs/btrfs/discard.c
+@@ -619,6 +619,7 @@ void btrfs_discard_punt_unused_bgs_list(
+ 	list_for_each_entry_safe(block_group, next, &fs_info->unused_bgs,
+ 				 bg_list) {
+ 		list_del_init(&block_group->bg_list);
++		btrfs_put_block_group(block_group);
+ 		btrfs_discard_queue_work(&fs_info->discard_ctl, block_group);
+ 	}
+ 	spin_unlock(&fs_info->unused_bgs_lock);
 
 
