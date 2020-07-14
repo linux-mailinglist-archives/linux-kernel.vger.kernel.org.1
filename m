@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E47521EFFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE51F21EFF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbgGNMCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728114AbgGNMCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 14 Jul 2020 08:02:14 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:52571 "EHLO
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:52577 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728047AbgGNMCN (ORCPT
+        with ESMTP id S1728083AbgGNMCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Jul 2020 08:02:13 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from vadimp@mellanox.com)
-        with SMTP; 14 Jul 2020 15:02:06 +0300
+        with SMTP; 14 Jul 2020 15:02:08 +0300
 Received: from r-build-lowlevel.mtr.labs.mlnx. (r-build-lowlevel.mtr.labs.mlnx [10.209.0.190])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06EC25de004353;
-        Tue, 14 Jul 2020 15:02:06 +0300
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06EC25df004353;
+        Tue, 14 Jul 2020 15:02:08 +0300
 From:   Vadim Pasternak <vadimp@mellanox.com>
 To:     andy@infradead.org, dvhart@infradead.org
 Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
         Vadim Pasternak <vadimp@mellanox.com>
-Subject: [PATCH platform-next v2 01/11] lib/string_helpers: Introduce string_upper() and string_lower() helpers
-Date:   Tue, 14 Jul 2020 15:01:53 +0300
-Message-Id: <20200714120203.10352-2-vadimp@mellanox.com>
+Subject: [PATCH platform-next v2 02/11] lib/test-string_helpers.c: Add string_upper() and string_lower() tests
+Date:   Tue, 14 Jul 2020 15:01:54 +0300
+Message-Id: <20200714120203.10352-3-vadimp@mellanox.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200714120203.10352-1-vadimp@mellanox.com>
 References: <20200714120203.10352-1-vadimp@mellanox.com>
@@ -32,46 +32,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide the helpers for string conversions to upper alnd lower cases.
+Add few of simple tests for string_upper() and string_lower() helpers.
 
 Signed-off-by: Vadim Pasternak <vadimp@mellanox.com>
 ---
- include/linux/string_helpers.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ lib/test-string_helpers.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-diff --git a/include/linux/string_helpers.h b/include/linux/string_helpers.h
-index c28955132234..86f150c2a6b6 100644
---- a/include/linux/string_helpers.h
-+++ b/include/linux/string_helpers.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_STRING_HELPERS_H_
- #define _LINUX_STRING_HELPERS_H_
+diff --git a/lib/test-string_helpers.c b/lib/test-string_helpers.c
+index 25b5cbfb7615..10360d4ea273 100644
+--- a/lib/test-string_helpers.c
++++ b/lib/test-string_helpers.c
+@@ -238,6 +238,28 @@ static const struct test_string_2 escape1[] __initconst = {{
+ 	/* terminator */
+ }};
  
-+#include <linux/ctype.h>
- #include <linux/types.h>
- 
- struct file;
-@@ -75,6 +76,20 @@ static inline int string_escape_str_any_np(const char *src, char *dst,
- 	return string_escape_str(src, dst, sz, ESCAPE_ANY_NP, only);
++static const struct test_string strings_upper[] __initconst = {
++	{
++		.in = "abcdefgh1234567890test",
++		.out = "ABCDEFGH1234567890TEST",
++	},
++	{
++		.in = "abCdeFgH1234567890TesT",
++		.out = "ABCDEFGH1234567890TEST",
++	},
++};
++
++static const struct test_string strings_lower[] __initconst = {
++	{
++		.in = "ABCDEFGH1234567890TEST",
++		.out = "abcdefgh1234567890test",
++	},
++	{
++		.in = "abCdeFgH1234567890TesT",
++		.out = "abcdefgh1234567890test",
++	},
++};
++
+ static __init const char *test_string_find_match(const struct test_string_2 *s2,
+ 						 unsigned int flags)
+ {
+@@ -390,6 +412,48 @@ static __init void test_string_get_size(void)
+ 	test_string_get_size_one(4096, U64_MAX, "75.6 ZB", "64.0 ZiB");
  }
  
-+static inline void string_upper(char *dst, const char *src)
++static void __init test_string_upper_lower(void)
 +{
-+	do {
-+		*dst++ = toupper(*src);
-+	} while (*src++);
++	char *dst;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(strings_upper); i++) {
++		const char *s = strings_upper[i].in;
++		int len = strlen(strings_upper[i].in) + 1;
++
++		dst = kmalloc(len, GFP_KERNEL);
++		if (!dst)
++			return;
++
++		string_upper(dst, s);
++		if (memcmp(dst, strings_upper[i].out, len)) {
++			pr_warn("Test 'string_upper' failed : expected %s, got %s!\n",
++				strings_upper[i].out, dst);
++			kfree(dst);
++			return;
++		}
++		kfree(dst);
++	}
++
++	for (i = 0; i < ARRAY_SIZE(strings_lower); i++) {
++		const char *s = strings_lower[i].in;
++		int len = strlen(strings_lower[i].in) + 1;
++
++		dst = kmalloc(len, GFP_KERNEL);
++		if (!dst)
++			return;
++
++		string_lower(dst, s);
++		if (memcmp(dst, strings_lower[i].out, len)) {
++			pr_warn("Test 'string_lower failed : : expected %s, got %s!\n",
++				strings_lower[i].out, dst);
++			kfree(dst);
++			return;
++		}
++		kfree(dst);
++	}
 +}
 +
-+static inline void string_lower(char *dst, const char *src)
-+{
-+	do {
-+		*dst++ = tolower(*src);
-+	} while (*src++);
-+}
+ static int __init test_string_helpers_init(void)
+ {
+ 	unsigned int i;
+@@ -411,6 +475,9 @@ static int __init test_string_helpers_init(void)
+ 	/* Test string_get_size() */
+ 	test_string_get_size();
+ 
++	/* Test string upper(), string_lower() */
++	test_string_upper_lower();
 +
- char *kstrdup_quotable(const char *src, gfp_t gfp);
- char *kstrdup_quotable_cmdline(struct task_struct *task, gfp_t gfp);
- char *kstrdup_quotable_file(struct file *file, gfp_t gfp);
+ 	return -EINVAL;
+ }
+ module_init(test_string_helpers_init);
 -- 
 2.11.0
 
