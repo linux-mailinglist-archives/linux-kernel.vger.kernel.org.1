@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7BD21F7FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D81021F800
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728918AbgGNRRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
+        id S1728941AbgGNRRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728186AbgGNRRC (ORCPT
+        with ESMTP id S1728186AbgGNRRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:17:02 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0D3C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:17:02 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id g22so3847960vke.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:17:02 -0700 (PDT)
+        Tue, 14 Jul 2020 13:17:49 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00918C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:17:48 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id k71so1921585pje.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:17:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=laL9jqyDAhx8XNNdn2YvqLz5e2HsHmGbabHru5+6+ac=;
-        b=VBuqWZc3c+PV/wsheMBO3Vhs1BGr9+VWwRe05MDbpZdOf/G+daYhXw4yDzDIfW1fED
-         0lyxr9FjVC4EHq9r2uYZMsdGn8/tizR7hUsSwZjkerZ1wGgHr1OEHHQgSyshpcxJqqTf
-         7N4uMIWxxiO/fnIi4BbjtufFGzGoAK1VsSk1yoamyQcz10vtvr8/R6VJ64EoIaW/8H67
-         wvPp8gR3TyuOB9oSm5zH92PYfdfxFnytZyCnvhcBpdFNYdtibwY31XF1nQbwoU2ZE/EY
-         Y1igfMjeV6q1ZQRZfPD6/j+u35LjChvDXySpQk3KA9drVbJMTEAEowF9B68b7xc6hMmT
-         D5Ng==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hnEFouxs+we3yCbXczH8V8BowgDMhEQabzvQ7VTQSUs=;
+        b=fGc8yYLs91rKUbePsXS8Omz/SMuyt3n7nXMuiwyo9zE3Ttv+pAC1IlQwkpIya38CCW
+         HByWzm4683r8rMc8n+GzW4h2LZ8swZqnWuNU6Ybv9BdUQs6ZFacZYFwf0rdGOTIuJyfd
+         9UTCtvrp4sFnv+ZLM40jX5XQe3WKr52/JZtxUzR7QDuLglqIJADP62Fftgh7oNEOfLka
+         sDNtNXfPLX026CAeZ6mevAW3L0KtJN4i9DI66mI7vesoVIZHooLFuiVAIvFUo7K3F5gE
+         t/YCDb/zIDIigaun2Mac91nNtYR5wATCIGbXxBdKSsu29Upd/6MxQmcs0WfbuHzOloFr
+         V85w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=laL9jqyDAhx8XNNdn2YvqLz5e2HsHmGbabHru5+6+ac=;
-        b=DpsHi+gjvb00b34ZENFz2uR4CC+TXfvKXcdWVJZph17d5Ewzh8TbaeeE02qbHCx14x
-         yQ2nlx/rLsCWepn78nH58cDbwCymy/NDy7V+ThM/qnRP/wNJz+cZ47zQmZ8ewgTNVKwk
-         4VorTgUnT3RsIJp0iyPSt5WOnWzyytu1Aiyd/i3KZ1UJDPdsskIyab22CUnYXX0N8YoC
-         zL9gFpvCfu4cbAYaGsnOwAxFDtDsgII/AuGPu3Lb/V1r8KMtXx6rciXdLPZqyqU/kKQz
-         cy36gng/H88bNRlRC2/Uv9dmuRYocowRTA0JeXKmQTm5ilVq/un3I56Exu0j1vWqA7iA
-         0Zhw==
-X-Gm-Message-State: AOAM532zv0FXY0CKyEhq+p8usuLsSFrw//uGxTX+gWJHxUivYxA7CnBx
-        jecPegf/ba8tFdzgeC2hICxtBZKOq8TBE5emSOl0m8dr
-X-Google-Smtp-Source: ABdhPJzHNFrugBMO2S61VslrpSRXmFF2CHqMHlK2gROBSdoqMAnqNd/Z46gTkqHWdvA45vYX+KRznEjm7iQcOKGJrdc=
-X-Received: by 2002:ac5:c189:: with SMTP id z9mr4800999vkb.79.1594747021495;
- Tue, 14 Jul 2020 10:17:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hnEFouxs+we3yCbXczH8V8BowgDMhEQabzvQ7VTQSUs=;
+        b=k+CIcI4/0/iqkf12cFN3LeToCuF2y3EGPnP2+FEgSNNyzVmg6VhaR7JeUN1fLO0n+W
+         a7mFxnyxAs3hqd8qHv9Swi38ngYXeOw0ACDHWmovOZG69A3hpA9xwkBWoZ79M8KkpSlE
+         zLAuSjv3odEECqKMURs3nn/CcPjftEZgFWzymw5uFwTwuvXDMFQL9+1aDUkBBSsI1zkn
+         b12OMVmLBurOYFyxidmrssCn7qhXyq9eeF8QU7mgo6FFUXaYscg+OoYPXNWCfLVjs6Tc
+         xrqE3H0Kv4pKORJU3yf7Y3KpElw+BwKmS84N6T2FvRNAia+6tQN2k5n+0xVkmY1rSTIm
+         lT0A==
+X-Gm-Message-State: AOAM532OBpuhDXDyx+fKU9j+te/3dkeunwdcOhBdR/6m/b370tW7BmwR
+        IHlAsaGjjwFiQnN2GTSRpBy8
+X-Google-Smtp-Source: ABdhPJwp8WPJacRREeYurMSXd2PZPgxhOF/urNM0WAhQhjFkuxyGfC5yfSDtHEpTWWQOC95UvhFyEA==
+X-Received: by 2002:a17:902:7e01:: with SMTP id b1mr4839837plm.310.1594747068418;
+        Tue, 14 Jul 2020 10:17:48 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6d83:a4f:d:a14d:ca62:5c15])
+        by smtp.gmail.com with ESMTPSA id c27sm17191410pfj.163.2020.07.14.10.17.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 14 Jul 2020 10:17:47 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 22:47:42 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org
+Subject: Re: [PATCH 18/25] pinctrl: pinctrl-bm1880: Rename ill documented
+ struct attribute entries
+Message-ID: <20200714171742.GA7260@Mani-XPS-13-9360>
+References: <20200713144930.1034632-1-lee.jones@linaro.org>
+ <20200713144930.1034632-19-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <20200713204300.345975-1-badhri@google.com> <20200714060520.GB657428@kroah.com>
- <040b4cde-91d4-7776-60b5-8f55b6e75831@roeck-us.net>
-In-Reply-To: <040b4cde-91d4-7776-60b5-8f55b6e75831@roeck-us.net>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Tue, 14 Jul 2020 10:16:25 -0700
-Message-ID: <CAPTae5JHSrp5H47Dr9mrkS_PF_W8MH1TFMzNCc4Geva0-b-B0A@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Move to high priority workqueue for
- processing events
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     reg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713144930.1034632-19-lee.jones@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 11:58 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 7/13/20 11:05 PM, reg Kroah-Hartman wrote:
-> > On Mon, Jul 13, 2020 at 01:43:00PM -0700, Badhri Jagan Sridharan wrote:
-> >> "tReceiverResponse 15 ms Section 6.6.2
-> >> The receiver of a Message requiring a response Shall respond
-> >> within tReceiverResponse in order to ensure that the
-> >> sender=E2=80=99s SenderResponseTimer does not expire."
-> >>
-> >> When the cpu complex is busy running other lower priority
-> >> work items, TCPM's work queue sometimes does not get scheduled
-> >> on time to meet the above requirement from the spec.
-> >> Elevating the TCPM's work queue to higher priority allows
-> >> TCPM to meet tReceiverResponse in a busy system.
-> >>
-> >> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> >> ---
-> >>  drivers/usb/typec/tcpm/tcpm.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tc=
-pm.c
-> >> index 82b19ebd7838e0..088b6f1fa1ff89 100644
-> >> --- a/drivers/usb/typec/tcpm/tcpm.c
-> >> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> >> @@ -4747,7 +4747,7 @@ struct tcpm_port *tcpm_register_port(struct devi=
-ce *dev, struct tcpc_dev *tcpc)
-> >>      mutex_init(&port->lock);
-> >>      mutex_init(&port->swap_lock);
-> >>
-> >> -    port->wq =3D create_singlethread_workqueue(dev_name(dev));
-> >> +    port->wq =3D alloc_ordered_workqueue("%s", WQ_HIGHPRI, dev_name(d=
-ev));
-> >
-> > How are you "guaranteeing" that this is really going to change anything
-> > on a highly loaded machine?
-> >
-> > Yes, it might make things better, but if you have a hard deadline like
-> > this, you need to do things a bit differently to always ensure that you
-> > meet it.  I do not think this change is that fix, do you?
-> >
-Yes Greg I agree with you, moving to HIGHPRI was making it better but
-is not going to
-solve the problem always. I was wondering whether are there better
-ways of doing this.
+On Mon, Jul 13, 2020 at 03:49:23PM +0100, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/pinctrl/pinctrl-bm1880.c:40: warning: Function parameter or member 'pctrldev' not described in 'bm1880_pinctrl'
+>  drivers/pinctrl/pinctrl-bm1880.c:40: warning: Function parameter or member 'pinconf' not described in 'bm1880_pinctrl'
+> 
+> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
->
-> Good point. The worker in drivers/watchdog/ !watchdog_dev.c might be
-> useful as a starting point. There may be better examples - this is
-> just one I know of which had a similar problem. See commits
-> 38a1222ae4f3 and 1ff688209e2e.
->
-> Guenter
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Thanks a lot Guenter !! Very useful pointers, will review the
-approaches in both the
-commits !
+Thanks,
+Mani
+
+> ---
+>  drivers/pinctrl/pinctrl-bm1880.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/pinctrl-bm1880.c b/drivers/pinctrl/pinctrl-bm1880.c
+> index d1a7d98367870..a8e267237435f 100644
+> --- a/drivers/pinctrl/pinctrl-bm1880.c
+> +++ b/drivers/pinctrl/pinctrl-bm1880.c
+> @@ -22,12 +22,12 @@
+>  /**
+>   * struct bm1880_pinctrl - driver data
+>   * @base:	Pinctrl base address
+> - * @pctrl:	Pinctrl device
+> + * @pctrldev:	Pinctrl device
+>   * @groups:	Pingroups
+>   * @ngroups:	Number of @groups
+>   * @funcs:	Pinmux functions
+>   * @nfuncs:	Number of @funcs
+> - * @pconf:	Pinconf data
+> + * @pinconf:	Pinconf data
+>   */
+>  struct bm1880_pinctrl {
+>  	void __iomem *base;
+> -- 
+> 2.25.1
+> 
