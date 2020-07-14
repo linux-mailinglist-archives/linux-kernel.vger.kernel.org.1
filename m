@@ -2,94 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B731B21EC8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38A921EC95
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgGNJUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:20:02 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:32899 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726352AbgGNJUA (ORCPT
+        id S1727047AbgGNJUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:20:22 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:10474 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726352AbgGNJUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:20:00 -0400
-Received: by mail-ot1-f66.google.com with SMTP id h13so12557339otr.0;
-        Tue, 14 Jul 2020 02:19:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lr6ehkiA+wQTlVbgKUBtfLmjH6B35ZHI7I1BOUE7Afo=;
-        b=t3icOm9FBPBdB2+Fp9LxU1YRusbuEdz/FTmz/ZCHqoWOaIJToTAFWFvq4MrZip0sfH
-         ZMtC7It3CW5yQfa+pssA3AAvkW3IT/HAKF9jU9QOqBDbtczWUxPw2zg9yYD4ca6Ul4sl
-         /L66+Puw1yhpyMFAYHctjn/9JMtvwjGQOhwXjUmKFPj+4BXAEOdElceJkVwCZ3vD2DV4
-         6mPyNtQKIQTP4I5SDmy554m65nHLOAj8u2Xe5fzFUs2h5vfCqgzKejrdtXFcL1NzO5FH
-         ahkSm4JZ3HVGo4amx+d+pM7QHf93Xjbja0YndPyvwUfMNB+c/Hz6xoivmRvkKdgT6mlX
-         nG5w==
-X-Gm-Message-State: AOAM530SPu3PO0/rLqk3e50aJcENKQN27GqjkgC2Nmc6KZhzPu/yN/3/
-        8vjI8IOk+xylsKRYGi/+YRDRYz+09eZiiomFn94=
-X-Google-Smtp-Source: ABdhPJymM3jUthOU7MUC7BJJVYVEZLSfzetmtXN1UCJV7+dkv0NdChE4LhYysx3KVtt2ozOxEExy7AyZyfrvt66ViT4=
-X-Received: by 2002:a9d:2646:: with SMTP id a64mr3032121otb.107.1594718399477;
- Tue, 14 Jul 2020 02:19:59 -0700 (PDT)
+        Tue, 14 Jul 2020 05:20:18 -0400
+X-UUID: 40cb303faeb34b5f9cfe22808e3e0d28-20200714
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=hmsORDIPMJN07qmiFoSYlo7v/gV+W406wr5ivtTn3g0=;
+        b=vFJdk8vBozqBQgg8Au52/fUn1c7a70GE7L3pamzC8jj4AUih0HBXY1lmMxnbtldG9wlh9sFyLtUiAwBTgesl43vzLufANeDNi9wCODFMsbiKWAokUxhzzXXPv20Xz3XA0vQmd2qRjvXYqQLh+XvrHRONCieHwPWlXa9cPnySwC0=;
+X-UUID: 40cb303faeb34b5f9cfe22808e3e0d28-20200714
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <hanks.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 2045001762; Tue, 14 Jul 2020 17:20:14 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 14 Jul 2020 17:20:04 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 14 Jul 2020 17:20:04 +0800
+From:   Hanks Chen <hanks.chen@mediatek.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>
+CC:     mtk01761 <wendell.lin@mediatek.com>,
+        Andy Teng <andy.teng@mediatek.com>,
+        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>,
+        Hanks Chen <hanks.chen@mediatek.com>
+Subject: [PATCH v8 0/7] Add basic SoC Support for Mediatek MT6779 SoC
+Date:   Tue, 14 Jul 2020 17:19:55 +0800
+Message-ID: <1594718402-20813-1-git-send-email-hanks.chen@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-References: <20200714122247.797cf01e@canb.auug.org.au> <20200714061654.GE183694@krava>
- <20200714083133.GF183694@krava>
-In-Reply-To: <20200714083133.GF183694@krava>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 14 Jul 2020 11:19:47 +0200
-Message-ID: <CAMuHMdVjyHAJJNNUwva=RnyLxV--kVpgSWAic7WoJMgf_Ri+NQ@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+DQpDaGFuZ2Ugc2luY2Ugdjg6DQpDb21taXQgImR0LWJpbmRpbmdzOiBwaW5jdHJsOiBhZGQgYmlu
+ZGluZ3MgZm9yIE1lZGlhVGVrIg0KLS0gdXBkYXRlIHRoZSBmb3JtYXQNCkNvbW1pdCAiYXJtNjQ6
+IGR0czogYWRkIGR0cyBub2RlcyBmb3IgTVQ2Nzc5Ig0KLS0gZml4IHRoZSB0eXBvIGluIHVhcnQg
+bm9kZQ0KDQoNCkNoYW5nZSBzaW5jZSB2NzoNCkNvbW1pdCAiZHQtYmluZGluZ3M6IHBpbmN0cmw6
+IGFkZCBiaW5kaW5ncyBmb3IgTWVkaWFUZWsiDQotLSBmaXggdHlwbyBhbmQgY2hhbmdlIG9yZGVy
+IG9mIHBhdGNoDQpDb21taXQgImNsazogbWVkaWF0ZWs6IGFkZCBVQVJUMCBjbG9jayBzdXBwb3J0
+Ig0KLS0gYWRkIGZpeGVzIHRhZyBhbmQgcmVhbCBuYW1lDQpDb21taXQgImFybTY0OiBkdHM6IGFk
+ZCBkdHMgbm9kZXMgZm9yIE1UNjc3OSINCi0tIGV4cG9zZSBhbGwgdGhyZWUgVUFSVHMgaW4gdGhl
+IGR0c2kNCg0KDQpDaGFuZ2Ugc2luY2UgdjY6DQpDb21taXQgImR0LWJpbmRpbmdzOiBwaW5jdHJs
+OiBhZGQgYmluZGluZ3MgZm9yIE1lZGlhVGVrIg0KLS0gZml4IGZvcm1hdCBvZiBiaW5kaW5ncyBh
+bmQgYWRkIGludGVycnVwdCBkZWZpbml0aW9uLg0KQ29tbWl0ICJwaW5jdHJsOiBtZWRpYXRlazog
+dXBkYXRlIHBpbm11eCBkZWZpbml0aW9ucyBmb3IiDQotLSB1c2UgdGhlIHN0YW5kYXJkIGluY2x1
+ZGUgcGF0aA0KQ29tbWl0ICJwaW5jdHJsOiBtZWRpYXRlazogYXZvaWQgdmlydHVhbCBncGlvIHRy
+eWluZyB0byBzZXQiDQotLSByZW1vdmUgdW5uZWNlc3NhcnkgZXJyb3IgaGFuZGxlcg0KQ29tbWl0
+ICJwaW5jdHJsOiBtZWRpYXRlazogYWRkIHBpbmN0cmwgc3VwcG9ydCBmb3IgTVQ2Nzc5IFNvQyIN
+Ci0tIGFkZCBzb21lIHVzZWZ1bCBoZWxwIHRleHQgaW4ga2NvbmZpZw0KQ29tbWl0ICJjbGs6IG1l
+ZGlhdGVrOiBhZGQgVUFSVDAgY2xvY2sgc3VwcG9ydCINCi0tIGFkZCBVQVJUMCBjbG9jayBzdXBw
+b3J0DQpDb21taXQgImFybTY0OiBkdHM6IGFkZCBkdHMgbm9kZXMgZm9yIE1UNjc3OSINCi0tIGFk
+ZCAiYmF1ZCIgYW5kICJidXMiIGNsb2NrcyBmb3IgdWFydA0KLS0gYWRkIG5ldyBhcHByb2FjaCBm
+b3IgbW1zeXMNCg0KDQpDaGFuZ2Ugc2luY2UgdjU6DQoxLiByZW1vdmUgdW5uZWNlc3Nhcnkgc3Ry
+aW5nIGluIGNvbW1pdCBtZXNzYWdlDQoNCg0KQ2hhbmdlIHNpbmNlIHY0Og0KMS4gZml4IGZvcm1h
+dCBvZiBwaW5jdHJsIGJpbmRpbmdzDQoNCg0KQ2hhbmdlIHNpbmNlIHYzOg0KMS4gYWRkIGJpbmRp
+bmdzIGZvciAibWVkaWF0ZWssbXQ2Nzc5LXBpbmN0cmwiDQoyLiBhZGQgc29tZSBjb21tZW50cyBp
+bnRvIHRoZSBjb2RlIChlLmcuIHZpcnR1YWwgZ3BpbyAuLi4pDQozLiBhZGQgQWNrZWQtYnkgdGFn
+cw0KNC4gYWRkIHBtdSBub2RlIGludG8gZHRzDQo1LiBzdXBwb3J0IHBwaSBwYXJ0aXRpb24gYW5k
+IGZpeCBiYXNlIGFkZHJlc3MgaW4gZ2ljIG5vZGUgb2YgZHRzDQoNCg0KQ2hhbmdlIHNpbmNlIHYy
+Og0KMS4gYWRkIFJldmlld2VkLWJ5IHRhZ3MNCjIuIGZpeCBjaGVja3BhdGNoIHdhcm5pbmdzIHdp
+dGggc3RyaWN0IGxldmVsDQoNCg0KQ2hhbmdlIHNpbmNlIHYxOg0KZmlyc3QgcGF0Y2hzZXQNCg0K
+QW5keSBUZW5nICgxKToNCiAgZHQtYmluZGluZ3M6IHBpbmN0cmw6IGFkZCBiaW5kaW5ncyBmb3Ig
+TWVkaWFUZWsgTVQ2Nzc5IFNvQw0KDQpIYW5rcyBDaGVuICg2KToNCiAgcGluY3RybDogbWVkaWF0
+ZWs6IHVwZGF0ZSBwaW5tdXggZGVmaW5pdGlvbnMgZm9yIG10Njc3OQ0KICBwaW5jdHJsOiBtZWRp
+YXRlazogYXZvaWQgdmlydHVhbCBncGlvIHRyeWluZyB0byBzZXQgcmVnDQogIHBpbmN0cmw6IG1l
+ZGlhdGVrOiBhZGQgcGluY3RybCBzdXBwb3J0IGZvciBNVDY3NzkgU29DDQogIHBpbmN0cmw6IG1l
+ZGlhdGVrOiBhZGQgbXQ2Nzc5IGVpbnQgc3VwcG9ydA0KICBhcm02NDogZHRzOiBhZGQgZHRzIG5v
+ZGVzIGZvciBNVDY3NzkNCiAgY2xrOiBtZWRpYXRlazogYWRkIFVBUlQwIGNsb2NrIHN1cHBvcnQN
+Cg0KIC4uLi9waW5jdHJsL21lZGlhdGVrLG10Njc3OS1waW5jdHJsLnlhbWwgICAgICB8ICAyMDMg
+KysNCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL01ha2VmaWxlICAgICAgICAgfCAgICAx
+ICsNCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS1ldmIuZHRzICAgfCAgIDMx
+ICsNCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS5kdHNpICAgICAgfCAgMjcx
+ICsrKw0KIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDY3NzkuYyAgICAgICAgICAgICB8ICAg
+IDIgKw0KIGRyaXZlcnMvcGluY3RybC9tZWRpYXRlay9LY29uZmlnICAgICAgICAgICAgICB8ICAg
+MTIgKw0KIGRyaXZlcnMvcGluY3RybC9tZWRpYXRlay9NYWtlZmlsZSAgICAgICAgICAgICB8ICAg
+IDEgKw0KIGRyaXZlcnMvcGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10Njc3OS5jICAgICB8ICA3
+ODMgKysrKysrKw0KIC4uLi9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwtbXRrLWNvbW1vbi12Mi5j
+ICB8ICAgMjUgKw0KIC4uLi9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwtbXRrLWNvbW1vbi12Mi5o
+ICB8ICAgIDEgKw0KIGRyaXZlcnMvcGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10ay1tdDY3Nzku
+aCB8IDIwODUgKysrKysrKysrKysrKysrKysNCiBkcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGlu
+Y3RybC1wYXJpcy5jICAgICAgfCAgICA3ICsNCiBpbmNsdWRlL2R0LWJpbmRpbmdzL3BpbmN0cmwv
+bXQ2Nzc5LXBpbmZ1bmMuaCAgfCAxMjQyICsrKysrKysrKysNCiAxMyBmaWxlcyBjaGFuZ2VkLCA0
+NjY0IGluc2VydGlvbnMoKykNCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL3BpbmN0cmwvbWVkaWF0ZWssbXQ2Nzc5LXBpbmN0cmwueWFtbA0KIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3OS1ldmIu
+ZHRzDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2
+Nzc5LmR0c2kNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3Bp
+bmN0cmwtbXQ2Nzc5LmMNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9waW5jdHJsL21lZGlh
+dGVrL3BpbmN0cmwtbXRrLW10Njc3OS5oDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvZHQt
+YmluZGluZ3MvcGluY3RybC9tdDY3NzktcGluZnVuYy5oDQoNCi0tIA0KMi4xOC4wDQo=
 
-On Tue, Jul 14, 2020 at 10:33 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> On Tue, Jul 14, 2020 at 08:16:54AM +0200, Jiri Olsa wrote:
-> > On Tue, Jul 14, 2020 at 12:22:47PM +1000, Stephen Rothwell wrote:
-> > > After merging the bpf-next tree, today's linux-next build (arm
-> > > multi_v7_defconfig) failed like this:
-> > >
-> > > tmp/ccsqpVCY.s: Assembler messages:
-> > > tmp/ccsqpVCY.s:78: Error: unrecognized symbol type ""
-> > > tmp/ccsqpVCY.s:91: Error: unrecognized symbol type ""
-> > >
-> > > I don't know what has caused this (I guess maybe the resolve_btfids
-> > > branch).
-> > >
-> > > I have used the bpf-next tree from next-20200713 for today.
-
-Bummer, didn't find this report before I had bisected this to
-c9a0f3b85e09dd16 ("bpf: Resolve BTF IDs in vmlinux image"), and
-investigated the root cause (@object) myself, as the failing file path
-(net/core/filter.o) was not mentioned...
-
-> > ok, trying to reproduce
->
-> damn crossbuilds.. change below fixes it for me,
-> will do some more testing and post it today
-
-Thanks, this fixes my (cross)arm32 build, and the (cross)arm64 build
-keeps working, and everything boots, so
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
