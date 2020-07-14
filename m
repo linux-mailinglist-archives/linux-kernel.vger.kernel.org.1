@@ -2,147 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A33621F4D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A49821F51B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729553AbgGNOme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 10:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
+        id S1729335AbgGNOoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 10:44:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728594AbgGNOma (ORCPT
+        with ESMTP id S1728910AbgGNOoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 10:42:30 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC38C061755;
-        Tue, 14 Jul 2020 07:42:30 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id md7so1627111pjb.1;
-        Tue, 14 Jul 2020 07:42:30 -0700 (PDT)
+        Tue, 14 Jul 2020 10:44:14 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF94C061755;
+        Tue, 14 Jul 2020 07:44:13 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id e22so17435407edq.8;
+        Tue, 14 Jul 2020 07:44:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SP0Naqe+XyrnxJdPH8f9ichHee+APezC6SuY9ngtXIk=;
-        b=GV4k29JuC5mkobx0g3nRtMcPBcK9WLwmE/uhek51rHSWApaFN1yLu2Zb0nnq73fUE+
-         NOHGuWA9x81GtzwesIZf08C4cpi7nwl9pF1Lxgva49TRvhA4Sz8rKyyQCDH+kgLg5BAt
-         GR6Jzp66fdFLtGZmj+ym2g9TW6xOR9FKSOMgdm3CmIH0zjeqRixHoq/bH029UrlKgWrg
-         6H3od+zUs5sI4ZqIScykWY06FxP8z3yXA1HPRjg5JaMRE+B77eByQPkQ4BT40DXNwN8L
-         D72ErKnc+Be611GdoBTrxC6bM4kR7TW0pwX0ypn7Q+1DzGOOWr5YHpVmD2+q8+oUZGdY
-         iPXg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t30atcJvCbG4JSsj3Z+i70oJNsi5h+N/EZl6DSby6dA=;
+        b=EPGp6O7E7TlY2HJxPwK7ozJTa7XMsbUUCwAsFWhW0hPfsjSsqjvn8tYsGuRJQhl1Px
+         TofguusDy8w9gebOZZsa9zFNfLYltjT/Ox4mxzlorkvWISam3HIh8USRs8Q/pKHmzgc/
+         1aqj2SoRvq6j9xUll3X3tMSYovOOjuMqjpqqo9KIMKn4K+DQ7U2Cc90WAceCwlDY4gme
+         sLViFNidrhoRu/7EDF3yhgxLHXn//uAIj9udQZZ3VxMgjYUbx/c0m2vyjdJpQOx1uW8J
+         DK4Cpd/h8Ne92paB2HZuWrrhHoody238f3a0CR83h9gZBtdaswivOTXYJrpEYkYmWtzx
+         zV/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=SP0Naqe+XyrnxJdPH8f9ichHee+APezC6SuY9ngtXIk=;
-        b=LY0zv4IU4DLdLutZgwkm8x7PWHKs6ahG2StScsmByYvrQv+5mpEyKJlIXBvpDtSlNo
-         Rn31sH2CKDZ32iY0u4f0OGtewMTvLZGJXf5fUOVdIOLvj1aPn2p9oFk4P6JCGXzq3oZJ
-         RWgfQelOc7oZelHvUYehOpkkgqZQV7SdkefG6MFE88Kj6o9CL4K9A/98ZZ9Q/r2Ww3ss
-         zkjzAQdaY5+E5Ve9QwU/QIsRlIBiKEtz0PESgw9WBRNxo3/GeCHHmsE5vw5D+Bz8/ezl
-         5k43OVbxd3x2ZI7Qq4giffDLMMXLkfrfIpgebgDesKHNhHGGTh9lLP87cHjhGifdauCC
-         IIqg==
-X-Gm-Message-State: AOAM53079bRWEDz07Ja+mI5HCCumGN4E1sip152lgLzKWF54X+ldofy4
-        ft9hYyCxrHzTOaXjqAvKIK0=
-X-Google-Smtp-Source: ABdhPJyXLpAXYb4IkQRZC+hSMIGJW6iNB3EXKAM3DlPY/X13BbrGTTZ2JMycam+qLSaTRPE+QGLpxQ==
-X-Received: by 2002:a17:902:54c:: with SMTP id 70mr4383816plf.0.1594737750382;
-        Tue, 14 Jul 2020 07:42:30 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b14sm17390441pfo.28.2020.07.14.07.42.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 07:42:29 -0700 (PDT)
-Subject: Re: [PATCHv3 3/4] watchdog: rti-wdt: attach to running watchdog
- during probe
-To:     Tero Kristo <t-kristo@ti.com>, wim@linux-watchdog.org,
-        linux-watchdog@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jan.kiszka@siemens.com
-References: <20200713131818.825-1-t-kristo@ti.com>
- <20200713131818.825-4-t-kristo@ti.com>
- <0c69734d-b301-7762-7614-0644e2a719ba@roeck-us.net>
- <2a92083c-f8bd-7a42-25e2-ee6ae354a4de@ti.com>
- <19373936-7566-3936-428a-2f2f7f3392d4@roeck-us.net>
- <350ea70f-9647-863c-a4f7-6ba7c402ccff@ti.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <ad4bd82f-3f6f-0a32-3d9f-32e66817e61a@roeck-us.net>
-Date:   Tue, 14 Jul 2020 07:42:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t30atcJvCbG4JSsj3Z+i70oJNsi5h+N/EZl6DSby6dA=;
+        b=HAxin06TtHn+vCZ0DhD/SwfpnrTiOVhXWJkRaNDW1sOvYsq7SZMs/pT2aYkhnFEKDy
+         CPg/vyF/NaTMIhas+ZU0Gk+tUcmoUYru+x8XDgDJcKSN2ixeR7EPAIvA5iKBT/tPYlAT
+         vzBelJRPvIAi/o8K+c6H+LvgdX3jzyH1WIaBSNfN8NPFmZNG7KroLQ+1TmOjLhmHH2ks
+         ELT+nt4qYcUx1jb7SqPS0Lco/HWnjZrqXfh6uT0bC0+3JHeTsstDw+aQgzXUZ06tud6g
+         ph1BmV2JnV1gGaV53aZukTOaEhJ0Kh16SnBMlqrRj9g31Gm7XXvycO6TGXSpGJ4mnj6r
+         wLAA==
+X-Gm-Message-State: AOAM531vROLWkxDPXeJfAmOvppxRJ1/Q2qGrMuM1GD+KU/YCI075XI5I
+        w1aJaHUC6nqA2VzEmcgvXx4=
+X-Google-Smtp-Source: ABdhPJzDhO7M+TA49TC1WlNGRmopdrNGfkhFKH1h4oqd37edQ6MScQaH4qa3vHjnvYaxHOfojx8gwA==
+X-Received: by 2002:aa7:c341:: with SMTP id j1mr5070467edr.197.1594737852087;
+        Tue, 14 Jul 2020 07:44:12 -0700 (PDT)
+Received: from skbuf ([188.25.219.134])
+        by smtp.gmail.com with ESMTPSA id b6sm14937194eds.64.2020.07.14.07.44.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 07:44:11 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 17:44:09 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Sergey Organov <sorganov@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fugang Duan <fugang.duan@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [PATCH v2 net] net: fec: fix hardware time stamping by external
+ devices
+Message-ID: <20200714144409.ymnj6fhlnztsg6ir@skbuf>
+References: <20200711120842.2631-1-sorganov@gmail.com>
+ <20200711231937.wu2zrm5spn7a6u2o@skbuf>
+ <87wo387r8n.fsf@osv.gnss.ru>
+ <20200712150151.55jttxaf4emgqcpc@skbuf>
+ <87r1tg7ib9.fsf@osv.gnss.ru>
+ <20200712193344.bgd5vpftaikwcptq@skbuf>
+ <87365wgyae.fsf@osv.gnss.ru>
+ <20200712231546.4k6qyaiq2cgok3ep@skbuf>
+ <878sfmcluf.fsf@osv.gnss.ru>
+ <20200714142324.oq7od3ylwd63ohyj@skbuf>
 MIME-Version: 1.0
-In-Reply-To: <350ea70f-9647-863c-a4f7-6ba7c402ccff@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714142324.oq7od3ylwd63ohyj@skbuf>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/20 12:13 AM, Tero Kristo wrote:
-[ ... ]
-
->>> Well, you can re-program it but... It does not take effect until next window starts, so basically we need to take care of the currently running window anyways after which re-programming it doesn't make much sense anymore. And handling the switch from one setup to next would add extra complexity.
->>>
->>
->> Seems to me that hardware team really made an effort to make the
->> watchdog as difficult to program as possible :-(.
+On Tue, Jul 14, 2020 at 05:23:24PM +0300, Vladimir Oltean wrote:
+> On Tue, Jul 14, 2020 at 03:39:04PM +0300, Sergey Organov wrote:
+> > Vladimir Oltean <olteanv@gmail.com> writes:
+> > 
+> > > On Mon, Jul 13, 2020 at 01:32:09AM +0300, Sergey Organov wrote:
+> > 
+> > [...]
+> > 
+> > >> > From the perspective of the mainline kernel, that can never happen.
+> > >>
+> > >> Yet in happened to me, and in some way because of the UAPI deficiencies
+> > >> I've mentioned, as ethtool has entirely separate code path, that happens
+> > >> to be correct for a long time already.
+> > >>
+> > >
+> > > Yup, you are right:
+> > >
+> > 
+> > [...]
+> > 
+> > > Very bad design choice indeed...
+> > > Given the fact that the PHY timestamping needs massaging from MAC driver
+> > > for plenty of other reasons, now of all things, ethtool just decided
+> > > it's not going to consult the MAC driver about the PHC it intends to
+> > > expose to user space, and just say "here's the PHY, deal with it". This
+> > > is a structural bug, I would say.
+> > >
+> > >> > From your perspective as a developer, in your private work tree, where
+> > >> > _you_ added the necessary wiring for PHY timestamping, I fully
+> > >> > understand that this is exactly what happened _to_you_.
+> > >> > I am not saying that PHY timestamping doesn't need this issue fixed. It
+> > >> > does, and if it weren't for DSA, it would have simply been a "new
+> > >> > feature", and it would have been ok to have everything in the same
+> > >> > patch.
+> > >>
+> > >> Except that it's not a "new feature", but a bug-fix of an existing one,
+> > >> as I see it.
+> > >>
+> > >
+> > > See above. It's clear that the intention of the PHY timestamping support
+> > > is for MAC drivers to opt-in, otherwise some mechanism would have been
+> > > devised such that not every single one of them would need to check for
+> > > phy_has_hwtstamp() in .ndo_do_ioctl(). That simply doesn't scale. Also,
+> > > it seems that automatically calling phy_ts_info from
+> > > __ethtool_get_ts_info is not coherent with that intention.
+> > >
+> > > I need to think more about this. Anyway, if your aim is to "reduce
+> > > confusion" for others walking in your foot steps, I think this is much
+> > > worthier of your time: avoiding the inconsistent situation where the MAC
+> > > driver is obviously not ready for PHY timestamping, however not all
+> > > parts of the kernel are in agreement with that, and tell the user
+> > > something else.
+> > 
+> > You see, I have a problem on kernel 4.9.146. After I apply this patch,
+> > the problem goes away, at least for FEC/PHY combo that I care about, and
+> > chances are high that for DSA as well, according to your own expertise.
+> > Why should I care what is or is not ready for what to get a bug-fix
+> > patch into the kernel? Why should I guess some vague "intentions" or
+> > spend my time elsewhere?
+> > 
+> > Also please notice that if, as you suggest, I will propose only half of
+> > the patch that will fix DSA only, then I will create confusion for
+> > FEC/PHY users that will have no way to figure they need another part of
+> > the fix to get their setup to work.
+> > 
+> > Could we please finally agree that, as what I suggest is indeed a simple
+> > bug-fix, we could safely let it into the kernel?
+> > 
+> > Thanks,
+> > -- Sergey
 > 
-> Yea, it is surprisingly difficult to program... when watchdogs in principle are extremely simple pieces of HW. This claims to be some automotive grade watchdog, which means it has the window in place.
+> I cannot contradict you, you have all the arguments on your side. The
+> person who added support for "ethtool -T" in commit c8f3a8c31069
+> ("ethtool: Introduce a method for getting time stamping capabilities.")
+> made a fundamental mistake in that they exposed broken functionality to
+> the user, in case CONFIG_NETWORK_PHY_TIMESTAMPING is enabled and the MAC
+> driver doesn't fulfill the requirements, be they skb_tx_timestamp(),
+> phy_has_hwtstamp() and what not. So, therefore, any patch that is adding
+> PHY timestamping compatibility in a MAC driver can rightfully claim that
+> it is fixing a bug, a sloppy design. Fair enough.
 > 
+> The only reason why I mentioned about spending your time on useful
+> things is because in your previous series you seemed to be concerned
+> about that. In retrospect, I believe you agree with me that your
+> confusion would have been significantly lower if the output of "ethtool
+> -T" was in harmony with the actual source of hardware timestamps.
+> Now that we discussed it through and I did see your point, I just
+> suggested what I believe to be the fundamental issue here, don't shoot
+> the messenger. Of course you are free to spend your time however you
+> want to.
+> 
+> Acked-by: Vladimir Oltean <olteanv@gmail.com>
+> 
+> Thanks,
+> -Vladimir
 
-We are getting a bit off topic, but that almost sounds like
-"automotive" translates to "it must be hard to program".
-I can not think of a valid reason for such a window, no matter
-the circumstances. Either case, dealing with the window in the
-kernel in that situation (ie if some specification states that
-the window must exist) would be the wrong solution and circumvent
-the reason for having it in the first place.
+Of course, it would be good if you sent a new version with the sha1sum
+of the Fixes: tag having the right length, otherwise people will
+complain.
 
-Not that this matters here, of course. I am just wondering what the impact
-would be if the driver is indeed used in such an application. For example,
-some compliance test code might try to ping the watchdog outside the window
-to test its reaction. Such test code would fail if the ping is delayed
-by the kernel.
-
-Guenter
+Thanks,
+-Vladimir
