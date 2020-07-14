@@ -2,75 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E25B21F8AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F0921F8BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728911AbgGNSAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:00:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55368 "EHLO mail.kernel.org"
+        id S1728169AbgGNSDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:03:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726762AbgGNSAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:00:39 -0400
+        id S1727028AbgGNSDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:03:24 -0400
 Received: from embeddedor (unknown [201.162.240.73])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7540522582;
-        Tue, 14 Jul 2020 18:00:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B450F22582;
+        Tue, 14 Jul 2020 18:03:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594749639;
-        bh=3/I2eTVPWqvrsySRhFsLdL2VS130lm9nIDIg6wCK//Y=;
+        s=default; t=1594749803;
+        bh=27yz5joe+49D2494fVuVbmM7h/G2j1WWWKnYTtSpw7o=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aFWSPCFqzRP4iRvQgv8DRsG9NhBv6ElfZROED0uvt+26WJ3714qsCtztlEWqgPOB3
-         CTWJux3REx/kZEqn284Yfd30b4TzC1sN5sW8WdMjxRqepIVKsM7QzZ1fVD3EDdaNgl
-         DXlOBuEJso4aLPQP8erdbhFDOvqNzGaiQ3yphLwg=
-Date:   Tue, 14 Jul 2020 13:06:11 -0500
+        b=hH8elfPLJqZU4PF+MMAJRQZhsLdzvNUaVZjCRylV24xv4YMR7Q/R2Tz9ZwK2qC915
+         mXl6OFopoiUl6QIUl98T0Yz13cy7X3Zx68mZgzKYak6Kq7ODLp0g8kKrrrHKzDjMws
+         HOXqxSydOTFJcBvQXegyrM7c/FxaWVF7xRok/ptQ=
+Date:   Tue, 14 Jul 2020 13:08:55 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] hpilo: Replace one-element array with
- flexible-array member
-Message-ID: <20200714180611.GA30749@embeddedor>
-References: <20200714154449.GA26153@embeddedor>
- <20200714161948.GA2092551@kroah.com>
+To:     "Winkler, Tomas" <tomas.winkler@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] mei: Avoid the use of one-element arrays
+Message-ID: <20200714180855.GA31158@embeddedor>
+References: <20200714174644.GA30158@embeddedor>
+ <fe3b8d4a4eb04ead83ffcefe12fd218e@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200714161948.GA2092551@kroah.com>
+In-Reply-To: <fe3b8d4a4eb04ead83ffcefe12fd218e@intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 06:19:48PM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Jul 14, 2020 at 10:44:49AM -0500, Gustavo A. R. Silva wrote:
-> > There is a regular need in the kernel to provide a way to declare
-> > having a dynamically sized set of trailing elements in a structure.
-> > Kernel code should always use “flexible array members”[1] for these
-> > cases. The older style of one-element or zero-length arrays should
-> > no longer be used[2].
+On Tue, Jul 14, 2020 at 05:54:32PM +0000, Winkler, Tomas wrote:
 > > 
-> > For this particular case, it is important to notice that the cachelines
-> > change from 7 to 6 after the flexible-array conversion:
+> > There is a regular need in the kernel to provide a way to declare having a
+> > dynamically sized set of trailing elements in a structure.
+> > Kernel code should always use “flexible array members”[1] for these cases
+> > or, as in this particular case, replace the one-element array with a simple
+> > value type u8 reserved once this is just a placeholder for alignment. The older
+> > style of one-element or zero-length arrays should no longer be used[2].
+> > 
+> > Also, while there, use the preferred form for passing a size of a struct.
+> > The alternative form where struct name is spelled out hurts readability and
+> > introduces an opportunity for a bug when the variable type is changed but
+> > the corresponding sizeof that is passed as argument is not.
+> > 
+> > [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> > [2] https://github.com/KSPP/linux/issues/79
+> > 
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> I'm okay with the patch but in this case the description is a bit off. 
+> In this case there was no intention for a flexible arrays its just a reserved field. 
 > 
-> That's really funny to see.  Nice work, I'll go queue this up.  I doubt
-> anyone will notice as this is a very old driver :)
-> 
 
-Yep; by the way, notice the link to the Kernel CI test results:
+The reserved field is actually mentioned in the description:
 
-https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/kernel-ci/hpilo-20200714.md
-
-I plan to add the generation --and inclusion in the changelog text-- of
-such links to my workflow, whenever possible.
-
-When Kernel CI reports 'SUCCESS', they don't send the report to any mailing
-list; they only send those reports to the maintainers/developers. So. I'm
-going to store the ones I get in this github repository:
-
-https://github.com/GustavoARSilva/linux-hardening/tree/master/cii/kernel-ci/
+"... or, as in this particular case, replace the one-element array with a simple
+value type u8 reserved once this is just a placeholder for alignment."
 
 Thanks
 --
 Gustavo
+
+> > ---
+> >  drivers/misc/mei/hbm.c | 4 ++--
+> >  drivers/misc/mei/hw.h  | 6 +++---
+> >  2 files changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/misc/mei/hbm.c b/drivers/misc/mei/hbm.c index
+> > a44094cdbc36..f020d5594154 100644
+> > --- a/drivers/misc/mei/hbm.c
+> > +++ b/drivers/misc/mei/hbm.c
+> > @@ -408,14 +408,14 @@ static int mei_hbm_add_cl_resp(struct mei_device
+> > *dev, u8 addr, u8 status)  {
+> >  	struct mei_msg_hdr mei_hdr;
+> >  	struct hbm_add_client_response resp;
+> > -	const size_t len = sizeof(struct hbm_add_client_response);
+> > +	const size_t len = sizeof(resp);
+> >  	int ret;
+> > 
+> >  	dev_dbg(dev->dev, "adding client response\n");
+> > 
+> >  	mei_hbm_hdr(&mei_hdr, len);
+> > 
+> > -	memset(&resp, 0, sizeof(struct hbm_add_client_response));
+> > +	memset(&resp, 0, len);
+> >  	resp.hbm_cmd = MEI_HBM_ADD_CLIENT_RES_CMD;
+> >  	resp.me_addr = addr;
+> >  	resp.status  = status;
+> > diff --git a/drivers/misc/mei/hw.h b/drivers/misc/mei/hw.h index
+> > b1a8d5ec88b3..8c0297f0e7f3 100644
+> > --- a/drivers/misc/mei/hw.h
+> > +++ b/drivers/misc/mei/hw.h
+> > @@ -346,13 +346,13 @@ struct hbm_add_client_request {
+> >   * @hbm_cmd: bus message command header
+> >   * @me_addr: address of the client in ME
+> >   * @status: if HBMS_SUCCESS then the client can now accept connections.
+> > - * @reserved: reserved
+> > + * @reserved: reserved for alignment.
+> >   */
+> >  struct hbm_add_client_response {
+> >  	u8 hbm_cmd;
+> >  	u8 me_addr;
+> >  	u8 status;
+> > -	u8 reserved[1];
+> > +	u8 reserved;
+> >  } __packed;
+> > 
+> >  /**
+> > @@ -461,7 +461,7 @@ struct hbm_notification {
+> >  	u8 hbm_cmd;
+> >  	u8 me_addr;
+> >  	u8 host_addr;
+> > -	u8 reserved[1];
+> > +	u8 reserved;
+> >  } __packed;
+> > 
+> >  /**
+> > --
+> > 2.27.0
+> 
