@@ -2,315 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A17F21E9CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5474121E9CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbgGNHON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:14:13 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55744 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgGNHOM (ORCPT
+        id S1726955AbgGNHNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:13:50 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:38077 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbgGNHNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:14:12 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06E7DXMd020986;
-        Tue, 14 Jul 2020 02:13:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594710813;
-        bh=R7NrFqekFwNIgVZJ8oOZUWFh/jRjHZvvXOhWevCTS5A=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=i8MPOFbApkl1FUCOqL4tSU/X+PCQw1wg2d17CKg3WGUuWW+5zPRQNXwMuazxWkIzt
-         43ppQ62NxJbmyMFnI6sncRnChdwXLb7H8WZVI+D2Ht96HfpNmycw7OMM69D028Nvn9
-         Ukm5HsdJHSHkyvPui8eSLay2IxfwovxA1Zk5vLjs=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06E7DWUb023783
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 14 Jul 2020 02:13:32 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 14
- Jul 2020 02:13:32 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 14 Jul 2020 02:13:32 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06E7DTaG127751;
-        Tue, 14 Jul 2020 02:13:31 -0500
-Subject: Re: [PATCHv3 3/4] watchdog: rti-wdt: attach to running watchdog
- during probe
-To:     Guenter Roeck <linux@roeck-us.net>, <wim@linux-watchdog.org>,
-        <linux-watchdog@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jan.kiszka@siemens.com>
-References: <20200713131818.825-1-t-kristo@ti.com>
- <20200713131818.825-4-t-kristo@ti.com>
- <0c69734d-b301-7762-7614-0644e2a719ba@roeck-us.net>
- <2a92083c-f8bd-7a42-25e2-ee6ae354a4de@ti.com>
- <19373936-7566-3936-428a-2f2f7f3392d4@roeck-us.net>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <350ea70f-9647-863c-a4f7-6ba7c402ccff@ti.com>
-Date:   Tue, 14 Jul 2020 10:13:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 14 Jul 2020 03:13:50 -0400
+Received: by mail-lj1-f193.google.com with SMTP id x9so11229970ljc.5;
+        Tue, 14 Jul 2020 00:13:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=I8q/kKOoJ4EDNZmyw9B1tAKEj1PJEvtqbKVmsPEfvXs=;
+        b=uQCAhWNsC0e3oJaE6PhefE+B4+veKwpnFXSQzq4MaB30U5gvjYSmGElbh9OZEDh7CJ
+         1VpAtvxNP2cSJyjzyXRVo+a/i6slMA8xwHTxT83NgIraC3ukOhgRf96gAXVVlWwYItWN
+         t4AAW1jH9JuH9+9vKZqI4TEtd1Pl6ttTeTGWCoQodJbdl4ht5hcVLbpMNgCL2M/d3kJj
+         38+NY1BKhWERks5eI3F/nPQZsM0CtuPN4Uwl9nvpNLHkp2i7ktBRA+hrXpS19bb0cpgs
+         f9tuvIaA5safynrIjfPFN8LNz7e4/qXIB3RUEz3bE4SJlVkg3jaDohqo5t5pzFkV1QCy
+         q0hA==
+X-Gm-Message-State: AOAM532lpg6vdm1gd9LfgZ6r69SUoMVPLA9wmbWnUfrAvPUCVqLuHTND
+        oCSSCYLA4rIx2FZlGe0mHUv4ebrY300=
+X-Google-Smtp-Source: ABdhPJzQkSTYKCrOtoiirkCn7UfcT2sr5AYRFu3/FFh6u8vMuj1l/H7fCj2W0oyXAz0VwVAj35osCg==
+X-Received: by 2002:a2e:9a16:: with SMTP id o22mr1753925lji.40.1594710826288;
+        Tue, 14 Jul 2020 00:13:46 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id o64sm5093636lfa.22.2020.07.14.00.13.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 00:13:45 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1jvF8V-0008HK-9M; Tue, 14 Jul 2020 09:13:56 +0200
+Date:   Tue, 14 Jul 2020 09:13:55 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, kernel@pengutronix.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: Re: [PATCH v7 3/3] leds: trigger: implement a tty trigger
+Message-ID: <20200714071355.GY3453@localhost>
+References: <20200707165958.16522-1-u.kleine-koenig@pengutronix.de>
+ <20200707165958.16522-4-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <19373936-7566-3936-428a-2f2f7f3392d4@roeck-us.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20200707165958.16522-4-u.kleine-koenig@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2020 10:06, Guenter Roeck wrote:
-> On 7/13/20 11:50 PM, Tero Kristo wrote:
->> On 14/07/2020 08:15, Guenter Roeck wrote:
->>> On 7/13/20 6:18 AM, Tero Kristo wrote:
->>>> If the RTI watchdog is running already during probe, the driver must
->>>> configure itself to match the HW. Window size and timeout is probed from
->>>> hardware, and the last keepalive ping is adjusted to match it also.
->>>>
->>>> Signed-off-by: Tero Kristo <t-kristo@ti.com>
->>>> ---
->>>>    drivers/watchdog/rti_wdt.c | 111 +++++++++++++++++++++++++++++++++----
->>>>    1 file changed, 101 insertions(+), 10 deletions(-)
->>>>
->>>> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
->>>> index d456dd72d99a..45dfc546e371 100644
->>>> --- a/drivers/watchdog/rti_wdt.c
->>>> +++ b/drivers/watchdog/rti_wdt.c
->>>> @@ -35,7 +35,11 @@
->>>>      #define RTIWWDRX_NMI    0xa
->>>>    -#define RTIWWDSIZE_50P    0x50
->>>> +#define RTIWWDSIZE_50P        0x50
->>>> +#define RTIWWDSIZE_25P        0x500
->>>> +#define RTIWWDSIZE_12P5        0x5000
->>>> +#define RTIWWDSIZE_6P25        0x50000
->>>> +#define RTIWWDSIZE_3P125    0x500000
->>>>      #define WDENABLE_KEY    0xa98559da
->>>>    @@ -48,7 +52,7 @@
->>>>      #define DWDST            BIT(1)
->>>>    -static int heartbeat;
->>>> +static int heartbeat = DEFAULT_HEARTBEAT;
->>>>      /*
->>>>     * struct to hold data for each WDT device
->>>> @@ -79,11 +83,9 @@ static int rti_wdt_start(struct watchdog_device *wdd)
->>>>         * be petted during the open window; not too early or not too late.
->>>>         * The HW configuration options only allow for the open window size
->>>>         * to be 50% or less than that; we obviouly want to configure the open
->>>> -     * window as large as possible so we select the 50% option. To avoid
->>>> -     * any glitches, we accommodate 5% safety margin also, so we setup
->>>> -     * the min_hw_hearbeat at 55% of the timeout period.
->>>> +     * window as large as possible so we select the 50% option.
->>>>         */
->>>> -    wdd->min_hw_heartbeat_ms = 11 * wdd->timeout * 1000 / 20;
->>>> +    wdd->min_hw_heartbeat_ms = 500 * wdd->timeout;
->>>>          /* Generate NMI when wdt expires */
->>>>        writel_relaxed(RTIWWDRX_NMI, wdt->base + RTIWWDRXCTRL);
->>>> @@ -110,7 +112,48 @@ static int rti_wdt_ping(struct watchdog_device *wdd)
->>>>        return 0;
->>>>    }
->>>>    -static unsigned int rti_wdt_get_timeleft(struct watchdog_device *wdd)
->>>> +static int rti_wdt_setup_hw_hb(struct watchdog_device *wdd, u32 wsize)
->>>> +{
->>>> +    /*
->>>> +     * RTI only supports a windowed mode, where the watchdog can only
->>>> +     * be petted during the open window; not too early or not too late.
->>>> +     * The HW configuration options only allow for the open window size
->>>> +     * to be 50% or less than that.
->>>> +     */
->>>> +    switch (wsize) {
->>>> +    case RTIWWDSIZE_50P:
->>>> +        /* 50% open window => 50% min heartbeat */
->>>> +        wdd->min_hw_heartbeat_ms = 500 * heartbeat;
->>>> +        break;
->>>> +
->>>> +    case RTIWWDSIZE_25P:
->>>> +        /* 25% open window => 75% min heartbeat */
->>>> +        wdd->min_hw_heartbeat_ms = 750 * heartbeat;
->>>> +        break;
->>>> +
->>>> +    case RTIWWDSIZE_12P5:
->>>> +        /* 12.5% open window => 87.5% min heartbeat */
->>>> +        wdd->min_hw_heartbeat_ms = 875 * heartbeat;
->>>> +        break;
->>>> +
->>>> +    case RTIWWDSIZE_6P25:
->>>> +        /* 6.5% open window => 93.5% min heartbeat */
->>>> +        wdd->min_hw_heartbeat_ms = 935 * heartbeat;
->>>> +        break;
->>>> +
->>>> +    case RTIWWDSIZE_3P125:
->>>> +        /* 3.125% open window => 96.9% min heartbeat */
->>>> +        wdd->min_hw_heartbeat_ms = 969 * heartbeat;
->>>> +        break;
->>>> +
->>>> +    default:
->>>> +        return -EINVAL;
->>>> +    }
->>>> +
->>>> +    return 0;
->>>> +}
->>>> +
->>>> +static unsigned int rti_wdt_get_timeleft_ms(struct watchdog_device *wdd)
->>>>    {
->>>>        u64 timer_counter;
->>>>        u32 val;
->>>> @@ -123,11 +166,18 @@ static unsigned int rti_wdt_get_timeleft(struct watchdog_device *wdd)
->>>>          timer_counter = readl_relaxed(wdt->base + RTIDWDCNTR);
->>>>    +    timer_counter *= 1000;
->>>> +
->>>>        do_div(timer_counter, wdt->freq);
->>>>          return timer_counter;
->>>>    }
->>>>    +static unsigned int rti_wdt_get_timeleft(struct watchdog_device *wdd)
->>>> +{
->>>> +    return rti_wdt_get_timeleft_ms(wdd) / 1000;
->>>> +}
->>>> +
->>>>    static const struct watchdog_info rti_wdt_info = {
->>>>        .options = WDIOF_KEEPALIVEPING,
->>>>        .identity = "K3 RTI Watchdog",
->>>> @@ -148,6 +198,7 @@ static int rti_wdt_probe(struct platform_device *pdev)
->>>>        struct watchdog_device *wdd;
->>>>        struct rti_wdt_device *wdt;
->>>>        struct clk *clk;
->>>> +    u32 last_ping = 0;
->>>>          wdt = devm_kzalloc(dev, sizeof(*wdt), GFP_KERNEL);
->>>>        if (!wdt)
->>>> @@ -169,6 +220,14 @@ static int rti_wdt_probe(struct platform_device *pdev)
->>>>            return -EINVAL;
->>>>        }
->>>>    +    /*
->>>> +     * If watchdog is running at 32k clock, it is not accurate.
->>>> +     * Adjust frequency down in this case so that we don't pet
->>>> +     * the watchdog too often.
->>>> +     */
->>>> +    if (wdt->freq < 32768)
->>>> +        wdt->freq = wdt->freq * 9 / 10;
->>>> +
->>>
->>> So this is now only a problem is the window size was set restrictively
->>> in the BOS/ROMMON. Meaning it is still a problem. How is this better than
->>> before ? Why not just always set the window size to something reasonable ?
->>
->> Re-programming of the watchdog only takes effect at the next ping, then and only then will it adjust the window size + timeout period.
->>
+On Tue, Jul 07, 2020 at 06:59:58PM +0200, Uwe Kleine-K�nig wrote:
+> Usage is as follows:
 > 
-> What a mess. I am glad this isn't hardware I have to deal with.
-
-Hahah yeah. :)
-
+> 	myled=ledname
+> 	tty=ttyS0
 > 
->>>
->>>
->>>>        pm_runtime_enable(dev);
->>>>        ret = pm_runtime_get_sync(dev);
->>>>        if (ret) {
->>>> @@ -185,11 +244,8 @@ static int rti_wdt_probe(struct platform_device *pdev)
->>>>        wdd->min_timeout = 1;
->>>>        wdd->max_hw_heartbeat_ms = (WDT_PRELOAD_MAX << WDT_PRELOAD_SHIFT) /
->>>>            wdt->freq * 1000;
->>>> -    wdd->timeout = DEFAULT_HEARTBEAT;
->>>>        wdd->parent = dev;
->>>>    -    watchdog_init_timeout(wdd, heartbeat, dev);
->>>> -
->>>>        watchdog_set_drvdata(wdd, wdt);
->>>>        watchdog_set_nowayout(wdd, 1);
->>>>        watchdog_set_restart_priority(wdd, 128);
->>>> @@ -201,12 +257,47 @@ static int rti_wdt_probe(struct platform_device *pdev)
->>>>            goto err_iomap;
->>>>        }
->>>>    +    if (readl(wdt->base + RTIDWDCTRL) == WDENABLE_KEY) {
->>>> +        u32 time_left_ms;
->>>> +        u64 heartbeat_ms;
->>>> +        u32 wsize;
->>>> +
->>>> +        set_bit(WDOG_HW_RUNNING, &wdd->status);
->>>> +        time_left_ms = rti_wdt_get_timeleft_ms(wdd);
->>>> +        heartbeat_ms = readl(wdt->base + RTIDWDPRLD);
->>>> +        heartbeat_ms <<= WDT_PRELOAD_SHIFT;
->>>> +        heartbeat_ms *= 1000;
->>>> +        heartbeat_ms /= wdt->freq;
->>>
->>> Ah yes, the pitfalls of 64-bit divide operations.
->>
->> Should I convert this to use do_div? With 64bit archs this code is targeted at it runs just fine.
->>
+> 	echo tty > /sys/class/leds/$myled/trigger
+> 	echo $tty > /sys/class/leds/$myled/ttyname
 > 
-> ... and test builds on 32 bit architectures fail to compile, as reported
-> by 0-day. Maybe you don't care, fine, but then please remove all use of do_div
-> or other 64-bit divide functions from the driver and mark it as depending
-> on 64 bit.
-
-Let me try to fix this to compile on 32bit archs also. It probably is 
-never going to be run on such setup, but should be possible to fix it.
-
+> . When this new trigger is active it periodically checks the tty's
+> statistics and when it changed since the last check the led is flashed
+> once.
 > 
->>>
->>>> +        if (heartbeat_ms / 1000 != heartbeat)
->>>> +            dev_warn(dev, "watchdog already running, ignoring heartbeat config!\n");
->>>> +
->>>> +        heartbeat = heartbeat_ms / 1000;
->>>> +
->>>> +        wsize = readl(wdt->base + RTIWWDSIZECTRL);
->>>> +        ret = rti_wdt_setup_hw_hb(wdd, wsize);
->>>> +        if (ret) {
->>>> +            dev_err(dev, "bad window size.\n");
+> Signed-off-by: Uwe Kleine-K�nig <u.kleine-koenig@pengutronix.de>
+> ---
+>  .../ABI/testing/sysfs-class-led-trigger-tty   |   6 +
+>  drivers/leds/trigger/Kconfig                  |   7 +
+>  drivers/leds/trigger/Makefile                 |   1 +
+>  drivers/leds/trigger/ledtrig-tty.c            | 192 ++++++++++++++++++
+>  4 files changed, 206 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-class-led-trigger-tty
+>  create mode 100644 drivers/leds/trigger/ledtrig-tty.c
 > 
-> Maybe report what that bad window size actually is ?
+> diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-tty b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
+> new file mode 100644
+> index 000000000000..5c53ce3ede36
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
+> @@ -0,0 +1,6 @@
+> +What:		/sys/class/leds/<led>/ttyname
+> +Date:		Jul 2020
+> +KernelVersion:	5.8
+> +Contact:	linux-leds@vger.kernel.org
+> +Description:
+> +		Specifies the tty device name of the triggering tty
+> diff --git a/drivers/leds/trigger/Kconfig b/drivers/leds/trigger/Kconfig
+> index ce9429ca6dde..40ff08c93f56 100644
+> --- a/drivers/leds/trigger/Kconfig
+> +++ b/drivers/leds/trigger/Kconfig
+> @@ -144,4 +144,11 @@ config LEDS_TRIGGER_AUDIO
+>  	  the audio mute and mic-mute changes.
+>  	  If unsure, say N
+>  
+> +config LEDS_TRIGGER_TTY
+> +	tristate "LED Trigger for TTY devices"
+> +	depends on TTY
+> +	help
+> +	  This allows LEDs to be controlled by activity on ttys which includes
+> +	  serial devices like /dev/ttyS0.
+> +
+>  endif # LEDS_TRIGGERS
+> diff --git a/drivers/leds/trigger/Makefile b/drivers/leds/trigger/Makefile
+> index 733a83e2a718..25c4db97cdd4 100644
+> --- a/drivers/leds/trigger/Makefile
+> +++ b/drivers/leds/trigger/Makefile
+> @@ -15,3 +15,4 @@ obj-$(CONFIG_LEDS_TRIGGER_PANIC)	+= ledtrig-panic.o
+>  obj-$(CONFIG_LEDS_TRIGGER_NETDEV)	+= ledtrig-netdev.o
+>  obj-$(CONFIG_LEDS_TRIGGER_PATTERN)	+= ledtrig-pattern.o
+>  obj-$(CONFIG_LEDS_TRIGGER_AUDIO)	+= ledtrig-audio.o
+> +obj-$(CONFIG_LEDS_TRIGGER_TTY)		+= ledtrig-tty.o
+> diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/ledtrig-tty.c
+> new file mode 100644
+> index 000000000000..e44e2202fa34
+> --- /dev/null
+> +++ b/drivers/leds/trigger/ledtrig-tty.c
+> @@ -0,0 +1,192 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/delay.h>
+> +#include <linux/leds.h>
+> +#include <linux/module.h>
+> +#include <linux/slab.h>
+> +#include <linux/tty.h>
+> +#include <uapi/linux/serial.h>
+> +
+> +struct ledtrig_tty_data {
+> +	struct led_classdev *led_cdev;
+> +	struct delayed_work dwork;
+> +	struct mutex mutex;
+> +	const char *ttyname;
+> +	struct tty_struct *tty;
+> +	int rx, tx;
+> +};
+> +
+> +static void ledtrig_tty_halt(struct ledtrig_tty_data *trigger_data)
+> +{
+> +	cancel_delayed_work_sync(&trigger_data->dwork);
+> +}
 
-Ok, will print out the register value here.
+> +static ssize_t ttyname_store(struct device *dev,
+> +			     struct device_attribute *attr, const char *buf,
+> +			     size_t size)
+> +{
+> +	struct ledtrig_tty_data *trigger_data = led_trigger_get_drvdata(dev);
+> +	char *ttyname;
+> +	ssize_t ret = size;
+> +
+> +	ledtrig_tty_halt(trigger_data);
+> +
+> +	mutex_lock(&trigger_data->mutex);
+> +
+> +	if (size > 0 && buf[size - 1] == '\n')
+> +		size -= 1;
+> +
+> +	if (size) {
+> +		ttyname = kmemdup_nul(buf, size, GFP_KERNEL);
+> +		if (!ttyname) {
+> +			ret = -ENOMEM;
+> +			goto out_unlock;
+> +		}
+> +	} else {
+> +		ttyname = NULL;
+> +	}
+> +
+> +	kfree(trigger_data->ttyname);
+> +	tty_kref_put(trigger_data->tty);
+> +	trigger_data->tty = NULL;
+> +
+> +	trigger_data->ttyname = ttyname;
+> +
+> +out_unlock:
+> +	mutex_unlock(&trigger_data->mutex);
+> +
+> +	if (ttyname)
+> +		ledtrig_tty_restart(trigger_data);
+> +
+> +	return ret;
+> +}
+> +static DEVICE_ATTR_RW(ttyname);
+> +
+> +static void ledtrig_tty_work(struct work_struct *work)
+> +{
+> +	struct ledtrig_tty_data *trigger_data =
+> +		container_of(work, struct ledtrig_tty_data, dwork.work);
+> +	struct serial_icounter_struct icount;
+> +	int ret;
+> +	bool firstrun = false;
+> +
+> +	mutex_lock(&trigger_data->mutex);
+> +
+> +	BUG_ON(!trigger_data->ttyname);
+> +
+> +	/* try to get the tty corresponding to $ttyname */
+> +	if (!trigger_data->tty) {
+> +		dev_t devno;
+> +		struct tty_struct *tty;
+> +		int ret;
+> +
+> +		firstrun = true;
+> +
+> +		ret = tty_dev_name_to_number(trigger_data->ttyname, &devno);
+> +		if (ret < 0)
+> +			/*
+> +			 * A device with this name might appear later, so keep
+> +			 * retrying.
+> +			 */
+> +			goto out;
+> +
+> +		tty = tty_kopen_shared(devno);
+> +		if (IS_ERR(tty) || !tty)
+> +			/* What to do? retry or abort */
+> +			goto out;
+> +
+> +		trigger_data->tty = tty;
+> +	}
+> +
+> +	ret = tty_get_icount(trigger_data->tty, &icount);
+> +	if (ret)
+> +		return;
+> +
+> +	while (firstrun ||
+> +	       icount.rx != trigger_data->rx ||
+> +	       icount.tx != trigger_data->tx) {
+> +
+> +		led_set_brightness(trigger_data->led_cdev, LED_ON);
+> +
+> +		msleep(100);
+> +
+> +		led_set_brightness(trigger_data->led_cdev, LED_OFF);
+> +
+> +		trigger_data->rx = icount.rx;
+> +		trigger_data->tx = icount.tx;
+> +		firstrun = false;
+> +
+> +		ret = tty_get_icount(trigger_data->tty, &icount);
+> +		if (ret)
+> +			return;
+> +	}
 
-> 
->>>> +            goto err_iomap;
->>>> +        }
->>>> +
->>>> +        last_ping = heartbeat_ms - time_left_ms;
->>>> +        if (time_left_ms > heartbeat_ms) {
->>>> +            dev_warn(dev, "time_left > heartbeat? Assuming last ping just before now.\n");
->>>> +            last_ping = 0;
->>>> +        }
->>>
->>> All that complexity makes me wonder if it wouldn't be better to just reprogram
->>> the watchdog if it is already running. Any reason for not doing that ?
->>
->> Well, you can re-program it but... It does not take effect until next window starts, so basically we need to take care of the currently running window anyways after which re-programming it doesn't make much sense anymore. And handling the switch from one setup to next would add extra complexity.
->>
-> 
-> Seems to me that hardware team really made an effort to make the
-> watchdog as difficult to program as possible :-(.
+Haven't looked at the latest proposal in detail, but this looks broken
+as you can potentially loop indefinitely in a worker thread, and with no
+way to stop the trigger (delayed work).
 
-Yea, it is surprisingly difficult to program... when watchdogs in 
-principle are extremely simple pieces of HW. This claims to be some 
-automotive grade watchdog, which means it has the window in place.
+> +
+> +out:
+> +	mutex_unlock(&trigger_data->mutex);
+> +	schedule_delayed_work(&trigger_data->dwork, msecs_to_jiffies(100));
+> +}
 
--Tero
-
-> 
->> -Tero
->>
->>>
->>>> +    }
->>>> +
->>>> +    watchdog_init_timeout(wdd, heartbeat, dev);
->>>> +
->>>>        ret = watchdog_register_device(wdd);
->>>>        if (ret) {
->>>>            dev_err(dev, "cannot register watchdog device\n");
->>>>            goto err_iomap;
->>>>        }
->>>>    +    if (last_ping)
->>>> +        watchdog_set_last_hw_keepalive(wdd, last_ping);
->>>> +
->>>>        return 0;
->>>>      err_iomap:
->>>>
->>>
->>
->> -- 
-> 
-
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Johan
