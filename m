@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C1621FD41
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE34821FD2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729710AbgGNTXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:23:52 -0400
-Received: from mga11.intel.com ([192.55.52.93]:9953 "EHLO mga11.intel.com"
+        id S1729502AbgGNTT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:19:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727930AbgGNTXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:23:51 -0400
-IronPort-SDR: kWL5vu8lEG7WbOubWKGL/AZAtgk69fWGkm5J/r8kIHlbETWF6vuzdAM2f9cugRn5M62Fv6l55R
- 7X235GhGpYAQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="147022483"
-X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
-   d="scan'208";a="147022483"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 12:23:51 -0700
-IronPort-SDR: PCMjJ49O7HM1ZDukmb0/xSV3g6OqD7Hs4Q4nkyKXVCpxH8AQYuOK6cDIyzUqcC1dWE+GGzGVQL
- DKKPOK90aDlg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
-   d="scan'208";a="285859255"
-Received: from guptapadev.jf.intel.com (HELO guptapadev.amr) ([10.54.74.188])
-  by orsmga006.jf.intel.com with ESMTP; 14 Jul 2020 12:23:51 -0700
-Date:   Tue, 14 Jul 2020 12:17:59 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Gomez Iglesias, Antonio" <antonio.gomez.iglesias@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Waiman Long <longman@redhat.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] x86/bugs/multihit: Fix mitigation reporting when KVM is
- not in use
-Message-ID: <20200714191759.GA7116@guptapadev.amr>
-References: <267631f4db4fd7e9f7ca789c2efaeab44103f68e.1594689154.git.pawan.kumar.gupta@linux.intel.com>
- <20200714014540.GH29725@linux.intel.com>
- <099d6985-9e9f-1d9f-7098-58a9e26e4450@intel.com>
+        id S1728202AbgGNTT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:19:57 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 164902255F;
+        Tue, 14 Jul 2020 19:19:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594754396;
+        bh=pdt+ZEgfcDRHiUJp80sY+Xk7V9Swgajn9kAukK7kVoA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nZ51r8Iqlc54vZBYnsf0GzJRD/OcPD+7owGHrdIuH29eXK0ZbmN1wo77NO0QOdTtC
+         8OaMdI9+n0ZXkHcNykgmpmRdZOYF2sHbjijkAUMgCqEtV1EIzgsjCdaefnN7XGJWdJ
+         DvS357O/aozzO/GnIN4UXDV2fcezXUuzGOPeSInU=
+Date:   Tue, 14 Jul 2020 20:19:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Tudor.Ambarus@microchip.com
+Cc:     p.yadav@ti.com, vigneshr@ti.com, linux-spi@vger.kernel.org,
+        boris.brezillon@collabora.com, miquel.raynal@bootlin.com,
+        richard@nod.at, Nicolas.Ferre@microchip.com,
+        alexandre.belloni@bootlin.com, Ludovic.Desroches@microchip.com,
+        matthias.bgg@gmail.com, michal.simek@xilinx.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, nsekhar@ti.com
+Subject: Re: [PATCH v10 00/17] mtd: spi-nor: add xSPI Octal DTR support
+Message-ID: <20200714191947.GI4900@sirena.org.uk>
+References: <20200623183030.26591-1-p.yadav@ti.com>
+ <e6d4c015-b70f-40e3-2275-89d245e817e8@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nEsDIrWrg+hrB7l1"
 Content-Disposition: inline
-In-Reply-To: <099d6985-9e9f-1d9f-7098-58a9e26e4450@intel.com>
+In-Reply-To: <e6d4c015-b70f-40e3-2275-89d245e817e8@microchip.com>
+X-Cookie: Your password is pitifully obvious.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 07:57:53AM -0700, Dave Hansen wrote:
-> Let's stick to things which are at least static per reboot.  Checking
-> for X86_FEATURE_VMX or even CONFIG_KVM_INTEL seems like a good stopping
-> point.  "Could this kernel run a naughty guest?"  If so, report
-> "Vulnerable".  It's the same as Meltdown: "Could this kernel run
-> untrusted code?"  If so, report "Vulnerable".
 
-Thanks, These are good inputs. So what I need to add is a boot time
-check for VMX feature and report "Vulnerable" or "Not
-affected(VMX disabled)".
+--nEsDIrWrg+hrB7l1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Are you suggesting to not change the reporting when KVM deploys the
-"Split huge pages" mitigation? Is this because VMX can still be used by
-other VMMs?
+On Mon, Jul 13, 2020 at 06:34:12AM +0000, Tudor.Ambarus@microchip.com wrote:
 
-The current mitigation reporting is very specific to KVM:
+> These four patches are looking good, I had just few minor comments.
+> If you too think that they are ok, would you take them through the
+> SPI tree? If so, I would need an immutable tag on top of v5.8-rc1
+> preferably, so I can merge them back to SPI NOR and continue the
+> development on top of them.
 
-	- "KVM: Vulnerable"
-	- "KVM: Mitigation: Split huge pages"
+The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
 
-As the kernel doesn't know about the mitigation state of out-of-tree
-VMMs can we add VMX reporting to always say vulnerable when VMX is
-enabled:
+  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
 
-	- "VMX: Vulnerable, KVM: Vulnerable"
-	- "VMX: Vulnerable, KVM: Mitigation: Split huge pages"
+are available in the Git repository at:
 
-And if VMX is disabled report:
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-mem-dtr
 
-	- "VMX: Not affected(VMX disabled)"
+for you to fetch changes up to 4728f073bfc66b8b555274ef0d7741d7f5a48947:
 
-or something like that.
+  spi: spi-mtk-nor: reject DTR ops (2020-07-14 17:29:40 +0100)
 
-Thanks,
-Pawan
+----------------------------------------------------------------
+spi: Support for DTR ops
+
+----------------------------------------------------------------
+Pratyush Yadav (4):
+      spi: spi-mem: allow specifying whether an op is DTR or not
+      spi: spi-mem: allow specifying a command's extension
+      spi: atmel-quadspi: reject DTR ops
+      spi: spi-mtk-nor: reject DTR ops
+
+ drivers/spi/atmel-quadspi.c |  6 ++++++
+ drivers/spi/spi-mem.c       | 16 ++++++++++------
+ drivers/spi/spi-mtk-nor.c   | 10 ++++++++--
+ drivers/spi/spi-mxic.c      |  3 ++-
+ drivers/spi/spi-zynq-qspi.c | 11 ++++++-----
+ include/linux/spi/spi-mem.h | 14 +++++++++++++-
+ 6 files changed, 45 insertions(+), 15 deletions(-)
+
+--nEsDIrWrg+hrB7l1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8OBVIACgkQJNaLcl1U
+h9Bhygf9H+xpfxdxH22PtaRszzUoz4qNi2lr2fwNL/Z5+6EnJ6gCQCiu1AjHVWsc
+o0MZPls5hAEkyvp0c+Nu6z/NXHK0HIN6KuQxPbGvGCQFPuD981uFwbKlLV1hZqbG
+mQDJjTyRB9TMpBEYvUNxRpNPk+QLY0XMz1H5D0/YkRXS+TzuFtqggvLmLuaI7uri
+rurYlk8YAf4YZHjVRQoKu+vX+UbSSErglMvy6lDYTKN3d54vzt6iLsusghfv/G93
+t8CkM3J8QCRk1o71zrxtRBeol3xkYWKowJV1kSx3zHxyQCCzcbHcWab2QLt/qSK9
+FtqJVxO5UeujOgLPZXygGjBYygkqTw==
+=fMw1
+-----END PGP SIGNATURE-----
+
+--nEsDIrWrg+hrB7l1--
