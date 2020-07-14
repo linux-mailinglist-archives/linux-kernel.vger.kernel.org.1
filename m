@@ -2,89 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F50D21ECC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7931621ECD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbgGNJ1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:27:45 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:34690 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726928AbgGNJ1k (ORCPT
+        id S1726935AbgGNJ2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:28:41 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58197 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgGNJ2k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:27:40 -0400
-Received: by mail-ot1-f66.google.com with SMTP id e90so12567039ote.1;
-        Tue, 14 Jul 2020 02:27:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BcBgAiY71PDQb9AkYuorOFzEG6DsDrsVIbYaSy+JPpU=;
-        b=pDU7cxAc/8nVkIufip2sEC2iLfXpU+AebYUtWaIjKn0H4iq0NLO7N6MB0OcR9+kSha
-         KY2zU8joPjZ2EKi0eYLTmo3ZeenCLr+AYFDMjL65EvmWaREKe+qhfbLeWxl17vWIVPCM
-         tGAnMmQn39DcvDBWNMzSkKb2dGk7JbmLMU5uS8ggmlrcAYjOg7CVTGFWJRcKn2EjcpIV
-         FJhSulPblSS14bH2a6IXyWD7TDb8BL967V7GPJeCpZUdcRSy3MnJbtkX8KAUelPDJzdZ
-         IDZrh2UlEtFH2Fo+FwBxPZvyiti5IGgBYPDCsCHPYHRV0vb/ysm5yL6RlI7e4USxHy8i
-         ouqA==
-X-Gm-Message-State: AOAM530wME3BivjMGco+shebmbV/DUUFaVg48ToLehLsX8d9EOapnRGu
-        86wSIXgt4oz0ZST/gAnVE1l8mK7ZsWjXQ93m7lI=
-X-Google-Smtp-Source: ABdhPJyrhaG/SeR+X/25sxkP2ucHSApSaY4senOI3s6UTaENULowX/uuQANaV67djcwX6YA422EQ4z2isefIpnp0WQk=
-X-Received: by 2002:a05:6830:1451:: with SMTP id w17mr3264761otp.250.1594718859452;
- Tue, 14 Jul 2020 02:27:39 -0700 (PDT)
+        Tue, 14 Jul 2020 05:28:40 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jvHEr-0003hO-Oe; Tue, 14 Jul 2020 09:28:37 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts/spelling.txt: add more spellings to spelling.txt
+Date:   Tue, 14 Jul 2020 10:28:37 +0100
+Message-Id: <20200714092837.173796-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200714121608.58962d66@canb.auug.org.au> <20200714090048.GG183694@krava>
-In-Reply-To: <20200714090048.GG183694@krava>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 14 Jul 2020 11:27:28 +0200
-Message-ID: <CAMuHMdWznwG3dSFDM=iGX7OU9o95ChdnhbdJBZ27zFNQip8C3w@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the bpf-next tree
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 11:02 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> On Tue, Jul 14, 2020 at 12:16:08PM +1000, Stephen Rothwell wrote:
-> > After merging the bpf-next tree, today's linux-next build (powerpc
-> > ppc64_defconfig) produced this warning:
-> >
-> > ld: warning: orphan section `.BTF_ids' from `kernel/trace/bpf_trace.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `kernel/bpf/btf.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `kernel/bpf/stackmap.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `net/core/filter.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `kernel/trace/bpf_trace.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `kernel/bpf/btf.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `kernel/bpf/stackmap.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `net/core/filter.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `kernel/trace/bpf_trace.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `kernel/bpf/btf.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `kernel/bpf/stackmap.o' being placed in section `.BTF_ids'
-> > ld: warning: orphan section `.BTF_ids' from `net/core/filter.o' being placed in section `.BTF_ids'
-> >
-> > Presumably ntroduced by the merge of the resolve_btfids branch.
->
-> missing one more #ifdef.. chage below fixes it for me,
-> it's squashed with the fix for the arm build, I'll post
-> both fixes today
+From: Colin Ian King <colin.king@canonical.com>
 
-This one works for me, too:
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Here are some of the more common spelling mistakes and typos that I've
+found while fixing up spelling mistakes in the kernel since April 2020.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ scripts/spelling.txt | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-                        Geert
-
+diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+index c45e9afaab2d..f253681e7e2a 100644
+--- a/scripts/spelling.txt
++++ b/scripts/spelling.txt
+@@ -149,6 +149,7 @@ arbitary||arbitrary
+ architechture||architecture
+ arguement||argument
+ arguements||arguments
++arithmatic||arithmetic
+ aritmetic||arithmetic
+ arne't||aren't
+ arraival||arrival
+@@ -454,6 +455,7 @@ destorys||destroys
+ destroied||destroyed
+ detabase||database
+ deteced||detected
++detectt||detect
+ develope||develop
+ developement||development
+ developped||developed
+@@ -545,6 +547,7 @@ entires||entries
+ entites||entities
+ entrys||entries
+ enocded||encoded
++enought||enough
+ enterily||entirely
+ enviroiment||environment
+ enviroment||environment
+@@ -556,11 +559,14 @@ equivelant||equivalent
+ equivilant||equivalent
+ eror||error
+ errorr||error
++errror||error
+ estbalishment||establishment
+ etsablishment||establishment
+ etsbalishment||establishment
++evalution||evaluation
+ excecutable||executable
+ exceded||exceeded
++exceds||exceeds
+ exceeed||exceed
+ excellant||excellent
+ execeeded||exceeded
+@@ -583,6 +589,7 @@ explictly||explicitly
+ expresion||expression
+ exprimental||experimental
+ extened||extended
++exteneded||extended||extended
+ extensability||extensibility
+ extention||extension
+ extenstion||extension
+@@ -610,10 +617,12 @@ feautures||features
+ fetaure||feature
+ fetaures||features
+ fileystem||filesystem
++fimrware||firmware
+ fimware||firmware
+ firmare||firmware
+ firmaware||firmware
+ firware||firmware
++firwmare||firmware
+ finanize||finalize
+ findn||find
+ finilizes||finalizes
+@@ -661,6 +670,7 @@ globel||global
+ grabing||grabbing
+ grahical||graphical
+ grahpical||graphical
++granularty||granularity
+ grapic||graphic
+ grranted||granted
+ guage||gauge
+@@ -906,6 +916,7 @@ miximum||maximum
+ mmnemonic||mnemonic
+ mnay||many
+ modfiy||modify
++modifer||modifier
+ modulues||modules
+ momery||memory
+ memomry||memory
+@@ -915,6 +926,7 @@ monochromo||monochrome
+ monocrome||monochrome
+ mopdule||module
+ mroe||more
++multipler||multiplier
+ mulitplied||multiplied
+ multidimensionnal||multidimensional
+ multipe||multiple
+@@ -952,6 +964,7 @@ occassionally||occasionally
+ occationally||occasionally
+ occurance||occurrence
+ occurances||occurrences
++occurd||occurred
+ occured||occurred
+ occurence||occurrence
+ occure||occurred
+@@ -1058,6 +1071,7 @@ precission||precision
+ preemptable||preemptible
+ prefered||preferred
+ prefferably||preferably
++prefitler||prefilter
+ premption||preemption
+ prepaired||prepared
+ preperation||preparation
+@@ -1101,6 +1115,7 @@ pronunce||pronounce
+ propery||property
+ propigate||propagate
+ propigation||propagation
++propogation||propagation
+ propogate||propagate
+ prosess||process
+ protable||portable
+@@ -1316,6 +1331,7 @@ sturcture||structure
+ subdirectoires||subdirectories
+ suble||subtle
+ substract||subtract
++submited||submitted
+ submition||submission
+ suceed||succeed
+ succesfully||successfully
+@@ -1324,6 +1340,7 @@ successed||succeeded
+ successfull||successful
+ successfuly||successfully
+ sucessfully||successfully
++sucessful||successful
+ sucess||success
+ superflous||superfluous
+ superseeded||superseded
+@@ -1409,6 +1426,7 @@ transormed||transformed
+ trasfer||transfer
+ trasmission||transmission
+ treshold||threshold
++triggerd||triggered
+ trigerred||triggered
+ trigerring||triggering
+ trun||turn
+@@ -1421,6 +1439,7 @@ uknown||unknown
+ usccess||success
+ usupported||unsupported
+ uncommited||uncommitted
++uncompatible||incompatible
+ unconditionaly||unconditionally
+ undeflow||underflow
+ underun||underrun
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.27.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
