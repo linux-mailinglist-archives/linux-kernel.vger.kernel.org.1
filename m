@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FE221E4B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 02:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB6821E4BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 02:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgGNApH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 20:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
+        id S1726907AbgGNAqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 20:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726257AbgGNApG (ORCPT
+        with ESMTP id S1726364AbgGNAqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 20:45:06 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF78CC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 17:45:06 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ls15so742509pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 17:45:06 -0700 (PDT)
+        Mon, 13 Jul 2020 20:46:23 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E85FC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 17:46:23 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id cm21so738719pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 17:46:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=LBTyfKNSoOOAA6vthAh0GUlk56zoCc5lLvp+bO9Vv3E=;
-        b=BhhLv7aR3XvHyj0G9jQ/atdmxZQs2oDAmIf8x862jazgWBT0pROFNWSOzrzCPokV6u
-         COYzMdGczxuZIbvAj0P3dkFiMDon6yIGGGjAVY4Mh91qpfKMPsyeYh3XALr28LcWp6Fd
-         CLScefcYAWwIEPxaBorme5WcNyghNuijC0BEfDpesrvwqe/Qe1j25ixQOuHAGSNeQsbN
-         W2dSEww9mvjeRE1qo6MVs4nUg16/49mGnzjqKeh8p3f6JC4eVpTf1n6wFvYcrRvFRBsk
-         Dg/dr3OhH0X4AfETba4MczpQIHWhkmsQqNHZnf5k3uqZ2fxwMgTskZEGnR81arLauJfJ
-         k3tg==
+        bh=8r/ns8NnPKy/N7dekyAtGhBhg3kPMPGKsLiPQZHspAw=;
+        b=ZQPxLdQSGc9aLdz33XfX1RgGKLsU5G2wrmPVsGFyoS3O1KDm0IftWv07HOyAfMV3bP
+         SObIsdaSylKu2ynf10yuPVxITQDbBC1DdgS2PCb3T78ZpH8Nv/FeLR11L3cytvei9btw
+         vBpxR6lv2HNNL6EN5vVMAPQqYuNYRKgLn62IGap2xK51JrTlcv/wKoBNdR3tT+DZGMVR
+         uCUjh5YWY4v0PdDSQGcq31mZMnk9VNglt88HcP15dxIdI5P/v+mDEWWqGHpPs6Ljdfuf
+         6KfRXqf9HRtI8mwim5UdbC450t7o4C2pV/18efKoRNdm68uzD5z9SLeSbvsGQMIjkJxu
+         oxxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LBTyfKNSoOOAA6vthAh0GUlk56zoCc5lLvp+bO9Vv3E=;
-        b=p0lZaJI5IcorQAZ1p3rBEwlDbHTjnfhHlUHrolGh7qhr0xAYDHvo08dUakjTSHsdTL
-         n7KS1iFfk0jtQtgQ6113WzceQsTsYYhMlixBWQ0rnQIR6/Y2l42yqexRmHJWYjTxIRy2
-         s40Yw54hPo7RMLyb/9rhR2TQvpcfN0U18QLiljgvtO2AdWypiDv7dEIoRBTKFLTkSGCi
-         OQpzQWoSNLHkFTQ2uVVAUqo+R0tU8ykHP856lo25U4blU8RCbvyoNa6DZNl3xdHYVUVi
-         VWM+Mquhgh8IutMpktKBA1SB4+U3GJEJDQuhcFfOF+Xi5rleEX22eFGVj07y+/svtVic
-         VxBQ==
-X-Gm-Message-State: AOAM533LU6Z1daoPlyyp2o8YZcsefFnTAndJ/qv0w7TIh6+zURwmpksZ
-        wZaVcnd33yvddDG3ChLk1/Y=
-X-Google-Smtp-Source: ABdhPJyqusT08COj1lT1I30BN2LIw0I5TAtC0c9JQlwzwNXf1PCndFazNtTjOMjj8N0ychbGGlddBw==
-X-Received: by 2002:a17:90a:ff16:: with SMTP id ce22mr2075545pjb.160.1594687506391;
-        Mon, 13 Jul 2020 17:45:06 -0700 (PDT)
+        bh=8r/ns8NnPKy/N7dekyAtGhBhg3kPMPGKsLiPQZHspAw=;
+        b=pU9F4N7T0bJzFxEDWLOHbG/NoCzbZKp0z8hFO2M0f8IVA8zrvLS29qS+fcG1Fh8rAP
+         Mg1p74Oonh+0TzQm0shrFwoai+LCL8eSqLlS+ngkILbQPm8EParmhDM3l+cllfxnQ+C3
+         pfWIlmHoGwUo82LTAJJ7CVutyeLoQ0i3r9dB2qo1sdkPQW0pgZ03LBo7glznrID9M0Kz
+         J6S8aBbr9MdVQYLB0hHGW9EsmpaLQGVGG8iWcni8ZTVzGkyyLTOXRvWtd6jLX7QWDvxk
+         MYxfmauHUd9xeB1jpnPsxVsQL+GuL+e7oa4BnN/D7kbzWWlB0d80gmbK3BpeYX7e/ZJO
+         KiEA==
+X-Gm-Message-State: AOAM533sySj8jgPsJkfzmkRlQmbI70v9Vdm3Zb53HEUtE5Jjc255jMf9
+        LID2eUwSQCL+zpBX+LnAuPY=
+X-Google-Smtp-Source: ABdhPJxoJWNGsurXWkvbIx0NyIPyzBIdPeemYoJ0GNNN1dKoyCp+IEp5xxA6eXIBYpj3KoARnktZpA==
+X-Received: by 2002:a17:902:b589:: with SMTP id a9mr1705217pls.98.1594687583175;
+        Mon, 13 Jul 2020 17:46:23 -0700 (PDT)
 Received: from js1304-desktop ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id x13sm9663755pfj.122.2020.07.13.17.45.03
+        by smtp.gmail.com with ESMTPSA id c1sm634729pje.9.2020.07.13.17.46.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 13 Jul 2020 17:45:05 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 09:44:59 +0900
+        Mon, 13 Jul 2020 17:46:22 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 09:46:17 +0900
 From:   Joonsoo Kim <js1304@gmail.com>
 To:     Vlastimil Babka <vbabka@suse.cz>
 Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
@@ -58,111 +58,277 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
         Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v5 4/9] mm/migrate: clear __GFP_RECLAIM to make the
- migration callback consistent with regular THP allocations
-Message-ID: <20200714004446.GA7891@js1304-desktop>
+Subject: Re: [PATCH v5 5/9] mm/migrate: make a standard migration target
+ allocation function
+Message-ID: <20200714004616.GB7891@js1304-desktop>
 References: <1594622517-20681-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1594622517-20681-5-git-send-email-iamjoonsoo.kim@lge.com>
- <367ca602-1112-f87f-7d2a-b0a75cce7269@suse.cz>
+ <1594622517-20681-6-git-send-email-iamjoonsoo.kim@lge.com>
+ <641fa691-ce77-7eae-75e5-452c0a111ae9@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <367ca602-1112-f87f-7d2a-b0a75cce7269@suse.cz>
+In-Reply-To: <641fa691-ce77-7eae-75e5-452c0a111ae9@suse.cz>
 User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 09:52:20AM +0200, Vlastimil Babka wrote:
+On Mon, Jul 13, 2020 at 09:53:40AM +0200, Vlastimil Babka wrote:
 > On 7/13/20 8:41 AM, js1304@gmail.com wrote:
 > > From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> > 
-> > new_page_nodemask is a migration callback and it tries to use a common
-> > gfp flags for the target page allocation whether it is a base page or a
-> > THP. The later only adds GFP_TRANSHUGE to the given mask. This results
-> > in the allocation being slightly more aggressive than necessary because
-> > the resulting gfp mask will contain also __GFP_RECLAIM_KSWAPD. THP
-> > allocations usually exclude this flag to reduce over eager background
-> > reclaim during a high THP allocation load which has been seen during
-> > large mmaps initialization. There is no indication that this is a
-> > problem for migration as well but theoretically the same might happen
-> > when migrating large mappings to a different node. Make the migration
-> > callback consistent with regular THP allocations.
-> > 
-> > Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 > 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> Thanks!
-> 
-> Typo below (I assume Andrew will fix it)
-> 
-> > ---
-> >  mm/migrate.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/mm/migrate.c b/mm/migrate.c
-> > index 3b3d918..1cfc965 100644
-> > --- a/mm/migrate.c
-> > +++ b/mm/migrate.c
-> > @@ -1547,6 +1547,11 @@ struct page *new_page_nodemask(struct page *page,
-> >  	}
-> >  
-> >  	if (PageTransHuge(page)) {
-> > +		/*
-> > +		 * clear __GFP_RECALIM to make the migration callback
-> 
->                          __GFP_RECLAIM
+> Nit: s/make/introduce/ in the subject, is a more common verb in this context.
 > 
 
-Okay. Here goes a fixed version.
+Thanks for correcting!
+Following is fixed version.
 
-Thanks!
+Thanks.
 
-
----------------------->8-----------------------------
-From 6273f02fd8b8ef066c10c4a8ba54ea9efe6e70cd Mon Sep 17 00:00:00 2001
+----------------->8-------------------
+From e8e4533bbc56fff3a77d5bc9a40dda7a9efc83e8 Mon Sep 17 00:00:00 2001
 From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Date: Mon, 6 Jul 2020 14:34:04 +0900
-Subject: [PATCH v5 4/9] mm/migrate: clear __GFP_RECLAIM to make the migration
- callback consistent with regular THP allocations
+Date: Wed, 1 Jul 2020 16:19:18 +1000
+Subject: [PATCH v5 5/9] mm/migrate: introduce a standard migration target
+ allocation function
 
-new_page_nodemask is a migration callback and it tries to use a common
-gfp flags for the target page allocation whether it is a base page or a
-THP. The later only adds GFP_TRANSHUGE to the given mask. This results
-in the allocation being slightly more aggressive than necessary because
-the resulting gfp mask will contain also __GFP_RECLAIM_KSWAPD. THP
-allocations usually exclude this flag to reduce over eager background
-reclaim during a high THP allocation load which has been seen during
-large mmaps initialization. There is no indication that this is a
-problem for migration as well but theoretically the same might happen
-when migrating large mappings to a different node. Make the migration
-callback consistent with regular THP allocations.
+There are some similar functions for migration target allocation.  Since
+there is no fundamental difference, it's better to keep just one rather
+than keeping all variants.  This patch implements base migration target
+allocation function.  In the following patches, variants will be converted
+to use this function.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Changes should be mechanical, but, unfortunately, there are some
+differences. First, some callers' nodemask is assgined to NULL since NULL
+nodemask will be considered as all available nodes, that is,
+&node_states[N_MEMORY]. Second, for hugetlb page allocation, gfp_mask is
+redefined as regular hugetlb allocation gfp_mask plus __GFP_THISNODE if
+user provided gfp_mask has it. This is because future caller of this
+function requires to set this node constaint. Lastly, if provided nodeid
+is NUMA_NO_NODE, nodeid is set up to the node where migration source
+lives. It helps to remove simple wrappers for setting up the nodeid.
+
+Note that PageHighmem() call in previous function is changed to open-code
+"is_highmem_idx()" since it provides more readability.
+
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: Michal Hocko <mhocko@suse.com>
 Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 ---
- mm/migrate.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/linux/hugetlb.h | 15 +++++++++++++++
+ include/linux/migrate.h |  9 +++++----
+ mm/internal.h           |  7 +++++++
+ mm/memory-failure.c     |  7 +++++--
+ mm/memory_hotplug.c     | 12 ++++++++----
+ mm/migrate.c            | 26 ++++++++++++++++----------
+ mm/page_isolation.c     |  7 +++++--
+ 7 files changed, 61 insertions(+), 22 deletions(-)
 
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index bb93e95..6b9508d 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -701,6 +701,16 @@ static inline gfp_t htlb_alloc_mask(struct hstate *h)
+ 		return GFP_HIGHUSER;
+ }
+ 
++static inline gfp_t htlb_modify_alloc_mask(struct hstate *h, gfp_t gfp_mask)
++{
++	gfp_t modified_mask = htlb_alloc_mask(h);
++
++	/* Some callers might want to enfoce node */
++	modified_mask |= (gfp_mask & __GFP_THISNODE);
++
++	return modified_mask;
++}
++
+ static inline spinlock_t *huge_pte_lockptr(struct hstate *h,
+ 					   struct mm_struct *mm, pte_t *pte)
+ {
+@@ -888,6 +898,11 @@ static inline gfp_t htlb_alloc_mask(struct hstate *h)
+ 	return 0;
+ }
+ 
++static inline gfp_t htlb_modify_alloc_mask(struct hstate *h, gfp_t gfp_mask)
++{
++	return 0;
++}
++
+ static inline spinlock_t *huge_pte_lockptr(struct hstate *h,
+ 					   struct mm_struct *mm, pte_t *pte)
+ {
+diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+index 1d70b4a..cc56f0d 100644
+--- a/include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -10,6 +10,8 @@
+ typedef struct page *new_page_t(struct page *page, unsigned long private);
+ typedef void free_page_t(struct page *page, unsigned long private);
+ 
++struct migration_target_control;
++
+ /*
+  * Return values from addresss_space_operations.migratepage():
+  * - negative errno on page migration failure;
+@@ -39,8 +41,7 @@ extern int migrate_page(struct address_space *mapping,
+ 			enum migrate_mode mode);
+ extern int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
+ 		unsigned long private, enum migrate_mode mode, int reason);
+-extern struct page *new_page_nodemask(struct page *page,
+-		int preferred_nid, nodemask_t *nodemask);
++extern struct page *alloc_migration_target(struct page *page, unsigned long private);
+ extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
+ extern void putback_movable_page(struct page *page);
+ 
+@@ -59,8 +60,8 @@ static inline int migrate_pages(struct list_head *l, new_page_t new,
+ 		free_page_t free, unsigned long private, enum migrate_mode mode,
+ 		int reason)
+ 	{ return -ENOSYS; }
+-static inline struct page *new_page_nodemask(struct page *page,
+-		int preferred_nid, nodemask_t *nodemask)
++static inline struct page *alloc_migration_target(struct page *page,
++		unsigned long private)
+ 	{ return NULL; }
+ static inline int isolate_movable_page(struct page *page, isolate_mode_t mode)
+ 	{ return -EBUSY; }
+diff --git a/mm/internal.h b/mm/internal.h
+index dd14c53..0beacf3 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -614,4 +614,11 @@ static inline bool is_migrate_highatomic_page(struct page *page)
+ 
+ void setup_zone_pageset(struct zone *zone);
+ extern struct page *alloc_new_node_page(struct page *page, unsigned long node);
++
++struct migration_target_control {
++	int nid;		/* preferred node id */
++	nodemask_t *nmask;
++	gfp_t gfp_mask;
++};
++
+ #endif	/* __MM_INTERNAL_H */
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index c5e4cee..609d42b6 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1679,9 +1679,12 @@ EXPORT_SYMBOL(unpoison_memory);
+ 
+ static struct page *new_page(struct page *p, unsigned long private)
+ {
+-	int nid = page_to_nid(p);
++	struct migration_target_control mtc = {
++		.nid = page_to_nid(p),
++		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
++	};
+ 
+-	return new_page_nodemask(p, nid, &node_states[N_MEMORY]);
++	return alloc_migration_target(p, (unsigned long)&mtc);
+ }
+ 
+ /*
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index cafe65eb..431b470f 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1267,19 +1267,23 @@ static int scan_movable_pages(unsigned long start, unsigned long end,
+ 
+ static struct page *new_node_page(struct page *page, unsigned long private)
+ {
+-	int nid = page_to_nid(page);
+ 	nodemask_t nmask = node_states[N_MEMORY];
++	struct migration_target_control mtc = {
++		.nid = page_to_nid(page),
++		.nmask = &nmask,
++		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
++	};
+ 
+ 	/*
+ 	 * try to allocate from a different node but reuse this node if there
+ 	 * are no other online nodes to be used (e.g. we are offlining a part
+ 	 * of the only existing node)
+ 	 */
+-	node_clear(nid, nmask);
++	node_clear(mtc.nid, nmask);
+ 	if (nodes_empty(nmask))
+-		node_set(nid, nmask);
++		node_set(mtc.nid, nmask);
+ 
+-	return new_page_nodemask(page, nid, &nmask);
++	return alloc_migration_target(page, (unsigned long)&mtc);
+ }
+ 
+ static int
 diff --git a/mm/migrate.c b/mm/migrate.c
-index 3b3d918..faabb2e 100644
+index faabb2e..8a1ab4f 100644
 --- a/mm/migrate.c
 +++ b/mm/migrate.c
-@@ -1547,6 +1547,11 @@ struct page *new_page_nodemask(struct page *page,
+@@ -1531,19 +1531,26 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 	return rc;
+ }
+ 
+-struct page *new_page_nodemask(struct page *page,
+-				int preferred_nid, nodemask_t *nodemask)
++struct page *alloc_migration_target(struct page *page, unsigned long private)
+ {
+-	gfp_t gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL;
++	struct migration_target_control *mtc;
++	gfp_t gfp_mask;
+ 	unsigned int order = 0;
+ 	struct page *new_page = NULL;
++	int nid;
++	int zidx;
++
++	mtc = (struct migration_target_control *)private;
++	gfp_mask = mtc->gfp_mask;
++	nid = mtc->nid;
++	if (nid == NUMA_NO_NODE)
++		nid = page_to_nid(page);
+ 
+ 	if (PageHuge(page)) {
+ 		struct hstate *h = page_hstate(compound_head(page));
+ 
+-		gfp_mask = htlb_alloc_mask(h);
+-		return alloc_huge_page_nodemask(h, preferred_nid,
+-						nodemask, gfp_mask);
++		gfp_mask = htlb_modify_alloc_mask(h, gfp_mask);
++		return alloc_huge_page_nodemask(h, nid, mtc->nmask, gfp_mask);
  	}
  
  	if (PageTransHuge(page)) {
-+		/*
-+		 * clear __GFP_RECLAIM to make the migration callback
-+		 * consistent with regular THP allocations.
-+		 */
-+		gfp_mask &= ~__GFP_RECLAIM;
+@@ -1555,12 +1562,11 @@ struct page *new_page_nodemask(struct page *page,
  		gfp_mask |= GFP_TRANSHUGE;
  		order = HPAGE_PMD_ORDER;
  	}
+-
+-	if (PageHighMem(page) || (zone_idx(page_zone(page)) == ZONE_MOVABLE))
++	zidx = zone_idx(page_zone(page));
++	if (is_highmem_idx(zidx) || zidx == ZONE_MOVABLE)
+ 		gfp_mask |= __GFP_HIGHMEM;
+ 
+-	new_page = __alloc_pages_nodemask(gfp_mask, order,
+-				preferred_nid, nodemask);
++	new_page = __alloc_pages_nodemask(gfp_mask, order, nid, mtc->nmask);
+ 
+ 	if (new_page && PageTransHuge(new_page))
+ 		prep_transhuge_page(new_page);
+diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+index aec26d9..f25c66e 100644
+--- a/mm/page_isolation.c
++++ b/mm/page_isolation.c
+@@ -309,7 +309,10 @@ int test_pages_isolated(unsigned long start_pfn, unsigned long end_pfn,
+ 
+ struct page *alloc_migrate_target(struct page *page, unsigned long private)
+ {
+-	int nid = page_to_nid(page);
++	struct migration_target_control mtc = {
++		.nid = page_to_nid(page),
++		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
++	};
+ 
+-	return new_page_nodemask(page, nid, &node_states[N_MEMORY]);
++	return alloc_migration_target(page, (unsigned long)&mtc);
+ }
 -- 
 2.7.4
 
