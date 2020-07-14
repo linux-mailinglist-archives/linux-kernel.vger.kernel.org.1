@@ -2,49 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6747221F228
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B550B21F22B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgGNNMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:12:48 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:34704 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727975AbgGNNMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:12:47 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jvKjg-00535Z-TE; Tue, 14 Jul 2020 15:12:40 +0200
-Date:   Tue, 14 Jul 2020 15:12:40 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: Re: [PATCH net-next v1 5/5] net: phy: micrel: ksz886x/ksz8081: add
- cabletest support
-Message-ID: <20200714131240.GE1140268@lunn.ch>
-References: <20200710120851.28984-1-o.rempel@pengutronix.de>
- <20200710120851.28984-6-o.rempel@pengutronix.de>
- <20200711182912.GP1014141@lunn.ch>
- <20200713041129.gyoldkmsti4vl4m2@pengutronix.de>
- <20200713151719.GE1078057@lunn.ch>
- <20200714072501.GA5072@pengutronix.de>
+        id S1728432AbgGNNMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:12:55 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:53068 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727975AbgGNNMy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 09:12:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594732372;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tcXLN2aOM5HyVPvW2nX/ENf3RMB6pm0tLQoN1DTr1NI=;
+        b=JwMXQp6K5DrdVCVg3cKYHS0SvxmOveUmSRlyqRSP4zYPIL8jm5Fo2tOc+kaD6SHiFwd5jJ
+        8lv3B/Z693dp4QtrxbQNvFy5nviQNThYfE3N3VODAnYemLoSmZ215KBir9HpOONgC7nQqZ
+        GXHnCdfkuxrQ/Lv/WYQq4sOJS400824=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-351-rtI98Ls7NHGfFYlomvuigg-1; Tue, 14 Jul 2020 09:12:51 -0400
+X-MC-Unique: rtI98Ls7NHGfFYlomvuigg-1
+Received: by mail-qt1-f197.google.com with SMTP id e6so12509655qtb.19
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 06:12:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tcXLN2aOM5HyVPvW2nX/ENf3RMB6pm0tLQoN1DTr1NI=;
+        b=DJvk+gxnrE6TYVMb9fHduG8HVzvp/hZBrAnkCdRm3+HIwoyLxeu5KucpfESNHDArYM
+         TDVXHGUdPY0wE2VrLsRnIWI1RZtd47h6SD62kc24mIueSp8Wq2a8VfSHdZRALIiwwC27
+         2w2kA/Qn2A3XkYQW41IAX4eHOyZe0Ut98cSKBZ+8f1wfcVdDqOv+p9HPhPYvHBLQNhHJ
+         J7565goTrtwFMzEaHkICgDpJ9NtJnbksfu4jTvqPsg6vWnGeKnus5ubK6CRQLzCTjn7n
+         v++hM+J3VumLjUnCp7fXXJTAmxACDB+SDDGTW/EsB+qVMBC+EHVZ+jdDXo2/08evEqOv
+         VQ2g==
+X-Gm-Message-State: AOAM5314U3wTO9m51vl8q17wXKpio9sMY6FbFJWyD+iE5LkRM0nnR1hs
+        mDV8hh2JjPsvhjr/Cli8xPApmEwP1M4tx5rZDywDIaSsAFyS2y2TE9gTX9kkFXiMBdopGW5sb7T
+        K45MLD1U8oczxVA3cY754x2GM
+X-Received: by 2002:ae9:eb0a:: with SMTP id b10mr4469347qkg.198.1594732370432;
+        Tue, 14 Jul 2020 06:12:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxh7X3vh+e+aHk60ZVCRSIpZ+BjjvNryuzMuxMW7pfPiWEymFwrJuXp8EZHHg1lea0OTP2jpQ==
+X-Received: by 2002:ae9:eb0a:: with SMTP id b10mr4469327qkg.198.1594732370187;
+        Tue, 14 Jul 2020 06:12:50 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id x36sm23396153qtb.78.2020.07.14.06.12.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 06:12:49 -0700 (PDT)
+Subject: Re: [PATCH] reiserfs : fix improper free in reiserfs_get_block
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     jack@suse.cz, william.kucharski@oracle.com, jeffm@suse.com,
+        joseph.qi@linux.alibaba.com, liao.pingfang@zte.com.cn,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200714130509.11791-1-trix@redhat.com>
+ <20200714131043.GB12769@casper.infradead.org>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <bc5a13bd-54c4-509d-7202-20c93f43e2f6@redhat.com>
+Date:   Tue, 14 Jul 2020 06:12:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714072501.GA5072@pengutronix.de>
+In-Reply-To: <20200714131043.GB12769@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> OK. So, i'll cover both errata with separate flags? Set flags in the DSA
-> driver and apply workarounds in the PHY. ACK?
 
-Yes. Assume the issues are limited to just the first PHY in this
-switch. If there are discrete PHYs with the same issue, we can come up
-with a different way to identify them.
+On 7/14/20 6:10 AM, Matthew Wilcox wrote:
+> On Tue, Jul 14, 2020 at 06:05:09AM -0700, trix@redhat.com wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> clang static analysis flags this error
+>>
+>> inode.c:1083:5: warning: Argument to kfree() is the address of the
+>>   local variable 'unf_single', which is not memory allocated by
+>>   malloc() [unix.Malloc]
+>>                                 kfree(un);
+>>                                 ^~~~~~~~~
+>> Assignment of 'un'
+>>
+>> 	/*
+>> 	 * We use this in case we need to allocate
+>> 	 * only one block which is a fastpath
+>> 	 */
+>> 	unp_t unf_single = 0;
+>>
+>> 	...
+>>
+>> 	if (blocks_needed == 1) {
+>> 		un = &unf_single;
+>> 	} else {
+>> 		un = kcalloc(min(blocks_needed, max_to_insert),
+>> 			     UNFM_P_SIZE, GFP_NOFS);
+>> 		if (!un) {
+>> 			un = &unf_single;
+>> 			blocks_needed = 1;
+>> 			max_to_insert = 0;
+>> 		}
+>> 	}
+>>
+>> The logic to free 'un'
+>>
+>> 	if (blocks_needed != 1)
+>> 		kfree(un);
+>>
+>> Because the kcalloc failure falls back to using unf_single,
+>> the if-check for the free is wrong.
+> I think you mean "Because clang's static analysis is limited, it
+> warns incorrectly about this".  There's no path to get to the
+> kfree with blocks_needed != 1 and un being equal to &unf_single.
 
-     Andrew
+Ok.
+
+
+>> So improve the check.
+>>
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+>> ---
+>>  fs/reiserfs/inode.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
+>> index 1509775da040..4d62148e43e6 100644
+>> --- a/fs/reiserfs/inode.c
+>> +++ b/fs/reiserfs/inode.c
+>> @@ -1079,7 +1079,7 @@ int reiserfs_get_block(struct inode *inode, sector_t block,
+>>  						     UNFM_P_SIZE *
+>>  						     blocks_needed);
+>>  
+>> -			if (blocks_needed != 1)
+>> +			if (un != &unf_single)
+>>  				kfree(un);
+> I don't actually object to this patch, but your analysis of clang's
+> analysis is wrong.
+>
+
