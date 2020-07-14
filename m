@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B4E21FA2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97F821FAEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730277AbgGNSuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:50:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46120 "EHLO mail.kernel.org"
+        id S1730468AbgGNS5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:57:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730262AbgGNSuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:50:07 -0400
+        id S1731088AbgGNS4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:56:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C13C522AAA;
-        Tue, 14 Jul 2020 18:50:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D7B122A99;
+        Tue, 14 Jul 2020 18:56:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752606;
-        bh=om9r76ISGNiS80OtgG2eerHxgxg39eKZ3mjo5NKZBJ0=;
+        s=default; t=1594753014;
+        bh=z05sE6uoEfahcLhFFLnVSGhAnM319kCnEXXb1BUsaiI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CswnNFj7q8+uSUpZy5M8SzKQazucW8y62r6VCYKDrIFaPB54aOj/z1azY2eR2QMuI
-         7MsJzcbCTALe3NHHTxhFse014YBUhEL4w/DJvwMcnVHVvNdsIb6xe5J/YarSLCsrCm
-         AxVehT8nGGYwB2XQF+D8nmL7FhqqvnB5rBVEr3FA=
+        b=lMk6t/I0ZSHcMz8HlbOZrNVz3euTP0P3FrfD8L+AwcxqsPbKPMYzwl9RIlFFG7yIc
+         NbbYur6fbqoJCuvGU7aaNuOXRq7WMpaldoG61bS3vZuZ16e0E7R6eouqd5OsL/XM8a
+         +gSfhvryPNlEQiCIhFIyVrxqO7IRWBNQD9xhbLlA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -32,12 +32,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 040/109] bpf, sockmap: RCU splat with redirect and strparser error or TLS
-Date:   Tue, 14 Jul 2020 20:43:43 +0200
-Message-Id: <20200714184107.440594142@linuxfoundation.org>
+Subject: [PATCH 5.7 059/166] bpf, sockmap: RCU splat with redirect and strparser error or TLS
+Date:   Tue, 14 Jul 2020 20:43:44 +0200
+Message-Id: <20200714184118.697099943@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -144,10 +144,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 0536ea9298e4c..70ea352e3a3b6 100644
+index 351afbf6bfbac..c41ab6906b210 100644
 --- a/net/core/skmsg.c
 +++ b/net/core/skmsg.c
-@@ -687,7 +687,7 @@ static struct sk_psock *sk_psock_from_strp(struct strparser *strp)
+@@ -683,7 +683,7 @@ static struct sk_psock *sk_psock_from_strp(struct strparser *strp)
  	return container_of(parser, struct sk_psock, parser);
  }
  
@@ -156,7 +156,7 @@ index 0536ea9298e4c..70ea352e3a3b6 100644
  {
  	struct sk_psock *psock_other;
  	struct sock *sk_other;
-@@ -719,12 +719,11 @@ static void sk_psock_skb_redirect(struct sk_psock *psock, struct sk_buff *skb)
+@@ -715,12 +715,11 @@ static void sk_psock_skb_redirect(struct sk_psock *psock, struct sk_buff *skb)
  	}
  }
  
@@ -171,7 +171,7 @@ index 0536ea9298e4c..70ea352e3a3b6 100644
  		break;
  	case __SK_PASS:
  	case __SK_DROP:
-@@ -745,8 +744,8 @@ int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
+@@ -741,8 +740,8 @@ int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
  		ret = sk_psock_bpf_run(psock, prog, skb);
  		ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
  	}
@@ -181,7 +181,7 @@ index 0536ea9298e4c..70ea352e3a3b6 100644
  	return ret;
  }
  EXPORT_SYMBOL_GPL(sk_psock_tls_strp_read);
-@@ -774,7 +773,7 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
+@@ -770,7 +769,7 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
  		}
  		goto out_free;
  	case __SK_REDIRECT:
@@ -190,7 +190,7 @@ index 0536ea9298e4c..70ea352e3a3b6 100644
  		break;
  	case __SK_DROP:
  		/* fall-through */
-@@ -798,8 +797,8 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
+@@ -794,8 +793,8 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
  		ret = sk_psock_bpf_run(psock, prog, skb);
  		ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
  	}
