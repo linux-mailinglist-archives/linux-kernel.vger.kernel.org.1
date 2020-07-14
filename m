@@ -2,163 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A0C21ECFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66B221ED01
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgGNJeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726809AbgGNJeX (ORCPT
+        id S1726603AbgGNJgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:36:33 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:59361 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725816AbgGNJgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:34:23 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE57C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 02:34:23 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id k23so16546142iom.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 02:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=lRrq57w397KEjj99F1eu0ePTuse9TMJvNbmNZttcxV4=;
-        b=rLwNFfEAV7GLFEiTgkQgQk2b/z2xQrGaqrzARHdrOTEe13DqUx2PnFjkH77qxGjF/R
-         Fv3Q/3LbdjlAOGVznWQD4x9CcjBK7ihwBu705cJa7lwQP5/i+R+Xy+uTDbXvnrypexbU
-         2963CHA/XU+KsPE8PtqjDVSuHgC3MFJQu7v0fViYQW3QNJrhhbsJsj/0pTad1RDrM0Tt
-         Mqz91jZcI6T+Y+fNZtwDE1Ik6+ZeguJtcYkeDQ+A+BATo3zTpAXOS+iRP/fDsoFWFoey
-         pdEQTxm6R7ihnqSaNzBjg91MQznybOp3M+TPrKnL3Fq+1S/HhIApGOyVGyZoPAUqrMD3
-         76Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=lRrq57w397KEjj99F1eu0ePTuse9TMJvNbmNZttcxV4=;
-        b=U3CGI58KELR5APONPct2PYbHqATaf1Kr+S7UPwL09LMKZ0hImimDmlGCUcIO+t/few
-         Dkjp8NxJNTvdSUJpdMiWe7ZP5gZaqXjP+dW2bsqqzZbOXgpB7xpLhlU4o9ovY7opLNqw
-         Ph++052Zrc0hLogWQSxKTRkwI6M3PeKcGtV9VK/OOKQu/mZin0dYeNVwvsj22pNRoOp1
-         O3/Ty1sKavwjttU+uW8bHKSs9HyKCxYThbxCAx1ACFwBr0MwPaFIq4GnIYfv7meuyulp
-         UQkJ180gGc0cg6i03Em5H1d+hnBlhMhJTejqrOWFhVmzlgUHMmyGXRNr176Oi1stvvwi
-         e9tw==
-X-Gm-Message-State: AOAM530l7G7InEHbXKI3T7W8/XG/DPr+sdq7M/RjdTY7MzZKPPdGfSxn
-        84/PgKZC4C+Q6Y552ORxsdPuIGfnYx9wEEjqtw5H8wKep7Q=
-X-Google-Smtp-Source: ABdhPJwS4wgJ27bo1brklCCpRKCkVjZCwXpGXhfSv6nEWYPAh527AqIgY2tUEsDuYCUxOaB0yqifF6cOrJO5MbDS5PI=
-X-Received: by 2002:a5e:9309:: with SMTP id k9mr3962748iom.135.1594719262995;
- Tue, 14 Jul 2020 02:34:22 -0700 (PDT)
+        Tue, 14 Jul 2020 05:36:33 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 044095C0158;
+        Tue, 14 Jul 2020 05:36:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 14 Jul 2020 05:36:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Ikp6IE
+        9N1Xr46q5bU05QaviFnf+U/vK1Pwzbeox1CaY=; b=juo9EVQAOypmGYCFhp1QoT
+        DTEMxgrf4n1cR0nG6Pr+641n41oQYvy5v7/BoUbv7S0E+DZzhILmW0qyO1OE9fXZ
+        uk03BdZ8t+l3aGC6uPt5EGpY2NK5+NG4mFBDXX+EkZ7mWrv0cyXGQG8BuV9VMXtF
+        Re2WNs/i0gKIG2/TdVf4LE9zGa4d8DUSXZZBk90byTZbSBFnYg+5snx2gLLt6zHn
+        2oWPWD642OHJofRXX0/1w4mDTn0ieXeiWXAqIGY1qX8Kj2z5aS0hf3gjZVXk/aBx
+        0F2IA6aqpxsQjEHVI6oFUaXQi0T8LxisvoymoHY2uWPnzWZsKC1OgmF60WKtqfLQ
+        ==
+X-ME-Sender: <xms:n3wNX7QMlr56-Ng-RV56l1s70DxTOZeChbhVfhwEcD3pOubxEL1IEQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrfedtgddulecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecuogfuuhhsphgvtghtffhomhgrihhnucdlgeelmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
+    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
+    hrnhephedutdegkeevveettedvteeuveegjeffteekffffhfdvgedugeejteeuvedvteek
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghdprghpphhsphhothdrtghomhenucfkph
+    epuddtledrieeirdduledrudeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
+    mhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:n3wNX8w8MwuZU-2v2XiriVvx9wTiOdvxcCi3aTRdUu10QH_fOgQLcQ>
+    <xmx:n3wNXw2D4LiHuUZWz47oQrLJs6y9-mSysHgqk2ayjI-dNYWKNFQufA>
+    <xmx:n3wNX7DmNMgTbJfvOLqkqVHaqcNu8rbFqZwjoCxnkHGzZ4PyhL5Vyg>
+    <xmx:oHwNX3uLMswQwNL0idO_LFJwQ_Ftfmf_0pAlQh_ZhGRDCHlGgDrb5w>
+Received: from localhost (bzq-109-66-19-133.red.bezeqint.net [109.66.19.133])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 311E03280059;
+        Tue, 14 Jul 2020 05:36:31 -0400 (EDT)
+Date:   Tue, 14 Jul 2020 12:36:28 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     syzbot <syzbot+dd0040db0d77d52f98a5@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, jiri@mellanox.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: use-after-free Read in devlink_health_reporter_destroy
+Message-ID: <20200714093628.GA274556@shredder>
+References: <000000000000dd436905aa5a9533@google.com>
 MIME-Version: 1.0
-References: <20200713012428.1039487-1-caij2003@gmail.com> <20200713224020.1297154-1-caij2003@gmail.com>
-In-Reply-To: <20200713224020.1297154-1-caij2003@gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 14 Jul 2020 11:34:12 +0200
-Message-ID: <CA+icZUUXZmDLOXbcj6vZi6+ZTC41VbH77CViHFRmQfxiMBqYtw@mail.gmail.com>
-Subject: Re: [PATCH] x86/entry: add compatibility with IAS
-To:     Jian Cai <caij2003@gmail.com>
-Cc:     jiancai@google.com, Nick Desaulniers <ndesaulniers@google.com>,
-        manojgupta@google.com, Brian Gerst <brgerst@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000dd436905aa5a9533@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 12:40 AM Jian Cai <caij2003@gmail.com> wrote:
->
-> Clang's integrated assembler does not allow symbols with non-absolute
-> values to be reassigned. This patch allows the affected code to be
-> compatible with IAS.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1043
-> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Suggested-by: Brian Gerst <brgerst@gmail.com>
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Jian Cai <caij2003@gmail.com>
+On Mon, Jul 13, 2020 at 03:55:21PM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following crash on:
+> 
+> HEAD commit:    71930d61 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10c8d157100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=4c5bc87125719cf4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=dd0040db0d77d52f98a5
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1421cd3f100000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ccfe4f100000
+> 
+> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> Reported-by: syzbot+dd0040db0d77d52f98a5@syzkaller.appspotmail.com
 
-Hi Jian,
-
-thanks for the update!
-
-I am glad to see that some Linux/x86 assembler "monsters" jumped on the train.
-
-So, your patch with reviewer's comment got several iterations?
-Not sure if you are aware of the process of submitting patches (see [1])?
-
-It is common to add a ChangeLog below commit-message-body and diffstat
-means add below "--".
-Something like:
---
-Changes v1 -> v2:
-- I did some cool stuff to improve this
-
-While at it... Please add your version-of-patch to the subject-line:
-You can do this via "git format-patch --signoff --subject-prefix="PATCH v2".
-There might be other cool git tricks I do not know.
-
-Hope I was no "Uberlehrer".
-
-- Sedat -
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst
-
-> ---
->  arch/x86/include/asm/idtentry.h | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-> index f3d70830bf2a..5efaaed34eda 100644
-> --- a/arch/x86/include/asm/idtentry.h
-> +++ b/arch/x86/include/asm/idtentry.h
-> @@ -469,16 +469,15 @@ __visible noinstr void func(struct pt_regs *regs,                 \
->         .align 8
->  SYM_CODE_START(irq_entries_start)
->      vector=FIRST_EXTERNAL_VECTOR
-> -    pos = .
->      .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
->         UNWIND_HINT_IRET_REGS
-> +0 :
->         .byte   0x6a, vector
->         jmp     asm_common_interrupt
->         nop
->         /* Ensure that the above is 8 bytes max */
-> -       . = pos + 8
-> -    pos=pos+8
-> -    vector=vector+1
-> +       . = 0b + 8
-> +       vector = vector+1
->      .endr
->  SYM_CODE_END(irq_entries_start)
->
-> @@ -486,16 +485,15 @@ SYM_CODE_END(irq_entries_start)
->         .align 8
->  SYM_CODE_START(spurious_entries_start)
->      vector=FIRST_SYSTEM_VECTOR
-> -    pos = .
->      .rept (NR_VECTORS - FIRST_SYSTEM_VECTOR)
->         UNWIND_HINT_IRET_REGS
-> +0 :
->         .byte   0x6a, vector
->         jmp     asm_spurious_interrupt
->         nop
->         /* Ensure that the above is 8 bytes max */
-> -       . = pos + 8
-> -    pos=pos+8
-> -    vector=vector+1
-> +       . = 0b + 8
-> +       vector = vector+1
->      .endr
->  SYM_CODE_END(spurious_entries_start)
->  #endif
-> --
-> 2.27.0.383.g050319c2ae-goog
->
+#syz fix: devlink: Fix use-after-free when destroying health reporters
