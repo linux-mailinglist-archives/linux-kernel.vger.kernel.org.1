@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7C121FD0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C37121FD1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730761AbgGNTNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:13:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729525AbgGNTNU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:13:20 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8AAE922461;
-        Tue, 14 Jul 2020 19:13:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753999;
-        bh=FU1zyShPdiqPGFo5zwac+vHs4d5Y28ja+xiY5htjO8M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yykzRCMvWZTaRyOPOi06X7BumoSHem4c/fPCCfced53ufJsbrx1WCrZWhWJ8a9355
-         9JhSLXS9xsQTzfUhlO5O82erSzNDcocUqlWYXifaPU2CP1QzKHN67nBBUHKC8BiIHk
-         g4bzfH9yeq0re+q5JxCXpSAPXQtXxVM43OiItZiM=
-Date:   Tue, 14 Jul 2020 12:13:17 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Westergreen, Dalon" <dalon.westergreen@intel.com>
-Cc:     "mkubecek@suse.cz" <mkubecek@suse.cz>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Tan, Ley Foon" <ley.foon.tan@intel.com>,
-        "See, Chin Liang" <chin.liang.see@intel.com>,
-        "Nguyen, Dinh" <dinh.nguyen@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "Ooi, Joyce" <joyce.ooi@intel.com>,
-        "thor.thayer@linux.intel.com" <thor.thayer@linux.intel.com>
-Subject: Re: [PATCH v4 09/10] net: eth: altera: add msgdma prefetcher
-Message-ID: <20200714121317.732331aa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <9a8ba2616f72fb44cdc3b45fabfb4d7bdf961fd0.camel@intel.com>
-References: <20200708072401.169150-1-joyce.ooi@intel.com>
-        <20200708072401.169150-10-joyce.ooi@intel.com>
-        <20200708144900.058a8b25@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CY4PR11MB12537DA07C73574B82A239BDF2610@CY4PR11MB1253.namprd11.prod.outlook.com>
-        <20200714085526.2bb89dc6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <3bcb9020f0a3836f41036ddc3c8034b96e183197.camel@intel.com>
-        <20200714092903.38581b74@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <9a8ba2616f72fb44cdc3b45fabfb4d7bdf961fd0.camel@intel.com>
+        id S1729375AbgGNTSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728370AbgGNTSC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:18:02 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64622C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:18:02 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id e64so18516576iof.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O+ls3I/N5zsUDO1aedELyDp7Kj09Qsqb8dgbqg/A980=;
+        b=IzZThgcPgwciiCyVEcQUJ/jfFCpEk/2MHNYLhGkXYrsI6T2S8YEvqn5hytvliX0W+a
+         U7XZBozq1quYR/PnHj+En8JweGapYod2EjFhYop3iQeptqiKwVZaNeAE8n7jGZHJcvi3
+         i3JGBvvQYa93bVF4ZKKbvhP+oEPqsJPa/kDdn718wyLjxL5hwY8Cyc/ANYx83mLLq3Kt
+         hahpKBGipauXvaLE91+i7Sfd6BSBkQbSqBonxcodbI5jBjAVj7m7zoOG8fvSd2fBd2Ig
+         nVvOebWetUGEnnommtlkzG0peh1QODDmBQszhuzATE44PAl30vckla5GrFIcRciKPwUz
+         Yb6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O+ls3I/N5zsUDO1aedELyDp7Kj09Qsqb8dgbqg/A980=;
+        b=bbJLMeZYe0UG2GkjyspiZ1YwDTHpTWxU1wSwfhw28LHCTN5mrNcFRGosOAF2j1DuOH
+         tipOkaFvkX5gSgy/eIWE2E64dJ9+z7oKroj+7WmGfAsbssBF/InCJAA/fniy3oQVPvsr
+         eqlTsCJ3lklvWGCrhd9ZrqpNkpv60Fn+Z6W+dOkH+aeHAtxUP+iuT9Wa96mTMsRJiWZo
+         GZKfB1on49F8iKPqYc1t7C9ytZfKJBfuPIJ7LXtMKbOYWOPaFiuPvGGGjzdeY12RfBDh
+         C85bsgfO1vUHeeEeHs4Ak9TVd9Vni+xq/Q1lzg5Dhr7BtjUP6rtW8ymPi6sJcpfm+e+y
+         3/vw==
+X-Gm-Message-State: AOAM530h19DKfeC1Bp5O4xasGYYID2zx+JBqB3cYA57hbr9rYVjk4YDx
+        KP0bCOe26q3iBtOwBY16GJTI11Mt3f/G16rJzbglqQ==
+X-Google-Smtp-Source: ABdhPJzbujNqtoQoRYwDGoiM7cW9ZxY92ueoJ7abo6SGFJr01p4gHzSMuSZlOFme+LCpUveW0ZKh0vQSSFndz7J0gTc=
+X-Received: by 2002:a6b:6508:: with SMTP id z8mr6459683iob.82.1594754281290;
+ Tue, 14 Jul 2020 12:18:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200615063837.GA14668@zn.tnic> <20200714121955.GA2080@chrisdown.name>
+ <20200714154728.GA3101@nazgul.tnic> <20200714160448.GC2080@chrisdown.name>
+In-Reply-To: <20200714160448.GC2080@chrisdown.name>
+From:   Matthew Garrett <mjg59@google.com>
+Date:   Tue, 14 Jul 2020 12:17:50 -0700
+Message-ID: <CACdnJuvfhjMNQUYNYWpPMfwTE3xHi7UNPm7HEwUMv_1F3KT4gA@mail.gmail.com>
+Subject: Re: [PATCH -v2.1] x86/msr: Filter MSR writes
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        sean.j.christopherson@intel.com, tony.luck@intel.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020 18:51:15 +0000 Westergreen, Dalon wrote:
-> > I've seen vendors abuse fields of ethtool --coalesce to configure
-> > similar settings. tx-usecs-irq and rx-usecs-irq, I think. Since this
-> > part of ethtool API has been ported to netlink, could we perhaps add 
-> > a new field to ethtool --coalesce?  
-> 
-> I don't think this is necessary, i think just having a module parameter
-> meets our needs.  I don't see a need for the value to change on a per
-> interface basis.  This was primarily used during testing / bringup.
+On Tue, Jul 14, 2020 at 9:04 AM Chris Down <chris@chrisdown.name> wrote:
+> Either way, again, this isn't really the point. :-) The point is that there
+> _are_ currently widespread cases involving poking MSRs from userspace, however
+> sacrilegious or ugly (which I agree with!), and while people should be told
+> about that, it's excessive to have the potential to take up 80% of kmsg in the
+> default configuration. It doesn't take thousands of messages to get the message
+> across, that's what a custom printk ratelimit is for.
 
-It's hard to tell which knobs users will find worth turning therefore
-the testing / bringup justification unfortunately has little bearing on
-our upstream interface choices.
-
-We try hard to avoid module parameters in networking drivers, so if you
-want this tunable upstream a proper user interface will be required.
+Agreed - we should now offer all the necessary interfaces to avoid
+userspace having to hit MSRs directly for thermal management, but that
+wasn't always the case, and as a result there's tooling that still
+behaves this way.
