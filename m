@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6DA21F886
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1C321F88E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbgGNRvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbgGNRvH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:51:07 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9A9C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:51:06 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id s9so24359519ljm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=cSQtp/nOYLotNsNkXXY6oyibp+1oVU/cPnGkEldRkFU=;
-        b=Ex1RQm+7ZV8ckcKz87NbXznyHFpYDc3kjy2bP3741SE4rY3hXDeBQitizhA/CI/iRw
-         Ki0HYBcGjVW9E+12ZIzWE/SKOGSJ/k1JwJpDcNwqTrwl1rPvCgH3xrylv8+qTlgptt7f
-         bS8VlBHBGxyHcxEamp9lEnd8TDlc8wlrT/unLCxjTvqdvUgaoKrdWpAVCUB49EtGSqaf
-         xxOMDnaGUbbRgIZ+wnWihkWQzGUQfqfnEYF7oR6RgCAUdBaAdNn+K2sFOhGHHwPppkHZ
-         MgM7sab9vbnyFpA4DaN9StcaA0gzLhwAKDfWoUevrISNvrRPfu5jTeXGCMGpHdFha+gT
-         bGJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=cSQtp/nOYLotNsNkXXY6oyibp+1oVU/cPnGkEldRkFU=;
-        b=SWthQ3bnc/wvMj7nlh/OW0DxRSXAPyxCrqVx7S8ns0Rtw9mVYv18UfJfYPsFMV+fLT
-         lotnDloqTNrRvaviwkmyBBddE0W5X2CQkhuyHCyNvor67qyuTTVs4EfX2fDRSK2eptbn
-         JnghwuDWKqnKNF5MAKZkek8YHAwU7z1zvQZFYzDxRwQ7sBsNFx9GZnUwUoMp92hN5R3K
-         02E3zxD67MuPBQVCj6KVoODZhVKMSmlYLlfODwoKBEVU1SleZnIJ9Rt+vcCIoxd2qKvL
-         mHwf38r/gQHR5DqHD9AQJvbmCzlIm9fV5m0q1jJJYeMEl4wgvOF10NRbp3Q6a2wVG7kV
-         MMMg==
-X-Gm-Message-State: AOAM530XMsROOdAP1dkhUxPwcc0TCAwnFSYllJ7HSDk7jHvIHr2eoJLh
-        tp0Ky1uwBhlnbfacB+2MZC3WvPM21gFVaFzSsRRh1r2q
-X-Google-Smtp-Source: ABdhPJxFNKXtqGJqYiTrT5FUcR+mB4RW5x3j+tw+sW5awr9tkS+0lOaWnEzJWDHgcmb+ARgl+Xhdxo6dPYxRwsS4zP0=
-X-Received: by 2002:a2e:8e97:: with SMTP id z23mr3076693ljk.288.1594749065017;
- Tue, 14 Jul 2020 10:51:05 -0700 (PDT)
+        id S1725883AbgGNRxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:53:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725951AbgGNRxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 13:53:09 -0400
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70E5E2256C;
+        Tue, 14 Jul 2020 17:53:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594749188;
+        bh=Vj9u8QF9x99xMmejTwSLhX1eTftkeD98fKJvUc1Dfws=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=h/LcrFQhreoRzvurbroMwkTmQ359hV48l9cybtWCBaOFtWTXb4wI4GMJFqJ1yaZwS
+         17nUkwG5qYZIEPugizU2WFZGkh4XDeo9yrcMshphwgzT2wfk4nQ04mAarfL4g4vK+W
+         YI5C9xFqehV0JuttYHL4lLcddwPuD7JqlQ7F4iTE=
+Received: by mail-oi1-f173.google.com with SMTP id k6so14572868oij.11;
+        Tue, 14 Jul 2020 10:53:08 -0700 (PDT)
+X-Gm-Message-State: AOAM532oajVipUrTyLccnmcL3uep0f+wk1mRqq0qOQhdihvaXUMkKKtR
+        a3I22+at2Knckf1bSo0QKFTPkLtAeUaiPk3Fcg==
+X-Google-Smtp-Source: ABdhPJzeQjKGJO3Po7FN1n6GH1S+VMKuEzA4tWJk8eA1Ub0hYOYIbQ9EQOL3U26bSjQVI/j843zgHlHyOlWhcVywtCA=
+X-Received: by 2002:aca:bb82:: with SMTP id l124mr4795615oif.106.1594749187884;
+ Tue, 14 Jul 2020 10:53:07 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a19:7e43:0:0:0:0:0 with HTTP; Tue, 14 Jul 2020 10:51:04
- -0700 (PDT)
-Reply-To: peacemaurice99@gmail.com
-From:   Peace maurice <annben010@gmail.com>
-Date:   Tue, 14 Jul 2020 17:51:04 +0000
-Message-ID: <CAApjmfSXA6O_ss4U8NU=7DdM5V0pF59eSGcBLwqUM6FHXJFHQg@mail.gmail.com>
-Subject: Dear
-To:     undisclosed-recipients:;
+References: <20200623114005.791643-1-yamada.masahiro@socionext.com>
+ <20200714022252.GA1151466@bogus> <CAK7LNAQrdqztMrHtAHnbMkxeaDLLyBS68WVovev+zytHdD7RVQ@mail.gmail.com>
+ <20200714095259.GB4900@sirena.org.uk>
+In-Reply-To: <20200714095259.GB4900@sirena.org.uk>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 14 Jul 2020 11:52:56 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLvMbeMQL+SFgA58cZ=+FueSB5qYKf0f-CBy83S4sQ4cQ@mail.gmail.com>
+Message-ID: <CAL_JsqLvMbeMQL+SFgA58cZ=+FueSB5qYKf0f-CBy83S4sQ4cQ@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: ASoC: Convert UniPhier EVEA codec to json-schema
+To:     Mark Brown <broonie@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Katsuhiro Suzuki <katsuhiro@katsuster.net>,
+        DTML <devicetree@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        - <alsa-devel@alsa-project.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Please can we talk?
-Something just came up and it's very urgent,please i need your attention.
+On Tue, Jul 14, 2020 at 3:53 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Jul 14, 2020 at 03:13:26PM +0900, Masahiro Yamada wrote:
+>
+> > What do you mean by Reviewed-by ?
+> > Do you expect this to go to the asoc tree?
 
-Regards
-Peace.
+Yes.
+
+> > I just thought the schema conversion
+> > would go through the dt tree.
+>
+> No, bindings changes usually go through the subsystem - if there's any
+> other work on the binding then it'll usually also involve driver
+> changes.
+
+I have been taking some conversions so I can test them when they are
+standalone, there's a low chance of other changes, and the maintainer
+tends to be slow to apply and pickup fixes (not Mark).
+
+Rob
