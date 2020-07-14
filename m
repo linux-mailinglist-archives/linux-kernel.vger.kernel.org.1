@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE1521EB5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72BC21EB53
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbgGNIad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 04:30:33 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:60520 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgGNIac (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 04:30:32 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06E8S3W8158519;
-        Tue, 14 Jul 2020 08:30:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=bmrC3uO0hL9mY59/ViKJ+rhM/g+cSn+ihe2iBW1t2lA=;
- b=nP9sv9HQLvr50sCLZVHB8NUFvJJPfh8ZULE2AUPbZhuSmQdwVh+AgYKI4alEJOfKBf9o
- 37mU7E5wIGriv4Ye0p7eL8PIFtuXTjzsqZfLgwoitfx84Zgtqx5Lu8WfTPIJpTHs+cmg
- EoyhyJu0OhAGfjwW/PZN+XyJ++lgVv6+YWKrWeQuQM7aAQ50Br9hQPm7G/EZRZ2QGLiJ
- P2GoTv6a7i1cPSIszxN59j716BMLTx1/g2nYmxBJfWZvdP/7tw5ShlcYO3vY+ub3zYQa
- 0cFrj0td3c9hGD8jf8WN3CkSfCK4gTkONWPvR02NY2iGoHxllUPsrw9X893nm7Qrh2Mk cA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 3274ur3yj9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 14 Jul 2020 08:30:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06E8Hmsw084482;
-        Tue, 14 Jul 2020 08:28:23 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 327qb3a5qk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Jul 2020 08:28:23 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06E8SNPG009448;
-        Tue, 14 Jul 2020 08:28:23 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Jul 2020 01:28:22 -0700
-Date:   Tue, 14 Jul 2020 11:28:16 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Suraj Upadhyay <usuraj35@gmail.com>
-Cc:     manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        id S1726793AbgGNI22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 04:28:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725816AbgGNI22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 04:28:28 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A18121897;
+        Tue, 14 Jul 2020 08:28:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594715307;
+        bh=pIHiPnXl29m/SBs4JyChDxAqMplo09HuFsHg6sAYMJo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cca/sw3/jyus9ULYMXo0h2TBjV/Q+OEaM3QXhOQQN9gh0rzZoCsr+lXDNe1Y8FtjC
+         zH6wIyiBUzvZMiMF+TML3mUUcwPbiqsXG5lRUNj51n2NEC/bHHPxfZLPDLXc90vJzT
+         9YqF/zOe/+XKPeP1v7ljoCLfGG/EMIGPkjW39ynI=
+Date:   Tue, 14 Jul 2020 09:28:21 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     joro@8bytes.org, robin.murphy@arm.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, matthias.bgg@gmail.com,
+        robdclark@gmail.com, robh@kernel.org, tomeu.vizoso@collabora.com,
+        steven.price@arm.com, alyssa.rosenzweig@collabora.com,
+        airlied@linux.ie, daniel@ffwll.ch, baolin.wang7@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 4/6] staging: qlge: qlge_main: Simplify while statements.
-Message-ID: <20200714082816.GA2571@kadam>
-References: <cover.1594642213.git.usuraj35@gmail.com>
- <1bb472c5595d832221fd142dddb68907feeeecbe.1594642213.git.usuraj35@gmail.com>
- <20200713141235.GT2549@kadam>
- <20200714064022.GA12651@blackclown>
+Subject: Re: [PATCH v2 2/2] iommu: Add gfp parameter to io_pgtable_ops->map()
+Message-ID: <20200714082821.GC4516@willie-the-truck>
+References: <cover.1591930156.git.baolin.wang@linux.alibaba.com>
+ <3093df4cb95497aaf713fca623ce4ecebb197c2e.1591930156.git.baolin.wang@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200714064022.GA12651@blackclown>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9681 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 spamscore=0 phishscore=0 suspectscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007140063
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9681 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007140064
+In-Reply-To: <3093df4cb95497aaf713fca623ce4ecebb197c2e.1591930156.git.baolin.wang@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 12:10:22PM +0530, Suraj Upadhyay wrote:
-> On Mon, Jul 13, 2020 at 05:12:35PM +0300, Dan Carpenter wrote:
-> > On Mon, Jul 13, 2020 at 05:50:14PM +0530, Suraj Upadhyay wrote:
-> > > Simplify while loops into more readable and simple for loops.
-> > > 
-> > 
-> > I don't think either is more clear that the other.  Walter Harms hates
-> > count down loops and he's not entirely wrong...
-> > 
-> > regards,
-> > dan carpenter
+On Fri, Jun 12, 2020 at 11:39:55AM +0800, Baolin Wang wrote:
+> Now the ARM page tables are always allocated by GFP_ATOMIC parameter,
+> but the iommu_ops->map() function has been added a gfp_t parameter by
+> commit 781ca2de89ba ("iommu: Add gfp parameter to iommu_ops::map"),
+> thus io_pgtable_ops->map() should use the gfp parameter passed from
+> iommu_ops->map() to allocate page pages, which can avoid wasting the
+> memory allocators atomic pools for some non-atomic contexts.
 > 
-> Hi Dan,
-> 	Thanks for your response.
-> Should I send a v2 of this patch or not ??
-> Also do you have any problems with the other two patches doing the same
-> thing in different files ??
-> I am all ears.
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c |  2 +-
+>  drivers/iommu/arm-smmu-v3.c             |  2 +-
+>  drivers/iommu/arm-smmu.c                |  2 +-
+>  drivers/iommu/io-pgtable-arm-v7s.c      | 18 +++++++++---------
+>  drivers/iommu/io-pgtable-arm.c          | 18 +++++++++---------
+>  drivers/iommu/ipmmu-vmsa.c              |  2 +-
+>  drivers/iommu/msm_iommu.c               |  2 +-
+>  drivers/iommu/mtk_iommu.c               |  2 +-
+>  drivers/iommu/qcom_iommu.c              |  2 +-
+>  include/linux/io-pgtable.h              |  2 +-
+>  10 files changed, 26 insertions(+), 26 deletions(-)
 
-I would just resend patch 6/6.  If this is your driver and you're going
-to be working on it extensively then you do what makes you feel
-comfortable.  But to me the original code seems fine with while count
-down loops.
+I was a bit nervous about us passing GFP_KERNEL with a spinlock held, but
+it looks like you've checked all the callsites and it looks fine to me, so:
 
-regards,
-dan carpenter
+Acked-by: Will Deacon <will@kernel.org>
 
+Joerg -- not sure what you want to do with this one, as it's likely to
+conflict (trivially) with unrelated driver changes.
+
+Will
