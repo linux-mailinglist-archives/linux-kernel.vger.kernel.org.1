@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A6B21FB40
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7008A21FB1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731339AbgGNTAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58746 "EHLO mail.kernel.org"
+        id S1729968AbgGNS67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:58:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730432AbgGNTAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:00:02 -0400
+        id S1731261AbgGNS6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:58:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA17722507;
-        Tue, 14 Jul 2020 19:00:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C856722507;
+        Tue, 14 Jul 2020 18:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753201;
-        bh=k5W7uSQ0DgcsqwPBsi79a47RJXimzq06OvHjsTY60X0=;
+        s=default; t=1594753134;
+        bh=neCVyyDq9guLbLaLvVFA/6gC3/YO/5t6VrYTYc8SSGQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cPr2rvBj7vKtz8FscKjBZgE/oOYKO09oC+KF4kPJrtiwiSESLuik5LTqPbZY9P68k
-         b6xQVT7WFpI+fF3plg3POKsK1xLknFna3yO86eGkY5Yl5X4+Hss/nFEmmayclPRyG2
-         QP+/oiDHkoSgB/JECskGWA+Y8dQMIYyiDLwWfnW4=
+        b=BMwvY3uMtwjiEXHhs5TgZUwd5rkNm121GxI2m7DgaGO2s9SVGvh5cXwTal76dZt+b
+         g08GGEzZovuHWvjldQs4WYX45hMewWQloP8TtUCHcShK2I8gd/r6CgrOCJU0o9eWjL
+         HsJPN4rznRecLio+g14y5PFLSrhu+hE6yoPFGozU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.7 128/166] kallsyms: Refactor kallsyms_show_value() to take cred
-Date:   Tue, 14 Jul 2020 20:44:53 +0200
-Message-Id: <20200714184121.962592534@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Qiujun Huang <hqjagain@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 5.7 133/166] Revert "ath9k: Fix general protection fault in ath9k_hif_usb_rx_cb"
+Date:   Tue, 14 Jul 2020 20:44:58 +0200
+Message-Id: <20200714184122.198259865@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
 References: <20200714184115.844176932@linuxfoundation.org>
@@ -42,142 +44,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 160251842cd35a75edfb0a1d76afa3eb674ff40a upstream.
+This reverts commit 6602f080cb28745259e2fab1a4cf55eeb5894f93 which is
+commit 2bbcaaee1fcbd83272e29f31e2bb7e70d8c49e05 upstream.
 
-In order to perform future tests against the cred saved during open(),
-switch kallsyms_show_value() to operate on a cred, and have all current
-callers pass current_cred(). This makes it very obvious where callers
-are checking the wrong credential in their "read" contexts. These will
-be fixed in the coming patches.
+It is being reverted upstream, just hasn't made it there yet and is
+causing lots of problems.
 
-Additionally switch return value to bool, since it is always used as a
-direct permission check, not a 0-on-success, negative-on-error style
-function return.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Reported-by: Hans de Goede <hdegoede@redhat.com>
+Cc: Qiujun Huang <hqjagain@gmail.com>
+Cc: Kalle Valo <kvalo@codeaurora.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- include/linux/filter.h   |    2 +-
- include/linux/kallsyms.h |    5 +++--
- kernel/kallsyms.c        |   17 +++++++++++------
- kernel/kprobes.c         |    4 ++--
- kernel/module.c          |    2 +-
- 5 files changed, 18 insertions(+), 12 deletions(-)
+ drivers/net/wireless/ath/ath9k/hif_usb.c |   48 +++++++------------------------
+ drivers/net/wireless/ath/ath9k/hif_usb.h |    5 ---
+ 2 files changed, 11 insertions(+), 42 deletions(-)
 
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -893,7 +893,7 @@ static inline bool bpf_dump_raw_ok(void)
- 	/* Reconstruction of call-sites is dependent on kallsyms,
- 	 * thus make dump the same restriction.
- 	 */
--	return kallsyms_show_value() == 1;
-+	return kallsyms_show_value(current_cred());
- }
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -643,9 +643,9 @@ err:
  
- struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
---- a/include/linux/kallsyms.h
-+++ b/include/linux/kallsyms.h
-@@ -18,6 +18,7 @@
- #define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s]") + (KSYM_NAME_LEN - 1) + \
- 			 2*(BITS_PER_LONG*3/10) + (MODULE_NAME_LEN - 1) + 1)
- 
-+struct cred;
- struct module;
- 
- static inline int is_kernel_inittext(unsigned long addr)
-@@ -98,7 +99,7 @@ int lookup_symbol_name(unsigned long add
- int lookup_symbol_attrs(unsigned long addr, unsigned long *size, unsigned long *offset, char *modname, char *name);
- 
- /* How and when do we show kallsyms values? */
--extern int kallsyms_show_value(void);
-+extern bool kallsyms_show_value(const struct cred *cred);
- 
- #else /* !CONFIG_KALLSYMS */
- 
-@@ -158,7 +159,7 @@ static inline int lookup_symbol_attrs(un
- 	return -ERANGE;
- }
- 
--static inline int kallsyms_show_value(void)
-+static inline bool kallsyms_show_value(const struct cred *cred)
+ static void ath9k_hif_usb_rx_cb(struct urb *urb)
  {
- 	return false;
+-	struct rx_buf *rx_buf = (struct rx_buf *)urb->context;
+-	struct hif_device_usb *hif_dev = rx_buf->hif_dev;
+-	struct sk_buff *skb = rx_buf->skb;
++	struct sk_buff *skb = (struct sk_buff *) urb->context;
++	struct hif_device_usb *hif_dev =
++		usb_get_intfdata(usb_ifnum_to_if(urb->dev, 0));
+ 	int ret;
+ 
+ 	if (!skb)
+@@ -685,15 +685,14 @@ resubmit:
+ 	return;
+ free:
+ 	kfree_skb(skb);
+-	kfree(rx_buf);
  }
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -644,19 +644,20 @@ static inline int kallsyms_for_perf(void
-  * Otherwise, require CAP_SYSLOG (assuming kptr_restrict isn't set to
-  * block even that).
-  */
--int kallsyms_show_value(void)
-+bool kallsyms_show_value(const struct cred *cred)
+ 
+ static void ath9k_hif_usb_reg_in_cb(struct urb *urb)
  {
- 	switch (kptr_restrict) {
- 	case 0:
- 		if (kallsyms_for_perf())
--			return 1;
-+			return true;
- 	/* fallthrough */
- 	case 1:
--		if (has_capability_noaudit(current, CAP_SYSLOG))
--			return 1;
-+		if (security_capable(cred, &init_user_ns, CAP_SYSLOG,
-+				     CAP_OPT_NOAUDIT) == 0)
-+			return true;
- 	/* fallthrough */
- 	default:
--		return 0;
-+		return false;
- 	}
+-	struct rx_buf *rx_buf = (struct rx_buf *)urb->context;
+-	struct hif_device_usb *hif_dev = rx_buf->hif_dev;
+-	struct sk_buff *skb = rx_buf->skb;
++	struct sk_buff *skb = (struct sk_buff *) urb->context;
+ 	struct sk_buff *nskb;
++	struct hif_device_usb *hif_dev =
++		usb_get_intfdata(usb_ifnum_to_if(urb->dev, 0));
+ 	int ret;
+ 
+ 	if (!skb)
+@@ -751,7 +750,6 @@ resubmit:
+ 	return;
+ free:
+ 	kfree_skb(skb);
+-	kfree(rx_buf);
+ 	urb->context = NULL;
  }
  
-@@ -673,7 +674,11 @@ static int kallsyms_open(struct inode *i
- 		return -ENOMEM;
- 	reset_iter(iter, 0);
+@@ -797,7 +795,7 @@ static int ath9k_hif_usb_alloc_tx_urbs(s
+ 	init_usb_anchor(&hif_dev->mgmt_submitted);
  
--	iter->show_value = kallsyms_show_value();
-+	/*
-+	 * Instead of checking this on every s_show() call, cache
-+	 * the result here at open time.
-+	 */
-+	iter->show_value = kallsyms_show_value(file->f_cred);
- 	return 0;
+ 	for (i = 0; i < MAX_TX_URB_NUM; i++) {
+-		tx_buf = kzalloc(sizeof(*tx_buf), GFP_KERNEL);
++		tx_buf = kzalloc(sizeof(struct tx_buf), GFP_KERNEL);
+ 		if (!tx_buf)
+ 			goto err;
+ 
+@@ -834,9 +832,8 @@ static void ath9k_hif_usb_dealloc_rx_urb
+ 
+ static int ath9k_hif_usb_alloc_rx_urbs(struct hif_device_usb *hif_dev)
+ {
+-	struct rx_buf *rx_buf = NULL;
+-	struct sk_buff *skb = NULL;
+ 	struct urb *urb = NULL;
++	struct sk_buff *skb = NULL;
+ 	int i, ret;
+ 
+ 	init_usb_anchor(&hif_dev->rx_submitted);
+@@ -844,12 +841,6 @@ static int ath9k_hif_usb_alloc_rx_urbs(s
+ 
+ 	for (i = 0; i < MAX_RX_URB_NUM; i++) {
+ 
+-		rx_buf = kzalloc(sizeof(*rx_buf), GFP_KERNEL);
+-		if (!rx_buf) {
+-			ret = -ENOMEM;
+-			goto err_rxb;
+-		}
+-
+ 		/* Allocate URB */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+ 		if (urb == NULL) {
+@@ -864,14 +855,11 @@ static int ath9k_hif_usb_alloc_rx_urbs(s
+ 			goto err_skb;
+ 		}
+ 
+-		rx_buf->hif_dev = hif_dev;
+-		rx_buf->skb = skb;
+-
+ 		usb_fill_bulk_urb(urb, hif_dev->udev,
+ 				  usb_rcvbulkpipe(hif_dev->udev,
+ 						  USB_WLAN_RX_PIPE),
+ 				  skb->data, MAX_RX_BUF_SIZE,
+-				  ath9k_hif_usb_rx_cb, rx_buf);
++				  ath9k_hif_usb_rx_cb, skb);
+ 
+ 		/* Anchor URB */
+ 		usb_anchor_urb(urb, &hif_dev->rx_submitted);
+@@ -897,8 +885,6 @@ err_submit:
+ err_skb:
+ 	usb_free_urb(urb);
+ err_urb:
+-	kfree(rx_buf);
+-err_rxb:
+ 	ath9k_hif_usb_dealloc_rx_urbs(hif_dev);
+ 	return ret;
  }
+@@ -910,21 +896,14 @@ static void ath9k_hif_usb_dealloc_reg_in
  
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2362,7 +2362,7 @@ static void report_probe(struct seq_file
- 	else
- 		kprobe_type = "k";
+ static int ath9k_hif_usb_alloc_reg_in_urbs(struct hif_device_usb *hif_dev)
+ {
+-	struct rx_buf *rx_buf = NULL;
+-	struct sk_buff *skb = NULL;
+ 	struct urb *urb = NULL;
++	struct sk_buff *skb = NULL;
+ 	int i, ret;
  
--	if (!kallsyms_show_value())
-+	if (!kallsyms_show_value(current_cred()))
- 		addr = NULL;
+ 	init_usb_anchor(&hif_dev->reg_in_submitted);
  
- 	if (sym)
-@@ -2463,7 +2463,7 @@ static int kprobe_blacklist_seq_show(str
- 	 * If /proc/kallsyms is not showing kernel address, we won't
- 	 * show them here either.
- 	 */
--	if (!kallsyms_show_value())
-+	if (!kallsyms_show_value(current_cred()))
- 		seq_printf(m, "0x%px-0x%px\t%ps\n", NULL, NULL,
- 			   (void *)ent->start_addr);
- 	else
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -4348,7 +4348,7 @@ static int modules_open(struct inode *in
+ 	for (i = 0; i < MAX_REG_IN_URB_NUM; i++) {
  
- 	if (!err) {
- 		struct seq_file *m = file->private_data;
--		m->private = kallsyms_show_value() ? NULL : (void *)8ul;
-+		m->private = kallsyms_show_value(current_cred()) ? NULL : (void *)8ul;
- 	}
+-		rx_buf = kzalloc(sizeof(*rx_buf), GFP_KERNEL);
+-		if (!rx_buf) {
+-			ret = -ENOMEM;
+-			goto err_rxb;
+-		}
+-
+ 		/* Allocate URB */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+ 		if (urb == NULL) {
+@@ -939,14 +918,11 @@ static int ath9k_hif_usb_alloc_reg_in_ur
+ 			goto err_skb;
+ 		}
  
- 	return err;
+-		rx_buf->hif_dev = hif_dev;
+-		rx_buf->skb = skb;
+-
+ 		usb_fill_int_urb(urb, hif_dev->udev,
+ 				  usb_rcvintpipe(hif_dev->udev,
+ 						  USB_REG_IN_PIPE),
+ 				  skb->data, MAX_REG_IN_BUF_SIZE,
+-				  ath9k_hif_usb_reg_in_cb, rx_buf, 1);
++				  ath9k_hif_usb_reg_in_cb, skb, 1);
+ 
+ 		/* Anchor URB */
+ 		usb_anchor_urb(urb, &hif_dev->reg_in_submitted);
+@@ -972,8 +948,6 @@ err_submit:
+ err_skb:
+ 	usb_free_urb(urb);
+ err_urb:
+-	kfree(rx_buf);
+-err_rxb:
+ 	ath9k_hif_usb_dealloc_reg_in_urbs(hif_dev);
+ 	return ret;
+ }
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.h
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.h
+@@ -86,11 +86,6 @@ struct tx_buf {
+ 	struct list_head list;
+ };
+ 
+-struct rx_buf {
+-	struct sk_buff *skb;
+-	struct hif_device_usb *hif_dev;
+-};
+-
+ #define HIF_USB_TX_STOP  BIT(0)
+ #define HIF_USB_TX_FLUSH BIT(1)
+ 
 
 
