@@ -2,115 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233B922002D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B7B220043
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbgGNVjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:39:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37684 "EHLO mail.kernel.org"
+        id S1728043AbgGNVrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:47:11 -0400
+Received: from ms.lwn.net ([45.79.88.28]:42786 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727098AbgGNVjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:39:45 -0400
-Received: from embeddedor (unknown [201.162.240.73])
+        id S1726710AbgGNVrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 17:47:10 -0400
+Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 152C42064C;
-        Tue, 14 Jul 2020 21:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594762785;
-        bh=IcwyAgDmrYiZARCGLD0f3MGzv0IuApQzk4+xUcZdmu0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lB4VlDnlygA2pEVWgQoeFBVs0Gq0vzvLeL7QBNhohPHcraW3FQgK7esV7tOgziQKn
-         5ekZKIUFUVyMYnWn7klTRrDzQuGH8B8Lwa7T2dXERXRgyepqbLLpsPGIfnGSIZ5acv
-         YODa6H7SsGMysRWWHHfp6+/yx5o5+W0VIaQGPqUQ=
-Date:   Tue, 14 Jul 2020 16:45:16 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Tomas Winkler <tomas.winkler@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH v2] mei: Avoid the use of one-element arrays
-Message-ID: <20200714214516.GA1040@embeddedor>
+        by ms.lwn.net (Postfix) with ESMTPSA id 35E9260C;
+        Tue, 14 Jul 2020 21:47:10 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 15:47:08 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     torvalds@linux-foundation.org, ribalda@kernel.org,
+        viro@zeniv.linux.org.uk, mchehab+samsung@kernel.org,
+        luis.f.correia@gmail.com, geert+renesas@glider.be,
+        paulburton@kernel.org, cyphar@cyphar.com, martink@posteo.de,
+        davej@codemonkey.org.uk, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] CREDITS: remove link http://www.dementia.org/~shadow
+Message-ID: <20200714154708.71b3efe2@lwn.net>
+In-Reply-To: <20200714193805.49746-1-grandmaster@al2klimov.de>
+References: <20200713114321.783f0ae6@lwn.net>
+        <20200714193805.49746-1-grandmaster@al2klimov.de>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One-element arrays are being deprecated[1]. Replace the one-element
-arrays with a simple value type u8 reserved, once this is just a
-placeholder for alignment.
+On Tue, 14 Jul 2020 21:38:05 +0200
+"Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
 
-Also, while there, use the preferred form for passing a size of a struct.
-The alternative form where struct name is spelled out hurts readability
-and introduces an opportunity for a bug when the variable type is changed
-but the corresponding sizeof that is passed as argument is not.
+> Rationale:
+> The way it redirects looks like a fallback from a dead URL to a generic one.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Yes, I noted that some of the links removed by these "CREDITS: remove link:"
+>  patches have email addresses with the same domain nearby.
+> 
+>  Don't worry, I'll take care of them together with all other
+>  dead email addresses - but not right now.
+> 
+> 
+>  CREDITS | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/CREDITS b/CREDITS
+> index 0787b5872906..92ad22b7ef56 100644
+> --- a/CREDITS
+> +++ b/CREDITS
+> @@ -483,7 +483,6 @@ D: Intel Wireless WiMAX Connection 2400 SDIO driver
+>  
+>  N: Derrick J. Brashear
+>  E: shadow@dementia.org
+> -W: http://www.dementia.org/~shadow
 
-[1] https://github.com/KSPP/linux/issues/79
+So thanks for addressing these.  That said, I do wonder if this is quite
+the right thing to do.  I'm assuming that the old sites still exist in the
+wayback machine somewhere, and somebody might actually want to find them.
+Pity the poor anthropologist researching the origins of the the
+billion-line, free-software kernels widely used in the 2500's...
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v2:
- - Use a more concise changelog text.
+So maybe we should either mark it as "[BROKEN]" or make a direct link into
+the wayback machine instead?  That would enable the suitably motivated to
+go after the content that once existed.
 
- drivers/misc/mei/hbm.c | 4 ++--
- drivers/misc/mei/hw.h  | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+Thoughts anybody?
 
-diff --git a/drivers/misc/mei/hbm.c b/drivers/misc/mei/hbm.c
-index a44094cdbc36..f020d5594154 100644
---- a/drivers/misc/mei/hbm.c
-+++ b/drivers/misc/mei/hbm.c
-@@ -408,14 +408,14 @@ static int mei_hbm_add_cl_resp(struct mei_device *dev, u8 addr, u8 status)
- {
- 	struct mei_msg_hdr mei_hdr;
- 	struct hbm_add_client_response resp;
--	const size_t len = sizeof(struct hbm_add_client_response);
-+	const size_t len = sizeof(resp);
- 	int ret;
- 
- 	dev_dbg(dev->dev, "adding client response\n");
- 
- 	mei_hbm_hdr(&mei_hdr, len);
- 
--	memset(&resp, 0, sizeof(struct hbm_add_client_response));
-+	memset(&resp, 0, len);
- 	resp.hbm_cmd = MEI_HBM_ADD_CLIENT_RES_CMD;
- 	resp.me_addr = addr;
- 	resp.status  = status;
-diff --git a/drivers/misc/mei/hw.h b/drivers/misc/mei/hw.h
-index b1a8d5ec88b3..8c0297f0e7f3 100644
---- a/drivers/misc/mei/hw.h
-+++ b/drivers/misc/mei/hw.h
-@@ -346,13 +346,13 @@ struct hbm_add_client_request {
-  * @hbm_cmd: bus message command header
-  * @me_addr: address of the client in ME
-  * @status: if HBMS_SUCCESS then the client can now accept connections.
-- * @reserved: reserved
-+ * @reserved: reserved for alignment.
-  */
- struct hbm_add_client_response {
- 	u8 hbm_cmd;
- 	u8 me_addr;
- 	u8 status;
--	u8 reserved[1];
-+	u8 reserved;
- } __packed;
- 
- /**
-@@ -461,7 +461,7 @@ struct hbm_notification {
- 	u8 hbm_cmd;
- 	u8 me_addr;
- 	u8 host_addr;
--	u8 reserved[1];
-+	u8 reserved;
- } __packed;
- 
- /**
--- 
-2.27.0
+Thanks,
 
+jon
