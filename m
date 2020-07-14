@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BF921F9F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545BE21FA63
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729876AbgGNSsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:48:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43262 "EHLO mail.kernel.org"
+        id S1730483AbgGNSwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:52:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729865AbgGNSr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:47:59 -0400
+        id S1730476AbgGNSwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:52:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89FC322B2C;
-        Tue, 14 Jul 2020 18:47:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2CF122B48;
+        Tue, 14 Jul 2020 18:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752479;
-        bh=JS8ZQOSUM4qWSeqJVCG/LhsLW7f6uNGnyC/H3yHP2+Q=;
+        s=default; t=1594752726;
+        bh=pqw5UfEYGYT8ol4RNywBnTNu1KP+OoGQYk4BTsvHyYU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sWK3YIfqowr4BNLOoKtnFVbStahlg/AK5k3XXAODxYZpSIrTYWba6FPqk6I/1b/nH
-         py+3qg4bApo4C+jOxl6JPfyc86FGw40/LhOzX9ytKQpVL0IGWFmYou/pLJNI5+5/wa
-         hOkicPBIQnI0kIbErJPQ1Q5lwOAkW09ukQ5nB4Rs=
+        b=nBUJUNV5UMzefvehC/cW7s6dF+qatrRhF64/+MxaQWviF1UBMH5+qNbeGYuJwJrJB
+         ZTsLD9YTC33TrKPQUZ0B61l2bY+yWDo5ldOTyEQfY2OWqJ9An4AAq4P8onP+0UAIfO
+         zeMfviOkrZY/n9HFKypsbjnuzRCz7MajPM4f63YM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 4.19 56/58] ARC: entry: fix potential EFA clobber when TIF_SYSCALL_TRACE
-Date:   Tue, 14 Jul 2020 20:44:29 +0200
-Message-Id: <20200714184058.958721670@linuxfoundation.org>
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.4 087/109] kallsyms: Refactor kallsyms_show_value() to take cred
+Date:   Tue, 14 Jul 2020 20:44:30 +0200
+Message-Id: <20200714184109.715957926@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,81 +42,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Kees Cook <keescook@chromium.org>
 
-commit 00fdec98d9881bf5173af09aebd353ab3b9ac729 upstream.
+commit 160251842cd35a75edfb0a1d76afa3eb674ff40a upstream.
 
-Trap handler for syscall tracing reads EFA (Exception Fault Address),
-in case strace wants PC of trap instruction (EFA is not part of pt_regs
-as of current code).
+In order to perform future tests against the cred saved during open(),
+switch kallsyms_show_value() to operate on a cred, and have all current
+callers pass current_cred(). This makes it very obvious where callers
+are checking the wrong credential in their "read" contexts. These will
+be fixed in the coming patches.
 
-However this EFA read is racy as it happens after dropping to pure
-kernel mode (re-enabling interrupts). A taken interrupt could
-context-switch, trigger a different task's trap, clobbering EFA for this
-execution context.
+Additionally switch return value to bool, since it is always used as a
+direct permission check, not a 0-on-success, negative-on-error style
+function return.
 
-Fix this by reading EFA early, before re-enabling interrupts. A slight
-side benefit is de-duplication of FAKE_RET_FROM_EXCPN in trap handler.
-The trap handler is common to both ARCompact and ARCv2 builds too.
-
-This just came out of code rework/review and no real problem was reported
-but is clearly a potential problem specially for strace.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arc/kernel/entry.S |   16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ include/linux/filter.h   |    2 +-
+ include/linux/kallsyms.h |    5 +++--
+ kernel/kallsyms.c        |   17 +++++++++++------
+ kernel/kprobes.c         |    4 ++--
+ kernel/module.c          |    2 +-
+ 5 files changed, 18 insertions(+), 12 deletions(-)
 
---- a/arch/arc/kernel/entry.S
-+++ b/arch/arc/kernel/entry.S
-@@ -156,7 +156,6 @@ END(EV_Extension)
- tracesys:
- 	; save EFA in case tracer wants the PC of traced task
- 	; using ERET won't work since next-PC has already committed
--	lr  r12, [efa]
- 	GET_CURR_TASK_FIELD_PTR   TASK_THREAD, r11
- 	st  r12, [r11, THREAD_FAULT_ADDR]	; thread.fault_address
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -858,7 +858,7 @@ static inline bool bpf_dump_raw_ok(void)
+ 	/* Reconstruction of call-sites is dependent on kallsyms,
+ 	 * thus make dump the same restriction.
+ 	 */
+-	return kallsyms_show_value() == 1;
++	return kallsyms_show_value(current_cred());
+ }
  
-@@ -199,15 +198,9 @@ tracesys_exit:
- ; Breakpoint TRAP
- ; ---------------------------------------------
- trap_with_param:
--
--	; stop_pc info by gdb needs this info
--	lr  r0, [efa]
-+	mov r0, r12	; EFA in case ptracer/gdb wants stop_pc
- 	mov r1, sp
+ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+--- a/include/linux/kallsyms.h
++++ b/include/linux/kallsyms.h
+@@ -18,6 +18,7 @@
+ #define KSYM_SYMBOL_LEN (sizeof("%s+%#lx/%#lx [%s]") + (KSYM_NAME_LEN - 1) + \
+ 			 2*(BITS_PER_LONG*3/10) + (MODULE_NAME_LEN - 1) + 1)
  
--	; Now that we have read EFA, it is safe to do "fake" rtie
--	;   and get out of CPU exception mode
--	FAKE_RET_FROM_EXCPN
--
- 	; Save callee regs in case gdb wants to have a look
- 	; SP will grow up by size of CALLEE Reg-File
- 	; NOTE: clobbers r12
-@@ -234,6 +227,10 @@ ENTRY(EV_Trap)
++struct cred;
+ struct module;
  
- 	EXCEPTION_PROLOGUE
+ static inline int is_kernel_inittext(unsigned long addr)
+@@ -98,7 +99,7 @@ int lookup_symbol_name(unsigned long add
+ int lookup_symbol_attrs(unsigned long addr, unsigned long *size, unsigned long *offset, char *modname, char *name);
  
-+	lr  r12, [efa]
-+
-+	FAKE_RET_FROM_EXCPN
-+
- 	;============ TRAP 1   :breakpoints
- 	; Check ECR for trap with arg (PROLOGUE ensures r9 has ECR)
- 	bmsk.f 0, r9, 7
-@@ -241,9 +238,6 @@ ENTRY(EV_Trap)
+ /* How and when do we show kallsyms values? */
+-extern int kallsyms_show_value(void);
++extern bool kallsyms_show_value(const struct cred *cred);
  
- 	;============ TRAP  (no param): syscall top level
+ #else /* !CONFIG_KALLSYMS */
  
--	; First return from Exception to pure K mode (Exception/IRQs renabled)
--	FAKE_RET_FROM_EXCPN
--
- 	; If syscall tracing ongoing, invoke pre-post-hooks
- 	GET_CURR_THR_INFO_FLAGS   r10
- 	btst r10, TIF_SYSCALL_TRACE
+@@ -158,7 +159,7 @@ static inline int lookup_symbol_attrs(un
+ 	return -ERANGE;
+ }
+ 
+-static inline int kallsyms_show_value(void)
++static inline bool kallsyms_show_value(const struct cred *cred)
+ {
+ 	return false;
+ }
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -645,19 +645,20 @@ static inline int kallsyms_for_perf(void
+  * Otherwise, require CAP_SYSLOG (assuming kptr_restrict isn't set to
+  * block even that).
+  */
+-int kallsyms_show_value(void)
++bool kallsyms_show_value(const struct cred *cred)
+ {
+ 	switch (kptr_restrict) {
+ 	case 0:
+ 		if (kallsyms_for_perf())
+-			return 1;
++			return true;
+ 	/* fallthrough */
+ 	case 1:
+-		if (has_capability_noaudit(current, CAP_SYSLOG))
+-			return 1;
++		if (security_capable(cred, &init_user_ns, CAP_SYSLOG,
++				     CAP_OPT_NOAUDIT) == 0)
++			return true;
+ 	/* fallthrough */
+ 	default:
+-		return 0;
++		return false;
+ 	}
+ }
+ 
+@@ -674,7 +675,11 @@ static int kallsyms_open(struct inode *i
+ 		return -ENOMEM;
+ 	reset_iter(iter, 0);
+ 
+-	iter->show_value = kallsyms_show_value();
++	/*
++	 * Instead of checking this on every s_show() call, cache
++	 * the result here at open time.
++	 */
++	iter->show_value = kallsyms_show_value(file->f_cred);
+ 	return 0;
+ }
+ 
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2362,7 +2362,7 @@ static void report_probe(struct seq_file
+ 	else
+ 		kprobe_type = "k";
+ 
+-	if (!kallsyms_show_value())
++	if (!kallsyms_show_value(current_cred()))
+ 		addr = NULL;
+ 
+ 	if (sym)
+@@ -2463,7 +2463,7 @@ static int kprobe_blacklist_seq_show(str
+ 	 * If /proc/kallsyms is not showing kernel address, we won't
+ 	 * show them here either.
+ 	 */
+-	if (!kallsyms_show_value())
++	if (!kallsyms_show_value(current_cred()))
+ 		seq_printf(m, "0x%px-0x%px\t%ps\n", NULL, NULL,
+ 			   (void *)ent->start_addr);
+ 	else
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -4391,7 +4391,7 @@ static int modules_open(struct inode *in
+ 
+ 	if (!err) {
+ 		struct seq_file *m = file->private_data;
+-		m->private = kallsyms_show_value() ? NULL : (void *)8ul;
++		m->private = kallsyms_show_value(current_cred()) ? NULL : (void *)8ul;
+ 	}
+ 
+ 	return err;
 
 
