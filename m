@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE7A21E5A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E5821E5B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgGNC2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 22:28:30 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:11393 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgGNC21 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 22:28:27 -0400
-IronPort-SDR: hIVAOLfRWc7vP/6EzNNwfTtj25E5QxOh8B013qpDsxVQg1XNr6p6g2YZormq2oue6Gd2MuZ/kz
- g5lVhOHBDMsn4mS95zvGvPglJLqfzucEyKEgFt8jfinhveC+/M0BPnHVbnyQuIb967GctgnLjZ
- B4iIESEgsqNKi6CukIUnJpRGYAYdrQCEka/IyvJsB9agZeqPclXS94sSGGEiuTzy6vjrJjdpvZ
- vVf2GnbfRiu2jFuU7T3WGGHmdVsAagojyYHg+sx5eY8NWFWzicYEvfz4PcsA4cHchL+fiUBApE
- 9j0=
-X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
-   d="scan'208";a="47216745"
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by labrats.qualcomm.com with ESMTP; 13 Jul 2020 19:28:26 -0700
-Received: from pacamara-linux.qualcomm.com ([192.168.140.135])
-  by ironmsg01-sd.qualcomm.com with ESMTP; 13 Jul 2020 19:28:25 -0700
-Received: by pacamara-linux.qualcomm.com (Postfix, from userid 359480)
-        id 8A0A122DC2; Mon, 13 Jul 2020 19:28:25 -0700 (PDT)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 3/4] ufs: ufs-qcom: Fix a few BUGs in func ufs_qcom_dump_dbg_regs()
-Date:   Mon, 13 Jul 2020 19:28:11 -0700
-Message-Id: <1594693693-22466-4-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594693693-22466-1-git-send-email-cang@codeaurora.org>
-References: <1594693693-22466-1-git-send-email-cang@codeaurora.org>
+        id S1726752AbgGNCdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 22:33:45 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:42736 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726150AbgGNCdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 22:33:45 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowAC3vwMJFw1fLmaPAA--.28728S2;
+        Tue, 14 Jul 2020 10:23:06 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     davem@davemloft.net, kuba@kernel.org, michal.simek@xilinx.com,
+        esben@geanix.com, hkallweit1@gmail.com, f.fainelli@gmail.com,
+        vulab@iscas.ac.cn, weiyongjun1@huawei.com, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] net: xilinx: fix potential NULL dereference in temac_probe()
+Date:   Tue, 14 Jul 2020 02:23:04 +0000
+Message-Id: <20200714022304.4003-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowAC3vwMJFw1fLmaPAA--.28728S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFy7Jr4kAr48AFW7Wr47XFb_yoWkZFgEq3
+        Wj9r4fGrs5ur1FkF48Kr13AayY9Fs29r97Ww47KFWavaykWw1293yUuw4fXFy7Ww1xCFyD
+        JrnrJr4fua4UZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUba8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7
+        v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF
+        7I0E8cxan2IY04v7MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbZ2-5UUUUU==
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCAsQA18J9fBAqAABsq
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dumping testbus registers needs to sleep a bit intermittently as there are
-too many of them. Skip them for those contexts where sleep is not allowed.
+platform_get_resource() may return NULL, add proper
+check to avoid potential NULL dereferencing.
 
-Meanwhile, if ufs_qcom_dump_dbg_regs() calls ufs_qcom_testbus_config() from
-ufshcd_suspend/resume and/or clk gate/ungate context, pm_runtime_get_sync()
-and ufshcd_hold() will cause racing problems. Fix it by removing the
-unnecessary calls of pm_runtime_get_sync() and ufshcd_hold().
-
-Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
- drivers/scsi/ufs/ufs-qcom.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/xilinx/ll_temac_main.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index 2e6ddb5..3743c17 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -1604,9 +1604,6 @@ int ufs_qcom_testbus_config(struct ufs_qcom_host *host)
- 	 */
- 	}
- 	mask <<= offset;
--
--	pm_runtime_get_sync(host->hba->dev);
--	ufshcd_hold(host->hba, false);
- 	ufshcd_rmwl(host->hba, TEST_BUS_SEL,
- 		    (u32)host->testbus.select_major << 19,
- 		    REG_UFS_CFG1);
-@@ -1619,8 +1616,6 @@ int ufs_qcom_testbus_config(struct ufs_qcom_host *host)
- 	 * committed before returning.
- 	 */
- 	mb();
--	ufshcd_release(host->hba);
--	pm_runtime_put_sync(host->hba->dev);
+diff --git a/drivers/net/ethernet/xilinx/ll_temac_main.c b/drivers/net/ethernet/xilinx/ll_temac_main.c
+index 929244064abd..85a767fa2ecf 100644
+--- a/drivers/net/ethernet/xilinx/ll_temac_main.c
++++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
+@@ -1408,6 +1408,8 @@ static int temac_probe(struct platform_device *pdev)
  
- 	return 0;
- }
-@@ -1658,11 +1653,13 @@ static void ufs_qcom_dump_dbg_regs(struct ufs_hba *hba)
- 
- 	/* sleep a bit intermittently as we are dumping too much data */
- 	ufs_qcom_print_hw_debug_reg_all(hba, NULL, ufs_qcom_dump_regs_wrapper);
--	udelay(1000);
--	ufs_qcom_testbus_read(hba);
--	udelay(1000);
--	ufs_qcom_print_unipro_testbus(hba);
--	udelay(1000);
-+	if (in_task()) {
-+		udelay(1000);
-+		ufs_qcom_testbus_read(hba);
-+		udelay(1000);
-+		ufs_qcom_print_unipro_testbus(hba);
-+		udelay(1000);
-+	}
- }
- 
- /**
+ 	/* map device registers */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -EINVAL;
+ 	lp->regs = devm_ioremap(&pdev->dev, res->start,
+ 					resource_size(res));
+ 	if (!lp->regs) {
+@@ -1503,6 +1505,8 @@ static int temac_probe(struct platform_device *pdev)
+ 	} else if (pdata) {
+ 		/* 2nd memory resource specifies DMA registers */
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++		if (!res)
++			return -EINVAL;
+ 		lp->sdma_regs = devm_ioremap(&pdev->dev, res->start,
+ 						     resource_size(res));
+ 		if (!lp->sdma_regs) {
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.17.1
 
