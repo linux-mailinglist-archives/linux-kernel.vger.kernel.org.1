@@ -2,71 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4D321EBD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D8E21EBC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgGNIu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 04:50:57 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:54529 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726437AbgGNIuw (ORCPT
+        id S1726770AbgGNItJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 04:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726752AbgGNItI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 04:50:52 -0400
-X-UUID: e1eb7e2aa578486db4ba4a9c4546aef5-20200714
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=7ze8MUqRCqW8NAFyPQx+TiTtPZUYUkBO979o7vg+Kok=;
-        b=WxhM0PJM8r5yEmzZQTcAECnTzqfIYKOPvt2/NvdsvgroEMpYjWli+385jQhqIo3ng0OCe1Aq1+KoMxmNDMgUJE6HQvvU6y0iMljKWxsmbPAym7EEpGEX9RHfjCeYqLLnHlFsebOEQ9GNhp3jDJojjdSVFfAVfE4h4+GrxIlSYsQ=;
-X-UUID: e1eb7e2aa578486db4ba4a9c4546aef5-20200714
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 697251406; Tue, 14 Jul 2020 16:50:43 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- MTKMBS31DR.mediatek.inc (172.27.6.102) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 14 Jul 2020 16:50:41 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 14 Jul 2020 16:50:40 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 9/9] usb: gadget: bdc: prefer pointer dereference to pointer type
-Date:   Tue, 14 Jul 2020 16:48:54 +0800
-Message-ID: <1594716535-24699-9-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1594716535-24699-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1594716535-24699-1-git-send-email-chunfeng.yun@mediatek.com>
+        Tue, 14 Jul 2020 04:49:08 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A0DC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 01:49:08 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id w3so4119570wmi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 01:49:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ilOUjshXCxjQTzuS0UozRdRI9NqrHTWmX92ctNaLA88=;
+        b=m8RPlGi0J1Nh0hairX/5K3bldgpDaU68K9AbGbG6xA6UAa1DDCWD6fCR0AUfNFpMVn
+         uImdCCAqZXPb1vWJJuWv/f07DvgI4jof37Wk877FhshhwWH5QtAEHxtlbypglxKD4/Zz
+         StosouVRmYLsy476qAksBx9J6N9wt3Jw56rCXw+6iCmyI/VaCzb3fSPS25xmTbWJCqOv
+         jybMwq+zBUqAOAJGS57JqQUvOtmst6ol53LJIfkMI6F1LeR0TAOZxEXTwGxY3V/6+CnR
+         mH6ujEFjDhRjLfUbuGH22gWw5QrwDK4O/KK1jCY8EORxs5FIaqXHx/YwnhX6Lf4S9kl/
+         WAaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ilOUjshXCxjQTzuS0UozRdRI9NqrHTWmX92ctNaLA88=;
+        b=XlulNdmjOofCE09I6G0QGDRlt/SkRAeT8iRvoF2lK+IF8iY8YyP4rF7ulcrqWspl8v
+         W4dcbYJhfdKSlhjaaW7PCDCxfnjEY521W9+cPe0SoMbk+huVWxFLVvjThSePVSu9HS+g
+         r/ma3hCIjCbZF7HUQ6ZeAdLeKWbCw99QVLrapP+2/xo062bvoa9zu/2Lgm+taDM0DE1e
+         xsrep3FNsGMlegnl/asYcx4HZtQm4cEviBG3zyBYe0LyUaQDpwGF9Ko9Gg91mYK/TpKk
+         MiTe+ugnL+rGLsdYLaewtkwTQdGSx0xVPbDWRS1s7vCmBvLCm8J1V+wfbYRHIuTCwBV8
+         E+7g==
+X-Gm-Message-State: AOAM532B28oAjHPij4Wptz+4G4HJFLbNpzcNqrYbcofcPrEvrEQVGGVU
+        YQV8anNXS9yZ+Z/PjFEp/1+ktw==
+X-Google-Smtp-Source: ABdhPJyoEREPlabEzuRVBXS1Sv7ykAK4/to1qWGQ/eI6JnC4XJgg6glZu+S/nYcpfFWaOxI/hVqrWw==
+X-Received: by 2002:a1c:48d:: with SMTP id 135mr3343846wme.102.1594716546678;
+        Tue, 14 Jul 2020 01:49:06 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id z8sm3374460wmg.39.2020.07.14.01.49.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 01:49:06 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 09:49:04 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Hannes Reinecke <hare@kernel.org>, Linux GmbH <hare@suse.com>,
+        "Leonard N. Zubkoff" <lnz@dandelion.com>
+Subject: Re: [PATCH v2 15/24] scsi: myrs: Demote obvious misuse of kerneldoc
+ to standard comment blocks
+Message-ID: <20200714084904.GK3500@dell>
+References: <20200713080001.128044-1-lee.jones@linaro.org>
+ <20200713080001.128044-16-lee.jones@linaro.org>
+ <270f544a-19ef-cf71-220c-54e349dc6bfc@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: C2E4303C8A8616C9F37FBD7111587A0843CFAC8B0C6422BCC7485C4D614E0B692000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <270f544a-19ef-cf71-220c-54e349dc6bfc@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UHJlZmVyIGt6YWxsb2Moc2l6ZW9mKCpiZF90YWJsZSkuLi4pIG92ZXINCmt6YWxsb2Moc2l6ZW9m
-KHN0cnVjdCBiZF90YWJsZSkNCg0KU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVu
-Zy55dW5AbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRj
-X2VwLmMgfCAyICstDQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9u
-KC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfZXAuYyBi
-L2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19lcC5jDQppbmRleCBlZWE2NmQ1Li5kMWFj
-ZTc3IDEwMDY0NA0KLS0tIGEvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2VwLmMNCisr
-KyBiL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19lcC5jDQpAQCAtMTQ3LDcgKzE0Nyw3
-IEBAIHN0YXRpYyBpbnQgZXBfYmRfbGlzdF9hbGxvYyhzdHJ1Y3QgYmRjX2VwICplcCkNCiAJLyog
-QWxsb2NhdGUgbWVtb3J5IGZvciBlYWNoIHRhYmxlICovDQogCWZvciAoaW5kZXggPSAwOyBpbmRl
-eCA8IG51bV90YWJzOyBpbmRleCsrKSB7DQogCQkvKiBBbGxvY2F0ZSBtZW1vcnkgZm9yIGJkX3Rh
-YmxlIHN0cnVjdHVyZSAqLw0KLQkJYmRfdGFibGUgPSBremFsbG9jKHNpemVvZihzdHJ1Y3QgYmRf
-dGFibGUpLCBHRlBfQVRPTUlDKTsNCisJCWJkX3RhYmxlID0ga3phbGxvYyhzaXplb2YoKmJkX3Rh
-YmxlKSwgR0ZQX0FUT01JQyk7DQogCQlpZiAoIWJkX3RhYmxlKQ0KIAkJCWdvdG8gZmFpbDsNCiAN
-Ci0tIA0KMS45LjENCg==
+On Tue, 14 Jul 2020, Hannes Reinecke wrote:
 
+> On 7/13/20 9:59 AM, Lee Jones wrote:
+> > No attempt has been made to document any of the demoted functions here.
+> > 
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/scsi/myrs.c:94: warning: Function parameter or member 'cmd_blk' not described in 'myrs_reset_cmd'
+> >  drivers/scsi/myrs.c:105: warning: Function parameter or member 'cs' not described in 'myrs_qcmd'
+> >  drivers/scsi/myrs.c:105: warning: Function parameter or member 'cmd_blk' not described in 'myrs_qcmd'
+> >  drivers/scsi/myrs.c:130: warning: Function parameter or member 'cs' not described in 'myrs_exec_cmd'
+> >  drivers/scsi/myrs.c:130: warning: Function parameter or member 'cmd_blk' not described in 'myrs_exec_cmd'
+> >  drivers/scsi/myrs.c:149: warning: Function parameter or member 'cs' not described in 'myrs_report_progress'
+> >  drivers/scsi/myrs.c:149: warning: Function parameter or member 'ldev_num' not described in 'myrs_report_progress'
+> >  drivers/scsi/myrs.c:149: warning: Function parameter or member 'msg' not described in 'myrs_report_progress'
+> >  drivers/scsi/myrs.c:149: warning: Function parameter or member 'blocks' not described in 'myrs_report_progress'
+> >  drivers/scsi/myrs.c:149: warning: Function parameter or member 'size' not described in 'myrs_report_progress'
+> >  drivers/scsi/myrs.c:160: warning: Function parameter or member 'cs' not described in 'myrs_get_ctlr_info'
+> >  drivers/scsi/myrs.c:222: warning: Function parameter or member 'cs' not described in 'myrs_get_ldev_info'
+> >  drivers/scsi/myrs.c:222: warning: Function parameter or member 'ldev_num' not described in 'myrs_get_ldev_info'
+> >  drivers/scsi/myrs.c:222: warning: Function parameter or member 'ldev_info' not described in 'myrs_get_ldev_info'
+> >  drivers/scsi/myrs.c:310: warning: Function parameter or member 'cs' not described in 'myrs_get_pdev_info'
+> >  drivers/scsi/myrs.c:310: warning: Function parameter or member 'channel' not described in 'myrs_get_pdev_info'
+> >  drivers/scsi/myrs.c:310: warning: Function parameter or member 'target' not described in 'myrs_get_pdev_info'
+> >  drivers/scsi/myrs.c:310: warning: Function parameter or member 'lun' not described in 'myrs_get_pdev_info'
+> >  drivers/scsi/myrs.c:310: warning: Function parameter or member 'pdev_info' not described in 'myrs_get_pdev_info'
+> >  drivers/scsi/myrs.c:353: warning: Function parameter or member 'cs' not described in 'myrs_dev_op'
+> >  drivers/scsi/myrs.c:353: warning: Function parameter or member 'opcode' not described in 'myrs_dev_op'
+> >  drivers/scsi/myrs.c:353: warning: Function parameter or member 'opdev' not described in 'myrs_dev_op'
+> >  drivers/scsi/myrs.c:379: warning: Function parameter or member 'cs' not described in 'myrs_translate_pdev'
+> >  drivers/scsi/myrs.c:379: warning: Function parameter or member 'channel' not described in 'myrs_translate_pdev'
+> >  drivers/scsi/myrs.c:379: warning: Function parameter or member 'target' not described in 'myrs_translate_pdev'
+> >  drivers/scsi/myrs.c:379: warning: Function parameter or member 'lun' not described in 'myrs_translate_pdev'
+> >  drivers/scsi/myrs.c:379: warning: Function parameter or member 'devmap' not described in 'myrs_translate_pdev'
+> >  drivers/scsi/myrs.c:422: warning: Function parameter or member 'cs' not described in 'myrs_get_event'
+> >  drivers/scsi/myrs.c:422: warning: Function parameter or member 'event_num' not described in 'myrs_get_event'
+> >  drivers/scsi/myrs.c:422: warning: Function parameter or member 'event_buf' not described in 'myrs_get_event'
+> >  drivers/scsi/myrs.c:484: warning: Function parameter or member 'cs' not described in 'myrs_enable_mmio_mbox'
+> >  drivers/scsi/myrs.c:484: warning: Function parameter or member 'enable_mbox_fn' not described in 'myrs_enable_mmio_mbox'
+> >  drivers/scsi/myrs.c:584: warning: Function parameter or member 'cs' not described in 'myrs_get_config'
+> >  drivers/scsi/myrs.c:688: warning: cannot understand function prototype: 'struct '
+> >  drivers/scsi/myrs.c:1967: warning: Function parameter or member 'dev' not described in 'myrs_is_raid'
+> >  drivers/scsi/myrs.c:1980: warning: Function parameter or member 'dev' not described in 'myrs_get_resync'
+> >  drivers/scsi/myrs.c:2005: warning: Function parameter or member 'dev' not described in 'myrs_get_state'
+> >  drivers/scsi/myrs.c:2343: warning: bad line:   the Error Status Register when the driver performs the BIOS handshaking.
+> >  drivers/scsi/myrs.c:2344: warning: bad line:   It returns true for fatal errors and false otherwise.
+> >  drivers/scsi/myrs.c:2349: warning: Function parameter or member 'cs' not described in 'myrs_err_status'
+> >  drivers/scsi/myrs.c:2349: warning: Function parameter or member 'status' not described in 'myrs_err_status'
+> >  drivers/scsi/myrs.c:2349: warning: Function parameter or member 'parm0' not described in 'myrs_err_status'
+> >  drivers/scsi/myrs.c:2349: warning: Function parameter or member 'parm1' not described in 'myrs_err_status'
+> > 
+> > Cc: Hannes Reinecke <hare@kernel.org>
+> > Cc: Linux GmbH <hare@suse.com>
+> 
+> Please, do fix your mailer/script.
+> This is my company e-mail address, but my name is actually the same even
+> when working for the company ...
+
+I think it's the file that needs fixing.
+
+If you're adamant that the formatting in the file should be accepted
+then perhaps amend get_maintainer.pl instead.
+
+To get those lines, I run:
+
+ ./scripts/get_maintainer.pl --file-emails --git-min-percent 75 -f drivers/scsi/myrs.c
+
+> > Cc: "Leonard N. Zubkoff" <lnz@dandelion.com>
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/scsi/myrs.c | 34 +++++++++++++++++-----------------
+> >  1 file changed, 17 insertions(+), 17 deletions(-)
+> > 
+> I had been wanting to convert this to proper kernel-doc style, but never
+> found the time to actually do it.
+> So this will serve for now.
+> 
+> Reviewed-by: Hannes Reinecke <hare@suse.com>
+
+Thanks for all your reviews.  Much appreciated.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
