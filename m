@@ -2,188 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BAE2200FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 01:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287D6220102
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 01:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgGNXUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 19:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbgGNXUb (ORCPT
+        id S1727866AbgGNXVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 19:21:49 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:40482 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725977AbgGNXVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 19:20:31 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731B9C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 16:20:31 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f7so506312wrw.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 16:20:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/KMagfkLbbir5XD2E7V8iMKOu/nE7qe0ZSxVTJVsu5Y=;
-        b=I78DT92rk2oGUJNey+cMiJ+dT1q2neBqqRdkKk5hQk+kaMkXt5Z1hTIWtXtbl4f7TQ
-         +64sPRnnKCWYuoKMDmbwoLXqYPWi7TGwNfnvKe3IHbtwhAKKJh+iwZT2L810KyMya/0z
-         Yx6hgnbaUUDMqeBJM3KSFjEcHLQvA2q8adZbLlPJO7Cxljyddd53TCFO2C7eDHSEyd/K
-         ++teAkTGOI2b1PKFHB22OwLkFNjzWerwFPA1tZZa+4xErRTS0g5912aXv0xpH2bdtVcr
-         nicBCEGRDD7LNFyYq4YuSv4JMYTiDvG+4ll3/KQkUG02RSHHDW1eqhmanwJXqLyAz1QS
-         ZKGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/KMagfkLbbir5XD2E7V8iMKOu/nE7qe0ZSxVTJVsu5Y=;
-        b=T5FnXC59OdubmEHhdQJYJkqTG17My2+4lMBal29dil7IxRksLO8JE9j9RuVCvL/0As
-         +U7pLXTBuR7ZxIYlDStNC55J6OMswRe4nv3I1Fs2iZFopaggLJvzTNNfz3pYXGKi8Pc0
-         n6pM9HRPG7GfboojDMcQFEaHeZOshxwoL5TG5KFe8iVPOZwXuP7/ovxMXmkMZFnyELCe
-         6oK5VKngoEt2deB9tEg1AlOEwCKsgOhiLr00iRKjRN4tHe3EhRCopXfX29MRhhwzkOl5
-         FETd7DSwDuGk+FVhwpv5uACmRNC5JU2ZKQduRF9/3/46fDtG/IvcwE+fRzkA855BWb7G
-         /BVw==
-X-Gm-Message-State: AOAM530UIthcHJF6F82mQcTqIwzvnSPjnSHCIpDXG9ZSeujvx5hoatns
-        dtZku5E5Cl8Vu3IvDQJbN7QGeg==
-X-Google-Smtp-Source: ABdhPJxg5ZRUMNL70rPOM9WunXXtcwFJTQMTcUcvKt8QOZqVA17b3C0Soo2dTi99b+nuQY2xrpeCTQ==
-X-Received: by 2002:adf:f4d1:: with SMTP id h17mr8189076wrp.227.1594768829794;
-        Tue, 14 Jul 2020 16:20:29 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:814b:c0b2:8c76:b6a9? ([2a01:e34:ed2f:f020:814b:c0b2:8c76:b6a9])
-        by smtp.googlemail.com with ESMTPSA id w128sm587809wmb.19.2020.07.14.16.20.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 16:20:29 -0700 (PDT)
-Subject: Re: [PATCH v4 4/4] thermal: core: Add notifications call in the
- framework
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>, rui.zhang@intel.com
-Cc:     srinivas.pandruvada@linux.intel.com, rkumbako@codeaurora.org,
-        amit.kucheria@linaro.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>
-References: <20200706105538.2159-1-daniel.lezcano@linaro.org>
- <20200706105538.2159-4-daniel.lezcano@linaro.org>
- <CGME20200706131708eucas1p1487955a7632584c17df724399f48825a@eucas1p1.samsung.com>
- <c7ed6c63-cbb5-07dc-c292-2c473af8c4fb@samsung.com>
- <23c5830d-0a7c-9e87-e859-821d2dccb200@linaro.org>
- <8a34e9c4-6457-cfd2-3d05-05f80a630a0d@samsung.com>
- <41466d5a-24fb-b861-93ae-3ed190af7174@samsung.com>
- <75683b75-6e1b-6e4e-2354-477c487a5f5f@linaro.org>
-Message-ID: <4cfb15f6-2801-3386-c7cf-6296a54571a1@linaro.org>
-Date:   Wed, 15 Jul 2020 01:20:28 +0200
+        Tue, 14 Jul 2020 19:21:48 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06ENI58Z031995;
+        Tue, 14 Jul 2020 23:21:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=huwe7LJjPiG05JDlokSws0RPUDGrjHXSLJK2vvuRoFM=;
+ b=ZRRF+jnBix38ga052rXF5+mTn5/bZZ4SWTrmykOkoErMt/KZGutKmStn2PBDRM3FPJ50
+ VRtz2j4BKJvSFnt2C5a64/mer1JdTrBf7rN6Jj8NuAWYqFTrjY1Z0rw8HYHJBU7iWACi
+ 2Lde/HNtt/YVgy9sd2KJwLdOQtloYAi/jMqcjeiOcUJ8Rp5bEv1FjZUWY1hmUh3EmQPj
+ rw2B26boLreFPzagSWP0L5MAfSJeF7Nv4G9fBQuBkL3UuB2iyV+ewGncq4Ra+tYMkkbr
+ FwDhqKlXQTvmJKE3w/HTtDmjvs+QG0Rxm926fEuPF9C+YADLE4QKXLPHQMO3wvE1C3cR SA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 3274ur8bjv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Jul 2020 23:21:08 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06ENDcdx077551;
+        Tue, 14 Jul 2020 23:21:08 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 327q6t810m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Jul 2020 23:21:08 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06ENL32W032162;
+        Tue, 14 Jul 2020 23:21:04 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Jul 2020 16:21:03 -0700
+Subject: Re: [PATCH v3] mm/hugetlb: split hugetlb_cma in nodes with memory
+To:     Barry Song <song.bao.hua@hisilicon.com>, akpm@linux-foundation.org
+Cc:     x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, linux-arm-kernel@lists.infradead.org,
+        Roman Gushchin <guro@fb.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H.Peter Anvin" <hpa@zytor.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>
+References: <20200710120950.37716-1-song.bao.hua@hisilicon.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <359ea1d0-b1fd-d09f-d28a-a44655834277@oracle.com>
+Date:   Tue, 14 Jul 2020 16:21:01 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <75683b75-6e1b-6e4e-2354-477c487a5f5f@linaro.org>
+In-Reply-To: <20200710120950.37716-1-song.bao.hua@hisilicon.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=2
+ phishscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007140161
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ suspectscore=2 phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007140161
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2020 22:32, Daniel Lezcano wrote:
-> On 13/07/2020 11:31, Marek Szyprowski wrote:
->> Hi
->>
->> On 07.07.2020 11:15, Marek Szyprowski wrote:
->>> On 06.07.2020 15:46, Daniel Lezcano wrote:
->>>> On 06/07/2020 15:17, Marek Szyprowski wrote:
->>>>> On 06.07.2020 12:55, Daniel Lezcano wrote:
->>>>>> The generic netlink protocol is implemented but the different
->>>>>> notification functions are not yet connected to the core code.
->>>>>>
->>>>>> These changes add the notification calls in the different
->>>>>> corresponding places.
->>>>>>
->>>>>> Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
->>>>>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>>>> This patch landed in today's linux-next 20200706 as commit 5df786e46560
->>>>> ("thermal: core: Add notifications call in the framework"). Sadly it
->>>>> breaks booting various Samsung Exynos based boards. Here is an example
->>>>> log from Odroid U3 board:
->>>>>
->>>>> Unable to handle kernel NULL pointer dereference at virtual address 
->>>>> 00000010
->>>>> pgd = (ptrval)
->>>>> [00000010] *pgd=00000000
->>>>> Internal error: Oops: 5 [#1] PREEMPT SMP ARM
->>>>> Modules linked in:
->>>>> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc3-00015-g5df786e46560
->>>>> #1146
->>>>> Hardware name: Samsung Exynos (Flattened Device Tree)
->>>>> PC is at kmem_cache_alloc+0x13c/0x418
->>>>> LR is at kmem_cache_alloc+0x48/0x418
->>>>> pc : [<c02b5cac>]    lr : [<c02b5bb8>]    psr: 20000053
->>>>> ...
->>>>> Flags: nzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment none
->>>>> Control: 10c5387d  Table: 4000404a  DAC: 00000051
->>>>> Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
->>>>> Stack: (0xee8f1cf8 to 0xee8f2000)
->>>>> ...
->>>>> [<c02b5cac>] (kmem_cache_alloc) from [<c08cd170>] 
->>>>> (__alloc_skb+0x5c/0x170)
->>>>> [<c08cd170>] (__alloc_skb) from [<c07ec19c>]
->>>>> (thermal_genl_send_event+0x24/0x174)
->>>>> [<c07ec19c>] (thermal_genl_send_event) from [<c07ec648>]
->>>>> (thermal_notify_tz_create+0x58/0x74)
->>>>> [<c07ec648>] (thermal_notify_tz_create) from [<c07e9058>]
->>>>> (thermal_zone_device_register+0x358/0x650)
->>>>> [<c07e9058>] (thermal_zone_device_register) from [<c1028d34>]
->>>>> (of_parse_thermal_zones+0x304/0x7a4)
->>>>> [<c1028d34>] (of_parse_thermal_zones) from [<c1028964>]
->>>>> (thermal_init+0xdc/0x154)
->>>>> [<c1028964>] (thermal_init) from [<c0102378>] 
->>>>> (do_one_initcall+0x8c/0x424)
->>>>> [<c0102378>] (do_one_initcall) from [<c1001158>]
->>>>> (kernel_init_freeable+0x190/0x204)
->>>>> [<c1001158>] (kernel_init_freeable) from [<c0ab85f4>]
->>>>> (kernel_init+0x8/0x118)
->>>>> [<c0ab85f4>] (kernel_init) from [<c0100114>] (ret_from_fork+0x14/0x20)
->>>>>
->>>>> Reverting it on top of linux-next fixes the boot issue. I will
->>>>> investigate it further soon.
->>>> Thanks for reporting this.
->>>>
->>>> Can you send the addr2line result and code it points to ?
->>>
->>> addr2line of c02b5cac (kmem_cache_alloc+0x13c/0x418) points to 
->>> mm/slub.c +2839, but I'm not sure if we can trust it. imho it looks 
->>> like some trashed memory somewhere, but I don't have time right now to 
->>> analyze it further now...
->>
->> Just one more thing I've noticed. The crash happens only if the kernel 
->> is compiled with old GCC (tested with arm-linux-gnueabi-gcc (Linaro GCC 
->> 4.9-2017.01) 4.9.4). If I compile kernel with newed GCC (like 
->> arm-linux-gnueabi-gcc (Linaro GCC 6.4-2017.11) 6.4.1 20171012), it works 
->> fine...
->>
->> This happens also with Linux next-20200710, which again got this commit.
+On 7/10/20 5:09 AM, Barry Song wrote:
+> Online nodes are not necessarily memory containing nodes. Splitting
+> huge_cma in online nodes can lead to inconsistent hugetlb_cma size
+> with user setting. For example, for one system with 4 numa nodes and
+> only one of them has memory, if users set hugetlb_cma to 4GB, it will
+> split into four 1GB. So only the node with memory will get 1GB CMA.
+> All other three nodes get nothing. That means the whole system gets
+> only 1GB CMA while users ask for 4GB.
 > 
-> So I finally succeed to reproduce on an ARM64 with a recent compiler,
-> earlycon, and the option CONFIG_INIT_ON_ALLOC_DEFAULT_ON.
+> Thus, it is more sensible to split hugetlb_cma in nodes with memory.
+> For the above case, the only node with memory will reserve 4GB cma
+> which is same with user setting in bootargs. In order to split cma
+> in nodes with memory, hugetlb_cma_reserve() should scan over those
+> nodes with N_MEMORY state rather than N_ONLINE state. That means
+> the function should be called only after arch code has finished
+> setting the N_MEMORY state of nodes.
+> 
+> The problem is always there if N_ONLINE != N_MEMORY. It is a general
+> problem to all platforms. But there is some trivial difference among
+> different architectures.
+> For example, for ARM64, before hugetlb_cma_reserve() is called, all
+> nodes have got N_ONLINE state. So hugetlb will get inconsistent cma
+> size when some online nodes have no memory. For x86 case, the problem
+> is hidden because X86 happens to just set N_ONLINE on the nodes with
+> memory when hugetlb_cma_reserve() is called.
+> 
+> Anyway, this patch moves to scan N_MEMORY in hugetlb_cma_reserve()
+> and lets both x86 and ARM64 call the function after N_MEMORY state
+> is ready. It also documents the requirement in the definition of
+> hugetlb_cma_reserve().
+> 
+> Cc: Roman Gushchin <guro@fb.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: H. Peter Anvin <hpa@zytor.com>
+> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 
+I agree we should only be concerned with N_MEMORY nodes for the CMA
+reservations.  However, this patch got me thinking:
+- Do we really have to initiate the CMA reservations from arch specific code?
+- Can we move the call to reserve CMA a little later into hugetlb arch
+  independent code?
 
-Finally, narrowed down the issue.
+I know the cma_declare_contiguous_nid() routine says it should be called
+from arch specific code.  However, unless I am missing something that seems
+mostly about timing.
 
- - genetlink initialization is done at subsys initcall.
- - thermal netlink init is done at core initcall
- - netlink is done at core initcall
+What about a change like this on top of this patch?
 
-By changing the order:
+From 72b5b9a623f8711ad7f79f1a8f910906245f5d07 Mon Sep 17 00:00:00 2001
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Date: Tue, 14 Jul 2020 15:54:46 -0700
+Subject: [PATCH] hugetlb: move cma allocation call to arch independent code
 
- - netlink and genetlink at core initcall
- - thermal init at postcore initcall
+Instead of calling hugetlb_cma_reserve() from arch specific code,
+call from arch independent code when a gigantic page hstate is
+created.  This is late enough in the init process that all numa
+memory information should be initialized.  And, it is early enough
+to still use early memory allocator.
 
-That fixes the problem. The genetlink initcall order is from 2005 and
-IMO it makes sense to come right after the netlink initialization.
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ arch/arm64/mm/init.c    | 10 ----------
+ arch/x86/kernel/setup.c |  9 ---------
+ mm/hugetlb.c            |  8 +++++++-
+ 3 files changed, 7 insertions(+), 20 deletions(-)
 
-It is acceptable to have the thermal init at the postcore initcall. It
-is very recently we moved from fs_initcall to core_initcall.
-
-Thanks to Arnd who give me a direction to look at.
-
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 79806732f4b4..ff0ff584dde9 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -427,16 +427,6 @@ void __init bootmem_init(void)
+ 	sparse_init();
+ 	zone_sizes_init(min, max);
+ 
+-	/*
+-	 * must be done after zone_sizes_init() which calls free_area_init()
+-	 * that calls node_set_state() to initialize node_states[N_MEMORY]
+-	 * because hugetlb_cma_reserve() will scan over nodes with N_MEMORY
+-	 * state
+-	 */
+-#ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-#endif
+-
+ 	memblock_dump_all();
+ }
+ 
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index a1a9712090ae..111c8467fafa 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1177,15 +1177,6 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	x86_init.paging.pagetable_init();
+ 
+-	/*
+-	 * must be done after zone_sizes_init() which calls free_area_init()
+-	 * that calls node_set_state() to initialize node_states[N_MEMORY]
+-	 * because hugetlb_cma_reserve() will scan over nodes with N_MEMORY
+-	 * state
+-	 */
+-	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+-		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-
+ 	kasan_init();
+ 
+ 	/*
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index f24acb3af741..a0007d1d12d2 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3273,6 +3273,9 @@ void __init hugetlb_add_hstate(unsigned int order)
+ 	snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
+ 					huge_page_size(h)/1024);
+ 
++	if (order >= MAX_ORDER && hugetlb_cma_size)
++		hugetlb_cma_reserve(order);
++
+ 	parsed_hstate = h;
+ }
+ 
+@@ -5647,7 +5650,10 @@ void __init hugetlb_cma_reserve(int order)
+ 	unsigned long size, reserved, per_node;
+ 	int nid;
+ 
+-	cma_reserve_called = true;
++	if (cma_reserve_called)
++		return;
++	else
++		cma_reserve_called = true;
+ 
+ 	if (!hugetlb_cma_size)
+ 		return;
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.25.4
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
