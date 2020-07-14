@@ -2,186 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8373721F1C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3AB21F1DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728304AbgGNMqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728248AbgGNMqJ (ORCPT
+        id S1728508AbgGNMsk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Jul 2020 08:48:40 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:37587 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728006AbgGNMsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:46:09 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A027C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:46:09 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id k71so1532676pje.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=/SewYUnqs72nnjMOfIaT/P3hnIetrZLumBpPg+JegX0=;
-        b=D1NGAPg9DguAGriffg1ZKDQlJlC1+rzx1RCn9Z1SjvMh8mVyP85iJVTOk27SO4a08k
-         1V5qK1FMv2kRDf61ZAwWSToubCahJWjZawbE9dK/JQl/n6KGaGigwT8v4+/JvSOH3c9g
-         Mz5Lgz2PjW6tfU5YGXzfAQPF4Wg/hMeniIXfs+bXaz6nZPur23tEIN3EVe4/csCszP7T
-         aa4VAfNXB2ufQhsSmU5YlKzEACcAVaHvnN4wfizMbk4JbzAHCQuXlr1YyqS155MassiF
-         mgNzS52TqPR5Z4Go7wsaOTe0Q3qKQGveLcrduWSquAZ69BfUR0H0nvbYv0E4QcG7eqYv
-         Zv5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=/SewYUnqs72nnjMOfIaT/P3hnIetrZLumBpPg+JegX0=;
-        b=QkodQIhQmH0kT2Z6qFJ2pDsL33CxWeS0FdTuZ4nfYwlAPWR0fv/hZ/oQ52jeAyXKqU
-         W210nYoesa5yQLNCWKFWgwSL+lwi8T+w1CHV/Mb40haGDgr4A8Nimq+8QDo8iBzBDTvX
-         ZvlXivqhCsKo3spieqS2P7uDuZ5ahnLtIQCRNmPqY2pv5kJNjyL1at2la27Px4ablooD
-         7Fu54rINre9V76c/tj9gCLCAHMhxrijBEXmVxO02Wc62AzCjKEBKMXb8Y3A3IR1oTKN9
-         uneTBoHJQooMWuQHSnvgcCP4NWTmipbjc/qIYcQnqoU0UyHo8Zc9L/bYZ5kd2hbfDVM3
-         4WuA==
-X-Gm-Message-State: AOAM532Wpxv9VV5U0tomtJm2Hr7xxty4MVM+/Cd+mduaPsFKOBgFPtZQ
-        NsDPuETypowLA2XKIeVfaKyosQ==
-X-Google-Smtp-Source: ABdhPJxJbeD76js5UkUJHGRXxQF8mvRABkEpz0TioNSqyjRD+fSmGpaHXMGBmfPRvfGBot/P0MR7fg==
-X-Received: by 2002:a17:90a:3a81:: with SMTP id b1mr4539573pjc.217.1594730768819;
-        Tue, 14 Jul 2020 05:46:08 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:d111:b7a3:a3d3:c7aa? ([2601:646:c200:1ef2:d111:b7a3:a3d3:c7aa])
-        by smtp.gmail.com with ESMTPSA id g28sm17494542pfr.70.2020.07.14.05.46.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 05:46:07 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC PATCH 7/7] lazy tlb: shoot lazies, a non-refcounting lazy tlb option
-Date:   Tue, 14 Jul 2020 05:46:05 -0700
-Message-Id: <6D3D1346-DB1E-43EB-812A-184918CCC16A@amacapital.net>
-References: <1594708054.04iuyxuyb5.astroid@bobo.none>
-Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
-In-Reply-To: <1594708054.04iuyxuyb5.astroid@bobo.none>
-To:     Nicholas Piggin <npiggin@gmail.com>
-X-Mailer: iPhone Mail (17F80)
+        Tue, 14 Jul 2020 08:48:16 -0400
+Received: from mail-qt1-f173.google.com ([209.85.160.173]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1N0Zfg-1kpNO54Buu-00wYyD; Tue, 14 Jul 2020 14:48:14 +0200
+Received: by mail-qt1-f173.google.com with SMTP id e12so12598976qtr.9;
+        Tue, 14 Jul 2020 05:48:13 -0700 (PDT)
+X-Gm-Message-State: AOAM53136LyPXLhI3tS8U4sjkpRtrAH+5vomOVClwR9hUqoTfxYIBN8x
+        c3hS627Z4K/Uxg5TyOq3QzstMZvOunD3Sv18VrU=
+X-Google-Smtp-Source: ABdhPJz0Z9SjMA2TiRfvVF5+QL/VnAcXuYiITPjmPiu/IFxPN+hb/xCmz8NbiS+7xnqFLUv/TcXHUKAGTUzOUOis+tM=
+X-Received: by 2002:ac8:4ccb:: with SMTP id l11mr4345870qtv.18.1594730892682;
+ Tue, 14 Jul 2020 05:48:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200714123920.23711-1-horia.geanta@nxp.com> <20200714123920.23711-6-horia.geanta@nxp.com>
+In-Reply-To: <20200714123920.23711-6-horia.geanta@nxp.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 14 Jul 2020 14:47:56 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3eQ2a3QV=0XAumHAOssddAZ_sBs=Y0D736Sp7_P8Jvuw@mail.gmail.com>
+Message-ID: <CAK8P3a3eQ2a3QV=0XAumHAOssddAZ_sBs=Y0D736Sp7_P8Jvuw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/5] hwrng: imx-rngc: enable driver for i.MX6
+To:     =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:81kDPhRRuj+8IBXZ0Wc3qn8zBLzUvMRlI++0v4OOYmr3S7wJXnU
+ wNoa9drx2atFGvHTPDiRxuKj0D7t7Ul7qe6yOtUcgYWEII5sBvOCYGVEYMJC1p4aWi4jWiw
+ /ymC/Xq1VE9TXEYRhAfanSG6mZKKdT0ElCXqXtnSyzeNW56LepLNocO/eoQinvMe+M/mJeR
+ F2BsrhhFJNPq4bbEcUbdQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+QDhVOF4bgQ=:0VNFKV52MZawUlao+T7Lxd
+ gYzJXJ7TPNd2idUBmL8p0VhFr2jFNKCypSTJ+9uqgbEh5ch5Uybvg8j1ReWSERx91kTqsdtIC
+ xIozrfhtagb0uyYOnEYOHSoulxmgnVaKmadFZGvYAcGMh3RODYiG25eTwTUjVDQJ2h1nCDe1a
+ Phfe2PUJJBil0AFMkw9ydXExhOLstQWoFMRIF4bvaILeSsboJETdavUf90Ke2rLHuk+usGnTi
+ 5TbCIaXApxremtNHnI/4z9CNcELoKfu5k5ixqEymuKlKZ836NbpayESwz9fysHEp4Z0iJGGMS
+ fWaEjPyp3X5VgzuSAzqouwhJYelWMIhf3GWvNu9mlroa3JTT1j0e19a/DgyQcTZvJFz1qa4zz
+ g1ZPf9kHoUXLJSPojeum9Euzn6SgCuMCuD73Etmg3BD3RkGDe3H9ZS9mvmi/JgBsLQ9obLjdD
+ ZSo06WkDBJ3yCIRaOxqXkp/jL92JuBOPY1CGzm1VLHBGSoTPShhcV53s2qYJgWOxtox080tca
+ qiq3XW3jzYaOa+z4/wp39BgR3JpiRtYk/fhiLNqtlu+MTIl/5MAwHMnP5lFbB6Ksy4cY8o2DP
+ jkU8jximE4iVem4sILrQUjuS9crCcxdE0EEmV/IzYrxj46RBCC/HUfkVBIkDgWFNcw5gW2S4N
+ VkBZCaCjlFcmk0E1YaaS+CeyUImhb8OTBg0+wLgAyF+bHJN/KEALQoBbsd8P20DNiK6GNWysM
+ CsvFhjgLcZdBAj3F9LtSL9Yk2RWhGFFI4ydBvK1qkMqY+S9YQDmBj4jAKYoFqQD2x8siBU/qN
+ oLIwtBcEa61mjvYqtvlFdbjyXwarDWCjTX8iQ5/CaJ6vQ+QYaNW+JZOVOmTJvYpaiuyXLwLIT
+ TtRXaqf5BD8P5fH0WP8J+d/tYXOqSyvoguESxqfBw8ScRTBgpAqSLkCWTVWSIml1SacA3G3s8
+ svZXe7W/AcYY9cOIrTgdxrM2xtPrzST0Zucu8E/EE3SlX+uhlDIWq
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 14, 2020 at 2:39 PM Horia Geantă <horia.geanta@nxp.com> wrote:
+> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+> index 8478eb757f3c..98f95a09ce55 100644
+> --- a/drivers/char/hw_random/Kconfig
+> +++ b/drivers/char/hw_random/Kconfig
+> @@ -255,7 +255,7 @@ config HW_RANDOM_MXC_RNGA
+>  config HW_RANDOM_IMX_RNGC
+>         tristate "Freescale i.MX RNGC Random Number Generator"
+>         depends on HAS_IOMEM && HAVE_CLK
+> -       depends on SOC_IMX25 || COMPILE_TEST
+> +       depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6UL || COMPILE_TEST
+>         default HW_RANDOM
 
+Are these the only chips that have it? If other i.MX variations have
+the same block,
+or might have it in the future, maybe just generialize the dependency
+to SOC_IMX6
+or ARCH_IMX?
 
-> On Jul 13, 2020, at 11:31 PM, Nicholas Piggin <npiggin@gmail.com> wrote:
->=20
-> =EF=BB=BFExcerpts from Nicholas Piggin's message of July 14, 2020 3:04 pm:=
+> diff --git a/drivers/char/hw_random/imx-rngc.c b/drivers/char/hw_random/imx-rngc.c
+> index 9c47e431ce90..84576d2fbf8c 100644
+> --- a/drivers/char/hw_random/imx-rngc.c
+> +++ b/drivers/char/hw_random/imx-rngc.c
+> @@ -350,6 +350,9 @@ static SIMPLE_DEV_PM_OPS(imx_rngc_pm_ops, imx_rngc_suspend, imx_rngc_resume);
+>
+>  static const struct of_device_id imx_rngc_dt_ids[] = {
+>         { .compatible = "fsl,imx25-rngb", .data = NULL, },
+> +       { .compatible = "fsl,imx6sl-rngb", .data = NULL, },
+> +       { .compatible = "fsl,imx6sll-rngb", .data = NULL, },
+> +       { .compatible = "fsl,imx6ull-rngb", .data = NULL, },
+>         { /* sentinel */ }
 
->> Excerpts from Andy Lutomirski's message of July 14, 2020 4:18 am:
->>>=20
->>>> On Jul 13, 2020, at 9:48 AM, Nicholas Piggin <npiggin@gmail.com> wrote:=
+In the .dts file you describe the devices as compatible with fsl,imx25-rngb,
+so this change is not really needed, unless you want to add non-NULL
+.data fields in a follow-up. It is usually a good idea to have the more
+specialized compatible strings in the DT, but the driver change won't
+do anything here.
 
->>>>=20
->>>> =EF=BB=BFExcerpts from Andy Lutomirski's message of July 14, 2020 1:59 a=
-m:
->>>>>> On Thu, Jul 9, 2020 at 6:57 PM Nicholas Piggin <npiggin@gmail.com> wr=
-ote:
->>>>>>=20
->>>>>> On big systems, the mm refcount can become highly contented when doin=
-g
->>>>>> a lot of context switching with threaded applications (particularly
->>>>>> switching between the idle thread and an application thread).
->>>>>>=20
->>>>>> Abandoning lazy tlb slows switching down quite a bit in the important=
-
->>>>>> user->idle->user cases, so so instead implement a non-refcounted sche=
-me
->>>>>> that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot do=
-wn
->>>>>> any remaining lazy ones.
->>>>>>=20
->>>>>> On a 16-socket 192-core POWER8 system, a context switching benchmark
->>>>>> with as many software threads as CPUs (so each switch will go in and
->>>>>> out of idle), upstream can achieve a rate of about 1 million context
->>>>>> switches per second. After this patch it goes up to 118 million.
->>>>>>=20
->>>>>=20
->>>>> I read the patch a couple of times, and I have a suggestion that could=
-
->>>>> be nonsense.  You are, effectively, using mm_cpumask() as a sort of
->>>>> refcount.  You're saying "hey, this mm has no more references, but it
->>>>> still has nonempty mm_cpumask(), so let's send an IPI and shoot down
->>>>> those references too."  I'm wondering whether you actually need the
->>>>> IPI.  What if, instead, you actually treated mm_cpumask as a refcount
->>>>> for real?  Roughly, in __mmdrop(), you would only free the page tables=
-
->>>>> if mm_cpumask() is empty.  And, in the code that removes a CPU from
->>>>> mm_cpumask(), you would check if mm_users =3D=3D 0 and, if so, check i=
-f
->>>>> you just removed the last bit from mm_cpumask and potentially free the=
-
->>>>> mm.
->>>>>=20
->>>>> Getting the locking right here could be a bit tricky -- you need to
->>>>> avoid two CPUs simultaneously exiting lazy TLB and thinking they
->>>>> should free the mm, and you also need to avoid an mm with mm_users
->>>>> hitting zero concurrently with the last remote CPU using it lazily
->>>>> exiting lazy TLB.  Perhaps this could be resolved by having mm_count
->>>>> =3D=3D 1 mean "mm_cpumask() is might contain bits and, if so, it owns t=
-he
->>>>> mm" and mm_count =3D=3D 0 meaning "now it's dead" and using some caref=
-ul
->>>>> cmpxchg or dec_return to make sure that only one CPU frees it.
->>>>>=20
->>>>> Or maybe you'd need a lock or RCU for this, but the idea would be to
->>>>> only ever take the lock after mm_users goes to zero.
->>>>=20
->>>> I don't think it's nonsense, it could be a good way to avoid IPIs.
->>>>=20
->>>> I haven't seen much problem here that made me too concerned about IPIs=20=
-
->>>> yet, so I think the simple patch may be good enough to start with
->>>> for powerpc. I'm looking at avoiding/reducing the IPIs by combining the=
-
->>>> unlazying with the exit TLB flush without doing anything fancy with
->>>> ref counting, but we'll see.
->>>=20
->>> I would be cautious with benchmarking here. I would expect that the
->>> nasty cases may affect power consumption more than performance =E2=80=94=
- the=20
->>> specific issue is IPIs hitting idle cores, and the main effects are to=20=
-
->>> slow down exit() a bit but also to kick the idle core out of idle.=20
->>> Although, if the idle core is in a deep sleep, that IPI could be=20
->>> *very* slow.
->>=20
->> It will tend to be self-limiting to some degree (deeper idle cores
->> would tend to have less chance of IPI) but we have bigger issues on
->> powerpc with that, like broadcast IPIs to the mm cpumask for THP
->> management. Power hasn't really shown up as an issue but powerpc
->> CPUs may have their own requirements and issues there, shall we say.
->>=20
->>> So I think it=E2=80=99s worth at least giving this a try.
->>=20
->> To be clear it's not a complete solution itself. The problem is of=20
->> course that mm cpumask gives you false negatives, so the bits
->> won't always clean up after themselves as CPUs switch away from their
->> lazy tlb mms.
->=20
-> ^^
->=20
-> False positives: CPU is in the mm_cpumask, but is not using the mm
-> as a lazy tlb. So there can be bits left and never freed.
->=20
-> If you closed the false positives, you're back to a shared mm cache
-> line on lazy mm context switches.
-
-x86 has this exact problem. At least no more than 64*8 CPUs share the cache l=
-ine :)
-
-Can your share your benchmark?
-
->=20
-> Thanks,
-> Nick
+       Arnd
