@@ -2,80 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA4921E508
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 03:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C0421E50F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 03:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgGNBWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 21:22:54 -0400
-Received: from sonic315-55.consmr.mail.gq1.yahoo.com ([98.137.65.31]:36112
-        "EHLO sonic315-55.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726364AbgGNBWy (ORCPT
+        id S1726864AbgGNB3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 21:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgGNB3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 21:22:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1594689773; bh=kSZ8A/K3JBp8LhqRTcQFI6Kag9kj97BCjG/6uEWAlZc=; h=Date:From:To:Cc:Subject:References:In-Reply-To:From:Subject; b=ODio+wTgG8PN6r2cbOHOkXApXvS1xdIi6NXA4PImpbo92ezGIVt3qYUGr3XfmyJF+yz9QOZC7ctmV8OcDl1V5YodnuMr1ZFW0/rHZZBP33k6tRTFN9Zdzdpe11PIaQcCkGq5Vok7ibIRQqAxVpAxHF7k8qT4VeZduSu2Uam/W/O2J80rNGlI1JO8LwSWXlT2A4e4I0wcJgFX8cOqQlb9dmKvgIxk9BZxMVnKjvvY8LPhpVplhLBpbkqukIDPqUxBwEU0yQZsxf8qjXdA8Zr60JcYF65JxYf1BRA8DB5LoeU/b6ER96lnkGBNDGNBvBrHfJ5BbyGrdydPQ3ODolpAMg==
-X-YMail-OSG: .wzDUJ0VM1mceQnxa9_yhOOOke64Dafy9Q9UDbMovPnBzGAmgBzLsOJ7LySXt5a
- 9J3R9gX9oe_eAvBUo_B055.hPtrQKHHBimBiKNacZeirx8lMzsr8YJBmlNwgPsIUi3zuoOR8xMEh
- .xD86sEv2WRKPKgvI9IdWwr5suBNFi8ZFZYR_saqcru2b9BpMjZiHPlOhde2PpzD1CkGrkcv_rkT
- qrz2FY29v5MDLxPO7XAw6g5jOSwCJfhNBw4Wr4yavjFgsFbUVpvL9spTDdyjO6fWQOWQSr_sExdv
- xyth76vWEaYH6Ha2VNbOjdnOQzTH3jjgiKc.qx_JeiBSE3OtQA0SUw5CkMzX55wTJEgslA3ZELuU
- I4zajfP7.ITRLJpVvq_SzemDEB6Cx2FTN.6dPlqa_NNfll5opyWdhECoNI06Ba0_X.rIKk000kvb
- 1f3v3U39bBgm8c9y4EUs1xlVkoB20_Xyx3rvVgN5h1rh1uPZnLguOLr2.Mia3xZMzJGVBE4tIYzN
- rP5amZ935LW3ov.pGZWs2fNa0BVStIy7nMIChTgC75q1BmlISgtEAT.8Mo5Q.CQ5QRgasnFUr429
- iW4cR9ZoAsAe6OnmF7Lb5.oZ_DXWInpjHSAbC.kiroM4jtSDjvgc8nqP8NuM7KI4BGjQXW121r94
- aGtsjEySM2LoEa2svcNlY.gIhZD7jOWOph4F38tqbre7ORBLhuCyK8S70kneBU6lHYJEVVIhhac.
- 1BsZq2oLgZrTAsFLLzLUJsEu_TWxyDyjjrGX4IIz3g2MMeT.g3aqqcpunRXMNxT8Ax5uvG4hg5H0
- RHSXZ5rpdYM.4q077o8GTu2es118G3Duh0JlOcGVWbVj92BoSkWyVaCAzgo9PdwvXSZdgN9aLoVe
- W4CDO319FR_fZx2kSly6a08v9.p8SxbAyE27CDzgyEbeshWIf6goUofcGQ75lHyw.7B7ud4hH3YW
- eAogDELd2AZBbndnSFpF4oj27JCVmSckNAL972OqJceHhf4Zq6uHeo3UtflRq7pPNbhgItHuGN0L
- xj2fNssv4F6BaYMCnENMYwnB_EtpvHz4_m1R7blesOIm02bcdW.EK9nYDkHSjHoNTwCv9pIgZNZy
- kqM0lpLDkoDRZm_s5voyIMhHg065MosNVMU0iVsnqb.DkEngb2duuQTUGwVk.tky2h2EO2Nk1Rjh
- JI_yAxzmiNp2r9mW4E1zXPvGU04r3BXExwVkEO04Yd.ocJ_UQvoYUOnluZR8wGVN8So4jmhWp5cz
- KCr2q8eH9IoHQQF7nS55l572onKVaIgsMCU1I6a8sDf0Zn7DRyqDo0e2y9wH_5U8SqJH9djPq9CB
- XWxnwQO0HSxE1bGZBWCdaNzjzqZq428dy0QBJWplYEkPBMHnAp325Akn6tCdzp_y6_ZqF
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.gq1.yahoo.com with HTTP; Tue, 14 Jul 2020 01:22:53 +0000
-Received: by smtp416.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID ccb2d8946b485b8111546e619c1c7f07;
-          Tue, 14 Jul 2020 01:22:51 +0000 (UTC)
-Date:   Tue, 14 Jul 2020 09:22:46 +0800
-From:   Gao Xiang <hsiangkao@aol.com>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     xiang@kernel.org, chao@kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] erofs: Replace HTTP links with HTTPS ones
-Message-ID: <20200714012244.GA18418@hsiangkao-HP-ZHAN-66-Pro-G1>
-References: <20200713130944.34419-1-grandmaster@al2klimov.de>
+        Mon, 13 Jul 2020 21:29:30 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936C7C061755;
+        Mon, 13 Jul 2020 18:29:30 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id c30so14195428qka.10;
+        Mon, 13 Jul 2020 18:29:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=R5IIzVMOgCGftVB47FAaShDA0o6roHJ+qQ1SXjjeBPw=;
+        b=py84OM+5bG/8beCPdSOmQckjN7FoZchWH/ZlMsgqV0kEXJzeMI3pkaCzwYjHe8FN7q
+         7lkkAI/fQ4Bu8cS6E5f0PFiFL0D6+fhbm9SLHkASWNLELrUBTnIBwoEECSb+fHP52QMX
+         svXQQgU+Sm9cq4s1ikEcdzccc5mS4h87wkIcsPIpApZRk5/yyyfSrZb67FBOxqWKVt95
+         lsAMYIkTgw/TZ+Hd4srf3NaLYg0Wp3lo2J2vWXGeKmhvr72JlJCzW1U9xftaXYJ06UCX
+         6e2yRiMobflrXWYyMLPittWrzTkFblzDCn/ay5piTeaLgkIxbVK3+xWqYGwammud6K4v
+         D3Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=R5IIzVMOgCGftVB47FAaShDA0o6roHJ+qQ1SXjjeBPw=;
+        b=CqerWyAImO6k7YCKx55S3ll4WqPw04l4qckjmxsNlvjCSE+xothRGg1qvhK7d1eOmi
+         PK96srrEdms33KPVzmmNXQ6bgWpANUDehyCkNFgrJpE4iiOBR6wgCgNyXd18V+bBER5W
+         U6/WBeAs9dWMRfH16h3RXHlBn6A2BhvfjvFRT70cGO8Npu2FDcM3f3VIkrXK49HljdkL
+         7dP02AAtO66bVvNeENLRSt6ThwHFMCtltEhC+l1KvlLiMB1M4BY2udxVY+aGpwX+gBhR
+         hP7JQ0fvYmQXNYAauDVZBa4Phq6vkRkl3MiwHcRaHY1kNFkKFOoG4KpzlYPKXtZGZDOi
+         rwSQ==
+X-Gm-Message-State: AOAM532htHZ9YM7uywImzTmx/tIRuA4zpXsjcKU8z5m80A0jQxsZdhSJ
+        QnvCQorKbr+g8VSvoia11A==
+X-Google-Smtp-Source: ABdhPJwiHJEuFip+53k+1C0OC/E9TC3f8o1MxGFmfFAYhf0A8tB6Hb8t/KlSZbhCmgIH8HWpRiLTYw==
+X-Received: by 2002:ae9:ea13:: with SMTP id f19mr2317534qkg.331.1594690169776;
+        Mon, 13 Jul 2020 18:29:29 -0700 (PDT)
+Received: from localhost.localdomain ([209.94.141.207])
+        by smtp.gmail.com with ESMTPSA id w28sm19125827qkw.92.2020.07.13.18.29.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 18:29:29 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [Linux-kernel-mentees] [PATCH v2] bpf: Fix NULL pointer dereference in __btf_resolve_helper_id()
+Date:   Mon, 13 Jul 2020 21:27:32 -0400
+Message-Id: <20200714012732.195466-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAEf4BzZRGOsTiW3uFWd1aY6K5Yi+QBrTeC5FNOo6uVXviXuX4g@mail.gmail.com>
+References: <CAEf4BzZRGOsTiW3uFWd1aY6K5Yi+QBrTeC5FNOo6uVXviXuX4g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713130944.34419-1-grandmaster@al2klimov.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Mailer: WebService/1.1.16271 hermes_aol Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 03:09:44PM +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
-> 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+Prevent __btf_resolve_helper_id() from dereferencing `btf_vmlinux`
+as NULL. This patch fixes the following syzbot bug:
 
-Looks good to me,
-Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
+    https://syzkaller.appspot.com/bug?id=5edd146856fd513747c1992442732e5a0e9ba355
 
-(Will apply later with other potential patches...)
+Reported-by: syzbot+ee09bda7017345f1fbe6@syzkaller.appspotmail.com
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+Thank you for reviewing my patch! I am new to Linux kernel development; would
+the log message and errno be appropriate for this case?
 
-Thanks,
-Gao Xiang
+Change in v2:
+    - Split NULL and IS_ERR cases.
+
+ kernel/bpf/btf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 30721f2c2d10..092116a311f4 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -4088,6 +4088,11 @@ static int __btf_resolve_helper_id(struct bpf_verifier_log *log, void *fn,
+ 	const char *tname, *sym;
+ 	u32 btf_id, i;
+ 
++	if (!btf_vmlinux) {
++		bpf_log(log, "btf_vmlinux doesn't exist\n");
++		return -EINVAL;
++	}
++
+ 	if (IS_ERR(btf_vmlinux)) {
+ 		bpf_log(log, "btf_vmlinux is malformed\n");
+ 		return -EINVAL;
+-- 
+2.25.1
+
