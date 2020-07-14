@@ -2,101 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B66D21F98A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED7221F98F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729232AbgGNSfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:35:15 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48932 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbgGNSfP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:35:15 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 634131C0BD5; Tue, 14 Jul 2020 20:35:13 +0200 (CEST)
-Date:   Tue, 14 Jul 2020 20:35:12 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
-Subject: Re: [ANNOUNCE] 4.19.132-rt59
-Message-ID: <20200714183512.GA18816@duo.ucw.cz>
-References: <82932b48972f38fccf9920e2ec75b555c2b2494a.camel@kernel.org>
+        id S1729186AbgGNShO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:37:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725951AbgGNShO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:37:14 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47AF02242E;
+        Tue, 14 Jul 2020 18:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594751833;
+        bh=BKAb98muHn6GmBF50FO655h4SFC2eTpInAM6XtGNvMQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=z/8VB7+4yVBSumjQdzo5+PFy6GSvnetzXN7yLBLJbxrPW+7vue0AREnv0/u1JI0NJ
+         ZOiE0nCvDeW3mj0AV18u/qvi1rzK2YDyJBEAoWDZLhz+OSCUZH3PClMCMp5LkLnUWu
+         6y21BdwuEYWy9Vfl6xfF+cU/xLsLE8DHg+xOOqRo=
+Date:   Tue, 14 Jul 2020 11:37:11 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Luo bin <luobin9@huawei.com>
+Cc:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
+        <chiqijun@huawei.com>
+Subject: Re: [PATCH net-next v2] hinic: add firmware update support
+Message-ID: <20200714113711.32107a16@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200714125433.18126-1-luobin9@huawei.com>
+References: <20200714125433.18126-1-luobin9@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
-Content-Disposition: inline
-In-Reply-To: <82932b48972f38fccf9920e2ec75b555c2b2494a.camel@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 14 Jul 2020 20:54:33 +0800 Luo bin wrote:
+> add support to update firmware by the devlink flashing API
+> 
+> Signed-off-by: Luo bin <luobin9@huawei.com>
 
---opJtzjQTFsWo+cga
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Minor nits below, otherwise I think this looks good.
 
-Hi!
+> +static int hinic_firmware_update(struct hinic_devlink_priv *priv,
+> +				 const struct firmware *fw)
+> +{
+> +	struct host_image_st host_image;
+> +	int err;
+> +
+> +	memset(&host_image, 0, sizeof(struct host_image_st));
+> +
+> +	if (!check_image_valid(priv, fw->data, fw->size, &host_image) ||
+> +	    !check_image_integrity(priv, &host_image, FW_UPDATE_COLD) ||
+> +	    !check_image_device_type(priv, host_image.device_id))
 
->=20
-> I'm pleased to announce the 4.19.132-rt59 stable release.
->=20
-> This release is just an update to the new stable 4.19.132
-> version and no RT specific changes have been made.
->=20
-> You can get this release via the git tree at:
->=20
->   git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
->=20
->   branch: v4.19-rt
->   Head SHA1: 1eebf4069aa37e54330cce9a42608517ea6996fe
->=20
-> Or to build 4.19.132-rt59 directly, the following patches should be
-> applied:
+These helpers should also set an appropriate message in extack, so the
+user can see it on the command line / inside their application.
 
-Thanks a lot.
+> +		return -EINVAL;
+> +
+> +	dev_info(&priv->hwdev->hwif->pdev->dev, "Flash firmware begin\n");
+> +
+> +	err = hinic_flash_fw(priv, fw->data, &host_image);
+> +	if (err) {
+> +		if (err == HINIC_FW_DISMATCH_ERROR)
+> +			dev_err(&priv->hwdev->hwif->pdev->dev, "Firmware image doesn't match this card, please use newer image, err: %d\n",
 
-But now I am confused, I completely missed announcements for
-v4.19.127-rt55 to v4.19.131-rt58.
+Here as well - please make sure to return an error messages through
+extack.
 
-And for example -rt56 is not listed in
+> +				err);
+> +		else
+> +			dev_err(&priv->hwdev->hwif->pdev->dev, "Send firmware image data failed, err: %d\n",
+> +				err);
+> +		return err;
+> +	}
+> +
+> +	dev_info(&priv->hwdev->hwif->pdev->dev, "Flash firmware end\n");
+> +
+> +	return 0;
+> +}
 
-https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/4.19/older/sha=
-256sums.asc
+> @@ -1086,6 +1090,17 @@ static int nic_dev_init(struct pci_dev *pdev)
+>  		return PTR_ERR(hwdev);
+>  	}
+>  
+> +	devlink = hinic_devlink_alloc();
+> +	if (!devlink) {
+> +		dev_err(&pdev->dev, "Hinic devlink alloc failed\n");
+> +		err = -ENOMEM;
+> +		goto err_devlink_alloc;
+> +	}
+> +
+> +	priv = devlink_priv(devlink);
+> +	priv->hwdev = hwdev;
+> +	priv->devlink = devlink;
 
-=2E..aha, and the versions do not have signed tags, either:
+No need to remember the devlink pointer here, you can use
+priv_to_devlink(priv) to go from priv to devlink.
 
-pavel@amd:~/cip/k$ git show v4.19.131-rt58
-fatal: ambiguous argument 'v4.19.131-rt58': unknown revision or path not in=
- the working tree.
-
-Is that because they were created just as quick steps towards -rt59?
-
-Best regards,
-							Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---opJtzjQTFsWo+cga
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXw364AAKCRAw5/Bqldv6
-8rOPAJ9qkGbTCIP1F9HTh+ef752cxTiLZACcCjVOsvnHNrg5exKcv5zgou5X9Xc=
-=QjTP
------END PGP SIGNATURE-----
-
---opJtzjQTFsWo+cga--
+> +
+>  	num_qps = hinic_hwdev_num_qps(hwdev);
+>  	if (num_qps <= 0) {
+>  		dev_err(&pdev->dev, "Invalid number of QPS\n");
