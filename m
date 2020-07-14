@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE03D21F2F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C097C21F2FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbgGNNta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:49:30 -0400
-Received: from mga17.intel.com ([192.55.52.151]:60865 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbgGNNt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:49:29 -0400
-IronPort-SDR: e8y0HAM5Uj+juHzdfj6rBlh2bFEfS0rcc/0K8y3OmDIGsz0vITkpRZ9vE5qKWJ07WDlrT6MSuj
- 22OOvkxWd+ew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="128973638"
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="128973638"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 06:49:28 -0700
-IronPort-SDR: wJKIcLXRAfpXMko3n/XfrY2Ex03pnRJCi39OQTEPwK79/gcYLi39SVBT2i2wbuIpg8bf5kkHNS
- vN6olsUy2JLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="459695277"
-Received: from unknown (HELO xiongga1-MOBL2.ccr.corp.intel.com) ([10.255.31.222])
-  by orsmga005.jf.intel.com with ESMTP; 14 Jul 2020 06:49:26 -0700
-Message-ID: <b25d54d35cec777f0dcc5b2bcacce27321d9bd45.camel@intel.com>
-Subject: Re: [RFC PATCH 0/4] thermal: Introduce support for monitoring
- falling temperature
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>, robh+dt@kernel.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        id S1727058AbgGNNvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbgGNNvE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 09:51:04 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B057FC061755;
+        Tue, 14 Jul 2020 06:51:01 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 1A3A560C;
+        Tue, 14 Jul 2020 13:51:01 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 07:51:00 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     adobriyan@gmail.com, mchehab+huawei@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Tue, 14 Jul 2020 21:49:25 +0800
-In-Reply-To: <7437ee89-e76d-0c82-9860-5c6076ad8a30@linaro.org>
-References: <20200710135154.181454-1-thara.gopinath@linaro.org>
-         <7437ee89-e76d-0c82-9860-5c6076ad8a30@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 1/2] doc: filesystems: proc: Remove stray '-' preventing
+ table output
+Message-ID: <20200714075100.41db8cea@lwn.net>
+In-Reply-To: <20200714090644.13011-1-chris.packham@alliedtelesis.co.nz>
+References: <20200714090644.13011-1-chris.packham@alliedtelesis.co.nz>
+Organization: LWN.net
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-13 at 17:03 +0200, Daniel Lezcano wrote:
-> On 10/07/2020 15:51, Thara Gopinath wrote:
-> > Thermal framework today supports monitoring for rising temperatures
-> > and
-> > subsequently initiating cooling action in case of a thermal trip
-> > point
-> > being crossed. There are scenarios where a SoC need some warming
-> > action to
-> > be activated if the temperature falls below a cetain permissible
-> > limit.
-> > Since warming action can be considered mirror opposite of cooling
-> > action,
-> > most of the thermal framework can be re-used to achieve this.
-> > 
-> > This patch series is yet another attempt to add support for
-> > monitoring
-> > falling temperature in thermal framework. Unlike the first
-> > attempt[1]
-> > (where a new property was added to thermal trip point binding to
-> > indicate
-> > direction of temperature monitoring), this series introduces a new
-> > trip
-> > point type (THERMAL_TRIP_COLD) to indicate a trip point at which
-> > falling
-> > temperature monitoring must be triggered. This patch series uses
-> > Daniel
-> > Lezcano's recently added thermal genetlink interface[2] to notify
-> > userspace
-> > of falling temperature and rising temperature at the cold trip
-> > point. This
-> > will enable a user space engine to trigger the relevant mitigation
-> > for
-> > falling temperature. At present, no support is added to any of the
-> > thermal
-> > governors to monitor and mitigate falling temperature at the cold
-> > trip
-> > point;rather all governors return doing nothing if triggered for a
-> > cold
-> > trip point. As future extension, monitoring of falling temperature
-> > can be
-> > added to the relevant thermal governor. 
+On Tue, 14 Jul 2020 21:06:43 +1200
+Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
+
+> When processing proc.rst sphinx complained
 > 
-> I agree we need a cold trip point in order to introduce the
-> functioning
-> temperature range in the thermal framework.
+>   Documentation/filesystems/proc.rst:548: WARNING: Malformed table.
+>   Text in column margin in table line 29.
 > 
-> Rui, what is your opinion ?
+> This caused the entire table to be dropped. Removing the stray '-'
+> resolves the error and produces the desired table.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+>  Documentation/filesystems/proc.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index 996f3cfe7030..53a0230a08e2 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -545,7 +545,7 @@ encoded manner. The codes are the following:
+>      hg    huge page advise flag
+>      nh    no huge page advise flag
+>      mg    mergable advise flag
+> -    bt  - arm64 BTI guarded page
+> +    bt    arm64 BTI guarded page
+>      ==    =======================================
 
-I agree with the concept of "cold" trip point.
-In this patch set, the cold trip point is defined with only netlink
-event support. But there are still quite a lot of things unclear,
-especially what we should do in thermal framework?
+Which tree are you looking at?  Mauro fixed this back in June...
 
-For example, to support this, we can
-either
-introduce both "cold" trip points and "warming devices", and introduce
-new logic in thermal framework and governors to handle them,
-Or
-introduce "cold" trip point and "warming" device, but only
-semantically, and treat them just like normal trip points and cooling
-devices. And strictly define cooling state 0 as the state that
-generates most heat, and define max cooling state as the state that
-generates least heat. Then, say, we have a trip point at -10C, the
-"warming" device is set to cooling state 0 when the temperature is
-lower than -10C, and in most cases, this thermal zone is always in a
-"overheating" state (temperature higher than -10C), and the "warming"
-device for this thermal zone is "throttled" to generate as least heat
-as possible. And this is pretty much what the current code has always
-been doing, right?
+Thanks,
 
-I can not say which one is better for now as I don't have the
-background of this requirement. It's nice that Thara sent this RFC
-series for discussion, but from upstream point of view, I'd prefer to
-see a full stack solution, before taking any code.
-
-thanks,
-Rui
-
+jon
