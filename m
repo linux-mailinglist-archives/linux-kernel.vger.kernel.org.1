@@ -2,48 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4412021E88A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5977C21E87E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgGNGsI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Jul 2020 02:48:08 -0400
-Received: from correo.yucatan.gob.mx ([187.141.74.27]:37376 "EHLO
-        antispam.yucatan.gob.mx" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725925AbgGNGsH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 02:48:07 -0400
-Received: from correo.yucatan.gob.mx ([192.168.25.101])
-        by antispam.yucatan.gob.mx  with ESMTP id 06E6iCjq016513-06E6iCjt016513
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=CAFAIL);
-        Tue, 14 Jul 2020 01:44:12 -0500
-From:   Felipe Francisco Romero Ruiz <felipe.romero@yucatan.gob.mx>
-To:     "NOREPLY@MICROSOFT.NET" <NOREPLY@MICROSOFT.NET>
-Subject: =?windows-1250?Q?_10_va=9Aich_p=F8=EDchoz=EDch_zpr=E1v_bylo_pozastaveno?=
-Thread-Topic: =?windows-1250?Q?_10_va=9Aich_p=F8=EDchoz=EDch_zpr=E1v_bylo_pozastaveno?=
-Thread-Index: AdZZqi7TxOydIW36RBGMTQzjP07BZg==
-Date:   Tue, 14 Jul 2020 06:44:11 +0000
-Message-ID: <9B5224426D8A9A4F8725FFD78A10E7DA4D049FAC@SRV-MAILBOX-02.gobierno1.yucatan.gob.mx>
-Accept-Language: es-ES, es-MX, en-US
-Content-Language: es-ES
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [80.248.74.211]
-Content-Type: text/plain; charset="windows-1250"
-Content-Transfer-Encoding: 8BIT
+        id S1726788AbgGNGpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 02:45:14 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51410 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726375AbgGNGpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 02:45:12 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A34E061132CB930F3ED4;
+        Tue, 14 Jul 2020 14:45:08 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.70) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Tue, 14 Jul 2020 14:45:04 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+To:     <socketcan@hartkopp.net>, <mkl@pengutronix.de>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] can: silence remove_proc_entry warning
+Date:   Tue, 14 Jul 2020 14:44:50 +0800
+Message-ID: <1594709090-3203-1-git-send-email-zhangchangzhong@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-POZNÁMKA MIKROSOFTOVÉ OZNÁMENÍ
+If can_init_proc() fail to create /proc/net/can directory,
+can_remove_proc() will trigger a warning:
 
-10 z vašich pøíchozích zpráv bylo pozastaveno a váš úèet v e-mailové schránce bude nyní pozastaven, protože váš úèet v e-mailové schránce nebyl pro tento rok ovìøen. kliknìte na níže uvedené ovìøení a ovìøte si úèet své schránky
+WARNING: CPU: 6 PID: 7133 at fs/proc/generic.c:672 remove_proc_entry+0x17b0
+Kernel panic - not syncing: panic_on_warn set ...
 
-OVÌØIT TEÏ<https://solo1236.wixsite.com/mysite>
+Fix to return early from can_remove_proc() if can proc_dir
+does not exists.
 
-Dìkujeme za pochopení
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+---
+ net/can/proc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Tým Microsoft Verification
+diff --git a/net/can/proc.c b/net/can/proc.c
+index e6881bf..077af42 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -471,6 +471,9 @@ void can_init_proc(struct net *net)
+  */
+ void can_remove_proc(struct net *net)
+ {
++	if (!net->can.proc_dir)
++		return;
++
+ 	if (net->can.pde_version)
+ 		remove_proc_entry(CAN_PROC_VERSION, net->can.proc_dir);
+ 
+@@ -498,6 +501,5 @@ void can_remove_proc(struct net *net)
+ 	if (net->can.pde_rcvlist_sff)
+ 		remove_proc_entry(CAN_PROC_RCVLIST_SFF, net->can.proc_dir);
+ 
+-	if (net->can.proc_dir)
+-		remove_proc_entry("can", net->proc_net);
++	remove_proc_entry("can", net->proc_net);
+ }
+-- 
+1.8.3.1
 
-Microsoft Outlook Copyright © 2020 .Inc. Všechna práva vyhrazena.
