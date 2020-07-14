@@ -2,122 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5199F21EA8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656E521EA95
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgGNHrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:47:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35106 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725816AbgGNHrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:47:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A4DFCAD68;
-        Tue, 14 Jul 2020 07:47:46 +0000 (UTC)
-Subject: Re: [PATCH v2 21/24] scsi: aic7xxx: aic79xx_osm: Remove unused
- variable 'ahd'
-To:     Lee Jones <lee.jones@linaro.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Hannes Reinecke <hare@suse.com>
-References: <20200713080001.128044-1-lee.jones@linaro.org>
- <20200713080001.128044-22-lee.jones@linaro.org>
-From:   Hannes Reinecke <hare@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=hare@suse.de; prefer-encrypt=mutual; keydata=
- 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
- azzYF4VRJsdl+d0MCaSy8mUh
-Message-ID: <f9f25f97-ec01-f1b1-ca4e-074838141606@suse.de>
-Date:   Tue, 14 Jul 2020 09:47:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1725997AbgGNHwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:52:34 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:26057 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgGNHwd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:52:33 -0400
+Received: from localhost.localdomain ([93.22.39.234])
+        by mwinf5d17 with ME
+        id 2vsS2300B537AcD03vsSQz; Tue, 14 Jul 2020 09:52:31 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 14 Jul 2020 09:52:31 +0200
+X-ME-IP: 93.22.39.234
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     davem@davemloft.net, bryan.whitehead@microchip.com,
+        UNGLinuxDriver@microchip.com, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] lan743x: switch from 'pci_' to 'dma_' API
+Date:   Tue, 14 Jul 2020 09:52:24 +0200
+Message-Id: <20200714075224.290759-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200713080001.128044-22-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/20 9:59 AM, Lee Jones wrote:
-> Hasn't been used since 2005.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/scsi/aic7xxx/aic79xx_osm.c: In function ‘ahd_linux_slave_configure’:
->  drivers/scsi/aic7xxx/aic79xx_osm.c:703:20: warning: variable ‘ahd’ set but not used [-Wunused-but-set-variable]
-> 
-> Cc: Hannes Reinecke <hare@suse.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/scsi/aic7xxx/aic79xx_osm.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/aic7xxx/aic79xx_osm.c b/drivers/scsi/aic7xxx/aic79xx_osm.c
-> index dc4fe334efd01..9235b6283c0b3 100644
-> --- a/drivers/scsi/aic7xxx/aic79xx_osm.c
-> +++ b/drivers/scsi/aic7xxx/aic79xx_osm.c
-> @@ -700,9 +700,6 @@ ahd_linux_slave_alloc(struct scsi_device *sdev)
->  static int
->  ahd_linux_slave_configure(struct scsi_device *sdev)
->  {
-> -	struct	ahd_softc *ahd;
-> -
-> -	ahd = *((struct ahd_softc **)sdev->host->hostdata);
->  	if (bootverbose)
->  		sdev_printk(KERN_INFO, sdev, "Slave Configure\n");
->  
-> 
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Cheers,
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GPF_ with a correct flag.
+It has been compile tested.
 
-Hannes
+When memory is allocated in 'lan743x_tx_ring_cleanup()' and
+'lan743x_rx_ring_init()', GFP_KERNEL can be used because this flag is
+already used to allocate some memory in these functions.
+
+While at it, remove a useless (void *) casting in the first hunk in so that
+the code is more consistent.
+
+
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/ethernet/microchip/lan743x_main.c | 46 +++++++++----------
+ 1 file changed, 22 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 2373e72d2d29..f6479384dc4f 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1742,10 +1742,9 @@ static int lan743x_tx_napi_poll(struct napi_struct *napi, int weight)
+ static void lan743x_tx_ring_cleanup(struct lan743x_tx *tx)
+ {
+ 	if (tx->head_cpu_ptr) {
+-		pci_free_consistent(tx->adapter->pdev,
+-				    sizeof(*tx->head_cpu_ptr),
+-				    (void *)(tx->head_cpu_ptr),
+-				    tx->head_dma_ptr);
++		dma_free_coherent(&tx->adapter->pdev->dev,
++				  sizeof(*tx->head_cpu_ptr), tx->head_cpu_ptr,
++				  tx->head_dma_ptr);
+ 		tx->head_cpu_ptr = NULL;
+ 		tx->head_dma_ptr = 0;
+ 	}
+@@ -1753,10 +1752,9 @@ static void lan743x_tx_ring_cleanup(struct lan743x_tx *tx)
+ 	tx->buffer_info = NULL;
+ 
+ 	if (tx->ring_cpu_ptr) {
+-		pci_free_consistent(tx->adapter->pdev,
+-				    tx->ring_allocation_size,
+-				    tx->ring_cpu_ptr,
+-				    tx->ring_dma_ptr);
++		dma_free_coherent(&tx->adapter->pdev->dev,
++				  tx->ring_allocation_size, tx->ring_cpu_ptr,
++				  tx->ring_dma_ptr);
+ 		tx->ring_allocation_size = 0;
+ 		tx->ring_cpu_ptr = NULL;
+ 		tx->ring_dma_ptr = 0;
+@@ -1780,8 +1778,8 @@ static int lan743x_tx_ring_init(struct lan743x_tx *tx)
+ 				     sizeof(struct lan743x_tx_descriptor),
+ 				     PAGE_SIZE);
+ 	dma_ptr = 0;
+-	cpu_ptr = pci_zalloc_consistent(tx->adapter->pdev,
+-					ring_allocation_size, &dma_ptr);
++	cpu_ptr = dma_alloc_coherent(&tx->adapter->pdev->dev,
++				     ring_allocation_size, &dma_ptr, GFP_KERNEL);
+ 	if (!cpu_ptr) {
+ 		ret = -ENOMEM;
+ 		goto cleanup;
+@@ -1798,8 +1796,9 @@ static int lan743x_tx_ring_init(struct lan743x_tx *tx)
+ 	}
+ 	tx->buffer_info = (struct lan743x_tx_buffer_info *)cpu_ptr;
+ 	dma_ptr = 0;
+-	cpu_ptr = pci_zalloc_consistent(tx->adapter->pdev,
+-					sizeof(*tx->head_cpu_ptr), &dma_ptr);
++	cpu_ptr = dma_alloc_coherent(&tx->adapter->pdev->dev,
++				     sizeof(*tx->head_cpu_ptr), &dma_ptr,
++				     GFP_KERNEL);
+ 	if (!cpu_ptr) {
+ 		ret = -ENOMEM;
+ 		goto cleanup;
+@@ -2281,10 +2280,9 @@ static void lan743x_rx_ring_cleanup(struct lan743x_rx *rx)
+ 	}
+ 
+ 	if (rx->head_cpu_ptr) {
+-		pci_free_consistent(rx->adapter->pdev,
+-				    sizeof(*rx->head_cpu_ptr),
+-				    rx->head_cpu_ptr,
+-				    rx->head_dma_ptr);
++		dma_free_coherent(&rx->adapter->pdev->dev,
++				  sizeof(*rx->head_cpu_ptr), rx->head_cpu_ptr,
++				  rx->head_dma_ptr);
+ 		rx->head_cpu_ptr = NULL;
+ 		rx->head_dma_ptr = 0;
+ 	}
+@@ -2293,10 +2291,9 @@ static void lan743x_rx_ring_cleanup(struct lan743x_rx *rx)
+ 	rx->buffer_info = NULL;
+ 
+ 	if (rx->ring_cpu_ptr) {
+-		pci_free_consistent(rx->adapter->pdev,
+-				    rx->ring_allocation_size,
+-				    rx->ring_cpu_ptr,
+-				    rx->ring_dma_ptr);
++		dma_free_coherent(&rx->adapter->pdev->dev,
++				  rx->ring_allocation_size, rx->ring_cpu_ptr,
++				  rx->ring_dma_ptr);
+ 		rx->ring_allocation_size = 0;
+ 		rx->ring_cpu_ptr = NULL;
+ 		rx->ring_dma_ptr = 0;
+@@ -2327,8 +2324,8 @@ static int lan743x_rx_ring_init(struct lan743x_rx *rx)
+ 				     sizeof(struct lan743x_rx_descriptor),
+ 				     PAGE_SIZE);
+ 	dma_ptr = 0;
+-	cpu_ptr = pci_zalloc_consistent(rx->adapter->pdev,
+-					ring_allocation_size, &dma_ptr);
++	cpu_ptr = dma_alloc_coherent(&rx->adapter->pdev->dev,
++				     ring_allocation_size, &dma_ptr, GFP_KERNEL);
+ 	if (!cpu_ptr) {
+ 		ret = -ENOMEM;
+ 		goto cleanup;
+@@ -2345,8 +2342,9 @@ static int lan743x_rx_ring_init(struct lan743x_rx *rx)
+ 	}
+ 	rx->buffer_info = (struct lan743x_rx_buffer_info *)cpu_ptr;
+ 	dma_ptr = 0;
+-	cpu_ptr = pci_zalloc_consistent(rx->adapter->pdev,
+-					sizeof(*rx->head_cpu_ptr), &dma_ptr);
++	cpu_ptr = dma_alloc_coherent(&rx->adapter->pdev->dev,
++				     sizeof(*rx->head_cpu_ptr), &dma_ptr,
++				     GFP_KERNEL);
+ 	if (!cpu_ptr) {
+ 		ret = -ENOMEM;
+ 		goto cleanup;
 -- 
-Dr. Hannes Reinecke		           Kernel Storage Architect
-hare@suse.de			                  +49 911 74053 688
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
+2.25.1
+
