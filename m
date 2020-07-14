@@ -2,162 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531F821F646
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC5721F656
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgGNPjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 11:39:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725280AbgGNPjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 11:39:19 -0400
-Received: from embeddedor (unknown [201.162.240.73])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2393622285;
-        Tue, 14 Jul 2020 15:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594741158;
-        bh=415lbHSeClwZCtpjlS68bKbmwLWmlia7bSW5KCVq2Mc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=L6gBkn/qS+Aaz8ESC53BwR7g+RF+HsoAypwMOJzMRDMgLjoGi76E+3PJLYCRUXi9X
-         dQcjWjX/EkZ9Il7sc+7twvEjEBcCepeMiypNAubKVjJ/h1WRiJ6e4Qtf1TAJDPrQXU
-         +oaE2ICT/CVvA9KcHgzeZgURrUq34B4F3qHiYNsI=
-Date:   Tue, 14 Jul 2020 10:44:49 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] hpilo: Replace one-element array with flexible-array
- member
-Message-ID: <20200714154449.GA26153@embeddedor>
+        id S1726965AbgGNPp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 11:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgGNPp4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 11:45:56 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE3BC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:45:56 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id b185so16012350qkg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7U8JsZvgXHH3n8xgxoCLEbRbt6AY8Z+mxAelisJgRw8=;
+        b=TeT4WtuDoSJlYSAQH2bV1YMeSx1E6X2BFU8rj0/8YyGh0bErT86/GtYKHAowuaOF6E
+         i5sZLU99YAKqeQ4qr4Qp40qynq4yNSyzg1yH0BPltc5IY1ZLrkVQwxI8UTVm3ozseEdy
+         5ZkeWdsxPMWs2cvuTkyXFRGoW6rRjLvtArEwKHjtaJEZrrRGsCnu7J5y946a97v7K8xc
+         O8xhwzvcMs0lb/N+ymrisTzO4wstCoEc86JTj/YVRRwGUOkVXxACR80FW58sUvUxstgn
+         J4rgoTKUsqwoXilNN1i9HA6gtgwsAfe+lhDNrffl8KLuAP0+jQXa9OkWVGhEGjbFqp8/
+         6C6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7U8JsZvgXHH3n8xgxoCLEbRbt6AY8Z+mxAelisJgRw8=;
+        b=NvWTDoxFghjjAwkRVEBBaHCqtEcDgTGOB2Z7zW1lAoxyz3iKOQc1EWHtFjaVpy7tA5
+         AEMwJBRh6bkAI9WUI/VTA5Wuy6FX3GqvMmqM9+GL/g9f0fp/xsgWeByZ1HgYUqJumHId
+         edFmSkLogtxtCz0hc5SVzXflF96BXuipiISd4Jne23ePlPWCtR6QseNk9nR8rlphc9qy
+         ip+BWgwqj6GAASdkuJRB9T+lKogKdRogITqQ9V+jTHrsGAen6oZjAnHa8iF9ioiLARps
+         MCV/eVhli4S6KCH6Xe3mx63W93BKZ/OwGSWwkrSySPDEDhXh2DIK2bA8+eyshGWhZiAq
+         sBbA==
+X-Gm-Message-State: AOAM531a0uw9b42nmsT4aDXQ7YIB7/i+NgWjYvXDbelLe/ZgNLr4rCtz
+        j6GwmKRm3doGwF0C7ECHERrSDg==
+X-Google-Smtp-Source: ABdhPJwDgYPEzL6yjkDXQkBKQCvfcAKX1idi2WJWmoKy4Y+Sz7jQrn0lIt5Ndq1K+62+h1vAQ0vstA==
+X-Received: by 2002:a37:689:: with SMTP id 131mr4805114qkg.468.1594741554235;
+        Tue, 14 Jul 2020 08:45:54 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:81a8])
+        by smtp.gmail.com with ESMTPSA id r6sm23081172qtt.81.2020.07.14.08.45.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 08:45:53 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 11:45:04 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 1/2] mm, memcg: reclaim more aggressively before high
+ allocator throttling
+Message-ID: <20200714154504.GB215857@cmpxchg.org>
+References: <cover.1594640214.git.chris@chrisdown.name>
+ <a4e23b59e9ef499b575ae73a8120ee089b7d3373.1594640214.git.chris@chrisdown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <a4e23b59e9ef499b575ae73a8120ee089b7d3373.1594640214.git.chris@chrisdown.name>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare
-having a dynamically sized set of trailing elements in a structure.
-Kernel code should always use “flexible array members”[1] for these
-cases. The older style of one-element or zero-length arrays should
-no longer be used[2].
+On Mon, Jul 13, 2020 at 12:42:35PM +0100, Chris Down wrote:
+> In Facebook production, we've seen cases where cgroups have been put
+> into allocator throttling even when they appear to have a lot of slack
+> file caches which should be trivially reclaimable.
+> 
+> Looking more closely, the problem is that we only try a single cgroup
+> reclaim walk for each return to usermode before calculating whether or
+> not we should throttle. This single attempt doesn't produce enough
+> pressure to shrink for cgroups with a rapidly growing amount of file
+> caches prior to entering allocator throttling.
+> 
+> As an example, we see that threads in an affected cgroup are stuck in
+> allocator throttling:
+> 
+>     # for i in $(cat cgroup.threads); do
+>     >     grep over_high "/proc/$i/stack"
+>     > done
+>     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
+>     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
+>     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
+> 
+> ...however, there is no I/O pressure reported by PSI, despite a lot of
+> slack file pages:
+> 
+>     # cat memory.pressure
+>     some avg10=78.50 avg60=84.99 avg300=84.53 total=5702440903
+>     full avg10=78.50 avg60=84.99 avg300=84.53 total=5702116959
+>     # cat io.pressure
+>     some avg10=0.00 avg60=0.00 avg300=0.00 total=78051391
+>     full avg10=0.00 avg60=0.00 avg300=0.00 total=78049640
+>     # grep _file memory.stat
+>     inactive_file 1370939392
+>     active_file 661635072
+> 
+> This patch changes the behaviour to retry reclaim either until the
+> current task goes below the 10ms grace period, or we are making no
+> reclaim progress at all. In the latter case, we enter reclaim throttling
+> as before.
+> 
+> To a user, there's no intuitive reason for the reclaim behaviour to
+> differ from hitting memory.high as part of a new allocation, as opposed
+> to hitting memory.high because someone lowered its value. As such this
+> also brings an added benefit: it unifies the reclaim behaviour between
+> the two.
+> 
+> There's precedent for this behaviour: we already do reclaim retries when
+> writing to memory.{high,max}, in max reclaim, and in the page allocator
+> itself.
+> 
+> Signed-off-by: Chris Down <chris@chrisdown.name>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
 
-For this particular case, it is important to notice that the cachelines
-change from 7 to 6 after the flexible-array conversion:
-
-$ pahole -C 'fifo' drivers/misc/hpilo.o
-struct fifo {
-	u64                        nrents;               /*     0     8 */
-	u64                        imask;                /*     8     8 */
-	u64                        merge;                /*    16     8 */
-	u64                        reset;                /*    24     8 */
-	u8                         pad_0[96];            /*    32    96 */
-	/* --- cacheline 2 boundary (128 bytes) --- */
-	u64                        head;                 /*   128     8 */
-	u8                         pad_1[120];           /*   136   120 */
-	/* --- cacheline 4 boundary (256 bytes) --- */
-	u64                        tail;                 /*   256     8 */
-	u8                         pad_2[120];           /*   264   120 */
-	/* --- cacheline 6 boundary (384 bytes) --- */
-	u64                        fifobar[1];           /*   384     8 */
-
-	/* size: 392, cachelines: 7, members: 10 */
-	/* last cacheline: 8 bytes */
-};
-
-$ pahole -C 'fifo' drivers/misc/hpilo.o
-struct fifo {
-	u64                        nrents;               /*     0     8 */
-	u64                        imask;                /*     8     8 */
-	u64                        merge;                /*    16     8 */
-	u64                        reset;                /*    24     8 */
-	u8                         pad_0[96];            /*    32    96 */
-	/* --- cacheline 2 boundary (128 bytes) --- */
-	u64                        head;                 /*   128     8 */
-	u8                         pad_1[120];           /*   136   120 */
-	/* --- cacheline 4 boundary (256 bytes) --- */
-	u64                        tail;                 /*   256     8 */
-	u8                         pad_2[120];           /*   264   120 */
-	/* --- cacheline 6 boundary (384 bytes) --- */
-	u64                        fifobar[];            /*   384     0 */
-
-	/* size: 384, cachelines: 6, members: 10 */
-};
-
-Lastly, remove unnecessary parentheses in fifo_sz() and fix the following
-checkpatch.pl warning for the whole fifo structure:
-
-WARNING: please, no spaces at the start of a line
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://github.com/KSPP/linux/issues/79
-
-Tested-by: kernel test robot <lkp@intel.com>
-Link: https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/kernel-ci/hpilo-20200714.md
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/misc/hpilo.c |  2 +-
- drivers/misc/hpilo.h | 22 +++++++++++-----------
- 2 files changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/misc/hpilo.c b/drivers/misc/hpilo.c
-index 927309b86bab..10c975662f8b 100644
---- a/drivers/misc/hpilo.c
-+++ b/drivers/misc/hpilo.c
-@@ -207,7 +207,7 @@ static void ctrl_setup(struct ccb *ccb, int nr_desc, int l2desc_sz)
- static inline int fifo_sz(int nr_entry)
- {
- 	/* size of a fifo is determined by the number of entries it contains */
--	return (nr_entry * sizeof(u64)) + FIFOHANDLESIZE;
-+	return nr_entry * sizeof(u64) + FIFOHANDLESIZE;
- }
- 
- static void fifo_setup(void *base_addr, int nr_entry)
-diff --git a/drivers/misc/hpilo.h b/drivers/misc/hpilo.h
-index 1aa433a7f66c..f69ff645cac9 100644
---- a/drivers/misc/hpilo.h
-+++ b/drivers/misc/hpilo.h
-@@ -160,23 +160,23 @@ struct ccb_data {
- #define ILO_START_ALIGN	4096
- #define ILO_CACHE_SZ 	 128
- struct fifo {
--    u64 nrents;	/* user requested number of fifo entries */
--    u64 imask;  /* mask to extract valid fifo index */
--    u64 merge;	/*  O/C bits to merge in during enqueue operation */
--    u64 reset;	/* set to non-zero when the target device resets */
--    u8  pad_0[ILO_CACHE_SZ - (sizeof(u64) * 4)];
-+	u64 nrents;	/* user requested number of fifo entries */
-+	u64 imask;  /* mask to extract valid fifo index */
-+	u64 merge;	/*  O/C bits to merge in during enqueue operation */
-+	u64 reset;	/* set to non-zero when the target device resets */
-+	u8  pad_0[ILO_CACHE_SZ - (sizeof(u64) * 4)];
- 
--    u64 head;
--    u8  pad_1[ILO_CACHE_SZ - (sizeof(u64))];
-+	u64 head;
-+	u8  pad_1[ILO_CACHE_SZ - (sizeof(u64))];
- 
--    u64 tail;
--    u8  pad_2[ILO_CACHE_SZ - (sizeof(u64))];
-+	u64 tail;
-+	u8  pad_2[ILO_CACHE_SZ - (sizeof(u64))];
- 
--    u64 fifobar[1];
-+	u64 fifobar[];
- };
- 
- /* convert between struct fifo, and the fifobar, which is saved in the ccb */
--#define FIFOHANDLESIZE (sizeof(struct fifo) - sizeof(u64))
-+#define FIFOHANDLESIZE (sizeof(struct fifo))
- #define FIFOBARTOHANDLE(_fifo) \
- 	((struct fifo *)(((char *)(_fifo)) - FIFOHANDLESIZE))
- 
--- 
-2.27.0
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
