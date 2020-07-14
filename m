@@ -2,262 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918AE21EA21
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E722A21EA3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgGNHea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbgGNHea (ORCPT
+        id S1726788AbgGNHjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:39:02 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:50693 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgGNHjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:34:30 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5189C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 00:34:29 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id br7so6681472ejb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 00:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=TyuW/xx8h+jTjzlNFqQOSd3i2+037YbxhESnvjt0MIs=;
-        b=KMgJuSsNbNKH1EnVeb9w5Z2ElHZ3z+MbR2X1oeE5Mzqpg64n0X+7DWTmhPpYtFOqRe
-         zpuIPE3q56w1zaBqMG3Ypq9y2uAXwiN006UBg23VDE8UfPRcRRFeK67BlOyuVcF8fHKk
-         z2llW9leHnVkHKhU72uQrIXSHvruWaaocQdIVoKs3Z7xA34ajK8hTp6MQ0ru+663Ifbr
-         1D9ljjJ2kv9d60TnTTS0B//pYsNPr37qNLgRBANKamFlCTCBzSKLoD+VIB5eG50UUlzo
-         2s8JY1vlOFF4aat5PqZj3Ojgl9TnINAWk9zdC1hAWleCZc7mKKHxhCwdoJpVx38gPvjZ
-         Sa6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=TyuW/xx8h+jTjzlNFqQOSd3i2+037YbxhESnvjt0MIs=;
-        b=QwYuU8WTyrvVKG6+F5Uk6cjAqPelwO81sZB/7rQ93+mvUXFgsyrkgiGzxVEijkl+Kr
-         Q0TydwqcJADl6kKZlkKORL83UzRO+ujcu2jXMcvY+E74mq01kFeipAUpGbppIYq9Ac64
-         +eUjZKzhK21Fr+vkMP0oGrJjOLsbKuCoS31+yPp0TNJjzwepVvpjX/yga+DeBxTrwYl+
-         IKFsg/GH9K0yqfYchnI0hs2rEhPZdLcEVhUkEuakm5dx8EKV4T0y1/SEeB/dFVP3EYcf
-         6mhLS68xwAz2duxIJTfAT0/Ftec1YWmp2yeEQzajVAPjviutDHSCwPXia4pLRZmUCnq5
-         /rFQ==
-X-Gm-Message-State: AOAM531ovu5XEM40JwrGOAjx/WlheXGQnptAKIwgluZtIKKs7IePtJn0
-        qcXBPY6myRsDIAequBlOTw==
-X-Google-Smtp-Source: ABdhPJwLOzjABQV7Ob/I0kV2RhekApL/K1oLHY6aUbvzexJwglH9ehWzE6LFPNHCeX1E8VDNBBDfEA==
-X-Received: by 2002:a17:906:d057:: with SMTP id bo23mr3382304ejb.210.1594712068469;
-        Tue, 14 Jul 2020 00:34:28 -0700 (PDT)
-Received: from ?IPv6:2a02:810b:f40:e00:2885:810e:fc9c:eda1? ([2a02:810b:f40:e00:2885:810e:fc9c:eda1])
-        by smtp.gmail.com with ESMTPSA id cc9sm14628859edb.14.2020.07.14.00.34.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 00:34:27 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] drm: rockchip: add NV15, NV20 and NV30 support
-To:     Jonas Karlman <jonas@kwiboo.se>, Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Ben Davis <ben.davis@arm.com>
-References: <20200607202521.18438-1-jonas@kwiboo.se>
- <20200706223009.1200-1-jonas@kwiboo.se>
- <20200706223009.1200-3-jonas@kwiboo.se>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <45143339-1efc-4709-1782-466e7923d7ea@gmail.com>
-Date:   Tue, 14 Jul 2020 09:34:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 14 Jul 2020 03:39:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1594712341; x=1626248341;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=RmNBacgCYC3gH1oQYbu8uXXhpnAXbpfr/5u4Vf38fwA=;
+  b=SBErY5tYVuCSOrLiVekykka18a/e5h1aGjKXLkoZ74ZzbrPYqVMED0J+
+   e1Iz1Cri2cMQxLbVze+okcwON6MSU8FUz0Sx0osysDi6Qq/zwYjE5KUe4
+   jkJhn+kj5c2qL5dSpSOwSawmlkEMnQPhWghkTPMRdPt2UhWOP3ouA+MYw
+   cymK5Q8HZ+MaKnye6Fv8AyH1rC+xE+cTACT0Vruz/ZEytWD4AL6pVAdwf
+   jRwsUx3la29d1IOVK/J+ltXjPSm02r44uFG8gECbDBhPQfJ09WO6UxsEc
+   v0EZnQaLqbR0EzVPOpqU9fqMcuVEzzPlDlEurI+qm/tGISg77NmJ06Nnj
+   g==;
+IronPort-SDR: HP58hKqbjDlFzE95tiB0r0ZXdfNNJKh/ois8JDy4KJFTT2sxTqmQDS2Rat035DHD65ctOEp/sq
+ ZBBJVTMPtdg5+vLcgrHlxzBP+oyMvwf+rIruWEYqIqylvbnNPP/x3MlQOhMRa4eaNxk7+etGaq
+ NHF4Dny1nKipPB7QP/u6/1iWib5eJKYd/BDP5c5RNRVC0d4rwMPAK1FfNfjeiFqWeXzwr0tbfV
+ F4gFA/tdOQPjaEoJDUxIpICaErabvtNSYB/qhJS4qaW21iQb45FQVdGSdzU27W1MZ/4WzRYrFF
+ X9E=
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="81753242"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Jul 2020 00:39:00 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 14 Jul 2020 00:38:28 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 14 Jul 2020 00:38:58 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <jiri@resnulli.us>,
+        <ivecera@redhat.com>, <andrew@lunn.ch>,
+        <UNGLinuxDriver@microchip.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bridge@lists.linux-foundation.org>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next v4 00/12] bridge: mrp: Add support for interconnect ring
+Date:   Tue, 14 Jul 2020 09:34:46 +0200
+Message-ID: <20200714073458.1939574-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200706223009.1200-3-jonas@kwiboo.se>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonas,
+This patch series extends existing MRP to add support for interconnect ring.  An
+interconnect ring is a ring that connects 2 rings. In this way is possible to
+connect multiple rings. Each interconnect ring is form of 4 nodes, in which 3
+have the role MIC(Media Redundancy Interconnect Client) and one has the role
+MIM(Media Redundancy Interconnect Manager). All these nodes need to have the
+same ID and the ID needs to be unique between multiple interconnect rings. And 2
+nodes needs to be part of one ring and the other 2 nodes needs to be part of the
+other ring that is connected.
 
-Am 07.07.20 um 00:30 schrieb Jonas Karlman:
-> Add support for displaying 10-bit 4:2:0 and 4:2:2 formats produced by the
-> Rockchip Video Decoder on RK322X, RK3288, RK3328, RK3368 and RK3399.
-> Also add support for 10-bit 4:4:4 format while at it.
->
-> V2: Added NV30 support
->
-> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-> Reviewed-by: Sandy Huang <hjc@rock-chips.com>
-> ---
->   drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 29 +++++++++++++++++--
->   drivers/gpu/drm/rockchip/rockchip_drm_vop.h |  1 +
->   drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 32 +++++++++++++++++----
->   3 files changed, 54 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-> index c80f7d9fd13f..eb663e25ad9e 100644
-> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-> @@ -261,6 +261,18 @@ static bool has_rb_swapped(uint32_t format)
->   	}
->   }
->   
-> +static bool is_fmt_10(uint32_t format)
-> +{
-> +	switch (format) {
-> +	case DRM_FORMAT_NV15:
-> +	case DRM_FORMAT_NV20:
-> +	case DRM_FORMAT_NV30:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
->   static enum vop_data_format vop_convert_format(uint32_t format)
->   {
->   	switch (format) {
-> @@ -276,10 +288,13 @@ static enum vop_data_format vop_convert_format(uint32_t format)
->   	case DRM_FORMAT_BGR565:
->   		return VOP_FMT_RGB565;
->   	case DRM_FORMAT_NV12:
-> +	case DRM_FORMAT_NV15:
->   		return VOP_FMT_YUV420SP;
->   	case DRM_FORMAT_NV16:
-> +	case DRM_FORMAT_NV20:
->   		return VOP_FMT_YUV422SP;
->   	case DRM_FORMAT_NV24:
-> +	case DRM_FORMAT_NV30:
->   		return VOP_FMT_YUV444SP;
->   	default:
->   		DRM_ERROR("unsupported format[%08x]\n", format);
-> @@ -922,7 +937,12 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
->   	dsp_sty = dest->y1 + crtc->mode.vtotal - crtc->mode.vsync_start;
->   	dsp_st = dsp_sty << 16 | (dsp_stx & 0xffff);
->   
-> -	offset = (src->x1 >> 16) * fb->format->cpp[0];
-> +	if (fb->format->block_w[0])
-> +		offset = (src->x1 >> 16) * fb->format->char_per_block[0] /
-> +			 fb->format->block_w[0];
-> +	else
-> +		offset = (src->x1 >> 16) * fb->format->cpp[0];
-> +
->   	offset += (src->y1 >> 16) * fb->pitches[0];
->   	dma_addr = rk_obj->dma_addr + offset + fb->offsets[0];
->   
-> @@ -948,6 +968,7 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
->   	}
->   
->   	VOP_WIN_SET(vop, win, format, format);
-> +	VOP_WIN_SET(vop, win, fmt_10, is_fmt_10(fb->format->format));
->   	VOP_WIN_SET(vop, win, yrgb_vir, DIV_ROUND_UP(fb->pitches[0], 4));
->   	VOP_WIN_SET(vop, win, yrgb_mst, dma_addr);
->   	VOP_WIN_YUV2YUV_SET(vop, win_yuv2yuv, y2r_en, is_yuv);
-> @@ -964,7 +985,11 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
->   		uv_obj = fb->obj[1];
->   		rk_uv_obj = to_rockchip_obj(uv_obj);
->   
-> -		offset = (src->x1 >> 16) * bpp / hsub;
-> +		if (fb->format->block_w[1])
-> +			offset = (src->x1 >> 16) * bpp /
-> +				 fb->format->block_w[1] / hsub;
-> +		else
-> +			offset = (src->x1 >> 16) * bpp / hsub;
->   		offset += (src->y1 >> 16) * fb->pitches[1] / vsub;
->   
->   		dma_addr = rk_uv_obj->dma_addr + offset + fb->offsets[1];
-> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.h b/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-> index 4a2099cb582e..eab055d9b56d 100644
-> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-> @@ -154,6 +154,7 @@ struct vop_win_phy {
->   	struct vop_reg enable;
->   	struct vop_reg gate;
->   	struct vop_reg format;
-> +	struct vop_reg fmt_10;
->   	struct vop_reg rb_swap;
->   	struct vop_reg act_info;
->   	struct vop_reg dsp_info;
-> diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-> index 80053d91a301..2c55e1852c3d 100644
-> --- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-> +++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-> @@ -50,6 +50,23 @@ static const uint32_t formats_win_full[] = {
->   	DRM_FORMAT_NV24,
->   };
->   
-> +static const uint32_t formats_win_full_10[] = {
-> +	DRM_FORMAT_XRGB8888,
-> +	DRM_FORMAT_ARGB8888,
-> +	DRM_FORMAT_XBGR8888,
-> +	DRM_FORMAT_ABGR8888,
-> +	DRM_FORMAT_RGB888,
-> +	DRM_FORMAT_BGR888,
-> +	DRM_FORMAT_RGB565,
-> +	DRM_FORMAT_BGR565,
-> +	DRM_FORMAT_NV12,
-> +	DRM_FORMAT_NV16,
-> +	DRM_FORMAT_NV24,
-> +	DRM_FORMAT_NV15,
-> +	DRM_FORMAT_NV20,
-> +	DRM_FORMAT_NV30,
-> +};
-> +
->   static const uint64_t format_modifiers_win_full[] = {
->   	DRM_FORMAT_MOD_LINEAR,
->   	DRM_FORMAT_MOD_INVALID,
-> @@ -579,11 +596,12 @@ static const struct vop_scl_regs rk3288_win_full_scl = {
->   
->   static const struct vop_win_phy rk3288_win01_data = {
->   	.scl = &rk3288_win_full_scl,
-> -	.data_formats = formats_win_full,
-> -	.nformats = ARRAY_SIZE(formats_win_full),
-> +	.data_formats = formats_win_full_10,
-> +	.nformats = ARRAY_SIZE(formats_win_full_10),
->   	.format_modifiers = format_modifiers_win_full,
->   	.enable = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 0),
->   	.format = VOP_REG(RK3288_WIN0_CTRL0, 0x7, 1),
-> +	.fmt_10 = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 4),
->   	.rb_swap = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 12),
->   	.act_info = VOP_REG(RK3288_WIN0_ACT_INFO, 0x1fff1fff, 0),
->   	.dsp_info = VOP_REG(RK3288_WIN0_DSP_INFO, 0x0fff0fff, 0),
-> @@ -713,11 +731,12 @@ static const struct vop_intr rk3368_vop_intr = {
->   
->   static const struct vop_win_phy rk3368_win01_data = {
->   	.scl = &rk3288_win_full_scl,
-> -	.data_formats = formats_win_full,
-> -	.nformats = ARRAY_SIZE(formats_win_full),
-> +	.data_formats = formats_win_full_10,
-> +	.nformats = ARRAY_SIZE(formats_win_full_10),
->   	.format_modifiers = format_modifiers_win_full,
->   	.enable = VOP_REG(RK3368_WIN0_CTRL0, 0x1, 0),
->   	.format = VOP_REG(RK3368_WIN0_CTRL0, 0x7, 1),
-> +	.fmt_10 = VOP_REG(RK3368_WIN0_CTRL0, 0x1, 4),
->   	.rb_swap = VOP_REG(RK3368_WIN0_CTRL0, 0x1, 12),
->   	.x_mir_en = VOP_REG(RK3368_WIN0_CTRL0, 0x1, 21),
->   	.y_mir_en = VOP_REG(RK3368_WIN0_CTRL0, 0x1, 22),
+                 +---------+
+                 |         |
+      +----------|   MRM   |---------------+
+      |          |         |               |
+      |          +---------+               |
+      |                                    |
+      |                                    |
+      |                                    |
++--------------+                  +-----------------+
+|              |                  |                 |
+|  MRC/MIC     |------------------|    MRC/MIM      |
+|              |                  |                 |
++--------------+                  +-----------------+
+      |                                     |
+      |Interconnect port                    |Interconnect port
+      |                                     |
+      |                                     |
++--------------+                  +-----------------+
+|              |                  |                 |
+|  MRC/MIC     |----------------- |   MRC/MIC       |
+|              |                  |                 |
++--------------+                  +-----------------+
+      |                                     |
+      |                                     |
+      |          +---------+                |
+      |          |         |                |
+      +----------|  MRM    |----------------+
+                 |         |
+                 +---------+
 
-As per TRM/datasheet RK3368's VOP does not support 10-bit color formats.
+Each node in a ring needs to have one of the following ring roles, MRM or MRC.
+And it can also have an interconnect role like MIM or MIC if it is part of an
+interconnect ring. In the figure above the MRM doesn't have any interconnect
+role but the MRC from the top ring have the interconnect roles MIC respectively
+MIM. Therefore it is not possible for a node to have only an interconnect role.
 
-Therefore data_formats should be kept at formats_win_full here.
+There are 2 ways for interconnect ring to detect when is open or closed:
+1. To use CCM frames on the interconnect port to detect when the interconnect
+   link goes down/up. This mode is called LC-mode.
+2. To send InTest frames on all 3 ports(2 ring ports and 1 interconnect port)
+   and detect when these frames are received back. This mode is called RC-mode.
 
-> @@ -862,11 +881,12 @@ static const struct vop_win_yuv2yuv_data rk3399_vop_big_win_yuv2yuv_data[] = {
->   
->   static const struct vop_win_phy rk3399_win01_data = {
->   	.scl = &rk3288_win_full_scl,
-> -	.data_formats = formats_win_full,
-> -	.nformats = ARRAY_SIZE(formats_win_full),
-> +	.data_formats = formats_win_full_10,
-> +	.nformats = ARRAY_SIZE(formats_win_full_10),
->   	.format_modifiers = format_modifiers_win_full_afbc,
->   	.enable = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 0),
->   	.format = VOP_REG(RK3288_WIN0_CTRL0, 0x7, 1),
-> +	.fmt_10 = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 4),
->   	.rb_swap = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 12),
->   	.y_mir_en = VOP_REG(RK3288_WIN0_CTRL0, 0x1, 22),
->   	.act_info = VOP_REG(RK3288_WIN0_ACT_INFO, 0x1fff1fff, 0),
+This patch series adds support only for RC-mode. Where MIM sends InTest frames
+on all 3 ports and detects when it receives back the InTest. When it receives
+the InTest it means that the ring is closed so it would set the interconnect
+port in blocking state. If it stops receiving the InTest frames then it would
+set the port in forwarding state and it would send InTopo frames. These InTopo
+frames will be received by MRM nodes and process them. And then the MRM will
+send Topo frames in the rings so each client will clear its FDB.
 
-Regards,
+v4:
+  - always cancel delay work if the MRP instance is deleted or interconnect role
+    is disabled but allow only to start to send InTest frames only if the role
+    is MIM.
 
-Alex
+v3:
+  - update 'br_mrp_set_in_role' to stop sending test if the role is disabled
+    and don't allow to set a different interconnect port if there is already
+    one.
+
+v2:
+  - rearrange structures not to contain holes
+  - stop sending MRP_InTest frames when the MRP instance is deleted
+
+Horatiu Vultur (12):
+  switchdev: mrp: Extend switchdev API for MRP Interconnect
+  bridge: uapi: mrp: Extend MRP attributes for MRP interconnect
+  bridge: mrp: Extend bridge interface
+  bridge: mrp: Extend br_mrp for MRP interconnect
+  bridge: mrp: Rename br_mrp_port_open to br_mrp_ring_port_open
+  bridge: mrp: Add br_mrp_in_port_open function
+  bridge: switchdev: mrp: Extend MRP API for switchdev for MRP
+    Interconnect
+  bridge: mrp: Implement the MRP Interconnect API
+  bridge: mrp: Extend MRP netlink interface for configuring MRP
+    interconnect
+  bridge: uapi: mrp: Extend MRP_INFO attributes for interconnect status
+  bridge: mrp: Extend br_mrp_fill_info
+  net: bridge: Add port attribute IFLA_BRPORT_MRP_IN_OPEN
+
+ include/linux/if_bridge.h          |   1 +
+ include/net/switchdev.h            |  38 ++
+ include/uapi/linux/if_bridge.h     |  58 +++
+ include/uapi/linux/if_link.h       |   1 +
+ include/uapi/linux/mrp_bridge.h    |  38 ++
+ net/bridge/br_mrp.c                | 576 +++++++++++++++++++++++++++--
+ net/bridge/br_mrp_netlink.c        | 182 ++++++++-
+ net/bridge/br_mrp_switchdev.c      |  62 ++++
+ net/bridge/br_netlink.c            |   3 +
+ net/bridge/br_private_mrp.h        |  27 +-
+ tools/include/uapi/linux/if_link.h |   1 +
+ 11 files changed, 951 insertions(+), 36 deletions(-)
+
+-- 
+2.27.0
 
