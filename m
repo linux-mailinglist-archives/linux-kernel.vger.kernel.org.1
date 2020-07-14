@@ -2,56 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A8621F302
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD9B21F334
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgGNNvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:51:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725906AbgGNNvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:51:10 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE97F20760;
-        Tue, 14 Jul 2020 13:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594734670;
-        bh=AsJ/I2RJLvfz8A+sQ6DL4Bg36aA+bxlxgzqzMKU0rD8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cifSuM6Q23ORTqYIYC5ayBNI5ZspEDh6iIyRf/F267+G1l8i8nrTy1U095oSlAoAN
-         V2syaf4G9XwBVHtQJkoD5SAd0ledwjxdtj31uFF0pL0X0lfOXazBGMzlA4NWEmh53U
-         QOJoWXeU0iA4DNKqYqmuU9YMI3TwveGYbGvI2OgM=
-Date:   Tue, 14 Jul 2020 15:51:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     B K Karthik <bkkarthik@pesu.pes.edu>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: staging: media: atomisp: pci: css_2401_system:
- host: csi_rx.c: fixed a sparse warning by making undeclared symbols static
-Message-ID: <20200714135108.GA1698833@kroah.com>
-References: <20200714132350.naekk4zqivpuaedi@pesu-pes-edu>
+        id S1725877AbgGNN5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:57:04 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:57448 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725821AbgGNN5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 09:57:03 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id A5B01131134F9A7732CE;
+        Tue, 14 Jul 2020 21:51:53 +0800 (CST)
+Received: from [127.0.0.1] (10.174.186.75) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Jul 2020
+ 21:51:44 +0800
+Subject: Re: [PATCH v2 2/2] arm64: tlb: Use the TLBI RANGE feature in arm64
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     <will@kernel.org>, <suzuki.poulose@arm.com>, <maz@kernel.org>,
+        <steven.price@arm.com>, <guohanjun@huawei.com>, <olof@lixom.net>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
+        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
+        <kuhn.chenqun@huawei.com>
+References: <20200710094420.517-1-yezhenyu2@huawei.com>
+ <20200710094420.517-3-yezhenyu2@huawei.com> <20200714103629.GA18793@gaia>
+From:   Zhenyu Ye <yezhenyu2@huawei.com>
+Message-ID: <cda3d6bc-a7e2-5669-372c-3c34cc822e08@huawei.com>
+Date:   Tue, 14 Jul 2020 21:51:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714132350.naekk4zqivpuaedi@pesu-pes-edu>
+In-Reply-To: <20200714103629.GA18793@gaia>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.186.75]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 09:23:50AM -0400, B K Karthik wrote:
-> changed symbols N_SHORT_PACKET_LUT_ENTRIES, N_LONG_PACKET_ENTRIES,
-> N_CSI_RX_FE_CTRL_DLANES, N_CSI_RX_BE_SID_WIDTH to static because they
-> were not declared earlier.
+On 2020/7/14 18:36, Catalin Marinas wrote:
+> On Fri, Jul 10, 2020 at 05:44:20PM +0800, Zhenyu Ye wrote:
+>> +#define __TLBI_RANGE_PAGES(num, scale)	(((num) + 1) << (5 * (scale) + 1))
+>> +#define MAX_TLBI_RANGE_PAGES		__TLBI_RANGE_PAGES(31, 3)
+>> +
+>> +#define TLBI_RANGE_MASK			GENMASK_ULL(4, 0)
+>> +#define __TLBI_RANGE_NUM(range, scale)	\
+>> +	(((range) >> (5 * (scale) + 1)) & TLBI_RANGE_MASK)
+> [...]
+>> +	int num = 0;
+>> +	int scale = 0;
+> [...]
+>> +			start += __TLBI_RANGE_PAGES(num, scale) << PAGE_SHIFT;
+> [...]
+> 
+> Since num is an int, __TLBI_RANGE_PAGES is still an int. Shifting it by
+> PAGE_SHIFT can overflow as the maximum would be 8GB for 4K pages (or
+> 128GB for 64K pages). I think we probably get away with this because of
+> some implicit type conversion but I'd rather make __TLBI_RANGE_PAGES an
+> explicit unsigned long:
+> 
+> #define __TLBI_RANGE_PAGES(num, scale)	((unsigned long)((num) + 1) << (5 * (scale) + 1))
+> 
 
-Your subject line is a little bit crazy long.  Perhaps just:
-	staging: media: atomisp: mark some csi_rx.c symbols static
-?
+This is valuable and I will update this in next series, with the check
+for binutils (or encode the instructions by hand), as soon as possible.
 
-thanks,
+> Without this change, the CBMC check fails (see below for the test). In
+> the kernel, we don't have this problem as we encode the address via
+> __TLBI_VADDR_RANGE and it doesn't overflow.> The good part is that CBMC reckons the algorithm is correct ;).
 
-greg k-h
+Thanks for your test!
+
+Zhenyu
+
