@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B7B220043
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E0D22004A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgGNVrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:47:11 -0400
-Received: from ms.lwn.net ([45.79.88.28]:42786 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726710AbgGNVrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:47:10 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 35E9260C;
-        Tue, 14 Jul 2020 21:47:10 +0000 (UTC)
-Date:   Tue, 14 Jul 2020 15:47:08 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     torvalds@linux-foundation.org, ribalda@kernel.org,
-        viro@zeniv.linux.org.uk, mchehab+samsung@kernel.org,
-        luis.f.correia@gmail.com, geert+renesas@glider.be,
-        paulburton@kernel.org, cyphar@cyphar.com, martink@posteo.de,
-        davej@codemonkey.org.uk, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] CREDITS: remove link http://www.dementia.org/~shadow
-Message-ID: <20200714154708.71b3efe2@lwn.net>
-In-Reply-To: <20200714193805.49746-1-grandmaster@al2klimov.de>
-References: <20200713114321.783f0ae6@lwn.net>
-        <20200714193805.49746-1-grandmaster@al2klimov.de>
-Organization: LWN.net
+        id S1728185AbgGNVt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727058AbgGNVt0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 17:49:26 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF698C08C5C1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:49:25 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mn17so30842pjb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z/2Da3iNyWh0eVa9re/PxqTbl8E4lNL39Wvo8BQa5Jk=;
+        b=OfmVSBDsHc9Rmasjt6KXSUQdd+K+htfdnDGZNH60suyaUxoZ6TXC2sZQyckRFbNtVW
+         eCczQAunkP9IdML7SUT1mKGAgRCYJZ2JU2BzFii89fLlf5/fb6WZmg8/bak5hryNE5Y3
+         stsrls1AUgm02a5MgTkAsfCOzaG5T8ZvxZN3Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z/2Da3iNyWh0eVa9re/PxqTbl8E4lNL39Wvo8BQa5Jk=;
+        b=jXT8LTyJupQqCHPYdwJWiPA/P1DBFtKkkfhxLA+j1jHuibCmhi4jmcxECk+lJ7pyFP
+         VQGfXDnUZzWzNiQG+Eud4xRKSymQv/3FZkfgqrPPgSHGGvvadGOuY+dEG2ZnjlLKp4tD
+         ndGtR1vqxikbDMuhSi3uWZtrmvW6H9cLck3GpzrutmWwfld1vhKn+OKYrBO4UGMfMhsX
+         5Mgnx4gmB+V+NxqPGeSoJBAVbIWYFBjKYBuJ/GTAA6ejhjGehyGBLw/RbL05WQ3DdbeK
+         V5hUNxcQUFGm0BQhuDqkI0A37zFz2R89n5IQF8QRR9gRjWs1s8voWXzxntKFsfz9eSLm
+         XSDg==
+X-Gm-Message-State: AOAM533LFW0RNEvOmzmX+KG8FSfk9+J/Cf/8IGbODP8JnyEe/oS0PIqh
+        4U4P7DYGNdD9QMtS4PBXhN+Smg==
+X-Google-Smtp-Source: ABdhPJyfHN6nndxTZkr0qhDNx67iZO+T5mcaIl+et4AYLVpGCPX9K8cfoszp9wO2zi7jQoRkZbuhYA==
+X-Received: by 2002:a17:90a:240a:: with SMTP id h10mr7042196pje.225.1594763365288;
+        Tue, 14 Jul 2020 14:49:25 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id br9sm48405pjb.56.2020.07.14.14.49.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 14:49:24 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 14:49:23 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        linux-security-module@vger.kernel.org,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        John Johansen <john.johansen@canonical.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 7/7] exec: Implement kernel_execve
+Message-ID: <202007141446.A72A4437C@keescook>
+References: <871rle8bw2.fsf@x220.int.ebiederm.org>
+ <87wo365ikj.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wo365ikj.fsf@x220.int.ebiederm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020 21:38:05 +0200
-"Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
+On Tue, Jul 14, 2020 at 08:31:40AM -0500, Eric W. Biederman wrote:
+> +static int count_strings_kernel(const char *const *argv)
+> +{
+> +	int i;
+> +
+> +	if (!argv)
+> +		return 0;
+> +
+> +	for (i = 0; argv[i]; ++i) {
+> +		if (i >= MAX_ARG_STRINGS)
+> +			return -E2BIG;
+> +		if (fatal_signal_pending(current))
+> +			return -ERESTARTNOHAND;
+> +		cond_resched();
+> +	}
+> +	return i;
+> +}
 
-> Rationale:
-> The way it redirects looks like a fallback from a dead URL to a generic one.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->  Yes, I noted that some of the links removed by these "CREDITS: remove link:"
->  patches have email addresses with the same domain nearby.
-> 
->  Don't worry, I'll take care of them together with all other
->  dead email addresses - but not right now.
-> 
-> 
->  CREDITS | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/CREDITS b/CREDITS
-> index 0787b5872906..92ad22b7ef56 100644
-> --- a/CREDITS
-> +++ b/CREDITS
-> @@ -483,7 +483,6 @@ D: Intel Wireless WiMAX Connection 2400 SDIO driver
->  
->  N: Derrick J. Brashear
->  E: shadow@dementia.org
-> -W: http://www.dementia.org/~shadow
+I notice count() is only ever called with MAX_ARG_STRINGS. Perhaps
+refactor that too? (And maybe rename it to count_strings_user()?)
 
-So thanks for addressing these.  That said, I do wonder if this is quite
-the right thing to do.  I'm assuming that the old sites still exist in the
-wayback machine somewhere, and somebody might actually want to find them.
-Pity the poor anthropologist researching the origins of the the
-billion-line, free-software kernels widely used in the 2500's...
+Otherwise, looks good:
 
-So maybe we should either mark it as "[BROKEN]" or make a direct link into
-the wayback machine instead?  That would enable the suitably motivated to
-go after the content that once existed.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Thoughts anybody?
-
-Thanks,
-
-jon
+-- 
+Kees Cook
