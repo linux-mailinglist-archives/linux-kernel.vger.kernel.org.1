@@ -2,63 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65ECC21E4A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 02:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B0B21E4B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 02:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgGNAnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 20:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
+        id S1727025AbgGNApM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 20:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726257AbgGNAnB (ORCPT
+        with ESMTP id S1726257AbgGNApL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 20:43:01 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821A3C061755;
-        Mon, 13 Jul 2020 17:43:01 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id B433112985773;
-        Mon, 13 Jul 2020 17:43:00 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 17:42:59 -0700 (PDT)
-Message-Id: <20200713.174259.1939311860362174224.davem@davemloft.net>
-To:     grandmaster@al2klimov.de
-Cc:     ulli.kroll@googlemail.com, linus.walleij@linaro.org,
-        kuba@kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ethernet: Replace HTTP links with HTTPS ones
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200713171429.36369-1-grandmaster@al2klimov.de>
-References: <20200713171429.36369-1-grandmaster@al2klimov.de>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 13 Jul 2020 17:43:01 -0700 (PDT)
+        Mon, 13 Jul 2020 20:45:11 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20C7C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 17:45:10 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id by13so15381412edb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 17:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bmkyDT2Ok5AKFPTzejs90EKhv0LPiFP9AWMW7s63JrQ=;
+        b=Jg0UAal5+4ko6u58hgMcHJj+uPsQ3LKmIcb61aCtyM4jaS3QWcAOCy0OObnsCpkXUU
+         ISOHXxoeLc2wCXHvajiQfNFdrMJ7CZz0MIzF+f971d/Gfu7vDxvayh7mhP2svb+qf2K1
+         YjCKpJmEeHMPjbQgTcGGPjMJ2K/Bh+qYoKC+z1uXDQYgcZeKcEhWagYje7djbIKDgWYJ
+         AYe/bLL7xIkCn1F4CcRszKPFnDbSkFF4fiY64ouwJMLevX6CoCQo+zUsKxKywrzWL6JY
+         EIXB9J4+THNCUiMEJXbr8YqqIliuE2LBwznBkdqqenwgZ5vW4MfNPwXn4hh3McNhiyp1
+         6Lpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bmkyDT2Ok5AKFPTzejs90EKhv0LPiFP9AWMW7s63JrQ=;
+        b=O3Ycpgf/Kf9YvTZucCSIRjJrIQi1NiIYCpPx3MSAJ9S1LlZkplFB3d56BP8jAn5cYd
+         37YNZz2jxVwk2CqcJfEhWkZBoXK2TpHIDztDASVj0dFoCSWAYFW9zb/O5fWIXo1dhKDP
+         tLDghZqd84sNfghi8+RMegQ+g6RLWAJXPBnYRMH6jSsxeiqaPadwx1LZEV+fJCewo5vS
+         +Yh0Kk4UBDyfBAGIQ3zo9t43PGg5Hfb1ZBE1XCgRVMiRi0/6oILNfpag7vCF+tONmKL4
+         p/IaQAUOWMsTCgxZL896C5ghfhulAOcWj0lI8YiHDTJyamHpV3c55AA8sAWGRuVk/82P
+         uNJA==
+X-Gm-Message-State: AOAM530QTZOoqEYrBk/V7esYw7YHS0L8MP5GeKBoWS/g9Z5w5i0BVuMh
+        NXjtt9B2UyUmMFTaW513BPr0nzVsHufhBM5GMluz
+X-Google-Smtp-Source: ABdhPJxFM46eZkco0XOaaCsFFTHlrOfIfbbkJNmhbdNiqdLTCYkgzE1EAejSD/O9P/+a7qjfCVbCzfrxVpEC0f0mWgE=
+X-Received: by 2002:a05:6402:1d89:: with SMTP id dk9mr1958150edb.31.1594687509148;
+ Mon, 13 Jul 2020 17:45:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1593198710.git.rgb@redhat.com> <6abeb26e64489fc29b00c86b60b501c8b7316424.1593198710.git.rgb@redhat.com>
+ <CAHC9VhTx=4879F1MSXg4=Xd1i5rhEtyam6CakQhy=_ZjGtTaMA@mail.gmail.com>
+ <20200707025014.x33eyxbankw2fbww@madcap2.tricolour.ca> <CAHC9VhTTGLf9MPS_FgL1ibUVoH+YzMtPK6+2dp_j8a5o9fzftA@mail.gmail.com>
+ <20200713202906.iiz435vjeedljcwf@madcap2.tricolour.ca>
+In-Reply-To: <20200713202906.iiz435vjeedljcwf@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 13 Jul 2020 20:44:57 -0400
+Message-ID: <CAHC9VhScQAMeEXssDhDeAo+za9f-doqcM-yutDmFBuwqZVpa3A@mail.gmail.com>
+Subject: Re: [PATCH ghak90 V9 01/13] audit: collect audit task parameters
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     nhorman@tuxdriver.com, linux-api@vger.kernel.org,
+        containers@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
+        simo@redhat.com, netdev@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Date: Mon, 13 Jul 2020 19:14:29 +0200
+On Mon, Jul 13, 2020 at 4:30 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> On 2020-07-07 21:42, Paul Moore wrote:
+> > On Mon, Jul 6, 2020 at 10:50 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > On 2020-07-05 11:09, Paul Moore wrote:
+> > > > On Sat, Jun 27, 2020 at 9:21 AM Richard Guy Briggs <rgb@redhat.com> wrote:
 
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
-> 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+...
 
-Applied.
+> > > > In the early days of this patchset we talked a lot about how to handle
+> > > > the task_struct and the changes that would be necessary, ultimately
+> > > > deciding that encapsulating all of the audit fields into an
+> > > > audit_task_info struct.  However, what is puzzling me a bit at this
+> > > > moment is why we are only including audit_task_info in task_info by
+> > > > reference *and* making it a build time conditional (via CONFIG_AUDIT).
+> > > >
+> > > > If audit is enabled at build time it would seem that we are always
+> > > > going to allocate an audit_task_info struct, so I have to wonder why
+> > > > we don't simply embed it inside the task_info struct (similar to the
+> > > > seccomp struct in the snippet above?  Of course the audit_context
+> > > > struct needs to remain as is, I'm talking only about the
+> > > > task_info/audit_task_info struct.
+> > >
+> > > I agree that including the audit_task_info struct in the struct
+> > > task_struct would have been preferred to simplify allocation and free,
+> > > but the reason it was included by reference instead was to make the
+> > > task_struct size independent of audit so that future changes would not
+> > > cause as many kABI challenges.  This first change will cause kABI
+> > > challenges regardless, but it was future ones that we were trying to
+> > > ease.
+> > >
+> > > Does that match with your recollection?
+> >
+> > I guess, sure.  I suppose what I was really asking was if we had a
+> > "good" reason for not embedding the audit_task_info struct.
+> > Regardless, thanks for the explanation, that was helpful.
+>
+> Making it dynamic was actually your idea back in the spring of 2018:
+>         https://lkml.org/lkml/2018/4/18/759
+
+If you read my comments from 2018 carefully, or even not so carefully
+I think, you'll notice that my primary motivation for using a pointer
+was to "hide" the audit_task_info struct contents so that they
+couldn't be abused by other kernel subsystems looking for a general
+container identifier inside the kernel.  As we've discussed many times
+before, this patchset is not a general purpose container identifier,
+this is an ***audit*** container ID; limiting the scope and usage of
+this identifier is what has allowed us to gain the begrudging
+acceptance we've had thus far and I believe it is the key to success.
+
+For whatever it is worth, this patchset doesn't hide the
+audit_task_struct definition in a kernel/audit*.c file, it lives in a
+header file which is easily accessed by other subsystems.
+
+In my opinion we should pick one of two options: leave it as a pointer
+reference and "hide" the struct definition, or just embed the struct
+and simplify the code.  I see little value in openly defining the
+audit_task_info struct and using a pointer reference; if you believe
+you have a valid argument for why this makes sense I'm open to hearing
+it, but your comments thus far have been unconvincing.
+
+> > > > Richard, I'm sure you can answer this off the top of your head, but
+> > > > I'd have to go digging through the archives to pull out the relevant
+> > > > discussions so I figured I would just ask you for a reminder ... ?  I
+> > > > imagine it's also possible things have changed a bit since those early
+> > > > discussions and the solution we arrived at then no longer makes as
+> > > > much sense as it did before.
+> > >
+> > > Agreed, it doesn't make as much sense now as it did when proposed, but
+> > > will make more sense in the future depending on when this change gets
+> > > accepted upstream.  This is why I wanted this patch to go through as
+> > > part of ghak81 at the time the rest of it did so that future kABI issues
+> > > would be easier to handle, but that ship has long sailed.
+> >
+> > To be clear, kABI issues with task_struct really aren't an issue with
+> > the upstream kernel.  I know that you know all of this already
+> > Richard, I'm mostly talking to everyone else on the To/CC line in case
+> > they are casually watching this discussion.
+>
+> kABI issues may not as much of an upstream issue, but part of the goal
+> here was upstream kernel issues, isolating the kernel audit changes
+> to its own subsystem and affect struct task_struct as little as possible
+> in the future and to protect it from "abuse" (as you had expressed
+> serious concerns) from the rest of the kernel.  include/linux/sched.h
+> will need to know more about struct audit_task_info if it is embedded,
+> making it more suceptible to abuse.
+
+I define "abuse" in this context as other kernel subsystems inspecting
+the contents of the audit_task_struct, most likely to try and
+approximate a general container identifier.
+
+Better separation between the audit subsystem and the task_struct,
+while conceptually nice, isn't critical and is easily changed upstream
+with each kernel release as it isn't part of the kernel/userspace API.
+Regardless, a basic conceptual separation is achieved by the
+audit_task_struct regardless of if it is embedded into the task_struct
+or included by a pointer reference.
+
+> > While I'm sympathetic to long-lifetime enterprise distros such as
+> > RHEL, my responsibility is to ensure the upstream kernel is as good as
+> > we can make it, and in this case I believe that means embedding
+> > audit_task_info into the task_struct.
+>
+> Keeping audit_task_info dynamic will also make embedding struct
+> audit_context as a zero-length array at the end of it possible in the
+> future as an internal audit subsystem optimization whereas largely
+> preclude that if it were embedded.
+
+Predicting the future is hard, but I would be comfortable giving up on
+a variable length audit_task_info struct.  Besides, if we *really* had
+to do that in the future we could, it's not part of the
+kernel/userspace API.
+
+> This method has been well exercised over the last two years of
+> development, testing and rebases, so I'm not particularly concerned
+> about its dynamic nature any more.  It works well.  At this point this
+> change seems to be more gratuitously disruptive than helpful.
+
+It may not seem like it, but at this point in this patchset's life I
+do try to limit my comments to only those things which I feel are
+substantive.  In the cases where I think something is borderline I'll
+mention that in my comments.  The trivial cases I'll generally call
+out as "nitpicks".  I assure you my comments are not gratuitous.
+
+I look forward to reviewing another round of this patchset about as
+much as I expect you look forward to writing, testing, and submitting
+it.
+
+> > > > > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> > > > > index 468a23390457..f00c1da587ea 100644
+> > > > > --- a/kernel/auditsc.c
+> > > > > +++ b/kernel/auditsc.c
+> > > > > @@ -1612,7 +1615,6 @@ void __audit_free(struct task_struct *tsk)
+> > > > >                 if (context->current_state == AUDIT_RECORD_CONTEXT)
+> > > > >                         audit_log_exit();
+> > > > >         }
+> > > > > -
+> > > > >         audit_set_context(tsk, NULL);
+> > > > >         audit_free_context(context);
+> > > > >  }
+> > > >
+> > > > This nitpick is barely worth the time it is taking me to write this,
+> > > > but the whitespace change above isn't strictly necessary.
+> > >
+> > > Sure, it is a harmless but noisy cleanup when the function was being
+> > > cleaned up and renamed.  It wasn't an accident, but a style preference.
+> > > Do you prefer a vertical space before cleanup actions at the end of
+> > > functions and more versus less vertical whitespace in general?
+> >
+> > As I mentioned above, this really was barely worth mentioning, but I
+> > made the comment simply because I feel this patchset is going to draw
+> > a lot of attention once it is merged and I feel keeping the patchset
+> > as small, and as focused, as possible is a good thing.
+>
+> Is this concern also affecting the perspective on the change from
+> pointer to embedded above?
+
+Keeping this particular patchset small and focused has always been a
+goal; I know we talked about this at least once, likely more than
+that, while I was still at RH and we were talking offline.
+
+If something is going to be contentious, it is better to be small and
+focused on the contention.
+
+-- 
+paul moore
+www.paul-moore.com
