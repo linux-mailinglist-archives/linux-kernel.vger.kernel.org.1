@@ -2,105 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C342321EAB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33F421EACC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgGNH46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:56:58 -0400
-Received: from mail5.windriver.com ([192.103.53.11]:45414 "EHLO mail5.wrs.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725801AbgGNH46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:56:58 -0400
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
-        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 06E7sd8g016084
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Tue, 14 Jul 2020 00:54:49 -0700
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 14 Jul 2020 00:54:29 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <jmaloy@redhat.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <tuong.t.lien@dektech.com.au>, <eric.dumazet@gmail.com>,
-        <ying.xue@windriver.com>
-CC:     <netdev@vger.kernel.org>, <tipc-discussion@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] tipc: Don't using smp_processor_id() in preemptible code
-Date:   Tue, 14 Jul 2020 16:05:59 +0800
-Message-ID: <20200714080559.9617-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726769AbgGNIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 04:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbgGNIBQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 04:01:16 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AB3C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 01:01:16 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id o2so3907187wmh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 01:01:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3ztT/QpJ6PrCphActN8ZP+HT90Nds35MNzsbH5sIelU=;
+        b=gSGWB+49lMVbaphzeSLTo9w7GB7qEMwC4bbiMp1OgiArWtvWIKNyyi/2Aq3I95jJ79
+         dPty4eSAc7AwGcGkdCXiQrwmvm/qEHrEGNB2oxj9fmJOZEytDX2nv7ctd2xQVlggFJ10
+         yZLg0Ve/YIXNOcO8YqKf795Uu3r4g3QcQpnp6ftWay8TlSfLZpDN5psMA1Rw8sYRV0cO
+         WAbOCyPTdp7V/khUNKoljVY0LQ42tKizHWU426sN/mWb0YzGqGNWNGOIxKvfsSeIpaRI
+         ZIloyx4VcMk1Iz44hjlLrm3kRAbw5mc9qSN84T2yxFD0W/hb+DhhiwEYUevNgtR+lCqh
+         TN6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3ztT/QpJ6PrCphActN8ZP+HT90Nds35MNzsbH5sIelU=;
+        b=YZeJt/pfS4m9Sv3/D2WMi8gW6zhu+9mB9VfG/bGjpe3Q2Uw2u7fwW7M+6rygEHuKgx
+         7Yk0VlTqSjSuzGhdUheYidaimW8VfaBzQK7YvmPPhzPn4gnoxmyop2ICClmY3i3y+Dwl
+         +AHotnOhBOKiKHJJpwLkUqx4fwR1O4JpHiGnqZbbKzb5slf+1pZTsQVkLYCAGH/JpRab
+         1FSkFh0/RhiIVKUWQeLuUBMP8z/JUEcahHqYYQcw5/+fhsuAcWB7u2lKHb3x47VlS/u2
+         vG6ycZZFphhDO3ZkMcNWfM3oeLLaNI+Anaab79IqZMQ2JsoN5MsOXYX9NJfoEVHzMj+4
+         VTjw==
+X-Gm-Message-State: AOAM531MiJszR6uwGg+zuVZjlHeylJj4riG7KUYW+3YJNca5+pQWz+oT
+        WZqHzEHgNoW4VW4vz71iWWXl3w==
+X-Google-Smtp-Source: ABdhPJzeN2SHrdqPIt1LbkEDBs+YbZAAr6ZyG989rcpJQDX84Mi5m2wsg8bqV9/RfQG/IQu7KXu5wg==
+X-Received: by 2002:a1c:2095:: with SMTP id g143mr2942928wmg.113.1594713674837;
+        Tue, 14 Jul 2020 01:01:14 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id e17sm26518093wrr.88.2020.07.14.01.01.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 01:01:14 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 09:01:12 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Eurotech S.p.A" <info@eurotech.it>,
+        Rodolfo Giometti <giometti@linux.it>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 01/10] misc: c2port: core: Ensure source size does not
+ equal destination size in strncpy()
+Message-ID: <20200714080112.GJ3500@dell>
+References: <20200626130525.389469-1-lee.jones@linaro.org>
+ <20200626130525.389469-2-lee.jones@linaro.org>
+ <CAMuHMdVaO3gABJxRzBL+2U9axfAuBLRghSY0vCc9f8a6huiYZg@mail.gmail.com>
+ <20200714074629.GG3500@dell>
+ <CAMuHMdVW_MzdDQk4f0RN-FsaedEr8WHREuTHxymWGpx3CmDX0Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdVW_MzdDQk4f0RN-FsaedEr8WHREuTHxymWGpx3CmDX0Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+On Tue, 14 Jul 2020, Geert Uytterhoeven wrote:
 
-CPU: 0 PID: 6801 Comm: syz-executor201 Not tainted 5.8.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine,
-BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- check_preemption_disabled+0x128/0x130 lib/smp_processor_id.c:48
- tipc_aead_tfm_next net/tipc/crypto.c:402 [inline]
- tipc_aead_encrypt net/tipc/crypto.c:639 [inline]
- tipc_crypto_xmit+0x80a/0x2790 net/tipc/crypto.c:1605
- tipc_bearer_xmit_skb+0x180/0x3f0 net/tipc/bearer.c:523
- tipc_enable_bearer+0xb1d/0xdc0 net/tipc/bearer.c:331
- __tipc_nl_bearer_enable+0x2bf/0x390 net/tipc/bearer.c:995
- __tipc_nl_compat_doit net/tipc/netlink_compat.c:361 [inline]
- tipc_nl_compat_doit+0x440/0x640 net/tipc/netlink_compat.c:383
- tipc_nl_compat_handle net/tipc/netlink_compat.c:1268 [inline]
- tipc_nl_compat_recv+0x4ef/0xb40 net/tipc/netlink_compat.c:1311
- genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
- genl_rcv_msg+0x61d/0x980 net/netlink/genetlink.c:731
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4476a9
-Code: Bad RIP value.
-RSP: 002b:00007fff2b6d5168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000000
+> Hi Lee,
+> 
+> On Tue, Jul 14, 2020 at 9:46 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > On Mon, 13 Jul 2020, Geert Uytterhoeven wrote:
+> > > On Fri, Jun 26, 2020 at 3:06 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > We need to ensure there's a place for the NULL terminator.
+> > >
+> > > But who's filling that space with a NUL (not NULL) terminator?
+> > >
+> > > > Fixes the following W=1 warning(s):
+> > > >
+> > > >  In file included from include/linux/bitmap.h:9,
+> > > >  from include/linux/nodemask.h:95,
+> > > >  from include/linux/mmzone.h:17,
+> > > >  from include/linux/gfp.h:6,
+> > > >  from include/linux/umh.h:4,
+> > > >  from include/linux/kmod.h:9,
+> > > >  from include/linux/module.h:16,
+> > > >  from drivers/misc/c2port/core.c:9:
+> > > >  In function ‘strncpy’,
+> > > >  inlined from ‘c2port_device_register’ at drivers/misc/c2port/core.c:926:2:
+> > > >  include/linux/string.h:297:30: warning: ‘__builtin_strncpy’ specified bound 32 equals destination size [-Wstringop-truncation]
+> > > >  297 | #define __underlying_strncpy __builtin_strncpy
+> > > >  | ^
+> > > >  include/linux/string.h:307:9: note: in expansion of macro ‘__underlying_strncpy’
+> > > >  307 | return __underlying_strncpy(p, q, size);
+> > > >  | ^~~~~~~~~~~~~~~~~~~~
+> > > >
+> > > > Cc: Rodolfo Giometti <giometti@linux.it>
+> > > > Cc: "Eurotech S.p.A" <info@eurotech.it>
+> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > ---
+> > > >  drivers/misc/c2port/core.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
+> > > > index 33bba18022892..80d87e8a0bea9 100644
+> > > > --- a/drivers/misc/c2port/core.c
+> > > > +++ b/drivers/misc/c2port/core.c
+> > > > @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
+> > > >         }
+> > > >         dev_set_drvdata(c2dev->dev, c2dev);
+> > >
+> > > c2dev is allocated using:
+> > >
+> > >         c2dev = kmalloc(sizeof(struct c2port_device), GFP_KERNEL);
+> > >
+> > > hence the allocated memory is not zeroed.
+> > >
+> > > >
+> > > > -       strncpy(c2dev->name, name, C2PORT_NAME_LEN);
+> > > > +       strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
+> > >
+> > > strncpy()
+> > >   1. does not terminate the destination with a NUL if the source length
+> > >       is C2PORT_NAME_LEN - 1,
+> > >   2. fills all remaining space in the destination buffer with NUL characters.
+> > >
+> > > So c2dev.name[C2PORT_NAME_LEN - 1] always contains an uninitialized
+> > > value.
+> > >
+> > > Now, it seems the only caller of c2port_device_register() passes
+> > > "uc" as the name.  Which means in practice c2dev.name[] will be
+> > > NUL-terminated. However, the last byte will still be uninitialized, and
+> > > if the buffer is ever copied to userspace, your patch will have introduced
+> > > a leak.
+> >
+> > Quite right.  Good spot.  I must have made the assumption that the
+> > destination buffer would be pre-initialised.  Not sure why it's not in
+> > this case.  Seems like an odd practice.
+> >
+> > So we have a choice.  We can either enlarge the destination buffer to
+> > *actually* allow a full length (32 byte in this case) naming string,
+> > or zero the buffer.
+> >
+> > Or even both!
+> >
+> > Do you have a preference?
+> 
+> Do we know if the buffer or full c2dev struct is ever copied to userspace?
 
-Fixes: fc1b6d6de2208 ("tipc: introduce TIPC encryption & authentication")
-Reported-by: syzbot+263f8c0d007dc09b2dda@syzkaller.appspotmail.com
-Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
----
- v1->v2:
- add fixes tags.
+I don't know that, but I think we should err on the side of caution.
 
- net/tipc/crypto.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> If it may be copied => kalloc().
 
-diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c
-index 8c47ded2edb6..520af0afe1b3 100644
---- a/net/tipc/crypto.c
-+++ b/net/tipc/crypto.c
-@@ -399,9 +399,10 @@ static void tipc_aead_users_set(struct tipc_aead __rcu *aead, int val)
-  */
- static struct crypto_aead *tipc_aead_tfm_next(struct tipc_aead *aead)
- {
--	struct tipc_tfm **tfm_entry = this_cpu_ptr(aead->tfm_entry);
-+	struct tipc_tfm **tfm_entry = get_cpu_ptr(aead->tfm_entry);
- 
- 	*tfm_entry = list_next_entry(*tfm_entry, list);
-+	put_cpu_ptr(tfm_entry);
- 	return (*tfm_entry)->tfm;
- }
- 
+Do you mean kzalloc()?
+
+> If it will never be copied => strlcpy() (no NUL-padding, only NUL-terminator).
+> 
+> Oh, and there is a newer one on the block (which I always have to lookup),
+> which is preferred over strlcpy() and strncpy(): strscpy().
+> And reading lib/string.c, there's strscpy_pad(), too ;-)
+
+Let's not get too crazy. ;)
+
 -- 
-2.24.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
