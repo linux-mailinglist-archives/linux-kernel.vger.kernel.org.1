@@ -2,112 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1600821FEFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A84C21FF7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgGNUzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 16:55:19 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48973 "EHLO
+        id S1727888AbgGNVAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:00:55 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:57150 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728002AbgGNUzS (ORCPT
+        by vger.kernel.org with ESMTP id S1726768AbgGNVAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 16:55:18 -0400
+        Tue, 14 Jul 2020 17:00:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594760116;
+        s=mimecast20190719; t=1594760453;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IG4HUAqsDTrwc0sdFRqFLUeiV5cP2XX7c9955RD/JLA=;
-        b=K5DDmzFAy7VFQuXtuDs9HG3Wn5jRuEVncTpVsJYbK+1htvGSSIJ0Q430Ge1yeS/8jG9TTx
-        KWJy7DvusgP1r2DxeeSd1n81GP7k9P2gQSesGmltnnS+S+Twj1qfmXHE0POB5s0R1Hz3V1
-        3VI6DzU7pJg/aX37CnDk7zs9h84BhLY=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-305-_aLwibdaMEqohkiU8eEQnA-1; Tue, 14 Jul 2020 16:55:15 -0400
-X-MC-Unique: _aLwibdaMEqohkiU8eEQnA-1
-Received: by mail-qv1-f69.google.com with SMTP id em19so10469044qvb.14
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 13:55:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=IG4HUAqsDTrwc0sdFRqFLUeiV5cP2XX7c9955RD/JLA=;
-        b=oBXQEcuZ2typ/+TbuFFq62Ph+Eg8W94dPAvoXhJZsRJlub8BOaeTyX7x7ClhTM0jLV
-         uY8l/HdTUdJEzqwuetx5kjeSP0VLG38at41IM3PmIz+u/xJ/zFJRhgQsjQclISLdGf8v
-         5lXCORboAF4jfF8wVbNRmty96SLgt64bo8ANfx/EJc4m0hdEKF8c57AKeC9Mx9S+hci7
-         nP0mAetU88yrlg3QQXbSLN00QCkfF2dLpwV+x9lBxsw7fAOgWqLeY5E3Ig2fpKtie6FN
-         6Dsz94XSW4m3CiDdwK1dqIaHY7wWTNSpUr3yT0RNyKLvbYRADX9amxlEur6SfM03wyI6
-         08Nw==
-X-Gm-Message-State: AOAM532nZk1YuA0YSapPfM0Ed7h25/48RXfax2hZ+uGDr56f0kLVLiTX
-        sMMPbAxYCkapVo9p/8G1l4RCmUiPIF9qTEj2x7YGGQUAx1hzlypSDn6KmKRUL4kIS7ACOSkO2z7
-        tu4Rv5O/hqPhwOzgDYK8NO0Z4
-X-Received: by 2002:ac8:1667:: with SMTP id x36mr6817831qtk.344.1594760114507;
-        Tue, 14 Jul 2020 13:55:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzSc9JqI/7mPb4eGFhz4PiDFiEHI9lotYrjvFjoxySGjr6nl4C6ZtZQY6a3Ef23EDowBCDgsA==
-X-Received: by 2002:ac8:1667:: with SMTP id x36mr6817798qtk.344.1594760114128;
-        Tue, 14 Jul 2020 13:55:14 -0700 (PDT)
-Received: from [192.168.1.4] (198-84-170-103.cpe.teksavvy.com. [198.84.170.103])
-        by smtp.gmail.com with ESMTPSA id k197sm24103418qke.133.2020.07.14.13.55.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 13:55:13 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/4] rseq: Introduce extensible struct rseq
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fw@deneb.enyo.de>
-References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com>
-From:   Carlos O'Donell <carlos@redhat.com>
-Organization: Red Hat
-Message-ID: <e7ede994-ebec-8022-b12b-ac7147641ffb@redhat.com>
-Date:   Tue, 14 Jul 2020 16:55:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        bh=Z00rvsVZTFdUuigrucb84GtZBYdoQhBpetY3yD6qCBI=;
+        b=YkXZdlKqaXriHXrTJur7VzwTxoXI3XtblHEy3ksDlZenCPkAGMm8Jjz5IHL0nlsFdV6FFP
+        LBO76X+nKhEke9Mppk8bZLgvSEOuD/Em/tkoyEBq24c57aRVQqoxqd/BSUha6h5lH0Y+f9
+        PE6BqQYs2WJAUXAk4tSt+ZUzdsE216w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-170-eVLoMKjKOUiOF5BeLgCaCA-1; Tue, 14 Jul 2020 17:00:39 -0400
+X-MC-Unique: eVLoMKjKOUiOF5BeLgCaCA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 505B52D0;
+        Tue, 14 Jul 2020 21:00:38 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 448597980F;
+        Tue, 14 Jul 2020 21:00:30 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 17:00:27 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     john.johansen@canonical.com,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Eric Paris <eparis@parisplace.org>
+Subject: Re: [PATCH ghak84 v4] audit: purge audit_log_string from the
+ intra-kernel audit API
+Message-ID: <20200714210027.me2ieywjfcsf4v5r@madcap2.tricolour.ca>
+References: <6effbbd4574407d6af21162e57d9102d5f8b02ed.1594664015.git.rgb@redhat.com>
+ <CAHC9VhSyq7yKQqwvHL5syU9+TFki6-__WfCrvqewbnU3xpND4Q@mail.gmail.com>
+ <20200714174353.ds7lj3iisy67t2zu@madcap2.tricolour.ca>
+ <CAHC9VhQusQsdQc7EfdjdH5mp6qqqYVPHnG9nNhUhf3DS_cdWwA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200714030348.6214-1-mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhQusQsdQc7EfdjdH5mp6qqqYVPHnG9nNhUhf3DS_cdWwA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/20 11:03 PM, Mathieu Desnoyers wrote:
-> Recent discussion led to a solution for extending struct rseq. This is
-> an implementation of the proposed solution.
+On 2020-07-14 16:29, Paul Moore wrote:
+> On Tue, Jul 14, 2020 at 1:44 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > On 2020-07-14 12:21, Paul Moore wrote:
+> > > On Mon, Jul 13, 2020 at 3:52 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > >
+> > > > audit_log_string() was inteded to be an internal audit function and
+> > > > since there are only two internal uses, remove them.  Purge all external
+> > > > uses of it by restructuring code to use an existing audit_log_format()
+> > > > or using audit_log_format().
+> > > >
+> > > > Please see the upstream issue
+> > > > https://github.com/linux-audit/audit-kernel/issues/84
+> > > >
+> > > > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > > > ---
+> > > > Passes audit-testsuite.
+> > > >
+> > > > Changelog:
+> > > > v4
+> > > > - use double quotes in all replaced audit_log_string() calls
+> > > >
+> > > > v3
+> > > > - fix two warning: non-void function does not return a value in all control paths
+> > > >         Reported-by: kernel test robot <lkp@intel.com>
+> > > >
+> > > > v2
+> > > > - restructure to piggyback on existing audit_log_format() calls, checking quoting needs for each.
+> > > >
+> > > > v1 Vlad Dronov
+> > > > - https://github.com/nefigtut/audit-kernel/commit/dbbcba46335a002f44b05874153a85b9cc18aebf
+> > > >
+> > > >  include/linux/audit.h     |  5 -----
+> > > >  kernel/audit.c            |  4 ++--
+> > > >  security/apparmor/audit.c | 10 ++++------
+> > > >  security/apparmor/file.c  | 25 +++++++------------------
+> > > >  security/apparmor/ipc.c   | 46 +++++++++++++++++++++++-----------------------
+> > > >  security/apparmor/net.c   | 14 ++++++++------
+> > > >  security/lsm_audit.c      |  4 ++--
+> > > >  7 files changed, 46 insertions(+), 62 deletions(-)
+> > >
+> > > Thanks for restoring the quotes, just one question below ...
+> > >
+> > > > diff --git a/security/apparmor/ipc.c b/security/apparmor/ipc.c
+> > > > index 4ecedffbdd33..fe36d112aad9 100644
+> > > > --- a/security/apparmor/ipc.c
+> > > > +++ b/security/apparmor/ipc.c
+> > > > @@ -20,25 +20,23 @@
+> > > >
+> > > >  /**
+> > > >   * audit_ptrace_mask - convert mask to permission string
+> > > > - * @buffer: buffer to write string to (NOT NULL)
+> > > >   * @mask: permission mask to convert
+> > > > + *
+> > > > + * Returns: pointer to static string
+> > > >   */
+> > > > -static void audit_ptrace_mask(struct audit_buffer *ab, u32 mask)
+> > > > +static const char *audit_ptrace_mask(u32 mask)
+> > > >  {
+> > > >         switch (mask) {
+> > > >         case MAY_READ:
+> > > > -               audit_log_string(ab, "read");
+> > > > -               break;
+> > > > +               return "read";
+> > > >         case MAY_WRITE:
+> > > > -               audit_log_string(ab, "trace");
+> > > > -               break;
+> > > > +               return "trace";
+> > > >         case AA_MAY_BE_READ:
+> > > > -               audit_log_string(ab, "readby");
+> > > > -               break;
+> > > > +               return "readby";
+> > > >         case AA_MAY_BE_TRACED:
+> > > > -               audit_log_string(ab, "tracedby");
+> > > > -               break;
+> > > > +               return "tracedby";
+> > > >         }
+> > > > +       return "";
+> > >
+> > > Are we okay with this returning an empty string ("") in this case?
+> > > Should it be a question mark ("?")?
+> > >
+> > > My guess is that userspace parsing should be okay since it still has
+> > > quotes, I'm just not sure if we wanted to use a question mark as we do
+> > > in other cases where the field value is empty/unknown.
+> >
+> > Previously, it would have been an empty value, not even double quotes.
+> > "?" might be an improvement.
 > 
-> Now is a good time to agree on this scheme before the release of glibc
-> 2.32, just in case there are small details to fix on the user-space
-> side in order to allow extending struct rseq.
+> Did you want to fix that now in this patch, or leave it to later?  As
+> I said above, I'm not too bothered by it with the quotes so either way
+> is fine by me.
 
-Adding extensibility to the rseq registration process would be great,
-but we are out of time for the glibc 2.32 release.
+I'd defer to Steve, otherwise I'd say leave it, since there wasn't
+anything there before and this makes that more evident.
 
-Should we revert rseq for glibc 2.32 and spend quality time discussing
-the implications of an extensible design, something that Google already
-says they are doing?
+> John, I'm assuming you are okay with this patch?
+> 
+> -- 
+> paul moore
 
-We can, with a clear head, and an agreed upon extension mechanism
-include rseq in glibc 2.33 (release scheduled for Feburary 1st 2021).
-We release time boxed every 6 months, no deviation, so you know when
-your next merge window will be.
+- RGB
 
-We have already done the hard work of fixing the nesting signal
-handler issues, and glibc integration. If we revert today that will 
-also give time for Firefox and Chrome to adjust their sandboxes.
-
-Do you wish to go forward with rseq as we have it in glibc 2.32,
-or do you wish to revert rseq from glibc 2.32, discuss the extension
-mechanism, and put it back into glibc 2.33 with adjustments?
-
--- 
-Cheers,
-Carlos.
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
