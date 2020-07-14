@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F028521FAE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FC221F9F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730571AbgGNS4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:56:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54530 "EHLO mail.kernel.org"
+        id S1729892AbgGNSsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:48:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730368AbgGNS4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:56:31 -0400
+        id S1729884AbgGNSsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:48:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 415BA22B45;
-        Tue, 14 Jul 2020 18:56:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B336122B2A;
+        Tue, 14 Jul 2020 18:48:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752990;
-        bh=Tq7/FqVQvTwhdxSjTAKQNwEt8Q2oDTiDVywv3QE008I=;
+        s=default; t=1594752484;
+        bh=PUzhsn+22+EvfCIBitcmkj0en3/RTkXCU0CbLGQCvug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W4XV/elmHMQE8PURUJdExs7bh7mV1Xow4wn8+5qaGCqQbaas1Yr/Gf7JK4b8NilpW
-         ztYiMrGN2/yamVm9+1EZUGP2kr5Yuha0ow24qw7PABY3ue4OP8JU5SpadiEXzMNgb7
-         oNjAtsrwMlWkAKmpn39CViGRwEcsAo0SeLcwsKMI=
+        b=WIel8p4ULTdbUfqIs2kdf4JKmpXo78gbbsrQPFL20uyxciG7FDly2aCsp0zNguuds
+         oKAfHV7cn2+LatfY6j1gxvxUfW200aaAThVa6DpBQ5tNtN22h4IWRXu321fP4a7Nuf
+         r54tv01vi5Yte5BAjmIz+JhObBeuyyQGzFY3ryPA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huazhong Tan <tanhuazhong@huawei.com>,
+        stable@vger.kernel.org, Andre Edich <andre.edich@microchip.com>,
+        Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 077/166] net: hns3: check reset pending after FLR prepare
+Subject: [PATCH 4.19 29/58] smsc95xx: avoid memory leak in smsc95xx_bind
 Date:   Tue, 14 Jul 2020 20:44:02 +0200
-Message-Id: <20200714184119.538318293@linuxfoundation.org>
+Message-Id: <20200714184057.582907294@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huazhong Tan <tanhuazhong@huawei.com>
+From: Andre Edich <andre.edich@microchip.com>
 
-[ Upstream commit bb3d866882c280a85e8950d4d72af1e294d2e69c ]
+[ Upstream commit 3ed58f96a70b85ef646d5427258f677f1395b62f ]
 
-If there is a PF reset pending before FLR prepare, FLR's
-preparatory work will not fail, but the FLR rebuild procedure
-will fail for this pending. So this PF reset pending should
-be handled in the FLR preparatory.
+In a case where the ID_REV register read is failed, the memory for a
+private data structure has to be freed before returning error from the
+function smsc95xx_bind.
 
-Fixes: 8627bdedc435 ("net: hns3: refactor the precedure of PF FLR")
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+Fixes: bbd9f9ee69242 ("smsc95xx: add wol support for more frame types")
+Signed-off-by: Andre Edich <andre.edich@microchip.com>
+Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/smsc95xx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index a758f9ae32be9..4de268a879582 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -9351,7 +9351,7 @@ static void hclge_flr_prepare(struct hnae3_ae_dev *ae_dev)
- 	set_bit(HCLGE_STATE_RST_HANDLING, &hdev->state);
- 	hdev->reset_type = HNAE3_FLR_RESET;
- 	ret = hclge_reset_prepare(hdev);
--	if (ret) {
-+	if (ret || hdev->reset_pending) {
- 		dev_err(&hdev->pdev->dev, "fail to prepare FLR, ret=%d\n",
- 			ret);
- 		if (hdev->reset_pending ||
+diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
+index 145ee4a02a8a5..4f29010e1aeff 100644
+--- a/drivers/net/usb/smsc95xx.c
++++ b/drivers/net/usb/smsc95xx.c
+@@ -1307,7 +1307,8 @@ static int smsc95xx_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	/* detect device revision as different features may be available */
+ 	ret = smsc95xx_read_reg(dev, ID_REV, &val);
+ 	if (ret < 0)
+-		return ret;
++		goto free_pdata;
++
+ 	val >>= 16;
+ 	pdata->chip_id = val;
+ 	pdata->mdix_ctrl = get_mdix_status(dev->net);
 -- 
 2.25.1
 
