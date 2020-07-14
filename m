@@ -2,89 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2136521F881
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6DA21F886
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728988AbgGNRtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:49:15 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:10021 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727028AbgGNRtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:49:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594748953; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=HvsG3hhsmb4gPVoc6UyHgNH5M3ItFOz74uIV5eiJe8Y=; b=GhQj7BBU8pBHaYPTzWdFcqyj6LlK2KbhvAzRfGoUrg7Xpugpo9UTgYgbzirET8UrxINLOdnC
- q2jlwShPByCzMqSP/NhQUG0+6AXA40wmrFPaM/wBrYwc4pxrt5rAQJEQYt2Todf7OjpNQuxc
- MtPAiJptxtLE8blnGYofg0SCEn8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n18.prod.us-west-2.postgun.com with SMTP id
- 5f0df01675eeb235f6006cbe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 14 Jul 2020 17:49:10
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EE35BC433C8; Tue, 14 Jul 2020 17:49:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DB94DC433CA;
-        Tue, 14 Jul 2020 17:49:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DB94DC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Wireless <linux-wireless@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joseph Chuang <joseph.chuang@cypress.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>
-Subject: Re: linux-next: Fixes tag needs some work in the wireless-drivers-next tree
-References: <20200714205942.26248f1c@canb.auug.org.au>
-Date:   Tue, 14 Jul 2020 20:49:05 +0300
-In-Reply-To: <20200714205942.26248f1c@canb.auug.org.au> (Stephen Rothwell's
-        message of "Tue, 14 Jul 2020 20:59:42 +1000")
-Message-ID: <87mu429ecu.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1728942AbgGNRvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbgGNRvH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 13:51:07 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9A9C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:51:06 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id s9so24359519ljm.11
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:51:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=cSQtp/nOYLotNsNkXXY6oyibp+1oVU/cPnGkEldRkFU=;
+        b=Ex1RQm+7ZV8ckcKz87NbXznyHFpYDc3kjy2bP3741SE4rY3hXDeBQitizhA/CI/iRw
+         Ki0HYBcGjVW9E+12ZIzWE/SKOGSJ/k1JwJpDcNwqTrwl1rPvCgH3xrylv8+qTlgptt7f
+         bS8VlBHBGxyHcxEamp9lEnd8TDlc8wlrT/unLCxjTvqdvUgaoKrdWpAVCUB49EtGSqaf
+         xxOMDnaGUbbRgIZ+wnWihkWQzGUQfqfnEYF7oR6RgCAUdBaAdNn+K2sFOhGHHwPppkHZ
+         MgM7sab9vbnyFpA4DaN9StcaA0gzLhwAKDfWoUevrISNvrRPfu5jTeXGCMGpHdFha+gT
+         bGJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=cSQtp/nOYLotNsNkXXY6oyibp+1oVU/cPnGkEldRkFU=;
+        b=SWthQ3bnc/wvMj7nlh/OW0DxRSXAPyxCrqVx7S8ns0Rtw9mVYv18UfJfYPsFMV+fLT
+         lotnDloqTNrRvaviwkmyBBddE0W5X2CQkhuyHCyNvor67qyuTTVs4EfX2fDRSK2eptbn
+         JnghwuDWKqnKNF5MAKZkek8YHAwU7z1zvQZFYzDxRwQ7sBsNFx9GZnUwUoMp92hN5R3K
+         02E3zxD67MuPBQVCj6KVoODZhVKMSmlYLlfODwoKBEVU1SleZnIJ9Rt+vcCIoxd2qKvL
+         mHwf38r/gQHR5DqHD9AQJvbmCzlIm9fV5m0q1jJJYeMEl4wgvOF10NRbp3Q6a2wVG7kV
+         MMMg==
+X-Gm-Message-State: AOAM530XMsROOdAP1dkhUxPwcc0TCAwnFSYllJ7HSDk7jHvIHr2eoJLh
+        tp0Ky1uwBhlnbfacB+2MZC3WvPM21gFVaFzSsRRh1r2q
+X-Google-Smtp-Source: ABdhPJxFNKXtqGJqYiTrT5FUcR+mB4RW5x3j+tw+sW5awr9tkS+0lOaWnEzJWDHgcmb+ARgl+Xhdxo6dPYxRwsS4zP0=
+X-Received: by 2002:a2e:8e97:: with SMTP id z23mr3076693ljk.288.1594749065017;
+ Tue, 14 Jul 2020 10:51:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Received: by 2002:a19:7e43:0:0:0:0:0 with HTTP; Tue, 14 Jul 2020 10:51:04
+ -0700 (PDT)
+Reply-To: peacemaurice99@gmail.com
+From:   Peace maurice <annben010@gmail.com>
+Date:   Tue, 14 Jul 2020 17:51:04 +0000
+Message-ID: <CAApjmfSXA6O_ss4U8NU=7DdM5V0pF59eSGcBLwqUM6FHXJFHQg@mail.gmail.com>
+Subject: Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-
-> Hi all,
->
-> In commit
->
->   ad96bc27032c ("brcmfmac: initialize the requested dwell time")
->
-> Fixes tag
->
->   Fixes: 4905432b28b7 ("brcmfmac: Fix P2P Group Formation failure via Go-neg method")
->
-> has these problem(s):
->
->   - Target SHA1 does not exist
->
->
-> Maybe you meant
->
-> Fixes: 9c29da3f4e7e ("brcmfmac: Fix P2P Group Formation failure via Go-neg method")
-
-Heh, I noticed this and I even fixed it but maybe forgot to save my edit
-or something. I'll need to be more careful next time.
-
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Please can we talk?
+Something just came up and it's very urgent,please i need your attention.
+
+Regards
+Peace.
