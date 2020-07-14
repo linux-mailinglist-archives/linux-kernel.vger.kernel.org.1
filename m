@@ -2,99 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3092E220005
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5F421FF88
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728310AbgGNV1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
+        id S1728067AbgGNVCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727822AbgGNV1g (ORCPT
+        with ESMTP id S1727935AbgGNVCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:27:36 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B17C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:27:36 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id f139so958082wmf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:27:36 -0700 (PDT)
+        Tue, 14 Jul 2020 17:02:42 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509C5C061755;
+        Tue, 14 Jul 2020 14:02:42 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id r12so53018ilh.4;
+        Tue, 14 Jul 2020 14:02:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KSfvDIX/TrKhNfavz9gqT4CkPok883ejJCseRAMUrzQ=;
-        b=GtzkgbuGm+CflRAs9y9OQuFQxiZl5hlT9j1xzSijnMFIFq/1ETlmkPrZBx4rPXpZQW
-         kQUMvTOCAS3v3gZFeaCvS7AG6Uz/NZz7h9lufDKAjEX6IwrfXF4czGjb56vFo6Brn0zU
-         /YR4DgTdYmVAF8I6PT6XGCwBW5JyaGZ4Jbhqlp8sSzGRy+EUiO7zFBs6ud0wuK0YCVRa
-         e7WtqO2ymi6k9GOuyREhUvA+khGnFBn8wSLNd8nALFXqS31mo3UzJR7k5xQF2qnIN5IH
-         JL3M3M/Qaxkw6nCT79ts/jLodZ0qILcCfE+jFLaGr0w/xkZrF41g8RgjZBulPXFRKI50
-         H4lg==
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=2npQXh+dkmWmSHKIQodxnxIAaeJj1A/FFr2Ll6AD3Hs=;
+        b=cUVYKmbuMquj1tPPomJ3QAhJreggNlTpwsACBo1UIJy8ABrEJRvYcUBJ+BzMm+B8Pw
+         MqSqKdxiUZLp3/SF8aRm3MPFEOcuXTXzReaF83C04QfRQHgm5C83Tljo6P1xGnktBhzD
+         OT+ejuCCRxGNB8MkOVi2pHeVYazL4B1RPNhoCnI8kHFaP6uAtl1cDWerw9s1oH2TTw0B
+         LM7J/Ue++Hb1A6pAPvTDsxvbkSlC8xNFDSx4dnf7ckP1Hwf+uHJfUVUzdHq5jQZARzeY
+         kP3Kn/qUbeuD8v9JUHRLTRkHEjvJZJQ63Z+mmdiHUET6RLX7HxZvg2kwWAFQoo3rA3v3
+         6aTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KSfvDIX/TrKhNfavz9gqT4CkPok883ejJCseRAMUrzQ=;
-        b=ofE9E2JshEWo8pk7GfVY1O/JsWe8b5RuV4VYRDfL45t28RejRFVrJfjf+7XF5zBzQe
-         +QPEGuu7AO1a9lbxm2J7T3jMEPOrcM7RBxO31yp7bAIWxkX1uBniAKrZozfuRXNhOiZ2
-         us8JIaslG71APjGb36ofR9tjWqEbCB8pdV3jy916soFeePtNBVI+UNtgBZX2aYPUTWAe
-         urWYQcVNtPZW8CWSq8WDJ3I+i0jZbScpwgmvvA9mniy6WCx3lVjZe8gct3f7ODOCD0FH
-         isol7+R381wpeGh4wk9oYcbH6YgsPr4K8e3wzQc9yXs5R1nbGGlWIuoR+WBfC9qEMb6t
-         VtCw==
-X-Gm-Message-State: AOAM530eiXhmWw8F9kCF/eNaTXynhpx1k+9RlA1+g/CBkZ2rq7l8zAAe
-        yXPYWiOIMKwOni5g7JKLrG3lBxizd97Pig==
-X-Google-Smtp-Source: ABdhPJy0GFscM5m948VgN4h5ukfqjG35G3bXmIQulvRQz8qUJoPyiRdnYmLyFLy/FTP372JkZSxeSQ==
-X-Received: by 2002:a1c:3504:: with SMTP id c4mr5580994wma.177.1594760540764;
-        Tue, 14 Jul 2020 14:02:20 -0700 (PDT)
-Received: from dell ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id t141sm13313wmt.26.2020.07.14.14.02.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 14:02:20 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 22:02:18 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Kim Phillips <kim.phillips@amd.com>
-Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Jacob Shin <jacob.shin@amd.com>
-Subject: Re: [PATCH 13/13] cpufreq: amd_freq_sensitivity: Remove unused ID
- structs
-Message-ID: <20200714210218.GH1398296@dell>
-References: <20200714145049.2496163-1-lee.jones@linaro.org>
- <20200714145049.2496163-14-lee.jones@linaro.org>
- <6101e041-41e9-22bc-488d-38124c139bc7@amd.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to:cc;
+        bh=2npQXh+dkmWmSHKIQodxnxIAaeJj1A/FFr2Ll6AD3Hs=;
+        b=qwBz6cpTztDr+VsGfHlbeUB1eDw8ra2ncX7HmEGbwMpDo565vKQDn1MPAzT1am94md
+         LK0aVCDISIFjPj0yuE89IddNKThF9Fg+6bi0ubiqT2IID4+0SLTDdA2CopsNWR9e2jA/
+         um/tbkClS1JBWdMtQfdsxQGV+7VXkisi/7QMPcTGYnB/cw5T57y2VVQhs60rswriMXRs
+         lUDJ7rNe42+dcDkpGdh0WQMohRI48velBOYLyEUXhNFYz+1ErDHMEqgZ1Oj42wcJ6rM4
+         R7se7cqCgPVF6Q1enrZN1uBpA9FsYZoQO26Y4rTCpX4XvjeTdzV4mE+bb53JKUrEq+nf
+         zSng==
+X-Gm-Message-State: AOAM533mMYWOKUMz7bmVwC3qJr/yQHnFDBikiTIxepo8TP/t5Kn6z1vE
+        zkeOmrh60EoyH7PSDV+QogmQwxyd5E3EalmviHk=
+X-Google-Smtp-Source: ABdhPJwkddnl6FvRyOMdkmyyDRG9lWADdbl/Rct2E+/PQzsVJk9f8CH9Av6NUhTRswYDc3FssSb6pCSldchYVLW9F38=
+X-Received: by 2002:a92:9a4f:: with SMTP id t76mr6568425ili.174.1594760561627;
+ Tue, 14 Jul 2020 14:02:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6101e041-41e9-22bc-488d-38124c139bc7@amd.com>
+Received: by 2002:a05:6602:21d8:0:0:0:0 with HTTP; Tue, 14 Jul 2020 14:02:40
+ -0700 (PDT)
+In-Reply-To: <20200714184550.GA397277@bjorn-Precision-5520>
+References: <CAK8P3a3NWSZw6678k1O2eJ6-c5GuW7484PRvEzU9MEPPrCD-yw@mail.gmail.com>
+ <20200714184550.GA397277@bjorn-Precision-5520>
+From:   Kjetil Oftedal <oftedal@gmail.com>
+Date:   Tue, 14 Jul 2020 23:02:40 +0200
+Message-ID: <CALMQjD9OVTbLVPGX-9+GDekZ02Wsqdz57-k1uCBMXC7cT3K_7w@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/35] Move all PCIBIOS* definitions into arch/x86
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        bjorn@helgaas.com, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Toan Le <toan@os.amperecomputing.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020, Kim Phillips wrote:
+On 14/07/2020, Bjorn Helgaas <helgaas@kernel.org> wrote:
 
-> On 7/14/20 9:50 AM, Lee Jones wrote:
-> > Can't see them being used anywhere and the compiler doesn't complain
-> > that they're missing, so ...
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/cpufreq/amd_freq_sensitivity.c:147:32: warning: ‘amd_freq_sensitivity_ids’ defined but not used [-Wunused-const-variable=]
-> >  147 | static const struct x86_cpu_id amd_freq_sensitivity_ids[] = {
-> >  | ^~~~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Cc: Jacob Shin <jacob.shin@amd.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> 
-> Same comment as for patch 9/13: these are used automatic module loading.
+>>
+>> a) callers of the high-level config space accessors
+>>    pci_{write,read}_config_{byte,word,dword}, mostly in device
+>>    drivers.
+>> b) low-level implementation of the config space accessors
+>>     through struct pci_ops
+>> c) all other occurrences of these constants
+>>
+>> Starting with a), my first question is whether any high-level
+>> drivers even need to care about errors from these functions. I see
+>> 4913 callers that ignore the return code, and 576 that actually
+>> check it, and almost none care about the specific error (as you
+>> found as well). Unless we conclude that most PCI drivers are wrong,
+>> could we just change the return type to 'void' and assume they never
+>> fail for valid arguments on a valid pci_device* ?
+>
+> I really like this idea.
+>
+> pci_write_config_*() has one return value, and only 100ish of 2500
+> callers check for errors.  It's sometimes possible for config
+> accessors to detect PCI errors and return failure, e.g., device was
+> removed or didn't respond, but most of them don't, and detecting these
+> errors is not really that valuable.
+>
+> pci_read_config_*() is much more interesting because it returns two
+> things, the function return value and the value read from the PCI
+> device, and it's complicated to check both.
+>
+> Again it's sometimes possible for config read accessors to detect PCI
+> errors, but in most cases a PCI error means the accessor returns
+> success and the value from PCI is ~0.
+>
+> Checking the function return value catches programming errors (bad
+> alignment, etc) but misses most of the interesting errors (device was
+> unplugged or reported a PCI error).
+>
+> Checking the value returned from PCI is tricky because ~0 is a valid
+> value for some config registers, and only the driver knows for sure.
+> If the driver knows that ~0 is a possible value, it would have to do
+> something else, e.g., another config read of a register that *cannot*
+> be ~0, to see whether it's really an error.
+>
+> I suspect that if we had a single value to look at it would be easier
+> to get right.  Error checking with current interface would look like
+> this:
+>
+>   err = pci_read_config_word(dev, addr, &val);
+>   if (err)
+>     return -EINVAL;
+>
+>   if (PCI_POSSIBLE_ERROR(val)) {
+>     /* if driver knows ~0 is invalid */
+>     return -EINVAL;
+>
+>     /* if ~0 is potentially a valid value */
+>     err = pci_read_config_word(dev, PCI_VENDOR_ID, &val2);
+>     if (err)
+>       return -EINVAL;
+>
+>     if (PCI_POSSIBLE_ERROR(val2))
+>       return -EINVAL;
+>   }
+>
+> Error checking with a possible interface that returned only a single
+> value could look like this:
+>
+>   val = pci_config_read_word(dev, addr);
+>   if (PCI_POSSIBLE_ERROR(val)) {
+>     /* if driver knows ~0 is invalid */
+>     return -EINVAL;
+>
+>     /* if ~0 is potentially a valid value */
+>     val2 = pci_config_read_word(dev, PCI_VENDOR_ID);
+>     if (PCI_POSSIBLE_ERROR(val2))
+>       return -EINVAL;
+>   }
+>
+> Am I understanding you correctly?
 
-How does that work?
+Let us not do this. Reading config space is really expensive on some
+architectures. Requiring a driver to do it twice on some values does not
+improve upon that situation. And is quite redundant if the Root Complex
+driver already knows that the first access has failed.
 
-Could you point me to the code which handles that please?
+Additionally since multiple config accesses to the same devices is not
+allowed in the spec, the hardware must block and wait for a timeout if
+a config access does not get a response.
+(Can happen if a intermediate link between the RC and endpoint has to retrain)
+Having to block twice is very much not ideal. And in the case with
+retraining the secondary access might even succeed. As the link might
+recover between reading the first config word and reading PCI_VENDOR_ID.
+Thus allowing the driver to accept invalid data from the device.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>
+>> For b), it might be nice to also change other aspects of the
+>> interface, e.g. passing a pci_host_bridge pointer plus bus number
+>> instead of a pci_bus pointer, or having the callback in the
+>> pci_host_bridge structure.
+>
+> I like this idea a lot, too.  I think the fact that
+> pci_bus_read_config_word() requires a pci_bus * complicates things in
+> a few places.
+>
+> I think it's completely separate, as you say, and we should defer it
+> for now because even part a) is a lot of work.  I added it to my list
+> of possible future projects.
+>
+
+What about strange PCI devices such as Non-Transparent bridges?
+They will require their own PCI Config space accessors that is not
+connected to a host bridge if one wants to do some sort of
+punch-through enumeration.
+I guess the kernel doesn't care much about them?
+
+Best regards,
+Kjetil Oftedal
