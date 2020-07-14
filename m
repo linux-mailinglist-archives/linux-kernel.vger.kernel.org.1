@@ -2,168 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088E521EAAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BDE21EAA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726425AbgGNHz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgGNHz1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:55:27 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44932C061755;
-        Tue, 14 Jul 2020 00:55:27 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id k71so1202351pje.0;
-        Tue, 14 Jul 2020 00:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fr0V53mp8gct+D0reFrcGwuhnT+2GL17XE1iCQ4XpVI=;
-        b=Gge+R7Cg1yjg9iL0BE17WXm/g57Pn9HkIqT9YWBxp3KwEuFAuIKRHcUTDBv+cfSrw/
-         TCX4qy6GgGFW2X9szsU0k0gIVmtwIttwLGTU6F41pDjCbQ+iHoVmKCvafswEIUVV8XBf
-         hSQ7d8lx6G6vhNG77N2nhuI5T8zrVnxRUK3z5buqAlloqXOX++ivVBoemEt5Mdx36fwP
-         ZnWJKqbOBv5Ixlv5VVRMpYoNoA/OnZEStGi+wSU1eKMGCFWhp1IvmXseHBMiVq9Xnab9
-         yKUeYIUckh1drup9zfAUbZw4/tW+VBxl3B3N2Am7QgSV1XZvaW+1tN+ZnK7NKCzowEkL
-         dR1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fr0V53mp8gct+D0reFrcGwuhnT+2GL17XE1iCQ4XpVI=;
-        b=kz7ZTUMK/Gy3jDx06AZneTlPBdjctDJXhSS4row8Dr39KzNgB7141sUoEjEV7eTWNc
-         YCLUrOUBSQKKddCUsGzkBk65kLLPgJKF7DkIuHqzXRabGZsTYdmvL7X3Tl6HSnBOxXmE
-         hwbqGEZw9wSPOBa1KG7nrSYVF644ZTLzzzlZo0gZiqkjL6dt6h9KCwP59DcSOn7uxh6R
-         ueUpiCP0MjfRtSdtd05OLY9dUdVnuGZ/Ej2iI3i3QvvD2xeninpy8SG86HCKbG4FYQ5T
-         I1GRrDT3PnxtICvg+R01Zblj8fF+bkFfccfeCgTmXtXX0wbDX1sB/gtlH99KcDOFhCDp
-         sSpQ==
-X-Gm-Message-State: AOAM531orLf+47jRVGRjptu7whdzq0e7/3ew0O+tkNJlcOuM/6oskYo6
-        /5V5dcQQSryALGJXOolsJ8M=
-X-Google-Smtp-Source: ABdhPJzYDyYtVsFITfsqj3tmWGRYr2P9068LqybFQZ8fMOdrTVGKRYAQj1kQKJCIXWH+Eqx1bL7jEQ==
-X-Received: by 2002:a17:90a:c794:: with SMTP id gn20mr3174778pjb.114.1594713326762;
-        Tue, 14 Jul 2020 00:55:26 -0700 (PDT)
-Received: from gmail.com ([103.105.153.67])
-        by smtp.gmail.com with ESMTPSA id p19sm15100868pgj.74.2020.07.14.00.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 00:55:26 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 13:22:47 +0530
-From:   Vaibhav Gupta <vaibhav.varodek@gmail.com>
-To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, linux-ide@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] drivers: ide: use generic power management
-Message-ID: <20200714075247.GA4859@gmail.com>
-References: <20200713173613.2095-1-vaibhavgupta40@gmail.com>
- <CGME20200714073256eucas1p13ebe9585c29b766e48506400ba91a8ed@eucas1p1.samsung.com>
- <3b26bfff-7a42-7bbe-2050-51fe1ce96d4e@samsung.com>
+        id S1726758AbgGNHwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:52:51 -0400
+Received: from mail-eopbgr00062.outbound.protection.outlook.com ([40.107.0.62]:64598
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725801AbgGNHwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:52:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PWBV/I7SshOz882CNBiSCOe8dTLqLdvoZi0yxIf57pXrJdjcbeM9kHNOvrbRjHvulx0NH6S/b2iTekxwEFl9RbBtdmJPkXmZVOa99pzW7M9XtJLzz37lawNA3ClA+8g5Y2G2UwPKpZHkFX1TsUU/5qke9hRriOJX3E4qxJ4ROo2WGhvQCjF8qiid0MATXq3om9j0ybOQNPQRFWTGJ1T6dkzt+/5tWlFrqWgSWF6P6QQVz/O3+LGnDPUOAdq1gzAiNzG0QOKDkByswSuwTbjKebjPZFlyyqAYD04Blq7MNF4/IGaupXR5V7/au+QRHv+gfCa0q18St83KqCWx1PXzfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jAX/VOWe5u6r0maIKiHNTQNUXXJ1/0Y1jndYh9bd8p8=;
+ b=Pb30PB2dFquYkIdzxNzPv9HcJV17T1ix2EAc+w0Smj2Y2zUT5qUOX/y2UdPEhjOyyD3qcQg8KFoF76pZ373sYy0hgZUeVN6zoMOBf35cvaQM+rds3txFRXUcSP0tRgJRv4wutKRzsYqZMCNeyLTrkkBGa4i8HqDLzqfMsPUoAkv2wHp6KkER9F/n+XKYSWkPsu8XEi8MmyjDROWJD54s9OG5NGrCJAde7KqJSkn8Apug9fIgaO09IY4ZS8/t3lNxQQNoCS5/x4P4nSfDdn5ULu3UYhZ8rvSc0K8EzPeDNLC6fgzx8t51YMeqpIJwewZ7zRUAmks8TTd/lRqdKcXfYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jAX/VOWe5u6r0maIKiHNTQNUXXJ1/0Y1jndYh9bd8p8=;
+ b=E41YoIkuSq4FfTs9v0w7z/UF414L1vSc2HEmBu3Zh6ei0d+7bxdovDxMOyljhrra6Jtor/DPndC0QOMgZ2JjvI7pPOilVAs3ZutKWY+3aehBhor60PcZdCDLeEjYsh2PKGgnzKE8mi3lW4L/WjBFatAYWYRSBGzgEUa0lRxHxhU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB5623.eurprd04.prod.outlook.com (2603:10a6:20b:a9::13)
+ by AM6PR04MB4854.eurprd04.prod.outlook.com (2603:10a6:20b:e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Tue, 14 Jul
+ 2020 07:52:45 +0000
+Received: from AM6PR04MB5623.eurprd04.prod.outlook.com
+ ([fe80::ccb9:b047:d156:2694]) by AM6PR04MB5623.eurprd04.prod.outlook.com
+ ([fe80::ccb9:b047:d156:2694%5]) with mapi id 15.20.3174.026; Tue, 14 Jul 2020
+ 07:52:45 +0000
+From:   Clark Wang <xiaoning.wang@nxp.com>
+To:     broonie@kernel.org
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] spi: lpspi: fix the imbalance of runtime pm function call
+Date:   Tue, 14 Jul 2020 15:52:47 +0800
+Message-Id: <20200714075251.12777-2-xiaoning.wang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200714075251.12777-1-xiaoning.wang@nxp.com>
+References: <20200714075251.12777-1-xiaoning.wang@nxp.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR0401CA0013.apcprd04.prod.outlook.com
+ (2603:1096:3:1::23) To AM6PR04MB5623.eurprd04.prod.outlook.com
+ (2603:10a6:20b:a9::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3b26bfff-7a42-7bbe-2050-51fe1ce96d4e@samsung.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR0401CA0013.apcprd04.prod.outlook.com (2603:1096:3:1::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21 via Frontend Transport; Tue, 14 Jul 2020 07:52:43 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [119.31.174.71]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: dec0f567-8b1d-43f3-a7b3-08d827cae4c0
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4854:
+X-Microsoft-Antispam-PRVS: <AM6PR04MB48545E6001F35F27C391DAF5F3610@AM6PR04MB4854.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1002;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HzCOYGbJPrnuj3PKtpb61Wc+PupRLvDAcJ1bGJRQe/S430RqqjsT09ddfpJCcO0iMLgrAU079P4dWJoNzEILR1eaO1z45Gyfgxm9ia8KQ3VWAYjSdPzX84Oqfc8IiOC/0gGDQpHHF1gVGkawzTSUiD/Z6dKTs6I7fRnmvtuD1Y2IG1Okpg4lhT6+k8BkdICzJH0HKYnC9eKodSOlDFsnkoSYjb6iKtJjgmoga7+fYV7cwXDQAZHuvrCYy4H7p05XsNNerz9AvzTiNWZpphHlHaeeZteJuT95/4xk3GVm1LBjJ33YfHM9SvtZDP/OD5atygcxqrsc+DMDhe0+7YLihDUy1b50oSAdPZamS7anSNt/kp4pVWPNcvyELjjjYQ2k
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5623.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(376002)(366004)(396003)(346002)(136003)(66556008)(8936002)(66476007)(66946007)(86362001)(316002)(69590400007)(52116002)(5660300002)(6916009)(83380400001)(8676002)(2616005)(956004)(36756003)(6486002)(26005)(1076003)(6512007)(478600001)(2906002)(4326008)(16526019)(6506007)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: RzP1+Rb5oVe54j4KEI8SLMyttQ9V8PY2T1u01KxFDnnkQ4dAfyCu8Wn2fD9JPXjNQtTF2MJsMq9aj0833Z2NwiKHjF6S7PvuIOhuoqSbc0YE/BRVUK8XOyfILHZYX/D38SVkdCTaqb/uI+3CHU32buvHbuPIb7c3OdlYJBrBUmQkmqVtTE2QjZ5raNjtHn8xb/kMQHTAB5hXDJjaIOsFGNzvxK5ezFmkmi/JwA9hF5kp2bLe3QMgBut/v8YtxQIWrAfb4ta65EgI+vHDaf5HI7eb9XaXaA0tL8fiQjJk4vqdeVPSZ+dnVMCkOl2/+lpAbRAJgXCPi/ugzEYntP44Ws0JAwmXqR//uYcEOgGN41EvO1cApnTCiXj8rDAgAo1i5Ulbu6/4xbyt8Wa0BQTGw4cl4F0E+5meDu5rKkBD77aT5RSVD8YumTpQxTSNDFL/SIV1q9YWk5msfO2y10sC88JbIGfqE65EgmivXkjuHxg=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dec0f567-8b1d-43f3-a7b3-08d827cae4c0
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5623.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2020 07:52:45.2630
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2xephH3Vmwik1/GCWAGVZ+FK+Nr6o4R6TyGA5bWYgC5F4vzt4rz0erYA/LtGrfQSauw52/2Ms2QutFKbCPWnQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4854
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 09:32:56AM +0200, Bartlomiej Zolnierkiewicz wrote:
-> 
-> Hi,
-> 
-> On 7/13/20 7:36 PM, Vaibhav Gupta wrote:
-> > Linux Kernel Mentee: Remove Legacy Power Management.
-> > 
-> > The purpose of this patch series is to remove legacy power management callbacks
-> > from ide drivers.
-> > 
-> > The suspend() and resume() callbacks operations are still invoking
-> > pci_save/restore_state(), pci_set_power_state(), pci_enable/disable_state(),
-> > etc. and handling the power management themselves, which is not recommended.
-> > 
-> > The conversion requires the removal of the those function calls and change the
-> > callback definition accordingly and make use of dev_pm_ops structure.
-> 
-> IDE subsystem (drivers/ide/) is deprecated and has been superseded by libata
-> subsystem (drivers/ata/).
-> 
-> libata drivers have the same issue so please concentrate on fixing them
-> first. Later (if desirable) changes can be back-ported to drivers/ide/.
->
-Hello, (drivers/ide) and (drivers/ata) are the two major families, I am working
-on, for generic PM upgradation. I was bit unaware about priority, and also in
-the last, both ide and ata drivers have to be upgraded.
-> > All patches are compile-tested only.
-> 
-> This patchset needs (at least) some basic testing. It should be easier with
-> libata subsystem as it also support SATA controllers and devices.
-To upgrade PM in (drivers/ide) I have made .suspend() and .resume() static. Then
-bind them in "struct dev_pm_ops" variable (ide_pci_pm_ops) and expose it using
-EXPORT_SYMBOL_GPL(). This has affected 30 drivers. I was hoping if ide changes
-can be tested/verified, specially [PATCH 1/3]. As then, I will be sure about
-similar change in ata, as it also requires similar alteration.
+Call the put function after probe successfully. Otherwise, the lpspi
+module will keep active status until the first spi transfer called.
 
-Thanks
-Vaibhav Gupta
+Disable runtime pm when probe fails. There is no need to active runtime
+pm after probe failed.
 
-> 
-> Best regards,
-> --
-> Bartlomiej Zolnierkiewicz
-> Samsung R&D Institute Poland
-> Samsung Electronics
-> 
-> > v3:
-> >     - Modpost error for undefined reference by Kbuild in v1.
-> >     - Another approach to disable PM in drivers/ide/triflex.c suggested by
-> >       Bjorn Helgaas in v2.
-> > 
-> > Test tools:
-> >     - Compiler: gcc (GCC) 10.1.0
-> >     - allmodconfig build: make -j$(nproc) W=1 all
-> > 
-> > Vaibhav Gupta (3):
-> >   ide: use generic power management
-> >   ide: sc1200: use generic power management
-> >   ide: delkin_cb: use generic power management
-> > 
-> >  drivers/ide/aec62xx.c         |  3 +--
-> >  drivers/ide/alim15x3.c        |  3 +--
-> >  drivers/ide/amd74xx.c         |  3 +--
-> >  drivers/ide/atiixp.c          |  3 +--
-> >  drivers/ide/cmd64x.c          |  3 +--
-> >  drivers/ide/cs5520.c          |  3 +--
-> >  drivers/ide/cs5530.c          |  3 +--
-> >  drivers/ide/cs5535.c          |  3 +--
-> >  drivers/ide/cs5536.c          |  3 +--
-> >  drivers/ide/cy82c693.c        |  3 +--
-> >  drivers/ide/delkin_cb.c       | 32 +++++---------------------
-> >  drivers/ide/hpt366.c          |  3 +--
-> >  drivers/ide/ide-pci-generic.c |  3 +--
-> >  drivers/ide/it8172.c          |  3 +--
-> >  drivers/ide/it8213.c          |  3 +--
-> >  drivers/ide/it821x.c          |  3 +--
-> >  drivers/ide/jmicron.c         |  3 +--
-> >  drivers/ide/ns87415.c         |  3 +--
-> >  drivers/ide/opti621.c         |  3 +--
-> >  drivers/ide/pdc202xx_new.c    |  3 +--
-> >  drivers/ide/pdc202xx_old.c    |  3 +--
-> >  drivers/ide/piix.c            |  3 +--
-> >  drivers/ide/sc1200.c          | 43 ++++++++++++-----------------------
-> >  drivers/ide/serverworks.c     |  3 +--
-> >  drivers/ide/setup-pci.c       | 29 +++++------------------
-> >  drivers/ide/siimage.c         |  3 +--
-> >  drivers/ide/sis5513.c         |  3 +--
-> >  drivers/ide/sl82c105.c        |  3 +--
-> >  drivers/ide/slc90e66.c        |  3 +--
-> >  drivers/ide/triflex.c         | 24 +++++++------------
-> >  drivers/ide/via82cxxx.c       |  3 +--
-> >  include/linux/ide.h           |  8 +------
-> >  32 files changed, 62 insertions(+), 155 deletions(-)
-> > 
-> 
+Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+---
+ drivers/spi/spi-fsl-lpspi.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-fsl-lpspi.c b/drivers/spi/spi-fsl-lpspi.c
+index 1552b28b9515..a1555bbc5e5a 100644
+--- a/drivers/spi/spi-fsl-lpspi.c
++++ b/drivers/spi/spi-fsl-lpspi.c
+@@ -954,10 +954,15 @@ static int fsl_lpspi_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		dev_err(&pdev->dev, "dma setup error %d, use pio\n", ret);
+ 
++	pm_runtime_mark_last_busy(fsl_lpspi->dev);
++	pm_runtime_put_autosuspend(fsl_lpspi->dev);
++
+ 	return 0;
+ 
+ out_pm_get:
+-	pm_runtime_put_noidle(fsl_lpspi->dev);
++	pm_runtime_dont_use_autosuspend(fsl_lpspi->dev);
++	pm_runtime_put_sync(fsl_lpspi->dev);
++	pm_runtime_disable(fsl_lpspi->dev);
+ out_controller_put:
+ 	spi_controller_put(controller);
+ 
+-- 
+2.17.1
+
