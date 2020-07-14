@@ -2,196 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D18621FDEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B6421FDF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729732AbgGNTzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:55:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729465AbgGNTzD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:55:03 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20754C061755;
-        Tue, 14 Jul 2020 12:55:03 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id m9so8042681pfh.0;
-        Tue, 14 Jul 2020 12:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JYMRhwsu+Sb7OdIXTr+m2jcY6PaVT0jbYkR2hlBIQac=;
-        b=fs4fvydGVNvlk5nD87KZFP08JqelxL90HPPkjS2E4M1OFRJ8jvE23FFOO6XgUs+EdC
-         zz9EDAHIdKWW9SjezQFxrX2LzMxaOS4r37lvUaibE+hLSWKbTDdQHf1S3c2Rk3Y2aDch
-         +IqWejNVTpOIfjj6tqwlzSI+JD2dkDI93kixcYJznNmSlHmV91Cw93Okv4rBTTW2I0fp
-         9pDNi7fAjNtQfnPsnSaFVAT0D9iS6Af5T/vm+E1a2ZX2rTZiv3AxUGPm2QrOZMM7Grhi
-         OZ0e7UrNfkMAFwrkALZm3hpOPt02D8g6TC9uOoOBDqQIlI8pfED8r5BnDPx3S9CRblfR
-         Oysw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JYMRhwsu+Sb7OdIXTr+m2jcY6PaVT0jbYkR2hlBIQac=;
-        b=e9i+INIaY2rubZ9/4OdgVVqLOdhxecESmOIxQptklGoowMiTN60z0KqwJgwbBVTcwg
-         QRyFkTp9gT876c1O2NhZ40jqeXo7XxuRqMB4Od3H3IR//iiYek6yfN555/jZLYVFRwCh
-         OM8jB9ijI2uwdkBQhCUfnuYGfxAPqf7hqgQh/UKssi89ekKgxEYaUAau3xb/ZLhPMuiD
-         UaDqU/IkzqgcUScuxqDO9JZqBNkciSI9vrpvisjL/k3CxPAfxSPHd/FRsGbJIq3lA+kJ
-         pb8+ACWv+214imWrT+dhHPtTOjcGnf+UBpN0CC3qlfN8fqSc3/Wz2h18jCUZK5ehGxp3
-         swgQ==
-X-Gm-Message-State: AOAM53285KV4RdfCVuv2Pf+lWhHprioMsisrLK+08hAJWKompqngdp5d
-        P/1huMnfNaHNH1KW5zL5ZTIXkJ/A803auQ==
-X-Google-Smtp-Source: ABdhPJw/oO8x2DZghTsWUoMl473fHwCIUH5VYDjbimv6MY0MoeAVVAqLzc8Q/q4VrjOK+4DFIOHUgA==
-X-Received: by 2002:a05:6a00:2292:: with SMTP id f18mr5729482pfe.192.1594756502680;
-        Tue, 14 Jul 2020 12:55:02 -0700 (PDT)
-Received: from blackclown ([103.88.82.145])
-        by smtp.gmail.com with ESMTPSA id e20sm13898pfl.212.2020.07.14.12.54.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Jul 2020 12:55:01 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 01:24:56 +0530
-From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        GR-Linux-NIC-Dev@marvell.com, gregkh@linuxfoundation.org,
-        devel@driverdev.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] staging: qlge: qlge_ethtool: Remove one byte memset.
-Message-ID: <20200714195456.GB14742@blackclown>
-References: <cover.1594642213.git.usuraj35@gmail.com>
- <b5eb87576cef4bf1b968481d6341013e6c7e9650.1594642213.git.usuraj35@gmail.com>
- <20200713141749.GU2549@kadam>
- <a323c1e47e8de871ff7bb72289740cb0bc2d27f8.camel@perches.com>
- <20200714190602.GA14742@blackclown>
- <ce637b26b496dd99be8f272e6ec82333338321dc.camel@perches.com>
+        id S1729465AbgGNT5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:57:55 -0400
+Received: from mga04.intel.com ([192.55.52.120]:1672 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726634AbgGNT5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:57:55 -0400
+IronPort-SDR: Vcs2KtrI8/vCeP5MBy+yI6L8pqpUmCIocSjpmOfbKZhvNZIqQFbsyDeBiwEdx6Q5U3325JIk4z
+ 1yCcjE/KgYfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="146527842"
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="146527842"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 12:57:54 -0700
+IronPort-SDR: vgJEtswW57bMM9d6eV3f7gTpEkb2BRG+DouUyWMEbshmio6JShLrV6B3l49Pxkqbw4zr/HKk4N
+ gtAB7HM0I5Nw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="485996588"
+Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
+  by fmsmga005.fm.intel.com with ESMTP; 14 Jul 2020 12:57:54 -0700
+Received: from hasmsx601.ger.corp.intel.com (10.184.107.141) by
+ FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 14 Jul 2020 12:57:53 -0700
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ HASMSX601.ger.corp.intel.com (10.184.107.141) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 14 Jul 2020 22:57:51 +0300
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
+ Tue, 14 Jul 2020 22:57:51 +0300
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] mei: Avoid the use of one-element arrays
+Thread-Topic: [PATCH][next] mei: Avoid the use of one-element arrays
+Thread-Index: AQHWWgYBVMvTEO76bk+MJBte9XQfr6kHWu4Q///SZ4CAAE7REA==
+Date:   Tue, 14 Jul 2020 19:57:51 +0000
+Message-ID: <32f85e185c2244a19a1705d0db315c69@intel.com>
+References: <20200714174644.GA30158@embeddedor>
+ <fe3b8d4a4eb04ead83ffcefe12fd218e@intel.com>
+ <20200714180855.GA31158@embeddedor>
+In-Reply-To: <20200714180855.GA31158@embeddedor>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.2.0.6
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1LKvkjL3sHcu1TtY"
-Content-Disposition: inline
-In-Reply-To: <ce637b26b496dd99be8f272e6ec82333338321dc.camel@perches.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---1LKvkjL3sHcu1TtY
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jul 14, 2020 at 12:22:05PM -0700, Joe Perches wrote:
-> On Wed, 2020-07-15 at 00:36 +0530, Suraj Upadhyay wrote:
-> > On Tue, Jul 14, 2020 at 11:57:23AM -0700, Joe Perches wrote:
-> > > On Mon, 2020-07-13 at 17:17 +0300, Dan Carpenter wrote:
-> > > > On Mon, Jul 13, 2020 at 05:52:22PM +0530, Suraj Upadhyay wrote:
-> > > > > Use direct assignment instead of using memset with just one byte =
-as an
-> > > > > argument.
-> > > > > Issue found by checkpatch.pl.
-> > > > >=20
-> > > > > Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
-> > > > > ---
-> > > > > Hii Maintainers,
-> > > > > 	Please correct me if I am wrong here.
-> > > > > ---
-> > > > >=20
-> > > > >  drivers/staging/qlge/qlge_ethtool.c | 4 ++--
-> > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > >=20
-> > > > > diff --git a/drivers/staging/qlge/qlge_ethtool.c b/drivers/stagin=
-g/qlge/qlge_ethtool.c
-> > > > > index 16fcdefa9687..d44b2dae9213 100644
-> > > > > --- a/drivers/staging/qlge/qlge_ethtool.c
-> > > > > +++ b/drivers/staging/qlge/qlge_ethtool.c
-> > > > > @@ -516,8 +516,8 @@ static void ql_create_lb_frame(struct sk_buff=
- *skb,
-> > > > >  	memset(skb->data, 0xFF, frame_size);
-> > > > >  	frame_size &=3D ~1;
-> > > > >  	memset(&skb->data[frame_size / 2], 0xAA, frame_size / 2 - 1);
-> > > > > -	memset(&skb->data[frame_size / 2 + 10], 0xBE, 1);
-> > > > > -	memset(&skb->data[frame_size / 2 + 12], 0xAF, 1);
-> > > > > +	skb->data[frame_size / 2 + 10] =3D (unsigned char)0xBE;
-> > > > > +	skb->data[frame_size / 2 + 12] =3D (unsigned char)0xAF;
-> > > >=20
-> > > > Remove the casting.
-> > > >=20
-> > > > I guess this is better than the original because now it looks like
-> > > > ql_check_lb_frame().  It's still really weird looking though.
-> > >=20
-> > > There are several of these in the intel drivers too:
-> > >=20
-> > > drivers/net/ethernet/intel/e1000/e1000_ethtool.c:       memset(&skb->=
-data[frame_size / 2 + 10], 0xBE, 1);
-> > > drivers/net/ethernet/intel/e1000/e1000_ethtool.c:       memset(&skb->=
-data[frame_size / 2 + 12], 0xAF, 1);
-> > > drivers/net/ethernet/intel/e1000e/ethtool.c:    memset(&skb->data[fra=
-me_size / 2 + 10], 0xBE, 1);
-> > > drivers/net/ethernet/intel/e1000e/ethtool.c:    memset(&skb->data[fra=
-me_size / 2 + 12], 0xAF, 1);
-> > > drivers/net/ethernet/intel/igb/igb_ethtool.c:   memset(&skb->data[fra=
-me_size + 10], 0xBE, 1);
-> > > drivers/net/ethernet/intel/igb/igb_ethtool.c:   memset(&skb->data[fra=
-me_size + 12], 0xAF, 1);
-> > > drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c:       memset(&skb->=
-data[frame_size + 10], 0xBE, 1);
-> > > drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c:       memset(&skb->=
-data[frame_size + 12], 0xAF, 1);
-> > > drivers/staging/qlge/qlge_ethtool.c:    memset(&skb->data[frame_size =
-/ 2 + 10], 0xBE, 1);
-> > > drivers/staging/qlge/qlge_ethtool.c:    memset(&skb->data[frame_size =
-/ 2 + 12], 0xAF, 1);
-> >=20
-> > Thanks to point this out,
-> > 	I will be sending a patchset for that soon.
->=20
->=20
-> It _might_ be useful to create and use a standard
-> mechanism for the loopback functions:
->=20
-> 	<foo>create_lbtest_frame
-> and
-> 	<foo>check_lbtest_frame
->=20
-> Maybe use something like:
->=20
-> 	ether_loopback_frame_create
-> and
-> 	ether_loopback_frame_check
->=20
-I thought about it=A0 but then again the fram_size is sometimes divided by =
-two
-
-e.g. `frame_size /=3D 2;` or `frame_size >>=3D 1;`.
-
-and sometimes it is subtracted by one. i.e. `frame_size &=3D ~1;`.
-
-Anyway, I sent my layman patchset to the lkml and intel maintainers.
-
-Forgive my brevity.
-
-Thanks,=A0
-
-Suraj Upadhyay.=20
-
---1LKvkjL3sHcu1TtY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8ODYgACgkQ+gRsbIfe
-744oCRAAqrqADv/xB4JVPjjXz492plNFNWc8LGb+FfE8WO/fXyAdP6QlihH6yTK/
-wf77xEFSJOao6VFX501O5KqklsWkNZ+FFs49mMcDdo6qXjlezHp0/4J6NFI+bn5g
-OXjshxMZpjyGI4wT03QHxP2dvhIVxEt+2FY44DzOT/vtsVYRKInLK3nTjS4f7Wdp
-yqgSmI831AWcoPYZd3PkZLneXDbFi2CSPBBMREmiP1N735WfXSZqEACPYRtKVj2f
-62QgFz6S8AWb0OYB/I67OUDFDDnufchuGa22SJNmv3HxYbMpF9QlhovCK2XfUT6/
-30UzieYqCPd+IIccn1iWtbFhMl5wa0bTTZRL3D8Zt7P3J7dxrb9wHZyjkt2baqhj
-+n+GW4nfSoCVCDqJMr/AopOfIL0FS2eqvmkVsohOpneuElfYf6M+1AcH0kprADHW
-js9OomrTXRkanNAk1fjxPhItfVqqka8sT+dmYsVmfZMTDuytS6nxx55zwGSFuuzA
-BgTLJ0fNLrS7E7hrPyoc9/O2xktZ4DsWuFZYiB8SMz5F8nH1hG2VGsYOGjs+L7WS
-bFAau0a0f+GNRYj2TztM3Jq2Y393xBNBquUMaOAA6MXNd5InFZBb39L5dGuLmaXQ
-UyObb7g20JD6D8bJCBA+Jx4G4vGR3Qqvu9kbabnC6mINzK1AzyY=
-=iZ2l
------END PGP SIGNATURE-----
-
---1LKvkjL3sHcu1TtY--
+PiANCj4gT24gVHVlLCBKdWwgMTQsIDIwMjAgYXQgMDU6NTQ6MzJQTSArMDAwMCwgV2lua2xlciwg
+VG9tYXMgd3JvdGU6DQo+ID4gPg0KPiA+ID4gVGhlcmUgaXMgYSByZWd1bGFyIG5lZWQgaW4gdGhl
+IGtlcm5lbCB0byBwcm92aWRlIGEgd2F5IHRvIGRlY2xhcmUNCj4gPiA+IGhhdmluZyBhIGR5bmFt
+aWNhbGx5IHNpemVkIHNldCBvZiB0cmFpbGluZyBlbGVtZW50cyBpbiBhIHN0cnVjdHVyZS4NCj4g
+PiA+IEtlcm5lbCBjb2RlIHNob3VsZCBhbHdheXMgdXNlIOKAnGZsZXhpYmxlIGFycmF5IG1lbWJl
+cnPigJ1bMV0gZm9yIHRoZXNlDQo+ID4gPiBjYXNlcyBvciwgYXMgaW4gdGhpcyBwYXJ0aWN1bGFy
+IGNhc2UsIHJlcGxhY2UgdGhlIG9uZS1lbGVtZW50IGFycmF5DQo+ID4gPiB3aXRoIGEgc2ltcGxl
+IHZhbHVlIHR5cGUgdTggcmVzZXJ2ZWQgb25jZSB0aGlzIGlzIGp1c3QgYSBwbGFjZWhvbGRlcg0K
+PiA+ID4gZm9yIGFsaWdubWVudC4gVGhlIG9sZGVyIHN0eWxlIG9mIG9uZS1lbGVtZW50IG9yIHpl
+cm8tbGVuZ3RoIGFycmF5cw0KPiBzaG91bGQgbm8gbG9uZ2VyIGJlIHVzZWRbMl0uDQo+ID4gPg0K
+PiA+ID4gQWxzbywgd2hpbGUgdGhlcmUsIHVzZSB0aGUgcHJlZmVycmVkIGZvcm0gZm9yIHBhc3Np
+bmcgYSBzaXplIG9mIGEgc3RydWN0Lg0KPiA+ID4gVGhlIGFsdGVybmF0aXZlIGZvcm0gd2hlcmUg
+c3RydWN0IG5hbWUgaXMgc3BlbGxlZCBvdXQgaHVydHMNCj4gPiA+IHJlYWRhYmlsaXR5IGFuZCBp
+bnRyb2R1Y2VzIGFuIG9wcG9ydHVuaXR5IGZvciBhIGJ1ZyB3aGVuIHRoZQ0KPiA+ID4gdmFyaWFi
+bGUgdHlwZSBpcyBjaGFuZ2VkIGJ1dCB0aGUgY29ycmVzcG9uZGluZyBzaXplb2YgdGhhdCBpcyBw
+YXNzZWQgYXMNCj4gYXJndW1lbnQgaXMgbm90Lg0KPiA+ID4NCj4gPiA+IFsxXSBodHRwczovL2Vu
+Lndpa2lwZWRpYS5vcmcvd2lraS9GbGV4aWJsZV9hcnJheV9tZW1iZXINCj4gPiA+IFsyXSBodHRw
+czovL2dpdGh1Yi5jb20vS1NQUC9saW51eC9pc3N1ZXMvNzkNCj4gPiA+DQo+ID4gPiBTaWduZWQt
+b2ZmLWJ5OiBHdXN0YXZvIEEuIFIuIFNpbHZhIDxndXN0YXZvYXJzQGtlcm5lbC5vcmc+DQo+ID4g
+SSdtIG9rYXkgd2l0aCB0aGUgcGF0Y2ggYnV0IGluIHRoaXMgY2FzZSB0aGUgZGVzY3JpcHRpb24g
+aXMgYSBiaXQgb2ZmLg0KPiA+IEluIHRoaXMgY2FzZSB0aGVyZSB3YXMgbm8gaW50ZW50aW9uIGZv
+ciBhIGZsZXhpYmxlIGFycmF5cyBpdHMganVzdCBhIHJlc2VydmVkDQo+IGZpZWxkLg0KPiA+DQo+
+IA0KPiBUaGUgcmVzZXJ2ZWQgZmllbGQgaXMgYWN0dWFsbHkgbWVudGlvbmVkIGluIHRoZSBkZXNj
+cmlwdGlvbjoNCj4gDQo+ICIuLi4gb3IsIGFzIGluIHRoaXMgcGFydGljdWxhciBjYXNlLCByZXBs
+YWNlIHRoZSBvbmUtZWxlbWVudCBhcnJheSB3aXRoIGEgc2ltcGxlDQo+IHZhbHVlIHR5cGUgdTgg
+cmVzZXJ2ZWQgb25jZSB0aGlzIGlzIGp1c3QgYSBwbGFjZWhvbGRlciBmb3IgYWxpZ25tZW50LiIN
+Cg0KUmlnaHQsIGJ1dCBpdCBsb29rcyBub3QgY29ubmVjdGVkIHRvIG92ZXJhbGwgY29udGV4dCwg
+aXQgbG9va3MgbGlrZSBub3QgdmVyeSBjbGVhbiByZXVzZSBvZiBhIGNvbW1pdCBtZXNzYWdlLg0K
+SSB3b3VsZCBzYXkgdGhhdCB0aGlzIHJlc2VydmVkWzFdIHJhdGhlciBoYWQgY29uZnVzZWQgdGhl
+IGRldGVjdGlvbiBzY3JpcHRzIHlvdSBhcmUgdXNpbmcgZm9yIHRoZSAgY2xlYW51cCB5b3UgYXJl
+IGRvaW5nLiANCkFnYWluLCBJJ20gb2theSB3aXRoIHRoZSBwYXRjaCwgYnV0IGlmIHlvdSBjYW4g
+IHJld29yZCB0aGUgY29tbWl0IG1lc3NhZ2UgaXQgd291bGQgYmUgZXZlbiBtb3JlIG9rYXkuDQoN
+Cj4gDQo+IFRoYW5rcw0KPiAtLQ0KPiBHdXN0YXZvDQo+IA0KPiA+ID4gLS0tDQo+ID4gPiAgZHJp
+dmVycy9taXNjL21laS9oYm0uYyB8IDQgKystLQ0KPiA+ID4gIGRyaXZlcnMvbWlzYy9tZWkvaHcu
+aCAgfCA2ICsrKy0tLQ0KPiA+ID4gIDIgZmlsZXMgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCA1
+IGRlbGV0aW9ucygtKQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21pc2MvbWVp
+L2hibS5jIGIvZHJpdmVycy9taXNjL21laS9oYm0uYyBpbmRleA0KPiA+ID4gYTQ0MDk0Y2RiYzM2
+Li5mMDIwZDU1OTQxNTQgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL21pc2MvbWVpL2hibS5j
+DQo+ID4gPiArKysgYi9kcml2ZXJzL21pc2MvbWVpL2hibS5jDQo+ID4gPiBAQCAtNDA4LDE0ICs0
+MDgsMTQgQEAgc3RhdGljIGludCBtZWlfaGJtX2FkZF9jbF9yZXNwKHN0cnVjdA0KPiA+ID4gbWVp
+X2RldmljZSAqZGV2LCB1OCBhZGRyLCB1OCBzdGF0dXMpICB7DQo+ID4gPiAgCXN0cnVjdCBtZWlf
+bXNnX2hkciBtZWlfaGRyOw0KPiA+ID4gIAlzdHJ1Y3QgaGJtX2FkZF9jbGllbnRfcmVzcG9uc2Ug
+cmVzcDsNCj4gPiA+IC0JY29uc3Qgc2l6ZV90IGxlbiA9IHNpemVvZihzdHJ1Y3QgaGJtX2FkZF9j
+bGllbnRfcmVzcG9uc2UpOw0KPiA+ID4gKwljb25zdCBzaXplX3QgbGVuID0gc2l6ZW9mKHJlc3Ap
+Ow0KPiA+ID4gIAlpbnQgcmV0Ow0KPiA+ID4NCj4gPiA+ICAJZGV2X2RiZyhkZXYtPmRldiwgImFk
+ZGluZyBjbGllbnQgcmVzcG9uc2VcbiIpOw0KPiA+ID4NCj4gPiA+ICAJbWVpX2hibV9oZHIoJm1l
+aV9oZHIsIGxlbik7DQo+ID4gPg0KPiA+ID4gLQltZW1zZXQoJnJlc3AsIDAsIHNpemVvZihzdHJ1
+Y3QgaGJtX2FkZF9jbGllbnRfcmVzcG9uc2UpKTsNCj4gPiA+ICsJbWVtc2V0KCZyZXNwLCAwLCBs
+ZW4pOw0KPiA+ID4gIAlyZXNwLmhibV9jbWQgPSBNRUlfSEJNX0FERF9DTElFTlRfUkVTX0NNRDsN
+Cj4gPiA+ICAJcmVzcC5tZV9hZGRyID0gYWRkcjsNCj4gPiA+ICAJcmVzcC5zdGF0dXMgID0gc3Rh
+dHVzOw0KPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9tZWkvaHcuaCBiL2RyaXZlcnMv
+bWlzYy9tZWkvaHcuaCBpbmRleA0KPiA+ID4gYjFhOGQ1ZWM4OGIzLi44YzAyOTdmMGU3ZjMgMTAw
+NjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL21pc2MvbWVpL2h3LmgNCj4gPiA+ICsrKyBiL2RyaXZl
+cnMvbWlzYy9tZWkvaHcuaA0KPiA+ID4gQEAgLTM0NiwxMyArMzQ2LDEzIEBAIHN0cnVjdCBoYm1f
+YWRkX2NsaWVudF9yZXF1ZXN0IHsNCj4gPiA+ICAgKiBAaGJtX2NtZDogYnVzIG1lc3NhZ2UgY29t
+bWFuZCBoZWFkZXINCj4gPiA+ICAgKiBAbWVfYWRkcjogYWRkcmVzcyBvZiB0aGUgY2xpZW50IGlu
+IE1FDQo+ID4gPiAgICogQHN0YXR1czogaWYgSEJNU19TVUNDRVNTIHRoZW4gdGhlIGNsaWVudCBj
+YW4gbm93IGFjY2VwdA0KPiBjb25uZWN0aW9ucy4NCj4gPiA+IC0gKiBAcmVzZXJ2ZWQ6IHJlc2Vy
+dmVkDQo+ID4gPiArICogQHJlc2VydmVkOiByZXNlcnZlZCBmb3IgYWxpZ25tZW50Lg0KPiA+ID4g
+ICAqLw0KPiA+ID4gIHN0cnVjdCBoYm1fYWRkX2NsaWVudF9yZXNwb25zZSB7DQo+ID4gPiAgCXU4
+IGhibV9jbWQ7DQo+ID4gPiAgCXU4IG1lX2FkZHI7DQo+ID4gPiAgCXU4IHN0YXR1czsNCj4gPiA+
+IC0JdTggcmVzZXJ2ZWRbMV07DQo+ID4gPiArCXU4IHJlc2VydmVkOw0KPiA+ID4gIH0gX19wYWNr
+ZWQ7DQo+ID4gPg0KPiA+ID4gIC8qKg0KPiA+ID4gQEAgLTQ2MSw3ICs0NjEsNyBAQCBzdHJ1Y3Qg
+aGJtX25vdGlmaWNhdGlvbiB7DQo+ID4gPiAgCXU4IGhibV9jbWQ7DQo+ID4gPiAgCXU4IG1lX2Fk
+ZHI7DQo+ID4gPiAgCXU4IGhvc3RfYWRkcjsNCj4gPiA+IC0JdTggcmVzZXJ2ZWRbMV07DQo+ID4g
+PiArCXU4IHJlc2VydmVkOw0KPiA+ID4gIH0gX19wYWNrZWQ7DQo+ID4gPg0KPiA+ID4gIC8qKg0K
+PiA+ID4gLS0NCj4gPiA+IDIuMjcuMA0KPiA+DQo=
