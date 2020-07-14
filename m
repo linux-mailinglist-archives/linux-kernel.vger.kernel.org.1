@@ -2,202 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D3021ECE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E586A21ECEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726599AbgGNJcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        id S1726845AbgGNJdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725952AbgGNJcm (ORCPT
+        with ESMTP id S1725952AbgGNJdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:32:42 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392E6C061755;
-        Tue, 14 Jul 2020 02:32:42 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f2so20393810wrp.7;
-        Tue, 14 Jul 2020 02:32:42 -0700 (PDT)
+        Tue, 14 Jul 2020 05:33:01 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5681C061755;
+        Tue, 14 Jul 2020 02:33:00 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id dm19so16325682edb.13;
+        Tue, 14 Jul 2020 02:33:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3ZJpSNrQG4Atc/mSgU3Bc/DW89b2tSDyonqVtLvIePg=;
-        b=O35dMZty276VdJqNqrgMTd+4fbUsrCygRGdFjRlTdJHtdfalCEbRrxc9vWLk9TM/5R
-         +sdDuMHU4xdgq81ZHI6JLW5vPOi/WQSnCvJHWZhorjIB28n0G62R0oTjmYZVY74wmYUX
-         DZz8oMG/etZsTpkp+OU1ku0wDO34i+HwcBDazNsaXAM73AEdUifbQ1mVmycI2qs4n+FO
-         /vdwqIXGUzksjTks6O3ipYDGSsVwwXyK03L7h8CPTawQTY0etycHZzmokfhBhWhEukqT
-         j9u7qqdz4Vm5Ddy1tBlJJhQeD6HMVlnxJAHPhvsqyaKChotxxX+sz0yzvUuFstOKAs3p
-         Rimw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=4hx30PqqoaKCTO0tMV5MXPy9WV4JOGXHT29cx4BAmGo=;
+        b=PUZRD7ZoJoGcBKUQ//Po15bwuf7dQgrMkN+LsH1vGn+Wu+CPT+g+1ecewCvcnztIQ2
+         Zr4cI4eZ1MrETF11GT/frURS9Hw9hMFiEj2RVZWvs6sjop4lrpEk2ap67NUS7n4q4MpM
+         h7PLhp82Z1DnvX9DQTD3RXo88dBx8f2W4Kjtsawk/okiXD48p9YZzZh4vRdRY7aZUE+t
+         o+oc98a4PzwjA3FoDxNMWnWOrcgD9r1tvaUb2zAGaNFrfsZ4sISFsSkh6zgDFEDdY7UH
+         dIafe65vWNWVDgvxDX5icgA06I7IMkr7Ob2/N82waLw2dR23WPdSpOMrvbWH8pwKsQGr
+         5uwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3ZJpSNrQG4Atc/mSgU3Bc/DW89b2tSDyonqVtLvIePg=;
-        b=TKFLoGGeYL+FQfaYy8bH5MLy6dmCJlhENE//cVGuxIQ6qTQztFatutB32Pq19+rZOz
-         F9lURt24OU/zxYhSA156DwvWTivj7l0N4bckHQbtK5YFNDT1J3F4BErO/SiItss7ig1Q
-         bloy4vLjAPK35vCqcY7NaDe3KHzNjbNEOPuisAZ2eUnN4vVQh8vrm9OjUYoYxIzn7V/M
-         /soF9cZIHhTlnbsWKBoN5n9R1nr8ip7hmoOJU2p3ue1UEfYdiU2y1OGzKVj9Yri6GqeV
-         m3r2WsSc0FWhu8aoqBzy8vL0UbLVJFOoh0DhrKJhUBUNfl2nIlPdco+glTyrDD7/rByb
-         Fz/g==
-X-Gm-Message-State: AOAM532PpH6nsPTz0fllZUkglz8gGgy8kFK8Th0GW3hCL1vO+yxkKbLj
-        w0zfddfbQ5wM1/tJchuvhJU=
-X-Google-Smtp-Source: ABdhPJzRJyxKV2Nku5Zoe7kfjgysNqpYdZfL1L83vt00q76VlDKerkxLTJ1d2GTCMXG8DaQsDCOogw==
-X-Received: by 2002:a5d:540d:: with SMTP id g13mr3843924wrv.380.1594719160785;
-        Tue, 14 Jul 2020 02:32:40 -0700 (PDT)
-Received: from macbook-pro.local (181.4.199.77.rev.sfr.net. [77.199.4.181])
-        by smtp.gmail.com with ESMTPSA id l67sm4101008wml.13.2020.07.14.02.32.39
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4hx30PqqoaKCTO0tMV5MXPy9WV4JOGXHT29cx4BAmGo=;
+        b=iH9KBas7rVwtE5c2ouz1GWQ9+jV8L+q7S89moTnS5nN5a+kAJXDC4N6N8D4qkjxzJe
+         PhQmvdJ6RSBnjUtkVGpJHMKTyJNhsonkmz/iv+IiyJTq/giPpiiSEey5iS3pNFFI/DJg
+         87zuZSY+8LoA/PpDIJWZ+TJG1QQLhq5VB4cb/njCcyH6hdR1Ffo2lcFzMPQXertlH1fD
+         xXc61XWbcdSuDqa3j1k9EAJ9wyU8pH07hW201nY62CigwsiFzl0vlNmDQ7N4ZI5JASz6
+         wJ6dSKmz4fF/qvzFgPNkpw40HafOEfwyXzjDwFLjfr8VveNu1dPtD5VcD+xXf10Auyz4
+         dmeQ==
+X-Gm-Message-State: AOAM5326K1wRGXarjQDrb8+RHiQJYzrz8Il8FEtV837Tm5DHIVtTs5dz
+        uWgNJIQV8OBEx1qcZxOKw7E=
+X-Google-Smtp-Source: ABdhPJxQMpKEO/TmGr4t3/ZxNmff8nGv0ouAGV0vHWdU8pzoRUZBJ8ps7/OmisdmObnGZ/BxXqvGAw==
+X-Received: by 2002:a05:6402:1592:: with SMTP id c18mr3741523edv.258.1594719179492;
+        Tue, 14 Jul 2020 02:32:59 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id t6sm12170365ejc.40.2020.07.14.02.32.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 02:32:40 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 11:32:39 +0200
-From:   Willy Wolff <willy.mh.wolff.ml@gmail.com>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, k.konieczny@samsung.com,
-        cw00.choi@samsung.com, krzk@kernel.org, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        s.nawrocki@samsung.com, kgene@kernel.org
-Subject: Re: [PATCH v2 2/2] memory: samsung: exynos5422-dmc: Add module param
- to control IRQ mode
-Message-ID: <20200714093239.4kvonvkwkdwobeia@macbook-pro.local>
-References: <20200710191122.11029-1-lukasz.luba@arm.com>
- <CGME20200710191148eucas1p2552537bb911bde44c783d98808efa07f@eucas1p2.samsung.com>
- <20200710191122.11029-3-lukasz.luba@arm.com>
- <1a389137-cab5-124a-e198-8be3bc2ca841@samsung.com>
- <3154b8d2-1fa8-c69d-8a9d-05832e12fdd1@arm.com>
+        Tue, 14 Jul 2020 02:32:57 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 11:32:56 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] usb: tegra: Fix zero length memory allocation
+Message-ID: <20200714093256.GG141356@ulmo>
+References: <20200712102837.24340-1-jonathanh@nvidia.com>
+ <20200712102837.24340-2-jonathanh@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="DNUSDXU7R7AVVM8C"
 Content-Disposition: inline
-In-Reply-To: <3154b8d2-1fa8-c69d-8a9d-05832e12fdd1@arm.com>
+In-Reply-To: <20200712102837.24340-2-jonathanh@nvidia.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz and Bartek,
 
-On 2020-07-14-10-01-16, Lukasz Luba wrote:
->Hi Bartek,
->
->On 7/14/20 8:42 AM, Bartlomiej Zolnierkiewicz wrote:
->>
->>Hi,
->>
->>On 7/10/20 9:11 PM, Lukasz Luba wrote:
->>>The driver can operate in two modes relaying on devfreq monitoring
->>>mechanism which periodically checks the device status or it can use
->>>interrupts when they are provided by loaded Device Tree. The newly
->>>introduced module parameter can be used to choose between devfreq
->>>monitoring and internal interrupts without modifying the Device Tree.
->>>It also sets devfreq monitoring as default when the parameter is not set
->>>(also the case for default when the driver is not built as a module).
->>
->>Could you please explain why should we leave the IRQ mode
->>support in the dmc driver?
->
->I am still experimenting with the IRQ mode in DMC, but have limited time
->for it and no TRM.
->The IRQ mode in memory controller or bus controller has one major
->advantage: is more interactive. In polling we have fixed period, i.e.
->100ms - that's a lot when we have a sudden, latency sensitive workload.
->There might be no check of the device load for i.e. 99ms, but the tasks
->with such workload started running. That's a long period of a few frames
->which are likely to be junked. Should we adjust polling interval to i.e.
->10ms, I don't think so. There is no easy way to address all of the
->scenarios.
->
->>
->>What are the advantages over the polling mode?
->
->As described above: more reactive to sudden workload, which might be
->latency sensitive and cause junk frames.
->Drawback: not best in benchmarks which are randomly jumping
->over the data set, causing low traffic on memory.
->It could be mitigated as Sylwester described with not only one type
->of interrupt, but another, which could 'observe' also other information
->type in the counters and fire.
->
->>
->>In what scenarios it should be used?
->
->System like Android with GUI, when there is this sudden workload
->quite often.
->
->I think the interconnect could help here and would adjust the DMC
->freq upfront. Although I don't know if interconnect on Exynos5422 is in
->your scope in near future. Of course the interconnect will not cover
->all scenarios either.
->
+--DNUSDXU7R7AVVM8C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The interconnect (CCI-400) will not help much, you still have the same problem
-of setting interrupts at the right threshold, or to poll it to see any activity
-through it.
+On Sun, Jul 12, 2020 at 11:28:37AM +0100, Jon Hunter wrote:
+> After commit cad064f1bd52 ("devres: handle zero size in devm_kmalloc()")
+> was added system suspend started failing on Tegra186. The kernel log
+> showed that the Tegra XHCI driver was crashing on entry to suspend when
+> attemptin the save the USB context. The problem is caused because we
+> are trying to allocate a zero length array for the IPFS context on
+> Tegra186 and following commit cad064f1bd52 ("devres: handle zero size
+> in devm_kmalloc()") this now causes a NULL pointer deference crash
+> when we try to access the memory. Fix this by only allocating memory
+> for both the IPFS and FPCI contexts when required.
+>=20
+> Cc: stable@vger.kernel.org
+>=20
+> Fixes: 5c4e8d3781bc ("usb: host: xhci-tegra: Add support for XUSB context=
+ save/restore")
+>=20
+> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+> ---
+>  drivers/usb/host/xhci-tegra.c | 22 ++++++++++++++--------
+>  1 file changed, 14 insertions(+), 8 deletions(-)
 
->
->>
->>[ If this is only for documentation purposes then it should be
->>   removed as it would stay in (easily accessible) git history
->>   anyway.. ]
->
->The current interrupt mode is definitely not perfect and switching
->to devfreq monitoring mode has more sense. On the other hand, it
->still has potential, until there is no interconnect for this SoC.
->I will continue experimenting with irq mode, so I would like to
->still have the code in the driver.
->
->Regards,
->Lukasz
->
->>
->>Best regards,
->>--
->>Bartlomiej Zolnierkiewicz
->>Samsung R&D Institute Poland
->>Samsung Electronics
->>
->>>Reported-by: Willy Wolff <willy.mh.wolff.ml@gmail.com>
->>>Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>>---
->>>  drivers/memory/samsung/exynos5422-dmc.c | 9 +++++++--
->>>  1 file changed, 7 insertions(+), 2 deletions(-)
->>>
->>>diff --git a/drivers/memory/samsung/exynos5422-dmc.c b/drivers/memory/samsung/exynos5422-dmc.c
->>>index e03ee35f0ab5..53bfe6b7b703 100644
->>>--- a/drivers/memory/samsung/exynos5422-dmc.c
->>>+++ b/drivers/memory/samsung/exynos5422-dmc.c
->>>@@ -12,6 +12,7 @@
->>>  #include <linux/io.h>
->>>  #include <linux/mfd/syscon.h>
->>>  #include <linux/module.h>
->>>+#include <linux/moduleparam.h>
->>>  #include <linux/of_device.h>
->>>  #include <linux/pm_opp.h>
->>>  #include <linux/platform_device.h>
->>>@@ -21,6 +22,10 @@
->>>  #include "../jedec_ddr.h"
->>>  #include "../of_memory.h"
->>>+static int irqmode;
->>>+module_param(irqmode, int, 0644);
->>>+MODULE_PARM_DESC(irqmode, "Enable IRQ mode (0=off [default], 1=on)");
->>>+
->>>  #define EXYNOS5_DREXI_TIMINGAREF		(0x0030)
->>>  #define EXYNOS5_DREXI_TIMINGROW0		(0x0034)
->>>  #define EXYNOS5_DREXI_TIMINGDATA0		(0x0038)
->>>@@ -1428,7 +1433,7 @@ static int exynos5_dmc_probe(struct platform_device *pdev)
->>>  	/* There is two modes in which the driver works: polling or IRQ */
->>>  	irq[0] = platform_get_irq_byname(pdev, "drex_0");
->>>  	irq[1] = platform_get_irq_byname(pdev, "drex_1");
->>>-	if (irq[0] > 0 && irq[1] > 0) {
->>>+	if (irq[0] > 0 && irq[1] > 0 && irqmode) {
->>>  		ret = devm_request_threaded_irq(dev, irq[0], NULL,
->>>  						dmc_irq_thread, IRQF_ONESHOT,
->>>  						dev_name(dev), dmc);
->>>@@ -1485,7 +1490,7 @@ static int exynos5_dmc_probe(struct platform_device *pdev)
->>>  	if (dmc->in_irq_mode)
->>>  		exynos5_dmc_start_perf_events(dmc, PERF_COUNTER_START_VALUE);
->>>-	dev_info(dev, "DMC initialized\n");
->>>+	dev_info(dev, "DMC initialized, in irq mode: %d\n", dmc->in_irq_mode);
->>>  	return 0;
->>>
->>
+Actually it would seem to me that this is no longer a bug after your fix
+in patch 1. We only ever access tegra->context.ipfs if
+tegra->soc->ipfs.num_offsets > 0, so the special ZERO_SIZE_PTR case will
+not actually cause an issue anymore.
+
+The reason why this was crashing was because tegra->context.fpci was
+allocated with a zero size (because of the bug that you fixed in patch
+1) and then that zero-size pointer was dereferenced because the code was
+correctly checking for tegra->soc->fpci.num_offsets > 0 in the context
+save and restore.
+
+So I don't think there's a bug here. It's not wrong to allocate a zero-
+size buffer. It's only a bug to then go and dereference it. Are you
+still seeing the issue if you leave out this patch and only apply patch
+1?
+
+Thierry
+
+--DNUSDXU7R7AVVM8C
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl8Ne8YACgkQ3SOs138+
+s6FDDg/8CEz3TwFQZ66rzYhrJ454N+7L/iQDGUFwOVWDItvRGvKT/b6mGVa/CA1g
+mAm1dcSUr15ALz9ktJVS1kYlzUQ3XV8gLDtTQz3DPL3IULc75ykyWb6l5P0VMvQH
+s0kPu6SLZE/tLhApcoO3jzoq/m0aj0U1oBm4iDRlh9EbCZip8l4Er6Lcd0j4cRdY
+skYD09DG3v+WW2TVc97nfaWrf+J4e00a+96K/0tuw3WDFMO9CPuHOkAJ+RLVbVbF
+Ct3GDkQcrSeZ2J+ajbwXMPnRED493BJXLBAGfPGCvXh+r3gPCOVWWzFfnaXjs1mt
+m558IaWk5LRlxcKgzVY0L+vXDqBNa4oR5t9KszRosbUXqlg3sbJfIcAT4thelP9x
+1GHPrRmAlb9/Mw0zNsFaJK+O4WqLPMyms0nDHuY8Tcxhckr+vFuqZCdGW3GNI+ON
+fAL+UIr8BHjJ/pBInLe5fwAJImtLpI6o2G7sRlMtOYgnURCZAT/5ZFxlhGH/ShWL
+VVVYvf/M1oExnK4Y8kODARu9cgy1bCzvAMPFYT+Gec+TEECd2YWsPJYmFw91LiDO
+o3TnsA6g2LZmLzDsFfpp/TB+Bn0GcBz2znyncuZJltshMtVPbI4Ai/HXUIfXUMn7
+Ktl/q2KzH5cOrfyVAcn/4cNyOlNt/d9Fq7hU0kJzcooZCLxAgzs=
+=qqmM
+-----END PGP SIGNATURE-----
+
+--DNUSDXU7R7AVVM8C--
