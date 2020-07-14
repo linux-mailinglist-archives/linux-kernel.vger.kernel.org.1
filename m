@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0383321EF1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B8621EEFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgGNLU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 07:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728145AbgGNLSm (ORCPT
+        id S1728119AbgGNLRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 07:17:22 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:34594 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727119AbgGNLPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 07:18:42 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAE2C08E8A9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:16:09 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z15so20874859wrl.8
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NWVbeI3JQ64+Db8G4vi0TII3jbdljajswVKqeX2AaNk=;
-        b=pbKjjlMz+yuId3GnPdr+6e7242L15C8zpZ8cI32mV6xd6AgENPK00kT71vMS4zOEUQ
-         BZiKrF66/XjLDH28yMZs8xHjFIparf2OgetsOT625Mif3xJ1q8QNLhyQtuK7TGfZUNIr
-         CCj18IDVn978g2dBSbIwr5b38Pq9EwmlS120Y77bC8ePRFzM8Q56ZfUktL7RchA2vkT5
-         u5WCyG9mExt5AiqtFF84SoZFQZZshdlOkMoEgh6kK8rhIdvqnnVvWrj3OTAyPe9rWQLc
-         ErVVxOlolsFySUFnE8kq65UQFNT1RnKfPw0BhzkytqrRJQZNY7Rt5ThFUPrGUW6rf9Ea
-         d7wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NWVbeI3JQ64+Db8G4vi0TII3jbdljajswVKqeX2AaNk=;
-        b=VNy6qXwo88MahvfPBQfIX4EBPVfd5RjEWURyzww+I18OkJhpkPNW8B/eFsE6TP/v2A
-         fDaGYDlk57UkXs0D6NfqnmdeOUjZJZ0m5DQJGu5r6clK3i3lS4Wu/3NkU37uzhPwbyST
-         AyNOzt6BXjjQypmvJpQ9xKphU/kRwqTimOJ1V/4i7GReiCWfEDmtVnWinTwFALaj8Sf3
-         /eQl2SqLvK3mGycnc1G2V/RqPep5BukHy7RgQqAt1TmyFh9sgUSluA9sn4nXMMzjnccE
-         361oe7BjIIsvld/5Gsfa/aURmNKfoysbA/u6OkvlJOu5QTLy0OUqKQA2bINWl/fjcRqA
-         4ZsA==
-X-Gm-Message-State: AOAM530h4JqCzTSliK4z78ewYkKEbCxwHUlQbn3ATjig7s7twvKeh3Vi
-        y2Ekw5mAYHd9v3TR4uE//XkRvA==
-X-Google-Smtp-Source: ABdhPJy/Z9vM5I8MKYqwiF/ImZ+zlunr0KhgAAKurSmz0v7+QqjmsliobL9ygI2dqTBBUF+btm1W9g==
-X-Received: by 2002:a5d:4a84:: with SMTP id o4mr4756252wrq.104.1594725368354;
-        Tue, 14 Jul 2020 04:16:08 -0700 (PDT)
-Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.16.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 04:16:07 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     dan.j.williams@intel.com, vkoul@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Logan Gunthorpe <logang@deltatee.com>
-Subject: [PATCH 16/17] dma: ioat: init: Correct misspelling of function parameter 'c' for channel
-Date:   Tue, 14 Jul 2020 12:15:45 +0100
-Message-Id: <20200714111546.1755231-17-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200714111546.1755231-1-lee.jones@linaro.org>
-References: <20200714111546.1755231-1-lee.jones@linaro.org>
+        Tue, 14 Jul 2020 07:15:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594725352;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wo3b72+f5d0wE/+LGqBGg/pHVyxAvNtZLrUUPiNVkWE=;
+        b=MElu6c9AjpadHMhKjIf1xATnqMITgHfBaoZFUjBXCy3q56RzNLCiP1IentsOOytk/FFLZS
+        MR/7KTnj+qUwED+OZGmnaTx9eMWWMTV+Tbpub2MI5XwdwkJO+HuJYEZppIcJgbttroYGMt
+        5T8BhF19OIBeZREZeu9pIa5JUT2el8c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-56-JAf95g9fOGa8PNJBi69ewg-1; Tue, 14 Jul 2020 07:15:50 -0400
+X-MC-Unique: JAf95g9fOGa8PNJBi69ewg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E931100A61D;
+        Tue, 14 Jul 2020 11:15:49 +0000 (UTC)
+Received: from krava (unknown [10.40.193.14])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 3ADFA1CA;
+        Tue, 14 Jul 2020 11:15:46 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 13:15:45 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: linux-next: build warning after merge of the bpf-next tree
+Message-ID: <20200714111545.GI183694@krava>
+References: <20200714121608.58962d66@canb.auug.org.au>
+ <20200714090048.GG183694@krava>
+ <20200714203341.4664dda3@canb.auug.org.au>
+ <20200714104702.GH183694@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714104702.GH183694@krava>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Tue, Jul 14, 2020 at 12:47:02PM +0200, Jiri Olsa wrote:
+> On Tue, Jul 14, 2020 at 08:33:41PM +1000, Stephen Rothwell wrote:
+> 
+> SNIP
+> 
+> > > diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+> > > index 948378ca73d4..a88cd4426398 100644
+> > > --- a/tools/bpf/resolve_btfids/Makefile
+> > > +++ b/tools/bpf/resolve_btfids/Makefile
+> > > @@ -16,6 +16,20 @@ else
+> > >    MAKEFLAGS=--no-print-directory
+> > >  endif
+> > >  
+> > > +# always use the host compiler
+> > > +ifneq ($(LLVM),)
+> > > +HOSTAR  ?= llvm-ar
+> > > +HOSTCC  ?= clang
+> > > +HOSTLD  ?= ld.lld
+> > > +else
+> > > +HOSTAR  ?= ar
+> > > +HOSTCC  ?= gcc
+> > > +HOSTLD  ?= ld
+> > > +endif
+> > > +AR       = $(HOSTAR)
+> > > +CC       = $(HOSTCC)
+> > > +LD       = $(HOSTLD)
+> > > +
+> > >  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
+> > >  
+> > >  LIBBPF_SRC := $(srctree)/tools/lib/bpf/
+> > > 
+> > 
+> > Thanks for the quick response.  However, in the mean time the bpf-next
+> > tree has been merged into the net-next tree, so these fixes will be
+> > needed there ASAP.
+> 
+> I just posted it
 
- drivers/dma/ioat/init.c:608: warning: Function parameter or member 'c' not described in 'ioat_free_chan_resources'
- drivers/dma/ioat/init.c:608: warning: Excess function parameter 'chan' description in 'ioat_free_chan_resources'
+ugh, you said net-next..
 
-Cc: Logan Gunthorpe <logang@deltatee.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/dma/ioat/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+David, do you need me to repost with net-next tag?
+  https://lore.kernel.org/bpf/20200714102534.299280-1-jolsa@kernel.org/T/
 
-diff --git a/drivers/dma/ioat/init.c b/drivers/dma/ioat/init.c
-index 20a4f36a2f6ea..8a53f5c96b168 100644
---- a/drivers/dma/ioat/init.c
-+++ b/drivers/dma/ioat/init.c
-@@ -602,7 +602,7 @@ static void ioat_enumerate_channels(struct ioatdma_device *ioat_dma)
- 
- /**
-  * ioat_free_chan_resources - release all the descriptors
-- * @chan: the channel to be cleaned
-+ * @c: the channel to be cleaned
-  */
- static void ioat_free_chan_resources(struct dma_chan *c)
- {
--- 
-2.25.1
+jirka
 
