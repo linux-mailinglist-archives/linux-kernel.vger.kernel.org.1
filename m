@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B235721FCF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AC921FBCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730254AbgGNTMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:12:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41484 "EHLO mail.kernel.org"
+        id S1730893AbgGNSzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:55:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729556AbgGNSql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:46:41 -0400
+        id S1730886AbgGNSzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:55:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D88722AAB;
-        Tue, 14 Jul 2020 18:46:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1D9A21D79;
+        Tue, 14 Jul 2020 18:55:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752400;
-        bh=X8FtHlrJyDItUnN69QmMhvloGFJsAWkk0V7AsUpQpVk=;
+        s=default; t=1594752935;
+        bh=/OB5+buJ/dYANcHnH4H5AnXekZPVzzEHTMS/vT95zmQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AJH8fIGN1Ke2NnV+zPEx6S+DlL565wa7/NQGjlNFpkGTrticrSjZEp52HTWBFCrgC
-         QRTv019lei+V+4z+9tbv/H6WjUlfTYa91hw5NpRzhd9CUv6QiufP3np48jyRLIB/Dt
-         JQ3ogkjnw/PBZLikv84upooTMWZN4rZDgrqQoYEc=
+        b=B2X1Wb1g5VmPC6CCbfBREeo2ALgk2YO8ZLUWL763Ox/qu7eGjetoTY9z3Nub/YKen
+         9jTVPo/JW5gz5mStiEWXljEVDn91+C9hpx8SSXfexT+kwBaDnynjocUTv4p4UdHYfG
+         OUUA6okiLTyD1dyxuzXvjt/vK+IOx47G6ZqdJhZA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, maemo-leste@lists.dyne.org,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Sebastian Reichel <sre@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 07/58] ARM: dts: omap4-droid4: Fix spi configuration and increase rate
+Subject: [PATCH 5.7 055/166] bpf: Do not allow btf_ctx_access with __int128 types
 Date:   Tue, 14 Jul 2020 20:43:40 +0200
-Message-Id: <20200714184056.498066895@linuxfoundation.org>
+Message-Id: <20200714184118.509799543@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,50 +45,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: John Fastabend <john.fastabend@gmail.com>
 
-[ Upstream commit 0df12a01f4857495816b05f048c4c31439446e35 ]
+[ Upstream commit a9b59159d338d414acaa8e2f569d129d51c76452 ]
 
-We can currently sometimes get "RXS timed out" errors and "EOT timed out"
-errors with spi transfers.
+To ensure btf_ctx_access() is safe the verifier checks that the BTF
+arg type is an int, enum, or pointer. When the function does the
+BTF arg lookup it uses the calculation 'arg = off / 8'  using the
+fact that registers are 8B. This requires that the first arg is
+in the first reg, the second in the second, and so on. However,
+for __int128 the arg will consume two registers by default LLVM
+implementation. So this will cause the arg layout assumed by the
+'arg = off / 8' calculation to be incorrect.
 
-These errors can be made easy to reproduce by reading the cpcap iio
-values in a loop while keeping the CPUs busy by also reading /dev/urandom.
+Because __int128 is uncommon this patch applies the easiest fix and
+will force int types to be sizeof(u64) or smaller so that they will
+fit in a single register.
 
-The "RXS timed out" errors we can fix by adding spi-cpol and spi-cpha
-in addition to the spi-cs-high property we already have.
+v2: remove unneeded parens per Andrii's feedback
 
-The "EOT timed out" errors we can fix by increasing the spi clock rate
-to 9.6 MHz. Looks similar MC13783 PMIC says it works at spi clock rates
-up to 20 MHz, so let's assume we can pick any rate up to 20 MHz also
-for cpcap.
-
-Cc: maemo-leste@lists.dyne.org
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Sebastian Reichel <sre@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Fixes: 9e15db66136a1 ("bpf: Implement accurate raw_tp context access via BTF")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Link: https://lore.kernel.org/bpf/159303723962.11287.13309537171132420717.stgit@john-Precision-5820-Tower
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/btf.h | 5 +++++
+ kernel/bpf/btf.c    | 4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi b/arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi
-index f57acf8f66b95..75de8134b1d1f 100644
---- a/arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi
-+++ b/arch/arm/boot/dts/motorola-cpcap-mapphone.dtsi
-@@ -16,8 +16,10 @@
- 		#interrupt-cells = <2>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
--		spi-max-frequency = <3000000>;
-+		spi-max-frequency = <9600000>;
- 		spi-cs-high;
-+		spi-cpol;
-+		spi-cpha;
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 5c1ea99b480fa..8b81fbb4497cf 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -82,6 +82,11 @@ static inline bool btf_type_is_int(const struct btf_type *t)
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_INT;
+ }
  
- 		cpcap_adc: adc {
- 			compatible = "motorola,mapphone-cpcap-adc";
++static inline bool btf_type_is_small_int(const struct btf_type *t)
++{
++	return btf_type_is_int(t) && t->size <= sizeof(u64);
++}
++
+ static inline bool btf_type_is_enum(const struct btf_type *t)
+ {
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_ENUM;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index d65c6912bdaf6..d1f5d428c9fe2 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3744,7 +3744,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 				return false;
+ 
+ 			t = btf_type_skip_modifiers(btf, t->type, NULL);
+-			if (!btf_type_is_int(t)) {
++			if (!btf_type_is_small_int(t)) {
+ 				bpf_log(log,
+ 					"ret type %s not allowed for fmod_ret\n",
+ 					btf_kind_str[BTF_INFO_KIND(t->info)]);
+@@ -3766,7 +3766,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 	/* skip modifiers */
+ 	while (btf_type_is_modifier(t))
+ 		t = btf_type_by_id(btf, t->type);
+-	if (btf_type_is_int(t) || btf_type_is_enum(t))
++	if (btf_type_is_small_int(t) || btf_type_is_enum(t))
+ 		/* accessing a scalar */
+ 		return true;
+ 	if (!btf_type_is_ptr(t)) {
 -- 
 2.25.1
 
