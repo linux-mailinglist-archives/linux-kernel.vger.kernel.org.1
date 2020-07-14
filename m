@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391B521E664
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 05:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E2521E669
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 05:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgGNDiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 23:38:18 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:38988 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgGNDiR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 23:38:17 -0400
-Received: by mail-pj1-f66.google.com with SMTP id b92so877225pjc.4;
-        Mon, 13 Jul 2020 20:38:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Zpl3uAk1cyPC0bXhe+o2OJ9Nd/1R0pm/+fLCm+9cuOI=;
-        b=YWdzRfjQ8qR2Vq/ZmVkg9qdJJGm+0yj2zPaU/lTXFPuQS3fVwGAHPIJXgvDP79/N6y
-         ODBmp6ADJKj2fdzWgTH87H1W+dmGNQgKTtHbBq1tngB6k9fjmTtedvZ5jAydF1OWhp0N
-         Fi0T+On01+Zbzfmi0Lkvf6rK9YgaqZDy/5/J5/k4VxfQpR0+oIZB6PLj0GinwkHmv876
-         LGnNDc16HdGCYb9FhwjVM35Kj8pZiWe/wXruqgIWqmEOTxB/xulLKOj7O2cjBtU3LFyg
-         +4+wAp8GIkHbRmTP+bSYpneDwdF58z3bolH9dSEU+2dRkzDt2kf5Oddp4lQOVcWBz3vf
-         TiQw==
-X-Gm-Message-State: AOAM531Ve6xge6EjEbJfxmySV2pHhWYy/TO0tZGpNDOcd3795C9o9drv
-        /LDKgGGqVVUCT/+WiHUAm4uxBGar
-X-Google-Smtp-Source: ABdhPJz9XE/3kh4Lmrhnn90GWK/clAcS4bZPgWFvTD8Of2ZgoVOW6ordi83zmSdxVe8cYvt72TXPzw==
-X-Received: by 2002:a17:90a:3602:: with SMTP id s2mr2376991pjb.161.1594697896437;
-        Mon, 13 Jul 2020 20:38:16 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id p12sm802196pjz.44.2020.07.13.20.38.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 20:38:15 -0700 (PDT)
-Subject: Re: [PATCH v2 1/4] scsi: ufs: Add checks before setting clk-gating
- states
-To:     Can Guo <cang@codeaurora.org>, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1594693693-22466-1-git-send-email-cang@codeaurora.org>
- <1594693693-22466-2-git-send-email-cang@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <31ef233b-2562-2f61-d899-587092b5c033@acm.org>
-Date:   Mon, 13 Jul 2020 20:38:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726834AbgGNDik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 23:38:40 -0400
+Received: from ozlabs.org ([203.11.71.1]:41395 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726456AbgGNDij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 23:38:39 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B5R7c1n5lz9sRf;
+        Tue, 14 Jul 2020 13:38:36 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594697917;
+        bh=utKdEPCFFOb8Q1Yxk4/KLx+BAJ8D2GFKAuYxXohCvG8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YhNyqPH34KDJC8jEG9M/eVuyt9cp7GboLqIlNbnCksVZV0jDSD5tcjZ3qamCB2BTW
+         77nJg9JkOSDaEQYDHE5qSYLdALc9cAixTzF6wwWdelNfgZJEOXuRtsb5OmM/Ryndal
+         Fi7cu7PRJ8g836mWmZbDvPevVHabbZo9dUzYQEMix9rzzA15BBiwJbcWsnkxmMvgFo
+         An/EbFyasd8sLsnaqw9HAYxY8ljonIpWhWzeKGjMXwdb46oLK/X7pPGwYDZ0MzgzeH
+         Ydu7j+da1KVtcIwii1oA/6ogGp2YLXf8fHv6gX+PbS/4lujDnGNdPiqpeYR18fLRVl
+         SW2JhvfMsQzpw==
+Date:   Tue, 14 Jul 2020 13:38:35 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     dillon.minfei@gmail.com
+Cc:     bcousson@baylibre.com, tony@atomide.com, robh+dt@kernel.org,
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Since am437x have the same clock structure with
+ am335x [1][2], reuse the code from Tony Lindgren's patch [3] to fix dcan
+ probe failed on am437x platform.
+Message-ID: <20200714133835.3b03b8af@canb.auug.org.au>
+In-Reply-To: <1594696998-3995-2-git-send-email-dillon.minfei@gmail.com>
+References: <1594696998-3995-1-git-send-email-dillon.minfei@gmail.com>
+        <1594696998-3995-2-git-send-email-dillon.minfei@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1594693693-22466-2-git-send-email-cang@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/k1XeJEgdCmFTZKkg66haG0l";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-13 19:28, Can Guo wrote:
-> @@ -2538,7 +2540,8 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
->  		err = SCSI_MLQUEUE_HOST_BUSY;
->  		goto out;
->  	}
-> -	WARN_ON(hba->clk_gating.state != CLKS_ON);
-> +	if (ufshcd_is_clkgating_allowed(hba))
-> +		WARN_ON(hba->clk_gating.state != CLKS_ON);
+--Sig_/k1XeJEgdCmFTZKkg66haG0l
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-A minor comment: has it been considered to change this into the
-following?
+Hi,
 
-	WARN_ON(ufshcd_is_clkgating_allowed(hba) &&
-		hba->clk_gating.state != CLKS_ON);
+On Tue, 14 Jul 2020 11:23:18 +0800 dillon.minfei@gmail.com wrote:
+>
+> From: dillon min <dillon.minfei@gmail.com>
+>=20
+> Fixes: 1a5cd7c23cc5 ("bus: ti-sysc: Enable all clocks directly during ini=
+t to read revision")
+>=20
+> [1]: https://www.ti.com/lit/pdf/spruh73 Chapter-23, Figure 23-1. DCAN
+> Integration
+> [2]: https://www.ti.com/lit/pdf/spruhl7 Chapter-25, Figure 25-1. DCAN
+> Integration
+> [3]: commit 516f1117d0fb ("ARM: dts: Configure osc clock for d_can on am3=
+35x")
+>=20
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+>=20
+> Hi Stephen,
+>=20
+> This changes correct commit messages based on your reviewing.
+> make Fixes tags to oneline.
+> make all commit message tags at the end of commit message
 
-Thanks,
+But the Fixes: line should be down with the Signed-off-by: line ...
 
-Bart.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/k1XeJEgdCmFTZKkg66haG0l
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8NKLsACgkQAVBC80lX
+0Gxd/gf/XDaMTcgnoIkuJHOcd/X609x4hkBiINhaOmMBdPYVD/PQndttJiqXeUPM
+NTBl0H06S0BFUyeLAMiw2eA0gfzcCoz81NKhgTiKFl1uh3n+3MHM4Uw1ZkC2aj+o
+XW46IYvBt9Kf4IFd07cs/JGz8S25/LXhlU1tUQlujk5nBk52afUguIpIPLMq66QS
+3K4BlmGIYFvJhATTndQEkT4nGKfLXm0J00Pg8Ajq+y0kcErMGRgrGOgySdB9v0Ij
+wyZlDlZpLcSF8kfr+3Fk31ZGZmxkNAEvKrvdbsZjmV48PYedlgXYrQ8vk1924nAE
+lT4RqY7Bbs2VdqKaTY1WHYppHlCAOQ==
+=Y4xQ
+-----END PGP SIGNATURE-----
+
+--Sig_/k1XeJEgdCmFTZKkg66haG0l--
