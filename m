@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E2521E669
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 05:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E4321E66E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 05:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbgGNDik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 23:38:40 -0400
-Received: from ozlabs.org ([203.11.71.1]:41395 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726456AbgGNDij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 23:38:39 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B5R7c1n5lz9sRf;
-        Tue, 14 Jul 2020 13:38:36 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594697917;
-        bh=utKdEPCFFOb8Q1Yxk4/KLx+BAJ8D2GFKAuYxXohCvG8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YhNyqPH34KDJC8jEG9M/eVuyt9cp7GboLqIlNbnCksVZV0jDSD5tcjZ3qamCB2BTW
-         77nJg9JkOSDaEQYDHE5qSYLdALc9cAixTzF6wwWdelNfgZJEOXuRtsb5OmM/Ryndal
-         Fi7cu7PRJ8g836mWmZbDvPevVHabbZo9dUzYQEMix9rzzA15BBiwJbcWsnkxmMvgFo
-         An/EbFyasd8sLsnaqw9HAYxY8ljonIpWhWzeKGjMXwdb46oLK/X7pPGwYDZ0MzgzeH
-         Ydu7j+da1KVtcIwii1oA/6ogGp2YLXf8fHv6gX+PbS/4lujDnGNdPiqpeYR18fLRVl
-         SW2JhvfMsQzpw==
-Date:   Tue, 14 Jul 2020 13:38:35 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     dillon.minfei@gmail.com
-Cc:     bcousson@baylibre.com, tony@atomide.com, robh+dt@kernel.org,
-        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Since am437x have the same clock structure with
- am335x [1][2], reuse the code from Tony Lindgren's patch [3] to fix dcan
- probe failed on am437x platform.
-Message-ID: <20200714133835.3b03b8af@canb.auug.org.au>
-In-Reply-To: <1594696998-3995-2-git-send-email-dillon.minfei@gmail.com>
-References: <1594696998-3995-1-git-send-email-dillon.minfei@gmail.com>
-        <1594696998-3995-2-git-send-email-dillon.minfei@gmail.com>
+        id S1726771AbgGNDkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 23:40:25 -0400
+Received: from out28-220.mail.aliyun.com ([115.124.28.220]:33093 "EHLO
+        out28-220.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbgGNDkZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 23:40:25 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08019729|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0150631-0.00417496-0.980762;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03294;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.I1OFFep_1594698019;
+Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I1OFFep_1594698019)
+          by smtp.aliyun-inc.com(10.147.40.7);
+          Tue, 14 Jul 2020 11:40:20 +0800
+Subject: Re: [PATCH v2 2/3] dt-bindings: MIPS: Add Ingenic X1830 based boards.
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, paul.burton@mips.com,
+        paul@crapouillou.net, tsbogend@alpha.franken.de,
+        ak@linux.intel.com, ebiederm@xmission.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+References: <20200625173716.56146-1-zhouyanjie@wanyeetech.com>
+ <20200625173716.56146-3-zhouyanjie@wanyeetech.com>
+ <20200714023212.GA1162143@bogus>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <2ef2d552-1e7d-0855-87fb-37bc848a4dc4@wanyeetech.com>
+Date:   Tue, 14 Jul 2020 11:40:16 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/k1XeJEgdCmFTZKkg66haG0l";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200714023212.GA1162143@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/k1XeJEgdCmFTZKkg66haG0l
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Rob,
 
-Hi,
+在 2020/7/14 上午10:32, Rob Herring 写道:
+> On Fri, Jun 26, 2020 at 01:37:15AM +0800, 周琰杰 (Zhou Yanjie) wrote:
+>> Add bindings for Ingenic X1830 based board, prepare for later dts.
+>>
+>> Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> ---
+>>
+>> Notes:
+>>      v1->v2:
+>>      No change.
+>>
+>>   Documentation/devicetree/bindings/mips/ingenic/devices.yaml | 12 +++++++++---
+>>   1 file changed, 9 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mips/ingenic/devices.yaml b/Documentation/devicetree/bindings/mips/ingenic/devices.yaml
+>> index d1175030781a..feb695be9f66 100644
+>> --- a/Documentation/devicetree/bindings/mips/ingenic/devices.yaml
+>> +++ b/Documentation/devicetree/bindings/mips/ingenic/devices.yaml
+>> @@ -8,7 +8,8 @@ title: Ingenic XBurst based Platforms Device Tree Bindings
+>>   
+>>   maintainers:
+>>     - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> -description: |
+>> +
+>> +description:
+>>     Devices with a Ingenic XBurst CPU shall have the following properties.
+>>   
+>>   properties:
+>> @@ -32,8 +33,13 @@ properties:
+>>             - const: img,ci20
+>>             - const: ingenic,jz4780
+>>   
+>> -      - description: YSH & ATIL General Board CU Neo
+>> +      - description: YSH & ATIL General Board, CU1000 Module with Neo Backplane
+>>           items:
+>>             - const: yna,cu1000-neo
+>> -          - const: ingenic,x1000
+>> +          - const: ingenic,x1000e
+> What's this change? You can't just change bindings.
 
-On Tue, 14 Jul 2020 11:23:18 +0800 dillon.minfei@gmail.com wrote:
->
-> From: dillon min <dillon.minfei@gmail.com>
->=20
-> Fixes: 1a5cd7c23cc5 ("bus: ti-sysc: Enable all clocks directly during ini=
-t to read revision")
->=20
-> [1]: https://www.ti.com/lit/pdf/spruh73 Chapter-23, Figure 23-1. DCAN
-> Integration
-> [2]: https://www.ti.com/lit/pdf/spruhl7 Chapter-25, Figure 25-1. DCAN
-> Integration
-> [3]: commit 516f1117d0fb ("ARM: dts: Configure osc clock for d_can on am3=
-35x")
->=20
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> ---
->=20
-> Hi Stephen,
->=20
-> This changes correct commit messages based on your reviewing.
-> make Fixes tags to oneline.
-> make all commit message tags at the end of commit message
 
-But the Fixes: line should be down with the Signed-off-by: line ...
+This is my fault, I will add the modification of the corresponding dts 
+file in the next version.
 
---=20
-Cheers,
-Stephen Rothwell
+Thanks and best regards!
 
---Sig_/k1XeJEgdCmFTZKkg66haG0l
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8NKLsACgkQAVBC80lX
-0Gxd/gf/XDaMTcgnoIkuJHOcd/X609x4hkBiINhaOmMBdPYVD/PQndttJiqXeUPM
-NTBl0H06S0BFUyeLAMiw2eA0gfzcCoz81NKhgTiKFl1uh3n+3MHM4Uw1ZkC2aj+o
-XW46IYvBt9Kf4IFd07cs/JGz8S25/LXhlU1tUQlujk5nBk52afUguIpIPLMq66QS
-3K4BlmGIYFvJhATTndQEkT4nGKfLXm0J00Pg8Ajq+y0kcErMGRgrGOgySdB9v0Ij
-wyZlDlZpLcSF8kfr+3Fk31ZGZmxkNAEvKrvdbsZjmV48PYedlgXYrQ8vk1924nAE
-lT4RqY7Bbs2VdqKaTY1WHYppHlCAOQ==
-=Y4xQ
------END PGP SIGNATURE-----
-
---Sig_/k1XeJEgdCmFTZKkg66haG0l--
+>> +
+>> +      - description: YSH & ATIL General Board, CU1830 Module with Neo Backplane
+>> +        items:
+>> +          - const: yna,cu1830-neo
+>> +          - const: ingenic,x1830
+>>   ...
+>> -- 
+>> 2.11.0
+>>
