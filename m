@@ -2,187 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5A021E832
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFF721E81E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbgGNGeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 02:34:46 -0400
-Received: from out28-99.mail.aliyun.com ([115.124.28.99]:34034 "EHLO
-        out28-99.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726777AbgGNGen (ORCPT
+        id S1726630AbgGNGba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 02:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbgGNGba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 02:34:43 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07439695|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.118669-0.0191296-0.862201;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16368;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.I1SlfTL_1594708424;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I1SlfTL_1594708424)
-          by smtp.aliyun-inc.com(10.147.41.120);
-          Tue, 14 Jul 2020 14:34:37 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     balbi@kernel.org, robh+dt@kernel.org
-Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com, paul@crapouillou.net
-Subject: [PATCH v3 3/3] USB: PHY: JZ4770: Reformat the code to align it.
-Date:   Tue, 14 Jul 2020 14:31:09 +0800
-Message-Id: <20200714063109.102926-4-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200714063109.102926-1-zhouyanjie@wanyeetech.com>
-References: <20200714063109.102926-1-zhouyanjie@wanyeetech.com>
+        Tue, 14 Jul 2020 02:31:30 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B846C061755;
+        Mon, 13 Jul 2020 23:31:30 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s10so19859834wrw.12;
+        Mon, 13 Jul 2020 23:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=IW5MsAw16WncT7hiN49Rl3HYAzAQeKbFqwcVhNGKS+0=;
+        b=nVpM8O7ybmoMTE2akKTxb4v6KVMISCvIgqJqJwoSHz7qagb7clcsDC+oQbghkHElPc
+         bjm8Hayl9wJtAbIZeB/zSnP71SuAi3ZZ9gwGNQUbLx+zLfKT/mL98S0vnSloOp8FEKm+
+         llTVPmLwkGgpk0HU9VepNa3BRC4XZTAOOYqEGL5xzDZ+7uEJW5gcwoQ4Fj4KvV5z51q1
+         JYdIEQF1uD+mz1mq86749Bjgs5ZqP5DaAH6LawN8dS6YhviPE0IiwuVRW2V3LxQ+wY2D
+         zsIYrVjcm7MPuqhZSyITlHvpp6ktGzPjvSTFNN57jN4HmJQQfkicQ+1HDNrT042NANOi
+         TA7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=IW5MsAw16WncT7hiN49Rl3HYAzAQeKbFqwcVhNGKS+0=;
+        b=W7XEq12VakA1RV6foXH+WX4tMj+59veg22EaQ1B6GvbNFWhtrWpJD814kCaANZPq65
+         6FoBb5MHHUy7WdxS2wtc6jDOpW7B4zz92RjHQLiRdxsFnNbGb8CVxMHxX4wGznsl2vfF
+         c9ivlZZR86+dc2DIXdQu8aaZbsZAaScrvsAOB9MCQcxzcSFm4M5aPv1pRmPzd+LscIcS
+         g/zmR+QX1aO7I61Np7MQw8L6gl9gzAEvHYwTCnk0vpCAtlCzc834ifreoOyj+f/l8Og/
+         Lq+5AXxK0biTVgBvRRYoH4BkzmRGLqCxEVzZYhLl0/YhjdCaanXYZgR0FlRrQ51efasy
+         m+yA==
+X-Gm-Message-State: AOAM533MXEj9x+eJMOHS0mW4uF4Hbv676CeKPl6YJkwAtjCTeXYZQXpQ
+        JNhz41c1Nl662vdx/bHh0to=
+X-Google-Smtp-Source: ABdhPJwfFy6dmo1Vm5gws7qxqL6AU1u3wZpvQnq5Cd3DfkTvP2ksYNqKbknLtrONUpUfmGGPoNjFgA==
+X-Received: by 2002:adf:e482:: with SMTP id i2mr3266445wrm.75.1594708288840;
+        Mon, 13 Jul 2020 23:31:28 -0700 (PDT)
+Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
+        by smtp.gmail.com with ESMTPSA id z6sm2772208wmf.33.2020.07.13.23.31.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 23:31:28 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 16:31:20 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [RFC PATCH 7/7] lazy tlb: shoot lazies, a non-refcounting lazy
+ tlb option
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
+References: <1594658283.qabzoxga67.astroid@bobo.none>
+        <010054C3-7FFF-4FB5-BDA8-D2B80F7B1A5D@amacapital.net>
+        <1594701900.gcgdq8p13l.astroid@bobo.none>
+In-Reply-To: <1594701900.gcgdq8p13l.astroid@bobo.none>
 MIME-Version: 1.0
+Message-Id: <1594708054.04iuyxuyb5.astroid@bobo.none>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reformat the code (add one level of indentation before the values),
-to align the code in the macro definition section.
+Excerpts from Nicholas Piggin's message of July 14, 2020 3:04 pm:
+> Excerpts from Andy Lutomirski's message of July 14, 2020 4:18 am:
+>>=20
+>>> On Jul 13, 2020, at 9:48 AM, Nicholas Piggin <npiggin@gmail.com> wrote:
+>>>=20
+>>> =EF=BB=BFExcerpts from Andy Lutomirski's message of July 14, 2020 1:59 =
+am:
+>>>>> On Thu, Jul 9, 2020 at 6:57 PM Nicholas Piggin <npiggin@gmail.com> wr=
+ote:
+>>>>>=20
+>>>>> On big systems, the mm refcount can become highly contented when doin=
+g
+>>>>> a lot of context switching with threaded applications (particularly
+>>>>> switching between the idle thread and an application thread).
+>>>>>=20
+>>>>> Abandoning lazy tlb slows switching down quite a bit in the important
+>>>>> user->idle->user cases, so so instead implement a non-refcounted sche=
+me
+>>>>> that causes __mmdrop() to IPI all CPUs in the mm_cpumask and shoot do=
+wn
+>>>>> any remaining lazy ones.
+>>>>>=20
+>>>>> On a 16-socket 192-core POWER8 system, a context switching benchmark
+>>>>> with as many software threads as CPUs (so each switch will go in and
+>>>>> out of idle), upstream can achieve a rate of about 1 million context
+>>>>> switches per second. After this patch it goes up to 118 million.
+>>>>>=20
+>>>>=20
+>>>> I read the patch a couple of times, and I have a suggestion that could
+>>>> be nonsense.  You are, effectively, using mm_cpumask() as a sort of
+>>>> refcount.  You're saying "hey, this mm has no more references, but it
+>>>> still has nonempty mm_cpumask(), so let's send an IPI and shoot down
+>>>> those references too."  I'm wondering whether you actually need the
+>>>> IPI.  What if, instead, you actually treated mm_cpumask as a refcount
+>>>> for real?  Roughly, in __mmdrop(), you would only free the page tables
+>>>> if mm_cpumask() is empty.  And, in the code that removes a CPU from
+>>>> mm_cpumask(), you would check if mm_users =3D=3D 0 and, if so, check i=
+f
+>>>> you just removed the last bit from mm_cpumask and potentially free the
+>>>> mm.
+>>>>=20
+>>>> Getting the locking right here could be a bit tricky -- you need to
+>>>> avoid two CPUs simultaneously exiting lazy TLB and thinking they
+>>>> should free the mm, and you also need to avoid an mm with mm_users
+>>>> hitting zero concurrently with the last remote CPU using it lazily
+>>>> exiting lazy TLB.  Perhaps this could be resolved by having mm_count
+>>>> =3D=3D 1 mean "mm_cpumask() is might contain bits and, if so, it owns =
+the
+>>>> mm" and mm_count =3D=3D 0 meaning "now it's dead" and using some caref=
+ul
+>>>> cmpxchg or dec_return to make sure that only one CPU frees it.
+>>>>=20
+>>>> Or maybe you'd need a lock or RCU for this, but the idea would be to
+>>>> only ever take the lock after mm_users goes to zero.
+>>>=20
+>>> I don't think it's nonsense, it could be a good way to avoid IPIs.
+>>>=20
+>>> I haven't seen much problem here that made me too concerned about IPIs=20
+>>> yet, so I think the simple patch may be good enough to start with
+>>> for powerpc. I'm looking at avoiding/reducing the IPIs by combining the
+>>> unlazying with the exit TLB flush without doing anything fancy with
+>>> ref counting, but we'll see.
+>>=20
+>> I would be cautious with benchmarking here. I would expect that the
+>> nasty cases may affect power consumption more than performance =E2=80=94=
+ the=20
+>> specific issue is IPIs hitting idle cores, and the main effects are to=20
+>> slow down exit() a bit but also to kick the idle core out of idle.=20
+>> Although, if the idle core is in a deep sleep, that IPI could be=20
+>> *very* slow.
+>=20
+> It will tend to be self-limiting to some degree (deeper idle cores
+> would tend to have less chance of IPI) but we have bigger issues on
+> powerpc with that, like broadcast IPIs to the mm cpumask for THP
+> management. Power hasn't really shown up as an issue but powerpc
+> CPUs may have their own requirements and issues there, shall we say.
+>=20
+>> So I think it=E2=80=99s worth at least giving this a try.
+>=20
+> To be clear it's not a complete solution itself. The problem is of=20
+> course that mm cpumask gives you false negatives, so the bits
+> won't always clean up after themselves as CPUs switch away from their
+> lazy tlb mms.
 
-Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-Co-developed-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-Signed-off-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+^^
 
-Notes:
-    v1->v2:
-    Add support for the JZ4780 SoC.
-    
-    v2->v3:
-    No change.
+False positives: CPU is in the mm_cpumask, but is not using the mm
+as a lazy tlb. So there can be bits left and never freed.
 
- drivers/usb/phy/phy-jz4770.c | 100 +++++++++++++++++++++----------------------
- 1 file changed, 50 insertions(+), 50 deletions(-)
+If you closed the false positives, you're back to a shared mm cache
+line on lazy mm context switches.
 
-diff --git a/drivers/usb/phy/phy-jz4770.c b/drivers/usb/phy/phy-jz4770.c
-index fb5e1004bc72..676759250e6a 100644
---- a/drivers/usb/phy/phy-jz4770.c
-+++ b/drivers/usb/phy/phy-jz4770.c
-@@ -15,71 +15,71 @@
- #include <linux/usb/otg.h>
- #include <linux/usb/phy.h>
- 
--#define REG_USBPCR_OFFSET	0x00
--#define REG_USBRDT_OFFSET	0x04
--#define REG_USBVBFIL_OFFSET	0x08
--#define REG_USBPCR1_OFFSET	0x0c
-+#define REG_USBPCR_OFFSET			0x00
-+#define REG_USBRDT_OFFSET			0x04
-+#define REG_USBVBFIL_OFFSET			0x08
-+#define REG_USBPCR1_OFFSET			0x0c
- 
- /*USB Parameter Control Register*/
--#define USBPCR_USB_MODE		BIT(31)
--#define USBPCR_AVLD_REG		BIT(30)
--#define USBPCR_INCR_MASK	BIT(27)
--#define USBPCR_COMMONONN	BIT(25)
--#define USBPCR_VBUSVLDEXT	BIT(24)
--#define USBPCR_VBUSVLDEXTSEL	BIT(23)
--#define USBPCR_POR		BIT(22)
--#define USBPCR_SIDDQ		BIT(21)
--#define USBPCR_OTG_DISABLE	BIT(20)
--#define USBPCR_TXPREEMPHTUNE	BIT(6)
--
--#define USBPCR_IDPULLUP_LSB	28
--#define USBPCR_IDPULLUP_MASK	GENMASK(29, USBPCR_IDPULLUP_LSB)
--#define USBPCR_IDPULLUP_ALWAYS	(0x2 << USBPCR_IDPULLUP_LSB)
--#define USBPCR_IDPULLUP_SUSPEND	(0x1 << USBPCR_IDPULLUP_LSB)
--#define USBPCR_IDPULLUP_OTG	(0x0 << USBPCR_IDPULLUP_LSB)
--
--#define USBPCR_COMPDISTUNE_LSB	17
--#define USBPCR_COMPDISTUNE_MASK	GENMASK(19, USBPCR_COMPDISTUNE_LSB)
--#define USBPCR_COMPDISTUNE_DFT	(0x4 << USBPCR_COMPDISTUNE_LSB)
--
--#define USBPCR_OTGTUNE_LSB	14
--#define USBPCR_OTGTUNE_MASK	GENMASK(16, USBPCR_OTGTUNE_LSB)
--#define USBPCR_OTGTUNE_DFT	(0x4 << USBPCR_OTGTUNE_LSB)
--
--#define USBPCR_SQRXTUNE_LSB	11
--#define USBPCR_SQRXTUNE_MASK	GENMASK(13, USBPCR_SQRXTUNE_LSB)
-+#define USBPCR_USB_MODE				BIT(31)
-+#define USBPCR_AVLD_REG				BIT(30)
-+#define USBPCR_INCR_MASK			BIT(27)
-+#define USBPCR_COMMONONN			BIT(25)
-+#define USBPCR_VBUSVLDEXT			BIT(24)
-+#define USBPCR_VBUSVLDEXTSEL		BIT(23)
-+#define USBPCR_POR					BIT(22)
-+#define USBPCR_SIDDQ				BIT(21)
-+#define USBPCR_OTG_DISABLE			BIT(20)
-+#define USBPCR_TXPREEMPHTUNE		BIT(6)
-+
-+#define USBPCR_IDPULLUP_LSB			28
-+#define USBPCR_IDPULLUP_MASK		GENMASK(29, USBPCR_IDPULLUP_LSB)
-+#define USBPCR_IDPULLUP_ALWAYS		(0x2 << USBPCR_IDPULLUP_LSB)
-+#define USBPCR_IDPULLUP_SUSPEND		(0x1 << USBPCR_IDPULLUP_LSB)
-+#define USBPCR_IDPULLUP_OTG			(0x0 << USBPCR_IDPULLUP_LSB)
-+
-+#define USBPCR_COMPDISTUNE_LSB		17
-+#define USBPCR_COMPDISTUNE_MASK		GENMASK(19, USBPCR_COMPDISTUNE_LSB)
-+#define USBPCR_COMPDISTUNE_DFT		(0x4 << USBPCR_COMPDISTUNE_LSB)
-+
-+#define USBPCR_OTGTUNE_LSB			14
-+#define USBPCR_OTGTUNE_MASK			GENMASK(16, USBPCR_OTGTUNE_LSB)
-+#define USBPCR_OTGTUNE_DFT			(0x4 << USBPCR_OTGTUNE_LSB)
-+
-+#define USBPCR_SQRXTUNE_LSB			11
-+#define USBPCR_SQRXTUNE_MASK		GENMASK(13, USBPCR_SQRXTUNE_LSB)
- #define USBPCR_SQRXTUNE_DCR_20PCT	(0x7 << USBPCR_SQRXTUNE_LSB)
--#define USBPCR_SQRXTUNE_DFT	(0x3 << USBPCR_SQRXTUNE_LSB)
-+#define USBPCR_SQRXTUNE_DFT			(0x3 << USBPCR_SQRXTUNE_LSB)
- 
--#define USBPCR_TXFSLSTUNE_LSB	7
--#define USBPCR_TXFSLSTUNE_MASK	GENMASK(10, USBPCR_TXFSLSTUNE_LSB)
-+#define USBPCR_TXFSLSTUNE_LSB		7
-+#define USBPCR_TXFSLSTUNE_MASK		GENMASK(10, USBPCR_TXFSLSTUNE_LSB)
- #define USBPCR_TXFSLSTUNE_DCR_50PPT	(0xf << USBPCR_TXFSLSTUNE_LSB)
- #define USBPCR_TXFSLSTUNE_DCR_25PPT	(0x7 << USBPCR_TXFSLSTUNE_LSB)
--#define USBPCR_TXFSLSTUNE_DFT	(0x3 << USBPCR_TXFSLSTUNE_LSB)
-+#define USBPCR_TXFSLSTUNE_DFT		(0x3 << USBPCR_TXFSLSTUNE_LSB)
- #define USBPCR_TXFSLSTUNE_INC_25PPT	(0x1 << USBPCR_TXFSLSTUNE_LSB)
- #define USBPCR_TXFSLSTUNE_INC_50PPT	(0x0 << USBPCR_TXFSLSTUNE_LSB)
- 
--#define USBPCR_TXHSXVTUNE_LSB	4
--#define USBPCR_TXHSXVTUNE_MASK	GENMASK(5, USBPCR_TXHSXVTUNE_LSB)
--#define USBPCR_TXHSXVTUNE_DFT	(0x3 << USBPCR_TXHSXVTUNE_LSB)
-+#define USBPCR_TXHSXVTUNE_LSB		4
-+#define USBPCR_TXHSXVTUNE_MASK		GENMASK(5, USBPCR_TXHSXVTUNE_LSB)
-+#define USBPCR_TXHSXVTUNE_DFT		(0x3 << USBPCR_TXHSXVTUNE_LSB)
- #define USBPCR_TXHSXVTUNE_DCR_15MV	(0x1 << USBPCR_TXHSXVTUNE_LSB)
- 
--#define USBPCR_TXRISETUNE_LSB	4
--#define USBPCR_TXRISETUNE_MASK	GENMASK(5, USBPCR_TXRISETUNE_LSB)
--#define USBPCR_TXRISETUNE_DFT	(0x3 << USBPCR_TXRISETUNE_LSB)
-+#define USBPCR_TXRISETUNE_LSB		4
-+#define USBPCR_TXRISETUNE_MASK		GENMASK(5, USBPCR_TXRISETUNE_LSB)
-+#define USBPCR_TXRISETUNE_DFT		(0x3 << USBPCR_TXRISETUNE_LSB)
- 
--#define USBPCR_TXVREFTUNE_LSB	0
--#define USBPCR_TXVREFTUNE_MASK	GENMASK(3, USBPCR_TXVREFTUNE_LSB)
-+#define USBPCR_TXVREFTUNE_LSB		0
-+#define USBPCR_TXVREFTUNE_MASK		GENMASK(3, USBPCR_TXVREFTUNE_LSB)
- #define USBPCR_TXVREFTUNE_INC_25PPT	(0x7 << USBPCR_TXVREFTUNE_LSB)
--#define USBPCR_TXVREFTUNE_DFT	(0x5 << USBPCR_TXVREFTUNE_LSB)
-+#define USBPCR_TXVREFTUNE_DFT		(0x5 << USBPCR_TXVREFTUNE_LSB)
- 
- /*USB Reset Detect Timer Register*/
--#define USBRDT_UTMI_RST		BIT(27)
--#define USBRDT_HB_MASK		BIT(26)
--#define USBRDT_VBFIL_LD_EN	BIT(25)
--#define USBRDT_IDDIG_EN		BIT(24)
--#define USBRDT_IDDIG_REG	BIT(23)
--#define USBRDT_VBFIL_EN		BIT(2)
-+#define USBRDT_UTMI_RST				BIT(27)
-+#define USBRDT_HB_MASK				BIT(26)
-+#define USBRDT_VBFIL_LD_EN			BIT(25)
-+#define USBRDT_IDDIG_EN				BIT(24)
-+#define USBRDT_IDDIG_REG			BIT(23)
-+#define USBRDT_VBFIL_EN				BIT(2)
- 
- /*USB Parameter Control Register 1*/
- #define USBPCR1_BVLD_REG			BIT(31)
--- 
-2.11.0
-
+Thanks,
+Nick
