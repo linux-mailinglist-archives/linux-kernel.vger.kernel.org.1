@@ -2,76 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C8721F1B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B2F21F218
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgGNMmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:42:44 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58406 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726352AbgGNMmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:42:44 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9ECCBDDF89920A824B6C;
-        Tue, 14 Jul 2020 20:42:41 +0800 (CST)
-Received: from huawei.com (10.174.28.241) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Jul 2020
- 20:42:33 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-next@vger.kernel.org>, <cuibixuan@huawei.com>,
-        <john.wanghui@huawei.com>
-Subject: [PATCH] mm/percpu: mark pcpu_chunk_type() as __maybe_unused
-Date:   Tue, 14 Jul 2020 13:41:01 +0000
-Message-ID: <20200714134101.80534-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.28.241]
-X-CFilter-Loop: Reflected
+        id S1727891AbgGNNFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:05:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39526 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726354AbgGNNFW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 09:05:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594731921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=6VIoOR5Zq1Eiat1CGdfDl2SCC7HipCcOifvnlXpfoZM=;
+        b=dSDD6Oor+i8plV7dOuIihMZwjU3vWVYFBF2oP5TePkhDWQU3E8cQyL+DUv1ueAPhMGncSv
+        JlSTEuqVSeuHXeTRFPIeGVSJMpaAEt0+MKgREFMVMufNwilCTWbGtzRQXAZeLmVCodIj8L
+        3Yf0ulkOrP7oP0EqRgUJviMALmhz/h0=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-80-cZoKZhCvPuSzp2ujv3ravg-1; Tue, 14 Jul 2020 09:05:18 -0400
+X-MC-Unique: cZoKZhCvPuSzp2ujv3ravg-1
+Received: by mail-qt1-f200.google.com with SMTP id x6so12533252qtf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 06:05:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6VIoOR5Zq1Eiat1CGdfDl2SCC7HipCcOifvnlXpfoZM=;
+        b=QgybBT1IthZyJGAHyjLz+qsNAr7DXhS1wiJFZTZ9mW6/jIr6ubvtChdumDn4ZMpMjO
+         DUw6/wIQ40NaHz3dcMvYrILAdW0JzNNYjD4yMq/j1HNUYNy9gLMY72aXtktzCSIX2eec
+         iiZfsSOdPxX1zZjp9ffMie1PzA6DWBrRNbvzPssj+dmT5Uu2rxH+imfG6OMbNX+NZk1P
+         uG6yxZsXw41SuGVjahwAEbvquqduD8aTd4LWyB9VZAkQgx9FlWdmbV63SrdVlKQLFE+P
+         xbRWJBy0ROEIzZq1qtsgsTfesVcZhi07G2fICt5HQ8JJq16259mVG3BemogUxR2gQeF6
+         OiGg==
+X-Gm-Message-State: AOAM532ib5sQkPhySW8veWkXhn8bBtyKPjW/ZEjrLY4m/MVIRVHHrnnX
+        LV1ssxdUBzKB/o6fKlWGH5gUTvyqq98UmkD7f9pbs6gTCcDARUsWALSXTXJ8gdJs9FZANeiXuPP
+        Gwt4ZyeizvoIfGzHH3G3/nUIO
+X-Received: by 2002:ac8:197b:: with SMTP id g56mr4449149qtk.105.1594731917837;
+        Tue, 14 Jul 2020 06:05:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzVKa3PW5ERXw99RIG+5uzKIILhRlDiEsTBc59MTNrGF1RtX7vID/XbIEyJTmTUVgPSjNdDnA==
+X-Received: by 2002:ac8:197b:: with SMTP id g56mr4449125qtk.105.1594731917573;
+        Tue, 14 Jul 2020 06:05:17 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b53sm23888483qtc.65.2020.07.14.06.05.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 06:05:16 -0700 (PDT)
+From:   trix@redhat.com
+To:     jack@suse.cz, william.kucharski@oracle.com, jeffm@suse.com,
+        willy@infradead.org, joseph.qi@linux.alibaba.com,
+        liao.pingfang@zte.com.cn
+Cc:     reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] reiserfs : fix improper free in reiserfs_get_block
+Date:   Tue, 14 Jul 2020 06:05:09 -0700
+Message-Id: <20200714130509.11791-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gcc report the following warning without CONFIG_MEMCG_KMEM:
+From: Tom Rix <trix@redhat.com>
 
-mm/percpu-internal.h:145:29: warning: ‘pcpu_chunk_type’ defined
-but not used [-Wunused-function]
- static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
-                             ^~~~~~~~~~~~~~~
+clang static analysis flags this error
 
-Mark pcpu_chunk_type() as __maybe_unused to make it clear.
+inode.c:1083:5: warning: Argument to kfree() is the address of the
+  local variable 'unf_single', which is not memory allocated by
+  malloc() [unix.Malloc]
+                                kfree(un);
+                                ^~~~~~~~~
+Assignment of 'un'
 
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+	/*
+	 * We use this in case we need to allocate
+	 * only one block which is a fastpath
+	 */
+	unp_t unf_single = 0;
+
+	...
+
+	if (blocks_needed == 1) {
+		un = &unf_single;
+	} else {
+		un = kcalloc(min(blocks_needed, max_to_insert),
+			     UNFM_P_SIZE, GFP_NOFS);
+		if (!un) {
+			un = &unf_single;
+			blocks_needed = 1;
+			max_to_insert = 0;
+		}
+	}
+
+The logic to free 'un'
+
+	if (blocks_needed != 1)
+		kfree(un);
+
+Because the kcalloc failure falls back to using unf_single,
+the if-check for the free is wrong.
+
+So improve the check.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
 ---
- mm/percpu-internal.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/reiserfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
-index 7983455842ff..8a8a230bd957 100644
---- a/mm/percpu-internal.h
-+++ b/mm/percpu-internal.h
-@@ -129,7 +129,7 @@ static inline int pcpu_chunk_map_bits(struct pcpu_chunk *chunk)
- }
-
- #ifdef CONFIG_MEMCG_KMEM
--static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
-+static enum pcpu_chunk_type __maybe_unused pcpu_chunk_type(struct pcpu_chunk *chunk)
- {
- 	if (chunk->obj_cgroups)
- 		return PCPU_CHUNK_MEMCG;
-@@ -142,7 +142,7 @@ static bool pcpu_is_memcg_chunk(enum pcpu_chunk_type chunk_type)
- }
-
- #else
--static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
-+static enum pcpu_chunk_type __maybe_unused pcpu_chunk_type(struct pcpu_chunk *chunk)
- {
- 	return PCPU_CHUNK_ROOT;
- }
---
-2.17.1
+diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
+index 1509775da040..4d62148e43e6 100644
+--- a/fs/reiserfs/inode.c
++++ b/fs/reiserfs/inode.c
+@@ -1079,7 +1079,7 @@ int reiserfs_get_block(struct inode *inode, sector_t block,
+ 						     UNFM_P_SIZE *
+ 						     blocks_needed);
+ 
+-			if (blocks_needed != 1)
++			if (un != &unf_single)
+ 				kfree(un);
+ 
+ 			if (retval) {
+-- 
+2.18.1
 
