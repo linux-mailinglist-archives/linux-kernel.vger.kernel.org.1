@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110D821FA49
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F130321F9D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730380AbgGNSvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:51:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47606 "EHLO mail.kernel.org"
+        id S1729681AbgGNSrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:47:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729904AbgGNSvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:51:12 -0400
+        id S1729662AbgGNSrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:47:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81968207F5;
-        Tue, 14 Jul 2020 18:51:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF22D22B3A;
+        Tue, 14 Jul 2020 18:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752672;
-        bh=pIlEJRjVxi2ury+/Ey2yaXirtWPwYck8Ee9HE9kUsGs=;
+        s=default; t=1594752421;
+        bh=Jbar1YGVbw+/kkcPBNF+QcqfU0PyvZ4l2tMkv0Kaj44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KM7MKYkzpZC28s07GxEOXtkdmnsGZVDPp+u0HQEzDGVUARW1qBlnZ63qpsC7HIAbf
-         7LipdeRsadeXJ7hmrPuyQdEV62ISTr+rXR+mn2kEAdoY/VkKxnSqjC8zU5JYfBoQqj
-         awIIxoqZNDRynuhneLNof9ypJliV9SeGQCMzw1ac=
+        b=IukHa5R9smiB3zlJvawMIQhfPUhl9wMSBiIkCBN1I/DEyOmOCrXpJ/qDYR0DfS9/G
+         SF4XycdfJ7hhRbJx6WKpsEkXbnh6VkWhSsMWoLMPmyfL1s6T9khdsV2vc2Cxdc1rvz
+         IrbtuUX07gI0HC9RgXh2hASalfH0FmOhQJ2TGgd0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -34,12 +34,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 066/109] net: macb: mark device wake capable when "magic-packet" property present
+Subject: [PATCH 4.19 36/58] net: macb: mark device wake capable when "magic-packet" property present
 Date:   Tue, 14 Jul 2020 20:44:09 +0200
-Message-Id: <20200714184108.685050591@linuxfoundation.org>
+Message-Id: <20200714184057.928740952@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -78,10 +78,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 16f5c62ba6dfe..e7fafe2fcae5d 100644
+index d1ff317f3b182..acae87f548a16 100644
 --- a/drivers/net/ethernet/cadence/macb_main.c
 +++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -4260,7 +4260,7 @@ static int macb_probe(struct platform_device *pdev)
+@@ -4060,7 +4060,7 @@ static int macb_probe(struct platform_device *pdev)
  	bp->wol = 0;
  	if (of_get_property(np, "magic-packet", NULL))
  		bp->wol |= MACB_WOL_HAS_MAGIC_PACKET;
