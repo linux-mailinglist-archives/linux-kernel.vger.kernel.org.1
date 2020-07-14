@@ -2,176 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A86121EBE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680D521EBE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgGNIvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 04:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725820AbgGNIvh (ORCPT
+        id S1726845AbgGNIwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 04:52:07 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:36046 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725820AbgGNIwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 04:51:37 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CD5C061755;
-        Tue, 14 Jul 2020 01:51:37 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gc15so849267pjb.0;
-        Tue, 14 Jul 2020 01:51:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xjw4ARtfNtUX/6OkUQ1RIaj9M4+QsmA2dgmi/P58o5o=;
-        b=NkIg4XsR5nVcpy39XZ4T/BXz8U7st1zkK0LFOOgho1IiDJHZyrnBFMFdxH9MiqxnIM
-         esw76UvNr1LP6pQXcxbhTVNbQWP4KWIPbUoOPzMjYb+uJR24Uf42AsrGFy7l+Z1oYpgg
-         qBShjfjhWuf4TCKFgXBxZh7YMoR/UgVCYvdj/z5JF+9PcSX+a+MD3gs/7qoT6Ko5++2L
-         2pbI57+HOSZ4h73IAe3KXq1IDMSK5fRkado4j1/DmE1YDXvD6tHUSfCh6NPJkXb43eG8
-         VtSbMCaMjsg2sBOXGfmQossSbwiUpSCAkXpuX+5trLIsgiHhNxwle5MFn9R6hhqjpc68
-         2C+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xjw4ARtfNtUX/6OkUQ1RIaj9M4+QsmA2dgmi/P58o5o=;
-        b=DqIBPusRNyBixgiv8XAPvN5FDp1kLuUkCNPxPfATzOGZyn8TaGxZhOud0PYR4+KeNL
-         /WOnqp3ywvU7Gkj/T9zIinBb3NhcvtUXMbYcv7aoMnYrQI944YOd0Tb9VrpFpzj1isZU
-         QP62kyPeXwxQi77ZRrMTxbhcwr/wpd2xo7Kh1Jmj3n8ZRpFr9Z38Sg4UXeF7DVEeVTy4
-         i5RbqqxMXBmTyKXAkZZNlW7ev8uuaWMtM8RXb98dE2tK5zY7MnMCmWKWIzHpOxHieQXW
-         aIOaVj1/x6imLMyERpO19snxL5C5h3nZMOR4RZCXslWFdhT9OuwoOkufKS/5yZLgkry8
-         hCGw==
-X-Gm-Message-State: AOAM530ESkLLWLfGSViVyQrgnPVOziPPV83+nO7NnM1yedvBi6QffOa+
-        A03cxGqmPv3YJFwOFUnVP4LiKoiwdQynlm+ojgM=
-X-Google-Smtp-Source: ABdhPJz+U1xrPVMoU1USOz4l4EBn6EDe0LPwWgU9/7mbn/wsc8HtkjzMF0rTv8a85pPLg8q5H1dHIDQhDgyudGGaMa8=
-X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr3631808pjp.228.1594716697098;
- Tue, 14 Jul 2020 01:51:37 -0700 (PDT)
+        Tue, 14 Jul 2020 04:52:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1594716725; x=1626252725;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=tky6NM7O8/hnmZ6YHCdQVf/2RQnmXE+nhxA5aK0S6a8=;
+  b=U80e4I5yPSJrEZsICK9sGoFpO5j6OWsrYKurhz3/SIm65b3SKIAsOhWr
+   iza6nKRALzaBkqOZN7Q5gMGJx+Jy/rIcd8JwDvvdFAxgSBi5nAg2jz+40
+   h/yJ96x1Tn/2r6HipWtUk9cOAPW6K9FDfP9xoOxO92WIJLUux1nCHR1PZ
+   RjZv4Qjba20vAQkhqE4Jj5Dc5Wk0xJlxqLQcwrV8h1VlKICObZKNz0Gf2
+   1DJpmmTgio41W2e6i04cegRNd8jHx/XuusT1yCUU1rxh/6ap+N6Vv0nPm
+   fAiL2Lc+7lFa+ZBcwX1CYczaRHcNxFhipHV1Yztwggat7fEYrDYdPNbaz
+   A==;
+IronPort-SDR: fYrEfRCafZ4CxcwW6D3u0SOieHK0rHHRRzQG9Gfh5XnLBXvOpgKBDsMVAAZp1VZ+Q1AK9fuy5N
+ VaLBShb30ZgOmiq1RLe6gM2qPqL/XmBd8m1yFKuCrSlVAzZjc69yu8kyh3xr4SJvwZgfRS1HfO
+ a6hWpxGlnUnTBW1cbofkn2pqIVsJMvwXoTo1f5xTzF2aXXyx7kj6TCRykJGkn4b6XWRACgcSa/
+ Nlxxna2dJQcnM62j9a2uwpSbir7mjn+JNKS/D6ZtPqPOqV4KbcHG3M/VYuYvs11KLC5H/9Ly2R
+ Sk4=
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="87506770"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Jul 2020 01:52:05 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 14 Jul 2020 01:51:34 -0700
+Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Tue, 14 Jul 2020 01:51:30 -0700
+References: <20200702101331.26375-1-lars.povlsen@microchip.com> <20200702101331.26375-7-lars.povlsen@microchip.com> <20200713192902.GA587038@bogus>
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Mark Brown <broonie@kernel.org>, Peter Rosin <peda@axentia.se>,
+        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Subject: Re: [PATCH v3 6/8] dt-bindings: microchip,sparx5-spi-mux: Add Sparx5 SPI mux driver bindings
+In-Reply-To: <20200713192902.GA587038@bogus>
+Date:   Tue, 14 Jul 2020 10:52:01 +0200
+Message-ID: <87y2nmjx72.fsf@soft-dev15.microsemi.net>
 MIME-Version: 1.0
-References: <20200508021844.6911-1-david.e.box@linux.intel.com> <20200714062323.19990-4-david.e.box@linux.intel.com>
-In-Reply-To: <20200714062323.19990-4-david.e.box@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 14 Jul 2020 11:51:20 +0300
-Message-ID: <CAHp75VeueLvou3SEtR=EcTi0x+0qpLz7_cvE2KBXHXa_crS8cA@mail.gmail.com>
-Subject: Re: [PATCH V3 3/3] platform/x86: Intel PMT Telemetry capability driver
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 9:22 AM David E. Box
-<david.e.box@linux.intel.com> wrote:
+
+Rob Herring writes:
+
+> On Thu, Jul 02, 2020 at 12:13:29PM +0200, Lars Povlsen wrote:
+>> The Microchip Sparx5 SPI controller has two bus segments, and use this
+>> mux to control the bus interface mapping for any chip selects. This
+>> decribes the bindings used to configure the mux driver.
+>>
+>> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+>> ---
+>>  .../mux/microchip,sparx5-spi-mux.yaml         | 71 +++++++++++++++++++
+>>  1 file changed, 71 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/mux/microchip,sparx5-spi-mux.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/mux/microchip,sparx5-spi-mux.yaml b/Documentation/devicetree/bindings/mux/microchip,sparx5-spi-mux.yaml
+>> new file mode 100644
+>> index 0000000000000..b0ce3b15a69e5
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mux/microchip,sparx5-spi-mux.yaml
+>> @@ -0,0 +1,71 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/mux/microchip,sparx5-spi-mux.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Microchip Sparx5 SPI mux
+>> +
+>> +maintainers:
+>> +  - Lars Povlsen <lars.povlsen@microchip.com>
+>> +
+>> +description: |
+>> +  The Microchip Sparx5 SPI controller has two bus segments. In order
+>> +  to switch between the appropriate bus for any given SPI slave
+>> +  (defined by a chip select), this mux driver is used. The device tree
+>> +  node for the mux will define the bus mapping for any chip
+>> +  selects. The default bus mapping for any chip select is "0", such
+>> +  that only non-default mappings need to be explicitly defined.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - microchip,sparx5-spi-mux
+>> +
+>> +  '#address-cells':
+>> +    const: 1
+>> +
+>> +  '#size-cells':
+>> +    const: 0
+>> +
+>> +  '#mux-control-cells':
+>> +    const: 0
+>> +
+>> +required:
+>> +  - compatible
+>> +
+>> +additionalProperties: false
+>> +
+>> +patternProperties:
+>> +  "^mux@[0-9a-f]$":
+>> +    type: object
+>> +
+>> +    properties:
+>> +      reg:
+>> +        description:
+>> +          Chip select to define bus mapping for.
+>> +        minimum: 0
+>> +        maximum: 15
+>> +
+>> +      microchip,bus-interface:
+>> +        description:
+>> +          The bus interface to use for this chip select.
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +        enum: [0, 1]
+>> +
+>> +    required:
+>> +      - reg
+>> +      - microchip,bus-interface
+>> +
+>> +examples:
+>> +  - |
+>> +    mux: mux-controller {
+>> +      compatible = "microchip,sparx5-spi-mux";
+>> +      #address-cells = <1>;
+>> +      #size-cells = <0>;
+>> +      #mux-control-cells = <0>;
 >
-> PMT Telemetry is a capability of the Intel Platform Monitoring Technology.
-> The Telemetry capability provides access to device telemetry metrics that
-> provide hardware performance data to users from continuous, memory mapped,
-> read-only register spaces.
+> How is this mux accessed? You have no control interface defined.
 >
-> Register mappings are not provided by the driver. Instead, a GUID is read
-> from a header for each endpoint. The GUID identifies the device and is to
-> be used with an XML, provided by the vendor, to discover the available set
-> of metrics and their register mapping.  This allows firmware updates to
-> modify the register space without needing to update the driver every time
-> with new mappings. Firmware writes a new GUID in this case to specify the
-> new mapping.  Software tools with access to the associated XML file can
-> then interpret the changes.
+>> +      mux@e {
+>> +        reg = <14>;
+>> +        microchip,bus-interface = <1>;
 >
-> This module manages access to all PMT Telemetry endpoints on a system,
-> independent of the device exporting them. It creates a pmt_telemetry class
-> to manage the devices. For each telemetry endpoint, sysfs files provide
-> GUID and size information as well as a pointer to the parent device the
-> telemetry came from. Software may discover the association between
-> endpoints and devices by iterating through the list in sysfs, or by looking
-> for the existence of the class folder under the device of interest.  A
-> device node of the same name allows software to then map the telemetry
-> space for direct access.
+> This looks odd. I take it that there's 2 muxes for this h/w? If so then
+> #mux-control-cells should be 1 and the cell value can be whatever you
+> want that is meaningful for the mux controller. Could be 0,1 or perhaps
+> 0xe if that's more useful.
 >
-> This patch also creates an pci device id list for early telemetry hardware
-> that requires workarounds for known issues.
 
-Some more style issues, after addressing feel free to add
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Rob,
 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+The intended use was for the SPI driver to use mux_control_select(mux,
+<cs>) and then have the mux driver translate the <cs> to the right bus
+interface, according to its configuration. The SPI driver would have a
+"mux-controls" property bound to this mux.
 
-Since you are submitting this the order of the above SoB chain is a
-bit strange. I think something like
+Anyway, I am getting pushed in the direction of using the "mux-mmio" and
+"spi-mux" combo, so this driver and bindings are being dropped again.
 
-SoB: Alexander
-Co-developed-by: Alexander
-SoB: David
+I am currently awaiting the "rx-sample-delay-ns" issue to be clarified
+such that I can refresh the series.
 
-is expected (same for patch 2).
+Thank you for your comments!
 
-...
-
-> +Contact:       David Box <david.e.box@linux.intel.com>
-> +Description:
-> +               The telem<x> directory contains files describing an instance of
-> +               a PMT telemetry device that exposes hardware telemetry. Each
-> +               telem<x> directory has an associated /dev/telem<x> node. This
-> +               node may be opened and mapped to access the telemetry space of
-> +               the device. The register layout of the telemetry space is
-> +               determined from an XML file that matches the pci device id and
-
-PCI
-
-> +               guid for the device.
-
-GUID
-
-Same for all code where it appears.
-
-...
-
-> +       psize = (PFN_UP(entry->base_addr + entry->header.size) - pfn) *
-> +               PAGE_SIZE;
-
-I wouldn't mind having this on one line.
-
-...
-
-> +static ssize_t guid_show(struct device *dev, struct device_attribute *attr,
-> +                        char *buf)
-
-Ditto.
-
-...
-
-> +static ssize_t offset_show(struct device *dev, struct device_attribute *attr,
-> +                          char *buf)
-
-Ditto.
-
-...
-
-> +static bool pmt_telem_is_early_client_hw(struct device *dev)
-> +{
-
-> +       struct pci_dev *parent;
-> +
-> +       parent = to_pci_dev(dev->parent);
-
-Can be one line.
-
-> +       return !!pci_match_id(pmt_telem_early_client_pci_ids, parent);
-> +}
-
-...
-
-> +               entry->header_res = platform_get_resource(pdev, IORESOURCE_MEM,
-> +                                                         i);
-
-One line, please.
+> Rob
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Lars Povlsen,
+Microchip
