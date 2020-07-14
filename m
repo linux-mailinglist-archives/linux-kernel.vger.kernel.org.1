@@ -2,103 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DF421EC42
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6313421EC4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgGNJJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:09:21 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:35316 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726479AbgGNJJV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:09:21 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxqdQ7dg1fIVcEAA--.3823S2;
-        Tue, 14 Jul 2020 17:09:16 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Qing Zhang <zhangqing@loongson.cn>
-Subject: [PATCH] spi: Use clk_prepare_enable and clk_disable_unprepare
-Date:   Tue, 14 Jul 2020 17:09:14 +0800
-Message-Id: <1594717754-25428-1-git-send-email-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9CxqdQ7dg1fIVcEAA--.3823S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ary8Ww4UCw1fJF4UXryfXrb_yoW8Cr17pF
-        Z7tFWF9r4xXa109FsFv3yqvFyYy34fKa42kw4rK34ru345tryUtF48Xa4IvF4xuFykAF1I
-        9F4UKrs8Aan8ur7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyK14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAK
-        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-        xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-        jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-        0EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-        1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfU0iiSUUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+        id S1726975AbgGNJJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:09:38 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42072 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725833AbgGNJJg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 05:09:36 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06E94i4L059720;
+        Tue, 14 Jul 2020 05:09:28 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32991e9cdw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Jul 2020 05:09:28 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06E95IZN063342;
+        Tue, 14 Jul 2020 05:09:27 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32991e9cdb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Jul 2020 05:09:27 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06E969bQ010626;
+        Tue, 14 Jul 2020 09:09:26 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03wdc.us.ibm.com with ESMTP id 327528y4y3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Jul 2020 09:09:26 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06E99PK748300430
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Jul 2020 09:09:25 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B06DD28059;
+        Tue, 14 Jul 2020 09:09:25 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 52CC428058;
+        Tue, 14 Jul 2020 09:09:21 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.38.35])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 14 Jul 2020 09:09:21 +0000 (GMT)
+Subject: Re: [RFC v2 1/5] perf/pmu-events/jevents: Add enum to store
+ aggregation like PerPkg
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        pc@us.ibm.com, namhyung@kernel.org, ak@linux.intel.com,
+        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        anju@linux.vnet.ibm.com, kan.liang@linux.intel.com,
+        nasastry@in.ibm.com
+References: <20200707122314.624400-1-kjain@linux.ibm.com>
+ <20200707122314.624400-2-kjain@linux.ibm.com> <20200712185534.GB147742@krava>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <38d2fd54-41aa-61b0-c396-c58fc1da70da@linux.ibm.com>
+Date:   Tue, 14 Jul 2020 14:39:20 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200712185534.GB147742@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-14_01:2020-07-13,2020-07-14 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ suspectscore=0 spamscore=0 impostorscore=0 mlxscore=0 clxscore=1015
+ malwarescore=0 adultscore=0 priorityscore=1501 lowpriorityscore=0
+ bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007140065
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert clk_enable/clk_disable to clk_prepare_enable/clk_disable_unprepare
-calls as required by common clock framework.
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
- drivers/spi/spi-coldfire-qspi.c | 4 ++--
- drivers/spi/spi-omap-uwire.c    | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi-coldfire-qspi.c b/drivers/spi/spi-coldfire-qspi.c
-index f80e06c..8996115 100644
---- a/drivers/spi/spi-coldfire-qspi.c
-+++ b/drivers/spi/spi-coldfire-qspi.c
-@@ -387,7 +387,7 @@ static int mcfqspi_probe(struct platform_device *pdev)
- 		status = PTR_ERR(mcfqspi->clk);
- 		goto fail0;
- 	}
--	clk_enable(mcfqspi->clk);
-+	clk_prepare_enable(mcfqspi->clk);
- 
- 	master->bus_num = pdata->bus_num;
- 	master->num_chipselect = pdata->num_chipselect;
-@@ -425,7 +425,7 @@ static int mcfqspi_probe(struct platform_device *pdev)
- 	pm_runtime_disable(&pdev->dev);
- 	mcfqspi_cs_teardown(mcfqspi);
- fail1:
--	clk_disable(mcfqspi->clk);
-+	clk_disable_unprepare(mcfqspi->clk);
- fail0:
- 	spi_master_put(master);
- 
-diff --git a/drivers/spi/spi-omap-uwire.c b/drivers/spi/spi-omap-uwire.c
-index ce8dbdb..71402f7 100644
---- a/drivers/spi/spi-omap-uwire.c
-+++ b/drivers/spi/spi-omap-uwire.c
-@@ -443,7 +443,7 @@ static void uwire_cleanup(struct spi_device *spi)
- static void uwire_off(struct uwire_spi *uwire)
- {
- 	uwire_write_reg(UWIRE_SR3, 0);
--	clk_disable(uwire->ck);
-+	clk_disable_unprepare(uwire->ck);
- 	spi_master_put(uwire->bitbang.master);
- }
- 
-@@ -475,7 +475,7 @@ static int uwire_probe(struct platform_device *pdev)
- 		spi_master_put(master);
- 		return status;
- 	}
--	clk_enable(uwire->ck);
-+	clk_prepare_enable(uwire->ck);
- 
- 	if (cpu_is_omap7xx())
- 		uwire_idx_shift = 1;
--- 
-2.1.0
+On 7/13/20 12:25 AM, Jiri Olsa wrote:
+> On Tue, Jul 07, 2020 at 05:53:10PM +0530, Kajol Jain wrote:
+> 
+> SNIP
+> 
+>>  			}
+>>  
+>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>> index 93fe72a9dc0b..3cafbb320d68 100644
+>> --- a/tools/perf/util/pmu.c
+>> +++ b/tools/perf/util/pmu.c
+>> @@ -306,7 +306,7 @@ static bool perf_pmu_merge_alias(struct perf_pmu_alias *newalias,
+>>  static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+>>  				 char *desc, char *val,
+>>  				 char *long_desc, char *topic,
+>> -				 char *unit, char *perpkg,
+>> +				 char *unit, char *aggr_mode,
+>>  				 char *metric_expr,
+>>  				 char *metric_name,
+>>  				 char *deprecated)
+>> @@ -378,7 +378,7 @@ static int __perf_pmu__new_alias(struct list_head *list, char *dir, char *name,
+>>  			return -1;
+>>  		snprintf(alias->unit, sizeof(alias->unit), "%s", unit);
+>>  	}
+>> -	alias->per_pkg = perpkg && sscanf(perpkg, "%d", &num) == 1 && num == 1;
+>> +	alias->per_pkg = aggr_mode && sscanf(aggr_mode, "%d", &num) == 1 && num == 1;
+> 
+> should you rather use 'num == PerPkg' instead 'num == 1' ?
 
+Hi Jiri,
+     Thanks for reviewing the patchset. Sure I will update it.
+
+Thanks,
+Kajol Jain
+> 
+> jirka
+> 
