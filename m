@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E08D21FBA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080D221FC60
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731098AbgGNS5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:57:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
+        id S1730250AbgGNSuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:50:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731144AbgGNS5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:57:19 -0400
+        id S1730238AbgGNSt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:49:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B50C922B2B;
-        Tue, 14 Jul 2020 18:57:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 280D622AAA;
+        Tue, 14 Jul 2020 18:49:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753039;
-        bh=1q3eGcrgswO/Hm1Qc/cMcRPN19EH0r7T98jDvBGqZzY=;
+        s=default; t=1594752598;
+        bh=dxJSDkA1CY1HRGex+Bg/lyoogytrSC1qPBDs39Lk+fM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wk0Y+2bk05UfVJfAbldGSzIxtYmkpKQUTG7R5+nkQdb3VLviiyLueyRwG2t8B5rkL
-         TCNSWeroacGjppuOpW20JH5hQm6MfCRtPp9mrWaWv413lvLI/Gta7DlLyv5zX2kza3
-         qoW1q/XFxyjMWTJTz2WuFFP+2NfDNX0F/OqbddzE=
+        b=xEnp6mgUdJl1eH9OvU1/z1wbw5nBTfR9iDhBcZbCb+nDoTVb4gqb8vHMKUuWRBUed
+         mfEuvTiknGqo1IuuidLpRPZHf8tbMG49Oqfp0dHN0G9tEpiScL6GItA6sSSsFpzgX0
+         FjE9diknqxdiwOzPkowWCqDmCG6BK4aV9nK4uG5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
         Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 056/166] nl80211: dont return err unconditionally in nl80211_start_ap()
+Subject: [PATCH 5.4 038/109] nl80211: dont return err unconditionally in nl80211_start_ap()
 Date:   Tue, 14 Jul 2020 20:43:41 +0200
-Message-Id: <20200714184118.556622858@linuxfoundation.org>
+Message-Id: <20200714184107.345661678@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -64,10 +64,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 692bcd35f8094..a56ede64e70fc 100644
+index b65180e874fb9..a34bbca80f498 100644
 --- a/net/wireless/nl80211.c
 +++ b/net/wireless/nl80211.c
-@@ -5004,7 +5004,8 @@ static int nl80211_start_ap(struct sk_buff *skb, struct genl_info *info)
+@@ -4798,7 +4798,8 @@ static int nl80211_start_ap(struct sk_buff *skb, struct genl_info *info)
  		err = nl80211_parse_he_obss_pd(
  					info->attrs[NL80211_ATTR_HE_OBSS_PD],
  					&params.he_obss_pd);
@@ -76,7 +76,7 @@ index 692bcd35f8094..a56ede64e70fc 100644
 +			goto out;
  	}
  
- 	if (info->attrs[NL80211_ATTR_HE_BSS_COLOR]) {
+ 	nl80211_calculate_ap_params(&params);
 -- 
 2.25.1
 
