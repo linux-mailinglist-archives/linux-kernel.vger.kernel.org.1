@@ -2,62 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1C721F2CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1438E21F2D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgGNNkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgGNNkY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:40:24 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CD2C061755;
-        Tue, 14 Jul 2020 06:40:24 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A2D2D2E2;
-        Tue, 14 Jul 2020 13:40:23 +0000 (UTC)
-Date:   Tue, 14 Jul 2020 07:40:22 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        Openrisc <openrisc@lists.librecores.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] OPENRISC ARCHITECTURE: Replace HTTP links with HTTPS
- ones
-Message-ID: <20200714074022.24481c73@lwn.net>
-In-Reply-To: <CAMuHMdXoUME_dCOZP1N0tXyMv61edfNECM4-n4NPa56YbBCncw@mail.gmail.com>
-References: <20200710062019.28755-1-grandmaster@al2klimov.de>
-        <20200713113430.1c1777bb@lwn.net>
-        <CAMuHMdXoUME_dCOZP1N0tXyMv61edfNECM4-n4NPa56YbBCncw@mail.gmail.com>
-Organization: LWN.net
+        id S1726795AbgGNNkf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Jul 2020 09:40:35 -0400
+Received: from unicorn.mansr.com ([81.2.72.234]:48628 "EHLO unicorn.mansr.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725906AbgGNNkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 09:40:35 -0400
+Received: by unicorn.mansr.com (Postfix, from userid 65534)
+        id 0337015360; Tue, 14 Jul 2020 14:40:32 +0100 (BST)
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on unicorn.mansr.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=none autolearn=unavailable
+        autolearn_force=no version=3.4.4
+Received: from raven.mansr.com (raven.mansr.com [IPv6:2001:8b0:ca0d:8d8e::3])
+        by unicorn.mansr.com (Postfix) with ESMTPS id 42A1F15360;
+        Tue, 14 Jul 2020 14:40:32 +0100 (BST)
+Received: by raven.mansr.com (Postfix, from userid 51770)
+        id 392E321A6F3; Tue, 14 Jul 2020 14:40:32 +0100 (BST)
+From:   =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+To:     Chen-Yu Tsai <wens@kernel.org>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Chen-Yu Tsai <wens@csie.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: sun4i: hdmi: Fix inverted HPD result
+References: <20200711011030.21997-1-wens@kernel.org>
+Date:   Tue, 14 Jul 2020 14:40:32 +0100
+In-Reply-To: <20200711011030.21997-1-wens@kernel.org> (Chen-Yu Tsai's message
+        of "Sat, 11 Jul 2020 09:10:30 +0800")
+Message-ID: <yw1x5zaqnrjj.fsf@mansr.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020 09:22:39 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+Chen-Yu Tsai <wens@kernel.org> writes:
 
-> > > -     website         http://openrisc.io
-> > > +     website         https://openrisc.io
-> > >       email           openrisc@lists.librecores.org
-> > >       =======         =============================  
-> >
-> > Applied, thanks.  
-> 
-> Is that site accessible for anyone? It times out for me.
+> From: Chen-Yu Tsai <wens@csie.org>
+>
+> When the extra HPD polling in sun4i_hdmi was removed, the result of
+> HPD was accidentally inverted.
+>
+> Fix this by inverting the check.
+>
+> Fixes: bda8eaa6dee7 ("drm: sun4i: hdmi: Remove extra HPD polling")
+> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 
-Works for me.
+Tested-by: Mans Rullgard <mans@mansr.com>
 
-jon
+> ---
+>
+> Sorry for the screw-up.
+>
+> ---
+>  drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+> index 557cbe5ab35f..2f2c9f0a1071 100644
+> --- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+> +++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+> @@ -260,7 +260,7 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
+>  	unsigned long reg;
+>
+>  	reg = readl(hdmi->base + SUN4I_HDMI_HPD_REG);
+> -	if (reg & SUN4I_HDMI_HPD_HIGH) {
+> +	if (!(reg & SUN4I_HDMI_HPD_HIGH)) {
+>  		cec_phys_addr_invalidate(hdmi->cec_adap);
+>  		return connector_status_disconnected;
+>  	}
+> -- 
+> 2.27.0
+>
+
+-- 
+Måns Rullgård
