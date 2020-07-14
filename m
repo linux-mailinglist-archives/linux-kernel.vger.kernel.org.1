@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D672921FD70
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC7A21FD7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729532AbgGNTfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        id S1729776AbgGNTiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728768AbgGNTfF (ORCPT
+        with ESMTP id S1728768AbgGNTiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:35:05 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC54BC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:35:04 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id b25so24978102ljp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TmvrJI/J3yG66g6pPz5Il+RcCg67c3v/jT1iQASKlcc=;
-        b=KIYXfollvDwZIWSi8MBvzI16dhsw+y4zL9hnXlh1UD0SE8cjPtPzh3zCIWaf7usmKY
-         sJIPvwRi57eB+/xJI+6JaFihnvlQfFnptYDDF1G9FGiSyn3r0SxvQFRYD3v6hzm4/QTE
-         v64cADt8D/wtG1AQ2083itD+hTnNb9/mL5p7o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TmvrJI/J3yG66g6pPz5Il+RcCg67c3v/jT1iQASKlcc=;
-        b=Z58vQOg//nsmUU7zQOP1xwUPlZjB2h02Zko1bJWkVnDqPljy2UOsoRnQ8ZKqr/0TkV
-         NzBujEoygaJSmDVAFIYNGpcquJdag2gsLd2oV+FOBoKRqHB7+rlr3A1+rR8fe8zKSfLE
-         8hYSKK4el8Ts6PhssA9fsFM009ayjvEoWhGjAcUcB/qLjCa/1lJRGsLJoyVvJsCSR7V2
-         Qs8awhen0zZM4IrzVcVyulcHYKnRagQhuIRWoQjuFnVu6VW+ZYBMsjLd4sK/A9VTBoMQ
-         3MTbhnarKCrOTsuQrVS/cBf4/1NYGEzSvDk4ReiaeUyBsc1HlWoWLWbyabsm+V0kf6gZ
-         xp0w==
-X-Gm-Message-State: AOAM533fiyu1aJHUxXXqBzzeLrgQuyZmAd/kYVgzco/zy/UsXUIOTBtg
-        enYyVesTE9QeCIM2Kmacu1LQvmBJeOA=
-X-Google-Smtp-Source: ABdhPJxu+JkHL89co3sKA71u49FAq/0LNySvRORcRi8fR6PdZF6DHnytYXxeiS84ShQF/+mn3MQkbw==
-X-Received: by 2002:a2e:81a:: with SMTP id 26mr3142876lji.460.1594755302987;
-        Tue, 14 Jul 2020 12:35:02 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id i3sm2391ljj.64.2020.07.14.12.35.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 12:35:02 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id s16so13039928lfp.12
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:35:01 -0700 (PDT)
-X-Received: by 2002:a19:8a07:: with SMTP id m7mr2908470lfd.31.1594755301618;
- Tue, 14 Jul 2020 12:35:01 -0700 (PDT)
+        Tue, 14 Jul 2020 15:38:16 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD96C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:38:16 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 46CC0BC09D;
+        Tue, 14 Jul 2020 19:38:12 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     torvalds@linux-foundation.org, corbet@lwn.net, ribalda@kernel.org,
+        viro@zeniv.linux.org.uk, mchehab+samsung@kernel.org,
+        luis.f.correia@gmail.com, geert+renesas@glider.be,
+        paulburton@kernel.org, cyphar@cyphar.com, martink@posteo.de,
+        davej@codemonkey.org.uk, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] CREDITS: remove link http://www.dementia.org/~shadow
+Date:   Tue, 14 Jul 2020 21:38:05 +0200
+Message-Id: <20200714193805.49746-1-grandmaster@al2klimov.de>
+In-Reply-To: <20200713114321.783f0ae6@lwn.net>
+References: <20200713114321.783f0ae6@lwn.net>
 MIME-Version: 1.0
-References: <20200714190427.4332-1-hch@lst.de>
-In-Reply-To: <20200714190427.4332-1-hch@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 14 Jul 2020 12:34:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgxV9We+nVcJtQu2DHco+HSeja-WqVdA-KUcB=nyUYuoQ@mail.gmail.com>
-Message-ID: <CAHk-=wgxV9We+nVcJtQu2DHco+HSeja-WqVdA-KUcB=nyUYuoQ@mail.gmail.com>
-Subject: Re: decruft the early init / initrd / initramfs code v2
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Song Liu <song@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-raid@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 12:06 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> this series starts to move the early init code away from requiring
-> KERNEL_DS to be implicitly set during early startup.  It does so by
-> first removing legacy unused cruft, and the switches away the code
-> from struct file based APIs to our more usual in-kernel APIs.
+Rationale:
+The way it redirects looks like a fallback from a dead URL to a generic one.
 
-Looks good to me, with the added note on the utimes cruft too as a
-further cleanup (separate patch).
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Yes, I noted that some of the links removed by these "CREDITS: remove link:"
+ patches have email addresses with the same domain nearby.
 
-So you can add my acked-by.
+ Don't worry, I'll take care of them together with all other
+ dead email addresses - but not right now.
 
-I _would_ like the md parts to get a few more acks. I see the one from
-Song Liu, anybody else in md land willing to go through those patches?
-They were the bulk of it, and the least obvious to me because I don't
-know that code at all?
 
-              Linus
+ CREDITS | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/CREDITS b/CREDITS
+index 0787b5872906..92ad22b7ef56 100644
+--- a/CREDITS
++++ b/CREDITS
+@@ -483,7 +483,6 @@ D: Intel Wireless WiMAX Connection 2400 SDIO driver
+ 
+ N: Derrick J. Brashear
+ E: shadow@dementia.org
+-W: http://www.dementia.org/~shadow
+ P: 512/71EC9367 C5 29 0F BC 83 51 B9 F0  BC 05 89 A0 4F 1F 30 05
+ D: Author of Sparc CS4231 audio driver, random Sparc work
+ S: 403 Gilmore Avenue
+-- 
+2.27.0
+
