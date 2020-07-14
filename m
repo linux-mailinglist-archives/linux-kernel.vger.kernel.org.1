@@ -2,104 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10E621FD92
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF62E21FD93
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730085AbgGNTlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46960 "EHLO
+        id S1730143AbgGNTlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729465AbgGNTlT (ORCPT
+        with ESMTP id S1729465AbgGNTlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:41:19 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2046DC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:41:19 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id a12so18541544ion.13
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:41:19 -0700 (PDT)
+        Tue, 14 Jul 2020 15:41:31 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98BFCC061755;
+        Tue, 14 Jul 2020 12:41:30 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id k5so7428106plk.13;
+        Tue, 14 Jul 2020 12:41:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Yfl627IA+B/fjGximssA/R316mc2EfYtR5UACcyTqEU=;
-        b=JghOR3/w/t7Bad3EVRgQFuuTNrxpveb/+pmXcmvRpr8kT3VdS32gz4oS09pbARW9Um
-         mHfVM72pqiTz+45kDF631HpsK0xRi4Xx2fK3udA1l6TWZ+lznhGgzu6zP2x0Z7oSMgZW
-         y9TYbgPVf4sZ3qrb7BaioB7FbUO73nUsGKGqcxAXuvdf2pEryou31b6sNt+Yh/fiHFbk
-         2Mkm6BzFMouPZ0ML54FG1ZxtVydZrETj0xnFK9L2S9F24ILZrHy2PGt7c1MmrS7nqUkd
-         apbUxVSu+mEhD5qpWQxugtFUR3oM6cFtP64o3f40pgP99eajZSBJygzlAKTQTpvvmS4e
-         0Nhw==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=niAIjn+Een/amQTg5fN18KJRwMOstxeUEV0t203OE2I=;
+        b=U4GSwduRBIN/yTj+kSe1e3FhlYu/eU+cNd3YvmhAgwNpYObKc0ECpYaCaH/2CfjvbC
+         IpqBWb44SwRTcVaIf1U3pUOENQcwd2PTZYbEDJTHLSpmuY0BGenZJkq4l2PIrR89ANoB
+         KbkmGpnvSUb4wdeuAZQFz0x/z6xk61MwIgK+JTRIyzEYluvVUM7IaXpHFL2F17LFh1/s
+         npt0w4UMgdTBr3F3ba5j6MX2kRR8wzeANYFiwaXeHBQjb1+62g/LcMhLNBdJcZI0CVby
+         DwwZcRJTa6pQoanI2h7/ji6UxrcUQ7/VHgftXOKvybMx/C5wwtuPZGGddVHWEolYWzsl
+         Gupw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Yfl627IA+B/fjGximssA/R316mc2EfYtR5UACcyTqEU=;
-        b=lmKr6Iz+ofGyn2slcj4ILW5HhKBflci/fXrshWifHQmvz6+98MqZ+BKayY38wRhGxb
-         dvT/Qtr5lpec2DGpqI0az19LV3Fo+FG4BvmQ6XSv8iELg2lr0oT7WqCzsiCEDgfm0gFP
-         xo2MRv7k3In6IUzK2XbY56PlnBohi5VuffCzpPAWA24ouCJDeBkbHHv4KBpdM3c0ye+R
-         qhwjUhuyDQNuhG+2+cYDQXa3lVEX3VeHtweFSR81dWUGzaNGyhvpfEyLbSrT5uq/wUMT
-         qE/q6CTMZfhyphA9XP8kpDzbVE8yzXHC+w799i/kC6FAighPK3enN9Tie2pHuFp0vY2x
-         9xBA==
-X-Gm-Message-State: AOAM532svSosEaLaDWk31ma5nifotM2Hn10b+h8H1pdrHNkGaAYKrepk
-        mtoDDLSWKOfRObY6Lhhn9APYLuilf68LB1dI7io=
-X-Google-Smtp-Source: ABdhPJzDor833Vb6WahOOibHeQiKHiz9rWxuyRputJFLDlfl9uZc37yxhD6huWFISbKt5Knd+/DlitnTLUK68G8OADM=
-X-Received: by 2002:a05:6602:1555:: with SMTP id h21mr6451215iow.163.1594755678534;
- Tue, 14 Jul 2020 12:41:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=niAIjn+Een/amQTg5fN18KJRwMOstxeUEV0t203OE2I=;
+        b=SUnl8mtgfjIHzPTeWNe0BFJF8+7V6wqJduFqwd1pWlXgBSCDv7U78dxxodJ/d5eILY
+         9JZus02DTRizUdUBgeuUFDTU/4CtxP5oBnSg0oSkwzohJ2VgGKlCQjHNVcCjHaIsOdpG
+         IT0ZSrwVoAJapSzzQAv3kkjsWIkypFxQFmBpnnezQgTvOEjbljZZvEkfrXqBqrK6se45
+         s8TxSo2wJp7fDiC7bWnvwMNVA1iHYj7iQ86uvHd0E8N9aX9MXrVMEO5XS6i+uEmCyy2w
+         mG3+ogD3UfW+3RRsTPrc/fD2D1gO9M90TyMvw5UKngNI+eCC8Jqdat49O3ykQ1ygDHWP
+         7scg==
+X-Gm-Message-State: AOAM531XZN5jn0j20THUqq76qL8o48LI6gcOyNQAI3sM1UABGpI02sJ5
+        MNizwmRgmFRKvjMFSPOMLKk=
+X-Google-Smtp-Source: ABdhPJxnqN8nrX9Fqfy1W5R/qQtza/2Q/DP10I0i1HHBCyZOqj/LDHNKzVdELgVVBxO9fEp/MDav7g==
+X-Received: by 2002:a17:90a:72c7:: with SMTP id l7mr6645940pjk.34.1594755690151;
+        Tue, 14 Jul 2020 12:41:30 -0700 (PDT)
+Received: from blackclown ([103.88.82.145])
+        by smtp.gmail.com with ESMTPSA id r204sm9234pfc.134.2020.07.14.12.41.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 14 Jul 2020 12:41:29 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 01:11:17 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     jeffrey.t.kirsher@intel.com, davem@davemloft.net, kuba@kernel.org
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH 2/4] e1000e/ethtool.c : Remove unnecessary usages of memset.
+Message-ID: <20200714194117.GA21460@blackclown>
 MIME-Version: 1.0
-From:   Bernd Amend <bernd.amend@gmail.com>
-Date:   Tue, 14 Jul 2020 21:41:07 +0200
-Message-ID: <CAF31+H5ZB7zn73obrc5svLzgfsTnyYe5TKvr7-6atUOqrRY+2w@mail.gmail.com>
-Subject: Regression: squashfs issues since change "squashfs: migrate from
- ll_rw_block usage to BIO"
-To:     phillip@squashfs.org.uk, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, Bernd Amend <bernd.amend@gmail.com>,
-        Stefan Rommel <stefanrommel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vtzGhvizbBRQ85DL"
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-With the Linux Kernel version 5.8-rc5/master I am unable to mount some
-squashfs filesystems compressed with "-comp lz4".
-If I try to mount them I get the following error:
-[    1.084246] SQUASHFS error: lz4 decompression failed, data probably corrupt
-[    1.084545] SQUASHFS error: Failed to read block 0x873e1001: -5
-[    1.084761] SQUASHFS error: Unable to read metadata cache entry [873e0fff]
-[    1.084983] SQUASHFS error: Unable to read directory block [873e0fff:1586]
-[    1.122564] SQUASHFS error: Unable to read metadata cache entry [873e0fff]
-[    1.122708] SQUASHFS error: Unable to read directory block [873e0fff:1586]
-[    1.122862] Starting init: /sbin/init exists but couldn't execute
-it (error -5)
-[    1.123027] SQUASHFS error: Unable to read metadata cache entry [873e0fff]
-[    1.123152] SQUASHFS error: Unable to read directory block [873e0fff:1586]
-[    1.123279] Starting init: /etc/init exists but couldn't execute it
-(error -5)
-[    1.123444] SQUASHFS error: Unable to read metadata cache entry [873e0fff]
-[    1.123573] SQUASHFS error: Unable to read directory block [873e0fff:1586]
-[    1.123713] Starting init: /bin/init exists but couldn't execute it
-(error -5)
-[    1.123900] SQUASHFS error: Unable to read metadata cache entry [873e0fff]
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-or
+Replace memsets of 1 byte with simple assignments.
+Issue found with checkpatch.pl
 
-[ 4960.910693] attempt to access beyond end of device
-[ 4960.910695] loop0: rw=2048, want=46, limit=40
-[ 4960.910696] SQUASHFS error: Failed to read block 0x4001: -5
-[ 4960.910697] SQUASHFS error: Unable to read metadata cache entry [3fff]
-[ 4960.910698] SQUASHFS error: Unable to read inode 0x20c5000c
+Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+---
+ drivers/net/ethernet/intel/e1000e/ethtool.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I bisected the issue to the commit "squashfs: migrate from ll_rw_block
-usage to BIO"
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/fs/squashfs?id=93e72b3c612adcaca13d874fcc86c53e6c8da541
+diff --git a/drivers/net/ethernet/intel/e1000e/ethtool.c b/drivers/net/ethe=
+rnet/intel/e1000e/ethtool.c
+index 64f684dc6c7a..a8fc9208382c 100644
+--- a/drivers/net/ethernet/intel/e1000e/ethtool.c
++++ b/drivers/net/ethernet/intel/e1000e/ethtool.c
+@@ -1608,8 +1608,8 @@ static void e1000_create_lbtest_frame(struct sk_buff =
+*skb,
+ 	memset(skb->data, 0xFF, frame_size);
+ 	frame_size &=3D ~1;
+ 	memset(&skb->data[frame_size / 2], 0xAA, frame_size / 2 - 1);
+-	memset(&skb->data[frame_size / 2 + 10], 0xBE, 1);
+-	memset(&skb->data[frame_size / 2 + 12], 0xAF, 1);
++	skb->data[frame_size / 2 + 10] =3D 0xBE;
++	skb->data[frame_size / 2 + 12] =3D 0xAF;
+ }
+=20
+ static int e1000_check_lbtest_frame(struct sk_buff *skb,
+--=20
+2.17.1
 
-The issue can be reproduced by downloading
-https://theworldsend.eu/demo.squashfs (20K) and the following command
-line.
-# mount demo.squashfs mnt && ls mnt && umount mnt
 
-The same squashfs can be mounted using Linux <=5.7.8.
-The kernel config is identical to the Arch Linux Kernel configuration,
-build using gcc 9 and 10 on x86_64.
+--vtzGhvizbBRQ85DL
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Best regards,
-Bernd Amend
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8OCl0ACgkQ+gRsbIfe
+746ntw//Up63f9QJZQqL9+A+8jZ6A99A9PBee7fkjHVtAiLdaVg/xQMJD3lvbrPS
+MtdWfUsVOwvSkPGyGd8+v1XH3Xk/7mj2lFrG28fR4z2BxS8u3Kzu8ufiB0bAJH9n
+8F5hGTzwJkplP20bPcsqq6z5ffvZicoIGmIOZra3tHRNM3+3TurVJi7zJw8Xnl03
+PL5+EHQm5qbAG3iXsrx1nvUyPCHH6rX6fQH9PegcEt172CisnWx9/6gS2cF/U8Ba
+dWMozeK11DnPt1z2bV+oGxsPiFc+L+y/SwhkV46FDmKasHwBCWTBClJW3royGu4u
+O7PriCh8HYYqu0vu8CWRBPrwF7Ube5/ZBhnKmyjA7zUTF1LQyaoDSdTHajeaONaa
+/uRuaqgI7GGioLkIXUxh4XdZQJE2WuuCl3sDW4bRidMI1VHliUNtqtXJ2ALzhxuH
+bkh0cJY7WxYoDBbI1G6HVHcD4a9hxITTku13Dcg21Il5uKZ36WXzzb0a1RG5kuxx
+5jAtEpxK4cW4kXipXPOXcEYoKmnKYFmTmY5hc+QLe0AOWsDUJdDP51Q/r7/eKS4X
+swVlV0gyubhsZ36BL5sebGiM/IYCYvocv00PA8/9fRebNbw5nsd8nC/glcT2ekgR
++ISpehIiCZo3kmMmOQ/p/3beK4B5ZH0x/VdAWh7+vqIqfMHbzxg=
+=eUcI
+-----END PGP SIGNATURE-----
+
+--vtzGhvizbBRQ85DL--
