@@ -2,160 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EACF21E7FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E4B21E80C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgGNGWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 02:22:34 -0400
-Received: from mga05.intel.com ([192.55.52.43]:59744 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725306AbgGNGW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 02:22:29 -0400
-IronPort-SDR: fXzdI0NCz67B+VJ10Ivtq7VUKCwdJWB8AuKttqqSZ3i8tyqQ5Gd2oRy60w39EdrLYZ2z6qd0ra
- 8wSvOw9X3A4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="233672560"
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="233672560"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 23:22:27 -0700
-IronPort-SDR: ClrHa22q+8x1IH2Rjx9xeLsx/jfVYcNFANixAkgLOBsLrfZkSG7205IEa8flMIZ3PXD/DKTak/
- hMsBQYKGEX/A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="299432444"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 13 Jul 2020 23:22:27 -0700
-Received: from debox1-desk2.jf.intel.com (debox1-desk2.jf.intel.com [10.54.75.16])
-        by linux.intel.com (Postfix) with ESMTP id 46AEC580810;
-        Mon, 13 Jul 2020 23:22:27 -0700 (PDT)
-From:   "David E. Box" <david.e.box@linux.intel.com>
-To:     lee.jones@linaro.org, david.e.box@linux.intel.com,
-        dvhart@infradead.org, andy@infradead.org, bhelgaas@google.com,
-        alexander.h.duyck@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH V3 0/3] Intel Platform Monitoring Technology
-Date:   Mon, 13 Jul 2020 23:23:20 -0700
-Message-Id: <20200714062323.19990-1-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200508021844.6911-1-david.e.box@linux.intel.com>
-References: <20200508021844.6911-1-david.e.box@linux.intel.com>
+        id S1726851AbgGNGXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 02:23:22 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:36854 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbgGNGXW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 02:23:22 -0400
+Received: by mail-il1-f200.google.com with SMTP id t19so11328439ili.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 23:23:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Bt7VIZoYh6q5iszUbKKdJVEoemMQ5yuTF5lHduyu0Us=;
+        b=d7/QYf6Z+3qfwhnXy+J0ncpn1zXuTcO/eBVO710QFmJMnRvCwnDdQSPzFXoE8b+lAh
+         5JcdYLq5nl4ayGbAjlp/FzKzO67Y+xcXtIduNm28po9/V2antr6TgVSZUesO34C+/0VH
+         T11ooYGQquEdfEe3RQaLpGtXzGFJ2jADcTMsrR1n8TLET5zYarzdjEgKkca3pIMAxG3i
+         3izwoODVVA8rlLekmsAVUs1vXvmkzrpnm4c+g6nB6GaaqgF+aGLONffTcaITcvLcTpN/
+         jsy85PnndxU4I6FVtY2v6yKzPea+QUDXVrKRWmJJc1NWWssASo/PSE5iUASQedIt9+zp
+         jehQ==
+X-Gm-Message-State: AOAM533Dp8oCdkOrTOzE0S+W3zfGYhv8xde9UIuuzST3vZu5Tl/TCjg7
+        UygEyjPnvubtg9iP/iSgTljOxYI6oXBEl9bJa6+2+4I23LSo
+X-Google-Smtp-Source: ABdhPJwzEVSHrG7eUOqPSRed/XMlCM8tTr/NGNaWxdli2fy9fDiOpDKoIOai2HIGnZYTnMv2uTMaO9HK1/WqwD0ScF5mbNz682y2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:b6d4:: with SMTP id m81mr3415880ill.72.1594707800956;
+ Mon, 13 Jul 2020 23:23:20 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 23:23:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ff264805aa60d794@google.com>
+Subject: general protection fault in batadv_hardif_get_by_netdev
+From:   syzbot <syzbot+4a2d01c2df834fe6e86d@syzkaller.appspotmail.com>
+To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mareklindner@neomailbox.ch, netdev@vger.kernel.org,
+        sven@narfation.org, sw@simonwunderlich.de,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel Platform Monitoring Technology (PMT) is an architecture for
-enumerating and accessing hardware monitoring capabilities on a device.
-With customers increasingly asking for hardware telemetry, engineers not
-only have to figure out how to measure and collect data, but also how to
-deliver it and make it discoverable. The latter may be through some device
-specific method requiring device specific tools to collect the data. This
-in turn requires customers to manage a suite of different tools in order to
-collect the differing assortment of monitoring data on their systems.  Even
-when such information can be provided in kernel drivers, they may require
-constant maintenance to update register mappings as they change with
-firmware updates and new versions of hardware. PMT provides a solution for
-discovering and reading telemetry from a device through a hardware agnostic
-framework that allows for updates to systems without requiring patches to
-the kernel or software tools.
+Hello,
 
-PMT defines several capabilities to support collecting monitoring data from
-hardware. All are discoverable as separate instances of the PCIE Designated
-Vendor extended capability (DVSEC) with the Intel vendor code. The DVSEC ID
-field uniquely identifies the capability. Each DVSEC also provides a BAR
-offset to a header that defines capability-specific attributes, including
-GUID, feature type, offset and length, as well as configuration settings
-where applicable. The GUID uniquely identifies the register space of any
-monitor data exposed by the capability. The GUID is associated with an XML
-file from the vendor that describes the mapping of the register space along
-with properties of the monitor data. This allows vendors to perform
-firmware updates that can change the mapping (e.g. add new metrics) without
-requiring any changes to drivers or software tools. The new mapping is
-confirmed by an updated GUID, read from the hardware, which software uses
-with a new XML.
+syzbot found the following crash on:
 
-The current capabilities defined by PMT are Telemetry, Watcher, and
-Crashlog.  The Telemetry capability provides access to a continuous block
-of read only data. The Watcher capability provides access to hardware
-sampling and tracing features. Crashlog provides access to device crash
-dumps.  While there is some relationship between capabilities (Watcher can
-be configured to sample from the Telemetry data set) each exists as stand
-alone features with no dependency on any other. The design therefore splits
-them into individual, capability specific drivers. MFD is used to create
-platform devices for each capability so that they may be managed by their
-own driver. The PMT architecture is (for the most part) agnostic to the
-type of device it can collect from. Devices nodes are consequently generic
-in naming, e.g. /dev/telem<n> and /dev/smplr<n>. Each capability driver
-creates a class to manage the list of devices supporting it.  Software can
-determine which devices support a PMT feature by searching through each
-device node entry in the sysfs class folder. It can additionally determine
-if a particular device supports a PMT feature by checking for a PMT class
-folder in the device folder.
+HEAD commit:    0aea6d5c Merge tag 'for-linus-5.8b-rc5-tag' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1596004f100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=66ad203c2bb6d8b
+dashboard link: https://syzkaller.appspot.com/bug?extid=4a2d01c2df834fe6e86d
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
 
-This patch set provides support for the PMT framework, along with support
-for Telemetry on Tiger Lake.
+Unfortunately, I don't have any reproducer for this crash yet.
 
-Changes from V2:
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+4a2d01c2df834fe6e86d@syzkaller.appspotmail.com
 
-Please excuse this delayed V3 as we dealt with last minute hardware
-changes.
+netlink: 24 bytes leftover after parsing attributes in process `syz-executor.4'.
+general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+CPU: 1 PID: 11316 Comm: syz-executor.4 Not tainted 5.8.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:batadv_hardif_get_by_netdev+0x14c/0x400 net/batman-adv/hard-interface.c:72
+Code: 18 00 0f 85 92 02 00 00 4d 8b 24 24 49 81 fc e0 29 4f 8d 0f 84 b4 01 00 00 e8 00 01 ab f9 49 8d 7c 24 18 48 89 f8 48 c1 e8 03 <80> 3c 18 00 0f 85 73 02 00 00 4d 39 6c 24 18 75 b7 e8 de 00 ab f9
+RSP: 0018:ffffc900171aeca8 EFLAGS: 00010206
+RAX: 0000000000000003 RBX: dffffc0000000000 RCX: ffffc90011a8c000
+RDX: 0000000000040000 RSI: ffffffff87c8b900 RDI: 0000000000000018
+RBP: ffff88802afd4000 R08: 0000000000000000 R09: ffffffff8c593a27
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88802afd4000 R14: 0000000000000000 R15: ffffffff8aa441c0
+FS:  0000000000000000(0000) GS:ffff8880ae700000(0063) knlGS:00000000f5d6db40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 000055feecf1dcd8 CR3: 0000000027b29000 CR4: 00000000001426e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ batadv_hard_if_event+0x62/0x12f0 net/batman-adv/hard-interface.c:1031
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2027
+ call_netdevice_notifiers_extack net/core/dev.c:2039 [inline]
+ call_netdevice_notifiers net/core/dev.c:2053 [inline]
+ register_netdevice+0xa52/0x1540 net/core/dev.c:9509
+ veth_newlink+0x405/0xa00 drivers/net/veth.c:1366
+ __rtnl_newlink+0x1090/0x1730 net/core/rtnetlink.c:3339
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3397
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5460
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+ do_syscall_32_irqs_on+0x3f/0x60 arch/x86/entry/common.c:428
+ __do_fast_syscall_32 arch/x86/entry/common.c:475 [inline]
+ do_fast_syscall_32+0x7f/0x120 arch/x86/entry/common.c:503
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f72569
+Code: Bad RIP value.
+RSP: 002b:00000000f5d6d0cc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000007 RCX: 0000000020000040
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
 
- 	- In order to handle certain HW bugs from the telemetry capability
-	  driver, create a single platform device per capability instead of
-	  a device per entry. Add the entry data as device resources and
-	  let the capability driver manage them as a set allowing for
-	  cleaner HW bug resolution.
-	- Handle discovery table offset bug in intel_pmt.c
-	- Handle overlapping regions in intel_pmt_telemetry.c
-	- Add description of sysfs class to testing ABI.
-	- Don't check size and count until confirming support for the PMT
-	  capability to avoid bailing out when we need to skip it.
-	- Remove unneeded header file. Move code to the intel_pmt.c, the
-	  only place where it's needed.
-	- Remove now unused platform data.
-	- Add missing header files types.h, bits.h.
-	- Rename file name and build options from telem to telemetry.
-	- Code cleanup suggested by Andy S.
-	- x86 mailing list added.
 
-Changes from V1:
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-	- In the telemetry driver, set the device in device_create() to
-	  the parent pci device (the monitoring device) for clear
-	  association in sysfs. Was set before to the platform device
-	  created by the pci parent.
-	- Move telem struct into driver and delete unneeded header file.
-	- Start telem device numbering from 0 instead of 1. 1 was used
-	  due to anticipated changes, no longer needed.
-	- Use helper macros suggested by Andy S.
-	- Rename class to pmt_telemetry, spelling out full name
-	- Move monitor device name defines to common header
-	- Coding style, spelling, and Makefile/MAINTAINERS ordering fixes
-
-David E. Box (3):
-  PCI: Add defines for Designated Vendor-Specific Capability
-  mfd: Intel Platform Monitoring Technology support
-  platform/x86: Intel PMT Telemetry capability driver
-
- .../ABI/testing/sysfs-class-pmt_telemetry     |  46 ++
- MAINTAINERS                                   |   6 +
- drivers/mfd/Kconfig                           |  10 +
- drivers/mfd/Makefile                          |   1 +
- drivers/mfd/intel_pmt.c                       | 218 +++++++++
- drivers/platform/x86/Kconfig                  |  10 +
- drivers/platform/x86/Makefile                 |   1 +
- drivers/platform/x86/intel_pmt_telemetry.c    | 454 ++++++++++++++++++
- include/uapi/linux/pci_regs.h                 |   5 +
- 9 files changed, 751 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-pmt_telemetry
- create mode 100644 drivers/mfd/intel_pmt.c
- create mode 100644 drivers/platform/x86/intel_pmt_telemetry.c
-
--- 
-2.20.1
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
