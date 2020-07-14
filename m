@@ -2,146 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9D421F150
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9674921F13E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728310AbgGNMc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbgGNMcS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:32:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55340C061755;
-        Tue, 14 Jul 2020 05:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=z8wFYHvpj2g2xFS5/YiBc7GW6FsSmiP4taX5UIm0p3w=; b=rhW3oST8/y1BlKYN4rh7cG1jEz
-        1KIOM3rEqWQ5YAhi4KL4haHmbBcbZNDCyyyUVlz23N2sJw3PpAjWuOH15jpNMcEhHwblReMX6beZG
-        2QIt4pfW+PcDuJcQinbQ2Y6FmUmnQwfywqcIm3OIFgskhPV03aAQ5ZUtsJ6j1v+m4SKS70cIXTbdr
-        Dj4n66Y4ueQDZ/lnjPkNh8yWz3n+fuJ1OtWFpTB0TCnAtyHD+Y/cUlGwOd9k2olCN1JPO6ZF65KH1
-        DCyqWzlmTKO4jJZuIvM4ht9+0HtGwJahUg/edM0hYXI7Xs9rqZmouT2PXOB+bwvde5SlRNBX7Iy8l
-        frjQoWKQ==;
-Received: from [2001:4bb8:188:5f50:c70:4a89:bc61:2] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvK6X-00026k-F4; Tue, 14 Jul 2020 12:32:13 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/10] sh: use the generic dma coherent remap allocator
-Date:   Tue, 14 Jul 2020 14:18:56 +0200
-Message-Id: <20200714121856.955680-11-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200714121856.955680-1-hch@lst.de>
-References: <20200714121856.955680-1-hch@lst.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        id S1728142AbgGNMa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:30:58 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:41886 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726041AbgGNMa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 08:30:58 -0400
+Received: from ticat.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf9dapQ1fV3EEAA--.990S2;
+        Tue, 14 Jul 2020 20:30:19 +0800 (CST)
+From:   Peng Fan <fanpeng@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mips/vdso: Fix resource leaks in genvdso.c
+Date:   Tue, 14 Jul 2020 20:30:18 +0800
+Message-Id: <1594729818-7859-1-git-send-email-fanpeng@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxf9dapQ1fV3EEAA--.990S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF4ftF1UJrW8WrW3urWktFb_yoW8tF4UpF
+        sY9Fyv9rZ2kry7tw43J3409FZ5A3Z7Xryjgr4kA3yDZFWrX39FyrW8GFWFqFy5Aryav3yS
+        9a9ruFZ5Ar43t3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6ryUMxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUI6wZUUUUU
+X-CM-SenderInfo: xidq1vtqj6z05rqj20fqof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This switches to using common code for the DMA allocations, including
-potential use of the CMA allocator if configured.
+Close "fd" before the return of map_vdso() and close "out_file"
+in main().
 
-Switching to the generic code enables DMA allocations from atomic
-context, which is required by the DMA API documentation, and also
-adds various other minor features drivers start relying upon.  It
-also makes sure we have on tested code base for all architectures
-that require uncached pte bits for coherent DMA allocations.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Peng Fan <fanpeng@loongson.cn>
 ---
- arch/sh/Kconfig               |  2 ++
- arch/sh/kernel/dma-coherent.c | 51 ++---------------------------------
- 2 files changed, 4 insertions(+), 49 deletions(-)
 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 337eb496c45a0a..32d959849df9bc 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -137,7 +137,9 @@ config DMA_COHERENT
+v2:
+  - add one missing fclose()
+
+---
+ arch/mips/vdso/genvdso.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/mips/vdso/genvdso.c b/arch/mips/vdso/genvdso.c
+index be57b832..ccba50e 100644
+--- a/arch/mips/vdso/genvdso.c
++++ b/arch/mips/vdso/genvdso.c
+@@ -122,6 +122,7 @@ static void *map_vdso(const char *path, size_t *_size)
+ 	if (fstat(fd, &stat) != 0) {
+ 		fprintf(stderr, "%s: Failed to stat '%s': %s\n", program_name,
+ 			path, strerror(errno));
++		close(fd);
+ 		return NULL;
+ 	}
  
- config DMA_NONCOHERENT
- 	def_bool !NO_DMA && !DMA_COHERENT
-+	select ARCH_HAS_DMA_PREP_COHERENT
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-+	select DMA_DIRECT_REMAP
+@@ -130,6 +131,7 @@ static void *map_vdso(const char *path, size_t *_size)
+ 	if (addr == MAP_FAILED) {
+ 		fprintf(stderr, "%s: Failed to map '%s': %s\n", program_name,
+ 			path, strerror(errno));
++		close(fd);
+ 		return NULL;
+ 	}
  
- config PGTABLE_LEVELS
- 	default 3 if X2TLB
-diff --git a/arch/sh/kernel/dma-coherent.c b/arch/sh/kernel/dma-coherent.c
-index d4811691b93cc1..cd46a9825e3c59 100644
---- a/arch/sh/kernel/dma-coherent.c
-+++ b/arch/sh/kernel/dma-coherent.c
-@@ -3,60 +3,13 @@
-  * Copyright (C) 2004 - 2007  Paul Mundt
-  */
- #include <linux/mm.h>
--#include <linux/init.h>
- #include <linux/dma-noncoherent.h>
--#include <linux/module.h>
- #include <asm/cacheflush.h>
- #include <asm/addrspace.h>
+@@ -139,6 +141,7 @@ static void *map_vdso(const char *path, size_t *_size)
+ 	if (memcmp(ehdr->e_ident, ELFMAG, SELFMAG) != 0) {
+ 		fprintf(stderr, "%s: '%s' is not an ELF file\n", program_name,
+ 			path);
++		close(fd);
+ 		return NULL;
+ 	}
  
--void *arch_dma_alloc(struct device *dev, size_t size, dma_addr_t *dma_handle,
--		gfp_t gfp, unsigned long attrs)
-+void arch_dma_prep_coherent(struct page *page, size_t size)
- {
--	void *ret, *ret_nocache;
--	int order = get_order(size);
--
--	gfp |= __GFP_ZERO;
--
--	ret = (void *)__get_free_pages(gfp, order);
--	if (!ret)
--		return NULL;
--
--	/*
--	 * Pages from the page allocator may have data present in
--	 * cache. So flush the cache before using uncached memory.
--	 */
--	arch_sync_dma_for_device(virt_to_phys(ret), size,
--			DMA_BIDIRECTIONAL);
--
--	ret_nocache = (void __force *)ioremap(virt_to_phys(ret), size);
--	if (!ret_nocache) {
--		free_pages((unsigned long)ret, order);
--		return NULL;
--	}
--
--	split_page(pfn_to_page(virt_to_phys(ret) >> PAGE_SHIFT), order);
--
--	*dma_handle = virt_to_phys(ret);
--	if (!WARN_ON(!dev))
--		*dma_handle -= PFN_PHYS(dev->dma_pfn_offset);
--
--	return ret_nocache;
--}
--
--void arch_dma_free(struct device *dev, size_t size, void *vaddr,
--		dma_addr_t dma_handle, unsigned long attrs)
--{
--	int order = get_order(size);
--	unsigned long pfn = (dma_handle >> PAGE_SHIFT);
--	int k;
--
--	if (!WARN_ON(!dev))
--		pfn += dev->dma_pfn_offset;
--
--	for (k = 0; k < (1 << order); k++)
--		__free_pages(pfn_to_page(pfn + k), 0);
--
--	iounmap(vaddr);
-+	__flush_purge_region(page_address(page), size);
+@@ -150,6 +153,7 @@ static void *map_vdso(const char *path, size_t *_size)
+ 	default:
+ 		fprintf(stderr, "%s: '%s' has invalid ELF class\n",
+ 			program_name, path);
++		close(fd);
+ 		return NULL;
+ 	}
+ 
+@@ -161,6 +165,7 @@ static void *map_vdso(const char *path, size_t *_size)
+ 	default:
+ 		fprintf(stderr, "%s: '%s' has invalid ELF data order\n",
+ 			program_name, path);
++		close(fd);
+ 		return NULL;
+ 	}
+ 
+@@ -168,15 +173,18 @@ static void *map_vdso(const char *path, size_t *_size)
+ 		fprintf(stderr,
+ 			"%s: '%s' has invalid ELF machine (expected EM_MIPS)\n",
+ 			program_name, path);
++		close(fd);
+ 		return NULL;
+ 	} else if (swap_uint16(ehdr->e_type) != ET_DYN) {
+ 		fprintf(stderr,
+ 			"%s: '%s' has invalid ELF type (expected ET_DYN)\n",
+ 			program_name, path);
++		close(fd);
+ 		return NULL;
+ 	}
+ 
+ 	*_size = stat.st_size;
++	close(fd);
+ 	return addr;
  }
  
- void arch_sync_dma_for_device(phys_addr_t paddr, size_t size,
+@@ -293,10 +301,12 @@ int main(int argc, char **argv)
+ 	/* Calculate and write symbol offsets to <output file> */
+ 	if (!get_symbols(dbg_vdso_path, dbg_vdso)) {
+ 		unlink(out_path);
++		fclose(out_file);
+ 		return EXIT_FAILURE;
+ 	}
+ 
+ 	fprintf(out_file, "};\n");
++	fclose(out_file);
+ 
+ 	return EXIT_SUCCESS;
+ }
 -- 
-2.26.2
+2.1.0
 
