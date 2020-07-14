@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857F421FE33
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA84A21FE50
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730147AbgGNUHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 16:07:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729442AbgGNUHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 16:07:53 -0400
-Received: from embeddedor (unknown [201.162.240.73])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFC4320720;
-        Tue, 14 Jul 2020 20:07:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594757273;
-        bh=ygYbAYLGtGi7VTNZOTi8yA86zw5Ek9sxpF/WVqk+Yn8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2jLxk+PHM89Y7wfEZBVvTrSPCdxreCNs0ELZdOLeAZOFolpHFxcZ7/g2T5+ujmcxy
-         oxjwBxxgR3qY2BNocFAGQa75DXj7xGFS0txlKfRADEE7cI7yj8so/OPwGF7s3QCbGU
-         4ursNvzTIFslQ+CI4mAUqFzS0q+1qSepYkx7g3Sg=
-Date:   Tue, 14 Jul 2020 15:13:24 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "Winkler, Tomas" <tomas.winkler@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] mei: Avoid the use of one-element arrays
-Message-ID: <20200714201324.GA31673@embeddedor>
-References: <20200714174644.GA30158@embeddedor>
- <fe3b8d4a4eb04ead83ffcefe12fd218e@intel.com>
- <20200714180855.GA31158@embeddedor>
- <32f85e185c2244a19a1705d0db315c69@intel.com>
+        id S1730209AbgGNUOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 16:14:18 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35110 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728777AbgGNUOP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 16:14:15 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKDIxF183199;
+        Tue, 14 Jul 2020 20:14:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=yWBnHTtjwD/kifOL8R9vSVD5OGOOWWX50DnpIXyxMU4=;
+ b=YsHck65TlRa7XfU0yLxxTaYXtOuZENW6/P3QuFKjLePTma//RrS9yk+RcpJrnF69DOBP
+ T1D1jdwiO1VGCgKVZI3CWBLGs6PqXanuU1KoYCaoqKha56bLV/zuP4Lshdo70s+teZXj
+ ss4huLCQi+x8/4fDtbpmznNSEXLfvUyqC4wzVbkDjACbrap7tH2CJwQHzV5xhocp9v0e
+ Ju2Lp+ZG4I1iNkzMwvfSy9uDWGUxy0ML5u6lvb44W5utaxIWjgBs6GjPDmsjZyHi0u9K
+ r5LHhexljn3Ycj1uOIAinIQO1ec1VE5jlNttYyXK45nDZZkPZaKkLaSFQ/HvtkalxY7n wA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 3275cm7mnq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Jul 2020 20:14:01 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKDb5c025127;
+        Tue, 14 Jul 2020 20:14:01 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 327q0pvn8a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Jul 2020 20:14:01 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06EKE0Wx013769;
+        Tue, 14 Jul 2020 20:14:00 GMT
+Received: from localhost.localdomain (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Jul 2020 13:13:59 -0700
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: [PATCH 0/6] padata cleanups
+Date:   Tue, 14 Jul 2020 16:13:50 -0400
+Message-Id: <20200714201356.889176-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <32f85e185c2244a19a1705d0db315c69@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=1 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007140141
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007140141
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 07:57:51PM +0000, Winkler, Tomas wrote:
-> > 
-> > On Tue, Jul 14, 2020 at 05:54:32PM +0000, Winkler, Tomas wrote:
-> > > >
-> > > > There is a regular need in the kernel to provide a way to declare
-> > > > having a dynamically sized set of trailing elements in a structure.
-> > > > Kernel code should always use “flexible array members”[1] for these
-> > > > cases or, as in this particular case, replace the one-element array
-> > > > with a simple value type u8 reserved once this is just a placeholder
-> > > > for alignment. The older style of one-element or zero-length arrays
-> > should no longer be used[2].
-> > > >
-> > > > Also, while there, use the preferred form for passing a size of a struct.
-> > > > The alternative form where struct name is spelled out hurts
-> > > > readability and introduces an opportunity for a bug when the
-> > > > variable type is changed but the corresponding sizeof that is passed as
-> > argument is not.
-> > > >
-> > > > [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> > > > [2] https://github.com/KSPP/linux/issues/79
-> > > >
-> > > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > > I'm okay with the patch but in this case the description is a bit off.
-> > > In this case there was no intention for a flexible arrays its just a reserved
-> > field.
-> > >
-> > 
-> > The reserved field is actually mentioned in the description:
-> > 
-> > "... or, as in this particular case, replace the one-element array with a simple
-> > value type u8 reserved once this is just a placeholder for alignment."
-> 
-> Right, but it looks not connected to overall context, it looks like not very clean reuse of a commit message.
-> I would say that this reserved[1] rather had confused the detection scripts you are using for the  cleanup you are doing. 
-> Again, I'm okay with the patch, but if you can  reword the commit message it would be even more okay.
-> 
+These cleanups save ~5% of the padata text/data and make it a little
+easier to use and develop going forward.
 
-Yep; I've come up with a more concise text for these sorts of cases:
+In particular, they pave the way to extend padata's multithreading support to
+VFIO, a work-in-progress version of which can be found here:
 
-"One-element arrays are being deprecated[1]. Replace the one-element
-array with a simple value type u8 reserved, once this is just a
-placeholder for alignment.
+    https://oss.oracle.com/git/gitweb.cgi?p=linux-dmjordan.git;a=shortlog;h=refs/heads/padata-mt-wip-v0.5
 
-[1] https://github.com/KSPP/linux/issues/79"
+Based on v5.8-rc5.  As always, feedback is welcome.
 
-I'll send v2 with the text above, shortly.
+Daniel
 
-Thanks for the feedback.
---
-Gustavo
+Daniel Jordan (6):
+  padata: remove start function
+  padata: remove stop function
+  padata: inline single call of pd_setup_cpumasks()
+  padata: remove effective cpumasks from the instance
+  padata: fold padata_alloc_possible() into padata_alloc()
+  padata: remove padata_parallel_queue
+
+ Documentation/core-api/padata.rst |  18 +--
+ crypto/pcrypt.c                   |  17 +--
+ include/linux/padata.h            |  21 +---
+ kernel/padata.c                   | 177 ++++++------------------------
+ 4 files changed, 46 insertions(+), 187 deletions(-)
+
+
+base-commit: 11ba468877bb23f28956a35e896356252d63c983
+-- 
+2.27.0
+
