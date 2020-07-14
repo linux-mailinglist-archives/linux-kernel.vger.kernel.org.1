@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7743B21FA6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCEC21FB09
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730526AbgGNSw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:52:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49136 "EHLO mail.kernel.org"
+        id S1730664AbgGNS6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:58:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730511AbgGNSwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:52:24 -0400
+        id S1730806AbgGNS6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:58:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81BB422B42;
-        Tue, 14 Jul 2020 18:52:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 584F8229CA;
+        Tue, 14 Jul 2020 18:58:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752744;
-        bh=iv8j59IizSFovtJeOSAaB86Jk9Z6jur6Paq2/nEHfOw=;
+        s=default; t=1594753082;
+        bh=sBNdJl4w5KzMHk76Q+hkYXFrJJggdaSJ9oZroUN7ooM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fTjQleT0YE61FAUpMxBNDHU/uOjYvrMHPtX8J06celY8+9W9iWjz/VkvGkCPzcDnX
-         psyhMS55CEkKJIqdEHHCbl711T5wS4d06NFV047rCWpHpWTmVjwwQ5bM2MxrBBJ+9o
-         kGrqiCHJYciE5KEU57q+dCqHUaYCA41GGyjKeZm4=
+        b=ACjJABMusfg0j6jzYo0iSh3dOxx63fVaDa91ERRR1lw36vTXTfy1HsCNZXwUI46oO
+         JTdro4axfJC8QgNx4Yn0t+Z0vf43jZxZB6V748DJ1NEtDNhz+2P/iaTEuOPvbDR9MM
+         TZtWcxY+NmrnBUuQXf3az664gQPs5aVB7vY23GYI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 094/109] btrfs: fix double put of block group with nocow
+        stable@vger.kernel.org, Pavel Hofman <pavel.hofman@ivitera.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.7 112/166] ALSA: usb-audio: Add implicit feedback quirk for RTX6001
 Date:   Tue, 14 Jul 2020 20:44:37 +0200
-Message-Id: <20200714184110.060376603@linuxfoundation.org>
+Message-Id: <20200714184121.200567985@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,68 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
 
-commit 230ed397435e85b54f055c524fcb267ae2ce3bc4 upstream.
+commit b6a1e78b96a5d7f312f08b3a470eb911ab5feec0 upstream.
 
-While debugging a patch that I wrote I was hitting use-after-free panics
-when accessing block groups on unmount.  This turned out to be because
-in the nocow case if we bail out of doing the nocow for whatever reason
-we need to call btrfs_dec_nocow_writers() if we called the inc.  This
-puts our block group, but a few error cases does
+USB Audio analyzer RTX6001 uses the same implicit feedback quirk
+as other XMOS-based devices.
 
-if (nocow) {
-    btrfs_dec_nocow_writers();
-    goto error;
-}
-
-unfortunately, error is
-
-error:
-	if (nocow)
-		btrfs_dec_nocow_writers();
-
-so we get a double put on our block group.  Fix this by dropping the
-error cases calling of btrfs_dec_nocow_writers(), as it's handled at the
-error label now.
-
-Fixes: 762bf09893b4 ("btrfs: improve error handling in run_delalloc_nocow")
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
+Tested-by: Pavel Hofman <pavel.hofman@ivitera.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/822f0f20-1886-6884-a6b2-d11c685cbafa@ivitera.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/inode.c |    9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ sound/usb/pcm.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1657,12 +1657,8 @@ out_check:
- 			ret = fallback_to_cow(inode, locked_page, cow_start,
- 					      found_key.offset - 1,
- 					      page_started, nr_written);
--			if (ret) {
--				if (nocow)
--					btrfs_dec_nocow_writers(fs_info,
--								disk_bytenr);
-+			if (ret)
- 				goto error;
--			}
- 			cow_start = (u64)-1;
- 		}
- 
-@@ -1678,9 +1674,6 @@ out_check:
- 					  ram_bytes, BTRFS_COMPRESS_NONE,
- 					  BTRFS_ORDERED_PREALLOC);
- 			if (IS_ERR(em)) {
--				if (nocow)
--					btrfs_dec_nocow_writers(fs_info,
--								disk_bytenr);
- 				ret = PTR_ERR(em);
- 				goto error;
- 			}
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -368,6 +368,7 @@ static int set_sync_ep_implicit_fb_quirk
+ 		goto add_sync_ep_from_ifnum;
+ 	case USB_ID(0x07fd, 0x0008): /* MOTU M Series */
+ 	case USB_ID(0x31e9, 0x0002): /* Solid State Logic SSL2+ */
++	case USB_ID(0x0d9a, 0x00df): /* RTX6001 */
+ 		ep = 0x81;
+ 		ifnum = 2;
+ 		goto add_sync_ep_from_ifnum;
 
 
