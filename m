@@ -2,228 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6D821F75F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 18:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C53621F777
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 18:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbgGNQcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 12:32:50 -0400
-Received: from mga03.intel.com ([134.134.136.65]:63516 "EHLO mga03.intel.com"
+        id S1728318AbgGNQjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 12:39:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726062AbgGNQct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 12:32:49 -0400
-IronPort-SDR: TBhSCOYiAfpQiyktt+PWuzmEWTFArAYRyBIgxuMsJCl6PciaDARBnS/FRbJYuLsHGFHmbGcJfQ
- myKhi0rwQ0ww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="148957026"
-X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
-   d="scan'208";a="148957026"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 09:32:48 -0700
-IronPort-SDR: VIIs1ZhnFb2/oR+R9r078i98dlsTEFvH/PoGIlyJf5/fUblIkEDHEi6vJ4Rx8zhuKXqvbKt5+I
- Cscr8DBfInkQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
-   d="scan'208";a="317775607"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by fmsmga002.fm.intel.com with ESMTP; 14 Jul 2020 09:32:47 -0700
-Date:   Tue, 14 Jul 2020 09:39:09 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v3 2/4] iommu: Add iommu_aux_at(de)tach_group()
-Message-ID: <20200714093909.1ab93c9e@jacob-builder>
-In-Reply-To: <20200714055703.5510-3-baolu.lu@linux.intel.com>
-References: <20200714055703.5510-1-baolu.lu@linux.intel.com>
-        <20200714055703.5510-3-baolu.lu@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725931AbgGNQjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 12:39:41 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A501922475;
+        Tue, 14 Jul 2020 16:39:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594744781;
+        bh=VXBDgTJLVKWPVuRwGZc/xyeARiY3XELOkWmvVP1dLgw=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=0DE1cZNs4i1Blxp5k1J4/D1Qca6QXL8nIgyyo5l/CQNesPqvFOquXf/Mhxd5T92iK
+         YvKEKsmr4E5Isdg5UuWo5sRnRFAiX0OhUOWq0xK15h+le7tHVwU4+Lfg0sGi5eqfCD
+         gR9s4bzH5q6X7pL80M4wavbK0v3o+H19pRKyHGMA=
+Date:   Tue, 14 Jul 2020 17:39:32 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     - <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Katsuhiro Suzuki <katsuhiro@katsuster.net>,
+        linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20200623113915.791386-1-yamada.masahiro@socionext.com>
+References: <20200623113915.791386-1-yamada.masahiro@socionext.com>
+Subject: Re: [PATCH v2] dt-bindings: ASoC: Convert UniPhier AIO audio system to json-schema
+Message-Id: <159474477218.998.6916116867302380188.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020 13:57:01 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+On Tue, 23 Jun 2020 20:39:15 +0900, Masahiro Yamada wrote:
+> Convert the UniPhier AIO audio system binding to DT schema format.
 
-> This adds two new aux-domain APIs for a use case like vfio/mdev where
-> sub-devices derived from an aux-domain capable device are created and
-> put in an iommu_group.
-> 
-> /**
->  * iommu_aux_attach_group - attach an aux-domain to an iommu_group
-> which
->  *                          contains sub-devices (for example mdevs)
-> derived
->  *                          from @dev.
->  * @domain: an aux-domain;
->  * @group:  an iommu_group which contains sub-devices derived from
-> @dev;
->  * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
->  *
->  * Returns 0 on success, or an error value.
->  */
-> int iommu_aux_attach_group(struct iommu_domain *domain,
->                            struct iommu_group *group,
->                            struct device *dev)
-> 
-> /**
->  * iommu_aux_detach_group - detach an aux-domain from an iommu_group
->  *
->  * @domain: an aux-domain;
->  * @group:  an iommu_group which contains sub-devices derived from
-> @dev;
->  * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
->  *
->  * @domain must have been attached to @group via
-> iommu_aux_attach_group(). */
-> void iommu_aux_detach_group(struct iommu_domain *domain,
->                             struct iommu_group *group,
->                             struct device *dev)
-> 
-> It also adds a flag in the iommu_group data structure to identify
-> an iommu_group with aux-domain attached from those normal ones.
-> 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/iommu.c | 58
-> +++++++++++++++++++++++++++++++++++++++++++ include/linux/iommu.h |
-> 17 +++++++++++++ 2 files changed, 75 insertions(+)
-> 
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index e1fdd3531d65..cad5a19ebf22 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -45,6 +45,7 @@ struct iommu_group {
->  	struct iommu_domain *default_domain;
->  	struct iommu_domain *domain;
->  	struct list_head entry;
-> +	unsigned int aux_domain_attached:1;
->  };
->  
->  struct group_device {
-> @@ -2759,6 +2760,63 @@ int iommu_aux_get_pasid(struct iommu_domain
-> *domain, struct device *dev) }
->  EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
->  
-> +/**
-> + * iommu_aux_attach_group - attach an aux-domain to an iommu_group
-> which
-> + *                          contains sub-devices (for example mdevs)
-> derived
-> + *                          from @dev.
-> + * @domain: an aux-domain;
-> + * @group:  an iommu_group which contains sub-devices derived from
-> @dev;
-> + * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
-> + *
-> + * Returns 0 on success, or an error value.
-> + */
-> +int iommu_aux_attach_group(struct iommu_domain *domain,
-> +			   struct iommu_group *group, struct device
-> *dev) +{
-> +	int ret = -EBUSY;
-> +
-> +	mutex_lock(&group->mutex);
-> +	if (group->domain)
-> +		goto out_unlock;
-> +
-Perhaps I missed something but are we assuming only one mdev per mdev
-group? That seems to change the logic where vfio does:
-iommu_group_for_each_dev()
-	iommu_aux_attach_device()
+Applied to
 
-> +	ret = iommu_aux_attach_device(domain, dev);
-> +	if (!ret) {
-> +		group->domain = domain;
-> +		group->aux_domain_attached = true;
-> +	}
-> +
-> +out_unlock:
-> +	mutex_unlock(&group->mutex);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(iommu_aux_attach_group);
-> +
-> +/**
-> + * iommu_aux_detach_group - detach an aux-domain from an iommu_group
-> + *
-> + * @domain: an aux-domain;
-> + * @group:  an iommu_group which contains sub-devices derived from
-> @dev;
-> + * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
-> + *
-> + * @domain must have been attached to @group via
-> iommu_aux_attach_group().
-> + */
-> +void iommu_aux_detach_group(struct iommu_domain *domain,
-> +			    struct iommu_group *group, struct device
-> *dev) +{
-> +	mutex_lock(&group->mutex);
-> +
-> +	if (WARN_ON(!group->aux_domain_attached || group->domain !=
-> domain))
-> +		goto out_unlock;
-> +
-> +	iommu_aux_detach_device(domain, dev);
-> +	group->aux_domain_attached = false;
-> +	group->domain = NULL;
-> +
-> +out_unlock:
-> +	mutex_unlock(&group->mutex);
-> +}
-> +EXPORT_SYMBOL_GPL(iommu_aux_detach_group);
-> +
->  /**
->   * iommu_sva_bind_device() - Bind a process address space to a device
->   * @dev: the device
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 5657d4fef9f2..9506551139ab 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -635,6 +635,10 @@ bool iommu_dev_feature_enabled(struct device
-> *dev, enum iommu_dev_features f); int iommu_aux_attach_device(struct
-> iommu_domain *domain, struct device *dev); void
-> iommu_aux_detach_device(struct iommu_domain *domain, struct device
-> *dev); int iommu_aux_get_pasid(struct iommu_domain *domain, struct
-> device *dev); +int iommu_aux_attach_group(struct iommu_domain *domain,
-> +			   struct iommu_group *group, struct device
-> *dev); +void iommu_aux_detach_group(struct iommu_domain *domain,
-> +			   struct iommu_group *group, struct device
-> *dev); 
->  struct iommu_sva *iommu_sva_bind_device(struct device *dev,
->  					struct mm_struct *mm,
-> @@ -1023,6 +1027,19 @@ iommu_aux_get_pasid(struct iommu_domain
-> *domain, struct device *dev) return -ENODEV;
->  }
->  
-> +static inline int
-> +iommu_aux_attach_group(struct iommu_domain *domain,
-> +		       struct iommu_group *group, struct device *dev)
-> +{
-> +	return -ENODEV;
-> +}
-> +
-> +static inline void
-> +iommu_aux_detach_group(struct iommu_domain *domain,
-> +		       struct iommu_group *group, struct device *dev)
-> +{
-> +}
-> +
->  static inline struct iommu_sva *
->  iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void
-> *drvdata) {
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-[Jacob Pan]
+Thanks!
+
+[1/1] ASoC: Convert UniPhier AIO audio system to json-schema
+      commit: 3d04d1cc48838f9ae6617a97bbb2c16f06f01144
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
