@@ -2,85 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6021F21EC05
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0CD21EC0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgGNJBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:01:55 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:41519 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725816AbgGNJBy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:01:54 -0400
-Received: from mail-qk1-f180.google.com ([209.85.222.180]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MZl1l-1kP7ep3Vw7-00WrAn for <linux-kernel@vger.kernel.org>; Tue, 14 Jul
- 2020 11:01:53 +0200
-Received: by mail-qk1-f180.google.com with SMTP id k18so14891315qke.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 02:01:52 -0700 (PDT)
-X-Gm-Message-State: AOAM533XDGawA3VyGa5j8TwmpHStcOIFd+k7Gj7b4IYxkXdXn7wLOIpN
-        5pXn1asUrDNGfrs6WzIs1JUxbYWXwzYdx8zVEbg=
-X-Google-Smtp-Source: ABdhPJxkrMxvJdjvUYRY5fiC0GTtBxjfbZiL+yUHXJNjoR52VcliI2+SPKZmoDOY77LuQlmc2P4+CLfJAhZaf6U+1/E=
-X-Received: by 2002:a37:a496:: with SMTP id n144mr3539985qke.286.1594717311729;
- Tue, 14 Jul 2020 02:01:51 -0700 (PDT)
+        id S1726352AbgGNJD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:03:28 -0400
+Received: from mga07.intel.com ([134.134.136.100]:47712 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725820AbgGNJD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 05:03:28 -0400
+IronPort-SDR: T2YRdmqBPH0W3Q9YQ2v6TuEdm/1QN7rnfpWNq3D7Et2wJ0ZVGZ80W9lufZpgsB3sGBnu5LOOM5
+ hoDVVYHocT7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="213654905"
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="213654905"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 02:03:26 -0700
+IronPort-SDR: R8ZSUNuIhPrEx8ErZdX92HeHnSneVpK+jpXJNRB9MG+WbJDNCdtB7rYYa4TlWQQnZHEs9dLLpY
+ jQCyOYDLZk2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="316326032"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP; 14 Jul 2020 02:03:26 -0700
+Received: from [10.249.230.149] (abudanko-mobl.ccr.corp.intel.com [10.249.230.149])
+        by linux.intel.com (Postfix) with ESMTP id C3802580810;
+        Tue, 14 Jul 2020 02:03:24 -0700 (PDT)
+Subject: [PATCH v11 01/15] tools/libperf: avoid internal moving of fdarray fds
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <037d737f-0ada-a9f0-9686-f7521ca6fbc3@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <35f2832f-3ea8-56d6-b0a9-03623588fc12@linux.intel.com>
+Date:   Tue, 14 Jul 2020 12:03:23 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200714083259.1313267-1-lee.jones@linaro.org>
-In-Reply-To: <20200714083259.1313267-1-lee.jones@linaro.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 14 Jul 2020 11:01:35 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a07SOgW0rKPcv2wjqUShtnO_rrRYbTC=FCuiGTDtkdPvw@mail.gmail.com>
-Message-ID: <CAK8P3a07SOgW0rKPcv2wjqUShtnO_rrRYbTC=FCuiGTDtkdPvw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] misc: c2port: core: Make copying name from userspace
- more secure
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     gregkh <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rodolfo Giometti <giometti@enneenne.com>,
-        "Eurotech S.p.A" <info@eurotech.it>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:ozpfs08w3ZMFf93rHLIhJY2o0x5EydZCYTnNVZ7mgZhxgDtyxJc
- GwJB7wMeGLCWHOGGWwg3X2jeYxipIn1+yrLUK8QB4blMDIlccjOc0CUlOEFwH7h3UtD5xKy
- OsBCAvWAt12mxz6Rht/ehrStMlDxoZM4NGTHxTAbgXfxXGwsJjAt1cuMfmKd+gv6YPSisI2
- BQA592z9bHBw3LOWzb2Iw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:eMf2L3RiKQs=:3FtUDn/h9UTybaMWAwq2re
- MiC4/TjTcxTXxAYP5BYxUr2saqQ665JZt6IU4RBVBc/u9YCjUKB5vKVuCIv+e0YiOPDDy1Efj
- JJk/OoiH4gS5l7cQUgjjR9lTr89Mek70jgDSD0uMPeb42CbmKG3DP6t8NMZ50qtVP2W7SB3Tk
- Tou10byKAPd7tIKRF7xpa4zmX6P9NVoMwnp7ZzCexqVTvby9j44Z1PevOYUjTBuapWNZfiW0E
- OJHKrPOwb/25cL/sspLgrhfVs6TcU2WxpdBXvuHeTdkY29a8z/rXuP3n6ngle/T4sc+Lay5/O
- I9d64wT8ci1m6Mbr9wUzTx6GQ/2Yi/0oY4iGD/fciCPHW2YhGGFJQxVMKHRf0zmYthkoh8Cbm
- yG6OX2afTydvBfcnpnNf55akkDXHomkc2juCMiOlJIAo6scubyAwiTi1t0eONdLgubGfCeM0W
- 2XEkXMTQkB17ueBtN8n/fyjZNSEyNrm/XUTqPwULQZ+PcnMN6jaUGcQfTK+TSIPpKtHROOBuK
- CEGzzp3HbnS0CCm+nLucbmKtkuF1mu7/uriS9mCwzMkvjIpo161MoEE+KvhUTHnIp5RzdKCx5
- 1ZQjqE6BfjO/sr45DkIQX9jNX7gFQDZVkq6oHkmY57ZCen+isdqEzIjLiQ0PKyU3L9Bf/DxXD
- 2vbfBVluDWTjpTAAnuAqzcLP/ccFPmJi4Jtq9HEoUieJ9q9RTge8g1K6AQFfebtz+CGDyC5AM
- t8kzdXceSD0q3XV5ETNaixZv2J5+tPyBZU8B6m8TWwOhsAyjcF4Ow9V4k2T+Tc5Q9F7dSmqv9
- b5auEjB8N5UAs1THZYO4dv1ZxWXN34FaHfbmx4m54z7tfYvl+bSBdEFEiuIBzyE6x4qoTWL2k
- 9XhIDbH9oT2XsOZhOC/1n5+DpAmXpi9NBcaCgp2xpzQF6JpUmLdtYCTYLu8quFMxhlqkIoWK/
- v3alya5zhtSJ2XDPO/hBR7tRCah9Y0ahHGZ0I7Xq0/VvtSpPWBWKm
+In-Reply-To: <037d737f-0ada-a9f0-9686-f7521ca6fbc3@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 10:33 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Currently the 'c2dev' device data is not zeroed when its allocated.
-> Coupled with the fact strncpy() *may not* provide a NUL terminator
-> means that a 1-byte leak would be possible *if* this was ever copied
-> to userspace.
->
-> To prevent such a failing, let's first ensure the 'c2dev' device data
-> area is fully zeroed out and ensure the buffer will always be NUL
-> terminated by using the kernel's strscpy() which a) uses the
-> destination (instead of the source) size as the bytes to copy and b)
-> is *always* NUL terminated.
->
-> Cc: Rodolfo Giometti <giometti@enneenne.com>
-> Cc: "Eurotech S.p.A" <info@eurotech.it>
-> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Avoid moving of fds by fdarray__filter() so fds indices returned
+by fdarray__add() can be used for access and processing of
+objects at struct pollfd *entries.
+
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/lib/api/fd/array.c   | 11 +++++------
+ tools/perf/tests/fdarray.c | 20 ++------------------
+ 2 files changed, 7 insertions(+), 24 deletions(-)
+
+diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
+index 58d44d5eee31..89f9a2193c2d 100644
+--- a/tools/lib/api/fd/array.c
++++ b/tools/lib/api/fd/array.c
+@@ -93,22 +93,21 @@ int fdarray__filter(struct fdarray *fda, short revents,
+ 		return 0;
+ 
+ 	for (fd = 0; fd < fda->nr; ++fd) {
++		if (!fda->entries[fd].events)
++			continue;
++
+ 		if (fda->entries[fd].revents & revents) {
+ 			if (entry_destructor)
+ 				entry_destructor(fda, fd, arg);
+ 
++			fda->entries[fd].revents = fda->entries[fd].events = 0;
+ 			continue;
+ 		}
+ 
+-		if (fd != nr) {
+-			fda->entries[nr] = fda->entries[fd];
+-			fda->priv[nr]	 = fda->priv[fd];
+-		}
+-
+ 		++nr;
+ 	}
+ 
+-	return fda->nr = nr;
++	return nr;
+ }
+ 
+ int fdarray__poll(struct fdarray *fda, int timeout)
+diff --git a/tools/perf/tests/fdarray.c b/tools/perf/tests/fdarray.c
+index c7c81c4a5b2b..d0c8a05aab2f 100644
+--- a/tools/perf/tests/fdarray.c
++++ b/tools/perf/tests/fdarray.c
+@@ -12,6 +12,7 @@ static void fdarray__init_revents(struct fdarray *fda, short revents)
+ 
+ 	for (fd = 0; fd < fda->nr; ++fd) {
+ 		fda->entries[fd].fd	 = fda->nr - fd;
++		fda->entries[fd].events  = revents;
+ 		fda->entries[fd].revents = revents;
+ 	}
+ }
+@@ -29,7 +30,7 @@ static int fdarray__fprintf_prefix(struct fdarray *fda, const char *prefix, FILE
+ 
+ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_unused)
+ {
+-	int nr_fds, expected_fd[2], fd, err = TEST_FAIL;
++	int nr_fds, err = TEST_FAIL;
+ 	struct fdarray *fda = fdarray__new(5, 5);
+ 
+ 	if (fda == NULL) {
+@@ -55,7 +56,6 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
+ 
+ 	fdarray__init_revents(fda, POLLHUP);
+ 	fda->entries[2].revents = POLLIN;
+-	expected_fd[0] = fda->entries[2].fd;
+ 
+ 	pr_debug("\nfiltering all but fda->entries[2]:");
+ 	fdarray__fprintf_prefix(fda, "before", stderr);
+@@ -66,17 +66,9 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
+ 		goto out_delete;
+ 	}
+ 
+-	if (fda->entries[0].fd != expected_fd[0]) {
+-		pr_debug("\nfda->entries[0].fd=%d != %d\n",
+-			 fda->entries[0].fd, expected_fd[0]);
+-		goto out_delete;
+-	}
+-
+ 	fdarray__init_revents(fda, POLLHUP);
+ 	fda->entries[0].revents = POLLIN;
+-	expected_fd[0] = fda->entries[0].fd;
+ 	fda->entries[3].revents = POLLIN;
+-	expected_fd[1] = fda->entries[3].fd;
+ 
+ 	pr_debug("\nfiltering all but (fda->entries[0], fda->entries[3]):");
+ 	fdarray__fprintf_prefix(fda, "before", stderr);
+@@ -88,14 +80,6 @@ int test__fdarray__filter(struct test *test __maybe_unused, int subtest __maybe_
+ 		goto out_delete;
+ 	}
+ 
+-	for (fd = 0; fd < 2; ++fd) {
+-		if (fda->entries[fd].fd != expected_fd[fd]) {
+-			pr_debug("\nfda->entries[%d].fd=%d != %d\n", fd,
+-				 fda->entries[fd].fd, expected_fd[fd]);
+-			goto out_delete;
+-		}
+-	}
+-
+ 	pr_debug("\n");
+ 
+ 	err = 0;
+-- 
+2.24.1
+
