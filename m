@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691C721FC65
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E08D21FBA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730635AbgGNTIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:08:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45878 "EHLO mail.kernel.org"
+        id S1731098AbgGNS5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:57:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730230AbgGNSt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:49:56 -0400
+        id S1731144AbgGNS5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:57:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0A1422AAA;
-        Tue, 14 Jul 2020 18:49:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B50C922B2B;
+        Tue, 14 Jul 2020 18:57:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752596;
-        bh=GHn24gGp4o4CF2M+4AG8BhCear5O6ry4EQVDfn60o9I=;
+        s=default; t=1594753039;
+        bh=1q3eGcrgswO/Hm1Qc/cMcRPN19EH0r7T98jDvBGqZzY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w6w2kVS049SIEr3DpBqLWmi4GG8kYYt69FvOFZNWfzMysl/RkCywXqs4uWK2Y7mJT
-         j53UEZ6Kg6W2MkPjX4eMEQuLlxt608c4Zl+q/R/rc3j++ibvn+DDdQZhgtEU7c+phI
-         a9ZtUDJcYSgdCUpq1T+lTw4MyqrbxuQSMK7BtVWw=
+        b=wk0Y+2bk05UfVJfAbldGSzIxtYmkpKQUTG7R5+nkQdb3VLviiyLueyRwG2t8B5rkL
+         TCNSWeroacGjppuOpW20JH5hQm6MfCRtPp9mrWaWv413lvLI/Gta7DlLyv5zX2kza3
+         qoW1q/XFxyjMWTJTz2WuFFP+2NfDNX0F/OqbddzE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 037/109] gpio: pca953x: Fix GPIO resource leak on Intel Galileo Gen 2
-Date:   Tue, 14 Jul 2020 20:43:40 +0200
-Message-Id: <20200714184107.296596201@linuxfoundation.org>
+Subject: [PATCH 5.7 056/166] nl80211: dont return err unconditionally in nl80211_start_ap()
+Date:   Tue, 14 Jul 2020 20:43:41 +0200
+Message-Id: <20200714184118.556622858@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,44 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-[ Upstream commit 5d8913504ccfeea6120df5ae1c6f4479ff09b931 ]
+[ Upstream commit bc7a39b4272b9672d806d422b6850e8c1a09914c ]
 
-When adding a quirk for IRQ on Intel Galileo Gen 2 the commit ba8c90c61847
-("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
-missed GPIO resource release. We can safely do this in the same quirk, since
-IRQ will be locked by GPIO framework when requested and unlocked on freeing.
+When a memory leak was fixed, a return err was changed to goto err,
+but, accidentally, the if (err) was removed, so now we always exit at
+this point.
 
-Fixes: ba8c90c61847 ("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Fix it by adding if (err) back.
+
+Fixes: 9951ebfcdf2b ("nl80211: fix potential leak in AP start")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20200626124931.871ba5b31eee.I97340172d92164ee92f3c803fe20a8a6e97714e1@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-pca953x.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ net/wireless/nl80211.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-index c935019c0257c..81f5103dccb6f 100644
---- a/drivers/gpio/gpio-pca953x.c
-+++ b/drivers/gpio/gpio-pca953x.c
-@@ -176,7 +176,12 @@ static int pca953x_acpi_get_irq(struct device *dev)
- 	if (ret)
- 		return ret;
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index 692bcd35f8094..a56ede64e70fc 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -5004,7 +5004,8 @@ static int nl80211_start_ap(struct sk_buff *skb, struct genl_info *info)
+ 		err = nl80211_parse_he_obss_pd(
+ 					info->attrs[NL80211_ATTR_HE_OBSS_PD],
+ 					&params.he_obss_pd);
+-		goto out;
++		if (err)
++			goto out;
+ 	}
  
--	return gpio_to_irq(pin);
-+	ret = gpio_to_irq(pin);
-+
-+	/* When pin is used as an IRQ, no need to keep it requested */
-+	gpio_free(pin);
-+
-+	return ret;
- }
- #endif
- 
+ 	if (info->attrs[NL80211_ATTR_HE_BSS_COLOR]) {
 -- 
 2.25.1
 
