@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEFA21FA20
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C503221FABF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730204AbgGNSts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:49:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
+        id S1730867AbgGNSzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:55:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729612AbgGNSto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:49:44 -0400
+        id S1730854AbgGNSzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:55:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98A7F222E9;
-        Tue, 14 Jul 2020 18:49:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A7CA21D79;
+        Tue, 14 Jul 2020 18:55:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752584;
-        bh=LfinL+qf+xYekFkB6evl9bPpa9Gp5TmB/+oAhC/yJoM=;
+        s=default; t=1594752918;
+        bh=JU237hWnDCNGho2nOLzreWepG0pFmFvZo5x1vMrKeAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=opVQyVaHZg6ZWnUY6dYKv78REJuQIcMo3auwCQWaNJMWSd79q2n3jdKQ7pWWWTJql
-         GZfyejZkcrwShZhzwRPpqCgfpn0hc1Y2qJOHdYc8R0Dtux66J5mRuGDh95SnBaq5vY
-         Qx/eqDpEzsgd5HAl/JOpIfoyk1jBPlzSysJkS3PA=
+        b=JgFMDQSawG1Pj1qVYEodk/ATASs1bzI1j4g0F2Ccgx+nvM/+ff+OUsiSdP06mK484
+         Ec9DHOiPdEl7qA3O7S+8011WnNOtXCHNKTyDfD2dKbSQUKexMcvWTbxrtgYGHnegCp
+         bn+ic1x9ddu/a45cVJ4RTqNUo7nS2OZE1NZ0HJVk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Gurtovoy <maxg@mellanox.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 032/109] nvme-rdma: assign completion vector correctly
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 050/166] gpio: pca953x: Fix GPIO resource leak on Intel Galileo Gen 2
 Date:   Tue, 14 Jul 2020 20:43:35 +0200
-Message-Id: <20200714184107.058322073@linuxfoundation.org>
+Message-Id: <20200714184118.271627771@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +47,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Gurtovoy <maxg@mellanox.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 032a9966a22a3596addf81dacf0c1736dfedc32a ]
+[ Upstream commit 5d8913504ccfeea6120df5ae1c6f4479ff09b931 ]
 
-The completion vector index that is given during CQ creation can't
-exceed the number of support vectors by the underlying RDMA device. This
-violation currently can accure, for example, in case one will try to
-connect with N regular read/write queues and M poll queues and the sum
-of N + M > num_supported_vectors. This will lead to failure in establish
-a connection to remote target. Instead, in that case, share a completion
-vector between queues.
+When adding a quirk for IRQ on Intel Galileo Gen 2 the commit ba8c90c61847
+("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
+missed GPIO resource release. We can safely do this in the same quirk, since
+IRQ will be locked by GPIO framework when requested and unlocked on freeing.
 
-Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: ba8c90c61847 ("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/rdma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpio/gpio-pca953x.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 73e8475ddc8ab..cd0d499781908 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -451,7 +451,7 @@ static int nvme_rdma_create_queue_ib(struct nvme_rdma_queue *queue)
- 	 * Spread I/O queues completion vectors according their queue index.
- 	 * Admin queues can always go on completion vector 0.
- 	 */
--	comp_vector = idx == 0 ? idx : idx - 1;
-+	comp_vector = (idx == 0 ? idx : idx - 1) % ibdev->num_comp_vectors;
+diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
+index a10411958e3f2..48bea0997e70c 100644
+--- a/drivers/gpio/gpio-pca953x.c
++++ b/drivers/gpio/gpio-pca953x.c
+@@ -176,7 +176,12 @@ static int pca953x_acpi_get_irq(struct device *dev)
+ 	if (ret)
+ 		return ret;
  
- 	/* Polling queues need direct cq polling context */
- 	if (nvme_rdma_poll_queue(queue))
+-	return gpio_to_irq(pin);
++	ret = gpio_to_irq(pin);
++
++	/* When pin is used as an IRQ, no need to keep it requested */
++	gpio_free(pin);
++
++	return ret;
+ }
+ #endif
+ 
 -- 
 2.25.1
 
