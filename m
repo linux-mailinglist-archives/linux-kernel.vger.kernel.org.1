@@ -2,73 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EB121E7D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2CD21E7D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgGNGFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 02:05:19 -0400
-Received: from mga01.intel.com ([192.55.52.88]:33546 "EHLO mga01.intel.com"
+        id S1726905AbgGNGCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 02:02:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgGNGFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 02:05:18 -0400
-IronPort-SDR: pUkNnsfPJJCCdg4uSwZYGjkex70pmyxQt5oUQeXatznnOboG2/GCfKLL8bklQoa8By5HEaC1Ki
- tRiRvhbWpeQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="166922467"
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="166922467"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 23:05:17 -0700
-IronPort-SDR: HZ5ONaUZk2NcuqcnMUCSoeA6IkdolHNVFUioiP5YxUkmGzxelBocDrUEKStlthXaj0wb4oS/VP
- 4i6iId8BGY1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="299428436"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga002.jf.intel.com with ESMTP; 13 Jul 2020 23:05:15 -0700
-Date:   Tue, 14 Jul 2020 14:01:08 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Tom Rix <trix@redhat.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lgoncalv@redhat.com,
-        Wu Hao <hao.wu@intel.com>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: Re: [PATCH v2] fpga: dfl: pci: add device id for Intel FPGA PAC N3000
-Message-ID: <20200714060108.GA27430@yilunxu-OptiPlex-7050>
-References: <1594604866-30877-1-git-send-email-yilun.xu@intel.com>
- <4efe6ee9-4e88-5b31-01a2-414f752a3d2e@redhat.com>
+        id S1725925AbgGNGCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 02:02:40 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D870D21D93;
+        Tue, 14 Jul 2020 06:02:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594706560;
+        bh=QdaFBpDRGpizTzOQaQSCq0rsbtp195RVw7IgKPGdycg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KQSMa+VKG6cmXxYmbWcOmhW45JT/mB6y5x2wBTHQbfFeO8Zapfl0K9IEnKO4N/urg
+         WMqRO4abFXbvDRk8qJtUkMPUSRQML/qiZFL/lID4256toy0KYb2kJHX0ZlD4Qn8Yf1
+         Pvei3dwlHlyC6odSWabPDwCIN1T2X+ex0WLCd11c=
+Date:   Tue, 14 Jul 2020 08:02:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] tcpm: Error handling for
+ tcpm_register_partner_altmodes
+Message-ID: <20200714060238.GA657428@kroah.com>
+References: <20200714033453.4044482-1-kyletso@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4efe6ee9-4e88-5b31-01a2-414f752a3d2e@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200714033453.4044482-1-kyletso@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 07:36:26AM -0700, Tom Rix wrote:
-> 
-> > @@ -64,6 +64,7 @@ static void cci_pci_free_irq(struct pci_dev *pcidev)
-> >  #define PCIE_DEVICE_ID_PF_INT_5_X	0xBCBD
-> >  #define PCIE_DEVICE_ID_PF_INT_6_X	0xBCC0
-> >  #define PCIE_DEVICE_ID_PF_DSC_1_X	0x09C4
-> > +#define PCIE_DEVICE_ID_INTEL_PAC_N3000	0x0B30
-> 
-> My point about consistency.  These are all intel  and all should have their pf parts removed.
-> 
->  #define PCIE_DEVICE_ID_INTEL_INT_5_X	0xBCBD
->  #define PCIE_DEVICE_ID_INTEL_INT_6_X	0xBCC0
->  #define PCIE_DEVICE_ID_INTEL_DSC_1_X	0x09C4
-> 
-> Let's revisit this for the d5005.
+On Tue, Jul 14, 2020 at 11:34:51AM +0800, Kyle Tso wrote:
+> *** BLURB HERE ***
 
-I agree that we should be consistent on the naming. I think we could
-reconsider the naming of previous cards and submit a new patch for them.
+No blurb?
 
-> 
-> trix
-> 
+:(
