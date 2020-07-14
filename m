@@ -2,107 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A5921F828
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EDA21F84C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728961AbgGNR14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgGNR1z (ORCPT
+        id S1728809AbgGNRed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:34:33 -0400
+Received: from pbmsgap02.intersil.com ([192.157.179.202]:60974 "EHLO
+        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726169AbgGNRed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:27:55 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A32DC061755;
-        Tue, 14 Jul 2020 10:27:55 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id h22so24081103lji.9;
-        Tue, 14 Jul 2020 10:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rJflZjiXOdQ2b9X0uINcJ4Ucju/qSppPTgvRYeR307M=;
-        b=mrk8nP8ZaXDxwoSsyA8k3vVqLdKjX86zxjouhivf+G7iTeVFciVWjDwblY2qlwRa9V
-         9emGm1OFwkHsv0RNh6k8KhURGH1D+FwH8FkT9vHm1WjxGSwkBcc7aO9Y48XsU2c2Ndfp
-         ncNp8CUw5jw3N9JSVvpdTbpMguEDLfXGvNBMVwFLUb+lT15MUcBJEF7DDDa2ApoKe2px
-         /yca6v25q5b+Ew54GU19aO3kaPD9/jBteoDRN5SWUr1u5ykP8GzprDDHxTAHJoLMATxH
-         L2Itbr80hoTwWdfBBNrcSmyBVo7l9b1xeyICzyCQG5N5jUV/3HnVVjmUfM6PWg6pxsNZ
-         6wcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rJflZjiXOdQ2b9X0uINcJ4Ucju/qSppPTgvRYeR307M=;
-        b=ET10/RrCXX3P6owUfagMkf0F59cQkj4lMqorDfThTR08/3iHauj8+fW55m8TA/Vg88
-         qLZFkJZGsi4KatUVHxXehJBsyv3utbjY7xrDh8BCimVCF+TKkVo/3H/lMeqeHHBeTSaz
-         4+lRiHLYzrfPMf6NpDUnbXPfZCCIIYKfgGlaaHzDGUgwAqvvnKWAY121nd6itBt+DruG
-         SswYVc6sJ8DLxpRsnFfK0F29Kox+ZgXz9meTTDPPKy5aH0INGdq0hShlxKZgsxOA5bG/
-         DBIz3ogC8hg/7EmfPwEu0UY0LK0dpDHf4vQSXYZ3HchrZ+sTxr9f0khpbhNKhzLZORbL
-         Ip1g==
-X-Gm-Message-State: AOAM532BdN0pyMUdsKZOgY9jkGw8oBX6mDyl7p6M/TurDAcVc38mQSIp
-        mIUyrGtXqPfVKmBkFmw4CRMPqcrrSmQDhAeLeGj17A==
-X-Google-Smtp-Source: ABdhPJwXkCPdv8pEQTPBzV1xLgwG/Fk/yXhNz7NQyeZbo2FvwLmIalitSURyFPmgQdvxw6/FjTtTVnFu1TFItk7wtV8=
-X-Received: by 2002:a2e:9a4d:: with SMTP id k13mr2946227ljj.283.1594747673686;
- Tue, 14 Jul 2020 10:27:53 -0700 (PDT)
+        Tue, 14 Jul 2020 13:34:33 -0400
+X-Greylist: delayed 1119 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Jul 2020 13:34:32 EDT
+Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
+        by pbmsgap02.intersil.com (8.16.0.27/8.16.0.27) with SMTP id 06EHDIkX023308;
+        Tue, 14 Jul 2020 13:15:50 -0400
+Received: from pbmxdp02.intersil.corp (pbmxdp02.pb.intersil.com [132.158.200.223])
+        by pbmsgap02.intersil.com with ESMTP id 3277kcs6pa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 14 Jul 2020 13:15:50 -0400
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp02.intersil.corp (132.158.200.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1979.3; Tue, 14 Jul 2020 13:15:49 -0400
+Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 14 Jul 2020 13:15:48 -0400
+From:   <min.li.xe@renesas.com>
+To:     <richardcochran@gmail.com>, <corbet@lwn.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net 1/1] docs: ptp.rst: add support for Renesas (IDT) ClockMatrix
+Date:   Tue, 14 Jul 2020 13:15:20 -0400
+Message-ID: <1594746920-28760-1-git-send-email-min.li.xe@renesas.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <CAEf4BzZRGOsTiW3uFWd1aY6K5Yi+QBrTeC5FNOo6uVXviXuX4g@mail.gmail.com>
- <20200714012732.195466-1-yepeilin.cs@gmail.com> <CAEf4Bzas-C7hKX=AutcV1fz-F_q2P8+OCnrA37h-nCytLHPn1g@mail.gmail.com>
-In-Reply-To: <CAEf4Bzas-C7hKX=AutcV1fz-F_q2P8+OCnrA37h-nCytLHPn1g@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 14 Jul 2020 10:27:42 -0700
-Message-ID: <CAADnVQ+jUPGJapkvKW=AfXESD6Vz2iuONvJm8eJm5Yd+u9mJ+w@mail.gmail.com>
-Subject: Re: [Linux-kernel-mentees] [PATCH v2] bpf: Fix NULL pointer
- dereference in __btf_resolve_helper_id()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-MML: disable
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-14_06:2020-07-14,2020-07-14 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-2006250000 definitions=main-2007140126
+X-Proofpoint-Spam-Reason: mlx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 9:38 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Jul 13, 2020 at 6:29 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> >
-> > Prevent __btf_resolve_helper_id() from dereferencing `btf_vmlinux`
-> > as NULL. This patch fixes the following syzbot bug:
-> >
-> >     https://syzkaller.appspot.com/bug?id=5edd146856fd513747c1992442732e5a0e9ba355
+From: Min Li <min.li.xe@renesas.com>
 
-The link looks wrong?
-Nothing in the stack trace indicates this issue.
+Add below to “Ancillary clock features” section
+  - Low Pass Filter (LPF) access from user space
 
-> > Reported-by: syzbot+ee09bda7017345f1fbe6@syzkaller.appspotmail.com
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > ---
-> > Thank you for reviewing my patch! I am new to Linux kernel development; would
-> > the log message and errno be appropriate for this case?
->
-> I think it's good enough, thanks for the fix.
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
->
-> >
-> > Change in v2:
-> >     - Split NULL and IS_ERR cases.
-> >
-> >  kernel/bpf/btf.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
->
-> [...]
+Add below to list of “Supported hardware” section
+  + Renesas (IDT) ClockMatrix™
+
+Signed-off-by: Min Li <min.li.xe@renesas.com>
+---
+ Documentation/driver-api/ptp.rst | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/Documentation/driver-api/ptp.rst b/Documentation/driver-api/ptp.rst
+index a15192e..664838a 100644
+--- a/Documentation/driver-api/ptp.rst
++++ b/Documentation/driver-api/ptp.rst
+@@ -23,6 +23,7 @@ PTP hardware clock infrastructure for Linux
+   + Ancillary clock features
+     - Time stamp external events
+     - Period output signals configurable from user space
++    - Low Pass Filter (LPF) access from user space
+     - Synchronization of the Linux system time via the PPS subsystem
+ 
+ PTP hardware clock kernel API
+@@ -94,3 +95,14 @@ Supported hardware
+ 
+      - Auxiliary Slave/Master Mode Snapshot (optional interrupt)
+      - Target Time (optional interrupt)
++
++   * Renesas (IDT) ClockMatrix™
++
++     - Up to 4 independent PHC channels
++     - Integrated low pass filter (LPF), access via .adjPhase (compliant to ITU-T G.8273.2)
++     - Programmable output periodic signals
++     - Programmable inputs can time stamp external triggers
++     - Driver and/or hardware configuration through firmware (idtcm.bin)
++          - LPF settings (bandwidth, phase limiting, automatic holdover, physical layer assist (per ITU-T G.8273.2))
++          - Programmable output PTP clocks, any frequency up to 1GHz (to other PHY/MAC time stampers, refclk to ASSPs/SoCs/FPGAs)
++          - Lock to GNSS input, automatic switching between GNSS and user-space PHC control (optional)
+-- 
+2.7.4
+
