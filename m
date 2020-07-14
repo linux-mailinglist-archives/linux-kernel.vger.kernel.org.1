@@ -2,97 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA58220031
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AC9220038
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgGNVlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37392 "EHLO
+        id S1728188AbgGNVmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726688AbgGNVlH (ORCPT
+        with ESMTP id S1726710AbgGNVmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:41:07 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05B5C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:41:07 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k71so30244pje.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:41:07 -0700 (PDT)
+        Tue, 14 Jul 2020 17:42:52 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFA9C061755;
+        Tue, 14 Jul 2020 14:42:51 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id d27so108241qtg.4;
+        Tue, 14 Jul 2020 14:42:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=NVz0yoqE7nbKLxEfE0Ni6YZf8hVnVv/lZnqHDwHd9EI=;
-        b=d2/Gu/BmUNB5aqve7jAShkkdGjL9w8kucpLcU7onUISWOA1mEYKDfwakrLbMq+FLcv
-         m0luqWY1m/cPBVHnz3QKPRILQXGtjXZfWHubOLuYJtO3zgaijkhqOiEDpIpkqipJixUJ
-         aKgOIaNB2Nd6SJXbuWDUosoe/bMhO5LT++RmQ=
+        bh=dch/WtmoKPQg8SRn/xT9XuWPxCjeN6BPw/5vBDMLPao=;
+        b=rHWw0+X+zL9ddXJHGLNV7xjzS0eiiSQzcypjCMxbHGz22QkSRGXXtGnRd5MDjvk7/w
+         yqnU0NnbElreflfaS590bj4ZlPOfQscv9mmhaLuVFnjCnnX70y93TcNWen9KB9qA3j6v
+         5k5zMDHrlXQtdJev+EzUYEg+wSUacBRYApl4QSD7d5UsB+Pz9ekk4+G1TEvXZI6WctXq
+         mzuyNHyN5CBkVGUnVqAPJHAlOqVM/pngl0NgtFvLyiOIgHpmzhu1Hub6OG/TkCjExFRo
+         Oc2xQIjZmNemXiXFrUkSzaIN9xnFuR1cD4FUPOSS4OOBE2IiALEb0VieY+zVzgse88y5
+         gCVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NVz0yoqE7nbKLxEfE0Ni6YZf8hVnVv/lZnqHDwHd9EI=;
-        b=bmUEjlKFwQz+mLU5vzksrQtYw5Y1sWC9Fp915d62j0xsoRlTYf1XjQi2wNbV8mew7Z
-         yToM1G/1tWQ4oNVnovmhciEkRZYm6TLTdEitWvU2kR2LAOlgSJhlC/N8ym9zKvBQF4wm
-         2gjZ9fvMRMEH0lcbg1O3XTi8cn+k2q/B1RjKXfzJQ5ZMsaA6HkgJZAfhAg/TD7qITpAu
-         UWcahTNUJfOl61eXW0Mm+MDp/G1Y0+DLCU82f/t/yH0SLl+qGYydAxG83VgQzP6shWau
-         iD2wZtu1GSIrqKDK81bRuVzmPbeFsIF7NOdb3mtW/gVjjJeVkuxu6NmuSNvQP0nog0tq
-         4XgA==
-X-Gm-Message-State: AOAM532h0nBQOPLMD+LE+UrE3bD2rw+t2YjbvH8StZ6Zv1Tct97KvQvF
-        Naw5ZfCxjSUAJo69eG7cYhP9dA==
-X-Google-Smtp-Source: ABdhPJxhN/Y39BnxM0uRcYuZZMzDRRwoDiA3Y/6MHYVyzHW1tffbpD9XK/UIV8xeYgDAxt4YVSdZhw==
-X-Received: by 2002:a17:90b:3010:: with SMTP id hg16mr6773703pjb.69.1594762867408;
-        Tue, 14 Jul 2020 14:41:07 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x7sm113755pfq.197.2020.07.14.14.41.06
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=dch/WtmoKPQg8SRn/xT9XuWPxCjeN6BPw/5vBDMLPao=;
+        b=qKTt6KyquWNTXQJfh/zwxaHVpnQ0FQbVG/4bKxNaA5PBXaatmOHh55NsgyanQ/BNBP
+         AmfEJb7LxqTItFa9IoIh7uxP0MhCb2NwHJ5shZR4TF+CDs0h8X2AN5fT5UlziOz59Am6
+         AooPg/Vr30ePKouPXspyvyandYusdJirLb8HUdzdkRGHVpn8bJ8neo+Fk2LOM+8J1NrC
+         Pwra3QNajB5qLVJf1tI3oQPvL+gM23KgEI5KiC6bT2FayB6InHuskLDN5krDg+JAjNsa
+         6QOEYOY23+3pF/YHOR2XtQnIKpIE1nR6LeBhSsUkbTovHnsj5m3gcuAUgfA46Uhx/LNZ
+         NijQ==
+X-Gm-Message-State: AOAM533L7uaUhsEa0SkpL18TvjXTL/+nqma/6pQE2Pc7PcWVMzC7Y6aZ
+        Gt0jW+DELYFnPpW7XK47VrE=
+X-Google-Smtp-Source: ABdhPJzqJXUtDidVRHkXV4qNzeWa0YUAEGGmGN/8NWsY3UrCM6YCDQc4K/5yU4yxaXRn7gQCKKxL2A==
+X-Received: by 2002:ac8:4ccb:: with SMTP id l11mr6786726qtv.18.1594762964831;
+        Tue, 14 Jul 2020 14:42:44 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id q28sm377002qtk.13.2020.07.14.14.42.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 14:41:06 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 14:41:05 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        Tue, 14 Jul 2020 14:42:44 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 14 Jul 2020 17:42:42 -0400
+To:     Nick Terrell <nickrterrell@gmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        linux-security-module@vger.kernel.org,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 6/7] exec: Factor bprm_stack_limits out of
- prepare_arg_pages
-Message-ID: <202007141441.C612C34E7@keescook>
-References: <871rle8bw2.fsf@x220.int.ebiederm.org>
- <87365u6x60.fsf@x220.int.ebiederm.org>
+        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+        linux-kbuild@vger.kernel.org, x86@kernel.org,
+        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
+        Kees Cook <keescook@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
+        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Norbert Lange <nolange79@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Xu <alex_y_xu@yahoo.ca>, Nick Terrell <terrelln@fb.com>
+Subject: Re: [PATCH v7 2/7] lib: add zstd support to decompress
+Message-ID: <20200714214242.GA1000731@rani.riverdale.lan>
+References: <20200708185024.2767937-1-nickrterrell@gmail.com>
+ <20200708185024.2767937-3-nickrterrell@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87365u6x60.fsf@x220.int.ebiederm.org>
+In-Reply-To: <20200708185024.2767937-3-nickrterrell@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 08:31:03AM -0500, Eric W. Biederman wrote:
+On Wed, Jul 08, 2020 at 11:50:19AM -0700, Nick Terrell wrote:
+> From: Nick Terrell <terrelln@fb.com>
 > 
-> In preparation for implementiong kernel_execve (which will take kernel
-> pointers not userspace pointers) factor out bprm_stack_limits out of
-> prepare_arg_pages.  This separates the counting which depends upon the
-> getting data from userspace from the calculations of the stack limits
-> which is usable in kernel_execve.
+> * Add unzstd() and the zstd decompress interface.
+> * Add zstd support to decompress_method().
 > 
-> The remove prepare_args_pages and compute bprm->argc and bprm->envc
-> directly in do_execveat_common, before bprm_stack_limits is called.
+> The decompress_method() and unzstd() functions are used to decompress
+> the initramfs and the initrd. The __decompress() function is used in
+> the preboot environment to decompress a zstd compressed kernel.
 > 
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> The zstd decompression function allows the input and output buffers to
+> overlap because that is used by x86 kernel decompression.
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Nick Terrell <terrelln@fb.com>
+> + *
+> + * __DISABLE_EXPORTS stops zstd and xxhash from declaring themselves
+> + * as modules by disabling the EXPORT_SYMBOL macro.
+> + */
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Hi Nick, this doesn't actually work, because misc.c includes export.h
+via
+	"misc.h" -> <linux/linkage.h> -> <linux/export.h>
+and EXPORT_SYMBOL is already defined before __DISABLE_EXPORTS is defined
+here.
 
--- 
-Kees Cook
+Adding -D__EXPORT_SYMBOLS to KBUILD_CFLAGS in arch/x86/boot/compressed/Makefile
+fixes that, and then you don't have to define it here.
+
+Also, __DISABLE_EXPORTS does not currently inhibit MODULE_INFO, so a
+.modinfo section gets emitted into misc.o. I *think* this is harmless
+and it will get discarded when building compressed/vmlinux, but thought
+I'd point it out.
