@@ -2,87 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AD121F1BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C7821F146
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgGNMpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:45:36 -0400
-Received: from fallback17.m.smailru.net ([94.100.176.130]:38406 "EHLO
-        fallback17.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726352AbgGNMpf (ORCPT
+        id S1728232AbgGNMcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727867AbgGNMcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:45:35 -0400
-X-Greylist: delayed 2645 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Jul 2020 08:45:34 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=qbHt0xTQ8gvYX85r2GgVVZNjX4CqlbhbtSIusxndApI=;
-        b=rarA1JVvjcBb5okw+X5zdOWmuf1u5RpupNZRvNSNmIhlP55VbNJytTD7vEJRAIluohnrfqO+kUQbMk8GB3rh9G8v21nA+novJqE2szsk5ZgX+eNqXDkJV0GusgvlOLd9EaE7bs8nRecORAxlOWFWqBsL1BRyNkJbT8IYbUy0LM8=;
-Received: from [10.161.64.44] (port=52268 helo=smtp36.i.mail.ru)
-        by fallback17.m.smailru.net with esmtp (envelope-from <fido_max@inbox.ru>)
-        id 1jvJcl-0007Fg-6q
-        for linux-kernel@vger.kernel.org; Tue, 14 Jul 2020 15:01:27 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=qbHt0xTQ8gvYX85r2GgVVZNjX4CqlbhbtSIusxndApI=;
-        b=rarA1JVvjcBb5okw+X5zdOWmuf1u5RpupNZRvNSNmIhlP55VbNJytTD7vEJRAIluohnrfqO+kUQbMk8GB3rh9G8v21nA+novJqE2szsk5ZgX+eNqXDkJV0GusgvlOLd9EaE7bs8nRecORAxlOWFWqBsL1BRyNkJbT8IYbUy0LM8=;
-Received: by smtp36.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
-        id 1jvJch-0003R0-2o; Tue, 14 Jul 2020 15:01:23 +0300
-From:   Maxim Kochetkov <fido_max@inbox.ru>
-Cc:     Maxim Kochetkov <fido_max@inbox.ru>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] gianfar: Use random MAC address when none is given
-Date:   Tue, 14 Jul 2020 15:01:04 +0300
-Message-Id: <20200714120104.257819-1-fido_max@inbox.ru>
-X-Mailer: git-send-email 2.27.0
+        Tue, 14 Jul 2020 08:32:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A840BC061755;
+        Tue, 14 Jul 2020 05:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=OyZ2gK5FcIExI1V3T5j7nMnhL8zUoo41svBXtzu2/oY=; b=sGNKR3jpcBArGgMT6zGENCzXGs
+        nagY8RxgQNVF+mlKXANL8Hw5UtNASYKTTt1XiJG5swyQpHPBDL5U1JvDqZayOWfsUjuw1qiVQxJu7
+        KxfeajcTF+wRNbsD32/k9aut+8tzX5352HITFRovPmiOFzVF5Lr5IPHQhvBEMBsqt3ApEEloO+Fs/
+        0BJaH+xTzx6rYWAPNejQw41bifRm8vF39ySOn3Ahl83m7yhA1foUfNXPQeLvIfL932du4a2RHUaJ8
+        LhbdFF0vj4/o2raW0l7al/enXD74lFUZ/jwWwLKiVnlD4/OzEgOpxHdLEPMdpk6jAHlPRW49b4Uh1
+        44B64S5A==;
+Received: from 089144201169.atnat0010.highway.a1.net ([89.144.201.169] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvK6Q-000260-G5; Tue, 14 Jul 2020 12:32:06 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>
+Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 05/10] sh: move the ioremap implementation out of line
+Date:   Tue, 14 Jul 2020 14:18:51 +0200
+Message-Id: <20200714121856.955680-6-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200714121856.955680-1-hch@lst.de>
+References: <20200714121856.955680-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD9BB76C036EA8E79AC7183BC094B6F439707A04E6D4477B360182A05F538085040FE9E7DC89FC4EB4012E6849F381C3FA7DC809E60F3FC4F0404B695EBED5383FD
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7AED985C8E545F588EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006370D3D68FCEFFDD9EA8638F802B75D45FF5571747095F342E8C7A0BC55FA0FE5FC213B1F18E6357999AC01BF80EEC924F54356B433C02D987D389733CBF5DBD5E913377AFFFEAFD269176DF2183F8FC7C05A64D9A1E9CA65708941B15DA834481FCF19DD082D7633A0E7DDDDC251EA7DABA471835C12D1D977725E5C173C3A84C34964A708C60C975A117882F4460429728AD0CFFFB425014E40A5AABA2AD371193AA81AA40904B5D9A18204E546F3947C724336BCC0EE1BA82D242C3BD2E3F4C64AD6D5ED66289B52C79FDBAFFB82A7259735652A29929C6C725E5C173C3A84C36ED3D2230264E88FBA3038C0950A5D36B5C8C57E37DE458B0B4866841D68ED3567F23339F89546C55F5C1EE8F4F765FC2303E78B907142AC75ECD9A6C639B01BBD4B6F7A4D31EC0BC0CAF46E325F83A522CA9DD8327EE4930A3850AC1BE2E735E4A630A5B664A4FFC4224003CC836476C0CAF46E325F83A50BF2EBBBDD9D6B0F5D41B9178041F3E72623479134186CDE6BA297DBC24807EABDAD6C7F3747799A
-X-C8649E89: 94EF0272A9D89B9EF87A4F89EFDF43799A759607405807F9AD839F8A94B4F7BAC9759BC6ED5F36F0
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojB6ZTT+PDdQTwMtP0u4aUog==
-X-Mailru-Sender: 11C2EC085EDE56FA9C10FA2967F5AB24DD87BDCA44971A3634F755EE91CABA9A8D65200875EB1684EE9242D420CFEBFD3DDE9B364B0DF2891A624F84B2C74EDA4239CF2AF0A6D4F80DA7A0AF5A3A8387
-X-Mras: Ok
-X-7564579A: 78E4E2B564C1792B
-X-77F55803: 6242723A09DB00B4147F32E2E3FD3168531095BDAC846E1A692A065875C7E56768F3CF0E9FE49B692022726CF533BD93D3A5C365C5E6E138C88083DD89C81B5CBBBCFBF40EC1E8CB
-X-7FA49CB5: 0D63561A33F958A5CCBB3A1FA6F977126312C4CA0301EFE23B5A80210D29EE468941B15DA834481FA18204E546F3947C744B801E316CB65FF6B57BC7E64490618DEB871D839B7333395957E7521B51C2545D4CF71C94A83E9FA2833FD35BB23D27C277FBC8AE2E8B2EE5AD8F952D28FBA471835C12D1D977C4224003CC8364767815B9869FA544D8D32BA5DBAC0009BE9E8FC8737B5C22490103F85E399B2B9276E601842F6C81A12EF20D2F80756B5F13660E01DFBDB6B6089D37D7C0E48F6CA18204E546F3947C83C798A30B85E16BCE5475246E174218C8A9BA7A39EFB7666BA297DBC24807EA089D37D7C0E48F6C8AA50765F7900637AF8E4F18C523FAA9EFF80C71ABB335746BA297DBC24807EA27F269C8F02392CDC58410348177836EABEDDA51113D120200306258E7E6ABB4E4A6367B16DE6309
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojB6ZTT+PDdQQ1hVfU5MPrKw==
-X-Mailru-MI: 800
-X-Mailru-Sender: A5480F10D64C9005E7955441BDF86265BFC7CBB18C8FB6147A635300F1BE684FE2167D3455AE77B5C099ADC76E806A99D50E20E2BC48EF5A30D242760C51EA9CEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
-To:     unlisted-recipients:; (no To-header on input)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If there is no valid MAC address in the device tree,
-use a random MAC address.
+Move the internal implementation details of ioremap out of line, no need
+to expose any of this to drivers for a slow path API.
 
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/net/ethernet/freescale/gianfar.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/sh/include/asm/io.h | 101 ++++++---------------------------------
+ arch/sh/mm/ioremap.c     |  53 ++++++++++++++++++++
+ 2 files changed, 68 insertions(+), 86 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/gianfar.c b/drivers/net/ethernet/freescale/gianfar.c
-index b3c69e9038ea..b513b8c5c3b5 100644
---- a/drivers/net/ethernet/freescale/gianfar.c
-+++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -779,8 +779,12 @@ static int gfar_of_init(struct platform_device *ofdev, struct net_device **pdev)
+diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
+index 357a7e0c86d682..da08a61a2f7dae 100644
+--- a/arch/sh/include/asm/io.h
++++ b/arch/sh/include/asm/io.h
+@@ -242,109 +242,38 @@ unsigned long long poke_real_address_q(unsigned long long addr,
+ #define phys_to_virt(address)	(__va(address))
+ #endif
  
- 	mac_addr = of_get_mac_address(np);
+-/*
+- * On 32-bit SH, we traditionally have the whole physical address space
+- * mapped at all times (as MIPS does), so "ioremap()" and "iounmap()" do
+- * not need to do anything but place the address in the proper segment.
+- * This is true for P1 and P2 addresses, as well as some P3 ones.
+- * However, most of the P3 addresses and newer cores using extended
+- * addressing need to map through page tables, so the ioremap()
+- * implementation becomes a bit more complicated.
+- *
+- * See arch/sh/mm/ioremap.c for additional notes on this.
+- *
+- * We cheat a bit and always return uncachable areas until we've fixed
+- * the drivers to handle caching properly.
+- *
+- * On the SH-5 the concept of segmentation in the 1:1 PXSEG sense simply
+- * doesn't exist, so everything must go through page tables.
+- */
+ #ifdef CONFIG_MMU
++void iounmap(void __iomem *addr);
+ void __iomem *__ioremap_caller(phys_addr_t offset, unsigned long size,
+ 			       pgprot_t prot, void *caller);
+-void iounmap(void __iomem *addr);
+-
+-static inline void __iomem *
+-__ioremap(phys_addr_t offset, unsigned long size, pgprot_t prot)
+-{
+-	return __ioremap_caller(offset, size, prot, __builtin_return_address(0));
+-}
+-
+-static inline void __iomem *
+-__ioremap_29bit(phys_addr_t offset, unsigned long size, pgprot_t prot)
+-{
+-#ifdef CONFIG_29BIT
+-	phys_addr_t last_addr = offset + size - 1;
+-
+-	/*
+-	 * For P1 and P2 space this is trivial, as everything is already
+-	 * mapped. Uncached access for P1 addresses are done through P2.
+-	 * In the P3 case or for addresses outside of the 29-bit space,
+-	 * mapping must be done by the PMB or by using page tables.
+-	 */
+-	if (likely(PXSEG(offset) < P3SEG && PXSEG(last_addr) < P3SEG)) {
+-		u64 flags = pgprot_val(prot);
+-
+-		/*
+-		 * Anything using the legacy PTEA space attributes needs
+-		 * to be kicked down to page table mappings.
+-		 */
+-		if (unlikely(flags & _PAGE_PCC_MASK))
+-			return NULL;
+-		if (unlikely(flags & _PAGE_CACHABLE))
+-			return (void __iomem *)P1SEGADDR(offset);
+-
+-		return (void __iomem *)P2SEGADDR(offset);
+-	}
+-
+-	/* P4 above the store queues are always mapped. */
+-	if (unlikely(offset >= P3_ADDR_MAX))
+-		return (void __iomem *)P4SEGADDR(offset);
+-#endif
+-
+-	return NULL;
+-}
+-
+-static inline void __iomem *
+-__ioremap_mode(phys_addr_t offset, unsigned long size, pgprot_t prot)
+-{
+-	void __iomem *ret;
+-
+-	ret = __ioremap_trapped(offset, size);
+-	if (ret)
+-		return ret;
+-
+-	ret = __ioremap_29bit(offset, size, prot);
+-	if (ret)
+-		return ret;
+-
+-	return __ioremap(offset, size, prot);
+-}
+-#else
+-#define __ioremap(offset, size, prot)		((void __iomem *)(offset))
+-#define __ioremap_mode(offset, size, prot)	((void __iomem *)(offset))
+-static inline void iounmap(void __iomem *addr) {}
+-#endif /* CONFIG_MMU */
  
--	if (!IS_ERR(mac_addr))
-+	if (!IS_ERR(mac_addr)) {
- 		ether_addr_copy(dev->dev_addr, mac_addr);
-+	} else {
-+		eth_hw_addr_random(dev);
-+		dev_info(&ofdev->dev, "Using random MAC address: %pM\n", dev->dev_addr);
+ static inline void __iomem *ioremap(phys_addr_t offset, unsigned long size)
+ {
+-	return __ioremap_mode(offset, size, PAGE_KERNEL_NOCACHE);
++	return __ioremap_caller(offset, size, PAGE_KERNEL_NOCACHE,
++			__builtin_return_address(0));
+ }
+ 
+ static inline void __iomem *
+ ioremap_cache(phys_addr_t offset, unsigned long size)
+ {
+-	return __ioremap_mode(offset, size, PAGE_KERNEL);
++	return __ioremap_caller(offset, size, PAGE_KERNEL,
++			__builtin_return_address(0));
+ }
+ #define ioremap_cache ioremap_cache
+ 
+ #ifdef CONFIG_HAVE_IOREMAP_PROT
+-static inline void __iomem *
+-ioremap_prot(phys_addr_t offset, unsigned long size, unsigned long flags)
++static inline void __iomem *ioremap_prot(phys_addr_t offset, unsigned long size,
++		unsigned long flags)
+ {
+-	return __ioremap_mode(offset, size, __pgprot(flags));
++	return __ioremap_caller(offset, size, __pgprot(flags),
++			__builtin_return_address(0));
+ }
+-#endif
++#endif /* CONFIG_HAVE_IOREMAP_PROT */
++
++#else /* CONFIG_MMU */
++#define iounmap(addr)		do { } while (0)
++#define ioremap(offset, size)	((void __iomem *)(unsigned long)(offset))
++#endif /* CONFIG_MMU */
+ 
+ #define ioremap_uc	ioremap
+ 
+diff --git a/arch/sh/mm/ioremap.c b/arch/sh/mm/ioremap.c
+index d9ec85b6bb2130..69e55939e48a6f 100644
+--- a/arch/sh/mm/ioremap.c
++++ b/arch/sh/mm/ioremap.c
+@@ -26,6 +26,51 @@
+ #include <asm/mmu.h>
+ #include "ioremap.h"
+ 
++/*
++ * On 32-bit SH, we traditionally have the whole physical address space mapped
++ * at all times (as MIPS does), so "ioremap()" and "iounmap()" do not need to do
++ * anything but place the address in the proper segment.  This is true for P1
++ * and P2 addresses, as well as some P3 ones.  However, most of the P3 addresses
++ * and newer cores using extended addressing need to map through page tables, so
++ * the ioremap() implementation becomes a bit more complicated.
++ */
++#ifdef CONFIG_29BIT
++static void __iomem *
++__ioremap_29bit(phys_addr_t offset, unsigned long size, pgprot_t prot)
++{
++	phys_addr_t last_addr = offset + size - 1;
++
++	/*
++	 * For P1 and P2 space this is trivial, as everything is already
++	 * mapped. Uncached access for P1 addresses are done through P2.
++	 * In the P3 case or for addresses outside of the 29-bit space,
++	 * mapping must be done by the PMB or by using page tables.
++	 */
++	if (likely(PXSEG(offset) < P3SEG && PXSEG(last_addr) < P3SEG)) {
++		u64 flags = pgprot_val(prot);
++
++		/*
++		 * Anything using the legacy PTEA space attributes needs
++		 * to be kicked down to page table mappings.
++		 */
++		if (unlikely(flags & _PAGE_PCC_MASK))
++			return NULL;
++		if (unlikely(flags & _PAGE_CACHABLE))
++			return (void __iomem *)P1SEGADDR(offset);
++
++		return (void __iomem *)P2SEGADDR(offset);
 +	}
++
++	/* P4 above the store queues are always mapped. */
++	if (unlikely(offset >= P3_ADDR_MAX))
++		return (void __iomem *)P4SEGADDR(offset);
++
++	return NULL;
++}
++#else
++#define __ioremap_29bit(offset, size, prot)		NULL
++#endif /* CONFIG_29BIT */
++
+ /*
+  * Remap an arbitrary physical address space into the kernel virtual
+  * address space. Needed when the kernel wants to access high addresses
+@@ -43,6 +88,14 @@ __ioremap_caller(phys_addr_t phys_addr, unsigned long size,
+ 	unsigned long offset, last_addr, addr, orig_addr;
+ 	void __iomem *mapped;
  
- 	if (model && !strcasecmp(model, "TSEC"))
- 		priv->device_flags |= FSL_GIANFAR_DEV_HAS_GIGABIT |
++	mapped = __ioremap_trapped(phys_addr, size);
++	if (mapped)
++		return mapped;
++
++	mapped = __ioremap_29bit(phys_addr, size, pgprot);
++	if (mapped)
++		return mapped;
++
+ 	/* Don't allow wraparound or zero size */
+ 	last_addr = phys_addr + size - 1;
+ 	if (!size || last_addr < phys_addr)
 -- 
-2.27.0
+2.26.2
 
