@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2425621FB83
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A710F21FB7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731278AbgGNTCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:02:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57396 "EHLO mail.kernel.org"
+        id S1731316AbgGNTCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:02:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730271AbgGNS6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:58:53 -0400
+        id S1730154AbgGNS7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:59:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56529207F5;
-        Tue, 14 Jul 2020 18:58:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2E17207F5;
+        Tue, 14 Jul 2020 18:59:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753131;
-        bh=xvpfu3OKYXrf/Hf0b94tFHvzshmHtSyVnvWgsY1rVjo=;
+        s=default; t=1594753147;
+        bh=ZoJll4LksI40TPNtumYVwQbqJz3alFiU1ldCO5srpFQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gEr+JsHo5FWDsKl+J0LSMSsdISCkCxKOMNZdnFa1RkgTeFVE8mPnIvc1YIWwOrw+E
-         JfUkwmB/BY96h775Z8FoA8Pb1b7I9KaQmfQKnLjQIOFGPJYTOj83eXXC85cIir16zZ
-         EWTsZZqrhTSIaGCOFFi4iwI1zTt+kqq7VlGvehwo=
+        b=mBIXGo01oXTV5w7Sq8Hn0nOG/7JN9cBjRqGw3uD96vn+zvwVrWkHbvhMw4fQyarPU
+         K4r0ESX+vTywDQUamrH/wzlSNbPUbkm9WQh4C+uGXI1tLuX+znuA//KUpjLk7PHbLz
+         zsqWD8xratdnb+9g4RPEvprXa180wQTPgHrqMh2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-Subject: [PATCH 5.7 132/166] bpf: Check correct cred for CAP_SYSLOG in bpf_dump_raw_ok()
-Date:   Tue, 14 Jul 2020 20:44:57 +0200
-Message-Id: <20200714184122.156831179@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.7 138/166] drm/radeon: fix double free
+Date:   Tue, 14 Jul 2020 20:45:03 +0200
+Message-Id: <20200714184122.442239512@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
 References: <20200714184115.844176932@linuxfoundation.org>
@@ -44,175 +43,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Tom Rix <trix@redhat.com>
 
-commit 63960260457a02af2a6cb35d75e6bdb17299c882 upstream.
+commit 41855a898650803e24b284173354cc3e44d07725 upstream.
 
-When evaluating access control over kallsyms visibility, credentials at
-open() time need to be used, not the "current" creds (though in BPF's
-case, this has likely always been the same). Plumb access to associated
-file->f_cred down through bpf_dump_raw_ok() and its callers now that
-kallsysm_show_value() has been refactored to take struct cred.
+clang static analysis flags this error
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org
+drivers/gpu/drm/radeon/ci_dpm.c:5652:9: warning: Use of memory after it is freed [unix.Malloc]
+                kfree(rdev->pm.dpm.ps[i].ps_priv);
+                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/radeon/ci_dpm.c:5654:2: warning: Attempt to free released memory [unix.Malloc]
+        kfree(rdev->pm.dpm.ps);
+        ^~~~~~~~~~~~~~~~~~~~~~
+
+problem is reported in ci_dpm_fini, with these code blocks.
+
+	for (i = 0; i < rdev->pm.dpm.num_ps; i++) {
+		kfree(rdev->pm.dpm.ps[i].ps_priv);
+	}
+	kfree(rdev->pm.dpm.ps);
+
+The first free happens in ci_parse_power_table where it cleans up locally
+on a failure.  ci_dpm_fini also does a cleanup.
+
+	ret = ci_parse_power_table(rdev);
+	if (ret) {
+		ci_dpm_fini(rdev);
+		return ret;
+	}
+
+So remove the cleanup in ci_parse_power_table and
+move the num_ps calculation to inside the loop so ci_dpm_fini
+will know how many array elements to free.
+
+Fixes: cc8dbbb4f62a ("drm/radeon: add dpm support for CI dGPUs (v2)")
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Fixes: 7105e828c087 ("bpf: allow for correlation of maps and helpers in dump")
-Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/filter.h     |    4 ++--
- kernel/bpf/syscall.c       |   32 ++++++++++++++++++--------------
- net/core/sysctl_net_core.c |    2 +-
- 3 files changed, 21 insertions(+), 17 deletions(-)
+ drivers/gpu/drm/radeon/ci_dpm.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -888,12 +888,12 @@ void bpf_jit_compile(struct bpf_prog *pr
- bool bpf_jit_needs_zext(void);
- bool bpf_helper_changes_pkt_data(void *func);
- 
--static inline bool bpf_dump_raw_ok(void)
-+static inline bool bpf_dump_raw_ok(const struct cred *cred)
- {
- 	/* Reconstruction of call-sites is dependent on kallsyms,
- 	 * thus make dump the same restriction.
- 	 */
--	return kallsyms_show_value(current_cred());
-+	return kallsyms_show_value(cred);
- }
- 
- struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2918,7 +2918,8 @@ static const struct bpf_map *bpf_map_fro
- 	return NULL;
- }
- 
--static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog)
-+static struct bpf_insn *bpf_insn_prepare_dump(const struct bpf_prog *prog,
-+					      const struct cred *f_cred)
- {
- 	const struct bpf_map *map;
- 	struct bpf_insn *insns;
-@@ -2944,7 +2945,7 @@ static struct bpf_insn *bpf_insn_prepare
- 		    code == (BPF_JMP | BPF_CALL_ARGS)) {
- 			if (code == (BPF_JMP | BPF_CALL_ARGS))
- 				insns[i].code = BPF_JMP | BPF_CALL;
--			if (!bpf_dump_raw_ok())
-+			if (!bpf_dump_raw_ok(f_cred))
- 				insns[i].imm = 0;
- 			continue;
- 		}
-@@ -3000,7 +3001,8 @@ static int set_info_rec_size(struct bpf_
- 	return 0;
- }
- 
--static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
-+static int bpf_prog_get_info_by_fd(struct file *file,
-+				   struct bpf_prog *prog,
- 				   const union bpf_attr *attr,
- 				   union bpf_attr __user *uattr)
- {
-@@ -3069,11 +3071,11 @@ static int bpf_prog_get_info_by_fd(struc
- 		struct bpf_insn *insns_sanitized;
- 		bool fault;
- 
--		if (prog->blinded && !bpf_dump_raw_ok()) {
-+		if (prog->blinded && !bpf_dump_raw_ok(file->f_cred)) {
- 			info.xlated_prog_insns = 0;
- 			goto done;
- 		}
--		insns_sanitized = bpf_insn_prepare_dump(prog);
-+		insns_sanitized = bpf_insn_prepare_dump(prog, file->f_cred);
- 		if (!insns_sanitized)
+--- a/drivers/gpu/drm/radeon/ci_dpm.c
++++ b/drivers/gpu/drm/radeon/ci_dpm.c
+@@ -5577,6 +5577,7 @@ static int ci_parse_power_table(struct r
+ 	if (!rdev->pm.dpm.ps)
+ 		return -ENOMEM;
+ 	power_state_offset = (u8 *)state_array->states;
++	rdev->pm.dpm.num_ps = 0;
+ 	for (i = 0; i < state_array->ucNumEntries; i++) {
+ 		u8 *idx;
+ 		power_state = (union pplib_power_state *)power_state_offset;
+@@ -5586,10 +5587,8 @@ static int ci_parse_power_table(struct r
+ 		if (!rdev->pm.power_state[i].clock_info)
+ 			return -EINVAL;
+ 		ps = kzalloc(sizeof(struct ci_ps), GFP_KERNEL);
+-		if (ps == NULL) {
+-			kfree(rdev->pm.dpm.ps);
++		if (ps == NULL)
  			return -ENOMEM;
- 		uinsns = u64_to_user_ptr(info.xlated_prog_insns);
-@@ -3107,7 +3109,7 @@ static int bpf_prog_get_info_by_fd(struc
+-		}
+ 		rdev->pm.dpm.ps[i].ps_priv = ps;
+ 		ci_parse_pplib_non_clock_info(rdev, &rdev->pm.dpm.ps[i],
+ 					      non_clock_info,
+@@ -5611,8 +5610,8 @@ static int ci_parse_power_table(struct r
+ 			k++;
+ 		}
+ 		power_state_offset += 2 + power_state->v2.ucNumDPMLevels;
++		rdev->pm.dpm.num_ps = i + 1;
  	}
+-	rdev->pm.dpm.num_ps = state_array->ucNumEntries;
  
- 	if (info.jited_prog_len && ulen) {
--		if (bpf_dump_raw_ok()) {
-+		if (bpf_dump_raw_ok(file->f_cred)) {
- 			uinsns = u64_to_user_ptr(info.jited_prog_insns);
- 			ulen = min_t(u32, info.jited_prog_len, ulen);
- 
-@@ -3142,7 +3144,7 @@ static int bpf_prog_get_info_by_fd(struc
- 	ulen = info.nr_jited_ksyms;
- 	info.nr_jited_ksyms = prog->aux->func_cnt ? : 1;
- 	if (ulen) {
--		if (bpf_dump_raw_ok()) {
-+		if (bpf_dump_raw_ok(file->f_cred)) {
- 			unsigned long ksym_addr;
- 			u64 __user *user_ksyms;
- 			u32 i;
-@@ -3173,7 +3175,7 @@ static int bpf_prog_get_info_by_fd(struc
- 	ulen = info.nr_jited_func_lens;
- 	info.nr_jited_func_lens = prog->aux->func_cnt ? : 1;
- 	if (ulen) {
--		if (bpf_dump_raw_ok()) {
-+		if (bpf_dump_raw_ok(file->f_cred)) {
- 			u32 __user *user_lens;
- 			u32 func_len, i;
- 
-@@ -3230,7 +3232,7 @@ static int bpf_prog_get_info_by_fd(struc
- 	else
- 		info.nr_jited_line_info = 0;
- 	if (info.nr_jited_line_info && ulen) {
--		if (bpf_dump_raw_ok()) {
-+		if (bpf_dump_raw_ok(file->f_cred)) {
- 			__u64 __user *user_linfo;
- 			u32 i;
- 
-@@ -3276,7 +3278,8 @@ done:
- 	return 0;
- }
- 
--static int bpf_map_get_info_by_fd(struct bpf_map *map,
-+static int bpf_map_get_info_by_fd(struct file *file,
-+				  struct bpf_map *map,
- 				  const union bpf_attr *attr,
- 				  union bpf_attr __user *uattr)
- {
-@@ -3319,7 +3322,8 @@ static int bpf_map_get_info_by_fd(struct
- 	return 0;
- }
- 
--static int bpf_btf_get_info_by_fd(struct btf *btf,
-+static int bpf_btf_get_info_by_fd(struct file *file,
-+				  struct btf *btf,
- 				  const union bpf_attr *attr,
- 				  union bpf_attr __user *uattr)
- {
-@@ -3351,13 +3355,13 @@ static int bpf_obj_get_info_by_fd(const
- 		return -EBADFD;
- 
- 	if (f.file->f_op == &bpf_prog_fops)
--		err = bpf_prog_get_info_by_fd(f.file->private_data, attr,
-+		err = bpf_prog_get_info_by_fd(f.file, f.file->private_data, attr,
- 					      uattr);
- 	else if (f.file->f_op == &bpf_map_fops)
--		err = bpf_map_get_info_by_fd(f.file->private_data, attr,
-+		err = bpf_map_get_info_by_fd(f.file, f.file->private_data, attr,
- 					     uattr);
- 	else if (f.file->f_op == &btf_fops)
--		err = bpf_btf_get_info_by_fd(f.file->private_data, attr, uattr);
-+		err = bpf_btf_get_info_by_fd(f.file, f.file->private_data, attr, uattr);
- 	else
- 		err = -EINVAL;
- 
---- a/net/core/sysctl_net_core.c
-+++ b/net/core/sysctl_net_core.c
-@@ -277,7 +277,7 @@ static int proc_dointvec_minmax_bpf_enab
- 	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
- 	if (write && !ret) {
- 		if (jit_enable < 2 ||
--		    (jit_enable == 2 && bpf_dump_raw_ok())) {
-+		    (jit_enable == 2 && bpf_dump_raw_ok(current_cred()))) {
- 			*(int *)table->data = jit_enable;
- 			if (jit_enable == 2)
- 				pr_warn("bpf_jit_enable = 2 was set! NEVER use this in production, only for JIT debugging!\n");
+ 	/* fill in the vce power states */
+ 	for (i = 0; i < RADEON_MAX_VCE_LEVELS; i++) {
 
 
