@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3D8021E5C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6ED21E5CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgGNCil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 22:38:41 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:37902 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbgGNCik (ORCPT
+        id S1726798AbgGNCip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 22:38:45 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:43024 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726750AbgGNCil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 22:38:40 -0400
-Received: by mail-qk1-f193.google.com with SMTP id e13so14338027qkg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 19:38:39 -0700 (PDT)
+        Mon, 13 Jul 2020 22:38:41 -0400
+Received: by mail-qt1-f194.google.com with SMTP id k18so11730165qtm.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 19:38:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aLJKGhiT24jFn5bdFjl0Bt69kYs80uYBlHCplcAgbAg=;
-        b=BOg3oHgerH0GOc9V1UJ4i/Br0UAYsjN+tF7J0NgQcUurylRFItPbR+zbCkhQRa0tdf
-         ANe29aCkTxF2Ft9lA0hjmICJV5IQwA3FE2Jb+Bq14bD7nkW0qJoPBuxWmtmeGRAz+8jI
-         FfYKjjQUHVVBxcreyeX69VHYmHmZcoyUc5JrztKiDtfd1COEsZ7pWiX18FKbjLfs+iqs
-         8CP7RWp3OID7Ivy0VZrgbKKnDf1x2IjSvYjZ1U2hoAT0hMQ6QeTsQySIOksSR1UBRYRQ
-         pb9PAhCsguH/M/eCiiNzYbL40v2XO2a5simwx6xjd3wVQHAC5CqBkZVt+ZuaCe61viej
-         1CnA==
-X-Gm-Message-State: AOAM530WRKIIZsILDLDWtnr5LO00Bj+Vw/R2ILpxuBsPTlX4eBjHyJPB
-        YZg2tvpS4Z0KbApnO9cs/48=
-X-Google-Smtp-Source: ABdhPJwwWGQKFP/kuSLuULMzOl9sz5eyAdvNuNU3nvwI0/HEjBbeSLL65ep5Q5yLMMHhd+6ego9bNQ==
-X-Received: by 2002:a37:7d86:: with SMTP id y128mr2285057qkc.343.1594694318979;
-        Mon, 13 Jul 2020 19:38:38 -0700 (PDT)
+        bh=RhWnzCqvgTN++G31OGgg9qNDvvhiuki5nvpw8uOP67s=;
+        b=iykKiRANC7xXp/f/XNUjhyD0XqXF5EqclqhdCGauL1FScKRvcPIxMbjuMP4q83rQV2
+         hk5eDDCUlzzr2Tui8Vxt3AoDBI6+yda+KseG9PbJqz0PxPN35CAzAmapE3rdEsPx68n/
+         OtOEsJHc4W4oxIKzsaEnDoFY4NdNzSmwwAF2xIXCupTbYm0gIrgo6H2Ym6mGW8wp6FUh
+         XEQmq70JUiNGocd+IdU4Gqz/Uyak9Hqo5lmDg9CpzkP2qzFUk9/CRbMunxzVNLp8c0Kb
+         7Utdnpl04SEnOibUrzNIgBnI2QGEcdZDkf/Y4tXWxfOt2d7+QKVroB2cxRMBfx+PbpN1
+         UxXw==
+X-Gm-Message-State: AOAM533zOXRm4WWxXM9F3bh3ykD2W3z6lo/pUAWVKl4sIwgXicaOsU1P
+        iocnf6SHfLzS/ZHUNZfnO0Y=
+X-Google-Smtp-Source: ABdhPJyD7qP9lZFweP4z1r5ZI0QeCeUktNqgeXftUuQcGKDSL65SMY53iJ2yXSuWDyFQd0OlU9U5gA==
+X-Received: by 2002:ac8:4714:: with SMTP id f20mr2481897qtp.141.1594694320024;
+        Mon, 13 Jul 2020 19:38:40 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id a22sm21046291qka.64.2020.07.13.19.38.37
+        by smtp.gmail.com with ESMTPSA id a22sm21046291qka.64.2020.07.13.19.38.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jul 2020 19:38:38 -0700 (PDT)
+        Mon, 13 Jul 2020 19:38:39 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -50,9 +50,9 @@ Cc:     Nick Desaulniers <ndesaulniers@google.com>,
         Nathan Chancellor <natechancellor@gmail.com>,
         Arnd Bergmann <arnd@arndb.de>,
         "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 0/7] x86/boot: Remove runtime relocations from compressed kernel
-Date:   Mon, 13 Jul 2020 22:38:29 -0400
-Message-Id: <20200714023836.2310569-1-nivedita@alum.mit.edu>
+Subject: [PATCH v4 1/7] x86/boot/compressed: Move .got.plt entries out of the .got section
+Date:   Mon, 13 Jul 2020 22:38:30 -0400
+Message-Id: <20200714023836.2310569-2-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200629140928.858507-1-nivedita@alum.mit.edu>
 References: <20200629140928.858507-1-nivedita@alum.mit.edu>
@@ -63,107 +63,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The compressed kernel currently contains bogus runtime relocations in
-the startup code in head_{32,64}.S, which are generated by the linker,
-but must not actually be processed at runtime.
+From: Ard Biesheuvel <ardb@kernel.org>
 
-This generates warnings when linking with the BFD linker, and errors
-with LLD, which defaults to erroring on runtime relocations in read-only
-sections. It also requires the -z noreloc-overflow hack for the 64-bit
-kernel, which prevents us from linking it as -pie on an older BFD linker
-(<= 2.26) or on LLD, because the locations that are to be apparently
-relocated are only 32-bits in size and so cannot really have
-R_X86_64_RELATIVE relocations.
+The .got.plt section contains the part of the GOT which is used by PLT
+entries, and which gets updated lazily by the dynamic loader when
+function calls are dispatched through those PLT entries.
 
-This series aims to get rid of these relocations. I've build- and
-boot-tested with combinations of clang/gcc-10 with lld/bfd-2.34, and
-gcc-4.9.0 with bfd-2.24, skipping clang on 32-bit because it currently
-has other issues [0].
+On fully linked binaries such as the kernel proper or the decompressor,
+this never happens, and so in practice, the .got.plt section consists
+only of the first 3 magic entries that are meant to point at the _DYNAMIC
+section and at the fixup routine in the loader. However, since we don't
+use a dynamic loader, those entries are never populated or used.
 
-The first three patches by Ard remove indirection via the GOT from the
-compressed kernel code.
+This means that treating those entries like ordinary GOT entries, and
+updating their values based on the actual placement of the executable in
+memory is completely pointless, and we can just ignore the .got.plt
+section entirely, provided that it has no additional entries beyond
+the first 3 ones.
 
-The next patch is an independent fix for LLD, to avoid an orphan
-section in arch/x86/boot/setup.elf.
+So add an assertion in the linker script to ensure that this assumption
+holds, and move the contents out of the [_got, _egot) memory range that
+is modified by the GOT fixup routines.
 
-The fifth patch gets rid of almost all the relocations. It uses
-standard PIC addressing technique for 32-bit, i.e. loading a register
-with the address of _GLOBAL_OFFSET_TABLE_ and then using GOTOFF
-references to access variables. For 64-bit, there is 32-bit code that
-cannot use RIP-relative addressing, and also cannot use the 32-bit
-method, since GOTOFF references are 64-bit only. This is instead handled
-using a macro to replace a reference like gdt with (gdt-startup_32)
-instead. The assembler will generate a PC32 relocation entry, with
-addend set to (.-startup_32), and these will be replaced with constants
-at link time. This works as long as all the code using such references
-lives in the same section as startup_32, i.e. in .head.text.
+While at it, drop the KEEP(), since it has no effect on the contents
+of output sections that are created by the linker itself.
 
-The sixth patch addresses a remaining issue with the BFD linker, which
-generates runtime relocations for absolute symbols. We use z_input_len
-and z_output_len, defined in the generated piggy.S file, as symbols
-whose absolute "addresses" are actually the size of the compressed
-payload and the size of the decompressed kernel image respectively. LLD
-does not generate relocations for these two symbols, but the BFD linker
-does, prior to the upcoming 2.35. To get around this, piggy.S is
-extended to also define two u32 variables (in .rodata) with the lengths,
-and the head code is modified to use those instead of the symbol
-addresses.
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Acked-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+From: Ard Biesheuvel <ardb@kernel.org>
+Link: https://lore.kernel.org/r/20200523120021.34996-2-ardb@kernel.org
+---
+ arch/x86/boot/compressed/vmlinux.lds.S | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-An alternative way to handle z_input_len/z_output_len would be to just
-include piggy.S in head_{32,64}.S instead of as a separate object file,
-since the GNU assembler doesn't generate relocations for symbols set to
-constants.
-
-The last patch adds a check in the linker script to ensure that no
-runtime relocations get reintroduced.
-
-[0] https://lore.kernel.org/lkml/20200504230309.237398-1-ndesaulniers@google.com/
-
-Changes from v3:
-- Move hidden.h to include/linux so the EFI stub and the compressed
-  kernel can share the same file
-
-Changes from v2:
-- Incorporate Ard's patches for eliminating GOT references into this
-  series
-- Rebase on v5.8-rc3
-
-v2: https://lore.kernel.org/lkml/20200525225918.1624470-1-nivedita@alum.mit.edu/
-
-Changes from v1:
-- Add .text.* to setup.ld instead of just .text.startup
-- Rename the la() macro introduced in the second patch for 64-bit to
-  rva(), and rework the explanatory comment.
-- In the last patch, check both .rel.dyn and .rela.dyn, instead of just
-  one per arch.
-
-
-Ard Biesheuvel (3):
-  x86/boot/compressed: Move .got.plt entries out of the .got section
-  x86/boot/compressed: Force hidden visibility for all symbol references
-  x86/boot/compressed: Get rid of GOT fixup code
-
-Arvind Sankar (4):
-  x86/boot: Add .text.* to setup.ld
-  x86/boot: Remove run-time relocations from .head.text code
-  x86/boot: Remove runtime relocations from head_{32,64}.S
-  x86/boot: Check that there are no runtime relocations
-
- arch/x86/boot/compressed/Makefile      |  37 +-----
- arch/x86/boot/compressed/head_32.S     |  99 +++++----------
- arch/x86/boot/compressed/head_64.S     | 165 ++++++++++---------------
- arch/x86/boot/compressed/mkpiggy.c     |   6 +
- arch/x86/boot/compressed/vmlinux.lds.S |  24 +++-
- arch/x86/boot/setup.ld                 |   2 +-
- drivers/firmware/efi/libstub/Makefile  |   2 +-
- drivers/firmware/efi/libstub/hidden.h  |   6 -
- include/linux/hidden.h                 |  19 +++
- 9 files changed, 152 insertions(+), 208 deletions(-)
- delete mode 100644 drivers/firmware/efi/libstub/hidden.h
- create mode 100644 include/linux/hidden.h
-
-
-base-commit: 11ba468877bb23f28956a35e896356252d63c983
+diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+index 8f1025d1f681..b17d218ccdf9 100644
+--- a/arch/x86/boot/compressed/vmlinux.lds.S
++++ b/arch/x86/boot/compressed/vmlinux.lds.S
+@@ -44,10 +44,13 @@ SECTIONS
+ 	}
+ 	.got : {
+ 		_got = .;
+-		KEEP(*(.got.plt))
+ 		KEEP(*(.got))
+ 		_egot = .;
+ 	}
++	.got.plt : {
++		*(.got.plt)
++	}
++
+ 	.data :	{
+ 		_data = . ;
+ 		*(.data)
+@@ -77,3 +80,9 @@ SECTIONS
+ 
+ 	DISCARDS
+ }
++
++#ifdef CONFIG_X86_64
++ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18, "Unexpected GOT/PLT entries detected!")
++#else
++ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0xc, "Unexpected GOT/PLT entries detected!")
++#endif
 -- 
 2.26.2
 
