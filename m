@@ -2,128 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A0A21E778
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 07:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B271021E791
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 07:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgGNFdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 01:33:06 -0400
-Received: from mga05.intel.com ([192.55.52.43]:55493 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726384AbgGNFdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 01:33:05 -0400
-IronPort-SDR: yAnxvbBwHlM+WfbJTVsS6MdkDrrFxTq5cMQu76w3teMaVyFluWMJqXypZTanFE9QoHSzwBni9X
- In0hlTPHlqHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="233663854"
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="233663854"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 22:33:05 -0700
-IronPort-SDR: aDD1C1O4sqMlQQpAgdX8Ubkii5NHmQDCEZKGR//L+tb/3L9XUP/tPGA+UJCwWRAc/b+vovC09l
- Cy8acKKkmifg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="324445520"
-Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 13 Jul 2020 22:33:05 -0700
-Received: from [10.215.165.139] (rtanwar-MOBL.gar.corp.intel.com [10.215.165.139])
-        by linux.intel.com (Postfix) with ESMTP id 57D3758080E;
-        Mon, 13 Jul 2020 22:32:59 -0700 (PDT)
-Subject: Re: [PATCH v4 1/2] Add DT bindings YAML schema for PWM fan controller
- of LGM SoC
-To:     Rob Herring <robh@kernel.org>
-Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
-        thierry.reding@gmail.com, p.zabel@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        rahul.tanwar.linux@gmail.com
-References: <cover.1593503228.git.rahul.tanwar@linux.intel.com>
- <cfef33c19b97a9cfbb8ecc0c6a122f3c9a5b46dd.1593503228.git.rahul.tanwar@linux.intel.com>
- <20200713164600.GA359372@bogus>
-From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
-Message-ID: <b5832bbd-087e-4182-bea9-ed7b69626a8c@linux.intel.com>
-Date:   Tue, 14 Jul 2020 13:32:58 +0800
+        id S1726863AbgGNFeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 01:34:25 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:15411 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725778AbgGNFeZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 01:34:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594704864; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=ILPa8NO9W+lRh2reT/2n5OpGYrcFvUffhW4ZNUiY2zA=; b=KI+Nh5AgIJFh20vEmWJqDOBDLQVmd3f3+E7k67k5bXmZp4soqMjwsL3OoDhxJ2UoxogJwXfp
+ MmQ9ZcGOD6zC0+ppuTDuShDwUsCRT6ZEiipw6SXcJXdS3/qFXSuS7GrKDahLb6Nxu2XjrWTs
+ /Y02nU8tcDMX7RXNv0ZGE/5zZNs=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f0d43d1512812c070dd1bbd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 14 Jul 2020 05:34:09
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 24D71C433A0; Tue, 14 Jul 2020 05:34:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.11] (unknown [61.3.18.149])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3AF8CC433CA;
+        Tue, 14 Jul 2020 05:34:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3AF8CC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH] tty: serial: qcom-geni-serial: Drop the icc bw votes in
+ suspend for console
+To:     Doug Anderson <dianders@chromium.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-serial@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>
+References: <1594287420-24141-1-git-send-email-rnayak@codeaurora.org>
+ <20200710124152.GC1567243@kroah.com>
+ <CAD=FV=XJQaAHsDb6uvKpwU87qtqTQgNeoiuRr2kF9pqjBLhLpg@mail.gmail.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <18c235bc-03ce-e2f4-6d95-edff0fdf3edb@codeaurora.org>
+Date:   Tue, 14 Jul 2020 11:04:02 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200713164600.GA359372@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=XJQaAHsDb6uvKpwU87qtqTQgNeoiuRr2kF9pqjBLhLpg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi Rob,
-
-On 14/7/2020 12:46 am, Rob Herring wrote:
-> On Tue, Jun 30, 2020 at 03:55:31PM +0800, Rahul Tanwar wrote:
->> Intel's LGM(Lightning Mountain) SoC contains a PWM fan controller
->> which is only used to control the fan attached to the system. This
->> PWM controller does not have any other consumer other than fan.
->> Add DT bindings documentation for this PWM fan controller.
+On 7/14/2020 6:23 AM, Doug Anderson wrote:
+> Rajendra,
+> 
+> On Fri, Jul 10, 2020 at 5:41 AM Greg KH <gregkh@linuxfoundation.org> wrote:
 >>
->> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
->> ---
->>  .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     | 50 ++++++++++++++++++++++
->>  1 file changed, 50 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+>> On Thu, Jul 09, 2020 at 03:07:00PM +0530, Rajendra Nayak wrote:
+>>> When using the geni-serial as console, its important to be
+>>> able to hit the lowest possible power state in suspend,
+>>> even with no_console_suspend.
+>>> The only thing that prevents it today on platforms like the sc7180
+>>> is the interconnect BW votes, which we certainly don't need when
+>>> the system is in suspend. So in the suspend handler mark them as
+>>> ACTIVE_ONLY (0x3) and on resume switch them back to the ALWAYS tag (0x7)
+>>>
+>>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>>> ---
+>>> Note: Patch applies on qcom for-next, which has the ICC support patches.
+>>> The tag macros are currently not exported and hence the hardcoded values.
+>>> Perhaps if and when https://patchwork.kernel.org/patch/11619705/ lands I
+>>> can refresh this patch to use the macros.
 >>
->> diff --git a/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
->> new file mode 100644
->> index 000000000000..120bf3d85a24
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
->> @@ -0,0 +1,50 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/pwm/intel,lgm-pwm.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: LGM SoC PWM fan controller
->> +
->> +maintainers:
->> +  - Rahul Tanwar <rahul.tanwar@intel.com>
->> +
->> +properties:
->> +  compatible:
->> +    const: intel,lgm-pwm
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  resets:
->> +    maxItems: 1
->> +
->> +  intel,fan-wire:
->> +    $ref: '/schemas/types.yaml#/definitions/uint32'
->> +    description: Specifies fan mode. Default when unspecified is 2.
->> +
->> +  intel,max-rpm:
->> +    $ref: '/schemas/types.yaml#/definitions/uint32'
->> +    description:
->> +      Specifies maximum RPM of fan attached to the system.
->> +      Default when unspecified is 4000.
-> These are properties of the fan, not the PWM. And probably if you 
-> need these properties then others would too, so they should be 
-> common. Look at the pwm-fan.txt binding.
+>> Feel free to take this patch through that tree.
+>>
+>> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> Could you post a v2?  Bjorn landed some of my geni serial patches to
+> make console / kgdb work better, but then I realized that your patch
+> no longer applies cleanly.  It's trivial to resolve, so hopefully a v2
+> should be quick and then Bjorn can land?
 
-I checked pwm-fan.txt. I don't find any common property which matches
-our fan properties of fan wire mode & max-rpm. Are you suggesting to
-add these properties additionally in pwm-fan.txt as new common properties
-and then use newly added generic name in our driver?
+Thanks, just rebased and posted the v2.
 
-Also, we have a dedicated PWM fan controller. So do you think this driver
-belongs to drivers/hwmon instead of drivers/pwm? Thanks.
-
-Regards,
-Rahul 
-
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
