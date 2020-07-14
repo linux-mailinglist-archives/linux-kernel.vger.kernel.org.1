@@ -2,89 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F7621F207
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC11421F20F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728515AbgGNM6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:58:16 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:33292 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728049AbgGNM6C (ORCPT
+        id S1728069AbgGNM7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726354AbgGNM7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:58:02 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 3F1268040A7B;
-        Tue, 14 Jul 2020 12:58:00 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id r2vTuNbBRxgJ; Tue, 14 Jul 2020 15:57:59 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, James Hogan <jhogan@kernel.org>,
-        <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 6/6] MAINTAINERS: Add maintainers for MIPS core drivers
-Date:   Tue, 14 Jul 2020 15:57:52 +0300
-Message-ID: <20200714125753.22466-7-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200714125753.22466-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200714125753.22466-1-Sergey.Semin@baikalelectronics.ru>
+        Tue, 14 Jul 2020 08:59:44 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A59FC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:59:44 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id o38so12642362qtf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:59:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UARzO1WFxZQcMjBB8yKfPoPlNkMAzXMUicHr6tVQpkQ=;
+        b=QPiADLSq7fELwQRpXhcH/HkF/SzqCS7Dxdc3RMfwu+dOJOjE5PPFKYkZD/QX40fS0F
+         7SB6TdT8j1TAwUtSvYR3AAd/xrM+DWFqNpy60fem81JA7mMpr0dQ5mA4AvxQ9z8CcEMx
+         kgIf3B4h0nYBjjPJcWUHzjyoVgGjdAjE/xInulticD7yy1gwqaq3UHMC+uBitkyQN9gE
+         EDlwADqCFqrkF3fJYBmGdyv5VTsBU5RV2aw9knkV7O6vCfiZqSJYBpDa4n1XK2wzO/+u
+         G+joeYEPjKZjTKLkjhc2PJZS/4FpdtxwZsWEFfCQuPnCekqranbRnflXIMUOrfAdVMkt
+         kqVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UARzO1WFxZQcMjBB8yKfPoPlNkMAzXMUicHr6tVQpkQ=;
+        b=Y3htpxKdCyheY7f7KG3ooyyR1/O/qFNMzB/LsWEY3PYrHAJLRxIxy/wbOZO1957Ixu
+         xknqvugrV3p60BFynd51ItS7DSyc9cvf1T1dlK1EmVWIebTCBhzQqqTANoqZJ9NcBx/n
+         mi4Xska2X1bs/d0U+FfUySraGYr/JVkLvKrWeG5e7Xk606lmzOpk35J/eYOqvYNkJ2oR
+         ntP8FYvnKg235hhYzhxi0rJjHAygSnOAGYRMlvmTo1GJFwJWpsC7Ba8MLfUL3sG1kZHS
+         Q71mbfNhFLu85c/NAKXU/tm24TFjnH/f5d34AjwxOzg9PNkTmBKbm3BdWQFFgoQKeYGo
+         PmOQ==
+X-Gm-Message-State: AOAM5332HY/s1vls5Vpk7L19nCPFyPdi/VsGyONCa9p7ApCboYNWOBjf
+        gS0qrNe/cRdBUW4eGHdV0XXKlLNXBWtauvci
+X-Google-Smtp-Source: ABdhPJwi1XBgprYkr6cCi1GRuE9QZYpOTdIcJa9DnHj0RhWCV50pNRKoKmcKfy2n9ncHevD4xqR53w==
+X-Received: by 2002:ac8:4b4f:: with SMTP id e15mr4588639qts.305.1594731583374;
+        Tue, 14 Jul 2020 05:59:43 -0700 (PDT)
+Received: from Trinity.hsd1.ma.comcast.net ([2601:189:8200:19b0:8007:e577:f459:885a])
+        by smtp.gmail.com with ESMTPSA id f4sm22582162qtv.59.2020.07.14.05.59.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 05:59:42 -0700 (PDT)
+From:   peter.puhov@linaro.org
+To:     linux-kernel@vger.kernel.org
+Cc:     peter.puhov@linaro.org, robert.foley@linaro.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
+Subject: [PATCH v1] sched/fair: update_pick_idlest() Select group with lowest group_util when idle_cpus are equal
+Date:   Tue, 14 Jul 2020 08:59:41 -0400
+Message-Id: <20200714125941.4174-1-peter.puhov@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Thomas and myself as maintainers of the MIPS CPU and GIC IRQchip, MIPS
-GIC timer and MIPS CPS CPUidle drivers.
+From: Peter Puhov <peter.puhov@linaro.org>
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Marc Zyngier <maz@kernel.org>
+v0: https://lkml.org/lkml/2020/6/16/1286
 
+Changes in v1:
+- Test results formatted in a table form as suggested by Valentin Schneider
+- Added explanation by Vincent Guittot why nr_running may not be sufficient
+
+In slow path, when selecting idlest group, if both groups have type 
+group_has_spare, only idle_cpus count gets compared.
+As a result, if multiple tasks are created in a tight loop,
+and go back to sleep immediately 
+(while waiting for all tasks to be created), 
+they may be scheduled on the same core, because CPU is back to idle
+when the new fork happen.
+
+For example:
+sudo perf record -e sched:sched_wakeup_new -- \
+                                  sysbench threads --threads=4 run
+...
+    total number of events:              61582
+...
+sudo perf script
+sysbench 129378 [006] 74586.633466: sched:sched_wakeup_new: 
+                            sysbench:129380 [120] success=1 CPU:007
+sysbench 129378 [006] 74586.634718: sched:sched_wakeup_new: 
+                            sysbench:129381 [120] success=1 CPU:007
+sysbench 129378 [006] 74586.635957: sched:sched_wakeup_new: 
+                            sysbench:129382 [120] success=1 CPU:007
+sysbench 129378 [006] 74586.637183: sched:sched_wakeup_new: 
+                            sysbench:129383 [120] success=1 CPU:007
+
+This may have negative impact on performance for workloads with frequent
+creation of multiple threads.
+
+In this patch we are using group_util to select idlest group if both groups
+have equal number of idle_cpus. Comparing the number of idle cpu is 
+not enough in this case, because the newly forked thread sleeps 
+immediately and before we select the cpu for the next one. 
+This is shown in the trace where the same CPU7 is selected for 
+all wakeup_new events.
+That's why, looking at utilization when there is the same number of
+CPU is a good way to see where the previous task was placed. Using
+nr_running doesn't solve the problem because the newly forked task is not
+running and the cpu would not have been idle in this case and an idle
+CPU would have been selected instead.
+
+With this patch newly created tasks would be better distributed. 
+
+With this patch:
+sudo perf record -e sched:sched_wakeup_new -- \
+                                    sysbench threads --threads=4 run
+...
+    total number of events:              74401
+...
+sudo perf script
+sysbench 129455 [006] 75232.853257: sched:sched_wakeup_new: 
+                            sysbench:129457 [120] success=1 CPU:008
+sysbench 129455 [006] 75232.854489: sched:sched_wakeup_new: 
+                            sysbench:129458 [120] success=1 CPU:009
+sysbench 129455 [006] 75232.855732: sched:sched_wakeup_new: 
+                            sysbench:129459 [120] success=1 CPU:010
+sysbench 129455 [006] 75232.856980: sched:sched_wakeup_new: 
+                            sysbench:129460 [120] success=1 CPU:011
+
+
+We tested this patch with following benchmarks:
+master: 'commit b3a9e3b9622a ("Linux 5.8-rc1")' 
+
+100 iterations of: perf bench -f simple futex wake -s -t 128 -w 1
+Lower result is better
+|         |   BASELINE |   +PATCH |   DELTA (%) |
+|---------|------------|----------|-------------|
+| mean    |      0.33  |    0.313 |      +5.152 |
+| std (%) |     10.433 |    7.563 |             |
+
+
+100 iterations of: sysbench threads --threads=8 run
+Higher result is better
+|         |   BASELINE |   +PATCH |   DELTA (%) |
+|---------|------------|----------|-------------|
+| mean    |   5235.02  | 5863.73  |      +12.01 |
+| std (%) |      8.166 |   10.265 |             |
+
+
+100 iterations of: sysbench mutex --mutex-num=1 --threads=8 run
+Lower result is better
+|         |   BASELINE |   +PATCH |   DELTA (%) |
+|---------|------------|----------|-------------|
+| mean    |      0.413 |    0.404 |      +2.179 |
+| std (%) |      3.791 |    1.816 |             |
+
+
+Signed-off-by: Peter Puhov <peter.puhov@linaro.org>
 ---
+ kernel/sched/fair.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Changelog v3:
-- Keep the files list alphabetically ordered.
-- Add Thomas as the co-maintainer of the designated drivers.
----
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2926327e4976..20532e0287d7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11278,6 +11278,17 @@ F:	arch/mips/configs/generic/board-boston.config
- F:	drivers/clk/imgtec/clk-boston.c
- F:	include/dt-bindings/clock/boston-clock.h
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 02f323b85b6d..abcbdf80ee75 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8662,8 +8662,14 @@ static bool update_pick_idlest(struct sched_group *idlest,
  
-+MIPS CORE DRIVERS
-+M:	Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-+M:	Serge Semin <fancer.lancer@gmail.com>
-+L:	linux-mips@vger.kernel.org
-+S:	Supported
-+F:	drivers/bus/mips_cdmm.c
-+F:	drivers/clocksource/mips-gic-timer.c
-+F:	drivers/cpuidle/cpuidle-cps.c
-+F:	drivers/irqchip/irq-mips-cpu.c
-+F:	drivers/irqchip/irq-mips-gic.c
+ 	case group_has_spare:
+ 		/* Select group with most idle CPUs */
+-		if (idlest_sgs->idle_cpus >= sgs->idle_cpus)
++		if (idlest_sgs->idle_cpus > sgs->idle_cpus)
+ 			return false;
 +
- MIPS GENERIC PLATFORM
- M:	Paul Burton <paulburton@kernel.org>
- L:	linux-mips@vger.kernel.org
++		/* Select group with lowest group_util */
++		if (idlest_sgs->idle_cpus == sgs->idle_cpus &&
++			idlest_sgs->group_util <= sgs->group_util)
++			return false;
++
+ 		break;
+ 	}
+ 
 -- 
-2.26.2
+2.20.1
 
