@@ -2,114 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CEE21F140
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B2121F153
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbgGNMbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:31:06 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:40895 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726041AbgGNMbF (ORCPT
+        id S1728332AbgGNMcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:32:36 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:51854 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728047AbgGNMce (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:31:05 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jvK5O-0025fP-3k; Tue, 14 Jul 2020 14:31:02 +0200
-Received: from p57bd93f9.dip0.t-ipconnect.de ([87.189.147.249] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jvK5N-002ILX-Jl; Tue, 14 Jul 2020 14:31:01 +0200
-Subject: Re: ioremap and dma cleanups and fixes for superh (2nd resend)
-To:     Christoph Hellwig <hch@lst.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200714121856.955680-1-hch@lst.de>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <b0745e43-0ff1-58f7-70d5-60b9c8b8d81b@physik.fu-berlin.de>
-Date:   Tue, 14 Jul 2020 14:31:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200714121856.955680-1-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
+        Tue, 14 Jul 2020 08:32:34 -0400
+Received: from mailhost.synopsys.com (badc-mailhost1.synopsys.com [10.192.0.17])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id A7CC6C00E9;
+        Tue, 14 Jul 2020 12:32:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1594729953; bh=eeixpN2+EI6mUAAQ4cGP3s1R99EwwqmFBhljeDPOmFw=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=Ywc5bfCWGlLtKs8r7MbvaHpGFUI5pNkRzK6ju/aU3EnTmmUIzHNAIPx2m+4yrF2Vc
+         BtskSoftnzuoZWDV7APKpaLmnNshGDhNiSapf3UmtKjlZFK2BFrlCAiu0wx5fBSeQc
+         zUhdvilDhyu+ue/dxrllcOkpZWjcyR3TYn3wH0btYcu6k5smf5ZEqGk1KjHGCrXXOo
+         RJ+lCl9cGeE0pjCbPiXSka17FaJrQfmXroYL37CTPyl5urAECYN3P2TAOaUacRXe00
+         J00pCfcKJfFJUhqP6pZSzwyM2ZdYzktHor2ZZr8Qx/7qKQ08rnFlt1Si5I7RDF9+IG
+         CNnsJph8zgXTg==
+Received: from o365relay-in.synopsys.com (sv2-o365relay1.synopsys.com [10.202.1.137])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 96FBAA0071;
+        Tue, 14 Jul 2020 12:32:31 +0000 (UTC)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "GlobalSign Organization Validation CA - SHA256 - G3" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 17C3440081;
+        Tue, 14 Jul 2020 12:32:30 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=hminas@synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.b="F26zBPK2";
+        dkim-atps=neutral
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JH0vPVUeqf7eubLWYg2RPc45/GdxGk6cjq1IXZytYOcdrfunqUEmz9YI9EchK1+J1F6vcf/6Foid1An7bWVniVNlbZnlr48gXD/l7j9U3zR6KtFQtRQsC35PDqtCR8zMoKSdvKW3EuoQs+CySop0aVCKAdywQlUNC/a8k/bdSXaEVQ82IUN2IFia0SMKmFmTSlSqo8M1YZSw3GVMkz6O8XHcNeQC5taXIzziaQWI7iIW5uppAnmwAGCzAAjRWCJrPVq5L2OqxeaXceZReedctnN5eoqxDRvbejZdnGkU4Yg/0psL3IreUGvG/qJZZ8iQziMYrLYLn+BavVJ9/o/02g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eeixpN2+EI6mUAAQ4cGP3s1R99EwwqmFBhljeDPOmFw=;
+ b=NT4c0np0uhPhjzUgBTVdLwyhDGKEMFCWn4dW+KWHX4RYVg/N06lGf1QyI1SzOQPrg/RMoABwlI2X8zt8IntAen6VYiM2MM1YlZl5yvnQmKjllJRFADnhWkCjl/5mviP1PtwbbhPCCPFOZ/tKl37EhpBzBHTruGyRXIVR2YBgn0qBP8S/xThiMQ1yTkvylb6rebtLttDe0zewHLiiHTzGlzdPgAS+Hxacn31azJyYzva93ONJHAM0b4FesUGrQUeHpQ37LvvVsQ7Y66R9RCyEN7ypmciLKSIKsZeAAoZrh13ysD6aVG09qTsmE+U5D1OEwlLEb4DH1SNcYTMl6EYTGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eeixpN2+EI6mUAAQ4cGP3s1R99EwwqmFBhljeDPOmFw=;
+ b=F26zBPK2Eks97yIIGjB2zm/93SQGNPqbjyLbqeu1JjyE4X+JXHaQ3Wmp0qhQfJjJj9IlXW9fMQWIy6rxtEGAvRDWg8C5AblsDhdNy/zBLKSYjh5aijFwyexArgkepdrrzmP23Karo01gdpfIwBIu8FuPXzw6a5FRWzXjtdAwRhE=
+Received: from CY4PR12MB1432.namprd12.prod.outlook.com (2603:10b6:903:44::11)
+ by CY4PR12MB1416.namprd12.prod.outlook.com (2603:10b6:903:44::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.21; Tue, 14 Jul
+ 2020 12:32:28 +0000
+Received: from CY4PR12MB1432.namprd12.prod.outlook.com
+ ([fe80::3cb9:e2f2:a4ff:14bd]) by CY4PR12MB1432.namprd12.prod.outlook.com
+ ([fe80::3cb9:e2f2:a4ff:14bd%10]) with mapi id 15.20.3174.025; Tue, 14 Jul
+ 2020 12:32:27 +0000
+X-SNPS-Relay: synopsys.com
+From:   Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] usb: dwc2: Fix error path in gadget registration
+Thread-Topic: [PATCH] usb: dwc2: Fix error path in gadget registration
+Thread-Index: AQHWWbuDBUQ8jHqiX0W5003po+jOE6kHAjIA
+Date:   Tue, 14 Jul 2020 12:32:27 +0000
+Message-ID: <40bfbfd6-6516-5995-8250-c8e3df16e11e@synopsys.com>
+References: <CGME20200714084807eucas1p1f6e680d162573c6a0660037172a65805@eucas1p1.samsung.com>
+ <20200714084800.11340-1-m.szyprowski@samsung.com>
+In-Reply-To: <20200714084800.11340-1-m.szyprowski@samsung.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.147.249
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+authentication-results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=synopsys.com;
+x-originating-ip: [198.182.37.200]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4921cfc0-20e3-4c29-fed0-08d827f1f841
+x-ms-traffictypediagnostic: CY4PR12MB1416:
+x-microsoft-antispam-prvs: <CY4PR12MB14165A9A0B7F1009D258477FA7610@CY4PR12MB1416.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bI8SLaqlXjqnK5b8wEVCoT2Bznrg46c6K5K7tdh41jczT+vmcPazhzLeYCROlnnIdjEOXIzTkKnWV5j1PoG1tQkl1dhLPkCp9kenPenkgYyyySQw3B2fT9PG/8WLJNP9VLEPET78WaF1nXIzFjEv3cnK2jq07DJjYS5LAdCnKLsLMJ7tcUgDGTggAU+GdE0PK3S35rhy2747v2wfesVa/GHz9y+xQEg8MKl57UFJ9QBRhNZhvOt3fDflMLUEmMBHKu23B/DTY5scKtiNhlJEjGYZje42/Hg/0cakuXLLsGmiYrFsaQyCakA4HDWIJTPIeca966QxxIVBmSPcswPsv4b0RPj19x0gZxaxWqqfNJi0KFY3rfTFfE5FNLKMWyKc
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1432.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(376002)(39860400002)(366004)(396003)(346002)(31686004)(5660300002)(86362001)(8936002)(71200400001)(4744005)(2616005)(76116006)(83380400001)(66446008)(53546011)(8676002)(186003)(31696002)(26005)(91956017)(478600001)(6506007)(64756008)(316002)(4326008)(66556008)(66946007)(66476007)(2906002)(6512007)(110136005)(54906003)(6486002)(36756003)(43740500002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: +qUn7xyZoK9SjWq0HkcP12fp5j0nHSAgglgi6Y4jor141vtcQwD5AWPnb5IO6fzvGdNR6rfaFXUhEhT22wO5V/Rfl3jM6ZFw/UHWCdZPjV2v9HpMW4xDFh+7LL5GvWee3F8Wkfl6t0J+odwLe7QfTjpRJbhi4JQRlDMOn8wL9haLg8yHCXLOo99bAj8ra/USJYTYlFJByuC51VaePes2U8wCkhWq3ndT0wFsVdF3/OgDB3qqlTN1TduP/Hy6O6O7JS1tl2pEo4iTIfugjYE/FiQ7RYCl0u+HlrBezNQdh7Y8jvf0Cz+mxukMD3wBGM8eHsCSjzVd5tbskNRVZCHg49Zk8r28DZ9BqC6x7fK0Huk8sdFD3CqsEgh3Tp0MKrrYFDVH/JIHWK/P75SBJDBBE1OEpL1ew4UR/LD7e0EZ9vEEdKuABfy39uAaZ8QBGd8GYw1PWqe3ysQJamocoekBMDv3qlX4tx8l5mYuhmebOZgjGPceJJ46NGnRYnt0eFl1
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5D5B43223C7A7143A0C61A9504EAF726@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1432.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4921cfc0-20e3-4c29-fed0-08d827f1f841
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2020 12:32:27.6482
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Kpo5oH9Exot7M+nZFZRaZCyD2AMz1+C1QyWJtINtEpf8V3DWNQhs2Po4rntbK6kSgtv1asCnHsHfzqG6lHUf+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1416
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph!
-
-On 7/14/20 2:18 PM, Christoph Hellwig wrote:
-> can you take a look and possibly pick up the series below that untangles
-> and sorts out minor issues with the sh ioremap and dma code?
-> 
-> I sent this out a few times, but never got an answer.  If you don't
-> want to pick up the series I can also take it through one of my trees
-> if I get ACKs.
-
-Rich already said he is fine with most of the changes but we need to test
-the DMA changes first to make sure they didn't break anything.
-
-Thanks again for your continued efforts.
-
-Adrian
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+SGkgTWFyZWssDQoNCk9uIDcvMTQvMjAyMCAxMjo0OCBQTSwgTWFyZWsgU3p5cHJvd3NraSB3cm90
+ZToNCj4gV2hlbiBnYWRnZXQgcmVnaXN0cmF0aW9uIGZhaWxzLCBvbmUgc2hvdWxkIG5vdCBjYWxs
+IHVzYl9kZWxfZ2FkZ2V0X3VkYygpLg0KPiBFbnN1cmUgdGhpcyBieSBzZXR0aW5nIGdhZGdldC0+
+dWRjIHRvIE5VTEwuIEFsc28gaW4gY2FzZSBvZiBhIGZhaWx1cmUNCkkgd2FzIGFibGUgdG8gcmVw
+cm9kdWNlIGlzc3VlLiBJJ20gT2sgd2l0aCB0aGlzIGZpeC4NCg0KPiB0aGVyZSBpcyBubyBuZWVk
+IHRvIGRpc2FibGUgbG93LWxldmVsIGhhcmR3YXJlLCBzbyByZXR1cm4gaW1taWVkZXRseQ0KPiBp
+bnN0ZWFkIG9mIGp1bXBpbmcgdG8gZXJyb3JfaW5pdCBsYWJlbC4NCj4gDQpXaHkgZG8geW91IHRo
+aW5rIHRoYXQgZGlzYWJsZSBsb3ctbGV2ZWwgaGFyZHdhcmUgbm90IHJlcXVpcmVkIHdoaWNoIHdh
+cyANCmVuYWJsZWQgYmVmb3JlPyBBbHNvIGZvciBzb21lIHBsYXRmb3JtcyByZXF1aXJlZCB0byBj
+YWxsIA0KcmVndWxhdG9yX2Rpc2FibGUoKSB3aGljaCB3YXMgZW5hYmxlZCBlYXJsaWVyIGluIHBy
+b2JlIGZ1bmN0aW9uLg0KU28sIEkgc3VnZ2VzdCB0byBrZWVwIGp1bXAgdG8gZXJyb3JfaW5pdCBs
+YWJlbC4NCg0KPiBUaGlzIGZpeGVzIHRoZSBmb2xsb3dpbmcga2VybmVsIE5VTEwgcHRyIGRlcmVm
+ZXJlbmNlIG9uIGdhZGdldCBmYWlsdXJlDQo+IChjYW4gYmUgZWFzaWx5IHRyaWdnZXJlZCB3aXRo
+IGdfbWFzc19zdG9yYWdlIHdpdGhvdXQgYW55IG1vZHVsZQ0KPiBwYXJhbWV0ZXJzKToNCj4gDQoN
+ClRoYW5rcywNCk1pbmFzDQo=
