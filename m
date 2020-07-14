@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142BD21E5F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE3221E5F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbgGNCvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 22:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgGNCvH (ORCPT
+        id S1726568AbgGNCyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 22:54:18 -0400
+Received: from mx.aristanetworks.com ([162.210.129.12]:60493 "EHLO
+        smtp.aristanetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726372AbgGNCyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 22:51:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFF7C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 19:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fiiZnEYG1QnhgVM3Xxq9kA7j2/YA18FQvN2M1Z9IM1w=; b=D5rBkAjHu1cIwv0MsZQoxUzIXd
-        9wwXgWiIXiuIphDFWKhMGiOWnG0mrUH/WrNqdyZTEv3VAsiyDS7g2I28XgZUqcWN22upRhxTU0wo0
-        qFMNeEvaDVLDFxH085RFsyP46UXeLQjdj30WJlpkR/v6lVBmxJu0gPn1ypB0t28CeV3U3F71fF2wV
-        OzzsdyX3UwesQqI/d4/rAIAjXC0PB4+iKKw2qThEJrG/wDhNM/bbMIyOuXy5n0c0mAH+V+BBU07k8
-        IQuJP7ODBSCsUXIRKnALCNsm1YQuwUAKact/9q/xhiwOmzSviOxh5LSmKrsetg0AyC94MO1oHN1AA
-        pv7PRHzQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvB22-0002cx-7C; Tue, 14 Jul 2020 02:50:58 +0000
-Date:   Tue, 14 Jul 2020 03:50:58 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Changming <charley.ashbringer@gmail.com>, rdunlap@infradead.org,
-        keescook@chromium.org, mcgrof@kernel.org, yzaikin@google.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] panic: prevent panic_timeout * 1000 from overflow
-Message-ID: <20200714025058.GZ12769@casper.infradead.org>
-References: <0d4601d65709a0e2d80e2a8880gmail.com>
- <20200711051728.1499-1-charley.ashbringer@gmail.com>
- <20200713185739.03d576cca0dc9f618ea76d67@linux-foundation.org>
-MIME-Version: 1.0
+        Mon, 13 Jul 2020 22:54:18 -0400
+Received: from us180.sjc.aristanetworks.com (us180.sjc.aristanetworks.com [172.25.230.4])
+        by smtp.aristanetworks.com (Postfix) with ESMTP id BA0E54000A4;
+        Mon, 13 Jul 2020 19:54:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
+        s=Arista-A; t=1594695257;
+        bh=5S99b4Wsz1sSm6XJJBWve3nBCOGAX6DPDI8yaAHT25E=;
+        h=Date:To:Subject:From:From;
+        b=Qm8Gr88enAqDOUJHMvxrDLfLVMXPVBB1b6re0SVAco1YL0XDO16nhBoBrSKpaHEjp
+         a3iNLx/d3Zfj5y/FLzEoBqZBTIZ89w1Y0Ppw7X9Y5lvNuww7Xe/c/Z3iaRvZBFWEcF
+         aqbjmUUr5FOcUkF+IMas7Dy6OEV4dYbRRzOO66xOxD6K6mxQ7UGFcXeIrs7gHBQpyS
+         2cIjSuG+92Cg+sFi6/lUJpfZ4nrAuFh+XM+VepNxzMGor7QykGQCmo3hMwPBL2G61C
+         Dk7kAGBietPF96FPuEObRfehATihKjuQHXIm2lgCDlWlnbNRcygb4N43c+hNdoVre3
+         Fstayl15mHK7Q==
+Received: by us180.sjc.aristanetworks.com (Postfix, from userid 10189)
+        id A25EB95C0339; Mon, 13 Jul 2020 19:54:17 -0700 (PDT)
+Date:   Mon, 13 Jul 2020 19:54:17 -0700
+To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        amir73il@gmail.com, jack@suse.cz, fruggeri@arista.com
+Subject: soft lockup in fanotify_read
+User-Agent: Heirloom mailx 12.5 7/5/10
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713185739.03d576cca0dc9f618ea76d67@linux-foundation.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <20200714025417.A25EB95C0339@us180.sjc.aristanetworks.com>
+From:   fruggeri@arista.com (Francesco Ruggeri)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 06:57:39PM -0700, Andrew Morton wrote:
-> +++ a/kernel/panic.c
-> @@ -313,13 +313,16 @@ void panic(const char *fmt, ...)
->  		 * Delay timeout seconds before rebooting the machine.
->  		 * We can't use the "normal" timers since we just panicked.
->  		 */
-> +		u64 timeout = panic_timeout * 1000;	/* avoid overflow */
+We are getting this soft lockup in fanotify_read.
+The reason is that this code does not seem to scale to cases where there
+are big bursts of events generated by fanotify_handle_event.
+fanotify_read acquires group->notification_lock for each event.
+fanotify_handle_event uses the lock to add one event, which also involves
+fanotify_merge, which scans the whole list trying to find an event to
+merge the new one with.
+In our case fanotify_read is invoked with a buffer big enough for 200
+events, and what happens is that every time fanotify_read dequeues an
+event and releases the lock, fanotify_handle_event adds several more,
+scanning a longer and longer list. This causes fanotify_read to wait
+longer and longer for the lock, and the soft lockup happens before
+fanotify_read can reach 200 events.
+Is it intentional for fanotify_read to acquire the lock for each event,
+rather than batching together a user buffer worth of events?
 
-1000ULL to not truncate before the assignment.
+Thanks,
+Francesco Ruggeri
 
-> +		u64 timer;
-
-... as you implied later
-
-		u64 timer, timer_next;
-
-> (untested)
-
-Well, there's the rub.  Testing requires 49 days (2^32 / 1000 seconds).
+[5752801.578813] watchdog: BUG: soft lockup - CPU#15 stuck for 22s! [fstrace:23105]
+[5752801.586804] Modules linked in: ...
+[5752801.586871] CPU: 15 PID: 23105 Comm: fstrace Tainted: G        W  O L    4.19.112-16802951.AroraKernel419.el7.x86_64 #1
+[5752801.586872] Hardware name: Supermicro SYS-6029TP-HTR/X11DPT-PS, BIOS 3.1 04/30/2019
+[5752801.586879] RIP: 0010:queued_spin_lock_slowpath+0x141/0x17c
+[5752801.586881] Code: 5e c1 e9 12 83 e0 03 ff c9 48 c1 e0 04 48 63 c9 48 05 c0 14 02 00 48 03 04 cd 20 e7 e9 81 48 89 10 8b 42 08 85 c0 75 04 f3 90 <eb> f5 48 8b 0a 48 85 c9 74 03 0f 0d 09 8b 07 66 85 c0 74 93 f3 90
+[5752801.586882] RSP: 0018:ffffc90027c5fd18 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff13
+[5752801.586883] RAX: 0000000000000000 RBX: ffff8883a9078ce8 RCX: 000000000000001e
+[5752801.586884] RDX: ffff88df7f6e14c0 RSI: 0000000000400000 RDI: ffff88b06306e30c
+[5752801.586885] RBP: ffffc90027c5fd18 R08: 0000000000000001 R09: ffffffff811e8b7e
+[5752801.586886] R10: ffffc90027c5fce0 R11: 0000000000000000 R12: ffff88b06306e300
+[5752801.586887] R13: 00000000ff935638 R14: ffff88b4af422600 R15: 0000000000000018
+[5752801.586888] FS:  0000000000000000(0000) GS:ffff88df7f6c0000(0063) knlGS:0000000009c6a880
+[5752801.586889] CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+[5752801.586890] CR2: 0000000009430914 CR3: 000000035bbef006 CR4: 00000000007606e0
+[5752801.586891] DR0: 000000000001864c DR1: 0000000000000000 DR2: 0000000000000000
+[5752801.586891] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+[5752801.586892] PKRU: 55555554
+[5752801.586892] Call Trace:
+[5752801.586898]  do_raw_spin_lock+0x1a/0x1c
+[5752801.586901]  _raw_spin_lock+0xe/0x10
+[5752801.586905]  fanotify_read+0xa3/0x32d
+[5752801.586912]  ? __wake_up_sync+0x12/0x12
+[5752801.586916]  copy_oldmem_page+0xa9/0xa9
+[5752801.586920]  ? fsnotify_perm+0x60/0x6c
+[5752801.586921]  ? fsnotify_perm+0x60/0x6c
+[5752801.586923]  ? security_file_permission+0x37/0x3e
+[5752801.586926]  vfs_read+0xa4/0xdc
+[5752801.586928]  ksys_read+0x64/0xab
+[5752801.586930]  __ia32_sys_read+0x18/0x1a
+[5752801.586933]  do_fast_syscall_32+0xaf/0xf6
+[5752801.586935]  entry_SYSENTER_compat+0x6b/0x7a
+[5752801.586936] RIP: 0023:0xf7f64c29
+[5752801.586938] Code: 5b 5d c3 8b 04 24 c3 8b 14 24 c3 8b 1c 24 c3 8b 34 24 c3 90 90 90 90 90 90 90 90 90 90 90 90 90 90 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+[5752801.586939] RSP: 002b:00000000ff933828 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+[5752801.586940] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00000000ff9348d0
+[5752801.586941] RDX: 00000000000012c0 RSI: 0000000009c72da8 RDI: 00000000ff9348d0
+[5752801.586941] RBP: 00000000ff935ba8 R08: 0000000000000000 R09: 0000000000000000
+[5752801.586942] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[5752801.586942] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
 
