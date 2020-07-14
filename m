@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C4D21EEFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC8721EEE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgGNLRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 07:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
+        id S1727961AbgGNLQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 07:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727121AbgGNLPx (ORCPT
+        with ESMTP id S1727858AbgGNLQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 07:15:53 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082B9C08C5DD
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:15:53 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id o11so20920009wrv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:15:52 -0700 (PDT)
+        Tue, 14 Jul 2020 07:16:40 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F86C08C5DF
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:15:54 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id l2so5008878wmf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:15:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8AHNAOGxoWBX3bXCs6Dh5/0gSXTq0LMXanlZCN8dNwA=;
-        b=sx/RKyQ9jzgAwx3JUl7dyzFreyfVZjEL/DUHRuGpwSBUKhEE64OoYSqxjGFVirc7Gk
-         sryFAxXibssYup3dVrT2uC4aq0mcmalkbq93JYSCp+BwRLD89Pv+5kz4oOojBTVD6WrI
-         ahvJMu6FY2XT9T7OraeUW0dHR9cOdvO/2/IlNgYTkZD69LmCXDobV3qC8Noc5zlOMwgv
-         c8k9E73fAGNjkpPwVPp4//NZ/4D4LjQ+03Bry7q7c7JxzRjVhem6LUJ20JsV5NOal6eh
-         /ghvlJF4oOsqxuRZCbzwXiSGso3UnKH7O7X45+VT50Cn4Ete91et4bDQ6N+ZMBcH0aiX
-         q0lw==
+        bh=1JX6Y3K2cqUwU/GGZOaVZUng81gC2+PNbg79UPVm7pA=;
+        b=SdnZRHxrdki/679eF7FPi+/jeTt1n4vu5QCRmxeDf6qNUzYvM7bS2wL2e0ozSfTlDM
+         tARtuX6tX/rbJL0nOjGxOz1EtxEWgSJNBrFZwRThgWXp5Kl5a6eD/wFnCjhIw+jzzB7/
+         pa4ZdykY/E568sV/yKFbCQxdcbcvMthgP72Nu27IdlPvdnWn5ftPWOFl2iZSTN1CLks5
+         jCbJHl6gQERwh+F3BClZBDXiW2ATsNlEyVQiw6QRQl3Zs4s0/giQC73/rqp6wSLML6mF
+         zYRMnkFtGmDat2lWvacTNArmkiOZWN/S+hRGD0VkR7xu8KkSelzdOD+GdqTV8/pI3av1
+         6uAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8AHNAOGxoWBX3bXCs6Dh5/0gSXTq0LMXanlZCN8dNwA=;
-        b=kMvcnAg1jmRMHzeY175Z8Y+hgFECbgWURxZw9tJTm8rI03Z2lP8bhA8gkADbFtdBgb
-         0wLiyVMZDNo4aSljcwaiLRceMt5/UOBAtODmEieRxeAoopFlTbJ0y2T+0hrHwwku/3nX
-         N0Ku9ja/jqWQawQXRfHqlY95GaOjNdMNT7RhEVIhE+uYIUxtBHuMfRUX2x96VE4GPZ6h
-         eEIJovjva3cJiBLKz9F0hpz7iwZ1LeglLkbL+Qp99ki0FRp9eDDtqYL0WmKbviC0YpZT
-         6RT7U0DMVzec4EtGi2DTtv5QDlymGzEQF4uHzsmQKefJ8rqUvAjNJ5KJ7LqtWp9LEu6u
-         IWPA==
-X-Gm-Message-State: AOAM531Vek01oRMtHO5CML4TtCXcnRbtusCwRFVe11Kl0l7ZuAYCsN47
-        AeuPSXTZ5LdQAth4hldHexu9OQ==
-X-Google-Smtp-Source: ABdhPJz+RcOyEJB9HyBPqs6LMXrDgN6dj+1DlUqwXuNalPd8xjE66KHEGwQS5Q1S0C8zFN0qvlHVrg==
-X-Received: by 2002:a05:6000:cf:: with SMTP id q15mr4734329wrx.203.1594725351797;
-        Tue, 14 Jul 2020 04:15:51 -0700 (PDT)
+        bh=1JX6Y3K2cqUwU/GGZOaVZUng81gC2+PNbg79UPVm7pA=;
+        b=uhIEFxDEJFYFniZ2jTe+n++9Cww+PPRWQdA+IJrEYS8woXZSy3qIIk9UAzTTYYM5jl
+         bKzkznHi19L4U2yn33wqnlOOuN09Tf0/0hGk/BcfgiEOwGIf0+d1OQib54vC5rtRIgiP
+         PuhfmQJdgNhZ7DA5tBE9+XrOkTObjGaVTozEQt6qUG75ay85kjadFw1T6WHYX6aTavg3
+         ruO/81a+q33MMIsU8W9/sLNmBKkPElQO9x3SGArNyBmzOI8kgu4D4MaqJGUL5dXoNeKC
+         byhSKkiiMg0TCapmiGBZe1HfsJITKXKCfCsOPmDqQWALjGPdg+kgC+ylpKjRoNS56GjO
+         L7mg==
+X-Gm-Message-State: AOAM533LMYqgJOM2RRK7MUYiMoSx8ZKBgjp/gTaqNBlMc/n/oKGUuXl0
+        Dc/DaFpTIvHVrjqYe0x9hqY0mg==
+X-Google-Smtp-Source: ABdhPJzIAm8WUFOAz5PhBWJ+LR0cHqt9Te+7GSve6DdRDT8JFwjK99lQq5ArJTTuSWYWI8WtVeWu0w==
+X-Received: by 2002:a1c:a4c6:: with SMTP id n189mr3714749wme.173.1594725352930;
+        Tue, 14 Jul 2020 04:15:52 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.15.50
+        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.15.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 04:15:51 -0700 (PDT)
+        Tue, 14 Jul 2020 04:15:52 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     dan.j.williams@intel.com, vkoul@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 02/17] dma: of-dma: Fix misspellings/formatting issues in some function headers
-Date:   Tue, 14 Jul 2020 12:15:31 +0100
-Message-Id: <20200714111546.1755231-3-lee.jones@linaro.org>
+        dmaengine@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Lennert Buytenhek <buytenh@wantstofly.org>,
+        Ryan Mallon <rmallon@gmail.com>,
+        Mika Westerberg <mika.westerberg@iki.fi>
+Subject: [PATCH 03/17] dma: ep93xx_dma: Provide some missing struct attribute documentation
+Date:   Tue, 14 Jul 2020 12:15:32 +0100
+Message-Id: <20200714111546.1755231-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200714111546.1755231-1-lee.jones@linaro.org>
 References: <20200714111546.1755231-1-lee.jones@linaro.org>
@@ -65,61 +68,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A couple of entries were missed, causing kerneldoc to complain.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/dma/of-dma.c:57: warning: Function parameter or member 'ofdma' not described in 'of_dma_router_xlate'
- drivers/dma/of-dma.c:57: warning: Excess function parameter 'of_dma' description in 'of_dma_router_xlate'
- drivers/dma/of-dma.c:107: warning: Function parameter or member 'data' not described in 'of_dma_controller_register'
- drivers/dma/of-dma.c:308: warning: Function parameter or member 'ofdma' not described in 'of_dma_simple_xlate'
- drivers/dma/of-dma.c:308: warning: Excess function parameter 'of_dma' description in 'of_dma_simple_xlate'
- drivers/dma/of-dma.c:338: warning: Function parameter or member 'ofdma' not described in 'of_dma_xlate_by_chan_id'
- drivers/dma/of-dma.c:338: warning: Excess function parameter 'of_dma' description in 'of_dma_xlate_by_chan_id'
+ drivers/dma/ep93xx_dma.c:183: warning: Function parameter or member 'slave_config' not described in 'ep93xx_dma_chan'
+ drivers/dma/ep93xx_dma.c:215: warning: Function parameter or member 'hw_synchronize' not described in 'ep93xx_dma_engine'
 
+Cc: Lennert Buytenhek <buytenh@wantstofly.org>
+Cc: Ryan Mallon <rmallon@gmail.com>
+Cc: Mika Westerberg <mika.westerberg@iki.fi>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/dma/of-dma.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/dma/ep93xx_dma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/dma/of-dma.c b/drivers/dma/of-dma.c
-index b2c2b5e8093cf..863f2aaf5c8f7 100644
---- a/drivers/dma/of-dma.c
-+++ b/drivers/dma/of-dma.c
-@@ -46,7 +46,7 @@ static struct of_dma *of_dma_find_controller(struct of_phandle_args *dma_spec)
- /**
-  * of_dma_router_xlate - translation function for router devices
-  * @dma_spec:	pointer to DMA specifier as found in the device tree
-- * @of_dma:	pointer to DMA controller data (router information)
-+ * @ofdma:	pointer to DMA controller data (router information)
+diff --git a/drivers/dma/ep93xx_dma.c b/drivers/dma/ep93xx_dma.c
+index 9c8b4d35cf03d..87a246012629f 100644
+--- a/drivers/dma/ep93xx_dma.c
++++ b/drivers/dma/ep93xx_dma.c
+@@ -147,6 +147,7 @@ struct ep93xx_dma_desc {
+  *                is set via .device_config before slave operation is
+  *                prepared
+  * @runtime_ctrl: M2M runtime values for the control register.
++ * @slave_config: slave configuration
   *
-  * The function creates new dma_spec to be passed to the router driver's
-  * of_dma_route_allocate() function to prepare a dma_spec which will be used
-@@ -92,7 +92,7 @@ static struct dma_chan *of_dma_router_xlate(struct of_phandle_args *dma_spec,
-  * @np:			device node of DMA controller
-  * @of_dma_xlate:	translation function which converts a phandle
-  *			arguments list into a dma_chan structure
-- * @data		pointer to controller specific data to be used by
-+ * @data:		pointer to controller specific data to be used by
-  *			translation function
-  *
-  * Returns 0 on success or appropriate errno value on error.
-@@ -295,7 +295,7 @@ EXPORT_SYMBOL_GPL(of_dma_request_slave_channel);
- /**
-  * of_dma_simple_xlate - Simple DMA engine translation function
-  * @dma_spec:	pointer to DMA specifier as found in the device tree
-- * @of_dma:	pointer to DMA controller data
-+ * @ofdma:	pointer to DMA controller data
-  *
-  * A simple translation function for devices that use a 32-bit value for the
-  * filter_param when calling the DMA engine dma_request_channel() function.
-@@ -323,7 +323,7 @@ EXPORT_SYMBOL_GPL(of_dma_simple_xlate);
- /**
-  * of_dma_xlate_by_chan_id - Translate dt property to DMA channel by channel id
-  * @dma_spec:	pointer to DMA specifier as found in the device tree
-- * @of_dma:	pointer to DMA controller data
-+ * @ofdma:	pointer to DMA controller data
-  *
-  * This function can be used as the of xlate callback for DMA driver which wants
-  * to match the channel based on the channel id. When using this xlate function
+  * As EP93xx DMA controller doesn't support real chained DMA descriptors we
+  * will have slightly different scheme here: @active points to a head of
+@@ -187,6 +188,7 @@ struct ep93xx_dma_chan {
+  * @dma_dev: holds the dmaengine device
+  * @m2m: is this an M2M or M2P device
+  * @hw_setup: method which sets the channel up for operation
++ * @hw_synchronize: synchronizes DMA channel termination to current context
+  * @hw_shutdown: shuts the channel down and flushes whatever is left
+  * @hw_submit: pushes active descriptor(s) to the hardware
+  * @hw_interrupt: handle the interrupt
 -- 
 2.25.1
 
