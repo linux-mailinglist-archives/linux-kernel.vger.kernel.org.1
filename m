@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8A321F9D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF5421F9B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729649AbgGNSq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:46:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41712 "EHLO mail.kernel.org"
+        id S1729282AbgGNSp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:45:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729607AbgGNSqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:46:51 -0400
+        id S1728948AbgGNSpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:45:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D165222E9;
-        Tue, 14 Jul 2020 18:46:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCAA9222E9;
+        Tue, 14 Jul 2020 18:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752411;
-        bh=guW+R+NgHU962CogrYKOHyrmkNm6Y+ppDAjyq2omiG0=;
+        s=default; t=1594752354;
+        bh=v7i3vODcfsNt9qz80CBL3nKZlwMLOBfzh+PZ/J8FKLU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lIRs8WYRjumfkvuSUvhweC90g06gWAYE3dGnedaWpnuPC50lEk0IQf2xtG5NcHjEz
-         NdprjbQZXMGr/hV2zJ+wHOH6DH4enanD5w9bUl4kzlVTP+jVXBs96p1VUOYoZLEaNp
-         e6O4cCj6e7cPht0mTqN5sEUKhqNuzYmud/U2Rhxo=
+        b=BEP6KLJ/V/ftyPDIQqiLUt7DAMtYFJKByLrAFfAUW5FxsLYt0Sr9ZF53ZEwk4g4b0
+         R42vQjdqc5Ubd4QTwpjxEqq6ryJMjZqzcLJgTx7SdZM2u/DzSttyqUnHXGi0epgrt/
+         mLmr+kSTr+/KhwxXRCtwkZqyJF5MkVKayBeNXUy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
+        stable@vger.kernel.org, Peng Ma <peng.ma@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 01/58] KVM: s390: reduce number of IO pins to 1
-Date:   Tue, 14 Jul 2020 20:43:34 +0200
-Message-Id: <20200714184056.215128125@linuxfoundation.org>
+Subject: [PATCH 4.19 02/58] spi: spi-fsl-dspi: Adding shutdown hook
+Date:   Tue, 14 Jul 2020 20:43:35 +0200
+Message-Id: <20200714184056.265252863@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
 References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,71 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Borntraeger <borntraeger@de.ibm.com>
+From: Peng Ma <peng.ma@nxp.com>
 
-[ Upstream commit 774911290c589e98e3638e73b24b0a4d4530e97c ]
+[ Upstream commit dc234825997ec6ff05980ca9e2204f4ac3f8d695 ]
 
-The current number of KVM_IRQCHIP_NUM_PINS results in an order 3
-allocation (32kb) for each guest start/restart. This can result in OOM
-killer activity even with free swap when the memory is fragmented
-enough:
+We need to ensure dspi controller could be stopped in order for kexec
+to start the next kernel.
+So add the shutdown operation support.
 
-kernel: qemu-system-s39 invoked oom-killer: gfp_mask=0x440dc0(GFP_KERNEL_ACCOUNT|__GFP_COMP|__GFP_ZERO), order=3, oom_score_adj=0
-kernel: CPU: 1 PID: 357274 Comm: qemu-system-s39 Kdump: loaded Not tainted 5.4.0-29-generic #33-Ubuntu
-kernel: Hardware name: IBM 8562 T02 Z06 (LPAR)
-kernel: Call Trace:
-kernel: ([<00000001f848fe2a>] show_stack+0x7a/0xc0)
-kernel:  [<00000001f8d3437a>] dump_stack+0x8a/0xc0
-kernel:  [<00000001f8687032>] dump_header+0x62/0x258
-kernel:  [<00000001f8686122>] oom_kill_process+0x172/0x180
-kernel:  [<00000001f8686abe>] out_of_memory+0xee/0x580
-kernel:  [<00000001f86e66b8>] __alloc_pages_slowpath+0xd18/0xe90
-kernel:  [<00000001f86e6ad4>] __alloc_pages_nodemask+0x2a4/0x320
-kernel:  [<00000001f86b1ab4>] kmalloc_order+0x34/0xb0
-kernel:  [<00000001f86b1b62>] kmalloc_order_trace+0x32/0xe0
-kernel:  [<00000001f84bb806>] kvm_set_irq_routing+0xa6/0x2e0
-kernel:  [<00000001f84c99a4>] kvm_arch_vm_ioctl+0x544/0x9e0
-kernel:  [<00000001f84b8936>] kvm_vm_ioctl+0x396/0x760
-kernel:  [<00000001f875df66>] do_vfs_ioctl+0x376/0x690
-kernel:  [<00000001f875e304>] ksys_ioctl+0x84/0xb0
-kernel:  [<00000001f875e39a>] __s390x_sys_ioctl+0x2a/0x40
-kernel:  [<00000001f8d55424>] system_call+0xd8/0x2c8
-
-As far as I can tell s390x does not use the iopins as we bail our for
-anything other than KVM_IRQ_ROUTING_S390_ADAPTER and the chip/pin is
-only used for KVM_IRQ_ROUTING_IRQCHIP. So let us use a small number to
-reduce the memory footprint.
-
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Link: https://lore.kernel.org/r/20200617083620.5409-1-borntraeger@de.ibm.com
+Signed-off-by: Peng Ma <peng.ma@nxp.com>
+Link: https://lore.kernel.org/r/20200424061216.27445-1-peng.ma@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/kvm_host.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/spi/spi-fsl-dspi.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-index dad110e9f41b3..be8fa30a6ea6d 100644
---- a/arch/s390/include/asm/kvm_host.h
-+++ b/arch/s390/include/asm/kvm_host.h
-@@ -30,12 +30,12 @@
- #define KVM_USER_MEM_SLOTS 32
+diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
+index 3082e72e4f6c6..9296bcbbd32ce 100644
+--- a/drivers/spi/spi-fsl-dspi.c
++++ b/drivers/spi/spi-fsl-dspi.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0+
+ //
+ // Copyright 2013 Freescale Semiconductor, Inc.
++// Copyright 2020 NXP
+ //
+ // Freescale DSPI driver
+ // This file contains a driver for the Freescale DSPI
+@@ -43,6 +44,9 @@
+ #define SPI_MCR_CLR_TXF	(1 << 11)
+ #define SPI_MCR_CLR_RXF	(1 << 10)
+ #define SPI_MCR_XSPI		(1 << 3)
++#define SPI_MCR_DIS_TXF		(1 << 13)
++#define SPI_MCR_DIS_RXF		(1 << 12)
++#define SPI_MCR_HALT		(1 << 0)
  
- /*
-- * These seem to be used for allocating ->chip in the routing table,
-- * which we don't use. 4096 is an out-of-thin-air value. If we need
-- * to look at ->chip later on, we'll need to revisit this.
-+ * These seem to be used for allocating ->chip in the routing table, which we
-+ * don't use. 1 is as small as we can get to reduce the needed memory. If we
-+ * need to look at ->chip later on, we'll need to revisit this.
-  */
- #define KVM_NR_IRQCHIPS 1
--#define KVM_IRQCHIP_NUM_PINS 4096
-+#define KVM_IRQCHIP_NUM_PINS 1
- #define KVM_HALT_POLL_NS_DEFAULT 80000
+ #define SPI_TCR			0x08
+ #define SPI_TCR_GET_TCNT(x)	(((x) & 0xffff0000) >> 16)
+@@ -1140,6 +1144,24 @@ static int dspi_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
- /* s390-specific vcpu->requests bit members */
++static void dspi_shutdown(struct platform_device *pdev)
++{
++	struct spi_controller *ctlr = platform_get_drvdata(pdev);
++	struct fsl_dspi *dspi = spi_controller_get_devdata(ctlr);
++
++	/* Disable RX and TX */
++	regmap_update_bits(dspi->regmap, SPI_MCR,
++			   SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF,
++			   SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF);
++
++	/* Stop Running */
++	regmap_update_bits(dspi->regmap, SPI_MCR, SPI_MCR_HALT, SPI_MCR_HALT);
++
++	dspi_release_dma(dspi);
++	clk_disable_unprepare(dspi->clk);
++	spi_unregister_controller(dspi->master);
++}
++
+ static struct platform_driver fsl_dspi_driver = {
+ 	.driver.name    = DRIVER_NAME,
+ 	.driver.of_match_table = fsl_dspi_dt_ids,
+@@ -1147,6 +1169,7 @@ static struct platform_driver fsl_dspi_driver = {
+ 	.driver.pm = &dspi_pm,
+ 	.probe          = dspi_probe,
+ 	.remove		= dspi_remove,
++	.shutdown	= dspi_shutdown,
+ };
+ module_platform_driver(fsl_dspi_driver);
+ 
 -- 
 2.25.1
 
