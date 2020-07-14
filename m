@@ -2,155 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EE121F138
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DD321F117
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728127AbgGNMaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35602 "EHLO
+        id S1728214AbgGNMT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbgGNMaD (ORCPT
+        with ESMTP id S1726352AbgGNMT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:30:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42048C061755;
-        Tue, 14 Jul 2020 05:30:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=tYiJ8awb7HQY8NHNAGR9Uf0rHCnZXmo9pJDwUfvh/fs=; b=bxmEmpIE4k4/J4WlA22h1Ikk8b
-        pqYZVMO1Hfldvmu1M7np4M6sr/SuWEVQ1X/aoL/U8NMcuhsM64thR8J/Srsi08aYU6H6GclV6Ngje
-        8MzaPFl+XzFcskCVto8Nuy+se/fXLlaloo0JABFkMxkMs1fGeheAKMgCM3qKo51atbJdAeW44WOdr
-        fU3e4w4VxzNuLnNn/jwJP3feu8tCwBr/rr3YOU/CEaS5bKHjgMHizfWKBWrUqte7xYfh/8J7+SC08
-        NCAfdpX2NskbZUSe+/EbwU04F1mrtdxFbgXFSwWat7wuujeDK0YbNhO50Ccp5saKbjqsPJF8GeU/H
-        FhyL/25g==;
-Received: from 089144201169.atnat0010.highway.a1.net ([89.144.201.169] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvK4H-0001ud-AI; Tue, 14 Jul 2020 12:29:55 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 04/10] sh: move ioremap_fixed details out of <asm/io.h>
-Date:   Tue, 14 Jul 2020 14:18:50 +0200
-Message-Id: <20200714121856.955680-5-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200714121856.955680-1-hch@lst.de>
-References: <20200714121856.955680-1-hch@lst.de>
+        Tue, 14 Jul 2020 08:19:58 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6009C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:19:57 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id a1so11384823edt.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:19:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=Upvq0XTnNDqkoJtFc1NKNfRMzIAOX3/LGCieRj7keA0=;
+        b=OgzthXDQQkSKENql4YztVr6tFQiY54k6p17Uy/5bcc7+0ujdY5rlF65bya2ugm/1k4
+         hzNEqhYpj9g/Zq3XQF5qyl7U0HOvJ73Gh/4rNSG0PwfvemMNXstBpS9eNgrPPNU7UX77
+         WhHatpJCe+PLBLssCm85nbfGfIxvpMVvj4FBU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Upvq0XTnNDqkoJtFc1NKNfRMzIAOX3/LGCieRj7keA0=;
+        b=i/M/MU45gAB8Q/Ooi5IVwLYaSx0Vhii9iHtgSsPdfJOBW2wZBMJFUV0kxfyrqFPbZr
+         lUkbClZ23LEyubLIoucw6ywYyWVLKFCQB/gJeQa9KAOT/6o/TdNRGcQCcxjXeXaoXH7P
+         5Lolj6jR24p+C1hkGI1IhLZ37ji9wzaxkdDNpPg6bWccaqA5pudGBiwnPgMf5MG7l4y+
+         E6iQLt2FCRc4e1uQNAlwa9L4e/ubsqs4bk/KaLqK3+zja3Rl6YbmrUiLkiJDedVkN5ny
+         AopsL9K2WYCfUs6F2515cu2t5jXN2l/CBtWoob/Gpk/T2tKPYdniW7xcuIlqKpB8qrYO
+         Ad4w==
+X-Gm-Message-State: AOAM5305BzCD4ZgY+/oghj/CXOyaGue3ap7etQu7OiZF6zFFWC5ggDF6
+        iV9dl/0BXV/p/iI2X4RivkydHg==
+X-Google-Smtp-Source: ABdhPJzKDJKgOVyW2LvwituaOpypnl46h37Y+mxK8+iWEJWcch9N/FMLfcDPk9lAh1tmX3XCw7wjtg==
+X-Received: by 2002:a05:6402:b57:: with SMTP id bx23mr4056450edb.304.1594729196472;
+        Tue, 14 Jul 2020 05:19:56 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:6f85])
+        by smtp.gmail.com with ESMTPSA id ai4sm11724577ejc.91.2020.07.14.05.19.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 05:19:56 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 13:19:55 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
+        tony.luck@intel.com, torvalds@linux-foundation.org, x86@kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH -v2.1] x86/msr: Filter MSR writes
+Message-ID: <20200714121955.GA2080@chrisdown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200615063837.GA14668@zn.tnic>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ioremap_fixed is an internal implementation detail and should not be
-exposed to drivers.
+Hi Borislav,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/sh/include/asm/io.h   | 16 ----------------
- arch/sh/mm/init.c          |  1 +
- arch/sh/mm/ioremap.c       |  1 +
- arch/sh/mm/ioremap.h       | 23 +++++++++++++++++++++++
- arch/sh/mm/ioremap_fixed.c |  1 +
- 5 files changed, 26 insertions(+), 16 deletions(-)
- create mode 100644 arch/sh/mm/ioremap.h
+This is certainly a good idea, but I wonder whether we should be more pragmatic 
+about the printk ratelimiting while we give userspace time to react and update 
+their methodologies.
 
-diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
-index 1fd06ef6a19454..357a7e0c86d682 100644
---- a/arch/sh/include/asm/io.h
-+++ b/arch/sh/include/asm/io.h
-@@ -346,22 +346,6 @@ ioremap_prot(phys_addr_t offset, unsigned long size, unsigned long flags)
- }
- #endif
- 
--#ifdef CONFIG_IOREMAP_FIXED
--extern void __iomem *ioremap_fixed(phys_addr_t, unsigned long, pgprot_t);
--extern int iounmap_fixed(void __iomem *);
--extern void ioremap_fixed_init(void);
--#else
--static inline void __iomem *
--ioremap_fixed(phys_addr_t phys_addr, unsigned long size, pgprot_t prot)
--{
--	BUG();
--	return NULL;
--}
--
--static inline void ioremap_fixed_init(void) { }
--static inline int iounmap_fixed(void __iomem *addr) { return -EINVAL; }
--#endif
--
- #define ioremap_uc	ioremap
- 
- /*
-diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
-index a70ba0fdd0b382..da7ea48f9439e2 100644
---- a/arch/sh/mm/init.c
-+++ b/arch/sh/mm/init.c
-@@ -28,6 +28,7 @@
- #include <asm/setup.h>
- #include <asm/cache.h>
- #include <linux/sizes.h>
-+#include "ioremap.h"
- 
- pgd_t swapper_pg_dir[PTRS_PER_PGD];
- 
-diff --git a/arch/sh/mm/ioremap.c b/arch/sh/mm/ioremap.c
-index f6d02246d665bd..d9ec85b6bb2130 100644
---- a/arch/sh/mm/ioremap.c
-+++ b/arch/sh/mm/ioremap.c
-@@ -24,6 +24,7 @@
- #include <asm/cacheflush.h>
- #include <asm/tlbflush.h>
- #include <asm/mmu.h>
-+#include "ioremap.h"
- 
- /*
-  * Remap an arbitrary physical address space into the kernel virtual
-diff --git a/arch/sh/mm/ioremap.h b/arch/sh/mm/ioremap.h
-new file mode 100644
-index 00000000000000..f2544e721a3526
---- /dev/null
-+++ b/arch/sh/mm/ioremap.h
-@@ -0,0 +1,23 @@
-+#ifndef _SH_MM_IORMEMAP_H
-+#define _SH_MM_IORMEMAP_H 1
-+
-+#ifdef CONFIG_IOREMAP_FIXED
-+void __iomem *ioremap_fixed(phys_addr_t, unsigned long, pgprot_t);
-+int iounmap_fixed(void __iomem *);
-+void ioremap_fixed_init(void);
-+#else
-+static inline void __iomem *
-+ioremap_fixed(phys_addr_t phys_addr, unsigned long size, pgprot_t prot)
-+{
-+	BUG();
-+	return NULL;
-+}
-+static inline void ioremap_fixed_init(void)
-+{
-+}
-+static inline int iounmap_fixed(void __iomem *addr)
-+{
-+	return -EINVAL;
-+}
-+#endif /* CONFIG_IOREMAP_FIXED */
-+#endif /* _SH_MM_IORMEMAP_H */
-diff --git a/arch/sh/mm/ioremap_fixed.c b/arch/sh/mm/ioremap_fixed.c
-index 07e744d75fa01b..1914b79d1c530b 100644
---- a/arch/sh/mm/ioremap_fixed.c
-+++ b/arch/sh/mm/ioremap_fixed.c
-@@ -24,6 +24,7 @@
- #include <asm/tlbflush.h>
- #include <asm/mmu.h>
- #include <asm/mmu_context.h>
-+#include "ioremap.h"
- 
- struct ioremap_map {
- 	void __iomem *addr;
--- 
-2.26.2
+As one example, there is a common MSR hack which is verging on essential if 
+you're doing thermally intensive work on some recent ThinkPads[0][1], and this 
+drastically reduces the signal-to-noise ratio in kmsg (and this is only about 
+five minutes after boot):
 
+     % dmesg | wc -l
+     2963
+     % dmesg | grep -c 'unrecognized MSR'
+     2411
+
+That is, even with pr_err_ratelimited, we still end up logging on basically 
+every single write, even though it's from the same TGID writing to the same 
+MSRs, and end up becoming >80% of kmsg.
+
+Of course, one can boot with `allow_writes=1` to avoid these messages at all, 
+but that then has the downfall that one doesn't get _any_ notification at all 
+about these problems in the first place, and so is much less likely to forget 
+to fix it. One might rather it was less binary: it was still logged, just less 
+often, so that application developers _do_ have the incentive to improve their 
+current methods, without us having to push other useful stuff out of the kmsg 
+buffer.
+
+This one example isn't the point, of course: I'm sure there are plenty of other 
+non-ideal-but-pragmatic cases where people are writing to MSRs from userspace 
+right now, and it will take time for those people to find other solutions.
+
+I completely agree with you that there should be a better solution for these 
+cases, and that writing to MSRs from userspace is really not a good idea.  
+However, going from zero to over 80% of dmesg in cases where these MSRs are 
+repeatedly used seems too fast to me.
+
+Have you considered perhaps making the ramping up of error logging more gradual 
+by having this printk have its own, more conservative `struct ratelimit_state`, 
+as we do in some other places with similar noise concerns? Then we could 
+gradually make the warnings more aggressive as time goes on, up until the point 
+where we make allow_writes=0 the default.
+
+Thanks,
+
+Chris
+
+0: Lenovo is supposedly fixing this since last year, but no news yet.
+1: https://github.com/erpalma/throttled
