@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EA921ED89
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 796D421ED84
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgGNKCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 06:02:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54684 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725906AbgGNKCu (ORCPT
+        id S1726750AbgGNKAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 06:00:50 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:60034 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725906AbgGNKAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 06:02:50 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06E9VaZL139060;
-        Tue, 14 Jul 2020 05:59:43 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 328s1he621-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Jul 2020 05:59:43 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06E9VqAC140386;
-        Tue, 14 Jul 2020 05:59:42 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 328s1he60u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Jul 2020 05:59:42 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06E9stK5031001;
-        Tue, 14 Jul 2020 09:57:40 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 327527u6qs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Jul 2020 09:57:39 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06E9vbtP45154344
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Jul 2020 09:57:37 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A5149A4053;
-        Tue, 14 Jul 2020 09:57:37 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 983AEA4051;
-        Tue, 14 Jul 2020 09:57:35 +0000 (GMT)
-Received: from JAVRIS.in.ibm.com (unknown [9.199.51.67])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 14 Jul 2020 09:57:35 +0000 (GMT)
-Subject: Re: [PATCH v2] selftests/livepatch: adopt to newer sysctl error
- format
-To:     Petr Mladek <pmladek@suse.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>, Miroslav Benes <mbenes@suse.cz>
-Cc:     Joe Lawrence <joe.lawrence@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, live-patching@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200714091030.1611-1-pmladek@suse.com>
-From:   Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-Message-ID: <d71ffba0-87ab-0a31-d7cc-c476f5748c57@linux.vnet.ibm.com>
-Date:   Tue, 14 Jul 2020 15:27:33 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 14 Jul 2020 06:00:48 -0400
+X-UUID: bed1a5133baf41409bc26c71107765b3-20200714
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ysgoiQZkd6yevHeAk27WbwaWZS5sYS8VuJlnh1+Ohgc=;
+        b=EiBe0bVDnv7jLZLq4iiF2Jf9Beill+ZoiWu8CI0AAXdo4Q+9vDg3yvfnw46EmODy2IJu+AenpcWe9PGGKXa69pQ92gKPKsGO0wUstZ8rKzWX1c3XncZti/QiMNi8DXcFv9kUlcSlHJECMN3m7u3UZVwCDGHQGl1mFYXyu0xmcL4=;
+X-UUID: bed1a5133baf41409bc26c71107765b3-20200714
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1712766276; Tue, 14 Jul 2020 18:00:43 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 14 Jul 2020 18:00:40 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 14 Jul 2020 18:00:41 +0800
+Message-ID: <1594720842.22878.38.camel@mtkswgap22>
+Subject: RE: [PATCH v3] scsi: ufs: Cleanup completed request without
+ interrupt notification
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Avri Altman <Avri.Altman@wdc.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
+Date:   Tue, 14 Jul 2020 18:00:42 +0800
+In-Reply-To: <SN6PR04MB46404C9EC8C29F75E5D1E45BFC610@SN6PR04MB4640.namprd04.prod.outlook.com>
+References: <20200706132113.21096-1-stanley.chu@mediatek.com>
+         <SN6PR04MB4640BEAFE18BDC933FC7EC95FC640@SN6PR04MB4640.namprd04.prod.outlook.com>
+         <1594517160.10600.33.camel@mtkswgap22>
+         <SN6PR04MB4640F34CAA25B3CB58F94CABFC630@SN6PR04MB4640.namprd04.prod.outlook.com>
+         <1594716527.22878.28.camel@mtkswgap22>
+         <SN6PR04MB46404C9EC8C29F75E5D1E45BFC610@SN6PR04MB4640.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <20200714091030.1611-1-pmladek@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-14_02:2020-07-13,2020-07-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 bulkscore=0
- lowpriorityscore=0 impostorscore=0 spamscore=0 priorityscore=1501
- malwarescore=0 suspectscore=0 mlxscore=0 clxscore=1015 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007140070
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/20 2:40 pm, Petr Mladek wrote:
-> With procfs v3.3.16, the sysctl command doesn't print the set key and
-> value on error.  This change breaks livepatch selftest test-ftrace.sh,
-> that tests the interaction of sysctl ftrace_enabled:
-> 
-> Make it work with all sysctl versions using '-q' option.
-> 
-> Explicitly print the final status on success so that it can be verified
-> in the log. The error message is enough on failure.
-> 
-> Reported-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-> Signed-off-by: Petr Mladek <pmladek@suse.com>
+SGkgQXZyaSwNCg0KT24gVHVlLCAyMDIwLTA3LTE0IGF0IDA5OjI5ICswMDAwLCBBdnJpIEFsdG1h
+biB3cm90ZToNCj4gPiA+ID4gPiA+ICtjbGVhbnVwOg0KPiA+ID4gPiA+ID4gKyAgICAgICBzcGlu
+X2xvY2tfaXJxc2F2ZShob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsNCj4gPiA+ID4gPiA+ICsgICAg
+ICAgaWYgKCF0ZXN0X2JpdCh0YWcsICZoYmEtPm91dHN0YW5kaW5nX3JlcXMpKSB7DQo+ID4gPiBJ
+cyB0aGlzIG5lZWRlZD8gIGl0IHdhcyBhbHJlYWR5IGNoZWNrZWQgaW4gbGluZSA2NDM5Lg0KPiA+
+ID4NCj4gPiANCj4gPiBJIGFtIHdvcnJpZWQgYWJvdXQgdGhlIGNhc2UgdGhhdCBpbnRlcnJ1cHQg
+Y29tZXMgdmVyeSBsYXRlbHkuIA0KPiBzY3NpIHRpbWVvdXQgaXMgMzBzZWMgLSBkbyB5b3UgZXhw
+ZWN0IGFuIGludGVycnVwdCB0byBhcnJpdmUgYWZ0ZXIgdGhhdD8NCj4gDQoNClllYWgsIEkgYWdy
+ZWUgdGhhdCBhIDMwcyBkZWxheWVkIGludGVycnVwdCBzb3VuZHMga2luZCBvZiByaWRpY3Vsb3Vz
+Lg0KVGhpcyBjaGVja2luZyBpcyBqdXN0IHRvIG1ha2UgdGhlIGNsZWFudXAgZmxvdyBzYWZlci4N
+Cg0KVGhhbmtzLA0KU3RhbmxleSBDaHUNCg0K
 
-Reviewed-by: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
-
--- 
-Kamalesh
