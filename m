@@ -2,102 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE3221E5F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0649A21E5F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbgGNCyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 22:54:18 -0400
-Received: from mx.aristanetworks.com ([162.210.129.12]:60493 "EHLO
-        smtp.aristanetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726372AbgGNCyS (ORCPT
+        id S1726768AbgGNCzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 22:55:04 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:36281 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726372AbgGNCzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 22:54:18 -0400
-Received: from us180.sjc.aristanetworks.com (us180.sjc.aristanetworks.com [172.25.230.4])
-        by smtp.aristanetworks.com (Postfix) with ESMTP id BA0E54000A4;
-        Mon, 13 Jul 2020 19:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arista.com;
-        s=Arista-A; t=1594695257;
-        bh=5S99b4Wsz1sSm6XJJBWve3nBCOGAX6DPDI8yaAHT25E=;
-        h=Date:To:Subject:From:From;
-        b=Qm8Gr88enAqDOUJHMvxrDLfLVMXPVBB1b6re0SVAco1YL0XDO16nhBoBrSKpaHEjp
-         a3iNLx/d3Zfj5y/FLzEoBqZBTIZ89w1Y0Ppw7X9Y5lvNuww7Xe/c/Z3iaRvZBFWEcF
-         aqbjmUUr5FOcUkF+IMas7Dy6OEV4dYbRRzOO66xOxD6K6mxQ7UGFcXeIrs7gHBQpyS
-         2cIjSuG+92Cg+sFi6/lUJpfZ4nrAuFh+XM+VepNxzMGor7QykGQCmo3hMwPBL2G61C
-         Dk7kAGBietPF96FPuEObRfehATihKjuQHXIm2lgCDlWlnbNRcygb4N43c+hNdoVre3
-         Fstayl15mHK7Q==
-Received: by us180.sjc.aristanetworks.com (Postfix, from userid 10189)
-        id A25EB95C0339; Mon, 13 Jul 2020 19:54:17 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 19:54:17 -0700
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        amir73il@gmail.com, jack@suse.cz, fruggeri@arista.com
-Subject: soft lockup in fanotify_read
-User-Agent: Heirloom mailx 12.5 7/5/10
+        Mon, 13 Jul 2020 22:55:04 -0400
+Received: by mail-il1-f195.google.com with SMTP id x9so13041280ila.3;
+        Mon, 13 Jul 2020 19:55:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=33mC0WNeWBJScLg34kZk7QhtvixCsZdcT9IrD69H6fg=;
+        b=Lc+8ni+Co7lUy68+QjHk9dsz5IjulnskSEc0XL2jG72ypLWcXattbUm2lJ8bMVChx7
+         SzHIGBARiReyILNFt/gscW6ZXLmXs/wFmD8QTyCpzqZvrkQo0Ejil1DiM+1fVK0CgBsF
+         hE5DfiSDB/Ri5KnTgmMfrVUEj/Tj1DFHZk66o4ezHsKdzvioUQXnTupXgeZtRVdUVS0G
+         GCq4F39m8LCvFU2yzh+FN3HS0epgI12GEvCc1FIRK6QDq+DWuLgU/XtT0GBtOHUD5civ
+         4lVv9SsdG2kHIOD389mL6mYANcO/F3gdUneerzZGo9zhdIVxYvWKP0KNJzqHr9szeRo7
+         t7CQ==
+X-Gm-Message-State: AOAM532dd2K6d2MiMMOZ7I2M0xzQk1k3nrIQB79ul23PUlGP8zeJR1H4
+        ZNCpolyT59p8wMLLJ2zF/+5XL+lfLJsf
+X-Google-Smtp-Source: ABdhPJyE9VvhWE/YtF/sfRrUgNk6tQr8+XEEQkz614yZLL/axpbEH8QBKdMus3SSxaOMi+uD8xnotQ==
+X-Received: by 2002:a92:9fcb:: with SMTP id z72mr2764823ilk.195.1594695302402;
+        Mon, 13 Jul 2020 19:55:02 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id b20sm9555598ila.5.2020.07.13.19.55.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 19:55:01 -0700 (PDT)
+Received: (nullmailer pid 1195007 invoked by uid 1000);
+        Tue, 14 Jul 2020 02:55:00 -0000
+Date:   Mon, 13 Jul 2020 20:55:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     mchehab@kernel.org, hverkuil@xs4all.nl,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/4] dt-bindings: media: csi2dc: add bindings for
+ microchip csi2dc
+Message-ID: <20200714025500.GA1187556@bogus>
+References: <20200703074416.55272-1-eugen.hristev@microchip.com>
+ <20200703074416.55272-2-eugen.hristev@microchip.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200714025417.A25EB95C0339@us180.sjc.aristanetworks.com>
-From:   fruggeri@arista.com (Francesco Ruggeri)
+Content-Disposition: inline
+In-Reply-To: <20200703074416.55272-2-eugen.hristev@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are getting this soft lockup in fanotify_read.
-The reason is that this code does not seem to scale to cases where there
-are big bursts of events generated by fanotify_handle_event.
-fanotify_read acquires group->notification_lock for each event.
-fanotify_handle_event uses the lock to add one event, which also involves
-fanotify_merge, which scans the whole list trying to find an event to
-merge the new one with.
-In our case fanotify_read is invoked with a buffer big enough for 200
-events, and what happens is that every time fanotify_read dequeues an
-event and releases the lock, fanotify_handle_event adds several more,
-scanning a longer and longer list. This causes fanotify_read to wait
-longer and longer for the lock, and the soft lockup happens before
-fanotify_read can reach 200 events.
-Is it intentional for fanotify_read to acquire the lock for each event,
-rather than batching together a user buffer worth of events?
+On Fri, Jul 03, 2020 at 10:44:13AM +0300, Eugen Hristev wrote:
+> Add bindings documentation for microchip CSI2 Demultiplexer controller.
+> 
+> CSI2DC is a demultiplexer from Synopsys IDI interface specification to
+> parallel interface connection or direct memory access.
+> 
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> ---
+> Changes in v2:
+> - fixed warnings reported by dt_binding_check
+> 
+> 
+>  .../bindings/media/microchip,csi2dc.yaml      | 185 ++++++++++++++++++
+>  1 file changed, 185 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> new file mode 100644
+> index 000000000000..b7c46f7ad2a4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+> @@ -0,0 +1,185 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
 
-Thanks,
-Francesco Ruggeri
+New bindings should be:
 
-[5752801.578813] watchdog: BUG: soft lockup - CPU#15 stuck for 22s! [fstrace:23105]
-[5752801.586804] Modules linked in: ...
-[5752801.586871] CPU: 15 PID: 23105 Comm: fstrace Tainted: G        W  O L    4.19.112-16802951.AroraKernel419.el7.x86_64 #1
-[5752801.586872] Hardware name: Supermicro SYS-6029TP-HTR/X11DPT-PS, BIOS 3.1 04/30/2019
-[5752801.586879] RIP: 0010:queued_spin_lock_slowpath+0x141/0x17c
-[5752801.586881] Code: 5e c1 e9 12 83 e0 03 ff c9 48 c1 e0 04 48 63 c9 48 05 c0 14 02 00 48 03 04 cd 20 e7 e9 81 48 89 10 8b 42 08 85 c0 75 04 f3 90 <eb> f5 48 8b 0a 48 85 c9 74 03 0f 0d 09 8b 07 66 85 c0 74 93 f3 90
-[5752801.586882] RSP: 0018:ffffc90027c5fd18 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff13
-[5752801.586883] RAX: 0000000000000000 RBX: ffff8883a9078ce8 RCX: 000000000000001e
-[5752801.586884] RDX: ffff88df7f6e14c0 RSI: 0000000000400000 RDI: ffff88b06306e30c
-[5752801.586885] RBP: ffffc90027c5fd18 R08: 0000000000000001 R09: ffffffff811e8b7e
-[5752801.586886] R10: ffffc90027c5fce0 R11: 0000000000000000 R12: ffff88b06306e300
-[5752801.586887] R13: 00000000ff935638 R14: ffff88b4af422600 R15: 0000000000000018
-[5752801.586888] FS:  0000000000000000(0000) GS:ffff88df7f6c0000(0063) knlGS:0000000009c6a880
-[5752801.586889] CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-[5752801.586890] CR2: 0000000009430914 CR3: 000000035bbef006 CR4: 00000000007606e0
-[5752801.586891] DR0: 000000000001864c DR1: 0000000000000000 DR2: 0000000000000000
-[5752801.586891] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-[5752801.586892] PKRU: 55555554
-[5752801.586892] Call Trace:
-[5752801.586898]  do_raw_spin_lock+0x1a/0x1c
-[5752801.586901]  _raw_spin_lock+0xe/0x10
-[5752801.586905]  fanotify_read+0xa3/0x32d
-[5752801.586912]  ? __wake_up_sync+0x12/0x12
-[5752801.586916]  copy_oldmem_page+0xa9/0xa9
-[5752801.586920]  ? fsnotify_perm+0x60/0x6c
-[5752801.586921]  ? fsnotify_perm+0x60/0x6c
-[5752801.586923]  ? security_file_permission+0x37/0x3e
-[5752801.586926]  vfs_read+0xa4/0xdc
-[5752801.586928]  ksys_read+0x64/0xab
-[5752801.586930]  __ia32_sys_read+0x18/0x1a
-[5752801.586933]  do_fast_syscall_32+0xaf/0xf6
-[5752801.586935]  entry_SYSENTER_compat+0x6b/0x7a
-[5752801.586936] RIP: 0023:0xf7f64c29
-[5752801.586938] Code: 5b 5d c3 8b 04 24 c3 8b 14 24 c3 8b 1c 24 c3 8b 34 24 c3 90 90 90 90 90 90 90 90 90 90 90 90 90 90 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-[5752801.586939] RSP: 002b:00000000ff933828 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
-[5752801.586940] RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00000000ff9348d0
-[5752801.586941] RDX: 00000000000012c0 RSI: 0000000009c72da8 RDI: 00000000ff9348d0
-[5752801.586941] RBP: 00000000ff935ba8 R08: 0000000000000000 R09: 0000000000000000
-[5752801.586942] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-[5752801.586942] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+(GPL-2.0-only OR BSD-2-Clause)
 
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/microchip,csi2dc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip CSI2 Demux Controller (CSI2DC)
+> +
+> +maintainers:
+> +  - Eugen Hristev <eugen.hristev@microchip.com>
+> +
+> +description:
+> +  CSI2DC - Camera Serial Interface 2 Demux Controller
+> +
+> +  CSI2DC is a hardware block that receives incoming data from an IDI interface
+> +  and filters packets based on their data type and virtual channel identifier,
+> +  then converts the byte stream into a cross clock domain to a pixel stream
+> +  to a parallel interface that can be read by a sensor controller.
+> +
+> +  CSI2DC provides two pipes, one video pipe and one data pipe. Video pipe
+> +  is connected to a sensor controller and the data pipe is accessible
+> +  as a DMA slave port to a DMA controller.
+> +
+> +  CSI2DC supports a single 'port' node as a source pad with Synopsys 32-bit
+> +  IDI interface. The connected endpoint must be a IDI interface compatible
+> +  device (like Synopsys CSI2HOST) , that can provide 32-bit IDI interface
+> +  connection as sink pad.
+> +  It should contain one 'port' child node with one child 'endpoint' node.
+> +  This node should always have the 'reg' property as 0, being the first child
+> +  node.
+
+This information should be expressed as a schema.
+
+> +  For media entity and endpoints please refer to the bindings defined in
+> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+> +  For Synopsys IDI interface please refer to
+> +  Documentation/devicetree/bindings/media/snps,dw-csi-plat.txt
+> +
+
+> +  CSI2DC supports one 'port' node as sink pad with parallel interface. This is
+> +  called video pipe.
+> +  The reg property inside this 'port' node must have the 'reg' property as 1,
+> +  being the second child node.
+> +  This node must have one 'endpoint', and this 'endpoint' is related to the
+> +  virtual channel identifier.
+> +  The 'reg' property inside this 'endpoint' represents the CSI2 virtual channel
+> +  identifier.
+> +  This 'endpoint' can then be used as a source pad for another controller
+> +  (next in pipeline).
+> +  Please refer to the bindings defined in
+> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+
+And all this.
+
+> +
+> +  CSI2DC must have two clocks to function correctly. One clock is the
+> +  peripheral clock for the inside functionality of the hardware block.
+> +  This is named 'pclk'. The second clock must be the cross domain clock,
+> +  in which CSI2DC will perform clock crossing. This clock must be fed
+> +  by the next controller in pipeline, which usually is a sensor controller.
+> +  Normally this clock should be given by this sensor controller who
+> +  is also a clock source. This clock is named 'scck', sensor controller clock.
+
+Better to be part of 'clocks'.
+
+> +
+> +  CSI2DC also supports direct access to the data through AHB, via DMA channel,
+> +  called data pipe.
+> +  Because of this, the sink 'port' child node (second) is not mandatory.
+> +  If the sink 'port' child node is missing, only data pipe is available.
+> +
+> +properties:
+> +  compatible:
+> +    const: microchip,sama7g5-csi2dc
+> +
+> +  reg:
+> +    description:
+> +      Physical base address and length of the registers set for the device.
+
+That is every 'reg' prop. Drop.
+
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pclk
+> +      - const: scck
+> +
+> +  microchip,clk-gated:
+> +    type: boolean
+> +    description:
+> +      If present, indicates that the clock is gated.
+> +      Otherwise, the clock is free-running.
+> +
+> +  microchip,inter-line-delay:
+> +    allOf:
+> +    - $ref: /schemas/types.yaml#/definitions/uint32
+> +    - minimum: 1
+> +    - maximum: 16
+> +    default: 16
+> +    description:
+> +      Indicates how many clock cycles should be introduced between each line.
+> +
+> +  port@0:
+> +    type: object
+> +    description:
+> +      Input port node, single endpoint describing the input pad.
+> +
+> +    properties:
+> +      reg:
+> +        const: 0
+> +
+> +      endpoint:
+> +        type: object
+> +
+> +        properties:
+> +          remote-endpoint: true
+> +
+> +        required:
+> +          - remote-endpoint
+> +
+> +        additionalProperties: false
+> +
+> +    additionalProperties: false
+> +
+> +  port@1:
+> +    type: object
+> +    description:
+> +      Output port node, single endpoint, describing the output pad.
+> +
+> +    properties:
+> +      '#address-cells':
+> +        const: 1
+> +
+> +      '#size-cells':
+> +        const: 0
+> +
+> +      reg:
+> +        const: 1
+> +
+> +    patternProperties:
+> +      "^endpoint@[0-9a-f]$":
+
+Looks like only [0-3] is valid.
+
+> +        type: object
+> +
+> +        properties:
+> +          reg:
+> +            enum: [0, 1, 2, 3]
+> +            description: virtual channel for the endpoint
+> +
+> +          remote-endpoint: true
+> +
+> +        required:
+> +          - remote-endpoint
+> +          - reg
+> +
+> +        additionalProperties: false
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - port@0
+> +
+> +examples:
+> +  - |
+> +    csi2dc@e1404000 {
+> +        compatible = "microchip,sama7g5-csi2dc";
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        reg = <0xe1404000 0x500>;
+> +        clocks = <&pclk>, <&scck>;
+> +        clock-names = "pclk", "scck";
+> +
+> +        port@0 {
+> +               reg = <0>; /* must be 0, first child port */
+> +               csi2dc_in: endpoint { /* input from IDI interface */
+> +                     remote-endpoint = <&csi2host_out>;
+> +               };
+> +        };
+> +
+> +        port@1 {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                reg = <1>; /* must be 1, second child port */
+> +                csi2dc_out: endpoint@2 {
+> +                        reg = <2>;  /* virtual channel identifier */
+> +                        remote-endpoint = <&xisc_in>; /* output to sensor controller */
+> +                };
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.25.1
+> 
