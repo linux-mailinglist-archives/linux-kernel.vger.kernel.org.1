@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AAF221FB24
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF81A21FB28
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731087AbgGNS7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:59:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57656 "EHLO mail.kernel.org"
+        id S1730724AbgGNS7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:59:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731085AbgGNS7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:59:05 -0400
+        id S1730680AbgGNS7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:59:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C4F222AAF;
-        Tue, 14 Jul 2020 18:59:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69B40229CA;
+        Tue, 14 Jul 2020 18:59:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753144;
-        bh=St2pw05xyaaVWoBdM5zmWV914ertFmW8ms8PzxGR/e4=;
+        s=default; t=1594753150;
+        bh=X/IC48WbTd3ilrpMEuVJHlFQ8+HOo4HRvoUoEGbs6D4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i4JOabC4H/QdLcfOhKRWdlCDhnFL0ZBJE0RvWq1jHxo4XRvgnW5mBZvMFdp4IB5Md
-         OspwaRc29b0w2AkMjTborENyECLgIedxgxQCV7oNjE+rlAWjmgrGTVar5v0OqEtzVu
-         eiiklu9IMRckTqUOCrEboujGIqqNEiGZPHpv7ofI=
+        b=R91qpM+atylo6hSA3uxlsz0D3PsYPoWWDeTEfbgylFQW0BxMHjFyk+Woj1eatNCS7
+         fdJtTHdTzKXeHf5xuKA7n6rPcx9NJJc5aOfMhptBbvTc8GsxOnx9KcWXRhQVdMa2y5
+         YONkODbPklZFw8scbD/cgkoKiCcYKBt8n/1b0dAo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.7 137/166] btrfs: fix double put of block group with nocow
-Date:   Tue, 14 Jul 2020 20:45:02 +0200
-Message-Id: <20200714184122.393557082@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.7 139/166] drm/i915/gt: Pin the rings before marking active
+Date:   Tue, 14 Jul 2020 20:45:04 +0200
+Message-Id: <20200714184122.488639251@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
 References: <20200714184115.844176932@linuxfoundation.org>
@@ -44,68 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit 230ed397435e85b54f055c524fcb267ae2ce3bc4 upstream.
+commit 5a383d443b29a140094430f3ad1d02fa1acc2b80 upstream.
 
-While debugging a patch that I wrote I was hitting use-after-free panics
-when accessing block groups on unmount.  This turned out to be because
-in the nocow case if we bail out of doing the nocow for whatever reason
-we need to call btrfs_dec_nocow_writers() if we called the inc.  This
-puts our block group, but a few error cases does
+On eviction, we acquire the vm->mutex and then wait on the vma->active.
+Therefore when binding and pinning the vma, we must follow the same
+sequence, lock/pin the vma then mark it active. Otherwise, we mark the
+vma as active, then wait for the vm->mutex, and meanwhile the evictor
+holding the mutex waits upon us to complete our activity.
 
-if (nocow) {
-    btrfs_dec_nocow_writers();
-    goto error;
-}
-
-unfortunately, error is
-
-error:
-	if (nocow)
-		btrfs_dec_nocow_writers();
-
-so we get a double put on our block group.  Fix this by dropping the
-error cases calling of btrfs_dec_nocow_writers(), as it's handled at the
-error label now.
-
-Fixes: 762bf09893b4 ("btrfs: improve error handling in run_delalloc_nocow")
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 8ccfc20a7d56 ("drm/i915/gt: Mark ring->vma as active while pinned")
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Cc: <stable@vger.kernel.org> # v5.6+
+Reviewed-by: Matthew Auld <matthew.auld@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200706170138.8993-1-chris@chris-wilson.co.uk
+(cherry picked from commit 8567774e87e23a57155e5102f81208729b992ae6)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/inode.c |    9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+ drivers/gpu/drm/i915/gt/intel_context.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1690,12 +1690,8 @@ out_check:
- 			ret = fallback_to_cow(inode, locked_page, cow_start,
- 					      found_key.offset - 1,
- 					      page_started, nr_written);
--			if (ret) {
--				if (nocow)
--					btrfs_dec_nocow_writers(fs_info,
--								disk_bytenr);
-+			if (ret)
- 				goto error;
--			}
- 			cow_start = (u64)-1;
- 		}
+--- a/drivers/gpu/drm/i915/gt/intel_context.c
++++ b/drivers/gpu/drm/i915/gt/intel_context.c
+@@ -201,25 +201,25 @@ static int __ring_active(struct intel_ri
+ {
+ 	int err;
  
-@@ -1711,9 +1707,6 @@ out_check:
- 					  ram_bytes, BTRFS_COMPRESS_NONE,
- 					  BTRFS_ORDERED_PREALLOC);
- 			if (IS_ERR(em)) {
--				if (nocow)
--					btrfs_dec_nocow_writers(fs_info,
--								disk_bytenr);
- 				ret = PTR_ERR(em);
- 				goto error;
- 			}
+-	err = i915_active_acquire(&ring->vma->active);
++	err = intel_ring_pin(ring);
+ 	if (err)
+ 		return err;
+ 
+-	err = intel_ring_pin(ring);
++	err = i915_active_acquire(&ring->vma->active);
+ 	if (err)
+-		goto err_active;
++		goto err_pin;
+ 
+ 	return 0;
+ 
+-err_active:
+-	i915_active_release(&ring->vma->active);
++err_pin:
++	intel_ring_unpin(ring);
+ 	return err;
+ }
+ 
+ static void __ring_retire(struct intel_ring *ring)
+ {
+-	intel_ring_unpin(ring);
+ 	i915_active_release(&ring->vma->active);
++	intel_ring_unpin(ring);
+ }
+ 
+ __i915_active_call
 
 
