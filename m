@@ -2,173 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E099821FD56
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452E921FD5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729441AbgGNT3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:29:40 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:48456 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726169AbgGNT3j (ORCPT
+        id S1729674AbgGNTaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726169AbgGNT37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:29:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594754978;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Se13lQ+CRIfb3wczYYNcPpZ+CJSV+AV7XeFB0nsW9Bg=;
-        b=FQTpIGD071r5j3xorxjVsbud3A+e0n5WpdjiXvKO/dQvGHDIRz17UzUa4SNyinIvhxcNLE
-        WLepfpwU7/eEqdkmbFZy5HNPTPBLi+wRiDcSTHtEbTLWUV0SFFKfSB0hOIl6sid3Z/wjlO
-        xi9zINbMxzEh6KUZhPz4LsLBaAs5Cyw=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-102--5Vc4xfjPDeJjQeJveQMbg-1; Tue, 14 Jul 2020 15:29:36 -0400
-X-MC-Unique: -5Vc4xfjPDeJjQeJveQMbg-1
-Received: by mail-wr1-f70.google.com with SMTP id y18so23099645wrq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:29:36 -0700 (PDT)
+        Tue, 14 Jul 2020 15:29:59 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC18C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:29:59 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id e12so13757103qtr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:29:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BGNvPJrHn1Rri9TOnWUH5zEtUJcHDoODobxdHdGDsPM=;
+        b=BCZcMlRntxTI5jblvCeUvd216n7w0E/8W6IjcbntL9UzLJJ/xqnuM1unpNE2TBje+e
+         sUDmXjigeM+iQp4cejYES+dBr3D2LDL+udZH4scnvBcw01Oz261qVqDews1Hmr2URi0U
+         tmFNb37rO2UsDFWGo6OAuejqHKsSA89vYzceszlDyHXlBJVxk+DsEZ/cS3ItoHHnWKKM
+         NpiLTKrISMTnqixB9X4I+2XAX0HWXUVTKC0DhhqU430TYEobYb6RCkhnHkXY6fAAKwSz
+         b6K116zy756G8EZSNuD5iH0p1z9/ktcGdaEurmHR8OZD+OlJ3D/0YQemmbSX78zvRiET
+         hwrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Se13lQ+CRIfb3wczYYNcPpZ+CJSV+AV7XeFB0nsW9Bg=;
-        b=TlcEltL1PVWUZ8qI3n0amIlexga/NLdFN8JUugSv7Cd6u2Rm8y4H5d7Ixo4HW9bPfb
-         ri+h28qeYc2t/g8L9UyFvwlBkzCULq7WmH0Bk/8FpA7lPhVT6a9i3F3HL9soqBQAqAXN
-         fDususYJMGeiGX6JzsyEMZv1qrxrRxkA2DTAIfogLduD9eiWuBFDdSfngzyRAKYHIc5w
-         LOcPsrVlIUY26dgf+z4Fe0C9lCDNKDLLCSGNVYbL+SazVviyGp8TeLoIf2aYROdLhHv1
-         QWLlXu1LC8v+oSB9kFVOHiSKeOqC+yzr+vquDESXvHznzrfpLWp3dB3a2+vIokEmVyKs
-         kjPg==
-X-Gm-Message-State: AOAM5329aVGNMEkcNuECSHFDsx2jCR0PWE9YdpgcCzakx1JrYwQwxFYe
-        nGNf6sCFaT+1BKmt9ijd1soDGZoxblRcwMHgWTFgS0ISIgf6R+/KVGmCgl3CQgXPSKFi4pw6Hcs
-        KYAKcDf4tGqjJVt8bnxIwxYX9
-X-Received: by 2002:a5d:6a90:: with SMTP id s16mr7465833wru.8.1594754975064;
-        Tue, 14 Jul 2020 12:29:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzSeJkI7z8WDbBOeYyVmOlkEvrIzXZey3Q5E1/PnSLt1NtmuSs61S7NuXpLadP67n6hFVhkpA==
-X-Received: by 2002:a5d:6a90:: with SMTP id s16mr7465807wru.8.1594754974798;
-        Tue, 14 Jul 2020 12:29:34 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id u65sm6219443wmg.5.2020.07.14.12.29.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 12:29:34 -0700 (PDT)
-Subject: Re: [PATCH] ASoC: Intel: bytcht_es8316: Add missed put_device()
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        cezary.rojewski@intel.com, liam.r.girdwood@linux.intel.com,
-        yang.jie@linux.intel.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        paul@crapouillou.net
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20200714080918.148196-1-jingxiangfeng@huawei.com>
- <25abce87-5572-a78a-f001-7776f07be4ac@redhat.com>
- <48bdc22e-a0fc-0402-a003-1d0736107e8a@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <0405e05d-3f46-dba4-6558-7cf09fa3abe4@redhat.com>
-Date:   Tue, 14 Jul 2020 21:29:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=BGNvPJrHn1Rri9TOnWUH5zEtUJcHDoODobxdHdGDsPM=;
+        b=lXk4z7zakRRW0/XRpU6806k+sG+mSMj2BDm97tb2gfEdXwxGCv/OEXJPPXOIozno/R
+         T7v5GEK1/HmoNUxKOjEc2yD7VXSRxtKirQQzBVNeQ6wjrl/MFMSrnovDtgoXt34Qvl0C
+         DqQ9nDoEdQBRUQSRDuenU8E3iqZRkxqU8ywZS6PGIUjoEUqgNaNs5VBTDtpX4dvn5Cij
+         L0P3mpzAJgaAfGTmrlI6PVDRCSzxjgZ52zNUrbZYXNy68e7hSK/62c+woCov5op/2hdh
+         LOJNXlvDMCoeVyOMb/E1ybyCb22IurNtY5HIieCbI47FiEt23iWcT6ph7l/exoZOB52S
+         56fA==
+X-Gm-Message-State: AOAM532msaCYuVO2Y1qLle0nQN8J/ksfgxXHDUPLGWAiCJtbw3XVS4Hs
+        BXDmEVpeBVPrCkHYH/U8C0U=
+X-Google-Smtp-Source: ABdhPJwE3IRlWdcvdzeV0c/tM1hdgKDI+t+TaC71Iq1h1s5VSHTlOzopi2KbwFxck+wqF+C88uu3KQ==
+X-Received: by 2002:ac8:178b:: with SMTP id o11mr6187972qtj.320.1594754998616;
+        Tue, 14 Jul 2020 12:29:58 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id c9sm22591590qko.24.2020.07.14.12.29.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 12:29:58 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 14 Jul 2020 15:29:56 -0400
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/7] x86/boot: Remove runtime relocations from
+ compressed kernel
+Message-ID: <20200714192956.GA689174@rani.riverdale.lan>
+References: <20200629140928.858507-1-nivedita@alum.mit.edu>
+ <20200714023836.2310569-1-nivedita@alum.mit.edu>
+ <CA+icZUXSPfybFtzQB3wKn9spQmEPnQu_iGPWkRisAmRQbJLWXA@mail.gmail.com>
+ <20200714141550.GA329060@rani.riverdale.lan>
+ <CA+icZUU88wYmyycthW7AQUZ72HGa9RWPZmxVS5Gm6UW=6ES9kA@mail.gmail.com>
+ <CA+icZUWHdsk9+wkTZOdDghM7pRZyk2vHgxpYx62vPooqohzbYw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <48bdc22e-a0fc-0402-a003-1d0736107e8a@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+icZUWHdsk9+wkTZOdDghM7pRZyk2vHgxpYx62vPooqohzbYw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jul 14, 2020 at 08:30:14PM +0200, Sedat Dilek wrote:
+> > I did a full new build...
+> >
+> > ...and it fails with ld.lld-11 as linker:
+> >
+> > ld.lld-11 -m elf_x86_64 -pie  --no-dynamic-linker -r -o
+> > arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o
+> > -T arch/x86/boot/compressed/.tmp_misc.ver; mv -f
+> > arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o;
+> > rm -f arch/x86/boot/compressed/.tmp_misc.ver; fi
+> > *** ld.lld-11: error: -r and -pie may not be used together ***
+> > make[5]: *** [scripts/Makefile.build:281:
+> > arch/x86/boot/compressed/misc.o] Error 1
+> >
+> > It's annoying to fail on the last minutes of a build.
+> > Sorry for being very honest.
+> >
+> 
+> I applied this diff...
+> 
+> $ git diff arch/x86/boot/compressed/Makefile
+> diff --git a/arch/x86/boot/compressed/Makefile
+> b/arch/x86/boot/compressed/Makefile
+> index 789d5d14d8b0..9ba52a656838 100644
+> --- a/arch/x86/boot/compressed/Makefile
+> +++ b/arch/x86/boot/compressed/Makefile
+> @@ -51,7 +51,10 @@ UBSAN_SANITIZE :=n
+>  KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
+>  # Compressed kernel should be built as PIE since it may be loaded at any
+>  # address by the bootloader.
+> +# LLD linker does not allow -r and -pie options to be used together.
+> +ifndef CONFIG_LD_IS_LLD
+>  KBUILD_LDFLAGS += -pie $(call ld-option, --no-dynamic-linker)
+> +endif
+>  LDFLAGS_vmlinux := -T
+> 
+>  hostprogs      := mkpiggy
+> 
+> ...and was able to build, assemble, link arch/x86/boot/compressed/*.
+> 
+> - Sedat -
 
-On 7/14/20 5:32 PM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 7/14/20 8:33 AM, Hans de Goede wrote:
->> Hi,
->>
->> On 7/14/20 10:09 AM, Jing Xiangfeng wrote:
->>> snd_byt_cht_es8316_mc_probe() misses to call put_device() in an error
->>> path. Add the missed function call to fix it.
->>>
->>> Fixes: ba49cf6f8e4a ("ASoC: Intel: bytcht_es8316: Add quirk for inverted jack detect")
->>> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
->>
->> Patch looks good to me:
->>
->> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> 
-> Actually the existing code looks quite odd to me:
-> 
-> if (cnt) {
->      ret = device_add_properties(codec_dev, props);
->      if (ret)
->          return ret;
-> }
-> 
-> devm_acpi_dev_add_driver_gpios(codec_dev, byt_cht_es8316_gpios);
-> priv->speaker_en_gpio =
->      gpiod_get_index(codec_dev, "speaker-enable", 0,
->              /* see comment in byt_cht_es8316_resume */
->              GPIOD_OUT_LOW | GPIOD_FLAGS_BIT_NONEXCLUSIVE);
-> put_device(codec_dev);
-> 
-> if the first branch is not taken the put_device() will not be balanced.
+Thanks for the test.
 
-The get_device() does not come from the device_add_properties, it comes
-from the earlier:
+Can you share your .config? The error messages look like they're coming
+from running modversions on misc.o, which is unexpected as it shouldn't
+have any exported symbols, and it doesn't in my builds.
 
-codec_dev = bus_find_device_by_name(&i2c_bus_type, NULL, codec_name);
-
-call.
-
-Regards,
-
-Hans
-
-
-
-> 
-> Shouldn't this be:
-> 
-> if (cnt) {
->      ret = device_add_properties(codec_dev, props);
->      put_device(codec_dev);
->      if (ret)
->          return ret;
-> }
-> 
-> devm_acpi_dev_add_driver_gpios(codec_dev, byt_cht_es8316_gpios);
-> priv->speaker_en_gpio =
->      gpiod_get_index(codec_dev, "speaker-enable", 0,
->              /* see comment in byt_cht_es8316_resume */
->              GPIOD_OUT_LOW | GPIOD_FLAGS_BIT_NONEXCLUSIVE);
-> /* removed put_device(codec_dev); */
-> 
->>
->> Regards,
->>
->> Hans
->>
->>
->>> ---
->>>   sound/soc/intel/boards/bytcht_es8316.c | 4 +++-
->>>   1 file changed, 3 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
->>> index 9e5fc9430628..ecbc58e8a37f 100644
->>> --- a/sound/soc/intel/boards/bytcht_es8316.c
->>> +++ b/sound/soc/intel/boards/bytcht_es8316.c
->>> @@ -543,8 +543,10 @@ static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
->>>       if (cnt) {
->>>           ret = device_add_properties(codec_dev, props);
->>> -        if (ret)
->>> +        if (ret) {
->>> +            put_device(codec_dev);
->>>               return ret;
->>> +        }
->>>       }
->>>       devm_acpi_dev_add_driver_gpios(codec_dev, byt_cht_es8316_gpios);
->>>
->>
-> 
-
+In any case, I think the right fix here would be to add -pie and
+--no-dynamic-linker to LDFLAGS_vmlinux instead of KBUILD_LDFLAGS.
