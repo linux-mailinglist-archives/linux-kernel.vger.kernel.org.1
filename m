@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D42321EDCC
+	by mail.lfdr.de (Postfix) with ESMTP id D12B321EDCD
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgGNKVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 06:21:00 -0400
+        id S1727038AbgGNKVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 06:21:02 -0400
 Received: from relmlor1.renesas.com ([210.160.252.171]:20465 "EHLO
         relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725906AbgGNKVA (ORCPT
+        by vger.kernel.org with ESMTP id S1725906AbgGNKVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 06:21:00 -0400
+        Tue, 14 Jul 2020 06:21:01 -0400
 X-IronPort-AV: E=Sophos;i="5.75,351,1589209200"; 
-   d="scan'208";a="52086649"
+   d="scan'208";a="52086652"
 Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 14 Jul 2020 19:20:58 +0900
+  by relmlie5.idc.renesas.com with ESMTP; 14 Jul 2020 19:21:00 +0900
 Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 12180421EC6C;
-        Tue, 14 Jul 2020 19:20:56 +0900 (JST)
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 097A2421EC5C;
+        Tue, 14 Jul 2020 19:20:58 +0900 (JST)
 From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To:     Geert Uytterhoeven <geert+renesas@glider.be>,
         Joerg Roedel <joro@8bytes.org>,
@@ -26,37 +26,57 @@ To:     Geert Uytterhoeven <geert+renesas@glider.be>,
 Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
         Prabhakar <prabhakar.csengg@gmail.com>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 0/2] iommu/ipmmu-vmsa: Add entry for R8A774E1 and r8a77961
-Date:   Tue, 14 Jul 2020 11:20:53 +0100
-Message-Id: <1594722055-9298-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 1/2] iommu/ipmmu-vmsa: Hook up R8A774E1 DT matching code
+Date:   Tue, 14 Jul 2020 11:20:54 +0100
+Message-Id: <1594722055-9298-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1594722055-9298-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <1594722055-9298-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-Patch 1/2 was posted as part of series [1] as pointed out by Geert we need to
-have an entry in both the lists soc_rcar_gen3 and soc_rcar_gen3_whitelist to
-enable iommu unconditionally, this is now fixed in patch 1/2, also note the DT
-binding documentation for R8A774E1 is part of [1]. Where as patch 2/2 is a
-similar FIX for r8a77961.
+Add support for RZ/G2H (R8A774E1) SoC IPMMUs.
 
-Cheers,
-Prabhakar
+Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ drivers/iommu/ipmmu-vmsa.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-[1] https://patchwork.kernel.org/project/linux-renesas-soc/list/?series=317627
-
-Lad Prabhakar (1):
-  iommu/ipmmu-vmsa: Add an entry for r8a77961 in soc_rcar_gen3[]
-
-Marian-Cristian Rotariu (1):
-  iommu/ipmmu-vmsa: Hook up R8A774E1 DT matching code
-
- drivers/iommu/ipmmu-vmsa.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
+diff --git a/drivers/iommu/ipmmu-vmsa.c b/drivers/iommu/ipmmu-vmsa.c
+index b90cd9ff96f6..55c09cb8fc56 100644
+--- a/drivers/iommu/ipmmu-vmsa.c
++++ b/drivers/iommu/ipmmu-vmsa.c
+@@ -739,6 +739,7 @@ static const struct soc_device_attribute soc_rcar_gen3[] = {
+ 	{ .soc_id = "r8a774a1", },
+ 	{ .soc_id = "r8a774b1", },
+ 	{ .soc_id = "r8a774c0", },
++	{ .soc_id = "r8a774e1", },
+ 	{ .soc_id = "r8a7795", },
+ 	{ .soc_id = "r8a7796", },
+ 	{ .soc_id = "r8a77965", },
+@@ -751,6 +752,7 @@ static const struct soc_device_attribute soc_rcar_gen3[] = {
+ static const struct soc_device_attribute soc_rcar_gen3_whitelist[] = {
+ 	{ .soc_id = "r8a774b1", },
+ 	{ .soc_id = "r8a774c0", },
++	{ .soc_id = "r8a774e1", },
+ 	{ .soc_id = "r8a7795", .revision = "ES3.*" },
+ 	{ .soc_id = "r8a77961", },
+ 	{ .soc_id = "r8a77965", },
+@@ -963,6 +965,9 @@ static const struct of_device_id ipmmu_of_ids[] = {
+ 	}, {
+ 		.compatible = "renesas,ipmmu-r8a774c0",
+ 		.data = &ipmmu_features_rcar_gen3,
++	}, {
++		.compatible = "renesas,ipmmu-r8a774e1",
++		.data = &ipmmu_features_rcar_gen3,
+ 	}, {
+ 		.compatible = "renesas,ipmmu-r8a7795",
+ 		.data = &ipmmu_features_rcar_gen3,
 -- 
 2.17.1
 
