@@ -2,145 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B550B21F22B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D1F21F220
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728432AbgGNNMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:12:55 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:53068 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727975AbgGNNMy (ORCPT
+        id S1728083AbgGNNKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:10:35 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:58987 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726354AbgGNNKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:12:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594732372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tcXLN2aOM5HyVPvW2nX/ENf3RMB6pm0tLQoN1DTr1NI=;
-        b=JwMXQp6K5DrdVCVg3cKYHS0SvxmOveUmSRlyqRSP4zYPIL8jm5Fo2tOc+kaD6SHiFwd5jJ
-        8lv3B/Z693dp4QtrxbQNvFy5nviQNThYfE3N3VODAnYemLoSmZ215KBir9HpOONgC7nQqZ
-        GXHnCdfkuxrQ/Lv/WYQq4sOJS400824=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-rtI98Ls7NHGfFYlomvuigg-1; Tue, 14 Jul 2020 09:12:51 -0400
-X-MC-Unique: rtI98Ls7NHGfFYlomvuigg-1
-Received: by mail-qt1-f197.google.com with SMTP id e6so12509655qtb.19
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 06:12:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=tcXLN2aOM5HyVPvW2nX/ENf3RMB6pm0tLQoN1DTr1NI=;
-        b=DJvk+gxnrE6TYVMb9fHduG8HVzvp/hZBrAnkCdRm3+HIwoyLxeu5KucpfESNHDArYM
-         TDVXHGUdPY0wE2VrLsRnIWI1RZtd47h6SD62kc24mIueSp8Wq2a8VfSHdZRALIiwwC27
-         2w2kA/Qn2A3XkYQW41IAX4eHOyZe0Ut98cSKBZ+8f1wfcVdDqOv+p9HPhPYvHBLQNhHJ
-         J7565goTrtwFMzEaHkICgDpJ9NtJnbksfu4jTvqPsg6vWnGeKnus5ubK6CRQLzCTjn7n
-         v++hM+J3VumLjUnCp7fXXJTAmxACDB+SDDGTW/EsB+qVMBC+EHVZ+jdDXo2/08evEqOv
-         VQ2g==
-X-Gm-Message-State: AOAM5314U3wTO9m51vl8q17wXKpio9sMY6FbFJWyD+iE5LkRM0nnR1hs
-        mDV8hh2JjPsvhjr/Cli8xPApmEwP1M4tx5rZDywDIaSsAFyS2y2TE9gTX9kkFXiMBdopGW5sb7T
-        K45MLD1U8oczxVA3cY754x2GM
-X-Received: by 2002:ae9:eb0a:: with SMTP id b10mr4469347qkg.198.1594732370432;
-        Tue, 14 Jul 2020 06:12:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxh7X3vh+e+aHk60ZVCRSIpZ+BjjvNryuzMuxMW7pfPiWEymFwrJuXp8EZHHg1lea0OTP2jpQ==
-X-Received: by 2002:ae9:eb0a:: with SMTP id b10mr4469327qkg.198.1594732370187;
-        Tue, 14 Jul 2020 06:12:50 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id x36sm23396153qtb.78.2020.07.14.06.12.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 06:12:49 -0700 (PDT)
-Subject: Re: [PATCH] reiserfs : fix improper free in reiserfs_get_block
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     jack@suse.cz, william.kucharski@oracle.com, jeffm@suse.com,
-        joseph.qi@linux.alibaba.com, liao.pingfang@zte.com.cn,
-        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200714130509.11791-1-trix@redhat.com>
- <20200714131043.GB12769@casper.infradead.org>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <bc5a13bd-54c4-509d-7202-20c93f43e2f6@redhat.com>
-Date:   Tue, 14 Jul 2020 06:12:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Tue, 14 Jul 2020 09:10:34 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id E2D5F1BF208;
+        Tue, 14 Jul 2020 13:10:30 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 15:14:03 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH 20/25] pinctrl: pinctrl-rza1: Demote some kerneldoc
+ headers and fix others
+Message-ID: <20200714131403.eguxpnzsioxfzzko@uno.localdomain>
+References: <20200713144930.1034632-1-lee.jones@linaro.org>
+ <20200713144930.1034632-21-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200714131043.GB12769@casper.infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20200713144930.1034632-21-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Lee,
 
-On 7/14/20 6:10 AM, Matthew Wilcox wrote:
-> On Tue, Jul 14, 2020 at 06:05:09AM -0700, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> clang static analysis flags this error
->>
->> inode.c:1083:5: warning: Argument to kfree() is the address of the
->>   local variable 'unf_single', which is not memory allocated by
->>   malloc() [unix.Malloc]
->>                                 kfree(un);
->>                                 ^~~~~~~~~
->> Assignment of 'un'
->>
->> 	/*
->> 	 * We use this in case we need to allocate
->> 	 * only one block which is a fastpath
->> 	 */
->> 	unp_t unf_single = 0;
->>
->> 	...
->>
->> 	if (blocks_needed == 1) {
->> 		un = &unf_single;
->> 	} else {
->> 		un = kcalloc(min(blocks_needed, max_to_insert),
->> 			     UNFM_P_SIZE, GFP_NOFS);
->> 		if (!un) {
->> 			un = &unf_single;
->> 			blocks_needed = 1;
->> 			max_to_insert = 0;
->> 		}
->> 	}
->>
->> The logic to free 'un'
->>
->> 	if (blocks_needed != 1)
->> 		kfree(un);
->>
->> Because the kcalloc failure falls back to using unf_single,
->> the if-check for the free is wrong.
-> I think you mean "Because clang's static analysis is limited, it
-> warns incorrectly about this".  There's no path to get to the
-> kfree with blocks_needed != 1 and un being equal to &unf_single.
-
-Ok.
-
-
->> So improve the check.
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>  fs/reiserfs/inode.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
->> index 1509775da040..4d62148e43e6 100644
->> --- a/fs/reiserfs/inode.c
->> +++ b/fs/reiserfs/inode.c
->> @@ -1079,7 +1079,7 @@ int reiserfs_get_block(struct inode *inode, sector_t block,
->>  						     UNFM_P_SIZE *
->>  						     blocks_needed);
->>  
->> -			if (blocks_needed != 1)
->> +			if (un != &unf_single)
->>  				kfree(un);
-> I don't actually object to this patch, but your analysis of clang's
-> analysis is wrong.
+On Mon, Jul 13, 2020 at 03:49:25PM +0100, Lee Jones wrote:
+> Some description blocks are void of any description/documentation,
+> others are missing 'struct' identifiers, there are also a couple of
+> misspellings of function parameter names.  Fix all of them.
 >
+> Fixes the following W=1 kernel build warning(s):
+>
+>  drivers/pinctrl/pinctrl-rza1.c:81: warning: cannot understand function prototype: 'struct rza1_bidir_pin '
+>  drivers/pinctrl/pinctrl-rza1.c:90: warning: cannot understand function prototype: 'struct rza1_bidir_entry '
+>  drivers/pinctrl/pinctrl-rza1.c:98: warning: cannot understand function prototype: 'struct rza1_swio_pin '
+>  drivers/pinctrl/pinctrl-rza1.c:108: warning: cannot understand function prototype: 'struct rza1_swio_entry '
+>  drivers/pinctrl/pinctrl-rza1.c:116: warning: cannot understand function prototype: 'struct rza1_pinmux_conf '
+>  drivers/pinctrl/pinctrl-rza1.c:443: warning: cannot understand function prototype: 'struct rza1_mux_conf '
+>  drivers/pinctrl/pinctrl-rza1.c:462: warning: cannot understand function prototype: 'struct rza1_port '
+>  drivers/pinctrl/pinctrl-rza1.c:482: warning: cannot understand function prototype: 'struct rza1_pinctrl '
+>  drivers/pinctrl/pinctrl-rza1.c:546: warning: Function parameter or member 'port' not described in 'rza1_pinmux_get_flags'
+>  drivers/pinctrl/pinctrl-rza1.c:546: warning: Function parameter or member 'pin' not described in 'rza1_pinmux_get_flags'
+>  drivers/pinctrl/pinctrl-rza1.c:546: warning: Function parameter or member 'func' not described in 'rza1_pinmux_get_flags'
+>  drivers/pinctrl/pinctrl-rza1.c:546: warning: Function parameter or member 'rza1_pctl' not described in 'rza1_pinmux_get_flags'
+>  drivers/pinctrl/pinctrl-rza1.c:575: warning: Function parameter or member 'port' not described in 'rza1_set_bit'
+>  drivers/pinctrl/pinctrl-rza1.c:575: warning: Function parameter or member 'reg' not described in 'rza1_set_bit'
+>  drivers/pinctrl/pinctrl-rza1.c:575: warning: Function parameter or member 'bit' not described in 'rza1_set_bit'
+>  drivers/pinctrl/pinctrl-rza1.c:575: warning: Function parameter or member 'set' not described in 'rza1_set_bit'
+>  drivers/pinctrl/pinctrl-rza1.c:672: warning: Function parameter or member 'rza1_pctl' not described in 'rza1_pin_mux_single'
+>  drivers/pinctrl/pinctrl-rza1.c:672: warning: Excess function parameter 'pinctrl' description in 'rza1_pin_mux_single'
+>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> Cc: linux-renesas-soc@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
+Thanks, at the time I had no real idea about the implications of
+documenting with kerneldoc :)
+
+Acked-by: Jacopo Mondi <jacopo@jmondi.org>
+
+Thanks
+  j
+
+> ---
+>  drivers/pinctrl/pinctrl-rza1.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/pinctrl/pinctrl-rza1.c b/drivers/pinctrl/pinctrl-rza1.c
+> index 38a14bbced5f6..511f232ab7bc2 100644
+> --- a/drivers/pinctrl/pinctrl-rza1.c
+> +++ b/drivers/pinctrl/pinctrl-rza1.c
+> @@ -75,7 +75,7 @@
+>   * RZ/A1 pinmux flags
+>   */
+>
+> -/**
+> +/*
+>   * rza1_bidir_pin - describe a single pin that needs bidir flag applied.
+>   */
+>  struct rza1_bidir_pin {
+> @@ -83,7 +83,7 @@ struct rza1_bidir_pin {
+>  	u8 func: 4;
+>  };
+>
+> -/**
+> +/*
+>   * rza1_bidir_entry - describe a list of pins that needs bidir flag applied.
+>   *		      Each struct rza1_bidir_entry describes a port.
+>   */
+> @@ -92,7 +92,7 @@ struct rza1_bidir_entry {
+>  	const struct rza1_bidir_pin *pins;
+>  };
+>
+> -/**
+> +/*
+>   * rza1_swio_pin - describe a single pin that needs swio flag applied.
+>   */
+>  struct rza1_swio_pin {
+> @@ -102,7 +102,7 @@ struct rza1_swio_pin {
+>  	u16 input: 1;
+>  };
+>
+> -/**
+> +/*
+>   * rza1_swio_entry - describe a list of pins that needs swio flag applied
+>   */
+>  struct rza1_swio_entry {
+> @@ -110,7 +110,7 @@ struct rza1_swio_entry {
+>  	const struct rza1_swio_pin *pins;
+>  };
+>
+> -/**
+> +/*
+>   * rza1_pinmux_conf - group together bidir and swio pinmux flag tables
+>   */
+>  struct rza1_pinmux_conf {
+> @@ -431,7 +431,7 @@ static const struct rza1_pinmux_conf rza1l_pmx_conf = {
+>   * RZ/A1 types
+>   */
+>  /**
+> - * rza1_mux_conf - describes a pin multiplexing operation
+> + * struct rza1_mux_conf - describes a pin multiplexing operation
+>   *
+>   * @id: the pin identifier from 0 to RZA1_NPINS
+>   * @port: the port where pin sits on
+> @@ -450,7 +450,7 @@ struct rza1_mux_conf {
+>  };
+>
+>  /**
+> - * rza1_port - describes a pin port
+> + * struct rza1_port - describes a pin port
+>   *
+>   * This is mostly useful to lock register writes per-bank and not globally.
+>   *
+> @@ -467,12 +467,12 @@ struct rza1_port {
+>  };
+>
+>  /**
+> - * rza1_pinctrl - RZ pincontroller device
+> + * struct rza1_pinctrl - RZ pincontroller device
+>   *
+>   * @dev: parent device structure
+>   * @mutex: protect [pinctrl|pinmux]_generic functions
+>   * @base: logical address base
+> - * @nports: number of pin controller ports
+> + * @nport: number of pin controller ports
+>   * @ports: pin controller banks
+>   * @pins: pin array for pinctrl core
+>   * @desc: pincontroller desc for pinctrl core
+> @@ -536,7 +536,7 @@ static inline int rza1_pinmux_get_swio(unsigned int port,
+>  	return -ENOENT;
+>  }
+>
+> -/**
+> +/*
+>   * rza1_pinmux_get_flags() - return pinmux flags associated to a pin
+>   */
+>  static unsigned int rza1_pinmux_get_flags(unsigned int port, unsigned int pin,
+> @@ -566,7 +566,7 @@ static unsigned int rza1_pinmux_get_flags(unsigned int port, unsigned int pin,
+>   * RZ/A1 SoC operations
+>   */
+>
+> -/**
+> +/*
+>   * rza1_set_bit() - un-locked set/clear a single bit in pin configuration
+>   *		    registers
+>   */
+> @@ -664,7 +664,7 @@ static inline int rza1_pin_get(struct rza1_port *port, unsigned int pin)
+>  /**
+>   * rza1_pin_mux_single() - configure pin multiplexing on a single pin
+>   *
+> - * @pinctrl: RZ/A1 pin controller device
+> + * @rza1_pctl: RZ/A1 pin controller device
+>   * @mux_conf: pin multiplexing descriptor
+>   */
+>  static int rza1_pin_mux_single(struct rza1_pinctrl *rza1_pctl,
+> --
+> 2.25.1
+>
