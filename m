@@ -2,51 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D1821E658
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 05:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B3921E65A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 05:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726630AbgGNDgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 23:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        id S1726750AbgGNDgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 23:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726432AbgGNDgL (ORCPT
+        with ESMTP id S1726619AbgGNDgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 23:36:11 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD847C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 20:36:10 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id s9so19942783ybj.18
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 20:36:10 -0700 (PDT)
+        Mon, 13 Jul 2020 23:36:20 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5628BC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 20:36:20 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id d27so19893418ybe.20
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 20:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=zNQV95i7c6JcJLlsny6Fhc23+QJFeBp9C60Maw1tGG4=;
-        b=hSE/BPX913HTAs++baLX4mt1JgCuoxgt/V9igV0OR3rWM++ODniXgdSBD7s+jXLHhR
-         a452v+zASbCdRzM9C18yCMZHTmFww6nQiHdnKQKfyqeNHa1BxFDBXXrmuQOxFtyDdUUS
-         I/1eB5quNOsb0K8jVl1LObnoefnQk5OALxRZ/mYNqe+hzRywAxJEC9JPF2GJ/iwSquYi
-         UnM4P0svZlU/mxf+0n83oM1QEM7mV05C2iIGpPhyHlQ6JdIpOwuJleqPTYN9HRjfhlpO
-         FRIm6k3tIqAZBXakOrcIk1Env3Kclme5mD5xynU+EKbRHGJ707PPIsAlALWHniOjfPY2
-         wIEA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=0+nyRB4FjMX87DKB086K0BKyIubl+CqEw8r/lrjQmxQ=;
+        b=Vpd863DWtRje1jzZiUqY+85x9YDp4OKtuawen/XxjhstnxKOa7+DKF8jeefo/rEiRg
+         cJ57qzZjMfX/dwbrFBeJeN5UN17t4L7D/nwyKuCMNMcSIok2yLJLdK3zBpo404vdBcXL
+         TR98Qx9PIM8D2zbFibUMHBTV/sAFcy7UXxWF62zWnLmxFVTtxCqKMChrp41V5WbCs3oX
+         mbQwZKZ7b/LteXsP8WqdbjjldWR0uBke8c+ZnY9ccAXVH/d2HenbCWCgcW0m55Ifo1bh
+         +oWfC1CVcqvxshVIfhR/zZ3XKORCM3CqNWJQt7sEkW1v60Xwu7eIXake3VQSvBZ/Sz7C
+         eoCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=zNQV95i7c6JcJLlsny6Fhc23+QJFeBp9C60Maw1tGG4=;
-        b=bJazKCy8SuTd5ZN28jW78KVtN9TpJX+vzHsbRRtIFNh5TSK1aeiptF9U6ftyZ0lpdM
-         dru8vxikG5u238DykoW145eA//xJMyZb3D+hLGQcgxYz4KoqvEbm2iB3XC1hWfYA7RB4
-         NHnsBsnnQLdBmnlYPJiFHElsnhvQk9Sp7yjclEMbiXCcV+KYlb3w+FJbWYs1Xbv7EbER
-         KwVPIPI8VAWsUoOZ6Avkmrb31XUG1m11QnxdZK7UzQOerolCJljOV/7cw1ALDuRDLAyx
-         hudgxt1VdbzVVb3bRZXkK3jgwSmhadrFNg83EtAyFO2c5zoSGZke+ThskT7jAVH1+Di/
-         Pj5Q==
-X-Gm-Message-State: AOAM530b8IxWZi2m/9p6hT8KRUYlxjkHEsFkk8qhaReqbGRcJkpyy9st
-        RjQfk1vR1abVbH+cZslA30UvVxGsglVA
-X-Google-Smtp-Source: ABdhPJxnEf16kvDaLZZB9IfoIH2D+Xb4ovNqya7VkOUTo5ipYiwqV6Qi6ORPMZNHMpsbUnYXRU344QdXRV+v
-X-Received: by 2002:a25:803:: with SMTP id 3mr2023649ybi.518.1594697769925;
- Mon, 13 Jul 2020 20:36:09 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 11:34:51 +0800
-Message-Id: <20200714033453.4044482-1-kyletso@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=0+nyRB4FjMX87DKB086K0BKyIubl+CqEw8r/lrjQmxQ=;
+        b=buM+AgHYbeyuBRpOtSrJmhjUo1Yl5WBHOWYip9WctMDpJ7SwBxJZuO/tpuWwSjiYRz
+         UTjxxrU7XvBxdLv9SjHs3p2qg435qDu1g+pCtecc27Bhc0cUX4xLsqB0otw3SgF8uGI7
+         hYJxjE8tx5e2nqvCZHm+fbzFjjktcwCEhpnTPTqzyapmUkY+Hs27aKGnjPT31ALI4vP1
+         hikCK3XApAT7NlRyyqrnv9G80/q0anPSnS41MDbzp9VMKSinRRvD0u0tyI0T/OOwPH23
+         ho99SjIhOW6/7mMwv3+6hOqFKjNKG2em0PXi+Oqn3HK8BB4rkM2NB28FAuFMdxiZbcTq
+         p8WQ==
+X-Gm-Message-State: AOAM533g/dB0O4Omcn1fhEOYPsyXu+b945+7za6ijGVItaf8Gq+UjAVr
+        i8c7as6Z/2+rP7FR9oP28Hrmqr5iWpbb
+X-Google-Smtp-Source: ABdhPJypXU4xQMjv4OfZEmpngqqwsqY3SfhQH2rS2+ro4iTC+chO8wmNzvludTkKpsLR9hoBfW8VQBBqU8Ny
+X-Received: by 2002:a25:d104:: with SMTP id i4mr5388671ybg.176.1594697779588;
+ Mon, 13 Jul 2020 20:36:19 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 11:34:52 +0800
+In-Reply-To: <20200714033453.4044482-1-kyletso@google.com>
+Message-Id: <20200714033453.4044482-2-kyletso@google.com>
 Mime-Version: 1.0
+References: <20200714033453.4044482-1-kyletso@google.com>
 X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
-Subject: [PATCH 0/2] tcpm: Error handling for tcpm_register_partner_altmodes
+Subject: [PATCH 1/2] usb: typec: Comment correction for typec_partner_register_altmode
 From:   Kyle Tso <kyletso@google.com>
 To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
         gregkh@linuxfoundation.org
@@ -58,16 +62,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-*** BLURB HERE ***
+typec_register_altmode returns ERR_PTR on failure.
 
-Kyle Tso (2):
-  usb: typec: Comment correction for typec_partner_register_altmode
-  usb: typec: tcpm: Error handling for tcpm_register_partner_altmodes
+Signed-off-by: Kyle Tso <kyletso@google.com>
+---
+ drivers/usb/typec/class.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/usb/typec/class.c     | 2 +-
- drivers/usb/typec/tcpm/tcpm.c | 4 +++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index c9234748537a..02655694f200 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -580,7 +580,7 @@ EXPORT_SYMBOL_GPL(typec_partner_set_identity);
+  * SVID listed in response to Discover Modes command need to be listed in an
+  * array in @desc.
+  *
+- * Returns handle to the alternate mode on success or NULL on failure.
++ * Returns handle to the alternate mode on success or ERR_PTR on failure.
+  */
+ struct typec_altmode *
+ typec_partner_register_altmode(struct typec_partner *partner,
 -- 
 2.27.0.389.gc38d7665816-goog
 
