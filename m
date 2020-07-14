@@ -2,184 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 715022200B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 00:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750182200BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 00:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728398AbgGNWdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 18:33:35 -0400
-Received: from mga03.intel.com ([134.134.136.65]:32526 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726187AbgGNWdf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 18:33:35 -0400
-IronPort-SDR: v5l+yMayrkMnrx1l29GLaB/r5T14CTbTA/0AFTYOH/7v2PmxD5Qu7M2qBoltIQSkH7grjw1kNm
- tgG2nLJfUnpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="149034038"
-X-IronPort-AV: E=Sophos;i="5.75,353,1589266800"; 
-   d="scan'208";a="149034038"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 15:33:33 -0700
-IronPort-SDR: oGdgUCpOZMnspXBmZTZRjLVHxaRA2F4UQAa+tuF1Ev1SbhBb1o9Qnn/41B+MBu08TKI2lCOeYg
- kXYEmo/Wmt1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,353,1589266800"; 
-   d="scan'208";a="281895422"
-Received: from pipper-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.46.185])
-  by orsmga003.jf.intel.com with ESMTP; 14 Jul 2020 15:33:29 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Jessica Yu <jeyu@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH v3 3/3] kprobes: Flag out CONFIG_MODULES dependent code
-Date:   Wed, 15 Jul 2020 01:32:29 +0300
-Message-Id: <20200714223239.1543716-4-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200714223239.1543716-1-jarkko.sakkinen@linux.intel.com>
-References: <20200714223239.1543716-1-jarkko.sakkinen@linux.intel.com>
+        id S1728410AbgGNWdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 18:33:50 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53694 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgGNWdt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 18:33:49 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id BA2741C0BD5; Wed, 15 Jul 2020 00:33:46 +0200 (CEST)
+Date:   Wed, 15 Jul 2020 00:33:45 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Alexandre Courbot <gnurou@gmail.com>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH] leds: add NCT6795D driver
+Message-ID: <20200714223344.GA20740@amd>
+References: <20200713134114.137265-1-gnurou@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
+Content-Disposition: inline
+In-Reply-To: <20200713134114.137265-1-gnurou@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove CONFIG_MODULES dependency by flagging out the dependent code. This
-allows to use kprobes in a kernel without support for loadable modules,
-which could be useful for a test kernel or perhaps an embedded kernel.
 
-Cc: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- include/linux/module.h      | 14 +++++++-------
- kernel/kprobes.c            |  7 +++++++
- kernel/trace/trace_kprobe.c | 16 +++++++++++++++-
- 3 files changed, 29 insertions(+), 8 deletions(-)
+--7JfCtLOvnd9MIVvH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 857b84bf9e90..eaa8ad02f75c 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -290,6 +290,13 @@ extern typeof(name) __mod_##type##__##name##_device_table		\
- 
- struct notifier_block;
- 
-+enum module_state {
-+	MODULE_STATE_LIVE,	/* Normal state. */
-+	MODULE_STATE_COMING,	/* Full formed, running module_init. */
-+	MODULE_STATE_GOING,	/* Going away. */
-+	MODULE_STATE_UNFORMED,	/* Still setting it up. */
-+};
-+
- #ifdef CONFIG_MODULES
- 
- extern int modules_disabled; /* for sysctl */
-@@ -305,13 +312,6 @@ struct module_use {
- 	struct module *source, *target;
- };
- 
--enum module_state {
--	MODULE_STATE_LIVE,	/* Normal state. */
--	MODULE_STATE_COMING,	/* Full formed, running module_init. */
--	MODULE_STATE_GOING,	/* Going away. */
--	MODULE_STATE_UNFORMED,	/* Still setting it up. */
--};
--
- struct mod_tree_node {
- 	struct module *mod;
- 	struct latch_tree_node node;
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index b4f3c24cd2ef..3039df13d34e 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2225,6 +2225,7 @@ int kprobe_add_area_blacklist(unsigned long start, unsigned long end)
- 	return 0;
- }
- 
-+#ifdef CONFIG_MODULES
- /* Remove all symbols in given area from kprobe blacklist */
- static void kprobe_remove_area_blacklist(unsigned long start, unsigned long end)
- {
-@@ -2242,6 +2243,7 @@ static void kprobe_remove_ksym_blacklist(unsigned long entry)
- {
- 	kprobe_remove_area_blacklist(entry, entry + 1);
- }
-+#endif
- 
- int __init __weak arch_populate_kprobe_blacklist(void)
- {
-@@ -2285,6 +2287,7 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
- 	return ret ? : arch_populate_kprobe_blacklist();
- }
- 
-+#ifdef CONFIG_MODULES
- static void add_module_kprobe_blacklist(struct module *mod)
- {
- 	unsigned long start, end;
-@@ -2330,6 +2333,10 @@ static void remove_module_kprobe_blacklist(struct module *mod)
- 		kprobe_remove_area_blacklist(start, end);
- 	}
- }
-+#else
-+static void add_module_kprobe_blacklist(struct module *mod) {}
-+static void remove_module_kprobe_blacklist(struct module *mod) {}
-+#endif /* CONFIG_MODULES */
- 
- /* Module notifier call back, checking kprobes on the module */
- static int kprobes_module_callback(struct notifier_block *nb,
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 710ec6a6aa8f..7fcd1bf2d96e 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -103,8 +103,9 @@ static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
- 	return !!(kprobe_gone(&tk->rp.kp));
- }
- 
-+#ifdef CONFIG_MODULES
- static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
--						 struct module *mod)
-+						       struct module *mod)
- {
- 	int len = strlen(mod->name);
- 	const char *name = trace_kprobe_symbol(tk);
-@@ -129,6 +130,17 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
- 
- 	return ret;
- }
-+#else
-+static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
-+						       struct module *mod)
-+{
-+	return false;
-+}
-+static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
-+{
-+	return false;
-+}
-+#endif
- 
- static bool trace_kprobe_is_busy(struct dyn_event *ev)
- {
-@@ -685,10 +697,12 @@ static int trace_kprobe_module_callback(struct notifier_block *nb,
- 			/* Don't need to check busy - this should have gone. */
- 			__unregister_trace_kprobe(tk);
- 			ret = __register_trace_kprobe(tk);
-+#ifdef CONFIG_MODULES
- 			if (ret)
- 				pr_warn("Failed to re-register probe %s on %s: %d\n",
- 					trace_probe_name(&tk->tp),
- 					mod->name, ret);
-+#endif
- 		}
- 	}
- 	mutex_unlock(&event_mutex);
--- 
-2.25.1
+Hi!
 
+> Add support for the LED feature of the NCT6795D chip found on some
+> motherboards, notably MSI ones. The LEDs are typically used using a
+> RGB connector so this driver creates one LED device for each color
+> component.
+
+Ok, let me take a look. What entries does it present in /sys?
+
+We'll want you to switch to multicolor framework.
+
+> Also add self as maintainer.
+
+That will need to be separate patch, I'd be asking for trouble if I
+took that.
+
+Best regards,
+								Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--7JfCtLOvnd9MIVvH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl8OMsgACgkQMOfwapXb+vL42wCeMS5VYBSWE5YVKlf8oN1Fujvx
+nMcAoKbj+iXU1maSYd3fUX+vjt0CYC1I
+=nAm1
+-----END PGP SIGNATURE-----
+
+--7JfCtLOvnd9MIVvH--
