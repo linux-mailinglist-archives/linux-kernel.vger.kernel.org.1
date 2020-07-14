@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FC421F9DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFB521FB03
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729714AbgGNSrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:47:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42290 "EHLO mail.kernel.org"
+        id S1730793AbgGNS55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:57:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729702AbgGNSrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:47:16 -0400
+        id S1731105AbgGNS5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:57:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E906722AB9;
-        Tue, 14 Jul 2020 18:47:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 704E0207F5;
+        Tue, 14 Jul 2020 18:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752436;
-        bh=hg/MZDPe5Mt+7I1+7++9GeIT5/BF1/EQnzIMNbaGhYI=;
+        s=default; t=1594753072;
+        bh=iAix+odTu5gBFd40uh7vpisp2QYBWz+szMkM3yv+AcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sfbrjfFzhX3mFep/SH5VI5qjnh6lehIv/gi59xW/NwODSWkCj1Omk66Lnu9sFcp05
-         FAEvukylPGBiKr46ZcR2uWtxmLP3IdfYfqnmQ1OVS+NUr2SFhewVXEtmSXF0om2Yo0
-         004pOJzO8L5hCoQjFHtxzD9N3dhjsWVeh/Ne/ZAQ=
+        b=JswMJrsYEBPirwtSrgDUL6M9n++eICTZvPLE8codxXE2ujeMHwbXtBYgb0zDClyqW
+         1iQV6dPRvSZ8n2yDELs3Jk/MRPukHK06U4iG/SbfwRwaGkeLN6UvOQ0TH4xwLcD8Da
+         Y2AHrDQTf1FQ+3zeG2vgiw3x6V2MtHLqhONrAo0A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Scull <ascull@google.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 4.19 42/58] KVM: arm64: Stop clobbering x0 for HVC_SOFT_RESTART
-Date:   Tue, 14 Jul 2020 20:44:15 +0200
-Message-Id: <20200714184058.210364948@linuxfoundation.org>
+        stable@vger.kernel.org, Aya Levin <ayal@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 091/166] IB/mlx5: Fix 50G per lane indication
+Date:   Tue, 14 Jul 2020 20:44:16 +0200
+Message-Id: <20200714184120.200773750@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +47,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Scull <ascull@google.com>
+From: Aya Levin <ayal@mellanox.com>
 
-commit b9e10d4a6c9f5cbe6369ce2c17ebc67d2e5a4be5 upstream.
+[ Upstream commit 530c8632b547ff72f11ff83654b22462a73f1f7b ]
 
-HVC_SOFT_RESTART is given values for x0-2 that it should installed
-before exiting to the new address so should not set x0 to stub HVC
-success or failure code.
+Some released FW versions mistakenly don't set the capability that 50G per
+lane link-modes are supported for VFs (ptys_extended_ethernet capability
+bit).
 
-Fixes: af42f20480bf1 ("arm64: hyp-stub: Zero x0 on successful stub handling")
-Cc: stable@vger.kernel.org
-Signed-off-by: Andrew Scull <ascull@google.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20200706095259.1338221-1-ascull@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Use PTYS.ext_eth_proto_capability instead, as this indication is always
+accurate. If PTYS.ext_eth_proto_capability is valid
+(has a non-zero value) conclude that the HCA supports 50G per lane.
 
+Otherwise, conclude that the HCA doesn't support 50G per lane.
+
+Fixes: 08e8676f1607 ("IB/mlx5: Add support for 50Gbps per lane link modes")
+Link: https://lore.kernel.org/r/20200707110612.882962-3-leon@kernel.org
+Signed-off-by: Aya Levin <ayal@mellanox.com>
+Reviewed-by: Eran Ben Elisha <eranbe@mellanox.com>
+Reviewed-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kvm/hyp-init.S |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm64/kvm/hyp-init.S
-+++ b/arch/arm64/kvm/hyp-init.S
-@@ -144,11 +144,15 @@ ENTRY(__kvm_handle_stub_hvc)
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 6679756506e60..820e407b3e260 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -515,7 +515,7 @@ static int mlx5_query_port_roce(struct ib_device *device, u8 port_num,
+ 					   mdev_port_num);
+ 	if (err)
+ 		goto out;
+-	ext = MLX5_CAP_PCAM_FEATURE(dev->mdev, ptys_extended_ethernet);
++	ext = !!MLX5_GET_ETH_PROTO(ptys_reg, out, true, eth_proto_capability);
+ 	eth_prot_oper = MLX5_GET_ETH_PROTO(ptys_reg, out, ext, eth_proto_oper);
  
- 1:	cmp	x0, #HVC_RESET_VECTORS
- 	b.ne	1f
--reset:
-+
- 	/*
--	 * Reset kvm back to the hyp stub. Do not clobber x0-x4 in
--	 * case we coming via HVC_SOFT_RESTART.
-+	 * Set the HVC_RESET_VECTORS return code before entering the common
-+	 * path so that we do not clobber x0-x2 in case we are coming via
-+	 * HVC_SOFT_RESTART.
- 	 */
-+	mov	x0, xzr
-+reset:
-+	/* Reset kvm back to the hyp stub. */
- 	mrs	x5, sctlr_el2
- 	ldr	x6, =SCTLR_ELx_FLAGS
- 	bic	x5, x5, x6		// Clear SCTL_M and etc
-@@ -159,7 +163,6 @@ reset:
- 	/* Install stub vectors */
- 	adr_l	x5, __hyp_stub_vectors
- 	msr	vbar_el2, x5
--	mov	x0, xzr
- 	eret
- 
- 1:	/* Bad stub call */
+ 	props->active_width     = IB_WIDTH_4X;
+-- 
+2.25.1
+
 
 
