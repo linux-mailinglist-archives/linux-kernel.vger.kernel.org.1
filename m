@@ -2,78 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF0021F21C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9243E21F222
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728291AbgGNNFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:05:52 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:35934 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726354AbgGNNFw (ORCPT
+        id S1728335AbgGNNKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726354AbgGNNKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:05:52 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 8261B804D0;
-        Tue, 14 Jul 2020 15:05:48 +0200 (CEST)
-Date:   Tue, 14 Jul 2020 15:05:46 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Jitao Shi <jitao.shi@mediatek.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, ck.hu@mediatek.com,
-        stonea168@163.com, huijuan.xie@mediatek.com
-Subject: Re: [PATCH] drm/panel: Fix auo,kd101n80-45na horizontal noise on
- edges of panel
-Message-ID: <20200714130546.GA1588550@ravnborg.org>
-References: <20200714123332.37609-1-jitao.shi@mediatek.com>
+        Tue, 14 Jul 2020 09:10:45 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B89C061755;
+        Tue, 14 Jul 2020 06:10:45 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id d18so17203604ion.0;
+        Tue, 14 Jul 2020 06:10:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lv9gVEtOCHmdCNCXNh+kZOMT5/e2RCfYMVdBCxYu8hY=;
+        b=GGvCVe9fQU1dq95jD2QsY9q8iP9qkPLUMm8oPCRjJ7Anpl4RZFDQbyaFWBWnDnpLZ4
+         akCnj2zM5URBnRzaIYx3QViomArLjo2TYpYkKUdo/rc9Ev91ZRKMH/8XeuHIazcC6c9X
+         X5e55Z39z5v/S/1QJJmyS5e4BULhf2dcpWbN4Rz5aiw1fkHUaQuYK//DOOIuRhg/YMoN
+         n2xr6Y/ChWx51FMUP57QmncbKCORyhewPR3gy1lBR0mf/Hn9kfig/IhmlXPSlGpiPi80
+         ugnw+VVG06u4vmLe0YcKVW76Sjjn51ULmDMzk5J0lyt30N7aqkZelE3x0JW4tdCaw606
+         ps1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lv9gVEtOCHmdCNCXNh+kZOMT5/e2RCfYMVdBCxYu8hY=;
+        b=MwxVaudSE/X1IYIAZJFlTYzsvAapWoaQW9dkpQ0+T4jgQI5kBd2tEAD2cFp8FeHU03
+         DiqoHp9BIAqsxjvb88VIwGsTKtjLXfEAjXORSUPMdJzuOvBUAroIRDohIXx6XEpZ9MOw
+         zKnSg/axMc+O9tLxi08LRuyEYk8mBcxo7z0OCHOhdNV0C+lqFLoX5/ZDs5R6kRqLSidj
+         f/YcpblgVDNkrc3iaNtfsmq3PNIuu/ITrvgGyapuU3YCzAtOjeM8JQd0AAh0AP4freYb
+         N1Yu7TKQFI2a2hdgd1UNXfdTZuSF3fgJOxNzav44cz1pXUs6pZZW33QBw4QpdE0qFTcJ
+         QhTw==
+X-Gm-Message-State: AOAM5303SgIuUS2BDRhPz9hGEYCiZuEB7MuMFNaCohRnrk6VNlC8rBQn
+        7SgcrTelWNWNsXFaRrkT5073ZksYPrdeeCi77E0V4lPF
+X-Google-Smtp-Source: ABdhPJzXMwozFQAgRFaE2pFvKBmp5FCG/BtI9uXL/90zZu+JnA5e5/U/t3TL0CPy1LXwB+bUTV5aM8NrEjKdJO05MgI=
+X-Received: by 2002:a6b:b483:: with SMTP id d125mr4887880iof.186.1594732244839;
+ Tue, 14 Jul 2020 06:10:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714123332.37609-1-jitao.shi@mediatek.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=mpaa-ttXAAAA:8 a=al6dfsjdgZPfAsxNZ6YA:9
-        a=CjuIK1q_8ugA:10 a=6heAxKwa5pAsJatQ0mat:22
+References: <20200714025417.A25EB95C0339@us180.sjc.aristanetworks.com>
+In-Reply-To: <20200714025417.A25EB95C0339@us180.sjc.aristanetworks.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 14 Jul 2020 16:10:33 +0300
+Message-ID: <CAOQ4uxjLaGyOUd5GOV8oHwBY=nGGtgk4=5bRxmHTr5VsocrhiA@mail.gmail.com>
+Subject: Re: soft lockup in fanotify_read
+To:     Francesco Ruggeri <fruggeri@arista.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jitao.
+On Tue, Jul 14, 2020 at 5:54 AM Francesco Ruggeri <fruggeri@arista.com> wrote:
+>
+> We are getting this soft lockup in fanotify_read.
+> The reason is that this code does not seem to scale to cases where there
+> are big bursts of events generated by fanotify_handle_event.
+> fanotify_read acquires group->notification_lock for each event.
+> fanotify_handle_event uses the lock to add one event, which also involves
+> fanotify_merge, which scans the whole list trying to find an event to
+> merge the new one with.
 
-Material for -fixes or just -next?
+Yes, that is a terribly inefficient merge algorithm.
+If it helps I am carrying a quick brown paper bag fix for this issue in my tree:
 
-	Sam
+@@ -65,6 +74,8 @@ static int fanotify_merge(struct list_head *list,
+struct fsnotify_event *event)
+ {
+        struct fsnotify_event *test_event;
+        struct fanotify_event *new;
++       int limit = 128;
++       int i = 0;
 
-On Tue, Jul 14, 2020 at 08:33:32PM +0800, Jitao Shi wrote:
-> Fine tune the HBP and HFP to avoid the dot noise on the left and right edges.
-> 
-> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
-> ---
->  drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-> index 48a164257d18..3edb33e61908 100644
-> --- a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-> +++ b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-> @@ -615,9 +615,9 @@ static const struct panel_desc boe_tv101wum_nl6_desc = {
->  static const struct drm_display_mode auo_kd101n80_45na_default_mode = {
->  	.clock = 157000,
->  	.hdisplay = 1200,
-> -	.hsync_start = 1200 + 80,
-> -	.hsync_end = 1200 + 80 + 24,
-> -	.htotal = 1200 + 80 + 24 + 36,
-> +	.hsync_start = 1200 + 60,
-> +	.hsync_end = 1200 + 60 + 24,
-> +	.htotal = 1200 + 60 + 24 + 56,
->  	.vdisplay = 1920,
->  	.vsync_start = 1920 + 16,
->  	.vsync_end = 1920 + 16 + 4,
-> -- 
-> 2.25.1
+        pr_debug("%s: list=%p event=%p\n", __func__, list, event);
+        new = FANOTIFY_E(event);
+
+@@ -78,6 +89,9 @@ static int fanotify_merge(struct list_head *list,
+struct fsnotify_event *event)
+                return 0;
+
+        list_for_each_entry_reverse(test_event, list, list) {
++               /* Event merges are expensive so should be limited */
++               if (++i > limit)
++                       break;
+                if (should_merge(test_event, event)) {
+
+It's somewhere down my TODO list to fix this properly with a hash table.
+
+> In our case fanotify_read is invoked with a buffer big enough for 200
+> events, and what happens is that every time fanotify_read dequeues an
+> event and releases the lock, fanotify_handle_event adds several more,
+> scanning a longer and longer list. This causes fanotify_read to wait
+> longer and longer for the lock, and the soft lockup happens before
+> fanotify_read can reach 200 events.
+> Is it intentional for fanotify_read to acquire the lock for each event,
+> rather than batching together a user buffer worth of events?
+
+I think it is meant to allow for multiple reader threads to read events
+with fairness, but not sure.
+
+Even if it was fine to read a batch of events on every spinlock acquire
+making the code in the fanotify_read() loop behave well in case of
+an error in an event after reading a bunch of good events looks challenging,
+but I didn't try. Anyway, the root cause of the issue seems to be the
+inefficient merge and not the spinlock taken per one event read.
+
+Thanks,
+Amir.
