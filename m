@@ -2,181 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03B421F00D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2688F21F018
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgGNMHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:07:45 -0400
-Received: from mail-eopbgr80121.outbound.protection.outlook.com ([40.107.8.121]:27264
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726041AbgGNMHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:07:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QuyEeTggXRo43v4dr+uQsL+JeIOB27y9AhvDKVryk/k9sZI98yt78Wlo24OaMZZxKJoEAO2tLd6rDM5SX2sc20tPfV5O8c9aIl4mxLRLvbxP1VeyWtSBjO0XHGZgukfNQf5SdM9ODp3/EF2xfL3rcd5jBVAaF7Gt+CTeGEecRCDloOZor/7CluEj+cmbQiqDsVsUgXrJ0nrtA7I+6OIlN8r9EU9foj/ZGg499k66WwMO/U377i+urSQ2LSNVI6Xt9tBARgQxhUj2Bu4pBsCAwIwvXlTwN/zANBR5kPPPoSt0TFScUaL4UqEyqSrDa5hnGd9MoUYeSWi3J61nzlEwpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UCUY1L3OUPcWulq+X9QlrGeN+jL16QQA5lyxfI0CIJg=;
- b=kdRNcXCtVfwRNy/UiDWygTnVWyDVSUiAn+bY7P+lzMeiEf7pZxv3oCSBXdsMjH9nuxM0D5AqLQk/9itcvJAyGICn/HnK/uN2mEguBso+ft6EZHpo0uNupSCL/MUJblwF4PCVIq6O5JhCvXLPFu/gIlyTpBpV9FQyDkyeu+8pIG8kMGapUORyqea5R8IOJfsCPR3f5q7/PIK8yQxMOA91ESZt1ZvDpW7w5M42QtFFbjzf0q+T7yuX6YAJJo8EiPDmGbN6uQW9f3VHY4DCl38Hmd5huyytJ5do2Az1LaVOknI438By7mAPflNbd/GF4bdCMNoRnes08teXqAztQ9HQEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=habana.ai; dmarc=pass action=none header.from=habana.ai;
- dkim=pass header.d=habana.ai; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=habanalabs.onmicrosoft.com; s=selector2-habanalabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UCUY1L3OUPcWulq+X9QlrGeN+jL16QQA5lyxfI0CIJg=;
- b=GvoS8QPijkd9gy/vOlIr+rccg+H3hSq+lm6NrFyYJTVwVtZQZojFZEH9lYQfE614RHJfZstPRQodrvbmm7/HjXd/hI/GB7c2LTfEytgn0n4OdY9xsoasw3X36E04QlzxfVYhVR4VBm2ZafYFibS/ycENht6d4Js64Dn1vL7d7A4=
-Received: from VI1PR0202MB3277.eurprd02.prod.outlook.com
- (2603:10a6:803:1d::17) by VI1PR02MB4926.eurprd02.prod.outlook.com
- (2603:10a6:803:9a::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Tue, 14 Jul
- 2020 12:07:30 +0000
-Received: from VI1PR0202MB3277.eurprd02.prod.outlook.com
- ([fe80::1863:35ec:4293:eab7]) by VI1PR0202MB3277.eurprd02.prod.outlook.com
- ([fe80::1863:35ec:4293:eab7%6]) with mapi id 15.20.3174.025; Tue, 14 Jul 2020
- 12:07:29 +0000
-From:   Ofir Bitton <obitton@habana.ai>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        SW_Drivers <SW_Drivers@habana.ai>
-Subject: RE: [PATCH 1/3] habanalabs: implement dma-fence mechanism
-Thread-Topic: [PATCH 1/3] habanalabs: implement dma-fence mechanism
-Thread-Index: AQHWWSShqFCRK4JZYk2Bp6Q6RakrCqkFqnEAgAArrQCAAAhQgIAAAWOAgADAMgCAAFu6MA==
-Date:   Tue, 14 Jul 2020 12:07:29 +0000
-Message-ID: <VI1PR0202MB32774769723B6CE154865086BC610@VI1PR0202MB3277.eurprd02.prod.outlook.com>
-References: <20200713155424.24721-1-oded.gabbay@gmail.com>
- <20200713155752.GC267581@kroah.com>
- <CAKMK7uH=Ch4ce-9D5e-RvVwq_oK6Doqtq5QbvpmQ8uPWkMCi2w@mail.gmail.com>
- <20200713190357.GC25301@ziepe.ca>
- <CAKMK7uEvehX2CV3Q5FJrF49-_Xe9gXJ11wDo7xyVsipyuZm23Q@mail.gmail.com>
- <20200714063648.GC662760@kroah.com>
-In-Reply-To: <20200714063648.GC662760@kroah.com>
-Accept-Language: he-IL, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=habana.ai;
-x-originating-ip: [141.226.183.228]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 35a2d9a4-ce65-4ada-c2bc-08d827ee7b66
-x-ms-traffictypediagnostic: VI1PR02MB4926:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR02MB492645C714E83C8A704F6E0BBC610@VI1PR02MB4926.eurprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zuG4in5GRHjdwdzDCk+7P8uu1DUdXSmNIu3q87FT8/BlVP34MZclqZRDf0YGssHbALjKzNCZlEEy2wJkuQ57hEx0sqC9RgNMmN/v2p88wYhKTUB0Qj3BG00X11hMuXuTddfOUWoKLoZmcGKchdaIGUUERz7ZVrhH9BluaScWqp3+K0kIAsi3YuV9COqkpTUzNKnuQQFFGft/H1KDOdHBDYv+S51l6UXSz19AfXlA27m0RordbaBJBzxJilIVSzvPUDqdVgw/xBz96PKX2ONIfcDidpXRuuzp7bwdJWCgHmP2fo4e2QFBARmid/Zf9j/6H1Zd+NX/ILJdXYz0eBiwGEHZzX9ZlB4wjJxroPo6s+QOydvhoZgSXvCh75l0+eIRMsZBLWdUbBL/SqCMSoBx1Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0202MB3277.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(39850400004)(396003)(366004)(136003)(54906003)(186003)(76116006)(8936002)(66446008)(64756008)(53546011)(66946007)(7696005)(66476007)(66556008)(86362001)(4326008)(5660300002)(478600001)(107886003)(71200400001)(33656002)(8676002)(2906002)(83380400001)(26005)(110136005)(55016002)(6506007)(9686003)(316002)(52536014)(966005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: y0wQGG/yQ/iViEwiBnjG9eyOGjEjNZRd2aKOXNqJaKjIUnV67RYId330vPApELxwVOj3kKyiwdjnEHdLyho+DqI32H8QVa7d+Kq4fY3yNM8aowcOo+2fYUjt8cyfN5mm4CkPMfUlnk9yDLhurK1jA1uZ8xzkLsiczMcnSI68PLIJ9dhLmKlcEOEjRf8T/yOR0mLPoauSvqOsgvoe5gTQyrcWF7/aSuI29czyRgr41+JB7+58ScqG5Gdqne2nVqxLsqC5gsynlhKqemSYre9yNwa/i3eoZUfBoTbDIUHfkjYMvV788WEQq3wpYr6aGaueQ1eoucImEWYSIK6sQYw/Lns3Wb8d+KWT1SMEHytjogtfxDdiSYXofz4tU64P62E9BoL6LVZSOueaAkNbqsuNHuGDJjbiQGvEZ4wtQJo9s5S4CQV3Tfy4+9bzKAGkyeTPj1mKp7kUgmUldMq+rE66Ky9CWpI15GpGXSoUJW+4hLT47SOgxI3O1F7frg9vXYYD
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728173AbgGNMKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726630AbgGNMKg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 08:10:36 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFE6C061755;
+        Tue, 14 Jul 2020 05:10:36 -0700 (PDT)
+Received: from cap.home.8bytes.org (p5b006776.dip0.t-ipconnect.de [91.0.103.118])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 4D5321E6;
+        Tue, 14 Jul 2020 14:10:33 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v4 00/75] x86: SEV-ES Guest Support
+Date:   Tue, 14 Jul 2020 14:08:02 +0200
+Message-Id: <20200714120917.11253-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-OriginatorOrg: habana.ai
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0202MB3277.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35a2d9a4-ce65-4ada-c2bc-08d827ee7b66
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2020 12:07:29.6888
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4d4539-213c-4ed8-a251-dc9766ba127a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UWwxtJ+WjpxGEx1b03apWCLDy9fTG4XTTI9HKXGXDPiWmFFEhic2tYUo9HXs2yX4RmR1nqaRCLGB0/89zYvU4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR02MB4926
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sure,
-I will send a new patch using completion instead of dma-fence
+From: Joerg Roedel <jroedel@suse.de>
+
+Hi,
+
+here is the fourth version of the SEV-ES Guest Support patches. I
+addressed the review comments sent to me for the previous version and
+rebased the code v5.8-rc5.
+
+The biggest change in this version is the IST handling code for the
+#VC handler. I adapted the entry code for the #VC handler to the big
+pile of entry code changes merged into v5.8-rc1, which means it no
+longer uses IST shifting (with one exception in the NMI handler, but
+that is not ist-shifting as implemented previously).
+
+The #VC entry code now tries to pretend that the #VC handler does not
+use an IST stack by switching to the task stack if entered from
+user-mode or the SYSCALL entry path. When it is entered from
+kernel-mode it is doing its best to switch back to the interrupted
+stack. This is only possible if it is entered from a known and safe
+kernel stack (e.g. not the entry stack). If the previous stack is not
+safe to use the #VC handler switches to a fall-back stack and calls a
+special handler function which, as of now, just panics the system. For
+now this is safe as #VC exceptions only happen at know places which
+use a safe stack.
+
+The use of the fall-back stack is necessary so that the special
+handler function can safely raise nested #VC exceptions, for
+example to print a panic message.
+
+This implementation has survived overnight stress testing (>14h) with
+'perf top' running for NMI-load and three instances of the x86-selftests
+in a loop.
+
+A git-tree with these patches applied can be found at:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/joro/linux.git/log/?h=sev-es-client-v5.8-rc5
+
+Changes to the previous version:
+
+	* Addressed review comments
+
+	* Rebased to v5.8-rc5
+
+	* Addressed kbuild-bot reports
+
+	* Removed CPUID caching for now
+
+	* Re-implemented IST handling so that the #VC handler supports
+	  nesting
+
+The previous post of the patch-set can be found here:
+
+	v3: https://lore.kernel.org/lkml/20200428151725.31091-1-joro@8bytes.org/
+
+	v2: https://lore.kernel.org/lkml/20200319091407.1481-1-joro@8bytes.org/
+
+	v1: https://lore.kernel.org/lkml/20200211135256.24617-1-joro@8bytes.org/
+
+Please review.
 
 Thanks,
-Ofir
 
------Original Message-----
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>=20
-Sent: Tuesday, July 14, 2020 09:37
-To: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>; Oded Gabbay <oded.gabbay@gmail.com>; Li=
-nux Kernel Mailing List <linux-kernel@vger.kernel.org>; SW_Drivers <SW_Driv=
-ers@habana.ai>; Ofir Bitton <obitton@habana.ai>
-Subject: Re: [PATCH 1/3] habanalabs: implement dma-fence mechanism
+	Joerg
 
-On Mon, Jul 13, 2020 at 09:08:55PM +0200, Daniel Vetter wrote:
-> On Mon, Jul 13, 2020 at 9:03 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Mon, Jul 13, 2020 at 08:34:12PM +0200, Daniel Vetter wrote:
-> > > On Mon, Jul 13, 2020 at 5:57 PM Greg Kroah-Hartman=20
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Mon, Jul 13, 2020 at 06:54:22PM +0300, Oded Gabbay wrote:
-> > > > > From: Ofir Bitton <obitton@habana.ai>
-> > > > >
-> > > > > Instead of using standard dma-fence mechanism designed for=20
-> > > > > GPU's, we introduce our own implementation based on the former=20
-> > > > > one. This implementation is much more sparse than the=20
-> > > > > original, contains only mandatory functionality required by the d=
-river.
-> > > >
-> > > > Sad you can't use the in-kernel code for this, I really don't=20
-> > > > understand what's wrong with using it as-is.
-> > > >
-> > > > Daniel, why do we need/want duplicate code floating around in=20
-> > > > the tree like this?
-> > >
-> > > The rules around dma-fence are ridiculously strict, and it only=20
-> > > makes sense to inflict that upon you if you actually want to=20
-> > > participate in the cross driver uapi built up around dma-buf and dma-=
-fence.
-> > >
-> > > I've recently started some lockdep annotations to better enforce=20
-> > > these rules (and document them), and it's finding tons of subtle=20
-> > > bugs even in drivers/gpu (and I only just started with annotating dri=
-vers:
-> > >
-> > > https://lore.kernel.org/dri-devel/20200707201229.472834-1-daniel.v
-> > > etter@ffwll.ch/
-> > >
-> > > You really don't want to deal with this if you don't have to. If=20
-> > > drivers/gpu folks (who created this) aren't good enough to=20
-> > > understand it, maybe it's not a good idea to sprinkle this all=20
-> > > over the tree. And fundamentally all this is is a slightly fancier=20
-> > > struct completion. Use that one instead, or a wait_queue.
-> > >
-> > > I discussed this a bit with Oded, and he thinks it's easier to=20
-> > > copypaste and simplify, but given that all other drivers seem to=20
-> > > get by perfectly well with completion or wait_queue, I'm not sure=20
-> > > that's a solid case.
-> > >
-> > > Also adding Jason Gunthorpe, who very much suggested this should=20
-> > > be limited to dma-buf/gpu related usage only.
-> >
-> > Without all the cross-driver stuff dma_fence is just a completion.=20
-> > Using dma_fence to get a completion is big abuse of what it is=20
-> > intended for.
-> >
-> > I think the only problem with this patch is that it keeps too much=20
-> > of the dma_fence stuff around. From what I could tell it really just=20
-> > wants to add a kref and completion to struct hl_cs_compl and delete=20
-> > everything to do with dma_fence.
->=20
-> Yeah, that's what I recommended doing too. error flag might be needed=20
-> too I think, but that's it.
+Borislav Petkov (1):
+  KVM: SVM: Use __packed shorthand
 
-Ok, so this should be made much simpler and not use this copy/paste code at=
- all.  I can accept that :)
+Doug Covelli (1):
+  x86/vmware: Add VMware specific handling for VMMCALL under SEV-ES
 
-Ofir, care to redo this?
+Joerg Roedel (53):
+  KVM: SVM: Add GHCB Accessor functions
+  x86/traps: Move pf error codes to <asm/trap_pf.h>
+  x86/insn: Make inat-tables.c suitable for pre-decompression code
+  x86/umip: Factor out instruction fetch
+  x86/umip: Factor out instruction decoding
+  x86/insn: Add insn_get_modrm_reg_off()
+  x86/insn: Add insn_has_rep_prefix() helper
+  x86/boot/compressed/64: Disable red-zone usage
+  x86/boot/compressed/64: Add IDT Infrastructure
+  x86/boot/compressed/64: Rename kaslr_64.c to ident_map_64.c
+  x86/boot/compressed/64: Add page-fault handler
+  x86/boot/compressed/64: Always switch to own page-table
+  x86/boot/compressed/64: Don't pre-map memory in KASLR code
+  x86/boot/compressed/64: Change add_identity_map() to take start and
+    end
+  x86/boot/compressed/64: Add stage1 #VC handler
+  x86/boot/compressed/64: Call set_sev_encryption_mask earlier
+  x86/boot/compressed/64: Check return value of
+    kernel_ident_mapping_init()
+  x86/boot/compressed/64: Add set_page_en/decrypted() helpers
+  x86/boot/compressed/64: Setup GHCB Based VC Exception handler
+  x86/boot/compressed/64: Unmap GHCB page before booting the kernel
+  x86/fpu: Move xgetbv()/xsetbv() into separate header
+  x86/idt: Move IDT to data segment
+  x86/idt: Split idt_data setup out of set_intr_gate()
+  x86/idt: Move two function from k/idt.c to i/a/desc.h
+  x86/head/64: Install boot GDT
+  x86/head/64: Reload GDT after switch to virtual addresses
+  x86/head/64: Load segment registers earlier
+  x86/head/64: Switch to initial stack earlier
+  x86/head/64: Build k/head64.c with -fno-stack-protector
+  x86/head/64: Load IDT earlier
+  x86/head/64: Move early exception dispatch to C code
+  x86/sev-es: Add SEV-ES Feature Detection
+  x86/sev-es: Print SEV-ES info into kernel log
+  x86/sev-es: Compile early handler code into kernel image
+  x86/sev-es: Setup early #VC handler
+  x86/sev-es: Setup GHCB based boot #VC handler
+  x86/sev-es: Allocate and Map stacks for #VC handler
+  x86/sev-es: Allocate and setup IST entry for #VC
+  x86/sev-es: Adjust #VC IST Stack on entering NMI handler
+  x86/dumpstack/64: Add noinstr version of get_stack_info()
+  x86/entry/64: Add entry code for #VC handler
+  x86/sev-es: Wire up existing #VC exit-code handlers
+  x86/sev-es: Handle instruction fetches from user-space
+  x86/sev-es: Handle MMIO String Instructions
+  x86/sev-es: Handle #AC Events
+  x86/sev-es: Handle #DB Events
+  x86/paravirt: Allow hypervisor specific VMMCALL handling under SEV-ES
+  x86/realmode: Add SEV-ES specific trampoline entry point
+  x86/head/64: Setup TSS early for secondary CPUs
+  x86/head/64: Don't call verify_cpu() on starting APs
+  x86/head/64: Rename start_cpu0
+  x86/sev-es: Support CPU offline/online
+  x86/sev-es: Handle NMI State
 
-thanks,
+Martin Radev (1):
+  x86/sev-es: Check required CPU features for SEV-ES
 
-greg k-h
+Tom Lendacky (19):
+  KVM: SVM: Add GHCB definitions
+  x86/cpufeatures: Add SEV-ES CPU feature
+  x86/sev-es: Add support for handling IOIO exceptions
+  x86/sev-es: Add CPUID handling to #VC handler
+  x86/sev-es: Setup per-cpu GHCBs for the runtime handler
+  x86/sev-es: Add Runtime #VC Exception Handler
+  x86/sev-es: Handle MMIO events
+  x86/sev-es: Handle MSR events
+  x86/sev-es: Handle DR7 read/write events
+  x86/sev-es: Handle WBINVD Events
+  x86/sev-es: Handle RDTSC(P) Events
+  x86/sev-es: Handle RDPMC Events
+  x86/sev-es: Handle INVD Events
+  x86/sev-es: Handle MONITOR/MONITORX Events
+  x86/sev-es: Handle MWAIT/MWAITX Events
+  x86/sev-es: Handle VMMCALL Events
+  x86/kvm: Add KVM specific VMMCALL handling under SEV-ES
+  x86/realmode: Setup AP jump table
+  x86/efi: Add GHCB mappings when SEV-ES is active
+
+ arch/x86/Kconfig                           |    1 +
+ arch/x86/boot/Makefile                     |    2 +-
+ arch/x86/boot/compressed/Makefile          |    9 +-
+ arch/x86/boot/compressed/head_64.S         |   32 +-
+ arch/x86/boot/compressed/ident_map_64.c    |  349 +++++
+ arch/x86/boot/compressed/idt_64.c          |   54 +
+ arch/x86/boot/compressed/idt_handlers_64.S |   77 ++
+ arch/x86/boot/compressed/kaslr.c           |   36 +-
+ arch/x86/boot/compressed/kaslr_64.c        |  153 ---
+ arch/x86/boot/compressed/misc.c            |    7 +
+ arch/x86/boot/compressed/misc.h            |   45 +-
+ arch/x86/boot/compressed/sev-es.c          |  214 +++
+ arch/x86/entry/entry_64.S                  |   78 ++
+ arch/x86/include/asm/cpu.h                 |    2 +-
+ arch/x86/include/asm/cpu_entry_area.h      |   33 +-
+ arch/x86/include/asm/cpufeatures.h         |    1 +
+ arch/x86/include/asm/desc.h                |   27 +
+ arch/x86/include/asm/desc_defs.h           |   10 +
+ arch/x86/include/asm/fpu/internal.h        |   33 +-
+ arch/x86/include/asm/fpu/xcr.h             |   37 +
+ arch/x86/include/asm/idtentry.h            |   49 +
+ arch/x86/include/asm/insn-eval.h           |    6 +
+ arch/x86/include/asm/mem_encrypt.h         |    5 +
+ arch/x86/include/asm/msr-index.h           |    3 +
+ arch/x86/include/asm/page_64_types.h       |    1 +
+ arch/x86/include/asm/pgtable.h             |    2 +-
+ arch/x86/include/asm/processor.h           |    1 +
+ arch/x86/include/asm/proto.h               |    1 +
+ arch/x86/include/asm/realmode.h            |    4 +
+ arch/x86/include/asm/segment.h             |    2 +-
+ arch/x86/include/asm/setup.h               |    3 +-
+ arch/x86/include/asm/sev-es.h              |   97 ++
+ arch/x86/include/asm/stacktrace.h          |    2 +
+ arch/x86/include/asm/svm.h                 |  118 +-
+ arch/x86/include/asm/trap_pf.h             |   24 +
+ arch/x86/include/asm/trapnr.h              |    1 +
+ arch/x86/include/asm/traps.h               |   20 +-
+ arch/x86/include/asm/x86_init.h            |   16 +-
+ arch/x86/include/uapi/asm/svm.h            |   11 +
+ arch/x86/kernel/Makefile                   |    5 +
+ arch/x86/kernel/cpu/amd.c                  |    3 +-
+ arch/x86/kernel/cpu/scattered.c            |    1 +
+ arch/x86/kernel/cpu/vmware.c               |   50 +-
+ arch/x86/kernel/dumpstack.c                |    7 +-
+ arch/x86/kernel/dumpstack_64.c             |   47 +-
+ arch/x86/kernel/head64.c                   |  106 +-
+ arch/x86/kernel/head_32.S                  |    4 +-
+ arch/x86/kernel/head_64.S                  |  176 ++-
+ arch/x86/kernel/idt.c                      |   43 +-
+ arch/x86/kernel/kvm.c                      |   35 +-
+ arch/x86/kernel/nmi.c                      |   12 +
+ arch/x86/kernel/sev-es-shared.c            |  507 +++++++
+ arch/x86/kernel/sev-es.c                   | 1403 ++++++++++++++++++++
+ arch/x86/kernel/smpboot.c                  |    4 +-
+ arch/x86/kernel/traps.c                    |   56 +
+ arch/x86/kernel/umip.c                     |   49 +-
+ arch/x86/kvm/svm/svm.c                     |    2 +
+ arch/x86/lib/insn-eval.c                   |  130 ++
+ arch/x86/mm/cpu_entry_area.c               |    3 +-
+ arch/x86/mm/extable.c                      |    1 +
+ arch/x86/mm/mem_encrypt.c                  |   38 +-
+ arch/x86/mm/mem_encrypt_identity.c         |    3 +
+ arch/x86/platform/efi/efi_64.c             |   10 +
+ arch/x86/realmode/init.c                   |   24 +-
+ arch/x86/realmode/rm/header.S              |    3 +
+ arch/x86/realmode/rm/trampoline_64.S       |   20 +
+ arch/x86/tools/gen-insn-attr-x86.awk       |   50 +-
+ tools/arch/x86/tools/gen-insn-attr-x86.awk |   50 +-
+ 68 files changed, 3964 insertions(+), 444 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/ident_map_64.c
+ create mode 100644 arch/x86/boot/compressed/idt_64.c
+ create mode 100644 arch/x86/boot/compressed/idt_handlers_64.S
+ delete mode 100644 arch/x86/boot/compressed/kaslr_64.c
+ create mode 100644 arch/x86/boot/compressed/sev-es.c
+ create mode 100644 arch/x86/include/asm/fpu/xcr.h
+ create mode 100644 arch/x86/include/asm/sev-es.h
+ create mode 100644 arch/x86/include/asm/trap_pf.h
+ create mode 100644 arch/x86/kernel/sev-es-shared.c
+ create mode 100644 arch/x86/kernel/sev-es.c
+
+-- 
+2.27.0
+
