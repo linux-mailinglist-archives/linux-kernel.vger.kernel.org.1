@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C503221FABF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6084D21FAC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730867AbgGNSzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:55:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53020 "EHLO mail.kernel.org"
+        id S1730878AbgGNSzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:55:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730854AbgGNSzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:55:19 -0400
+        id S1730859AbgGNSzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:55:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A7CA21D79;
-        Tue, 14 Jul 2020 18:55:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4BB221D79;
+        Tue, 14 Jul 2020 18:55:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752918;
-        bh=JU237hWnDCNGho2nOLzreWepG0pFmFvZo5x1vMrKeAM=;
+        s=default; t=1594752921;
+        bh=YPWW6g2bZlQUgqHk1g+1fzvKYQHRfjq3261t+6B+jPk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JgFMDQSawG1Pj1qVYEodk/ATASs1bzI1j4g0F2Ccgx+nvM/+ff+OUsiSdP06mK484
-         Ec9DHOiPdEl7qA3O7S+8011WnNOtXCHNKTyDfD2dKbSQUKexMcvWTbxrtgYGHnegCp
-         bn+ic1x9ddu/a45cVJ4RTqNUo7nS2OZE1NZ0HJVk=
+        b=0/NEpk9VF+ixEBFshFAjSk3Z76aATTXWZ7+b3fm3XKkS589gr3H5FlW6WH6S1RpSg
+         xeUwzbQ+OaPSNLMLnYnTVi9M+BsrPG+TZb9DpDyemKY2VjSa7lezUAFOTjqHDz5vKq
+         988ihwdifPQCrC3vxuuf37JeTZFtoLpOQsVaYtQA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 050/166] gpio: pca953x: Fix GPIO resource leak on Intel Galileo Gen 2
-Date:   Tue, 14 Jul 2020 20:43:35 +0200
-Message-Id: <20200714184118.271627771@linuxfoundation.org>
+Subject: [PATCH 5.7 051/166] ASoC: fsl_mqs: Dont check clock is NULL before calling clk API
+Date:   Tue, 14 Jul 2020 20:43:36 +0200
+Message-Id: <20200714184118.321222867@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
 References: <20200714184115.844176932@linuxfoundation.org>
@@ -47,44 +45,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit 5d8913504ccfeea6120df5ae1c6f4479ff09b931 ]
+[ Upstream commit adf46113a608d9515801997fc96cbfe8ffa89ed3 ]
 
-When adding a quirk for IRQ on Intel Galileo Gen 2 the commit ba8c90c61847
-("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
-missed GPIO resource release. We can safely do this in the same quirk, since
-IRQ will be locked by GPIO framework when requested and unlocked on freeing.
+Because clk_prepare_enable and clk_disable_unprepare should
+check input clock parameter is NULL or not internally, then
+we don't need to check them before calling the function.
 
-Fixes: ba8c90c61847 ("gpio: pca953x: Override IRQ for one of the expanders on Galileo Gen 2")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Fixes: 9e28f6532c61 ("ASoC: fsl_mqs: Add MQS component driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/743be216bd504c26e8d45d5ce4a84561b67a122b.1592888591.git.shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-pca953x.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl_mqs.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
-index a10411958e3f2..48bea0997e70c 100644
---- a/drivers/gpio/gpio-pca953x.c
-+++ b/drivers/gpio/gpio-pca953x.c
-@@ -176,7 +176,12 @@ static int pca953x_acpi_get_irq(struct device *dev)
- 	if (ret)
- 		return ret;
+diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
+index 0c813a45bba7c..b44b134390a39 100644
+--- a/sound/soc/fsl/fsl_mqs.c
++++ b/sound/soc/fsl/fsl_mqs.c
+@@ -266,11 +266,9 @@ static int fsl_mqs_runtime_resume(struct device *dev)
+ {
+ 	struct fsl_mqs *mqs_priv = dev_get_drvdata(dev);
  
--	return gpio_to_irq(pin);
-+	ret = gpio_to_irq(pin);
-+
-+	/* When pin is used as an IRQ, no need to keep it requested */
-+	gpio_free(pin);
-+
-+	return ret;
+-	if (mqs_priv->ipg)
+-		clk_prepare_enable(mqs_priv->ipg);
++	clk_prepare_enable(mqs_priv->ipg);
+ 
+-	if (mqs_priv->mclk)
+-		clk_prepare_enable(mqs_priv->mclk);
++	clk_prepare_enable(mqs_priv->mclk);
+ 
+ 	if (mqs_priv->use_gpr)
+ 		regmap_write(mqs_priv->regmap, IOMUXC_GPR2,
+@@ -292,11 +290,8 @@ static int fsl_mqs_runtime_suspend(struct device *dev)
+ 		regmap_read(mqs_priv->regmap, REG_MQS_CTRL,
+ 			    &mqs_priv->reg_mqs_ctrl);
+ 
+-	if (mqs_priv->mclk)
+-		clk_disable_unprepare(mqs_priv->mclk);
+-
+-	if (mqs_priv->ipg)
+-		clk_disable_unprepare(mqs_priv->ipg);
++	clk_disable_unprepare(mqs_priv->mclk);
++	clk_disable_unprepare(mqs_priv->ipg);
+ 
+ 	return 0;
  }
- #endif
- 
 -- 
 2.25.1
 
