@@ -2,116 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9609821FD6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D672921FD70
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbgGNTbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:31:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728428AbgGNTbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:31:43 -0400
-Received: from tzanussi-mobl (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0598122AB9;
-        Tue, 14 Jul 2020 19:31:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594755102;
-        bh=8KHF2h/g6QZX6HAOpadCNV8iYbCZQg/UJbT2TwRfoDA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=RLMI3IT5XftXXkKdJdfZsBqaY7vC7WmySxrU00Iq19joSNpzUzYKyJ5+HiRNXmn4c
-         u6BLKnNZHXJ0zOf4bzdB62cA9aOppH4ZRIA0Nvmj4saPt7OWS39IHBXfdGDcTwExaA
-         cE1tifWjTvatN0qcRSK0DHnMEXO5WTQfaKQ4jfuU=
-Message-ID: <a9444792fd48b67493902b50a66a287fda0fb2c6.camel@kernel.org>
-Subject: Re: [ANNOUNCE] 4.19.132-rt59
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Clark Williams <williams@redhat.com>
-Date:   Tue, 14 Jul 2020 14:31:41 -0500
-In-Reply-To: <20200714183512.GA18816@duo.ucw.cz>
-References: <82932b48972f38fccf9920e2ec75b555c2b2494a.camel@kernel.org>
-         <20200714183512.GA18816@duo.ucw.cz>
+        id S1729532AbgGNTfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728768AbgGNTfF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:35:05 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC54BC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:35:04 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b25so24978102ljp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:35:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TmvrJI/J3yG66g6pPz5Il+RcCg67c3v/jT1iQASKlcc=;
+        b=KIYXfollvDwZIWSi8MBvzI16dhsw+y4zL9hnXlh1UD0SE8cjPtPzh3zCIWaf7usmKY
+         sJIPvwRi57eB+/xJI+6JaFihnvlQfFnptYDDF1G9FGiSyn3r0SxvQFRYD3v6hzm4/QTE
+         v64cADt8D/wtG1AQ2083itD+hTnNb9/mL5p7o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TmvrJI/J3yG66g6pPz5Il+RcCg67c3v/jT1iQASKlcc=;
+        b=Z58vQOg//nsmUU7zQOP1xwUPlZjB2h02Zko1bJWkVnDqPljy2UOsoRnQ8ZKqr/0TkV
+         NzBujEoygaJSmDVAFIYNGpcquJdag2gsLd2oV+FOBoKRqHB7+rlr3A1+rR8fe8zKSfLE
+         8hYSKK4el8Ts6PhssA9fsFM009ayjvEoWhGjAcUcB/qLjCa/1lJRGsLJoyVvJsCSR7V2
+         Qs8awhen0zZM4IrzVcVyulcHYKnRagQhuIRWoQjuFnVu6VW+ZYBMsjLd4sK/A9VTBoMQ
+         3MTbhnarKCrOTsuQrVS/cBf4/1NYGEzSvDk4ReiaeUyBsc1HlWoWLWbyabsm+V0kf6gZ
+         xp0w==
+X-Gm-Message-State: AOAM533fiyu1aJHUxXXqBzzeLrgQuyZmAd/kYVgzco/zy/UsXUIOTBtg
+        enYyVesTE9QeCIM2Kmacu1LQvmBJeOA=
+X-Google-Smtp-Source: ABdhPJxu+JkHL89co3sKA71u49FAq/0LNySvRORcRi8fR6PdZF6DHnytYXxeiS84ShQF/+mn3MQkbw==
+X-Received: by 2002:a2e:81a:: with SMTP id 26mr3142876lji.460.1594755302987;
+        Tue, 14 Jul 2020 12:35:02 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id i3sm2391ljj.64.2020.07.14.12.35.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 12:35:02 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id s16so13039928lfp.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:35:01 -0700 (PDT)
+X-Received: by 2002:a19:8a07:: with SMTP id m7mr2908470lfd.31.1594755301618;
+ Tue, 14 Jul 2020 12:35:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200714190427.4332-1-hch@lst.de>
+In-Reply-To: <20200714190427.4332-1-hch@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 14 Jul 2020 12:34:45 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgxV9We+nVcJtQu2DHco+HSeja-WqVdA-KUcB=nyUYuoQ@mail.gmail.com>
+Message-ID: <CAHk-=wgxV9We+nVcJtQu2DHco+HSeja-WqVdA-KUcB=nyUYuoQ@mail.gmail.com>
+Subject: Re: decruft the early init / initrd / initramfs code v2
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Song Liu <song@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-raid@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+On Tue, Jul 14, 2020 at 12:06 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> this series starts to move the early init code away from requiring
+> KERNEL_DS to be implicitly set during early startup.  It does so by
+> first removing legacy unused cruft, and the switches away the code
+> from struct file based APIs to our more usual in-kernel APIs.
 
-On Tue, 2020-07-14 at 20:35 +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > 
-> > I'm pleased to announce the 4.19.132-rt59 stable release.
-> > 
-> > This release is just an update to the new stable 4.19.132
-> > version and no RT specific changes have been made.
-> > 
-> > You can get this release via the git tree at:
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-
-> > rt.git
-> > 
-> >   branch: v4.19-rt
-> >   Head SHA1: 1eebf4069aa37e54330cce9a42608517ea6996fe
-> > 
-> > Or to build 4.19.132-rt59 directly, the following patches should be
-> > applied:
-> 
-> Thanks a lot.
-> 
-> But now I am confused, I completely missed announcements for
-> v4.19.127-rt55 to v4.19.131-rt58.
-> 
-> And for example -rt56 is not listed in
-> 
-> 
-https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/4.19/older/sha256sums.asc
-> 
+Looks good to me, with the added note on the utimes cruft too as a
+further cleanup (separate patch).
 
-Right, this is because we up the rt version every time we merge a
-stable version and have conflicts, and in this release there were a
-lot, so it jumped from -rt55 to -rt59.  We only announce the releases
-and not the intervening version bumps, which is why you couldn't find
-any announcements for them. 
+So you can add my acked-by.
 
-There are more details about exactly how the version numbers change
-here:
+I _would_ like the md parts to get a few more acks. I see the one from
+Song Liu, anybody else in md land willing to go through those patches?
+They were the bulk of it, and the least obvious to me because I don't
+know that code at all?
 
-  https://wiki.linuxfoundation.org/realtime/documentation/start
-
-> ...aha, and the versions do not have signed tags, either:
-> 
-> pavel@amd:~/cip/k$ git show v4.19.131-rt58
-> fatal: ambiguous argument 'v4.19.131-rt58': unknown revision or path
-> not in the working tree.
-> 
-
-Yeah, thanks for pointing that out.  Looks like my script doesn't push
-the intervening tags correctly, but I've pushed them out now.
-
-> Is that because they were created just as quick steps towards -rt59?
-> 
-
-Yeah, pretty much.
-
-Thanks,
-
-Tom
-
-> Best regards,
-> 							Pavel
-
+              Linus
