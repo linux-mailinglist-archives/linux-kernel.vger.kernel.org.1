@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF1121FA06
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF1921FA97
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgGNSsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:48:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44164 "EHLO mail.kernel.org"
+        id S1730699AbgGNSx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:53:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729982AbgGNSsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:48:37 -0400
+        id S1730113AbgGNSxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:53:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29C6D22B2B;
-        Tue, 14 Jul 2020 18:48:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 441E922BEF;
+        Tue, 14 Jul 2020 18:53:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752516;
-        bh=NbpJd0Lm+GZx1BSXzmwTJkP2fHhPnzL6+/cCHrlwfkA=;
+        s=default; t=1594752833;
+        bh=EiZ93p2usv/LoFYCN6aaZNeVxDqwVAnsSNJ+CTiv9dc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L577KsF/X2c7ZqUHBvpFM30W10/FHCdHKVSYGkcWUTFHTdjBDbI/c4SiMtsjCzkUU
-         W1JOnWe/gtn4b4Sr1EoSZrcRu/P2YWp6jqz6MOrebIDJeRmwe4gNIgRs7NdPKt8shn
-         kWjsenH0IhK+pRq0vm19RBtdxCynKWB/UcvGGbXI=
+        b=JVGmkVNEAgSqIhyZ1k+tfB1oVLzgAGD9RIRe6ARsThHTZn9UHoYvYveOVulsO9SVP
+         OPdqkTVWdRIBvItYgS4uZ767adazzFvnQJaTFC/61P5nhHGr+BJobHmV6lh1J0iyu+
+         T3+yyPruZ1jkenLgoERe3e5cBzlsJlB6z+2jZ7qA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephane Eranian <eranian@google.com>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 005/109] perf/x86/rapl: Move RAPL support to common x86 code
-Date:   Tue, 14 Jul 2020 20:42:59 +0200
-Message-Id: <20200714184105.778466736@linuxfoundation.org>
+        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 018/166] spi: spidev: fix a race between spidev_release and spidev_remove
+Date:   Tue, 14 Jul 2020 20:43:03 +0200
+Message-Id: <20200714184116.766310701@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,107 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephane Eranian <eranian@google.com>
+From: Zhenzhong Duan <zhenzhong.duan@gmail.com>
 
-[ Upstream commit fd3ae1e1587d64ef8cc8e361903d33625458073e ]
+[ Upstream commit abd42781c3d2155868821f1b947ae45bbc33330d ]
 
-To prepare for support of both Intel and AMD RAPL.
+Imagine below scene, spidev is referenced after it's freed.
 
-As per the AMD PPR, Fam17h support Package RAPL counters to monitor power usage.
-The RAPL counter operates as with Intel RAPL, and as such it is beneficial
-to share the code.
+spidev_release()                spidev_remove()
+...
+                                spin_lock_irq(&spidev->spi_lock);
+                                    spidev->spi = NULL;
+                                spin_unlock_irq(&spidev->spi_lock);
+mutex_lock(&device_list_lock);
+dofree = (spidev->spi == NULL);
+if (dofree)
+    kfree(spidev);
+mutex_unlock(&device_list_lock);
+                                mutex_lock(&device_list_lock);
+                                list_del(&spidev->device_entry);
+                                device_destroy(spidev_class, spidev->devt);
+                                clear_bit(MINOR(spidev->devt), minors);
+                                if (spidev->users == 0)
+                                    kfree(spidev);
+                                mutex_unlock(&device_list_lock);
 
-No change in functionality.
+Fix it by resetting spidev->spi in device_list_lock's protection.
 
-Signed-off-by: Stephane Eranian <eranian@google.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200527224659.206129-2-eranian@google.com
+Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+Link: https://lore.kernel.org/r/20200618032125.4650-1-zhenzhong.duan@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/Kconfig            | 6 +++---
- arch/x86/events/Makefile           | 1 +
- arch/x86/events/intel/Makefile     | 2 --
- arch/x86/events/{intel => }/rapl.c | 9 ++++++---
- 4 files changed, 10 insertions(+), 8 deletions(-)
- rename arch/x86/events/{intel => }/rapl.c (98%)
+ drivers/spi/spidev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/events/Kconfig b/arch/x86/events/Kconfig
-index 9a7a1446cb3a0..4a809c6cbd2f5 100644
---- a/arch/x86/events/Kconfig
-+++ b/arch/x86/events/Kconfig
-@@ -10,11 +10,11 @@ config PERF_EVENTS_INTEL_UNCORE
- 	available on NehalemEX and more modern processors.
+diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+index 80dd1025b9530..82e6481fdf950 100644
+--- a/drivers/spi/spidev.c
++++ b/drivers/spi/spidev.c
+@@ -786,13 +786,13 @@ static int spidev_remove(struct spi_device *spi)
+ {
+ 	struct spidev_data	*spidev = spi_get_drvdata(spi);
  
- config PERF_EVENTS_INTEL_RAPL
--	tristate "Intel rapl performance events"
--	depends on PERF_EVENTS && CPU_SUP_INTEL && PCI
-+	tristate "Intel/AMD rapl performance events"
-+	depends on PERF_EVENTS && (CPU_SUP_INTEL || CPU_SUP_AMD) && PCI
- 	default y
- 	---help---
--	Include support for Intel rapl performance events for power
-+	Include support for Intel and AMD rapl performance events for power
- 	monitoring on modern processors.
++	/* prevent new opens */
++	mutex_lock(&device_list_lock);
+ 	/* make sure ops on existing fds can abort cleanly */
+ 	spin_lock_irq(&spidev->spi_lock);
+ 	spidev->spi = NULL;
+ 	spin_unlock_irq(&spidev->spi_lock);
  
- config PERF_EVENTS_INTEL_CSTATE
-diff --git a/arch/x86/events/Makefile b/arch/x86/events/Makefile
-index 9e07f554333fb..b418ef6878796 100644
---- a/arch/x86/events/Makefile
-+++ b/arch/x86/events/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-y					+= core.o probe.o
-+obj-$(PERF_EVENTS_INTEL_RAPL)		+= rapl.o
- obj-y					+= amd/
- obj-$(CONFIG_X86_LOCAL_APIC)            += msr.o
- obj-$(CONFIG_CPU_SUP_INTEL)		+= intel/
-diff --git a/arch/x86/events/intel/Makefile b/arch/x86/events/intel/Makefile
-index 3468b0c1dc7c9..e67a5886336c1 100644
---- a/arch/x86/events/intel/Makefile
-+++ b/arch/x86/events/intel/Makefile
-@@ -2,8 +2,6 @@
- obj-$(CONFIG_CPU_SUP_INTEL)		+= core.o bts.o
- obj-$(CONFIG_CPU_SUP_INTEL)		+= ds.o knc.o
- obj-$(CONFIG_CPU_SUP_INTEL)		+= lbr.o p4.o p6.o pt.o
--obj-$(CONFIG_PERF_EVENTS_INTEL_RAPL)	+= intel-rapl-perf.o
--intel-rapl-perf-objs			:= rapl.o
- obj-$(CONFIG_PERF_EVENTS_INTEL_UNCORE)	+= intel-uncore.o
- intel-uncore-objs			:= uncore.o uncore_nhmex.o uncore_snb.o uncore_snbep.o
- obj-$(CONFIG_PERF_EVENTS_INTEL_CSTATE)	+= intel-cstate.o
-diff --git a/arch/x86/events/intel/rapl.c b/arch/x86/events/rapl.c
-similarity index 98%
-rename from arch/x86/events/intel/rapl.c
-rename to arch/x86/events/rapl.c
-index 5053a403e4ae0..3c222d6fdee3b 100644
---- a/arch/x86/events/intel/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -1,11 +1,14 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Support Intel RAPL energy consumption counters
-+ * Support Intel/AMD RAPL energy consumption counters
-  * Copyright (C) 2013 Google, Inc., Stephane Eranian
-  *
-  * Intel RAPL interface is specified in the IA-32 Manual Vol3b
-  * section 14.7.1 (September 2013)
-  *
-+ * AMD RAPL interface for Fam17h is described in the public PPR:
-+ * https://bugzilla.kernel.org/show_bug.cgi?id=206537
-+ *
-  * RAPL provides more controls than just reporting energy consumption
-  * however here we only expose the 3 energy consumption free running
-  * counters (pp0, pkg, dram).
-@@ -58,8 +61,8 @@
- #include <linux/nospec.h>
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
--#include "../perf_event.h"
--#include "../probe.h"
-+#include "perf_event.h"
-+#include "probe.h"
- 
- MODULE_LICENSE("GPL");
- 
+-	/* prevent new opens */
+-	mutex_lock(&device_list_lock);
+ 	list_del(&spidev->device_entry);
+ 	device_destroy(spidev_class, spidev->devt);
+ 	clear_bit(MINOR(spidev->devt), minors);
 -- 
 2.25.1
 
