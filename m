@@ -2,70 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F28A21FEF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D328521FEF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgGNUyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 16:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726442AbgGNUyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 16:54:03 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2CA220658;
-        Tue, 14 Jul 2020 20:54:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594760043;
-        bh=LrI6TvbFj8VaPzxpp5ekzeAMl8autdFdnS/2bB9ZGF4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t3+1RnT8+rDhVNw2EQLq8U3lJLOrZp7oVzOLMqPaKBEK9GVdooPlmF++zdcsk1+X1
-         ejPQLSrHEcog43UBm0ufElUp7iBgBfPN2WPd/z+mu9ANozuJF/2lkbh7NzC5lb2yuu
-         wDiQUxF+13uMOFxohJUKI0OXfaaMqX3v/Q9oUyJ0=
-Date:   Tue, 14 Jul 2020 13:54:01 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Victor Hsieh <victorhsieh@google.com>,
-        v9fs-developer@lists.sourceforge.net,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] fs/9p: Fix TCREATE's fid in protocol
-Message-ID: <20200714205401.GE1064009@gmail.com>
-References: <20200713215759.3701482-1-victorhsieh@google.com>
- <20200714121249.GA21928@nautica>
+        id S1728000AbgGNUzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 16:55:16 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:58734 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726442AbgGNUzP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 16:55:15 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKqujA008190;
+        Tue, 14 Jul 2020 20:54:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=9gAydN9tkf7vqIv4AFRYx4WuisnKrEAgHU9j5Ph1rdU=;
+ b=NW03zk8Dwv+MsKoWXK123RITG7VK0dHlNAjHPxyU/x1WQFR8xZ7jozc3/rC5RYBG414u
+ 6o9WCHjV2K+Ln9hLFSoxiR4xH5ewupyQ2Yaln4vxgPiFBWvxLVfhbRb83QlMjrOnTaUU
+ xBM3GYEfUqjKOnQV1Pf2YQSkHK18sGZx6/UFlwYZCeY2B3SDW7EJq9i22IrultOM55EW
+ uhMO9a7HnXQ1rwFcshjia+7acrTbDEEoQ+t1WiQxzIkhR8DVl+8U0sM6A0yOXzxgmLxj
+ iIVoYQHmgN8ROjp2LQhk3bkmSeE5BQHURuhwk25hFGdKYY5PJaY+bMe+Sw0kv8nF8foq uQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 32762nfnt8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Jul 2020 20:54:58 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKrcTG184155;
+        Tue, 14 Jul 2020 20:54:57 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 327q6t1en1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Jul 2020 20:54:57 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06EKstaL032357;
+        Tue, 14 Jul 2020 20:54:55 GMT
+Received: from localhost.localdomain (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Jul 2020 13:54:55 -0700
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Sistare <steven.sistare@oracle.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: [PATCH v3] x86/mm: use max memory block size on bare metal
+Date:   Tue, 14 Jul 2020 16:54:50 -0400
+Message-Id: <20200714205450.945834-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714121249.GA21928@nautica>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007140145
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 spamscore=0
+ clxscore=1015 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 phishscore=0 adultscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007140145
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 02:12:49PM +0200, Dominique Martinet wrote:
-> 
-> > Fixes: 5643135a2846 ("fs/9p: This patch implements TLCREATE for 9p2000.L protocol.")
-> > Signed-off-by: Victor Hsieh <victorhsieh@google.com>
-> > Cc: stable@vger.kernel.org
-> 
-> (afaiu it is normally frowned upon for developers to add this cc (I can
-> understand stable@ not wanting spam discussing issues left and right
-> before maintainers agreed on them!) ; I can add it to the commit itself
-> if requested but they normally pick most such fixes pretty nicely for
-> backport anyway; I see most 9p patches backported as long as the patch
-> applies cleanly which is pretty much all the time.
-> Please let me know if I understood that incorrectly)
-> 
+Some of our servers spend significant time at kernel boot initializing
+memory block sysfs directories and then creating symlinks between them
+and the corresponding nodes.  The slowness happens because the machines
+get stuck with the smallest supported memory block size on x86 (128M),
+which results in 16,288 directories to cover the 2T of installed RAM.
+The search for each memory block is noticeable even with
+commit 4fb6eabf1037 ("drivers/base/memory.c: cache memory blocks in
+xarray to accelerate lookup").
 
-Some people assume this, but the stable maintainers themselves say that Cc'ing
-stable@vger.kernel.org on in-development patches is fine:
-https://lkml.kernel.org/r/20200423184219.GA80650@kroah.com
+Commit 078eb6aa50dc ("x86/mm/memory_hotplug: determine block size based
+on the end of boot memory") chooses the block size based on alignment
+with memory end.  That addresses hotplug failures in qemu guests, but
+for bare metal systems whose memory end isn't aligned to even the
+smallest size, it leaves them at 128M.
 
-And doing so is pretty much inevitable, since the tag gets picked up by
-'git send-email'.  (Yes, there's also "stable@kernel.org", but it's not actually
-what is documented.)
+Make kernels that aren't running on a hypervisor use the largest
+supported size (2G) to minimize overhead on big machines.  Kernel boot
+goes 7% faster on the aforementioned servers, shaving off half a second.
 
-- Eric
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Sistare <steven.sistare@oracle.com>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+
+v3:
+ - Add more accurate hypervisor check.  Someone kindly pointed me to
+   517c3ba00916 ("x86/speculation/mds: Apply more accurate check on
+   hypervisor platform"), and v2 had the same issue.
+ - Rebase on v5.8-rc5
+
+v2:
+ - Thanks to David for the idea to make this conditional based on
+   virtualization.
+ - Update performance numbers to account for 4fb6eabf1037 (David)
+
+ arch/x86/mm/init_64.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+index dbae185511cdf..51ea8b8e2959d 100644
+--- a/arch/x86/mm/init_64.c
++++ b/arch/x86/mm/init_64.c
+@@ -1406,6 +1406,15 @@ static unsigned long probe_memory_block_size(void)
+ 		goto done;
+ 	}
+ 
++	/*
++	 * Use max block size to minimize overhead on bare metal, where
++	 * alignment for memory hotplug isn't a concern.
++	 */
++	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR)) {
++		bz = MAX_BLOCK_SIZE;
++		goto done;
++	}
++
+ 	/* Find the largest allowed block size that aligns to memory end */
+ 	for (bz = MAX_BLOCK_SIZE; bz > MIN_MEMORY_BLOCK_SIZE; bz >>= 1) {
+ 		if (IS_ALIGNED(boot_mem_end, bz))
+
+base-commit: 11ba468877bb23f28956a35e896356252d63c983
+-- 
+2.27.0
+
