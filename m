@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A760B21EB50
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE1521EB5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgGNI2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 04:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbgGNI2B (ORCPT
+        id S1726461AbgGNIad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 04:30:33 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:60520 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgGNIac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 04:28:01 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92537C061755;
-        Tue, 14 Jul 2020 01:28:01 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o13so7304016pgf.0;
-        Tue, 14 Jul 2020 01:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RFASHkwcTOcp5xJmcZ6cr6YyCkNb4rp9EMZoB3APeEs=;
-        b=ULwKSSLYkH+bjGYv5JxlkMvcFS4rwLeo8EWsF8xUFQDq33RBMR3P4tXOWkrtgiOSwn
-         yXU3tTBk9X6raRX/hmHLwrPivEbgy4Aw2IFqE6C0HhH8ZswZh4FcMatEgN2aPTU5r21B
-         A7xq0B+hteJs5aqnD3We1qYIfLfyg7sgIb+ZOQXH9VXaFuj1nhLpLQmRFHIczqQ2v26v
-         P/LpX/7D8fRyBXbw8ORi0JWRehF6tUh4zp9nJMrKfXuV5WH3mCBtVt83Bk/Dvy8bhWn6
-         rfeezApSCQVKzQW18J+E1/JReIdJzotb61bOHY0biXkpeWPJjQNk/R4mNxppiQnxiSiW
-         /Okg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RFASHkwcTOcp5xJmcZ6cr6YyCkNb4rp9EMZoB3APeEs=;
-        b=Bmy1cEPX+uB9goPyYPDD/QNXS6uemt3It0L49ufrbswrW/CtnpRympdq8pdAw+m/ER
-         mX0B5sRNZfK/gjM2xOX7HivydM0Cg9falJf6CZT/RAEfTxuFliKqXpYdfY0l/7W6rL19
-         97XII1cE0wbyrHRPQFTJuwxLDMBWH7c5OSQ4RzfDU+JjosjBXZDo8sChEOxEJxEudWde
-         eM5C9rOBOGkQdDm8WMI8s35Q9vLOzyCsypkiSwZ3YIMaCaQz9pmvia/cg8Y8w3a7snZN
-         6r9RLFa4BFMRUptbbxTyuvKwJXigeom+PnC9LuSlygOylpv0kfEXfjOSO6ltRtqjvRAA
-         bEIA==
-X-Gm-Message-State: AOAM531A136IBLVwLEc2OVNbRGIeROUoLDng2saLe2MdrmQPfJhgLiWg
-        /o9rw5hqygVQfvwXUguKEly3LxOYokDQnzFWVsQ=
-X-Google-Smtp-Source: ABdhPJy1EYtUDBT/tte1IBbm2WCblUvd+mmLWT5JgnWMWmxUN4zvKXGVtrhbtl66aUckEFjZ0g/VeOlVNdEJb1zRQO0=
-X-Received: by 2002:a63:924b:: with SMTP id s11mr2506093pgn.74.1594715281116;
- Tue, 14 Jul 2020 01:28:01 -0700 (PDT)
+        Tue, 14 Jul 2020 04:30:32 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06E8S3W8158519;
+        Tue, 14 Jul 2020 08:30:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=bmrC3uO0hL9mY59/ViKJ+rhM/g+cSn+ihe2iBW1t2lA=;
+ b=nP9sv9HQLvr50sCLZVHB8NUFvJJPfh8ZULE2AUPbZhuSmQdwVh+AgYKI4alEJOfKBf9o
+ 37mU7E5wIGriv4Ye0p7eL8PIFtuXTjzsqZfLgwoitfx84Zgtqx5Lu8WfTPIJpTHs+cmg
+ EoyhyJu0OhAGfjwW/PZN+XyJ++lgVv6+YWKrWeQuQM7aAQ50Br9hQPm7G/EZRZ2QGLiJ
+ P2GoTv6a7i1cPSIszxN59j716BMLTx1/g2nYmxBJfWZvdP/7tw5ShlcYO3vY+ub3zYQa
+ 0cFrj0td3c9hGD8jf8WN3CkSfCK4gTkONWPvR02NY2iGoHxllUPsrw9X893nm7Qrh2Mk cA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 3274ur3yj9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Jul 2020 08:30:24 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06E8Hmsw084482;
+        Tue, 14 Jul 2020 08:28:23 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 327qb3a5qk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Jul 2020 08:28:23 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06E8SNPG009448;
+        Tue, 14 Jul 2020 08:28:23 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 14 Jul 2020 01:28:22 -0700
+Date:   Tue, 14 Jul 2020 11:28:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Suraj Upadhyay <usuraj35@gmail.com>
+Cc:     manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 4/6] staging: qlge: qlge_main: Simplify while statements.
+Message-ID: <20200714082816.GA2571@kadam>
+References: <cover.1594642213.git.usuraj35@gmail.com>
+ <1bb472c5595d832221fd142dddb68907feeeecbe.1594642213.git.usuraj35@gmail.com>
+ <20200713141235.GT2549@kadam>
+ <20200714064022.GA12651@blackclown>
 MIME-Version: 1.0
-References: <20200714081510.6070-1-hdegoede@redhat.com> <CAHp75Vd6uGNw5m3-Tc1tkABLT_Wi7CtW2yo8+B5TpYV4U8XE9A@mail.gmail.com>
-In-Reply-To: <CAHp75Vd6uGNw5m3-Tc1tkABLT_Wi7CtW2yo8+B5TpYV4U8XE9A@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 14 Jul 2020 11:27:43 +0300
-Message-ID: <CAHp75Ve9HF4WVkiUA77s9LsN6d8oaFPRgjLi86FnDSHgmVvTNA@mail.gmail.com>
-Subject: Re: [PATCH 5.8 regression fix] platform/x86: thinkpad_acpi: Revert:
- Use strndup_user() in dispatch_proc_write()
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        Thinkpad-acpi devel ML <ibm-acpi-devel@lists.sourceforge.net>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714064022.GA12651@blackclown>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9681 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 spamscore=0 phishscore=0 suspectscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007140063
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9681 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007140064
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 11:21 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Tue, Jul 14, 2020 at 11:15 AM Hans de Goede <hdegoede@redhat.com> wrote:
-> >
-> > Commit 35d13c7a0512 ("platform/x86: thinkpad_acpi: Use strndup_user()
-> > in dispatch_proc_write()") cleaned up dispatch_proc_write() by replacing
-> > the code to copy the passed in data from userspae with strndup_user().
->
-> user space
->
-> > But strndup_user() expects a 0 terminated input buffer and the buffer
-> > passed to dispatch_proc_write() is NOT 0 terminated.
+On Tue, Jul 14, 2020 at 12:10:22PM +0530, Suraj Upadhyay wrote:
+> On Mon, Jul 13, 2020 at 05:12:35PM +0300, Dan Carpenter wrote:
+> > On Mon, Jul 13, 2020 at 05:50:14PM +0530, Suraj Upadhyay wrote:
+> > > Simplify while loops into more readable and simple for loops.
+> > > 
+> > 
+> > I don't think either is more clear that the other.  Walter Harms hates
+> > count down loops and he's not entirely wrong...
+> > 
+> > regards,
+> > dan carpenter
+> 
+> Hi Dan,
+> 	Thanks for your response.
+> Should I send a v2 of this patch or not ??
+> Also do you have any problems with the other two patches doing the same
+> thing in different files ??
+> I am all ears.
 
-Second though, perhaps it's a simple wrong count parameter?
-strndup_user(..., min(count, PAGE_SIZE)) or so would work?
+I would just resend patch 6/6.  If this is your driver and you're going
+to be working on it extensively then you do what makes you feel
+comfortable.  But to me the original code seems fine with while count
+down loops.
 
-> > So this change leads to strndup_user() copying some extra random bytes
-> > from userspace till it hits a 0 byte.
-> >
-> > This commit reverts the change to use strndup_user() fixing the
-> > buffer being passed to the ibm_struct.write() call back containing extra
-> > junk at the end.
->
-> Can we simply use memdup_user()?
-> And thanks for catching this up!
+regards,
+dan carpenter
 
-
-
--- 
-With Best Regards,
-Andy Shevchenko
