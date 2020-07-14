@@ -2,269 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B65A21F774
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 18:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6D821F75F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 18:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbgGNQhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 12:37:24 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:52729 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725931AbgGNQhX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 12:37:23 -0400
-Received: by mail-il1-f197.google.com with SMTP id o17so12310519ilt.19
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 09:37:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=75r0bKaYzCUPJq0CQLzub/SBEorxWQMEleK0P8TUUfo=;
-        b=aJ3ITdE+LGmV9rgDXUFmcGTjZ9t881Npd2ynIFpNM+y6wTqTxFlsDy3PKEmqOUi9KP
-         zKfrMG08MLmGM2ywSaw91bP6QtgSE6E5dmT6VpfgeiS+5yskF38mgAOE6LvaKnaEgdt8
-         M2m4q5ZTossGjnthzuDUgHu0EdaXLgwoYfvlnxKA53GvhVOYBbpo7aJnkREuAG7dQRSl
-         TJTu+Hm/2oVzl8fzByrK8oRJBGA0SIfUwAA9CMBQ/BN/5pXyQND6+RJg4EnAOc9CltEJ
-         xZxZ5yYNHX3IchF3mrf6vcolOPcPHbEoxzO17xLU9L/DqT8pJUCqcdSe6F2CyD2tMbw9
-         7Ysg==
-X-Gm-Message-State: AOAM531m1yx0kmwuQ/rWaykPIcmQE5at6Sje9DDV4+mzoRK49zWXqLwo
-        aPs9Kj0qW4pdQN+LGSjI+X7/NOHMCr8yjbAL3H6fzcO8nHg1
-X-Google-Smtp-Source: ABdhPJzjfKrJmrpaSlNo9wjgOZ7gFUKTYGavk0VCi3LaJt0DkbD8WH+ZB9yxwHFIZtZaKZun6QKnhMio/AtIXGIKPgRidbDZJL6I
+        id S1728001AbgGNQcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 12:32:50 -0400
+Received: from mga03.intel.com ([134.134.136.65]:63516 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726062AbgGNQct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 12:32:49 -0400
+IronPort-SDR: TBhSCOYiAfpQiyktt+PWuzmEWTFArAYRyBIgxuMsJCl6PciaDARBnS/FRbJYuLsHGFHmbGcJfQ
+ myKhi0rwQ0ww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="148957026"
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="148957026"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 09:32:48 -0700
+IronPort-SDR: VIIs1ZhnFb2/oR+R9r078i98dlsTEFvH/PoGIlyJf5/fUblIkEDHEi6vJ4Rx8zhuKXqvbKt5+I
+ Cscr8DBfInkQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="317775607"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Jul 2020 09:32:47 -0700
+Date:   Tue, 14 Jul 2020 09:39:09 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v3 2/4] iommu: Add iommu_aux_at(de)tach_group()
+Message-ID: <20200714093909.1ab93c9e@jacob-builder>
+In-Reply-To: <20200714055703.5510-3-baolu.lu@linux.intel.com>
+References: <20200714055703.5510-1-baolu.lu@linux.intel.com>
+        <20200714055703.5510-3-baolu.lu@linux.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a92:cece:: with SMTP id z14mr5319119ilq.120.1594744642220;
- Tue, 14 Jul 2020 09:37:22 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 09:37:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e8398205aa696bc3@google.com>
-Subject: possible deadlock in dev_uc_unsync
-From:   syzbot <syzbot+708f34079caa31416e39@syzkaller.appspotmail.com>
-To:     ap420073@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 14 Jul 2020 13:57:01 +0800
+Lu Baolu <baolu.lu@linux.intel.com> wrote:
 
-syzbot found the following crash on:
+> This adds two new aux-domain APIs for a use case like vfio/mdev where
+> sub-devices derived from an aux-domain capable device are created and
+> put in an iommu_group.
+> 
+> /**
+>  * iommu_aux_attach_group - attach an aux-domain to an iommu_group
+> which
+>  *                          contains sub-devices (for example mdevs)
+> derived
+>  *                          from @dev.
+>  * @domain: an aux-domain;
+>  * @group:  an iommu_group which contains sub-devices derived from
+> @dev;
+>  * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
+>  *
+>  * Returns 0 on success, or an error value.
+>  */
+> int iommu_aux_attach_group(struct iommu_domain *domain,
+>                            struct iommu_group *group,
+>                            struct device *dev)
+> 
+> /**
+>  * iommu_aux_detach_group - detach an aux-domain from an iommu_group
+>  *
+>  * @domain: an aux-domain;
+>  * @group:  an iommu_group which contains sub-devices derived from
+> @dev;
+>  * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
+>  *
+>  * @domain must have been attached to @group via
+> iommu_aux_attach_group(). */
+> void iommu_aux_detach_group(struct iommu_domain *domain,
+>                             struct iommu_group *group,
+>                             struct device *dev)
+> 
+> It also adds a flag in the iommu_group data structure to identify
+> an iommu_group with aux-domain attached from those normal ones.
+> 
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/iommu/iommu.c | 58
+> +++++++++++++++++++++++++++++++++++++++++++ include/linux/iommu.h |
+> 17 +++++++++++++ 2 files changed, 75 insertions(+)
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index e1fdd3531d65..cad5a19ebf22 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -45,6 +45,7 @@ struct iommu_group {
+>  	struct iommu_domain *default_domain;
+>  	struct iommu_domain *domain;
+>  	struct list_head entry;
+> +	unsigned int aux_domain_attached:1;
+>  };
+>  
+>  struct group_device {
+> @@ -2759,6 +2760,63 @@ int iommu_aux_get_pasid(struct iommu_domain
+> *domain, struct device *dev) }
+>  EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+>  
+> +/**
+> + * iommu_aux_attach_group - attach an aux-domain to an iommu_group
+> which
+> + *                          contains sub-devices (for example mdevs)
+> derived
+> + *                          from @dev.
+> + * @domain: an aux-domain;
+> + * @group:  an iommu_group which contains sub-devices derived from
+> @dev;
+> + * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
+> + *
+> + * Returns 0 on success, or an error value.
+> + */
+> +int iommu_aux_attach_group(struct iommu_domain *domain,
+> +			   struct iommu_group *group, struct device
+> *dev) +{
+> +	int ret = -EBUSY;
+> +
+> +	mutex_lock(&group->mutex);
+> +	if (group->domain)
+> +		goto out_unlock;
+> +
+Perhaps I missed something but are we assuming only one mdev per mdev
+group? That seems to change the logic where vfio does:
+iommu_group_for_each_dev()
+	iommu_aux_attach_device()
 
-HEAD commit:    8fb49c01 Merge branch 'Expose-port-split-attributes'
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1196f38f100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=415c682f6b7a0cbf
-dashboard link: https://syzkaller.appspot.com/bug?extid=708f34079caa31416e39
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+> +	ret = iommu_aux_attach_device(domain, dev);
+> +	if (!ret) {
+> +		group->domain = domain;
+> +		group->aux_domain_attached = true;
+> +	}
+> +
+> +out_unlock:
+> +	mutex_unlock(&group->mutex);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_aux_attach_group);
+> +
+> +/**
+> + * iommu_aux_detach_group - detach an aux-domain from an iommu_group
+> + *
+> + * @domain: an aux-domain;
+> + * @group:  an iommu_group which contains sub-devices derived from
+> @dev;
+> + * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
+> + *
+> + * @domain must have been attached to @group via
+> iommu_aux_attach_group().
+> + */
+> +void iommu_aux_detach_group(struct iommu_domain *domain,
+> +			    struct iommu_group *group, struct device
+> *dev) +{
+> +	mutex_lock(&group->mutex);
+> +
+> +	if (WARN_ON(!group->aux_domain_attached || group->domain !=
+> domain))
+> +		goto out_unlock;
+> +
+> +	iommu_aux_detach_device(domain, dev);
+> +	group->aux_domain_attached = false;
+> +	group->domain = NULL;
+> +
+> +out_unlock:
+> +	mutex_unlock(&group->mutex);
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_aux_detach_group);
+> +
+>  /**
+>   * iommu_sva_bind_device() - Bind a process address space to a device
+>   * @dev: the device
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index 5657d4fef9f2..9506551139ab 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -635,6 +635,10 @@ bool iommu_dev_feature_enabled(struct device
+> *dev, enum iommu_dev_features f); int iommu_aux_attach_device(struct
+> iommu_domain *domain, struct device *dev); void
+> iommu_aux_detach_device(struct iommu_domain *domain, struct device
+> *dev); int iommu_aux_get_pasid(struct iommu_domain *domain, struct
+> device *dev); +int iommu_aux_attach_group(struct iommu_domain *domain,
+> +			   struct iommu_group *group, struct device
+> *dev); +void iommu_aux_detach_group(struct iommu_domain *domain,
+> +			   struct iommu_group *group, struct device
+> *dev); 
+>  struct iommu_sva *iommu_sva_bind_device(struct device *dev,
+>  					struct mm_struct *mm,
+> @@ -1023,6 +1027,19 @@ iommu_aux_get_pasid(struct iommu_domain
+> *domain, struct device *dev) return -ENODEV;
+>  }
+>  
+> +static inline int
+> +iommu_aux_attach_group(struct iommu_domain *domain,
+> +		       struct iommu_group *group, struct device *dev)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+> +static inline void
+> +iommu_aux_detach_group(struct iommu_domain *domain,
+> +		       struct iommu_group *group, struct device *dev)
+> +{
+> +}
+> +
+>  static inline struct iommu_sva *
+>  iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void
+> *drvdata) {
 
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+708f34079caa31416e39@syzkaller.appspotmail.com
-
-device bridge_slave_1 left promiscuous mode
-bridge0: port 2(bridge_slave_1) entered disabled state
-device bridge_slave_0 left promiscuous mode
-bridge0: port 1(bridge_slave_0) entered disabled state
-======================================================
-WARNING: possible circular locking dependency detected
-5.8.0-rc2-syzkaller #0 Not tainted
-------------------------------------------------------
-kworker/u4:3/91 is trying to acquire lock:
-ffff8880a25c8280 (&vlan_netdev_addr_lock_key/1){+...}-{2:2}, at: netif_addr_lock_nested include/linux/netdevice.h:4243 [inline]
-ffff8880a25c8280 (&vlan_netdev_addr_lock_key/1){+...}-{2:2}, at: dev_uc_unsync net/core/dev_addr_lists.c:694 [inline]
-ffff8880a25c8280 (&vlan_netdev_addr_lock_key/1){+...}-{2:2}, at: dev_uc_unsync+0xf4/0x190 net/core/dev_addr_lists.c:688
-
-but task is already holding lock:
-ffff8880a74f2280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:358 [inline]
-ffff8880a74f2280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: netif_addr_lock_bh include/linux/netdevice.h:4248 [inline]
-ffff8880a74f2280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: dev_uc_unsync net/core/dev_addr_lists.c:693 [inline]
-ffff8880a74f2280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: dev_uc_unsync+0xb0/0x190 net/core/dev_addr_lists.c:688
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}:
-       _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:361
-       netif_addr_lock_nested include/linux/netdevice.h:4243 [inline]
-       dev_mc_unsync net/core/dev_addr_lists.c:915 [inline]
-       dev_mc_unsync+0xf4/0x190 net/core/dev_addr_lists.c:909
-       vlan_dev_stop+0x51/0x350 net/8021q/vlan_dev.c:315
-       __dev_close_many+0x1b3/0x2e0 net/core/dev.c:1605
-       dev_close_many+0x238/0x650 net/core/dev.c:1630
-       rollback_registered_many+0x3af/0xf60 net/core/dev.c:8953
-       unregister_netdevice_many.part.0+0x1a/0x2f0 net/core/dev.c:10121
-       unregister_netdevice_many net/core/dev.c:10120 [inline]
-       default_device_exit_batch+0x30c/0x3d0 net/core/dev.c:10604
-       ops_exit_list+0x10d/0x160 net/core/net_namespace.c:189
-       cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
-       process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
-       worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
-       kthread+0x3b5/0x4a0 kernel/kthread.c:291
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-
--> #0 (&vlan_netdev_addr_lock_key/1){+...}-{2:2}:
-       check_prev_add kernel/locking/lockdep.c:2496 [inline]
-       check_prevs_add kernel/locking/lockdep.c:2601 [inline]
-       validate_chain kernel/locking/lockdep.c:3218 [inline]
-       __lock_acquire+0x2acb/0x56e0 kernel/locking/lockdep.c:4380
-       lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:4959
-       _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:361
-       netif_addr_lock_nested include/linux/netdevice.h:4243 [inline]
-       dev_uc_unsync net/core/dev_addr_lists.c:694 [inline]
-       dev_uc_unsync+0xf4/0x190 net/core/dev_addr_lists.c:688
-       macvlan_stop+0xfe/0x4c0 drivers/net/macvlan.c:678
-       __dev_close_many+0x1b3/0x2e0 net/core/dev.c:1605
-       dev_close_many+0x238/0x650 net/core/dev.c:1630
-       rollback_registered_many+0x3af/0xf60 net/core/dev.c:8953
-       unregister_netdevice_many.part.0+0x1a/0x2f0 net/core/dev.c:10121
-       unregister_netdevice_many net/core/dev.c:10120 [inline]
-       default_device_exit_batch+0x30c/0x3d0 net/core/dev.c:10604
-       ops_exit_list+0x10d/0x160 net/core/net_namespace.c:189
-       cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
-       process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
-       worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
-       kthread+0x3b5/0x4a0 kernel/kthread.c:291
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&macvlan_netdev_addr_lock_key/1);
-                               lock(&vlan_netdev_addr_lock_key/1);
-                               lock(&macvlan_netdev_addr_lock_key/1);
-  lock(&vlan_netdev_addr_lock_key/1);
-
- *** DEADLOCK ***
-
-5 locks held by kworker/u4:3/91:
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
- #1: ffffc90000e57da8 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
- #2: ffffffff8a7a4930 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0xa00 net/core/net_namespace.c:565
- #3: ffffffff8a7b17a8 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock_unregistering net/core/dev.c:10557 [inline]
- #3: ffffffff8a7b17a8 (rtnl_mutex){+.+.}-{3:3}, at: default_device_exit_batch+0xea/0x3d0 net/core/dev.c:10595
- #4: ffff8880a74f2280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:358 [inline]
- #4: ffff8880a74f2280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: netif_addr_lock_bh include/linux/netdevice.h:4248 [inline]
- #4: ffff8880a74f2280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: dev_uc_unsync net/core/dev_addr_lists.c:693 [inline]
- #4: ffff8880a74f2280 (&macvlan_netdev_addr_lock_key/1){+...}-{2:2}, at: dev_uc_unsync+0xb0/0x190 net/core/dev_addr_lists.c:688
-
-stack backtrace:
-CPU: 1 PID: 91 Comm: kworker/u4:3 Not tainted 5.8.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- check_noncircular+0x324/0x3e0 kernel/locking/lockdep.c:1827
- check_prev_add kernel/locking/lockdep.c:2496 [inline]
- check_prevs_add kernel/locking/lockdep.c:2601 [inline]
- validate_chain kernel/locking/lockdep.c:3218 [inline]
- __lock_acquire+0x2acb/0x56e0 kernel/locking/lockdep.c:4380
- lock_acquire+0x1f1/0xad0 kernel/locking/lockdep.c:4959
- _raw_spin_lock_nested+0x30/0x40 kernel/locking/spinlock.c:361
- netif_addr_lock_nested include/linux/netdevice.h:4243 [inline]
- dev_uc_unsync net/core/dev_addr_lists.c:694 [inline]
- dev_uc_unsync+0xf4/0x190 net/core/dev_addr_lists.c:688
- macvlan_stop+0xfe/0x4c0 drivers/net/macvlan.c:678
- __dev_close_many+0x1b3/0x2e0 net/core/dev.c:1605
- dev_close_many+0x238/0x650 net/core/dev.c:1630
- rollback_registered_many+0x3af/0xf60 net/core/dev.c:8953
- unregister_netdevice_many.part.0+0x1a/0x2f0 net/core/dev.c:10121
- unregister_netdevice_many net/core/dev.c:10120 [inline]
- default_device_exit_batch+0x30c/0x3d0 net/core/dev.c:10604
- ops_exit_list+0x10d/0x160 net/core/net_namespace.c:189
- cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-device veth1_to_batadv left promiscuous mode
-device veth0_to_team left promiscuous mode
-device veth1_to_bridge left promiscuous mode
-device veth0 left promiscuous mode
-device veth1_macvtap left promiscuous mode
-device veth0_macvtap left promiscuous mode
-device veth1_vlan left promiscuous mode
-device veth0_vlan left promiscuous mode
-bond0 (unregistering): (slave macvlan60): Releasing backup interface
-bond0 (unregistering): (slave macvlan59): Releasing backup interface
-bond0 (unregistering): (slave macvlan58): Releasing backup interface
-bond0 (unregistering): (slave macvlan57): Releasing backup interface
-bond0 (unregistering): (slave macvlan56): Releasing backup interface
-bond0 (unregistering): (slave macvlan55): Releasing backup interface
-bond0 (unregistering): (slave macvlan54): Releasing backup interface
-bond0 (unregistering): (slave macvlan53): Releasing backup interface
-bond0 (unregistering): (slave macvlan52): Releasing backup interface
-bond0 (unregistering): (slave macvlan51): Releasing backup interface
-bond0 (unregistering): (slave macvlan50): Releasing backup interface
-bond0 (unregistering): (slave macvlan49): Releasing backup interface
-bond0 (unregistering): (slave macvlan48): Releasing backup interface
-bond0 (unregistering): (slave macvlan47): Releasing backup interface
-bond0 (unregistering): (slave macvlan46): Releasing backup interface
-bond0 (unregistering): (slave macvlan45): Releasing backup interface
-bond0 (unregistering): (slave macvlan44): Releasing backup interface
-bond0 (unregistering): (slave macvlan43): Releasing backup interface
-bond0 (unregistering): (slave macvlan42): Releasing backup interface
-bond0 (unregistering): (slave macvlan41): Releasing backup interface
-bond0 (unregistering): (slave macvlan40): Releasing backup interface
-bond0 (unregistering): (slave macvlan39): Releasing backup interface
-bond0 (unregistering): (slave macvlan38): Releasing backup interface
-bond0 (unregistering): (slave macvlan37): Releasing backup interface
-bond0 (unregistering): (slave macvlan36): Releasing backup interface
-bond0 (unregistering): (slave macvlan35): Releasing backup interface
-bond0 (unregistering): (slave macvlan34): Releasing backup interface
-bond0 (unregistering): (slave macvlan33): Releasing backup interface
-bond0 (unregistering): (slave macvlan32): Releasing backup interface
-bond0 (unregistering): (slave macvlan31): Releasing backup interface
-bond0 (unregistering): (slave macvlan30): Releasing backup interface
-bond0 (unregistering): (slave macvlan29): Releasing backup interface
-bond0 (unregistering): (slave macvlan28): Releasing backup interface
-bond0 (unregistering): (slave macvlan27): Releasing backup interface
-bond0 (unregistering): (slave macvlan26): Releasing backup interface
-bond0 (unregistering): (slave macvlan25): Releasing backup interface
-bond0 (unregistering): (slave macvlan24): Releasing backup interface
-bond0 (unregistering): (slave macvlan23): Releasing backup interface
-bond0 (unregistering): (slave macvlan22): Releasing backup interface
-bond0 (unregistering): (slave macvlan21): Releasing backup interface
-bond0 (unregistering): (slave macvlan20): Releasing backup interface
-bond0 (unregistering): (slave macvlan19): Releasing backup interface
-bond0 (unregistering): (slave macvlan18): Releasing backup interface
-bond0 (unregistering): (slave macvlan17): Releasing backup interface
-bond0 (unregistering): (slave macvlan16): Releasing backup interface
-bond0 (unregistering): (slave macvlan15): Releasing backup interface
-bond0 (unregistering): (slave macvlan14): Releasing backup interface
-bond0 (unregistering): (slave macvlan13): Releasing backup interface
-bond0 (unregistering): (slave macvlan12): Releasing backup interface
-bond0 (unregistering): (slave macvlan11): Releasing backup interface
-bond0 (unregistering): (slave macvlan10): Releasing backup interface
-bond0 (unregistering): (slave macvlan9): Releasing backup interface
-bond0 (unregistering): (slave macvlan8): Releasing backup interface
-bond0 (unregistering): (slave macvlan7): Releasing backup interface
-bond0 (unregistering): (slave macvlan6): Releasing backup interface
-bond0 (unregistering): (slave macvlan5): Releasing backup interface
-bond0 (unregistering): (slave macvlan4): Releasing backup interface
-bond0 (unregistering): (slave macvlan3): Releasing backup interface
-bond0 (unregistering): (slave macvlan2): Releasing backup interface
-team0 (unregistering): Port device team_slave_1 removed
-team0 (unregistering): Port device team_slave_0 removed
-bond0 (unregistering): (slave bond_slave_1): Releasing backup interface
-bond0 (unregistering): (slave bond_slave_0): Releasing backup interface
-bond0 (unregistering): Released all slaves
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+[Jacob Pan]
