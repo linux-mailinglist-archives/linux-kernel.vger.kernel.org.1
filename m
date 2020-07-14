@@ -2,137 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3008521F19C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A7C21F190
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbgGNMkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:40:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54834 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728478AbgGNMkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:40:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6931AB036;
-        Tue, 14 Jul 2020 12:40:03 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     hch@lst.de, linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Rientjes <rientjes@google.com>
-Cc:     linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        iommu@lists.linux-foundation.org
-Subject: [PATCH v2 4/4] dma-pool: Make sure atomic pool suits device
-Date:   Tue, 14 Jul 2020 14:39:28 +0200
-Message-Id: <20200714123928.8581-5-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714123928.8581-1-nsaenzjulienne@suse.de>
-References: <20200714123928.8581-1-nsaenzjulienne@suse.de>
+        id S1728445AbgGNMjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:39:54 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:33142 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726041AbgGNMjv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 08:39:51 -0400
+Received: by mail-ot1-f68.google.com with SMTP id h13so12929224otr.0;
+        Tue, 14 Jul 2020 05:39:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1gkM+uPTnitshLBuV08goagb6Ra5DyU+s9EwRHXtZeQ=;
+        b=mfkgj4eGLF/mS6HqwU2jRhvquP2KbIWOqQVHucEbNhtAlIGrgbXdXbsPnTkayf14FE
+         oQg/z0nbq0N+stgN7htDaEcBL5b8DITSlN2vdoPC/vnB3zkOh6sRIKIDyXcD/1Lhgpx7
+         m+8MBQqD39qOni3D0FQ2zPI0yLuLo/dvpXpuVO8fTJCWIv33HKy4tP1k5rwtAIhtdVpv
+         UaVqpCj6ZFTqN4K68xtGjsnmaVhCwf5aMHL/Xha/LRqNAcGfXsOX9uM8yCjmJAKJPaH9
+         5/ifjivkwWjaZvYMaZXQ2q80AIvuA3d9wqLnZCear2qONGYWSW+PuDfaQGwbDI7nK4AI
+         Mg4A==
+X-Gm-Message-State: AOAM5326I/hh7zqgBgwJ88VvQbW6sEr26AX/NfYV4yASaSuSSOLlPDNM
+        yHg8earbspn+2BzeO70WnYQNYum9VJMV/FRyviQ=
+X-Google-Smtp-Source: ABdhPJwQEGIYICCEl9+rMfVmtnnA3KEy1Oav7DAM0WyYTDfpBWgrg5GEkZrfN+c/weUUf5GnvXRjVxzrNetFysb/vow=
+X-Received: by 2002:a9d:2646:: with SMTP id a64mr3637009otb.107.1594730390491;
+ Tue, 14 Jul 2020 05:39:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1594676120-5862-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594676120-5862-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdV4zzrk_=-2Cmgq8=PKTeU457iveJ58gYekJ-Z8SXqaCQ@mail.gmail.com>
+ <CA+V-a8tB0mA17f51GMQQ-Cj_CUXze_JjTahrpoAtmwuOFHQV6g@mail.gmail.com>
+ <CAMuHMdXM3qf266exJtJrN0XAogEsJoM-k3FON9CjX+stLpuMFA@mail.gmail.com> <TY2PR01MB3692A868DD4E67D770C610E3D8610@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+In-Reply-To: <TY2PR01MB3692A868DD4E67D770C610E3D8610@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 14 Jul 2020 14:39:39 +0200
+Message-ID: <CAMuHMdUry12MnLvVgmd7NJ+Gv4mA86qKKfsQobP1o-ohzKm=RQ@mail.gmail.com>
+Subject: Re: [PATCH 2/9] iommu/ipmmu-vmsa: Hook up R8A774E1 DT matching code
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When allocating DMA memory from a pool, the core can only guess which
-atomic pool will fit a device's constraints. If it doesn't, get a safer
-atomic pool and try again.
+Hi Shimoda-san,
 
-Fixes: c84dc6e68a1d ("dma-pool: add additional coherent pools to map to gfp mask")
-Reported-by: Jeremy Linton <jeremy.linton@arm.com>
-Suggested-by: Robin Murphy <robin.murphy@arm.com>
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
----
+On Tue, Jul 14, 2020 at 1:42 PM Yoshihiro Shimoda
+<yoshihiro.shimoda.uh@renesas.com> wrote:
+> > From: Geert Uytterhoeven, Sent: Tuesday, July 14, 2020 5:42 PM
+> > On Tue, Jul 14, 2020 at 10:30 AM Lad, Prabhakar
+> > <prabhakar.csengg@gmail.com> wrote:
+> > > On Tue, Jul 14, 2020 at 9:09 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Mon, Jul 13, 2020 at 11:35 PM Lad Prabhakar
+> > > Also the recent patch to add
+> > > "r8a77961" just adds to soc_rcar_gen3_whitelist.
+> >
+> > Oops, commit 17fe16181639801b ("iommu/renesas: Add support for r8a77961")
+> > did it wrong, too.
+>
+> Thank you for the point it out. We should add r8a77961 to the soc_rcar_gen3[].
+> However, I don't know why I could not realize this issue...
+> So, I investigated this a little and then, IIUC, glob_match() which
+> soc_device_match() uses seems to return true, if *pat = "r8a7796" and *str = "r8a77961".
 
-Changes since v1:
- - Rebase to linus' master
+Are you sure about this?
+I enabled CONFIG_GLOB_SELFTEST, and globtest succeeded.
+It does test glob_match("a", "aa"), which is a similar test.
 
- kernel/dma/pool.c | 57 ++++++++++++++++++++++++++++++-----------------
- 1 file changed, 37 insertions(+), 20 deletions(-)
+To be 100% sure, I added:
 
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index 5b9eaa2b498d..d48d9acb585f 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -240,39 +240,56 @@ static inline struct gen_pool *dma_guess_pool(struct device *dev,
- void *dma_alloc_from_pool(struct device *dev, size_t size,
- 			  struct page **ret_page, gfp_t flags)
- {
--	struct gen_pool *pool = dma_guess_pool(dev, NULL);
--	unsigned long val;
-+	struct gen_pool *pool = NULL;
-+	unsigned long val = 0;
- 	void *ptr = NULL;
--
--	if (!pool) {
--		WARN(1, "%pGg atomic pool not initialised!\n", &flags);
--		return NULL;
-+	phys_addr_t phys;
-+
-+	while (1) {
-+		pool = dma_guess_pool(dev, pool);
-+		if (!pool) {
-+			WARN(1, "Failed to get suitable pool for %s\n",
-+			     dev_name(dev));
-+			break;
-+		}
-+
-+		val = gen_pool_alloc(pool, size);
-+		if (!val)
-+			continue;
-+
-+		phys = gen_pool_virt_to_phys(pool, val);
-+		if (dma_coherent_ok(dev, phys, size))
-+			break;
-+
-+		gen_pool_free(pool, val, size);
-+		val = 0;
- 	}
- 
--	val = gen_pool_alloc(pool, size);
--	if (likely(val)) {
--		phys_addr_t phys = gen_pool_virt_to_phys(pool, val);
- 
-+	if (val) {
- 		*ret_page = pfn_to_page(__phys_to_pfn(phys));
- 		ptr = (void *)val;
- 		memset(ptr, 0, size);
--	} else {
--		WARN_ONCE(1, "DMA coherent pool depleted, increase size "
--			     "(recommended min coherent_pool=%zuK)\n",
--			  gen_pool_size(pool) >> 9);
-+
-+		if (gen_pool_avail(pool) < atomic_pool_size)
-+			schedule_work(&atomic_pool_work);
- 	}
--	if (gen_pool_avail(pool) < atomic_pool_size)
--		schedule_work(&atomic_pool_work);
- 
- 	return ptr;
- }
- 
- bool dma_free_from_pool(struct device *dev, void *start, size_t size)
- {
--	struct gen_pool *pool = dma_guess_pool(dev, NULL);
-+	struct gen_pool *pool = NULL;
- 
--	if (!pool || !gen_pool_has_addr(pool, (unsigned long)start, size))
--		return false;
--	gen_pool_free(pool, (unsigned long)start, size);
--	return true;
-+	while (1) {
-+		pool = dma_guess_pool(dev, pool);
-+		if (!pool)
-+			return false;
-+
-+		if (gen_pool_has_addr(pool, (unsigned long)start, size)) {
-+			gen_pool_free(pool, (unsigned long)start, size);
-+			return true;
-+		}
-+	}
- }
+--- a/lib/globtest.c
++++ b/lib/globtest.c
+@@ -59,6 +59,7 @@ static char const glob_tests[] __initconst =
+        "1" "a\0" "a\0"
+        "0" "a\0" "b\0"
+        "0" "a\0" "aa\0"
++       "0" "r8a7796\0" "r8a77961\0"
+        "0" "a\0" "\0"
+        "1" "\0" "\0"
+        "0" "\0" "a\0"
+
+and it still succeeded.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.27.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
