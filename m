@@ -2,63 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCD921EE95
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD7C21EE9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgGNLAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 07:00:35 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:25407 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726545AbgGNLAe (ORCPT
+        id S1727856AbgGNLBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 07:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgGNLBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 07:00:34 -0400
-Received: from localhost.localdomain ([93.22.39.234])
-        by mwinf5d70 with ME
-        id 2z0V23009537AcD03z0W7a; Tue, 14 Jul 2020 13:00:32 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 14 Jul 2020 13:00:32 +0200
-X-ME-IP: 93.22.39.234
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     jes@trained-monkey.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-hippi@sunsite.dk, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] hippi: Fix a size used in a 'pci_free_consistent()' in an error handling path
-Date:   Tue, 14 Jul 2020 13:00:27 +0200
-Message-Id: <20200714110027.301728-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.25.1
+        Tue, 14 Jul 2020 07:01:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566AEC061755;
+        Tue, 14 Jul 2020 04:01:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=dLJ+rswlwOb9VgarkBahNyYojmAUY/xiMFDZ6ppJYq8=; b=Kz01khxc0JwwuZnVk8sIru0ipf
+        o0d8wJyabxrEX2NNseTwAW9ee/TD6/cNvWILaL6Jyr1x1fwztZHD9HGX1/nF+lhj0I6J+4Zy/pBs5
+        zy3/VlfHrn2a9R29W3rU/ZDeSZekvc+Jc2XJi/KpH4Zq2CqAwUQSXrvalLeS33yo5y1ufgkkEV6gj
+        iiCgi4O4JciPs8Kxjg6z5bGsJx8WVKqosaMuX36dAliAyMFuCTSFZ4mAy0FK+MZHBJH1Iti6GRTlu
+        7G+lR2TYNLx5MMBH58KjINfHWfuicHp3DvETkmodt5HAUCdYFiM51FXMNYNUGiXUsO6AVoEhOxoM6
+        bzBJcIdA==;
+Received: from 089144201169.atnat0010.highway.a1.net ([89.144.201.169] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvIgt-00065C-BH; Tue, 14 Jul 2020 11:01:39 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/6] nds32: use uaccess_kernel in show_regs
+Date:   Tue, 14 Jul 2020 12:55:01 +0200
+Message-Id: <20200714105505.935079-3-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200714105505.935079-1-hch@lst.de>
+References: <20200714105505.935079-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The size used when calling 'pci_alloc_consistent()' and
-'pci_free_consistent()' should match.
+Use the uaccess_kernel helper instead of duplicating it.
 
-Fix it and have it consistent with the corresponding call in 'rr_close()'.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Greentime Hu <green.hu@gmail.com>
 ---
- drivers/net/hippi/rrunner.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/nds32/kernel/process.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/hippi/rrunner.c b/drivers/net/hippi/rrunner.c
-index 2a6ec5394966..d0d5100eeb0c 100644
---- a/drivers/net/hippi/rrunner.c
-+++ b/drivers/net/hippi/rrunner.c
-@@ -1242,7 +1242,7 @@ static int rr_open(struct net_device *dev)
- 		rrpriv->info = NULL;
- 	}
- 	if (rrpriv->rx_ctrl) {
--		pci_free_consistent(pdev, sizeof(struct ring_ctrl),
-+		pci_free_consistent(pdev, 256 * sizeof(struct ring_ctrl),
- 				    rrpriv->rx_ctrl, rrpriv->rx_ctrl_dma);
- 		rrpriv->rx_ctrl = NULL;
- 	}
+diff --git a/arch/nds32/kernel/process.c b/arch/nds32/kernel/process.c
+index 9712fd474f2ca3..f06265949ec28b 100644
+--- a/arch/nds32/kernel/process.c
++++ b/arch/nds32/kernel/process.c
+@@ -121,7 +121,7 @@ void show_regs(struct pt_regs *regs)
+ 		regs->uregs[3], regs->uregs[2], regs->uregs[1], regs->uregs[0]);
+ 	pr_info("  IRQs o%s  Segment %s\n",
+ 		interrupts_enabled(regs) ? "n" : "ff",
+-		segment_eq(get_fs(), KERNEL_DS)? "kernel" : "user");
++		uaccess_kernel() ? "kernel" : "user");
+ }
+ 
+ EXPORT_SYMBOL(show_regs);
 -- 
-2.25.1
+2.26.2
 
