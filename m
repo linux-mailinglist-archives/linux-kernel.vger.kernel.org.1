@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261DA21FA3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129F321FADA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729920AbgGNSup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46890 "EHLO mail.kernel.org"
+        id S1730971AbgGNS4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:56:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730313AbgGNSum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:50:42 -0400
+        id S1730970AbgGNS4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:56:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CF5C22B2A;
-        Tue, 14 Jul 2020 18:50:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACD4A222B9;
+        Tue, 14 Jul 2020 18:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752641;
-        bh=WJSu7jjjoQkirFpIXvqr4UHY09mUZiBEYqt0DClml1A=;
+        s=default; t=1594752980;
+        bh=uH0PDz0zA3uX9zg+dvKMu8xWqiGXeFBXQbz58FsVmRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lyqkz618pKNoMivQ5Nw9wSiudcQ8VGpXqe18OWL1+GRXl+MzGYtfkBWe059GmBX7N
-         8Hx2GjeYVG9z9mZZUiFeC+Ctt6HTW7Xwk7IDP3VYC/Lu8B5BOwgm626QIQent1uxVS
-         HL4f1640dtmBWWKf5mljZk7NqvPolTMaYoittsxg=
+        b=TqVC7l7MRPMI7gN4HUTb1KwoFUJMTmYZBIy0N72NwjZsvROTGk4v27AVkBqokM5Uq
+         fcqOW3UqnBsno8u0O50N95BLBRCbE3T62hStwC0XlDtRc+F+QgdKH4FxdaJ1xrncyq
+         9LTq5cbusgchT0OzeDLj8xw5b9mYSjLv5NR1l934=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Luwei Kang <luwei.kang@intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 056/109] RDMA/siw: Fix reporting vendor_part_id
+Subject: [PATCH 5.7 074/166] perf intel-pt: Fix PEBS sample for XMM registers
 Date:   Tue, 14 Jul 2020 20:43:59 +0200
-Message-Id: <20200714184108.200034373@linuxfoundation.org>
+Message-Id: <20200714184119.398711366@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,43 +46,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit 04340645f69ab7abb6f9052688a60f0213b3f79c ]
+[ Upstream commit 4c95ad261cfac120dd66238fcae222766754c219 ]
 
-Move the initialization of the vendor_part_id to be before calling
-ib_register_device(), this is needed because the query_device() callback
-is called from the context of ib_register_device() before initializing the
-vendor_part_id, so the reported value is wrong.
+The condition to add XMM registers was missing, the regs array needed to
+be in the outer scope, and the size of the regs array was too small.
 
-Fixes: bdcf26bf9b3a ("rdma/siw: network and RDMA core interface")
-Link: https://lore.kernel.org/r/20200707130931.444724-1-kamalheib1@gmail.com
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Reviewed-by: Bernard Metzler <bmt@zurich.ibm.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 143d34a6b387b ("perf intel-pt: Add XMM registers to synthesized PEBS sample")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Luwei Kang <luwei.kang@intel.com>
+Link: http://lore.kernel.org/lkml/20200630133935.11150-4-adrian.hunter@intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/siw/siw_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/perf/util/intel-pt.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 130b1e31b9780..fb66d67572787 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -66,12 +66,13 @@ static int siw_device_register(struct siw_device *sdev, const char *name)
- 	static int dev_id = 1;
- 	int rv;
+diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+index 23c8289c2472d..545d1cdc0ec87 100644
+--- a/tools/perf/util/intel-pt.c
++++ b/tools/perf/util/intel-pt.c
+@@ -1731,6 +1731,7 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
+ 	u64 sample_type = evsel->core.attr.sample_type;
+ 	u64 id = evsel->core.id[0];
+ 	u8 cpumode;
++	u64 regs[8 * sizeof(sample.intr_regs.mask)];
  
-+	sdev->vendor_part_id = dev_id++;
-+
- 	rv = ib_register_device(base_dev, name);
- 	if (rv) {
- 		pr_warn("siw: device registration error %d\n", rv);
- 		return rv;
+ 	if (intel_pt_skip_event(pt))
+ 		return 0;
+@@ -1780,8 +1781,8 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
  	}
--	sdev->vendor_part_id = dev_id++;
  
- 	siw_dbg(base_dev, "HWaddr=%pM\n", sdev->netdev->dev_addr);
+ 	if (sample_type & PERF_SAMPLE_REGS_INTR &&
+-	    items->mask[INTEL_PT_GP_REGS_POS]) {
+-		u64 regs[sizeof(sample.intr_regs.mask)];
++	    (items->mask[INTEL_PT_GP_REGS_POS] ||
++	     items->mask[INTEL_PT_XMM_POS])) {
+ 		u64 regs_mask = evsel->core.attr.sample_regs_intr;
+ 		u64 *pos;
  
 -- 
 2.25.1
