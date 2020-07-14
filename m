@@ -2,121 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8796D21F864
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDE621F868
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbgGNRnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:43:02 -0400
-Received: from mail.efficios.com ([167.114.26.124]:54638 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbgGNRnC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:43:02 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0C1112C05BD;
-        Tue, 14 Jul 2020 13:43:01 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id nhR_Ah5mzdji; Tue, 14 Jul 2020 13:43:00 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 9B5322C05BA;
-        Tue, 14 Jul 2020 13:43:00 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 9B5322C05BA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1594748580;
-        bh=seWsR9nNwIwjY1q15u9E8IBkaous6A8kQWGjHM+M0II=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=QJj2qL1Ma0h6IeEjzZADML6kkN8v4eT107DDZrwJ+tyI/VsmDvqiGp9CQxSDmgAqI
-         bhx5+yyK0iAMlqrjXYMtrw9il4bcv6lnlp3KUYX05k/X9eOWRn63jqe+M8mSarDD7P
-         zb/k68oYI+Bgwp96llrOudcKEGHJRQmuBSYNk/fuB8aoGBsVdPorwgf2uzONz2naDW
-         5YMPhncirtjqTJtLMXSeNz3gS44bQpeuMRKuZSxPWQjJ++w7QNe9P7yoKa2FVKfQVx
-         eFmZwoNld+EOjWWgz6LwfMFxwLjgvSA0NYRGfntx4UdxatKUwt9URxE0NVDZCcYKsO
-         AcmeEVBLv1roA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id yo41s664PUBE; Tue, 14 Jul 2020 13:43:00 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 85BEE2C05B9;
-        Tue, 14 Jul 2020 13:43:00 -0400 (EDT)
-Date:   Tue, 14 Jul 2020 13:43:00 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@linux.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fw@deneb.enyo.de>, carlos <carlos@redhat.com>,
-        Peter Oskolkov <posk@google.com>
-Message-ID: <775688146.12145.1594748580461.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAFTs51UHaUqaKj5bEj0vQtEZrww9gnrqb-kGVk7DAgQJPBAR+w@mail.gmail.com>
-References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com> <20200714030348.6214-3-mathieu.desnoyers@efficios.com> <CAFTs51UHaUqaKj5bEj0vQtEZrww9gnrqb-kGVk7DAgQJPBAR+w@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/4] rseq: Allow extending struct rseq
+        id S1729029AbgGNRnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:43:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729017AbgGNRnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 13:43:24 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B19722518;
+        Tue, 14 Jul 2020 17:43:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594748604;
+        bh=daLXe87+gGS/cotI3VTupP+Y+qDbGBfUc+G6VgIw8cM=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=bSuiX3AzueHGoneBBm8Kwj1dfdk/F5OQE1EvAJghVgvJdqzHWrB/6IPt8G0BfVabM
+         o5gCGUI3zbJG7SZdIhAKoVioS4yjoPOSTQYZgfRQ0OQwg/MP+OW5d0w7b7BOCzaey7
+         RU8QN19LCFVNEOvisRw1E26in/HmzAJqYeMVAqp8=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id DECF2352262C; Tue, 14 Jul 2020 10:43:23 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 10:43:23 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, akiyks@gmail.com,
+        boqun.feng@gmail.com, elver@google.com, joel@joelfernandes.org,
+        tglx@linutronix.de
+Subject: [GIT PULL memory-model] LKMM commits for v5.9
+Message-ID: <20200714174323.GA32508@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
-Thread-Topic: rseq: Allow extending struct rseq
-Thread-Index: vGEUEey8cuOfMMOgr2MenI2vkLZz+g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 14, 2020, at 1:24 PM, Peter Oskolkov posk@posk.io wrote:
+Hello, Ingo!
 
-> At Google, we actually extended struct rseq (I will post the patches
-> here once they are fully deployed and we have specific
-> benefits/improvements to report). We did this by adding several fields
-> below __u32 flags (the last field currently), and correspondingly
-> increasing rseq_len in rseq() syscall. If the kernel does not know of
-> this extension, it will return -EINVAL due to an unexpected rseq_len;
-> then the application can either fall-back to the standard/upstream
-> rseq, or bail. If the kernel does know of this extension, it accepts
-> it. If the application passes the old rseq_len (32), the kernel knows
-> that this is an old application and treats it as such.
-> 
-> I looked through the archives, but I did not find specifically why the
-> pretty standard approach described above is considered inferior to the
-> one taken in this patch (freeze rseq_len at 32, add additional length
-> fields to struct rseq). Can these be summarized?
+This pull request contains Linux-Kernel Memory-Model commits for v5.9.
+These have been subjected to LKML review:
 
-I think you don't face the issues I'm facing with libc rseq integration
-because you control the entire user-space software ecosystem at Google.
+	https://lore.kernel.org/lkml/20200623005152.GA27459@paulmck-ThinkPad-P72/
 
-The main issue we face is that the library responsible for registering
-rseq (either glibc 2.32+, an early-adopter librseq library, or the
-application) may very well not be the same library defining the __rseq_abi
-symbol used in the global symbol table. Interposition with ld preload or
-by defining the __rseq_abi in the program's executable are good examples
-of this kind of scenario, and those use-cases are supported.
+All of these have also been subjected to the kbuild test robot and
+-next testing.  The following changes since v5.8-rc3 are available in
+the git repository at:
 
-So the size of the __rseq_abi structure may be larger than the struct
-rseq known by glibc (and eventually smaller, if future glibc versions
-extend their __rseq_abi size but is loaded with an older program/library
-doing __rseq_abi interposition).
+  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git lkmm
 
-So we need some way to allow code defining the __rseq_abi to let the kernel
-know how much room is available, without necessarily requiring the code
-responsible for rseq registration to be aware of that extended layout.
-This is the purpose of the __rseq_abi.flags RSEQ_FLAG_TLS_SIZE and field
-__rseq_abi.user_size.
+for you to fetch changes up to 5ef0a07a7928539d46fdb163acfad28c6d877a89:
 
-And we need some way to allow the kernel to let user-space rseq critical
-sections (user code) know how much of those fields are actually populated
-by the kernel. This is the purpose of __rseq_abi.flags RSEQ_FLAG_TLS_SIZE
-with __rseq_abi.kernel_size.
+  Documentation/litmus-tests: Add note on herd7 7.56 in atomic litmus test (2020-06-29 12:05:18 -0700)
 
-Thanks,
+----------------------------------------------------------------
+Akira Yokosawa (5):
+      tools/memory-model: Fix reference to litmus test in recipes.txt
+      Documentation/litmus-tests: Merge atomic's README into top-level one
+      tools/memory-model/README: Expand dependency of klitmus7
+      tools/memory-model/README: Mention herdtools7 7.56 in compatibility table
+      Documentation/litmus-tests: Add note on herd7 7.56 in atomic litmus test
 
-Mathieu
+Boqun Feng (4):
+      tools/memory-model: Add an exception for limitations on _unless() family
+      Documentation/litmus-tests: Introduce atomic directory
+      Documentation/litmus-tests/atomic: Add a test for atomic_set()
+      Documentation/litmus-tests/atomic: Add a test for smp_mb__after_atomic()
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Joel Fernandes (Google) (4):
+      Documentation: LKMM: Add litmus test for RCU GP guarantee where updater frees object
+      Documentation: LKMM: Add litmus test for RCU GP guarantee where reader stores
+      MAINTAINERS: Update maintainers for new Documentation/litmus-tests
+      Documentation/litmus-tests: Cite an RCU litmus test
+
+Marco Elver (1):
+      tools/memory-model: Fix "conflict" definition
+
+Paul E. McKenney (1):
+      tools/memory-model: Add recent references
+
+ Documentation/atomic_t.txt                         | 24 +++----
+ Documentation/litmus-tests/README                  | 35 +++++++++
+ ...b__after_atomic-is-stronger-than-acquire.litmus | 32 +++++++++
+ ...Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus | 25 +++++++
+ .../litmus-tests/rcu/RCU+sync+free.litmus          | 42 +++++++++++
+ .../litmus-tests/rcu/RCU+sync+read.litmus          | 37 ++++++++++
+ MAINTAINERS                                        |  2 +
+ tools/memory-model/Documentation/explanation.txt   | 83 ++++++++++++----------
+ tools/memory-model/Documentation/recipes.txt       |  2 +-
+ tools/memory-model/Documentation/references.txt    | 21 +++++-
+ tools/memory-model/README                          | 40 +++++++++--
+ 11 files changed, 285 insertions(+), 58 deletions(-)
+ create mode 100644 Documentation/litmus-tests/README
+ create mode 100644 Documentation/litmus-tests/atomic/Atomic-RMW+mb__after_atomic-is-stronger-than-acquire.litmus
+ create mode 100644 Documentation/litmus-tests/atomic/Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus
+ create mode 100644 Documentation/litmus-tests/rcu/RCU+sync+free.litmus
+ create mode 100644 Documentation/litmus-tests/rcu/RCU+sync+read.litmus
