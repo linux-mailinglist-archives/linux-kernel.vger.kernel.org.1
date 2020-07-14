@@ -2,201 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33E822002C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDEB22002E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgGNVjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
+        id S1728364AbgGNVj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728164AbgGNVjb (ORCPT
+        with ESMTP id S1726722AbgGNVjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:39:31 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9370C08C5C1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:39:31 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id h17so4942qvr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:39:31 -0700 (PDT)
+        Tue, 14 Jul 2020 17:39:55 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1E8C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:39:55 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f7so318188wrw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:39:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ivtV/tA+b1A/Jafm7GfFZzd+iRi0WOOxKuOfikxY7+k=;
-        b=WjEYpxVM3mq/vbkRqdXSLdC7YbDXYAN/KzVub+tuD6Pj/BjXgN6ubrURsurRWz5Zju
-         XVL/1DkXIqEXvbjBtcHthBS/cpgE68ii8m0B8NWdlp+0ZsEERD+qlrbrswcvQL9nhoIo
-         pCyLIufdlyvYT5fREkPjqmbjxcHYRExuBahHXDsu+u5fsocUIz2jZtMM7zgDTCDJwsfA
-         /1fopVeOCIW7EaL0irp4bqfk5vXgkSZWjqjB2wZB/J7Xl0goI+lxCGzOO6THyQk5vTAL
-         aZDdX27Ci77hxUKb2q5WbtCT6O3L+8RDEwzsI97kA0s9VZqAsrwcs845rOZpQMrZDIzv
-         tYXA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=cmHcwmTccT13ZJXcb7SBLzTw/UgSDiTbBWL8nKbEfh8=;
+        b=hl2mRBj5TXYfXXlig2eChw0XasjMiOrb9AtRFxZdbPyHE59r5Wap6WzQTySOdEQUJI
+         tgFQc7fupgoqDrRc4Wn0CrupPbdEojws4yyp8xGLozYqdZ+6dSzfYy9qzKGkM5FV2Oot
+         JbUj+RtfHk/mhyglpCa+/0ezOc66UcAQVwVY/q5jd1U8RZZvcfbf5rWZ8jh+w0OB4ndd
+         BOAIKcnWA4EHnVvIftC76Fk+nsHIzerjm0BABgGduehlIa3KOS9RIL5mJPZMwTxnzhFc
+         6g0zZxbsTIbeQwd0MMdLVYaPZjRj2G5QXPIswenRv7L1YSXMhp26dAtHy6ZelPtw6+o6
+         cbyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ivtV/tA+b1A/Jafm7GfFZzd+iRi0WOOxKuOfikxY7+k=;
-        b=W/fKWrZKe/7VxtKG/GKkatkZd4/c+p3xhQgQRMvT3kph2R3e0zfgHtUKHVs2xE585w
-         YyKrSIPCvurjj3wBcneK90cHmJ28V0/i72U1PzRVZ7WdLviUskCp0T2UbzRL0T//VfoE
-         cjezlBFa7JXsdD1iSiPC9zeyRJQkVIbWsGHxV32ysU199XFE2r5u1pM++eskUJmXf5DM
-         YgtP1e3nZsI73B46LXYHOl6Xg6OC/HBxQHyN9RvdQC8mRKVde7eIBB/Z5DLauo4LG5hn
-         4zljsKV82Cm10nrdgtynp0gfk0Ja0Qui5XIAksyTdZGuFBa2PTFB6aiY9kWtaxv9NNOn
-         MVlg==
-X-Gm-Message-State: AOAM5329BvqXpKFSaXEV+GmdssjUJltJzyZmRbf+5S8p/QFF0gbkzM0H
-        rVzVK2w/NFgD+C+QvR9lhXk6p+ZE/eY=
-X-Google-Smtp-Source: ABdhPJwe07rWmBLjDl+TNx93m7uxFpH0gw52e9HYRNc/1T0+JhOUVFNF4wo6TGY89wzmBv3Wnssccw==
-X-Received: by 2002:ad4:42a7:: with SMTP id e7mr6694798qvr.212.1594762770573;
-        Tue, 14 Jul 2020 14:39:30 -0700 (PDT)
-Received: from [192.168.1.92] (pool-71-255-246-27.washdc.fios.verizon.net. [71.255.246.27])
-        by smtp.gmail.com with ESMTPSA id r185sm740qkb.39.2020.07.14.14.39.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 14:39:30 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/4] thermal: Introduce support for monitoring falling
- temperature
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>, robh+dt@kernel.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200710135154.181454-1-thara.gopinath@linaro.org>
- <7437ee89-e76d-0c82-9860-5c6076ad8a30@linaro.org>
- <b25d54d35cec777f0dcc5b2bcacce27321d9bd45.camel@intel.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <5861acec-c49a-47cc-d7c6-ccef11dc1d58@linaro.org>
-Date:   Tue, 14 Jul 2020 17:39:29 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cmHcwmTccT13ZJXcb7SBLzTw/UgSDiTbBWL8nKbEfh8=;
+        b=Lgn080a89OSXFAuNTKlhzm/qL5vwmfpwcv3XZN1ZRz9lqMh6msKtdvBcbbdPjXtbAe
+         jl6Xf8X0Q5TugjodL2ypxlwDXVx+dGzY0P8AIVwQA3rs9ACWoH2Nl2uU0s0RCkga8AWB
+         B+2lh16B4Z+rgSA8zJFxlJvmTKDDsT7YMr6nQOxJDmb4y8L45+KcigiUmKHuZ9w3tAKs
+         53OxYLXkndM1pCtalKcvXe5xZSy+L1FKwwfa4qxdHqkbNZ4DRMt/X/ZCcfAdxA+4Lbhj
+         tjE7e3O7IzA9wDTMB8PZogGHEPFEwNN50AbP15YbS75L5S9wV9wmXIEeoV0qgDJHj7Ih
+         99GQ==
+X-Gm-Message-State: AOAM531Pc0F0PvWAMDSBTIJgA3ND7AdAkc+aU+cMr3rX4Xu/5RFmecZc
+        UafO6ZqzpYBRkZwOG+v1cwqe7klYejOMVA==
+X-Google-Smtp-Source: ABdhPJxIEccNsYzkB+5beVgvKTvwXqRGoyrdzYXHMD7gkZ4Eq4nfKYrUQld8CLXdiaS/LHOlv5+6SQ==
+X-Received: by 2002:a5d:5388:: with SMTP id d8mr7829244wrv.35.1594762793831;
+        Tue, 14 Jul 2020 14:39:53 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id v18sm26479wrv.49.2020.07.14.14.39.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 14:39:53 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 22:39:51 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Hannes Reinecke <hare@suse.de>, martin.petersen@oracle.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Hannes Reinecke <hare@suse.com>
+Subject: Re: [PATCH v2 24/24] scsi: aic7xxx: aic79xx_osm: Remove set but
+ unused variabes 'saved_scsiid' and 'saved_modes'
+Message-ID: <20200714213951.GL1398296@dell>
+References: <20200713080001.128044-1-lee.jones@linaro.org>
+ <20200713080001.128044-25-lee.jones@linaro.org>
+ <559e47de-fa26-9ae5-a3c5-4adeae606309@suse.de>
+ <1594741430.4545.15.camel@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <b25d54d35cec777f0dcc5b2bcacce27321d9bd45.camel@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1594741430.4545.15.camel@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 14 Jul 2020, James Bottomley wrote:
 
-
-On 7/14/20 9:49 AM, Zhang Rui wrote:
-> On Mon, 2020-07-13 at 17:03 +0200, Daniel Lezcano wrote:
->> On 10/07/2020 15:51, Thara Gopinath wrote:
->>> Thermal framework today supports monitoring for rising temperatures
->>> and
->>> subsequently initiating cooling action in case of a thermal trip
->>> point
->>> being crossed. There are scenarios where a SoC need some warming
->>> action to
->>> be activated if the temperature falls below a cetain permissible
->>> limit.
->>> Since warming action can be considered mirror opposite of cooling
->>> action,
->>> most of the thermal framework can be re-used to achieve this.
->>>
->>> This patch series is yet another attempt to add support for
->>> monitoring
->>> falling temperature in thermal framework. Unlike the first
->>> attempt[1]
->>> (where a new property was added to thermal trip point binding to
->>> indicate
->>> direction of temperature monitoring), this series introduces a new
->>> trip
->>> point type (THERMAL_TRIP_COLD) to indicate a trip point at which
->>> falling
->>> temperature monitoring must be triggered. This patch series uses
->>> Daniel
->>> Lezcano's recently added thermal genetlink interface[2] to notify
->>> userspace
->>> of falling temperature and rising temperature at the cold trip
->>> point. This
->>> will enable a user space engine to trigger the relevant mitigation
->>> for
->>> falling temperature. At present, no support is added to any of the
->>> thermal
->>> governors to monitor and mitigate falling temperature at the cold
->>> trip
->>> point;rather all governors return doing nothing if triggered for a
->>> cold
->>> trip point. As future extension, monitoring of falling temperature
->>> can be
->>> added to the relevant thermal governor.
->>
->> I agree we need a cold trip point in order to introduce the
->> functioning
->> temperature range in the thermal framework.
->>
->> Rui, what is your opinion ?
+> On Tue, 2020-07-14 at 09:46 +0200, Hannes Reinecke wrote:
+> > On 7/13/20 10:00 AM, Lee Jones wrote:
+> > > Haven't been used since 2006.
+> > > 
+> > > Fixes the following W=1 kernel build warning(s):
+> > > 
+> > >  drivers/scsi/aic7xxx/aic79xx_osm.c: In function
+> > > ‘ahd_linux_queue_abort_cmd’:
+> > >  drivers/scsi/aic7xxx/aic79xx_osm.c:2155:17: warning: variable
+> > > ‘saved_modes’ set but not used [-Wunused-but-set-variable]
+> > >  drivers/scsi/aic7xxx/aic79xx_osm.c:2148:9: warning: variable
+> > > ‘saved_scsiid’ set but not used [-Wunused-but-set-variable]
+> > > 
+> > > Cc: Hannes Reinecke <hare@suse.com>
+> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > ---
+> > >  drivers/scsi/aic7xxx/aic79xx_osm.c | 4 ----
+> > >  1 file changed, 4 deletions(-)
+> > > 
+> > > diff --git a/drivers/scsi/aic7xxx/aic79xx_osm.c
+> > > b/drivers/scsi/aic7xxx/aic79xx_osm.c
+> > > index 3782a20d58885..140c4e74ddd7e 100644
+> > > --- a/drivers/scsi/aic7xxx/aic79xx_osm.c
+> > > +++ b/drivers/scsi/aic7xxx/aic79xx_osm.c
+> > > @@ -2141,14 +2141,12 @@ ahd_linux_queue_abort_cmd(struct scsi_cmnd
+> > > *cmd)
+> > >  	u_int  saved_scbptr;
+> > >  	u_int  active_scbptr;
+> > >  	u_int  last_phase;
+> > > -	u_int  saved_scsiid;
+> > >  	u_int  cdb_byte;
+> > >  	int    retval;
+> > >  	int    was_paused;
+> > >  	int    paused;
+> > >  	int    wait;
+> > >  	int    disconnected;
+> > > -	ahd_mode_state saved_modes;
+> > >  	unsigned long flags;
+> > >  
+> > >  	pending_scb = NULL;
+> > > @@ -2239,7 +2237,6 @@ ahd_linux_queue_abort_cmd(struct scsi_cmnd
+> > > *cmd)
+> > >  		goto done;
+> > >  	}
+> > >  
+> > > -	saved_modes = ahd_save_modes(ahd);
+> > >  	ahd_set_modes(ahd, AHD_MODE_SCSI, AHD_MODE_SCSI);
+> > >  	last_phase = ahd_inb(ahd, LASTPHASE);
+> > >  	saved_scbptr = ahd_get_scbptr(ahd);
+> > > @@ -2257,7 +2254,6 @@ ahd_linux_queue_abort_cmd(struct scsi_cmnd
+> > > *cmd)
+> > >  	 * passed in command.  That command is currently active on
+> > > the
+> > >  	 * bus or is in the disconnected state.
+> > >  	 */
+> > > -	saved_scsiid = ahd_inb(ahd, SAVED_SCSIID);
+> > >  	if (last_phase != P_BUSFREE
+> > >  	    && SCB_GET_TAG(pending_scb) == active_scbptr) {
+> > >  
+> > > 
+> > 
+> > Reviewed-by: Hannes Reinecke <hare@suse.de>
 > 
-> I agree with the concept of "cold" trip point.
-> In this patch set, the cold trip point is defined with only netlink
-> event support. But there are still quite a lot of things unclear,
-> especially what we should do in thermal framework?
-Hi Rui,
+> Hey, you don't get to do that ... I asked you to figure out why we're
+> missing an ahd_restore_modes().  Removing the ahd_save_modes() is
+> cosmetic: it gets rid of a warning but doesn't fix the problem.  I'd
+> rather keep the warning until the problem is fixed and the problem is
+> we need a mode save/restore around the ahd_set_modes() which is only
+> partially implemented in this function.
 
-Thanks for the comments.
-
-You are right that cold trip points are dealt with only by netlink 
-events in this patch series. Eventually IMHO, governors should handle 
-them with a logic opposite to what is being currently done for non-cold 
-trip points.
-
-> 
-> For example, to support this, we can
-> either
-> introduce both "cold" trip points and "warming devices", and introduce
-> new logic in thermal framework and governors to handle them,
-> Or
-> introduce "cold" trip point and "warming" device, but only
-> semantically, and treat them just like normal trip points and cooling
-> devices. And strictly define cooling state 0 as the state that
-> generates most heat, and define max cooling state as the state that
-> generates least heat. Then, say, we have a trip point at -10C, the
-> "warming" device is set to cooling state 0 when the temperature is
-> lower than -10C, and in most cases, this thermal zone is always in a
-> "overheating" state (temperature higher than -10C), and the "warming"
-> device for this thermal zone is "throttled" to generate as least heat
-> as possible. And this is pretty much what the current code has always
-> been doing, right?
-
-
-IMHO, thermal framework should move to a direction where the term 
-"mitigation" is used rather than cooling or warming. In this case 
-"cooling dev" and "warming dev" should will become 
-"temp-mitigating-dev". So going by this, I think what you mention as 
-option 1 is more suitable where new logic is introduced into the 
-framework and governors to handle the trip points marked as "cold".
-
-Also in the current set of requirements, we have a few power domain 
-rails and other resources that are used exclusively in the thermal 
-framework for warming alone as in they are not used ever for cooling 
-down a zone. But then one of the requirements we have discussed is for 
-cpufreq and gpu scaling to be behave as warming devices where the 
-minimum operating point/ voltage of the relevant cpu/gpu is restricted.
-So in this case, Daniel had this suggestion of introducing negative 
-states for presently what is defined as cooling devices. So cooling dev 
-/ temp-mitigation-dev states can range from say -3 to 5 with 0 as the 
-good state where no mitigation is happening. This is an interesting idea 
-though I have not proto-typed it yet.
-
-> 
-> I can not say which one is better for now as I don't have the
-> background of this requirement. It's nice that Thara sent this RFC
-> series for discussion, but from upstream point of view, I'd prefer to
-> see a full stack solution, before taking any code.
-
-We had done a session at ELC on this requirement. Here is the link to 
-the presentation. Hopefully it gives you some back ground on this.
-
-https://elinux.org/images/f/f7/ELC-2020-Thara-Ram-Linux-Kernel-Thermal-Warming.pdf
-
-I have sent across some patches for introducing a generic power domain 
-warming device which is under review by Daniel.
-
-So how do you want to proceed on this? Can you elaborate a bit more on 
-what you mean by a full stack solution.
-
-> 
-> thanks,
-> Rui
-> 
+I had a look.  Traced it back to the dawn of time (time == Git), then
+delved even further back by downloading and trawling through ~10-15
+tarballs.  It looks as though drivers/scsi/aic7xxx/aic79xx_osm.c was
+upstreamed in v2.5.60, nearly 20 years ago.  'saved_modes' has been
+unused since at least then.  If no one has complained in 2 decades,
+I'd say it probably isn't an issue worth perusing.
 
 -- 
-Warm Regards
-Thara
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
