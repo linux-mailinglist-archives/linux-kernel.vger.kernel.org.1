@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E4921FB47
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252BF21FB56
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729916AbgGNTA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59284 "EHLO mail.kernel.org"
+        id S1731221AbgGNTBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:01:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731363AbgGNTAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:00:22 -0400
+        id S1730524AbgGNTAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:00:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41E5B2240B;
-        Tue, 14 Jul 2020 19:00:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE5BF22A99;
+        Tue, 14 Jul 2020 19:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753221;
-        bh=QQPLdQsHm8zskkrD67gBus4xmrYf5opoihyze2dADgw=;
+        s=default; t=1594753224;
+        bh=3WhSWmNNy5hqVAlzz7aFIf/TWdrTr8fOsaf6M/t9T9o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HyPRkjm1tUapovJSag/wYAXQe7idOSzrFLtOezPW9uLztLlL1e9hMdFOOO5gWOzt+
-         ojY9CElPuHD/7Rw+uijWFimyVYdCmoleMRFETdYLdqkQpRTBVMiGzVePl/Qv5RWVK6
-         zFAZL/gReaP1bwRYHLS0dx43RXSmrV1vuSoq7PVM=
+        b=1d8R2x/mVU2mJUZZmMeOqYsc4qNCTAEa3Y0SQtZU5WSL5MM6+am4MzibaXQ1truIG
+         8UxkiHudXuVv2QTXt6GAa1LN1uvisKMLxYHQhp4+YJMFhfI5t8H1nZfLuVHLklYzE/
+         BXKkYfuj7iQRnmwbEX1gPrkUUlBf9ZnL+IE0v5CM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Will Deacon <will@kernel.org>
-Subject: [PATCH 5.7 157/166] arm64: Introduce a way to disable the 32bit vdso
-Date:   Tue, 14 Jul 2020 20:45:22 +0200
-Message-Id: <20200714184123.341424853@linuxfoundation.org>
+Subject: [PATCH 5.7 158/166] arm64: arch_timer: Allow an workaround descriptor to disable compat vdso
+Date:   Tue, 14 Jul 2020 20:45:23 +0200
+Message-Id: <20200714184123.389060989@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
 References: <20200714184115.844176932@linuxfoundation.org>
@@ -46,68 +46,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marc Zyngier <maz@kernel.org>
 
-commit 97884ca8c2925d14c32188e865069f21378b4b4f upstream.
+commit c1fbec4ac0d701f350a581941d35643d5a9cd184 upstream.
 
-We have a class of errata (grouped under the ARM64_WORKAROUND_1418040
-banner) that force the trapping of counter access from 32bit EL0.
-
-We would normally disable the whole vdso for such defect, except that
-it would disable it for 64bit userspace as well, which is a shame.
-
-Instead, add a new vdso_clock_mode, which signals that the vdso
-isn't usable for compat tasks.  This gets checked in the new
-vdso_clocksource_ok() helper, now provided for the 32bit vdso.
+As we are about to disable the vdso for compat tasks in some circumstances,
+let's allow a workaround descriptor to express exactly that.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 Acked-by: Mark Rutland <mark.rutland@arm.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200706163802.1836732-2-maz@kernel.org
+Link: https://lore.kernel.org/r/20200706163802.1836732-3-maz@kernel.org
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/include/asm/vdso/clocksource.h         |    7 +++++--
- arch/arm64/include/asm/vdso/compat_gettimeofday.h |    8 +++++++-
- 2 files changed, 12 insertions(+), 3 deletions(-)
+ arch/arm64/include/asm/arch_timer.h  |    1 +
+ drivers/clocksource/arm_arch_timer.c |    3 +++
+ 2 files changed, 4 insertions(+)
 
---- a/arch/arm64/include/asm/vdso/clocksource.h
-+++ b/arch/arm64/include/asm/vdso/clocksource.h
-@@ -2,7 +2,10 @@
- #ifndef __ASM_VDSOCLOCKSOURCE_H
- #define __ASM_VDSOCLOCKSOURCE_H
+--- a/arch/arm64/include/asm/arch_timer.h
++++ b/arch/arm64/include/asm/arch_timer.h
+@@ -58,6 +58,7 @@ struct arch_timer_erratum_workaround {
+ 	u64 (*read_cntvct_el0)(void);
+ 	int (*set_next_event_phys)(unsigned long, struct clock_event_device *);
+ 	int (*set_next_event_virt)(unsigned long, struct clock_event_device *);
++	bool disable_compat_vdso;
+ };
  
--#define VDSO_ARCH_CLOCKMODES	\
--	VDSO_CLOCKMODE_ARCHTIMER
-+#define VDSO_ARCH_CLOCKMODES					\
-+	/* vdso clocksource for both 32 and 64bit tasks */	\
-+	VDSO_CLOCKMODE_ARCHTIMER,				\
-+	/* vdso clocksource for 64bit tasks only */		\
-+	VDSO_CLOCKMODE_ARCHTIMER_NOCOMPAT
- 
- #endif
---- a/arch/arm64/include/asm/vdso/compat_gettimeofday.h
-+++ b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
-@@ -111,7 +111,7 @@ static __always_inline u64 __arch_get_hw
- 	 * update. Return something. Core will do another round and then
- 	 * see the mode change and fallback to the syscall.
- 	 */
--	if (clock_mode == VDSO_CLOCKMODE_NONE)
-+	if (clock_mode != VDSO_CLOCKMODE_ARCHTIMER)
- 		return 0;
- 
- 	/*
-@@ -152,6 +152,12 @@ static __always_inline const struct vdso
- 	return ret;
+ DECLARE_PER_CPU(const struct arch_timer_erratum_workaround *,
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -566,6 +566,9 @@ void arch_timer_enable_workaround(const
+ 	if (wa->read_cntvct_el0) {
+ 		clocksource_counter.vdso_clock_mode = VDSO_CLOCKMODE_NONE;
+ 		vdso_default = VDSO_CLOCKMODE_NONE;
++	} else if (wa->disable_compat_vdso && vdso_default != VDSO_CLOCKMODE_NONE) {
++		vdso_default = VDSO_CLOCKMODE_ARCHTIMER_NOCOMPAT;
++		clocksource_counter.vdso_clock_mode = vdso_default;
+ 	}
  }
  
-+static inline bool vdso_clocksource_ok(const struct vdso_data *vd)
-+{
-+	return vd->clock_mode == VDSO_CLOCKMODE_ARCHTIMER;
-+}
-+#define vdso_clocksource_ok	vdso_clocksource_ok
-+
- #endif /* !__ASSEMBLY__ */
- 
- #endif /* __ASM_VDSO_GETTIMEOFDAY_H */
 
 
