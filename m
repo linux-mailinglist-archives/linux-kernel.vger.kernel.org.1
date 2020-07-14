@@ -2,102 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDF121ECF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B14721ECF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgGNJeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:34:04 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:34604 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726889AbgGNJeC (ORCPT
+        id S1726928AbgGNJeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:34:00 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25276 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726889AbgGNJd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:34:02 -0400
-X-UUID: 294ffe915ddd4f2ebdd084d2a09cb58b-20200714
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=g0vfCKfsVImSYs7pBa71fJvZ3L9cSxC+jFd3c5Ar0OA=;
-        b=qga6wQmnl6LFOkFK300s5TBJueZg6wKqfCxqm5ApKl/ZRsDH9DFKNGfON9o0N811mIV5nbnXtOhLq1skUUp1gl8KFO7yK+XzxmK+qHBqDCq+Tf2eYe/t2m2HpEiDShWesjx0GfIE2m3D5iou3wiEwCOHQkXt+aM8yocisuLvyqU=;
-X-UUID: 294ffe915ddd4f2ebdd084d2a09cb58b-20200714
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1789059505; Tue, 14 Jul 2020 17:33:57 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 14 Jul
- 2020 17:33:55 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 14 Jul 2020 17:33:54 +0800
-Message-ID: <1594719186.16172.35.camel@mhfsdcap03>
-Subject: Re: [PATCH 11/21] iommu/mediatek: Add power-domain operation
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Pi-Hsun Shih <pihsun@chromium.org>
-CC:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>,
-        Youlin Pei =?UTF-8?Q?=28=E8=A3=B4=E5=8F=8B=E6=9E=97=29?= 
-        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
-        <anan.sun@mediatek.com>, <cui.zhang@mediatek.com>,
-        <chao.hao@mediatek.com>, <ming-fan.chen@mediatek.com>
-Date:   Tue, 14 Jul 2020 17:33:06 +0800
-In-Reply-To: <CANdKZ0e3=AeCxpSHVk7daUE01L7AgJYmZ7jeOQDT169SaowL-g@mail.gmail.com>
-References: <20200711064846.16007-1-yong.wu@mediatek.com>
-         <20200711064846.16007-12-yong.wu@mediatek.com>
-         <CANdKZ0e3=AeCxpSHVk7daUE01L7AgJYmZ7jeOQDT169SaowL-g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 14 Jul 2020 05:33:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594719236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DD/NJLwq0bamxwrGSpcfsRcNRSxti2z+zdKscIzsmx8=;
+        b=aqpdiJTbxSyzYz5A5oM5qGBwedN6Z2XP4krUBoIdGuqI8/RAzX06Ic/k2gil0u0eVB9BgF
+        XPC0VgGtHu9pkvLdW/6KV3xVbsDyanNFMG/LRh61N71X6F+eNZTXzOyyw6mSSvM9/PMCFP
+        LajOPPz1TeZb7IFgq0b4C49EEgzFkkA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-56-IIOjO1v5OfWKNeJr3I5bsQ-1; Tue, 14 Jul 2020 05:33:55 -0400
+X-MC-Unique: IIOjO1v5OfWKNeJr3I5bsQ-1
+Received: by mail-wr1-f69.google.com with SMTP id c6so20895228wru.7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 02:33:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DD/NJLwq0bamxwrGSpcfsRcNRSxti2z+zdKscIzsmx8=;
+        b=EGfkDOQ82R5h48AEp1oihCqIUZVHE03Tke2xhiuDilrfFhEApOOBFB35yeiOG0CGtB
+         iLzSGx0gzNsfrSefRO6yYz/xII/11fLb15CpWZMbTfVoFkZWpqVDdrSDOinZPLI3uszc
+         n5OP7S56MmNYOr/S7lJyOKOdkfNXPTUV3DLBDPPkkpP9+wawSXI9YaI5J1l3IXf1Mqde
+         1SKWaOLLzL22HDY4W9f/wrsoHssS2PaHQOfsm0RFpEy0Jh1ensGo5fzMicPHZDd70yUw
+         l2+qZvViRINkWn85LAa9ozolXpe1ujrBP5NpzwkCBjHchoUAIv8ZJZHNKuxZbG05cSDT
+         Kfpg==
+X-Gm-Message-State: AOAM531JkW2feMx693261L1MGJxeHHzuKs5JKi0X+407eY6M0iIdlILq
+        eI4QsqLAUqP1lgYB/UUQYvenTOANQr5yDaJ0mEEifIegBV3e/Rli36s8piwgx7Dv/ugDmtPKMdO
+        wFJcKyloa9vzVP/ZJOvAWTnX3
+X-Received: by 2002:adf:82f5:: with SMTP id 108mr4055590wrc.218.1594719233554;
+        Tue, 14 Jul 2020 02:33:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw1p/qy7933UavAoXwgcWhVOtbvoAlMJGxZoS0PdD7U/ByU3kIkzqqn/GZmkZDBKPgptMqMYw==
+X-Received: by 2002:adf:82f5:: with SMTP id 108mr4055578wrc.218.1594719233348;
+        Tue, 14 Jul 2020 02:33:53 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id a12sm28522958wrv.41.2020.07.14.02.33.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 02:33:52 -0700 (PDT)
+Subject: Re: [PATCH 5.8 regression fix] platform/x86: thinkpad_acpi: Revert:
+ Use strndup_user() in dispatch_proc_write()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
+        Thinkpad-acpi devel ML <ibm-acpi-devel@lists.sourceforge.net>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200714081510.6070-1-hdegoede@redhat.com>
+ <CAHp75Vd6uGNw5m3-Tc1tkABLT_Wi7CtW2yo8+B5TpYV4U8XE9A@mail.gmail.com>
+ <CAHp75Ve9HF4WVkiUA77s9LsN6d8oaFPRgjLi86FnDSHgmVvTNA@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <af1a7c41-071f-4c26-9a9a-7c6ffb5dde88@redhat.com>
+Date:   Tue, 14 Jul 2020 11:33:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 4A868CC5672C9E09033785D03A34B39C2AB230B1DC2A9B4BD748D338AF6B73A92000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <CAHp75Ve9HF4WVkiUA77s9LsN6d8oaFPRgjLi86FnDSHgmVvTNA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA3LTEzIGF0IDE1OjAzICswODAwLCBQaS1Ic3VuIFNoaWggd3JvdGU6DQo+
-IE9uIFNhdCwgSnVsIDExLCAyMDIwIGF0IDI6NTEgUE0gWW9uZyBXdSA8eW9uZy53dUBtZWRpYXRl
-ay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gSW4gdGhlIHByZXZpb3VzIFNvQywgdGhlIE00VSBIVyBp
-cyBpbiB0aGUgRU1JIHBvd2VyIGRvbWFpbiB3aGljaCBpcw0KPiA+IGFsd2F5cyBvbi4gdGhlIGxh
-dGVzdCBNNFUgaXMgaW4gdGhlIGRpc3BsYXkgcG93ZXIgZG9tYWluIHdoaWNoIG1heSBiZQ0KPiA+
-IHR1cm5lZCBvbi9vZmYsIHRodXMgd2UgaGF2ZSB0byBhZGQgcG1fcnVudGltZSBpbnRlcmZhY2Ug
-Zm9yIGl0Lg0KPiA+DQo+ID4gd2Ugc2hvdWxkIGVuYWJsZSBpdHMgcG93ZXIgYmVmb3JlIE00VSBo
-dyBpbml0aWFsLiBhbmQgZGlzYWJsZSBpdCBhZnRlciBIVw0KPiA+IGluaXRpYWxpemUuDQo+ID4N
-Cj4gPiBXaGVuIHRoZSBlbmdpbmUgd29yaywgdGhlIGVuZ2luZSBhbHdheXMgZW5hYmxlIHRoZSBw
-b3dlciBhbmQgY2xvY2tzIGZvcg0KPiA+IHNtaS1sYXJiL3NtaS1jb21tb24sIHRoZW4gdGhlIE00
-VSdzIHBvd2VyIHdpbGwgYWx3YXlzIGJlIHBvd2VyZWQgb24NCj4gPiBhdXRvbWF0aWNhbGx5IHZp
-YSB0aGUgZGV2aWNlIGxpbmsgd2l0aCBzbWktY29tbW9uLg0KPiA+DQo+ID4gTm90ZTogd2UgZG9u
-J3QgZW5hYmxlIHRoZSBNNFUgcG93ZXIgaW4gaW9tbXVfbWFwL3VubWFwIGZvciB0bGIgZmx1c2gu
-DQo+ID4gSWYgaXRzIHBvd2VyIGFscmVhZHkgaXMgb24sIG9mIGNvdXJzZSBpdCBpcyBvay4gaWYg
-dGhlIHBvd2VyIGlzIG9mZiwNCj4gPiB0aGUgbWFpbiB0bGIgd2lsbCBiZSByZXNldCB3aGlsZSBN
-NFUgcG93ZXIgb24sIHRodXMgdGhlIHRsYiBmbHVzaCB3aGlsZQ0KPiA+IG00dSBwb3dlciBvZmYg
-aXMgdW5uZWNlc3NhcnksIGp1c3Qgc2tpcCBpdC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFlv
-bmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2lvbW11
-L210a19pb21tdS5jIHwgNTQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0t
-DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0NyBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0K
-PiA+IC4uLg0KPiA+ICAgICAgICAgZm9yX2VhY2hfbTR1KGRhdGEpIHsNCj4gPiArICAgICAgICAg
-ICAgICAgLyogc2tpcCB0bGIgZmx1c2ggd2hlbiBwbSBpcyBub3QgYWN0aXZlICovDQo+ID4gKyAg
-ICAgICAgICAgICAgIGlmIChwbV9ydW50aW1lX2VuYWJsZWQoZGF0YS0+ZGV2KSAmJg0KPiA+ICsg
-ICAgICAgICAgICAgICAgICAgIXBtX3J1bnRpbWVfYWN0aXZlKGRhdGEtPmRldikpDQo+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+ID4gKw0KPiANCj4gcG1fcnVudGltZV9h
-Y3RpdmUoZGV2KSA9PSBmYWxzZSBpbXBsaWVzIGRldi0+cG93ZXIuZGlzYWJsZV9kZXB0aCA9PSAw
-LA0KPiB3aGljaCBpbXBsaWVzIHBtX3J1bnRpbWVfZW5hYmxlZChkZXYpID09IHRydWUsIHNvIHRo
-ZQ0KPiBwbV9ydW50aW1lX2VuYWJsZWQoZGF0YS0+ZGV2KSBjYW4gYmUgb21pdHRlZCBoZXJlLg0K
-DQpZZXMuIFRoYW5rcy4NCldpbGwgZml4IGluIG5leHQgdmVyc2lvbi4NCg0KPiANCj4gPiAgICAg
-ICAgICAgICAgICAgc3Bpbl9sb2NrX2lycXNhdmUoJmRhdGEtPnRsYl9sb2NrLCBmbGFncyk7DQo+
-ID4gICAgICAgICAgICAgICAgIHdyaXRlbF9yZWxheGVkKEZfSU5WTERfRU4xIHwgRl9JTlZMRF9F
-TjAsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEtPmJhc2UgKyBkYXRh
-LT5wbGF0X2RhdGEtPmludl9zZWxfcmVnKTsNCj4gPiAuLi4NCg0K
+Hi,
+
+On 7/14/20 10:27 AM, Andy Shevchenko wrote:
+> On Tue, Jul 14, 2020 at 11:21 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+>> On Tue, Jul 14, 2020 at 11:15 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>>>
+>>> Commit 35d13c7a0512 ("platform/x86: thinkpad_acpi: Use strndup_user()
+>>> in dispatch_proc_write()") cleaned up dispatch_proc_write() by replacing
+>>> the code to copy the passed in data from userspae with strndup_user().
+>>
+>> user space
+
+Ack, do you want me to send a v2, or can you fix this up after applying.
+
+>>> But strndup_user() expects a 0 terminated input buffer and the buffer
+>>> passed to dispatch_proc_write() is NOT 0 terminated.
+> 
+> Second though, perhaps it's a simple wrong count parameter?
+> strndup_user(..., min(count, PAGE_SIZE)) or so would work?
+
+I honestly have not looked at a better fix and given that you've just come
+up with 2 suggestions which may or may not work, combined with
+where we are in the 5.8 cycle I believe it would be best to just
+play it safe and go with the revert for 5.8.
+
+If you then take a second attempt at cleaning this up for 5.9 and
+send it to me, I can test it for you.
+
+Regards,
+
+Hans
 
