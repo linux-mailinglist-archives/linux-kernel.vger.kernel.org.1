@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFC821F3AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A1521F3AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgGNOP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 10:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725803AbgGNOPy (ORCPT
+        id S1728519AbgGNOQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 10:16:18 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:6915 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725803AbgGNOQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 10:15:54 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD11C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:15:54 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id a32so12881347qtb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:15:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P372NUKZoZ0/nvzVGUuc2s28GruKsUnveXwN5n0Gdac=;
-        b=fWDJsztsy4vHZnJcfhEoivjuDuvY9H6HC+F2NhBdj1E4joBeLZ17Rt2HLiHKkMFDXM
-         BEDbI36VlLMjke+//jmvYPPhNaqi8L7grwEbXPWyvIbZi67K67WAP7/wN+BDoLR6p4tG
-         a5/VDto9JJkkBPm8pXSB98z6lnDQtm7IcPJ9RVBxX7kS4EpJTJm7OcqyxLdSXygdfRle
-         HWvnRjI33sVvNOLATWzYQIjCoOuXmjkeifyMq008/6crfbDFxzZM9FxRAnb05k909OG4
-         AfYJH1kIQaTW+Dw7IQlaudr5Ug6C28xe/jvARrfLBSz3Iyd3XFa66+jxqH776YyDgMuw
-         XS5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=P372NUKZoZ0/nvzVGUuc2s28GruKsUnveXwN5n0Gdac=;
-        b=pBDom9CzUR8YxsYkNlo3tZvB7cDbOaLV7pc9W5bh/V/31G0K8J4mFyP0Aq6ht3cLOr
-         eYvwjiNYGX6Nvhd1FVZbZh4F/+j+XEqckzGyrVM1HGwNgBNwVwP5vzhsQ9W7YuEiV4EJ
-         8b5Zdi9YVsLYgmjPyI7drfI7z02P9/LIqkWQ3IdRYJ9RxglBldIZsBw3bet0e//Z9DBh
-         Y7G4jB3hq6uQcurZACNby2pPdPMKhbk2vO86lBXYAuFvrZUuy10FXC2VmppPWxeda4WH
-         dQq3DomlyRg70QqVrrBZaOBJrAyLDN9Hv65Zy9b1NHzoLGGjSqxb6ptSvz6p9hVPoqjF
-         Jxsg==
-X-Gm-Message-State: AOAM5306lML0SDIQC8+qMaJv/qENfWWnk9y/9wF4ppHM6qHFX7tq4kIN
-        slBA5Wv+e0PxClFxTkHghGU=
-X-Google-Smtp-Source: ABdhPJz2n202z1wIcS/YMaunLV4uw0Y5CM/DIPtulElHJdQPSUW6gzU+fr1d3mKFvywCsjIuQUqdPA==
-X-Received: by 2002:ac8:544d:: with SMTP id d13mr4915886qtq.375.1594736152547;
-        Tue, 14 Jul 2020 07:15:52 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id 19sm22696233qke.44.2020.07.14.07.15.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 07:15:51 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 14 Jul 2020 10:15:50 -0400
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] x86/boot: Remove runtime relocations from
- compressed kernel
-Message-ID: <20200714141550.GA329060@rani.riverdale.lan>
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200714023836.2310569-1-nivedita@alum.mit.edu>
- <CA+icZUXSPfybFtzQB3wKn9spQmEPnQu_iGPWkRisAmRQbJLWXA@mail.gmail.com>
+        Tue, 14 Jul 2020 10:16:17 -0400
+X-IronPort-AV: E=Sophos;i="5.75,350,1589234400"; 
+   d="scan'208";a="459696777"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 16:16:15 +0200
+Date:   Tue, 14 Jul 2020 16:16:15 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Suraj Upadhyay <usuraj35@gmail.com>
+cc:     davem@davemloft.net, kuba@kernel.org,
+        linux-decnet-user@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] decnet: dn_dev: Remove an unnecessary label.
+In-Reply-To: <20200714141309.GA3184@blackclown>
+Message-ID: <alpine.DEB.2.22.394.2007141615490.2355@hadrien>
+References: <20200714141309.GA3184@blackclown>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CA+icZUXSPfybFtzQB3wKn9spQmEPnQu_iGPWkRisAmRQbJLWXA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 03:15:49PM +0200, Sedat Dilek wrote:
-> 
-> How to test this series without building a full new kernel?
-> 
-> make $make_opts vmlinux
-> 
-> - Sedat -
-> 
 
-Not sure I understood the question: you do have to build a full new
-kernel with this patch series to test it. Since the changes are to the
-compressed kernel, you would need to make bzImage, which is the end
-product of the full kernel build.
 
-Thanks.
+On Tue, 14 Jul 2020, Suraj Upadhyay wrote:
+
+> Remove the unnecessary label from dn_dev_ioctl() and make its error
+> handling simpler to read.
+>
+> Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+> ---
+>  net/decnet/dn_dev.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/net/decnet/dn_dev.c b/net/decnet/dn_dev.c
+> index 65abcf1b3210..64901bb9f314 100644
+> --- a/net/decnet/dn_dev.c
+> +++ b/net/decnet/dn_dev.c
+> @@ -462,7 +462,9 @@ int dn_dev_ioctl(unsigned int cmd, void __user *arg)
+>  	switch (cmd) {
+>  	case SIOCGIFADDR:
+>  		*((__le16 *)sdn->sdn_nodeaddr) = ifa->ifa_local;
+> -		goto rarok;
+> +		if (copy_to_user(arg, ifr, DN_IFREQ_SIZE))
+> +			ret = -EFAULT;
+> +			break;
+
+The indentation on break does not look correct.
+
+julia
+
+>
+>  	case SIOCSIFADDR:
+>  		if (!ifa) {
+> @@ -485,10 +487,6 @@ int dn_dev_ioctl(unsigned int cmd, void __user *arg)
+>  	rtnl_unlock();
+>
+>  	return ret;
+> -rarok:
+> -	if (copy_to_user(arg, ifr, DN_IFREQ_SIZE))
+> -		ret = -EFAULT;
+> -	goto done;
+>  }
+>
+>  struct net_device *dn_dev_get_default(void)
+> --
+> 2.17.1
+>
+>
