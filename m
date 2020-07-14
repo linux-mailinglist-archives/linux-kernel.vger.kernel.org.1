@@ -2,104 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9972321EAAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7695921EAB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgGNHzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725876AbgGNHz3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:55:29 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC32C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 00:55:29 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1jvFmg-0007Gm-Ku; Tue, 14 Jul 2020 09:55:26 +0200
-Subject: Re: [PATCH 3/3] ARM: dts: colibri-imx7: add usb dual-role switch
- capability
-To:     Philippe Schenker <philippe.schenker@toradex.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>
-Cc:     "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-imx@nxp.com" <linux-imx@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-References: <20200710132423.497230-1-philippe.schenker@toradex.com>
- <20200710132423.497230-3-philippe.schenker@toradex.com>
- <73240ab0-5069-40c5-4ade-7fcc2207dfaf@pengutronix.de>
- <c76c0fd056512a3f8e24bf06e7bb7e1650090609.camel@toradex.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <7e6f8135-120f-0831-20ad-25648ea646b8@pengutronix.de>
-Date:   Tue, 14 Jul 2020 09:55:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726803AbgGNH4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:56:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48808 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725833AbgGNH4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:56:10 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B46E72145D;
+        Tue, 14 Jul 2020 07:56:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594713369;
+        bh=qeHxoelopC8fC8i1MYKZLmE+ijVyBr7FSm/jfPrNJf8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fkeT9Yj3tp1TDlDqeq3AhcpLjrOBqs5FOt7gsO1aA2J+sG41iTneHzbLldMqyksjg
+         KtKaUN+u+m6bmGA/fqs07uM46fY8E4Y1giEhRtzqRd0CljhONMXkPmnA/s7Xmvboeh
+         N+obl3zoeIZ1hKl8vv3F9U81LTbfJmMMMUJArlM0=
+Date:   Tue, 14 Jul 2020 08:56:03 +0100
+From:   Will Deacon <will@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] firmware: QCOM_SCM: Allow qcom_scm driver to be
+ loadable as a permenent module
+Message-ID: <20200714075603.GE4277@willie-the-truck>
+References: <20200625001039.56174-1-john.stultz@linaro.org>
+ <20200625001039.56174-6-john.stultz@linaro.org>
+ <20200702141825.GA16941@willie-the-truck>
+ <CALAqxLVZ2EhutYjOt7Be1RgnYwHT6-4m6DxA-t1wuxuSy=6yDQ@mail.gmail.com>
+ <20200710075411.GA30011@willie-the-truck>
+ <CALAqxLWadLrxckRHRAR0Q417RnFKquQJbRfO_DLEVH56cykRow@mail.gmail.com>
+ <20200713204133.GA3731@willie-the-truck>
+ <CALAqxLXDVRzWDfuAS78EFwyYs3yr3QrPF3Tze0KAW1fo9c7M2A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c76c0fd056512a3f8e24bf06e7bb7e1650090609.camel@toradex.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALAqxLXDVRzWDfuAS78EFwyYs3yr3QrPF3Tze0KAW1fo9c7M2A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Philippe,
-
-On 7/13/20 1:53 PM, Philippe Schenker wrote:
-> On Mon, 2020-07-13 at 11:46 +0200, Ahmad Fatoum wrote:
->> Hello Philippe,
->>
->>> +	extcon_usbc_det: usbc_det {
->>> +		compatible = "linux,extcon-usb-gpio";
->>
->> According to 4602f3bff266 ("usb: common: add USB GPIO based connection
->> detection driver"):
->> "the old way using extcon to support USB Dual-Role switch is now
->> deprecated
->>  when use Type-B connector."
->>
->> Have you considered using a compatible = "gpio-usb-b-connector" child
->> node instead?
->>
->> Cheers,
->> Ahmad
+On Mon, Jul 13, 2020 at 01:48:29PM -0700, John Stultz wrote:
+> On Mon, Jul 13, 2020 at 1:41 PM Will Deacon <will@kernel.org> wrote:
+> > On Fri, Jul 10, 2020 at 03:21:53PM -0700, John Stultz wrote:
+> > > On Fri, Jul 10, 2020 at 12:54 AM Will Deacon <will@kernel.org> wrote:
+> > > > On Thu, Jul 09, 2020 at 08:28:45PM -0700, John Stultz wrote:
+> > > > > On Thu, Jul 2, 2020 at 7:18 AM Will Deacon <will@kernel.org> wrote:
+> > > > > > On Thu, Jun 25, 2020 at 12:10:39AM +0000, John Stultz wrote:
+> > > > > > > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> > > > > > > index b510f67dfa49..714893535dd2 100644
+> > > > > > > --- a/drivers/iommu/Kconfig
+> > > > > > > +++ b/drivers/iommu/Kconfig
+> > > > > > > @@ -381,6 +381,7 @@ config SPAPR_TCE_IOMMU
+> > > > > > >  config ARM_SMMU
+> > > > > > >       tristate "ARM Ltd. System MMU (SMMU) Support"
+> > > > > > >       depends on (ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)) && MMU
+> > > > > > > +     depends on QCOM_SCM || !QCOM_SCM #if QCOM_SCM=m this can't be =y
+> > > > > > >       select IOMMU_API
+> > > > > > >       select IOMMU_IO_PGTABLE_LPAE
+> > > > > > >       select ARM_DMA_USE_IOMMU if ARM
+> > > > > >
+> > > > > > This looks like a giant hack. Is there another way to handle this?
+> > > > >
+> > > > > Sorry for the slow response here.
+> > > > >
+> > > > > So, I agree the syntax looks strange (requiring a comment obviously
+> > > > > isn't a good sign), but it's a fairly common way to ensure drivers
+> > > > > don't get built in if they optionally depend on another driver that
+> > > > > can be built as a module.
+> > > > >   See "RFKILL || !RFKILL", "EXTCON || !EXTCON", or "USB_GADGET ||
+> > > > > !USB_GADGET" in various Kconfig files.
+> > > > >
+> > > > > I'm open to using a different method, and in a different thread you
+> > > > > suggested using something like symbol_get(). I need to look into it
+> > > > > more, but that approach looks even more messy and prone to runtime
+> > > > > failures. Blocking the unwanted case at build time seems a bit cleaner
+> > > > > to me, even if the syntax is odd.
+> > > >
+> > > > Maybe just split it out then, so that the ARM_SMMU entry doesn't have this,
+> > > > as that driver _really_ doesn't care about SoC details like this. In other
+> > > > words, add a new entry along the lines of:
+> > > >
+> > > >         config ARM_SMMU_QCOM_IMPL
+> > > >         default y
+> > > >         #if QCOM_SCM=m this can't be =y
+> > > >         depends on ARM_SMMU & (QCOM_SCM || !QCOM_SCM)
+> > > >
+> > > > and then have arm-smmu.h provide a static inline qcom_smmu_impl_init()
+> > > > which returns -ENODEV if CONFIG_ARM_SMMU_QCOM_IMPL=n and hack the Makefile
+> > > > so that we don't bother to compile arm-smmu-qcom.o in that case.
+> > > >
+> > > > Would that work?
+> > >
+> > > I think this proposal still has problems with the directionality of the call.
+> > >
+> > > The arm-smmu-impl.o calls to arm-smmu-qcom.o which calls qcom_scm.o
+> > > So if qcom_scm.o is part of a module, the calling code in
+> > > arm-smmu-qcom.o also needs to be a module, which means CONFIG_ARM_SMMU
+> > > needs to be a module.
+> > >
+> > > I know you said the arm-smmu driver doesn't care about SoC details,
+> > > but the trouble is that currently the arm-smmu driver does directly
+> > > call the qcom-scm code. So it is a real dependency. However, if
+> > > QCOM_SCM is not configured, it calls stubs and that's ok.  In that
+> > > way, the "depends on QCOM_SCM || !QCOM_SCM" line actually makes sense.
+> > > It looks terrible because we're used to boolean logic, but it's
+> > > ternary.
+> >
+> > Yes, it looks ugly, but the part I really have issues with is that building
+> > QCOM_SCM=m and ARM_SMMU=y is perfectly fine if you don't run on an SoC
+> > with the qcom implementation. I don't see why we need to enforce things
+> > here beyond making sure that all selectable permutations _build_ and
+> > fail gracefully at runtime on the qcom SoC if SCM isn't available.
 > 
-> Thanks for the Hint Ahmad,
-> 
-> I already tried and just now tried again but it doesn't work on our
-> hardware. Are you sure this works with chipidea driver?
+> Ok. Thanks, that context/rationale makes sense to me now!  I'll dig in
+> and see if I can figure out the runtime get_symbol handling you
+> suggested for the scm callout.
 
-I haven't, just wanted to point its existence out in case you didn't know.
-Seems we need to call of_platform_populate somewhere in the driver.
-Unsure what other changes are necessary.
+Cheers, but in the interest of not being a massive pain in the bum, please
+yell if it ends up being tonnes of work and I'll close my eyes while
+applying your original patch.
 
-> Should this new usb-connector stuff work in general with every old
-> driver?
-
-If the driver support isn't there yet, I think use of extcon is fine as is.
-
-Thanks
-Ahmad
-
-> 
-> Philippe
-
-
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Will
