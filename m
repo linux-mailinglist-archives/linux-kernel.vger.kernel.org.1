@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 392AE21FAB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1222521FA15
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730817AbgGNSy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:54:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52420 "EHLO mail.kernel.org"
+        id S1730112AbgGNStU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:49:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729957AbgGNSyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:54:53 -0400
+        id S1730094AbgGNStS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:49:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE49822B47;
-        Tue, 14 Jul 2020 18:54:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E005922AAA;
+        Tue, 14 Jul 2020 18:49:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752893;
-        bh=cy5Qh/XKBJsz+OaLp+9qPvYzkHVd0QmKFeuT0HGW0oo=;
+        s=default; t=1594752558;
+        bh=aLKc2SmUfn8SIjJJkUSZ8J7RkjL7/t9i+FwVY1Z71rM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mwKMJGuqKhzyGza4wgQvDEugS6WQA11oeKIDD6bdoXU0VpHbC57j7scrIPIahJ5Tz
-         F+sx00W73aHz9nvTohJXP53gy19PYxALc0AqX7omhPI3NRdy9SArOicH5fTh5XUass
-         JLR63D0jQR9h0+kK+qJBtvqXVYLAiLWynWWir7Rw=
+        b=nn394Zh9GSNjunLmagWwrHF4SR+ytbQcchQD5dzngmikhgpulrbifxQzZruJiy4xv
+         yAbrp/f9ZquXzbR4de+d/gZGNur0dplr5drDSjIrdciKZOWsVNj7UjbWYvG35ka/nY
+         DaV7RXXe3OPhTXdRWjTr8ch8Bn0yDAyywQTGRsAg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
-        Marco Elver <elver@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
+        stable@vger.kernel.org, Emil Velikov <emil.l.velikov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 041/166] x86/entry: Increase entry_stack size to a full page
+Subject: [PATCH 5.4 023/109] drm: panel-orientation-quirks: Add quirk for Asus T101HA panel
 Date:   Tue, 14 Jul 2020 20:43:26 +0200
-Message-Id: <20200714184117.845108345@linuxfoundation.org>
+Message-Id: <20200714184106.639980198@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,38 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit c7aadc09321d8f9a1d3bd1e6d8a47222ecddf6c5 ]
+[ Upstream commit 6c22bc18a3b93a38018844636557ad02e588e055 ]
 
-Marco crashed in bad_iret with a Clang11/KCSAN build due to
-overflowing the stack. Now that we run C code on it, expand it to a
-full page.
+Like the Asus T100HA the Asus T101HA also uses a panel which has been
+mounted 90 degrees rotated, albeit in the opposite direction.
+Add a quirk for this.
 
-Suggested-by: Andy Lutomirski <luto@amacapital.net>
-Reported-by: Marco Elver <elver@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Tested-by: Marco Elver <elver@google.com>
-Link: https://lkml.kernel.org/r/20200618144801.819246178@infradead.org
+Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200531093025.28050-1-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/processor.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_panel_orientation_quirks.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index c4e8fd709cf67..e38befea287fc 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -370,7 +370,7 @@ struct x86_hw_tss {
- #define IO_BITMAP_OFFSET_INVALID	(__KERNEL_TSS_LIMIT + 1)
- 
- struct entry_stack {
--	unsigned long		words[64];
-+	char	stack[PAGE_SIZE];
- };
- 
- struct entry_stack_page {
+diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+index ffd95bfeaa94c..d11d83703931e 100644
+--- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
++++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
+@@ -121,6 +121,12 @@ static const struct dmi_system_id orientation_data[] = {
+ 		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100HAN"),
+ 		},
+ 		.driver_data = (void *)&asus_t100ha,
++	}, {	/* Asus T101HA */
++		.matches = {
++		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T101HA"),
++		},
++		.driver_data = (void *)&lcd800x1280_rightside_up,
+ 	}, {	/* GPD MicroPC (generic strings, also match on bios date) */
+ 		.matches = {
+ 		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Default string"),
 -- 
 2.25.1
 
