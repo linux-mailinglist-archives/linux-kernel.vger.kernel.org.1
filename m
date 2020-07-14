@@ -2,68 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C6221EF06
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE72721EF20
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728067AbgGNLSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 07:18:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
+        id S1728059AbgGNLUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 07:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727939AbgGNLQt (ORCPT
+        with ESMTP id S1727935AbgGNLSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 07:16:49 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97A2C08E763
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:16:05 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id o11so20921052wrv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:16:05 -0700 (PDT)
+        Tue, 14 Jul 2020 07:18:42 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17EEC08E876
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:16:06 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l2so5010523wmf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:16:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=z/zoKcrmx2IW2qZYN8v07zqfWyovJdKlsFhRtVJoj8Y=;
-        b=b1sAb44WGmZFCdVAFpOnOB6gjm1ZuIfnH5qfH6jEl7r1V5Ot0bj2a/haai/zLlbGwZ
-         jyft/gXpKRKwhcAmBF6N1E3tVUv3FpyxaQDJbEMA+kzxFOdi5i/iC+SuVdGwUK3S7lkC
-         JCMyVtDbRUfFVhAZkbBSmtUupdpqKKxXkUPJTaoOYPu5dPFvyg6Blg9WrDMzB/cseVM+
-         rhmyyRlfWyztEMer+eWo6n3Do/AXv5WhKdZaS+4tgq6H2R8pELz1fQ3yZJcDDG53AKI8
-         o6mlh08h6jJhiGMzg1aEP83hrtSL2JwTrrM/lGjoC5Bpn1y65cxU+TAsW9GNOLI5/kNh
-         tUSw==
+        bh=tHvsPtXMawqhgTlXf8i2jhQs/B2cBsj2Ks/fZJOcmHY=;
+        b=Fqu+JGaFSRh7vRRPgR/HabR8IBZaeLvvr2EcwSrSv7QCI/6fOnODRUdqwt90J3g5C8
+         0s7/ZkCY/MC07cLGz5P6eZPk8H0sOh7MIQCT3wT/fmUP0dZZvRlB6+ROihSuNTcRcnrn
+         3f/KQJT0rXlJvq27p2T59AjfgIz20tp6gxCQwiRj2g3DFceT0HNj5P5tLxs2F3WUfGUr
+         BCztbiua/SQvCo0rqC98vsPQJ6hLsJvnB5rS2qxatc4pm34FHMoA/X6H2H78RvRzapwC
+         7c22y4tqYny0qVqhSNYiSLAngITlsOr2bNM3rVNtPcNOiSxaFmQjsg/AEf1VCrEiPz2W
+         p5Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=z/zoKcrmx2IW2qZYN8v07zqfWyovJdKlsFhRtVJoj8Y=;
-        b=s2KOOmWVdCA9ZzSs7Olx+MnzR6DuEafyn68QStXc1Vi9A7ptPab8+EDMm5cGiOT2oA
-         aCximwLoB8CNmVO/03yRnSTDHkaG7xDjkL7EHWF+/GqCL7rba/U6LeJvAKRrqawJyMbZ
-         /uLBd9UHOIQY3Jvq78ISDvnAbnfFtyF554isgIY610v1ozWa6fjlVvAEj/b3L0glZBbb
-         2dgpZdB5z3F++X7bC+4abyn24Dq/mogV4nzng4/TMj7b2CQKHUNQ67w1gEUmy/jrsn2p
-         clGCmM9OC9Ie3/vEqP0n5YaldRKX4zWJBF5zHq0ZyPFRAUhRGMCvkDlh1oJH+zgvd6Xg
-         tVqw==
-X-Gm-Message-State: AOAM533QF0dCo5IxudwIOVxsRX1Ojjogab649CN+jbxyzIKuiEsAoT6f
-        uTQCDaL7NFHoIVugyyilllmNNg==
-X-Google-Smtp-Source: ABdhPJyAUbTKcS5Sll5KxkNhZWdfScOwNs01z+UT0g/DeH+FLBo8B9AbZI4twgzB3lN+ZB/l5mfLmQ==
-X-Received: by 2002:a5d:698e:: with SMTP id g14mr4923996wru.301.1594725364528;
-        Tue, 14 Jul 2020 04:16:04 -0700 (PDT)
+        bh=tHvsPtXMawqhgTlXf8i2jhQs/B2cBsj2Ks/fZJOcmHY=;
+        b=ShEF3DacY3iIejks6uD9xP05l45Dwu+u8KDsnUmJ6GXLnGXIy9qlIod6gaoIqHEqZ2
+         jvBneX/bvn4BU6PIuvEfI3BTy4ez2LG46eOMykwVQleUWmlznubHZ3GVslr2fE5RbZlC
+         lUuTVXfWUr5knBJZ3TlMVgeprt9f7cgdtoOjM9+sE82EjSevoonDxd4IcTqxcOwIEvoh
+         vvEWZGK4im/gRj0IWk0SxtVdUTj7uN/QPcxSAj/Q7S4Zt6h57Bpfu5bNpv8I1BkRsCOn
+         3+NUGCmFU6lsS95lSOwdvkEky70L0flXkHwCemEwAHNmT/1Co0cEho1wp3kaouqW+J/j
+         gr8g==
+X-Gm-Message-State: AOAM531YGUsHOvCp6JbZ/JH3LEQ3/quSRY2zb+MlgNFwkMiVpj1XEL2C
+        DeU6K9D3VuKhq1YNoHp5diqId8Zoefs=
+X-Google-Smtp-Source: ABdhPJxVoSxX2N3tawtWC/yLdMqtT4pktyn2twbJ8qTyWyZpqmkc6sC5zihRJLY5WtskmmQJi5EWrw==
+X-Received: by 2002:a05:600c:2116:: with SMTP id u22mr3778571wml.82.1594725365560;
+        Tue, 14 Jul 2020 04:16:05 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.16.03
+        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.16.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 04:16:03 -0700 (PDT)
+        Tue, 14 Jul 2020 04:16:05 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     dan.j.williams@intel.com, vkoul@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         dmaengine@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 13/17] dma: nbpfaxi: Provide some missing attribute docs and split out slave info
-Date:   Tue, 14 Jul 2020 12:15:42 +0100
-Message-Id: <20200714111546.1755231-14-lee.jones@linaro.org>
+        Prasad Sahu <rsahu@apm.com>, Loc Ho <lho@apm.com>
+Subject: [PATCH 14/17] dma: xgene-dma: Provide descriptions for 'dev' and 'clk' in device's ddata
+Date:   Tue, 14 Jul 2020 12:15:43 +0100
+Message-Id: <20200714111546.1755231-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200714111546.1755231-1-lee.jones@linaro.org>
 References: <20200714111546.1755231-1-lee.jones@linaro.org>
@@ -76,75 +68,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/dma/nbpfaxi.c:157: warning: Function parameter or member 'chan' not described in 'nbpf_desc'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'tasklet' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_src_addr' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_src_width' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_src_burst' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_dst_addr' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_dst_width' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'slave_dst_burst' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'running' not described in 'nbpf_channel'
- drivers/dma/nbpfaxi.c:220: warning: Function parameter or member 'paused' not described in 'nbpf_channel'
+ drivers/dma/xgene-dma.c:310: warning: Function parameter or member 'dev' not described in 'xgene_dma'
+ drivers/dma/xgene-dma.c:310: warning: Function parameter or member 'clk' not described in 'xgene_dma'
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@chromium.org>
-Cc: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
+Cc: Prasad Sahu <rsahu@apm.com>
+Cc: Loc Ho <lho@apm.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/dma/nbpfaxi.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/dma/xgene-dma.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/dma/nbpfaxi.c b/drivers/dma/nbpfaxi.c
-index 594409a6e9752..74df621402e10 100644
---- a/drivers/dma/nbpfaxi.c
-+++ b/drivers/dma/nbpfaxi.c
-@@ -144,6 +144,7 @@ struct nbpf_link_desc {
-  * @async_tx:	dmaengine object
-  * @user_wait:	waiting for a user ack
-  * @length:	total transfer length
-+ * @chan:	associated DMAC channel
-  * @sg:		list of hardware descriptors, represented by struct nbpf_link_desc
-  * @node:	member in channel descriptor lists
-  */
-@@ -174,13 +175,17 @@ struct nbpf_desc_page {
+diff --git a/drivers/dma/xgene-dma.c b/drivers/dma/xgene-dma.c
+index cd60fa6d67501..4f733d37a22e2 100644
+--- a/drivers/dma/xgene-dma.c
++++ b/drivers/dma/xgene-dma.c
+@@ -287,6 +287,8 @@ struct xgene_dma_chan {
+ 
  /**
-  * struct nbpf_channel - one DMAC channel
-  * @dma_chan:	standard dmaengine channel object
-+ * @tasklet:	channel specific tasklet used for callbacks
-  * @base:	register address base
-  * @nbpf:	DMAC
-  * @name:	IRQ name
-  * @irq:	IRQ number
-- * @slave_addr:	address for slave DMA
-- * @slave_width:slave data size in bytes
-- * @slave_burst:maximum slave burst size in bytes
-+ * @slave_src_addr:	source address for slave DMA
-+ * @slave_src_width:	source slave data size in bytes
-+ * @slave_src_burst:	maximum source slave burst size in bytes
-+ * @slave_dst_addr:	destination address for slave DMA
-+ * @slave_dst_width:	destination slave data size in bytes
-+ * @slave_dst_burst:	maximum destination slave burst size in bytes
-  * @terminal:	DMA terminal, assigned to this channel
-  * @dmarq_cfg:	DMA request line configuration - high / low, edge / level for NBPF_CHAN_CFG
-  * @flags:	configuration flags from DT
-@@ -191,6 +196,8 @@ struct nbpf_desc_page {
-  * @active:	list of descriptors, scheduled for processing
-  * @done:	list of completed descriptors, waiting post-processing
-  * @desc_page:	list of additionally allocated descriptor pages - if any
-+ * @running:	linked descriptor of running transaction
-+ * @paused:	are translations on this channel paused?
-  */
- struct nbpf_channel {
- 	struct dma_chan dma_chan;
+  * struct xgene_dma - internal representation of an X-Gene DMA device
++ * @dev: reference to this device's struct device
++ * @clk: reference to this device's clock
+  * @err_irq: DMA error irq number
+  * @ring_num: start id number for DMA ring
+  * @csr_dma: base for DMA register access
 -- 
 2.25.1
 
