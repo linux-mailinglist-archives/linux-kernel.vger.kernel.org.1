@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FC621FB1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A2A21FA82
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731082AbgGNS6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57246 "EHLO mail.kernel.org"
+        id S1730603AbgGNSxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:53:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730271AbgGNS6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:58:44 -0400
+        id S1730208AbgGNSxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:53:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FF3E207F5;
-        Tue, 14 Jul 2020 18:58:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A9D2422C9D;
+        Tue, 14 Jul 2020 18:53:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753124;
-        bh=mb6AWRCses7PESJHExIvHSgznp6bZTKBUHQZAMr8PII=;
+        s=default; t=1594752791;
+        bh=/9Hm/xSYktH0LLH6MOmys3DleHFYDKGxs4K6ki9AYFg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SUExUP22Ni/7NMvSjcZz0vLFEkOaPZb2nityAzBYhNfn4xhLgRCeH7WXwMufWvaWz
-         FvJc1imZQcgJoBAcXU21LIKigalkCHLlL30GuM3onxEmbjPF+sPYsie0vR6Wvbl0A0
-         goLLymSDK8EEEieTKMkzQdpIvLsQ/PWeZ0KaPOR4=
+        b=oTMQqX10Us4Cz+CcOk5Vq7lI5/PGNN+3MZE8LhQgrOgjleoUQUH5zzEiFI+5mtpW1
+         rDBnI6XYh+TmUke6chVrLWBZUueZMrDWDY77u1hwKJyJMAHOHSfLfO8l4FsG/xgvLH
+         RRVpaJ1W8YPTXjXTnk7bfKv2Sg5kCBsxhpk3OXfM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eli Britstein <elibr@mellanox.com>,
-        Roi Dayan <roid@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 098/166] net/mlx5e: CT: Fix memory leak in cleanup
-Date:   Tue, 14 Jul 2020 20:44:23 +0200
-Message-Id: <20200714184120.539053575@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Scull <ascull@google.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.4 081/109] KVM: arm64: Stop clobbering x0 for HVC_SOFT_RESTART
+Date:   Tue, 14 Jul 2020 20:44:24 +0200
+Message-Id: <20200714184109.428333611@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eli Britstein <elibr@mellanox.com>
+From: Andrew Scull <ascull@google.com>
 
-[ Upstream commit eb32b3f53d283e8d68b6d86c3a6ed859b24dacae ]
+commit b9e10d4a6c9f5cbe6369ce2c17ebc67d2e5a4be5 upstream.
 
-CT entries are deleted via a workqueue from netfilter. If removing the
-module before that, the rules are cleaned by the driver itself, but the
-memory entries for them are not freed. Fix that.
+HVC_SOFT_RESTART is given values for x0-2 that it should installed
+before exiting to the new address so should not set x0 to stub HVC
+success or failure code.
 
-Fixes: ac991b48d43c ("net/mlx5e: CT: Offload established flows")
-Signed-off-by: Eli Britstein <elibr@mellanox.com>
-Reviewed-by: Roi Dayan <roid@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: af42f20480bf1 ("arm64: hyp-stub: Zero x0 on successful stub handling")
+Cc: stable@vger.kernel.org
+Signed-off-by: Andrew Scull <ascull@google.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200706095259.1338221-1-ascull@google.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/kvm/hyp-init.S |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-index 470282daed198..369a037714356 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-@@ -849,6 +849,7 @@ mlx5_tc_ct_flush_ft_entry(void *ptr, void *arg)
- 	struct mlx5_ct_entry *entry = ptr;
+--- a/arch/arm64/kvm/hyp-init.S
++++ b/arch/arm64/kvm/hyp-init.S
+@@ -136,11 +136,15 @@ ENTRY(__kvm_handle_stub_hvc)
  
- 	mlx5_tc_ct_entry_del_rules(ct_priv, entry);
-+	kfree(entry);
- }
+ 1:	cmp	x0, #HVC_RESET_VECTORS
+ 	b.ne	1f
+-reset:
++
+ 	/*
+-	 * Reset kvm back to the hyp stub. Do not clobber x0-x4 in
+-	 * case we coming via HVC_SOFT_RESTART.
++	 * Set the HVC_RESET_VECTORS return code before entering the common
++	 * path so that we do not clobber x0-x2 in case we are coming via
++	 * HVC_SOFT_RESTART.
+ 	 */
++	mov	x0, xzr
++reset:
++	/* Reset kvm back to the hyp stub. */
+ 	mrs	x5, sctlr_el2
+ 	ldr	x6, =SCTLR_ELx_FLAGS
+ 	bic	x5, x5, x6		// Clear SCTL_M and etc
+@@ -151,7 +155,6 @@ reset:
+ 	/* Install stub vectors */
+ 	adr_l	x5, __hyp_stub_vectors
+ 	msr	vbar_el2, x5
+-	mov	x0, xzr
+ 	eret
  
- static void
--- 
-2.25.1
-
+ 1:	/* Bad stub call */
 
 
