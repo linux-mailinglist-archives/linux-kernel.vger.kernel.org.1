@@ -2,126 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C700B21F97F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F32221F984
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:34:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729185AbgGNSdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
+        id S1729239AbgGNSd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbgGNSdc (ORCPT
+        with ESMTP id S1726817AbgGNSd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:33:32 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3AC1C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:33:31 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id t27so15034575ill.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:33:31 -0700 (PDT)
+        Tue, 14 Jul 2020 14:33:57 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4CBC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:33:57 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id e4so24640512ljn.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=+GrWComU6TBiIyymRd8f6GtXs9/MoZhC4FrxlGlnlig=;
-        b=Xa0xe+8Qcmx/ymrkj23nB3jIFtCMBlAwRV26M9ftEsSHshXYtA54soUcQmeVWa5vJ4
-         JgCoxeEuvPQH2ZnS3UQX9OrRgPsyoq/SNaxK3v5nHYWjQv7Tg/j4aIwqxbMxojQ4ZLZx
-         VdWgM7h4YhHVcgkX23DfjwwjK3nhGndJ7+cJ3EW4uiH+WTSbgN6SYk49IZPeCAR0M/fD
-         PCm/ib867eRLK2GUKmekIeg7duOIUjjADCJl08ORUWOztWcmpwub8uLEwrUrUUrf1Tak
-         SQJSlQjUlV5a67mLzj5FRORhO/DDS7FCmBBchVzp05k2OEJofKa5xJuJWI8pGIUuyW/n
-         jNCA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yyP3ZHSQbiIJkgfhj+w2LY9l2YJKPJ+qK594IrEb58E=;
+        b=qYKY00MEabqGiQ7om+FCgRsF3qL/GSt4BdQ+DC3BjaBjVRtPavSO7I+bKn2fn9H/+A
+         4YBy0mJ2n+3/LWK/rIvkJW2EI4G8dmOhSmAUXBD8hThIgdANEqiZViODGTy4FbwROfPK
+         tRn5nCWI7UiPloxZ1mwja90xAyhlIvln/CUboMoCeo0trcdTJyJjV/oBdcYI1stqk/wA
+         l7D4atz2mu0OIXlrT1I7Sjl4Zhb6DLYCoG6xROrOmWi4z+5tAVUy1jbIiVFPQUIr88t7
+         Q357PW73mz4a2VcF94WK8yu4QOJCbCniyE4OnjqjHoCYNlA/Y6U+x+hheWnzedDV4r0a
+         OqOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=+GrWComU6TBiIyymRd8f6GtXs9/MoZhC4FrxlGlnlig=;
-        b=Sntb6X4UKoBLv9k5EdqoPS5Myaj+Rix3d2tqJbtzAF8jImK3p8jq8kicYrZH6k1lNA
-         qD5p0svC3nicagmm3hl5BYryXvtAyt5V/mBFbK0OwszRkS7cQqyvP1ATerQ76lzZXpZy
-         BsWhByS9sPLjEj1lNhixAL3lb+XuY6/3T6+7+Bb2JXLFMy1xwL+ezlWffsHznZQMBZGe
-         K9i5klxD4PFGAxDKru7yVVE5af2ljmVPT2wOTYVzVsPIquLVsxSp8Ns0CQWhDm9D5q6x
-         6Tx4v1obEXTdbmFPruwMEIxPIeSSvEL73zbpMk4n+OrcqX9Ladbdh4ocGw374ZQSzHOP
-         TXWQ==
-X-Gm-Message-State: AOAM532FBgBEYewRVG3OybuY05M0h5HJ1lkEuyEAPyn3csEPTaJQJiTi
-        JMqnsz5qWswvjTTGlitcP88Ioz7zWUwcD8GH5Iw=
-X-Google-Smtp-Source: ABdhPJyPemS7zsyNCYJIK3K/PqcPh9lIRF1DIinCrjXbvndkLzkY0bN0ijo9FaTZZeENw5QZH2lMIY/ekD9lzxCoBqo=
-X-Received: by 2002:a92:8b11:: with SMTP id i17mr5986875ild.212.1594751611244;
- Tue, 14 Jul 2020 11:33:31 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yyP3ZHSQbiIJkgfhj+w2LY9l2YJKPJ+qK594IrEb58E=;
+        b=X5YXFTLPyQMaAO9IUv6boITJZRCDKiSKNJz3JRAv3ubUoIZhD9vpXpcEkEvdHmPeyI
+         HJp8YNj2sjIaQg8HAcAU5KehpCinIt9Uh6wSSR+LyCKvD6SjM6pZehqtte/CGsMT2J6j
+         BjX1Qe0MugsOv6wJ7wpjH4dqFCK1LiCrnM8ZDrosX20pyKFJ/nf9HGKJPx6DxGeHXxLm
+         yXf0CPe4NJ7Z/OaLw1PVwxpSffMSqZcDwZdnJJUFl2xuKgPXu9OcHm6kijdE5M0P14/H
+         K2pGaTiwhXCQ8tNjTRJUvgKacK5DPLLDjwwzbtMj+RPOPLqzlX2Hw4RH+lEbHQi8Q0RC
+         gpSg==
+X-Gm-Message-State: AOAM530YJyFS0IQVap1u4aZc1q43GQxspuFW+AByjsO+dt1BpB/YFTi9
+        J/EVCzXTZ/IpQbMhO34ly3kKc7U7JagpWa9ZguXRQw==
+X-Google-Smtp-Source: ABdhPJzutP+Eujesct6aPGeAiwrZdsjZGD8qSndUPJy6OUx7H9vvuS79gJZzuNhHI60cmBHSQCgOeaiRiKEf+jUgss0=
+X-Received: by 2002:a2e:9b87:: with SMTP id z7mr186034lji.80.1594751635653;
+ Tue, 14 Jul 2020 11:33:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200714023836.2310569-1-nivedita@alum.mit.edu> <CA+icZUXSPfybFtzQB3wKn9spQmEPnQu_iGPWkRisAmRQbJLWXA@mail.gmail.com>
- <20200714141550.GA329060@rani.riverdale.lan> <CA+icZUU88wYmyycthW7AQUZ72HGa9RWPZmxVS5Gm6UW=6ES9kA@mail.gmail.com>
- <CA+icZUWHdsk9+wkTZOdDghM7pRZyk2vHgxpYx62vPooqohzbYw@mail.gmail.com>
-In-Reply-To: <CA+icZUWHdsk9+wkTZOdDghM7pRZyk2vHgxpYx62vPooqohzbYw@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 14 Jul 2020 20:33:19 +0200
-Message-ID: <CA+icZUWip6xAFdTiLNWT4QHS0R6bQuCZ6W7dWd+UbbZGnBBh4w@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] x86/boot: Remove runtime relocations from
- compressed kernel
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
+References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com>
+ <20200714030348.6214-3-mathieu.desnoyers@efficios.com> <CAFTs51UHaUqaKj5bEj0vQtEZrww9gnrqb-kGVk7DAgQJPBAR+w@mail.gmail.com>
+ <775688146.12145.1594748580461.JavaMail.zimbra@efficios.com>
+In-Reply-To: <775688146.12145.1594748580461.JavaMail.zimbra@efficios.com>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Tue, 14 Jul 2020 11:33:44 -0700
+Message-ID: <CAPNVh5fiCCJpyeLj_ciWzFrO4fasVXZNhpfKXJhJWJirXdJOjQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/4] rseq: Allow extending struct rseq
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Oskolkov <posk@posk.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        paulmck <paulmck@linux.ibm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api <linux-api@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fw@deneb.enyo.de>, carlos <carlos@redhat.com>,
+        Chris Kennelly <ckennelly@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 8:30 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+On Tue, Jul 14, 2020 at 10:43 AM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
-> > I did a full new build...
+> ----- On Jul 14, 2020, at 1:24 PM, Peter Oskolkov posk@posk.io wrote:
+>
+> > At Google, we actually extended struct rseq (I will post the patches
+> > here once they are fully deployed and we have specific
+> > benefits/improvements to report). We did this by adding several fields
+> > below __u32 flags (the last field currently), and correspondingly
+> > increasing rseq_len in rseq() syscall. If the kernel does not know of
+> > this extension, it will return -EINVAL due to an unexpected rseq_len;
+> > then the application can either fall-back to the standard/upstream
+> > rseq, or bail. If the kernel does know of this extension, it accepts
+> > it. If the application passes the old rseq_len (32), the kernel knows
+> > that this is an old application and treats it as such.
 > >
-> > ...and it fails with ld.lld-11 as linker:
-> >
-> > ld.lld-11 -m elf_x86_64 -pie  --no-dynamic-linker -r -o
-> > arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o
-> > -T arch/x86/boot/compressed/.tmp_misc.ver; mv -f
-> > arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o;
-> > rm -f arch/x86/boot/compressed/.tmp_misc.ver; fi
-> > *** ld.lld-11: error: -r and -pie may not be used together ***
-> > make[5]: *** [scripts/Makefile.build:281:
-> > arch/x86/boot/compressed/misc.o] Error 1
-> >
-> > It's annoying to fail on the last minutes of a build.
-> > Sorry for being very honest.
-> >
+> > I looked through the archives, but I did not find specifically why the
+> > pretty standard approach described above is considered inferior to the
+> > one taken in this patch (freeze rseq_len at 32, add additional length
+> > fields to struct rseq). Can these be summarized?
 >
-> I applied this diff...
+> I think you don't face the issues I'm facing with libc rseq integration
+> because you control the entire user-space software ecosystem at Google.
 >
-> $ git diff arch/x86/boot/compressed/Makefile
-> diff --git a/arch/x86/boot/compressed/Makefile
-> b/arch/x86/boot/compressed/Makefile
-> index 789d5d14d8b0..9ba52a656838 100644
-> --- a/arch/x86/boot/compressed/Makefile
-> +++ b/arch/x86/boot/compressed/Makefile
-> @@ -51,7 +51,10 @@ UBSAN_SANITIZE :=n
->  KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
->  # Compressed kernel should be built as PIE since it may be loaded at any
->  # address by the bootloader.
-> +# LLD linker does not allow -r and -pie options to be used together.
-> +ifndef CONFIG_LD_IS_LLD
->  KBUILD_LDFLAGS += -pie $(call ld-option, --no-dynamic-linker)
-> +endif
->  LDFLAGS_vmlinux := -T
+> The main issue we face is that the library responsible for registering
+> rseq (either glibc 2.32+, an early-adopter librseq library, or the
+> application) may very well not be the same library defining the __rseq_abi
+> symbol used in the global symbol table. Interposition with ld preload or
+> by defining the __rseq_abi in the program's executable are good examples
+> of this kind of scenario, and those use-cases are supported.
 >
->  hostprogs      := mkpiggy
+> So the size of the __rseq_abi structure may be larger than the struct
+> rseq known by glibc (and eventually smaller, if future glibc versions
+> extend their __rseq_abi size but is loaded with an older program/library
+> doing __rseq_abi interposition).
 >
-> ...and was able to build, assemble, link arch/x86/boot/compressed/*.
+> So we need some way to allow code defining the __rseq_abi to let the kernel
+> know how much room is available, without necessarily requiring the code
+> responsible for rseq registration to be aware of that extended layout.
+> This is the purpose of the __rseq_abi.flags RSEQ_FLAG_TLS_SIZE and field
+> __rseq_abi.user_size.
 >
+> And we need some way to allow the kernel to let user-space rseq critical
+> sections (user code) know how much of those fields are actually populated
+> by the kernel. This is the purpose of __rseq_abi.flags RSEQ_FLAG_TLS_SIZE
+> with __rseq_abi.kernel_size.
 
-I checked my last succesfull build without your patchset:
+Thanks, Mathieu, for the explanation. Yes, multiple unrelated
+libraries having to share struct rseq complicates matters. Your
+approach appears to be a way to reconcile the issues you outlined
+above.
 
-$ grep no-dynamic-linker build-log_5.8.0-rc5-1-amd64-llvm11-ias.txt
-[ EMPTY ]
+Thanks,
+Peter
 
-- Sedat -
+>
+> Thanks,
+>
+> Mathieu
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
