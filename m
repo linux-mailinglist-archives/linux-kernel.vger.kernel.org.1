@@ -2,117 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6972021FC16
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:06:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A07621FC28
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730685AbgGNTG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:06:27 -0400
-Received: from mga14.intel.com ([192.55.52.115]:45257 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731196AbgGNTGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:06:17 -0400
-IronPort-SDR: 27iBeCfoeLRrVUeRTy/BI0zBGPcmN+PmJoub48PPOgpH+618PXlf6ue/5i8667iiPyfSDqvbOY
- ES4o41RqYn5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="148148363"
-X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
-   d="scan'208";a="148148363"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 12:06:16 -0700
-IronPort-SDR: 372ah54Muur1nzmIJ6WpFVvasq6EKc/XBygmqwb4njk9NqFeHdl/Vb7u58xf0Grd72pTvNiTPg
- ndEouPAOrQ8w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
-   d="scan'208";a="324632815"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by FMSMGA003.fm.intel.com with ESMTP; 14 Jul 2020 12:06:16 -0700
-Date:   Tue, 14 Jul 2020 12:06:16 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 12/15] kmap: Add stray write protection for device
- pages
-Message-ID: <20200714190615.GC3008823@iweiny-DESK2.sc.intel.com>
-References: <20200714070220.3500839-1-ira.weiny@intel.com>
- <20200714070220.3500839-13-ira.weiny@intel.com>
- <20200714084451.GQ10769@hirez.programming.kicks-ass.net>
+        id S1731192AbgGNTHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730576AbgGNTHI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:07:08 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0267C061755;
+        Tue, 14 Jul 2020 12:07:07 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 7B1ACBC06E;
+        Tue, 14 Jul 2020 19:07:03 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     dvhart@infradead.org, andy@infradead.org,
+        mika.westerberg@linux.intel.com, mchehab+huawei@kernel.org,
+        lee.jones@linaro.org, dmitry.torokhov@gmail.com,
+        ayman.bagabas@gmail.com, masahiroy@kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] platform/x86: acerhdf: Replace HTTP links with HTTPS ones
+Date:   Tue, 14 Jul 2020 21:06:57 +0200
+Message-Id: <20200714190657.47527-1-grandmaster@al2klimov.de>
+In-Reply-To: <CAHp75Ve2pPGN3BtMw6x1xR5Cyv8VP=KMJMMJ9qao29ArrxPo9w@mail.gmail.com>
+References: <CAHp75Ve2pPGN3BtMw6x1xR5Cyv8VP=KMJMMJ9qao29ArrxPo9w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714084451.GQ10769@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 10:44:51AM +0200, Peter Zijlstra wrote:
-> On Tue, Jul 14, 2020 at 12:02:17AM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > Device managed pages may have additional protections.  These protections
-> > need to be removed prior to valid use by kernel users.
-> > 
-> > Check for special treatment of device managed pages in kmap and take
-> > action if needed.  We use kmap as an interface for generic kernel code
-> > because under normal circumstances it would be a bug for general kernel
-> > code to not use kmap prior to accessing kernel memory.  Therefore, this
-> > should allow any valid kernel users to seamlessly use these pages
-> > without issues.
-> > 
-> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> > ---
-> >  include/linux/highmem.h | 32 +++++++++++++++++++++++++++++++-
-> >  1 file changed, 31 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-> > index d6e82e3de027..7f809d8d5a94 100644
-> > --- a/include/linux/highmem.h
-> > +++ b/include/linux/highmem.h
-> > @@ -8,6 +8,7 @@
-> >  #include <linux/mm.h>
-> >  #include <linux/uaccess.h>
-> >  #include <linux/hardirq.h>
-> > +#include <linux/memremap.h>
-> >  
-> >  #include <asm/cacheflush.h>
-> >  
-> > @@ -31,6 +32,20 @@ static inline void invalidate_kernel_vmap_range(void *vaddr, int size)
-> >  
-> >  #include <asm/kmap_types.h>
-> >  
-> > +static inline void enable_access(struct page *page)
-> > +{
-> > +	if (!page_is_access_protected(page))
-> > +		return;
-> > +	dev_access_enable();
-> > +}
-> > +
-> > +static inline void disable_access(struct page *page)
-> > +{
-> > +	if (!page_is_access_protected(page))
-> > +		return;
-> > +	dev_access_disable();
-> > +}
-> 
-> So, if I followed along correctly, you're proposing to do a WRMSR per
-> k{,un}map{_atomic}(), sounds like excellent performance all-round :-(
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
 
-Only to pages which have this additional protection, ie not DRAM.
+Deterministic algorithm:
+For each file:
+  If not .svg:
+    For each line:
+      If doesn't contain `\bxmlns\b`:
+        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+            If both the HTTP and HTTPS versions
+            return 200 OK and serve the same content:
+              Replace HTTP with HTTPS.
 
-User mappings of this memory is not affected (would be covered by User PKeys if
-desired).  User mappings to persistent memory are the primary use case and the
-performant path.
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ drivers/platform/x86/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ira
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 0581a54cf562..1d96e07b2a02 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -140,7 +140,7 @@ config ACERHDF
+ 	  in the same node directory will tell you if it is "acerhdf".
+ 
+ 	  For more information about this driver see
+-	  <http://piie.net/files/acerhdf_README.txt>
++	  <https://piie.net/files/acerhdf_README.txt>
+ 
+ 	  If you have an Acer Aspire One netbook, say Y or M
+ 	  here.
+-- 
+2.27.0
+
