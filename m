@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7711921FBA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EBF21FBA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731234AbgGNTDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:03:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55774 "EHLO mail.kernel.org"
+        id S1730524AbgGNTDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:03:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730687AbgGNS5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:57:30 -0400
+        id S1730730AbgGNS5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:57:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A94F7207F5;
-        Tue, 14 Jul 2020 18:57:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67728229CA;
+        Tue, 14 Jul 2020 18:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753050;
-        bh=OWIHnKV5MZ12VsrvwuY3Yra7e3O5eMMUe1kObuHO6Cc=;
+        s=default; t=1594753052;
+        bh=SCgh5w+fDeT4xs3n99jnk/FuLczKsnSlQOhehTpmPEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a+1BSP6K1c5sn3THwe/w0RnNwYdHRwnmkZJ6qCldePhHFRU7Xldja7r8k+fvTEFZy
-         XADuLmqPGfyzziyZoum0U2SiDs2PZsBenIHs5Q/MKPQLuH5GApapFX6N1SuqxKMZdM
-         y6ritvof3o2BSFuZMZo3nNdrL7QgVBAZasPdkqvY=
+        b=qnwSgcYLqVh2VWwQD+IOyd7Qz4M2yp05pMHiR3aMUAHipGR7vmTj1sDQOi3JOS2AW
+         /xYcIkyWW8+9orNla1eU7ZVP27PFswuJQjhTg199ypvnKMQa8rjB6lwj09Cl1epZJj
+         8+024Pwf2O5+++/x0ODrQovFwan6LNeV/nnQPXdQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Claudiu Beznea <claudiu.beznea@microchip.com>,
         Harini Katakam <harini.katakam@xilinx.com>,
-        Sergio Prado <sergio.prado@e-labworks.com>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 101/166] net: macb: mark device wake capable when "magic-packet" property present
-Date:   Tue, 14 Jul 2020 20:44:26 +0200
-Message-Id: <20200714184120.679280878@linuxfoundation.org>
+Subject: [PATCH 5.7 102/166] net: macb: fix macb_get/set_wol() when moving to phylink
+Date:   Tue, 14 Jul 2020 20:44:27 +0200
+Message-Id: <20200714184120.727271973@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
 References: <20200714184115.844176932@linuxfoundation.org>
@@ -51,45 +51,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-[ Upstream commit ced4799d06375929e013eea04ba6908207afabbe ]
+[ Upstream commit 253fe09435045ab9346a8e364299d971185ae031 ]
 
-Change the way the "magic-packet" DT property is handled in the
-macb_probe() function, matching DT binding documentation.
-Now we mark the device as "wakeup capable" instead of calling the
-device_init_wakeup() function that would enable the wakeup source.
+Keep previous function goals and integrate phylink actions to them.
 
-For Ethernet WoL, enabling the wakeup_source is done by
-using ethtool and associated macb_set_wol() function that
-already calls device_set_wakeup_enable() for this purpose.
+phylink_ethtool_get_wol() is not enough to figure out if Ethernet driver
+supports Wake-on-Lan.
+Initialization of "supported" and "wolopts" members is done in phylink
+function, no need to keep them in calling function.
 
-That would reduce power consumption by cutting more clocks if
-"magic-packet" property is set but WoL is not configured by ethtool.
+phylink_ethtool_set_wol() return value is considered and determines
+if the MAC has to handle WoL or not. The case where the PHY doesn't
+implement WoL leads to the MAC configuring it to provide this feature.
 
-Fixes: 3e2a5e153906 ("net: macb: add wake-on-lan support via magic packet")
+Fixes: 7897b071ac3b ("net: macb: convert to phylink")
 Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
 Cc: Harini Katakam <harini.katakam@xilinx.com>
-Cc: Sergio Prado <sergio.prado@e-labworks.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Antoine Tenart <antoine.tenart@bootlin.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cadence/macb_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/cadence/macb_main.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 55e680f350222..4cafe343c0a27 100644
+index 4cafe343c0a27..79c2fe0543038 100644
 --- a/drivers/net/ethernet/cadence/macb_main.c
 +++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -4422,7 +4422,7 @@ static int macb_probe(struct platform_device *pdev)
- 	bp->wol = 0;
- 	if (of_get_property(np, "magic-packet", NULL))
- 		bp->wol |= MACB_WOL_HAS_MAGIC_PACKET;
--	device_init_wakeup(&pdev->dev, bp->wol & MACB_WOL_HAS_MAGIC_PACKET);
-+	device_set_wakeup_capable(&pdev->dev, bp->wol & MACB_WOL_HAS_MAGIC_PACKET);
+@@ -2821,11 +2821,13 @@ static void macb_get_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+ {
+ 	struct macb *bp = netdev_priv(netdev);
  
- 	spin_lock_init(&bp->lock);
+-	wol->supported = 0;
+-	wol->wolopts = 0;
+-
+-	if (bp->wol & MACB_WOL_HAS_MAGIC_PACKET)
++	if (bp->wol & MACB_WOL_HAS_MAGIC_PACKET) {
+ 		phylink_ethtool_get_wol(bp->phylink, wol);
++		wol->supported |= WAKE_MAGIC;
++
++		if (bp->wol & MACB_WOL_ENABLED)
++			wol->wolopts |= WAKE_MAGIC;
++	}
+ }
  
+ static int macb_set_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+@@ -2833,9 +2835,13 @@ static int macb_set_wol(struct net_device *netdev, struct ethtool_wolinfo *wol)
+ 	struct macb *bp = netdev_priv(netdev);
+ 	int ret;
+ 
++	/* Pass the order to phylink layer */
+ 	ret = phylink_ethtool_set_wol(bp->phylink, wol);
+-	if (!ret)
+-		return 0;
++	/* Don't manage WoL on MAC if handled by the PHY
++	 * or if there's a failure in talking to the PHY
++	 */
++	if (!ret || ret != -EOPNOTSUPP)
++		return ret;
+ 
+ 	if (!(bp->wol & MACB_WOL_HAS_MAGIC_PACKET) ||
+ 	    (wol->wolopts & ~WAKE_MAGIC))
 -- 
 2.25.1
 
