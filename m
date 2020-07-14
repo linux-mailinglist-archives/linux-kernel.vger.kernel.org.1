@@ -2,151 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F98821EB67
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC0621EB69
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbgGNIa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 04:30:57 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:33756 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgGNIa4 (ORCPT
+        id S1726599AbgGNIbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 04:31:41 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:23197 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725801AbgGNIbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 04:30:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1594715455; x=1626251455;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=iwME0Emw2+J43pHMb9qYdnILvBRF1cOmxeCbkgwHHWI=;
-  b=usyuXKN+KCwL4nBDIstjpgPvjiNq2A+Wp7eJ3bE8Z104DiEmMl816w30
-   kQP6l8kW7LZ1HZyYpy1AOkVnAGLtvjjdpa6sbvIpbZGON15TanIpIw3IC
-   1OV4SxKa+hlT1BqbgDIVKvpdhKhdctiIF/ORSNTWKiZ4ptOlzMKo8AeCM
-   gq8JLL7DBseA4m6UbO5Or0+SHAc+G5rntmpbtz7LSfH2mzPRSk+D7N84Z
-   4S/mH5m8ei3t76AH8uELMrIrv+vsfbjcntFuxBcmH9Ll6XfwIG12S5ilM
-   ZQjKFufh/MbFGrh82bu2ZNI35gHxc+gnAUnUMIUzKqcChztxpvSxsvyUH
-   w==;
-IronPort-SDR: rDCm3eZA3Wna9AO+bK/EoLvsiUHMNsKMDHn3nfTK+yrolAsyVlBnVSS1verBpraJXN83kMw8i8
- R0nwofBCha3cvA79LOIo5b8kNGzwuiST9NpBr6An6U5v6hPEEMu6t448RPxcYtREMfCViZNZEB
- JF7Ed4bGIIR34VfHP/943RyhAj/6MQoJxxmThFf4p2CwZysnM8IXuBpNyhwWuzc8ODnKgh2bah
- pH8DdvW4lFzsp+rORr5YIX3twSt19kuTp7CulOfVd2V91QKNYPItKglCEf9q1UkDXb3K4gYi5S
- 23U=
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="87503354"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Jul 2020 01:30:55 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 14 Jul 2020 01:30:54 -0700
-Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Tue, 14 Jul 2020 01:30:52 -0700
-References: <20200702101331.26375-1-lars.povlsen@microchip.com> <20200702101331.26375-6-lars.povlsen@microchip.com> <20200713192259.GA553903@bogus> <20200713195219.xfvqknioqw7yyr74@mobilestation>
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mark Brown <broonie@kernel.org>
-CC:     Rob Herring <robh@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        "Lars Povlsen" <lars.povlsen@microchip.com>,
-        Peter Rosin <peda@axentia.se>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 5/8] dt-bindings: snps,dw-apb-ssi: Add sparx5 support, plus snps,rx-sample-delay-ns property
-In-Reply-To: <20200713195219.xfvqknioqw7yyr74@mobilestation>
-Date:   Tue, 14 Jul 2020 10:30:51 +0200
-Message-ID: <87zh82jy6c.fsf@soft-dev15.microsemi.net>
+        Tue, 14 Jul 2020 04:31:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594715499;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jxagKFMPTlHYLlE9FXu+4jDWBv7YXV1lVPgmdIJdZ48=;
+        b=CsVckzVae5W6TG/iDfWoKLqt1dpoytQwBDwJn7phouZ8hh7ce8X6Td7/XuUTF7z3lj/voi
+        vRcG966dbGvieLhJU9bdHM2W68Mv4E6/r7Ztj+i77z5BFywkroDm5YSnhlfX7phZLT3Vmz
+        WINIKGrYudvuZU2nMmtlrJnWXV7Q+B4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-gT-4-w__MF-EnDVmh3g0kw-1; Tue, 14 Jul 2020 04:31:37 -0400
+X-MC-Unique: gT-4-w__MF-EnDVmh3g0kw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C175106B244;
+        Tue, 14 Jul 2020 08:31:36 +0000 (UTC)
+Received: from krava (unknown [10.40.193.14])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 558B12DE6A;
+        Tue, 14 Jul 2020 08:31:34 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 10:31:33 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: linux-next: build failure after merge of the bpf-next tree
+Message-ID: <20200714083133.GF183694@krava>
+References: <20200714122247.797cf01e@canb.auug.org.au>
+ <20200714061654.GE183694@krava>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714061654.GE183694@krava>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 14, 2020 at 08:16:54AM +0200, Jiri Olsa wrote:
+> On Tue, Jul 14, 2020 at 12:22:47PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the bpf-next tree, today's linux-next build (arm
+> > multi_v7_defconfig) failed like this:
+> > 
+> > tmp/ccsqpVCY.s: Assembler messages:
+> > tmp/ccsqpVCY.s:78: Error: unrecognized symbol type ""
+> > tmp/ccsqpVCY.s:91: Error: unrecognized symbol type ""
+> > 
+> > I don't know what has caused this (I guess maybe the resolve_btfids
+> > branch).
+> > 
+> > I have used the bpf-next tree from next-20200713 for today.
+> 
+> ok, trying to reproduce
 
-Serge Semin writes:
+damn crossbuilds.. change below fixes it for me,
+will do some more testing and post it today
 
-> On Mon, Jul 13, 2020 at 01:22:59PM -0600, Rob Herring wrote:
->> On Thu, Jul 02, 2020 at 12:13:28PM +0200, Lars Povlsen wrote:
-> ...
->>
->> > +
->> >  patternProperties:
->> >    "^.*@[0-9a-f]+$":
->> >      type: object
->> > @@ -107,6 +122,14 @@ patternProperties:
->> >        spi-tx-bus-width:
->> >          const: 1
->> >
->> > +      snps,rx-sample-delay-ns:
->>
->
->> We already have 'rx-sample-delay-ns' from Rockchip SPI, so use that. But
->> note that it applies to the SPI node. Does this need to be per SPI
->> child?
->
-> It was me, who suggested to Lars to have that parameter moved to the SPI
-> sub-nodes. As I see it the property is highly dependent on the SPI slave device
-> the controller is communicating to. Some of the them may need the delay some
-> may not. It's not always the capacitance thing, but also depends on how good
-> the MISO signal a particular slave generates. So IMO the Rockchip SPI driver
-> developer should have moved that property to the sub-nodes too.
->
+jirka
 
-In the case with sparx5, having two bus interfaces, spi slaves may be on
-different busses - making it obvious why you may need different settings.
 
-But I guess even on the same bus the physical length of SPI connections
-and device response delay to each device could play in as well.
+---
+diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+index fe019774f8a7..8b9194e22c7c 100644
+--- a/include/linux/btf_ids.h
++++ b/include/linux/btf_ids.h
+@@ -21,7 +21,7 @@
+ asm(							\
+ ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
+ ".local " #symbol " ;                          \n"	\
+-".type  " #symbol ", @object;                  \n"	\
++".type  " #symbol ", STT_OBJECT;               \n"	\
+ ".size  " #symbol ", 4;                        \n"	\
+ #symbol ":                                     \n"	\
+ ".zero 4                                       \n"	\
+diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+index 948378ca73d4..a88cd4426398 100644
+--- a/tools/bpf/resolve_btfids/Makefile
++++ b/tools/bpf/resolve_btfids/Makefile
+@@ -16,6 +16,20 @@ else
+   MAKEFLAGS=--no-print-directory
+ endif
+ 
++# always use the host compiler
++ifneq ($(LLVM),)
++HOSTAR  ?= llvm-ar
++HOSTCC  ?= clang
++HOSTLD  ?= ld.lld
++else
++HOSTAR  ?= ar
++HOSTCC  ?= gcc
++HOSTLD  ?= ld
++endif
++AR       = $(HOSTAR)
++CC       = $(HOSTCC)
++LD       = $(HOSTLD)
++
+ OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
+ 
+ LIBBPF_SRC := $(srctree)/tools/lib/bpf/
 
-Nevertheless, it *does* make sense to be able to specify per slave, but
-a default could make the DT more terse. Should I add this to my patch?
-
-I will remove the "snps," prefix now that the property is globally
-established.
-
----Lars
-
-> On the other hand if the Rx errors are caused by the MISO lane capacitance,
-> then it will be cumbersome to have the same property duplicated for each
-> sub-node. Then what about having the property supported by both the SPI
-> controller and the SPI-child nodes? For instance the SPI-controller
-> "rx-sample-delay-ns" will provide a default sample delay for each sub-node
-> instead of zero by default, while the individual sub-node "rx-sample-delay-ns"
-> property can be used to override the default value.
->
-> -Sergey
->
->>
->> BTW, the Rockchip controller appears to be a version of the DW
->> controller.
->>
->> > +        description: SPI Rx sample delay offset, unit is nanoseconds.
->> > +          The delay from the default sample time before the actual
->> > +          sample of the rxd input signal occurs. The "rx_sample_delay"
->> > +          is an optional feature of the designware controller, and the
->> > +          upper limit is also subject to controller configuration.
->> > +        $ref: /schemas/types.yaml#/definitions/uint32
->> > +
->> >  unevaluatedProperties: false
->> >
->> >  required:
->> > @@ -129,5 +152,10 @@ examples:
->> >        num-cs = <2>;
->> >        cs-gpios = <&gpio0 13 0>,
->> >                   <&gpio0 14 0>;
->> > +      spi-flash@1 {
->> > +        compatible = "spi-nand";
->> > +        reg = <1>;
->> > +        snps,rx-sample-delay-ns = <7>;
->> > +      };
->> >      };
->> >  ...
->> > --
->> > 2.27.0
-
--- 
-Lars Povlsen,
-Microchip
