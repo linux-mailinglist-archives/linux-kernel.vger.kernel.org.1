@@ -2,170 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8809721F7FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35C821F7F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728930AbgGNRRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:17:18 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:33888 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728186AbgGNRRR (ORCPT
+        id S1728825AbgGNROp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726169AbgGNROo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:17:17 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jvOYM-0008Cy-TV; Tue, 14 Jul 2020 11:17:14 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jvOYL-0007NN-ND; Tue, 14 Jul 2020 11:17:14 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Nicolas Pitre <nico@fluxnic.net>
-References: <20200630043641.GD2786714@ZenIV.linux.org.uk>
-Date:   Tue, 14 Jul 2020 12:14:25 -0500
-In-Reply-To: <20200630043641.GD2786714@ZenIV.linux.org.uk> (Al Viro's message
-        of "Tue, 30 Jun 2020 05:36:41 +0100")
-Message-ID: <875zaq589a.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 14 Jul 2020 13:14:44 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38349C061755;
+        Tue, 14 Jul 2020 10:14:44 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x9so7298838plr.2;
+        Tue, 14 Jul 2020 10:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Q1yP5MjK68khXRUCkC/tMY60bn7lSwmNLj1+YFBxTWQ=;
+        b=QeIs1Pa7YD1iGhw4n/zGMhkL8GtA9hfQkiaBw1JRei+FBMOtuB8jgazx6JA7yzkeWq
+         trJGGbCKJKy+gD1qYDAyAEQTHdYKtMfz2abpOOZNF5zB74RyACPLneALJuDaT6Ddzy+j
+         aF+cSgu190I45dT+AS0x/UGgYyWqbUkL6KDc16k1vNqDnekD5Hq5XV51BqEWHWsTQwFd
+         /i/KxAyfY5y6jywnIz0GaApJbZZV6z41wnmJCUJYbXn6XAnE+RCMbSdU/ZokrdM+2TKS
+         XH6d1s02Oslo3PfPlZxG2YAuIiAMgvdQjNE9kEjgcvEfRivfl8mbR/iybvagWs/E+bgZ
+         Jybg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Q1yP5MjK68khXRUCkC/tMY60bn7lSwmNLj1+YFBxTWQ=;
+        b=jAp33x9/74QAVc2Vg4HZcMgdCx93iN0/XPPcF4XpOVr9M5xW6ZYkMoOr531OA1zVUc
+         ePZyrOgQu5vPAIL3F6M9oTLIKH8LZNvBZ521z1WOn0DheftsoNcPZIDT1AbEFswDrbp4
+         e4msWoAYql0M8Is9rxXdTSlnxZooM8G33ECaWzsvv33L+g+vHpn1TjaLnWccLB89s3Bb
+         LUd1H6FlCw4rh4tg7VD191us7lo3ZFz1mF8xtLX8ZX5oQBaWHsjoDa7ZbNloai0g1BbP
+         pgv7/frgIPZSKZ8wPbmXnCwvKiprv7BW2zwBkbVNpeJ/4SvV2dKJ8W2PTNpFLA4f8QjO
+         XIdA==
+X-Gm-Message-State: AOAM533gKJW7Rzt2qNvgGyeWYJq4/1hbScA3oeAtl7E02j1RnqqL8lSX
+        TWToIZ+x/Z/NoB7UJ6B3ky83KUiA6ZM=
+X-Google-Smtp-Source: ABdhPJwiYN9U+BM+9hxgQIYscYAzySsq1JbBAPx+shplhicxzcZ0T9ZedwhzPZHoMuKj6nmRQlmANQ==
+X-Received: by 2002:a17:902:30d:: with SMTP id 13mr2335102pld.251.1594746883454;
+        Tue, 14 Jul 2020 10:14:43 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u2sm17557409pfl.21.2020.07.14.10.14.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 10:14:42 -0700 (PDT)
+Subject: Re: [PATCH v2] hwmon: (drivetemp) Avoid SCT usage on Toshiba DT01ACA
+ family drives
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <8325438e25a3a5a7e6d12ef6ede8f4350e4c65be.1594500029.git.mail@maciej.szmigiero.name>
+ <50fb6686-5d36-ccb6-4620-c516472c6c0f@roeck-us.net>
+ <0bf1376f-9e55-aecb-e03d-75b5fdf31339@maciej.szmigiero.name>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <211fa8c0-3b09-fbb5-b376-bb10ee6e13e3@roeck-us.net>
+Date:   Tue, 14 Jul 2020 10:14:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jvOYL-0007NN-ND;;;mid=<875zaq589a.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+DLwPEzJB8iPoGZ+F8SvH9+Vy8PldIabY=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,
-        T_XMDrugObfuBody_00 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 T_XMDrugObfuBody_00 obfuscated drug references
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Al Viro <viro@zeniv.linux.org.uk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 869 ms - load_scoreonly_sql: 0.09 (0.0%),
-        signal_user_changed: 12 (1.3%), b_tie_ro: 10 (1.1%), parse: 1.17
-        (0.1%), extract_message_metadata: 18 (2.1%), get_uri_detail_list: 3.6
-        (0.4%), tests_pri_-1000: 18 (2.0%), tests_pri_-950: 1.44 (0.2%),
-        tests_pri_-900: 1.10 (0.1%), tests_pri_-90: 377 (43.4%), check_bayes:
-        375 (43.2%), b_tokenize: 11 (1.3%), b_tok_get_all: 12 (1.4%),
-        b_comp_prob: 4.3 (0.5%), b_tok_touch_all: 343 (39.4%), b_finish: 1.04
-        (0.1%), tests_pri_0: 429 (49.4%), check_dkim_signature: 0.67 (0.1%),
-        check_dkim_adsp: 2.6 (0.3%), poll_dns_idle: 0.82 (0.1%), tests_pri_10:
-        2.1 (0.2%), tests_pri_500: 6 (0.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC][PATCHES] converting FDPIC coredumps to regsets
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <0bf1376f-9e55-aecb-e03d-75b5fdf31339@maciej.szmigiero.name>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Al Viro <viro@zeniv.linux.org.uk> writes:
+On 7/14/20 7:11 AM, Maciej S. Szmigiero wrote:
+> On 14.07.2020 16:02, Guenter Roeck wrote:
+>> On 7/11/20 1:41 PM, Maciej S. Szmigiero wrote:
+>>> It has been observed that Toshiba DT01ACA family drives have
+>>> WRITE FPDMA QUEUED command timeouts and sometimes just freeze until
+>>> power-cycled under heavy write loads when their temperature is getting
+>>> polled in SCT mode. The SMART mode seems to be fine, though.
+>>>
+>>> Let's make sure we don't use SCT mode for these drives then.
+>>>
+>>> While only the 3 TB model was actually caught exhibiting the problem let's
+>>> play safe here to avoid data corruption and extend the ban to the whole
+>>> family.
+>>>
+>>> Fixes: 5b46903d8bf3 ("hwmon: Driver for disk and solid state drives with temperature sensors")
+>>> Cc: stable@vger.kernel.org
+>>> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+>>> ---
+>>>
+>>> Notes:
+>>>     This behavior was observed on two different DT01ACA3 drives.
+>>>     
+>>>     Usually, a series of queued WRITE FPDMA QUEUED commands just time out,
+>>>     but sometimes the whole drive freezes. Merely disconnecting and
+>>>     reconnecting SATA interface cable then does not unfreeze the drive.
+>>>     
+>>>     One has to disconnect and reconnect the drive power connector for the
+>>>     drive to be detected again (suggesting the drive firmware itself has
+>>>     crashed).
+>>>     
+>>>     This only happens when the drive temperature is polled very often (like
+>>>     every second), so occasional SCT usage via smartmontools is probably
+>>>     safe.
+>>>     
+>>>     Changes from v1:
+>>>     'SCT blacklist' -> 'SCT avoid models'
+>>>
+>>>  drivers/hwmon/drivetemp.c | 37 +++++++++++++++++++++++++++++++++++++
+>>>  1 file changed, 37 insertions(+)
+>>>
+>>> diff --git a/drivers/hwmon/drivetemp.c b/drivers/hwmon/drivetemp.c
+>>> index 0d4f3d97ffc6..da9cfcbecc96 100644
+>>> --- a/drivers/hwmon/drivetemp.c
+>>> +++ b/drivers/hwmon/drivetemp.c
+>>> @@ -285,6 +285,36 @@ static int drivetemp_get_scttemp(struct drivetemp_data *st, u32 attr, long *val)
+>>>  	return err;
+>>>  }
+>>>  
+>>> +static const char * const sct_avoid_models[] = {
+>>> +/*
+>>> + * These drives will have WRITE FPDMA QUEUED command timeouts and sometimes just
+>>> + * freeze until power-cycled under heavy write loads when their temperature is
+>>> + * getting polled in SCT mode. The SMART mode seems to be fine, though.
+>>> + *
+>>> + * While only the 3 TB model was actually caught exhibiting the problem
+>>> + * let's play safe here to avoid data corruption and ban the whole family.
+>>> + */
+>>> +	"TOSHIBA DT01ACA0",
+>>> +	"TOSHIBA DT01ACA1",
+>>> +	"TOSHIBA DT01ACA2",
+>>> +	"TOSHIBA DT01ACA3",
+>>> +};
+>>> +
+>>> +static bool drivetemp_sct_avoid(struct drivetemp_data *st)
+>>> +{
+>>> +	struct scsi_device *sdev = st->sdev;
+>>> +	unsigned int ctr;
+>>> +
+>>> +	if (!sdev->model)
+>>> +		return false;
+>>> +
+>>> +	for (ctr = 0; ctr < ARRAY_SIZE(sct_avoid_models); ctr++)
+>>> +		if (strncmp(sdev->model, sct_avoid_models[ctr], 16) == 0)
+>>
+>> Why strncmp, and why length 16 ? Both strings are, as far as I can see,
+>> 0 terminated. A fixed length only asks for trouble later on as more models
+>> are added to the list.
+> 
+> The first 16 bytes of sdev->model contain the model number, the rest
+> seems to be the drive serial number.
+> There is no NULL separator between them.
+> 
 
-> 	Conversion of ELF coredumps to regsets has not touched
-> ELF_FDPIC.  Right now all architectures that support FDPIC have
-> regsets sufficient for switching it to regset-based coredumps.  A bit
-> of backstory: original ELF (and ELF_FDPIC) coredumps reused the old
-> helpers used by a.out coredumps.  These days a.out coredumps are gone;
-> we could remove the dead code, if not for several obstacles.  And one
-> of those obstacles is ELF_FDPIC.
->
-> 	This series more or less reproduces the conversion done
-> by Roland for ELF coredumps.  The branch is in
-> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #work.fdpic
-> and it's based on top of #regset.base there (just the introduction of
-> regset_get() wrapper for ->get(); nothing else from the regset series
-> is needed).  Killing the old aout helpers is _not_ in this branch;
-> followup cleanups live separately.
->
-> 	First we need to sort out the mess with struct elf_prstatus,
-> though.  It's used both for ELF and ELF_FDPIC coredumps, and it
-> contains a couple of fields under ifdef on CONFIG_BINFMT_ELF_FDPIC.
-> ELF is MMU-dependent and most, but not all configs that allow ELF_FDPIC
-> are non-MMU.  ARM is an exception - there ELF_FDPIC is allowed both for
-> MMU and non-MMU configs.  That's a problem - struct elf_prstatus is a
-> part of coredump layout, so ELF coredumps produced by arm kernels that
-> have ELF_FDPIC enabled are incompatible with those that have it disabled.
->
-> 	The obvious solution is to introduce struct elf_prstatus_fdpic
-> and use that in binfmt_elf_fdpic.c, taking these fields out of the
-> normal struct elf_prstatus.  Unfortunately, the damn thing is defined in
-> include/uapi/linux/elfcore.h, so nominally it's a part of userland ABI.
-> However, not a single userland program actually includes linux/elfcore.h.
-> The reason is that the definition in there uses elf_gregset_t as a member,
-> and _that_ is not defined anywhere in the exported headers.  It is defined
-> in (libc) sys/procfs.h, but the same file defines struct elf_prstatus
-> as well.  So if you try to include linux/elfcore.h without having already
-> pulled sys/procfs.h, it'll break on incomplete type of a member.  And if
-> you have pulled sys/procfs.h, it'll break on redefining a structure.
-> IOW, it's not usable and it never had been; as the matter of fact,
-> that's the reason sys/procfs.h had been introduced back in 1996.
->
-> 1/7) unexport linux/elfcore.h
-> 	Takes it out of include/uapi/linux and moves the stuff that used
-> to live there into include/linux/elfcore.h
->
-> 2/7) take fdpic-related parts of elf_prstatus out
-> 	Now we can take that ifdef out of the definition of elf_prstatus
-> (as well as compat_elf_prstatus) and put the variant with those extra
-> fields into binfmt_elf_fdpic.c, calling it elf_prstatus_fdpic there.
->
-> 3/7) kill elf_fpxregs_t
-> 	All code dealing with it (both in elf_fdpic and non-regset side
-> of elf) is conditional upon ELF_CORE_COPY_XFPREGS.  And no architectures
-> define that anymore.  Take the dead code out.
->
-> 4/7) [elf-fdpic] coredump: don't bother with cyclic list for per-thread
-> objects
-> 5/7) [elf-fdpic] move allocation of elf_thread_status into
-> elf_dump_thread_status()
-> 6/7) [elf-fdpic] use elf_dump_thread_status() for the dumper thread as well
-> 	Massaging fdpic coredump logics towards the regset side of
-> elf coredump.
->
-> 7/7) [elf-fdpic] switch coredump to regsets
-> 	... and now we can switch from elf_core_copy_task_{,fp}regs()
-> to regset_get().
+If the "16" is based on some SCSI standard, there should be
+a define for it somewhere. Otherwise, the comparison should
+use strlen(sct_avoid_models[ctr]) and explain the reason.
+In the latter case, it might possibly make sense to match
+"TOSHIBA DT01ACA" to also catch later models.
 
-I just did a quick read through.
+Thanks,
+Guenter
 
-The KABI bits look sane, or rather pulling definitions out of the KABI
-headers because they are not usable seems like a reasonable response to
-a messed up situation.  In the long run it would be good if we could get
-some proper KABI headers for the format of coredumps.
+> See how the SCSI device model is printed for the sysfs "model"
+> attribute:
+> https://elixir.bootlin.com/linux/v5.8-rc4/source/drivers/scsi/scsi_sysfs.c#L654
+> 
+>> Also, please use "!" instead of "== 0".
+> 
+> Will do.
+> 
+> Thanks,
+> Maciej
+> 
 
-I am a bit confused about what is happening in the cleanups, and frankly
-the fault really lies with the binfmt_elf.c.  As binfmt_elf.c in Linus's
-tree still has a regset and a non-regset version of core dumping.
-
-What I see happening is that you are transforming what started off
-as a copy of the non-regset version of elf coredumping and transforming
-it into something close to the regset version of coredumping.  Which is
-sensible.  The fact that the elf_fdpic code continues to use the
-non-regset names for the functions it calls, and does not synchronize
-it's structure with the ordinary elf core dumping code may be sensible
-but it is extremely confusing to follow.
-
-As a follow up it would probably good to sort out synchronize the
-elf and elf_fdpic coredumping code as much as possible, just to simplify
-future maintenance.
-
-So for as much as I could understand and verify.
-
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-
-Eric
