@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DF321EFEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E47521EFFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgGNMCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:02:08 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:52543 "EHLO
+        id S1728086AbgGNMCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:02:14 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:52571 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726041AbgGNMCI (ORCPT
+        with ESMTP id S1728047AbgGNMCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:02:08 -0400
+        Tue, 14 Jul 2020 08:02:13 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from vadimp@mellanox.com)
-        with SMTP; 14 Jul 2020 15:02:05 +0300
+        with SMTP; 14 Jul 2020 15:02:06 +0300
 Received: from r-build-lowlevel.mtr.labs.mlnx. (r-build-lowlevel.mtr.labs.mlnx [10.209.0.190])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06EC25dd004353;
-        Tue, 14 Jul 2020 15:02:05 +0300
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06EC25de004353;
+        Tue, 14 Jul 2020 15:02:06 +0300
 From:   Vadim Pasternak <vadimp@mellanox.com>
 To:     andy@infradead.org, dvhart@infradead.org
 Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
         Vadim Pasternak <vadimp@mellanox.com>
-Subject: [PATCH platform-next v2 00/11] platform/x86: Add new features for Mellanox systems
-Date:   Tue, 14 Jul 2020 15:01:52 +0300
-Message-Id: <20200714120203.10352-1-vadimp@mellanox.com>
+Subject: [PATCH platform-next v2 01/11] lib/string_helpers: Introduce string_upper() and string_lower() helpers
+Date:   Tue, 14 Jul 2020 15:01:53 +0300
+Message-Id: <20200714120203.10352-2-vadimp@mellanox.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200714120203.10352-1-vadimp@mellanox.com>
+References: <20200714120203.10352-1-vadimp@mellanox.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patchset adds new features for the existing Mellanox systems.
+Provide the helpers for string conversions to upper alnd lower cases.
 
-Patch #1 add string helpers for upper/lower conversion.
-Patch #2 add tests for these helpers.
-Patch #3 updates license for module 'mlxreg-hotplug'.
-Patch #4 allows to configure number of hotplug 'sysfs' attributes for
-		 the particular system class according to the hardware data for
-		 the specific system from this class, instead of configuring it
-		 up-to maximum number in the class.
-Patch #5 adds environmental data to hotplug 'uevent'.
-Patches #6-#7 add more definitions for system attributes.
-Patch #8 extends 'mlxreg-io' driver with complex attributes support.
-Patch #9 extends documentation with new attributes.
-Patches #10-#11 extend FAN platform data with register presence field.
+Signed-off-by: Vadim Pasternak <vadimp@mellanox.com>
+---
+ include/linux/string_helpers.h | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Vadim Pasternak (11):
-  lib/string_helpers: Introduce string_upper() and string_lower()
-    helpers
-  lib/test-string_helpers.c: Add string_upper() and string_lower() tests
-  platform/mellanox: mlxreg-hotplug: Modify module license
-  platform/mellanox: mlxreg-hotplug: Use capability register for
-    attribute creation
-  platform/mellanox: mlxreg-hotplug: Add environmental data to uevent
-  platform_data/mlxreg: Add support for complex attributes
-  platform/x86: mlx-platform: Add more definitions for system attributes
-  platform/mellanox: mlxreg-io: Add support for complex attributes
-  Documentation/ABI: Add new attribute for mlxreg-io sysfs interfaces
-  platform_data/mlxreg: Add presence register field for FAN devices
-  platform/x86: mlx-platform: Extend FAN platform data description
-
- Documentation/ABI/stable/sysfs-driver-mlxreg-io |  17 +++
- drivers/platform/mellanox/mlxreg-hotplug.c      | 114 ++++++++++---------
- drivers/platform/mellanox/mlxreg-io.c           |  45 ++++++--
- drivers/platform/x86/mlx-platform.c             | 141 ++++++++++++++++++++++++
- include/linux/platform_data/mlxreg.h            |   4 +
- include/linux/string_helpers.h                  |  15 +++
- lib/test-string_helpers.c                       |  67 +++++++++++
- 7 files changed, 341 insertions(+), 62 deletions(-)
-
+diff --git a/include/linux/string_helpers.h b/include/linux/string_helpers.h
+index c28955132234..86f150c2a6b6 100644
+--- a/include/linux/string_helpers.h
++++ b/include/linux/string_helpers.h
+@@ -2,6 +2,7 @@
+ #ifndef _LINUX_STRING_HELPERS_H_
+ #define _LINUX_STRING_HELPERS_H_
+ 
++#include <linux/ctype.h>
+ #include <linux/types.h>
+ 
+ struct file;
+@@ -75,6 +76,20 @@ static inline int string_escape_str_any_np(const char *src, char *dst,
+ 	return string_escape_str(src, dst, sz, ESCAPE_ANY_NP, only);
+ }
+ 
++static inline void string_upper(char *dst, const char *src)
++{
++	do {
++		*dst++ = toupper(*src);
++	} while (*src++);
++}
++
++static inline void string_lower(char *dst, const char *src)
++{
++	do {
++		*dst++ = tolower(*src);
++	} while (*src++);
++}
++
+ char *kstrdup_quotable(const char *src, gfp_t gfp);
+ char *kstrdup_quotable_cmdline(struct task_struct *task, gfp_t gfp);
+ char *kstrdup_quotable_file(struct file *file, gfp_t gfp);
 -- 
 2.11.0
 
