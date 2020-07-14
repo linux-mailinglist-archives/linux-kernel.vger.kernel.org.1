@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F9121E929
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38DB21EA0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgGNHEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:04:43 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:55386 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727091AbgGNHEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:04:37 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2858A5A23F2DA69548A0;
-        Tue, 14 Jul 2020 15:04:36 +0800 (CST)
-Received: from localhost (10.175.101.6) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Jul 2020
- 15:04:28 +0800
-From:   Weilong Chen <chenweilong@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <jiri@mellanox.com>,
-        <edumazet@google.com>, <chenweilong@huawei.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 net] rtnetlink: Fix memory(net_device) leak when ->newlink fails
-Date:   Tue, 14 Jul 2020 15:48:14 +0800
-Message-ID: <20200714074814.108767-1-chenweilong@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726414AbgGNHb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgGNHbz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:31:55 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B204CC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 00:31:55 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x9so6678334plr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 00:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=J3KZkLfKSbC5BZHL1d7yO/DwRivb2bB63Afyu0rAU7c=;
+        b=neWIcuYRVYuNZuF10/O3q7zrFJP1sqCxlXB97WQT2VbL3vvBdpupQ/95yQPa2zdUQu
+         wWarWnCZZcwf31IYFbOm+0q9QrPLM7Y8VaO6OcTrVRqtC3+QFlWdTwLVX7e0vRZwY6C6
+         8gRJ4wKSV1CbCtbXTPTT7XBQRZItRciZ0RyMPlDxmi3EctrZQQPeIYMH7XpPKnCw7z+U
+         uEQI4ZGtjktdxDrhh5dbQEkESc+LhHRT/iFVbo8EXDxc8fzcEQD0tleyYa+uyntfo+Rj
+         0SRP+ixxeCsrRkMY0LSTqJrx/KJemBooUE5Xz5iB+BuNSrY8NVsn1xi7mDHZ/WeLHUAM
+         6J0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=J3KZkLfKSbC5BZHL1d7yO/DwRivb2bB63Afyu0rAU7c=;
+        b=IgUmPD/BuFL1zRq1BGkXD0UkeV7WM4SEm84KbwgxK6uZsLKrEWkl0qpG9St6+DX+Vg
+         w9fiNRhn3fcOXmlJ2RZUbJ8+9XZ3C/WKYNFWHXrx1WiE3XOTZQFpV/cK3sXHr55eCaHs
+         hjwkoy3/LxkVHTbFGhQLNA+W3Y01VxsGZyCelDIiEX2WBKL7U867It2dIfIWvpivjS+Y
+         qB8eOAm+bf7wQaEg/qsaxVD8mPBHp4W6xSD9LjE+3xEJWIJE5bTd1a+aleVhk9gy1q0M
+         YDoL+0odRsyRLokXZgQXJchKJDFOLRgqYLIPxKutEfv/aKsQNClBJ6IfsXrzdQR2HLgx
+         1H7g==
+X-Gm-Message-State: AOAM533lAD/aEkhUWtcr4Ri+2Vqe4MYmno8WxGjXah8129HY5xGR9g5B
+        +GfXNGSn4P2xOOA3JKxjZlIyrw==
+X-Google-Smtp-Source: ABdhPJz4Gu9yn7RPaM4tJg1tqh+c8051L0lJfupoplxt4ZQbS1Uj9OmeRr99/0ypRIpDK6J+yF33xw==
+X-Received: by 2002:a17:90b:300d:: with SMTP id hg13mr3447366pjb.212.1594711914895;
+        Tue, 14 Jul 2020 00:31:54 -0700 (PDT)
+Received: from localhost ([122.172.34.142])
+        by smtp.gmail.com with ESMTPSA id g6sm16518336pfr.129.2020.07.14.00.31.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 Jul 2020 00:31:53 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 13:01:52 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] cpufreq: tegra186: Fix initial frequency
+Message-ID: <20200714073152.cof7pdgevcaettm2@vireshk-i7>
+References: <20200712100645.13927-1-jonathanh@nvidia.com>
+ <20200713032554.cykywnygxln6ukrl@vireshk-i7>
+ <3d6091f2-6b04-185f-6c23-e39a34b87877@nvidia.com>
+ <20200714034635.2zdv3wzmftjg2t4a@vireshk-i7>
+ <aa941c67-1dec-5363-7bd7-5e9d8d324110@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa941c67-1dec-5363-7bd7-5e9d8d324110@nvidia.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When vlan_newlink call register_vlan_dev fails, it might return error
-with dev->reg_state = NETREG_UNREGISTERED. The rtnl_newlink should
-free the memory. But currently rtnl_newlink only free the memory which
-state is NETREG_UNINITIALIZED.
+On 14-07-20, 08:26, Jon Hunter wrote:
+> OK, I can add a get callback. However, there are a few other drivers
+> that set the current frequency in the init() and don't implement a get()
+> callback ...
+> 
+> drivers/cpufreq/pasemi-cpufreq.c
+> drivers/cpufreq/ppc_cbe_cpufreq.c
 
-BUG: memory leak
-unreferenced object 0xffff8881051de000 (size 4096):
-  comm "syz-executor139", pid 560, jiffies 4294745346 (age 32.445s)
-  hex dump (first 32 bytes):
-    76 6c 61 6e 32 00 00 00 00 00 00 00 00 00 00 00  vlan2...........
-    00 45 28 03 81 88 ff ff 00 00 00 00 00 00 00 00  .E(.............
-  backtrace:
-    [<0000000047527e31>] kmalloc_node include/linux/slab.h:578 [inline]
-    [<0000000047527e31>] kvmalloc_node+0x33/0xd0 mm/util.c:574
-    [<000000002b59e3bc>] kvmalloc include/linux/mm.h:753 [inline]
-    [<000000002b59e3bc>] kvzalloc include/linux/mm.h:761 [inline]
-    [<000000002b59e3bc>] alloc_netdev_mqs+0x83/0xd90 net/core/dev.c:9929
-    [<000000006076752a>] rtnl_create_link+0x2c0/0xa20 net/core/rtnetlink.c:3067
-    [<00000000572b3be5>] __rtnl_newlink+0xc9c/0x1330 net/core/rtnetlink.c:3329
-    [<00000000e84ea553>] rtnl_newlink+0x66/0x90 net/core/rtnetlink.c:3397
-    [<0000000052c7c0a9>] rtnetlink_rcv_msg+0x540/0x990 net/core/rtnetlink.c:5460
-    [<000000004b5cb379>] netlink_rcv_skb+0x12b/0x3a0 net/netlink/af_netlink.c:2469
-    [<00000000c71c20d3>] netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
-    [<00000000c71c20d3>] netlink_unicast+0x4c6/0x690 net/netlink/af_netlink.c:1329
-    [<00000000cca72fa9>] netlink_sendmsg+0x735/0xcc0 net/netlink/af_netlink.c:1918
-    [<000000009221ebf7>] sock_sendmsg_nosec net/socket.c:652 [inline]
-    [<000000009221ebf7>] sock_sendmsg+0x109/0x140 net/socket.c:672
-    [<000000001c30ffe4>] ____sys_sendmsg+0x5f5/0x780 net/socket.c:2352
-    [<00000000b71ca6f3>] ___sys_sendmsg+0x11d/0x1a0 net/socket.c:2406
-    [<0000000007297384>] __sys_sendmsg+0xeb/0x1b0 net/socket.c:2439
-    [<000000000eb29b11>] do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
-    [<000000006839b4d0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+These are quite old and I am not sure why they didn't do it.
 
-Fixes: e51fb152318ee6 (rtnetlink: fix a memory leak when ->newlink fails)
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Weilong Chen <chenweilong@huawei.com>
----
- net/core/rtnetlink.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> drivers/cpufreq/intel_pstate.c
 
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 9aedc15736ad..85a4b0101f76 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -3343,7 +3343,8 @@ static int __rtnl_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		 */
- 		if (err < 0) {
- 			/* If device is not registered at all, free it now */
--			if (dev->reg_state == NETREG_UNINITIALIZED)
-+			if (dev->reg_state == NETREG_UNINITIALIZED ||
-+			    dev->reg_state == NETREG_UNREGISTERED)
- 				free_netdev(dev);
- 			goto out;
- 		}
+With intel-pstate driver, the firmware sets the frequency of the CPUs
+and it can be different from what cpufreq core has asked it to. And so
+the kernel normally has no idea of what the frequency a CPU is running
+at.
+
 -- 
-2.17.1
-
+viresh
