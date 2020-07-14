@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F16121F22E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7414C21F232
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728495AbgGNNOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:14:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51132 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726914AbgGNNOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:14:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AAFCEAFB7;
-        Tue, 14 Jul 2020 13:14:18 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C99941E12C9; Tue, 14 Jul 2020 15:14:13 +0200 (CEST)
-Date:   Tue, 14 Jul 2020 15:14:13 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Francesco Ruggeri <fruggeri@arista.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        amir73il@gmail.com, jack@suse.cz
-Subject: Re: soft lockup in fanotify_read
-Message-ID: <20200714131413.GJ23073@quack2.suse.cz>
-References: <20200714025417.A25EB95C0339@us180.sjc.aristanetworks.com>
+        id S1728547AbgGNNOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727944AbgGNNOq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 09:14:46 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CBDC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 06:14:46 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id j18so5654405wmi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 06:14:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cumulusnetworks.com; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=g2EyQlAqpHZO5s5qqHKlAo11WIHmOqc0rUAshNEUl2M=;
+        b=borORmurH5EPJJNnd7Lhs3GNt3l3WCLMftWORGj+zrxXvkT3GSAjiw6lXlF54+CB7A
+         W1bX0hSTU76d2ShMudHT/6fsfXkzmfailabgVc3MOvvjv5zJX+ncFsfpxvejGZW84o8z
+         3er9h9m7CAECayAUE5SjM+MucvuPrewYpQU2c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=g2EyQlAqpHZO5s5qqHKlAo11WIHmOqc0rUAshNEUl2M=;
+        b=mY581ZbJSzz7cKmwCaxU1B4gxI+szqbMIy053b0CKa97csmpKo970KxTAXOlTXwahF
+         tRhO2b8HAhVNjViZLLunEU1PJABaytZPiSkiIkjdOYZRb57B24B/A0Apvp7xaVhz0tCL
+         pl591PwQRp/dcrpwWxLLMgDoFv/P7npbbY2+s/VkuB6yetCKLfwLuzaHyFWLjqI34ic6
+         F8G/4OUz6eCDQl31zi/YZ3fMbpTq2lc8Y/gEmRd236Afk2/41URtdq2a0JxPwP9GOkMV
+         ip0Z8hFHHevuSLS2hdZtXej0SWJ0dHAhyEwOMPQdmoF6WbNCnIBjyOXN1xqFj79GseXM
+         aiDA==
+X-Gm-Message-State: AOAM533vdg8KY1ZLfw4+kPP3KS1UfW2gZ5AHP0+NrputSg5en4UeH2eg
+        H7Kt6GFCLNBngQtpDxOJI15g/g==
+X-Google-Smtp-Source: ABdhPJwatvSqQbprk1c/oMEOGLR0UWtFeqVkvmelzVPpnXp5yBndiAquQQFvlNxWRQHf/rPgoJxbig==
+X-Received: by 2002:a1c:d8:: with SMTP id 207mr4303796wma.81.1594732485190;
+        Tue, 14 Jul 2020 06:14:45 -0700 (PDT)
+Received: from [192.168.0.109] (84-238-136-197.ip.btc-net.bg. [84.238.136.197])
+        by smtp.gmail.com with ESMTPSA id f14sm32074246wro.90.2020.07.14.06.14.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 06:14:44 -0700 (PDT)
+Subject: Re: [PATCH net-next v4 03/12] bridge: mrp: Extend bridge interface
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>,
+        roopa@cumulusnetworks.com, davem@davemloft.net, kuba@kernel.org,
+        jiri@resnulli.us, ivecera@redhat.com, andrew@lunn.ch,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org
+References: <20200714073458.1939574-1-horatiu.vultur@microchip.com>
+ <20200714073458.1939574-4-horatiu.vultur@microchip.com>
+From:   Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Message-ID: <e877ca40-8e84-ed05-f455-369ca43a179d@cumulusnetworks.com>
+Date:   Tue, 14 Jul 2020 16:14:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714025417.A25EB95C0339@us180.sjc.aristanetworks.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200714073458.1939574-4-horatiu.vultur@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On 14/07/2020 10:34, Horatiu Vultur wrote:
+> This patch adds a new flag(BR_MRP_LOST_IN_CONT) to the net bridge
+> ports. This bit will be set when the port lost the continuity of
+> MRP_InTest frames.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> ---
+>  include/linux/if_bridge.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
+> index b3a8d3054af0f..6479a38e52fa9 100644
+> --- a/include/linux/if_bridge.h
+> +++ b/include/linux/if_bridge.h
+> @@ -49,6 +49,7 @@ struct br_ip_list {
+>  #define BR_ISOLATED		BIT(16)
+>  #define BR_MRP_AWARE		BIT(17)
+>  #define BR_MRP_LOST_CONT	BIT(18)
+> +#define BR_MRP_LOST_IN_CONT	BIT(19)
+>  
+>  #define BR_DEFAULT_AGEING_TIME	(300 * HZ)
+>  
+> 
 
-On Mon 13-07-20 19:54:17, Francesco Ruggeri wrote:
-> We are getting this soft lockup in fanotify_read.
-> The reason is that this code does not seem to scale to cases where there
-> are big bursts of events generated by fanotify_handle_event.
-> fanotify_read acquires group->notification_lock for each event.
-> fanotify_handle_event uses the lock to add one event, which also involves
-> fanotify_merge, which scans the whole list trying to find an event to
-> merge the new one with.
-> In our case fanotify_read is invoked with a buffer big enough for 200
-> events, and what happens is that every time fanotify_read dequeues an
-> event and releases the lock, fanotify_handle_event adds several more,
-> scanning a longer and longer list. This causes fanotify_read to wait
-> longer and longer for the lock, and the soft lockup happens before
-> fanotify_read can reach 200 events.
-> Is it intentional for fanotify_read to acquire the lock for each event,
-> rather than batching together a user buffer worth of events?
+Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
 
-Thanks for report and the analysis. I agree what you describe is possible.
-The locking is actually fine I think but you're correct that the merging
-logic isn't ideal and for large amounts of queued events may be too slow.
-We were already discussing with Amir how to speed it up but didn't end up
-doing anything yet since the issue wasn't really pressing.
 
-WRT fanotify_read() removing events from the list in batches: That's
-certainly one possible optimization but (especially with recent extensions
-to fanotify interface) it is difficult to tell how many events will
-actually fit in the provided buffer so we'd have to provide a way to push
-events back to the event queue which may get a bit tricky. And as I wrote
-above I think the real problem is actually with fanotify merge logic which
-ends up holding the notification_lock for too long...
-
-But we may want to add cond_resched() into the loop in fanotify_read() as
-that can currently take time proportinal to user-provided buffer which can
-be a lot. That will probably silence the softlockup for you as well
-(although it's not really fixing the underlying issue).
-
-We'll have a look what we can do about this :)
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
