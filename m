@@ -2,112 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC2F21FA1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1341021FA7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730196AbgGNStq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729605AbgGNStl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:49:41 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6ADC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:49:41 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id b25so24780005ljp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:49:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Alox4jKEMRaA950HZ1waP0+wedXfzVsNihjzfohVQYc=;
-        b=VvlDJH5CSlxwkIB6dqeYM9fELFt2NoQrAo8WwW52hkqyP+QEgrAcfi37PxvMFQ3jXz
-         exscy1cS5CvqO0N4kUSCglH47nIFT7m+TmAko7nxgzLwvs9rvLlklibVS3y9Lb+KsOEb
-         7GJJwIeCsAlMivcZbPoiCqejNh8PNrAxOIO3I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Alox4jKEMRaA950HZ1waP0+wedXfzVsNihjzfohVQYc=;
-        b=X/LKeQIXm355+KLdnshrIPi60skknn7aWDtZdzcp5Ug2QBldBUmLoEiBa9OvBh/p53
-         5WfRtszvMs61vbL+S/UTSY5qdYOFpL0qKfvI3cwZyCPSAC4ji8ULImcUpLqItMQre5KX
-         g3NFLHhe3fVg1DvmNp91UBzQZ3P0VxwQPi/jI3eUYEdS6rOUA0eCG00D93pFsFGNgsef
-         vgoXKogp5Q8r/Zz45bMRZAe1su31VtqiV9HBoYo1kez8Pie8s/JMVBWYhwk4ScFzPtls
-         W40EiYDvWda4K387rrDI6eY5KbH7kw5BvQ+gcaogEXYzLw/6kmoIjnNzfTmEpSLshg9D
-         N80g==
-X-Gm-Message-State: AOAM533AcrMybX3Xi0tbGO8aho5Y0Mzu1PdBf66HwyRu8uimcvb3YSVF
-        ZieK+QvWN+OzujHTzG1hmRds4papJuE=
-X-Google-Smtp-Source: ABdhPJz/fv7+JpDgxX6su3ekiz/On1iOaJ0li8Qjf2H9zVwZxPuYkAmsLepF9JaOiWGsSK/V79MC8w==
-X-Received: by 2002:a2e:7a16:: with SMTP id v22mr1794780ljc.42.1594752578974;
-        Tue, 14 Jul 2020 11:49:38 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id k6sm5457184lfm.89.2020.07.14.11.49.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 11:49:37 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id f5so24801419ljj.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:49:36 -0700 (PDT)
-X-Received: by 2002:a2e:86c4:: with SMTP id n4mr3097947ljj.312.1594752576542;
- Tue, 14 Jul 2020 11:49:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYt+6OeibZMD0fP=O3nqFbcN3O4xcLkjq0mpQbZJ2uxB9w@mail.gmail.com>
- <CAHk-=wgRcFSnQt=T95S+1dPkyvCuVAVGQ37JDvRg41h8hRqO3Q@mail.gmail.com>
- <CA+G9fYuL=xJPLbQJVzDfXB8uNiCWdXpL=joDsnATEFCzyFh_1g@mail.gmail.com>
- <CAHk-=wgB6Ds6yqbZZmscKNuAiNR2J0Pf3a8UrbdfewYxHE7SbA@mail.gmail.com>
- <20200712215041.GA3644504@google.com> <CAHk-=whxP0Gj70pJN5R7Qec4qjrGr+G9Ex7FJi7=_fPcdQ2ocQ@mail.gmail.com>
- <20200714073306.kq4zikkphqje2yzb@box> <20200714160843.GA1685150@google.com>
- <CAHk-=wjffJ=EBrLjsz=KUFyPXVQUO03L=VJmHnLhVr4XvT3Mpw@mail.gmail.com> <CAEXW_YRTnCb-z6TeboA3OCYv8eoX8UiCNn7K1hGMX+41Zdz8Og@mail.gmail.com>
-In-Reply-To: <CAEXW_YRTnCb-z6TeboA3OCYv8eoX8UiCNn7K1hGMX+41Zdz8Og@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 14 Jul 2020 11:49:20 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgRS_WpRdC9nyXzVZ7aWNQt0HKMbyFjhrgrNo49AFNWzg@mail.gmail.com>
-Message-ID: <CAHk-=wgRS_WpRdC9nyXzVZ7aWNQt0HKMbyFjhrgrNo49AFNWzg@mail.gmail.com>
-Subject: Re: WARNING: at mm/mremap.c:211 move_page_tables in i386
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux- stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        lkft-triage@lists.linaro.org, Chris Down <chris@chrisdown.name>,
-        Michel Lespinasse <walken@google.com>,
-        Fan Yang <Fan_Yang@sjtu.edu.cn>,
-        Brian Geffon <bgeffon@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>, pugaowei@gmail.com,
-        Jerome Glisse <jglisse@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Hugh Dickins <hughd@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Tejun Heo <tj@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
+        id S1730587AbgGNSxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:53:08 -0400
+Received: from mga03.intel.com ([134.134.136.65]:12880 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730571AbgGNSw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:52:57 -0400
+IronPort-SDR: 38F0vV1cM6SqScdKUC6l0ZafjIWp5B6L18+JTBbmsI7hdJMOjKC2n2I4G8Jf3JYlalnDUlSOAQ
+ 7HXtqf534dHA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="149002058"
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="149002058"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 11:52:49 -0700
+IronPort-SDR: a81X54LhkLa2IisbkBWZtq05E5qrWVUFll2OzsUdPfWyL252dJ2j5JxYp8KjGtGVt4PmeOvbRP
+ e6iaiE8+19zQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="317816694"
+Received: from rrobinso-mobl.amr.corp.intel.com ([10.212.205.127])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Jul 2020 11:52:47 -0700
+Message-ID: <e33ebe71317b0a09ca40e97fb76ff57313c0444c.camel@linux.intel.com>
+Subject: Re: [PATCH -v2.1] x86/msr: Filter MSR writes
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>, Chris Down <chris@chrisdown.name>
+Cc:     linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
+        tony.luck@intel.com, torvalds@linux-foundation.org, x86@kernel.org,
+        kernel-team@fb.com, Matthew Garrett <matthewgarrett@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Date:   Tue, 14 Jul 2020 11:52:47 -0700
+In-Reply-To: <20200714165621.GA3622@nazgul.tnic>
+References: <20200615063837.GA14668@zn.tnic>
+         <20200714121955.GA2080@chrisdown.name> <20200714154728.GA3101@nazgul.tnic>
+         <20200714160448.GC2080@chrisdown.name> <20200714165621.GA3622@nazgul.tnic>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.3 (3.34.3-1.fc31) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 11:12 AM Joel Fernandes <joel@joelfernandes.org> wrote:
->
-> I think you misunderstood me. I was not advocating breaking the stack
-> movement code or breaking stack randomization, I was going to try to
-> see if I could keep that working while not having to do an overlapping
-> move.
+On Tue, 2020-07-14 at 18:56 +0200, Borislav Petkov wrote:
+> On Tue, Jul 14, 2020 at 05:04:48PM +0100, Chris Down wrote:
+> > Since the issue involves DPTF which is only supported via binary
+> > blobs, I
+> > can't say for certain what the issue is. As I understand it, when
+> > the
+> > throttling behaviour isn't explicitly configured by the OS kernel,
+> > the
+> > default policy is extremely overeager. Matthew also had a look at
+> > it[0], but
+> > I don't know if anything eventually happened there. I've cc'ed him.
+> > 
+> > Either way, again, this isn't really the point. :-) The point is
+> > that there
+> > _are_ currently widespread cases involving poking MSRs from
+> > userspace,
+> > however sacrilegious or ugly (which I agree with!), and while
+> > people should
+> > be told about that, it's excessive to have the potential to take up
+> > 80% of
+> > kmsg in the default configuration. It doesn't take thousands of
+> > messages to
+> > get the message across, that's what a custom printk ratelimit is
+> > for.
+> 
+> Ok, feel free to suggest a fix, better yet send a patch. Otherwise,
+> you'd have to wait for my vacation to end first. :-)
+> 
+> > 0: https://twitter.com/mjg59/status/1034132444201582596
+> 
+> As to the power issue, lemme CC some Intel folks I found in
+> MAINTAINERS.
+> 
+> Intel folks, pls check the link above and upthread: Why TF do people
+> need to use some luserspace daemon which pokes at MSRs which the
+> kernel
+> writes to too, in order to bypass some apparently too conservative
+> throttling, AFAIU?
+For issues related to thermal or power, we don't expect to poke MSRs
+from user space by any daemon. We have sysfs interfaces for the
+required controls. This is also true for controls via MMIO space.
+Anytime if it is safe to add, we are adding controls via sysfs.
 
-I'm not really seeing how you'd do that with a big stack that gets
-close to the stack ulimit.
+The tool in question from the link (not from Intel), when developed may
+not have TCC or RAPL-MMIO controls via sysfs. We have sysfs interfaces
+for a while. They can send email to me to justify other controls if
+any.
+ 
+Only time direct MSR access is required is for debug tools like
+turbostat.
 
-Except by avoiding randomization.
+> 
+> And why does this work on windoze reportedly?
+This is not related to MSR or MMIO. This is related to some ACPI
+tables. In Linux, thermald will adjust these knobs like Windows. It was
+missing some ACPI details, which Matthew Garrett submitted patches to
+kernel and getting merged with 5.8 series.
 
-But the existing randomization may be so bad that it doesn't much
-matter. And I do think we limit the execve stack to a reasonably small
-fraction of the whole ulimit. So worth exploring, I guess.
+Thanks,
+Srinivas
 
-The current code with "align_stack" doing randomization could also do
-with a lot of clarifications. The code is odd.
 
-            Linus
