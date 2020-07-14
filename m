@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D100E21F9E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD75D21FA87
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbgGNSr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:47:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42482 "EHLO mail.kernel.org"
+        id S1730234AbgGNSxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729730AbgGNSrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:47:24 -0400
+        id S1730618AbgGNSxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:53:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38BA222AAE;
-        Tue, 14 Jul 2020 18:47:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7090F207F5;
+        Tue, 14 Jul 2020 18:53:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752443;
-        bh=L20Zm7GZCYXy/G0BHbY7qhmQ9cOpWth7HfFw16eKR/0=;
+        s=default; t=1594752800;
+        bh=VNLiK8TeBYmWAMxY/YD4soQp/ZXucvsXLee0gy0MjLA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QPjHxNkGUfhRt/LCydXdBG+PLnPcnRpODTg/HLnm5bDkO+TH5OmYZLIb9re02u4Ue
-         Xt9hvOIQaaH6IudlpdjsFKwKwe3sK0V1vmkAnaTeC0e0gF13TXgCb3XDva2zdcCny+
-         QNv4TRkY3GT2D8kXsnUIg1ISrWoygrjlG8/RHHr8=
+        b=tR9f5pCouzyhqhUk3pgYi2ZZpBDnzmEiMw/IXDDzjvKGKtJpYu/iI3UecLgGnG3xB
+         j31uXUFXeiMlnCNDr/AMu4QFAK99fLBqCOLt2mV8HmrkGrNObbWNrBwWinWawkwH4x
+         2iF978OGffN3nBVaHtkYH48Gvbhig9Xmy+UbHnR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastien Boeuf <sebastien.boeuf@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.19 44/58] KVM: x86: Inject #GP if guest attempts to toggle CR4.LA57 in 64-bit mode
-Date:   Tue, 14 Jul 2020 20:44:17 +0200
-Message-Id: <20200714184058.332482083@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Hofman <pavel.hofman@ivitera.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 075/109] ALSA: usb-audio: Add implicit feedback quirk for RTX6001
+Date:   Tue, 14 Jul 2020 20:44:18 +0200
+Message-Id: <20200714184109.128454170@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
 
-commit d74fcfc1f0ff4b6c26ecef1f9e48d8089ab4eaac upstream.
+commit b6a1e78b96a5d7f312f08b3a470eb911ab5feec0 upstream.
 
-Inject a #GP on MOV CR4 if CR4.LA57 is toggled in 64-bit mode, which is
-illegal per Intel's SDM:
+USB Audio analyzer RTX6001 uses the same implicit feedback quirk
+as other XMOS-based devices.
 
-  CR4.LA57
-    57-bit linear addresses (bit 12 of CR4) ... blah blah blah ...
-    This bit cannot be modified in IA-32e mode.
-
-Note, the pseudocode for MOV CR doesn't call out the fault condition,
-which is likely why the check was missed during initial development.
-This is arguably an SDM bug and will hopefully be fixed in future
-release of the SDM.
-
-Fixes: fd8cb433734ee ("KVM: MMU: Expose the LA57 feature to VM.")
-Cc: stable@vger.kernel.org
-Reported-by: Sebastien Boeuf <sebastien.boeuf@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200703021714.5549-1-sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
+Tested-by: Pavel Hofman <pavel.hofman@ivitera.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/822f0f20-1886-6884-a6b2-d11c685cbafa@ivitera.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/x86.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/usb/pcm.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -865,6 +865,8 @@ int kvm_set_cr4(struct kvm_vcpu *vcpu, u
- 	if (is_long_mode(vcpu)) {
- 		if (!(cr4 & X86_CR4_PAE))
- 			return 1;
-+		if ((cr4 ^ old_cr4) & X86_CR4_LA57)
-+			return 1;
- 	} else if (is_paging(vcpu) && (cr4 & X86_CR4_PAE)
- 		   && ((cr4 ^ old_cr4) & pdptr_bits)
- 		   && !load_pdptrs(vcpu, vcpu->arch.walk_mmu,
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -350,6 +350,7 @@ static int set_sync_ep_implicit_fb_quirk
+ 		goto add_sync_ep_from_ifnum;
+ 	case USB_ID(0x07fd, 0x0008): /* MOTU M Series */
+ 	case USB_ID(0x31e9, 0x0002): /* Solid State Logic SSL2+ */
++	case USB_ID(0x0d9a, 0x00df): /* RTX6001 */
+ 		ep = 0x81;
+ 		ifnum = 2;
+ 		goto add_sync_ep_from_ifnum;
 
 
