@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CA321FC34
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB7021FC8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730822AbgGNTHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:07:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730666AbgGNTH3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:07:29 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDD0C061755;
-        Tue, 14 Jul 2020 12:07:29 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id 8A42ABC0D3;
-        Tue, 14 Jul 2020 19:07:27 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     dvhart@infradead.org, andy@infradead.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH] platform/x86: apple-gmux: Replace HTTP links with HTTPS ones
-Date:   Tue, 14 Jul 2020 21:07:21 +0200
-Message-Id: <20200714190721.47603-1-grandmaster@al2klimov.de>
-In-Reply-To: <CAHp75Ve2pPGN3BtMw6x1xR5Cyv8VP=KMJMMJ9qao29ArrxPo9w@mail.gmail.com>
-References: <CAHp75Ve2pPGN3BtMw6x1xR5Cyv8VP=KMJMMJ9qao29ArrxPo9w@mail.gmail.com>
+        id S1730441AbgGNTKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:10:08 -0400
+Received: from mga09.intel.com ([134.134.136.24]:65171 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730189AbgGNTJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:09:52 -0400
+IronPort-SDR: 9Bfeb0/0Naw0dTcYqAOMzBFQIbwFhqES6uIjGLDuwYS6ZDA9k7rTiIx6IdmO+QnHqP7wxi5UuR
+ 3y9gI5QUBFDA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="150426923"
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="150426923"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 12:09:46 -0700
+IronPort-SDR: F5+6TagJ+l1griOYsZtzQkFGRpSQRa2AcrvfdSOx4vFmi7tumHZNFRIJUHlFtNvtasUh0ZpCV3
+ s3kdDTQFO7MA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="285855453"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga006.jf.intel.com with ESMTP; 14 Jul 2020 12:09:45 -0700
+Date:   Tue, 14 Jul 2020 12:09:45 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 04/15] x86/pks: Preserve the PKRS MSR on context
+ switch
+Message-ID: <20200714190945.GD3008823@iweiny-DESK2.sc.intel.com>
+References: <20200714070220.3500839-1-ira.weiny@intel.com>
+ <20200714070220.3500839-5-ira.weiny@intel.com>
+ <20200714082701.GO10769@hirez.programming.kicks-ass.net>
+ <20200714185322.GB3008823@iweiny-DESK2.sc.intel.com>
+ <20200714190539.GG5523@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714190539.GG5523@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On Tue, Jul 14, 2020 at 09:05:39PM +0200, Peter Zijlstra wrote:
+> On Tue, Jul 14, 2020 at 11:53:22AM -0700, Ira Weiny wrote:
+> > On Tue, Jul 14, 2020 at 10:27:01AM +0200, Peter Zijlstra wrote:
+> > > On Tue, Jul 14, 2020 at 12:02:09AM -0700, ira.weiny@intel.com wrote:
+> > > > From: Ira Weiny <ira.weiny@intel.com>
+> > > > 
+> > > > The PKRS MSR is defined as a per-core register.  This isolates memory
+> > > > access by CPU.  Unfortunately, the MSR is not preserved by XSAVE.
+> > > > Therefore, We must preserve the protections for individual tasks even if
+> > > > they are context switched out and placed on another cpu later.
+> > > 
+> > > This is a contradiction and utter trainwreck.
+> > 
+> > I don't understand where there is a contradiction?  Perhaps I should have said
+> > the MSR is not XSAVE managed vs 'preserved'?
+> 
+> You're stating the MSR is per-*CORE*, and then continue to talk about
+> per-task state.
+> 
+> We've had a bunch of MSRs have exactly that problem recently, and it's
+> not fun. We're not going to do that again.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+Ah sorry, my mistake yes I meant 'per-logical-processor' like Dave said.  I'll
+update the commit message.
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- drivers/platform/x86/apple-gmux.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/platform/x86/apple-gmux.c b/drivers/platform/x86/apple-gmux.c
-index 7e3083deb1c5..9aae45a45200 100644
---- a/drivers/platform/x86/apple-gmux.c
-+++ b/drivers/platform/x86/apple-gmux.c
-@@ -277,8 +277,8 @@ static bool gmux_is_indexed(struct apple_gmux_data *gmux_data)
-  * MBP5 2008/09 uses a `TI LP8543`_ backlight driver. All newer models
-  * use a `TI LP8545`_.
-  *
-- * .. _TI LP8543: http://www.ti.com/lit/ds/symlink/lp8543.pdf
-- * .. _TI LP8545: http://www.ti.com/lit/ds/symlink/lp8545.pdf
-+ * .. _TI LP8543: https://www.ti.com/lit/ds/symlink/lp8543.pdf
-+ * .. _TI LP8545: https://www.ti.com/lit/ds/symlink/lp8545.pdf
-  */
- 
- static int gmux_get_brightness(struct backlight_device *bd)
-@@ -373,14 +373,14 @@ static const struct backlight_ops gmux_bl_ops = {
-  * switch the panel and the external DP connector and allocates a framebuffer
-  * for the selected GPU.
-  *
-- * .. _US 8,687,007 B2: http://pimg-fpiw.uspto.gov/fdd/07/870/086/0.pdf
-- * .. _NXP CBTL06141:   http://www.nxp.com/documents/data_sheet/CBTL06141.pdf
-- * .. _NXP CBTL06142:   http://www.nxp.com/documents/data_sheet/CBTL06141.pdf
-- * .. _TI HD3SS212:     http://www.ti.com/lit/ds/symlink/hd3ss212.pdf
-+ * .. _US 8,687,007 B2: https://pimg-fpiw.uspto.gov/fdd/07/870/086/0.pdf
-+ * .. _NXP CBTL06141:   https://www.nxp.com/documents/data_sheet/CBTL06141.pdf
-+ * .. _NXP CBTL06142:   https://www.nxp.com/documents/data_sheet/CBTL06141.pdf
-+ * .. _TI HD3SS212:     https://www.ti.com/lit/ds/symlink/hd3ss212.pdf
-  * .. _Pericom PI3VDP12412: https://www.pericom.com/assets/Datasheets/PI3VDP12412.pdf
-- * .. _TI SN74LV4066A:  http://www.ti.com/lit/ds/symlink/sn74lv4066a.pdf
-+ * .. _TI SN74LV4066A:  https://www.ti.com/lit/ds/symlink/sn74lv4066a.pdf
-  * .. _NXP CBTL03062:   http://pdf.datasheetarchive.com/indexerfiles/Datasheets-SW16/DSASW00308511.pdf
-- * .. _TI TS3DS10224:   http://www.ti.com/lit/ds/symlink/ts3ds10224.pdf
-+ * .. _TI TS3DS10224:   https://www.ti.com/lit/ds/symlink/ts3ds10224.pdf
-  */
- 
- static void gmux_read_switch_state(struct apple_gmux_data *gmux_data)
--- 
-2.27.0
-
+Ira
