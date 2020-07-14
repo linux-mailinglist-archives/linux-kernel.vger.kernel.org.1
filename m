@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84E221FA1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C3B21FAC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729580AbgGNStm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:49:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45462 "EHLO mail.kernel.org"
+        id S1730860AbgGNSzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:55:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730175AbgGNStj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:49:39 -0400
+        id S1730833AbgGNSzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:55:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62DD522B3F;
-        Tue, 14 Jul 2020 18:49:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5E3A22BEF;
+        Tue, 14 Jul 2020 18:55:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752579;
-        bh=XShLMHFLIslsFzvvnDfxIF44y2nXE8NLb7s1NS6Wa0E=;
+        s=default; t=1594752916;
+        bh=bhSzwi+A4XN32hFzoNnB5HCq3CxGtguLBScwRiUtXq0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UzwqC0ocEg4isUEJ1fiC7r573W8v0Z9Q7McyYkPl0xkTWJY0bkQXuhrSNconX0fb4
-         4DVZrMott2rgPf+LtB4IQ80XM7EKD5rZchK9A+fpdrZVtFpgI89K3/ZOzh1nnM6QPB
-         RxQ3ZyvmV1ETvKSwTQZ3Vns/nsjwb/RaPjJlt+3k=
+        b=SGnMxe316GpOWXQqGITaVB3l/AAqb8nqlfyLrNLrXJCOgOcjfVfcBjAyBr6ygF0ED
+         01eCOXj+S5mTKu5Feb5Xa+i9xz3Bpq1m7fWCR14JObsQAunSpQnMTrpPFkaYJT7ww0
+         C0BnYzAJ646jb8xZu67Q3sC/UxzPw6K73D58V+t8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Felipe Balbi <balbi@kernel.org>,
+        stable@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 030/109] usb: dwc3: pci: Fix reference count leak in dwc3_pci_resume_work
-Date:   Tue, 14 Jul 2020 20:43:33 +0200
-Message-Id: <20200714184106.963706477@linuxfoundation.org>
+Subject: [PATCH 5.7 049/166] gpio: pca953x: Fix direction setting when configure an IRQ
+Date:   Tue, 14 Jul 2020 20:43:34 +0200
+Message-Id: <20200714184118.223750703@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aditya Pakki <pakki001@umn.edu>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 2655971ad4b34e97dd921df16bb0b08db9449df7 ]
+[ Upstream commit 0b22c25e1b81c5f718e89c4d759e6a359be24417 ]
 
-dwc3_pci_resume_work() calls pm_runtime_get_sync() that increments
-the reference counter. In case of failure, decrement the reference
-before returning.
+The commit 0f25fda840a9 ("gpio: pca953x: Zap ad-hoc reg_direction cache")
+seems inadvertently made a typo in pca953x_irq_bus_sync_unlock().
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+When the direction bit is 1 it means input, and the piece of code in question
+was looking for output ones that should be turned to inputs.
+
+Fix direction setting when configure an IRQ by injecting a bitmap complement
+operation.
+
+Fixes: 0f25fda840a9 ("gpio: pca953x: Zap ad-hoc reg_direction cache")
+Depends-on: 35d13d94893f ("gpio: pca953x: convert to use bitmap API")
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/dwc3-pci.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpio/gpio-pca953x.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
-index b67372737dc9b..96c05b121fac8 100644
---- a/drivers/usb/dwc3/dwc3-pci.c
-+++ b/drivers/usb/dwc3/dwc3-pci.c
-@@ -206,8 +206,10 @@ static void dwc3_pci_resume_work(struct work_struct *work)
- 	int ret;
+diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
+index 8571e54512476..a10411958e3f2 100644
+--- a/drivers/gpio/gpio-pca953x.c
++++ b/drivers/gpio/gpio-pca953x.c
+@@ -686,8 +686,6 @@ static void pca953x_irq_bus_sync_unlock(struct irq_data *d)
+ 	DECLARE_BITMAP(reg_direction, MAX_LINE);
+ 	int level;
  
- 	ret = pm_runtime_get_sync(&dwc3->dev);
--	if (ret)
-+	if (ret) {
-+		pm_runtime_put_sync_autosuspend(&dwc3->dev);
- 		return;
-+	}
+-	pca953x_read_regs(chip, chip->regs->direction, reg_direction);
+-
+ 	if (chip->driver_data & PCA_PCAL) {
+ 		/* Enable latch on interrupt-enabled inputs */
+ 		pca953x_write_regs(chip, PCAL953X_IN_LATCH, chip->irq_mask);
+@@ -698,7 +696,11 @@ static void pca953x_irq_bus_sync_unlock(struct irq_data *d)
+ 		pca953x_write_regs(chip, PCAL953X_INT_MASK, irq_mask);
+ 	}
  
- 	pm_runtime_mark_last_busy(&dwc3->dev);
- 	pm_runtime_put_sync_autosuspend(&dwc3->dev);
++	/* Switch direction to input if needed */
++	pca953x_read_regs(chip, chip->regs->direction, reg_direction);
++
+ 	bitmap_or(irq_mask, chip->irq_trig_fall, chip->irq_trig_raise, gc->ngpio);
++	bitmap_complement(reg_direction, reg_direction, gc->ngpio);
+ 	bitmap_and(irq_mask, irq_mask, reg_direction, gc->ngpio);
+ 
+ 	/* Look for any newly setup interrupt */
 -- 
 2.25.1
 
