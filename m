@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A80221EF01
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECAD21EF0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 13:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbgGNLSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 07:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52264 "EHLO
+        id S1728017AbgGNLTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 07:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727883AbgGNLQm (ORCPT
+        with ESMTP id S1726431AbgGNLQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 07:16:42 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60A8C08C5EF
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:15:57 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f18so20906389wrs.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:15:57 -0700 (PDT)
+        Tue, 14 Jul 2020 07:16:46 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBB5C08C5F5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:15:58 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id s10so20840938wrw.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 04:15:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QiZP1EJ4HMANCxwy0emf1RpubxHNKPeVfuS0vb5jwJ0=;
-        b=Bt0GCA6sAZ1Dhav8uxfVkLsp+I/g50wOtMFqyePzqFC2JGKGQxf3cofzFqQLhNbxix
-         MYHy7BJqu7ePGOEXENWyzEDOqRnf7hx4HmX+xp/YqM9BmOTD2QM8AHwRHx8+rdCKXCic
-         Pyjf/Qqn5u/+f+t2ojun7ZEgZQ26jHK8sFVi7bFwAMD2KWCNJeaUK/snV2iHB/lrurng
-         h2WH838TmE6UU8l1dStBAttQpIHjjbZDEUOqOTzlzpn/lcbltMLgIlmu3iJyR3SW1lMm
-         wl7f4eeoVNZIyCvMf8vK2JiVtvZbc0GHpPNzkvbArAVJhlqNI1knGxYIRsaYRGwWSPZy
-         Ip0w==
+        bh=xDspo//ZGGv62/k8vhH8b8dLXko1WA1DYqLJUY7Z0pU=;
+        b=lRnHD6+n0Kjyezcw88EVB0+8py6DiaAYhCbxlABYw2m8o9Zqwb0e0UYsTQn6UzdoyM
+         Ai/Lwf+avt/HMmYhCR2/TG+yz4ONmkQc2lUl56ky4FIDgvtg1bdsR8ab93IYufj3BDun
+         i0WFD7NuGJNJDoZQohH34gqSOOdzQKa+D1J8sCzkxCvJV+Jwbn1/J2Scn0vFBzHdFMU4
+         yHlh6N9RzslpQaPG35aqpOqxYCtYF2Q9jqYGfdLmmosobj45f6BOMGXsaHWrN8m60dsA
+         vBG+Cnm/FE0W+t1lyKdF9znSpMDeukw6cl5PVzqvlV6+4bcIri+v2g7Y5SvFnTWu1qFI
+         jtFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QiZP1EJ4HMANCxwy0emf1RpubxHNKPeVfuS0vb5jwJ0=;
-        b=EGyNf8eYt9QJr8LerA/gqii8kLAGMDLXllLiauDu9pFMOsCWkoFUFo8XhKVa6vsu+6
-         HvIic/INpR5Ou6jB2P5hWH2KP4aTlQpLdoFGC+qRUotRfDAZ5RBKqVNfkitfA4LWSqfc
-         hZt9/1043Nj2HW+v7yzLwvXgLNjRbG17qD919D6nO1m2hM6D3mPbYMtPWMrQ+ss1NHas
-         fnOldNQvsdDKHOVjbZlvkJq1kEtM/3/YliLRNSfXT+Sl9lJDdnFhSVvdeTVTs3lKHLHd
-         72oFH8XjGXXQszmr7oL0sQ+/yLV/JW5STouu5EwxCF4btXaYZRRt7yhTUP75JoKhINx3
-         v6rQ==
-X-Gm-Message-State: AOAM532G0f2nNvodwFw7Lji7nhS0GqgOHIbfqU89rVU4QXZMjepO1/Kd
-        s/dOCfFJtUUrbGXp0JlX9BzhTg==
-X-Google-Smtp-Source: ABdhPJwkiwpi8l/2xIcMFabgGHg0sSEJz0lNu3Gqu0LiD5h2i/XCtSzTUFZ2AhtZQDnFonigsMSt8A==
-X-Received: by 2002:a5d:6749:: with SMTP id l9mr4524901wrw.63.1594725356234;
-        Tue, 14 Jul 2020 04:15:56 -0700 (PDT)
+        bh=xDspo//ZGGv62/k8vhH8b8dLXko1WA1DYqLJUY7Z0pU=;
+        b=Sq0LUO3DUchmLN2nPe1IWHumCL6139OH4D/0Ro5J6OQOh1zZ3Bc/lqS6385RffrS7b
+         AFRCdS5MvI8qaBLH3Y5QdSKUEghUnKdg2X9jj5laKLHrR3w+OVH1HNRdGwoRko1v4lqS
+         d/H84/HauqqlS0oSKOCeC3u6dQmfXDmaW3NUGuVgGq4eZbZc/X0RuM5717RROhCqFzUN
+         aXOpXP9o1LM6YHidGdtWB2ScWi7BHYFZ4xU+dB5WOJj+R199kLM3Mm15V/dJr06xs3il
+         f9bP9DBO1GTAcb2vY4j+HAFG+JKx9hduQYtYoqExUuyWNPCnOhGOHsybs3ra04baBmsS
+         ZGyg==
+X-Gm-Message-State: AOAM532lleAyTfeqA7aYAEKe0fMkPiSM9640t8AJKq6mLWgPPLdjELy2
+        vM1xYyY4NA57kCZ+X28l+FOqdw==
+X-Google-Smtp-Source: ABdhPJzIzSvAOB3xgad3Sen6dlJzxBYaenPpru9T4eTefZSfzMtOdkfpSmMn9BuJRx6p9P4nOKO/4A==
+X-Received: by 2002:a5d:6a90:: with SMTP id s16mr4580377wru.8.1594725357328;
+        Tue, 14 Jul 2020 04:15:57 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.15.55
+        by smtp.gmail.com with ESMTPSA id l8sm28566052wrq.15.2020.07.14.04.15.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 04:15:55 -0700 (PDT)
+        Tue, 14 Jul 2020 04:15:56 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     dan.j.williams@intel.com, vkoul@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         dmaengine@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Per Forlin <per.forlin@stericsson.com>,
-        Jonas Aaberg <jonas.aberg@stericsson.com>
-Subject: [PATCH 06/17] dma: ste_dma40: Supply 2 missing struct attribute descriptions
-Date:   Tue, 14 Jul 2020 12:15:35 +0100
-Message-Id: <20200714111546.1755231-7-lee.jones@linaro.org>
+        Stefan Roese <sr@denx.de>
+Subject: [PATCH 07/17] dma: altera-msgdma: Fix struct documentation blocks
+Date:   Tue, 14 Jul 2020 12:15:36 +0100
+Message-Id: <20200714111546.1755231-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200714111546.1755231-1-lee.jones@linaro.org>
 References: <20200714111546.1755231-1-lee.jones@linaro.org>
@@ -67,38 +66,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix some misspelling/description issues, demote non-kerneldoc header
+to standard comment block and provide a new description for
+msgdma_desc_config()'s 'stride' parameter.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/dma/ste_dma40.c:398: warning: Function parameter or member 'dma_addr' not described in 'd40_lcla_pool'
- drivers/dma/ste_dma40.c:601: warning: Function parameter or member 'dma_parms' not described in 'd40_base'
+ drivers/dma/altera-msgdma.c:163: warning: Function parameter or member 'node' not described in 'msgdma_sw_desc'
+ drivers/dma/altera-msgdma.c:163: warning: Function parameter or member 'tx_list' not described in 'msgdma_sw_desc'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'lock' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'dev' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'irq_tasklet' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'pending_list' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'free_list' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'active_list' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'done_list' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'desc_free_cnt' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'idle' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'dmadev' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'dmachan' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'hw_desq' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'sw_desq' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'npendings' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'slave_cfg' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'irq' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'csr' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'desc' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'resp' not described in 'msgdma_device'
+ drivers/dma/altera-msgdma.c:265: warning: Function parameter or member 'stride' not described in 'msgdma_desc_config'
 
-Cc: Per Forlin <per.forlin@stericsson.com>
-Cc: Jonas Aaberg <jonas.aberg@stericsson.com>
+Cc: Stefan Roese <sr@denx.de>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/dma/ste_dma40.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/dma/altera-msgdma.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/ste_dma40.c b/drivers/dma/ste_dma40.c
-index de8bfd9a76e9e..21e2f1d0c2109 100644
---- a/drivers/dma/ste_dma40.c
-+++ b/drivers/dma/ste_dma40.c
-@@ -381,6 +381,7 @@ struct d40_desc {
-  * struct d40_lcla_pool - LCLA pool settings and data.
-  *
-  * @base: The virtual address of LCLA. 18 bit aligned.
-+ * @dma_addr: DMA address, if mapped
-  * @base_unaligned: The orignal kmalloc pointer, if kmalloc is used.
-  * This pointer is only there for clean-up on error.
-  * @pages: The number of pages needed for all physical channels.
-@@ -534,6 +535,7 @@ struct d40_gen_dmac {
-  * mode" allocated physical channels.
-  * @num_log_chans: The number of logical channels. Calculated from
-  * num_phy_chans.
-+ * @dma_parms: DMA parameters for the channel
-  * @dma_both: dma_device channels that can do both memcpy and slave transfers.
-  * @dma_slave: dma_device channels that can do only do slave transfers.
-  * @dma_memcpy: dma_device channels that can do only do memcpy transfers.
+diff --git a/drivers/dma/altera-msgdma.c b/drivers/dma/altera-msgdma.c
+index 539e785039cac..321ac3a7aa418 100644
+--- a/drivers/dma/altera-msgdma.c
++++ b/drivers/dma/altera-msgdma.c
+@@ -153,7 +153,8 @@ struct msgdma_extended_desc {
+  * struct msgdma_sw_desc - implements a sw descriptor
+  * @async_tx: support for the async_tx api
+  * @hw_desc: assosiated HW descriptor
+- * @free_list: node of the free SW descriprots list
++ * @node: node to move from the free list to the tx list
++ * @tx_list: transmit list node
+  */
+ struct msgdma_sw_desc {
+ 	struct dma_async_tx_descriptor async_tx;
+@@ -162,7 +163,7 @@ struct msgdma_sw_desc {
+ 	struct list_head tx_list;
+ };
+ 
+-/**
++/*
+  * struct msgdma_device - DMA device structure
+  */
+ struct msgdma_device {
+@@ -258,6 +259,7 @@ static void msgdma_free_desc_list(struct msgdma_device *mdev,
+  * @dst: Destination buffer address
+  * @src: Source buffer address
+  * @len: Transfer length
++ * @stride: Read/write stride value to set
+  */
+ static void msgdma_desc_config(struct msgdma_extended_desc *desc,
+ 			       dma_addr_t dst, dma_addr_t src, size_t len,
 -- 
 2.25.1
 
