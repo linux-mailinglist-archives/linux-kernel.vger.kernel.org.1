@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A7C21F190
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F6B21F1AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728445AbgGNMjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:39:54 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:33142 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgGNMjv (ORCPT
+        id S1728273AbgGNMks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:40:48 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:58969 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726354AbgGNMkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:39:51 -0400
-Received: by mail-ot1-f68.google.com with SMTP id h13so12929224otr.0;
-        Tue, 14 Jul 2020 05:39:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1gkM+uPTnitshLBuV08goagb6Ra5DyU+s9EwRHXtZeQ=;
-        b=mfkgj4eGLF/mS6HqwU2jRhvquP2KbIWOqQVHucEbNhtAlIGrgbXdXbsPnTkayf14FE
-         oQg/z0nbq0N+stgN7htDaEcBL5b8DITSlN2vdoPC/vnB3zkOh6sRIKIDyXcD/1Lhgpx7
-         m+8MBQqD39qOni3D0FQ2zPI0yLuLo/dvpXpuVO8fTJCWIv33HKy4tP1k5rwtAIhtdVpv
-         UaVqpCj6ZFTqN4K68xtGjsnmaVhCwf5aMHL/Xha/LRqNAcGfXsOX9uM8yCjmJAKJPaH9
-         5/ifjivkwWjaZvYMaZXQ2q80AIvuA3d9wqLnZCear2qONGYWSW+PuDfaQGwbDI7nK4AI
-         Mg4A==
-X-Gm-Message-State: AOAM5326I/hh7zqgBgwJ88VvQbW6sEr26AX/NfYV4yASaSuSSOLlPDNM
-        yHg8earbspn+2BzeO70WnYQNYum9VJMV/FRyviQ=
-X-Google-Smtp-Source: ABdhPJwQEGIYICCEl9+rMfVmtnnA3KEy1Oav7DAM0WyYTDfpBWgrg5GEkZrfN+c/weUUf5GnvXRjVxzrNetFysb/vow=
-X-Received: by 2002:a9d:2646:: with SMTP id a64mr3637009otb.107.1594730390491;
- Tue, 14 Jul 2020 05:39:50 -0700 (PDT)
+        Tue, 14 Jul 2020 08:40:47 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MWSJJ-1kOFtd0c7n-00Xu1w; Tue, 14 Jul 2020 14:40:46 +0200
+Received: by mail-qk1-f174.google.com with SMTP id e13so15379526qkg.5;
+        Tue, 14 Jul 2020 05:40:45 -0700 (PDT)
+X-Gm-Message-State: AOAM532uWDfK0CrMGEqUt+3JEtNLskFiGnm5aWT4PyqG7lknZnW356qk
+        xivRCE1zfxU1jA19LxwwobUqkniFpy0+80lXE8E=
+X-Google-Smtp-Source: ABdhPJwoDyUVNvcOe+3WE/Iw422K5Ioay6giK+l3tMcD5he75L5Od52pooGlmGuC3YHnkuA463/el5XmyYtbmMe13MA=
+X-Received: by 2002:a37:a282:: with SMTP id l124mr4103430qke.3.1594730444925;
+ Tue, 14 Jul 2020 05:40:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <1594676120-5862-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594676120-5862-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdV4zzrk_=-2Cmgq8=PKTeU457iveJ58gYekJ-Z8SXqaCQ@mail.gmail.com>
- <CA+V-a8tB0mA17f51GMQQ-Cj_CUXze_JjTahrpoAtmwuOFHQV6g@mail.gmail.com>
- <CAMuHMdXM3qf266exJtJrN0XAogEsJoM-k3FON9CjX+stLpuMFA@mail.gmail.com> <TY2PR01MB3692A868DD4E67D770C610E3D8610@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-In-Reply-To: <TY2PR01MB3692A868DD4E67D770C610E3D8610@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 14 Jul 2020 14:39:39 +0200
-Message-ID: <CAMuHMdUry12MnLvVgmd7NJ+Gv4mA86qKKfsQobP1o-ohzKm=RQ@mail.gmail.com>
-Subject: Re: [PATCH 2/9] iommu/ipmmu-vmsa: Hook up R8A774E1 DT matching code
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200708175020.194436-1-daniele.alessandrelli@linux.intel.com>
+In-Reply-To: <20200708175020.194436-1-daniele.alessandrelli@linux.intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 14 Jul 2020 14:40:28 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3GVZftAZKEHC3TjDRL86vYOkND6TNuVq1KjssOHi5AXw@mail.gmail.com>
+Message-ID: <CAK8P3a3GVZftAZKEHC3TjDRL86vYOkND6TNuVq1KjssOHi5AXw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] Add initial Keem Bay SoC / Board support
+To:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        SoC Team <soc@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Olof Johansson <olof@lixom.net>,
+        DTML <devicetree@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Paul Murphy <paul.j.murphy@intel.com>,
+        Will Deacon <will@kernel.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:CsynuHuwhHtu5uzF+9VYwHTOHeqJFWUP52MU5ctkAdvQyk183H6
+ gZqqgMZU6MO6d4Sgt9Qi0sE2qHQLuOEqs8gFjdv9O+nL3qBGJ5iYOQ9undmjHTT2vdKHYUa
+ nsQGaaF/O/iYZsiptdAqYvr4CVcvBsjC+m2sKBB0H7nq1+dAnWYeQXPopPew739thZsKqJz
+ Rdc8csrJy1rU017s68Vqg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kJyLWz3kEj4=:vOcnB8EFLlBnmYTTKTwQrM
+ alOEZAeGQhQ2eyzA8c/HkD12ZTiKooAVcYD1iUveJLGorsAy0b/gEGhl7JCjSKl8BcU9INhuY
+ VxKK+umsUS7bW0c3SyQ+AzKWfWTAEOy6JVJtwDN4TP21kf7k2eXY1zz6PmwKi1b+4EbN0NSty
+ n+ZgalwffrzvMMH8eLGPZRonpagRwbd9MawsPAD9q6I5GGKVDjbeyCMhmL89F8KmYJx3Aw7oe
+ Dzx20PVQHxJRJKAJex3YV0BBpoXfuTdVtuas/U76ZpQ6bZHj9fXWsrbOK3Qvfo3hEIfNhf3gl
+ HA+uYJO2uiGupILeymREMXmmhARfThO9NCNE8WeOwzaSqefikPT4UnPDIau68s98CvO75FD6a
+ ray6/ghyfmeQWRo2mU6wP3dhsPmQUVJxcfsLM/4A2rRRX2H0gp/WcwlrqBZ5VDzAQ1r8yKLMJ
+ wQhKh7G359DX3n6pa2AZAdwDFipCRRdg0RuCmjgUpCNE4UBL2bxQ1WnTOj+yWfWOtp8B2YO3i
+ lwf79W/+QSVWFeSLSnWueu9t297boVdHdKSh2q7xBvq0xecnMBLXp8DqQxLPnHKVRYin7jTXk
+ o1rvvWrmLg6tja/n63gMPjO1zrWVy4IokizIHKQLrccmK9k19NJqnQ2pKya9TmO4CjsqMTaRq
+ bY49eP8+tawnMRVoj7XYEu9H7rjEAaRJz2okswev9PL6XsUtv6SRN7nQ5qyp7DCWPkWvp1giN
+ s62H/RYSXit5DP/xJs6wvTjhaPsesq7aqQ6OA2qXDCtUOcA82ymcb/7g2GzoXcF9H0uBE3HMz
+ jaEVttUxJVay1TSNP94ogDOUVdK+PsiZOMes2Fa7g6WYVAfWC4IDkju7dFNO/SRGR9ilj45/Z
+ NMXgPF4FY10aau3jnKUe3pcjAcZJVyEII5b7OxwTWEkiGhfnPHRW2VnQO777MwOyltsCGIO4A
+ Rf49B42n+7U7tXHxqCN48ktluMOW7aOIaRBQNPEHCFohcUci4E3v3
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shimoda-san,
-
-On Tue, Jul 14, 2020 at 1:42 PM Yoshihiro Shimoda
-<yoshihiro.shimoda.uh@renesas.com> wrote:
-> > From: Geert Uytterhoeven, Sent: Tuesday, July 14, 2020 5:42 PM
-> > On Tue, Jul 14, 2020 at 10:30 AM Lad, Prabhakar
-> > <prabhakar.csengg@gmail.com> wrote:
-> > > On Tue, Jul 14, 2020 at 9:09 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Mon, Jul 13, 2020 at 11:35 PM Lad Prabhakar
-> > > Also the recent patch to add
-> > > "r8a77961" just adds to soc_rcar_gen3_whitelist.
-> >
-> > Oops, commit 17fe16181639801b ("iommu/renesas: Add support for r8a77961")
-> > did it wrong, too.
+On Wed, Jul 8, 2020 at 7:50 PM Daniele Alessandrelli
+<daniele.alessandrelli@linux.intel.com> wrote:
 >
-> Thank you for the point it out. We should add r8a77961 to the soc_rcar_gen3[].
-> However, I don't know why I could not realize this issue...
-> So, I investigated this a little and then, IIUC, glob_match() which
-> soc_device_match() uses seems to return true, if *pat = "r8a7796" and *str = "r8a77961".
+> Hi,
+>
+> This patch-set adds initial support for a new Intel Movidius SoC code-named
+> Keem Bay. The SoC couples an ARM Cortex A53 CPU with an Intel Movidius VPU.
+>
+> This initial patch-set enables only the minimal set of components required
+> to make the Keem Bay EVM board boot into initramfs.
+>
+> Changes from v1 to v2:
+> * Moved keembay-scmi-mailbox driver to a separate patchset
+> * Removed Keem Bay SCMI mailbox and SCMI node from Keem Bay SoC device tree
 
-Are you sure about this?
-I enabled CONFIG_GLOB_SELFTEST, and globtest succeeded.
-It does test glob_match("a", "aa"), which is a similar test.
+This all looks basically ok, but I noticed that the DT bindings ands
+DTS files all have a
+"GPL-2.0-only" tag. Usually we make those dual-licensed in order to
+make it easier
+to distribute them with a non-GPL bootloader and synchronize them between
+projects.
 
-To be 100% sure, I added:
+Do you know if the GPL-2.0-only part was picked intentionally, or if it can
+be changed to dual-licensed?
 
---- a/lib/globtest.c
-+++ b/lib/globtest.c
-@@ -59,6 +59,7 @@ static char const glob_tests[] __initconst =
-        "1" "a\0" "a\0"
-        "0" "a\0" "b\0"
-        "0" "a\0" "aa\0"
-+       "0" "r8a7796\0" "r8a77961\0"
-        "0" "a\0" "\0"
-        "1" "\0" "\0"
-        "0" "\0" "a\0"
-
-and it still succeeded.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+      Arnd
