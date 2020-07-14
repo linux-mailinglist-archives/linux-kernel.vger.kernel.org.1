@@ -2,153 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0A621F551
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA5321F559
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgGNOsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 10:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56938 "EHLO
+        id S1728275AbgGNOuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 10:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbgGNOsl (ORCPT
+        with ESMTP id S1725803AbgGNOux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 10:48:41 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1421AC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:48:41 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id k23so17507329iom.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:48:41 -0700 (PDT)
+        Tue, 14 Jul 2020 10:50:53 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A549C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:50:53 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id j4so22188120wrp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:50:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GD6BIvUqA5Oi+YyOCn6l+FUN1jjJuNH169fVbfbKorw=;
-        b=yUOzy5EUMjvhqbWr7ZrVYyrIXLxGpaCLUABbU4iuOkQWVkI5kWR8EW71NcPvUxuIZ1
-         yv6KVrznNf3pOZ2zxgzZfhzGAq6CJ2gDZYqDqo3j9Bk0cVALNvQSwhOFsGOARQeNHT/C
-         LcwQT5zZJbnUWa9mO7mr9WTKE+quzSZvGYPk/mMQFfFhsdrqjT5bB/ma4kWT94Gg9ReO
-         sE+xEhAgwNxozTG28Z26XHB3HVOMJ1mAHkxWnDiZLGz6NW7+sjCdXAva8jkgw3lQIgaI
-         vALLud2M7dzQTvcp2ZeCjnIQZqeYsGRZ+iBIQwan4fv/awCo21DTphl8METczjZC3O/P
-         95hw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dBVqVVxkCFPydp4gvp9N47SqJWklBSjEVbb+D1SR9xk=;
+        b=h4Qh+z+ZYyiSuOo8neI6v9IW6E6TBYraxSGCGVufzc2pHG3de81R08TAFRAePhzBt3
+         ezeF0XHmPEY1tN5gWpjs6Gg06ggJfxXjQsbUqpcz4ygJbWN1rTmQh2puteU/Ziwdntp9
+         xed8JgYu3+7aYxoE64ZaV5ZxxflplAu6Mli2v44IYL35Z1LoHdixyzkLCNhVQP74z0Nb
+         JBORxe2cTAWJuCiQ2qQ+FpNidrabz+Ddaz2Px9oe30miQFL0XZOWCP81XTNU8mpxfKAW
+         FqMJ6fEqQCS5MVm6EZRAcGmCVst/fsjc+VtfFVNHzMvPMPCLx9CBfN1bbdvmXu8skwOi
+         OPRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GD6BIvUqA5Oi+YyOCn6l+FUN1jjJuNH169fVbfbKorw=;
-        b=O8wfOz8MukE4Dsq+wFBVEqtyQhsAo8paCmZFOuOrTPqXE4ECsKJfB48QganEDjpQ0w
-         oQZ++59G6fwmpNets9uYek9GKJ7YHZBFgcnKvI25eR7szTc+J13IfjOOxgRmOLBAeJtS
-         F1BvCoJKJapuQxlTa5Rr9KkImst/xO7t2juS5lrXzaZlIOfj03iAHzCXMMJ8AvurXuYb
-         D/N1Zb2Flgcdq711dUsHWxrDwvm1nDx2hZ5OMv3TNTprpBkOZcpfiRuf4m05CD0f0VkW
-         QTO97gw5Y2xQQ2Q4wpCEGgGmIjBUAvKJLYJx6kUmWkG3w2AIkzb+W2o1S0oix406B9sv
-         FjHA==
-X-Gm-Message-State: AOAM533/ClUldYzucHt4M6VvGCxVmDqC/Zu1tTCYews85gk2UGVeuudM
-        RL8wD4Itl480IVxcETV0BZXN1O0oG6RQODBaVEOJsQ==
-X-Google-Smtp-Source: ABdhPJxIy/+FbmPkRdLd+fE4QlG6dYCLWsG7ljD32Q9xSWvwS+DinNGEDchWYGgv2nA8UdXC+iuV+myzSOcs7T9TWeA=
-X-Received: by 2002:a05:6602:2103:: with SMTP id x3mr5304596iox.130.1594738120270;
- Tue, 14 Jul 2020 07:48:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dBVqVVxkCFPydp4gvp9N47SqJWklBSjEVbb+D1SR9xk=;
+        b=Rk1TIcAIVu0fkPktgO0hXYI3I8VU5WhX7mmVSABCnQev8MxUKjJkIVIGKZy8E0/esQ
+         Ei2mI1Z8XtRmLIPRD9MhMX0z/nF5DTteeo7bcReLntGTvHNTpBKhEIm+IwMouXKh0NKe
+         8qTQ9N/vBBNZQxyRyagNg+BGsn+NtfvkZOsXFLyshBjox4c7YqifZT4jkODqSt8Bfi07
+         0M9EFg4EyyHWYiKy2VC5MLB71PswtkwM27UzaCnEqov38mJbCz5EJSH1cEz/kyajc0ne
+         a8Q4wleOsbQwQWLEpnnf7sV7Qsri8aEH37WejYIhavt3kpM2GlpBQ2R3qq8b+56vc8Nh
+         whpg==
+X-Gm-Message-State: AOAM532nApoTJx+pBddShnNnfg9J8drZAbBtp9ryFjpcV30O9MIDgQsr
+        3J6Qa1Ve3mJ+k3EuLtTLrZcfGw==
+X-Google-Smtp-Source: ABdhPJxuJWZr/PeYSTFC+BJW8N1mAYAM+CjOxNV7UC21YCNpd0wztJ6jfBeMlZDcmUeWJrORwMd9+Q==
+X-Received: by 2002:adf:ff8d:: with SMTP id j13mr6007105wrr.11.1594738252169;
+        Tue, 14 Jul 2020 07:50:52 -0700 (PDT)
+Received: from localhost.localdomain ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id a84sm4653305wmh.47.2020.07.14.07.50.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 07:50:51 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 00/13] Rid W=1 warnings in CPUFreq
+Date:   Tue, 14 Jul 2020 15:50:36 +0100
+Message-Id: <20200714145049.2496163-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200713145934.18243-1-brgl@bgdev.pl> <20200713145934.18243-2-brgl@bgdev.pl>
- <20200713192901.GD3703480@smile.fi.intel.com>
-In-Reply-To: <20200713192901.GD3703480@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 14 Jul 2020 16:48:29 +0200
-Message-ID: <CAMRc=Me66Yi-zXVEOgHW3m_TtaEAz4QMQUJRjeS0WKayJBHC9w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] devres: provide devm_krealloc()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 9:29 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Jul 13, 2020 at 04:59:32PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > Implement the managed variant of krealloc(). This function works with
-> > all memory allocated by devm_kmalloc() (or devres functions using it
-> > implicitly like devm_kmemdup(), devm_kstrdup() etc.).
-> >
-> > Managed realloc'ed chunks can be manually released with devm_kfree().
-> >
-> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > ---
-> >  .../driver-api/driver-model/devres.rst        |  1 +
-> >  drivers/base/devres.c                         | 67 +++++++++++++++++++
-> >  include/linux/device.h                        |  2 +
-> >  3 files changed, 70 insertions(+)
-> >
-> > diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
-> > index eaaaafc21134f..f318a5c0033c1 100644
-> > --- a/Documentation/driver-api/driver-model/devres.rst
-> > +++ b/Documentation/driver-api/driver-model/devres.rst
-> > @@ -354,6 +354,7 @@ MEM
-> >    devm_kmalloc()
-> >    devm_kmalloc_array()
-> >    devm_kmemdup()
-> > +  devm_krealloc()
-> >    devm_kstrdup()
-> >    devm_kvasprintf()
-> >    devm_kzalloc()
-> > diff --git a/drivers/base/devres.c b/drivers/base/devres.c
-> > index ed615d3b9cf15..1775d35462300 100644
-> > --- a/drivers/base/devres.c
-> > +++ b/drivers/base/devres.c
-> > @@ -837,6 +837,73 @@ void *devm_kmalloc(struct device *dev, size_t size, gfp_t gfp)
-> >  }
-> >  EXPORT_SYMBOL_GPL(devm_kmalloc);
-> >
-> > +/**
-> > + * devm_krealloc - Resource-managed krealloc()
-> > + * @dev: Device to re-allocate memory for
-> > + * @ptr: Pointer to the memory chunk to re-allocate
-> > + * @new_size: New allocation size
-> > + * @gfp: Allocation gfp flags
-> > + *
-> > + * Managed krealloc(). Resizes the memory chunk allocated with devm_kmalloc().
-> > + * Behaves similarly to regular krealloc(): if @ptr is NULL or ZERO_SIZE_PTR,
-> > + * it's the equivalent of devm_kmalloc(). If new_size is zero, it returns
->
-> 'it frees the previously allocated memory and returns'
->
-> > + * ZERO_SIZE_PTR. This function doesn't change the order in which the release
-> > + * callback for the re-alloc'ed devres will be called (except when falling back
-> > + * to devm_kmalloc()
->
-> 'or when freeing resources when new_size is zero'
->
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-This is nit-picking but ok. :)
+After these patches are applied, the build system no longer
+complains about any W=0 nor W=1 level warnings in drivers/cpufreq.
 
-[snip!]
+Hurrah!
 
-> > +++ b/include/linux/device.h
-> > @@ -206,6 +206,8 @@ int devres_release_group(struct device *dev, void *id);
-> >
-> >  /* managed devm_k.alloc/kfree for device drivers */
-> >  void *devm_kmalloc(struct device *dev, size_t size, gfp_t gfp) __malloc;
->
-> > +void *devm_krealloc(struct device *dev, void *ptr, size_t size,
-> > +                 gfp_t gfp) __must_check;
->
-> Strange indentation, also you can move __must_check to the beginning of the
-> declaration.
->
+Lee Jones (13):
+  cpufreq: freq_table: Demote obvious misuse of kerneldoc to standard
+    comment blocks
+  cpufreq: cpufreq: Demote lots of function headers unworthy of
+    kerneldoc status
+  cpufreq: cpufreq_governor: Demote store_sampling_rate() header to
+    standard comment block
+  cpufreq: sti-cpufreq: Fix some formatting and misspelling issues
+  cpufreq/arch: powerpc: pasemi: Move prototypes to shared header
+  cpufreq: powernv-cpufreq: Functions only used in call-backs should be
+    static
+  cpufreq: powernv-cpufreq: Fix a bunch of kerneldoc related issues
+  cpufreq: acpi-cpufreq: Take 'dummy' principle one stage further
+  cpufreq: acpi-cpufreq: Remove unused ID structs
+  cpufreq: powernow-k8: Make use of known set but not used variables
+  cpufreq: pcc-cpufreq: Remove unused ID structs
+  cpufreq: intel_pstate: Supply struct attribute description for
+    get_aperf_mperf_shift()
+  cpufreq: amd_freq_sensitivity: Remove unused ID structs
 
-There's nothing wrong with this indentation, what do you mean?
-__must_check is usually put at the end of the line.
+ arch/powerpc/platforms/pasemi/pasemi.h    | 15 -----------
+ arch/powerpc/platforms/pasemi/powersave.S |  2 ++
+ drivers/cpufreq/acpi-cpufreq.c            | 16 ++----------
+ drivers/cpufreq/amd_freq_sensitivity.c    |  6 -----
+ drivers/cpufreq/cpufreq.c                 | 32 ++++++++++++-----------
+ drivers/cpufreq/cpufreq_governor.c        |  2 +-
+ drivers/cpufreq/freq_table.c              |  6 ++---
+ drivers/cpufreq/intel_pstate.c            |  2 ++
+ drivers/cpufreq/pasemi-cpufreq.c          |  1 +
+ drivers/cpufreq/pcc-cpufreq.c             |  7 -----
+ drivers/cpufreq/powernow-k8.c             |  2 ++
+ drivers/cpufreq/powernv-cpufreq.c         | 15 ++++++-----
+ drivers/cpufreq/sti-cpufreq.c             |  8 +++---
+ include/linux/platform_data/pasemi.h      | 28 ++++++++++++++++++++
+ 14 files changed, 70 insertions(+), 72 deletions(-)
+ create mode 100644 include/linux/platform_data/pasemi.h
 
-[snip!]
+-- 
+2.25.1
 
-Bart
