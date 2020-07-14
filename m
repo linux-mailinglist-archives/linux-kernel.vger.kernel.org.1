@@ -2,85 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42C421E9F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E024021E9F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgGNHWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:22:51 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45232 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726050AbgGNHWv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:22:51 -0400
-Received: by mail-ot1-f66.google.com with SMTP id h1so12255340otq.12;
-        Tue, 14 Jul 2020 00:22:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zQc3b3cEG4qoV3UIOktn0Ijwe/EIk3WLKFZosqYyBVs=;
-        b=PsmL6a9oltMwdBJvv7Gv+u2qO9gVFjcGaGIXPgWk9S0BEgiXmg4/MzyGV9DG5a+hmy
-         rkAwwv0Gxz5S6Va1Vp0IbBhJosKfGbrWGp6zBMKP0scPMVe2dxi5WET7QFoIwTIw6hCX
-         hhZ31JeNdMqOsn0jFJ2cZpTavrnOzgOw5i6G8tAK1XMJt5V+etAgdlXQKlFicCI/J/3X
-         iAfcCaUvovjWfhlGMxC4bVyr5LAq0BYofBIwo7FFfXBwtvkjYRAYnAi8Q2dMikRcY0Bq
-         tI74zliDqqxqdqp0xc4/D76iU8uQwwBbs7Y8mGgxnM1WvUMP9tNonPoSbIh5cAk3oSgQ
-         /6HA==
-X-Gm-Message-State: AOAM5319VQea9YC73jhQnB+rjH63HdnPlWrR8hOxpiO6qpsUuaUgZaTT
-        nv1//mnKwO+umToMbyTCOEl/adlYNTG7Bt3PAI4=
-X-Google-Smtp-Source: ABdhPJz1sAOdS6D9PESw3CKqn8GGA2iUl9nNfnBianI8jxVmwEadGYyk0M5nb2M82d5LxVc36lQQSerNhEHLzoOzfSM=
-X-Received: by 2002:a9d:1b0d:: with SMTP id l13mr2887577otl.145.1594711370357;
- Tue, 14 Jul 2020 00:22:50 -0700 (PDT)
+        id S1726768AbgGNHXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:23:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50462 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725945AbgGNHXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:23:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AD016B875;
+        Tue, 14 Jul 2020 07:23:41 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 09:23:38 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAIERS: Add John Ogness as printk reviewer
+Message-ID: <20200714072337.GE20226@alley>
+References: <20200710094432.19655-1-pmladek@suse.com>
 MIME-Version: 1.0
-References: <20200710062019.28755-1-grandmaster@al2klimov.de> <20200713113430.1c1777bb@lwn.net>
-In-Reply-To: <20200713113430.1c1777bb@lwn.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 14 Jul 2020 09:22:39 +0200
-Message-ID: <CAMuHMdXoUME_dCOZP1N0tXyMv61edfNECM4-n4NPa56YbBCncw@mail.gmail.com>
-Subject: Re: [PATCH] OPENRISC ARCHITECTURE: Replace HTTP links with HTTPS ones
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        Openrisc <openrisc@lists.librecores.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710094432.19655-1-pmladek@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 7:37 PM Jonathan Corbet <corbet@lwn.net> wrote:
-> On Fri, 10 Jul 2020 08:20:19 +0200
-> "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
-> >  Documentation/openrisc/openrisc_port.rst | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/openrisc/openrisc_port.rst b/Documentation/openrisc/openrisc_port.rst
-> > index 4b2c437942a0..657ac4af7be6 100644
-> > --- a/Documentation/openrisc/openrisc_port.rst
-> > +++ b/Documentation/openrisc/openrisc_port.rst
-> > @@ -8,7 +8,7 @@ target architecture, specifically, is the 32-bit OpenRISC 1000 family (or1k).
-> >  For information about OpenRISC processors and ongoing development:
-> >
-> >       =======         =============================
-> > -     website         http://openrisc.io
-> > +     website         https://openrisc.io
-> >       email           openrisc@lists.librecores.org
-> >       =======         =============================
->
-> Applied, thanks.
+Mea culpa, I forgot to add John into CC.
 
-Is that site accessible for anyone? It times out for me.
+John, if you agree with being spammed by printk patches,
+please ack this one ;-)
 
-Gr{oetje,eeting}s,
+Best Regards,
+Petr
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+On Fri 2020-07-10 11:44:32, Petr Mladek wrote:
+> John Ogness has started major rework of the printk code. Add him
+> as reviewer so that he is aware of all other coming changes and
+> could influence their integration.
+> 
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 1d4aa7f942de..8e82d9db2a21 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13770,6 +13770,7 @@ PRINTK
+>  M:	Petr Mladek <pmladek@suse.com>
+>  M:	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+>  R:	Steven Rostedt <rostedt@goodmis.org>
+> +R:	John Ogness <john.ogness@linutronix.de>
+>  S:	Maintained
+>  F:	include/linux/printk.h
+>  F:	kernel/printk/
+> -- 
+> 2.26.2
