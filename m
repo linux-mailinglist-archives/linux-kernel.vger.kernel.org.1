@@ -2,227 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526AF21F38C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B321B21F38F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgGNOLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 10:11:40 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43998 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbgGNOLj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 10:11:39 -0400
-Date:   Tue, 14 Jul 2020 16:11:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594735897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JeIQ3P4wYQehcuP5rdazH48Xayk7TLAphsc9ayU/skc=;
-        b=KQHmh359AhnE0Yc29/cztUPNOuA2hDJa2FTg+OIf3pnghDrYXsVLNgo7BqlEG36Q4+lBsS
-        jo/ZlUU9k2R+tH1LuE1yLFespUMOCB2HbSThJc7veRoTtiW+TOXpMm6MwW7r+oaGtXlClA
-        Xksm1mZX2f3uK22HyWHDaNtmvWlfNgmApxlKthab5hUFvAXGVqUsMtEpWg4GNzJ7gDR98S
-        SRV/JiynF4YYrKQpfBSEV4BMfwKqGPrBSbMTZpJaq5HmP9UMXIBuxL7zlXUV0vjJS/GYAt
-        dz4eD08lgF09dgZgljm4cIHkiK7ukO8dtKyPbvAaL+AksNIFoN7SOBJKUEnx1Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594735897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JeIQ3P4wYQehcuP5rdazH48Xayk7TLAphsc9ayU/skc=;
-        b=ImtnlcJ3L8NSKe+FtsbIjjfsAPIXFMc0olxzPEWXzgGnhnf6t9VJ+6OhLe+mWyUg4+7F7O
-        pCQfexCLYQ85OyBA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Stephen Berman <stephen.berman@gmx.net>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Subject: Re: power-off delay/hang due to commit 6d25be57 (mainline)
-Message-ID: <20200714141135.47adndrsdgpiqfy4@linutronix.de>
-References: <20200616073827.vysntufld3ves666@linutronix.de>
- <87o8pjh1i0.fsf@gmx.net>
- <20200616155501.psduxnisltitodme@linutronix.de>
- <871rmesqkk.fsf@gmx.net>
- <20200617142734.mxwfoblufmo6li5e@linutronix.de>
- <87ftatqu07.fsf@gmx.net>
- <20200624201156.xu6hel3drnhno6c3@linutronix.de>
- <87ftak2kxr.fsf@rub.de>
- <20200714134410.3odqfvjq6rndjjf6@linutronix.de>
- <CAJZ5v0hZSUkEMCszDADGWk-v0xNEiDE45B3CHLi05BX6rPfm6g@mail.gmail.com>
+        id S1728200AbgGNOLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 10:11:55 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:51252 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728187AbgGNOLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 10:11:54 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1jvLev-0002OD-6U; Tue, 14 Jul 2020 16:11:49 +0200
+Subject: Re: [PATCH v2] hwmon: (drivetemp) Avoid SCT usage on Toshiba DT01ACA
+ family drives
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <8325438e25a3a5a7e6d12ef6ede8f4350e4c65be.1594500029.git.mail@maciej.szmigiero.name>
+ <50fb6686-5d36-ccb6-4620-c516472c6c0f@roeck-us.net>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Autocrypt: addr=mail@maciej.szmigiero.name; prefer-encrypt=mutual; keydata=
+ mQINBFpGusUBEADXUMM2t7y9sHhI79+2QUnDdpauIBjZDukPZArwD+sDlx5P+jxaZ13XjUQc
+ 6oJdk+jpvKiyzlbKqlDtw/Y2Ob24tg1g/zvkHn8AVUwX+ZWWewSZ0vcwp7u/LvA+w2nJbIL1
+ N0/QUUdmxfkWTHhNqgkNX5hEmYqhwUPozFR0zblfD/6+XFR7VM9yT0fZPLqYLNOmGfqAXlxY
+ m8nWmi+lxkd/PYqQQwOq6GQwxjRFEvSc09m/YPYo9hxh7a6s8hAP88YOf2PD8oBB1r5E7KGb
+ Fv10Qss4CU/3zaiyRTExWwOJnTQdzSbtnM3S8/ZO/sL0FY/b4VLtlZzERAraxHdnPn8GgxYk
+ oPtAqoyf52RkCabL9dsXPWYQjkwG8WEUPScHDy8Uoo6imQujshG23A99iPuXcWc/5ld9mIo/
+ Ee7kN50MOXwS4vCJSv0cMkVhh77CmGUv5++E/rPcbXPLTPeRVy6SHgdDhIj7elmx2Lgo0cyh
+ uyxyBKSuzPvb61nh5EKAGL7kPqflNw7LJkInzHqKHDNu57rVuCHEx4yxcKNB4pdE2SgyPxs9
+ 9W7Cz0q2Hd7Yu8GOXvMfQfrBiEV4q4PzidUtV6sLqVq0RMK7LEi0RiZpthwxz0IUFwRw2KS/
+ 9Kgs9LmOXYimodrV0pMxpVqcyTepmDSoWzyXNP2NL1+GuQtaTQARAQABtDBNYWNpZWogUy4g
+ U3ptaWdpZXJvIDxtYWlsQG1hY2llai5zem1pZ2llcm8ubmFtZT6JAlQEEwEIAD4CGwMFCwkI
+ BwIGFQoJCAsCBBYCAwECHgECF4AWIQRyeg1N257Z9gOb7O+Ef143kM4JdwUCXuTdbwUJBRTJ
+ qgAKCRCEf143kM4Jd1y3D/9YKOQktnlcvZuAVU36SlR44n1x+P98z8a+s9X4+w+9aGZR+LF3
+ mL8yHZU8dSPii0SH794pG4CEFNKgR+uJKy/OujUGf/nsjampfTsWpDr6NvGmiUyQlNaCGyoJ
+ EANwxWBNn8uYQZJyiTqBviIVSHubx9kMfpjnAP2dugnthZExA3SjSGiBPtO2Sd4jVZoqp4Wt
+ 8lWcNp6wGvbrhNIkM2YQxshZz0Nz1+wP6mRmiS848e2dR7tjTJ0mGnei3Tzv4I+LJs0W6N17
+ U+3pI6wiB7hGuaD+eu0KMf/q4WzC5uv18Rl93DwVqEIxNKA8xroUfcUwooC7s85MxYa18rt5
+ jgQDYjZId4zwDVHUnlkIXlAlHDIsTUmuooyxxQ5xnhInfW8PTtowdayUQBrbpjSCz1EzvgGr
+ j13nySgA9j7YXX19WXO368x54PinPObz60SE5Za8xMqd83d4i/tie9uRpotS0jY83chmUETh
+ JPWQnY+MHqCxb514tqipXapFiWwnRRfwJLjUSdbSyc4am1OdsEA3hldNgtfLB3IknDUV4A7M
+ rjncHGqH/q9kLa3hATpH87B6475AogtYMrfWBCi8XGpFRzpQdhIygOkexHQP4pTS6TM6waG0
+ +2WFGwISbGxA7S6uO0GJoakG/hNralUDdXQv5PuxMSglouu1YHd5fYjNKrkBjQRaRrtSAQwA
+ 1c8skXiNYGgitv7X8osxlkOGiqvy1WVV6jJsv068W6irDhVETSB6lSc7Qozk9podxjlrae9b
+ vqfaJxsWhuwQjd+QKAvklWiLqw4dll2R3+aanBcRJcdZ9iw0T63ctD26xz84Wm7HIVhGOKsS
+ yHHWJv2CVHjfD9ppxs62XuQNNb3vP3i7LEto9zT1Zwt6TKsJy5kWSjfRr+2eoSi0LIzBFaGN
+ D8UOP8FdpS7MEkqUQPMI17E+02+5XCLh33yXgHFVyWUxChqL2r8y57iXBYE/9XF3j4+58oTD
+ ne/3ef+6dwZGyqyP1C34vWoh/IBq2Ld4cKWhzOUXlqKJno0V6pR0UgnIJN7SchdZy5jd0Mrq
+ yEI5k7fcQHJxLK6wvoQv3mogZok4ddLRJdADifE4+OMyKwzjLXtmjqNtW1iLGc/JjMXQxRi0
+ ksC8iTXgOjY0f7G4iMkgZkBfd1zqfS+5DfcGdxgpM0m9EZ1mhERRR80U6C+ZZ5VzXga2bj0o
+ ZSumgODJABEBAAGJA/IEGAEIACYCGwIWIQRyeg1N257Z9gOb7O+Ef143kM4JdwUCXuTd2QUJ
+ BRTJhwHAwPQgBBkBCAAdFiEE4ndqq6COJv9aG0oJUrHW6VHQzgcFAlpGu1IACgkQUrHW6VHQ
+ zgdztQv+PRhCVQ7KUuQMEvMaH+rc1GIaHT6Igbvn77bEG1Kd39jX3lJDdyZXrVqxFylLu64r
+ +9kHeCslM+Uq/fUM94od7cXGkvCW7ST1MUGQ3g+/rAf88F5l+KjUzLShw2sxElP+sjGQGQ4z
+ Llve5MarGtV4TH6dJlDXZTtxwHotHZDiA2bUeJYLlMAggwLM/rBS9xfytMNuFk8U0THR/TVw
+ vu3VymjdOjJnSecFyu9iRskRXc8LA9JxqDbfmETePg1dPehxiwgMvdi3WdYk4BB1wMl0MdnU
+ 2Ea3AdjU3nX+Uc/npPMvDuzai9ZA7/tVG1RaQhIElL85+A5Tb2Wzl0IoO1kTafkaQNBOStEe
+ O1fhLSz5/3Dt+dOOqxp7VuwSHqEXb3jc6WgnwZiimF8vvGzE2PNBAuIAwGItY2fkpGblbmmN
+ b/qYZEjdbVNjfJXyVyez//QoiUrQk2sC9nNL7zYTEMocuJFN90a2158h5ve1qBT0jpUx69Ok
+ yR8/DxnAEmj04WSoCRCEf143kM4Jdy7HEACB4yiFVPA2UdYAjV2HkWsQ0UC7AdGD7uatn1Gv
+ +q1LmcQnKo2RRomi8Tgnbpwf2HkaCD/PDJ2hpYNW3x8bkOhy/2PVZPAhsMedHLCG8RdTB1o1
+ dnlBE0Bn9lVsUDilGqGt/J6kBD7nlYAxIzWLlt1ydBqxPrc1zzOXAH0PmQAhiP4wx3DcvwOy
+ QMyadiVxvmwSzyt5IorMPUdqYx3FysuDxD2mSDkDsiIpHlo5trQoBH/tYcLgR2XaVDc6G+0v
+ 0QpnjW0eesCKP8apW1iaSJGADUVv1DqTTdKXWJM4Ddu9bGGlNzDRs5PIeHCYsQ1jwQwJ7cFf
+ gof2B4VzdWiUeQHHR+b88r3ZQuJ0PeKmeVFLML4qG/WeQf7yN6Iv0plP+mZZp5hCN14jQReW
+ 86G4KwVDF6t6YVl/bXo9Po9XcCOjO4YnR+a68Q14ze+ivn1Pzy1fQJnbTJD1xpmI8dtkKZIf
+ sHBKfeFmt57HK4Hvmpt51gjb6gqVMR4WWfWMtECSGI/9AzXlOSw0qpSBRazRDKflEG5aq49y
+ cBnNRw1Jq927gOTAEt/xmL+nSGAUHFN+VxitstSk+JK6F7kXcOmlDw7yVv1RHBNeg6Dj/Uvn
+ byh+CePBaQU+9bj5ZezcpCRXCNCDsrRg2vhCPALBDPW/hshpYpq5teCmi7aww18Wgb6LZbkB
+ jQRaRrwiAQwAxnVmJqeP9VUTISps+WbyYFYlMFfIurl7tzK74bc67KUBp+PHuDP9p4ZcJUGC
+ 3UZJP85/GlUVdE1NairYWEJQUB7bpogTuzMI825QXIB9z842HwWfP2RW5eDtJMeujzJeFaUp
+ meTG9snzaYxYN3r0TDKj5dZwSIThIMQpsmhH2zylkT0jH7kBPxb8IkCQ1c6wgKITwoHFjTIO
+ 0B75U7bBNSDpXUaUDvd6T3xd1Fz57ujAvKHrZfWtaNSGwLmUYQAcFvrKDGPB5Z3ggkiTtkmW
+ 3OCQbnIxGJJw/+HefYhB5/kCcpKUQ2RYcYgCZ0/WcES1xU5dnNe4i0a5gsOFSOYCpNCfTHtt
+ VxKxZZTQ/rxjXwTuToXmTI4Nehn96t25DHZ0t9L9UEJ0yxH2y8Av4rtf75K2yAXFZa8dHnQg
+ CkyjA/gs0ujGwD+Gs7dYQxP4i+rLhwBWD3mawJxLxY0vGwkG7k7npqanlsWlATHpOdqBMUiA
+ R22hs02FikAoiXNgWTy7ABEBAAGJAjwEGAEIACYCGwwWIQRyeg1N257Z9gOb7O+Ef143kM4J
+ dwUCXuTd5AUJBRTItwAKCRCEf143kM4Jd8muEACm7brFhSj8NsfjHcsGvTuQUCIBnzrClELB
+ ytdsJ/y/swQXx7VD85CI1wPfYJEUKmQA/zYgTiHKbTce1gqnt5kWnuuiup9OiwW36LfSvx5X
+ AlJ0uM4Ku3dh1iRaXhe4EhCrH92GMuHcVcNlkumDdrX9kJiCrTosrI9mXX+PwYzQH8fjbuVn
+ x03l6XlVeKiFl37prb19RoabEscBVF+qo5dJgics4cDEgh2BcL2o/dvz/L9OA9P13qi3WezT
+ wVIr6UXMdljFlZtJds3lM8kciYHzzOPhCJUso+5+XTdsskw59+DKdf8+/Uex6slH2gpskeqe
+ WPo5xzWbg+p1048AFCdlJgPEHNiB3aaP8e6+VkQkzIyRtcgyoQR8HTyjJdSL2jgKv8Ly5oxA
+ KYo2YYv7Je7/xbBIP/y9EGPG41vH90lknZwgFs6iDEp49boj6MgSk5vXN9ibxfgVxIzelfNO
+ YiQDaf+ZP0KhIHoWg0hJy7i6IF2XUTlg/4heSd0I3cVJypkF89gQr82bdkXf5DDHPBOR0N7M
+ xbtTSGjTTxw5DGAYobE5CRocypoNzH7xSqQ3p523lhS9wDxx+5wP9AwCFrrVGMR6V2+OTixk
+ WQddat1pyxP0u2qVz0L1QQ0rhS73wImbXwBItBr+4cP7hBmNWzHdvunpcEquWAzzEqEoHpqD mA==
+Message-ID: <0bf1376f-9e55-aecb-e03d-75b5fdf31339@maciej.szmigiero.name>
+Date:   Tue, 14 Jul 2020 16:11:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="hxwaiyslsko5zit6"
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hZSUkEMCszDADGWk-v0xNEiDE45B3CHLi05BX6rPfm6g@mail.gmail.com>
+In-Reply-To: <50fb6686-5d36-ccb6-4620-c516472c6c0f@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---hxwaiyslsko5zit6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-On 2020-07-14 15:54:57 [+0200], Rafael J. Wysocki wrote:
-> On Tue, Jul 14, 2020 at 3:44 PM Sebastian Andrzej Siewior
-> <bigeasy@linutronix.de> wrote:>
-> > On 2020-06-24 23:49:52 [+0200], Stephen Berman wrote:
-> >
-> > Let me summarize the thread here:
-> >
-> > On Stephen's system, ACPI informs the thermal zone driver to poll the
-> > temperature every second and the driver does so.
-> > The driver queries the temperature by invoking acpi_evaluate_integer()
-> > which invokes (at some point) acpi_ev_queue_notify_request().
+On 14.07.2020 16:02, Guenter Roeck wrote:
+> On 7/11/20 1:41 PM, Maciej S. Szmigiero wrote:
+>> It has been observed that Toshiba DT01ACA family drives have
+>> WRITE FPDMA QUEUED command timeouts and sometimes just freeze until
+>> power-cycled under heavy write loads when their temperature is getting
+>> polled in SCT mode. The SMART mode seems to be fine, though.
+>>
+>> Let's make sure we don't use SCT mode for these drives then.
+>>
+>> While only the 3 TB model was actually caught exhibiting the problem let's
+>> play safe here to avoid data corruption and extend the ban to the whole
+>> family.
+>>
+>> Fixes: 5b46903d8bf3 ("hwmon: Driver for disk and solid state drives with temperature sensors")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Maciej S. Szmigiero <mail@maciej.szmigiero.name>
+>> ---
+>>
+>> Notes:
+>>     This behavior was observed on two different DT01ACA3 drives.
+>>     
+>>     Usually, a series of queued WRITE FPDMA QUEUED commands just time out,
+>>     but sometimes the whole drive freezes. Merely disconnecting and
+>>     reconnecting SATA interface cable then does not unfreeze the drive.
+>>     
+>>     One has to disconnect and reconnect the drive power connector for the
+>>     drive to be detected again (suggesting the drive firmware itself has
+>>     crashed).
+>>     
+>>     This only happens when the drive temperature is polled very often (like
+>>     every second), so occasional SCT usage via smartmontools is probably
+>>     safe.
+>>     
+>>     Changes from v1:
+>>     'SCT blacklist' -> 'SCT avoid models'
+>>
+>>  drivers/hwmon/drivetemp.c | 37 +++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 37 insertions(+)
+>>
+>> diff --git a/drivers/hwmon/drivetemp.c b/drivers/hwmon/drivetemp.c
+>> index 0d4f3d97ffc6..da9cfcbecc96 100644
+>> --- a/drivers/hwmon/drivetemp.c
+>> +++ b/drivers/hwmon/drivetemp.c
+>> @@ -285,6 +285,36 @@ static int drivetemp_get_scttemp(struct drivetemp_data *st, u32 attr, long *val)
+>>  	return err;
+>>  }
+>>  
+>> +static const char * const sct_avoid_models[] = {
+>> +/*
+>> + * These drives will have WRITE FPDMA QUEUED command timeouts and sometimes just
+>> + * freeze until power-cycled under heavy write loads when their temperature is
+>> + * getting polled in SCT mode. The SMART mode seems to be fine, though.
+>> + *
+>> + * While only the 3 TB model was actually caught exhibiting the problem
+>> + * let's play safe here to avoid data corruption and ban the whole family.
+>> + */
+>> +	"TOSHIBA DT01ACA0",
+>> +	"TOSHIBA DT01ACA1",
+>> +	"TOSHIBA DT01ACA2",
+>> +	"TOSHIBA DT01ACA3",
+>> +};
+>> +
+>> +static bool drivetemp_sct_avoid(struct drivetemp_data *st)
+>> +{
+>> +	struct scsi_device *sdev = st->sdev;
+>> +	unsigned int ctr;
+>> +
+>> +	if (!sdev->model)
+>> +		return false;
+>> +
+>> +	for (ctr = 0; ctr < ARRAY_SIZE(sct_avoid_models); ctr++)
+>> +		if (strncmp(sdev->model, sct_avoid_models[ctr], 16) == 0)
 > 
-> Well, I don't quite see how acpi_ev_queue_notify_request() can be
-> invoked from the acpi_evaluate_integer() code path.
-> 
-> Do you have a call trace showing that?
+> Why strncmp, and why length 16 ? Both strings are, as far as I can see,
+> 0 terminated. A fixed length only asks for trouble later on as more models
+> are added to the list.
 
-So the trace in 
-     https://lore.kernel.org/linux-acpi/87o8pjh1i0.fsf@gmx.net/
+The first 16 bytes of sdev->model contain the model number, the rest
+seems to be the drive serial number.
+There is no NULL separator between them.
 
-shows the pattern and we nailed it down that it comes from
-thermal_get_temp(). I assumed acpi_ex_opcode_2A_0T_0R() since the other
-candidate was acpi_ev_asynch_execute_gpe_method().
+See how the SCSI device model is printed for the sysfs "model"
+attribute:
+https://elixir.bootlin.com/linux/v5.8-rc4/source/drivers/scsi/scsi_sysfs.c#L654
 
-Stephen, the patch attached adds a WARN_ON() statement which will
-produce a stack trace (4 or so). Could please run 'dmesg' after a while
-and send it back. There should be a
-    "WARNING in drivers/acpi/acpica/evmisc.c" 
+> Also, please use "!" instead of "== 0".
 
-statement or something along the lines.
+Will do.
 
-Rafael, are you also interested in an ACPI dump?
-
-> Cheers!
-
-Sebastian
-
---hxwaiyslsko5zit6
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="acpi_dbg.patch"
-
-diff --git a/drivers/acpi/acpica/evgpe.c b/drivers/acpi/acpica/evgpe.c
-index 3e39907fedd9f..816e23d103c63 100644
---- a/drivers/acpi/acpica/evgpe.c
-+++ b/drivers/acpi/acpica/evgpe.c
-@@ -477,6 +477,7 @@ static void ACPI_SYSTEM_XFACE acpi_ev_asynch_execute_gpe_method(void *context)
- 		 * notifies on multiple device objects.
- 		 */
- 		notify = gpe_event_info->dispatch.notify_list;
-+		trace_printk("notify %px\n", gpe_event_info);
- 		while (ACPI_SUCCESS(status) && notify) {
- 			status =
- 			    acpi_ev_queue_notify_request(notify->device_node,
-@@ -484,6 +485,7 @@ static void ACPI_SYSTEM_XFACE acpi_ev_asynch_execute_gpe_method(void *context)
- 
- 			notify = notify->next;
- 		}
-+		trace_printk("Event notify %px done %x\n", gpe_event_info, status);
- 
- 		break;
- 
-@@ -491,6 +493,9 @@ static void ACPI_SYSTEM_XFACE acpi_ev_asynch_execute_gpe_method(void *context)
- 
- 		/* Allocate the evaluation information block */
- 
-+		trace_printk("Evaluate %4.4s\n",
-+			     acpi_ut_get_node_name(gpe_event_info->dispatch.method_node));
-+
- 		info = ACPI_ALLOCATE_ZEROED(sizeof(struct acpi_evaluate_info));
- 		if (!info) {
- 			status = AE_NO_MEMORY;
-diff --git a/drivers/acpi/acpica/evmisc.c b/drivers/acpi/acpica/evmisc.c
-index ce1eda6beb845..d8e3f426729db 100644
---- a/drivers/acpi/acpica/evmisc.c
-+++ b/drivers/acpi/acpica/evmisc.c
-@@ -72,6 +72,7 @@ acpi_ev_queue_notify_request(struct acpi_namespace_node *node, u32 notify_value)
- 	union acpi_generic_state *info;
- 	u8 handler_list_id = 0;
- 	acpi_status status = AE_OK;
-+	static int num_req = 0;
- 
- 	ACPI_FUNCTION_NAME(ev_queue_notify_request);
- 
-@@ -129,19 +130,20 @@ acpi_ev_queue_notify_request(struct acpi_namespace_node *node, u32 notify_value)
- 	info->notify.handler_list_head = handler_list_head;
- 	info->notify.global = &acpi_gbl_global_notify[handler_list_id];
- 
--	ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--			  "Dispatching Notify on [%4.4s] (%s) Value 0x%2.2X (%s) Node %p\n",
-+	trace_printk("Dispatching Notify on [%4.4s] (%s) Value 0x%2.2X (%s) Node %px\n",
- 			  acpi_ut_get_node_name(node),
- 			  acpi_ut_get_type_name(node->type), notify_value,
- 			  acpi_ut_get_notify_name(notify_value, ACPI_TYPE_ANY),
--			  node));
-+			  node);
-+	WARN_ON(num_req > 10 && num_req < 15);
- 
- 	status = acpi_os_execute(OSL_NOTIFY_HANDLER,
- 				 acpi_ev_notify_dispatch, info);
- 	if (ACPI_FAILURE(status)) {
- 		acpi_ut_delete_generic_state(info);
- 	}
--
-+	if (num_req++ == 300)
-+		tracing_off();
- 	return (status);
- }
- 
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 762c5d50b8fe2..67d5ac9aa433d 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -844,6 +844,16 @@ static void acpi_os_execute_deferred(struct work_struct *work)
- 	kfree(dpc);
- }
- 
-+static void acpi_os_execute_deferred_notify(struct work_struct *work)
-+{
-+	struct acpi_os_dpc *dpc = container_of(work, struct acpi_os_dpc, work);
-+
-+	trace_printk("Start %px %pS(%px)\n", dpc, dpc->function, dpc->context);
-+	dpc->function(dpc->context);
-+	trace_printk("End %px %pS(%px)\n", dpc, dpc->function, dpc->context);
-+	kfree(dpc);
-+}
-+
- #ifdef CONFIG_ACPI_DEBUGGER
- static struct acpi_debugger acpi_debugger;
- static bool acpi_debugger_initialized;
-@@ -1096,7 +1106,8 @@ acpi_status acpi_os_execute(acpi_execute_type type,
- 	 */
- 	if (type == OSL_NOTIFY_HANDLER) {
- 		queue = kacpi_notify_wq;
--		INIT_WORK(&dpc->work, acpi_os_execute_deferred);
-+		trace_printk("Adding %pS %px <%px>\n", function, context, dpc);
-+		INIT_WORK(&dpc->work, acpi_os_execute_deferred_notify);
- 	} else if (type == OSL_GPE_HANDLER) {
- 		queue = kacpid_wq;
- 		INIT_WORK(&dpc->work, acpi_os_execute_deferred);
-diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
-index 19067a5e52934..883eb37592639 100644
---- a/drivers/acpi/thermal.c
-+++ b/drivers/acpi/thermal.c
-@@ -191,7 +191,9 @@ static int acpi_thermal_get_temperature(struct acpi_thermal *tz)
- 
- 	tz->last_temperature = tz->temperature;
- 
-+	printk("Query temp\n");
- 	status = acpi_evaluate_integer(tz->device->handle, "_TMP", NULL, &tmp);
-+	printk("Query temp done: %d\n", status);
- 	if (ACPI_FAILURE(status))
- 		return -ENODEV;
- 
-
---hxwaiyslsko5zit6--
+Thanks,
+Maciej
