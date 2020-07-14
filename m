@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FA421EE82
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632CF21EE6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726827AbgGNK7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 06:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgGNK7c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 06:59:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8294AC061755;
-        Tue, 14 Jul 2020 03:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=8kIpdB7MOVPeE6Mtm6qS57nGC+Nbr8eHQGmiVAURoO0=; b=Y7Egjcf3jjfOrfhxpS00WHCSu/
-        7+sVXf5y3GzUV7zX3zJjYmm8deI9zyULqJUYesggLwFRaA+jOjsxongcjp8mxAoAG8K3HDdINJd6Y
-        vpNJTkxpMrx1z7EoGeksBRSNefcuskiLd65m0OFcEBbp3J4vlBaubVusFTxRdWpP4YXOgd3ykjh13
-        0cY6HbeK+wpHET1t/nPFQv6pVsBgQwSTNwIFtZIdVXf2LPGrbKhTmqbBUOuafwzpQ57/9MR+JyPNQ
-        0TVBYyjEfWaK73wyPMWy2TfbXz1SCQ/fGAnTWWvXRC4QEQl48YTr2nCyTzsIvCCaXVmU2MEreblnJ
-        eshrFJFQ==;
-Received: from 089144201169.atnat0010.highway.a1.net ([89.144.201.169] helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvIem-0005up-87; Tue, 14 Jul 2020 10:59:28 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/6] syscalls: use uaccess_kernel in addr_limit_user_check
-Date:   Tue, 14 Jul 2020 12:55:00 +0200
-Message-Id: <20200714105505.935079-2-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200714105505.935079-1-hch@lst.de>
-References: <20200714105505.935079-1-hch@lst.de>
+        id S1727114AbgGNK4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 06:56:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33508 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726729AbgGNK4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 06:56:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 47770AD1A;
+        Tue, 14 Jul 2020 10:56:24 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 12:56:21 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, pmladek@suse.cz,
+        live-patching@vger.kernel.org
+Subject: Re: linux-next: Tree for Jun 23 (objtool (2))
+In-Reply-To: <20200702123555.bjioosahrs5vjovu@treble>
+Message-ID: <alpine.LSU.2.21.2007141240540.5393@pobox.suse.cz>
+References: <20200623162820.3f45feae@canb.auug.org.au> <61df2e8f-75e8-d233-9c3c-5b4fa2b7fbdc@infradead.org> <20200702123555.bjioosahrs5vjovu@treble>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the uaccess_kernel helper instead of duplicating it.
+On Thu, 2 Jul 2020, Josh Poimboeuf wrote:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+> On Tue, Jun 23, 2020 at 08:06:07AM -0700, Randy Dunlap wrote:
+> > On 6/22/20 11:28 PM, Stephen Rothwell wrote:
+> > > Hi all,
+> > > 
+> > > Changes since 20200622:
+> > > 
+> > 
+> > on x86_64:
+> > 
+> > arch/x86/kernel/cpu/mce/core.o: warning: objtool: mce_timed_out()+0x24: unreachable instruction
+> > kernel/exit.o: warning: objtool: __x64_sys_exit_group()+0x14: unreachable instruction
+> > 
+> > Full randconfig file is attached.
+> 
+> More livepatch...
+
+Correct.
+
+Both are known and I thought Josh had fixes queued somewhere for both, but 
+my memory fails me quite often. See below.
+
+However, I think it is time to decide how to approach this whole saga. It 
+seems that there are not so many places in the kernel in need of 
+__noreturn annotation in the end and as jikos argued at least some of 
+those should be fixed regardless. Josh, should I prepare proper patches 
+and submit them to relevant maintainers to see where this path is going?
+
+It would be much better to fix it in GCC, but it has been like banging 
+one's head against a wall so far. Josh, you wanted to create a bug 
+for GCC in this respect in the past? Has that happened?
+
+If I remember correctly, we discussed briefly a possibility to cope with 
+that in objtool, but no solution was presented.
+
+Removing -flive-patching is also a possibility. I don't like it much, but 
+we discussed it with Petr M. a couple of months ago and it might be a way 
+too.
+
+Thanks
+Miroslav
+
 ---
- include/linux/syscalls.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index b951a87da9877c..e933a43d4a69ac 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -263,7 +263,7 @@ static inline void addr_limit_user_check(void)
- 		return;
- #endif
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 14e4b4d17ee5..469a71ecea3c 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -279,7 +279,7 @@ static int fake_panic;
+ static atomic_t mce_fake_panicked;
  
--	if (CHECK_DATA_CORRUPTION(!segment_eq(get_fs(), USER_DS),
-+	if (CHECK_DATA_CORRUPTION(uaccess_kernel(),
- 				  "Invalid address limit on user-mode return"))
- 		force_sig(SIGKILL);
+ /* Panic in progress. Enable interrupts and wait for final IPI */
+-static void wait_for_panic(void)
++static void __noreturn wait_for_panic(void)
+ {
+        long timeout = PANIC_TIMEOUT*USEC_PER_SEC;
  
--- 
-2.26.2
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 727150f28103..570649152e7f 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -877,7 +877,7 @@ SYSCALL_DEFINE1(exit, int, error_code)
+  * as well as by sys_exit_group (below).
+  */
+ void
+-do_group_exit(int exit_code)
++__noreturn do_group_exit(int exit_code)
+ {
+        struct signal_struct *sig = current->signal;
 
