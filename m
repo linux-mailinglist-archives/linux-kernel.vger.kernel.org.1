@@ -2,150 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDC121E78E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 07:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C4F21E77D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 07:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726856AbgGNFdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 01:33:31 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:15411 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725788AbgGNFdY (ORCPT
+        id S1726670AbgGNFdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 01:33:11 -0400
+Received: from out28-53.mail.aliyun.com ([115.124.28.53]:60284 "EHLO
+        out28-53.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgGNFdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 01:33:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594704803; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=PIxPn9TmwLUH9DoRtn54FfW6ocCPCNMGRIylWUzieFA=; b=ZYEN/FBGld9PCs1Ein1E8gb6DzVP2qbR1gm+1qenpw8gP3l+BcWbmkoh5czg9CX7IiMDQAx0
- efFVBgkx18gjP2FWJY0QeH2i87ptAamXFXhKI/iwjp16luhLucfVupNhc96FrYMJEFQdi/KM
- r7xVUqZ8u2ERYoN1FG6m97FD3wg=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f0d435dd3d6508422872229 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 14 Jul 2020 05:32:13
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DF5FFC43395; Tue, 14 Jul 2020 05:32:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E4143C433C8;
-        Tue, 14 Jul 2020 05:32:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E4143C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     bjorn.andersson@linaro.org, agross@kernel.org,
-        gregkh@linuxfoundation.org, georgi.djakov@linaro.org
-Cc:     akashast@codeaurora.org, mka@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, dianders@chromium.org,
-        swboyd@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH v2] tty: serial: qcom-geni-serial: Drop the icc bw votes in suspend for console
-Date:   Tue, 14 Jul 2020 11:01:49 +0530
-Message-Id: <1594704709-26072-1-git-send-email-rnayak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Tue, 14 Jul 2020 01:33:09 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07881087|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0154259-0.00356313-0.981011;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16378;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.I1QwJ79_1594704779;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I1QwJ79_1594704779)
+          by smtp.aliyun-inc.com(10.147.44.145);
+          Tue, 14 Jul 2020 13:33:04 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     tsbogend@alpha.franken.de, robh+dt@kernel.org
+Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, paulburton@kernel.org,
+        paul@crapouillou.net, ak@linux.intel.com, ebiederm@xmission.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Subject: [PATCH v4 0/5] Add support for Ingenic X1830 SoC and Y&A CU1830-Neo board.
+Date:   Tue, 14 Jul 2020 13:32:24 +0800
+Message-Id: <20200714053229.33195-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using the geni-serial as console, its important to be
-able to hit the lowest possible power state in suspend,
-even with no_console_suspend.
-The only thing that prevents it today on platforms like the sc7180
-is the interconnect BW votes, which we certainly don't need when
-the system is in suspend. So in the suspend handler mark them as
-ACTIVE_ONLY (0x3) and on resume switch them back to the ALWAYS tag (0x7)
+v3->v4:
+1.Modify the commit message and add the change description
+  for CU1000-Neo in patch [2/5].
+2.The wrongly written "ingenic,x1000" in compatible is
+  changed to "ingenic,x1000e" in "cu1000-neo.dts".
+3.Adjust the order of nodes according to the corresponding
+  address value for X1000.
+4.Drop unnecessary node in "wlan_pwrseq" in "cu1000-neo.dts".
+5.Add the leds node to "cu1000-neo.dts".
 
-Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-Reviewed-by: Akash Asthana <akashast@codeaurora.org>
-Tested-by: Matthias Kaehlcke <mka@chromium.org>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
-v2: Rebased on the latest qcom for-next
+周琰杰 (Zhou Yanjie) (5):
+  MIPS: Ingenic: Add Ingenic X1830 support.
+  dt-bindings: MIPS: Add X1830 based CU1830-Neo and fix bug in
+    CU1000-Neo.
+  MIPS: Ingenic: Add YSH & ATIL CU Neo board support.
+  MIPS: Ingenic: Fix bugs and add missing LED node for X1000.
+  MIPS: CU1000-Neo: Refresh defconfig to support LED.
 
- drivers/soc/qcom/qcom-geni-se.c       |  9 +++++++++
- drivers/tty/serial/qcom_geni_serial.c | 16 +++++++++++++++-
- include/linux/qcom-geni-se.h          |  1 +
- 3 files changed, 25 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/mips/ingenic/devices.yaml  |  12 +-
+ arch/mips/boot/dts/ingenic/Makefile                |   1 +
+ arch/mips/boot/dts/ingenic/cu1000-neo.dts          | 114 ++++----
+ arch/mips/boot/dts/ingenic/cu1830-neo.dts          | 168 ++++++++++++
+ arch/mips/boot/dts/ingenic/x1000.dtsi              | 126 +++++----
+ arch/mips/boot/dts/ingenic/x1830.dtsi              | 300 +++++++++++++++++++++
+ arch/mips/configs/cu1000-neo_defconfig             |   4 +
+ arch/mips/configs/cu1830-neo_defconfig             | 123 +++++++++
+ arch/mips/jz4740/Kconfig                           |  10 +
+ 9 files changed, 733 insertions(+), 125 deletions(-)
+ create mode 100644 arch/mips/boot/dts/ingenic/cu1830-neo.dts
+ create mode 100644 arch/mips/boot/dts/ingenic/x1830.dtsi
+ create mode 100644 arch/mips/configs/cu1830-neo_defconfig
 
-diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
-index e2a0ba2..355d503 100644
---- a/drivers/soc/qcom/qcom-geni-se.c
-+++ b/drivers/soc/qcom/qcom-geni-se.c
-@@ -771,6 +771,15 @@ int geni_icc_set_bw(struct geni_se *se)
- }
- EXPORT_SYMBOL(geni_icc_set_bw);
- 
-+void geni_icc_set_tag(struct geni_se *se, u32 tag)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(se->icc_paths); i++)
-+		icc_set_tag(se->icc_paths[i].path, tag);
-+}
-+EXPORT_SYMBOL(geni_icc_set_tag);
-+
- /* To do: Replace this by icc_bulk_enable once it's implemented in ICC core */
- int geni_icc_enable(struct geni_se *se)
- {
-diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-index 583d903..07b7b6b 100644
---- a/drivers/tty/serial/qcom_geni_serial.c
-+++ b/drivers/tty/serial/qcom_geni_serial.c
-@@ -1505,16 +1505,30 @@ static int __maybe_unused qcom_geni_serial_sys_suspend(struct device *dev)
- 	struct uart_port *uport = &port->uport;
- 	struct qcom_geni_private_data *private_data = uport->private_data;
- 
-+	/*
-+	 * This is done so we can hit the lowest possible state in suspend
-+	 * even with no_console_suspend
-+	 */
-+	if (uart_console(uport)) {
-+		geni_icc_set_tag(&port->se, 0x3);
-+		geni_icc_set_bw(&port->se);
-+	}
- 	return uart_suspend_port(private_data->drv, uport);
- }
- 
- static int __maybe_unused qcom_geni_serial_sys_resume(struct device *dev)
- {
-+	int ret;
- 	struct qcom_geni_serial_port *port = dev_get_drvdata(dev);
- 	struct uart_port *uport = &port->uport;
- 	struct qcom_geni_private_data *private_data = uport->private_data;
- 
--	return uart_resume_port(private_data->drv, uport);
-+	ret = uart_resume_port(private_data->drv, uport);
-+	if (uart_console(uport)) {
-+		geni_icc_set_tag(&port->se, 0x7);
-+		geni_icc_set_bw(&port->se);
-+	}
-+	return ret;
- }
- 
- static const struct dev_pm_ops qcom_geni_serial_pm_ops = {
-diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-index afa511e..8f385fb 100644
---- a/include/linux/qcom-geni-se.h
-+++ b/include/linux/qcom-geni-se.h
-@@ -454,6 +454,7 @@ void geni_se_rx_dma_unprep(struct geni_se *se, dma_addr_t iova, size_t len);
- int geni_icc_get(struct geni_se *se, const char *icc_ddr);
- 
- int geni_icc_set_bw(struct geni_se *se);
-+void geni_icc_set_tag(struct geni_se *se, u32 tag);
- 
- int geni_icc_enable(struct geni_se *se);
- 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.11.0
 
