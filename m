@@ -2,136 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE9721E815
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EF421E803
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgGNG1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 02:27:22 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:43512 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbgGNG1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 02:27:21 -0400
-Received: by mail-io1-f69.google.com with SMTP id f13so9770330iok.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 23:27:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=FLVAbxi1esskEQ5kfl7eEQXpSY8yr8b12Vi9jQkuAYY=;
-        b=i8vV+MP+34633yUXDNxJrekE67R4jTyjYJf0Dv0zvOfZA1xzmwdaSBLtQ7VlCatQt4
-         TGu7dsBvSXqnWu4GVD3I3AOQVXT8kjK+TuFw5tHOiTdq8FzSV1Q8yrLEcCmFVze48CF0
-         3fNesv5lduQbS3TwhFXza2lsMrzc2p+Gy3TwnLsRj6tRq9AlSh+FHvOR9Z9r6RV/gSEA
-         RtpW3lgNnvSrEpZ7S010HoCd6bIxNcaWX2goytj8ACRlSD0qaVT9tvuAjs3llbvetWjg
-         vbuA9RtHx/tDgUth2kySfTQWNjjopojMDp13oUF+ePzFpMi2Gmq+jxnrxhZV+cA73J6B
-         cMFA==
-X-Gm-Message-State: AOAM532CyTbk97deeJXQfSGSMI8GNpCaQftfUKqCCipChMXnaAiWplha
-        51KDEZzj9bR2SxCZUQZ2rPUfUP0hrgty63GZ69TfQjAp/N03
-X-Google-Smtp-Source: ABdhPJxIX0yB/poBDHpHgkPp4hBEFkcgSXkd3/58wbOFsb5OFmP5v5sDo6fgzrEilmPGC01ECbCeX65uLAsvi4FJyux8xMmBkkEL
+        id S1726809AbgGNGWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 02:22:45 -0400
+Received: from mail-dm6nam12on2071.outbound.protection.outlook.com ([40.107.243.71]:6030
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726629AbgGNGWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 02:22:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZZ/kOvobLklZAAjbus/RsWLGvyJIk9WbhWYARboYnezzldSd5huuZ+OvLjZ3wagUvrXxLzPd3b4ErIaXqLKHLNzuIE8reX+lJ/IUe0pfUuitiphi/mFq4zThjMayMtVdjCXklhQ/h4SwuyHfiIv2eOiSmfkY4b7cX8zich/pBe+I4GvEziFYfMqCzwhInx9N7rtiQtYAKv2YMBNFOjVIUws0f37awmRMfu3kWEqwNdE9GoVozPYCzUXmiFZjkMi8l364wXu0oLr6+9j+qxkpVpbpaUnqUfXnGqaDqifqsNJTTxVC8MUBe5xCRXQnawDci7cau4fbAdPARQ9kzalSUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cRlIsH2YUSk3nNnlfDhaWl/g3zpeIx5dADi5CDH7xmY=;
+ b=maYGUvit1e6sdlNcsdqUXL0G/LGsK1i+3UXglAHjh3nG9WkUB1TdpmZoZ1yYh+h+7QfrCLAt3dAFf9OVEnx8X+/XZZftaKRIu9CTE3NEzDQXuH5KjE8EUXbvAMKu20Gsq1SNE9ggJTFs2hnEYsXswPCUtAUdsHmKzR6FiSCWqM5KjXZXqu8V9M9haVfYCpplmAwOT4dWn0EQpl0oqImNUIhrzxMPHwacDbJlnrxMUjXsuVZa6xjEtcBhZOk7oTG3HQBklz/nmNdUK7w2g3KG3e7ULW979TU+Ko0/atZlhxtihJEqFU3e2KIBa50OhbMukNntbWu4gmeCjdNEEHoHRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=avnet.com smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cRlIsH2YUSk3nNnlfDhaWl/g3zpeIx5dADi5CDH7xmY=;
+ b=HFWGEmDPJM8ZQycTwdtj0spXhu44j5fts6f0U3OL7pxZMGB5IbR38sqszqYpHHOkA0CrMTYovnSOMYmJLvhMGm5lJ6X42mEAvk8muvXGYrEcQrcxJYoN2hj3KYOnLurtV2jjrEkfMQyn7QtMaAZ9orAItFbNgxfQtf0GiLZGogk=
+Received: from BL1PR13CA0008.namprd13.prod.outlook.com (2603:10b6:208:256::13)
+ by SN4PR0201MB3472.namprd02.prod.outlook.com (2603:10b6:803:48::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Tue, 14 Jul
+ 2020 06:22:35 +0000
+Received: from BL2NAM02FT045.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:256:cafe::e5) by BL1PR13CA0008.outlook.office365.com
+ (2603:10b6:208:256::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.10 via Frontend
+ Transport; Tue, 14 Jul 2020 06:22:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; avnet.com; dkim=none (message not signed)
+ header.d=none;avnet.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ BL2NAM02FT045.mail.protection.outlook.com (10.152.77.16) with Microsoft SMTP
+ Server id 15.20.3174.21 via Frontend Transport; Tue, 14 Jul 2020 06:22:35
+ +0000
+Received: from [149.199.38.66] (port=48881 helo=xsj-pvapsmtp01)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <lakshmi.sai.krishna.potthuri@xilinx.com>)
+        id 1jvEJB-000340-Ov; Mon, 13 Jul 2020 23:20:53 -0700
+Received: from localhost ([127.0.0.1] helo=xsj-pvapsmtp01)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <lakshmi.sai.krishna.potthuri@xilinx.com>)
+        id 1jvEKo-00046B-6H; Mon, 13 Jul 2020 23:22:34 -0700
+Received: from [10.140.6.35] (helo=xhdsaipava40.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <lakshmis@xhdsaipava40.xilinx.com>)
+        id 1jvEKn-000465-8V; Mon, 13 Jul 2020 23:22:33 -0700
+Received: by xhdsaipava40.xilinx.com (Postfix, from userid 14964)
+        id 5B43F13C063E; Tue, 14 Jul 2020 11:59:11 +0530 (IST)
+From:   Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, git@xilinx.com,
+        saikrishna12468@gmail.com,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Subject: [PATCH 0/2] reset: reset-zynqmp: Added Versal platform support
+Date:   Tue, 14 Jul 2020 11:59:07 +0530
+Message-Id: <1594708149-29944-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(136003)(39860400002)(376002)(346002)(396003)(46966005)(4744005)(70206006)(5660300002)(70586007)(36756003)(47076004)(26005)(82740400003)(478600001)(107886003)(4326008)(83380400001)(82310400002)(2906002)(2616005)(316002)(6666004)(81166007)(8936002)(6636002)(6266002)(110136005)(426003)(42186006)(8676002)(336012)(186003)(356005);DIR:OUT;SFP:1101;
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-X-Received: by 2002:a02:878b:: with SMTP id t11mr4343107jai.106.1594708040706;
- Mon, 13 Jul 2020 23:27:20 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 23:27:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000049705905aa60e63e@google.com>
-Subject: KASAN: global-out-of-bounds Read in __xfrm6_tunnel_spi_lookup
-From:   syzbot <syzbot+cd59712012813594d659@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, steffen.klassert@secunet.com,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 1d84401a-1c01-49ee-a580-08d827be4c73
+X-MS-TrafficTypeDiagnostic: SN4PR0201MB3472:
+X-LD-Processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+X-Microsoft-Antispam-PRVS: <SN4PR0201MB3472F8DEC352822F72241F03BD610@SN4PR0201MB3472.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XFLGeau5EsedwPPHdRSWPMQ119wTNyed8dm9qcO8SmiXmhyMXbjTokhCZZxT1sV2lMxMceio6Q5VpyCXjSB4qh700AegmceAosTgkVFKWCnihMAYUqws0Mb0F9SV9xq4Vn4GtXDOu3mYCXww4QAhcJnL73Js6z0pfkAoIfMzHZhwp6dwbxqeiVZpCd84gYq8zg5tj2fRYMeOxymvjplHHaM4ttzg2amRO/65e/jXroPRCwmCd1PQ4Om2kCoKHGKe1h27jeLOD0hh44vYhsXCP0xgmGkUad1MwUslZ0rDPA+G3ViPo7pdjQ4nHBidGX31vlkyZhnWA8QzsIQ9ITmuHgmBdtJCssXjICM3Q5F4bl2LbjG3LCcOYu1SXabujaSwHjF2F73Wq65eNxZyLiitbg==
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2020 06:22:35.2702
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d84401a-1c01-49ee-a580-08d827be4c73
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT045.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0201MB3472
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Extended the ZynqMP reset driver to support Versal platform, accordingly
+updated the dt-binding with the Versal platform specific information
+like compatible string and reset indices.
 
-syzbot found the following crash on:
+Sai Krishna Potthuri (2):
+  dt-bindings: reset: Updated binding for Versal reset driver
+  reset: reset-zynqmp: Added support for Versal platform
 
-HEAD commit:    be978f8f Add linux-next specific files for 20200713
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11e79167100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3fe4fccb94cbc1a6
-dashboard link: https://syzkaller.appspot.com/bug?extid=cd59712012813594d659
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1430914f100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1203e95d100000
+ .../bindings/reset/xlnx,zynqmp-reset.txt      |  11 +-
+ drivers/reset/reset-zynqmp.c                  |  24 +++-
+ .../dt-bindings/reset/xlnx-versal-resets.h    | 105 ++++++++++++++++++
+ 3 files changed, 132 insertions(+), 8 deletions(-)
+ create mode 100644 include/dt-bindings/reset/xlnx-versal-resets.h
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+cd59712012813594d659@syzkaller.appspotmail.com
+-- 
+2.17.1
 
-IPVS: ftp: loaded support on port[0] = 21
-==================================================================
-BUG: KASAN: global-out-of-bounds in ipv6_addr_equal include/net/ipv6.h:579 [inline]
-BUG: KASAN: global-out-of-bounds in xfrm6_addr_equal include/net/xfrm.h:1699 [inline]
-BUG: KASAN: global-out-of-bounds in __xfrm6_tunnel_spi_lookup+0x367/0x3b0 net/ipv6/xfrm6_tunnel.c:82
-Read of size 8 at addr ffffffff884ba1e0 by task syz-executor372/6812
-CPU: 0 PID: 6812 Comm: syz-executor372 Not tainted 5.8.0-rc4-next-20200713-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- ipv6_addr_equal include/net/ipv6.h:579 [inline]
- xfrm6_addr_equal include/net/xfrm.h:1699 [inline]
- __xfrm6_tunnel_spi_lookup+0x367/0x3b0 net/ipv6/xfrm6_tunnel.c:82
- xfrm6_tunnel_spi_lookup+0x8a/0x1d0 net/ipv6/xfrm6_tunnel.c:95
- xfrmi6_rcv_tunnel+0xb9/0x100 net/xfrm/xfrm_interface.c:810
- tunnel6_rcv+0xef/0x2b0 net/ipv6/tunnel6.c:148
- ip6_protocol_deliver_rcu+0x2e8/0x1670 net/ipv6/ip6_input.c:433
- ip6_input_finish+0x7f/0x160 net/ipv6/ip6_input.c:474
- NF_HOOK include/linux/netfilter.h:307 [inline]
- NF_HOOK include/linux/netfilter.h:301 [inline]
- ip6_input+0x9c/0xd0 net/ipv6/ip6_input.c:483
- ip6_mc_input+0x411/0xea0 net/ipv6/ip6_input.c:577
- dst_input include/net/dst.h:449 [inline]
- ip6_rcv_finish net/ipv6/ip6_input.c:76 [inline]
- NF_HOOK include/linux/netfilter.h:307 [inline]
- NF_HOOK include/linux/netfilter.h:301 [inline]
- ipv6_rcv+0x28e/0x3c0 net/ipv6/ip6_input.c:307
- __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5287
- __netif_receive_skb+0x27/0x1c0 net/core/dev.c:5401
- netif_receive_skb_internal net/core/dev.c:5503 [inline]
- netif_receive_skb+0x159/0x990 net/core/dev.c:5562
- tun_rx_batched.isra.0+0x460/0x720 drivers/net/tun.c:1518
- tun_get_user+0x23b2/0x35b0 drivers/net/tun.c:1972
- tun_chr_write_iter+0xba/0x151 drivers/net/tun.c:2001
- call_write_iter include/linux/fs.h:1879 [inline]
- new_sync_write+0x422/0x650 fs/read_write.c:515
- vfs_write+0x59d/0x6b0 fs/read_write.c:595
- ksys_write+0x12d/0x250 fs/read_write.c:648
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4013a0
-Code: Bad RIP value.
-RSP: 002b:00007ffdf3de1d98 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004013a0
-RDX: 000000000000005e RSI: 0000000020000ac0 RDI: 00000000000000f0
-RBP: 00007ffdf3de1db0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-The buggy address belongs to the variable:
- psi_io_proc_ops+0xa0/0x4fe0
-Memory state around the buggy address:
- ffffffff884ba080: 00 00 00 00 f9 f9 f9 f9 00 00 00 00 00 00 00 00
- ffffffff884ba100: 00 00 00 00 f9 f9 f9 f9 00 00 00 00 00 00 00 00
->ffffffff884ba180: 00 00 00 00 f9 f9 f9 f9 00 00 01 f9 f9 f9 f9 f9
-                                                       ^
- ffffffff884ba200: 00 00 00 07 f9 f9 f9 f9 00 00 00 f9 f9 f9 f9 f9
- ffffffff884ba280: 00 00 07 f9 f9 f9 f9 f9 00 00 00 02 f9 f9 f9 f9
-==================================================================
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
