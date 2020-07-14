@@ -2,144 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B6621F561
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE99821F56E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbgGNOvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 10:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57328 "EHLO
+        id S1728979AbgGNOva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 10:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728704AbgGNOvB (ORCPT
+        with ESMTP id S1728735AbgGNOvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 10:51:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B684C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:51:01 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id q5so22195771wru.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:51:01 -0700 (PDT)
+        Tue, 14 Jul 2020 10:51:02 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7173DC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:51:02 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id q5so22195941wru.6
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:51:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=87fYCk78HvnEcHEWI8252kKdAErne/JGHZaNtIMV4DM=;
-        b=oan2KmRnlmziHA33dlWeKxYSz99uymPx4Upt4DdPZqzkE7Pn6aNbVFcS4EqijPPT1b
-         epm+Z0+gabomO1htq+2nGq7mfGaa4AQjVGvinv2W7rG4Yf4zrX1lLQEsQqp/IxzwJsZK
-         KsU3lyQE4BSuu7m+y0e17j3xQipWcaeFlmiHFAjUhm+t5oiOf17IImiudspjVz2Gr4Np
-         +3ggtvvQ+Y0p36Roz5hpma2QxOSlmCwdpxC50LPbuzXaY/z9L0dMBVjNrKdi9Dd18Pfz
-         bjl9EDQ3qx3ytSsCNXEZ3bn0ERkPJPoJyn67O07VbJKTig+xN3S9JouZaVPvYAKfp92V
-         EHyw==
+        bh=oYBUe5BwYsr/R2phlHidQsm6+vzt4cxxnkc0JimKqEE=;
+        b=kw0j6YyJsiIk2n3yX5+GkWGHEPOb5rpZONh1AHETutb3Im0RIS6q17btR7I5qt+Y3G
+         Cr1hhv/Kwb4+WIS0DNHRjmc1aw52YDL0xbevlEKg7TJLPfD4wiKMTStgnlv9QSESRuy2
+         ud15ingoco58gPEiG8JkpQosiAAkovGqjbIlBoloUt9rOcx2anemoSqTP2ATqz6NrUQt
+         tulqxTx3pqJ1mnmLEsWngWkqghXlkZjKVXZb6FZTVVe+ZC2J0MR1r2jQ+V86qR4QnhyQ
+         LWrTAK+0ruiFBAkkrUIWJlkdAkSpEDrtau+/OBkjXFh5ifl7sURfmnAjGYLKjcVCRWk7
+         J80Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=87fYCk78HvnEcHEWI8252kKdAErne/JGHZaNtIMV4DM=;
-        b=rghLBb4GE72lgGdXiw2U7EaivWozpxQza1FKMi9aUUFu3LlYbEQ0LtlexEkdoSPKFe
-         dtnQGImZtnv33/pwTJ57Y5zd61tNRe4iueB6MBun1tJgzMRTD40/RZptJ5eJwnkEgVeF
-         1p+NdH4OGVwu2whjt83/q5Gcs9gBWnldV0a4S60Fl2qJ9hIuGvxfJ26QnX3LJo+kfPAZ
-         MvK4XSyGgP7ovo4hDKmr5uTsZsbgpyDbJ+hsRLnetrdRbb1leNHn3j7Y+zwcL+VWX63/
-         bwpGIPvu6rJFJGnly0OuyClV8jpn01kDY5abRNLpce3RhMmeLE0PTj+ENKZukIBiQDFK
-         qukQ==
-X-Gm-Message-State: AOAM533hGORvrgcn6gQQ9g1GgH/Uns4KK8U58k32Y2RZEP7KKrapZL0H
-        P1MORSu6EcsMbleicXFY1q4QrA==
-X-Google-Smtp-Source: ABdhPJyholUMWz/5/8DrxA2fX1xTdZCmREnCcugfLGT0R3+RARPOD0BiRca7mzrYbDfRATUmPfhpCg==
-X-Received: by 2002:a5d:6990:: with SMTP id g16mr6060756wru.131.1594738259994;
-        Tue, 14 Jul 2020 07:50:59 -0700 (PDT)
+        bh=oYBUe5BwYsr/R2phlHidQsm6+vzt4cxxnkc0JimKqEE=;
+        b=Ex77a/pUezBN7FoCc1f/dvrLeEu3PK5IHGKmborRZyCNPZCDYXhxf0XHGYZMfmss7p
+         QOy/jQAPOD76S166gMeF8Rkd+RU4yhsdadn08EWb1E+vDYNvgHDzk6GZoOBQWIbBPQkR
+         FCjyfncQtv7f0kkQjTsoSjkDChEJyZr8TzaHI47FDwTCTKED91QTa+BPwPFBGWFfYYHs
+         m71p4t71Sp5d4GRScJeMxziV+ZskerDKh1O1MY++ykIYlpNEdGKKPp0gZaXiZkmsKI+b
+         J8F5moJXL8X2i6SntCn6sr5lLN27bLkUjW0LW1XPd2G4u4hu4X1N3oqlU70oeZWzoFF9
+         Wdmg==
+X-Gm-Message-State: AOAM530H/TIWRp95DYvxr6yWRGACKP+nDFL3UQ+n7ht6VY/O8qKdrcpi
+        2aQL/D6rbTUHxoCDO9AbTsrNrA==
+X-Google-Smtp-Source: ABdhPJz8xLGj6PyHHnWxNk1fB9l9swenCZNjFdqaoHR4cK01bpPaXCLBFCFf4j5xacHn27d9sC7Xrw==
+X-Received: by 2002:a5d:5151:: with SMTP id u17mr6280720wrt.154.1594738261236;
+        Tue, 14 Jul 2020 07:51:01 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id a84sm4653305wmh.47.2020.07.14.07.50.58
+        by smtp.gmail.com with ESMTPSA id a84sm4653305wmh.47.2020.07.14.07.51.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 07:50:59 -0700 (PDT)
+        Tue, 14 Jul 2020 07:51:00 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     rjw@rjwysocki.net, viresh.kumar@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-pm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 07/13] cpufreq: powernv-cpufreq: Fix a bunch of kerneldoc related issues
-Date:   Tue, 14 Jul 2020 15:50:43 +0100
-Message-Id: <20200714145049.2496163-8-lee.jones@linaro.org>
+        Andy Grover <andrew.grover@intel.com>,
+        Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>,
+        Dominik Brodowski <linux@brodo.de>,
+        Denis Sadykov <denis.m.sadykov@intel.com>
+Subject: [PATCH 08/13] cpufreq: acpi-cpufreq: Take 'dummy' principle one stage further
+Date:   Tue, 14 Jul 2020 15:50:44 +0100
+Message-Id: <20200714145049.2496163-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200714145049.2496163-1-lee.jones@linaro.org>
 References: <20200714145049.2496163-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Repair problems with formatting and missing attributes/parameters, and
-demote header comments which do not meet the required standards
-applicable to kerneldoc.
+If we fail to use a variable, even a 'dummy' one, then the compiler
+complains that it is set but not used.  We know this is fine, so we
+set it to its own value here.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/cpufreq/powernv-cpufreq.c:84: warning: Function parameter or member 'last_lpstate_idx' not described in 'global_pstate_info'
- drivers/cpufreq/powernv-cpufreq.c:84: warning: Function parameter or member 'last_gpstate_idx' not described in 'global_pstate_info'
- drivers/cpufreq/powernv-cpufreq.c:84: warning: Function parameter or member 'policy' not described in 'global_pstate_info'
- drivers/cpufreq/powernv-cpufreq.c:182: warning: Function parameter or member 'i' not described in 'idx_to_pstate'
- drivers/cpufreq/powernv-cpufreq.c:201: warning: Function parameter or member 'pstate' not described in 'pstate_to_idx'
- drivers/cpufreq/powernv-cpufreq.c:670: warning: Function parameter or member 't' not described in 'gpstate_timer_handler'
- drivers/cpufreq/powernv-cpufreq.c:670: warning: Excess function parameter 'data' description in 'gpstate_timer_handler'
+ drivers/cpufreq/acpi-cpufreq.c: In function ‘cpu_freq_read_intel’:
+ drivers/cpufreq/acpi-cpufreq.c:247:11: warning: variable ‘dummy’ set but not used [-Wunused-but-set-variable]
+ drivers/cpufreq/acpi-cpufreq.c: In function ‘cpu_freq_read_amd’:
+ drivers/cpufreq/acpi-cpufreq.c:265:11: warning: variable ‘dummy’ set but not used [-Wunused-but-set-variable]
 
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Andy Grover <andrew.grover@intel.com>
+Cc: Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>
+Cc: Dominik Brodowski <linux@brodo.de>
+Cc: Denis Sadykov <denis.m.sadykov@intel.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/cpufreq/powernv-cpufreq.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/cpufreq/acpi-cpufreq.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-index 068cc53abe320..2e5a8b8a4abaa 100644
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -64,13 +64,14 @@
-  *				highest_lpstate_idx
-  * @last_sampled_time:		Time from boot in ms when global pstates were
-  *				last set
-- * @last_lpstate_idx,		Last set value of local pstate and global
-- * last_gpstate_idx		pstate in terms of cpufreq table index
-+ * @last_lpstate_idx:		Last set value of local pstate and global
-+ * @last_gpstate_idx:		pstate in terms of cpufreq table index
-  * @timer:			Is used for ramping down if cpu goes idle for
-  *				a long time with global pstate held high
-  * @gpstate_lock:		A spinlock to maintain synchronization between
-  *				routines called by the timer handler and
-  *				governer's target_index calls
-+ * @policy:			Associated CPUFreq policy
-  */
- struct global_pstate_info {
- 	int highest_lpstate_idx;
-@@ -170,7 +171,7 @@ static inline u8 extract_pstate(u64 pmsr_val, unsigned int shift)
+diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+index 429e5a36c08a9..d38a693b48e03 100644
+--- a/drivers/cpufreq/acpi-cpufreq.c
++++ b/drivers/cpufreq/acpi-cpufreq.c
+@@ -247,6 +247,7 @@ static u32 cpu_freq_read_intel(struct acpi_pct_register *not_used)
+ 	u32 val, dummy;
  
- /* Use following functions for conversions between pstate_id and index */
- 
--/**
-+/*
-  * idx_to_pstate : Returns the pstate id corresponding to the
-  *		   frequency in the cpufreq frequency table
-  *		   powernv_freqs indexed by @i.
-@@ -188,7 +189,7 @@ static inline u8 idx_to_pstate(unsigned int i)
- 	return powernv_freqs[i].driver_data;
+ 	rdmsr(MSR_IA32_PERF_CTL, val, dummy);
++	dummy &= dummy; /* Silence set but not used warning */
+ 	return val;
  }
  
--/**
-+/*
-  * pstate_to_idx : Returns the index in the cpufreq frequencytable
-  *		   powernv_freqs for the frequency whose corresponding
-  *		   pstate id is @pstate.
-@@ -660,7 +661,7 @@ static inline void  queue_gpstate_timer(struct global_pstate_info *gpstates)
- /**
-  * gpstate_timer_handler
-  *
-- * @data: pointer to cpufreq_policy on which timer was queued
-+ * @t: Timer context used to fetch global pstate info struct
-  *
-  * This handler brings down the global pstate closer to the local pstate
-  * according quadratic equation. Queues a new timer if it is still not equal
+@@ -264,6 +265,7 @@ static u32 cpu_freq_read_amd(struct acpi_pct_register *not_used)
+ 	u32 val, dummy;
+ 
+ 	rdmsr(MSR_AMD_PERF_CTL, val, dummy);
++	dummy &= dummy; /* Silence set but not used warning */
+ 	return val;
+ }
+ 
 -- 
 2.25.1
 
