@@ -2,137 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A2421E49F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 02:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5A021E4A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 02:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726782AbgGNAiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 20:38:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726347AbgGNAiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 20:38:18 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43BF721835;
-        Tue, 14 Jul 2020 00:38:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594687097;
-        bh=pFcNS2ygVqW7ey6A2Cca3OTCddtdMGr4gJx98JrrPYY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=s042KyzvtI4w4VGAyAkcy2v2y653tZtfuqChNgbbl0qQaDRvArLmp56nOPblDDmFX
-         exgh+cqRpD+VVSxisUJXcDotaJf7qZEJrbzrGDxsyVrzVeo1F/OeYxIXhJeZBTbSRu
-         QXaXwEPSGMFFUJ2ZslA7SJPv7Ne89gWFHQYESUhI=
-Date:   Mon, 13 Jul 2020 19:38:14 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        id S1726830AbgGNAmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 20:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726257AbgGNAm3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 20:42:29 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7836C061755;
+        Mon, 13 Jul 2020 17:42:29 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id h18so6734726qvl.3;
+        Mon, 13 Jul 2020 17:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KdIW5He8ZiiCiJCefvMCxWAQ162LKqrQoM487o/uJO8=;
+        b=kXA12gfh+GeMEU0kaSoQ15nqyvzVsppDR7KTdVpxyShQ4ztvA5r9mmzlEhnBgw6JM0
+         M00ZaD5scYu/PTcWMxJ3kv0hZ/2XO78OrGxpYpb3jhWXgfQbUTnqRwqFOIsDr+j2pAqZ
+         VG8Q0fRmq8eJULv43+qfCdY9Ktf/a/hY4BI5P71MaaS572T0+rvdfB0qNBtmNLuYm/Ps
+         fuCIymU+DnYkvMCpTVRVPkiC8b+NoUSPslqs22xgK65g6NPfK6UT4PlPNzCmCNNIhJnr
+         Dsdm00orgJnSJy5lAamHKdi/YTHjKQI2HhK+As546ROmFhNnfbcMSCixrsSHP5yttjHH
+         ibmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KdIW5He8ZiiCiJCefvMCxWAQ162LKqrQoM487o/uJO8=;
+        b=bRiLL9P9PFWTnEP07ZSpy/3be42C+/glXZP6vbUvwhf976JQEVo1VW6AH8alr9Z0oX
+         F2r/jOKb9+w6CPG3j1Ll7gbCRTbiTtnPkKu64oFPXD6tOb+blLxIh0LoiE52dIY9kBaA
+         Ws3CT7WVlx8RaNIwWTGZVvG6dertr/BDDQxqk0Fcu6550Ja3CGcR5bil4gZ7ZQOTq7RK
+         yPooX9l87/P60uJjnDR3rqrGIBT/EDiCPQ+7l/WcL59OR0quceYs+ssn0xNWfPVESNCY
+         Hus/9eutG/2f6O5RstxqLFtZWbA+BWrwzxMvRwPZ8SiFdVcAH239hgxerq2YMsl/tpc8
+         rsNQ==
+X-Gm-Message-State: AOAM532C1SQEOCE5BFaxUNPSeXM9wl4vkHYZK3g9NNjjMNLlvokjJPX9
+        hNMwkuJQ3mErmdZdvJbyzQ==
+X-Google-Smtp-Source: ABdhPJwVjnzLFeP+i8s/I6t5APn4aBiJ18PZlMr//czA/GeBiS5dylC/raDPG+E1JxJrEBSrZxyUCw==
+X-Received: by 2002:a0c:8583:: with SMTP id o3mr2124679qva.108.1594687348930;
+        Mon, 13 Jul 2020 17:42:28 -0700 (PDT)
+Received: from localhost.localdomain ([209.94.141.207])
+        by smtp.gmail.com with ESMTPSA id p36sm2849287qte.90.2020.07.13.17.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jul 2020 17:42:28 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org
-Subject: Re: [PATCH v1 2/6] [media] cx23885: use generic power management
-Message-ID: <20200714003814.GA292013@bjorn-Precision-5520>
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [Linux-kernel-mentees] [PATCH] bpf: Fix NULL pointer dereference in __btf_resolve_helper_id()
+Date:   Mon, 13 Jul 2020 20:38:56 -0400
+Message-Id: <20200714003856.194768-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4a46846-208f-c834-56d7-02543c395795@xs4all.nl>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 12:01:51PM +0200, Hans Verkuil wrote:
-> On 29/06/2020 09:36, Vaibhav Gupta wrote:
-> > The .suspend() and .resume() callbacks are not defined for this driver.
-> > Still, their power managemgement stucture can be easily upgraded to
-> 
-> management structure
-> 
-> > gemeric, without affecting its normal behaviour.
-> 
-> generic
-> 
-> > Hence, define them NULL and use struct dev_pm_ops type to bind them.
-> > 
-> > Compile-tested only.
-> > 
-> > Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-> > ---
-> >  drivers/media/pci/cx23885/cx23885-core.c | 16 ++++++++++------
-> >  1 file changed, 10 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
-> > index 7e0b0b7cc2a3..da9ee7270dfd 100644
-> > --- a/drivers/media/pci/cx23885/cx23885-core.c
-> > +++ b/drivers/media/pci/cx23885/cx23885-core.c
-> > @@ -2230,14 +2230,18 @@ static const struct pci_device_id cx23885_pci_tbl[] = {
-> >  };
-> >  MODULE_DEVICE_TABLE(pci, cx23885_pci_tbl);
-> >  
-> > +#define cx23885_suspend NULL
-> > +#define cx23885_resume NULL
-> > +
-> > +static SIMPLE_DEV_PM_OPS(cx23885_pm_ops, cx23885_suspend, cx23885_resume);
-> > +
-> >  static struct pci_driver cx23885_pci_driver = {
-> > -	.name     = "cx23885",
-> > -	.id_table = cx23885_pci_tbl,
-> > -	.probe    = cx23885_initdev,
-> > -	.remove   = cx23885_finidev,
-> > +	.name      = "cx23885",
-> > +	.id_table  = cx23885_pci_tbl,
-> > +	.probe     = cx23885_initdev,
-> > +	.remove    = cx23885_finidev,
-> >  	/* TODO */
-> > -	.suspend  = NULL,
-> > -	.resume   = NULL,
-> > +	.driver.pm = &cx23885_pm_ops,
-> 
-> I don't entirely understand this. Wouldn't it be sufficient to just
-> drop the .suspend/.resume assignments here? It is now required for
-> driver.pm to be non-NULL?
-> 
-> I'm not up to speed on the changes, but normally you can leave things
-> NULL if you don't support a feature (PM in this case).
+Prevent __btf_resolve_helper_id() from dereferencing `btf_vmlinux`
+as NULL. This patch fixes the following syzbot bug:
 
-I think this patch will break things.  Previously, we had:
+    https://syzkaller.appspot.com/bug?id=5edd146856fd513747c1992442732e5a0e9ba355
 
-  cx23885_pci_driver.suspend == NULL
-  cx23885_pci_driver.resume == NULL
-  cx23885_pci_driver.driver.pm == NULL
+Reported-by: syzbot+ee09bda7017345f1fbe6@syzkaller.appspotmail.com
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+ kernel/bpf/btf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-pci_pm_suspend() looks like:
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 30721f2c2d10..3e981b183fa4 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -4088,7 +4088,7 @@ static int __btf_resolve_helper_id(struct bpf_verifier_log *log, void *fn,
+ 	const char *tname, *sym;
+ 	u32 btf_id, i;
+ 
+-	if (IS_ERR(btf_vmlinux)) {
++	if (IS_ERR_OR_NULL(btf_vmlinux)) {
+ 		bpf_log(log, "btf_vmlinux is malformed\n");
+ 		return -EINVAL;
+ 	}
+-- 
+2.25.1
 
-  if (pci_has_legacy_pm_support(pci_dev))
-    return pci_legacy_suspend(dev, PMSG_SUSPEND);
-
-  if (!pm) {
-    pci_pm_default_suspend(pci_dev);
-    return 0;
-  }
-
-pci_has_legacy_pm_support() was false since drv->suspend and
-drv->resume are both NULL, so we'd take the pci_pm_default_suspend()
-path.  After this patch, driver.pm would no longer be NULL, so we'd
-take a different path that is clearly not equivalent.
-
-I think you should do this:
-
-  - 	/* TODO */
-  -	.suspend  = NULL,
-  -	.resume   = NULL,
-
-and leave .driver.pm NULL by not mentioning it at all.  That should be
-identical at the object code level since those are the defaults
-anyway.
-
-That almost looks like useless churn, but the point of this patch is
-to remove use of PCI legacy PM (pci_driver.suspend and .resume) so we
-can completely remove that infrastructure from the PCI core, including
-the .suspend and .resume members of struct pci_driver, so we really do
-need to do it.
-
-Bjorn
