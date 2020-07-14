@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FC221F9F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E5721FA41
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729892AbgGNSsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:48:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43380 "EHLO mail.kernel.org"
+        id S1730346AbgGNSu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729884AbgGNSsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:48:04 -0400
+        id S1729653AbgGNSux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:50:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B336122B2A;
-        Tue, 14 Jul 2020 18:48:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07B5522B3F;
+        Tue, 14 Jul 2020 18:50:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752484;
-        bh=PUzhsn+22+EvfCIBitcmkj0en3/RTkXCU0CbLGQCvug=;
+        s=default; t=1594752652;
+        bh=NGFCHbSe5ZUZiSBlNjSOtCtvAsGFgJpCK38zbY82Ql4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WIel8p4ULTdbUfqIs2kdf4JKmpXo78gbbsrQPFL20uyxciG7FDly2aCsp0zNguuds
-         oKAfHV7cn2+LatfY6j1gxvxUfW200aaAThVa6DpBQ5tNtN22h4IWRXu321fP4a7Nuf
-         r54tv01vi5Yte5BAjmIz+JhObBeuyyQGzFY3ryPA=
+        b=WnEz12FSCbx/Rl2TZyLYW/PEgPPGy1DQBvopfUgqfRJERYnBMMkbXTXjg1Sl+Msf6
+         8uDVh8s8BoKz2K2xAvingO8DqXU3beu/RgjeZOKxHTH7+L0Vv7DWceVwUc/f3QXN9f
+         +Bv21nWMyJMCag4WDGrvZ0lMFfiPn1Kborzu2oXc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andre Edich <andre.edich@microchip.com>,
-        Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Aya Levin <ayal@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 29/58] smsc95xx: avoid memory leak in smsc95xx_bind
-Date:   Tue, 14 Jul 2020 20:44:02 +0200
-Message-Id: <20200714184057.582907294@linuxfoundation.org>
+Subject: [PATCH 5.4 060/109] IB/mlx5: Fix 50G per lane indication
+Date:   Tue, 14 Jul 2020 20:44:03 +0200
+Message-Id: <20200714184108.398057933@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +47,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Edich <andre.edich@microchip.com>
+From: Aya Levin <ayal@mellanox.com>
 
-[ Upstream commit 3ed58f96a70b85ef646d5427258f677f1395b62f ]
+[ Upstream commit 530c8632b547ff72f11ff83654b22462a73f1f7b ]
 
-In a case where the ID_REV register read is failed, the memory for a
-private data structure has to be freed before returning error from the
-function smsc95xx_bind.
+Some released FW versions mistakenly don't set the capability that 50G per
+lane link-modes are supported for VFs (ptys_extended_ethernet capability
+bit).
 
-Fixes: bbd9f9ee69242 ("smsc95xx: add wol support for more frame types")
-Signed-off-by: Andre Edich <andre.edich@microchip.com>
-Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Use PTYS.ext_eth_proto_capability instead, as this indication is always
+accurate. If PTYS.ext_eth_proto_capability is valid
+(has a non-zero value) conclude that the HCA supports 50G per lane.
+
+Otherwise, conclude that the HCA doesn't support 50G per lane.
+
+Fixes: 08e8676f1607 ("IB/mlx5: Add support for 50Gbps per lane link modes")
+Link: https://lore.kernel.org/r/20200707110612.882962-3-leon@kernel.org
+Signed-off-by: Aya Levin <ayal@mellanox.com>
+Reviewed-by: Eran Ben Elisha <eranbe@mellanox.com>
+Reviewed-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/smsc95xx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/hw/mlx5/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
-index 145ee4a02a8a5..4f29010e1aeff 100644
---- a/drivers/net/usb/smsc95xx.c
-+++ b/drivers/net/usb/smsc95xx.c
-@@ -1307,7 +1307,8 @@ static int smsc95xx_bind(struct usbnet *dev, struct usb_interface *intf)
- 	/* detect device revision as different features may be available */
- 	ret = smsc95xx_read_reg(dev, ID_REV, &val);
- 	if (ret < 0)
--		return ret;
-+		goto free_pdata;
-+
- 	val >>= 16;
- 	pdata->chip_id = val;
- 	pdata->mdix_ctrl = get_mdix_status(dev->net);
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 4f44a731a48e1..b781ad74e6de4 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -517,7 +517,7 @@ static int mlx5_query_port_roce(struct ib_device *device, u8 port_num,
+ 					   mdev_port_num);
+ 	if (err)
+ 		goto out;
+-	ext = MLX5_CAP_PCAM_FEATURE(dev->mdev, ptys_extended_ethernet);
++	ext = !!MLX5_GET_ETH_PROTO(ptys_reg, out, true, eth_proto_capability);
+ 	eth_prot_oper = MLX5_GET_ETH_PROTO(ptys_reg, out, ext, eth_proto_oper);
+ 
+ 	props->active_width     = IB_WIDTH_4X;
 -- 
 2.25.1
 
