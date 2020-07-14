@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393B721FA3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F028521FAE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730338AbgGNSu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:50:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
+        id S1730571AbgGNS4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:56:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730333AbgGNSuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:50:50 -0400
+        id S1730368AbgGNS4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:56:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B873223B0;
-        Tue, 14 Jul 2020 18:50:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 415BA22B45;
+        Tue, 14 Jul 2020 18:56:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752650;
-        bh=+7x5kyX+DAwyNlTHk6X0fynGSCvBGsm+DFSo9qEzvJg=;
+        s=default; t=1594752990;
+        bh=Tq7/FqVQvTwhdxSjTAKQNwEt8Q2oDTiDVywv3QE008I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y2jbfbbUCott6Fk7Nf0xrSSHnK9qaTzakN0giLSb9IpgUk+zCNjyyy64zFU3JyAlT
-         CBU0FSKzbOi3te74+rcZD72x5/2h/5jgXxDh/ZaHo3myg5rwCxu5k0pJcUhbJfHtRW
-         KahRI6wkobiD4rS/SLGO1EbGWgE5rizWHGme6iFE=
+        b=W4XV/elmHMQE8PURUJdExs7bh7mV1Xow4wn8+5qaGCqQbaas1Yr/Gf7JK4b8NilpW
+         ztYiMrGN2/yamVm9+1EZUGP2kr5Yuha0ow24qw7PABY3ue4OP8JU5SpadiEXzMNgb7
+         oNjAtsrwMlWkAKmpn39CViGRwEcsAo0SeLcwsKMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        stable@vger.kernel.org, Huazhong Tan <tanhuazhong@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 059/109] cxgb4: fix all-mask IP address comparison
+Subject: [PATCH 5.7 077/166] net: hns3: check reset pending after FLR prepare
 Date:   Tue, 14 Jul 2020 20:44:02 +0200
-Message-Id: <20200714184108.350196895@linuxfoundation.org>
+Message-Id: <20200714184119.538318293@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+From: Huazhong Tan <tanhuazhong@huawei.com>
 
-[ Upstream commit 76c4d85c9260c3d741cbd194c30c61983d0a4303 ]
+[ Upstream commit bb3d866882c280a85e8950d4d72af1e294d2e69c ]
 
-Convert all-mask IP address to Big Endian, instead, for comparison.
+If there is a PF reset pending before FLR prepare, FLR's
+preparatory work will not fail, but the FLR rebuild procedure
+will fail for this pending. So this PF reset pending should
+be handled in the FLR preparatory.
 
-Fixes: f286dd8eaad5 ("cxgb4: use correct type for all-mask IP address comparison")
-Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+Fixes: 8627bdedc435 ("net: hns3: refactor the precedure of PF FLR")
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-index 375e1be6a2d8d..f459313357c78 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
-@@ -839,16 +839,16 @@ static bool is_addr_all_mask(u8 *ipmask, int family)
- 		struct in_addr *addr;
- 
- 		addr = (struct in_addr *)ipmask;
--		if (ntohl(addr->s_addr) == 0xffffffff)
-+		if (addr->s_addr == htonl(0xffffffff))
- 			return true;
- 	} else if (family == AF_INET6) {
- 		struct in6_addr *addr6;
- 
- 		addr6 = (struct in6_addr *)ipmask;
--		if (ntohl(addr6->s6_addr32[0]) == 0xffffffff &&
--		    ntohl(addr6->s6_addr32[1]) == 0xffffffff &&
--		    ntohl(addr6->s6_addr32[2]) == 0xffffffff &&
--		    ntohl(addr6->s6_addr32[3]) == 0xffffffff)
-+		if (addr6->s6_addr32[0] == htonl(0xffffffff) &&
-+		    addr6->s6_addr32[1] == htonl(0xffffffff) &&
-+		    addr6->s6_addr32[2] == htonl(0xffffffff) &&
-+		    addr6->s6_addr32[3] == htonl(0xffffffff))
- 			return true;
- 	}
- 	return false;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+index a758f9ae32be9..4de268a879582 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -9351,7 +9351,7 @@ static void hclge_flr_prepare(struct hnae3_ae_dev *ae_dev)
+ 	set_bit(HCLGE_STATE_RST_HANDLING, &hdev->state);
+ 	hdev->reset_type = HNAE3_FLR_RESET;
+ 	ret = hclge_reset_prepare(hdev);
+-	if (ret) {
++	if (ret || hdev->reset_pending) {
+ 		dev_err(&hdev->pdev->dev, "fail to prepare FLR, ret=%d\n",
+ 			ret);
+ 		if (hdev->reset_pending ||
 -- 
 2.25.1
 
