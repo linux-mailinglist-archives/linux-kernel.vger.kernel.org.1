@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0889321F397
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDA321F3E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgGNOMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 10:12:52 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33884 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725890AbgGNOMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 10:12:52 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2947372FCC856207FD9F;
-        Tue, 14 Jul 2020 22:12:50 +0800 (CST)
-Received: from kernelci-master.huawei.com (10.175.101.6) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 14 Jul 2020 22:12:42 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Hulk Robot <hulkci@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] irqchip: mips-gic: Make some symbols static
-Date:   Tue, 14 Jul 2020 22:22:45 +0800
-Message-ID: <20200714142245.16124-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728813AbgGNOXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 10:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728766AbgGNOX2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 10:23:28 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD899C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:23:27 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j4so21978955wrp.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:23:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+XB0FMKuppgq4ltckLknQrvpl9WV3rgpMyG5Av27BWg=;
+        b=JMk16yBQUPUZ6gxqBeByLmVDx4mOjjb1cQBJz7HbdIRAau3VnH8I3fIB5KgOV9F428
+         jVz+WcRwlk6q7PmehC9LV2k2R3Q239BZKoOp03NTTHlCoubklxgj4X9lx6Hv1DTi2veR
+         6K+iWUCaicRDpcZr1orM7MTz7Lf2ieJCRSPJYj1NaPqRzdsMjsus5LZBSwAcPfnzqc65
+         DCHBqYgBwUJ7V0UUZD9PS8RGH9USZvFwehH/HNEkwMPejvRM4mVUsU8GVM109mcQUxO1
+         9UhyNCvlziedmeMebcDBeo22muADCSJiX0umqAJDV5EVQGp07JJmmuaAUIkOGAS03g0N
+         q6iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+XB0FMKuppgq4ltckLknQrvpl9WV3rgpMyG5Av27BWg=;
+        b=d3PRLuha6FbN3NSgpauFM/8LufyA4wXDDIdY6yw2timeo/30P73plKbPtYZAhY4rXb
+         hqMci5p2aGVOVO1tI2rfF7KrNwbbtugkAur1fc++p4xdM0LD4LQ3ImCGQ4/HVad3w+1j
+         RdLx5RuEI1MC/WI8Wwr7WO1rIs5wLDQZ8Ul5SCu6OT3Scq5Qct1PZJb8Z1Cy3STsI22M
+         v3Zal1L2kxc+HoO+waFKkjI+yorlv62iWL3W5T9XimsPsSHZTKp0PgSx0uLtGkHUpn4V
+         Dfs3km+odps7cArgHcIg3DZwv9TLAzVPFEe+FSolBkJ+YdtMYoDMD8T7WUcjK04LX3ST
+         I9hA==
+X-Gm-Message-State: AOAM533b+A2EPM77KNjol5SFG8Oi3ZxXhdjQ/+qyMDE3NAM/Tj+aE4NR
+        PP6U2aGe3lav75bKsYaRkByvlFl/fN4=
+X-Google-Smtp-Source: ABdhPJxhrqDOQ6E+DeR8LfASUhGAMwlZ4Mg3y3JEhR8OJgyB3KcvVv/uXU3ze5rXDoW8FSqffXqNyA==
+X-Received: by 2002:adf:e908:: with SMTP id f8mr5844532wrm.3.1594736606613;
+        Tue, 14 Jul 2020 07:23:26 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id j6sm29991962wro.25.2020.07.14.07.23.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 07:23:26 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 15:23:24 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH v2 05/29] scsi: fcoe: fcoe_ctlr: Fix a myriad of
+ documentation issues
+Message-ID: <20200714142324.GC1398296@dell>
+References: <20200713074645.126138-1-lee.jones@linaro.org>
+ <20200713074645.126138-6-lee.jones@linaro.org>
+ <yq1lfjmqji1.fsf@ca-mkp.ca.oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <yq1lfjmqji1.fsf@ca-mkp.ca.oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sparse tool complains as follows:
+On Tue, 14 Jul 2020, Martin K. Petersen wrote:
 
-drivers/irqchip/irq-mips-gic.c:49:1: warning:
- symbol '__pcpu_scope_pcpu_masks' was not declared. Should it be static?
-drivers/irqchip/irq-mips-gic.c:620:6: warning:
- symbol 'gic_ipi_domain_free' was not declared. Should it be static?
-drivers/irqchip/irq-mips-gic.c:634:5: warning:
- symbol 'gic_ipi_domain_match' was not declared. Should it be static?
+> 
+> Lee,
 
-Those symbols are not used outside of irq-mips-gic.c, so marks
-them static.
+Ah, you are alive.  I was beginning to worry. :)
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/irqchip/irq-mips-gic.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+I have more fixes for you, but didn't want to send them until these
+have been merged.
 
-diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index d70507133c1d..aacfa012c082 100644
---- a/drivers/irqchip/irq-mips-gic.c
-+++ b/drivers/irqchip/irq-mips-gic.c
-@@ -46,7 +46,7 @@
- 
- void __iomem *mips_gic_base;
- 
--DEFINE_PER_CPU_READ_MOSTLY(unsigned long[GIC_MAX_LONGS], pcpu_masks);
-+static DEFINE_PER_CPU_READ_MOSTLY(unsigned long[GIC_MAX_LONGS], pcpu_masks);
- 
- static DEFINE_SPINLOCK(gic_lock);
- static struct irq_domain *gic_irq_domain;
-@@ -617,8 +617,8 @@ static int gic_ipi_domain_alloc(struct irq_domain *d, unsigned int virq,
- 	return ret;
- }
- 
--void gic_ipi_domain_free(struct irq_domain *d, unsigned int virq,
--			 unsigned int nr_irqs)
-+static void gic_ipi_domain_free(struct irq_domain *d, unsigned int virq,
-+				unsigned int nr_irqs)
- {
- 	irq_hw_number_t base_hwirq;
- 	struct irq_data *data;
-@@ -631,8 +631,8 @@ void gic_ipi_domain_free(struct irq_domain *d, unsigned int virq,
- 	bitmap_set(ipi_available, base_hwirq, nr_irqs);
- }
- 
--int gic_ipi_domain_match(struct irq_domain *d, struct device_node *node,
--			 enum irq_domain_bus_token bus_token)
-+static int gic_ipi_domain_match(struct irq_domain *d, struct device_node *node,
-+				enum irq_domain_bus_token bus_token)
- {
- 	bool is_ipi;
- 
+> > @@ -3015,9 +3016,8 @@ static void fcoe_ctlr_disc_recv(struct fc_lport *lport, struct fc_frame *fp)
+> >  	fc_frame_free(fp);
+> >  }
+> >  
+> > -/**
+> > +/*
+> >   * fcoe_ctlr_disc_recv - start discovery for VN2VN mode.
+> > - * @fip: The FCoE controller
+> >   *
+> >   * This sets a flag indicating that remote ports should be created
+> >   * and started for the peers we discover.  We use the disc_callback
+> 
+> s/fcoe_ctlr_disc_recv/fcoe_ctlr_disc_start/ ?
 
+Yes, I spotted it.  Hence my earlier comment to Hannes:
+
+ "Look at the function below it (in your local copy). ;)"
+
+Do you want me to fix that up here as well?
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
