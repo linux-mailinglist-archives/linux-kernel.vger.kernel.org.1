@@ -2,151 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF71C21F675
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E9821F679
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgGNPu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 11:50:26 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:43217 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727788AbgGNPuW (ORCPT
+        id S1727818AbgGNPwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 11:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbgGNPwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 11:50:22 -0400
-Received: by mail-wr1-f67.google.com with SMTP id j4so22647116wrp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:50:20 -0700 (PDT)
+        Tue, 14 Jul 2020 11:52:04 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F8BC061755;
+        Tue, 14 Jul 2020 08:52:04 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id dp18so22539046ejc.8;
+        Tue, 14 Jul 2020 08:52:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8ma385S9XtvllyPFqZZyWkLBqNuOCBNLKQ/FFZ13ZKw=;
+        b=pSDC/jbE+Qa0bij2n1SZrZmVpg9S6LwvxnLh8cKVELNbEfqqnBg1g0sb7cWiw45Ili
+         9NfqiIVYzTQxp4PwLkPetUL7ssZxBPXftfuwMu3nCJ3pQ+Sc3tbiJ+RFBuW8+D99ApOb
+         9qlBKMj1iDEagnxzceho9tnGWc4p/h5HhcHnP9sZqt4/f8zFsNEMCow/vTNuGw39GLoC
+         zmPo4f7R8/MdI2StVEceJ9S/oWm6fR4wGdPOmS57gcDkZ3iTNMpN2l5Pns34KMkmflW2
+         fkRTZiGPvJ0gYbF75MCd8CH2ZrSGAWZYmSzYFVrV9EgqHw3dW+62+eFVJ7GgN4025KxT
+         zTZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7UNjTjNj7nBrxc1O4cT43g/Jb9uDjM/8ow+jG2V3JdU=;
-        b=YfJeUlJPjkfvg0k4vb3iE8VOj75IGsDtw1gSKprJS4fHfHgo6Sr3Hyz/Mwc+W4yg4C
-         bpQnt1BZL9oDHG5g62mul6jnnUbvLPMi8pIum8msPnyYvIO6YnpcKAGp+LN8l/sj/SOh
-         vZQXNPG12kYtb4QNHGTIRVJd1N1MDGKWpMxHeZAQZuGRPwQFK/S80BjQ4Yob5WMVZcJ1
-         hPJ5082rsaDHX7nNsF/hopLFOiqSJho+bTqdwQ8Na7l8UViWv0V8Mzl5xgd0x10s7Gqg
-         qeHzaUE33O1n9jkJpIlrJaz71GfKPHubSXfks3zz5yw6mbdURYhwAcH4YivFidIuKDa7
-         i8bg==
-X-Gm-Message-State: AOAM530BbN0iUT8F5Jh+pQPta6s0h3dleXvfaDGxU8DTRBAFpTliOU/0
-        xRKk01zFCLy72WFHb6hss1Y=
-X-Google-Smtp-Source: ABdhPJzkKuBEXARsKEFK+BNNFviqFhl02Embfs0hF4rMtyp2khXl4hcBMRqZxUzNHjwX/hgn6kxA4A==
-X-Received: by 2002:adf:f2c5:: with SMTP id d5mr6660872wrp.96.1594741819457;
-        Tue, 14 Jul 2020 08:50:19 -0700 (PDT)
-Received: from localhost (ip-37-188-148-171.eurotel.cz. [37.188.148.171])
-        by smtp.gmail.com with ESMTPSA id k14sm29563410wrn.76.2020.07.14.08.50.18
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8ma385S9XtvllyPFqZZyWkLBqNuOCBNLKQ/FFZ13ZKw=;
+        b=iygjFQRx7H8khHHHsMWFlffoqa6YIc0sCA7Y3pMOn+9J4xRtCnynPEP6i+hdbmx+V4
+         9+xCexrRp2dORRQ3wAPMozwKM/QNUZ6YkPb0lgXW0D/PqDkijJ2CKaYYiFERt+joIykk
+         CVE82P7qXWsTq4NUKG+Xdsj1E+Nll52yPoNUOiDwGOAzley2bGFa0aLHqmYdvUU9APSK
+         wuJ4AoXVveqGPfN5YLXiw6F0FdSxXGqip8Jor7KPGa7Cwl2/By4xUe3eEPdIi/ZlW3dD
+         VtX6kFInFN17Si8E+0pxU1PsVq00H2Xg+q/XttA4kHQpnWn+8rW3G1LzjTPJ0ATp2RDH
+         asDQ==
+X-Gm-Message-State: AOAM532Yz9J4SRGZ13yVlSX8ofcIPttLp4AJJ9sMYchcYgJXoXMyty+7
+        DXKdBFEE2gwH8ItyiR+SW30=
+X-Google-Smtp-Source: ABdhPJwVwWy+mYhcQbMzIwAsrvhXC5qyNxh45YEnq3DASdGc4ydc2Fij/VqDYPXLeulhFsshSe1GpQ==
+X-Received: by 2002:a17:906:26c7:: with SMTP id u7mr4988154ejc.13.1594741923259;
+        Tue, 14 Jul 2020 08:52:03 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id cq7sm14958442edb.66.2020.07.14.08.52.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 08:50:18 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 17:50:17 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Domas Mituzas <domas@fb.com>, Tejun Heo <tj@kernel.org>,
-        Chris Down <chris@chrisdown.name>
-Subject: Re: [PATCH] mm: memcontrol: avoid workload stalls when lowering
- memory.high
-Message-ID: <20200714155017.GQ24642@dhcp22.suse.cz>
-References: <20200709194718.189231-1-guro@fb.com>
- <20200710122917.GB3022@dhcp22.suse.cz>
- <CALvZod6Yk8QoZjbNkGE8-qeOD187Nu-+VwasoROGZs_UsMgbEQ@mail.gmail.com>
- <20200710184205.GB350256@carbon.dhcp.thefacebook.com>
- <CALvZod45_zVaFhvw-wc9b6-Fth=fZo5Fo6xCwRVkrWC6ZprYyw@mail.gmail.com>
- <20200714084123.GG24642@dhcp22.suse.cz>
- <CALvZod6kw++JnZnyYVg4-u2vNQ7SLMFh3qKG1xu7_AahdmXhdg@mail.gmail.com>
+        Tue, 14 Jul 2020 08:52:01 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 17:52:00 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable <stable@vger.kernel.org>,
+        Shardar Shariff Md <smohammed@nvidia.com>,
+        Krishna Yarlagadda <kyarlagadda@nvidia.com>
+Subject: Re: [PATCH 1/2] serial: tegra: fix CREAD handling for PIO
+Message-ID: <20200714155200.GB251696@ulmo>
+References: <20200710135947.2737-1-johan@kernel.org>
+ <20200710135947.2737-2-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8GpibOaaTibBMecb"
 Content-Disposition: inline
-In-Reply-To: <CALvZod6kw++JnZnyYVg4-u2vNQ7SLMFh3qKG1xu7_AahdmXhdg@mail.gmail.com>
+In-Reply-To: <20200710135947.2737-2-johan@kernel.org>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 14-07-20 08:32:09, Shakeel Butt wrote:
-> On Tue, Jul 14, 2020 at 1:41 AM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > On Fri 10-07-20 12:19:37, Shakeel Butt wrote:
-> > > On Fri, Jul 10, 2020 at 11:42 AM Roman Gushchin <guro@fb.com> wrote:
-> > > >
-> > > > On Fri, Jul 10, 2020 at 07:12:22AM -0700, Shakeel Butt wrote:
-> > > > > On Fri, Jul 10, 2020 at 5:29 AM Michal Hocko <mhocko@kernel.org> wrote:
-> > > > > >
-> > > > > > On Thu 09-07-20 12:47:18, Roman Gushchin wrote:
-> > > > > > > Memory.high limit is implemented in a way such that the kernel
-> > > > > > > penalizes all threads which are allocating a memory over the limit.
-> > > > > > > Forcing all threads into the synchronous reclaim and adding some
-> > > > > > > artificial delays allows to slow down the memory consumption and
-> > > > > > > potentially give some time for userspace oom handlers/resource control
-> > > > > > > agents to react.
-> > > > > > >
-> > > > > > > It works nicely if the memory usage is hitting the limit from below,
-> > > > > > > however it works sub-optimal if a user adjusts memory.high to a value
-> > > > > > > way below the current memory usage. It basically forces all workload
-> > > > > > > threads (doing any memory allocations) into the synchronous reclaim
-> > > > > > > and sleep. This makes the workload completely unresponsive for
-> > > > > > > a long period of time and can also lead to a system-wide contention on
-> > > > > > > lru locks. It can happen even if the workload is not actually tight on
-> > > > > > > memory and has, for example, a ton of cold pagecache.
-> > > > > > >
-> > > > > > > In the current implementation writing to memory.high causes an atomic
-> > > > > > > update of page counter's high value followed by an attempt to reclaim
-> > > > > > > enough memory to fit into the new limit. To fix the problem described
-> > > > > > > above, all we need is to change the order of execution: try to push
-> > > > > > > the memory usage under the limit first, and only then set the new
-> > > > > > > high limit.
-> > > > > >
-> > > > > > Shakeel would this help with your pro-active reclaim usecase? It would
-> > > > > > require to reset the high limit right after the reclaim returns which is
-> > > > > > quite ugly but it would at least not require a completely new interface.
-> > > > > > You would simply do
-> > > > > >         high = current - to_reclaim
-> > > > > >         echo $high > memory.high
-> > > > > >         echo infinity > memory.high # To prevent direct reclaim
-> > > > > >                                     # allocation stalls
-> > > > > >
-> > > > >
-> > > > > This will reduce the chance of stalls but the interface is still
-> > > > > non-delegatable i.e. applications can not change their own memory.high
-> > > > > for the use-cases like application controlled proactive reclaim and
-> > > > > uswapd.
-> > > >
-> > > > Can you, please, elaborate a bit more on this? I didn't understand
-> > > > why.
-> > > >
-> > >
-> > > Sure. Do we want memory.high a CFTYPE_NS_DELEGATABLE type file? I
-> > > don't think so otherwise any job on a system can change their
-> > > memory.high and can adversely impact the isolation and memory
-> > > scheduling of the system.
-> >
-> > Is this really the case? There should always be a parent cgroup that
-> > overrides the setting.
-> 
-> Can you explain a bit more? I don't see any requirement of having a
-> layer of cgroup between root and the job cgroup. Internally we
-> schedule jobs as top level cgroups. There do exist jobs which are a
-> combination of other jobs and there we do use an additional layer of
-> cgroup (similar to pods running multiple containers in kubernetes).
-> Surely we can add a layer for all the jobs but it comes with an
-> overhead and at scale that overhead is not negligible.
 
-What I've had in mind is that if you want to delegate then you have an
-option to add a layer where you pre define restrictions/guanratees so
-that the delegated cgroup under that hierarchy cannot runaway. So
-configuring high limit in a delegated cgroup should be reasonably safe.
+--8GpibOaaTibBMecb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Also you can always set the hard limit if you do
-> > not want to add another layer of cgroup in the hierarchy before
-> > delegation. Or am I missing something?
-> >
-> 
-> Yes, we can set memory.max though it has different oom semantics and
-> not really a replacement for memory.high.
+On Fri, Jul 10, 2020 at 03:59:46PM +0200, Johan Hovold wrote:
+> Commit 33ae787b74fc ("serial: tegra: add support to ignore read") added
+> support for dropping input in case CREAD isn't set, but for PIO the
+> ignore_status_mask wasn't checked until after the character had been
+> put in the receive buffer.
+>=20
+> Note that the NULL tty-port test is bogus and will be removed by a
+> follow-on patch.
+>=20
+> Fixes: 33ae787b74fc ("serial: tegra: add support to ignore read")
+> Cc: stable <stable@vger.kernel.org>     # 5.4
+> Cc: Shardar Shariff Md <smohammed@nvidia.com>
+> Cc: Krishna Yarlagadda <kyarlagadda@nvidia.com>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+> ---
+>  drivers/tty/serial/serial-tegra.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 
-Right but you can define a safe cap this way and leave the high
-watermark for the delegated cgroup.
--- 
-Michal Hocko
-SUSE Labs
+Looks good to me:
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+--8GpibOaaTibBMecb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl8N1KAACgkQ3SOs138+
+s6E5wxAAh7iJ8sJY9GOfgRgH+TfVpaOx9vthw1a+YaDJkl8WT7Y7pz9YaEru4OIJ
+eBLvyt+pMPkx7Tl495j7EbFwUmZGy7F+4pse9vx686+bAwsc9+SgYRgnQzMvwsY1
+UX6Kfaj+pfWcGvYz/Gq5zQEi23ZH6QrIkEZGWm408gXMz+NzRKxABTDJx5+FRdtu
+uB2b6BNnrQ/em1dY2NTtFoNbKZpoHRm5aDXiAb/9NO4sgmJHaKB4UpNdtMBe2mHA
+uCkPzhytPCl6gzyl+EMLsrkPZQpPRDEcCoeHj/Gv01F5FRXILUUb8dhCIvhQpXZ/
+vKiHVCN7o7IfMp+CVRDSwRrcLZ4D1hQl/wDw+k4ZSAhE5InotN6nDrpJIR4kDxII
+KWEkyWkrf8buSpdCFCY6XBPtC7FAHn/W28RaD4LDE9fpXFJWawxe0ebtH+M/bRxk
+CVbjYU6NxjpdbK0YCKNUzPNQJwBU1HWErGkMU7cnPdc+04t/jVx7023JrYaRzYak
+6+2O96GdpQEa97PthXw6xVamIwWjA3383/+inuztYSXduWajpx3A1RA38ihcU04I
+stG3Ft3FHvDjEu/iE8i/8k5nvs0S/s+lJYKkdyVaJcvUAwQt2kO24x8WPkV4tdvz
+w1AIMxx54zoT9n4CHdVhc3EINKoWirt8QgAfw37VSSa2vboL4yg=
+=0eYi
+-----END PGP SIGNATURE-----
+
+--8GpibOaaTibBMecb--
