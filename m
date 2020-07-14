@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B6A21EDCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2691121EDD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgGNKVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 06:21:05 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:20465 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727044AbgGNKVD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 06:21:03 -0400
-X-IronPort-AV: E=Sophos;i="5.75,351,1589209200"; 
-   d="scan'208";a="52086655"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 14 Jul 2020 19:21:02 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 02BFD421EC6D;
-        Tue, 14 Jul 2020 19:21:00 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Joerg Roedel <joro@8bytes.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 2/2] iommu/ipmmu-vmsa: Add an entry for r8a77961 in soc_rcar_gen3[]
-Date:   Tue, 14 Jul 2020 11:20:55 +0100
-Message-Id: <1594722055-9298-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594722055-9298-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1594722055-9298-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1727052AbgGNKXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 06:23:41 -0400
+Received: from vps.xff.cz ([195.181.215.36]:46160 "EHLO vps.xff.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725884AbgGNKXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 06:23:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
+        t=1594722217; bh=b5ZA4YXSStj9NSEJKpR0EoBU9eCLYs5GBPxpk7Au4Jk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IOj2CJTFMM4foh6Z1bL6bN76aQ3IsZF6KzKGIuLDgwKASd6lE3sIDRQv/76ND9+BX
+         rqLW9wJBgyvd5VA3nFg4GXphHvFr/pdQEdcE8Dv3y+q2cSLVgjuvs5B1SxBQxXIoUe
+         tmTZaqUKBXg2vC69LsfMNpFnShBOCyhzHsK8LT9k=
+From:   Ondrej Jirman <megous@megous.com>
+To:     linux-sunxi@googlegroups.com,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     Ondrej Jirman <megous@megous.com>, Luca Weiss <luca@z3ntu.xyz>,
+        Tomas Novotny <tomas@novotny.cz>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v4 0/4] Add support for vibrator motor for TBS A711 Tablet
+Date:   Tue, 14 Jul 2020 12:22:59 +0200
+Message-Id: <20200714102303.3007896-1-megous@megous.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an entry for r8a77961 in soc_rcar_gen3[] list so that we dont
-enable iommu unconditionally.
+The tablet has a vibrator motor. This patch series exposes it via
+input subsystem (EV_FF).
 
-Fixes: 17fe161816398 ("iommu/renesas: Add support for r8a77961")
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/iommu/ipmmu-vmsa.c | 1 +
- 1 file changed, 1 insertion(+)
+I'd like to ask input maintainers to take the patches 1 and 2.
+Patches 3 and 4 should go via the sunxi tree.
 
-diff --git a/drivers/iommu/ipmmu-vmsa.c b/drivers/iommu/ipmmu-vmsa.c
-index 55c09cb8fc56..093b4ac5db69 100644
---- a/drivers/iommu/ipmmu-vmsa.c
-+++ b/drivers/iommu/ipmmu-vmsa.c
-@@ -741,6 +741,7 @@ static const struct soc_device_attribute soc_rcar_gen3[] = {
- 	{ .soc_id = "r8a774c0", },
- 	{ .soc_id = "r8a774e1", },
- 	{ .soc_id = "r8a7795", },
-+	{ .soc_id = "r8a77961", },
- 	{ .soc_id = "r8a7796", },
- 	{ .soc_id = "r8a77965", },
- 	{ .soc_id = "r8a77970", },
+The change to the vibrator driver is meant to enable toggling the
+vibrator motor just via a power supply itself. There's not additional
+gpio driven switch on this tablet between the power supply for the
+motor and the motor.
+
+Please take a look.
+
+Changes in v4:
+- Added DT reviewed-by tag
+- Fixed motor typo
+
+Changes in v3:
+- Changed dt-binding to require at least one of enable/supply, dropped ack
+- Changed driver to bail out if neither supply nor gpio is given
+
+Changes in v2:
+- Added DT ack tag
+- Add more information to the commit log (re use of LDO for the power)
+
+
+thank you and regards,
+  Ondrej Jirman
+
+Ondrej Jirman (4):
+  dt-bindings: input: gpio-vibrator: Don't require enable-gpios
+  input: gpio-vibra: Allow to use vcc-supply alone to control the
+    vibrator
+  ARM: dts: sun8i-a83t-tbs-a711: Add support for the vibrator motor
+  ARM: dts: sun8i-a83t-tbs-a711: Increase voltage on the vibrator
+
+ .../devicetree/bindings/input/gpio-vibrator.yaml   |  7 ++++++-
+ arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts          |  9 +++++++--
+ drivers/input/misc/gpio-vibra.c                    | 14 ++++++++++----
+ 3 files changed, 23 insertions(+), 7 deletions(-)
+
 -- 
-2.17.1
+2.27.0
 
