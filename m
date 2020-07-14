@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF6121F6DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 18:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CF021F6DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 18:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgGNQNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 12:13:50 -0400
+        id S1728513AbgGNQNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 12:13:55 -0400
 Received: from mga17.intel.com ([192.55.52.151]:13555 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728281AbgGNQNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 12:13:49 -0400
-IronPort-SDR: eOEYARkJ6RH14vh5s7DyxmB8TbBKday4SXAhpn15WvoGQVWLqFpENtrzbMt9JiC+mB4I9RQS2r
- j2snln2wP6wg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="129030372"
+        id S1728281AbgGNQNy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 12:13:54 -0400
+IronPort-SDR: cOZ3dXkC3vVzbzdVUQJon1ew9izxnkHbKAh2TLPxMiGZnZY7q27SvLdJHYpOHyqiqjfFzHpKp3
+ Hb1yGA44RYjw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="129030385"
 X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="129030372"
+   d="scan'208";a="129030385"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 09:13:49 -0700
-IronPort-SDR: w02oRpL+zy/c4+nw16rV03VnHTGrSz40xWcmPlrviQAykU91o0+Mtr+DbOtNcYjXFn8CwLJexJ
- Ii7zVmI/uHug==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 09:13:53 -0700
+IronPort-SDR: v6TE1gIQVEZ9VPhhOjH/H2OxprPTbe0IVhPdt7ialG5gyYQbE4G7GMYeOj9NnkrfcNi4uw1/HN
+ 3WLZyjFaflFw==
 X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="485930577"
+   d="scan'208";a="485930605"
 Received: from yagellee-mobl.ger.corp.intel.com (HELO dalessan-mobl1.ir.intel.com) ([10.252.20.60])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 09:13:45 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 09:13:49 -0700
 From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
 To:     linux-arm-kernel@lists.infradead.org, SoC Team <soc@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -37,9 +37,9 @@ Cc:     Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
         Will Deacon <will@kernel.org>,
         "Paul J. Murphy" <paul.j.murphy@intel.com>,
         Dinh Nguyen <dinguyen@kernel.org>
-Subject: [PATCH v3 4/7] dt-bindings: power: Add Keem Bay power domains
-Date:   Tue, 14 Jul 2020 17:13:02 +0100
-Message-Id: <20200714161305.836348-5-daniele.alessandrelli@linux.intel.com>
+Subject: [PATCH v3 5/7] MAINTAINERS: Add maintainers for Keem Bay SoC
+Date:   Tue, 14 Jul 2020 17:13:03 +0100
+Message-Id: <20200714161305.836348-6-daniele.alessandrelli@linux.intel.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200714161305.836348-1-daniele.alessandrelli@linux.intel.com>
 References: <20200714161305.836348-1-daniele.alessandrelli@linux.intel.com>
@@ -52,39 +52,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 
-Add power domain dt-bindings for Keem Bay SoC.
+Add maintainers for the new Intel Movidius SoC code-named Keem Bay.
 
+Reviewed-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 ---
- include/dt-bindings/power/keembay-power.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
- create mode 100644 include/dt-bindings/power/keembay-power.h
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/dt-bindings/power/keembay-power.h b/include/dt-bindings/power/keembay-power.h
-new file mode 100644
-index 000000000000..1385c42f897d
---- /dev/null
-+++ b/include/dt-bindings/power/keembay-power.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
-+/*
-+ * Copyright (c) 2020 Intel Corporation.
-+ *
-+ * Device tree defines for power domains in Keem Bay.
-+ */
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b4a43a9e7fbc..b151d0fc0588 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1954,6 +1954,14 @@ F:	drivers/irqchip/irq-ixp4xx.c
+ F:	include/linux/irqchip/irq-ixp4xx.h
+ F:	include/linux/platform_data/timer-ixp4xx.h
+ 
++ARM/INTEL KEEMBAY ARCHITECTURE
++M:	Paul J. Murphy <paul.j.murphy@intel.com>
++M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
++S:	Maintained
++F:	Documentation/devicetree/bindings/arm/keembay.yaml
++F:	include/dt-bindings/clock/keembay-clocks.h
++F:	include/dt-bindings/power/keembay-power.h
 +
-+#ifndef __DT_BINDINGS_KEEMBAY_POWER_H
-+#define __DT_BINDINGS_KEEMBAY_POWER_H
-+
-+#define KEEM_BAY_PSS_POWER_DOMAIN 0
-+#define KEEM_BAY_MSS_CPU_POWER_DOMAIN 1
-+#define KEEM_BAY_VDEC_POWER_DOMAIN 2
-+#define KEEM_BAY_VENC_POWER_DOMAIN 3
-+#define KEEM_BAY_PCIE_POWER_DOMAIN 4
-+#define KEEM_BAY_USS_POWER_DOMAIN 5
-+#define KEEM_BAY_MSS_CAM_POWER_DOMAIN 6
-+
-+#endif /* __DT_BINDINGS_KEEMBAY_POWER_H */
+ ARM/INTEL RESEARCH IMOTE/STARGATE 2 MACHINE SUPPORT
+ M:	Jonathan Cameron <jic23@cam.ac.uk>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
 -- 
 2.26.2
 
