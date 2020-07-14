@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E114421F05B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C214921F016
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728632AbgGNMLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
+        id S1728109AbgGNMJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728541AbgGNMLZ (ORCPT
+        with ESMTP id S1727867AbgGNMJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:11:25 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73139C08C5DF;
-        Tue, 14 Jul 2020 05:11:23 -0700 (PDT)
-Received: from cap.home.8bytes.org (p5b006776.dip0.t-ipconnect.de [91.0.103.118])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id B1749FF5;
-        Tue, 14 Jul 2020 14:11:14 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        Martin Radev <martin.b.radev@gmail.com>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v4 75/75] x86/sev-es: Check required CPU features for SEV-ES
-Date:   Tue, 14 Jul 2020 14:09:17 +0200
-Message-Id: <20200714120917.11253-76-joro@8bytes.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714120917.11253-1-joro@8bytes.org>
-References: <20200714120917.11253-1-joro@8bytes.org>
+        Tue, 14 Jul 2020 08:09:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A43C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:09:48 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594728586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sd6FY7HyKBhACYNltviUNZjUxd7/V5m5zWZgt4T/m9Q=;
+        b=RUqv8y8sPePXSkyq+Rn4hmSWmuiz+TQvQasZ1VMTEj/noj7LQpgIhkjXzjHwHulWrGpAN1
+        HCV/kg+18Uv9n+r6pw8L3x286QT3LOIP/ysGaV/c08dZe7iPTRAZ1HdzHfP/jN4a3wUZNw
+        tiEd8ahMAN1mMU0ZmJLSy5wTrWAFFz7lED9i7cs9VxZLRAbhaDEbvxCj3gGPwFN+DMulg4
+        gmuaytAh91WHqNu1b1LS1c3EwSiCuoaFZhXlXUZwKR5b+soo00IIdICDWm+a78kHlc92GA
+        7MXGKlSqOqL875MumHSNA3Uw1382LWHYcJOLLKejgfe545Nf10kpPPqE9lGAbQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594728586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sd6FY7HyKBhACYNltviUNZjUxd7/V5m5zWZgt4T/m9Q=;
+        b=FCR/1LnlZFw9wBBdwn7/QZ1PiZSb98DEKIeGUs1qiUOvAh4HZDr6ffCO37QnRT0wDgCTPm
+        0lflNyFrC50WhVDg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAIERS: Add John Ogness as printk reviewer
+In-Reply-To: <20200714072337.GE20226@alley>
+References: <20200710094432.19655-1-pmladek@suse.com> <20200714072337.GE20226@alley>
+Date:   Tue, 14 Jul 2020 14:15:45 +0206
+Message-ID: <87v9iqmh6e.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Radev <martin.b.radev@gmail.com>
+On 2020-07-10, Petr Mladek <pmladek@suse.com> wrote:
+> John Ogness has started major rework of the printk code. Add him
+> as reviewer so that he is aware of all other coming changes and
+> could influence their integration.
+> 
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
 
-Make sure the machine supports RDRAND, otherwise there is no trusted
-source of of randomness in the system.
+The rework still has a long road ahead of it, but I am happy to formerly
+assist with future printk work. It is an honor to work together with you
+guys.
 
-Signed-off-by: Martin Radev <martin.b.radev@gmail.com>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/boot/compressed/sev-es.c |  3 +++
- arch/x86/kernel/sev-es-shared.c   | 15 +++++++++++++++
- arch/x86/kernel/sev-es.c          |  3 +++
- 3 files changed, 21 insertions(+)
+Acked-by: John Ogness <john.ogness@linutronix.de>
 
-diff --git a/arch/x86/boot/compressed/sev-es.c b/arch/x86/boot/compressed/sev-es.c
-index b522c18c0588..eb1a8b5cc753 100644
---- a/arch/x86/boot/compressed/sev-es.c
-+++ b/arch/x86/boot/compressed/sev-es.c
-@@ -145,6 +145,9 @@ void sev_es_shutdown_ghcb(void)
- 	if (!boot_ghcb)
- 		return;
- 
-+	if (!sev_es_check_cpu_features())
-+		error("SEV-ES CPU Features missing.");
-+
- 	/*
- 	 * GHCB Page must be flushed from the cache and mapped encrypted again.
- 	 * Otherwise the running kernel will see strange cache effects when
-diff --git a/arch/x86/kernel/sev-es-shared.c b/arch/x86/kernel/sev-es-shared.c
-index 608f76d0d088..56de70cb80d8 100644
---- a/arch/x86/kernel/sev-es-shared.c
-+++ b/arch/x86/kernel/sev-es-shared.c
-@@ -9,6 +9,21 @@
-  * and is included directly into both code-bases.
-  */
- 
-+#ifndef __BOOT_COMPRESSED
-+#define error(v)	pr_err(v)
-+#define has_cpuflag(f)	boot_cpu_has(f)
-+#endif
-+
-+static bool __init sev_es_check_cpu_features(void)
-+{
-+	if (!has_cpuflag(X86_FEATURE_RDRAND)) {
-+		error("RDRAND instruction not supported - no trusted source of randomness available\n");
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
- static void sev_es_terminate(unsigned int reason)
- {
- 	u64 val = GHCB_SEV_TERMINATE;
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 61308f9c8138..481ea00c58b6 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -682,6 +682,9 @@ void __init sev_es_init_vc_handling(void)
- 	if (!sev_es_active())
- 		return;
- 
-+	if (!sev_es_check_cpu_features())
-+		panic("SEV-ES CPU Features missing");
-+
- 	/* Initialize per-cpu GHCB pages */
- 	for_each_possible_cpu(cpu) {
- 		sev_es_alloc_runtime_data(cpu);
--- 
-2.27.0
-
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 1d4aa7f942de..8e82d9db2a21 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13770,6 +13770,7 @@ PRINTK
+>  M:	Petr Mladek <pmladek@suse.com>
+>  M:	Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+>  R:	Steven Rostedt <rostedt@goodmis.org>
+> +R:	John Ogness <john.ogness@linutronix.de>
+>  S:	Maintained
+>  F:	include/linux/printk.h
+>  F:	kernel/printk/
+> -- 
+> 2.26.2
