@@ -2,94 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC4221F842
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4440621F854
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728983AbgGNRcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:32:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726169AbgGNRcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:32:53 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B18AB22450;
-        Tue, 14 Jul 2020 17:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594747972;
-        bh=zyZEA+TmaYx9HIH4TKfXi4hIG1sMV22qo4R5bh/s0e4=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=tux0jxNthNtq9o2fuXzgxnq27EFg1a+hfPyEw+mL7e8RWGUuwd/BtmJG1FzvhA6Jk
-         xxhP6/NVPQ8bIfrcrEwddf/egH/42naepoICJYkAhcTnrJuNHoEbwlRY5+fgIe8Pq1
-         Ug0HADccu05FqQpYVBywxXHO/rkvKK8YJpd6YzUM=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 9A8C9352262C; Tue, 14 Jul 2020 10:32:52 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 10:32:52 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     mingo@kernel.org, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, cai@lca.pw, elver@google.com
-Subject: [GIT PULL kcsan] KCSAN commits for v5.9
-Message-ID: <20200714173252.GA32057@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S1728336AbgGNRhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:37:55 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57518 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726169AbgGNRhz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 13:37:55 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06EHVlU7020416
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:37:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=EsIhcEg5yglXpW3rCuyKG1bMZzzwxUJS0zfvcC1B5FU=;
+ b=Hrkw1wiIS3xztRCtXLSewxKkfzE/QF2kEUzxyiuAa3994nYHDPKcZ+lfaMU31YIRjElh
+ dX77TtzIRQGQjzch85czZiai++PySnSwRSBzyVwWmDJ9dbpfcE7UkD5srWXjdqGA18aD
+ 9LIkPrD9Rb5UEk13Wdg2Si0EPOnrnoLZQWU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 327axn6du3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:37:53 -0700
+Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 14 Jul 2020 10:37:52 -0700
+Received: by devvm1096.prn0.facebook.com (Postfix, from userid 111017)
+        id B775D11D9D9E; Tue, 14 Jul 2020 10:37:50 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm1096.prn0.facebook.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>
+Smtp-Origin-Cluster: prn0c01
+Subject: [PATCH] mm: vmstat: fix /proc/sys/vm/stat_refresh generating false warnings
+Date:   Tue, 14 Jul 2020 10:37:47 -0700
+Message-ID: <20200714173747.3315771-1-guro@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-14_07:2020-07-14,2020-07-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 suspectscore=2 phishscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 lowpriorityscore=0 adultscore=0 bulkscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007140129
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+I've noticed a number of warnings like "vmstat_refresh: nr_free_cma
+-5" or "vmstat_refresh: nr_zone_write_pending -11" on our production
+hosts. The numbers of these warnings were relatively low and stable,
+so it didn't look like we are systematically leaking the counters.
+The corresponding vmstat counters also looked sane.
 
-This pull request contains KCSAN updates for v5.9.  These have been
-subjected to LKML review, most recently here:
+These warnings are generated by the vmstat_refresh() function, which
+assumes that atomic zone and numa counters can't go below zero.
+However, on a SMP machine it's not quite right: due to per-cpu
+caching it can in theory be as low as -(zone threshold) * NR_CPUs.
 
-	https://lore.kernel.org/lkml/20200623004310.GA26995@paulmck-ThinkPad-P72/
+For instance, let's say all cma pages are in use and NR_FREE_CMA_PAGES
+reached 0. Then we've reclaimed a small number of cma pages on each
+CPU except CPU0, so that most percpu NR_FREE_CMA_PAGES counters are
+slightly positive (the atomic counter is still 0). Then somebody on
+CPU0 consumes all these pages. The number of pages can easily exceed
+the threshold and a negative value will be committed to the atomic
+counter.
 
-All of these have also been subjected to the kbuild test robot and
--next testing.  The following changes since v5.8-rc3 are available in
-the git repository at:
+To fix the problem and avoid generating false warnings, let's just
+relax the condition and warn only if the value is less than minus
+the maximum theoretically possible drift value, which is 125 *
+number of online CPUs. It will still allow to catch systematic leaks,
+but will not generate bogus warnings.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git kcsan
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Cc: Hugh Dickins <hughd@google.com>
+Signed-off-by: Roman Gushchin <guro@fb.com>
+---
+ Documentation/admin-guide/sysctl/vm.rst |  4 ++--
+ mm/vmstat.c                             | 30 ++++++++++++++++---------
+ 2 files changed, 21 insertions(+), 13 deletions(-)
 
-for you to fetch changes up to 61d56d7aa5eca3b909bce51ba8125b0fa44d7e17:
+diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admi=
+n-guide/sysctl/vm.rst
+index 4b9d2e8e9142..95fb80d0c606 100644
+--- a/Documentation/admin-guide/sysctl/vm.rst
++++ b/Documentation/admin-guide/sysctl/vm.rst
+@@ -822,8 +822,8 @@ e.g. cat /proc/sys/vm/stat_refresh /proc/meminfo
+=20
+ As a side-effect, it also checks for negative totals (elsewhere reported
+ as 0) and "fails" with EINVAL if any are found, with a warning in dmesg.
+-(At time of writing, a few stats are known sometimes to be found negativ=
+e,
+-with no ill effects: errors and warnings on these stats are suppressed.)
++(On a SMP machine some stats can temporarily become negative, with no il=
+l
++effects: errors and warnings on these stats are suppressed.)
+=20
+=20
+ numa_stat
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index a21140373edb..8f0ef8aaf8ee 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -169,6 +169,8 @@ EXPORT_SYMBOL(vm_node_stat);
+=20
+ #ifdef CONFIG_SMP
+=20
++#define MAX_THRESHOLD 125
++
+ int calculate_pressure_threshold(struct zone *zone)
+ {
+ 	int threshold;
+@@ -186,11 +188,9 @@ int calculate_pressure_threshold(struct zone *zone)
+ 	threshold =3D max(1, (int)(watermark_distance / num_online_cpus()));
+=20
+ 	/*
+-	 * Maximum threshold is 125
++	 * Threshold is capped by MAX_THRESHOLD
+ 	 */
+-	threshold =3D min(125, threshold);
+-
+-	return threshold;
++	return min(MAX_THRESHOLD, threshold);
+ }
+=20
+ int calculate_normal_threshold(struct zone *zone)
+@@ -610,6 +610,9 @@ void dec_node_page_state(struct page *page, enum node=
+_stat_item item)
+ }
+ EXPORT_SYMBOL(dec_node_page_state);
+ #else
++
++#define MAX_THRESHOLD 0
++
+ /*
+  * Use interrupt disable to serialize counter updates
+  */
+@@ -1810,7 +1813,7 @@ static void refresh_vm_stats(struct work_struct *wo=
+rk)
+ int vmstat_refresh(struct ctl_table *table, int write,
+ 		   void *buffer, size_t *lenp, loff_t *ppos)
+ {
+-	long val;
++	long val, max_drift;
+ 	int err;
+ 	int i;
+=20
+@@ -1821,17 +1824,22 @@ int vmstat_refresh(struct ctl_table *table, int w=
+rite,
+ 	 * pages, immediately after running a test.  /proc/sys/vm/stat_refresh,
+ 	 * which can equally be echo'ed to or cat'ted from (by root),
+ 	 * can be used to update the stats just before reading them.
+-	 *
+-	 * Oh, and since global_zone_page_state() etc. are so careful to hide
+-	 * transiently negative values, report an error here if any of
+-	 * the stats is negative, so we know to go looking for imbalance.
+ 	 */
+ 	err =3D schedule_on_each_cpu(refresh_vm_stats);
+ 	if (err)
+ 		return err;
++
++	/*
++	 * Since global_zone_page_state() etc. are so careful to hide
++	 * transiently negative values, report an error here if any of
++	 * the stats is negative and are less than the maximum drift value,
++	 * so we know to go looking for imbalance.
++	 */
++	max_drift =3D num_online_cpus() * MAX_THRESHOLD;
++
+ 	for (i =3D 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
+ 		val =3D atomic_long_read(&vm_zone_stat[i]);
+-		if (val < 0) {
++		if (val < -max_drift) {
+ 			pr_warn("%s: %s %ld\n",
+ 				__func__, zone_stat_name(i), val);
+ 			err =3D -EINVAL;
+@@ -1840,7 +1848,7 @@ int vmstat_refresh(struct ctl_table *table, int wri=
+te,
+ #ifdef CONFIG_NUMA
+ 	for (i =3D 0; i < NR_VM_NUMA_STAT_ITEMS; i++) {
+ 		val =3D atomic_long_read(&vm_numa_stat[i]);
+-		if (val < 0) {
++		if (val < -max_drift) {
+ 			pr_warn("%s: %s %ld\n",
+ 				__func__, numa_stat_name(i), val);
+ 			err =3D -EINVAL;
+--=20
+2.26.2
 
-  kcsan: Disable branch tracing in core runtime (2020-06-29 12:04:48 -0700)
-
-----------------------------------------------------------------
-Marco Elver (9):
-      kcsan: Add test suite
-      kcsan: Prefer '__no_kcsan inline' in test
-      kcsan: Silence -Wmissing-prototypes warning with W=1
-      kcsan: Rename test.c to selftest.c
-      kcsan: Remove existing special atomic rules
-      kcsan: Add jiffies test to test suite
-      kcsan: Re-add GCC as a supported compiler
-      kcsan: Simplify compiler flags
-      kcsan: Disable branch tracing in core runtime
-
-Paul E. McKenney (1):
-      rculist: Add ASSERT_EXCLUSIVE_ACCESS() to __list_splice_init_rcu()
-
-Qian Cai (3):
-      fork: Annotate a data race in vm_area_dup()
-      x86/mm/pat: Mark an intentional data race
-      locking/osq_lock: Annotate a data race in osq_lock
-
- Documentation/dev-tools/kcsan.rst   |    3 +-
- arch/x86/mm/pat/set_memory.c        |    2 +-
- include/linux/rculist.h             |    2 +
- kernel/fork.c                       |    8 +-
- kernel/kcsan/Makefile               |    9 +-
- kernel/kcsan/atomic.h               |    6 +-
- kernel/kcsan/core.c                 |    9 +
- kernel/kcsan/kcsan-test.c           | 1107 +++++++++++++++++++++++++++++++++++
- kernel/kcsan/{test.c => selftest.c} |    0
- kernel/locking/osq_lock.c           |    6 +-
- lib/Kconfig.kcsan                   |   26 +-
- scripts/Makefile.kcsan              |    2 +-
- 12 files changed, 1166 insertions(+), 14 deletions(-)
- create mode 100644 kernel/kcsan/kcsan-test.c
- rename kernel/kcsan/{test.c => selftest.c} (100%)
