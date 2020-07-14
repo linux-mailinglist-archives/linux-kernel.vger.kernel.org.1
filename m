@@ -2,80 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9019B21EC08
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B940621EBFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgGNJB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:01:58 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:35646 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726794AbgGNJB4 (ORCPT
+        id S1726437AbgGNJBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:01:05 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24543 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726187AbgGNJBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:01:56 -0400
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 14F9E8011F;
-        Tue, 14 Jul 2020 21:01:53 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1594717313;
-        bh=QZhAokAJFsC6uIiQS0wezeU8N66XgeQ4QescCeZU9us=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=iR8qyw0JVnHCYF0qT+HKOSZVqQ+bwMjPzy253eF1XtD2w4+5qL+5BBN4vQsfFCK8x
-         EBtIVCjwT0faaUxDL8EQgayYEo4soJeTeqOXQD3y20JcrG/l1HkAIkd4N7Y3QoO1A/
-         pm61enhuUIbpEqj6+jddx+PwJbuWrJNoeRO3vc9FuV1JEnekELWBzYyviBNoAIOcKi
-         MYY/Ln0D4K4suz6nnze2bXQIOp8eSFIAGSFZoshBki0/mdpKsAnPtyjcICy7vXrS5I
-         mxb0K+97RRNFnT89JojqsymFJVgw6K/QFTFGbc6Xg/REIbgHesAQD1wMgcn3ve+3kO
-         zOvwvXSbGUEew==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5f0d74720002>; Tue, 14 Jul 2020 21:01:38 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Tue, 14 Jul 2020 20:45:25 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.006; Tue, 14 Jul 2020 20:45:25 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: procfs VmFlags table missing from online docs
-Thread-Topic: procfs VmFlags table missing from online docs
-Thread-Index: AQHWWZ04Axuc9KTu2km08OQff6fL16kFzV0AgAAseoA=
-Date:   Tue, 14 Jul 2020 08:45:25 +0000
-Message-ID: <a8747dde-32d8-bbfd-fe73-662827abd60e@alliedtelesis.co.nz>
-References: <8abafee9-e34b-45f6-19a7-3f043ceb5537@alliedtelesis.co.nz>
- <6ee41c18-934e-26c2-a875-3d9e4c700c6c@infradead.org>
-In-Reply-To: <6ee41c18-934e-26c2-a875-3d9e4c700c6c@infradead.org>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <171F16C1FB480043918082C088BBED02@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Tue, 14 Jul 2020 05:01:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594717264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0ed3Xocn2VEJ7JZTYR0y+4DEJWtAkhtN40Gvl92+Xn0=;
+        b=ULC7ZQY0kRtLnp1MZEm2h1sR8P8SpGAv7+AQCF0A51a22JBpylFZB2byFZLMsMNBFTuJU3
+        8OLcepX9Bq/RWq9Mso4RhM6r4HXr/zioIF8Aj5H/+lpIXZIm9OhUIZmfRzzC1F/VvbBr2n
+        cRngrXsMw2I6Wnyi/tZQoSWQ/zysQXo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-eftPBnxdNtuDoNxCfsMStA-1; Tue, 14 Jul 2020 05:01:01 -0400
+X-MC-Unique: eftPBnxdNtuDoNxCfsMStA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C77D109D;
+        Tue, 14 Jul 2020 09:00:52 +0000 (UTC)
+Received: from krava (unknown [10.40.193.14])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 227AD5C679;
+        Tue, 14 Jul 2020 09:00:49 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 11:00:48 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: linux-next: build warning after merge of the bpf-next tree
+Message-ID: <20200714090048.GG183694@krava>
+References: <20200714121608.58962d66@canb.auug.org.au>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714121608.58962d66@canb.auug.org.au>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxNC8wNy8yMCA2OjA2IHBtLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+IE9uIDcvMTMvMjAg
-MTA6MTEgUE0sIENocmlzIFBhY2toYW0gd3JvdGU6DQo+PiBIaSwNCj4+DQo+PiBJIHdhcyBqdXN0
-IGJyb3dzaW5nDQo+PiBodHRwczovL3d3dy5rZXJuZWwub3JnL2RvYy9odG1sL2xhdGVzdC9maWxl
-c3lzdGVtcy9wcm9jLmh0bWwNCj4+DQo+PiBUaGUgIlZtRmxhZ3MiIGRlc2NyaXB0aW9uIHNlZW1z
-IHRvIGJlIG1pc3NpbmcgYSB0YWJsZS4gSXQncyB0aGVyZSBpbg0KPj4gRG9jdW1lbnRhdGlvbi9m
-aWxlc3lzdGVtcy9wcm9jLnJzdCBzbyBJIGFzc3VtZSBpdCdzIHNvbWUgc3BoaW54L3JzdA0KPj4g
-cHJvYmxlbS4gUG9zc2libHkgdGhlIHRhYmxlIGlzIG92ZXIgaW5kZW50ZWQ/DQo+IFdvdy4gSXQg
-c2tpcHMgdGhlIHRhYmxlIGNvbXBsZXRlbHkuDQo+DQo+IEkgdHJpZWQgYSBjb3VwbGUgb2YgdGhp
-bmdzIHRoYXQgZGlkIG5vdCBoZWxwLg0KSSB0aGluayBpdCdzIGp1c3QgdGhlIHN0cmF5IC0gaW4g
-dGhlICJidCAtIGFybTY0IiBsaW5lIHBhdGNoIGluY29taW5nLg0KPj4gQW55d2F5IEkgdGhvdWdo
-dCBJJ2QgbGV0IHNvbWVvbmUga25vdy4NCj4gVGhhbmtzLg0KPg0KPj4gUmVnYXJkcywNCj4+IENo
-cmlzDQo+
+On Tue, Jul 14, 2020 at 12:16:08PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the bpf-next tree, today's linux-next build (powerpc
+> ppc64_defconfig) produced this warning:
+> 
+> ld: warning: orphan section `.BTF_ids' from `kernel/trace/bpf_trace.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `kernel/bpf/btf.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `kernel/bpf/stackmap.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `net/core/filter.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `kernel/trace/bpf_trace.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `kernel/bpf/btf.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `kernel/bpf/stackmap.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `net/core/filter.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `kernel/trace/bpf_trace.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `kernel/bpf/btf.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `kernel/bpf/stackmap.o' being placed in section `.BTF_ids'
+> ld: warning: orphan section `.BTF_ids' from `net/core/filter.o' being placed in section `.BTF_ids'
+> 
+> Presumably ntroduced by the merge of the resolve_btfids branch.
+
+missing one more #ifdef.. chage below fixes it for me,
+it's squashed with the fix for the arm build, I'll post 
+both fixes today
+
+thanks,
+jirka
+
+
+---
+diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+index fe019774f8a7..2f9754a4ab2b 100644
+--- a/include/linux/btf_ids.h
++++ b/include/linux/btf_ids.h
+@@ -3,6 +3,8 @@
+ #ifndef _LINUX_BTF_IDS_H
+ #define _LINUX_BTF_IDS_H
+ 
++#ifdef CONFIG_DEBUG_INFO_BTF
++
+ #include <linux/compiler.h> /* for __PASTE */
+ 
+ /*
+@@ -21,7 +23,7 @@
+ asm(							\
+ ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"	\
+ ".local " #symbol " ;                          \n"	\
+-".type  " #symbol ", @object;                  \n"	\
++".type  " #symbol ", STT_OBJECT;               \n"	\
+ ".size  " #symbol ", 4;                        \n"	\
+ #symbol ":                                     \n"	\
+ ".zero 4                                       \n"	\
+@@ -83,5 +85,12 @@ asm(							\
+ ".zero 4                                       \n"	\
+ ".popsection;                                  \n");
+ 
++#else
++
++#define BTF_ID_LIST(name) u32 name[5];
++#define BTF_ID(prefix, name)
++#define BTF_ID_UNUSED
++
++#endif /* CONFIG_DEBUG_INFO_BTF */
+ 
+ #endif
+diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+index 948378ca73d4..a88cd4426398 100644
+--- a/tools/bpf/resolve_btfids/Makefile
++++ b/tools/bpf/resolve_btfids/Makefile
+@@ -16,6 +16,20 @@ else
+   MAKEFLAGS=--no-print-directory
+ endif
+ 
++# always use the host compiler
++ifneq ($(LLVM),)
++HOSTAR  ?= llvm-ar
++HOSTCC  ?= clang
++HOSTLD  ?= ld.lld
++else
++HOSTAR  ?= ar
++HOSTCC  ?= gcc
++HOSTLD  ?= ld
++endif
++AR       = $(HOSTAR)
++CC       = $(HOSTCC)
++LD       = $(HOSTLD)
++
+ OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
+ 
+ LIBBPF_SRC := $(srctree)/tools/lib/bpf/
+
