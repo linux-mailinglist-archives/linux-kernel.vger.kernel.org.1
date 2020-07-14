@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7A021F1EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E68221F1ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728166AbgGNMxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
+        id S1728262AbgGNMxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728049AbgGNMxG (ORCPT
+        with ESMTP id S1728049AbgGNMxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 08:53:06 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BF2C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:53:06 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id f12so21633850eja.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 05:53:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=02YT1Lj8tQBcXYWYQpvUg3R7oFq3J1/SDbHKgSEViOM=;
-        b=pG17K27r/eh9uS5LUykan0qzoLSeXs0OsFRdIMBC599dtjKqobI6aXecAu+D4I3vrs
-         VlOgdWyjwcBqGzGSXtVR+I7+Lgkd+G4Ihk5N1cBYftfzWFJBq4o6wWt9nU5E8+XkpYYi
-         BSvk0drNpPK2i0jyJHwa6r4ZUQroktho/OPvg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=02YT1Lj8tQBcXYWYQpvUg3R7oFq3J1/SDbHKgSEViOM=;
-        b=F2dLca5QrieCTEeCBsdX0u0bhQR6usZPA/rRjS8lD+xZ8uTJcvg0Z74SVUe9BkTtjx
-         vTUJsNB86cf5D32vMrWoRn8XNcgRv+udd7jKA6eZOS6gu6RrPQHB/b+8IJxUisR7PauJ
-         LM3SUJyk3VS785s714ic+kyO7/R6qFGMvFUabHxriqJnOp4WUEF6B6vvo2ap3ivbg8I4
-         B3xAwLCD9vb1vkAzauDY09DngzyNkDM71EiqB0xs3uRi/bgmtjN3GMjh4H90kUY4S5X1
-         v8O+IqJKln1vmhNJ8a0zCiQaBqr3SWGHKmqf62uPDnzKhKiB9MzLFSfmL+qAD1DrdTNZ
-         pYMg==
-X-Gm-Message-State: AOAM531U9WJGKnsveYs7uhk2oDWpe1pkYBvmh7URbWl9n4XEfy0qwruy
-        yxqVpX+B7I4qpZvBwdVXdlu8WXoSUndrpYVMByw13A==
-X-Google-Smtp-Source: ABdhPJw6m1Bx4tTAVd5qna1UJXIjSt0ecpLxk7rReLLIYcM3qVVI8xAtQJZfQj1z1jmrWaiu4SPAVmgH8PSnUdWmFRE=
-X-Received: by 2002:a17:906:1c05:: with SMTP id k5mr4199021ejg.320.1594731184628;
- Tue, 14 Jul 2020 05:53:04 -0700 (PDT)
+        Tue, 14 Jul 2020 08:53:20 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335C0C061755;
+        Tue, 14 Jul 2020 05:53:20 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B5gRY3cgKz9sRf;
+        Tue, 14 Jul 2020 22:53:13 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594731193;
+        bh=WxdhhT3xJBEpwVaUPSy80Amv6nH76of8j38ezETeGLI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Woq8u2BW6oF8HcstvzYhuBDqNwkPAn3B0zojk0Um0lQ5BHKFsN7KrSgP9e8JISs5Y
+         TCnbrvzMTz0+EdMkB647PrbBbSJ0FmnUX5Vdm4PPSxm5KQoU6XY33uiijKfWMsIV3p
+         /KgjgxQueAurUm1hLJ8TouS8bLXe9vibQqrO4SXKXKkmrKcLC4TwP3Mo2NNS/26ids
+         5Ki79z8DWDKUyg9TEXdknZrRDBhK3KMRdpyVFKpk1rcaNxdBTPWe5lLhPOXg5pDPvz
+         w8Ywr6YDH83LvOimpxd/vCbOcbPzKwJSS8FDOZpj4Kf5moLG5Ct7877QsYAPjnhFkD
+         pB7XVc4FRShEw==
+Date:   Tue, 14 Jul 2020 22:53:11 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bixuan Cui <cuibixuan@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-next@vger.kernel.org>,
+        <john.wanghui@huawei.com>, Roman Gushchin <guro@fb.com>
+Subject: Re: [PATCH] mm/percpu: mark pcpu_chunk_type() as __maybe_unused
+Message-ID: <20200714225311.7aeffffd@canb.auug.org.au>
+In-Reply-To: <20200714134101.80534-1-cuibixuan@huawei.com>
+References: <20200714134101.80534-1-cuibixuan@huawei.com>
 MIME-Version: 1.0
-References: <2733b41a-b4c6-be94-0118-a1a8d6f26eec@virtuozzo.com>
- <d6e8ef46-c311-b993-909c-4ae2823e2237@virtuozzo.com> <CAJfpegupeWA_dFi5Q4RBSdHFAkutEeRk3Z1KZ5mtfkFn-ROo=A@mail.gmail.com>
- <8da94b27-484c-98e4-2152-69d282bcfc50@virtuozzo.com> <CAJfpegvU2JQcNM+0mcMPk-_e==RcT0xjqYUHCTzx3g0oCw6RiA@mail.gmail.com>
- <CA+icZUXtYt6LtaB4Fc3UWS0iCOZPV1ExaZgc-1-cD6TBw29Q8A@mail.gmail.com>
-In-Reply-To: <CA+icZUXtYt6LtaB4Fc3UWS0iCOZPV1ExaZgc-1-cD6TBw29Q8A@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 14 Jul 2020 14:52:53 +0200
-Message-ID: <CAJfpegs+hN2G02qigUyQMp=0Ev+t_vYHmK5kh3z+U1GkSuLH-w@mail.gmail.com>
-Subject: Re: [PATCH] fuse_writepages_fill() optimization to avoid WARN_ON in tree_insert
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Vasily Averin <vvs@virtuozzo.com>, linux-fsdevel@vger.kernel.org,
-        Maxim Patlasov <maximvp@gmail.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/J=dR+cfYKKv=+cQfMInw+=E";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 2:40 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+--Sig_/J=dR+cfYKKv=+cQfMInw+=E
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> Did you sent out a new version of your patch?
-> If yes, where can I get it from?
+Hi Bixuan,
 
-Just pushed a bunch of fixes including this one to
+On Tue, 14 Jul 2020 13:41:01 +0000 Bixuan Cui <cuibixuan@huawei.com> wrote:
+>
+> Gcc report the following warning without CONFIG_MEMCG_KMEM:
+>=20
+> mm/percpu-internal.h:145:29: warning: =E2=80=98pcpu_chunk_type=E2=80=99 d=
+efined
+> but not used [-Wunused-function]
+>  static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
+>                              ^~~~~~~~~~~~~~~
+>=20
+> Mark pcpu_chunk_type() as __maybe_unused to make it clear.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git#for-next
+Given that it is in a header file, it should probably just be "static
+inline" (which will also suppress the warning).  As should
+pcpu_is_memcg_chunk() and pcpu_chunk_list().  Also, without them being
+inline, there will be a new copy for each file that
+mm/percpu-internal.h is included in.
 
-Thanks,
-Miklos
+And that should be considered a fix for "mm: memcg/percpu: account
+percpu memory to memory cgroups".
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/J=dR+cfYKKv=+cQfMInw+=E
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8NqrcACgkQAVBC80lX
+0Gy1Ugf/Q/FkaGsEtMOw6s34DBkZttcN+Ayf2WPXZBy6iPueeNHxS6jToQ2/jQ5c
+zUJ4itvLutvGFlxVl9ULesKcYdQuwqCAoXgxUisPCLFPhFcBC2qKXRBObKNv+OI0
+f9Ia6prDgnLNf5D/jX7SbVNBqnDJGwBQYG3XQBTv2c3dgJ40s6RPcEfjm83K6CUp
+WjVbgEfvqcN6aB6PoelT6+JtKNDrLfn38OAYzavri8p4KgRaLppO1e5gWBMOxtUE
+sQDJ7yilgfw3gxalrzzTTog7O0Fggx3LZrsfIFfVZVw5kZcxatC+64CbpCf3fAqT
+uvgGiL7yfkcMVw9JLqyn1ldzQ57lWQ==
+=zIOj
+-----END PGP SIGNATURE-----
+
+--Sig_/J=dR+cfYKKv=+cQfMInw+=E--
