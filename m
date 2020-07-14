@@ -2,81 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC4921F9CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B997421F9B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729527AbgGNSqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:46:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729491AbgGNSqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:46:30 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 426DC22B2E;
-        Tue, 14 Jul 2020 18:46:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752389;
-        bh=ygP+kvB9/t08RSdTKMcD2QE5Gt3TvzBA4D0jbatvNt8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bZ/ta7es3635OZiSw7lJ4v5ing+YzqDhBmYnrbdP8o/XRBSb3MVUsGYTL/7aKbawv
-         NYLcA3vu62Fdd7gFGyn70zum1x2prwJvIGs7D4S4L4snmNWJ+m77/VM1O+aLhtGolt
-         MRaJ0LL/AlpIb27uAvxkOVPPw+eZzC6FwbINTMX0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Gurtovoy <maxg@mellanox.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 23/58] nvme-rdma: assign completion vector correctly
-Date:   Tue, 14 Jul 2020 20:43:56 +0200
-Message-Id: <20200714184057.296932001@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1729260AbgGNSoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbgGNSoI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:44:08 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED297C061755;
+        Tue, 14 Jul 2020 11:44:07 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: wlozano)
+        with ESMTPSA id 2DC4D2A090D
+From:   Walter Lozano <walter.lozano@collabora.com>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Walter Lozano <walter.lozano@collabora.com>
+Subject: [PATCH] cpufreq: imx: Select NVMEM_IMX_OCOTP
+Date:   Tue, 14 Jul 2020 15:43:56 -0300
+Message-Id: <20200714184356.32749-1-walter.lozano@collabora.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Gurtovoy <maxg@mellanox.com>
+When probing cpufreq for iMX6 the values in the efuse needs to be
+read which requires NVMEM_IMX_OCOTP. If this option is not enabled,
+the probe will be deferred forever and cpufreq won't be available.
 
-[ Upstream commit 032a9966a22a3596addf81dacf0c1736dfedc32a ]
+This patch forces the selection of the required configuration option.
 
-The completion vector index that is given during CQ creation can't
-exceed the number of support vectors by the underlying RDMA device. This
-violation currently can accure, for example, in case one will try to
-connect with N regular read/write queues and M poll queues and the sum
-of N + M > num_supported_vectors. This will lead to failure in establish
-a connection to remote target. Instead, in that case, share a completion
-vector between queues.
-
-Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Walter Lozano <walter.lozano@collabora.com>
 ---
- drivers/nvme/host/rdma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpufreq/Kconfig.arm | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 9711bfbdf4316..f393a6193252e 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -447,7 +447,7 @@ static int nvme_rdma_create_queue_ib(struct nvme_rdma_queue *queue)
- 	 * Spread I/O queues completion vectors according their queue index.
- 	 * Admin queues can always go on completion vector 0.
- 	 */
--	comp_vector = idx == 0 ? idx : idx - 1;
-+	comp_vector = (idx == 0 ? idx : idx - 1) % ibdev->num_comp_vectors;
- 
- 	/* +1 for ib_stop_cq */
- 	queue->ib_cq = ib_alloc_cq(ibdev, queue,
+diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+index c6cbfc8baf72..ce0227c429cf 100644
+--- a/drivers/cpufreq/Kconfig.arm
++++ b/drivers/cpufreq/Kconfig.arm
+@@ -93,6 +93,7 @@ config ARM_IMX6Q_CPUFREQ
+ 	tristate "Freescale i.MX6 cpufreq support"
+ 	depends on ARCH_MXC
+ 	depends on REGULATOR_ANATOP
++	select NVMEM_IMX_OCOTP
+ 	select PM_OPP
+ 	help
+ 	  This adds cpufreq driver support for Freescale i.MX6 series SoCs.
 -- 
-2.25.1
-
-
+2.20.1
 
