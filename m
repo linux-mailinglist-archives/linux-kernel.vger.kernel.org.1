@@ -2,74 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF7921F97A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C700B21F97F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729145AbgGNSci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:32:38 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:34436 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726817AbgGNSci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:32:38 -0400
-Received: from x2f7fa33.dyn.telefonica.de ([2.247.250.51] helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1jvPjI-0008JF-Q6; Tue, 14 Jul 2020 20:32:36 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
-        linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH 19/25] pinctrl: pinctrl-rockchip: Fix a bunch of kerneldoc misdemeanours
-Date:   Tue, 14 Jul 2020 20:32:34 +0200
-Message-ID: <2181743.Gcv4MJzrWR@phil>
-In-Reply-To: <20200713144930.1034632-20-lee.jones@linaro.org>
-References: <20200713144930.1034632-1-lee.jones@linaro.org> <20200713144930.1034632-20-lee.jones@linaro.org>
+        id S1729185AbgGNSdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbgGNSdc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:33:32 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3AC1C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:33:31 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id t27so15034575ill.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=+GrWComU6TBiIyymRd8f6GtXs9/MoZhC4FrxlGlnlig=;
+        b=Xa0xe+8Qcmx/ymrkj23nB3jIFtCMBlAwRV26M9ftEsSHshXYtA54soUcQmeVWa5vJ4
+         JgCoxeEuvPQH2ZnS3UQX9OrRgPsyoq/SNaxK3v5nHYWjQv7Tg/j4aIwqxbMxojQ4ZLZx
+         VdWgM7h4YhHVcgkX23DfjwwjK3nhGndJ7+cJ3EW4uiH+WTSbgN6SYk49IZPeCAR0M/fD
+         PCm/ib867eRLK2GUKmekIeg7duOIUjjADCJl08ORUWOztWcmpwub8uLEwrUrUUrf1Tak
+         SQJSlQjUlV5a67mLzj5FRORhO/DDS7FCmBBchVzp05k2OEJofKa5xJuJWI8pGIUuyW/n
+         jNCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=+GrWComU6TBiIyymRd8f6GtXs9/MoZhC4FrxlGlnlig=;
+        b=Sntb6X4UKoBLv9k5EdqoPS5Myaj+Rix3d2tqJbtzAF8jImK3p8jq8kicYrZH6k1lNA
+         qD5p0svC3nicagmm3hl5BYryXvtAyt5V/mBFbK0OwszRkS7cQqyvP1ATerQ76lzZXpZy
+         BsWhByS9sPLjEj1lNhixAL3lb+XuY6/3T6+7+Bb2JXLFMy1xwL+ezlWffsHznZQMBZGe
+         K9i5klxD4PFGAxDKru7yVVE5af2ljmVPT2wOTYVzVsPIquLVsxSp8Ns0CQWhDm9D5q6x
+         6Tx4v1obEXTdbmFPruwMEIxPIeSSvEL73zbpMk4n+OrcqX9Ladbdh4ocGw374ZQSzHOP
+         TXWQ==
+X-Gm-Message-State: AOAM532FBgBEYewRVG3OybuY05M0h5HJ1lkEuyEAPyn3csEPTaJQJiTi
+        JMqnsz5qWswvjTTGlitcP88Ioz7zWUwcD8GH5Iw=
+X-Google-Smtp-Source: ABdhPJyPemS7zsyNCYJIK3K/PqcPh9lIRF1DIinCrjXbvndkLzkY0bN0ijo9FaTZZeENw5QZH2lMIY/ekD9lzxCoBqo=
+X-Received: by 2002:a92:8b11:: with SMTP id i17mr5986875ild.212.1594751611244;
+ Tue, 14 Jul 2020 11:33:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20200629140928.858507-1-nivedita@alum.mit.edu>
+ <20200714023836.2310569-1-nivedita@alum.mit.edu> <CA+icZUXSPfybFtzQB3wKn9spQmEPnQu_iGPWkRisAmRQbJLWXA@mail.gmail.com>
+ <20200714141550.GA329060@rani.riverdale.lan> <CA+icZUU88wYmyycthW7AQUZ72HGa9RWPZmxVS5Gm6UW=6ES9kA@mail.gmail.com>
+ <CA+icZUWHdsk9+wkTZOdDghM7pRZyk2vHgxpYx62vPooqohzbYw@mail.gmail.com>
+In-Reply-To: <CA+icZUWHdsk9+wkTZOdDghM7pRZyk2vHgxpYx62vPooqohzbYw@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 14 Jul 2020 20:33:19 +0200
+Message-ID: <CA+icZUWip6xAFdTiLNWT4QHS0R6bQuCZ6W7dWd+UbbZGnBBh4w@mail.gmail.com>
+Subject: Re: [PATCH v4 0/7] x86/boot: Remove runtime relocations from
+ compressed kernel
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 13. Juli 2020, 16:49:24 CEST schrieb Lee Jones:
-> Demote headers which are clearly not kerneldoc, provide titles for
-> struct definition blocks, fix API slip (bitrot) misspellings and
-> provide some missing entries.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/pinctrl/pinctrl-rockchip.c:82: warning: cannot understand function prototype: 'struct rockchip_iomux '
->  drivers/pinctrl/pinctrl-rockchip.c:97: warning: Enum value 'DRV_TYPE_IO_DEFAULT' not described in enum 'rockchip_pin_drv_type'
->  drivers/pinctrl/pinctrl-rockchip.c:97: warning: Enum value 'DRV_TYPE_IO_1V8_OR_3V0' not described in enum 'rockchip_pin_drv_type'
->  drivers/pinctrl/pinctrl-rockchip.c:97: warning: Enum value 'DRV_TYPE_IO_1V8_ONLY' not described in enum 'rockchip_pin_drv_type'
->  drivers/pinctrl/pinctrl-rockchip.c:97: warning: Enum value 'DRV_TYPE_IO_1V8_3V0_AUTO' not described in enum 'rockchip_pin_drv_type'
->  drivers/pinctrl/pinctrl-rockchip.c:97: warning: Enum value 'DRV_TYPE_IO_3V3_ONLY' not described in enum 'rockchip_pin_drv_type'
->  drivers/pinctrl/pinctrl-rockchip.c:97: warning: Enum value 'DRV_TYPE_MAX' not described in enum 'rockchip_pin_drv_type'
->  drivers/pinctrl/pinctrl-rockchip.c:106: warning: Enum value 'PULL_TYPE_IO_DEFAULT' not described in enum 'rockchip_pin_pull_type'
->  drivers/pinctrl/pinctrl-rockchip.c:106: warning: Enum value 'PULL_TYPE_IO_1V8_ONLY' not described in enum 'rockchip_pin_pull_type'
->  drivers/pinctrl/pinctrl-rockchip.c:106: warning: Enum value 'PULL_TYPE_MAX' not described in enum 'rockchip_pin_pull_type'
->  drivers/pinctrl/pinctrl-rockchip.c:109: warning: Cannot understand  * @drv_type: drive strength variant using rockchip_perpin_drv_type
->  on line 109 - I thought it was a doc line
->  drivers/pinctrl/pinctrl-rockchip.c:122: warning: Cannot understand  * @reg_base: register base of the gpio bank
->  on line 109 - I thought it was a doc line
->  drivers/pinctrl/pinctrl-rockchip.c:325: warning: Function parameter or member 'route_location' not described in 'rockchip_mux_route_data'
->  drivers/pinctrl/pinctrl-rockchip.c:328: warning: Cannot understand  */
->  on line 109 - I thought it was a doc line
->  drivers/pinctrl/pinctrl-rockchip.c:375: warning: Function parameter or member 'data' not described in 'rockchip_pin_group'
->  drivers/pinctrl/pinctrl-rockchip.c:387: warning: Function parameter or member 'ngroups' not described in 'rockchip_pmx_func'
-> 
-> Cc: Heiko Stuebner <heiko@sntech.de>
-> Cc: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-> Cc: linux-rockchip@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Tue, Jul 14, 2020 at 8:30 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> > I did a full new build...
+> >
+> > ...and it fails with ld.lld-11 as linker:
+> >
+> > ld.lld-11 -m elf_x86_64 -pie  --no-dynamic-linker -r -o
+> > arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o
+> > -T arch/x86/boot/compressed/.tmp_misc.ver; mv -f
+> > arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o;
+> > rm -f arch/x86/boot/compressed/.tmp_misc.ver; fi
+> > *** ld.lld-11: error: -r and -pie may not be used together ***
+> > make[5]: *** [scripts/Makefile.build:281:
+> > arch/x86/boot/compressed/misc.o] Error 1
+> >
+> > It's annoying to fail on the last minutes of a build.
+> > Sorry for being very honest.
+> >
+>
+> I applied this diff...
+>
+> $ git diff arch/x86/boot/compressed/Makefile
+> diff --git a/arch/x86/boot/compressed/Makefile
+> b/arch/x86/boot/compressed/Makefile
+> index 789d5d14d8b0..9ba52a656838 100644
+> --- a/arch/x86/boot/compressed/Makefile
+> +++ b/arch/x86/boot/compressed/Makefile
+> @@ -51,7 +51,10 @@ UBSAN_SANITIZE :=n
+>  KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
+>  # Compressed kernel should be built as PIE since it may be loaded at any
+>  # address by the bootloader.
+> +# LLD linker does not allow -r and -pie options to be used together.
+> +ifndef CONFIG_LD_IS_LLD
+>  KBUILD_LDFLAGS += -pie $(call ld-option, --no-dynamic-linker)
+> +endif
+>  LDFLAGS_vmlinux := -T
+>
+>  hostprogs      := mkpiggy
+>
+> ...and was able to build, assemble, link arch/x86/boot/compressed/*.
+>
 
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+I checked my last succesfull build without your patchset:
 
-Thanks for fixing these doc issues
+$ grep no-dynamic-linker build-log_5.8.0-rc5-1-amd64-llvm11-ias.txt
+[ EMPTY ]
 
-
-
+- Sedat -
