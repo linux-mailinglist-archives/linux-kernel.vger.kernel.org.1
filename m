@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5414621FDAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D43C21FDAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730331AbgGNTmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:42:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729427AbgGNTmU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:42:20 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4585C061755;
-        Tue, 14 Jul 2020 12:42:20 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o13so8056344pgf.0;
-        Tue, 14 Jul 2020 12:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+ZhRanqEZ6xrzrFJNj1TcXKoTTLAuy/jV3gWLNq6hZ4=;
-        b=giu+sL5nBFSemahOaz6MWi28NSoEh5gBWf7W/REahIs3P6gyU45zkCg2aKS23Dn0S0
-         M/gnZ9RUATYkOYeuop9a3noUH4U0ds3U4otsNJ3HVeUWMSUBQ7IDgRWFohRw/8wrjVne
-         /FdX1Ekj/KQ4rJjpw1GwMn2lSMiwaZL63W0lUaeaAzpL/U7drbicEP46mKpmZZEN4yfi
-         vq3nQnGox9EZjQ3R2vpbG+OjVSMFpNwSvFu6oSjZCZ54dJcJMeMQ8ucWLY+KPQ7UHG25
-         QyNK4NgQT6oUSL/7yWEFfasxf5/E5Dii8tH73DLtBasnMYN0HnD90rSMFe4A8zWEpl1z
-         +v/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+ZhRanqEZ6xrzrFJNj1TcXKoTTLAuy/jV3gWLNq6hZ4=;
-        b=EhRU0Ax1MA68QUWzp0TtspNjurMN2WYEcgfTY73L5U60QBAyKTVY7KLL4/Tl/ReEhB
-         wUtKY/OxtzOljKMhypikF4l3zpNfA4NoIEyHBqLxvrji1H9p9QOjpLiH2s/knx6Emnd2
-         lObxVTA/jNZZnNf1sRUtY7r4z6ARnouJqnl/eEGg3EUrS7hMFPzHM5wwKOqnbPUKUsWV
-         ssp9bAvj6UXdsKJ2B0KbgsSsiZRLPw0JRuFEQfy1jKCWqnRD1+jPyK60DPeMerJ6pGRZ
-         OfptGinbrciwJx9+GW/wctkgSIf7E4WeSlxsCHbz3156d32aXi5JRHcNvMflai6I7Cb0
-         WOgw==
-X-Gm-Message-State: AOAM533XtrJ0iK+azwqC8EQP9P8D8VSeUGEsmgM9b+yftBlooD2heZv5
-        40vR0iuVZs4h43oRKEmNjfb3+kAQi7I=
-X-Google-Smtp-Source: ABdhPJwCZW0EI5rCFgMKvm2MFTrsjjZtvXTrUu9XHGbNrwtGiJZJ/jM8nhz7CjNBJzySZOjUfWeRrw==
-X-Received: by 2002:a62:4e06:: with SMTP id c6mr5741389pfb.296.1594755740258;
-        Tue, 14 Jul 2020 12:42:20 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:96f0])
-        by smtp.gmail.com with ESMTPSA id f2sm5394pfb.184.2020.07.14.12.42.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 12:42:19 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 12:42:16 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, bpf <bpf@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Gary Lin <GLin@suse.com>, Bruno Meneguele <bmeneg@redhat.com>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [merged][PATCH v3 00/16] Make the user mode driver code a better
- citizen
-Message-ID: <20200714194216.sq2e3z44htts57qf@ast-mbp.dhcp.thefacebook.com>
-References: <20200625095725.GA3303921@kroah.com>
- <778297d2-512a-8361-cf05-42d9379e6977@i-love.sakura.ne.jp>
- <20200625120725.GA3493334@kroah.com>
- <20200625.123437.2219826613137938086.davem@davemloft.net>
- <CAHk-=whuTwGHEPjvtbBvneHHXeqJC=q5S09mbPnqb=Q+MSPMag@mail.gmail.com>
- <87pn9mgfc2.fsf_-_@x220.int.ebiederm.org>
- <87y2oac50p.fsf@x220.int.ebiederm.org>
- <87bll17ili.fsf_-_@x220.int.ebiederm.org>
- <87y2o1swee.fsf_-_@x220.int.ebiederm.org>
- <87r1tke44q.fsf_-_@x220.int.ebiederm.org>
+        id S1729861AbgGNTn4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Jul 2020 15:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729329AbgGNTnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:43:55 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 337C022B4D;
+        Tue, 14 Jul 2020 19:43:54 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 15:43:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Tom Zanussi <zanussi@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Clark Williams <williams@redhat.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>
+Subject: Re: [ANNOUNCE] 4.19.132-rt59
+Message-ID: <20200714154352.04794760@oasis.local.home>
+In-Reply-To: <20200714183512.GA18816@duo.ucw.cz>
+References: <82932b48972f38fccf9920e2ec75b555c2b2494a.camel@kernel.org>
+        <20200714183512.GA18816@duo.ucw.cz>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r1tke44q.fsf_-_@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 05:05:09PM -0500, Eric W. Biederman wrote:
-> 
-> I have merged all of this into my exec-next tree.
-> 
-> The code is also available on the frozen branch:
-> 
->    git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.git usermode-driver-cleanup
-> 
-> Declaring this set of changes done now, allows the work that depends
-> upon this change to proceed.
+On Tue, 14 Jul 2020 20:35:12 +0200
+Pavel Machek <pavel@denx.de> wrote:
 
-Now I've pulled it into bpf-next as well.
-In the mean time there were changes to kernel_write that broke bpfilter.ko
-I fixed it up as well.
-Thanks.
+> Hi!
+> 
+> > 
+> > I'm pleased to announce the 4.19.132-rt59 stable release.
+> > 
+> > This release is just an update to the new stable 4.19.132
+> > version and no RT specific changes have been made.
+> > 
+> > You can get this release via the git tree at:
+> > 
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+> > 
+> >   branch: v4.19-rt
+> >   Head SHA1: 1eebf4069aa37e54330cce9a42608517ea6996fe
+> > 
+> > Or to build 4.19.132-rt59 directly, the following patches should be
+> > applied:  
+> 
+> Thanks a lot.
+> 
+> But now I am confused, I completely missed announcements for
+> v4.19.127-rt55 to v4.19.131-rt58.
+> 
+> And for example -rt56 is not listed in
+> 
+> https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/4.19/older/sha256sums.asc
+> 
+> ...aha, and the versions do not have signed tags, either:
+> 
+> pavel@amd:~/cip/k$ git show v4.19.131-rt58
+> fatal: ambiguous argument 'v4.19.131-rt58': unknown revision or path not in the working tree.
+> 
+> Is that because they were created just as quick steps towards -rt59?
+>
+
+Ah, I was about to say this is something that Kate keeps reminding me
+to add to the wiki, but looking, I already did!
+
+https://wiki.linuxfoundation.org/realtime/documentation/start
+
+"Tagging policy of the PREEMPT_RT stable releases. Each PREEMPT_RT
+stable release is tagged with the version number of the upstream Linux
+stable kernel as well as its own “-rt” counter that is appended. The
+-rt counter will increment for the following:
+
+ - When forward ported to the latest upstream Linux stable version.
+ - When any merge with a upstream Linux stable causes a conflict.
+ - When a backport of the PREEMPT_RT development branch is done.
+
+A backport will not be done with a forward port of a stable version.
+They will be done separately, and tagged separately."
+
+Tom, I sign all tags, we probably should be consistent with that too.
+
+-- Steve
