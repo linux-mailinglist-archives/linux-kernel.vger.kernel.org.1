@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC81121F71A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 18:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2EA21F71D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 18:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728595AbgGNQSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 12:18:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47182 "EHLO mail.kernel.org"
+        id S1728105AbgGNQTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 12:19:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726478AbgGNQSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 12:18:53 -0400
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725876AbgGNQTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 12:19:51 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 605622251F;
-        Tue, 14 Jul 2020 16:18:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0986B2251F;
+        Tue, 14 Jul 2020 16:19:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594743532;
-        bh=Arizj3kFgzEcL3Koyf1IoHEpYlDKy+RYAsYt5BODwnc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=T+my6tgyXE9IQIVevvThSfjhdhNcDPwiHAF99JP8td1Zbp4KR5sqD9/YD2xWrm7NE
-         8CTBTmZU52RSRd4L/WoM9hOaWIQaquWQ7Xo9JjUzbLP0jQXfn4sKo5bl5eHw4Pz4OY
-         D8r6aXgKdnsXBHBMV/bu2MrBr4sRiqkkzN/8IFQA=
-Received: by mail-lj1-f180.google.com with SMTP id e8so23595707ljb.0;
-        Tue, 14 Jul 2020 09:18:52 -0700 (PDT)
-X-Gm-Message-State: AOAM530l7QIKT++9ZK2mt90lFDekE1KO0T7XPm9vHNO/9tyUHEKiorkM
-        6kIGlKwhxEy921haOFjTEiA4++KQDPoXbEcu8tQ=
-X-Google-Smtp-Source: ABdhPJyZyZCLfuoyTSGGY8RWN0T4zhEj7y1fQH0Eoe71BRYQetrHSV3OxgPcdQvc0QB7QrW9affifMlT3VJPWRtxWxo=
-X-Received: by 2002:a2e:88c6:: with SMTP id a6mr2700501ljk.27.1594743530708;
- Tue, 14 Jul 2020 09:18:50 -0700 (PDT)
+        s=default; t=1594743590;
+        bh=lRSE/4hSn1v2fMwF9n46EsTDKUbMg56aFEA+qhfcP9M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qBzwb4f8LW3UEB7F8Jb8cf9IX+qFNOmLeiKzIa9Ooq7h2pRN0jLasD7vbnkiTCo/q
+         wjHoMBpMbmzqq+OQ3phhpUMCmvPlNUQwszES7Sk742Aib0XNuqeTtSLBC6W8UxWVDx
+         Ri9c7y6iJQduP16H88phMTHeLSvH4Z4kS08Ag0NY=
+Date:   Tue, 14 Jul 2020 18:19:48 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] hpilo: Replace one-element array with
+ flexible-array member
+Message-ID: <20200714161948.GA2092551@kroah.com>
+References: <20200714154449.GA26153@embeddedor>
 MIME-Version: 1.0
-References: <20200709233545.67954-1-junxiao.bi@oracle.com> <CAPhsuW7seCUnt3zt6A_fjTS2diB7qiTE+SZkM6Vh=G26hdwGtg@mail.gmail.com>
- <de97a2c1-fba0-5276-7748-f0155088ad0d@oracle.com>
-In-Reply-To: <de97a2c1-fba0-5276-7748-f0155088ad0d@oracle.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 14 Jul 2020 09:18:39 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4GQK7hS4AOpJJ1mEE8gbFgo+n+XCQ2fvW94QnZhA6ivQ@mail.gmail.com>
-Message-ID: <CAPhsuW4GQK7hS4AOpJJ1mEE8gbFgo+n+XCQ2fvW94QnZhA6ivQ@mail.gmail.com>
-Subject: Re: [PATCH] md: fix deadlock causing by sysfs_notify
-To:     Junxiao Bi <junxiao.bi@oracle.com>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200714154449.GA26153@embeddedor>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 11:41 PM Junxiao Bi <junxiao.bi@oracle.com> wrote:
->
-> On 7/13/20 11:17 PM, Song Liu wrote:
->
-> > On Thu, Jul 9, 2020 at 4:36 PM Junxiao Bi <junxiao.bi@oracle.com> wrote:
-> >> The following deadlock was captured. The first process is holding 'kernfs_mutex'
-> >> and hung by io. The io was staging in 'r1conf.pending_bio_list' of raid1 device,
-> >> this pending bio list would be flushed by second process 'md127_raid1', but
-> >> it was hung by 'kernfs_mutex'. Using sysfs_notify_dirent_safe() to replace
-> >> sysfs_notify() can fix it. There were other sysfs_notify() invoked from io
-> >> path, removed all of them.
-> >>
-> > [...]
-> >> Cc: stable@vger.kernel.org
-> >> Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
-> > Thanks for the patch. It looks good in general. One question though, do we
-> > need the same change the following line in md.c:level_store()?
-> >
-> >      sysfs_notify(&mddev->kobj, NULL, "level");
->
-> Thanks for the review. This one is not in io path, looks it's safe. I
-> can change it if you want to align it with others.
+On Tue, Jul 14, 2020 at 10:44:49AM -0500, Gustavo A. R. Silva wrote:
+> There is a regular need in the kernel to provide a way to declare
+> having a dynamically sized set of trailing elements in a structure.
+> Kernel code should always use “flexible array members”[1] for these
+> cases. The older style of one-element or zero-length arrays should
+> no longer be used[2].
+> 
+> For this particular case, it is important to notice that the cachelines
+> change from 7 to 6 after the flexible-array conversion:
 
-This one is the only leftover. Let's also change it.
+That's really funny to see.  Nice work, I'll go queue this up.  I doubt
+anyone will notice as this is a very old driver :)
 
-Thanks,
-Song
+thanks,
+
+greg k-h
