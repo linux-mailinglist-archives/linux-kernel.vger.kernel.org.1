@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B0E21FB3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422C221FA8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731333AbgGNTAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:00:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58640 "EHLO mail.kernel.org"
+        id S1730655AbgGNSxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:53:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731015AbgGNS74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:59:56 -0400
+        id S1730628AbgGNSxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:53:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F001122507;
-        Tue, 14 Jul 2020 18:59:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B54C207F5;
+        Tue, 14 Jul 2020 18:53:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753196;
-        bh=G15zM31QICDMV7rJs5RJeHhuMGQu1mL+XeWYE7wr6vs=;
+        s=default; t=1594752803;
+        bh=Y0ZL7fYwpv1P8Ccuhgv3GoEXJWVonj3eDP4lzZJ/Lk4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IeXNbBv/gM4hj/iXPkxL6uUZ6LH/FW2CJ0sABNX4yDoNT9nVkyYU/rjw+Z/KBe1fW
-         jJvjokIe/A3zzmVGWVzr9bRVJVr33mSwSkqOSrFr7hSQ8q1I11xb9HigPt3co1Ky6I
-         Rbo27OrLmbVZbpnFoQInA5rZUmDugro3nljZZqLM=
+        b=pXiT6Y0zNF1KYTGxw/r538+S1SsiJB8MPJho3KrB6uNDYkpPHfLe77W4p0/oW3rwm
+         xpMpEgk1hFpHVOwhjKKkCM2mp8v92D/wUZWJm7ppFZrocLw9ihV9ezEW1V8Guz9mnT
+         JySeO/QF7kHbLnTzz5PgU4Vejwfm+jkT7QuTPVEo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.7 126/166] io_uring: fix memleak in io_sqe_files_register()
-Date:   Tue, 14 Jul 2020 20:44:51 +0200
-Message-Id: <20200714184121.866656714@linuxfoundation.org>
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH 5.4 109/109] pwm: jz4740: Fix build failure
+Date:   Tue, 14 Jul 2020 20:44:52 +0200
+Message-Id: <20200714184110.775627425@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
 
-commit 667e57da358f61b6966e12e925a69e42d912e8bb upstream.
+When commit 9017dc4fbd59 ("pwm: jz4740: Enhance precision in calculation
+of duty cycle") from v5.8-rc1 was backported to v5.4.x its dependency on
+commit ce1f9cece057 ("pwm: jz4740: Use clocks from TCU driver") was not
+noticed which made the pwm-jz4740 driver fail to build.
 
-I got a memleak report when doing some fuzz test:
+As ce1f9cece057 depends on still more rework, just backport a small part
+of this commit to make the driver build again. (There is no dependency
+on the functionality introduced in ce1f9cece057, just the rate variable
+is needed.)
 
-BUG: memory leak
-unreferenced object 0x607eeac06e78 (size 8):
-  comm "test", pid 295, jiffies 4294735835 (age 31.745s)
-  hex dump (first 8 bytes):
-    00 00 00 00 00 00 00 00                          ........
-  backtrace:
-    [<00000000932632e6>] percpu_ref_init+0x2a/0x1b0
-    [<0000000092ddb796>] __io_uring_register+0x111d/0x22a0
-    [<00000000eadd6c77>] __x64_sys_io_uring_register+0x17b/0x480
-    [<00000000591b89a6>] do_syscall_64+0x56/0xa0
-    [<00000000864a281d>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Call percpu_ref_exit() on error path to avoid
-refcount memleak.
-
-Fixes: 05f3fb3c5397 ("io_uring: avoid ring quiesce for fixed file set unregister and update")
-Cc: stable@vger.kernel.org
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Uwe Kleine-KÃ¶nig <u.kleine-koenig@pengutronix.de>
+Reported-by: H. Nikolaus Schaller <hns@goldelico.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/io_uring.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/pwm/pwm-jz4740.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6751,6 +6751,7 @@ static int io_sqe_files_register(struct
- 		for (i = 0; i < nr_tables; i++)
- 			kfree(ctx->file_data->table[i].files);
+--- a/drivers/pwm/pwm-jz4740.c
++++ b/drivers/pwm/pwm-jz4740.c
+@@ -92,11 +92,12 @@ static int jz4740_pwm_apply(struct pwm_c
+ {
+ 	struct jz4740_pwm_chip *jz4740 = to_jz4740(pwm->chip);
+ 	unsigned long long tmp;
+-	unsigned long period, duty;
++	unsigned long rate, period, duty;
+ 	unsigned int prescaler = 0;
+ 	uint16_t ctrl;
  
-+		percpu_ref_exit(&ctx->file_data->refs);
- 		kfree(ctx->file_data->table);
- 		kfree(ctx->file_data);
- 		ctx->file_data = NULL;
+-	tmp = (unsigned long long)clk_get_rate(jz4740->clk) * state->period;
++	rate = clk_get_rate(jz4740->clk);
++	tmp = rate * state->period;
+ 	do_div(tmp, 1000000000);
+ 	period = tmp;
+ 
 
 
