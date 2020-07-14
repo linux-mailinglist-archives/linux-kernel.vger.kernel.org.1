@@ -2,136 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985F8220011
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69350220010
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgGNVdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgGNVdh (ORCPT
+        id S1728135AbgGNVbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:31:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43927 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727101AbgGNVbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:33:37 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D3FC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:33:37 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 22so982578wmg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:33:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=UtdKaUC50+DBu44j3zskZy46PDkWi7WEkFGNTwqCIoY=;
-        b=ZdxXWZM/b8EqxIpABEM6pucd3tsDPMAQfWU1nIe16VgCJokdapVLUjRlV5UPCmXIy8
-         g/cPrQ8DefYSLzelcVRd7gziOGDddN35aIqanSzhKRDTeYvP8zwPVdUBeSLv83jn8cLE
-         CKlYIgFapNDT1Mujzuc1pYuICnf0PL9xwfIliuIxuZ9JpSzNBYWRBzqCkT/if1n7M9oY
-         rR4t+NCLHGYA5fzbPQ1SUTM47Lvtj1nJvxceDGuv9luNbkkjGxydDcdvq6vyAOoWPIGt
-         PKTwOkzm84pBrYLhfjP+ctuefK8I0nGvM2a2rfC3GAMvunHwuhO6DxKas83H/jumrufW
-         /x2w==
+        Tue, 14 Jul 2020 17:31:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594762273;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P2jjMlQNGljDKhczKBKSdNL0F7/+3pAMGrpUsxclRjw=;
+        b=TG3F4bV69A/sXIHC0vLWa8qXNzt3LLCklHYcD69hRDZf+Kfp/ThO7WhAXipHBnnPT+A0JW
+        eZcEclgwuIHMLGZ7ZS8vbT9IUkD2iulYLGoa7QvtIf3eitaYE1kd4vsDyuIixv8CKCDK1X
+        DeU1Go1l6mQteYxchRyTJ5LdaawOems=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-6O96uBO8PVy_396vys0hUw-1; Tue, 14 Jul 2020 17:30:52 -0400
+X-MC-Unique: 6O96uBO8PVy_396vys0hUw-1
+Received: by mail-qv1-f72.google.com with SMTP id m8so30845qvv.10
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:30:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UtdKaUC50+DBu44j3zskZy46PDkWi7WEkFGNTwqCIoY=;
-        b=QCcQcrh+u8roHg6l4md+HDfkHM9MsKO7OHSVvDa8b9pKBDQA7Uji123IxBOeGOhI/T
-         sfb0qw2mhPkQ6FCy5ps7CVItT5Y5ILnXDzT5yX7A8akxOLj8OaXhCYiS7P4ccYLl1mO6
-         ApWdhAqsGPRhxR80NRZOB4FVO0Gf51croFEzOSLZG0Gh/rqdh2+xEH7gaU2o8SgWbp5c
-         u9svowTGwoSQiEzoy+rgWStYeJUqNcIV9BBIbELizZBmY6eM8QEpGlTlJFWAG50HkeEo
-         pu6UuPcoO+m8AYSjNCdLmN3ztrGFuF4oGYpr2OKLMuEb74F/EPZIXHWbqMthoird+0DN
-         spNg==
-X-Gm-Message-State: AOAM530LOfwlVMUhT7p5eXm0ZRVT5ddVVf1GMoT42Z9L3r6UNVTdahz+
-        Zu2gtM41K/JJHTW4UqZU9g8e5gZ//4DIfg==
-X-Google-Smtp-Source: ABdhPJwN+wbuGDAsIxRpEcUZpQpduMqrY8XULh5RX+WB9UypF8LaMOjLVXqMgqHTPSLtn1qEMODkZw==
-X-Received: by 2002:a7b:cbcb:: with SMTP id n11mr5303227wmi.99.1594760623207;
-        Tue, 14 Jul 2020 14:03:43 -0700 (PDT)
-Received: from dell ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id w14sm30807910wrt.55.2020.07.14.14.03.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 14:03:42 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 22:03:40 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Andy Grover <andrew.grover@intel.com>,
-        Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>,
-        Dominik Brodowski <linux@brodo.de>,
-        Denis Sadykov <denis.m.sadykov@intel.com>
-Subject: Re: [PATCH 09/13] cpufreq: acpi-cpufreq: Remove unused ID structs
-Message-ID: <20200714210340.GJ1398296@dell>
-References: <20200714145049.2496163-1-lee.jones@linaro.org>
- <20200714145049.2496163-10-lee.jones@linaro.org>
- <CAJZ5v0iB0K6H28DSDQj9T7k_kV10THxV6-HwN9qfmkLsYNHfiA@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=P2jjMlQNGljDKhczKBKSdNL0F7/+3pAMGrpUsxclRjw=;
+        b=BU5RHZ6ZEsBeRt/zOK8AMs0yIuRjVygerRygdjVyvQMsO18JkgUDNYGMdOOICR/MG1
+         AtZ2EaYWcXMQwDimuwdQLrmgYBHtd1Hrbedpj9+Xl+yo5PFik1Pkca4EtYdhQm1J4M5P
+         C9g8L+8Nq1lN7hlt0usxNoayJlpVlnmKO/FcnPXuWsQ5BKpnPNeCvolKd2AtzcLeF+AR
+         GkfDv2x7ALdRkMQLlJGTbtP+ySmmGtbl3z91wrz1EAI+SzoZu4p6MTc+VFJS/qNoLWgS
+         EQwpLiD3h1qgAElNrxPjmSpvhlDEgvFaFEuEF4k07PF536LXO4ypSca4LnRw+xH3u/vA
+         zztQ==
+X-Gm-Message-State: AOAM533XbBdp5Aml8vaWc+SP8JdVtyjuaPnNS+aFI024/zxdoTzUd0ko
+        4Ouyqim2szV4sfI5WBiX6RyPn6m1MsgsTiHDip3BmPLU6TtLezPrWVTI18PMwdhuxIPSa8qymY1
+        eBK8dlSib+AVIVRIUuGQSftn7
+X-Received: by 2002:a05:6214:b88:: with SMTP id fe8mr6538662qvb.244.1594762251500;
+        Tue, 14 Jul 2020 14:30:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy37EnGkXWH29/is0Rnyzb85M4QGYNcVEtSjI8TXgMm71R1QkncAoCqNse2QQbDKv4E0v71Gg==
+X-Received: by 2002:a05:6214:b88:: with SMTP id fe8mr6538645qvb.244.1594762251246;
+        Tue, 14 Jul 2020 14:30:51 -0700 (PDT)
+Received: from [192.168.1.4] (198-84-170-103.cpe.teksavvy.com. [198.84.170.103])
+        by smtp.gmail.com with ESMTPSA id q5sm360934qtf.12.2020.07.14.14.30.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 14:30:50 -0700 (PDT)
+Subject: Re: [RFC PATCH 2/4] rseq: Allow extending struct rseq
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Florian Weimer <fweimer@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        paulmck <paulmck@linux.ibm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        linux-api <linux-api@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com>
+ <20200714030348.6214-3-mathieu.desnoyers@efficios.com>
+ <87mu42bepq.fsf@oldenburg2.str.redhat.com>
+ <131549905.11442.1594731035989.JavaMail.zimbra@efficios.com>
+ <87a7028d5u.fsf@oldenburg2.str.redhat.com>
+ <2452161.11491.1594732791558.JavaMail.zimbra@efficios.com>
+From:   Carlos O'Donell <carlos@redhat.com>
+Organization: Red Hat
+Message-ID: <71f08b3a-56f5-0e0f-53b0-cc680f7e8181@redhat.com>
+Date:   Tue, 14 Jul 2020 17:30:49 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <2452161.11491.1594732791558.JavaMail.zimbra@efficios.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0iB0K6H28DSDQj9T7k_kV10THxV6-HwN9qfmkLsYNHfiA@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020, Rafael J. Wysocki wrote:
+On 7/14/20 9:19 AM, Mathieu Desnoyers wrote:
+> Is there an arch-agnostic way to get the thread pointer from user-space code ? That
+> would be needed by all rseq critical section implementations.
 
-> On Tue, Jul 14, 2020 at 4:51 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > Can't see them being used anywhere and the compiler doesn't complain
-> > that they're missing, so ...
-> 
-> Aren't they needed for automatic module loading in certain configurations?
+Yes, and no. We have void *__builtin_thread_pointer (void), but
+few architectures implement the builtin so we'd have to go through
+a round of compiler updates and backports. All targets know how to
+access the thread pointer because the compiler has to generate
+IE-mode accesses to the TLS variables.
 
-Any idea how that works, or where the code is for that?
+I have filed an enhancement request:
+Bug 96200 - Implement __builtin_thread_pointer() and 
+            __builtin_set_thread_pointer() if TLS is supported
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=96200
 
-> > Fixes the following W=1 kernel build warning(s):
-> >
-> >  drivers/cpufreq/acpi-cpufreq.c:1004:36: warning: ‘processor_device_ids’ defined but not used [-Wunused-const-variable=]
-> >  997 | static const struct x86_cpu_id acpi_cpufreq_ids[] = {
-> >  | ^~~~~~~~~~~~~~~~
-> >  drivers/cpufreq/acpi-cpufreq.c:997:32: warning: ‘acpi_cpufreq_ids’ defined but not used [-Wunused-const-variable=]
-> >  619 | static const struct acpi_device_id processor_device_ids[] = {
-> >  | ^~~~~~~~~~~~~~~~~~~~
-> >
-> > Cc: Andy Grover <andrew.grover@intel.com>
-> > Cc: Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>
-> > Cc: Dominik Brodowski <linux@brodo.de>
-> > Cc: Denis Sadykov <denis.m.sadykov@intel.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/cpufreq/acpi-cpufreq.c | 14 --------------
-> >  1 file changed, 14 deletions(-)
-> >
-> > diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-> > index d38a693b48e03..fc68f13352695 100644
-> > --- a/drivers/cpufreq/acpi-cpufreq.c
-> > +++ b/drivers/cpufreq/acpi-cpufreq.c
-> > @@ -995,18 +995,4 @@ MODULE_PARM_DESC(acpi_pstate_strict,
-> >  late_initcall(acpi_cpufreq_init);
-> >  module_exit(acpi_cpufreq_exit);
-> >
-> > -static const struct x86_cpu_id acpi_cpufreq_ids[] = {
-> > -       X86_MATCH_FEATURE(X86_FEATURE_ACPI, NULL),
-> > -       X86_MATCH_FEATURE(X86_FEATURE_HW_PSTATE, NULL),
-> > -       {}
-> > -};
-> > -MODULE_DEVICE_TABLE(x86cpu, acpi_cpufreq_ids);
-> > -
-> > -static const struct acpi_device_id processor_device_ids[] = {
-> > -       {ACPI_PROCESSOR_OBJECT_HID, },
-> > -       {ACPI_PROCESSOR_DEVICE_HID, },
-> > -       {},
-> > -};
-> > -MODULE_DEVICE_TABLE(acpi, processor_device_ids);
-> > -
-> >  MODULE_ALIAS("acpi");
-> >
+We have glibc internal macro APIs to access the thread pointer,
+but I would rather the compiler handle the access since it can
+schedule the resulting sequence better.
+
+On some arches setting the therad pointer needs a syscall or
+equivalent operation (hppa), and for some arches there is no
+fixed register (arm) hence the need for __builtin_thread_pointer()
+to force the compiler to place the pointer into a register for
+function return.
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Cheers,
+Carlos.
+
