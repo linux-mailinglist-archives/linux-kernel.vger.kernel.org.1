@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AF221E928
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E4021E8EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727105AbgGNHEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:04:39 -0400
-Received: from mga04.intel.com ([192.55.52.120]:50389 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727034AbgGNHEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:04:31 -0400
-IronPort-SDR: ich8xV8hFnmzCz3xenXCt5Gwp+Pu22XqcldrFpG6x50tDs0YTP3pCyVSc5MvlINldsLKGEd0I+
- MNn2n1F8J6TA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="146304368"
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="146304368"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 00:04:30 -0700
-IronPort-SDR: OlctpnIJwdlGQxS+Bsa4EvBdFZhgaMgi6E93HtogmUqsYd+MIKqgpv8ZX2Fg+6KeQMAbeYu29A
- wm1rPhIk0yOg==
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="459583558"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 00:04:29 -0700
-From:   ira.weiny@intel.com
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: [RFC PATCH 15/15] [dax|pmem]: Enable stray write protection
-Date:   Tue, 14 Jul 2020 00:02:20 -0700
-Message-Id: <20200714070220.3500839-16-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200714070220.3500839-1-ira.weiny@intel.com>
-References: <20200714070220.3500839-1-ira.weiny@intel.com>
+        id S1726752AbgGNHD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725788AbgGNHD0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:03:26 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47CCC061755;
+        Tue, 14 Jul 2020 00:03:25 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id v6so16225665iob.4;
+        Tue, 14 Jul 2020 00:03:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MT7cYYrcM99DVBuXFRqZwFieQfngoQCFo5QcPTP5JIU=;
+        b=UuwneiRc0rQ4ddykmcV5x4aFSBSVHiADlOmVLt+KR1OpoPshajKUwgnvFAcpGSrxl5
+         3pGRlh9s4/86E31cbcNuVMogV6sdDS0rQj9+cA323xxXwYQ2hwNUSV5bssL2w7/SprQh
+         LfMbP5OsgkMYdGRiIZ9q852VoxNxtbKbnzYYVH3B0n6NEnmzVC0nq3KggJDS3YpBUD/D
+         uSvQAEGqc+9ZQzGfzNnvPhpcUtDYw46nzAPxSh+QM/jD8uclpmT76WFgIZJpYQH6XNvq
+         3kwsabONEMBcGjzDzWzgUtPlslAtkKMXs9vFaVg91F6Cfbc077ix/IxSewKrczxN4Yj5
+         9WRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MT7cYYrcM99DVBuXFRqZwFieQfngoQCFo5QcPTP5JIU=;
+        b=f/ch9BlkP3qJNsq2T8fHqnaHjm2tJll2qLzZqYx594cYJ+wAaDjSwO+f1biTQoGzPY
+         fgoQ9epWjnCkbdiCbGropF/oYCuK1djvG6bqoCkbiNQSpCOTpo76iw7d/TeYf9zwDU7E
+         xi/O9BOUZWAyByRRD/5YMBvsx9aBr3p4crfbWZRu5kUdmfE1JwzYfTmga8RziIR12PCK
+         t3JJIu3oPzet8iuaLjj97Ag3gTcfNzOPrUtjBpBY4vTO8F+7azIKj5oNW27aNNZpcjoN
+         Ngu2Bi1APVv/DFX/i0nlbBJ4TAZ75d9kVhmvqtx2GHnIRMAC4tOaeiskNEvFVJAtvjWO
+         lvjw==
+X-Gm-Message-State: AOAM532ZbrIGPU7SPgxx6agSuaTb69ZyigFiEJgdzUCdkJT9l3ASalod
+        DvYcRLtzzZpU4XYpbcCOy5MutxWJKUd9qbfSppo=
+X-Google-Smtp-Source: ABdhPJx/68mFEtDU4FvSbKmhgpZcJ/ThBF5GsLgMTXMMX9bc0cLIFg2GtR0zDMn4VLvb+UyjQcuz6KcG9QXNXo3MMi4=
+X-Received: by 2002:a05:6638:601:: with SMTP id g1mr4378444jar.137.1594710205319;
+ Tue, 14 Jul 2020 00:03:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1594708507-6794-1-git-send-email-dillon.minfei@gmail.com>
+ <1594708507-6794-2-git-send-email-dillon.minfei@gmail.com> <20200714164504.10b23697@canb.auug.org.au>
+In-Reply-To: <20200714164504.10b23697@canb.auug.org.au>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Tue, 14 Jul 2020 15:02:49 +0800
+Message-ID: <CAL9mu0KRc1qNvW4xJj0cn_PoaumCnfdFVoneHja_B+2DPoRTSw@mail.gmail.com>
+Subject: Re: [PATCH v4] Fix dcan driver probe failed on am437x platform
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Benoit Cousson <bcousson@baylibre.com>, tony@atomide.com,
+        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+Hi Stephen,
 
-Protecting against stray writes is particularly important for PMEM
-because, unlike writes to anonymous memory, writes to PMEM persists
-across a reboot.  Thus data corruption could result in permanent loss of
-data.  Therefore, there is no option presented to the user.
+Thanks for your patience, step by step help on my patch reviewing.
 
-Enable stray write protection by setting the flag in pgmap which
-requests it.  Note if Zone Device Access Protection not be supported
-this flag will have no affect.
+Dillon,
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- drivers/dax/device.c  | 2 ++
- drivers/nvdimm/pmem.c | 2 ++
- 2 files changed, 4 insertions(+)
-
-diff --git a/drivers/dax/device.c b/drivers/dax/device.c
-index 4c0af2eb7e19..884f66d73d32 100644
---- a/drivers/dax/device.c
-+++ b/drivers/dax/device.c
-@@ -430,6 +430,8 @@ int dev_dax_probe(struct device *dev)
- 	}
- 
- 	dev_dax->pgmap.type = MEMORY_DEVICE_DEVDAX;
-+	dev_dax->pgmap.flags |= PGMAP_PROT_ENABLED;
-+
- 	addr = devm_memremap_pages(dev, &dev_dax->pgmap);
- 	if (IS_ERR(addr))
- 		return PTR_ERR(addr);
-diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index 46c11a09b813..9416a660eede 100644
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -427,6 +427,8 @@ static int pmem_attach_disk(struct device *dev,
- 		return -EBUSY;
- 	}
- 
-+	pmem->pgmap.flags |= PGMAP_PROT_ENABLED;
-+
- 	q = blk_alloc_queue(pmem_make_request, dev_to_node(dev));
- 	if (!q)
- 		return -ENOMEM;
--- 
-2.25.1
-
+On Tue, Jul 14, 2020 at 2:45 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi Dillon,
+>
+> > Hi Stephen,
+> >
+> > This changes correct commit messages based on your reviewing.
+> > make Fixes tags to oneline.
+> > make all commit message tags at the end of commit message
+> > make Fixes tags before Signed-off-by line.
+> > add probe failed log to commit message.
+>
+> Thanks for persisting.  It looks good to me, now.
+>
+> --
+> Cheers,
+> Stephen Rothwell
