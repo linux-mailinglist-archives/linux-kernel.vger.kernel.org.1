@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D71121FAFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7993A21F9C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730715AbgGNS53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:57:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55428 "EHLO mail.kernel.org"
+        id S1729401AbgGNSqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:46:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730687AbgGNS5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:57:14 -0400
+        id S1729337AbgGNSqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:46:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FE0C22AAB;
-        Tue, 14 Jul 2020 18:57:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AAE2C22282;
+        Tue, 14 Jul 2020 18:46:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753033;
-        bh=pwCzRgtQyL6bef2NAxTEb5Plovt+I4tu2fJ+gDKUAKk=;
+        s=default; t=1594752369;
+        bh=/gmxHS3XLDyTXY59bVZQeIR8YytUDZlxFAMR595dCLM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0OFCwbXQZGt/nmhvd6Oxq+ldk+k+aROfkgxlFzKSEHg+Z4etc4gpBw0/DdunFCw0u
-         Hn7u7DWDO9IeLSQ9LCDb+fq6zTmhfWyLY5ArAVJBxIGHpEQhdue3xouFq4JBOhqukN
-         d9u80hTpJq7YbBlKXT01ZkfNJDVZrLzAxy5prpwo=
+        b=cnTLTuFao7GCqxqKUdwMEsJKyMuti4NYz5dOTxB7TVyyMTWV9nUxtmPpoFsbBwEuU
+         1RvCSvrzshy0uiGo3Ho1xhFZm77X5wqzK8tFkdCxQBuwXGzH/P3/nsmxiRaRnZZUs4
+         fy61WRUmtgij81BNHO7prgGsLyrZB8WLInkGO/Z8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Li Heng <liheng40@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 064/166] net: cxgb4: fix return error value in t4_prep_fw
+        stable@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>
+Subject: [PATCH 4.19 16/58] s390/kasan: fix early pgm check handler execution
 Date:   Tue, 14 Jul 2020 20:43:49 +0200
-Message-Id: <20200714184118.930699608@linuxfoundation.org>
+Message-Id: <20200714184056.958041028@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,56 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Heng <liheng40@huawei.com>
+From: Vasily Gorbik <gor@linux.ibm.com>
 
-[ Upstream commit 8a259e6b73ad8181b0b2ef338b35043433db1075 ]
+[ Upstream commit 998f5bbe3dbdab81c1cfb1aef7c3892f5d24f6c7 ]
 
-t4_prep_fw goto bye tag with positive return value when something
-bad happened and which can not free resource in adap_init0.
-so fix it to return negative value.
+Currently if early_pgm_check_handler is called it ends up in pgm check
+loop. The problem is that early_pgm_check_handler is instrumented by
+KASAN but executed without DAT flag enabled which leads to addressing
+exception when KASAN checks try to access shadow memory.
 
-Fixes: 16e47624e76b ("cxgb4: Add new scheme to update T4/T5 firmware")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Li Heng <liheng40@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix that by executing early handlers with DAT flag on under KASAN as
+expected.
+
+Reported-and-tested-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+Reviewed-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/t4_hw.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/s390/kernel/early.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-index 2a3480fc1d914..9121cef2be2d5 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
-@@ -3493,7 +3493,7 @@ int t4_prep_fw(struct adapter *adap, struct fw_info *fw_info,
- 	drv_fw = &fw_info->fw_hdr;
+diff --git a/arch/s390/kernel/early.c b/arch/s390/kernel/early.c
+index e7e6608b996c6..ad88bed743954 100644
+--- a/arch/s390/kernel/early.c
++++ b/arch/s390/kernel/early.c
+@@ -155,6 +155,8 @@ static noinline __init void setup_lowcore_early(void)
+ 	psw_t psw;
  
- 	/* Read the header of the firmware on the card */
--	ret = -t4_read_flash(adap, FLASH_FW_START,
-+	ret = t4_read_flash(adap, FLASH_FW_START,
- 			    sizeof(*card_fw) / sizeof(uint32_t),
- 			    (uint32_t *)card_fw, 1);
- 	if (ret == 0) {
-@@ -3522,8 +3522,8 @@ int t4_prep_fw(struct adapter *adap, struct fw_info *fw_info,
- 		   should_install_fs_fw(adap, card_fw_usable,
- 					be32_to_cpu(fs_fw->fw_ver),
- 					be32_to_cpu(card_fw->fw_ver))) {
--		ret = -t4_fw_upgrade(adap, adap->mbox, fw_data,
--				     fw_size, 0);
-+		ret = t4_fw_upgrade(adap, adap->mbox, fw_data,
-+				    fw_size, 0);
- 		if (ret != 0) {
- 			dev_err(adap->pdev_dev,
- 				"failed to install firmware: %d\n", ret);
-@@ -3554,7 +3554,7 @@ int t4_prep_fw(struct adapter *adap, struct fw_info *fw_info,
- 			FW_HDR_FW_VER_MICRO_G(c), FW_HDR_FW_VER_BUILD_G(c),
- 			FW_HDR_FW_VER_MAJOR_G(k), FW_HDR_FW_VER_MINOR_G(k),
- 			FW_HDR_FW_VER_MICRO_G(k), FW_HDR_FW_VER_BUILD_G(k));
--		ret = EINVAL;
-+		ret = -EINVAL;
- 		goto bye;
- 	}
- 
+ 	psw.mask = PSW_MASK_BASE | PSW_DEFAULT_KEY | PSW_MASK_EA | PSW_MASK_BA;
++	if (IS_ENABLED(CONFIG_KASAN))
++		psw.mask |= PSW_MASK_DAT;
+ 	psw.addr = (unsigned long) s390_base_ext_handler;
+ 	S390_lowcore.external_new_psw = psw;
+ 	psw.addr = (unsigned long) s390_base_pgm_handler;
 -- 
 2.25.1
 
