@@ -2,120 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA0221E59C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD6021E5AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 04:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbgGNCYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 22:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgGNCYq (ORCPT
+        id S1726768AbgGNC35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 22:29:57 -0400
+Received: from mx0a-00190b01.pphosted.com ([67.231.149.131]:38990 "EHLO
+        mx0a-00190b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726150AbgGNC35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 22:24:46 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51FBC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 19:24:46 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id o38so11726895qtf.6
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 19:24:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zbcRxgW3JR28m29u/55Y7F17wlRrdtYw3svGpp+m0sg=;
-        b=JFfrRU6VO9nyB2CutrxZpYRw9Z/DY7NGnHc7yaGCJgjV/oeGMm7gUDUMn2Hw+DFEwr
-         iZFUnN+AU8QEv3VXY6QjmLpETHOxi44WxXXIGVTMsBKAsoQ/Vo47oKXxr1TYPabv1FZ9
-         Rpn0etW2cq4MVhIPqvOLKoA8d6WFKcLsjpf49XKFfUczmsMfHqLtVLjdchl733qmpaU1
-         iGeOj/BLj0e/CL66lzd3dXDyTfv/XlxtbtsYKYpaeULok22FZz9GEHaGCT9l7NzMZPEZ
-         877VHoIAL1jv2u5a2U5eONSDPTqMFHxQ0nkY/+kKjs/YlvQo5uCW56e2K1KQv455VLuo
-         2iFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zbcRxgW3JR28m29u/55Y7F17wlRrdtYw3svGpp+m0sg=;
-        b=YWhFlMqxiVPHhjFZy3dkgwuWVY+JZDaJdCBHNyjfwCPfyNOyuWQ4bFxlmOi72SIWHw
-         FmBHNKtHwpIgg8z2qW20oaJHzQstvYjo6xr43Xh9ADvRdBim9gvHIbQGGGcrbVBFoSS9
-         q1s8aKJPpiN6RwuU8v+t9UVxlhpl0d3MmrlNpUY9NQ3/JzzEyoEVfs2uK//SZO+XfyhU
-         +Zydot2WFd8xs/12zfSWe/8q3sDPQPXUhi78hyXt96AEEs6C9rAkRtgvASxW3SacEonp
-         lj0T6pHkhFxNMwhbdbKaiX9egqP2T6P7s8EQjkygo+ak1b/9J32MaFglrI4NodUyIC5D
-         iovQ==
-X-Gm-Message-State: AOAM530S8TbH9GAkaxfmu5/86w6jZnnzV5a6MWNfcTg70VbHR7i1YG7e
-        lnrqWldCbYxvnDu8LhvuLJePiFXhO6xQ1nzyb1Y=
-X-Google-Smtp-Source: ABdhPJyAQ09tdvgL6Dv66Q8tRJxbejbevW6MHwgjkdJo1J0PJRpaqYJXXUOl1c4EvtR33b15Bha4oFqdqndgJf9A6aY=
-X-Received: by 2002:ac8:24fc:: with SMTP id t57mr2611282qtt.116.1594693484792;
- Mon, 13 Jul 2020 19:24:44 -0700 (PDT)
+        Mon, 13 Jul 2020 22:29:57 -0400
+Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
+        by m0050093.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id 06E2Pgf7028288;
+        Tue, 14 Jul 2020 03:26:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=CMcWgeN70W9yzJtbKSXSLvUJZMguz5JGKLMRefnJ8lw=;
+ b=geoh4f3TugKozfQ9Cfy3aRtr+995DFFBaOKo0APSihxXRXFCe+FPFSSWNX8MyP3I1TcE
+ /npw2P0wBD0pXnTQjLVjdpentHTmJI1tsUEAJnk+H7LaMUte+RfHXjnjDkXsjTX1f8WH
+ BYp0ItB6UiJifUoZA2tWRktRg2jkmAPo2oJrPxmSW8Ct0v2lVs4zlRfSvKfvp1XsNXb8
+ 4Zm7fup2nuFtt+4zC1jfWHCGHNMx/DLoSAAn5q5i0EMCXNhKydpOv45BJWqcrQDFOi3D
+ 0ez6EyK4YAcl3/bpoujT5kawQ1/aYsBBQmDsWkNIY8gzfWczyz6q/8okxN21KxGOe/9o tw== 
+Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19] (may be forged))
+        by m0050093.ppops.net-00190b01. with ESMTP id 328kc6gxan-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Jul 2020 03:26:36 +0100
+Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
+        by prod-mail-ppoint2.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 06E2HXAA023075;
+        Mon, 13 Jul 2020 22:26:34 -0400
+Received: from prod-mail-relay11.akamai.com ([172.27.118.250])
+        by prod-mail-ppoint2.akamai.com with ESMTP id 3278rx7aq1-1;
+        Mon, 13 Jul 2020 22:26:34 -0400
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay11.akamai.com (Postfix) with ESMTP id 1996F229E9;
+        Tue, 14 Jul 2020 02:26:34 +0000 (GMT)
+Subject: Re: [PATCH v4 13/17] dyndbg: accept 'file foo.c:func1' and 'file
+ foo.c:10-100'
+To:     Jim Cromie <jim.cromie@gmail.com>, linux-kernel@vger.kernel.org,
+        akpm@linuxfoundation.org, gregkh@linuxfoundation.org
+Cc:     linux@rasmusvillemoes.dk, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Orson Zhai <orson.zhai@unisoc.com>,
+        Will Deacon <will@kernel.org>, Petr Mladek <pmladek@suse.com>,
+        linux-doc@vger.kernel.org
+References: <20200620180643.887546-1-jim.cromie@gmail.com>
+ <20200620180643.887546-14-jim.cromie@gmail.com>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <30de6359-e56b-0915-5742-a360ef1b2814@akamai.com>
+Date:   Mon, 13 Jul 2020 22:26:34 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CALaQ_hosk7627nTx97+xSSsGiN-qt=pTGNW4DZn4TOcAeRSC8g@mail.gmail.com>
- <20200714000347.GA19314@google.com>
-In-Reply-To: <20200714000347.GA19314@google.com>
-From:   Nathan Royce <nroycea+kernel@gmail.com>
-Date:   Mon, 13 Jul 2020 21:24:34 -0500
-Message-ID: <CALaQ_hriyvF8yaSihvGEN1U2jufCQ5sj=aknN+1xB=4EbkBWaQ@mail.gmail.com>
-Subject: Re: F2FS Segmentation Fault
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Chao Yu <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200620180643.887546-14-jim.cromie@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-13_17:2020-07-13,2020-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007140014
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-13_17:2020-07-13,2020-07-13 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 priorityscore=1501
+ mlxscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 malwarescore=0 clxscore=1015 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007140017
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 7:03 PM Jaegeuk Kim <jaegeuk@kernel.org> wrote:
->
-> Hi Nathan,
->
-> Could you try to say "N" here to move forward to fix the corrupted metadata?
->
-> Thanks,
-*****
-Do you want to restore lost files into ./lost_found/? [Y/N] N
-Info: Write valid nat_bits in checkpoint
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x18eca] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x18ecb] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x18ecc] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x18ee3] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x18ee4] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x18ee5] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x18f78] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x18f79] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x18f7a] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x4d621] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x4d622] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x7fa32] in NAT
-[FIX] (nullify_nat_entry:2273)  --> Remove nid [0x7fa33] in NAT
-Info: Write valid nat_bits in checkpoint
 
-Done.
-*****
 
-*****
-Info: Fix the reported corruption.
-Info: Force to fix corruption
-Info: Segments per section = 1
-Info: Sections per zone = 1
-Info: sector size = 512
-Info: total sectors = 124168159 (60628 MB)
-Info: MKFS version
-  "Linux version 5.1.15.a-1-hardened (builduser@slave-1) (gcc version
-9.1.0 (GCC)) #1 SMP PREEMPT Thu Jun 27 11:33:04 CEST 2019"
-Info: FSCK version
-  from "Linux version 4.19.13-dirty (nater@devx64) (gcc version 8.2.1
-20181127 (GCC)) #2 SMP PREEMPT Mon Dec 31 00:15:50 CST 2018"
-    to "Linux version 4.19.13-dirty (nater@devx64) (gcc version 8.2.1
-20181127 (GCC)) #2 SMP PREEMPT Mon Dec 31 00:15:50 CST 2018"
-Info: superblock features = 0 :
-Info: superblock encrypt level = 0, salt = 00000000000000000000000000000000
-Info: total FS sectors = 124168152 (60628 MB)
-Info: CKPT version = 63f2b4a
-Info: checkpoint state = 281 :  allow_nocrc nat_bits unmount
-Info: No error was reported
-*****
-I'm now booted in from my SDHC card. So it "seems" I'm good to go.
-But with the actions taken and the files I've seen displayed during
-the fsck, I'm thinking I'm going to reinstall all packages.
-Assuming the issue was related to the power outage, I do wonder why
-there weren't any fsck issues at bootup at that time. I hadn't had any
-disk issues before with that card.
-At least now I know the issue would be resolved by not saving the lost
-files and I can continue on my merry way.
+On 6/20/20 2:06 PM, Jim Cromie wrote:
+> Accept these additional query forms:
+> 
+>    echo "file $filestr +_" > control
+> 
+>        path/to/file.c:100	# as from control, column 1
+>        path/to/file.c:1-100	# or any legal line-range
+>        path/to/file.c:func_A	# as from an editor/browser
+>        path/to/file.c:drm_\*	# wildcards still work
+>        path/to/file.c:*_foo	# lead wildcard too
+> 
+> 1st 2 examples are treated as line-ranges, 3,4 are treated as func's
+> 
+> Doc these changes, and sprinkle in a few extra wild-card examples and
+> trailing # explanation texts.
+> 
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
+>  .../admin-guide/dynamic-debug-howto.rst       |  5 +++++
+>  lib/dynamic_debug.c                           | 20 ++++++++++++++++++-
+>  2 files changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+> index 1423af580bed..6c04aea8f4cd 100644
+> --- a/Documentation/admin-guide/dynamic-debug-howto.rst
+> +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+> @@ -164,6 +164,7 @@ func
+>      of each callsite.  Example::
+>  
+>  	func svc_tcp_accept
+> +	func *recv*		# in rfcomm, bluetooth, ping, tcp
+>  
+>  file
+>      The given string is compared against either the src-root relative
+> @@ -172,6 +173,9 @@ file
+>  
+>  	file svcsock.c
+>  	file kernel/freezer.c	# ie column 1 of control file
+> +	file drivers/usb/*	# all callsites under it
+> +	file inode.c:start_*	# parse :tail as a func (above)
+> +	file inode.c:1-100	# parse :tail as a line-range (above)
+>  
+>  module
+>      The given string is compared against the module name
+> @@ -181,6 +185,7 @@ module
+>  
+>  	module sunrpc
+>  	module nfsd
+> +	module drm*	# both drm, drm_kms_helper
+>  
+>  format
+>      The given string is searched for in the dynamic debug format
+> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> index ae6e523fdecd..7eb963b1bd11 100644
+> --- a/lib/dynamic_debug.c
+> +++ b/lib/dynamic_debug.c
+> @@ -321,6 +321,8 @@ static int parse_linerange(struct ddebug_query *query, const char *first)
+>  	} else {
+>  		query->last_lineno = query->first_lineno;
+>  	}
+> +	vpr_info("parsed line %d-%d\n", query->first_lineno,
+> +		 query->last_lineno);
+>  	return 0;
+>  }
+
+This bit seems like its unrelated to this patch and makes more sense in the
+previous patch, or as separate patch...
+
+Thanks,
+
+-Jason
+
+
+>  
+> @@ -357,6 +359,7 @@ static int ddebug_parse_query(char *words[], int nwords,
+>  {
+>  	unsigned int i;
+>  	int rc = 0;
+> +	char *fline;
+>  
+>  	/* check we have an even number of words */
+>  	if (nwords % 2 != 0) {
+> @@ -372,7 +375,22 @@ static int ddebug_parse_query(char *words[], int nwords,
+>  		if (!strcmp(words[i], "func")) {
+>  			rc = check_set(&query->function, words[i+1], "func");
+>  		} else if (!strcmp(words[i], "file")) {
+> -			rc = check_set(&query->filename, words[i+1], "file");
+> +			if (check_set(&query->filename, words[i+1], "file"))
+> +				return -EINVAL;
+> +
+> +			/* tail :$info is function or line-range */
+> +			fline = strchr(query->filename, ':');
+> +			if (!fline)
+> +				break;
+> +			*fline++ = '\0';
+> +			if (isalpha(*fline) || *fline == '*' || *fline == '?') {
+> +				/* take as function name */
+> +				if (check_set(&query->function, fline, "func"))
+> +					return -EINVAL;
+> +			} else {
+> +				if (parse_linerange(query, fline))
+> +					return -EINVAL;
+> +			}
+>  		} else if (!strcmp(words[i], "module")) {
+>  			rc = check_set(&query->module, words[i+1], "module");
+>  		} else if (!strcmp(words[i], "format")) {
+> 
