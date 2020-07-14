@@ -2,128 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9270621F5FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E6421F5FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgGNPRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 11:17:13 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:43178 "EHLO huawei.com"
+        id S1728052AbgGNPSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 11:18:47 -0400
+Received: from mail-eopbgr60113.outbound.protection.outlook.com ([40.107.6.113]:11653
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725876AbgGNPRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 11:17:13 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A7B0A3B5B896DCDB36BD;
-        Tue, 14 Jul 2020 23:17:09 +0800 (CST)
-Received: from [127.0.0.1] (10.174.186.75) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Jul 2020
- 23:17:03 +0800
-Subject: Re: [PATCH v2 0/2] arm64: tlb: add support for TLBI RANGE
- instructions
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     <maz@kernel.org>, <steven.price@arm.com>, <guohanjun@huawei.com>,
-        <will@kernel.org>, <olof@lixom.net>, <suzuki.poulose@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <zhangshaokun@hisilicon.com>, <prime.zeng@hisilicon.com>,
-        <linux-arch@vger.kernel.org>, <kuhn.chenqun@huawei.com>,
-        <xiexiangyou@huawei.com>, <linux-mm@kvack.org>, <arm@kernel.org>
-References: <20200710094420.517-1-yezhenyu2@huawei.com>
- <159440712962.27784.4664678472466095995.b4-ty@arm.com>
- <20200713122123.GC15829@gaia>
- <2edcf1ce-38d4-82b2-e500-51f742cae357@huawei.com>
- <20200713165903.GD15829@gaia>
-From:   Zhenyu Ye <yezhenyu2@huawei.com>
-Message-ID: <b0c1ae56-3c22-dafe-a145-305714b211eb@huawei.com>
-Date:   Tue, 14 Jul 2020 23:17:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1725890AbgGNPSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 11:18:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FFQAwM0FXiwF0tPqDEQGgRQrADQerglzDePNAdlouSFQmzwq2K6fIzUgNqy4Y55HHe3Pbgcu+L8S5t5x2QQRPgjcWjU8LKnZR1Oeh7R5FdWfNjta0/PhykIa3u3tKzBcELHBrcMPB39uYltCVm2gIVqrPSbqKErD08++0O0GcaUjBwRPCCWKd5wjhWblqq4vT5u4rX76S8/FbNdaxYfQNbmDOuERkMUnDjdnIzTqx3xRzhiGfw4cAvzr7OQWx/w7MZeFRSgridV/1dW0JLsnGeRjbESFXqxDkoCg+xnd1kGUAmPPRai70996jv6kJVgN27AxpnBIRjdlk0EuvIOA6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BChI7i2E2ULDFrKu7M5Fj8dVzUlBDS4yziyfaBaHB/g=;
+ b=GiFNdAkJzyHnRtY0nxoHoJLrjGBx7jNpINY74fz84ebrxf0dL6AgTyLjBONLMnxFypbbQNp0c54DNkbHwKouulRtlHnIH8f6nDPRJL/JdmXDL04gK4ccfg6hKK1rYliFmexSlm4i0sl7DBGDGc5FMqo+62tdgda8zKbRY+l65t/5fQ+B69chpu+NuseKCZ3phyhw0alJVtP7wNygDgRUrBYqatxI46cJER+amDCmtg2GdUFH+WHjzF2ncFgO1EBGfkOBNfmtTgr/xmT1ZDE8sKTlgvCqBSHFRVpcwW26QHks/5RCwXn11B62DXP0RJSMXH81kjAnhu8YakLsN5o2Kg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
+ dkim=pass header.d=toradex.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BChI7i2E2ULDFrKu7M5Fj8dVzUlBDS4yziyfaBaHB/g=;
+ b=pZ31k9KiwNwyB1BEZMdWHzlVYXtwUanIUdWUMxkC8qQ8BNF7+b11IQq9arPiYWP4r/1Sirr7RpCZzQ1WKGOPCkFbHEI5cZNrYYDGEqpOtthcUtyXY+TKnh5JuS5cV11ERzi9cYMRGcrxKSHBiNL9hNnN4susImPzEFa82nKgnZU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=toradex.com;
+Received: from AM6PR05MB6120.eurprd05.prod.outlook.com (2603:10a6:20b:a8::25)
+ by AM6PR05MB5174.eurprd05.prod.outlook.com (2603:10a6:20b:66::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.24; Tue, 14 Jul
+ 2020 15:18:37 +0000
+Received: from AM6PR05MB6120.eurprd05.prod.outlook.com
+ ([fe80::1d81:6a9b:8c26:3b7d]) by AM6PR05MB6120.eurprd05.prod.outlook.com
+ ([fe80::1d81:6a9b:8c26:3b7d%4]) with mapi id 15.20.3174.026; Tue, 14 Jul 2020
+ 15:18:37 +0000
+From:   Philippe Schenker <philippe.schenker@toradex.com>
+To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, Peter Chen <Peter.Chen@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Philippe Schenker <philippe.schenker@toradex.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] dt-bindings: usb: ci-hdrc-usb2: add property disable-runtime-pm
+Date:   Tue, 14 Jul 2020 17:18:20 +0200
+Message-Id: <20200714151822.250783-1-philippe.schenker@toradex.com>
+X-Mailer: git-send-email 2.27.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: GV0P278CA0019.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:710:28::6) To AM6PR05MB6120.eurprd05.prod.outlook.com
+ (2603:10a6:20b:a8::25)
 MIME-Version: 1.0
-In-Reply-To: <20200713165903.GD15829@gaia>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.186.75]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from philippe-pc.toradex.int (31.10.206.124) by GV0P278CA0019.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:28::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Tue, 14 Jul 2020 15:18:36 +0000
+X-Mailer: git-send-email 2.27.0
+X-Originating-IP: [31.10.206.124]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bceea4ca-1589-4e6b-0f34-08d828092e74
+X-MS-TrafficTypeDiagnostic: AM6PR05MB5174:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR05MB51740AE7EE7600D18F02CCE8F4610@AM6PR05MB5174.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HoicR8jOnqhZcvvOgLdUqd/CaonSz+UiRg/seCojW2lTiScRNZISlVEcdSC0nGPfceS0j0jE+duuTagZD7j/Pm2TBu8YCVtaHpLeWhriUt64IXE9CZLH1cSQ9PFmCip0m7DyA7qMTQZtUNEjyFXE2qNs85C2pKSGwslxHbmSp1r0WxQUbwfxGSaY7bTuXhyuYQvkHZNAEufzZ9whbT/B80bOJIKavlDO+yOc0DbY3cBpBDGr8bCdm63i2mVnhab9FNXX7s8z5FhsttbFmeUM4drjnJEPXjTFElvCeA7lX/4H77w38IWm2xyvy+8M+ff+lhP6oW99kdvWd+rqxXaBUb3KlVOmMQ8QM9FLoPoUhzhOtvSjtJJE8YPQpzo+sEEk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR05MB6120.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(110136005)(86362001)(4326008)(5660300002)(83380400001)(8676002)(6666004)(1076003)(6506007)(186003)(2906002)(6512007)(26005)(66556008)(6486002)(2616005)(956004)(36756003)(16526019)(66946007)(66476007)(52116002)(498600001)(8936002)(44832011)(54906003)(16060500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: lNTcjaDZlp3OBwb/25eWin0Rf7JZmdp4bWgSOgB5mX94A7l0II0+21VFUgTlQ9FUrrbfusxZICQ3bY10zVaYzFnhNdzCvme1NknpkUNMlWE5qXp1Mz8ARCZxIlxPFNEkQyYkEAyvI05LOxDCLqq6KTuybT13wjpyVFuvOUYjTLyM2cR7xoNdQvMZQar8QR2gbamZi/b9wRK9WaFnYOk4BAYafmo3+O4YiV5QWVpxDz1Wdt+UbSh3kbBDqA3PmvdjcWkAftI1QvDaTx8ZICrQLTEPT9vcWs1/SYftX1Wr6ivb14eQOXAcIoniqtzEeLHyH+O5yVit0vwgKJnAobscscGbmlG9OyIDSQ+GIgGhmQgI+Agr0kf/PU4gJLb3nWxMGN5ycfguGBjTPkvOBVGwOBpNkDiujr76g0MW7O7wLisSPtxLsC+p+tMUGSVAHwtfLoz64nW6g8YWrZxhdpgjxgWE+HQO1s6rFrrQRu+pV+A=
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bceea4ca-1589-4e6b-0f34-08d828092e74
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR05MB6120.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2020 15:18:37.4128
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u1VjModaoCXBkvaAlXumyDTfi4IPaX7ok7Q1PGNMlE0JLimX2Ock/O2SFrNgm0DEl03uNRzMp+32HQMRv0bIhRexGVxIAMZ261tsowPxJVo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR05MB5174
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/14 0:59, Catalin Marinas wrote:
->> +config ARM64_TLBI_RANGE
->> +	bool "Enable support for tlbi range feature"
->> +	default y
->> +	depends on AS_HAS_TLBI_RANGE
->> +	help
->> +	  ARMv8.4-TLBI provides TLBI invalidation instruction that apply to a
->> +	  range of input addresses.
->> +
->> +	  The feature introduces new assembly instructions, and they were
->> +	  support when binutils >= 2.30.
-> 
-> It looks like 2.30. I tracked it down to this commit:
-> 
-> https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=793a194839bc8add71fdc7429c58b10f0667a6f6;hp=1a7ed57c840dcb0401f1a67c6763a89f7d2686d2
-> 
->> +config AS_HAS_TLBI_RANGE
->> +	def_bool $(as-option, -Wa$(comma)-march=armv8.4-a)
->> +
->>  endmenu
-> 
-> The problem is that we don't pass -Wa,-march=armv8.4-a to gas. AFAICT,
-> we only set an 8.3 for PAC but I'm not sure how passing two such options
-> goes.
-> 
+Chipidea depends on some hardware signals to be there in order
+for runtime-pm to work well. Add the possibility to disable runtime
+power management that is necessary for certain boards.
 
-Pass the -march twice may not have bad impact.  Test in my toolchains
-and the newer one will be chosen.  Anyway, we can add judgment to avoid
-them be passed at the same time.
+Signed-off-by: Philippe Schenker <philippe.schenker@toradex.com>
+---
 
-> I'm slightly surprised that my toolchains (and yours) did not complain
-> about these instructions. Looking at the binutils code, I think it
-> should have complained if -march=armv8.4-a wasn't passed but works fine.
-> I thought gas doesn't enable the maximum arch feature by default.
->> An alternative would be to check for a specific instruction (untested):
-> 
-> 	def_bool $(as-instr,tlbi rvae1is, x0)
-> 
-> but we need to figure out whether gas not requiring -march=armv8.4-a is
-> a bug (which may be fixed) or that gas accepts all TLBI instructions.
-> 
+Changes in v2: None
 
-As you say in another email, this is a bug.  So we should pass -march=
-armv8.4-a to gas if we use toolchains to generate tlbi range instructions.
+ Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-But this bug only affects the compilation (cause WARNING or ERROR if not
-pass -march-armv8.4-a when compiling) but not the judgment.
-
-> A safer bet may be to simply encode the instructions by hand:
-> 
-> #define SYS_TLBI_RVAE1IS(Rt) \
-> 	__emit_inst(0xd5000000 | sys_insn(1, 0, 8, 2, 1) | ((Rt) & 0x1f))
-> #define SYS_TLBI_RVALE1IS(Rt) \
-> 	__emit_inst(0xd5000000 | sys_insn(1, 0, 8, 2, 5) | ((Rt) & 0x1f))
-> 
-> (please check that they are correct)
-> 
-
-Currently in kernel, all tlbi instructions are passed through __tlbi()
-and __tlbi_user(). If we encode the range instructions by hand, we may
-should have to add a new mechanism for this:
-
-1. choose a register and save it;
-2. put the operations for tlbi range to the register;
-3. do tlbi range by asm(SYS_TLBI_RVAE1IS(x0));
-4. restore the value of the register.
-
-It's complicated and will only be used with tlbi range instructions.
-(Am I understand something wrong? )
-
-So I am prefer to pass -march=armv8.4-a to toolschains to support tlbi
-range instruction, just like what PAC does.
-
-Thanks,
-Zhenyu
-
-
-
+diff --git a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt
+index 51376cbe5f3d..67a31df13e69 100644
+--- a/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt
++++ b/Documentation/devicetree/bindings/usb/ci-hdrc-usb2.txt
+@@ -90,6 +90,7 @@ Optional properties:
+   case, the "idle" state needs to pull down the data and strobe pin
+   and the "active" state needs to pull up the strobe pin.
+ - pinctrl-n: alternate pin modes
++- disable-runtime-pm: This disables the runtime power management.
+ 
+ i.mx specific properties
+ - fsl,usbmisc: phandler of non-core register device, with one
+-- 
+2.27.0
 
