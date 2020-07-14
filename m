@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D8221F7E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52BC21F7E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbgGNRKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:10:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgGNRKi (ORCPT
+        id S1728655AbgGNRME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:12:04 -0400
+Received: from smtprelay0023.hostedemail.com ([216.40.44.23]:50450 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726169AbgGNRME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:10:38 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4757C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:10:38 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id q17so7280629pls.9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 10:10:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9Pi0r+taXC55e2CabsrtsPMzJOxhTQ5VmZxPESoJ2R0=;
-        b=YcUpdW8ssFvg31o7FKf1VxZt+87ICTP6BSy10MKwemlGlPTgoZywHlO0FpXTOwd/RU
-         w/bmCXL2iKjRaYWDvnTjtwzPvUKBib7XWkuxrC/k8O0L3uhEvg0mByeAVTHLIuI+oYJi
-         UYI69blXL++kD2Z9kDNOsL0ynAVx1mU7fpvMs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9Pi0r+taXC55e2CabsrtsPMzJOxhTQ5VmZxPESoJ2R0=;
-        b=sIJ+byh42tXQDNecfilcUnua1kC3PcKsRA6ezT4H2dRUROnzHK2uLfTxK4MXfhuqKn
-         IFHApxm9BK9r4Zb4Bh37cbKd8zRRdJF5F+UlwIYxZNlt3WAaMZo518R98XFSFZsIJNvl
-         zo3poOxBEobJNB9FnOjgp7u9gTekuwM3G5n6P8bGhAQ/ap54Ymc79e5h4jionuLZ3GgQ
-         IOgkG+xe2r9XIlbiYvhbboEu6FvmwHBEN33K5ye4mYpTh2Mm2nKXwm+KmSUISQklXrXV
-         gnXqiz93qbtH8JYk9rBi/AlJJqCx7K44+dwl2tADJ0sjTolcB/F34UzuTKPKoW7LCuUB
-         4Qwg==
-X-Gm-Message-State: AOAM533x6p6n5Jk6vkr4jcHLJqor5gBvD7VUx/pmnIaqoIeHNEYieyZT
-        HM7BtX233C+zzcLeYAXeWuROYdCZlYQ=
-X-Google-Smtp-Source: ABdhPJwDHng07+7Jqf3f0zfUAjKLkymgxwE7dDtjLH3NoOVCed41ZFg0oAaAvDN6Z5TOUJLbYrwhEg==
-X-Received: by 2002:a17:90b:8d0:: with SMTP id ds16mr5960924pjb.2.1594746638227;
-        Tue, 14 Jul 2020 10:10:38 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id a3sm16338620pgd.73.2020.07.14.10.10.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 10:10:37 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 10:10:36 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jcrouse@codeaurora.org, devicetree@vger.kernel.org,
-        jonathan@marek.ca, robdclark@gmail.com, rnayak@codeaurora.org
-Subject: Re: [PATCH] drm: msm: a6xx: fix gpu failure after system resume
-Message-ID: <20200714171036.GS3191083@google.com>
-References: <1594733130-398-1-git-send-email-akhilpo@codeaurora.org>
+        Tue, 14 Jul 2020 13:12:04 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 0C492180A812A;
+        Tue, 14 Jul 2020 17:12:03 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3872:4321:5007:6119:7514:7576:10004:10400:10848:11232:11658:11914:12297:12555:12740:12760:12895:13069:13161:13229:13311:13357:13439:14181:14659:14721:21063:21080:21451:21627:30054:30064:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: ship30_110333026ef2
+X-Filterd-Recvd-Size: 1692
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 14 Jul 2020 17:12:02 +0000 (UTC)
+Message-ID: <8d7ebe02cfbff19f31f6ac1ce098f98d8ba1850a.camel@perches.com>
+Subject: Re: [PATCH] checkpatch.pl: Allow '+' in compatible strings
+From:   Joe Perches <joe@perches.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Andy Whitcroft <apw@canonical.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Tue, 14 Jul 2020 10:12:00 -0700
+In-Reply-To: <CAL_Jsq+c5+QFpdiNK4K=ROPAhxp=SMYS6iRFuJKooin=NbCiXw@mail.gmail.com>
+References: <20200714094141.147418-1-thierry.reding@gmail.com>
+         <CAL_Jsq+c5+QFpdiNK4K=ROPAhxp=SMYS6iRFuJKooin=NbCiXw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1594733130-398-1-git-send-email-akhilpo@codeaurora.org>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 06:55:30PM +0530, Akhil P Oommen wrote:
-> On targets where GMU is available, GMU takes over the ownership of GX GDSC
-> during its initialization. So, take a refcount on the GX PD on behalf of
-> GMU before we initialize it. This makes sure that nobody can collapse the
-> GX GDSC once GMU owns the GX GDSC. This patch fixes some weird failures
-> during GPU wake up during system resume.
+On Tue, 2020-07-14 at 10:21 -0600, Rob Herring wrote:
+> On Tue, Jul 14, 2020 at 3:41 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+> > From: Thierry Reding <treding@nvidia.com>
+> > 
+> > The current checks will interpret a '+' character as special because
+> > they use regular expression matching. Escape the '+' character if it
+> > appears in a compatible string.
 > 
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> Ugg, looks like c6x really liked using '+'. Might need to be added in
+> schema checks, too. Not sure offhand.
 
-I went through a few dozen suspend/resume cycles on SC7180 and didn't run
-into the kernel panic that typically occurs after a few iterations without
-this patch.
+These are the non alphanumeric characters used in .dts and .dtsi files
+with 'compatible=' strings
 
-Reported-by: Matthias Kaehlcke <mka@chromium.org>
-Tested-by: Matthias Kaehlcke <mka@chromium.org>
+- 44115
+, 32035
+. 1131
+_ 259
++ 46
+/ 18
+) 5
+( 5
 
-On which tree is this patch based on? I had to apply it manually because
-'git am' is unhappy when I try to apply it:
+So it looks like
 
-  error: sha1 information is lacking or useless (drivers/gpu/drm/msm/adreno/a6xx_gmu.c).
-  error: could not build fake ancestor
+	"("
+	")"
 
-Both upstream and drm-msm are in my remotes and synced, so I suspect it's
-some private tree. Please make sure to base patches on the corresponding
-maintainer tree or upstream, whichs makes life easier for maintainers,
-testers and reviewers.
+need to be added and escaped too
+
+?
+
+
