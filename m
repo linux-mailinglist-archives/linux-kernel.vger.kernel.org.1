@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6BF21FC53
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2625E21FCB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730637AbgGNTI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:08:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46496 "EHLO mail.kernel.org"
+        id S1730090AbgGNStO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:49:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729741AbgGNSuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:50:24 -0400
+        id S1730067AbgGNStM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:49:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA91C207F5;
-        Tue, 14 Jul 2020 18:50:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4C10222E9;
+        Tue, 14 Jul 2020 18:49:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752623;
-        bh=49qUf6Pee7v1XrKB0RGEegsA3cDs8+wRd1v2gKqYmWo=;
+        s=default; t=1594752552;
+        bh=99IkoKqYal1+CgiFJUp043LhO+ehrbzZwOrkNWk7qI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=czt4yaLiS4/+kibZLyaRkDooMdO2WPc31GCRNEdwjEwEitE0mtAuoaBJTol1NsJXH
-         YcfXUYIYUT/Y0FtDYyiyOCdPZNIUfT6d43a6AMyE6Be09Ts5NBg7okpkhfsIzhm/xj
-         oYTJ71tpGaSApN8A8LtBhA+bnKu9jU7KcRWtZOXk=
+        b=tXhXcujrXroj0F/BTVvWOlH5eAdZcIv4JGnI/spyPrBFCXGU771KQhMOcv/oL/1SZ
+         A1PBBkY5FjjebkC2RSfkp0fJN8nb21EhTnG2hrhvLm0+mQomhV3T3N/0CcjBrDqlvU
+         iZTx3SJGQA7zvaGlvZf6+9hQk336SEOJw3zwZHCM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ciara Loftus <ciara.loftus@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        stable@vger.kernel.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 018/109] ixgbe: protect ring accesses with READ- and WRITE_ONCE
-Date:   Tue, 14 Jul 2020 20:43:21 +0200
-Message-Id: <20200714184106.394531883@linuxfoundation.org>
+Subject: [PATCH 5.4 021/109] powerpc/kvm/book3s64: Fix kernel crash with nested kvm & DEBUG_VIRTUAL
+Date:   Tue, 14 Jul 2020 20:43:24 +0200
+Message-Id: <20200714184106.543814586@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
 References: <20200714184105.507384017@linuxfoundation.org>
@@ -45,110 +45,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ciara Loftus <ciara.loftus@intel.com>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-[ Upstream commit f140ad9fe2ae16f385f8fe4dc9cf67bb4c51d794 ]
+[ Upstream commit c1ed1754f271f6b7acb1bfdc8cfb62220fbed423 ]
 
-READ_ONCE should be used when reading rings prior to accessing the
-statistics pointer. Introduce this as well as the corresponding WRITE_ONCE
-usage when allocating and freeing the rings, to ensure protected access.
+With CONFIG_DEBUG_VIRTUAL=y, __pa() checks for addr value and if it's
+less than PAGE_OFFSET it leads to a BUG().
 
-Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+  #define __pa(x)
+  ({
+  	VIRTUAL_BUG_ON((unsigned long)(x) < PAGE_OFFSET);
+  	(unsigned long)(x) & 0x0fffffffffffffffUL;
+  })
+
+  kernel BUG at arch/powerpc/kvm/book3s_64_mmu_radix.c:43!
+  cpu 0x70: Vector: 700 (Program Check) at [c0000018a2187360]
+      pc: c000000000161b30: __kvmhv_copy_tofrom_guest_radix+0x130/0x1f0
+      lr: c000000000161d5c: kvmhv_copy_from_guest_radix+0x3c/0x80
+  ...
+  kvmhv_copy_from_guest_radix+0x3c/0x80
+  kvmhv_load_from_eaddr+0x48/0xc0
+  kvmppc_ld+0x98/0x1e0
+  kvmppc_load_last_inst+0x50/0x90
+  kvmppc_hv_emulate_mmio+0x288/0x2b0
+  kvmppc_book3s_radix_page_fault+0xd8/0x2b0
+  kvmppc_book3s_hv_page_fault+0x37c/0x1050
+  kvmppc_vcpu_run_hv+0xbb8/0x1080
+  kvmppc_vcpu_run+0x34/0x50
+  kvm_arch_vcpu_ioctl_run+0x2fc/0x410
+  kvm_vcpu_ioctl+0x2b4/0x8f0
+  ksys_ioctl+0xf4/0x150
+  sys_ioctl+0x28/0x80
+  system_call_exception+0x104/0x1d0
+  system_call_common+0xe8/0x214
+
+kvmhv_copy_tofrom_guest_radix() uses a NULL value for to/from to
+indicate direction of copy.
+
+Avoid calling __pa() if the value is NULL to avoid the BUG().
+
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+[mpe: Massage change log a bit to mention CONFIG_DEBUG_VIRTUAL]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200611120159.680284-1-aneesh.kumar@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c  | 12 ++++++------
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 14 +++++++++++---
- 2 files changed, 17 insertions(+), 9 deletions(-)
+ arch/powerpc/kvm/book3s_64_mmu_radix.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-index cc3196ae5aea8..636e6e840afa2 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_lib.c
-@@ -923,7 +923,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
- 		ring->queue_index = txr_idx;
+diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+index 43b56f8f6bebd..da8375437d161 100644
+--- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
++++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+@@ -38,7 +38,8 @@ unsigned long __kvmhv_copy_tofrom_guest_radix(int lpid, int pid,
+ 	/* Can't access quadrants 1 or 2 in non-HV mode, call the HV to do it */
+ 	if (kvmhv_on_pseries())
+ 		return plpar_hcall_norets(H_COPY_TOFROM_GUEST, lpid, pid, eaddr,
+-					  __pa(to), __pa(from), n);
++					  (to != NULL) ? __pa(to): 0,
++					  (from != NULL) ? __pa(from): 0, n);
  
- 		/* assign ring to adapter */
--		adapter->tx_ring[txr_idx] = ring;
-+		WRITE_ONCE(adapter->tx_ring[txr_idx], ring);
- 
- 		/* update count and index */
- 		txr_count--;
-@@ -950,7 +950,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
- 		set_ring_xdp(ring);
- 
- 		/* assign ring to adapter */
--		adapter->xdp_ring[xdp_idx] = ring;
-+		WRITE_ONCE(adapter->xdp_ring[xdp_idx], ring);
- 
- 		/* update count and index */
- 		xdp_count--;
-@@ -993,7 +993,7 @@ static int ixgbe_alloc_q_vector(struct ixgbe_adapter *adapter,
- 		ring->queue_index = rxr_idx;
- 
- 		/* assign ring to adapter */
--		adapter->rx_ring[rxr_idx] = ring;
-+		WRITE_ONCE(adapter->rx_ring[rxr_idx], ring);
- 
- 		/* update count and index */
- 		rxr_count--;
-@@ -1022,13 +1022,13 @@ static void ixgbe_free_q_vector(struct ixgbe_adapter *adapter, int v_idx)
- 
- 	ixgbe_for_each_ring(ring, q_vector->tx) {
- 		if (ring_is_xdp(ring))
--			adapter->xdp_ring[ring->queue_index] = NULL;
-+			WRITE_ONCE(adapter->xdp_ring[ring->queue_index], NULL);
- 		else
--			adapter->tx_ring[ring->queue_index] = NULL;
-+			WRITE_ONCE(adapter->tx_ring[ring->queue_index], NULL);
- 	}
- 
- 	ixgbe_for_each_ring(ring, q_vector->rx)
--		adapter->rx_ring[ring->queue_index] = NULL;
-+		WRITE_ONCE(adapter->rx_ring[ring->queue_index], NULL);
- 
- 	adapter->q_vector[v_idx] = NULL;
- 	napi_hash_del(&q_vector->napi);
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index edaa0bffa5c35..5336bfcd2d701 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -7064,7 +7064,10 @@ void ixgbe_update_stats(struct ixgbe_adapter *adapter)
- 	}
- 
- 	for (i = 0; i < adapter->num_rx_queues; i++) {
--		struct ixgbe_ring *rx_ring = adapter->rx_ring[i];
-+		struct ixgbe_ring *rx_ring = READ_ONCE(adapter->rx_ring[i]);
-+
-+		if (!rx_ring)
-+			continue;
- 		non_eop_descs += rx_ring->rx_stats.non_eop_descs;
- 		alloc_rx_page += rx_ring->rx_stats.alloc_rx_page;
- 		alloc_rx_page_failed += rx_ring->rx_stats.alloc_rx_page_failed;
-@@ -7085,15 +7088,20 @@ void ixgbe_update_stats(struct ixgbe_adapter *adapter)
- 	packets = 0;
- 	/* gather some stats to the adapter struct that are per queue */
- 	for (i = 0; i < adapter->num_tx_queues; i++) {
--		struct ixgbe_ring *tx_ring = adapter->tx_ring[i];
-+		struct ixgbe_ring *tx_ring = READ_ONCE(adapter->tx_ring[i]);
-+
-+		if (!tx_ring)
-+			continue;
- 		restart_queue += tx_ring->tx_stats.restart_queue;
- 		tx_busy += tx_ring->tx_stats.tx_busy;
- 		bytes += tx_ring->stats.bytes;
- 		packets += tx_ring->stats.packets;
- 	}
- 	for (i = 0; i < adapter->num_xdp_queues; i++) {
--		struct ixgbe_ring *xdp_ring = adapter->xdp_ring[i];
-+		struct ixgbe_ring *xdp_ring = READ_ONCE(adapter->xdp_ring[i]);
- 
-+		if (!xdp_ring)
-+			continue;
- 		restart_queue += xdp_ring->tx_stats.restart_queue;
- 		tx_busy += xdp_ring->tx_stats.tx_busy;
- 		bytes += xdp_ring->stats.bytes;
+ 	quadrant = 1;
+ 	if (!pid)
 -- 
 2.25.1
 
