@@ -2,141 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C1B21FF84
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3092E220005
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728054AbgGNVBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
+        id S1728310AbgGNV1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727935AbgGNVBj (ORCPT
+        with ESMTP id S1727822AbgGNV1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:01:39 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFCAC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:01:38 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id q5so189913wru.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:01:38 -0700 (PDT)
+        Tue, 14 Jul 2020 17:27:36 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B17C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:27:36 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id f139so958082wmf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:27:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=gVD9qdPMyUmjbT/wQ1whJd58NB9dc+MTfoFQHtY+660=;
-        b=bQ9D3OLg1v4uiE7MNPeSsCZ9RjCLsAXGwENkmXzkCqye+xMBX1iTLaiqTh+6Kh8GXe
-         m2n12+8KlPUJLT7DCFMhcHtE8JlYLW50hkC4IBjo67KedA4qpEHW/PWyMxcNTNTS5sEf
-         F82bVfSUPDu0MY27IrQxz7IPFxQyw9tdK3Ly+qhjEFOH7+PtdswO7JGZThpVEGuJu/+v
-         R8eSIi8vHfHyiDtWbCmC1yVwTwKsE4ZfhbBi/LAml1bmYFSvRgSQ470zxz1iAtsHlN7a
-         DkV8jQvJKsGeADwO1t4/+0HWkfNxU84YSp0/vkHna8N4y1131VWlnivaL/yMr6aZ4T/S
-         mnIQ==
+        bh=KSfvDIX/TrKhNfavz9gqT4CkPok883ejJCseRAMUrzQ=;
+        b=GtzkgbuGm+CflRAs9y9OQuFQxiZl5hlT9j1xzSijnMFIFq/1ETlmkPrZBx4rPXpZQW
+         kQUMvTOCAS3v3gZFeaCvS7AG6Uz/NZz7h9lufDKAjEX6IwrfXF4czGjb56vFo6Brn0zU
+         /YR4DgTdYmVAF8I6PT6XGCwBW5JyaGZ4Jbhqlp8sSzGRy+EUiO7zFBs6ud0wuK0YCVRa
+         e7WtqO2ymi6k9GOuyREhUvA+khGnFBn8wSLNd8nALFXqS31mo3UzJR7k5xQF2qnIN5IH
+         JL3M3M/Qaxkw6nCT79ts/jLodZ0qILcCfE+jFLaGr0w/xkZrF41g8RgjZBulPXFRKI50
+         H4lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=gVD9qdPMyUmjbT/wQ1whJd58NB9dc+MTfoFQHtY+660=;
-        b=F+Mba2W6VrY4EKKjU19QuT03phuFnwK5P5stO9E8aXhctBJzW2H9beCCgMFzZPbNJO
-         qJiqneJJyxFUhS0vPKXOdbEnBxkjHUaG9ojVuII+W6x/2LE0OVOF3fXyCtbBtCpA+wCl
-         f2S/sf8jjyW4GdrjtjbVs2vpV7YTTJtxv+veQmMheuki4gFHXpHXErJiRFkdLEKci8Hy
-         QSPkZhESYNcNeAsBRU9zpCnp49gbwSXht7RyQxpJIe1duOj1Op+eDN9MWeWW96Z59i5l
-         KIDvxnXz5oxE9pk4b6FpsTPzFiNj/Zkcm0w3n+fPyF65NQFoveaV3h7k6I9ZWBfICkhn
-         d/ZA==
-X-Gm-Message-State: AOAM530fXK5Ji0f5w3C73C/NHhy2B3C9O5T57smJn5GYLA26oSzcTLHL
-        IXL7bLA6+MQIZnDlpXYHisinTA==
-X-Google-Smtp-Source: ABdhPJx/Uqe4FxAG4ZMmGcrr32Cx8sRFTkUO3Zy3oUr3YF1k+Daypk5262+gqjeWsMOgCWIUSQWJ9A==
-X-Received: by 2002:adf:e6ce:: with SMTP id y14mr7815941wrm.401.1594760497577;
-        Tue, 14 Jul 2020 14:01:37 -0700 (PDT)
+        bh=KSfvDIX/TrKhNfavz9gqT4CkPok883ejJCseRAMUrzQ=;
+        b=ofE9E2JshEWo8pk7GfVY1O/JsWe8b5RuV4VYRDfL45t28RejRFVrJfjf+7XF5zBzQe
+         +QPEGuu7AO1a9lbxm2J7T3jMEPOrcM7RBxO31yp7bAIWxkX1uBniAKrZozfuRXNhOiZ2
+         us8JIaslG71APjGb36ofR9tjWqEbCB8pdV3jy916soFeePtNBVI+UNtgBZX2aYPUTWAe
+         urWYQcVNtPZW8CWSq8WDJ3I+i0jZbScpwgmvvA9mniy6WCx3lVjZe8gct3f7ODOCD0FH
+         isol7+R381wpeGh4wk9oYcbH6YgsPr4K8e3wzQc9yXs5R1nbGGlWIuoR+WBfC9qEMb6t
+         VtCw==
+X-Gm-Message-State: AOAM530eiXhmWw8F9kCF/eNaTXynhpx1k+9RlA1+g/CBkZ2rq7l8zAAe
+        yXPYWiOIMKwOni5g7JKLrG3lBxizd97Pig==
+X-Google-Smtp-Source: ABdhPJy0GFscM5m948VgN4h5ukfqjG35G3bXmIQulvRQz8qUJoPyiRdnYmLyFLy/FTP372JkZSxeSQ==
+X-Received: by 2002:a1c:3504:: with SMTP id c4mr5580994wma.177.1594760540764;
+        Tue, 14 Jul 2020 14:02:20 -0700 (PDT)
 Received: from dell ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id e17sm29502178wrr.88.2020.07.14.14.01.36
+        by smtp.gmail.com with ESMTPSA id t141sm13313wmt.26.2020.07.14.14.02.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 14:01:36 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 22:01:35 +0100
+        Tue, 14 Jul 2020 14:02:20 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 22:02:18 +0100
 From:   Lee Jones <lee.jones@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Andreas Herrmann <herrmann.der.user@googlemail.com>,
-        Dominik Brodowski <linux@brodo.de>,
-        Pavel Machek <pavel@ucw.cz>,
-        Paul Devriendt <paul.devriendt@amd.com>,
-        Mark Langsdorf <mark.langsdorf@amd.com>
-Subject: Re: [PATCH 10/13] cpufreq: powernow-k8: Make use of known set but
- not used variables
-Message-ID: <20200714210135.GG1398296@dell>
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Jacob Shin <jacob.shin@amd.com>
+Subject: Re: [PATCH 13/13] cpufreq: amd_freq_sensitivity: Remove unused ID
+ structs
+Message-ID: <20200714210218.GH1398296@dell>
 References: <20200714145049.2496163-1-lee.jones@linaro.org>
- <20200714145049.2496163-11-lee.jones@linaro.org>
- <CAJZ5v0jXjtZ0=ZnOZm2LNR32TwWSrq4C4bwhNh5tOOChfpWZxw@mail.gmail.com>
+ <20200714145049.2496163-14-lee.jones@linaro.org>
+ <6101e041-41e9-22bc-488d-38124c139bc7@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jXjtZ0=ZnOZm2LNR32TwWSrq4C4bwhNh5tOOChfpWZxw@mail.gmail.com>
+In-Reply-To: <6101e041-41e9-22bc-488d-38124c139bc7@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020, Rafael J. Wysocki wrote:
+On Tue, 14 Jul 2020, Kim Phillips wrote:
 
-> On Tue, Jul 14, 2020 at 4:51 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > If we fail to use a variable, even a 'dummy' one, then the compiler
-> > complains that it is set but not used.  We know this is fine, so we
-> > set it to its own value here.
-> >
+> On 7/14/20 9:50 AM, Lee Jones wrote:
+> > Can't see them being used anywhere and the compiler doesn't complain
+> > that they're missing, so ...
+> > 
 > > Fixes the following W=1 kernel build warning(s):
-> >
-> >  drivers/cpufreq/powernow-k8.c: In function ‘pending_bit_stuck’:
-> >  drivers/cpufreq/powernow-k8.c:89:10: warning: variable ‘hi’ set but not used [-Wunused-but-set-variable]
-> >  89 | u32 lo, hi;
-> >  | ^~
-> >  drivers/cpufreq/powernow-k8.c: In function ‘core_voltage_pre_transition’:
-> >  drivers/cpufreq/powernow-k8.c:285:14: warning: variable ‘lo’ set but not used [-Wunused-but-set-variable]
-> >  285 | u32 maxvid, lo, rvomult = 1;
-> >  | ^~
-> >
-> > Cc: Andreas Herrmann <herrmann.der.user@googlemail.com>
-> > Cc: Dominik Brodowski <linux@brodo.de>
-> > Cc: Pavel Machek <pavel@ucw.cz>
-> > Cc: Paul Devriendt <paul.devriendt@amd.com>
-> > Cc: Mark Langsdorf <mark.langsdorf@amd.com>
+> > 
+> >  drivers/cpufreq/amd_freq_sensitivity.c:147:32: warning: ‘amd_freq_sensitivity_ids’ defined but not used [-Wunused-const-variable=]
+> >  147 | static const struct x86_cpu_id amd_freq_sensitivity_ids[] = {
+> >  | ^~~~~~~~~~~~~~~~~~~~~~~~
+> > 
+> > Cc: Jacob Shin <jacob.shin@amd.com>
 > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > > ---
-> >  drivers/cpufreq/powernow-k8.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/cpufreq/powernow-k8.c b/drivers/cpufreq/powernow-k8.c
-> > index 3984959eed1d5..b76df81044c4f 100644
-> > --- a/drivers/cpufreq/powernow-k8.c
-> > +++ b/drivers/cpufreq/powernow-k8.c
-> > @@ -89,6 +89,7 @@ static int pending_bit_stuck(void)
-> >         u32 lo, hi;
-> >
-> >         rdmsr(MSR_FIDVID_STATUS, lo, hi);
-> > +       hi &= hi; /* Silence set but not used warning */
 > 
-> Hmm.
-> 
-> What about using __always_unused for this?
+> Same comment as for patch 9/13: these are used automatic module loading.
 
-I didn't know you could use that for standard variables.
+How does that work?
 
-Will fix.
-
-> >         return lo & MSR_S_LO_CHANGE_PENDING ? 1 : 0;
-> >  }
-> >
-> > @@ -292,6 +293,7 @@ static int core_voltage_pre_transition(struct powernow_k8_data *data,
-> >                 rvomult = 2;
-> >         rvosteps *= rvomult;
-> >         rdmsr(MSR_FIDVID_STATUS, lo, maxvid);
-> > +       lo &= lo; /* Silence set but not used warning */
-> >         maxvid = 0x1f & (maxvid >> 16);
-> >         pr_debug("ph1 maxvid=0x%x\n", maxvid);
-> >         if (reqvid < maxvid) /* lower numbers are higher voltages */
-> >
+Could you point me to the code which handles that please?
 
 -- 
 Lee Jones [李琼斯]
