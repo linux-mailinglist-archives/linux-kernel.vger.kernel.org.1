@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E242821F2BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C06321F2C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728639AbgGNNfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:35:23 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:48266 "EHLO inva021.nxp.com"
+        id S1728661AbgGNNfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:35:25 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:48278 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728200AbgGNNfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728417AbgGNNfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Jul 2020 09:35:18 -0400
 Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5F0CE201024;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A39ED201027;
         Tue, 14 Jul 2020 15:35:16 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 52B032001B2;
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 97BB22015E6;
         Tue, 14 Jul 2020 15:35:16 +0200 (CEST)
 Received: from fsr-ub1864-126.ea.freescale.net (fsr-ub1864-126.ea.freescale.net [10.171.82.212])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 128A6205A4;
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 618DA205A4;
         Tue, 14 Jul 2020 15:35:16 +0200 (CEST)
 From:   Ioana Ciornei <ioana.ciornei@nxp.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
         Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH 4/6] staging: dpaa2-ethsw: disable switch ports are probe time
-Date:   Tue, 14 Jul 2020 16:34:29 +0300
-Message-Id: <20200714133431.17532-5-ioana.ciornei@nxp.com>
+Subject: [PATCH 5/6] staging: dpaa2-ethsw: store version information of the DPSW object
+Date:   Tue, 14 Jul 2020 16:34:30 +0300
+Message-Id: <20200714133431.17532-6-ioana.ciornei@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200714133431.17532-1-ioana.ciornei@nxp.com>
 References: <20200714133431.17532-1-ioana.ciornei@nxp.com>
@@ -36,32 +36,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MC firmware will enable the switch interfaces at DPSW creation
-without waiting for an 'ifconfig up' on the switch interfaces. When this
-happens, the states held by the Linux software vs the firmware are not
-in sync. Make sure to disable the switch ports at probe time to not
-encounter this issue.
+Store the major and minor versions of the DPSW object in the ethsw
+structure. This will be used in a subsequent patch to make sure some
+commands are only called on the appropriate version of object.
 
 Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
 ---
- drivers/staging/fsl-dpaa2/ethsw/ethsw.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/staging/fsl-dpaa2/ethsw/ethsw.c | 16 ++++++++--------
+ drivers/staging/fsl-dpaa2/ethsw/ethsw.h |  1 +
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/staging/fsl-dpaa2/ethsw/ethsw.c b/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-index a1917842536e..f283ce195c1e 100644
+index f283ce195c1e..a8fc9bcf3b8a 100644
 --- a/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
 +++ b/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-@@ -1672,6 +1672,10 @@ static int ethsw_probe(struct fsl_mc_device *sw_dev)
- 		goto err_free_ports;
+@@ -1368,9 +1368,9 @@ static int ethsw_init(struct fsl_mc_device *sw_dev)
+ {
+ 	struct device *dev = &sw_dev->dev;
+ 	struct ethsw_core *ethsw = dev_get_drvdata(dev);
+-	u16 version_major, version_minor, i;
+ 	struct dpsw_stp_cfg stp_cfg;
+ 	int err;
++	u16 i;
+ 
+ 	ethsw->dev_id = sw_dev->obj_desc.id;
+ 
+@@ -1388,20 +1388,20 @@ static int ethsw_init(struct fsl_mc_device *sw_dev)
  	}
  
-+	/* Make sure the switch ports are disabled at probe time */
-+	for (i = 0; i < ethsw->sw_attr.num_ifs; i++)
-+		dpsw_if_disable(ethsw->mc_io, 0, ethsw->dpsw_handle, i);
-+
- 	/* Setup IRQs */
- 	err = ethsw_setup_irqs(sw_dev);
- 	if (err)
+ 	err = dpsw_get_api_version(ethsw->mc_io, 0,
+-				   &version_major,
+-				   &version_minor);
++				   &ethsw->major,
++				   &ethsw->minor);
+ 	if (err) {
+ 		dev_err(dev, "dpsw_get_api_version err %d\n", err);
+ 		goto err_close;
+ 	}
+ 
+ 	/* Minimum supported DPSW version check */
+-	if (version_major < DPSW_MIN_VER_MAJOR ||
+-	    (version_major == DPSW_MIN_VER_MAJOR &&
+-	     version_minor < DPSW_MIN_VER_MINOR)) {
++	if (ethsw->major < DPSW_MIN_VER_MAJOR ||
++	    (ethsw->major == DPSW_MIN_VER_MAJOR &&
++	     ethsw->minor < DPSW_MIN_VER_MINOR)) {
+ 		dev_err(dev, "DPSW version %d:%d not supported. Use %d.%d or greater.\n",
+-			version_major,
+-			version_minor,
++			ethsw->major,
++			ethsw->minor,
+ 			DPSW_MIN_VER_MAJOR, DPSW_MIN_VER_MINOR);
+ 		err = -ENOTSUPP;
+ 		goto err_close;
+diff --git a/drivers/staging/fsl-dpaa2/ethsw/ethsw.h b/drivers/staging/fsl-dpaa2/ethsw/ethsw.h
+index a0244f7d5003..0e520fd94dbc 100644
+--- a/drivers/staging/fsl-dpaa2/ethsw/ethsw.h
++++ b/drivers/staging/fsl-dpaa2/ethsw/ethsw.h
+@@ -61,6 +61,7 @@ struct ethsw_core {
+ 	struct fsl_mc_io		*mc_io;
+ 	u16				dpsw_handle;
+ 	struct dpsw_attr		sw_attr;
++	u16				major, minor;
+ 	int				dev_id;
+ 	struct ethsw_port_priv		**ports;
+ 
 -- 
 2.25.1
 
