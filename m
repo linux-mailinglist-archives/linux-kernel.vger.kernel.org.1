@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B5721EBEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B03621EBED
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgGNIyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 04:54:21 -0400
-Received: from mail-eopbgr50102.outbound.protection.outlook.com ([40.107.5.102]:4735
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725820AbgGNIyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 04:54:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HLaT5oAB+ms7we7zRnqHKj7EiV1fZ9lLjwI0DpcEtW88hsnPLL/WrRJiqLHfGwn54vD10HpwSzN0jLyvuJpr7ucaP2LYb/p9j3I+mbIzEtS3TgZcVRAulTWuD6vDgSDj/cboLjV7VSczUGMr/pCOHZzTsH/kdWphEpRksxuLYTaFCaywM3Kg9gbmky0eKU0kLLi/mYjyyCRF+qabR5oX9erwn/XiueFvB3Hk4qS+c7dhmXtrZQtrBmsRbgZefi+HIaHsvyZa/UAbugb8iJj2Y6GIT4oXS9zL1XNN1AaP4ADhcxZLScmAsoKANC2eJQmRN6w17GFSZwtzMdgbyuLwHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xmZ5uvhsE5MPtS8wLfI0Bjgd/yVrSq5Ty7YxNLyU2jA=;
- b=EBPfIQYgwVQgkTfDU00RzaQUBzgQ01xvoTR8ClouFxRgFWwQt6lGoN21gSyE+lXuxqXw+TKnCg8n9xYIJXsBUj7X36jnHfp786TvfMEME+gj554pU2J4GD3BHc5g+Nue2PeHl8Nf7PIPCLSaK43TOb84NzWWD+fBo21vdHZPCuPQc8uKZLY4+qjveJfAatTOnjpxOOjANMeNmst8WlPxemMce+mXvVk5NKCCgSnycJAICGniKPMCVhegww+p0tMcwvRAyCD/y+dMsoMeDHRqDoLurJr75h5NRjzPYF40j0sRyO0ghHs/LqgP0AfrqsXcnp5NUPHbp/6zXmUEgyzdQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xmZ5uvhsE5MPtS8wLfI0Bjgd/yVrSq5Ty7YxNLyU2jA=;
- b=ROgzE/YYmI5iRNjGrRUKPqcc4nkt+yMuDXpn+cjGD0yIO45UMs31oGPGcvQW14qQJtMbhmwxaa7JyL+tOgPSQhINREe26uaObrf406I9pczAK85bKgslDhfaAXO+/cg8gd4CGCAZE/zB0rTpn9uHELn2P2D40vdpjfkvfMF33IM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=kontron.de;
-Received: from DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:50::12)
- by DB8PR10MB3276.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:11a::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Tue, 14 Jul
- 2020 08:54:17 +0000
-Received: from DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::ac04:ef33:baf3:36f3]) by DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::ac04:ef33:baf3:36f3%4]) with mapi id 15.20.3174.026; Tue, 14 Jul 2020
- 08:54:17 +0000
-Subject: Re: [PATCH] spi: spidev: Add compatible for external SPI ports on
- Kontron boards
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-References: <20200702141846.7752-1-frieder.schrempf@kontron.de>
- <20200702142511.GF4483@sirena.org.uk>
- <24ec4eed-de01-28df-ee1f-f7bcfc80051a@kontron.de>
- <20200702150725.GI4483@sirena.org.uk>
- <479d566a-213f-4e33-8ac7-7637ae88e31c@kontron.de>
- <a5b88ad9-3884-1d9c-c4ad-057266f84261@kontron.de>
- <20200713151108.GB4420@sirena.org.uk>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-Message-ID: <2eb6971b-7ea4-c9c8-5452-6f4b17e8860a@kontron.de>
-Date:   Tue, 14 Jul 2020 10:54:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200713151108.GB4420@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR02CA0079.eurprd02.prod.outlook.com
- (2603:10a6:208:154::20) To DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:50::12)
+        id S1726670AbgGNIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 04:55:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46012 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725820AbgGNIzM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 04:55:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594716911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=73S/IVSRb41NQET//LecZg2QFojO2k5JSxkBwEYr01g=;
+        b=LudDbIpb2+K6okx1k8v4M2w9GXHsTvGZkW3M7c58022E+81yNgR1BeLrU3JpE3UaQnn4iH
+        9E2DkUSyHJpBUPuPljfq6s9YeIeD2K/SJQqgux1iqF9Rij7/oNuCC4mm8pIxK2dPfLefEC
+        z9ljXI/MiCEQ7XG34K1UOj0RyVfKetw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-330-HwICBWc-OdGPqL68_hNR7w-1; Tue, 14 Jul 2020 04:55:08 -0400
+X-MC-Unique: HwICBWc-OdGPqL68_hNR7w-1
+Received: by mail-wr1-f72.google.com with SMTP id d11so20787487wrw.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 01:55:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=73S/IVSRb41NQET//LecZg2QFojO2k5JSxkBwEYr01g=;
+        b=fUr3S6+cLy69qDXjDzfpPBfkZcBzSiBH3Yo5qavHlWCLTdQzZA1BUwROHDHIXNqHi1
+         V8jaS10xc/HNCntIns/N2uelf4cjcuxVWghla/2cyx26LDi+I6f8IJ7JgLUuLWL0XoLM
+         l+xG+QmPZBanIXoLVqUF+z9lernoNdDwBA0HfhTcMa20wVf05St/0BJ+sU41lBWAW14+
+         mw03cLk2SagZkWT7YKvfOegkv88e9MA50fLjIHgtHV/YMBb9bppyCj1++1n3Y3hQ4/wy
+         +RhHn2lnfoLYqn4TIADQXGWCKp4rxUaygNpARFP6E//sBXb7IJIVrpbqfXLQVJTA0LEU
+         qs9g==
+X-Gm-Message-State: AOAM533TnW0N5OlL9UA4pUIamU7DWsDMKgsVcfkdmn9W6YWNhm60hhJc
+        XCh7Vhx3EYw2oeCGwi4Hp48//PN5Gs17aYdlQPO33DSGqG1+jxoUoHYzdZG4ntSntffEEZA1r3g
+        /+km0/j8nqCogvpA5I6wmwIfZ
+X-Received: by 2002:adf:9404:: with SMTP id 4mr3804662wrq.367.1594716907283;
+        Tue, 14 Jul 2020 01:55:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpc9sR4tw7tvh47yW+jR4/3qcFEgQli9j7i7YqnWb9GTJR0Kq/zgQzCdCvkqBfrz3On5f+uw==
+X-Received: by 2002:adf:9404:: with SMTP id 4mr3804647wrq.367.1594716907130;
+        Tue, 14 Jul 2020 01:55:07 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-10-140.red.bezeqint.net. [79.180.10.140])
+        by smtp.gmail.com with ESMTPSA id n5sm3324370wmi.34.2020.07.14.01.55.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 01:55:06 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 04:55:02 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     david@redhat.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtio-dev@lists.oasis-open.org
+Subject: Re: [PATCH] virtio-balloon: Document byte ordering of poison_val
+Message-ID: <20200714045454-mutt-send-email-mst@kernel.org>
+References: <20200713203539.17140.71425.stgit@localhost.localdomain>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.99.63] (80.147.118.32) by AM0PR02CA0079.eurprd02.prod.outlook.com (2603:10a6:208:154::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20 via Frontend Transport; Tue, 14 Jul 2020 08:54:17 +0000
-X-Originating-IP: [80.147.118.32]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7a3aa5c4-18ac-4b1c-63ed-08d827d37da3
-X-MS-TrafficTypeDiagnostic: DB8PR10MB3276:
-X-Microsoft-Antispam-PRVS: <DB8PR10MB3276A0E7469D2B7B3EB3EE02E9610@DB8PR10MB3276.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QEHLnSkWVVqsd2xtM410UnhALVl9RPQA3dAVb0E5f++GZJY4aXBL3EIIyEnXtP+4uzjZV6hOXhe/d4fhF1vGPThz7swES1VeAkREzRLuDWKtzs+blk9I4h32YeNAPqAIPhUsI68k4G/NcfE9x9b1+OQ1R53oRFxAyFA3ioKGA/2x6oN3U/PaJAqebBNvXYjE8CGjPJ/8zAFMpmjuZVHnPnr74VKJPToLklBvz3n2ESBAw2PGeskCd5fuolCU2kdXg4tyweGsSOqGPIq/tqZgpS18B73AgZOH/wS1MUaUldkn5A7DQeQUvXUxbRay9gjQSB5WmziD2jB7i0JmVNjEKkuolzaL2rSoSQJHNPNLrskhAJ2Ck1/6N4rmwo4T4s4l
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(39860400002)(346002)(396003)(136003)(86362001)(5660300002)(53546011)(478600001)(31696002)(52116002)(6916009)(8936002)(36756003)(26005)(66946007)(31686004)(66476007)(66556008)(8676002)(956004)(2906002)(16576012)(2616005)(186003)(44832011)(316002)(4326008)(16526019)(6486002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 6YYE6bwsWAc1g48CZYSW39kOwi9MBrsvUU+Y/zG+XO0m9krhLYJpt9DZdeuI/JvPMQCGjnBRVgSClGIQecGeqow6sm9XYn7w0ksAEvvsmvvtfJN0rmbcZFsc/LO4m1aap0zx+VB2YEK8VoNEfCXICQQyXtgEvo/TMWB11r8iQImcL3hqglRt9G9B+jgI6AMqN54HgTnTEcgDbGPdreD/joumI5uGMZuenfmZK2qBIyRM3Uw99dvQw+ATeLZLGZ/3KZ/Mr5ihi68t4KDXKWQKTi+FalDQfVHCWO7w91SL2aK3G4WiXruwNP2fEEwUfWUsShCX1IPRHtZvqz9pMTrsUgN8+F7fYyxU01m9uB5GKDZsQnCTmTwO6pQ2+2r6LlARBBb4Od+Nmf2a45YxT9WWJQ8QIhYcBX4icyIlKzo//BhJWQrTbv0o4Q6zt1goiqGL0Mfk3RBKjRSN8WhfZdJ91g9Vnr+lfUiFz9/4hj9z/ns=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a3aa5c4-18ac-4b1c-63ed-08d827d37da3
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2020 08:54:17.4736
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: g4JVprxkDccXSTUcrXodhzOw3XXA7s0QYgKUGzOUNelIyAim9Nc5YKVlwfOkvD35b1qhrT550/gJwFHOzE8puNojulOwOOEacJK7lpwgqgQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3276
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713203539.17140.71425.stgit@localhost.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.07.20 17:11, Mark Brown wrote:
-> On Mon, Jul 13, 2020 at 03:19:52PM +0200, Frieder Schrempf wrote:
+On Mon, Jul 13, 2020 at 01:35:39PM -0700, Alexander Duyck wrote:
+> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 > 
->> I would have expected that there is some kind of existing userspace API to
->> load an overlay manually, but it seems like there isn't!?
+> The poison_val field in the virtio_balloon_config is treated as a
+> little-endian field by the host. Since we are currently only having to deal
+> with a single byte poison value this isn't a problem, however if the value
+> should ever expand it would cause byte ordering issues. Document that in
+> the code so that we know that if the value should ever expand we need to
+> byte swap the value on big-endian architectures.
 > 
->> So what's the reasoning behind this? How can I solve this in a
->> mainline-compliant way, meaning without either keeping downstream patches to
->> bind spidev to my device or writing and maintaining code that does the
->> overlay loading?
+> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+
+Queued, thanks!
+
+> ---
+>  drivers/virtio/virtio_balloon.c |    5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> Basically the reasoning is that nobody's done it rather than any grand
-> design not to do it.  There's some issues for more complex connectors
-> present on multiple boards with mapping the same connector onto multiple
-> boards where a resource on the connector might be provided by different
-> things on the base board so it's not quite as trivial for them as it
-> should be.
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 1f157d2f4952..d0fd8f8dc6ed 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -974,6 +974,11 @@ static int virtballoon_probe(struct virtio_device *vdev)
+>  		/*
+>  		 * Let the hypervisor know that we are expecting a
+>  		 * specific value to be written back in balloon pages.
+> +		 *
+> +		 * If the PAGE_POISON value was larger than a byte we would
+> +		 * need to byte swap poison_val here to guarantee it is
+> +		 * little-endian. However for now it is a single byte so we
+> +		 * can pass it as-is.
+>  		 */
+>  		if (!want_init_on_free())
+>  			memset(&poison_val, PAGE_POISON, sizeof(poison_val));
 
-Ok, thanks. I'm afraid I'm currently not in the position to work on any 
-generic solution to leverage the loading of DT overlays from userspace.
-
-It would still be quite nice to benefit from the flexibility of DT 
-overlays not only for the SPI use case. But before I come up with any 
-custom solution, for now I will rather have the device in the DT statically.
-
-I just wonder if I need to keep the DT node for the device in a separate 
-patch in our own tree, or if a node with a custom compatible string like 
-for example "kontron,user-spi" would be accepted upstream, without a 
-matching driver?
