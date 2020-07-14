@@ -2,145 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A8B21FE35
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D20B21FE39
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729021AbgGNUIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 16:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgGNUIQ (ORCPT
+        id S1728243AbgGNUKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 16:10:32 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.166]:20786 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbgGNUKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 16:08:16 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE63BC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 13:08:16 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id v8so18687643iox.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 13:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=7R3dCXqsSoyh387FNpg7of+Vy2Uow0OshGTXM3A59Lo=;
-        b=qa5xbbgSqDFSqHmM56KWb16bYK0iDbPVkZs70iYrW4xgJyjSKR/5uqwiLmSlmoCLD9
-         /4wNRu7Jy4WdnXZk+YtEC9lEYRjwP60InPz+yhlBVv/xKq/+AFvNv/g7xYLFGs++7V4Q
-         EOApNkQiaQV20m1vFh8bJBgBCEP+mZd8wb/VEOnQ4fGygVqEDV8zQxIKGun8GwWZ5xay
-         dN++q5KoeejqFDJD/jhkYjkuYrJqBzy3m7PcimIFSz9P2nzhZrLfJzqh7+y+vLqsbvd8
-         wImg9/1/81zcreyoQLJzYKEM7unzDAjUfhdMT47DS8NQRt4DLo5FzJ+qY/95TSucfoFT
-         0TyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=7R3dCXqsSoyh387FNpg7of+Vy2Uow0OshGTXM3A59Lo=;
-        b=k1iahIeGVjcZSgv2Jehi68jwfgybmUdD0BTqPgiq07bIQKiyvHIzKK3nAlY+G+OCtl
-         UaCif/m+xrjG1VrTw/i3McuZX0q/+mU7GV2pZCk7dF+lGb7aisZ0b92p5lvBnnAVqKZc
-         8NAgW1g/SkuNXxOpTZX2yr5Ltfa6SAYoSnI5idloXNBCFjCmlbHVC6BUau91g4pfUOVA
-         OSXVerBzWttWva6KWLgMGKwjEVFfKTiKW+i3gJKrGcD2rj4gqtbREwWWtEaJSICHXHgh
-         E4VoabQ7XAwkQ1bRBBTRCdZvPhevKrfzYo+9ZZGt6VeBPPcl3jTpRYOOk5fc/LQHlN/G
-         e+Sw==
-X-Gm-Message-State: AOAM5310HAjfuZ/Mlau5L+7wf2icDKeTx2vGeMKImrp5rkbpQGkX6jHq
-        rddiV4W90tu/rbCWh2XwrSaEgZNR+g0H44Vd+2E=
-X-Google-Smtp-Source: ABdhPJx/gIy10Ng7jj3gTMeo9keifXcqF57WgPcsgQR230AKnJadvsLxkWcobRw8wQBX3Wrt45FDeFS0loW5eB++FKM=
-X-Received: by 2002:a05:6638:2591:: with SMTP id s17mr7925053jat.23.1594757296233;
- Tue, 14 Jul 2020 13:08:16 -0700 (PDT)
+        Tue, 14 Jul 2020 16:10:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1594757429;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=GNcdh9hbyCSYCE1dhM3aHIwRYOjxxn/mU4RGqzYVsko=;
+        b=hvMq0FtjXZ4ja0TuywxipPbO7azfGxH7OjuTLXyy6VhFPRT4qrOdDkKAsMlFVdtFq9
+        YT9PNq2F/LNh8bzxKgp5CQ5MNp+xONj78Vt59maynjmADTgIY8ZqoFuIWfFzCYH7mTme
+        CCXyAcxzAyuUia3pDuzOvJ8/e0DpQ7wV/gxIfCwxXsPPzWWBaNPZ7j+43SlV4yJPQEbw
+        F9a8IUc93tDHcIoNPoIbhxn5HR5pIKA7yQChmlxvyZB7xL8k6l14C4Rd6FfyP70HV4x/
+        v0ZlwWd3N7PTJlplBuTmU/FN6oHzbIcyrcraE5MH9/87eqp4j2OAKvVgPqswJDSitneJ
+        m8bQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3HMbEWKOdeVTdI="
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.50.177]
+        by smtp.strato.de (RZmta 46.10.5 DYNA|AUTH)
+        with ESMTPSA id R09ac6w6EKA9tgs
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Tue, 14 Jul 2020 22:10:09 +0200 (CEST)
+Subject: Re: [PATCH net-next] can: silence remove_proc_entry warning
+To:     Zhang Changzhong <zhangchangzhong@huawei.com>, mkl@pengutronix.de,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1594709090-3203-1-git-send-email-zhangchangzhong@huawei.com>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <e2344833-b2f4-cc6f-4b6c-868afc3ced6e@hartkopp.net>
+Date:   Tue, 14 Jul 2020 22:10:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200714023836.2310569-1-nivedita@alum.mit.edu> <CA+icZUXSPfybFtzQB3wKn9spQmEPnQu_iGPWkRisAmRQbJLWXA@mail.gmail.com>
- <20200714141550.GA329060@rani.riverdale.lan> <CA+icZUU88wYmyycthW7AQUZ72HGa9RWPZmxVS5Gm6UW=6ES9kA@mail.gmail.com>
- <CA+icZUWHdsk9+wkTZOdDghM7pRZyk2vHgxpYx62vPooqohzbYw@mail.gmail.com>
- <20200714192956.GA689174@rani.riverdale.lan> <CA+icZUXoZzhUMRsVVexazd=oFK4vKa1KJN5=_KXz+fcYxcA4Rw@mail.gmail.com>
-In-Reply-To: <CA+icZUXoZzhUMRsVVexazd=oFK4vKa1KJN5=_KXz+fcYxcA4Rw@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 14 Jul 2020 22:08:04 +0200
-Message-ID: <CA+icZUXBggJtwtWmyXEwgu1WztrcTiLrZCW1_QqSw2SiThOkfQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] x86/boot: Remove runtime relocations from
- compressed kernel
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1594709090-3203-1-git-send-email-zhangchangzhong@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 9:53 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Tue, Jul 14, 2020 at 9:29 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
-> >
-> > On Tue, Jul 14, 2020 at 08:30:14PM +0200, Sedat Dilek wrote:
-> > > > I did a full new build...
-> > > >
-> > > > ...and it fails with ld.lld-11 as linker:
-> > > >
-> > > > ld.lld-11 -m elf_x86_64 -pie  --no-dynamic-linker -r -o
-> > > > arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o
-> > > > -T arch/x86/boot/compressed/.tmp_misc.ver; mv -f
-> > > > arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o;
-> > > > rm -f arch/x86/boot/compressed/.tmp_misc.ver; fi
-> > > > *** ld.lld-11: error: -r and -pie may not be used together ***
-> > > > make[5]: *** [scripts/Makefile.build:281:
-> > > > arch/x86/boot/compressed/misc.o] Error 1
-> > > >
-> > > > It's annoying to fail on the last minutes of a build.
-> > > > Sorry for being very honest.
-> > > >
-> > >
-> > > I applied this diff...
-> > >
-> > > $ git diff arch/x86/boot/compressed/Makefile
-> > > diff --git a/arch/x86/boot/compressed/Makefile
-> > > b/arch/x86/boot/compressed/Makefile
-> > > index 789d5d14d8b0..9ba52a656838 100644
-> > > --- a/arch/x86/boot/compressed/Makefile
-> > > +++ b/arch/x86/boot/compressed/Makefile
-> > > @@ -51,7 +51,10 @@ UBSAN_SANITIZE :=n
-> > >  KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
-> > >  # Compressed kernel should be built as PIE since it may be loaded at any
-> > >  # address by the bootloader.
-> > > +# LLD linker does not allow -r and -pie options to be used together.
-> > > +ifndef CONFIG_LD_IS_LLD
-> > >  KBUILD_LDFLAGS += -pie $(call ld-option, --no-dynamic-linker)
-> > > +endif
-> > >  LDFLAGS_vmlinux := -T
-> > >
-> > >  hostprogs      := mkpiggy
-> > >
-> > > ...and was able to build, assemble, link arch/x86/boot/compressed/*.
-> > >
-> > > - Sedat -
-> >
-> > Thanks for the test.
-> >
-> > Can you share your .config? The error messages look like they're coming
-> > from running modversions on misc.o, which is unexpected as it shouldn't
-> > have any exported symbols, and it doesn't in my builds.
-> >
-> > In any case, I think the right fix here would be to add -pie and
-> > --no-dynamic-linker to LDFLAGS_vmlinux instead of KBUILD_LDFLAGS.
->
-> Hmm, you might be right with moving to LDFLAGS_vmlinux.
->
 
-We will need the "ifndef CONFIG_LD_IS_LLD" as -r and -pie cannot be
-used together.
-Is that the or not the fact when moving to LDFLAGS_vmlinux?
 
-I cannot test as I modified my local Git and re-invoking my
-build-script is doing a whole new build-dance.
+On 14.07.20 08:44, Zhang Changzhong wrote:
+> If can_init_proc() fail to create /proc/net/can directory,
+> can_remove_proc() will trigger a warning:
+> 
+> WARNING: CPU: 6 PID: 7133 at fs/proc/generic.c:672 remove_proc_entry+0x17b0
+> Kernel panic - not syncing: panic_on_warn set ...
+> 
+> Fix to return early from can_remove_proc() if can proc_dir
+> does not exists.
+> 
+> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-- Sedat -
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+
+Thanks!
+
+> ---
+>   net/can/proc.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/can/proc.c b/net/can/proc.c
+> index e6881bf..077af42 100644
+> --- a/net/can/proc.c
+> +++ b/net/can/proc.c
+> @@ -471,6 +471,9 @@ void can_init_proc(struct net *net)
+>    */
+>   void can_remove_proc(struct net *net)
+>   {
+> +	if (!net->can.proc_dir)
+> +		return;
+> +
+>   	if (net->can.pde_version)
+>   		remove_proc_entry(CAN_PROC_VERSION, net->can.proc_dir);
+>   
+> @@ -498,6 +501,5 @@ void can_remove_proc(struct net *net)
+>   	if (net->can.pde_rcvlist_sff)
+>   		remove_proc_entry(CAN_PROC_RCVLIST_SFF, net->can.proc_dir);
+>   
+> -	if (net->can.proc_dir)
+> -		remove_proc_entry("can", net->proc_net);
+> +	remove_proc_entry("can", net->proc_net);
+>   }
+> 
