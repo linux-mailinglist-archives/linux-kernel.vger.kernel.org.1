@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD4E21FC67
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 001B221FBDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730625AbgGNTIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:08:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45514 "EHLO mail.kernel.org"
+        id S1731128AbgGNTFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:05:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729587AbgGNStl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:49:41 -0400
+        id S1730245AbgGNSza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:55:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD45122B3F;
-        Tue, 14 Jul 2020 18:49:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 420C621D79;
+        Tue, 14 Jul 2020 18:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752581;
-        bh=WDOcpm8AiqOoHahlx7bW0LSDjS5IJ/h+aOG5VQUvvuo=;
+        s=default; t=1594752929;
+        bh=muY5iUHz/BlEr6zV2wNTZnyKKM+IE0t8F954ng1j9G4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YzcQBMWvAWI5jki0NQUaFte3LS3l/3mISC8OJXomPGWzvQJu/4J4SlywJ3OpAfwcd
-         7/Ipo8XxYFmDn0fSb04uUY9I0TeMZ/r8XKuE58k5WqxW1Hi3HR4kw+biCOSKd6Cmmv
-         7UKBTMq2z05ejAQxiJKh/LHlNEvoov2aLz4JnFB0=
+        b=2K+JQrDA9drwp62fwENpLJ+axODxxn9SgPonpyc0ncx6+hKpddGwULHUyzxqV2X8b
+         t4AViT433CZkO+unXig2CZTsNNo75QchCgqA8ATyRPry2gWCCGyOEJ7L3kwXyW4mEe
+         INUePtCBxJvw4jipqBUSwGreunhoZkCFQ1NXSDg8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>,
-        Christoph Hellwig <hch@lst.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 031/109] block: release bip in a right way in error path
-Date:   Tue, 14 Jul 2020 20:43:34 +0200
-Message-Id: <20200714184107.010737495@linuxfoundation.org>
+        stable@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 053/166] KVM: arm64: vgic-v4: Plug race between non-residency and v4.1 doorbell
+Date:   Tue, 14 Jul 2020 20:43:38 +0200
+Message-Id: <20200714184118.416543229@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,70 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengguang Xu <cgxu519@mykernel.net>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 0b8eb629a700c0ef15a437758db8255f8444e76c ]
+[ Upstream commit a3f574cd65487cd993f79ab235d70229d9302c1e ]
 
-Release bip using kfree() in error path when that was allocated
-by kmalloc().
+When making a vPE non-resident because it has hit a blocking WFI,
+the doorbell can fire at any time after the write to the RD.
+Crucially, it can fire right between the write to GICR_VPENDBASER
+and the write to the pending_last field in the its_vpe structure.
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+This means that we would overwrite pending_last with stale data,
+and potentially not wakeup until some unrelated event (such as
+a timer interrupt) puts the vPE back on the CPU.
+
+GICv4 isn't affected by this as we actively mask the doorbell on
+entering the guest, while GICv4.1 automatically manages doorbell
+delivery without any hypervisor-driven masking.
+
+Use the vpe_lock to synchronize such update, which solves the
+problem altogether.
+
+Fixes: ae699ad348cdc ("irqchip/gic-v4.1: Move doorbell management to the GICv4 abstraction layer")
+Reported-by: Zenghui Yu <yuzenghui@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bio-integrity.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ drivers/irqchip/irq-gic-v3-its.c | 8 ++++++++
+ virt/kvm/arm/vgic/vgic-v4.c      | 8 ++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/block/bio-integrity.c b/block/bio-integrity.c
-index ae07dd78e9518..c9dc2b17ce251 100644
---- a/block/bio-integrity.c
-+++ b/block/bio-integrity.c
-@@ -24,6 +24,18 @@ void blk_flush_integrity(void)
- 	flush_workqueue(kintegrityd_wq);
- }
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index b3e16a06c13b7..b99e3105bf9fe 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -3938,16 +3938,24 @@ static void its_vpe_4_1_deschedule(struct its_vpe *vpe,
+ 	u64 val;
  
-+void __bio_integrity_free(struct bio_set *bs, struct bio_integrity_payload *bip)
-+{
-+	if (bs && mempool_initialized(&bs->bio_integrity_pool)) {
-+		if (bip->bip_vec)
-+			bvec_free(&bs->bvec_integrity_pool, bip->bip_vec,
-+				  bip->bip_slab);
-+		mempool_free(bip, &bs->bio_integrity_pool);
-+	} else {
-+		kfree(bip);
-+	}
-+}
+ 	if (info->req_db) {
++		unsigned long flags;
 +
- /**
-  * bio_integrity_alloc - Allocate integrity payload and attach it to bio
-  * @bio:	bio to attach integrity metadata to
-@@ -75,7 +87,7 @@ struct bio_integrity_payload *bio_integrity_alloc(struct bio *bio,
+ 		/*
+ 		 * vPE is going to block: make the vPE non-resident with
+ 		 * PendingLast clear and DB set. The GIC guarantees that if
+ 		 * we read-back PendingLast clear, then a doorbell will be
+ 		 * delivered when an interrupt comes.
++		 *
++		 * Note the locking to deal with the concurrent update of
++		 * pending_last from the doorbell interrupt handler that can
++		 * run concurrently.
+ 		 */
++		raw_spin_lock_irqsave(&vpe->vpe_lock, flags);
+ 		val = its_clear_vpend_valid(vlpi_base,
+ 					    GICR_VPENDBASER_PendingLast,
+ 					    GICR_VPENDBASER_4_1_DB);
+ 		vpe->pending_last = !!(val & GICR_VPENDBASER_PendingLast);
++		raw_spin_unlock_irqrestore(&vpe->vpe_lock, flags);
+ 	} else {
+ 		/*
+ 		 * We're not blocking, so just make the vPE non-resident
+diff --git a/virt/kvm/arm/vgic/vgic-v4.c b/virt/kvm/arm/vgic/vgic-v4.c
+index 27ac833e5ec7c..b5fa73c9fd355 100644
+--- a/virt/kvm/arm/vgic/vgic-v4.c
++++ b/virt/kvm/arm/vgic/vgic-v4.c
+@@ -90,7 +90,15 @@ static irqreturn_t vgic_v4_doorbell_handler(int irq, void *info)
+ 	    !irqd_irq_disabled(&irq_to_desc(irq)->irq_data))
+ 		disable_irq_nosync(irq);
  
- 	return bip;
- err:
--	mempool_free(bip, &bs->bio_integrity_pool);
-+	__bio_integrity_free(bs, bip);
- 	return ERR_PTR(-ENOMEM);
- }
- EXPORT_SYMBOL(bio_integrity_alloc);
-@@ -96,14 +108,7 @@ void bio_integrity_free(struct bio *bio)
- 		kfree(page_address(bip->bip_vec->bv_page) +
- 		      bip->bip_vec->bv_offset);
++	/*
++	 * The v4.1 doorbell can fire concurrently with the vPE being
++	 * made non-resident. Ensure we only update pending_last
++	 * *after* the non-residency sequence has completed.
++	 */
++	raw_spin_lock(&vcpu->arch.vgic_cpu.vgic_v3.its_vpe.vpe_lock);
+ 	vcpu->arch.vgic_cpu.vgic_v3.its_vpe.pending_last = true;
++	raw_spin_unlock(&vcpu->arch.vgic_cpu.vgic_v3.its_vpe.vpe_lock);
++
+ 	kvm_make_request(KVM_REQ_IRQ_PENDING, vcpu);
+ 	kvm_vcpu_kick(vcpu);
  
--	if (bs && mempool_initialized(&bs->bio_integrity_pool)) {
--		bvec_free(&bs->bvec_integrity_pool, bip->bip_vec, bip->bip_slab);
--
--		mempool_free(bip, &bs->bio_integrity_pool);
--	} else {
--		kfree(bip);
--	}
--
-+	__bio_integrity_free(bs, bip);
- 	bio->bi_integrity = NULL;
- 	bio->bi_opf &= ~REQ_INTEGRITY;
- }
 -- 
 2.25.1
 
