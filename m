@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7507021FBE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E712D21FC58
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730903AbgGNTFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:05:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52584 "EHLO mail.kernel.org"
+        id S1730139AbgGNStb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:49:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729554AbgGNSzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:55:01 -0400
+        id S1730126AbgGNSt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:49:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87BE322BF3;
-        Tue, 14 Jul 2020 18:55:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA377222E9;
+        Tue, 14 Jul 2020 18:49:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752901;
-        bh=sj7Mgy53uvCuBJN5AxCbcIf+Ao8fcs55/4IY3bzKD68=;
+        s=default; t=1594752568;
+        bh=3logLcMQQOo83B8CEm+7SX7oSisRfIO2V1PiVpYBb2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KABGEfNkMwcFlZZAjPTzoqFKhxezYb914OoGcmVe7mYkpCueCFe8RmEFa5M4JHJ2O
-         Cfu7ym5gpd/cLQOS5WWqv6GSjhUOBhJSBYaEMHgR8Pfojl98NheaKqJ2ICAxACtZUx
-         XT0P5UXA7+OH9Zzjge/0LnCD3w5/9Dc5PdcRqfTs=
+        b=OqTCCTorVHWkeOhISefvAbFzgUzV3hKL2IdadVz3l3YBOmphXT+ApENVXkYjTQLND
+         lxjrwj3+g71PB/8fj//FmUx2bEFQsTEjCNGT1Qp75/TGrbvcIpOT6YGMAsxVppY73l
+         2l+v72PRsw7iJsFZf8VxpyMY216eGPBzhG4nJL6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 043/166] nfs: Fix memory leak of export_path
-Date:   Tue, 14 Jul 2020 20:43:28 +0200
-Message-Id: <20200714184117.942167644@linuxfoundation.org>
+Subject: [PATCH 5.4 027/109] cifs: update ctime and mtime during truncate
+Date:   Tue, 14 Jul 2020 20:43:30 +0200
+Message-Id: <20200714184106.829713172@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-[ Upstream commit 4659ed7cc8514369043053463514408ca16ad6f3 ]
+[ Upstream commit 5618303d8516f8ac5ecfe53ee8e8bc9a40eaf066 ]
 
-The try_location function is called within a loop by nfs_follow_referral.
-try_location calls nfs4_pathname_string to created the export_path.
-nfs4_pathname_string allocates the memory. export_path is stored in the
-nfs_fs_context/fs_context structure similarly as hostname and source.
-But whereas the ctx hostname and source are freed before assignment,
-export_path is not.  So if there are multiple loops, the new export_path
-will overwrite the old without the old being freed.
+As the man description of the truncate, if the size changed,
+then the st_ctime and st_mtime fields should be updated. But
+in cifs, we doesn't do it.
 
-So call kfree for export_path.
+It lead the xfstests generic/313 failed.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+So, add the ATTR_MTIME|ATTR_CTIME flags on attrs when change
+the file size
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4namespace.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/cifs/inode.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/fs/nfs/nfs4namespace.c b/fs/nfs/nfs4namespace.c
-index a3ab6e219061b..873342308dc0d 100644
---- a/fs/nfs/nfs4namespace.c
-+++ b/fs/nfs/nfs4namespace.c
-@@ -308,6 +308,7 @@ static int try_location(struct fs_context *fc,
- 	if (IS_ERR(export_path))
- 		return PTR_ERR(export_path);
+diff --git a/fs/cifs/inode.c b/fs/cifs/inode.c
+index 6045b48682752..5ae458505f630 100644
+--- a/fs/cifs/inode.c
++++ b/fs/cifs/inode.c
+@@ -2270,6 +2270,15 @@ set_size_out:
+ 	if (rc == 0) {
+ 		cifsInode->server_eof = attrs->ia_size;
+ 		cifs_setsize(inode, attrs->ia_size);
++
++		/*
++		 * The man page of truncate says if the size changed,
++		 * then the st_ctime and st_mtime fields for the file
++		 * are updated.
++		 */
++		attrs->ia_ctime = attrs->ia_mtime = current_time(inode);
++		attrs->ia_valid |= ATTR_CTIME | ATTR_MTIME;
++
+ 		cifs_truncate_page(inode->i_mapping, inode->i_size);
+ 	}
  
-+	kfree(ctx->nfs_server.export_path);
- 	ctx->nfs_server.export_path = export_path;
- 
- 	source = kmalloc(len + 1 + ctx->nfs_server.export_path_len + 1,
 -- 
 2.25.1
 
