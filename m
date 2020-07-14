@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323EE21F9E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1528F21FB1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729792AbgGNSrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:47:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42790 "EHLO mail.kernel.org"
+        id S1731245AbgGNS6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729723AbgGNSri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:47:38 -0400
+        id S1730634AbgGNS6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:58:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3FB4D22B2C;
-        Tue, 14 Jul 2020 18:47:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9558229CA;
+        Tue, 14 Jul 2020 18:58:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752457;
-        bh=FrW5svSSOMr6F6SuCMiGrVaNwk3DE5YpZW0VtD3OlHY=;
+        s=default; t=1594753121;
+        bh=vscYnN+/yBVE31sL8YMMRDuaN+dE6TLRG3B4dgMLsPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xaAvRnONvkZemAES5cErBf7B17PMwaZv8yv6/REzpstNAH20gDcQ/L7uBPrxcIXd+
-         fnj2GaBIOPKSreUWqbh4fUDIU94JDFrXgVgmSrFhu5uruc1/eFLd/e3iTlrJWxfEzu
-         T0zHmpntsdlRu1CN+09lzW/kQJvKAbjlLK8KMGZw=
+        b=TluxcQilUCNPi8/Tv6IuQGHcCV5bs8X4LMCKIfVZXjClqYV+HzK0osDDPKyr/OBtL
+         3lBSlbORohMxNo4E5BFLpt9RS7kx9JORGH4awtyWJztkUlGOdnMCeNPfPzAXoOuJFO
+         WZ8V8WaP8CoCN402aiAv8cbjTTe6ARqZ/4A42nec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dominik Czarnota <dominik.czarnota@trailofbits.com>,
-        Jessica Yu <jeyu@kernel.org>, Kees Cook <keescook@chromium.org>
-Subject: [PATCH 4.19 49/58] module: Do not expose section addresses to non-CAP_SYSLOG
+        stable@vger.kernel.org, Aya Levin <ayal@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 097/166] net/mlx5e: Fix 50G per lane indication
 Date:   Tue, 14 Jul 2020 20:44:22 +0200
-Message-Id: <20200714184058.596597029@linuxfoundation.org>
+Message-Id: <20200714184120.491647800@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +45,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Aya Levin <ayal@mellanox.com>
 
-commit b25a7c5af9051850d4f3d93ca500056ab6ec724b upstream.
+[ Upstream commit 6a1cf4e443a3b0a4d690d3c93b84b1e9cbfcb1bd ]
 
-The printing of section addresses in /sys/module/*/sections/* was not
-using the correct credentials to evaluate visibility.
+Some released FW versions mistakenly don't set the capability that 50G
+per lane link-modes are supported for VFs (ptys_extended_ethernet
+capability bit). When the capability is unset, read
+PTYS.ext_eth_proto_capability (always reliable).
+If PTYS.ext_eth_proto_capability is valid (has a non-zero value)
+conclude that the HCA supports 50G per lane. Otherwise, conclude that
+the HCA doesn't support 50G per lane.
 
-Before:
-
- # cat /sys/module/*/sections/.*text
- 0xffffffffc0458000
- ...
- # capsh --drop=CAP_SYSLOG -- -c "cat /sys/module/*/sections/.*text"
- 0xffffffffc0458000
- ...
-
-After:
-
- # cat /sys/module/*/sections/*.text
- 0xffffffffc0458000
- ...
- # capsh --drop=CAP_SYSLOG -- -c "cat /sys/module/*/sections/.*text"
- 0x0000000000000000
- ...
-
-Additionally replaces the existing (safe) /proc/modules check with
-file->f_cred for consistency.
-
-Reported-by: Dominik Czarnota <dominik.czarnota@trailofbits.com>
-Fixes: be71eda5383f ("module: Fix display of wrong module .text address")
-Cc: stable@vger.kernel.org
-Tested-by: Jessica Yu <jeyu@kernel.org>
-Acked-by: Jessica Yu <jeyu@kernel.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: a08b4ed1373d ("net/mlx5: Add support to ext_* fields introduced in Port Type and Speed register")
+Signed-off-by: Aya Levin <ayal@mellanox.com>
+Reviewed-by: Eran Ben Elisha <eranbe@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/module.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/en/port.c | 21 ++++++++++++++++---
+ .../net/ethernet/mellanox/mlx5/core/en/port.h |  2 +-
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  |  8 +++----
+ 3 files changed, 23 insertions(+), 8 deletions(-)
 
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1471,8 +1471,8 @@ static ssize_t module_sect_read(struct f
- 	if (pos != 0)
- 		return -EINVAL;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/port.c b/drivers/net/ethernet/mellanox/mlx5/core/en/port.c
+index 2a8950b3056f9..3cf3e35053f77 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/port.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/port.c
+@@ -78,11 +78,26 @@ static const u32 mlx5e_ext_link_speed[MLX5E_EXT_LINK_MODES_NUMBER] = {
+ 	[MLX5E_400GAUI_8]			= 400000,
+ };
  
--	return sprintf(buf, "0x%px\n", kptr_restrict < 2 ?
--		       (void *)sattr->address : NULL);
-+	return sprintf(buf, "0x%px\n",
-+		       kallsyms_show_value(file->f_cred) ? (void *)sattr->address : NULL);
++bool mlx5e_ptys_ext_supported(struct mlx5_core_dev *mdev)
++{
++	struct mlx5e_port_eth_proto eproto;
++	int err;
++
++	if (MLX5_CAP_PCAM_FEATURE(mdev, ptys_extended_ethernet))
++		return true;
++
++	err = mlx5_port_query_eth_proto(mdev, 1, true, &eproto);
++	if (err)
++		return false;
++
++	return !!eproto.cap;
++}
++
+ static void mlx5e_port_get_speed_arr(struct mlx5_core_dev *mdev,
+ 				     const u32 **arr, u32 *size,
+ 				     bool force_legacy)
+ {
+-	bool ext = force_legacy ? false : MLX5_CAP_PCAM_FEATURE(mdev, ptys_extended_ethernet);
++	bool ext = force_legacy ? false : mlx5e_ptys_ext_supported(mdev);
+ 
+ 	*size = ext ? ARRAY_SIZE(mlx5e_ext_link_speed) :
+ 		      ARRAY_SIZE(mlx5e_link_speed);
+@@ -177,7 +192,7 @@ int mlx5e_port_linkspeed(struct mlx5_core_dev *mdev, u32 *speed)
+ 	bool ext;
+ 	int err;
+ 
+-	ext = MLX5_CAP_PCAM_FEATURE(mdev, ptys_extended_ethernet);
++	ext = mlx5e_ptys_ext_supported(mdev);
+ 	err = mlx5_port_query_eth_proto(mdev, 1, ext, &eproto);
+ 	if (err)
+ 		goto out;
+@@ -205,7 +220,7 @@ int mlx5e_port_max_linkspeed(struct mlx5_core_dev *mdev, u32 *speed)
+ 	int err;
+ 	int i;
+ 
+-	ext = MLX5_CAP_PCAM_FEATURE(mdev, ptys_extended_ethernet);
++	ext = mlx5e_ptys_ext_supported(mdev);
+ 	err = mlx5_port_query_eth_proto(mdev, 1, ext, &eproto);
+ 	if (err)
+ 		return err;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/port.h b/drivers/net/ethernet/mellanox/mlx5/core/en/port.h
+index a2ddd446dd59e..7a7defe607926 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/port.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/port.h
+@@ -54,7 +54,7 @@ int mlx5e_port_linkspeed(struct mlx5_core_dev *mdev, u32 *speed);
+ int mlx5e_port_max_linkspeed(struct mlx5_core_dev *mdev, u32 *speed);
+ u32 mlx5e_port_speed2linkmodes(struct mlx5_core_dev *mdev, u32 speed,
+ 			       bool force_legacy);
+-
++bool mlx5e_ptys_ext_supported(struct mlx5_core_dev *mdev);
+ int mlx5e_port_query_pbmc(struct mlx5_core_dev *mdev, void *out);
+ int mlx5e_port_set_pbmc(struct mlx5_core_dev *mdev, void *in);
+ int mlx5e_port_query_priority2buffer(struct mlx5_core_dev *mdev, u8 *buffer);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index bc290ae80a531..1c491acd48f32 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -200,7 +200,7 @@ static void mlx5e_ethtool_get_speed_arr(struct mlx5_core_dev *mdev,
+ 					struct ptys2ethtool_config **arr,
+ 					u32 *size)
+ {
+-	bool ext = MLX5_CAP_PCAM_FEATURE(mdev, ptys_extended_ethernet);
++	bool ext = mlx5e_ptys_ext_supported(mdev);
+ 
+ 	*arr = ext ? ptys2ext_ethtool_table : ptys2legacy_ethtool_table;
+ 	*size = ext ? ARRAY_SIZE(ptys2ext_ethtool_table) :
+@@ -883,7 +883,7 @@ static void get_lp_advertising(struct mlx5_core_dev *mdev, u32 eth_proto_lp,
+ 			       struct ethtool_link_ksettings *link_ksettings)
+ {
+ 	unsigned long *lp_advertising = link_ksettings->link_modes.lp_advertising;
+-	bool ext = MLX5_CAP_PCAM_FEATURE(mdev, ptys_extended_ethernet);
++	bool ext = mlx5e_ptys_ext_supported(mdev);
+ 
+ 	ptys2ethtool_adver_link(lp_advertising, eth_proto_lp, ext);
  }
- 
- static void free_sect_attrs(struct module_sect_attrs *sect_attrs)
-@@ -4260,7 +4260,7 @@ static int modules_open(struct inode *in
- 
- 	if (!err) {
- 		struct seq_file *m = file->private_data;
--		m->private = kallsyms_show_value(current_cred()) ? NULL : (void *)8ul;
-+		m->private = kallsyms_show_value(file->f_cred) ? NULL : (void *)8ul;
+@@ -913,7 +913,7 @@ int mlx5e_ethtool_get_link_ksettings(struct mlx5e_priv *priv,
+ 			   __func__, err);
+ 		goto err_query_regs;
  	}
+-	ext = MLX5_CAP_PCAM_FEATURE(mdev, ptys_extended_ethernet);
++	ext = !!MLX5_GET_ETH_PROTO(ptys_reg, out, true, eth_proto_capability);
+ 	eth_proto_cap    = MLX5_GET_ETH_PROTO(ptys_reg, out, ext,
+ 					      eth_proto_capability);
+ 	eth_proto_admin  = MLX5_GET_ETH_PROTO(ptys_reg, out, ext,
+@@ -1066,7 +1066,7 @@ int mlx5e_ethtool_set_link_ksettings(struct mlx5e_priv *priv,
+ 	autoneg = link_ksettings->base.autoneg;
+ 	speed = link_ksettings->base.speed;
  
- 	return err;
+-	ext_supported = MLX5_CAP_PCAM_FEATURE(mdev, ptys_extended_ethernet);
++	ext_supported = mlx5e_ptys_ext_supported(mdev);
+ 	ext = ext_requested(autoneg, adver, ext_supported);
+ 	if (!ext_supported && ext)
+ 		return -EOPNOTSUPP;
+-- 
+2.25.1
+
 
 
