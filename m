@@ -2,72 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B3B21FB99
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A0321FC1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730862AbgGNTDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        id S1731093AbgGNTGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730825AbgGNTC4 (ORCPT
+        with ESMTP id S1729917AbgGNTGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:02:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF07DC061755;
-        Tue, 14 Jul 2020 12:02:56 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 21:02:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594753375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D5hF4twVv5HhwhE7NRxkaBM2XMg1Sfjm24WE5eOk48k=;
-        b=mghMUxtJm8hieMhzxLu5CerE0Pb2DYjrakx+pa3Am3jPdlCvZUIrG6FHe8zemEN3OgSGsL
-        oaTpO4Lnjb9Suti0+9hwP/Xh2pRPwpQKKYmEruzKcgvU0ACEDi3qh8OGLUwiNXC466ZTnm
-        HNvr1S1YCv/rLVPWYQk9iogWGyYZBHwbUI2fmUSYoQHmcpYaDa+Qh4/OqsRLSaF0/1xrE9
-        ZEbkvsgCLulWMuH1QSHjorYrJNSYidUd/iL4rdeXO47C18SUNqdA4Skif8FpDzZzb35yHI
-        ngfYroqncdmsGZMna5vXqTOnWEOwWqWijnzHjt6PEzC2Pic3RHKxD/F3GqIBUg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594753375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=D5hF4twVv5HhwhE7NRxkaBM2XMg1Sfjm24WE5eOk48k=;
-        b=pLUMCIIOM723c3dWn2+rwO0l91r2lz11nnKA1HLCnh5e9PJtpBvMKx0tE3gNPsduT6GvIu
-        7UV0830Gzi0alABg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org, arnd@arndb.de, elver@google.com, ethp@qq.com,
-        frederic@kernel.org, jbi.octave@gmail.com, joel@joelfernandes.org,
-        lihaoliang@google.com, madhuparnabhowmik10@gmail.com,
-        mchehab+huawei@kernel.org, peter.enderborg@sony.com,
-        rdunlap@infradead.org, richard.weiyang@linux.alibaba.com,
-        urezki@gmail.com, zou_wei@huawei.com, tglx@linutronix.de
-Subject: Re: [GIT PULL tip/core/rcu] RCU commits for v5.9
-Message-ID: <20200714190253.ylqjif7frqs2rq7x@linutronix.de>
-References: <20200714172701.GA31369@paulmck-ThinkPad-P72>
- <20200714181426.hhguqzrcqdubyvae@linutronix.de>
- <20200714182732.GU9247@paulmck-ThinkPad-P72>
+        Tue, 14 Jul 2020 15:06:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558B2C061755;
+        Tue, 14 Jul 2020 12:06:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=3mOaoD/B/fJiX289qQjOUZtXOEZ2+n+0JbvjRMjxJao=; b=IDR/vZd4vo7XbrQ3tTdWn6EOsA
+        fGgy5xPMuRkYm1IvorwX2tRu+QVFD9THWEEz/F7SKv0ODpJrJMTqvujD8fMBgR+96UDHuQwN1+ukr
+        3qVqC2NlQi310NumxiqTfX1xt6lAECmhhBdKCE3mcgN/+qR+ms56Vesqe3YU2AGA/LA3p2p0nnLrd
+        sYTfvUSptdqcle1kCtdQ/Lf/QWY9HbbtZN3C0tcqN9qKYaffJlbVIRy3pkXa2OiVMbc0MfMitchUT
+        fQdG5vK6q4WfYqnrTWI7pCNgpRqBwnjERK3xS8X1sDu1AC3nRIsCBnvsPI5n3q4cJPCekNSVi6O7z
+        h7IBwuxA==;
+Received: from 089144201169.atnat0010.highway.a1.net ([89.144.201.169] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvQGE-0005cy-Vv; Tue, 14 Jul 2020 19:06:39 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, Song Liu <song@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: decruft the early init / initrd / initramfs code v2
+Date:   Tue, 14 Jul 2020 21:04:04 +0200
+Message-Id: <20200714190427.4332-1-hch@lst.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200714182732.GU9247@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-14 11:27:32 [-0700], Paul E. McKenney wrote:
-> I believe that Ulad and Joel are working on an update.
+Hi all,
 
-I expressed multiple times that I am unhappy with the raw_spinlock_t
-which both want to keep. It is important to be future proof but at the
-same time I am not sure if they know how many in-hardirq kmalloc() or
-kfree() invocation we have as of today in PREEMPT_RT.
-I also had a patch in my series to keep the lock/unlock path symmetrical
-and it I think that I the only one that is missing it.
+this series starts to move the early init code away from requiring
+KERNEL_DS to be implicitly set during early startup.  It does so by
+first removing legacy unused cruft, and the switches away the code
+from struct file based APIs to our more usual in-kernel APIs.
 
-> 							Thanx, Paul
+There is no really good tree for this, so if there are no objections
+I'd like to set up a new one for linux-next.
 
-Sebastian
+
+Git tree:
+
+    git://git.infradead.org/users/hch/misc.git init-user-pointers
+
+Gitweb:
+
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/init-user-pointers
+
+Changes since v2:
+ - add vfs_fchown and vfs_fchmod helpers and use them for initramfs
+   unpacking
+ - split patches up a little more
+ - fix a commit log typo
+Changes since v1:
+ - add a patch to deprecated "classic" initrd support
+
+Diffstat:
+ b/arch/arm/kernel/atags_parse.c |    2 
+ b/arch/sh/kernel/setup.c        |    2 
+ b/arch/sparc/kernel/setup_32.c  |    2 
+ b/arch/sparc/kernel/setup_64.c  |    2 
+ b/arch/x86/kernel/setup.c       |    2 
+ b/drivers/md/Makefile           |    3 
+ b/drivers/md/md-autodetect.c    |  239 ++++++++++++++++++----------------------
+ b/drivers/md/md.c               |   34 +----
+ b/drivers/md/md.h               |   10 +
+ b/fs/file.c                     |    7 -
+ b/fs/ioctl.c                    |    7 -
+ b/fs/open.c                     |   56 +++++----
+ b/fs/read_write.c               |    2 
+ b/fs/readdir.c                  |   11 -
+ b/include/linux/fs.h            |    3 
+ b/include/linux/initrd.h        |    6 -
+ b/include/linux/raid/detect.h   |    8 +
+ b/include/linux/syscalls.h      |   17 --
+ b/init/Makefile                 |    1 
+ b/init/do_mounts.c              |   70 +----------
+ b/init/do_mounts.h              |   21 ---
+ b/init/do_mounts_initrd.c       |   13 --
+ b/init/do_mounts_rd.c           |  102 +++++++----------
+ b/init/initramfs.c              |  103 +++++------------
+ b/init/main.c                   |   16 +-
+ include/linux/raid/md_u.h       |   13 --
+ 26 files changed, 279 insertions(+), 473 deletions(-)
