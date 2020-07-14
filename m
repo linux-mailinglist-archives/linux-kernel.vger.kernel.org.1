@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C68B21FC18
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCE121FBA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730580AbgGNTGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:06:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50316 "EHLO mail.kernel.org"
+        id S1731159AbgGNTDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:03:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730609AbgGNSxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:53:19 -0400
+        id S1731099AbgGNS5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:57:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EFF9A22C7B;
-        Tue, 14 Jul 2020 18:53:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F6A7207F5;
+        Tue, 14 Jul 2020 18:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752798;
-        bh=1f1XWa2bRWx73QVevXDY5pPvGfCNRVovTwrQSxmj5kA=;
+        s=default; t=1594753055;
+        bh=Y4vXQKe7mtBW2sC8bi/lqBkpZsVxlG9RqnJgmezmESQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KMLvdWAxy2rjeuKo6GrZzLWbmBPl1QmNh6sHO9ZXiAHSHn0bmVYkRC6oDhzXTk3TC
-         MtiFlhl9eGEl05ZmgtFm4OhuqUQQ5C0bq627jaIL2q6oRIBqbh34VDIwzEqyioDWdi
-         A+wQTjYMDqD1xgyQxGJFr1JjHqOWd3EzpaEowVz8=
+        b=WbCPD67aONpLOpcDa7XWq+Ld/+Bu+duqqSIjbswGUQWUoW1+pEWai3fu7/gsNLNeO
+         ToF4OYXRu0M8hLPzwRXxAoQ6miHqBfqTqE1fCxGV/h/n+7GYXRrZG2hAcxZMIC9PC2
+         oqxkNBKGxbDEW9bUuZ9E8JbYreeGVCbHXhEILaMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sebastien Boeuf <sebastien.boeuf@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.4 084/109] KVM: x86: Inject #GP if guest attempts to toggle CR4.LA57 in 64-bit mode
-Date:   Tue, 14 Jul 2020 20:44:27 +0200
-Message-Id: <20200714184109.569988645@linuxfoundation.org>
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Harini Katakam <harini.katakam@xilinx.com>,
+        Antoine Tenart <antoine.tenart@bootlin.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 103/166] net: macb: fix macb_suspend() by removing call to netif_carrier_off()
+Date:   Tue, 14 Jul 2020 20:44:28 +0200
+Message-Id: <20200714184120.775125901@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +49,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-commit d74fcfc1f0ff4b6c26ecef1f9e48d8089ab4eaac upstream.
+[ Upstream commit 64febc5e56c9a748162f206dcc5be1a44436087a ]
 
-Inject a #GP on MOV CR4 if CR4.LA57 is toggled in 64-bit mode, which is
-illegal per Intel's SDM:
+As we now use the phylink call to phylink_stop() in the non-WoL path,
+there is no need for this call to netif_carrier_off() anymore. It can
+disturb the underlying phylink FSM.
 
-  CR4.LA57
-    57-bit linear addresses (bit 12 of CR4) ... blah blah blah ...
-    This bit cannot be modified in IA-32e mode.
-
-Note, the pseudocode for MOV CR doesn't call out the fault condition,
-which is likely why the check was missed during initial development.
-This is arguably an SDM bug and will hopefully be fixed in future
-release of the SDM.
-
-Fixes: fd8cb433734ee ("KVM: MMU: Expose the LA57 feature to VM.")
-Cc: stable@vger.kernel.org
-Reported-by: Sebastien Boeuf <sebastien.boeuf@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Message-Id: <20200703021714.5549-1-sean.j.christopherson@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 7897b071ac3b ("net: macb: convert to phylink")
+Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: Harini Katakam <harini.katakam@xilinx.com>
+Cc: Antoine Tenart <antoine.tenart@bootlin.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/x86.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/cadence/macb_main.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -980,6 +980,8 @@ int kvm_set_cr4(struct kvm_vcpu *vcpu, u
- 	if (is_long_mode(vcpu)) {
- 		if (!(cr4 & X86_CR4_PAE))
- 			return 1;
-+		if ((cr4 ^ old_cr4) & X86_CR4_LA57)
-+			return 1;
- 	} else if (is_paging(vcpu) && (cr4 & X86_CR4_PAE)
- 		   && ((cr4 ^ old_cr4) & pdptr_bits)
- 		   && !load_pdptrs(vcpu, vcpu->arch.walk_mmu,
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 79c2fe0543038..548815255e22b 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -4604,7 +4604,6 @@ static int __maybe_unused macb_suspend(struct device *dev)
+ 			bp->pm_data.scrt2 = gem_readl_n(bp, ETHT, SCRT2_ETHT);
+ 	}
+ 
+-	netif_carrier_off(netdev);
+ 	if (bp->ptp_info)
+ 		bp->ptp_info->ptp_remove(netdev);
+ 	pm_runtime_force_suspend(dev);
+-- 
+2.25.1
+
 
 
