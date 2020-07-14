@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE51F21EFF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F79B21F003
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgGNMCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 08:02:14 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:52577 "EHLO
+        id S1728240AbgGNMCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:02:51 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:52582 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728083AbgGNMCN (ORCPT
+        with ESMTP id S1728085AbgGNMCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Jul 2020 08:02:13 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from vadimp@mellanox.com)
-        with SMTP; 14 Jul 2020 15:02:08 +0300
+        with SMTP; 14 Jul 2020 15:02:10 +0300
 Received: from r-build-lowlevel.mtr.labs.mlnx. (r-build-lowlevel.mtr.labs.mlnx [10.209.0.190])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06EC25df004353;
-        Tue, 14 Jul 2020 15:02:08 +0300
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06EC25dg004353;
+        Tue, 14 Jul 2020 15:02:10 +0300
 From:   Vadim Pasternak <vadimp@mellanox.com>
 To:     andy@infradead.org, dvhart@infradead.org
 Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
         Vadim Pasternak <vadimp@mellanox.com>
-Subject: [PATCH platform-next v2 02/11] lib/test-string_helpers.c: Add string_upper() and string_lower() tests
-Date:   Tue, 14 Jul 2020 15:01:54 +0300
-Message-Id: <20200714120203.10352-3-vadimp@mellanox.com>
+Subject: [PATCH platform-next v2 03/11] platform/mellanox: mlxreg-hotplug: Modify module license
+Date:   Tue, 14 Jul 2020 15:01:55 +0300
+Message-Id: <20200714120203.10352-4-vadimp@mellanox.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200714120203.10352-1-vadimp@mellanox.com>
 References: <20200714120203.10352-1-vadimp@mellanox.com>
@@ -32,105 +32,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add few of simple tests for string_upper() and string_lower() helpers.
+Change module license to 'SPDX'.
 
 Signed-off-by: Vadim Pasternak <vadimp@mellanox.com>
 ---
- lib/test-string_helpers.c | 67 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+ drivers/platform/mellanox/mlxreg-hotplug.c | 32 +++---------------------------
+ 1 file changed, 3 insertions(+), 29 deletions(-)
 
-diff --git a/lib/test-string_helpers.c b/lib/test-string_helpers.c
-index 25b5cbfb7615..10360d4ea273 100644
---- a/lib/test-string_helpers.c
-+++ b/lib/test-string_helpers.c
-@@ -238,6 +238,28 @@ static const struct test_string_2 escape1[] __initconst = {{
- 	/* terminator */
- }};
+diff --git a/drivers/platform/mellanox/mlxreg-hotplug.c b/drivers/platform/mellanox/mlxreg-hotplug.c
+index ed48917af162..19af2897ef75 100644
+--- a/drivers/platform/mellanox/mlxreg-hotplug.c
++++ b/drivers/platform/mellanox/mlxreg-hotplug.c
+@@ -1,34 +1,8 @@
++// SPDX-License-Identifier: GPL-2.0+
+ /*
+- * Copyright (c) 2016-2018 Mellanox Technologies. All rights reserved.
+- * Copyright (c) 2016-2018 Vadim Pasternak <vadimp@mellanox.com>
++ * Mellanox hotplug driver
+  *
+- * Redistribution and use in source and binary forms, with or without
+- * modification, are permitted provided that the following conditions are met:
+- *
+- * 1. Redistributions of source code must retain the above copyright
+- *    notice, this list of conditions and the following disclaimer.
+- * 2. Redistributions in binary form must reproduce the above copyright
+- *    notice, this list of conditions and the following disclaimer in the
+- *    documentation and/or other materials provided with the distribution.
+- * 3. Neither the names of the copyright holders nor the names of its
+- *    contributors may be used to endorse or promote products derived from
+- *    this software without specific prior written permission.
+- *
+- * Alternatively, this software may be distributed under the terms of the
+- * GNU General Public License ("GPL") version 2 as published by the Free
+- * Software Foundation.
+- *
+- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+- * POSSIBILITY OF SUCH DAMAGE.
++ * Copyright (C) 2016-2020 Mellanox Technologies
+  */
  
-+static const struct test_string strings_upper[] __initconst = {
-+	{
-+		.in = "abcdefgh1234567890test",
-+		.out = "ABCDEFGH1234567890TEST",
-+	},
-+	{
-+		.in = "abCdeFgH1234567890TesT",
-+		.out = "ABCDEFGH1234567890TEST",
-+	},
-+};
-+
-+static const struct test_string strings_lower[] __initconst = {
-+	{
-+		.in = "ABCDEFGH1234567890TEST",
-+		.out = "abcdefgh1234567890test",
-+	},
-+	{
-+		.in = "abCdeFgH1234567890TesT",
-+		.out = "abcdefgh1234567890test",
-+	},
-+};
-+
- static __init const char *test_string_find_match(const struct test_string_2 *s2,
- 						 unsigned int flags)
- {
-@@ -390,6 +412,48 @@ static __init void test_string_get_size(void)
- 	test_string_get_size_one(4096, U64_MAX, "75.6 ZB", "64.0 ZiB");
- }
- 
-+static void __init test_string_upper_lower(void)
-+{
-+	char *dst;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(strings_upper); i++) {
-+		const char *s = strings_upper[i].in;
-+		int len = strlen(strings_upper[i].in) + 1;
-+
-+		dst = kmalloc(len, GFP_KERNEL);
-+		if (!dst)
-+			return;
-+
-+		string_upper(dst, s);
-+		if (memcmp(dst, strings_upper[i].out, len)) {
-+			pr_warn("Test 'string_upper' failed : expected %s, got %s!\n",
-+				strings_upper[i].out, dst);
-+			kfree(dst);
-+			return;
-+		}
-+		kfree(dst);
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(strings_lower); i++) {
-+		const char *s = strings_lower[i].in;
-+		int len = strlen(strings_lower[i].in) + 1;
-+
-+		dst = kmalloc(len, GFP_KERNEL);
-+		if (!dst)
-+			return;
-+
-+		string_lower(dst, s);
-+		if (memcmp(dst, strings_lower[i].out, len)) {
-+			pr_warn("Test 'string_lower failed : : expected %s, got %s!\n",
-+				strings_lower[i].out, dst);
-+			kfree(dst);
-+			return;
-+		}
-+		kfree(dst);
-+	}
-+}
-+
- static int __init test_string_helpers_init(void)
- {
- 	unsigned int i;
-@@ -411,6 +475,9 @@ static int __init test_string_helpers_init(void)
- 	/* Test string_get_size() */
- 	test_string_get_size();
- 
-+	/* Test string upper(), string_lower() */
-+	test_string_upper_lower();
-+
- 	return -EINVAL;
- }
- module_init(test_string_helpers_init);
+ #include <linux/bitops.h>
 -- 
 2.11.0
 
