@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD9B21F334
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2383521F30D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbgGNN5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:57:04 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:57448 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725821AbgGNN5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:57:03 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id A5B01131134F9A7732CE;
-        Tue, 14 Jul 2020 21:51:53 +0800 (CST)
-Received: from [127.0.0.1] (10.174.186.75) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Jul 2020
- 21:51:44 +0800
-Subject: Re: [PATCH v2 2/2] arm64: tlb: Use the TLBI RANGE feature in arm64
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     <will@kernel.org>, <suzuki.poulose@arm.com>, <maz@kernel.org>,
-        <steven.price@arm.com>, <guohanjun@huawei.com>, <olof@lixom.net>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
-        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
-        <kuhn.chenqun@huawei.com>
-References: <20200710094420.517-1-yezhenyu2@huawei.com>
- <20200710094420.517-3-yezhenyu2@huawei.com> <20200714103629.GA18793@gaia>
-From:   Zhenyu Ye <yezhenyu2@huawei.com>
-Message-ID: <cda3d6bc-a7e2-5669-372c-3c34cc822e08@huawei.com>
-Date:   Tue, 14 Jul 2020 21:51:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726624AbgGNNyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:54:51 -0400
+Received: from mga09.intel.com ([134.134.136.24]:33363 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725906AbgGNNyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 09:54:50 -0400
+IronPort-SDR: DfQ4pygSGIKCWICuBzK2GxdfELpJaN+3QJRCzuj7ImTAHpFioEkrBeR/QKbjnAkiRHcHmGyA/d
+ HChDdavJa1nA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="150318980"
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="150318980"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 06:54:50 -0700
+IronPort-SDR: +XxidMzrv1a/8/8wXZ7LcHaInmy7T6RrqjR1IZ3hUJ3l6CBXlDbbvF1v1Acu2ApZ+1FOxRdw/u
+ m41TaWmbXY1A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="485370296"
+Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
+  by fmsmga006.fm.intel.com with ESMTP; 14 Jul 2020 06:54:49 -0700
+Date:   Tue, 14 Jul 2020 06:54:49 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Liu, Yi L" <yi.l.liu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        amd-gfx <amd-gfx@lists.freedesktop.org>
+Subject: Re: [PATCH v6 01/12] iommu: Change type of pasid to u32
+Message-ID: <20200714135449.GI32961@romley-ivt3.sc.intel.com>
+References: <1594684087-61184-1-git-send-email-fenghua.yu@intel.com>
+ <1594684087-61184-2-git-send-email-fenghua.yu@intel.com>
+ <DM5PR11MB1435D67E0CE9D8D4C1D7F675C3610@DM5PR11MB1435.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200714103629.GA18793@gaia>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.186.75]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM5PR11MB1435D67E0CE9D8D4C1D7F675C3610@DM5PR11MB1435.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/14 18:36, Catalin Marinas wrote:
-> On Fri, Jul 10, 2020 at 05:44:20PM +0800, Zhenyu Ye wrote:
->> +#define __TLBI_RANGE_PAGES(num, scale)	(((num) + 1) << (5 * (scale) + 1))
->> +#define MAX_TLBI_RANGE_PAGES		__TLBI_RANGE_PAGES(31, 3)
->> +
->> +#define TLBI_RANGE_MASK			GENMASK_ULL(4, 0)
->> +#define __TLBI_RANGE_NUM(range, scale)	\
->> +	(((range) >> (5 * (scale) + 1)) & TLBI_RANGE_MASK)
-> [...]
->> +	int num = 0;
->> +	int scale = 0;
-> [...]
->> +			start += __TLBI_RANGE_PAGES(num, scale) << PAGE_SHIFT;
-> [...]
+On Mon, Jul 13, 2020 at 07:45:49PM -0700, Liu, Yi L wrote:
+> > From: Fenghua Yu <fenghua.yu@intel.com>
+> > Sent: Tuesday, July 14, 2020 7:48 AM
+> >
+> > PASID is defined as a few different types in iommu including "int",
+> > "u32", and "unsigned int". To be consistent and to match with uapi
+> > definitions, define PASID and its variations (e.g. max PASID) as "u32".
+> > "u32" is also shorter and a little more explicit than "unsigned int".
+> >
+> > No PASID type change in uapi although it defines PASID as __u64 in
+> > some places.
 > 
-> Since num is an int, __TLBI_RANGE_PAGES is still an int. Shifting it by
-> PAGE_SHIFT can overflow as the maximum would be 8GB for 4K pages (or
-> 128GB for 64K pages). I think we probably get away with this because of
-> some implicit type conversion but I'd rather make __TLBI_RANGE_PAGES an
-> explicit unsigned long:
-> 
-> #define __TLBI_RANGE_PAGES(num, scale)	((unsigned long)((num) + 1) << (5 * (scale) + 1))
-> 
+> just out of curious, why not using ioasid_t? In Linux kernel, PASID is
+> managed by ioasid.
 
-This is valuable and I will update this in next series, with the check
-for binutils (or encode the instructions by hand), as soon as possible.
+ioasid_t is only used in limited underneath files (ioasid.c and ioasid.h).
+Instead of changing hundreds of places to use ioasid_t, it's better to
+keep ioasid_t only used in the files.
 
-> Without this change, the CBMC check fails (see below for the test). In
-> the kernel, we don't have this problem as we encode the address via
-> __TLBI_VADDR_RANGE and it doesn't overflow.> The good part is that CBMC reckons the algorithm is correct ;).
+And it's explict and matches with uapi to define PASID as u32. Changing
+to ioasid_t in so many files (amd, gpu, crypto, etc) may confuse upper
+users on "why ioasid_t".
 
-Thanks for your test!
+So we had better to explicitly define PASID as u32 and keep ioasid_t in
+the limited underneath files.
 
-Zhenyu
+Thanks.
 
+-Fenghua
