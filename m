@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA4821E7E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF3721E7EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgGNGIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 02:08:01 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:57060 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725778AbgGNGIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 02:08:01 -0400
-Received: from localhost.loongson.cn (unknown [10.20.42.122])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7x+4Sw1fRD8EAA--.5360S2;
-        Tue, 14 Jul 2020 14:07:53 +0800 (CST)
-From:   Guoyun Sun <sunguoyun@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Sunguoyun <sunguoyun@loongson.cn>
-Subject: [PATCH] MIPS: fix vdso different address spaces
-Date:   Tue, 14 Jul 2020 14:07:47 +0800
-Message-Id: <1594706867-4426-1-git-send-email-sunguoyun@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx7x+4Sw1fRD8EAA--.5360S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFy3ZFW8Cr17AFW3GrW7Arb_yoWDtrc_KF
-        9FkwsYgr4rtFn7CF1DW34S9Fyjgw4UWry8ursxurnFg39YqrnrKrZF9F13Jw4xZrsF9393
-        Kry7uw1UA34xKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbzxFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-        AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-        xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbrMaUUUUUU==
-X-CM-SenderInfo: 5vxqw3hr1x0qxorr0wxvrqhubq/
+        id S1725997AbgGNGOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 02:14:32 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:64067 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgGNGOc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 02:14:32 -0400
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 06E6E33F024828;
+        Tue, 14 Jul 2020 15:14:04 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 06E6E33F024828
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1594707244;
+        bh=mOcbSlBkfHZn1T5iVADjaQnNfA8I3/LNq/v0cJT1fAM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cqAASXHE2xvsuWfTGsHKyFDQ0O+vz02gDrjZDek4ngpLYWT5W/MAqVkMbJVvHNmGV
+         O/2vjzOV71V/Ud0weZvBeDDCq6rL+bUUzrskD7JljG1+5vbrVn154Xe1Ka98k/JlzO
+         tOwGIK9Pm7Y72c3mMlHgsWSq++wZMr4mBE27uaavR8AZijz9wZRYwpV2WlaYsv7vN4
+         rhnEzkv7gZV1Sh7/3akVmIT0ZRqtz77m6+T2nteISia2vY3EBj2XmrAHNKjB7XDU8W
+         e3f5aeF6+xVXDe7Pv0i5PoBNLP+vE2mV4BtUSvr8tEpQCilzsVMUho+EDk/8bXmycl
+         to/QDh74WNAhQ==
+X-Nifty-SrcIP: [209.85.217.47]
+Received: by mail-vs1-f47.google.com with SMTP id o184so221324vsc.0;
+        Mon, 13 Jul 2020 23:14:04 -0700 (PDT)
+X-Gm-Message-State: AOAM530pPcgIZxrwiv36FoAxIzx5MJg867ezUgDtuG5K6nENwSz1DuB+
+        YtuurOcZvFljqqeM41NCrCfD1SeHtebHl52qZLI=
+X-Google-Smtp-Source: ABdhPJyEQUewdqjYSjbQ5eQsqie1dSmZKBqqOnYOdQ1EPFt5mHUxq1RYQUHAYkUTcRbFtkaVmamaxfWs9F9YcL/S6+w=
+X-Received: by 2002:a67:de09:: with SMTP id q9mr2024085vsk.179.1594707243302;
+ Mon, 13 Jul 2020 23:14:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200623114005.791643-1-yamada.masahiro@socionext.com> <20200714022252.GA1151466@bogus>
+In-Reply-To: <20200714022252.GA1151466@bogus>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 14 Jul 2020 15:13:26 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQrdqztMrHtAHnbMkxeaDLLyBS68WVovev+zytHdD7RVQ@mail.gmail.com>
+Message-ID: <CAK7LNAQrdqztMrHtAHnbMkxeaDLLyBS68WVovev+zytHdD7RVQ@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: ASoC: Convert UniPhier EVEA codec to json-schema
+To:     Rob Herring <robh@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Katsuhiro Suzuki <katsuhiro@katsuster.net>,
+        DTML <devicetree@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        - <alsa-devel@alsa-project.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sunguoyun <sunguoyun@loongson.cn>
+On Tue, Jul 14, 2020 at 11:22 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, 23 Jun 2020 20:40:05 +0900, Masahiro Yamada wrote:
+> > Convert the UniPhier EVEA sound codec binding to DT schema format.
+> >
+> > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> > ---
+> >
+> > Changes in v2:
+> >   - Add schema for subnode 'port'
+> >
+> >  .../sound/socionext,uniphier-evea.yaml        | 70 +++++++++++++++++++
+> >  .../bindings/sound/uniphier,evea.txt          | 26 -------
+> >  2 files changed, 70 insertions(+), 26 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/sound/uniphier,evea.txt
+> >
+>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-sparse report build warning as follows:
-arch/mips/vdso/vdso-n32-image.c:13:35:
-incorrect type in assignment (different address spaces) @@
-expected void *[usertype] vdso @@     got void [noderef] <asn:1> * @@
 
-Reported-by: kernel test robot <lkp@intel.com>
+What do you mean by Reviewed-by ?
+Do you expect this to go to the asoc tree?
 
-Signed-off-by: Sunguoyun <sunguoyun@loongson.cn>
----
- arch/mips/vdso/genvdso.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I just thought the schema conversion
+would go through the dt tree.
 
-diff --git a/arch/mips/vdso/genvdso.c b/arch/mips/vdso/genvdso.c
-index be57b832bbe0..94f9538bc889 100644
---- a/arch/mips/vdso/genvdso.c
-+++ b/arch/mips/vdso/genvdso.c
-@@ -260,7 +260,7 @@ int main(int argc, char **argv)
- 	fprintf(out_file, "	if (vdso_image.size != new_size)\n");
- 	fprintf(out_file, "		return -EINVAL;\n");
- 	fprintf(out_file, "	current->mm->context.vdso =\n");
--	fprintf(out_file, "	(void __user *)(new_vma->vm_start);\n");
-+	fprintf(out_file, "	(void *)(new_vma->vm_start);\n");
- 	fprintf(out_file, "	return 0;\n");
- 	fprintf(out_file, "}\n");
- 
+
+
 -- 
-2.17.1
-
+Best Regards
+Masahiro Yamada
