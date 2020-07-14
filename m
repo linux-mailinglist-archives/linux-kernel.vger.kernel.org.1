@@ -2,71 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2420221E781
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 07:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A0A21E778
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 07:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgGNFdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 01:33:20 -0400
-Received: from out28-194.mail.aliyun.com ([115.124.28.194]:53467 "EHLO
-        out28-194.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbgGNFdQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 01:33:16 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1863961|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0194656-0.000730076-0.979804;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16367;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.I1QwJ79_1594704779;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I1QwJ79_1594704779)
-          by smtp.aliyun-inc.com(10.147.44.145);
-          Tue, 14 Jul 2020 13:33:10 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     tsbogend@alpha.franken.de, robh+dt@kernel.org
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paulburton@kernel.org,
-        paul@crapouillou.net, ak@linux.intel.com, ebiederm@xmission.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH v4 5/5] MIPS: CU1000-Neo: Refresh defconfig to support LED.
-Date:   Tue, 14 Jul 2020 13:32:29 +0800
-Message-Id: <20200714053229.33195-6-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200714053229.33195-1-zhouyanjie@wanyeetech.com>
-References: <20200714053229.33195-1-zhouyanjie@wanyeetech.com>
+        id S1726517AbgGNFdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 01:33:06 -0400
+Received: from mga05.intel.com ([192.55.52.43]:55493 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726384AbgGNFdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 01:33:05 -0400
+IronPort-SDR: yAnxvbBwHlM+WfbJTVsS6MdkDrrFxTq5cMQu76w3teMaVyFluWMJqXypZTanFE9QoHSzwBni9X
+ In0hlTPHlqHA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="233663854"
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="233663854"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 22:33:05 -0700
+IronPort-SDR: aDD1C1O4sqMlQQpAgdX8Ubkii5NHmQDCEZKGR//L+tb/3L9XUP/tPGA+UJCwWRAc/b+vovC09l
+ Cy8acKKkmifg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="324445520"
+Received: from linux.intel.com ([10.54.29.200])
+  by FMSMGA003.fm.intel.com with ESMTP; 13 Jul 2020 22:33:05 -0700
+Received: from [10.215.165.139] (rtanwar-MOBL.gar.corp.intel.com [10.215.165.139])
+        by linux.intel.com (Postfix) with ESMTP id 57D3758080E;
+        Mon, 13 Jul 2020 22:32:59 -0700 (PDT)
+Subject: Re: [PATCH v4 1/2] Add DT bindings YAML schema for PWM fan controller
+ of LGM SoC
+To:     Rob Herring <robh@kernel.org>
+Cc:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org,
+        thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rahul.tanwar.linux@gmail.com
+References: <cover.1593503228.git.rahul.tanwar@linux.intel.com>
+ <cfef33c19b97a9cfbb8ecc0c6a122f3c9a5b46dd.1593503228.git.rahul.tanwar@linux.intel.com>
+ <20200713164600.GA359372@bogus>
+From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
+Message-ID: <b5832bbd-087e-4182-bea9-ed7b69626a8c@linux.intel.com>
+Date:   Tue, 14 Jul 2020 13:32:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200713164600.GA359372@bogus>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refresh CU1000-Neo's defconfig to support LED.
 
-Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+Hi Rob,
 
-Notes:
-    v4:
-    New patch.
+On 14/7/2020 12:46 am, Rob Herring wrote:
+> On Tue, Jun 30, 2020 at 03:55:31PM +0800, Rahul Tanwar wrote:
+>> Intel's LGM(Lightning Mountain) SoC contains a PWM fan controller
+>> which is only used to control the fan attached to the system. This
+>> PWM controller does not have any other consumer other than fan.
+>> Add DT bindings documentation for this PWM fan controller.
+>>
+>> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+>> ---
+>>  .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     | 50 ++++++++++++++++++++++
+>>  1 file changed, 50 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+>> new file mode 100644
+>> index 000000000000..120bf3d85a24
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+>> @@ -0,0 +1,50 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/pwm/intel,lgm-pwm.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: LGM SoC PWM fan controller
+>> +
+>> +maintainers:
+>> +  - Rahul Tanwar <rahul.tanwar@intel.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: intel,lgm-pwm
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +  intel,fan-wire:
+>> +    $ref: '/schemas/types.yaml#/definitions/uint32'
+>> +    description: Specifies fan mode. Default when unspecified is 2.
+>> +
+>> +  intel,max-rpm:
+>> +    $ref: '/schemas/types.yaml#/definitions/uint32'
+>> +    description:
+>> +      Specifies maximum RPM of fan attached to the system.
+>> +      Default when unspecified is 4000.
+> These are properties of the fan, not the PWM. And probably if you 
+> need these properties then others would too, so they should be 
+> common. Look at the pwm-fan.txt binding.
 
- arch/mips/configs/cu1000-neo_defconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+I checked pwm-fan.txt. I don't find any common property which matches
+our fan properties of fan wire mode & max-rpm. Are you suggesting to
+add these properties additionally in pwm-fan.txt as new common properties
+and then use newly added generic name in our driver?
 
-diff --git a/arch/mips/configs/cu1000-neo_defconfig b/arch/mips/configs/cu1000-neo_defconfig
-index 9b05a8fdabe1..6b471cdb16cf 100644
---- a/arch/mips/configs/cu1000-neo_defconfig
-+++ b/arch/mips/configs/cu1000-neo_defconfig
-@@ -74,6 +74,10 @@ CONFIG_JZ4740_WDT=y
- # CONFIG_USB_SUPPORT is not set
- CONFIG_MMC=y
- CONFIG_MMC_JZ4740=y
-+CONFIG_NEW_LEDS=y
-+CONFIG_LEDS_CLASS=y
-+CONFIG_LEDS_GPIO=y
-+CONFIG_LEDS_TRIGGERS=y
- CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_JZ4740=y
- CONFIG_DMADEVICES=y
--- 
-2.11.0
+Also, we have a dedicated PWM fan controller. So do you think this driver
+belongs to drivers/hwmon instead of drivers/pwm? Thanks.
+
+Regards,
+Rahul 
 
