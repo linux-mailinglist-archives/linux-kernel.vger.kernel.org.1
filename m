@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B5221FBB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5210D21FCEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730733AbgGNTDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:03:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54948 "EHLO mail.kernel.org"
+        id S1730973AbgGNTM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:12:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731029AbgGNS4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:56:49 -0400
+        id S1728117AbgGNSrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:47:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7884A22B45;
-        Tue, 14 Jul 2020 18:56:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47B2022AAE;
+        Tue, 14 Jul 2020 18:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753009;
-        bh=G30PLW8QpaaKptZT/j4meATNrNnYomK/4sx27ePFTe4=;
+        s=default; t=1594752423;
+        bh=WaI4zcf7p58FCzVfZfWBdeLKbAZ6Z+i4ih5TUkvlf/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZNKkaaef6hHARTKLd/YBbOqmZjHJSCKsONb/E5Pja24blbTw3d+Q70iUezrvU9KE+
-         CgjF8aDIJl2pzXmp3TpvK3YnZqrA3lI341kRNGIM59gu08h81KMsUAlcuHT+SsAwQV
-         Ie+hKLT8YlHRMPBzbIY73qfEDYYdGYz5J1ZSeLYU=
+        b=FnN4R0nC1p8uPxZn62Z51Yi2gPHrH2Z1KBj3UCTDsXpWZWCjDywsAFfJX53V6+tQC
+         O/9ddEgzYCRDX1blSBi1KtNwYIRt8ebcNATX96DQ5ughRR44LQ443UwNMsEAhA96Sz
+         xxxK3ft3M4TgE1BRjgJWpwLF0jQj+3NhnNu+X4mI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shannon Nelson <snelson@pensando.io>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 084/166] ionic: centralize queue reset code
-Date:   Tue, 14 Jul 2020 20:44:09 +0200
-Message-Id: <20200714184119.874151844@linuxfoundation.org>
+Subject: [PATCH 4.19 37/58] mlxsw: spectrum_router: Remove inappropriate usage of WARN_ON()
+Date:   Tue, 14 Jul 2020 20:44:10 +0200
+Message-Id: <20200714184057.973201050@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,202 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shannon Nelson <snelson@pensando.io>
+From: Ido Schimmel <idosch@mellanox.com>
 
-[ Upstream commit 086c18f2452d0028f81e319f098bcb8e53133dbf ]
+[ Upstream commit d9d5420273997664a1c09151ca86ac993f2f89c1 ]
 
-The queue reset pattern is used in a couple different places,
-only slightly different from each other, and could cause
-issues if one gets changed and the other didn't.  This puts
-them together so that only one version is needed, yet each
-can have slighty different effects by passing in a pointer
-to a work function to do whatever configuration twiddling is
-needed in the middle of the reset.
+We should not trigger a warning when a memory allocation fails. Remove
+the WARN_ON().
 
-This specifically addresses issues seen where under loops
-of changing ring size or queue count parameters we could
-occasionally bump into the netdev watchdog.
+The warning is constantly triggered by syzkaller when it is injecting
+faults:
 
-v2: added more commit message commentary
+[ 2230.758664] FAULT_INJECTION: forcing a failure.
+[ 2230.758664] name failslab, interval 1, probability 0, space 0, times 0
+[ 2230.762329] CPU: 3 PID: 1407 Comm: syz-executor.0 Not tainted 5.8.0-rc2+ #28
+...
+[ 2230.898175] WARNING: CPU: 3 PID: 1407 at drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c:6265 mlxsw_sp_router_fib_event+0xfad/0x13e0
+[ 2230.898179] Kernel panic - not syncing: panic_on_warn set ...
+[ 2230.898183] CPU: 3 PID: 1407 Comm: syz-executor.0 Not tainted 5.8.0-rc2+ #28
+[ 2230.898190] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
 
-Fixes: 4d03e00a2140 ("ionic: Add initial ethtool support")
-Signed-off-by: Shannon Nelson <snelson@pensando.io>
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 3057224e014c ("mlxsw: spectrum_router: Implement FIB offload in deferred work")
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Reviewed-by: Jiri Pirko <jiri@mellanox.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../ethernet/pensando/ionic/ionic_ethtool.c   | 52 ++++++-------------
- .../net/ethernet/pensando/ionic/ionic_lif.c   | 17 ++++--
- .../net/ethernet/pensando/ionic/ionic_lif.h   |  4 +-
- 3 files changed, 32 insertions(+), 41 deletions(-)
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c b/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
-index 6996229facfd4..22430fa911e2c 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_ethtool.c
-@@ -464,12 +464,18 @@ static void ionic_get_ringparam(struct net_device *netdev,
- 	ring->rx_pending = lif->nrxq_descs;
- }
- 
-+static void ionic_set_ringsize(struct ionic_lif *lif, void *arg)
-+{
-+	struct ethtool_ringparam *ring = arg;
-+
-+	lif->ntxq_descs = ring->tx_pending;
-+	lif->nrxq_descs = ring->rx_pending;
-+}
-+
- static int ionic_set_ringparam(struct net_device *netdev,
- 			       struct ethtool_ringparam *ring)
- {
- 	struct ionic_lif *lif = netdev_priv(netdev);
--	bool running;
--	int err;
- 
- 	if (ring->rx_mini_pending || ring->rx_jumbo_pending) {
- 		netdev_info(netdev, "Changing jumbo or mini descriptors not supported\n");
-@@ -487,22 +493,7 @@ static int ionic_set_ringparam(struct net_device *netdev,
- 	    ring->rx_pending == lif->nrxq_descs)
- 		return 0;
- 
--	err = ionic_wait_for_bit(lif, IONIC_LIF_F_QUEUE_RESET);
--	if (err)
--		return err;
--
--	running = test_bit(IONIC_LIF_F_UP, lif->state);
--	if (running)
--		ionic_stop(netdev);
--
--	lif->ntxq_descs = ring->tx_pending;
--	lif->nrxq_descs = ring->rx_pending;
--
--	if (running)
--		ionic_open(netdev);
--	clear_bit(IONIC_LIF_F_QUEUE_RESET, lif->state);
--
--	return 0;
-+	return ionic_reset_queues(lif, ionic_set_ringsize, ring);
- }
- 
- static void ionic_get_channels(struct net_device *netdev,
-@@ -517,12 +508,17 @@ static void ionic_get_channels(struct net_device *netdev,
- 	ch->combined_count = lif->nxqs;
- }
- 
-+static void ionic_set_queuecount(struct ionic_lif *lif, void *arg)
-+{
-+	struct ethtool_channels *ch = arg;
-+
-+	lif->nxqs = ch->combined_count;
-+}
-+
- static int ionic_set_channels(struct net_device *netdev,
- 			      struct ethtool_channels *ch)
- {
- 	struct ionic_lif *lif = netdev_priv(netdev);
--	bool running;
--	int err;
- 
- 	if (!ch->combined_count || ch->other_count ||
- 	    ch->rx_count || ch->tx_count)
-@@ -531,21 +527,7 @@ static int ionic_set_channels(struct net_device *netdev,
- 	if (ch->combined_count == lif->nxqs)
- 		return 0;
- 
--	err = ionic_wait_for_bit(lif, IONIC_LIF_F_QUEUE_RESET);
--	if (err)
--		return err;
--
--	running = test_bit(IONIC_LIF_F_UP, lif->state);
--	if (running)
--		ionic_stop(netdev);
--
--	lif->nxqs = ch->combined_count;
--
--	if (running)
--		ionic_open(netdev);
--	clear_bit(IONIC_LIF_F_QUEUE_RESET, lif->state);
--
--	return 0;
-+	return ionic_reset_queues(lif, ionic_set_queuecount, ch);
- }
- 
- static u32 ionic_get_priv_flags(struct net_device *netdev)
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_lif.c b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-index 790d4854b8ef5..b591bec0301cc 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
-@@ -1301,7 +1301,7 @@ static int ionic_change_mtu(struct net_device *netdev, int new_mtu)
- 		return err;
- 
- 	netdev->mtu = new_mtu;
--	err = ionic_reset_queues(lif);
-+	err = ionic_reset_queues(lif, NULL, NULL);
- 
- 	return err;
- }
-@@ -1313,7 +1313,7 @@ static void ionic_tx_timeout_work(struct work_struct *ws)
- 	netdev_info(lif->netdev, "Tx Timeout recovery\n");
- 
- 	rtnl_lock();
--	ionic_reset_queues(lif);
-+	ionic_reset_queues(lif, NULL, NULL);
- 	rtnl_unlock();
- }
- 
-@@ -1944,7 +1944,7 @@ static const struct net_device_ops ionic_netdev_ops = {
- 	.ndo_get_vf_stats       = ionic_get_vf_stats,
- };
- 
--int ionic_reset_queues(struct ionic_lif *lif)
-+int ionic_reset_queues(struct ionic_lif *lif, ionic_reset_cb cb, void *arg)
- {
- 	bool running;
- 	int err = 0;
-@@ -1957,12 +1957,19 @@ int ionic_reset_queues(struct ionic_lif *lif)
- 	if (running) {
- 		netif_device_detach(lif->netdev);
- 		err = ionic_stop(lif->netdev);
-+		if (err)
-+			goto reset_out;
- 	}
--	if (!err && running) {
--		ionic_open(lif->netdev);
-+
-+	if (cb)
-+		cb(lif, arg);
-+
-+	if (running) {
-+		err = ionic_open(lif->netdev);
- 		netif_device_attach(lif->netdev);
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+index 76960d3adfc03..93d662de106e8 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+@@ -5982,7 +5982,7 @@ static int mlxsw_sp_router_fib_event(struct notifier_block *nb,
  	}
  
-+reset_out:
- 	clear_bit(IONIC_LIF_F_QUEUE_RESET, lif->state);
+ 	fib_work = kzalloc(sizeof(*fib_work), GFP_ATOMIC);
+-	if (WARN_ON(!fib_work))
++	if (!fib_work)
+ 		return NOTIFY_BAD;
  
- 	return err;
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_lif.h b/drivers/net/ethernet/pensando/ionic/ionic_lif.h
-index 5d4ffda5c05f2..2c65cf6300dbd 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_lif.h
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_lif.h
-@@ -226,6 +226,8 @@ static inline u32 ionic_coal_hw_to_usec(struct ionic *ionic, u32 units)
- 	return (units * div) / mult;
- }
- 
-+typedef void (*ionic_reset_cb)(struct ionic_lif *lif, void *arg);
-+
- void ionic_link_status_check_request(struct ionic_lif *lif);
- void ionic_lif_deferred_enqueue(struct ionic_deferred *def,
- 				struct ionic_deferred_work *work);
-@@ -243,7 +245,7 @@ int ionic_lif_rss_config(struct ionic_lif *lif, u16 types,
- 
- int ionic_open(struct net_device *netdev);
- int ionic_stop(struct net_device *netdev);
--int ionic_reset_queues(struct ionic_lif *lif);
-+int ionic_reset_queues(struct ionic_lif *lif, ionic_reset_cb cb, void *arg);
- 
- static inline void debug_stats_txq_post(struct ionic_qcq *qcq,
- 					struct ionic_txq_desc *desc, bool dbell)
+ 	fib_work->mlxsw_sp = router->mlxsw_sp;
 -- 
 2.25.1
 
