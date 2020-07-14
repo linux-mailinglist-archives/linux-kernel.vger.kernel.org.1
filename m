@@ -2,95 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C6F21FBA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9852C21FB80
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731204AbgGNTD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:03:26 -0400
-Received: from smtprelay0192.hostedemail.com ([216.40.44.192]:51710 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729699AbgGNS52 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:57:28 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 33E0E100E7B4A;
-        Tue, 14 Jul 2020 18:57:26 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3870:3871:3872:4321:4605:5007:7514:7903:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12555:12663:12740:12760:12895:12986:13019:13161:13229:13439:14181:14659:14721:21080:21324:21451:21627:30054:30055:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: wish68_300691626ef3
-X-Filterd-Recvd-Size: 3488
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 14 Jul 2020 18:57:24 +0000 (UTC)
-Message-ID: <a323c1e47e8de871ff7bb72289740cb0bc2d27f8.camel@perches.com>
-Subject: Re: [PATCH 6/6] staging: qlge: qlge_ethtool: Remove one byte memset.
-From:   Joe Perches <joe@perches.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Suraj Upadhyay <usuraj35@gmail.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc:     manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 14 Jul 2020 11:57:23 -0700
-In-Reply-To: <20200713141749.GU2549@kadam>
-References: <cover.1594642213.git.usuraj35@gmail.com>
-         <b5eb87576cef4bf1b968481d6341013e6c7e9650.1594642213.git.usuraj35@gmail.com>
-         <20200713141749.GU2549@kadam>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        id S1731124AbgGNTCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:02:06 -0400
+Received: from mga06.intel.com ([134.134.136.31]:19710 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731262AbgGNS6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:58:55 -0400
+IronPort-SDR: givwFSprjeL4Mr4h/slmcV8zftQTk35wDE2YZRBlvpeRAVZ8IfNbXB1l2zsVNPJvxj6lKF0yNw
+ 8Lxp0ehWQNAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="210549633"
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="210549633"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 11:58:54 -0700
+IronPort-SDR: T4uUEX03cyAvgT+sDDYLZfjnqNCrWzrggMmI031wo1yUThJxQ3uGcdrJkujY7qZw+MLsY6rKHu
+ YW2uwZzwrDKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
+   d="scan'208";a="390565699"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga001.fm.intel.com with ESMTP; 14 Jul 2020 11:58:54 -0700
+Date:   Tue, 14 Jul 2020 11:58:54 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oliver Upton <oupton@google.com>,
+        Peter Shier <pshier@google.com>
+Subject: Re: [PATCH] KVM: x86: Don't attempt to load PDPTRs when 64-bit mode
+ is enabled
+Message-ID: <20200714185853.GC14404@linux.intel.com>
+References: <20200714015732.32426-1-sean.j.christopherson@intel.com>
+ <CALMp9eQ1-6GEiSh55-NXgjuq3EOwP9VWNMeriH_J64p9JMjN0g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALMp9eQ1-6GEiSh55-NXgjuq3EOwP9VWNMeriH_J64p9JMjN0g@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-13 at 17:17 +0300, Dan Carpenter wrote:
-> On Mon, Jul 13, 2020 at 05:52:22PM +0530, Suraj Upadhyay wrote:
-> > Use direct assignment instead of using memset with just one byte as an
-> > argument.
-> > Issue found by checkpatch.pl.
-> > 
-> > Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
-> > ---
-> > Hii Maintainers,
-> > 	Please correct me if I am wrong here.
-> > ---
-> > 
-> >  drivers/staging/qlge/qlge_ethtool.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/staging/qlge/qlge_ethtool.c b/drivers/staging/qlge/qlge_ethtool.c
-> > index 16fcdefa9687..d44b2dae9213 100644
-> > --- a/drivers/staging/qlge/qlge_ethtool.c
-> > +++ b/drivers/staging/qlge/qlge_ethtool.c
-> > @@ -516,8 +516,8 @@ static void ql_create_lb_frame(struct sk_buff *skb,
-> >  	memset(skb->data, 0xFF, frame_size);
-> >  	frame_size &= ~1;
-> >  	memset(&skb->data[frame_size / 2], 0xAA, frame_size / 2 - 1);
-> > -	memset(&skb->data[frame_size / 2 + 10], 0xBE, 1);
-> > -	memset(&skb->data[frame_size / 2 + 12], 0xAF, 1);
-> > +	skb->data[frame_size / 2 + 10] = (unsigned char)0xBE;
-> > +	skb->data[frame_size / 2 + 12] = (unsigned char)0xAF;
+On Tue, Jul 14, 2020 at 11:55:45AM -0700, Jim Mattson wrote:
+> On Mon, Jul 13, 2020 at 6:57 PM Sean Christopherson
+> <sean.j.christopherson@intel.com> wrote:
+> >
+> > Don't attempt to load PDPTRs if EFER.LME=1, i.e. if 64-bit mode is
+> > enabled.  A recent change to reload the PDTPRs when CR0.CD or CR0.NW is
+> > toggled botched the EFER.LME handling and sends KVM down the PDTPR path
+> > when is_paging() is true, i.e. when the guest toggles CD/NW in 64-bit
+> > mode.
 > 
-> Remove the casting.
+> Oops!
 > 
-> I guess this is better than the original because now it looks like
-> ql_check_lb_frame().  It's still really weird looking though.
+> I don't think "is_paging()" is relevant here, so much as "EFER.LME=1."
+> As you note below, KVM *should* go down the PDPTR path when
+> is_paging() is true and EFER.LME=0.
 
-There are several of these in the intel drivers too:
+It's relevant for the EFER.LME=1 case as it's used to detect CR0.PG 0->1.
 
-drivers/net/ethernet/intel/e1000/e1000_ethtool.c:       memset(&skb->data[frame_size / 2 + 10], 0xBE, 1);
-drivers/net/ethernet/intel/e1000/e1000_ethtool.c:       memset(&skb->data[frame_size / 2 + 12], 0xAF, 1);
-drivers/net/ethernet/intel/e1000e/ethtool.c:    memset(&skb->data[frame_size / 2 + 10], 0xBE, 1);
-drivers/net/ethernet/intel/e1000e/ethtool.c:    memset(&skb->data[frame_size / 2 + 12], 0xAF, 1);
-drivers/net/ethernet/intel/igb/igb_ethtool.c:   memset(&skb->data[frame_size + 10], 0xBE, 1);
-drivers/net/ethernet/intel/igb/igb_ethtool.c:   memset(&skb->data[frame_size + 12], 0xAF, 1);
-drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c:       memset(&skb->data[frame_size + 10], 0xBE, 1);
-drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c:       memset(&skb->data[frame_size + 12], 0xAF, 1);
-drivers/staging/qlge/qlge_ethtool.c:    memset(&skb->data[frame_size / 2 + 10], 0xBE, 1);
-drivers/staging/qlge/qlge_ethtool.c:    memset(&skb->data[frame_size / 2 + 12], 0xAF, 1);
-
-
-
+Though maybe we're in violent agreement?
