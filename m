@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080D221FC60
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EBC21FC56
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730250AbgGNSuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:50:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45962 "EHLO mail.kernel.org"
+        id S1729734AbgGNSuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:50:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730238AbgGNSt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:49:59 -0400
+        id S1730268AbgGNSuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:50:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 280D622AAA;
-        Tue, 14 Jul 2020 18:49:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 106C121835;
+        Tue, 14 Jul 2020 18:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752598;
-        bh=dxJSDkA1CY1HRGex+Bg/lyoogytrSC1qPBDs39Lk+fM=;
+        s=default; t=1594752608;
+        bh=w1saTiJ4092Q9Rc1+4AWTRTNFivBt5Fd42VK/TVq+gw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xEnp6mgUdJl1eH9OvU1/z1wbw5nBTfR9iDhBcZbCb+nDoTVb4gqb8vHMKUuWRBUed
-         mfEuvTiknGqo1IuuidLpRPZHf8tbMG49Oqfp0dHN0G9tEpiScL6GItA6sSSsFpzgX0
-         FjE9diknqxdiwOzPkowWCqDmCG6BK4aV9nK4uG5g=
+        b=Ewk43zSr82kOvUvvqMiGHXXIbZEtJL5a/Y4JTXBxkF0woScXNPxJNogmX36Dt3zaI
+         NS/3fWvmuEepu/X+lJQniQlSydGSwA2Y5SNWmCA5WzM53t91jL9lHdHLdKUUpJSaAN
+         c7bAMbQ9bAEl7bMv4z6w+IUcjAr/SuKeOnMRkCjA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 038/109] nl80211: dont return err unconditionally in nl80211_start_ap()
-Date:   Tue, 14 Jul 2020 20:43:41 +0200
-Message-Id: <20200714184107.345661678@linuxfoundation.org>
+Subject: [PATCH 5.4 041/109] bpf, sockmap: RCU dereferenced psock may be used outside RCU block
+Date:   Tue, 14 Jul 2020 20:43:44 +0200
+Message-Id: <20200714184107.488252468@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
 References: <20200714184105.507384017@linuxfoundation.org>
@@ -44,39 +45,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Coelho <luciano.coelho@intel.com>
+From: John Fastabend <john.fastabend@gmail.com>
 
-[ Upstream commit bc7a39b4272b9672d806d422b6850e8c1a09914c ]
+[ Upstream commit 8025751d4d55a2f32be6bdf825b6a80c299875f5 ]
 
-When a memory leak was fixed, a return err was changed to goto err,
-but, accidentally, the if (err) was removed, so now we always exit at
-this point.
+If an ingress verdict program specifies message sizes greater than
+skb->len and there is an ENOMEM error due to memory pressure we
+may call the rcv_msg handler outside the strp_data_ready() caller
+context. This is because on an ENOMEM error the strparser will
+retry from a workqueue. The caller currently protects the use of
+psock by calling the strp_data_ready() inside a rcu_read_lock/unlock
+block.
 
-Fix it by adding if (err) back.
+But, in above workqueue error case the psock is accessed outside
+the read_lock/unlock block of the caller. So instead of using
+psock directly we must do a look up against the sk again to
+ensure the psock is available.
 
-Fixes: 9951ebfcdf2b ("nl80211: fix potential leak in AP start")
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20200626124931.871ba5b31eee.I97340172d92164ee92f3c803fe20a8a6e97714e1@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+There is an an ugly piece here where we must handle
+the case where we paused the strp and removed the psock. On
+psock removal we first pause the strparser and then remove
+the psock. If the strparser is paused while an skb is
+scheduled on the workqueue the skb will be dropped on the
+flow and kfree_skb() is called. If the workqueue manages
+to get called before we pause the strparser but runs the rcvmsg
+callback after the psock is removed we will hit the unlikely
+case where we run the sockmap rcvmsg handler but do not have
+a psock. For now we will follow strparser logic and drop the
+skb on the floor with skb_kfree(). This is ugly because the
+data is dropped. To date this has not caused problems in practice
+because either the application controlling the sockmap is
+coordinating with the datapath so that skbs are "flushed"
+before removal or we simply wait for the sock to be closed before
+removing it.
+
+This patch fixes the describe RCU bug and dropping the skb doesn't
+make things worse. Future patches will improve this by allowing
+the normal case where skbs are not merged to skip the strparser
+altogether. In practice many (most?) use cases have no need to
+merge skbs so its both a code complexity hit as seen above and
+a performance issue. For example, in the Cilium case we always
+set the strparser up to return sbks 1:1 without any merging and
+have avoided above issues.
+
+Fixes: e91de6afa81c1 ("bpf: Fix running sk_skb program types with ktls")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/159312679888.18340.15248924071966273998.stgit@john-XPS-13-9370
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/nl80211.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/core/skmsg.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index b65180e874fb9..a34bbca80f498 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -4798,7 +4798,8 @@ static int nl80211_start_ap(struct sk_buff *skb, struct genl_info *info)
- 		err = nl80211_parse_he_obss_pd(
- 					info->attrs[NL80211_ATTR_HE_OBSS_PD],
- 					&params.he_obss_pd);
--		goto out;
-+		if (err)
-+			goto out;
- 	}
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 70ea352e3a3b6..118cf1ace43a6 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -785,11 +785,18 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
  
- 	nl80211_calculate_ap_params(&params);
+ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
+ {
+-	struct sk_psock *psock = sk_psock_from_strp(strp);
++	struct sk_psock *psock;
+ 	struct bpf_prog *prog;
+ 	int ret = __SK_DROP;
++	struct sock *sk;
+ 
+ 	rcu_read_lock();
++	sk = strp->sk;
++	psock = sk_psock(sk);
++	if (unlikely(!psock)) {
++		kfree_skb(skb);
++		goto out;
++	}
+ 	prog = READ_ONCE(psock->progs.skb_verdict);
+ 	if (likely(prog)) {
+ 		skb_orphan(skb);
+@@ -798,6 +805,7 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
+ 		ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
+ 	}
+ 	sk_psock_verdict_apply(psock, skb, ret);
++out:
+ 	rcu_read_unlock();
+ }
+ 
 -- 
 2.25.1
 
