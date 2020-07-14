@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FFFF21E8BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4863721E890
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgGNG7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 02:59:37 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:52951 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725778AbgGNG7h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 02:59:37 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.7789875|0.5314721;CH=green;DM=|SPAM|false|;DS=CONTINUE|ham_regular_dialog|0.0554704-0.000987751-0.943542;FP=0|0|0|0|0|-1|-1|-1;HT=e01l04362;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.I1TXvIO_1594709967;
-Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.I1TXvIO_1594709967)
-          by smtp.aliyun-inc.com(10.147.44.145);
-          Tue, 14 Jul 2020 14:59:32 +0800
-From:   Frank Lee <frank@allwinnertech.com>
-To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        mripard@kernel.org, wens@csie.org, linux-clk@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, huangshuosheng@allwinnertech.com,
-        liyong@allwinnertech.com, Yangtao Li <frank@allwinnertech.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 01/16] dt-bindings: clk: sunxi-ccu: add compatible string for A100 CCU and R-CCU
-Date:   Tue, 14 Jul 2020 14:59:20 +0800
-Message-Id: <ca521ce2603649ad530acd8a562c639479c81e80.1594708864.git.frank@allwinnertech.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1594708863.git.frank@allwinnertech.com>
-References: <cover.1594708863.git.frank@allwinnertech.com>
+        id S1726863AbgGNGs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 02:48:57 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:7301 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725788AbgGNGs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 02:48:56 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id A1C87E4664C6108C855F;
+        Tue, 14 Jul 2020 14:48:52 +0800 (CST)
+Received: from localhost (10.175.101.6) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Jul 2020
+ 14:48:43 +0800
+From:   Weilong Chen <chenweilong@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <jiri@mellanox.com>,
+        <edumazet@google.com>, <chenweilong@huawei.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 net] rtnetlink: Fix memory(net_device) leak when ->newlink fails
+Date:   Tue, 14 Jul 2020 15:32:28 +0800
+Message-ID: <20200714073228.102901-1-chenweilong@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <frank@allwinnertech.com>
+When vlan_newlink call register_vlan_dev fails, it might return error
+with dev->reg_state = NETREG_UNREGISTERED. The rtnl_newlink should
+free the memory. But currently rtnl_newlink only free the memory which
+state is NETREG_UNINITIALIZED.
 
-This patch adds binding to a100's ccu clock and r-ccu clock.
+BUG: memory leak
+unreferenced object 0xffff8881051de000 (size 4096):
+  comm "syz-executor139", pid 560, jiffies 4294745346 (age 32.445s)
+  hex dump (first 32 bytes):
+    76 6c 61 6e 32 00 00 00 00 00 00 00 00 00 00 00  vlan2...........
+    00 45 28 03 81 88 ff ff 00 00 00 00 00 00 00 00  .E(.............
+  backtrace:
+    [<0000000047527e31>] kmalloc_node include/linux/slab.h:578 [inline]
+    [<0000000047527e31>] kvmalloc_node+0x33/0xd0 mm/util.c:574
+    [<000000002b59e3bc>] kvmalloc include/linux/mm.h:753 [inline]
+    [<000000002b59e3bc>] kvzalloc include/linux/mm.h:761 [inline]
+    [<000000002b59e3bc>] alloc_netdev_mqs+0x83/0xd90 net/core/dev.c:9929
+    [<000000006076752a>] rtnl_create_link+0x2c0/0xa20 net/core/rtnetlink.c:3067
+    [<00000000572b3be5>] __rtnl_newlink+0xc9c/0x1330 net/core/rtnetlink.c:3329
+    [<00000000e84ea553>] rtnl_newlink+0x66/0x90 net/core/rtnetlink.c:3397
+    [<0000000052c7c0a9>] rtnetlink_rcv_msg+0x540/0x990 net/core/rtnetlink.c:5460
+    [<000000004b5cb379>] netlink_rcv_skb+0x12b/0x3a0 net/netlink/af_netlink.c:2469
+    [<00000000c71c20d3>] netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+    [<00000000c71c20d3>] netlink_unicast+0x4c6/0x690 net/netlink/af_netlink.c:1329
+    [<00000000cca72fa9>] netlink_sendmsg+0x735/0xcc0 net/netlink/af_netlink.c:1918
+    [<000000009221ebf7>] sock_sendmsg_nosec net/socket.c:652 [inline]
+    [<000000009221ebf7>] sock_sendmsg+0x109/0x140 net/socket.c:672
+    [<000000001c30ffe4>] ____sys_sendmsg+0x5f5/0x780 net/socket.c:2352
+    [<00000000b71ca6f3>] ___sys_sendmsg+0x11d/0x1a0 net/socket.c:2406
+    [<0000000007297384>] __sys_sendmsg+0xeb/0x1b0 net/socket.c:2439
+    [<000000000eb29b11>] do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
+    [<000000006839b4d0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Fixes: commit e51fb152318ee6 (rtnetlink: fix a memory leak when ->newlink fails)
+Cc: David S. Miller <davem@davemloft.net>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Weilong Chen <chenweilong@huawei.com>
 ---
- .../devicetree/bindings/clock/allwinner,sun4i-a10-ccu.yaml | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ net/core/rtnetlink.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/allwinner,sun4i-a10-ccu.yaml b/Documentation/devicetree/bindings/clock/allwinner,sun4i-a10-ccu.yaml
-index 4d382128b711..3b45344ed758 100644
---- a/Documentation/devicetree/bindings/clock/allwinner,sun4i-a10-ccu.yaml
-+++ b/Documentation/devicetree/bindings/clock/allwinner,sun4i-a10-ccu.yaml
-@@ -36,6 +36,8 @@ properties:
-       - allwinner,sun9i-a80-ccu
-       - allwinner,sun50i-a64-ccu
-       - allwinner,sun50i-a64-r-ccu
-+      - allwinner,sun50i-a100-ccu
-+      - allwinner,sun50i-a100-r-ccu
-       - allwinner,sun50i-h5-ccu
-       - allwinner,sun50i-h6-ccu
-       - allwinner,sun50i-h6-r-ccu
-@@ -78,6 +80,7 @@ if:
-         - allwinner,sun8i-a83t-r-ccu
-         - allwinner,sun8i-h3-r-ccu
-         - allwinner,sun50i-a64-r-ccu
-+        - allwinner,sun50i-a100-r-ccu
-         - allwinner,sun50i-h6-r-ccu
- 
- then:
-@@ -94,7 +97,9 @@ else:
-   if:
-     properties:
-       compatible:
--        const: allwinner,sun50i-h6-ccu
-+        enum:
-+          - allwinner,sun50i-a100-ccu
-+          - allwinner,sun50i-h6-ccu
- 
-   then:
-     properties:
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index 9aedc15736ad..85a4b0101f76 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -3343,7 +3343,8 @@ static int __rtnl_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 		 */
+ 		if (err < 0) {
+ 			/* If device is not registered at all, free it now */
+-			if (dev->reg_state == NETREG_UNINITIALIZED)
++			if (dev->reg_state == NETREG_UNINITIALIZED ||
++			    dev->reg_state == NETREG_UNREGISTERED)
+ 				free_netdev(dev);
+ 			goto out;
+ 		}
 -- 
-2.24.0
+2.17.1
 
