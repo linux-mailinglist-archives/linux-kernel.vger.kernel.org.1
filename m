@@ -2,80 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6622A21FD4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9634421FC07
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729328AbgGNT1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:27:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45602 "EHLO mail.kernel.org"
+        id S1731195AbgGNTGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:06:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728370AbgGNT1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:27:09 -0400
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1730247AbgGNSxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:53:30 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0EE7225AB
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 19:27:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 929F1207F5;
+        Tue, 14 Jul 2020 18:53:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594754829;
-        bh=P5jNGMBlBX/QkkJRNB1+sQIGoUmYLPb4UbvcuiwyfXU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=D7ZxWEJC3oQ/TI0IJ+5dDrybFphlb1csCiK3XkuOwP5oqHfRRzbdSKZ8IeBpUScMP
-         lCa2ypQlxbT2mEOffrh1BYDi8jYiyr0Ljl/I5PCQDiJITjiRfyH95Z52Rh+lMuxFk1
-         vJFM3kQtm5MzPWXR3+A81e5kYbG75dRPjlYXeOLA=
-Received: by mail-wm1-f47.google.com with SMTP id q15so8337733wmj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:27:08 -0700 (PDT)
-X-Gm-Message-State: AOAM530Ed+yF41a94NnNzQyNioQ5Moth81TTryB0W5q+RBbH/ngmil79
-        L1JZCaYehCMmKDGJIYBHO+DSL2KgwBZjsZdFMprYLw==
-X-Google-Smtp-Source: ABdhPJxdA00P6WYL5aBprrtpWULRdP3PtUO6mZJTS1tjNWVBTfJxhDStj7KTroekfThk3dz/LDqSAqwPthtxEIwVRio=
-X-Received: by 2002:a7b:c92e:: with SMTP id h14mr4877690wml.36.1594748492474;
- Tue, 14 Jul 2020 10:41:32 -0700 (PDT)
+        s=default; t=1594752809;
+        bh=YQI3JFO0/IRGd0ndbGFLjzwEN80zHIU6ULPZ524xL9A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GZPTSk09r41HgEDQjv8zq0UYZhFjhhuqEOULNdo4014KjLI9IqUO34GuIr106Tmnf
+         ItmeIQv+QZPmH827kVZPR94RFH2BcCN82IN1OnjNiBHeO8HEczc0IfDaOE34QGX8eD
+         l4NSOWchriYsXRbzhsnRn1CvqjKp8BptXc37WYVc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 001/166] KVM: s390: reduce number of IO pins to 1
+Date:   Tue, 14 Jul 2020 20:42:46 +0200
+Message-Id: <20200714184115.917313137@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-References: <20200616142315.375918-1-brgerst@gmail.com> <20200714064004.GA32655@lst.de>
- <CAMzpN2gg4H5qnU8Dk=bCaEm2WdRF-synfpf_yUaK8L6vyuo=zQ@mail.gmail.com>
-In-Reply-To: <CAMzpN2gg4H5qnU8Dk=bCaEm2WdRF-synfpf_yUaK8L6vyuo=zQ@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 14 Jul 2020 10:41:18 -0700
-X-Gmail-Original-Message-ID: <CALCETrWLac6LV_iJhbo86hqZ87oAY5L62S6L82PYZi2Y_5k1BQ@mail.gmail.com>
-Message-ID: <CALCETrWLac6LV_iJhbo86hqZ87oAY5L62S6L82PYZi2Y_5k1BQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] X32 syscall cleanups
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 10:03 AM Brian Gerst <brgerst@gmail.com> wrote:>
-> On Tue, Jul 14, 2020 at 2:40 AM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > On Tue, Jun 16, 2020 at 10:23:13AM -0400, Brian Gerst wrote:
-> > > Christoph Hellwig uncovered an issue with how we currently handle X32
-> > > syscalls.  Currently, we can only use COMPAT_SYS_DEFINEx() for X32
-> > > specific syscalls.  These changes remove that restriction and allow
-> > > native syscalls.
-> >
-> > Did this go anywhere?
->
-> This approach wasn't well received, so I'd just go with this as the
-> simplest solution:
-> https://lore.kernel.org/lkml/CAK8P3a17h782gO65qJ9Mmz0EuiTSKQPEyr_=nvqOtnmQZuh9Kw@mail.gmail.com/
->
+From: Christian Borntraeger <borntraeger@de.ibm.com>
 
-I'm okay with either approach, although I think the original approach
-is nicer than the simplified #define approach.
+[ Upstream commit 774911290c589e98e3638e73b24b0a4d4530e97c ]
 
-In my mind, the __x64_omg_so_many_underscores prefixes really mean
-"don't think too hard about these -- we just decided to make extra
-long names", so whatever.  We can clean it up more some day.
+The current number of KVM_IRQCHIP_NUM_PINS results in an order 3
+allocation (32kb) for each guest start/restart. This can result in OOM
+killer activity even with free swap when the memory is fragmented
+enough:
 
-> --
-> Brian Gerst
+kernel: qemu-system-s39 invoked oom-killer: gfp_mask=0x440dc0(GFP_KERNEL_ACCOUNT|__GFP_COMP|__GFP_ZERO), order=3, oom_score_adj=0
+kernel: CPU: 1 PID: 357274 Comm: qemu-system-s39 Kdump: loaded Not tainted 5.4.0-29-generic #33-Ubuntu
+kernel: Hardware name: IBM 8562 T02 Z06 (LPAR)
+kernel: Call Trace:
+kernel: ([<00000001f848fe2a>] show_stack+0x7a/0xc0)
+kernel:  [<00000001f8d3437a>] dump_stack+0x8a/0xc0
+kernel:  [<00000001f8687032>] dump_header+0x62/0x258
+kernel:  [<00000001f8686122>] oom_kill_process+0x172/0x180
+kernel:  [<00000001f8686abe>] out_of_memory+0xee/0x580
+kernel:  [<00000001f86e66b8>] __alloc_pages_slowpath+0xd18/0xe90
+kernel:  [<00000001f86e6ad4>] __alloc_pages_nodemask+0x2a4/0x320
+kernel:  [<00000001f86b1ab4>] kmalloc_order+0x34/0xb0
+kernel:  [<00000001f86b1b62>] kmalloc_order_trace+0x32/0xe0
+kernel:  [<00000001f84bb806>] kvm_set_irq_routing+0xa6/0x2e0
+kernel:  [<00000001f84c99a4>] kvm_arch_vm_ioctl+0x544/0x9e0
+kernel:  [<00000001f84b8936>] kvm_vm_ioctl+0x396/0x760
+kernel:  [<00000001f875df66>] do_vfs_ioctl+0x376/0x690
+kernel:  [<00000001f875e304>] ksys_ioctl+0x84/0xb0
+kernel:  [<00000001f875e39a>] __s390x_sys_ioctl+0x2a/0x40
+kernel:  [<00000001f8d55424>] system_call+0xd8/0x2c8
+
+As far as I can tell s390x does not use the iopins as we bail our for
+anything other than KVM_IRQ_ROUTING_S390_ADAPTER and the chip/pin is
+only used for KVM_IRQ_ROUTING_IRQCHIP. So let us use a small number to
+reduce the memory footprint.
+
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Link: https://lore.kernel.org/r/20200617083620.5409-1-borntraeger@de.ibm.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/s390/include/asm/kvm_host.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
+index d6bcd34f3ec32..ec65bc2bd084e 100644
+--- a/arch/s390/include/asm/kvm_host.h
++++ b/arch/s390/include/asm/kvm_host.h
+@@ -31,12 +31,12 @@
+ #define KVM_USER_MEM_SLOTS 32
+ 
+ /*
+- * These seem to be used for allocating ->chip in the routing table,
+- * which we don't use. 4096 is an out-of-thin-air value. If we need
+- * to look at ->chip later on, we'll need to revisit this.
++ * These seem to be used for allocating ->chip in the routing table, which we
++ * don't use. 1 is as small as we can get to reduce the needed memory. If we
++ * need to look at ->chip later on, we'll need to revisit this.
+  */
+ #define KVM_NR_IRQCHIPS 1
+-#define KVM_IRQCHIP_NUM_PINS 4096
++#define KVM_IRQCHIP_NUM_PINS 1
+ #define KVM_HALT_POLL_NS_DEFAULT 50000
+ 
+ /* s390-specific vcpu->requests bit members */
+-- 
+2.25.1
+
+
+
