@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A857E21FE8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69EDC21FE78
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 22:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgGNU2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 16:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgGNU2q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 16:28:46 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2553FC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 13:21:04 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id t7so8112170qvl.8
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 13:21:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dNqqoUWNmRxmdTmC2H241F4+woK6j4Lxw/jD+n5ASO0=;
-        b=aA8lDs80uNY9ngYTDCOapy6ub7nOBQNxCJlX/AZU4bi9eLCOy8jKPiKZDVty7/dTRR
-         WjyYlA8jVYTa9AcVZD3bML6mMCYjntZevep8CYf5gX2mQPY2yY9CFpR8rSC2gxoklEzv
-         k8XBFiLxyHNR6arup/PPCrlyR4ZQ5DFYRti7eyo/MsCWauHe5Tuo/Fxu5k/lu/9SG1G2
-         GwQxcAVezJc6tIxQR26MmoTQgdTFXLi69wOMKdkrc9OjeOHWOz3RtotWJac+F9nrM6Qq
-         7JD0eKiZO1RfZ9/3toFRf3qbLCQsn/5jGNgV+RpbdTFoP77hwZj3AJK5iRuNS0EH979K
-         i+6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=dNqqoUWNmRxmdTmC2H241F4+woK6j4Lxw/jD+n5ASO0=;
-        b=JsIzrkfjEyegaNaVGJQfJDjr5RKkewjo8VBhlLiJK59LUxrT5KxCrOsBkiGfnuaKgb
-         JQ5yTJo/lGvirpukFzPmgDohZA+ArZ3xe2kWznYAKwPIMxYXm+DWnDdvIY16dUXCQ/Yc
-         70ltftP/xnXbCF3lYxhBoZbZkgKop1c0A/100VdO/hDzU/gzBXHsbtU/7+mWSnj1V5cF
-         mU7FeEdlUtFZWPKPx0TFT/RYl5XTAe7IRGm63HP6cFAHjjhhWHBtVw6PteFh7bsEQ1hG
-         EagjYiSjIIrhe/wscUxNscrnYFbEbgVnuRmJJ6wL7p1D0y1ankaRU5CbnuyMsaB9wlad
-         fKKQ==
-X-Gm-Message-State: AOAM533KEQkOGfTBz1xOJpwkvush83LniVCMd10vIDHQgDu3gEAMxf8q
-        5zHqVKBJVS4uizY8W1VyhUA=
-X-Google-Smtp-Source: ABdhPJwb1I0p4bOMKtLajLgcNEbmG1Q0OY/t2sel9rmpa1wxid9tfL1gZ+7fk6XPzyZ+YZ4ujjS0FQ==
-X-Received: by 2002:a0c:f842:: with SMTP id g2mr6506941qvo.181.1594758063273;
-        Tue, 14 Jul 2020 13:21:03 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id x36sm45154qtb.78.2020.07.14.13.21.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 13:21:02 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 14 Jul 2020 16:21:00 -0400
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] x86/boot: Remove runtime relocations from
- compressed kernel
-Message-ID: <20200714202100.GB902932@rani.riverdale.lan>
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200714023836.2310569-1-nivedita@alum.mit.edu>
- <CA+icZUXSPfybFtzQB3wKn9spQmEPnQu_iGPWkRisAmRQbJLWXA@mail.gmail.com>
- <20200714141550.GA329060@rani.riverdale.lan>
- <CA+icZUU88wYmyycthW7AQUZ72HGa9RWPZmxVS5Gm6UW=6ES9kA@mail.gmail.com>
- <CA+icZUWHdsk9+wkTZOdDghM7pRZyk2vHgxpYx62vPooqohzbYw@mail.gmail.com>
- <20200714192956.GA689174@rani.riverdale.lan>
- <CA+icZUXoZzhUMRsVVexazd=oFK4vKa1KJN5=_KXz+fcYxcA4Rw@mail.gmail.com>
- <CA+icZUXBggJtwtWmyXEwgu1WztrcTiLrZCW1_QqSw2SiThOkfQ@mail.gmail.com>
+        id S1726442AbgGNUWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 16:22:33 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:52353 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725877AbgGNUWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 16:22:33 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B5sPy5MrBz9sRK;
+        Wed, 15 Jul 2020 06:22:30 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594758151;
+        bh=m6q0t5rQ4tSfOmMooV1EHEwUQAHvbpn5mjHL15F+qEw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=P8ibvs29lkUkCz49co9V7WPBcFc/Fsw2a7NNDseIh5Z31qyH7nJnsa3KUz/4KcVHh
+         XKaV46mul9bSfayC/SuC0pMo/cIsabqX0Ssqr3ROzYPLYP/gMlHEo/br7IWo1BN1Zx
+         Yak5pqJreqTXZckh2FJxYNYTd1PgBpsFFWkz3fF4DRMinpALDJsfHr8XH3lXBQW+yq
+         kKRPfE4iZoOHBrWBEqnhLj6TPEtQxPK1BqaYzF9HV2JkfbETO8Q2mWN7b2p7gygoAO
+         /VjzTRywXnwW4StfhKJLmi/P4Khyhzd9ZEZO44JBhvzsww+HRXJO3vRdQjut/W7CDU
+         KBdoxrjfvqg8g==
+Date:   Wed, 15 Jul 2020 06:22:29 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bixuan Cui <cuibixuan@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-next@vger.kernel.org>,
+        <john.wanghui@huawei.com>, Roman Gushchin <guro@fb.com>
+Subject: Re: [PATCH v2] mm/percpu: fix 'defined but not used' warning
+Message-ID: <20200715062229.78591ff9@canb.auug.org.au>
+In-Reply-To: <6f1a8c76-d6d7-1a2c-8b0b-26a4a31f1a19@huawei.com>
+References: <20200714134101.80534-1-cuibixuan@huawei.com>
+        <20200714225311.7aeffffd@canb.auug.org.au>
+        <6f1a8c76-d6d7-1a2c-8b0b-26a4a31f1a19@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CA+icZUXBggJtwtWmyXEwgu1WztrcTiLrZCW1_QqSw2SiThOkfQ@mail.gmail.com>
+Content-Type: multipart/signed; boundary="Sig_/PLQTjSuhLZHKFG1.u30PGb4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 10:08:04PM +0200, Sedat Dilek wrote:
-> > >
-> > > In any case, I think the right fix here would be to add -pie and
-> > > --no-dynamic-linker to LDFLAGS_vmlinux instead of KBUILD_LDFLAGS.
-> >
-> > Hmm, you might be right with moving to LDFLAGS_vmlinux.
-> >
-> 
-> We will need the "ifndef CONFIG_LD_IS_LLD" as -r and -pie cannot be
-> used together.
-> Is that the or not the fact when moving to LDFLAGS_vmlinux?
+--Sig_/PLQTjSuhLZHKFG1.u30PGb4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-LDFLAGS_vmlinux will only be used to link boot/compressed/vmlinux,
-whereas KBUILD_LDFLAGS is used for all linker invocations, and in
-particular the little link to do the modversions stuff ends up using it.
+Hi Bixuan,
 
-So once we move -pie --no-dynamic-linker to the more correct
-LDFLAGS_vmlinux and/or stop modversions running, we'll be fine. Being
-able to use -pie with lld is one of the goals of this series.
+Thanks for this.
 
-> 
-> I cannot test as I modified my local Git and re-invoking my
-> build-script is doing a whole new build-dance.
-> 
-> - Sedat -
+On Tue, 14 Jul 2020 21:46:18 +0800 Bixuan Cui <cuibixuan@huawei.com> wrote:
+>
+> Gcc report the following warning without CONFIG_MEMCG_KMEM:
+>=20
+> mm/percpu-internal.h:145:29: warning: 'pcpu_chunk_type' defined
+> but not used [-Wunused-function]
+>  static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
+>                              ^~~~~~~~~~~~~~~
+>=20
+> Add 'inline' to pcpu_chunk_type(),pcpu_is_memcg_chunk() and
+> pcpu_chunk_list() to clear warning.
+>=20
+> Fixes: 26c99879ef01 ("mm: memcg/percpu: account percpu memory to memory c=
+groups")
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+
+You really should not add SUB lines for others - in  this case a
+Suggested-by is more appropriate.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/PLQTjSuhLZHKFG1.u30PGb4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8OFAUACgkQAVBC80lX
+0GwHggf/bNn1uN+FOLwHWa7pt12Gtfv8cZ13520mBvzbvw2hVaoiMGE1xgZuZ6WM
+9VYCtJXLpeFWsHJXOZKBI0HxIjJHkDR5rNZ3fnorDexzBJ0LvjTj/GUMjuUHv1vq
+owAraeXUIsJUDr2jpuRq60+5PUm80F3+YGF35694tl1uHxK8Do/CFM4i7bRz/aQ/
+ynfJNm/hFoR9CbBDISULAujfLnhKHgwR2z7fxgqqSM3Uj3hWZZyTI1GfS6oKVsJz
+XN7UEb95LUCQiCUhsZeU2g4IR/rkXokDwoqDghIEX63zeb5//XJstDKHV7x6Xpgd
+v49A+51vkMXaLbMI0h4C+gXZAETleA==
+=IdV1
+-----END PGP SIGNATURE-----
+
+--Sig_/PLQTjSuhLZHKFG1.u30PGb4--
