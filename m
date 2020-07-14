@@ -2,115 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6422421E8AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D4D21E8A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 08:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgGNG4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 02:56:40 -0400
-Received: from mga03.intel.com ([134.134.136.65]:8313 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725853AbgGNG4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 02:56:40 -0400
-IronPort-SDR: vDQ8C2NA79zJsql6egR0wNe5XPyDaU2kO0nW8QtGySHY6vKlRcUNXESXrIFoVFw+37em4zUext
- vzmzxZz81Mxw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="148826705"
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="148826705"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 23:56:38 -0700
-IronPort-SDR: znEllzvz59U1pi/w5kzWBPXAD5ZqLh2y2GHVbxyKxHuF276SxXROqNt3PASQGjpvpRD6Vzkvy6
- RGXZxKqHbmuQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="269932666"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Jul 2020 23:56:35 -0700
-Date:   Tue, 14 Jul 2020 14:52:28 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, trix@redhat.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
-        lgoncalv@redhat.com, Wu Hao <hao.wu@intel.com>
-Subject: Re: [PATCH 1/2] mfd: intel-m10-bmc: add Max10 BMC chip support for
-  Intel FPGA PAC
-Message-ID: <20200714065228.GA24900@yilunxu-OptiPlex-7050>
-References: <1594614896-16606-1-git-send-email-yilun.xu@intel.com>
- <1594614896-16606-2-git-send-email-yilun.xu@intel.com>
- <20200713091708.GC3500@dell>
- <20200714060520.GA27975@yilunxu-OptiPlex-7050>
- <20200714065043.GF3500@dell>
+        id S1726844AbgGNGwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 02:52:51 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7848 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725788AbgGNGwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 02:52:50 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 6B4983DBE0D63BBD3067;
+        Tue, 14 Jul 2020 14:52:47 +0800 (CST)
+Received: from [10.174.178.65] (10.174.178.65) by smtp.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 14 Jul
+ 2020 14:52:40 +0800
+Subject: Re: [PATCH v2 net] rtnetlink: Fix memory(net_device) leak when
+ ->newlink fails
+To:     Weilong Chen <chenweilong@huawei.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "edumazet@google.com" <edumazet@google.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200714073228.102901-1-chenweilong@huawei.com>
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+Message-ID: <c03c408e-a46d-9c81-40eb-14e43677c1a6@huawei.com>
+Date:   Tue, 14 Jul 2020 14:52:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200714065043.GF3500@dell>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200714073228.102901-1-chenweilong@huawei.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.65]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 07:50:43AM +0100, Lee Jones wrote:
-> On Tue, 14 Jul 2020, Xu Yilun wrote:
-> 
-> > On Mon, Jul 13, 2020 at 10:17:08AM +0100, Lee Jones wrote:
-> > > On Mon, 13 Jul 2020, Xu Yilun wrote:
-> > > 
-> > > > This patch implements the basic functions of the BMC chip for some Intel
-> > > > FPGA PCIe Acceleration Cards (PAC). The BMC is implemented using the
-> > > > intel max10 CPLD.
-> > > > 
-> > > > This BMC chip is connected to FPGA by a SPI bus. To provide reliable
-> > > > register access from FPGA, an Avalon Memory-Mapped (Avmm) transaction
-> > > > protocol over the SPI bus is used between host and slave.
-> > > > 
-> > > > This driver implements the basic register access with the regmap framework.
-> > > > The mfd cells array is empty now as a placeholder.
-> > > > 
-> > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > > Signed-off-by: Wu Hao <hao.wu@intel.com>
-> > > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > > Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> > > > Signed-off-by: Tom Rix <trix@redhat.com>
-> > > > ---
-> > > >  .../ABI/testing/sysfs-driver-intel-m10-bmc         |  15 +
-> > > >  drivers/mfd/Kconfig                                |  13 +
-> > > >  drivers/mfd/Makefile                               |   3 +
-> > > >  drivers/mfd/intel-m10-bmc-main.c                   | 176 ++++
-> > > 
-> > > >  drivers/mfd/intel-spi-avmm.c                       | 904 +++++++++++++++++++++
-> > > 
-> > > This does not belong in MFD.
-> > > 
-> > > Please consider moving it to drivers/spi.
-> > 
-> > OK, I could make the intel-spi-avmm.c as a separate module in other
-> > folder.
-> > 
-> > Since it is an implementation of regmap, is it better we move it to
-> > drivers/base/regmap?
-> 
-> Either way, you need to speak to Mark Brown.
 
-Thanks for your suggestion, I'll contact him.
 
-Yilun.
+On 2020/7/14 15:32, Weilong Chen wrote:
+> When vlan_newlink call register_vlan_dev fails, it might return error
+> with dev->reg_state = NETREG_UNREGISTERED. The rtnl_newlink should
+> free the memory. But currently rtnl_newlink only free the memory which
+> state is NETREG_UNINITIALIZED.
+> 
+> BUG: memory leak
+> unreferenced object 0xffff8881051de000 (size 4096):
+>   comm "syz-executor139", pid 560, jiffies 4294745346 (age 32.445s)
+>   hex dump (first 32 bytes):
+>     76 6c 61 6e 32 00 00 00 00 00 00 00 00 00 00 00  vlan2...........
+>     00 45 28 03 81 88 ff ff 00 00 00 00 00 00 00 00  .E(.............
+>   backtrace:
+>     [<0000000047527e31>] kmalloc_node include/linux/slab.h:578 [inline]
+>     [<0000000047527e31>] kvmalloc_node+0x33/0xd0 mm/util.c:574
+>     [<000000002b59e3bc>] kvmalloc include/linux/mm.h:753 [inline]
+>     [<000000002b59e3bc>] kvzalloc include/linux/mm.h:761 [inline]
+>     [<000000002b59e3bc>] alloc_netdev_mqs+0x83/0xd90 net/core/dev.c:9929
+>     [<000000006076752a>] rtnl_create_link+0x2c0/0xa20 net/core/rtnetlink.c:3067
+>     [<00000000572b3be5>] __rtnl_newlink+0xc9c/0x1330 net/core/rtnetlink.c:3329
+>     [<00000000e84ea553>] rtnl_newlink+0x66/0x90 net/core/rtnetlink.c:3397
+>     [<0000000052c7c0a9>] rtnetlink_rcv_msg+0x540/0x990 net/core/rtnetlink.c:5460
+>     [<000000004b5cb379>] netlink_rcv_skb+0x12b/0x3a0 net/netlink/af_netlink.c:2469
+>     [<00000000c71c20d3>] netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+>     [<00000000c71c20d3>] netlink_unicast+0x4c6/0x690 net/netlink/af_netlink.c:1329
+>     [<00000000cca72fa9>] netlink_sendmsg+0x735/0xcc0 net/netlink/af_netlink.c:1918
+>     [<000000009221ebf7>] sock_sendmsg_nosec net/socket.c:652 [inline]
+>     [<000000009221ebf7>] sock_sendmsg+0x109/0x140 net/socket.c:672
+>     [<000000001c30ffe4>] ____sys_sendmsg+0x5f5/0x780 net/socket.c:2352
+>     [<00000000b71ca6f3>] ___sys_sendmsg+0x11d/0x1a0 net/socket.c:2406
+>     [<0000000007297384>] __sys_sendmsg+0xeb/0x1b0 net/socket.c:2439
+>     [<000000000eb29b11>] do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
+>     [<000000006839b4d0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Fixes: commit e51fb152318ee6 (rtnetlink: fix a memory leak when ->newlink fails)
 
-> 
-> > > >  drivers/mfd/intel-spi-avmm.h                       |  35 +
-> > > >  include/linux/mfd/intel-m10-bmc.h                  |  57 ++
-> > > >  7 files changed, 1203 insertions(+)
-> > > >  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
-> > > >  create mode 100644 drivers/mfd/intel-m10-bmc-main.c
-> > > >  create mode 100644 drivers/mfd/intel-spi-avmm.c
-> > > >  create mode 100644 drivers/mfd/intel-spi-avmm.h
-> > > >  create mode 100644 include/linux/mfd/intel-m10-bmc.h
-> > > 
-> 
-> -- 
-> Lee Jones [李琼斯]
-> Senior Technical Lead - Developer Services
-> Linaro.org │ Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+Should be:
+
+Fixes: e51fb152318ee6 ("rtnetlink: fix a memory leak when ->newlink fails")
+
