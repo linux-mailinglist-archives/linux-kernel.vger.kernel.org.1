@@ -2,114 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AC9220038
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233B922002D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbgGNVmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:42:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726710AbgGNVmw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:42:52 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFA9C061755;
-        Tue, 14 Jul 2020 14:42:51 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id d27so108241qtg.4;
-        Tue, 14 Jul 2020 14:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dch/WtmoKPQg8SRn/xT9XuWPxCjeN6BPw/5vBDMLPao=;
-        b=rHWw0+X+zL9ddXJHGLNV7xjzS0eiiSQzcypjCMxbHGz22QkSRGXXtGnRd5MDjvk7/w
-         yqnU0NnbElreflfaS590bj4ZlPOfQscv9mmhaLuVFnjCnnX70y93TcNWen9KB9qA3j6v
-         5k5zMDHrlXQtdJev+EzUYEg+wSUacBRYApl4QSD7d5UsB+Pz9ekk4+G1TEvXZI6WctXq
-         mzuyNHyN5CBkVGUnVqAPJHAlOqVM/pngl0NgtFvLyiOIgHpmzhu1Hub6OG/TkCjExFRo
-         Oc2xQIjZmNemXiXFrUkSzaIN9xnFuR1cD4FUPOSS4OOBE2IiALEb0VieY+zVzgse88y5
-         gCVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=dch/WtmoKPQg8SRn/xT9XuWPxCjeN6BPw/5vBDMLPao=;
-        b=qKTt6KyquWNTXQJfh/zwxaHVpnQ0FQbVG/4bKxNaA5PBXaatmOHh55NsgyanQ/BNBP
-         AmfEJb7LxqTItFa9IoIh7uxP0MhCb2NwHJ5shZR4TF+CDs0h8X2AN5fT5UlziOz59Am6
-         AooPg/Vr30ePKouPXspyvyandYusdJirLb8HUdzdkRGHVpn8bJ8neo+Fk2LOM+8J1NrC
-         Pwra3QNajB5qLVJf1tI3oQPvL+gM23KgEI5KiC6bT2FayB6InHuskLDN5krDg+JAjNsa
-         6QOEYOY23+3pF/YHOR2XtQnIKpIE1nR6LeBhSsUkbTovHnsj5m3gcuAUgfA46Uhx/LNZ
-         NijQ==
-X-Gm-Message-State: AOAM533L7uaUhsEa0SkpL18TvjXTL/+nqma/6pQE2Pc7PcWVMzC7Y6aZ
-        Gt0jW+DELYFnPpW7XK47VrE=
-X-Google-Smtp-Source: ABdhPJzqJXUtDidVRHkXV4qNzeWa0YUAEGGmGN/8NWsY3UrCM6YCDQc4K/5yU4yxaXRn7gQCKKxL2A==
-X-Received: by 2002:ac8:4ccb:: with SMTP id l11mr6786726qtv.18.1594762964831;
-        Tue, 14 Jul 2020 14:42:44 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id q28sm377002qtk.13.2020.07.14.14.42.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 14:42:44 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 14 Jul 2020 17:42:42 -0400
-To:     Nick Terrell <nickrterrell@gmail.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        linux-kbuild@vger.kernel.org, x86@kernel.org,
-        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
-        Kees Cook <keescook@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
-        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Norbert Lange <nolange79@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Xu <alex_y_xu@yahoo.ca>, Nick Terrell <terrelln@fb.com>
-Subject: Re: [PATCH v7 2/7] lib: add zstd support to decompress
-Message-ID: <20200714214242.GA1000731@rani.riverdale.lan>
-References: <20200708185024.2767937-1-nickrterrell@gmail.com>
- <20200708185024.2767937-3-nickrterrell@gmail.com>
+        id S1728315AbgGNVjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:39:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727098AbgGNVjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 17:39:45 -0400
+Received: from embeddedor (unknown [201.162.240.73])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 152C42064C;
+        Tue, 14 Jul 2020 21:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594762785;
+        bh=IcwyAgDmrYiZARCGLD0f3MGzv0IuApQzk4+xUcZdmu0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lB4VlDnlygA2pEVWgQoeFBVs0Gq0vzvLeL7QBNhohPHcraW3FQgK7esV7tOgziQKn
+         5ekZKIUFUVyMYnWn7klTRrDzQuGH8B8Lwa7T2dXERXRgyepqbLLpsPGIfnGSIZ5acv
+         YODa6H7SsGMysRWWHHfp6+/yx5o5+W0VIaQGPqUQ=
+Date:   Tue, 14 Jul 2020 16:45:16 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Tomas Winkler <tomas.winkler@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH v2] mei: Avoid the use of one-element arrays
+Message-ID: <20200714214516.GA1040@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200708185024.2767937-3-nickrterrell@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 11:50:19AM -0700, Nick Terrell wrote:
-> From: Nick Terrell <terrelln@fb.com>
-> 
-> * Add unzstd() and the zstd decompress interface.
-> * Add zstd support to decompress_method().
-> 
-> The decompress_method() and unzstd() functions are used to decompress
-> the initramfs and the initrd. The __decompress() function is used in
-> the preboot environment to decompress a zstd compressed kernel.
-> 
-> The zstd decompression function allows the input and output buffers to
-> overlap because that is used by x86 kernel decompression.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Nick Terrell <terrelln@fb.com>
-> + *
-> + * __DISABLE_EXPORTS stops zstd and xxhash from declaring themselves
-> + * as modules by disabling the EXPORT_SYMBOL macro.
-> + */
+One-element arrays are being deprecated[1]. Replace the one-element
+arrays with a simple value type u8 reserved, once this is just a
+placeholder for alignment.
 
-Hi Nick, this doesn't actually work, because misc.c includes export.h
-via
-	"misc.h" -> <linux/linkage.h> -> <linux/export.h>
-and EXPORT_SYMBOL is already defined before __DISABLE_EXPORTS is defined
-here.
+Also, while there, use the preferred form for passing a size of a struct.
+The alternative form where struct name is spelled out hurts readability
+and introduces an opportunity for a bug when the variable type is changed
+but the corresponding sizeof that is passed as argument is not.
 
-Adding -D__EXPORT_SYMBOLS to KBUILD_CFLAGS in arch/x86/boot/compressed/Makefile
-fixes that, and then you don't have to define it here.
+[1] https://github.com/KSPP/linux/issues/79
 
-Also, __DISABLE_EXPORTS does not currently inhibit MODULE_INFO, so a
-.modinfo section gets emitted into misc.o. I *think* this is harmless
-and it will get discarded when building compressed/vmlinux, but thought
-I'd point it out.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Use a more concise changelog text.
+
+ drivers/misc/mei/hbm.c | 4 ++--
+ drivers/misc/mei/hw.h  | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/misc/mei/hbm.c b/drivers/misc/mei/hbm.c
+index a44094cdbc36..f020d5594154 100644
+--- a/drivers/misc/mei/hbm.c
++++ b/drivers/misc/mei/hbm.c
+@@ -408,14 +408,14 @@ static int mei_hbm_add_cl_resp(struct mei_device *dev, u8 addr, u8 status)
+ {
+ 	struct mei_msg_hdr mei_hdr;
+ 	struct hbm_add_client_response resp;
+-	const size_t len = sizeof(struct hbm_add_client_response);
++	const size_t len = sizeof(resp);
+ 	int ret;
+ 
+ 	dev_dbg(dev->dev, "adding client response\n");
+ 
+ 	mei_hbm_hdr(&mei_hdr, len);
+ 
+-	memset(&resp, 0, sizeof(struct hbm_add_client_response));
++	memset(&resp, 0, len);
+ 	resp.hbm_cmd = MEI_HBM_ADD_CLIENT_RES_CMD;
+ 	resp.me_addr = addr;
+ 	resp.status  = status;
+diff --git a/drivers/misc/mei/hw.h b/drivers/misc/mei/hw.h
+index b1a8d5ec88b3..8c0297f0e7f3 100644
+--- a/drivers/misc/mei/hw.h
++++ b/drivers/misc/mei/hw.h
+@@ -346,13 +346,13 @@ struct hbm_add_client_request {
+  * @hbm_cmd: bus message command header
+  * @me_addr: address of the client in ME
+  * @status: if HBMS_SUCCESS then the client can now accept connections.
+- * @reserved: reserved
++ * @reserved: reserved for alignment.
+  */
+ struct hbm_add_client_response {
+ 	u8 hbm_cmd;
+ 	u8 me_addr;
+ 	u8 status;
+-	u8 reserved[1];
++	u8 reserved;
+ } __packed;
+ 
+ /**
+@@ -461,7 +461,7 @@ struct hbm_notification {
+ 	u8 hbm_cmd;
+ 	u8 me_addr;
+ 	u8 host_addr;
+-	u8 reserved[1];
++	u8 reserved;
+ } __packed;
+ 
+ /**
+-- 
+2.27.0
+
