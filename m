@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EDA21F84C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E9121F832
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 19:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728809AbgGNRed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 13:34:33 -0400
-Received: from pbmsgap02.intersil.com ([192.157.179.202]:60974 "EHLO
-        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726169AbgGNRed (ORCPT
+        id S1728494AbgGNRav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 13:30:51 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42931 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726364AbgGNRav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 13:34:33 -0400
-X-Greylist: delayed 1119 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Jul 2020 13:34:32 EDT
-Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
-        by pbmsgap02.intersil.com (8.16.0.27/8.16.0.27) with SMTP id 06EHDIkX023308;
-        Tue, 14 Jul 2020 13:15:50 -0400
-Received: from pbmxdp02.intersil.corp (pbmxdp02.pb.intersil.com [132.158.200.223])
-        by pbmsgap02.intersil.com with ESMTP id 3277kcs6pa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 14 Jul 2020 13:15:50 -0400
-Received: from pbmxdp03.intersil.corp (132.158.200.224) by
- pbmxdp02.intersil.corp (132.158.200.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.1979.3; Tue, 14 Jul 2020 13:15:49 -0400
-Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
- (132.158.200.224) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 14 Jul 2020 13:15:48 -0400
-From:   <min.li.xe@renesas.com>
-To:     <richardcochran@gmail.com>, <corbet@lwn.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, Min Li <min.li.xe@renesas.com>
-Subject: [PATCH net 1/1] docs: ptp.rst: add support for Renesas (IDT) ClockMatrix
-Date:   Tue, 14 Jul 2020 13:15:20 -0400
-Message-ID: <1594746920-28760-1-git-send-email-min.li.xe@renesas.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 14 Jul 2020 13:30:51 -0400
+Received: by mail-ot1-f67.google.com with SMTP id g37so13625772otb.9;
+        Tue, 14 Jul 2020 10:30:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M/cNHRoFa4ZZjmVaGoyconZpvhXMck6nqNSnofkb4M4=;
+        b=nrNtTWExrjtJQTMqOuFC0PAiJU1mI/zJaZ5gl6ioFdR3nAr+sVfZYOg8crKEvKjSXm
+         dyVHI8L40O/1VV5iEXwufeH8Uy1WBT5jDCqtjv8SEgLEU/qWYha2Kqq9AbHOOGN+/aQM
+         8pnjatAYfL1KJI1pF2e741MZ4Squs58N8rmMlHFYdAW2gGwLk50l6VSKoeqGv9Lr3YLO
+         7tdbAXi5B2ozV+GR0VZGUicWeZNhJs+BgX/n6gZPImmD0YqMAwzH27A4qUL/m3Rj1ng5
+         cULTWwcxf00Qsq7T0Ffa896lhDZemrI5hxgx/sDsf/0HPr/3l9UZOtZbXBzRWyupUQDK
+         0cFg==
+X-Gm-Message-State: AOAM531qjhyic5O5654wnIwMrO9mqw55motHZpo07AZe5Whr5i2oaI5U
+        IdZDpAorSBMZfloE4lmRdb54Z48sHyNenaQCLyc5BINH
+X-Google-Smtp-Source: ABdhPJyjtOKVrskn2k0uotMlFr81PpuggxZ+Bi4Vw/Z+yFlzfzcEe35xF2O5iYz07cLAkDBRX5w969ExRVCIDRcAt/8=
+X-Received: by 2002:a9d:1b0d:: with SMTP id l13mr4989325otl.145.1594747850060;
+ Tue, 14 Jul 2020 10:30:50 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200710062019.28755-1-grandmaster@al2klimov.de>
+ <20200713113430.1c1777bb@lwn.net> <CAMuHMdXoUME_dCOZP1N0tXyMv61edfNECM4-n4NPa56YbBCncw@mail.gmail.com>
+ <20200714074022.24481c73@lwn.net>
+In-Reply-To: <20200714074022.24481c73@lwn.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 14 Jul 2020 19:30:38 +0200
+Message-ID: <CAMuHMdXMumw9CnMHOc_GJGO0MNsLowTv-wE399BMJveXgTXbLQ@mail.gmail.com>
+Subject: Re: [PATCH] OPENRISC ARCHITECTURE: Replace HTTP links with HTTPS ones
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Openrisc <openrisc@lists.librecores.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-TM-AS-MML: disable
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-14_06:2020-07-14,2020-07-14 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-2006250000 definitions=main-2007140126
-X-Proofpoint-Spam-Reason: mlx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Min Li <min.li.xe@renesas.com>
+On Tue, Jul 14, 2020 at 3:40 PM Jonathan Corbet <corbet@lwn.net> wrote:
+> On Tue, 14 Jul 2020 09:22:39 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > -     website         http://openrisc.io
+> > > > +     website         https://openrisc.io
+> > > >       email           openrisc@lists.librecores.org
+> > > >       =======         =============================
+> > >
+> > > Applied, thanks.
+> >
+> > Is that site accessible for anyone? It times out for me.
+>
+> Works for me.
 
-Add below to “Ancillary clock features” section
-  - Low Pass Filter (LPF) access from user space
+Now it indeed does.
 
-Add below to list of “Supported hardware” section
-  + Renesas (IDT) ClockMatrix™
+Gr{oetje,eeting}s,
 
-Signed-off-by: Min Li <min.li.xe@renesas.com>
----
- Documentation/driver-api/ptp.rst | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+                        Geert
 
-diff --git a/Documentation/driver-api/ptp.rst b/Documentation/driver-api/ptp.rst
-index a15192e..664838a 100644
---- a/Documentation/driver-api/ptp.rst
-+++ b/Documentation/driver-api/ptp.rst
-@@ -23,6 +23,7 @@ PTP hardware clock infrastructure for Linux
-   + Ancillary clock features
-     - Time stamp external events
-     - Period output signals configurable from user space
-+    - Low Pass Filter (LPF) access from user space
-     - Synchronization of the Linux system time via the PPS subsystem
- 
- PTP hardware clock kernel API
-@@ -94,3 +95,14 @@ Supported hardware
- 
-      - Auxiliary Slave/Master Mode Snapshot (optional interrupt)
-      - Target Time (optional interrupt)
-+
-+   * Renesas (IDT) ClockMatrix™
-+
-+     - Up to 4 independent PHC channels
-+     - Integrated low pass filter (LPF), access via .adjPhase (compliant to ITU-T G.8273.2)
-+     - Programmable output periodic signals
-+     - Programmable inputs can time stamp external triggers
-+     - Driver and/or hardware configuration through firmware (idtcm.bin)
-+          - LPF settings (bandwidth, phase limiting, automatic holdover, physical layer assist (per ITU-T G.8273.2))
-+          - Programmable output PTP clocks, any frequency up to 1GHz (to other PHY/MAC time stampers, refclk to ASSPs/SoCs/FPGAs)
-+          - Lock to GNSS input, automatic switching between GNSS and user-space PHC control (optional)
 -- 
-2.7.4
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
