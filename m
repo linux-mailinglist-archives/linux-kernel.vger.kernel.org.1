@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6084D21FAC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9CE21F9C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730878AbgGNSzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53054 "EHLO mail.kernel.org"
+        id S1729461AbgGNSqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:46:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730859AbgGNSzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:55:21 -0400
+        id S1728591AbgGNSqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:46:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4BB221D79;
-        Tue, 14 Jul 2020 18:55:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A4C822282;
+        Tue, 14 Jul 2020 18:46:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752921;
-        bh=YPWW6g2bZlQUgqHk1g+1fzvKYQHRfjq3261t+6B+jPk=;
+        s=default; t=1594752381;
+        bh=Etl3Gm+fIH+E4vV7pbD8M3aAq8PdUs9ASZvdnVGqd3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0/NEpk9VF+ixEBFshFAjSk3Z76aATTXWZ7+b3fm3XKkS589gr3H5FlW6WH6S1RpSg
-         xeUwzbQ+OaPSNLMLnYnTVi9M+BsrPG+TZb9DpDyemKY2VjSa7lezUAFOTjqHDz5vKq
-         988ihwdifPQCrC3vxuuf37JeTZFtoLpOQsVaYtQA=
+        b=A1zySKUeesKRe4EBjsmy4qX71FtHj6gAaTOphtndN3zJ6I0IFY8Gwd+tkkT6pYFCy
+         g7zJJkBzcIJFuzG56sE3ML8o/NRdFau8CvHPDYux7Yj4ndXxJqlSDEwwt7mEvSE1PD
+         8eCFwXxZdMvZP6nyPEjD3qfrVOO6DwqT9aovA3/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
+        stable@vger.kernel.org, Vladimir Oltean <olteanv@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 051/166] ASoC: fsl_mqs: Dont check clock is NULL before calling clk API
+Subject: [PATCH 4.19 03/58] spi: spi-fsl-dspi: Fix lockup if device is removed during SPI transfer
 Date:   Tue, 14 Jul 2020 20:43:36 +0200
-Message-Id: <20200714184118.321222867@linuxfoundation.org>
+Message-Id: <20200714184056.312388147@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,53 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit adf46113a608d9515801997fc96cbfe8ffa89ed3 ]
+[ Upstream commit 7684580d45bd3d84ed9b453a4cadf7a9a5605a3f ]
 
-Because clk_prepare_enable and clk_disable_unprepare should
-check input clock parameter is NULL or not internally, then
-we don't need to check them before calling the function.
+During device removal, the driver should unregister the SPI controller
+and stop the hardware.  Otherwise the dspi_transfer_one_message() could
+wait on completion infinitely.
 
-Fixes: 9e28f6532c61 ("ASoC: fsl_mqs: Add MQS component driver")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/743be216bd504c26e8d45d5ce4a84561b67a122b.1592888591.git.shengjiu.wang@nxp.com
+Additionally, calling spi_unregister_controller() first in device
+removal reverse-matches the probe function, where SPI controller is
+registered at the end.
+
+Fixes: 05209f457069 ("spi: fsl-dspi: add missing clk_disable_unprepare() in dspi_remove()")
+Reported-by: Vladimir Oltean <olteanv@gmail.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200622110543.5035-1-krzk@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl_mqs.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/spi/spi-fsl-dspi.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
-index 0c813a45bba7c..b44b134390a39 100644
---- a/sound/soc/fsl/fsl_mqs.c
-+++ b/sound/soc/fsl/fsl_mqs.c
-@@ -266,11 +266,9 @@ static int fsl_mqs_runtime_resume(struct device *dev)
- {
- 	struct fsl_mqs *mqs_priv = dev_get_drvdata(dev);
+diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
+index 9296bcbbd32ce..970ffdb976d73 100644
+--- a/drivers/spi/spi-fsl-dspi.c
++++ b/drivers/spi/spi-fsl-dspi.c
+@@ -1137,9 +1137,18 @@ static int dspi_remove(struct platform_device *pdev)
+ 	struct fsl_dspi *dspi = spi_master_get_devdata(master);
  
--	if (mqs_priv->ipg)
--		clk_prepare_enable(mqs_priv->ipg);
-+	clk_prepare_enable(mqs_priv->ipg);
- 
--	if (mqs_priv->mclk)
--		clk_prepare_enable(mqs_priv->mclk);
-+	clk_prepare_enable(mqs_priv->mclk);
- 
- 	if (mqs_priv->use_gpr)
- 		regmap_write(mqs_priv->regmap, IOMUXC_GPR2,
-@@ -292,11 +290,8 @@ static int fsl_mqs_runtime_suspend(struct device *dev)
- 		regmap_read(mqs_priv->regmap, REG_MQS_CTRL,
- 			    &mqs_priv->reg_mqs_ctrl);
- 
--	if (mqs_priv->mclk)
--		clk_disable_unprepare(mqs_priv->mclk);
--
--	if (mqs_priv->ipg)
--		clk_disable_unprepare(mqs_priv->ipg);
-+	clk_disable_unprepare(mqs_priv->mclk);
-+	clk_disable_unprepare(mqs_priv->ipg);
+ 	/* Disconnect from the SPI framework */
++	spi_unregister_controller(dspi->master);
++
++	/* Disable RX and TX */
++	regmap_update_bits(dspi->regmap, SPI_MCR,
++			   SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF,
++			   SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF);
++
++	/* Stop Running */
++	regmap_update_bits(dspi->regmap, SPI_MCR, SPI_MCR_HALT, SPI_MCR_HALT);
++
+ 	dspi_release_dma(dspi);
+ 	clk_disable_unprepare(dspi->clk);
+-	spi_unregister_master(dspi->master);
  
  	return 0;
  }
