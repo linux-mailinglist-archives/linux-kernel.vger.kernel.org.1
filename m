@@ -2,111 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9870621FF99
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C112F21FFCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgGNVIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:08:19 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:39237 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726750AbgGNVIT (ORCPT
+        id S1728202AbgGNVPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726446AbgGNVPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:08:19 -0400
-Received: by mail-il1-f193.google.com with SMTP id k6so57500ili.6;
-        Tue, 14 Jul 2020 14:08:18 -0700 (PDT)
+        Tue, 14 Jul 2020 17:15:17 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9B97C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:15:16 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id f139so622212wmf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=JUEg0KE2LQNXUnQ1n5BTApkaeDmfdKi09730MDrCtg0=;
+        b=qRr2B3VHmkvr9FzAb3TPPTTqg5epYJaKAyo+kjk19u5o8YsrGM5dkE+b4m+vt5vaUn
+         WEadUCo2DCD3ihT+hjhAZ/keb6lH8+Mrb3cc5ha/3M8RgcylQ9+aF6RLvSiSojj2Wmlb
+         1hpN7rZzGO5b2WpeiXfgfDTrAsJRazU6v2C2wgQCxUuT0h31EQU97VXxMVzWbE+KN2gN
+         S+nCngBk7af0akuxHtqWzE7q2ttmbFrZ+lsOWmVEMNz8ARkMf8bGeeWg6rjlAfPFQj+Y
+         h97fnhnLQqxNgCHKMocfPN22r/uYjTwtq2KN9GSB0SoN5SkPf3mHaSEmOyGXm9lqSNsu
+         9dVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=47xVzqClcakdpwxsWPSzbhTXJk9iY+clY3tNe/dil2Q=;
-        b=LL4uvTkqgTWkNsTvc97n7Q+onw5+8y23ts5Q/NKy2mSW9RUd/z8uMRIHEJ5pTGE7J6
-         QVYm9rhGZLRbo3+uSzCQPzEfqzF7W1+qMjOoJij1fatqv2ysrrAz97Y2NEpspElaF80U
-         dfcvDeeRbG9BCojenUaO8WcBd4/HIaR9jXzo9o7envLQR4xRb/vR31IQXiFXW7v6Ox9M
-         1BepSVNXBZuxwyqGECfsH++Zcu5KHa92WCeAw8orStL4UDjA30q5dTXsUrddBz+q7Xie
-         g3bIMFNVSkndc1FF28vl/A32ZAIwsBYUtExOJLNMrI52yTVJt7vUKi1kWAaX3qRiVz/i
-         cI+A==
-X-Gm-Message-State: AOAM530447q/v6ZkOIyKdIxIpwWzALD0PCY1d0oSbB06PG0cNJI+Zp7K
-        BCVaxSewU1FLrwcCvwGVHg==
-X-Google-Smtp-Source: ABdhPJxk4CD0RmuAu+456Gzol2Zv7+diPbeNAwAx+o8KXZ40zRoA6BoDZbLLN1AGaDjYYmva06UBPg==
-X-Received: by 2002:a92:cbd1:: with SMTP id s17mr6598323ilq.43.1594760897955;
-        Tue, 14 Jul 2020 14:08:17 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id n7sm84082iob.44.2020.07.14.14.08.16
+        bh=JUEg0KE2LQNXUnQ1n5BTApkaeDmfdKi09730MDrCtg0=;
+        b=Z8F5VdrGRlOVZk7p+oz0jnyTkZO66S1C0ct3uDcMRNNzDjDJaAFKzQqyqghIwmrkHs
+         0g+FpVUOyTjSqJqIJyvQq3adyHz+koWW23ArQd/MwKcyp+yA0mhCjopRB+zONbSj2+5c
+         6wPFNB+XkG+IkQg0Q3cWWMazpoX8P8Cf8uvVgpDrMNU6FMhqEudiXdC07weoQ52fnqGC
+         y3/fdMgDuFuIj7XOYYFjdTzHx36GeU/J6axLujskXGdODxOFVx3nELoS4cNbwwp+s6j/
+         37o06Og5CCSTOS2q4Kd/WWxWA13hJQuHQiabnJwfRmR185yYpaxoPu5QzCV3wNJ5Ew53
+         Tyqw==
+X-Gm-Message-State: AOAM530DLlSDjmiS1lcZxvlAPCBdT7kLRPuMhJ2KPB8HR7n5BoNNZ0X+
+        KOZt28W618ZpqNjXPM3nMZWrZhNSGaidOA==
+X-Google-Smtp-Source: ABdhPJytELNObhA895rBmJRA6pjcTMN68Hpoeai8c9X/kohg1+XkGLZ++8WCuOYx+YzJWvcCVsWgZg==
+X-Received: by 2002:a05:600c:2182:: with SMTP id e2mr5513024wme.186.1594760923346;
+        Tue, 14 Jul 2020 14:08:43 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id a123sm30765wmd.28.2020.07.14.14.08.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 14:08:17 -0700 (PDT)
-Received: (nullmailer pid 2919365 invoked by uid 1000);
-        Tue, 14 Jul 2020 21:08:16 -0000
-Date:   Tue, 14 Jul 2020 15:08:16 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-Subject: Re: [PATCH v3 2/6] dt-bindings: power: supply: Extend max17040
- compatibility
-Message-ID: <20200714210816.GA2918005@bogus>
-References: <20200624155633.3557401-1-iskren.chernev@gmail.com>
- <20200624155633.3557401-3-iskren.chernev@gmail.com>
- <20200713190310.GA546410@bogus>
- <c4dc5045-48ee-a27b-98a8-22fdb37d6ba9@gmail.com>
+        Tue, 14 Jul 2020 14:08:42 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 22:08:41 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Doug Ledford <dledford@redhat.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Hannes Reinecke <hare@suse.com>
+Subject: Re: [PATCH v2 18/29] scsi: aic7xxx: aic7xxx_osm: Remove unused
+ variable 'tinfo'
+Message-ID: <20200714210841.GK1398296@dell>
+References: <20200713074645.126138-1-lee.jones@linaro.org>
+ <20200713074645.126138-19-lee.jones@linaro.org>
+ <95350d0a60d1e305e2053388ada2cbd3310684e3.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c4dc5045-48ee-a27b-98a8-22fdb37d6ba9@gmail.com>
+In-Reply-To: <95350d0a60d1e305e2053388ada2cbd3310684e3.camel@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 11:49:44AM +0300, Iskren Chernev wrote:
-> 
-> On 7/13/20 10:03 PM, Rob Herring wrote:
-> > On Wed, Jun 24, 2020 at 06:56:29PM +0300, Iskren Chernev wrote:
-> >> Maxim max17040 is a fuel gauge from a larger family utilising the Model
-> >> Gauge technology. Document all different compatible strings that the
-> >> max17040 driver recognizes.
-> >>
-> >> Some devices in the wild report double the capacity. The
-> >> maxim,double-soc (from State-Of-Charge) property fixes that.
-> >>
-> >> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-> >> ---
-> >>† .../bindings/power/supply/max17040_battery.txt††† | 15 ++++++++++++++-
-> >>† 1 file changed, 14 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/power/supply/max17040_battery.txt b/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
-> >> index 4e0186b8380fa..554bce82a08e6 100644
-> >> --- a/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
-> >> +++ b/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
-> >> @@ -2,7 +2,9 @@ max17040_battery
-> >>† ~~~~~~~~~~~~~~~~
-> >>
-> >>† Required properties :
-> >> - - compatible : "maxim,max17040" or "maxim,max77836-battery"
-> >> + - compatible : "maxim,max17040", "maxim,max17041", "maxim,max17043",
-> >> + †† ††† †"maxim,max17044", "maxim,max17048", "maxim,max17049",
-> >> +†† ††† †"maxim,max17058", "maxim,max17059" or "maxim,max77836-battery"
-> >>†† - reg: i2c slave address
-> >>
-> >>† Optional properties :
-> >> @@ -11,6 +13,10 @@ Optional properties :
-> >> ††† ††† ††† ††† †generated. Can be configured from 1 up to 32
-> >> ††† ††† ††† ††† †(%). If skipped the power up default value of
-> >> ††† ††† ††† ††† †4 (%) will be used.
-> >> +- maxim,double-soc : †† ††† †Certain devices return double the capacity.
-> >> +†† ††† ††† ††† †Specify this boolean property to divide the
-> >> +†† ††† ††† ††† †reported value in 2 and thus normalize it.
-> >> +†† ††† ††† ††† †SOC == State of Charge == Capacity.
-> >
-> > This can't be implied by the compatible string?
-> >
-> 
-> >From what I can tell - no. Here are multiple examples of downstream code:
+On Tue, 14 Jul 2020, Doug Ledford wrote:
 
-Okay,
+> On Mon, 2020-07-13 at 08:46 +0100, Lee Jones wrote:
+> > Looks like none of the artifact from  ahc_fetch_transinfo() are used
+> > anymore.
+> > 
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/scsi/aic7xxx/aic7xxx_osm.c: In function
+> > ‚Äòahc_linux_target_alloc‚Äô:
+> >  drivers/scsi/aic7xxx/aic7xxx_osm.c:567:30: warning: variable ‚Äòtinfo‚Äô
+> > set but not used [-Wunused-but-set-variable]
+> >  567 | struct ahc_initiator_tinfo *tinfo;
+> >  | ^~~~~
+> > 
+> > Cc: Hannes Reinecke <hare@suse.com>
+> > Cc: "Daniel M. Eischen" <deischen@iworks.InterWorks.org>
+> > Cc: Doug Ledford <dledford@redhat.com>
+> 
+> FWIW, I can't seem to figure out how you got mine or Dan's email
+> addresses as related to this driver.  The MAINTAINERS file only lists
+> Hannes.  The driver Dan and I worked on was a different driver.  It was
+> named aic7xxx, but that was back in the 1990s.  It was renamed to
+> aic7xxx_old so that Adaptec could contribute this driver you are
+> currently patching back around 2001 or so.  And then maybe around 2010
+> or something like that, the aic7xxx_old driver that Dan and I worked on
+> was removed from the upstream source tree entirely.  So, just out of
+> curiosity, how did you get mine and Dan's email addresses to put on the
+> Cc: list for these patches?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+ $ ./scripts/get_maintainer.pl --file-emails --git-min-percent 75 -f drivers/scsi/aic7xxx/aic7xxx_osm.c
+  Hannes Reinecke <hare@suse.com> (maintainer:AIC7XXX / AIC79XX SCSI DRIVER,in file)
+  "James E.J. Bottomley" <jejb@linux.ibm.com> (maintainer:SCSI SUBSYSTEM)
+  "Martin K. Petersen" <martin.petersen@oracle.com> (maintainer:SCSI SUBSYSTEM)
+  "Daniel M. Eischen" <deischen@iworks.InterWorks.org> (in file)
+  Doug Ledford <dledford@redhat.com> (in file)
+  linux-scsi@vger.kernel.org (open list:AIC7XXX / AIC79XX SCSI DRIVER)
+  linux-kernel@vger.kernel.org (open list)
+
+Looks like get_maintainer.pl pulled it from the file header.
+
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/scsi/aic7xxx/aic7xxx_osm.c | 5 -----
+> >  1 file changed, 5 deletions(-)
+> > 
+> > diff --git a/drivers/scsi/aic7xxx/aic7xxx_osm.c
+> > b/drivers/scsi/aic7xxx/aic7xxx_osm.c
+> > index 2edfa0594f183..32bfe20d79cc1 100644
+> > --- a/drivers/scsi/aic7xxx/aic7xxx_osm.c
+> > +++ b/drivers/scsi/aic7xxx/aic7xxx_osm.c
+> > @@ -564,8 +564,6 @@ ahc_linux_target_alloc(struct scsi_target
+> > *starget)
+> >  	struct scsi_target **ahc_targp =
+> > ahc_linux_target_in_softc(starget);
+> >  	unsigned short scsirate;
+> >  	struct ahc_devinfo devinfo;
+> > -	struct ahc_initiator_tinfo *tinfo;
+> > -	struct ahc_tmode_tstate *tstate;
+> >  	char channel = starget->channel + 'A';
+> >  	unsigned int our_id = ahc->our_id;
+> >  	unsigned int target_offset;
+> > @@ -612,9 +610,6 @@ ahc_linux_target_alloc(struct scsi_target
+> > *starget)
+> >  			spi_max_offset(starget) = 0;
+> >  		spi_min_period(starget) = 
+> >  			ahc_find_period(ahc, scsirate, maxsync);
+> > -
+> > -		tinfo = ahc_fetch_transinfo(ahc, channel, ahc->our_id,
+> > -					    starget->id, &tstate);
+> >  	}
+> >  	ahc_compile_devinfo(&devinfo, our_id, starget->id,
+> >  			    CAM_LUN_WILDCARD, channel,
+> 
+
+
+
+-- 
+Lee Jones [ÊùéÁêºÊñØ]
+Senior Technical Lead - Developer Services
+Linaro.org ‚îÇ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
