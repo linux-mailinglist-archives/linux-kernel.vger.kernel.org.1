@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E9421FDCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406C421FDD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729918AbgGNTuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
+        id S1730008AbgGNTu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729793AbgGNTuq (ORCPT
+        with ESMTP id S1729820AbgGNTuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Jul 2020 15:50:46 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C2AC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:50:45 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id w17so7446033ply.11
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:50:45 -0700 (PDT)
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE42C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:50:46 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id cv18so1232698pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:50:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=HqC/r0kZGRE0C9tFepj9Kth0ejpSIA3U+4WW75ILzcw=;
-        b=X+2XZhU5UYCGPhuwRNJ+463fWfT4ufqSVSE9vwV5GAXH8K4noMZHqr/R9+Rev+GTHD
-         nI7nnJa4b3Cr60ljApAjy7JHa7T7ZDX2l5MaOtVkJ8fZPRbQ/VWDGAs9b5tKrkBmlMZj
-         mqr/nq/bX2nudSdkUPL1HQwr+0U3o9ByTpfuJFOabm5TawHJaDdRxPiPYqPKmj/ZKPLX
-         MM2Oqi5U2Aq8miSEWJE4KhwvnFBvos24kQTdv4D3Kuz4SLmnQXXwRxARcERlskY9z0wx
-         l9GN83NjlfsNLDVoflG8YVe6gCDVbGtj3QQ5xsSrY5xb7PKTBERqdEt94rPsvTE3lc5h
-         G2gw==
+        bh=nMyi9G4SQ4whd75yWsK3XcIzJ3knuveu4wwY4ps0adQ=;
+        b=bAhGruAwC8ofZckxr4Bc1z5NeDH/ZzOKiajCa4lg05QaBfUnVHPEWgYjSAsi7SqZhe
+         CfujtZ4ErzL0fTYr5XlxD5jBxue3Gyim6FsVweK1WRNyCD9HzsA6MqMSeIuZSsMYUZiz
+         xIUjqwBFLJjU00b4adosiyv3tC+2U8Imas6UCS924n4EC+9+MiOjolS//PBslNmxRGyP
+         6TeKhORVNYhSx4DdWRoZFHlb/1KpNxq6A44epNhsPHbUcaf9DebdIsaR2GuGBQCYGu42
+         99iHsvjghfqKBemizQkzN43tetUKz/DcVsaRuDlJoIb7uUsVC+5/hQ9gwTWzRjMDrnqZ
+         Qe4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=HqC/r0kZGRE0C9tFepj9Kth0ejpSIA3U+4WW75ILzcw=;
-        b=R/zThW3+RXHQK2DYHBe0zEVAHnWP/ESoaRcXBjVF6v0EHkbs5dVQay2X8e0vZwg/a0
-         zYB/OkmKISClMts7m57ctIJHnptb3il+IUS7P7wz0ppcmLrSJ3mb+K7BsrFV1lw51ZjJ
-         JIzRg0WIAeH2K+TwCkA9INpuApROqI5PlllQe83RDmSPZS1mrHtxbhUxB5afujWz/syc
-         CsjMp46kcycGjw0b9EDzDNgiMjpmZpXirpocrHpcAWRsrzeJCLw5xT2bY+1+sxwT7rBg
-         zRw1W14phxetDOGgRa4UI9gSXJmve2P3H62nEE7DUQozneLAIlt5XnFKltgs94WYczFi
-         m/sg==
-X-Gm-Message-State: AOAM533x4/VPnM8Po+96aW7bwZwzyjZZ6YxiTUnF4r6RLkeneIX+CSUq
-        Y28CAVEFScHFODOAyRGr7RZG+w==
-X-Google-Smtp-Source: ABdhPJz5fnG+i3dbqwIWs+jFBwufIKFoal4ZG5OQg7uDu6XlcjoRvtcJSwzZednf3VeUffwJtZlZJw==
-X-Received: by 2002:a17:90a:3a81:: with SMTP id b1mr6446790pjc.217.1594756245406;
-        Tue, 14 Jul 2020 12:50:45 -0700 (PDT)
+        bh=nMyi9G4SQ4whd75yWsK3XcIzJ3knuveu4wwY4ps0adQ=;
+        b=K8mIn6igSgMYIGgy402DIk2TUTQppXN5qxVHbp+nQTGQxpsuZ2eJ7W0WJKbGm1aV6n
+         SJkiSnlb6UdAu6xapycvXqZgz4qzoNthymnd9Vfa14dL7bUZACT6avrMRpABAI6hYw3v
+         GHRY3X/f5cvijQg4tmke9tRODn3sInKwWN1vAbSVr0lCXPT6o84IOzJwXnTRuLY0gW6A
+         vdS3Kh1xMpxQgWarlsvRY3tUFGjxIuuotYLxmAlb0PfmefZHhZ8+vEbxJ1FkQTfh4TsA
+         Rht1AdllKbXddsgCtt1gb/2iGAyX3wQobHvi9HBv5Bn5nBV9Vp/yTyMwxzKwicHycMlK
+         sFQQ==
+X-Gm-Message-State: AOAM530cw2guyMAsA8UoELv/Cfo+rKtF1tGxPNToweTTlY4Xy78oekXX
+        Kd00E81l6TulpteGTqCPhO76FQ==
+X-Google-Smtp-Source: ABdhPJz2/oKVIa7YB+mIuN2swG7Ca/VMKtO0ZCgPjLyOHESdHDISHwd3fbG5yzu6V0bhvIMlNS7yKg==
+X-Received: by 2002:a17:90a:e987:: with SMTP id v7mr6121530pjy.56.1594756246494;
+        Tue, 14 Jul 2020 12:50:46 -0700 (PDT)
 Received: from xps15.cg.shawcable.net (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id g8sm16736689pgr.70.2020.07.14.12.50.44
+        by smtp.gmail.com with ESMTPSA id g8sm16736689pgr.70.2020.07.14.12.50.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 12:50:44 -0700 (PDT)
+        Tue, 14 Jul 2020 12:50:46 -0700 (PDT)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     ohad@wizery.com, bjorn.andersson@linaro.org
 Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 7/9] remoteproc: Refactor function rproc_trigger_auto_boot()
-Date:   Tue, 14 Jul 2020 13:50:33 -0600
-Message-Id: <20200714195035.1426873-8-mathieu.poirier@linaro.org>
+Subject: [PATCH v6 8/9] remoteproc: Refactor function rproc_free_vring()
+Date:   Tue, 14 Jul 2020 13:50:34 -0600
+Message-Id: <20200714195035.1426873-9-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200714195035.1426873-1-mathieu.poirier@linaro.org>
 References: <20200714195035.1426873-1-mathieu.poirier@linaro.org>
@@ -64,38 +64,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor function rproc_trigger_auto_boot() to properly deal
-with scenarios where the remoteproc core needs to attach with a
-remote processor that has already been booted by an external
-entity.
+When function rproc_free_vring() clears the virtio device section
+it does so on the cached resource table rather than the one
+installed in the remote processor memory.  When a remote processor
+has been booted by another entity there is no need to use a cached
+table and as such, no need to clear the virtio device section in
+it.
 
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Tested-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- drivers/remoteproc/remoteproc_core.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/remoteproc/remoteproc_core.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index caea920ce4b8..08de81828e4e 100644
+index 08de81828e4e..6b6e4ec8cf3a 100644
 --- a/drivers/remoteproc/remoteproc_core.c
 +++ b/drivers/remoteproc/remoteproc_core.c
-@@ -1568,6 +1568,15 @@ static int rproc_trigger_auto_boot(struct rproc *rproc)
- {
- 	int ret;
+@@ -410,10 +410,22 @@ void rproc_free_vring(struct rproc_vring *rvring)
  
+ 	idr_remove(&rproc->notifyids, rvring->notifyid);
+ 
+-	/* reset resource entry info */
+-	rsc = (void *)rproc->table_ptr + rvring->rvdev->rsc_offset;
+-	rsc->vring[idx].da = 0;
+-	rsc->vring[idx].notifyid = -1;
 +	/*
-+	 * Since the remote processor is in a detached state, it has already
-+	 * been booted by another entity.  As such there is no point in waiting
-+	 * for a firmware image to be loaded, we can simply initiate the process
-+	 * of attaching to it immediately.
++	 * At this point rproc_stop() has been called and the installed resource
++	 * table in the remote processor memory may no longer be accessible. As
++	 * such and as per rproc_stop(), rproc->table_ptr points to the cached
++	 * resource table (rproc->cached_table).  The cached resource table is
++	 * only available when a remote processor has been booted by the
++	 * remoteproc core, otherwise it is NULL.
++	 *
++	 * Based on the above, reset the virtio device section in the cached
++	 * resource table only if there is one to work with.
 +	 */
-+	if (rproc->state == RPROC_DETACHED)
-+		return rproc_boot(rproc);
-+
- 	/*
- 	 * We're initiating an asynchronous firmware loading, so we can
- 	 * be built-in kernel code, without hanging the boot process.
++	if (rproc->table_ptr) {
++		rsc = (void *)rproc->table_ptr + rvring->rvdev->rsc_offset;
++		rsc->vring[idx].da = 0;
++		rsc->vring[idx].notifyid = -1;
++	}
+ }
+ 
+ static int rproc_vdev_do_start(struct rproc_subdev *subdev)
 -- 
 2.25.1
 
