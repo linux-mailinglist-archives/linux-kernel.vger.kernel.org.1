@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1124821FA58
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3219E21FA76
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730435AbgGNSvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:51:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48286 "EHLO mail.kernel.org"
+        id S1730447AbgGNSvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:51:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730427AbgGNSvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:51:45 -0400
+        id S1730433AbgGNSvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:51:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8041D207F5;
-        Tue, 14 Jul 2020 18:51:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43B0A22B2A;
+        Tue, 14 Jul 2020 18:51:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752705;
-        bh=3uf1IuXZh93/qcZAinaEENd95ogQcAx98MOdCIGIPxE=;
+        s=default; t=1594752707;
+        bh=UdVNl+rmnCmVIMGITeCqI/vCHrvoAIr2z9iVHtccCB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q2xgcAC3Ld8q0C8biVM07vG1pzlxRS7BB+/AVLIDnxWK6/nsXyUsCtlhHqvd7XGJP
-         NE5mZVoGlofVa2A53Z0XjMPwiQgQ88IqzS+kVWspUcxCqCccO6NNKKe7ZyhB5YR1qI
-         99NSGeiEZmiFdkafY0V+fYHo+cKGhPE6ysiA6KlY=
+        b=DgVauUPFLXQ46K+hEqcctnNAla6L9thvwl8Wzfs8fAHtj5GxQzBeVR0BIbRQSYoOJ
+         FzLlMDeLlAANc9vifFWUUfiO6DM7aYIOQ7DPdPQxKABHKW/LOyUWJZkWMe+WRpaoGm
+         M1msJ9WLX96gqCnJV/Onmp56hoUqrXqcl22VoOcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Li <liwei391@huawei.com>,
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        Luwei Kang <luwei.kang@intel.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 048/109] perf report TUI: Fix segmentation fault in perf_evsel__hists_browse()
-Date:   Tue, 14 Jul 2020 20:43:51 +0200
-Message-Id: <20200714184107.821720203@linuxfoundation.org>
+Subject: [PATCH 5.4 049/109] perf intel-pt: Fix recording PEBS-via-PT with registers
+Date:   Tue, 14 Jul 2020 20:43:52 +0200
+Message-Id: <20200714184107.869835372@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
 References: <20200714184105.507384017@linuxfoundation.org>
@@ -51,82 +46,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Li <liwei391@huawei.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit d61cbb859b45fdb6b4997f2d51834fae41af0e94 ]
+[ Upstream commit 75bcb8776dc987538f267ba4ba05ca43fc2b1676 ]
 
-The segmentation fault can be reproduced as following steps:
+When recording PEBS-via-PT, the kernel will not accept the intel_pt
+event with register sampling e.g.
 
-1) Executing perf report in tui.
+ # perf record --kcore -c 10000 -e '{intel_pt/branch=0/,branch-loads/aux-output/ppp}' -I -- ls -l
+ Error:
+ intel_pt/branch=0/: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
 
-2) Typing '/xxxxx' to filter the symbol to get nothing matched.
+Fix by suppressing register sampling on the intel_pt evsel.
 
-3) Pressing enter with no entry selected.
+Committer notes:
 
-Then it will report a segmentation fault.
+Adrian informed that this is only available from Tremont onwards, so on
+older processors the error continues the same as before.
 
-It is caused by the lack of check of browser->he_selection when
-accessing it's member res_samples in perf_evsel__hists_browse().
-
-These processes are meaningful for specified samples, so we can skip
-these when nothing is selected.
-
-Fixes: 4968ac8fb7c3 ("perf report: Implement browsing of individual samples")
-Signed-off-by: Wei Li <liwei391@huawei.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Hanjun Guo <guohanjun@huawei.com>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Link: http://lore.kernel.org/lkml/20200612094322.39565-1-liwei391@huawei.com
+Fixes: 9e64cefe4335b ("perf intel-pt: Process options for PEBS event synthesis")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Luwei Kang <luwei.kang@intel.com>
+Link: http://lore.kernel.org/lkml/20200630133935.11150-2-adrian.hunter@intel.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/ui/browsers/hists.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ tools/perf/arch/x86/util/intel-pt.c | 1 +
+ tools/perf/util/evsel.c             | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/ui/browsers/hists.c b/tools/perf/ui/browsers/hists.c
-index 88c3df24b748c..514cef3a17b40 100644
---- a/tools/perf/ui/browsers/hists.c
-+++ b/tools/perf/ui/browsers/hists.c
-@@ -2224,6 +2224,11 @@ static struct thread *hist_browser__selected_thread(struct hist_browser *browser
- 	return browser->he_selection->thread;
- }
+diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
+index d43f9dec69980..e768c02ef2ab9 100644
+--- a/tools/perf/arch/x86/util/intel-pt.c
++++ b/tools/perf/arch/x86/util/intel-pt.c
+@@ -596,6 +596,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+ 			}
+ 			evsel->core.attr.freq = 0;
+ 			evsel->core.attr.sample_period = 1;
++			evsel->no_aux_samples = true;
+ 			intel_pt_evsel = evsel;
+ 			opts->full_auxtrace = true;
+ 		}
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index abc7fda4a0fe1..a844715a352d8 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1028,12 +1028,12 @@ void perf_evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 	if (callchain && callchain->enabled && !evsel->no_aux_samples)
+ 		perf_evsel__config_callchain(evsel, opts, callchain);
  
-+static struct res_sample *hist_browser__selected_res_sample(struct hist_browser *browser)
-+{
-+	return browser->he_selection ? browser->he_selection->res_samples : NULL;
-+}
-+
- /* Check whether the browser is for 'top' or 'report' */
- static inline bool is_report_browser(void *timer)
- {
-@@ -3170,16 +3175,16 @@ static int perf_evsel__hists_browse(struct evsel *evsel, int nr_events,
- 					     &options[nr_options], NULL, NULL, evsel);
- 		nr_options += add_res_sample_opt(browser, &actions[nr_options],
- 						 &options[nr_options],
--				 hist_browser__selected_entry(browser)->res_samples,
--				 evsel, A_NORMAL);
-+						 hist_browser__selected_res_sample(browser),
-+						 evsel, A_NORMAL);
- 		nr_options += add_res_sample_opt(browser, &actions[nr_options],
- 						 &options[nr_options],
--				 hist_browser__selected_entry(browser)->res_samples,
--				 evsel, A_ASM);
-+						 hist_browser__selected_res_sample(browser),
-+						 evsel, A_ASM);
- 		nr_options += add_res_sample_opt(browser, &actions[nr_options],
- 						 &options[nr_options],
--				 hist_browser__selected_entry(browser)->res_samples,
--				 evsel, A_SOURCE);
-+						 hist_browser__selected_res_sample(browser),
-+						 evsel, A_SOURCE);
- 		nr_options += add_switch_opt(browser, &actions[nr_options],
- 					     &options[nr_options]);
- skip_scripting:
+-	if (opts->sample_intr_regs) {
++	if (opts->sample_intr_regs && !evsel->no_aux_samples) {
+ 		attr->sample_regs_intr = opts->sample_intr_regs;
+ 		perf_evsel__set_sample_bit(evsel, REGS_INTR);
+ 	}
+ 
+-	if (opts->sample_user_regs) {
++	if (opts->sample_user_regs && !evsel->no_aux_samples) {
+ 		attr->sample_regs_user |= opts->sample_user_regs;
+ 		perf_evsel__set_sample_bit(evsel, REGS_USER);
+ 	}
 -- 
 2.25.1
 
