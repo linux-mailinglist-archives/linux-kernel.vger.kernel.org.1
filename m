@@ -2,137 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CEE21FFBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5895C21FFBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728262AbgGNVMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:12:17 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:48032 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726795AbgGNVMR (ORCPT
+        id S1728268AbgGNVMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:12:30 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:41220 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727925AbgGNVMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:12:17 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKtOu4069740;
-        Tue, 14 Jul 2020 21:12:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=ntwITgDlCNnMl4sAC0C0ThmwSxWIuQYTwTUOGx4B2X0=;
- b=Yh2iAWYPCxuMrcSHXr6xdbX2bJpucnK7duJ+qcMdhXceR9w7iw5G62yI67IaSRLY8kyQ
- SmtfRuO68fEhKdkoxFHhfPRaI+w68A8rJpdQxjV3MDJWITDJqBhl8uOyyotPQBphq1y/
- 3W29cWBGX9ht1yxZuqjv9w7NKq2zk15O2P1aW64BxefyXNDujPigmr5VbKjBbhIaQPph
- Q4BfYkwpdy9I+DY3jbQnufZKYacS1dAmn6M8hWJMsuIBabYlo2Zr7Wwg83m3awL8LAST
- Hf2rqi49xx429P0ZMDyX/H/XVKiJH3dOIjffuDemA8+M49qxPcVJtudg51+HtmtGN8la VQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 3275cm7v8b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 14 Jul 2020 21:12:07 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06EKraL0056099;
-        Tue, 14 Jul 2020 21:12:06 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 327qb58wve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Jul 2020 21:12:06 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06ELC4au006456;
-        Tue, 14 Jul 2020 21:12:04 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 14 Jul 2020 14:12:04 -0700
-Subject: Re: [PATCH] mm/hugetlb: hide nr_nodes in the internal of
- for_each_node_mask_to_[alloc|free]
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20200714073404.84863-1-richard.weiyang@linux.alibaba.com>
- <cd1651a0-35c6-7535-5782-ce7e31cc26e8@suse.cz>
- <807a1e32-926b-2882-740b-6484b8dca2b6@suse.cz>
- <20200714095713.GA86690@L-31X9LVDL-1304.local>
- <e0d384a7-34bc-43ce-dc20-db4808b0f736@suse.cz>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <694bb1ac-4f9c-a6a5-7c87-1fc0cdd948a6@oracle.com>
-Date:   Tue, 14 Jul 2020 14:12:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 14 Jul 2020 17:12:30 -0400
+Received: by mail-il1-f196.google.com with SMTP id q3so58025ilt.8;
+        Tue, 14 Jul 2020 14:12:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S13MP5PonlfNBx38Brx7HPH7gHXZ1ZmRAhb/buFrfQk=;
+        b=bej9e2exjXIcLza7LLRNsxv5tVND07bIYfhBYjTYo9Xc9UBWQOdt7LFw/hLOR9W8//
+         FBtslCFX6nIGQK/uvAlFtIDbsvlxZz+t61Z1THnoIc+0N+nmPz/NImHsIzAilw7VtWA0
+         kO+K7tsUN8ctYMR9zntsy9A6S3xcIPH6XxhMZXgVH8mqkRLNKPCow+s3OT6KhkX7OHT1
+         /6aa/tp35cPeFpngRRvj96J3MFTcw5ChlVxnmc0i17KdmjjRKaT96Ha3wO0zBSG3UabC
+         QNGTGvXjQVr1nRv/PCgjWj8r3khsUiboD3yvSEtrbxLbqezzdv44E8lweBctpdQhKV5r
+         3unQ==
+X-Gm-Message-State: AOAM531VddElLf3aLsPhKyBFncJQigGgAaudgoeCKxK1/3zBTs6rNHsp
+        8QmRsahTYjHjAiQLRG0AnHVSRops7O/n
+X-Google-Smtp-Source: ABdhPJyDNiUPgR201wUJawqLfdOlbMUE19Yu2W+Wctasoh8enVF6bWtaSMKWKLDHb59+amEamS0T3w==
+X-Received: by 2002:a92:8b11:: with SMTP id i17mr6580022ild.212.1594761148802;
+        Tue, 14 Jul 2020 14:12:28 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id l18sm57363ill.56.2020.07.14.14.12.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 14:12:28 -0700 (PDT)
+Received: (nullmailer pid 2927743 invoked by uid 1000);
+        Tue, 14 Jul 2020 21:12:27 -0000
+Date:   Tue, 14 Jul 2020 15:12:27 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+Cc:     linux-arm-kernel@lists.infradead.org, SoC Team <soc@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Paul J. Murphy" <paul.j.murphy@intel.com>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Subject: Re: [PATCH v3 3/7] dt-bindings: clock: Add Keem Bay clock IDs
+Message-ID: <20200714211227.GA2924943@bogus>
+References: <20200714161305.836348-1-daniele.alessandrelli@linux.intel.com>
+ <20200714161305.836348-4-daniele.alessandrelli@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <e0d384a7-34bc-43ce-dc20-db4808b0f736@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 spamscore=0 phishscore=0 suspectscore=2 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007140145
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 priorityscore=1501
- bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007140145
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714161305.836348-4-daniele.alessandrelli@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/20 3:02 AM, Vlastimil Babka wrote:
-> On 7/14/20 11:57 AM, Wei Yang wrote:
->> On Tue, Jul 14, 2020 at 11:22:03AM +0200, Vlastimil Babka wrote:
->>> On 7/14/20 11:13 AM, Vlastimil Babka wrote:
->>>> On 7/14/20 9:34 AM, Wei Yang wrote:
->>>>> The second parameter of for_each_node_mask_to_[alloc|free] is a loop
->>>>> variant, which is not used outside of loop iteration.
->>>>>
->>>>> Let's hide this.
->>>>>
->>>>> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
->>>>> ---
->>>>>  mm/hugetlb.c | 38 ++++++++++++++++++++------------------
->>>>>  1 file changed, 20 insertions(+), 18 deletions(-)
->>>>>
->>>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->>>>> index 57ece74e3aae..9c3d15fb317e 100644
->>>>> --- a/mm/hugetlb.c
->>>>> +++ b/mm/hugetlb.c
->>>>> @@ -1196,17 +1196,19 @@ static int hstate_next_node_to_free(struct hstate *h, nodemask_t *nodes_allowed)
->>>>>  	return nid;
->>>>>  }
->>>>>  
->>>>> -#define for_each_node_mask_to_alloc(hs, nr_nodes, node, mask)		\
->>>>> -	for (nr_nodes = nodes_weight(*mask);				\
->>>>> -		nr_nodes > 0 &&						\
->>>>> +#define for_each_node_mask_to_alloc(hs, node, mask)			\
->>>>> +	int __nr_nodes;							\
->>>>> +	for (__nr_nodes = nodes_weight(*mask);				\
->>>>
->>>> The problem with this is that if I use the macro twice in the same block, this
->>>> will redefine __nr_nodes and fail to compile, no?
->>>> In that case it's better to avoid setting up this trap, IMHO.
->>>
->>> Ah, and it will also generate the following warning, if the use of for_each*
->>> macro is not the first thing after variable declarations, but there's another
->>> statement before:
->>>
->>> warning: ISO C90 forbids mixed declarations and code [-Wdeclaration-after-statement]
->>>
->>> Instead we should switch to C99 and declare it as "for (int __nr_nodes" :P
->>
->> Hmm... I tried what you suggested, but compiler complains.
->>
->> 'for' loop initial declarations are only allowed in C99 or C11 mode
+On Tue, Jul 14, 2020 at 05:13:01PM +0100, Daniele Alessandrelli wrote:
+> From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 > 
-> Yes, by "we should switch to C99" I meant that the kernel kbuild system would
-> need to switch. Not a trivial change...
-> Without that, I don't see how your patch is possible to do safely.
+> Add clock dt-bindings for Keem Bay SoC.
 
-Vlastimil, thanks for pointing out future potential issues with this patch.
-I likely would have missed that.
+Where's the binding schema?
 
-Wei, thanks for taking the time to put together the patch.  However, I tend
-to agree with Vlastimil's assesment.  The cleanup is not worth the risk of
-running into issues if someone uses multiple instances of the macro.
--- 
-Mike Kravetz
+> 
+> Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> ---
+>  include/dt-bindings/clock/keembay-clocks.h | 188 +++++++++++++++++++++
+>  1 file changed, 188 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/keembay-clocks.h
+> 
+> diff --git a/include/dt-bindings/clock/keembay-clocks.h b/include/dt-bindings/clock/keembay-clocks.h
+> new file mode 100644
+> index 000000000000..4ad6616ee8e0
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/keembay-clocks.h
+> @@ -0,0 +1,188 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+> +/*
+> + * Copyright (c) 2020 Intel Corporation.
+> + *
+> + * Device tree defines for clocks in Keem Bay.
+> + */
+> +
+> +#ifndef __DT_BINDINGS_KEEMBAY_CLOCKS_H
+> +#define __DT_BINDINGS_KEEMBAY_CLOCKS_H
+> +
+> +/* CPR_PLL region. CLK_ID: 0 - 11 */
+> +#define KEEM_BAY_A53_PLL_START_ID (0)
+> +#define KEEM_BAY_A53_PLL_0_OUT_0 (KEEM_BAY_A53_PLL_START_ID + 0)
+> +#define KEEM_BAY_A53_PLL_0_OUT_1 (KEEM_BAY_A53_PLL_START_ID + 1)
+> +#define KEEM_BAY_A53_PLL_0_OUT_2 (KEEM_BAY_A53_PLL_START_ID + 2)
+> +#define KEEM_BAY_A53_PLL_0_OUT_3 (KEEM_BAY_A53_PLL_START_ID + 3)
+> +#define KEEM_BAY_A53_PLL_1_OUT_0 (KEEM_BAY_A53_PLL_START_ID + 4)
+> +#define KEEM_BAY_A53_PLL_1_OUT_1 (KEEM_BAY_A53_PLL_START_ID + 5)
+> +#define KEEM_BAY_A53_PLL_1_OUT_2 (KEEM_BAY_A53_PLL_START_ID + 6)
+> +#define KEEM_BAY_A53_PLL_1_OUT_3 (KEEM_BAY_A53_PLL_START_ID + 7)
+> +#define KEEM_BAY_A53_PLL_2_OUT_0 (KEEM_BAY_A53_PLL_START_ID + 8)
+> +#define KEEM_BAY_A53_PLL_2_OUT_1 (KEEM_BAY_A53_PLL_START_ID + 9)
+> +#define KEEM_BAY_A53_PLL_2_OUT_2 (KEEM_BAY_A53_PLL_START_ID + 10)
+> +#define KEEM_BAY_A53_PLL_2_OUT_3 (KEEM_BAY_A53_PLL_START_ID + 11)
+> +#define KEEM_BAY_A53_PLL_MAX_ID (KEEM_BAY_A53_PLL_2_OUT_3)
+> +
+> +/* A53_CPR region. CLK_ID: 12 - 30 */
+> +#define KEEM_BAY_A53_START_ID (KEEM_BAY_A53_PLL_MAX_ID + 1)
+> +#define KEEM_BAY_A53_AON (KEEM_BAY_A53_START_ID + 0)
+> +#define KEEM_BAY_A53_NOC (KEEM_BAY_A53_START_ID + 1)
+> +#define KEEM_BAY_A53_FUSE (KEEM_BAY_A53_START_ID + 2)
+> +#define KEEM_BAY_A53_ROM (KEEM_BAY_A53_START_ID + 3)
+> +#define KEEM_BAY_A53_ICB (KEEM_BAY_A53_START_ID + 4)
+> +#define KEEM_BAY_A53_GIC (KEEM_BAY_A53_START_ID + 5)
+> +#define KEEM_BAY_A53_TIM (KEEM_BAY_A53_START_ID + 6)
+> +#define KEEM_BAY_A53_GPIO (KEEM_BAY_A53_START_ID + 7)
+> +#define KEEM_BAY_A53_JTAG (KEEM_BAY_A53_START_ID + 8)
+> +#define KEEM_BAY_A53_MBIST_0 (KEEM_BAY_A53_START_ID + 9)
+> +#define KEEM_BAY_A53_DSS (KEEM_BAY_A53_START_ID + 10)
+> +#define KEEM_BAY_A53_MSS (KEEM_BAY_A53_START_ID + 11)
+> +#define KEEM_BAY_A53_PSS (KEEM_BAY_A53_START_ID + 12)
+> +#define KEEM_BAY_A53_PCIE (KEEM_BAY_A53_START_ID + 13)
+> +#define KEEM_BAY_A53_VENC (KEEM_BAY_A53_START_ID + 14)
+> +#define KEEM_BAY_A53_VDEC (KEEM_BAY_A53_START_ID + 15)
+> +#define KEEM_BAY_A53_MBIST_1 (KEEM_BAY_A53_START_ID + 16)
+> +#define KEEM_BAY_A53_MBIST_2 (KEEM_BAY_A53_START_ID + 17)
+> +#define KEEM_BAY_A53_MBIST_3 (KEEM_BAY_A53_START_ID + 18)
+> +#define KEEM_BAY_A53_MAX_ID (KEEM_BAY_A53_MBIST_3)
+> +
+> +/* A53_CPR_AUX region. CLK_ID: 31 - 57 */
+> +#define KEEM_BAY_A53_AUX_START_ID (KEEM_BAY_A53_MAX_ID + 1)
+> +#define KEEM_BAY_A53_AUX_32KHZ (KEEM_BAY_A53_AUX_START_ID + 0)
+> +#define KEEM_BAY_A53_AUX_CPR (KEEM_BAY_A53_AUX_START_ID + 1)
+> +#define KEEM_BAY_A53_AUX_TSENS (KEEM_BAY_A53_AUX_START_ID + 2)
+> +#define KEEM_BAY_A53_AUX_GPIO0 (KEEM_BAY_A53_AUX_START_ID + 3)
+> +#define KEEM_BAY_A53_AUX_GPIO1 (KEEM_BAY_A53_AUX_START_ID + 4)
+> +#define KEEM_BAY_A53_AUX_GPIO2 (KEEM_BAY_A53_AUX_START_ID + 5)
+> +#define KEEM_BAY_A53_AUX_GPIO3 (KEEM_BAY_A53_AUX_START_ID + 6)
+> +#define KEEM_BAY_A53_AUX_DDR_REF (KEEM_BAY_A53_AUX_START_ID + 7)
+> +#define KEEM_BAY_A53_AUX_DDR_REF_BYPASS (KEEM_BAY_A53_AUX_START_ID + 8)
+> +#define KEEM_BAY_A53_AUX_RESERVED1 (KEEM_BAY_A53_AUX_START_ID + 9)
+> +#define KEEM_BAY_A53_AUX_VENC (KEEM_BAY_A53_AUX_START_ID + 10)
+> +#define KEEM_BAY_A53_AUX_VDEC (KEEM_BAY_A53_AUX_START_ID + 11)
+> +#define KEEM_BAY_A53_AUX_USOC_USB_CTRL (KEEM_BAY_A53_AUX_START_ID + 12)
+> +#define KEEM_BAY_A53_AUX_USB (KEEM_BAY_A53_AUX_START_ID + 13)
+> +#define KEEM_BAY_A53_AUX_USB_REF (KEEM_BAY_A53_AUX_START_ID + 14)
+> +#define KEEM_BAY_A53_AUX_USB_ALT_REF (KEEM_BAY_A53_AUX_START_ID + 15)
+> +#define KEEM_BAY_A53_AUX_USB_SUSPEND (KEEM_BAY_A53_AUX_START_ID + 16)
+> +#define KEEM_BAY_A53_AUX_RESERVED2 (KEEM_BAY_A53_AUX_START_ID + 17)
+> +#define KEEM_BAY_A53_AUX_PCIE (KEEM_BAY_A53_AUX_START_ID + 18)
+> +#define KEEM_BAY_A53_AUX_DBG_CLK (KEEM_BAY_A53_AUX_START_ID + 19)
+> +#define KEEM_BAY_A53_AUX_DBG_TRACE (KEEM_BAY_A53_AUX_START_ID + 20)
+> +#define KEEM_BAY_A53_AUX_DBG_DAP (KEEM_BAY_A53_AUX_START_ID + 21)
+> +#define KEEM_BAY_A53_AUX_ARM_CLKIN (KEEM_BAY_A53_AUX_START_ID + 22)
+> +#define KEEM_BAY_A53_AUX_ARM_AXI (KEEM_BAY_A53_AUX_START_ID + 23)
+> +#define KEEM_BAY_A53_AUX_USOC (KEEM_BAY_A53_AUX_START_ID + 24)
+> +#define KEEM_BAY_A53_AUX_USOC_REF (KEEM_BAY_A53_AUX_START_ID + 25)
+> +#define KEEM_BAY_A53_AUX_USOC_ALT_REF (KEEM_BAY_A53_AUX_START_ID + 26)
+> +#define KEEM_BAY_A53_AUX_MAX_ID (KEEM_BAY_A53_AUX_USOC_ALT_REF)
+> +
+> +/* PSS_CPR region CLK_ID: CLK_ID: 58 - 82 */
+> +#define KEEM_BAY_PSS_START_ID (KEEM_BAY_A53_AUX_MAX_ID + 1)
+> +#define KEEM_BAY_PSS_I2C0 (KEEM_BAY_PSS_START_ID + 0)
+> +#define KEEM_BAY_PSS_I2C1 (KEEM_BAY_PSS_START_ID + 1)
+> +#define KEEM_BAY_PSS_I2C2 (KEEM_BAY_PSS_START_ID + 2)
+> +#define KEEM_BAY_PSS_I2C3 (KEEM_BAY_PSS_START_ID + 3)
+> +#define KEEM_BAY_PSS_I2C4 (KEEM_BAY_PSS_START_ID + 4)
+> +#define KEEM_BAY_PSS_SD0 (KEEM_BAY_PSS_START_ID + 5)
+> +#define KEEM_BAY_PSS_SD1 (KEEM_BAY_PSS_START_ID + 6)
+> +#define KEEM_BAY_PSS_EMMC (KEEM_BAY_PSS_START_ID + 7)
+> +#define KEEM_BAY_PSS_AXI_DMA (KEEM_BAY_PSS_START_ID + 8)
+> +#define KEEM_BAY_PSS_SPI0 (KEEM_BAY_PSS_START_ID + 9)
+> +#define KEEM_BAY_PSS_SPI1 (KEEM_BAY_PSS_START_ID + 10)
+> +#define KEEM_BAY_PSS_SPI2 (KEEM_BAY_PSS_START_ID + 11)
+> +#define KEEM_BAY_PSS_SPI3 (KEEM_BAY_PSS_START_ID + 12)
+> +#define KEEM_BAY_PSS_I2S0 (KEEM_BAY_PSS_START_ID + 13)
+> +#define KEEM_BAY_PSS_I2S1 (KEEM_BAY_PSS_START_ID + 14)
+> +#define KEEM_BAY_PSS_I2S2 (KEEM_BAY_PSS_START_ID + 15)
+> +#define KEEM_BAY_PSS_I2S3 (KEEM_BAY_PSS_START_ID + 16)
+> +#define KEEM_BAY_PSS_UART0 (KEEM_BAY_PSS_START_ID + 17)
+> +#define KEEM_BAY_PSS_UART1 (KEEM_BAY_PSS_START_ID + 18)
+> +#define KEEM_BAY_PSS_UART2 (KEEM_BAY_PSS_START_ID + 19)
+> +#define KEEM_BAY_PSS_UART3 (KEEM_BAY_PSS_START_ID + 20)
+> +#define KEEM_BAY_PSS_I3C0 (KEEM_BAY_PSS_START_ID + 21)
+> +#define KEEM_BAY_PSS_I3C1 (KEEM_BAY_PSS_START_ID + 22)
+> +#define KEEM_BAY_PSS_I3C2 (KEEM_BAY_PSS_START_ID + 23)
+> +#define KEEM_BAY_PSS_GBE (KEEM_BAY_PSS_START_ID + 24)
+> +#define KEEM_BAY_PSS_MAX_ID (KEEM_BAY_PSS_GBE)
+> +
+> +/* PSS_CPR_AUX region. CLK_ID: 83 - 97 */
+> +#define KEEM_BAY_PSS_AUX_START_ID (KEEM_BAY_PSS_MAX_ID + 1)
+> +#define KEEM_BAY_PSS_AUX_I2S0 (KEEM_BAY_PSS_AUX_START_ID + 0)
+> +#define KEEM_BAY_PSS_AUX_I2S1 (KEEM_BAY_PSS_AUX_START_ID + 1)
+> +#define KEEM_BAY_PSS_AUX_I2S2 (KEEM_BAY_PSS_AUX_START_ID + 2)
+> +#define KEEM_BAY_PSS_AUX_I2S3 (KEEM_BAY_PSS_AUX_START_ID + 3)
+> +#define KEEM_BAY_PSS_AUX_UART0 (KEEM_BAY_PSS_AUX_START_ID + 4)
+> +#define KEEM_BAY_PSS_AUX_UART1 (KEEM_BAY_PSS_AUX_START_ID + 5)
+> +#define KEEM_BAY_PSS_AUX_UART2 (KEEM_BAY_PSS_AUX_START_ID + 6)
+> +#define KEEM_BAY_PSS_AUX_UART3 (KEEM_BAY_PSS_AUX_START_ID + 7)
+> +#define KEEM_BAY_PSS_AUX_SD0 (KEEM_BAY_PSS_AUX_START_ID + 8)
+> +#define KEEM_BAY_PSS_AUX_SD1 (KEEM_BAY_PSS_AUX_START_ID + 9)
+> +#define KEEM_BAY_PSS_AUX_EMMC (KEEM_BAY_PSS_AUX_START_ID + 10)
+> +#define KEEM_BAY_PSS_AUX_TRNG (KEEM_BAY_PSS_AUX_START_ID + 11)
+> +#define KEEM_BAY_PSS_AUX_OCS (KEEM_BAY_PSS_AUX_START_ID + 12)
+> +#define KEEM_BAY_PSS_AUX_GBE_PTP (KEEM_BAY_PSS_AUX_START_ID + 13)
+> +#define KEEM_BAY_PSS_AUX_GBE_TX (KEEM_BAY_PSS_AUX_START_ID + 14)
+> +#define KEEM_BAY_PSS_AUX_MAX_ID (KEEM_BAY_PSS_AUX_GBE_TX)
+> +
+> +/* DSS_CPR region. CLK_ID: 98 - 109 */
+> +#define KEEM_BAY_DSS_START_ID (KEEM_BAY_PSS_AUX_MAX_ID + 1)
+> +#define KEEM_BAY_DSS_SYS (KEEM_BAY_DSS_START_ID + 0)
+> +#define KEEM_BAY_DSS_DEC400 (KEEM_BAY_DSS_START_ID + 1)
+> +#define KEEM_BAY_DSS_TSENSE (KEEM_BAY_DSS_START_ID + 2)
+> +#define KEEM_BAY_DSS_BUS_0 (KEEM_BAY_DSS_START_ID + 3)
+> +#define KEEM_BAY_DSS_CORE_0 (KEEM_BAY_DSS_START_ID + 4)
+> +#define KEEM_BAY_DSS_REF_0 (KEEM_BAY_DSS_START_ID + 5)
+> +#define KEEM_BAY_DSS_REF_BYP_0 (KEEM_BAY_DSS_START_ID + 6)
+> +#define KEEM_BAY_DSS_BUS_1 (KEEM_BAY_DSS_START_ID + 7)
+> +#define KEEM_BAY_DSS_CORE_1 (KEEM_BAY_DSS_START_ID + 8)
+> +#define KEEM_BAY_DSS_REF_1 (KEEM_BAY_DSS_START_ID + 9)
+> +#define KEEM_BAY_DSS_REF_BYP_1 (KEEM_BAY_DSS_START_ID + 10)
+> +#define KEEM_BAY_DSS_MMU500 (KEEM_BAY_DSS_START_ID + 11)
+> +#define KEEM_BAY_DSS_MAX_ID (KEEM_BAY_DSS_MMU500)
+> +
+> +/* USS_CPR region. CLK_ID: 110 - 116 */
+> +#define KEEM_BAY_USS_START_ID (KEEM_BAY_DSS_MAX_ID + 1)
+> +#define KEEM_BAY_USS_SYS (KEEM_BAY_USS_START_ID + 0)
+> +#define KEEM_BAY_USS_REF (KEEM_BAY_USS_START_ID + 1)
+> +#define KEEM_BAY_USS_ALT_REF (KEEM_BAY_USS_START_ID + 2)
+> +#define KEEM_BAY_USS_SUSPEND (KEEM_BAY_USS_START_ID + 3)
+> +#define KEEM_BAY_USS_CORE (KEEM_BAY_USS_START_ID + 4)
+> +#define KEEM_BAY_USS_LOW_JIT (KEEM_BAY_USS_START_ID + 5)
+> +#define KEEM_BAY_USS_PHY_TST (KEEM_BAY_USS_START_ID + 6)
+> +#define KEEM_BAY_USS_MAX_ID (KEEM_BAY_USS_PHY_TST)
+> +
+> +/* MSS_CPR region. CLK_ID: 117 - 129 */
+> +#define KEEM_BAY_MSS_START_ID (KEEM_BAY_USS_MAX_ID + 1)
+> +#define KEEM_BAY_MSS_CPU (KEEM_BAY_MSS_START_ID + 0)
+> +#define KEEM_BAY_MSS_CPU_DSU (KEEM_BAY_MSS_START_ID + 1)
+> +#define KEEM_BAY_MSS_CPU_L2C (KEEM_BAY_MSS_START_ID + 2)
+> +#define KEEM_BAY_MSS_CPU_ICB (KEEM_BAY_MSS_START_ID + 3)
+> +#define KEEM_BAY_MSS_CPU_TIM (KEEM_BAY_MSS_START_ID + 4)
+> +#define KEEM_BAY_MSS_JPGENC (KEEM_BAY_MSS_START_ID + 5)
+> +#define KEEM_BAY_MSS_DTB (KEEM_BAY_MSS_START_ID + 6)
+> +#define KEEM_BAY_MSS_BLT (KEEM_BAY_MSS_START_ID + 7)
+> +#define KEEM_BAY_MSS_UPA (KEEM_BAY_MSS_START_ID + 8)
+> +#define KEEM_BAY_MSS_NCE (KEEM_BAY_MSS_START_ID + 9)
+> +#define KEEM_BAY_MSS_CV (KEEM_BAY_MSS_START_ID + 10)
+> +#define KEEM_BAY_MSS_ISP (KEEM_BAY_MSS_START_ID + 11)
+> +#define KEEM_BAY_MSS_CAM (KEEM_BAY_MSS_START_ID + 12)
+> +#define KEEM_BAY_MSS_MAX_ID (KEEM_BAY_MSS_CAM)
+> +
+> +/* MSS_CPR_AUX region. CLK_ID: 130 - 138 */
+> +#define KEEM_BAY_MSS_AUX_START_ID (KEEM_BAY_MSS_MAX_ID + 1)
+> +#define KEEM_BAY_MSS_AUX_CIF (KEEM_BAY_MSS_AUX_START_ID + 0)
+> +#define KEEM_BAY_MSS_AUX_LCD (KEEM_BAY_MSS_AUX_START_ID + 1)
+> +#define KEEM_BAY_MSS_AUX_SLVDS0 (KEEM_BAY_MSS_AUX_START_ID + 2)
+> +#define KEEM_BAY_MSS_AUX_SLVDS1 (KEEM_BAY_MSS_AUX_START_ID + 3)
+> +#define KEEM_BAY_MSS_AUX_MIPI_TX0 (KEEM_BAY_MSS_AUX_START_ID + 4)
+> +#define KEEM_BAY_MSS_AUX_MIPI_TX1 (KEEM_BAY_MSS_AUX_START_ID + 5)
+> +#define KEEM_BAY_MSS_AUX_MIPI_ECFG (KEEM_BAY_MSS_AUX_START_ID + 6)
+> +#define KEEM_BAY_MSS_AUX_MIPI_CFG (KEEM_BAY_MSS_AUX_START_ID + 7)
+> +#define KEEM_BAY_MSS_AUX_JPGENC (KEEM_BAY_MSS_AUX_START_ID + 8)
+> +#define KEEM_BAY_MSS_AUX_MAX_ID (KEEM_BAY_MSS_AUX_JPGENC)
+> +
+> +#define KEEM_BAY_NUM_CLOCKS (KEEM_BAY_MSS_AUX_MAX_ID + 1)
+> +
+> +#endif /* __DT_BINDINGS_KEEMBAY_CLOCKS_H */
+> -- 
+> 2.26.2
+> 
