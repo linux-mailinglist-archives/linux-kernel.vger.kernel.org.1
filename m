@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5210D21FCEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A70121FC41
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730973AbgGNTM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:12:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42026 "EHLO mail.kernel.org"
+        id S1731069AbgGNTH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:07:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728117AbgGNSrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:47:04 -0400
+        id S1730385AbgGNSvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:51:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47B2022AAE;
-        Tue, 14 Jul 2020 18:47:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F420207F5;
+        Tue, 14 Jul 2020 18:51:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752423;
-        bh=WaI4zcf7p58FCzVfZfWBdeLKbAZ6Z+i4ih5TUkvlf/w=;
+        s=default; t=1594752677;
+        bh=DCOozzv+SC+l8M6QiWjP13NaDxXLcrR6MHm8+O/lmls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FnN4R0nC1p8uPxZn62Z51Yi2gPHrH2Z1KBj3UCTDsXpWZWCjDywsAFfJX53V6+tQC
-         O/9ddEgzYCRDX1blSBi1KtNwYIRt8ebcNATX96DQ5ughRR44LQ443UwNMsEAhA96Sz
-         xxxK3ft3M4TgE1BRjgJWpwLF0jQj+3NhnNu+X4mI=
+        b=YTI6oF/cn22iT2shHsZrvLz/AFQZ/h7w2YHcZKTCg8uVshyXaabP9J6T+ifdz7AnD
+         2dsUvLBkm9WE9r/u14OBF+vmqSWce7gYP13Ci92xfynyhDXpaXcNlbcMZeashCaQrD
+         mtadHnfJc+RgCAx3sXvT41I4LnsTtPROcZjnik+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Pirko <jiri@mellanox.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 37/58] mlxsw: spectrum_router: Remove inappropriate usage of WARN_ON()
-Date:   Tue, 14 Jul 2020 20:44:10 +0200
-Message-Id: <20200714184057.973201050@linuxfoundation.org>
+Subject: [PATCH 5.4 068/109] mlxsw: spectrum_router: Remove inappropriate usage of WARN_ON()
+Date:   Tue, 14 Jul 2020 20:44:11 +0200
+Message-Id: <20200714184108.794078147@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
-References: <20200714184056.149119318@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -74,10 +74,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
-index 76960d3adfc03..93d662de106e8 100644
+index efdf8cb5114c2..2f013fc716985 100644
 --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
 +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
-@@ -5982,7 +5982,7 @@ static int mlxsw_sp_router_fib_event(struct notifier_block *nb,
+@@ -6287,7 +6287,7 @@ static int mlxsw_sp_router_fib_event(struct notifier_block *nb,
  	}
  
  	fib_work = kzalloc(sizeof(*fib_work), GFP_ATOMIC);
