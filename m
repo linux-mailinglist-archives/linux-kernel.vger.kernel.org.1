@@ -2,118 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9243E21F222
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EBF21F225
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728335AbgGNNKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41850 "EHLO
+        id S1728378AbgGNNLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726354AbgGNNKp (ORCPT
+        with ESMTP id S1726354AbgGNNLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:10:45 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B89C061755;
-        Tue, 14 Jul 2020 06:10:45 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id d18so17203604ion.0;
-        Tue, 14 Jul 2020 06:10:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lv9gVEtOCHmdCNCXNh+kZOMT5/e2RCfYMVdBCxYu8hY=;
-        b=GGvCVe9fQU1dq95jD2QsY9q8iP9qkPLUMm8oPCRjJ7Anpl4RZFDQbyaFWBWnDnpLZ4
-         akCnj2zM5URBnRzaIYx3QViomArLjo2TYpYkKUdo/rc9Ev91ZRKMH/8XeuHIazcC6c9X
-         X5e55Z39z5v/S/1QJJmyS5e4BULhf2dcpWbN4Rz5aiw1fkHUaQuYK//DOOIuRhg/YMoN
-         n2xr6Y/ChWx51FMUP57QmncbKCORyhewPR3gy1lBR0mf/Hn9kfig/IhmlXPSlGpiPi80
-         ugnw+VVG06u4vmLe0YcKVW76Sjjn51ULmDMzk5J0lyt30N7aqkZelE3x0JW4tdCaw606
-         ps1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lv9gVEtOCHmdCNCXNh+kZOMT5/e2RCfYMVdBCxYu8hY=;
-        b=MwxVaudSE/X1IYIAZJFlTYzsvAapWoaQW9dkpQ0+T4jgQI5kBd2tEAD2cFp8FeHU03
-         DiqoHp9BIAqsxjvb88VIwGsTKtjLXfEAjXORSUPMdJzuOvBUAroIRDohIXx6XEpZ9MOw
-         zKnSg/axMc+O9tLxi08LRuyEYk8mBcxo7z0OCHOhdNV0C+lqFLoX5/ZDs5R6kRqLSidj
-         f/YcpblgVDNkrc3iaNtfsmq3PNIuu/ITrvgGyapuU3YCzAtOjeM8JQd0AAh0AP4freYb
-         N1Yu7TKQFI2a2hdgd1UNXfdTZuSF3fgJOxNzav44cz1pXUs6pZZW33QBw4QpdE0qFTcJ
-         QhTw==
-X-Gm-Message-State: AOAM5303SgIuUS2BDRhPz9hGEYCiZuEB7MuMFNaCohRnrk6VNlC8rBQn
-        7SgcrTelWNWNsXFaRrkT5073ZksYPrdeeCi77E0V4lPF
-X-Google-Smtp-Source: ABdhPJzXMwozFQAgRFaE2pFvKBmp5FCG/BtI9uXL/90zZu+JnA5e5/U/t3TL0CPy1LXwB+bUTV5aM8NrEjKdJO05MgI=
-X-Received: by 2002:a6b:b483:: with SMTP id d125mr4887880iof.186.1594732244839;
- Tue, 14 Jul 2020 06:10:44 -0700 (PDT)
+        Tue, 14 Jul 2020 09:11:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6512DC061755;
+        Tue, 14 Jul 2020 06:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rt0R45n245S6OzOOzV5XkJqNAJz0aHNoAHA0u2wcjZc=; b=WA3KTL0TATn8suIqR6Jthtag2T
+        E5wP0QuQNZ/hrhi3/e7AvuL+AGXlHv7Mup3K1VKRLW1iZg9eswfKYRjClAFEynkb6UMWUBSjhcV9N
+        AFSYxFks4hKKGFQ0Fx3X6JAr7epce0hMZrfvGvo5sZvyDkrrFcN/W0hnsF/FhCPdJ4J6JkUnkyzxT
+        cWLNqu9h6i5Zgy1gYhysaghKiFvV/wQMEA1F2FBuGpGUlUAH0QeNJIWE/QhtRxzDY4U4CFQc3sDZT
+        jFJx3zA/IaBlpR1zFJzFKmrDzQ+PGJzmMZ7gD7vTYglV15S+7gflqMmwXC4aoj8wqtdltwOIMqIpk
+        lVUFG/aw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvKhn-0003xf-Uh; Tue, 14 Jul 2020 13:10:44 +0000
+Date:   Tue, 14 Jul 2020 14:10:43 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     trix@redhat.com
+Cc:     jack@suse.cz, william.kucharski@oracle.com, jeffm@suse.com,
+        joseph.qi@linux.alibaba.com, liao.pingfang@zte.com.cn,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] reiserfs : fix improper free in reiserfs_get_block
+Message-ID: <20200714131043.GB12769@casper.infradead.org>
+References: <20200714130509.11791-1-trix@redhat.com>
 MIME-Version: 1.0
-References: <20200714025417.A25EB95C0339@us180.sjc.aristanetworks.com>
-In-Reply-To: <20200714025417.A25EB95C0339@us180.sjc.aristanetworks.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 14 Jul 2020 16:10:33 +0300
-Message-ID: <CAOQ4uxjLaGyOUd5GOV8oHwBY=nGGtgk4=5bRxmHTr5VsocrhiA@mail.gmail.com>
-Subject: Re: soft lockup in fanotify_read
-To:     Francesco Ruggeri <fruggeri@arista.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714130509.11791-1-trix@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 5:54 AM Francesco Ruggeri <fruggeri@arista.com> wrote:
->
-> We are getting this soft lockup in fanotify_read.
-> The reason is that this code does not seem to scale to cases where there
-> are big bursts of events generated by fanotify_handle_event.
-> fanotify_read acquires group->notification_lock for each event.
-> fanotify_handle_event uses the lock to add one event, which also involves
-> fanotify_merge, which scans the whole list trying to find an event to
-> merge the new one with.
+On Tue, Jul 14, 2020 at 06:05:09AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> clang static analysis flags this error
+> 
+> inode.c:1083:5: warning: Argument to kfree() is the address of the
+>   local variable 'unf_single', which is not memory allocated by
+>   malloc() [unix.Malloc]
+>                                 kfree(un);
+>                                 ^~~~~~~~~
+> Assignment of 'un'
+> 
+> 	/*
+> 	 * We use this in case we need to allocate
+> 	 * only one block which is a fastpath
+> 	 */
+> 	unp_t unf_single = 0;
+> 
+> 	...
+> 
+> 	if (blocks_needed == 1) {
+> 		un = &unf_single;
+> 	} else {
+> 		un = kcalloc(min(blocks_needed, max_to_insert),
+> 			     UNFM_P_SIZE, GFP_NOFS);
+> 		if (!un) {
+> 			un = &unf_single;
+> 			blocks_needed = 1;
+> 			max_to_insert = 0;
+> 		}
+> 	}
+> 
+> The logic to free 'un'
+> 
+> 	if (blocks_needed != 1)
+> 		kfree(un);
+> 
+> Because the kcalloc failure falls back to using unf_single,
+> the if-check for the free is wrong.
 
-Yes, that is a terribly inefficient merge algorithm.
-If it helps I am carrying a quick brown paper bag fix for this issue in my tree:
+I think you mean "Because clang's static analysis is limited, it
+warns incorrectly about this".  There's no path to get to the
+kfree with blocks_needed != 1 and un being equal to &unf_single.
 
-@@ -65,6 +74,8 @@ static int fanotify_merge(struct list_head *list,
-struct fsnotify_event *event)
- {
-        struct fsnotify_event *test_event;
-        struct fanotify_event *new;
-+       int limit = 128;
-+       int i = 0;
+> So improve the check.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  fs/reiserfs/inode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/reiserfs/inode.c b/fs/reiserfs/inode.c
+> index 1509775da040..4d62148e43e6 100644
+> --- a/fs/reiserfs/inode.c
+> +++ b/fs/reiserfs/inode.c
+> @@ -1079,7 +1079,7 @@ int reiserfs_get_block(struct inode *inode, sector_t block,
+>  						     UNFM_P_SIZE *
+>  						     blocks_needed);
+>  
+> -			if (blocks_needed != 1)
+> +			if (un != &unf_single)
+>  				kfree(un);
 
-        pr_debug("%s: list=%p event=%p\n", __func__, list, event);
-        new = FANOTIFY_E(event);
-
-@@ -78,6 +89,9 @@ static int fanotify_merge(struct list_head *list,
-struct fsnotify_event *event)
-                return 0;
-
-        list_for_each_entry_reverse(test_event, list, list) {
-+               /* Event merges are expensive so should be limited */
-+               if (++i > limit)
-+                       break;
-                if (should_merge(test_event, event)) {
-
-It's somewhere down my TODO list to fix this properly with a hash table.
-
-> In our case fanotify_read is invoked with a buffer big enough for 200
-> events, and what happens is that every time fanotify_read dequeues an
-> event and releases the lock, fanotify_handle_event adds several more,
-> scanning a longer and longer list. This causes fanotify_read to wait
-> longer and longer for the lock, and the soft lockup happens before
-> fanotify_read can reach 200 events.
-> Is it intentional for fanotify_read to acquire the lock for each event,
-> rather than batching together a user buffer worth of events?
-
-I think it is meant to allow for multiple reader threads to read events
-with fairness, but not sure.
-
-Even if it was fine to read a batch of events on every spinlock acquire
-making the code in the fanotify_read() loop behave well in case of
-an error in an event after reading a bunch of good events looks challenging,
-but I didn't try. Anyway, the root cause of the issue seems to be the
-inefficient merge and not the spinlock taken per one event read.
-
-Thanks,
-Amir.
+I don't actually object to this patch, but your analysis of clang's
+analysis is wrong.
