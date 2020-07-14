@@ -2,121 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0F321F8D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7759021F8D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729116AbgGNSN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727772AbgGNSN0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:13:26 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93012C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:13:26 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id f23so18305995iof.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:13:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=DkaDz2vQpSy5XI1g9Hw7BaXUJBJ+MBpnR3NMIQZfDRQ=;
-        b=XnYy2yXleZye8c+VETEcwH80zwMNR3nr9eif0Wzo7JSdEClHNSE12TUJ1PbAwivEye
-         2zRCazYW0wztkcByTKdsg7Wh8JR0X8qZuRD43vBWCUsVRPykqNSY38hDq4sHNvm7e91L
-         hlZFRkX0eLcoCCtCBZjmD0+Sl3vN+E6hRowfOFlBP/1H7ppKql0wtAnIyhOROmGmxp93
-         tEL6m0i/F/faqSrh3Eb4dTZ6epUQSfDpTuG3Z+L6jow044fRrO2eaw/D9WNtqMYhcpxf
-         PcJzaHNXo4l7wCq7pkHOKSC/tcav1qJ/28Um26umY/bOAMQ1zZCBGvfROInM/0WhcjLj
-         Dc5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=DkaDz2vQpSy5XI1g9Hw7BaXUJBJ+MBpnR3NMIQZfDRQ=;
-        b=udUeRWb0v146vq2u1Xm6BRTDHEXk/q1pXrgMSRzCWU6glKr11OxxvXO6Q7rDVLHATW
-         COQBkgrSLsBu+1rfm25nfPZOy90s+Y2Qk+dNhKFUQyu5a0aoSXYmrjy6X075seQwg+Fj
-         0UPYneI4dch+LLX337Dt6/rT5K1MbIxIZkA1a9afw85POmPeoLjE7Th9zFmBgOa9iRTw
-         l6DQr/KuBQadQtHGpvGSA/6QuNo71JAXrISmPUL8OsK+kVZw24ebkz/+k1AgTLoT1yBp
-         WFXfAp4xLvJBH7UgzDSN1nJ5eu505prwhrJgMab4JdveCruStwiAEWVLOSMNgdmJl3JA
-         05dw==
-X-Gm-Message-State: AOAM530ajUg7jugVx6ee2hAn2kR0BTqIvp5ed6ikXgGe8UcdnGiT2agW
-        QFE1QTP1KQBY8e5Qzud4fOzV/gXZhbMR+L/2bXs=
-X-Google-Smtp-Source: ABdhPJzBJvCjQCUWkrn9IEwod7frezCfISaypAwCT64tMY71YH+PE51CXhhpH621VDCfOOdld75CMnv/xSGc8eMeG1c=
-X-Received: by 2002:a02:a909:: with SMTP id n9mr7259618jam.70.1594750405993;
- Tue, 14 Jul 2020 11:13:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200714023836.2310569-1-nivedita@alum.mit.edu> <CA+icZUXSPfybFtzQB3wKn9spQmEPnQu_iGPWkRisAmRQbJLWXA@mail.gmail.com>
- <20200714141550.GA329060@rani.riverdale.lan>
-In-Reply-To: <20200714141550.GA329060@rani.riverdale.lan>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 14 Jul 2020 20:13:14 +0200
-Message-ID: <CA+icZUU88wYmyycthW7AQUZ72HGa9RWPZmxVS5Gm6UW=6ES9kA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] x86/boot: Remove runtime relocations from
- compressed kernel
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        id S1729126AbgGNSO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:14:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727772AbgGNSO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:14:26 -0400
+Received: from gaia (unknown [95.146.230.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A6A2225AA;
+        Tue, 14 Jul 2020 18:14:18 +0000 (UTC)
+Date:   Tue, 14 Jul 2020 19:14:15 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     zong.li@sifive.com, linux-riscv@lists.infradead.org,
+        rppt@linux.ibm.com, linux@armlinux.org.uk, will@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, gxt@pku.edu.cn,
+        Arnd Bergmann <arnd@arndb.de>, linus.walleij@linaro.org,
+        akpm@linux-foundation.org, mchehab+samsung@kernel.org,
+        gregory.0xf0@gmail.com, masahiroy@kernel.org,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        bgolaszewski@baylibre.com, steve@sk2.org, tglx@linutronix.de,
+        keescook@chromium.org, alex@ghiti.fr, mcgrof@kernel.org,
+        mark.rutland@arm.com, james.morse@arm.com,
+        alex.shi@linux.alibaba.com, andriy.shevchenko@linux.intel.com,
+        broonie@kernel.org, rdunlap@infradead.org, davem@davemloft.net,
+        rostedt@goodmis.org, dan.j.williams@intel.com, mhiramat@kernel.org,
+        krzk@kernel.org, zaslonko@linux.ibm.com,
+        matti.vaittinen@fi.rohmeurope.com, uwe@kleine-koenig.org,
+        clabbe@baylibre.com, changbin.du@intel.com,
+        Greg KH <gregkh@linuxfoundation.org>, paulmck@kernel.org,
+        pmladek@suse.com, brendanhiggins@google.com, glider@google.com,
+        elver@google.com, davidgow@google.com, ardb@kernel.org,
+        takahiro.akashi@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v2 4/5] arm64: Use the generic devmem_is_allowed()
+Message-ID: <20200714181415.GC10736@gaia>
+References: <20200709211925.1926557-1-palmer@dabbelt.com>
+ <20200709211925.1926557-5-palmer@dabbelt.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709211925.1926557-5-palmer@dabbelt.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 4:15 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> On Tue, Jul 14, 2020 at 03:15:49PM +0200, Sedat Dilek wrote:
-> >
-> > How to test this series without building a full new kernel?
-> >
-> > make $make_opts vmlinux
-> >
-> > - Sedat -
-> >
->
-> Not sure I understood the question: you do have to build a full new
-> kernel with this patch series to test it. Since the changes are to the
-> compressed kernel, you would need to make bzImage, which is the end
-> product of the full kernel build.
->
-> Thanks.
->
+On Thu, Jul 09, 2020 at 02:19:24PM -0700, Palmer Dabbelt wrote:
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
+> 
+> I recently copied this into lib/ for use by the RISC-V port.
+> 
+> [I haven't even build tested this.  The lib/ patch is on riscv/for-next,
+> which I'm targeting for 5.9, so this won't work alone.  See the cover
+> letter for more details.]
+> 
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Thanks for the informations.
-
-make bzImage
-
-...was the last I tried - gasped 15mins on this - after gasping 30mins on
-
-make vmlinux
-
-I did a full new build...
-
-...and it fails with ld.lld-11 as linker:
-
-ld.lld-11 -m elf_x86_64 -pie  --no-dynamic-linker -r -o
-arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o
--T arch/x86/boot/compressed/.tmp_misc.ver; mv -f
-arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o;
-rm -f arch/x86/boot/compressed/.tmp_misc.ver; fi
-*** ld.lld-11: error: -r and -pie may not be used together ***
-make[5]: *** [scripts/Makefile.build:281:
-arch/x86/boot/compressed/misc.o] Error 1
-
-It's annoying to fail on the last minutes of a build.
-Sorry for being very honest.
-
-- Sedat -
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
