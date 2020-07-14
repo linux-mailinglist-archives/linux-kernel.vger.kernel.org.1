@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B285B21FBB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED0B21FBCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731267AbgGNTDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:03:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55392 "EHLO mail.kernel.org"
+        id S1731303AbgGNTEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:04:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730678AbgGNS5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:57:11 -0400
+        id S1730934AbgGNS4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:56:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C368229CA;
-        Tue, 14 Jul 2020 18:57:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A276229CA;
+        Tue, 14 Jul 2020 18:55:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753031;
-        bh=kcbW/+42tbYkeYEzHPoKqQt2cffnqTQdX15gHcEcuBg=;
+        s=default; t=1594752959;
+        bh=tq0ZgPpb1UjGyzLqz8Drb8E6aQgtxe36pAXvAlHP1pc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MtvJYiYFkXpugTUpLBFuhyx3mJGyEm3c7btP2Fsg1SjvA9BR9oL2TWe1lFPS4OIem
-         yn/cywKtzW8k6FcMnTL3Fe8ZJOcdXbDtmL/x8I0rltxQvYL57yOBf8Ojw9DX5dwt8p
-         fLoJmUmPFqjq4m9FCUALD+iz7obnQJKkavjv5P8g=
+        b=B54VyKLclmrqTmWe2Pr4pF0N5csPeNS2iFgv2GQomSnIQZyd2QFzk+wRspYXf+xgR
+         /cq6mpdu0CwKFPGw3b54kHII2UpcYmcPhBHnVBHVvlzKwk/hW25RcCvxoL4KImvDJD
+         VLo8Uk8XCDkxxChD5pv9FXXHe2MrnFYq2Sf85qrY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 063/166] net: ipa: no checksum offload for SDM845 LAN RX
-Date:   Tue, 14 Jul 2020 20:43:48 +0200
-Message-Id: <20200714184118.882833458@linuxfoundation.org>
+Subject: [PATCH 5.7 066/166] drm/meson: viu: fix setting the OSD burst length in VIU_OSD1_FIFO_CTRL_STAT
+Date:   Tue, 14 Jul 2020 20:43:51 +0200
+Message-Id: <20200714184119.025517936@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
 References: <20200714184115.844176932@linuxfoundation.org>
@@ -44,36 +46,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit 41af5436e857ec64f302fcc9b6e4a8c526b6b402 ]
+[ Upstream commit 17f64701ea6f541db7eb5d7423a830cb929b3052 ]
 
-The AP LAN RX endpoint should not have download checksum offload
-enabled.
+The burst length is configured in VIU_OSD1_FIFO_CTRL_STAT[31] and
+VIU_OSD1_FIFO_CTRL_STAT[11:10]. The public S905D3 datasheet describes
+this as:
+- 0x0 = up to 24 per burst
+- 0x1 = up to 32 per burst
+- 0x2 = up to 48 per burst
+- 0x3 = up to 64 per burst
+- 0x4 = up to 96 per burst
+- 0x5 = up to 128 per burst
 
-The receive handler does properly accommodate the trailer that's
-added by the hardware, but we ignore it.
+The lower two bits map to VIU_OSD1_FIFO_CTRL_STAT[11:10] while the upper
+bit maps to VIU_OSD1_FIFO_CTRL_STAT[31].
 
-Fixes: 1ed7d0c0fdba ("soc: qcom: ipa: configuration data")
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Replace meson_viu_osd_burst_length_reg() with pre-defined macros which
+set these values. meson_viu_osd_burst_length_reg() always returned 0
+(for the two used values: 32 and 64 at least) and thus incorrectly set
+the burst size to 24.
+
+Fixes: 147ae1cbaa1842 ("drm: meson: viu: use proper macros instead of magic constants")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Tested-by: Christian Hewitt <christianshewitt@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200620155752.21065-1-martin.blumenstingl@googlemail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ipa/ipa_data-sdm845.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/meson/meson_registers.h |  6 ++++++
+ drivers/gpu/drm/meson/meson_viu.c       | 11 ++---------
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_data-sdm845.c b/drivers/net/ipa/ipa_data-sdm845.c
-index 0d9c36e1e806c..0917c5b028f67 100644
---- a/drivers/net/ipa/ipa_data-sdm845.c
-+++ b/drivers/net/ipa/ipa_data-sdm845.c
-@@ -44,7 +44,6 @@ static const struct ipa_gsi_endpoint_data ipa_gsi_endpoint_data[] = {
- 		.endpoint = {
- 			.seq_type	= IPA_SEQ_INVALID,
- 			.config = {
--				.checksum	= true,
- 				.aggregation	= true,
- 				.status_enable	= true,
- 				.rx = {
+diff --git a/drivers/gpu/drm/meson/meson_registers.h b/drivers/gpu/drm/meson/meson_registers.h
+index 8ea00546cd4e2..049c4bfe2a3ae 100644
+--- a/drivers/gpu/drm/meson/meson_registers.h
++++ b/drivers/gpu/drm/meson/meson_registers.h
+@@ -261,6 +261,12 @@
+ #define VIU_OSD_FIFO_DEPTH_VAL(val)      ((val & 0x7f) << 12)
+ #define VIU_OSD_WORDS_PER_BURST(words)   (((words & 0x4) >> 1) << 22)
+ #define VIU_OSD_FIFO_LIMITS(size)        ((size & 0xf) << 24)
++#define VIU_OSD_BURST_LENGTH_24          (0x0 << 31 | 0x0 << 10)
++#define VIU_OSD_BURST_LENGTH_32          (0x0 << 31 | 0x1 << 10)
++#define VIU_OSD_BURST_LENGTH_48          (0x0 << 31 | 0x2 << 10)
++#define VIU_OSD_BURST_LENGTH_64          (0x0 << 31 | 0x3 << 10)
++#define VIU_OSD_BURST_LENGTH_96          (0x1 << 31 | 0x0 << 10)
++#define VIU_OSD_BURST_LENGTH_128         (0x1 << 31 | 0x1 << 10)
+ 
+ #define VD1_IF0_GEN_REG 0x1a50
+ #define VD1_IF0_CANVAS0 0x1a51
+diff --git a/drivers/gpu/drm/meson/meson_viu.c b/drivers/gpu/drm/meson/meson_viu.c
+index 304f8ff1339cb..aede0c67a57f0 100644
+--- a/drivers/gpu/drm/meson/meson_viu.c
++++ b/drivers/gpu/drm/meson/meson_viu.c
+@@ -411,13 +411,6 @@ void meson_viu_gxm_disable_osd1_afbc(struct meson_drm *priv)
+ 			    priv->io_base + _REG(VIU_MISC_CTRL1));
+ }
+ 
+-static inline uint32_t meson_viu_osd_burst_length_reg(uint32_t length)
+-{
+-	uint32_t val = (((length & 0x80) % 24) / 12);
+-
+-	return (((val & 0x3) << 10) | (((val & 0x4) >> 2) << 31));
+-}
+-
+ void meson_viu_init(struct meson_drm *priv)
+ {
+ 	uint32_t reg;
+@@ -444,9 +437,9 @@ void meson_viu_init(struct meson_drm *priv)
+ 		VIU_OSD_FIFO_LIMITS(2);      /* fifo_lim: 2*16=32 */
+ 
+ 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_G12A))
+-		reg |= meson_viu_osd_burst_length_reg(32);
++		reg |= VIU_OSD_BURST_LENGTH_32;
+ 	else
+-		reg |= meson_viu_osd_burst_length_reg(64);
++		reg |= VIU_OSD_BURST_LENGTH_64;
+ 
+ 	writel_relaxed(reg, priv->io_base + _REG(VIU_OSD1_FIFO_CTRL_STAT));
+ 	writel_relaxed(reg, priv->io_base + _REG(VIU_OSD2_FIFO_CTRL_STAT));
 -- 
 2.25.1
 
