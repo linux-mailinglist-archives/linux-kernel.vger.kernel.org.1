@@ -2,132 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73B921ED90
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A827D21EDA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 12:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgGNKDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 06:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        id S1726617AbgGNKGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 06:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbgGNKDd (ORCPT
+        with ESMTP id S1725952AbgGNKGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 06:03:33 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AC7CC061755;
-        Tue, 14 Jul 2020 03:03:33 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id e22so16407362edq.8;
-        Tue, 14 Jul 2020 03:03:33 -0700 (PDT)
+        Tue, 14 Jul 2020 06:06:08 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541C1C061755;
+        Tue, 14 Jul 2020 03:06:08 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id p1so6826168pls.4;
+        Tue, 14 Jul 2020 03:06:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MKp4hLtxETvkv2CWahEKcfbp1IqsM/1I1uhcW5o/wdY=;
-        b=PWuXG4b4cpqYFf2T4pSBWibdehnMvZPSt8U8it8Y5Vr8G4jATwgScAO7URB+xYsDIk
-         ko9j8deE86NN89zX1NpP0ZD8NnsgJ0aEsk4cQyxlHIy8LnqMWPhINDEoCUH+Djt7fk/y
-         q304ihm+M83eb/bwQu6b+Toz8dSHDcE0hrBPElnsKJmwQ/199siBC15iLpr7S6Mdo26K
-         vdr863REyILYzvb0IRSz4DmkuUysNw/HjI1lpJ9FWPSxQUoSsDOCsqrIO/oIhPu2wevy
-         DXrW7iyxD/djeMfYG+35wUH6epFRuZ2OkKCh2tIw8JBTqudzg5N70NnfjZTINxnOUN9i
-         HZEg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eYpCQfk/q2dXlOvqggXDmkrAf68vEnrgzdjskwoJL6M=;
+        b=skKTE+CpIsdKXt3/0nlblro53GUANKxqNtTyG/+IjykwtXnPLWN2ztxla7THEHgzH7
+         uGA61QgHlK6eFYdNEtt05P9FNTsqwXikvAR1Ha+CP/QySTYvzeYrAnHwE5yjRheYfkO/
+         3BEh2FAMbrPvrpuECImvgbgZ1V5H1FpUGVxoZp2KucYUsnHYB4PLIulj4r4ENMZDvtJ8
+         vV7uzdGS0DQcmvh9J7T0xybMq5uPoaoQP0Vevf+QkaRjV8Ou3Qz+9/sRjvMOuUjhtCGw
+         0Qnud8/LutL7ucYLB4wlJBDecFp7+rv6x36+NC858rm/VBy1Rp3nADTExX47SdkXqxZJ
+         hCVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MKp4hLtxETvkv2CWahEKcfbp1IqsM/1I1uhcW5o/wdY=;
-        b=PGluHX4elZ+dcwPspx60tBqVbXgy86oSlzCTXYv3j6X3c/EisdII8vTZzw4GOYaGNd
-         BQpeqiPE2nCq9IZYPkwlr7KhTWRlbLh8oqGhZnLLmq7womYf8PWPU7IUuN0D2VY8JPQS
-         h5eL+Gvo4kt6naDYSBA+Y/9sWfsfOS1p68uq4IezbmNJWsCMCxLJxrEIAYuBjCx99HqK
-         tLkkPLkhGEL2lLlA0ZlexzLm20HnP0YkjvS6Jker7DoYj6CnFgAjQO7+nUYXM9MmHLK+
-         Y0267C1yYAJ2jZpNYKanHN5qyCWVTRT9C0ULXRnjb4kzzIG6wrF4nL7HdbnOeJS01sU6
-         BwZw==
-X-Gm-Message-State: AOAM532UEIib8a1rzLgnGuHW/PaeGVwFKjx3a2f6p//aWmm2WuXlKkIB
-        URgMHG0IaCY/XIJ43Dlx7WW4aZG/bzw+9e8tRUE=
-X-Google-Smtp-Source: ABdhPJzMuF8S5wkwmiZSLv/BO2k8Uh6Rq8XGYvR9lfAW1FMCP6K5LDh1XPrNn+57jDHjM8t8/P6yahksikRVd7DQfbE=
-X-Received: by 2002:a50:d55b:: with SMTP id f27mr3747046edj.312.1594721012001;
- Tue, 14 Jul 2020 03:03:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eYpCQfk/q2dXlOvqggXDmkrAf68vEnrgzdjskwoJL6M=;
+        b=NNoc0RBC3JBd8GR3LqFsl7/BmCwYGQJvNgBlQk2HDzopnL3b6/bcN/bba/jZCe0XmX
+         8K6iM7+DDC2QA3vSZb+bI9LXJE+FFouhWKdt0JTE9hUb5GJysxjhKSNZwSaiSl5+LnMD
+         SQ9jAg6gGXFz9EcxbYToih7M90OfYNIELWkw0DcLqwLjpR0zKd7i900UBKOstDcMakjf
+         dekyKrW9NKJQ0h5/oIxv5WnKYWfRRb32YYG/TLydNSvZYtIiILCBRZIjp7Ut6vYd0AuU
+         +AAJ55Qj9dlGgKcCRX7USAZmmxW5sV8JI79R6ETHralCSw0S2CNtkOZ5BjDcJsg7MSch
+         LRPg==
+X-Gm-Message-State: AOAM530zoQ573+u/WxR+0T1rWmUDfSje488ynPwlC99JVgtsHX0lsIJ7
+        qmKvoJIwrHIpFAuj2fL752c=
+X-Google-Smtp-Source: ABdhPJztQv0rhQk5gYPwf/IdL9QA4paHfVHV8Ckv+UiFjvEVBFFyA/8krZQ1RQWQcTOCzHtMwAZ6UA==
+X-Received: by 2002:a17:90a:ea0f:: with SMTP id w15mr3999097pjy.138.1594721167865;
+        Tue, 14 Jul 2020 03:06:07 -0700 (PDT)
+Received: from localhost (g175.219-103-161.ppp.wakwak.ne.jp. [219.103.161.175])
+        by smtp.gmail.com with ESMTPSA id l9sm2084386pjy.2.2020.07.14.03.05.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 03:05:55 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 19:05:45 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Openrisc <openrisc@lists.librecores.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] OPENRISC ARCHITECTURE: Replace HTTP links with HTTPS ones
+Message-ID: <20200714100545.GD437393@lianli.shorne-pla.net>
+References: <20200710062019.28755-1-grandmaster@al2klimov.de>
+ <20200713113430.1c1777bb@lwn.net>
+ <CAMuHMdXoUME_dCOZP1N0tXyMv61edfNECM4-n4NPa56YbBCncw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200629114927.17379-1-bruno.thomsen@gmail.com>
- <20200629114927.17379-2-bruno.thomsen@gmail.com> <20200713025246.GY21277@dragon>
-In-Reply-To: <20200713025246.GY21277@dragon>
-From:   Bruno Thomsen <bruno.thomsen@gmail.com>
-Date:   Tue, 14 Jul 2020 12:03:16 +0200
-Message-ID: <CAH+2xPAHKY6YfhO-jXfKN+TRN5LDT1Kkn8a8HUj_EOqFt=75nQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] ARM: dts: imx7: add support for kamstrup flex concentrator
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Bruno Thomsen <bth@kamstrup.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXoUME_dCOZP1N0tXyMv61edfNECM4-n4NPa56YbBCncw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Den man. 13. jul. 2020 kl. 04.52 skrev Shawn Guo <shawnguo@kernel.org>:
->
-> On Mon, Jun 29, 2020 at 01:49:26PM +0200, Bruno Thomsen wrote:
-> > +&fec1 {
-> > +     pinctrl-names = "default";
-> > +     pinctrl-0 = <&pinctrl_enet1>;
-> > +     phy-mode = "rmii";
-> > +     phy-reset-gpios = <&gpio7 15 GPIO_ACTIVE_LOW>;
-> > +     phy-reset-duration = <100>;
-> > +     phy-reset-post-delay = <1000>;
->
-> These properties are deprecated.
+On Tue, Jul 14, 2020 at 09:22:39AM +0200, Geert Uytterhoeven wrote:
+> On Mon, Jul 13, 2020 at 7:37 PM Jonathan Corbet <corbet@lwn.net> wrote:
+> > On Fri, 10 Jul 2020 08:20:19 +0200
+> > "Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
+> > >  Documentation/openrisc/openrisc_port.rst | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/openrisc/openrisc_port.rst b/Documentation/openrisc/openrisc_port.rst
+> > > index 4b2c437942a0..657ac4af7be6 100644
+> > > --- a/Documentation/openrisc/openrisc_port.rst
+> > > +++ b/Documentation/openrisc/openrisc_port.rst
+> > > @@ -8,7 +8,7 @@ target architecture, specifically, is the 32-bit OpenRISC 1000 family (or1k).
+> > >  For information about OpenRISC processors and ongoing development:
+> > >
+> > >       =======         =============================
+> > > -     website         http://openrisc.io
+> > > +     website         https://openrisc.io
+> > >       email           openrisc@lists.librecores.org
+> > >       =======         =============================
+> >
+> > Applied, thanks.
+> 
+> Is that site accessible for anyone? It times out for me.
+> 
 
-Thanks for review Shawn.
+It should be,  It was working a few days ago when I updated it last.  Perhaps
+there is an issue caused by the github outage yesterday.  I will look into it.
 
-I have not yet been successful in converting the deprecated properties
-to generic phy properties, so hoping I could get a hit.
-
-Kernel error messages:
-mdio_bus 30be0000.ethernet-1: MDIO device at address 1 is missing.
-fec 30be0000.ethernet eth0: Unable to connect to phy
-
-Updated device tree section:
-&fec1 {
-        pinctrl-names = "default";
-        pinctrl-0 = <&pinctrl_enet1>;
-        phy-mode = "rmii";
-        phy-handle = <&ethphy>;
-        status = "okay";
-
-        mdio {
-                #address-cells = <1>;
-                #size-cells = <0>;
-
-                ethphy: ethernet-phy@1 {
-                        /* Micrel KSZ8051RNLV */
-                        compatible = "ethernet-phy-ieee802.3-c22";
-                        reg = <1>;
-                        max-speed = <100>;
-
-                        reset-assert-us = <100000>;
-                        reset-deassert-us = <1000000>;
-                        reset-gpios = <&gpio7 15 GPIO_ACTIVE_LOW>;
-                };
-        };
-};
-
-/Bruno
-
-> > +     phy-handle = <&ethphy>;
-> > +     status = "okay";
-> > +
-> > +     mdio {
-> > +             #address-cells = <1>;
-> > +             #size-cells = <0>;
-> > +             ethphy: ethernet-phy@1 {
-> > +                     /* Micrel KSZ8051RNLV */
-> > +                     compatible = "ethernet-phy-ieee802.3-c22";
-> > +                     reg = <1>;
-> > +             };
-> > +     };
-> > +};
+-Stafford
