@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A572521F9F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8434A21F9D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729919AbgGNSsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:48:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43628 "EHLO mail.kernel.org"
+        id S1729227AbgGNSrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:47:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729132AbgGNSsQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:48:16 -0400
+        id S1729634AbgGNSq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:46:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F091122B2C;
-        Tue, 14 Jul 2020 18:48:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD4C022B2E;
+        Tue, 14 Jul 2020 18:46:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752495;
-        bh=HbMB8dhIsKbn9++zvk6mg7FNJbmb/n03UK2o+8Tq7c8=;
+        s=default; t=1594752416;
+        bh=lyxEKoaNkK7E7mMANVO/l97JTCsXrjZDPER7yfusQxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KpMnwaOi1FsxCgyiaCwJCWHyE2vRMr/FGrm5MPDQPdslvpIUChtsipdkkrc/TYMep
-         4D8JbeXrTy9HqsHY600t9GzJ/BIcmcFreBgJUrqe8XguVeloaHh58pb04atgJGzM0r
-         Ntlh/7rTH9RBLpSWQr3gw74RbPj9dooxJSGnVX1E=
+        b=icbIehrWJHfdaAR13F6Al/Oo3b1vjztCmZfiWG18rvCYIrPi0kGPoovPh+eVasu6Z
+         UsLg1JXYvaIs59zkruNmlLFHWiuYT0JKbWFdzNL9D0BJqtuggwZrQtlBi/LEH/Ca8B
+         j1wOg8w5T/fewhuqliuNzKr/z3NY+Lor7Vvsb+MA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+934037347002901b8d2a@syzkaller.appspotmail.com,
-        Zheng Bin <zhengbin13@huawei.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 33/58] nbd: Fix memory leak in nbd_add_socket
-Date:   Tue, 14 Jul 2020 20:44:06 +0200
-Message-Id: <20200714184057.790468799@linuxfoundation.org>
+        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 34/58] cxgb4: fix all-mask IP address comparison
+Date:   Tue, 14 Jul 2020 20:44:07 +0200
+Message-Id: <20200714184057.840546789@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
 References: <20200714184056.149119318@linuxfoundation.org>
@@ -46,78 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Bin <zhengbin13@huawei.com>
+From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 
-[ Upstream commit 579dd91ab3a5446b148e7f179b6596b270dace46 ]
+[ Upstream commit 76c4d85c9260c3d741cbd194c30c61983d0a4303 ]
 
-When adding first socket to nbd, if nsock's allocation failed, the data
-structure member "config->socks" was reallocated, but the data structure
-member "config->num_connections" was not updated. A memory leak will occur
-then because the function "nbd_config_put" will free "config->socks" only
-when "config->num_connections" is not zero.
+Convert all-mask IP address to Big Endian, instead, for comparison.
 
-Fixes: 03bf73c315ed ("nbd: prevent memory leak")
-Reported-by: syzbot+934037347002901b8d2a@syzkaller.appspotmail.com
-Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: f286dd8eaad5 ("cxgb4: use correct type for all-mask IP address comparison")
+Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/nbd.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 226103af30f05..d7c7232e438c9 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -974,25 +974,26 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
- 	     test_bit(NBD_BOUND, &config->runtime_flags))) {
- 		dev_err(disk_to_dev(nbd->disk),
- 			"Device being setup by another task");
--		sockfd_put(sock);
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto put_socket;
-+	}
-+
-+	nsock = kzalloc(sizeof(*nsock), GFP_KERNEL);
-+	if (!nsock) {
-+		err = -ENOMEM;
-+		goto put_socket;
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+index 86745f33a252d..97d97de9accc5 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+@@ -810,16 +810,16 @@ static bool is_addr_all_mask(u8 *ipmask, int family)
+ 		struct in_addr *addr;
+ 
+ 		addr = (struct in_addr *)ipmask;
+-		if (ntohl(addr->s_addr) == 0xffffffff)
++		if (addr->s_addr == htonl(0xffffffff))
+ 			return true;
+ 	} else if (family == AF_INET6) {
+ 		struct in6_addr *addr6;
+ 
+ 		addr6 = (struct in6_addr *)ipmask;
+-		if (ntohl(addr6->s6_addr32[0]) == 0xffffffff &&
+-		    ntohl(addr6->s6_addr32[1]) == 0xffffffff &&
+-		    ntohl(addr6->s6_addr32[2]) == 0xffffffff &&
+-		    ntohl(addr6->s6_addr32[3]) == 0xffffffff)
++		if (addr6->s6_addr32[0] == htonl(0xffffffff) &&
++		    addr6->s6_addr32[1] == htonl(0xffffffff) &&
++		    addr6->s6_addr32[2] == htonl(0xffffffff) &&
++		    addr6->s6_addr32[3] == htonl(0xffffffff))
+ 			return true;
  	}
- 
- 	socks = krealloc(config->socks, (config->num_connections + 1) *
- 			 sizeof(struct nbd_sock *), GFP_KERNEL);
- 	if (!socks) {
--		sockfd_put(sock);
--		return -ENOMEM;
-+		kfree(nsock);
-+		err = -ENOMEM;
-+		goto put_socket;
- 	}
- 
- 	config->socks = socks;
- 
--	nsock = kzalloc(sizeof(struct nbd_sock), GFP_KERNEL);
--	if (!nsock) {
--		sockfd_put(sock);
--		return -ENOMEM;
--	}
--
- 	nsock->fallback_index = -1;
- 	nsock->dead = false;
- 	mutex_init(&nsock->tx_lock);
-@@ -1004,6 +1005,10 @@ static int nbd_add_socket(struct nbd_device *nbd, unsigned long arg,
- 	atomic_inc(&config->live_connections);
- 
- 	return 0;
-+
-+put_socket:
-+	sockfd_put(sock);
-+	return err;
- }
- 
- static int nbd_reconnect_socket(struct nbd_device *nbd, unsigned long arg)
+ 	return false;
 -- 
 2.25.1
 
