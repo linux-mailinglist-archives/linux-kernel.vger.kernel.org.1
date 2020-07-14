@@ -2,84 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1FA21E4FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 03:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F64D21E50B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 03:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbgGNBMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 21:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726374AbgGNBMW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 21:12:22 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCF1C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 18:12:22 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id w2so6829413pgg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Jul 2020 18:12:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5yjaTy96iRFPTsi26P18yq64D5S2151Zztu56aP2UQk=;
-        b=DKREwuM1AdDK/M5PRjMceNQQ5PSr4Xfy3P/tz5j9KLqG7xpQvwFBtF6iqOKNiHJeHz
-         0LtGhspN0cAeU/1/I6hlmRFzPP+PakMNDDWkk+6neyLAw6VjOq3PKxLlGjVYFwnl71jY
-         CvuZix9jHtiIZKtZpVPiMHxs6yo596oGk6UAo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5yjaTy96iRFPTsi26P18yq64D5S2151Zztu56aP2UQk=;
-        b=WVqgnKVmMbNsHE6pPZrVnGYwvFCW/WfmTO93bMTnbcgtLHTkcB/67PQBaykoHHAjk9
-         yUrFKf28JlPY2WcEQIshkrO5VQ6WDTNjlk59k+UB4HaNZyv1XkYzFg1OKZPh1R9RML2c
-         YIL1EVR9NAs03uumCbfhaczx6D8toF4JI77LmfEoca3qBC2T9egA+ccMZKwPJ6NrVprq
-         r5bZeWJCMwolRGWnmjxeN7Q2/WfSf9SefqG2OyRFLVIOhBKKvXdkjE+vqh94J/A4Cc4V
-         vP4XWIx47s/NoAa3ZAPil5DE7bdLBRbuIiiKA4j7mpFSd7+j0lWGj5K4Y9LH9DIVA16S
-         SkOA==
-X-Gm-Message-State: AOAM530iqwRdYMoJ3bUbgVqzxHC0Dq599oFYwbXBzXHwJ7IO5u3loGtt
-        6VHhIn3bT22QBn32x+FXTbFdQA==
-X-Google-Smtp-Source: ABdhPJzURU5w7Tj+O39sbKidAAXjNVHx+XXYlAgKEyC4g8eI7DWw01L8nI4SKvyRTPsf2//G04xEaQ==
-X-Received: by 2002:a05:6a00:14ce:: with SMTP id w14mr2275557pfu.121.1594689141507;
-        Mon, 13 Jul 2020 18:12:21 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id e8sm15972489pfl.125.2020.07.13.18.12.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jul 2020 18:12:20 -0700 (PDT)
-Date:   Mon, 13 Jul 2020 18:12:19 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        seanpaul@chromium.org, hoegsberg@chromium.org,
-        dianders@chromium.org, mkrishn@codeaurora.org,
-        travitej@codeaurora.org, nganji@codeaurora.org
-Subject: Re: [v1] drm/msm/dpu: add support for clk and bw scaling for display
-Message-ID: <20200714011219.GQ3191083@google.com>
-References: <1592489321-29213-1-git-send-email-kalyan_t@codeaurora.org>
+        id S1726935AbgGNBYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 21:24:46 -0400
+Received: from mga12.intel.com ([192.55.52.136]:3555 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726364AbgGNBYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 21:24:46 -0400
+IronPort-SDR: SIGcOZgvAqjfH//LbaTL/KD/vLUq4oLQendT9QYk+KT9Vc/gGkuPgu+UzIWhuWJ4SapHoLU21S
+ Rprxhe2HE5tg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="128335352"
+X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
+   d="scan'208";a="128335352"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 18:24:45 -0700
+IronPort-SDR: zTuwavoXlFX6hjRzlLozhiHIC7rdTX3dDznO7Xsbcd+TcvNnPRYsMfxCNvEFbKCCwi91T5suab
+ 2Nu9R/xpPjRg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
+   d="scan'208";a="485691184"
+Received: from guptapadev.jf.intel.com (HELO guptapadev.amr) ([10.54.74.188])
+  by fmsmga005.fm.intel.com with ESMTP; 13 Jul 2020 18:24:44 -0700
+Date:   Mon, 13 Jul 2020 18:18:54 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Gomez Iglesias, Antonio" <antonio.gomez.iglesias@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Anthony Steinhauser <asteinhauser@google.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Waiman Long <longman@redhat.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH] x86/bugs/multihit: Fix mitigation reporting when KVM is not
+ in use
+Message-ID: <267631f4db4fd7e9f7ca789c2efaeab44103f68e.1594689154.git.pawan.kumar.gupta@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1592489321-29213-1-git-send-email-kalyan_t@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 07:38:41PM +0530, Kalyan Thota wrote:
-> This change adds support to scale src clk and bandwidth as
-> per composition requirements.
-> 
-> Interconnect registration for bw has been moved to mdp
-> device node from mdss to facilitate the scaling.
-> 
-> Changes in v1:
->  - Address armv7 compilation issues with the patch (Rob)
-> 
-> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+On systems that have virtualization disabled or KVM module is not
+loaded, sysfs mitigation state of X86_BUG_ITLB_MULTIHIT is reported
+incorrectly as:
 
-It seems this is an evolution of this series: https://patchwork.kernel.org/project/linux-arm-msm/list/?series=265351
+  $ cat /sys/devices/system/cpu/vulnerabilities/itlb_multihit
+  KVM: Vulnerable
 
-Are the DT bits of the series still valid? If so please include them in the
-series, otherwise please add DT patches to allow folks to test and review,
-and get them landed in Bjorn's tree after the driver changes have landed.
+System is not vulnerable to DoS attack from a rogue guest when:
+ - KVM module is not loaded or
+ - Virtualization is disabled in the hardware or
+ - Kernel was configured without support for KVM
+
+Change the reporting to "Currently not affected (KVM not in use)" for
+such cases.
+
+Reported-by: Nelson Dsouza <nelson.dsouza@linux.intel.com>
+Fixes: b8e8c8303ff2 ("kvm: mmu: ITLB_MULTIHIT mitigation")
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+---
+ .../admin-guide/hw-vuln/multihit.rst          |  5 +++-
+ arch/x86/include/asm/processor.h              |  6 +++++
+ arch/x86/kernel/cpu/bugs.c                    | 24 +++++++++----------
+ arch/x86/kvm/mmu/mmu.c                        |  9 +++++--
+ 4 files changed, 29 insertions(+), 15 deletions(-)
+
+diff --git a/Documentation/admin-guide/hw-vuln/multihit.rst b/Documentation/admin-guide/hw-vuln/multihit.rst
+index ba9988d8bce5..842961419f3e 100644
+--- a/Documentation/admin-guide/hw-vuln/multihit.rst
++++ b/Documentation/admin-guide/hw-vuln/multihit.rst
+@@ -82,7 +82,10 @@ The possible values in this file are:
+        - Software changes mitigate this issue.
+      * - KVM: Vulnerable
+        - The processor is vulnerable, but no mitigation enabled
+-
++     * - Currently not affected (KVM not in use)
++       - The processor is vulnerable but no mitigation is required because
++         KVM module is not loaded or virtualization is disabled in the hardware or
++         kernel was configured without support for KVM.
+ 
+ Enumeration of the erratum
+ --------------------------------
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 03b7c4ca425a..830a3e7725af 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -989,4 +989,10 @@ enum mds_mitigations {
+ 	MDS_MITIGATION_VMWERV,
+ };
+ 
++enum itlb_multihit_mitigations {
++	ITLB_MULTIHIT_MITIGATION_OFF,
++	ITLB_MULTIHIT_MITIGATION_FULL,
++	ITLB_MULTIHIT_MITIGATION_NO_KVM,
++};
++
+ #endif /* _ASM_X86_PROCESSOR_H */
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 0b71970d2d3d..97f66a93f2be 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1395,8 +1395,15 @@ void x86_spec_ctrl_setup_ap(void)
+ 		x86_amd_ssb_disable();
+ }
+ 
+-bool itlb_multihit_kvm_mitigation;
+-EXPORT_SYMBOL_GPL(itlb_multihit_kvm_mitigation);
++/* Default to KVM not in use, KVM module changes this later */
++enum itlb_multihit_mitigations itlb_multihit_mitigation = ITLB_MULTIHIT_MITIGATION_NO_KVM;
++EXPORT_SYMBOL_GPL(itlb_multihit_mitigation);
++
++static const char * const itlb_multihit_strings[] = {
++	[ITLB_MULTIHIT_MITIGATION_OFF]		= "KVM: Vulnerable",
++	[ITLB_MULTIHIT_MITIGATION_FULL]		= "KVM: Mitigation: Split huge pages",
++	[ITLB_MULTIHIT_MITIGATION_NO_KVM]	= "Currently not affected (KVM not in use)",
++};
+ 
+ #undef pr_fmt
+ #define pr_fmt(fmt)	"L1TF: " fmt
+@@ -1553,25 +1560,18 @@ static ssize_t l1tf_show_state(char *buf)
+ 		       l1tf_vmx_states[l1tf_vmx_mitigation],
+ 		       sched_smt_active() ? "vulnerable" : "disabled");
+ }
+-
+-static ssize_t itlb_multihit_show_state(char *buf)
+-{
+-	if (itlb_multihit_kvm_mitigation)
+-		return sprintf(buf, "KVM: Mitigation: Split huge pages\n");
+-	else
+-		return sprintf(buf, "KVM: Vulnerable\n");
+-}
+ #else
+ static ssize_t l1tf_show_state(char *buf)
+ {
+ 	return sprintf(buf, "%s\n", L1TF_DEFAULT_MSG);
+ }
++#endif
+ 
+ static ssize_t itlb_multihit_show_state(char *buf)
+ {
+-	return sprintf(buf, "Processor vulnerable\n");
++	return sprintf(buf, "%s\n",
++		       itlb_multihit_strings[itlb_multihit_mitigation]);
+ }
+-#endif
+ 
+ static ssize_t mds_show_state(char *buf)
+ {
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 6d6a0ae7800c..e089b9e565a5 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -50,7 +50,7 @@
+ #include <asm/kvm_page_track.h>
+ #include "trace.h"
+ 
+-extern bool itlb_multihit_kvm_mitigation;
++extern enum itlb_multihit_mitigations itlb_multihit_mitigation;
+ 
+ static int __read_mostly nx_huge_pages = -1;
+ #ifdef CONFIG_PREEMPT_RT
+@@ -6158,7 +6158,12 @@ static bool get_nx_auto_mode(void)
+ 
+ static void __set_nx_huge_pages(bool val)
+ {
+-	nx_huge_pages = itlb_multihit_kvm_mitigation = val;
++	nx_huge_pages = val;
++
++	if (val)
++		itlb_multihit_mitigation = ITLB_MULTIHIT_MITIGATION_FULL;
++	else
++		itlb_multihit_mitigation = ITLB_MULTIHIT_MITIGATION_OFF;
+ }
+ 
+ static int set_nx_huge_pages(const char *val, const struct kernel_param *kp)
+-- 
+2.21.3
+
