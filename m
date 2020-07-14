@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A8F21F2B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B21221F2C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728531AbgGNNet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:34:49 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7307 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726624AbgGNNer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:34:47 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id EEBE7B5AE868C3BC6A28;
-        Tue, 14 Jul 2020 21:34:42 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.238) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Jul 2020
- 21:34:34 +0800
-Subject: [PATCH v2] mm/percpu: fix 'defined but not used' warning
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linux-next@vger.kernel.org>,
-        <john.wanghui@huawei.com>, Roman Gushchin <guro@fb.com>
-References: <20200714134101.80534-1-cuibixuan@huawei.com>
- <20200714225311.7aeffffd@canb.auug.org.au>
-From:   Bixuan Cui <cuibixuan@huawei.com>
-Message-ID: <7c871406-4f27-64c0-edca-8f5cee1ea605@huawei.com>
-Date:   Tue, 14 Jul 2020 21:34:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726542AbgGNNha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 09:37:30 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:52875 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726050AbgGNNh3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 09:37:29 -0400
+Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 06EDbQxS094750;
+        Tue, 14 Jul 2020 22:37:26 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
+ Tue, 14 Jul 2020 22:37:26 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 06EDbQm9094743
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Tue, 14 Jul 2020 22:37:26 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] fbdev: Detect integer underflow at "struct
+ fbcon_ops"->clear_margins.
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-kernel@vger.kernel.org,
+        George Kennedy <george.kennedy@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <189fc902-db7c-9886-cc31-c0348435303a@i-love.sakura.ne.jp>
+ <20200712111013.11881-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <20200712111013.11881-2-penguin-kernel@I-love.SAKURA.ne.jp>
+ <CGME20200714072231eucas1p17c53f0a661346ebfd316ebd5796ca346@eucas1p1.samsung.com>
+ <db4b3346-b9f8-a428-1445-1fcbd8521e1d@samsung.com>
+ <e00078d1-e5fb-a019-3036-cb182ed2e40b@i-love.sakura.ne.jp>
+Message-ID: <adff5d10-fe35-62d4-74c5-182958c5ada7@i-love.sakura.ne.jp>
+Date:   Tue, 14 Jul 2020 22:37:27 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200714225311.7aeffffd@canb.auug.org.au>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <e00078d1-e5fb-a019-3036-cb182ed2e40b@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.238]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gcc report the following warning without CONFIG_MEMCG_KMEM:
+On 2020/07/14 19:27, Tetsuo Handa wrote:
+> On 2020/07/14 16:22, Bartlomiej Zolnierkiewicz wrote:
+>> How does this patch relate to:
+>>
+>> 	https://marc.info/?l=linux-fbdev&m=159415024816722&w=2
+>>
+>> ?
+>>
+>> It seems to address the same issue, I've added George and Dan to Cc:.
+> 
+> George Kennedy's patch does not help for my case.
+> 
 
-mm/percpu-internal.h:145:29: warning: â€˜pcpu_chunk_typeâ€™ defined
-but not used [-Wunused-function]
- static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
-                             ^~~~~~~~~~~~~~~
+OK. You can add
 
-Add 'inline' to pcpu_chunk_type(),pcpu_is_memcg_chunk() and
-pcpu_chunk_list() to clear warning.
+Reported-and-tested-by: syzbot <syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com>
 
-Fixes: 26c99879ef01 ("mm: memcg/percpu: account percpu memory to memory cgroups")
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
- mm/percpu-internal.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+to my patch.
 
-diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
-index 7983455842ff..18b768ac7dca 100644
---- a/mm/percpu-internal.h
-+++ b/mm/percpu-internal.h
-@@ -129,31 +129,31 @@ static inline int pcpu_chunk_map_bits(struct pcpu_chunk *chunk)
- }
+By the way, if
 
- #ifdef CONFIG_MEMCG_KMEM
--static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
-+static inline enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
- {
- 	if (chunk->obj_cgroups)
- 		return PCPU_CHUNK_MEMCG;
- 	return PCPU_CHUNK_ROOT;
- }
+  /* bitfill_aligned() assumes that it's at least 8x8 */
 
--static bool pcpu_is_memcg_chunk(enum pcpu_chunk_type chunk_type)
-+static inline bool pcpu_is_memcg_chunk(enum pcpu_chunk_type chunk_type)
- {
- 	return chunk_type == PCPU_CHUNK_MEMCG;
- }
-
- #else
--static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
-+static inline enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
- {
- 	return PCPU_CHUNK_ROOT;
- }
-
--static bool pcpu_is_memcg_chunk(enum pcpu_chunk_type chunk_type)
-+static inline bool pcpu_is_memcg_chunk(enum pcpu_chunk_type chunk_type)
- {
- 	return false;
- }
- #endif
-
--static struct list_head *pcpu_chunk_list(enum pcpu_chunk_type chunk_type)
-+static inline struct list_head *pcpu_chunk_list(enum pcpu_chunk_type chunk_type)
- {
- 	return &pcpu_chunk_lists[pcpu_nr_slots *
- 				 pcpu_is_memcg_chunk(chunk_type)];
--- 
-2.17.1
-
-
-.
-
-
-
+is true, don't we need to also check that the rect to fill is at least
+8x8 in bit_clear_margins() ? (Well, I feel did it mean multiple of 8x8 ?
+Then, what is bitfill_unaligned() for ?)
