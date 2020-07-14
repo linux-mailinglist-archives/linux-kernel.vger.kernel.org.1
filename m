@@ -2,130 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B756B21F637
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0712B21F63B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727848AbgGNPdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 11:33:02 -0400
-Received: from mga12.intel.com ([192.55.52.136]:19794 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725280AbgGNPdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 11:33:02 -0400
-IronPort-SDR: Fx25YqgNYcYkbhAQ2E7SBzrRBP5zmilBpMw/24mHkwG+Jc+k99BtbuiLuhfQBNZX6uXpLQ+p7Q
- LzQP6vhNuW/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="128495203"
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="128495203"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 08:33:01 -0700
-IronPort-SDR: jpLl8Z91CHrJMTPg3t0J7aTW5y2Vqu6HL+js7/SNral8HdnSKvyg1gNcK1cIg8t/WVHXCucWtk
- kjh/xIzkwcnQ==
-X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
-   d="scan'208";a="317756331"
-Received: from pbusser-mobl1.amr.corp.intel.com (HELO [10.252.136.7]) ([10.252.136.7])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 08:33:00 -0700
-Subject: Re: [PATCH] ASoC: Intel: bytcht_es8316: Add missed put_device()
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        cezary.rojewski@intel.com, liam.r.girdwood@linux.intel.com,
-        yang.jie@linux.intel.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        paul@crapouillou.net
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20200714080918.148196-1-jingxiangfeng@huawei.com>
- <25abce87-5572-a78a-f001-7776f07be4ac@redhat.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <48bdc22e-a0fc-0402-a003-1d0736107e8a@linux.intel.com>
-Date:   Tue, 14 Jul 2020 10:32:59 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727924AbgGNPdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 11:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725280AbgGNPdk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 11:33:40 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80ACEC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:33:40 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id k15so11988566lfc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:33:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3rYU4sbMcFdjvk+wenfKOdKBg9lSiSVy3qR8AsDWIT4=;
+        b=IobWZMZ2K4lfIlp2s0OMaugN8Nr0+nroGDJtXkiC4e/XOIRS/xcHqGwEs/K6W4JaY9
+         vx/FIjFLSo1MrfLf/XK1RlzcMb1/WLsHEyRjvsEhdixC9gGSR6G0trgFj5aiUsbt1zRC
+         5VvJnSve8NLK8sjeRHlLk7K93NUoBQ/sk2+O8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3rYU4sbMcFdjvk+wenfKOdKBg9lSiSVy3qR8AsDWIT4=;
+        b=B+dxGDnFztpQjeoLty6CfHiejHaV5ui/Om+RAvXErC9omBrbj0Ey2Uvnyzw/7OgctQ
+         EeuBE6uadXDnfG2MUOwYzdOQQNJCQYXBaHnTAkRkoCdKy7S+JKgNAHnaxIGE+YQRIsgp
+         idX8RRiePFMKG+1vrO6hjB/pB2ZvTcDhPNRh1jKROpSmPwUQ8W9d5fTIewaHrAoS3+Yh
+         DDw/vhD6m8ttKJ5+t3/9NdR+DlamefBDhW4WH7rJa7tPuqBE4LT9GDzwLniX8BRQqRky
+         vzU9tSYZUyXce4i+EUTx1R+ZC16nk1sT9B7BEtLtyejYsHi60JtnrhPDtZiOipc5lvgc
+         ei6w==
+X-Gm-Message-State: AOAM531kk8gQgQYZykeQJgLLRRL7uQcnfcFIJXFKi68oSgNWbdGdaJeC
+        ge58M+f0fAwFZUWOIEdbEQg6EFDTlSQ=
+X-Google-Smtp-Source: ABdhPJwX+j2iwIadga+SOvdBYrbYUIqq0t1Q/2/PvqQJ3z8Squ+F/7lcO7J1AR3gBjuN58ctGGhNqw==
+X-Received: by 2002:a19:7002:: with SMTP id h2mr2465786lfc.62.1594740818359;
+        Tue, 14 Jul 2020 08:33:38 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id g7sm5356699lfe.62.2020.07.14.08.33.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 08:33:37 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id r19so23290319ljn.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:33:37 -0700 (PDT)
+X-Received: by 2002:a2e:999a:: with SMTP id w26mr2542103lji.371.1594740817078;
+ Tue, 14 Jul 2020 08:33:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <25abce87-5572-a78a-f001-7776f07be4ac@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200710135706.537715-1-hch@lst.de> <CAHk-=wjGjwtgYJvLOd5aO2dWyPsC-6ED2Hthoxm1Eerf-Ahd-w@mail.gmail.com>
+ <20200714070955.GB776@lst.de>
+In-Reply-To: <20200714070955.GB776@lst.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 14 Jul 2020 08:33:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wibed1S5_XMgjrUTOgUf0UOy1djm3e14c3YOm1Loj2vzw@mail.gmail.com>
+Message-ID: <CAHk-=wibed1S5_XMgjrUTOgUf0UOy1djm3e14c3YOm1Loj2vzw@mail.gmail.com>
+Subject: Re: clean up address limit helpers
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-riscv@lists.infradead.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 14, 2020 at 12:09 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Fri, Jul 10, 2020 at 08:25:35AM -0700, Linus Torvalds wrote:
+> >
+> > Ack. All the patches looked like no-ops to me, but with better naming
+> > and clarity.
+>
+> Is that a formal Acked-by?
 
+Yup, the patch series looks fine to me, and it looks like you fixed up
+the things people noticed about off m68k behavior.
 
-On 7/14/20 8:33 AM, Hans de Goede wrote:
-> Hi,
-> 
-> On 7/14/20 10:09 AM, Jing Xiangfeng wrote:
->> snd_byt_cht_es8316_mc_probe() misses to call put_device() in an error
->> path. Add the missed function call to fix it.
->>
->> Fixes: ba49cf6f8e4a ("ASoC: Intel: bytcht_es8316: Add quirk for 
->> inverted jack detect")
->> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-> 
-> Patch looks good to me:
-> 
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Actually the existing code looks quite odd to me:
-
-if (cnt) {
-	ret = device_add_properties(codec_dev, props);
-	if (ret)
-		return ret;
-}
-
-devm_acpi_dev_add_driver_gpios(codec_dev, byt_cht_es8316_gpios);
-priv->speaker_en_gpio =
-	gpiod_get_index(codec_dev, "speaker-enable", 0,
-			/* see comment in byt_cht_es8316_resume */
-			GPIOD_OUT_LOW | GPIOD_FLAGS_BIT_NONEXCLUSIVE);
-put_device(codec_dev);
-
-if the first branch is not taken the put_device() will not be balanced.
-
-Shouldn't this be:
-
-if (cnt) {
-	ret = device_add_properties(codec_dev, props);
-	put_device(codec_dev);
-	if (ret)
-		return ret;
-}
-
-devm_acpi_dev_add_driver_gpios(codec_dev, byt_cht_es8316_gpios);
-priv->speaker_en_gpio =
-	gpiod_get_index(codec_dev, "speaker-enable", 0,
-			/* see comment in byt_cht_es8316_resume */
-			GPIOD_OUT_LOW | GPIOD_FLAGS_BIT_NONEXCLUSIVE);
-/* removed put_device(codec_dev); */
-
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
->> ---
->>   sound/soc/intel/boards/bytcht_es8316.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/intel/boards/bytcht_es8316.c 
->> b/sound/soc/intel/boards/bytcht_es8316.c
->> index 9e5fc9430628..ecbc58e8a37f 100644
->> --- a/sound/soc/intel/boards/bytcht_es8316.c
->> +++ b/sound/soc/intel/boards/bytcht_es8316.c
->> @@ -543,8 +543,10 @@ static int snd_byt_cht_es8316_mc_probe(struct 
->> platform_device *pdev)
->>       if (cnt) {
->>           ret = device_add_properties(codec_dev, props);
->> -        if (ret)
->> +        if (ret) {
->> +            put_device(codec_dev);
->>               return ret;
->> +        }
->>       }
->>       devm_acpi_dev_add_driver_gpios(codec_dev, byt_cht_es8316_gpios);
->>
-> 
+              Linus
