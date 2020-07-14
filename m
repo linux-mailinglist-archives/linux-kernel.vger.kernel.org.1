@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2014621FB70
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D38421FCE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731248AbgGNS6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:58:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57136 "EHLO mail.kernel.org"
+        id S1730474AbgGNTML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:12:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731226AbgGNS6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:58:38 -0400
+        id S1729738AbgGNSrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:47:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E94CB22507;
-        Tue, 14 Jul 2020 18:58:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 788DB22AAE;
+        Tue, 14 Jul 2020 18:47:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753118;
-        bh=EdnW4CLBQnFmAtrJiSFWIfqAi2rXfDL9+rm6fgdqO1g=;
+        s=default; t=1594752455;
+        bh=lHoFsJHhdG2dbnh2ce7yjRas4/oHkqce+YQiHAMMOGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JhfqR1o13XRALEGB7RcEGLQF5igya/xd2rCdChz3UrvoD5J0wzzTQbvkp2ZqGRemO
-         S3XlLXO62pnctdxUvkQs4iT3L2wguLNVifWC3xyAAjElOspXpZFemvX279G47EAURB
-         GntpNPUDW47Lm3aUj8r4f6+6lq0mt3oY+rNLdcJU=
+        b=bODN6zQpyX9qAwvAUsXaFLcpd040evA0KX1PTpTIW34ePsD+VSlh+46Yco7zCwXYz
+         8FBQ6lXpDhahAcu/1RQFkMLJYIEJ6rghfV08UtjjM713fi9LMGmkeiVBJ5PdXnywVp
+         /dn5+5+wJwXkdfO4ofa9kTCW/8SSy+XdwwmLdu3w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@mellanox.com>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 096/166] net/mlx5e: Fix CPU mapping after function reload to avoid aRFS RX crash
+        stable@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 4.19 48/58] module: Refactor section attr into bin attribute
 Date:   Tue, 14 Jul 2020 20:44:21 +0200
-Message-Id: <20200714184120.444355652@linuxfoundation.org>
+Message-Id: <20200714184058.548988651@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184056.149119318@linuxfoundation.org>
+References: <20200714184056.149119318@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,83 +43,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@mellanox.com>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit f4aebbfb56ed0c186adbeb2799df836da50f78e3 ]
+commit ed66f991bb19d94cae5d38f77de81f96aac7813f upstream.
 
-After function reload, CPU mapping used by aRFS RX is broken, leading to
-a kernel panic. Fix by moving initialization of rx_cpu_rmap from
-netdev_init to netdev_attach. IRQ table is re-allocated on mlx5_load,
-but netdev is not re-initialize.
+In order to gain access to the open file's f_cred for kallsym visibility
+permission checks, refactor the module section attributes to use the
+bin_attribute instead of attribute interface. Additionally removes the
+redundant "name" struct member.
 
-Trace of the panic:
-[ 22.055672] general protection fault, probably for non-canonical address 0x785634120000ff1c: 0000 [#1] SMP PTI
-[ 22.065010] CPU: 4 PID: 0 Comm: swapper/4 Not tainted 5.7.0-rc2-for-upstream-perf-2020-04-21_16-34-03-31 #1
-[ 22.067967] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
-[ 22.071174] RIP: 0010:get_rps_cpu+0x267/0x300
-[ 22.075692] RSP: 0018:ffffc90000244d60 EFLAGS: 00010202
-[ 22.076888] RAX: ffff888459b0e400 RBX: 0000000000000000 RCX:0000000000000007
-[ 22.078364] RDX: 0000000000008884 RSI: ffff888467cb5b00 RDI:0000000000000000
-[ 22.079815] RBP: 00000000ff342b27 R08: 0000000000000007 R09:0000000000000003
-[ 22.081289] R10: ffffffffffffffff R11: 00000000000070cc R12:ffff888454900000
-[ 22.082767] R13: ffffc90000e5a950 R14: ffffc90000244dc0 R15:0000000000000007
-[ 22.084190] FS: 0000000000000000(0000) GS:ffff88846fc80000(0000)knlGS:0000000000000000
-[ 22.086161] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 22.087427] CR2: ffffffffffffffff CR3: 0000000464426003 CR4:0000000000760ee0
-[ 22.088888] DR0: 0000000000000000 DR1: 0000000000000000 DR2:0000000000000000
-[ 22.090336] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:0000000000000400
-[ 22.091764] PKRU: 55555554
-[ 22.092618] Call Trace:
-[ 22.093442] <IRQ>
-[ 22.094211] ? kvm_clock_get_cycles+0xd/0x10
-[ 22.095272] netif_receive_skb_list_internal+0x258/0x2a0
-[ 22.096460] gro_normal_list.part.137+0x19/0x40
-[ 22.097547] napi_complete_done+0xc6/0x110
-[ 22.098685] mlx5e_napi_poll+0x190/0x670 [mlx5_core]
-[ 22.099859] net_rx_action+0x2a0/0x400
-[ 22.100848] __do_softirq+0xd8/0x2a8
-[ 22.101829] irq_exit+0xa5/0xb0
-[ 22.102750] do_IRQ+0x52/0xd0
-[ 22.103654] common_interrupt+0xf/0xf
-[ 22.104641] </IRQ>
+Cc: stable@vger.kernel.org
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Tested-by: Jessica Yu <jeyu@kernel.org>
+Acked-by: Jessica Yu <jeyu@kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 4383cfcc65e7 ("net/mlx5: Add devlink reload")
-Signed-off-by: Aya Levin <ayal@mellanox.com>
-Reviewed-by: Eran Ben Elisha <eranbe@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/module.c |   45 ++++++++++++++++++++++++---------------------
+ 1 file changed, 24 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 02f6b6bd2847c..bc54913c58618 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -5119,6 +5119,10 @@ static int mlx5e_init_nic_rx(struct mlx5e_priv *priv)
- 	if (err)
- 		goto err_destroy_flow_steering;
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1451,8 +1451,7 @@ static inline bool sect_empty(const Elf_
+ }
  
-+#ifdef CONFIG_MLX5_EN_ARFS
-+	priv->netdev->rx_cpu_rmap =  mlx5_eq_table_get_rmap(priv->mdev);
-+#endif
+ struct module_sect_attr {
+-	struct module_attribute mattr;
+-	char *name;
++	struct bin_attribute battr;
+ 	unsigned long address;
+ };
+ 
+@@ -1462,11 +1461,16 @@ struct module_sect_attrs {
+ 	struct module_sect_attr attrs[0];
+ };
+ 
+-static ssize_t module_sect_show(struct module_attribute *mattr,
+-				struct module_kobject *mk, char *buf)
++static ssize_t module_sect_read(struct file *file, struct kobject *kobj,
++				struct bin_attribute *battr,
++				char *buf, loff_t pos, size_t count)
+ {
+ 	struct module_sect_attr *sattr =
+-		container_of(mattr, struct module_sect_attr, mattr);
++		container_of(battr, struct module_sect_attr, battr);
 +
- 	return 0;
++	if (pos != 0)
++		return -EINVAL;
++
+ 	return sprintf(buf, "0x%px\n", kptr_restrict < 2 ?
+ 		       (void *)sattr->address : NULL);
+ }
+@@ -1476,7 +1480,7 @@ static void free_sect_attrs(struct modul
+ 	unsigned int section;
  
- err_destroy_flow_steering:
-@@ -5296,10 +5300,6 @@ int mlx5e_netdev_init(struct net_device *netdev,
- 	/* netdev init */
- 	netif_carrier_off(netdev);
+ 	for (section = 0; section < sect_attrs->nsections; section++)
+-		kfree(sect_attrs->attrs[section].name);
++		kfree(sect_attrs->attrs[section].battr.attr.name);
+ 	kfree(sect_attrs);
+ }
  
--#ifdef CONFIG_MLX5_EN_ARFS
--	netdev->rx_cpu_rmap =  mlx5_eq_table_get_rmap(mdev);
--#endif
--
- 	return 0;
+@@ -1485,42 +1489,41 @@ static void add_sect_attrs(struct module
+ 	unsigned int nloaded = 0, i, size[2];
+ 	struct module_sect_attrs *sect_attrs;
+ 	struct module_sect_attr *sattr;
+-	struct attribute **gattr;
++	struct bin_attribute **gattr;
  
- err_free_cpumask:
--- 
-2.25.1
-
+ 	/* Count loaded sections and allocate structures */
+ 	for (i = 0; i < info->hdr->e_shnum; i++)
+ 		if (!sect_empty(&info->sechdrs[i]))
+ 			nloaded++;
+ 	size[0] = ALIGN(struct_size(sect_attrs, attrs, nloaded),
+-			sizeof(sect_attrs->grp.attrs[0]));
+-	size[1] = (nloaded + 1) * sizeof(sect_attrs->grp.attrs[0]);
++			sizeof(sect_attrs->grp.bin_attrs[0]));
++	size[1] = (nloaded + 1) * sizeof(sect_attrs->grp.bin_attrs[0]);
+ 	sect_attrs = kzalloc(size[0] + size[1], GFP_KERNEL);
+ 	if (sect_attrs == NULL)
+ 		return;
+ 
+ 	/* Setup section attributes. */
+ 	sect_attrs->grp.name = "sections";
+-	sect_attrs->grp.attrs = (void *)sect_attrs + size[0];
++	sect_attrs->grp.bin_attrs = (void *)sect_attrs + size[0];
+ 
+ 	sect_attrs->nsections = 0;
+ 	sattr = &sect_attrs->attrs[0];
+-	gattr = &sect_attrs->grp.attrs[0];
++	gattr = &sect_attrs->grp.bin_attrs[0];
+ 	for (i = 0; i < info->hdr->e_shnum; i++) {
+ 		Elf_Shdr *sec = &info->sechdrs[i];
+ 		if (sect_empty(sec))
+ 			continue;
++		sysfs_bin_attr_init(&sattr->battr);
+ 		sattr->address = sec->sh_addr;
+-		sattr->name = kstrdup(info->secstrings + sec->sh_name,
+-					GFP_KERNEL);
+-		if (sattr->name == NULL)
++		sattr->battr.attr.name =
++			kstrdup(info->secstrings + sec->sh_name, GFP_KERNEL);
++		if (sattr->battr.attr.name == NULL)
+ 			goto out;
+ 		sect_attrs->nsections++;
+-		sysfs_attr_init(&sattr->mattr.attr);
+-		sattr->mattr.show = module_sect_show;
+-		sattr->mattr.store = NULL;
+-		sattr->mattr.attr.name = sattr->name;
+-		sattr->mattr.attr.mode = S_IRUSR;
+-		*(gattr++) = &(sattr++)->mattr.attr;
++		sattr->battr.read = module_sect_read;
++		sattr->battr.size = 3 /* "0x", "\n" */ + (BITS_PER_LONG / 4);
++		sattr->battr.attr.mode = 0400;
++		*(gattr++) = &(sattr++)->battr;
+ 	}
+ 	*gattr = NULL;
+ 
+@@ -1610,7 +1613,7 @@ static void add_notes_attrs(struct modul
+ 			continue;
+ 		if (info->sechdrs[i].sh_type == SHT_NOTE) {
+ 			sysfs_bin_attr_init(nattr);
+-			nattr->attr.name = mod->sect_attrs->attrs[loaded].name;
++			nattr->attr.name = mod->sect_attrs->attrs[loaded].battr.attr.name;
+ 			nattr->attr.mode = S_IRUGO;
+ 			nattr->size = info->sechdrs[i].sh_size;
+ 			nattr->private = (void *) info->sechdrs[i].sh_addr;
 
 
