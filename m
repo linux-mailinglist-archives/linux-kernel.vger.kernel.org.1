@@ -2,103 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4249221F568
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0446921F577
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 16:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbgGNOvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 10:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728835AbgGNOvI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 10:51:08 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C47EC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:51:08 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z13so22179838wrw.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 07:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1l4G4IRouZ0WTRSlZcy5MrRuoV79BSQEwt+8MDC1zos=;
-        b=wn2diMwBztTukWV3a+OQNb47W076q9O5m4hlY8WUNk2ANeNPaT/CQqfi3zwQR1nGOg
-         VSSBNKiAlDKVFIJkOH+19zNKugRcw4cpro7kI2dybo1tFgi8XfZSUt3XWqaoBeR3z+Av
-         +BpmcNzyT53w8bXQHF125EFE/q99zFhEemyIkgKezuFYO+m6Wrr3L3utp3V8ZyiYB1a+
-         o30rqYQ6cOqjoSrfZS3gdzIETNcvOBwh9eiVRnEkHsqSZKnsldi6j2CGj6wyxxwcW7sN
-         6DdTvdz7/e/Gkt4GbQ+f9viLiUUW0EP2OA+J4uLKVRwzUHrW9D8fZA2LFwU5mGcjfEJU
-         A74w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1l4G4IRouZ0WTRSlZcy5MrRuoV79BSQEwt+8MDC1zos=;
-        b=H9ROCmI9/yvzq4C/0KRP+oXCdaeaHEdGn5OgaooPtGI0DvBmoTNEwXRZiwnL6i2DnG
-         kBsG6qTAXiZf+64vcCqV4F5UaiFVhtS6Jg/P/LI9TsxZ0bXszNr/pl1rlyK/cOoKg2or
-         6ikY+CV9gP5MQmcnYGoeezdaFzEiDOypy6K2RrbMuJtly99QdV3L8y0oIhdoaFPr2/wa
-         /Fdsic2kEkQhszqYTG5gydBGI9pHZNdg0dJ2V20yPJ0f3n8j3Xa4rVRL+sRNPNhE06dm
-         FrR1IOm189D361X5jWxgb1J4COo1f5S754GKKBWPQFAcRghvqNYG7MRnGp8TqDwiKezl
-         FNtA==
-X-Gm-Message-State: AOAM533y8LjTNlck0YtwpFjn9lpBOpxVD9vi45OD+LBsy3p73VHCT5vU
-        INzC/VXzWWhq5LlnMAzwDBPoH0XOgCg=
-X-Google-Smtp-Source: ABdhPJxU9G/etho4iPMM3oDyoMPF/f2Brrlm1RMB2kEg+iD0TtRcr3nqndDSPblNhCAw+mZZ27YJig==
-X-Received: by 2002:a5d:4845:: with SMTP id n5mr6034582wrs.353.1594738266949;
-        Tue, 14 Jul 2020 07:51:06 -0700 (PDT)
-Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id a84sm4653305wmh.47.2020.07.14.07.51.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 07:51:06 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Jacob Shin <jacob.shin@amd.com>
-Subject: [PATCH 13/13] cpufreq: amd_freq_sensitivity: Remove unused ID structs
-Date:   Tue, 14 Jul 2020 15:50:49 +0100
-Message-Id: <20200714145049.2496163-14-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200714145049.2496163-1-lee.jones@linaro.org>
-References: <20200714145049.2496163-1-lee.jones@linaro.org>
+        id S1728892AbgGNOv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 10:51:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728410AbgGNOv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 10:51:58 -0400
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF73C21973;
+        Tue, 14 Jul 2020 14:51:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594738318;
+        bh=yBb5NwYoawydc+4SE8fRGu7VyXAWbEb+g0AP6WC6mFc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ExIYtMs8JLqxwbj6nNae6eHnbYrvDYP541mY1ltF6anHWu+bVCKIuwonfQ8bolWwo
+         M1jqUoMWjVDZ0zMdYu2r22PNYJKQP0HIX7KUKdoB0lkauYgHJcWb/YtvIkeWpiIll/
+         /hGntYFS6PsAi0fD5K6FyrdUTkfYQoDbDfYu4BWo=
+Received: by mail-ot1-f47.google.com with SMTP id n24so13192540otr.13;
+        Tue, 14 Jul 2020 07:51:57 -0700 (PDT)
+X-Gm-Message-State: AOAM532SXy19f2eUz7X/OHR52VEtv1vNeRuT6+iNJnlp9Rwr638ofLIS
+        S7hpEK3yTK+2AD9yt/MGzcmNlF/eoXjAmXqK4g==
+X-Google-Smtp-Source: ABdhPJxu9bDpxj3Hu09V0IUmiMju7QCn1apEa8gYBelufC7LjqgI1XuYmXKWxWiuIqZ3DwQLWjG/IWRcqN1eIQ909Gg=
+X-Received: by 2002:a9d:2646:: with SMTP id a64mr4155072otb.107.1594738317260;
+ Tue, 14 Jul 2020 07:51:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <20200708074035.31595-1-luca@lucaceresoli.net> <20200708074035.31595-4-luca@lucaceresoli.net>
+ <20200714031109.GA1210492@bogus> <6177ebd1-b39a-3b53-3f5b-92f8d1f9881b@lucaceresoli.net>
+In-Reply-To: <6177ebd1-b39a-3b53-3f5b-92f8d1f9881b@lucaceresoli.net>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 14 Jul 2020 08:51:45 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKCQJjAoZciQOv+Ksb885E9MSR9FB1dEAkUh7DbqM_gcg@mail.gmail.com>
+Message-ID: <CAL_JsqKCQJjAoZciQOv+Ksb885E9MSR9FB1dEAkUh7DbqM_gcg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] dt-bindings: clk: versaclock5: convert to yaml
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Adam Ford <aford173@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can't see them being used anywhere and the compiler doesn't complain
-that they're missing, so ...
+On Tue, Jul 14, 2020 at 3:15 AM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>
+> Hi Rob,
+>
+> thanks for you review!
+>
+> On 14/07/20 05:11, Rob Herring wrote:
+> > On Wed, Jul 08, 2020 at 09:40:35AM +0200, Luca Ceresoli wrote:
+> >> Convert to yaml the VersaClock bindings document. The mapping between
+> >> clock specifier and physical pins cannot be described formally in yaml
+> >> schema, then keep it verbatim in the description field.
+> >>
+> >> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+>
+> [...]
+>
+> >> +  reg:
+> >> +    maxItems: 1
+> >> +    description: I2C device address, shall be 0x68 or 0x6a.
+> >
+> > Can be a schema:
+> >
+> > enum: [ 0x68, 0x6a ]
+>
+> Nice, will fix.
+>
+> >> +
+> >> +  '#clock-cells':
+> >> +    const: 1
+> >> +
+> >> +patternProperties:
+> >> +  "^OUT[1-4]$":
+> >> +    type: object
+> >> +    description:
+> >> +      Description of one of the outputs (OUT1..OUT4). See "Clock1 Output
+> >> +      Configuration" in the Versaclock 5/6/6E Family Register Description
+> >> +      and Programming Guide.
+> >> +    properties:
+> >> +      idt,mode:
+> >> +        description:
+> >> +          The output drive mode. Values defined in dt-bindings/clk/versaclock.h
+> >> +        enum:
+> >> +          - VC5_LVPECL
+> >
+> > This is defining a string. Can't use defines here.
+>
+> How do I use the defines from include/dt-bindings then? Or should I just
+> use the numeric values then, like:
+>
+>   idt,mode:
+>     description:
+>       The output drive mode. Values defined in
+>       dt-bindings/clk/versaclock.h
+>     minimum: 0
+>     maximum: 6
+>
+> ?
 
-Fixes the following W=1 kernel build warning(s):
+Yes.
 
- drivers/cpufreq/amd_freq_sensitivity.c:147:32: warning: ‘amd_freq_sensitivity_ids’ defined but not used [-Wunused-const-variable=]
- 147 | static const struct x86_cpu_id amd_freq_sensitivity_ids[] = {
- | ^~~~~~~~~~~~~~~~~~~~~~~~
+>
+> >> +      idt,voltage-microvolts:
+> >> +        description: The output drive voltage.
+> >> +        $ref: /schemas/types.yaml#/definitions/uint32
+> >
+> > Standard unit suffixes have a type already, so drop.
+>
+> Ok.
+>
+> >> +allOf:
+> >> +  - if:
+> >> +      properties:
+> >> +        compatible:
+> >> +          contains:
+> >> +            enum:
+> >> +              - idt,5p49v5933
+> >> +              - idt,5p49v5935
+> >> +    then:
+> >> +      # Devices with builtin crystal, optional external input
+> >> +      properties:
+> >> +        clock-names:
+> >> +          const: clkin
+> >> +        clocks:
+> >> +          maxItems: 1
+> >> +    else:
+> >> +      # Devices without builtin crystal
+> >> +      properties:
+> >> +        clock-names:
+> >> +          anyOf:
+> >> +            - required: [ xin ]
+> >> +            - required: [ clkin ]
+> >
+> > This isn't valid. I think you want:
+> >
+> > clock-names:
+> >   minItems: 1
+> >   items:
+> >     - const: xin
+> >     - const: clkin
+> >
+> > This would mean 'xin' is always required, clkin is optional.
+>
+> No, what I wanted to mean is that allowed cases are:
+>  * for idt,5p49v5933 and idt,5p49v5935:
+>    - only 'xin' (required)
 
-Cc: Jacob Shin <jacob.shin@amd.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/cpufreq/amd_freq_sensitivity.c | 6 ------
- 1 file changed, 6 deletions(-)
+For this you need an if/then schema. There are plenty of examples in
+the tree, but this is what you need:
 
-diff --git a/drivers/cpufreq/amd_freq_sensitivity.c b/drivers/cpufreq/amd_freq_sensitivity.c
-index f7c4206d4c90b..a17093729511b 100644
---- a/drivers/cpufreq/amd_freq_sensitivity.c
-+++ b/drivers/cpufreq/amd_freq_sensitivity.c
-@@ -144,12 +144,6 @@ static void __exit amd_freq_sensitivity_exit(void)
- }
- module_exit(amd_freq_sensitivity_exit);
- 
--static const struct x86_cpu_id amd_freq_sensitivity_ids[] = {
--	X86_MATCH_FEATURE(X86_FEATURE_PROC_FEEDBACK, NULL),
--	{}
--};
--MODULE_DEVICE_TABLE(x86cpu, amd_freq_sensitivity_ids);
--
- MODULE_AUTHOR("Jacob Shin <jacob.shin@amd.com>");
- MODULE_DESCRIPTION("AMD frequency sensitivity feedback powersave bias for "
- 		"the ondemand governor.");
--- 
-2.25.1
+if:
+  properties:
+    compatible:
+      enum:
+        - idt,5p49v5933
+        - idt,5p49v5935
+then:
+  properties:
+    clocks:
+      maxItems: 1
+    clock-names:
+      const: xin
 
+>  * for the other parts one of these:
+>    - only 'xin'
+>    - only 'clkin'
+>    - both 'xin' and 'clkin'
+>
+> How do I express that?
+
+For the 2nd part:
+
+clock-names:
+  minItems: 1
+  maxItems: 2
+  items:
+    enum: [ xin, clkin ]
+
+> A general note: as a newcomer to yaml bindings I found a steep learning
+> curve. Finding a correct construct (not to mention the best one) for
+> each situation is time consuming and frustrating. I've been looking at
+> existing files for suitable examples but it doesn't work very well.
+>
+> Is there any guide to yaml bindings for beginners with examples of
+> typical cases? It would greatly help in producing better patches and
+> saving time for everybody.
+
+bindings/example-schema.yaml is intended to do that. No doubt it could
+use more examples. Though from my perspective people already don't
+read and follow things it says there.
+
+The problem I think is not the typical cases, but the atypical ones. I
+don't think we can enumerate all the atypical cases. At that point you
+really need some understanding of json-schema which I agree has a bit
+of a learning curve if you've never used anything like it (I hadn't).
+
+Rob
