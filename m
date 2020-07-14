@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64B821FA8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D18EF21FAD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 20:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730648AbgGNSxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:53:32 -0400
-Received: from mga14.intel.com ([192.55.52.115]:43539 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730626AbgGNSxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:53:24 -0400
-IronPort-SDR: 1fV2sjGxhfIIrmYdRIGsuPzZPRGWZ8Q7/l9/XE9GhF22y4AbDkhq/zODkTmJnsLY8r8J+dCiYr
- 7M4lYHM7d5Mg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="148142821"
-X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
-   d="scan'208";a="148142821"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 11:53:23 -0700
-IronPort-SDR: K8KPclbMvzgCpNFSFhz9Nn0YwCcdCbQhJi73NeRnxAdxCClsbyjKHY02fk6MDlf/UteP15gYg8
- 6LDggwpzlYUQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,352,1589266800"; 
-   d="scan'208";a="307978346"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Jul 2020 11:53:23 -0700
-Date:   Tue, 14 Jul 2020 11:53:22 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, x86@kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 04/15] x86/pks: Preserve the PKRS MSR on context
- switch
-Message-ID: <20200714185322.GB3008823@iweiny-DESK2.sc.intel.com>
-References: <20200714070220.3500839-1-ira.weiny@intel.com>
- <20200714070220.3500839-5-ira.weiny@intel.com>
- <20200714082701.GO10769@hirez.programming.kicks-ass.net>
+        id S1729633AbgGNS4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730930AbgGNSz6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:55:58 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDDCC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:55:57 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id d18so18460579ion.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 11:55:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IwJUAiA8BpGrXQ3dlTzGVWDeFkGjuEAAOtgnYtpstag=;
+        b=r4bMcrj+DSWRX7zW5bEHa64p7BZKCexjM5C4F9d6hvYG8IFfMmB4cCzIi/uwzjXpLL
+         2wIMBo0RJEmz/dP13ZjdgKfDTzbgglyD/ChLlc75bmsM+GfDL4uaBba7dmOrzsimJ2fv
+         mYX8o5YlWF67g7gb04WcxMWJ5IybOK47ZP8FKo2YoDzLx3o2rkgVxpIcC2Is+ZmU5bg+
+         H2lNsMgB33s6V5s5pSj4VGXILNQRkaRYYMTQG0pqRiCtDNKIKER0bBcnz1s2ntTyM3rV
+         n812s2eeZ2rB9k++XZb556z2QXI9NauLo9sgEZEFt9JX7DQRPwdOR6nRt2Sx73ojA0Fz
+         oulg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IwJUAiA8BpGrXQ3dlTzGVWDeFkGjuEAAOtgnYtpstag=;
+        b=uMW/O90C59OpovZmAze7BFu+WSXsL366WX3BgbPhsMcwdRB0APck9y9VL+b/judNYQ
+         wEyHQhq1tjNTrkFGezmWBWD2mtSbqrLV4NvU/MK6uzVPYs9ubnqq10KSAM2aKm76WlYV
+         KFhY0HXH8SFDlVpY/1GTbDyRVPo0wygZE+jALx+7nCBZNWRn+1szVMFjhMO25x7WgH8V
+         /rdjQhrmT8w6zFgs75N092gyPVlhGaHcyH/Wh+SZ/849kmhfAoiKbCuxnjXwi8q0lkho
+         X9hB5snFSsBkbFBQ0lKHxyXC3dg4h039496W3urEseP4jfL6AHbsre4c348wN+oh6yIV
+         4nRg==
+X-Gm-Message-State: AOAM5307MoYboUTrPEJ29HBr6BhMjOU6MBRgaXuZtACwJSfL8YGKo+Sp
+        ear3TuEBenj5b/wFhEnnnTYEKamMgJnycYbHdjHBkA==
+X-Google-Smtp-Source: ABdhPJzXOZOKkN0bh6O7BSXC9478lsDVT3KH6Z0MLS3oc5Y1KTkC/sprReNUZ4+9oQ8cDYDBfWIXZrUdPNW/oCsLVxU=
+X-Received: by 2002:a05:6638:118:: with SMTP id x24mr7612352jao.48.1594752956875;
+ Tue, 14 Jul 2020 11:55:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714082701.GO10769@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20200714015732.32426-1-sean.j.christopherson@intel.com>
+In-Reply-To: <20200714015732.32426-1-sean.j.christopherson@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 14 Jul 2020 11:55:45 -0700
+Message-ID: <CALMp9eQ1-6GEiSh55-NXgjuq3EOwP9VWNMeriH_J64p9JMjN0g@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Don't attempt to load PDPTRs when 64-bit mode
+ is enabled
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oliver Upton <oupton@google.com>,
+        Peter Shier <pshier@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 10:27:01AM +0200, Peter Zijlstra wrote:
-> On Tue, Jul 14, 2020 at 12:02:09AM -0700, ira.weiny@intel.com wrote:
-> > From: Ira Weiny <ira.weiny@intel.com>
-> > 
-> > The PKRS MSR is defined as a per-core register.  This isolates memory
-> > access by CPU.  Unfortunately, the MSR is not preserved by XSAVE.
-> > Therefore, We must preserve the protections for individual tasks even if
-> > they are context switched out and placed on another cpu later.
-> 
-> This is a contradiction and utter trainwreck.
+On Mon, Jul 13, 2020 at 6:57 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> Don't attempt to load PDPTRs if EFER.LME=1, i.e. if 64-bit mode is
+> enabled.  A recent change to reload the PDTPRs when CR0.CD or CR0.NW is
+> toggled botched the EFER.LME handling and sends KVM down the PDTPR path
+> when is_paging() is true, i.e. when the guest toggles CD/NW in 64-bit
+> mode.
 
-I don't understand where there is a contradiction?  Perhaps I should have said
-the MSR is not XSAVE managed vs 'preserved'?
+Oops!
 
-> We're not going to do more
-> per-core MSRs and pretend they make sense per-task.
+I don't think "is_paging()" is relevant here, so much as "EFER.LME=1."
+As you note below, KVM *should* go down the PDPTR path when
+is_paging() is true and EFER.LME=0.
 
-I don't understand how this does not make sense.  The PKRS register is
-controlling the task's access to kernel memory and is designed to be restricted
-to that task.  Put another way, this is similar to CR3 which ultimately
-controls tasks memory access.  Per-process mm is inherent to memory access
-control and is per-task.  So how is this any different?  Many MSRs are like
-this.
-
-I suppose an alternative might be to disallow a context switch while the PKRS
-value is not the default but I don't see this being very desirable at all.
-
-Ira
+> Split the CR0 checks for 64-bit vs. 32-bit PAE into separate paths.  The
+> 64-bit path is specifically checking state when paging is toggled on,
+> i.e. CR0.PG transititions from 0->1.  The PDPTR path now needs to run if
+> the new CR0 state has paging enabled, irrespective of whether paging was
+> already enabled.  Trying to shave a few cycles to make the PDPTR path an
+> "else if" case is a mess.
+>
+> Fixes: d42e3fae6faed ("kvm: x86: Read PDPTEs on CR0.CD and CR0.NW changes")
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: Oliver Upton <oupton@google.com>
+> Cc: Peter Shier <pshier@google.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
