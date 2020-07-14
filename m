@@ -2,130 +2,1686 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A3221F743
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 18:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E5821F74B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 18:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbgGNQZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 12:25:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725890AbgGNQZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 12:25:08 -0400
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A60662255F;
-        Tue, 14 Jul 2020 16:25:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594743908;
-        bh=k/Tsw6xLqgnJY1o7iH6r4M/K+u3aSSQdGkYMYdYd8I8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VTmpkPIzMgweGoJMVFQhHwPlTmsACcCZYKLnJf4uV5MJbosmzzKJ397vHUls2HOaz
-         eFZ69VNZv/h5RjAH/J8ksD9O2qsAxaIIp5R0iwg9VlZld06OGkc2JS41oAV6UtM2Za
-         h6VSMX+rCl64xxRhkdYo617vEockbRKEzQ3aA/hg=
-Received: by mail-lj1-f171.google.com with SMTP id d17so23599198ljl.3;
-        Tue, 14 Jul 2020 09:25:07 -0700 (PDT)
-X-Gm-Message-State: AOAM530zx9pSZGMmt+pXQJpdJUBK8GQyz5xzGkOp7MZq62TcyGqWho1E
-        B9u7XmA/PYsim9qu+R+jpLh0W7yFrwIv9gSaKYk=
-X-Google-Smtp-Source: ABdhPJw2LgpnAjeHGhekyjVCCVOxT1kK9hVgydd27e2JfjQorPcSs3QPMc/nVkb/g8IlxUzlBQI7f749Aj988uEH82o=
-X-Received: by 2002:a2e:864e:: with SMTP id i14mr2747628ljj.441.1594743905973;
- Tue, 14 Jul 2020 09:25:05 -0700 (PDT)
+        id S1728281AbgGNQ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 12:27:23 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:36928 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726364AbgGNQ1V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 12:27:21 -0400
+Received: by mail-io1-f70.google.com with SMTP id 63so10734723ioy.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 09:27:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=a4RIQZSMCaLZPfOS8gYevPoU/8gLcp6uWQpveue7TQk=;
+        b=ijBsHyAGfsbtJLk+IlnhllH4tYHAdXWghtGEE467vqRs63/MYtCIEiEWA1hkMbyT49
+         9f8cFBKlaZUwvnh1A1B+pXXRnpPwzx1I+5Duy5b2q+Y+FgUSqDyZF2hCZBBMmLutYIK0
+         z6Om0CTp2OwuEGNbfHP8CIqr0qHBepln6PE/Y5+JCPTOqNbK9MWU3xaPhQd1jcnj/q5v
+         vs3Zubj3UEBp6ohqnjHhgnVuoxs17HDkDyL/P9nrDj2UumU0HmcsqHU/FRZgxMP4WUQK
+         ofo6XW0lNz9+odwDaWLt3mfggoW0YRuST4szkbUcb3N4gjD99QNou0Wj/iOgWSgIAVPH
+         ISMQ==
+X-Gm-Message-State: AOAM530j3TXfUVincge6TsGEhjqWeSyVAdiRM4U4yL0aysdpB4H4/Gls
+        dDmWUtPFbkaIVT5pDCGU5H6dE23R4ZuCXKCgrScx/ZrmMfKV
+X-Google-Smtp-Source: ABdhPJwth1f5p4Eoagd727WAo6U1hAag7L2nHu7KaogbQfgBTJ/uxv8zdBx4F0sDq+kQtzz9bLFliSEzYBaOcPu1ws6IZX/0vGaI
 MIME-Version: 1.0
-References: <1594683562-68149-1-git-send-email-guoren@kernel.org>
- <1594683562-68149-7-git-send-email-guoren@kernel.org> <20200714203757.512ce7fb5fa61a88b1dbb2f3@kernel.org>
-In-Reply-To: <20200714203757.512ce7fb5fa61a88b1dbb2f3@kernel.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 15 Jul 2020 00:24:54 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSMUnHfv3GLj_TGT2dJkKq2zbEsnbPKREiq5i6PPjyTBg@mail.gmail.com>
-Message-ID: <CAJF2gTSMUnHfv3GLj_TGT2dJkKq2zbEsnbPKREiq5i6PPjyTBg@mail.gmail.com>
-Subject: Re: [PATCH v3 6/7] riscv: Add KPROBES_ON_FTRACE supported
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anup Patel <anup@brainfault.org>, linux-csky@vger.kernel.org,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        =?UTF-8?Q?Patrick_St=C3=A4hlin?= <me@packi.ch>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Pekka Enberg <penberg@kernel.org>
+X-Received: by 2002:a92:96c7:: with SMTP id g190mr5301878ilh.252.1594744038179;
+ Tue, 14 Jul 2020 09:27:18 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 09:27:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e7493205aa694785@google.com>
+Subject: INFO: rcu detected stall in dummy_timer (3)
+From:   syzbot <syzbot+4d3749e9612c2cfab956@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, fweisbec@gmail.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        mingo@kernel.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx Masami,
+Hello,
 
-On Tue, Jul 14, 2020 at 7:38 PM Masami Hiramatsu <mhiramat@kernel.org> wrot=
-e:
->
-> On Mon, 13 Jul 2020 23:39:21 +0000
-> guoren@kernel.org wrote:
->
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > This patch adds support for kprobes on ftrace call sites to avoids
-> > much of the overhead with regular kprobes. Try it with simple
-> > steps:
-> >
-> > 1. Get _do_fork ftrace call site.
-> > Dump of assembler code for function _do_fork:
-> >    0xffffffe00020af64 <+0>:     addi    sp,sp,-128
-> >    0xffffffe00020af66 <+2>:     sd      s0,112(sp)
-> >    0xffffffe00020af68 <+4>:     sd      ra,120(sp)
-> >    0xffffffe00020af6a <+6>:     addi    s0,sp,128
-> >    0xffffffe00020af6c <+8>:     sd      s1,104(sp)
-> >    0xffffffe00020af6e <+10>:    sd      s2,96(sp)
-> >    0xffffffe00020af70 <+12>:    sd      s3,88(sp)
-> >    0xffffffe00020af72 <+14>:    sd      s4,80(sp)
-> >    0xffffffe00020af74 <+16>:    sd      s5,72(sp)
-> >    0xffffffe00020af76 <+18>:    sd      s6,64(sp)
-> >    0xffffffe00020af78 <+20>:    sd      s7,56(sp)
-> >    0xffffffe00020af7a <+22>:    mv      s4,a0
-> >    0xffffffe00020af7c <+24>:    mv      a0,ra
-> >    0xffffffe00020af7e <+26>:    nop   <<<<<<<< here!
-> >    0xffffffe00020af82 <+30>:    nop
-> >    0xffffffe00020af86 <+34>:    ld      s3,0(s4)
-> >
-> > 2. Set _do_fork+26 as the kprobe.
-> >   echo 'p:myprobe _do_fork+26 dfd=3D%a0 filename=3D%a1 flags=3D%a2 mode=
-=3D+4($stack)' > /sys/kernel/debug/tracing/kprobe_events
-> >   echo 1 > /sys/kernel/debug/tracing/events/kprobes/enable
-> >   cat /sys/kernel/debug/tracing/trace
-> >   tracer: nop
-> >
-> >   entries-in-buffer/entries-written: 3/3   #P:1
-> >
-> >                                _-----=3D> irqs-off
-> >                               / _----=3D> need-resched
-> >                              | / _---=3D> hardirq/softirq
-> >                              || / _--=3D> preempt-depth
-> >                              ||| /     delay
-> >             TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
-> >                | |       |   ||||       |         |
-> >               sh-87    [000] ....   551.557031: myprobe: (_do_fork+0x1a=
-/0x2e6) dfd=3D0xffffffe00020af7e filename=3D0xffffffe00020b34e flags=3D0xff=
-ffffe00101e7c0 mode=3D0x20af86ffffffe0
-> >
-> >   cat /sys/kernel/debug/kprobes/list
-> > ffffffe00020af7e  k  _do_fork+0x1a    [FTRACE]
-> >                                        ^^^^^^
->
-> Hmm, this seems fentry is not supported on RISC-V yet. But anyway,
-> it will be useful for users (if they can find the offset).
+syzbot found the following crash on:
 
-Seems only x86 & =E2=AC=86=EF=B8=8F90 use fentry=EF=BC=8Ccan you elaborate =
-more about fentry's
-benefit and how the user could set kprobe on ftrace call site without
-disassemble?
+HEAD commit:    25051b55 udc: lpc32xx: make symbol 'lpc32xx_usbddata' static
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e0ba00900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=999be4eb2478ffa5
+dashboard link: https://syzkaller.appspot.com/bug?extid=4d3749e9612c2cfab956
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=127354e7100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10ba8500900000
 
---
-Best Regards
- Guo Ren
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+4d3749e9612c2cfab956@syzkaller.appspotmail.com
 
-ML: https://lore.kernel.org/linux-csky/
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+rcu: INFO: rcu_sched self-detected stall on CPU
+rcu: 	0-....: (10474 ticks this GP) idle=0d2/1/0x4000000000000000 softirq=3587/3587 fqs=5237 
+	(t=10501 jiffies g=1585 q=93881)
+NMI backtrace for cpu 0
+CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.8.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xf6/0x16e lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x74/0xb6 lib/nmi_backtrace.c:101
+ nmi_trigger_cpumask_backtrace+0x1da/0x1f4 lib/nmi_backtrace.c:62
+ trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
+ rcu_dump_cpu_stacks+0x194/0x1cf kernel/rcu/tree_stall.h:320
+ print_cpu_stall kernel/rcu/tree_stall.h:553 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:627 [inline]
+ rcu_pending kernel/rcu/tree.c:3489 [inline]
+ rcu_sched_clock_irq.cold+0x544/0x876 kernel/rcu/tree.c:2504
+ update_process_times+0xe6/0x150 kernel/time/timer.c:1726
+ tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:176
+ tick_sched_timer+0xfc/0x290 kernel/time/tick-sched.c:1320
+ __run_hrtimer kernel/time/hrtimer.c:1520 [inline]
+ __hrtimer_run_queues+0x1d5/0xf10 kernel/time/hrtimer.c:1584
+ hrtimer_interrupt+0x300/0x8f0 kernel/time/hrtimer.c:1646
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+ __sysvec_apic_timer_interrupt+0xf9/0x4d0 arch/x86/kernel/apic/apic.c:1097
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ sysvec_apic_timer_interrupt+0x84/0xc0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:596
+RIP: 0010:arch_local_irq_restore arch/x86/include/asm/irqflags.h:85 [inline]
+RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+RIP: 0010:_raw_spin_unlock_irqrestore+0x3b/0x40 kernel/locking/spinlock.c:191
+Code: e8 ca b5 76 fb 48 89 ef e8 62 a2 77 fb f6 c7 02 75 11 53 9d e8 16 46 95 fb 65 ff 0d cf 0d 52 7a 5b 5d c3 e8 f7 4b 95 fb 53 9d <eb> ed 0f 1f 00 55 48 89 fd 65 ff 05 b5 0d 52 7a 45 31 c9 41 b8 01
+RSP: 0018:ffff8881da207988 EFLAGS: 00000246
+RAX: 000000000004cc30 RBX: 0000000000000246 RCX: 0000000000000002
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff85afe139
+RBP: ffff8881d4410000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffff8881d4510440
+R13: ffff8881c86a1d00 R14: dffffc0000000000 R15: ffff8881d9a94700
+ spin_unlock_irqrestore include/linux/spinlock.h:408 [inline]
+ dummy_timer+0x12ef/0x3240 drivers/usb/gadget/udc/dummy_hcd.c:1981
+ call_timer_fn+0x1ac/0x6e0 kernel/time/timer.c:1404
+ expire_timers kernel/time/timer.c:1449 [inline]
+ __run_timers.part.0+0x54c/0x9e0 kernel/time/timer.c:1773
+ __run_timers kernel/time/timer.c:1745 [inline]
+ run_timer_softirq+0x80/0x120 kernel/time/timer.c:1786
+ __do_softirq+0x222/0x95b kernel/softirq.c:292
+ run_ksoftirqd kernel/softirq.c:630 [inline]
+ run_ksoftirqd+0x1f/0x40 kernel/softirq.c:622
+ smpboot_thread_fn+0x3ec/0x870 kernel/smpboot.c:165
+ kthread+0x392/0x470 kernel/kthread.c:291
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 3-1:0.0: Error: urb status = -71
+mceusb 2-1:0.0: Error: urb status = -71
+mceusb 4-1:0.0: Error: urb status = -71
+mceusb 6-1:0.0: Error: urb status = -71
+mceusb 5-1:0.0: Error: urb status = -71
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
