@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55C822000B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3202421FF8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 23:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgGNV24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 17:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
+        id S1727101AbgGNVGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 17:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728013AbgGNV24 (ORCPT
+        with ESMTP id S1726789AbgGNVGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 17:28:56 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D90C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:28:55 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 22so961422wmg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:28:55 -0700 (PDT)
+        Tue, 14 Jul 2020 17:06:36 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005FDC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:06:35 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id o11so174584wrv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 14:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GpQ2nTVgl9VHF6JY6WDJ53QAh2uhLUNW3Mar+OyQZbM=;
-        b=NEQB91ZbGya6R2upSrLKRfi8KuMsERBDit3367O8XOCDov47EWXESnNZS/Exznj1pf
-         3zkhjn8Z6VvUMj1XnEVqRwadV/8SD+LVg7c0MyGGCXbTsBqn7mHT25X74BLm6E2t1BIj
-         AHmmkoFL+d1MhnJ5r6By5XnwpfnPrgu9RrJQTbEF/FNkihbb2Jc2BKgo4nwzY7zqCjbH
-         BSn49UCom/ygIRJ1XcW5hYZLPSmALo4CspsA/o9MDPGI/bpQwIG/vyUSRZSD4l9rkvK1
-         vSbKHqhuUdsLSCoWUam5/splpzvGOyvJubzorsQVYLwPuvvPboBkYjyc0yJC6A5aVbZh
-         DdiA==
+        bh=7JMUJfmLILJAC3wwSn7dkUj0r4rvZ4E8tu+aX4YpkZE=;
+        b=Q/mC/UlDR1Elq0xd5L9jkydnt5g9mRR0i3iucnKpnRY0OUVyhkxmuS0ax7CwwHuJPe
+         TbyPUZVhuGNk0DrbObtKA5lL33TmU/nHEDm7uQZAo5CJPlJeBOYFZ0OaPcGVKZkCyhpW
+         trSnU3Soog1BSF1L6VWtC+KgbEku3iXUIxk/RKUh18gIdSSRGqWZGKqBSP483byfBsZk
+         DyQw8o+l5fpakYQ1c1uSEkG4vljGiMVszeTJlpeWKZABViI6g4+3jTQwr+9wHGjYaZ8Q
+         UZEWl6OvOVnqbQiJhVGoxk0N7YyLwOy678NRLmBTgsD0CA2K3NWDcCtuJ662FcptmYk0
+         uawA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GpQ2nTVgl9VHF6JY6WDJ53QAh2uhLUNW3Mar+OyQZbM=;
-        b=tmX2fk7Ju+lbshXzgK3fyFmyCY88mxA4m+Q3p5Li8c5pYSiUbz2Boyiu7ljlCYWTDY
-         vLsraIznMiUg+ftAIWqeoJK1XK980q/Pa/yshHpagNwqdMLQjaVplYT3BBm5w7S7Apo6
-         3xvhR973yOoURfpxmPk04ZS31YlMlN1l6i3U4JlTkijCjKpixMYJZdzXWprM3DxE6Np9
-         zlCkJ6+G6u4q3hywzrKRuVmUpCsL4jCvCWywvbpSiKdxTlZIsu7KAzddo2L6Cs2ohBPT
-         hI0ya0uHZZ2SWBvNm7t+5/tWs2QdmYTaAUbYPR4JmGXXfvz17w7WBHykUGm2eZynYrlb
-         mQ6Q==
-X-Gm-Message-State: AOAM533mggGqWaebDpkV7v//NE1xltfbu4Vmev7zSMVUzJ8LZVR/UMG/
-        xDHHs+GPo9mZg/sOtWeqGMce7422Eo9NW34YZjMAotDpqg0=
-X-Google-Smtp-Source: ABdhPJwpPAm74H0SvmIQNdcH3mj34EyGmIpZjHCzd/YAdJd30s4vvgXWoss0YiaRhUy3ADdkAgTEptyhGTTBKAAPsHA=
-X-Received: by 2002:a1c:398b:: with SMTP id g133mr5452807wma.76.1594760748029;
- Tue, 14 Jul 2020 14:05:48 -0700 (PDT)
+        bh=7JMUJfmLILJAC3wwSn7dkUj0r4rvZ4E8tu+aX4YpkZE=;
+        b=McOSUjWGYZT8SmSWxzDpZ2kcbr8xTl6yBhQk0kt1YkM0QaV1pQ50OY7HVTDdsbEmBJ
+         BHy6THa7eMgS1QXLQYcJ0jqjNJ9XiuMFJmxu/ym2SnDGhbe0ezvniq7UHKZyrMF3IOv3
+         jz1CxvmNqzB7n047s0e8cMAj02WRF10h96ocWl8Sz+lpw6ZEo1aFUZegrO65f4g3KBSu
+         RrL31WNAdWj+tepTSpOCA1TqS39aQ5qK9uZgFZZLNJC1fh/X+bfwSE5+qAe0nOJUYQEF
+         mynNsJSFj0wb92Oi6EEc8Ju/kRjwToCOD++r/MC/b4adKks+C6kT8H892exatSw7nVJH
+         mvYg==
+X-Gm-Message-State: AOAM530SiPf7cHL1l7oosHGnrkVtEB3+fVnV/CRjF5a+uNaaFZYHSQjx
+        9DAlR1pTFdXIy79NL7qEy3/+AU/aVev2FZem+1JRdA==
+X-Google-Smtp-Source: ABdhPJzZM6vh0J+v1cYhXpa6uIF84ICMcvhovKgga70JYXwiTm1YOHxTTCCdt2tZOxwIx6xWx6oDv5G//QF3FNjMM8g=
+X-Received: by 2002:adf:e40e:: with SMTP id g14mr8377563wrm.271.1594760794276;
+ Tue, 14 Jul 2020 14:06:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200712132634.138901-1-jolsa@kernel.org> <20200712132634.138901-2-jolsa@kernel.org>
-In-Reply-To: <20200712132634.138901-2-jolsa@kernel.org>
+References: <20200712132634.138901-1-jolsa@kernel.org> <20200712132634.138901-3-jolsa@kernel.org>
+In-Reply-To: <20200712132634.138901-3-jolsa@kernel.org>
 From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 14 Jul 2020 14:05:36 -0700
-Message-ID: <CAP-5=fW+1PxuzcPKN8iMSH3y_6qRTkiry6+gO3JpeT5kWxiOoQ@mail.gmail.com>
-Subject: Re: [PATCH 01/18] perf metric: Rename expr__add_id to expr__add_val
+Date:   Tue, 14 Jul 2020 14:06:23 -0700
+Message-ID: <CAP-5=fU=WKHp5So8Wj+HossbjP1TL1gnvPczFQUK32eiuwP4SQ@mail.gmail.com>
+Subject: Re: [PATCH 02/18] perf metric: Add struct expr_id_data to keep expr value
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         lkml <linux-kernel@vger.kernel.org>,
@@ -72,11 +72,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sun, Jul 12, 2020 at 6:26 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Renaming expr__add_id to expr__add_val so we can use
-> expr__add_id to actually add just id without any value
-> in following changes.
->
-> There's no functional change.
+> Adding struct expr_id_data to keep expr value
+> instead of just simple double pointer, so we can
+> store more data for ID in following changes.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
@@ -86,106 +84,111 @@ Thanks,
 Ian
 
 > ---
->  tools/perf/tests/expr.c       | 4 ++--
->  tools/perf/tests/pmu-events.c | 4 ++--
->  tools/perf/util/expr.c        | 2 +-
->  tools/perf/util/expr.h        | 2 +-
->  tools/perf/util/expr.y        | 2 +-
->  tools/perf/util/stat-shadow.c | 4 ++--
->  6 files changed, 9 insertions(+), 9 deletions(-)
+>  tools/perf/tests/expr.c       |  3 ++-
+>  tools/perf/util/expr.c        | 22 +++++++++++-----------
+>  tools/perf/util/expr.h        |  4 ++++
+>  tools/perf/util/metricgroup.c |  2 +-
+>  4 files changed, 18 insertions(+), 13 deletions(-)
 >
 > diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-> index b7e5ef3007fc..d13fc1dfd5ef 100644
+> index d13fc1dfd5ef..4d01051951cd 100644
 > --- a/tools/perf/tests/expr.c
 > +++ b/tools/perf/tests/expr.c
-> @@ -24,8 +24,8 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+> @@ -18,8 +18,9 @@ static int test(struct expr_parse_ctx *ctx, const char *e, double val2)
+>
+>  int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+>  {
+> +       struct expr_id_data *val_ptr;
+>         const char *p;
+> -       double val, *val_ptr;
+> +       double val;
+>         int ret;
 >         struct expr_parse_ctx ctx;
 >
->         expr__ctx_init(&ctx);
-> -       expr__add_id(&ctx, strdup("FOO"), 1);
-> -       expr__add_id(&ctx, strdup("BAR"), 2);
-> +       expr__add_id_val(&ctx, strdup("FOO"), 1);
-> +       expr__add_id_val(&ctx, strdup("BAR"), 2);
->
->         ret = test(&ctx, "1+1", 2);
->         ret |= test(&ctx, "FOO+BAR", 3);
-> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-> index b66b021476ec..eb19f9a0bc15 100644
-> --- a/tools/perf/tests/pmu-events.c
-> +++ b/tools/perf/tests/pmu-events.c
-> @@ -492,7 +492,7 @@ static int test_parsing(void)
->                          */
->                         k = 1;
->                         hashmap__for_each_entry((&ctx.ids), cur, bkt)
-> -                               expr__add_id(&ctx, strdup(cur->key), k++);
-> +                               expr__add_id_val(&ctx, strdup(cur->key), k++);
->
->                         hashmap__for_each_entry((&ctx.ids), cur, bkt) {
->                                 if (check_parse_cpu(cur->key, map == cpus_map,
-> @@ -547,7 +547,7 @@ static int metric_parse_fake(const char *str)
->          */
->         i = 1;
->         hashmap__for_each_entry((&ctx.ids), cur, bkt)
-> -               expr__add_id(&ctx, strdup(cur->key), i++);
-> +               expr__add_id_val(&ctx, strdup(cur->key), i++);
->
->         hashmap__for_each_entry((&ctx.ids), cur, bkt) {
->                 if (check_parse_fake(cur->key)) {
 > diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-> index e8f777830a23..9116a3a01eea 100644
+> index 9116a3a01eea..5d05f9765ed8 100644
 > --- a/tools/perf/util/expr.c
 > +++ b/tools/perf/util/expr.c
-> @@ -33,7 +33,7 @@ static bool key_equal(const void *key1, const void *key2,
+> @@ -33,32 +33,32 @@ static bool key_equal(const void *key1, const void *key2,
 >  }
 >
 >  /* Caller must make sure id is allocated */
-> -int expr__add_id(struct expr_parse_ctx *ctx, const char *name, double val)
-> +int expr__add_id_val(struct expr_parse_ctx *ctx, const char *name, double val)
+> -int expr__add_id_val(struct expr_parse_ctx *ctx, const char *name, double val)
+> +int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val)
 >  {
->         double *val_ptr = NULL, *old_val = NULL;
+> -       double *val_ptr = NULL, *old_val = NULL;
+> +       struct expr_id_data *data_ptr = NULL, *old_data = NULL;
 >         char *old_key = NULL;
+>         int ret;
+>
+>         if (val != 0.0) {
+> -               val_ptr = malloc(sizeof(double));
+> -               if (!val_ptr)
+> +               data_ptr = malloc(sizeof(*data_ptr));
+> +               if (!data_ptr)
+>                         return -ENOMEM;
+> -               *val_ptr = val;
+> +               data_ptr->val = val;
+>         }
+> -       ret = hashmap__set(&ctx->ids, name, val_ptr,
+> -                          (const void **)&old_key, (void **)&old_val);
+> +       ret = hashmap__set(&ctx->ids, id, data_ptr,
+> +                          (const void **)&old_key, (void **)&old_data);
+>         free(old_key);
+> -       free(old_val);
+> +       free(old_data);
+>         return ret;
+>  }
+>
+>  int expr__get_id(struct expr_parse_ctx *ctx, const char *id, double *val_ptr)
+>  {
+> -       double *data;
+> +       struct expr_id_data *data;
+>
+>         if (!hashmap__find(&ctx->ids, id, (void **)&data))
+>                 return -1;
+> -       *val_ptr = (data == NULL) ?  0.0 : *data;
+> +       *val_ptr = (data == NULL) ?  0.0 : data->val;
+>         return 0;
+>  }
+>
+> @@ -119,7 +119,7 @@ int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
+>  int expr__find_other(const char *expr, const char *one,
+>                      struct expr_parse_ctx *ctx, int runtime)
+>  {
+> -       double *old_val = NULL;
+> +       struct expr_id_data *old_val = NULL;
+>         char *old_key = NULL;
+>         int ret = __expr__parse(NULL, ctx, expr, EXPR_OTHER, runtime);
+>
 > diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
-> index 8a2c1074f90f..bb6bac836b48 100644
+> index bb6bac836b48..21fe5bd85718 100644
 > --- a/tools/perf/util/expr.h
 > +++ b/tools/perf/util/expr.h
-> @@ -22,7 +22,7 @@ struct expr_scanner_ctx {
+> @@ -15,6 +15,10 @@ struct expr_parse_ctx {
+>         struct hashmap ids;
+>  };
 >
->  void expr__ctx_init(struct expr_parse_ctx *ctx);
->  void expr__ctx_clear(struct expr_parse_ctx *ctx);
-> -int expr__add_id(struct expr_parse_ctx *ctx, const char *id, double val);
-> +int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val);
->  int expr__get_id(struct expr_parse_ctx *ctx, const char *id, double *val_ptr);
->  int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
->                 const char *expr, int runtime);
-> diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
-> index 5fcb98800f9c..b2b3420ea6ec 100644
-> --- a/tools/perf/util/expr.y
-> +++ b/tools/perf/util/expr.y
-> @@ -69,7 +69,7 @@ all_other: all_other other
->
->  other: ID
+> +struct expr_id_data {
+> +       double  val;
+> +};
+> +
+>  struct expr_scanner_ctx {
+>         int start_token;
+>         int runtime;
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index 82fecb5a302d..df0356ec120d 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -138,7 +138,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+>                                       unsigned long *evlist_used)
 >  {
-> -       expr__add_id(ctx, $1, 0.0);
-> +       expr__add_id_val(ctx, $1, 0.0);
->  }
->  |
->  MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')' | ','
-> diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-> index 8fdef47005e6..fc9ac4b4218e 100644
-> --- a/tools/perf/util/stat-shadow.c
-> +++ b/tools/perf/util/stat-shadow.c
-> @@ -773,9 +773,9 @@ static int prepare_metric(struct evsel **metric_events,
->                         *pn = 0;
+>         struct evsel *ev, *current_leader = NULL;
+> -       double *val_ptr;
+> +       struct expr_id_data *val_ptr;
+>         int i = 0, matched_events = 0, events_to_match;
+>         const int idnum = (int)hashmap__size(&pctx->ids);
 >
->                 if (metric_total)
-> -                       expr__add_id(pctx, n, metric_total);
-> +                       expr__add_id_val(pctx, n, metric_total);
->                 else
-> -                       expr__add_id(pctx, n, avg_stats(stats)*scale);
-> +                       expr__add_id_val(pctx, n, avg_stats(stats)*scale);
->         }
->
->         return i;
 > --
 > 2.25.4
 >
