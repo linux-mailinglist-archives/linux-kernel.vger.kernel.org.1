@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A7A21FC55
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67ED21FBEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729138AbgGNSuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 14:50:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46286 "EHLO mail.kernel.org"
+        id S1730875AbgGNTFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:05:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730284AbgGNSuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:50:14 -0400
+        id S1730767AbgGNSyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:54:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 000AA22AAA;
-        Tue, 14 Jul 2020 18:50:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2CC522B4E;
+        Tue, 14 Jul 2020 18:54:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752613;
-        bh=ZaXnKVv036WIEZxAKuXBF80BGpN2iXc9gZtAy+/Mtrc=;
+        s=default; t=1594752872;
+        bh=n0AitVfgdLldntIptWUBYQyNz/wZ9glfh8b0xqufE50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qRvfGjH1RQOurOG7FqsxpJdAAUPzxRCBsCrBFe9eXi1Yg9Z0+rwRDwwzs4hAu2gvQ
-         xk+eI+DQ3oxsC/gTtIL1YTEcZQN+THQKvXzW+Lmme+lOL8RMQ/acW8lsQFxkDlSFvh
-         LQlFs05AdKY/g56o1q1avHG8rhISDc8jSEop/5b8=
+        b=bOYmrb3pOKjuZv2Dj2Gn6N/4O/OzkFcKMBJ+ClLdWR42zt8hM0TQSSzDz3H0M2iXJ
+         FIwMqflpA0XVGJbhFS0f6ueIRb6tq1yUTG9htuhWjbyUvbZRadM8Q+ch8vm5xdvvvK
+         JFyJqa845qQL3fQJfFMu1E7iW6To/SRFgX+UdqGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 014/109] spi: spidev: fix a race between spidev_release and spidev_remove
-Date:   Tue, 14 Jul 2020 20:43:17 +0200
-Message-Id: <20200714184106.203830082@linuxfoundation.org>
+Subject: [PATCH 5.7 033/166] cifs: update ctime and mtime during truncate
+Date:   Tue, 14 Jul 2020 20:43:18 +0200
+Message-Id: <20200714184117.464466687@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
-References: <20200714184105.507384017@linuxfoundation.org>
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhenzhong Duan <zhenzhong.duan@gmail.com>
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-[ Upstream commit abd42781c3d2155868821f1b947ae45bbc33330d ]
+[ Upstream commit 5618303d8516f8ac5ecfe53ee8e8bc9a40eaf066 ]
 
-Imagine below scene, spidev is referenced after it's freed.
+As the man description of the truncate, if the size changed,
+then the st_ctime and st_mtime fields should be updated. But
+in cifs, we doesn't do it.
 
-spidev_release()                spidev_remove()
-...
-                                spin_lock_irq(&spidev->spi_lock);
-                                    spidev->spi = NULL;
-                                spin_unlock_irq(&spidev->spi_lock);
-mutex_lock(&device_list_lock);
-dofree = (spidev->spi == NULL);
-if (dofree)
-    kfree(spidev);
-mutex_unlock(&device_list_lock);
-                                mutex_lock(&device_list_lock);
-                                list_del(&spidev->device_entry);
-                                device_destroy(spidev_class, spidev->devt);
-                                clear_bit(MINOR(spidev->devt), minors);
-                                if (spidev->users == 0)
-                                    kfree(spidev);
-                                mutex_unlock(&device_list_lock);
+It lead the xfstests generic/313 failed.
 
-Fix it by resetting spidev->spi in device_list_lock's protection.
+So, add the ATTR_MTIME|ATTR_CTIME flags on attrs when change
+the file size
 
-Signed-off-by: Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Link: https://lore.kernel.org/r/20200618032125.4650-1-zhenzhong.duan@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spidev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/cifs/inode.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index ab2c3848f5bf8..88d0976215fac 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -783,13 +783,13 @@ static int spidev_remove(struct spi_device *spi)
- {
- 	struct spidev_data	*spidev = spi_get_drvdata(spi);
+diff --git a/fs/cifs/inode.c b/fs/cifs/inode.c
+index 430b0b1256547..44a57b65915bf 100644
+--- a/fs/cifs/inode.c
++++ b/fs/cifs/inode.c
+@@ -2350,6 +2350,15 @@ set_size_out:
+ 	if (rc == 0) {
+ 		cifsInode->server_eof = attrs->ia_size;
+ 		cifs_setsize(inode, attrs->ia_size);
++
++		/*
++		 * The man page of truncate says if the size changed,
++		 * then the st_ctime and st_mtime fields for the file
++		 * are updated.
++		 */
++		attrs->ia_ctime = attrs->ia_mtime = current_time(inode);
++		attrs->ia_valid |= ATTR_CTIME | ATTR_MTIME;
++
+ 		cifs_truncate_page(inode->i_mapping, inode->i_size);
+ 	}
  
-+	/* prevent new opens */
-+	mutex_lock(&device_list_lock);
- 	/* make sure ops on existing fds can abort cleanly */
- 	spin_lock_irq(&spidev->spi_lock);
- 	spidev->spi = NULL;
- 	spin_unlock_irq(&spidev->spi_lock);
- 
--	/* prevent new opens */
--	mutex_lock(&device_list_lock);
- 	list_del(&spidev->device_entry);
- 	device_destroy(spidev_class, spidev->devt);
- 	clear_bit(MINOR(spidev->devt), minors);
 -- 
 2.25.1
 
