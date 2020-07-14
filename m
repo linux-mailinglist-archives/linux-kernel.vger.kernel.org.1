@@ -2,68 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4171921F5F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9270621F5FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgGNPQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 11:16:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44400 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725876AbgGNPQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 11:16:37 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D58A6223FB;
-        Tue, 14 Jul 2020 15:16:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594739797;
-        bh=8dTO9PLXvIm7/AVLONCljqRVzNQDWz6iSFvrIeWSHOs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HVL5XpXI7+318g8hPN4IqiDLi+fa3xShibT8cS6spEwVfqOX9I3KdE8TbH9VHcpYl
-         YZ0+5bglEZtSkq6zvf0hjX6mAXiDj+5GWAn1YvUPqR/3jI3XrDfZXe7eEjWTCGxTMa
-         QdpD526THZMo9jHtxgO1AO48aGkv+c6dbB22ncUI=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 48D2F40094; Tue, 14 Jul 2020 12:16:34 -0300 (-03)
-Date:   Tue, 14 Jul 2020 12:16:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH v11 00/15] perf: support enable and disable commands in
- stat and record modes
-Message-ID: <20200714151634.GA43671@kernel.org>
-References: <037d737f-0ada-a9f0-9686-f7521ca6fbc3@linux.intel.com>
- <CAM9d7cgv1dbLMmtUYWXEvoSUC_NQuBpJ9JRBn3tXJ+S5PX+8TQ@mail.gmail.com>
+        id S1728178AbgGNPRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 11:17:13 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:43178 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725876AbgGNPRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 11:17:13 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A7B0A3B5B896DCDB36BD;
+        Tue, 14 Jul 2020 23:17:09 +0800 (CST)
+Received: from [127.0.0.1] (10.174.186.75) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Jul 2020
+ 23:17:03 +0800
+Subject: Re: [PATCH v2 0/2] arm64: tlb: add support for TLBI RANGE
+ instructions
+To:     Catalin Marinas <catalin.marinas@arm.com>
+CC:     <maz@kernel.org>, <steven.price@arm.com>, <guohanjun@huawei.com>,
+        <will@kernel.org>, <olof@lixom.net>, <suzuki.poulose@arm.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <zhangshaokun@hisilicon.com>, <prime.zeng@hisilicon.com>,
+        <linux-arch@vger.kernel.org>, <kuhn.chenqun@huawei.com>,
+        <xiexiangyou@huawei.com>, <linux-mm@kvack.org>, <arm@kernel.org>
+References: <20200710094420.517-1-yezhenyu2@huawei.com>
+ <159440712962.27784.4664678472466095995.b4-ty@arm.com>
+ <20200713122123.GC15829@gaia>
+ <2edcf1ce-38d4-82b2-e500-51f742cae357@huawei.com>
+ <20200713165903.GD15829@gaia>
+From:   Zhenyu Ye <yezhenyu2@huawei.com>
+Message-ID: <b0c1ae56-3c22-dafe-a145-305714b211eb@huawei.com>
+Date:   Tue, 14 Jul 2020 23:17:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cgv1dbLMmtUYWXEvoSUC_NQuBpJ9JRBn3tXJ+S5PX+8TQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200713165903.GD15829@gaia>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.186.75]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jul 14, 2020 at 09:05:10PM +0900, Namhyung Kim escreveu:
-> Hello,
+On 2020/7/14 0:59, Catalin Marinas wrote:
+>> +config ARM64_TLBI_RANGE
+>> +	bool "Enable support for tlbi range feature"
+>> +	default y
+>> +	depends on AS_HAS_TLBI_RANGE
+>> +	help
+>> +	  ARMv8.4-TLBI provides TLBI invalidation instruction that apply to a
+>> +	  range of input addresses.
+>> +
+>> +	  The feature introduces new assembly instructions, and they were
+>> +	  support when binutils >= 2.30.
 > 
-> On Tue, Jul 14, 2020 at 5:37 PM Alexey Budankov
-> <alexey.budankov@linux.intel.com> wrote:
-> >
-> >
-> > Changes in v11:
-> > - added comments to struct ctl_fd
-> > - explicitly coded data_size decrement
+> It looks like 2.30. I tracked it down to this commit:
 > 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> https://sourceware.org/git/?p=binutils-gdb.git;a=commitdiff;h=793a194839bc8add71fdc7429c58b10f0667a6f6;hp=1a7ed57c840dcb0401f1a67c6763a89f7d2686d2
+> 
+>> +config AS_HAS_TLBI_RANGE
+>> +	def_bool $(as-option, -Wa$(comma)-march=armv8.4-a)
+>> +
+>>  endmenu
+> 
+> The problem is that we don't pass -Wa,-march=armv8.4-a to gas. AFAICT,
+> we only set an 8.3 for PAC but I'm not sure how passing two such options
+> goes.
+> 
 
-So, I think v10 had Jiri's Acked-by, right? Or was it a reviewed-by?
-Please next time collect those, helps with reviewing, Jiri?
+Pass the -march twice may not have bad impact.  Test in my toolchains
+and the newer one will be chosen.  Anyway, we can add judgment to avoid
+them be passed at the same time.
 
-- Arnaldo
+> I'm slightly surprised that my toolchains (and yours) did not complain
+> about these instructions. Looking at the binutils code, I think it
+> should have complained if -march=armv8.4-a wasn't passed but works fine.
+> I thought gas doesn't enable the maximum arch feature by default.
+>> An alternative would be to check for a specific instruction (untested):
+> 
+> 	def_bool $(as-instr,tlbi rvae1is, x0)
+> 
+> but we need to figure out whether gas not requiring -march=armv8.4-a is
+> a bug (which may be fixed) or that gas accepts all TLBI instructions.
+> 
+
+As you say in another email, this is a bug.  So we should pass -march=
+armv8.4-a to gas if we use toolchains to generate tlbi range instructions.
+
+But this bug only affects the compilation (cause WARNING or ERROR if not
+pass -march-armv8.4-a when compiling) but not the judgment.
+
+> A safer bet may be to simply encode the instructions by hand:
+> 
+> #define SYS_TLBI_RVAE1IS(Rt) \
+> 	__emit_inst(0xd5000000 | sys_insn(1, 0, 8, 2, 1) | ((Rt) & 0x1f))
+> #define SYS_TLBI_RVALE1IS(Rt) \
+> 	__emit_inst(0xd5000000 | sys_insn(1, 0, 8, 2, 5) | ((Rt) & 0x1f))
+> 
+> (please check that they are correct)
+> 
+
+Currently in kernel, all tlbi instructions are passed through __tlbi()
+and __tlbi_user(). If we encode the range instructions by hand, we may
+should have to add a new mechanism for this:
+
+1. choose a register and save it;
+2. put the operations for tlbi range to the register;
+3. do tlbi range by asm(SYS_TLBI_RVAE1IS(x0));
+4. restore the value of the register.
+
+It's complicated and will only be used with tlbi range instructions.
+(Am I understand something wrong? )
+
+So I am prefer to pass -march=armv8.4-a to toolschains to support tlbi
+range instruction, just like what PAC does.
+
+Thanks,
+Zhenyu
+
+
+
+
