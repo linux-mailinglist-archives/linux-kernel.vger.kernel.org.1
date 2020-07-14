@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C448721EB32
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790A421EB37
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 10:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgGNIWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 04:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53584 "EHLO
+        id S1725997AbgGNIYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 04:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgGNIWG (ORCPT
+        with ESMTP id S1725801AbgGNIYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 04:22:06 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3728C061755;
-        Tue, 14 Jul 2020 01:22:05 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id f16so1177977pjt.0;
-        Tue, 14 Jul 2020 01:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UxT+xVg1iEE+TdiS6PzOnTuOQmCXGShz9BDeI/0k6RI=;
-        b=X5lhRJB59sgnqNf0zVexBgPh36/YV37c5fAfH/uEasMqURC7Cjb1qQQTGbU8+Vf4ya
-         SLBFKjBg8XYlaOjhYH1IBYHyDq523T8IWXb3MUtHun54j87VOyJHJ0+QBU7wCW2yffCj
-         jFUG20LunyablP3sh3UHL73xW+KI6skpUGIfD7wmU8amILZ2rToGcGRzJSwISDchE57W
-         eHU2t0i+DPDWXAj6+XryYf5KXM5xWezs4D/MMgWqnSEA0IXp55+ZIYykU7mRsooxSz1S
-         A0T/sw/PpP4rBfbLcFpEXcmi0GCG2abk/gW2aDyp+yGqUAiXILda4+7go4Bw8eb/MBFP
-         vxXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UxT+xVg1iEE+TdiS6PzOnTuOQmCXGShz9BDeI/0k6RI=;
-        b=RzUoxMgDG1O9iLq0Sa180MGgq2VAsz91cKbn0psoiOf0HqQWl3Mfc8uTuo6Ij2tSKj
-         WaaUkMFCKUMsA1FdcGEMmI7kq0ECGKVjEkCOBHOXwbdxM681ttycUaeWYvo19pH4HExc
-         +dDYSgxiTTC2wOSG8lSBhiPDkkM/q6YmcOZZ/qwTylyCFl5FEOVxhEU3/8Fwys3SvB5V
-         DRFXIBNvd3QIKkIjVKl8plpcTMPcqsQ8z4c0325/ISD/2xcQmdD+sjxTjTnN5H+GR2Uh
-         HrP314DvlUGryG9HLUqE42twwrEH2BJbraxAlE7CCDh4WLzMNExxz5tM5H9ZfLYb0axD
-         2ovA==
-X-Gm-Message-State: AOAM530ukV97U57Icku2IZJatj4oLIqG6aihymRcUA8+GlhOj992FCkv
-        z6Z1fpugTLly9FbBkreeZxix9ueFkEfeizqmGR0=
-X-Google-Smtp-Source: ABdhPJyJXVM7MeA3GmA+gb8Y/IKCddN/vz262hxa8lU5yf5tdOl+VJnVXqo/AabFiUCqcD9seS0VkBVvrXA45nivY9U=
-X-Received: by 2002:a17:902:7288:: with SMTP id d8mr3099798pll.18.1594714925385;
- Tue, 14 Jul 2020 01:22:05 -0700 (PDT)
+        Tue, 14 Jul 2020 04:24:09 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044EDC061755;
+        Tue, 14 Jul 2020 01:24:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NTXTDSxXIabpTtQm/KBGD+7vkhm9AF9uI5qymKFrD1w=; b=D+se2QTEccQm3Ggm33suL8k8ez
+        e8uPxBkYvNfxWeFq95mKwbbpEU9WSrnr8JNTxU0ueYEw5bm+xA/r0BUDOUlxInDMjd0BiojA71AyX
+        QPJ8pT10mSqJLKhMw7M+X0Bm+XrnzwYB2UKx5rnbUMmzi2d5mQ4XhzIERPlGuuK2E/l76p6xU+20b
+        84/4zOfGHB8NXjGHmtu/rSRQRYtz0NKTxqONHWQkKuUk2fEG9sMgeRmPh/saiW1XyYveOYeFCnRay
+        RLDJgcNxnIFRACLiYRer7WOpwsVF/g3gFZaJw1P3EUod3kRwXbArN+M7Q8UCwrG0J674qsp2zRcQp
+        B4AD0qvw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvGEH-0003WO-Ek; Tue, 14 Jul 2020 08:23:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D5D7F302753;
+        Tue, 14 Jul 2020 10:23:52 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 405D02141F06E; Tue, 14 Jul 2020 10:23:52 +0200 (CEST)
+Date:   Tue, 14 Jul 2020 10:23:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
+Message-ID: <20200714082352.GN10769@hirez.programming.kicks-ass.net>
+References: <cover.1594707424.git.viresh.kumar@linaro.org>
+ <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-References: <20200714081510.6070-1-hdegoede@redhat.com>
-In-Reply-To: <20200714081510.6070-1-hdegoede@redhat.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 14 Jul 2020 11:21:48 +0300
-Message-ID: <CAHp75Vd6uGNw5m3-Tc1tkABLT_Wi7CtW2yo8+B5TpYV4U8XE9A@mail.gmail.com>
-Subject: Re: [PATCH 5.8 regression fix] platform/x86: thinkpad_acpi: Revert:
- Use strndup_user() in dispatch_proc_write()
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Henrique de Moraes Holschuh <ibm-acpi@hmh.eng.br>,
-        Thinkpad-acpi devel ML <ibm-acpi-devel@lists.sourceforge.net>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 11:15 AM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Commit 35d13c7a0512 ("platform/x86: thinkpad_acpi: Use strndup_user()
-> in dispatch_proc_write()") cleaned up dispatch_proc_write() by replacing
-> the code to copy the passed in data from userspae with strndup_user().
+On Tue, Jul 14, 2020 at 12:06:53PM +0530, Viresh Kumar wrote:
+> Several parts of the kernel are already using the effective CPU
+> utilization to get the current load on the CPU, do the same here instead
+> of depending on the idle time of the CPU, which isn't that accurate
+> comparatively.
+> 
+> Note that, this (and CPU frequency scaling in general) doesn't work that
+> well with idle injection as that is done from rt threads and is counted
+> as load while it tries to do quite the opposite. That should be solved
+> separately though.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/thermal/cpufreq_cooling.c | 65 +++++++------------------------
+>  1 file changed, 15 insertions(+), 50 deletions(-)
+> 
+> diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+> index 6c0e1b053126..74340b2b0da7 100644
+> --- a/drivers/thermal/cpufreq_cooling.c
+> +++ b/drivers/thermal/cpufreq_cooling.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/thermal.h>
+>  
+>  #include <trace/events/thermal.h>
+> +#include "../../kernel/sched/sched.h"
 
-user space
-
-> But strndup_user() expects a 0 terminated input buffer and the buffer
-> passed to dispatch_proc_write() is NOT 0 terminated.
->
-> So this change leads to strndup_user() copying some extra random bytes
-> from userspace till it hits a 0 byte.
->
-> This commit reverts the change to use strndup_user() fixing the
-> buffer being passed to the ibm_struct.write() call back containing extra
-> junk at the end.
-
-Can we simply use memdup_user()?
-And thanks for catching this up!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Hard NAK on that. Just writing it should've been a clue.
