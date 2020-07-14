@@ -2,166 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD0221F639
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71EB21F645
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgGNPd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 11:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35694 "EHLO
+        id S1726442AbgGNPjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 11:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725280AbgGNPd2 (ORCPT
+        with ESMTP id S1725280AbgGNPjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 11:33:28 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C05FC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:33:28 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id j4so22518245wrp.10
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:33:28 -0700 (PDT)
+        Tue, 14 Jul 2020 11:39:09 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EDBC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:39:08 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id e11so15992422qkm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 08:39:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cumulusnetworks.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZV/5MnfWGeiQqfjaCqjhBosmdIaJp+dftZ+PZRkEpS8=;
-        b=dUQ7MtvKSup1M8kQBPW+VW+lvzt1lO7sZHZm9EF/2jZHHtXM2s0S6Oz2Q8owzi0TM7
-         dsSlH9pweGgn7xh1ukkA2C1VN3Mx03bsgftFuETOH1x9fKpaAfgrmG7SN1sl1Q0XZvH7
-         wA5+wE332V0zEcqxTumt6y2Q1r/2OZ4OmsBXw=
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=udaIJS0JTvOfLh22C6s5PXq+hAqCuMLbXynj9AvwNfw=;
+        b=t36hGhq6fYlBHr3reEL60xJ9Hsqz2Fh7uaCmdq4G7aSIKOJe29wosZHkhylqlO8iMu
+         rEUj1WtiMn6zd2vO1VFwPwLC6alSQ2GNbrY4E9StreSKDQasc6/Rbn27Un3RDSeFMCjY
+         GFsVNP2u8YW/HcTOxNyQ1Pfdta0FENBlljwec8KQsrk2jaJARDlUdeFLLpxS3V+w6N2+
+         77W/AJFo+Oak5RIhf/dgVKowiHgAMf5exTiensoa5uRk/A/WsbFazxULX7O+KFL+nNEy
+         PWtH/EmzaVyQTEj44kB/MBC7iRhZUoWr7RtxTcqQWlSaYPHiqcrdfbbAXvsv6rZVAVA4
+         rHfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZV/5MnfWGeiQqfjaCqjhBosmdIaJp+dftZ+PZRkEpS8=;
-        b=pmiRAjrGFj2XIXBoWwF2SW5B+0GflGdhUot38PAzIsOHMartNDlPUMrg7/iErs6GRC
-         LSNOS9E4+PDgvYpFMSNbHzrsdZVFfsxIcnF1vF4eztMAsq/HNNTXiJVr1it+fxkwepp4
-         ZtKWFY1kJ+z1cONTNL9aNuVOCrlI/73AsDAwqDZb3mfXjNuVsI/7/H8+jQ4HfD/5eg/E
-         EiXS9yassVimalN1K8EOiKUNu1AN8VJ3qMw5ygRmUIpNQ5/05VMAKzSU016cYi5WIQ7O
-         1vT1tNHX4J2qoYd5x80Fi/LcMWzVH4RBpRSoHlVnDR38kyjIKXoiPJvYO/HZhk41K+Ja
-         Vy/A==
-X-Gm-Message-State: AOAM5333wXzMqIiKvGD2o3czlrVrCxNItPSiVm5BcsJh9ISwaMDYlL7Z
-        /Ey8J2FfJa1mrsvPldF4fymAzg==
-X-Google-Smtp-Source: ABdhPJw7QIq7PKKMCpfby1y5PCR1m53BEi9g8JiyU2dyynkHCDmKyKsirnqTtXj1MUOKCU8yf4oG6w==
-X-Received: by 2002:a5d:4e48:: with SMTP id r8mr6301220wrt.309.1594740807167;
-        Tue, 14 Jul 2020 08:33:27 -0700 (PDT)
-Received: from [192.168.0.109] (84-238-136-197.ip.btc-net.bg. [84.238.136.197])
-        by smtp.gmail.com with ESMTPSA id f12sm29802475wrj.48.2020.07.14.08.33.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 08:33:26 -0700 (PDT)
-Subject: Re: [PATCH net-next v4 12/12] net: bridge: Add port attribute
- IFLA_BRPORT_MRP_IN_OPEN
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     roopa@cumulusnetworks.com, davem@davemloft.net, kuba@kernel.org,
-        jiri@resnulli.us, ivecera@redhat.com, andrew@lunn.ch,
-        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org
-References: <20200714073458.1939574-1-horatiu.vultur@microchip.com>
- <20200714073458.1939574-13-horatiu.vultur@microchip.com>
- <9eeb89c5-865f-2b21-c7c6-7f4479bf4175@cumulusnetworks.com>
- <20200714150740.3ji3qhtvikhrizfn@soft-dev3.localdomain>
-From:   Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
-Message-ID: <a22642aa-63a2-e492-5f64-b344c62d0142@cumulusnetworks.com>
-Date:   Tue, 14 Jul 2020 18:33:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=udaIJS0JTvOfLh22C6s5PXq+hAqCuMLbXynj9AvwNfw=;
+        b=jVpNkoGVTv/a/y1j7KoTthgfB13S9oIdBlr7D1qluCpAMlIuF0WJeTwxW/3Ev9Av7b
+         RbCcWjkkhg+ww3tFTBirWnFEcbloqVWAaR6CsLbAArULVQ0ijRbMF9tp0eZXlnkAsmuS
+         BRCP2WAoSDkWzMQlgyRC50IyLZWVJG7dpAzaT0Rapg4pqfD7DNKD6LeQ8QV1DXPrVmbA
+         miNV5bYQB1L1d3jpniictEXYpDWjvaJpOi6hpnZ6eWsNcHK6iJFI+uW+95qIQMRMFy5B
+         drRmoz171u7Zpy7jCz8VD4NOsVwIIrieT74GwQxts+dh5cNncBjtCyRDQ7v6M4zO2743
+         6Q+g==
+X-Gm-Message-State: AOAM532Wmn5QBw51Drubz0stiravyLAUrnJ4esOnivpr3LwV9fPouZLf
+        03ccyo3JWsrgWmLtNVzyVm3pRA==
+X-Google-Smtp-Source: ABdhPJzdVJ1fec3PNIF6e8LFfx5i8dQrP7XaYGWW7sAdQ8zlpK2plTnJt8cwSZLekO4Zy5KH4fMU7Q==
+X-Received: by 2002:a05:620a:2298:: with SMTP id o24mr5050638qkh.73.1594741147787;
+        Tue, 14 Jul 2020 08:39:07 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:81a8])
+        by smtp.gmail.com with ESMTPSA id d14sm2791142qkl.9.2020.07.14.08.39.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 08:39:06 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 11:38:17 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kernel Team <kernel-team@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Domas Mituzas <domas@fb.com>, Tejun Heo <tj@kernel.org>,
+        Chris Down <chris@chrisdown.name>
+Subject: Re: [PATCH] mm: memcontrol: avoid workload stalls when lowering
+ memory.high
+Message-ID: <20200714153817.GA215857@cmpxchg.org>
+References: <20200709194718.189231-1-guro@fb.com>
+ <20200710122917.GB3022@dhcp22.suse.cz>
+ <CALvZod6Yk8QoZjbNkGE8-qeOD187Nu-+VwasoROGZs_UsMgbEQ@mail.gmail.com>
+ <20200710184205.GB350256@carbon.dhcp.thefacebook.com>
+ <CALvZod45_zVaFhvw-wc9b6-Fth=fZo5Fo6xCwRVkrWC6ZprYyw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200714150740.3ji3qhtvikhrizfn@soft-dev3.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod45_zVaFhvw-wc9b6-Fth=fZo5Fo6xCwRVkrWC6ZprYyw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2020 18:07, Horatiu Vultur wrote:
-> The 07/14/2020 16:29, Nikolay Aleksandrov wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> On 14/07/2020 10:34, Horatiu Vultur wrote:
->>> This patch adds a new port attribute, IFLA_BRPORT_MRP_IN_OPEN, which
->>> allows to notify the userspace when the node lost the contiuity of
->>> MRP_InTest frames.
->>>
->>> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
->>> ---
->>>  include/uapi/linux/if_link.h       | 1 +
->>>  net/bridge/br_netlink.c            | 3 +++
->>>  tools/include/uapi/linux/if_link.h | 1 +
->>>  3 files changed, 5 insertions(+)
->>>
+On Fri, Jul 10, 2020 at 12:19:37PM -0700, Shakeel Butt wrote:
+> On Fri, Jul 10, 2020 at 11:42 AM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > On Fri, Jul 10, 2020 at 07:12:22AM -0700, Shakeel Butt wrote:
+> > > On Fri, Jul 10, 2020 at 5:29 AM Michal Hocko <mhocko@kernel.org> wrote:
+> > > >
+> > > > On Thu 09-07-20 12:47:18, Roman Gushchin wrote:
+> > > > > Memory.high limit is implemented in a way such that the kernel
+> > > > > penalizes all threads which are allocating a memory over the limit.
+> > > > > Forcing all threads into the synchronous reclaim and adding some
+> > > > > artificial delays allows to slow down the memory consumption and
+> > > > > potentially give some time for userspace oom handlers/resource control
+> > > > > agents to react.
+> > > > >
+> > > > > It works nicely if the memory usage is hitting the limit from below,
+> > > > > however it works sub-optimal if a user adjusts memory.high to a value
+> > > > > way below the current memory usage. It basically forces all workload
+> > > > > threads (doing any memory allocations) into the synchronous reclaim
+> > > > > and sleep. This makes the workload completely unresponsive for
+> > > > > a long period of time and can also lead to a system-wide contention on
+> > > > > lru locks. It can happen even if the workload is not actually tight on
+> > > > > memory and has, for example, a ton of cold pagecache.
+> > > > >
+> > > > > In the current implementation writing to memory.high causes an atomic
+> > > > > update of page counter's high value followed by an attempt to reclaim
+> > > > > enough memory to fit into the new limit. To fix the problem described
+> > > > > above, all we need is to change the order of execution: try to push
+> > > > > the memory usage under the limit first, and only then set the new
+> > > > > high limit.
+> > > >
+> > > > Shakeel would this help with your pro-active reclaim usecase? It would
+> > > > require to reset the high limit right after the reclaim returns which is
+> > > > quite ugly but it would at least not require a completely new interface.
+> > > > You would simply do
+> > > >         high = current - to_reclaim
+> > > >         echo $high > memory.high
+> > > >         echo infinity > memory.high # To prevent direct reclaim
+> > > >                                     # allocation stalls
+> > > >
+> > >
+> > > This will reduce the chance of stalls but the interface is still
+> > > non-delegatable i.e. applications can not change their own memory.high
+> > > for the use-cases like application controlled proactive reclaim and
+> > > uswapd.
+> >
+> > Can you, please, elaborate a bit more on this? I didn't understand
+> > why.
+> >
 > 
-> Hi Nik,
+> Sure. Do we want memory.high a CFTYPE_NS_DELEGATABLE type file? I
+> don't think so otherwise any job on a system can change their
+> memory.high and can adversely impact the isolation and memory
+> scheduling of the system.
 > 
->>
->> It's kind of late by now, but I'd wish these were contained in a nested MRP attribute. :)
->> Horatiu, do you expect to have many more MRP attributes outside of MRP netlink code?
-> 
-> I don't expect to add any other MRP attributes outside of MRP netlink
-> code.
-> 
->>
->> Perhaps we should at least dump them only for MRP-aware ports, that should be easy.
->> They make no sense outside of MRP anyway, but increase the size of the dump for all
->> right now.
-> 
-> You are right. Then should I first send a fix on the net for this and
-> after that I will fix these patches or just fix this in the next patch
-> series?
-> 
+> Next we have to agree that there are valid use-cases to allow
+> applications to reclaim from their cgroups and I think uswapd and
+> proactive reclaim are valid use-cases. Let's suppose memory.high is
+> the only way to trigger reclaim but the application can not write to
+> their top level memory.high, so, it has to create a dummy cgroup of
+> which it has write access to memory.high and has to move itself to
+> that dummy cgroup to use memory.high to trigger reclaim for
+> uswapd/proactive-reclaim.
 
-IMO it's more of an improvement rather than a bug, but since you don't expect to have more
-attributes outside of MRP's netlink I guess we can drop it for now. Up to you.
+For what it's worth, for proactive reclaim driven by userspace, we're
+currently carrying a hacky memory.high.tmp in our private tree. It
+takes a limit and a timeout, so that in case the daemon crashes during
+a dip in memory consumption no unsafe limits are left behind.
 
-It definitely shouldn't block this patch-set.
+We haven't upstreamed it because it's not clear yet how exactly the
+interface should look like. The userspace daemon is still
+evolving. But I think we're going to need *some form* of a dedicated
+knob to make this operation safe.
 
->>
->> Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
->>
->>> diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
->>> index cc185a007ade8..26842ffd0501d 100644
->>> --- a/include/uapi/linux/if_link.h
->>> +++ b/include/uapi/linux/if_link.h
->>> @@ -344,6 +344,7 @@ enum {
->>>       IFLA_BRPORT_ISOLATED,
->>>       IFLA_BRPORT_BACKUP_PORT,
->>>       IFLA_BRPORT_MRP_RING_OPEN,
->>> +     IFLA_BRPORT_MRP_IN_OPEN,
->>>       __IFLA_BRPORT_MAX
->>>  };
->>>  #define IFLA_BRPORT_MAX (__IFLA_BRPORT_MAX - 1)
->>> diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
->>> index c532fa65c9834..147d52596e174 100644
->>> --- a/net/bridge/br_netlink.c
->>> +++ b/net/bridge/br_netlink.c
->>> @@ -152,6 +152,7 @@ static inline size_t br_port_info_size(void)
->>>  #endif
->>>               + nla_total_size(sizeof(u16))   /* IFLA_BRPORT_GROUP_FWD_MASK */
->>>               + nla_total_size(sizeof(u8))    /* IFLA_BRPORT_MRP_RING_OPEN */
->>> +             + nla_total_size(sizeof(u8))    /* IFLA_BRPORT_MRP_IN_OPEN */
->>>               + 0;
->>>  }
->>>
->>> @@ -216,6 +217,8 @@ static int br_port_fill_attrs(struct sk_buff *skb,
->>>                      !!(p->flags & BR_NEIGH_SUPPRESS)) ||
->>>           nla_put_u8(skb, IFLA_BRPORT_MRP_RING_OPEN, !!(p->flags &
->>>                                                         BR_MRP_LOST_CONT)) ||
->>> +         nla_put_u8(skb, IFLA_BRPORT_MRP_IN_OPEN,
->>> +                    !!(p->flags & BR_MRP_LOST_IN_CONT)) ||
->>>           nla_put_u8(skb, IFLA_BRPORT_ISOLATED, !!(p->flags & BR_ISOLATED)))
->>>               return -EMSGSIZE;
->>>
->>> diff --git a/tools/include/uapi/linux/if_link.h b/tools/include/uapi/linux/if_link.h
->>> index cafedbbfefbe9..781e482dc499f 100644
->>> --- a/tools/include/uapi/linux/if_link.h
->>> +++ b/tools/include/uapi/linux/if_link.h
->>> @@ -344,6 +344,7 @@ enum {
->>>       IFLA_BRPORT_ISOLATED,
->>>       IFLA_BRPORT_BACKUP_PORT,
->>>       IFLA_BRPORT_MRP_RING_OPEN,
->>> +     IFLA_BRPORT_MRP_IN_OPEN,
->>>       __IFLA_BRPORT_MAX
->>>  };
->>>  #define IFLA_BRPORT_MAX (__IFLA_BRPORT_MAX - 1)
->>>
->>
-> 
+As far as permissions to self-pressurize go - I'm curious how you make
+that safe? How do you keep the reclaim daemon from accidentally
+putting excessive pressure on its own cgroup that may interfere with
+the very act of backing off the limit again?
 
+The way we do this right now is having the reclaimer daemon in a
+dedicated top-level cgroup with memory.min protection.
+
+This works well because we have a comprehensive cgroup setup anyway
+and need to protect this daemon (it's oomd - the proactive reclaimer,
+senpai, is a plugin) for other reasons as well. But it's probably a
+royal pain to use if you don't have all of that infrastructure.
+
+One possible idea to make this simpler would be to have a limit knob
+that has a psi/pressure blowout valve. This way you could specify your
+tolerances for paging and what constitutes "cold" memory, and the
+limit unsets itself when pressure moves into harmful territory. This
+would make it safe to use when the reclaimer becomes unresponsive or
+dies altogether, which makes it safe to use from within the
+cgroup. And being separate from max and high means we can delegate it.
