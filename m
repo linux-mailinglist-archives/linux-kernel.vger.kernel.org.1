@@ -2,149 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD6821FD37
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B26E21FD3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729320AbgGNTVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727930AbgGNTVW (ORCPT
+        id S1729657AbgGNTWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:22:11 -0400
+Received: from smtprelay0022.hostedemail.com ([216.40.44.22]:34252 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727930AbgGNTWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:21:22 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944F2C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:21:22 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id l1so18524983ioh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 12:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=6MKTlr7J8Rp2MsMio23TCowkP5+63OkXW2oUskwJZ8w=;
-        b=kirqayn1/3LrfNhHlFjphh3zOb/8tQ1wCoTI8dQbkWi4nEZUI0fTq5CzVJHNt6Nai5
-         TLe9VCZIBLrCMmsyCGLOm3g4A4iJmYgMwYGZP6MyUQDurP5vDrpC8dqELT9awpkcICtK
-         znZNJ/5OcjuiBAdwxLDcpRQPS5FAXykwRstzDFUwNpVeytro4nmwpDgDa01ubbV5Afj4
-         59IjcONDDVcfWN2xAB89NPFJZNsDvA3xeQUYNijdIpXxcLUjkns2rrxymX8LaiwZxi+w
-         /fOE366hbMqSGsCckOS70SBm04GOHQsU1iwfNNx/mIK40/t+/bX3harB6nh1uAR1zRdP
-         eACg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=6MKTlr7J8Rp2MsMio23TCowkP5+63OkXW2oUskwJZ8w=;
-        b=SFwE77MNjtENxlIalnIpynDcxlcTDZSmPwhkxq5JD8ViuPJV8eSpOMx99bHHMVWgdF
-         nGs+as5Vnj9FjqJn+T83u+G8R/7GygcvVJhpHal0Ni3mP00NgFERHVru3HC4TFqm5+eK
-         XBS1v0zXZctpt2sCu7f/1sKMss5vIi8lVIYNst731bk9B/uZF4/OkMVj6iFUy+1WVCRD
-         u/AmtYW8lZm/HOW+zjkx/iMROhyc0G+5po/HJbyzztGjLY/0rIlEqc6xhMKOQ0BOQgF8
-         n86qCOjC0bC/iQyAcR3FH9ZJX2DhXpHv5U2tbDsshkxY3qrzq3JNcZmZuZDbkg7mcUmW
-         2rKw==
-X-Gm-Message-State: AOAM531M0Er1CEKTRSuK90vsvjdscjecNZcOF1YFoSTmLUXmlOwAVOdK
-        5H39N9sxKCuElda4P6meWhHnCu1y4+V6/rNQdD8=
-X-Google-Smtp-Source: ABdhPJyIJ0zNzeeZQGOJi/xHoKFzwlo7DIgyEzpWKu9GwQNZj7Ajr7/bys8cNSU1H/dvXN01Mlyz/JAJAuYzSyOGNDU=
-X-Received: by 2002:a5e:9309:: with SMTP id k9mr6361130iom.135.1594754481750;
- Tue, 14 Jul 2020 12:21:21 -0700 (PDT)
+        Tue, 14 Jul 2020 15:22:11 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 0685B181D337B;
+        Tue, 14 Jul 2020 19:22:08 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:4605:5007:6691:7514:7903:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12438:12555:12663:12740:12760:12895:12986:13439:14181:14659:14721:21080:21324:21451:21627:30054:30055:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: turn41_0b16cbc26ef3
+X-Filterd-Recvd-Size: 4228
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 14 Jul 2020 19:22:06 +0000 (UTC)
+Message-ID: <ce637b26b496dd99be8f272e6ec82333338321dc.camel@perches.com>
+Subject: Re: [PATCH 6/6] staging: qlge: qlge_ethtool: Remove one byte memset.
+From:   Joe Perches <joe@perches.com>
+To:     Suraj Upadhyay <usuraj35@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        manishc@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 14 Jul 2020 12:22:05 -0700
+In-Reply-To: <20200714190602.GA14742@blackclown>
+References: <cover.1594642213.git.usuraj35@gmail.com>
+         <b5eb87576cef4bf1b968481d6341013e6c7e9650.1594642213.git.usuraj35@gmail.com>
+         <20200713141749.GU2549@kadam>
+         <a323c1e47e8de871ff7bb72289740cb0bc2d27f8.camel@perches.com>
+         <20200714190602.GA14742@blackclown>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-References: <20200629140928.858507-1-nivedita@alum.mit.edu>
- <20200714023836.2310569-1-nivedita@alum.mit.edu> <CA+icZUXSPfybFtzQB3wKn9spQmEPnQu_iGPWkRisAmRQbJLWXA@mail.gmail.com>
- <20200714141550.GA329060@rani.riverdale.lan> <CA+icZUU88wYmyycthW7AQUZ72HGa9RWPZmxVS5Gm6UW=6ES9kA@mail.gmail.com>
- <CA+icZUWHdsk9+wkTZOdDghM7pRZyk2vHgxpYx62vPooqohzbYw@mail.gmail.com> <CA+icZUWip6xAFdTiLNWT4QHS0R6bQuCZ6W7dWd+UbbZGnBBh4w@mail.gmail.com>
-In-Reply-To: <CA+icZUWip6xAFdTiLNWT4QHS0R6bQuCZ6W7dWd+UbbZGnBBh4w@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 14 Jul 2020 21:21:10 +0200
-Message-ID: <CA+icZUUq9Wtut702su0HQ5qALkDvR+cdW7bczdj_mv=p-U3w4g@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] x86/boot: Remove runtime relocations from
- compressed kernel
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Daniel Kiper <daniel.kiper@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H . J . Lu" <hjl@sourceware.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 8:33 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Tue, Jul 14, 2020 at 8:30 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > > I did a full new build...
-> > >
-> > > ...and it fails with ld.lld-11 as linker:
-> > >
-> > > ld.lld-11 -m elf_x86_64 -pie  --no-dynamic-linker -r -o
-> > > arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o
-> > > -T arch/x86/boot/compressed/.tmp_misc.ver; mv -f
-> > > arch/x86/boot/compressed/.tmp_misc.o arch/x86/boot/compressed/misc.o;
-> > > rm -f arch/x86/boot/compressed/.tmp_misc.ver; fi
-> > > *** ld.lld-11: error: -r and -pie may not be used together ***
-> > > make[5]: *** [scripts/Makefile.build:281:
-> > > arch/x86/boot/compressed/misc.o] Error 1
-> > >
-> > > It's annoying to fail on the last minutes of a build.
-> > > Sorry for being very honest.
-> > >
-> >
-> > I applied this diff...
-> >
-> > $ git diff arch/x86/boot/compressed/Makefile
-> > diff --git a/arch/x86/boot/compressed/Makefile
-> > b/arch/x86/boot/compressed/Makefile
-> > index 789d5d14d8b0..9ba52a656838 100644
-> > --- a/arch/x86/boot/compressed/Makefile
-> > +++ b/arch/x86/boot/compressed/Makefile
-> > @@ -51,7 +51,10 @@ UBSAN_SANITIZE :=n
-> >  KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
-> >  # Compressed kernel should be built as PIE since it may be loaded at any
-> >  # address by the bootloader.
-> > +# LLD linker does not allow -r and -pie options to be used together.
-> > +ifndef CONFIG_LD_IS_LLD
-> >  KBUILD_LDFLAGS += -pie $(call ld-option, --no-dynamic-linker)
-> > +endif
-> >  LDFLAGS_vmlinux := -T
-> >
-> >  hostprogs      := mkpiggy
-> >
-> > ...and was able to build, assemble, link arch/x86/boot/compressed/*.
-> >
->
-> I checked my last succesfull build without your patchset:
->
-> $ grep no-dynamic-linker build-log_5.8.0-rc5-1-amd64-llvm11-ias.txt
-> [ EMPTY ]
->
+On Wed, 2020-07-15 at 00:36 +0530, Suraj Upadhyay wrote:
+> On Tue, Jul 14, 2020 at 11:57:23AM -0700, Joe Perches wrote:
+> > On Mon, 2020-07-13 at 17:17 +0300, Dan Carpenter wrote:
+> > > On Mon, Jul 13, 2020 at 05:52:22PM +0530, Suraj Upadhyay wrote:
+> > > > Use direct assignment instead of using memset with just one byte as an
+> > > > argument.
+> > > > Issue found by checkpatch.pl.
+> > > > 
+> > > > Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+> > > > ---
+> > > > Hii Maintainers,
+> > > > 	Please correct me if I am wrong here.
+> > > > ---
+> > > > 
+> > > >  drivers/staging/qlge/qlge_ethtool.c | 4 ++--
+> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/staging/qlge/qlge_ethtool.c b/drivers/staging/qlge/qlge_ethtool.c
+> > > > index 16fcdefa9687..d44b2dae9213 100644
+> > > > --- a/drivers/staging/qlge/qlge_ethtool.c
+> > > > +++ b/drivers/staging/qlge/qlge_ethtool.c
+> > > > @@ -516,8 +516,8 @@ static void ql_create_lb_frame(struct sk_buff *skb,
+> > > >  	memset(skb->data, 0xFF, frame_size);
+> > > >  	frame_size &= ~1;
+> > > >  	memset(&skb->data[frame_size / 2], 0xAA, frame_size / 2 - 1);
+> > > > -	memset(&skb->data[frame_size / 2 + 10], 0xBE, 1);
+> > > > -	memset(&skb->data[frame_size / 2 + 12], 0xAF, 1);
+> > > > +	skb->data[frame_size / 2 + 10] = (unsigned char)0xBE;
+> > > > +	skb->data[frame_size / 2 + 12] = (unsigned char)0xAF;
+> > > 
+> > > Remove the casting.
+> > > 
+> > > I guess this is better than the original because now it looks like
+> > > ql_check_lb_frame().  It's still really weird looking though.
+> > 
+> > There are several of these in the intel drivers too:
+> > 
+> > drivers/net/ethernet/intel/e1000/e1000_ethtool.c:       memset(&skb->data[frame_size / 2 + 10], 0xBE, 1);
+> > drivers/net/ethernet/intel/e1000/e1000_ethtool.c:       memset(&skb->data[frame_size / 2 + 12], 0xAF, 1);
+> > drivers/net/ethernet/intel/e1000e/ethtool.c:    memset(&skb->data[frame_size / 2 + 10], 0xBE, 1);
+> > drivers/net/ethernet/intel/e1000e/ethtool.c:    memset(&skb->data[frame_size / 2 + 12], 0xAF, 1);
+> > drivers/net/ethernet/intel/igb/igb_ethtool.c:   memset(&skb->data[frame_size + 10], 0xBE, 1);
+> > drivers/net/ethernet/intel/igb/igb_ethtool.c:   memset(&skb->data[frame_size + 12], 0xAF, 1);
+> > drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c:       memset(&skb->data[frame_size + 10], 0xBE, 1);
+> > drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c:       memset(&skb->data[frame_size + 12], 0xAF, 1);
+> > drivers/staging/qlge/qlge_ethtool.c:    memset(&skb->data[frame_size / 2 + 10], 0xBE, 1);
+> > drivers/staging/qlge/qlge_ethtool.c:    memset(&skb->data[frame_size / 2 + 12], 0xAF, 1);
+> 
+> Thanks to point this out,
+> 	I will be sending a patchset for that soon.
 
-I was able to boot on bare metal.
 
-Feel free to add my...
+It _might_ be useful to create and use a standard
+mechanism for the loopback functions:
 
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+	<foo>create_lbtest_frame
+and
+	<foo>check_lbtest_frame
 
-...when you restore "old" behaviour when CONFIG_LD_IS_LLD=y (apply or
-fold-in my diff with comment)...
+Maybe use something like:
 
-...and use one "runtime" in your subject-line:
+	ether_loopback_frame_create
+and
+	ether_loopback_frame_check
 
-$ git log --oneline
-v5.8-rc5..for-5.8/x86-boot-compressed-remove-runtime-relocations-nivedita-v4
-| egrep 'runtime|run-time'
-9547f8f08689 x86/boot: Check that there are no runtime relocations
-ede02a307b30 x86/boot: Remove runtime relocations from head_{32,64}.S
-525a67ac7ea9 x86/boot: Remove run-time relocations from .head.text code
 
-Thanks.
-
-- Sedat -
