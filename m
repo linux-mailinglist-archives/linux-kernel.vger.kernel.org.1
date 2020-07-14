@@ -2,143 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1163F21F653
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531F821F646
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 17:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgGNPoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 11:44:03 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30146 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725280AbgGNPoD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 11:44:03 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06EFVB2X154713;
-        Tue, 14 Jul 2020 11:43:55 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 328s1hrnhr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Jul 2020 11:43:55 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06EFV8Gb017741;
-        Tue, 14 Jul 2020 15:43:54 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma04wdc.us.ibm.com with ESMTP id 327528sghs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Jul 2020 15:43:54 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06EFhq3963439300
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Jul 2020 15:43:52 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A8D2478063;
-        Tue, 14 Jul 2020 15:43:53 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0867B7805E;
-        Tue, 14 Jul 2020 15:43:51 +0000 (GMT)
-Received: from [153.66.254.194] (unknown [9.85.141.100])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 14 Jul 2020 15:43:51 +0000 (GMT)
-Message-ID: <1594741430.4545.15.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 24/24] scsi: aic7xxx: aic79xx_osm: Remove set but
- unused variabes 'saved_scsiid' and 'saved_modes'
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Hannes Reinecke <hare@suse.de>, Lee Jones <lee.jones@linaro.org>,
-        martin.petersen@oracle.com
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Hannes Reinecke <hare@suse.com>
-Date:   Tue, 14 Jul 2020 08:43:50 -0700
-In-Reply-To: <559e47de-fa26-9ae5-a3c5-4adeae606309@suse.de>
-References: <20200713080001.128044-1-lee.jones@linaro.org>
-         <20200713080001.128044-25-lee.jones@linaro.org>
-         <559e47de-fa26-9ae5-a3c5-4adeae606309@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
+        id S1726752AbgGNPjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 11:39:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725280AbgGNPjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 11:39:19 -0400
+Received: from embeddedor (unknown [201.162.240.73])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2393622285;
+        Tue, 14 Jul 2020 15:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594741158;
+        bh=415lbHSeClwZCtpjlS68bKbmwLWmlia7bSW5KCVq2Mc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=L6gBkn/qS+Aaz8ESC53BwR7g+RF+HsoAypwMOJzMRDMgLjoGi76E+3PJLYCRUXi9X
+         dQcjWjX/EkZ9Il7sc+7twvEjEBcCepeMiypNAubKVjJ/h1WRiJ6e4Qtf1TAJDPrQXU
+         +oaE2ICT/CVvA9KcHgzeZgURrUq34B4F3qHiYNsI=
+Date:   Tue, 14 Jul 2020 10:44:49 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] hpilo: Replace one-element array with flexible-array
+ member
+Message-ID: <20200714154449.GA26153@embeddedor>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-14_05:2020-07-14,2020-07-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 bulkscore=0
- lowpriorityscore=0 impostorscore=0 spamscore=0 priorityscore=1501
- malwarescore=0 suspectscore=0 mlxscore=0 clxscore=1015 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007140114
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-14 at 09:46 +0200, Hannes Reinecke wrote:
-> On 7/13/20 10:00 AM, Lee Jones wrote:
-> > Haven't been used since 2006.
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/scsi/aic7xxx/aic79xx_osm.c: In function
-> > ‘ahd_linux_queue_abort_cmd’:
-> >  drivers/scsi/aic7xxx/aic79xx_osm.c:2155:17: warning: variable
-> > ‘saved_modes’ set but not used [-Wunused-but-set-variable]
-> >  drivers/scsi/aic7xxx/aic79xx_osm.c:2148:9: warning: variable
-> > ‘saved_scsiid’ set but not used [-Wunused-but-set-variable]
-> > 
-> > Cc: Hannes Reinecke <hare@suse.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/scsi/aic7xxx/aic79xx_osm.c | 4 ----
-> >  1 file changed, 4 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/aic7xxx/aic79xx_osm.c
-> > b/drivers/scsi/aic7xxx/aic79xx_osm.c
-> > index 3782a20d58885..140c4e74ddd7e 100644
-> > --- a/drivers/scsi/aic7xxx/aic79xx_osm.c
-> > +++ b/drivers/scsi/aic7xxx/aic79xx_osm.c
-> > @@ -2141,14 +2141,12 @@ ahd_linux_queue_abort_cmd(struct scsi_cmnd
-> > *cmd)
-> >  	u_int  saved_scbptr;
-> >  	u_int  active_scbptr;
-> >  	u_int  last_phase;
-> > -	u_int  saved_scsiid;
-> >  	u_int  cdb_byte;
-> >  	int    retval;
-> >  	int    was_paused;
-> >  	int    paused;
-> >  	int    wait;
-> >  	int    disconnected;
-> > -	ahd_mode_state saved_modes;
-> >  	unsigned long flags;
-> >  
-> >  	pending_scb = NULL;
-> > @@ -2239,7 +2237,6 @@ ahd_linux_queue_abort_cmd(struct scsi_cmnd
-> > *cmd)
-> >  		goto done;
-> >  	}
-> >  
-> > -	saved_modes = ahd_save_modes(ahd);
-> >  	ahd_set_modes(ahd, AHD_MODE_SCSI, AHD_MODE_SCSI);
-> >  	last_phase = ahd_inb(ahd, LASTPHASE);
-> >  	saved_scbptr = ahd_get_scbptr(ahd);
-> > @@ -2257,7 +2254,6 @@ ahd_linux_queue_abort_cmd(struct scsi_cmnd
-> > *cmd)
-> >  	 * passed in command.  That command is currently active on
-> > the
-> >  	 * bus or is in the disconnected state.
-> >  	 */
-> > -	saved_scsiid = ahd_inb(ahd, SAVED_SCSIID);
-> >  	if (last_phase != P_BUSFREE
-> >  	    && SCB_GET_TAG(pending_scb) == active_scbptr) {
-> >  
-> > 
-> 
-> Reviewed-by: Hannes Reinecke <hare@suse.de>
+There is a regular need in the kernel to provide a way to declare
+having a dynamically sized set of trailing elements in a structure.
+Kernel code should always use “flexible array members”[1] for these
+cases. The older style of one-element or zero-length arrays should
+no longer be used[2].
 
-Hey, you don't get to do that ... I asked you to figure out why we're
-missing an ahd_restore_modes().  Removing the ahd_save_modes() is
-cosmetic: it gets rid of a warning but doesn't fix the problem.  I'd
-rather keep the warning until the problem is fixed and the problem is
-we need a mode save/restore around the ahd_set_modes() which is only
-partially implemented in this function.
+For this particular case, it is important to notice that the cachelines
+change from 7 to 6 after the flexible-array conversion:
 
-James
+$ pahole -C 'fifo' drivers/misc/hpilo.o
+struct fifo {
+	u64                        nrents;               /*     0     8 */
+	u64                        imask;                /*     8     8 */
+	u64                        merge;                /*    16     8 */
+	u64                        reset;                /*    24     8 */
+	u8                         pad_0[96];            /*    32    96 */
+	/* --- cacheline 2 boundary (128 bytes) --- */
+	u64                        head;                 /*   128     8 */
+	u8                         pad_1[120];           /*   136   120 */
+	/* --- cacheline 4 boundary (256 bytes) --- */
+	u64                        tail;                 /*   256     8 */
+	u8                         pad_2[120];           /*   264   120 */
+	/* --- cacheline 6 boundary (384 bytes) --- */
+	u64                        fifobar[1];           /*   384     8 */
+
+	/* size: 392, cachelines: 7, members: 10 */
+	/* last cacheline: 8 bytes */
+};
+
+$ pahole -C 'fifo' drivers/misc/hpilo.o
+struct fifo {
+	u64                        nrents;               /*     0     8 */
+	u64                        imask;                /*     8     8 */
+	u64                        merge;                /*    16     8 */
+	u64                        reset;                /*    24     8 */
+	u8                         pad_0[96];            /*    32    96 */
+	/* --- cacheline 2 boundary (128 bytes) --- */
+	u64                        head;                 /*   128     8 */
+	u8                         pad_1[120];           /*   136   120 */
+	/* --- cacheline 4 boundary (256 bytes) --- */
+	u64                        tail;                 /*   256     8 */
+	u8                         pad_2[120];           /*   264   120 */
+	/* --- cacheline 6 boundary (384 bytes) --- */
+	u64                        fifobar[];            /*   384     0 */
+
+	/* size: 384, cachelines: 6, members: 10 */
+};
+
+Lastly, remove unnecessary parentheses in fifo_sz() and fix the following
+checkpatch.pl warning for the whole fifo structure:
+
+WARNING: please, no spaces at the start of a line
+
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://github.com/KSPP/linux/issues/79
+
+Tested-by: kernel test robot <lkp@intel.com>
+Link: https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/kernel-ci/hpilo-20200714.md
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/misc/hpilo.c |  2 +-
+ drivers/misc/hpilo.h | 22 +++++++++++-----------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/misc/hpilo.c b/drivers/misc/hpilo.c
+index 927309b86bab..10c975662f8b 100644
+--- a/drivers/misc/hpilo.c
++++ b/drivers/misc/hpilo.c
+@@ -207,7 +207,7 @@ static void ctrl_setup(struct ccb *ccb, int nr_desc, int l2desc_sz)
+ static inline int fifo_sz(int nr_entry)
+ {
+ 	/* size of a fifo is determined by the number of entries it contains */
+-	return (nr_entry * sizeof(u64)) + FIFOHANDLESIZE;
++	return nr_entry * sizeof(u64) + FIFOHANDLESIZE;
+ }
+ 
+ static void fifo_setup(void *base_addr, int nr_entry)
+diff --git a/drivers/misc/hpilo.h b/drivers/misc/hpilo.h
+index 1aa433a7f66c..f69ff645cac9 100644
+--- a/drivers/misc/hpilo.h
++++ b/drivers/misc/hpilo.h
+@@ -160,23 +160,23 @@ struct ccb_data {
+ #define ILO_START_ALIGN	4096
+ #define ILO_CACHE_SZ 	 128
+ struct fifo {
+-    u64 nrents;	/* user requested number of fifo entries */
+-    u64 imask;  /* mask to extract valid fifo index */
+-    u64 merge;	/*  O/C bits to merge in during enqueue operation */
+-    u64 reset;	/* set to non-zero when the target device resets */
+-    u8  pad_0[ILO_CACHE_SZ - (sizeof(u64) * 4)];
++	u64 nrents;	/* user requested number of fifo entries */
++	u64 imask;  /* mask to extract valid fifo index */
++	u64 merge;	/*  O/C bits to merge in during enqueue operation */
++	u64 reset;	/* set to non-zero when the target device resets */
++	u8  pad_0[ILO_CACHE_SZ - (sizeof(u64) * 4)];
+ 
+-    u64 head;
+-    u8  pad_1[ILO_CACHE_SZ - (sizeof(u64))];
++	u64 head;
++	u8  pad_1[ILO_CACHE_SZ - (sizeof(u64))];
+ 
+-    u64 tail;
+-    u8  pad_2[ILO_CACHE_SZ - (sizeof(u64))];
++	u64 tail;
++	u8  pad_2[ILO_CACHE_SZ - (sizeof(u64))];
+ 
+-    u64 fifobar[1];
++	u64 fifobar[];
+ };
+ 
+ /* convert between struct fifo, and the fifobar, which is saved in the ccb */
+-#define FIFOHANDLESIZE (sizeof(struct fifo) - sizeof(u64))
++#define FIFOHANDLESIZE (sizeof(struct fifo))
+ #define FIFOBARTOHANDLE(_fifo) \
+ 	((struct fifo *)(((char *)(_fifo)) - FIFOHANDLESIZE))
+ 
+-- 
+2.27.0
 
