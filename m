@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AAA221F211
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 15:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C8721F1B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 14:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728238AbgGNNA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 09:00:29 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:27104 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726354AbgGNNA2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 09:00:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594731627;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aMkXnOTuFZ2jMVFd+eEKpMBPsCP+t2ST7hOj6unA51o=;
-        b=cUNXTRCiKMc5dy87VN+Eg2oRxAnNuADtqcLm0vS9QLkpLC6qqOYMHazyjQlmlv5y6b3Epz
-        sWDgzds4qxfvIW9bG5awZ5Nk2XVqPVzYb2vvvZdWQLGg826WNVvTNp/AHMdkwSUnD2YbK1
-        kg0GP0e0MHbMLnj72nKU2WYS0b1APuY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-8KGSR5ANOEOnQed3gXCn-g-1; Tue, 14 Jul 2020 09:00:22 -0400
-X-MC-Unique: 8KGSR5ANOEOnQed3gXCn-g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12E3E19057A1;
-        Tue, 14 Jul 2020 13:00:20 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-112-246.ams2.redhat.com [10.36.112.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C749E10098A4;
-        Tue, 14 Jul 2020 13:00:14 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@linux.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        carlos <carlos@redhat.com>
-Subject: Re: [RFC PATCH 2/4] rseq: Allow extending struct rseq
-References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com>
-        <20200714030348.6214-3-mathieu.desnoyers@efficios.com>
-        <87mu42bepq.fsf@oldenburg2.str.redhat.com>
-        <131549905.11442.1594731035989.JavaMail.zimbra@efficios.com>
-Date:   Tue, 14 Jul 2020 15:00:13 +0200
-In-Reply-To: <131549905.11442.1594731035989.JavaMail.zimbra@efficios.com>
-        (Mathieu Desnoyers's message of "Tue, 14 Jul 2020 08:50:35 -0400
-        (EDT)")
-Message-ID: <87a7028d5u.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1728234AbgGNMmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 08:42:44 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:58406 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726352AbgGNMmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 08:42:44 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 9ECCBDDF89920A824B6C;
+        Tue, 14 Jul 2020 20:42:41 +0800 (CST)
+Received: from huawei.com (10.174.28.241) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Tue, 14 Jul 2020
+ 20:42:33 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linux-next@vger.kernel.org>, <cuibixuan@huawei.com>,
+        <john.wanghui@huawei.com>
+Subject: [PATCH] mm/percpu: mark pcpu_chunk_type() as __maybe_unused
+Date:   Tue, 14 Jul 2020 13:41:01 +0000
+Message-ID: <20200714134101.80534-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.28.241]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mathieu Desnoyers:
+Gcc report the following warning without CONFIG_MEMCG_KMEM:
 
->> How are extensions going to affect the definition of struct rseq,
->> including its alignment?
->
-> The alignment will never decrease. If the structure becomes large enough
-> its alignment could theoretically increase. Would that be an issue ?
+mm/percpu-internal.h:145:29: warning: ‘pcpu_chunk_type’ defined
+but not used [-Wunused-function]
+ static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
+                             ^~~~~~~~~~~~~~~
 
-Telling the compiler that struct is larger than it actually is, or that
-it has more alignment than in memory, results in undefined behavior,
-even if only fields are accessed in the smaller struct region.
+Mark pcpu_chunk_type() as __maybe_unused to make it clear.
 
-An increase in alignment from 32 to 64 is perhaps not likely to have
-this effect.  But the undefined behavior is still there, and has been
-observed for mismatches like 8 vs 16.
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+---
+ mm/percpu-internal.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->> As things stand now, glibc 2.32 will make the size and alignment of
->> struct rseq part of its ABI, so it can't really change after that.
->
-> Can the size and alignment of a structure be defined as minimum alignment
-> and size values ? For instance, those would be invariant for a given glibc
-> version (if we always use the internal struct rseq declaration), but could
-> be increased in future versions.
+diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
+index 7983455842ff..8a8a230bd957 100644
+--- a/mm/percpu-internal.h
++++ b/mm/percpu-internal.h
+@@ -129,7 +129,7 @@ static inline int pcpu_chunk_map_bits(struct pcpu_chunk *chunk)
+ }
 
-Not if we are talking about a global (TLS) data symbol.  No such changes
-are possible there.  We have some workarounds for symbols that live
-exclusively within glibc, but they don't work if there are libraries out
-there which interpose the symbol.
+ #ifdef CONFIG_MEMCG_KMEM
+-static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
++static enum pcpu_chunk_type __maybe_unused pcpu_chunk_type(struct pcpu_chunk *chunk)
+ {
+ 	if (chunk->obj_cgroups)
+ 		return PCPU_CHUNK_MEMCG;
+@@ -142,7 +142,7 @@ static bool pcpu_is_memcg_chunk(enum pcpu_chunk_type chunk_type)
+ }
 
->> With a different approach, we can avoid making the symbol size part of
->> the ABI, but then we cannot use the __rseq_abi TLS symbol.  As a result,
->> interoperability with early adopters would be lost.
->
-> Do you mean with a function "getter", and then keeping that pointer around
-> in a per-user TLS ? I would prefer to avoid that because it adds an extra
-> pointer dereference on a fast path.
-
-My choice would have been a function that returns the offset from the
-thread pointer (which has to be unchanged regarding all threads).
-
-Thanks,
-Florian
+ #else
+-static enum pcpu_chunk_type pcpu_chunk_type(struct pcpu_chunk *chunk)
++static enum pcpu_chunk_type __maybe_unused pcpu_chunk_type(struct pcpu_chunk *chunk)
+ {
+ 	return PCPU_CHUNK_ROOT;
+ }
+--
+2.17.1
 
