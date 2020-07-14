@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6081D21FB3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A995C21FB42
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731141AbgGNTAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:00:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58616 "EHLO mail.kernel.org"
+        id S1731094AbgGNTAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:00:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731314AbgGNS7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:59:54 -0400
+        id S1730398AbgGNTAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:00:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5945322507;
-        Tue, 14 Jul 2020 18:59:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77ECE22507;
+        Tue, 14 Jul 2020 19:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594753193;
-        bh=8XehDhDAYZ5yLnOp2poj5t1BNfP/ZjLH1Sgm6/0JwTk=;
+        s=default; t=1594753214;
+        bh=gT5151k0Ubtk/tBEyVBe8PhGWzMR8W2gtoTZ7OzRg98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zQgTPTNFUON0lyDqhTDc3BxuoqhzvM7CKSH1zyuX0puHqra/y+zGS5GrYqzxH/337
-         1Z0NtM7Cu8GNio9SxthkCOUjgpIBf6sT/lk3KCdHFZyxbN/cdOHuBdurHi23UCS7Ki
-         7MV4CG94jIkHl8ZEhFaV99kxgdtyrZp7cKm5iDnk=
+        b=omlI0mWt3ZXeEigMEm+ODmsxKGpycnzhvFhjvJc/uFJZMxvC4cDAHV1W0069yxmp1
+         0W4YjPRBGjgXNWUGI6wq0UklHdlMW5AXzNcxoBDbqHFK+AgNb/eEX9iYaB93oBcil4
+         oCRPU2vsDBbEw3P8wLeGUF91NEeUPNj23Gkke6F0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 5.7 154/166] ARC: elf: use right ELF_ARCH
-Date:   Tue, 14 Jul 2020 20:45:19 +0200
-Message-Id: <20200714184123.197962493@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.7 156/166] s390/mm: fix huge pte soft dirty copying
+Date:   Tue, 14 Jul 2020 20:45:21 +0200
+Message-Id: <20200714184123.293574193@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
 References: <20200714184115.844176932@linuxfoundation.org>
@@ -42,28 +46,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Janosch Frank <frankja@linux.ibm.com>
 
-commit b7faf971081a4e56147f082234bfff55135305cb upstream.
+commit 528a9539348a0234375dfaa1ca5dbbb2f8f8e8d2 upstream.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+If the pmd is soft dirty we must mark the pte as soft dirty (and not dirty).
+This fixes some cases for guest migration with huge page backings.
+
+Cc: <stable@vger.kernel.org> # 4.8
+Fixes: bc29b7ac1d9f ("s390/mm: clean up pte/pmd encoding")
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Gerald Schaefer <gerald.schaefer@de.ibm.com>
+Signed-off-by: Janosch Frank <frankja@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arc/include/asm/elf.h |    2 +-
+ arch/s390/mm/hugetlbpage.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arc/include/asm/elf.h
-+++ b/arch/arc/include/asm/elf.h
-@@ -19,7 +19,7 @@
- #define  R_ARC_32_PCREL		0x31
- 
- /*to set parameters in the core dumps */
--#define ELF_ARCH		EM_ARCOMPACT
-+#define ELF_ARCH		EM_ARC_INUSE
- #define ELF_CLASS		ELFCLASS32
- 
- #ifdef CONFIG_CPU_BIG_ENDIAN
+--- a/arch/s390/mm/hugetlbpage.c
++++ b/arch/s390/mm/hugetlbpage.c
+@@ -117,7 +117,7 @@ static inline pte_t __rste_to_pte(unsign
+ 					     _PAGE_YOUNG);
+ #ifdef CONFIG_MEM_SOFT_DIRTY
+ 		pte_val(pte) |= move_set_bit(rste, _SEGMENT_ENTRY_SOFT_DIRTY,
+-					     _PAGE_DIRTY);
++					     _PAGE_SOFT_DIRTY);
+ #endif
+ 		pte_val(pte) |= move_set_bit(rste, _SEGMENT_ENTRY_NOEXEC,
+ 					     _PAGE_NOEXEC);
 
 
