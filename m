@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA98521FD53
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B9721FD58
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729396AbgGNT3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:29:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726818AbgGNT3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 15:29:17 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3212D225AB;
-        Tue, 14 Jul 2020 19:29:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594754956;
-        bh=lMK7C6ng+T9UttAEHw5V+tYjQ5/2JkOgzpqo9X6mc6A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z9B7j3NbUZSWppYeDQAoliZQLbE9Iujz+KijRvU37A58urcaPZIpzOIt7+gDmPr7C
-         K8TQT2GWYlKq8154QaHk0XB8nBlOUD26VsMo4nVy95veZI0Bal7PAiSwlZ+sApFtdn
-         fF/kC/KafxtVLpBBTRspGYZTFwUuf1JcYRlMwM8E=
-Date:   Tue, 14 Jul 2020 20:29:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] spi: spidev: Add compatible for external SPI ports on
- Kontron boards
-Message-ID: <20200714192907.GJ4900@sirena.org.uk>
-References: <20200702141846.7752-1-frieder.schrempf@kontron.de>
- <20200702142511.GF4483@sirena.org.uk>
- <24ec4eed-de01-28df-ee1f-f7bcfc80051a@kontron.de>
- <20200702150725.GI4483@sirena.org.uk>
- <479d566a-213f-4e33-8ac7-7637ae88e31c@kontron.de>
- <a5b88ad9-3884-1d9c-c4ad-057266f84261@kontron.de>
- <20200713151108.GB4420@sirena.org.uk>
- <2eb6971b-7ea4-c9c8-5452-6f4b17e8860a@kontron.de>
+        id S1729613AbgGNT3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 15:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726169AbgGNT3o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 15:29:44 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4651FC061755;
+        Tue, 14 Jul 2020 12:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DxRaLkjpUaoEf0xxT682sMuthlbkUQaqou9xBSEthzs=; b=tzoYhF+ndXteGbrYuyAmg/q9ql
+        lJtaI0FuH3c8J42sQR/E2uYkhCpFeXPc7FOgJmI68T+H7bkQ1q0y60RT2NqowxnJ3StJLPeHeFkX+
+        OJQuj30D3GKP79EnnrdKlWLBIRpGW8Uk7sk/geT4GGepsLX1EzHvB6k7GgVEqZNBr8+N0VDQGEOvL
+        qCTLoXPiM68Ko3DHDHTOU+jyhW0vavjCzO+PW93pSARAtS+smk4XeVnWr5NFiSvSl/91dIrVZy0Kj
+        3iEsiKrDzeyxoXFNxo7ATz5CUBvlf0xCdP/0GAON2pptcLhSZ1rsMxpICMN616g+xltCbAX7YAnS8
+        Yffd4cvw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvQcO-0002xP-EN; Tue, 14 Jul 2020 19:29:32 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AA08A9817E0; Tue, 14 Jul 2020 21:29:30 +0200 (CEST)
+Date:   Tue, 14 Jul 2020 21:29:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH 12/15] kmap: Add stray write protection for device
+ pages
+Message-ID: <20200714192930.GH5523@worktop.programming.kicks-ass.net>
+References: <20200714070220.3500839-1-ira.weiny@intel.com>
+ <20200714070220.3500839-13-ira.weiny@intel.com>
+ <20200714084451.GQ10769@hirez.programming.kicks-ass.net>
+ <20200714190615.GC3008823@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ibvzjYYg+QDzMCy1"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2eb6971b-7ea4-c9c8-5452-6f4b17e8860a@kontron.de>
-X-Cookie: Your password is pitifully obvious.
+In-Reply-To: <20200714190615.GC3008823@iweiny-DESK2.sc.intel.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 14, 2020 at 12:06:16PM -0700, Ira Weiny wrote:
+> On Tue, Jul 14, 2020 at 10:44:51AM +0200, Peter Zijlstra wrote:
 
---ibvzjYYg+QDzMCy1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > So, if I followed along correctly, you're proposing to do a WRMSR per
+> > k{,un}map{_atomic}(), sounds like excellent performance all-round :-(
+> 
+> Only to pages which have this additional protection, ie not DRAM.
+> 
+> User mappings of this memory is not affected (would be covered by User PKeys if
+> desired).  User mappings to persistent memory are the primary use case and the
+> performant path.
 
-On Tue, Jul 14, 2020 at 10:54:15AM +0200, Frieder Schrempf wrote:
-
-> It would still be quite nice to benefit from the flexibility of DT overlays
-> not only for the SPI use case. But before I come up with any custom
-> solution, for now I will rather have the device in the DT statically.
-
-> I just wonder if I need to keep the DT node for the device in a separate
-> patch in our own tree, or if a node with a custom compatible string like for
-> example "kontron,user-spi" would be accepted upstream, without a matching
-> driver?
-
-I'm having a hard time getting enthusiastic about it TBH - can you not
-just use spidev and live with the warning?
-
---ibvzjYYg+QDzMCy1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8OB4IACgkQJNaLcl1U
-h9DpaQf7BBqueEOqSjOvjtORDyHTDzwMyXjqzEizOxoc3v+nwMk+G90WhXg0aEM5
-VPv8HBBGSPnQlzkc6qHJFYZ5axm4lNsQsED/KDm2nZ5pHYVHvg+S/+JOkAJXqaYx
-JI/gqdu+JFZYqUcV4i5/BwGO00zR3OntARea/24y/atTbxqB9Lm/vGrTs/Qw8FUR
-oflKzZdlg+s5aUiQvl7Gwa+9O2oJLM5EwpFjfGJ967GtKJfkMjHEKhwVqEvJgfeM
-6unCikuBQrE4/w7S0xjlm/M+2fT2ussP0nr8yZmzsEN+q7AtHkyorPsvWiPnI9i2
-HaD2ydvutHJVTqX5P2RYDtYromP/WA==
-=O3jF
------END PGP SIGNATURE-----
-
---ibvzjYYg+QDzMCy1--
+Because performance to non-volatile memory doesn't matter? I think Dave
+has a better answer here ...
