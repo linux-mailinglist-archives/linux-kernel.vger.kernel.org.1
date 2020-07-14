@@ -2,129 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C6E21E564
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 03:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4753821E566
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 03:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726568AbgGNB5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Jul 2020 21:57:34 -0400
-Received: from mga14.intel.com ([192.55.52.115]:24486 "EHLO mga14.intel.com"
+        id S1726670AbgGNB5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Jul 2020 21:57:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726149AbgGNB5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Jul 2020 21:57:34 -0400
-IronPort-SDR: R4Tp2NX0R6+OCjQD1BEERhXhQtpoLAo5yAg8M1A+nzGkADw5dDP4FcOS2NoqErlYHC4hwGy85U
- Y2eveZtY7kCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="147905455"
-X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
-   d="scan'208";a="147905455"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2020 18:57:33 -0700
-IronPort-SDR: 71eSYM25ykw/jOPCA7O/DMLEvwPLrpRSDX+xrnEOdBZFL3wjyP/ejX2oMXO+mw+/WirUYCm/fl
- O7CxzvWmGL5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,349,1589266800"; 
-   d="scan'208";a="307681797"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Jul 2020 18:57:33 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Oliver Upton <oupton@google.com>,
-        Peter Shier <pshier@google.com>
-Subject: [PATCH] KVM: x86: Don't attempt to load PDPTRs when 64-bit mode is enabled
-Date:   Mon, 13 Jul 2020 18:57:32 -0700
-Message-Id: <20200714015732.32426-1-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726602AbgGNB5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Jul 2020 21:57:40 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B5362186A;
+        Tue, 14 Jul 2020 01:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594691860;
+        bh=wLIvmYd4KBmDzs2Q/hlnCi1CEtHw65SAqVZY1eF2e0Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k0YUp4fbrSBr8S1wX5O+tz0YpWcd3J+tjZJo9fAc4NHWvY3JD+elPoKVEZGLbhlK9
+         Kg+HX2Gtmm0jGgYAoo++UM85xQqtIOulYqFiFOsS0l2bbE4FCoUnptQ5G3QbxFBCs8
+         cdfKlfsrRzmub2MrVG4/eD1VY7Kwcu0sLY9rKW9M=
+Date:   Mon, 13 Jul 2020 18:57:39 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Changming <charley.ashbringer@gmail.com>
+Cc:     willy@infradead.org, rdunlap@infradead.org, keescook@chromium.org,
+        mcgrof@kernel.org, yzaikin@google.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] panic: prevent panic_timeout * 1000 from overflow
+Message-Id: <20200713185739.03d576cca0dc9f618ea76d67@linux-foundation.org>
+In-Reply-To: <20200711051728.1499-1-charley.ashbringer@gmail.com>
+References: <0d4601d65709a0e2d80e2a8880gmail.com>
+        <20200711051728.1499-1-charley.ashbringer@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't attempt to load PDPTRs if EFER.LME=1, i.e. if 64-bit mode is
-enabled.  A recent change to reload the PDTPRs when CR0.CD or CR0.NW is
-toggled botched the EFER.LME handling and sends KVM down the PDTPR path
-when is_paging() is true, i.e. when the guest toggles CD/NW in 64-bit
-mode.
+On Sat, 11 Jul 2020 01:17:28 -0400 Changming <charley.ashbringer@gmail.com> wrote:
 
-Split the CR0 checks for 64-bit vs. 32-bit PAE into separate paths.  The
-64-bit path is specifically checking state when paging is toggled on,
-i.e. CR0.PG transititions from 0->1.  The PDPTR path now needs to run if
-the new CR0 state has paging enabled, irrespective of whether paging was
-already enabled.  Trying to shave a few cycles to make the PDPTR path an
-"else if" case is a mess.
+> From: Changming Liu <charley.ashbringer@gmail.com>
+> 
+> Since panic_timeout is an integer passed-in through sysctl,
+> the loop boundary panic_timeout * 1000 could overflow and
+> result in a zero-delay panic when panic_timeout is greater
+> than INT_MAX/1000.
+> 
+> Fix this by moving 1000 to the left, also in case i/1000
+> might never be greater than panic_timeout, change i to
+> long long so that it strictly has more bits.
+> 
+> ...
+>
+> --- a/kernel/panic.c
+> +++ b/kernel/panic.c
+> @@ -178,7 +178,8 @@ void panic(const char *fmt, ...)
+>  {
+>  	static char buf[1024];
+>  	va_list args;
+> -	long i, i_next = 0, len;
+> +	long long i;
+> +	long i_next = 0, len;
+>  	int state = 0;
+>  	int old_cpu, this_cpu;
+>  	bool _crash_kexec_post_notifiers = crash_kexec_post_notifiers;
+> @@ -315,7 +316,7 @@ void panic(const char *fmt, ...)
+>  		 */
+>  		pr_emerg("Rebooting in %d seconds..\n", panic_timeout);
+>  
+> -		for (i = 0; i < panic_timeout * 1000; i += PANIC_TIMER_STEP) {
+> +		for (i = 0; i / 1000 < panic_timeout; i += PANIC_TIMER_STEP) {
 
-Fixes: d42e3fae6faed ("kvm: x86: Read PDPTEs on CR0.CD and CR0.NW changes")
-Cc: Jim Mattson <jmattson@google.com>
-Cc: Oliver Upton <oupton@google.com>
-Cc: Peter Shier <pshier@google.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
+Problem is, 32-bit machines generally cannot perform 64-bit divides. 
+So a call is emitted to the library function __divsi64() (I forget the exact
+name) which Linux doesn't implement (because it's so slow, and we don't
+want to be calling it by accident).
 
-The other way to fix this, with a much smaller diff stat, is to simply
-move the !is_page(vcpu) check inside (vcpu->arch.efer & EFER_LME).  But
-that results in a ridiculous amount of nested conditionals for what is a
-very straightforward check e.g.
+So a fix would be to call do_div() or something from
+include/linux/div64.h but it's all a great mess.
 
-	if (cr0 & X86_CR0_PG) {
-		if (vcpu->arch.efer & EFER_LME) }
-			if (!is_paging(vcpu)) {
-				...
-			}
-		}
-	}
+However we can do native 64-bit multiplication on 32-bit!  So how about
+something like
 
-Since this doesn't need to be backported anywhere, I didn't see any value
-in having an intermediate step.
-
- arch/x86/kvm/x86.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 95ef629228691..5f526d94c33f3 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -819,22 +819,22 @@ int kvm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
- 	if ((cr0 & X86_CR0_PG) && !(cr0 & X86_CR0_PE))
- 		return 1;
+--- a/kernel/panic.c~a
++++ a/kernel/panic.c
+@@ -313,13 +313,16 @@ void panic(const char *fmt, ...)
+ 		 * Delay timeout seconds before rebooting the machine.
+ 		 * We can't use the "normal" timers since we just panicked.
+ 		 */
++		u64 timeout = panic_timeout * 1000;	/* avoid overflow */
++		u64 timer;
++
+ 		pr_emerg("Rebooting in %d seconds..\n", panic_timeout);
  
--	if (cr0 & X86_CR0_PG) {
- #ifdef CONFIG_X86_64
--		if (!is_paging(vcpu) && (vcpu->arch.efer & EFER_LME)) {
--			int cs_db, cs_l;
-+	if ((vcpu->arch.efer & EFER_LME) && !is_paging(vcpu) &&
-+	    (cr0 & X86_CR0_PG)) {
-+		int cs_db, cs_l;
- 
--			if (!is_pae(vcpu))
--				return 1;
--			kvm_x86_ops.get_cs_db_l_bits(vcpu, &cs_db, &cs_l);
--			if (cs_l)
--				return 1;
--		} else
--#endif
--		if (is_pae(vcpu) && ((cr0 ^ old_cr0) & pdptr_bits) &&
--		    !load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu)))
-+		if (!is_pae(vcpu))
-+			return 1;
-+		kvm_x86_ops.get_cs_db_l_bits(vcpu, &cs_db, &cs_l);
-+		if (cs_l)
- 			return 1;
- 	}
-+#endif
-+	if (!(vcpu->arch.efer & EFER_LME) && (cr0 & X86_CR0_PG) &&
-+	    is_pae(vcpu) && ((cr0 ^ old_cr0) & pdptr_bits) &&
-+	    !load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu)))
-+		return 1;
- 
- 	if (!(cr0 & X86_CR0_PG) && kvm_read_cr4_bits(vcpu, X86_CR4_PCIDE))
- 		return 1;
--- 
-2.26.0
+-		for (i = 0; i < panic_timeout * 1000; i += PANIC_TIMER_STEP) {
++		for (timer = 0; timer < timeout; timer += PANIC_TIMER_STEP) {
+ 			touch_nmi_watchdog();
+-			if (i >= i_next) {
+-				i += panic_blink(state ^= 1);
+-				i_next = i + 3600 / PANIC_BLINK_SPD;
++			if (timer >= i_next) {
++				timer += panic_blink(state ^= 1);
++				i_next = timer + 3600 / PANIC_BLINK_SPD;
+ 			}
+ 			mdelay(PANIC_TIMER_STEP);
+ 		}
+
+(untested)
+
+There's still the 3600/PANIC_BLINK_SPD in there, but a) that will be
+done at compile-time and b) the 64-bit promotion should be done after
+the division.
+
+And... oh crap, i_next needs to be 64-bit as well.
+
 
