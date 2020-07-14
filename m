@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D37D21EA3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A8821EA5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 09:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgGNHiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 03:38:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725780AbgGNHix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 03:38:53 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06F482084C;
-        Tue, 14 Jul 2020 07:38:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594712333;
-        bh=D9X12rzUdjdFj13IA0SQy7lT+r0nIG2ebG23ZycYooo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AjbVNXfqwfJCMrv83a4TBW2KQlgSPYZoRCZ2dyPGQ1L0rB7E0Ao5fqRdVamRJCVaQ
-         XW+aGrhAPXs0BGRK58cXBAhBQvMQs8dcotHaCXyDWKOoN7mgnc1S/yVL8puPbnyTe0
-         lg6Q2vZI1zLrG9u+Oyyj9aRQpRso4NfJVV1eFU80=
-Received: by pali.im (Postfix)
-        id 340C8842; Tue, 14 Jul 2020 09:38:50 +0200 (CEST)
-Date:   Tue, 14 Jul 2020 09:38:50 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] PCI: aardvark: Don't touch PCIe registers if no card
- connected
-Message-ID: <20200714073850.rvuknigpj3jt7kp4@pali>
-References: <20200702083036.12230-1-pali@kernel.org>
- <20200709113509.GB19638@e121166-lin.cambridge.arm.com>
- <20200709122208.rmfeuu6zgbwh3fr5@pali>
- <20200709144701.GA21760@e121166-lin.cambridge.arm.com>
- <20200709150959.wq6zfkcy4m6hvvpl@pali>
- <20200710091800.GA3419@e121166-lin.cambridge.arm.com>
- <20200713082747.e3q3ml3wpbszn4j7@pali>
- <20200713112325.GA25865@e121166-lin.cambridge.arm.com>
- <20200713145003.foarsdixquicvivy@pali>
- <20200713164140.GA29307@e121166-lin.cambridge.arm.com>
+        id S1727850AbgGNHjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 03:39:47 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:41212 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727119AbgGNHjk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 03:39:40 -0400
+Received: by mail-oi1-f193.google.com with SMTP id y22so13188853oie.8;
+        Tue, 14 Jul 2020 00:39:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dCYnWiBfrUG0V4QV9bfy3mtM9Gw/6z5cymsRyqfOxPU=;
+        b=qH/1FIlN+DJH4FNmhUoS7tmmK6M/URGpHYWNJAy3Mb44wZiS8hmILq834C2QfxiBev
+         5wxeR/tplU0cLeQwL7TOwORTx/No9dbYn/O12Ben4/WH6T2x+l7f2jjmmyc7cV+gykT2
+         7lGobbFVkO0qGam55RFFxM/fv/oNdLJDtwqYjoI/oEivY9y2xdGNE2KML9la63CrzeQ9
+         EbiBQWVhMZSafn2O0Mv6Ub1fZQgMymQ8dmBXLuU9UygADKTYbbz+YzsyeNdDlw1TiCM+
+         wfYhL2VoViWMzpQGMCmYq12J3CQILK5yXMWscylb8Te0URo+EaSkWnnc09LMK0nZHfAh
+         EIAg==
+X-Gm-Message-State: AOAM53284iKjupKdrQ1a0mF9Os3HxzeD1yPYYctW9K9oAaD0F2TfCtv7
+        VM0H6Z96FW4XYXy3kqjsG8ftuuzCC9n/hgIgt9A=
+X-Google-Smtp-Source: ABdhPJx5dphEyeiFZMm6iXlEYQPyjm7HBBuh4FxBXEBpFTIMln0CZySUEMQ/80bez3KevRXtht7yiFFsC0OTtXhX8oU=
+X-Received: by 2002:aca:5c41:: with SMTP id q62mr2546599oib.148.1594712379512;
+ Tue, 14 Jul 2020 00:39:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200713164140.GA29307@e121166-lin.cambridge.arm.com>
-User-Agent: NeoMutt/20180716
+References: <1594676120-5862-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594676120-5862-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594676120-5862-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 14 Jul 2020 09:39:28 +0200
+Message-ID: <CAMuHMdVyJTZ2-YS-WvjAr0ca_EfNdLk3+PEOSK8L5vShd97VWg@mail.gmail.com>
+Subject: Re: [PATCH 4/9] dt-bindings: dma: renesas,rcar-dmac: Document
+ R8A774E1 bindings
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 13 July 2020 17:41:40 Lorenzo Pieralisi wrote:
-> On Mon, Jul 13, 2020 at 04:50:03PM +0200, Pali Rohár wrote:
-> > On Monday 13 July 2020 12:23:25 Lorenzo Pieralisi wrote:
-> > > I will go over the thread again but I suspect I can merge the patch even
-> > > though I still believe there is work to be done to understand the issue
-> > > we are facing.
-> > 
-> > Just to note that pci-mvebu.c also checks if pcie link is up before
-> > trying to access the real PCIe interface registers, similarly as in my
-> > patch.
-> 
-> I understand - that does not change my opinion though, the link check
-> is just a workaround, it'd be best if we pinpoint the real issue which
-> is likely to a HW one.
+On Mon, Jul 13, 2020 at 11:35 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Renesas RZ/G2H (R8A774E1) SoC also has the R-Car gen3 compatible
+> DMA controllers, therefore document RZ/G2H specific bindings.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Lorenzo, if you have an idea how to debug this issue or if you would
-like to see some test results, let me know. I can do some tests, but I
-currently really do not know more then what I wrote in previous emails.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-In my opinion, problem is in HW which Marvell has not documented nor
-proved that it exists. Other option is that problem is in Compex card
-which can be triggered only by Marvell aardvark HW.
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
