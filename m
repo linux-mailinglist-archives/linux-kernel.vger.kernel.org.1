@@ -2,155 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B707021EC66
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DAD21EC69
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgGNJNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:13:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56228 "EHLO mx2.suse.de"
+        id S1727037AbgGNJNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:13:22 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:49516 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725833AbgGNJNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:13:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1BAC0AAC7;
-        Tue, 14 Jul 2020 09:13:17 +0000 (UTC)
-Subject: Re: [PATCH] mm/hugetlb: hide nr_nodes in the internal of
- for_each_node_mask_to_[alloc|free]
-To:     Wei Yang <richard.weiyang@linux.alibaba.com>,
-        mike.kravetz@oracle.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20200714073404.84863-1-richard.weiyang@linux.alibaba.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <cd1651a0-35c6-7535-5782-ce7e31cc26e8@suse.cz>
-Date:   Tue, 14 Jul 2020 11:13:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726766AbgGNJNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 05:13:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594717999; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=OpGstJziG3b+lewJ4OJkEErFnXU4CBYWekCcjmKdfZw=;
+ b=q3Kxkk/80hwnMoni9m2MV8BQxjklWL9s3ik4ErFFl8vDRZOXxuh6oge7jX7QHDSUwsyiKc0d
+ 84p5uekVT7jMOnE9rwlpKHveHtH3JhjxXBsjReWny+mazOuMKjJ0EFs5TYC39a+wvxmJDgz1
+ kMLXABcFASAFUmdRXy0SdBPIQkw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n18.prod.us-west-2.postgun.com with SMTP id
+ 5f0d772e166c1c5494060807 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 14 Jul 2020 09:13:18
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 452A4C433B1; Tue, 14 Jul 2020 09:13:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 270ABC433C8;
+        Tue, 14 Jul 2020 09:13:16 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200714073404.84863-1-richard.weiyang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Tue, 14 Jul 2020 17:13:16 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Nitin Rawat <nitirawa@codeaurora.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] scsi: ufs: Fix up and simplify error recovery
+ mechanism
+In-Reply-To: <47e7a4ec9a0404bc6d01818fcdad90eb@codeaurora.org>
+References: <1594693693-22466-1-git-send-email-cang@codeaurora.org>
+ <1594693693-22466-5-git-send-email-cang@codeaurora.org>
+ <fe00619c-f337-397f-9ccf-7babda095210@acm.org>
+ <47e7a4ec9a0404bc6d01818fcdad90eb@codeaurora.org>
+Message-ID: <5fb1e82c97a480e5330337a240a12633@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/20 9:34 AM, Wei Yang wrote:
-> The second parameter of for_each_node_mask_to_[alloc|free] is a loop
-> variant, which is not used outside of loop iteration.
-> 
-> Let's hide this.
-> 
-> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
-> ---
->  mm/hugetlb.c | 38 ++++++++++++++++++++------------------
->  1 file changed, 20 insertions(+), 18 deletions(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 57ece74e3aae..9c3d15fb317e 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1196,17 +1196,19 @@ static int hstate_next_node_to_free(struct hstate *h, nodemask_t *nodes_allowed)
->  	return nid;
->  }
->  
-> -#define for_each_node_mask_to_alloc(hs, nr_nodes, node, mask)		\
-> -	for (nr_nodes = nodes_weight(*mask);				\
-> -		nr_nodes > 0 &&						\
-> +#define for_each_node_mask_to_alloc(hs, node, mask)			\
-> +	int __nr_nodes;							\
-> +	for (__nr_nodes = nodes_weight(*mask);				\
+Hi Bart,
 
-The problem with this is that if I use the macro twice in the same block, this
-will redefine __nr_nodes and fail to compile, no?
-In that case it's better to avoid setting up this trap, IMHO.
-
-> +		__nr_nodes > 0 &&					\
->  		((node = hstate_next_node_to_alloc(hs, mask)) || 1);	\
-> -		nr_nodes--)
-> +		__nr_nodes--)
->  
-> -#define for_each_node_mask_to_free(hs, nr_nodes, node, mask)		\
-> -	for (nr_nodes = nodes_weight(*mask);				\
-> -		nr_nodes > 0 &&						\
-> +#define for_each_node_mask_to_free(hs, node, mask)			\
-> +	int __nr_nodes;							\
-> +	for (__nr_nodes = nodes_weight(*mask);				\
-> +		__nr_nodes > 0 &&					\
->  		((node = hstate_next_node_to_free(hs, mask)) || 1);	\
-> -		nr_nodes--)
-> +		__nr_nodes--)
->  
->  #ifdef CONFIG_ARCH_HAS_GIGANTIC_PAGE
->  static void destroy_compound_gigantic_page(struct page *page,
-> @@ -1403,7 +1405,7 @@ static void __free_huge_page(struct page *page)
->  	 * reservation.  If the page was associated with a subpool, there
->  	 * would have been a page reserved in the subpool before allocation
->  	 * via hugepage_subpool_get_pages().  Since we are 'restoring' the
-> -	 * reservtion, do not call hugepage_subpool_put_pages() as this will
-> +	 * reservation, do not call hugepage_subpool_put_pages() as this will
->  	 * remove the reserved page from the subpool.
->  	 */
->  	if (!restore_reserve) {
-> @@ -1760,10 +1762,10 @@ static int alloc_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
->  				nodemask_t *node_alloc_noretry)
->  {
->  	struct page *page;
-> -	int nr_nodes, node;
-> +	int node;
->  	gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
->  
-> -	for_each_node_mask_to_alloc(h, nr_nodes, node, nodes_allowed) {
-> +	for_each_node_mask_to_alloc(h, node, nodes_allowed) {
->  		page = alloc_fresh_huge_page(h, gfp_mask, node, nodes_allowed,
->  						node_alloc_noretry);
->  		if (page)
-> @@ -1787,10 +1789,10 @@ static int alloc_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
->  static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
->  							 bool acct_surplus)
->  {
-> -	int nr_nodes, node;
-> +	int node;
->  	int ret = 0;
->  
-> -	for_each_node_mask_to_free(h, nr_nodes, node, nodes_allowed) {
-> +	for_each_node_mask_to_free(h, node, nodes_allowed) {
->  		/*
->  		 * If we're returning unused surplus pages, only examine
->  		 * nodes with surplus pages.
-> @@ -2481,9 +2483,9 @@ int alloc_bootmem_huge_page(struct hstate *h)
->  int __alloc_bootmem_huge_page(struct hstate *h)
->  {
->  	struct huge_bootmem_page *m;
-> -	int nr_nodes, node;
-> +	int node;
->  
-> -	for_each_node_mask_to_alloc(h, nr_nodes, node, &node_states[N_MEMORY]) {
-> +	for_each_node_mask_to_alloc(h, node, &node_states[N_MEMORY]) {
->  		void *addr;
->  
->  		addr = memblock_alloc_try_nid_raw(
-> @@ -2662,17 +2664,17 @@ static inline void try_to_free_low(struct hstate *h, unsigned long count,
->  static int adjust_pool_surplus(struct hstate *h, nodemask_t *nodes_allowed,
->  				int delta)
->  {
-> -	int nr_nodes, node;
-> +	int node;
->  
->  	VM_BUG_ON(delta != -1 && delta != 1);
->  
->  	if (delta < 0) {
-> -		for_each_node_mask_to_alloc(h, nr_nodes, node, nodes_allowed) {
-> +		for_each_node_mask_to_alloc(h, node, nodes_allowed) {
->  			if (h->surplus_huge_pages_node[node])
->  				goto found;
->  		}
->  	} else {
-> -		for_each_node_mask_to_free(h, nr_nodes, node, nodes_allowed) {
-> +		for_each_node_mask_to_free(h, node, nodes_allowed) {
->  			if (h->surplus_huge_pages_node[node] <
->  					h->nr_huge_pages_node[node])
->  				goto found;
+On 2020-07-14 12:26, Can Guo wrote:
+> Hi Bart,
 > 
+> On 2020-07-14 11:52, Bart Van Assche wrote:
+>> On 2020-07-13 19:28, Can Guo wrote:
+>>> o Queue eh_work on a single threaded workqueue to avoid concurrency 
+>>> between
+>>>   eh_works.
+>> 
+>> Please use another approach (mutex?) to serialize error handling. 
+>> There are
+>> already way too workqueues in a running Linux system.
+>> 
 
+Yeah, mutex works, but in this change, we need to flush the eh_work. As 
+per
+test, in real cases, flush_work can trigger warnings if the work is 
+queued on
+system_wq. Please check func check_flush_dependency().
+
+>>> o According to the UFSHCI JEDEC spec, hibern8 enter/exit error occurs 
+>>> when
+>>>   the link is broken. This actaully applies to any power mode change
+>>>   operations. In this change, if a power mode change operation 
+>>> (including
+>>>   AH8 enter/exit) fails, mark the link state as UIC_LINK_BROKEN_STATE 
+>>> and
+>>>   schedule eh_work. eh_work needs to do full reset and restore to 
+>>> recover
+>>>   the link back to active. Before the link state is recovered to 
+>>> active by
+>>>   eh_work, any power mode change attempts just return -ENOLINK to 
+>>> avoid
+>>>   consecutive HW error.
+>>> 
+>>> o To avoid concurrency between eh_work and link recovery, remove link
+>>>   recovery from hibern8 enter/exit func. If hibern8 enter/exit func 
+>>> fails,
+>>>   simply return error code and let eh_work run in parallel.
+>>> 
+>>> o Recover UFS hba runtime PM error in eh_work. If 
+>>> ufschd_suspend/resume
+>>>   fails due to UFS error, e.g. hibern8 enter/exit error and SSU cmd 
+>>> error,
+>>>   the runtime PM framework saves the error to 
+>>> dev.power.runtime_error.
+>>>   After that, hba runtime suspend/resume would not be invoked anymore 
+>>> until
+>>>   dev.power.runtime_error is cleared. The runtime PM error can be 
+>>> recovered
+>>>   in eh_work by calling pm_runtime_set_active() after reset and 
+>>> restore
+>>>   succeeds. Meanwhile, if pm_runtime_set_active() returns no error, 
+>>> which
+>>>   means dev.power.runtime_error is cleared, we also need to 
+>>> explicitly
+>>>   resume those scsi devices under hba in case any of them has failed 
+>>> to be
+>>>   resumed due to hba runtime resume error.
+>>> 
+>>> o Fix a racing problem between eh_work and ufshcd_suspend/resume. In 
+>>> the
+>>>   old code, it blocks scsi requests before schedules eh_work, but 
+>>> when
+>>>   eh_work calls pm_runtime_get_sync(), if ufshcd_suspend/resume is 
+>>> sending
+>>>   a scsi cmd, most likely the SSU cmd, pm_runtime_get_sync() will 
+>>> never
+>>>   return because scsi requests were blocked. To fix this racing 
+>>> problem,
+>>>   o Don't block scsi requests before schedule eh_work, but let 
+>>> eh_work
+>>>     block scsi requests when eh_work is ready to start error 
+>>> recovery.
+>>>   o Meanwhile, if eh_work is schueduled due to fatal error, don't 
+>>> requeue
+>>>     the scsi cmds sent from ufshcd_suspend/resume path, but simply 
+>>> let the
+>>>     scsi cmds fail. If the scsi cmds fail, hba runtime suspend/resume 
+>>> fails
+>>>     too, but it does hurt since eh_work recovers hba runtime PM 
+>>> error.
+>>> 
+>>> o Move host/regs dump in ufshcd_check_errors() to eh_work because 
+>>> heavy
+>>>   dump in IRQ context can lead to stability issues. In addition, some 
+>>> clean
+>>>   up in ufshcd_print_host_regs() and ufshcd_print_host_state().
+>> 
+>> The above list is a long list. To me that is a sign that this patch 
+>> needs to
+>> be split into multiple patches.
+>> 
+>> Thanks,
+>> 
+>> Bart.
+> 
+> Sure, will split it into a few patches.
+> 
+> Thanks,
+> 
+> Can Guo.
+
+I tried, but I find it hard to split it as it works as a whole, it is a 
+refactor
+change rather than a mixture of multiple fixes. I will try to refine the 
+commit
+msg in next version. So it goes just as it is now.
+
+Thanks,
+
+Can Guo.
