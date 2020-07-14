@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3942E21FBC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF2021FC36
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 21:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731048AbgGNTEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 15:04:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53904 "EHLO mail.kernel.org"
+        id S1729690AbgGNSv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 14:51:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730940AbgGNS4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 14:56:05 -0400
+        id S1729994AbgGNSvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 14:51:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5551D22B39;
-        Tue, 14 Jul 2020 18:56:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA1ED22B2B;
+        Tue, 14 Jul 2020 18:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594752964;
-        bh=jZ/uBJLMnF7CksbNt0FsKVe0JN/CTahK8lmRklB3lGI=;
+        s=default; t=1594752713;
+        bh=QuTUpPj32od8xKGnqQ9wp9FMjS5Eo+apjOKbMlh7Uxw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JqxfbhNZ5cTalVk8W5+xXUozkR55RzR//v9bIUZ6AOpww6ZdxKGHD52n4bs0PxlVc
-         kWhCJRzvtljTQ7dM8UAWWCaxu8r2VrwN2x3I+iL6LUXy334i29/UEaSjNFGmiUgbw2
-         I/TxSiNoiGQHfGuX4B1qOIFx+FERuTMUQM0d/uiM=
+        b=ehIiNthK9RfzTIMpxDyWMHdjLlSZ8lGreOKe7rbuk7lsb8k+0hLPdWrSKdd9dLBLN
+         NMDRut1Z8V1M4TXwGIKFhtRu78zBNn43CNnKelY3Lc0+2mO3swKK5xHoWno59It7fV
+         R+3wA2byJ1z0TdxwauqmqBtSkvBoa3KwRNOR0oKs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
+        stable@vger.kernel.org, Andre Edich <andre.edich@microchip.com>,
+        Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 068/166] net: dsa: microchip: set the correct number of ports
-Date:   Tue, 14 Jul 2020 20:43:53 +0200
-Message-Id: <20200714184119.121413478@linuxfoundation.org>
+Subject: [PATCH 5.4 051/109] smsc95xx: check return value of smsc95xx_reset
+Date:   Tue, 14 Jul 2020 20:43:54 +0200
+Message-Id: <20200714184107.964772377@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-References: <20200714184115.844176932@linuxfoundation.org>
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+References: <20200714184105.507384017@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,54 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+From: Andre Edich <andre.edich@microchip.com>
 
-[ Upstream commit af199a1a9cb02ec0194804bd46c174b6db262075 ]
+[ Upstream commit 7c8b1e855f94f88a0c569be6309fc8d5c8844cd1 ]
 
-The number of ports is incorrectly set to the maximum available for a DSA
-switch. Even if the extra ports are not used, this causes some functions
-to be called later, like port_disable() and port_stp_state_set(). If the
-driver doesn't check the port index, it will end up modifying unknown
-registers.
+The return value of the function smsc95xx_reset() must be checked
+to avoid returning false success from the function smsc95xx_bind().
 
-Fixes: b987e98e50ab ("dsa: add DSA switch driver for Microchip KSZ9477")
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: 2f7ca802bdae2 ("net: Add SMSC LAN9500 USB2.0 10/100 ethernet adapter driver")
+Signed-off-by: Andre Edich <andre.edich@microchip.com>
+Signed-off-by: Parthiban Veerasooran <Parthiban.Veerasooran@microchip.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/microchip/ksz8795.c | 3 +++
- drivers/net/dsa/microchip/ksz9477.c | 3 +++
- 2 files changed, 6 insertions(+)
+ drivers/net/usb/smsc95xx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index 47d65b77caf77..7c17b0f705ec3 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -1268,6 +1268,9 @@ static int ksz8795_switch_init(struct ksz_device *dev)
- 			return -ENOMEM;
- 	}
+diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
+index 3cf4dc3433f91..eb404bb74e18e 100644
+--- a/drivers/net/usb/smsc95xx.c
++++ b/drivers/net/usb/smsc95xx.c
+@@ -1287,6 +1287,8 @@ static int smsc95xx_bind(struct usbnet *dev, struct usb_interface *intf)
  
-+	/* set the real number of ports */
-+	dev->ds->num_ports = dev->port_cnt;
-+
+ 	/* Init all registers */
+ 	ret = smsc95xx_reset(dev);
++	if (ret)
++		goto free_pdata;
+ 
+ 	/* detect device revision as different features may be available */
+ 	ret = smsc95xx_read_reg(dev, ID_REV, &val);
+@@ -1317,6 +1319,10 @@ static int smsc95xx_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	schedule_delayed_work(&pdata->carrier_check, CARRIER_CHECK_DELAY);
+ 
  	return 0;
++
++free_pdata:
++	kfree(pdata);
++	return ret;
  }
  
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index 9a51b8a4de5d1..8d15c30160246 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -1588,6 +1588,9 @@ static int ksz9477_switch_init(struct ksz_device *dev)
- 			return -ENOMEM;
- 	}
- 
-+	/* set the real number of ports */
-+	dev->ds->num_ports = dev->port_cnt;
-+
- 	return 0;
- }
- 
+ static void smsc95xx_unbind(struct usbnet *dev, struct usb_interface *intf)
 -- 
 2.25.1
 
