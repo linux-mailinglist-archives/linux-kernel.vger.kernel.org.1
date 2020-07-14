@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FB721ED57
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7863821ED5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgGNJz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbgGNJzX (ORCPT
+        id S1727050AbgGNJzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:55:49 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:37290 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725884AbgGNJzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:55:23 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DCFC061755;
-        Tue, 14 Jul 2020 02:55:23 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id w17so6805012ply.11;
-        Tue, 14 Jul 2020 02:55:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=feWyy0YWmvWVEAuHgQpmSZhwHtPX9xjD6RVECBnCw3E=;
-        b=szkV+r3apsHlELmwwhzxtkq1yixy/UbcMA1fZ4Ojl6hwP8YJWOUvxKilJEieNgl/mr
-         CFKioRISpV6/4WG5XX8mpUMa7j+NitLI7/st6mguFQg8ExUFf5i9sDUUy77If+ucQVHq
-         Hnci4wSGC5I7Zel6KvKxA9pR/hkKNSoeIf2W5P6THvDhpvEw6EaDHrsNA9Sz14hWivOS
-         aaodikEJC3hSmcgtkFN3xjvr0J80158VGgrlXemKKvNTkGykwQeetuTuTsB823max8IV
-         ND7qI01RAydtjE8w2L3J3QFMkXiGYPYaRUmsrSEJyExDAPRoQcScywiY28ytlVewnMVy
-         8hmQ==
+        Tue, 14 Jul 2020 05:55:48 -0400
+Received: by mail-lj1-f193.google.com with SMTP id e4so21675164ljn.4;
+        Tue, 14 Jul 2020 02:55:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=feWyy0YWmvWVEAuHgQpmSZhwHtPX9xjD6RVECBnCw3E=;
-        b=MKQ+FiGZ9aKTB20Hb/wfKt1lV3H20rvDIQd6ao/wvTlOfh55aYNjwArrZNsOr1s2sB
-         j4PHvAjRh9J05o/OkppIMfcGQJSzh8tq+sxIGmZGuCbZIkHGsSPOhYPwvRJE/EBUbxSf
-         ZLEOH4BZbWb9H+/UrMui/G3o0opI2GYuFPfhc/uu4H95r+5EwS0o3G2esIfzEdwKLfd9
-         3aW39nrxe74Pj8zGv6VszLT+2AEue3XLlQJK6bWqVehX2KHQVlzc4WFUqnLxE8boMIn+
-         GoY3ko0HiIX84MsaMftAQh2kMggaHHfrPZV26VDYh051w3DvNs3ZMCUO+1q1gljZlbf0
-         0r6A==
-X-Gm-Message-State: AOAM5301F8dX/VQCwOk1CTPmj0ZQlHK5jyom2DBIrwiFAFrEzebvbUwz
-        ER7FD34OIBnutTHFIjjs7FetL3+yQM+H5onSbQk=
-X-Google-Smtp-Source: ABdhPJyLkwHAgk0Hq9Da32IJsRjfu0UEDZPtRnkMliyiC9nKvLchi2zi9dqKwFcuEsMNxDe5/zAQeyqFPhpPEFkQ8O0=
-X-Received: by 2002:a17:90a:fd12:: with SMTP id cv18mr3943134pjb.66.1594720522822;
- Tue, 14 Jul 2020 02:55:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7JmZ94tGXd3SBERSIl141jP1/VBkw6bU6NXbKGZdMJg=;
+        b=awiqCBwi2yEHBbm1tUDSr1Ew3guPnVN911Hl2pQ6osvLWHAPEY4zmDCz4AZKDIUZt8
+         Rb+NftBDiZGGYO4ZFr4o/TV++E3NWkgFuFtZstUuL4+jAAn4uBMf7aTaiEuDYXh/zwrq
+         bsNmEAvZxbxpTxDLArl1ebKy0o3biORCkSNS8mYamKiz+rQRxjasID/PjQdrAZUR0wYT
+         WYv/KPoOKRrZbMlexp/s7/B2DoesA8x1YDWtHPpmS9VSwUrjI/fcu8TA9wcDBINQtgbe
+         gnAlZ+r/3z1JCgC8W16CrbKDUE5mzSj22kUjehoa4ypYDYn1AF8PJqUSV11I8onjPDKQ
+         /uIg==
+X-Gm-Message-State: AOAM533xU9tHfQWLkrQHMmEGX+8SsQ1kXKqrSGQjXfyZFNaG5G5vAVTf
+        CmVG5kWFqYUX8LNqtN/Mmgg=
+X-Google-Smtp-Source: ABdhPJxLtJsIeNMTvo9ZG9iKC5VbDUDDIZGbPfkIjQ7Ej4GcXMYqme/5bUL+2WJ5Hv5DT9oydNSH6w==
+X-Received: by 2002:a2e:b88f:: with SMTP id r15mr1792878ljp.355.1594720546216;
+        Tue, 14 Jul 2020 02:55:46 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id 16sm4524652ljw.127.2020.07.14.02.55.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 02:55:45 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1jvHfI-0006UA-DQ; Tue, 14 Jul 2020 11:55:56 +0200
+Date:   Tue, 14 Jul 2020 11:55:56 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Johan Hovold <johan@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: serial: sierra: clean up special-interface handling
+Message-ID: <20200714095556.GA3453@localhost>
+References: <20200713153936.18032-1-johan@kernel.org>
+ <20200713155127.GA267581@kroah.com>
 MIME-Version: 1.0
-References: <20200708043754.46554-1-xie.he.0141@gmail.com> <20200708.101321.1049330296069021543.davem@davemloft.net>
- <CAJht_EOqgWh0dShG258C3uoYdQga+EUae34tvL9HhqpztAv1PQ@mail.gmail.com> <490146353e9225245d8165b6edade1a9@dev.tdt.de>
-In-Reply-To: <490146353e9225245d8165b6edade1a9@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Tue, 14 Jul 2020 02:55:11 -0700
-Message-ID: <CAJht_EOu1cWt3bZJaWw3-TpbEVY3yr7HGeo3SLZb+6HDNed8gQ@mail.gmail.com>
-Subject: Re: [PATCH] drivers/net/wan/x25_asy: Fix to make it work
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Martin Habets <mhabets@solarflare.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Linux X25 <linux-x25@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713155127.GA267581@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 1:07 AM -0700
-Martin Schiller <ms@dev.tdt.de> wrote:
->
-> It really seems very strange that this driver seems to contain such
-> fundamental errors. I have never used it.
->
-> But the explanations and fixes look plausible to me.
+On Mon, Jul 13, 2020 at 05:51:27PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Jul 13, 2020 at 05:39:36PM +0200, Johan Hovold wrote:
+> > Clean up the handling of special interfaces that either should be
+> > ignored or that need a larger number of URBs.
+> > 
+> > Commit 66f092ed3b94 ("USB: serial: sierra: unify quirk handling logic")
+> > replaced the previous is_blacklisted() and is_highmemory() helpers with
+> > a single is_quirk() helper which made it even harder to understand what
+> > the interface lists were used for.
+> > 
+> > Rename the interface-list struct, its members and the interface-lookup
+> > helper and restructure the code somewhat in order to make it more
+> > self-explanatory.
+> 
+> Much better, that was messy, thanks for cleaning this up.
+> 
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Thank you for reviewing this patch, Martin!
+Now applied.
 
-Yes, this situation is very strange. I guess not so many people have
-tried this driver. The comment of this driver says it doesn't
-implement the checksum, which is required by the international
-standard. So I guess it can't be used for practical purposes anyway. I
-tried this driver because I was personally interested in X.25.
+Johan
