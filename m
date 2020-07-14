@@ -2,146 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E58E22010F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 01:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90DE220121
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 01:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgGNXeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 19:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgGNXeS (ORCPT
+        id S1727090AbgGNXrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 19:47:40 -0400
+Received: from mail-m964.mail.126.com ([123.126.96.4]:38506 "EHLO
+        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726795AbgGNXrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 19:34:18 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44B8C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 16:34:18 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id i4so239240iov.11
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 16:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fsTQrOCCM6yA1JojsplBwI6Qpm1eIbU6tWKRrhNq0L8=;
-        b=Xe+ngmM7jnpOaj9OqRhcN0gqzjId08uwAew0qwDF8WY7Et/Vkh2HgKSSjJLiwWTfGU
-         j44JCNWvUx0MMNxLzAxoyDy/Dkz44TmYvxtqAe+VrwQnW4Vs45YQB426Z0aD3Ijc80R3
-         AXBUCjgwzGIUnmWqB3/V80leO43p/tqm4/ohdRdP+DHp8BJF/HYT2k9kyTpCl6dyi6le
-         NGHVLwzENO6xA/QZEaE2O9/S/HDRv8ovdMyW+I6Ggsh4PJFyJ7+ZStCQt24Rxa6knbh2
-         xLeg4YyZMHrlq7uxg19+zlHUWDazKIDhxi1DsRSZhR55XjJe4JJwFLv0xU6jA/Pbh5JM
-         zdTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fsTQrOCCM6yA1JojsplBwI6Qpm1eIbU6tWKRrhNq0L8=;
-        b=DVYDzOwVE0fHilE/v1ax/RBsY0zgTrsXxUNzk8Xf2vBa86pWpOCxe1HpGIsxIERRGf
-         VOUMjZkQ2WqKXicOI9qR4MKm9NKkIXhRE2XF6qAtsY7ONAJsHXbTVDmuxbQMasUJVIcd
-         9q0zPA09GU4br0dgsCqS52pJelwyiZjAVFW9I4luP3Hj5Tat1CQqEJN5YHIPcyJC44aX
-         4CRmDd9igSR9HisCt4nqeaKoY1IA5bmjfBPyQxDgYaRYpg/l5vKU+iHqZ8M7E3b0FSj6
-         2t4eYtJtpoU2S8fJC3qPZwqyp6DkwLn0SEx7DAHo3S0W5bZ/Rpwhabu9fm4iQrdVxcMF
-         dDZQ==
-X-Gm-Message-State: AOAM530S1T5A48oJEjr/QZvUirb2ZCJ/A52qwWgeHmMOOOmbS9vlaGPx
-        qZPj/tWSu9bt6cK/BQR7G2w=
-X-Google-Smtp-Source: ABdhPJxeIzNachO8EzSQjEoNSCMWOmk8OHEK4Kv+a5s14qoubZy7zDVPyaCbyo1+kFLysB8FAGg1lw==
-X-Received: by 2002:a05:6602:15c9:: with SMTP id f9mr7436588iow.35.1594769657817;
-        Tue, 14 Jul 2020 16:34:17 -0700 (PDT)
-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:f693:9fff:fef4:238b])
-        by smtp.googlemail.com with ESMTPSA id x12sm223235ile.14.2020.07.14.16.34.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 16:34:17 -0700 (PDT)
-From:   Jian Cai <caij2003@gmail.com>
-Cc:     caij2003@gmail.com, jiancai@google.com, ndesaulniers@google.com,
-        manojgupta@google.com, sedat.dilek@gmail.com,
-        Brian Gerst <brgerst@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH v2] x86/entry: add compatibility with IAS
-Date:   Tue, 14 Jul 2020 16:33:39 -0700
-Message-Id: <20200714233342.1791530-1-caij2003@gmail.com>
-X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        Tue, 14 Jul 2020 19:47:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=6ftHnufomPdHe0IaVz
+        +dEJ5CVFA2F1hb5s6vpXV/Y1k=; b=RSCiZL7GvzHaS/u8IQn3oRlBsDrvo/zZes
+        OUaVFAIqFkMZx3+BudzCj+DMgMTOvLjHCo7iLeuRQtSek0em9703hM2o4MIejLZC
+        JbVsEYGU1FV1jzhDpWujXNNUqh9Vh78goSTFs6xpMZ2IMsEtQKxcow+1aQHdKXdH
+        qE5Er4zys=
+Received: from zhixu-home.lan (unknown [114.249.221.156])
+        by smtp9 (Coremail) with SMTP id NeRpCgAnhRVoQw5fvYJGCg--.14881S2;
+        Wed, 15 Jul 2020 07:44:40 +0800 (CST)
+From:   Zhixu Zhao <zhixu001@126.com>
+To:     zhixu001@126.com
+Cc:     benchan@chromium.org, devel@driverdev.osuosl.org,
+        gregkh@linuxfoundation.org, joe@perches.com,
+        linux-kernel@vger.kernel.org, rcy@google.com, rspringer@google.com,
+        toddpoynor@google.com, dan.carpenter@oracle.com
+Subject: Re: [PATCH v2] staging: gasket: core: Fix a coding style issue in gasket_core.c
+Date:   Wed, 15 Jul 2020 07:44:40 +0800
+Message-Id: <20200714234440.27009-1-zhixu001@126.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200617161127.32006-1-zhixu001@126.com>
+References: <20200617161127.32006-1-zhixu001@126.com>
+X-CM-TRANSID: NeRpCgAnhRVoQw5fvYJGCg--.14881S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4Rn2-eDUUUU
+X-Originating-IP: [114.249.221.156]
+X-CM-SenderInfo: x2kl53qqqrqiyswou0bp/1tbiZghhfFpD+1v+tAAAsA
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang's integrated assembler does not allow symbols with non-absolute
-values to be reassigned. This patch allows the affected code to be
-compatible with IAS.
+On Thu, Jun 18, 2020 at 12:11:27AM +0800, Zhixu Zhao wrote:
+> A coding alignment issue is found by checkpatch.pl.
+> Fix it by using a temporary for gasket_dev->bar_data[bar_num].
+> 
+> Signed-off-by: Zhixu Zhao <zhixu001@126.com>
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1043
-Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Suggested-by: Brian Gerst <brgerst@gmail.com>
-Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> #
-Compile-/Assemble-tested against Linux v5.8-rc5 with LLVM/Clang
-v11.0.0-git
-Signed-off-by: Jian Cai <caij2003@gmail.com>
----
+Hi, there~
 
-Thanks Nick and Sedat for explaining the process of submitting patches.
-Include the changelog as follows,
+Does anybody have any further comments on this?
+Can it be merged?
 
-Changes v1 -> v2:
- Update the patch based on Arvind Sankar <nivedita@alum.mit.edu>'s
- comments. Also include addtional information in the Tested-by tag.
-
- arch/x86/include/asm/idtentry.h | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index f3d70830bf2a..5efaaed34eda 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -469,16 +469,15 @@ __visible noinstr void func(struct pt_regs *regs,			\
- 	.align 8
- SYM_CODE_START(irq_entries_start)
-     vector=FIRST_EXTERNAL_VECTOR
--    pos = .
-     .rept (FIRST_SYSTEM_VECTOR - FIRST_EXTERNAL_VECTOR)
- 	UNWIND_HINT_IRET_REGS
-+0 :
- 	.byte	0x6a, vector
- 	jmp	asm_common_interrupt
- 	nop
- 	/* Ensure that the above is 8 bytes max */
--	. = pos + 8
--    pos=pos+8
--    vector=vector+1
-+	. = 0b + 8
-+	vector = vector+1
-     .endr
- SYM_CODE_END(irq_entries_start)
- 
-@@ -486,16 +485,15 @@ SYM_CODE_END(irq_entries_start)
- 	.align 8
- SYM_CODE_START(spurious_entries_start)
-     vector=FIRST_SYSTEM_VECTOR
--    pos = .
-     .rept (NR_VECTORS - FIRST_SYSTEM_VECTOR)
- 	UNWIND_HINT_IRET_REGS
-+0 :
- 	.byte	0x6a, vector
- 	jmp	asm_spurious_interrupt
- 	nop
- 	/* Ensure that the above is 8 bytes max */
--	. = pos + 8
--    pos=pos+8
--    vector=vector+1
-+	. = 0b + 8
-+	vector = vector+1
-     .endr
- SYM_CODE_END(spurious_entries_start)
- #endif
--- 
-2.27.0.389.gc38d7665816-goog
+Zhixu
 
