@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6960621EC13
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD8A21EC28
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Jul 2020 11:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgGNJEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 05:04:48 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33429 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726431AbgGNJEr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 05:04:47 -0400
-X-UUID: 96a93593bea04ce3bb92840ad50347c8-20200714
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=oQhNO1aDSq964/bNoXZsaKR638iBryUKI8hdFeOuNn4=;
-        b=pZfWpOO8RCMm9n4Q4i4vg2DYCge5qafplcO6YOJ5gRLNGg5bGnwFEk9GdRQ7E/qB047rzbpsoba3ZjYhdLGOAQNxIKS+K5Vo5KqyosKgIhNrevCYS2VZxyNwOA+iQt81Exm2SJVX0IjahPT8E+TOM5mL4e+8LOiryWaB29hxbq0=;
-X-UUID: 96a93593bea04ce3bb92840ad50347c8-20200714
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <hanks.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 525924331; Tue, 14 Jul 2020 17:04:44 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 14 Jul 2020 17:04:42 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 14 Jul 2020 17:04:42 +0800
-From:   Hanks Chen <hanks.chen@mediatek.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>
-CC:     mtk01761 <wendell.lin@mediatek.com>,
-        Andy Teng <andy.teng@mediatek.com>,
-        <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        CC Hwang <cc.hwang@mediatek.com>,
-        Loda Chou <loda.chou@mediatek.com>,
-        Hanks Chen <hanks.chen@mediatek.com>
-Subject: [PATCH 7/7] clk: mediatek: add UART0 clock support
-Date:   Tue, 14 Jul 2020 17:04:39 +0800
-Message-ID: <1594717479-8160-8-git-send-email-hanks.chen@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1594717479-8160-1-git-send-email-hanks.chen@mediatek.com>
-References: <1594717479-8160-1-git-send-email-hanks.chen@mediatek.com>
+        id S1727107AbgGNJFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 05:05:16 -0400
+Received: from mga11.intel.com ([192.55.52.93]:10742 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727103AbgGNJFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 05:05:12 -0400
+IronPort-SDR: boeVU5t4SV4mArsN6tZRj1KvTsqctRmzeNSUHeO8jFSlcAnDYCj551N03ziY0mlSxM46oOd2/5
+ fbatN9kyIuIA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9681"; a="146857499"
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="146857499"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 02:05:11 -0700
+IronPort-SDR: hd17/lg7afTynaMmuYWsnGADa2CuUdGgMigR7ho1Rbevtq4ham9Nb4ixELEAkJ7sSuFgeXQqOF
+ 4LW85DsFkhtA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,350,1589266800"; 
+   d="scan'208";a="316326542"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP; 14 Jul 2020 02:05:11 -0700
+Received: from [10.249.230.149] (abudanko-mobl.ccr.corp.intel.com [10.249.230.149])
+        by linux.intel.com (Postfix) with ESMTP id 8A60E580814;
+        Tue, 14 Jul 2020 02:05:07 -0700 (PDT)
+Subject: [PATCH v11 04/15] perf evlist: introduce control file descriptors
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <037d737f-0ada-a9f0-9686-f7521ca6fbc3@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <7a305109-f579-c175-2110-2063b774c592@linux.intel.com>
+Date:   Tue, 14 Jul 2020 12:05:05 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <037d737f-0ada-a9f0-9686-f7521ca6fbc3@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIE1UNjc3OSBVQVJUMCBjbG9jayBzdXBwb3J0Lg0KDQpGaXhlczogNzEwNzc0ZTA0ODYxICgi
-Y2xrOiBtZWRpYXRlazogQWRkIE1UNjc3OSBjbG9jayBzdXBwb3J0IikNClNpZ25lZC1vZmYtYnk6
-IFdlbmRlbGwgTGluIDx3ZW5kZWxsLmxpbkBtZWRpYXRlay5jb20+DQpTaWduZWQtb2ZmLWJ5OiBI
-YW5rcyBDaGVuIDxoYW5rcy5jaGVuQG1lZGlhdGVrLmNvbT4NClJldmlld2VkLWJ5OiBNYXR0aGlh
-cyBCcnVnZ2VyIDxtYXR0aGlhcy5iZ2dAZ21haWwuY29tPg0KLS0tDQogZHJpdmVycy9jbGsvbWVk
-aWF0ZWsvY2xrLW10Njc3OS5jIHwgICAgMiArKw0KIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlv
-bnMoKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDY3NzkuYyBi
-L2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDY3NzkuYw0KaW5kZXggOTc2NmNjYy4uNmUwZDNh
-MSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDY3NzkuYw0KKysrIGIv
-ZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10Njc3OS5jDQpAQCAtOTE5LDYgKzkxOSw4IEBADQog
-CQkgICAgInB3bV9zZWwiLCAxOSksDQogCUdBVEVfSU5GUkEwKENMS19JTkZSQV9QV00sICJpbmZy
-YV9wd20iLA0KIAkJICAgICJwd21fc2VsIiwgMjEpLA0KKwlHQVRFX0lORlJBMChDTEtfSU5GUkFf
-VUFSVDAsICJpbmZyYV91YXJ0MCIsDQorCQkgICAgInVhcnRfc2VsIiwgMjIpLA0KIAlHQVRFX0lO
-RlJBMChDTEtfSU5GUkFfVUFSVDEsICJpbmZyYV91YXJ0MSIsDQogCQkgICAgInVhcnRfc2VsIiwg
-MjMpLA0KIAlHQVRFX0lORlJBMChDTEtfSU5GUkFfVUFSVDIsICJpbmZyYV91YXJ0MiIsDQotLSAN
-CjEuNy45LjUNCg==
+
+Define and initialize control file descriptors.
+
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/perf/util/evlist.c | 3 +++
+ tools/perf/util/evlist.h | 5 +++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index bcbe0cb8482e..36eb50aba1f5 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -63,6 +63,9 @@ void evlist__init(struct evlist *evlist, struct perf_cpu_map *cpus,
+ 	perf_evlist__set_maps(&evlist->core, cpus, threads);
+ 	evlist->workload.pid = -1;
+ 	evlist->bkw_mmap_state = BKW_MMAP_NOTREADY;
++	evlist->ctl_fd.fd = -1;
++	evlist->ctl_fd.ack = -1;
++	evlist->ctl_fd.pos = -1;
+ }
+ 
+ struct evlist *evlist__new(void)
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index 38901c0d1599..fe1fe40e044b 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -74,6 +74,11 @@ struct evlist {
+ 		pthread_t		th;
+ 		volatile int		done;
+ 	} thread;
++	struct {
++		int	fd;	/* control file descriptor */
++		int	ack;	/* ack file descriptor for control commands */
++		int	pos;	/* index at evlist core object to check signals */
++	} ctl_fd;
+ };
+ 
+ struct evsel_str_handler {
+-- 
+2.24.1
+
 
