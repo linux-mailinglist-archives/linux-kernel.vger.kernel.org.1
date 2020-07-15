@@ -2,83 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A921220199
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 03:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F9B22018E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 03:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgGOBEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 21:04:41 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29311 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726962AbgGOBEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 21:04:40 -0400
-IronPort-SDR: zVKxatvGwfhciKZvFCykYATBurvA8doSX6RumBn/EPvcZkUkarm86IYsHDERMxHMr4OhGPDl8W
- 9+uvHk6BpHgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="146563181"
-X-IronPort-AV: E=Sophos;i="5.75,353,1589266800"; 
-   d="scan'208";a="146563181"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 18:04:38 -0700
-IronPort-SDR: gbYlDs4Ly5SqxpHpBIogAaCvu597r+FyU8UGFhHgLyt2iKxmSwIjEagGJ2FHxrymAQvdzZX+Ad
- hhl4enV8Ea0w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,353,1589266800"; 
-   d="scan'208";a="459891197"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by orsmga005.jf.intel.com with ESMTP; 14 Jul 2020 18:04:36 -0700
-Cc:     baolu.lu@linux.intel.com,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH v3 4/4] vfio/type1: Use iommu_aux_at(de)tach_group() APIs
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Christoph Hellwig <hch@infradead.org>
-References: <20200714055703.5510-1-baolu.lu@linux.intel.com>
- <20200714055703.5510-5-baolu.lu@linux.intel.com>
- <20200714082514.GA30622@infradead.org>
- <20200714092930.4b61b77c@jacob-builder>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <ac4507d5-a5fc-d078-9bfc-f9e9fd1244e7@linux.intel.com>
-Date:   Wed, 15 Jul 2020 09:00:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726836AbgGOBAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 21:00:48 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2541 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726356AbgGOBAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 21:00:47 -0400
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id D712171674DF9AAF01CF;
+        Wed, 15 Jul 2020 09:00:45 +0800 (CST)
+Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Wed, 15 Jul 2020 09:00:45 +0800
+Received: from [10.174.61.242] (10.174.61.242) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 15 Jul 2020 09:00:44 +0800
+Subject: Re: [PATCH net-next v2] hinic: add firmware update support
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
+        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
+        <chiqijun@huawei.com>
+References: <20200714125433.18126-1-luobin9@huawei.com>
+ <20200714113711.32107a16@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   "luobin (L)" <luobin9@huawei.com>
+Message-ID: <0025d09b-589e-a68e-7e17-a3c5558e0565@huawei.com>
+Date:   Wed, 15 Jul 2020 09:00:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <20200714092930.4b61b77c@jacob-builder>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200714113711.32107a16@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.61.242]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph and Jacob,
-
-On 7/15/20 12:29 AM, Jacob Pan wrote:
-> On Tue, 14 Jul 2020 09:25:14 +0100
-> Christoph Hellwig<hch@infradead.org>  wrote:
+On 2020/7/15 2:37, Jakub Kicinski wrote:
+> On Tue, 14 Jul 2020 20:54:33 +0800 Luo bin wrote:
+>> add support to update firmware by the devlink flashing API
+>>
+>> Signed-off-by: Luo bin <luobin9@huawei.com>
 > 
->> On Tue, Jul 14, 2020 at 01:57:03PM +0800, Lu Baolu wrote:
->>> Replace iommu_aux_at(de)tach_device() with
->>> iommu_aux_at(de)tach_group(). It also saves the
->>> IOMMU_DEV_FEAT_AUX-capable physcail device in the vfio_group data
->>> structure so that it could be reused in other places.
->> This removes the last user of iommu_aux_attach_device and
->> iommu_aux_detach_device, which can be removed now.
-> it is still used in patch 2/4 inside iommu_aux_attach_group(), right?
+> Minor nits below, otherwise I think this looks good.
 > 
-
-There is a need to use this interface. For example, an aux-domain is
-attached to a subset of a physical device and used in the kernel. In
-this usage scenario, there's no need to use vfio/mdev. The device driver
-could just allocate an aux-domain and call iommu_aux_attach_device() to
-setup the iommu.
-
-Best regards,
-baolu
+>> +static int hinic_firmware_update(struct hinic_devlink_priv *priv,
+>> +				 const struct firmware *fw)
+>> +{
+>> +	struct host_image_st host_image;
+>> +	int err;
+>> +
+>> +	memset(&host_image, 0, sizeof(struct host_image_st));
+>> +
+>> +	if (!check_image_valid(priv, fw->data, fw->size, &host_image) ||
+>> +	    !check_image_integrity(priv, &host_image, FW_UPDATE_COLD) ||
+>> +	    !check_image_device_type(priv, host_image.device_id))
+> 
+> These helpers should also set an appropriate message in extack, so the
+> user can see it on the command line / inside their application.
+> 
+>> +		return -EINVAL;
+>> +
+>> +	dev_info(&priv->hwdev->hwif->pdev->dev, "Flash firmware begin\n");
+>> +
+>> +	err = hinic_flash_fw(priv, fw->data, &host_image);
+>> +	if (err) {
+>> +		if (err == HINIC_FW_DISMATCH_ERROR)
+>> +			dev_err(&priv->hwdev->hwif->pdev->dev, "Firmware image doesn't match this card, please use newer image, err: %d\n",
+> 
+> Here as well - please make sure to return an error messages through
+> extack.
+> 
+>> +				err);
+>> +		else
+>> +			dev_err(&priv->hwdev->hwif->pdev->dev, "Send firmware image data failed, err: %d\n",
+>> +				err);
+>> +		return err;
+>> +	}
+>> +
+>> +	dev_info(&priv->hwdev->hwif->pdev->dev, "Flash firmware end\n");
+>> +
+>> +	return 0;
+>> +}
+> 
+>> @@ -1086,6 +1090,17 @@ static int nic_dev_init(struct pci_dev *pdev)
+>>  		return PTR_ERR(hwdev);
+>>  	}
+>>  
+>> +	devlink = hinic_devlink_alloc();
+>> +	if (!devlink) {
+>> +		dev_err(&pdev->dev, "Hinic devlink alloc failed\n");
+>> +		err = -ENOMEM;
+>> +		goto err_devlink_alloc;
+>> +	}
+>> +
+>> +	priv = devlink_priv(devlink);
+>> +	priv->hwdev = hwdev;
+>> +	priv->devlink = devlink;
+> 
+> No need to remember the devlink pointer here, you can use
+> priv_to_devlink(priv) to go from priv to devlink.
+> 
+>> +
+>>  	num_qps = hinic_hwdev_num_qps(hwdev);
+>>  	if (num_qps <= 0) {
+>>  		dev_err(&pdev->dev, "Invalid number of QPS\n");
+> .
+> 
+Will fix all. Thanks for your review.
