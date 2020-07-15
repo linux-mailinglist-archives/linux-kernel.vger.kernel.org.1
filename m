@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B23220F01
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4ED220F0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgGOOQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 10:16:59 -0400
-Received: from mail-eopbgr50058.outbound.protection.outlook.com ([40.107.5.58]:37764
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726834AbgGOOQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 10:16:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VSbo1dgo/FjNn6bVhivyhgzXqwrKubAi78rh6mW2A4ukRuFWOx61rt2kG5GiHApGs83NPQD5H+BqRGtgxvb1xD4aVbkqycSSGCHQpW/NPVt0CdLYCnf02J7rSLEU0BzIiW65IRbKO5XCwaReBvjEcJTOC5dB15TuvlZmwQ3M/3buk75k9DdrZEZjsmUN/ENm1cMAI6WD0la3K2lAHhzRMdrrtCGdAHjO5qDYx3miewmanIbL5d/apGUKvhM6E2+mSmxGZ0NuURzOjagh/lUWteVgTEFWhaYUc6AowIHRnBlHyMW42++BdG9ocRkYLHa+W/wlUxljKLmWesAwSccZGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K9NJqL+dSwU0FeaLOpUzOcfMFSD+IIm1iRD7egSKROg=;
- b=PSzl1ZhM+of7093UuaLO7hOI3CzJ2gbMakdcDFuy3N5klBc+hbBYYGlWt0XS+Ew2YiIDm7lIUBsxvAm/mVD72Q2QM9MMxky1VsYnaFEHhKCuw+l3COJ92SRX/1215cD1dHtlS/vgm4QQ3zkD0DORFuwpe5/CDwt6FmUe7dM5fmTsIYkcBmu1Za4u5I+Zy+NfrGBLM8KDlM7755ridjSdp2k6t0ltQ33pGhsAW+xRohU6MoTGbCp28Bga+ipQlmhibVUIK6YiWDRJ1XY1zAQmBdY9I9vxaaeHZD7GJVx8dKxqczM/0OPqlOn2mqH4xdURA2c3RyTYQQ9nwHFcvfJAEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K9NJqL+dSwU0FeaLOpUzOcfMFSD+IIm1iRD7egSKROg=;
- b=RE8cMeIKwCqKwUR2iCTPrQouzJUB161u7wpxDxNXhHByPfXwX+Kb6ZdoXeMD/iwV6/Lf7mtf31L5m7E2tOo2ZvQ2NWgGm7b1YsF6s3gUZ9RkCTGH/UTHylba3yzQfCeTWLzWjn9dOAcxnpwTl8dXCyxQGzWU8T1NaMXZmPH6B8s=
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- (2603:10a6:803:16::14) by VI1PR04MB4125.eurprd04.prod.outlook.com
- (2603:10a6:803:46::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Wed, 15 Jul
- 2020 14:16:55 +0000
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::e5d7:ec32:1cfe:71f0]) by VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::e5d7:ec32:1cfe:71f0%7]) with mapi id 15.20.3174.026; Wed, 15 Jul 2020
- 14:16:55 +0000
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>
-Subject: RE: [PATCH 0/6] staging: dpaa2-ethsw: cleanup of link state and MAC
- addresses
-Thread-Topic: [PATCH 0/6] staging: dpaa2-ethsw: cleanup of link state and MAC
- addresses
-Thread-Index: AQHWWeOcTNWCNrl18kmFkABE4UkG5akIr44AgAAAO2A=
-Date:   Wed, 15 Jul 2020 14:16:54 +0000
-Message-ID: <VI1PR0402MB3871A51187B93BD27415A46AE07E0@VI1PR0402MB3871.eurprd04.prod.outlook.com>
-References: <20200714133431.17532-1-ioana.ciornei@nxp.com>
- <20200715141018.GA3377845@kroah.com>
-In-Reply-To: <20200715141018.GA3377845@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=nxp.com;
-x-originating-ip: [188.25.219.134]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 27208d90-8381-49a6-693f-08d828c9ba34
-x-ms-traffictypediagnostic: VI1PR04MB4125:
-x-microsoft-antispam-prvs: <VI1PR04MB4125D17F504A65A9D44F11A1E07E0@VI1PR04MB4125.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AOcooLTNVG+TcQN8nC1vW+0JVntK6oHsW/mSMLfb/YrF5kkq7n3I84q0vWiE3rd3YTXqYPbXCPwT/Zr9KwYDl00f4AjHfxsnAhUQTWpb7gzR2j4YozNyDRhhMZOR7mNlkOyyZYGK97D/TDZUA6osxvxDNIAwOFQ6udwFpnXv/nuGzAH7XmTaXm2+RePVknxy4vCg2MU6e/+LzxcL2gQZ7+tF3xcaG5NmiuhbfBu0DKwiOBIBYu2lhKHmKaSWSuKRlb/yhoA2bBhZNzg1xR8a3H7wMzUb2UDrv/vF5bJrixZeYe+Fd8p4T6JtvSdjXdzlboYdT9rZk5Y6VK7U8Z/wj0bq+YNHw6xZ2wEqmnx2kSaERVVoBrdgHwf8LsD/ST/g7N57OQadogPdpAGaSAtYRg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3871.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(136003)(396003)(376002)(346002)(66476007)(64756008)(66946007)(66556008)(6506007)(76116006)(71200400001)(6916009)(7696005)(54906003)(9686003)(186003)(52536014)(2906002)(8676002)(4326008)(66446008)(55016002)(478600001)(316002)(33656002)(26005)(5660300002)(86362001)(44832011)(8936002)(966005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 9mRr7pmXBGIZt0l7EBTXKdRkKQz3KbXxiAcjL7CtJ2+sf+Vh1qChkNZC3GRGqPFpTSTjbxyCPxsf9mc2/wmysq+M6VCI+q+B9bDp8Afd6XFVwaj6/6xP0CBH17HuJWBJLVXQhKIgErQzB/jPyzXpDdpcfQsi1srMJN90OvMhnPEW/5sk9d9b31sG6ZoJbgd5pCgXV7US1ftPYqACTh01ODGzC5sUBnYiAWQFqgGBTDpnMerkSdBgpat+7jfz15ySidIriytwLLbXVaNnzTfX+i6XWCEQzYbR+X65n8ZsCwXcfQwEb+m20eql6qAvm8xy7N69wpMhBH8F39sacPHscj6aFSqOWWmRsT5E0jx+/GcEhS9+A7OC9kfjNmMJSapdadEooVjeJTZxNVagzf8yTsU53nC8aZ67e5KKgpfxFxt0RwGsG5Hy7GWeG9EUZPUL9IgqgGxxxxryKjD2wh/ZWMfB8L2RkRE/8C4HC576sFAtkEePKVFdb1vdY8n4yfoG
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728114AbgGOORo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 10:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726834AbgGOORo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 10:17:44 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C87C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:17:43 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l2so6036715wmf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=1JgqT9mrEdGtuuXwQt1J5C4Rwf+h8f2OaFWoY0odJro=;
+        b=S0VhaBxg8cYN2y22Wc8O6G1H0W5VMl3rd5sgHxUVmhOmkptVnKaF2Atf0ycbrTZlJJ
+         sND/EQFP9ttvwNC0bf7Aep2qLg+X2eS57cDpA5Y48S+1/77eLo6OmZElOADrMEqeBh7f
+         k4fLSjVpyGlb6Q+Dh6qeGDi/Argdm/WmvtL5C41RmhcJ6NsfE6KAx7bxDDr08n7D4auF
+         1Z1XDU61mCGt8BkkdkTjLxR2YIvWXVvaXBAy5mhit9DKMAdmxGSnbig9tLf/1awmFsYn
+         ykR2apsM/CS1X95ZF1wa1lIrb3u0f/wtq6QczfxsneKAuT4a2TMYSboex0KVB6zfsKZd
+         A2ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=1JgqT9mrEdGtuuXwQt1J5C4Rwf+h8f2OaFWoY0odJro=;
+        b=oKESBryHecPnXD6aW/9Rd4aoQzTG11Xqx6UppO8Z4MqzMzN78c+1QSFvNO+eNOGmjQ
+         D8Fzv/kgesxRII2fgAvmagRchtiwufzvWJtcb70efIPshDQ9wTrKTYiJZO8PBWfcT9fE
+         OSugMLf+TRGqY1qcmL6vq9RWzUK1bmT/pICMPsUHNgtubz+dsuG/RVlGYf2YN5iWz2kC
+         qGV3AqbaKCLj7kaPxozHXxAeo/sacY3Sj3GL4kXkhZ0Ke1eS1CejpDOT00HmMNL+oonR
+         kcy+oBcYm8ODhF/I9aTjoyUoPLy+LL6/yFYXhwfhhbLk/G8KEBXlvezAqHJ2IN5xIEBS
+         sjLg==
+X-Gm-Message-State: AOAM531eK52Ptzl/oEAAPuPm9d/Mdw/xWhV81zrbqARgAYBrseNkxNLJ
+        98MIi6hazlTf5P9IBUQBdtG9TA==
+X-Google-Smtp-Source: ABdhPJxOQs7hjvQMJKZS3uHDUMnZ/0JyZLpaK8BTw6SybE8pBSddAZM6kWuOIcneFpTvLZCFPfLoXA==
+X-Received: by 2002:a1c:4d05:: with SMTP id o5mr8820870wmh.130.1594822662438;
+        Wed, 15 Jul 2020 07:17:42 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id p17sm3394573wma.47.2020.07.15.07.17.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 07:17:41 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 15:17:40 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Clean up aperf_mperf_shift
+ description
+Message-ID: <20200715141740.GG3165313@dell>
+References: <1695770.kLfQgcESsc@kreacher>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3871.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27208d90-8381-49a6-693f-08d828c9ba34
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2020 14:16:55.0065
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Pad2xuFC4JmaN4y3zHcVZNK6Jn1q/u9EDFEWtNY5zzdRtVj2U1rPihTIf34KxeEUVyKS3FJ/dQ89Wh3ut17O8g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4125
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1695770.kLfQgcESsc@kreacher>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH 0/6] staging: dpaa2-ethsw: cleanup of link state and =
-MAC
-> addresses
->=20
-> On Tue, Jul 14, 2020 at 04:34:25PM +0300, Ioana Ciornei wrote:
-> > This patch set is cleaning up the link state handling of the switch
-> > ports in patches 1-4. The last two patches are setting up the MAC
-> > addresses of the switch ports automatically so that the user is not
-> > forced to manually add them before adding them to a bridge.
->=20
-> This feels like adding new functionality to this code.  What is keeping i=
-t from
-> getting out of staging at this point in time?  I would prefer for it to b=
-e moved out
-> before adding new stuff to it.
->=20
-> thanks,
->=20
-> greg k-h
+On Wed, 15 Jul 2020, Rafael J. Wysocki wrote:
 
-We still have some work do to on this driver before moving it out of stagin=
-g unfortunately, mainly integrating the Rx/Tx functionality for switch port=
-s[1] and general cleanup on the driver. Sorry I did not mention this in the=
- cover letter.
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> The kerneldoc description of the aperf_mperf_shift field in
+> struct global_params is unclear and there is a typo in it, so
+> simplify it and clean it up.
+> 
+> Reported-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>  drivers/cpufreq/intel_pstate.c |    4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> Index: linux-pm/drivers/cpufreq/intel_pstate.c
+> ===================================================================
+> --- linux-pm.orig/drivers/cpufreq/intel_pstate.c
+> +++ linux-pm/drivers/cpufreq/intel_pstate.c
+> @@ -202,9 +202,7 @@ struct global_params {
+>   * @pstate:		Stores P state limits for this CPU
+>   * @vid:		Stores VID limits for this CPU
+>   * @last_sample_time:	Last Sample time
+> - * @aperf_mperf_shift:	Number of clock cycles after aperf, merf is incremented
+> - *			This shift is a multiplier to mperf delta to
+> - *			calculate CPU busy.
+> + * @aperf_mperf_shift:	APERF vs MPERF counting frequency difference
+>   * @prev_aperf:		Last APERF value read from APERF MSR
+>   * @prev_mperf:		Last MPERF value read from MPERF MSR
+>   * @prev_tsc:		Last timestamp counter (TSC) value
 
-This patch set just does some cleanup of the link state handling since the =
-state showed to the user in the ifconfig output was not consistent all the =
-time with what actually was happening in the hardware.
+Definitely clearer.
 
-Thanks,
-Ioana
+Reviewed-by: Lee Jones <lee.jones@linaro.org>
 
-[1] https://lkml.org/lkml/2019/11/5/548
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
