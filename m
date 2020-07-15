@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F31220789
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1EE22078B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730323AbgGOIiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:38:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729066AbgGOIiY (ORCPT
+        id S1730286AbgGOIjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:39:19 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:51267 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729329AbgGOIjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:38:24 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EAD7C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:38:24 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id m16so2100143pls.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:38:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TbJ/+ucYAYXSyy1FqmpSCm01BvP6FkdKr9JPVe9GaUg=;
-        b=L0pRlBCRfUah0I4nLTsTC/5bv4ktc+BBmfCp6T4csHEtDtfAWLOgbeZW4Bn68P3Mao
-         zEltQ6EKuI39ADl6Bd7eMem4iWEgCvj4H+xSIPzU9722c0kTQrVLOqE1H/UeFH3Xx7tO
-         K1+rMFQbYBqLwwKrmRKDwMP9C5AK9HR6oz3QDlCVjoihNrO0V3QJxpTm7HzGEo4bWKa+
-         yD6xSMWacEH9z2oxtwNfhmE1dyNRMOxtbLP2sdhLXnH7Hm8UiNrBx7zM5R7gdzXDsEQr
-         CKV88k3iqYvf8mz+EUQv0blZ5MAQFv792N7CKYU9apHXNuqw/NA+8732rWdUvYWO0zOW
-         WoCg==
+        Wed, 15 Jul 2020 04:39:18 -0400
+Received: by mail-io1-f72.google.com with SMTP id l1so944652ioh.18
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:39:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TbJ/+ucYAYXSyy1FqmpSCm01BvP6FkdKr9JPVe9GaUg=;
-        b=Z783HrFNVJMilYptp06Y3O65+t0meDoWdLuhClIUeaMBNoW4dzExoZH+8CTeli2wzX
-         hOLZx5Nisz4XOlhefdKJ/INV9cVpdjvvNKtruoeba/5LhY5SvmI5Rec8V9vkJQr8o8A8
-         meVy6Z7q/BcqmfB38AzGMFZtpsc0xeU7f2gFzRMdkqeSRQCNFjVtWAmmASQjLKhXW/Dz
-         0b7fSRv1gSXNP3FvvuMUCjlqJqKmcYoaQmhTRnV03uT1thi+i1wAOzyZLnRfjesXs0Ox
-         E9V40wH+FUO7Lyx0DIEJ7V9E3PeUpGtA3tpOYEp/zzhDJAYkyCZL4n+44wP1ijv9mvsI
-         07pA==
-X-Gm-Message-State: AOAM533GAB85ZON75cJaQV6fiPJI4NWljRqGWekm+OZ74HK/mw/Adufh
-        DjPb8ZijqNlNGLo8C3lEcXJC+MUKbYdUm741MGbo+Q==
-X-Google-Smtp-Source: ABdhPJwYyn9g4MTK+w+66YEWHyngcaSRZXVufsH+Vtuz+n2tEnKccXdTiDptiWqLYywvLUAfuZ8kOijAqHnOrcK1b/8=
-X-Received: by 2002:a17:90a:cc03:: with SMTP id b3mr8256003pju.80.1594802303432;
- Wed, 15 Jul 2020 01:38:23 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=X50zSFlWOsBbnGGaGGIgEhrXhN4UntpAF5C1oBx9MYs=;
+        b=GYxjZvk4TDZ9ACWWS9c71iYVx1eSYR08vSiNwql2naU/QEQabu71vhsSKzhtQhI+ak
+         HUsSZYNByGCI7GPGw3up5+v0oFGcH16YhLxlI39ZoUD74mhtQhQlwKnRAVm93JqfzO1L
+         V1R61YyzByoBXL7lhuL608luDaWqScO6zP/RgK+d18hbCVlBSDy1LAnrVHsNS3DznclG
+         gZJ4gOAU/W6opZDGmH8m7eON7usx9n2M5J3P9E4ltEo4Ky2QLfnvKQOH+ltY01BhUjhH
+         HeppSYK+zGRXEH4ZcSCzQAOsIiboCUADqk29nb9dhmgbFQJk9gxiReKHPRZmgvC/nXhN
+         kCAg==
+X-Gm-Message-State: AOAM530xmbf3pODvJjTQYVkSRAAfsUHXPgesEqeYejOFSkPy0g6T8V6A
+        k183fI4AFYUysqpxT+bRAPmRS5yOMVKgHTovgCEgPTYGK/6R
+X-Google-Smtp-Source: ABdhPJyFSqYEGOij/2d2gRAgBYTTNAvoJfPacGxhsMgIpHLdOUDDPeG4AeOMpxQVXQBcvyYcDGWpH3dXO8ZI3tqHxnFQj6EqYi7Y
 MIME-Version: 1.0
-References: <20200704085213.444645-1-ignat@cloudflare.com> <20200704085213.444645-2-ignat@cloudflare.com>
-In-Reply-To: <20200704085213.444645-2-ignat@cloudflare.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 15 Jul 2020 01:38:12 -0700
-Message-ID: <CAFd5g45jR3tRfWhGiX931xh4=aScrfp0buHyRSWWH78NdTHSVA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] um/kconfig: introduce CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
-To:     Ignat Korchagin <ignat@cloudflare.com>
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team@cloudflare.com
+X-Received: by 2002:a05:6e02:682:: with SMTP id o2mr8155784ils.188.1594802357332;
+ Wed, 15 Jul 2020 01:39:17 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 01:39:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fef5a905aa76dbf9@google.com>
+Subject: memory leak in create_pipe_files
+From:   syzbot <syzbot+6a137efd811917e8b53c@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 4, 2020 at 1:52 AM Ignat Korchagin <ignat@cloudflare.com> wrote:
->
-> For statically linked UML build it is important to take into account the
-> standard C-library implementation. Some implementations, notably glibc have
-> caveats: even when linked statically, the final program might require some
-> runtime dependencies, if certain functions are used within the code.
->
-> Consider the following program:
-> int main(void)
-> {
->         getpwent();
->         return 0;
-> }
->
-> Compiling this program and linking statically with glibc produces the following
-> warning from the linker:
-> /usr/sbin/ld: /tmp/ccuthw1o.o: in function `main':
-> test.c:(.text+0x5): warning: Using 'getpwent' in statically linked
-> applications requires at runtime the shared libraries from the glibc version
-> used for linking
->
-> We will use the flag to detect such C-library implementation build time and
-> possibly disable static linking for UML to avoid producing a binary with
-> unexpected behaviour and dependencies.
->
-> Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+Hello,
 
-Nice.
+syzbot found the following issue on:
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+HEAD commit:    a581387e Merge tag 'io_uring-5.8-2020-07-10' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10ba1967100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=13a9cfc3f50ff96
+dashboard link: https://syzkaller.appspot.com/bug?extid=6a137efd811917e8b53c
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d2004f100000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6a137efd811917e8b53c@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff88812a6c8800 (size 256):
+  comm "syz-execprog", pid 6479, jiffies 4295096411 (age 83.520s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    20 2d 85 2a 81 88 ff ff 80 57 d2 15 81 88 ff ff   -.*.....W......
+  backtrace:
+    [<00000000057eb446>] kmem_cache_zalloc include/linux/slab.h:659 [inline]
+    [<00000000057eb446>] __alloc_file+0x23/0x120 fs/file_table.c:101
+    [<0000000046b459a4>] alloc_empty_file+0x4f/0xe0 fs/file_table.c:151
+    [<00000000fced1caf>] alloc_file+0x31/0x160 fs/file_table.c:193
+    [<0000000079549d8a>] alloc_file_pseudo+0xae/0x120 fs/file_table.c:233
+    [<0000000058a70f71>] create_pipe_files+0x127/0x270 fs/pipe.c:931
+    [<00000000ad5d09be>] __do_pipe_flags fs/pipe.c:964 [inline]
+    [<00000000ad5d09be>] do_pipe2+0x43/0x110 fs/pipe.c:1012
+    [<0000000038960906>] __do_sys_pipe2 fs/pipe.c:1030 [inline]
+    [<0000000038960906>] __se_sys_pipe2 fs/pipe.c:1028 [inline]
+    [<0000000038960906>] __x64_sys_pipe2+0x16/0x20 fs/pipe.c:1028
+    [<00000000b1b64f40>] do_syscall_64+0x4c/0xe0 arch/x86/entry/common.c:384
+    [<00000000e3fac4b7>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88812a7abb80 (size 16):
+  comm "syz-execprog", pid 6479, jiffies 4295096411 (age 83.520s)
+  hex dump (first 16 bytes):
+    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<0000000029e2bcd5>] kmem_cache_zalloc include/linux/slab.h:659 [inline]
+    [<0000000029e2bcd5>] lsm_file_alloc security/security.c:567 [inline]
+    [<0000000029e2bcd5>] security_file_alloc+0x2e/0xc0 security/security.c:1455
+    [<00000000884a9f66>] __alloc_file+0x61/0x120 fs/file_table.c:106
+    [<0000000046b459a4>] alloc_empty_file+0x4f/0xe0 fs/file_table.c:151
+    [<00000000fced1caf>] alloc_file+0x31/0x160 fs/file_table.c:193
+    [<0000000079549d8a>] alloc_file_pseudo+0xae/0x120 fs/file_table.c:233
+    [<0000000058a70f71>] create_pipe_files+0x127/0x270 fs/pipe.c:931
+    [<00000000ad5d09be>] __do_pipe_flags fs/pipe.c:964 [inline]
+    [<00000000ad5d09be>] do_pipe2+0x43/0x110 fs/pipe.c:1012
+    [<0000000038960906>] __do_sys_pipe2 fs/pipe.c:1030 [inline]
+    [<0000000038960906>] __se_sys_pipe2 fs/pipe.c:1028 [inline]
+    [<0000000038960906>] __x64_sys_pipe2+0x16/0x20 fs/pipe.c:1028
+    [<00000000b1b64f40>] do_syscall_64+0x4c/0xe0 arch/x86/entry/common.c:384
+    [<00000000e3fac4b7>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
