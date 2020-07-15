@@ -2,57 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF53B2202CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F4E2202D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgGODMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 23:12:13 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:60896 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726852AbgGODMN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 23:12:13 -0400
-Date:   Tue, 14 Jul 2020 23:12:11 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: ioremap and dma cleanups and fixes for superh (2nd resend)
-Message-ID: <20200715031210.GD14669@brightrain.aerifal.cx>
-References: <20200714121856.955680-1-hch@lst.de>
- <b0745e43-0ff1-58f7-70d5-60b9c8b8d81b@physik.fu-berlin.de>
- <20200714155914.GA24404@brightrain.aerifal.cx>
- <8cbf2963-d0e4-0ca8-4ffe-c2057694447f@physik.fu-berlin.de>
- <011f29e6-ad71-366e-dbff-bc8471f3da60@physik.fu-berlin.de>
+        id S1728144AbgGODOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 23:14:35 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:43776 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726624AbgGODOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 23:14:35 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 236DFE6E48ADD26CEA9A;
+        Wed, 15 Jul 2020 11:14:33 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Jul 2020
+ 11:14:24 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] tools/bpftool: Fix error return code in do_skeleton()
+Date:   Wed, 15 Jul 2020 11:13:53 +0800
+Message-ID: <20200715031353.14692-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <011f29e6-ad71-366e-dbff-bc8471f3da60@physik.fu-berlin.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 01:12:33AM +0200, John Paul Adrian Glaubitz wrote:
-> Hello!
-> 
-> I have applied Christoph's full series on top of Linus' tree and I can confirm that
-> the kernel boots fine on my SH-7785LCR board.
-> 
-> Thus, for the whole series of patches:
-> 
-> Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> 
-> However, independent of Christoph's series, the kernels throws two backtraces during
-> boot which I think should require a git bisect (unless I missed a configuration option
-> as I trimmed down the kernel a bit to make sure it's not too big).
-> 
-> See the traces below and let me know what you think.
+The error return code should be PTR_ERR(obj) other than
+PTR_ERR(NULL).
 
-I've got a slightly earlier version (my for-next) built for qemu r2d
-board, and don't get any such messages. Do you have a lock-debugging
-option enabled that's catching a problem, perhaps?
+Fixes: 5dc7a8b21144 ("bpftool, selftests/bpf: Embed object file inside skeleton")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ tools/bpf/bpftool/gen.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Rich
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 10de76b296ba..35f62273cdbd 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -305,8 +305,9 @@ static int do_skeleton(int argc, char **argv)
+ 	opts.object_name = obj_name;
+ 	obj = bpf_object__open_mem(obj_data, file_sz, &opts);
+ 	if (IS_ERR(obj)) {
++		err = PTR_ERR(obj);
++		p_err("failed to open BPF object file: %ld", err);
+ 		obj = NULL;
+-		p_err("failed to open BPF object file: %ld", PTR_ERR(obj));
+ 		goto out;
+ 	}
+ 
+-- 
+2.17.1
+
+
