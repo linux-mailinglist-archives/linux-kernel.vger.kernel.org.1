@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77045220E16
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28848220E21
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731758AbgGON1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 09:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730868AbgGON13 (ORCPT
+        id S1731862AbgGONbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 09:31:38 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19993 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730872AbgGONbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 09:27:29 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5627BC061755;
-        Wed, 15 Jul 2020 06:27:29 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id s21so1945172ilk.5;
-        Wed, 15 Jul 2020 06:27:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PbxQ2FDotI1NR/7QgrtYPUlW34gpA/IpqMQYvPXzsaU=;
-        b=iDq2OQUoCKcNJHDuF1T6d6391NGSAhrjIFSytd7aoJCNDirq1KL+Psa6IKX5H6ipVM
-         8EveZhhHNSyKFw/tzyQaOtNXZeQzcR0GF/MIV9VZCU3jRmVk/X8xXOqb+mrXQZdVOiU8
-         sgMdsj24bA2TqMGMWY7Lz/L3AMdEsknaRLHa5wY5RUFh0epZQ4o8wNzCv5KSgdgGlBB9
-         +RS2abuIaRFEy8FXo+KOu/hb9/fZigZCnkQeXHTxpJ4YqlMWMYl++BVLzDnQ9W7RuCH7
-         jioDJ281lKpUYjK63GolcPL8BXF8eNMnTqSrgNmhHV2xS43l9OL+oaM5EOLOuNDBUEG4
-         Abog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PbxQ2FDotI1NR/7QgrtYPUlW34gpA/IpqMQYvPXzsaU=;
-        b=iJzW6yLowkHcRJe1k04k03mYRvyXpkn8IyqtsYCaiFMjXs2YBRg+qEPzcY51A69nBF
-         EGm7qkXhmD8NR1itV/eAUrkVCfVsVOg8GPHE9kNx8h/rQ+gCi8nVGAtNQvz/WQz0nuCN
-         nA7v2XO6CtHB2NYxEBrHYRx9y7WWWOhK7x+Mk7vf9fODrZdwqHaEWbZAHC4DGsRap7nh
-         UZMv79NmM3xrmIk5Jz8535WUg+a8u77Njt5Ciu1vAXqBSPg8Vf29I4qeVsLPj2aCeol3
-         M2jWa9jD/w8iMEAWRt3HKkkw+srgx1Eu7n7UK/nO8OzuUa0CRRaVFvMCCbDn1ljo3eYN
-         TcoA==
-X-Gm-Message-State: AOAM5309QliQa93XSQ6I9C7UBAqnfU7NJB4NFXCfDK/r23rG24VxiE1k
-        vSCJMOL1jKaWqhj7gGLdTxpGZeAR2hZmGxILS+Pepw==
-X-Google-Smtp-Source: ABdhPJwdqZKNGvFCLxnhq+oCKi4llzKqdgvXEJwMn81yXVIrPJa37UczDq1B8Jt5nKtorIFiwpB6OK09gkPFEMUZ+x4=
-X-Received: by 2002:a92:5a52:: with SMTP id o79mr8892696ilb.89.1594819648301;
- Wed, 15 Jul 2020 06:27:28 -0700 (PDT)
+        Wed, 15 Jul 2020 09:31:38 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0f052c0003>; Wed, 15 Jul 2020 06:31:24 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 15 Jul 2020 06:31:37 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 15 Jul 2020 06:31:37 -0700
+Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Jul
+ 2020 13:31:32 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 15 Jul 2020 13:31:32 +0000
+Received: from sumitg-l4t.nvidia.com (Not Verified[10.24.37.103]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f0f05300001>; Wed, 15 Jul 2020 06:31:31 -0700
+From:   Sumit Gupta <sumitg@nvidia.com>
+To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
+        <mirq-linux@rere.qmqm.pl>, <devicetree@vger.kernel.org>,
+        <jonathanh@nvidia.com>, <talho@nvidia.com>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <bbasu@nvidia.com>, <sumitg@nvidia.com>, <mperttunen@nvidia.com>
+Subject: [TEGRA194_CPUFREQ PATCH v6 0/3] Add cpufreq driver for Tegra194 
+Date:   Wed, 15 Jul 2020 19:01:22 +0530
+Message-ID: <1594819885-31016-1-git-send-email-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-References: <20200714123419.3390-1-aford173@gmail.com> <20200714123419.3390-2-aford173@gmail.com>
- <CAMuHMdVS6Hf344EbyroGCWR_yxtO3DZh=JUJhauy5OeVG2hajA@mail.gmail.com>
-In-Reply-To: <CAMuHMdVS6Hf344EbyroGCWR_yxtO3DZh=JUJhauy5OeVG2hajA@mail.gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Wed, 15 Jul 2020 08:27:16 -0500
-Message-ID: <CAHCN7xKpXErWc8Bjji1==8+AL-9oeFn3QsP-qmE4QD2NpGt=3Q@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] dt-bindings: arm: renesas: Document beacon-rzg2m
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594819885; bh=WTUIqvfTFFpJnkH2n1zUFiz0tjU+/4uyluowU1GJEtQ=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=RpSImJzMyW2BDMCE4bSK5VZwzXCjM7mkstKHXBIdWsB26Yeji/Pqf6sCb4oGYzjS+
+         VeXbiGdfbaSocZPTkAG1AB4Ody5yYEeY7CyXCSRlF4+hseb2hzxLy/A6z79VH0mlsi
+         hKTJBiAmCdCuGrsUtkZngqhDcuUR85azvtZ6h59MQe94kQzUP0phO4D8Ff2VT5clqG
+         wpv5iuvuTiU5sNMUEI+E4ugL0k6f1SJFC2xtvuv6tItdjtPigoojMZnfhgaLkxU3rq
+         inej/VKTMCKMiOa/lryWAZlawZcqsdeSJ51lyZ6DX0/Ukq0i5vM/Lq8iVUxYCduTnx
+         xbYvnN+i19/cA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 3:58 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> On Tue, Jul 14, 2020 at 2:34 PM Adam Ford <aford173@gmail.com> wrote:
-> > Beacon EmbeddedWorks in introducing a development kit based on the
-> > Renesas RZ/G2M platform.  This patch adds the entry to the bindings
-> > list.
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-devel for v5.9, with the typo pointed out
-> by Sergei fixed.
+Hi Viresh & Rob,
 
-Since you pointed out some stuff I should correct in patch 1/2.
-Should I just re-submit the first patch by itself, or do you want me
-to submit 2/2 with these fixes?
+Have made the changes as per feedback.
+Please review/ack and consider this patch set for merging in 5.9.
 
-adam
+Thank you,
+Sumit
+---
 
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+The patch series adds cpufreq driver for Tegra194 SOC.
+
+v5[5] -> v6
+- Add new schema file for 'nvidia,tegra194-ccplex'[Rob].
+- Minor changes suggested in cpufreq driver[Viresh].
+
+v4[4] -> v5
+- Don't call destroy_workqueue() if alloc_workqueue() fails[Viresh]
+- Move CONFIG_ARM_TEGRA194_CPUFREQ enabling to soc/tegra/Kconfig[Viresh]
+- Add dependency of 'nvidia,bpmp' on 'compatible' in yaml file[Michal]
+- Fix typo in description causing dt_binding_check bot failure[Rob]
+
+v3[3] -> v4
+- Open code LOOP_FOR_EACH_CPU_OF_CLUSTER macro[Viresh]
+- Delete unused funciton map_freq_to_ndiv[Viresh, kernel test bot]
+- Remove flush_workqueue from free_resources[Viresh]
+
+v2[2] -> v3
+- Set same policy for all cpus in a cluster[Viresh].
+- Add compatible string for CPU Complex under cpus node[Thierry].
+- Add reference to bpmp node under cpus node[Thierry].
+- Bind cpufreq driver to CPU Complex compatible string[Thierry].
+- Remove patch to get bpmp data as now using cpus node to get that[Thierry].
+
+v1[1] -> v2:
+- Remove cpufreq_lock mutex from tegra194_cpufreq_set_target [Viresh].
+- Remove CPUFREQ_ASYNC_NOTIFICATION flag [Viresh].
+- Remove redundant _begin|end() call from tegra194_cpufreq_set_target.
+- Rename opp_table to freq_table [Viresh].
+
+
+Sumit Gupta (3):
+  dt-bindings: arm: Add NVIDIA Tegra194 CPU Complex binding
+  arm64: tegra: Add t194 ccplex compatible and bpmp property
+  cpufreq: Add Tegra194 cpufreq driver
+
+ .../bindings/arm/nvidia,tegra194-ccplex.yaml       |  69 ++++
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           |   2 +
+ drivers/cpufreq/Kconfig.arm                        |   7 +
+ drivers/cpufreq/Makefile                           |   1 +
+ drivers/cpufreq/tegra194-cpufreq.c                 | 397 +++++++++++++++++++++
+ 5 files changed, 476 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/nvidia,tegra194-ccplex.yaml
+ create mode 100644 drivers/cpufreq/tegra194-cpufreq.c
+
+[1] https://marc.info/?t=157539452300001&r=1&w=2
+[2] https://marc.info/?l=linux-tegra&m=158602857106213&w=2
+[3] https://marc.info/?l=linux-pm&m=159283376010084&w=2
+[4] https://marc.info/?l=linux-tegra&m=159318640622917&w=2
+[5] https://marc.info/?l=linux-tegra&m=159465409805593&w=2 
+-- 
+2.7.4
+
