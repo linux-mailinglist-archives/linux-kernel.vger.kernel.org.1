@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A02A221788
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62776221790
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgGOWJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 18:09:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgGOWJa (ORCPT
+        id S1727867AbgGOWL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 18:11:56 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:38780 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726660AbgGOWLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 18:09:30 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745F1C061755;
-        Wed, 15 Jul 2020 15:09:30 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id a24so2711957pfc.10;
-        Wed, 15 Jul 2020 15:09:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iXUu1B+e2hu89plusvhYUpAqCkvjgD3XbXtinUQy3AM=;
-        b=J/uKHeCUX/uvVp4F0hlELkMzTPPDkIhErFja0Nou/OUYDcxm3S/al0zczKhaWHCWWL
-         +qrNf0OhvBTaV+YPEGA9C68OLamKFFbaZ/dcNpGqTKhLe6MJ2Gpg7DBs9GcTqiMoabd4
-         hE4TGUTmb/ikmCC5bTyi/9vpt3b5i5ld2m8BscPfRtmodtHjkYfc8xNQiGeiN25vpveZ
-         XyE0KKVxv4Sis/kLEFgDi5jv87fqwQBrlliQGIxD9AxeDrFzSjDQsoK0uLmt6Rbtyg22
-         JrocBMUolEH3N86iBU+wvx9fMJYeoFK8yF8XNGvOhZv8J3sE26bLslxG01fiIM7clOf8
-         +ahQ==
+        Wed, 15 Jul 2020 18:11:55 -0400
+Received: by mail-io1-f65.google.com with SMTP id l1so3950773ioh.5;
+        Wed, 15 Jul 2020 15:11:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iXUu1B+e2hu89plusvhYUpAqCkvjgD3XbXtinUQy3AM=;
-        b=KZIxRODY0jHkvqgjpSQ+4VuL+yDxS/OXI9UnMK9K3wvRbkV4uG2mhv1WniZ5vEPFlD
-         TODWbDTjZmcoKTSXd6EbCjSUseZW8O+JLY7pk/e0vqmgx/eeqMFmFWHCcGVyLNf/NwHt
-         NMpCpKSnvYkYvgccsfS/zFnz7rtUyIomQj9Ab0aCxwd3kofumVWrMHuEPs2hrJm91Chq
-         /4f88onGiCM+QyhAYKuhUqa6a10jruLp+B5ld5wxTC/N2TPQAlcnr2kXCwQhdnoyQmP2
-         uYnM9C4hLdl6K2f4ZzH1lhJt4WN+4i88xkf4alebGz1R6Dw5MR+2nWe3i6tKETdmQekx
-         v6Ng==
-X-Gm-Message-State: AOAM531BGi4M+MyWRWsPzjclBFSyTYHzWLZ9VsIDz81HEQc650+hlJ5I
-        eYCQUMy+j1PsWQa9OIQkrAQ=
-X-Google-Smtp-Source: ABdhPJwZXIPr+Pj6FB3BWSb0imr4lOp5785AjF1OEkiJwH49VcK9cPl/dzZK/qHuAYLptDbpH6TqDA==
-X-Received: by 2002:a62:7bc9:: with SMTP id w192mr1132848pfc.255.1594850969862;
-        Wed, 15 Jul 2020 15:09:29 -0700 (PDT)
-Received: from localhost.localdomain.com ([2605:e000:160b:911f:a2ce:c8ff:fe03:6cb0])
-        by smtp.gmail.com with ESMTPSA id g19sm2744233pfu.183.2020.07.15.15.09.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cSCfkxcCcyjHt+Lm+PcX89G7cBf+aHHVtzsrdedDXKc=;
+        b=m2SCLWuOj8Cd79C0OJJQsSfjIWae+UAU1SHXdNBfAweIup+rCOP0v6ioGOxDpA7Cst
+         ataPw1D4sW2mLGLNZJTgEcD5sn7Fez3oynaEfXrcK7b9Kj3rSa4W9stEIN/iXHnFE3y4
+         wGc07HF8ZlTWOUWQyC3YOcOTuOH7FNLeMO1sHTVlq3bG2K+sutYoMhz8NWP0sWCriV6t
+         WM6Gm7uMwEtibCfPMMBsnrfj3ENTEZNi7CuZtgzAZOjml2Op4lfCQKPv3EzM3edyTHH3
+         iDwbgJsR+ySG3eHtjK4TQq1wy6E92gnKZRs9n+EhLjqOPTrNu54VX9iE9VQtRHBWElxY
+         Afdg==
+X-Gm-Message-State: AOAM531vNdSF5N9L3tO1em3vW3azXsBvxmLDcrNxmDjwXul/Fqes9pLh
+        fjx1+C3nDfg4h32XPGhYtg==
+X-Google-Smtp-Source: ABdhPJyKYsSoag/7NVQqzCmE+kWu9QcpiPp5VpZITLoA8fnHrjW4RaA72LtIyG7LK6zeuLC1+oX5tA==
+X-Received: by 2002:a5d:97d3:: with SMTP id k19mr1459065ios.45.1594851114865;
+        Wed, 15 Jul 2020 15:11:54 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id v5sm1746255ios.54.2020.07.15.15.11.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 15:09:29 -0700 (PDT)
-From:   Chris Healy <cphealy@gmail.com>
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de, stefan@agner.ch,
-        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        festevam@gmail.com
-Cc:     Chris Healy <cphealy@gmail.com>
-Subject: [PATCH] ARM: dts: vf610-zii-ssmb-spu3: Add node for switch watchdog
-Date:   Wed, 15 Jul 2020 15:07:58 -0700
-Message-Id: <20200715220758.3106-1-cphealy@gmail.com>
-X-Mailer: git-send-email 2.21.3
+        Wed, 15 Jul 2020 15:11:54 -0700 (PDT)
+Received: (nullmailer pid 907327 invoked by uid 1000);
+        Wed, 15 Jul 2020 22:11:53 -0000
+Date:   Wed, 15 Jul 2020 16:11:53 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Johnson CH Chen =?utf-8?B?KOmZs+aYreWLsyk=?= 
+        <JohnsonCH.Chen@moxa.com>
+Cc:     =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
+        "tony@atomide.com" <tony@atomide.com>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: omap: Replace UC-8100-ME-T with
+ UC-8100A-ME
+Message-ID: <20200715221153.GA906180@bogus>
+References: <HK2PR01MB3281AFFC8F352E3AE8046645FA660@HK2PR01MB3281.apcprd01.prod.exchangelabs.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <HK2PR01MB3281AFFC8F352E3AE8046645FA660@HK2PR01MB3281.apcprd01.prod.exchangelabs.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add I2C child node for switch watchdog present on SPU3
+On Tue, Jul 07, 2020 at 10:23:34AM +0000, Johnson CH Chen (陳昭勳) wrote:
+> UC-8100-ME-T is deprecated, and UC-8100A-ME is advanced of UC-8100-ME-T,
+> so replace UC-8100-ME-T with UC-8100A-ME.
+> 
+> Signed-off-by: Johnson Chen <johnsonch.chen@moxa.com>
+> ---
+>  Documentation/devicetree/bindings/arm/omap/omap.txt | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/omap/omap.txt b/Documentation/devicetree/bindings/arm/omap/omap.txt
+> index e77635c5422c..f02265a8a0d4 100644
+> --- a/Documentation/devicetree/bindings/arm/omap/omap.txt
+> +++ b/Documentation/devicetree/bindings/arm/omap/omap.txt
+> @@ -167,8 +167,8 @@ Boards (incomplete list of examples):
+>  - AM335x phyBOARD-REGOR: Single Board Computer
+>    compatible = "phytec,am335x-regor", "phytec,am335x-phycore-som", "ti,am33xx"
+>  
+> -- AM335X UC-8100-ME-T: Communication-centric industrial computing platform
+> -  compatible = "moxa,uc-8100-me-t", "ti,am33xx";
+> +- AM335X UC-8100A-ME: Communication-centric industrial computing platform
+> +  compatible = "moxa,uc-8100a-me", "ti,am33xx";
 
-Signed-off-by: Chris Healy <cphealy@gmail.com>
----
- arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+You can't just change compatible strings. They are an ABI.
 
-diff --git a/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts b/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts
-index b3d6d4b9fa9c..d55ceb5afe1d 100644
---- a/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts
-+++ b/arch/arm/boot/dts/vf610-zii-ssmb-spu3.dts
-@@ -225,6 +225,18 @@
- 	};
- };
- 
-+&i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
-+
-+	watchdog@38 {
-+		compatible = "zii,rave-wdt";
-+		reg = <0x38>;
-+	};
-+};
-+
- &snvsrtc {
- 	status = "disabled";
- };
--- 
-2.21.3
-
+>  
+>  - OMAP5 EVM : Evaluation Module
+>    compatible = "ti,omap5-evm", "ti,omap5"
+> -- 
+> 2.11.0
