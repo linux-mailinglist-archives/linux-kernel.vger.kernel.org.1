@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E437422022A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD0222022B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgGOCFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 22:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
+        id S1728252AbgGOCF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 22:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgGOCFu (ORCPT
+        with ESMTP id S1726356AbgGOCF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 22:05:50 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55C0C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 19:05:50 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id z5so1168741pgb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 19:05:50 -0700 (PDT)
+        Tue, 14 Jul 2020 22:05:58 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE517C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 19:05:58 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x9so983698plr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 19:05:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=7/Gfwk+DS7GBHyMfJAg29h1M+nONHVWzDeqMwBHi0xE=;
-        b=YUR6Lc3G6i0FvqSkKps61Lmea72qgGLz3WCUuMsu2AhhimxaJdhtNLl8AyP9aFXJ0I
-         1QZtqBY4iFk7eUDQlJWcEQPDnmJtPlcCeUiDxkXfre5ORokCj2KlDwuXTXPNTQXeyMoF
-         jl1ucKXQAqSHcmpIyyBB65pDXgY3cyAdDnVwvbj7su/I6kzfeC5a1sQhgr0iAkgSn5A4
-         UyYfMOBdOo5qlgqpw+8WAKzmr3DOx4VybjG0hVA3K3vYbsQ5D42BOuN/MOZzkKT5QEq/
-         7uUJQyXcSawVxdRaz6phyOveay0PuxUZDU0jCg4B9b227FDPM8DAyKOfP5VXWLFyOh8/
-         vnCw==
+        bh=ipEKOYUy0lWTBEiPnpX/QvgsPhGjR8M5oL+bv/+PVNY=;
+        b=OKwq59ofEQvjl0rf8+qoNtlQqNXL5ng/x/i7+TUUKBCxrzu9o/bYZHlpHT2ipdlMH8
+         2sQ2Zz1lI65U364bGf66i119BtLUXETXBZk/dOs8LATJu5y3rkIygcwxAw5728KpNeKi
+         jDhC46l3d64ZwdCPTL7pwDU2H6y7/6Q4RqzfTgl+qE/2UvbEK1wWZgHT5S2SMJjcbXnf
+         IEHaGBzPFqfqpInLB5qWTvfhsZct2wRTcjuIsBxDVZ67SXUFSTkBXdnRCOciKV1mmySY
+         BQgD+hC7EOxhuh6NeZiZvedcgjNwCXH6HxVTNRgf+6TWFDAuOrP/3JUKAqC5SHjbgwFL
+         L0TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references;
-        bh=7/Gfwk+DS7GBHyMfJAg29h1M+nONHVWzDeqMwBHi0xE=;
-        b=P+CgGAl/vl18CNf1oDBctlw1bAZ9rRtUvY1IQeP6WadZRtcXmnckY5sCoHU26PvyPl
-         ZIzrER/XLvCNuQl57DuO5+IrnmI+Juee6vx064NEFwHYtH7yyIqKeXnH9exWGGC2Rtu/
-         2XdrHqhsYguWJCWoq8WZvm9R5wgAbuWSMlSF0fSHt3wDTV5t5ZlpbwmbdzNySO3+BnSm
-         RrNrHDVQjT65cdsh7ivvVhogtI205y6yVuE3ltV65Htu983Ep+OejtXq6Y3VRWJNpICI
-         OMMJKtj9o/Xfo+moFxnteAmItOq9C4zUVfexckcNTNbdBnt9U/Pe7CjVaLvBZ3EJWxoZ
-         9Osw==
-X-Gm-Message-State: AOAM531JC0e2gjW04kEu3njvC3XTOGAXZtG1uh1LwE7XouGZiJx5mp6r
-        OPX1k22YRY0bPKicyYfa11t3xw==
-X-Google-Smtp-Source: ABdhPJwV/5lGCdOshqU/M3J8xvahpLeG8JkJAxdd84ZmMrsq1MKHsDo2FG1Jwtv9lwt07qLGKhqisA==
-X-Received: by 2002:a65:6411:: with SMTP id a17mr3406498pgv.450.1594778750164;
-        Tue, 14 Jul 2020 19:05:50 -0700 (PDT)
+        bh=ipEKOYUy0lWTBEiPnpX/QvgsPhGjR8M5oL+bv/+PVNY=;
+        b=i981hLk4rijmPCJETgzRR8EO9xSXaIbRpq0ZsbAK3UP+0shZh7FxPU+rxSW06Aj+J+
+         32aYEFiGbTMHDssJl5yBYyCCFt6wrUuQpBET7pKkJqiPZlF+HGMnEl+p+hQvz+9ON0du
+         aybOS5o/yG8/zzRi73gvJEyBPCoPwj27tVsvNgXgjBBjHJ0fQhU7BAFc4HDq0U4LXxKB
+         JPnDDHszA66314WJSpe1kUHFSPiz/HKZ14uCqprQyr1ovtDeb0FVpfLPutHWZ8HHVqoh
+         YywkxbLErUr9EX1NWTEdx33ODNr+apX0oNjqbNFugRolK8DDRvxa5ZnvZDbG9gQwcbyI
+         EONg==
+X-Gm-Message-State: AOAM530c0fE18W8T4+eiVnl/oAkYti50rImd0VeM6CwYpYtJ2Ka2IxZW
+        trEZfT8Hp1s92Oi/N6lO0JuTJW9Elv2/EQ==
+X-Google-Smtp-Source: ABdhPJzCo/QzGIKdS2L42Rixd5oGY6ofdxrVlSJJ+PcSZI2ghr06QlESXk2/1dne8fRw0HHyOKflwA==
+X-Received: by 2002:a17:90a:db8a:: with SMTP id h10mr7811371pjv.197.1594778758276;
+        Tue, 14 Jul 2020 19:05:58 -0700 (PDT)
 Received: from localhost ([2400:8904::f03c:91ff:fe8a:bbe4])
-        by smtp.gmail.com with ESMTPSA id h15sm366740pfo.192.2020.07.14.19.05.49
+        by smtp.gmail.com with ESMTPSA id q1sm376592pfk.132.2020.07.14.19.05.57
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Jul 2020 19:05:49 -0700 (PDT)
+        Tue, 14 Jul 2020 19:05:57 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -63,9 +63,9 @@ To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Kan Liang <kan.liang@linux.intel.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/6] arm64: perf: Only advertise cap_user_time for arch_timer
-Date:   Wed, 15 Jul 2020 10:05:09 +0800
-Message-Id: <20200715020512.20991-4-leo.yan@linaro.org>
+Subject: [PATCH v2 4/6] perf: Add perf_event_mmap_page::cap_user_time_short ABI
+Date:   Wed, 15 Jul 2020 10:05:10 +0800
+Message-Id: <20200715020512.20991-5-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200715020512.20991-1-leo.yan@linaro.org>
 References: <20200715020512.20991-1-leo.yan@linaro.org>
@@ -76,61 +76,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Zijlstra <peterz@infradead.org>
 
-When sched_clock is running on anything other than arch_timer, don't
-advertise cap_user_time*.
+In order to support short clock counters, provide an ABI extension.
 
-Requested-by: Will Deacon <will@kernel.org>
+As a whole:
+
+    u64 time, delta, cyc = read_cycle_counter();
+
++   if (cap_user_time_short)
++	cyc = time_cycle + ((cyc - time_cycle) & time_mask);
+
+    delta = mul_u64_u32_shr(cyc, time_mult, time_shift);
+
+    if (cap_user_time_zero)
+	time = time_zero + delta;
+
+    delta += time_offset;
+
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/arm64/kernel/perf_event.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ include/uapi/linux/perf_event.h | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-index 35c2c737d4af..76f6afd28b48 100644
---- a/arch/arm64/kernel/perf_event.c
-+++ b/arch/arm64/kernel/perf_event.c
-@@ -13,6 +13,8 @@
- #include <asm/sysreg.h>
- #include <asm/virt.h>
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index 7b2d6fc9e6ed..21a1edd08cbe 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -532,9 +532,10 @@ struct perf_event_mmap_page {
+ 				cap_bit0_is_deprecated	: 1, /* Always 1, signals that bit 0 is zero */
  
-+#include <clocksource/arm_arch_timer.h>
+ 				cap_user_rdpmc		: 1, /* The RDPMC instruction can be used to read counts */
+-				cap_user_time		: 1, /* The time_* fields are used */
++				cap_user_time		: 1, /* The time_{shift,mult,offset} fields are used */
+ 				cap_user_time_zero	: 1, /* The time_zero field is used */
+-				cap_____res		: 59;
++				cap_user_time_short	: 1, /* the time_{cycle,mask} fields are used */
++				cap_____res		: 58;
+ 		};
+ 	};
+ 
+@@ -593,13 +594,29 @@ struct perf_event_mmap_page {
+ 	 *               ((rem * time_mult) >> time_shift);
+ 	 */
+ 	__u64	time_zero;
 +
- #include <linux/acpi.h>
- #include <linux/clocksource.h>
- #include <linux/kvm_host.h>
-@@ -1170,16 +1172,15 @@ void arch_perf_update_userpage(struct perf_event *event,
- 	unsigned int seq;
- 	u64 quot, rem, ns;
- 
--	/*
--	 * Internal timekeeping for enabled/running/stopped times
--	 * is always computed with the sched_clock.
--	 */
--	userpg->cap_user_time = 1;
--	userpg->cap_user_time_zero = 1;
-+	userpg->cap_user_time = 0;
-+	userpg->cap_user_time_zero = 0;
- 
- 	do {
- 		rd = sched_clock_read_begin(&seq);
- 
-+		if (rd->read_sched_clock != arch_timer_read_counter)
-+			return;
+ 	__u32	size;			/* Header size up to __reserved[] fields. */
++	__u32	__reserved_1;
 +
- 		userpg->time_mult = rd->mult;
- 		userpg->time_shift = rd->shift;
- 		userpg->time_zero = rd->epoch_ns;
-@@ -1211,4 +1212,10 @@ void arch_perf_update_userpage(struct perf_event *event,
- 		userpg->time_mult >>= 1;
- 	}
- 
 +	/*
-+	 * Internal timekeeping for enabled/running/stopped times
-+	 * is always computed with the sched_clock.
++	 * If cap_usr_time_short, the hardware clock is less than 64bit wide
++	 * and we must compute the 'cyc' value, as used by cap_usr_time, as:
++	 *
++	 *   cyc = time_cycles + ((cyc - time_cycles) & time_mask)
++	 *
++	 * NOTE: this form is explicitly chosen such that cap_usr_time_short
++	 *       is a correction on top of cap_usr_time, and code that doesn't
++	 *       know about cap_usr_time_short still works under the assumption
++	 *       the counter doesn't wrap.
 +	 */
-+	userpg->cap_user_time = 1;
-+	userpg->cap_user_time_zero = 1;
- }
++	__u64	time_cycles;
++	__u64	time_mask;
+ 
+ 		/*
+ 		 * Hole for extension of the self monitor capabilities
+ 		 */
+ 
+-	__u8	__reserved[118*8+4];	/* align to 1k. */
++	__u8	__reserved[116*8];	/* align to 1k. */
+ 
+ 	/*
+ 	 * Control data for the mmap() data buffer.
 -- 
 2.17.1
 
