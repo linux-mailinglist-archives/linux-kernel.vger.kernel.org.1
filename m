@@ -2,178 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65B522104E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D90221058
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728202AbgGOPHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:07:23 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50263 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728146AbgGOPHT (ORCPT
+        id S1728250AbgGOPIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726811AbgGOPIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 11:07:19 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jvizh-0003h4-21; Wed, 15 Jul 2020 15:06:49 +0000
-Date:   Wed, 15 Jul 2020 17:06:47 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Adrian Reber <areber@redhat.com>
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Pavel Emelyanov <ovzxemul@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Dirk Petersen <dipeit@gmail.com>,
-        Christine Flood <chf@redhat.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Radostin Stoyanov <rstoyanov1@gmail.com>,
-        Cyrill Gorcunov <gorcunov@openvz.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-        Eric Paris <eparis@parisplace.org>,
-        Jann Horn <jannh@google.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 1/6] capabilities: Introduce CAP_CHECKPOINT_RESTORE
-Message-ID: <20200715150647.a24nz2iqrel62sfg@wittgenstein>
-References: <20200715144954.1387760-1-areber@redhat.com>
- <20200715144954.1387760-2-areber@redhat.com>
+        Wed, 15 Jul 2020 11:08:09 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003D6C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:08:08 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id k6so2256869ili.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:08:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N2Tc17Rr4p8/CnE9/Q69Mw8vNfjf1wSeomUtzrfVVt4=;
+        b=bAXyF5mnFFNR50WGQCzoR4y0e+YNErNmhCFIzAXmeEtskZ7YDy+JJQIW87Ox8yK/vB
+         rwIwwOP6uTHi8U6q0Pad9dFtVOntIC5IJtLE5CKpTeiotgrWDY50fKatgrtcfdYUUnhN
+         Zi8Ip7+cnsbF+I9HXiuhpj9cCmF0fxr90MjB7LXT0hgfOK/6RScSZbxcSMoo9ANXRXlP
+         lGHrWhatHeSzlG2kFnOurhmusDInccD2yNh+pvPnM9UqTA8v7TuOO2bU4hogfiDWQgv5
+         SXPUq3OtKkytIWOpLAos/2TRw5XbiaJZej4OIefJXGRnTRHXfDjDi1tHtInU33l5qCtB
+         AV9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N2Tc17Rr4p8/CnE9/Q69Mw8vNfjf1wSeomUtzrfVVt4=;
+        b=mpIV6ZKGjFnxPwvcNySDRDw6CSYBjKy0A9LdqK4HsWxJqdv+hosJJDljpIUeVKGfY+
+         9W8xbhGtpwslciHWxMaIZ25J9wa4FbzcZB/rHo+K0P0LQp5dVEamAdsQyTSstEDBndf1
+         illwmRkY0rg+sP/JxYKxetF26yuOxQDTBbsZudVLhWyM2C3wz0NLdDcRs0fAFFcskp9m
+         XL20F0jll1oq+gZDlWdjancyJRQCCYb1f7yYJAjvizfQbDxi7fq2lvHqAOWCrz2RdziJ
+         pa7nooj/FVj/ydUqiGF6cI58yizCxemYoIBwKqNfu6tp1JHGl6cZtIqsVWPZ6pKQIviV
+         GYXw==
+X-Gm-Message-State: AOAM530CfkABcDCEedZ+WK1IXc7dWLJe7MGOyslf/1/DE20I+iT964AI
+        G3jAaRocGsO7A4UM1vKBgTd8d3zSVYSLSQ==
+X-Google-Smtp-Source: ABdhPJwFgGIm9OBMGPtFlk9DjAAg1pLSFUTqlyBWPGuVv1d4Ker51JWjIoh/EMy1vWoA1unf4T5oow==
+X-Received: by 2002:a92:48da:: with SMTP id j87mr10913166ilg.197.1594825687973;
+        Wed, 15 Jul 2020 08:08:07 -0700 (PDT)
+Received: from [192.168.1.58] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id r2sm1271254iop.34.2020.07.15.08.08.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jul 2020 08:08:07 -0700 (PDT)
+Subject: Re: linux-next: build failure after merge of the block tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200715121423.6c20731b@canb.auug.org.au>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <22e580c4-be3d-5917-b8dd-4a212f5160f3@kernel.dk>
+Date:   Wed, 15 Jul 2020 09:08:06 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200715144954.1387760-2-areber@redhat.com>
+In-Reply-To: <20200715121423.6c20731b@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 04:49:49PM +0200, Adrian Reber wrote:
-> This patch introduces CAP_CHECKPOINT_RESTORE, a new capability facilitating
-> checkpoint/restore for non-root users.
+On 7/14/20 8:14 PM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Over the last years, The CRIU (Checkpoint/Restore In Userspace) team has been
-> asked numerous times if it is possible to checkpoint/restore a process as
-> non-root. The answer usually was: 'almost'.
+> After merging the block tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
 > 
-> The main blocker to restore a process as non-root was to control the PID of the
-> restored process. This feature available via the clone3 system call, or via
-> /proc/sys/kernel/ns_last_pid is unfortunately guarded by CAP_SYS_ADMIN.
+> block/blk-timeout.c: In function 'blk_round_jiffies':
+> block/blk-timeout.c:96:14: error: 'CONFIG_HZ_ROUGH_MASK' undeclared (first use in this function)
+>    96 |  return (j + CONFIG_HZ_ROUGH_MASK) + 1;
+>       |              ^~~~~~~~~~~~~~~~~~~~
 > 
-> In the past two years, requests for non-root checkpoint/restore have increased
-> due to the following use cases:
-> * Checkpoint/Restore in an HPC environment in combination with a resource
->   manager distributing jobs where users are always running as non-root.
->   There is a desire to provide a way to checkpoint and restore long running
->   jobs.
-> * Container migration as non-root
-> * We have been in contact with JVM developers who are integrating
->   CRIU into a Java VM to decrease the startup time. These checkpoint/restore
->   applications are not meant to be running with CAP_SYS_ADMIN.
+> Caused by commit
 > 
-> We have seen the following workarounds:
-> * Use a setuid wrapper around CRIU:
->   See https://github.com/FredHutch/slurm-examples/blob/master/checkpointer/lib/checkpointer/checkpointer-suid.c
-> * Use a setuid helper that writes to ns_last_pid.
->   Unfortunately, this helper delegation technique is impossible to use with
->   clone3, and is thus prone to races.
->   See https://github.com/twosigma/set_ns_last_pid
-> * Cycle through PIDs with fork() until the desired PID is reached:
->   This has been demonstrated to work with cycling rates of 100,000 PIDs/s
->   See https://github.com/twosigma/set_ns_last_pid
-> * Patch out the CAP_SYS_ADMIN check from the kernel
-> * Run the desired application in a new user and PID namespace to provide
->   a local CAP_SYS_ADMIN for controlling PIDs. This technique has limited use in
->   typical container environments (e.g., Kubernetes) as /proc is
->   typically protected with read-only layers (e.g., /proc/sys) for hardening
->   purposes. Read-only layers prevent additional /proc mounts (due to proc's
->   SB_I_USERNS_VISIBLE property), making the use of new PID namespaces limited as
->   certain applications need access to /proc matching their PID namespace.
+>   91ba0f529364 ("block: relax jiffies rounding for timeouts")
 > 
-> The introduced capability allows to:
-> * Control PIDs when the current user is CAP_CHECKPOINT_RESTORE capable
->   for the corresponding PID namespace via ns_last_pid/clone3.
-> * Open files in /proc/pid/map_files when the current user is
->   CAP_CHECKPOINT_RESTORE capable in the root namespace, useful for recovering
->   files that are unreachable via the file system such as deleted files, or memfd
->   files.
+> CONFIG_HZ_ROUGH_MASK is not defined for this build even though
+> CONFIG_HZ_100 is set. The arm arch does not include kernel/Kconfig.hz.
 > 
-> See corresponding selftest for an example with clone3().
-> 
-> Signed-off-by: Adrian Reber <areber@redhat.com>
-> Signed-off-by: Nicolas Viennot <Nicolas.Viennot@twosigma.com>
-> ---
+> I have reverted that commit for today.
 
-Thanks!
-This looks good now.
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Thanks, I'll take a look.
 
->  include/linux/capability.h          | 6 ++++++
->  include/uapi/linux/capability.h     | 9 ++++++++-
->  security/selinux/include/classmap.h | 5 +++--
->  3 files changed, 17 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/capability.h b/include/linux/capability.h
-> index b4345b38a6be..1e7fe311cabe 100644
-> --- a/include/linux/capability.h
-> +++ b/include/linux/capability.h
-> @@ -261,6 +261,12 @@ static inline bool bpf_capable(void)
->  	return capable(CAP_BPF) || capable(CAP_SYS_ADMIN);
->  }
->  
-> +static inline bool checkpoint_restore_ns_capable(struct user_namespace *ns)
-> +{
-> +	return ns_capable(ns, CAP_CHECKPOINT_RESTORE) ||
-> +		ns_capable(ns, CAP_SYS_ADMIN);
-> +}
-> +
->  /* audit system wants to get cap info from files as well */
->  extern int get_vfs_caps_from_disk(const struct dentry *dentry, struct cpu_vfs_cap_data *cpu_caps);
->  
-> diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-> index 48ff0757ae5e..395dd0df8d08 100644
-> --- a/include/uapi/linux/capability.h
-> +++ b/include/uapi/linux/capability.h
-> @@ -408,7 +408,14 @@ struct vfs_ns_cap_data {
->   */
->  #define CAP_BPF			39
->  
-> -#define CAP_LAST_CAP         CAP_BPF
-> +
-> +/* Allow checkpoint/restore related operations */
-> +/* Allow PID selection during clone3() */
-> +/* Allow writing to ns_last_pid */
-> +
-> +#define CAP_CHECKPOINT_RESTORE	40
-> +
-> +#define CAP_LAST_CAP         CAP_CHECKPOINT_RESTORE
->  
->  #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
->  
-> diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
-> index e54d62d529f1..ba2e01a6955c 100644
-> --- a/security/selinux/include/classmap.h
-> +++ b/security/selinux/include/classmap.h
-> @@ -27,9 +27,10 @@
->  	    "audit_control", "setfcap"
->  
->  #define COMMON_CAP2_PERMS  "mac_override", "mac_admin", "syslog", \
-> -		"wake_alarm", "block_suspend", "audit_read", "perfmon", "bpf"
-> +		"wake_alarm", "block_suspend", "audit_read", "perfmon", "bpf", \
-> +		"checkpoint_restore"
->  
-> -#if CAP_LAST_CAP > CAP_BPF
-> +#if CAP_LAST_CAP > CAP_CHECKPOINT_RESTORE
->  #error New capability defined, please update COMMON_CAP2_PERMS.
->  #endif
->  
-> -- 
-> 2.26.2
-> 
+-- 
+Jens Axboe
+
