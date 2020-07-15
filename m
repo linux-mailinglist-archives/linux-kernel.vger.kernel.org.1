@@ -2,142 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D277622188D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 01:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D996221895
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 01:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgGOXmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 19:42:10 -0400
-Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:35404 "EHLO
-        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726770AbgGOXmJ (ORCPT
+        id S1726984AbgGOXqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 19:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726770AbgGOXqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 19:42:09 -0400
-Received: from dread.disaster.area (pa49-180-53-24.pa.nsw.optusnet.com.au [49.180.53.24])
-        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 30842D7C575;
-        Thu, 16 Jul 2020 09:42:04 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jvr2J-0001Fq-DD; Thu, 16 Jul 2020 09:42:03 +1000
-Date:   Thu, 16 Jul 2020 09:42:03 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Marco Elver <elver@google.com>,
-        syzbot <syzbot+0f1e470df6a4316e0a11@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: KCSAN: data-race in generic_file_buffered_read /
- generic_file_buffered_read
-Message-ID: <20200715234203.GK5369@dread.disaster.area>
-References: <0000000000004a4d6505aa7c688a@google.com>
- <20200715152912.GA2209203@elver.google.com>
- <20200715163256.GB1167@sol.localdomain>
+        Wed, 15 Jul 2020 19:46:33 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB400C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 16:46:33 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x72so2811042pfc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 16:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p5jorZC1TkH3ISm4S95AAjWEBEpsvo8bCA396VWT6Ds=;
+        b=iqVybj+NsR/y+uI9GLbCm957UqnhBLZOXRPv8IVn2eHO98vAKndW8AkW3UE0GbuyB+
+         8XRPwqdUAwz5b7Agz2a5r20JI0fB/uSSlhQBQftNGJAwlxnmY2FHRUXDe3nDoZZAPF2Q
+         jN4LDK+FdcNo1yUVKL7gfSqRgv5mGGr/emRL4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p5jorZC1TkH3ISm4S95AAjWEBEpsvo8bCA396VWT6Ds=;
+        b=bzNPNpKbAkYGHp3xl3O+kuvuUGTV39FYAkESURHIIHcMYHCEtgBU1vVqeP4jC9gBgp
+         m1JFvw809PfNmA7gyNWYPU5Dw+syinT5aSc2vdJycewdRJABg5CScNuBJHthFpbjynyQ
+         3YBuCyTo99VO7mlkyrmStL+PsrRg/I6z+puCuUW/KLd32MFZoP5+V7ExHiBOgMyY5W0U
+         Qk97qDWdctpS22+kXSPgBg4XhErQpTMZ63iuk+h9a35W9/E/meGb7FLz48OKxZN4ZX52
+         knMMh3qYqcOkTakkR5+Nvbb6YWWGKv46vSLXdfGkywfbALXEKX/BJgTp+MxwSB335na6
+         1CxQ==
+X-Gm-Message-State: AOAM531dz/tjvVTdZsI/N0EVzu+TARdvZ5x/0A+0vMF9chtQ4wT284Zo
+        8Ggv42PWC0GjoL/GHfuYOg6Chg==
+X-Google-Smtp-Source: ABdhPJwFl2N0BOA5livG8Sss2jFK57hegzDrN7WQsB/aTtqUX8jnsaqbVioZt9UU0BW5sS75mSkbyA==
+X-Received: by 2002:a63:84c3:: with SMTP id k186mr1803546pgd.394.1594856793107;
+        Wed, 15 Jul 2020 16:46:33 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id a19sm3010706pfn.136.2020.07.15.16.46.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 16:46:32 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Rohit Kumar <rohitkr@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Richard Fitzgerald <rf@opensource.wolfsonmicro.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] regmap: debugfs: Don't sleep while atomic for fast_io regmaps
+Date:   Wed, 15 Jul 2020 16:46:15 -0700
+Message-Id: <20200715164611.1.I35b3533e8a80efde0cec1cc70f71e1e74b2fa0da@changeid>
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200715163256.GB1167@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
-        a=moVtWZxmCkf3aAMJKIb/8g==:117 a=moVtWZxmCkf3aAMJKIb/8g==:17
-        a=kj9zAlcOel0A:10 a=_RQrkK6FrEwA:10 a=VwQbUJbxAAAA:8 a=edf1wS77AAAA:8
-        a=eU0e3LhYAAAA:20 a=hSkVLCK3AAAA:8 a=7-415B0cAAAA:8
-        a=ZUY0gg6SJnirf6z4UTcA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=DcSpbTIhAlouE1Uv7lRv:22 a=cQPPKAXgyycSBL8etih5:22
-        a=biEYGPWJfzWAr4FL6Ov7:22 a=pHzHmUro8NiASowvMSCR:22
-        a=nt3jZW36AmriUCFCBwmW:22
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 09:32:56AM -0700, Eric Biggers wrote:
-> [+Cc linux-fsdevel]
-> 
-> On Wed, Jul 15, 2020 at 05:29:12PM +0200, 'Marco Elver' via syzkaller-bugs wrote:
-> > On Wed, Jul 15, 2020 at 08:16AM -0700, syzbot wrote:
-> > > Hello,
-> > > 
-> > > syzbot found the following issue on:
-> > > 
-> > > HEAD commit:    e9919e11 Merge branch 'for-linus' of git://git.kernel.org/..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1217a83b100000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=570eb530a65cd98e
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=0f1e470df6a4316e0a11
-> > > compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-> > > 
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > 
-> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > Reported-by: syzbot+0f1e470df6a4316e0a11@syzkaller.appspotmail.com
-> > > 
-> > > ==================================================================
-> > > BUG: KCSAN: data-race in generic_file_buffered_read / generic_file_buffered_read
-> > 
-> > Our guess is that this is either misuse of an API from userspace, or a
-> > bug. Can someone clarify?
-> > 
-> > Below are the snippets of code around these accesses.
-> 
-> Concurrent reads on the same file descriptor are allowed.  Not with sys_read(),
-> as that implicitly uses the file position.  But it's allowed with sys_pread(),
-> and also with sys_sendfile() which is the case syzbot is reporting here.
+If a regmap has "fast_io" set then its lock function uses a spinlock.
+That doesn't work so well with the functions:
+* regmap_cache_only_write_file()
+* regmap_cache_bypass_write_file()
 
-Concurrent read()s are fine, they'll just read from the same offset.
+Both of the above functions have the pattern:
+1. Lock the regmap.
+2. Call:
+   debugfs_write_file_bool()
+     copy_from_user()
+       __might_fault()
+         __might_sleep()
 
+Let's reorder things a bit so that we do all of our sleepable
+functions before we grab the lock.
 
-> 
-> > 
-> > > write to 0xffff8880968747b0 of 8 bytes by task 6336 on cpu 0:
-> > >  generic_file_buffered_read+0x18be/0x19e0 mm/filemap.c:2246
-> > 
-> > 	...
-> > 	would_block:
-> > 		error = -EAGAIN;
-> > 	out:
-> > 		ra->prev_pos = prev_index;
-> > 		ra->prev_pos <<= PAGE_SHIFT;
-> > 2246)		ra->prev_pos |= prev_offset;
-> > 
-> > 		*ppos = ((loff_t)index << PAGE_SHIFT) + offset;
-> > 		file_accessed(filp);
-> > 		return written ? written : error;
-> > 	}
-> > 	EXPORT_SYMBOL_GPL(generic_file_buffered_read);
-> > 	...
-> 
-> Well, it's a data race.  Each open file descriptor has just one readahead state
-> (struct file_ra_state), and concurrent reads of the same file descriptor
-> use/change that readahead state without any locking.
-> 
-> Presumably this has traditionally been considered okay, since readahead is
-> "only" for performance and doesn't affect correctness.  And for performance
-> reasons, we want to avoid locking during file reads.
-> 
-> So we may just need to annotate all access to file_ra_state with
-> READ_ONCE() and WRITE_ONCE()...
+Fixes: d3dc5430d68f ("regmap: debugfs: Allow writes to cache state settings")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-Please, no. Can we stop making the code hard to read, more difficult
-to maintain and preventing the compiler from optimising it by doing
-stupid "turn off naive static checker warnings" stuff like this?
+ drivers/base/regmap/regmap-debugfs.c | 52 ++++++++++++++++------------
+ 1 file changed, 29 insertions(+), 23 deletions(-)
 
-If the code is fine with races, then -leave it alone-. If it's not
-fine with a data race, then please go and work out the correct
-ordering and place well documented barriers and/or release/acquire
-ordering semantics in the code so that we do not need to hide data
-races behind a compiler optimisation defeating macro....
-
-Yes, I know data_race() exists to tell the tooling that it should
-ignore data races in the expression, but that makes just as much
-mess of the code as READ_ONCE/WRITE_ONCE being spewed everywhere
-indiscriminately because <some tool said we need to do that>.
-
-Cheers,
-
-Dave.
+diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/regmap-debugfs.c
+index 089e5dc7144a..f58baff2be0a 100644
+--- a/drivers/base/regmap/regmap-debugfs.c
++++ b/drivers/base/regmap/regmap-debugfs.c
+@@ -463,29 +463,31 @@ static ssize_t regmap_cache_only_write_file(struct file *file,
+ {
+ 	struct regmap *map = container_of(file->private_data,
+ 					  struct regmap, cache_only);
+-	ssize_t result;
+-	bool was_enabled, require_sync = false;
++	bool new_val, require_sync = false;
+ 	int err;
+ 
+-	map->lock(map->lock_arg);
++	err = kstrtobool_from_user(user_buf, count, &new_val);
++	/* Ignore malforned data like debugfs_write_file_bool() */
++	if (err)
++		return count;
+ 
+-	was_enabled = map->cache_only;
++	err = debugfs_file_get(file->f_path.dentry);
++	if (err)
++		return err;
+ 
+-	result = debugfs_write_file_bool(file, user_buf, count, ppos);
+-	if (result < 0) {
+-		map->unlock(map->lock_arg);
+-		return result;
+-	}
++	map->lock(map->lock_arg);
+ 
+-	if (map->cache_only && !was_enabled) {
++	if (new_val && !map->cache_only) {
+ 		dev_warn(map->dev, "debugfs cache_only=Y forced\n");
+ 		add_taint(TAINT_USER, LOCKDEP_STILL_OK);
+-	} else if (!map->cache_only && was_enabled) {
++	} else if (!new_val && map->cache_only) {
+ 		dev_warn(map->dev, "debugfs cache_only=N forced: syncing cache\n");
+ 		require_sync = true;
+ 	}
++	map->cache_only = new_val;
+ 
+ 	map->unlock(map->lock_arg);
++	debugfs_file_put(file->f_path.dentry);
+ 
+ 	if (require_sync) {
+ 		err = regcache_sync(map);
+@@ -493,7 +495,7 @@ static ssize_t regmap_cache_only_write_file(struct file *file,
+ 			dev_err(map->dev, "Failed to sync cache %d\n", err);
+ 	}
+ 
+-	return result;
++	return count;
+ }
+ 
+ static const struct file_operations regmap_cache_only_fops = {
+@@ -508,28 +510,32 @@ static ssize_t regmap_cache_bypass_write_file(struct file *file,
+ {
+ 	struct regmap *map = container_of(file->private_data,
+ 					  struct regmap, cache_bypass);
+-	ssize_t result;
+-	bool was_enabled;
++	bool new_val;
++	int err;
+ 
+-	map->lock(map->lock_arg);
++	err = kstrtobool_from_user(user_buf, count, &new_val);
++	/* Ignore malforned data like debugfs_write_file_bool() */
++	if (err)
++		return count;
+ 
+-	was_enabled = map->cache_bypass;
++	err = debugfs_file_get(file->f_path.dentry);
++	if (err)
++		return err;
+ 
+-	result = debugfs_write_file_bool(file, user_buf, count, ppos);
+-	if (result < 0)
+-		goto out;
++	map->lock(map->lock_arg);
+ 
+-	if (map->cache_bypass && !was_enabled) {
++	if (new_val && !map->cache_bypass) {
+ 		dev_warn(map->dev, "debugfs cache_bypass=Y forced\n");
+ 		add_taint(TAINT_USER, LOCKDEP_STILL_OK);
+-	} else if (!map->cache_bypass && was_enabled) {
++	} else if (!new_val && map->cache_bypass) {
+ 		dev_warn(map->dev, "debugfs cache_bypass=N forced\n");
+ 	}
++	map->cache_bypass = new_val;
+ 
+-out:
+ 	map->unlock(map->lock_arg);
++	debugfs_file_put(file->f_path.dentry);
+ 
+-	return result;
++	return count;
+ }
+ 
+ static const struct file_operations regmap_cache_bypass_fops = {
 -- 
-Dave Chinner
-david@fromorbit.com
+2.28.0.rc0.105.gf9edc3c819-goog
+
