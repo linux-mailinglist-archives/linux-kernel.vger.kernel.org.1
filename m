@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F593220956
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7BA220961
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 12:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730941AbgGOJ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:58:48 -0400
-Received: from mga11.intel.com ([192.55.52.93]:3722 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728043AbgGOJ6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:58:47 -0400
-IronPort-SDR: Ccg8o/TKYuRPlxu59lO07VnZAyh+ZVdR1vaeWk1B2zcUIMouYASEbL8SpVi7u1mTLbh3mWXTTr
- NGOfPIDyu32w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="147121823"
-X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
-   d="scan'208";a="147121823"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 02:58:47 -0700
-IronPort-SDR: qqUQiZjtJC9DtiYjrdw1wdZpnZDKzBJCJgLhXo9hV4zhclnfN/FNhad/9To1q8/bbpICKqPzp3
- XuEPLf7ZmLDQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
-   d="scan'208";a="286058587"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006.jf.intel.com with ESMTP; 15 Jul 2020 02:58:46 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jveBa-001woD-Ni; Wed, 15 Jul 2020 12:58:46 +0300
-Date:   Wed, 15 Jul 2020 12:58:46 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>
-Subject: [GIT PULL] platform-drivers-x86 for 5.8-2
-Message-ID: <20200715095846.GA464373@smile.fi.intel.com>
+        id S1730957AbgGOKCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 06:02:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726479AbgGOKCO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 06:02:14 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D723FC061755;
+        Wed, 15 Jul 2020 03:02:14 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x72so1879985pfc.6;
+        Wed, 15 Jul 2020 03:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Nh0VZckjN06FZSJxhs7hmcKYv3xu0k2u9oXV74eQ34=;
+        b=ltRYeljvTrcnJGbqBCgJ+/jtYXLWfHOLrsIZSzj//W7aCHwNjoApoh2uU5OQ2dNHui
+         RNUkthyWxxTXv0DtI781+jh1HjdSSNX1TgqUeLTFR/hVDP/roSGk1k3ToyVAxGidAQkP
+         bcO02pZFCAzGsdJiU8xaABONAs/WMoNZdYlHGrleydD6qzJtZgfCvegb3Dg3KbuWLABy
+         8F+BhHzq70bGG/pOvYWzHKvwlSXlHg6HlvKzDcEZBUBYmGEQmxR/YkLNaYTVBcqur/WR
+         wGEN4Tu+tpAYU6ypL0caFPX9MHBWud3VflYPhRJHjTeYP4PMVx1SYHdD5WBpa8CO74V6
+         5GAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Nh0VZckjN06FZSJxhs7hmcKYv3xu0k2u9oXV74eQ34=;
+        b=QESjFuTek9cI0aBfE7cYrMJhJZzsK6fBqQheWnS83B/xr+1/RPZmFDe2PwRT+4ypwr
+         CZC4K3jouQor7/F3mt2gW2uwxfuidN0i3jrjNOuW/aumhZVWsH4zst4z7SN/9zO5E+pa
+         PxnA7McnQQesJfg8mS7102niHYyGdSKPlZtLJEXuHCOlizVtim2QfzZhx/aXllqdC9Wd
+         WYW79p48dHIiBg9OoIH1isRZhQ1n1jkzSc9Ns6eqzgu3bfhpc4h68Mt4YAWBfiEK5FMG
+         Fkw3+YlBwyYnIC/PvzJHPP8BqEOS8Vb3hmSlDjFR6IDjTPhzgK4FPb4owGRXISUqu6wQ
+         7/Ww==
+X-Gm-Message-State: AOAM533d5iRkMCtZq/clGVzrR5Z+jfu2Tx6xTa0RuoUVpcuUpRDnEvoH
+        0nWY5sffxj75nBsnbtT2VG3PFo5Qb+VSDFUzbWGZ4aYc
+X-Google-Smtp-Source: ABdhPJyNgLiom+tibJ3Wafec8DTUX+KqiDdF09Ir2aUsQBzW9RHJppt+lkvjbJe1B/w8CgUwG+XoZxbOQucyaquElDM=
+X-Received: by 2002:a62:8ccb:: with SMTP id m194mr5567303pfd.36.1594807334390;
+ Wed, 15 Jul 2020 03:02:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200714120203.10352-1-vadimp@mellanox.com>
+In-Reply-To: <20200714120203.10352-1-vadimp@mellanox.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 15 Jul 2020 13:01:57 +0300
+Message-ID: <CAHp75VdthROggsKZ2e1-9P+_quL8GjMYqQMujf88anXteqxKQQ@mail.gmail.com>
+Subject: Re: [PATCH platform-next v2 00/11] platform/x86: Add new features for
+ Mellanox systems
+To:     Vadim Pasternak <vadimp@mellanox.com>
+Cc:     Andy Shevchenko <andy@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Jul 14, 2020 at 3:02 PM Vadim Pasternak <vadimp@mellanox.com> wrote:
+>
+> The patchset adds new features for the existing Mellanox systems.
+>
+> Patch #1 add string helpers for upper/lower conversion.
+> Patch #2 add tests for these helpers.
+> Patch #3 updates license for module 'mlxreg-hotplug'.
+> Patch #4 allows to configure number of hotplug 'sysfs' attributes for
+>                  the particular system class according to the hardware data for
+>                  the specific system from this class, instead of configuring it
+>                  up-to maximum number in the class.
+> Patch #5 adds environmental data to hotplug 'uevent'.
+> Patches #6-#7 add more definitions for system attributes.
+> Patch #8 extends 'mlxreg-io' driver with complex attributes support.
+> Patch #9 extends documentation with new attributes.
+> Patches #10-#11 extend FAN platform data with register presence field.
+>
 
-Small fixes for this, v5.8 cycle in PDx86. No conflicts found.
+Pushed to my review and testing queue, thanks!
 
-Thanks,
+> Vadim Pasternak (11):
+>   lib/string_helpers: Introduce string_upper() and string_lower()
+>     helpers
+>   lib/test-string_helpers.c: Add string_upper() and string_lower() tests
+>   platform/mellanox: mlxreg-hotplug: Modify module license
+>   platform/mellanox: mlxreg-hotplug: Use capability register for
+>     attribute creation
+>   platform/mellanox: mlxreg-hotplug: Add environmental data to uevent
+>   platform_data/mlxreg: Add support for complex attributes
+>   platform/x86: mlx-platform: Add more definitions for system attributes
+>   platform/mellanox: mlxreg-io: Add support for complex attributes
+>   Documentation/ABI: Add new attribute for mlxreg-io sysfs interfaces
+>   platform_data/mlxreg: Add presence register field for FAN devices
+>   platform/x86: mlx-platform: Extend FAN platform data description
+>
+>  Documentation/ABI/stable/sysfs-driver-mlxreg-io |  17 +++
+>  drivers/platform/mellanox/mlxreg-hotplug.c      | 114 ++++++++++---------
+>  drivers/platform/mellanox/mlxreg-io.c           |  45 ++++++--
+>  drivers/platform/x86/mlx-platform.c             | 141 ++++++++++++++++++++++++
+>  include/linux/platform_data/mlxreg.h            |   4 +
+>  include/linux/string_helpers.h                  |  15 +++
+>  lib/test-string_helpers.c                       |  67 +++++++++++
+>  7 files changed, 341 insertions(+), 62 deletions(-)
+>
+> --
+> 2.11.0
+>
 
-With Best Regards,
-Andy Shevchenko
-
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
-
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
-
-are available in the Git repository at:
-
-  git://git.infradead.org/linux-platform-drivers-x86.git tags/platform-drivers-x86-v5.8-2
-
-for you to fetch changes up to 9a33e375d98ece5ea40c576eabd3257acb90c509:
-
-  platform/x86: asus-wmi: allow BAT1 battery name (2020-07-15 12:47:04 +0300)
-
-----------------------------------------------------------------
-platform-drivers-x86 for v5.8-2
-
-* Fix procfs handling in Thinkpad ACPI driver
-* Fix battery management on new ASUS laptops
-* New IDs (Sapphire Rapids) in ISST tool
-
-The following is an automated git shortlog grouped by driver:
-
-asus-wmi:
- -  allow BAT1 battery name
-
-ISST:
- -  Add new PCI device ids
-
-thinkpad_acpi:
- -  Revert "Use strndup_user() in dispatch_proc_write()"
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      platform/x86: thinkpad_acpi: Revert "Use strndup_user() in dispatch_proc_write()"
-
-Srinivas Pandruvada (1):
-      platform/x86: ISST: Add new PCI device ids
-
-Vasiliy Kupriakov (1):
-      platform/x86: asus-wmi: allow BAT1 battery name
-
- drivers/platform/x86/asus-wmi.c                            |  1 +
- .../platform/x86/intel_speed_select_if/isst_if_common.h    |  3 +++
- .../platform/x86/intel_speed_select_if/isst_if_mbox_pci.c  |  1 +
- drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c  |  1 +
- drivers/platform/x86/thinkpad_acpi.c                       | 14 +++++++++++---
- 5 files changed, 17 insertions(+), 3 deletions(-)
 
 -- 
 With Best Regards,
 Andy Shevchenko
-
-
