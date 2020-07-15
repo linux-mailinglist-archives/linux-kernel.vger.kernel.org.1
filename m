@@ -2,223 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3062214F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 21:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7B5221508
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 21:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgGOTRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 15:17:10 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44234 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgGOTQq (ORCPT
+        id S1726949AbgGOTXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 15:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726479AbgGOTXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 15:16:46 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 57B7F20B4908;
-        Wed, 15 Jul 2020 12:16:19 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 57B7F20B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1594840580;
-        bh=UWGs7/duiBxGsOajSPhznATeEZNTIvIT7z0CfurjKPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AtQ4ANyqaj6Uj0YRg8qc9b5pYtQCaff87NoEQAxW5c0zBREGYQuchjVgHQdDCj8oM
-         /GvJb8FSUQuvO/e1TwLqtK8//i2IhlFHexBR2+P58o2riBIsAF4Gvi6F/j2S118bl7
-         +6zBiYPodt/qIGlByb78XSsNS1/Ui3BltYWOBlnY=
-Date:   Wed, 15 Jul 2020 14:16:17 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     deven.desai@linux.microsoft.com
-Cc:     agk@redhat.com, axboe@kernel.dk, snitzer@redhat.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, jannh@google.com,
-        pasha.tatashin@soleen.com, sashal@kernel.org,
-        jaskarankhurana@linux.microsoft.com, nramas@linux.microsoft.com,
-        mdsakib@linux.microsoft.com, linux-kernel@vger.kernel.org,
-        corbet@lwn.net
-Subject: Re: [RFC PATCH v3 03/12] security: add ipe lsm policy parser and
- policy loading
-Message-ID: <20200715191617.GD3673@sequoia>
-References: <20200415162550.2324-1-deven.desai@linux.microsoft.com>
- <20200415162550.2324-4-deven.desai@linux.microsoft.com>
+        Wed, 15 Jul 2020 15:23:44 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF318C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 12:23:43 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id l6so2781715plt.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 12:23:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OJ/YWMib2y0Oi9xcE3B9cmLij4uK6K7vyJCnBwYrt/0=;
+        b=kiYOUCLw+1YMW5C/hDrCQnyOlnRtGrFPezJA04+b0b4IIM5w8VNidZnsPMPHfZ31KS
+         LxhyDUqGX0RwzJAlBRqOfe2ODGCTv2LKEk/50WpTfn28Dp+ZBxdVxNZXkt6vym0qxK/Q
+         rx82Fv0Ijv3kJKlDTbYSXiKFjVaIlmJguN6+3aaiaOjcY7ZTRMaa5SON4MfuTw8M/HSU
+         v8ruKKdEd2o//mAyXMOkE3cXxzduzOyubtoH4T/VezrAKzRSY9zqMZ+YPOlllJ7ocF+k
+         UdiLFpdNVsXZC/MUNV+4eR0KRB3FESXVCeMno3tw/kkcCifALuCf49tFeBBbwBN9AyNI
+         Cing==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OJ/YWMib2y0Oi9xcE3B9cmLij4uK6K7vyJCnBwYrt/0=;
+        b=fkEYkgK2ms3V2qRHz3zUQHcAqOtoJ7fxoMQzb+B7n4VBTmiVrSyU1QWpghv4zftGbO
+         s6nDtUN6PYlRJ1gaHlQ1Ba/QMiJ2GZty3o+OugR/vY12Ir5a2wHdn3Hz/2wppFV7j9vD
+         rnj1RBikArIEsp4xF+fBcyTNAY+mmsiDiA9yuLjvzPY/UCzVzqitwloZW3PKW6zvVWPG
+         w87kjOGhB3MVuR8u+vYb3hkYg6U0VE3b7TGw0OKWM1pjwfyi17Giwr/Cj0SiS/UMBef+
+         kaJwjkGTycpJFdzVFCsj5nwyv1p/ARoZKDPjXQad+TtHEasv1baagSnBZ+lAbXD84nBJ
+         Lh7A==
+X-Gm-Message-State: AOAM530YV0V1HSj1jdMinRvnjE/7F8DyQmp6hxqaGbotDYiZNbYPeB65
+        hsjnGN7jFEcn6ZKAqSFgVcoESE1o+wI=
+X-Google-Smtp-Source: ABdhPJxxiugzYbbF1aUsgwFCaTWYsI5jJtHeJsIIOQXJcVFYwSl1wCBetM40QxEzTt5KKymF9BCfSw==
+X-Received: by 2002:a17:90a:ed87:: with SMTP id k7mr1208692pjy.31.1594841023280;
+        Wed, 15 Jul 2020 12:23:43 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id g6sm2829878pfr.129.2020.07.15.12.23.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 12:23:42 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 12:21:38 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     ohad@wizery.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 2/2] remoteproc: qcom_sysmon: Solve function header
+ bitrot issues
+Message-ID: <20200715192138.GA2922385@builder.lan>
+References: <20200715123551.4011154-1-lee.jones@linaro.org>
+ <20200715123551.4011154-2-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200415162550.2324-4-deven.desai@linux.microsoft.com>
+In-Reply-To: <20200715123551.4011154-2-lee.jones@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-15 09:25:41, deven.desai@linux.microsoft.com wrote:
-> From: Deven Bowers <deven.desai@linux.microsoft.com>
+On Wed 15 Jul 05:35 PDT 2020, Lee Jones wrote:
+
+> Looks as though 'name' has now been moved into 'struct sysmod_event'
+> which is passed in instead.  However, the parameter descriptions were
+> not updated at the same time.  Let's do that now.
 > 
-> Adds the policy parser and the policy loading to IPE, along with the
-> related sysfs, securityfs entries, and audit events.
+> Fixes the following W=1 kernel build warning(s):
 > 
-> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+>  drivers/remoteproc/qcom_sysmon.c:78: warning: Function parameter or member 'event' not described in 'sysmon_send_event'
+>  drivers/remoteproc/qcom_sysmon.c:78: warning: Excess function parameter 'name' description in 'sysmon_send_event'
+>  drivers/remoteproc/qcom_sysmon.c:350: warning: Function parameter or member 'event' not described in 'ssctl_send_event'
+>  drivers/remoteproc/qcom_sysmon.c:350: warning: Excess function parameter 'name' description in 'ssctl_send_event'
+> 
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Thanks Lee, both patches applied.
+
+Regards,
+Bjorn
+
 > ---
-
-...
-
-> diff --git a/security/ipe/ipe-sysfs.c b/security/ipe/ipe-sysfs.c
-> index 1c65185c531d..a250da29c3b5 100644
-> --- a/security/ipe/ipe-sysfs.c
-> +++ b/security/ipe/ipe-sysfs.c
-> @@ -5,6 +5,7 @@
->  
->  #include "ipe.h"
->  #include "ipe-audit.h"
-> +#include "ipe-secfs.h"
->  
->  #include <linux/sysctl.h>
->  #include <linux/fs.h>
-> @@ -45,6 +46,79 @@ static int ipe_switch_mode(struct ctl_table *table, int write,
->  
->  #endif /* CONFIG_SECURITY_IPE_PERMISSIVE_SWITCH */
->  
-> +#ifdef CONFIG_SECURITYFS
-> +
-> +/**
-> + * ipe_switch_active_policy: Handler to switch the policy IPE is enforcing.
-> + * @table: Sysctl table entry from the variable, sysctl_table.
-> + * @write: Integer indicating whether this is a write or a read.
-> + * @buffer: Data passed to sysctl. This is the policy id to activate,
-> + *	    for this function.
-> + * @lenp: Pointer to the size of @buffer.
-> + * @ppos: Offset into @buffer.
-> + *
-> + * This wraps proc_dointvec_minmax, and if there's a change, emits an
-> + * audit event.
-> + *
-> + * Return:
-> + * 0 - OK
-> + * -ENOMEM - Out of memory
-> + * -ENOENT - Policy identified by @id does not exist
-> + * Other - See proc_dostring and retrieve_backed_dentry
-> + */
-> +static int ipe_switch_active_policy(struct ctl_table *table, int write,
-> +				    void __user *buffer, size_t *lenp,
-> +				    loff_t *ppos)
-> +{
-> +	int rc = 0;
-> +	char *id = NULL;
-> +	size_t size = 0;
-> +
-> +	if (write) {
-
-I see that the policy files in securityfs, such as new_policy, are
-checking for CAP_MAC_ADMIN but there's no check here for CAP_MAC_ADMIN
-when switching the active policy. I think we should enforce that cap
-here, too.
-
-Thinking about it some more, I find it a little odd that we're spreading
-the files necessary to update a policy across both procfs (sysctl) and
-securityfs. It looks like procfs will have different semantics than
-securityfs after looking at proc_sys_permission(). I suggest moving
-strict_parse and active_policy under securityfs for a unified experience
-and common location when updating policy.
-
-Tyler
-
-> +		id = kzalloc((*lenp) + 1, GFP_KERNEL);
-> +		if (!id)
-> +			return -ENOMEM;
-> +
-> +		table->data = id;
-> +		table->maxlen = (*lenp) + 1;
-> +
-> +		rc = proc_dostring(table, write, buffer, lenp, ppos);
-> +		if (rc != 0)
-> +			goto out;
-> +
-> +		rc = ipe_set_active_policy(id, strlen(id));
-> +	} else {
-> +		if (!rcu_access_pointer(ipe_active_policy)) {
-> +			table->data = "";
-> +			table->maxlen = 1;
-> +			return proc_dostring(table, write, buffer, lenp, ppos);
-> +		}
-> +
-> +		rcu_read_lock();
-> +		size = strlen(rcu_dereference(ipe_active_policy)->policy_name);
-> +		rcu_read_unlock();
-> +
-> +		id = kzalloc(size + 1, GFP_KERNEL);
-> +		if (!id)
-> +			return -ENOMEM;
-> +
-> +		rcu_read_lock();
-> +		strncpy(id, rcu_dereference(ipe_active_policy)->policy_name,
-> +			size);
-> +		rcu_read_unlock();
-> +
-> +		table->data = id;
-> +		table->maxlen = size;
-> +
-> +		rc = proc_dostring(table, write, buffer, lenp, ppos);
-> +	}
-> +out:
-> +	kfree(id);
-> +	return rc;
-> +}
-> +
-> +#endif /* CONFIG_SECURITYFS */
-> +
->  static struct ctl_table_header *sysctl_header;
->  
->  static const struct ctl_path sysctl_path[] = {
-> @@ -75,6 +149,24 @@ static struct ctl_table sysctl_table[] = {
->  		.extra1 = SYSCTL_ZERO,
->  		.extra2 = SYSCTL_ONE,
->  	},
-> +#ifdef CONFIG_SECURITYFS
-> +	{
-> +		.procname = "strict_parse",
-> +		.data = &ipe_strict_parse,
-> +		.maxlen = sizeof(int),
-> +		.mode = 0644,
-> +		.proc_handler = proc_dointvec_minmax,
-> +		.extra1 = SYSCTL_ZERO,
-> +		.extra2 = SYSCTL_ONE,
-> +	},
-> +	{
-> +		.procname = "active_policy",
-> +		.data = NULL,
-> +		.maxlen = 0,
-> +		.mode = 0644,
-> +		.proc_handler = ipe_switch_active_policy,
-> +	},
-> +#endif /* CONFIG_SECURITYFS */
->  	{}
->  };
->  
-> diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
-> index b6553e370f98..07f855ffb79a 100644
-> --- a/security/ipe/ipe.c
-> +++ b/security/ipe/ipe.c
-> @@ -6,6 +6,7 @@
->  #include "ipe.h"
->  #include "ipe-policy.h"
->  #include "ipe-hooks.h"
-> +#include "ipe-secfs.h"
->  #include "ipe-sysfs.h"
->  
->  #include <linux/module.h>
-> @@ -60,3 +61,4 @@ DEFINE_LSM(ipe) = {
->  
->  int ipe_enforce = 1;
->  int ipe_success_audit;
-> +int ipe_strict_parse;
-> diff --git a/security/ipe/ipe.h b/security/ipe/ipe.h
-> index 6a47f55b05d9..bf6cf7744b0e 100644
-> --- a/security/ipe/ipe.h
-> +++ b/security/ipe/ipe.h
-> @@ -16,5 +16,6 @@
->  
->  extern int ipe_enforce;
->  extern int ipe_success_audit;
-> +extern int ipe_strict_parse;
->  
->  #endif /* IPE_H */
+>  drivers/remoteproc/qcom_sysmon.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/qcom_sysmon.c b/drivers/remoteproc/qcom_sysmon.c
+> index 8d8996d714f07..9eb2f6bccea63 100644
+> --- a/drivers/remoteproc/qcom_sysmon.c
+> +++ b/drivers/remoteproc/qcom_sysmon.c
+> @@ -71,7 +71,7 @@ static LIST_HEAD(sysmon_list);
+>  /**
+>   * sysmon_send_event() - send notification of other remote's SSR event
+>   * @sysmon:	sysmon context
+> - * @name:	other remote's name
+> + * @event:	sysmon event context
+>   */
+>  static void sysmon_send_event(struct qcom_sysmon *sysmon,
+>  			      const struct sysmon_event *event)
+> @@ -343,7 +343,7 @@ static void ssctl_request_shutdown(struct qcom_sysmon *sysmon)
+>  /**
+>   * ssctl_send_event() - send notification of other remote's SSR event
+>   * @sysmon:	sysmon context
+> - * @name:	other remote's name
+> + * @event:	sysmon event context
+>   */
+>  static void ssctl_send_event(struct qcom_sysmon *sysmon,
+>  			     const struct sysmon_event *event)
 > -- 
-> 2.26.0
+> 2.25.1
+> 
