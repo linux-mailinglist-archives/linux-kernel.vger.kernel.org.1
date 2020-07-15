@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E032208B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089882208B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730716AbgGOJ0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:26:13 -0400
-Received: from chalk.uuid.uk ([51.68.227.198]:51732 "EHLO chalk.uuid.uk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729890AbgGOJ0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:26:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=BuxXrpb686ptaZ1HCHsKcx9WQB5LeIW7vA9uRU9DVeE=; b=mS2x6lyqgl9S1NYxKolQ3u+MOw
-        B2QGyLs7CSV+ZU7KaEXhMS3iS0GeixJdOkDAMIP7bv1al73Im79MYGV3rWPzHhfq/dh/+QpsevpdV
-        01p9bxNO/iJUiY5S3VS1qrodVODH3fnEYG4qrrpv/eLEvAb8sSLBlWqiuXsAW2m51JzBGYXbMiayU
-        URqSiouTZo4HuH1dSGt3dO2/19zYyGSDV/WfmDaJaeC9VNfUn8wUFs/B8Tek/d5ZrucAMawQ3F9sa
-        S2o5QJoASdWbJBq2YVj9U2PyZ7+unBTga87tezN/4AKIcvPm3Y0l424HF7PQWQTXxlwVkU6OBqhX6
-        OcrEoVhg==;
-Received: by chalk.uuid.uk with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <simon@octiron.net>)
-        id 1jvdfm-0005i1-4N; Wed, 15 Jul 2020 10:25:59 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:
-        Content-Transfer-Encoding:Content-Type:MIME-Version;
-        bh=BuxXrpb686ptaZ1HCHsKcx9WQB5LeIW7vA9uRU9DVeE=; b=oN/opcW7Llpdn+3P9i4ewgdFha
-        x1UfAtQbGeo129n6GyLA0manluVHBBKL3KUtMkihJI6OujbKtf9uMg7EWMg6HaEja2NpanRF97yeM
-        lYwG1ylVQNyzIkgk/REnO9lwI2hakWaVx+b3DjGEnBot15iCB4GifSPx/bX3KS9VrZ/TwzMaU68cR
-        BqeqTwZCSCyLri9uo7dXDF/z8R4sAZsPeKQNdgmNqHyxveuolRKoPZH3befcSF44/MW+RDBlH8qkK
-        P4/jPGSurFtvSp0SKxV7Q/J9JytrL+8X3A7xC3u5A2ojI5nJPgYVl6E9XY+Rr8QPGu1cUGJejUSsV
-        +fPtqjSg==;
-Received: by tsort.uuid.uk with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <simon@octiron.net>)
-        id 1jvdfj-0004dX-Bh; Wed, 15 Jul 2020 10:25:51 +0100
-Received: from localhost ([::1]:44858)
-        by skund.uuid.uk with esmtp (Exim 4.86_2)
-        (envelope-from <simon@octiron.net>)
-        id 1jvdfj-0000oB-8E; Wed, 15 Jul 2020 10:25:51 +0100
+        id S1730720AbgGOJ0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:26:43 -0400
+Received: from [195.135.220.15] ([195.135.220.15]:36262 "EHLO mx2.suse.de"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S1729869AbgGOJ0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 05:26:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0D1F0AF6F;
+        Wed, 15 Jul 2020 09:26:44 +0000 (UTC)
+Date:   Wed, 15 Jul 2020 11:26:38 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 70/75] x86/head/64: Don't call verify_cpu() on
+ starting APs
+Message-ID: <20200715092638.GJ16200@suse.de>
+References: <20200714120917.11253-1-joro@8bytes.org>
+ <20200714120917.11253-71-joro@8bytes.org>
+ <202007141837.2B93BBD78@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 15 Jul 2020 10:25:51 +0100
-From:   Simon Arlott <simon@octiron.net>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH (v2)] scsi: sd: add parameter to stop disks before reboot
-In-Reply-To: <yq1bll1fi9u.fsf@ca-mkp.ca.oracle.com>
-References: <e726ffd8-8897-4a79-c3d6-6271eda8aebb@0882a8b5-c6c3-11e9-b005-00805fc181fe>
- <20200629080947.GA28551@infradead.org>
- <yq1bll1fi9u.fsf@ca-mkp.ca.oracle.com>
-Message-ID: <3d3799e1-5c4c-b82d-5f35-88144df1cc1f@0882a8b5-c6c3-11e9-b005-00805fc181fe>
-X-Sender: simon@octiron.net
-User-Agent: Roundcube Webmail/1.2-beta
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202007141837.2B93BBD78@keescook>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/06/2020 02:35, Martin K. Petersen wrote:
->> What happened to the suggestion to treat reboot=p like a poweroff
->> instead?  That seems to be fundamentally the right thing to do.
-> 
-> I agree!
+Hi Kees,
 
-I've done that but so far it has been ignored:
-https://lore.kernel.org/lkml/f4a7b539-eeac-1a59-2350-3eefc8c17801@0882a8b5-c6c3-11e9-b005-00805fc181fe/
+thanks for your reviews!
 
--- 
-Simon Arlott
+On Tue, Jul 14, 2020 at 06:40:30PM -0700, Kees Cook wrote:
+> Eek, no. MSR_IA32_MISC_ENABLE_XD_DISABLE needs to be cleared very early
+> during CPU startup; this can't just be skipped.
+
+That MSR is Intel-only, right? The boot-path installed here is only used
+for SEV-ES guests, running on AMD systems, so this MSR is not even
+accessed during boot on those VMs.
+
+The alternative is to set up exception handling prior to calling
+verify_cpu, including segments, stack and IDT. Given that verify_cpu()
+does not add much value to SEV-ES guests, I'd like to avoid adding this
+complexity.
+
+> Also, is UNWIND_HINT_EMPTY needed for the new target?
+
+Yes, I think it is, will add it in the next version.
+
+Regards,
+
+	Joerg
