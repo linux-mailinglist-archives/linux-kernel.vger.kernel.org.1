@@ -2,113 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6374B22061E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 09:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0791922061B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 09:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgGOHWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 03:22:49 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:22991 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729247AbgGOHWr (ORCPT
+        id S1729282AbgGOHWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 03:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729270AbgGOHWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 03:22:47 -0400
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 06F7M7QO031597;
-        Wed, 15 Jul 2020 16:22:07 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 06F7M7QO031597
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1594797728;
-        bh=w3JbW09mtoeE98TWzXBL1LmtIUCrjbrYaU4GyXXoQ4A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KE7n4oSkpr4uW9J+/oFTuVtoFLcgVoosn+86ciSZgCJ1HtPLFYm8CHSnvqnhfjUJC
-         5sf/Nc8t+ReC9oUEKvMQVFsDFgnYnE/HrO29qiI+P/ogTZTdxqhSoo0wnEUHIyDH9M
-         CmJ5+g4DLGNFsrBMvSzqOhTfJixzKqXhJfzhL8FTqBjg6ng+1/Hs9QBKCBaozSsawx
-         PzSHCqfb/9AAxEhT9bHlrGp2lgdyveQ0yH3eIPf11hWEs1K9dUaP7uGmdumdsCO3//
-         9f1UNKqdJQjDaTrJBQt9ussCzwf4C4w/3KMGxaEPzmUrTsBvJQCVHfrJnKLAEgOnhl
-         cOW7MuoJ7HcFQ==
-X-Nifty-SrcIP: [209.85.222.48]
-Received: by mail-ua1-f48.google.com with SMTP id g4so280210uaq.10;
-        Wed, 15 Jul 2020 00:22:07 -0700 (PDT)
-X-Gm-Message-State: AOAM53272+RRs5bisZutAcQknJrmeIJ8SC2MGFfb85CqyaVeFvd32zAs
-        Kj/2Nddz1ryStE/odyuWLVz4FTN+X8twzVfndvU=
-X-Google-Smtp-Source: ABdhPJzniKddUQu2JP4MRRzQSLJmu66OKv+Gt9OUATG6zNkhKWMie+WW0snL77VGMIYWVgVjhoN2r9IkM4IAsJ9NJ8Q=
-X-Received: by 2002:ab0:44e5:: with SMTP id n92mr6138229uan.121.1594797726600;
- Wed, 15 Jul 2020 00:22:06 -0700 (PDT)
+        Wed, 15 Jul 2020 03:22:46 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168C0C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 00:22:46 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id o18so1085869eje.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 00:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=e0z3WAln9/b8KJCeTvRzLMhQz+ybMeJAtGV4eeqp8+E=;
+        b=HrUpjGKdTFo2vqkZLD2VO+BOxJ91VmGSZPLglU4+lha2IlEGKjCIIlE9bS06oXoPUi
+         0nJbChuWBY8Ez/KMC/yiogy0uNjxr/rIXGhYzd+qduNqWzh3mV0cyu8pancaaP+sM1O1
+         oUr3oCNgZL923aJML0+PfOBTPri4KtSUTY/P6LdgOZSH0sXgpvIWRQ2viGQwDQE+wQjZ
+         IldsezdBsV2nMXI61zDJsarmFPg8Dom2vmO3pe0608dtAv0vWLHD8Ir5/SNgrojhqM58
+         XBD6rNjSTYurAC8qj7HT5hSHUx6/6RTPLaSFqt9ofbvBYDkAhUni27KbhkNgA+baSFKc
+         JQrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=e0z3WAln9/b8KJCeTvRzLMhQz+ybMeJAtGV4eeqp8+E=;
+        b=fph39jDeAaDw+Pjxt7XDICX99N7UGk1i9lRu6jT8HSd42dnqRyEx/TDOO9xc/VKunq
+         +LYIkDhAYnTNHiRQYZ7BJPXhNU9a1kV3rEEp+1T7FdH6UFgelsHtVXHLQosTbTfj794Z
+         p+eki8UlOdmmVmzHXCR1JM719ynOMW8iTuecWEb2vtD63wClwqphpwFlKJtye3xtLuPN
+         eUdbxbp6t7cGvhRQ3FO3Sj9NHjG4kdrzaCw6qJw3tmfxuWADr2WWIF+S1Un4a079cGHV
+         QKS3KIs0resuumtMKNc3tuKcgrX0DHNQvSiDSkgpKP3iUrp75iC6p7b06Fr5GxOZ/QB9
+         YHxg==
+X-Gm-Message-State: AOAM530AUiXkDzcRgHJabERHUfcpKbBhfgpElj3GdgbBdJ3VY0CZpR0j
+        EARAd1wbr4gRFdPAq1WPEyk=
+X-Google-Smtp-Source: ABdhPJzqms5EVR7knQvKdSpFV2PDjrD3Ji5oiolEJuUqvMkBIcXFszIHetMOPmg/vrcZ4RV5qRH/yg==
+X-Received: by 2002:a17:906:280c:: with SMTP id r12mr5190357ejc.105.1594797764816;
+        Wed, 15 Jul 2020 00:22:44 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id cq7sm1274244edb.66.2020.07.15.00.22.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 00:22:43 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 09:22:42 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] checkpatch.pl: Allow '+' in compatible strings
+Message-ID: <20200715072242.GA321038@ulmo>
+References: <20200714094141.147418-1-thierry.reding@gmail.com>
+ <CAL_Jsq+c5+QFpdiNK4K=ROPAhxp=SMYS6iRFuJKooin=NbCiXw@mail.gmail.com>
+ <8d7ebe02cfbff19f31f6ac1ce098f98d8ba1850a.camel@perches.com>
+ <CAL_Jsq+HUUXRVoLN1OH3YXNYG=z4jyBJu_Z9qMb6L3K6vwXZiA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200715032631.1562882-1-nivedita@alum.mit.edu>
-In-Reply-To: <20200715032631.1562882-1-nivedita@alum.mit.edu>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 15 Jul 2020 16:21:30 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARqLfYmEomDyzc9iXrk7hKKpGg-nKXpM22V4UYCrXzXAg@mail.gmail.com>
-Message-ID: <CAK7LNARqLfYmEomDyzc9iXrk7hKKpGg-nKXpM22V4UYCrXzXAg@mail.gmail.com>
-Subject: Re: [PATCH] arch/x86/boot: Don't add the EFI stub to targets
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     X86 ML <x86@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
+Content-Disposition: inline
+In-Reply-To: <CAL_Jsq+HUUXRVoLN1OH3YXNYG=z4jyBJu_Z9qMb6L3K6vwXZiA@mail.gmail.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 12:26 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> vmlinux-objs-y is added to targets, which currently means that the EFI
-> stub gets added to the targets as well. It shouldn't be added since it
-> is built elsewhere.
->
-> This confuses Makefile.build which interprets the EFI stub as a target
->         $(obj)/$(objtree)/drivers/firmware/efi/libstub/lib.a
-> and will create drivers/firmware/efi/libstub/ underneath
-> arch/x86/boot/compressed, to hold this supposed target, if building
-> out-of-tree. [0]
->
-> Fix this by pulling the stub out of vmlinux-objs-y into efi-obj-y.
->
-> [0] See scripts/Makefile.build near the end:
->     # Create directories for object files if they do not exist
->
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> ---
 
+--UlVJffcvxoiEqYs2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+On Tue, Jul 14, 2020 at 11:42:15AM -0600, Rob Herring wrote:
+> On Tue, Jul 14, 2020 at 11:12 AM Joe Perches <joe@perches.com> wrote:
+> >
+> > On Tue, 2020-07-14 at 10:21 -0600, Rob Herring wrote:
+> > > On Tue, Jul 14, 2020 at 3:41 AM Thierry Reding <thierry.reding@gmail.=
+com> wrote:
+> > > > From: Thierry Reding <treding@nvidia.com>
+> > > >
+> > > > The current checks will interpret a '+' character as special because
+> > > > they use regular expression matching. Escape the '+' character if it
+> > > > appears in a compatible string.
+> > >
+> > > Ugg, looks like c6x really liked using '+'. Might need to be added in
+> > > schema checks, too. Not sure offhand.
+> >
+> > These are the non alphanumeric characters used in .dts and .dtsi files
+> > with 'compatible=3D' strings
+> >
+> > - 44115
+> > , 32035
+> > . 1131
+> > _ 259
+> > + 46
+> > / 18
+> > ) 5
+> > ( 5
+> >
+> > So it looks like
+> >
+> >         "("
+> >         ")"
+> >
+> > need to be added and escaped too
+> >
+> > ?
+>=20
+> No, those are 'regulator-compatible' AFAICT which is something else
+> and deprecated.
 
+Looks like we do need to escape the '.' character as well, although it
+should be mostly harmless if we don't since '.' in the regex would also
+match a literal '.' in the compatible string.
 
+Thierry
 
->  arch/x86/boot/compressed/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-> index 7619742f91c9..5a828fde7a42 100644
-> --- a/arch/x86/boot/compressed/Makefile
-> +++ b/arch/x86/boot/compressed/Makefile
-> @@ -90,8 +90,8 @@ endif
->
->  vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
->
-> -vmlinux-objs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
->  vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
-> +efi-obj-$(CONFIG_EFI_STUB) = $(objtree)/drivers/firmware/efi/libstub/lib.a
->
->  # The compressed kernel is built with -fPIC/-fPIE so that a boot loader
->  # can place it anywhere in memory and it will still run. However, since
-> @@ -115,7 +115,7 @@ endef
->  quiet_cmd_check-and-link-vmlinux = LD      $@
->        cmd_check-and-link-vmlinux = $(cmd_check_data_rel); $(cmd_ld)
->
-> -$(obj)/vmlinux: $(vmlinux-objs-y) FORCE
-> +$(obj)/vmlinux: $(vmlinux-objs-y) $(efi-obj-y) FORCE
->         $(call if_changed,check-and-link-vmlinux)
->
->  OBJCOPYFLAGS_vmlinux.bin :=  -R .comment -S
-> --
-> 2.26.2
->
+--UlVJffcvxoiEqYs2
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Best Regards
-Masahiro Yamada
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl8Orr8ACgkQ3SOs138+
+s6GTIQ/8D7AQ4ufdVorOZaawWFBkZehfkNBtNxxl8hk/80pZILMLHcqPLhlx2cfa
+erlVP2/W4vdfd3DpJZ9NBnTu+1PpKMkYrhhF257v1crv/6Y1qro+TXzfOFDNqS7m
+US0ed6NUZM1Jeo0DR/n0oj5+uvaVCSLNth1llL7dzGab+SNaJKYYisj/NbPNw/9W
+7SgfEOg0uwY/3A2gvfFRteymaRdGs/iPpd0fXYlr+SEnw5akjwL4IS8/WLmRGfpC
+9GcnUJCBhtSyy1jmZqc0wg46K1SDqHGh5sb8vKeaYGpUScZJGiXd4EdLDB3qFhjA
+WOLSdDPV/nmmhC7TJ5dQ3iV2oxfQ/HBUnFZ82+lxD+2zQfDNUGsx3VI3nHtF9/e+
+jhe1oJxYtsIs8p3mddFvAK44s2logaIfD3dQF0RlgX2q7PreqdhTxXTvT1Pgh0IN
+mqCr6ZoeHVdZHaQF+6ntoXna1Mb/D9eDw6mPnJq9xP0qKOG4gJB136EorP/g58xy
+kTRHArzFqVTw0cQvu15g/rgapwUjcmktUMcxWHueDImXX3utSUG02pu0eC8Nd9fJ
+fpqTPoj96ycxbdA1EB0hfiXxdWPgRpt30KNvFfhOI+nQuT4VlP4Fk1GQi9jNzH4S
+sOQqYQdEadtjheWZIKWMYG+tCmGV9K1ATAhyVN2AhAOEYbIImYQ=
+=Irhq
+-----END PGP SIGNATURE-----
+
+--UlVJffcvxoiEqYs2--
