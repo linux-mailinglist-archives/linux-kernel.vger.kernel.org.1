@@ -2,133 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1D62212C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B3722212E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgGOQo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
+        id S1728146AbgGOQpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727844AbgGOQno (ORCPT
+        with ESMTP id S1728126AbgGOQpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:43:44 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D855C061755;
-        Wed, 15 Jul 2020 09:43:43 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id cv18so2127173pjb.1;
-        Wed, 15 Jul 2020 09:43:43 -0700 (PDT)
+        Wed, 15 Jul 2020 12:45:47 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D1CC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 09:45:46 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id t4so2695830oij.9
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 09:45:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SVXFvr2B5Hs0esxCy7/N+APzoMWA9/KzTTSBGidGpzY=;
-        b=KhA4i+rBcTXdBxIwBtsPJEQL4y77O8peBm5FhW4faGRJt8DfHWIfQPfVhI5lzsfa6U
-         2hnnwC9bL8rT7DbGhERijjD5spHwBH7scXT8GBrEUDr2T90umlyUgwtzcy/owEsfme/d
-         RQKZTJtE64AfhcI/Q++cITEmPPWm9z1UUA90h3DOAdIxXKRZMMhyw/hRg0Nh4y1SzJxU
-         gdO6UfaA06XlggJIXBCOsEhD2tiDpgCXkFuptCC/3gqcygxqiFwMn2U/rqrTsfH+h/ta
-         QiK5YNLs+ql0aCUQZovoChu9M+cDmKTnWGugttb4mQPDxVajOxrWtU3oa7gGGiCpi1rs
-         pXWw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9TcWWArm6s2MYIjyVq/UCCy6oJdlx6ARoFnt89Ui6x0=;
+        b=sV6IQzmmJdgqjSlPefWQO1LQG41ajK49ClTNxi6vcAcJc/xoMmC9RgSCHTvxuCLRvB
+         6r0LmXLs0zGlQP4Bfu5p1odS+zZkvmVlrXy5fRe1JH78zAZSUu26SJ3MKgENdjkjskAq
+         Lq5wuzeEDZGN5gIFi0BN/c7vv18aLxvT45YmKGMTsreDy9SmXD6Zv+PAA1RykgpGxonv
+         vVEoHX+nbl2KYuqhwf72Owy17ueFZHrtvvRM15bpnFG0eOjVnZbr4Ac/WjwxjUligG13
+         8hBWAK8AP557FROdKvpdTX8eLwfig/RXBN4RkmH9OBWjpstDMRsCT/SASNWzHMFt+K1W
+         QG2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=SVXFvr2B5Hs0esxCy7/N+APzoMWA9/KzTTSBGidGpzY=;
-        b=mATuwo8wLa3fOGQ5fb59hfF920RwTjy5+sfL8mj+wCxtE1zUPQiQ18EiOJtZ9jwK0I
-         NsVRLSZUOgMF+6FI/5o5uT1K2q4o3qxxDOKdkbs5Qy495rscsugkk7VKN8J68xSHt5oT
-         fqHcLu+E9TkibqW1uix9jHbNNW484gGAB+egsPl5TxwqKxsB3AZHwohihW6MitkUK7x2
-         qF6p4PIAzP1eTy40hXYJnkbJfGVMifjz3t18f7R5n+N8te6Dkgb4blNx5GoIY+reFxKL
-         hphsexCXz77BxD5bS4Q2OIKlsvnHDLjKipn9hMP7Jo82TSzSKgNhbmZtPGMRlVIK+I9G
-         n+vg==
-X-Gm-Message-State: AOAM533dBO3DecvtTl3d3I7pLCUDvJcVI17IMVpeWqTQ48GGqWhGwPFl
-        WF/MDio0NxpJH50cRl5lLsTpMn6+
-X-Google-Smtp-Source: ABdhPJzYTiCdC+ggMqFYhWE++RKrq4apno48/IldIeChCHa3iICqgE1p6y/9FEDmWiJHC1zrMAUH0w==
-X-Received: by 2002:a17:902:bf4c:: with SMTP id u12mr298338pls.32.1594831422813;
-        Wed, 15 Jul 2020 09:43:42 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o10sm2506142pjs.27.2020.07.15.09.43.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jul 2020 09:43:42 -0700 (PDT)
-Subject: Re: [PATCH 5.7 000/166] 5.7.9-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-References: <20200714184115.844176932@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <424db635-44a1-8bc8-fe5e-4b84e9c14281@roeck-us.net>
-Date:   Wed, 15 Jul 2020 09:43:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9TcWWArm6s2MYIjyVq/UCCy6oJdlx6ARoFnt89Ui6x0=;
+        b=QFT7HkvjdpyAL28mUwyQwa+5czoQwSu7AeHWW1/E2XyY572idUhWyvRKeobumkpopL
+         ugBB5NrlTfao6VdAkP9lkM4hcIvKK22Hd94JRuZy6RQYKii1fkE7kuytX24bzGRnzpqX
+         V1dj1anRO6HA8Ozlkb4mMYEUakVmNYo3JbHc7fJ1mEHP3+BE7i18lursyvgRH8eOkaa5
+         QuitBNNi0QzGzcQIboDRyq13Jg4BzlRYQiwkcD/5+5M4OqeuSV0ej5e7laNC7kJTr+9G
+         4RNe6XU+8tl1P6zhrjLrRkqlwpYa04wm4EsnLlvqLy6YPQHwqg097xMV9itXt/rWeuvm
+         bE6w==
+X-Gm-Message-State: AOAM533VJnM9vlQRmygkFMPQuOBZ+kI1eB/IhFF3CWHaRPzkOD9O6+S2
+        16Ytu61T7A7Uo5/XdZl0BQu7a7jF3qTQF3Kb/UhfmQ==
+X-Google-Smtp-Source: ABdhPJwssU2sgLtioAtubTRiKoa9fXpfCJPHELz4q7gRW7oXa88GnM/2/oRwHYoMQmQ5ln/cthnWT+Q2TDvVLRpl+Ag=
+X-Received: by 2002:aca:cf4f:: with SMTP id f76mr510384oig.172.1594831546012;
+ Wed, 15 Jul 2020 09:45:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <0000000000004a4d6505aa7c688a@google.com> <20200715152912.GA2209203@elver.google.com>
+ <20200715163256.GB1167@sol.localdomain>
+In-Reply-To: <20200715163256.GB1167@sol.localdomain>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 15 Jul 2020 18:45:33 +0200
+Message-ID: <CANpmjNN7GhF0e5gKPpn8mQS1Nry_8out4j_meDM0PqbZ9K5Ang@mail.gmail.com>
+Subject: Re: KCSAN: data-race in generic_file_buffered_read / generic_file_buffered_read
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     syzbot <syzbot+0f1e470df6a4316e0a11@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/20 11:42 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.7.9 release.
-> There are 166 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 16 Jul 2020 18:40:38 +0000.
-> Anything received after that time might be too late.
-> 
+On Wed, 15 Jul 2020 at 18:33, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> [+Cc linux-fsdevel]
+>
+> On Wed, Jul 15, 2020 at 05:29:12PM +0200, 'Marco Elver' via syzkaller-bugs wrote:
+> > On Wed, Jul 15, 2020 at 08:16AM -0700, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    e9919e11 Merge branch 'for-linus' of git://git.kernel.org/..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1217a83b100000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=570eb530a65cd98e
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=0f1e470df6a4316e0a11
+> > > compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+> > >
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+0f1e470df6a4316e0a11@syzkaller.appspotmail.com
+> > >
+> > > ==================================================================
+> > > BUG: KCSAN: data-race in generic_file_buffered_read / generic_file_buffered_read
+> >
+> > Our guess is that this is either misuse of an API from userspace, or a
+> > bug. Can someone clarify?
+> >
+> > Below are the snippets of code around these accesses.
+>
+> Concurrent reads on the same file descriptor are allowed.  Not with sys_read(),
+> as that implicitly uses the file position.  But it's allowed with sys_pread(),
+> and also with sys_sendfile() which is the case syzbot is reporting here.
+>
+> >
+> > > write to 0xffff8880968747b0 of 8 bytes by task 6336 on cpu 0:
+> > >  generic_file_buffered_read+0x18be/0x19e0 mm/filemap.c:2246
+> >
+> >       ...
+> >       would_block:
+> >               error = -EAGAIN;
+> >       out:
+> >               ra->prev_pos = prev_index;
+> >               ra->prev_pos <<= PAGE_SHIFT;
+> > 2246)         ra->prev_pos |= prev_offset;
+> >
+> >               *ppos = ((loff_t)index << PAGE_SHIFT) + offset;
+> >               file_accessed(filp);
+> >               return written ? written : error;
+> >       }
+> >       EXPORT_SYMBOL_GPL(generic_file_buffered_read);
+> >       ...
+>
+> Well, it's a data race.  Each open file descriptor has just one readahead state
+> (struct file_ra_state), and concurrent reads of the same file descriptor
+> use/change that readahead state without any locking.
+>
+> Presumably this has traditionally been considered okay, since readahead is
+> "only" for performance and doesn't affect correctness.  And for performance
+> reasons, we want to avoid locking during file reads.
+>
+> So we may just need to annotate all access to file_ra_state with
+> READ_ONCE() and WRITE_ONCE()...
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 431 pass: 431 fail: 0
+The thing that stood out here are the multiple accesses both on the
+reader and writer side. If it was only 1 access, where the race is
+expected, a simple READ/WRITE_ONCE might have been OK.
 
-Guenter
+But here, we actually have several writes to the same variable
+'prev_pos'. The reader is also doing several reads to the same
+variable. Maybe we got lucky because the compiler just turns it into 1
+load, keeps it in a register and does the various modifications, and
+then 1 store to write back. Similar on the reader side, we may have
+gotten lucky in that the compiler just does 1 actual load. If that
+behaviour is safe, it needs to be made explicit to make it impossible
+for the compiler to generate anything else.
+
+> > >  generic_file_read_iter+0x7d/0x3e0 mm/filemap.c:2326
+> > >  ext4_file_read_iter+0x2d6/0x420 fs/ext4/file.c:74
+> > >  call_read_iter include/linux/fs.h:1902 [inline]
+> > >  generic_file_splice_read+0x22a/0x310 fs/splice.c:312
+> > >  do_splice_to fs/splice.c:870 [inline]
+> > >  splice_direct_to_actor+0x2a8/0x660 fs/splice.c:950
+> > >  do_splice_direct+0xf2/0x170 fs/splice.c:1059
+> > >  do_sendfile+0x562/0xb10 fs/read_write.c:1540
+> > >  __do_sys_sendfile64 fs/read_write.c:1601 [inline]
+> > >  __se_sys_sendfile64 fs/read_write.c:1587 [inline]
+> > >  __x64_sys_sendfile64+0xf2/0x130 fs/read_write.c:1587
+> > >  do_syscall_64+0x51/0xb0 arch/x86/entry/common.c:384
+> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > >
+> > > read to 0xffff8880968747b0 of 8 bytes by task 6334 on cpu 1:
+> > >  generic_file_buffered_read+0x11e/0x19e0 mm/filemap.c:2011
+> >
+> >       ...
+> >       index = *ppos >> PAGE_SHIFT;
+> >       prev_index = ra->prev_pos >> PAGE_SHIFT;
+> > 2011) prev_offset = ra->prev_pos & (PAGE_SIZE-1);
+> >       last_index = (*ppos + iter->count + PAGE_SIZE-1) >> PAGE_SHIFT;
+> >       offset = *ppos & ~PAGE_MASK;
+> >       ...
+> >
+> > >  generic_file_read_iter+0x7d/0x3e0 mm/filemap.c:2326
+> > >  ext4_file_read_iter+0x2d6/0x420 fs/ext4/file.c:74
+> > >  call_read_iter include/linux/fs.h:1902 [inline]
+> > >  generic_file_splice_read+0x22a/0x310 fs/splice.c:312
+> > >  do_splice_to fs/splice.c:870 [inline]
+> > >  splice_direct_to_actor+0x2a8/0x660 fs/splice.c:950
+> > >  do_splice_direct+0xf2/0x170 fs/splice.c:1059
+> > >  do_sendfile+0x562/0xb10 fs/read_write.c:1540
+> > >  __do_sys_sendfile64 fs/read_write.c:1601 [inline]
+> > >  __se_sys_sendfile64 fs/read_write.c:1587 [inline]
+> > >  __x64_sys_sendfile64+0xf2/0x130 fs/read_write.c:1587
+> > >  do_syscall_64+0x51/0xb0 arch/x86/entry/common.c:384
+> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > >
+> > > Reported by Kernel Concurrency Sanitizer on:
+> > > CPU: 1 PID: 6334 Comm: syz-executor.0 Not tainted 5.8.0-rc5-syzkaller #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > > ==================================================================
