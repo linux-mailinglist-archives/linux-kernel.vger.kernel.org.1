@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33EB220FFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E805221000
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgGOOzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 10:55:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725798AbgGOOzV (ORCPT
+        id S1727101AbgGOOz6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Jul 2020 10:55:58 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:56970 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726831AbgGOOzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 10:55:21 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFE0C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:55:20 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id o11so3025608wrv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:55:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Xx3joU+7lj4tPv3i1MBeu7gIGjv2jVS4xXq0wsixJEw=;
-        b=mZ7zMteF9Dkbv4smJYU6GqQ+rNM4I9cTbn4pjKCwKenfFj3y8WMi6xF/5lDE87m0mn
-         0ipw1YhEn3wMmPaqWymXg7qytDbvgBHRAmy0zz1wWns9j+WrdH3Hr0dkvY3bzZC8Y8cc
-         rak79OzoglUWnTrb3nQGygOzoyTJ8+F0sb9OTXIRFkfcLdTB9yhGDUy+7aV9jFXsXhu/
-         j6gvw1HI5lHnqNVrqLdvgwYJ0JR+kzUEHZqeYlDPG7AJFP8aMG2u4Wg0aXFp00ezS96E
-         3TRB6il2spjRMxMrg0mN0LPgz0Dq9Og+iXFLR/R5sfl0SaYoRYSB/Hp4LCKsSAhE/EhW
-         fA3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Xx3joU+7lj4tPv3i1MBeu7gIGjv2jVS4xXq0wsixJEw=;
-        b=NFbEiA6OhBAcBr8Fq+et2v+UPdcE+c2jqpW9QOsPRaJW+5BcX94gbAZScRS2GTVmGH
-         QUPTpp7PrV928yAPOV5rcGBVPyjOwTm62AEySLqLS7Xb6lKx+TlGJYjYAGoXqnaKfeZp
-         0O/84yW4DcjRRq+T7GJua0XotLLHgS+u7kBRmTGNVzhqRFnGxYGCpbvI+EgPCNVpz9Og
-         KHrAuy2vLBXIoJHXJ0DlMGMnIs7bpYBu6v3iqpDahmcqYFVjbjp5t6Ey4xhcN5D5VKkQ
-         A87Rw5JuP/KIxnALcuNlWpGXg50hXRMLR+y3Jpe4hGStanFQyix37i1uWS4C0ABhuNIM
-         swLQ==
-X-Gm-Message-State: AOAM5316uw0U4ckGwa0u49MZnDBLodARR5Ucl9SqKkiXSYQ5R+MqSyHp
-        AQHRucPP9wItnjN9SdLdec8dpA==
-X-Google-Smtp-Source: ABdhPJweQjLfl3Z2I4EIWZw8pwB7r6eyoCyj4BdjN5QJI5YwTdyLpOuupQoYb9sgXDe+xqjyl9/7CA==
-X-Received: by 2002:a5d:628b:: with SMTP id k11mr11838681wru.107.1594824919525;
-        Wed, 15 Jul 2020 07:55:19 -0700 (PDT)
-Received: from dell ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id c15sm3733251wme.23.2020.07.15.07.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 07:55:18 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 15:55:16 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/1] ASoC: fsl: fsl-asoc-card: Trivial: Fix misspelling
- of 'exists'
-Message-ID: <20200715145516.GH3165313@dell>
-References: <20200715094447.3170843-1-lee.jones@linaro.org>
- <20200715142651.GA44014@sirena.org.uk>
+        Wed, 15 Jul 2020 10:55:55 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-188-aPZD-QdqNveEotIVVqmAdA-1; Wed, 15 Jul 2020 15:55:51 +0100
+X-MC-Unique: aPZD-QdqNveEotIVVqmAdA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 15 Jul 2020 15:55:50 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 15 Jul 2020 15:55:50 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@infradead.org>,
+        Kees Cook <keescook@chromium.org>
+CC:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "John Johansen" <john.johansen@canonical.com>
+Subject: RE: [PATCH 7/7] exec: Implement kernel_execve
+Thread-Topic: [PATCH 7/7] exec: Implement kernel_execve
+Thread-Index: AQHWWnMrd4ih7YlzG0aqMJfp5omyT6kIuIaQ
+Date:   Wed, 15 Jul 2020 14:55:50 +0000
+Message-ID: <d6d204c4427b49f6b24ac24bf1082fa4@AcuMS.aculab.com>
+References: <871rle8bw2.fsf@x220.int.ebiederm.org>
+ <87wo365ikj.fsf@x220.int.ebiederm.org> <202007141446.A72A4437C@keescook>
+ <20200715064248.GH32470@infradead.org>
+In-Reply-To: <20200715064248.GH32470@infradead.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200715142651.GA44014@sirena.org.uk>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Jul 2020, Mark Brown wrote:
-
-> On Wed, Jul 15, 2020 at 10:44:47AM +0100, Lee Jones wrote:
+From: Christoph Hellwig
+> Sent: 15 July 2020 07:43
+> Subject: Re: [PATCH 7/7] exec: Implement kernel_execve
 > 
-> >  /*
-> > - * This dapm route map exits for DPCM link only.
-> > + * This dapm route map exists for DPCM link only.
-> >   * The other routes shall go through Device Tree.
-> 
-> This doesn't apply against current code, please check and resend.
+> On Tue, Jul 14, 2020 at 02:49:23PM -0700, Kees Cook wrote:
+> > On Tue, Jul 14, 2020 at 08:31:40AM -0500, Eric W. Biederman wrote:
+> > > +static int count_strings_kernel(const char *const *argv)
+> > > +{
+> > > +	int i;
+> > > +
+> > > +	if (!argv)
+> > > +		return 0;
+> > > +
+> > > +	for (i = 0; argv[i]; ++i) {
+> > > +		if (i >= MAX_ARG_STRINGS)
+> > > +			return -E2BIG;
+> > > +		if (fatal_signal_pending(current))
+> > > +			return -ERESTARTNOHAND;
+> > > +		cond_resched();
+> > > +	}
+> > > +	return i;
+> > > +}
+> >
+> > I notice count() is only ever called with MAX_ARG_STRINGS. Perhaps
+> > refactor that too? (And maybe rename it to count_strings_user()?)
 
-What is 'current code'?  It's applied against today's -next.
+Thinks....
+If you setup env[] and argv[] on the new user stack early in exec processing
+then you may not need any limits at all - except the size of the user stack.
+Even the get_user() loop will hit an invalid address before the counter
+wraps (provided it is unsigned long).
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
