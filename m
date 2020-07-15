@@ -2,95 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EC2221375
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 19:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9232213C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 19:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726034AbgGORYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 13:24:16 -0400
-Received: from mga05.intel.com ([192.55.52.43]:14801 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgGORYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 13:24:15 -0400
-IronPort-SDR: XfrtuW+XMvx9W7vz/obGzoORxpRIsckwEytAbNVy2VqzhU23Qa72dRnQb4GgoVM6dQZWF9aTwf
- CUJY/8Nc6nfg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="234077841"
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; 
-   d="scan'208";a="234077841"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 10:24:13 -0700
-IronPort-SDR: wsqayxnu2iV0RqIZ80mnY9a5n9quVCaoiOsHLNX9f8O9A+jvW/8ILDlG6gvYuLyd3EgAfM7oBR
- rHVA/jAbsmLw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; 
-   d="scan'208";a="430204423"
-Received: from guptapadev.jf.intel.com (HELO guptapadev.amr) ([10.54.74.188])
-  by orsmga004.jf.intel.com with ESMTP; 15 Jul 2020 10:24:13 -0700
-Date:   Wed, 15 Jul 2020 10:18:20 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
+        id S1726780AbgGORyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 13:54:14 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:45690 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725861AbgGORyN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 13:54:13 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06FGvwPu045673;
+        Wed, 15 Jul 2020 16:59:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=ySvnLAKibIKrCI95yKZmOin0mAO3iUBF2SDonTOgiX0=;
+ b=xYrPmKxGZfvFxOqIpElVFiktRYwsOKkT0bHSmvjM8NifpdUwKjJixyRVC1y+mFoZTVV0
+ jRayhCHA7dLI/G6zYZpnKRj0Nc6XACkYUy+ay+gfe3ui2XOW5pnroxxXAESX2mrPuAsC
+ d9nm0TMw6eHQbfXgH0i6l//QzxBTbQTE67cYV8nbuXmj8VZW+pHRyKfHcroqQhryWdpJ
+ Q/YJF+NEZn6ZQS6FWYabg4cb/VNbT1eEa0aakt6wLISjSg9DgOZzum966IgmGBFaq+LM
+ J8bLbZeKF/unOaRxLPNxhlQz4dHszcTx+AWjNrvzav3TIIJH9GXDbM08wfuRh8aRsuYJ Zw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 327s65jvdh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 15 Jul 2020 16:59:33 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06FGwh9Y004902;
+        Wed, 15 Jul 2020 16:59:32 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 327qc1b55g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jul 2020 16:59:32 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06FGxQq3009148;
+        Wed, 15 Jul 2020 16:59:27 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 Jul 2020 09:59:26 -0700
+Subject: Re: [PATCH v3] mm/hugetlb: split hugetlb_cma in nodes with memory
+To:     Will Deacon <will@kernel.org>
+Cc:     Barry Song <song.bao.hua@hisilicon.com>, akpm@linux-foundation.org,
+        x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, linux-arm-kernel@lists.infradead.org,
+        Roman Gushchin <guro@fb.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Gomez Iglesias, Antonio" <antonio.gomez.iglesias@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Anthony Steinhauser <asteinhauser@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H.Peter Anvin" <hpa@zytor.com>,
         Mike Rapoport <rppt@linux.ibm.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Waiman Long <longman@redhat.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH] x86/bugs/multihit: Fix mitigation reporting when KVM is
- not in use
-Message-ID: <20200715171820.GA12379@guptapadev.amr>
-References: <267631f4db4fd7e9f7ca789c2efaeab44103f68e.1594689154.git.pawan.kumar.gupta@linux.intel.com>
- <20200714014540.GH29725@linux.intel.com>
- <099d6985-9e9f-1d9f-7098-58a9e26e4450@intel.com>
- <20200714191759.GA7116@guptapadev.amr>
- <ba442a51-294e-8624-9a69-5613ff050551@intel.com>
- <20200714210442.GA10488@guptapadev.amr>
- <e12cd3b8-7df1-94e8-e603-39e00648c026@intel.com>
- <20200715005130.GE14404@linux.intel.com>
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>
+References: <20200710120950.37716-1-song.bao.hua@hisilicon.com>
+ <359ea1d0-b1fd-d09f-d28a-a44655834277@oracle.com>
+ <20200715081822.GA5683@willie-the-truck>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <5724f1f8-63a6-ee0f-018c-06fb259b6290@oracle.com>
+Date:   Wed, 15 Jul 2020 09:59:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200715005130.GE14404@linux.intel.com>
+In-Reply-To: <20200715081822.GA5683@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9683 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 mlxscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007150132
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9683 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007150132
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 05:51:30PM -0700, Sean Christopherson wrote:
-> On Tue, Jul 14, 2020 at 02:20:59PM -0700, Dave Hansen wrote:
-> > On 7/14/20 2:04 PM, Pawan Gupta wrote:
-> > >> I see three inputs and four possible states (sorry for the ugly table,
-> > >> it was this or a spreadsheet :):
-> > >>
-> > >> X86_FEATURE_VMX	CONFIG_KVM_*	hpage split  Result	   Reason
-> > >> 	N			x	    x	     Not Affected  No VMX
-> > >> 	Y			N	    x	     Not affected  No KVM
+On 7/15/20 1:18 AM, Will Deacon wrote:
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index f24acb3af741..a0007d1d12d2 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -3273,6 +3273,9 @@ void __init hugetlb_add_hstate(unsigned int order)
+>>  	snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
+>>  					huge_page_size(h)/1024);
 > 
-> This line item is pointless, the relevant itlb_multihit_show_state()
-> implementation depends on CONFIG_KVM_INTEL.  The !KVM_INTEL version simply
-> prints ""Processor vulnerable".
+> (nit: you can also make hugetlb_cma_reserve() static and remote its function
+> prototypes from hugetlb.h)
 
-While we are on it, for CONFIG_KVM_INTEL=n would it make sense to report "Not
-affected(No KVM)"? "Processor vulnerable" is not telling much about the
-mitigation.
+Yes thanks.  I threw this together pretty quickly.
 
-Thanks,
-Pawan
+> 
+>> +	if (order >= MAX_ORDER && hugetlb_cma_size)
+>> +		hugetlb_cma_reserve(order);
+> 
+> Although I really like the idea of moving this out of the arch code, I don't
+> quite follow the check against MAX_ORDER here -- it looks like a bit of a
+> hack to try to intercept the "PUD_SHIFT - PAGE_SHIFT" order which we
+> currently pass to hugetlb_cma_reserve(). Maybe we could instead have
+> something like:
+> 
+> 	#ifndef HUGETLB_CMA_ORDER
+> 	#define HUGETLB_CMA_ORDER	(PUD_SHIFT - PAGE_SHIFT)
+> 	#endif
+> 
+> and then just do:
+> 
+> 	if (order == HUGETLB_CMA_ORDER)
+> 		hugetlb_cma_reserve(order);
+> 
+> ? Is there something else I'm missing?
+> 
+
+Well, the current hugetlb CMA code only kicks in for gigantic pages as
+defined by the hugetlb code. For example, the code to allocate a page
+from CMA is in the routine alloc_gigantic_page().  alloc_gigantic_page()
+is called from alloc_fresh_huge_page() which starts with:
+
+        if (hstate_is_gigantic(h))
+                page = alloc_gigantic_page(h, gfp_mask, nid, nmask);
+        else
+                page = alloc_buddy_huge_page(h, gfp_mask,
+                                nid, nmask, node_alloc_noretry);
+
+and, hstate_is_gigantic is,
+
+static inline bool hstate_is_gigantic(struct hstate *h)
+{
+        return huge_page_order(h) >= MAX_ORDER;
+}
+
+So, everything in the existing code really depends on the hugetlb definition
+of gigantic page (order >= MAX_ORDER).  The code to check for
+'order >= MAX_ORDER' in my proposed patch is just following the same
+convention.
+
+I think the current dependency on the hugetlb definition of gigantic page
+may be too simplistic if using CMA for huegtlb pages becomes more common.
+Some architectures (sparc, powerpc) have more than one gigantic pages size.
+Currently there is no way to specify that CMA should be used for one and
+not the other.  In addition, I could imagine someone wanting to reserve/use
+CMA for non-gigantic (PMD) sized pages.  There is no mechainsm for that today.
+
+I honestly have not heard about many use cases for this CMA functionality.
+When support was initially added, it was driven by a specific use case and
+the 'all gigantic pages use CMA if defined' implementation was deemed
+sufficient.  If there are more use cases, or this seems too simple we can
+revisit that decision.
+
+>> +
+>>  	parsed_hstate = h;
+>>  }
+>>  
+>> @@ -5647,7 +5650,10 @@ void __init hugetlb_cma_reserve(int order)
+>>  	unsigned long size, reserved, per_node;
+>>  	int nid;
+>>  
+>> -	cma_reserve_called = true;
+>> +	if (cma_reserve_called)
+>> +		return;
+>> +	else
+>> +		cma_reserve_called = true;
+> 
+> (nit: don't need the 'else' here)
+
+Yes, duh!
+
+-- 
+Mike Kravetz
