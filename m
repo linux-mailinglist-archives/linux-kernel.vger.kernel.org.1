@@ -2,79 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CE322089C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE4C22089E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730628AbgGOJXd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Jul 2020 05:23:33 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:44318 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729672AbgGOJXc (ORCPT
+        id S1730645AbgGOJXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:23:52 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49896 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729672AbgGOJXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:23:32 -0400
-Received: by mail-ej1-f66.google.com with SMTP id ga4so1412653ejb.11;
-        Wed, 15 Jul 2020 02:23:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZjUBYbCAhkMSlEf1D1VjAPqeltcV9sJtDSHasy83UmE=;
-        b=ifhmI0N3dDcqPL5TV9oj7Fn/Ncit4UO5XhbPfngAIS6+iqRO24OiAwnNgtn/zE8NUY
-         j8Hg+gHHY/bM7JW9RE3ZQt26K5/NHS0ad98VOlezrPEonNKSahoWvgBem+FvzGALj3YT
-         WhZ3Ox9yP5hUmOq7igQdnhM4PPzamlQHkWtI1uHL0jW7gq+RbSizcOg0Ry7Rt++AbfE/
-         bEqxn/VLjFkZVq5tKttVh2JWSU5lfzMgu6rDR2Rqm3u8VuCTFl+y9az/6EE+tK2K3Bas
-         AWSPNvosU0iPKG5vxkm4SXVwGhksgFxOmbgHeWUgtMnf5zxrXOAGE3fhmKJCVFgVVS5Y
-         IjBw==
-X-Gm-Message-State: AOAM532ZH17tBj/pejpWkjEfw4259RZujdIitkEv1U5vtu/TjTPZ8cXW
-        2uBlhyaAhnMZrqWdodbZ3au9IHYw7LQxq6intFY=
-X-Google-Smtp-Source: ABdhPJwHOldqQmuodyxBvCRakrk0jEwP5N4dmKqXxJKGDLmt+HF2VeypeRx/68egPxFW5FOpqzMnanzIOz45zNrQOwk=
-X-Received: by 2002:a17:906:a44:: with SMTP id x4mr8965528ejf.193.1594805010582;
- Wed, 15 Jul 2020 02:23:30 -0700 (PDT)
+        Wed, 15 Jul 2020 05:23:49 -0400
+Date:   Wed, 15 Jul 2020 11:23:45 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594805027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nVewUEkE+vEgqvpSZaR+rHv9rvICaRBJ6Hc/Y4Gfv04=;
+        b=iRcqbhooQLbNQYs0t6EgUxItIJxhtP3b8s8woTQvVERuHgCybkfAetFUIzEPA2qoDta3XB
+        hFGfqNFUsu3hRGjuhAphrutMLv6knCYWsKZM43Mb3AYZHtaVSpWCf9rN/cvu+IehElTs6w
+        w7jkCecMreibSzUAgIGJ2NVV3RoeZlRT8WDBS9NXru7YSKwOWLV7KNvaQtm77bvWFv6rIw
+        Tmf674X1SQV4U6ysvZST8Y6X5/9VyE6jietFR2lRK9R/Fnv4Xy0+oqlSKZzC+OAamfCMpL
+        S6AUQbGmozxbFDdI/qPyin9SrTMah7JNfk2r2V4MAlBnzEXS+gnSSHhpJVaY6A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594805027;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nVewUEkE+vEgqvpSZaR+rHv9rvICaRBJ6Hc/Y4Gfv04=;
+        b=XvgIcEpx3pM+hW2dYCP5H7sBCeEboYeXT2fgmDCQ3cwOqyeGO6r/T+NNo/0VBxbVQMqjLC
+        G1W0Dhzx1t3IK1CQ==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     peterz@infradead.org
+Cc:     Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>, jogness@linutronix.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] sched_clock: Expose struct clock_read_data
+Message-ID: <20200715092345.GA231464@debian-buster-darwi.lab.linutronix.de>
+References: <20200715020512.20991-1-leo.yan@linaro.org>
+ <20200715020512.20991-2-leo.yan@linaro.org>
+ <20200715055650.GB225020@debian-buster-darwi.lab.linutronix.de>
+ <20200715081222.GB10769@hirez.programming.kicks-ass.net>
+ <20200715081443.GB43129@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200713032143.21362-1-vulab@iscas.ac.cn>
-In-Reply-To: <20200713032143.21362-1-vulab@iscas.ac.cn>
-From:   Barry Song <baohua@kernel.org>
-Date:   Wed, 15 Jul 2020 21:23:20 +1200
-Message-ID: <CAGsJ_4z4QfmFxu=+8QgKz4qSSob+2K+EO5hukPjhgPYkvEuJmw@mail.gmail.com>
-Subject: Re: [PATCH] clk: clk-atlas6: fix return value check in atlas6_clk_init()
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     Michael Turquette <mturquette@baylibre.com>, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715081443.GB43129@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xu Wang <vulab@iscas.ac.cn> 于2020年7月13日周一 下午3:27写道：
+On Wed, Jul 15, 2020 at 10:14:43AM +0200, peterz@infradead.org wrote:
+> On Wed, Jul 15, 2020 at 10:12:22AM +0200, Peter Zijlstra wrote:
+> > On Wed, Jul 15, 2020 at 07:56:50AM +0200, Ahmed S. Darwish wrote:
+> > > On Wed, Jul 15, 2020 at 10:05:07AM +0800, Leo Yan wrote:
+> > > > From: Peter Zijlstra <peterz@infradead.org>
+> > > >
+> > > ...
+> > > >
+> > > > Provide struct clock_read_data and two (seqcount) helpers so that
+> > > > architectures (arm64 in specific) can expose the numbers to userspace.
+> > > >
+> > > ...
+> > > >
+> > > > +struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
+> > > > +{
+> > > > +	*seq = raw_read_seqcount(&cd.seq);
+> > > > +	return cd.read_data + (*seq & 1);
+> > > > +}
+> > > > +
+> > > ...
+> > >
+> > > Hmm, this seqcount_t is actually a latch seqcount. I know the original
+> > > code also used raw_read_seqcount(), but while at it, let's use the
+> > > proper read API for seqcount_t latchers: raw_read_seqcount_latch().
+> > >
+> > > raw_read_seqcount_latch() has no read memory barrier though, and a
+> > > suspicious claim that READ_ONCE() pairs with an smp_wmb() (??). But if
+> > > its implementation is wrong, let's fix it there instead.
+> >
+> > It's supposed to be a dependent load, so READ_ONCE() is sufficient.
+> > Except, of course, the C standard has other ideas, so a compiler is
+> > allowed to wreck that, but they mostly don't :-)
 >
-> In case of error, the function clk_register() returns ERR_PTR()
-> and never returns NULL. The NULL test in the return value check
-> should be replaced with IS_ERR().
+> Also see:
 >
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+>   https://lkml.kernel.org/r/20200625085745.GD117543@hirez.programming.kicks-ass.net
 
-Acked-by: Barry Song <baohua@kernel.org>
+Oh, spot on.
 
-> ---
->  drivers/clk/sirf/clk-atlas6.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/sirf/clk-atlas6.c b/drivers/clk/sirf/clk-atlas6.c
-> index c84d5bab7ac2..b95483bb6a5e 100644
-> --- a/drivers/clk/sirf/clk-atlas6.c
-> +++ b/drivers/clk/sirf/clk-atlas6.c
-> @@ -135,7 +135,7 @@ static void __init atlas6_clk_init(struct device_node *np)
->
->         for (i = pll1; i < maxclk; i++) {
->                 atlas6_clks[i] = clk_register(NULL, atlas6_clk_hw_array[i]);
-> -               BUG_ON(!atlas6_clks[i]);
-> +               BUG_ON(IS_ERR(atlas6_clks[i]));
->         }
->         clk_register_clkdev(atlas6_clks[cpu], NULL, "cpu");
->         clk_register_clkdev(atlas6_clks[io],  NULL, "io");
-> --
-> 2.17.1
->
+Can we then please replace the raw_read_seqcount(), in the original
+patch which started this discussion, with raw_read_seqcount_latch()?
+
+I see that you already did something similar for timekeeping.c:
+7fc26327b756 ("seqlock: Introduce raw_read_seqcount_latch()").
+
+Confession time: I have an internal patch series which introduces
+seqcount_latch_t. Having a standardized set of accessors for the
+seqcount latch read and write paths will make everything much more
+streamlined :-)
+
+Thanks,
+
+--
+Ahmed S. Darwish
+Linutronix GmbH
