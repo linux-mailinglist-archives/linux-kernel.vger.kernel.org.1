@@ -2,168 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901B1220159
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 02:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C90B22015B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 02:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgGOAhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 20:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
+        id S1728104AbgGOAhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 20:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726893AbgGOAhB (ORCPT
+        with ESMTP id S1726603AbgGOAhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 20:37:01 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E161BC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:37:00 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id o8so2326226wmh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:37:00 -0700 (PDT)
+        Tue, 14 Jul 2020 20:37:32 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29961C061755;
+        Tue, 14 Jul 2020 17:37:32 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id cm21so697039pjb.3;
+        Tue, 14 Jul 2020 17:37:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fyYHKBAEzWizf9raS+o1+KdK49GqNrkiRZGBEtob6wU=;
-        b=nQAtCVzUhpS93taxTWnLXkxMV9e8LFmbTxpMYPt3h4S9PC7WSh9WDOpFBH2ssKXCKW
-         1ysNRALjweghfM0buYTQz0ODi9le7f692CurPwnafhsGQcEIXOiDOnIs6ZGSjyxtPACs
-         1QGfzPgg9a01ouhFHRnyd9VF7slLelIIXll67D5oW+uFNFWqkLh7Axk5nzir/NKmqww8
-         9a2hzfW3LtdDfhEQudTbg/m12LJzChK1bj+i0RMgED4cEwCGGs82ZASilgAmT9VbKoCI
-         pRxgPSqcJQ8LkK36otymqsFjkBYyJUlcSOZrHqXdLLRAaxndr+VeyBdrOm4Xx6FPieQE
-         15FA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0d8lgGWp3yT9RktjxMAvaiqBLoWz3hFyt3U4v25jxeA=;
+        b=sS8jnJufruUkvnsojmPjKIRSOHh7VIVZ7zbND0Y3TAZWO/tul0vNDtJjFlXMf2NuNl
+         PyOl63gKpchRxR/DGPMK+8bCepYSz83F6w3IZ+kRcrc+wDkrvYDJc9L18fwUfJ4R3sel
+         IhU1bIRPXPeTySu5ja2yaMlkHcePst+YLBw43kEPt5wpi/h5oIEn6dJvV5/2Yc36BEV/
+         EA2VNNojBUnhuSDObVJ0ITq+0DUMGVsFZJFNNzGeZB8ZzJmEv1R8v0ZlMSWUu9xGgU/P
+         4ZgeAIe+EWGK0j2gFy1hDFDSBI9on9kx8viuw0llZFETth6Gdncn31DDnR3EJmMcdOtR
+         pPcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fyYHKBAEzWizf9raS+o1+KdK49GqNrkiRZGBEtob6wU=;
-        b=r4K0ly/ayYWTjGCB2wF4pK9yspJEOHsAO3E5Ey+8/YbUxnB+Vz7aftrJ24WucJ8WMi
-         1P3zzNwrtobJwJ1w7msNC9XLUp+f7GrbtQs1fg9NypyIB+nitk8e8vBHJeRThF20/NmO
-         v9DWBvAfBawH/M29yt0kGryxuyKxgsvZi0ikYKlZSV6K3D03G6c97YGsZaE43h+5lCRc
-         9IUYEVlnJuv4Qp4UQnLnKyRWHYxEIJ0JXK2FAN4r9QcB2UsxOUuzAaBCdA9as87HYMo9
-         3VZx/g4TWbfP5eugKjFEvi+TxaVQ8A+y5Rb1NEJNfc6tzCv57vfGsEPRJxo2LSak5VHo
-         nw7w==
-X-Gm-Message-State: AOAM5303hrvuF55wEq/hans5iwSD6pLVbc/zAEjcuY0jhWvwKACQ1qE9
-        6ki03QtVJBoL26fx/VlRT6QAE+KLD5E58cVDSjZnaKqSbWQ=
-X-Google-Smtp-Source: ABdhPJx7l4LDaw+zhDnbEnv4B+UZ34ld6qKBXtTgvzH4TTCQ1rPk1xzm6TX1TvjrOlweSDOmwbxSOhm49DM/1+4vaE4=
-X-Received: by 2002:a1c:4e08:: with SMTP id g8mr6204312wmh.77.1594771798282;
- Tue, 14 Jul 2020 17:09:58 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0d8lgGWp3yT9RktjxMAvaiqBLoWz3hFyt3U4v25jxeA=;
+        b=c5Bnzk1OfhxcuUClM84E7cdC7+Qx3bQD3IYneDefIkJHZRtHPuGEA5JjUd+2yqhald
+         cr2mBX6Eg3ObOwotsNNXy+XSKyDqPSNI1TZbAFfr+oeUDOPER0nmj2TLSR8+0YN8bTa/
+         2y+Ul20buqBdMYYlfOMDEmOESRBHN6lEVGHif2teHsD81D7AnoNAWLXX0j/oTt5iSRBu
+         NlIZPYTDyrFJke+zAaAThFxShlEDkyJJeGsgQPKX6PjqyddHlx6iMUHdpnGrwqnU9lIu
+         in46+vJnXe0cKAREdtrgMR67u7pJbxBIS4DQyzlwhaoYtqfbqQDDmeTqIBRpOcR1KSCJ
+         XioA==
+X-Gm-Message-State: AOAM531AxogsktbAtfpoeDegNIdqK2/3FY9FURn8NB0YDAtMRPnt7GMp
+        PvKvhG3P4urgN0LUDCvY9fI=
+X-Google-Smtp-Source: ABdhPJyhy0IZNy2r60ubEp+cU+tNGhJpKg1e8Xtbaa0LZXxBASDuTA64k4DDn+q/FKE1JmsOrx0NYQ==
+X-Received: by 2002:a17:90b:4b12:: with SMTP id lx18mr7855878pjb.156.1594773451627;
+        Tue, 14 Jul 2020 17:37:31 -0700 (PDT)
+Received: from xiaomi.mioffice.cn ([43.224.245.179])
+        by smtp.gmail.com with ESMTPSA id t126sm266156pfd.214.2020.07.14.17.37.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 17:37:31 -0700 (PDT)
+From:   Qiwu Huang <yanziily@gmail.com>
+To:     sre@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jiangfei1@xiaomi.com,
+        Qiwu Huang <huangqiwu@xiaomi.com>
+Subject: [PATCH v3 1/5] power: supply: core: add quick charge type property
+Date:   Wed, 15 Jul 2020 08:35:19 +0800
+Message-Id: <40809c9b859c086ba6aec56b24402d41c60d6e71.1594726859.git.huangqiwu@xiaomi.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1594726859.git.huangqiwu@xiaomi.com>
+References: <cover.1594726859.git.huangqiwu@xiaomi.com>
 MIME-Version: 1.0
-References: <20200712132634.138901-1-jolsa@kernel.org> <20200712132634.138901-11-jolsa@kernel.org>
-In-Reply-To: <20200712132634.138901-11-jolsa@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 14 Jul 2020 17:09:47 -0700
-Message-ID: <CAP-5=fXm7YxrnemW-FWvZCvP8JUqJ2HMeRwUE3E=bM3XszxcFA@mail.gmail.com>
-Subject: Re: [PATCH 10/18] perf metric: Collect referenced metrics in struct metric_expr
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 6:27 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Add referenced metrics into struct metric_expr object,
-> so they are accessible when computing the metric.
->
-> Storing just name and expression itself, so the metric
-> can be resolved and computed.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+From: Qiwu Huang <huangqiwu@xiaomi.com>
 
-Acked-by: Ian Rogers <irogers@google.com>
+Reports the kind of quick charge type based on
+different adapter power. UI will show different
+animation effect for different quick charge type.
 
-Thanks,
-Ian
+Signed-off-by: Qiwu Huang <huangqiwu@xiaomi.com>
+---
+ Documentation/ABI/testing/sysfs-class-power | 21 +++++++++++++++++++++
+ drivers/power/supply/power_supply_sysfs.c   |  1 +
+ include/linux/power_supply.h                | 10 ++++++++++
+ 3 files changed, 32 insertions(+)
 
-> ---
->  tools/perf/util/metricgroup.c | 26 ++++++++++++++++++++++++++
->  tools/perf/util/metricgroup.h |  6 ++++++
->  2 files changed, 32 insertions(+)
->
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 9923eef1e2d4..8cbcc5e05fef 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -83,6 +83,7 @@ static void metric_event_delete(struct rblist *rblist __maybe_unused,
->         struct metric_expr *expr, *tmp;
->
->         list_for_each_entry_safe(expr, tmp, &me->head, nd) {
-> +               free(expr->metric_refs);
->                 free(expr);
->         }
->
-> @@ -243,6 +244,7 @@ static int metricgroup__setup_events(struct list_head *groups,
->
->         list_for_each_entry (eg, groups, nd) {
->                 struct evsel **metric_events;
-> +               struct metric_ref *metric_refs = NULL;
->
->                 metric_events = calloc(sizeof(void *),
->                                 hashmap__size(&eg->pctx.ids) + 1);
-> @@ -274,6 +276,30 @@ static int metricgroup__setup_events(struct list_head *groups,
->                         free(metric_events);
->                         break;
->                 }
-> +
-> +               /*
-> +                * Collect and store collected nested expressions
-> +                * for metric processing.
-> +                */
-> +               if (eg->refs_cnt) {
-> +                       struct metric_ref_node *ref;
-> +
-> +                       metric_refs = zalloc(sizeof(struct metric_ref) * (eg->refs_cnt + 1));
-> +                       if (!metric_refs) {
-> +                               ret = -ENOMEM;
-> +                               free(metric_events);
-> +                               break;
-> +                       }
-> +
-> +                       i = 0;
-> +                       list_for_each_entry(ref, &eg->refs, list) {
-> +                               metric_refs[i].metric_name = ref->metric_name;
-> +                               metric_refs[i].metric_expr = ref->metric_expr;
-> +                               i++;
-> +                       }
-> +               };
-> +
-> +               expr->metric_refs = metric_refs;
->                 expr->metric_expr = eg->metric_expr;
->                 expr->metric_name = eg->metric_name;
->                 expr->metric_unit = eg->metric_unit;
-> diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-> index 8315bd1a7da4..62623a39cbec 100644
-> --- a/tools/perf/util/metricgroup.h
-> +++ b/tools/perf/util/metricgroup.h
-> @@ -18,12 +18,18 @@ struct metric_event {
->         struct list_head head; /* list of metric_expr */
->  };
->
-> +struct metric_ref {
-> +       const char *metric_name;
-> +       const char *metric_expr;
-> +};
-> +
->  struct metric_expr {
->         struct list_head nd;
->         const char *metric_expr;
->         const char *metric_name;
->         const char *metric_unit;
->         struct evsel **metric_events;
-> +       struct metric_ref *metric_refs;
->         int runtime;
->  };
->
-> --
-> 2.25.4
->
+diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/ABI/testing/sysfs-class-power
+index 216d61a22f1e..dd3773dcf16a 100644
+--- a/Documentation/ABI/testing/sysfs-class-power
++++ b/Documentation/ABI/testing/sysfs-class-power
+@@ -708,3 +708,24 @@ Description:
+ 
+ 		Access: Read
+ 		Valid values: 1-31
++
++What:		/sys/class/power_supply/<supply_name>/quick_charge_type
++Date:		Jul 2020
++Contact:	Fei Jiang <jiangfei1@xiaomi.com>
++		Description:
++		Reports the kind of quick charge type based on different adapter power.
++		Different quick charge type represent different charging power.
++		QUICK_CHARGE_NORMAL : Charging Power <= 10W
++		QUICK_CHARGE_FAST : 10W < Charging Power <= 20W
++		QUICK_CHARGE_FLASH : 20W < Charging Power <= 30W
++		QUICK_CHARGE_TURBE : 30W < Charging Power <= 50W
++		QUICK_CHARGE_SUPER : Charging Power > 50W
++
++		Access: Read-Only
++		Valid values:
++			0: QUICK_CHARGE_NORMAL,
++			1: QUICK_CHARGE_FAST,
++			2: QUICK_CHARGE_FLASH,
++			3: QUICK_CHARGE_TURBE,
++			4: QUICK_CHARGE_SUPER.
++
+diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
+index bc79560229b5..9554d7907373 100644
+--- a/drivers/power/supply/power_supply_sysfs.c
++++ b/drivers/power/supply/power_supply_sysfs.c
+@@ -206,6 +206,7 @@ static struct power_supply_attr power_supply_attrs[] = {
+ 	POWER_SUPPLY_ATTR(MODEL_NAME),
+ 	POWER_SUPPLY_ATTR(MANUFACTURER),
+ 	POWER_SUPPLY_ATTR(SERIAL_NUMBER),
++	POWER_SUPPLY_ATTR(QUICK_CHARGE_TYPE),
+ };
+ 
+ static struct attribute *
+diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+index ac1345a48ad0..f35c661a2544 100644
+--- a/include/linux/power_supply.h
++++ b/include/linux/power_supply.h
+@@ -167,6 +167,7 @@ enum power_supply_property {
+ 	POWER_SUPPLY_PROP_MODEL_NAME,
+ 	POWER_SUPPLY_PROP_MANUFACTURER,
+ 	POWER_SUPPLY_PROP_SERIAL_NUMBER,
++	POWER_SUPPLY_PROP_QUICK_CHARGE_TYPE,
+ };
+ 
+ enum power_supply_type {
+@@ -197,6 +198,15 @@ enum power_supply_usb_type {
+ 	POWER_SUPPLY_USB_TYPE_APPLE_BRICK_ID,	/* Apple Charging Method */
+ };
+ 
++enum power_supply_quick_charge_type {
++	QUICK_CHARGE_NORMAL = 0,		/* Charging Power <= 10W */
++	QUICK_CHARGE_FAST,			/* 10W < Charging Power <= 20W */
++	QUICK_CHARGE_FLASH,			/* 20W < Charging Power <= 30W */
++	QUICK_CHARGE_TURBE,			/* 30W < Charging Power <= 50W */
++	QUICK_CHARGE_SUPER,			/* Charging Power > 50W */
++	QUICK_CHARGE_MAX,
++};
++
+ enum power_supply_notifier_events {
+ 	PSY_EVENT_PROP_CHANGED,
+ };
+-- 
+2.27.0
+
