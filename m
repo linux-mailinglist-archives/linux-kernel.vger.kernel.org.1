@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD9F22094D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353AD220952
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730935AbgGOJze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:55:34 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24852 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726687AbgGOJzd (ORCPT
+        id S1730938AbgGOJ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726511AbgGOJ4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:55:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594806932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=bgMe+PJv6EbNNW+M57oHn+BOmr98gpSCFa9M9x7OmkA=;
-        b=JME1/EPEAn+n8K8raJ7zX7a3I3yw0ljinDAOowThUG0Ra4BFQLIJ+yJIbDdMuqqt54Sluk
-        SAP0dU6L/NLU0LIk2fb0zonflUVsPrzB5OgY9ZVKS6GR0l6Qzd0MNpWaAFXixUFCAqEic1
-        I87n78pgr80ocZJaDQ+gUbOWJNumEWU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-453-bKF6v7lJM_29bnIZfmmQqg-1; Wed, 15 Jul 2020 05:55:30 -0400
-X-MC-Unique: bKF6v7lJM_29bnIZfmmQqg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E05911083E83;
-        Wed, 15 Jul 2020 09:55:28 +0000 (UTC)
-Received: from starship.f32vm (unknown [10.35.206.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C98EB710A0;
-        Wed, 15 Jul 2020 09:55:19 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-block@vger.kernel.org (open list:BLOCK LAYER),
-        virtualization@lists.linux-foundation.org (open list:VIRTIO CORE AND
-        NET DRIVERS), Paolo Bonzini <pbonzini@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH] virtio-blk: check host supplied logical block size
-Date:   Wed, 15 Jul 2020 12:55:18 +0300
-Message-Id: <20200715095518.3724-1-mlevitsk@redhat.com>
+        Wed, 15 Jul 2020 05:56:09 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DE2C061755;
+        Wed, 15 Jul 2020 02:56:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=icvsh0UAC9qH2aXd5iDWHDNfzNryn9ZQFj2YeE2x3Lo=; b=aVqwxJf/YogDENWanh6k54iAGI
+        9UWG/KMCQJeVdsLop0VPQ79Zr/SQfouIqOsOlLMxUwWnqkkXy4Oh6Sdw/0KZmzWZ+HycSExS2RqNy
+        4dCX+oEmw4S4UUGMrF4jUES2V8rnOvJZW5gkCi41UyGni8n7w/OrL1RNO/WQxMeHqsC2fiV7h7ERZ
+        78bzlQI2ze2+W5xpUlOrrCFcz/VkLV+AAj1M68CU/vKoQVKVDI+82A0HARYOp8qUjd6peTUn0XET0
+        PNeM9BfgcQNefofCusAPr5QFt3rPrPGPI7BUEVpSgW60HTQaWwS/lB8IqzlYdsOcP1WPds8VPAGzb
+        ri6mySkA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jve8s-0001Wv-P0; Wed, 15 Jul 2020 09:55:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E514A302753;
+        Wed, 15 Jul 2020 11:55:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D1352207A6655; Wed, 15 Jul 2020 11:55:56 +0200 (CEST)
+Date:   Wed, 15 Jul 2020 11:55:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 00/75] x86: SEV-ES Guest Support
+Message-ID: <20200715095556.GI10769@hirez.programming.kicks-ass.net>
+References: <20200714120917.11253-1-joro@8bytes.org>
+ <20200715092456.GE10769@hirez.programming.kicks-ass.net>
+ <20200715093426.GK16200@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715093426.GK16200@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux kernel only supports logical block sizes which are power of two,
-at least 512 bytes and no more that PAGE_SIZE.
+On Wed, Jul 15, 2020 at 11:34:26AM +0200, Joerg Roedel wrote:
+> On Wed, Jul 15, 2020 at 11:24:56AM +0200, Peter Zijlstra wrote:
+> > Can we get some more words -- preferably in actual code comments, on
+> > when exactly #VC happens?
+> 
+> Sure, will add this as a comment before the actual runtime VC handler.
 
-Check this instead of crashing later on.
+Thanks!
 
-Note that there is no need to check physical block size since it is
-only a hint, and virtio-blk already only supports power of two values.
+> > Because the only thing I remember is that #VC could happen on any memop,
+> > but I also have vague memories of that being a later extention.
+> 
+> Currently it is only raised when something happens that the hypervisor
+> intercepts, for example on a couple of instructions like CPUID,
+> RD/WRMSR, ..., or on MMIO/IOIO accesses.
+> 
+> With Secure Nested Paging (SNP), which needs additional enablement, a #VC can
+> happen on any memory access. I wrote the IST handling entry code for #VC
+> with that in mind, but do not actually enable it. This is the reason why
+> the #VC handler just panics the system when it ends up on the fall-back
+> (VC2) stack, with SNP enabled it needs to handle the SNP exit-codes in
+> that path.
 
-Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1664619
-
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- drivers/block/virtio_blk.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-index 980df853ee497..36dda31cc4e96 100644
---- a/drivers/block/virtio_blk.c
-+++ b/drivers/block/virtio_blk.c
-@@ -681,6 +681,12 @@ static const struct blk_mq_ops virtio_mq_ops = {
- static unsigned int virtblk_queue_depth;
- module_param_named(queue_depth, virtblk_queue_depth, uint, 0444);
- 
-+
-+static bool virtblk_valid_block_size(unsigned int blksize)
-+{
-+	return blksize >= 512 && blksize <= PAGE_SIZE && is_power_of_2(blksize);
-+}
-+
- static int virtblk_probe(struct virtio_device *vdev)
- {
- 	struct virtio_blk *vblk;
-@@ -809,9 +815,16 @@ static int virtblk_probe(struct virtio_device *vdev)
- 	err = virtio_cread_feature(vdev, VIRTIO_BLK_F_BLK_SIZE,
- 				   struct virtio_blk_config, blk_size,
- 				   &blk_size);
--	if (!err)
-+	if (!err) {
-+		if (!virtblk_valid_block_size(blk_size)) {
-+			dev_err(&vdev->dev,
-+				"%s failure: unsupported logical block size %d\n",
-+				__func__, blk_size);
-+			err = -EINVAL;
-+			goto out_cleanup_queue;
-+		}
- 		blk_queue_logical_block_size(q, blk_size);
--	else
-+	} else
- 		blk_size = queue_logical_block_size(q);
- 
- 	/* Use topology information if available */
-@@ -872,6 +885,9 @@ static int virtblk_probe(struct virtio_device *vdev)
- 	device_add_disk(&vdev->dev, vblk->disk, virtblk_attr_groups);
- 	return 0;
- 
-+out_cleanup_queue:
-+	blk_cleanup_queue(vblk->disk->queue);
-+	vblk->disk->queue = NULL;
- out_free_tags:
- 	blk_mq_free_tag_set(&vblk->tag_set);
- out_put_disk:
--- 
-2.26.2
-
+And recursive #VC was instant death, right? Because there's no way to
+avoid IST stack corruption in that case.
