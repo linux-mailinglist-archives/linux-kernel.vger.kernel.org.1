@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54432220E7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD854220E81
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731959AbgGONwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 09:52:12 -0400
-Received: from chalk.uuid.uk ([51.68.227.198]:53852 "EHLO chalk.uuid.uk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729086AbgGONwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 09:52:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=guijBD4cg8Q7tdnUnEDYLjCfwVKhLO9XFxXD5Rd4dqU=; b=bNOrGneSfYnabKmEt6SPi+WhIf
-        idXYQAEi7Poyjy3yLsuqy/0ACqYBbFcVPFXbb0YNSzDlGlr6lRMJBiNSVNdkRjtjooluEZmMcTolf
-        56My/D8cvRmABhjiD0CcNIIPFiu1Eo1GycDDdij0/UemLKBWCIpEs1Alv78co2roBRY+AIx8qG++y
-        EhWTf3CHekv94ORx/+LiocmaTH3L35yiDmj5oOG9zqw2fvvPl7WoZjPm9wXjMIwcwOVTC7umLLaPI
-        Dek47bdZuoyPeetqJKwYcQV4sVN8Seiyk2mWO1TozYNm9peYsHxPRlG2nL3yKKZZIOV7bnisqjszV
-        adyVta9g==;
-Received: by chalk.uuid.uk with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <simon@octiron.net>)
-        id 1jvhpH-0000Mi-KI; Wed, 15 Jul 2020 14:52:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:
-        Content-Transfer-Encoding:Content-Type:MIME-Version;
-        bh=guijBD4cg8Q7tdnUnEDYLjCfwVKhLO9XFxXD5Rd4dqU=; b=pDNq9ZX1Rc+2yxI3frqE441dLn
-        80QhNt/Yfx7iAN/mf+jMRFBtacr/seV9EPGwIbZ5N1gFvw4oZNE2C5FWPS5TXVTC7BuWXN1+AJYtn
-        AR5etgDHvk6u0ceQw+5PYoOLy+nlB7C3uidtDT2OrI6F2nUj2KikkA1oBDDsBr8YXzyJCxSpDwOl1
-        sIpOzTZNCGeC9RhpyQs8HKYSJYrjfSbGlV/8mdYUVfrKyjeg+qYuqFOfOBIY6UPRWhrqcXXsQSWB3
-        I4xwtSVTAxF9Le/gY1Pysf3yxX1iMdR7owIo+2dYk5fbZk29pCF616RWFKKuUKUg7NXmCLt7nBQu8
-        19VaFC3A==;
-Received: by tsort.uuid.uk with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <simon@octiron.net>)
-        id 1jvhpC-00018M-Kr; Wed, 15 Jul 2020 14:51:57 +0100
-Received: from localhost ([::1]:45698)
-        by skund.uuid.uk with esmtp (Exim 4.86_2)
-        (envelope-from <simon@octiron.net>)
-        id 1jvhpC-0005Bx-Hy; Wed, 15 Jul 2020 14:51:54 +0100
+        id S1731966AbgGONyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 09:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729086AbgGONyM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 09:54:12 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FCFC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 06:54:12 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id d4so1522972otk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 06:54:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zevQ7L819A5+HQKEue+bXkAwYvfiFRDlPMUrv63M1Lc=;
+        b=e6yziB2Y75V/oJ47iNgF/BM8AgQRy8qxhw86+Pu3WqavW3gOUUDrUVGuc/SFldGhbf
+         ObQ3lm/YBMv5/xNzF+dCZ+S0mAKiclwl0cSJi1DCn1nTdJsLkTE1jHB9sUUkgwM/QHZd
+         k59c+GSpQY5H/t3OHfx5giJRfzYBUXY3mNQbw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zevQ7L819A5+HQKEue+bXkAwYvfiFRDlPMUrv63M1Lc=;
+        b=m4E84ZjayzXBmfn3y5wasmCs90dbnqp+/i71IFtUjxICxwhYvH67bgSKRIX65wz2MX
+         jb97gq54s+7h+GdzIVjq8H33P64bbbDLmQWwj0qXYdwwuQBHSiVBWweR1FK16uNzrD+N
+         RxcAwjfottLuFH6EOM4zYPq7Axuyp0FL3DQfCp+mlisht8Isww77xeWAOWaNHlKiBQVe
+         rtBuiHz7ZAcM/F9jTYK5NjbF1BbvDAuvrIgbmkYKK8nw2oU9GsI0JIzS+rGQY/eQ3vUK
+         X31Z1tzJW2RUKtvUDKKqZGdWR7KDIVpV4IZ0SJJiDweT3EqzvMYuINjSv9bAubLe8GW3
+         Y0Vw==
+X-Gm-Message-State: AOAM533L0/cr9bR6QiXLje9jZ49Yg3N8/0f7rIuCVtpxXnosc+vsK0We
+        UbgecFgOWZxvlxDbaJtMNjcrYA==
+X-Google-Smtp-Source: ABdhPJw4YtuIvoz55X2G1KSV6+9Zs36xzyXAT2Sd1S+gfTcLnWqxD8jlFW6jsuOlkW66s/ikG0BuDQ==
+X-Received: by 2002:a9d:7c8:: with SMTP id 66mr8586373oto.169.1594821250495;
+        Wed, 15 Jul 2020 06:54:10 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id g7sm433754oop.47.2020.07.15.06.54.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jul 2020 06:54:09 -0700 (PDT)
+Subject: Re: [PATCH 5.7 000/166] 5.7.9-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20200714184115.844176932@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <e8d1da73-9c00-66c9-58d7-18175f539015@linuxfoundation.org>
+Date:   Wed, 15 Jul 2020 07:54:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 15 Jul 2020 14:51:54 +0100
-From:   Simon Arlott <simon@octiron.net>
-To:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>, kishon@ti.com,
-        vkoul@kernel.org, robh+dt@kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Philipp Zabel <p.zabel@pengutronix.de>, krzk@kernel.org,
-        gregkh@linuxfoundation.org, alcooperx@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 2/2] phy: bcm63xx-usbh: Add BCM63xx USBH driver
-In-Reply-To: <4C342CF5-7417-4C6D-B1D2-75C71B9688C1@gmail.com>
-References: <20200715131803.1762064-1-noltari@gmail.com>
- <20200715131803.1762064-3-noltari@gmail.com>
- <2e28eed25955385ab2513f8b617829f3@arlott.org>
- <4C342CF5-7417-4C6D-B1D2-75C71B9688C1@gmail.com>
-Message-ID: <17de4f558d512a288ff15c26e90951d0@arlott.org>
-X-Sender: simon@octiron.net
-User-Agent: Roundcube Webmail/1.2-beta
+In-Reply-To: <20200714184115.844176932@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-15 14:39, Álvaro Fernández Rojas wrote:
-> Hello Simon,
+On 7/14/20 12:42 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.7.9 release.
+> There are 166 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This is based on your work:
-> https://github.com/nomis/linux/commit/c4c55b603a78e2732044a833e248c1a1087e7053
-> https://github.com/nomis/linux/commit/f153a58b9e6f88e72c3ef34dc076118f8b3ade5b
+> Responses should be made by Thu, 16 Jul 2020 18:40:38 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.9-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Ok, it has been a long time and I couldn't find a branch with those in 
-locally.
+Compiled and booted on my test system. No dmesg regressions.
 
-Please remove my *email address* from the source code and MODULE_AUTHOR 
-text.
+thanks,
+-- Shuah
 
-
-Historical signed-off-by lines can be updated to:
-Signed-off-by: Simon Arlott <simon@octiron.net>
-
--- 
-Simon Arlott
