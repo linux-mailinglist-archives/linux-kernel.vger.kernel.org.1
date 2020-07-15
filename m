@@ -2,163 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2812217B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1614A2217B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgGOWTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 18:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
+        id S1726929AbgGOWWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 18:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgGOWTY (ORCPT
+        with ESMTP id S1726356AbgGOWWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 18:19:24 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E103C061755;
-        Wed, 15 Jul 2020 15:19:24 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id z5so3796253pgb.6;
-        Wed, 15 Jul 2020 15:19:24 -0700 (PDT)
+        Wed, 15 Jul 2020 18:22:24 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB40C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 15:22:24 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id z24so4535041ljn.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 15:22:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qxMjYphEfEAV7tSz+LCOdD9vQZvr3WacRlabwazm568=;
-        b=tUbTUWR3dxj56+YyBKIZgJW/7OA2iUxxr4thXULbGaCVs/FCj2qxgmftDdCgQcDfAj
-         P5pg8iyiIjQnURraFdk4xxB9TYVuanQxxhvUUAqFJKFeXquE3grQoz4CcppAAy4p5B5E
-         R+/cmzvRIj8wFAXTYPyl3DfbeeARc8bZzK9LkaPYajrSDztZTrdukZcz/XpD4YeBH+Se
-         vYEXBRqGTZ/F2Fuv9aMgg/pO+40ZN4ejTFs7IzCFduxAh5ykbHu13lc1dBt0YzCg57dZ
-         p4UV4ANTI/ixautCIS60xQkouahgl9VBwr1QkJCepyM0WYVBoR1dvQklHkzhUAmNDkU/
-         NR5Q==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QQLzvz01x+b8v3+Cnyl7jGabL4vkvUR6NP/JnDRqN14=;
+        b=t6qmthfa2lAn6qPwWRBsl1GYTeI7O9H+AGbAsb4IxmUyvEHHu7fJK1c224oXidHvmZ
+         5AMdfkj6yFJC2kHTm4TOyTPpVtA2o/xE9NjwHt7C60xpdfuBkE/teayYJacmxzGDOdZW
+         oJbqNFfuBFbWTh5wzW6rl26wHAx82ioSAM5EtzXQUes5raOLOCYfkroCswbzjPxIlBUT
+         /8QKGEclyi661apiOLbs3iuEf1mkRSBXZ/CqUrMD38x7aMkQz2OTITKPPn//QaYzYJfo
+         W/iI5R7wgEGjK8RrMtshOmUBj6wl1smJGLhCZOoaQnxKC1hX619J7iHFGarIIARs5hPn
+         5exw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qxMjYphEfEAV7tSz+LCOdD9vQZvr3WacRlabwazm568=;
-        b=YZb+rvD5V7SzJf1LZFWdbZWEJi6JLMQxK5t5ezXfE7Vglly6G41pEGj1weFeYApLnx
-         p4pSW8Iup+jQLQt7q18CmLulia45ST6KncXzzMgLkA5gKQmPGzqojj+9QYsxjLBfDauT
-         ebbE74tmGSBeE5r/FVQ4b7/F1Utq/xZ2HJkemKYL23dx8ZITHzJb5TcDmYP6yd1yCEBg
-         33rRvqU9g4hbR8vilw9srnPboue+BkR3rZLU6c4WmPxC1V2IU3Q2UUtDDadhRQ9+fqtv
-         +535tVmr2tNNwzDQHg+zjKbCnd18bcTiRnXBcWqow/kzNnVTHxPVuiS7bq3biUvSNOLc
-         xivw==
-X-Gm-Message-State: AOAM533gUwNBSVM95bG9jyXYgDcicZr5wj/6b1ww2oiL4Aaej5iYG1El
-        6copP2FrtbWxbtaBOB8vArQ=
-X-Google-Smtp-Source: ABdhPJztQ4b1Z0Z4rUFJQFEEF4msB+mPG53K5SjClbyNecECZ4BF9AnbVoPPw+8lwtj9Zq1DN6QehQ==
-X-Received: by 2002:a63:135b:: with SMTP id 27mr1656329pgt.37.1594851563677;
-        Wed, 15 Jul 2020 15:19:23 -0700 (PDT)
-Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id p9sm1445997pgc.77.2020.07.15.15.19.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QQLzvz01x+b8v3+Cnyl7jGabL4vkvUR6NP/JnDRqN14=;
+        b=aDWQVAHykqkOmxXBw1GkToBGcshoZrfbpda2V2PNxgukWeSoGbzMue78WQYvx9PaB4
+         t6+6iKYvAwiMi/5POgXKy2a6XwfVJy4u8Wg8X3C5CWdHhm+PpbGtON9NMQu2+tc8ILo4
+         zSSR6H5asLCHGmBBOune/cuVG6zxBZhiOuJBfZap475F37gJDY16MlflIEa8cLDTZOsR
+         09ZqRHJzh+fjDk1flgLxRpY2QbakAV98E6GpfMEiHopO75InpHjPSXklI6F+rRS36M9B
+         9tvBQJQaMpKsfyFE2J8d1SI+7uLJmlwhQyx3mO+LymQ9zGcC2Tb2rWBdaBiYXcN9zsOn
+         WSxw==
+X-Gm-Message-State: AOAM531/IVczgRpFYOA2I+T2QfhTF3CzXXDmh7emh6+k6lW4ugDI0ix2
+        Owj6aTAgVC3S5TAD+4E1Z35j2g==
+X-Google-Smtp-Source: ABdhPJyj3VFOBx+30maf++ddl657sJxm7UjHak+BcLiZlBDP5KWvcTAUDiP0zVjwmsERLy3vKL2u3Q==
+X-Received: by 2002:a2e:8046:: with SMTP id p6mr616358ljg.100.1594851742568;
+        Wed, 15 Jul 2020 15:22:22 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id b16sm669040ljp.124.2020.07.15.15.22.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 15:19:22 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Steev Klimaszewski <steev@gentoo.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Drew Davenport <ddavenport@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Zheng Bin <zhengbin13@huawei.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm/dpu: fix/enable 6bpc dither with split-lm
-Date:   Wed, 15 Jul 2020 15:19:51 -0700
-Message-Id: <20200715221955.3209856-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 15 Jul 2020 15:22:22 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 5CB9C102143; Thu, 16 Jul 2020 01:22:28 +0300 (+03)
+Date:   Thu, 16 Jul 2020 01:22:28 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCHv2] mm: Fix warning in move_normal_pmd()
+Message-ID: <20200715222228.jf2pv5u2wyhtc5o5@box>
+References: <20200715135011.42743-1-kirill.shutemov@linux.intel.com>
+ <CAHk-=wh4pB-jRngOjcGxpc8=NPds3jWqJwDMUWC3-OEo4dRiKg@mail.gmail.com>
+ <20200715205428.GA201569@google.com>
+ <CAHk-=wg-_Oof43pKUHMk4ySdLwpYi7+shFg+aeV18UP2Akiv8g@mail.gmail.com>
+ <CAHk-=wg+iVwK7MDXB+BPbhTmP-1eBa-y4vxRNr_G8ETnzv5pZg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg+iVwK7MDXB+BPbhTmP-1eBa-y4vxRNr_G8ETnzv5pZg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Wed, Jul 15, 2020 at 02:43:00PM -0700, Linus Torvalds wrote:
+> On Wed, Jul 15, 2020 at 2:31 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Naresh - don't test that version. The bugs Joel found just make the
+> > math wrong, so it won't work.
+> 
+> Here's a new version with the thing that Joel and Kirill both noticed
+> hopefully fixed.
+> 
+> But I probably screwed it up again. I guess I should test it, but I
+> don't have any really relevant environment (the plain mremap() case
+> should have shown the obvious bugs, though, so that's just an excuse
+> for my laziness)
 
-If split-lm is used (for ex, on sdm845), we can have multiple ping-
-pongs, but only a single phys encoder.  We need to configure dithering
-on each of them.
+Sorry, but the patch is broken.
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   | 22 ++++++++++---------
- .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c   |  3 +--
- 2 files changed, 13 insertions(+), 12 deletions(-)
+It overcopies entires in some cases. It doesn't handles correctly if you
+try to move PTEs from the middle of VMA.
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-index 46df0ff75b85..9b98b63c77fb 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-@@ -212,14 +212,14 @@ static u32 dither_matrix[DITHER_MATRIX_SZ] = {
- 	15, 7, 13, 5, 3, 11, 1, 9, 12, 4, 14, 6, 0, 8, 2, 10
- };
- 
--static void _dpu_encoder_setup_dither(struct dpu_encoder_phys *phys)
-+static void _dpu_encoder_setup_dither(struct dpu_hw_pingpong *hw_pp, unsigned bpc)
- {
- 	struct dpu_hw_dither_cfg dither_cfg = { 0 };
- 
--	if (!phys->hw_pp || !phys->hw_pp->ops.setup_dither)
-+	if (!hw_pp->ops.setup_dither)
- 		return;
- 
--	switch (phys->connector->display_info.bpc) {
-+	switch (bpc) {
- 	case 6:
- 		dither_cfg.c0_bitdepth = 6;
- 		dither_cfg.c1_bitdepth = 6;
-@@ -228,14 +228,14 @@ static void _dpu_encoder_setup_dither(struct dpu_encoder_phys *phys)
- 		dither_cfg.temporal_en = 0;
- 		break;
- 	default:
--		phys->hw_pp->ops.setup_dither(phys->hw_pp, NULL);
-+		hw_pp->ops.setup_dither(hw_pp, NULL);
- 		return;
- 	}
- 
- 	memcpy(&dither_cfg.matrix, dither_matrix,
- 			sizeof(u32) * DITHER_MATRIX_SZ);
- 
--	phys->hw_pp->ops.setup_dither(phys->hw_pp, &dither_cfg);
-+	hw_pp->ops.setup_dither(hw_pp, &dither_cfg);
- }
- 
- void dpu_encoder_helper_report_irq_timeout(struct dpu_encoder_phys *phys_enc,
-@@ -1132,11 +1132,13 @@ static void _dpu_encoder_virt_enable_helper(struct drm_encoder *drm_enc)
- 
- 	_dpu_encoder_update_vsync_source(dpu_enc, &dpu_enc->disp_info);
- 
--	if (dpu_enc->disp_info.intf_type == DRM_MODE_ENCODER_DSI) {
--		for (i = 0; i < dpu_enc->num_phys_encs; i++) {
--			struct dpu_encoder_phys *phys = dpu_enc->phys_encs[i];
--
--			_dpu_encoder_setup_dither(phys);
-+	if (dpu_enc->disp_info.intf_type == DRM_MODE_ENCODER_DSI &&
-+			!WARN_ON(dpu_enc->num_phys_encs == 0)) {
-+		unsigned bpc = dpu_enc->phys_encs[0]->connector->display_info.bpc;
-+		for (i = 0; i < MAX_CHANNELS_PER_ENC; i++) {
-+			if (!dpu_enc->hw_pp[i])
-+				continue;
-+			_dpu_encoder_setup_dither(dpu_enc->hw_pp[i], bpc);
- 		}
- 	}
- }
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
-index 7411ab6bf6af..bea4ab5c58c5 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
-@@ -231,8 +231,7 @@ static void _setup_pingpong_ops(struct dpu_hw_pingpong *c,
- 	c->ops.poll_timeout_wr_ptr = dpu_hw_pp_poll_timeout_wr_ptr;
- 	c->ops.get_line_count = dpu_hw_pp_get_line_count;
- 
--	if (test_bit(DPU_PINGPONG_DITHER, &features) &&
--		IS_SC7180_TARGET(c->hw.hwversion))
-+	if (test_bit(DPU_PINGPONG_DITHER, &features))
- 		c->ops.setup_dither = dpu_hw_pp_setup_dither;
- };
- 
+The test case below rightly sigfaults without the patch when trying access
+DST_ADDR[0], but not with the patch. It creates PTE entry at DST_ADDR that
+doesn't belong to any VMA. :/
+
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <string.h>
+#include <sys/mman.h>
+
+#define SRC_ADDR ((char *)(4UL << 30))
+#define DST_ADDR ((char *)(5UL << 30))
+
+
+int main(void)
+{
+	mmap(SRC_ADDR, 2UL << 20, PROT_READ | PROT_WRITE,
+		 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+	madvise(SRC_ADDR, 2UL << 20, MADV_NOHUGEPAGE);
+	memset(SRC_ADDR, 0x33, 2UL << 20);
+
+	mremap(SRC_ADDR + 4096, 4096, 4096, MREMAP_MAYMOVE | MREMAP_FIXED,
+		     DST_ADDR + 4096);
+	printf("0: %#x 4096: %#x\n", DST_ADDR[0], DST_ADDR[4096]);
+	return 0;
+}
+
 -- 
-2.26.2
-
+ Kirill A. Shutemov
