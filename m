@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AE2220753
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3183522075C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbgGOIdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:33:07 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37977 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726034AbgGOIdH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:33:07 -0400
-Received: by mail-ot1-f66.google.com with SMTP id t18so849002otq.5;
-        Wed, 15 Jul 2020 01:33:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o5sAqUgn9cvxe+xg29sqCECVsVXdkGKTE+GopvFS8Qg=;
-        b=C/uPXLFdBFEYtcdajfHjCu7IaWrTLH04H5KC1xTdjmDSaxkWCmz6mJO1e3qcITZPHT
-         1LDmMGcNKjcHQriJnOX+uZfkDmnwLA0glozQyqmn5HOysXqDvDgBAErGmyxO5ucqmB0l
-         RDKHFuU1sUIuU4cDWL+/dGeobJtkStSAxTG4eTeKvZemEFuRIJAyZFbVLUGvplT1A1hw
-         UfQ+To7zesobhAE7M5RzKqCBHOUDXT0D2j1meW37KUn1PISv85IkrX8L8y3+SgJhNcfc
-         sKmLEo5IT+27SewyIWoFovvJ0EFVoj+bvEMubQZ9q82cyly2xB0WW8+531jnUT/agUEi
-         iPFQ==
-X-Gm-Message-State: AOAM532CGm9kWqZQYZzTdh9UUTnrzo3I/oFhmRpfVg+e0rxvaJiOvNeL
-        WYt4UWA2+LGpeEVWcYQpijLQlPBsxun3TnM9rdk=
-X-Google-Smtp-Source: ABdhPJxRf7X46l9/RuxnR97QYrbp+tXYdwoLbtediLsDriX3jmkzvVFsmx9ys9vBTFJoKvIU4nKd978smmCpgCdrPLg=
-X-Received: by 2002:a9d:2646:: with SMTP id a64mr7340091otb.107.1594801986000;
- Wed, 15 Jul 2020 01:33:06 -0700 (PDT)
+        id S1730138AbgGOId1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:33:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726034AbgGOId1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 04:33:27 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AB1C20672;
+        Wed, 15 Jul 2020 08:33:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594802006;
+        bh=iOVN0Aj56V7pWppvWBvshuC3/3Wx6PjHbGrnZyydSO0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PTE7YLDehLY6msegiqFCDsJCkrKstPFQEli4wDa+DYQ0plMqvlHJ00vUMOzOrJCY/
+         05CVC2ZuBA3YF5UVB395FVbgyOFuFxd2c+C3Gb9/pHpjTpCyPYcjbchaOybNvNF9Nr
+         0hAr7IDZ08YHAOgkmGdtM567MY6dwVdj2gl/4Ae4=
+Date:   Wed, 15 Jul 2020 10:33:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2][RESEND v3] PM-runtime: change the tracepoints to
+ cover all usage_count
+Message-ID: <20200715083322.GB2716443@kroah.com>
+References: <cover.1594790493.git.yu.c.chen@intel.com>
+ <395187057e486df9a4328bc6d7d4ee912967fdb3.1594790493.git.yu.c.chen@intel.com>
+ <20200715070614.GA2297388@kroah.com>
+ <20200715081838.GA22379@chenyu-office.sh.intel.com>
 MIME-Version: 1.0
-References: <20200714123419.3390-1-aford173@gmail.com> <20200714123419.3390-2-aford173@gmail.com>
- <c2e52f87-b2cf-ca36-7780-5e206f065d40@cogentembedded.com>
-In-Reply-To: <c2e52f87-b2cf-ca36-7780-5e206f065d40@cogentembedded.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 15 Jul 2020 10:32:54 +0200
-Message-ID: <CAMuHMdUYdGD2Us8W8FvSi-2MTJbDOvW4k_eC+YrTgdmZS97LCQ@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] dt-bindings: arm: renesas: Document beacon-rzg2m
-To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc:     Adam Ford <aford173@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200715081838.GA22379@chenyu-office.sh.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergei,
+On Wed, Jul 15, 2020 at 04:18:38PM +0800, Chen Yu wrote:
+> Hi Greg,
+> thanks very much for taking a look,
+> On Wed, Jul 15, 2020 at 09:06:14AM +0200, Greg Kroah-Hartman wrote:
+> > On Wed, Jul 15, 2020 at 02:28:03PM +0800, Chen Yu wrote:
+> > > Commit d229290689ae ("PM-runtime: add tracepoints for usage_count changes")
+> > > has added some tracepoints to monitor the change of runtime usage, and
+> > > there is something to improve:
+> > > 1. There are some places that adjust the usage count not
+> > >    been traced yet. For example, pm_runtime_get_noresume() and
+> > >    pm_runtime_put_noidle()
+> > > 2. The change of the usage count will not be tracked if decreased
+> > >    from 1 to 0.
+> > > 
+> > > This patch intends to adjust the logic to be consistent with the
+> > > change of usage_counter, that is to say, only after the counter has
+> > > been possibly modified, we record it. Besides, all usage changes will
+> > > be shown using rpm_usage even if included by other trace points.
+> > > And these changes has helped track down the e1000e runtime issue.
+> > > 
+> > > Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> > > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > > ---
+> > >  drivers/base/power/runtime.c | 38 +++++++++++++++++++++++-------------
+> > >  1 file changed, 24 insertions(+), 14 deletions(-)
+> > > 
+> > > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> > > index 85a248e196ca..5789d2624513 100644
+> > > --- a/drivers/base/power/runtime.c
+> > > +++ b/drivers/base/power/runtime.c
+> > > @@ -1004,10 +1004,11 @@ int __pm_runtime_idle(struct device *dev, int rpmflags)
+> > >  	int retval;
+> > >  
+> > >  	if (rpmflags & RPM_GET_PUT) {
+> > > -		if (!atomic_dec_and_test(&dev->power.usage_count)) {
+> > > -			trace_rpm_usage_rcuidle(dev, rpmflags);
+> > > +		bool non_zero = !atomic_dec_and_test(&dev->power.usage_count);
+> > > +
+> > > +		trace_rpm_usage_rcuidle(dev, rpmflags);
+> > 
+> > Why not just call trace everywhere before you do the atomic operations?
+> > Why does the trace need to be called after the operation everywhere?
+> > 
+> If I understand correctly, besides Michal's comments, if we put the trace
+> before the atomic operation, we might be unable to judge whether the counter
+> is going to increase or decrease from rpmflags: it is RPM_GET_PUT which combine
+> the get() and put() together, then it is a little inconvenient for tracking IMO.
 
-On Wed, Jul 15, 2020 at 10:16 AM Sergei Shtylyov
-<sergei.shtylyov@cogentembedded.com> wrote:
-> On 14.07.2020 15:34, Adam Ford wrote:
-> > Beacon EmbeddedWorks in introducing a development kit based on the
-> > Renesas RZ/G2M platform.  This patch adds the entry to the bindings
-> > list.
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
+A trace can never know the exact value of an atomic value as it could
+change right before or after the trace function is called, right?
 
-> > --- a/Documentation/devicetree/bindings/arm/renesas.yaml
-> > +++ b/Documentation/devicetree/bindings/arm/renesas.yaml
-> > @@ -118,6 +118,7 @@ properties:
-> >           items:
-> >             - enum:
-> >                 - hoperun,hihope-rzg2m # HopeRun HiHope RZ/G2M platform
-> > +              - beacon,beacon-rzg2m # Beacon EmbeddedWorks RZ/G2M Kit
->
->     Why the vendor-prefixes.yaml file calls it Compass Electronics Group?
+So why are you caring about that?  Care about the functionality that is
+happening, not a reference count that you do not control at all.
 
-See commit f756619f26edf74a ("dt-bindings: vendor-prefixes: Add Beacon
-vendor prefix"):
+thanks,
 
-    Beacon EmebeddedWorks is the brand owned by Compass Electronics Group,
-    LLC based out of the United States.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
