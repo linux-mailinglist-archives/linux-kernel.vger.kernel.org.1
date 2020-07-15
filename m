@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053B3220B97
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE12B220B99
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728663AbgGOLNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 07:13:40 -0400
-Received: from chalk.uuid.uk ([51.68.227.198]:52568 "EHLO chalk.uuid.uk"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726034AbgGOLNj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:13:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=BNbPwFNjGOZuIyTmfC1KF3tsumtB45tKs1PO9XQlp80=; b=ClPUNCrpsVyHg5X8jnMvD9oZKH
-        FhrWrjk+VLs06Grjai4jAkyxcq/If8dMqmfJRN7ks8gx5zlkY2ItfJrAjvEv/y7dBeBC8rty2LXwa
-        R3xlla8YBYjLvcsgJ+8aMZgZ/sAlvYnCaOvAS3Zmns/mcYpNX+rOzgXVbV0wH5B7uCPpQAGgLGT/H
-        +fGog4RZuW5TSV+CsqnYwonNGr3pW75peYxPAFkMEsAU6XyY4d9pWnI/6SaksOUlvrFUa++MlZHDG
-        xkEujtSfgerxVbi9n0iGZZvgNGc6+jmZ50/Tj7CYVERPCo9HEdTIghvczN99pbsMo/SVfffHAndKM
-        KzIQFNjw==;
-Received: by chalk.uuid.uk with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <simon@octiron.net>)
-        id 1jvfLr-0001yH-N0; Wed, 15 Jul 2020 12:13:34 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:Subject:From:Cc:To;
-        bh=BNbPwFNjGOZuIyTmfC1KF3tsumtB45tKs1PO9XQlp80=; b=ZZCOflpNYv1VZQPRBAzdREp386
-        1JrKmZnbPQB4nFbETmFCFcurWi0O+qkMWhH//GXeb4DD0OpTHtN713EIVh/dOuF2YXOHhsj0DH0Ah
-        hlu1MulypgZe22eO3n+Fm2hRuJaWxmnD6ohsehVRi0uVUAibV4/mA3nZ6lP/rj2vxDAoVIcKvHm/x
-        YrRmzS3SGuFGWjx6FZUtF9kkftTgn24IRrCRt3OKo93sBA4mA0gUbWLP0v3UFm2gDwOXlnLc+gMn6
-        8odnar77qLhC8/Mzfui8PrfR0RMuC/Ov2jP01gNhUnL6Yb2d2S5tluEqS0peC963JzATEKV0BGzwv
-        eS8+lx5w==;
-Received: by tsort.uuid.uk with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <simon@octiron.net>)
-        id 1jvfLp-0006wK-Cc; Wed, 15 Jul 2020 12:13:25 +0100
-To:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Park Ju Hyung <qkrwngud825@gmail.com>,
-        Tejun Heo <tj@kernel.org>
-From:   Simon Arlott <simon@octiron.net>
-Subject: [PATCH] ata: Disable queued TRIM for Samsung 860 SSDs
-Message-ID: <9324ef33-eedd-b965-37e8-b82e06778aab@0882a8b5-c6c3-11e9-b005-00805fc181fe>
-Date:   Wed, 15 Jul 2020 12:13:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728516AbgGOLQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 07:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgGOLQD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 07:16:03 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E66C061755;
+        Wed, 15 Jul 2020 04:16:03 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B6FDs4szfz9sRf;
+        Wed, 15 Jul 2020 21:15:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594811759;
+        bh=3WOh8dyM4Vi1i0NxC/9yQndiresf1N+xQQw5HKnVsqw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GkaBGqWroEWltm8HhGQzyaVmSkDXgfMKwzCEeTOkAItaY8Y39meiPHPS4mMnGsgIj
+         6Lo4BFiF+GZDIwxdWsIOQVqY+WGmnFoO3XLeFEMNoD7yyssBTW1PmE6RfYukR7Jliy
+         BkL42vqKecgwC60UQCQ6d6yLfUHihrxQouON6bHCkfx41epvvs2mdnln1GvlXhjWgZ
+         MWqhyt4kro4RBdLWOxUZHmWSyXYz59z9A/T9fgewg6qmeP5Gobab0jLXeAbNHvuL0C
+         Z1hUi9E1T6JGN5SRYLi1YdvCIZdH/n+5bZA0S+zl50wFudi0K+2cK0Da8N2uvUj52s
+         JRK810a0dRk4g==
+Date:   Wed, 15 Jul 2020 21:15:56 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     syzbot <syzbot+fa64e680a1ff32087778@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, axboe@kernel.dk,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pmladek@suse.com, qiang.zhang@windriver.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: WARNING in kthread_queue_work
+Message-ID: <20200715211556.61705064@canb.auug.org.au>
+In-Reply-To: <00000000000031a14405aa780bdb@google.com>
+References: <000000000000e6807f05aa4608b7@google.com>
+        <00000000000031a14405aa780bdb@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/ahPpGGhSCtt9pBV9/XE.=pa";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Despite the unsubstantiated claim from Samsung that "the improved
-queued trim enhances Linux compatibility" this does not appear to be
-true, even on Intel SATA controllers:
+--Sig_/ahPpGGhSCtt9pBV9/XE.=pa
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Bug 203475 - Samsung 860 EVO queued TRIM issues
-https://bugzilla.kernel.org/show_bug.cgi?id=203475
+Hi syzbot,
 
-Disable queued TRIM for all Samsung 860 SSDs. Only the EVO has been
-reported as having this problem, but the original justification for
-enabling appears to be based on marketing material with no explanation
-of what has been changed to make the 860 work properly when the earlier
-840 and 850 both have the same issue.
+On Wed, 15 Jul 2020 03:04:04 -0700 syzbot <syzbot+fa64e680a1ff32087778@syzk=
+aller.appspotmail.com> wrote:
+>
+> syzbot has bisected this issue to:
+>=20
+> commit 4977caef05aa154f5e45a232fc4f0e1c74a0c739
+> Author: Zhang Qiang <qiang.zhang@windriver.com>
+> Date:   Tue Jul 7 02:29:47 2020 +0000
+>=20
+>     kthread: work could not be queued when worker being destroyed
+>=20
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D12c58f5710=
+0000
+> start commit:   89032636 Add linux-next specific files for 20200708
+> git tree:       linux-next
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D11c58f5710=
+0000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D16c58f57100000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D64a250ebabc6c=
+320
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dfa64e680a1ff320=
+87778
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D16bf9f2f100=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D118380ed100000
+>=20
+> Reported-by: syzbot+fa64e680a1ff32087778@syzkaller.appspotmail.com
+> Fixes: 4977caef05aa ("kthread: work could not be queued when worker being=
+ destroyed")
+>=20
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
 
-Signed-off-by: Simon Arlott <simon@octiron.net>
-Cc: Park Ju Hyung <qkrwngud825@gmail.com>
-Cc: stable@vger.kernel.org
-Fixes: ca6bfcb2f6d9 ("libata: Enable queued TRIM for Samsung SSD 860")
----
- drivers/ata/libata-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+#syz invalid
 
-diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-index b1cd4d97bc2a..02e861aac5ec 100644
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -3951,6 +3951,8 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 
--- 
-2.17.1
+This patch was removed.
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-Simon Arlott
+--Sig_/ahPpGGhSCtt9pBV9/XE.=pa
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8O5WwACgkQAVBC80lX
+0Gw+DQf/fLLZPQPNoACTbZnOrP7NSSsjaXnens7+3QkbZlSCAiUCedarlTPop4Wm
+YHGepi0ykJtd1pFFHJg7+0fzSjqdHlr6JES5zMaWoTo9xjqj4Z2ko4e6ulCV51NA
+7FOSUJ7KN7pbCuABwSx5sliQgD7tZaY7ZNYQJqiV9p1Eg4XD9tgqR9wjm/hH764b
+U1nJzaUwrhPZBFuKqyMuWDqiYarBVM+P6DrC8yNnIEt6LH89yeWYm9ew/zsjHKHz
+WKXtH7mFX904r5m92spjsHVJtQkJZpq7imBPLgKjy2nY4lKmQJtaqn+HsXkLJqGt
+SMRpnu8zcLsUNDXpOlj4HI/rcQYjMg==
+=Rc9o
+-----END PGP SIGNATURE-----
+
+--Sig_/ahPpGGhSCtt9pBV9/XE.=pa--
