@@ -2,310 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFA9221825
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB49D221829
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgGOWwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 18:52:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7440 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726765AbgGOWwe (ORCPT
+        id S1727036AbgGOW6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 18:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726765AbgGOW6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 18:52:34 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06FMY7MG146329;
-        Wed, 15 Jul 2020 18:52:23 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 329x5y8h27-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 18:52:23 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06FMcuJX165608;
-        Wed, 15 Jul 2020 18:52:22 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 329x5y8h1x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 18:52:22 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06FMihdv013145;
-        Wed, 15 Jul 2020 22:52:21 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma02wdc.us.ibm.com with ESMTP id 327ursw6wh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 22:52:21 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06FMqIto29229770
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jul 2020 22:52:18 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 563F8C6057;
-        Wed, 15 Jul 2020 22:52:20 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D29FFC6059;
-        Wed, 15 Jul 2020 22:52:16 +0000 (GMT)
-Received: from morokweng.localdomain (unknown [9.163.73.114])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Wed, 15 Jul 2020 22:52:16 +0000 (GMT)
-References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com> <159466091925.24747.6840028682768745598.stgit@hbathini.in.ibm.com>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Hari Bathini <hbathini@linux.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pingfan Liu <piliu@redhat.com>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH v3 06/12] ppc64/kexec_file: restrict memory usage of kdump kernel
-In-reply-to: <159466091925.24747.6840028682768745598.stgit@hbathini.in.ibm.com>
-Date:   Wed, 15 Jul 2020 19:52:12 -0300
-Message-ID: <87365s9ysj.fsf@morokweng.localdomain>
+        Wed, 15 Jul 2020 18:58:10 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983A5C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 15:58:09 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id q4so4732773lji.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 15:58:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4fXMEPU6gAVBWg6IQ+xECv6MLETWbdcbr7WGd26o3dM=;
+        b=MBC5vtMhzWJZZ9GjdJtx8UdDPaGZja6xgYIgmlwDQwU4kEQhcF0AjO17QURILiA/4B
+         tQiejDuF2CcqHQwQcyUdPx4syUjjnCAfwoSBapL59fT69dyD/l2/35n4JLhu67HZ3Ncy
+         hH2PMCUltb52qLOa2NBW/07krGkLSfwM2sCDQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4fXMEPU6gAVBWg6IQ+xECv6MLETWbdcbr7WGd26o3dM=;
+        b=ssuV/GJOCzGpSKZ/Rn/kTmAa+oix8RnudrooCZ6pEI3kH32k30oTuvM1O1W1/7M6Ha
+         9oEdJSDhi90gpRpZfp6vRQszr6xH3ULRsDbeVLIUihgqhuNQveplPpnWLQwdGU+oGNTe
+         pByYYRSLUaUmAj03rkqwKDjpxQUeCjws22KFCWGPpyNY2UNhACBHggvFpy51NuS8gA4H
+         /sL52Rap9BC9QRLCR5Qwq9kC+EyP5EBNc0TlkNXRHUlZ1QE7NAzYvv2n9tHOgrp2cqbx
+         AbECIMtCOYqk2bfAUyLjizFmDcxpLHSzZm1zA+kvQ1l4pN9ZdJ1d0wRNJ/YkOUITAKND
+         Mw4g==
+X-Gm-Message-State: AOAM533j0dUWO/RXse5aByaRJVkC9Yl5S6TKNoJpEujGYVTNHVmpQdVb
+        pR6Xkn1P9jLDi/2DMu6ihfF4j7Ur6wM=
+X-Google-Smtp-Source: ABdhPJw6ok7l+XkbIJs3h2/9JIZ9HYI5U7gpEpA5s9o9Q2k566WB6/jsnnXIJpEULZe1ue38l3Qqhg==
+X-Received: by 2002:a2e:760b:: with SMTP id r11mr638078ljc.285.1594853887674;
+        Wed, 15 Jul 2020 15:58:07 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id k25sm689574ljk.87.2020.07.15.15.58.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jul 2020 15:58:06 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id k17so2079286lfg.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 15:58:06 -0700 (PDT)
+X-Received: by 2002:a19:8a07:: with SMTP id m7mr608455lfd.31.1594853886124;
+ Wed, 15 Jul 2020 15:58:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-15_12:2020-07-15,2020-07-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007150168
+References: <20200715135011.42743-1-kirill.shutemov@linux.intel.com>
+ <CAHk-=wh4pB-jRngOjcGxpc8=NPds3jWqJwDMUWC3-OEo4dRiKg@mail.gmail.com>
+ <20200715205428.GA201569@google.com> <CAHk-=wg-_Oof43pKUHMk4ySdLwpYi7+shFg+aeV18UP2Akiv8g@mail.gmail.com>
+ <CAHk-=wg+iVwK7MDXB+BPbhTmP-1eBa-y4vxRNr_G8ETnzv5pZg@mail.gmail.com> <20200715222228.jf2pv5u2wyhtc5o5@box>
+In-Reply-To: <20200715222228.jf2pv5u2wyhtc5o5@box>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 15 Jul 2020 15:57:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgp-ZJ+J250DMaJFBDU2hnhUUqXcUnVnZZ1iFQEK6O-jg@mail.gmail.com>
+Message-ID: <CAHk-=wgp-ZJ+J250DMaJFBDU2hnhUUqXcUnVnZZ1iFQEK6O-jg@mail.gmail.com>
+Subject: Re: [PATCHv2] mm: Fix warning in move_normal_pmd()
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        William Kucharski <william.kucharski@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hari Bathini <hbathini@linux.ibm.com> writes:
-
->  /**
-> + * get_usable_memory_ranges - Get usable memory ranges. This list includes
-> + *                            regions like crashkernel, opal/rtas & tce-table,
-> + *                            that kdump kernel could use.
-> + * @mem_ranges:               Range list to add the memory ranges to.
-> + *
-> + * Returns 0 on success, negative errno on error.
-> + */
-> +static int get_usable_memory_ranges(struct crash_mem **mem_ranges)
-> +{
-> +	int ret;
-> +
-> +	/* First memory block & crashkernel region */
-> +	ret = add_mem_range(mem_ranges, 0, crashk_res.end + 1);
-
-This is a bit surprising. I guess I don't have a complete big picture of
-the patch series yet. What prevents the crashkernel from using memory at
-the [0, _end] range and overwriting the crashed kernel's memory?
-
-Shouldn't the above range start at crashk_res.start?
-
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret = add_rtas_mem_range(mem_ranges);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret = add_opal_mem_range(mem_ranges);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret = add_tce_mem_ranges(mem_ranges);
-> +out:
-> +	if (ret)
-> +		pr_err("Failed to setup usable memory ranges\n");
-> +	return ret;
-> +}
-> +
-> +/**
->   * __locate_mem_hole_top_down - Looks top down for a large enough memory hole
->   *                              in the memory regions between buf_min & buf_max
->   *                              for the buffer. If found, sets kbuf->mem.
-> @@ -261,6 +305,322 @@ static int locate_mem_hole_bottom_up_ppc64(struct kexec_buf *kbuf,
->  }
+On Wed, Jul 15, 2020 at 3:22 PM Kirill A. Shutemov <kirill@shutemov.name> wrote:
 >
->  /**
-> + * check_realloc_usable_mem - Reallocate buffer if it can't accommodate entries
-> + * @um_info:                  Usable memory buffer and ranges info.
-> + * @cnt:                      No. of entries to accommodate.
-> + *
-> + * Returns 0 on success, negative errno on error.
+> Sorry, but the patch is broken.
 
-It actually returns the buffer on success, and NULL on error.
+.. instead of taking up knitting - which I'd invariably also screw up
+- I took a look.
 
-> + */
-> +static uint64_t *check_realloc_usable_mem(struct umem_info *um_info, int cnt)
-> +{
-> +	void *tbuf;
-> +
-> +	if (um_info->size >=
-> +	    ((um_info->idx + cnt) * sizeof(*(um_info->buf))))
-> +		return um_info->buf;
-> +
-> +	um_info->size += MEM_RANGE_CHUNK_SZ;
-> +	tbuf = krealloc(um_info->buf, um_info->size, GFP_KERNEL);
-> +	if (!tbuf) {
-> +		um_info->size -= MEM_RANGE_CHUNK_SZ;
-> +		return NULL;
-> +	}
-> +
-> +	memset(tbuf + um_info->idx, 0, MEM_RANGE_CHUNK_SZ);
-> +	return tbuf;
-> +}
+Yeah, in addition to checking the vm_prev/vm_next vma's, we need to
+check the limits of the 'vma' itself. Because we may not be moving the
+whole vma.
 
-<snip>
+So the "extend upwards" can only happen if the end address matches the
+end address of the current vma (and vice versa for the "extend down"
+case).
 
-> +/**
-> + * get_node_path - Get the full path of the given node.
-> + * @dn:            Node.
-> + * @path:          Updated with the full path of the node.
-> + *
-> + * Returns nothing.
-> + */
-> +static void get_node_path(struct device_node *dn, char *path)
-> +{
-> +	if (!dn)
-> +		return;
-> +
-> +	get_node_path(dn->parent, path);
+Then it would hopefully work.
 
-Is it ok to do recursion in the kernel? In this case I believe it's not
-problematic since the maximum call depth will be the maximum depth of a
-device tree node which shouldn't be too much. Also, there are no local
-variables in this function. But I thought it was worth mentioning.
+But now I've screwed it up twice, and have a splitting headache, so
+rather than stare at this cross-eyed, I'll take a break and hope that
+somebody more competent than me looks at the code.
 
-> +	sprintf(path, "/%s", dn->full_name);
-> +}
-> +
-> +/**
-> + * get_node_pathlen - Get the full path length of the given node.
-> + * @dn:               Node.
-> + *
-> + * Returns the length of the full path of the node.
-> + */
-> +static int get_node_pathlen(struct device_node *dn)
-> +{
-> +	int len = 0;
-> +
-> +	while (dn) {
-> +		len += strlen(dn->full_name) + 1;
-> +		dn = dn->parent;
-> +	}
-> +	len++;
-> +
-> +	return len;
-> +}
-> +
-> +/**
-> + * add_usable_mem_property - Add usable memory property for the given
-> + *                           memory node.
-> + * @fdt:                     Flattened device tree for the kdump kernel.
-> + * @dn:                      Memory node.
-> + * @um_info:                 Usable memory buffer and ranges info.
-> + *
-> + * Returns 0 on success, negative errno on error.
-> + */
-> +static int add_usable_mem_property(void *fdt, struct device_node *dn,
-> +				   struct umem_info *um_info)
-> +{
-> +	int n_mem_addr_cells, n_mem_size_cells, node;
-> +	int i, len, ranges, cnt, ret;
-> +	uint64_t base, end, *buf;
-> +	const __be32 *prop;
-> +	char *pathname;
-> +
-> +	/* Allocate memory for node path */
-> +	pathname = kzalloc(ALIGN(get_node_pathlen(dn), 8), GFP_KERNEL);
-> +	if (!pathname)
-> +		return -ENOMEM;
-> +
-> +	/* Get the full path of the memory node */
-> +	get_node_path(dn, pathname);
-> +	pr_debug("Memory node path: %s\n", pathname);
-> +
-> +	/* Now that we know the path, find its offset in kdump kernel's fdt */
-> +	node = fdt_path_offset(fdt, pathname);
-> +	if (node < 0) {
-> +		pr_err("Malformed device tree: error reading %s\n",
-> +		       pathname);
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	/* Get the address & size cells */
-> +	n_mem_addr_cells = of_n_addr_cells(dn);
-> +	n_mem_size_cells = of_n_size_cells(dn);
-> +	pr_debug("address cells: %d, size cells: %d\n", n_mem_addr_cells,
-> +		 n_mem_size_cells);
-> +
-> +	um_info->idx  = 0;
-> +	buf = check_realloc_usable_mem(um_info, 2);
-> +	if (!buf) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	um_info->buf = buf;
-> +
-> +	prop = of_get_property(dn, "reg", &len);
-> +	if (!prop || len <= 0) {
-> +		ret = 0;
-> +		goto out;
-> +	}
-> +
-> +	/*
-> +	 * "reg" property represents sequence of (addr,size) duples
-
-s/duples/tuples/ ?
-
-> +	 * each representing a memory range.
-> +	 */
-> +	ranges = (len >> 2) / (n_mem_addr_cells + n_mem_size_cells);
-> +
-> +	for (i = 0; i < ranges; i++) {
-> +		base = of_read_number(prop, n_mem_addr_cells);
-> +		prop += n_mem_addr_cells;
-> +		end = base + of_read_number(prop, n_mem_size_cells) - 1;
-
-You need to `prop += n_mem_size_cells` here.
-
-> +
-> +		ret = add_usable_mem(um_info, base, end, &cnt);
-> +		if (ret) {
-> +			ret = ret;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * No kdump kernel usable memory found in this memory node.
-> +	 * Write (0,0) duple in linux,usable-memory property for
-
-s/duple/tuple/ ?
-
-> +	 * this region to be ignored.
-> +	 */
-> +	if (um_info->idx == 0) {
-> +		um_info->buf[0] = 0;
-> +		um_info->buf[1] = 0;
-> +		um_info->idx = 2;
-> +	}
-> +
-> +	ret = fdt_setprop(fdt, node, "linux,usable-memory", um_info->buf,
-> +			  (um_info->idx * sizeof(*(um_info->buf))));
-> +
-> +out:
-> +	kfree(pathname);
-> +	return ret;
-> +}
-
---
-Thiago Jung Bauermann
-IBM Linux Technology Center
+               Linus
