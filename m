@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C48221331
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 19:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71077221334
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 19:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgGORGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 13:06:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35364 "EHLO mail.kernel.org"
+        id S1726472AbgGORHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 13:07:32 -0400
+Received: from lists.nic.cz ([217.31.204.67]:50594 "EHLO mail.nic.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725838AbgGORGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 13:06:02 -0400
-Received: from localhost (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D53F2065E;
-        Wed, 15 Jul 2020 17:06:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594832761;
-        bh=MVQs60eyaseKttygMi5Okmio5UqpxovjpBaGYM2KopU=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=CBPLDZ0a2kofL5+ir7rsYDlbbpzpSFpGzRjY5GXtgxKoOkAVo9rx/IXw2nZaAg6FP
-         0PGoTpRFSOeEWLcCxLE4J3D3xFoVDU+sXxptoew5BleNGM0IN0YcxXbu+SlhudGRTe
-         VCtmQZUU53N6u7CQ+nguMHVqQdrr4STCBfllpVWM=
-Date:   Wed, 15 Jul 2020 10:06:00 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-cc:     Stefano Stabellini <sstabellini@kernel.org>, jgross@suse.com,
-        Peng Fan <peng.fan@nxp.com>, konrad.wilk@oracle.com,
-        jasowang@redhat.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Christoph Hellwig <hch@infradead.org>,
-        iommu@lists.linux-foundation.org, linux-imx@nxp.com,
-        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] xen: introduce xen_vring_use_dma
-In-Reply-To: <20200711144334-mutt-send-email-mst@kernel.org>
-Message-ID: <alpine.DEB.2.21.2007151001140.4124@sstabellini-ThinkPad-T480s>
-References: <20200624163940-mutt-send-email-mst@kernel.org> <alpine.DEB.2.21.2006241351430.8121@sstabellini-ThinkPad-T480s> <20200624181026-mutt-send-email-mst@kernel.org> <alpine.DEB.2.21.2006251014230.8121@sstabellini-ThinkPad-T480s>
- <20200626110629-mutt-send-email-mst@kernel.org> <alpine.DEB.2.21.2006291621300.8121@sstabellini-ThinkPad-T480s> <20200701133456.GA23888@infradead.org> <alpine.DEB.2.21.2007011020320.8121@sstabellini-ThinkPad-T480s> <20200701172219-mutt-send-email-mst@kernel.org>
- <alpine.DEB.2.21.2007101019340.4124@sstabellini-ThinkPad-T480s> <20200711144334-mutt-send-email-mst@kernel.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1725838AbgGORHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 13:07:31 -0400
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTPSA id AD5D413F695;
+        Wed, 15 Jul 2020 19:07:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1594832848; bh=VJj/3rJKfaRGY2IQDV9pYisRvsVavLbXwD9XAifjC1M=;
+        h=Date:From:To;
+        b=qWr4UoxZ1GL7pNbGinsFPhwXkbtxUFnBb2k1jiXNlUcz83T/I9NKE4w79cSLTwETT
+         HdcNg6Ha6A3MtRzYscXljrqts8jDkQV5Ftf2xT1xj9kGWBIueOahqAAdIsUnBguFbN
+         5SqSB/xPY3oDvRpElqnhvcIvEan/U8+XAfumNHlk=
+Date:   Wed, 15 Jul 2020 19:07:27 +0200
+From:   Marek =?ISO-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Ondrej Jirman <megous@megous.com>, linux-kernel@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>,
+        "open list:LED SUBSYSTEM" <linux-leds@vger.kernel.org>
+Subject: Re: [PATCH RFC] leds: Add support for per-LED device triggers
+Message-ID: <20200715190727.4bb528dc@dellmb.labs.office.nic.cz>
+In-Reply-To: <20200711100409.GA18901@amd>
+References: <20200702144712.1994685-1-megous@megous.com>
+        <20200711100409.GA18901@amd>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 11 Jul 2020, Michael S. Tsirkin wrote:
-> On Fri, Jul 10, 2020 at 10:23:22AM -0700, Stefano Stabellini wrote:
-> > Sorry for the late reply -- a couple of conferences kept me busy.
-> > 
-> > 
-> > On Wed, 1 Jul 2020, Michael S. Tsirkin wrote:
-> > > On Wed, Jul 01, 2020 at 10:34:53AM -0700, Stefano Stabellini wrote:
-> > > > Would you be in favor of a more flexible check along the lines of the
-> > > > one proposed in the patch that started this thread:
-> > > > 
-> > > >     if (xen_vring_use_dma())
-> > > >             return true;
-> > > > 
-> > > > 
-> > > > xen_vring_use_dma would be implemented so that it returns true when
-> > > > xen_swiotlb is required and false otherwise.
-> > > 
-> > > Just to stress - with a patch like this virtio can *still* use DMA API
-> > > if PLATFORM_ACCESS is set. So if DMA API is broken on some platforms
-> > > as you seem to be saying, you guys should fix it before doing something
-> > > like this..
-> > 
-> > Yes, DMA API is broken with some interfaces (specifically: rpmesg and
-> > trusty), but for them PLATFORM_ACCESS is never set. That is why the
-> > errors weren't reported before. Xen special case aside, there is no
-> > problem under normal circumstances.
+On Sat, 11 Jul 2020 12:04:09 +0200
+Pavel Machek <pavel@ucw.cz> wrote:
+
+> What about this? Should address Marek's concerns about resource use...
 > 
-> So why not fix DMA API? Then this patch is not needed.
+> Best regards,
+>      	   	 				       		Pavel
+> 
 
-It looks like the conversation is going in circles :-)
+...
 
-I tried to explain the reason why, even if we fixed the DMA API to work
-with rpmesg and trusty, we still need this patch with the following
-email:  https://marc.info/?l=linux-kernel&m=159347446709625&w=2
+> @@ -280,7 +291,8 @@ int led_trigger_register(struct led_trigger *trig)
+>  	down_write(&triggers_list_lock);
+>  	/* Make sure the trigger's name isn't already in use */
+>  	list_for_each_entry(_trig, &trigger_list, next_trig) {
+> -		if (!strcmp(_trig->name, trig->name)) {
+> +		if (!strcmp(_trig->name, trig->name) &&
+> +		    (!_trig->private_led || _trig->private_led ==
+> trig->private_led)) { up_write(&triggers_list_lock);
+>  			return -EEXIST;
+>  		}
 
+Hi Pavel,
 
-At that time it looked like you agreed that we needed to improve this
-check?  (https://marc.info/?l=linux-kernel&m=159363662418250&w=2)
+Your proposal does not add private_led member to struct led_trigger. I
+think you forgot to change this from Ondrej's proposal.
+This should instead check:
+  the names are same and both trigger have the same type (either none
+  or same). In that case return -EEXIST.
+
+Also a couple of lines below there is code for enabling this trigger
+for LEDs that have it set as default trigger. There should also be a
+check whether the trigger is relevant.
+
+In the linux/leds.h header the trigger_type in led_classdev should be
+inside the CONFIG_LEDS_TRIGGERS block.
+
+I will send new version with an example usage for a Marvell PHY driver.
+
+Marek
