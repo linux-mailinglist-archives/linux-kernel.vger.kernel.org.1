@@ -2,149 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E95220B2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D90220B2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731819AbgGOLLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731828AbgGOLLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 07:11:22 -0400
+Received: from [195.135.220.15] ([195.135.220.15]:54998 "EHLO mx2.suse.de"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S1731799AbgGOLLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Jul 2020 07:11:17 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:3372 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731779AbgGOLLP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:11:15 -0400
-X-IronPort-AV: E=Sophos;i="5.75,355,1589209200"; 
-   d="scan'208";a="51982045"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 15 Jul 2020 20:11:13 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 37C094006DF5;
-        Wed, 15 Jul 2020 20:11:08 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Niklas <niklas.soderlund@ragnatech.se>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Magnus Damm <magnus.damm@gmail.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 20/20] arm64: dts: renesas: r8a774e1: Add CAN[FD] support
-Date:   Wed, 15 Jul 2020 12:09:10 +0100
-Message-Id: <1594811350-14066-21-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594811350-14066-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1594811350-14066-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 26997B5A1;
+        Wed, 15 Jul 2020 11:11:18 +0000 (UTC)
+Date:   Wed, 15 Jul 2020 13:11:14 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, pmladek@suse.cz,
+        live-patching@vger.kernel.org
+Subject: Re: linux-next: Tree for Jun 23 (objtool (2))
+In-Reply-To: <20200714135747.lcgysd5joguhssas@treble>
+Message-ID: <alpine.LSU.2.21.2007151250390.25290@pobox.suse.cz>
+References: <20200623162820.3f45feae@canb.auug.org.au> <61df2e8f-75e8-d233-9c3c-5b4fa2b7fbdc@infradead.org> <20200702123555.bjioosahrs5vjovu@treble> <alpine.LSU.2.21.2007141240540.5393@pobox.suse.cz> <20200714135747.lcgysd5joguhssas@treble>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add CAN[01] and CANFD support to RZ/G2H (R8A774E1) SoC specific dtsi.
+On Tue, 14 Jul 2020, Josh Poimboeuf wrote:
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/r8a774e1.dtsi | 56 +++++++++++++++++++++--
- 1 file changed, 53 insertions(+), 3 deletions(-)
+> On Tue, Jul 14, 2020 at 12:56:21PM +0200, Miroslav Benes wrote:
+> > On Thu, 2 Jul 2020, Josh Poimboeuf wrote:
+> > 
+> > > On Tue, Jun 23, 2020 at 08:06:07AM -0700, Randy Dunlap wrote:
+> > > > On 6/22/20 11:28 PM, Stephen Rothwell wrote:
+> > > > > Hi all,
+> > > > > 
+> > > > > Changes since 20200622:
+> > > > > 
+> > > > 
+> > > > on x86_64:
+> > > > 
+> > > > arch/x86/kernel/cpu/mce/core.o: warning: objtool: mce_timed_out()+0x24: unreachable instruction
+> > > > kernel/exit.o: warning: objtool: __x64_sys_exit_group()+0x14: unreachable instruction
+> > > > 
+> > > > Full randconfig file is attached.
+> > > 
+> > > More livepatch...
+> > 
+> > Correct.
+> > 
+> > Both are known and I thought Josh had fixes queued somewhere for both, but 
+> > my memory fails me quite often. See below.
+> 
+> I did have fixes for some of them in a stash somewhere, but I never
+> finished them because I decided it's a GCC bug.
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-index b2fa1a60470c..001874af8cf2 100644
---- a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-@@ -34,6 +34,13 @@
- 		clock-frequency = <0>;
- 	};
+Same here.
  
-+	/* External CAN clock - to be overridden by boards that provide it */
-+	can_clk: can {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <0>;
-+	};
-+
- 	cluster0_opp: opp_table0 {
- 		compatible = "operating-points-v2";
- 		opp-shared;
-@@ -1139,17 +1146,60 @@
- 		};
- 
- 		can0: can@e6c30000 {
-+			compatible = "renesas,can-r8a774e1",
-+				     "renesas,rcar-gen3-can";
- 			reg = <0 0xe6c30000 0 0x1000>;
-+			interrupts = <GIC_SPI 186 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 916>,
-+				 <&cpg CPG_CORE R8A774E1_CLK_CANFD>,
-+				 <&can_clk>;
-+			clock-names = "clkp1", "clkp2", "can_clk";
-+			assigned-clocks = <&cpg CPG_CORE R8A774E1_CLK_CANFD>;
-+			assigned-clock-rates = <40000000>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 916>;
- 			status = "disabled";
--
--			/* placeholder */
- 		};
- 
- 		can1: can@e6c38000 {
-+			compatible = "renesas,can-r8a774e1",
-+				     "renesas,rcar-gen3-can";
- 			reg = <0 0xe6c38000 0 0x1000>;
-+			interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 915>,
-+				 <&cpg CPG_CORE R8A774E1_CLK_CANFD>,
-+				 <&can_clk>;
-+			clock-names = "clkp1", "clkp2", "can_clk";
-+			assigned-clocks = <&cpg CPG_CORE R8A774E1_CLK_CANFD>;
-+			assigned-clock-rates = <40000000>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 915>;
- 			status = "disabled";
-+		};
- 
--			/* placeholder */
-+		canfd: can@e66c0000 {
-+			compatible = "renesas,r8a774e1-canfd",
-+				     "renesas,rcar-gen3-canfd";
-+			reg = <0 0xe66c0000 0 0x8000>;
-+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 914>,
-+				 <&cpg CPG_CORE R8A774E1_CLK_CANFD>,
-+				 <&can_clk>;
-+			clock-names = "fck", "canfd", "can_clk";
-+			assigned-clocks = <&cpg CPG_CORE R8A774E1_CLK_CANFD>;
-+			assigned-clock-rates = <40000000>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 914>;
-+			status = "disabled";
-+
-+			channel0 {
-+				status = "disabled";
-+			};
-+
-+			channel1 {
-+				status = "disabled";
-+			};
- 		};
- 
- 		pwm0: pwm@e6e30000 {
--- 
-2.17.1
+> > However, I think it is time to decide how to approach this whole saga. It 
+> > seems that there are not so many places in the kernel in need of 
+> > __noreturn annotation in the end and as jikos argued at least some of 
+> > those should be fixed regardless.
+> 
+> I would agree that global functions like do_group_exit() deserve a
+> __noreturn annotation, though it should be in the header file.  But
+> static functions shouldn't need it.
 
+Agreed. I'll post the patches for global functions eventually, but see 
+below first.
+
+> > Josh, should I prepare proper patches and submit them to relevant
+> > maintainers to see where this path is going?
+> 
+> If that's how you want to handle it, ok, but it doesn't seem right to
+> me, for the static functions at least.
+> 
+> > It would be much better to fix it in GCC, but it has been like banging 
+> > one's head against a wall so far. Josh, you wanted to create a bug 
+> > for GCC in this respect in the past? Has that happened?
+> 
+> I didn't open a bug, but I could, if you think that would help.  I
+> haven't had a lot of success with GCC bugs in the past.
+
+Understood.
+
+> > If I remember correctly, we discussed briefly a possibility to cope with 
+> > that in objtool, but no solution was presented.
+> 
+> That would also feel like a GCC workaround and might impede objtool's
+> ability to find bugs like this one, and possibly more serious bugs.
+> 
+> > Removing -flive-patching is also a possibility. I don't like it much, but 
+> > we discussed it with Petr M. a couple of months ago and it might be a way 
+> > too.
+> 
+> -flive-patching has many problems which I outlined before.  None of them
+> have been addressed.  I still feel the same way, that it should be
+> reverted until it's ready.  Otherwise it's a drain on upstream.
+> 
+> Also, if the GCC developers won't acknowledge this bug then it doesn't
+> give me confidence in their ability to keep the feature working as
+> optimizations are added or changed.
+
+I must admit that I've started to share the sentiment recently. And it is 
+probably the main reason for changing my mind about the whole thing.
+
+> I still think a potential alternative exists: objtool could be used as a
+> simple tree-wide object diff tool by generating a checksum for each
+> function.  Then the patch can be applied and built to see exactly which
+> functions have changed, based on the changed checksums.  In which case
+> this feature would no longer be needed anyway, would you agree?
+
+Yes.
+
+> I also think that could be a first step for converging our patch
+> creation processes.
+
+Yes again.
+
+Petr, would you agree to revert -flive-patching due to reasons above? Is 
+there anything you want to add?
+
+Miroslav
