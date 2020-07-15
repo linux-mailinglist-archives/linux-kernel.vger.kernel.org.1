@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B9322175D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 23:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8773B221768
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 23:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgGOVwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 17:52:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57404 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726356AbgGOVwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 17:52:22 -0400
-Received: from embeddedor (unknown [201.162.227.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07CB320657;
-        Wed, 15 Jul 2020 21:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594849942;
-        bh=Rlc9uBbdMh8nPCQYPMiL8KMBXH5cVcB8gLYx9jlnqeY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Uw+r3Sy4sRy1EaQREl16g0VNZH5ZmLBQiBuzR6f5/v3MSijrfDu8gXbf41JcJWusm
-         yX6ck+MB1iuXDf8+NG8TWBCD7TW5TfcvbBzT239a7RU+eWBXDburG/fTmOej5UhEXg
-         JCd0SeL/O9ZlQF2hyTa9pJghV7EFVR06+URmFhE8=
-Date:   Wed, 15 Jul 2020 16:57:55 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Maya Erez <merez@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] wil6210: Avoid the use of one-element array
-Message-ID: <20200715215755.GA21716@embeddedor>
+        id S1727090AbgGOV6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 17:58:06 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:35375 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgGOV6G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 17:58:06 -0400
+Received: from localhost (lfbn-lyo-1-1676-121.w90-65.abo.wanadoo.fr [90.65.108.121])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 5973B100008;
+        Wed, 15 Jul 2020 21:58:02 +0000 (UTC)
+Date:   Wed, 15 Jul 2020 23:58:01 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Cristian Birsan <cristian.birsan@microchip.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Songjun Wu <songjun.wu@atmel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH RESEND 3/3] usb: gadget: udc: atmel: implement .pullup
+ callback
+Message-ID: <20200715215801.GG23553@piout.net>
+References: <cover.1594231056.git.mirq-linux@rere.qmqm.pl>
+ <63121e624012996a2f6f5f3763270ad834667a12.1594231056.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <63121e624012996a2f6f5f3763270ad834667a12.1594231056.git.mirq-linux@rere.qmqm.pl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One-element arrays are being deprecated[1]. Replace the one-element
-array with a simple value type 'u8 reserved'[2], once this is just
-a placeholder for alignment.
+On 08/07/2020 20:04:10+0200, Michał Mirosław wrote:
+> Implement udc->pullup callback, so that udc_connect/disconnect work.
+> This is needed for composite gadget, as it assumes udc_disconnect()
+> actually works and calls its ->disconnect callback.
+> 
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-[1] https://github.com/KSPP/linux/issues/79
-[2] https://github.com/KSPP/linux/issues/86
+> ---
+>  drivers/usb/gadget/udc/atmel_usba_udc.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
+> index 9342a3d24963..c5128c229c52 100644
+> --- a/drivers/usb/gadget/udc/atmel_usba_udc.c
+> +++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+> @@ -1028,6 +1028,7 @@ usba_udc_set_selfpowered(struct usb_gadget *gadget, int is_selfpowered)
+>  	return 0;
+>  }
+>  
+> +static int atmel_usba_pullup(struct usb_gadget *gadget, int is_on);
+>  static int atmel_usba_start(struct usb_gadget *gadget,
+>  		struct usb_gadget_driver *driver);
+>  static int atmel_usba_stop(struct usb_gadget *gadget);
+> @@ -1101,6 +1102,7 @@ static const struct usb_gadget_ops usba_udc_ops = {
+>  	.get_frame		= usba_udc_get_frame,
+>  	.wakeup			= usba_udc_wakeup,
+>  	.set_selfpowered	= usba_udc_set_selfpowered,
+> +	.pullup			= atmel_usba_pullup,
+>  	.udc_start		= atmel_usba_start,
+>  	.udc_stop		= atmel_usba_stop,
+>  	.match_ep		= atmel_usba_match_ep,
+> @@ -1957,6 +1959,24 @@ static irqreturn_t usba_vbus_irq_thread(int irq, void *devid)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> +static int atmel_usba_pullup(struct usb_gadget *gadget, int is_on)
+> +{
+> +	struct usba_udc *udc = container_of(gadget, struct usba_udc, gadget);
+> +	unsigned long flags;
+> +	u32 ctrl;
+> +
+> +	spin_lock_irqsave(&udc->lock, flags);
+> +	ctrl = usba_readl(udc, CTRL);
+> +	if (is_on)
+> +		ctrl &= ~USBA_DETACH;
+> +	else
+> +		ctrl |= USBA_DETACH;
+> +	usba_writel(udc, CTRL, ctrl);
+> +	spin_unlock_irqrestore(&udc->lock, flags);
+> +
+> +	return 0;
+> +}
+> +
+>  static int atmel_usba_start(struct usb_gadget *gadget,
+>  		struct usb_gadget_driver *driver)
+>  {
+> -- 
+> 2.20.1
+> 
 
-Tested-by: kernel test robot <lkp@intel.com>
-Link: https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/0-day/wil6210-20200715.md
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/ath/wil6210/wmi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/wil6210/wmi.h b/drivers/net/wireless/ath/wil6210/wmi.h
-index 9affa4525609..beb53cac329b 100644
---- a/drivers/net/wireless/ath/wil6210/wmi.h
-+++ b/drivers/net/wireless/ath/wil6210/wmi.h
-@@ -3086,7 +3086,7 @@ struct wmi_scheduling_scheme_event {
- 	/* wmi_sched_scheme_failure_type */
- 	u8 failure_type;
- 	/* alignment to 32b */
--	u8 reserved[1];
-+	u8 reserved;
- } __packed;
- 
- /* WMI_RS_CFG_CMDID - deprecated */
 -- 
-2.27.0
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
