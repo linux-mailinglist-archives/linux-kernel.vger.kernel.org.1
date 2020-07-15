@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B416F221169
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E561122116E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbgGOPnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgGOPnN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 11:43:13 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED038C061755;
-        Wed, 15 Jul 2020 08:43:12 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id b25so3110319ljp.6;
-        Wed, 15 Jul 2020 08:43:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4Uquz2cUXAsNkebI07cUnJTpD7lMymggdeIx4TLm5Zs=;
-        b=eAkwWsC4SvtuONlDmsXgzlEuVDoQKmQdtfQxKrKRCCgcvU2UW55qZ2P9GQoKQLccrM
-         AlJVR0MiOzGB7kSsPS1z5OrkEkpkPYglQxi+0HxLgJH615zHjfrXeEDSceS0zvN0TA7o
-         bAcX7wzyA9oNj2UpN3MrtjBwK6YkwTjhe57eFxFv3KfrbIv2/1E4/UflcczzdVZRf0y2
-         sKxOK1T6KLv2UQBf2ZacHqeHcIQZNxlM9JV0XUGXEMc2BT2C/K3XiVVvlikyZoVSKDw1
-         TzcakFppiacvwmS+pPR3XMDPLU9GLg7f8zJlTvIdJtXX2gGU5GfHE07zSHp+ibHOrCBs
-         N1ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4Uquz2cUXAsNkebI07cUnJTpD7lMymggdeIx4TLm5Zs=;
-        b=mzCbf7D/jIF6dvZXrGqH9FKsT1m9xY0g+AcAKgwyuF1zFhiEQW0CHshZeo8jEYvS20
-         eWJDVF75mPHROzqPZBDZJt2ZxhkGAeYQohC9Pp+Lpb/mEiaJXxW92q9gwKTOs4f/FJrX
-         CEx6DOibNixCSZU2ep8I3wptQ/Blmu55e8P6o8uUOucJQ9dBHn8ltBH6eS3b5Xr52UTY
-         SNcs9EEBnQPhesd5p0U5s8GiWc+PtTZLLYLb8xeWD1VUPPI7SHDlCzloZ9ShBemgBKhA
-         GcxNjM96iJYRR3kovHl2fm8/dd7c8OKkFUfi53LBS6+IRQMk3XDdKZpxj4G4HJc1QmFp
-         upiA==
-X-Gm-Message-State: AOAM531iCM8oXMvTg+8qR1ura68Qv34yM76DLiqZbgGLwDhDhwLj/J5J
-        kThAd5F5n2oDWLIr/cps9ply6eJr
-X-Google-Smtp-Source: ABdhPJy9n946MWIITS2PG4rpk28bH1oXW/JL416AzmkGtAiqAOCgDNrkrCxc0idvXr9zLr0B1G5EAQ==
-X-Received: by 2002:a05:651c:511:: with SMTP id o17mr4820999ljp.433.1594827791169;
-        Wed, 15 Jul 2020 08:43:11 -0700 (PDT)
-Received: from osv.localdomain ([89.175.180.246])
-        by smtp.gmail.com with ESMTPSA id c6sm563955lff.77.2020.07.15.08.43.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 08:43:10 -0700 (PDT)
-From:   Sergey Organov <sorganov@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Sergey Organov <sorganov@gmail.com>
-Subject: [PATCH net-next v2 4/4] net: fec: replace snprintf() with strlcpy() in fec_ptp_init()
-Date:   Wed, 15 Jul 2020 18:43:00 +0300
-Message-Id: <20200715154300.13933-5-sorganov@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200715154300.13933-1-sorganov@gmail.com>
-References: <20200706142616.25192-1-sorganov@gmail.com>
- <20200715154300.13933-1-sorganov@gmail.com>
+        id S1727790AbgGOPnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:43:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45314 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726023AbgGOPnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 11:43:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BBB49AB76;
+        Wed, 15 Jul 2020 15:43:11 +0000 (UTC)
+Subject: Re: [External] Re: [PATCH v5.4.y, v4.19.y] mm: memcg/slab: fix memory
+ leak at non-root kmem_cache destroy
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>
+References: <20200707062754.8383-1-songmuchun@bytedance.com>
+ <3d06418e-e75c-e7b8-91cd-ba56283045be@suse.cz>
+ <CAMZfGtXK9yQOJy7BPnTBzhG4tithRs=9R4O3rDg1Rjz0zUFKnQ@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <4c1bba23-56c5-f69c-28cb-48dd3db30880@suse.cz>
+Date:   Wed, 15 Jul 2020 17:43:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMZfGtXK9yQOJy7BPnTBzhG4tithRs=9R4O3rDg1Rjz0zUFKnQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to use snprintf() on a constant string, nor using magic
-constant in the fixed code was a good idea.
+On 7/15/20 5:13 PM, Muchun Song wrote:
+> On Wed, Jul 15, 2020 at 7:32 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> On 7/7/20 8:27 AM, Muchun Song wrote:
+>> > If the kmem_cache refcount is greater than one, we should not
+>> > mark the root kmem_cache as dying. If we mark the root kmem_cache
+>> > dying incorrectly, the non-root kmem_cache can never be destroyed.
+>> > It resulted in memory leak when memcg was destroyed. We can use the
+>> > following steps to reproduce.
+>> >
+>> >   1) Use kmem_cache_create() to create a new kmem_cache named A.
+>> >   2) Coincidentally, the kmem_cache A is an alias for kmem_cache B,
+>> >      so the refcount of B is just increased.
+>> >   3) Use kmem_cache_destroy() to destroy the kmem_cache A, just
+>> >      decrease the B's refcount but mark the B as dying.
+>> >   4) Create a new memory cgroup and alloc memory from the kmem_cache
+>> >      A. It leads to create a non-root kmem_cache for allocating.
+>> >   5) When destroy the memory cgroup created in the step 4), the
+>> >      non-root kmem_cache can never be destroyed.
+>> >
+>> > If we repeat steps 4) and 5), this will cause a lot of memory leak.
+>> > So only when refcount reach zero, we mark the root kmem_cache as dying.
+>> >
+>> > Fixes: 92ee383f6daa ("mm: fix race between kmem_cache destroy, create and deactivate")
+>> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>>
+>> CC Roman, who worked in this area recently.
+>>
+>> Also why is this marked "[PATCH v5.4.y, v4.19.y]"? Has it been fixed otherwise
+>> in 5.5+ ?
+> 
+> Because the memcg slab/slub is reworked by Roman since v5.8.
 
-Signed-off-by: Sergey Organov <sorganov@gmail.com>
----
- drivers/net/ethernet/freescale/fec_ptp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That rework is in mmotm, so scheduled for 5.9, AFAIK. If you mean "The new
+cgroup slab memory controller" series.
 
-diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-index 0c8c56bdd7ac..93a86553147c 100644
---- a/drivers/net/ethernet/freescale/fec_ptp.c
-+++ b/drivers/net/ethernet/freescale/fec_ptp.c
-@@ -570,7 +570,7 @@ void fec_ptp_init(struct platform_device *pdev, int irq_idx)
- 	int ret;
- 
- 	fep->ptp_caps.owner = THIS_MODULE;
--	snprintf(fep->ptp_caps.name, 16, "fec ptp");
-+	strlcpy(fep->ptp_caps.name, "fec ptp", sizeof(fep->ptp_caps.name));
- 
- 	fep->ptp_caps.max_adj = 250000000;
- 	fep->ptp_caps.n_alarm = 0;
--- 
-2.10.0.1.g57b01a3
+> Therefore, this problem exists in v5.7 and below.
 
+Even 5.7 has a stable series, so no need to list only the LTS's.
+To sum up, the patch (once reviewed) should be queued for mainline as usual,
+perhaps sent before 5.8 is final, if deemed safe enough, and with added
+
+Cc: <stable@vger.kernel.org>
+
+and the Fixes: tag you provided, the applicable stable versions will pick it.
+
+Vlastimil
