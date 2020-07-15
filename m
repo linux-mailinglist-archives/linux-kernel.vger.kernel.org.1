@@ -2,190 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7193822091F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D755F220938
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730844AbgGOJrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730000AbgGOJrV (ORCPT
+        id S1730903AbgGOJvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:51:02 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53322 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730755AbgGOJvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:47:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07996C061755;
-        Wed, 15 Jul 2020 02:47:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0elNuqYxcCo1hxsLEEQkxpnR+7H9VliZhBonNrxGt2Y=; b=rGy15IwTdosyqZKG9Fqu61aw8r
-        EcZqWOQPfINy492XWxED50S8KJjaSk2xP068ox4WapjrUXn0tcqK85EqV4MyFmONN72dm0x4BFmsL
-        obY7r6FuMNdeixQGVaOA8lsOHVH1WSfrgP8wMRvXhlrxAMk5wmMbJN72IlywZHIO8SLxOlVd8T5Xm
-        t3qjIJHlibrn7hbOfDk1StAlw/Hgd83oGiTYkjBSF4Tkv34kCsYkgjos0J5jqaOKXuyirk4YKpgy1
-        /IcvszPzckLNg5+AsNpyaCsU/coExmg8PiDbzLwsndF6ajo69ZfzGRko1WQojQClj99DuhyNBasrz
-        t+oPuxPw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jve0G-00033K-3p; Wed, 15 Jul 2020 09:47:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B9F563028C8;
-        Wed, 15 Jul 2020 11:47:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A202F20D27C63; Wed, 15 Jul 2020 11:47:02 +0200 (CEST)
-Date:   Wed, 15 Jul 2020 11:47:02 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 45/75] x86/sev-es: Adjust #VC IST Stack on entering
- NMI handler
-Message-ID: <20200715094702.GF10769@hirez.programming.kicks-ass.net>
-References: <20200714120917.11253-1-joro@8bytes.org>
- <20200714120917.11253-46-joro@8bytes.org>
+        Wed, 15 Jul 2020 05:51:01 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06F9mSh7176609;
+        Wed, 15 Jul 2020 09:50:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=L1fC24AO0mFGrHZ+aeKv7ArHLZSEsoi+M3DofTmccgo=;
+ b=yusml1W+ItxebkMydFTO6Lu0XB7PqaZ7ZytBPghep5MTwdPUvM85wje7wtukJRhtHKBK
+ daFyp0vFfmaN/h/NSJ8Mx0Ic9bC9ClTp0aDxjMo5hyybbASJu3MqJuQ5H0UWt/mLFjw2
+ Hta5Ub3rxsvTvqBP0hGW7Mp+mi+SQa15sFzHcBAtAT+rlh5xbvXqeUD5xmYFNvtddex5
+ vDk7hceohFW8rhK5ZgQzUWgV3x5VFqNzN3pggi6dWBoZ76Ri+9pRrEeILe3s9NUMGZyd
+ r0mg8pLLZxDdGpSnaPLMBrBbB662aZM31X6AvahJgcxxIPnsh2SxaJSxZzJqByqFxMDw kg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 3275cmac7e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 15 Jul 2020 09:50:48 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06F9ldJH118956;
+        Wed, 15 Jul 2020 09:48:47 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 327q6u3f6m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jul 2020 09:48:47 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06F9miY4015244;
+        Wed, 15 Jul 2020 09:48:44 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 Jul 2020 02:48:44 -0700
+Date:   Wed, 15 Jul 2020 12:48:36 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot <syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com>
+Subject: Re: [PATCH v2] fbdev: Detect integer underflow at "struct
+ fbcon_ops"->clear_margins.
+Message-ID: <20200715094836.GD2571@kadam>
+References: <adff5d10-fe35-62d4-74c5-182958c5ada7@i-love.sakura.ne.jp>
+ <20200715015102.3814-1-penguin-kernel@I-love.SAKURA.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200714120917.11253-46-joro@8bytes.org>
+In-Reply-To: <20200715015102.3814-1-penguin-kernel@I-love.SAKURA.ne.jp>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007150081
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007150081
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 02:08:47PM +0200, Joerg Roedel wrote:
-
-> @@ -489,6 +490,9 @@ DEFINE_IDTENTRY_RAW(exc_nmi)
->  	this_cpu_write(nmi_cr2, read_cr2());
->  nmi_restart:
+On Wed, Jul 15, 2020 at 10:51:02AM +0900, Tetsuo Handa wrote:
+> syzbot is reporting general protection fault in bitfill_aligned() [1]
+> caused by integer underflow in bit_clear_margins(). The cause of this
+> problem is when and how do_vc_resize() updates vc->vc_{cols,rows}.
+> 
+> If vc_do_resize() fails (e.g. kzalloc() fails) when var.xres or var.yres
+> is going to shrink, vc->vc_{cols,rows} will not be updated. This allows
+> bit_clear_margins() to see info->var.xres < (vc->vc_cols * cw) or
+> info->var.yres < (vc->vc_rows * ch). Unexpectedly large rw or bh will
+> try to overrun the __iomem region and causes general protection fault.
+> 
+> Also, vc_resize(vc, 0, 0) does not set vc->vc_{cols,rows} = 0 due to
+> 
+>   new_cols = (cols ? cols : vc->vc_cols);
+>   new_rows = (lines ? lines : vc->vc_rows);
+> 
+> exception. Since cols and lines are calculated as
+> 
+>   cols = FBCON_SWAP(ops->rotate, info->var.xres, info->var.yres);
+>   rows = FBCON_SWAP(ops->rotate, info->var.yres, info->var.xres);
+>   cols /= vc->vc_font.width;
+>   rows /= vc->vc_font.height;
+>   vc_resize(vc, cols, rows);
+> 
+> in fbcon_modechanged(), var.xres < vc->vc_font.width makes cols = 0
+> and var.yres < vc->vc_font.height makes rows = 0. This means that
+> 
+>   const int fd = open("/dev/fb0", O_ACCMODE);
+>   struct fb_var_screeninfo var = { };
+>   ioctl(fd, FBIOGET_VSCREENINFO, &var);
+>   var.xres = var.yres = 1;
+>   ioctl(fd, FBIOPUT_VSCREENINFO, &var);
+> 
+> easily reproduces integer underflow bug explained above.
+> 
+> Of course, callers of vc_resize() are not handling vc_do_resize() failure
+> is bad. But we can't avoid vc_resize(vc, 0, 0) which returns 0. Therefore,
+> as a band-aid workaround, this patch checks integer underflow in
+> "struct fbcon_ops"->clear_margins call, assuming that
+> vc->vc_cols * vc->vc_font.width and vc->vc_rows * vc->vc_font.heigh do not
+> cause integer overflow.
+> 
+> [1] https://syzkaller.appspot.com/bug?id=a565882df74fa76f10d3a6fec4be31098dbb37c6
+> 
+> Reported-and-tested-by: syzbot <syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com>
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> ---
+>  drivers/video/fbdev/core/bitblit.c   | 4 ++--
+>  drivers/video/fbdev/core/fbcon_ccw.c | 4 ++--
+>  drivers/video/fbdev/core/fbcon_cw.c  | 4 ++--
+>  drivers/video/fbdev/core/fbcon_ud.c  | 4 ++--
+>  4 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/core/bitblit.c b/drivers/video/fbdev/core/bitblit.c
+> index ca935c09a261..35ebeeccde4d 100644
+> --- a/drivers/video/fbdev/core/bitblit.c
+> +++ b/drivers/video/fbdev/core/bitblit.c
+> @@ -216,7 +216,7 @@ static void bit_clear_margins(struct vc_data *vc, struct fb_info *info,
+>  	region.color = color;
+>  	region.rop = ROP_COPY;
 >  
-> +	/* Needs to happen before DR7 is accessed */
-> +	sev_es_ist_enter(regs);
-> +
->  	this_cpu_write(nmi_dr7, local_db_save());
->  
->  	nmi_enter();
-> @@ -502,6 +506,8 @@ DEFINE_IDTENTRY_RAW(exc_nmi)
->  
->  	local_db_restore(this_cpu_read(nmi_dr7));
->  
-> +	sev_es_ist_exit();
-> +
->  	if (unlikely(this_cpu_read(nmi_cr2) != read_cr2()))
->  		write_cr2(this_cpu_read(nmi_cr2));
->  	if (this_cpu_dec_return(nmi_state))
+> -	if (rw && !bottom_only) {
+> +	if ((int) rw > 0 && !bottom_only) {
+>  		region.dx = info->var.xoffset + rs;
+                            ^^^^^^^^^^^^^^^^^^^^^^
 
-I really hate all this #VC stuff :-(
+If you choose a very high positive "rw" then this addition can overflow.
+info->var.xoffset comes from the user and I don't think it's checked...
 
-So the above will make the NMI do 4 unconditional extra CALL+RET, a LOAD
-(which will potentially miss) and a compare and branch.
+regards,
+dan carpenter
 
-How's that a win for normal people? Can we please turn all these
-sev_es_*() hooks into something like:
-
-DECLARE_STATIC_KEY_FALSE(sev_es_enabled_key);
-
-static __always_inline void sev_es_foo()
-{
-	if (static_branch_unlikely(&sev_es_enabled_key))
-		__sev_es_foo();
-}
-
-So that normal people will only see an extra NOP?
-
-> diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-> index d415368f16ec..2a7cc72db1d5 100644
-> --- a/arch/x86/kernel/sev-es.c
-> +++ b/arch/x86/kernel/sev-es.c
-> @@ -78,6 +78,67 @@ static void __init sev_es_setup_vc_stacks(int cpu)
->  	tss->x86_tss.ist[IST_INDEX_VC] = CEA_ESTACK_TOP(&cea->estacks, VC);
->  }
->  
-> +static bool on_vc_stack(unsigned long sp)
-
-noinstr or __always_inline
-
-> +{
-> +	return ((sp >= __this_cpu_ist_bot_va(VC)) && (sp < __this_cpu_ist_top_va(VC)));
-> +}
-> +
-> +/*
-> + * This function handles the case when an NMI or an NMI-like exception
-> + * like #DB is raised in the #VC exception handler entry code. In this
-
-I've yet to find you handle the NMI-like cases..
-
-> + * case the IST entry for VC must be adjusted, so that any subsequent VC
-> + * exception will not overwrite the stack contents of the interrupted VC
-> + * handler.
-> + *
-> + * The IST entry is adjusted unconditionally so that it can be also be
-> + * unconditionally back-adjusted in sev_es_nmi_exit(). Otherwise a
-> + * nested nmi_exit() call (#VC->NMI->#DB) may back-adjust the IST entry
-> + * too early.
-
-Is this comment accurate, I cannot find the patch touching
-nmi_enter/exit()?
-
-> + */
-> +void noinstr sev_es_ist_enter(struct pt_regs *regs)
-> +{
-> +	unsigned long old_ist, new_ist;
-> +	unsigned long *p;
-> +
-> +	if (!sev_es_active())
-> +		return;
-> +
-> +	/* Read old IST entry */
-> +	old_ist = __this_cpu_read(cpu_tss_rw.x86_tss.ist[IST_INDEX_VC]);
-> +
-> +	/* Make room on the IST stack */
-> +	if (on_vc_stack(regs->sp))
-> +		new_ist = ALIGN_DOWN(regs->sp, 8) - sizeof(old_ist);
-> +	else
-> +		new_ist = old_ist - sizeof(old_ist);
-> +
-> +	/* Store old IST entry */
-> +	p       = (unsigned long *)new_ist;
-> +	*p      = old_ist;
-> +
-> +	/* Set new IST entry */
-> +	this_cpu_write(cpu_tss_rw.x86_tss.ist[IST_INDEX_VC], new_ist);
-> +}
-> +
-> +void noinstr sev_es_ist_exit(void)
-> +{
-> +	unsigned long ist;
-> +	unsigned long *p;
-> +
-> +	if (!sev_es_active())
-> +		return;
-> +
-> +	/* Read IST entry */
-> +	ist = __this_cpu_read(cpu_tss_rw.x86_tss.ist[IST_INDEX_VC]);
-> +
-> +	if (WARN_ON(ist == __this_cpu_ist_top_va(VC)))
-> +		return;
-> +
-> +	/* Read back old IST entry and write it to the TSS */
-> +	p = (unsigned long *)ist;
-> +	this_cpu_write(cpu_tss_rw.x86_tss.ist[IST_INDEX_VC], *p);
-> +}
-
-That's pretty disguisting :-(
