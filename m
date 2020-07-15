@@ -2,265 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738172206CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089B62206CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728888AbgGOIKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:10:30 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:43872 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729609AbgGOIK3 (ORCPT
+        id S1729660AbgGOILP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Jul 2020 04:11:15 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:43959 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729609AbgGOILO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:10:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1594800629; x=1626336629;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=R6O+TMn1MI3Pm+jNBr7ybQvvfUzZ61n0bbw6b4vy1p4=;
-  b=EuzLpr9+tJPlgIru73WnMarP2D/70ipwPkI+dt0uSqthjrQHaE+DofEK
-   raieVCKjL59/ukDPpV7PQ+B7NcwqlniQUSp7rGAEAy5kMAaG5T2si0Uud
-   38KAkMI5o/EBqS8j2esFwwFR1moQVmGIkD2/M8OYLJy0blPR4YvidUZFX
-   lnIM+bNNK9ACnQiW0XQk9oB7OMS0IKbQgUp3/ajsvDv7rpvo1cgS8w8Kx
-   1PRArPlnKquwnRy9N3WenDcK0n/fM2mVIJ0wrDwEpWcY/QcmZFAHPWcjW
-   z/kzByYLVUnnPwo/YPngfXNDonSQNsCx0/YNaR5OtdIu4Tf5wFU5uZRgl
-   Q==;
-IronPort-SDR: Fpsk4Hk/d+Qj06NQLXeLyW9plX/1ruOwsY/PkELtQA3uz7X1vQ4GhIXJ7MbNaBSydIakkdAJea
- qjZnAKRuMlHH8fjSOwFx/+V9ApLxPw+aDHGuHp4+i6SBMHeJsoJqa3EwvPtToeL5zJTSE8dkjA
- HouLBdPUVAMPU4rHKwGet2RfSmTksKZaZZfiXUuXanNr3erjzW2zzbmUBJesimKNYKmIe1yMZs
- ln4PzOWQvsOSd20E9fIzEv+jIBvDlbJk/OcO5z/7/Q46J5vrcXJsqwrdDN397W52W+WmcGNMZO
- ig0=
-X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
-   d="scan'208";a="83940377"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Jul 2020 01:10:28 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 15 Jul 2020 01:09:55 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Wed, 15 Jul 2020 01:09:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hopzNafgvwXs3k4vB0hTO94pRDp6BHvtryvbisSNd1FVJhg7LziqOYXCRRX0Zot7y19fZ97NgMAtGcoc3pLFZxEU17yvx5zQiGdlUWlqLvJG/BGB6hroPwmkJPDfX5K1E1Tr3qPqvnzgnTPY2BD9rkW0f6B40Z2Qip4NBvsom8itQOzRml9S31M18pMP8S0ubtxWUFTb0hVD3gbHZlRuAbTUoqv0GX+r2vWGhVQEVwf+pfxed//mYGuA8RLaPfzco8QXPG6nGqIrIx835w6kMCzAMHup19SHNMJuOELwMwga+OrY7c7S5QzUxNgvtIOvfBfsprTCUV7qvOLJLpSC+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R6O+TMn1MI3Pm+jNBr7ybQvvfUzZ61n0bbw6b4vy1p4=;
- b=A8CDslIm6Ln/Fg06/G5abzEvlkGkgBcSGIXrEvnoInIsxS9cAiUuI0igNZ+RQvsFWbok+HEbi4fINLAz7NgjsKrMmXk2mc4Z0RLxdxZ5wi2xx/koT2IzjFo+Dfuy5v/ZUGHIc+X0gOG7hZRePImHBh2YquuDvfCq4ix8yPOlj0rKpjnYWAGVuBiigrQX2aX2ugiwmN/VmIxJB3+kuldy2Rv6dFJ1F46n16M3uJaqNJ/7Vp/AHoc30wjaeFoejxo2dytprgHig0zTz7kOzqx4kmchrhZikiFJ9V6sVJ/Md/qNuZR5o+M74z6gLVgeVVx1shMxH2vxfTyLZN/tXpp0HQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R6O+TMn1MI3Pm+jNBr7ybQvvfUzZ61n0bbw6b4vy1p4=;
- b=udU+fG2VHOnuRaV1hHi99wPx7EeEJozPFzNQBjuFUylsIJyKFNsPz+w1K+LBUtIwhfr8ZpHNBgFEveuclegZunP+CjEW1dHjZnK2i4k/aBnkIX3KKRq9SY6bzZz4O9c1jLWkNxfhXl/jCd8ggFM7tJOtJ9sXypNYJBnkOi20Lgs=
-Received: from MWHPR11MB0061.namprd11.prod.outlook.com (2603:10b6:301:65::37)
- by MWHPR11MB1248.namprd11.prod.outlook.com (2603:10b6:300:27::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.22; Wed, 15 Jul
- 2020 08:10:27 +0000
-Received: from MWHPR11MB0061.namprd11.prod.outlook.com
- ([fe80::c907:e7ec:bf95:f0be]) by MWHPR11MB0061.namprd11.prod.outlook.com
- ([fe80::c907:e7ec:bf95:f0be%4]) with mapi id 15.20.3174.025; Wed, 15 Jul 2020
- 08:10:27 +0000
-From:   <Nicolas.Ferre@microchip.com>
-To:     <Claudiu.Beznea@microchip.com>, <linux@armlinux.org.uk>,
-        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <harini.katakam@xilinx.com>, <f.fainelli@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <davem@davemloft.net>,
-        <alexandre.belloni@bootlin.com>, <antoine.tenart@bootlin.com>
-Subject: Re: [PATCH v6 1/2] net: macb: WoL support for GEM type of Ethernet
- controller
-Thread-Topic: [PATCH v6 1/2] net: macb: WoL support for GEM type of Ethernet
- controller
-Thread-Index: AQHWWn9leYo0zcBGv0e87UuyHo5Eiw==
-Date:   Wed, 15 Jul 2020 08:10:27 +0000
-Message-ID: <4fd5402a-84e5-d100-8b66-0b0bde3321d1@microchip.com>
-References: <cover.1594632220.git.nicolas.ferre@microchip.com>
- <1e40c4277d85b2ae23c8baca6f75ad25dbd35446.1594632220.git.nicolas.ferre@microchip.com>
- <63427173-1176-c117-e5be-6f4f4a73ef10@microchip.com>
-In-Reply-To: <63427173-1176-c117-e5be-6f4f4a73ef10@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-authentication-results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none
- header.from=microchip.com;
-x-originating-ip: [2a01:cb1c:8c:b200:2918:a845:6472:38af]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 819b70b9-9e14-420d-4d1b-08d82896887b
-x-ms-traffictypediagnostic: MWHPR11MB1248:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB1248901F933857DDAEE97FA2E07E0@MWHPR11MB1248.namprd11.prod.outlook.com>
-x-bypassexternaltag: True
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PWKDm6UEIf5fsCnsE4FEOceRhujLOXyphF4ikut9+84BZDvo0Gv4KgJOmGAuvHSavu7nmYTXg3bRrD9rnSeNfsvWvv/UsMeoLrtLZvVM0SN48Y2EKtkKGh6wB2hAe+qodRvrEvz6TAKUE26n2JOJPJlvXROA/Rp3IVJcxu+0qXW+++vDfGJLgdFu2NELuBBo/d5AgrliCIX+kHxo4tCVQTVKByE1AxSBf4r2sTjqeqxgdDYq7MBrFPz3zWIFz0/6eLYDruoaqzSE+xfiRxtGLLqtCoCwVXB+Y47MuZP9UZ2XGdqOcgLJPXFzCSn3fyXlCHJM9zjxm5EqXZXsFpr5O5exjqgYtXHRjo8tMPG1ZDQEO7+tLjG7TvUV2sLE2McX
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0061.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(366004)(136003)(39860400002)(376002)(396003)(31686004)(54906003)(2616005)(110136005)(86362001)(53546011)(31696002)(6506007)(316002)(2906002)(6486002)(5660300002)(8936002)(36756003)(64756008)(71200400001)(66446008)(66946007)(76116006)(66476007)(83380400001)(66556008)(91956017)(478600001)(4326008)(6512007)(8676002)(186003)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: BiTYQEy69kbg20wVAaDcvjqJMbTmQ94RQsy521lGXmMjU3lhrN+TL9iSKxU73Ts1p+tjaS2HiVSp4l9TYNeUjq27BxCbfZQ4f5OkQDwQgsmkTsSCbrou+Df/UD6HOoMwNfRpKTADaX1JEgLT0TS4zE2dZbcvtkN4/wsJv7p4q27+/nTgpjccBKhw/uEr0PDwcluvClHAHurJQ8KPsoDNKVa7COXjXCJcN/5zbteUztSbJfzbStII7KBggvVkC9DpslvmQHqfqSUsBonU8GTV8ssdOSyJvIHm/ShGwiUgOBT+pGCvWfPGbH2HjgcE0GiUi6dKfJyMX3Ecl9e2hhTJ4RRIUPikDhw7Zj5hoTYuuZf1Txz435YEhRmA7Qj+77wIzxpIOHBvAr5CLiILxxociQ69AfCWufuuLQA4qixFoUWzIPQuEa9DkxW2gwzH5QgMRlrbMoNRFljk1pQFbj+FwGQOe0ScOYhUROk0luScgMiPHdsgTrSzLwGt5sWEhDSGBuiDks5zhPD6RvUZ//HdMS0pxH51AGrFpJH3uVfCv7Y=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5646FC362DF88F478BDF9EA58568A008@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 15 Jul 2020 04:11:14 -0400
+Received: from 'smile.earth' ([95.89.3.2]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MQ5aw-1kHfdY20Dw-00M8Kn for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020
+ 10:11:12 +0200
+X-Virus-Scanned: amavisd at 'smile.earth'
+From:   Hans-Peter Jansen <hpj@urpla.net>
+To:     linux-kernel@vger.kernel.org
+Subject: Re: AMD PCI Bridge: Hardware error from APEI
+Date:   Wed, 15 Jul 2020 10:11:11 +0200
+Message-ID: <2149597.8uJZFlvqrj@xrated>
+In-Reply-To: <7789846.exkBBusKcl@xrated>
+References: <2559180.cUrjzdZFCD@xrated> <10516708.ThPc60jCtT@xrated>
+ <7789846.exkBBusKcl@xrated>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0061.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 819b70b9-9e14-420d-4d1b-08d82896887b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2020 08:10:27.1883
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 52FwWfGyEaRVwnbhts5dvWBsP3eXJCqRKcR7IKzdtt09tP4wZ3S47qNlpR72vMpUaxEVEGE7RoU/JrDR5NwdqMOmRpvzbVu4YTEamRgwlc4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1248
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
+X-Provags-ID: V03:K1:a1Htewdacj5b35d+1IMcWoCJmuTV2bsxgBPPtIPt4RwtcWtS9Ek
+ +AIgvVCcpSIYci0YJRynt9t9NDdMamrxvhsKQjqK/sv16sKgwtZHIkjCHMwoyJHD9a38lk1
+ n3XA4fJuYGWimiFg9anKVZbvGS9PRLlvo1+DBG4mkCW5cSimGuJns5HjNjWnvEEhdKC0meb
+ B1zW+aJjtuSOLhtp7eL3w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cP+XYUBL9fc=:7EUlEr3wDi3GqUiKgtkGHT
+ C+I0EzzvTFu0r7R6Sscd2jFqjFq2O6tXeFZLAUoAYq/XI1cLOK2XPWYdkvR7vXBfe+TWeDkLA
+ OF+/qdIYSRo9IPWUiP8y4EuHtORoy6JHvbSpTaE+Hv9zkwX9DYHyxBrKw3Ks3mOyhAMEAn3hr
+ sRR/Nv+EpIMzBeY6hegl5vLOdAXaLlstZmaE/99TmLWc4g8XPfNnkSRLNm6E2CrnRmnAsv4mC
+ NvSLRzJQMxa+KR0ZPFVT0N4WCfb95IHL+cmZI1xWFpqHmsPGEKxtSd2zNlqPKIUnMjdL4zkKw
+ BwkXs63BPP0VhRc3Hm3K0AmIYYu6iKW4cMnc76mwN9HMtLvBQpx9IkrEoyY390cwlXfy9AD8d
+ DnVRr7CTEw3S+N0joHVe6mb/rbAhdXbphceVUKTpluqKDnrETHd+1ot0RLj8K22+YjldcfZt7
+ /H1IejcJA0F40ZjETMSd6fIU7vB/NXtJuWUo6BRgYU5V5gRB65iOmTiV9efbHaa4Rb8lglow1
+ r0gH5dMKc5HdQpye6bXfOp8viBZ4I3K3w6W/8dcvPZ3BPeMWiQYppyhOYI0zdQRs58qoGXjU2
+ 9l6m2wljXplLjOxeHy/zIwoawbkAIOUTr4CRmQ/uq/aeZCv4fO9HeJiq18uAm6xZtFjKqIBv+
+ WmHnr640mP9kNPeiJwwo86A5g+N004LvtVWTcdrWWvC5TTpAKhgP2fr1p66nI7feIpr5d/3/a
+ NpHZIBvv9bfHRyJnJWX5ktUMxKV8H/0Hi2UcVRRhCqqEd8KB9KWA7ysxS+h+p5NLbjVcroC5M
+ q3crPcGWBktxvSMvVmNdR/4CDffVfQnpOAhGAw7KP9ebzjPoKKsPWKy6IyPvnCkkIulVegC
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTMvMDcvMjAyMCBhdCAxNzo0NSwgQ2xhdWRpdSBCZXpuZWEgLSBNMTgwNjMgd3JvdGU6DQo+
-IEhpIE5pY29sYXMsDQo+IA0KPiANCj4gT24gMTMuMDcuMjAyMCAxMzowNSwgbmljb2xhcy5mZXJy
-ZUBtaWNyb2NoaXAuY29tIHdyb3RlOg0KPj4gRnJvbTogTmljb2xhcyBGZXJyZSA8bmljb2xhcy5m
-ZXJyZUBtaWNyb2NoaXAuY29tPg0KPj4NCj4+IEFkYXB0IHRoZSBXYWtlLW9uLUxhbiBmZWF0dXJl
-IHRvIHRoZSBDYWRlbmNlIEdFTSBFdGhlcm5ldCBjb250cm9sbGVyLg0KPj4gVGhpcyBjb250cm9s
-bGVyIGhhcyBkaWZmZXJlbnQgcmVnaXN0ZXIgbGF5b3V0IGFuZCBjYW5ub3QgYmUgaGFuZGxlZCBi
-eQ0KPj4gcHJldmlvdXMgY29kZS4NCj4+IFdlIGRpc2FibGUgY29tcGxldGVseSBpbnRlcnJ1cHRz
-IG9uIGFsbCB0aGUgcXVldWVzIGJ1dCB0aGUgcXVldWUgMC4NCj4+IEhhbmRsaW5nIG9mIFdvTCBp
-bnRlcnJ1cHQgaXMgZG9uZSBpbiBhbm90aGVyIGludGVycnVwdCBoYW5kbGVyDQo+PiBwb3NpdGlv
-bmVkIGRlcGVuZGluZyBvbiB0aGUgY29udHJvbGxlciB2ZXJzaW9uIHVzZWQsIGp1c3QgYmV0d2Vl
-bg0KPj4gc3VzcGVuZCgpIGFuZCByZXN1bWUoKSBjYWxscy4NCj4+IEl0IGFsbG93cyB0byBsb3dl
-ciBwcmVzc3VyZSBvbiB0aGUgZ2VuZXJpYyBpbnRlcnJ1cHQgaG90IHBhdGggYnkNCj4+IHJlbW92
-aW5nIHRoZSBuZWVkIHRvIGhhbmRsZSAyIHRlc3RzIGZvciBlYWNoIElSUTogdGhlIGZpcnN0IGZp
-Z3VyaW5nIG91dA0KPj4gdGhlIGNvbnRyb2xsZXIgcmV2aXNpb24sIHRoZSBzZWNvbmQgZm9yIGFj
-dHVhbGx5IGtub3dpbmcgaWYgdGhlIFdvTCBiaXQNCj4+IGlzIHNldC4NCj4+DQo+PiBRdWV1ZSBt
-YW5hZ2VtZW50IGluIHN1c3BlbmQoKS9yZXN1bWUoKSBmdW5jdGlvbnMgaW5zcGlyZWQgZnJvbSBS
-RkMgcGF0Y2gNCj4+IGJ5IEhhcmluaSBLYXRha2FtIDxoYXJpbmlrQHhpbGlueC5jb20+LCB0aGFu
-a3MhDQo+Pg0KPj4gQ2M6IENsYXVkaXUgQmV6bmVhIDxjbGF1ZGl1LmJlem5lYUBtaWNyb2NoaXAu
-Y29tPg0KPj4gQ2M6IEhhcmluaSBLYXRha2FtIDxoYXJpbmkua2F0YWthbUB4aWxpbnguY29tPg0K
-Pj4gU2lnbmVkLW9mZi1ieTogTmljb2xhcyBGZXJyZSA8bmljb2xhcy5mZXJyZUBtaWNyb2NoaXAu
-Y29tPg0KPj4gLS0tDQo+PiBDaGFuZ2VzIGluIHY2Og0KPj4gLSBWYWx1ZXMgb2YgcmVnaXN0ZXJz
-IHVzcmlvIGFuZCBzY3J0MiBwcm9wZXJseSByZWFkIGluIGFueSBjYXNlIChXb0wgb3Igbm90KQ0K
-Pj4gICAgZHVyaW5nIG1hY2Jfc3VzcGVuZCgpIHRvIGJlIHJlc3RvcmVkIGR1cmluZyBtYWNiX3Jl
-c3VtZSgpDQo+Pg0KPj4gQ2hhbmdlcyBpbiB2MzoNCj4+IC0gSW4gbWFjYl9yZXN1bWUoKSwgbW92
-ZSB0byBhIG1vcmUgaW4tZGVwdGggcmUtY29uZmlndXJhdGlvbiBvZiB0aGUgY29udHJvbGxlcg0K
-Pj4gICAgZXZlbiBvbiB0aGUgbm9uLVdvTCBwYXRoIGluIG9yZGVyIHRvIGFjY2VwdCBkZWVwZXIg
-c2xlZXAgc3RhdGVzLg0KPj4gLSB0aGlzIGVuZHMgdXAgaGF2aW5nIGEgcGh5bGlua19zdG9wKCkv
-cGh5bGlua19zdGFydCgpIGZvciBlYWNoIG9mIHRoZQ0KPj4gICAgV29MLyFXb0wgcGF0aHMNCj4+
-IC0gSW4gbWFjYl9yZXN1bWUoKSwga2VlcCBzZXR0aW5nIHRoZSBNUEUgYml0IGluIE5DUiByZWdp
-c3RlciB3aGljaCBpcyBuZWVkZWQgaW4NCj4+ICAgIGNhc2Ugb2YgZGVlcCBwb3dlciBzYXZpbmcg
-bW9kZSB1c2VkDQo+PiAtIFRlc3RzIGRvbmUgaW4gInN0YW5kYnkiIGFzIHdlbGwgYXMgb3VyIGRl
-ZXBlciBQb3dlciBNYW5hZ2VtZW50IG1vZGU6DQo+PiAgICBCYWNrdXAgU2VsZi1SZWZyZXNoIChC
-U1IpDQo+Pg0KPj4gQ2hhbmdlcyBpbiB2MjoNCj4+IC0gQWRkaXRpb24gb2YgcG1fd2FrZXVwX2V2
-ZW50KCkgaW4gV29MIElSUQ0KPj4gLSBJbiBtYWNiX3Jlc3VtZSgpLCByZW1vdmFsIG9mIHNldHRp
-bmcgdGhlIE1QRSBiaXQgaW4gTkNSIHJlZ2lzdGVyIHdoaWNoIGlzIG5vdA0KPj4gICAgbmVlZGVk
-IGluIGFueSBjYXNlOiBJUCBpcyByZXNldCBvbiB0aGUgdXN1YWwgcGF0aCBhbmQga2VwdCBhbGl2
-ZSBpZiBXb0wgaXMgdXNlZA0KPj4gLSBJbiBtYWNiX3Jlc3VtZSgpLCBjb21wbGV0ZSByZXNldCBv
-ZiB0aGUgY29udHJvbGxlciBpcyBrZXB0IG9ubHkgZm9yIG5vbi1Xb0wNCj4+ICAgIGNhc2UuIEZv
-ciB0aGUgV29MIGNhc2UsIHdlIG9ubHkgcmVwbGFjZSB0aGUgdXN1YWwgSVJRIGhhbmRsZXIuDQo+
-Pg0KPj4gICBkcml2ZXJzL25ldC9ldGhlcm5ldC9jYWRlbmNlL21hY2IuaCAgICAgIHwgICAzICsN
-Cj4+ICAgZHJpdmVycy9uZXQvZXRoZXJuZXQvY2FkZW5jZS9tYWNiX21haW4uYyB8IDE1MSArKysr
-KysrKysrKysrKysrKysrLS0tLQ0KPj4gICAyIGZpbGVzIGNoYW5nZWQsIDEyNyBpbnNlcnRpb25z
-KCspLCAyNyBkZWxldGlvbnMoLSkNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRo
-ZXJuZXQvY2FkZW5jZS9tYWNiLmggYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9jYWRlbmNlL21hY2Iu
-aA0KPj4gaW5kZXggYWI4MjdmYjRiNmI5Li40ZjFiNDE1NjkyNjAgMTAwNjQ0DQo+PiAtLS0gYS9k
-cml2ZXJzL25ldC9ldGhlcm5ldC9jYWRlbmNlL21hY2IuaA0KPj4gKysrIGIvZHJpdmVycy9uZXQv
-ZXRoZXJuZXQvY2FkZW5jZS9tYWNiLmgNCj4+IEBAIC05MCw2ICs5MCw3IEBADQo+PiAgICNkZWZp
-bmUgR0VNX1NBM1QJCTB4MDA5QyAvKiBTcGVjaWZpYzMgVG9wICovDQo+PiAgICNkZWZpbmUgR0VN
-X1NBNEIJCTB4MDBBMCAvKiBTcGVjaWZpYzQgQm90dG9tICovDQo+PiAgICNkZWZpbmUgR0VNX1NB
-NFQJCTB4MDBBNCAvKiBTcGVjaWZpYzQgVG9wICovDQo+PiArI2RlZmluZSBHRU1fV09MCQkJMHgw
-MGI4IC8qIFdha2Ugb24gTEFOICovDQo+PiAgICNkZWZpbmUgR0VNX0VGVFNICQkweDAwZTggLyog
-UFRQIEV2ZW50IEZyYW1lIFRyYW5zbWl0dGVkIFNlY29uZHMgUmVnaXN0ZXIgNDc6MzIgKi8NCj4+
-ICAgI2RlZmluZSBHRU1fRUZSU0gJCTB4MDBlYyAvKiBQVFAgRXZlbnQgRnJhbWUgUmVjZWl2ZWQg
-U2Vjb25kcyBSZWdpc3RlciA0NzozMiAqLw0KPj4gICAjZGVmaW5lIEdFTV9QRUZUU0gJCTB4MDBm
-MCAvKiBQVFAgUGVlciBFdmVudCBGcmFtZSBUcmFuc21pdHRlZCBTZWNvbmRzIFJlZ2lzdGVyIDQ3
-OjMyICovDQo+PiBAQCAtMzk2LDYgKzM5Nyw4IEBADQo+PiAgICNkZWZpbmUgTUFDQl9QRFJTRlRf
-U0laRQkxDQo+PiAgICNkZWZpbmUgTUFDQl9TUklfT0ZGU0VUCQkyNiAvKiBUU1UgU2Vjb25kcyBS
-ZWdpc3RlciBJbmNyZW1lbnQgKi8NCj4+ICAgI2RlZmluZSBNQUNCX1NSSV9TSVpFCQkxDQo+PiAr
-I2RlZmluZSBHRU1fV09MX09GRlNFVAkJMjggLyogRW5hYmxlIHdha2Utb24tbGFuIGludGVycnVw
-dCAqLw0KPj4gKyNkZWZpbmUgR0VNX1dPTF9TSVpFCQkxDQo+PiAgIA0KPj4gICAvKiBUaW1lciBp
-bmNyZW1lbnQgZmllbGRzICovDQo+PiAgICNkZWZpbmUgTUFDQl9USV9DTlNfT0ZGU0VUCTANCj4+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9jYWRlbmNlL21hY2JfbWFpbi5jIGIv
-ZHJpdmVycy9uZXQvZXRoZXJuZXQvY2FkZW5jZS9tYWNiX21haW4uYw0KPj4gaW5kZXggZTVlMzdh
-YTgxYjAyLi4xMjJjNTRlNDBmOTEgMTAwNjQ0DQo+PiAtLS0gYS9kcml2ZXJzL25ldC9ldGhlcm5l
-dC9jYWRlbmNlL21hY2JfbWFpbi5jDQo+PiArKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9jYWRl
-bmNlL21hY2JfbWFpbi5jDQo+PiBAQCAtMTUxNyw2ICsxNTE3LDM1IEBAIHN0YXRpYyB2b2lkIG1h
-Y2JfdHhfcmVzdGFydChzdHJ1Y3QgbWFjYl9xdWV1ZSAqcXVldWUpDQo+PiAgIAltYWNiX3dyaXRl
-bChicCwgTkNSLCBtYWNiX3JlYWRsKGJwLCBOQ1IpIHwgTUFDQl9CSVQoVFNUQVJUKSk7DQo+PiAg
-IH0NCj4+ICAgDQo+PiArc3RhdGljIGlycXJldHVybl90IGdlbV93b2xfaW50ZXJydXB0KGludCBp
-cnEsIHZvaWQgKmRldl9pZCkNCj4+ICt7DQo+PiArCXN0cnVjdCBtYWNiX3F1ZXVlICpxdWV1ZSA9
-IGRldl9pZDsNCj4+ICsJc3RydWN0IG1hY2IgKmJwID0gcXVldWUtPmJwOw0KPj4gKwl1MzIgc3Rh
-dHVzOw0KPj4gKw0KPj4gKwlzdGF0dXMgPSBxdWV1ZV9yZWFkbChxdWV1ZSwgSVNSKTsNCj4+ICsN
-Cj4+ICsJaWYgKHVubGlrZWx5KCFzdGF0dXMpKQ0KPj4gKwkJcmV0dXJuIElSUV9OT05FOw0KPj4g
-Kw0KPj4gKwlzcGluX2xvY2soJmJwLT5sb2NrKTsNCj4+ICsNCj4+ICsJaWYgKHN0YXR1cyAmIEdF
-TV9CSVQoV09MKSkgew0KPj4gKwkJcXVldWVfd3JpdGVsKHF1ZXVlLCBJRFIsIEdFTV9CSVQoV09M
-KSk7DQo+PiArCQlnZW1fd3JpdGVsKGJwLCBXT0wsIDApOw0KPj4gKwkJbmV0ZGV2X3ZkYmcoYnAt
-PmRldiwgIkdFTSBXb0w6IHF1ZXVlID0gJXUsIGlzciA9IDB4JTA4bHhcbiIsDQo+PiArCQkJICAg
-ICh1bnNpZ25lZCBpbnQpKHF1ZXVlIC0gYnAtPnF1ZXVlcyksDQo+PiArCQkJICAgICh1bnNpZ25l
-ZCBsb25nKXN0YXR1cyk7DQo+PiArCQlpZiAoYnAtPmNhcHMgJiBNQUNCX0NBUFNfSVNSX0NMRUFS
-X09OX1dSSVRFKQ0KPj4gKwkJCXF1ZXVlX3dyaXRlbChxdWV1ZSwgSVNSLCBHRU1fQklUKFdPTCkp
-Ow0KPj4gKwkJcG1fd2FrZXVwX2V2ZW50KCZicC0+cGRldi0+ZGV2LCAwKTsNCj4+ICsJfQ0KPj4g
-Kw0KPj4gKwlzcGluX3VubG9jaygmYnAtPmxvY2spOw0KPj4gKw0KPj4gKwlyZXR1cm4gSVJRX0hB
-TkRMRUQ7DQo+PiArfQ0KPj4gKw0KPj4gICBzdGF0aWMgaXJxcmV0dXJuX3QgbWFjYl9pbnRlcnJ1
-cHQoaW50IGlycSwgdm9pZCAqZGV2X2lkKQ0KPj4gICB7DQo+PiAgIAlzdHJ1Y3QgbWFjYl9xdWV1
-ZSAqcXVldWUgPSBkZXZfaWQ7DQo+PiBAQCAtMzMxNiw2ICszMzQ1LDggQEAgc3RhdGljIGNvbnN0
-IHN0cnVjdCBldGh0b29sX29wcyBtYWNiX2V0aHRvb2xfb3BzID0gew0KPj4gICBzdGF0aWMgY29u
-c3Qgc3RydWN0IGV0aHRvb2xfb3BzIGdlbV9ldGh0b29sX29wcyA9IHsNCj4+ICAgCS5nZXRfcmVn
-c19sZW4JCT0gbWFjYl9nZXRfcmVnc19sZW4sDQo+PiAgIAkuZ2V0X3JlZ3MJCT0gbWFjYl9nZXRf
-cmVncywNCj4+ICsJLmdldF93b2wJCT0gbWFjYl9nZXRfd29sLA0KPj4gKwkuc2V0X3dvbAkJPSBt
-YWNiX3NldF93b2wsDQo+PiAgIAkuZ2V0X2xpbmsJCT0gZXRodG9vbF9vcF9nZXRfbGluaywNCj4+
-ICAgCS5nZXRfdHNfaW5mbwkJPSBtYWNiX2dldF90c19pbmZvLA0KPj4gICAJLmdldF9ldGh0b29s
-X3N0YXRzCT0gZ2VtX2dldF9ldGh0b29sX3N0YXRzLA0KPj4gQEAgLTQ1NjcsMzMgKzQ1OTgsNjcg
-QEAgc3RhdGljIGludCBfX21heWJlX3VudXNlZCBtYWNiX3N1c3BlbmQoc3RydWN0IGRldmljZSAq
-ZGV2KQ0KPj4gICAJc3RydWN0IG1hY2JfcXVldWUgKnF1ZXVlID0gYnAtPnF1ZXVlczsNCj4+ICAg
-CXVuc2lnbmVkIGxvbmcgZmxhZ3M7DQo+PiAgIAl1bnNpZ25lZCBpbnQgcTsNCj4+ICsJaW50IGVy
-cjsNCj4+ICAgDQo+PiAgIAlpZiAoIW5ldGlmX3J1bm5pbmcobmV0ZGV2KSkNCj4+ICAgCQlyZXR1
-cm4gMDsNCj4+ICAgDQo+PiAgIAlpZiAoYnAtPndvbCAmIE1BQ0JfV09MX0VOQUJMRUQpIHsNCj4+
-IC0JCW1hY2Jfd3JpdGVsKGJwLCBJRVIsIE1BQ0JfQklUKFdPTCkpOw0KPj4gLQkJbWFjYl93cml0
-ZWwoYnAsIFdPTCwgTUFDQl9CSVQoTUFHKSk7DQo+PiAtCQllbmFibGVfaXJxX3dha2UoYnAtPnF1
-ZXVlc1swXS5pcnEpOw0KPj4gLQkJbmV0aWZfZGV2aWNlX2RldGFjaChuZXRkZXYpOw0KPj4gLQl9
-IGVsc2Ugew0KPj4gLQkJbmV0aWZfZGV2aWNlX2RldGFjaChuZXRkZXYpOw0KPj4gKwkJc3Bpbl9s
-b2NrX2lycXNhdmUoJmJwLT5sb2NrLCBmbGFncyk7DQo+PiArCQkvKiBGbHVzaCBhbGwgc3RhdHVz
-IGJpdHMgKi8NCj4+ICsJCW1hY2Jfd3JpdGVsKGJwLCBUU1IsIC0xKTsNCj4+ICsJCW1hY2Jfd3Jp
-dGVsKGJwLCBSU1IsIC0xKTsNCj4+ICAgCQlmb3IgKHEgPSAwLCBxdWV1ZSA9IGJwLT5xdWV1ZXM7
-IHEgPCBicC0+bnVtX3F1ZXVlczsNCj4+IC0JCSAgICAgKytxLCArK3F1ZXVlKQ0KPj4gLQkJCW5h
-cGlfZGlzYWJsZSgmcXVldWUtPm5hcGkpOw0KPj4gKwkJICAgICArK3EsICsrcXVldWUpIHsNCj4+
-ICsJCQkvKiBEaXNhYmxlIGFsbCBpbnRlcnJ1cHRzICovDQo+PiArCQkJcXVldWVfd3JpdGVsKHF1
-ZXVlLCBJRFIsIC0xKTsNCj4+ICsJCQlxdWV1ZV9yZWFkbChxdWV1ZSwgSVNSKTsNCj4+ICsJCQlp
-ZiAoYnAtPmNhcHMgJiBNQUNCX0NBUFNfSVNSX0NMRUFSX09OX1dSSVRFKQ0KPj4gKwkJCQlxdWV1
-ZV93cml0ZWwocXVldWUsIElTUiwgLTEpOw0KPj4gKwkJfQ0KPj4gKwkJLyogQ2hhbmdlIGludGVy
-cnVwdCBoYW5kbGVyIGFuZA0KPj4gKwkJICogRW5hYmxlIFdvTCBJUlEgb24gcXVldWUgMA0KPj4g
-KwkJICovDQo+PiArCQlpZiAobWFjYl9pc19nZW0oYnApKSB7DQo+PiArCQkJZGV2bV9mcmVlX2ly
-cShkZXYsIGJwLT5xdWV1ZXNbMF0uaXJxLCBicC0+cXVldWVzKTsNCj4+ICsJCQllcnIgPSBkZXZt
-X3JlcXVlc3RfaXJxKGRldiwgYnAtPnF1ZXVlc1swXS5pcnEsIGdlbV93b2xfaW50ZXJydXB0LA0K
-Pj4gKwkJCQkJICAgICAgIElSUUZfU0hBUkVELCBuZXRkZXYtPm5hbWUsIGJwLT5xdWV1ZXMpOw0K
-Pj4gKwkJCWlmIChlcnIpIHsNCj4+ICsJCQkJZGV2X2VycihkZXYsDQo+PiArCQkJCQkiVW5hYmxl
-IHRvIHJlcXVlc3QgSVJRICVkIChlcnJvciAlZClcbiIsDQo+PiArCQkJCQlicC0+cXVldWVzWzBd
-LmlycSwgZXJyKTsNCj4+ICsJCQkJcmV0dXJuIGVycjsNCj4gDQo+IFJlc3RvcmluZyBmcm9tIHRo
-aXMgc3RhdGUgd2lsbCBjb21wbGljYXRlIHRoZSBjb2RlIGhlcmUgZXZlbiBmdXJ0aGVyLg0KPiBB
-dCBsZWFzdCByZWxlYXNlIHRoZSBzcGlubG9jayBiZWZvcmUgZXhpdGluZy4NCg0KDQpPaCB5ZXMs
-IGdvb2QgY2F0Y2ggQ2xhdWRpdS4gSXQnbGwgYmUgZml4ZWQgaW4gdjcuDQoNCkkgZ2l2ZSB0aGlz
-IHNlcmllcyBhIGNvdXBsZSBvZiBkYXlzIG1vcmUgYW5kIHBsYW4gdG8gcmUtc2VuZCBieSB0aGUg
-ZW5kIA0Kb2YgdGhlIHdlZWsuDQo+PiArCQkJfQ0KPj4gKwkJCXF1ZXVlX3dyaXRlbChicC0+cXVl
-dWVzLCBJRVIsIEdFTV9CSVQoV09MKSk7DQo+PiArCQkJZ2VtX3dyaXRlbChicCwgV09MLCBNQUNC
-X0JJVChNQUcpKTsNCj4+ICsJCX0gZWxzZSB7DQo+PiArCQkJcXVldWVfd3JpdGVsKGJwLT5xdWV1
-ZXMsIElFUiwgTUFDQl9CSVQoV09MKSk7DQo+PiArCQkJbWFjYl93cml0ZWwoYnAsIFdPTCwgTUFD
-Ql9CSVQoTUFHKSk7DQo+PiArCQl9DQo+PiArCQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZicC0+
-bG9jaywgZmxhZ3MpOw0KPj4gKw0KPj4gKwkJZW5hYmxlX2lycV93YWtlKGJwLT5xdWV1ZXNbMF0u
-aXJxKTsNCj4+ICsJfQ0KPj4gKw0KDQpbLi5dDQoNCj4+ICsJCS8qIFJlcGxhY2UgaW50ZXJydXB0
-IGhhbmRsZXIgb24gcXVldWUgMCAqLw0KPj4gKwkJZGV2bV9mcmVlX2lycShkZXYsIGJwLT5xdWV1
-ZXNbMF0uaXJxLCBicC0+cXVldWVzKTsNCj4+ICsJCWVyciA9IGRldm1fcmVxdWVzdF9pcnEoZGV2
-LCBicC0+cXVldWVzWzBdLmlycSwgbWFjYl9pbnRlcnJ1cHQsDQo+PiArCQkJCSAgICAgICBJUlFG
-X1NIQVJFRCwgbmV0ZGV2LT5uYW1lLCBicC0+cXVldWVzKTsNCj4+ICsJCWlmIChlcnIpIHsNCj4+
-ICsJCQlkZXZfZXJyKGRldiwNCj4+ICsJCQkJIlVuYWJsZSB0byByZXF1ZXN0IElSUSAlZCAoZXJy
-b3IgJWQpXG4iLA0KPj4gKwkJCQlicC0+cXVldWVzWzBdLmlycSwgZXJyKTsNCj4+ICsJCQlyZXR1
-cm4gZXJyOw0KPiANCj4gU2FtZSBoZXJlLg0KDQpPay4NCg0KPj4gKwkJfQ0KPj4gKwkJc3Bpbl91
-bmxvY2tfaXJxcmVzdG9yZSgmYnAtPmxvY2ssIGZsYWdzKTsNCg0KWy4uXQ0KDQpUaGFua3MgZm9y
-IHlvdXIgcmV2aWV3LiBCZXN0IHJlZ2FyZHMsDQotLSANCk5pY29sYXMgRmVycmUNCg==
+Am Samstag, 11. Juli 2020, 18:32:21 CEST schrieben Sie:
+> Am Dienstag, 7. Juli 2020, 08:56:41 CEST schrieben Sie:
+> > Am Samstag, 27. Juni 2020, 20:23:35 CEST schrieben Sie:
+> > > Dear hacker from the order of the penguins,
+> > > 
+> > > we're facing a disturbing issue here after swapping a motherboard of a
+> > > mission critical system:
+> > > 
+> > > Specs:
+> > > ASUS KNPA-U16 with an AMD EPYC 7261, 2x32 GB Kingston KSM26RD4/32MEI
+> > > (officially supported RAM modules)
+> > > 
+> > > openSUSE 15.1, Kernel 5.7.5
+> > 
+> > Not sure, how to proceed with this one?
+> > 
+> > After 9½ days uptime, it cumulated about 34,000 incidents:
+> > 
+> > [...]
+> > 
+> > Needless so say, that this is no permanent solution.
+> > 
+> > Any ideas anybody?
+> 
+> After swapping the PCIe slot for the Digital Devices Max S8 4/8, the error
+> has moved:
+> 
+> 2020-07-11T18:25:34.380002+02:00 tyrex kernel: [  889.223783] {20}[Hardware
+> Error]: Hardware error from APEI Generic Hardware Error Source: 4
+> 2020-07-11T18:25:34.380025+02:00 tyrex kernel: [  889.223787] {20}[Hardware
+> Error]: It has been corrected by h/w and requires no further action
+> 2020-07-11T18:25:34.380028+02:00 tyrex kernel: [  889.223789] {20}[Hardware
+> Error]: event severity: corrected 2020-07-11T18:25:34.380031+02:00 tyrex
+> kernel: [  889.223791] {20}[Hardware Error]:  Error 0, type: corrected
+> 2020-07-11T18:25:34.380032+02:00 tyrex kernel: [  889.223793] {20}[Hardware
+> Error]:  fru_text: PcieError 2020-07-11T18:25:34.380034+02:00 tyrex kernel:
+> [  889.223795] {20}[Hardware Error]:   section_type: PCIe error
+> 2020-07-11T18:25:34.380577+02:00 tyrex kernel: [  889.223796] {20}[Hardware
+> Error]:   port_type: 4, root port 2020-07-11T18:25:34.380586+02:00 tyrex
+> kernel: [  889.223798] {20}[Hardware Error]:   version: 0.2
+> 2020-07-11T18:25:34.380588+02:00 tyrex kernel: [  889.223800] {20}[Hardware
+> Error]:   command: 0x0407, status: 0x0010 2020-07-11T18:25:34.380590+02:00
+> tyrex kernel: [  889.223802] {20}[Hardware Error]:   device_id:
+> 0000:40:03.1 2020-07-11T18:25:34.380591+02:00 tyrex kernel: [  889.223803]
+> {20}[Hardware Error]:   slot: 16 2020-07-11T18:25:34.380593+02:00 tyrex
+> kernel: [  889.223804] {20}[Hardware Error]:   secondary_bus: 0x41
+> 2020-07-11T18:25:34.380595+02:00 tyrex kernel: [  889.223806] {20}[Hardware
+> Error]:   vendor_id: 0x1022, device_id: 0x1453
+> 2020-07-11T18:25:34.380597+02:00 tyrex kernel: [  889.223808] {20}[Hardware
+> Error]:   class_code: 060400 2020-07-11T18:25:34.380599+02:00 tyrex kernel:
+> [  889.223810] {20}[Hardware Error]:   bridge: secondary_status: 0x2000,
+> control: 0x0012 2020-07-11T18:25:34.380601+02:00 tyrex kernel: [ 
+> 889.223908] pcieport 0000:40:03.1: AER: aer_status: 0x00001000, aer_mask:
+> 0x00006000 2020-07-11T18:25:34.380603+02:00 tyrex kernel: [  889.223912]
+> pcieport 0000:40:03.1: AER:    [12] Timeout
+> 2020-07-11T18:25:34.380605+02:00 tyrex kernel: [  889.223915] pcieport
+> 0000:40:03.1: AER: aer_layer=Data Link Layer, aer_agent=Transmitter ID
+> 
+> It looks like the system is creating such devices on demand:
+> 
+> 40:03.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Family 17h (Models
+> 00h-0fh) PCIe GPP Bridge (prog-if 00 [Normal decode]) Flags: bus master,
+> fast devsel, latency 0, IRQ 39, NUMA node 2 Bus: primary=40, secondary=41,
+> subordinate=41, sec-latency=0 I/O behind bridge: None
+>         Memory behind bridge: e5d00000-e5dfffff [size=1M]
+>         Prefetchable memory behind bridge: None
+>         Capabilities: [50] Power Management version 3
+>         Capabilities: [58] Express Root Port (Slot+), MSI 00
+>         Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
+>         Capabilities: [c0] Subsystem: Advanced Micro Devices, Inc. [AMD]
+> Family 17h (Models 00h-0fh) PCIe GPP Bridge Capabilities: [c8]
+> HyperTransport: MSI Mapping Enable+ Fixed+ Capabilities: [100] Vendor
+> Specific Information: ID=0001 Rev=1 Len=010 <?> Capabilities: [150]
+> Advanced Error Reporting
+>         Capabilities: [270] #19
+>         Capabilities: [2a0] Access Control Services
+>         Capabilities: [370] L1 PM Substates
+>         Capabilities: [380] Downstream Port Containment
+>         Capabilities: [3c4] #23
+>         Kernel driver in use: pcieport
+> 
+> in order to handle:
+> 
+> 41:00.0 Multimedia controller: Digital Devices GmbH Max
+>         Subsystem: Digital Devices GmbH Max S8 4/8
+>         Flags: bus master, fast devsel, latency 0, IRQ 181, NUMA node 2
+>         Memory at e5d00000 (64-bit, non-prefetchable) [size=64K]
+>         Capabilities: [50] Power Management version 3
+>         Capabilities: [70] MSI: Enable- Count=1/2 Maskable- 64bit+
+>         Capabilities: [90] Express Endpoint, MSI 00
+>         Capabilities: [100] Vendor Specific Information: ID=0000 Rev=0
+> Len=00c <?> Kernel driver in use: ddbridge
+>         Kernel modules: ddbridge
+
+Here's the initialization sequence of these devices:
+
+Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1: [1022:1453] type 01 class 0x060400
+Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1: PME# supported from D0 D3hot D3cold
+Jul 13 12:19:27 tyrex kernel: pci 0000:41:00.0: [dd01:0007] type 00 class 0x048000
+Jul 13 12:19:27 tyrex kernel: pci 0000:41:00.0: reg 0x10: [mem 0xe5d00000-0xe5d0ffff 64bit]
+Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1: PCI bridge to [bus 41]
+Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1:   bridge window [mem 0xe5d00000-0xe5dfffff]
+Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1: PCI bridge to [bus 41]
+Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1:   bridge window [mem 0xe5d00000-0xe5dfffff]
+Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1: Adding to iommu group 41
+Jul 13 12:19:27 tyrex kernel: pci 0000:41:00.0: Adding to iommu group 47
+Jul 13 12:19:27 tyrex kernel: pcieport 0000:40:03.1: PME: Signaling with IRQ 39
+Jul 13 12:19:27 tyrex kernel: pcieport 0000:40:03.1: AER: enabled with IRQ 39
+Jul 13 12:19:27 tyrex kernel: pcieport 0000:40:03.1: DPC: error containment capabilities: Int Msg #0, RPExt+ PoisonedTLP+ SwTrigger+ RP PIO Log 6, DL_ActiveErr+
+
+The last line is somewhat suspicious, but hard to decipher:
+
+DPC: error containment capabilities: Int Msg #0, RPExt+ PoisonedTLP+ SwTrigger+ RP PIO Log 6, DL_ActiveErr+
+
+I'm pretty sure, this is related, but the deeper meaning is denied me.
+
+Would be nice, if some enlightened person could shed some light
+into this abyss.
+
+Pete
+
+
