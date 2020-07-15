@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24572220F86
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E59F220F9B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbgGOOf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 10:35:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729053AbgGOOfz (ORCPT
+        id S1728833AbgGOOhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 10:37:19 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:57261 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727044AbgGOOhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 10:35:55 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A308DC08C5DD
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:35:55 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id k4so2459196pld.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=yhR2xx3ll78zXx4v/LleHZDLIGASUAw7oXjwdcYoQnM=;
-        b=MBTmhayGzIbypNDEFm2+paSuwfcC+PzqE85tReoauMa8/vlEuTbLPAXgN9+8qVkcNT
-         yGNU7gl/zluURp9BUENw3LJ4rFqKK/8Ff3aRUbs7uTkYSeZwW3aDJgw4Kt3y+YyUVgap
-         0Zoy3gWJ2MC50r6ZcK2DVZ/eywPJseJ4IQfjEcO37x2ua0wTNQCE2y3Qf9A5N9IFiZH3
-         TV20PfmuxIw8NVCsuD+kmZ/Sgqsg/HqB0qdOSMeiMCizUz5tGze/hYcp6asxJeM5mtMB
-         DgMTMy20N6K6A7ufGOkrKyndioWzeqygDTq2Q7VudYC1FYDBSTz+eJgpCU7AeeAih/Ao
-         uuaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=yhR2xx3ll78zXx4v/LleHZDLIGASUAw7oXjwdcYoQnM=;
-        b=ePnacpqsmxPHKHoFdCdlKI+CzSFnrYqWf9wUU8dpX3iWJ1j8Q768eMPyeMvBSQtotk
-         2pFmol367oEbBUN3qEksOGVUpUyd4QsZ5GC4SfGPS38pOFpcmyiTE4Bra6G5eMdLyIzX
-         ODxCFDW67XFAecvfDV/pSCHIlP59bazmb/6YGbLyGyyNrcV/cZRH/Nt4p1N4Opi76whv
-         JLlBzUev4xCGDGjAucvlhZAICxW1+IrgUQeMeqH4DHGeZM0B8I4dMZGophKjzEwq2s6C
-         zvmrXZ/49g7eSxMMZwTAnJly+qc56YlIla3JBvRMq09Bbg21CAAs/vhp2P+1/6XyLSi6
-         G8Aw==
-X-Gm-Message-State: AOAM5303rQBsqVBRCgDgY08z/+QmAM2k2qYKhnCmWoaa0geIfPDKFOjY
-        ++maJKjGd2RmMDfB5ld6FpucmpnDpBdanw==
-X-Google-Smtp-Source: ABdhPJx+DB3uxvOEpxqYRcjJv7aAG86vLrcHnfdyXOzjYxTb/HN/VlnnEvVbdEuur4NmvWF0oRc3Vw==
-X-Received: by 2002:a17:90a:7406:: with SMTP id a6mr9616376pjg.152.1594823753194;
-        Wed, 15 Jul 2020 07:35:53 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:14c:4e33:547f:e274? ([2601:646:c200:1ef2:14c:4e33:547f:e274])
-        by smtp.gmail.com with ESMTPSA id y7sm2101353pfq.69.2020.07.15.07.35.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jul 2020 07:35:51 -0700 (PDT)
+        Wed, 15 Jul 2020 10:37:18 -0400
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.93)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1jviX5-002jxV-Eb; Wed, 15 Jul 2020 16:37:15 +0200
+Received: from p57bd93f9.dip0.t-ipconnect.de ([87.189.147.249] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.93)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1jviX5-002GxL-7D; Wed, 15 Jul 2020 16:37:15 +0200
+Subject: Re: ioremap and dma cleanups and fixes for superh (2nd resend)
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Rich Felker <dalias@libc.org>, Christoph Hellwig <hch@lst.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200714121856.955680-1-hch@lst.de>
+ <b0745e43-0ff1-58f7-70d5-60b9c8b8d81b@physik.fu-berlin.de>
+ <20200714155914.GA24404@brightrain.aerifal.cx>
+ <8cbf2963-d0e4-0ca8-4ffe-c2057694447f@physik.fu-berlin.de>
+ <011f29e6-ad71-366e-dbff-bc8471f3da60@physik.fu-berlin.de>
+ <CAMuHMdUre2-fRgLP8YiwjAKN6J=m1vGhPSMMUdpof7jPJfcWuw@mail.gmail.com>
+ <def65208-a38b-8663-492a-cae150027003@physik.fu-berlin.de>
+ <b5f1853e-031d-c09d-57d2-fb4baffa01ea@physik.fu-berlin.de>
+ <CAMuHMdW8RtJKk3u7RWQKP2tA3AYT2rB2aqhUT1KnJ4tJwWWKDA@mail.gmail.com>
+ <b5cd845f-7b5e-af8e-a15d-3ede7e61ced4@physik.fu-berlin.de>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
+ 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
+ scOkTAZQGVpD/8AaLH4v1w==
+Message-ID: <0322def7-fc16-c805-8f2b-c88fffce2f1e@physik.fu-berlin.de>
+Date:   Wed, 15 Jul 2020 16:37:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <b5cd845f-7b5e-af8e-a15d-3ede7e61ced4@physik.fu-berlin.de>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: strace of io_uring events?
-Date:   Wed, 15 Jul 2020 07:35:50 -0700
-Message-Id: <D9FAB37B-D059-4137-A115-616237D78640@amacapital.net>
-References: <CAJfpegu3EwbBFTSJiPhm7eMyTK2MzijLUp1gcboOo3meMF_+Qg@mail.gmail.com>
-Cc:     strace-devel@lists.strace.io, io-uring@vger.kernel.org,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <CAJfpegu3EwbBFTSJiPhm7eMyTK2MzijLUp1gcboOo3meMF_+Qg@mail.gmail.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-X-Mailer: iPhone Mail (17F80)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.147.249
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Geert!
 
+On 7/15/20 10:27 AM, John Paul Adrian Glaubitz wrote:
+>> Lemme gues: does commit 002ae7057069538a ("mm, dump_page(): do not crash
+>> with invalid mapping pointer") in v5.8-rc1 help?
+> 
+> Hmm, it seems I already have that patch (I'm using Linus' main tree):
+> 
+> commit 002ae7057069538aa3afd500f6f60a429cb948b2
+> Author: Vlastimil Babka <vbabka@suse.cz>
+> Date:   Mon Jun 1 21:46:03 2020 -0700
+> 
+>     mm, dump_page(): do not crash with invalid mapping pointer
 
-> On Jul 15, 2020, at 4:12 AM, Miklos Szeredi <miklos@szeredi.hu> wrote:
->=20
-> =EF=BB=BFHi,
->=20
-> This thread is to discuss the possibility of stracing requests
-> submitted through io_uring.   I'm not directly involved in io_uring
-> development, so I'm posting this out of  interest in using strace on
-> processes utilizing io_uring.
->=20
-> io_uring gives the developer a way to bypass the syscall interface,
-> which results in loss of information when tracing.  This is a strace
-> fragment on  "io_uring-cp" from liburing:
->=20
-> io_uring_enter(5, 40, 0, 0, NULL, 8)    =3D 40
-> io_uring_enter(5, 1, 0, 0, NULL, 8)     =3D 1
-> io_uring_enter(5, 1, 0, 0, NULL, 8)     =3D 1
-> ...
->=20
-> What really happens are read + write requests.  Without that
-> information the strace output is mostly useless.
->=20
-> This loss of information is not new, e.g. calls through the vdso or
-> futext fast paths are also invisible to strace.  But losing filesystem
-> I/O calls are a major blow, imo.
->=20
-> What do people think?
->=20
-> =46rom what I can tell, listing the submitted requests on
-> io_uring_enter() would not be hard.  Request completion is
-> asynchronous, however, and may not require  io_uring_enter() syscall.
-> Am I correct?
->=20
-> Is there some existing tracing infrastructure that strace could use to
-> get async completion events?  Should we be introducing one?
->=20
->=20
+Okay, kernel 5.0.0 does not suffer from this bug. So I should be able to bisect
+this particular issue.
 
-Let=E2=80=99s add some seccomp folks. We probably also want to be able to ru=
-n seccomp-like filters on io_uring requests. So maybe io_uring should call i=
-nto seccomp-and-tracing code for each action.=
+I'm glad I don't have to start bisecting with earlier kernels because these
+won't build easily with my current toolchain based on gcc-9.
+
+Will report once I found the bad commit that introduced the problem.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
