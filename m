@@ -2,162 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD2C2216FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 23:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4701221701
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 23:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgGOV3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 17:29:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43126 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725917AbgGOV3f (ORCPT
+        id S1726942AbgGOVaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 17:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgGOVaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 17:29:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594848573;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MpbML4yMq945onzGFlPVUKaSeaPEo2c43J0f2h46uug=;
-        b=Z9qK0x3DRQ9b7/hTTKRlbqq6ot9+XmtdQ0GkP6gFd+keOdjgsklhHzUmNOFtfEPXp5kGme
-        wn5fZZMdblwtQ1FzVDi0SWaESYB5rH1BdcdkMnDmBc2GV3AgXESSckdQYSPZ1oHOyaaNVo
-        5PReBkivWFg7+8Z8/187w2fvbR9akH4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-477-G_lthps0Mdy8k2zjFRnCQQ-1; Wed, 15 Jul 2020 17:29:29 -0400
-X-MC-Unique: G_lthps0Mdy8k2zjFRnCQQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5817C18A1DE1;
-        Wed, 15 Jul 2020 21:29:27 +0000 (UTC)
-Received: from krava (unknown [10.40.194.44])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 693075D9C5;
-        Wed, 15 Jul 2020 21:29:24 +0000 (UTC)
-Date:   Wed, 15 Jul 2020 23:29:23 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 16/18] perf metric: Add recursion check when processing
- nested metrics
-Message-ID: <20200715212923.GT183694@krava>
-References: <20200712132634.138901-1-jolsa@kernel.org>
- <20200712132634.138901-17-jolsa@kernel.org>
- <CAP-5=fUdUKmsGMxsyxxZCzmwRAumLmj6LgGrXWe7APPZRRC=WA@mail.gmail.com>
+        Wed, 15 Jul 2020 17:30:16 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82CE9C061755;
+        Wed, 15 Jul 2020 14:30:16 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id h13so2633372otr.0;
+        Wed, 15 Jul 2020 14:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gg4JrqfCgBGC6t6EzVXSJJQHBX5kSrQQVUjGzeSKHF0=;
+        b=A14AiHsks+5grSbpMzsN/lJAbv3gaayhst+jtITpIhkxWO7Te4qRCV0vhCJpxujQwv
+         MSHcKryEA+4NjmAtKpqjxCDFutA7IbmY38R9zB4/bMgfgUw78uPO5Uz7FK0KUiaBnvl/
+         7qS6LNNmXNVcO/QJx7skMi/dUezf7cYF7XARsGJR6ol+XOVaSibV9f0UIFyYx6n1rU0q
+         0/aE58X92RvpHqxjUVT4370HyafZRQWN6th1EOjkfLFZW/T8tpTHm2zBcPQd61PSPBAm
+         kZJmrczd38wnLTYCEPJh/lyTwbhZjxS9Z7Im9kjpWyZzKRLTrpq1oW5K8dpNTBanMHMr
+         8ALA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gg4JrqfCgBGC6t6EzVXSJJQHBX5kSrQQVUjGzeSKHF0=;
+        b=lIRI87scLBZ4AMYgPeooPcCviRE/kzM/RMWe2UCJQCRSlQlIDVcluo/hhD9qaDkRkN
+         6q9IejgvK1JihIw1j9j8ronkvYSJZ9mOjYn5XXy/AyhTCSyHCKTNM0F9ckEVcXecYZ9l
+         qcpSYdVmrZuP6BkrNYhjhp/gmOOHmOfNPVSnl/UG6T8oo/IDdrTPfUD8K2JXBeHfj1Qs
+         H3vqx3sB1bo9JpzuNyO1DrEiMjwojg0jRqoskVIEJT0JtHoSQkCetsOAoghlFRQUyi/Y
+         2C39UtHdLQzZelPHmBwWGqMgTccoqbF6CNENI57jWxU0fdTzz892FCxfJ+EwPdQLcPtR
+         JzrA==
+X-Gm-Message-State: AOAM530H8ojmyEwgQLCGvYcsaypwIiaXeyBaf0SUh8Q1PXIpRoHIGaQp
+        OnngRvvDE8RC8KY5x+ExwLuIMHu8m1Zlqs4ycPNu1LIYIjLU3g==
+X-Google-Smtp-Source: ABdhPJzu5gR3kxgIlN3HLfyszBwlsUj6J/lk0upH7IO4tJs0hTwNMDyBBI+po0DLwAufxSOsmvdX8ErBf5KicFaw4FE=
+X-Received: by 2002:a9d:6c09:: with SMTP id f9mr1514735otq.362.1594848615745;
+ Wed, 15 Jul 2020 14:30:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fUdUKmsGMxsyxxZCzmwRAumLmj6LgGrXWe7APPZRRC=WA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200305111047.147355-1-enric.balletbo@collabora.com>
+In-Reply-To: <20200305111047.147355-1-enric.balletbo@collabora.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Wed, 15 Jul 2020 23:30:04 +0200
+Message-ID: <CAFqH_52LhfV9AsnPRZi_ZPsgYX8WrUrKEsV-E7VHOw3ZZtHd-w@mail.gmail.com>
+Subject: Re: [RESEND RESEND PATCH] arm/arm64: defconfig: Update configs to use
+ the new CROS_EC options
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Dmitry Torokhov <dtor@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        linux-tegra@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Olof Johansson <olof@lixom.net>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Anson Huang <Anson.Huang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 10:40:41AM -0700, Ian Rogers wrote:
-> On Sun, Jul 12, 2020 at 6:27 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Keeping the stack of nested metrics via 'struct expr_id' objecs
-> 
-> s/objecs/objects/
-> 
-> > and checking if we are in recursion via already processed metric.
-> >
-> > The stack is implemented as static array within the struct egroup
-> > with 100 entries, which should be enough nesting depth for any
-> > metric we have or plan to have at the moment.
-> >
-> > Adding test that simulates the recursion and checks we can
-> > detect it.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/perf/tests/parse-metric.c |  27 ++++++++-
-> >  tools/perf/util/expr.c          |   2 +
-> >  tools/perf/util/expr.h          |   9 ++-
-> >  tools/perf/util/metricgroup.c   | 101 +++++++++++++++++++++++++++++---
-> >  4 files changed, 128 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
-> > index b50e2a3f3b73..238a805edd55 100644
-> > --- a/tools/perf/tests/parse-metric.c
-> > +++ b/tools/perf/tests/parse-metric.c
-> > @@ -57,6 +57,14 @@ static struct pmu_event pme_test[] = {
-> >         .metric_expr    = "d_ratio(DCache_L2_All_Miss, DCache_L2_All)",
-> >         .metric_name    = "DCache_L2_Misses",
-> >  },
-> > +{
-> > +       .metric_expr    = "IPC + M2",
-> > +       .metric_name    = "M1",
-> > +},
-> > +{
-> > +       .metric_expr    = "IPC + M1",
-> > +       .metric_name    = "M2",
-> > +},
-> >  };
-> 
-> Perhaps add a test on simple recursion too:
-> {
->   .metric_expr = "1/M1",
->   .metric_name = "M1",
-> }
+Hi arm/arm64 maintainers,
 
-ok, will add
+Missatge de Enric Balletbo i Serra <enric.balletbo@collabora.com> del
+dia dj., 5 de mar=C3=A7 2020 a les 12:11:
+>
+> We refactored the CrOS EC drivers moving part of the code from the MFD
+> subsystem to the platform chrome subsystem. During this change we needed
+> to rename some config options, so, update the defconfigs accordingly.
+>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Gwendal Grignou <gwendal@chromium.org>
+> Tested-by: Gwendal Grignou <gwendal@chromium.org>
+> Acked-by: Lee Jones <lee.jones@linaro.org>
+> ---
 
-SNIP
+A gentle ping. I'd like to land this if is possible because that way I
+can remove some legacy code in platform/chrome subsystem.
 
-> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> > index 66f25362702d..69ec20dd737b 100644
-> > --- a/tools/perf/util/metricgroup.c
-> > +++ b/tools/perf/util/metricgroup.c
-> > @@ -24,6 +24,7 @@
-> >  #include <subcmd/parse-options.h>
-> >  #include <api/fs/fs.h>
-> >  #include "util.h"
-> > +#include <asm/bug.h>
-> >
-> >  struct metric_event *metricgroup__lookup(struct rblist *metric_events,
-> >                                          struct evsel *evsel,
-> > @@ -109,6 +110,8 @@ struct metric_ref_node {
-> >         struct list_head list;
-> >  };
-> >
-> > +#define RECURSION_ID_MAX 100
-> > +
-> >  struct egroup {
-> >         struct list_head nd;
-> >         struct expr_parse_ctx pctx;
-> > @@ -119,6 +122,11 @@ struct egroup {
-> >         int refs_cnt;
-> >         int runtime;
-> >         bool has_constraint;
-> > +
-> > +       struct {
-> > +               struct expr_id  id[RECURSION_ID_MAX];
-> > +               int             cnt;
-> > +       } recursion;
-> >  };
-> 
-> Rather than place this in the egroup why not pass a "visited" array to
-> add metric. This would be more in keeping with Tarjan's algorithm
-> (although the SCC isn't needed in this case):
-> https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
+Thanks,
+  Enric
 
-it's true that it's just source of the 'struct expr_id' objects and
-one global array could be used in multiple metrics not event directly
-nested ... seems good, will check
-
-thanks,
-jirka
-
+> Dear all,
+>
+> This is a resend of a resend patch [3]. In some previous discussions
+> maintainers would prefer to have this merged through the arm-soc tree
+> but wasn't merged yet and I forget to ping again, hence, sending a new
+> resend.
+>
+> To give some context to some discussions that can arise again (i.e
+> whether some symbols should be built-in or not) please look at the
+> previous resends [1] and [2].
+>
+> Thanks,
+>  Enric
+>
+> [1] https://lkml.org/lkml/2019/8/23/518
+> [2] https://lkml.org/lkml/2019/8/23/475
+> [3] https://patchwork.kernel.org/patch/11267741/
+>
+>  arch/arm/configs/exynos_defconfig   | 4 +++-
+>  arch/arm/configs/multi_v7_defconfig | 5 ++++-
+>  arch/arm/configs/pxa_defconfig      | 4 +++-
+>  arch/arm/configs/tegra_defconfig    | 2 +-
+>  arch/arm64/configs/defconfig        | 5 ++++-
+>  5 files changed, 15 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/arm/configs/exynos_defconfig b/arch/arm/configs/exynos_=
+defconfig
+> index c8e0c14092e8..cb030549dd69 100644
+> --- a/arch/arm/configs/exynos_defconfig
+> +++ b/arch/arm/configs/exynos_defconfig
+> @@ -160,7 +160,9 @@ CONFIG_DEVFREQ_THERMAL=3Dy
+>  CONFIG_THERMAL_EMULATION=3Dy
+>  CONFIG_WATCHDOG=3Dy
+>  CONFIG_S3C2410_WATCHDOG=3Dy
+> -CONFIG_MFD_CROS_EC=3Dy
+> +CONFIG_MFD_CROS_EC_DEV=3Dy
+> +CONFIG_CHROME_PLATFORMS=3Dy
+> +CONFIG_CROS_EC=3Dy
+>  CONFIG_MFD_MAX14577=3Dy
+>  CONFIG_MFD_MAX77686=3Dy
+>  CONFIG_MFD_MAX77693=3Dy
+> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi=
+_v7_defconfig
+> index 017d65f86eba..9099787ccf70 100644
+> --- a/arch/arm/configs/multi_v7_defconfig
+> +++ b/arch/arm/configs/multi_v7_defconfig
+> @@ -938,7 +938,7 @@ CONFIG_SERIO_NVEC_PS2=3Dy
+>  CONFIG_NVEC_POWER=3Dy
+>  CONFIG_NVEC_PAZ00=3Dy
+>  CONFIG_STAGING_BOARD=3Dy
+> -CONFIG_MFD_CROS_EC=3Dm
+> +CONFIG_MFD_CROS_EC_DEV=3Dm
+>  CONFIG_CROS_EC_I2C=3Dm
+>  CONFIG_CROS_EC_SPI=3Dm
+>  CONFIG_COMMON_CLK_MAX77686=3Dy
+> @@ -1118,3 +1118,6 @@ CONFIG_CMA_SIZE_MBYTES=3D64
+>  CONFIG_PRINTK_TIME=3Dy
+>  CONFIG_MAGIC_SYSRQ=3Dy
+>  CONFIG_DEBUG_FS=3Dy
+> +CONFIG_CHROME_PLATFORMS=3Dy
+> +CONFIG_CROS_EC=3Dm
+> +CONFIG_CROS_EC_CHARDEV=3Dm
+> diff --git a/arch/arm/configs/pxa_defconfig b/arch/arm/configs/pxa_defcon=
+fig
+> index b817c57f05f1..f1b084ace88d 100644
+> --- a/arch/arm/configs/pxa_defconfig
+> +++ b/arch/arm/configs/pxa_defconfig
+> @@ -393,7 +393,9 @@ CONFIG_SA1100_WATCHDOG=3Dm
+>  CONFIG_MFD_AS3711=3Dy
+>  CONFIG_MFD_BCM590XX=3Dm
+>  CONFIG_MFD_AXP20X=3Dy
+> -CONFIG_MFD_CROS_EC=3Dm
+> +CONFIG_MFD_CROS_EC_DEV=3Dm
+> +CONFIG_CHROME_PLATFORMS=3Dy
+> +CONFIG_CROS_EC=3Dm
+>  CONFIG_CROS_EC_I2C=3Dm
+>  CONFIG_CROS_EC_SPI=3Dm
+>  CONFIG_MFD_ASIC3=3Dy
+> diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_de=
+fconfig
+> index a27592d3b1fa..7bfae67d2016 100644
+> --- a/arch/arm/configs/tegra_defconfig
+> +++ b/arch/arm/configs/tegra_defconfig
+> @@ -147,7 +147,7 @@ CONFIG_SENSORS_LM95245=3Dy
+>  CONFIG_WATCHDOG=3Dy
+>  CONFIG_TEGRA_WATCHDOG=3Dy
+>  CONFIG_MFD_AS3722=3Dy
+> -CONFIG_MFD_CROS_EC=3Dy
+> +CONFIG_MFD_CROS_EC_DEV=3Dy
+>  CONFIG_MFD_MAX8907=3Dy
+>  CONFIG_MFD_STMPE=3Dy
+>  CONFIG_MFD_PALMAS=3Dy
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 905109f6814f..2095e61c8665 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -705,9 +705,12 @@ CONFIG_VIRTIO_BALLOON=3Dy
+>  CONFIG_VIRTIO_MMIO=3Dy
+>  CONFIG_XEN_GNTDEV=3Dy
+>  CONFIG_XEN_GRANT_DEV_ALLOC=3Dy
+> -CONFIG_MFD_CROS_EC=3Dy
+> +CONFIG_MFD_CROS_EC_DEV=3Dy
+> +CONFIG_CHROME_PLATFORMS=3Dy
+> +CONFIG_CROS_EC=3Dy
+>  CONFIG_CROS_EC_I2C=3Dy
+>  CONFIG_CROS_EC_SPI=3Dy
+> +CONFIG_CROS_EC_CHARDEV=3Dm
+>  CONFIG_COMMON_CLK_RK808=3Dy
+>  CONFIG_COMMON_CLK_SCPI=3Dy
+>  CONFIG_COMMON_CLK_CS2000_CP=3Dy
+> --
+> 2.25.1
+>
