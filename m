@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF82B2207E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE162207E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgGOIzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
+        id S1728834AbgGOIzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728145AbgGOIzB (ORCPT
+        with ESMTP id S1727930AbgGOIzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:55:01 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D2DC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:55:01 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id k23so1406542iom.10
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:55:01 -0700 (PDT)
+        Wed, 15 Jul 2020 04:55:44 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04939C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:55:44 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id p205so1413876iod.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:55:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc;
-        bh=E2KzDTTFRMDiRWJvyL1sP2xPLBu+h45b96i3t1+zICg=;
-        b=REAg+4jMgFjTriSI5Lb0DMOgace/gsHcOhmNuScsAQpLlZNqocusWWB0jZYfdmjSxP
-         38l7QutyQ1JxMOQlHKZLh0wI17gFE2diQLmCqTGo00F/QJD2N8xY8Hr6cmS/nTG3iFe2
-         ElK1iW+HwQhoKoHVP7+a6W4MuY5rb4rVJzF1KRdBhBuQTs6t+xfubC5Ptl7CxjypZ1P4
-         C0tFFyfZZuSttYWNi+p+kpFEMjCm6elPYU7jq7CvJZUHVjTE+0hzQVQcltD2FrJcnMqy
-         OnPyfIU0IflA0aaqOXFaeiuHmSDMQ8ozB2UNnguweCdAJ18RMhLDOD9SlH1xs8gkVALP
-         G2sQ==
+        bh=RsnVN0E19i3bHghc9pYkTMlrihhqaH+/1a+LCxqn6J8=;
+        b=UwzvjHZgjR8vfGdEBbjZtNDn4fj5o2UBdEqSv9SDkqZVJAYZwQTyal1lb/jgTGun3C
+         0jOcPVcRNyxYa1tC9ocDhc5wcOURTNYhB3OzBMoMppOCdKYRqEjg0z03ORA4VCgx/DvP
+         fgrRO3Zo4x6PoSi57C0iAC1bc6Z/ejCtIj+//w/pPCG20j3SePm93TMWAmueRSWMfg9a
+         AXzWmhHIlzNAdTUxCDYiMTF3jOPstnab1TfTAuQh0hvvJ/87BMEB+7A49c41wZ//maP2
+         U1WSe1FBxjstKxebO+ms8ZLwbDT/JNVp70lksO9Ke8R7e0Zl5jq6dapCglSJtHetjSKE
+         FP2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc;
-        bh=E2KzDTTFRMDiRWJvyL1sP2xPLBu+h45b96i3t1+zICg=;
-        b=hT1YZp71qoUezFgoQXKa4YtK3gv10xDe6eSYDo9P7pwwWLpqjCsuPGQ8p8Xd5aeTjI
-         6cwh0mDylST/CmXZ6N8UUP6L3TeCt/xQ+AudUb1mHxjrp/h72mFxFtLwjzqo6NKrJd+8
-         4q+okqwDJ8d35mqb0oFqGW320uUciRwTBVLIgBgcEeD79POGNVfqkvTBGAfToepc9QbL
-         h7JFSoAheB5B0iTISSDj/awOz+VfSJjBMWuojWyh3mjDlqXBLSZdWVGd7wMT1EuXZlWj
-         HcEfOHexbhG3nC3yPyb/RRg8mOdUxPKY2mazK6//Hoi2q2J35LT6RYEjNXbLd08kW6e+
-         7U9Q==
-X-Gm-Message-State: AOAM533ztRjkxbs3JK7dE8FmCcG9oVRR9CUM5u474tm4n0Zxop8/KQf8
-        LXiXAumhnp20FNplM2BV/wyLS3c64RmYyxp/tP4=
-X-Google-Smtp-Source: ABdhPJz7vNmjqPEigVUxaXZKf2QB7tcA/b2b+Q3C0oB6IQ4cfmzqBcJ5BN8+V+V89TuDMyBt64LqaV1Nd1j4r2f8x0c=
-X-Received: by 2002:a05:6602:1555:: with SMTP id h21mr8957112iow.163.1594803300431;
- Wed, 15 Jul 2020 01:55:00 -0700 (PDT)
+        bh=RsnVN0E19i3bHghc9pYkTMlrihhqaH+/1a+LCxqn6J8=;
+        b=aY5dC1Pc8050a/3dkbu2ZM2CsSqSEpj0SONMI8Q8SOGEm/w00Kbmikmrqbex6MtKN4
+         AGDKorEyLqL+sKWPSGV+ycN/KpdXAtlLMCcuiqxEvbrCd9Gv7mA/llxTSqT9RmBgeOze
+         NpDh0pXHNwoyakgIz2q5UWxaV304q2de/0YXDQvGehwRAXstX6niwfRsc8dzcsVO981J
+         PB7KeFxFgGyrLkHzKsnYlsFoiWfYk/NP8AtZu1ZlTO35qqmKGegH0Y6oC8gyopfVm2ys
+         VI42qTuEvWmQpDvFzV2mjTv/36fdnr2qNkuGBqbdkJz3Xr+RqsNM5yNIeq/HelPlNPe9
+         aQSQ==
+X-Gm-Message-State: AOAM533qKJtZLACUepW4Gh4mvQjbJv3HGOivCkvarXHKOYtr2HpjUI+h
+        1WnjK1gMBgNDzRDM+gHV9IFexNQb06oNDPaViiw=
+X-Google-Smtp-Source: ABdhPJy2Rjw6ADBkJ+lIiEYOqiVz6E18OPO6lkBkrDzxTPxAMQHQKE8JuBbWWGut2WpChG+sfTItV9q14L0SxTeqJBw=
+X-Received: by 2002:a5e:9309:: with SMTP id k9mr8925467iom.135.1594803343386;
+ Wed, 15 Jul 2020 01:55:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200714023836.2310569-1-nivedita@alum.mit.edu> <20200715004133.1430068-4-nivedita@alum.mit.edu>
-In-Reply-To: <20200715004133.1430068-4-nivedita@alum.mit.edu>
+References: <20200714023836.2310569-1-nivedita@alum.mit.edu> <20200715004133.1430068-5-nivedita@alum.mit.edu>
+In-Reply-To: <20200715004133.1430068-5-nivedita@alum.mit.edu>
 Reply-To: sedat.dilek@gmail.com
 From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 15 Jul 2020 10:54:49 +0200
-Message-ID: <CA+icZUVPzMnEe-VUabCCA_Kb9X00NZTUoms1Q0Wm6sK-5fHn=A@mail.gmail.com>
-Subject: Re: [PATCH v5 3/7] x86/boot/compressed: Get rid of GOT fixup code
+Date:   Wed, 15 Jul 2020 10:55:32 +0200
+Message-ID: <CA+icZUWkPH8-4bGjVhNDyO4LqrSXqF5g9Fbh0bJo7kVhxC916Q@mail.gmail.com>
+Subject: Re: [PATCH v5 4/7] x86/boot: Add .text.* to setup.ld
 To:     Arvind Sankar <nivedita@alum.mit.edu>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -75,182 +75,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, Jul 15, 2020 at 2:41 AM Arvind Sankar <nivedita@alum.mit.edu> wrote:
 >
-> From: Ard Biesheuvel <ardb@kernel.org>
+> gcc puts the main function into .text.startup when compiled with -Os (or
+> -O2). This results in arch/x86/boot/main.c having a .text.startup
+> section which is currently not included explicitly in the linker script
+> setup.ld in the same directory.
 >
-> In a previous patch, we have eliminated GOT entries from the decompressor
-> binary and added an assertion that the .got section is empty. This means
-> that the GOT fixup routines that exist in both the 32-bit and 64-bit
-> startup routines have become dead code, and can be removed.
+> The BFD linker places this orphan section immediately after .text, so
+> this still works. However, LLD git, since [1], is choosing to place it
+> immediately after the .bstext section instead (this is the first code
+> section). This plays havoc with the section layout that setup.elf
+> requires to create the setup header, for eg on 64-bit:
 >
-> While at it, drop the KEEP() from the linker script, as it has no effect
-> on the contents of output sections that are created by the linker itself.
+>     LD      arch/x86/boot/setup.elf
+>   ld.lld: error: section .text.startup file range overlaps with .header
+>   >>> .text.startup range is [0x200040, 0x2001FE]
+>   >>> .header range is [0x2001EF, 0x20026B]
+>
+>   ld.lld: error: section .header file range overlaps with .bsdata
+>   >>> .header range is [0x2001EF, 0x20026B]
+>   >>> .bsdata range is [0x2001FF, 0x200398]
+>
+>   ld.lld: error: section .bsdata file range overlaps with .entrytext
+>   >>> .bsdata range is [0x2001FF, 0x200398]
+>   >>> .entrytext range is [0x20026C, 0x2002D3]
+>
+>   ld.lld: error: section .text.startup virtual address range overlaps
+>   with .header
+>   >>> .text.startup range is [0x40, 0x1FE]
+>   >>> .header range is [0x1EF, 0x26B]
+>
+>   ld.lld: error: section .header virtual address range overlaps with
+>   .bsdata
+>   >>> .header range is [0x1EF, 0x26B]
+>   >>> .bsdata range is [0x1FF, 0x398]
+>
+>   ld.lld: error: section .bsdata virtual address range overlaps with
+>   .entrytext
+>   >>> .bsdata range is [0x1FF, 0x398]
+>   >>> .entrytext range is [0x26C, 0x2D3]
+>
+>   ld.lld: error: section .text.startup load address range overlaps with
+>   .header
+>   >>> .text.startup range is [0x40, 0x1FE]
+>   >>> .header range is [0x1EF, 0x26B]
+>
+>   ld.lld: error: section .header load address range overlaps with
+>   .bsdata
+>   >>> .header range is [0x1EF, 0x26B]
+>   >>> .bsdata range is [0x1FF, 0x398]
+>
+>   ld.lld: error: section .bsdata load address range overlaps with
+>   .entrytext
+>   >>> .bsdata range is [0x1FF, 0x398]
+>   >>> .entrytext range is [0x26C, 0x2D3]
+>
+> Add .text.* to the .text output section to fix this, and also prevent
+> any future surprises if the compiler decides to create other such
+> sections.
+>
+> [1] https://reviews.llvm.org/D75225
 >
 > Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> Acked-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> Reviewed-by: Fangrui Song <maskray@google.com>
 > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> From: Ard Biesheuvel <ardb@kernel.org>
-> Link: https://lore.kernel.org/r/20200523120021.34996-4-ardb@kernel.org
 
 Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
 
 - Sedat -
 
 > ---
->  arch/x86/boot/compressed/head_32.S     | 24 ++---------
->  arch/x86/boot/compressed/head_64.S     | 57 --------------------------
->  arch/x86/boot/compressed/vmlinux.lds.S |  4 +-
->  3 files changed, 5 insertions(+), 80 deletions(-)
+>  arch/x86/boot/setup.ld | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
-> index 03557f2174bf..39f0bb43218f 100644
-> --- a/arch/x86/boot/compressed/head_32.S
-> +++ b/arch/x86/boot/compressed/head_32.S
-> @@ -49,16 +49,13 @@
->   * Position Independent Executable (PIE) so that linker won't optimize
->   * R_386_GOT32X relocation to its fixed symbol address.  Older
->   * linkers generate R_386_32 relocations against locally defined symbols,
-> - * _bss, _ebss, _got, _egot and _end, in PIE.  It isn't wrong, just less
-> - * optimal than R_386_RELATIVE.  But the x86 kernel fails to properly handle
-> - * R_386_32 relocations when relocating the kernel.  To generate
-> - * R_386_RELATIVE relocations, we mark _bss, _ebss, _got, _egot and _end as
-> - * hidden:
-> + * _bss, _ebss and _end, in PIE.  It isn't wrong, just less optimal than
-> + * R_386_RELATIVE.  But the x86 kernel fails to properly handle R_386_32
-> + * relocations when relocating the kernel.  To generate R_386_RELATIVE
-> + * relocations, we mark _bss, _ebss and _end as hidden:
->   */
->         .hidden _bss
->         .hidden _ebss
-> -       .hidden _got
-> -       .hidden _egot
->         .hidden _end
+> diff --git a/arch/x86/boot/setup.ld b/arch/x86/boot/setup.ld
+> index 24c95522f231..49546c247ae2 100644
+> --- a/arch/x86/boot/setup.ld
+> +++ b/arch/x86/boot/setup.ld
+> @@ -20,7 +20,7 @@ SECTIONS
+>         .initdata       : { *(.initdata) }
+>         __end_init = .;
 >
->         __HEAD
-> @@ -192,19 +189,6 @@ SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
->         shrl    $2, %ecx
->         rep     stosl
+> -       .text           : { *(.text) }
+> +       .text           : { *(.text .text.*) }
+>         .text32         : { *(.text32) }
 >
-> -/*
-> - * Adjust our own GOT
-> - */
-> -       leal    _got(%ebx), %edx
-> -       leal    _egot(%ebx), %ecx
-> -1:
-> -       cmpl    %ecx, %edx
-> -       jae     2f
-> -       addl    %ebx, (%edx)
-> -       addl    $4, %edx
-> -       jmp     1b
-> -2:
-> -
->  /*
->   * Do the extraction, and jump to the new kernel..
->   */
-> diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-> index 97d37f0a34f5..bf1ab30acc5b 100644
-> --- a/arch/x86/boot/compressed/head_64.S
-> +++ b/arch/x86/boot/compressed/head_64.S
-> @@ -40,8 +40,6 @@
->   */
->         .hidden _bss
->         .hidden _ebss
-> -       .hidden _got
-> -       .hidden _egot
->         .hidden _end
->
->         __HEAD
-> @@ -353,25 +351,6 @@ SYM_CODE_START(startup_64)
->         /* Set up the stack */
->         leaq    boot_stack_end(%rbx), %rsp
->
-> -       /*
-> -        * paging_prepare() and cleanup_trampoline() below can have GOT
-> -        * references. Adjust the table with address we are running at.
-> -        *
-> -        * Zero RAX for adjust_got: the GOT was not adjusted before;
-> -        * there's no adjustment to undo.
-> -        */
-> -       xorq    %rax, %rax
-> -
-> -       /*
-> -        * Calculate the address the binary is loaded at and use it as
-> -        * a GOT adjustment.
-> -        */
-> -       call    1f
-> -1:     popq    %rdi
-> -       subq    $1b, %rdi
-> -
-> -       call    .Ladjust_got
-> -
->         /*
->          * At this point we are in long mode with 4-level paging enabled,
->          * but we might want to enable 5-level paging or vice versa.
-> @@ -464,21 +443,6 @@ trampoline_return:
->         pushq   $0
->         popfq
->
-> -       /*
-> -        * Previously we've adjusted the GOT with address the binary was
-> -        * loaded at. Now we need to re-adjust for relocation address.
-> -        *
-> -        * Calculate the address the binary is loaded at, so that we can
-> -        * undo the previous GOT adjustment.
-> -        */
-> -       call    1f
-> -1:     popq    %rax
-> -       subq    $1b, %rax
-> -
-> -       /* The new adjustment is the relocation address */
-> -       movq    %rbx, %rdi
-> -       call    .Ladjust_got
-> -
->  /*
->   * Copy the compressed kernel to the end of our buffer
->   * where decompression in place becomes safe.
-> @@ -556,27 +520,6 @@ SYM_FUNC_START_LOCAL_NOALIGN(.Lrelocated)
->         jmp     *%rax
->  SYM_FUNC_END(.Lrelocated)
->
-> -/*
-> - * Adjust the global offset table
-> - *
-> - * RAX is the previous adjustment of the table to undo (use 0 if it's the
-> - * first time we touch GOT).
-> - * RDI is the new adjustment to apply.
-> - */
-> -.Ladjust_got:
-> -       /* Walk through the GOT adding the address to the entries */
-> -       leaq    _got(%rip), %rdx
-> -       leaq    _egot(%rip), %rcx
-> -1:
-> -       cmpq    %rcx, %rdx
-> -       jae     2f
-> -       subq    %rax, (%rdx)    /* Undo previous adjustment */
-> -       addq    %rdi, (%rdx)    /* Apply the new adjustment */
-> -       addq    $8, %rdx
-> -       jmp     1b
-> -2:
-> -       ret
-> -
->         .code32
->  /*
->   * This is the 32-bit trampoline that will be copied over to low memory.
-> diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-> index 4bcc943842ab..a4a4a59a2628 100644
-> --- a/arch/x86/boot/compressed/vmlinux.lds.S
-> +++ b/arch/x86/boot/compressed/vmlinux.lds.S
-> @@ -43,9 +43,7 @@ SECTIONS
->                 _erodata = . ;
->         }
->         .got : {
-> -               _got = .;
-> -               KEEP(*(.got))
-> -               _egot = .;
-> +               *(.got)
->         }
->         .got.plt : {
->                 *(.got.plt)
+>         . = ALIGN(16);
 > --
 > 2.26.2
 >
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200715004133.1430068-5-nivedita%40alum.mit.edu.
