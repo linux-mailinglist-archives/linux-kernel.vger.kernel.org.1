@@ -2,132 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B89D220E94
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49FE220ED1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732006AbgGON6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 09:58:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21866 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727822AbgGON6Q (ORCPT
+        id S1732082AbgGOOGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 10:06:55 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:41434 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729996AbgGOOGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 09:58:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594821494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=lNYAB5WtdpHZtbrXZUY3IMkmV+ZQSuZpS3mId26/pIw=;
-        b=hsSRX7deygPFlhMM3/yvqUAXnoWU9xkuSD7yXYpV0xpvErcqlmqdIqvehkRyIX4MnmJIF6
-        wLLgw1aB73wd8cAmkudi+0r9wMN/jOEfZ5NYhu7Xk99eQoxhIchqU5obgOhgcYuKAU/zcJ
-        98JJns2p6hVrubdZLdbKblPGaxItpFA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-506-O_RPBkzFPFGhh9FzPvxrmQ-1; Wed, 15 Jul 2020 09:58:13 -0400
-X-MC-Unique: O_RPBkzFPFGhh9FzPvxrmQ-1
-Received: by mail-wr1-f69.google.com with SMTP id j16so1424403wrw.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 06:58:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=lNYAB5WtdpHZtbrXZUY3IMkmV+ZQSuZpS3mId26/pIw=;
-        b=IzPq56VRXe1jLA/F353306D1MtfMyAwOHUbI7Pkqv8P78kMeuZWW5slxQCA7Slnh9W
-         tfzXkDjkme/QTDECv009Ar3rdx90YNy4iE9gNKIkLArmGVyvyVlFjgEI4MxqJgBOJaCD
-         rTTK11UxZ/z1prLOPenxfbH3pqGkTJBiqB0iRuCqIwJWB6wLuHv3dkHP6cxbOihXdOC2
-         xqBHMAKaQN5NxA7XPc0kOnYlajK413OXF5/sQmnfz94xPDzMq/QcbAGfWXhM+43C24G2
-         u5lHlZ6pBDXocDqx9gECyDLAJebs0J8op9ZGArqnlg6UEIr91zemaru1Zhkfou9dKvD2
-         zHqA==
-X-Gm-Message-State: AOAM531yO/TngLEj5fgxYfR3OYDoBiW9v2xioPC2dXMTbh0mYnbOuuZq
-        BR9rAmppqt/3YwtSwqZGZmww8v2bOMcOAubTzBEwAHI4aibTWbUfoXWY/Ug6bShz+KOpyxYNNj4
-        xbFwkd/hXUJmG4nG0FHog2Oy8
-X-Received: by 2002:adf:b608:: with SMTP id f8mr12310158wre.363.1594821491433;
-        Wed, 15 Jul 2020 06:58:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyENFqiva68rgsrhrT1+9cBPKB/7ZYwnr1uTs81wgO+SSDgSYBiKi/nQWV/DVHlvr0G2ndfSA==
-X-Received: by 2002:adf:b608:: with SMTP id f8mr12310142wre.363.1594821491254;
-        Wed, 15 Jul 2020 06:58:11 -0700 (PDT)
-Received: from redhat.com (bzq-79-180-10-140.red.bezeqint.net. [79.180.10.140])
-        by smtp.gmail.com with ESMTPSA id a15sm3956429wrh.54.2020.07.15.06.58.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 06:58:10 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 09:58:08 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH RFC don't apply] vdpa_sim: endian-ness for config space
-Message-ID: <20200715135540.22832-1-mst@redhat.com>
+        Wed, 15 Jul 2020 10:06:55 -0400
+X-Greylist: delayed 1414 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Jul 2020 10:06:54 EDT
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06FDfrMQ147465;
+        Wed, 15 Jul 2020 13:43:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
+ cc : message-id : date : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=nGLt9EKk198EdWzg50X+8wpdgF4yG6/fnWmLQefveYg=;
+ b=Ov0fgQ2Wz8iz5c8ljjYR15inEJdjeweavANYIPxDSqaHoiUf4U/rIfbQnK25zq7sZaNu
+ JN4X3fpyDctO/V3Fkw5RgKrN5g8cS2bTLDe2RlvSpFguh7t9vlJ95lX5UQGIDd+qUG/h
+ 1NHSIXGNqYEQ+EcCYNlpq6w0n1nZULFAceC18atzRyyriXQZuywedcx7HDIMeTkbXL3d
+ 5QIKXvD/Y0QTo8L4YKstIjJcet7BCJMWQhlW3Za4OREGf6TxkEPHWACnLMpYc1Xhv9yd
+ ZPltPPsIdqvByq40RSEvBzS+G2ARLTQxqMVRn1fl159nbebngtfdhvDxldeRLjq1DeM7 PQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 327s65hq8p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 15 Jul 2020 13:43:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06FDbbBs151259;
+        Wed, 15 Jul 2020 13:43:17 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 327qb7mfpf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jul 2020 13:43:16 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06FDhGMJ025016;
+        Wed, 15 Jul 2020 13:43:16 GMT
+Received: from [192.168.1.106] (/47.220.71.223)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 Jul 2020 06:43:16 -0700
+From:   John Donnelly <John.P.donnelly@oracle.com>
+Subject: [PATCH [linux-4.14.y]] dm cache: submit writethrough writes in
+ parallel to origin and cache
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     john.p.donnelly@oracle.com, snitzer@redhat.com
+Message-ID: <169d0415-0a91-8fcb-b796-7dbd05a9831c@oracle.com>
+Date:   Wed, 15 Jul 2020 08:43:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=835 malwarescore=0
+ mlxscore=0 spamscore=0 phishscore=0 suspectscore=2 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007150111
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ clxscore=1015 bulkscore=0 mlxlogscore=826 impostorscore=0 suspectscore=2
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007150112
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VDPA sim stores config space as native endian, but that
-is wrong: modern guests expect LE.
-I coded up the following to fix it up, but it is wrong too:
-vdpasim_create is called before guest features are known.
+From: Mike Snitzer <snitzer@redhat.com>
 
-So what should we do? New ioctl to specify the interface used?
-More ideas?
+Discontinue issuing writethrough write IO in series to the origin and
+then cache.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Use bio_clone_fast() to create a new origin clone bio that will be
+mapped to the origin device and then bio_chain() it to the bio that gets
+remapped to the cache device. The origin clone bio does _not_ have a
+copy of the per_bio_data -- as such check_if_tick_bio_needed() will not
+be called.
 
+The cache bio (parent bio) will not complete until the origin bio has
+completed -- this fulfills bio_clone_fast()'s requirements as well as
+the requirement to not complete the original IO until the write IO has
+completed to both the origin and cache device.
 
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+
+(cherry picked from commit 2df3bae9a6543e90042291707b8db0cbfbae9ee9)
+
+Fixes: 705559706d62038b74c5088114c1799cf2c9dce8 (dm bio record:
+save/restore bi_end_io and bi_integrity, version 4.14.188)
+
+70555970 introduced a mkfs.ext4 hang on a LVM device that has been
+modified with lvconvert --cachemode=writethrough.
+
+Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+Tested-by: John Donnelly <john.p.donnelly@oracle.com>
+Reviewed-by: Somasundaram Krishnasamy <somasundaram.krishnasamy@oracle.com>
+
+conflict: drivers/md/dm-cache-target.c - Corrected syntax of
+writethrough_mode(&cache->feature) that was caught by
+arm compiler.
+
+cc: stable@vger.kernel.org
+cc: snitzer@redhat.com
 ---
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+drivers/md/dm-cache-target.c | 54 ++++++++++++++++++++++++------------
+1 file changed, 37 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index a9bc5e0fb353..cc754ae0ec15 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -24,6 +24,7 @@
- #include <linux/etherdevice.h>
- #include <linux/vringh.h>
- #include <linux/vdpa.h>
-+#include <linux/virtio_byteorder.h>
- #include <linux/vhost_iotlb.h>
- #include <uapi/linux/virtio_config.h>
- #include <uapi/linux/virtio_net.h>
-@@ -72,6 +73,23 @@ struct vdpasim {
- 	u64 features;
- };
- 
-+/* TODO: cross-endian support */
-+static inline bool vdpasim_is_little_endian(struct vdpasim *vdpasim)
+diff --git a/drivers/md/dm-cache-target.c b/drivers/md/dm-cache-target.c
+index 69cdb29ef6be..8241b7c36655 100644
+--- a/drivers/md/dm-cache-target.c
++++ b/drivers/md/dm-cache-target.c
+@@ -450,6 +450,7 @@ struct cache {
+struct work_struct migration_worker;
+struct delayed_work waker;
+struct dm_bio_prison_v2 *prison;
++ struct bio_set *bs;
+mempool_t *migration_pool;
+@@ -868,16 +869,23 @@ static void check_if_tick_bio_needed(struct cache 
+*cache, struct bio *bio)
+spin_unlock_irqrestore(&cache->lock, flags);
+}
+-static void remap_to_origin_clear_discard(struct cache *cache, struct 
+bio *bio,
+- dm_oblock_t oblock)
++static void __remap_to_origin_clear_discard(struct cache *cache, struct 
+bio *bio,
++ dm_oblock_t oblock, bool bio_has_pbd)
+{
+- // FIXME: this is called way too much.
+- check_if_tick_bio_needed(cache, bio);
++ if (bio_has_pbd)
++ check_if_tick_bio_needed(cache, bio);
+remap_to_origin(cache, bio);
+if (bio_data_dir(bio) == WRITE)
+clear_discard(cache, oblock_to_dblock(cache, oblock));
+}
++static void remap_to_origin_clear_discard(struct cache *cache, struct 
+bio *bio,
++ dm_oblock_t oblock)
 +{
-+	return virtio_legacy_is_little_endian() ||
-+		(vdpasim->features & (1ULL << VIRTIO_F_VERSION_1));
++ // FIXME: check_if_tick_bio_needed() is called way too much through 
+this interface
++ __remap_to_origin_clear_discard(cache, bio, oblock, true);
 +}
 +
-+static inline u16 vdpasim16_to_cpu(struct vdpasim *vdpasim, __virtio16 val)
-+{
-+	return __virtio16_to_cpu(vdpasim_is_little_endian(vdpasim), val);
-+}
+static void remap_to_cache_dirty(struct cache *cache, struct bio *bio,
+dm_oblock_t oblock, dm_cblock_t cblock)
+{
+@@ -971,23 +979,25 @@ static void writethrough_endio(struct bio *bio)
+}
+/*
+- * FIXME: send in parallel, huge latency as is.
+* When running in writethrough mode we need to send writes to clean blocks
+- * to both the cache and origin devices. In future we'd like to clone the
+- * bio and send them in parallel, but for now we're doing them in
+- * series as this is easier.
++ * to both the cache and origin devices. Clone the bio and send them in 
+parallel.
+*/
+-static void remap_to_origin_then_cache(struct cache *cache, struct bio 
+*bio,
+- dm_oblock_t oblock, dm_cblock_t cblock)
++static void remap_to_origin_and_cache(struct cache *cache, struct bio *bio,
++ dm_oblock_t oblock, dm_cblock_t cblock)
+{
+- struct per_bio_data *pb = get_per_bio_data(bio, PB_DATA_SIZE_WT);
++ struct bio *origin_bio = bio_clone_fast(bio, GFP_NOIO, cache->bs);
+- pb->cache = cache;
+- pb->cblock = cblock;
+- dm_hook_bio(&pb->hook_info, bio, writethrough_endio, NULL);
+- dm_bio_record(&pb->bio_details, bio);
++ BUG_ON(!origin_bio);
+- remap_to_origin_clear_discard(pb->cache, bio, oblock);
++ bio_chain(origin_bio, bio);
++ /*
++ * Passing false to __remap_to_origin_clear_discard() skips
++ * all code that might use per_bio_data (since clone doesn't have it)
++ */
++ __remap_to_origin_clear_discard(cache, origin_bio, oblock, false);
++ submit_bio(origin_bio);
 +
-+static inline __virtio16 cpu_to_vdpasim16(struct vdpasim *vdpasim, u16 val)
-+{
-+	return __cpu_to_virtio16(vdpasim_is_little_endian(vdpasim), val);
-+}
++ remap_to_cache(cache, bio, cblock);
+}
+/*----------------------------------------------------------------
+@@ -1873,7 +1883,7 @@ static int map_bio(struct cache *cache, struct bio 
+*bio, dm_oblock_t block,
+} else {
+if (bio_data_dir(bio) == WRITE && writethrough_mode(&cache->features) &&
+!is_dirty(cache, cblock)) {
+- remap_to_origin_then_cache(cache, bio, block, cblock);
++ remap_to_origin_and_cache(cache, bio, block, cblock);
+accounted_begin(cache, bio);
+} else
+remap_to_cache_dirty(cache, bio, block, cblock);
+@@ -2132,6 +2142,9 @@ static void destroy(struct cache *cache)
+kfree(cache->ctr_args[i]);
+kfree(cache->ctr_args);
++ if (cache->bs)
++ bioset_free(cache->bs);
 +
- static struct vdpasim *vdpasim_dev;
- 
- static struct vdpasim *vdpa_to_sim(struct vdpa_device *vdpa)
-@@ -332,8 +350,8 @@ static struct vdpasim *vdpasim_create(void)
- 		goto err_iommu;
- 
- 	config = &vdpasim->config;
--	config->mtu = 1500;
--	config->status = VIRTIO_NET_S_LINK_UP;
-+	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
-+	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
- 	eth_random_addr(config->mac);
- 
- 	vringh_set_iotlb(&vdpasim->vqs[0].vring, vdpasim->iommu);
+kfree(cache);
+}
+@@ -2589,6 +2602,13 @@ static int cache_create(struct cache_args *ca, 
+struct cache **result)
+cache->features = ca->features;
+ti->per_io_data_size = get_per_bio_data_size(cache);
++ if (writethrough_mode(&cache->features)) {
++ /* Create bioset for writethrough bios issued to origin */
++ cache->bs = bioset_create(BIO_POOL_SIZE, 0, 0);
++ if (!cache->bs)
++ goto bad;
++ }
++
+cache->callbacks.congested_fn = cache_is_congested;
+dm_table_add_target_callbacks(ti->table, &cache->callbacks);
+
 -- 
-MST
+2.26.2
 
