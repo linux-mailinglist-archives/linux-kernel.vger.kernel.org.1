@@ -2,87 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF13A220812
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA96220823
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730356AbgGOJEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:04:14 -0400
-Received: from smtprelay0078.hostedemail.com ([216.40.44.78]:43546 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729856AbgGOJEL (ORCPT
+        id S1730493AbgGOJEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730475AbgGOJEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:04:11 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 1BD8A182CED5B;
-        Wed, 15 Jul 2020 09:04:10 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2902:2914:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6248:7903:8700:9010:9025:10004:10400:10848:11232:11289:11658:11914:12043:12297:12555:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14180:14181:14659:14721:14777:21060:21080:21433:21627:21811:21819:21939:30003:30022:30054:30060:30062:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:6,LUA_SUMMARY:none
-X-HE-Tag: crowd16_1d14ee826ef8
-X-Filterd-Recvd-Size: 2534
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 15 Jul 2020 09:04:08 +0000 (UTC)
-Message-ID: <128a9f7de9885257736b3bb2648ea90bcbc2c760.camel@perches.com>
-Subject: Re: [PATCH v2] staging: gasket: core: Fix a coding style issue in
- gasket_core.c
-From:   Joe Perches <joe@perches.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Zhixu Zhao <zhixu001@126.com>, rcy@google.com,
-        rspringer@google.com, toddpoynor@google.com
-Date:   Wed, 15 Jul 2020 02:04:06 -0700
-In-Reply-To: <20200715083727.GY2549@kadam>
-References: <20200617161127.32006-1-zhixu001@126.com>
-         <20200714234440.27009-1-zhixu001@126.com>
-         <20200715071748.GC2305231@kroah.com>
-         <23ef3ca9616418b702df891443d0f4864edd58ff.camel@perches.com>
-         <20200715075755.GA2516028@kroah.com> <20200715083727.GY2549@kadam>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Wed, 15 Jul 2020 05:04:51 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53603C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:04:51 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id o3so1308002ilo.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:04:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q4dxg/x+C61ezLjqHNaCCzjzXw07QWDdBXsi9fVkAUU=;
+        b=YEe2issca20y2/l73T3sa81rOD0zgi1OUm8I/tbIAEmNaSjKhPdRRwJBKafc2gc3jk
+         xDQYds+jIMarrr7rQWr59jGk4zxqH1Wu2H5gqoNbIV8k/iPjTfSnbsRa7W3NEOcMK3up
+         2LgACIRQucnwj+gcTH6lQJtscwwtIK86qjmEo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q4dxg/x+C61ezLjqHNaCCzjzXw07QWDdBXsi9fVkAUU=;
+        b=MbDHgLfgofs/+wBH7Ap43JftKaVLo5FgvTH3IGIB1A/mn3N/2bjnc0yjiEaR96yCBx
+         ZySqn08nwISCpeeOSxCvEF827IACJ9I58CqaO21y5a7YXXGGjQLP4dQAD3r0aVN+3mdK
+         W4PrOW0GZhJfiZZ3fR4dlGbFXPM7pm0ZR13jHhMQ2teU9hT8ujv5Z3gu989+IE++nSXH
+         XWyDJRE74V3dVD+VGJT6Qv+K/NeLD73tfXjOyBJA7jvAgFowUZQIIRqvVgirnQMtCxIX
+         J4Y22wiZ9maM3nL9dS294vnTWznPrygtiMmY/GPw2tuc0oiqJ83T7Wmaj+sqtf8V72Ui
+         EcdQ==
+X-Gm-Message-State: AOAM533j+nfKpV+Sy9pQPBMTbwVT8lTBOSCQKzbui1vcWM60VrSDC/J4
+        6Bm1DDtx5lMPW3Ba5SfYCTFRUenmPng=
+X-Google-Smtp-Source: ABdhPJxrlHdiHSw4qIAQozA6QPaLfo4sO39kilXZXIAzNFNdnarBA3GONzBTywg63aHdEirQDHzWOQ==
+X-Received: by 2002:a05:6e02:487:: with SMTP id b7mr9294174ils.100.1594803889939;
+        Wed, 15 Jul 2020 02:04:49 -0700 (PDT)
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com. [209.85.166.182])
+        by smtp.gmail.com with ESMTPSA id t11sm818572ils.3.2020.07.15.02.04.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jul 2020 02:04:48 -0700 (PDT)
+Received: by mail-il1-f182.google.com with SMTP id a11so1360556ilk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:04:48 -0700 (PDT)
+X-Received: by 2002:a92:de42:: with SMTP id e2mr8593960ilr.189.1594803887732;
+ Wed, 15 Jul 2020 02:04:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200713091211.2183368-1-tientzu@chromium.org>
+ <20200713091211.2183368-2-tientzu@chromium.org> <4a2451f9-57d8-2e83-e1d6-f144f37173c0@arm.com>
+ <20200714110141.GD16178@lst.de> <CALiNf2-9b5LMjv+KCqFJ9oz2FocT6oQ1zVY_MBaFgNG1DQxZ=Q@mail.gmail.com>
+In-Reply-To: <CALiNf2-9b5LMjv+KCqFJ9oz2FocT6oQ1zVY_MBaFgNG1DQxZ=Q@mail.gmail.com>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Wed, 15 Jul 2020 17:04:36 +0800
+X-Gmail-Original-Message-ID: <CALiNf28LVobHKLuXAf7P7Avi6n1oU+tbbFJ55ZPanJuq8Q1Ysg@mail.gmail.com>
+Message-ID: <CALiNf28LVobHKLuXAf7P7Avi6n1oU+tbbFJ55ZPanJuq8Q1Ysg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dma-mapping: Add bounced DMA ops
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Rob Herring <robh+dt@kernel.org>, frowand.list@gmail.com,
+        m.szyprowski@samsung.com, treding@nvidia.com,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>, suzuki.poulose@arm.com,
+        dan.j.williams@intel.com, heikki.krogerus@linux.intel.com,
+        bgolaszewski@baylibre.com, devicetree@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, tfiga@chromium.org,
+        Nicolas Boichat <drinkcat@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-07-15 at 11:37 +0300, Dan Carpenter wrote:
-> On Wed, Jul 15, 2020 at 09:57:55AM +0200, Greg KH wrote:
-> > On Wed, Jul 15, 2020 at 12:24:22AM -0700, Joe Perches wrote:
-> > > On Wed, 2020-07-15 at 09:17 +0200, Greg KH wrote:
-> > > > On Wed, Jul 15, 2020 at 07:44:40AM +0800, Zhixu Zhao wrote:
-> > > > > On Thu, Jun 18, 2020 at 12:11:27AM +0800, Zhixu Zhao wrote:
-> > > > > > A coding alignment issue is found by checkpatch.pl.
-> > > > > > Fix it by using a temporary for gasket_dev->bar_data[bar_num].
-> > > > > > 
-> > > > > > Signed-off-by: Zhixu Zhao <zhixu001@126.com>
-> > > > > 
-> > > > > Hi, there~
-> > > > > 
-> > > > > Does anybody have any further comments on this?
-> > > > > Can it be merged?
-> > > > 
-> > > > I never saw the first version of this, are you sure it got sent to the
-> > > > mailing list?  It's not in any archives anywhere.
-> > > 
-> > > I saw it.  It's here:
-> > > https://lore.kernel.org/lkml/20200617161127.32006-1-zhixu001@126.com/
-> > 
-> > Ah, doh, sorry.
-> > 
-> > Zhixu, please address the comments given to you on the series and resend
-> > it as a new version.
-> 
-> He responded but not as a reply to my email.  It turns out I made a
-> mistake.
-> 
-> Anyway, just resend, Zhixu.
+On Wed, Jul 15, 2020 at 11:46 AM Claire Chang <tientzu@chromium.org> wrote:
+>
+> On Tue, Jul 14, 2020 at 7:01 PM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > On Mon, Jul 13, 2020 at 12:55:43PM +0100, Robin Murphy wrote:
+> > > On 2020-07-13 10:12, Claire Chang wrote:
+> > >> The bounced DMA ops provide an implementation of DMA ops that bounce
+> > >> streaming DMA in and out of a specially allocated region. Only the
+> > >> operations relevant to streaming DMA are supported.
+> > >
+> > > I think there are too many implicit assumptions here - apparently that
+> > > coherent allocations will always be intercepted by
+> > > dma_*_from_dev_coherent(), and that calling into dma-direct won't actually
+> > > bounce things a second time beyond where you thought they were going,
+> > > manage coherency for a different address, and make it all go subtly wrong.
+> > > Consider "swiotlb=force", for instance...
+If I understand it correctly, reusing SWIOTLB won't prevent the
+coherent allocations
+from always being intercepted by dma_*_from_dev_coherent(), right?
+Since we can't bounce the coherent memory, we still need to rely on
+dma_*_from_dev_coherent() and a reserved-memory region for coherent DMA to
+restrict the device DMA access.
 
-It's a pity a resend is being requested.
+As for calling into dma-direct, in this version, I use set_dma_ops to set the
+dma_bounced_ops, so I just bypass dma-direct and SWIOTLB. "swiotlb=force"
+won't bounce things a second time and the data will still be bounced
+to the region
+set in dts.
+Besides, I did a quick search and found that only two *-iommu.c directly use
+dma_direct_map_page.
+https://elixir.bootlin.com/linux/latest/C/ident/dma_direct_map_page
+Since bounced DMA is to mitigate the lack of DMA access control on systems
+without an IOMMU (see patch#4, only call of_dma_set_bounce_buffer for the
+devices not behind an IOMMU), can we assume no one will use dma-direct?
+(I understand that if we build bounced DMA on top of SWIOTLB, we don't need
+to worry about this.)
 
-It'd be a better process if the original patch could
-be applied via the link akin to a git pull.
+> > >
+> > > Again, plumbing this straight into dma-direct so that SWIOTLB can simply
+> > > target a different buffer and always bounce regardless of masks would seem
+> > > a far better option.
+> >
+> > I haven't really had time to read through the details, but I agree that
+> > any bouncing scheme should reuse the swiotlb code and not invent a
+> > parallel infrastructure.
+> Thanks for the feedback. I'll try to reuse SWIOTLB.
+My current plan is to first change the buffers management logic in SWIOTLB to
+use gen_pool like this patch (i.e., gen_pool_dma_alloc, gen_pool_free, ect), and
+then make SWIOTLB use the device's private pool for regular DMA to/from system
+memory if possible.
+Does this sound right?
 
-
+Thanks!
