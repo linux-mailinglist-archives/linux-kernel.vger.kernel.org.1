@@ -2,190 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0272217B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B282217AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgGOWTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 18:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
+        id S1727034AbgGOWTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 18:19:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgGOWTT (ORCPT
+        with ESMTP id S1726356AbgGOWTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 18:19:19 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1DBC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 15:19:18 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id k23so3947747iom.10
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 15:19:18 -0700 (PDT)
+        Wed, 15 Jul 2020 18:19:13 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930A4C061755;
+        Wed, 15 Jul 2020 15:19:13 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id s26so2721395pfm.4;
+        Wed, 15 Jul 2020 15:19:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uamVRmBnq/LyIAwWR9vTRtXE6KJjN16bes8FQWmt5qc=;
-        b=LP9YnNKBDUyZc5hldm+tOuZM/Xv9Dq6jUSsWZh3iCZOkud47rfRGMe+VGiH1HmC9f9
-         xNGiaCcq6okAfg1P08F+1dwmDew22YigqRGMFIE2XNBGjG+e29WOiWN+IrRdlArL2r7y
-         zIvaW91RxDvXWsCJAv1vj8Pe0vzK4xq70ISaYWajxjaNCSYaIs0fv2RoRrSvGqt8gLxV
-         /kW2vuuYIvgAJGPekOs73MICUoQ37PrUpC7k7DpWEJXwmsess9lxUuYgbIsOi7Qi3zIb
-         byafvAUIQVyn8mMu2L301RALWXTA6C2xsI/0AT6nMN42UnLVD4JySNglI0ePaotrQGfv
-         OZYQ==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=L5GmY7L5HiAC8HqdYtfQXZjWPSkTCivraVGIeIH6xEE=;
+        b=f7/jal1vkki2RMNvTtMvqlOoaX3OnyJjnqEf2IOuHHcNk+elT7V1peCYtakcnQKvYz
+         39UUvOvtcTCYIB+/jO1Jf4tjL8ODVmiqKj9ck5jrqyXMND8A4CjUVcduigaso+4NfTd6
+         TB+GHfya+bAw1mZrIKRkTf9IShgncIbmPM5TRxpHKQwaQ8HNL6SaMkja76angsIUZqrF
+         Y65OiLeLbz5HB7rgtYxavkaQY6VgFVbM7f/ZC2hI0fXc/uF0yAHfcHbAkdeui+/jBIxj
+         /PcrpON+lxb9qnc9pag2p7b3+GoCZ4W/FHQ8hNnfm6FuwF1YeQAAT4AVkX7HEY3r/yL9
+         iGKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uamVRmBnq/LyIAwWR9vTRtXE6KJjN16bes8FQWmt5qc=;
-        b=rvtvoO0aLeZFsHNb29XMW9lxETau1bSQM4Kb7onxrLtOJhqc8db62weDFggR/pR0b1
-         ayk3kTib5mrZRLsOE/FcxCxpWvlmEsOOd8iojvcLypaadmDqr8IK+IQFavnHy128oJTX
-         e7NgfGOw3UmwyEePAMIPCzi5/vxFOanrLi+HhaRVml3+DZFoBjKfVMAAhEy7TmOXv92g
-         NSZxxxows3NQr6D4W08BOPs9Ff9PrSon4l0AGBOB9B1Vxje2nT+kfcFrT1Id+zc5RZfZ
-         zw+jiZmJRSDEl+i+FskAX0QCG2D4bIhKir8WXQQpRIBdoQiHaYoNKqzCQ+6luLmMTgiw
-         LBCA==
-X-Gm-Message-State: AOAM5334hAyGK+rgfaJjeK03ZN9tZrTHfR3bLXk32fcSwUUvpHrfr0mk
-        94ttKlR+QNOU3V2z99HpS9Pi/eeKSNttTFYnkQ6pzQ==
-X-Google-Smtp-Source: ABdhPJxanTTddn1ct1kSr/GGgdJAB/ArrrDHYsVVxx4CSGuJVHDOZIRP8qD8hAuix1aIu35jzjzgXUi0p+0yiT3+pyg=
-X-Received: by 2002:a5d:8853:: with SMTP id t19mr1496520ios.73.1594851558125;
- Wed, 15 Jul 2020 15:19:18 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=L5GmY7L5HiAC8HqdYtfQXZjWPSkTCivraVGIeIH6xEE=;
+        b=E1bgmzGLQf4bxFutbI5TzhxbOx1wZvfeD7pXVWf2oVbjXhkvjkU2F1dwMEVFyxpEZ4
+         qhBZdg0aY2AQh3wX9jT89d6ES1NYw/ffsu8uxI5xnlh9RayarnRjUqNVQLTbxqsdYU67
+         BvlOttxdacxEV8zdYpplqVg/e52r1nk4wHz3S8F7xA+asrOPjVtwiSXqg43Tagt3pouh
+         3aq+Bx71YebHwueQv5I790tut7K1TxZjp1ZIPRaxYm1bHQtLa9OrHudPoFxnFvnUmbsU
+         epUb1CCiDQ7XGQAInkwzrVAGPFN07m0EqcP8mCWeNRJNmyAMgQZKTo7D2b6YR9QkoV5S
+         YTLg==
+X-Gm-Message-State: AOAM532ewkC445dPJx8nKrX7IjzUL/6w9QTUN0GIOgmJOKFU3kXLlsJt
+        R5gGiwbeguZpTzuMKt7YSXM=
+X-Google-Smtp-Source: ABdhPJzHPKvV0aI6JxTWi/oUAVWq5l+4QlNduI5iAu8bPUuehKV+rdPs5HKsHkBQkH22ybvdvFQBOw==
+X-Received: by 2002:a63:6884:: with SMTP id d126mr1530707pgc.341.1594851553028;
+        Wed, 15 Jul 2020 15:19:13 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m68sm3299747pje.24.2020.07.15.15.19.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 15 Jul 2020 15:19:12 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 15:19:11 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Rob Herring <robh@kernel.org>
+Cc:     "Daniel M. Weeks" <dan@danweeks.net>, jdelvare@suse.com,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: hwmon: Correct vendor for mcp980x
+Message-ID: <20200715221911.GA231856@roeck-us.net>
+References: <20200703153748.GA16156@dev.danweeks.net>
+ <20200715213917.GA818608@bogus>
 MIME-Version: 1.0
-References: <20200707213112.928383-7-mathieu.poirier@linaro.org> <202007150455.m7mLaFaF%lkp@intel.com>
-In-Reply-To: <202007150455.m7mLaFaF%lkp@intel.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Wed, 15 Jul 2020 16:19:07 -0600
-Message-ID: <CANLsYkwWe_zfpafBKNF10BEqV4w1tHTjrTOPUca36LkTD+Nu=Q@mail.gmail.com>
-Subject: Re: [PATCH v5 06/11] remoteproc: stm32: Properly set co-processor
- state when attaching
-To:     kernel test robot <lkp@intel.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Loic PALLARDY <loic.pallardy@st.com>,
-        Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715213917.GA818608@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robot,
+On Wed, Jul 15, 2020 at 03:39:17PM -0600, Rob Herring wrote:
+> On Fri, Jul 03, 2020 at 11:37:48AM -0400, Daniel M. Weeks wrote:
+> > Signed-off-by: Daniel M. Weeks <dan@danweeks.net>
+> 
+> Commit message? Isn't this going to break any users? Or we rely on i2c 
+> stripping the vendor?
+> 
+Looks like there are no in-kernel users.
 
-On Tue, 14 Jul 2020 at 14:31, kernel test robot <lkp@intel.com> wrote:
->
-> Hi Mathieu,
->
-> I love your patch! Yet something to improve:
->
-> [auto build test ERROR on linux/master]
-> [also build test ERROR on linus/master v5.8-rc5 next-20200714]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use  as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Mathieu-Poirier/remoteproc-stm32-Add-support-for-attaching-to-M4/20200708-053515
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68
-> config: arm-randconfig-r011-20200714 (attached as .config)
-> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 02946de3802d3bc65bc9f2eb9b8d4969b5a7add8)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install arm cross compiling tool for clang build
->         # apt-get install binutils-arm-linux-gnueabi
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
-> >> drivers/remoteproc/stm32_rproc.c:697:18: error: use of undeclared identifier 'RPROC_DETACHED'
->                    rproc->state = RPROC_DETACHED;
->                                   ^
->    1 error generated.
+Guenter
 
-This patchset depends on this one [1], something that is clearly
-stated in the cover letter.  Compiling this set on top of [1]
-generates no error.
-
-[1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=318275
-
->
-> vim +/RPROC_DETACHED +697 drivers/remoteproc/stm32_rproc.c
->
->    661
->    662
->    663  static int stm32_rproc_probe(struct platform_device *pdev)
->    664  {
->    665          struct device *dev = &pdev->dev;
->    666          struct stm32_rproc *ddata;
->    667          struct device_node *np = dev->of_node;
->    668          struct rproc *rproc;
->    669          unsigned int state;
->    670          int ret;
->    671
->    672          ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(32));
->    673          if (ret)
->    674                  return ret;
->    675
->    676          rproc = rproc_alloc(dev, np->name, &st_rproc_ops, NULL, sizeof(*ddata));
->    677          if (!rproc)
->    678                  return -ENOMEM;
->    679
->    680          ddata = rproc->priv;
->    681
->    682          rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
->    683
->    684          ret = stm32_rproc_parse_dt(pdev, ddata, &rproc->auto_boot);
->    685          if (ret)
->    686                  goto free_rproc;
->    687
->    688          ret = stm32_rproc_of_memory_translations(pdev, ddata);
->    689          if (ret)
->    690                  goto free_rproc;
->    691
->    692          ret = stm32_rproc_get_m4_status(ddata, &state);
->    693          if (ret)
->    694                  goto free_rproc;
->    695
->    696          if (state == M4_STATE_CRUN)
->  > 697                  rproc->state = RPROC_DETACHED;
->    698
->    699          rproc->has_iommu = false;
->    700          ddata->workqueue = create_workqueue(dev_name(dev));
->    701          if (!ddata->workqueue) {
->    702                  dev_err(dev, "cannot create workqueue\n");
->    703                  ret = -ENOMEM;
->    704                  goto free_rproc;
->    705          }
->    706
->    707          platform_set_drvdata(pdev, rproc);
->    708
->    709          ret = stm32_rproc_request_mbox(rproc);
->    710          if (ret)
->    711                  goto free_wkq;
->    712
->    713          ret = rproc_add(rproc);
->    714          if (ret)
->    715                  goto free_mb;
->    716
->    717          return 0;
->    718
->    719  free_mb:
->    720          stm32_rproc_free_mbox(rproc);
->    721  free_wkq:
->    722          destroy_workqueue(ddata->workqueue);
->    723  free_rproc:
->    724          if (device_may_wakeup(dev)) {
->    725                  dev_pm_clear_wake_irq(dev);
->    726                  device_init_wakeup(dev, false);
->    727          }
->    728          rproc_free(rproc);
->    729          return ret;
->    730  }
->    731
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > ---
+> >  Documentation/devicetree/bindings/hwmon/lm75.txt | 2 +-
+> >  drivers/hwmon/lm75.c                             | 8 ++++----
+> >  2 files changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/hwmon/lm75.txt b/Documentation/devicetree/bindings/hwmon/lm75.txt
+> > index 273616702c51..e5bb554cd2c3 100644
+> > --- a/Documentation/devicetree/bindings/hwmon/lm75.txt
+> > +++ b/Documentation/devicetree/bindings/hwmon/lm75.txt
+> > @@ -14,10 +14,10 @@ Required properties:
+> >  		"maxim,max6626",
+> >  		"maxim,max31725",
+> >  		"maxim,max31726",
+> > -		"maxim,mcp980x",
+> >  		"nxp,pct2075",
+> >  		"st,stds75",
+> >  		"st,stlm75",
+> > +		"microchip,mcp980x",
+> >  		"microchip,tcn75",
+> >  		"ti,tmp100",
+> >  		"ti,tmp101",
+> > diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
+> > index ba0be48aeadd..a8cfc7e4a685 100644
+> > --- a/drivers/hwmon/lm75.c
+> > +++ b/drivers/hwmon/lm75.c
+> > @@ -690,10 +690,6 @@ static const struct of_device_id __maybe_unused lm75_of_match[] = {
+> >  		.compatible = "maxim,max31726",
+> >  		.data = (void *)max31725
+> >  	},
+> > -	{
+> > -		.compatible = "maxim,mcp980x",
+> > -		.data = (void *)mcp980x
+> > -	},
+> >  	{
+> >  		.compatible = "nxp,pct2075",
+> >  		.data = (void *)pct2075
+> > @@ -706,6 +702,10 @@ static const struct of_device_id __maybe_unused lm75_of_match[] = {
+> >  		.compatible = "st,stlm75",
+> >  		.data = (void *)stlm75
+> >  	},
+> > +	{
+> > +		.compatible = "microchip,mcp980x",
+> > +		.data = (void *)mcp980x
+> > +	},
+> >  	{
+> >  		.compatible = "microchip,tcn75",
+> >  		.data = (void *)tcn75
+> > -- 
+> > Daniel M. Weeks
