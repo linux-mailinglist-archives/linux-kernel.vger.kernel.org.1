@@ -2,173 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B362211B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3282211BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgGOPvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:51:09 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:46236 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbgGOPvI (ORCPT
+        id S1726650AbgGOP4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725798AbgGOP4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 11:51:08 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7D47F20B4908;
-        Wed, 15 Jul 2020 08:51:07 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7D47F20B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1594828268;
-        bh=PqZS5ckYTWkUACXW2CzkMAhIn3QNaBv0Mq12LReLoVA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ihxt9tMz48bY6B/jpDdTs1dTPvX52ZyIF7gncnLawsjwkY8neLeNQ90iRqXzFY0qz
-         CklPsjPHf7QPev7+Dm/MnlgjsGs4h2iNl95bh4lACsae+lEsqrIpv6VZ4dVk7j0wlJ
-         +KtXNOzw4JHsh6HXps2KOQIz9mK+TqUDUszBeiU8=
-Date:   Wed, 15 Jul 2020 10:50:53 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Ard Biesheuvel <ardb@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Petr Vandrovec <petr@vmware.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        linux-integrity@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Jones <pjones@redhat.com>
-Subject: Re: [PATCH v2] tpm: Require that all digests are present in
- TCG_PCR_EVENT2 structures
-Message-ID: <20200715155053.GA3673@sequoia>
-References: <20200710192955.23333-1-tyhicks@linux.microsoft.com>
- <20200713205719.GA1419951@linux.intel.com>
+        Wed, 15 Jul 2020 11:56:18 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D785C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:56:18 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id w2so3273811pgg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:56:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VoLrAtt1VyxuFNU8R+bL89rZwqBhfdjM3HwRVlNo+Sg=;
+        b=EWwLkljz1VAM7yL27jdXj31g9KL4DV/W+V32rYb7qrevaLYYLinozQdpR6f0DJVC7W
+         NBt/g0/RJs44i1CYCqPFyL4YSJhgXu+LDp7VhUJRQMKi/rcmcWNomspHlxE+RDZgIscf
+         7dGi8dIzEYzm25OK1Seqoi4zjh+niQ70jVGh3HEQdPoIbJWkBeif8fD9UPLdEFAN1pqZ
+         qiahVa0hqI2ZDeh8ROJkgaq5Osn0QYnrKHAvG0tVQUBq4lW4IKRxrh+sC2WqNc/qY8Vw
+         v5yb5yhDdTtjytfM/q3IwdtK1DEsGmBhvW1gqQN1pxBdtmSC5HPlr7bfE9typ0scTTmO
+         Bc3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VoLrAtt1VyxuFNU8R+bL89rZwqBhfdjM3HwRVlNo+Sg=;
+        b=r82Ri3TdkuLgHgKUhrg1om+ovP7L0OvjMGOlq+IfbUwGKNb8IIgBc4MjCzDVRcjWqE
+         LYWgF2KwomnCIH7rcbn2zrhs8nNbPfneKrWbOs9BW2DFqtUp2Qqh+S5d8LpMJZI3ZmjB
+         sUhtRED/Vwnr3pAZK+/Rao5Y1PRBH2Ijl5LBvOnIQeuh1Ye3Z5LnGaHtBOr2eqE9c59d
+         xzERus9CL5LnAvFHWOvjLN7nLnOqBGIBecMh1XNSYs/RZ/YwPlWxiJMCfXJ2O4ySaayM
+         c6z7D/s/iap8FotVUE5tsI4H4WMbaAleIXn/lXxPyJ4iTFx0a3p73LhfCC0g5ySQEQep
+         zgDg==
+X-Gm-Message-State: AOAM530ygEBZDYICp3Zqehi6ol4bjg0cyEabZKd6NHb0ztAA89JhoIO9
+        evUTbZdgsBvyj8R7GGrf/5yTso3KLmVrrkafk1Q5Kw==
+X-Google-Smtp-Source: ABdhPJzATAq/QWB7Ymlgx30NYeVFKy3oLTmS3TSJDTGy8g96MJaUiFfFEyKVmbp43RB1/CiM+nsS0iqHGdg9fDO1Z9M=
+X-Received: by 2002:a63:cf49:: with SMTP id b9mr308979pgj.31.1594828577905;
+ Wed, 15 Jul 2020 08:56:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200713205719.GA1419951@linux.intel.com>
+References: <20200707062754.8383-1-songmuchun@bytedance.com>
+ <3d06418e-e75c-e7b8-91cd-ba56283045be@suse.cz> <CAMZfGtXK9yQOJy7BPnTBzhG4tithRs=9R4O3rDg1Rjz0zUFKnQ@mail.gmail.com>
+ <4c1bba23-56c5-f69c-28cb-48dd3db30880@suse.cz>
+In-Reply-To: <4c1bba23-56c5-f69c-28cb-48dd3db30880@suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 15 Jul 2020 23:55:42 +0800
+Message-ID: <CAMZfGtVEiUmQYX61MT_oCymac+idXy16U8bAQoV21HcFrVXCxg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5.4.y, v4.19.y] mm: memcg/slab: fix memory
+ leak at non-root kmem_cache destroy
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-13 23:57:19, Jarkko Sakkinen wrote:
-> On Fri, Jul 10, 2020 at 02:29:55PM -0500, Tyler Hicks wrote:
-> > Require that the TCG_PCR_EVENT2.digests.count value strictly matches the
-> > value of TCG_EfiSpecIdEvent.numberOfAlgorithms in the event field of the
-> > TCG_PCClientPCREvent event log header. Also require that
-> > TCG_EfiSpecIdEvent.numberOfAlgorithms is non-zero.
-> > 
-> > The TCG PC Client Platform Firmware Profile Specification section 9.1
-> > (Family "2.0", Level 00 Revision 1.04) states:
-> > 
-> >  For each Hash algorithm enumerated in the TCG_PCClientPCREvent entry,
-> >  there SHALL be a corresponding digest in all TCG_PCR_EVENT2 structures.
-> >  Note: This includes EV_NO_ACTION events which do not extend the PCR.
-> > 
-> > Section 9.4.5.1 provides this description of
-> > TCG_EfiSpecIdEvent.numberOfAlgorithms:
-> > 
-> >  The number of Hash algorithms in the digestSizes field. This field MUST
-> >  be set to a value of 0x01 or greater.
-> > 
-> > Enforce these restrictions, as required by the above specification, in
-> > order to better identify and ignore invalid sequences of bytes at the
-> > end of an otherwise valid TPM2 event log. Firmware doesn't always have
-> > the means necessary to inform the kernel of the actual event log size so
-> > the kernel's event log parsing code should be stringent when parsing the
-> > event log for resiliency against firmware bugs. This is true, for
-> > example, when firmware passes the event log to the kernel via a reserved
-> > memory region described in device tree.
-> > 
-> > POWER and some ARM systems use the "linux,sml-base" and "linux,sml-size"
-> > device tree properties to describe the memory region used to pass the
-> > event log from firmware to the kernel. Unfortunately, the
-> > "linux,sml-size" property describes the size of the entire reserved
-> > memory region rather than the size of the event long within the memory
-> > region and the event log format does not include information describing
-> > the size of the event log.
-> > 
-> > tpm_read_log_of(), in drivers/char/tpm/eventlog/of.c, is where the
-> > "linux,sml-size" property is used. At the end of that function,
-> > log->bios_event_log_end is pointing at the end of the reserved memory
-> > region. That's typically 0x10000 bytes offset from "linux,sml-base",
-> > depending on what's defined in the device tree source.
-> > 
-> > The firmware event log only fills a portion of those 0x10000 bytes and
-> > the rest of the memory region should be zeroed out by firmware. Even in
-> > the case of a properly zeroed bytes in the remainder of the memory
-> > region, the only thing allowing the kernel's event log parser to detect
-> > the end of the event log is the following conditional in
-> > __calc_tpm2_event_size():
-> > 
-> >         if (event_type == 0 && event_field->event_size == 0)
-> >                 size = 0;
-> > 
-> > If that wasn't there, __calc_tpm2_event_size() would think that a 16
-> > byte sequence of zeroes, following an otherwise valid event log, was
-> > a valid event.
-> > 
-> > However, problems can occur if a single bit is set in the offset
-> > corresponding to either the TCG_PCR_EVENT2.eventType or
-> > TCG_PCR_EVENT2.eventSize fields, after the last valid event log entry.
-> > This could confuse the parser into thinking that an additional entry is
-> > present in the event log and exposing this invalid entry to userspace in
-> > the /sys/kernel/security/tpm0/binary_bios_measurements file. Such
-> > problems have been seen if firmware does not fully zero the memory
-> > region upon a warm reboot.
-> > 
-> > This patch significantly raises the bar on how difficult it is for
-> > stale/invalid memory to confuse the kernel's event log parser but
-> > there's still, ultimately, a reliance on firmware to properly initialize
-> > the remainder of the memory region reserved for the event log as the
-> > parser cannot be expected to detect a stale but otherwise properly
-> > formatted firmware event log entry.
-> > 
-> > Fixes: fd5c78694f3f ("tpm: fix handling of the TPM 2.0 event logs")
-> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > ---
-> > 
-> > * v2
-> >   - Rebase the patch on top of the TPM next branch, commit 786a2aa281f4
-> >     ("Revert commit e918e570415c ("tpm_tis: Remove the HID IFX0102")")
-> >   - Expand on the technical reasoning for needing strict event
-> >     validation in the commit message
-> >   - Improve the inline comment explaining the need for detecting
-> >     malformed events
-> > 
-> >  include/linux/tpm_eventlog.h | 11 +++++++++--
-> >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/tpm_eventlog.h b/include/linux/tpm_eventlog.h
-> > index 64356b199e94..739ba9a03ec1 100644
-> > --- a/include/linux/tpm_eventlog.h
-> > +++ b/include/linux/tpm_eventlog.h
-> > @@ -211,9 +211,16 @@ static inline int __calc_tpm2_event_size(struct tcg_pcr_event2_head *event,
-> >  
-> >  	efispecid = (struct tcg_efi_specid_event_head *)event_header->event;
-> >  
-> > -	/* Check if event is malformed. */
-> > +	/*
-> > +	 * Perform validation of the event in order to identify malformed
-> > +	 * events. This function may be asked to parse arbitrary byte sequences
-> > +	 * immediately following a valid event log. The caller expects this
-> > +	 * function to recognize that the byte sequence is not a valid event
-> > +	 * and to return an event size of 0.
-> > +	 */
-> >  	if (memcmp(efispecid->signature, TCG_SPECID_SIG,
-> > -		   sizeof(TCG_SPECID_SIG)) || count > efispecid->num_algs) {
-> > +		   sizeof(TCG_SPECID_SIG)) ||
-> > +	    !efispecid->num_algs || count != efispecid->num_algs) {
-> >  		size = 0;
-> >  		goto out;
-> >  	}
-> > -- 
-> > 2.25.1
-> > 
-> 
-> 
-> Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+On Wed, Jul 15, 2020 at 11:43 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 7/15/20 5:13 PM, Muchun Song wrote:
+> > On Wed, Jul 15, 2020 at 7:32 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+> >>
+> >> On 7/7/20 8:27 AM, Muchun Song wrote:
+> >> > If the kmem_cache refcount is greater than one, we should not
+> >> > mark the root kmem_cache as dying. If we mark the root kmem_cache
+> >> > dying incorrectly, the non-root kmem_cache can never be destroyed.
+> >> > It resulted in memory leak when memcg was destroyed. We can use the
+> >> > following steps to reproduce.
+> >> >
+> >> >   1) Use kmem_cache_create() to create a new kmem_cache named A.
+> >> >   2) Coincidentally, the kmem_cache A is an alias for kmem_cache B,
+> >> >      so the refcount of B is just increased.
+> >> >   3) Use kmem_cache_destroy() to destroy the kmem_cache A, just
+> >> >      decrease the B's refcount but mark the B as dying.
+> >> >   4) Create a new memory cgroup and alloc memory from the kmem_cache
+> >> >      A. It leads to create a non-root kmem_cache for allocating.
+> >> >   5) When destroy the memory cgroup created in the step 4), the
+> >> >      non-root kmem_cache can never be destroyed.
+> >> >
+> >> > If we repeat steps 4) and 5), this will cause a lot of memory leak.
+> >> > So only when refcount reach zero, we mark the root kmem_cache as dying.
+> >> >
+> >> > Fixes: 92ee383f6daa ("mm: fix race between kmem_cache destroy, create and deactivate")
+> >> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>
+> >> CC Roman, who worked in this area recently.
+> >>
+> >> Also why is this marked "[PATCH v5.4.y, v4.19.y]"? Has it been fixed otherwise
+> >> in 5.5+ ?
+> >
+> > Because the memcg slab/slub is reworked by Roman since v5.8.
+>
+> That rework is in mmotm, so scheduled for 5.9, AFAIK. If you mean "The new
+> cgroup slab memory controller" series.
 
-Thanks for the review. Do you plan to take this through the linux-tpmdd
-tree or are you expecting someone else to pick up this patch?
+Yeah, I mean "The new cgroup slab memory controller".
 
-Tyler
+>
+> > Therefore, this problem exists in v5.7 and below.
+>
+> Even 5.7 has a stable series, so no need to list only the LTS's.
+> To sum up, the patch (once reviewed) should be queued for mainline as usual,
+> perhaps sent before 5.8 is final, if deemed safe enough, and with added
+>
+> Cc: <stable@vger.kernel.org>
+>
+> and the Fixes: tag you provided, the applicable stable versions will pick it.
 
-> 
-> /Jarkko
+Got it. Thanks.
+
+>
+> Vlastimil
+
+
+
+-- 
+Yours,
+Muchun
