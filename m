@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4A322167A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F6722167D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgGOUpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 16:45:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37654 "EHLO mail.kernel.org"
+        id S1727903AbgGOUpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 16:45:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgGOUpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 16:45:00 -0400
+        id S1726670AbgGOUpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 16:45:02 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C81E72067D;
-        Wed, 15 Jul 2020 20:44:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A73C2070E;
+        Wed, 15 Jul 2020 20:45:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594845899;
-        bh=DhK6b8I/1ss0W4MzzdX02SLszvZEsAiNuD4UF+ErW80=;
+        s=default; t=1594845901;
+        bh=82c0M4r2v9vmu+J3LNGEZvNsiX4xegCRnclRjTkc4/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XdM+pJB4xeHusWvm1eoMCtIMJBK1krsd2g7/Kmlvs2ZA9kSq243NpwjTqBjrDD703
-         Bujfqyl7pMDhr38aQllgCT7mNSeUoEDzUtKeqbINxNfl561Glpuf3U88XoDhh2wDw5
-         ThzBTHuZCT/Huv2+pwcY0N472ZQJ7Y/sBmETlThA=
+        b=eVcCgpSp6N8Lu8pYUkh2pzuDpoBZ9+aiIPRlmvsFhp1Bfd3YqxJUUDQFqM08p1mDW
+         S5jMIbrSuBtCPF0Kar2gn5BtTdTQjI183TIUre92tq5Hq+QWM3a84jB3rYrAKu8eBM
+         H3JGVGLCn+Wum99KL/beD+yTWX44f+lMRh/EJnhg=
 From:   Mark Brown <broonie@kernel.org>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
@@ -36,9 +36,9 @@ Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
         Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
         linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/3] stacktrace: Remove reliable argument from arch_stack_walk() callback
-Date:   Wed, 15 Jul 2020 21:28:19 +0100
-Message-Id: <20200715202821.12220-2-broonie@kernel.org>
+Subject: [PATCH 2/3] arm64: stacktrace: Make stack walk callback consistent with generic code
+Date:   Wed, 15 Jul 2020 21:28:20 +0100
+Message-Id: <20200715202821.12220-3-broonie@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200715202821.12220-1-broonie@kernel.org>
 References: <20200715202821.12220-1-broonie@kernel.org>
@@ -49,140 +49,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the callback passed to arch_stack_walk() has an argument called
-reliable passed to it to indicate if the stack entry is reliable, a comment
-says that this is used by some printk() consumers. However in the current
-kernel none of the arch_stack_walk() implementations ever set this flag to
-true and the only callback implementation we have is in the generic
-stacktrace code which ignores the flag. It therefore appears that this
-flag is redundant so we can simplify and clarify things by removing it.
+As with the generic arch_stack_walk() code the arm64 stack walk code takes
+a callback that is called per stack frame. Currently the arm64 code always
+passes a struct stackframe to the callback and the generic code just passes
+the pc, however none of the users ever reference anything in the struct
+other than the pc value. The arm64 code also uses a return type of int
+while the generic code uses a return type of bool though in both cases the
+return value is a boolean value.
+
+In order to reduce code duplication when arm64 is converted to use
+arch_stack_walk() change the signature of the arm64 specific callback to
+match that of the generic code.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/s390/kernel/stacktrace.c |  4 ++--
- arch/x86/kernel/stacktrace.c  | 10 +++++-----
- include/linux/stacktrace.h    |  5 +----
- kernel/stacktrace.c           |  8 +++-----
- 4 files changed, 11 insertions(+), 16 deletions(-)
+ arch/arm64/include/asm/stacktrace.h |  2 +-
+ arch/arm64/kernel/perf_callchain.c  |  6 +++---
+ arch/arm64/kernel/return_address.c  |  8 ++++----
+ arch/arm64/kernel/stacktrace.c      | 11 +++++------
+ 4 files changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/arch/s390/kernel/stacktrace.c b/arch/s390/kernel/stacktrace.c
-index fc5419ac64c8..7f1266c24f6b 100644
---- a/arch/s390/kernel/stacktrace.c
-+++ b/arch/s390/kernel/stacktrace.c
-@@ -19,7 +19,7 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
+index fc7613023c19..eb29b1fe8255 100644
+--- a/arch/arm64/include/asm/stacktrace.h
++++ b/arch/arm64/include/asm/stacktrace.h
+@@ -63,7 +63,7 @@ struct stackframe {
  
- 	unwind_for_each_frame(&state, task, regs, 0) {
- 		addr = unwind_get_return_address(&state);
--		if (!addr || !consume_entry(cookie, addr, false))
-+		if (!addr || !consume_entry(cookie, addr))
- 			break;
- 	}
- }
-@@ -56,7 +56,7 @@ int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
- 			return -EINVAL;
- #endif
+ extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
+ extern void walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+-			    int (*fn)(struct stackframe *, void *), void *data);
++			    bool (*fn)(void *, unsigned long), void *data);
+ extern void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+ 			   const char *loglvl);
  
--		if (!consume_entry(cookie, addr, false))
-+		if (!consume_entry(cookie, addr))
- 			return -EINVAL;
- 	}
- 
-diff --git a/arch/x86/kernel/stacktrace.c b/arch/x86/kernel/stacktrace.c
-index 6ad43fc44556..5c30999fc705 100644
---- a/arch/x86/kernel/stacktrace.c
-+++ b/arch/x86/kernel/stacktrace.c
-@@ -18,13 +18,13 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- 	struct unwind_state state;
- 	unsigned long addr;
- 
--	if (regs && !consume_entry(cookie, regs->ip, false))
-+	if (regs && !consume_entry(cookie, regs->ip))
- 		return;
- 
- 	for (unwind_start(&state, task, regs, NULL); !unwind_done(&state);
- 	     unwind_next_frame(&state)) {
- 		addr = unwind_get_return_address(&state);
--		if (!addr || !consume_entry(cookie, addr, false))
-+		if (!addr || !consume_entry(cookie, addr))
- 			break;
- 	}
- }
-@@ -73,7 +73,7 @@ int arch_stack_walk_reliable(stack_trace_consume_fn consume_entry,
- 		if (!addr)
- 			return -EINVAL;
- 
--		if (!consume_entry(cookie, addr, false))
-+		if (!consume_entry(cookie, addr))
- 			return -EINVAL;
- 	}
- 
-@@ -119,7 +119,7 @@ void arch_stack_walk_user(stack_trace_consume_fn consume_entry, void *cookie,
- {
- 	const void __user *fp = (const void __user *)regs->bp;
- 
--	if (!consume_entry(cookie, regs->ip, false))
-+	if (!consume_entry(cookie, regs->ip))
- 		return;
- 
- 	while (1) {
-@@ -133,7 +133,7 @@ void arch_stack_walk_user(stack_trace_consume_fn consume_entry, void *cookie,
- 			break;
- 		if (!frame.ret_addr)
- 			break;
--		if (!consume_entry(cookie, frame.ret_addr, false))
-+		if (!consume_entry(cookie, frame.ret_addr))
- 			break;
- 		fp = frame.next_fp;
- 	}
-diff --git a/include/linux/stacktrace.h b/include/linux/stacktrace.h
-index b7af8cc13eda..50e2df30b0aa 100644
---- a/include/linux/stacktrace.h
-+++ b/include/linux/stacktrace.h
-@@ -29,14 +29,11 @@ unsigned int stack_trace_save_user(unsigned long *store, unsigned int size);
-  * stack_trace_consume_fn - Callback for arch_stack_walk()
-  * @cookie:	Caller supplied pointer handed back by arch_stack_walk()
-  * @addr:	The stack entry address to consume
-- * @reliable:	True when the stack entry is reliable. Required by
-- *		some printk based consumers.
-  *
-  * Return:	True, if the entry was consumed or skipped
-  *		False, if there is no space left to store
+diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
+index b0e03e052dd1..bd2a91bd9e9e 100644
+--- a/arch/arm64/kernel/perf_callchain.c
++++ b/arch/arm64/kernel/perf_callchain.c
+@@ -137,11 +137,11 @@ void perf_callchain_user(struct perf_callchain_entry_ctx *entry,
+  * whist unwinding the stackframe and is like a subroutine return so we use
+  * the PC.
   */
--typedef bool (*stack_trace_consume_fn)(void *cookie, unsigned long addr,
--				       bool reliable);
-+typedef bool (*stack_trace_consume_fn)(void *cookie, unsigned long addr);
- /**
-  * arch_stack_walk - Architecture specific function to walk the stack
-  * @consume_entry:	Callback which is invoked by the architecture code for
-diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
-index 946f44a9e86a..9f8117c7cfdd 100644
---- a/kernel/stacktrace.c
-+++ b/kernel/stacktrace.c
-@@ -78,8 +78,7 @@ struct stacktrace_cookie {
- 	unsigned int	len;
+-static int callchain_trace(struct stackframe *frame, void *data)
++static bool callchain_trace(void *data, unsigned long pc)
+ {
+ 	struct perf_callchain_entry_ctx *entry = data;
+-	perf_callchain_store(entry, frame->pc);
+-	return 0;
++	perf_callchain_store(entry, pc);
++	return false;
+ }
+ 
+ void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry,
+diff --git a/arch/arm64/kernel/return_address.c b/arch/arm64/kernel/return_address.c
+index a5e8b3b9d798..6434427a827a 100644
+--- a/arch/arm64/kernel/return_address.c
++++ b/arch/arm64/kernel/return_address.c
+@@ -18,16 +18,16 @@ struct return_address_data {
+ 	void *addr;
  };
  
--static bool stack_trace_consume_entry(void *cookie, unsigned long addr,
--				      bool reliable)
-+static bool stack_trace_consume_entry(void *cookie, unsigned long addr)
+-static int save_return_addr(struct stackframe *frame, void *d)
++static bool save_return_addr(void *d, unsigned long pc)
  {
- 	struct stacktrace_cookie *c = cookie;
+ 	struct return_address_data *data = d;
  
-@@ -94,12 +93,11 @@ static bool stack_trace_consume_entry(void *cookie, unsigned long addr,
- 	return c->len < c->size;
+ 	if (!data->level) {
+-		data->addr = (void *)frame->pc;
+-		return 1;
++		data->addr = (void *)pc;
++		return true;
+ 	} else {
+ 		--data->level;
+-		return 0;
++		return false;
+ 	}
  }
+ NOKPROBE_SYMBOL(save_return_addr);
+diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+index 2dd8e3b8b94b..743cf11fbfca 100644
+--- a/arch/arm64/kernel/stacktrace.c
++++ b/arch/arm64/kernel/stacktrace.c
+@@ -118,12 +118,12 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+ NOKPROBE_SYMBOL(unwind_frame);
  
--static bool stack_trace_consume_entry_nosched(void *cookie, unsigned long addr,
--					      bool reliable)
-+static bool stack_trace_consume_entry_nosched(void *cookie, unsigned long addr)
+ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+-		     int (*fn)(struct stackframe *, void *), void *data)
++			     bool (*fn)(void *, unsigned long), void *data)
  {
- 	if (in_sched_functions(addr))
- 		return true;
--	return stack_trace_consume_entry(cookie, addr, reliable);
-+	return stack_trace_consume_entry(cookie, addr);
- }
+ 	while (1) {
+ 		int ret;
  
- /**
+-		if (fn(frame, data))
++		if (fn(data, frame->pc))
+ 			break;
+ 		ret = unwind_frame(tsk, frame);
+ 		if (ret < 0)
+@@ -139,17 +139,16 @@ struct stack_trace_data {
+ 	unsigned int skip;
+ };
+ 
+-static int save_trace(struct stackframe *frame, void *d)
++static bool save_trace(void *d, unsigned long addr)
+ {
+ 	struct stack_trace_data *data = d;
+ 	struct stack_trace *trace = data->trace;
+-	unsigned long addr = frame->pc;
+ 
+ 	if (data->no_sched_functions && in_sched_functions(addr))
+-		return 0;
++		return false;
+ 	if (data->skip) {
+ 		data->skip--;
+-		return 0;
++		return false;
+ 	}
+ 
+ 	trace->entries[trace->nr_entries++] = addr;
 -- 
 2.20.1
 
