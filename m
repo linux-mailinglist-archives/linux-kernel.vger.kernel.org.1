@@ -2,101 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695B822056F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B934D22056D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728885AbgGOGv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 02:51:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725924AbgGOGv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 02:51:26 -0400
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 574D32067D;
-        Wed, 15 Jul 2020 06:51:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594795885;
-        bh=5DttlarQkKvK74ioG6I0+VxDllg5IuyUP93tfyKyKgQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ng5t2TWJzvvsKlj8vhgNYrko2Y/LBVPSqVGt6VfuP/VXJ7kMpneB2xAI4nINZLpni
-         yvIwA6yaxpVwOtzCVOBJThcMsykaZjhWnPvYCjF5SL3kSv294DMupYqxVwiZL2LL3J
-         YOCbJDzS5uoJN1EmKaoSXNbV7qWobORB+Otw6uUs=
-Received: by mail-ot1-f52.google.com with SMTP id 72so676849otc.3;
-        Tue, 14 Jul 2020 23:51:25 -0700 (PDT)
-X-Gm-Message-State: AOAM531m8UphKIayCokYP4DDUt4ccuU1249SGBxc4p5XDdaToAQiwOEb
-        fnvz/cxkj6yD+c+Yrc4Bwj9+EKpOq3+CjJ5gWQM=
-X-Google-Smtp-Source: ABdhPJyOUv8yAnl6wxEUDJ3G0ggCymhEObpRdn/b7PFU4YR6YIR4dFTpLKjM9DtkyVqwv4c8oWhWQAbWJrxM6qgMY9U=
-X-Received: by 2002:a9d:7553:: with SMTP id b19mr7955857otl.77.1594795884664;
- Tue, 14 Jul 2020 23:51:24 -0700 (PDT)
+        id S1728708AbgGOGvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 02:51:21 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:40226 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725924AbgGOGvU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 02:51:20 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06F6FpUX024368;
+        Wed, 15 Jul 2020 08:51:16 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=vbuvzM4B1pzYFNQAdA/xW0KuMdcMV+YHFNrF1pRM0Ao=;
+ b=1FdLCpqARMTs+AHaN4/DCuR7Lx+oGxPz/ohUXhAcMQB6ROpr2iG6wpQTmHtwqe3pwH8b
+ qf+X8nh6NFFNMBxhv09fRdBKYnVkSf9FVCUT6PTIzRVN2nKUJpfR9reXXDkttml6C73C
+ o7qTigMTDaplbFrTpWG42fBYl49TvS60IBDEKG/Lf8muLmGeLR6uL3z2HUZ5PJLX23t/
+ 3j594oHhZ85fO1a147T4sBjLxApedV1C59s2XCGGUazbLxvxob2gxIxvHWtwu3d2gmWw
+ 60AwtahQE+HS/2NAS0cFR6dS7/gBgaby+xSAZBD/esQk8m/ILbDjMlEHMn6zG9/hOnz6 1w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 327bkvbedu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Jul 2020 08:51:16 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9A17610002A;
+        Wed, 15 Jul 2020 08:51:15 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag7node1.st.com [10.75.127.19])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 89C3521CA7F;
+        Wed, 15 Jul 2020 08:51:15 +0200 (CEST)
+Received: from SFHDAG3NODE1.st.com (10.75.127.7) by SFHDAG7NODE1.st.com
+ (10.75.127.19) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Jul
+ 2020 08:51:14 +0200
+Received: from SFHDAG3NODE1.st.com ([fe80::1166:1abb:aad4:5f86]) by
+ SFHDAG3NODE1.st.com ([fe80::1166:1abb:aad4:5f86%20]) with mapi id
+ 15.00.1473.003; Wed, 15 Jul 2020 08:51:14 +0200
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        Loic PALLARDY <loic.pallardy@st.com>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: RE: [PATCH v6 00/11] remoteproc: stm32: Add support for attaching to
+ M4
+Thread-Topic: [PATCH v6 00/11] remoteproc: stm32: Add support for attaching to
+ M4
+Thread-Index: AQHWWhoHKFc9kYSe9EGYwzCL4AzvBqkIMyOA
+Date:   Wed, 15 Jul 2020 06:51:14 +0000
+Message-ID: <1cde5c1d5d9047149c93e031c5093492@SFHDAG3NODE1.st.com>
+References: <20200714200445.1427257-1-mathieu.poirier@linaro.org>
+In-Reply-To: <20200714200445.1427257-1-mathieu.poirier@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.48]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200715032631.1562882-1-nivedita@alum.mit.edu>
-In-Reply-To: <20200715032631.1562882-1-nivedita@alum.mit.edu>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 15 Jul 2020 09:51:12 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXHzZAqHbqgJnrTjxtRvcVkpZan3LC6khFEucdR=cUhYfg@mail.gmail.com>
-Message-ID: <CAMj1kXHzZAqHbqgJnrTjxtRvcVkpZan3LC6khFEucdR=cUhYfg@mail.gmail.com>
-Subject: Re: [PATCH] arch/x86/boot: Don't add the EFI stub to targets
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     X86 ML <x86@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-15_02:2020-07-15,2020-07-15 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Jul 2020 at 06:26, Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> vmlinux-objs-y is added to targets, which currently means that the EFI
-> stub gets added to the targets as well. It shouldn't be added since it
-> is built elsewhere.
->
-> This confuses Makefile.build which interprets the EFI stub as a target
->         $(obj)/$(objtree)/drivers/firmware/efi/libstub/lib.a
-> and will create drivers/firmware/efi/libstub/ underneath
-> arch/x86/boot/compressed, to hold this supposed target, if building
-> out-of-tree. [0]
->
-> Fix this by pulling the stub out of vmlinux-objs-y into efi-obj-y.
->
-> [0] See scripts/Makefile.build near the end:
->     # Create directories for object files if they do not exist
->
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Hi Mathieu
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+> -----Original Message-----
+> From: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Sent: mardi 14 juillet 2020 22:05
+> To: ohad@wizery.com; bjorn.andersson@linaro.org; Loic PALLARDY
+> <loic.pallardy@st.com>; Arnaud POULIQUEN <arnaud.pouliquen@st.com>;
+> mcoquelin.stm32@gmail.com; Alexandre TORGUE
+> <alexandre.torgue@st.com>
+> Cc: linux-remoteproc@vger.kernel.org; linux-kernel@vger.kernel.org; linux=
+-
+> stm32@st-md-mailman.stormreply.com
+> Subject: [PATCH v6 00/11] remoteproc: stm32: Add support for attaching to
+> M4
+>=20
+> This set applies on top of [1] and refactors the STM32 platform code in o=
+rder
+> to attach to the M4 remote processor when it has been started by the boot
+> loader.
+>=20
+> New to V6:
+> 1) Removed extra newline in patch 06.
+> 2) Re-worked title and changelog of patch 08 to better reflect
+>    what is done by the patch.
+>=20
+> Tested on ST's mp157c development board.
 
-> ---
->  arch/x86/boot/compressed/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-> index 7619742f91c9..5a828fde7a42 100644
-> --- a/arch/x86/boot/compressed/Makefile
-> +++ b/arch/x86/boot/compressed/Makefile
-> @@ -90,8 +90,8 @@ endif
->
->  vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
->
-> -vmlinux-objs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
->  vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
-> +efi-obj-$(CONFIG_EFI_STUB) = $(objtree)/drivers/firmware/efi/libstub/lib.a
->
->  # The compressed kernel is built with -fPIC/-fPIE so that a boot loader
->  # can place it anywhere in memory and it will still run. However, since
-> @@ -115,7 +115,7 @@ endef
->  quiet_cmd_check-and-link-vmlinux = LD      $@
->        cmd_check-and-link-vmlinux = $(cmd_check_data_rel); $(cmd_ld)
->
-> -$(obj)/vmlinux: $(vmlinux-objs-y) FORCE
-> +$(obj)/vmlinux: $(vmlinux-objs-y) $(efi-obj-y) FORCE
->         $(call if_changed,check-and-link-vmlinux)
->
->  OBJCOPYFLAGS_vmlinux.bin :=  -R .comment -S
+I don' t know if you don't see  it on last  version or if you prefer that I=
+ review your update first... so for the series
+
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+
+Thanks,
+Arnaud
+
+>=20
+> Thanks,
+> Mathieu
+>=20
+> [1].https://patchwork.kernel.org/project/linux-
+> remoteproc/list/?series=3D318275
+>=20
+> Mathieu Poirier (11):
+>   remoteproc: stm32: Decouple rproc from memory translation
+>   remoteproc: stm32: Request IRQ with platform device
+>   remoteproc: stm32: Decouple rproc from DT parsing
+>   remoteproc: stm32: Remove memory translation from DT parsing
+>   remoteproc: stm32: Parse syscon that will manage M4 synchronisation
+>   remoteproc: stm32: Properly set co-processor state when attaching
+>   remoteproc: Make function rproc_resource_cleanup() public
+>   remoteproc: stm32: Parse memory regions when attaching to M4
+>   remoteproc: stm32: Properly handle the resource table when attaching
+>   remoteproc: stm32: Introduce new attach() operation
+>   remoteproc: stm32: Update M4 state in stm32_rproc_stop()
+>=20
+>  drivers/remoteproc/remoteproc_core.c |   3 +-
+>  drivers/remoteproc/stm32_rproc.c     | 214 ++++++++++++++++++++++++--
+> -
+>  include/linux/remoteproc.h           |   1 +
+>  3 files changed, 198 insertions(+), 20 deletions(-)
+>=20
 > --
-> 2.26.2
->
+> 2.25.1
+
