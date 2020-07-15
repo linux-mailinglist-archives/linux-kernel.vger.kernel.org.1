@@ -2,279 +2,648 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB3A220148
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 02:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1DE220141
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 02:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbgGOARF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 20:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgGOARF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 20:17:05 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A3BC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:17:04 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id j80so267510qke.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Oq76v+RUv94wSS69Fqfqev4VRzCgB2IyBU1P7nBVtig=;
-        b=m0ut99R/8dD81hmur6pMC9ru6Vq9dtQamQKgmoqoLYTEfqFFkOIiJyqL/d7oWzxxID
-         5JAvEZqNqyR8qSP6voCyTFwScD757h15qUjPPyMX4wDRYllrp1sLj3vKklZcfQ6DQv3F
-         vlWq+SGYaBMgcYUpXfuv5WZ6qchx31F5olne0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Oq76v+RUv94wSS69Fqfqev4VRzCgB2IyBU1P7nBVtig=;
-        b=TUzbUztQoynWpP1x17n4/SHIqJeZoU7Ipu0hHaXs22EYJy/8cRlYdG4V6j89q3wM8I
-         JfLDwSfogHj/S1gHSPbrjmtH8B6VWpy6lpmYFbqL5VDIRSR06IAOKp5I85KgsEg9SMsQ
-         2c8KWuy9EW5+DFk0uoO48SfLxZoecoO3rSMQxlJHx7tJrPvD20LUu9f4NZu3+LcF9HrA
-         DvwNjIWf60/a9vKw1YVHf3QYaE+Y6xdDY40z9LLrEX4OqbCFgv5wE/EwIXS4SMiXhdAy
-         PHOoXKUocbzwqCeI+qMRA8Af3MAnpjgXJDbGe9T+XSf8gUw9FzbCRThSBABWXpEgmVK/
-         1+bg==
-X-Gm-Message-State: AOAM532EHxjHvblLm1s141Ok40s+Dcj9P6dPxj645ztsOiAF8G+VwJsh
-        SpleIDxzGfffA/Xoq250XNr8IVnBlX0=
-X-Google-Smtp-Source: ABdhPJzn3HNRyDSDtv9z8EOmCSoVdLSyu3k5MAVLVj1wkIiyL46IuDUUoVrE3Qw/LfCkGGH8tXltrw==
-X-Received: by 2002:a05:620a:1598:: with SMTP id d24mr6934229qkk.295.1594772223689;
-        Tue, 14 Jul 2020 17:17:03 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id l1sm865384qtk.18.2020.07.14.17.17.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Jul 2020 17:17:03 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id c14so303986ybj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:17:03 -0700 (PDT)
-X-Received: by 2002:ab0:486d:: with SMTP id c42mr5460752uad.64.1594771725929;
- Tue, 14 Jul 2020 17:08:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <1592818308-23001-1-git-send-email-mkshah@codeaurora.org>
- <1592818308-23001-2-git-send-email-mkshah@codeaurora.org> <CAD=FV=WcbEH2O+7xqCyDfrPR0+g+MpWWsgORNPepC=VrhOanFQ@mail.gmail.com>
- <723acb53-364a-9045-8dbd-fa2a270798a6@codeaurora.org>
-In-Reply-To: <723acb53-364a-9045-8dbd-fa2a270798a6@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 14 Jul 2020 17:08:34 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WqeCbAgM+7_+trHYgeYFN3XnNdBcMy4N34N_8m9QFr9w@mail.gmail.com>
-Message-ID: <CAD=FV=WqeCbAgM+7_+trHYgeYFN3XnNdBcMy4N34N_8m9QFr9w@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] pinctrl: qcom: Remove irq_disable callback from
- msmgpio irqchip
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        LinusW <linus.walleij@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Evan Green <evgreen@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
+        id S1727926AbgGOAJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 20:09:41 -0400
+Received: from mx1.riseup.net ([198.252.153.129]:56290 "EHLO mx1.riseup.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726450AbgGOAJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 20:09:41 -0400
+Received: from capuchin.riseup.net (capuchin-pn.riseup.net [10.0.1.176])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
+        by mx1.riseup.net (Postfix) with ESMTPS id 4B5yS41CzNzFccC;
+        Tue, 14 Jul 2020 17:09:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1594771780; bh=Ad5qlOqnmimrNbAC4ZME4HG7yQpdX8yK593nHQsZmmQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=o5Xfxk2cMSN3DCGJZcyfTaLyyKtgbe+HsWgbW9XYTDf2idWXYFyIONCHoIQ4F1Cy9
+         eMB5K/N7N/EkeFjotkH6SA3w1TTOX8yy+Zn3bhRnn9ibbprTlLxX+sp1tivRlhybIn
+         Sx/efcnXT9UfW+54hDNaaBUCmAQxo6WKqM4IUEvI=
+X-Riseup-User-ID: E6178C2038C11DF7FD051B4B29915B39E4249CB275ACF2B1623D68C4225D3A25
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by capuchin.riseup.net (Postfix) with ESMTPSA id 4B5yS341n4z8tqN;
+        Tue, 14 Jul 2020 17:09:39 -0700 (PDT)
+From:   Francisco Jerez <currojerez@riseup.net>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     Linux Documentation <linux-doc@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Srinivas Rao L <lsrao@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Doug Smythies <dsmythies@telus.net>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Implement passive mode with HWP enabled
+In-Reply-To: <3955470.QvD6XneCf3@kreacher>
+References: <3955470.QvD6XneCf3@kreacher>
+Date:   Tue, 14 Jul 2020 17:09:33 -0700
+Message-ID: <87r1tdiqpu.fsf@riseup.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="==-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--==-=-=
+Content-Type: multipart/mixed; boundary="=-=-="
 
-On Tue, Jul 14, 2020 at 3:38 AM Maulik Shah <mkshah@codeaurora.org> wrote:
->
-> Hi,
->
-> On 7/14/2020 3:47 AM, Doug Anderson wrote:
->
-> Hi,
->
-> On Mon, Jun 22, 2020 at 2:32 AM Maulik Shah <mkshah@codeaurora.org> wrote:
->
-> > > The gpio can be marked for wakeup and drivers can invoke disable_irq()
-> > > during suspend, in such cases unlazy approach will also disable at HW
-> > > and such gpios will not wakeup device from suspend to RAM.
-> > >
-> > > Remove irq_disable callback to allow gpio interrupts to lazy disabled.
-> > > The gpio interrupts will get disabled during irq_mask callback.
-> > >
-> > > Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> > > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> > > ---
-> > >  drivers/pinctrl/qcom/pinctrl-msm.c | 13 -------------
-> > >  1 file changed, 13 deletions(-)
-> >
-> > While the code of this patch looks fairly correct to me (there's no
-> > need to implement the irq_disable callback and we can just rely on the
-> > masking), I'm slightly anxious about the description.  It almost feels
-> > like you're somehow relying on the laziness to "fix" your issue here.
->
-> i don't think thats the case here. As i have mentioned in previous discussions, reiterating here..
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I hadn't followed all the previous discussions, but generally if two
-people are independently confused by the same thing it's a sign that
-it needs to be explained better.  In this case that means a better
-commit message that explains exactly why this isn't a problem.
+"Rafael J. Wysocki" <rjw@rjwysocki.net> writes:
 
-
-> During suspend there is no way IRQ will be enabled/unmasked in HW even if its marked for wakeup.
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 >
-> All kernel does during suspend is if an IRQ is not marked for wakeup (did not invoke enable_irq_wake())
-> then during suspend those IRQs will get disabled/masked in HW to prevent them waking up.
+> Allow intel_pstate to work in the passive mode with HWP enabled and
+> make it set the HWP minimum performance limit (HWP floor) to the
+> P-state value given by the target frequency supplied by the cpufreq
+> governor, so as to prevent the HWP algorithm and the CPU scheduler
+> from working against each other, at least when the schedutil governor
+> is in use, and update the intel_pstate documentation accordingly.
 >
-> Note that kernel don't do anything for the IRQs that are marked for wakeup. those IRQs are left in its original state.
-> by original state, i mean if the IRQ was enabled/unmasked in HW, it will stay as is, if its disabled/masked it will stay same.
-> suspend process won't change the state of those IRQs.
+> Among other things, this allows utilization clamps to be taken
+> into account, at least to a certain extent, when intel_pstate is
+> in use and makes it more likely that sufficient capacity for
+> deadline tasks will be provided.
 >
-> Lets take two cases of lazy and unlazy disable/mask.
+> After this change, the resulting behavior of an HWP system with
+> intel_pstate in the passive mode should be close to the behavior
+> of the analogous non-HWP system with intel_pstate in the passive
+> mode, except that in the frequency range below the base frequency
+> (ie. the frequency retured by the base_frequency cpufreq attribute
+> in sysfs on HWP systems) the HWP algorithm is allowed to go above
+> the floor P-state set by intel_pstate with or without hardware
+> coordination of P-states among CPUs in the same package.
 >
-> case-1)
+> Also note that the setting of the HWP floor may not be taken into
+> account by the processor in the following cases:
 >
-> if the irq_chip implements .irq_disable callback, genirq by default takes unlazy path (immediatly disabled in SW + HW).
-> if device enters suspend after client driver calls disable_irq(), there is no way to wakeup with such IRQs, even though
-> driver choosen to mark it for wakeup. As i told above, kernel leaves such IRQ in its original state (disabled in SW + HW here)
-> This is the problem case where we started with.
+>  * For the HWP floor in the range of P-states above the base
+>    frequency, referred to as the turbo range, the processor has a
+>    license to choose any P-state from that range, either below or
+>    above the HWP floor, just like a non-HWP processor in the case
+>    when the target P-state falls into the turbo range.
 >
-> case -2)
+>  * If P-states of the CPUs in the same package are coordinated
+>    at the hardware level, the processor may choose a P-state
+>    above the HWP floor, just like a non-HWP processor in the
+>    analogous case.
 >
-> If the irq_chip did not implements .irq_disable callback, genirq takes lazy disable path and only marks IRQ disabled in SW.
-> It is still left enabled in HW. This is what current series is implemented for.
-
-OK, I think I understand what you're trying to say.  What you're
-saying is that the important thing is that when you're using the
-kernel's "lazy" mode that the kernel will have knowledge of whether a
-disabled IRQ is pending.  That's because the IRQ fired once (and the
-kernel set IRQS_PENDING) before it got masked.  If we're using a
-non-lazy case then the IRQ could be pending but the kernel wouldn't
-know.
-
-If that's what you're relying on for this patch to work then it
-belongs in the commit message.
-
-...but (see below) I don't think it's working like you think it does.
-
-
-> > ...but the laziness is supposed to just be an optimization.
-> > Specifically if an interrupt happens to fire at any point in time
-> > after a driver has called disable_irq() then it acts just like a
-> > non-lazy disable.
-> >
-> > Said another way, I think this is a valid thing for a driver to do and
-> > it should get woken up if the irq fires in suspend:
-> >
-> > disable_irq();
-> > msleep(1000);
-> > enable_irq_wake()
-> >
-> > Specifically if an IRQ comes in during that sleep then it will be just
-> > like you had a non-lazy IRQ.
+> With this change applied, intel_pstate in the passive mode
+> assumes complete control over the HWP request MSR and concurrent
+> changes of that MSR (eg. via the direct MSR access interface) are
+> overridden by it.
 >
-> i don't think, Let me take your example...driver calls below during suspend
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
 >
+> This basically unifies the passive mode behavior of intel_pstate for syst=
+ems
+> with and without HWP enabled.  The only case in which there is a differen=
+ce
+> between the two (after this patch) is below the turbo range, where the HWP
+> algorithm can go above the floor regardless of whether or not P-state are
+> coordinated package-wide (this means the systems with per-core P-states
+> mostly is where the difference can be somewhat visible).
 >
-> 1. disable_irq();
-> 2. msleep(1000);
-> 3. enable_irq_wake();
+> Since the passive mode hasn't worked with HWP at all, and it is not going=
+ to
+> the default for HWP systems anyway, I don't see any drawbacks related to =
+making
+> this change, so I would consider this as 5.9 material unless there are any
+> serious objections.
 >
->     a) if the IRQ comes in before (1) No issue in this case, its just like during active time if any other IRQ gets handled.
+> Thanks!
 >
->     b) if IRQ comes anytime after (1) is over, but (3) is not done (i.e. during msleep())
+> ---
+>  Documentation/admin-guide/pm/intel_pstate.rst |   89 +++++++---------
+>  drivers/cpufreq/intel_pstate.c                |  141 +++++++++++++++++++=
++------
+>  2 files changed, 152 insertions(+), 78 deletions(-)
 >
->     - genirq will find that IRQ was disabled in SW,
->     - driver's IRQ handler will not get called since it was disabled in SW via (1).
->     - it will mark pending in SW and then really disables in HW now (lazy disable)
->     - next call is enable_irq_wake(), which will mark IRQ as wake up capable and also re-enable in HW from patch-4 of this series
->       in PDC driver's .irq_set_wake call...
->         if (on) {
->                 pdc_enable_intr(d, true);
->                 irq_chip_enable_parent(d);
->                 set_bit(d->hwirq, pdc_wake_irqs);
->         }
->         with this IRQ will be left enabled/unmasked in HW.
->     - device goes to suspend.
->     - since its enabled/unmasked in HW, it will be able to wake up with this IRQ since GIC will forward this IRQ to CPU to wake it up.
+> Index: linux-pm/drivers/cpufreq/intel_pstate.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-pm.orig/drivers/cpufreq/intel_pstate.c
+> +++ linux-pm/drivers/cpufreq/intel_pstate.c
+> @@ -36,6 +36,7 @@
+>  #define INTEL_PSTATE_SAMPLING_INTERVAL	(10 * NSEC_PER_MSEC)
+>=20=20
+>  #define INTEL_CPUFREQ_TRANSITION_LATENCY	20000
+> +#define INTEL_CPUFREQ_TRANSITION_DELAY_HWP	5000
+>  #define INTEL_CPUFREQ_TRANSITION_DELAY		500
+>=20=20
+>  #ifdef CONFIG_ACPI
+> @@ -222,6 +223,7 @@ struct global_params {
+>   *			preference/bias
+>   * @epp_saved:		Saved EPP/EPB during system suspend or CPU offline
+>   *			operation
+> + * @epp_cached		Cached HWP energy-performance preference value
+>   * @hwp_req_cached:	Cached value of the last HWP Request MSR
+>   * @hwp_cap_cached:	Cached value of the last HWP Capabilities MSR
+>   * @last_io_update:	Last time when IO wake flag was set
+> @@ -259,6 +261,7 @@ struct cpudata {
+>  	s16 epp_policy;
+>  	s16 epp_default;
+>  	s16 epp_saved;
+> +	s16 epp_cached;
+>  	u64 hwp_req_cached;
+>  	u64 hwp_cap_cached;
+>  	u64 last_io_update;
+> @@ -676,6 +679,8 @@ static int intel_pstate_set_energy_pref_
+>=20=20
+>  		value |=3D (u64)epp << 24;
+>  		ret =3D wrmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, value);
+> +
+> +		WRITE_ONCE(cpu_data->epp_cached, epp);
 
-...but what if it's an edge interrupt?  Then:
+Why introduce a new EPP cache variable if there is already
+hwp_req_cached?  If intel_pstate_set_energy_pref_index() is failing to
+update hwp_req_cached maybe we should fix that instead.  That will save
+you a little bit of work in intel_cpufreq_adjust_hwp().
 
-1. It will fire.
-2. It will get marked as IRQS_PENDING and Acked.
-3. It will get masked.
-4. Your code will unmask and wake up from future edges but the edge
-that already came in won't cause a wakeup, right?
+>  	} else {
+>  		if (epp =3D=3D -EINVAL)
+>  			epp =3D (pref_index - 1) << 2;
+> @@ -2047,6 +2052,7 @@ static int intel_pstate_init_cpu(unsigne
+>  		cpu->epp_default =3D -EINVAL;
+>  		cpu->epp_powersave =3D -EINVAL;
+>  		cpu->epp_saved =3D -EINVAL;
+> +		WRITE_ONCE(cpu->epp_cached, -EINVAL);
+>  	}
+>=20=20
+>  	cpu =3D all_cpu_data[cpunum];
+> @@ -2245,7 +2251,10 @@ static int intel_pstate_verify_policy(st
+>=20=20
+>  static void intel_cpufreq_stop_cpu(struct cpufreq_policy *policy)
+>  {
+> -	intel_pstate_set_min_pstate(all_cpu_data[policy->cpu]);
+> +	if (hwp_active)
+> +		intel_pstate_hwp_force_min_perf(policy->cpu);
+> +	else
+> +		intel_pstate_set_min_pstate(all_cpu_data[policy->cpu]);
+>  }
+>=20=20
+>  static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
+> @@ -2253,12 +2262,10 @@ static void intel_pstate_stop_cpu(struct
+>  	pr_debug("CPU %d exiting\n", policy->cpu);
+>=20=20
+>  	intel_pstate_clear_update_util_hook(policy->cpu);
+> -	if (hwp_active) {
+> +	if (hwp_active)
+>  		intel_pstate_hwp_save_state(policy);
+> -		intel_pstate_hwp_force_min_perf(policy->cpu);
+> -	} else {
+> -		intel_cpufreq_stop_cpu(policy);
+> -	}
+> +
+> +	intel_cpufreq_stop_cpu(policy);
+>  }
+>=20=20
+>  static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
+> @@ -2388,13 +2395,82 @@ static void intel_cpufreq_trace(struct c
+>  		fp_toint(cpu->iowait_boost * 100));
+>  }
+>=20=20
+> +static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pst=
+ate,
+> +				     bool fast_switch)
+> +{
+> +	u64 prev =3D READ_ONCE(cpu->hwp_req_cached), value =3D prev;
+> +	s16 epp;
+> +
+> +	value &=3D ~HWP_MIN_PERF(~0L);
+> +	value |=3D HWP_MIN_PERF(target_pstate);
+> +
+> +	/*
+> +	 * The entire MSR needs to be updated in order to update the HWP min
+> +	 * field in it, so opportunistically update the max too if needed.
+> +	 */
+> +	value &=3D ~HWP_MAX_PERF(~0L);
+> +	value |=3D HWP_MAX_PERF(cpu->max_perf_ratio);
+> +
+> +	/*
+> +	 * In case the EPP has been adjusted via sysfs, write the last cached
+> +	 * value of it to the MSR as well.
+> +	 */
+> +	epp =3D READ_ONCE(cpu->epp_cached);
+> +	if (epp >=3D 0) {
+> +		value &=3D ~GENMASK_ULL(31, 24);
+> +		value |=3D (u64)epp << 24;
+> +	}
+> +
+> +	if (value =3D=3D prev)
+> +		return;
+> +
+> +	WRITE_ONCE(cpu->hwp_req_cached, value);
+> +	if (fast_switch)
+> +		wrmsrl(MSR_HWP_REQUEST, value);
+> +	else
+> +		wrmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST, value);
+> +}
 
-Hrm, though I guess that's just a problem in general.  Probably
-suspend_device_irq() should check to see if an IRQ is pending?  In any
-case, at this point in time it's not a bug that is affecting me since
-(right now) cros_ec sets the wakeup _before_ disabling, but it
-probably should still be fixed.
+I've asked this question already but you may have missed it: Given that
+you are of the opinion that [1] should be implemented in schedutil
+instead with intel_pstate in HWP passive mode, what's your plan for
+exposing the HWP_MAX_PERF knob to the governor in addition to
+HWP_MIN_PERF, since the interface implemented here only allows the
+governor to provide a single frequency?
 
+[1] https://lwn.net/ml/linux-pm/20200428032258.2518-1-currojerez@riseup.net/
 
->     c) if IRQ comes in anytime after (3) is done,
->
->     - genirq will find that IRQ was disabled in SW
->     - driver's IRQ handler will not get called since it was disabled in SW via (1).
->     - it will mark pending in SW and then really disables in HW now (lazy disable)
->     - it will also notify suspend PM core about this event to abort the suspend since this IRQ was marked for wakeup.
+> +
+> +static void intel_cpufreq_adjust_perf_ctl(struct cpudata *cpu,
+> +					  u32 target_pstate, bool fast_switch)
+> +{
+> +	if (fast_switch)
+> +		wrmsrl(MSR_IA32_PERF_CTL,
+> +		       pstate_funcs.get_val(cpu, target_pstate));
+> +	else
+> +		wrmsrl_on_cpu(cpu->cpu, MSR_IA32_PERF_CTL,
+> +			      pstate_funcs.get_val(cpu, target_pstate));
+> +}
+> +
+> +static int intel_cpufreq_update_pstate(struct cpudata *cpu, int target_p=
+state,
+> +				       bool fast_switch)
+> +{
+> +	int old_pstate =3D cpu->pstate.current_pstate;
+> +
+> +	target_pstate =3D intel_pstate_prepare_request(cpu, target_pstate);
+> +	if (target_pstate !=3D old_pstate) {
+> +		cpu->pstate.current_pstate =3D target_pstate;
+> +		if (hwp_active)
+> +			intel_cpufreq_adjust_hwp(cpu, target_pstate,
+> +						 fast_switch);
+> +		else
+> +			intel_cpufreq_adjust_perf_ctl(cpu, target_pstate,
+> +						      fast_switch);
+> +	}
+> +
+> +	intel_cpufreq_trace(cpu, fast_switch ? INTEL_PSTATE_TRACE_FAST_SWITCH :
+> +			    INTEL_PSTATE_TRACE_TARGET, old_pstate);
+> +
+> +	return target_pstate;
+> +}
+> +
+>  static int intel_cpufreq_target(struct cpufreq_policy *policy,
+>  				unsigned int target_freq,
+>  				unsigned int relation)
+>  {
+>  	struct cpudata *cpu =3D all_cpu_data[policy->cpu];
+>  	struct cpufreq_freqs freqs;
+> -	int target_pstate, old_pstate;
+> +	int target_pstate;
+>=20=20
+>  	update_turbo_state();
+>=20=20
+> @@ -2402,6 +2478,7 @@ static int intel_cpufreq_target(struct c
+>  	freqs.new =3D target_freq;
+>=20=20
+>  	cpufreq_freq_transition_begin(policy, &freqs);
+> +
+>  	switch (relation) {
+>  	case CPUFREQ_RELATION_L:
+>  		target_pstate =3D DIV_ROUND_UP(freqs.new, cpu->pstate.scaling);
+> @@ -2413,15 +2490,11 @@ static int intel_cpufreq_target(struct c
+>  		target_pstate =3D DIV_ROUND_CLOSEST(freqs.new, cpu->pstate.scaling);
+>  		break;
+>  	}
+> -	target_pstate =3D intel_pstate_prepare_request(cpu, target_pstate);
+> -	old_pstate =3D cpu->pstate.current_pstate;
+> -	if (target_pstate !=3D cpu->pstate.current_pstate) {
+> -		cpu->pstate.current_pstate =3D target_pstate;
+> -		wrmsrl_on_cpu(policy->cpu, MSR_IA32_PERF_CTL,
+> -			      pstate_funcs.get_val(cpu, target_pstate));
+> -	}
+> +
+> +	target_pstate =3D intel_cpufreq_update_pstate(cpu, target_pstate, false=
+);
+> +
+>  	freqs.new =3D target_pstate * cpu->pstate.scaling;
+> -	intel_cpufreq_trace(cpu, INTEL_PSTATE_TRACE_TARGET, old_pstate);
+> +
+>  	cpufreq_freq_transition_end(policy, &freqs, false);
+>=20=20
+>  	return 0;
+> @@ -2431,15 +2504,14 @@ static unsigned int intel_cpufreq_fast_s
+>  					      unsigned int target_freq)
+>  {
+>  	struct cpudata *cpu =3D all_cpu_data[policy->cpu];
+> -	int target_pstate, old_pstate;
+> +	int target_pstate;
+>=20=20
+>  	update_turbo_state();
+>=20=20
+>  	target_pstate =3D DIV_ROUND_UP(target_freq, cpu->pstate.scaling);
+> -	target_pstate =3D intel_pstate_prepare_request(cpu, target_pstate);
+> -	old_pstate =3D cpu->pstate.current_pstate;
+> -	intel_pstate_update_pstate(cpu, target_pstate);
+> -	intel_cpufreq_trace(cpu, INTEL_PSTATE_TRACE_FAST_SWITCH, old_pstate);
+> +
+> +	target_pstate =3D intel_cpufreq_update_pstate(cpu, target_pstate, true);
+> +
+>  	return target_pstate * cpu->pstate.scaling;
+>  }
+>=20=20
+> @@ -2459,7 +2531,6 @@ static int intel_cpufreq_cpu_init(struct
+>  		return ret;
+>=20=20
+>  	policy->cpuinfo.transition_latency =3D INTEL_CPUFREQ_TRANSITION_LATENCY;
+> -	policy->transition_delay_us =3D INTEL_CPUFREQ_TRANSITION_DELAY;
+>  	/* This reflects the intel_pstate_get_cpu_pstates() setting. */
+>  	policy->cur =3D policy->cpuinfo.min_freq;
+>=20=20
+> @@ -2471,10 +2542,17 @@ static int intel_cpufreq_cpu_init(struct
+>=20=20
+>  	cpu =3D all_cpu_data[policy->cpu];
+>=20=20
+> -	if (hwp_active)
+> +	if (hwp_active) {
+> +		u64 value;
+> +
+>  		intel_pstate_get_hwp_max(policy->cpu, &turbo_max, &max_state);
+> -	else
+> +		policy->transition_delay_us =3D INTEL_CPUFREQ_TRANSITION_DELAY_HWP;
+> +		rdmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST, &value);
+> +		WRITE_ONCE(cpu->hwp_req_cached, value);
+> +	} else {
+>  		turbo_max =3D cpu->pstate.turbo_pstate;
+> +		policy->transition_delay_us =3D INTEL_CPUFREQ_TRANSITION_DELAY;
+> +	}
+>=20=20
+>  	min_freq =3D DIV_ROUND_UP(turbo_max * global.min_perf_pct, 100);
+>  	min_freq *=3D cpu->pstate.scaling;
+> @@ -2575,9 +2653,6 @@ static int intel_pstate_register_driver(
+>=20=20
+>  static int intel_pstate_unregister_driver(void)
+>  {
+> -	if (hwp_active)
+> -		return -EBUSY;
+> -
+>  	cpufreq_unregister_driver(intel_pstate_driver);
+>  	intel_pstate_driver_cleanup();
+>=20=20
+> @@ -2828,7 +2903,10 @@ static int __init intel_pstate_init(void
+>  			hwp_active++;
+>  			hwp_mode_bdw =3D id->driver_data;
+>  			intel_pstate.attr =3D hwp_cpufreq_attrs;
+> -			default_driver =3D &intel_pstate;
+> +			intel_cpufreq.attr =3D hwp_cpufreq_attrs;
+> +			if (!default_driver)
+> +				default_driver =3D &intel_pstate;
+> +
+>  			goto hwp_cpu_matched;
+>  		}
+>  	} else {
+> @@ -2899,14 +2977,13 @@ static int __init intel_pstate_setup(cha
+>  	if (!str)
+>  		return -EINVAL;
+>=20=20
+> -	if (!strcmp(str, "disable")) {
+> +	if (!strcmp(str, "disable"))
+>  		no_load =3D 1;
+> -	} else if (!strcmp(str, "active")) {
+> +	else if (!strcmp(str, "active"))
+>  		default_driver =3D &intel_pstate;
+> -	} else if (!strcmp(str, "passive")) {
+> +	else if (!strcmp(str, "passive"))
+>  		default_driver =3D &intel_cpufreq;
+> -		no_hwp =3D 1;
+> -	}
+> +
+>  	if (!strcmp(str, "no_hwp")) {
+>  		pr_info("HWP disabled\n");
+>  		no_hwp =3D 1;
+> Index: linux-pm/Documentation/admin-guide/pm/intel_pstate.rst
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-pm.orig/Documentation/admin-guide/pm/intel_pstate.rst
+> +++ linux-pm/Documentation/admin-guide/pm/intel_pstate.rst
+> @@ -54,10 +54,13 @@ registered (see `below <status_attr_>`_)
+>  Operation Modes
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20=20
+> -``intel_pstate`` can operate in three different modes: in the active mod=
+e with
+> -or without hardware-managed P-states support and in the passive mode.  W=
+hich of
+> -them will be in effect depends on what kernel command line options are u=
+sed and
+> -on the capabilities of the processor.
+> +``intel_pstate`` can operate in two different modes, active or passive. =
+ In the
+> +active mode, it uses its own internal preformance scaling governor algor=
+ithm or
+> +allows the hardware to do preformance scaling by itself, while in the pa=
+ssive
+> +mode it responds to requests made by a generic ``CPUFreq`` governor impl=
+ementing
+> +a certain performance scaling algorithm.  Which of them will be in effect
+> +depends on what kernel command line options are used and on the capabili=
+ties of
+> +the processor.
+>=20=20
+>  Active Mode
+>  -----------
+> @@ -194,10 +197,11 @@ This is the default operation mode of ``
+>  hardware-managed P-states (HWP) support.  It is always used if the
+>  ``intel_pstate=3Dpassive`` argument is passed to the kernel in the comma=
+nd line
+>  regardless of whether or not the given processor supports HWP.  [Note th=
+at the
+> -``intel_pstate=3Dno_hwp`` setting implies ``intel_pstate=3Dpassive`` if =
+it is used
+> -without ``intel_pstate=3Dactive``.]  Like in the active mode without HWP=
+ support,
+> -in this mode ``intel_pstate`` may refuse to work with processors that ar=
+e not
+> -recognized by it.
+> +``intel_pstate=3Dno_hwp`` setting causes the driver to start in the pass=
+ive mode
+> +if it is not combined with ``intel_pstate=3Dactive``.]  Like in the acti=
+ve mode
+> +without HWP support, in this mode ``intel_pstate`` may refuse to work wi=
+th
+> +processors that are not recognized by it if HWP is prevented from being =
+enabled
+> +through the kernel command line.
+>=20=20
+>  If the driver works in this mode, the ``scaling_driver`` policy attribut=
+e in
+>  ``sysfs`` for all ``CPUFreq`` policies contains the string "intel_cpufre=
+q".
+> @@ -318,10 +322,9 @@ manuals need to be consulted to get to i
+>=20=20
+>  For this reason, there is a list of supported processors in ``intel_psta=
+te`` and
+>  the driver initialization will fail if the detected processor is not in =
+that
+> -list, unless it supports the `HWP feature <Active Mode_>`_.  [The interf=
+ace to
+> -obtain all of the information listed above is the same for all of the pr=
+ocessors
+> -supporting the HWP feature, which is why they all are supported by
+> -``intel_pstate``.]
+> +list, unless it supports the HWP feature.  [The interface to obtain all =
+of the
+> +information listed above is the same for all of the processors supportin=
+g the
+> +HWP feature, which is why ``intel_pstate`` works with all of them.]
+>=20=20
+>=20=20
+>  User Space Interface in ``sysfs``
+> @@ -425,22 +428,16 @@ argument is passed to the kernel in the
+>  	as well as the per-policy ones) are then reset to their default
+>  	values, possibly depending on the target operation mode.]
+>=20=20
+> -	That only is supported in some configurations, though (for example, if
+> -	the `HWP feature is enabled in the processor <Active Mode With HWP_>`_,
+> -	the operation mode of the driver cannot be changed), and if it is not
+> -	supported in the current configuration, writes to this attribute will
+> -	fail with an appropriate error.
+> -
+>  ``energy_efficiency``
+> -	This attribute is only present on platforms, which have CPUs matching
+> -	Kaby Lake or Coffee Lake desktop CPU model. By default
+> -	energy efficiency optimizations are disabled on these CPU models in HWP
+> -	mode by this driver. Enabling energy efficiency may limit maximum
+> -	operating frequency in both HWP and non HWP mode. In non HWP mode,
+> -	optimizations are done only in the turbo frequency range. In HWP mode,
+> -	optimizations are done in the entire frequency range. Setting this
+> -	attribute to "1" enables energy efficiency optimizations and setting
+> -	to "0" disables energy efficiency optimizations.
+> +	This attribute is only present on platforms with CPUs matching the Kaby
+> +	Lake or Coffee Lake desktop CPU model. By default, energy-efficiency
+> +	optimizations are disabled on these CPU models if HWP is enabled.
+> +	Enabling energy-efficiency optimizations may limit maximum operating
+> +	frequency with or without the HWP feature.  With HWP enabled, the
+> +	optimizations are done only in the turbo frequency range.  Without it,
+> +	they are done in the entire available frequency range.  Setting this
+> +	attribute to "1" enables the energy-efficiency optimizations and setting
+> +	to "0" disables them.
+>=20=20
+>  Interpretation of Policy Attributes
+>  -----------------------------------
+> @@ -484,8 +481,8 @@ Next, the following policy attributes ha
+>  	policy for the time interval between the last two invocations of the
+>  	driver's utilization update callback by the CPU scheduler for that CPU.
+>=20=20
+> -One more policy attribute is present if the `HWP feature is enabled in t=
+he
+> -processor <Active Mode With HWP_>`_:
+> +One more policy attribute is present if the HWP feature is enabled in the
+> +processor:
+>=20=20
+>  ``base_frequency``
+>  	Shows the base frequency of the CPU. Any frequency above this will be
+> @@ -526,11 +523,11 @@ on the following rules, regardless of th
+>=20=20
+>   3. The global and per-policy limits can be set independently.
+>=20=20
+> -If the `HWP feature is enabled in the processor <Active Mode With HWP_>`=
+_, the
+> -resulting effective values are written into its registers whenever the l=
+imits
+> -change in order to request its internal P-state selection logic to alway=
+s set
+> -P-states within these limits.  Otherwise, the limits are taken into acco=
+unt by
+> -scaling governors (in the `passive mode <Passive Mode_>`_) and by the dr=
+iver
+> +In the `active mode with the HWP feature enabled <Active Mode With HWP_>=
+`_, the
+> +resulting effective values are written into hardware registers whenever =
+the
+> +limits change in order to request its internal P-state selection logic t=
+o always
+> +set P-states within these limits.  Otherwise, the limits are taken into =
+account
+> +by scaling governors (in the `passive mode <Passive Mode_>`_) and by the=
+ driver
+>  every time before setting a new P-state for a CPU.
+>=20=20
+>  Additionally, if the ``intel_pstate=3Dper_cpu_perf_limits`` command line=
+ argument
+> @@ -541,12 +538,11 @@ at all and the only way to set the limit
+>  Energy vs Performance Hints
+>  ---------------------------
+>=20=20
+> -If ``intel_pstate`` works in the `active mode with the HWP feature enabl=
+ed
+> -<Active Mode With HWP_>`_ in the processor, additional attributes are pr=
+esent
+> -in every ``CPUFreq`` policy directory in ``sysfs``.  They are intended t=
+o allow
+> -user space to help ``intel_pstate`` to adjust the processor's internal P=
+-state
+> -selection logic by focusing it on performance or on energy-efficiency, or
+> -somewhere between the two extremes:
+> +If the hardware-managed P-states (HWP) is enabled in the processor, addi=
+tional
+> +attributes, intended to allow user space to help ``intel_pstate`` to adj=
+ust the
+> +processor's internal P-state selection logic by focusing it on performan=
+ce or on
+> +energy-efficiency, or somewhere between the two extremes, are present in=
+ every
+> +``CPUFreq`` policy directory in ``sysfs``.  They are :
+>=20=20
+>  ``energy_performance_preference``
+>  	Current value of the energy vs performance hint for the given policy
+> @@ -650,12 +646,14 @@ of them have to be prepended with the ``
+>  	Do not register ``intel_pstate`` as the scaling driver even if the
+>  	processor is supported by it.
+>=20=20
+> +``active``
+> +	Register ``intel_pstate`` in the `active mode <Active Mode_>`_ to start
+> +	with.
+> +
+>  ``passive``
+>  	Register ``intel_pstate`` in the `passive mode <Passive Mode_>`_ to
+>  	start with.
+>=20=20
+> -	This option implies the ``no_hwp`` one described below.
+> -
+>  ``force``
+>  	Register ``intel_pstate`` as the scaling driver instead of
+>  	``acpi-cpufreq`` even if the latter is preferred on the given system.
+> @@ -670,13 +668,12 @@ of them have to be prepended with the ``
+>  	driver is used instead of ``acpi-cpufreq``.
+>=20=20
+>  ``no_hwp``
+> -	Do not enable the `hardware-managed P-states (HWP) feature
+> -	<Active Mode With HWP_>`_ even if it is supported by the processor.
+> +	Do not enable the hardware-managed P-states (HWP) feature even if it is
+> +	supported by the processor.
+>=20=20
+>  ``hwp_only``
+>  	Register ``intel_pstate`` as the scaling driver only if the
+> -	`hardware-managed P-states (HWP) feature <Active Mode With HWP_>`_ is
+> -	supported by the processor.
+> +	hardware-managed P-states (HWP) feature is supported by the processor.
+>=20=20
+>  ``support_acpi_ppc``
+>  	Take ACPI ``_PPC`` performance limits into account.
 
-So I tested this and it didn't seem to work.  I went into
-cros_ec_suspend() and added a delay after the disable_irq() call.  I
-pressed a key on my keyboard while the delay was happening.  When I
-pressed the key I saw qcom_pdc_gic_mask() get called for the
-interrupt.  ...and the suspend was _not_ aborted.  I watched and the
-system continued all the way.
+--=-=-=--
 
-I watched the system go all the way down and shut down the CPUs.
-Then, after 6 seconds (!) it woke back up.  I don't quite understand
-it, but the 6 seconds here seems to be the time needed to wakeup if
-PDC is enabled but the interrupt is masked at the gic level.
+--==-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Digging a little deeper, I see that in irq_may_run() it was getting true for:
+-----BEGIN PGP SIGNATURE-----
 
-!irqd_has_set(&desc->irq_data, mask)
-
-...and thus it was returning true for irq_may_run() without setting
-irq_pm_check_wakeup().
-
-Given that it's not working as you describe it to be working, I feel
-like you might need to go back and re-evaluate your approach.  I'll
-try to spend more time thinking about this tomorrow too, but I'm about
-out of time for the day.
-
-
-> So, in all cases we are fine.
->
->
-> So while I'm for this patch, I'd suggest a simpler description
-> (assuming my understanding is correct):
->
-> There is no reason to implement irq_disable() and irq_mask().  Let's just
-> use irq_mask() and let the rest of the core handle it.
->
-> i think current description is fine with above explanation.
-
-As per above, if nothing else you need to clarify things so people
-aren't so confused.
-
-
-> Also: it feels really weird to me that you're getting rid of the
-> irq_disable() but keeping irq_enable().  That seems like asking for
-> trouble, though I'd have to do more research to see if I could figure
-> out exactly what might go wrong.  Could you remove your irq_enable()
-> too?
->
->
-> -Doug
->
-> irq_enable() servers another purpose of clearing any errornous IRQ when enabling it first time, so its kept as it is.
->
-> i do not think it causes any troubles.
-
-I kinda ran out of time to dig more here, but it still worries me.
-I'll try to dig more tomorrow.  In any case, can't you just clear out
-any erroneous IRQs at init time and make it symmetric?
-
--Doug
+iHUEAREIAB0WIQST8OekYz69PM20/4aDmTidfVK/WwUCXw5JPQAKCRCDmTidfVK/
+W5O0AP9vpRhu6K8Fvgews8Gw41q4yV/gB1EikL0GqFp5slLVjAD9FCeDgKF4VkWk
+XkYof5PtwCfffJqUxpBj8v/RztmjWRM=
+=xlGb
+-----END PGP SIGNATURE-----
+--==-=-=--
