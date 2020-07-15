@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608322211D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305D82211DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725922AbgGOQBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:01:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54336 "EHLO mail.kernel.org"
+        id S1726440AbgGOQDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:03:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726437AbgGOQAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:00:41 -0400
+        id S1725885AbgGOQAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 12:00:54 -0400
 Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53555206D5;
-        Wed, 15 Jul 2020 16:00:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A63F2071B;
+        Wed, 15 Jul 2020 16:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594828841;
-        bh=CeX0MHTmJsHaAB/QS6BONJpBk2doOHrMWAlokkPu28o=;
+        s=default; t=1594828850;
+        bh=Y8284yERRo+KqCcBf+q3NCh9szlZqEj1ByfomoYfk3k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IcW2cUilMfq0VRhyOLmDIS6q/a9gLEqOf5YNsxgDpWJG7OctqnXrYujqMVqxgpXip
-         26GLAx2IQ9jfkGpzb/tO4j55Jh7cCK1v6YW68iE6tk2xwD9azHtaY8Cb5OZPuqC/lf
-         cvSGtsqinIbMwrQWf9m5/3qO1VFtw0w5bx/AReXU=
+        b=nfxFYGmq207aAppxvYriLkIFkBC3HC7K/VgBrOLgpHdMQtIYzfblj0hvOYtGuB4B4
+         0Fa4VC4Nz3jxTDQCGxFXfn/0cZYUZ3drXaJOV5kZ+95HQZK0Bwutt8NGpcUfOTaU61
+         JKGp9A8PwmfoEiTOG6cfraJB664x9WaazOqC5HjQ=
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Alistair Delva <adelva@google.com>, mhiramat@kernel.org,
         linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/3] tools/bootconfig: Add testcases for value override operator
-Date:   Thu, 16 Jul 2020 01:00:38 +0900
-Message-Id: <159482883824.126704.2166030493721357163.stgit@devnote2>
+Subject: [PATCH 3/3] Documentation: bootconfig: Add bootconfig override operator
+Date:   Thu, 16 Jul 2020 01:00:47 +0900
+Message-Id: <159482884682.126704.7198860675721719878.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <159482882056.126704.15508672095852220119.stgit@devnote2>
 References: <159482882056.126704.15508672095852220119.stgit@devnote2>
@@ -42,71 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some testcases and examples for value override operator.
+Add a sentence about bootconfig override operator (":=") to
+bootconfig.rst.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- tools/bootconfig/samples/bad-override.bconf  |    3 +++
- tools/bootconfig/samples/bad-override2.bconf |    3 +++
- tools/bootconfig/samples/good-override.bconf |    6 ++++++
- tools/bootconfig/test-bootconfig.sh          |   13 +++++++++++++
- 4 files changed, 25 insertions(+)
- create mode 100644 tools/bootconfig/samples/bad-override.bconf
- create mode 100644 tools/bootconfig/samples/bad-override2.bconf
- create mode 100644 tools/bootconfig/samples/good-override.bconf
+ Documentation/admin-guide/bootconfig.rst |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/tools/bootconfig/samples/bad-override.bconf b/tools/bootconfig/samples/bad-override.bconf
-new file mode 100644
-index 000000000000..fde6c561512e
---- /dev/null
-+++ b/tools/bootconfig/samples/bad-override.bconf
-@@ -0,0 +1,3 @@
-+key.subkey = value
-+# We can not override pre-defined subkeys with value
-+key := value
-diff --git a/tools/bootconfig/samples/bad-override2.bconf b/tools/bootconfig/samples/bad-override2.bconf
-new file mode 100644
-index 000000000000..688587cb023c
---- /dev/null
-+++ b/tools/bootconfig/samples/bad-override2.bconf
-@@ -0,0 +1,3 @@
-+key = value
-+# We can not override pre-defined value with subkey
-+key.subkey := value
-diff --git a/tools/bootconfig/samples/good-override.bconf b/tools/bootconfig/samples/good-override.bconf
-new file mode 100644
-index 000000000000..7d31d5f8fbd8
---- /dev/null
-+++ b/tools/bootconfig/samples/good-override.bconf
-@@ -0,0 +1,6 @@
-+# Override the value
-+key.word = 1,2,4
-+key.word := 2,3
-+
-+# No pre-defined key
-+key.new.word := "new"
-diff --git a/tools/bootconfig/test-bootconfig.sh b/tools/bootconfig/test-bootconfig.sh
-index 3c2ab9e75730..56284b98d8f0 100755
---- a/tools/bootconfig/test-bootconfig.sh
-+++ b/tools/bootconfig/test-bootconfig.sh
-@@ -117,6 +117,19 @@ xpass grep -q "bar" $OUTFILE
- xpass grep -q "baz" $OUTFILE
- xpass grep -q "qux" $OUTFILE
+diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
+index d6b3b77a4129..a22024f9175e 100644
+--- a/Documentation/admin-guide/bootconfig.rst
++++ b/Documentation/admin-guide/bootconfig.rst
+@@ -71,6 +71,16 @@ For example,::
+  foo = bar, baz
+  foo = qux  # !ERROR! we can not re-define same key
  
-+echo "Override same-key values"
-+cat > $TEMPCONF << EOF
-+key = bar, baz
-+key := qux
-+EOF
-+echo > $INITRD
++If you want to update the value, you must use the override operator
++``:=`` explicitly. For example::
 +
-+xpass $BOOTCONF -a $TEMPCONF $INITRD
-+$BOOTCONF $INITRD > $OUTFILE
-+xfail grep -q "bar" $OUTFILE
-+xfail grep -q "baz" $OUTFILE
-+xpass grep -q "qux" $OUTFILE
++ foo = bar, baz
++ foo := qux
 +
- echo "Double/single quotes test"
- echo "key = '\"string\"';" > $TEMPCONF
- $BOOTCONF -a $TEMPCONF $INITRD
++then, the ``qux`` is assigned to ``foo`` key. This is useful for
++overriding the default value by adding (partial) custom bootconfigs
++without parsing the default bootconfig.
++
+ If you want to append the value to existing key as an array member,
+ you can use ``+=`` operator. For example::
+ 
+@@ -84,6 +94,7 @@ For example, following config is NOT allowed.::
+ 
+  foo = value1
+  foo.bar = value2 # !ERROR! subkey "bar" and value "value1" can NOT co-exist
++ foo.bar := value2 # !ERROR! even with the override operator, this is NOT allowed.
+ 
+ 
+ Comments
 
