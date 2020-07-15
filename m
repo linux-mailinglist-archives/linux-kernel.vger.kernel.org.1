@@ -2,179 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C530D2211B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F25742211CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgGOPyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:54:33 -0400
-Received: from mga06.intel.com ([134.134.136.31]:3994 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbgGOPyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 11:54:33 -0400
-IronPort-SDR: Jfrhcul+9Asal5E6VLwOIUsLKSl7as7HVJXJbyZolYJKmExjM/LA4f80UVHut3IxpFSqWfVnKF
- hDvl+D9MP8mQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="210719066"
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; 
-   d="scan'208";a="210719066"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 08:54:32 -0700
-IronPort-SDR: aQuOBvXboXvtr9LVjlL5IQoQ7kAhQ0ypAtkS+t3EQWIQbydXd6EzK86vUF9k3FT6R/aJglWQbE
- fG7j1Cnj2I4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; 
-   d="scan'208";a="460137858"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga005.jf.intel.com with ESMTP; 15 Jul 2020 08:54:32 -0700
-Date:   Wed, 15 Jul 2020 09:01:14 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
-        Cornelia Huck <cohuck@redhat.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v3 2/4] iommu: Add iommu_aux_at(de)tach_group()
-Message-ID: <20200715090114.50a459d4@jacob-builder>
-In-Reply-To: <b5b22e01-4a51-8dfe-9ba4-aeca783740f1@linux.intel.com>
-References: <20200714055703.5510-1-baolu.lu@linux.intel.com>
-        <20200714055703.5510-3-baolu.lu@linux.intel.com>
-        <20200714093909.1ab93c9e@jacob-builder>
-        <b5b22e01-4a51-8dfe-9ba4-aeca783740f1@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1726332AbgGOP7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbgGOP66 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 11:58:58 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDB3C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ExYAFJz0ZBBS/XgvHstTQZzss3nPH5mMu89RC/YVoN8=; b=wCTiXBd6+q4YP6aP6mI/GlWlPK
+        C+hOQUbCsWTrv4X6QcK9PZKFXY/Spa6bpc+LqgeExYuEHt9Z+wkYfCupJgIUt5K89fSVgumWhxaNe
+        9fbVJYiic6qSuqrhNBxvFQfpqdGhbgk5xWy0gySZpSFmjhSKt7iWT11Z44uPtItYINwDawFs2zmUq
+        arohuRR5axkHHBmW9la7RsSJYFYce4x06P0T7C7JuvJe3A7TFJ4zGKuscSb1u1KwuliP1UxJko73N
+        OgGDjsa3IEIJA0qw5qmECdYuUFI+f1Q2V+5fmJLE8O496PjE0kmf49h2E4rFrZUtQuBnASLJvv0Lg
+        6lmxOlgg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvjo6-0007t7-6Q; Wed, 15 Jul 2020 15:58:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 39B83300446;
+        Wed, 15 Jul 2020 17:58:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2C83920D27ABC; Wed, 15 Jul 2020 17:58:50 +0200 (CEST)
+Date:   Wed, 15 Jul 2020 17:58:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        John Ogness <jogness@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] time/sched_clock: Use raw_read_seqcount_latch()
+Message-ID: <20200715155850.GL10769@hirez.programming.kicks-ass.net>
+References: <20200715095220.GH10769@hirez.programming.kicks-ass.net>
+ <20200715115901.515956-1-a.darwish@linutronix.de>
+ <20200715152926.GA16686@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715152926.GA16686@leoy-ThinkPad-X240s>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Jul 2020 08:47:36 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+On Wed, Jul 15, 2020 at 11:29:26PM +0800, Leo Yan wrote:
+> Hi Peter, Ahmed,
+> 
+> On Wed, Jul 15, 2020 at 01:59:01PM +0200, Ahmed S. Darwish wrote:
+> > sched_clock uses seqcount_t latching to switch between two storage
+> > places protected by the sequence counter. This allows it to have
+> > interruptible, NMI-safe, seqcount_t write side critical sections.
+> > 
+> > Since 7fc26327b756 ("seqlock: Introduce raw_read_seqcount_latch()"),
+> > raw_read_seqcount_latch() became the standardized way for seqcount_t
+> > latch read paths. Due to the dependent load, it also has one read
+> > memory barrier less than the currently used raw_read_seqcount() API.
+> > 
+> > Use raw_read_seqcount_latch() for the seqcount_t latch read path.
+> > 
+> > Link: https://lkml.kernel.org/r/20200625085745.GD117543@hirez.programming.kicks-ass.net
+> > Link: https://lkml.kernel.org/r/20200715092345.GA231464@debian-buster-darwi.lab.linutronix.de
+> > References: 1809bfa44e10 ("timers, sched/clock: Avoid deadlock during read from NMI")
+> > Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+> > ---
+> >  kernel/time/sched_clock.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/time/sched_clock.c b/kernel/time/sched_clock.c
+> > index fa3f800d7d76..ea007928d681 100644
+> > --- a/kernel/time/sched_clock.c
+> > +++ b/kernel/time/sched_clock.c
+> > @@ -100,7 +100,7 @@ unsigned long long notrace sched_clock(void)
+> >  	struct clock_read_data *rd;
+> > 
+> >  	do {
+> > -		seq = raw_read_seqcount(&cd.seq);
+> > +		seq = raw_read_seqcount_latch(&cd.seq);
+> 
+> Understand this is doing the same thing with __ktime_get_fast_ns() and
+> I saw Peter acked to make change for this.
+> 
+> Just want to confirm, since this patch introduces conflict with the
+> patch set "arm64: perf: Proper cap_user_time* support" [1], I should
+> rebase the patch set on top of this patch, right?
 
-> Hi Jacob,
-> 
-> On 7/15/20 12:39 AM, Jacob Pan wrote:
-> > On Tue, 14 Jul 2020 13:57:01 +0800
-> > Lu Baolu<baolu.lu@linux.intel.com>  wrote:
-> >   
-> >> This adds two new aux-domain APIs for a use case like vfio/mdev
-> >> where sub-devices derived from an aux-domain capable device are
-> >> created and put in an iommu_group.
-> >>
-> >> /**
-> >>   * iommu_aux_attach_group - attach an aux-domain to an iommu_group
-> >> which
-> >>   *                          contains sub-devices (for example
-> >> mdevs) derived
-> >>   *                          from @dev.
-> >>   * @domain: an aux-domain;
-> >>   * @group:  an iommu_group which contains sub-devices derived from
-> >> @dev;
-> >>   * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
-> >>   *
-> >>   * Returns 0 on success, or an error value.
-> >>   */
-> >> int iommu_aux_attach_group(struct iommu_domain *domain,
-> >>                             struct iommu_group *group,
-> >>                             struct device *dev)
-> >>
-> >> /**
-> >>   * iommu_aux_detach_group - detach an aux-domain from an
-> >> iommu_group *
-> >>   * @domain: an aux-domain;
-> >>   * @group:  an iommu_group which contains sub-devices derived from
-> >> @dev;
-> >>   * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
-> >>   *
-> >>   * @domain must have been attached to @group via
-> >> iommu_aux_attach_group(). */
-> >> void iommu_aux_detach_group(struct iommu_domain *domain,
-> >>                              struct iommu_group *group,
-> >>                              struct device *dev)
-> >>
-> >> It also adds a flag in the iommu_group data structure to identify
-> >> an iommu_group with aux-domain attached from those normal ones.
-> >>
-> >> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
-> >> ---
-> >>   drivers/iommu/iommu.c | 58
-> >> +++++++++++++++++++++++++++++++++++++++++++ include/linux/iommu.h |
-> >> 17 +++++++++++++ 2 files changed, 75 insertions(+)
-> >>
-> >> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> >> index e1fdd3531d65..cad5a19ebf22 100644
-> >> --- a/drivers/iommu/iommu.c
-> >> +++ b/drivers/iommu/iommu.c
-> >> @@ -45,6 +45,7 @@ struct iommu_group {
-> >>   	struct iommu_domain *default_domain;
-> >>   	struct iommu_domain *domain;
-> >>   	struct list_head entry;
-> >> +	unsigned int aux_domain_attached:1;
-> >>   };
-> >>   
-> >>   struct group_device {
-> >> @@ -2759,6 +2760,63 @@ int iommu_aux_get_pasid(struct iommu_domain
-> >> *domain, struct device *dev) }
-> >>   EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
-> >>   
-> >> +/**
-> >> + * iommu_aux_attach_group - attach an aux-domain to an iommu_group
-> >> which
-> >> + *                          contains sub-devices (for example
-> >> mdevs) derived
-> >> + *                          from @dev.
-> >> + * @domain: an aux-domain;
-> >> + * @group:  an iommu_group which contains sub-devices derived from
-> >> @dev;
-> >> + * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
-> >> + *
-> >> + * Returns 0 on success, or an error value.
-> >> + */
-> >> +int iommu_aux_attach_group(struct iommu_domain *domain,
-> >> +			   struct iommu_group *group, struct
-> >> device *dev) +{
-> >> +	int ret = -EBUSY;
-> >> +
-> >> +	mutex_lock(&group->mutex);
-> >> +	if (group->domain)
-> >> +		goto out_unlock;
-> >> +  
-> > Perhaps I missed something but are we assuming only one mdev per
-> > mdev group? That seems to change the logic where vfio does:
-> > iommu_group_for_each_dev()
-> > 	iommu_aux_attach_device()
-> >   
-> 
-> It has been changed in PATCH 4/4:
-> 
-> static int vfio_iommu_attach_group(struct vfio_domain *domain,
->                                     struct vfio_group *group)
-> {
->          if (group->mdev_group)
->                  return iommu_aux_attach_group(domain->domain,
->                                                group->iommu_group,
->                                                group->iommu_device);
->          else
->                  return iommu_attach_group(domain->domain, 
-> group->iommu_group);
-> }
-> 
-> So, for both normal domain and aux-domain, we use the same concept:
-> attach a domain to a group.
-> 
-I get that, but don't you have to attach all the devices within the
-group? Here you see the group already has a domain and exit.
-
-> Best regards,
-> baolu
-
-[Jacob Pan]
+Or rebase this patch on top of yours and include it, either way.
