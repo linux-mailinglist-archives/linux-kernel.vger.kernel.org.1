@@ -2,176 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BC92208F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F2B2208F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730578AbgGOJgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:36:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730288AbgGOJgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:36:22 -0400
-Received: from localhost (unknown [122.171.202.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3A5C2064B;
-        Wed, 15 Jul 2020 09:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594805781;
-        bh=KvERwz6a46BBHzE6XXdChhsa8mTA1HYiIRsamLDzAAk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cwOG7ONgUQATsH0ycjjCKSrtHYV3VXdEM2cynR4bGOZa8BCiEhjKyOOrHm16HYgVY
-         otwZoFZJNRtQDR25TUIM12C7x61DjAcXhnGTUhVbfWqiHKEzWDFrkcgXluTSz4Zm+y
-         ObSdpCvHZSO5nJIs9kRXmZru3HVKMywxudVviKtU=
-Date:   Wed, 15 Jul 2020 15:06:17 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dma <dmaengine@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] dmaengine: fixes for v5.8-rc6
-Message-ID: <20200715093617.GF34333@vkoul-mobl>
+        id S1730605AbgGOJhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:37:51 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:38536 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728820AbgGOJhu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 05:37:50 -0400
+Received: by mail-ot1-f65.google.com with SMTP id t18so968623otq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:37:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KWp7nWgHjnZaqCpFQfZuC5eqi869KUC7JN5+uHQNEnY=;
+        b=EiWSgARTJj6pZpYTPcO3PL9hvL0ab0VKPGONDdAsMZn0D8U6bEDTK9rI5o107NFwa9
+         a9Jkty58uAcmy5zeiewy28Z2kPVx06mEzqJXypXqndP64iInYDQCTMMaYIm/tyoTWsly
+         KE3YllcWqHOAUKoyfPkUDW3AWShFzpg4PPUxeA9DkHHEaw5s00Stt7t3ytxBKmuTbYXM
+         zWqxNJ17v+vdtLALTSPj6eXyKawG4jjQEpOpnW4WgD9QhJx0GZY2v6pxSReFXKBuP+An
+         psZ8TbdeqLdcVwyUaiLBsq4ZpkUz8+eVu+KLrVoPdANDTrXigGuxKnbtEXx72rPbnjiT
+         G1gA==
+X-Gm-Message-State: AOAM530r4y7rPKA/XmRBkbFOSCI+a/C0h8tiFPpCVnwP9xOifVABi0BE
+        uLVqaomaW1rtR29NQFObSsttoF8gIJENpLQcJS4=
+X-Google-Smtp-Source: ABdhPJwfowNirhlLmiSJKaAj1mLc/o1S7QZdxHWP3yfsmLS2or0kjB8TvuxOXCPnQCicB7JXMvkD656N8EMG2EDeS8w=
+X-Received: by 2002:a05:6830:1451:: with SMTP id w17mr7982898otp.250.1594805870335;
+ Wed, 15 Jul 2020 02:37:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yEPQxsgoJgBvi8ip"
-Content-Disposition: inline
+References: <1594234423-30914-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594234423-30914-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 15 Jul 2020 11:37:39 +0200
+Message-ID: <CAMuHMdUohbEmw2g23OOTxNyTxU8t8TySuBo9q075H1eG9gOApQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: defconfig: Enable R-Car PCIe endpoint driver
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Prabhakar,
 
---yEPQxsgoJgBvi8ip
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+CC Arnd
 
-Hi Linus,
+On Wed, Jul 8, 2020 at 8:54 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Enable R-Car PCIe endpoint driver on RZ/G2E board, including enabling
+> endpoint configurations CONFIG_PCI_ENDPOINT, CONFIG_PCI_ENDPOINT_CONFIGFS,
+> CONFIG_PCI_EPF_TEST and CONFIG_PCI_ENDPOINT_TEST required to use and test
+> the driver.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Here is the dmaengine pull request for v5.8. Please note dmaengine tree
-has moved to kernel.org so you would need to pull from that now on.
+Thanks for your patch!
 
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -196,6 +196,7 @@ CONFIG_HOTPLUG_PCI_ACPI=y
+>  CONFIG_PCI_AARDVARK=y
+>  CONFIG_PCI_TEGRA=y
+>  CONFIG_PCIE_RCAR_HOST=y
+> +CONFIG_PCIE_RCAR_EP=y
+>  CONFIG_PCI_HOST_GENERIC=y
+>  CONFIG_PCI_XGENE=y
+>  CONFIG_PCIE_ALTERA=y
+> @@ -212,6 +213,9 @@ CONFIG_PCIE_ARMADA_8K=y
+>  CONFIG_PCIE_KIRIN=y
+>  CONFIG_PCIE_HISI_STB=y
+>  CONFIG_PCIE_TEGRA194_HOST=m
+> +CONFIG_PCI_ENDPOINT=y
+> +CONFIG_PCI_ENDPOINT_CONFIGFS=y
 
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+It's a pity the above can't be modular.
 
-are available in the Git repository at:
+> +CONFIG_PCI_EPF_TEST=y
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
-aengine-fix-5.8-rc6
+But at least this one can, and should, IMHO.
 
-for you to fetch changes up to 87730ccbddcb48478b1b88e88b14e73424130764:
+>  CONFIG_DEVTMPFS=y
+>  CONFIG_DEVTMPFS_MOUNT=y
+>  CONFIG_FW_LOADER_USER_HELPER=y
+> @@ -242,6 +246,7 @@ CONFIG_BLK_DEV_NBD=m
+>  CONFIG_VIRTIO_BLK=y
+>  CONFIG_BLK_DEV_NVME=m
+>  CONFIG_SRAM=y
+> +CONFIG_PCI_ENDPOINT_TEST=y
 
-  dmaengine: ioat setting ioat timeout as module parameter (2020-07-06 14:4=
-9:34 +0530)
+Same here.
 
-----------------------------------------------------------------
-dmaengine fixes for v5.5-rc6
+>  CONFIG_EEPROM_AT24=m
+>  CONFIG_EEPROM_AT25=m
+>  CONFIG_UACCE=m
 
- - Update dmaengine tree location to k.org
- - dmatest fix for completing threads
- - Driver fixes for:
-   - k3dma
-   - fsl-dma
-   - idxd
-   - tegra
-   - and few other in bunch of other drivers
+Gr{oetje,eeting}s,
 
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      dmaengine: dw: Initialize channel before each transfer
+                        Geert
 
-Angelo Dureghello (1):
-      dmaengine: fsl-edma: fix wrong tcd endianness for big-endian cpu
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Dave Jiang (3):
-      dmaengine: idxd: fix hw descriptor fields for delta record
-      dmaengine: idxd: cleanup workqueue config after disabling
-      dmaengine: idxd: fix misc interrupt handler thread unmasking
-
-Dinghao Liu (1):
-      dmaengine: tegra210-adma: Fix runtime PM imbalance on error
-
-Fabio Estevam (1):
-      dmaengine: imx-sdma: Fix: Remove 'always true' comparison
-
-Krzysztof Kozlowski (3):
-      dmaengine: fsl-edma: Add lockdep assert for exported function
-      dmaengine: fsl-edma: Fix NULL pointer exception in fsl_edma_tx_handler
-      dmaengine: mcf-edma: Fix NULL pointer exception in mcf_edma_tx_handler
-
-Leonid Ravich (1):
-      dmaengine: ioat setting ioat timeout as module parameter
-
-Nikhil Rao (1):
-      dmaengine: idxd: fix cdev locking for open and release
-
-Peter Ujfalusi (5):
-      dmaengine: ti: k3-udma: Use correct node to read "ti,udma-atype"
-      dmaengine: ti: k3-udma: Fix cleanup code for alloc_chan_resources
-      dmaengine: ti: k3-udma: Fix the running channel handling in alloc_cha=
-n_resources
-      dmaengine: ti: k3-udma: Fix delayed_work usage for tx drain workaround
-      dmaengine: dmatest: stop completed threads when running without set c=
-hannel
-
-Robin Gong (1):
-      dmaengine: fsl-edma-common: correct DSIZE_32BYTE
-
-Vinod Koul (1):
-      MAINTAINERS: switch dmaengine tree to kernel.org
-
-Yoshihiro Shimoda (1):
-      dmaengine: sh: usb-dmac: set tx_result parameters
-
-Yu Kuai (1):
-      dmaengine: ti: k3-udma: add missing put_device() call in of_xudma_dev=
-_get()
-
- MAINTAINERS                      |  2 +-
- drivers/dma/dmatest.c            |  2 ++
- drivers/dma/dw/core.c            | 12 ------------
- drivers/dma/fsl-edma-common.c    | 28 ++++++++++++++++------------
- drivers/dma/fsl-edma-common.h    |  2 +-
- drivers/dma/fsl-edma.c           |  7 +++++++
- drivers/dma/idxd/cdev.c          | 19 ++++++++++++++++---
- drivers/dma/idxd/device.c        | 25 +++++++++++++++++++++++++
- drivers/dma/idxd/idxd.h          |  1 +
- drivers/dma/idxd/irq.c           |  3 ++-
- drivers/dma/idxd/sysfs.c         |  5 +++++
- drivers/dma/imx-sdma.c           | 11 ++++-------
- drivers/dma/ioat/dma.c           | 12 ++++++++++++
- drivers/dma/ioat/dma.h           |  2 --
- drivers/dma/mcf-edma.c           |  7 +++++++
- drivers/dma/sh/usb-dmac.c        |  2 ++
- drivers/dma/tegra210-adma.c      |  5 ++++-
- drivers/dma/ti/k3-udma-private.c |  1 +
- drivers/dma/ti/k3-udma.c         | 39 +++++++++++++++++++-----------------=
----
- include/uapi/linux/idxd.h        |  3 +++
- 20 files changed, 128 insertions(+), 60 deletions(-)
-
-Thanks
---=20
-~Vinod
-
---yEPQxsgoJgBvi8ip
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl8OzhEACgkQfBQHDyUj
-g0cuyhAA0l/b0AeNH5mVbRQTysAB0mY6SInJBpMfwkAmr8gIETOm+p10KB2/iCVr
-tj10KP/mfnh0Uz4H//utTlL+UZhSmpIMgAB0Cp6G1rtz5Qp1FoX24ccsofU1NJ74
-iRG9+VA3lCufP0zq3u31eJ12j3yi0g7JiptBElsZhDUT1GNLVoniQbqKkeuvqb5G
-3REAUV1zEu53YnMvdlbW1zrlRa+HF7/QE7Yu4i9MLI3cetGQAvIQXp+lwnboc+Nq
-MhAYZQXi2U6zoFSrFVH+hGU0+H+SN9zktVI6atztaLj8lDZYW/tucbeIU9wNbNbs
-3WE+TlGlV9SgZa4tSSowmOO1YGS8EmxwZmyYJQtIHdtQAG5o9T8hyfpTko0EEmCJ
-5lvdujFw9VzMGjP6uQPHWsiG3YFr+Mz6wttJMDilUkXQaYjVbtzouOTCdh0vdVxd
-Prj6AL7fulN7Rm0H9nsP/jULXpPwduv1OkCYO9/0PoelEAaePnl71q1dCl945doz
-nqPvvhwVqgq3bAU2UvRckc9ST2qPCnmUI6roeOcX+lq6HY3Z7uzo5dlc3/eGkNPm
-vdGkM5Jz0ootr38FLxVoaEIyAmXtN35f7V1MsQNhqtALA+a9p+s4KZFwEBnToK9a
-LgN3hTu/ztEgQswN7RwcWWM5ljNoAhPZ9w1P3xdQaah6Zv1cBiA=
-=uBEH
------END PGP SIGNATURE-----
-
---yEPQxsgoJgBvi8ip--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
