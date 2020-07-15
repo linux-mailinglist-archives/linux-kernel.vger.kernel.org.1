@@ -2,176 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9232213C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 19:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BBB22137F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 19:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgGORyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 13:54:14 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:45690 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgGORyN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 13:54:13 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06FGvwPu045673;
-        Wed, 15 Jul 2020 16:59:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=ySvnLAKibIKrCI95yKZmOin0mAO3iUBF2SDonTOgiX0=;
- b=xYrPmKxGZfvFxOqIpElVFiktRYwsOKkT0bHSmvjM8NifpdUwKjJixyRVC1y+mFoZTVV0
- jRayhCHA7dLI/G6zYZpnKRj0Nc6XACkYUy+ay+gfe3ui2XOW5pnroxxXAESX2mrPuAsC
- d9nm0TMw6eHQbfXgH0i6l//QzxBTbQTE67cYV8nbuXmj8VZW+pHRyKfHcroqQhryWdpJ
- Q/YJF+NEZn6ZQS6FWYabg4cb/VNbT1eEa0aakt6wLISjSg9DgOZzum966IgmGBFaq+LM
- J8bLbZeKF/unOaRxLPNxhlQz4dHszcTx+AWjNrvzav3TIIJH9GXDbM08wfuRh8aRsuYJ Zw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 327s65jvdh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Jul 2020 16:59:33 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06FGwh9Y004902;
-        Wed, 15 Jul 2020 16:59:32 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 327qc1b55g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jul 2020 16:59:32 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06FGxQq3009148;
-        Wed, 15 Jul 2020 16:59:27 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 15 Jul 2020 09:59:26 -0700
-Subject: Re: [PATCH v3] mm/hugetlb: split hugetlb_cma in nodes with memory
-To:     Will Deacon <will@kernel.org>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>, akpm@linux-foundation.org,
-        x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, linux-arm-kernel@lists.infradead.org,
-        Roman Gushchin <guro@fb.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H.Peter Anvin" <hpa@zytor.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>
-References: <20200710120950.37716-1-song.bao.hua@hisilicon.com>
- <359ea1d0-b1fd-d09f-d28a-a44655834277@oracle.com>
- <20200715081822.GA5683@willie-the-truck>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <5724f1f8-63a6-ee0f-018c-06fb259b6290@oracle.com>
-Date:   Wed, 15 Jul 2020 09:59:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726086AbgGORan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 13:30:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725861AbgGORam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 13:30:42 -0400
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 990D02065D;
+        Wed, 15 Jul 2020 17:30:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594834241;
+        bh=4T6S2epKi2ENJEC3KsYLtzEaf+uX57nEZeTJaHpHW8Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UGHUsR7BJPApYZexFuAAHrBmRxmIAKgVSeA6cL9K/upaRAeFUcZHrQLGgvS+7p5F3
+         6hvgH5plDm73aCY/VvnLmFS0Iaslye8woDqCku7pQDoa+9S8jLe4ZuFWd7MlnWOIAO
+         vqFWOiHuJh5mvdnEdK89U+IhikuPR54noxKyGrjI=
+Received: by mail-oi1-f169.google.com with SMTP id j11so2809795oiw.12;
+        Wed, 15 Jul 2020 10:30:41 -0700 (PDT)
+X-Gm-Message-State: AOAM532jxJh+Xw/HOtWoJW4m9UGaQJ5WbpwryfKKGCB5Q7AjWVzRpWgz
+        r03eNrLCPT6ycOYXwtPanm5neQw6O2pNFRzs+A==
+X-Google-Smtp-Source: ABdhPJwVPF7yPW/4Xav5tdTwLAAlgry1UaSHbNVOcYXq6cWPmc2b5sYdGrcceGq9vFN8OCcKMceTZ8Ekrz+Jdd7ZRTE=
+X-Received: by 2002:aca:bb82:: with SMTP id l124mr693571oif.106.1594834240916;
+ Wed, 15 Jul 2020 10:30:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200715081822.GA5683@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9683 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 mlxscore=0 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007150132
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9683 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007150132
+References: <20200710230224.2265647-1-dianders@chromium.org>
+ <CAL_JsqKC5WtHb-coMCxMTDJ7CJcjVXcAxDT4J9N-Xyr=0uuURA@mail.gmail.com>
+ <CAD=FV=XWKoTd_t2uRGpw3oa0Nij2EPeAJpOHhUipXFW07JN2qw@mail.gmail.com>
+ <CAL_JsqLJM5nwNSdugMBLDVtjP97dikCm_AiHjnDs1jqBOFoaaQ@mail.gmail.com>
+ <CAD=FV=UP0AHWr22U69TKcwwAefPCYMsfzymobczqmrdB6BOOhA@mail.gmail.com>
+ <CAOCk7NoX-XAXy2WaYGjGOtEmypis-DO-W1cfU0wnucHH0oZrqg@mail.gmail.com>
+ <CAL_Jsq+Nys+ry-3D07e-68e=9Pb34C9Js6piAnzwd1gXf_DmTw@mail.gmail.com> <20200714225220.GI388985@builder.lan>
+In-Reply-To: <20200714225220.GI388985@builder.lan>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 15 Jul 2020 11:30:29 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKU7X5f-Dt67N_yFQUUVuXrZYomB-n=dKyUqD94OXFyJQ@mail.gmail.com>
+Message-ID: <CAL_JsqKU7X5f-Dt67N_yFQUUVuXrZYomB-n=dKyUqD94OXFyJQ@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH 0/9] drm/msm: Avoid possible infinite probe
+ deferral and speed booting
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Doug Anderson <dianders@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/20 1:18 AM, Will Deacon wrote:
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index f24acb3af741..a0007d1d12d2 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -3273,6 +3273,9 @@ void __init hugetlb_add_hstate(unsigned int order)
->>  	snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
->>  					huge_page_size(h)/1024);
-> 
-> (nit: you can also make hugetlb_cma_reserve() static and remote its function
-> prototypes from hugetlb.h)
+On Tue, Jul 14, 2020 at 4:54 PM Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Tue 14 Jul 15:13 PDT 2020, Rob Herring wrote:
+>
+> > On Tue, Jul 14, 2020 at 10:33 AM Jeffrey Hugo <jeffrey.l.hugo@gmail.com> wrote:
+> > >
+> > > On Mon, Jul 13, 2020 at 5:50 PM Doug Anderson <dianders@chromium.org> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > On Mon, Jul 13, 2020 at 1:25 PM Rob Herring <robh+dt@kernel.org> wrote:
+> > > > >
+> > > > > On Mon, Jul 13, 2020 at 9:08 AM Doug Anderson <dianders@chromium.org> wrote:
+> > > > > >
+> > > > > > Hi,
+> > > > > >
+> > > > > > On Mon, Jul 13, 2020 at 7:11 AM Rob Herring <robh+dt@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Fri, Jul 10, 2020 at 5:02 PM Douglas Anderson <dianders@chromium.org> wrote:
+> > > > > > > >
+> > > > > > > > I found that if I ever had a little mistake in my kernel config,
+> > > > > > > > or device tree, or graphics driver that my system would sit in a loop
+> > > > > > > > at bootup trying again and again and again.  An example log was:
+> > > > > > >
+> > > > > > > Why do we care about optimizing the error case?
+> > > > > >
+> > > > > > It actually results in a _fully_ infinite loop.  That is: if anything
+> > > > > > small causes a component of DRM to fail to probe then the whole system
+> > > > > > doesn't boot because it just loops trying to probe over and over
+> > > > > > again.  The messages I put in the commit message are printed over and
+> > > > > > over and over again.
+> > > > >
+> > > > > Sounds like a bug as that's not what should happen.
+> > > > >
+> > > > > If you defer during boot (initcalls), then you'll be on the deferred
+> > > > > list until late_initcall and everything is retried. After
+> > > > > late_initcall, only devices getting added should trigger probing. But
+> > > > > maybe the adding and then removing a device is causing a re-trigger.
+> > > >
+> > > > Right, I'm nearly certain that the adding and then removing is causing
+> > > > a re-trigger.  I believe the loop would happen for any case where we
+> > > > have a probe function that:
+> > > >
+> > > > 1. Adds devices.
+> > > > 2. After adding devices it decides that it needs to defer.
+> > > > 3. Removes the devices it added.
+> > > > 4. Return -EPROBE_DEFER from its probe function.
+> > > >
+> > > > Specifically from what I know about how -EPROBE_DEFER works I'm not
+> > > > sure how it wouldn't cause an infinite loop in that case.
+> > > >
+> > > > Perhaps the missing part of my explanation, though, is why it never
+> > > > gets out of this infinite loop.  In my case I purposely made the
+> > > > bridge chip "ti-sn65dsi86.c" return an error (-EINVAL) in its probe
+> > > > every time.  Obviously I wasn't going to get a display up like this,
+> > > > but I just wanted to not loop forever at bootup.  I tracked down
+> > > > exactly why we get an - EPROBE_DEFER over and over in this case.
+> > > >
+> > > > You can see it in msm_dsi_host_register().  If some components haven't
+> > > > shown up when that function runs it will _always_ return
+> > > > -EPROBE_DEFER.
+> > > >
+> > > > In my case, since I caused the bridge to fail to probe, those
+> > > > components will _never_ show up.  That means that
+> > > > msm_dsi_host_register() will _always_ return -EPROBE_DEFER.
+> > > >
+> > > > I haven't dug through all the DRM code enough, but it doesn't
+> > > > necessarily seem like the wrong behavior.  If the bridge driver or a
+> > > > panel was a module then (presumably) they could show up later and so
+> > > > it should be OK for it to defer, right?
+> > > >
+> > > > So with all that, it doesn't really feel like this is a bug so much as
+> > > > it's an unsupported use case.  The current deferral logic simply can't
+> > > > handle the case we're throwing at it.  You cannot return -EPROBE_DEFER
+> > > > if your probe function adds devices each time through the probe
+> > > > function.
+> > > >
+> > > > Assuming all the above makes sense, that means we're stuck with:
+> > > >
+> > > > a) This patch series, which makes us not add devices.
+> > > >
+> > > > b) Some other patch series which rearchitects the MSM graphics stack
+> > > > to not return -EPROBE_DEFER in this case.
+> > >
+> > > This isn't a MSM specific issue.  This is an issue with how the DSI
+> > > interface works, and how software is structured in Linux.  I would
+> > > expect that pretty much any DSI host in the kernel would have some
+> > > version of this issue.
+> > >
+> > > The problem is that DSI is not "hot pluggable", so to give the DRM
+> > > stack the info it needs, we need both the DSI controller (aka the MSM
+> > > graphics stack in your case), and the thing it connects to (in your
+> > > case, the TI bridge, normally the actual panel) because the DRM stack
+> > > expects that if init completes, it has certain information
+> > > (resolution, etc), and some of that information is in the DSI
+> > > controller, and some of it is on the DSI device.
+> >
+> > Ah yes, DRM's lack of hot-plug and discrete component support... Is
+> > that not improved with some of the bridge rework?
+> >
+> > Anyways, given there is a child dependency on the parent, I don't
+> > think we should work-around DRM deficiencies in DT.
+> >
+> > BTW, There's also a deferred probe timeout you can use which stops
+> > deferring probe some number of seconds after late_initcall.
+> >
+>
+> I don't think we can rely on the deferred probe timeout, given that it
+> was reverted back to 0 seconds past late_initcall - which given that
+> most of the involved components are modules, means that without the
+> opt-in command line option we would likely fail to bring up the display.
 
-Yes thanks.  I threw this together pretty quickly.
+I meant just as a way to make progress booting in this case where the
+display is never coming up. We're talking only about a better
+experience for an error case.
 
-> 
->> +	if (order >= MAX_ORDER && hugetlb_cma_size)
->> +		hugetlb_cma_reserve(order);
-> 
-> Although I really like the idea of moving this out of the arch code, I don't
-> quite follow the check against MAX_ORDER here -- it looks like a bit of a
-> hack to try to intercept the "PUD_SHIFT - PAGE_SHIFT" order which we
-> currently pass to hugetlb_cma_reserve(). Maybe we could instead have
-> something like:
-> 
-> 	#ifndef HUGETLB_CMA_ORDER
-> 	#define HUGETLB_CMA_ORDER	(PUD_SHIFT - PAGE_SHIFT)
-> 	#endif
-> 
-> and then just do:
-> 
-> 	if (order == HUGETLB_CMA_ORDER)
-> 		hugetlb_cma_reserve(order);
-> 
-> ? Is there something else I'm missing?
-> 
+Maybe a simple solution is just having some delay inserted between
+delayed probe triggers so progress is made.
 
-Well, the current hugetlb CMA code only kicks in for gigantic pages as
-defined by the hugetlb code. For example, the code to allocate a page
-from CMA is in the routine alloc_gigantic_page().  alloc_gigantic_page()
-is called from alloc_fresh_huge_page() which starts with:
-
-        if (hstate_is_gigantic(h))
-                page = alloc_gigantic_page(h, gfp_mask, nid, nmask);
-        else
-                page = alloc_buddy_huge_page(h, gfp_mask,
-                                nid, nmask, node_alloc_noretry);
-
-and, hstate_is_gigantic is,
-
-static inline bool hstate_is_gigantic(struct hstate *h)
-{
-        return huge_page_order(h) >= MAX_ORDER;
-}
-
-So, everything in the existing code really depends on the hugetlb definition
-of gigantic page (order >= MAX_ORDER).  The code to check for
-'order >= MAX_ORDER' in my proposed patch is just following the same
-convention.
-
-I think the current dependency on the hugetlb definition of gigantic page
-may be too simplistic if using CMA for huegtlb pages becomes more common.
-Some architectures (sparc, powerpc) have more than one gigantic pages size.
-Currently there is no way to specify that CMA should be used for one and
-not the other.  In addition, I could imagine someone wanting to reserve/use
-CMA for non-gigantic (PMD) sized pages.  There is no mechainsm for that today.
-
-I honestly have not heard about many use cases for this CMA functionality.
-When support was initially added, it was driven by a specific use case and
-the 'all gigantic pages use CMA if defined' implementation was deemed
-sufficient.  If there are more use cases, or this seems too simple we can
-revisit that decision.
-
->> +
->>  	parsed_hstate = h;
->>  }
->>  
->> @@ -5647,7 +5650,10 @@ void __init hugetlb_cma_reserve(int order)
->>  	unsigned long size, reserved, per_node;
->>  	int nid;
->>  
->> -	cma_reserve_called = true;
->> +	if (cma_reserve_called)
->> +		return;
->> +	else
->> +		cma_reserve_called = true;
-> 
-> (nit: don't need the 'else' here)
-
-Yes, duh!
-
--- 
-Mike Kravetz
+Rob
