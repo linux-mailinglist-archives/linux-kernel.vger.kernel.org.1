@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFDA220784
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9386B220787
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730277AbgGOIhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729241AbgGOIhB (ORCPT
+        id S1729324AbgGOIiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:38:11 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54604 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729066AbgGOIiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:37:01 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C55C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:37:01 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc9so2735100pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:37:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h9e1W5rBzUoEq05vuDlOKs3gf+nXF7OhrK8kaajg1ac=;
-        b=Z9kDPOp1FOu00FcZtAxKCCrC//M9z2MauO785jr35+alWbwgh31TLfIbwBkJwkJIx1
-         DNJBfgyJ9K4mIlkkNFDwNTqHraFDPl2s5lCYSlYhBKGlVdVka6e4rH1SgjV1ZnBTQ0YA
-         azRGUWkc56EmpFXB7K20gR36aLtQk8xdI18iHAl+vJsN1luj/w+rCYRlAV2tchpx6hw6
-         Pjzg03n+odx2Bu3ArbeliphQl4nUcsSCkfHMtsTratpMsr0Qe0dauFhJPRSOQUej8c4Y
-         frIzwbZKglsrzysOE35FuFf7tnHMlW/GOv9BHscJ8X77S0Nr3p8V6TQL//jqoocHl/s2
-         bBtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h9e1W5rBzUoEq05vuDlOKs3gf+nXF7OhrK8kaajg1ac=;
-        b=NAvES21p842NGIG1jgAiQhhixLwcsl0EdX1fkYbSVMUOyNetfyUP+6ijUUfeWEDwBo
-         fpYRNwbzRm/aJ9pMHFVjjTWjy0GWAUG1QhIsA9kt9hc99b+ExRX4yi+WgFuEaWc5a2U8
-         zR67q+9rBAZEb8WSYLpr71YeLa4xRxaFrspYNH12J9K6gJEC2W+waffdZyzGqsaeAbBV
-         qXRHxfl53mxuZ1ZJ4C4cRLC903TXB1WURSaUxEr6Ytd7fRKp9IKlTqPcdkX1/HQwvs48
-         oV2DOXK/4Hkl28eOFp6+LfeGyigdJFSuyAlnXouNHmTU69aOk5b9J+4wq37jhjZeEHBp
-         lFIA==
-X-Gm-Message-State: AOAM533NyDl4JTRlODd0krsW8PQIzZu1c/bKb3wrsupmOGNTmfdp1g7i
-        c5XFAm3k5mqjObp+cIyMwUNqpmAWtCFdRtvFsOcvxg==
-X-Google-Smtp-Source: ABdhPJw3SeXd2XR4IrKqxKl7AKVabBH4FlMuqTRltcDQ7ODNjGBPkrxjgzPvvgHQkNyLh820BQ+mH8+NEnTOCNHJVqs=
-X-Received: by 2002:a17:90b:1296:: with SMTP id fw22mr9071513pjb.20.1594802220226;
- Wed, 15 Jul 2020 01:37:00 -0700 (PDT)
+        Wed, 15 Jul 2020 04:38:10 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06F8W7kg147701;
+        Wed, 15 Jul 2020 08:37:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=0oIcIHic/n+18h7D2ez3Bk061rU2Mlnb/HJIfCwCVqU=;
+ b=c5VIn3MtRNPOEhDMfEao95+zv9V3kIYxMcRBq6EDrPNQzGsumpbNqdjgju1O/oCBpdMx
+ 8Ku3ZlFWL64vWQcTS2hobf2++tYJaP0ccPSC3FekTWvdYu5eFk7LMEiy42Pi7A9fxfIF
+ +VpJDL/B+ImOoY6MAUA5jbPgRY3acGVp/NdbWDsOck2eRZdwTf8KKo7ggfxBIcqAIQgj
+ A6igT30WtACoCgBCsX2LrucRHqxrGxuOmMCN1V8F9cAmn74V4QVmfGxZ1WV5br2gZUWN
+ VcaEVTneH1nDxhaCdKh+8OUcbEIUxKXUKKf3NA50CAaGGhdnDl0iIC9IlxubYeO78C6F 8Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 3274ura2kv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 15 Jul 2020 08:37:56 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06F8XeDp042497;
+        Wed, 15 Jul 2020 08:37:56 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 327q6tytyk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jul 2020 08:37:56 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06F8bt7d017390;
+        Wed, 15 Jul 2020 08:37:55 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 Jul 2020 01:37:54 -0700
+Date:   Wed, 15 Jul 2020 11:37:27 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Joe Perches <joe@perches.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, Zhixu Zhao <zhixu001@126.com>,
+        rcy@google.com, rspringer@google.com, toddpoynor@google.com
+Subject: Re: [PATCH v2] staging: gasket: core: Fix a coding style issue in
+ gasket_core.c
+Message-ID: <20200715083727.GY2549@kadam>
+References: <20200617161127.32006-1-zhixu001@126.com>
+ <20200714234440.27009-1-zhixu001@126.com>
+ <20200715071748.GC2305231@kroah.com>
+ <23ef3ca9616418b702df891443d0f4864edd58ff.camel@perches.com>
+ <20200715075755.GA2516028@kroah.com>
 MIME-Version: 1.0
-References: <20200704085213.444645-1-ignat@cloudflare.com>
-In-Reply-To: <20200704085213.444645-1-ignat@cloudflare.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 15 Jul 2020 01:36:49 -0700
-Message-ID: <CAFd5g44QK2L+Zkri9=mTFoLXTqdjORn-QATPomiKXkgZfA+wqw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] um: allow static linking for non-glibc libc implementations
-To:     Ignat Korchagin <ignat@cloudflare.com>
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715075755.GA2516028@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007150072
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007150072
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 4, 2020 at 1:52 AM Ignat Korchagin <ignat@cloudflare.com> wrote:
->
-> This is a continuation of [1]. Since I was able to produce a working UML binary
-> with UML_NET_VECTOR linked with musl with the changes included in the patches
-> here. I was compiling on Arch Linux, so hopefully all the latest versions of
-> the compiler, libraries and binutils.
->
-> I also tested allyesconfig with both musl and glibc. The compilation succeeds
-> with both, however both binaries (glibc one being dynamically linked) segfault
-> on start. This is probably of some incompatible config option/module being
-> included and not related to musl/glibc.
->
-> [1]: https://patchwork.ozlabs.org/project/linux-um/patch/20200624212319.403689-1-ignat@cloudflare.com/
->
-> Ignat Korchagin (3):
->   um/kconfig: introduce CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
->   um: some fixes to build UML with musl
->   um: allow static linking for non-glibc implementations
->
->  arch/um/Kconfig               |  2 +-
->  arch/um/drivers/Kconfig       |  3 ---
->  arch/um/drivers/daemon_user.c |  1 +
->  arch/um/drivers/pcap_user.c   | 12 ++++++------
->  arch/um/drivers/slip_user.c   |  2 +-
->  arch/um/drivers/vector_user.c |  4 +---
->  arch/um/os-Linux/util.c       |  2 +-
->  arch/x86/um/user-offsets.c    |  2 +-
->  init/Kconfig                  |  6 ++++++
->  scripts/cc-can-link.sh        |  5 +++--
->  10 files changed, 21 insertions(+), 18 deletions(-)
+On Wed, Jul 15, 2020 at 09:57:55AM +0200, Greg KH wrote:
+> On Wed, Jul 15, 2020 at 12:24:22AM -0700, Joe Perches wrote:
+> > On Wed, 2020-07-15 at 09:17 +0200, Greg KH wrote:
+> > > On Wed, Jul 15, 2020 at 07:44:40AM +0800, Zhixu Zhao wrote:
+> > > > On Thu, Jun 18, 2020 at 12:11:27AM +0800, Zhixu Zhao wrote:
+> > > > > A coding alignment issue is found by checkpatch.pl.
+> > > > > Fix it by using a temporary for gasket_dev->bar_data[bar_num].
+> > > > > 
+> > > > > Signed-off-by: Zhixu Zhao <zhixu001@126.com>
+> > > > 
+> > > > Hi, there~
+> > > > 
+> > > > Does anybody have any further comments on this?
+> > > > Can it be merged?
+> > > 
+> > > I never saw the first version of this, are you sure it got sent to the
+> > > mailing list?  It's not in any archives anywhere.
+> > 
+> > I saw it.  It's here:
+> > https://lore.kernel.org/lkml/20200617161127.32006-1-zhixu001@126.com/
+> 
+> Ah, doh, sorry.
+> 
+> Zhixu, please address the comments given to you on the series and resend
+> it as a new version.
 
-Sorry for taking so long to get to this. I saw this last week or
-whenever and then forgot, saw the comments yesterday and remembered.
+He responded but not as a reply to my email.  It turns out I made a
+mistake.
 
-Looks pretty good overall. I will put my reviewed-by on each
-individual patch. Nevertheless, I tested them all together, so being
-lazy:
+Anyway, just resend, Zhixu.
 
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
+regards,
+dan carpenter
+
