@@ -2,127 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B54220FD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A77220FDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725864AbgGOOuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 10:50:05 -0400
-Received: from mail.efficios.com ([167.114.26.124]:52348 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgGOOuE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 10:50:04 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B8D4F2825C3;
-        Wed, 15 Jul 2020 10:50:02 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id fd-ChUQ4y-j4; Wed, 15 Jul 2020 10:50:02 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 5681228245B;
-        Wed, 15 Jul 2020 10:50:02 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 5681228245B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1594824602;
-        bh=UKtsJI5QB1xU8LCcwpkPI3i1klkSLGG5bCDazvEjLm4=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=NKN85lyLk2KAd0gJFrbdUMOJxNjH92cQP2mnUkcXuAHTjHHKlN8Pimon02tsp1st/
-         Ww+jEfodMeOWRm2KwjSxqDNdFytk5RM3UP6YXSacHVvpF4lwi8U+wfK6FEZ99ELYlU
-         i5XsDFuUPQJnXNv9iOpuwYd+WBu+XMAfmlj9s+A71VJLECxtG7eE2UcWJwupbL431l
-         4Ut5XiyLInXmBJRfdo+CtDlMa9preGCRPqb543iLSgZs7K9anuAjBrSUvyB8GgUlC5
-         bGMcurpU/3SB6Lu2FPiWyvX3Jx6T3lu+4AmQuauDhbJ0LJyqsB/8spTU9cQNsvXdIS
-         2gVnB0eV2EIlQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ANSTUrHF-juH; Wed, 15 Jul 2020 10:50:02 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 3AA0B282458;
-        Wed, 15 Jul 2020 10:50:02 -0400 (EDT)
-Date:   Wed, 15 Jul 2020 10:50:02 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Chris Kennelly <ckennelly@google.com>
-Cc:     Peter Oskolkov <posk@google.com>, Peter Oskolkov <posk@posk.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@linux.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fw@deneb.enyo.de>, carlos <carlos@redhat.com>
-Message-ID: <601595827.14270.1594824602119.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAEE+ybmt4BredezuTPdh-vf=FkKtu0yAhWuf+0daUe89AnbmPg@mail.gmail.com>
-References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com> <20200714030348.6214-3-mathieu.desnoyers@efficios.com> <CAFTs51UHaUqaKj5bEj0vQtEZrww9gnrqb-kGVk7DAgQJPBAR+w@mail.gmail.com> <775688146.12145.1594748580461.JavaMail.zimbra@efficios.com> <CAPNVh5fiCCJpyeLj_ciWzFrO4fasVXZNhpfKXJhJWJirXdJOjQ@mail.gmail.com> <CAEE+ybmt4BredezuTPdh-vf=FkKtu0yAhWuf+0daUe89AnbmPg@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/4] rseq: Allow extending struct rseq
+        id S1726603AbgGOOvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 10:51:15 -0400
+Received: from mail-eopbgr50046.outbound.protection.outlook.com ([40.107.5.46]:53686
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726431AbgGOOvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 10:51:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nT27LxK4k7LiG2XCCHFQDKwKBXccpU4iSAIEEF+tE89cX48kTi0HOv8AGbQ5RhbeDN0aAX/G/+Ok39QafzV6PpPnjdwuCT9QlUKWi8VmKI8jdgpGV1vK3pvxib27PN/EM7Q+/h/wV6n1E5Ab/XGfBKIAuEsJOPwBQBFf09VoxqqP9Fii7k7oLD9lHLaPISuNUSLqvSq1kuDm1QnFwt7WFHYYGQ4sX8s5/2PF/ExAjUDEOiZ8URWIhoue4nDzWdPXbZxBgWqqD6CC1lm5UT3V++22HThfN3hhXzxVtiC+41xjILQ8UsXCehblTbXwKdTYrYqtZ23Kcf3AYLO9NoFs3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2XwANTVQL4x+G6zfQNnfDDio08zBlW4d4skikYHLpMk=;
+ b=DZIjnt6GcSO3+/gEQRUn4HpTUcYYLZaraQvfk+N6tdPCe/77fS36q35QNKM1i2FoAr9SaBGU7BFDaYcbHcGJFZ7SK42ye8YOFnv1DCkqhVVcp0p412LDWLJ8ZKBRGTtRSF5fCrIp3R1XpNTsEv7oRpbzpe8UYU06qov0Xd98s/dV8oZtIRVMXa+dVah8FJODDpI1EW6mduMNjFoDQRUnpRPkby7zxQETBB9Z22kswnmbOovkArgPCIsOTrrXGbH5PyC0zhWVSVhHc9KxaK9Gb8t+UkUbcQ5lkGg+dvLhJrhFBPS274xk6NBBHlvAVbAkIXVEPA9X4adJZ87oQvtYNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kunbus.com; dmarc=pass action=none header.from=kunbus.com;
+ dkim=pass header.d=kunbus.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=kunbusgmbh.onmicrosoft.com; s=selector2-kunbusgmbh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2XwANTVQL4x+G6zfQNnfDDio08zBlW4d4skikYHLpMk=;
+ b=a6Pe9AhyZR4cxBw/L1vHjCqBaU5oE6mFmqtLb4MNPJRebflMgVbUIxmYk7BNoIdaOKPibBedpVcCdB9rKkegrNiDxPZzP+jgI+fRVXGfR13nMbINWIt0nJ1iR6cRV/zhclSNU4h70ACq86noujlhZkNQZk57QnOQA1E5ZhUbhLM=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=kunbus.com;
+Received: from DB8P193MB0744.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:145::18)
+ by DB8P193MB0581.EURP193.PROD.OUTLOOK.COM (2603:10a6:10:153::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18; Wed, 15 Jul
+ 2020 14:51:08 +0000
+Received: from DB8P193MB0744.EURP193.PROD.OUTLOOK.COM
+ ([fe80::21ab:201f:7843:1910]) by DB8P193MB0744.EURP193.PROD.OUTLOOK.COM
+ ([fe80::21ab:201f:7843:1910%8]) with mapi id 15.20.3174.026; Wed, 15 Jul 2020
+ 14:51:08 +0000
+From:   Philipp Rosenberger <p.rosenberger@kunbus.com>
+To:     linux-kernel@vger.kernel.org, rostedt@goodmis.org, mingo@redhat.com
+Cc:     Philipp Rosenberger <p.rosenberger@kunbus.com>
+Subject: [PATCH] trace: fix commets of include guards
+Date:   Wed, 15 Jul 2020 16:50:10 +0200
+Message-Id: <20200715145010.15652-1-p.rosenberger@kunbus.com>
+X-Mailer: git-send-email 2.27.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR10CA0040.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:150::20) To DB8P193MB0744.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:10:145::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
-Thread-Topic: rseq: Allow extending struct rseq
-Thread-Index: bPI+2deu99arGuPk6Okd/MCPJ67vKA==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kun-nb-112.kunbus.com (87.130.101.138) by AM0PR10CA0040.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18 via Frontend Transport; Wed, 15 Jul 2020 14:51:07 +0000
+X-Mailer: git-send-email 2.27.0
+X-Originating-IP: [87.130.101.138]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ba44dda9-f9c9-4434-d5aa-08d828ce81e5
+X-MS-TrafficTypeDiagnostic: DB8P193MB0581:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8P193MB0581EA75E974DC925F7D3AE49F7E0@DB8P193MB0581.EURP193.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:411;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ijrvSTdmddYLR3hZmrMjr/C0x8t7r+6Z8yxwoc6xT0eHVl/uDLqZCR+liNeimcXFPaxxRu6q1WJr1zDV2MzF/Ie6OXTX5Px4IATWYEwzeI3mobrV6RySntt2+EGgpR+fU4CJTSiRCvVm+pyIt6ipnxWQh1tejM5JrSbG2oDREaHkBxS9NJPoN+4K9UCfXwL2NTZ2Vufc+nt551RRLCSiZ3/9yN9wIO49yRsdDplmCvEtVIbemAIvdqaMtX9N/29G1HIXUpsIY8B3qEoRlvE4HztN8b6VhZXAo6/xZXZAO+hUQGIK+X0XVk6i0FpHSX18AzLW3+QPMRuzd6rd/2sDbg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8P193MB0744.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(366004)(396003)(39830400003)(376002)(346002)(83380400001)(52116002)(7696005)(2906002)(66946007)(1076003)(66556008)(66476007)(8936002)(6666004)(36756003)(5660300002)(6486002)(2616005)(4326008)(956004)(86362001)(316002)(508600001)(107886003)(26005)(186003)(16526019)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Mp+mE9Uul1LK9WDCAAeI6A7jKF/+DU+7KQw+Qx2jtxbJFGpi9kez2g3AbVw7x8cAFNgUhPToycf7W43i5m9x2d1MRdF6Hq3SZYUFM8qTIDhPmjvuCzTzmplZIt8qwxbRxdnkGICvz1RbFnlgPK7zFga4VeSAPMYCwCzyW2cgS1tYrzNpMyM2D/1mFngruap+XqBu42eU8kOzNMH2cmY6EjllXJHw4VWQL6YtXPr+97cdRYOVxeJwXwKBzvYFpDheqnbNjp6xTbN5Qe2uYmZ3Zw+Ab+OHUrIzEpdg/wkNe7yRIfSsGcRzzOvQhmyHxA5KNlNWs+yBAPzE6wcM+iVO8IVFSz5i0W6ywOONHeFLRVu76gY2SJ7sRj5CvuGCSai6Hvecg5m7EnPsE+ejoiLuG+iPPcX8b6wWBYHuE+Mi9+b8n5+40hUm8R3gzTXK3xcxvvee6Et0KS293Kw6RmVcn6slyjwWvr37HD8i3geXdKQ=
+X-OriginatorOrg: kunbus.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba44dda9-f9c9-4434-d5aa-08d828ce81e5
+X-MS-Exchange-CrossTenant-AuthSource: DB8P193MB0744.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2020 14:51:08.1737
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: aaa4d814-e659-4b0a-9698-1c671f11520b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IH5YIdue1dWNd10fn4aTeYc5RU6SasJnb23/p2fCQsSvczNkirY77Hpd02sbFRgQQu6pPhq/iboEtkQx/Ixav31HleQ0hY01iUNBtHZtWHg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8P193MB0581
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 14, 2020, at 10:34 PM, Chris Kennelly ckennelly@google.com wrote:
+Some header files where derived from other headers, but the comments of
+the include guards where not changed. This patch fixes those comments
+at the end of the header files.
 
-> On Tue, Jul 14, 2020 at 2:33 PM Peter Oskolkov <posk@google.com> wrote:
->>
->> On Tue, Jul 14, 2020 at 10:43 AM Mathieu Desnoyers
->> <mathieu.desnoyers@efficios.com> wrote:
->> >
->> > ----- On Jul 14, 2020, at 1:24 PM, Peter Oskolkov posk@posk.io wrote:
->> >
->> > > At Google, we actually extended struct rseq (I will post the patches
->> > > here once they are fully deployed and we have specific
->> > > benefits/improvements to report). We did this by adding several fields
->> > > below __u32 flags (the last field currently), and correspondingly
->> > > increasing rseq_len in rseq() syscall. If the kernel does not know of
->> > > this extension, it will return -EINVAL due to an unexpected rseq_len;
->> > > then the application can either fall-back to the standard/upstream
->> > > rseq, or bail. If the kernel does know of this extension, it accepts
->> > > it. If the application passes the old rseq_len (32), the kernel knows
->> > > that this is an old application and treats it as such.
->> > >
->> > > I looked through the archives, but I did not find specifically why the
->> > > pretty standard approach described above is considered inferior to the
->> > > one taken in this patch (freeze rseq_len at 32, add additional length
->> > > fields to struct rseq). Can these be summarized?
->> >
->> > I think you don't face the issues I'm facing with libc rseq integration
->> > because you control the entire user-space software ecosystem at Google.
->> >
->> > The main issue we face is that the library responsible for registering
->> > rseq (either glibc 2.32+, an early-adopter librseq library, or the
->> > application) may very well not be the same library defining the __rseq_abi
->> > symbol used in the global symbol table. Interposition with ld preload or
->> > by defining the __rseq_abi in the program's executable are good examples
->> > of this kind of scenario, and those use-cases are supported.
-> 
-> Does this work if/when we run out of bytes in the current sizeof(__rseq_abi)?
+Signed-off-by: Philipp Rosenberger <p.rosenberger@kunbus.com>
+---
+ include/trace/events/initcall.h   | 2 +-
+ include/trace/events/irq_matrix.h | 2 +-
+ include/trace/events/page_ref.h   | 2 +-
+ include/trace/events/regulator.h  | 2 +-
+ include/trace/events/rseq.h       | 2 +-
+ include/trace/events/spi.h        | 2 +-
+ include/trace/events/sunvnet.h    | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-Only if all libraries/programs involved (including glibc) expect that the size
-of the __rseq_abi can be the smallest possible subset, and only consider it
-to be "extended" if specific information in the ABI tells them it is the case.
-
-> 
-> Which library provides the TLS symbol (and N bytes of storage) seems
-> sensitive to the choices the linker makes for us, once the symbol
-> sizes diverge.
-
-AFAIU, a symbol defined in the main executable will have precedence over
-a preloaded library, which has precedence over shared library dependencies,
-e.g. glibc.
-
-Thanks,
-
-Mathieu
-
+diff --git a/include/trace/events/initcall.h b/include/trace/events/initcall.h
+index eb903c3f195f..9d7a00378ba9 100644
+--- a/include/trace/events/initcall.h
++++ b/include/trace/events/initcall.h
+@@ -68,7 +68,7 @@ TRACE_EVENT(initcall_finish,
+ 	TP_printk("func=%pS ret=%d", __entry->func, __entry->ret)
+ );
+ 
+-#endif /* if !defined(_TRACE_GPIO_H) || defined(TRACE_HEADER_MULTI_READ) */
++#endif /* if !defined(_TRACE_INITCALL_H) || defined(TRACE_HEADER_MULTI_READ) */
+ 
+ /* This part must be outside protection */
+ #include <trace/define_trace.h>
+diff --git a/include/trace/events/irq_matrix.h b/include/trace/events/irq_matrix.h
+index 267d4cbbf360..6a554bdcd75a 100644
+--- a/include/trace/events/irq_matrix.h
++++ b/include/trace/events/irq_matrix.h
+@@ -195,7 +195,7 @@ DEFINE_EVENT(irq_matrix_cpu, irq_matrix_free,
+ );
+ 
+ 
+-#endif /*  _TRACE_IRQ_H */
++#endif /* _TRACE_IRQ_MATRIX_H */
+ 
+ /* This part must be outside protection */
+ #include <trace/define_trace.h>
+diff --git a/include/trace/events/page_ref.h b/include/trace/events/page_ref.h
+index 5d2ea93956ce..e3aa264918da 100644
+--- a/include/trace/events/page_ref.h
++++ b/include/trace/events/page_ref.h
+@@ -129,7 +129,7 @@ DEFINE_EVENT(page_ref_mod_template, page_ref_unfreeze,
+ 	TP_ARGS(page, v)
+ );
+ 
+-#endif /* _TRACE_PAGE_COUNT_H */
++#endif /* _TRACE_PAGE_REF_H */
+ 
+ /* This part must be outside protection */
+ #include <trace/define_trace.h>
+diff --git a/include/trace/events/regulator.h b/include/trace/events/regulator.h
+index b70583c32c08..dd1fbf2269a0 100644
+--- a/include/trace/events/regulator.h
++++ b/include/trace/events/regulator.h
+@@ -136,7 +136,7 @@ DEFINE_EVENT(regulator_value, regulator_set_voltage_complete,
+ 
+ );
+ 
+-#endif /* _TRACE_POWER_H */
++#endif /* _TRACE_REGULATOR_H */
+ 
+ /* This part must be outside protection */
+ #include <trace/define_trace.h>
+diff --git a/include/trace/events/rseq.h b/include/trace/events/rseq.h
+index a04a64bc1a00..4ebc8f228e7a 100644
+--- a/include/trace/events/rseq.h
++++ b/include/trace/events/rseq.h
+@@ -51,7 +51,7 @@ TRACE_EVENT(rseq_ip_fixup,
+ 		__entry->post_commit_offset, __entry->abort_ip)
+ );
+ 
+-#endif /* _TRACE_SOCK_H */
++#endif /* _TRACE_RSEQ_H */
+ 
+ /* This part must be outside protection */
+ #include <trace/define_trace.h>
+diff --git a/include/trace/events/spi.h b/include/trace/events/spi.h
+index 277bb9d25779..3e71d24dc5de 100644
+--- a/include/trace/events/spi.h
++++ b/include/trace/events/spi.h
+@@ -151,7 +151,7 @@ DEFINE_EVENT(spi_transfer, spi_transfer_stop,
+ 
+ );
+ 
+-#endif /* _TRACE_POWER_H */
++#endif /* _TRACE_SPI_H */
+ 
+ /* This part must be outside protection */
+ #include <trace/define_trace.h>
+diff --git a/include/trace/events/sunvnet.h b/include/trace/events/sunvnet.h
+index 8d444f1bb10d..088481cdd078 100644
+--- a/include/trace/events/sunvnet.h
++++ b/include/trace/events/sunvnet.h
+@@ -134,7 +134,7 @@ TRACE_EVENT(vnet_skip_tx_trigger,
+ 	TP_printk("(%x:%x) Skip Tx trigger. Last trigger sent was %d",
+ 		__entry->lsid, __entry->rsid, __entry->last)
+ );
+-#endif /* _TRACE_SOCK_H */
++#endif /* _TRACE_SUNVNET_H */
+ 
+ /* This part must be outside protection */
+ #include <trace/define_trace.h>
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.27.0
+
