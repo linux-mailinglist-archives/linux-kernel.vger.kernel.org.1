@@ -2,109 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A422213D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 19:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31FE2213DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 19:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726935AbgGOR40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 13:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbgGOR4V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 13:56:21 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EE4C08C5CE
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 10:56:20 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id h28so2292903edz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 10:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R0ZW6+2wSAAvKeptmvS3TdVWhKSNDtE+RZ5Wnm+wGaE=;
-        b=JhKTjk4BbKFQoyxETwWTq/M5U8QYrEqybvknl5jzSV98DOFBDsiOzEO5CH90YZeobH
-         pWdmFf6NCTkMb6Lo01g2/HjhgQyDyHemL5J1gtG0OQVSYK16cpNBY+yzNsOvGWpMwgZc
-         VnjFQnglBrv1D3SbKrFfHYZppu1Uqzp5GnQAOz5L4nJ3MLPNPdvbGjm2Yxln+FJ4NZBP
-         2KgJtdG4PjvIqpgSIVkgTt9ENAlSAHbJhAxvgu07sLEfUrRO0Dc/9awb1pyRr1rGhEPQ
-         PFVM4dFJxxNse8NwiUDCedpPyNo1G1QDs4px4FGAcLfc1YAl2jYepYpjXG4ea6lQUHVN
-         oJLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R0ZW6+2wSAAvKeptmvS3TdVWhKSNDtE+RZ5Wnm+wGaE=;
-        b=TgtNZtI9P0CnSKhIHp0LEbfqiDxvhU8LvTsfFGCzzXB4iI1fcHUT0TAkXtecvxmijX
-         sQESBYXYZIB4rPWvZthfr/2Ip7BFAPlyxScjHg9x3RSZr6SrScQJzEia2Dar7w/XTfMt
-         tlaBxhmMx7lUvrX3LPYef4oySw+bBAWXPjhO8uxbmRn2Lipp06HubuErEX682TXQDY8h
-         /I+XC6NaeXISLO2FWZ32gIOQ+tsJ6Wi4HOdy01vcSG/Rw1fKwMIDJwuxYtNTyNVddeP3
-         NXoFageYhFODeOJit45EtFuKJIbfhyKuV5FzfJ6RE27EgixrlxcwAUY/LNJQktv6n6ff
-         h9TA==
-X-Gm-Message-State: AOAM532sVJxz3mN1BEgd8eKjeBn2+oRuvlasiApvJ4oTVp214DpWla5y
-        B8ugv/CZqLZhI7PP6oTB5GVFgfnvmlxACGjBJTc=
-X-Google-Smtp-Source: ABdhPJwiGpxm2H2nTFAV4e5biQsdybReF+2s8VBt/yBMMu6X0KI5KzzjyHk2KdwODKFNIiKJCdSIa/ZEwu01gWKsHBU=
-X-Received: by 2002:a05:6402:16c7:: with SMTP id r7mr796021edx.288.1594835779154;
- Wed, 15 Jul 2020 10:56:19 -0700 (PDT)
+        id S1726376AbgGOR71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 13:59:27 -0400
+Received: from mail.nic.cz ([217.31.204.67]:34598 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725861AbgGOR70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 13:59:26 -0400
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTPSA id 8C7E1140968;
+        Wed, 15 Jul 2020 19:59:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1594835964; bh=wSLE4bSdSmJMP5hpsSynAR0AfQ54sMsJNDTZBVOCjJM=;
+        h=Date:From:To;
+        b=vMqdUxGqpidHhI5kmr7U2ZRdspcEuLP3HEpRhraxy0n0BofPlhhoT7svUH3od1LT1
+         G9XSUlJ+5Y698s7LPk9uWmOopQbOw5P3lPkvqmOUHmF1HdRuKC+1eyISpZ8eIK4xWq
+         X//kaVHaAQelmwVe6xPDfp9yIeZOaWOXxiMjCwq8=
+Date:   Wed, 15 Jul 2020 19:59:24 +0200
+From:   Marek =?ISO-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Dan Murphy <dmurphy@ti.com>, jacek.anaszewski@gmail.com,
+        robh@kernel.org, devicetree@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v30 04/16] leds: Add multicolor ID to the color ID list
+Message-ID: <20200715195924.51ab4dbe@dellmb.labs.office.nic.cz>
+In-Reply-To: <20200715173610.GA31327@amd>
+References: <20200713154544.1683-1-dmurphy@ti.com>
+        <20200713154544.1683-5-dmurphy@ti.com>
+        <20200715152056.3505e181@dellmb.labs.office.nic.cz>
+        <20200715173610.GA31327@amd>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200713114321.783f0ae6@lwn.net> <20200714193805.49746-1-grandmaster@al2klimov.de>
-In-Reply-To: <20200714193805.49746-1-grandmaster@al2klimov.de>
-From:   Marc Dionne <marc.c.dionne@gmail.com>
-Date:   Wed, 15 Jul 2020 14:56:07 -0300
-Message-ID: <CAB9dFdsHfSqjvkAzOs6+Fp81qAZug2ROb2eyGOMbyLTda2x_-Q@mail.gmail.com>
-Subject: Re: [PATCH] CREDITS: remove link http://www.dementia.org/~shadow
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, corbet@lwn.net,
-        ribalda@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        mchehab+samsung@kernel.org, luis.f.correia@gmail.com,
-        geert+renesas@glider.be, paulburton@kernel.org, cyphar@cyphar.com,
-        martink@posteo.de, davej@codemonkey.org.uk,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 4:41 PM Alexander A. Klimov
-<grandmaster@al2klimov.de> wrote:
->
-> Rationale:
-> The way it redirects looks like a fallback from a dead URL to a generic one.
->
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-> ---
->  Yes, I noted that some of the links removed by these "CREDITS: remove link:"
->  patches have email addresses with the same domain nearby.
->
->  Don't worry, I'll take care of them together with all other
->  dead email addresses - but not right now.
->
->
->  CREDITS | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/CREDITS b/CREDITS
-> index 0787b5872906..92ad22b7ef56 100644
-> --- a/CREDITS
-> +++ b/CREDITS
-> @@ -483,7 +483,6 @@ D: Intel Wireless WiMAX Connection 2400 SDIO driver
->
->  N: Derrick J. Brashear
->  E: shadow@dementia.org
-> -W: http://www.dementia.org/~shadow
->  P: 512/71EC9367 C5 29 0F BC 83 51 B9 F0  BC 05 89 A0 4F 1F 30 05
->  D: Author of Sparc CS4231 audio driver, random Sparc work
->  S: 403 Gilmore Avenue
-> --
-> 2.27.0
+On Wed, 15 Jul 2020 19:36:10 +0200
+Pavel Machek <pavel@ucw.cz> wrote:
 
-"dementia.org" became "dementix.org" a few years ago.
+> Thanks for patches, thanks for reviews, 1-4 applied.
+> 									Pavel
 
-This happens to be a co-worker, who suggests replacing the entry as
-per this commit:
-
-   https://github.com/torvalds/linux/commit/d878bcc8695c5d8bd3ca8b8defa4d50ec2424859
-
-Although that might be a bit beyond the scope of this particular patch
-series; it should maybe be sent separately.
-
-Marc
+The most important one is 5th, though :D
