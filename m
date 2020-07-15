@@ -2,227 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267DC220590
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695B822056F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbgGOGzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 02:55:47 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:34616 "EHLO inva020.nxp.com"
+        id S1728885AbgGOGv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 02:51:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729013AbgGOGzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 02:55:45 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8983E1A03AA;
-        Wed, 15 Jul 2020 08:55:42 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D7FD31A03D4;
-        Wed, 15 Jul 2020 08:55:38 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E7E02402BF;
-        Wed, 15 Jul 2020 14:55:33 +0800 (SGT)
-From:   andy.tang@nxp.com
-To:     shawnguo@kernel.org
-Cc:     amit.kucheria@linaro.org, leoyang.li@nxp.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yuantian Tang <andy.tang@nxp.com>
-Subject: [PATCH 2/2 v2] arm64: dts: ls208xa: add more thermal zone support
-Date:   Wed, 15 Jul 2020 14:49:09 +0800
-Message-Id: <20200715064909.9161-2-andy.tang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200715064909.9161-1-andy.tang@nxp.com>
-References: <20200715064909.9161-1-andy.tang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725924AbgGOGv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 02:51:26 -0400
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 574D32067D;
+        Wed, 15 Jul 2020 06:51:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594795885;
+        bh=5DttlarQkKvK74ioG6I0+VxDllg5IuyUP93tfyKyKgQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ng5t2TWJzvvsKlj8vhgNYrko2Y/LBVPSqVGt6VfuP/VXJ7kMpneB2xAI4nINZLpni
+         yvIwA6yaxpVwOtzCVOBJThcMsykaZjhWnPvYCjF5SL3kSv294DMupYqxVwiZL2LL3J
+         YOCbJDzS5uoJN1EmKaoSXNbV7qWobORB+Otw6uUs=
+Received: by mail-ot1-f52.google.com with SMTP id 72so676849otc.3;
+        Tue, 14 Jul 2020 23:51:25 -0700 (PDT)
+X-Gm-Message-State: AOAM531m8UphKIayCokYP4DDUt4ccuU1249SGBxc4p5XDdaToAQiwOEb
+        fnvz/cxkj6yD+c+Yrc4Bwj9+EKpOq3+CjJ5gWQM=
+X-Google-Smtp-Source: ABdhPJyOUv8yAnl6wxEUDJ3G0ggCymhEObpRdn/b7PFU4YR6YIR4dFTpLKjM9DtkyVqwv4c8oWhWQAbWJrxM6qgMY9U=
+X-Received: by 2002:a9d:7553:: with SMTP id b19mr7955857otl.77.1594795884664;
+ Tue, 14 Jul 2020 23:51:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200715032631.1562882-1-nivedita@alum.mit.edu>
+In-Reply-To: <20200715032631.1562882-1-nivedita@alum.mit.edu>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 15 Jul 2020 09:51:12 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXHzZAqHbqgJnrTjxtRvcVkpZan3LC6khFEucdR=cUhYfg@mail.gmail.com>
+Message-ID: <CAMj1kXHzZAqHbqgJnrTjxtRvcVkpZan3LC6khFEucdR=cUhYfg@mail.gmail.com>
+Subject: Re: [PATCH] arch/x86/boot: Don't add the EFI stub to targets
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     X86 ML <x86@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuantian Tang <andy.tang@nxp.com>
+On Wed, 15 Jul 2020 at 06:26, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> vmlinux-objs-y is added to targets, which currently means that the EFI
+> stub gets added to the targets as well. It shouldn't be added since it
+> is built elsewhere.
+>
+> This confuses Makefile.build which interprets the EFI stub as a target
+>         $(obj)/$(objtree)/drivers/firmware/efi/libstub/lib.a
+> and will create drivers/firmware/efi/libstub/ underneath
+> arch/x86/boot/compressed, to hold this supposed target, if building
+> out-of-tree. [0]
+>
+> Fix this by pulling the stub out of vmlinux-objs-y into efi-obj-y.
+>
+> [0] See scripts/Makefile.build near the end:
+>     # Create directories for object files if they do not exist
+>
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 
-There are 7 thermal zones in ls208xa soc. Add the other thermal zone
-nodes to enable them.
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-Signed-off-by: Yuantian Tang <andy.tang@nxp.com>
----
-v2:
-	- remove useless alert trip
-	- add cooling-map to core cluster zones.
-
- .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 141 ++++++++++++++++--
- 1 file changed, 132 insertions(+), 9 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-index 41102dacc2e1..cc36c969dd9d 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-@@ -79,20 +79,62 @@
- 	};
- 
- 	thermal-zones {
--		cpu_thermal: cpu-thermal {
-+		ddr-controller1 {
- 			polling-delay-passive = <1000>;
- 			polling-delay = <5000>;
-+			thermal-sensors = <&tmu 1>;
- 
-+			trips {
-+				ddr-ctrler1-crit {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+		};
-+
-+		ddr-controller2 {
-+			polling-delay-passive = <1000>;
-+			polling-delay = <5000>;
-+			thermal-sensors = <&tmu 2>;
-+
-+			trips {
-+				ddr-ctrler2-crit {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+		};
-+
-+		ddr-controller3 {
-+			polling-delay-passive = <1000>;
-+			polling-delay = <5000>;
-+			thermal-sensors = <&tmu 3>;
-+
-+			trips {
-+				ddr-ctrler3-crit {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+		};
-+
-+		core-cluster1 {
-+			polling-delay-passive = <1000>;
-+			polling-delay = <5000>;
- 			thermal-sensors = <&tmu 4>;
- 
- 			trips {
--				cpu_alert: cpu-alert {
--					temperature = <75000>;
-+				core_cluster1_alert: core-cluster1-alert {
-+					temperature = <85000>;
- 					hysteresis = <2000>;
- 					type = "passive";
- 				};
--				cpu_crit: cpu-crit {
--					temperature = <85000>;
-+
-+				core-cluster1-crit {
-+					temperature = <95000>;
- 					hysteresis = <2000>;
- 					type = "critical";
- 				};
-@@ -100,14 +142,95 @@
- 
- 			cooling-maps {
- 				map0 {
--					trip = <&cpu_alert>;
-+					trip = <&core_cluster1_alert>;
- 					cooling-device =
- 						<&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
--						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
-+		};
-+
-+		core-cluster2 {
-+			polling-delay-passive = <1000>;
-+			polling-delay = <5000>;
-+			thermal-sensors = <&tmu 5>;
-+
-+			trips {
-+				core_cluster2_alert: core-cluster2-alert {
-+					temperature = <85000>;
-+					hysteresis = <2000>;
-+					type = "passive";
-+				};
-+
-+				core-cluster2-crit {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&core_cluster2_alert>;
-+					cooling-device =
- 						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
--						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
-+		};
-+
-+		core-cluster3 {
-+			polling-delay-passive = <1000>;
-+			polling-delay = <5000>;
-+			thermal-sensors = <&tmu 6>;
-+
-+			trips {
-+				core_cluster3_alert: core-cluster3-alert {
-+					temperature = <85000>;
-+					hysteresis = <2000>;
-+					type = "passive";
-+				};
-+
-+				core-cluster3-crit {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&core_cluster3_alert>;
-+					cooling-device =
- 						<&cpu4 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
--						<&cpu5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu5 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+				};
-+			};
-+		};
-+
-+		core-cluster4 {
-+			polling-delay-passive = <1000>;
-+			polling-delay = <5000>;
-+			thermal-sensors = <&tmu 7>;
-+
-+			trips {
-+				core_cluster4_alert: core-cluster4-alert {
-+					temperature = <85000>;
-+					hysteresis = <2000>;
-+					type = "passive";
-+				};
-+
-+				core-cluster4-crit {
-+					temperature = <95000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+
-+			cooling-maps {
-+				map0 {
-+					trip = <&core_cluster4_alert>;
-+					cooling-device =
- 						<&cpu6 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
- 						<&cpu7 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
- 				};
--- 
-2.17.1
-
+> ---
+>  arch/x86/boot/compressed/Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+> index 7619742f91c9..5a828fde7a42 100644
+> --- a/arch/x86/boot/compressed/Makefile
+> +++ b/arch/x86/boot/compressed/Makefile
+> @@ -90,8 +90,8 @@ endif
+>
+>  vmlinux-objs-$(CONFIG_ACPI) += $(obj)/acpi.o
+>
+> -vmlinux-objs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
+>  vmlinux-objs-$(CONFIG_EFI_MIXED) += $(obj)/efi_thunk_$(BITS).o
+> +efi-obj-$(CONFIG_EFI_STUB) = $(objtree)/drivers/firmware/efi/libstub/lib.a
+>
+>  # The compressed kernel is built with -fPIC/-fPIE so that a boot loader
+>  # can place it anywhere in memory and it will still run. However, since
+> @@ -115,7 +115,7 @@ endef
+>  quiet_cmd_check-and-link-vmlinux = LD      $@
+>        cmd_check-and-link-vmlinux = $(cmd_check_data_rel); $(cmd_ld)
+>
+> -$(obj)/vmlinux: $(vmlinux-objs-y) FORCE
+> +$(obj)/vmlinux: $(vmlinux-objs-y) $(efi-obj-y) FORCE
+>         $(call if_changed,check-and-link-vmlinux)
+>
+>  OBJCOPYFLAGS_vmlinux.bin :=  -R .comment -S
+> --
+> 2.26.2
+>
