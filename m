@@ -2,120 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0429C220625
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 09:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC810220627
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 09:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729313AbgGOH0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 03:26:36 -0400
-Received: from mail-eopbgr70097.outbound.protection.outlook.com ([40.107.7.97]:40384
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729283AbgGOH0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 03:26:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IiLHEYVfHMLN6w6soDJ7T0FttL6OwDlmIENNu5Gpc4kgA3WEjqCysvVCvi9MnXLguVvrUoOQM5ok3ryeOn25kk5L2OqcL0Dp4xbGKkstfJ/FflEuoHGuyGiaVs4kHCeX3FobPvrdpPgLsiXOSWxEJMjnxzwwRQ9GS/DaZZsvwLjULeNxPajjkR4JJrze/xEmKBjV3uRg4yK9nl/54WDrdFpc4rQDxMN8xRMPtBInNIhLQwEEjvvJlhmjEhlrzWx5JX/nO+0SISZ3Ugxc8biIdVvlG7FF4LBFppqOcMH+pDj01LdPSC6gnfB+9TEcYIVlNkjmZZ/sCRScCoXQnnYNUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cnunhXK7BmdUXfkEGB8BFFuOlWT46F78/xfRgN58jXQ=;
- b=CQm5mvbg4iukPaP82JbdKSM32XdoQbAsOW0ozAJJ00bBcgHIyotgAKXPIjmCFUhIZh9VVcwenK107plySAW8Ip1PBHv9+Qqi/AuRd9u7vp0zN7kKVO3toR/Z4A0taCVSNoPP8Ul4CbLydx1CNJumrbZ/WELJtAJqqj9nr8ybS0LqR4OBtdYDQ8F1XqYkIaARz/isAnEjewG9XTB+z4+w6s4PMHa9iKgunrzbRG8N8pRaWfF+QfpoEbInOrenA+iGblkqnDyMjPBIN5nqdgKYq7+Yg3nsJ+mchgNDBVuimAZ7GfAoxCAg2IeJ64ThCtDF45YUsfuhGWPFQHXiroE7dg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cnunhXK7BmdUXfkEGB8BFFuOlWT46F78/xfRgN58jXQ=;
- b=bn1M78PEWN5JIehnBjXgPBKUADso+SnyZlsSt5vpdm20atlPIK0drK5TFL6WPKXarwz47jEo/cNiy/efRp8VtoA2NIEaEqkiNqWp1qBBl9xUyY5y8INbeHBZoKQWg1q8Cxvjd6qKIC652fj3a212h3CaqU6qP9bq8fXJmzFXvyQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=kontron.de;
-Received: from DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:50::12)
- by DB6PR1001MB0984.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:4:63::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.23; Wed, 15 Jul
- 2020 07:26:30 +0000
-Received: from DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::ac04:ef33:baf3:36f3]) by DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::ac04:ef33:baf3:36f3%4]) with mapi id 15.20.3174.026; Wed, 15 Jul 2020
- 07:26:30 +0000
-Subject: Re: [PATCH] spi: spidev: Add compatible for external SPI ports on
- Kontron boards
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-References: <20200702141846.7752-1-frieder.schrempf@kontron.de>
- <20200702142511.GF4483@sirena.org.uk>
- <24ec4eed-de01-28df-ee1f-f7bcfc80051a@kontron.de>
- <20200702150725.GI4483@sirena.org.uk>
- <479d566a-213f-4e33-8ac7-7637ae88e31c@kontron.de>
- <a5b88ad9-3884-1d9c-c4ad-057266f84261@kontron.de>
- <20200713151108.GB4420@sirena.org.uk>
- <2eb6971b-7ea4-c9c8-5452-6f4b17e8860a@kontron.de>
- <20200714192907.GJ4900@sirena.org.uk>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-Message-ID: <16825a78-8eb0-90f2-433a-d1ae6eed6ba8@kontron.de>
-Date:   Wed, 15 Jul 2020 09:26:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200714192907.GJ4900@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR03CA0080.eurprd03.prod.outlook.com
- (2603:10a6:208:69::21) To DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:50::12)
+        id S1729320AbgGOH1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 03:27:22 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:40164 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728888AbgGOH1V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 03:27:21 -0400
+Received: by mail-oi1-f193.google.com with SMTP id t198so1474639oie.7;
+        Wed, 15 Jul 2020 00:27:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yOG5hbXf9gCS3fAC+6osqlmvxreRnYDSVs3PZp8A2Sk=;
+        b=hv7p5ghhPWVZXDqjylFDkqujCrOYgof6iXyymJIXx3A6UeFOBwtt0RGH2i7Xd6xahL
+         9xzLw4gVOdzgHXS5b0ypviOG+1WBwpieui2Ax45GIpkJVscCxUCYk5hJmq5LDygxHl2A
+         hXm0N2Ni7MtiupVCoBSylQZdGG+8ttow+VLnDSX6VysZie2iRKPeKVg6Z/fsB9WflilC
+         62ASTboooaR3fzCKUXHC8wxFPbMBpHChvom5lkbNGLArD5AArobcvmTtkeIh2d93ZSvI
+         eYJ/ACIKdYNWHI2dH6D+dR3kdN1gd+Fg6eJ5MhSo/cGj+LrJjh/j6ql+gJu+RUC1yPxD
+         ovBw==
+X-Gm-Message-State: AOAM533VeF1Wbq2sQZ68IER1rB+rkL4CBK+D1aXxR+S0gNl7D8L2hZPq
+        D7wf64kk+WwIa4ERn+NyX/LJFy+mOHpRb79sWbVsGJD1ohM=
+X-Google-Smtp-Source: ABdhPJwAch/u3YbK4xUzI/NXXwiBhJyutH5sGUCIrTLZjgDyBAQItkSdXa9uWzVCUnTwfy8dDIK13opWQ8gKuhO8N1M=
+X-Received: by 2002:a05:6808:64a:: with SMTP id z10mr6792545oih.54.1594798040215;
+ Wed, 15 Jul 2020 00:27:20 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.10.17] (109.250.128.36) by AM0PR03CA0080.eurprd03.prod.outlook.com (2603:10a6:208:69::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17 via Frontend Transport; Wed, 15 Jul 2020 07:26:30 +0000
-X-Originating-IP: [109.250.128.36]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 39c83a16-f50e-4765-ea85-08d8289064ea
-X-MS-TrafficTypeDiagnostic: DB6PR1001MB0984:
-X-Microsoft-Antispam-PRVS: <DB6PR1001MB0984B70946C80D44C4752374E97E0@DB6PR1001MB0984.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 505f54hriWc64sBVpYU1kM/qapJi5WJH3Faz9YVgCjD5R6kF2B2O/rDV7sOfvkQGTB1HQtsEJn1gm15osDuC+C0K7Y09DL8dPa3cg7/vDLlJ2VRizr+gvwokAkU9J7ma8o385ez1aNjkE6h7OLILF7WohbElyeWoT+wXB2PCYCstfcERDKpTTmgSgpJ0GXgXntNmJcf5DcvF5KKKaZC1GqVtvo7/ZDECTswjEomRj+VC6WW0d1EtZIg9md8cFjZ8VaUNIWUNZssWajkcO0HctJWlYPh2r+Y8JlukEUe96YycU/xOooAzCjQy6pHAH6pD7sFvFKU25W6uXlxZWa3dDSAQ4azDSvnVlSKo9Bg98wjQ1WH/L9bgbFZULlpzcFub
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39850400004)(136003)(376002)(346002)(366004)(316002)(16576012)(5660300002)(66556008)(66476007)(26005)(956004)(2616005)(2906002)(31686004)(83380400001)(53546011)(8676002)(4326008)(66946007)(8936002)(36756003)(16526019)(6486002)(478600001)(186003)(86362001)(44832011)(6916009)(31696002)(52116002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: iCN1NspopIPfr3dBjsLi42tty/0gJ55VdrKSJF63QYReZT2tv9aK2c3o1kXWZJeb5vYn62nVWvNwWW0KzzOvrPxVFF6IkdjkZ7/zEd1zcWSe8kFWbNzNN3egHGVteUSUNjJxaxTFzFVx8VX9YuWB9iaW+QjbWvBJ81Uds20SjKyGl9bI3BanSRm8sp21eF7dr6Q/c0Yra7EsONrLPCoV2CpNwxDlI3OICtIv/rmi/9IkbL9DIysTI+HUDJpK1gGzEyZkJTONs8ym4P48s36YS7hI6Wb8bupTlaC2b8hGb6GF65RpGnE1nLYLv3dsouv7JLbY76lC46XMWpf/uMjuzqPa/90N+zqLfIT5XYda14EqjhDVgtwtbUNDXr5SFSbJyDAZrY+ubuwXlEFcT3daEqyBuEeQjS2IWIgs/VxvOBZjOAj+sUJoWcWd0l4NmVqUy79NwS5ti7SiFQ7DeOV4jPCnqOLf6aSyJSBPjJcZ5Gg=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39c83a16-f50e-4765-ea85-08d8289064ea
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR10MB2490.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2020 07:26:30.7733
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SX3pMUu8kDHJu8Y7KZsTigHGNWR0yRylMi6YRXWQ+WjaMkBpbo6EJzhvcfVGadc5b8P2MnkJzqq2VG15kvjByHOq3xnLN9KPJvcLmxqvSoc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR1001MB0984
+References: <20200714121856.955680-1-hch@lst.de> <b0745e43-0ff1-58f7-70d5-60b9c8b8d81b@physik.fu-berlin.de>
+ <20200714155914.GA24404@brightrain.aerifal.cx> <8cbf2963-d0e4-0ca8-4ffe-c2057694447f@physik.fu-berlin.de>
+ <011f29e6-ad71-366e-dbff-bc8471f3da60@physik.fu-berlin.de>
+In-Reply-To: <011f29e6-ad71-366e-dbff-bc8471f3da60@physik.fu-berlin.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 15 Jul 2020 09:27:08 +0200
+Message-ID: <CAMuHMdUre2-fRgLP8YiwjAKN6J=m1vGhPSMMUdpof7jPJfcWuw@mail.gmail.com>
+Subject: Re: ioremap and dma cleanups and fixes for superh (2nd resend)
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Rich Felker <dalias@libc.org>, Christoph Hellwig <hch@lst.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.20 21:29, Mark Brown wrote:
-> On Tue, Jul 14, 2020 at 10:54:15AM +0200, Frieder Schrempf wrote:
-> 
->> It would still be quite nice to benefit from the flexibility of DT overlays
->> not only for the SPI use case. But before I come up with any custom
->> solution, for now I will rather have the device in the DT statically.
-> 
->> I just wonder if I need to keep the DT node for the device in a separate
->> patch in our own tree, or if a node with a custom compatible string like for
->> example "kontron,user-spi" would be accepted upstream, without a matching
->> driver?
-> 
-> I'm having a hard time getting enthusiastic about it TBH - can you not
-> just use spidev and live with the warning?
+Hi Adrian,
 
-Ok, I can do that, but when I resend my patches and add "compatible = 
-'spidev'" to my DT I expect someone to complain again as my DT does not 
-describe the hardware.
+On Wed, Jul 15, 2020 at 1:14 AM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> However, independent of Christoph's series, the kernels throws two backtraces during
+> boot which I think should require a git bisect (unless I missed a configuration option
+> as I trimmed down the kernel a bit to make sure it's not too big).
+>
+> See the traces below and let me know what you think.
 
-Seeing that there are quite a few DTs that still do it like this, I 
-probably will try it still and also keep a patch in our tree to remove 
-the warning so customers won't be getting worried.
+> [    1.560000] sh-sci.1: ttySC1 at MMIO 0xffeb0000 (irq = 44, base_baud = 0) is a scif
+> [    1.560000] BUG: spinlock bad magic on CPU#0, swapper/1
+> [    1.560000]  lock: sci_ports+0x1d8/0xb10, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
 
-But for obvious reasons this can't be considered a good solution and it 
-seems somewhat disturbing that the maintainer needs to propose it 
-because of lack of proper solutions ;)
+[PATCH v1] serial: core: Initialise spin lock before use in
+uart_configure_port()
+https://lore.kernel.org/r/20200706140036.75524-1-andriy.shevchenko@linux.intel.com
+
+> [    1.560000] CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc5-00026-g22b7a96ece82 #3
+> [    1.560000] Stack: (0x9f445ce8 to 0x9f446000)
+> [    1.560000] 5ce0:
+> [    1.560000]
+> [    1.560000]
+> [    1.560000] 80260daa
+> [    1.560000] 9f445cfc
+> [    1.560000] 80048fd8
+> [    1.560000] 8096c158
+> [    1.560000] 805ab908
+> [    1.560000] 8004449c
+
+Any plans to take "[PATCH v2 0/9] sh: Modernize printing of kernel messages"?
+https://lore.kernel.org/r/20200617143639.18315-1-geert+renesas@glider.be
+
+
+> [    5.464000] WARNING: CPU: 0 PID: 1 at mm/slab.c:2589 cache_alloc_refill+0x216/0x6a0
+> [    5.464000] Modules linked in:
+> [    5.464000]
+> [    5.464000] CPU: 0 PID: 1 Comm: swapper Not tainted 5.8.0-rc5-00026-g22b7a96ece82 #3
+> [    5.464000] PC is at cache_alloc_refill+0x216/0x6a0
+> [    5.464000] PR is at kmem_cache_alloc+0xd6/0x128
+> [    5.464000] PC  : 800ec0d2 SP  : 9f445e68 SR  : 400080f0
+> [    5.464000] TEA : c00c30d0
+> [    5.464000] R0  : 8062724c R1  : 8000fee8 R2  : 9f403540 R3  : 00000100
+> [    5.464000] R4  : 9f403500 R5  : 00000000 R6  : 8068d5b0 R7  : 007fffff
+> [    5.464000] R8  : 0000000c R9  : 9f403500 R10 : 8096fc0c R11 : 80044410
+> [    5.464000] R12 : 9f405060 R13 : 00000dc0 R14 : 9f445e68
+> [    5.464000] MACH: 10623bba MACL: 00000cc0 GBR : 2957bd58 PR  : 800ec80a
+> [    5.464000]
+> [    5.464000] Call trace:
+> [    5.464000]  [<(ptrval)>] _raw_spin_unlock_irqrestore+0x0/0x54
+> [    5.464000]  [<(ptrval)>] _raw_spin_lock_irqsave+0x0/0x44
+> [    5.464000]  [<(ptrval)>] kmem_cache_alloc+0xd6/0x128
+> [    5.464000]  [<(ptrval)>] arch_local_irq_restore+0x0/0x2c
+> [    5.464000]  [<(ptrval)>] __raw_spin_lock_init+0x0/0x1c
+> [    5.464000]  [<(ptrval)>] pgd_alloc+0x10/0x24
+
+Does commit 73c348f31b63d28d ("sh: Fix unneeded constructor in page
+table allocation") in next-20200710 and later fix that?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
