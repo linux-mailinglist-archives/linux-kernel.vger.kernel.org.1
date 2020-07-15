@@ -2,84 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9ED22031F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5248C220322
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 06:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728711AbgGODyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 23:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgGODyp (ORCPT
+        id S1725828AbgGOEAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 00:00:48 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:40944 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgGOEAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 23:54:45 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1B0C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 20:54:45 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B63Rj1pl9z9sRK;
-        Wed, 15 Jul 2020 13:54:41 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1594785282;
-        bh=MIi6RwKszLbhlnij4bd7Rn0o2tKvQExnOupg3X0TUWk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=qxx8+YhVP7/J+7Gyyj12czQdZNim5ZtAPbniTDX67VdB2/0ueMc0QF8AkQS9Mmi07
-         iEM+2AxYU32SIlRhkTlla76eeXXAJpRnasF8pwEdpgoGsjsk73qpgmgKhepIqspSPW
-         sjrk8geX3LoIDI+fGwB4yg2lx8jq1OR48vca8PX5W4OJd/SWoCBOVtLvPALSaMOIsU
-         91hgfnEdhY9IQ+uI4eEznGlRJkk3XkxF3/k3V1NU9rpfJ4pZUtBv3WXoRqBoh/SLtv
-         +8IkPM3Ub2brasTlPAsoXRzkcNo3lV9HBuKb696ng5mNh8xm7GCdGarGarezOLbMds
-         84OIDw67vqt1A==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     YueHaibing <yuehaibing@huawei.com>, benh@kernel.crashing.org,
-        paulus@samba.org, haren@linux.ibm.com, dave.hansen@linux.intel.com,
-        npiggin@gmail.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH] powerpc: Fix inconsistent function names
-In-Reply-To: <20200715031939.31968-1-yuehaibing@huawei.com>
-References: <20200715031939.31968-1-yuehaibing@huawei.com>
-Date:   Wed, 15 Jul 2020 13:54:39 +1000
-Message-ID: <875zapv3eo.fsf@mpe.ellerman.id.au>
+        Wed, 15 Jul 2020 00:00:47 -0400
+Received: by mail-pj1-f66.google.com with SMTP id t15so2014321pjq.5;
+        Tue, 14 Jul 2020 21:00:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=lERFJsVziUIHdDubkh5EQsGRx2WiD8PPl5yIF/RY6ck=;
+        b=Nv2Rkw7Xrczm2KEgi3kdQVC2yk6r3J/TrCnDoMEwi6y5ouLa1Ti7V28sgnNed+knFT
+         aTGuz74f1xKCvjj4IM6JS9xAX6WX9QZhSbIMXvkveznnEkb0GRurKCUFZ5Q2z27m7vKj
+         FsK/mwfE2MUQlJCK7Qx3ijqg4ZPmfdR/O9DxdZMu4pyAgkvr3NF+HgZK26bEPPqaNK3R
+         T+0luXxLI/ZMWnToRrDqrjholVJ9T9+T4Qs/JZXrBs7KhadOcilPema6IGEA7qOPZMxl
+         SOwpuNwuOEP9EW8/IqU3DAaGIMOb33KJ6Sbj6MUwute4uPiQcYNi5Cqw2YTXLIwAv/hU
+         tECg==
+X-Gm-Message-State: AOAM531eChbYjvp+9Erxl1imVLJYBV3ljvN3eG7Wg9hR0z9egCpD7bom
+        cgBobHnMsM7k6vMxWZp2ZDE=
+X-Google-Smtp-Source: ABdhPJx1qYjuOEb0D4RJpuqJbzCrkMb27Oza/CFeXaMET7dz1U0JmL/QBR5OITuGJreervEq8almHw==
+X-Received: by 2002:a17:902:b589:: with SMTP id a9mr6097265pls.98.1594785647018;
+        Tue, 14 Jul 2020 21:00:47 -0700 (PDT)
+Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id i132sm568002pfe.9.2020.07.14.21.00.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 21:00:46 -0700 (PDT)
+Subject: Re: [PATCH v3] scsi: ufs: Cleanup completed request without interrupt
+ notification
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
+References: <20200706132113.21096-1-stanley.chu@mediatek.com>
+ <3d509c4b-d66d-2a4a-5fbd-a50a0610ad31@acm.org>
+ <1594607245.22878.8.camel@mtkswgap22>
+ <SN6PR04MB46409838AE9D4BD63797E26DFC600@SN6PR04MB4640.namprd04.prod.outlook.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <912623e8-5915-8380-f39a-fac7b5868a6d@acm.org>
+Date:   Tue, 14 Jul 2020 21:00:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <SN6PR04MB46409838AE9D4BD63797E26DFC600@SN6PR04MB4640.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YueHaibing <yuehaibing@huawei.com> writes:
+On 2020-07-13 01:10, Avri Altman wrote:
+> Artificially injecting errors is a very common validation mechanism,
+> Provided that you are not breaking anything of the upper-layers,
+> Which I don't think you are doing.
 
-> The stub helpers name should be consistent with prototypes.
+Hi Avri,
+
+My concern is that the code that is being added in the abort handler
+sooner or later will evolve into a duplicate of the regular completion
+path. Wouldn't it be better to poll for completions from the timeout
+handler by calling ufshcd_transfer_req_compl() instead of duplicating
+that function?
+
+>>> In section 7.2.3 of the UFS specification I found the following about how
+>>> to process request completions: "Software determines if new TRs have
+>>> completed since step #2, by repeating one of the two methods described in
+>>> step #2. If new TRs have completed, software repeats the sequence from
+>>> step #3." Is such a loop perhaps missing from the Linux UFS driver?
 >
-> mm_context_add_vas_windows() --> mm_context_add_vas_window()
-> mm_context_remove_vas_windows() --> mm_context_remove_vas_window()
->
-> Fixes: c420644c0a8f ("powerpc: Use mm_context vas_windows counter to issue CP_ABORT")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  arch/powerpc/include/asm/mmu_context.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/mmu_context.h b/arch/powerpc/include/asm/mmu_context.h
-> index 1a474f6b1992..00fd1d44731a 100644
-> --- a/arch/powerpc/include/asm/mmu_context.h
-> +++ b/arch/powerpc/include/asm/mmu_context.h
-> @@ -218,8 +218,8 @@ static inline void inc_mm_active_cpus(struct mm_struct *mm) { }
->  static inline void dec_mm_active_cpus(struct mm_struct *mm) { }
->  static inline void mm_context_add_copro(struct mm_struct *mm) { }
->  static inline void mm_context_remove_copro(struct mm_struct *mm) { }
-> -static inline void mm_context_add_vas_windows(struct mm_struct *mm) { }
-> -static inline void mm_context_remove_vas_windows(struct mm_struct *mm) { }
-> +static inline void mm_context_add_vas_window(struct mm_struct *mm) { }
-> +static inline void mm_context_remove_vas_window(struct mm_struct *mm) { }
->  #endif
+> Could not find that citation.
+> What version of the spec are you using?
 
-Both of those functions are only called from 64-bit only code, so the
-stubs should not be needed at all. Which explains why we haven't seen a
-build break.
+That quote comes from the following document: "Universal Flash Storage
+Host Controller Interface (UFSHCI); Version 2.1; JESD223C; (Revision of
+JESD223B, September 2013); MARCH 2016".
 
-So just dropping them would be better IMO.
+Bart.
 
-cheers
