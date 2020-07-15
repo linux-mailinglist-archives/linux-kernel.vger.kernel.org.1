@@ -2,309 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24DC922014B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 02:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DAF22014E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 02:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgGOAS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 20:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgGOAS0 (ORCPT
+        id S1727090AbgGOAYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 20:24:11 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:53878 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgGOAYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 20:18:26 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D55C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:18:26 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id 72so377465ple.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:18:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VKz0ARpq5MDLj9K45daGnPMEyKlao4XZmq4tn5REs6Q=;
-        b=i6O2sMFjKkipVxCildMn6AzET2z4pdczDQE3sZOr1uwSdT3eZ65QTtVd5rG9TZCpJu
-         T5PiVd+GwVHsuqNXczfnQ/yoLjLrWDHE34c6beCJTjNoKtk6ozH74O8EJFtFi2GBlB7H
-         fMvwevHXqDBkTvV8xoKASTd5bj/ErMEE6X3yZq5KHjsA7g2YsStC7ElhAMmb6SXnl1mE
-         dSHT/3FqVk76ABqguIEKNL9BzGqmcUW6vlqMWtlSKw3Kypb3e1qy2iFTmh/XT/usxERv
-         CNqQCdlyLT7F//fp5WtJ+VE2Yom1VZF1MaEHN2vFEgLkty4et18e+oBR7f/DwLkNanhO
-         6n5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VKz0ARpq5MDLj9K45daGnPMEyKlao4XZmq4tn5REs6Q=;
-        b=T+8j7zdQwQZfrH4+y8d8Nu/8BAMu/h3GouYOaczC7h9uvDTX5uPhUCxEXHmsyAWbmu
-         hXKMDlbZJZkFPRpLLNpTXFDQX8e21LXPMz6ywkg9f+BTaQKZYKyPVFZSk8JEkiCArHQ3
-         R2GER30T5b8Sbu+fTs1UxhHoq4WfpOUGTyzDdlRMMTs2fdQisDbmUQQRCOfSdcTbFJ24
-         wRnNBkwv1V1cBvDlk2T4RBh2pXJnM66ouL0yhzHcbzqPPz/ifGUdWko/Wsqq902ZtAQe
-         57RC9QAG8J9gwxa3r4LKsbQi0GSJLFXK2YBnB9lilBQFYkLNRqKIBsL9Pt6B+yEjQZ3I
-         0OLg==
-X-Gm-Message-State: AOAM532rMFnqxC57oFYCUf6jZv+sBDndQhRJz8NVnD8eVK8ZcZgp892x
-        3jKjvnhDYNOvpzPWQ80Ow5pKnj2pbDjzOK0Hcs3gGA==
-X-Google-Smtp-Source: ABdhPJwa2dzmCFcQqTMjbmnXoLW3w7WXixblDqFy52K1oh7MLD0H+RydmNx0h+dj1KgCAmDIW1rNAAkyVatrnsANveQ=
-X-Received: by 2002:a17:90a:d306:: with SMTP id p6mr6741341pju.25.1594772305155;
- Tue, 14 Jul 2020 17:18:25 -0700 (PDT)
+        Tue, 14 Jul 2020 20:24:11 -0400
+Received: from fsav401.sakura.ne.jp (fsav401.sakura.ne.jp [133.242.250.100])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 06F0O9m6009533;
+        Wed, 15 Jul 2020 09:24:09 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav401.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp);
+ Wed, 15 Jul 2020 09:24:09 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav401.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 06F0O80A009529
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 15 Jul 2020 09:24:09 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] fbdev: Detect integer underflow at "struct
+ fbcon_ops"->clear_margins.
+To:     George Kennedy <george.kennedy@oracle.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <189fc902-db7c-9886-cc31-c0348435303a@i-love.sakura.ne.jp>
+ <20200712111013.11881-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <20200712111013.11881-2-penguin-kernel@I-love.SAKURA.ne.jp>
+ <CGME20200714072231eucas1p17c53f0a661346ebfd316ebd5796ca346@eucas1p1.samsung.com>
+ <db4b3346-b9f8-a428-1445-1fcbd8521e1d@samsung.com>
+ <e00078d1-e5fb-a019-3036-cb182ed2e40b@i-love.sakura.ne.jp>
+ <c5bf6d5c-8d0a-8df5-2a11-38bf37a11d67@oracle.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <a2433659-4f95-d508-11de-8273fd2b6632@i-love.sakura.ne.jp>
+Date:   Wed, 15 Jul 2020 09:24:06 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200713225103.GA1095851@google.com> <20200714232349.2198114-1-nhuck@google.com>
-In-Reply-To: <20200714232349.2198114-1-nhuck@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 14 Jul 2020 17:18:13 -0700
-Message-ID: <CAKwvOdnsp=zuxbFVcbGRN+-ZH-F5UFVfKzNBfHM714WkwRZyCQ@mail.gmail.com>
-Subject: Re: [PATCH v3] Makefile: Add clang-tidy and static analyzer support
- to makefile
-To:     Nathan Huckleberry <nhuck@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c5bf6d5c-8d0a-8df5-2a11-38bf37a11d67@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 4:24 PM 'Nathan Huckleberry' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> This patch adds clang-tidy and the clang static-analyzer as make
-> targets. The goal of this patch is to make static analysis tools
-> usable and extendable by any developer or researcher who is familiar
-> with basic c++.
->
-> The current static analysis tools require intimate knowledge of the
-> internal
-> workings of the static analysis.  Clang-tidy and the clang static
-> analyzers
-> expose an easy to use api and allow users unfamiliar with clang to
-> write new checks with relative ease.
->
-> ===Clang-tidy===
->
-> Clang-tidy is an easily extendable 'linter' that runs on the AST.
-> Clang-tidy checks are easy to write and understand. A check consists of
-> two parts, a matcher and a checker. The matcher is created using a
-> domain specific language that acts on the AST
-> (https://clang.llvm.org/docs/LibASTMatchersReference.html).  When AST
-> nodes are found by the matcher a callback is made to the checker. The
-> checker can then execute additional checks and issue warnings.
->
-> Here is an example clang-tidy check to report functions that have calls
-> to local_irq_disable without calls to local_irq_enable and vice-versa.
-> Functions flagged with __attribute((annotation("ignore_irq_balancing")))
-> are ignored for analysis. (https://reviews.llvm.org/D65828)
->
-> ===Clang static analyzer===
->
-> The clang static analyzer is a more powerful static analysis tool that
-> uses symbolic execution to find bugs. Currently there is a check that
-> looks for potential security bugs from invalid uses of kmalloc and
-> kfree. There are several more general purpose checks that are useful for
-> the kernel.
->
-> The clang static analyzer is well documented and designed to be
-> extensible.
-> (https://clang-analyzer.llvm.org/checker_dev_manual.html)
-> (https://github.com/haoNoQ/clang-analyzer-guide/releases/download/v0.1/clang-analyzer-guide-v0.1.pdf)
->
-> The main draw of the clang tools is how accessible they are. The clang
-> documentation is very nice and these tools are built specifically to be
-> easily extendable by any developer. They provide an accessible method of
-> bug-finding and research to people who are not overly familiar with the
-> kernel codebase.
->
-> Signed-off-by: Nathan Huckleberry <nhuck@google.com>
-> ---
-> Changes v2 -> v3
-> * Redirect clang-tidy output to stderr
-> * Style fixes
-> * Add directory to MAINTAINERS
->  MAINTAINERS                                   |  1 +
->  Makefile                                      |  3 +
->  scripts/clang-tools/Makefile.clang-tools      | 23 +++++++
->  .../{ => clang-tools}/gen_compile_commands.py |  0
->  scripts/clang-tools/run-clang-tools.py        | 69 +++++++++++++++++++
->  5 files changed, 96 insertions(+)
->  create mode 100644 scripts/clang-tools/Makefile.clang-tools
->  rename scripts/{ => clang-tools}/gen_compile_commands.py (100%)
->  create mode 100755 scripts/clang-tools/run-clang-tools.py
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 1d4aa7f942de..a444564e5572 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4198,6 +4198,7 @@ W:        https://clangbuiltlinux.github.io/
->  B:     https://github.com/ClangBuiltLinux/linux/issues
->  C:     irc://chat.freenode.net/clangbuiltlinux
->  F:     Documentation/kbuild/llvm.rst
-> +F:     scripts/clang-tools/
->  K:     \b(?i:clang|llvm)\b
->
->  CLEANCACHE API
-> diff --git a/Makefile b/Makefile
-> index fe0164a654c7..3e2df010b342 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -747,6 +747,7 @@ KBUILD_CFLAGS       += $(call cc-option,-fno-allow-store-data-races)
->
->  include scripts/Makefile.kcov
->  include scripts/Makefile.gcc-plugins
-> +include scripts/clang-tools/Makefile.clang-tools
->
->  ifdef CONFIG_READABLE_ASM
->  # Disable optimizations that make assembler listings hard to read.
-> @@ -1543,6 +1544,8 @@ help:
->         @echo  '  export_report   - List the usages of all exported symbols'
->         @echo  '  headerdep       - Detect inclusion cycles in headers'
->         @echo  '  coccicheck      - Check with Coccinelle'
-> +       @echo  '  clang-analyzer  - Check with clang static analyzer'
-> +       @echo  '  clang-tidy      - Check with clang-tidy'
->         @echo  ''
->         @echo  'Tools:'
->         @echo  '  nsdeps          - Generate missing symbol namespace dependencies'
-> diff --git a/scripts/clang-tools/Makefile.clang-tools b/scripts/clang-tools/Makefile.clang-tools
-> new file mode 100644
-> index 000000000000..7ad3308c1937
-> --- /dev/null
-> +++ b/scripts/clang-tools/Makefile.clang-tools
-> @@ -0,0 +1,23 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright (C) Google LLC, 2020
-> +#
-> +# Author: Nathan Huckleberry <nhuck@google.com>
-> +#
-> +PHONY += clang-tidy
-> +clang-tidy:
-> +ifdef CONFIG_CC_IS_CLANG
-> +       $(PYTHON3) scripts/clang-tools/gen_compile_commands.py
-> +       $(PYTHON3) scripts/clang-tools/run-clang-tools.py clang-tidy compile_commands.json
-> +else
-> +       $(error clang-tidy requires CC=clang)
-> +endif
-> +
-> +PHONY += clang-analyzer
-> +clang-analyzer:
-> +ifdef CONFIG_CC_IS_CLANG
-> +       $(PYTHON3) scripts/clang-tools/gen_compile_commands.py
-> +       $(PYTHON3) scripts/clang-tools/run-clang-tools.py static-analyzer compile_commands.json
+On 2020/07/15 2:15, George Kennedy wrote:
+> Can you try the a.out built from the original Syzkaller modified repro C program? It walks 0-7 through xres and yres of the fb_var_screeninfo struct.
 
-^ note below on `static-analyzer`
+I'm not familiar with exploit code. What do you want to explain via this program?
 
-> +else
-> +       $(error clang-analyzer requires CC=clang)
-> +endif
-> diff --git a/scripts/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-> similarity index 100%
-> rename from scripts/gen_compile_commands.py
-> rename to scripts/clang-tools/gen_compile_commands.py
-> diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
-> new file mode 100755
-> index 000000000000..00b8532c1729
-> --- /dev/null
-> +++ b/scripts/clang-tools/run-clang-tools.py
-> @@ -0,0 +1,69 @@
-> +#!/usr/bin/env python
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright (C) Google LLC, 2020
-> +#
-> +# Author: Nathan Huckleberry <nhuck@google.com>
-> +#
-> +"""A helper routine run clang-tidy and the clang static-analyzer on
-> +compile_commands.json."""
-> +
-> +import argparse
-> +import json
-> +import logging
-> +import multiprocessing
-> +import os
-> +import subprocess
-> +import sys
-> +
-> +def parse_arguments():
-> +  """Set up and parses command-line arguments.
-> +  Returns:
-> +    args: Dict of parsed args
-> +      Has keys "file" and "type"
-> +  """
-> +  usage = """Run clang-tidy or the clang static-analyzer on a
-> +  compilation database."""
-> +  parser = argparse.ArgumentParser(description=usage)
-> +
-> +  type_help = ("Type of analysis to be performed")
-> +  parser.add_argument("type", choices=["clang-tidy", "static-analyzer"],
+>   struct fb_var_screeninfo *varp = (struct fb_var_screeninfo *)0x200001c0;
+>   struct fb_var_screeninfo *starting_varp = malloc(sizeof(struct fb_var_screeninfo *));
 
-Rather than "static-analyzer", how about "clang-analyzer" to be
-consistent with the `make` target?  Top level Makefile would need to
-pass that here, too.
+>     memcpy(starting_varp, varp, sizeof(struct fb_var_screeninfo));
 
-> +                      help=type_help)
-> +  file_path_help = ("Path to the compilation database to parse")
-> +  parser.add_argument("file",  type=str, help=file_path_help)
-> +
-> +  args = parser.parse_args()
-> +
-> +  return args
-> +
-> +def init(l,t):
-> +  global lock
-> +  global analysis_type
-> +  lock = l
-> +  analysis_type = t
-> +
-> +def run_analysis(entry):
-> +  filename = entry["file"]
-> +  checks = "-checks=-*,linuxkernel-*" if (analysis_type == "clang-tidy") else "-checks=-*,clang-analyzer-*"
+>             memcpy(varp, starting_varp, sizeof(struct fb_var_screeninfo));
 
-I'm not sure that the parens are necessary ^, but it's not a big
-enough deal to necessitate a v4, IMO.
+At least, I suspect there is a memory corruption bug in this program
+because of malloc()ing only sizeof(struct fb_var_screeninfo *) bytes.
 
-Though this is still running `-*,` for static-analyzer which I would
-like removed.
-
-> +  p = subprocess.run(["clang-tidy", "-p", os.getcwd(),
-> +                    checks, filename],
-> +                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-> +  lock.acquire()
-> +  print(filename, file=sys.stderr)
-
-Should we drop printing the filename? Analyzing the output of `make
-LLVM=1 -j71 defconfig clang-tidy 2> log.txt`, for example I see:
-Error while processing
-/linux-next/drivers/net/ethernet/freescale/fman/fman_sp.c.
-...
-<hundreds of lines from different files>
-drivers/net/ethernet/freescale/fman/fman_sp.c
-
-It's surprising to me how these appear out of order; maybe buffering
-or not has something to do with it?
-
-Anyways, if we print the filename anyways per error, and files with no
-errors are just printed kind of meaninglessly, then I think we don't
-need to print the filename being analyzed again.  For clang-analyzer,
-the errors also have the filename per line of the warning printed.
-
-> +  sys.stderr.buffer.write(p.stdout)
-> +  lock.release()
-> +
-> +
-> +def main():
-> +  args = parse_arguments()
-> +  filename = args.file
-> +
-> +  #Read JSON data into the datastore variable
-> +  with open(filename, "r") as f:
-> +    datastore = json.load(f)
-> +    lock = multiprocessing.Lock()
-> +    pool = multiprocessing.Pool(initializer=init, initargs=(lock, args.type))
-> +    pool.map(run_analysis,datastore)
-> +
-> +if __name__ == "__main__":
-> +    main()
-> --
-
-
--- 
-Thanks,
-~Nick Desaulniers
