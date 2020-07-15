@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4827220C8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB44220C8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 14:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730626AbgGOL7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 07:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
+        id S1730633AbgGOMBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 08:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgGOL7G (ORCPT
+        with ESMTP id S1725852AbgGOMBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:59:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F35C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 04:59:06 -0700 (PDT)
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594814341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E/Hw+7u7aBxeaVg0fnGygmITDj3v4tIkOl2+fAUxPTA=;
-        b=yPvm7CWthkRwlgkbg7g+faKOFs7NJk5qxg8qwKA5nL8eKSbGvhGte1Wk7qi7IQL0FSRFYk
-        hIzoPza7nioo4DDk51dvAslE9Jzr2bo8V56WpkGviOaJvGH7tyUF9RPAnkuLcq+BN8W/51
-        juhHRRzevdx88N+vmlySdiTMSN2TuCIXZNOwezf74nu6T7mVA7Goxa2S8cyQmOD0lvRbqZ
-        czhk3/wxsFBgedPVCwHQgVqVlr/VKNiOitSIAX4Yw7eA7Q7De9CkqtTSq2dhAawVEDYrz8
-        QJLZWcObt5Y2xkzhtCkEEYq2TitT+AYe+Ra3dZnwQx2AgcJjwtt8pzqz2uQOIA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594814341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=E/Hw+7u7aBxeaVg0fnGygmITDj3v4tIkOl2+fAUxPTA=;
-        b=oNrpRIq83+0jvmZcDwfQAsaE9OgkuYiwLJQw1Jtukv/q1VpPzrB9AVnPYwXiiCSZdsisJq
-        oyeq+HTEY0CQieCQ==
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Leo Yan <leo.yan@linaro.org>
-Cc:     Will Deacon <will@kernel.org>, John Ogness <jogness@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH] time/sched_clock: Use raw_read_seqcount_latch()
-Date:   Wed, 15 Jul 2020 13:59:01 +0200
-Message-Id: <20200715115901.515956-1-a.darwish@linutronix.de>
-In-Reply-To: <20200715095220.GH10769@hirez.programming.kicks-ass.net>
-References: <20200715095220.GH10769@hirez.programming.kicks-ass.net>
+        Wed, 15 Jul 2020 08:01:33 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB744C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:01:32 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o18so1870679eje.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=aphiOP4h9v9T9OtJ9dBaBxGd9lSp1X6ehev+oAyP+7g=;
+        b=r/e29ZyCyz/kFzZtP1L8rUa51b+KUKz0VoX+W+23Uude9+faffHoBAo4ZF6SYq/pKH
+         oZZSlJAXdqng8seNA76gsQyr7iUjnLgL0VKhVp8KthxyihwqHBeeYxzDL80P/RQtxz5W
+         L2hYtztPpSfGrf+g6rtfhTBUpoV1dwCvQq3DOtPxufy6g251Kitt7J7KF5blgjl/DVLz
+         GcpeKTH8Uqj9+VL2+qvwcEZGsyPFzasK28pTK6TuOh27op5R/IZvJG8RxcaHJrB2UEwy
+         2Nf4hxTGQ9Y8UCiclEsfB9XT/5jjS1QYYO6oZdfASEyYYKg3SfWuRThxJqlTFbQYFxbm
+         Us6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=aphiOP4h9v9T9OtJ9dBaBxGd9lSp1X6ehev+oAyP+7g=;
+        b=RjrZ30PBQXTY0qhm1APQ+GcLBcQsU+dHbF+//0yhYAnH7ZObsLbxJ+bi6kcPG3kNsk
+         /lnLPZuOHhRzm/3G50fiYp1BAylzuGsB8e5EQ/UoPIA2Oph6d7DuUfgCfHS4bCeCMLUi
+         9ZowjlgKn7Z8tYGvaiokM2MhK9vGQKS9uNo8KFRYoK8LXdhyEQJwcCM/rUBSqXXYQrRG
+         HisvOa1iPP+SSYckatRn0c4TzDSWJQlZzEj7VyzsWbZYlV+kmriCJnJPFGDF0lBRvfSL
+         Su/oOGHHNsw53qJ81cP1oQ0Kz4rmDWjD00hWsZc044kLQQbwKxkVn8W0iJKasnhBIand
+         KQPw==
+X-Gm-Message-State: AOAM531F0GQKIthtm/CUWhmxnyrF5JetwOPjc9PjwOaQjJ91DlYnMd2t
+        AsUBycoONDotH7aVCF7EkqqKaR3XOUTih0MWbS8=
+X-Google-Smtp-Source: ABdhPJyVULnrFEoEeyOBwlGGGzGdJujueg9FegHaMkX9J3bfgdJ+Hvh9feerewNSWUQiskwwP5APx6ydjOzL1TQHQgc=
+X-Received: by 2002:a17:906:c453:: with SMTP id ck19mr8668334ejb.185.1594814491470;
+ Wed, 15 Jul 2020 05:01:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ab4:ad84:0:0:0:0:0 with HTTP; Wed, 15 Jul 2020 05:01:30
+ -0700 (PDT)
+Reply-To: sgtjanray@gmail.com
+From:   SGT JAN RAY <mrade568@gmail.com>
+Date:   Wed, 15 Jul 2020 14:01:30 +0200
+Message-ID: <CABZnd=UzBPeFg-3QWx5N2xUBcnvH630Lo846dWD5Y-4Avhh_Hw@mail.gmail.com>
+Subject: Hello Greetings.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sched_clock uses seqcount_t latching to switch between two storage
-places protected by the sequence counter. This allows it to have
-interruptible, NMI-safe, seqcount_t write side critical sections.
+--=20
+Hello Greetings.
 
-Since 7fc26327b756 ("seqlock: Introduce raw_read_seqcount_latch()"),
-raw_read_seqcount_latch() became the standardized way for seqcount_t
-latch read paths. Due to the dependent load, it also has one read
-memory barrier less than the currently used raw_read_seqcount() API.
+I am happy to have you here as a friend, i hope all is well with you,
+and how are you enjoying your day over there in your country?
 
-Use raw_read_seqcount_latch() for the seqcount_t latch read path.
+My name is SGT SAFI IBRAHIM,. I=E2=80=99m 28 years old an orphan my parents
+died when I was five years old nobody to help me,I send you my
+business proposal with tears and sorrow Please let this not be a
+surprised message to you.
 
-Link: https://lkml.kernel.org/r/20200625085745.GD117543@hirez.programming.kicks-ass.net
-Link: https://lkml.kernel.org/r/20200715092345.GA231464@debian-buster-darwi.lab.linutronix.de
-References: 1809bfa44e10 ("timers, sched/clock: Avoid deadlock during read from NMI")
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
----
- kernel/time/sched_clock.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am single. an Nurse in America military but i am presently in
+Afghanistan for the fight against terrorism and peace keeping, I need
+an urgent help from you i have in my possession the sum of $3.5million
+USD I made here in Afghanistan.
 
-diff --git a/kernel/time/sched_clock.c b/kernel/time/sched_clock.c
-index fa3f800d7d76..ea007928d681 100644
---- a/kernel/time/sched_clock.c
-+++ b/kernel/time/sched_clock.c
-@@ -100,7 +100,7 @@ unsigned long long notrace sched_clock(void)
- 	struct clock_read_data *rd;
+I want you to stand as my beneficiary receive the fund you will assist
+me to invest it in a good profitable Venture or you keep it for me
+until I arrive your country, I will give You 40% of the total money
+for your assistance after you have receive The money.
 
- 	do {
--		seq = raw_read_seqcount(&cd.seq);
-+		seq = raw_read_seqcount_latch(&cd.seq);
- 		rd = cd.read_data + (seq & 1);
+Take good care of yourself.your urgent reply is needed is my private
+email address below sgtsafiibrahim@gmail.com, for more details.
 
- 		cyc = (rd->read_sched_clock() - rd->epoch_cyc) &
---
-2.20.1
+Best Resgards
+SGT SAFI IBRAHIM,
