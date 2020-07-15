@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D90C221049
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F26221045
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgGOPHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57214 "EHLO
+        id S1728124AbgGOPHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728032AbgGOPGx (ORCPT
+        with ESMTP id S1727971AbgGOPGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 11:06:53 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E51C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:53 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 22so5936014wmg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:53 -0700 (PDT)
+        Wed, 15 Jul 2020 11:06:55 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F93C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:54 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id f7so3119340wrw.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AI7c50J2x+3VkfEYyAsOrnfGhBXfcF4lm0Ws/hDguDo=;
-        b=OeStQ676gkLJC9flvx8uGog1ZO5sbiMnJMlr05Al3vZvFQRZHCm9sU16b+mHbGjiu/
-         zQLROHGqy978gbiKFEpIyBMkOKofeVQ/0xUFfYH39mKo7Q/YCUXT4fDwvOGve9NdyaIX
-         9oBji0BeVTVDE0SHHoemYV6TVo+WjAKxrdNhNHqSd/H/p+j3DHSbgYtsByjsXwlwg6yh
-         B90amTbQ+xuUjsIMEaeQTQ5v1qC2Q60Kfs8TTa513agQ2PQASIWFW+QdgHaZlhk4wKge
-         XgSqUFE8pvon3wcWLfW14C76/b7c1rRSMvGnEnSCton+69Vj+u/y5VG7MA4JQqEPS5Xd
-         Ycwg==
+        bh=St/xAyCtrmRBWfYYcSn7juPr5Poh/NZ3n2rNrUrY394=;
+        b=BYmhvu/PhXomekAXRVNla/c/6EiDYkDyIEEP+MnOTHWaO96GdMvSUBbWJS2c9+d7Jk
+         VRcp05/uXtkltdnBCD3P4U/6uWXmTugA1wexZ81oTwI5iXU7B5eDg18v1fmgG2gpnKrY
+         it07272+neTo2ZgSdaMpbMxWIRl/CJYkeFY2bH2Qc3ma0Q8+h02ZtLTMWgAnGuztvZYn
+         ugk+ds7CLMSz5QoMkAHIgg+y7QLjfsXOlV07N2pPDjgbpagdKNJ8+SYYTPvMc5djiWwH
+         5awGcZaMqjxnB/PtmoiA5Wx4+EdazDc9VX+/311LH/1OaZcHs/cKfKmw2aCAutzqfQJB
+         lAvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AI7c50J2x+3VkfEYyAsOrnfGhBXfcF4lm0Ws/hDguDo=;
-        b=aRNRw3dwuOJ1fXbihN+sEaiL9xO9vr4FcfElDv6RoJn+Zr84WLhmEqyFRKNfp6XSdI
-         xTvMwTYyLkYOvZqDaN2LkgcfTolYJ7Jh9scxtplG442USoKwuGsOdt8dJf5iYVvBlZCn
-         WtEgCUaQF7ob7sq47qQH/qXSjKB2VQGonW/azr2NXF2yIqykgpWp/GMppJJPWSalYOEw
-         bTw1QnWjDpVmh+SoCzZyN3RBW8q2XegsZeGAX107aU4tQU/gjWWXyYHM4GKexMSCAAsT
-         96ngVxjnSxRR0hRimsfXJqrGGj+AS2ybQK4PnIo+nYcSNXwbLhK8EetUc5ouHOtDj9T5
-         imPQ==
-X-Gm-Message-State: AOAM530khjWAt0/zz5oFE1AmslQOE4KyD50QfDHjXTRwfG2hvbNj5MJC
-        mKp8eTQsZib7WVEAvy9waEXxww==
-X-Google-Smtp-Source: ABdhPJyBnfjeYbjMACkhjMYXKR10NpPlrtS5qROBcZV5AlpsItZlXQak8hpIg97VCabsero4VDwi7w==
-X-Received: by 2002:a1c:a557:: with SMTP id o84mr9230410wme.42.1594825612087;
-        Wed, 15 Jul 2020 08:06:52 -0700 (PDT)
+        bh=St/xAyCtrmRBWfYYcSn7juPr5Poh/NZ3n2rNrUrY394=;
+        b=mxQDGWEVJtsO4GELCK0kMXhgWY2RcAsuFnMnmj/G2OEL5C7pv+5ez5oKh8mK3pTlns
+         Y4q80SlFzfo589ED3fDfldnR2Vyx2tKIhtPQ8oUCBsqEeVcX63ypcYAb4BoJ0azsURIM
+         XU8Al/v3GPE+u1ClqMn3haJB3tGtKwmo8np/xbpNthMpu5t50bhy/P8tOZ20727jUiNE
+         5Uj0Jwib6W4hNg6crwVf29bbVa9rHM3JOTS9imb0HhtoDAwgJT3giI42p2BX/MtXpMPK
+         UpF6nSJzhmxXe8uf6um1P2oEAF6LWL2vVjoCteKs5IR65mqEYApWkhh03E32hL/TurRC
+         laxA==
+X-Gm-Message-State: AOAM531hqV7/1ff6EPh2i5/aNIfwrWACKJntkh5xljscbiBSFQuQpyRX
+        YH9H5IE9AkwcNaiAbMTPhWjrFw==
+X-Google-Smtp-Source: ABdhPJzKOkWoJ5Xd1No49tmC7h+p+Lj1YSarlHghqR0fzO+t7pGvO0lAkoOgf54GCL5hcHwEPQMssg==
+X-Received: by 2002:adf:f6cb:: with SMTP id y11mr11810561wrp.100.1594825613486;
+        Wed, 15 Jul 2020 08:06:53 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id w2sm3906140wrs.77.2020.07.15.08.06.50
+        by smtp.gmail.com with ESMTPSA id w2sm3906140wrs.77.2020.07.15.08.06.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 08:06:51 -0700 (PDT)
+        Wed, 15 Jul 2020 08:06:52 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-spi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH 13/14] spi: spi-pxa2xx: Do not define 'struct acpi_device_id' when
-Date:   Wed, 15 Jul 2020 16:06:31 +0100
-Message-Id: <20200715150632.409077-14-lee.jones@linaro.org>
+        Sanjay R Mehta <sanju.mehta@amd.com>
+Subject: [PATCH 14/14] spi: spi-amd: Do not define 'struct acpi_device_id' when
+Date:   Wed, 15 Jul 2020 16:06:32 +0100
+Message-Id: <20200715150632.409077-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200715150632.409077-1-lee.jones@linaro.org>
 References: <20200715150632.409077-1-lee.jones@linaro.org>
@@ -70,42 +68,38 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Since ACPI_PTR() is used to NULLify the value when !CONFIG_ACPI,
-struct 'pxa2xx_spi_acpi_match' becomes defined but unused.
+struct 'spi_acpi_match' becomes defined but unused.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/spi/spi-pxa2xx.c:1435:36: warning: ‘pxa2xx_spi_acpi_match’ defined but not used [-Wunused-const-variable=]
- 1435 | static const struct acpi_device_id pxa2xx_spi_acpi_match[] = {
- | ^~~~~~~~~~~~~~~~~~~~~
+ drivers/spi/spi-amd.c:297:36: warning: ‘spi_acpi_match’ defined but not used [-Wunused-const-variable=]
+ 297 | static const struct acpi_device_id spi_acpi_match[] = {
+ | ^~~~~~~~~~~~~~
 
-Cc: Daniel Mack <daniel@zonque.org>
-Cc: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Sanjay R Mehta <sanju.mehta@amd.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/spi/spi-pxa2xx.c | 2 ++
+ drivers/spi/spi-amd.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index 0040362b71622..814268405ab0b 100644
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -1432,6 +1432,7 @@ static void cleanup(struct spi_device *spi)
- 	kfree(chip);
+diff --git a/drivers/spi/spi-amd.c b/drivers/spi/spi-amd.c
+index d0aacd4de1b9e..7f629544060db 100644
+--- a/drivers/spi/spi-amd.c
++++ b/drivers/spi/spi-amd.c
+@@ -294,11 +294,13 @@ static int amd_spi_probe(struct platform_device *pdev)
+ 	return err;
  }
  
 +#ifdef CONFIG_ACPI
- static const struct acpi_device_id pxa2xx_spi_acpi_match[] = {
- 	{ "INT33C0", LPSS_LPT_SSP },
- 	{ "INT33C1", LPSS_LPT_SSP },
-@@ -1442,6 +1443,7 @@ static const struct acpi_device_id pxa2xx_spi_acpi_match[] = {
- 	{ },
+ static const struct acpi_device_id spi_acpi_match[] = {
+ 	{ "AMDI0061", 0 },
+ 	{},
  };
- MODULE_DEVICE_TABLE(acpi, pxa2xx_spi_acpi_match);
+ MODULE_DEVICE_TABLE(acpi, spi_acpi_match);
 +#endif
  
- /*
-  * PCI IDs of compound devices that integrate both host controller and private
+ static struct platform_driver amd_spi_driver = {
+ 	.driver = {
 -- 
 2.25.1
 
