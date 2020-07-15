@@ -2,445 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE66222078E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5264A220796
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730297AbgGOIjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:39:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729329AbgGOIjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:39:47 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85499206E9;
-        Wed, 15 Jul 2020 08:39:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594802385;
-        bh=9g3wRwm34rlY2GEV9FJHH59IFkjzBReW/3du5Avi/W4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WZICEo29zcHdow9dTw2aFtiePLFCmDEnoR95Ag+4UdggMJLIeZd64gDLRjmCwxZCq
-         l1ejK/nfR6WPxTCuZWpnSTon74TWv2ZFIJjrbjzmmEULBmYoTyZDYVkTFIVbmkLu0n
-         gzFVn+GSxXuiHekb071e0VxfgZs6jneT4aWt49zc=
-Date:   Wed, 15 Jul 2020 17:39:39 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        live-patching@vger.kernel.org (open list:LIVE PATCHING)
-Subject: Re: [PATCH v3 2/3] module: Add lock_modules() and unlock_modules()
-Message-Id: <20200715173939.40e235a5035ea698e38b7ee7@kernel.org>
-In-Reply-To: <20200714223239.1543716-3-jarkko.sakkinen@linux.intel.com>
-References: <20200714223239.1543716-1-jarkko.sakkinen@linux.intel.com>
-        <20200714223239.1543716-3-jarkko.sakkinen@linux.intel.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730331AbgGOIlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729351AbgGOIle (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 04:41:34 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9541AC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:41:34 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id a1so978017edt.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J4RPEf69RMf6fMrFPs7gvn650I5l4fPXkmLiZzrYicg=;
+        b=joTTxszSLFMvayIfPbb55BXWK7XCzUWZDla2m5tAeog6qXLfmJE5dj+uRo2NBF9wZ/
+         F7i8zd8hr0+Qxym6zB6l97h72NSaZ/5NKdHBEnj5J1feDVUpr1YfOMLXfk4KLNiTdWYK
+         3mrklvsXTJ1W+NqzIijFYhkfbdrl3pBNpY49Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J4RPEf69RMf6fMrFPs7gvn650I5l4fPXkmLiZzrYicg=;
+        b=IRL+mcNPmxS9kqepwtARjrQzuKpqbdvhFAnudGXGVAE8VMaI+e1G1RsrwwbqS0+o2w
+         TzQiJ5Fi0FWOxh5MrELOFD74ZmrPDXDUCiPTXo6ySdRbmJuH0xFVZJp5m1ZkPjzP2TB5
+         8bNqVQgUlyBEXJUgww74gyqpRrLzVRJfawHIifjwCYUUuxkSFDi1EfVO7f7n9lZsGNNY
+         OPhY0+wR0zV6fKmZDRdGRROSWM0eITckFB5CffD7Gqg1b7GliNpN63mgx+lpzy3e7ME0
+         JPDZ9bb2cTE8Ya8DRVE7DHPgth8mmH7XOHy3lez7KuQhIRXGIxaVZI+vfh0DcQK58GY5
+         xbbw==
+X-Gm-Message-State: AOAM53026iFMdKMAC3jjJ0IbNnw1CWYB7U7EPgKyaf6YJFt9czjfdRVT
+        TQrWujSHY1GWjAM2twbQXumQ5Ft+yrwPfWH3mZd7OA==
+X-Google-Smtp-Source: ABdhPJxiUoXSY8oQTuQyEBhp5lraS2n1iwGYDCrETHXVLFmYYXHH1CsTFd5Uc/EepPXHKcXFh5OP0Y7UW1nxbUoUAJg=
+X-Received: by 2002:a05:6402:1687:: with SMTP id a7mr8448226edv.358.1594802493290;
+ Wed, 15 Jul 2020 01:41:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAODFU0q6CrUB_LkSdrbp5TQ4Jm6Sw=ZepZwD-B7-aFudsOvsig@mail.gmail.com>
+ <20200705115021.GA1227929@kroah.com> <20200714065110.GA8047@amd>
+ <CAJfpegu8AXZWQh3W39PriqxVna+t3D2pz23t_4xEVxGcNf1AUA@mail.gmail.com>
+ <4e92b851-ce9a-e2f6-3f9a-a4d47219d320@gmail.com> <CAJfpegvroouw5ndHv+395w5PP1c+pUyp=-T8qhhvSnFbhbRehg@mail.gmail.com>
+ <7584d754-2044-a892-cf29-65259b9c4eb1@gmail.com>
+In-Reply-To: <7584d754-2044-a892-cf29-65259b9c4eb1@gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 15 Jul 2020 10:41:22 +0200
+Message-ID: <CAJfpegvkw5Exptz=gY5bRy2U8GjvTo+muBHsgdF_PA5=hyhmSA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] readfile(2): a new syscall to make open/read/close faster
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Pavel Machek <pavel@denx.de>, Greg KH <gregkh@linuxfoundation.org>,
+        Jan Ziak <0xe2.0x9a.0x9b@gmail.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-man <linux-man@vger.kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>, shuah@kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>, io-uring@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Jul 2020 01:32:28 +0300
-Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
+On Wed, Jul 15, 2020 at 10:33 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>
+> On 14/07/2020 14:55, Miklos Szeredi wrote:
+> > On Tue, Jul 14, 2020 at 1:36 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+> >>
+> >> On 14/07/2020 11:07, Miklos Szeredi wrote:
+> >>> On Tue, Jul 14, 2020 at 8:51 AM Pavel Machek <pavel@denx.de> wrote:
+> >>>>
+> >>>> Hi!
+> >>>>
+> >>>>>> At first, I thought that the proposed system call is capable of
+> >>>>>> reading *multiple* small files using a single system call - which
+> >>>>>> would help increase HDD/SSD queue utilization and increase IOPS (I/O
+> >>>>>> operations per second) - but that isn't the case and the proposed
+> >>>>>> system call can read just a single file.
+> >>>>>
+> >>>>> If you want to do this for multple files, use io_ring, that's what it
+> >>>>> was designed for.  I think Jens was going to be adding support for the
+> >>>>> open/read/close pattern to it as well, after some other more pressing
+> >>>>> features/fixes were finished.
+> >>>>
+> >>>> What about... just using io_uring for single file, too? I'm pretty
+> >>>> sure it can be wrapped in a library that is simple to use, avoiding
+> >>>> need for new syscall.
+> >>>
+> >>> Just wondering:  is there a plan to add strace support to io_uring?
+> >>> And I don't just mean the syscalls associated with io_uring, but
+> >>> tracing the ring itself.
+> >>
+> >> What kind of support do you mean? io_uring is asynchronous in nature
+> >> with all intrinsic tracing/debugging/etc. problems of such APIs.
+> >> And there are a lot of handy trace points, are those not enough?
+> >>
+> >> Though, this can be an interesting project to rethink how async
+> >> APIs are worked with.
+> >
+> > Yeah, it's an interesting problem.  The uring has the same events, as
+> > far as I understand, that are recorded in a multithreaded strace
+> > output (syscall entry, syscall exit); nothing more is needed>
+> > I do think this needs to be integrated into strace(1), otherwise the
+> > usefulness of that tool (which I think is *very* high) would go down
+> > drastically as io_uring usage goes up.
+>
+> Not touching the topic of usefulness of strace + io_uring, but I'd rather
+> have a tool that solves a problem, than a problem that created and honed
+> for a tool.
 
-> Add wrappers to take the modules "big lock" in order to encapsulate
-> conditional compilation (CONFIG_MODULES) inside the wrapper.
-> 
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  include/linux/module.h      | 15 ++++++++++
->  kernel/kprobes.c            |  4 +--
->  kernel/livepatch/core.c     |  8 ++---
->  kernel/module.c             | 60 ++++++++++++++++++-------------------
->  kernel/trace/trace_kprobe.c |  4 +--
->  5 files changed, 53 insertions(+), 38 deletions(-)
-> 
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index 2e6670860d27..857b84bf9e90 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -902,4 +902,19 @@ static inline bool module_sig_ok(struct module *module)
->  }
->  #endif	/* CONFIG_MODULE_SIG */
->  
-> +#ifdef CONFIG_MODULES
-> +static inline void lock_modules(void)
-> +{
-> +	mutex_lock(&module_mutex);
-> +}
-> +
-> +static inline void unlock_modules(void)
-> +{
-> +	mutex_unlock(&module_mutex);
-> +}
-> +#else
-> +static inline void lock_modules(void) { }
-> +static inline void unlock_modules(void) { }
-> +#endif
+Sorry, I'm not getting the metaphor.  Can you please elaborate?
 
-You don't need to add new #ifdefs. There is a room for dummy prototypes
-for !CONFIG_MODULES already in modules.h.
-
------
-struct notifier_block;
-
-#ifdef CONFIG_MODULES
-
-extern int modules_disabled; /* for sysctl */
-
-...
-#else /* !CONFIG_MODULES... */
-
-static inline struct module *__module_address(unsigned long addr)
-{
------
-
-So you can just put those inlines in the appropriate places ;)
-
-Thank you,
-
-> +
->  #endif /* _LINUX_MODULE_H */
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index fa7687eb0c0e..b4f3c24cd2ef 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -573,7 +573,7 @@ static void kprobe_optimizer(struct work_struct *work)
->  	cpus_read_lock();
->  	mutex_lock(&text_mutex);
->  	/* Lock modules while optimizing kprobes */
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  
->  	/*
->  	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
-> @@ -598,7 +598,7 @@ static void kprobe_optimizer(struct work_struct *work)
->  	/* Step 4: Free cleaned kprobes after quiesence period */
->  	do_free_cleaned_kprobes();
->  
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	mutex_unlock(&text_mutex);
->  	cpus_read_unlock();
->  
-> diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-> index f76fdb925532..d9d9d4973e6b 100644
-> --- a/kernel/livepatch/core.c
-> +++ b/kernel/livepatch/core.c
-> @@ -57,7 +57,7 @@ static void klp_find_object_module(struct klp_object *obj)
->  	if (!klp_is_module(obj))
->  		return;
->  
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	/*
->  	 * We do not want to block removal of patched modules and therefore
->  	 * we do not take a reference here. The patches are removed by
-> @@ -74,7 +74,7 @@ static void klp_find_object_module(struct klp_object *obj)
->  	if (mod && mod->klp_alive)
->  		obj->mod = mod;
->  
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  }
->  
->  static bool klp_initialized(void)
-> @@ -163,12 +163,12 @@ static int klp_find_object_symbol(const char *objname, const char *name,
->  		.pos = sympos,
->  	};
->  
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	if (objname)
->  		module_kallsyms_on_each_symbol(klp_find_callback, &args);
->  	else
->  		kallsyms_on_each_symbol(klp_find_callback, &args);
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  
->  	/*
->  	 * Ensure an address was found. If sympos is 0, ensure symbol is unique;
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 8adeb126b02c..3fd8686b1637 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -896,7 +896,7 @@ static void module_unload_free(struct module *mod)
->  {
->  	struct module_use *use, *tmp;
->  
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	list_for_each_entry_safe(use, tmp, &mod->target_list, target_list) {
->  		struct module *i = use->target;
->  		pr_debug("%s unusing %s\n", mod->name, i->name);
-> @@ -905,7 +905,7 @@ static void module_unload_free(struct module *mod)
->  		list_del(&use->target_list);
->  		kfree(use);
->  	}
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  }
->  
->  #ifdef CONFIG_MODULE_FORCE_UNLOAD
-> @@ -1025,7 +1025,7 @@ SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
->  	if (ret != 0)
->  		goto out;
->  
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	/* Final destruction now no one is using it. */
->  	if (mod->exit != NULL)
->  		mod->exit();
-> @@ -1044,7 +1044,7 @@ SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
->  	wake_up_all(&module_wq);
->  	return 0;
->  out:
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	return ret;
->  }
->  
-> @@ -1449,7 +1449,7 @@ static const struct kernel_symbol *resolve_symbol(struct module *mod,
->  	 * in the wait_event_interruptible(), which is harmless.
->  	 */
->  	sched_annotate_sleep();
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	sym = find_symbol(name, &owner, &crc,
->  			  !(mod->taints & (1 << TAINT_PROPRIETARY_MODULE)), true);
->  	if (!sym)
-> @@ -1476,7 +1476,7 @@ static const struct kernel_symbol *resolve_symbol(struct module *mod,
->  	/* We must make copy under the lock if we failed to get ref. */
->  	strncpy(ownername, module_name(owner), MODULE_NAME_LEN);
->  unlock:
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	return sym;
->  }
->  
-> @@ -1731,10 +1731,10 @@ static void del_usage_links(struct module *mod)
->  #ifdef CONFIG_MODULE_UNLOAD
->  	struct module_use *use;
->  
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	list_for_each_entry(use, &mod->target_list, target_list)
->  		sysfs_remove_link(use->target->holders_dir, mod->name);
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  #endif
->  }
->  
-> @@ -1744,14 +1744,14 @@ static int add_usage_links(struct module *mod)
->  #ifdef CONFIG_MODULE_UNLOAD
->  	struct module_use *use;
->  
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	list_for_each_entry(use, &mod->target_list, target_list) {
->  		ret = sysfs_create_link(use->target->holders_dir,
->  					&mod->mkobj.kobj, mod->name);
->  		if (ret)
->  			break;
->  	}
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	if (ret)
->  		del_usage_links(mod);
->  #endif
-> @@ -2177,9 +2177,9 @@ static void free_module(struct module *mod)
->  
->  	/* We leave it in list to prevent duplicate loads, but make sure
->  	 * that noone uses it while it's being deconstructed. */
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	mod->state = MODULE_STATE_UNFORMED;
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  
->  	/* Remove dynamic debug info */
->  	ddebug_remove_module(mod->name);
-> @@ -2197,7 +2197,7 @@ static void free_module(struct module *mod)
->  		free_module_elf(mod);
->  
->  	/* Now we can delete it from the lists */
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	/* Unlink carefully: kallsyms could be walking list. */
->  	list_del_rcu(&mod->list);
->  	mod_tree_remove(mod);
-> @@ -2205,7 +2205,7 @@ static void free_module(struct module *mod)
->  	module_bug_cleanup(mod);
->  	/* Wait for RCU-sched synchronizing before releasing mod->list and buglist. */
->  	synchronize_rcu();
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  
->  	/* This may be empty, but that's OK */
->  	module_arch_freeing_init(mod);
-> @@ -3504,10 +3504,10 @@ static bool finished_loading(const char *name)
->  	 * in the wait_event_interruptible(), which is harmless.
->  	 */
->  	sched_annotate_sleep();
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	mod = find_module_all(name, strlen(name), true);
->  	ret = !mod || mod->state == MODULE_STATE_LIVE;
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  
->  	return ret;
->  }
-> @@ -3619,7 +3619,7 @@ static noinline int do_init_module(struct module *mod)
->  
->  	ftrace_free_mem(mod, mod->init_layout.base, mod->init_layout.base +
->  			mod->init_layout.size);
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	/* Drop initial reference. */
->  	module_put(mod);
->  	trim_init_extable(mod);
-> @@ -3651,7 +3651,7 @@ static noinline int do_init_module(struct module *mod)
->  	if (llist_add(&freeinit->node, &init_free_list))
->  		schedule_work(&init_free_wq);
->  
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	wake_up_all(&module_wq);
->  
->  	return 0;
-> @@ -3693,12 +3693,12 @@ static int add_unformed_module(struct module *mod)
->  	mod->state = MODULE_STATE_UNFORMED;
->  
->  again:
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	old = find_module_all(mod->name, strlen(mod->name), true);
->  	if (old != NULL) {
->  		if (old->state != MODULE_STATE_LIVE) {
->  			/* Wait in case it fails to load. */
-> -			mutex_unlock(&module_mutex);
-> +			unlock_modules();
->  			err = wait_event_interruptible(module_wq,
->  					       finished_loading(mod->name));
->  			if (err)
-> @@ -3714,7 +3714,7 @@ static int add_unformed_module(struct module *mod)
->  	err = 0;
->  
->  out:
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  out_unlocked:
->  	return err;
->  }
-> @@ -3723,7 +3723,7 @@ static int complete_formation(struct module *mod, struct load_info *info)
->  {
->  	int err;
->  
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  
->  	/* Find duplicate symbols (must be called under lock). */
->  	err = verify_exported_symbols(mod);
-> @@ -3740,12 +3740,12 @@ static int complete_formation(struct module *mod, struct load_info *info)
->  	/* Mark state as coming so strong_try_module_get() ignores us,
->  	 * but kallsyms etc. can see us. */
->  	mod->state = MODULE_STATE_COMING;
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  
->  	return 0;
->  
->  out:
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	return err;
->  }
->  
-> @@ -3943,9 +3943,9 @@ static int load_module(struct load_info *info, const char __user *uargs,
->  	klp_module_going(mod);
->   bug_cleanup:
->  	/* module_bug_cleanup needs module_mutex protection */
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	module_bug_cleanup(mod);
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  
->   ddebug_cleanup:
->  	ftrace_release_mod(mod);
-> @@ -3959,14 +3959,14 @@ static int load_module(struct load_info *info, const char __user *uargs,
->   free_unload:
->  	module_unload_free(mod);
->   unlink_mod:
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	/* Unlink carefully: kallsyms could be walking list. */
->  	list_del_rcu(&mod->list);
->  	mod_tree_remove(mod);
->  	wake_up_all(&module_wq);
->  	/* Wait for RCU-sched synchronizing before releasing mod->list. */
->  	synchronize_rcu();
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->   free_module:
->  	/* Free lock-classes; relies on the preceding sync_rcu() */
->  	lockdep_free_key_range(mod->core_layout.base, mod->core_layout.size);
-> @@ -4322,7 +4322,7 @@ static char *module_flags(struct module *mod, char *buf)
->  /* Called by the /proc file system to return a list of modules. */
->  static void *m_start(struct seq_file *m, loff_t *pos)
->  {
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	return seq_list_start(&modules, *pos);
->  }
->  
-> @@ -4333,7 +4333,7 @@ static void *m_next(struct seq_file *m, void *p, loff_t *pos)
->  
->  static void m_stop(struct seq_file *m, void *p)
->  {
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  }
->  
->  static int m_show(struct seq_file *m, void *p)
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index aefb6065b508..710ec6a6aa8f 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -122,9 +122,9 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
->  	if (!p)
->  		return true;
->  	*p = '\0';
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	ret = !!find_module(tk->symbol);
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	*p = ':';
->  
->  	return ret;
-> -- 
-> 2.25.1
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks,
+Miklos
