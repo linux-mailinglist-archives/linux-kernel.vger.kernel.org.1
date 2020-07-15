@@ -2,125 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8BD220F1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D2C220F2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbgGOOWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 10:22:34 -0400
-Received: from mga18.intel.com ([134.134.136.126]:27565 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728086AbgGOOWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 10:22:34 -0400
-IronPort-SDR: qhl1A9ke0D2uwj8Iup3cMrkOU/yIzW2ch506eHNya3L6vIuZLNcYfirnsBEHMrIzhYCRUzmNP5
- +yB2ZVFNooBQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="136608590"
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; 
-   d="scan'208";a="136608590"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 07:22:33 -0700
-IronPort-SDR: 80v3gF12OrUgc3oIBjWlwM2wEEYcTwJALfOy+mW5YqBibu2SxXytSH25abnfa12TbAfIiwqCna
- 9SiWcSQ/Gm+Q==
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; 
-   d="scan'208";a="460106447"
-Received: from sjeong-mobl.amr.corp.intel.com (HELO [10.255.231.101]) ([10.255.231.101])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 07:22:32 -0700
-Subject: Re: [PATCH 8/9] soundwire: intel: add wake interrupt support
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, sanyog.r.kale@intel.com,
-        slawomir.blauciak@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-References: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
- <20200623173546.21870-9-yung-chuan.liao@linux.intel.com>
- <20200630165126.GT2599@vkoul-mobl>
- <a69aa5d0-613a-6ef6-9263-378b1e99770a@linux.intel.com>
- <20200701055654.GW2599@vkoul-mobl>
- <81a33798-0667-9a4f-9916-eb157ad5514d@linux.intel.com>
- <20200715045011.GO34333@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <2832a0d0-dd19-9532-2c6e-814b796b4e20@linux.intel.com>
-Date:   Wed, 15 Jul 2020 09:22:31 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728620AbgGOO0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 10:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728414AbgGOO0B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 10:26:01 -0400
+Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6551EC08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:26:01 -0700 (PDT)
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTP id 0AD0113FC1A;
+        Wed, 15 Jul 2020 16:25:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1594823158; bh=Dmmq7c83omCyHjmVGSlaEZEbm4AR1uYjTQdEkSn1A6Y=;
+        h=From:To:Date;
+        b=EyDL/AxzXK8CilzzMj58XhdopH7oDBuHAZIp+gObouVHtWUad46wexw9nG/syQG6t
+         RKFv+WwGHuRMjfaU0x4QAnNzQbHo0IuV3qFOaXPG4ltt9UvJnnovOgMG3wtr5U1yvs
+         rDX0c2S3hUooXtf5RfhPqTZ5/rAEd7YzzXKOLhjE=
+From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+To:     linux-pci@vger.kernel.org
+Cc:     Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-kernel@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Xogium <contact@xogium.me>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>
+Subject: [PATCH 0/5] PCIe aardvark controller improvements
+Date:   Wed, 15 Jul 2020 16:25:52 +0200
+Message-Id: <20200715142557.17115-1-marek.behun@nic.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200715045011.GO34333@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Spam-Status: No, score=0.00
+X-Spamd-Bar: /
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+we have some more improvements for PCIe aardvark controller (Armada 3720
+SOC - EspressoBIN and Turris MOX).
 
-On 7/14/20 11:50 PM, Vinod Koul wrote:
-> On 01-07-20, 10:25, Pierre-Louis Bossart wrote:
->>
->>>>>> +	 * wake up master and slave so that slave can notify master
->>>>>> +	 * the wakeen event and let codec driver check codec status
->>>>>> +	 */
->>>>>> +	list_for_each_entry(slave, &bus->slaves, node) {
->>>>>> +		/*
->>>>>> +		 * discard devices that are defined in ACPI tables but
->>>>>> +		 * not physically present and devices that cannot
->>>>>> +		 * generate wakes
->>>>>> +		 */
->>>>>> +		if (slave->dev_num_sticky && slave->prop.wake_capable)
->>>>>> +			pm_request_resume(&slave->dev);
->>>>>
->>>>> Hmmm, shouldn't slave do this? would it not make sense to notify the
->>>>> slave thru callback and then slave decides to resume or not..?
->>>>
->>>> In this mode, the bus is clock-stop mode, and events are detected with level
->>>> detector tied to PCI events. The master and slave devices are all in
->>>> pm_runtime suspended states. The codec cannot make any decisions on its own
->>>> since the bus is stopped, it needs to first resume, which assumes that the
->>>> master resumes first and the enumeration re-done before it can access any of
->>>> its registers.
->>>>
->>>> By looping through the list of devices that can generate events, you end-up
->>>> first forcing the master to resume, and then each slave resumes and can
->>>> check who generated the event and what happened while suspended. if the
->>>> codec didn't generate the event it will go back to suspended mode after the
->>>> usual timeout.
->>>>
->>>> We can add a callback but that callback would only be used for Intel
->>>> solutions, but internally it would only do a pm_request_resume() since the
->>>> codec cannot make any decisions before first resuming. In other words, it
->>>> would be an Intel-specific callback that is implemented using generic resume
->>>> operations. It's probably better to keep this in Intel-specific code, no?
->>>
->>> I do not like the idea that a device would be woken up, that kind of
->>> defeats the whole idea behind the runtime pm. Waking up a device to
->>> check the events is a generic sdw concept, I don't see that as Intel
->>> specific one.
->>
->> In this case, this in an Intel-specific mode that's beyond what MIPI
->> defined. This is not the traditional in-band SoundWire wake defined in the
->> SoundWire specification. The bus is completely down, the master IP is
->> powered-off and all context lost. There is still the ability for a Slave
->> device to throw a wake as defined by MIPI in clock-stop-mode1, but this is
->> handled with a separate level detector and the wake detection is handled by
->> the PCI subsystem. On a wake, the master IP needs to be powered-up, the
->> entire bus needs to be restarted and the Slave devices re-enumerated.
-> 
-> Right and I would expect that Slave device would do runtime_get_sync()
-> first thing in the callback. That would ensure that the Master is
-> powered up, Slave is powered up, all enumeration is complete. This is
-> more standard way to deal with this, we expect devices to be so we
-> low powered or off so cannot do read/write unless we resume.
+The main improvement is that with these patches the driver can be compiled
+as a module, and can be reloaded at runtime.
 
-As shared privately with you, we don't need to deal with device PM or 
-add a callback, it's enough to resume the master, which will indirectly 
-restart the bus and result in devices being resumed when they report 
-their interrupt status. We'll share the update from [1] in the v2.
+This series applies on top of Linus' master branch.
 
-[1] https://github.com/thesofproject/linux/pull/2247
+Marek & Pali
+
+Pali Rohár (5):
+  PCI: aardvark: Fix compilation on s390
+  PCI: aardvark: Check for errors from pci_bridge_emul_init() call
+  PCI: pci-bridge-emul: Export API functions
+  PCI: aardvark: Implement driver 'remove' function and allow to build
+    it as module
+  PCI: aardvark: Move PCIe reset card code to advk_pcie_train_link()
+
+ drivers/pci/controller/Kconfig        |   2 +-
+ drivers/pci/controller/pci-aardvark.c | 102 ++++++++++++++++----------
+ drivers/pci/pci-bridge-emul.c         |   4 +
+ 3 files changed, 69 insertions(+), 39 deletions(-)
+
+-- 
+2.26.2
 
