@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1A2220BBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1760220BBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729780AbgGOLYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 07:24:36 -0400
+        id S1729831AbgGOLYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 07:24:40 -0400
 Received: from esa3.microchip.iphmx.com ([68.232.153.233]:62426 "EHLO
         esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728010AbgGOLYf (ORCPT
+        with ESMTP id S1728010AbgGOLYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:24:35 -0400
+        Wed, 15 Jul 2020 07:24:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1594812274; x=1626348274;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=N6DV/31sOvQExw0bvi++MBVy/1MVzuDsKT0HgUq9HoE=;
-  b=mQht0u40tiOPxCoO/H0zQPXfmvLM6kKGmqS9h8zAh7iiVqfsRJgdPLwB
-   gI3MBWu2tJ3GtjPZbBSqfMxB5j4OW2SHMH8TmxURVROTy2QTk24sUwDnE
-   Tk1Lwy7NDrhfXVwwZDkD6HqsT5WFPYwRRbkQFODVfAQvh6CLXzFeYoXt2
-   BRSiDsB1NVRCKbPRxrsRRPeDjj4moOu7KR41NiosoxPi3xmT2lf6zw/42
-   4dpFk/cPkn1TADCVpz5VLMusvNa4/be7N4HK0Y/inOTlr9/bbvR0neqDH
-   9LB/ghgxXl79G1NC58R90ScDeLVVmQiH8GoJSen0Njjd06vI4XZagDc3t
-   g==;
-IronPort-SDR: ZKHXd4/fyx4RCYvlqHOKqh2HnOppqoJljtcZg0EbsfeF2z5ThN5f/JdhTh9kAoAaXrnh5YiuSI
- pMYCxeqmBSFLZyESAZlCRrQ+DSAR9DMAQU8lI7nZPqtCRzHd8BJ99JVslqs9c6KnIvNOdtkkfO
- mUEUSMWgeewAOYgC59D6tlbnfSNUsuuSS3e3Zs+nwmwfXClEHCSsZjcjMti8f2Ntgmr8+l2Tbc
- jvZ2qpgSDkwYidyrtxWA7TwwNIm3eywe9G7MEGIO4DsJlaW8bHTcYTpF7Rnc8lKekDHIYh3hYN
- pj0=
+  t=1594812278; x=1626348278;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=7R0pQ7si/LBGC7HCv98obeajPRN2G3AQ5wVM3UPEBzA=;
+  b=RgIowaklaQlGrMWW5JfP2Ge/YeVSJB48TMJTFWd5cui2PuaZu8tlRP0m
+   ntWpFP2sj+f+nL76BjmOLcL6QjZFMAzCt1iTdsTGrkauh1godUv01amEI
+   /kTbsNVH4br8ZNutmzG9+74jDf68uUHyFgM+C+MafkZKpSAns5Xwo5h36
+   YXuOKu/3aQGYrjKNDdaLw1wLT2anVT8qw1x1ojEp4tab/rnKOf6h0Mb63
+   NkZ3mTrzZiEG5agTewM4gjsJJWa8+rziNwfkUGlEZt55pjjaEmN6xGOJa
+   e9SuPjr9l0e4uCF1sNDdw5v1Hbq0tCwwj+m44f3Fy4yYHw0WQPK7aLcBb
+   w==;
+IronPort-SDR: pYPktPbPEbpUybSKK3miu3zNbBIbkRbVnld4SME1+MyatmIMhD8/1FcfYZk10XsHKVs+gVhYHO
+ w8+1Kh5pkU2AclRkKExHuaQbY81tsOgunZdQFAUHm2vSZ5VFn5K4/WEsB3awbsCDqML1BKLA/m
+ WQoPrrpsAgMenIurMa0RZWP8LkxyNQrVwDMk9ReVZmp8+XlqOWVSxY8VSNZ9g17SQ2UfGlyCsm
+ Gj2XPxgnscdJaAhOGFU6LjKChuUcCnLByUw8Z6FIy+u3im9iwBbFOAmZCqnl6sdkZFiCfNVqZ6
+ eRc=
 X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; 
-   d="scan'208";a="83962759"
+   d="scan'208";a="83962763"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Jul 2020 04:24:34 -0700
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Jul 2020 04:24:37 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 15 Jul 2020 04:24:02 -0700
+ 15.1.1979.3; Wed, 15 Jul 2020 04:24:37 -0700
 Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 15 Jul 2020 04:23:58 -0700
+ 15.1.1979.3 via Frontend Transport; Wed, 15 Jul 2020 04:24:02 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -48,10 +49,12 @@ CC:     <bbrezillon@kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         "Claudiu Beznea" <claudiu.beznea@microchip.com>
-Subject: [PATCH 00/19] clk: at91: add sama7g5 clock support
-Date:   Wed, 15 Jul 2020 14:24:08 +0300
-Message-ID: <1594812267-6697-1-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH 01/19] clk: at91: clk-generated: continue if __clk_determine_rate() returns error
+Date:   Wed, 15 Jul 2020 14:24:09 +0300
+Message-ID: <1594812267-6697-2-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1594812267-6697-1-git-send-email-claudiu.beznea@microchip.com>
+References: <1594812267-6697-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -59,86 +62,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+__clk_determine_rate() may return error. Skip the current step
+in case of error.
 
-This series adds clock support for SAMA7G5. The first patches in
-series, patches 1/19-9/19, contains some fixes (let me know if
-you want to send them as a separate series).
+Fixes: 1a1a36d72e3d3 ("clk: at91: clk-generated: make gclk determine audio_pll rate")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ drivers/clk/at91/clk-generated.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-For SAMA7G5 clock support some AT91 clock drivers needed changes
-because:
-1/ some of generated, master and peripheral clocks could have
-   changeable parents (being able to request frequency changes
-   from parent)
-2/ generated and programmable clocks parents needed a mux table
-   as the hardware parent index doesn't correspond with software
-   parent index
-3/ there are 4 new master clocks, MCK1..4 (compared with previous
-   AT91 architectures) which are controlled separately from MCK0
-4/ some of the PLLs have 2 outputs the internal block schema being
-   as follows:
-
-   +------+            +--------+
-   | FRAC |-----+----->| DIVPMC |--->
-   +------+     |      +--------+
-                |
-                |      +--------+
-                +----->|  DIVIO |--->
-                       +--------+
-
-   For this, the clk-sam9x60-pll driver has been re-factored.
-
-Claudiu Beznea (19):
-  clk: at91: clk-generated: continue if __clk_determine_rate() returns
-    error
-  clk: at91: clk-generated: check best_rate against ranges
-  clk: at91: clk-sam9x60-pll: fix mul mask
-  clk: at91: sam9x60-pll: use frac when computing pll frequency
-  clk: at91: sam9x60-pll: use logical or for range check
-  clk: at91: sam9x60-pll: check fcore against ranges
-  clk: at91: sam9x60-pll: use frac when setting frequency
-  clk: at91: sam9x60: fix main rc oscillator frequency
-  clk: at91: sckc: register slow_rc with accuracy option
-  clk: at91: replace conditional operator with double logical not
-  clk: at91: clk-generated: pass the id of changeable parent at
-    registration
-  clk: at91: clk-generated: add mux_table option
-  clk: at91: clk-master: add master clock support for SAMA7G5
-  clk: at91: clk-peripheral: add support for changeable parent rate
-  clk: at91: clk-programmable: add mux_table option
-  clk: at91: add macro for pll ids mask
-  clk: at91: clk-sam9x60-pll: re-factor to support plls with multiple
-    outputs
-  clk: at91: clk-utmi: add utmi support for sama7g5
-  clk: at91: sama7g5: add clock support for sama7g5
-
- drivers/clk/at91/Makefile           |    1 +
- drivers/clk/at91/at91rm9200.c       |    3 +-
- drivers/clk/at91/at91sam9260.c      |    3 +-
- drivers/clk/at91/at91sam9g45.c      |    3 +-
- drivers/clk/at91/at91sam9n12.c      |    5 +-
- drivers/clk/at91/at91sam9rl.c       |    3 +-
- drivers/clk/at91/at91sam9x5.c       |    7 +-
- drivers/clk/at91/clk-generated.c    |   44 +-
- drivers/clk/at91/clk-main.c         |    6 +-
- drivers/clk/at91/clk-master.c       |  310 +++++++++-
- drivers/clk/at91/clk-peripheral.c   |  111 +++-
- drivers/clk/at91/clk-programmable.c |   11 +-
- drivers/clk/at91/clk-sam9x60-pll.c  |  547 ++++++++++++------
- drivers/clk/at91/clk-system.c       |    4 +-
- drivers/clk/at91/clk-utmi.c         |  103 +++-
- drivers/clk/at91/dt-compat.c        |   25 +-
- drivers/clk/at91/pmc.h              |   43 +-
- drivers/clk/at91/sam9x60.c          |   64 ++-
- drivers/clk/at91/sama5d2.c          |   41 +-
- drivers/clk/at91/sama5d3.c          |    6 +-
- drivers/clk/at91/sama5d4.c          |    7 +-
- drivers/clk/at91/sama7g5.c          | 1059 +++++++++++++++++++++++++++++++++++
- drivers/clk/at91/sckc.c             |    5 +-
- include/linux/clk/at91_pmc.h        |    4 +
- 24 files changed, 2140 insertions(+), 275 deletions(-)
- create mode 100644 drivers/clk/at91/sama7g5.c
-
+diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
+index 44a46dcc0518..995a13133cfb 100644
+--- a/drivers/clk/at91/clk-generated.c
++++ b/drivers/clk/at91/clk-generated.c
+@@ -170,7 +170,8 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+ 
+ 	for (div = 1; div < GENERATED_MAX_DIV + 2; div++) {
+ 		req_parent.rate = req->rate * div;
+-		__clk_determine_rate(parent, &req_parent);
++		if (__clk_determine_rate(parent, &req_parent))
++			continue;
+ 		clk_generated_best_diff(req, parent, req_parent.rate, div,
+ 					&best_diff, &best_rate);
+ 
 -- 
 2.7.4
 
