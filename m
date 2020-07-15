@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234C7221040
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F97221042
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgGOPGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
+        id S1728085AbgGOPG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727971AbgGOPGs (ORCPT
+        with ESMTP id S1727978AbgGOPGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 11:06:48 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C9EC08C5E2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:47 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 17so6166138wmo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:47 -0700 (PDT)
+        Wed, 15 Jul 2020 11:06:50 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1556C08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:49 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b6so3039944wrs.11
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=P2yOByTJ584zq87efhS3Vkyk+agE9qVyWq/sL4PYeIk=;
-        b=UyEhMAjQjWz7s63ZoKbqZd0he72PbgcQoERVqZzfPDdeHfi76qTF2aqAKxzkw+vs8v
-         1ccaVDSAO4pCzQ94UQJrxVt/sheMgiPUXVzxym6vO5O3kTo9gbcNiNZVaVD1plMF0J3k
-         z3yGisz15rp6uRZwbOTBwSS7WRG2WW4RYhT3UooUQ1/ByKSkNAp8xkJVJkMzDKEaz/uV
-         dY1tnRfjmei2kZiknTPr5tnLNurtxkTSnbU4QVjMd/PG1AQFoIo5f4IX91KQdnkdhecL
-         G0V3E7kPOXw89FXa9PIId9kyqYzc/kbEl6QHQn+6MHKgA350J1Dw6gHOjtOneOkfuyyM
-         4CgQ==
+        bh=IfYptBKxQvrYFn67V4A+QmgFkUNV62He06/dIZhBEjs=;
+        b=KZ/TT1t8CLQwqRlkcCPqM5ZK4eIUzF122chFSiLAFw9aUgHkXoJwedsjFUWNkqBK8w
+         xoB4tfqJRd7SZyxqiKTR0kyAIdXPlACO3EGTzoXFXhuypYOk/pAabYnC9cCRagJh7ra6
+         ys8mn2pnkIg3p3UpxtX1bwTvZquhEm5FSmtxNhh0OL5NHOsLK1CSoHoAZKQZe3U63AC6
+         kWdU4mIEZiRg7ZLXpgfvBAeuZbFLsSu/s8OANq5iu9F/gUzRFCpo8TyvZzhRXipVMsh/
+         W/JWNHB7R1SpSzw5769jWnV7f2oaRtgeMcQNpgQUwUsncIOaqTP5xM4uwZc4qtUaYnV4
+         /oKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=P2yOByTJ584zq87efhS3Vkyk+agE9qVyWq/sL4PYeIk=;
-        b=iShlAbrvTXoiTT6eRhz2+a2VY0Cix3HvpOFXmGI4xAycnwX9i/EgtAurudm2BIJ+jl
-         l5eHHYiuHF+8otAJevIbHSKlU9y9Kbvzv8IIZZcaQS+sJ8xyBI0oH1VRi6ey1iZC0sqQ
-         qJICo1tf+POadPO6sTFazQYOzS4PE5GwkDDEXuGhqpZIckeY9L3NJBegVj1xW1P16O+S
-         NmVtUMolzUkbAIb741HWehudBltYycaDgXdKRfJfsSkWXAu4ezgNvvDmo8n2sVLONtgP
-         jmgljZnabJ7ic2DQDiFif9J/E9liVKQtBRkENHU7JsPPRaLV5CAUK6u5XxWGzxiC9m8H
-         BWBg==
-X-Gm-Message-State: AOAM530M4sbJdW5rOAhyVB1pBcY7B4G8wC3ArmzjnYhPRE5X+zYXsvDp
-        xejoVSi53+R802dmlg7VHwTyVjUhz/k=
-X-Google-Smtp-Source: ABdhPJx39xtrPHkcaKWFcDV25x4ysJFEnVveAGzGMS6sEEHSQ9JC+ALsZmBUt/eVdulx8vVh0d6eMQ==
-X-Received: by 2002:a1c:f609:: with SMTP id w9mr9114757wmc.150.1594825606599;
-        Wed, 15 Jul 2020 08:06:46 -0700 (PDT)
+        bh=IfYptBKxQvrYFn67V4A+QmgFkUNV62He06/dIZhBEjs=;
+        b=Pr/m7HJr3m22bEQDru8UCuxwXVZEzOBYG54+FiWw2q1UpmNZkBIx1VV4iOQ6vge1Qa
+         92c2VDN9p84CJNOrfq7zdwBsYZFK0wHxz1Q9U4+qfnKGW5isXWGH8T1S/fd9UmpTv5AV
+         WbmYMOQmKyS9IqTAP1kVuEBZovGhqwDEACxYpo3km+6CeByqoIXXA98Y9tdXvgsg3ZxS
+         BF7fTxwfRqW4oPx3kB93vXNXq1je62DtS2tIGlWfoiupIoDvTSkAy009z3yullH0DG44
+         5SuBp8wHH4aptYkRiKzTS8tNzwgWzU4qp05Y1tpiLgibESN731wVzeyH9m23SyJ0xPPH
+         tRCQ==
+X-Gm-Message-State: AOAM533aA7oVdIzkC0/9Z3QDWlRmk02/7yWXY8eL4ARsUmf6oblA/917
+        6OJZ++S8Pf6sF6HAZprzwfbcHg==
+X-Google-Smtp-Source: ABdhPJxrrdTj/aQFIMBJUj58shw/EWz9k6o034iUJPO0GSeP71Qz7tMabUEkuVxpSHB3KuZgJnnDiQ==
+X-Received: by 2002:a5d:4992:: with SMTP id r18mr11145302wrq.323.1594825608304;
+        Wed, 15 Jul 2020 08:06:48 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id w2sm3906140wrs.77.2020.07.15.08.06.45
+        by smtp.gmail.com with ESMTPSA id w2sm3906140wrs.77.2020.07.15.08.06.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 08:06:45 -0700 (PDT)
+        Wed, 15 Jul 2020 08:06:47 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-spi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Sureshkumar Relli <nagasure@xilinx.com>
-Subject: [PATCH 09/14] spi: spi-zynq-qspi: Add description for 2 missing attributes/parameters
-Date:   Wed, 15 Jul 2020 16:06:27 +0100
-Message-Id: <20200715150632.409077-10-lee.jones@linaro.org>
+        Michal Simek <michal.simek@xilinx.com>
+Subject: [PATCH 10/14] spi: spi-zynqmp-gqspi: Correct a couple of misspellings in kerneldoc
+Date:   Wed, 15 Jul 2020 16:06:28 +0100
+Message-Id: <20200715150632.409077-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200715150632.409077-1-lee.jones@linaro.org>
 References: <20200715150632.409077-1-lee.jones@linaro.org>
@@ -69,38 +68,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/spi/spi-zynq-qspi.c:143: warning: Function parameter or member 'dev' not described in 'zynq_qspi'
- drivers/spi/spi-zynq-qspi.c:334: warning: Function parameter or member 'spi' not described in 'zynq_qspi_config_op'
- drivers/spi/spi-zynq-qspi.c:334: warning: Excess function parameter 'qspi' description in 'zynq_qspi_config_op'
+ drivers/spi/spi-zynqmp-gqspi.c:205: warning: Function parameter or member 'slavecs' not described in 'zynqmp_gqspi_selectslave'
+ drivers/spi/spi-zynqmp-gqspi.c:205: warning: Function parameter or member 'slavebus' not described in 'zynqmp_gqspi_selectslave'
+ drivers/spi/spi-zynqmp-gqspi.c:205: warning: Excess function parameter 'flashcs' description in 'zynqmp_gqspi_selectslave'
+ drivers/spi/spi-zynqmp-gqspi.c:205: warning: Excess function parameter 'flashbus' description in 'zynqmp_gqspi_selectslave'
+ drivers/spi/spi-zynqmp-gqspi.c:902: warning: Function parameter or member 'dev' not described in 'zynqmp_qspi_suspend'
+ drivers/spi/spi-zynqmp-gqspi.c:902: warning: Excess function parameter '_dev' description in 'zynqmp_qspi_suspend'
 
 Cc: Michal Simek <michal.simek@xilinx.com>
-Cc: Sureshkumar Relli <nagasure@xilinx.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/spi/spi-zynq-qspi.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/spi/spi-zynqmp-gqspi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
-index bbf3d90561f54..5d8a5ee62fa23 100644
---- a/drivers/spi/spi-zynq-qspi.c
-+++ b/drivers/spi/spi-zynq-qspi.c
-@@ -119,6 +119,7 @@
+diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
+index 811c97a7c8589..e17a201252557 100644
+--- a/drivers/spi/spi-zynqmp-gqspi.c
++++ b/drivers/spi/spi-zynqmp-gqspi.c
+@@ -197,8 +197,8 @@ static inline void zynqmp_gqspi_write(struct zynqmp_qspi *xqspi, u32 offset,
+ /**
+  * zynqmp_gqspi_selectslave:	For selection of slave device
+  * @instanceptr:	Pointer to the zynqmp_qspi structure
+- * @flashcs:	For chip select
+- * @flashbus:	To check which bus is selected- upper or lower
++ * @slavecs:	For chip select
++ * @slavebus:	To check which bus is selected- upper or lower
+  */
+ static void zynqmp_gqspi_selectslave(struct zynqmp_qspi *instanceptr,
+ 				     u8 slavecs, u8 slavebus)
+@@ -892,7 +892,7 @@ static int zynqmp_qspi_start_transfer(struct spi_master *master,
  
  /**
-  * struct zynq_qspi - Defines qspi driver instance
-+ * @dev:		Pointer to the this device's information
-  * @regs:		Virtual address of the QSPI controller registers
-  * @refclk:		Pointer to the peripheral clock
-  * @pclk:		Pointer to the APB clock
-@@ -316,7 +317,7 @@ static void zynq_qspi_chipselect(struct spi_device *spi, bool assert)
- /**
-  * zynq_qspi_config_op - Configure QSPI controller for specified transfer
-  * @xqspi:	Pointer to the zynq_qspi structure
-- * @qspi:	Pointer to the spi_device structure
-+ * @spi:	Pointer to the spi_device structure
+  * zynqmp_qspi_suspend:	Suspend method for the QSPI driver
+- * @_dev:	Address of the platform_device structure
++ * @dev:	Address of the platform_device structure
   *
-  * Sets the operational mode of QSPI controller for the next QSPI transfer and
-  * sets the requested clock frequency.
+  * This function stops the QSPI driver queue and disables the QSPI controller
+  *
 -- 
 2.25.1
 
