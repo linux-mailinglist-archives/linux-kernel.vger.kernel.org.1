@@ -2,94 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96252214C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 20:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BE02214CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 21:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgGOS56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 14:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
+        id S1726766AbgGOTCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 15:02:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726086AbgGOS56 (ORCPT
+        with ESMTP id S1726650AbgGOTCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 14:57:58 -0400
-Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD06FC061755;
-        Wed, 15 Jul 2020 11:57:57 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id C4B90BC0CB;
-        Wed, 15 Jul 2020 18:57:52 +0000 (UTC)
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-To:     dvhart@infradead.org, andy@infradead.org, peter@piie.net,
-        mika.westerberg@linux.intel.com, lee.jones@linaro.org,
-        dmitry.torokhov@gmail.com, ayman.bagabas@gmail.com,
-        masahiroy@kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Subject: [PATCH v2] platform/x86: acerhdf: Replace HTTP links with HTTPS ones
-Date:   Wed, 15 Jul 2020 20:57:44 +0200
-Message-Id: <20200715185744.52335-1-grandmaster@al2klimov.de>
-In-Reply-To: <CAHp75VcZ5f0xw9RbV0OZ0DuE6JqCfkTExqO=MJ9AE0TFdCV8Xg@mail.gmail.com>
-References: <CAHp75VcZ5f0xw9RbV0OZ0DuE6JqCfkTExqO=MJ9AE0TFdCV8Xg@mail.gmail.com>
+        Wed, 15 Jul 2020 15:02:14 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FCBC08C5CE
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 12:02:14 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id h1so728765vkn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 12:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PmtQ0FrsBiOsqRJiGiTNFNGrmIx+8RMusU8KDu9T4aY=;
+        b=ASTb52Iah2njRL2ETx3AA40ICz/qZGc0YsZ4RTzCHytuyNKqdrkSTbsaUPy6zkttzt
+         S0MEohrvEOeRRGxXFQp93vIfJK+w3YIv6+8lc3P+gfKEBlEbAj93X2DRVgyxa9eN6HIB
+         Wn7Yifou3j68JRXTW7Fq30Bc0R2f+cTkHEa1U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PmtQ0FrsBiOsqRJiGiTNFNGrmIx+8RMusU8KDu9T4aY=;
+        b=tjRowsZRVF9ShFzQ58mXkm9w7X4MKJa+typjELUU6A4M4s+ISTUOhpsBUrdn3A+RIN
+         0FR/EqxoyWrX8UDg7hudsOWGA1YhK2SpAwNYHBb04Ho1ieQVpHZKnVsSrd0eqkKFuVgO
+         RSbEugeZ1Wgi66c6Ubl2hdp1mZ3vvaX0HXQnZ3/5MjckqPw0jcTZo3qXT3/CoJ52p1nm
+         uJTTj4oGbGQV0WUfGk1ooiWBBAFvzlo+ByfIeCpwH5qJJNEOgrG9OQ5iIGBFD9fMAxYX
+         SkHCtDWtdiJATk5VFaRe3WVBgt2L0F/fFTGxXAHafXl5hyuEmqEYrX1UIaBEwZf/xYaf
+         eJoA==
+X-Gm-Message-State: AOAM5305JiNRrWFA6603mjSutHC4avrMpaJNaJLtYwXQY75XRXhQZAKk
+        dzLkfhkAPkpqpwxGsmiv/zyVAb62g4k=
+X-Google-Smtp-Source: ABdhPJzA7oqzci4xxrt4xwtDv8MqYdm28Gl8Eh/WVwmIQw3nH1QZEG4l0zkbdpaiAe4SVoIqbFh/Ew==
+X-Received: by 2002:a1f:a18f:: with SMTP id k137mr444207vke.69.1594839732872;
+        Wed, 15 Jul 2020 12:02:12 -0700 (PDT)
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com. [209.85.221.178])
+        by smtp.gmail.com with ESMTPSA id f69sm434568vkf.4.2020.07.15.12.02.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jul 2020 12:02:12 -0700 (PDT)
+Received: by mail-vk1-f178.google.com with SMTP id h190so731547vkh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 12:02:11 -0700 (PDT)
+X-Received: by 2002:a1f:3d4a:: with SMTP id k71mr443715vka.65.1594839731375;
+ Wed, 15 Jul 2020 12:02:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
+References: <1594615586-17055-1-git-send-email-pillair@codeaurora.org>
+In-Reply-To: <1594615586-17055-1-git-send-email-pillair@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 15 Jul 2020 12:01:59 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XtBhM_CSQM63LCiVDR0oPAAyEr5bG_FRt1tdwpw5OPKQ@mail.gmail.com>
+Message-ID: <CAD=FV=XtBhM_CSQM63LCiVDR0oPAAyEr5bG_FRt1tdwpw5OPKQ@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: qcom: sc7180: Add missing properties for
+ Wifi node
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Evan Green <evgreen@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Hi,
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
+On Sun, Jul 12, 2020 at 9:46 PM Rakesh Pillai <pillair@codeaurora.org> wrote:
+>
+> The wlan firmware memory is statically mapped in
+> the Trusted Firmware, hence the wlan driver does
+> not need to map/unmap this region dynamically.
+>
+> Hence add the property to indicate the wlan driver
+> to not map/unamp the firmware memory region
+> dynamically.
+>
+> Also add the chain1 voltage supply for wlan.
+>
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> ---
+> Changes from v1:
+> - Add the wifi mac alias
+>
+> This patch is created on top of the change by
+> Douglas Anderson.
+> https://lkml.org/lkml/2020/6/25/817
+>
+> Also the dt-bindings for the chain1 voltage supply
+> is added by the below patch series:
+> https://patchwork.kernel.org/project/linux-wireless/list/?series=309137
+> ---
+>  arch/arm64/boot/dts/qcom/sc7180-idp.dts | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> index 472f7f4..c042d61 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+> @@ -19,6 +19,7 @@
+>
+>         aliases {
+>                 bluetooth0 = &bluetooth;
+> +               wifi0 = &wifi;
+>                 hsuart0 = &uart3;
+>                 serial0 = &uart8;
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
----
- v2: Combined all two patches for acerhdf.
+Could you alphabetize?
 
- drivers/platform/x86/Kconfig   | 2 +-
- drivers/platform/x86/acerhdf.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+>         };
+> @@ -391,10 +392,12 @@
+>
+>  &wifi {
+>         status = "okay";
+> +       qcom,msa-fixed-perm;
+>         vdd-0.8-cx-mx-supply = <&vreg_l9a_0p6>;
+>         vdd-1.8-xo-supply = <&vreg_l1c_1p8>;
+>         vdd-1.3-rfa-supply = <&vreg_l2c_1p3>;
+>         vdd-3.3-ch0-supply = <&vreg_l10c_3p3>;
+> +       vdd-3.3-ch1-supply = <&vreg_l11c_3p3>;
+>         wifi-firmware {
+>                 iommus = <&apps_smmu 0xc2 0x1>;
+>         };
 
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 0581a54cf562..1d96e07b2a02 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -140,7 +140,7 @@ config ACERHDF
- 	  in the same node directory will tell you if it is "acerhdf".
- 
- 	  For more information about this driver see
--	  <http://piie.net/files/acerhdf_README.txt>
-+	  <https://piie.net/files/acerhdf_README.txt>
- 
- 	  If you have an Acer Aspire One netbook, say Y or M
- 	  here.
-diff --git a/drivers/platform/x86/acerhdf.c b/drivers/platform/x86/acerhdf.c
-index 4df7609b4aa9..a7a0b2e0ceb9 100644
---- a/drivers/platform/x86/acerhdf.c
-+++ b/drivers/platform/x86/acerhdf.c
-@@ -5,7 +5,7 @@
-  *           as soon as the upper/lower threshold is reached.
-  *
-  * (C) 2009 - Peter Kaestle     peter (a) piie.net
-- *                              http://piie.net
-+ *                              https://piie.net
-  *     2009 Borislav Petkov	bp (a) alien8.de
-  *
-  * Inspired by and many thanks to:
--- 
-2.27.0
+Other than the alphabetical order:
 
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
