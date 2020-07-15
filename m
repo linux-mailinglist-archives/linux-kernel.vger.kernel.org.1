@@ -2,133 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1647D22045F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 07:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C966C220446
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 07:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728390AbgGOF3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 01:29:17 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:37653 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728233AbgGOF3Q (ORCPT
+        id S1728170AbgGOFOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 01:14:00 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:48572 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgGOFN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 01:29:16 -0400
-Received: by mail-io1-f72.google.com with SMTP id 63so716109ioy.4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 22:29:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hV6gDoNEujJXR09Xve4tPCYU9mNFTuJaaSa8jwnMPP0=;
-        b=m+b7emthKK70Qme1+4zqTEwbMVgJTu4RbujFEleycqe4vs3oK3W0EGc5CxEcGz9IoE
-         jt+2PQUxEm+TcCgbglmeKQCwTYbCKtEMOjA3D4CrjwcJcxeKVPWwrCjDN6usiJghkFNC
-         h21TSCUrQURT4Qb+O2F61nmWVMGE84JrtROVd7vKOCxyF+cfk6ZF1nkgSwxmlPKeaS5L
-         W2kjIHseU3lhGX8aBAj1iQaeM3oWxAEmvppi5pk4tFCsA0R/Y2A8LmLMZLj6n0MSwstE
-         lqpSQfZzkrOsvHHeuGvpdioY04XU535V7Bxflxb1WdH73/+yxWGTFpwTVWriKRK43xMc
-         A0lA==
-X-Gm-Message-State: AOAM532c1QC58ZMNkVpkFPQxgQzneK+QvHTOaEF2Cmh1ztVmREEqNm6W
-        n2mnu60g+El0e5yMlemTc26MusByNBMKdWftk5pS9dOz5tEe
-X-Google-Smtp-Source: ABdhPJyTwqmwwekbwNS1ArF4gR9aG13eAzwOXh/BLbfLQMb1otJ/DIiHulDT7EDtpVqpYAxo8Zpq2cQ9vOf5cYOuSHGjUAHzE9gs
-MIME-Version: 1.0
-X-Received: by 2002:a02:30c4:: with SMTP id q187mr9630643jaq.102.1594790955573;
- Tue, 14 Jul 2020 22:29:15 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 22:29:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000065e73d05aa743471@google.com>
-Subject: INFO: rcu detected stall in __do_sys_clock_adjtime
-From:   syzbot <syzbot+587a843fe6b38420a209@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 15 Jul 2020 01:13:59 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200715051355epoutp04d56a71223a471e74396c6110c425cee2~h1RaSa3P-0561505615epoutp04R
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:13:55 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200715051355epoutp04d56a71223a471e74396c6110c425cee2~h1RaSa3P-0561505615epoutp04R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594790036;
+        bh=GIdXeG9LsXYkUgrWWOUY0Jh4teDLnJtF0I4YxRoyxug=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=FcSvr06b/VwGObhzcsHaKH9FVcrqbeAuRIYtGSEBqEL1ySn01h1nRaLgxU7Zp1R7I
+         Xx3FN0PN6n1TYmDo7ts7yKpRfQlu4UjqsOCu+jgGPyc2J8ItRNpsQI0EMYM39BloLo
+         Mg8bU3DdbtwARSdJ5w6kcd+okPSQ8Wkv/JwHzaB8=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200715051355epcas1p2f5a139c8dee95e82b27438b02b476bed~h1RZs_KC23061530615epcas1p29;
+        Wed, 15 Jul 2020 05:13:55 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.164]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4B65C56WzRzMqYkX; Wed, 15 Jul
+        2020 05:13:53 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B8.46.19033.1909E0F5; Wed, 15 Jul 2020 14:13:53 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200715051353epcas1p46ae6b84555180be315752ef69262dfce~h1RXp0kgP0136901369epcas1p4w;
+        Wed, 15 Jul 2020 05:13:53 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200715051353epsmtrp1a3877c73a7eb2f2b0d5eb26e0b147381~h1RXpMRDq0122501225epsmtrp1B;
+        Wed, 15 Jul 2020 05:13:53 +0000 (GMT)
+X-AuditID: b6c32a36-16fff70000004a59-30-5f0e9091b9b4
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4E.6D.08382.1909E0F5; Wed, 15 Jul 2020 14:13:53 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.105.96]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200715051353epsmtip17fbac96bdc4e0b9c4a65516606bb5d7f~h1RXhq5Rd0927509275epsmtip1e;
+        Wed, 15 Jul 2020 05:13:53 +0000 (GMT)
+From:   Jeehong Kim <jhez.kim@samsung.com>
+To:     jhez.kim@samsung.com, sre@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dohyung Kim <dh0703.kim@samsung.com>
+Subject: [PATCH] power: supply: add "Wireless" to power_supply_type and
+ power_supply_type_text
+Date:   Wed, 15 Jul 2020 14:38:44 +0900
+Message-Id: <20200715053844.12657-1-jhez.kim@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFKsWRmVeSWpSXmKPExsWy7bCmru7ECXzxBltv6Vsc+reb0eLq0UnM
+        Fpd3zWGz+Nx7hNHi9O4SB1aPTas62Tz6tqxi9Pi8SS6AOSrHJiM1MSW1SCE1Lzk/JTMv3VbJ
+        OzjeOd7UzMBQ19DSwlxJIS8xN9VWycUnQNctMwdoo5JCWWJOKVAoILG4WEnfzqYov7QkVSEj
+        v7jEVim1ICWnwNCgQK84Mbe4NC9dLzk/18rQwMDIFKgyISfjy609jAXL+Cqev41pYFzM08XI
+        ySEhYCKx5M9k9i5GLg4hgR2MEtevvWKDcD4xSlz58Y4NpEpI4BujxJ+3lTAdqyb+Y4Qo2sso
+        sb11KlT7Z0aJ2e+3sYNUsQloSNxtvscCYosA2U0N0xlBbGaBJIkNd64D2RwcwgIJEqe680DC
+        LAKqEvuengMr4RWwlLjw6C0zxDJ5idUbDjCDzJcQ6GeXWN13gw0i4SJx588eJghbWOLV8S3s
+        ELaUxMv+NnaoBkaJD2/bobp7gF5Y+ZgVospYorfnAjPIFcwCmhLrd+lDhBUldv6eC3Uon8S7
+        rz2sICUSArwSHW1CEKaSxLFV9hDVEhJPvp+HGughsfz2YyZIYMVKbF0yjX0Co+wshPkLGBlX
+        MYqlFhTnpqcWGxYYIcfRJkZwItIy28E46e0HvUOMTByMhxglOJiVRHh5uHjjhXhTEiurUovy
+        44tKc1KLDzGaAgNsIrOUaHI+MBXmlcQbmhoZGxtbmJiZm5kaK4nz/jvLHi8kkJ5YkpqdmlqQ
+        WgTTx8TBKdXAtGy5+8Gj9id/+93ec2Ae2xY3O47fDPMkvzAvjDxgP6vaxGD+bQamrLcP9Vyv
+        Zd9lEmue/dnBPtCk+PlO3aqW6duzAz96bnom0sRSJb2hPDOsQUFHf/Hy+ff9ZjLzKBwVOfNs
+        auYj6ffxURJZQu3evCuOXGOavJPX73lazK8Zk44uiCyftObtQ6vQSXoXp+7kct1UULxSKlVY
+        gL053q6Cl2vupDscn08ENz/fr++4V/RbzIn/SxxWuK69OW+XpaiaX2ay3KFFHZuapkSVN6R2
+        GWhNWH6jKcRT5nryHYtT7zf6sfIE+C/asmdC27Snusec/l3Z+f1EVlhmUbFIqNmBp5eCdi/d
+        eOxkiJBLicTKfiWW4oxEQy3mouJEAER+QIvNAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBJMWRmVeSWpSXmKPExsWy7bCSnO7ECXzxBpO3sFkc+reb0eLq0UnM
+        Fpd3zWGz+Nx7hNHi9O4SB1aPTas62Tz6tqxi9Pi8SS6AOYrLJiU1J7MstUjfLoEr48utPYwF
+        y/gqnr+NaWBczNPFyMkhIWAisWriP8YuRi4OIYHdjBIfnx1lh0hISBz+cJe1i5EDyBaWOHy4
+        GKLmI6PE+sV3wGrYBDQk7jbfYwGxRQS0JBbf3sUGYjMLpEhsO9oHViMsECfx5uhqMJtFQFVi
+        39NzjCA2r4ClxIVHb5khdslLrN5wgHkCI88CRoZVjJKpBcW56bnFhgWGeanlesWJucWleel6
+        yfm5mxjBgaGluYNx+6oPeocYmTgYDzFKcDArifDycPHGC/GmJFZWpRblxxeV5qQWH2KU5mBR
+        Eue9UbgwTkggPbEkNTs1tSC1CCbLxMEp1cDUsXE+Y8GUqLBckQ/K6ZWxNddXXQxT/hz31LM1
+        k+PAi/RVf2WE1Xdt3iM87fDqT3Vffdj9H7Lk8jX+nBGxqp6ffaKkMKdpSvzvLb8npgqluQV9
+        9HkvvkvnXq6a+bYypWexqmf5k7XDDxlpawe0zpzr8GrfuyWczdPbVj4UEd1s5HpyTeFeB+dH
+        dzRY38Zmv5i/76FLZsz2BUFHX4udmi/Yrl+hqfhgRsr6A9H52bfiK/29D510Cpg9M+Hjzz6n
+        5XH33pxMbCwztMk7nzT9KctX7qWt+7zmb9jF/fZXp6r/1ccc1zfffnTEY+e54grDG5cjjXa6
+        lZ2bOjEz58SMa2p3ynU3Rr1pjJn/kWku165pSizFGYmGWsxFxYkA0Y5iRXsCAAA=
+X-CMS-MailID: 20200715051353epcas1p46ae6b84555180be315752ef69262dfce
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200715051353epcas1p46ae6b84555180be315752ef69262dfce
+References: <CGME20200715051353epcas1p46ae6b84555180be315752ef69262dfce@epcas1p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+In android platform(BatteryMonitor.cpp), SysfsStringEnumMap<int>
+supplyTypeMap[] is declred for communication with kernel(sysfs)
+and there is "Wireless". But, no type for "Wireless" in kernel.
+So, we suggest to add "Wireless" to power_supply_type and
+power_supply_type_text.
+I hope this will not only synchronize the text values with
+android platform, but also help other platforms.
 
-syzbot found the following issue on:
-
-HEAD commit:    a581387e Merge tag 'io_uring-5.8-2020-07-10' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1312c277100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=66ad203c2bb6d8b
-dashboard link: https://syzkaller.appspot.com/bug?extid=587a843fe6b38420a209
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14778a77100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15150e13100000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+587a843fe6b38420a209@syzkaller.appspotmail.com
-
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	0-...0: (1 GPs behind) idle=c22/1/0x4000000000000000 softirq=10714/10715 fqs=5249 
-	(detected by 1, t=10502 jiffies, g=10189, q=4119)
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 6820 Comm: syz-executor767 Not tainted 5.8.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:should_restart_cycle net/sched/sch_taprio.c:647 [inline]
-RIP: 0010:advance_sched+0x236/0x990 net/sched/sch_taprio.c:723
-Code: 00 0f 85 d1 06 00 00 48 8d 7d 28 4d 8b 65 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 cf 06 00 00 <4c> 39 64 24 20 4c 8b 7d 28 0f 84 3c 03 00 00 e8 26 aa 11 fb 4c 89
-RSP: 0018:ffffc90000007d78 EFLAGS: 00000046
-RAX: dffffc0000000000 RBX: ffff8880a0d9db40 RCX: ffffffff86620d01
-RDX: 1ffff11013ee0ae5 RSI: ffffffff86620d0f RDI: ffff88809f705728
-RBP: ffff88809f705700 R08: 0000000000000001 R09: 0000000000000003
-R10: 17432cbe2e86597c R11: 0000000000000000 R12: ffff88809f705710
-R13: ffff888094684700 R14: 17432cbe2e86597c R15: dffffc0000000000
-FS:  0000000001fb4880(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000610 CR3: 000000009e890000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- __run_hrtimer kernel/time/hrtimer.c:1520 [inline]
- __hrtimer_run_queues+0x6a9/0xfc0 kernel/time/hrtimer.c:1584
- hrtimer_interrupt+0x32a/0x930 kernel/time/hrtimer.c:1646
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
- __sysvec_apic_timer_interrupt+0x142/0x5e0 arch/x86/kernel/apic/apic.c:1097
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- sysvec_apic_timer_interrupt+0xe0/0x120 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:587
-RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:765 [inline]
-RIP: 0010:on_each_cpu+0x149/0x240 kernel/smp.c:702
-Code: 00 fc ff df 48 c1 e8 03 80 3c 10 00 0f 85 e6 00 00 00 48 83 3d 97 12 4c 08 00 0f 84 af 00 00 00 e8 9c e9 0a 00 48 89 df 57 9d <0f> 1f 44 00 00 e8 8d e9 0a 00 bf 01 00 00 00 e8 83 a4 e6 ff 31 ff
-RSP: 0018:ffffc900017f7b68 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000293 RCX: 0000000000000000
-RDX: ffff88809e192500 RSI: ffffffff8168cdf4 RDI: 0000000000000293
-RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-R13: 001e89e9b1852336 R14: 003b9aca00000000 R15: 0000000000000000
- clock_was_set+0x18/0x20 kernel/time/hrtimer.c:872
- timekeeping_inject_offset+0x3e9/0x4d0 kernel/time/timekeeping.c:1305
- do_adjtimex+0x28f/0x990 kernel/time/timekeeping.c:2332
- do_clock_adjtime kernel/time/posix-timers.c:1109 [inline]
- __do_sys_clock_adjtime+0x155/0x250 kernel/time/posix-timers.c:1121
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443949
-Code: Bad RIP value.
-RSP: 002b:00007ffef6e7f668 EFLAGS: 00000246 ORIG_RAX: 0000000000000131
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443949
-RDX: 0000000000443949 RSI: 0000000020000300 RDI: 0000000000000000
-RBP: 00007ffef6e7f670 R08: 0000000001bbbbbb R09: 0000000001bbbbbb
-R10: 0000000001bbbbbb R11: 0000000000000246 R12: 00007ffef6e7f680
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 0.000 msecs
-
-
+Reported-by: Jaeho Song <jaeho21.song@samsung.com>
+Signed-off-by: Dohyung Kim <dh0703.kim@samsung.com>
+Signed-off-by: Jeehong Kim <jhez.kim@samsung.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/power/supply/power_supply_sysfs.c | 1 +
+ include/linux/power_supply.h              | 1 +
+ 2 files changed, 2 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
+index bc79560229b5..35582b67eff5 100644
+--- a/drivers/power/supply/power_supply_sysfs.c
++++ b/drivers/power/supply/power_supply_sysfs.c
+@@ -56,6 +56,7 @@ static const char * const POWER_SUPPLY_TYPE_TEXT[] = {
+ 	[POWER_SUPPLY_TYPE_USB_PD]		= "USB_PD",
+ 	[POWER_SUPPLY_TYPE_USB_PD_DRP]		= "USB_PD_DRP",
+ 	[POWER_SUPPLY_TYPE_APPLE_BRICK_ID]	= "BrickID",
++	[POWER_SUPPLY_TYPE_WIRELESS]		= "Wireless",
+ };
+
+ static const char * const POWER_SUPPLY_USB_TYPE_TEXT[] = {
+diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+index ac1345a48ad0..c8bad17a9483 100644
+--- a/include/linux/power_supply.h
++++ b/include/linux/power_supply.h
+@@ -182,6 +182,7 @@ enum power_supply_type {
+ 	POWER_SUPPLY_TYPE_USB_PD,		/* Power Delivery Port */
+ 	POWER_SUPPLY_TYPE_USB_PD_DRP,		/* PD Dual Role Port */
+ 	POWER_SUPPLY_TYPE_APPLE_BRICK_ID,	/* Apple Charging Method */
++	POWER_SUPPLY_TYPE_WIRELESS,		/* Wireless */
+ };
+
+enum power_supply_usb_type {
+
+base-commit: e9919e11e219eaa5e8041b7b1a196839143e9125
+--
+2.17.1
+
