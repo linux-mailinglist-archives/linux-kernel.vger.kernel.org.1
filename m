@@ -2,127 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31410220EA6
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB7C220EA7
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729911AbgGOOCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 10:02:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54842 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727822AbgGOOCp (ORCPT
+        id S1732024AbgGOODH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 10:03:07 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:58029 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727822AbgGOODH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 10:02:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594821764;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZvHDwOoLbdSaOIDbTqIso84H/Gr3/SW89Du8SzMSm1c=;
-        b=MB781OHZ2jB0ROJWdNwp4VMIUZlnqcWNnFT/x0wbwCeFytwG2f8+4HgAVXtcELhNivIluD
-        5jhxpUwpLY0wG1zG9SuK0R2rknXVKKkLxG8AHJWMf89bfMPxr1qYN/ZIAk1bMG7FzdxblL
-        TpXm4p8YkcrbtR4pYcZd9Y3Ituq1m9g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-411-X7wHNdWnOBqDZp5sCk_oAw-1; Wed, 15 Jul 2020 10:02:42 -0400
-X-MC-Unique: X7wHNdWnOBqDZp5sCk_oAw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3334880572E;
-        Wed, 15 Jul 2020 14:02:41 +0000 (UTC)
-Received: from [10.72.13.230] (ovpn-13-230.pek2.redhat.com [10.72.13.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4900B19C4F;
-        Wed, 15 Jul 2020 14:02:35 +0000 (UTC)
-Subject: Re: [PATCH RFC don't apply] vdpa_sim: endian-ness for config space
-To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org
-References: <20200715135540.22832-1-mst@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <8f39dcc1-0899-7ed8-8a6e-75672417b9e3@redhat.com>
-Date:   Wed, 15 Jul 2020 22:02:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Wed, 15 Jul 2020 10:03:07 -0400
+Received: from fsav101.sakura.ne.jp (fsav101.sakura.ne.jp [27.133.134.228])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 06FE35Bp056463;
+        Wed, 15 Jul 2020 23:03:05 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav101.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav101.sakura.ne.jp);
+ Wed, 15 Jul 2020 23:03:05 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav101.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 06FE2xxt056225
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 15 Jul 2020 23:03:05 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH v2] fbdev: Detect integer underflow at "struct
+ fbcon_ops"->clear_margins.
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot <syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com>
+References: <adff5d10-fe35-62d4-74c5-182958c5ada7@i-love.sakura.ne.jp>
+ <20200715015102.3814-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <20200715094836.GD2571@kadam>
+ <9e6eac10-c5c3-f518-36cc-9ea32fb5d7fe@i-love.sakura.ne.jp>
+Message-ID: <b50f85c7-80e5-89c5-0aca-31d8e9892665@i-love.sakura.ne.jp>
+Date:   Wed, 15 Jul 2020 23:02:58 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200715135540.22832-1-mst@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <9e6eac10-c5c3-f518-36cc-9ea32fb5d7fe@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020/07/15 20:17, Tetsuo Handa wrote:
+> On 2020/07/15 18:48, Dan Carpenter wrote:
+>>> @@ -216,7 +216,7 @@ static void bit_clear_margins(struct vc_data *vc, struct fb_info *info,
+>>>  	region.color = color;
+>>>  	region.rop = ROP_COPY;
+>>>  
+>>> -	if (rw && !bottom_only) {
+>>> +	if ((int) rw > 0 && !bottom_only) {
+>>>  		region.dx = info->var.xoffset + rs;
+>>                             ^^^^^^^^^^^^^^^^^^^^^^
+>>
+>> If you choose a very high positive "rw" then this addition can overflow.
+>> info->var.xoffset comes from the user and I don't think it's checked...
+> 
+> Well, I think it would be checked by "struct fb_ops"->check_var hook.
+> For example, vmw_fb_check_var() has
+> 
+> 	if ((var->xoffset + var->xres) > par->max_width ||
+> 	    (var->yoffset + var->yres) > par->max_height) {
+> 		DRM_ERROR("Requested geom can not fit in framebuffer\n");
+> 		return -EINVAL;
+> 	}
+> 
+> check. Of course, there might be integer overflow in that check...
+> Having sanity check at caller of "struct fb_ops"->check_var might be nice.
+> 
 
-On 2020/7/15 下午9:58, Michael S. Tsirkin wrote:
-> VDPA sim stores config space as native endian, but that
-> is wrong: modern guests expect LE.
-> I coded up the following to fix it up, but it is wrong too:
-> vdpasim_create is called before guest features are known.
->
-> So what should we do? New ioctl to specify the interface used?
-> More ideas?
->
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Well, while
 
+        const int fd = open("/dev/fb0", O_ACCMODE);
+        struct fb_var_screeninfo var = { };
+        ioctl(fd, FBIOGET_VSCREENINFO, &var);
+        var.xres = var.yres = 4;
+        var.xoffset = 4294967292U;
+        ioctl(fd, FBIOPUT_VSCREENINFO, &var);
 
-Can we do the endian conversion in set_config/get_config()?
+bypassed
 
-Thanks
+  (var->xoffset + var->xres) > par->max_width
 
+check in vmw_fb_check_var(),
 
->
->
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.c | 22 ++++++++++++++++++++--
->   1 file changed, 20 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index a9bc5e0fb353..cc754ae0ec15 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -24,6 +24,7 @@
->   #include <linux/etherdevice.h>
->   #include <linux/vringh.h>
->   #include <linux/vdpa.h>
-> +#include <linux/virtio_byteorder.h>
->   #include <linux/vhost_iotlb.h>
->   #include <uapi/linux/virtio_config.h>
->   #include <uapi/linux/virtio_net.h>
-> @@ -72,6 +73,23 @@ struct vdpasim {
->   	u64 features;
->   };
->   
-> +/* TODO: cross-endian support */
-> +static inline bool vdpasim_is_little_endian(struct vdpasim *vdpasim)
-> +{
-> +	return virtio_legacy_is_little_endian() ||
-> +		(vdpasim->features & (1ULL << VIRTIO_F_VERSION_1));
-> +}
-> +
-> +static inline u16 vdpasim16_to_cpu(struct vdpasim *vdpasim, __virtio16 val)
-> +{
-> +	return __virtio16_to_cpu(vdpasim_is_little_endian(vdpasim), val);
-> +}
-> +
-> +static inline __virtio16 cpu_to_vdpasim16(struct vdpasim *vdpasim, u16 val)
-> +{
-> +	return __cpu_to_virtio16(vdpasim_is_little_endian(vdpasim), val);
-> +}
-> +
->   static struct vdpasim *vdpasim_dev;
->   
->   static struct vdpasim *vdpa_to_sim(struct vdpa_device *vdpa)
-> @@ -332,8 +350,8 @@ static struct vdpasim *vdpasim_create(void)
->   		goto err_iommu;
->   
->   	config = &vdpasim->config;
-> -	config->mtu = 1500;
-> -	config->status = VIRTIO_NET_S_LINK_UP;
-> +	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
-> +	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
->   	eth_random_addr(config->mac);
->   
->   	vringh_set_iotlb(&vdpasim->vqs[0].vring, vdpasim->iommu);
+----------
+--- a/drivers/video/fbdev/core/bitblit.c
++++ b/drivers/video/fbdev/core/bitblit.c
+@@ -216,6 +216,7 @@ static void bit_clear_margins(struct vc_data *vc, struct fb_info *info,
+        region.color = color;
+        region.rop = ROP_COPY;
 
++       printk(KERN_INFO "%s info->var.xoffset=%u rs=%u info->var.yoffset=%u bs=%u\n", __func__, info->var.xoffset, rs, info->var.yoffset, bs);
+        if ((int) rw > 0 && !bottom_only) {
+                region.dx = info->var.xoffset + rs;
+                region.dy = 0;
+----------
+
+says that info->var.xoffset does not come from the user.
+
+----------
+ bit_clear_margins info->var.xoffset=0 rs=1024 info->var.yoffset=0 bs=800
+----------
