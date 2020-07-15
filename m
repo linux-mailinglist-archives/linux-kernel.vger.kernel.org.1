@@ -2,58 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD8C221284
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241922212A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgGOQkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:40:16 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:33672 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726201AbgGOQkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:40:14 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id 6827D4089F09;
-        Wed, 15 Jul 2020 16:40:11 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jason Yan <yanaijie@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [PATCH] usb: gadget: net2272: skip BAR1 on error handling paths in probe
-Date:   Wed, 15 Jul 2020 19:40:09 +0300
-Message-Id: <20200715164009.32341-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.16.4
+        id S1727989AbgGOQlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:41:09 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:42676 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727118AbgGOQkd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 12:40:33 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06FGeSZx003863;
+        Wed, 15 Jul 2020 11:40:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594831228;
+        bh=DIxOOQwIi12wLQSGUItZsPXBRsZgdqTGMtvo+XZ3cO0=;
+        h=From:To:Subject:Date:In-Reply-To:References;
+        b=NZhwHN61v/ncEVgo2rqXdLJ8o4rLRxcozE3YA67zV6QxDBruQMl85vfgB5Rz6K9gi
+         ek70TKamPKdje3jaMJrFE5IyHYe8+EvWI+hs7NT1WxC1bXqv3qtFL1/WdBjjGMbN/n
+         vj30tYziXSyRGCyuU5QvM4T7Z8DEPJ11Fs0qlW1A=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06FGeSCF031939;
+        Wed, 15 Jul 2020 11:40:28 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 15
+ Jul 2020 11:40:28 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 15 Jul 2020 11:40:27 -0500
+Received: from uda0868495.fios-router.home (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06FGeCvh081717;
+        Wed, 15 Jul 2020 11:40:26 -0500
+From:   Murali Karicheri <m-karicheri2@ti.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        <nsekhar@ti.com>, <grygorii.strashko@ti.com>,
+        <vinicius.gomes@intel.com>
+Subject: [net-next PATCH v2 9/9] net: prp: enhance debugfs to display PRP info
+Date:   Wed, 15 Jul 2020 12:40:10 -0400
+Message-ID: <20200715164012.1222-10-m-karicheri2@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200715164012.1222-1-m-karicheri2@ti.com>
+References: <20200715164012.1222-1-m-karicheri2@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-net2272_rdk1_probe() skips "i == 1" (BAR1) during allocation of
-resources. The patch does this on error hanling paths as well.
+Print PRP specific information from node table as part of debugfs
+node table display. Also display the node as DAN-H or DAN-P depending
+on the info from node table.
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
 ---
- drivers/usb/gadget/udc/net2272.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/hsr/hsr_debugfs.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/net2272.c b/drivers/usb/gadget/udc/net2272.c
-index 928057b206f1..639631d44b00 100644
---- a/drivers/usb/gadget/udc/net2272.c
-+++ b/drivers/usb/gadget/udc/net2272.c
-@@ -2370,6 +2370,8 @@ net2272_rdk1_probe(struct pci_dev *pdev, struct net2272 *dev)
+diff --git a/net/hsr/hsr_debugfs.c b/net/hsr/hsr_debugfs.c
+index c1932c0a15be..3b6f675bd55a 100644
+--- a/net/hsr/hsr_debugfs.c
++++ b/net/hsr/hsr_debugfs.c
+@@ -24,7 +24,7 @@ static struct dentry *hsr_debugfs_root_dir;
  
-  err:
- 	while (--i >= 0) {
-+		if (i == 1)
-+			continue;	/* BAR1 unused */
- 		iounmap(mem_mapped_addr[i]);
- 		release_mem_region(pci_resource_start(pdev, i),
- 			pci_resource_len(pdev, i));
+ static void print_mac_address(struct seq_file *sfp, unsigned char *mac)
+ {
+-	seq_printf(sfp, "%02x:%02x:%02x:%02x:%02x:%02x:",
++	seq_printf(sfp, "%02x:%02x:%02x:%02x:%02x:%02x ",
+ 		   mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+ }
+ 
+@@ -35,20 +35,32 @@ hsr_node_table_show(struct seq_file *sfp, void *data)
+ 	struct hsr_priv *priv = (struct hsr_priv *)sfp->private;
+ 	struct hsr_node *node;
+ 
+-	seq_puts(sfp, "Node Table entries\n");
+-	seq_puts(sfp, "MAC-Address-A,   MAC-Address-B, time_in[A], ");
+-	seq_puts(sfp, "time_in[B], Address-B port\n");
++	seq_printf(sfp, "Node Table entries for (%s) device\n",
++		   (priv->prot_version == PRP_V1 ? "PRP" : "HSR"));
++	seq_puts(sfp, "MAC-Address-A,    MAC-Address-B,    time_in[A], ");
++	seq_puts(sfp, "time_in[B], Address-B port, ");
++	if (priv->prot_version == PRP_V1)
++		seq_puts(sfp, "SAN-A, SAN-B, DAN-P\n");
++	else
++		seq_puts(sfp, "DAN-H\n");
++
+ 	rcu_read_lock();
+ 	list_for_each_entry_rcu(node, &priv->node_db, mac_list) {
+ 		/* skip self node */
+ 		if (hsr_addr_is_self(priv, node->macaddress_A))
+ 			continue;
+ 		print_mac_address(sfp, &node->macaddress_A[0]);
+-		seq_puts(sfp, " ");
+ 		print_mac_address(sfp, &node->macaddress_B[0]);
+-		seq_printf(sfp, "0x%lx, ", node->time_in[HSR_PT_SLAVE_A]);
+-		seq_printf(sfp, "0x%lx ", node->time_in[HSR_PT_SLAVE_B]);
+-		seq_printf(sfp, "0x%x\n", node->addr_B_port);
++		seq_printf(sfp, "%10lx, ", node->time_in[HSR_PT_SLAVE_A]);
++		seq_printf(sfp, "%10lx, ", node->time_in[HSR_PT_SLAVE_B]);
++		seq_printf(sfp, "%14x, ", node->addr_B_port);
++
++		if (priv->prot_version == PRP_V1)
++			seq_printf(sfp, "%5x, %5x, %5x\n",
++				   node->san_a, node->san_b,
++				   (node->san_a == 0 && node->san_b == 0));
++		else
++			seq_printf(sfp, "%5x\n", 1);
+ 	}
+ 	rcu_read_unlock();
+ 	return 0;
+@@ -57,7 +69,8 @@ hsr_node_table_show(struct seq_file *sfp, void *data)
+ /* hsr_node_table_open - Open the node_table file
+  *
+  * Description:
+- * This routine opens a debugfs file node_table of specific hsr device
++ * This routine opens a debugfs file node_table of specific hsr
++ * or prp device
+  */
+ static int
+ hsr_node_table_open(struct inode *inode, struct file *filp)
 -- 
-2.16.4
+2.17.1
 
