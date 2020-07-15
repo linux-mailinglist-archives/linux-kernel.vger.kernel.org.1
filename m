@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814182202A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DD42202B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgGOC7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 22:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57958 "EHLO
+        id S1728632AbgGODAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 23:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728487AbgGOC7q (ORCPT
+        with ESMTP id S1727772AbgGODAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 22:59:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759D4C061755;
-        Tue, 14 Jul 2020 19:59:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=6lwWwAlEO1r2TqlY65WPd8CYnqdDTpT/FurFBVz8FjY=; b=eFYy8368wH5BhB/TGgki+74rsA
-        dep1hjzoyuDe/DqJ4sYhrmzQL0oHwVnSJYnquI3S9H5WeUsX9eotT7F03kOQIXzwB+8//Da4sgia5
-        LgQtNh7iM8d2JsEJKDeub2Dfv6hHcSr9JtqOIDlasFmYcBEvYet4GfFY1LRyoVtBZ5+KVt2iXUmMW
-        Q6+3jBU/X6QmBw0j1GWVkwcU1seWZMY+QtMRH9TtE0nkVqwMGaLcqnVCxmYFXqdogHSh1pUyk/WlC
-        j7fYv9e21tDQCO9C71GD5O78idefs8go7dCGVcZW0UHGHkaSfTReC/CBU7pUe8hG8Vwml+KHKZ/yx
-        irFMznhg==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvXe4-0001FT-CL; Wed, 15 Jul 2020 02:59:45 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH 13/13 net-next] net: sctp: drop duplicate words in comments
-Date:   Tue, 14 Jul 2020 19:59:14 -0700
-Message-Id: <20200715025914.28091-13-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200715025914.28091-1-rdunlap@infradead.org>
-References: <20200715025914.28091-1-rdunlap@infradead.org>
+        Tue, 14 Jul 2020 23:00:48 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6E1C061755;
+        Tue, 14 Jul 2020 20:00:48 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id a24so1140438pfc.10;
+        Tue, 14 Jul 2020 20:00:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=1Lox4NjQutxxCAyIeog/I4IOb78DAZQiAZT6VbqqOWw=;
+        b=rhsc93T5Y9kvp5CauuOOjj3+KAzVWQFlqvr+llfbQjpyywTVWKnHGGCx8XP0QSgaX3
+         GjWr/gtMOkWa2LBLTO83uCM+uOse0ZGxwkXU1Ouipm0dUkHDarbIPjO2aajDMwmBdHuF
+         w/sCjTZ9J0dDHAH0FyP1PTU8HC3MFKRrR6NuLeKp+GRvGNN6CRQyuzekGk1/3vLfDs1S
+         NcAKgEjanRymaibf76sbJFUZRChbVkbOAtkf39W7a0U1Xv2+fLSOfI1e67KKy5blUhFh
+         xYLHhRP0Xk31taV838lQ/WOkl/Ud+pBDr9cT4pceUjFnoPf5tq6UH9biOYiu+OyGl7Zy
+         gEDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=1Lox4NjQutxxCAyIeog/I4IOb78DAZQiAZT6VbqqOWw=;
+        b=PHwo7la0oYIXZOCFfyD4GtYPtNw3q0SYQWiOY0W77KoAyGNr+O2yBGRjhvy6H6era9
+         7MRIQfqu5lCXfEPNTTxkx7ZcsrZ++tY5s+ya4lnGE6rKMMX5GZj39vQ1TynSmNXlbKdu
+         OCp0/SF8iXFGSSEPENbAqXdSmNw/ke3WmXvYhwqDfXZPbVCi7kC+b7NlA2RaNQ1rusjO
+         FoaTBn5YIwB9XMJDnxFLBiApanQok84UTdEovnB3unaaU4QiRx4cp6Q4UG0j2yUgk//T
+         Z6tCBGEwFA96CKYWOo2F+vVE/iF2CKLN4OZfxwM1Sml6w+ReEjE+EAols+J7v1GLxMKT
+         CH2g==
+X-Gm-Message-State: AOAM531yMxV5McUeYGc3ehAMSflb/kt+9b3UO86oAS1zePrCg/F2U2eS
+        1lTPcdSv2afBg62eGt3sBMuEk72m8uo=
+X-Google-Smtp-Source: ABdhPJwkHJJjR0MotnebLX23BOguIhErOSFz9vxM99gk7lnMHqOVbCr/6+AAWbG7UM8NHUizuOcK9g==
+X-Received: by 2002:a63:4e51:: with SMTP id o17mr6299774pgl.315.1594782046935;
+        Tue, 14 Jul 2020 20:00:46 -0700 (PDT)
+Received: from [127.0.0.1] ([203.205.141.43])
+        by smtp.gmail.com with ESMTPSA id g6sm445356pfr.129.2020.07.14.20.00.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 20:00:46 -0700 (PDT)
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+From:   brookxu <brookxu.cn@gmail.com>
+Subject: ext4: fix spelling typos in ext4_mb_initialize_context
+Message-ID: <883b523c-58ec-7f38-0bb8-cd2ea4393684@gmail.com>
+Date:   Wed, 15 Jul 2020 11:00:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop doubled words in several comments.
+Fix spelling typos in ext4_mb_initialize_context.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
 ---
- include/net/sctp/sctp.h    |    2 +-
- include/net/sctp/structs.h |    6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20200714.orig/include/net/sctp/sctp.h
-+++ linux-next-20200714/include/net/sctp/sctp.h
-@@ -291,7 +291,7 @@ atomic_dec(&sctp_dbg_objcnt_## name)
- #define SCTP_DBG_OBJCNT(name) \
- atomic_t sctp_dbg_objcnt_## name = ATOMIC_INIT(0)
- 
--/* Macro to help create new entries in in the global array of
-+/* Macro to help create new entries in the global array of
-  * objcnt counters.
-  */
- #define SCTP_DBG_OBJCNT_ENTRY(name) \
---- linux-next-20200714.orig/include/net/sctp/structs.h
-+++ linux-next-20200714/include/net/sctp/structs.h
-@@ -1398,7 +1398,7 @@ struct sctp_stream_priorities {
- 	struct list_head prio_sched;
- 	/* List of streams scheduled */
- 	struct list_head active;
--	/* The next stream stream in line */
-+	/* The next stream in line */
- 	struct sctp_stream_out_ext *next;
- 	__u16 prio;
- };
-@@ -1460,7 +1460,7 @@ struct sctp_stream {
- 		struct {
- 			/* List of streams scheduled */
- 			struct list_head rr_list;
--			/* The next stream stream in line */
-+			/* The next stream in line */
- 			struct sctp_stream_out_ext *rr_next;
- 		};
- 	};
-@@ -1770,7 +1770,7 @@ struct sctp_association {
- 	int max_burst;
- 
- 	/* This is the max_retrans value for the association.  This value will
--	 * be initialized initialized from system defaults, but can be
-+	 * be initialized from system defaults, but can be
- 	 * modified by the SCTP_ASSOCINFO socket option.
- 	 */
- 	int max_retrans;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index c0a331e..6dc2c6c 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4399,7 +4399,7 @@ static void ext4_mb_group_or_file(struct ext4_allocation_context *ac)
+     ac->ac_g_ex = ac->ac_o_ex;
+     ac->ac_flags = ar->flags;
+ 
+-    /* we have to define context: we'll we work with a file or
++    /* we have to define context: we'll work with a file or
+      * locality group. this is a policy, actually */
+     ext4_mb_group_or_file(ac);
+ 
+-- 
+1.8.3.1
+
