@@ -2,159 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C769221583
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 21:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF2822158A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 21:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgGOTuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 15:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
+        id S1727043AbgGOTv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 15:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgGOTuC (ORCPT
+        with ESMTP id S1726864AbgGOTvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 15:50:02 -0400
+        Wed, 15 Jul 2020 15:51:25 -0400
 Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63B1C061755;
-        Wed, 15 Jul 2020 12:50:02 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id m9so2557434pfh.0;
-        Wed, 15 Jul 2020 12:50:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86467C08C5CE
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 12:51:25 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id a14so2550442pfi.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 12:51:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nzMCxXIb1CZNelAhevV8cRZiqty4DF8B33TdTJ4+WY4=;
-        b=ucHZ+pFszf+J+TIqeYoAWKQwewbznQITtqZ6V0PQDW3MvzrGuqfSjnnpKPEauQMa+V
-         aGnCZelsynpKX0O5oNlueBo4oA1V/ZxUJ1hN6VUpCr1Bwm5xo8vcDmT9CJGB2r+nV0Or
-         ZZBP7x1Igu+lJ0fckLUz1IEDE5Q6GWE2yPwULWxHZrMs8KRvtfS5gzBFkIYsHvAYAEad
-         fMdFld8+Y22QD/5hCeMqh+U8uzaQAXw1Nuk5Gk7FnPY3RGImsTJg3tkqlHf4bGrqS8S7
-         +uAUAmEba+UMCRoovJYnjRmqoTsIcW3qoXuXiPo2i7wkcNl7bz31UTmcUqgyU8U5eyT9
-         kMtw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9JohOJfniBpoVsObcPj1lUWx7GOTVdGb79jGgvP71lo=;
+        b=jbY1Z/MEEo7lZDPPFvdqaESsTErbULuzQ2o7XOJQEu3R7wPlnDYtTP0kbWlMVoJQ1i
+         /k1apyD0iOzOuWoUP9wFyrQE7izrWG9QaJbvN1bsKY3OdWcAvYVZ8ILLhC9aNjofvZv/
+         iS1hlqyDWhpIZ6w8peHSwSjNTfMnQ/gI9hMN4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=nzMCxXIb1CZNelAhevV8cRZiqty4DF8B33TdTJ4+WY4=;
-        b=UUxQVnzvaJLq6QfBTm1dZagf4AhxNt5AnNSxoQkHrzCPy4bAG1hPHiYbs9zYbkgOXf
-         Gym7WZyo5yXRx3jOT1LPEq1pekGpZVNbgB4LDx0DMFAmUCpRu5PA+ANHV8mnYYKob5u1
-         1WrX6VQadnSg1PVjk12UmbUnI4RxXo47UYyOlEa64hKHEi9S9gKzXMUjFJ3On7ahE7a7
-         kCCe8HQeuzWki/vJpTE4iZkscCy8mAwNCox6D6WBN4O9eOg4jR7lbikx92mYx19F8ejm
-         UUysDABgGn0GPCsTCtGjXmdd/nS+Rziaq0EOUt2MOei9rEt2qER9AC56JkJfMHQSl7uW
-         7SCg==
-X-Gm-Message-State: AOAM532sitKHJs03A7Sq+APvyyzaW2T2azbdcmt/DkS7RrtYeuCe68Pl
-        jpzvTvPg9pqHFBA+/hxkjPzPUsNS
-X-Google-Smtp-Source: ABdhPJzfiqnXY/VFZ9GpseRPCHHnoM1kztw79UU+8GLXqQdduVmPjtcpblebKMiIUnypLbyKFjh22g==
-X-Received: by 2002:a63:d40d:: with SMTP id a13mr1147806pgh.225.1594842602101;
-        Wed, 15 Jul 2020 12:50:02 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id nk22sm2810794pjb.51.2020.07.15.12.50.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jul 2020 12:50:01 -0700 (PDT)
-Subject: Re: [PATCH v2] hwmon: corsair-cpro: Change to HID driver
-To:     Marius Zachmann <mail@mariuszachmann.de>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200715151419.43134-1-mail@mariuszachmann.de>
- <f17c4888-4f5f-0a51-304f-54efd601f00a@roeck-us.net>
- <51449356.7lugSRDzgr@marius>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <9fc09eec-7921-68ab-b3c7-1d83d3e09817@roeck-us.net>
-Date:   Wed, 15 Jul 2020 12:49:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9JohOJfniBpoVsObcPj1lUWx7GOTVdGb79jGgvP71lo=;
+        b=sKU/LpkLyI2+n3Go7ZV7v6B+iqtaATbdMU/5hF5jsb7C1HlTOspsakg6vnwzwGvHkx
+         RT/x/se1RS1FZHJscqVNSkD7CTEoXW/1s76fYwP5Me7O7J9/dgZvHnN4wbpaYhu4li/h
+         sti5jOyFv5JbYTy6Hjvlc3HhYZDyKJy3ljSlPBed40HE+FCvSlDeivM6lPJEHRPXOLXg
+         Wt56p6p+KwdD+sHAmfSIKiM+Iy/Ui950Uz6IkcDLqcJoOAW/EXdINMH0yBX39lf3u4ye
+         R1azCvyTzVcR0VdXEhztAuazZ2ngObrYgWpbCPSdmEG/Vtf90oF0CWtI0SYjEYCO/IC7
+         w8yw==
+X-Gm-Message-State: AOAM531phVgsU1LGmvcvvuX1rjgEALZ/ldX6mzTXS4c3DQ5ZSeDdjPFt
+        95xr+LM8ZeAWQHXQuv70Y7xiYA==
+X-Google-Smtp-Source: ABdhPJxBdP0fkixBEZUc7Sl0daIrNJeBbWdZ0nIQHwF8G8KVbUQSAXDkVIZfhtO4DSSxZK7C2l+rDw==
+X-Received: by 2002:a62:7790:: with SMTP id s138mr699734pfc.65.1594842685051;
+        Wed, 15 Jul 2020 12:51:25 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 16sm2794211pjb.48.2020.07.15.12.51.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 12:51:24 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 12:51:23 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, x86@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Babu Moger <Babu.Moger@amd.com>,
+        Omar Sandoval <osandov@fb.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Marco Elver <elver@google.com>,
+        Brian Gerst <brgerst@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH v3 1/3] kprobes: Add text_alloc() and text_free()
+Message-ID: <202007151250.DE6C4B417@keescook>
+References: <20200714223239.1543716-1-jarkko.sakkinen@linux.intel.com>
+ <20200714223239.1543716-2-jarkko.sakkinen@linux.intel.com>
+ <202007151232.0DA220B2@keescook>
+ <20200715194933.GC1166045@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <51449356.7lugSRDzgr@marius>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715194933.GC1166045@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/20 12:12 PM, Marius Zachmann wrote:
-> On 15.07.20 at 17:35:08 CEST, Guenter Roeck wrote
->> On 7/15/20 8:14 AM, Marius Zachmann wrote:
->>> This changes corsair-cpro to a hid driver using hid reports.
->>>
->>> Signed-off-by: Marius Zachmann <mail@mariuszachmann.de>
->>>
->>> ---
->>
-> ...
->>> -module_usb_driver(ccp_driver);
->>> +static int __init ccp_init(void)
->>> +{
->>> +	return hid_register_driver(&ccp_driver);
->>> +}
->>> +
->>> +static void __exit ccp_exit(void)
->>> +{
->>> +	hid_unregister_driver(&ccp_driver);
->>> +}
->>> +
->>> +/* make sure it is loaded after hid */
->>> +late_initcall(ccp_init);
->>> +module_exit(ccp_exit);
->>
->> Sorry for not noticing before, but can you use module_hid_driver() ?
->> That seems to work for other hid drivers.
->>
->> Thanks,
->> Guenter
->>
+On Wed, Jul 15, 2020 at 10:49:33PM +0300, Mike Rapoport wrote:
+> On Wed, Jul 15, 2020 at 12:36:02PM -0700, Kees Cook wrote:
+> > On Wed, Jul 15, 2020 at 01:32:27AM +0300, Jarkko Sakkinen wrote:
+> > > Introduce new API for allocating space for code generaed at run-time
+> > > leveraging from module_alloc() and module_memfree() code. Use this to
+> > > perform memory allocations in the kprobes code in order to loose the
+> > > bound between kprobes and modules subsystem.
+> > > 
+> > > Initially, use this API only with arch/x86 and define a new config
+> > > flag CONFIG_ARCH_HAS_TEXT_ALLOC to promote the availability of the
+> > > new API.
+> > > [...]
+> > > diff --git a/include/linux/text.h b/include/linux/text.h
+> > > new file mode 100644
+> > > index 000000000000..a27d4a42ecda
+> > > --- /dev/null
+> > > +++ b/include/linux/text.h
+> > > @@ -0,0 +1,17 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > +
+> > > +#ifndef _LINUX_TEXT_H
+> > > +#define _LINUX_TEXT_H
+> > > +
+> > > +/*
+> > > + * An allocator used for allocating modules, core sections and init sections.
+> > > + * Returns NULL on failure.
+> > > + */
+> > > +void *text_alloc(unsigned long size);
+> > > +
+> > > +/*
+> > > + * Free memory returned from text_alloc().
+> > > + */
+> > > +void text_free(void *region);
+> > > +
+> > > +#endif /* _LINUX_TEXT_H */
+> > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > > index 2e97febeef77..fa7687eb0c0e 100644
+> > > --- a/kernel/kprobes.c
+> > > +++ b/kernel/kprobes.c
+> > > @@ -35,6 +35,7 @@
+> > >  #include <linux/ftrace.h>
+> > >  #include <linux/cpu.h>
+> > >  #include <linux/jump_label.h>
+> > > +#include <linux/text.h>
+> > >  
+> > >  #include <asm/sections.h>
+> > >  #include <asm/cacheflush.h>
+> > > @@ -111,12 +112,20 @@ enum kprobe_slot_state {
+> > >  
+> > >  void __weak *alloc_insn_page(void)
+> > >  {
+> > > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
+> > > +	return text_alloc(PAGE_SIZE);
+> > > +#else
+> > >  	return module_alloc(PAGE_SIZE);
+> > > +#endif
+> > 
+> > This seems like it shouldn't be needed. I think text_alloc() should
+> > always be visible. In the ARCH_HAS... case it will call the arch
+> > implementation, and without it should just call module_alloc():
+> > 
+> > For example:
+> > void *text_alloc(unsigned long size)
+> > {
+> > #ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
+> > 	return arch_text_alloc(size);
+> > #else
+> > 	return module_alloc(size);
+> > #endif
+> > }
 > 
-> When using module_hid_driver() and compiling the driver as built-in
-> the driver init function will get called before hid and fail registering
-> the driver. late_initcall forces it to be loaded after hid.
-> 
+> This inverts the dependcy chain, IMHO, module_alloc() is a special case
+> of text_alloc() and not vice versa.
 
-That seems odd. Why does no other hid driver have that problem ?
-Your argument is pretty much that module_hid_driver() would not work,
-which seems unlikely.
+Okay, sure. That's fine too. Whatever the case is, I want to make sure
+we keep the KASLR offset though. I don't think that should be unique to
+the modules logic.
 
-Thanks,
-Guenter
+-- 
+Kees Cook
