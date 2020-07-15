@@ -2,73 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024542208E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668D32208EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730336AbgGOJea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:34:30 -0400
-Received: from [195.135.220.15] ([195.135.220.15]:41518 "EHLO mx2.suse.de"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1728043AbgGOJea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:34:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 99D8CAC2D;
-        Wed, 15 Jul 2020 09:34:31 +0000 (UTC)
-Date:   Wed, 15 Jul 2020 11:34:26 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 00/75] x86: SEV-ES Guest Support
-Message-ID: <20200715093426.GK16200@suse.de>
-References: <20200714120917.11253-1-joro@8bytes.org>
- <20200715092456.GE10769@hirez.programming.kicks-ass.net>
+        id S1730507AbgGOJfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:35:08 -0400
+Received: from mga14.intel.com ([192.55.52.115]:17366 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729047AbgGOJfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 05:35:08 -0400
+IronPort-SDR: /RhEs1ezO4fUwI0+S8giD2+TXfKR6EZk72LEtYRVuVaTK21SCSjvTaM0Vb4Gy09Qee6JX0mkES
+ RW30vAIZrlEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="148263530"
+X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
+   d="scan'208";a="148263530"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 02:35:07 -0700
+IronPort-SDR: s4HUAEIe0zRFUw7HV1d/if0esPX8SM2lJDteLk3CncAu8Q1yuGJtdyi+JspbYdp1GbhWq6WFQt
+ f7XwBq24ryhw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
+   d="scan'208";a="268897816"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007.fm.intel.com with ESMTP; 15 Jul 2020 02:35:04 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jvdoe-001wGn-K1; Wed, 15 Jul 2020 12:35:04 +0300
+Date:   Wed, 15 Jul 2020 12:35:04 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v5 1/3] devres: provide devm_krealloc()
+Message-ID: <20200715093504.GY3703480@smile.fi.intel.com>
+References: <20200715092528.8136-1-brgl@bgdev.pl>
+ <20200715092528.8136-2-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200715092456.GE10769@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200715092528.8136-2-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 11:24:56AM +0200, Peter Zijlstra wrote:
-> Can we get some more words -- preferably in actual code comments, on
-> when exactly #VC happens?
+On Wed, Jul 15, 2020 at 11:25:26AM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> Implement the managed variant of krealloc(). This function works with
+> all memory allocated by devm_kmalloc() (or devres functions using it
+> implicitly like devm_kmemdup(), devm_kstrdup() etc.).
+> 
+> Managed realloc'ed chunks can be manually released with devm_kfree().
 
-Sure, will add this as a comment before the actual runtime VC handler.
+FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> Because the only thing I remember is that #VC could happen on any memop,
-> but I also have vague memories of that being a later extention.
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  .../driver-api/driver-model/devres.rst        |  1 +
+>  drivers/base/devres.c                         | 68 +++++++++++++++++++
+>  include/linux/device.h                        |  2 +
+>  3 files changed, 71 insertions(+)
+> 
+> diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
+> index eaaaafc21134f..f318a5c0033c1 100644
+> --- a/Documentation/driver-api/driver-model/devres.rst
+> +++ b/Documentation/driver-api/driver-model/devres.rst
+> @@ -354,6 +354,7 @@ MEM
+>    devm_kmalloc()
+>    devm_kmalloc_array()
+>    devm_kmemdup()
+> +  devm_krealloc()
+>    devm_kstrdup()
+>    devm_kvasprintf()
+>    devm_kzalloc()
+> diff --git a/drivers/base/devres.c b/drivers/base/devres.c
+> index ed615d3b9cf15..24e27959af270 100644
+> --- a/drivers/base/devres.c
+> +++ b/drivers/base/devres.c
+> @@ -837,6 +837,74 @@ void *devm_kmalloc(struct device *dev, size_t size, gfp_t gfp)
+>  }
+>  EXPORT_SYMBOL_GPL(devm_kmalloc);
+>  
+> +/**
+> + * devm_krealloc - Resource-managed krealloc()
+> + * @dev: Device to re-allocate memory for
+> + * @ptr: Pointer to the memory chunk to re-allocate
+> + * @new_size: New allocation size
+> + * @gfp: Allocation gfp flags
+> + *
+> + * Managed krealloc(). Resizes the memory chunk allocated with devm_kmalloc().
+> + * Behaves similarly to regular krealloc(): if @ptr is NULL or ZERO_SIZE_PTR,
+> + * it's the equivalent of devm_kmalloc(). If new_size is zero, it frees the
+> + * previously allocated memory and returns ZERO_SIZE_PTR. This function doesn't
+> + * change the order in which the release callback for the re-alloc'ed devres
+> + * will be called (except when falling back to devm_kmalloc() or when freeing
+> + * resources when new_size is zero). The contents of the memory are preserved
+> + * up to the lesser of new and old sizes.
+> + */
+> +void *devm_krealloc(struct device *dev, void *ptr, size_t new_size, gfp_t gfp)
+> +{
+> +	struct devres *old_dr, *new_dr;
+> +	struct list_head old_head;
+> +	unsigned long flags;
+> +	size_t total_size;
+> +	void *ret = NULL;
+> +
+> +	if (unlikely(!new_size)) {
+> +		devm_kfree(dev, ptr);
+> +		return ZERO_SIZE_PTR;
+> +	}
+> +
+> +	if (unlikely(ZERO_OR_NULL_PTR(ptr)))
+> +		return devm_kmalloc(dev, new_size, gfp);
+> +
+> +	if (WARN_ON(is_kernel_rodata((unsigned long)ptr)))
+> +		/*
+> +		 * We cannot reliably realloc a const string returned by
+> +		 * devm_kstrdup_const().
+> +		 */
+> +		return NULL;
+> +
+> +	if (!check_dr_size(new_size, &total_size))
+> +		return NULL;
+> +
+> +	spin_lock_irqsave(&dev->devres_lock, flags);
+> +
+> +	old_dr = find_dr(dev, devm_kmalloc_release, devm_kmalloc_match, ptr);
+> +	if (!old_dr) {
+> +		spin_unlock_irqrestore(&dev->devres_lock, flags);
+> +		WARN(1, "Memory chunk not managed or managed by a different device.");
+> +		return NULL;
+> +	}
+> +
+> +	old_head = old_dr->node.entry;
+> +
+> +	new_dr = krealloc(old_dr, total_size, gfp);
+> +	if (!new_dr) {
+> +		spin_unlock_irqrestore(&dev->devres_lock, flags);
+> +		return NULL;
+> +	}
+> +
+> +	if (new_dr != old_dr)
+> +		list_replace(&old_head, &new_dr->node.entry);
+> +
+> +	ret = new_dr->data;
+> +	spin_unlock_irqrestore(&dev->devres_lock, flags);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_krealloc);
+> +
+>  /**
+>   * devm_kstrdup - Allocate resource managed space and
+>   *                copy an existing string into that.
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 7322c51e9c0c7..f64f408431593 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -206,6 +206,8 @@ int devres_release_group(struct device *dev, void *id);
+>  
+>  /* managed devm_k.alloc/kfree for device drivers */
+>  void *devm_kmalloc(struct device *dev, size_t size, gfp_t gfp) __malloc;
+> +void *devm_krealloc(struct device *dev, void *ptr, size_t size,
+> +		    gfp_t gfp) __must_check;
+>  __printf(3, 0) char *devm_kvasprintf(struct device *dev, gfp_t gfp,
+>  				     const char *fmt, va_list ap) __malloc;
+>  __printf(3, 4) char *devm_kasprintf(struct device *dev, gfp_t gfp,
+> -- 
+> 2.26.1
+> 
 
-Currently it is only raised when something happens that the hypervisor
-intercepts, for example on a couple of instructions like CPUID,
-RD/WRMSR, ..., or on MMIO/IOIO accesses.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-With Secure Nested Paging (SNP), which needs additional enablement, a #VC can
-happen on any memory access. I wrote the IST handling entry code for #VC
-with that in mind, but do not actually enable it. This is the reason why
-the #VC handler just panics the system when it ends up on the fall-back
-(VC2) stack, with SNP enabled it needs to handle the SNP exit-codes in
-that path.
 
-Regards,
-
-	Joerg
