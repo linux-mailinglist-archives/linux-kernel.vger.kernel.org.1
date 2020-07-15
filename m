@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C502207C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B052207C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730441AbgGOIsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S1730429AbgGOIsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729377AbgGOIsN (ORCPT
+        with ESMTP id S1729377AbgGOIsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:48:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0709CC061755;
-        Wed, 15 Jul 2020 01:48:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2hxetUaUv/Sl3bYl89m2PSXLP2Q6opXZZBO3eaTSzBk=; b=WW8YoVzkyFTNUO9zvgWo2fwDzD
-        Lqc0L2K1pu7x6Aoez048E/g4JFKPhwgeWkwrPWMYTj0CoOm8R+ljR0SxX8amd6+eXuJX/CS9zmIBP
-        943484iheiZFam8/iMWZxomMZnKu3B5V7HkQa0b7F7vNyE0OOpFL410o1HVKURFQzX7WfnAynrSRq
-        tPJdTgs6yJAUqRMlfeetU4QyxaCqG8Ix+u5Od6IdthJP8fJ/XDceikh2bSZdYT0a33CAF8phFpOoh
-        sMIvkBLrFGVTnISkOolA4A/ruDGcTPVcQFmN13Opjlbj/piWe6oHWmXOLLCQdHnbZ2fe1g5NLgJOf
-        CE8x9iDA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvd50-0007wY-B1; Wed, 15 Jul 2020 08:47:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BB2203028C8;
-        Wed, 15 Jul 2020 10:47:52 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A994F2145CCC2; Wed, 15 Jul 2020 10:47:52 +0200 (CEST)
-Date:   Wed, 15 Jul 2020 10:47:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 63/75] x86/sev-es: Handle #DB Events
-Message-ID: <20200715084752.GD10769@hirez.programming.kicks-ass.net>
-References: <20200714120917.11253-1-joro@8bytes.org>
- <20200714120917.11253-64-joro@8bytes.org>
+        Wed, 15 Jul 2020 04:48:10 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557C6C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:48:10 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x8so2102217plm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:48:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qnhFJ16AfACROoupr0uxF/NZlSmJRV5Jft/zULE7Grs=;
+        b=O3RcdCC88GcY5PgG/zjp9j2CcHjun8IZ9uMwrKE6MWEOzk230IMFzETWYRcSKfTV5A
+         85TsDtwcOJ7PCfxQyoQmHOLjNxvwcxG+ExC6FOhjh/+ql/QocaUIWanPqkmld2yJ6Iid
+         BeR6Ib1B07VjOljCk4b1zGEg8poa+4oE/d/9A7aHkZySar42854CbnvFXDZWOCi21uV5
+         3/QWaOP3Ubt4K/FfPG7QuEUL3lBP8ehxxFh8l40P5VihCHWv7DnFBfHcQy3q1+nkiUnL
+         CUeEZ5a/i3HfuzB6rPkB2o5gEJcgF+56XJ6jeO2ZSZbDiG2Z1i+eczsy1CBEKWTYvJiD
+         mdjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qnhFJ16AfACROoupr0uxF/NZlSmJRV5Jft/zULE7Grs=;
+        b=BuSewW6lN4LFGBEonVUvlkAADkucad+4lWmhzHpiu+0w5IYTp+v0oF8t+ECTNDyJHv
+         EdGcialx9Z1T8ljnMUQKrXgBgEY2SN2bPyZXMPHB3sT9Q3e68VG5Pcz0ueSzoln9csV5
+         nHA5VDkBF53oe05WRd2IR1EO2ACywSb0ApfQJX/31G1TduODpWPvHmFFM6oLTMX4JFH8
+         v3yiXt008az0DUhgIBJwNFJ8kQIAkR7KaqsriSaaen8ZwLIX6sA7Tth3tqmUmT5pDp4c
+         RN/c4nm3wAqGtuCLWApbB6ONOR5tdCUUitwSF8nMh8FSNP5zlxGoUpZkIrN87qKZc1mv
+         epCA==
+X-Gm-Message-State: AOAM530f8RSPv6I/xJITm1x3YMKO8Nw9oWMWw2cZK5gajmjsa9F6yTow
+        xD/+IkcPQxtcnYaV4RadSM3AQOUbdvnf3XxN2DEf6A==
+X-Google-Smtp-Source: ABdhPJw5R4cBnytLiHdmHwQG46XxUk2XZbBfEfz2tLVcCRJCRBBkJN2wVHhhhxfv4yMNwTMYljTgJPlOgjfSqFOWIZA=
+X-Received: by 2002:a17:90a:cc03:: with SMTP id b3mr8285727pju.80.1594802889678;
+ Wed, 15 Jul 2020 01:48:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714120917.11253-64-joro@8bytes.org>
+References: <20200704085213.444645-1-ignat@cloudflare.com> <20200704085213.444645-3-ignat@cloudflare.com>
+ <8b168d8c-f526-42b4-7cec-ec7c26c64122@cambridgegreys.com> <CALrw=nFaeMPH9GbMWwiT4rV32=uLKa3ZOYpmnkKTA3bvMiyXYg@mail.gmail.com>
+ <72b84dca-e285-bb1f-1b69-5b29c70806d8@cambridgegreys.com> <54c5ffb6416bf59f2f287762820ce84d8ad9b495.camel@sipsolutions.net>
+In-Reply-To: <54c5ffb6416bf59f2f287762820ce84d8ad9b495.camel@sipsolutions.net>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 15 Jul 2020 01:47:58 -0700
+Message-ID: <CAFd5g47ZOpxjmFGnq+EXrnbT4HEziH3WVZGoFtaqBPBNN+gdWA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] um: some fixes to build UML with musl
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Richard Weinberger <richard@nod.at>,
+        Jeff Dike <jdike@addtoit.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 02:09:05PM +0200, Joerg Roedel wrote:
+On Tue, Jul 14, 2020 at 9:02 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> On Tue, 2020-07-14 at 11:43 +0100, Anton Ivanov wrote:
+>
+> > Patch is OK with me, should not read patches before the 3rd double espresso next time.
+> >
+> > I will +1 it, Richard, Johannes, what do you think?
+>
+> I got dropped off the list in "The Great Infradead Purge" but I see it
+> in patchwork ;)
+>
+> Not sure we should modify cc-can-link.sh without at least CC'ing
+> Masahiro Yamada?
+>
+> But yeah, looks fine to me. Not that I have any interest in static
+> linking.
 
-> @@ -1028,6 +1036,16 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
->  	struct ghcb *ghcb;
->  
->  	lockdep_assert_irqs_disabled();
-> +
-> +	/*
-> +	 * #DB is special and needs to be handled outside of the intrumentation_begin()/end().
-> +	 * Otherwise the #VC handler could be raised recursivly.
-> +	 */
-> +	if (error_code == SVM_EXIT_EXCP_BASE + X86_TRAP_DB) {
-> +		vc_handle_trap_db(regs);
-> +		return;
-> +	}
-> +
->  	instrumentation_begin();
-
-Wait what?! That makes no sense what so ever.
+Yeah, looks good to me as well, but I think the others here know the
+drivers here better than I.
