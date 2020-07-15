@@ -2,76 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9C9220D5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 14:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85146220D63
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 14:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731396AbgGOMtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 08:49:07 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:60282 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731347AbgGOMs7 (ORCPT
+        id S1731145AbgGOMu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 08:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728766AbgGOMu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 08:48:59 -0400
-Received: from Q.local (cpc89242-aztw30-2-0-cust488.18-1.cable.virginm.net [86.31.129.233])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 37AD3564;
-        Wed, 15 Jul 2020 14:48:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1594817337;
-        bh=I4Mi3hs9NzKXoN4u5HKTknj7JJzfm1Unvue8SQk/r+o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NEyGvFr3RO7xu/J+6VreJBQ5ZtcQPnwEkULqvlM5kU9EIQHiCKZ3qflop0xn26IxG
-         b08yppSnjuwzbnlVsFZC/yd7Ek0RD7WCFfgmLordwgA/9TobI3gcr9ynMNrjGcCWGW
-         6+LnjZghY07uvepiv0f/Fv+z1fzYH+5tAp0pGUKs=
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-To:     trivial@kernel.org
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Xiong <xndchn@gmail.com>, SeongJae Park <sjpark@amazon.de>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 8/8] scripts/spelling.txt: Add descriptors correction
-Date:   Wed, 15 Jul 2020 13:48:39 +0100
-Message-Id: <20200715124839.252822-9-kieran.bingham+renesas@ideasonboard.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200715124839.252822-1-kieran.bingham+renesas@ideasonboard.com>
-References: <20200715124839.252822-1-kieran.bingham+renesas@ideasonboard.com>
+        Wed, 15 Jul 2020 08:50:27 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012A2C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:50:27 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id m9so2065800pfh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:50:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=ShVGtDM5xerpslVq+QO4NAQXlRlUc1FZogmGfNpoutY=;
+        b=zfEz8H5E0uTrtiedmvrlTGbHtdxGX3RrMjMgJxif+xhNGImqKZRwVnxOB7SiJiHGZb
+         EgfDXwV6eV0eYsRRBkuQtDnVaC/gA32Wm8PgvRC0S/grBe3RSNr07Qwb/U5MFJQCd+xu
+         ZzRH0TwSYyHM7F+ByWaX4y+/lwLlfZropXcAtw4OEd6s5YhRov92z0a99VRfYJAAhfNf
+         bZtJoVQi9SqMDg0zgDRRi4WZCRBAeTXicGV743fdg5EHoHEDZibVOgCS65ZUQ9HcWhdA
+         loHkMsrB0ViJIeLN9ArV7hzmoxVeMMuJFVT9NdQFZG26b8lb2eJfYno6GYBY0w3mG5Fw
+         aObg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=ShVGtDM5xerpslVq+QO4NAQXlRlUc1FZogmGfNpoutY=;
+        b=R4PvkTf5Xror0VUwfQR/Ep+asa/1D0mGreNQ+AfyVZ/3iydCd3kJcRJ75HMf8/JCl5
+         ipynfFsSSyIo8M8mHdg2tWtziTa9+rriJzjsftX/eF6Nq7s+5Pv1nUfWwf7Sig6deaUk
+         DgVwvUDkHEKxZDovXHjgFC4ReexwxPpFNpIiDI1NXvM6K8e45VbpetqKKljPG1477oVO
+         zCpb49BbV/0uX1DYytsVPx3S9BFFnmYauPdDYXh41/3FQ60euiDtXa/Ut7sUxOI7XnYt
+         F6nPO0hqfEQVZ/IP2+bdV6eToVZ/06s9cVcBodA1cRHCLtXMGevjiraDGadbg1k+j2Fi
+         NYsA==
+X-Gm-Message-State: AOAM531hwnE3MkLF4I2vtfTV5DoQUM0U4qwpxndQD+1PWbvSqfpMlrNv
+        oa15zWWbm9DZWf1SEzdBgmBWRkv4yCM=
+X-Google-Smtp-Source: ABdhPJy/Ln9peH7xxHmsqXkwnv/o960pFulImShZC6watVz+6vqqfalkLQT9ngLHhAPVGcqCMTcTqA==
+X-Received: by 2002:a63:1f11:: with SMTP id f17mr7755201pgf.217.1594817426552;
+        Wed, 15 Jul 2020 05:50:26 -0700 (PDT)
+Received: from localhost ([2406:7400:73:f0a7:1936:cfd2:c2df:5e48])
+        by smtp.gmail.com with ESMTPSA id ml8sm2037189pjb.47.2020.07.15.05.50.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 05:50:25 -0700 (PDT)
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+X-Google-Original-From: B K Karthik <karthik.bk2000@live.com>
+Date:   Wed, 15 Jul 2020 08:50:18 -0400
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: block_dev.c: fix WARNING in submit_bio_check
+Message-ID: <20200715125018.mjj6sj5uibd5s67b@pesu-pes-edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lpn6rsynz3x3gxmk"
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After coming across the s/decriptors/descriptors/ spelling error twice,
-a scan of the tree showed it was a pervasive mistake.
 
-Update the spelling suggestions database to prevent it in both singular
-and plural form.
+--lpn6rsynz3x3gxmk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+duplicating the logic in blkdev_get_by_path to
+blkdev_get_by_dev to avoid a user-triggerable WARN
+trying to write to a read-only block device.
 
+blkdev_get_by_path() looks at
+((mode & FMODE_WRITE) && bdev_read_only(bdev)) to check for write permissio=
+ns.
+
+A user-triggerable WARN can be avoided by doing the same with bdev_get_by_d=
+ev.
+
+Reported-by: syzbot+4c50ac32e5b10e4133e1@syzkaller.appspotmail.com
+Signed-off-by: B K Karthik <karthik.bk2000@live.com>
 ---
-v2:
- - Use both singular and plural form.
----
- scripts/spelling.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/block_dev.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index c45e9afaab2d..c56a6c36e6f2 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -406,6 +406,8 @@ decendants||descendants
- decompres||decompress
- decsribed||described
- decription||description
-+decriptor||descriptor
-+decriptors||descriptors
- dectected||detected
- defailt||default
- deferal||deferral
--- 
-2.25.1
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 64c4fe8181f2..472e3b046406 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -1796,6 +1796,11 @@ struct block_device *blkdev_get_by_dev(dev_t dev, fm=
+ode_t mode, void *holder)
+ 	if (err)
+ 		return ERR_PTR(err);
+=20
++	if ((mode & FMODE_WRITE) && bdev_read_only(bdev)) {
++		blkdev_put(bdev, mode);
++		return ERR_PTR(-EACCES);
++	}
++
+ 	return bdev;
+ }
+ EXPORT_SYMBOL(blkdev_get_by_dev);
+--=20
+2.20.1
 
+
+--lpn6rsynz3x3gxmk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAEBCgAdFiEEpIrzAt4LvWLJmKjp471Q5AHeZ2oFAl8O+4kACgkQ471Q5AHe
+Z2rFSwv/eUXmS0JEAwk4ovaLtuu9ly240wFQQBHwIyOidIuxiw0fnOKPfRpBFCHc
+NDdVlZ3/IDfRbcT/5Td3wO+X4OmWPoE/mr2EClOxeYWFCcJV7oWzO+FBkkYb7P93
+JmzuDtIYMsSVnIrAyjlwwCdlii0nW2eism0rIP2Ja30FsAvZR5l1pqw8ypjFpKrQ
+tGot98tkBA5iAm5A2F/8iBpwX+kp/y5kEzXpfH8qgrslt3booQ4FLFcg+TCOeIaj
+G1vPkY0fuVCsQZPXSta6RU89NI71AQKN5FhyujqpNa1hIiA5IYT4+c9ryRwzuJIr
+fzLFygwWbFXLXtvgZ87BlhkSIayJMQNFUBrjA36BB0iN83fRyKr69K0i8BbG5QKU
+FP/zryOsnO2AdbtBpB8OCPXq5era+hbeZnXncBzl9h9ApatmRWajO4D0mOXQRd7a
+njx23nf5npJtjXeHmznhi+luoAeeLkK+te0hvGl2fmFhT/v7Zt8xa7D4bMnC18eh
+ZkaRfIHq
+=Pl6p
+-----END PGP SIGNATURE-----
+
+--lpn6rsynz3x3gxmk--
