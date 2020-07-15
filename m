@@ -2,191 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D996221895
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 01:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A16221897
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 01:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgGOXqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 19:46:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgGOXqd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 19:46:33 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB400C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 16:46:33 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x72so2811042pfc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 16:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p5jorZC1TkH3ISm4S95AAjWEBEpsvo8bCA396VWT6Ds=;
-        b=iqVybj+NsR/y+uI9GLbCm957UqnhBLZOXRPv8IVn2eHO98vAKndW8AkW3UE0GbuyB+
-         8XRPwqdUAwz5b7Agz2a5r20JI0fB/uSSlhQBQftNGJAwlxnmY2FHRUXDe3nDoZZAPF2Q
-         jN4LDK+FdcNo1yUVKL7gfSqRgv5mGGr/emRL4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p5jorZC1TkH3ISm4S95AAjWEBEpsvo8bCA396VWT6Ds=;
-        b=bzNPNpKbAkYGHp3xl3O+kuvuUGTV39FYAkESURHIIHcMYHCEtgBU1vVqeP4jC9gBgp
-         m1JFvw809PfNmA7gyNWYPU5Dw+syinT5aSc2vdJycewdRJABg5CScNuBJHthFpbjynyQ
-         3YBuCyTo99VO7mlkyrmStL+PsrRg/I6z+puCuUW/KLd32MFZoP5+V7ExHiBOgMyY5W0U
-         Qk97qDWdctpS22+kXSPgBg4XhErQpTMZ63iuk+h9a35W9/E/meGb7FLz48OKxZN4ZX52
-         knMMh3qYqcOkTakkR5+Nvbb6YWWGKv46vSLXdfGkywfbALXEKX/BJgTp+MxwSB335na6
-         1CxQ==
-X-Gm-Message-State: AOAM531dz/tjvVTdZsI/N0EVzu+TARdvZ5x/0A+0vMF9chtQ4wT284Zo
-        8Ggv42PWC0GjoL/GHfuYOg6Chg==
-X-Google-Smtp-Source: ABdhPJwFl2N0BOA5livG8Sss2jFK57hegzDrN7WQsB/aTtqUX8jnsaqbVioZt9UU0BW5sS75mSkbyA==
-X-Received: by 2002:a63:84c3:: with SMTP id k186mr1803546pgd.394.1594856793107;
-        Wed, 15 Jul 2020 16:46:33 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id a19sm3010706pfn.136.2020.07.15.16.46.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 16:46:32 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rohit Kumar <rohitkr@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Richard Fitzgerald <rf@opensource.wolfsonmicro.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] regmap: debugfs: Don't sleep while atomic for fast_io regmaps
-Date:   Wed, 15 Jul 2020 16:46:15 -0700
-Message-Id: <20200715164611.1.I35b3533e8a80efde0cec1cc70f71e1e74b2fa0da@changeid>
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
+        id S1727103AbgGOXqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 19:46:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726770AbgGOXqw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 19:46:52 -0400
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5DE82072E;
+        Wed, 15 Jul 2020 23:46:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594856812;
+        bh=0Z67DEQDHtPE1jpEjdWwnW7bGURvhC5c7yF3Sjpr8hk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cYZW967hw78HF44rBPZbhDp74+Fd+k9NG8yQo6a39ZFC/RrcnhJ6l1FplyjoUsLrm
+         FQsevYclY00Fz2eqEoFv+K3SCB82olAXFZcdd4hjHkAP04Pzv0CBfGSUBl69T9+uwx
+         QCWEh/HsT2CBwvEiB8OsGm01nw7B6frzsh/OrI6w=
+Received: by mail-ej1-f44.google.com with SMTP id rk21so4339531ejb.2;
+        Wed, 15 Jul 2020 16:46:51 -0700 (PDT)
+X-Gm-Message-State: AOAM532kg9G4jea9PAjzpCEwCelwqCRo5gplmvtz9bDuYmVSrDB8uDB1
+        26B+GzpQPWw1hFpMqjV5xtdTaad8obIQiyUOMw==
+X-Google-Smtp-Source: ABdhPJybFTPB4ttZSVsoT9XP7GbTBiZv3OHdAp22XXJXjOEHZph4uhAj/ulMlTNJr2ITr8vkAIq1+BAKIAJ+CF4iAB0=
+X-Received: by 2002:a17:906:404e:: with SMTP id y14mr1294495ejj.260.1594856810429;
+ Wed, 15 Jul 2020 16:46:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1594285927-1840-1-git-send-email-neal.liu@mediatek.com> <1594285927-1840-3-git-send-email-neal.liu@mediatek.com>
+In-Reply-To: <1594285927-1840-3-git-send-email-neal.liu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 16 Jul 2020 07:46:39 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-6d12FUf5XnYco0f0CfeWsb-XjsCESsLixLr_Q=jnc0Q@mail.gmail.com>
+Message-ID: <CAAOTY_-6d12FUf5XnYco0f0CfeWsb-XjsCESsLixLr_Q=jnc0Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] soc: mediatek: add mtk-devapc driver
+To:     Neal Liu <neal.liu@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a regmap has "fast_io" set then its lock function uses a spinlock.
-That doesn't work so well with the functions:
-* regmap_cache_only_write_file()
-* regmap_cache_bypass_write_file()
+HI, Neal:
 
-Both of the above functions have the pattern:
-1. Lock the regmap.
-2. Call:
-   debugfs_write_file_bool()
-     copy_from_user()
-       __might_fault()
-         __might_sleep()
+Neal Liu <neal.liu@mediatek.com> =E6=96=BC 2020=E5=B9=B47=E6=9C=889=E6=97=
+=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=885:13=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> MediaTek bus fabric provides TrustZone security support and data
+> protection to prevent slaves from being accessed by unexpected
+> masters.
+> The security violation is logged and sent to the processor for
+> further analysis or countermeasures.
+>
+> Any occurrence of security violation would raise an interrupt, and
+> it will be handled by mtk-devapc driver. The violation
+> information is printed in order to find the murderer.
+>
+> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
+> ---
 
-Let's reorder things a bit so that we do all of our sleepable
-functions before we grab the lock.
+[snip]
 
-Fixes: d3dc5430d68f ("regmap: debugfs: Allow writes to cache state settings")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+> +
+> +/*
+> + * mtk_devapc_dump_vio_dbg - shift & dump the violation debug informatio=
+n.
+> + */
+> +static bool mtk_devapc_dump_vio_dbg(struct mtk_devapc_context *devapc_ct=
+x,
+> +                                   int slave_type, int *vio_idx)
+> +{
+> +       const struct mtk_device_info **device_info;
+> +       u32 shift_bit;
+> +       int i;
+> +
+> +       device_info =3D devapc_ctx->device_info;
+> +
+> +       for (i =3D 0; i < get_vio_slave_num(slave_type); i++) {
+> +               *vio_idx =3D device_info[slave_type][i].vio_index;
+> +
+> +               if (check_vio_mask(devapc_ctx, slave_type, *vio_idx))
+> +                       continue;
 
- drivers/base/regmap/regmap-debugfs.c | 52 ++++++++++++++++------------
- 1 file changed, 29 insertions(+), 23 deletions(-)
+I guess if one vio_idx is masked, its status would never be true. If
+my guess is right, I think you could skip check_vio_mask() and
+directly check_vio_status().
 
-diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/regmap-debugfs.c
-index 089e5dc7144a..f58baff2be0a 100644
---- a/drivers/base/regmap/regmap-debugfs.c
-+++ b/drivers/base/regmap/regmap-debugfs.c
-@@ -463,29 +463,31 @@ static ssize_t regmap_cache_only_write_file(struct file *file,
- {
- 	struct regmap *map = container_of(file->private_data,
- 					  struct regmap, cache_only);
--	ssize_t result;
--	bool was_enabled, require_sync = false;
-+	bool new_val, require_sync = false;
- 	int err;
- 
--	map->lock(map->lock_arg);
-+	err = kstrtobool_from_user(user_buf, count, &new_val);
-+	/* Ignore malforned data like debugfs_write_file_bool() */
-+	if (err)
-+		return count;
- 
--	was_enabled = map->cache_only;
-+	err = debugfs_file_get(file->f_path.dentry);
-+	if (err)
-+		return err;
- 
--	result = debugfs_write_file_bool(file, user_buf, count, ppos);
--	if (result < 0) {
--		map->unlock(map->lock_arg);
--		return result;
--	}
-+	map->lock(map->lock_arg);
- 
--	if (map->cache_only && !was_enabled) {
-+	if (new_val && !map->cache_only) {
- 		dev_warn(map->dev, "debugfs cache_only=Y forced\n");
- 		add_taint(TAINT_USER, LOCKDEP_STILL_OK);
--	} else if (!map->cache_only && was_enabled) {
-+	} else if (!new_val && map->cache_only) {
- 		dev_warn(map->dev, "debugfs cache_only=N forced: syncing cache\n");
- 		require_sync = true;
- 	}
-+	map->cache_only = new_val;
- 
- 	map->unlock(map->lock_arg);
-+	debugfs_file_put(file->f_path.dentry);
- 
- 	if (require_sync) {
- 		err = regcache_sync(map);
-@@ -493,7 +495,7 @@ static ssize_t regmap_cache_only_write_file(struct file *file,
- 			dev_err(map->dev, "Failed to sync cache %d\n", err);
- 	}
- 
--	return result;
-+	return count;
- }
- 
- static const struct file_operations regmap_cache_only_fops = {
-@@ -508,28 +510,32 @@ static ssize_t regmap_cache_bypass_write_file(struct file *file,
- {
- 	struct regmap *map = container_of(file->private_data,
- 					  struct regmap, cache_bypass);
--	ssize_t result;
--	bool was_enabled;
-+	bool new_val;
-+	int err;
- 
--	map->lock(map->lock_arg);
-+	err = kstrtobool_from_user(user_buf, count, &new_val);
-+	/* Ignore malforned data like debugfs_write_file_bool() */
-+	if (err)
-+		return count;
- 
--	was_enabled = map->cache_bypass;
-+	err = debugfs_file_get(file->f_path.dentry);
-+	if (err)
-+		return err;
- 
--	result = debugfs_write_file_bool(file, user_buf, count, ppos);
--	if (result < 0)
--		goto out;
-+	map->lock(map->lock_arg);
- 
--	if (map->cache_bypass && !was_enabled) {
-+	if (new_val && !map->cache_bypass) {
- 		dev_warn(map->dev, "debugfs cache_bypass=Y forced\n");
- 		add_taint(TAINT_USER, LOCKDEP_STILL_OK);
--	} else if (!map->cache_bypass && was_enabled) {
-+	} else if (!new_val && map->cache_bypass) {
- 		dev_warn(map->dev, "debugfs cache_bypass=N forced\n");
- 	}
-+	map->cache_bypass = new_val;
- 
--out:
- 	map->unlock(map->lock_arg);
-+	debugfs_file_put(file->f_path.dentry);
- 
--	return result;
-+	return count;
- }
- 
- static const struct file_operations regmap_cache_bypass_fops = {
--- 
-2.28.0.rc0.105.gf9edc3c819-goog
+> +
+> +               if (!check_vio_status(devapc_ctx, slave_type, *vio_idx))
+> +                       continue;
+> +
+> +               shift_bit =3D get_shift_group(devapc_ctx, slave_type, *vi=
+o_idx);
+> +
+> +               if (!sync_vio_dbg(devapc_ctx, slave_type, shift_bit))
+> +                       continue;
+> +
+> +               devapc_extract_vio_dbg(devapc_ctx, slave_type);
+> +
+> +               return true;
 
+I think multiple vio_idx would violate at the same time, why just process o=
+ne?
+
+Regards,
+Chun-Kuang.
+
+> +       }
+> +
+> +       return false;
+> +}
