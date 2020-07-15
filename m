@@ -2,93 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710032215C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19A92215CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgGOUI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 16:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
+        id S1727123AbgGOUKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 16:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgGOUI4 (ORCPT
+        with ESMTP id S1726715AbgGOUKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 16:08:56 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5561C061755;
-        Wed, 15 Jul 2020 13:08:55 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id c80so7056023wme.0;
-        Wed, 15 Jul 2020 13:08:55 -0700 (PDT)
+        Wed, 15 Jul 2020 16:10:07 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA1AC08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 13:10:06 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id dm19so2585502edb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 13:10:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=szeredi.hu; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TolZEtxgsV3An5H/SdGdZj4fiN57mXcD++DOPxm6nec=;
-        b=jnQVra4+13tS061DNIkTvsRN58izvTQtayCFy3EenQN3TZszDfT5iQLKl4CCwDqXac
-         mxK9lP5rUoskc/FzlXEjYSQ22MICw9Ui5tV3HckDCZIIFV+54zKHfWCZgYgTUk+/61nc
-         rCKSyiStxwsayPsHroTFsJkBZoB2PHBxrq/zRKBXKsRApgfUlHICMl6a5toV5myHQ/Ij
-         Tnn292G6AN8i7Yxz7kQTNMpq6TJF6bVlC9KWpmmPQ5tLqqLvKmon9O8RB9aSvc/bFnK9
-         lSmT5ex5uekMteqlOYR7EnNLWRxDWzM69X6xAGMJ0ujYqE03nCF6nbcps76viWv163se
-         /4ww==
+        bh=NBZwz/iJDyturYfYwj1u5a/ly72Q32flNreT+u4AFMs=;
+        b=oZxSTMfMImLKJUtIiMgUf5gj0cNhaT6bR7vnph9913MaReYlVEart7NBd42sLC0ROc
+         KBhL/e4b6KJXNBPowk8KgMKzFPs37ZxVr9V7P2136toqRe8FJ3BrPPUVqJR2abR1Fj60
+         ycFHshZU5Shfy9PmwmEgB16QqoRI0ZTGrJsdM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TolZEtxgsV3An5H/SdGdZj4fiN57mXcD++DOPxm6nec=;
-        b=TMjffXnktfJTcJbbAQ629AR9Mg92zIQEBMLCOpiN1vUbCJlq9K0gxnybuJQ44C/cxP
-         FanScgvrxRUcDaA+gM4JEKYSIPrgnCIQc0k/70FEo7miqKHylMZKOb5Yb0RU7XVEgonx
-         6UwtW5xeeLyh4gett2xqw0t3B+D2qJt6gIKzFMs6nQO3oFhIlIj6+arHVHOCfxuUuSxv
-         9VYQBSHcYijl3DTszWFMf0S4LyP1Gj0TdsBX1SL4wdxVFSFPDCpnAPfHhKSOLMQdLfMr
-         JncmGcAkmQll1om1xoFnA5fRIvGDRZ/RqIthqIhzN78ykAoopBcRPMZjIuPzt0zwoNNh
-         rR+w==
-X-Gm-Message-State: AOAM530sAuHqJZI5FQ86WiZu6ko3KwM2i90bFyABA4+uDYWJGh9hUVF1
-        dDBbqeFFxKkQ3AM71nIIizJaBiioMthK8sXCbE0=
-X-Google-Smtp-Source: ABdhPJxxxn/p48diSigUNGjm4Jnah7ajXIZF5W1reXQTfbH4SrdS7LWBtgRqa0NxXagT2e1CXjGCce/zqJQ+MyLpXa8=
-X-Received: by 2002:a1c:ab56:: with SMTP id u83mr1111488wme.94.1594843734608;
- Wed, 15 Jul 2020 13:08:54 -0700 (PDT)
+        bh=NBZwz/iJDyturYfYwj1u5a/ly72Q32flNreT+u4AFMs=;
+        b=AVTuJb34oQDODHdf4lgigEpCzHotJIfPHprZl0NE74v0I4EsccuuOL0MiHj4F5O2mH
+         CurjbDcs0l1AIjxcrJwtjc5NX9eQdrvllxezEBlsglfnslo5k8uw5/8qL2vGcVzMyzSg
+         KxvEmjekgZ1z+xz0DyqqLXAwJxVDW9uImAHmbrjuGQqwCXEbGMEKR03wjDqve60rP9eK
+         N9p+FvXQ4LpZfbPmvgQLmL3J4FNQ/VHpmGOs5MuL55BF5nnEwajgCFBZYyonJiSujvq9
+         HG4GJM1BQL3H0PLsnrQ51RAYeCi0v+7fDIIinFq9CjqL++QMY6DY1CVvTE3uUEPfvUoq
+         yYVA==
+X-Gm-Message-State: AOAM533LM4tmsjhsrDRMnQcrYjl0yVBa91uztslT21zG/1gZiFV3Ps3J
+        STQG62ADYwBfwFnS+GL2LFUzoLiMMw+UX59UwKAIZg==
+X-Google-Smtp-Source: ABdhPJxmiwfGPdXuAL/Cm/iBN4GQDNpUgVqb1mhfqKEEu8zlIX3pRbGp59TjObNIRuwsiYpzoCYIpAxQXU0MuNuaGEM=
+X-Received: by 2002:aa7:d04e:: with SMTP id n14mr1329981edo.161.1594843805238;
+ Wed, 15 Jul 2020 13:10:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200713183711.762244-1-luke.r.nels@gmail.com> <CAJ+HfNg_qV=umB9T1U9vRo2pUpmUFfBN44WpAOfMoi75Ymh2dw@mail.gmail.com>
-In-Reply-To: <CAJ+HfNg_qV=umB9T1U9vRo2pUpmUFfBN44WpAOfMoi75Ymh2dw@mail.gmail.com>
-From:   Luke Nelson <luke.r.nels@gmail.com>
-Date:   Wed, 15 Jul 2020 13:08:43 -0700
-Message-ID: <CAB-e3NQFE9rsVZ55Y=jivuBsd1A+V4GWtceqjOz80qtmFsFQVA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf, riscv: Add compressed instructions
- to rv64 JIT
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Luke Nelson <lukenels@cs.washington.edu>,
-        bpf <bpf@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Netdev <netdev@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <CAJfpegu3EwbBFTSJiPhm7eMyTK2MzijLUp1gcboOo3meMF_+Qg@mail.gmail.com>
+ <D9FAB37B-D059-4137-A115-616237D78640@amacapital.net> <20200715171130.GG12769@casper.infradead.org>
+ <7c09f6af-653f-db3f-2378-02dca2bc07f7@gmail.com>
+In-Reply-To: <7c09f6af-653f-db3f-2378-02dca2bc07f7@gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 15 Jul 2020 22:09:54 +0200
+Message-ID: <CAJfpegt9=p4uo5U2GXqc-rwqOESzZCWAkGMRTY1r8H6fuXx96g@mail.gmail.com>
+Subject: Re: strace of io_uring events?
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        strace-devel@lists.strace.io, io-uring@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 15, 2020 at 9:43 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
 >
-> First of all; Really nice work. I like this, and it makes the code
-> easier to read as well (e.g. emit_mv). I'm a bit curious why you only
-> did it for RV64, and not RV32? I have some minor comments on the
-> patches. I strongly encourage you to submit this as a proper (non-RFC)
-> set for bpf-next.
+> To clear details for those who are not familiar with io_uring:
 >
+> io_uring has a pair of queues, submission (SQ) and completion queues (CQ),
+> both shared between kernel and user spaces. The userspace submits requests
+> by filling a chunk of memory in SQ. The kernel picks up SQ entries in
+> (syscall io_uring_enter) or asynchronously by polling SQ.
+>
+> CQ entries are filled by the kernel completely asynchronously and
+> in parallel. Some users just poll CQ to get them, but also have a way
+> to wait for them.
+>
+> >>>
+> >>> What do people think?
+> >>>
+> >>> From what I can tell, listing the submitted requests on
+> >>> io_uring_enter() would not be hard.  Request completion is
+> >>> asynchronous, however, and may not require  io_uring_enter() syscall.
+> >>> Am I correct?
+>
+> Both, submission and completion sides may not require a syscall.
 
-Thanks for the feedback! I'll clean up the patches and address your
-comments in the next revision.
+Okay.
 
-The patch adding RVC to the RV32 JIT is forthcoming; some of the
-optimizations there are more difficult since the RV32 JIT makes more
-use of "internal" jumps whose offsets depend on the sizes of emitted
-instructions. I plan to clean up that code and add RVC support in a
-future series.
+> >>> Is there some existing tracing infrastructure that strace could use to
+> >>> get async completion events?  Should we be introducing one?
+>
+> There are static trace points covering all needs.
 
-- Luke
+This needs to be unprivileged, or its usefulness is again compromized.
+
+>
+> And if not used the whole thing have to be zero-overhead. Otherwise
+> there is perf, which is zero-overhead, and this IMHO won't fly.
+
+Obviously it needs to be zero overhead if not tracing.
+
+What won't fly?
+
+Thanks,
+Miklos
