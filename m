@@ -2,119 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F79D220F10
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27EA220F18
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbgGOOUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 10:20:19 -0400
-Received: from mail.efficios.com ([167.114.26.124]:42852 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726834AbgGOOUS (ORCPT
+        id S1728295AbgGOOWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 10:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728121AbgGOOWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 10:20:18 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id BA731282582;
-        Wed, 15 Jul 2020 10:20:16 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id eZg8zfz8LZ71; Wed, 15 Jul 2020 10:20:16 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 63C86282581;
-        Wed, 15 Jul 2020 10:20:16 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 63C86282581
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1594822816;
-        bh=8pyjh3w3gqmbApSqfgRB3ksH58blRuuNrO9qaoBB2P8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=NQOp04meYobOrNmaL5O+BPNwVBabfCQhcnNrZ30VkCIserTPFvBIu8bKMXfyaARMk
-         my4A6xnXOOVbqsNTiZ0qH/+76r7xVJ3UX0zWkYcbF+YYPVBOcZ8ZuUsi8YPYYfw6lR
-         mhRFFbO+JNHo8j4MvP25Ia06jlh3khYCXQyYzceFb45uxDtRewmnOolVFLluS9xz8A
-         DiWCEz7H/6RjWNVVxtHxs1CQGMTA8vJQYqZLixXz2e67TmyIUAsL/I3pNhTqsJg+jX
-         JSN+NoUEQuhuqr94Lycw1GfwCw5DCelZ9g9zIZUFquatV953iKHbYfXaYCTqTca5lG
-         tfNyFO5vlhuvQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id uVk_T4vgAKIJ; Wed, 15 Jul 2020 10:20:16 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 557522823A1;
-        Wed, 15 Jul 2020 10:20:16 -0400 (EDT)
-Date:   Wed, 15 Jul 2020 10:20:16 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Florian Weimer <fweimer@redhat.com>, carlos <carlos@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@linux.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>
-Message-ID: <1765484769.14232.1594822816264.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200715135554.4q6aamx4iqd4mnqh@wittgenstein>
-References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com> <2452161.11491.1594732791558.JavaMail.zimbra@efficios.com> <71f08b3a-56f5-0e0f-53b0-cc680f7e8181@redhat.com> <2053637148.14136.1594818777608.JavaMail.zimbra@efficios.com> <87y2nk29rp.fsf@oldenburg2.str.redhat.com> <882700738.14181.1594819884049.JavaMail.zimbra@efficios.com> <87mu4028uk.fsf@oldenburg2.str.redhat.com> <20200715135554.4q6aamx4iqd4mnqh@wittgenstein>
-Subject: Re: [RFC PATCH 2/4] rseq: Allow extending struct rseq
+        Wed, 15 Jul 2020 10:22:13 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DDEC061755;
+        Wed, 15 Jul 2020 07:22:12 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e22so1741283edq.8;
+        Wed, 15 Jul 2020 07:22:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J4YLq7ad8Ku7+EWFa0/mgk39lvRv5vsUDuPSLGAmMis=;
+        b=lCcrKo0G+0r8E1QGKPPSeKTD6jPE8Sc6irv4/pOM95bnJP53927eRuCyYXGeGkV9fd
+         4mAETYDfMMhmValjwwKkzgyw6wNRUSM7HPaYym0azD4zlCU3nckTdg4+j1Wc53w3nOHA
+         O1x4YZWvOSoxt6Ki5XkR4PxFJ2sl5ih71h1LHgcgiViNmWv4Groshm3PXgvKN4TJT7MH
+         8TG+hVZ4AaNClt0XH3+2cPGeaAwLX9Nb/XP5ixDGbggf5vtZTfFJFyppqTL9x3mDCHfO
+         b4nFyNmrOU8X1KLO5q+5txBX/3CO8n6xnjqpC15H43ua/BRMEViLX4C0QztCHodDD7LN
+         K3Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J4YLq7ad8Ku7+EWFa0/mgk39lvRv5vsUDuPSLGAmMis=;
+        b=QnnOxpkqv+u1t8KK3xMYa9Yrr8zxinQg/TiQhXW6HKaqXwTb8YDuxcwcpMg/uSMX8C
+         mGJXWH7TrPxXfPxxzI2Y/L9CXae1Z+GCBQseMxcC/sWEe03Qi5pKjiPRxasWZpKlpOfA
+         68lV9obOIVHdNEa/A8f/qVSgeBi+0l6agET/daP1o4n7GdHJvGlm1KgmO52NAulYf7E3
+         P1nLpLCujJSq8f3c3bUZXr0Xw/XfaKjfU+WUcxmv4hDxB40X3C+p22FHKSiSn7hI2RKm
+         ExQRNotLtXYo9lLhlhjG59xNTkCA73A+3qYwg2te5zU3k9tDXdaU3/0G63uhAyoZT7R0
+         KW/Q==
+X-Gm-Message-State: AOAM530TkmiGvG4+pfIc07Q4Nd9IQ9Ay98/lTwLnRsug4gZmdJm6JKgD
+        PR0cQs8nBPpItyZb3qEDKqApGXadPN4DDq3Oxuo=
+X-Google-Smtp-Source: ABdhPJw5Rrl8VSXS3LDJXAXOUm42CTHm9/tBMgf95ADIskpTsgsl8yCwuH0vzZ6Rb7gKkig3GTgv+diJgyCwmRsxUnA=
+X-Received: by 2002:aa7:c3d7:: with SMTP id l23mr9596809edr.18.1594822931168;
+ Wed, 15 Jul 2020 07:22:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
-Thread-Topic: rseq: Allow extending struct rseq
-Thread-Index: dcnj3oHgdUUwDl0MIo+e+CqqnEuWyQ==
+References: <20200629114927.17379-1-bruno.thomsen@gmail.com>
+ <20200629114927.17379-2-bruno.thomsen@gmail.com> <20200713025246.GY21277@dragon>
+ <CAH+2xPAHKY6YfhO-jXfKN+TRN5LDT1Kkn8a8HUj_EOqFt=75nQ@mail.gmail.com> <CAOMZO5DsyqRgD8n-w=6OmnXuMX+1T2DDOjQLNK133=FaqtWXVQ@mail.gmail.com>
+In-Reply-To: <CAOMZO5DsyqRgD8n-w=6OmnXuMX+1T2DDOjQLNK133=FaqtWXVQ@mail.gmail.com>
+From:   Bruno Thomsen <bruno.thomsen@gmail.com>
+Date:   Wed, 15 Jul 2020 16:21:55 +0200
+Message-ID: <CAH+2xPD31bdb_ZjAi6qo5n25K469Ak-qt2GJCcppHk4FZChdeg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ARM: dts: imx7: add support for kamstrup flex concentrator
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Bruno Thomsen <bth@kamstrup.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 15, 2020, at 9:55 AM, Christian Brauner christian.brauner@ubuntu.com wrote:
+Den tir. 14. jul. 2020 kl. 13.54 skrev Fabio Estevam <festevam@gmail.com>:
+>
+> Hi Bruno,
+>
+> On Tue, Jul 14, 2020 at 7:03 AM Bruno Thomsen <bruno.thomsen@gmail.com> wrote:
+>
+> > I have not yet been successful in converting the deprecated properties
+> > to generic phy properties, so hoping I could get a hit.
+> >
+> > Kernel error messages:
+> > mdio_bus 30be0000.ethernet-1: MDIO device at address 1 is missing.
+>
+> Please double-check whether 1 is the correct address for the KSZ8051
+> Ethernet PHY as per your schematics.
 
-> On Wed, Jul 15, 2020 at 03:42:11PM +0200, Florian Weimer wrote:
->> * Mathieu Desnoyers:
->> 
->> > So indeed it could be done today without upgrading the toolchains by
->> > writing custom assembler for each architecture to get the thread's
->> > struct rseq. AFAIU the ABI to access the thread pointer is fixed for
->> > each architecture, right ?
->> 
->> Yes, determining the thread pointer and access initial-exec TLS
->> variables is baked into the ABI.
->> 
->> > How would this allow early-rseq-adopter libraries to interact with
->> > glibc ?
->> 
->> Under all extension proposals I've seen so far, early adopters are
->> essentially incompatible with glibc rseq registration.  I don't think
->> you can have it both ways.
-> 
-> Who are the early adopters? And if we aren't being compatible with them
-> under the extensible schemes proposed we should be able to achieve
-> compatibility with non-early adopters, right? Which I guess is more
-> important. (I still struggle to make sense what qualifies as an early
-> adopter/what the difference to a non-early adopter is.)
+Hi Fabio,
 
-Early adopter libraries and applications are meant to be able to use rseq
-without requiring upgrade of the entire environment to a newer glibc.
+Thanks for the hints.
 
-I maintain early adopter projects (liburcu, lttng-ust) which postpone using
-rseq outside of prototype branches until we agree on an ABI to share
-__rseq_abi between glibc and early adopter libraries. The last thing I
-want is for those projects to break when an end-user upgrades their
-glibc. tcmalloc is another early adopter which have less strict
-compatibility requirements: they are OK with breaking changes requiring
-upgrading and rebuilding tcmalloc.
+Yes, the address is correct and configured with external resistors,
+but just realised that I wrote the wrong device name in the comment,
+it's actually KSZ8081RNB.
 
-Indeed, until we cast in stone the layout of struct rseq as exposed by
-glibc, I think we have some freedom in our definition of "early adopter",
-because pretty much every relevant open source project which want to use
-rseq is waiting on glibc to define that ABI, to use rseq either as an
-early-adopter or through a dependency on newer glibc.
+Ethernet has been working with multiple mainline kernel versions
+(latest being 5.7.8)
+for the last year or so when using the DTS in patch. So I am pretty sure
+hardware and setup of mux is correct'ish.
 
-Thanks,
+Kernel trace from patch version:
+kernel: Micrel KSZ8081 or KSZ8091 30be0000.ethernet-1:01: attached PHY driver
+ [Micrel KSZ8081 or KSZ8091] (mii_bus:phy_addr=30be0000.ethernet-1:01, irq=POLL)
 
-Mathieu
+Error first occurs when switching from fec phy reset to mdio phy reset
+code path,
+I understand that the fec phy reset is obsolete as phy properties was wrongly
+added to the mac and of course should be part of the phy (separate chip).
 
+When debugging it I end up with the get_phy_device() call not working
+inside of_mdiobus_register_phy().
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Workaround at the moment seems to be extending compatible with
+"ethernet-phy-id0022.1560" to disable auto detection of phy type,
+and then Ethernet works again. At least the same PHY driver trace
+can be found and full transmission speed can be used without packet
+errors/loss.
+
+> Are there external pull-up/pull-down resistors for strapping the
+> various configuration pins for the PHY? Or are the pull-up/pull-down
+> provided by the i.MX7D pins?
+
+Config strapping is done with external resistors.
+
+> If there are no external pull-ups, please make sure to configure the
+> pinctrl_enet1 accordingly, so that the Ethernet PHY address can be
+> properly configured and then mdio_bus driver can find it at the
+> correct address.
+>
+> Please check in arch/arm/boot/dts/imx6qdl-sr-som.dtsi for an example
+> on how to configure the Ethernet PHY pin strapping via iMX IOMUX.
+
+Thanks, good examples can be hard to find.
+
+/Bruno
