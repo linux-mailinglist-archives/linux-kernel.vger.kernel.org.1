@@ -2,212 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431C6220589
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F482220593
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728991AbgGOGyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 02:54:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728948AbgGOGyu (ORCPT
+        id S1728969AbgGOG4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 02:56:14 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:56873 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728782AbgGOG4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 02:54:50 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4EEC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 23:54:50 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id u12so476916lff.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 23:54:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NTsvJyRsXTYCu8MRJ6uonhEhc3O9bi7P+xqu5XwBB5o=;
-        b=E6jlNw7evD92OdJk5WvRgw585l+yKXMvWaIDL63GiT3/WAMzPN4eE8SboE4p7Epj14
-         sU6PAnG4/7Ye8TdkAcT58Wjx7FS7ictIISKa5aLBRAjORMP62xOGyWrXsCLBGQ8DtcBp
-         V/DtM5Pzze4tWl3X/xsum3CWLm/ci6wglbrTQ/ri8l+qinRrGLxIokZfPwNy5PlcdcCV
-         mNHZjzSBPa7YLjoGeYFRBBGwJrdMmVNdn46m8fKLwuE4qpenUY+5LBh8ytrmpjffFsDx
-         8dvJtaI4bSFxL1AOSgGpPbV2/eeq3pD99oBRkkpXHT3SdfYAM2ljbZE9XzgDa7gWhDXG
-         dsTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NTsvJyRsXTYCu8MRJ6uonhEhc3O9bi7P+xqu5XwBB5o=;
-        b=VPf1AnFt6+tAF58fSCOxyz88BCGbqug940d3vjkN709vd3UldDkMnCb1OfxHfQB5OP
-         QLcgPjCZC7RCE3U5Y/ZswXRkqcfhBiYij5pipPt+BaucSnFmlV7+xvpgT26hrZC3mJ0h
-         uqof5lodVZwCyiB5NdlYCs09jM4BFwDkxQv3zwGZRcjQ2F6Reydw52QksotcoVHFFcEX
-         oDrLg4CIp/8hzXPaHXeYzC3UjjFjv26b4fNOH2VnjGACp8jqC3GvSSOEdcPFsShilqkO
-         uRgZf5g2LR3ZpC7kCi2Pi1Q3CdacvSgmIMcdIfXy5XY9Gls1/BWpmnkHWN9q0UaWk2AD
-         kLQw==
-X-Gm-Message-State: AOAM532d75bHkSiA4/88+U8n/gT7h8Zft4CKM3Mp4tE0Enx+WjQjsFdN
-        NjMXYK7ntKLPor8k3avwELkt9++WWoKOlI4d2rM=
-X-Google-Smtp-Source: ABdhPJzaAHirbaV9fE8Gp2p6pOT7v1RRsHPmFc3Dtky4E27NDk/KuiefzTdq7jt3y2ung8PHx/RdWli1iHEKYukdpaE=
-X-Received: by 2002:a19:e61a:: with SMTP id d26mr4021628lfh.96.1594796087665;
- Tue, 14 Jul 2020 23:54:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200713031252.3873546-1-daeho43@gmail.com> <20200713181152.GC2910046@google.com>
- <3b02263d-a5e1-136c-40ed-514d34e4c895@huawei.com> <CACOAw_wBD_ourGJSdRTDM-wzeH97aGE966QDB6bpjiyXRrh47A@mail.gmail.com>
- <f4a594a1-464f-3a74-90cb-fd536bed9962@huawei.com>
-In-Reply-To: <f4a594a1-464f-3a74-90cb-fd536bed9962@huawei.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Wed, 15 Jul 2020 15:54:36 +0900
-Message-ID: <CACOAw_w3OWDVXSYHuTEEVv1HaBZir1CWcRAmxOt00MB4vXBKVg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: change the way of handling range.len
- in F2FS_IOC_SEC_TRIM_FILE
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        Daeho Jeong <daehojeong@google.com>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 15 Jul 2020 02:56:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594796172; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=9N1oWEhcrUbKJ3x4cXl1jbwYwOPXzexus4BA/jvOXTw=; b=D/o5Wr1TxrE0lIH6JT6gj43uWWAg9TNUuT7bTg2Kko9lpzOhKXVNrWWSA5hlMyhkNiiMuOzV
+ ZXt29CBiHXoa/2YoP+uZwMG44Ev7xJ1/7Wjav/gim32sxzgblRWCPEoQVrVWKQ/ju134S1aw
+ 4YdH812DhhvAsZJlkbw/nc6Joss=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n18.prod.us-west-2.postgun.com with SMTP id
+ 5f0ea881512812c0708b1402 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Jul 2020 06:56:01
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B09A1C433A1; Wed, 15 Jul 2020 06:56:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31F5BC433CB;
+        Wed, 15 Jul 2020 06:55:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 31F5BC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tdas@codeaurora.org
+From:   Taniya Das <tdas@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
+Cc:     David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        robh@kernel.org, robh+dt@kernel.org, cychiang@google.com,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH] arm64: dts: qcom: sc7180: Add LPASS clock controller nodes
+Date:   Wed, 15 Jul 2020 12:25:49 +0530
+Message-Id: <1594796149-14778-1-git-send-email-tdas@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You mean we can support ZEROOUT option only for encrypted files of
-non-multidevice f2fs,
-and return -EOPNOTSUPP in the multidevice case, right now?
+Update the clock controller nodes for Low power audio subsystem
+functionality.
 
-2020=EB=85=84 7=EC=9B=94 15=EC=9D=BC (=EC=88=98) =EC=98=A4=ED=9B=84 3:17, C=
-hao Yu <yuchao0@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On 2020/7/15 12:06, Daeho Jeong wrote:
-> > We could use fscrypt_zeroout_range() for an encrypted file.
-> > But, one problem is fscrypt_zeroout_range() assumes that filesystems
-> > only use a single block device.
-> > It means it doesn't receive bdev as a parameter.
-> > How about changing the interface of fscrypt_zeroout_range() first and u=
-sing it?
->
-> Yes, please limited to use fscrypt_zeroout_range() on non-multidevice f2f=
-s image
-> first, we can add a condition to check that in the beginning of ioctl int=
-erface,
-> once fscrypt_zeroout_range() accepts bdev as parameter, we can remove tha=
-t limitation.
->
-> Thanks,
->
-> >
-> > 2020=EB=85=84 7=EC=9B=94 14=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 9:3=
-6, Chao Yu <yuchao0@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
-> >>
-> >> On 2020/7/14 2:11, Jaegeuk Kim wrote:
-> >>> Hi Daeho,
-> >>>
-> >>> Please take a look at this.
-> >>>
-> >>> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/comm=
-it/?h=3Ddev&id=3D35245180459aebf6d70fde88a538f0400a794aa6
-> >>
-> >> I'm curious about what will happen if we call
-> >> sec_trim_file(F2FS_TRIM_FILE_ZEROOUT) on an encrypted file, will
-> >> it use zero bits covering encrypted data on disk?
-> >>
-> >> Thanks,
-> >>
-> >>>
-> >>> Thanks,
-> >>>
-> >>> On 07/13, Daeho Jeong wrote:
-> >>>> From: Daeho Jeong <daehojeong@google.com>
-> >>>>
-> >>>> Changed the way of handling range.len of F2FS_IOC_SEC_TRIM_FILE.
-> >>>>  1. Added -1 value support for range.len to secure trim the whole bl=
-ocks
-> >>>>     starting from range.start regardless of i_size.
-> >>>>  2. If the end of the range passes over the end of file, it means un=
-til
-> >>>>     the end of file (i_size).
-> >>>>  3. ignored the case of that range.len is zero to prevent the functi=
-on
-> >>>>     from making end_addr zero and triggering different behaviour of
-> >>>>     the function.
-> >>>>
-> >>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> >>>> ---
-> >>>> Changes in v2:
-> >>>>  - Changed -1 range.len option to mean the whole blocks starting fro=
-m
-> >>>>    range.start regardless of i_size
-> >>>> ---
-> >>>>  fs/f2fs/file.c | 23 ++++++++++++-----------
-> >>>>  1 file changed, 12 insertions(+), 11 deletions(-)
-> >>>>
-> >>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> >>>> index 368c80f8e2a1..2485841e3b2d 100644
-> >>>> --- a/fs/f2fs/file.c
-> >>>> +++ b/fs/f2fs/file.c
-> >>>> @@ -3792,7 +3792,7 @@ static int f2fs_sec_trim_file(struct file *fil=
-p, unsigned long arg)
-> >>>>      pgoff_t index, pg_end;
-> >>>>      block_t prev_block =3D 0, len =3D 0;
-> >>>>      loff_t end_addr;
-> >>>> -    bool to_end;
-> >>>> +    bool to_end =3D false;
-> >>>>      int ret =3D 0;
-> >>>>
-> >>>>      if (!(filp->f_mode & FMODE_WRITE))
-> >>>> @@ -3813,23 +3813,23 @@ static int f2fs_sec_trim_file(struct file *f=
-ilp, unsigned long arg)
-> >>>>      file_start_write(filp);
-> >>>>      inode_lock(inode);
-> >>>>
-> >>>> -    if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode)) =
-{
-> >>>> +    if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode) |=
-|
-> >>>> +                    range.start >=3D inode->i_size) {
-> >>>>              ret =3D -EINVAL;
-> >>>>              goto err;
-> >>>>      }
-> >>>>
-> >>>> -    if (range.start >=3D inode->i_size) {
-> >>>> -            ret =3D -EINVAL;
-> >>>> +    if (range.len =3D=3D 0)
-> >>>>              goto err;
-> >>>> -    }
-> >>>>
-> >>>> -    if (inode->i_size - range.start < range.len) {
-> >>>> -            ret =3D -E2BIG;
-> >>>> -            goto err;
-> >>>> +    if (inode->i_size - range.start > range.len) {
-> >>>> +            end_addr =3D range.start + range.len;
-> >>>> +    } else {
-> >>>> +            end_addr =3D range.len =3D=3D (u64)-1 ?
-> >>>> +                    sbi->sb->s_maxbytes : inode->i_size;
-> >>>> +            to_end =3D true;
-> >>>>      }
-> >>>> -    end_addr =3D range.start + range.len;
-> >>>>
-> >>>> -    to_end =3D (end_addr =3D=3D inode->i_size);
-> >>>>      if (!IS_ALIGNED(range.start, F2FS_BLKSIZE) ||
-> >>>>                      (!to_end && !IS_ALIGNED(end_addr, F2FS_BLKSIZE)=
-)) {
-> >>>>              ret =3D -EINVAL;
-> >>>> @@ -3846,7 +3846,8 @@ static int f2fs_sec_trim_file(struct file *fil=
-p, unsigned long arg)
-> >>>>      down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> >>>>      down_write(&F2FS_I(inode)->i_mmap_sem);
-> >>>>
-> >>>> -    ret =3D filemap_write_and_wait_range(mapping, range.start, end_=
-addr - 1);
-> >>>> +    ret =3D filemap_write_and_wait_range(mapping, range.start,
-> >>>> +                    to_end ? LLONG_MAX : end_addr - 1);
-> >>>>      if (ret)
-> >>>>              goto out;
-> >>>>
-> >>>> --
-> >>>> 2.27.0.383.g050319c2ae-goog
-> >>>
-> >>>
-> >>> _______________________________________________
-> >>> Linux-f2fs-devel mailing list
-> >>> Linux-f2fs-devel@lists.sourceforge.net
-> >>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> >>> .
-> >>>
-> > .
-> >
+Signed-off-by: Taniya Das <tdas@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 2be81a2..8c30a17 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -8,6 +8,7 @@
+ #include <dt-bindings/clock/qcom,dispcc-sc7180.h>
+ #include <dt-bindings/clock/qcom,gcc-sc7180.h>
+ #include <dt-bindings/clock/qcom,gpucc-sc7180.h>
++#include <dt-bindings/clock/qcom,lpasscorecc-sc7180.h>
+ #include <dt-bindings/clock/qcom,rpmh.h>
+ #include <dt-bindings/clock/qcom,videocc-sc7180.h>
+ #include <dt-bindings/interconnect/qcom,osm-l3.h>
+@@ -2136,6 +2137,27 @@
+ 			};
+ 		};
+
++		lpasscc: clock-controller@62d00000 {
++			compatible = "qcom,sc7180-lpasscorecc";
++			reg = <0 0x62d00000 0 0x50000>,
++			    <0 0x62780000 0 0x30000>;
++			reg-names = "lpass_core_cc", "lpass_audio_cc";
++			clocks = <&gcc GCC_LPASS_CFG_NOC_SWAY_CLK>;
++			clock-names = "iface";
++			power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
++			#clock-cells = <1>;
++			#power-domain-cells = <1>;
++		};
++
++		lpass_hm: clock-controller@63000000 {
++			compatible = "qcom,sc7180-lpasshm";
++			reg = <0 0x63000000 0 0x28>;
++			clocks = <&gcc GCC_LPASS_CFG_NOC_SWAY_CLK>;
++			clock-names = "iface";
++			#clock-cells = <1>;
++			#power-domain-cells = <1>;
++		};
++
+ 		etm@7040000 {
+ 			compatible = "arm,coresight-etm4x", "arm,primecell";
+ 			reg = <0 0x07040000 0 0x1000>;
+--
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the  Linux Foundation.
+
