@@ -2,98 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27F82208CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22A12208CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730773AbgGOJcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:32:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
+        id S1730788AbgGOJcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730759AbgGOJcP (ORCPT
+        with ESMTP id S1730760AbgGOJcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:32:15 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305E0C08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:14 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id q15so4689099wmj.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:14 -0700 (PDT)
+        Wed, 15 Jul 2020 05:32:16 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738F8C08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:15 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id o8so4660892wmh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=easFprA1rlXP+l9tcr/n/hbQjfY4p+URdQB+bt/vLVk=;
-        b=kgCdXMjbGP82TXbjFkxf/2lpaClvJKN/LS7/ueUYl0t9EesCTDJfExfKSVdPJyLnpI
-         mNcg+6XK9vjLQBI0TmsKAlocgw/bqTjmQHBO0KtCWxV1u5kdLAavgH1N/J3AWWNmzmvN
-         +zjfJ100UTrvp4EJ/cExnGTPeICQKkKq5igA0enZNlm78zQVXTzpS6ZjnNTZlLxw31S+
-         +HXFBE/AsjuKE/OD1e1P8Bs5M0+RG7GdA27HkDiSKQHJ+xI23vDB/wQbucsQJzCFFNvW
-         RYobiCqAlVK2T63+0sgwVQU26AvHkqo6Vq0OQ79jEojfAL4V6fsjjUH/KVhlr3WgRwRl
-         xewg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+Z3KCPJPJ9xqOxMrVh/E1QUCCirSlEPo9eFXpxRTSLE=;
+        b=j1hC6fbFvEKSfKk3vGCWwkBbfplkz5E48kA4VMiG9AJs8jLE2MQYYlqUG4PUexzeWZ
+         JaAxqVumQic3OZhO1DNUlAwOkwiHCXh5UE3M2Z+S87THP6F5wND7f9Ee0wmUgmoEegsZ
+         LVnSYFgKt+rh9f+IXR2jnsPTcDcBsap1QoK8duiDrdW8QG78i3ll5N03D/juvat4fj7k
+         X1b6UEJ/f13U3vfWT5XhHJr0ty7jwnu35Q6LggfCBPBNOw8noBWj6GmoDQ/nQyU7nP+D
+         XmMKy432/ChdZt0+jP09xTU+QNTA3a3+aRuWXDbxAe9tU8D26pQELScIlU5dAIpuwSar
+         zzkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=easFprA1rlXP+l9tcr/n/hbQjfY4p+URdQB+bt/vLVk=;
-        b=hCufuGk1MriAhuHjZa/ddLf5HyjozKXSDtIQycVBR2Ed2GhWWmXlAdj51yfrYFPZ0B
-         8Nf2fLF6AYMdBMqQO8yvhvn9hORVJCjc2zgUl5OSsWu/dl88oBO/aCgy0FEB9GCdVFMo
-         Dji5CD1pucYnWkftJj1OiejJ0RILIV1BOb9qjQA8tEWP0ekaQ87d7W8BL7x+Lc7TYkZ9
-         CWioJdU1iRApw+W5BeCZyle/k0umFT1FFs7iG9+H+pElF/yhCVt8iEl+U5rgRJFOdR7K
-         uxzi5a+uk6O0qq1Z8BweXiHyAz1NDWN5hg73OtU/p+iJyBlwUxWMi0g8fxW0gYwKr43z
-         8Avw==
-X-Gm-Message-State: AOAM5321L3IbdmKZAhNR8uiF3ZN960vRPQxJdz6KMO+ueTNzDBUsulz+
-        7d52GBifMrKN/7MR80Q9rhhMYQ==
-X-Google-Smtp-Source: ABdhPJwg8dRgDgK/PgoS2WBYF+uhV5nacvXxeFhiZpmGdsw3/hGyoVy0nupsk/XEgqvxhoGTIjI46Q==
-X-Received: by 2002:a1c:7d85:: with SMTP id y127mr7961510wmc.181.1594805532762;
-        Wed, 15 Jul 2020 02:32:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+Z3KCPJPJ9xqOxMrVh/E1QUCCirSlEPo9eFXpxRTSLE=;
+        b=grZHp8nSjz7xc1nATiC8Lemm5zUPuQSvNaKE6v6RtUnmgjSchsmAqdR2JmADrSVTsO
+         vaYk90jX81Q8gQnx4JeWzsdr/tHRk0zQL12/fkEN1CGpMMB+KXhpbjKcBF4lQHh8jDjo
+         GIEID8lwa+4PZuR94AycgJ+Vn+t60bR9QSYrzXVYg/ROYESTt/TjUxR/KvuzyBNKgIB3
+         0h9JVyBj8EFgK2OdViYjDdttkmXGdR2zhuHy4dIGzDWM8IN3gixTqMjcwbeqxcEgTY8K
+         s7NBVh4JmnddiIsINM/lYlcqoYk/5EsZlHb0CDN8vP8oeyTAqSo4+jHePZZ9lMZAADRt
+         ZBkw==
+X-Gm-Message-State: AOAM5318feDWBFixXpPsYttZs2/ynINbVu3aEHFI+6ln0YvT+YXo0BIj
+        pP1LGqMUqU3Tnl9otETCt5Z9ww==
+X-Google-Smtp-Source: ABdhPJz2F7AQdDuodvs3Nhzm9b78oR7eczk/gzHg9MMwyTt6vuYsGoFv1+7G/mzU5URIZ5Ey8K5mdg==
+X-Received: by 2002:a1c:e0c4:: with SMTP id x187mr7495953wmg.153.1594805534090;
+        Wed, 15 Jul 2020 02:32:14 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id s203sm2686991wms.32.2020.07.15.02.32.11
+        by smtp.gmail.com with ESMTPSA id s203sm2686991wms.32.2020.07.15.02.32.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 02:32:12 -0700 (PDT)
+        Wed, 15 Jul 2020 02:32:13 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH v2 0/8] Mop-up left-behind fixes for W=1 warnings in USB
-Date:   Wed, 15 Jul 2020 10:32:01 +0100
-Message-Id: <20200715093209.3165641-1-lee.jones@linaro.org>
+        linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Minas Harutyunyan <hminas@synopsys.com>,
+        Ben Dooks <ben@simtec.co.uk>
+Subject: [PATCH v2 1/8] usb: dwc2: gadget: Make use of GINTMSK2
+Date:   Wed, 15 Jul 2020 10:32:02 +0100
+Message-Id: <20200715093209.3165641-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200715093209.3165641-1-lee.jones@linaro.org>
+References: <20200715093209.3165641-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the last of them.
+The value obtained from GINTSTS2 should be masked with the GINTMSK2
+value.  Looks like this has been broken since
+dwc2_gadget_wkup_alert_handler() was added back in 2018.
 
-Some have been re-written, others fixed-up.
+Also fixes the following W=1 warning:
 
-See the in-patch changelog for the details.
+ drivers/usb/dwc2/gadget.c: In function ‘dwc2_gadget_wkup_alert_handler’:
+ drivers/usb/dwc2/gadget.c:259:6: warning: variable ‘gintmsk2’ set but not used [-Wunused-but-set-variable]
+ 259 | u32 gintmsk2;
+ | ^~~~~~~~
 
-Lee Jones (8):
-  usb: dwc2: gadget: Make use of GINTMSK2
-  usb: dwc2: gadget: Avoid pointless read of EP control register
-  usb: mtu3: mtu3_trace: Function headers are not suitable for kerneldoc
-  usb: mtu3: mtu3_trace: Supply missing mtu3_debug.h include file
-  usb: class: cdc-wdm: Provide description for usb_cdc_wdm_register()'s
-    manage_power arg
-  usb: c67x00: c67x00-hcd: Demote obvious misuse of kerneldoc to
-    standard comment blocks
-  usb: misc: sisusbvga: sisusb_init: Remove genunine unused static const
-    arrays
-  usb: misc: sisusbvga: Move static const tables out to different
-    include file
+Cc: Minas Harutyunyan <hminas@synopsys.com>
+Cc: Ben Dooks <ben@simtec.co.uk>
+Fixes: 187c5298a1229 ("usb: dwc2: gadget: Add handler for WkupAlert interrupt")
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+Changelog:
 
- drivers/usb/c67x00/c67x00-hcd.c            |   6 +-
- drivers/usb/class/cdc-wdm.c                |   3 +-
- drivers/usb/dwc2/gadget.c                  |   3 +-
- drivers/usb/misc/sisusbvga/sisusb_init.c   |   1 +
- drivers/usb/misc/sisusbvga/sisusb_init.h   | 662 --------------------
- drivers/usb/misc/sisusbvga/sisusb_tables.h | 688 +++++++++++++++++++++
- drivers/usb/mtu3/mtu3_trace.c              |   3 +-
- 7 files changed, 697 insertions(+), 669 deletions(-)
- create mode 100644 drivers/usb/misc/sisusbvga/sisusb_tables.h
+v2: Re-written to *use* instad of *remove* gintmsk2
 
+ drivers/usb/dwc2/gadget.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
+index df5fedaca60a0..03cf1fa856219 100644
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -260,6 +260,7 @@ static void dwc2_gadget_wkup_alert_handler(struct dwc2_hsotg *hsotg)
+ 
+ 	gintsts2 = dwc2_readl(hsotg, GINTSTS2);
+ 	gintmsk2 = dwc2_readl(hsotg, GINTMSK2);
++	gintsts2 &= gintmsk2;
+ 
+ 	if (gintsts2 & GINTSTS2_WKUP_ALERT_INT) {
+ 		dev_dbg(hsotg->dev, "%s: Wkup_Alert_Int\n", __func__);
 -- 
 2.25.1
 
