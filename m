@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C372208DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD522208E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730571AbgGOJdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:33:19 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:42928 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbgGOJdT (ORCPT
+        id S1730273AbgGOJeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:34:09 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:37724 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728043AbgGOJeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:33:19 -0400
-Received: by mail-ot1-f67.google.com with SMTP id g37so943762otb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:33:18 -0700 (PDT)
+        Wed, 15 Jul 2020 05:34:08 -0400
+Received: by mail-oi1-f193.google.com with SMTP id 12so1729501oir.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:34:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2zSBza/A2TbTL8HuxHQLfop5BTTpNoqMx+x88U5xSCg=;
-        b=V4vV9/ZlZ6vGQk1y6KFh+whw9J9EAhSHVn2S5su/kkHIfB2iuhXMqT/4A4gT6nyhKu
-         KBJfOaonaba9oSepYH8mS3tvRz7kCp1MZ/fU2crHscw3WXFGGLkhECJyymzBFoW72INZ
-         vBosBB4egGhX6yCpCGOvYAZ1G7u352IY+O4dUhlg1gy/3p8cxFmw/wuVjzSgdnwrIidk
-         mEIPprQm33WtLXMUedSX+tllzXL9v6cdnbGTZB0/bRPRJziYKp0/EsTVhlfUzIyZaJcf
-         qTOa0UdJcBbyVZIDuSe9B3kpFtvv2qJK3OBQPNMzNupjWhymPdamxjJRm62ED/AYIroL
-         EQqQ==
-X-Gm-Message-State: AOAM533RDjSMKYTCBglCh2QUW0IUFsxbETsTswZy9DcWyQVCRxQI7eNZ
-        7sNDpR5ggucbZqavduSxmfjS15xfgP7XSD2Pwog=
-X-Google-Smtp-Source: ABdhPJzzj1yYj1U/ZCf95+Q2ORWnAZ+lygEjLDT7captY+3H5kw2r+KzelfwvLYQjScnf26pKt+qpkoPFsnNPuoqAI4=
-X-Received: by 2002:a9d:2646:: with SMTP id a64mr7514251otb.107.1594805598066;
- Wed, 15 Jul 2020 02:33:18 -0700 (PDT)
+        bh=EvU8f9uqtqhKQi1upBV6M7odRgHTJO0NIPiNBIO/iso=;
+        b=WGSmOAK17cViYw49pHuVHA8/wJ62VUvDNk5LRf8MA+d0k++nmNRpHiL/ySlZ4p0u45
+         XGPfjN/WnAkIdL2WxVBKoGRI3029EbU3cpGxh1BoRhbYp9kFiUGS6O3AukkGS3ybmGc3
+         zVsqdMXmWvICUhPi1e4hNZZzeiw+asBipSEgQ9T37bB0l2TbGAQkiQyjraJaEhJIz/9/
+         Lge5E/O+og5OC2aSPyHILJ0q9UFDfozdcatmRfruhzzhSTJhoPeApvmM6MppjEZxAL/R
+         syJmjtnKrjnEcFVSvbarPwc2gCGC4hN2hDM7abSJLRoaEcH44DSjtjPN84Z7qLeCf5ol
+         9/lA==
+X-Gm-Message-State: AOAM5333Hrq88Es0RWZoV1O2jGRRDpGMzjEPfgVeNf024TQrhLeFU93e
+        EvCgjZr7p2KG/zo9TkQN1w5FMT89JC1I8G00rjk=
+X-Google-Smtp-Source: ABdhPJy9IvsxtdXlInbx2uqQJkVU+nPkqyYw7WEzAKfjGHtwKAFf4Tb1kkO8UbWyyEt9nm9bbZrbFwjGHDrSB0oKqCc=
+X-Received: by 2002:aca:5c41:: with SMTP id q62mr6800166oib.148.1594805648341;
+ Wed, 15 Jul 2020 02:34:08 -0700 (PDT)
 MIME-Version: 1.0
 References: <1594722055-9298-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594722055-9298-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1594722055-9298-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1594722055-9298-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1594722055-9298-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 15 Jul 2020 11:33:07 +0200
-Message-ID: <CAMuHMdWOgYkWNj0UTUvqi_8O5tKf6NOc61RpEyNWoJPxeC_rqw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] iommu/ipmmu-vmsa: Hook up R8A774E1 DT matching code
+Date:   Wed, 15 Jul 2020 11:33:57 +0200
+Message-ID: <CAMuHMdXOBVn1HAxN6yB+bv+VtBPs4F4dUwvPZHkLj6Sz7KmRDQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] iommu/ipmmu-vmsa: Add an entry for r8a77961 in soc_rcar_gen3[]
 To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Cc:     Joerg Roedel <joro@8bytes.org>,
         Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
@@ -52,11 +52,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, Jul 14, 2020 at 12:21 PM Lad Prabhakar
 <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> Add an entry for r8a77961 in soc_rcar_gen3[] list so that we dont
+> enable iommu unconditionally.
 >
-> Add support for RZ/G2H (R8A774E1) SoC IPMMUs.
->
-> Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> Fixes: 17fe161816398 ("iommu/renesas: Add support for r8a77961")
 > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
@@ -65,7 +64,7 @@ Gr{oetje,eeting}s,
 
                         Geert
 
---
+-- 
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
