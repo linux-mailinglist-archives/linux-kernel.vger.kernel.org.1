@@ -2,164 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19546220AA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82FB220AA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731346AbgGOLGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 07:06:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7508 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729699AbgGOLGG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:06:06 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06FB2SQj006302;
-        Wed, 15 Jul 2020 07:05:58 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32991fj332-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 07:05:58 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06FB1Z85012919;
-        Wed, 15 Jul 2020 11:05:56 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma02fra.de.ibm.com with ESMTP id 327527veqm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 11:05:55 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06FB4drW65339512
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jul 2020 11:04:39 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F4233AE053;
-        Wed, 15 Jul 2020 11:04:38 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7D0A3AE051;
-        Wed, 15 Jul 2020 11:04:37 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.63.15])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 15 Jul 2020 11:04:37 +0000 (GMT)
-Subject: Re: [ext4] d3b6f23f71: stress-ng.fiemap.ops_per_sec -60.5% regression
-To:     kernel test robot <rong.a.chen@intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, kbuild test robot <lkp@intel.com>,
-        Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <20200407080036.GA8179@shao2-debian>
-From:   Ritesh Harjani <riteshh@linux.ibm.com>
-Date:   Wed, 15 Jul 2020 16:34:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1731359AbgGOLGM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Jul 2020 07:06:12 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2542 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728385AbgGOLGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 07:06:10 -0400
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id 7FE7B53607C20D5A957B;
+        Wed, 15 Jul 2020 19:06:08 +0800 (CST)
+Received: from DGGEMM526-MBX.china.huawei.com ([169.254.8.195]) by
+ DGGEMM402-HUB.china.huawei.com ([10.3.20.210]) with mapi id 14.03.0487.000;
+ Wed, 15 Jul 2020 19:06:03 +0800
+From:   "Zengtao (B)" <prime.zeng@hisilicon.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "cai@lca.pw" <cai@lca.pw>, Kevin Tian <kevin.tian@intel.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michel Lespinasse" <walken@google.com>,
+        Denis Efremov <efremov@linux.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] vfio/pci: fix racy on error and request eventfd ctx
+Thread-Topic: [PATCH] vfio/pci: fix racy on error and request eventfd ctx
+Thread-Index: AQHWWnqQ+QrCfngfhUOguFGy1o0RgqkH7XyAgACJOHA=
+Date:   Wed, 15 Jul 2020 11:06:04 +0000
+Message-ID: <678F3D1BB717D949B966B68EAEB446ED415845CF@dggemm526-mbx.china.huawei.com>
+References: <1594798484-20501-1-git-send-email-prime.zeng@hisilicon.com>
+ <20200715123955.0d7e731a.cohuck@redhat.com>
+In-Reply-To: <20200715123955.0d7e731a.cohuck@redhat.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.74.221.187]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <20200407080036.GA8179@shao2-debian>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200715110437.7D0A3AE051@d06av26.portsmouth.uk.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-15_07:2020-07-15,2020-07-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- suspectscore=0 spamscore=0 impostorscore=0 mlxscore=0 clxscore=1011
- malwarescore=0 adultscore=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007150089
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Xing,
-
-On 4/7/20 1:30 PM, kernel test robot wrote:
-> Greeting,
+> -----Original Message-----
+> From: kvm-owner@vger.kernel.org [mailto:kvm-owner@vger.kernel.org]
+> On Behalf Of Cornelia Huck
+> Sent: Wednesday, July 15, 2020 6:40 PM
+> To: Zengtao (B)
+> Cc: alex.williamson@redhat.com; cai@lca.pw; Kevin Tian; Peter Xu;
+> Andrew Morton; Michel Lespinasse; Denis Efremov; kvm@vger.kernel.org;
+> linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] vfio/pci: fix racy on error and request eventfd ctx
 > 
-> FYI, we noticed a -60.5% regression of stress-ng.fiemap.ops_per_sec due to commit:
+> On Wed, 15 Jul 2020 15:34:41 +0800
+> Zeng Tao <prime.zeng@hisilicon.com> wrote:
 > 
+> > The vfio_pci_release call will free and clear the error and request
+> > eventfd ctx while these ctx could be in use at the same time in the
+> > function like vfio_pci_request, and it's expected to protect them under
+> > the vdev->igate mutex, which is missing in vfio_pci_release.
+> >
+> > This issue is introduced since commit 1518ac272e78 ("vfio/pci: fix
+> memory
+> > leaks of eventfd ctx"),and since commit 5c5866c593bb ("vfio/pci: Clear
+> > error and request eventfd ctx after releasing"), it's very easily to
+> > trigger the kernel panic like this:
+> >
+> > [ 9513.904346] Unable to handle kernel NULL pointer dereference at
+> virtual address 0000000000000008
+> > [ 9513.913091] Mem abort info:
+> > [ 9513.915871]   ESR = 0x96000006
+> > [ 9513.918912]   EC = 0x25: DABT (current EL), IL = 32 bits
+> > [ 9513.924198]   SET = 0, FnV = 0
+> > [ 9513.927238]   EA = 0, S1PTW = 0
+> > [ 9513.930364] Data abort info:
+> > [ 9513.933231]   ISV = 0, ISS = 0x00000006
+> > [ 9513.937048]   CM = 0, WnR = 0
+> > [ 9513.940003] user pgtable: 4k pages, 48-bit VAs,
+> pgdp=0000007ec7d12000
+> > [ 9513.946414] [0000000000000008] pgd=0000007ec7d13003,
+> p4d=0000007ec7d13003, pud=0000007ec728c003,
+> pmd=0000000000000000
+> > [ 9513.956975] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+> > [ 9513.962521] Modules linked in: vfio_pci vfio_virqfd vfio_iommu_type1
+> vfio hclge hns3 hnae3 [last unloaded: vfio_pci]
+> > [ 9513.972998] CPU: 4 PID: 1327 Comm: bash Tainted: G        W
+> 5.8.0-rc4+ #3
+> > [ 9513.980443] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC,
+> BIOS 2280-V2 CS V3.B270.01 05/08/2020
+> > [ 9513.989274] pstate: 80400089 (Nzcv daIf +PAN -UAO BTYPE=--)
+> > [ 9513.994827] pc : _raw_spin_lock_irqsave+0x48/0x88
+> > [ 9513.999515] lr : eventfd_signal+0x6c/0x1b0
+> > [ 9514.003591] sp : ffff800038a0b960
+> > [ 9514.006889] x29: ffff800038a0b960 x28: ffff007ef7f4da10
+> > [ 9514.012175] x27: ffff207eefbbfc80 x26: ffffbb7903457000
+> > [ 9514.017462] x25: ffffbb7912191000 x24: ffff007ef7f4d400
+> > [ 9514.022747] x23: ffff20be6e0e4c00 x22: 0000000000000008
+> > [ 9514.028033] x21: 0000000000000000 x20: 0000000000000000
+> > [ 9514.033321] x19: 0000000000000008 x18: 0000000000000000
+> > [ 9514.038606] x17: 0000000000000000 x16: ffffbb7910029328
+> > [ 9514.043893] x15: 0000000000000000 x14: 0000000000000001
+> > [ 9514.049179] x13: 0000000000000000 x12: 0000000000000002
+> > [ 9514.054466] x11: 0000000000000000 x10: 0000000000000a00
+> > [ 9514.059752] x9 : ffff800038a0b840 x8 : ffff007ef7f4de60
+> > [ 9514.065038] x7 : ffff007fffc96690 x6 : fffffe01faffb748
+> > [ 9514.070324] x5 : 0000000000000000 x4 : 0000000000000000
+> > [ 9514.075609] x3 : 0000000000000000 x2 : 0000000000000001
+> > [ 9514.080895] x1 : ffff007ef7f4d400 x0 : 0000000000000000
+> > [ 9514.086181] Call trace:
+> > [ 9514.088618]  _raw_spin_lock_irqsave+0x48/0x88
+> > [ 9514.092954]  eventfd_signal+0x6c/0x1b0
+> > [ 9514.096691]  vfio_pci_request+0x84/0xd0 [vfio_pci]
+> > [ 9514.101464]  vfio_del_group_dev+0x150/0x290 [vfio]
+> > [ 9514.106234]  vfio_pci_remove+0x30/0x128 [vfio_pci]
+> > [ 9514.111007]  pci_device_remove+0x48/0x108
+> > [ 9514.115001]  device_release_driver_internal+0x100/0x1b8
+> > [ 9514.120200]  device_release_driver+0x28/0x38
+> > [ 9514.124452]  pci_stop_bus_device+0x68/0xa8
+> > [ 9514.128528]  pci_stop_and_remove_bus_device+0x20/0x38
+> > [ 9514.133557]  pci_iov_remove_virtfn+0xb4/0x128
+> > [ 9514.137893]  sriov_disable+0x3c/0x108
+> > [ 9514.141538]  pci_disable_sriov+0x28/0x38
+> > [ 9514.145445]  hns3_pci_sriov_configure+0x48/0xb8 [hns3]
+> > [ 9514.150558]  sriov_numvfs_store+0x110/0x198
+> > [ 9514.154724]  dev_attr_store+0x44/0x60
+> > [ 9514.158373]  sysfs_kf_write+0x5c/0x78
+> > [ 9514.162018]  kernfs_fop_write+0x104/0x210
+> > [ 9514.166010]  __vfs_write+0x48/0x90
+> > [ 9514.169395]  vfs_write+0xbc/0x1c0
+> > [ 9514.172694]  ksys_write+0x74/0x100
+> > [ 9514.176079]  __arm64_sys_write+0x24/0x30
+> > [ 9514.179987]  el0_svc_common.constprop.4+0x110/0x200
+> > [ 9514.184842]  do_el0_svc+0x34/0x98
+> > [ 9514.188144]  el0_svc+0x14/0x40
+> > [ 9514.191185]  el0_sync_handler+0xb0/0x2d0
+> > [ 9514.195088]  el0_sync+0x140/0x180
+> > [ 9514.198389] Code: b9001020 d2800000 52800022 f9800271
+> (885ffe61)
+> > [ 9514.204455] ---[ end trace 648de00c8406465f ]---
+> > [ 9514.212308] note: bash[1327] exited with preempt_count 1
 > 
-> commit: d3b6f23f71670007817a5d59f3fbafab2b794e8c ("ext4: move ext4_fiemap to use iomap framework")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> Good catch, I hope this is fixed now for good :/
 > 
-> in testcase: stress-ng
-> on test machine: 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
-> with following parameters:
+> >
+> > Cc: Qian Cai <cai@lca.pw>
+> > Cc: Alex Williamson <alex.williamson@redhat.com>
+> > Fixes: 1518ac272e78 ("vfio/pci: fix memory leaks of eventfd ctx")
 > 
-> 	nr_threads: 10%
-> 	disk: 1HDD
-> 	testtime: 1s
-> 	class: os
-> 	cpufreq_governor: performance
-> 	ucode: 0x500002c
-> 	fs: ext4
+> Fixes: 5c5866c593bb ("vfio/pci: Clear error and request eventfd ctx after
+> releasing")
+> 
+In fact, commit 5c5866c593bb don't really introduce any problem but happened
+ to make the issue more explicit and it's easier to get a panic. :) 
 
-I started looking into this issue. But with my unit testing, I didn't
-find any perf issue with fiemap ioctl call. I haven't yet explored about
-how stress-ng take fiemap performance numbers, it could be doing
-something differently. But in my testing I just made sure to create a
-file with large number of extents and used xfs_io -c "fiemap -v" cmd
-to check how much time it takes to read all the entries in 1st
-and subsequent iterations.
+> > Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
+> > ---
+> >  drivers/vfio/pci/vfio_pci.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+> > index f634c81..de881a6 100644
+> > --- a/drivers/vfio/pci/vfio_pci.c
+> > +++ b/drivers/vfio/pci/vfio_pci.c
+> > @@ -521,14 +521,19 @@ static void vfio_pci_release(void
+> *device_data)
+> >  		vfio_pci_vf_token_user_add(vdev, -1);
+> >  		vfio_spapr_pci_eeh_release(vdev->pdev);
+> >  		vfio_pci_disable(vdev);
+> > +		mutex_lock(&vdev->igate);
+> >  		if (vdev->err_trigger) {
+> >  			eventfd_ctx_put(vdev->err_trigger);
+> >  			vdev->err_trigger = NULL;
+> >  		}
+> > +		mutex_unlock(&vdev->igate);
+> > +
+> > +		mutex_lock(&vdev->igate);
+> 
+> Just keep the mutex locked for both triggers?
+two reasons here:
+1.  Just keep a smaller lock, it's a better practice. 
+2.  Let the pending request to finish if there is race condition.
 
+> 
+> >  		if (vdev->req_trigger) {
+> >  			eventfd_ctx_put(vdev->req_trigger);
+> >  			vdev->req_trigger = NULL;
+> >  		}
+> > +		mutex_unlock(&vdev->igate);
+> >  	}
+> >
+> >  	mutex_unlock(&vdev->reflck->lock);
 
-Setup comprised of qemu machine on x86_64 with latest linux branch.
-
-1. created a file of 10G using fallocate. (this allocated unwritten
-extents for this file).
-
-2. Then I punched hole on every alternate block of file. This step took
-a long time. And after sufficiently long time, I had to cancel it.
-for i in $(seq 1 2 xxxxx); do echo $i; fallocate -p -o $(($i*4096)) -l 
-4096; done
-
-3. Then issued fiemap call via xfs_io and took the time measurement.
-time xfs_io -c "fiemap -v" bigfile > /dev/null
-
-
-Perf numbers on latest default kernel build for above cmd.
-
-1st iteration
-==============
-real    0m31.684s
-user    0m1.593s
-sys     0m24.174s
-
-2nd and subsequent iteration
-============================
-real    0m3.379s
-user    0m1.300s
-sys     0m2.080s
-
-
-4. Then I reverted all the iomap_fiemap patches and re-tested this.
-With this the older ext4_fiemap implementation will be tested:-
-
-
-1st iteration
-==============
-real    0m31.591s
-user    0m1.400s
-sys     0m24.243s
-
-
-2nd and subsequent iteration (had to cancel it since it was taking more 
-time then 15m)
-============================
-^C^C
-real    15m49.884s
-user    0m0.032s
-sys     15m49.722s
-
-I guess the reason why 2nd iteration with older implementation is taking
-too much time is since with previous implementation we never cached
-extent entries in extent_status tree. And also in 1st iteration the page
-cache may get filled with lot of buffer_head entries. So maybe page
-reclaims are taking more time.
-
-While with the latest implementation using iomap_fiemap(), the call to 
-query extent blocks is done using ext4_map_blocks(). ext4_map_blocks()
-by default will also cache the extent entries into extent_status tree.
-Hence during 2nd iteration, we will directly read the entries from 
-extent_status tree and will not do any disk I/O.
-
--ritesh
