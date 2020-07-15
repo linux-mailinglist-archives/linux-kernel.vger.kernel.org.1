@@ -2,667 +2,557 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8698822065C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 09:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 890E5220661
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 09:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729398AbgGOHjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 03:39:15 -0400
-Received: from mga14.intel.com ([192.55.52.115]:6105 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729329AbgGOHjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 03:39:15 -0400
-IronPort-SDR: wM44rUb8Pc4sdj3WmM+iOCTVvh5rBOXEqvs+GfRm/tP5XwtX+zdxG/ICMg2OcC1gT2FYi+mPCx
- rVS6oWtAsg4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="148249111"
-X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
-   d="scan'208";a="148249111"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 00:39:10 -0700
-IronPort-SDR: jKOwDmbC9Fu8sn3e4nycfjoMYJR9k72yz2iiukCL3NA/MSLzIbGuko6s5H6uZbculkpTKO12L4
- af3Bc1AAdDpg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
-   d="scan'208";a="360623877"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP; 15 Jul 2020 00:39:10 -0700
-Received: from [10.249.231.50] (abudanko-mobl.ccr.corp.intel.com [10.249.231.50])
-        by linux.intel.com (Postfix) with ESMTP id 65CE5580820;
-        Wed, 15 Jul 2020 00:39:07 -0700 (PDT)
-Subject: Re: [PATCH V3 3/3] platform/x86: Intel PMT Telemetry capability
- driver
-To:     "David E. Box" <david.e.box@linux.intel.com>, lee.jones@linaro.org,
-        dvhart@infradead.org, andy@infradead.org, bhelgaas@google.com,
-        alexander.h.duyck@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        Alexey Budankov <alexey.budankov@linux.intel.com>
-References: <20200508021844.6911-1-david.e.box@linux.intel.com>
- <20200714062323.19990-4-david.e.box@linux.intel.com>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <727a75a0-3fb5-769a-cf1f-70a2a0bab0c8@linux.intel.com>
-Date:   Wed, 15 Jul 2020 10:39:06 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729390AbgGOHlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 03:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729036AbgGOHlN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 03:41:13 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1FAC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 00:41:13 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id s189so2651099pgc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 00:41:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3E2N6gxbXJUAm1tI7+3OKhl/InE4bXZxd3AI/1HHS40=;
+        b=fPr5CN4ehmonxxpldFxb1uian1grpRzcO8GgyMo4sSagVNYiKk4F8SE2yrPNK96t/8
+         twsXAVnWwbpOEyvPEDVG6oTLH+CTpy+wIz5P3vzne2+IeAOdbTGP/P/xeqr0yct5amz2
+         2vt0Gd6bwDA19C1zpAnTzQBiU1IW5cnMjIaxI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3E2N6gxbXJUAm1tI7+3OKhl/InE4bXZxd3AI/1HHS40=;
+        b=uFizs0YwrUfrL47dmeytoK/TOElIv3WkUqeJL/Miy/b0EAbMfKzj8GiCQT+kXVgDU6
+         MUS7CIuMhs2cJGtKBAV5DarXcyv9MuTg4K58n8Jln0I4Ok0KVhtB1DIi2ihOX11NFDNe
+         fH9+PtklxlcK8ikyn85yCX8poqYr+FoVCuCFBrCeAfcugJtcVc54fsCtW2BvLUKMhwxa
+         LXZBhU5XRU3Pa6oRHEwVlP9tlOfjTMJlihXJjTbYrtKF8hsme5kUjlhROFkZb5yqB6GR
+         y1tdHZM5qFnh37VyPa1aZQdogtqZ/mou1Fmk+8vTGV3nwR8H/Y2mYKGCiv8ZI6UUjjjS
+         s70g==
+X-Gm-Message-State: AOAM530hTKlET5Pxcd6/AAgJNfDyyXuZGvRcmBymUYy3SzrWYg4WiEmb
+        ul5ct3M1L2zdnq/essfNGPZ9NQ==
+X-Google-Smtp-Source: ABdhPJyGbVHwZHYm7yqRZRTjcgQHLlc6ENWvjfqqJoTPPcwYyy4pOFH9RwKxSIEX8i9dgkVQL/PtlQ==
+X-Received: by 2002:a65:4502:: with SMTP id n2mr6937320pgq.132.1594798872343;
+        Wed, 15 Jul 2020 00:41:12 -0700 (PDT)
+Received: from bhanumaiya-glaptop.hsd1.ca.comcast.net ([2601:646:9500:590:250:b6ff:fe8e:b459])
+        by smtp.gmail.com with ESMTPSA id c2sm1329681pgk.77.2020.07.15.00.41.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 00:41:11 -0700 (PDT)
+From:   Bhanu Prakash Maiya <bhanumaiya@chromium.org>
+X-Google-Original-From: Bhanu Prakash Maiya <bhanumaiya@google.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Furquan Shaikh <furquan@chromium.org>,
+        Raul E Rangel <rrangel@chromium.org>,
+        Eric Peers <epeers@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Bhanu Prakash Maiya <bhanumaiya@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.Kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 1/2] cros: platform/chrome: Add cros-ec-uart driver for uart support
+Date:   Wed, 15 Jul 2020 00:41:06 -0700
+Message-Id: <20200715074106.1754048-1-bhanumaiya@google.com>
+X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
 MIME-Version: 1.0
-In-Reply-To: <20200714062323.19990-4-david.e.box@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+From: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
 
-On 14.07.2020 9:23, David E. Box wrote:
-> PMT Telemetry is a capability of the Intel Platform Monitoring Technology.
-> The Telemetry capability provides access to device telemetry metrics that
-> provide hardware performance data to users from continuous, memory mapped,
-> read-only register spaces.
-> 
-> Register mappings are not provided by the driver. Instead, a GUID is read
-> from a header for each endpoint. The GUID identifies the device and is to
-> be used with an XML, provided by the vendor, to discover the available set
-> of metrics and their register mapping.  This allows firmware updates to
-> modify the register space without needing to update the driver every time
-> with new mappings. Firmware writes a new GUID in this case to specify the
-> new mapping.  Software tools with access to the associated XML file can
-> then interpret the changes.
-> 
-> This module manages access to all PMT Telemetry endpoints on a system,
-> independent of the device exporting them. It creates a pmt_telemetry class
-> to manage the devices. For each telemetry endpoint, sysfs files provide
-> GUID and size information as well as a pointer to the parent device the
-> telemetry came from. Software may discover the association between
-> endpoints and devices by iterating through the list in sysfs, or by looking
-> for the existence of the class folder under the device of interest.  A
-> device node of the same name allows software to then map the telemetry
-> space for direct access.
-> 
-> This patch also creates an pci device id list for early telemetry hardware
-> that requires workarounds for known issues.
-> 
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> ---
->  .../ABI/testing/sysfs-class-pmt_telemetry     |  46 ++
->  MAINTAINERS                                   |   1 +
->  drivers/platform/x86/Kconfig                  |  10 +
->  drivers/platform/x86/Makefile                 |   1 +
->  drivers/platform/x86/intel_pmt_telemetry.c    | 454 ++++++++++++++++++
->  5 files changed, 512 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-class-pmt_telemetry
->  create mode 100644 drivers/platform/x86/intel_pmt_telemetry.c
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-class-pmt_telemetry b/Documentation/ABI/testing/sysfs-class-pmt_telemetry
-> new file mode 100644
-> index 000000000000..381924549ecb
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-class-pmt_telemetry
-> @@ -0,0 +1,46 @@
-> +What:		/sys/class/pmt_telemetry/
-> +Date:		July 2020
-> +KernelVersion:	5.9
-> +Contact:	David Box <david.e.box@linux.intel.com>
-> +Description:
-> +		The pmt_telemetry/ class directory contains information for
-> +		devices that expose hardware telemetry using Intel Platform
-> +		Monitoring Technology (PMT)
-> +
-> +What:		/sys/class/pmt_telemetry/telem<x>
-> +Date:		July 2020
-> +KernelVersion:	5.9
-> +Contact:	David Box <david.e.box@linux.intel.com>
-> +Description:
-> +		The telem<x> directory contains files describing an instance of
-> +		a PMT telemetry device that exposes hardware telemetry. Each
-> +		telem<x> directory has an associated /dev/telem<x> node. This
-> +		node may be opened and mapped to access the telemetry space of
-> +		the device. The register layout of the telemetry space is
-> +		determined from an XML file that matches the pci device id and
-> +		guid for the device.
-> +
-> +What:		/sys/class/pmt_telemetry/telem<x>/guid
-> +Date:		July 2020
-> +KernelVersion:	5.9
-> +Contact:	David Box <david.e.box@linux.intel.com>
-> +Description:
-> +		(RO) The guid for this telemetry device. The guid identifies
-> +		the version of the XML file for the parent device that is to
-> +		be used to get the register layout.
-> +
-> +What:		/sys/class/pmt_telemetry/telem<x>/size
-> +Date:		July 2020
-> +KernelVersion:	5.9
-> +Contact:	David Box <david.e.box@linux.intel.com>
-> +Description:
-> +		(RO) The size of telemetry region in bytes that corresponds to
-> +		the mapping size for the /dev/telem<x> device node.
-> +
-> +What:		/sys/class/pmt_telemetry/telem<x>/offset
-> +Date:		July 2020
-> +KernelVersion:	5.9
-> +Contact:	David Box <david.e.box@linux.intel.com>
-> +Description:
-> +		(RO) The offset of telemetry region in bytes that corresponds to
-> +		the mapping for the /dev/telem<x> device node.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 2e42bf0c41ab..ebc145894abd 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8849,6 +8849,7 @@ INTEL PMT DRIVER
->  M:	"David E. Box" <david.e.box@linux.intel.com>
->  S:	Maintained
->  F:	drivers/mfd/intel_pmt.c
-> +F:	drivers/platform/x86/intel_pmt_*
->  
->  INTEL PRO/WIRELESS 2100, 2200BG, 2915ABG NETWORK CONNECTION SUPPORT
->  M:	Stanislav Yakovlev <stas.yakovlev@gmail.com>
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 0581a54cf562..5e1f7ce6e69f 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -1396,6 +1396,16 @@ config INTEL_TELEMETRY
->  	  directly via debugfs files. Various tools may use
->  	  this interface for SoC state monitoring.
->  
-> +config INTEL_PMT_TELEMETRY
-> +	tristate "Intel Platform Monitoring Technology (PMT) Telemetry driver"
-> +	help
-> +	 The Intel Platform Monitory Technology (PMT) Telemetry driver provides
-> +	 access to hardware telemetry metrics on devices that support the
-> +	 feature.
-> +
-> +	 For more information, see
-> +	 <file:Documentation/ABI/testing/sysfs-class-intel_pmt_telem>
-> +
->  endif # X86_PLATFORM_DEVICES
->  
->  config PMC_ATOM
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index 2b85852a1a87..95cd3d0be17f 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -139,6 +139,7 @@ obj-$(CONFIG_INTEL_MFLD_THERMAL)	+= intel_mid_thermal.o
->  obj-$(CONFIG_INTEL_MID_POWER_BUTTON)	+= intel_mid_powerbtn.o
->  obj-$(CONFIG_INTEL_MRFLD_PWRBTN)	+= intel_mrfld_pwrbtn.o
->  obj-$(CONFIG_INTEL_PMC_CORE)		+= intel_pmc_core.o intel_pmc_core_pltdrv.o
-> +obj-$(CONFIG_INTEL_PMT_TELEMETRY)	+= intel_pmt_telemetry.o
->  obj-$(CONFIG_INTEL_PUNIT_IPC)		+= intel_punit_ipc.o
->  obj-$(CONFIG_INTEL_SCU_IPC)		+= intel_scu_ipc.o
->  obj-$(CONFIG_INTEL_SCU_PCI)		+= intel_scu_pcidrv.o
-> diff --git a/drivers/platform/x86/intel_pmt_telemetry.c b/drivers/platform/x86/intel_pmt_telemetry.c
-> new file mode 100644
-> index 000000000000..e1856fc8c209
-> --- /dev/null
-> +++ b/drivers/platform/x86/intel_pmt_telemetry.c
-> @@ -0,0 +1,454 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Intel Platform Monitory Technology Telemetry driver
-> + *
-> + * Copyright (c) 2020, Intel Corporation.
-> + * All Rights Reserved.
-> + *
-> + * Author: "David E. Box" <david.e.box@linux.intel.com>
-> + */
-> +
-> +#include <linux/bits.h>
-> +#include <linux/cdev.h>
-> +#include <linux/io-64-nonatomic-lo-hi.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <linux/types.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/xarray.h>
-> +
-> +#define TELEM_DEV_NAME		"pmt_telemetry"
-> +
-> +/* Telemetry access types */
-> +#define TELEM_ACCESS_FUTURE	1
-> +#define TELEM_ACCESS_BARID	2
-> +#define TELEM_ACCESS_LOCAL	3
-> +
-> +#define TELEM_GUID_OFFSET	0x4
-> +#define TELEM_BASE_OFFSET	0x8
-> +#define TELEM_TBIR_MASK		GENMASK(2, 0)
-> +#define TELEM_ACCESS(v)		((v) & GENMASK(3, 0))
-> +#define TELEM_TYPE(v)		(((v) & GENMASK(7, 4)) >> 4)
-> +/* size is in bytes */
-> +#define TELEM_SIZE(v)		(((v) & GENMASK(27, 12)) >> 10)
-> +
-> +#define TELEM_XA_START		0
-> +#define TELEM_XA_MAX		INT_MAX
-> +#define TELEM_XA_LIMIT		XA_LIMIT(TELEM_XA_START, TELEM_XA_MAX)
-> +
-> +/* Used by client hardware to identify a fixed telemetry entry*/
-> +#define TELEM_CLIENT_FIXED_BLOCK_GUID	0x10000000
-> +
-> +static DEFINE_XARRAY_ALLOC(telem_array);
-> +
-> +struct pmt_telem_priv;
-> +
-> +struct telem_header {
-> +	u8	access_type;
-> +	u8	telem_type;
-> +	u16	size;
-> +	u32	guid;
-> +	u32	base_offset;
-> +	u8	tbir;
-> +};
-> +
-> +struct pmt_telem_entry {
-> +	struct pmt_telem_priv		*priv;
-> +	struct telem_header		header;
-> +	struct resource			*header_res;
-> +	unsigned long			base_addr;
-> +	void __iomem			*disc_table;
-> +	struct cdev			cdev;
-> +	dev_t				devt;
-> +	int				devid;
-> +};
-> +
-> +struct pmt_telem_priv {
-> +	struct pmt_telem_entry		*entry;
-> +	int				num_entries;
-> +	struct device			*dev;
-> +};
-> +
-> +/*
-> + * devfs
-> + */
-> +static int pmt_telem_open(struct inode *inode, struct file *filp)
-> +{
-> +	struct pmt_telem_priv *priv;
-> +	struct pmt_telem_entry *entry;
-> +	struct pci_driver *pci_drv;
-> +	struct pci_dev *pci_dev;
-> +
-> +	if (!capable(CAP_SYS_ADMIN))
+This patch enables uart transport layer for cros_ec framework.
+The cros-ec-uart binds with EC device working on uart transport to
+send request and receive response.
 
-Thanks for supplying these patches.
-Are there any reasons not to expose this feature to CAP_PERFMON privileged
-processes too that currently have access to performance monitoring features
-of the kernel without root/CAP_SYS_ADMIN credentials? This could be done by
-pefmon_capable() function call starting from v5.8+.
+Signed-off-by: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Change-Id: Icb23b633700f1ef4d123e3f21fd26fad21a3f207
+---
+ MAINTAINERS                            |   1 +
+ drivers/platform/chrome/Kconfig        |  10 +
+ drivers/platform/chrome/Makefile       |   1 +
+ drivers/platform/chrome/cros_ec_uart.c | 411 +++++++++++++++++++++++++
+ 4 files changed, 423 insertions(+)
+ create mode 100644 drivers/platform/chrome/cros_ec_uart.c
 
-Thanks,
-Alexei
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 50659d76976b7..aa8e1d121c1d7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4036,6 +4036,7 @@ F:	sound/soc/codecs/cros_ec_codec.*
+ CHROMEOS EC SUBDRIVERS
+ M:	Benson Leung <bleung@chromium.org>
+ M:	Enric Balletbo i Serra <enric.balletbo@collabora.com>
++M:	Bhanu Prakash Maiya <bhanumaiya@chromium.org>
+ R:	Guenter Roeck <groeck@chromium.org>
+ S:	Maintained
+ F:	drivers/power/supply/cros_usbpd-charger.c
+diff --git a/drivers/platform/chrome/Kconfig b/drivers/platform/chrome/Kconfig
+index 3822e5e111caa..2082fafe08a6a 100644
+--- a/drivers/platform/chrome/Kconfig
++++ b/drivers/platform/chrome/Kconfig
+@@ -125,6 +125,16 @@ config CROS_EC_SPI
+ 	  response time cannot be guaranteed, we support ignoring
+ 	  'pre-amble' bytes before the response actually starts.
+ 
++config CROS_EC_UART
++	tristate "ChromeOS Embedded Controller (UART)"
++	depends on CROS_EC && ACPI && SERIAL_DEV_BUS
++	help
++	  If you say Y here, you get support for talking to the ChromeOS EC
++	  through a UART, using a byte-level protocol.
++
++	  To compile this driver as a module, choose M here: the
++	  module will be called cros_ec_uart.
++
+ config CROS_EC_LPC
+ 	tristate "ChromeOS Embedded Controller (LPC)"
+ 	depends on CROS_EC && ACPI && (X86 || COMPILE_TEST)
+diff --git a/drivers/platform/chrome/Makefile b/drivers/platform/chrome/Makefile
+index 8ed1e33033b38..fc449351fc794 100644
+--- a/drivers/platform/chrome/Makefile
++++ b/drivers/platform/chrome/Makefile
+@@ -12,6 +12,7 @@ obj-$(CONFIG_CROS_EC_I2C)		+= cros_ec_i2c.o
+ obj-$(CONFIG_CROS_EC_ISHTP)		+= cros_ec_ishtp.o
+ obj-$(CONFIG_CROS_EC_RPMSG)		+= cros_ec_rpmsg.o
+ obj-$(CONFIG_CROS_EC_SPI)		+= cros_ec_spi.o
++obj-$(CONFIG_CROS_EC_UART)		+= cros_ec_uart.o
+ cros_ec_lpcs-objs			:= cros_ec_lpc.o cros_ec_lpc_mec.o
+ obj-$(CONFIG_CROS_EC_TYPEC)		+= cros_ec_typec.o
+ obj-$(CONFIG_CROS_EC_LPC)		+= cros_ec_lpcs.o
+diff --git a/drivers/platform/chrome/cros_ec_uart.c b/drivers/platform/chrome/cros_ec_uart.c
+new file mode 100644
+index 0000000000000..9a0ba884b6812
+--- /dev/null
++++ b/drivers/platform/chrome/cros_ec_uart.c
+@@ -0,0 +1,411 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * UART interface for ChromeOS Embedded Controller
++ *
++ * Copyright 2020 Google LLC.
++ */
++
++#include <linux/delay.h>
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/acpi.h>
++#include <linux/of.h>
++#include <linux/platform_data/cros_ec_commands.h>
++#include <linux/platform_data/cros_ec_proto.h>
++#include <linux/serdev.h>
++#include <linux/slab.h>
++#include <uapi/linux/sched/types.h>
++
++#include "cros_ec.h"
++
++/*
++ * EC sends contiguous bytes of response packet on UART AP RX.
++ * TTY driver in AP accumulates incoming bytes and calls the registered callback
++ * function. Byte count can range from 1 to Max count supported by TTY driver.
++ * This driver should wait for long time for all callbacks to be processed.
++ * Considering the worst case scenario, wait for ~3 secs. This timeout should
++ * account for max latency and some additional guard time.
++ * In case the packet is received in ms, wait queue will be released and packet
++ * will be processed.
++ */
++#define EC_MSG_DEADLINE_MS		(300 * 10)
++
++/**
++ * struct response_info - Encapsulate EC response related
++ *			information for passing between function
++ *			cros_ec_uart_pkt_xfer() and cros_ec_uart_rx_bytes()
++ *			callback.
++ * @data:		Copy the data received from EC here.
++ * @max_size:		Max size allocated for the @data buffer. If the
++ *			received data exceeds this value, we log an error.
++ * @size:		Actual size of data received from EC. This is also
++ *			used to accumulate byte count with response is received
++ *			in dma chunks.
++ * @exp_len:		Expected bytes of response from EC including header.
++ * @error:		0 for success, negative error code for a failure.
++ * @received:		Set to true on receiving a valid EC response.
++ * @wait_queue:		Wait queue EC response where the cros_ec sends request
++ *			to EC and waits
++ */
++struct response_info {
++	void *data;
++	size_t max_size;
++	size_t size;
++	int error;
++	size_t exp_len;
++	bool received;
++	wait_queue_head_t wait_queue;
++};
++
++/**
++ * struct cros_ec_uart - information about a uart-connected EC
++ *
++ * @serdev_device:	serdev uart device we are connected to.
++ * @baudrate:		UART baudrate of attached EC device.
++ * @flowcontrol:	UART flowcontrol of attached device.
++ * @irq:		Linux IRQ number of associated serial device.
++ * @response:		Response info passing between cros_ec_uart_pkt_xfer()
++ *			and cros_ec_uart_rx_bytes()
++ */
++struct cros_ec_uart {
++	struct serdev_device *serdev;
++	u32 baudrate;
++	u8  flowcontrol;
++	u32 irq;
++	struct response_info response;
++};
++
++static int cros_ec_uart_rx_bytes(struct serdev_device *serdev,
++				 const u8 *data,
++				 size_t count)
++{
++	struct ec_host_response *response;
++	struct cros_ec_device *ec_dev =   serdev_device_get_drvdata(serdev);
++	struct cros_ec_uart *ec_uart = ec_dev->priv;
++
++	/* Check if bytes were sent out of band */
++	if (!ec_uart->response.data) {
++		/* Discard all bytes */
++		return count;
++	}
++
++	/*
++	 * Check if incoming bytes + response.size are less than allocated
++	 * buffer in din by cros_ec. This will ensure that if EC sends more
++	 * bytes than max_size, waiting process will be notified with an error.
++	 */
++	if (ec_uart->response.size + count <= ec_uart->response.max_size) {
++		/* Copy bytes in data in buffer */
++		memcpy((void *)ec_uart->response.data + ec_uart->response.size,
++		       (void *)data, count);
++
++		/* Add incoming bytes in size */
++		ec_uart->response.size += count;
++
++		/*
++		 * Read data_len if we received response header and if exp_len
++		 * was not read before.
++		 */
++		if (ec_uart->response.size >= sizeof(*response) &&
++		    ec_uart->response.exp_len == 0) {
++			/* Get expected response length from response header */
++			response = (struct ec_host_response *)
++							ec_uart->response.data;
++
++			ec_uart->response.exp_len = response->data_len +
++				sizeof(*response);
++		}
++
++		/*
++		 * If driver received response header and payload from EC,
++		 * Wake up the wait queue.
++		 */
++		if (ec_uart->response.size >= sizeof(*response) &&
++		    ec_uart->response.size == ec_uart->response.exp_len) {
++			/* Set flag before waking up the caller */
++			ec_uart->response.received = true;
++
++			/* Wake the calling thread */
++			wake_up_interruptible(&ec_uart->response.wait_queue);
++		}
++	} else {
++		/* Received bytes are more the allocated buffer*/
++		ec_uart->response.error = -EMSGSIZE;
++
++		/* Wake the calling thread */
++		wake_up_interruptible(&ec_uart->response.wait_queue);
++	}
++
++	return count;
++}
++
++static int cros_ec_uart_pkt_xfer(struct cros_ec_device *ec_dev,
++				 struct cros_ec_command *ec_msg)
++{
++	struct cros_ec_uart *ec_uart = ec_dev->priv;
++	struct serdev_device *serdev = ec_uart->serdev;
++	struct ec_host_response *response;
++	unsigned int len;
++	int ret, i;
++	u8 sum = 0;
++
++	/* Prepare an outgoing message in the output buffer */
++	len = cros_ec_prepare_tx(ec_dev, ec_msg);
++	dev_dbg(ec_dev->dev, "Prepared len=%d\n", len);
++
++	/* Setup for incoming response */
++	ec_uart->response.data = ec_dev->din;
++	ec_uart->response.max_size = ec_dev->din_size;
++	ec_uart->response.size = 0;
++	ec_uart->response.error = 0;
++	ec_uart->response.exp_len = 0;
++	ec_uart->response.received = false;
++
++	/* Write serial device buffer */
++	ret = serdev_device_write_buf(serdev, ec_dev->dout, len);
++	if (ret < len) {
++		dev_err(&serdev->dev,
++			"Unable to write data to serial device %s",
++			dev_name(&serdev->dev));
++
++		/* Return EIO as controller had issues writing buffer */
++		ret = -EIO;
++		goto exit;
++	}
++
++	/* Once request is successfully sent to EC, wait to wait_queue */
++	wait_event_interruptible_timeout(ec_uart->response.wait_queue,
++					 ec_uart->response.received,
++					 msecs_to_jiffies(EC_MSG_DEADLINE_MS));
++
++	/* Check if wait_queue was interrupted due to an error */
++	if (ec_uart->response.error < 0) {
++		dev_warn(&serdev->dev, "Response error detected.\n");
++
++		ret = ec_uart->response.error;
++		goto exit;
++	}
++
++	/* Check if valid response was received or there was a timeout */
++	if (!ec_uart->response.received) {
++		dev_warn(&serdev->dev, "EC failed to respond in time.\n");
++
++		ret = -ETIMEDOUT;
++		goto exit;
++	}
++
++	/* Check response error code */
++	response = (struct ec_host_response *)ec_dev->din;
++	ec_msg->result = response->result;
++
++	/* Check if received response is longer than expected */
++	if (response->data_len > ec_msg->insize) {
++		dev_err(ec_dev->dev, "Resp too long (%d bytes, expected %d)",
++			response->data_len,
++			ec_msg->insize);
++		ret = -ENOSPC;
++		goto exit;
++	}
++
++	/* Copy response packet to ec_msg data buffer */
++	memcpy(ec_msg->data,
++	       ec_dev->din + sizeof(*response),
++	       response->data_len);
++
++	/* Add all response header bytes for checksum calculation */
++	for (i = 0; i < sizeof(*response); i++)
++		sum += ec_dev->din[i];
++
++	/* Copy response packet payload and compute checksum */
++	for (i = 0; i < response->data_len; i++)
++		sum += ec_msg->data[i];
++
++	if (sum) {
++		dev_err(ec_dev->dev,
++			"Bad packet checksum calculated %x\n",
++			sum);
++		ret = -EBADMSG;
++		goto exit;
++	}
++
++	/* Return data_len to cros_ec */
++	ret = response->data_len;
++
++exit:
++	/* Reset ec_uart */
++	ec_uart->response.data = NULL;
++	ec_uart->response.max_size = 0;
++	ec_uart->response.size = 0;
++	ec_uart->response.error = 0;
++	ec_uart->response.exp_len = 0;
++	ec_uart->response.received = false;
++
++	if (ec_msg->command == EC_CMD_REBOOT_EC)
++		msleep(EC_REBOOT_DELAY_MS);
++
++	return ret;
++}
++
++static int cros_ec_uart_resource(struct acpi_resource *ares, void *data)
++{
++	struct cros_ec_uart *ec_uart = data;
++	struct acpi_resource_uart_serialbus *sb;
++
++	switch (ares->type) {
++	case ACPI_RESOURCE_TYPE_SERIAL_BUS:
++		sb = &ares->data.uart_serial_bus;
++		if (sb->type == ACPI_RESOURCE_SERIAL_TYPE_UART) {
++			ec_uart->baudrate = sb->default_baud_rate;
++			dev_dbg(&ec_uart->serdev->dev, "Baudrate %d\n",
++				ec_uart->baudrate);
++
++			ec_uart->flowcontrol = sb->flow_control;
++			dev_dbg(&ec_uart->serdev->dev, "Flow control %d\n",
++				ec_uart->flowcontrol);
++		}
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int cros_ec_uart_acpi_probe(struct cros_ec_uart *ec_uart)
++{
++	LIST_HEAD(resources);
++	struct acpi_device *adev = ACPI_COMPANION(&ec_uart->serdev->dev);
++	int ret;
++
++	/* Retrieve UART ACPI info */
++	ret = acpi_dev_get_resources(adev, &resources,
++				     cros_ec_uart_resource, ec_uart);
++	if (ret < 0)
++		return ret;
++
++	acpi_dev_free_resource_list(&resources);
++
++	/* Retrieve GpioInt and translate it to Linux IRQ number */
++	ret = acpi_dev_gpio_irq_get(adev, 0);
++	if (ret < 0)
++		return ret;
++
++	ec_uart->irq = ret;
++	dev_dbg(&ec_uart->serdev->dev, "IRQ number %d\n", ec_uart->irq);
++
++	return 0;
++}
++
++static const struct serdev_device_ops cros_ec_uart_client_ops = {
++	.receive_buf = cros_ec_uart_rx_bytes,
++};
++
++static int cros_ec_uart_probe(struct serdev_device *serdev)
++{
++	struct device *dev = &serdev->dev;
++	struct cros_ec_device *ec_dev;
++	struct cros_ec_uart *ec_uart;
++	int ret;
++
++	ec_uart = devm_kzalloc(dev, sizeof(*ec_uart), GFP_KERNEL);
++	if (!ec_uart)
++		return -ENOMEM;
++
++	ec_dev = devm_kzalloc(dev, sizeof(*ec_dev), GFP_KERNEL);
++	if (!ec_dev)
++		return -ENOMEM;
++
++	ec_uart->serdev = serdev;
++
++	/* Open the serial device */
++	ret = devm_serdev_device_open(dev, ec_uart->serdev);
++	if (ret) {
++		dev_err(dev, "Unable to open UART device %s",
++			dev_name(&serdev->dev));
++		return ret;
++	}
++
++	serdev_device_set_drvdata(serdev, ec_dev);
++
++	serdev_device_set_client_ops(serdev, &cros_ec_uart_client_ops);
++
++	/* Initialize wait queue */
++	init_waitqueue_head(&ec_uart->response.wait_queue);
++
++	ret = cros_ec_uart_acpi_probe(ec_uart);
++	if (ret < 0) {
++		dev_err(dev, "Failed to get ACPI info (%d)", ret);
++		return ret;
++	}
++
++	/* Set baud rate of serial device */
++	ret = serdev_device_set_baudrate(serdev, ec_uart->baudrate);
++	if (ret < 0) {
++		dev_err(dev, "Failed to set up host baud rate (%d)", ret);
++		return ret;
++	}
++
++	/* Set flow control of serial device */
++	serdev_device_set_flow_control(serdev, ec_uart->flowcontrol);
++
++	/* Initialize ec_dev for cros_ec  */
++	ec_dev->phys_name = dev_name(&ec_uart->serdev->dev);
++	ec_dev->dev = dev;
++	ec_dev->priv = ec_uart;
++	ec_dev->irq = ec_uart->irq;
++	ec_dev->cmd_xfer = NULL;
++	ec_dev->pkt_xfer = cros_ec_uart_pkt_xfer;
++	ec_dev->din_size = sizeof(struct ec_host_response) +
++			   sizeof(struct ec_response_get_protocol_info);
++	ec_dev->dout_size = sizeof(struct ec_host_request);
++
++	/* Register a new cros_ec device */
++	return cros_ec_register(ec_dev);
++}
++
++static void cros_ec_uart_remove(struct serdev_device *serdev)
++{
++	struct cros_ec_device *ec_dev = serdev_device_get_drvdata(serdev);
++
++	cros_ec_unregister(ec_dev);
++};
++
++static int __maybe_unused cros_ec_uart_suspend(struct device *dev)
++{
++	struct cros_ec_device *ec_dev = dev_get_drvdata(dev);
++
++	return cros_ec_suspend(ec_dev);
++}
++
++static int __maybe_unused cros_ec_uart_resume(struct device *dev)
++{
++	struct cros_ec_device *ec_dev = dev_get_drvdata(dev);
++
++	return cros_ec_resume(ec_dev);
++}
++
++static SIMPLE_DEV_PM_OPS(cros_ec_uart_pm_ops, cros_ec_uart_suspend,
++			 cros_ec_uart_resume);
++
++static const struct of_device_id cros_ec_uart_of_match[] = {
++	{ .compatible = "google,cros-ec-uart" },
++	{}
++};
++
++static struct serdev_device_driver cros_ec_uart_driver = {
++	.driver	= {
++		.name	= "cros-ec-uart",
++		.of_match_table = cros_ec_uart_of_match,
++		.pm	= &cros_ec_uart_pm_ops,
++	},
++	.probe		= cros_ec_uart_probe,
++	.remove		= cros_ec_uart_remove,
++};
++
++module_serdev_device_driver(cros_ec_uart_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("UART interface for ChromeOS Embedded Controller");
++MODULE_AUTHOR("Bhanu Prakash Maiya <bhanumaiya@chromium.org>");
+-- 
+2.26.2
 
-> +		return -EPERM;
-> +
-> +	entry = container_of(inode->i_cdev, struct pmt_telem_entry, cdev);
-> +	priv = entry->priv;
-> +	pci_dev = to_pci_dev(priv->dev->parent);
-> +
-> +	pci_drv = pci_dev_driver(pci_dev);
-> +	if (!pci_drv)
-> +		return -ENODEV;
-> +
-> +	filp->private_data = entry;
-> +	get_device(&pci_dev->dev);
-> +
-> +	if (!try_module_get(pci_drv->driver.owner)) {
-> +		put_device(&pci_dev->dev);
-> +		return -ENODEV;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int pmt_telem_release(struct inode *inode, struct file *filp)
-> +{
-> +	struct pmt_telem_entry *entry = filp->private_data;
-> +	struct pci_dev *pci_dev = to_pci_dev(entry->priv->dev->parent);
-> +	struct pci_driver *pci_drv = pci_dev_driver(pci_dev);
-> +
-> +	put_device(&pci_dev->dev);
-> +	module_put(pci_drv->driver.owner);
-> +
-> +	return 0;
-> +}
-> +
-> +static int pmt_telem_mmap(struct file *filp, struct vm_area_struct *vma)
-> +{
-> +	struct pmt_telem_entry *entry = filp->private_data;
-> +	struct pmt_telem_priv *priv;
-> +	unsigned long vsize = vma->vm_end - vma->vm_start;
-> +	unsigned long phys = entry->base_addr;
-> +	unsigned long pfn = PFN_DOWN(phys);
-> +	unsigned long psize;
-> +
-> +	priv = entry->priv;
-> +	psize = (PFN_UP(entry->base_addr + entry->header.size) - pfn) *
-> +		PAGE_SIZE;
-> +	if (vsize > psize) {
-> +		dev_err(priv->dev, "Requested mmap size is too large\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if ((vma->vm_flags & VM_WRITE) || (vma->vm_flags & VM_MAYWRITE))
-> +		return -EPERM;
-> +
-> +	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> +
-> +	if (io_remap_pfn_range(vma, vma->vm_start, pfn, vsize,
-> +			       vma->vm_page_prot))
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations pmt_telem_fops = {
-> +	.owner =	THIS_MODULE,
-> +	.open =		pmt_telem_open,
-> +	.mmap =		pmt_telem_mmap,
-> +	.release =	pmt_telem_release,
-> +};
-> +
-> +/*
-> + * sysfs
-> + */
-> +static ssize_t guid_show(struct device *dev, struct device_attribute *attr,
-> +			 char *buf)
-> +{
-> +	struct pmt_telem_entry *entry = dev_get_drvdata(dev);
-> +
-> +	return sprintf(buf, "0x%x\n", entry->header.guid);
-> +}
-> +static DEVICE_ATTR_RO(guid);
-> +
-> +static ssize_t size_show(struct device *dev, struct device_attribute *attr,
-> +			 char *buf)
-> +{
-> +	struct pmt_telem_entry *entry = dev_get_drvdata(dev);
-> +
-> +	/* Display buffer size in bytes */
-> +	return sprintf(buf, "%u\n", entry->header.size);
-> +}
-> +static DEVICE_ATTR_RO(size);
-> +
-> +static ssize_t offset_show(struct device *dev, struct device_attribute *attr,
-> +			   char *buf)
-> +{
-> +	struct pmt_telem_entry *entry = dev_get_drvdata(dev);
-> +
-> +	/* Display buffer offset in bytes */
-> +	return sprintf(buf, "%lu\n", offset_in_page(entry->base_addr));
-> +}
-> +static DEVICE_ATTR_RO(offset);
-> +
-> +static struct attribute *pmt_telem_attrs[] = {
-> +	&dev_attr_guid.attr,
-> +	&dev_attr_size.attr,
-> +	&dev_attr_offset.attr,
-> +	NULL
-> +};
-> +ATTRIBUTE_GROUPS(pmt_telem);
-> +
-> +struct class pmt_telem_class = {
-> +	.owner	= THIS_MODULE,
-> +	.name	= "pmt_telemetry",
-> +	.dev_groups = pmt_telem_groups,
-> +};
-> +
-> +/*
-> + * driver initialization
-> + */
-> +static const struct pci_device_id pmt_telem_early_client_pci_ids[] = {
-> +	{ PCI_VDEVICE(INTEL, 0x9a0d) }, /* TGL */
-> +	{ }
-> +};
-> +
-> +static bool pmt_telem_is_early_client_hw(struct device *dev)
-> +{
-> +	struct pci_dev *parent;
-> +
-> +	parent = to_pci_dev(dev->parent);
-> +
-> +	return !!pci_match_id(pmt_telem_early_client_pci_ids, parent);
-> +}
-> +
-> +static int pmt_telem_create_dev(struct pmt_telem_priv *priv,
-> +				struct pmt_telem_entry *entry)
-> +{
-> +	struct pci_dev *pci_dev;
-> +	struct device *dev;
-> +	int ret;
-> +
-> +	cdev_init(&entry->cdev, &pmt_telem_fops);
-> +	ret = cdev_add(&entry->cdev, entry->devt, 1);
-> +	if (ret) {
-> +		dev_err(priv->dev, "Could not add char dev\n");
-> +		return ret;
-> +	}
-> +
-> +	pci_dev = to_pci_dev(priv->dev->parent);
-> +	dev = device_create(&pmt_telem_class, &pci_dev->dev, entry->devt,
-> +			    entry, "telem%d", entry->devid);
-> +	if (IS_ERR(dev)) {
-> +		dev_err(priv->dev, "Could not create device node\n");
-> +		cdev_del(&entry->cdev);
-> +	}
-> +
-> +	return PTR_ERR_OR_ZERO(dev);
-> +}
-> +
-> +static void pmt_telem_populate_header(void __iomem *disc_offset,
-> +				      struct telem_header *header)
-> +{
-> +	header->access_type = TELEM_ACCESS(readb(disc_offset));
-> +	header->telem_type = TELEM_TYPE(readb(disc_offset));
-> +	header->size = TELEM_SIZE(readl(disc_offset));
-> +	header->guid = readl(disc_offset + TELEM_GUID_OFFSET);
-> +	header->base_offset = readl(disc_offset + TELEM_BASE_OFFSET);
-> +
-> +	/*
-> +	 * For non-local access types the lower 3 bits of base offset
-> +	 * contains the index of the base address register where the
-> +	 * telemetry can be found.
-> +	 */
-> +	header->tbir = header->base_offset & TELEM_TBIR_MASK;
-> +	header->base_offset ^= header->tbir;
-> +}
-> +
-> +static int pmt_telem_add_entry(struct pmt_telem_priv *priv,
-> +			       struct pmt_telem_entry *entry)
-> +{
-> +	struct resource *res = entry->header_res;
-> +	struct pci_dev *pci_dev = to_pci_dev(priv->dev->parent);
-> +	int ret;
-> +
-> +	pmt_telem_populate_header(entry->disc_table, &entry->header);
-> +
-> +	/* Local access and BARID only for now */
-> +	switch (entry->header.access_type) {
-> +	case TELEM_ACCESS_LOCAL:
-> +		if (entry->header.tbir) {
-> +			dev_err(priv->dev,
-> +				"Unsupported BAR index %d for access type %d\n",
-> +				entry->header.tbir, entry->header.access_type);
-> +			return -EINVAL;
-> +		}
-> +
-> +		/*
-> +		 * For access_type LOCAL, the base address is as follows:
-> +		 * base address = header address + header length + base offset
-> +		 */
-> +		entry->base_addr = res->start + resource_size(res) +
-> +				   entry->header.base_offset;
-> +		break;
-> +
-> +	case TELEM_ACCESS_BARID:
-> +		entry->base_addr = pci_dev->resource[entry->header.tbir].start +
-> +				   entry->header.base_offset;
-> +		break;
-> +
-> +	default:
-> +		dev_err(priv->dev, "Unsupported access type %d\n",
-> +			entry->header.access_type);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = alloc_chrdev_region(&entry->devt, 0, 1, TELEM_DEV_NAME);
-> +	if (ret) {
-> +		dev_err(priv->dev,
-> +			"PMT telemetry chrdev_region error: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = xa_alloc(&telem_array, &entry->devid, entry, TELEM_XA_LIMIT,
-> +		       GFP_KERNEL);
-> +	if (ret)
-> +		goto fail_xa_alloc;
-> +
-> +	ret = pmt_telem_create_dev(priv, entry);
-> +	if (ret)
-> +		goto fail_create_dev;
-> +
-> +	entry->priv = priv;
-> +	priv->num_entries++;
-> +	return 0;
-> +
-> +fail_create_dev:
-> +	xa_erase(&telem_array, entry->devid);
-> +fail_xa_alloc:
-> +	unregister_chrdev_region(entry->devt, 1);
-> +
-> +	return ret;
-> +}
-> +
-> +static bool pmt_telem_region_overlaps(struct platform_device *pdev,
-> +				      void __iomem *disc_table)
-> +{
-> +	u32 guid;
-> +
-> +	guid = readl(disc_table + TELEM_GUID_OFFSET);
-> +
-> +	return guid == TELEM_CLIENT_FIXED_BLOCK_GUID;
-> +}
-> +
-> +static void pmt_telem_remove_entries(struct pmt_telem_priv *priv)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < priv->num_entries; i++) {
-> +		device_destroy(&pmt_telem_class, priv->entry[i].devt);
-> +		cdev_del(&priv->entry[i].cdev);
-> +		xa_erase(&telem_array, priv->entry[i].devid);
-> +		unregister_chrdev_region(priv->entry[i].devt, 1);
-> +	}
-> +}
-> +
-> +static int pmt_telem_probe(struct platform_device *pdev)
-> +{
-> +	struct pmt_telem_priv *priv;
-> +	struct pmt_telem_entry *entry;
-> +	bool early_hw;
-> +	int i;
-> +
-> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, priv);
-> +	priv->dev = &pdev->dev;
-> +
-> +	priv->entry = devm_kcalloc(&pdev->dev, pdev->num_resources,
-> +				   sizeof(struct pmt_telem_entry), GFP_KERNEL);
-> +	if (!priv->entry)
-> +		return -ENOMEM;
-> +
-> +	if (pmt_telem_is_early_client_hw(&pdev->dev))
-> +		early_hw = true;
-> +
-> +	for (i = 0, entry = priv->entry; i < pdev->num_resources;
-> +	     i++, entry++) {
-> +		int ret;
-> +
-> +		entry->header_res = platform_get_resource(pdev, IORESOURCE_MEM,
-> +							  i);
-> +		if (!entry->header_res) {
-> +			pmt_telem_remove_entries(priv);
-> +			return -ENODEV;
-> +		}
-> +
-> +		entry->disc_table = devm_platform_ioremap_resource(pdev, i);
-> +		if (IS_ERR(entry->disc_table)) {
-> +			pmt_telem_remove_entries(priv);
-> +			return PTR_ERR(entry->disc_table);
-> +		}
-> +
-> +		if (pmt_telem_region_overlaps(pdev, entry->disc_table) &&
-> +		    early_hw)
-> +			continue;
-> +
-> +		ret = pmt_telem_add_entry(priv, entry);
-> +		if (ret) {
-> +			pmt_telem_remove_entries(priv);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int pmt_telem_remove(struct platform_device *pdev)
-> +{
-> +	struct pmt_telem_priv *priv = platform_get_drvdata(pdev);
-> +
-> +	pmt_telem_remove_entries(priv);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct platform_device_id pmt_telem_table[] = {
-> +	{
-> +		.name = "pmt_telemetry",
-> +	},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(platform, pmt_telem_table);
-> +
-> +static struct platform_driver pmt_telem_driver = {
-> +	.driver = {
-> +		.name   = TELEM_DEV_NAME,
-> +	},
-> +	.probe  = pmt_telem_probe,
-> +	.remove = pmt_telem_remove,
-> +	.id_table = pmt_telem_table,
-> +};
-> +
-> +static int __init pmt_telem_init(void)
-> +{
-> +	int ret = class_register(&pmt_telem_class);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = platform_driver_register(&pmt_telem_driver);
-> +	if (ret)
-> +		class_unregister(&pmt_telem_class);
-> +
-> +	return ret;
-> +}
-> +module_init(pmt_telem_init);
-> +
-> +static void __exit pmt_telem_exit(void)
-> +{
-> +	platform_driver_unregister(&pmt_telem_driver);
-> +	class_unregister(&pmt_telem_class);
-> +	xa_destroy(&telem_array);
-> +}
-> +module_exit(pmt_telem_exit);
-> +
-> +MODULE_AUTHOR("David E. Box <david.e.box@linux.intel.com>");
-> +MODULE_DESCRIPTION("Intel PMT Telemetry driver");
-> +MODULE_ALIAS("platform:" TELEM_DEV_NAME);
-> +MODULE_LICENSE("GPL v2");
-> 
