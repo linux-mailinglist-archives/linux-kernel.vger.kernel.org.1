@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDE52215D6
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7742215D7
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgGOUMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 16:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
+        id S1727105AbgGOUMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 16:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726670AbgGOUMS (ORCPT
+        with ESMTP id S1726670AbgGOUMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 16:12:18 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A1FC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 13:12:18 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id o11so4172291wrv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 13:12:18 -0700 (PDT)
+        Wed, 15 Jul 2020 16:12:20 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7677C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 13:12:19 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z15so4166818wrl.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 13:12:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kKQNjZzmCPBtKyAhLJMmus5XdLv4tDXCgTh+A5rB4FM=;
-        b=g5wHa9b7UMgWKsb3tbxt/L23NnqlQ39S51PcxKKi38gTxycgyknCz6KTCapqh9awVw
-         ZERpcqMurWsLpCum2BfTffpqzX1iCWkrr7d7iJr1IRA8K0Br5h3dMuLi7eCjZ1hoNE66
-         xQ8SZiBOzaODrW96/4u61CNXA+pSeM46SHpVU=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AB7aSgKZXEiLixC1bE1ZYkp9PgBC2tt87UCkWirjmZc=;
+        b=Qt8Vi0VVNwcURcX5g2FqQbvFYwCmeZQvAiVDxOpDkhgGdjstaUlr2cbUQSkHUsoFfW
+         D1cXjvlhnNphkw/tc8viEoGMHduzImo9Bc/urL45NjlrF5UwG/uHgqX26G5ilyqztTP9
+         kxplMTfWoozWEzmnyHENPXvKDQGXv01Cck7gg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kKQNjZzmCPBtKyAhLJMmus5XdLv4tDXCgTh+A5rB4FM=;
-        b=SM17fdYK6P6ndVZxAvxKZn/eJOWFXONbbazw2+WcvsnnCr9y+RIyJjdY4ciq+wp91H
-         OmbnkLa/gFkZtwchnbStqqesaSbri8yUCNNIi+LWYYoWSzeJqgQcwI29ArhQSWAlTBJy
-         W+j0OJ3SiofzH8AnJC+Hwv/eVB+3Vm1zBo3o9xWwxC1yQbB2qLyoi/a35NycAES8mcoJ
-         sxyyo4j6g6YpGnq7Yy6CPSzyKyT3SZoOWOieMWbDohY9xiS9IBJIG7NGUdGWzr4+VIaJ
-         jp8GpST3DBdsd+Ysy9EhbcUScAihmYQD5P7YnhtfwQH2PZ1vggSSHk72rPVbDaTUvXDg
-         amzg==
-X-Gm-Message-State: AOAM5319l3mmUbMBNWMOCgJ+AvRiUZPLxVFx+or42qse/Fu6bYrYHx7d
-        ASVMUJqJG06uscS8NQ8uM1DxNw==
-X-Google-Smtp-Source: ABdhPJznKAiXOJvXcBqbRplHMKOjWUQQ2SvughtssvksMnraFKMCly+xId/MqKF6rstpuHSYtoEAHw==
-X-Received: by 2002:a05:6000:1182:: with SMTP id g2mr1121479wrx.44.1594843936956;
-        Wed, 15 Jul 2020 13:12:16 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AB7aSgKZXEiLixC1bE1ZYkp9PgBC2tt87UCkWirjmZc=;
+        b=C0bqTCncQd/zyr1c9s1bLfsg8TJ0bxi58d7WNJ0qa4zxA35LUJp//GUjI2eByAWqCn
+         OjM7K2ngOePp2OCijfaE9q19otk2qfAxy/HAn7UWIdfiBNO4O3bqESoIti/Zo/GDbt05
+         tY1N6YUyiZAaTunxhpQ0wmmDnRM9x8Vk4z1TbtwVMW+itRZ0zmZXhbrV+9RxN4Ca4pyP
+         0ru2llLwjqcYaAobprHa24ZtF97Xaa9c5uP//OcaNBDO+KBheescBplevYW/HlkQWaTR
+         8bfyKCQ+Drhdosk40sya+2pLZ/eiGMoBxaA4IXsNvDI3bGgQ7zMZ9WKCoH8HcnXR+9aK
+         Dc0Q==
+X-Gm-Message-State: AOAM531LOvRlJfgNM9CwTs7N92Xjc6bwznmby1r9ons13jIfXcqWUccz
+        YBa890vJ/6ReJ1dApFhpTDoZ5g==
+X-Google-Smtp-Source: ABdhPJxtMRFK+UR1H0ErJ1rtqO+Cd+zSEn0YPWO8KwUzmLRPQQ92lcCNYKhI0NDaOM+fF/nKf8lDJQ==
+X-Received: by 2002:adf:c986:: with SMTP id f6mr1199722wrh.168.1594843938327;
+        Wed, 15 Jul 2020 13:12:18 -0700 (PDT)
 Received: from dev.cfops.net (88-144-169-51.host.pobb.as13285.net. [88.144.169.51])
-        by smtp.gmail.com with ESMTPSA id p4sm4765528wrx.63.2020.07.15.13.12.15
+        by smtp.gmail.com with ESMTPSA id p4sm4765528wrx.63.2020.07.15.13.12.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 13:12:16 -0700 (PDT)
+        Wed, 15 Jul 2020 13:12:17 -0700 (PDT)
 From:   Ignat Korchagin <ignat@cloudflare.com>
 To:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
         brendanhiggins@google.com, masahiroy@kernel.org,
         linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Ignat Korchagin <ignat@cloudflare.com>, kernel-team@cloudflare.com
-Subject: [PATCH v3 0/3] um: allow static linking for non-glibc libc implementations
-Date:   Wed, 15 Jul 2020 21:11:56 +0100
-Message-Id: <20200715201159.54166-1-ignat@cloudflare.com>
+Subject: [PATCH v3 1/3] um/kconfig: introduce CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
+Date:   Wed, 15 Jul 2020 21:11:57 +0100
+Message-Id: <20200715201159.54166-2-ignat@cloudflare.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200715201159.54166-1-ignat@cloudflare.com>
+References: <20200715201159.54166-1-ignat@cloudflare.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -61,40 +63,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes from v2:
-  * rebased to accomodate b816b3db15f68690ee72a4a414624f8e82942b25 ("kbuild: fix CONFIG_CC_CAN_LINK(_STATIC) for cross-compilation with Clang")
-  * removed unused FORBID_STATIC_LINK config option
-  * cc-ed Masahiro Yamada <masahiroy@kernel.org> for can-link.sh approve
+For statically linked UML build it is important to take into account the
+standard C-library implementation. Some implementations, notably glibc have
+caveats: even when linked statically, the final program might require some
+runtime dependencies, if certain functions are used within the code.
 
-This is a continuation of [1]. Since I was able to produce a working UML binary
-with UML_NET_VECTOR linked with musl with the changes included in the patches
-here. I was compiling on Arch Linux, so hopefully all the latest versions of
-the compiler, libraries and binutils.
+Consider the following program:
+int main(void)
+{
+	getpwent();
+	return 0;
+}
 
-I also tested allyesconfig with both musl and glibc. The compilation succeeds
-with both, however both binaries (glibc one being dynamically linked) segfault
-on start. This is probably of some incompatible config option/module being
-included and not related to musl/glibc.
+Compiling this program and linking statically with glibc produces the following
+warning from the linker:
+/usr/sbin/ld: /tmp/ccuthw1o.o: in function `main':
+test.c:(.text+0x5): warning: Using 'getpwent' in statically linked
+applications requires at runtime the shared libraries from the glibc version
+used for linking
 
-[1]: https://patchwork.ozlabs.org/project/linux-um/patch/20200624212319.403689-1-ignat@cloudflare.com/
+We will use the flag to detect such C-library implementation build time and
+possibly disable static linking for UML to avoid producing a binary with
+unexpected behaviour and dependencies.
 
-Ignat Korchagin (3):
-  um/kconfig: introduce CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
-  um: some fixes to build UML with musl
-  um: allow static linking for non-glibc implementations
+Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
+---
+ init/Kconfig           | 6 ++++++
+ scripts/cc-can-link.sh | 5 +++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
- arch/um/Kconfig               |  5 +----
- arch/um/drivers/Kconfig       |  3 ---
- arch/um/drivers/daemon_user.c |  1 +
- arch/um/drivers/pcap_user.c   | 12 ++++++------
- arch/um/drivers/slip_user.c   |  2 +-
- arch/um/drivers/vector_user.c |  4 +---
- arch/um/os-Linux/util.c       |  2 +-
- arch/x86/um/user-offsets.c    |  2 +-
- init/Kconfig                  |  6 ++++++
- scripts/cc-can-link.sh        |  5 +++--
- 10 files changed, 21 insertions(+), 21 deletions(-)
-
+diff --git a/init/Kconfig b/init/Kconfig
+index 0498af567f70..0a1ec56c9f33 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -57,6 +57,12 @@ config CC_CAN_LINK_STATIC
+ 	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag) -static) if 64BIT
+ 	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag) -static)
+ 
++config CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
++	bool
++	depends on UML && CC_CAN_LINK_STATIC
++	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m64-flag) -static -Xlinker --fatal-warnings) if 64BIT
++	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(m32-flag) -static -Xlinker --fatal-warnings)
++
+ config CC_HAS_ASM_GOTO
+ 	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
+ 
+diff --git a/scripts/cc-can-link.sh b/scripts/cc-can-link.sh
+index 6efcead31989..e5011a46103e 100755
+--- a/scripts/cc-can-link.sh
++++ b/scripts/cc-can-link.sh
+@@ -2,10 +2,11 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ cat << "END" | $@ -x c - -o /dev/null >/dev/null 2>&1
+-#include <stdio.h>
++#include <sys/types.h>
++#include <pwd.h>
+ int main(void)
+ {
+-	printf("");
++	getpwent();
+ 	return 0;
+ }
+ END
 -- 
 2.20.1
 
