@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4ED220F0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1717B220F0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgGOORo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 10:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
+        id S1728234AbgGOOUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 10:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726834AbgGOORo (ORCPT
+        with ESMTP id S1728153AbgGOOUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 10:17:44 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C87C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:17:43 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id l2so6036715wmf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:17:43 -0700 (PDT)
+        Wed, 15 Jul 2020 10:20:17 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AA3C061755;
+        Wed, 15 Jul 2020 07:20:16 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id x9so2790012ljc.5;
+        Wed, 15 Jul 2020 07:20:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1JgqT9mrEdGtuuXwQt1J5C4Rwf+h8f2OaFWoY0odJro=;
-        b=S0VhaBxg8cYN2y22Wc8O6G1H0W5VMl3rd5sgHxUVmhOmkptVnKaF2Atf0ycbrTZlJJ
-         sND/EQFP9ttvwNC0bf7Aep2qLg+X2eS57cDpA5Y48S+1/77eLo6OmZElOADrMEqeBh7f
-         k4fLSjVpyGlb6Q+Dh6qeGDi/Argdm/WmvtL5C41RmhcJ6NsfE6KAx7bxDDr08n7D4auF
-         1Z1XDU61mCGt8BkkdkTjLxR2YIvWXVvaXBAy5mhit9DKMAdmxGSnbig9tLf/1awmFsYn
-         ykR2apsM/CS1X95ZF1wa1lIrb3u0f/wtq6QczfxsneKAuT4a2TMYSboex0KVB6zfsKZd
-         A2ug==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cvmC5haUsj6mD/QlGqPWHxsvGR5ylAYh/s0gDOMIuPQ=;
+        b=i/guopJyhuve8jzIeXmqbKMVeFCTd6qre1GGKHpxlntPlk++FNW6lCWSuBvbeWZ4cD
+         pNDKiOEaMa40hjmsxXUx1N4Uhv7KQXCAxSve0V+9QWxo6RSLR42uxxBgZV8n0e/0F55W
+         F7RwybcyUJsdm+8hJHZQIBi8Z6Y1QoBIyvBo8sR8t/OeYXoyc7XiSJb3rmqHJ8Gkwuqr
+         opRYa8A0SMpvF1B7ovVQe4D4HwstxnPv6rjQFDLaYplYv0K80bNZA35MQNUEmeoTgiQZ
+         wQNcbIVzI1HuaBv+0KrKEsIvuR4oIM6gDKX63Hik8LiXrmQFXMwzPUkGV7cf9YjJo0ij
+         qodQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1JgqT9mrEdGtuuXwQt1J5C4Rwf+h8f2OaFWoY0odJro=;
-        b=oKESBryHecPnXD6aW/9Rd4aoQzTG11Xqx6UppO8Z4MqzMzN78c+1QSFvNO+eNOGmjQ
-         D8Fzv/kgesxRII2fgAvmagRchtiwufzvWJtcb70efIPshDQ9wTrKTYiJZO8PBWfcT9fE
-         OSugMLf+TRGqY1qcmL6vq9RWzUK1bmT/pICMPsUHNgtubz+dsuG/RVlGYf2YN5iWz2kC
-         qGV3AqbaKCLj7kaPxozHXxAeo/sacY3Sj3GL4kXkhZ0Ke1eS1CejpDOT00HmMNL+oonR
-         kcy+oBcYm8ODhF/I9aTjoyUoPLy+LL6/yFYXhwfhhbLk/G8KEBXlvezAqHJ2IN5xIEBS
-         sjLg==
-X-Gm-Message-State: AOAM531eK52Ptzl/oEAAPuPm9d/Mdw/xWhV81zrbqARgAYBrseNkxNLJ
-        98MIi6hazlTf5P9IBUQBdtG9TA==
-X-Google-Smtp-Source: ABdhPJxOQs7hjvQMJKZS3uHDUMnZ/0JyZLpaK8BTw6SybE8pBSddAZM6kWuOIcneFpTvLZCFPfLoXA==
-X-Received: by 2002:a1c:4d05:: with SMTP id o5mr8820870wmh.130.1594822662438;
-        Wed, 15 Jul 2020 07:17:42 -0700 (PDT)
-Received: from dell ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id p17sm3394573wma.47.2020.07.15.07.17.41
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cvmC5haUsj6mD/QlGqPWHxsvGR5ylAYh/s0gDOMIuPQ=;
+        b=O4GJyrac6lNDUIrcwVIVPh8kJTrpN/kd2qNk4I8w0dkPYGfAs0boskyi4nv57sd3OW
+         wxR38CyBOugf86LsR84PSBnTf7+/3RtMmgSYQn2gJqHZHNXQtktgBmTkWBz93B8/U6H3
+         tRb9QI9xtop+yjqI741YIReZ8H60OjKPvn2OmDlvJ5ZiPRNVv5prNzVuNZ/K5A4jQbeV
+         XtooQIN32pXNN1zHJEPlA2ybD5WM/l4QWQ1sz12PHtNX8+zrFUPyaGHuryqgvpCHxURv
+         3WyDAILFPREHAlGug/nuH1zlj4kJ1ZJ0kyJ9wbbj6+fX5sPHbVuQuV5LeK89SIhYoXue
+         1uVw==
+X-Gm-Message-State: AOAM533R7MdUoJpxo+aBCaOK1gmS2a7fz/Ux/x3l0pFLiJZm5Zlq8+qJ
+        C2SbtEMwTVGbHeS/ypSsLq8=
+X-Google-Smtp-Source: ABdhPJzvlfsSM7ba1UIgmK1uKciFvQmZZhfiGnd/sNQAofgyGvZMzN/1z2mwWTrhLJhIHD07R9q57Q==
+X-Received: by 2002:a2e:6806:: with SMTP id c6mr4462638lja.219.1594822814615;
+        Wed, 15 Jul 2020 07:20:14 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id q13sm524522lfb.55.2020.07.15.07.20.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 07:17:41 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 15:17:40 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Clean up aperf_mperf_shift
- description
-Message-ID: <20200715141740.GG3165313@dell>
-References: <1695770.kLfQgcESsc@kreacher>
+        Wed, 15 Jul 2020 07:20:11 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Wed, 15 Jul 2020 16:20:09 +0200
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, paulmck@kernel.org,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com
+Subject: Re: [PATCH tip/core/rcu 03/17] rcu/tree: Skip entry into the page
+ allocator for PREEMPT_RT
+Message-ID: <20200715142009.GA25196@pc636>
+References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
+ <20200624201226.21197-3-paulmck@kernel.org>
+ <20200630164543.4mdcf6zb4zfclhln@linutronix.de>
+ <20200715133808.GA24778@pc636>
+ <20200715141622.zd2h3mnhd7ypd2fp@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1695770.kLfQgcESsc@kreacher>
+In-Reply-To: <20200715141622.zd2h3mnhd7ypd2fp@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Jul 2020, Rafael J. Wysocki wrote:
-
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, Jul 15, 2020 at 04:16:22PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2020-07-15 15:38:08 [+0200], Uladzislau Rezki wrote:
+> > > As of -rc3 it should complain about printk() which is why it is still disabled by default.
+> > >
+> > Have you tried to trigger a "complain" you are talking about?
 > 
-> The kerneldoc description of the aperf_mperf_shift field in
-> struct global_params is unclear and there is a typo in it, so
-> simplify it and clean it up.
+> No, but I is wrong because a raw_spinlock_t is acquired followed by a
+> spinlock_t.
+>
+Right. According to documentation CONFIG_PROVE_RAW_LOCK_NESTING is used
+to detect raw_spinlock vs. spinlock nesting usage.
+
 > 
-> Reported-by: Lee Jones <lee.jones@linaro.org>
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  drivers/cpufreq/intel_pstate.c |    4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+> > I suspect to get some trace dump when CONFIG_PROVE_RAW_LOCK_NESTING=y.
 > 
-> Index: linux-pm/drivers/cpufreq/intel_pstate.c
-> ===================================================================
-> --- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-> +++ linux-pm/drivers/cpufreq/intel_pstate.c
-> @@ -202,9 +202,7 @@ struct global_params {
->   * @pstate:		Stores P state limits for this CPU
->   * @vid:		Stores VID limits for this CPU
->   * @last_sample_time:	Last Sample time
-> - * @aperf_mperf_shift:	Number of clock cycles after aperf, merf is incremented
-> - *			This shift is a multiplier to mperf delta to
-> - *			calculate CPU busy.
-> + * @aperf_mperf_shift:	APERF vs MPERF counting frequency difference
->   * @prev_aperf:		Last APERF value read from APERF MSR
->   * @prev_mperf:		Last MPERF value read from MPERF MSR
->   * @prev_tsc:		Last timestamp counter (TSC) value
+> You should get one if you haven't received any splat earlier (like from
+> printk code because it only triggers once).
+> 
+Got it.
 
-Definitely clearer.
+Thanks! 
 
-Reviewed-by: Lee Jones <lee.jones@linaro.org>
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+--
+Vlad Rezki
