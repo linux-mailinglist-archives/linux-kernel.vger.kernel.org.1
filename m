@@ -2,127 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF52C2215DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F42F2215E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgGOUM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 16:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727078AbgGOUMW (ORCPT
+        id S1726971AbgGOUPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 16:15:42 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:39030 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgGOUPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 16:12:22 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACC5C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 13:12:22 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id o11so4172488wrv.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 13:12:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Dia+f5f3wvQzmpYjq6ONA8seF0ZSOjUyP7q0pPCU8gE=;
-        b=y+7xaubN85hm0VkPLZmHNUEiHABvfBCqkOclf4aSjJZyIKhK0qT3k9d1a1Kjd9xWfI
-         yOOJfjZyB1RameJ3L2thtQ+OCfEPdAlYGtzkLIt41jwSNNa79DDtFLl1NyGhT6CPJGye
-         b4isXTPp+hp+hErFrWzx22ciFMfB13LdtRyz8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Dia+f5f3wvQzmpYjq6ONA8seF0ZSOjUyP7q0pPCU8gE=;
-        b=og+b/cQwG+ceBO5qEYxDdLmPCV28/2z3NLm5owxMGGX/tpg9pIKeVxi4im2KiAwCip
-         68a9vvTVWvGJjrjjnQFKiRNltugaH2T2xNTtkSDwFQfh+voYTicHPl+8UkNmDd6pXfps
-         m2VVneT68DajUMmZ5jBNvWLWapwTz7nXv8hzeRrYBDYLiM/cOs8cfnO/fkeYnH+YiYLz
-         F6pRoL3NfV3nkvc+9SskYa8E1KfiLsmF8ccSorgaglM1judr2X6iYy63ATvFUZ9Pwzhj
-         ORIiT+Kr6EmZAIX6qqG6xsa9dYFWBtlDooh3N7dzfv7Wn0Z/XkM4J6p5M+MmS1hvZ6/u
-         GQ8w==
-X-Gm-Message-State: AOAM531BjTluESwu+uUm98LWqQ5B2CSFhMQ66CPexk6T2s80fghvUHzs
-        rB7By6qU9/d8ibaftKcD4ErQ7w==
-X-Google-Smtp-Source: ABdhPJzoruHsfO20jqQFRAaqzq7uXGD3IjSwFRTxrgR+ek9zXRU/o+P3IAkyJdX46KhbPFg1pm/eKw==
-X-Received: by 2002:adf:80c7:: with SMTP id 65mr1204312wrl.246.1594843940696;
-        Wed, 15 Jul 2020 13:12:20 -0700 (PDT)
-Received: from dev.cfops.net (88-144-169-51.host.pobb.as13285.net. [88.144.169.51])
-        by smtp.gmail.com with ESMTPSA id p4sm4765528wrx.63.2020.07.15.13.12.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 13:12:20 -0700 (PDT)
-From:   Ignat Korchagin <ignat@cloudflare.com>
-To:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        brendanhiggins@google.com, masahiroy@kernel.org,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Ignat Korchagin <ignat@cloudflare.com>, kernel-team@cloudflare.com
-Subject: [PATCH v3 3/3] um: allow static linking for non-glibc implementations
-Date:   Wed, 15 Jul 2020 21:11:59 +0100
-Message-Id: <20200715201159.54166-4-ignat@cloudflare.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200715201159.54166-1-ignat@cloudflare.com>
-References: <20200715201159.54166-1-ignat@cloudflare.com>
+        Wed, 15 Jul 2020 16:15:41 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06FKCALc035647;
+        Wed, 15 Jul 2020 20:14:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=jYA/oNKDV5tuYlRC12bb44dQzKeSWg1Z+Lr/djLF7Xo=;
+ b=NBWTbLiJ78ctYZAn84xzzyBw9i5TTW+BinidJ4Mfoe6Fx1nyH9QZvHLYSrp6kKI8sKZ0
+ El7xeqLtQxdayLS1ob/SmYiR/atq8a+3fWQ6Jz80E6zPf6iIJdxUqq/xrN7fpzqzHCW2
+ NA2Iku9ONLl+ZiDyW5oY3UInGZVcAd8Y1zVQmIUS4n+7gXzNaJ7yvGUKvZyecTDudQZC
+ S7TdOyG9wAGZMS5/pjnkHMP3q1Yh71TLOYKhArpz91MPnq+3hBbZwmeoJ9D9QHtUK058
+ NjJDUzBPqD/uNuDPmR9d+0JLY3IZDjoqKEIJrNvJZnq1Ki2kyfLuEfglFZM8swALIRzf 2g== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 3274urdn2y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 15 Jul 2020 20:14:38 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06FKCh4i018101;
+        Wed, 15 Jul 2020 20:14:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 327qc1n1tv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jul 2020 20:14:37 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06FKERjY002445;
+        Wed, 15 Jul 2020 20:14:32 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 15 Jul 2020 13:14:27 -0700
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Simon Arlott <simon@octiron.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Subject: Re: [PATCH 1/2] reboot: add a "power cycle" quirk to prepare for a
+ power off on reboot
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle
+Message-ID: <yq1sgdso7sc.fsf@ca-mkp.ca.oracle.com>
+References: <f4a7b539-eeac-1a59-2350-3eefc8c17801@0882a8b5-c6c3-11e9-b005-00805fc181fe>
+        <20200715181145.GA17753@infradead.org>
+Date:   Wed, 15 Jul 2020 16:14:23 -0400
+In-Reply-To: <20200715181145.GA17753@infradead.org> (Christoph Hellwig's
+        message of "Wed, 15 Jul 2020 19:11:45 +0100")
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9683 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 spamscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 mlxscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007150155
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9683 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
+ suspectscore=1 phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007150155
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible to produce a statically linked UML binary with UML_NET_VECTOR,
-UML_NET_VDE and UML_NET_PCAP options enabled using alternative libc
-implementations, which do not rely on NSS, such as musl.
 
-Allow static linking in this case.
+Christoph,
 
-Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
----
- arch/um/Kconfig         | 5 +----
- arch/um/drivers/Kconfig | 3 ---
- 2 files changed, 1 insertion(+), 7 deletions(-)
+> Except for the fact that I think that usage of the BIT() macro is
+> a horrible pattern, this looks good:
+>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 9318dc6d1a0c..beb98b3b9f75 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -62,12 +62,9 @@ config NR_CPUS
- 
- source "arch/$(HEADER_ARCH)/um/Kconfig"
- 
--config FORBID_STATIC_LINK
--	bool
--
- config STATIC_LINK
- 	bool "Force a static link"
--	depends on !FORBID_STATIC_LINK
-+	depends on CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS || (!UML_NET_VECTOR && !UML_NET_VDE && !UML_NET_PCAP)
- 	help
- 	  This option gives you the ability to force a static link of UML.
- 	  Normally, UML is linked as a shared binary.  This is inconvenient for
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 9160ead56e33..72d417055782 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -234,7 +234,6 @@ config UML_NET_DAEMON
- config UML_NET_VECTOR
- 	bool "Vector I/O high performance network devices"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
- 	help
- 	This User-Mode Linux network driver uses multi-message send
- 	and receive functions. The host running the UML guest must have
-@@ -246,7 +245,6 @@ config UML_NET_VECTOR
- config UML_NET_VDE
- 	bool "VDE transport (obsolete)"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
- 	help
- 	This User-Mode Linux network transport allows one or more running
- 	UMLs on a single host to communicate with each other and also
-@@ -294,7 +292,6 @@ config UML_NET_MCAST
- config UML_NET_PCAP
- 	bool "pcap transport (obsolete)"
- 	depends on UML_NET
--	select FORBID_STATIC_LINK
- 	help
- 	The pcap transport makes a pcap packet stream on the host look
- 	like an ethernet device inside UML.  This is useful for making
+Looks good to me too.
+
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+
 -- 
-2.20.1
-
+Martin K. Petersen	Oracle Linux Engineering
