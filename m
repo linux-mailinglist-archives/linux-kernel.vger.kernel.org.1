@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0302211A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC3C22118E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbgGOPtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:49:39 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:45944 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726962AbgGOPtA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727058AbgGOPtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:49:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49944 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725867AbgGOPtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Jul 2020 11:49:00 -0400
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D3AAA20B490E;
-        Wed, 15 Jul 2020 08:48:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D3AAA20B490E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1594828140;
-        bh=mt9WRyN0K0mzACad6GlGI3HgDlUI75SH8oC6SKEyiMk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bZ8yXgGDaH7urVxRxxM++HSvnS6y6t2xPiZ3xpoXfjiJ5nKL3fB0zrdqtU8Y+p5Hd
-         FenGfLez3cKpkI9GZ4rc3vLDj5nhUFk3VBwR7qLpBGTCCgqLcOG5dgFk3pG+uxk4kY
-         u5uINadxvFX/hr6XYygFY1GOE0a9zfWaMP+a3qAQ=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com
-Cc:     jmorris@namei.org, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 5/5] LSM: Define workqueue for measuring security module state
-Date:   Wed, 15 Jul 2020 08:48:53 -0700
-Message-Id: <20200715154853.23374-6-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200715154853.23374-1-nramas@linux.microsoft.com>
-References: <20200715154853.23374-1-nramas@linux.microsoft.com>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1FA51ABE4;
+        Wed, 15 Jul 2020 15:49:02 +0000 (UTC)
+Date:   Wed, 15 Jul 2020 17:48:56 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 70/75] x86/head/64: Don't call verify_cpu() on
+ starting APs
+Message-ID: <20200715154856.GA24822@suse.de>
+References: <20200714120917.11253-1-joro@8bytes.org>
+ <20200714120917.11253-71-joro@8bytes.org>
+ <202007141837.2B93BBD78@keescook>
+ <20200715092638.GJ16200@suse.de>
+ <202007150815.A81E879@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202007150815.A81E879@keescook>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Data structures critical to the functioning of a security module could
-be tampered with by malware or changed inadvertently at runtime
-thereby disabling or reducing the security guarantees provided by
-the security module. Such critical data need to be periodically checked
-and measured, if there is any change. This would enable an attestation
-service, for instance, to verify that the security modules are operating
-with the configuration and policy setup by the system administrator.
+Hi Kees,
 
-Define a workqueue in the LSM and invoke the security modules in
-the workqueue handler to check their data and measure.
+as a general note: With SEV-ES the guest kernel will get #VC exceptions
+for events that, without SEV-ES, would just cause a #VMEXIT to the
+hypervisor.
 
-Note that the data given by the security module would be measured by
-the IMA subsystem only if it has changed since the last time it was
-measured.
+On Wed, Jul 15, 2020 at 08:26:14AM -0700, Kees Cook wrote:
+> On Wed, Jul 15, 2020 at 11:26:38AM +0200, Joerg Roedel wrote:
+> > That MSR is Intel-only, right? The boot-path installed here is only used
+> > for SEV-ES guests, running on AMD systems, so this MSR is not even
+> > accessed during boot on those VMs.
+> 
+> Oh, hrm, yes, that's true. If other x86 maintainers are comfortable with
+> this, then okay. My sense is that changing the early CPU startup paths
+> will cause trouble down the line.
 
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
----
- security/security.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+The AP startup path does not change for non SEV-ES guests. But under
+SEV-ES everything that might cause a #VC exception must be avoided until
+the kernel is ready to handle them. With the current patches this
+happens when the AP runs in 64bit long-mode and loaded TSS and IDT.
+Therefore a slightly different AP boot-path is needed for SEV-ES guests.
 
-diff --git a/security/security.c b/security/security.c
-index 3fbabc2e6ddb..6a0ceff815a2 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -89,6 +89,11 @@ static __initdata struct lsm_info *exclusive;
- static struct lsm_info *security_state_lsms;
- static int security_state_lsms_count;
- 
-+static long security_state_timeout = 300000; /* 5 Minutes */
-+static void security_state_handler(struct work_struct *work);
-+static DECLARE_DELAYED_WORK(security_state_delayed_work,
-+			    security_state_handler);
-+
- static __initdata bool debug;
- #define init_debug(...)						\
- 	do {							\
-@@ -277,6 +282,26 @@ static void __init initialize_security_state_lsms(void)
- 	security_state_lsms_count = count;
- }
- 
-+static void initialize_security_state_monitor(void)
-+{
-+	if (security_state_lsms_count == 0)
-+		return;
-+
-+	schedule_delayed_work(&security_state_delayed_work,
-+			      msecs_to_jiffies(security_state_timeout));
-+}
-+
-+static void security_state_handler(struct work_struct *work)
-+{
-+	int inx;
-+
-+	for (inx = 0; inx < security_state_lsms_count; inx++)
-+		measure_security_state(&(security_state_lsms[inx]));
-+
-+	schedule_delayed_work(&security_state_delayed_work,
-+			      msecs_to_jiffies(security_state_timeout));
-+}
-+
- /* Populate ordered LSMs list from comma-separated LSM name list. */
- static void __init ordered_lsm_parse(const char *order, const char *origin)
- {
-@@ -400,6 +425,7 @@ static void __init ordered_lsm_init(void)
- 	}
- 
- 	initialize_security_state_lsms();
-+	initialize_security_state_monitor();
- 
- 	kfree(ordered_lsms);
- }
--- 
-2.27.0
+> So, going back to the requirements here ... what things in verify_cpu()
+> can cause exceptions? AFAICT, cpuid is safely handled (i.e. it is
+> detected and only run in a way to avoid exceptions and the MSR
+> reads/writes are similarly bound by CPU family/id range checks). I must
+> be missing something. :)
 
+It is actually the CPUID instructions that cause #VC exceptions. The
+MSRs that are accessed on AMD processors are not intercepted in the
+hypervisors this code has been tested on, so these will not cause #VC
+exceptions.
+
+Regards,
+
+	Joerg
