@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2F722070F
+	by mail.lfdr.de (Postfix) with ESMTP id 32B5922070E
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729951AbgGOI07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51874 "EHLO
+        id S1725819AbgGOI06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:26:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729924AbgGOI0x (ORCPT
+        with ESMTP id S1729909AbgGOI0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:26:53 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84546C08C5DD
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:26:53 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b6so1427568wrs.11
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:26:53 -0700 (PDT)
+        Wed, 15 Jul 2020 04:26:55 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E076C08C5DE
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:26:54 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 22so4495639wmg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:26:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DCQLIBPnltOFRS++BAxztAHTwj2wSWnOs3LHnUsG1Vw=;
-        b=MCdybl3Gw37G1Bq/aJP5Pe/EbpLyiPirff+C0yH74i5zHU8WcFuucv4pc/ZhtSSWEb
-         ttmjNt5ZOBIvwTOM+6NTPRrCdWBMnzyTvyBLIj9ihMHFxmoMVzIWV6oDuc6y7Ddiatc+
-         odBn85hD3ytXmPY/VclQxhIvmv+JEXhZ/+C/UmsSczSruP7d2KHaPnrQXUuIKYHaVTle
-         aqGRE6kd+T5yIuyJ7NE9pl8ssXT3aL++/ogfFrPvX97pp8CLI1PSDK5sv11Crmh69/s8
-         cdeR7g8HxgeKnBP4l2E4bI0m07BfB8de3Xn+NIPTWcrVc0fTiXnI3i5b1Bf+irA6SiuL
-         z/bw==
+        bh=xDE1zUX/1JKQBQmQqlPliyHfkazrkQ232Ej5nXmiXwM=;
+        b=zXIpCOcYgYHp1oI/hNnk7zY9h2vzxnyGom+gI1qtkY9gm2GpNzrjfPEFEUBPJH5UV6
+         B6KQaI1nRCVuI+yN6eORsPiXeZ1pz3BSHbCy72HLtafEThX0+RoPRLneZigsJABeab59
+         zdzPVLTA85+sxS8iafLaTVvgxWdhYc/5554JhGgByGNiv1rSVi/h1HH0DjGavC9IpM/N
+         xhOMe26zXLdwfZOhKkZEvOA9PdP5EnV5oe8Ib/cVIjRGbWpg9829J9rA3vpuOfklOYV8
+         spprCi/ti3c2ZogtRgF35Z0LCQrJWosGr7Xz/eHYISvhYS+lP1v8pf+RlvdSSzpCWpaI
+         jjiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DCQLIBPnltOFRS++BAxztAHTwj2wSWnOs3LHnUsG1Vw=;
-        b=e7a/badaXUjg2FcGDzyM8LntezZCzeplx9Z7n6hC8TMVQrI7RFHeS+aegPdOg6BR8k
-         V2yCdxCVV52Rmt9PIyNEri0nMYLbWqMnO64TWf6NLcFAb9BxXAeUXY5x77y/dZV//aym
-         LdDoZx4dGRfNgQiwQfQWBOj0r+bfm48OwD7u8CqqqlbSqTVlxAMY0tsW/goQOrzvj1Kx
-         GIpvfSsrkMeBhaG8Gz8PIXAeIj22DdkmINZhHKVK8nOCZFVZEV+tYNJnp6fLLcG+923W
-         2TIH9wIR0qdTcDYCxUwORVc2ciANF3ltZuG3d02RZDR2CRSVjbxzgSA/eG27r88YKa05
-         Se0Q==
-X-Gm-Message-State: AOAM5302l8Xp8Qj3mlmNdpyy0fIPXYT6MOQaK5wJdGaAcUtonk1Zl5Eb
-        LqZnXb/Ctq4kq71sc7GYRh9UBA==
-X-Google-Smtp-Source: ABdhPJxlua+SYa5MMQ296pyJ156z28xC7KELszStrbytWumw2AI+ZT38OsX9kXDGi5NnDOmPRNNLBQ==
-X-Received: by 2002:a5d:6912:: with SMTP id t18mr9955251wru.411.1594801612237;
-        Wed, 15 Jul 2020 01:26:52 -0700 (PDT)
+        bh=xDE1zUX/1JKQBQmQqlPliyHfkazrkQ232Ej5nXmiXwM=;
+        b=V1pXrI29qle6WNnqT5ru9JLKjdi5/NWY/A8vZGD9Q+rmQnFPC7fS8+CW1m4EdTlaiq
+         x0Sl7kioQIclXkeK4GZqTfpIVuU2AAcHofxk+Q5VkMH2+XvYytvkDzpCb8BzFBLXwdpg
+         +Y0ChY3ZmZDXpr5UEVBIbMXwOJmHlQ4RDMHQ1uNtWfFt5YHschsX5RXafGfGzNIUeCUZ
+         /5zsG1Um0XrfxeTt1JeQNw5edDmv+KYXAzLloi4rfxgIjHhmu3rKitNzQwa5a6Way8AT
+         HeuLaAleJF+i12jB6fQnA+J/a3D61T6/e47MlZ61GzQq/YNF774Wloi1/FZ67N6unwx8
+         ZYSw==
+X-Gm-Message-State: AOAM530oszG1PJUSSYiV5mS9jIyIl1Ood4cxm1ZC24DrWxF7cjf3X2wf
+        rwJqHumC11ZJF5AIgh1veHotaw==
+X-Google-Smtp-Source: ABdhPJwYJSMFUV5PpASoPDrjaYIuPcrg9uZDlscqgtu4rQfld8dFTZRklyYJDtiqeHbOc4WUtFqVFg==
+X-Received: by 2002:a1c:18b:: with SMTP id 133mr7513947wmb.178.1594801613334;
+        Wed, 15 Jul 2020 01:26:53 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id h13sm2400361wml.42.2020.07.15.01.26.51
+        by smtp.gmail.com with ESMTPSA id h13sm2400361wml.42.2020.07.15.01.26.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 01:26:51 -0700 (PDT)
+        Wed, 15 Jul 2020 01:26:52 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     rjw@rjwysocki.net, viresh.kumar@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-pm@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Matthew Garrett <mjg@redhat.com>,
-        Nagananda Chumbalkar <nagananda.chumbalkar@hp.com>
-Subject: [PATCH v2 11/13] cpufreq: pcc-cpufreq: Mark sometimes used ID structs as __maybe_unused
-Date:   Wed, 15 Jul 2020 09:26:32 +0100
-Message-Id: <20200715082634.3024816-12-lee.jones@linaro.org>
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Dirk Brandewie <dirk.j.brandewie@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v2 12/13] cpufreq: intel_pstate: Supply struct attribute description for get_aperf_mperf_shift()
+Date:   Wed, 15 Jul 2020 09:26:33 +0100
+Message-Id: <20200715082634.3024816-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200715082634.3024816-1-lee.jones@linaro.org>
 References: <20200715082634.3024816-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not used when MODULE is not defined.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/cpufreq/pcc-cpufreq.c:619:36: warning: ‘processor_device_ids’ defined but not used [-Wunused-const-variable=]
- 619 | static const struct acpi_device_id processor_device_ids[] = {
- | ^~~~~~~~~~~~~~~~~~~~
+ drivers/cpufreq/intel_pstate.c:293: warning: Function parameter or member 'get_aperf_mperf_shift' not described in 'pstate_funcs'
 
-Cc: Matthew Garrett <mjg@redhat.com>
-Cc: Nagananda Chumbalkar <nagananda.chumbalkar@hp.com>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Len Brown <lenb@kernel.org>
+Cc: Dirk Brandewie <dirk.j.brandewie@intel.com>
+Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/cpufreq/pcc-cpufreq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpufreq/intel_pstate.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/cpufreq/pcc-cpufreq.c b/drivers/cpufreq/pcc-cpufreq.c
-index 5789fe7a94bd3..9f3fc7a073d07 100644
---- a/drivers/cpufreq/pcc-cpufreq.c
-+++ b/drivers/cpufreq/pcc-cpufreq.c
-@@ -616,7 +616,7 @@ static void __exit pcc_cpufreq_exit(void)
- 	free_percpu(pcc_cpu_info);
- }
- 
--static const struct acpi_device_id processor_device_ids[] = {
-+static const struct acpi_device_id __maybe_unused processor_device_ids[] = {
- 	{ACPI_PROCESSOR_OBJECT_HID, },
- 	{ACPI_PROCESSOR_DEVICE_HID, },
- 	{},
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 44c7b4677675d..3960f971fdfb3 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -275,6 +275,8 @@ static struct cpudata **all_cpu_data;
+  * @get_min:		Callback to get minimum P state
+  * @get_turbo:		Callback to get turbo P state
+  * @get_scaling:	Callback to get frequency scaling factor
++ * @get_aperf_mperf_shift: Callback to get the APERF vs MPERF frequency
++ *			   difference
+  * @get_val:		Callback to convert P state to actual MSR write value
+  * @get_vid:		Callback to get VID data for Atom platforms
+  *
 -- 
 2.25.1
 
