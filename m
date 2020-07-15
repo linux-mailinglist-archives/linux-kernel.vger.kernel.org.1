@@ -2,214 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D021A2212FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8BD221303
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgGOQui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45158 "EHLO
+        id S1726384AbgGOQyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgGOQuh (ORCPT
+        with ESMTP id S1725834AbgGOQyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:50:37 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3CAC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 09:50:37 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id k71so3349968pje.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 09:50:37 -0700 (PDT)
+        Wed, 15 Jul 2020 12:54:54 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03ADBC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 09:54:53 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 80so2450546qko.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 09:54:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EMqIy3T6Ix+Em0b+36gk3NtDJw0Mhrphx3pfNV9mw6g=;
-        b=Eq7YBqvG1cx6mJBewkrWbQhs3iYhLyGyNq+EIEkepazXpIGK8JmduABRFSDOHBeg1T
-         YAhY9L1CVBf/rIPgZSVxtaB6fSWgYAphkK59NtF05wTLYg6nzGOoz8unajE/EdEPY7Hw
-         PLygagx34WGPYdL1+fIE65S487Khhx1ASVM3TOmF983JAHpmXyuhvggr33iKMRaZYr+f
-         TmOXyxxVx/DuzA0OxCa3WvkWQcYn8yrf6mPIUqHuAEMLUPcRkg20QT33L5n2J1zS8aTl
-         DZP0t8uEtWDGpTNxcjVIQG0aQVPmosq1/vcfYq90b9sPQ+rb+be/mK12wqslTfsMJelo
-         0UYA==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IGEOdfM2hRlmbqp8sPRSn3puPERfLRnlbCIsoJ2WegI=;
+        b=FBdUKu4ZqFwKdKPqP5xEzhJHNM74kc6s4VEdepCUCGgTjRFE3AtXMmZ2hS5rVF2e1L
+         m9IeJuX0bWDhMp+OGVyI7sTsCuhDDiBZzIoyq+ekaze/9E09bSWYOp3etnk7kM82RZtN
+         cTY2LB4aAt6pLWE0+leOyfZgo+2hnraY7tw6uk0vrcS8EMA8wVkmja0pflTayZlU9UhV
+         d+xF6vlAjul4fyOd+P4AfKyZlOXd/957OqJfXz7rmeX+WduUZm+w7hQ2+ujWGyzmF/SS
+         JOCrxuS9FKTiYF03lR/vvB6HXE8zoygLtjHUh0dQPEa9QAsSssinSDoF5+U9TVLcvvv0
+         Lp1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EMqIy3T6Ix+Em0b+36gk3NtDJw0Mhrphx3pfNV9mw6g=;
-        b=QwdC7zZnoVelByKy1Ckbj+MzYg573g8LWTkxgjz/xa8L3FOscQLhTQq/itPqU442dd
-         4a8V0FKMCm89zkthk8lbOCathLbxtfEcti9Loo1WQ5M0naE7ELWEFlD/1xFvlYuNKS6s
-         xyWEC+rK955jwII4dmeyfgCmEK8987N29xzaKZW+XsGlnVPVqNVmGgfvxmkor7gsugGD
-         t5PQmrJs6v1iwvATq2haIQVmUcUnwhQ70uiGc0EXibi8V7wYh0OgSo8WOCkU7qX1kb1v
-         4O/VuTgcKXnrvcz/zsWlqWkBNNvfFfhAr9kqkxufSfIob6Yi+WO2UWmwJOPvJWmP/Gyr
-         JtdQ==
-X-Gm-Message-State: AOAM530Li8qCjjvhzQ0kW2xkMFe0hxDS5qmPfQnj19bLAZ91DKTaQXSQ
-        VlMcS+Wdl5qqScB+haxuMwqqSg==
-X-Google-Smtp-Source: ABdhPJwHAiEC5QJTaasRq724Ql/4PZyQHjjGHY9KrBd2KjUUv48sqlnZjbs65SNtrvAgoEXaRSwa3w==
-X-Received: by 2002:a17:90a:12c7:: with SMTP id b7mr540254pjg.137.1594831836920;
-        Wed, 15 Jul 2020 09:50:36 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.221.67])
-        by smtp.gmail.com with ESMTPSA id b21sm2648979pfp.172.2020.07.15.09.50.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Jul 2020 09:50:36 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     guro@fb.com, vbabka@suse.cz, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, shakeelb@google.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2] mm: memcg/slab: fix memory leak at non-root kmem_cache destroy
-Date:   Thu, 16 Jul 2020 00:50:22 +0800
-Message-Id: <20200715165023.29919-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IGEOdfM2hRlmbqp8sPRSn3puPERfLRnlbCIsoJ2WegI=;
+        b=uDP7/Sjn8N7ZCGO2jWIkzAr3vwIBXa2ewtIhOGn8raqfqHuw0GhWSsgorbKH3pepbz
+         IqIelFglR0/i1RRO4qOOOw/LdTD7Cxf1dhpux4sfphOWHFsUy2RtnoT+5R8V+AigEsbG
+         xxk3flBpxOwnO++SFJwbYAwx4pmuetl/5cWHGQlgfBV3pPDISzpwNMifS2mHh969UEA7
+         5h+QEUXzcV6yobpBZaSm8uX2af8V8aiS3+85O0krBGMZTTI6JwOU7JKnpcWkzk9HR0VH
+         AOm5pyoksPlQ15KiWC34mL2Y5dST29KT/c4rIswHEZsTLK+Gin0hZdg4l5hQx1ETAqXh
+         XcTA==
+X-Gm-Message-State: AOAM533k9sleD761TXnM42ACQ2vWT2aGtM7D7+8dICwQx6LVSFdZ3dSN
+        r+O03JhsRHObXbduasr4sT2mqA==
+X-Google-Smtp-Source: ABdhPJw+BsB1V/WidzAtPATnw4VY3l9AFfLmdy3RNQXztS/qL3uXKFijMY4CqdSI3ebgB3bNyHuGUw==
+X-Received: by 2002:a05:620a:1282:: with SMTP id w2mr14411qki.196.1594832092927;
+        Wed, 15 Jul 2020 09:54:52 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:6e7a])
+        by smtp.gmail.com with ESMTPSA id m14sm3246229qke.99.2020.07.15.09.54.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 09:54:51 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 12:54:02 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kernel Team <kernel-team@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Domas Mituzas <domas@fb.com>, Tejun Heo <tj@kernel.org>,
+        Chris Down <chris@chrisdown.name>
+Subject: Re: [PATCH] mm: memcontrol: avoid workload stalls when lowering
+ memory.high
+Message-ID: <20200715165402.GA232052@cmpxchg.org>
+References: <20200709194718.189231-1-guro@fb.com>
+ <20200710122917.GB3022@dhcp22.suse.cz>
+ <CALvZod6Yk8QoZjbNkGE8-qeOD187Nu-+VwasoROGZs_UsMgbEQ@mail.gmail.com>
+ <20200710184205.GB350256@carbon.dhcp.thefacebook.com>
+ <CALvZod45_zVaFhvw-wc9b6-Fth=fZo5Fo6xCwRVkrWC6ZprYyw@mail.gmail.com>
+ <20200714153817.GA215857@cmpxchg.org>
+ <CALvZod5n+KF9c6VCMVVrdYqwk+PY6K0AoQQU+mDEk85Ozz_NJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod5n+KF9c6VCMVVrdYqwk+PY6K0AoQQU+mDEk85Ozz_NJg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the kmem_cache refcount is greater than one, we should not
-mark the root kmem_cache as dying. If we mark the root kmem_cache
-dying incorrectly, the non-root kmem_cache can never be destroyed.
-It resulted in memory leak when memcg was destroyed. We can use the
-following steps to reproduce.
+On Tue, Jul 14, 2020 at 10:06:32AM -0700, Shakeel Butt wrote:
+> On Tue, Jul 14, 2020 at 8:39 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > The way we do this right now is having the reclaimer daemon in a
+> > dedicated top-level cgroup with memory.min protection.
+> >
+> > This works well because we have a comprehensive cgroup setup anyway
+> > and need to protect this daemon (it's oomd - the proactive reclaimer,
+> > senpai, is a plugin) for other reasons as well. But it's probably a
+> > royal pain to use if you don't have all of that infrastructure.
+> >
+> > One possible idea to make this simpler would be to have a limit knob
+> > that has a psi/pressure blowout valve. This way you could specify your
+> > tolerances for paging and what constitutes "cold" memory, and the
+> > limit unsets itself when pressure moves into harmful territory. This
+> > would make it safe to use when the reclaimer becomes unresponsive or
+> > dies altogether, which makes it safe to use from within the
+> > cgroup. And being separate from max and high means we can delegate it.
+> 
+> I like this idea and agree with having a separate interface from max
+> and high. Though why do we want to think of this interface as a limit
+> interface. Are there additional benefits or use-cases which can
+> benefit from this semantic?
 
-  1) Use kmem_cache_create() to create a new kmem_cache named A.
-  2) Coincidentally, the kmem_cache A is an alias for kmem_cache B,
-     so the refcount of B is just increased.
-  3) Use kmem_cache_destroy() to destroy the kmem_cache A, just
-     decrease the B's refcount but mark the B as dying.
-  4) Create a new memory cgroup and alloc memory from the kmem_cache
-     B. It leads to create a non-root kmem_cache for allocating memory.
-  5) When destroy the memory cgroup created in the step 4), the
-     non-root kmem_cache can never be destroyed.
+I'm not saying we have to.
 
-If we repeat steps 4) and 5), this will cause a lot of memory leak.
-So only when refcount reach zero, we mark the root kmem_cache as dying.
+But one benefit of having a limit rather than a reclaim command knob
+is that you can prevent cache-polluting scans through file data from
+unnecessarily exploding the memory footprint of the cgroup.
 
-Fixes: 92ee383f6daa ("mm: fix race between kmem_cache destroy, create and deactivate")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
----
-
-changelog in v2:
- 1) Fix a confusing typo in the commit log.
- 2) Remove flush_memcg_workqueue() for !CONFIG_MEMCG_KMEM.
- 3) Introduce a new helper memcg_set_kmem_cache_dying() to fix a race
-    condition between flush_memcg_workqueue() and slab_unmergeable(). 
-
- mm/slab_common.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 47 insertions(+), 7 deletions(-)
-
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 8c1ffbf7de45..c4958116e3fd 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -258,6 +258,11 @@ static void memcg_unlink_cache(struct kmem_cache *s)
- 		list_del(&s->memcg_params.kmem_caches_node);
- 	}
- }
-+
-+static inline bool memcg_kmem_cache_dying(struct kmem_cache *s)
-+{
-+	return is_root_cache(s) && s->memcg_params.dying;
-+}
- #else
- static inline int init_memcg_params(struct kmem_cache *s,
- 				    struct kmem_cache *root_cache)
-@@ -272,6 +277,11 @@ static inline void destroy_memcg_params(struct kmem_cache *s)
- static inline void memcg_unlink_cache(struct kmem_cache *s)
- {
- }
-+
-+static inline bool memcg_kmem_cache_dying(struct kmem_cache *s)
-+{
-+	return false;
-+}
- #endif /* CONFIG_MEMCG_KMEM */
- 
- /*
-@@ -326,6 +336,13 @@ int slab_unmergeable(struct kmem_cache *s)
- 	if (s->refcount < 0)
- 		return 1;
- 
-+	/*
-+	 * If the kmem_cache is dying. We should also skip this
-+	 * kmem_cache.
-+	 */
-+	if (memcg_kmem_cache_dying(s))
-+		return 1;
-+
- 	return 0;
- }
- 
-@@ -886,12 +903,15 @@ static int shutdown_memcg_caches(struct kmem_cache *s)
- 	return 0;
- }
- 
--static void flush_memcg_workqueue(struct kmem_cache *s)
-+static void memcg_set_kmem_cache_dying(struct kmem_cache *s)
- {
- 	spin_lock_irq(&memcg_kmem_wq_lock);
- 	s->memcg_params.dying = true;
- 	spin_unlock_irq(&memcg_kmem_wq_lock);
-+}
- 
-+static void flush_memcg_workqueue(struct kmem_cache *s)
-+{
- 	/*
- 	 * SLAB and SLUB deactivate the kmem_caches through call_rcu. Make
- 	 * sure all registered rcu callbacks have been invoked.
-@@ -923,10 +943,6 @@ static inline int shutdown_memcg_caches(struct kmem_cache *s)
- {
- 	return 0;
- }
--
--static inline void flush_memcg_workqueue(struct kmem_cache *s)
--{
--}
- #endif /* CONFIG_MEMCG_KMEM */
- 
- void slab_kmem_cache_release(struct kmem_cache *s)
-@@ -944,8 +960,6 @@ void kmem_cache_destroy(struct kmem_cache *s)
- 	if (unlikely(!s))
- 		return;
- 
--	flush_memcg_workqueue(s);
--
- 	get_online_cpus();
- 	get_online_mems();
- 
-@@ -955,6 +969,32 @@ void kmem_cache_destroy(struct kmem_cache *s)
- 	if (s->refcount)
- 		goto out_unlock;
- 
-+#ifdef CONFIG_MEMCG_KMEM
-+	memcg_set_kmem_cache_dying(s);
-+
-+	mutex_unlock(&slab_mutex);
-+
-+	put_online_mems();
-+	put_online_cpus();
-+
-+	flush_memcg_workqueue(s);
-+
-+	get_online_cpus();
-+	get_online_mems();
-+
-+	mutex_lock(&slab_mutex);
-+
-+	if (WARN(s->refcount,
-+		 "kmem_cache_destroy %s: Slab cache is still referenced\n",
-+		 s->name)) {
-+		/*
-+		 * Reset the dying flag setted by memcg_set_kmem_cache_dying().
-+		 */
-+		s->memcg_params.dying = false;
-+		goto out_unlock;
-+	}
-+#endif
-+
- 	err = shutdown_memcg_caches(s);
- 	if (!err)
- 		err = shutdown_cache(s);
--- 
-2.11.0
-
+It may be useful to compile a list of applications and goals for such
+a knob, i.e. the reasons we want to do proactive reclaim in the first
+place.
