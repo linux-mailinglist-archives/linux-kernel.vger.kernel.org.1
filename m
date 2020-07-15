@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B78A220E1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBAB220E2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731820AbgGONb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 09:31:27 -0400
-Received: from mail.efficios.com ([167.114.26.124]:55356 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731629AbgGONbZ (ORCPT
+        id S1731884AbgGONbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 09:31:48 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1044 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730872AbgGONbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 09:31:25 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6F6FF281BB5;
-        Wed, 15 Jul 2020 09:31:24 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id x456bqztpUaV; Wed, 15 Jul 2020 09:31:24 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 2CDA8281D33;
-        Wed, 15 Jul 2020 09:31:24 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 2CDA8281D33
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1594819884;
-        bh=oiV20TFEdg/WOjUfdcRO5DKrVFJm+7E+Ps+0ZX3tPDU=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=fChuM0scw5yPL3HRGW6aeXy1V5SY4zG8eVVUidUGRxoCvWlWzTozGvyw24z07q0yE
-         yivaIoBlBe7zZzo+Ag8yDbpNyJrQGHuYRFnrjR/wc6WMRyd2pZti88UoPlOqMYXZzz
-         L0wNSO3vfI3UAjo27v2TxsMZu2yq8SkDuZ0pXN4nzMjCTbOkn4Vf2wZiRKGnvk1pex
-         2+KFt2eD523DXEQb5qHPEhdxKLPze58Kkc/f0CC7ux7ooWyRC63mbQphOG16OR/Swl
-         3COZ1UK+9AqgSmQMysU3cl8PUYQWEfRpbgOA19Z9/pNDsYlJ+rqq2NVYIROFxRm7q5
-         egSHsn4sI2EMw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3oemUUox7m-y; Wed, 15 Jul 2020 09:31:24 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 1FC062819DC;
-        Wed, 15 Jul 2020 09:31:24 -0400 (EDT)
-Date:   Wed, 15 Jul 2020 09:31:24 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     carlos <carlos@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@linux.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Message-ID: <882700738.14181.1594819884049.JavaMail.zimbra@efficios.com>
-In-Reply-To: <87y2nk29rp.fsf@oldenburg2.str.redhat.com>
-References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com> <87mu42bepq.fsf@oldenburg2.str.redhat.com> <131549905.11442.1594731035989.JavaMail.zimbra@efficios.com> <87a7028d5u.fsf@oldenburg2.str.redhat.com> <2452161.11491.1594732791558.JavaMail.zimbra@efficios.com> <71f08b3a-56f5-0e0f-53b0-cc680f7e8181@redhat.com> <2053637148.14136.1594818777608.JavaMail.zimbra@efficios.com> <87y2nk29rp.fsf@oldenburg2.str.redhat.com>
-Subject: Re: [RFC PATCH 2/4] rseq: Allow extending struct rseq
+        Wed, 15 Jul 2020 09:31:46 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0f05350002>; Wed, 15 Jul 2020 06:31:33 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 15 Jul 2020 06:31:46 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 15 Jul 2020 06:31:46 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Jul
+ 2020 13:31:45 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 15 Jul 2020 13:31:45 +0000
+Received: from sumitg-l4t.nvidia.com (Not Verified[10.24.37.103]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f0f053c0003>; Wed, 15 Jul 2020 06:31:44 -0700
+From:   Sumit Gupta <sumitg@nvidia.com>
+To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
+        <mirq-linux@rere.qmqm.pl>, <devicetree@vger.kernel.org>,
+        <jonathanh@nvidia.com>, <talho@nvidia.com>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <bbasu@nvidia.com>, <sumitg@nvidia.com>, <mperttunen@nvidia.com>
+Subject: [TEGRA194_CPUFREQ PATCH v6 2/3] arm64: tegra: Add t194 ccplex compatible and bpmp property
+Date:   Wed, 15 Jul 2020 19:01:24 +0530
+Message-ID: <1594819885-31016-3-git-send-email-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1594819885-31016-1-git-send-email-sumitg@nvidia.com>
+References: <1594819885-31016-1-git-send-email-sumitg@nvidia.com>
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
-Thread-Topic: rseq: Allow extending struct rseq
-Thread-Index: V96wiIe8u1FFBKTMqXUWPRUhLORLEA==
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594819893; bh=TpthJr1iU0Z8U18qrY6XTkSfu4UJS8h2L2M4yxyYoSY=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
+         Content-Type;
+        b=hClJNTpJmi3ZKr35qzdDl30vXfg7bguu22hVcZUnu7HZNuJpgAZMtw5Qj2/0y66iY
+         MdoNxZktR6/LLINxKEci/SE/aHIUa/WgLPWpguK+yEoVRHzDOrRdRJYEZ45W7dtXNh
+         xMTqJ7fSdXfQSe2gH/INhbni9rIRPkg1iILWsoQsYfrTKOC/WJ5Tpsj8OZd+H2fQMh
+         ZA3KM/u1I3/4ErqM/vaky801AWB3XoIlgxfeAMwBl+nPG3t/z29IXtmRRwr//+iqqa
+         7UJhlHtLlQ75uRagvwC3cyivSBO7gE6iY2EVQX+9VltSFNi0mLJxvbhknebEjRsjlc
+         fdG21pqXyx3XQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 15, 2020, at 9:22 AM, Florian Weimer fweimer@redhat.com wrote:
+On Tegra194, data on valid operating points for the CPUs needs to be
+queried from BPMP. In T194, there is no node representing CPU complex.
+So, add compatible string to the 'cpus' node instead of using dummy
+node to bind cpufreq driver. Also, add reference to the BPMP instance
+for the CPU complex.
 
-> * Mathieu Desnoyers:
-> 
->> Practically speaking, I suspect this would mean postponing availability of
->> rseq for widely deployed applications for a few more years ?
-> 
-> There is no rseq support in GCC today, so you have to write assembler
-> code anyway.
+Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+---
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Assembler code is only needed for the rseq critical sections, not for accessing
-the __rseq_abi. Use-cases like getting the current cpu number do not currently
-require any assembler for instance.
-
-So indeed it could be done today without upgrading the toolchains by writing
-custom assembler for each architecture to get the thread's struct rseq. AFAIU
-the ABI to access the thread pointer is fixed for each architecture, right ?
-
-How would this allow early-rseq-adopter libraries to interact with glibc ?
-
-Thanks,
-
-Mathieu
-
-
+diff --git a/arch/arm64/boot/dts/nvidia/tegra194.dtsi b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
+index 7c9511a..0abf287 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra194.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
+@@ -1764,6 +1764,8 @@
+ 	};
+ 
+ 	cpus {
++		compatible = "nvidia,tegra194-ccplex";
++		nvidia,bpmp = <&bpmp>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.7.4
+
