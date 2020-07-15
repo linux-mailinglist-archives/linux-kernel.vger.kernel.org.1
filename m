@@ -2,174 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52A32206E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298152206E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbgGOISa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:18:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34748 "EHLO mail.kernel.org"
+        id S1729717AbgGOIRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:17:19 -0400
+Received: from mga17.intel.com ([192.55.52.151]:10240 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729677AbgGOIS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:18:29 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB6EE206D5;
-        Wed, 15 Jul 2020 08:18:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594801108;
-        bh=34jg8R1xjCptBC76HUWkIvJCkwN8uJQ6UcQj8rPdzhs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DuZmZQbB2NC9HJ03ltwn8FIENpV1ZEF2fcWMzNkj0v0Cg5s+FMoEbbBKm+RrYgkrO
-         s+Q6HzzuDhlCyCGQ4AFs4g9aIHIt/tumrc0QFpNFjkBOs2m3zCgDkpgqyvYFiQuJxv
-         oT1T/gOZbuq08Aih9I0y+RFaYsq7JJrPltgmdFp0=
-Date:   Wed, 15 Jul 2020 09:18:22 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>, akpm@linux-foundation.org,
-        x86@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, linux-arm-kernel@lists.infradead.org,
-        Roman Gushchin <guro@fb.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H.Peter Anvin" <hpa@zytor.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>
-Subject: Re: [PATCH v3] mm/hugetlb: split hugetlb_cma in nodes with memory
-Message-ID: <20200715081822.GA5683@willie-the-truck>
-References: <20200710120950.37716-1-song.bao.hua@hisilicon.com>
- <359ea1d0-b1fd-d09f-d28a-a44655834277@oracle.com>
+        id S1729609AbgGOIRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 04:17:19 -0400
+IronPort-SDR: kz12ijebYn0rgvE+Tsk3uvOTENBsBK2o1JPnedwjWllDftYoXbm4zpmp8sCXWIHSqsNz0ZgiA0
+ 6vdfNBu8E5lg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="129192958"
+X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
+   d="scan'208";a="129192958"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 01:17:19 -0700
+IronPort-SDR: 6HuCebTA1L2MzGnfdRJfGme8ptZjG4bUr+C1KsCVsDafRlDS57yCMrIy6skNMdlheJp7X5xMEw
+ iD3Ewbb4NJXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
+   d="scan'208";a="459987676"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga005.jf.intel.com with ESMTP; 15 Jul 2020 01:17:17 -0700
+Date:   Wed, 15 Jul 2020 16:18:38 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Michal Miroslaw <mirq-linux@rere.qmqm.pl>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2][RESEND v3] PM-runtime: change the tracepoints to
+ cover all usage_count
+Message-ID: <20200715081838.GA22379@chenyu-office.sh.intel.com>
+References: <cover.1594790493.git.yu.c.chen@intel.com>
+ <395187057e486df9a4328bc6d7d4ee912967fdb3.1594790493.git.yu.c.chen@intel.com>
+ <20200715070614.GA2297388@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <359ea1d0-b1fd-d09f-d28a-a44655834277@oracle.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200715070614.GA2297388@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
-
-On Tue, Jul 14, 2020 at 04:21:01PM -0700, Mike Kravetz wrote:
-> I agree we should only be concerned with N_MEMORY nodes for the CMA
-> reservations.  However, this patch got me thinking:
-> - Do we really have to initiate the CMA reservations from arch specific code?
-> - Can we move the call to reserve CMA a little later into hugetlb arch
->   independent code?
+Hi Greg,
+thanks very much for taking a look,
+On Wed, Jul 15, 2020 at 09:06:14AM +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jul 15, 2020 at 02:28:03PM +0800, Chen Yu wrote:
+> > Commit d229290689ae ("PM-runtime: add tracepoints for usage_count changes")
+> > has added some tracepoints to monitor the change of runtime usage, and
+> > there is something to improve:
+> > 1. There are some places that adjust the usage count not
+> >    been traced yet. For example, pm_runtime_get_noresume() and
+> >    pm_runtime_put_noidle()
+> > 2. The change of the usage count will not be tracked if decreased
+> >    from 1 to 0.
+> > 
+> > This patch intends to adjust the logic to be consistent with the
+> > change of usage_counter, that is to say, only after the counter has
+> > been possibly modified, we record it. Besides, all usage changes will
+> > be shown using rpm_usage even if included by other trace points.
+> > And these changes has helped track down the e1000e runtime issue.
+> > 
+> > Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > ---
+> >  drivers/base/power/runtime.c | 38 +++++++++++++++++++++++-------------
+> >  1 file changed, 24 insertions(+), 14 deletions(-)
+> > 
+> > diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> > index 85a248e196ca..5789d2624513 100644
+> > --- a/drivers/base/power/runtime.c
+> > +++ b/drivers/base/power/runtime.c
+> > @@ -1004,10 +1004,11 @@ int __pm_runtime_idle(struct device *dev, int rpmflags)
+> >  	int retval;
+> >  
+> >  	if (rpmflags & RPM_GET_PUT) {
+> > -		if (!atomic_dec_and_test(&dev->power.usage_count)) {
+> > -			trace_rpm_usage_rcuidle(dev, rpmflags);
+> > +		bool non_zero = !atomic_dec_and_test(&dev->power.usage_count);
+> > +
+> > +		trace_rpm_usage_rcuidle(dev, rpmflags);
 > 
-> I know the cma_declare_contiguous_nid() routine says it should be called
-> from arch specific code.  However, unless I am missing something that seems
-> mostly about timing.
+> Why not just call trace everywhere before you do the atomic operations?
+> Why does the trace need to be called after the operation everywhere?
 > 
-> What about a change like this on top of this patch?
+If I understand correctly, besides Michal's comments, if we put the trace
+before the atomic operation, we might be unable to judge whether the counter
+is going to increase or decrease from rpmflags: it is RPM_GET_PUT which combine
+the get() and put() together, then it is a little inconvenient for tracking IMO.
+
+thanks,
+Chenyu
+> thanks,
 > 
-> From 72b5b9a623f8711ad7f79f1a8f910906245f5d07 Mon Sep 17 00:00:00 2001
-> From: Mike Kravetz <mike.kravetz@oracle.com>
-> Date: Tue, 14 Jul 2020 15:54:46 -0700
-> Subject: [PATCH] hugetlb: move cma allocation call to arch independent code
-> 
-> Instead of calling hugetlb_cma_reserve() from arch specific code,
-> call from arch independent code when a gigantic page hstate is
-> created.  This is late enough in the init process that all numa
-> memory information should be initialized.  And, it is early enough
-> to still use early memory allocator.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  arch/arm64/mm/init.c    | 10 ----------
->  arch/x86/kernel/setup.c |  9 ---------
->  mm/hugetlb.c            |  8 +++++++-
->  3 files changed, 7 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 79806732f4b4..ff0ff584dde9 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -427,16 +427,6 @@ void __init bootmem_init(void)
->  	sparse_init();
->  	zone_sizes_init(min, max);
->  
-> -	/*
-> -	 * must be done after zone_sizes_init() which calls free_area_init()
-> -	 * that calls node_set_state() to initialize node_states[N_MEMORY]
-> -	 * because hugetlb_cma_reserve() will scan over nodes with N_MEMORY
-> -	 * state
-> -	 */
-> -#ifdef CONFIG_ARM64_4K_PAGES
-> -	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
-> -#endif
-> -
->  	memblock_dump_all();
->  }
->  
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index a1a9712090ae..111c8467fafa 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -1177,15 +1177,6 @@ void __init setup_arch(char **cmdline_p)
->  
->  	x86_init.paging.pagetable_init();
->  
-> -	/*
-> -	 * must be done after zone_sizes_init() which calls free_area_init()
-> -	 * that calls node_set_state() to initialize node_states[N_MEMORY]
-> -	 * because hugetlb_cma_reserve() will scan over nodes with N_MEMORY
-> -	 * state
-> -	 */
-> -	if (boot_cpu_has(X86_FEATURE_GBPAGES))
-> -		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
-> -
->  	kasan_init();
->  
->  	/*
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index f24acb3af741..a0007d1d12d2 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3273,6 +3273,9 @@ void __init hugetlb_add_hstate(unsigned int order)
->  	snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
->  					huge_page_size(h)/1024);
-
-(nit: you can also make hugetlb_cma_reserve() static and remote its function
-prototypes from hugetlb.h)
-
-> +	if (order >= MAX_ORDER && hugetlb_cma_size)
-> +		hugetlb_cma_reserve(order);
-
-Although I really like the idea of moving this out of the arch code, I don't
-quite follow the check against MAX_ORDER here -- it looks like a bit of a
-hack to try to intercept the "PUD_SHIFT - PAGE_SHIFT" order which we
-currently pass to hugetlb_cma_reserve(). Maybe we could instead have
-something like:
-
-	#ifndef HUGETLB_CMA_ORDER
-	#define HUGETLB_CMA_ORDER	(PUD_SHIFT - PAGE_SHIFT)
-	#endif
-
-and then just do:
-
-	if (order == HUGETLB_CMA_ORDER)
-		hugetlb_cma_reserve(order);
-
-? Is there something else I'm missing?
-
-> +
->  	parsed_hstate = h;
->  }
->  
-> @@ -5647,7 +5650,10 @@ void __init hugetlb_cma_reserve(int order)
->  	unsigned long size, reserved, per_node;
->  	int nid;
->  
-> -	cma_reserve_called = true;
-> +	if (cma_reserve_called)
-> +		return;
-> +	else
-> +		cma_reserve_called = true;
-
-(nit: don't need the 'else' here)
-
-Will
+> greg k-h
