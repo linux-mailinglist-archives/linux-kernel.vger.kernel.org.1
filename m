@@ -2,80 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0DE220BA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB54220BAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbgGOLRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 07:17:51 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:61626 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgGOLRu (ORCPT
+        id S1729373AbgGOLTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 07:19:54 -0400
+Received: from smtp99.ord1d.emailsrvr.com ([184.106.54.99]:39982 "EHLO
+        smtp99.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725855AbgGOLTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:17:50 -0400
-Received: from fsav404.sakura.ne.jp (fsav404.sakura.ne.jp [133.242.250.103])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 06FBHk8c074032;
-        Wed, 15 Jul 2020 20:17:46 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav404.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav404.sakura.ne.jp);
- Wed, 15 Jul 2020 20:17:46 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav404.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 06FBHk6A074027
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Wed, 15 Jul 2020 20:17:46 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v2] fbdev: Detect integer underflow at "struct
- fbcon_ops"->clear_margins.
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wed, 15 Jul 2020 07:19:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1594811993;
+        bh=PfhUjWoGfzXa24bYs69+6jW8ujvkaYrav1deIMbjDzw=;
+        h=Subject:To:From:Date:From;
+        b=RU3wQeZ/cWGHO9rnyElBfthR6qn+Bjhcvj+GPzwCRFHJXFfkOBmq24RM4TeMyvBNU
+         zOCfUZdOp51YSm5uonfVSVQYhl9z33xI1Gbn+pkzG6sCZHqDkt6NTiTwvIk/eCXuQo
+         kdiiv6O2PJCQy1p2dVrEAWaW3g8XXpo30KjpU3uE=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1594811993;
+        bh=PfhUjWoGfzXa24bYs69+6jW8ujvkaYrav1deIMbjDzw=;
+        h=Subject:To:From:Date:From;
+        b=P7SH4M1KfkHWkmuDbTQTIpjh8AVPCtUNqNHdsjhw+9DtsDo6AjE0m6yZkzgxCEBRO
+         cPZMbhGlLrR38qWn89cB4VcrO9WWQ4oS4S4lwEtV455ftjyq2LVH/5+LYRzZdhJq+a
+         /IadFyNDAoJDffW1O4F85h+QaOwcNwfbSwyn+SjY=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp13.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id BF118C00D9;
+        Wed, 15 Jul 2020 07:19:51 -0400 (EDT)
+Subject: Re: [PATCH] staging: comedi: comedi_fops.c: changed type in
+ assignment to unsigned int *
+To:     B K Karthik <bkkarthik@pesu.pes.edu>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        George Kennedy <george.kennedy@oracle.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot <syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com>
-References: <adff5d10-fe35-62d4-74c5-182958c5ada7@i-love.sakura.ne.jp>
- <20200715015102.3814-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <20200715094836.GD2571@kadam>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <9e6eac10-c5c3-f518-36cc-9ea32fb5d7fe@i-love.sakura.ne.jp>
-Date:   Wed, 15 Jul 2020 20:17:44 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Michel Lespinasse <walken@google.com>,
+        Divyansh Kamboj <kambojdivyansh2000@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20200715044813.fww3regsgsbgyp7b@pesu-pes-edu>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <4aa4d949-7ef9-ccfe-bf5c-11a380c8f542@mev.co.uk>
+Date:   Wed, 15 Jul 2020 12:19:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200715094836.GD2571@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20200715044813.fww3regsgsbgyp7b@pesu-pes-edu>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+X-Classification-ID: 9eceb263-004a-4246-841e-09953c9dc0d2-1-1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/07/15 18:48, Dan Carpenter wrote:
->> @@ -216,7 +216,7 @@ static void bit_clear_margins(struct vc_data *vc, struct fb_info *info,
->>  	region.color = color;
->>  	region.rop = ROP_COPY;
->>  
->> -	if (rw && !bottom_only) {
->> +	if ((int) rw > 0 && !bottom_only) {
->>  		region.dx = info->var.xoffset + rs;
->                             ^^^^^^^^^^^^^^^^^^^^^^
+On 15/07/2020 05:48, B K Karthik wrote:
+> fixed a sparse warning by changing the type in
+> assignment from void [noderef] __user * to unsigned int *
+> (different address space)
 > 
-> If you choose a very high positive "rw" then this addition can overflow.
-> info->var.xoffset comes from the user and I don't think it's checked...
+> Signed-off-by: B K Karthik <karthik.bk2000@live.com>
+> ---
+>   drivers/staging/comedi/comedi_fops.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+> index 3f70e5dfac39..4cc012e231b7 100644
+> --- a/drivers/staging/comedi/comedi_fops.c
+> +++ b/drivers/staging/comedi/comedi_fops.c
+> @@ -2956,7 +2956,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
+>   	cmd->scan_end_arg = v32.scan_end_arg;
+>   	cmd->stop_src = v32.stop_src;
+>   	cmd->stop_arg = v32.stop_arg;
+> -	cmd->chanlist = compat_ptr(v32.chanlist);
+> +	cmd->chanlist = (unsigned int *) compat_ptr(v32.chanlist);
 
-Well, I think it would be checked by "struct fb_ops"->check_var hook.
-For example, vmw_fb_check_var() has
+That should be:
 
-	if ((var->xoffset + var->xres) > par->max_width ||
-	    (var->yoffset + var->yres) > par->max_height) {
-		DRM_ERROR("Requested geom can not fit in framebuffer\n");
-		return -EINVAL;
-	}
+	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
 
-check. Of course, there might be integer overflow in that check...
-Having sanity check at caller of "struct fb_ops"->check_var might be nice.
+>   	cmd->chanlist_len = v32.chanlist_len;
+>   	cmd->data = compat_ptr(v32.data);
+>   	cmd->data_len = v32.data_len;
+> 
+
+A reverse cast is required in put_compat_cmd():
+
+	v32.chanlist = ptr_to_compat((unsigned int __user *)cmd->chanlist);
+
+Those changes will get rid of the sparse warnings.
+
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || Web: www.mev.co.uk )=-
+-=( MEV Ltd. is a company registered in England & Wales. )=-
+-=( Registered number: 02862268.  Registered address:    )=-
+-=( 15 West Park Road, Bramhall, STOCKPORT, SK7 3JZ, UK. )=-
