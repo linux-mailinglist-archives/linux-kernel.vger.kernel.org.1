@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B032204ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8E02204E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728679AbgGOG1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 02:27:15 -0400
-Received: from verein.lst.de ([213.95.11.211]:57655 "EHLO verein.lst.de"
+        id S1726893AbgGOG02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 02:26:28 -0400
+Received: from mga17.intel.com ([192.55.52.151]:63476 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgGOG1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 02:27:15 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 15E5467357; Wed, 15 Jul 2020 08:27:12 +0200 (CEST)
-Date:   Wed, 15 Jul 2020 08:27:11 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Song Liu <song@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-raid@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 17/23] initramfs: switch initramfs unpacking to struct
- file based APIs
-Message-ID: <20200715062711.GA21447@lst.de>
-References: <20200714190427.4332-1-hch@lst.de> <20200714190427.4332-18-hch@lst.de> <CAHk-=whDbHL7x5Jx-CSz97=nVg4V_q45DsokX+X-Y-yZV4rPvw@mail.gmail.com>
+        id S1725823AbgGOG00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 02:26:26 -0400
+IronPort-SDR: EIk66CuYAmNXFYycqxpyN7WddBRdTmh1FnMd5GiZQ7/2MeBvbZPSUqtHesbLkF6zgE3hmgHa+P
+ klUXRM56du5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="129180712"
+X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
+   d="scan'208";a="129180712"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2020 23:26:26 -0700
+IronPort-SDR: qyzu3FoXm2tWkSwHG44a1k2Dibq2ur1AEhKJ2qK5pwbqGYObv0eKKmB+cCWpy2dkClBDTDc34V
+ DBnAWqrbBvCg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
+   d="scan'208";a="485615838"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by fmsmga006.fm.intel.com with ESMTP; 14 Jul 2020 23:26:24 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Michal Miroslaw" <mirq-linux@rere.qmqm.pl>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH 0/2][RESEND v3] Extend trace point to cover all runtime usage count
+Date:   Wed, 15 Jul 2020 14:27:27 +0800
+Message-Id: <cover.1594790493.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whDbHL7x5Jx-CSz97=nVg4V_q45DsokX+X-Y-yZV4rPvw@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 12:31:01PM -0700, Linus Torvalds wrote:
-> That "vcollected" is ugly and broken, and seems oh-so-wrong.
-> 
-> Because it's only use is:
-> 
-> 
-> > -               ksys_close(wfd);
-> > +               fput(wfile);
-> >                 do_utime(vcollected, mtime);
-> >                 kfree(vcollected);
-> 
-> which should just have done the exact same thing that you did with
-> vfs_chown() and friends: we already have a "utimes_common()" that
-> takes a path, and it could have been made into "vfs_utimes()", and
-> then this whole vcollected confusion would go away and be replaced by
-> 
->         vfs_truncate(&wfile->f_path, mtime);
-> 
-> (ok, with all the "timespec64 t[2]" things going on that do_utime()
-> does now, but you get the idea).
-> 
-> Talk about de-crufting that initramfs unpacking..
-> 
-> But I don't hate this patch, I'm just pointing out that there's room
-> for improvement.
+Currently some code flow of runtime usage count changes is not covered by 
+the rpm_runtime_usage tracepoints. Adjust corresponding tracepoints to monitor
+all the runtime usage count changes.
 
-I'll send another series to clean this up.  I had a few utimes related
-patch in a later series and this fits in pretty well with those.
+Chen Yu (2):
+  PM-runtime: Move all runtime usage related function to runtime.c
+  PM-runtime: change the tracepoints to cover all usage_count
+
+ drivers/base/power/runtime.c | 50 ++++++++++++++++++++++++++----------
+ include/linux/pm_runtime.h   | 12 ++-------
+ 2 files changed, 38 insertions(+), 24 deletions(-)
+
+-- 
+2.17.1
+
