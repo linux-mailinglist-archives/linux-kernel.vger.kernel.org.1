@@ -2,82 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD77E22085E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9BC220865
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730576AbgGOJNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:13:42 -0400
-Received: from [195.135.220.15] ([195.135.220.15]:55238 "EHLO mx2.suse.de"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1728672AbgGOJNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:13:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1D30FAF69;
-        Wed, 15 Jul 2020 09:13:43 +0000 (UTC)
-Date:   Wed, 15 Jul 2020 11:13:37 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 63/75] x86/sev-es: Handle #DB Events
-Message-ID: <20200715091337.GI16200@suse.de>
-References: <20200714120917.11253-1-joro@8bytes.org>
- <20200714120917.11253-64-joro@8bytes.org>
- <20200715084752.GD10769@hirez.programming.kicks-ass.net>
+        id S1730520AbgGOJOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:14:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729577AbgGOJOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 05:14:51 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DD0520672;
+        Wed, 15 Jul 2020 09:14:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594804490;
+        bh=AM2Ga0muPdIqtmmtQUI4g+h+tsNOnfDchEgKBokgGQs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vsw7dE0TpDpreTk/JbbNMTtdCC50xSLWp9JxE6uBWD6lqyKMg3y2Bc7kpqYf0VDGg
+         2o7s7NOuZrwo4+7bj+nEGA+6sAZWUgnx8YVgfhjTX5XhbUuPGLF80fmEtp5istms9a
+         o1wTJ4GYClSYlOlguD6XMI42+RTk46a6K0WXBYTw=
+Date:   Wed, 15 Jul 2020 11:14:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     B K Karthik <bkkarthik@pesu.pes.edu>
+Cc:     devel@driverdev.osuosl.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        linux-kernel@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michel Lespinasse <walken@google.com>,
+        Divyansh Kamboj <kambojdivyansh2000@gmail.com>
+Subject: Re: [PATCH] staging: comedi: comedi_fops.c: changed type in
+ assignment to unsigned int *
+Message-ID: <20200715091446.GA2722864@kroah.com>
+References: <20200715044813.fww3regsgsbgyp7b@pesu-pes-edu>
+ <20200715070842.GA2303720@kroah.com>
+ <CAAhDqq3u_0wCRGDaWRGgtC6bkx6t+AubAXfnX_f7V0t10BRuuA@mail.gmail.com>
+ <20200715083144.GA2716443@kroah.com>
+ <CAAhDqq1hwtgqyOnfx__OFgTkm9QDs0or-Zg76cMojShCYRAN2w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200715084752.GD10769@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAAhDqq1hwtgqyOnfx__OFgTkm9QDs0or-Zg76cMojShCYRAN2w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 10:47:52AM +0200, Peter Zijlstra wrote:
-> On Tue, Jul 14, 2020 at 02:09:05PM +0200, Joerg Roedel wrote:
+On Wed, Jul 15, 2020 at 04:41:52AM -0400, B K Karthik wrote:
+> On Wed, Jul 15, 2020 at 4:31 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Jul 15, 2020 at 01:56:45PM +0530, B K Karthik wrote:
+> > > On Wed, Jul 15, 2020, 12:38 PM Greg Kroah-Hartman <
+> > > gregkh@linuxfoundation.org> wrote:
+> > >
+> > > > On Wed, Jul 15, 2020 at 12:48:13AM -0400, B K Karthik wrote:
+> > > > > fixed a sparse warning by changing the type in
+> > > > > assignment from void [noderef] __user * to unsigned int *
+> > > > > (different address space)
+> > > > >
+> > > > > Signed-off-by: B K Karthik <karthik.bk2000@live.com>
+> > > > > ---
+> > > > >  drivers/staging/comedi/comedi_fops.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/staging/comedi/comedi_fops.c
+> > > > b/drivers/staging/comedi/comedi_fops.c
+> > > > > index 3f70e5dfac39..4cc012e231b7 100644
+> > > > > --- a/drivers/staging/comedi/comedi_fops.c
+> > > > > +++ b/drivers/staging/comedi/comedi_fops.c
+> > > > > @@ -2956,7 +2956,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
+> > > > >       cmd->scan_end_arg = v32.scan_end_arg;
+> > > > >       cmd->stop_src = v32.stop_src;
+> > > > >       cmd->stop_arg = v32.stop_arg;
+> > > > > -     cmd->chanlist = compat_ptr(v32.chanlist);
+> > > > > +     cmd->chanlist = (unsigned int *) compat_ptr(v32.chanlist);
+> > > > >       cmd->chanlist_len = v32.chanlist_len;
+> > > > >       cmd->data = compat_ptr(v32.data);
+> > > > >       cmd->data_len = v32.data_len;
+> > > >
+> > > > Always run your patches through checkpatch before sending them, so you
+> > > > do not have a grumpy maintainer telling you that you have to run
+> > > > checkpatch on your patch before sending them.
+> > > >
+> > >
+> > > I will. Sorry for that.
+> > >
+> > > But the error that's being shown in this patch is something that comes up
+> > > on its own.
+> >
+> > No it is not.
+> >
+> > > git format-patch leaves trailing whitespace in blank lines.
+> >
+> > It does?  Where is any trailing whitespace here?  That's not the issue.
 > 
-> > @@ -1028,6 +1036,16 @@ DEFINE_IDTENTRY_VC_SAFE_STACK(exc_vmm_communication)
-> >  	struct ghcb *ghcb;
-> >  
-> >  	lockdep_assert_irqs_disabled();
-> > +
-> > +	/*
-> > +	 * #DB is special and needs to be handled outside of the intrumentation_begin()/end().
-> > +	 * Otherwise the #VC handler could be raised recursivly.
-> > +	 */
-> > +	if (error_code == SVM_EXIT_EXCP_BASE + X86_TRAP_DB) {
-> > +		vc_handle_trap_db(regs);
-> > +		return;
-> > +	}
-> > +
-> >  	instrumentation_begin();
+> To give you an example,
+> https://lore.kernel.org/lkml/20200714132350.naekk4zqivpuaedi@pesu-pes-edu/
+> was a patch i submitted recently.
+> This is what checkpatch has to say:
 > 
-> Wait what?! That makes no sense what so ever.
+> $ perl scripts/checkpatch.pl -f
+> ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch
+> ERROR: trailing whitespace
+> #21: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:21:
+> + $
+> 
+> ERROR: trailing whitespace
+> #23: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:23:
+> + $
+> 
+> ERROR: trailing whitespace
+> #30: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:30:
+> + $
+> 
+> ERROR: trailing whitespace
+> #37: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:37:
+> + $
+> 
+> ERROR: trailing whitespace
+> #44: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:44:
+> + $
+> 
+> ERROR: trailing whitespace
+> #51: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:51:
+> +-- $
+> 
+> total: 6 errors, 0 warnings, 53 lines checked
+> 
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+> 
+> NOTE: Whitespace errors detected.
+>       You may wish to use scripts/cleanpatch or scripts/cleanfile
+> 
+> ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch
+> has style problems, please review.
+> 
+> NOTE: If any of the errors are false positives, please report
+>       them to the maintainer, see CHECKPATCH in MAINTAINERS.
+> 
+> Does this happen only to patches I make? Am I making a silly mistake
+> while making a patch?
 
-Then my understanding of intrumentation_begin/end() is wrong, I thought
-that the kernel will forbid setting breakpoints before
-instrumentation_begin(), which is necessary here because a break-point
-in the #VC handler might cause recursive #VC-exceptions when #DB is
-intercepted.
-Maybe you can elaborate on why this makes no sense?
+I don't get that error at all, here's all I get with that patch:
 
-Regards,
+$ ./scripts/checkpatch.pl x.patch
+WARNING: Missing Signed-off-by: line by nominal patch author ''
 
-	Joerg
+total: 0 errors, 1 warnings, 0 checks, 30 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+x.patch has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+
+
+That warning is because I just saved the body of your email as a patch,
+watch out when you try to check signed emails like you are doing here.
+
+> I use 'git format-patch -1' to generate the patch file.
+> If I am going wrong somewhere, please let me know.
+
+Seems to work for me :)
+
+thanks,
+
+greg k-h
