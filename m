@@ -2,71 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C632212C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFEC2212D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgGOQoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43974 "EHLO
+        id S1727813AbgGOQp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:45:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726941AbgGOQnH (ORCPT
+        with ESMTP id S1727828AbgGOQnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:43:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566DCC061755;
-        Wed, 15 Jul 2020 09:43:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=fhXbIAxOvLawpatfmd6lRi0iAaY9jxDHPqpleO//3Xk=; b=L4aE+Yg3g1NbIvla3uOY8nNuvv
-        xHro/LRvFK2/1oCCYve7o20YWbymTbGUTb3U6vqrRMEQKc8zf6LCT7YbKi0iN7hnr55biodcie9+g
-        0pftmi5/kQpan8J/DPjOGJMmohAANrK19Wv1ZB7vxwCRflQluT09FtXcAD7WOcsVe6aw8j4K2/l0F
-        WsA6LanSiURbIVRjsEnD2lZsEeFjw+PdjFfxFRpTumFToHQUo6igYc2x9ZsIvt7nUwDR5L+7KUalY
-        skYi/R+8rR+IIF2p2EkNiOM9l+wJ2yc71Kfc87zkutPDMy9WTV5ZyBiXr1bZ6JDTIjpftevy/8CuO
-        wB7Pr/OQ==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvkUr-0000Bh-Gd; Wed, 15 Jul 2020 16:43:06 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH 9/9 v2 net-next] net: ipv6: drop duplicate word in comment
-Date:   Wed, 15 Jul 2020 09:42:46 -0700
-Message-Id: <20200715164246.9054-9-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200715164246.9054-1-rdunlap@infradead.org>
-References: <20200715164246.9054-1-rdunlap@infradead.org>
+        Wed, 15 Jul 2020 12:43:14 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095BBC061755;
+        Wed, 15 Jul 2020 09:43:14 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id gc9so3332985pjb.2;
+        Wed, 15 Jul 2020 09:43:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VzFSVVUL1ngwtkvu9jAyRacbV6yrNRDEoFftLYXmJNw=;
+        b=nUGJ3ciE4X0BJd1PdXXivO9gwVqf5l4X+8gG0kmBtTcADkMhcsLI0hyCQoULxTzbfl
+         8IgIHJXChTV2a8hr0tPC+/Fb1nD6l6yHLOah1IDaoRqBskVy1r1f4YVYlGoi47E8aBXu
+         c/bgz57d23s1n6eHi8gHXbsQKve0nUmH0wP3xX6/SLKGRGQMJ97bb3g11njPknNcfz48
+         R5DbTwnwqX74OO1XuFyd3ANO+kEuTkb7xFdEOZFnNOByBlI5NvrvvCp7+umm12DGg1Ye
+         q04Yfprpzo3tTKnMRM19OoTqJ49ggEJMp2eZ5Qr6BK21mGWjMLbvEyftcaB2OcbnYcS9
+         cbQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=VzFSVVUL1ngwtkvu9jAyRacbV6yrNRDEoFftLYXmJNw=;
+        b=GiWDfSOh8x5qJ1v8VL3o0YJSXDTXZdKWmSDQeDukcBl1AoDRmbxPRbxb19obRsrVGn
+         Yo1xJcVbDI+g1mJtpp2C6ZpRdBA3wLSn4NIK8b+2SCGpvXozGvipeCqJdU8XGaJh5wH3
+         O0LizB/a0Ps9wbWH8bs/Tu9tLQYjfDEBfKaFcelgYaG2+CxNFHZajvTyLAihxGeMeE/h
+         TmHBk1XSeps1U+3VBuYU+gOMD9Q8/N5VuE83KQrg6VsSsj0pGDzt9xFTOxI3reaGEM1E
+         7ELU4mPkbtVJs8/iLGWA87uHnHLBER1/Pka/GueK8DmvK7NQHYs5ZOUuXV8AE1msBILy
+         zwlA==
+X-Gm-Message-State: AOAM532+UCecyo/DAxdFj/YlaD3yOHNolA57i2q3RthaNm+E60dq+yQS
+        EVcHKCynHYAYzALXi4FjXyTVFpZP
+X-Google-Smtp-Source: ABdhPJxHVL71w5F5bQdemhhmt7+DM+ALjL6uwx1Qt6AJTuUTK3AaCWRv1vnB+t9/sgDJyt8XkFXMUg==
+X-Received: by 2002:a17:90a:fef:: with SMTP id 102mr538193pjz.104.1594831393436;
+        Wed, 15 Jul 2020 09:43:13 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m3sm2693194pfk.171.2020.07.15.09.43.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jul 2020 09:43:13 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/109] 5.4.52-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+References: <20200714184105.507384017@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <e94c262d-5235-87b5-8ff4-49b112083c70@roeck-us.net>
+Date:   Wed, 15 Jul 2020 09:43:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200714184105.507384017@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the doubled word "by" in a comment.
+On 7/14/20 11:43 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.52 release.
+> There are 109 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 16 Jul 2020 18:40:38 +0000.
+> Anything received after that time might be too late.
+> 
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
----
-v2: move wireless patches to a separate patch series, though this one
-    is a new patch.
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 430 pass: 430 fail: 0
 
- include/linux/ipv6.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- linux-next-20200714.orig/include/linux/ipv6.h
-+++ linux-next-20200714/include/linux/ipv6.h
-@@ -223,7 +223,7 @@ struct ipv6_pinfo {
- 
- 	/*
- 	 * Packed in 16bits.
--	 * Omit one shift by by putting the signed field at MSB.
-+	 * Omit one shift by putting the signed field at MSB.
- 	 */
- #if defined(__BIG_ENDIAN_BITFIELD)
- 	__s16			hop_limit:9;
+Guenter
