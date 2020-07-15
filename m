@@ -2,119 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C36A5220226
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AED220235
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgGOCFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 22:05:30 -0400
-Received: from mail.synology.com ([211.23.38.101]:60084 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726356AbgGOCF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 22:05:29 -0400
-Subject: Re: [PATCH] mm : fix pte _PAGE_DIRTY bit when fallback migrate page
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1594778727; bh=YDrsMEH4rB9HXHNVRExpD6LMr7xokp4y9XlpkI3qsRo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=kHqL3YjTUkLKU+mFo39ywmRMf4qTO8txj2I5J34NwSQiOHh7HNklZCY4H6mFUzXBV
-         GeVsjmCAtIkNCO5Tbt3orFAbv3EVXejLhZTOuEmhwhypkLlUBzhS7jeKCw1GPp25tH
-         deYTKO02Sk3S3YYJTWoYOUAfLmaIUyQO2wW/66S8=
-To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org,
-        Roman Gushchin <guro@fb.com>, David Sterba <dsterba@suse.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20200709024808.18466-1-robbieko@synology.com>
- <859c810e-376e-5e8b-e8a5-0da3f83315d1@suse.cz>
- <80b55fcf-def1-8a83-8f53-a22f2be56244@synology.com>
- <433e26b0-5201-129a-4afe-4881e42781fa@suse.cz>
-From:   Robbie Ko <robbieko@synology.com>
-Message-ID: <13d4b937-23e8-2d6f-919c-deb2f4284951@synology.com>
-Date:   Wed, 15 Jul 2020 10:05:26 +0800
-MIME-Version: 1.0
-In-Reply-To: <433e26b0-5201-129a-4afe-4881e42781fa@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S1727913AbgGOCQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 22:16:12 -0400
+Received: from kernel.crashing.org ([76.164.61.194]:36854 "EHLO
+        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725977AbgGOCQL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 22:16:11 -0400
+Received: from localhost (gate.crashing.org [63.228.1.57])
+        (authenticated bits=0)
+        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 06F2CWXx001242
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 14 Jul 2020 21:12:38 -0500
+Message-ID: <fb40545a8de8df8914df40d7d6167752c5244ce6.camel@kernel.crashing.org>
+Subject: Re: [RFC PATCH 00/35] Move all PCIBIOS* definitions into arch/x86
+From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        bjorn@helgaas.com, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Toan Le <toan@os.amperecomputing.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>
+Date:   Wed, 15 Jul 2020 12:12:29 +1000
+In-Reply-To: <20200714184550.GA397277@bjorn-Precision-5520>
+References: <20200714184550.GA397277@bjorn-Precision-5520>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2020-07-14 at 13:45 -0500, Bjorn Helgaas wrote:
+> 
+> > fail for valid arguments on a valid pci_device* ?
+> 
+> I really like this idea.
+> 
+> pci_write_config_*() has one return value, and only 100ish of 2500
+> callers check for errors.  It's sometimes possible for config
+> accessors to detect PCI errors and return failure, e.g., device was
+> removed or didn't respond, but most of them don't, and detecting
+> these
+> errors is not really that valuable.
+> 
+> pci_read_config_*() is much more interesting because it returns two
+> things, the function return value and the value read from the PCI
+> device, and it's complicated to check both. 
 
-Vlastimil Babka 於 2020/7/14 下午5:46 寫道:
-> On 7/13/20 3:57 AM, Robbie Ko wrote:
->> Vlastimil Babka 於 2020/7/10 下午11:31 寫道:
->>> On 7/9/20 4:48 AM, robbieko wrote:
->>>> From: Robbie Ko <robbieko@synology.com>
->>>>
->>>> When a migrate page occurs, we first create a migration entry
->>>> to replace the original pte, and then go to fallback_migrate_page
->>>> to execute a writeout if the migratepage is not supported.
->>>>
->>>> In the writeout, we will clear the dirty bit of the page and use
->>>> page_mkclean to clear the dirty bit along with the corresponding pte,
->>>> but page_mkclean does not support migration entry.
->>>>
->>>> The page ditry bit is cleared, but the dirty bit of the pte still exists,
->>>> so if mmap continues to write, it will result in data loss.
->>> Curious, did you observe this data loss? What filesystem? If yes, it seems
->>> serious enough to
->>> CC stable and determine a Fixes: tag?
->> Yes, there is data loss.
->> I'm using a btrfs environment, but not the following patch
-> And the kernel is otherwise upstream? Which version?
-> Anyway we better let btrfs guys know (+CC) even if the fix is in MM code.
+  .../...
 
-Kernel verion is 4.4.
-I think this is a bug that has been around for a long time.
+I agree. It's a mess at the moment.
 
-I think the problem is not limited to btrfs, as long as other fs
-have not implemented the migrationpage, they will encounter
-the problem. (Eg ecryptfs, fat, nfs...)
+We have separate mechanism to convey PCI errors (among other things the
+channel state) which should apply to config space when detection is
+possible.
 
->> btrfs: implement migratepage callback for data pages
->> https://git.kernel.org/pub/scm/linux/kernel
->> /git/torvalds/linux.git/commit/?h=v5.8-rc5&
->> id=f8e6608180a31cc72a23b74969da428da236dbd1
-> That's a new commit, so if this is really affecting upstream btrfs pre-5.8 we
-> should either backport that commit, or your fix (after review).
->
->>>> We fix the by first remove the migration entry and then clearing
->>>> the dirty bits of the page, which also clears the pte's dirty bits.
->>>>
->>>> Signed-off-by: Robbie Ko <robbieko@synology.com>
->>>> ---
->>>>    mm/migrate.c | 8 ++++----
->>>>    1 file changed, 4 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/mm/migrate.c b/mm/migrate.c
->>>> index f37729673558..5c407434b9ba 100644
->>>> --- a/mm/migrate.c
->>>> +++ b/mm/migrate.c
->>>> @@ -875,10 +875,6 @@ static int writeout(struct address_space *mapping, struct page *page)
->>>>    		/* No write method for the address space */
->>>>    		return -EINVAL;
->>>>    
->>>> -	if (!clear_page_dirty_for_io(page))
->>>> -		/* Someone else already triggered a write */
->>>> -		return -EAGAIN;
->>>> -
->>>>    	/*
->>>>    	 * A dirty page may imply that the underlying filesystem has
->>>>    	 * the page on some queue. So the page must be clean for
->>>> @@ -889,6 +885,10 @@ static int writeout(struct address_space *mapping, struct page *page)
->>>>    	 */
->>>>    	remove_migration_ptes(page, page, false);
->>>>    
->>>> +	if (!clear_page_dirty_for_io(page))
->>>> +		/* Someone else already triggered a write */
->>>> +		return -EAGAIN;
->>>> +
->>>>    	rc = mapping->a_ops->writepage(page, &wbc);
->>>>    
->>>>    	if (rc != AOP_WRITEPAGE_ACTIVATE)
->>>>
->
+I think returning all 1's is the right thing to do here and avoids odd
+duplicate error detection logic which I bet you is never properly
+tested.
+
+> > For b), it might be nice to also change other aspects of the
+> > interface, e.g. passing a pci_host_bridge pointer plus bus number
+> > instead of a pci_bus pointer, or having the callback in the
+> > pci_host_bridge structure.
+> 
+> I like this idea a lot, too.  I think the fact that
+> pci_bus_read_config_word() requires a pci_bus * complicates things in
+> a few places.
+> 
+> I think it's completely separate, as you say, and we should defer it
+> for now because even part a) is a lot of work.  I added it to my list
+> of possible future projects.
+
+Agreed on both points.
+
+Cheers,
+Ben.
+
+
