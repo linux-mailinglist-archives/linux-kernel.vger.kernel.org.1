@@ -2,339 +2,532 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B937220FA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33803220FAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgGOOjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 10:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726086AbgGOOjR (ORCPT
+        id S1729198AbgGOOoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 10:44:34 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9633 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgGOOoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 10:39:17 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E341C061755;
-        Wed, 15 Jul 2020 07:39:17 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id b92so3065672pjc.4;
-        Wed, 15 Jul 2020 07:39:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EVN7Krk9aNTG/z7sMpZMy2uuZmAuzY7KaEATKxotU1g=;
-        b=FoPDpx4KS5fWCAIvVn/3fMAKlv8fX9JtX44+85EjJjy+iQvQPDaikDsW8UwLd8iS+K
-         wKZa8IazArQedHRLeYHprQGTwtRKoJEa1g/2XpPV3lrsN8cyucJY5L2ixhwzTPfLRLxL
-         6vk10DvmH4mSz1+DTV1Jzg6J7pV7fBvbCwqJ+XRVJcCL4LqTFkZ14JgYklZtMN8ZrY3D
-         hbEFdxW7gSlNi3xFN56IceAsQXFb0xswXSaMVzH07eO/Sd9kZR/09VO2L6hhE+ITgWtU
-         70oCUoX5OKRXIzk67r825JSurCRkG9leE/rsRBuGmUvgMYTSyLD7wgapx+GwT6pc8M77
-         19TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EVN7Krk9aNTG/z7sMpZMy2uuZmAuzY7KaEATKxotU1g=;
-        b=kUVwywqaguFsvFJl/3/ssX5dVl3Nbm+AU0KCU7hfcwRNhcTnqQNyaQZljaQ5X3H9eW
-         uRNv1e9P9/nNemWWeinIjKnaMOG/+6MgVfXfXwbuMLzQQ6Wtamf4O6AHepJ6vDDYNsJL
-         DBNg/gL3ucaCo0b8FZToUjo4dAwO2wsBYtlE0ZZLwNJfTxBVreZdcGicAPII1USmzZ/3
-         tRlJXR2OFtnYzE4tx2dUaf9i/wwHyK89xvWRMhN2mjkDRx14mTRmuqSzL342YxV2Cp3V
-         PFGNey3Nl7x149dXXOJCWDOS1MArYPeHTtZGtYGegYcFEhDOkINAa9k5AtgQlTcwgxAd
-         icAA==
-X-Gm-Message-State: AOAM531IprSDmAxj4qYsbdnb9UzIeeaDiua6FMEXvWyASKY88uXL/bgN
-        Yta3M5pDdD79eI45WXx1q+A=
-X-Google-Smtp-Source: ABdhPJzg80x8u9C+GDJM7SQiyhcUli6IaUbI2vnMSddTmuAKkdzPJh8YJRYNBDpjPe5ywDFVmkQNqQ==
-X-Received: by 2002:a17:90b:24a:: with SMTP id fz10mr10471964pjb.36.1594823956583;
-        Wed, 15 Jul 2020 07:39:16 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w29sm2306247pfq.128.2020.07.15.07.39.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Jul 2020 07:39:15 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 07:39:14 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Marius Zachmann <mail@mariuszachmann.de>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: corsair-cpro: Change to hid driver
-Message-ID: <20200715143914.GB201840@roeck-us.net>
-References: <20200714105230.3126-1-mail@mariuszachmann.de>
+        Wed, 15 Jul 2020 10:44:34 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0f15df0000>; Wed, 15 Jul 2020 07:42:39 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 15 Jul 2020 07:44:33 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 15 Jul 2020 07:44:33 -0700
+Received: from [10.26.73.219] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Jul
+ 2020 14:44:26 +0000
+Subject: Re: [TEGRA194_CPUFREQ PATCH v6 3/3] cpufreq: Add Tegra194 cpufreq
+ driver
+To:     Sumit Gupta <sumitg@nvidia.com>, <rjw@rjwysocki.net>,
+        <viresh.kumar@linaro.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <thierry.reding@gmail.com>,
+        <robh+dt@kernel.org>, <mirq-linux@rere.qmqm.pl>,
+        <devicetree@vger.kernel.org>, <talho@nvidia.com>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <bbasu@nvidia.com>, <mperttunen@nvidia.com>
+References: <1594819885-31016-1-git-send-email-sumitg@nvidia.com>
+ <1594819885-31016-4-git-send-email-sumitg@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <d0a4a28a-f471-22bd-273a-dc5c62a79051@nvidia.com>
+Date:   Wed, 15 Jul 2020 15:44:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714105230.3126-1-mail@mariuszachmann.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1594819885-31016-4-git-send-email-sumitg@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594824159; bh=hts6yE/D+T5uapmUmz6jGwekaVI+cks8M7XGRMXj33w=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Rgy2WPhZL85KmgcIVwB0B+byv7fRY3dOee38gLhLgrO6OF8d1RsYvy1QcrbaSLNLi
+         eBOYxPu4AGl7wyvWBIbJKKvDrp8aw/LEzq+hAuRnuvf38qxBQZ2ys5txMiU5w4hNi1
+         1O/+1h2ltr5C/H/FgH6hZTJlRrcY2qj+R7z+AxCkrc3fSfcNd8+inKy2eHsrcqDwYY
+         Oejji8oI+jaHEbDQDjiysmq/knaVgUH/FhEaEMFz6sP0Q/OnYnuetWhIt/q2dJ5dKi
+         9fPSw7wAkfSBSTvpsLUWmtagKl/JnyrlBPqbS3OEMRtb7wFZUSASAiUfEJmYEQPGgL
+         PCXhrMKZdG6nQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 12:52:30PM +0200, Marius Zachmann wrote:
-> I found a project which uses hidraw to communicate with the device.
-> Because I do not want to break any existing userspace code, I
-> changed this to a hid driver, so hidraw can still be used.
-> Do I need to include the hid maintainers for the undo in hid-quirks?
 
-I think I'll squash this patch with the others.
-
+On 15/07/2020 14:31, Sumit Gupta wrote:
+> Add support for CPU frequency scaling on Tegra194. The frequency
+> of each core can be adjusted by writing a clock divisor value to
+> a MSR on the core. The range of valid divisors is queried from
+> the BPMP.
 > 
-> Signed-off-by: Marius Zachmann <mail@mariuszachmann.de>
+> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
 > ---
->  drivers/hid/hid-quirks.c     |   2 -
->  drivers/hwmon/Kconfig        |   4 +-
->  drivers/hwmon/corsair-cpro.c | 114 ++++++++++++++++++++++++++---------
->  3 files changed, 86 insertions(+), 34 deletions(-)
+>  drivers/cpufreq/Kconfig.arm        |   7 +
+>  drivers/cpufreq/Makefile           |   1 +
+>  drivers/cpufreq/tegra194-cpufreq.c | 397 +++++++++++++++++++++++++++++++++++++
+>  3 files changed, 405 insertions(+)
+>  create mode 100644 drivers/cpufreq/tegra194-cpufreq.c
 > 
-> diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-> index 7b7bc7737c53..ca8b5c261c7c 100644
-> --- a/drivers/hid/hid-quirks.c
-> +++ b/drivers/hid/hid-quirks.c
-> @@ -699,8 +699,6 @@ static const struct hid_device_id hid_ignore_list[] = {
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_AXENTIA, USB_DEVICE_ID_AXENTIA_FM_RADIO) },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_BERKSHIRE, USB_DEVICE_ID_BERKSHIRE_PCWD) },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_CIDC, 0x0103) },
-> -	{ HID_USB_DEVICE(USB_VENDOR_ID_CORSAIR, 0x0c10) },
-> -	{ HID_USB_DEVICE(USB_VENDOR_ID_CORSAIR, 0x1d00) },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_CYGNAL, USB_DEVICE_ID_CYGNAL_RADIO_SI470X) },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_CYGNAL, USB_DEVICE_ID_CYGNAL_RADIO_SI4713) },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_CMEDIA, USB_DEVICE_ID_CM109) },
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 8b046a5dfa40..c603d8c8e3d2 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -441,7 +441,7 @@ config SENSORS_BT1_PVT_ALARMS
-> 
->  config SENSORS_CORSAIR_CPRO
->  	tristate "Corsair Commander Pro controller"
-> -	depends on USB
-> +	depends on HID
+> diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+> index 15c1a12..7e99a46 100644
+> --- a/drivers/cpufreq/Kconfig.arm
+> +++ b/drivers/cpufreq/Kconfig.arm
+> @@ -314,6 +314,13 @@ config ARM_TEGRA186_CPUFREQ
 >  	help
->  	  If you say yes here you get support for the Corsair Commander Pro
->  	  controller.
-> @@ -1716,7 +1716,7 @@ config SENSORS_ADS7871
-> 
->  config SENSORS_AMC6821
->  	tristate "Texas Instruments AMC6821"
-> -	depends on I2C
-> +	depends on I2C
-
-Unrelated change; please drop.
-
->  	help
->  	  If you say yes here you get support for the Texas Instruments
->  	  AMC6821 hardware monitoring chips.
-> diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
-> index fe625190e3a1..4310ee5aca24 100644
-> --- a/drivers/hwmon/corsair-cpro.c
-> +++ b/drivers/hwmon/corsair-cpro.c
-> @@ -5,13 +5,14 @@
->   */
-> 
->  #include <linux/bitops.h>
-> +#include <linux/completion.h>
-> +#include <linux/hid.h>
->  #include <linux/hwmon.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
->  #include <linux/slab.h>
->  #include <linux/types.h>
-> -#include <linux/usb.h>
-> 
->  #define USB_VENDOR_ID_CORSAIR			0x1b1c
->  #define USB_PRODUCT_ID_CORSAIR_COMMANDERPRO	0x0c10
-> @@ -62,7 +63,8 @@
->  #define NUM_TEMP_SENSORS	4
-> 
->  struct ccp_device {
-> -	struct usb_device *udev;
-> +	struct hid_device *hdev;
-> +	struct completion wait_input_report;
->  	struct mutex mutex; /* whenever buffer is used, lock before send_usb_cmd */
->  	u8 *buffer;
->  	int pwm[6];
-> @@ -75,7 +77,7 @@ struct ccp_device {
->  /* send command, check for error in response, response in ccp->buffer */
->  static int send_usb_cmd(struct ccp_device *ccp, u8 command, u8 byte1, u8 byte2, u8 byte3)
->  {
-> -	int actual_length;
-> +	unsigned long t;
->  	int ret;
-> 
->  	memset(ccp->buffer, 0x00, OUT_BUFFER_SIZE);
-> @@ -84,26 +86,39 @@ static int send_usb_cmd(struct ccp_device *ccp, u8 command, u8 byte1, u8 byte2,
->  	ccp->buffer[2] = byte2;
->  	ccp->buffer[3] = byte3;
-> 
-> -	ret = usb_bulk_msg(ccp->udev, usb_sndintpipe(ccp->udev, 2), ccp->buffer, OUT_BUFFER_SIZE,
-> -			   &actual_length, 1000);
-> -	if (ret)
-> -		return ret;
-> +	reinit_completion(&ccp->wait_input_report);
-> 
-> -	/* response needs to be received every time */
-> -	ret = usb_bulk_msg(ccp->udev, usb_rcvintpipe(ccp->udev, 1), ccp->buffer, IN_BUFFER_SIZE,
-> -			   &actual_length, 1000);
-> -	if (ret)
-> +	ret = hid_hw_output_report(ccp->hdev, ccp->buffer, OUT_BUFFER_SIZE);
-> +	if (ret < 0)
->  		return ret;
-> 
-> +	t = wait_for_completion_timeout(&ccp->wait_input_report, msecs_to_jiffies(300));
-
-Please use a define for the timeout.
-
-> +	if (!t)
-> +		return -ETIMEDOUT;
-
-
+>  	  This adds the CPUFreq driver support for Tegra186 SOCs.
+>  
+> +config ARM_TEGRA194_CPUFREQ
+> +	tristate "Tegra194 CPUFreq support"
+> +	depends on ARCH_TEGRA_194_SOC && TEGRA_BPMP
+> +	default y
+> +	help
+> +	  This adds CPU frequency driver support for Tegra194 SOCs.
 > +
->  	/* first byte of response is error code */
->  	if (ccp->buffer[0] != 0x00) {
-> -		dev_dbg(&ccp->udev->dev, "device response error: %d", ccp->buffer[0]);
-> +		hid_dbg(ccp->hdev, "device response error: %d", ccp->buffer[0]);
->  		return -EIO;
->  	}
-> 
->  	return 0;
->  }
-> 
-> +static int ccp_raw_event(struct hid_device *hdev, struct hid_report *report, u8 *data, int size)
+>  config ARM_TI_CPUFREQ
+>  	bool "Texas Instruments CPUFreq support"
+>  	depends on ARCH_OMAP2PLUS
+> diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
+> index f6670c4..66b5563 100644
+> --- a/drivers/cpufreq/Makefile
+> +++ b/drivers/cpufreq/Makefile
+> @@ -83,6 +83,7 @@ obj-$(CONFIG_ARM_TANGO_CPUFREQ)		+= tango-cpufreq.o
+>  obj-$(CONFIG_ARM_TEGRA20_CPUFREQ)	+= tegra20-cpufreq.o
+>  obj-$(CONFIG_ARM_TEGRA124_CPUFREQ)	+= tegra124-cpufreq.o
+>  obj-$(CONFIG_ARM_TEGRA186_CPUFREQ)	+= tegra186-cpufreq.o
+> +obj-$(CONFIG_ARM_TEGRA194_CPUFREQ)	+= tegra194-cpufreq.o
+>  obj-$(CONFIG_ARM_TI_CPUFREQ)		+= ti-cpufreq.o
+>  obj-$(CONFIG_ARM_VEXPRESS_SPC_CPUFREQ)	+= vexpress-spc-cpufreq.o
+>  
+> diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
+> new file mode 100644
+> index 0000000..b52a5e2
+> --- /dev/null
+> +++ b/drivers/cpufreq/tegra194-cpufreq.c
+> @@ -0,0 +1,397 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2020, NVIDIA CORPORATION. All rights reserved
+> + */
+> +
+> +#include <linux/cpu.h>
+> +#include <linux/cpufreq.h>
+> +#include <linux/delay.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +
+> +#include <asm/smp_plat.h>
+> +
+> +#include <soc/tegra/bpmp.h>
+> +#include <soc/tegra/bpmp-abi.h>
+> +
+> +#define KHZ                     1000
+> +#define REF_CLK_MHZ             408 /* 408 MHz */
+> +#define US_DELAY                500
+> +#define US_DELAY_MIN            2
+> +#define CPUFREQ_TBL_STEP_HZ     (50 * KHZ * KHZ)
+> +#define MAX_CNT                 ~0U
+> +
+> +/* cpufreq transisition latency */
+> +#define TEGRA_CPUFREQ_TRANSITION_LATENCY (300 * 1000) /* unit in nanoseconds */
+> +
+> +enum cluster {
+> +	CLUSTER0,
+> +	CLUSTER1,
+> +	CLUSTER2,
+> +	CLUSTER3,
+> +	MAX_CLUSTERS,
+> +};
+> +
+> +struct tegra194_cpufreq_data {
+> +	void __iomem *regs;
+> +	size_t num_clusters;
+> +	struct cpufreq_frequency_table **tables;
+> +};
+> +
+> +struct tegra_cpu_ctr {
+> +	u32 cpu;
+> +	u32 delay;
+> +	u32 coreclk_cnt, last_coreclk_cnt;
+> +	u32 refclk_cnt, last_refclk_cnt;
+> +};
+> +
+> +struct read_counters_work {
+> +	struct work_struct work;
+> +	struct tegra_cpu_ctr c;
+> +};
+> +
+> +static struct workqueue_struct *read_counters_wq;
+> +
+> +static enum cluster get_cpu_cluster(u8 cpu)
 > +{
-> +	struct ccp_device *ccp = hid_get_drvdata(hdev);
+> +	return MPIDR_AFFINITY_LEVEL(cpu_logical_map(cpu), 1);
+> +}
 > +
-> +	/* only copy buffer when requested */
-> +	if (completion_done(&ccp->wait_input_report))
+> +/*
+> + * Read per-core Read-only system register NVFREQ_FEEDBACK_EL1.
+> + * The register provides frequency feedback information to
+> + * determine the average actual frequency a core has run at over
+> + * a period of time.
+> + *	[31:0] PLLP counter: Counts at fixed frequency (408 MHz)
+> + *	[63:32] Core clock counter: counts on every core clock cycle
+> + *			where the core is architecturally clocking
+> + */
+> +static u64 read_freq_feedback(void)
+> +{
+> +	u64 val = 0;
+> +
+> +	asm volatile("mrs %0, s3_0_c15_c0_5" : "=r" (val) : );
+> +
+> +	return val;
+> +}
+> +
+> +static inline u32 map_ndiv_to_freq(struct mrq_cpu_ndiv_limits_response
+> +				   *nltbl, u16 ndiv)
+> +{
+> +	return nltbl->ref_clk_hz / KHZ * ndiv / (nltbl->pdiv * nltbl->mdiv);
+> +}
+> +
+> +static void tegra_read_counters(struct work_struct *work)
+> +{
+> +	struct read_counters_work *read_counters_work;
+> +	struct tegra_cpu_ctr *c;
+> +	u64 val;
+> +
+> +	/*
+> +	 * ref_clk_counter(32 bit counter) runs on constant clk,
+> +	 * pll_p(408MHz).
+> +	 * It will take = 2 ^ 32 / 408 MHz to overflow ref clk counter
+> +	 *              = 10526880 usec = 10.527 sec to overflow
+> +	 *
+> +	 * Like wise core_clk_counter(32 bit counter) runs on core clock.
+> +	 * It's synchronized to crab_clk (cpu_crab_clk) which runs at
+> +	 * freq of cluster. Assuming max cluster clock ~2000MHz,
+> +	 * It will take = 2 ^ 32 / 2000 MHz to overflow core clk counter
+> +	 *              = ~2.147 sec to overflow
+> +	 */
+> +	read_counters_work = container_of(work, struct read_counters_work,
+> +					  work);
+> +	c = &read_counters_work->c;
+> +
+> +	val = read_freq_feedback();
+> +	c->last_refclk_cnt = lower_32_bits(val);
+> +	c->last_coreclk_cnt = upper_32_bits(val);
+> +	udelay(c->delay);
+> +	val = read_freq_feedback();
+> +	c->refclk_cnt = lower_32_bits(val);
+> +	c->coreclk_cnt = upper_32_bits(val);
+> +}
+> +
+> +/*
+> + * Return instantaneous cpu speed
+> + * Instantaneous freq is calculated as -
+> + * -Takes sample on every query of getting the freq.
+> + *	- Read core and ref clock counters;
+> + *	- Delay for X us
+> + *	- Read above cycle counters again
+> + *	- Calculates freq by subtracting current and previous counters
+> + *	  divided by the delay time or eqv. of ref_clk_counter in delta time
+> + *	- Return Kcycles/second, freq in KHz
+> + *
+> + *	delta time period = x sec
+> + *			  = delta ref_clk_counter / (408 * 10^6) sec
+> + *	freq in Hz = cycles/sec
+> + *		   = (delta cycles / x sec
+> + *		   = (delta cycles * 408 * 10^6) / delta ref_clk_counter
+> + *	in KHz	   = (delta cycles * 408 * 10^3) / delta ref_clk_counter
+> + *
+> + * @cpu - logical cpu whose freq to be updated
+> + * Returns freq in KHz on success, 0 if cpu is offline
+> + */
+> +static unsigned int tegra194_get_speed_common(u32 cpu, u32 delay)
+> +{
+> +	struct read_counters_work read_counters_work;
+> +	struct tegra_cpu_ctr c;
+> +	u32 delta_refcnt;
+> +	u32 delta_ccnt;
+> +	u32 rate_mhz;
+> +
+> +	/*
+> +	 * udelay() is required to reconstruct cpu frequency over an
+> +	 * observation window. Using workqueue to call udelay() with
+> +	 * interrupts enabled.
+> +	 */
+> +	read_counters_work.c.cpu = cpu;
+> +	read_counters_work.c.delay = delay;
+> +	INIT_WORK_ONSTACK(&read_counters_work.work, tegra_read_counters);
+> +	queue_work_on(cpu, read_counters_wq, &read_counters_work.work);
+> +	flush_work(&read_counters_work.work);
+> +	c = read_counters_work.c;
+> +
+> +	if (c.coreclk_cnt < c.last_coreclk_cnt)
+> +		delta_ccnt = c.coreclk_cnt + (MAX_CNT - c.last_coreclk_cnt);
+> +	else
+> +		delta_ccnt = c.coreclk_cnt - c.last_coreclk_cnt;
+> +	if (!delta_ccnt)
 > +		return 0;
 > +
-> +	memcpy(ccp->buffer, data, min(IN_BUFFER_SIZE, size));
-> +	complete(&ccp->wait_input_report);
+> +	/* ref clock is 32 bits */
+> +	if (c.refclk_cnt < c.last_refclk_cnt)
+> +		delta_refcnt = c.refclk_cnt + (MAX_CNT - c.last_refclk_cnt);
+> +	else
+> +		delta_refcnt = c.refclk_cnt - c.last_refclk_cnt;
+> +	if (!delta_refcnt) {
+> +		pr_debug("cpufreq: %d is idle, delta_refcnt: 0\n", cpu);
+> +		return 0;
+> +	}
+> +	rate_mhz = ((unsigned long)(delta_ccnt * REF_CLK_MHZ)) / delta_refcnt;
+> +
+> +	return (rate_mhz * KHZ); /* in KHz */
+> +}
+> +
+> +static unsigned int tegra194_get_speed(u32 cpu)
+> +{
+> +	return tegra194_get_speed_common(cpu, US_DELAY);
+> +}
+> +
+> +static unsigned int tegra194_fast_get_speed(u32 cpu)
+> +{
+> +	return tegra194_get_speed_common(cpu, US_DELAY_MIN);
+> +}
+
+Personally, I would not bother with the above function as it is only
+used in one place.
+
+> +
+> +static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
+> +{
+> +	struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
+> +	int cl = get_cpu_cluster(policy->cpu);
+> +	u32 cpu;
+> +
+> +	if (cl >= data->num_clusters)
+> +		return -EINVAL;
+> +
+> +	policy->cur = tegra194_fast_get_speed(policy->cpu); /* boot freq */
+> +
+> +	/* set same policy for all cpus in a cluster */
+> +	for (cpu = (cl * 2); cpu < ((cl + 1) * 2); cpu++)
+> +		cpumask_set_cpu(cpu, policy->cpus);
+> +
+> +	policy->freq_table = data->tables[cl];
+> +	policy->cpuinfo.transition_latency = TEGRA_CPUFREQ_TRANSITION_LATENCY;
 > +
 > +	return 0;
 > +}
 > +
->  /* requests and returns single data values depending on channel */
->  static int get_data(struct ccp_device *ccp, int command, int channel)
->  {
-> @@ -437,57 +452,96 @@ static int get_temp_cnct(struct ccp_device *ccp)
->  	return 0;
->  }
-> 
-> -static int ccp_probe(struct usb_interface *intf, const struct usb_device_id *id)
-> +static int ccp_probe(struct hid_device *hdev, const struct hid_device_id *id)
->  {
->  	struct device *hwmon_dev;
->  	struct ccp_device *ccp;
->  	int ret;
-> 
-> -	ccp = devm_kzalloc(&intf->dev, sizeof(*ccp), GFP_KERNEL);
-> +	ccp = devm_kzalloc(&hdev->dev, sizeof(*ccp), GFP_KERNEL);
->  	if (!ccp)
->  		return -ENOMEM;
-> 
-> -	ccp->buffer = devm_kmalloc(&intf->dev, OUT_BUFFER_SIZE, GFP_KERNEL);
-> +	ccp->buffer = devm_kmalloc(&hdev->dev, OUT_BUFFER_SIZE, GFP_KERNEL);
->  	if (!ccp->buffer)
->  		return -ENOMEM;
-> 
-> +	ret = hid_parse(hdev);
-> +	if (ret)
-> +		return ret;
+> +static void set_cpu_ndiv(void *data)
+> +{
+> +	struct cpufreq_frequency_table *tbl = data;
+> +	u64 ndiv_val = (u64)tbl->driver_data;
 > +
-> +	ret = hid_hw_start(hdev, HID_CONNECT_HIDRAW);
-> +	if (ret)
-> +		return ret;
+> +	asm volatile("msr s3_0_c15_c0_4, %0" : : "r" (ndiv_val));
+> +}
 > +
-> +	ret = hid_hw_open(hdev);
-> +	if (ret)
-> +		goto out_hw_stop;
+> +static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
+> +				       unsigned int index)
+> +{
+> +	struct cpufreq_frequency_table *tbl = policy->freq_table + index;
 > +
-> +	ccp->hdev = hdev;
-> +	hid_set_drvdata(hdev, ccp);
->  	mutex_init(&ccp->mutex);
-> +	init_completion(&ccp->wait_input_report);
-> 
-> -	ccp->udev = interface_to_usbdev(intf);
-> +	hid_device_io_start(hdev);
-> 
->  	/* temp and fan connection status only updates when device is powered on */
->  	ret = get_temp_cnct(ccp);
->  	if (ret)
-> -		return ret;
-> +		goto out_hw_close;
-> 
->  	ret = get_fan_cnct(ccp);
->  	if (ret)
-> -		return ret;
-> -
-> -	hwmon_dev = devm_hwmon_device_register_with_info(&intf->dev, "corsaircpro", ccp,
-> +		goto out_hw_close;
-> +	hwmon_dev = devm_hwmon_device_register_with_info(&hdev->dev, "corsaircpro", ccp,
->  							 &ccp_chip_info, 0);
+> +	/*
+> +	 * Each core writes frequency in per core register. Then both cores
+> +	 * in a cluster run at same frequency which is the maximum frequency
+> +	 * request out of the values requested by both cores in that cluster.
+> +	 */
+> +	on_each_cpu_mask(policy->cpus, set_cpu_ndiv, tbl, true);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct cpufreq_driver tegra194_cpufreq_driver = {
+> +	.name = "tegra194",
+> +	.flags = CPUFREQ_STICKY | CPUFREQ_CONST_LOOPS |
+> +		CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+> +	.verify = cpufreq_generic_frequency_table_verify,
+> +	.target_index = tegra194_cpufreq_set_target,
+> +	.get = tegra194_get_speed,
+> +	.init = tegra194_cpufreq_init,
+> +	.attr = cpufreq_generic_attr,
+> +};
+> +
+> +static void tegra194_cpufreq_free_resources(void)
+> +{
+> +	destroy_workqueue(read_counters_wq);
+> +}
 
-You'll have to use hwmon_device_register_with_info() and call the remove
-function explicitly in ccp_remove() to avoid race conditions.
-Alternatively, you could use devm_add_action_or_reset() to handle
-hid_hw_close() and hid_hw_stop(), but that would probably not be worth
-the added complexity.
+I would not bother with adding this function either.
 
-> +	if (IS_ERR(hwmon_dev)) {
-> +		ret = PTR_ERR(hwmon_dev);
-> +		goto out_hw_close;
+> +
+> +static struct cpufreq_frequency_table *
+> +init_freq_table(struct platform_device *pdev, struct tegra_bpmp *bpmp,
+> +		unsigned int cluster_id)
+> +{
+> +	struct cpufreq_frequency_table *freq_table;
+> +	struct mrq_cpu_ndiv_limits_response resp;
+> +	unsigned int num_freqs, ndiv, delta_ndiv;
+> +	struct mrq_cpu_ndiv_limits_request req;
+> +	struct tegra_bpmp_message msg;
+> +	u16 freq_table_step_size;
+> +	int err, index;
+> +
+> +	memset(&req, 0, sizeof(req));
+> +	req.cluster_id = cluster_id;
+> +
+> +	memset(&msg, 0, sizeof(msg));
+> +	msg.mrq = MRQ_CPU_NDIV_LIMITS;
+> +	msg.tx.data = &req;
+> +	msg.tx.size = sizeof(req);
+> +	msg.rx.data = &resp;
+> +	msg.rx.size = sizeof(resp);
+> +
+> +	err = tegra_bpmp_transfer(bpmp, &msg);
+> +	if (err)
+> +		return ERR_PTR(err);
+> +
+> +	/*
+> +	 * Make sure frequency table step is a multiple of mdiv to match
+> +	 * vhint table granularity.
+> +	 */
+> +	freq_table_step_size = resp.mdiv *
+> +			DIV_ROUND_UP(CPUFREQ_TBL_STEP_HZ, resp.ref_clk_hz);
+> +
+> +	dev_dbg(&pdev->dev, "cluster %d: frequency table step size: %d\n",
+> +		cluster_id, freq_table_step_size);
+> +
+> +	delta_ndiv = resp.ndiv_max - resp.ndiv_min;
+> +
+> +	if (unlikely(delta_ndiv == 0)) {
+> +		num_freqs = 1;
+> +	} else {
+> +		/* We store both ndiv_min and ndiv_max hence the +1 */
+> +		num_freqs = delta_ndiv / freq_table_step_size + 1;
 > +	}
 > +
+> +	num_freqs += (delta_ndiv % freq_table_step_size) ? 1 : 0;
+> +
+> +	freq_table = devm_kcalloc(&pdev->dev, num_freqs + 1,
+> +				  sizeof(*freq_table), GFP_KERNEL);
+> +	if (!freq_table)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	for (index = 0, ndiv = resp.ndiv_min;
+> +			ndiv < resp.ndiv_max;
+> +			index++, ndiv += freq_table_step_size) {
+> +		freq_table[index].driver_data = ndiv;
+> +		freq_table[index].frequency = map_ndiv_to_freq(&resp, ndiv);
+> +	}
+> +
+> +	freq_table[index].driver_data = resp.ndiv_max;
+> +	freq_table[index++].frequency = map_ndiv_to_freq(&resp, resp.ndiv_max);
+> +	freq_table[index].frequency = CPUFREQ_TABLE_END;
+> +
+> +	return freq_table;
+> +}
+> +
+> +static int tegra194_cpufreq_probe(struct platform_device *pdev)
+> +{
+> +	struct tegra194_cpufreq_data *data;
+> +	struct tegra_bpmp *bpmp;
+> +	int err, i;
+> +
+> +	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	data->num_clusters = MAX_CLUSTERS;
+> +	data->tables = devm_kcalloc(&pdev->dev, data->num_clusters,
+> +				    sizeof(*data->tables), GFP_KERNEL);
+> +	if (!data->tables)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, data);
+> +
+> +	bpmp = tegra_bpmp_get(&pdev->dev);
+> +	if (IS_ERR(bpmp))
+> +		return PTR_ERR(bpmp);
+> +
+> +	read_counters_wq = alloc_workqueue("read_counters_wq", __WQ_LEGACY, 1);
+> +	if (!read_counters_wq) {
+> +		dev_err(&pdev->dev, "fail to create_workqueue\n");
+> +		err = -EINVAL;
+> +		goto put_bpmp;
+> +	}
+> +
+> +	for (i = 0; i < data->num_clusters; i++) {
+> +		data->tables[i] = init_freq_table(pdev, bpmp, i);
+> +		if (IS_ERR(data->tables[i])) {
+> +			err = PTR_ERR(data->tables[i]);
+> +			goto err_free_res;
+> +		}
+> +	}
+> +
+> +	tegra194_cpufreq_driver.driver_data = data;
+> +
+> +	err = cpufreq_register_driver(&tegra194_cpufreq_driver);
+> +	if (err)
+> +		goto err_free_res;
+
+You don't need the above if statement now you added the below.
+
+> +
+> +	if (!err)
+> +		goto put_bpmp;
+> +
+> +err_free_res:
+> +	tegra194_cpufreq_free_resources();
+> +put_bpmp:
+> +	tegra_bpmp_put(bpmp);
+> +	return err;
+> +}
+> +
+> +static int tegra194_cpufreq_remove(struct platform_device *pdev)
+> +{
+> +	cpufreq_unregister_driver(&tegra194_cpufreq_driver);
+> +	tegra194_cpufreq_free_resources();
+> +
 > +	return 0;
-> 
-> -	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +out_hw_close:
-> +	hid_hw_close(hdev);
-> +out_hw_stop:
-> +	hid_hw_stop(hdev);
-> +	return ret;
->  }
-> 
-> -static void ccp_disconnect(struct usb_interface *intf)
-> +static void ccp_remove(struct hid_device *hdev)
->  {
-> +	hid_hw_close(hdev);
-> +	hid_hw_stop(hdev);
->  }
-> 
-> -static const struct usb_device_id ccp_devices[] = {
-> -	{ USB_DEVICE(USB_VENDOR_ID_CORSAIR, USB_PRODUCT_ID_CORSAIR_COMMANDERPRO) },
-> -	{ USB_DEVICE(USB_VENDOR_ID_CORSAIR, USB_PRODUCT_ID_CORSAIR_1000D) },
-> +static const struct hid_device_id ccp_devices[] = {
-> +	{ HID_USB_DEVICE(USB_VENDOR_ID_CORSAIR, USB_PRODUCT_ID_CORSAIR_COMMANDERPRO) },
-> +	{ HID_USB_DEVICE(USB_VENDOR_ID_CORSAIR, USB_PRODUCT_ID_CORSAIR_1000D) },
->  	{ }
->  };
-> 
-> -static struct usb_driver ccp_driver = {
-> +static struct hid_driver ccp_driver = {
->  	.name = "corsair-cpro",
-> +	.id_table = ccp_devices,
->  	.probe = ccp_probe,
-> -	.disconnect = ccp_disconnect,
-> -	.id_table = ccp_devices
-> +	.remove = ccp_remove,
-> +	.raw_event = ccp_raw_event,
->  };
-> 
-> -MODULE_DEVICE_TABLE(usb, ccp_devices);
-> +MODULE_DEVICE_TABLE(hid, ccp_devices);
->  MODULE_LICENSE("GPL");
-> 
-> -module_usb_driver(ccp_driver);
-> +static int __init ccp_init(void)
-> +{
-> +	return hid_register_driver(&ccp_driver);
 > +}
 > +
-> +static void __exit ccp_exit(void)
-> +{
-> +	hid_unregister_driver(&ccp_driver);
-> +}
+> +static const struct of_device_id tegra194_cpufreq_of_match[] = {
+> +	{ .compatible = "nvidia,tegra194-ccplex", },
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, tegra194_cpufreq_of_match);
 > +
-> +/* make sure, it is loaded after hid */
-> +late_initcall(ccp_init);
-> +module_exit(ccp_exit);
-> --
-> 2.27.0
+> +static struct platform_driver tegra194_ccplex_driver = {
+> +	.driver = {
+> +		.name = "tegra194-cpufreq",
+> +		.of_match_table = tegra194_cpufreq_of_match,
+> +	},
+> +	.probe = tegra194_cpufreq_probe,
+> +	.remove = tegra194_cpufreq_remove,
+> +};
+> +module_platform_driver(tegra194_ccplex_driver);
+> +
+> +MODULE_AUTHOR("Mikko Perttunen <mperttunen@nvidia.com>");
+> +MODULE_AUTHOR("Sumit Gupta <sumitg@nvidia.com>");
+> +MODULE_DESCRIPTION("NVIDIA Tegra194 cpufreq driver");
+> +MODULE_LICENSE("GPL v2");
+> 
+
+Cheers
+Jon
+
+-- 
+nvpublic
