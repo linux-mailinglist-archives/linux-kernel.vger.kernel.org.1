@@ -2,150 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4171F220D99
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20043220DC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731402AbgGONDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 09:03:02 -0400
-Received: from mail.efficios.com ([167.114.26.124]:45970 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729900AbgGONDB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 09:03:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id A3B4A2818D1;
-        Wed, 15 Jul 2020 09:02:59 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id T-XhEFUSaRUD; Wed, 15 Jul 2020 09:02:59 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 2A5E128199D;
-        Wed, 15 Jul 2020 09:02:59 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 2A5E128199D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1594818179;
-        bh=Sbd+cGFRnpcsVMskyWR7rP8BqYCfqctsQ8T1oYWLSPA=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=ip+9qV9oYQB6oHNPVhT20tRLymHcsVPD1Pn7A/qIKoBDmIhZKIkc9/l2kFaUaqp3z
-         cEa44OxzVDEUfrEiKe4Zsa5qRxiCrivTGSbMr/pip1nqAo2hdtjOekoBpxnOs1fmcI
-         L8OVVdNXdK6/QrdlI3nOdl/XsZxG0b56WLJamyFQStKwMsSs8K8U3mH3Y1G5RxTJQX
-         yH841PgJLYFZiCylIz5/nZsxu6iwOCdCZJSPLLUtFd45JbQuELsJEM1QtZ0xOKeSq0
-         9HIJnSLJQrOlnjZh6oBPg+9DeLE3yKhA0E7a7lWUVAEYHwa13uTeovCBlbX/OfvtU7
-         3u8Zlb/zbG2+A==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mTcnIX4OkSq5; Wed, 15 Jul 2020 09:02:59 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 1875528199C;
-        Wed, 15 Jul 2020 09:02:59 -0400 (EDT)
-Date:   Wed, 15 Jul 2020 09:02:59 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     carlos <carlos@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@linux.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Chris Kennelly <ckennelly@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <1190016739.14119.1594818179014.JavaMail.zimbra@efficios.com>
-In-Reply-To: <e7ede994-ebec-8022-b12b-ac7147641ffb@redhat.com>
-References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com> <e7ede994-ebec-8022-b12b-ac7147641ffb@redhat.com>
-Subject: Re: [RFC PATCH 0/4] rseq: Introduce extensible struct rseq
+        id S1731485AbgGONKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 09:10:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730868AbgGONKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 09:10:43 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ECE0420657;
+        Wed, 15 Jul 2020 13:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594818643;
+        bh=pY2aTpiDZTdC6aeil7mlvqDRiK5xcbKTqBLafGtkabk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kXC8jjMMtnAd9ik+gnB9/r9quQXE3QeBEZcJ1nxHvMccL0X4h0jsV3MocfmE4FpxF
+         y+7qXsyurvVnIn3T/s1ewHbCiJopITtuIJEb17kRSoeOqz3JaeGZttxZNTEvhFZcqR
+         tN5zvFQaUnqRIRP37BwpMrxsM4PEro9ATXlkCx/8=
+Date:   Wed, 15 Jul 2020 14:10:33 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH] spi: spidev: Add compatible for external SPI ports on
+ Kontron boards
+Message-ID: <20200715131033.GF5431@sirena.org.uk>
+References: <24ec4eed-de01-28df-ee1f-f7bcfc80051a@kontron.de>
+ <20200702150725.GI4483@sirena.org.uk>
+ <479d566a-213f-4e33-8ac7-7637ae88e31c@kontron.de>
+ <a5b88ad9-3884-1d9c-c4ad-057266f84261@kontron.de>
+ <20200713151108.GB4420@sirena.org.uk>
+ <2eb6971b-7ea4-c9c8-5452-6f4b17e8860a@kontron.de>
+ <20200714192907.GJ4900@sirena.org.uk>
+ <16825a78-8eb0-90f2-433a-d1ae6eed6ba8@kontron.de>
+ <20200715113609.GD5431@sirena.org.uk>
+ <824b8479-e204-d087-7887-a2dbefa0f844@kontron.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3955 (ZimbraWebClient - FF78 (Linux)/8.8.15_GA_3953)
-Thread-Topic: rseq: Introduce extensible struct rseq
-Thread-Index: Uvni3ynFct6LM9XWdCgpU+47NQj6gw==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3oCie2+XPXTnK5a5"
+Content-Disposition: inline
+In-Reply-To: <824b8479-e204-d087-7887-a2dbefa0f844@kontron.de>
+X-Cookie: 40 isn't old.  If you're a tree.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 14, 2020, at 4:55 PM, carlos carlos@redhat.com wrote:
 
-> On 7/13/20 11:03 PM, Mathieu Desnoyers wrote:
->> Recent discussion led to a solution for extending struct rseq. This is
->> an implementation of the proposed solution.
->> 
->> Now is a good time to agree on this scheme before the release of glibc
->> 2.32, just in case there are small details to fix on the user-space
->> side in order to allow extending struct rseq.
-> 
-> Adding extensibility to the rseq registration process would be great,
-> but we are out of time for the glibc 2.32 release.
+--3oCie2+XPXTnK5a5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Of course, and my goal is not to add this support for extensibility
-before glibc 2.32, but merely to see if we need to change anything in
-the way it uses rseq today (before the release) in order to facilitate
-extensibility in the future.
+On Wed, Jul 15, 2020 at 01:45:51PM +0200, Frieder Schrempf wrote:
+> On 15.07.20 13:36, Mark Brown wrote:
 
-> Should we revert rseq for glibc 2.32 and spend quality time discussing
-> the implications of an extensible design, something that Google already
-> says they are doing?
+> > Hey, I proposed other solutions you didn't want to implement!
 
-Google's approach is limited to contexts simpler than multiple unrelated
-libraries scenarios. Peter Oskolkov stated as a follow-up that my
-extension approach would be one way to deal with problems associated
-with sharing __rseq_abi between unrelated libraries:
+> Right, but you have to admit that the other solutions turned out to be
+> rather out of scope for someone like me who merely wants to use the spidev
+> driver.
 
-https://lore.kernel.org/lkml/CAPNVh5fiCCJpyeLj_ciWzFrO4fasVXZNhpfKXJhJWJirXdJOjQ@mail.gmail.com/
+> But I don't blame you. I'm now having a better idea of how things are (or
+> aren't) supposed to look like. So thanks for your patience!
 
-The fact that Google already have their own rseq extensions internally
-confirms that planning for extensibility is needed.
+I'm not sure platforms like this are a great fit for DT TBH - the
+trouble with DT is that it turns things into ABIs regardless of if it's
+really a finished thing, platform data based systems were a lot more
+flexible here.
 
-> We can, with a clear head, and an agreed upon extension mechanism
-> include rseq in glibc 2.33 (release scheduled for Feburary 1st 2021).
-> We release time boxed every 6 months, no deviation, so you know when
-> your next merge window will be.
-> 
-> We have already done the hard work of fixing the nesting signal
-> handler issues, and glibc integration. If we revert today that will
-> also give time for Firefox and Chrome to adjust their sandboxes.
-> 
-> Do you wish to go forward with rseq as we have it in glibc 2.32,
-> or do you wish to revert rseq from glibc 2.32, discuss the extension
-> mechanism, and put it back into glibc 2.33 with adjustments?
+--3oCie2+XPXTnK5a5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-So here we have a catch-22 situation. Linus wants to see how rseq
-is being used before accepting additional features (ref.
-https://lore.kernel.org/lkml/CAHk-=wjk-2c4XvWjdzc-bs9Hbgvy-p7ASSnKKphggr5qDoXRDQ@mail.gmail.com/).
-This lack of ability to allow user-space to make any large-scale use
-of the rseq system call in a coordinated fashion blocks wide use of rseq.
-This coordination is supposed to be done by glibc, and I told
-every user-space project maintainer who contacted me to hold off
-using rseq until it is integrated into glibc. "tcmalloc" from Google
-is the exception because they do not care about ABI compatibility with
-other libraries (they are OK with a breakage and requiring upgrade).
+-----BEGIN PGP SIGNATURE-----
 
-The process I'm going through right now is checking what are our
-options for extending rseq starting from the current ABI, just
-to see if we are painting ourselves in a corner with the current
-glibc integration. However, if we postpone integration of rseq
-into glibc because of possible future extensibility features, those
-may never happen because of the lack of usage feedback, due of lack
-of users, due to lack of coordinated ABI registration.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8PAEkACgkQJNaLcl1U
+h9Ao7Af+ILdbHVUAjGqFK0kjVIvRBVQmrtMuVvJUElx26xVjUNSaA9pPaUpWVQMU
+3kvIuwar56ByNPhPH+FJ7+NoE88dySjua0+mrLbufymXgD58aIzWPQoLPakoDg5y
+TXB3bJ1bTbg6GOZQ3AVJ/hr8wbl13tqgX0/NGy2XCCrMvholDmiXGCGSwiFm09tj
+dzvPrE6qWk5w1h8A9gD0fvtNb9WREq2ePDedQNmi0IByRYl1DVIbfa5+CHVurPDS
+zgtw4XwVgOFNAS8EJoRXGcQmFi+qZWROQ3N9geLAIopwCz1/Tp6jk+EQ1nk7jnux
+gInzPWYYlJ6/hnK+zfw3YHozO5DnYA==
+=BSsn
+-----END PGP SIGNATURE-----
 
-At this point, the main question I would like answered is whether
-it would be acceptable to increase the size and alignment of
-the __rseq_abi symbol (which will be exposed by glibc) between
-e.g. glibc 2.32 and 2.33. If it's not possible, then we can
-find other solutions, for instance using an indirection with
-a pointer to an extended structure, but this appears to be
-slightly less efficient.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+--3oCie2+XPXTnK5a5--
