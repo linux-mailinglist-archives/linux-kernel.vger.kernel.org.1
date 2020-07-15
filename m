@@ -2,133 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D90220B2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2714A220B8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731828AbgGOLLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 07:11:22 -0400
-Received: from [195.135.220.15] ([195.135.220.15]:54998 "EHLO mx2.suse.de"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1731799AbgGOLLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:11:17 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 26997B5A1;
-        Wed, 15 Jul 2020 11:11:18 +0000 (UTC)
-Date:   Wed, 15 Jul 2020 13:11:14 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, pmladek@suse.cz,
-        live-patching@vger.kernel.org
-Subject: Re: linux-next: Tree for Jun 23 (objtool (2))
-In-Reply-To: <20200714135747.lcgysd5joguhssas@treble>
-Message-ID: <alpine.LSU.2.21.2007151250390.25290@pobox.suse.cz>
-References: <20200623162820.3f45feae@canb.auug.org.au> <61df2e8f-75e8-d233-9c3c-5b4fa2b7fbdc@infradead.org> <20200702123555.bjioosahrs5vjovu@treble> <alpine.LSU.2.21.2007141240540.5393@pobox.suse.cz> <20200714135747.lcgysd5joguhssas@treble>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1729805AbgGOLM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 07:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728095AbgGOLMW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 07:12:22 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C786C08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 04:12:22 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a1so1717139ejg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 04:12:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=GNZTlebsq0eWIwEljX2xeBdZEHRs2k6AtH87hm9Zwgg=;
+        b=JZLRSBhWm0oHxV3fok6cxthIXvhjAenz53D8fezRJjLbsEGzev4V175VrT5tTOPQ0L
+         XAnaq/Ov0CMEsnpV/F+V8rK7u1bIHghoUkChEQwbMY9tpBz4kn9ZGAYdf+rjrsnXqUDy
+         +MzGC5vqoZD/qK6UbJ4A75mLpvNLy6Zar3ArQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=GNZTlebsq0eWIwEljX2xeBdZEHRs2k6AtH87hm9Zwgg=;
+        b=Xl7r89TCiN1NPVwdOG0nPRmZ2rJmKZqQrGaYA6d8pVx+wIzTPoX4bCpPCyzeT3vgOz
+         tXkOto8qWhpkYW+BSJNEP1xPxCgQfejCIAsuu+cNCc6l17/NHl35r4++86cSgeR7f5Bp
+         rVefNLaP7BfNqR/N4ozNVU/oSt6tJ+FQG2l8FDE1z4inILA9mXpkiNtgUc0MsGRR/tmC
+         7+QQbWy3UePi7ngcwpABt1pv5F+ftLiqO5ZLVb7AAVQwbowb9olMAAQKWYuE0en7JB8h
+         nPHKGiZa8Zprh4U7+j26+eLG6G298cBspKhzPEj+EzDvZjBhlezGKvg0xRqVy3rAzaXo
+         joDw==
+X-Gm-Message-State: AOAM5313U0w4Vfm7pmfeNRt57qQv6Fhaawfk8X7f9lqaAD+661NbZ7RG
+        tl7Ho8dHF8pC9V7oZKAr7eF46U3ZMHlFvIvmWT1+xg==
+X-Google-Smtp-Source: ABdhPJw0oIZdNNSQSx2dAWVRtVjY5tScV5cqBbhIhCHnr1dD6YokQZCqwZVPmd0NLTWPqfK15c8L+dhgVb8e5/u5u6o=
+X-Received: by 2002:a17:906:b74e:: with SMTP id fx14mr8403146ejb.202.1594811541019;
+ Wed, 15 Jul 2020 04:12:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 15 Jul 2020 13:12:09 +0200
+Message-ID: <CAJfpegu3EwbBFTSJiPhm7eMyTK2MzijLUp1gcboOo3meMF_+Qg@mail.gmail.com>
+Subject: strace of io_uring events?
+To:     strace-devel@lists.strace.io, io-uring@vger.kernel.org
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020, Josh Poimboeuf wrote:
+Hi,
 
-> On Tue, Jul 14, 2020 at 12:56:21PM +0200, Miroslav Benes wrote:
-> > On Thu, 2 Jul 2020, Josh Poimboeuf wrote:
-> > 
-> > > On Tue, Jun 23, 2020 at 08:06:07AM -0700, Randy Dunlap wrote:
-> > > > On 6/22/20 11:28 PM, Stephen Rothwell wrote:
-> > > > > Hi all,
-> > > > > 
-> > > > > Changes since 20200622:
-> > > > > 
-> > > > 
-> > > > on x86_64:
-> > > > 
-> > > > arch/x86/kernel/cpu/mce/core.o: warning: objtool: mce_timed_out()+0x24: unreachable instruction
-> > > > kernel/exit.o: warning: objtool: __x64_sys_exit_group()+0x14: unreachable instruction
-> > > > 
-> > > > Full randconfig file is attached.
-> > > 
-> > > More livepatch...
-> > 
-> > Correct.
-> > 
-> > Both are known and I thought Josh had fixes queued somewhere for both, but 
-> > my memory fails me quite often. See below.
-> 
-> I did have fixes for some of them in a stash somewhere, but I never
-> finished them because I decided it's a GCC bug.
+This thread is to discuss the possibility of stracing requests
+submitted through io_uring.   I'm not directly involved in io_uring
+development, so I'm posting this out of  interest in using strace on
+processes utilizing io_uring.
 
-Same here.
- 
-> > However, I think it is time to decide how to approach this whole saga. It 
-> > seems that there are not so many places in the kernel in need of 
-> > __noreturn annotation in the end and as jikos argued at least some of 
-> > those should be fixed regardless.
-> 
-> I would agree that global functions like do_group_exit() deserve a
-> __noreturn annotation, though it should be in the header file.  But
-> static functions shouldn't need it.
+io_uring gives the developer a way to bypass the syscall interface,
+which results in loss of information when tracing.  This is a strace
+fragment on  "io_uring-cp" from liburing:
 
-Agreed. I'll post the patches for global functions eventually, but see 
-below first.
+io_uring_enter(5, 40, 0, 0, NULL, 8)    = 40
+io_uring_enter(5, 1, 0, 0, NULL, 8)     = 1
+io_uring_enter(5, 1, 0, 0, NULL, 8)     = 1
+...
 
-> > Josh, should I prepare proper patches and submit them to relevant
-> > maintainers to see where this path is going?
-> 
-> If that's how you want to handle it, ok, but it doesn't seem right to
-> me, for the static functions at least.
-> 
-> > It would be much better to fix it in GCC, but it has been like banging 
-> > one's head against a wall so far. Josh, you wanted to create a bug 
-> > for GCC in this respect in the past? Has that happened?
-> 
-> I didn't open a bug, but I could, if you think that would help.  I
-> haven't had a lot of success with GCC bugs in the past.
+What really happens are read + write requests.  Without that
+information the strace output is mostly useless.
 
-Understood.
+This loss of information is not new, e.g. calls through the vdso or
+futext fast paths are also invisible to strace.  But losing filesystem
+I/O calls are a major blow, imo.
 
-> > If I remember correctly, we discussed briefly a possibility to cope with 
-> > that in objtool, but no solution was presented.
-> 
-> That would also feel like a GCC workaround and might impede objtool's
-> ability to find bugs like this one, and possibly more serious bugs.
-> 
-> > Removing -flive-patching is also a possibility. I don't like it much, but 
-> > we discussed it with Petr M. a couple of months ago and it might be a way 
-> > too.
-> 
-> -flive-patching has many problems which I outlined before.  None of them
-> have been addressed.  I still feel the same way, that it should be
-> reverted until it's ready.  Otherwise it's a drain on upstream.
-> 
-> Also, if the GCC developers won't acknowledge this bug then it doesn't
-> give me confidence in their ability to keep the feature working as
-> optimizations are added or changed.
+What do people think?
 
-I must admit that I've started to share the sentiment recently. And it is 
-probably the main reason for changing my mind about the whole thing.
+From what I can tell, listing the submitted requests on
+io_uring_enter() would not be hard.  Request completion is
+asynchronous, however, and may not require  io_uring_enter() syscall.
+Am I correct?
 
-> I still think a potential alternative exists: objtool could be used as a
-> simple tree-wide object diff tool by generating a checksum for each
-> function.  Then the patch can be applied and built to see exactly which
-> functions have changed, based on the changed checksums.  In which case
-> this feature would no longer be needed anyway, would you agree?
+Is there some existing tracing infrastructure that strace could use to
+get async completion events?  Should we be introducing one?
 
-Yes.
-
-> I also think that could be a first step for converging our patch
-> creation processes.
-
-Yes again.
-
-Petr, would you agree to revert -flive-patching due to reasons above? Is 
-there anything you want to add?
-
-Miroslav
+Thanks,
+Miklos
