@@ -2,124 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EA12211F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA8A22122D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgGOQIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:08:52 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:52366 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726817AbgGOQG6 (ORCPT
+        id S1726736AbgGOQYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:24:38 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53015 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgGOQYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:06:58 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06FFqh3d030962;
-        Wed, 15 Jul 2020 18:06:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=VxjdMpcXN79GVQ3jPVzbk6I3tuoSCoV11faoa+SlGGI=;
- b=0ViChu9TZbG0vELUnZ7hnwVFkWnPfXUPZz421JH2+6TXkR5fxPnr/4AoGEmRaMyA5o0E
- JFk++uqxQVxM5ZYzB46rsxykc7Cug2RIlRCCZzEGGQjq5PEIHpm/2gB7Tf51EhNkx8Wy
- B01ZOsma7XtWsXpt5kDx/HaDEzXXk+pgHJhXgfzOQRAOD7KSQ4FpLKZLCF5To8rNTdB5
- 66b9vsHxt5B+TXyCzAP102i4z7jYJERv94CWYC+vlL3wopBpEqFryMf8exnoZKr/TgRp
- 33eKppjknyx4WJY8LZTsaiEaFx3b7uK9OWzT1694oaeHAXg7PFBKuZsqBQJ3HUK7tlqv Iw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 327cyv5baq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 18:06:38 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9A85910002A;
-        Wed, 15 Jul 2020 18:06:37 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 825E12AEEA6;
-        Wed, 15 Jul 2020 18:06:37 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.48) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Jul
- 2020 18:06:36 +0200
-Subject: Re: [PATCH v7 0/2] Add rpmsg tty driver
-To:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, <linux-kernel@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Suman Anna <s-anna@ti.com>,
-        Fabien DESSENNE <fabien.dessenne@st.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
-        xiang xiao <xiaoxiang781216@gmail.com>
-References: <20200324170407.16470-1-arnaud.pouliquen@st.com>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <98271538-d7b4-cf48-abda-3a6c8cd45ee5@st.com>
-Date:   Wed, 15 Jul 2020 18:06:35 +0200
+        Wed, 15 Jul 2020 12:24:37 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jvjwM-0004dH-NA; Wed, 15 Jul 2020 16:07:26 +0000
+Subject: Re: xprtrdma: Prevent inline overflow
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Bruce Fields <bfields@fieldses.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <ac00f855-e67c-b3d5-2be8-a18b07fcc8f8@canonical.com>
+ <239E2F87-E595-4132-B133-504EFF9103B8@oracle.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <2e64a42f-9e0d-9086-3279-d32aaad4f57c@canonical.com>
+Date:   Wed, 15 Jul 2020 17:07:26 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200324170407.16470-1-arnaud.pouliquen@st.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <239E2F87-E595-4132-B133-504EFF9103B8@oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG4NODE1.st.com (10.75.127.10) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-15_12:2020-07-15,2020-07-15 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15/07/2020 17:05, Chuck Lever wrote:
+> 
+> 
+>> On Jul 15, 2020, at 11:56 AM, Colin Ian King <colin.king@canonical.com> wrote:
+>>
+>> Hi,
+>>
+>> Static analysis with Coverity has found a potential issue with the
+>> header size calculations in source net/sunrpc/xprtrdma/rpc_rdma.c in
+>> functions rpcrdma_max_call_header_size and rpcrdma_max_reply_header_size.
+>>
+>> The commit in question is relatively old:
+>>
+>> commit 302d3deb20682a076e1ab551821cacfdc81c5e4f
+>> Author: Chuck Lever <chuck.lever@oracle.com>
+>> Date:   Mon May 2 14:41:05 2016 -0400
+>>
+>>    xprtrdma: Prevent inline overflow
+>>
+>> The two issues are as follows:
+>>
+>> Issue #1:
+>>
+>> 66 static unsigned int rpcrdma_max_call_header_size(unsigned int maxsegs)
+>> 67 {
+>> 68        unsigned int size;
+>> 69
+>> 70        /* Fixed header fields and list discriminators */
+>>
+>> Unused value (UNUSED_VALUE)
+>>
+>> 71        size = RPCRDMA_HDRLEN_MIN;
+>> 72
+>> 73        /* Maximum Read list size */
+>> 74        size = maxsegs * rpcrdma_readchunk_maxsz * sizeof(__be32);
+>> 75
+>>
+>> should the size assignment on line 74 be instead:
+>>
+>> 	size += maxsegs * rpcrdma_readchunk_maxsz * sizeof(__be32);
+>>
+>>
+>> Issue #2:
+>>
+>> 89 static unsigned int rpcrdma_max_reply_header_size(unsigned int maxsegs)
+>> 90 {
+>> 91        unsigned int size;
+>> 92
+>> 93        /* Fixed header fields and list discriminators */
+>>
+>> Unused value (UNUSED_VALUE)
+>>
+>> 94        size = RPCRDMA_HDRLEN_MIN;
+>> 95
+>> 96        /* Maximum Write list size */
+>> 97        size = sizeof(__be32);          /* segment count */
+>>
+>> should the size assignment in line 97 be instead:
+>>
+>> 	size += sizeof(__be32)?
+> 
+> Colin, Yes to both questions. Can you send a fix to Anna?
 
+OK, thanks for confirming. Will send a fix in the next hour or so.
 
-On 3/24/20 6:04 PM, Arnaud Pouliquen wrote:
-> This patch set introduces a TTY console on top of the RPMsg framework which
-> enables the following use cases:
-> - Provide a console to communicate easily with the remote processor application.
-> - Provide an interface to get the remote processor log traces without ring
->   buffer limitation.
-> - Ease the migration from MPU + MCU processors to multi core processors
->   (MPU and MCU integrated in one processor) by offering a virtual serial link.
+Colin
 > 
-> An alternative of this proposed solution would consist in using the virtio
-> console:
-> The drawback with that solution is that it requires a specific virtio buffer
-> (in addition to the one already used for RPMsg) which does not fit with remote
-> processors with little memory. The proposed solution allows to multiplex the
-> console with the other rpmsg services, optimizing the memory.
+> --
+> Chuck Lever
 > 
-> The first patch adds an API to the rpmsg framework ('get max transmission unit')
-> and the second one is the rpmsg tty driver itself.
 > 
-> Previous revision:
-> - the patch 1/2 ("rpmsg: core: add API to get MTU) has been discussed in a
->   separate thread on remoteproc mailing list:
->     https://patchwork.kernel.org/patch/11333509/
-> - Previous version of the patch 2/2 (tty: add rpmsg driver) available here:
->     https://patchwork.kernel.org/cover/11130213/
-> 
-> Main delta vs v6:
->  - Pack the rpmsg_tty_ctrl struct.
->  - MTU API acked by Suman Anna from Texas Intruments company. 
-> 
-> Arnaud Pouliquen (2):
->   rpmsg: core: add API to get MTU
->   tty: add rpmsg driver
-> 
->  Documentation/serial/tty_rpmsg.rst |  45 ++++
->  drivers/rpmsg/rpmsg_core.c         |  21 ++
->  drivers/rpmsg/rpmsg_internal.h     |   2 +
->  drivers/rpmsg/virtio_rpmsg_bus.c   |  10 +
->  drivers/tty/Kconfig                |   9 +
->  drivers/tty/Makefile               |   1 +
->  drivers/tty/rpmsg_tty.c            | 417 +++++++++++++++++++++++++++++
->  include/linux/rpmsg.h              |  10 +
->  8 files changed, 515 insertions(+)
->  create mode 100644 Documentation/serial/tty_rpmsg.rst
->  create mode 100644 drivers/tty/rpmsg_tty.c
 > 
 
-Series put on hold after discussion with Bjorn. First we need to define the interface and mechanism
-to allow any service name to be associated with an rpmsg service based on the IOCTL user interface. 
-The goal is to allow the Linux application to initiate the link. This work will be done on the 
-rpmsg char and then extend to other generic interfaces such as TTY.
