@@ -2,245 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A82220897
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247FA22089D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730611AbgGOJWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729912AbgGOJWg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:22:36 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00516C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:22:35 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e4so1802987ljn.4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:22:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4paLmIU/CwBBLnLr52mkv/Y6S35wXBNCIlDRSWPLwtQ=;
-        b=panp4hN8htxMyL8Po9aDofLEM6+3tWJMkE+qUwzG3GtJAj1jAseuWscgGV9uXybRC4
-         SeFsh7OLxdItR27o0vGkbUGtGahAfQdGDeUxqZcMoIu+xcdPDqcg0+7R27DAjh5DJX4d
-         O3K6d/bEC55qvAS0lzIANE8tsAQeIfw1oerVg9QacKr46GxgLLMK86GSP/I4SqufbQuj
-         Gj31SSClXsp87GNoazsDRmKUBwuDK//U1UKo+9HtoJ+z7b3Qa4dFDdoztj48mJO+8Eab
-         jJ138nDnsCEglJjTedkT60xyYTNc4WCL2wFVHs5LJv81neXSTMnpE+uXPEgZAmkq2EIi
-         32RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4paLmIU/CwBBLnLr52mkv/Y6S35wXBNCIlDRSWPLwtQ=;
-        b=BiifrwhMgkNzWX8s+X+moLNSEnCvuZEJpWw6gQ+1Xiag1J7EgZmCpjgKt5OK1rwvxj
-         /kWBqY+XqRrosiLM0YmztZUXqBkyKZRsgIvCQeON7f2QygYvUE2KEfuiHq2x2pppySBw
-         aJ4gR19CP4xpl2ugTyQOnMHSqpgAYC0Qr7xs4EjAnpcMTKtQvS6YPpFlYgy4DtKKQXhF
-         HLPDGrmYvCs5s38lRcAzGo5Ih3hF3VX6u3NDcFvlO0Wg8GWCaecy4rouEvHMf58WCiWO
-         EQ7q7XcegUjToH/HnZbSAGwqAcraBwzBJht2/BiaoNcpeHyi8EJoWKRh60KtZ0lsjrRQ
-         6/Sg==
-X-Gm-Message-State: AOAM5325T6ApUC73Hm8psSsq6Wv8PTVSrqHErQpbck2c3dZXKYnwISN4
-        CKiT7241KlycxGAyy5UWaaNBvykkK+o06eQQvXGUGA==
-X-Google-Smtp-Source: ABdhPJyHR06eMZhC3WpHJIHkz/93mfFHItr6ZqMXt+cGQfjAdksgwmr6l0mxxS0jsZoymJKKIGdg5nVHAM1D/l2Pz0U=
-X-Received: by 2002:a2e:b4ed:: with SMTP id s13mr4423801ljm.296.1594804954409;
- Wed, 15 Jul 2020 02:22:34 -0700 (PDT)
+        id S1730637AbgGOJXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:23:48 -0400
+Received: from mga12.intel.com ([192.55.52.136]:55198 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729672AbgGOJXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 05:23:47 -0400
+IronPort-SDR: 6MECR/mdu1hZCHOTqjfpLOH6oolGTeZVakstF31Z0LBzMYtyp9bUMCEm5V/BjvcBmnzNHLj/pL
+ gcsxWgXjuNOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="128675166"
+X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
+   d="scan'208";a="128675166"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 02:23:47 -0700
+IronPort-SDR: +yhAI4yuWih4miWHj/upq+Xknm2prgWKgQcXWJn677L39lhKlJigRG2x4TvAWHd3Pl4pif8+S4
+ 0Y5Sx5e1g99w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
+   d="scan'208";a="326110851"
+Received: from lkp-server01.sh.intel.com (HELO b157d87b7ee7) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 15 Jul 2020 02:23:46 -0700
+Received: from kbuild by b157d87b7ee7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jvddh-00008f-H2; Wed, 15 Jul 2020 09:23:45 +0000
+Date:   Wed, 15 Jul 2020 17:22:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.07.10a] BUILD SUCCESS
+ 475a5da3202544a8cbb3342f842a763df423b989
+Message-ID: <5f0ecae9.B36+NWa6ZvW1RngG%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20200715044813.fww3regsgsbgyp7b@pesu-pes-edu> <20200715070842.GA2303720@kroah.com>
- <CAAhDqq3u_0wCRGDaWRGgtC6bkx6t+AubAXfnX_f7V0t10BRuuA@mail.gmail.com>
- <20200715083144.GA2716443@kroah.com> <CAAhDqq1hwtgqyOnfx__OFgTkm9QDs0or-Zg76cMojShCYRAN2w@mail.gmail.com>
- <CAAhDqq2y7wn5zX1zg1LN19zYBsf_EiuOmHEL-ivNP5C4aH63Pw@mail.gmail.com> <20200715091922.GB2722864@kroah.com>
-In-Reply-To: <20200715091922.GB2722864@kroah.com>
-From:   B K Karthik <bkkarthik@pesu.pes.edu>
-Date:   Wed, 15 Jul 2020 05:22:22 -0400
-Message-ID: <CAAhDqq1WxZ2XwXe43mKkDRm0sMFgusso53kfG2EtWDAUZ1T+_g@mail.gmail.com>
-Subject: Re: [PATCH] staging: comedi: comedi_fops.c: changed type in
- assignment to unsigned int *
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        linux-kernel@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michel Lespinasse <walken@google.com>,
-        Divyansh Kamboj <kambojdivyansh2000@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 5:19 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jul 15, 2020 at 04:47:48AM -0400, B K Karthik wrote:
-> > On Wed, Jul 15, 2020 at 4:41 AM B K Karthik <bkkarthik@pesu.pes.edu> wrote:
-> > >
-> > > On Wed, Jul 15, 2020 at 4:31 AM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Wed, Jul 15, 2020 at 01:56:45PM +0530, B K Karthik wrote:
-> > > > > On Wed, Jul 15, 2020, 12:38 PM Greg Kroah-Hartman <
-> > > > > gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > > On Wed, Jul 15, 2020 at 12:48:13AM -0400, B K Karthik wrote:
-> > > > > > > fixed a sparse warning by changing the type in
-> > > > > > > assignment from void [noderef] __user * to unsigned int *
-> > > > > > > (different address space)
-> > > > > > >
-> > > > > > > Signed-off-by: B K Karthik <karthik.bk2000@live.com>
-> > > > > > > ---
-> > > > > > >  drivers/staging/comedi/comedi_fops.c | 2 +-
-> > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > >
-> > > > > > > diff --git a/drivers/staging/comedi/comedi_fops.c
-> > > > > > b/drivers/staging/comedi/comedi_fops.c
-> > > > > > > index 3f70e5dfac39..4cc012e231b7 100644
-> > > > > > > --- a/drivers/staging/comedi/comedi_fops.c
-> > > > > > > +++ b/drivers/staging/comedi/comedi_fops.c
-> > > > > > > @@ -2956,7 +2956,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
-> > > > > > >       cmd->scan_end_arg = v32.scan_end_arg;
-> > > > > > >       cmd->stop_src = v32.stop_src;
-> > > > > > >       cmd->stop_arg = v32.stop_arg;
-> > > > > > > -     cmd->chanlist = compat_ptr(v32.chanlist);
-> > > > > > > +     cmd->chanlist = (unsigned int *) compat_ptr(v32.chanlist);
-> > > > > > >       cmd->chanlist_len = v32.chanlist_len;
-> > > > > > >       cmd->data = compat_ptr(v32.data);
-> > > > > > >       cmd->data_len = v32.data_len;
-> > > > > >
-> > > > > > Always run your patches through checkpatch before sending them, so you
-> > > > > > do not have a grumpy maintainer telling you that you have to run
-> > > > > > checkpatch on your patch before sending them.
-> > > > > >
-> > > > >
-> > > > > I will. Sorry for that.
-> > > > >
-> > > > > But the error that's being shown in this patch is something that comes up
-> > > > > on its own.
-> > > >
-> > > > No it is not.
-> > > >
-> > > > > git format-patch leaves trailing whitespace in blank lines.
-> > > >
-> > > > It does?  Where is any trailing whitespace here?  That's not the issue.
-> > >
-> > > To give you an example,
-> > > https://lore.kernel.org/lkml/20200714132350.naekk4zqivpuaedi@pesu-pes-edu/
-> > > was a patch i submitted recently.
-> > > This is what checkpatch has to say:
-> > >
-> > > $ perl scripts/checkpatch.pl -f
-> > > ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch
-> > > ERROR: trailing whitespace
-> > > #21: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:21:
-> > > + $
-> > >
-> > > ERROR: trailing whitespace
-> > > #23: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:23:
-> > > + $
-> > >
-> > > ERROR: trailing whitespace
-> > > #30: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:30:
-> > > + $
-> > >
-> > > ERROR: trailing whitespace
-> > > #37: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:37:
-> > > + $
-> > >
-> > > ERROR: trailing whitespace
-> > > #44: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:44:
-> > > + $
-> > >
-> > > ERROR: trailing whitespace
-> > > #51: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:51:
-> > > +-- $
-> > >
-> > > total: 6 errors, 0 warnings, 53 lines checked
-> > >
-> > > NOTE: For some of the reported defects, checkpatch may be able to
-> > >       mechanically convert to the typical style using --fix or --fix-inplace.
-> > >
-> > > NOTE: Whitespace errors detected.
-> > >       You may wish to use scripts/cleanpatch or scripts/cleanfile
-> > >
-> > > ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch
-> > > has style problems, please review.
-> > >
-> > > NOTE: If any of the errors are false positives, please report
-> > >       them to the maintainer, see CHECKPATCH in MAINTAINERS.
-> > >
-> > > Does this happen only to patches I make? Am I making a silly mistake
-> > > while making a patch?
-> > > I use 'git format-patch -1' to generate the patch file.
-> > > If I am going wrong somewhere, please let me know.
-> >
-> > Also, The patch I sent (this thread):
-> > $ perl scripts/checkpatch.pl -f
-> > ./0001-staging-comedi-comedi_fops.c-changed-void-__user-to-.patch
-> > ERROR: trailing whitespace
-> > #29: FILE: ./0001-staging-comedi-comedi_fops.c-changed-void-__user-to-.patch:29:
-> > +-- $
-> >
-> > total: 1 errors, 0 warnings, 31 lines checked
-> >
-> > NOTE: For some of the reported defects, checkpatch may be able to
-> >       mechanically convert to the typical style using --fix or --fix-inplace.
-> >
-> > NOTE: Whitespace errors detected.
-> >       You may wish to use scripts/cleanpatch or scripts/cleanfile
-> >
-> > ./0001-staging-comedi-comedi_fops.c-changed-void-__user-to-.patch has
-> > style problems, please review.
-> >
-> > NOTE: If any of the errors are false positives, please report
-> >       them to the maintainer, see CHECKPATCH in MAINTAINERS.
-> >
-> > Am I using 'git format-patch' or 'checkpatch.pl' the wrong way?
->
-> Are you checking the right thing here?  Here's what I got:
->
-> $ ./scripts/checkpatch.pl --terse x.patch
-> x.patch:19: CHECK: No space is necessary after a cast
-> x.patch:25: WARNING: Missing Signed-off-by: line by nominal patch author ''
-> total: 0 errors, 1 warnings, 1 checks, 8 lines checked
->
->
-> I use --terse to make it more obvious what the issue is.
->
-> Heck, check it yourself:
->
-> $ b4 am https://lore.kernel.org/r/20200715044813.fww3regsgsbgyp7b@pesu-pes-edu
-> Looking up https://lore.kernel.org/r/20200715044813.fww3regsgsbgyp7b%40pesu-pes-edu
-> Grabbing thread from lore.kernel.org/driverdev-devel
-> Analyzing 7 messages in the thread
-> ---
-> Writing ./20200715_bkkarthik_staging_comedi_comedi_fops_c_changed_type_in_assignment_to_unsigned_int.mbx
->   [PATCH] staging: comedi: comedi_fops.c: changed type in assignment to unsigned int *
-> ---
-> Total patches: 1
-> ---
->  Link: https://lore.kernel.org/r/20200715044813.fww3regsgsbgyp7b@pesu-pes-edu
->  Base: not found (applies clean to current tree)
->        git am ./20200715_bkkarthik_staging_comedi_comedi_fops_c_changed_type_in_assignment_to_unsigned_int.mbx
->
-> $ ./scripts/checkpatch.pl --terse 20200715_bkkarthik_staging_comedi_comedi_fops_c_changed_type_in_assignment_to_unsigned_int.mbx
-> 20200715_bkkarthik_staging_comedi_comedi_fops_c_changed_type_in_assignment_to_unsigned_int.mbx:32: CHECK: No space is necessary after a cast
-> 20200715_bkkarthik_staging_comedi_comedi_fops_c_changed_type_in_assignment_to_unsigned_int.mbx:38: WARNING: Missing Signed-off-by: line by nominal patch author 'B K Karthik <bkkarthik@pesu.pes.edu>'
-> total: 0 errors, 1 warnings, 1 checks, 8 lines checked
->
->
-> I used the b4 tool to download your email in mbox form from
-> lore.kernel.org and then ran checkpatch on it.
->
->
-> And the signed-off-by error is real, you need to also fix that.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.07.10a
+branch HEAD: 475a5da3202544a8cbb3342f842a763df423b989  rcutorture: Add CONFIG_PROVE_RCU_LIST to TREE05
 
-I will check that. I am sorry for wasting your time.
-But you have accepted a couple of patches from me before that were
-created the same way.
+elapsed time: 720m
 
->
-> Try the above yourself to verify this.
+configs tested: 108
+configs skipped: 12
 
-I will.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-thanks,
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+h8300                     edosk2674_defconfig
+sh                          polaris_defconfig
+mips                           xway_defconfig
+xtensa                          iss_defconfig
+powerpc                      pmac32_defconfig
+mips                      maltaaprp_defconfig
+sh                           se7206_defconfig
+mips                malta_qemu_32r6_defconfig
+sparc64                             defconfig
+mips                      pistachio_defconfig
+powerpc                       maple_defconfig
+arm                          badge4_defconfig
+microblaze                          defconfig
+i386                             allyesconfig
+arm                         s3c6400_defconfig
+m68k                         amcore_defconfig
+c6x                               allnoconfig
+xtensa                generic_kc705_defconfig
+mips                           ip27_defconfig
+mips                  mips_paravirt_defconfig
+c6x                        evmc6474_defconfig
+powerpc                      pasemi_defconfig
+sh                        dreamcast_defconfig
+openrisc                         alldefconfig
+m68k                        m5407c3_defconfig
+arm                          ep93xx_defconfig
+arm                          moxart_defconfig
+sparc                               defconfig
+mips                        maltaup_defconfig
+mips                          rb532_defconfig
+powerpc                mpc7448_hpc2_defconfig
+mips                        nlm_xlp_defconfig
+sh                 kfr2r09-romimage_defconfig
+openrisc                            defconfig
+arm                  colibri_pxa270_defconfig
+ia64                      gensparse_defconfig
+mips                      fuloong2e_defconfig
+sh                          r7780mp_defconfig
+ia64                                defconfig
+powerpc                      ppc6xx_defconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nios2                            allyesconfig
+c6x                              allyesconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
 
-karthik
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
