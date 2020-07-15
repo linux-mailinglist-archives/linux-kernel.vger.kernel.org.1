@@ -2,205 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE9722124A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A5322122B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726160AbgGOQ1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:27:19 -0400
-Received: from ipmail04.adl3.internode.on.net ([150.101.137.10]:23235 "EHLO
-        ipmail04.adl3.internode.on.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725770AbgGOQ1S (ORCPT
+        id S1726437AbgGOQYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgGOQYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:27:18 -0400
-X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Jul 2020 12:27:14 EDT
-X-SMTP-MATCH: 0
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2BKBABQLA9f/5UxyQ5ggRCBQ4MZVF+?=
- =?us-ascii?q?NNIYAnDCBaQsBMwkBAgQBAYRGBAKCDCU3Bg4CEAEBBgEBAQEBBgSGSAyGHQs?=
- =?us-ascii?q?BIyNPgQKDJgGCexCqdTOJMIE6BoE4iAOFCYIAgRGDToJcBBd+CiAFhg8EjzK?=
- =?us-ascii?q?LbJoRgmeBC4dIkHkwgQuBbYk7kwYBnBuWZoF7MxoIKAg7gmlQGQ2OKheDTop?=
- =?us-ascii?q?mNDACNQIGCAEBAwlXAY0cgjUBAQ?=
-Received: from 14-201-49-149.tpgi.com.au (HELO silver.lan) ([14.201.49.149])
-  by ipmail04.adl3.internode.on.net with ESMTP; 16 Jul 2020 01:52:09 +0930
-From:   Paul Schulz <paul@mawsonlakes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Paul Schulz <paul@mawsonlakes.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH] sound/pci/hda: Changes 'blacklist/whitelist' to 'blocklist/allowlist'
-Date:   Thu, 16 Jul 2020 01:52:04 +0930
-Message-Id: <20200715162204.104646-1-paul@mawsonlakes.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 15 Jul 2020 12:24:10 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B0DC061755;
+        Wed, 15 Jul 2020 09:24:09 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id z5so3318680pgb.6;
+        Wed, 15 Jul 2020 09:24:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n1owiFS7zFRAwYxxmKrW5ayuAVDGr5L90IuLEk/BlMU=;
+        b=mGCLh8smW73FQqNooYUV59HNgCW/VTKhYFcghPxw98L9oiNtnl3s7mM65etHaap9UI
+         Qc7Xo5cZyATcPkV7+2/B4T4hR20Riqn4cqJ13GEtEac4oHdJNltx4S5pQHsnQDX+LLin
+         zb3e7DCNus4w2CCvcmdKY8NJb01E6EgJPu9RIMJ0YHi8ateoe68xq/WMvkWGp8fxQIlb
+         dYMkYMpKm4eNrtn6bg4tj9mUNZxJjTcsoPXBO2x9WW+ZPkibs+4CkYbVd1Y+dLgIA/ax
+         HDmcXDPlbQsdEmkODoptIw/PZDRofOGomTc6DVq4Q7t2gaTLpXFPVSMth8g8ElfBayf7
+         xiMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=n1owiFS7zFRAwYxxmKrW5ayuAVDGr5L90IuLEk/BlMU=;
+        b=a44C8fa3GwrVZKR+jP840bDD7u2QMjS2cxEr1EXLdsynX0qDpNs5kxQaWYSfwSMuVd
+         Pmr5n+Tr1O26HLQ9QRhJSN0anqcDck7RfsjW9TptZZdHa7uPoSpTSCkmvAQyeRgq9aYj
+         jZOx5T6V/vvAdHKALMkd+1e5H1kRnSZqzderhzOdHq7HO2gW37YH8NjZut1T2RXJNfZK
+         mkbFY62U5RVOF7TH8MDfkAthgMIRu9HcZAvry/kHF27KGX7nZ0NpUErNjW8Y+sZiIqEx
+         blpeM71nQQQvQtqL+G5vVF+jFOzhOLqJtoVkmtpXTsyHumjOL19FmMt6pSGQDav2vp42
+         e+ug==
+X-Gm-Message-State: AOAM53264GHQiLNQdBibToVt1SEorVL5HiAIgB9tabFUVaLcJN9LJ8vp
+        gCg5REn++dfqxuGtBWdHSRb/jdAT
+X-Google-Smtp-Source: ABdhPJza46HrtNnxP/nz8YHLiABgw3Ik3e6qK3OOAgrkArxsqSvnu2yOl8S3Bv5oboG+a1/D1eUTGw==
+X-Received: by 2002:a65:64c5:: with SMTP id t5mr474232pgv.28.1594830249130;
+        Wed, 15 Jul 2020 09:24:09 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d16sm2568537pfo.156.2020.07.15.09.24.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jul 2020 09:24:08 -0700 (PDT)
+Subject: Re: [PATCH 1/3 v2] usb: typec: tcpci: Support BIST test data mode for
+ compliance.
+To:     Badhri Jagan Sridharan <badhri@google.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        reg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200714231207.866838-1-badhri@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <0e8bb91c-031f-7e39-4343-c2c4c4ad9692@roeck-us.net>
+Date:   Wed, 15 Jul 2020 09:24:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200714231207.866838-1-badhri@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This edit changes instances of 'blacklist' and 'whitelist' to
-'blocklist' and 'allowlist' (and associated variations)
-in sound/pci/hda.
+On 7/14/20 4:12 PM, Badhri Jagan Sridharan wrote:
+> Quoting from TCPCI spec:
+> "Setting this bit to 1 is intended to be used only when a USB compliance
+> tester is using USB BIST Test Data to test the PHY layer of the TCPC. The
+> TCPM should clear this bit when a disconnect is detected.
+> 0: Normal Operation. Incoming messages enabled by RECEIVE_DETECT
+> passed to TCPM via Alert.
+> 1: BIST Test Mode. Incoming messages enabled by RECEIVE_DETECT
+> result in GoodCRC response but may not be passed to the TCPM via
+> Alert."
+> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-This is a functionally trivial patch and has no other effect.
+This needs to be the second patch in the series. The set_bist_data
+callback doesn't exist yet.
 
-Signed-off-by: Paul Schulz <paul@mawsonlakes.org>
----
- Documentation/sound/hd-audio/notes.rst |  2 +-
- sound/pci/hda/hda_intel.c              | 32 +++++++++++++-------------
- sound/pci/hda/patch_realtek.c          |  6 ++---
- 3 files changed, 20 insertions(+), 20 deletions(-)
+Other than that, for the code itself:
 
-diff --git a/Documentation/sound/hd-audio/notes.rst b/Documentation/sound/hd-audio/notes.rst
-index 0f3109d9abc8..1024ca1a7bd2 100644
---- a/Documentation/sound/hd-audio/notes.rst
-+++ b/Documentation/sound/hd-audio/notes.rst
-@@ -142,7 +142,7 @@ thus we disabled MSI for them.
- There seem also still other devices that don't work with MSI.  If you
- see a regression wrt the sound quality (stuttering, etc) or a lock-up
- in the recent kernel, try to pass ``enable_msi=0`` option to disable
--MSI.  If it works, you can add the known bad device to the blacklist
-+MSI.  If it works, you can add the known bad device to the blocklist
- defined in hda_intel.c.  In such a case, please report and give the
- patch back to the upstream developer. 
- 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 3565e2ab0965..c7596773358b 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -178,9 +178,9 @@ module_param(power_save, xint, 0644);
- MODULE_PARM_DESC(power_save, "Automatic power-saving timeout "
- 		 "(in second, 0 = disable).");
- 
--static bool pm_blacklist = true;
--module_param(pm_blacklist, bool, 0644);
--MODULE_PARM_DESC(pm_blacklist, "Enable power-management blacklist");
-+static bool pm_blocklist = true;
-+module_param(pm_blocklist, bool, 0644);
-+MODULE_PARM_DESC(pm_blocklist, "Enable power-management blocklist");
- 
- /* reset the HD-audio controller in power save mode.
-  * this may give more power-saving, but will take longer time to
-@@ -1508,7 +1508,7 @@ static bool check_hdmi_disabled(struct pci_dev *pci)
- #endif /* SUPPORT_VGA_SWITCHEROO */
- 
- /*
-- * white/black-listing for position_fix
-+ * allow/block-listing for position_fix
-  */
- static const struct snd_pci_quirk position_fix_list[] = {
- 	SND_PCI_QUIRK(0x1028, 0x01cc, "Dell D820", POS_FIX_LPIB),
-@@ -1601,7 +1601,7 @@ static void assign_position_fix(struct azx *chip, int fix)
- }
- 
- /*
-- * black-lists for probe_mask
-+ * block-lists for probe_mask
-  */
- static const struct snd_pci_quirk probe_mask_list[] = {
- 	/* Thinkpad often breaks the controller communication when accessing
-@@ -1649,9 +1649,9 @@ static void check_probe_mask(struct azx *chip, int dev)
- }
- 
- /*
-- * white/black-list for enable_msi
-+ * allow/block-list for enable_msi
-  */
--static const struct snd_pci_quirk msi_black_list[] = {
-+static const struct snd_pci_quirk msi_block_list[] = {
- 	SND_PCI_QUIRK(0x103c, 0x2191, "HP", 0), /* AMD Hudson */
- 	SND_PCI_QUIRK(0x103c, 0x2192, "HP", 0), /* AMD Hudson */
- 	SND_PCI_QUIRK(0x103c, 0x21f7, "HP", 0), /* AMD Hudson */
-@@ -1674,7 +1674,7 @@ static void check_msi(struct azx *chip)
- 		return;
- 	}
- 	chip->msi = 1;	/* enable MSI as default */
--	q = snd_pci_quirk_lookup(chip->pci, msi_black_list);
-+	q = snd_pci_quirk_lookup(chip->pci, msi_block_list);
- 	if (q) {
- 		dev_info(chip->card->dev,
- 			 "msi for device %04x:%04x set to %d\n",
-@@ -2074,11 +2074,11 @@ static void pcm_mmap_prepare(struct snd_pcm_substream *substream,
- #endif
- }
- 
--/* Blacklist for skipping the whole probe:
-+/* Blocklist for skipping the whole probe:
-  * some HD-audio PCI entries are exposed without any codecs, and such devices
-  * should be ignored from the beginning.
-  */
--static const struct pci_device_id driver_blacklist[] = {
-+static const struct pci_device_id driver_blocklist[] = {
- 	{ PCI_DEVICE_SUB(0x1022, 0x1487, 0x1043, 0x874f) }, /* ASUS ROG Zenith II / Strix */
- 	{ PCI_DEVICE_SUB(0x1022, 0x1487, 0x1462, 0xcb59) }, /* MSI TRX40 Creator */
- 	{ PCI_DEVICE_SUB(0x1022, 0x1487, 0x1462, 0xcb60) }, /* MSI TRX40 */
-@@ -2101,8 +2101,8 @@ static int azx_probe(struct pci_dev *pci,
- 	bool schedule_probe;
- 	int err;
- 
--	if (pci_match_id(driver_blacklist, pci)) {
--		dev_info(&pci->dev, "Skipping the blacklisted device\n");
-+	if (pci_match_id(driver_blocklist, pci)) {
-+		dev_info(&pci->dev, "Skipping the blocklisted device\n");
- 		return -ENODEV;
- 	}
- 
-@@ -2192,7 +2192,7 @@ static int azx_probe(struct pci_dev *pci,
-  * So we keep a list of devices where we disable powersaving as its known
-  * to causes problems on these devices.
-  */
--static const struct snd_pci_quirk power_save_blacklist[] = {
-+static const struct snd_pci_quirk power_save_blocklist[] = {
- 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
- 	SND_PCI_QUIRK(0x1849, 0xc892, "Asrock B85M-ITX", 0),
- 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
-@@ -2235,12 +2235,12 @@ static void set_default_power_save(struct azx *chip)
- 	int val = power_save;
- 
- #ifdef CONFIG_PM
--	if (pm_blacklist) {
-+	if (pm_blocklist) {
- 		const struct snd_pci_quirk *q;
- 
--		q = snd_pci_quirk_lookup(chip->pci, power_save_blacklist);
-+		q = snd_pci_quirk_lookup(chip->pci, power_save_blocklist);
- 		if (q && val) {
--			dev_info(chip->card->dev, "device %04x:%04x is on the power_save blacklist, forcing power_save to 0\n",
-+			dev_info(chip->card->dev, "device %04x:%04x is on the power_save blocklist, forcing power_save to 0\n",
- 				 q->subvendor, q->subdevice);
- 			val = 0;
- 		}
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 194ffa8c66ce..3ced5762bac4 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -1070,7 +1070,7 @@ static int set_beep_amp(struct alc_spec *spec, hda_nid_t nid,
- 	return 0;
- }
- 
--static const struct snd_pci_quirk beep_white_list[] = {
-+static const struct snd_pci_quirk beep_allow_list[] = {
- 	SND_PCI_QUIRK(0x1043, 0x103c, "ASUS", 1),
- 	SND_PCI_QUIRK(0x1043, 0x115d, "ASUS", 1),
- 	SND_PCI_QUIRK(0x1043, 0x829f, "ASUS", 1),
-@@ -1080,7 +1080,7 @@ static const struct snd_pci_quirk beep_white_list[] = {
- 	SND_PCI_QUIRK(0x1043, 0x834a, "EeePC", 1),
- 	SND_PCI_QUIRK(0x1458, 0xa002, "GA-MA790X", 1),
- 	SND_PCI_QUIRK(0x8086, 0xd613, "Intel", 1),
--	/* blacklist -- no beep available */
-+	/* blocklist -- no beep available */
- 	SND_PCI_QUIRK(0x17aa, 0x309e, "Lenovo ThinkCentre M73", 0),
- 	SND_PCI_QUIRK(0x17aa, 0x30a3, "Lenovo ThinkCentre M93", 0),
- 	{}
-@@ -1090,7 +1090,7 @@ static inline int has_cdefine_beep(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
- 	const struct snd_pci_quirk *q;
--	q = snd_pci_quirk_lookup(codec->bus->pci, beep_white_list);
-+	q = snd_pci_quirk_lookup(codec->bus->pci, beep_allow_list);
- 	if (q)
- 		return q->value;
- 	return spec->cdefine.enable_pcbeep;
--- 
-2.25.1
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
+> ---
+> Version history:
+> Changes since V1:(Guenter's suggestions)
+> - Split the change into two: TCPM and TCPCI
+> - Move BIST log to TCPM log
+> - Alignment and column count changes
+> ---
+>  drivers/usb/typec/tcpm/tcpci.c | 9 +++++++++
+>  drivers/usb/typec/tcpm/tcpci.h | 1 +
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+> index 753645bb25273a..f57d91fd0e0924 100644
+> --- a/drivers/usb/typec/tcpm/tcpci.c
+> +++ b/drivers/usb/typec/tcpm/tcpci.c
+> @@ -227,6 +227,14 @@ static int tcpci_set_vconn(struct tcpc_dev *tcpc, bool enable)
+>  				enable ? TCPC_POWER_CTRL_VCONN_ENABLE : 0);
+>  }
+>  
+> +static int tcpci_set_bist_data(struct tcpc_dev *tcpc, bool enable)
+> +{
+> +	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+> +
+> +	return regmap_update_bits(tcpci->regmap, TCPC_TCPC_CTRL, TCPC_TCPC_CTRL_BIST_TM,
+> +				 enable ? TCPC_TCPC_CTRL_BIST_TM : 0);
+> +}
+> +
+>  static int tcpci_set_roles(struct tcpc_dev *tcpc, bool attached,
+>  			   enum typec_role role, enum typec_data_role data)
+>  {
+> @@ -530,6 +538,7 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
+>  	tcpci->tcpc.set_pd_rx = tcpci_set_pd_rx;
+>  	tcpci->tcpc.set_roles = tcpci_set_roles;
+>  	tcpci->tcpc.pd_transmit = tcpci_pd_transmit;
+> +	tcpci->tcpc.set_bist_data = tcpci_set_bist_data;
+>  
+>  	err = tcpci_parse_config(tcpci);
+>  	if (err < 0)
+> diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
+> index 303ebde265465c..11c36d086c8608 100644
+> --- a/drivers/usb/typec/tcpm/tcpci.h
+> +++ b/drivers/usb/typec/tcpm/tcpci.h
+> @@ -36,6 +36,7 @@
+>  
+>  #define TCPC_TCPC_CTRL			0x19
+>  #define TCPC_TCPC_CTRL_ORIENTATION	BIT(0)
+> +#define TCPC_TCPC_CTRL_BIST_TM		BIT(1)
+>  
+>  #define TCPC_ROLE_CTRL			0x1a
+>  #define TCPC_ROLE_CTRL_DRP		BIT(6)
+> 
 
