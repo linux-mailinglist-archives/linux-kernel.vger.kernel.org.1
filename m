@@ -2,121 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6F6221832
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 01:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6846622183A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 01:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgGOXFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 19:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
+        id S1727771AbgGOXHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 19:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgGOXFI (ORCPT
+        with ESMTP id S1727103AbgGOXHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 19:05:08 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35029C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 16:05:08 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id j11so4696271ljo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 16:05:08 -0700 (PDT)
+        Wed, 15 Jul 2020 19:07:03 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DE0C08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 16:07:03 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id j20so2774273pfe.5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 16:07:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b7b58/h5ygcF8kKv7hgx0H1e7z/j3xwcZDk14pT0DbM=;
-        b=VfbflGy/HM2cZzGH0dNGp5YQ7VcJfDItB1n+tAqhFQc6mj3d7qLNTmWwWTJdwZ9MSa
-         +75uVzkhz7POD0P5pLG4XiPzOv+Iqp4wbAloW9OKLMJk4B2QaI9cbBqJkPNl5tTef6DK
-         4x+iZ9WNsUegvLM+Y8yj19d7Z/iz8UalyR9TM=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Yvaq2P+PojMtEplE3YoxoQamecRP9sYA0XkAU4Baoko=;
+        b=JMLQW1jfVYP22T1V+VNzJav9OTx0KTdcOe7OERKHlGpW8JELre7ySGePgiPZuFcyyN
+         hv4f5DEkN3p2rSD2ZdUCUMFs5NE+FYj/t3vmPWXwa6hn6iIvulda5TgKB29T+wlP/DMw
+         30zXLYPXJiTbbOUUjh1uOEqVp63wRsgeQ87Y0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b7b58/h5ygcF8kKv7hgx0H1e7z/j3xwcZDk14pT0DbM=;
-        b=jcEiOrxi3cgND/ZbqihNfkX5gw5wI+AGXPSAwPcpgcQfMlI4IrBxmGkFrTMHJkLHl5
-         rIMMdciryhX4ihsqZhXYQRhi9VFOz+N7jm0CgxzEE2RYerGIGkVEiRQX4PVnEj2AtgLF
-         p39UxDYMus1AKdHphI6qBPjpVzracvRVr5PiGoOsFtyHk74PZUX9//d7Pu80P0xQFMcK
-         zTpjzh8l4TfwUyyqjS1D44sAam/8VJ2Fr92LKKa93833MJ8Dg4jk8ZdItsA7Z7yO09St
-         SOJezmoaCi9KPoror88JNSj11EhdzJDCsM18NltVFrR3M9C3spQaxdcoXoyp6vA2G+FI
-         0UbQ==
-X-Gm-Message-State: AOAM530T3tes4314vCnnSwwyuPUg3nls+5YUpC/+CWNrIMebphZkRzqH
-        SJZdp1pzIFj2m2lS4rYvfUR168tRVzw=
-X-Google-Smtp-Source: ABdhPJzqhzcrm/bT0lO7dLiOHNkAf5pbX6r/hbSMFx5oeTKwA6ODmFgZ3h8yyn9OdxXjDP5r0hbw4Q==
-X-Received: by 2002:a2e:3804:: with SMTP id f4mr612708lja.90.1594854306308;
-        Wed, 15 Jul 2020 16:05:06 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id l14sm768098lfj.13.2020.07.15.16.05.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jul 2020 16:05:04 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id i80so2079179lfi.13
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 16:05:04 -0700 (PDT)
-X-Received: by 2002:a19:8a07:: with SMTP id m7mr619665lfd.31.1594854303661;
- Wed, 15 Jul 2020 16:05:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Yvaq2P+PojMtEplE3YoxoQamecRP9sYA0XkAU4Baoko=;
+        b=uiGsuMqV83/J/TogNdqq4gt3uXH6BxI+FIkKNuPhcgDzyDM+wXEM7wArvdzdgD4g3h
+         1xy94tQ2uCQRD66O1c3xukmjyloLERGjaQSgCnkRCEclv5ghdedRWqy/5isj56DoIuWi
+         m/KSMZtmiBZfQ3+LpcMlEv2Dl5afGebigEG+wW8d2NOytL8k5Sl83kfoCAA80a3QXURW
+         Eb5+CZbf1pl2g0PYLLleTVdkEp55GR0erem8nNViz2JMd0grQrjo9jFVmK3t9Emq08e1
+         3Qtwdae6B9ECb6JSR8lqjLXQvS6SbUzr7yA1jXPaG9HlyJjwkmJbxB52XuR8Uwzg0vEg
+         Ly2w==
+X-Gm-Message-State: AOAM532JCOfpQ4HZc2De76Uev3odN56HhD6deuIS+obL6Tp9UfIZrp1r
+        YOFLSSuN6NL7ew23rAmFnufcrL5xdUg=
+X-Google-Smtp-Source: ABdhPJwECD3XSw3fWrn3S2RNcLITwnLnmJV2sTo8wYEzW0OORY57dF5Km8mckEsgMVSWW/0odG8ZvA==
+X-Received: by 2002:a63:e80e:: with SMTP id s14mr1825227pgh.32.1594854422427;
+        Wed, 15 Jul 2020 16:07:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 186sm2941627pfe.1.2020.07.15.16.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 16:07:01 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 16:07:00 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jann Horn <jannh@google.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        strace-devel@lists.strace.io, io-uring@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: Re: strace of io_uring events?
+Message-ID: <202007151511.2AA7718@keescook>
+References: <CAJfpegu3EwbBFTSJiPhm7eMyTK2MzijLUp1gcboOo3meMF_+Qg@mail.gmail.com>
+ <D9FAB37B-D059-4137-A115-616237D78640@amacapital.net>
+ <20200715171130.GG12769@casper.infradead.org>
+ <7c09f6af-653f-db3f-2378-02dca2bc07f7@gmail.com>
+ <CAJfpegt9=p4uo5U2GXqc-rwqOESzZCWAkGMRTY1r8H6fuXx96g@mail.gmail.com>
+ <48cc7eea-5b28-a584-a66c-4eed3fac5e76@gmail.com>
 MIME-Version: 1.0
-References: <20200715135011.42743-1-kirill.shutemov@linux.intel.com>
- <CAHk-=wh4pB-jRngOjcGxpc8=NPds3jWqJwDMUWC3-OEo4dRiKg@mail.gmail.com>
- <20200715205428.GA201569@google.com> <CAHk-=wg-_Oof43pKUHMk4ySdLwpYi7+shFg+aeV18UP2Akiv8g@mail.gmail.com>
- <CAHk-=wg+iVwK7MDXB+BPbhTmP-1eBa-y4vxRNr_G8ETnzv5pZg@mail.gmail.com>
- <20200715222228.jf2pv5u2wyhtc5o5@box> <CAHk-=wgp-ZJ+J250DMaJFBDU2hnhUUqXcUnVnZZ1iFQEK6O-jg@mail.gmail.com>
-In-Reply-To: <CAHk-=wgp-ZJ+J250DMaJFBDU2hnhUUqXcUnVnZZ1iFQEK6O-jg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 15 Jul 2020 16:04:47 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh3jD4dwXWWFors9OnYp-YCzYN2bCGs9HDxrtZ=TiFyDQ@mail.gmail.com>
-Message-ID: <CAHk-=wh3jD4dwXWWFors9OnYp-YCzYN2bCGs9HDxrtZ=TiFyDQ@mail.gmail.com>
-Subject: Re: [PATCHv2] mm: Fix warning in move_normal_pmd()
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        William Kucharski <william.kucharski@oracle.com>
-Content-Type: multipart/mixed; boundary="0000000000003d291905aa82f406"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <48cc7eea-5b28-a584-a66c-4eed3fac5e76@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000003d291905aa82f406
-Content-Type: text/plain; charset="UTF-8"
+Earlier Andy Lutomirski wrote:
+> Let’s add some seccomp folks. We probably also want to be able to run
+> seccomp-like filters on io_uring requests. So maybe io_uring should call into
+> seccomp-and-tracing code for each action.
 
-On Wed, Jul 15, 2020 at 3:57 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> But now I've screwed it up twice, and have a splitting headache, so
-> rather than stare at this cross-eyed, I'll take a break and hope that
-> somebody more competent than me looks at the code.
+Okay, I'm finally able to spend time looking at this. And thank you to
+the many people that CCed me into this and earlier discussions (at least
+Jann, Christian, and Andy).
 
-I lied. I had a couple of pending pulls, so I couldn't go lie down
-anyway, so I tried to take another look.
+It *seems* like there is a really clean mapping of SQE OPs to syscalls.
+To that end, yes, it should be trivial to add ptrace and seccomp support
+(sort of). The trouble comes for doing _interception_, which is how both
+ptrace and seccomp are designed.
 
-It *might* be as simple as this incremetal thing on top, but then I
-think that code will no longer trigger on the stack movement case at
-all, since there we don't work with the whole vma.
+In the basic case of seccomp, various syscalls are just being checked
+for accept/reject. It seems like that would be easy to wire up. For the
+more ptrace-y things (SECCOMP_RET_TRAP, SECCOMP_RET_USER_NOTIF, etc),
+I think any such results would need to be "upgraded" to "reject". Things
+are a bit complex in that seccomp's form of "reject" can be "return
+errno" (easy) or it can be "kill thread (or thread_group)" which ...
+becomes less clear. (More on this later.)
 
-So if we want that to work, we'd have to fix that up too.
+In the basic case of "I want to run strace", this is really just a
+creative use of ptrace in that interception is being used only for
+reporting. Does ptrace need to grow a way to create/attach an io_uring
+eventfd? Or should there be an entirely different tool for
+administrative analysis of io_uring events (kind of how disk IO can be
+monitored)?
 
-And this might be broken anyway. My track record isn't looking so hot right now.
+For io_uring generally, I have a few comments/questions:
 
-                  Linus
+- Why did a new syscall get added that couldn't be extended? All new
+  syscalls should be using Extended Arguments. :(
 
---0000000000003d291905aa82f406
-Content-Type: application/octet-stream; name="patch.incremental"
-Content-Disposition: attachment; filename="patch.incremental"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kcnz23n30>
-X-Attachment-Id: f_kcnz23n30
+- Why aren't the io_uring syscalls in the man-page git? (It seems like
+  they're in liburing, but that's should document the _library_ not the
+  syscalls, yes?)
 
-ZGlmZiAtLWdpdCBhL21tL21yZW1hcC5jIGIvbW0vbXJlbWFwLmMKaW5kZXggNjE0YjRmZmZlZDFk
-Li42YzNkZjAyMmZmNjQgMTAwNjQ0Ci0tLSBhL21tL21yZW1hcC5jCisrKyBiL21tL21yZW1hcC5j
-CkBAIC0yNDMsNiArMjQzLDkgQEAgc3RhdGljIGlubGluZSB2b2lkIHRyeV90b19hbGlnbl9zdGFy
-dCh1bnNpZ25lZCBsb25nICpsZW4sCiAJc3RydWN0IHZtX2FyZWFfc3RydWN0ICpvbGQsIHVuc2ln
-bmVkIGxvbmcgKm9sZF9hZGRyLAogCXN0cnVjdCB2bV9hcmVhX3N0cnVjdCAqbmV3LCB1bnNpZ25l
-ZCBsb25nICpuZXdfYWRkcikKIHsKKwlpZiAoKm9sZF9hZGRyID4gb2xkLT52bV9zdGFydCkKKwkJ
-cmV0dXJuOworCiAJaWYgKEFERFJfQkVGT1JFX1BSRVYoKm9sZF9hZGRyICYgUE1EX01BU0ssIG9s
-ZCkpCiAJCXJldHVybjsKIApAQCAtMjcwLDYgKzI3Myw5IEBAIHN0YXRpYyBpbmxpbmUgdm9pZCB0
-cnlfdG9fYWxpZ25fZW5kKHVuc2lnbmVkIGxvbmcgKmxlbiwKIAlzdHJ1Y3Qgdm1fYXJlYV9zdHJ1
-Y3QgKm9sZCwgdW5zaWduZWQgbG9uZyAqb2xkX2FkZHIsCiAJc3RydWN0IHZtX2FyZWFfc3RydWN0
-ICpuZXcsIHVuc2lnbmVkIGxvbmcgKm5ld19hZGRyKQogeworCWlmICgqb2xkX2FkZHIgPCBvbGQt
-PnZtX2VuZCkKKwkJcmV0dXJuOworCiAJaWYgKEFERFJfQUZURVJfTkVYVCgqb2xkX2FkZHIgKyAq
-bGVuLCBvbGQpKQogCQlyZXR1cm47CiAK
---0000000000003d291905aa82f406--
+Speaking to Stefano's proposal[1]:
+
+- There appear to be three classes of desired restrictions:
+  - opcodes for io_uring_register() (which can be enforced entirely with
+    seccomp right now).
+  - opcodes from SQEs (this _could_ be intercepted by seccomp, but is
+    not currently written)
+  - opcodes of the types of restrictions to restrict... for making sure
+    things can't be changed after being set? seccomp already enforces
+    that kind of "can only be made stricter"
+
+- Credentials vs no_new_privs needs examination (more on this later)
+
+So, I think, at least for restrictions, seccomp should absolutely be
+the place to get this work done. It already covers 2 of the 3 points in
+the proposal.
+
+Solving the mapping of seccomp interception types into CQEs (or anything
+more severe) will likely inform what it would mean to map ptrace events
+to CQEs. So, I think they're related, and we should get seccomp hooked
+up right away, and that might help us see how (if) ptrace should be
+attached.
+
+Specifically for seccomp, I see at least the following design questions:
+
+- How does no_new_privs play a role in the existing io_uring credential
+  management? Using _any_ kind of syscall-effective filtering, whether
+  it's seccomp or Stefano's existing proposal, needs to address the
+  potential inheritable restrictions across privilege boundaries (which is
+  what no_new_privs tries to eliminate). In regular syscall land, this is
+  an issue when a filter follows a process through setuid via execve()
+  and it gains privileges that now the filter-creator can trick into
+  doing weird stuff -- io_uring has a concept of alternative credentials
+  so I have to ask about it. (I don't *think* there would be a path to
+  install a filter before gaining privilege, but I likely just
+  need to do my homework on the io_uring internals. Regardless,
+  use of seccomp by io_uring would need to have this issue "solved"
+  in the sense that it must be "safe" to filter io_uring OPs, from a
+  privilege-boundary-crossing perspective.
+
+- From which task perspective should filters be applied? It seems like it
+  needs to follow the io_uring personalities, as that contains the
+  credentials. (This email is a brain-dump so far -- I haven't gone to
+  look to see if that means io_uring is literally getting a reference to
+  struct cred; I assume so.) Seccomp filters are attached to task_struct.
+  However, for v5.9, seccomp will gain a more generalized get/put system
+  for having filters attached to the SECCOMP_RET_USER_NOTIF fd. Adding
+  more get/put-ers for some part of the io_uring context shouldn't
+  be hard.
+
+- How should seccomp return values be applied? Three seem okay:
+	SECCOMP_RET_ALLOW: do SQE action normally
+	SECCOMP_RET_LOG: do SQE action, log via seccomp
+	SECCOMP_RET_ERRNO: skip actions in SQE and pass errno to CQE
+  The rest not so much:
+	SECCOMP_RET_TRAP: can't send SIGSYS anywhere sane?
+	SECCOMP_RET_TRACE: no tracer, can't send SIGSYS?
+	SECCOMP_RET_USER_NOTIF: can't do user_notif rewrites?
+	SECCOMP_RET_KILL_THREAD: kill which thread?
+	SECCOMP_RET_KILL_PROCESS: kill which thread group?
+  If TRAP, TRACE, and USER_NOTIF need to be "upgraded" to KILL_THREAD,
+  what does KILL_THREAD mean? Does it really mean "shut down the entire
+  SQ?" Does it mean kill the worker thread? Does KILL_PROCESS mean kill
+  all the tasks with an open mapping for the SQ?
+
+Anyway, I'd love to hear what folks think, but given the very direct
+mapping from SQE OPs to syscalls, I really think seccomp needs to be
+inserted in here somewhere to maintain any kind of sensible reasoning
+about syscall filtering.
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/20200710141945.129329-3-sgarzare@redhat.com/
+
+-- 
+Kees Cook
