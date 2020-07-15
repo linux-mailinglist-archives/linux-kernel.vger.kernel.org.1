@@ -2,90 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDFB2206FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92CB2206FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729810AbgGOIZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:25:27 -0400
-Received: from mag112.magazineer.net ([157.7.134.112]:44481 "EHLO
-        157.7.134.112" rhost-flags-OK-OK-FAIL-FAIL) by vger.kernel.org
-        with ESMTP id S1729792AbgGOIZ1 (ORCPT
+        id S1729835AbgGOIZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729826AbgGOIZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:25:27 -0400
-X-Greylist: delayed 335 seconds by postgrey-1.27 at vger.kernel.org; Wed, 15 Jul 2020 04:25:26 EDT
-To:     <linux-kernel@vger.kernel.org>
-Subject: =?iso-2022-jp?B?GyRCJTMlbSVKJEskaCRrOWJCNDpOTVEkTiU5JTElOCVlITwla0pROTkbKEI=?=
-From:   =?ISO-2022-JP?B?GyRCJTglZyVWJUklaSVVJUglOyVfJUohPDE/MUQ8PBsoQg==?= 
-        <info@hr-saiyo.work>
-Date:   Wed, 15 Jul 2020 17:25:26 +0900
-Reply-To: info@hr-saiyo.work
-Message-Id: <20200615172526.08071@hr-saiyo.work>
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+        Wed, 15 Jul 2020 04:25:48 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A666BC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:25:48 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id t11so1758492pfq.11
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AvUYaZdTBJOJT4skplAAvkJuJ1Wq6R9AP4tH75ZrRy8=;
+        b=a03ni/S+QZlAxNdYtn54fZdmDTQtr3DBCOJOCY8BRoSjPtfaoL9nZOJDyXCOWVZFDC
+         ADCkB+1YpTIf5E2eCiCBDrnbGDkFRKf+au4RFU01ZmH8oeoETZuTZHG3wKi2MeEBD51D
+         kDRgi3ll1SSf0CKFiAluKcYqgUS7NQstGyGYs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AvUYaZdTBJOJT4skplAAvkJuJ1Wq6R9AP4tH75ZrRy8=;
+        b=U7sxxU6PwNtSaIOtSnHCr2EtKnXZDJ9MFoTUrtBi3gEETBV7Wr5aFdSbPPCcS5hfSq
+         82+A3FPNYj4XTc4MVQ9TlnNYE7ogtbZ6er9PnAnNC0ir6wIvEljyliSyxbhwBVfNB6NT
+         VdedsvAp4ZrJfr9E/TSCdPuT6pw38vvKArrdjm918JPg7wj2nQq4Xii9k+/qnkRl+Wr0
+         I4moveMomdJwHZ1OVbF7/9r3Gg95/qeHUxKIoEoIwRnOlc77tiLKloVb8Fco+KDVrOOm
+         q5OShP37Elw0sEx0TtUwGRxDmDPolJwmK5Z7YveAAQJtj0qPUr2L3C5zcy1hf2qrBrha
+         gYnA==
+X-Gm-Message-State: AOAM531M3lwteXy8LGgAvVMZHp307qN8BnOA81I0oD/gQeDT5ABbMu4m
+        s8HX/Cjv2Zt127lsXUyMgT7GRQ==
+X-Google-Smtp-Source: ABdhPJw3+nKTM6LEEm7fZCBVsDT/JQ2nZBNipQhAObPQb7nADYjtnszvy9WpDZDlB3q5QahBcnbcQA==
+X-Received: by 2002:a63:925a:: with SMTP id s26mr7072727pgn.21.1594801548068;
+        Wed, 15 Jul 2020 01:25:48 -0700 (PDT)
+Received: from bhanumaiya-glaptop.hsd1.ca.comcast.net ([2601:646:9500:590:250:b6ff:fe8e:b459])
+        by smtp.gmail.com with ESMTPSA id y7sm1093627pfq.69.2020.07.15.01.25.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 01:25:47 -0700 (PDT)
+From:   Bhanu Prakash Maiya <bhanumaiya@chromium.org>
+X-Google-Original-From: Bhanu Prakash Maiya <bhanumaiya@google.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Furquan Shaikh <furquan@chromium.org>,
+        Raul E Rangel <rrangel@chromium.org>,
+        Eric Peers <epeers@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Bhanu Prakash Maiya <bhanumaiya@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.Kernel.org,
+        Bhanu Prakash Maiya <bhanumaiya@google.com>
+Subject: [PATCH v2 2/2] dt-bindings: mfd: Add DT compatible string "google,cros_ec_uart"
+Date:   Wed, 15 Jul 2020 01:25:26 -0700
+Message-Id: <20200715082526.1760426-2-bhanumaiya@google.com>
+X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
+In-Reply-To: <20200715082526.1760426-1-bhanumaiya@google.com>
+References: <20200715082526.1760426-1-bhanumaiya@google.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-いつもお世話になります。
+From: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
 
-この度は、高卒採用に関するオンラインセミナーをご案内申し上げます。
+Add DT compatible string in
+Documentation/devicetree/bindings/mfd/cros_ec.txt
 
+Series-to: LKML <linux-kernel@vger.kernel.org>
+Series-cc: Raul E Rangel <rrangel@chromium.org>, Furquan Shaikh <furquan@chromium.org>, Duncan Laurie <dlaurie@google.com>, Eric Peers <epeers@google.com>, Benson Leung <bleung@chromium.org>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
 
-コロナの影響で、今年の高卒採用のスケジュールは
-9月の応募開始・採用選考解禁の1ヶ月後ろ倒しが決定しました。
+Signed-off-by: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
+Change-Id: Icfeab15fa04daaffc61280faf5a75cd9b23ee822
+Signed-off-by: Bhanu Prakash Maiya <bhanumaiya@google.com>
+---
+ Documentation/devicetree/bindings/mfd/cros-ec.txt | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
+diff --git a/Documentation/devicetree/bindings/mfd/cros-ec.txt b/Documentation/devicetree/bindings/mfd/cros-ec.txt
+index 4860eabd0f729..ec8c5d7ecc266 100644
+--- a/Documentation/devicetree/bindings/mfd/cros-ec.txt
++++ b/Documentation/devicetree/bindings/mfd/cros-ec.txt
+@@ -3,7 +3,7 @@ ChromeOS Embedded Controller
+ Google's ChromeOS EC is a Cortex-M device which talks to the AP and
+ implements various function such as keyboard and battery charging.
+ 
+-The EC can be connect through various means (I2C, SPI, LPC, RPMSG) and the
++The EC can be connect through various means (I2C, SPI, UART, LPC, RPMSG) and the
+ compatible string used depends on the interface. Each connection method has
+ its own driver which connects to the top level interface-agnostic EC driver.
+ Other Linux driver (such as cros-ec-keyb for the matrix keyboard) connect to
+@@ -17,6 +17,10 @@ Required properties (SPI):
+ - compatible: "google,cros-ec-spi"
+ - reg: SPI chip select
+ 
++Required properties (UART):
++- compatible: "google,cros-ec-uart"
++- reg: UART baudrate, flowcontrol
++
+ Required properties (RPMSG):
+ - compatible: "google,cros-ec-rpmsg"
+ 
+@@ -72,5 +76,6 @@ spi@131b0000 {
+ 	};
+ };
+ 
+-
+ Example for LPC is not supplied as it is not yet implemented.
++
++Example for UART is not supplied as it is not yet implemented.
+-- 
+2.27.0.389.gc38d7665816-goog
 
-それに伴い、例年は8月に行う職場見学を
-9月まで受入が必要になる可能性があります。
-
-
-企業側が高校生に直接会える場面はそう多くありません。
-職場見学は貴重なチャンスです。
-
-
-ここでの「事前準備」「当日の運営」「事後対応」が
-その後の応募率に大きな影響を与えます。
-
-
-本講座では、2000社を超える企業へのアドバイス経験を元に
-50%以上を応募に繋げる職場見学の仕掛け方をご紹介いたします。
-
-
-良い職場見学と悪い職場見学の違いは？
-応募したくなる仕掛けとは？
-スケジュールが変更になる中、今後想定されることは？
-
-
-高卒採用を行う企業様は是非ともお申込ください。
-
-
-　■　詳細・申込　https://hr-saiyo.work/200700/　■
-
-
-オンライン開催
-――――――――――――――――――――――――――――
-
-　　　　　応募率50%を超える
-　　　 “職場見学”の仕掛け方
-
-　 日程：7月15日/21日/31日　※
-　 時間：11:00〜11:45　※
-　 会場：オンライン開催　(自宅や職場で視聴可能)
-
-　■　詳細・申込　https://hr-saiyo.work/200700/　■
-
-　 ※全日程とも開催時間・内容は同じです。
-
-――――――――――――――――――――――――――――
-　本メールのご不要な方には大変ご迷惑をおかけいたしました。
-　配信停止ご希望の方は、お手数ですが「配信不要」と
-　ご返信いただくか、下記アドレスよりお手続き願います。
-　 https://form9dm.site/kaijo/
-――――――――――――――――――――――――――――
-   ジョブドラフトセミナー運営室(株式会社ジンジブ)
-　 住所：東京都港区浜松町2丁目7-19　KDX浜松町ビル5階    
- 　TEL：03-5777-2679
-　 Mail：info@hr-service.work
-――――――――――――――――――――――――――――
