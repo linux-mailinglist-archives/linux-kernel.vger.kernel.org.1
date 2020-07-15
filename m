@@ -2,174 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089B62206CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579212206CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729660AbgGOILP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Jul 2020 04:11:15 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:43959 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729609AbgGOILO (ORCPT
+        id S1729671AbgGOILr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:11:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729609AbgGOILq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:11:14 -0400
-Received: from 'smile.earth' ([95.89.3.2]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MQ5aw-1kHfdY20Dw-00M8Kn for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020
- 10:11:12 +0200
-X-Virus-Scanned: amavisd at 'smile.earth'
-From:   Hans-Peter Jansen <hpj@urpla.net>
-To:     linux-kernel@vger.kernel.org
-Subject: Re: AMD PCI Bridge: Hardware error from APEI
-Date:   Wed, 15 Jul 2020 10:11:11 +0200
-Message-ID: <2149597.8uJZFlvqrj@xrated>
-In-Reply-To: <7789846.exkBBusKcl@xrated>
-References: <2559180.cUrjzdZFCD@xrated> <10516708.ThPc60jCtT@xrated>
- <7789846.exkBBusKcl@xrated>
+        Wed, 15 Jul 2020 04:11:46 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FFEC08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:11:46 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id g2so588771lfb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=r58zgr+dFUtMHO8bMdDys5iOfYMIt5NXXpWBTmydEcE=;
+        b=d2Q3jVi1joXvon+jSxrPSrpeL8n7zUBeVPObZ0usiT22dNLY7KRKXMYrMQTQaMsUqw
+         ZML3ybd2ItswlymaGlTDLlpnYxEMup0Mv+XXSz1d44DByUHbI4svxA+64rv6rYq6N3Fw
+         LZTI7q8p4mL4DpNvCzSzC5n3Sqy69xU+oIXEW66TyX6o5F0XSBzz5andR0PwL5RI8ijW
+         wnJsJc14v3tagRrqqIxAADZxbQY0q2Rn9SC9mPTAKdZAqoVr/9m3Bk5IyezrHok+O3TD
+         LZNp3Thb/18HnD9sYfuK0byDNBjmsEcSa5nU2ZFL26/aRwO7fit59T6lSILFFd1BlMVt
+         UItw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=r58zgr+dFUtMHO8bMdDys5iOfYMIt5NXXpWBTmydEcE=;
+        b=bNDIlrhCm69XEn7Mm/nxzDmAfaFQpZR3LPRresKPi8KY/C3Gzcl2LDMGLuFMv/GVop
+         pXYtdTNGF3UYDYbWo8yWetM9ea4mzuq5yhHAAhI+o5mbFz60A/ft+ORX46bIll6mHhmX
+         OsFxmQNfm2/+cBXEnKaXPBGYZBVuFYUCXvlj87amrON9epvZElmBAcsxWB0AxAO5D+06
+         1NaFaXaI57DA6jaCecizxizO4cxz5nDe8KqaSvJsxE6rfHdp9O9V5Xx/JOLMc+Ifi6m0
+         z76xbSjoRb/6FGKLr7kf0CbRSUxWXZLynNHsAXdkVQbFjZ8J4B60zkd8TSzMwxD+R4dq
+         Pz/A==
+X-Gm-Message-State: AOAM530f8ikTGAFOc9ET1LE5S5Ww5uPuOoisXYkXllVuqA1XOA2WtlEK
+        RyMx4Mj5YPhAdEVl/M+HMiF5MQ==
+X-Google-Smtp-Source: ABdhPJygnAIMcjY9IH7L7lww2iefyofOwl+m8Oz8PP+g5xfoCJJUzKGYICWaioD43IU4WV7dO+fw6Q==
+X-Received: by 2002:a19:e61a:: with SMTP id d26mr4180514lfh.96.1594800704746;
+        Wed, 15 Jul 2020 01:11:44 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id y69sm330239lfa.86.2020.07.15.01.11.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 01:11:43 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 43B8510209F; Wed, 15 Jul 2020 11:11:48 +0300 (+03)
+Date:   Wed, 15 Jul 2020 11:11:48 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Robbie Ko <robbieko@synology.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>, David Sterba <dsterba@suse.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH] mm : fix pte _PAGE_DIRTY bit when fallback migrate page
+Message-ID: <20200715081148.ufmy6rlrdqn52c4v@box>
+References: <20200709024808.18466-1-robbieko@synology.com>
+ <859c810e-376e-5e8b-e8a5-0da3f83315d1@suse.cz>
+ <80b55fcf-def1-8a83-8f53-a22f2be56244@synology.com>
+ <433e26b0-5201-129a-4afe-4881e42781fa@suse.cz>
+ <20200714101951.6osakxdgbhrnfrbd@box>
+ <a7bb68ef-9b33-3ed7-8eff-91feb2223d80@synology.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
-X-Provags-ID: V03:K1:a1Htewdacj5b35d+1IMcWoCJmuTV2bsxgBPPtIPt4RwtcWtS9Ek
- +AIgvVCcpSIYci0YJRynt9t9NDdMamrxvhsKQjqK/sv16sKgwtZHIkjCHMwoyJHD9a38lk1
- n3XA4fJuYGWimiFg9anKVZbvGS9PRLlvo1+DBG4mkCW5cSimGuJns5HjNjWnvEEhdKC0meb
- B1zW+aJjtuSOLhtp7eL3w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cP+XYUBL9fc=:7EUlEr3wDi3GqUiKgtkGHT
- C+I0EzzvTFu0r7R6Sscd2jFqjFq2O6tXeFZLAUoAYq/XI1cLOK2XPWYdkvR7vXBfe+TWeDkLA
- OF+/qdIYSRo9IPWUiP8y4EuHtORoy6JHvbSpTaE+Hv9zkwX9DYHyxBrKw3Ks3mOyhAMEAn3hr
- sRR/Nv+EpIMzBeY6hegl5vLOdAXaLlstZmaE/99TmLWc4g8XPfNnkSRLNm6E2CrnRmnAsv4mC
- NvSLRzJQMxa+KR0ZPFVT0N4WCfb95IHL+cmZI1xWFpqHmsPGEKxtSd2zNlqPKIUnMjdL4zkKw
- BwkXs63BPP0VhRc3Hm3K0AmIYYu6iKW4cMnc76mwN9HMtLvBQpx9IkrEoyY390cwlXfy9AD8d
- DnVRr7CTEw3S+N0joHVe6mb/rbAhdXbphceVUKTpluqKDnrETHd+1ot0RLj8K22+YjldcfZt7
- /H1IejcJA0F40ZjETMSd6fIU7vB/NXtJuWUo6BRgYU5V5gRB65iOmTiV9efbHaa4Rb8lglow1
- r0gH5dMKc5HdQpye6bXfOp8viBZ4I3K3w6W/8dcvPZ3BPeMWiQYppyhOYI0zdQRs58qoGXjU2
- 9l6m2wljXplLjOxeHy/zIwoawbkAIOUTr4CRmQ/uq/aeZCv4fO9HeJiq18uAm6xZtFjKqIBv+
- WmHnr640mP9kNPeiJwwo86A5g+N004LvtVWTcdrWWvC5TTpAKhgP2fr1p66nI7feIpr5d/3/a
- NpHZIBvv9bfHRyJnJWX5ktUMxKV8H/0Hi2UcVRRhCqqEd8KB9KWA7ysxS+h+p5NLbjVcroC5M
- q3crPcGWBktxvSMvVmNdR/4CDffVfQnpOAhGAw7KP9ebzjPoKKsPWKy6IyPvnCkkIulVegC
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a7bb68ef-9b33-3ed7-8eff-91feb2223d80@synology.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Samstag, 11. Juli 2020, 18:32:21 CEST schrieben Sie:
-> Am Dienstag, 7. Juli 2020, 08:56:41 CEST schrieben Sie:
-> > Am Samstag, 27. Juni 2020, 20:23:35 CEST schrieben Sie:
-> > > Dear hacker from the order of the penguins,
-> > > 
-> > > we're facing a disturbing issue here after swapping a motherboard of a
-> > > mission critical system:
-> > > 
-> > > Specs:
-> > > ASUS KNPA-U16 with an AMD EPYC 7261, 2x32 GB Kingston KSM26RD4/32MEI
-> > > (officially supported RAM modules)
-> > > 
-> > > openSUSE 15.1, Kernel 5.7.5
+On Wed, Jul 15, 2020 at 10:45:39AM +0800, Robbie Ko wrote:
+> 
+> Kirill A. Shutemov 於 2020/7/14 下午6:19 寫道:
+> > On Tue, Jul 14, 2020 at 11:46:12AM +0200, Vlastimil Babka wrote:
+> > > On 7/13/20 3:57 AM, Robbie Ko wrote:
+> > > > Vlastimil Babka 於 2020/7/10 下午11:31 寫道:
+> > > > > On 7/9/20 4:48 AM, robbieko wrote:
+> > > > > > From: Robbie Ko <robbieko@synology.com>
+> > > > > > 
+> > > > > > When a migrate page occurs, we first create a migration entry
+> > > > > > to replace the original pte, and then go to fallback_migrate_page
+> > > > > > to execute a writeout if the migratepage is not supported.
+> > > > > > 
+> > > > > > In the writeout, we will clear the dirty bit of the page and use
+> > > > > > page_mkclean to clear the dirty bit along with the corresponding pte,
+> > > > > > but page_mkclean does not support migration entry.
+> > I don't follow the scenario.
 > > 
-> > Not sure, how to proceed with this one?
-> > 
-> > After 9� days uptime, it cumulated about 34,000 incidents:
-> > 
-> > [...]
-> > 
-> > Needless so say, that this is no permanent solution.
-> > 
-> > Any ideas anybody?
+> > When we establish migration entries with try_to_unmap(), it transfers
+> > dirty bit from PTE to the page.
 > 
-> After swapping the PCIe slot for the Digital Devices Max S8 4/8, the error
-> has moved:
+> Sorry, I mean is _PAGE_RW with pte_write
 > 
-> 2020-07-11T18:25:34.380002+02:00 tyrex kernel: [  889.223783] {20}[Hardware
-> Error]: Hardware error from APEI Generic Hardware Error Source: 4
-> 2020-07-11T18:25:34.380025+02:00 tyrex kernel: [  889.223787] {20}[Hardware
-> Error]: It has been corrected by h/w and requires no further action
-> 2020-07-11T18:25:34.380028+02:00 tyrex kernel: [  889.223789] {20}[Hardware
-> Error]: event severity: corrected 2020-07-11T18:25:34.380031+02:00 tyrex
-> kernel: [  889.223791] {20}[Hardware Error]:  Error 0, type: corrected
-> 2020-07-11T18:25:34.380032+02:00 tyrex kernel: [  889.223793] {20}[Hardware
-> Error]:  fru_text: PcieError 2020-07-11T18:25:34.380034+02:00 tyrex kernel:
-> [  889.223795] {20}[Hardware Error]:   section_type: PCIe error
-> 2020-07-11T18:25:34.380577+02:00 tyrex kernel: [  889.223796] {20}[Hardware
-> Error]:   port_type: 4, root port 2020-07-11T18:25:34.380586+02:00 tyrex
-> kernel: [  889.223798] {20}[Hardware Error]:   version: 0.2
-> 2020-07-11T18:25:34.380588+02:00 tyrex kernel: [  889.223800] {20}[Hardware
-> Error]:   command: 0x0407, status: 0x0010 2020-07-11T18:25:34.380590+02:00
-> tyrex kernel: [  889.223802] {20}[Hardware Error]:   device_id:
-> 0000:40:03.1 2020-07-11T18:25:34.380591+02:00 tyrex kernel: [  889.223803]
-> {20}[Hardware Error]:   slot: 16 2020-07-11T18:25:34.380593+02:00 tyrex
-> kernel: [  889.223804] {20}[Hardware Error]:   secondary_bus: 0x41
-> 2020-07-11T18:25:34.380595+02:00 tyrex kernel: [  889.223806] {20}[Hardware
-> Error]:   vendor_id: 0x1022, device_id: 0x1453
-> 2020-07-11T18:25:34.380597+02:00 tyrex kernel: [  889.223808] {20}[Hardware
-> Error]:   class_code: 060400 2020-07-11T18:25:34.380599+02:00 tyrex kernel:
-> [  889.223810] {20}[Hardware Error]:   bridge: secondary_status: 0x2000,
-> control: 0x0012 2020-07-11T18:25:34.380601+02:00 tyrex kernel: [ 
-> 889.223908] pcieport 0000:40:03.1: AER: aer_status: 0x00001000, aer_mask:
-> 0x00006000 2020-07-11T18:25:34.380603+02:00 tyrex kernel: [  889.223912]
-> pcieport 0000:40:03.1: AER:    [12] Timeout
-> 2020-07-11T18:25:34.380605+02:00 tyrex kernel: [  889.223915] pcieport
-> 0000:40:03.1: AER: aer_layer=Data Link Layer, aer_agent=Transmitter ID
+> When we establish migration entries with try_to_unmap(),
+> we create a migration entry, and if pte_write we set it to SWP_MIGRATION_WRITE,
+> which will replace the migration entry with the original pte.
 > 
-> It looks like the system is creating such devices on demand:
+> When migratepage,  we go to fallback_migrate_page to execute a writeout
+> if the migratepage is not supported.
 > 
-> 40:03.1 PCI bridge: Advanced Micro Devices, Inc. [AMD] Family 17h (Models
-> 00h-0fh) PCIe GPP Bridge (prog-if 00 [Normal decode]) Flags: bus master,
-> fast devsel, latency 0, IRQ 39, NUMA node 2 Bus: primary=40, secondary=41,
-> subordinate=41, sec-latency=0 I/O behind bridge: None
->         Memory behind bridge: e5d00000-e5dfffff [size=1M]
->         Prefetchable memory behind bridge: None
->         Capabilities: [50] Power Management version 3
->         Capabilities: [58] Express Root Port (Slot+), MSI 00
->         Capabilities: [a0] MSI: Enable+ Count=1/1 Maskable- 64bit+
->         Capabilities: [c0] Subsystem: Advanced Micro Devices, Inc. [AMD]
-> Family 17h (Models 00h-0fh) PCIe GPP Bridge Capabilities: [c8]
-> HyperTransport: MSI Mapping Enable+ Fixed+ Capabilities: [100] Vendor
-> Specific Information: ID=0001 Rev=1 Len=010 <?> Capabilities: [150]
-> Advanced Error Reporting
->         Capabilities: [270] #19
->         Capabilities: [2a0] Access Control Services
->         Capabilities: [370] L1 PM Substates
->         Capabilities: [380] Downstream Port Containment
->         Capabilities: [3c4] #23
->         Kernel driver in use: pcieport
+> In the writeout, we call clear_page_dirty_for_io to  clear the dirty bit of the page
+> and use page_mkclean to clear pte _PAGE_RW with pte_wrprotect in page_mkclean_one.
 > 
-> in order to handle:
+> However, page_mkclean_one does not support migration entries, so the
+> migration entry is still SWP_MIGRATION_WRITE.
 > 
-> 41:00.0 Multimedia controller: Digital Devices GmbH Max
->         Subsystem: Digital Devices GmbH Max S8 4/8
->         Flags: bus master, fast devsel, latency 0, IRQ 181, NUMA node 2
->         Memory at e5d00000 (64-bit, non-prefetchable) [size=64K]
->         Capabilities: [50] Power Management version 3
->         Capabilities: [70] MSI: Enable- Count=1/2 Maskable- 64bit+
->         Capabilities: [90] Express Endpoint, MSI 00
->         Capabilities: [100] Vendor Specific Information: ID=0000 Rev=0
-> Len=00c <?> Kernel driver in use: ddbridge
->         Kernel modules: ddbridge
+> In writeout, then we call remove_migration_ptes to remove the migration entry,
+> because it is still SWP_MIGRATION_WRITE so set _PAGE_RW to pte via pte_mkwrite.
+> 
+> Therefore, subsequent mmap wirte will not trigger page_mkwrite to cause data loss.
 
-Here's the initialization sequence of these devices:
+Hm, okay.
 
-Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1: [1022:1453] type 01 class 0x060400
-Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1: PME# supported from D0 D3hot D3cold
-Jul 13 12:19:27 tyrex kernel: pci 0000:41:00.0: [dd01:0007] type 00 class 0x048000
-Jul 13 12:19:27 tyrex kernel: pci 0000:41:00.0: reg 0x10: [mem 0xe5d00000-0xe5d0ffff 64bit]
-Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1: PCI bridge to [bus 41]
-Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1:   bridge window [mem 0xe5d00000-0xe5dfffff]
-Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1: PCI bridge to [bus 41]
-Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1:   bridge window [mem 0xe5d00000-0xe5dfffff]
-Jul 13 12:19:27 tyrex kernel: pci 0000:40:03.1: Adding to iommu group 41
-Jul 13 12:19:27 tyrex kernel: pci 0000:41:00.0: Adding to iommu group 47
-Jul 13 12:19:27 tyrex kernel: pcieport 0000:40:03.1: PME: Signaling with IRQ 39
-Jul 13 12:19:27 tyrex kernel: pcieport 0000:40:03.1: AER: enabled with IRQ 39
-Jul 13 12:19:27 tyrex kernel: pcieport 0000:40:03.1: DPC: error containment capabilities: Int Msg #0, RPExt+ PoisonedTLP+ SwTrigger+ RP PIO Log 6, DL_ActiveErr+
+Folks, is there any good reason why try_to_unmap(TTU_MIGRATION) should not
+clear PTE (make the PTE none) for file page?
 
-The last line is somewhat suspicious, but hard to decipher:
-
-DPC: error containment capabilities: Int Msg #0, RPExt+ PoisonedTLP+ SwTrigger+ RP PIO Log 6, DL_ActiveErr+
-
-I'm pretty sure, this is related, but the deeper meaning is denied me.
-
-Would be nice, if some enlightened person could shed some light
-into this abyss.
-
-Pete
-
-
+-- 
+ Kirill A. Shutemov
