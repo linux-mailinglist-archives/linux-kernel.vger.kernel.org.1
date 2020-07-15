@@ -2,58 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738CC220DF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C119220DF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731718AbgGONUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 09:20:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34730 "EHLO mail.kernel.org"
+        id S1731756AbgGONUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 09:20:24 -0400
+Received: from mail.nic.cz ([217.31.204.67]:41280 "EHLO mail.nic.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729900AbgGONUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 09:20:16 -0400
-Received: from localhost (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96B3F20578;
-        Wed, 15 Jul 2020 13:20:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594819216;
-        bh=GSpr6UASAlStOTqKkZNRWIGI2XEGUU7o/VqNPRA9ZGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TMzCsrREac3xi0lBCtQKKs5hLraFo47JH9tU4OQSUIP3qyOn17RhiZ3D2IB3cWgEK
-         GGgwnW50CraCwBnJhIQZzI6u0G2bnnp3G+Pwbfk6gclH2qqF6ahzAzZdRgvu6U+31J
-         JvLVbM72Nod4Dx4RJg7HtxESW/0XX59dQYmlKeK8=
-Date:   Wed, 15 Jul 2020 15:20:14 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 1/9] timer: Move trigger_dyntick_cpu() to enqueue_timer()
-Message-ID: <20200715132010.GB16227@lenoir>
-References: <20200707013253.26770-1-frederic@kernel.org>
- <20200707013253.26770-2-frederic@kernel.org>
- <alpine.DEB.2.21.2007091312340.4020@somnus>
+        id S1729900AbgGONUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 09:20:23 -0400
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTPSA id AAC84140968;
+        Wed, 15 Jul 2020 15:20:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1594819221; bh=EhvEo4m4fKGkK7GF8jSxHSKc1eN7KqOotdvfp78dHIE=;
+        h=Date:From:To;
+        b=FdASlJ7vdxKjyIY/Xqz49mtaP2/xeCzwUwpM08kQJcfFVYoCs84cOKaLYqUXyfgd+
+         NoBgXj2NV1/ZrpmNhamXJ2gffI753w1WiLHY+J2HADCMRvmocCGe3ZbS+nGkYULtdN
+         2mWcK1PILV6jjZ5y/37lEKdzJjPWNd1XGGBOZWb4=
+Date:   Wed, 15 Jul 2020 15:20:17 +0200
+From:   Marek =?ISO-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v30 02/16] leds: lp5523: Fix various formatting issues
+ in the code
+Message-ID: <20200715152017.4961ddc7@dellmb.labs.office.nic.cz>
+In-Reply-To: <20200713154544.1683-3-dmurphy@ti.com>
+References: <20200713154544.1683-1-dmurphy@ti.com>
+        <20200713154544.1683-3-dmurphy@ti.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2007091312340.4020@somnus>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 02:17:35PM +0200, Anna-Maria Behnsen wrote:
-> Hi Frederic,
-> 
-> On Tue, 7 Jul 2020, Frederic Weisbecker wrote:
-> 
-> > Consolidate the code by calling trigger_dyntick_cpu() from
-> > enqueue_timer() instead of calling it from all its callers.
-> 
-> Looks good, but maybe you could also update the comments in the code (see
-> remarks below)?
+On Mon, 13 Jul 2020 10:45:30 -0500
+Dan Murphy <dmurphy@ti.com> wrote:
 
-Ok, fixing that, thanks!
+> Fix checkpatch errors and warnings for the LP5523.c device
+> driver.
+>=20
+> Acked-by: Pavel Machek <pavel@ucw.cz>
+> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>  drivers/leds/leds-lp5523.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)=20
+
+Reviewed-by: Marek Beh=C3=BAn <marek.behun@nic.cz>
