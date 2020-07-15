@@ -2,140 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840282214DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 21:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B0B2214E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 21:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgGOTHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 15:07:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726356AbgGOTGz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 15:06:55 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D6BC061755;
-        Wed, 15 Jul 2020 12:06:55 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id cv18so2224250pjb.1;
-        Wed, 15 Jul 2020 12:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TdOyt4R9Z57zhmCtsEfttpqmFzjBydXI6S7D/BNVn9o=;
-        b=e73JoRrRYxGu62bl5KoSMZHLBcuQMjV+5+TqneAGMDvDQTH7fvHFQjdep471elc40r
-         KvBNYigMGwr18RELuTuShGU/xAut09ARiqnzPDWaj2vMtsdLifL2ZCnYKuSkXPIqEV92
-         Ms9uzBeRmeocYNunLPBTKFEDN2ce/cgUrH/z4H2luYDl556tpE4fcTL7QhQj2m+wUm+D
-         PXWsycKlNvFdNmaoz0pCSiYyl0vvg/4WIQQL1XI2726MpDBgeAIFGKe3ouhJsMX7FPzy
-         mwB7N0slfwSDWtt3tLY/bb5UX7n2yZwiAi7gM6FGg6YfMcOCi1cgWf3Az916kmnx/0mN
-         Jrfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TdOyt4R9Z57zhmCtsEfttpqmFzjBydXI6S7D/BNVn9o=;
-        b=n1ecSWdHUL717mh614IBnWRWCJ6lxpC1Uh5+4Zh2C+1t3QRSPqox0r82ZPFX4gK/pr
-         M7IP+a8VfQOelsDzFDhrrS6pJXdZl28GJmfLxt7apAny7VB5QEW+cXPhkkSZTW1aphk5
-         MIxo1J8reVI5ydD8iAPQyf95+O3od7ehZwCdJy6SwTuqGWmu3P+hffMrOHDmIthBvjc1
-         6wrRfGLZif3Sllcuiex0dKywhezjrT0H+8lDSRBZ7LG9YlgRRvO4htPjHkQB7C6eAU4b
-         noDkeSS46eJcFE1H0Y8B1sdnXVlg7mxvCcjb1Vy6j0FX9zyUEVb07LY5uKSG/Ft0G0V9
-         IboA==
-X-Gm-Message-State: AOAM531ejwBA/19IEhtlkuIovWFiydMguhL862UtN0vJK4+Sktioj26H
-        I3i+CAJ8+u/bEtIZUiTQZKk=
-X-Google-Smtp-Source: ABdhPJxkJHXkw9qYWYAXzFYPSzZ3C8v4575JyuEP2Ms4l7Azc1ObNhfpBI+OUK/nzsaigQEU2g8Cyg==
-X-Received: by 2002:a17:90a:12c7:: with SMTP id b7mr1129885pjg.137.1594840014855;
-        Wed, 15 Jul 2020 12:06:54 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id z25sm2757161pfg.140.2020.07.15.12.06.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 12:06:53 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Brian Masney <masneyb@onstation.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm/adreno: fix gpu probe if no interconnect-names
-Date:   Wed, 15 Jul 2020 12:07:30 -0700
-Message-Id: <20200715190732.3116556-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726778AbgGOTKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 15:10:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726479AbgGOTKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 15:10:40 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B535D2076C;
+        Wed, 15 Jul 2020 19:10:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594840237;
+        bh=04PyxVq470XO3zTgd8I3XFy4aNows+K2H5vcSdr/fHo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TgRH7+nbKg81sjEy3bs9kZAGUBheXauQs8urrlWJKs1YYKWXzE+/985LaL9mXGjUA
+         /QPAk2aNWuEEh6s7TfwVKtbbZro5Dv+L7VGQEsIMzmYJU8BNDMU+cjXdBYDAMnEky5
+         l+XIcRRdDNwDq4MQRliOfprxh6DuDWT4e3XyTqG8=
+Date:   Wed, 15 Jul 2020 12:10:37 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Subject: Re: [f2fs-dev] [PATCH] f2fs: don't skip writeback of quota data
+Message-ID: <20200715191037.GB2232118@google.com>
+References: <20200709053027.351974-1-jaegeuk@kernel.org>
+ <2f4207db-57d1-5b66-f1ee-3532feba5d1f@huawei.com>
+ <20200709190545.GA3001066@google.com>
+ <ae1a3e8a-6209-8d4b-7235-5c8897076501@huawei.com>
+ <20200710032616.GC545837@google.com>
+ <01d0db54-eee1-f6cd-76c3-ebe59a7abae4@huawei.com>
+ <20200710035053.GH545837@google.com>
+ <77041117-f615-e6e6-591c-b02bf99e58c2@huawei.com>
+ <20200713175926.GB2910046@google.com>
+ <d8645371-f1d6-f5a2-01a9-19708fe3861b@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d8645371-f1d6-f5a2-01a9-19708fe3861b@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On 07/14, Chao Yu wrote:
+> On 2020/7/14 1:59, Jaegeuk Kim wrote:
+> > On 07/10, Chao Yu wrote:
+> >> On 2020/7/10 11:50, Jaegeuk Kim wrote:
+> >>> On 07/10, Chao Yu wrote:
+> >>>> On 2020/7/10 11:26, Jaegeuk Kim wrote:
+> >>>>> On 07/10, Chao Yu wrote:
+> >>>>>> On 2020/7/10 3:05, Jaegeuk Kim wrote:
+> >>>>>>> On 07/09, Chao Yu wrote:
+> >>>>>>>> On 2020/7/9 13:30, Jaegeuk Kim wrote:
+> >>>>>>>>> It doesn't need to bypass flushing quota data in background.
+> >>>>>>>>
+> >>>>>>>> The condition is used to flush quota data in batch to avoid random
+> >>>>>>>> small-sized udpate, did you hit any problem here?
+> >>>>>>>
+> >>>>>>> I suspect this causes fault injection test being stuck by waiting for inode
+> >>>>>>> writeback completion. With this patch, it has been running w/o any issue so far.
+> >>>>>>> I keep an eye on this.
+> >>>>>>
+> >>>>>> Hmmm.. so that this patch may not fix the root cause, and it may hiding the
+> >>>>>> issue deeper.
+> >>>>>>
+> >>>>>> How about just keeping this patch in our private branch to let fault injection
+> >>>>>> test not be stuck? until we find the root cause in upstream codes.
+> >>>>>
+> >>>>> Well, I don't think this hides something. When the issue happens, I saw inodes
+> >>>>> being stuck due to writeback while only quota has some dirty data. At that time,
+> >>>>> there was no dirty data page from other inodes.
+> >>>>
+> >>>> Okay,
+> >>>>
+> >>>>>
+> >>>>> More specifically, I suspect __writeback_inodes_sb_nr() gives WB_SYNC_NONE and
+> >>>>> waits for wb_wait_for_completion().
+> >>>>
+> >>>> Did you record any callstack after the issue happened?
+> >>>
+> >>> I found this.
+> >>>
+> >>> [213389.297642]  __schedule+0x2dd/0x780^M
+> >>> [213389.299224]  schedule+0x55/0xc0^M
+> >>> [213389.300745]  wb_wait_for_completion+0x56/0x90^M
+> >>> [213389.302469]  ? wait_woken+0x80/0x80^M
+> >>> [213389.303997]  __writeback_inodes_sb_nr+0xa8/0xd0^M
+> >>> [213389.305760]  writeback_inodes_sb+0x4b/0x60^M
+> >>> [213389.307439]  sync_filesystem+0x2e/0xa0^M
+> >>> [213389.308999]  generic_shutdown_super+0x27/0x110^M
+> >>> [213389.310738]  kill_block_super+0x27/0x50^M
+> >>> [213389.312327]  kill_f2fs_super+0x76/0xe0 [f2fs]^M
+> >>> [213389.314014]  deactivate_locked_super+0x3b/0x80^M
+> >>> [213389.315692]  deactivate_super+0x3e/0x50^M
+> >>> [213389.317226]  cleanup_mnt+0x109/0x160^M
+> >>> [213389.318718]  __cleanup_mnt+0x12/0x20^M
+> >>> [213389.320177]  task_work_run+0x70/0xb0^M
+> >>> [213389.321609]  exit_to_usermode_loop+0x131/0x160^M
+> >>> [213389.323306]  do_syscall_64+0x170/0x1b0^M
+> >>> [213389.324762]  entry_SYSCALL_64_after_hwframe+0x44/0xa9^M
+> >>> [213389.326477] RIP: 0033:0x7fc4b5e6a35b^M
+> >>
+> >> Does this only happen during umount? If so, will below change help?
+> >>
+> >> 	if ((S_ISDIR(inode->i_mode) || IS_NOQUOTA(inode)) &&
+> >> +			!is_sbi_flag_set(sbi, SBI_IS_CLOSE) &&
+> >> 			wbc->sync_mode == WB_SYNC_NONE &&
+> >> 			get_dirty_pages(inode) < nr_pages_to_skip(sbi, DATA) &&
+> >> 			f2fs_available_free_memory(sbi, DIRTY_DENTS))
+> >> 		goto skip_write;
+> > 
+> > Hmm, this doesn't work. The writeback was called before put_super?
+> 
+> Oops, still be confused about this issue. :(
 
-If there is no interconnect-names, but there is an interconnects
-property, then of_icc_get(dev, "gfx-mem"); would return an error
-rather than NULL.
+Huam, I hit the problem with the patch.
+I need to return back and think in other way. :(
 
-Also, if there is no interconnect-names property, there will never
-be a ocmem path.  But of_icc_get(dev, "ocmem") would return -EINVAL
-instead of -ENODATA.  Just don't bother trying in this case.
-
-v2: explicity check for interconnect-names property
-
-Fixes: 8e29fb37b301 ("drm/msm: handle for EPROBE_DEFER for of_icc_get")
-Fixes: 00bb9243d346 ("drm/msm/gpu: add support for ocmem interconnect path")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/adreno/adreno_gpu.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-index 0527e85184e1..e23641a5ec84 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-@@ -1003,22 +1003,23 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
- 	if (ret)
- 		return ret;
- 
--	/* Check for an interconnect path for the bus */
--	gpu->icc_path = of_icc_get(dev, "gfx-mem");
--	if (!gpu->icc_path) {
--		/*
--		 * Keep compatbility with device trees that don't have an
--		 * interconnect-names property.
--		 */
-+	/*
-+	 * The legacy case, before "interconnect-names", only has a
-+	 * single interconnect path which is equivalent to "gfx-mem"
-+	 */
-+	if (!of_find_property(dev->of_node, "interconnect-names", NULL)) {
- 		gpu->icc_path = of_icc_get(dev, NULL);
-+	} else {
-+		gpu->icc_path = of_icc_get(dev, "gfx-mem");
-+		gpu->ocmem_icc_path = of_icc_get(dev, "ocmem");
- 	}
-+
- 	if (IS_ERR(gpu->icc_path)) {
- 		ret = PTR_ERR(gpu->icc_path);
- 		gpu->icc_path = NULL;
- 		return ret;
- 	}
- 
--	gpu->ocmem_icc_path = of_icc_get(dev, "ocmem");
- 	if (IS_ERR(gpu->ocmem_icc_path)) {
- 		ret = PTR_ERR(gpu->ocmem_icc_path);
- 		gpu->ocmem_icc_path = NULL;
-@@ -1026,6 +1027,7 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
- 		if (ret != -ENODATA)
- 			return ret;
- 	}
-+
- 	return 0;
- }
- 
--- 
-2.26.2
-
+> 
+> Thanks,
+> 
+> > I'll try the original patch one more time.
+> > 
+> >>
+> >>>
+> >>>>
+> >>>> Still I'm confused that why directory's data written could be skipped, but
+> >>>> quota's data couldn't, what's the difference?
+> >>>
+> >>> I suspect different blocking timing from cp_error between quota and dentry.
+> >>> e.g., we block dir operations right after cp_error, while quota can make
+> >>
+> >> No guarantee that there is no dirty dentry being created after
+> >> cp_error, right?
+> >>
+> >> e.g.
+> >>
+> >> Thread A				Thread B
+> >> - f2fs_create
+> >> - bypass f2fs_cp_error
+> >> 					- set cp_error
+> >> - create dirty dentry
+> >>
+> >> BTW, do you know what __writeback_inodes_sb_nr is waiting for?
+> >>
+> >>> dirty pages in more fine granularity.
+> >>>
+> >>>>
+> >>>>>
+> >>>>>>
+> >>>>>> Thanks,
+> >>>>>>
+> >>>>>>>
+> >>>>>>> Thanks,
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>> Thanks,
+> >>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> >>>>>>>>> ---
+> >>>>>>>>>  fs/f2fs/data.c | 2 +-
+> >>>>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>>>>>>>
+> >>>>>>>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> >>>>>>>>> index 44645f4f914b6..72e8b50e588c1 100644
+> >>>>>>>>> --- a/fs/f2fs/data.c
+> >>>>>>>>> +++ b/fs/f2fs/data.c
+> >>>>>>>>> @@ -3148,7 +3148,7 @@ static int __f2fs_write_data_pages(struct address_space *mapping,
+> >>>>>>>>>  	if (unlikely(is_sbi_flag_set(sbi, SBI_POR_DOING)))
+> >>>>>>>>>  		goto skip_write;
+> >>>>>>>>>  
+> >>>>>>>>> -	if ((S_ISDIR(inode->i_mode) || IS_NOQUOTA(inode)) &&
+> >>>>>>>>> +	if (S_ISDIR(inode->i_mode) &&
+> >>>>>>>>>  			wbc->sync_mode == WB_SYNC_NONE &&
+> >>>>>>>>>  			get_dirty_pages(inode) < nr_pages_to_skip(sbi, DATA) &&
+> >>>>>>>>>  			f2fs_available_free_memory(sbi, DIRTY_DENTS))
+> >>>>>>>>>
+> >>>>>>> .
+> >>>>>>>
+> >>>>> .
+> >>>>>
+> >>> .
+> >>>
+> > .
+> > 
