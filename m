@@ -2,128 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7830221649
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BE222164F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgGOUd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 16:33:27 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:54041 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbgGOUd0 (ORCPT
+        id S1726859AbgGOUgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 16:36:39 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:35320 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgGOUgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 16:33:26 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 374A322F2E;
-        Wed, 15 Jul 2020 22:33:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1594845203;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1R6jeG7FT+QCwR3qccYGaQElhDE6JyZhVCS4fYcS7Ks=;
-        b=AaOqyHiujL9F9adYBvyLPusadO/aXLJC1EC4nuSiP1OJS0fJVWBEjZ2o0jOc+JGO7VjEaP
-        sraX8ttjpR2SkCoYubNuyXXdNIiTMFztRS0v9ArSIohDJh4/w9fiAr9ev2wIzUejVavbow
-        nJB4mVS4hbf2e34qBF1WlY+A0eSOeAw=
+        Wed, 15 Jul 2020 16:36:38 -0400
+Received: by mail-il1-f193.google.com with SMTP id t18so3183081ilh.2;
+        Wed, 15 Jul 2020 13:36:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BJXqP+XSa8G42ZyuDhISJ/0QmN/qD/vI4ezaEI9n1jk=;
+        b=p4nFhlTzE0KKtv6xXcVUU0+ExVtfRcu2iPb0aUQUGet9HGspCQM1CLARGgWXaegcWk
+         NOic0SnrPYvZOPFZp/HBq2eKKqXhOe7cCvn+UXtj0w5NF31F7nkBpjZ8EzTt7Pf488aq
+         1T6a2XMVwAtZf3TGkX3RrG+3LV6xwL2FFGhfOBu+d/7mk8pSQJpHC8aynM8Ul+nXtcC2
+         2z89DzdtzhO88pk2OHE931tKEqJ8gkFv9eG6h27ak7ANlz9ut89B1V0ZKDfQa8sdcYFq
+         tRaS41a1dBpHmTicBppjPG+oA0vRC8CfXVl2CztE8czX/7zS1tsE+bztZ9pezJO5rIaC
+         +YeA==
+X-Gm-Message-State: AOAM530+VbEfz2a5Zow6XbEU/NL5FJzReNqcMPTgUQr9Semnhyk1OOfp
+        cJpKVE1lZYeqrK/TVL/S/Q==
+X-Google-Smtp-Source: ABdhPJy9wtrz0U4Y6iejGJoArzuSrlG0r9+g5Y1CnR9WU06vnjI5mV5Fd3x5SusqG0Fm/xx1Hy0YLg==
+X-Received: by 2002:a05:6e02:5c4:: with SMTP id l4mr1265616ils.209.1594845397644;
+        Wed, 15 Jul 2020 13:36:37 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id f9sm1577464ilq.9.2020.07.15.13.36.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 13:36:37 -0700 (PDT)
+Received: (nullmailer pid 775848 invoked by uid 1000);
+        Wed, 15 Jul 2020 20:36:36 -0000
+Date:   Wed, 15 Jul 2020 14:36:36 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Wenchao Hao <haowenchao22@gmail.com>
+Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        frowand.list@gmail.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH] of/address: Fix variable name in comment of of_iomap
+Message-ID: <20200715203636.GA775752@bogus>
+References: <20200701162444.9494-1-haowenchao22@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 15 Jul 2020 22:33:23 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alex Marginean <alexandru.marginean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v6 1/4] net: phy: add USXGMII link partner
- ability constants
-In-Reply-To: <546718f3f76862d285aeb82cb02767c4@walle.cc>
-References: <20200709213526.21972-1-michael@walle.cc>
- <20200709213526.21972-2-michael@walle.cc>
- <20200713182314.GW1551@shell.armlinux.org.uk>
- <546718f3f76862d285aeb82cb02767c4@walle.cc>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <b6c24b8f698245549056c975042d9b51@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200701162444.9494-1-haowenchao22@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-07-13 20:37, schrieb Michael Walle:
-> Am 2020-07-13 20:23, schrieb Russell King - ARM Linux admin:
->> On Thu, Jul 09, 2020 at 11:35:23PM +0200, Michael Walle wrote:
->>> The constants are taken from the USXGMII Singleport Copper Interface
->>> specification. The naming are based on the SGMII ones, but with an 
->>> MDIO_
->>> prefix.
->>> 
->>> Signed-off-by: Michael Walle <michael@walle.cc>
->>> ---
->>>  include/uapi/linux/mdio.h | 26 ++++++++++++++++++++++++++
->>>  1 file changed, 26 insertions(+)
->>> 
->>> diff --git a/include/uapi/linux/mdio.h b/include/uapi/linux/mdio.h
->>> index 4bcb41c71b8c..784723072578 100644
->>> --- a/include/uapi/linux/mdio.h
->>> +++ b/include/uapi/linux/mdio.h
->>> @@ -324,4 +324,30 @@ static inline __u16 mdio_phy_id_c45(int prtad, 
->>> int devad)
->>>  	return MDIO_PHY_ID_C45 | (prtad << 5) | devad;
->>>  }
->>> 
->>> +/* UsxgmiiChannelInfo[15:0] for USXGMII in-band auto-negotiation.*/
->>> +#define MDIO_LPA_USXGMII_EEE_CLK_STP	0x0080	/* EEE clock stop 
->>> supported */
->>> +#define MDIO_LPA_USXGMII_EEE		0x0100	/* EEE supported */
->>> +#define MDIO_LPA_USXGMII_SPD_MASK	0x0e00	/* USXGMII speed mask */
->>> +#define MDIO_LPA_USXGMII_FULL_DUPLEX	0x1000	/* USXGMII full duplex 
->>> */
->>> +#define MDIO_LPA_USXGMII_DPX_SPD_MASK	0x1e00	/* USXGMII duplex and 
->>> speed bits */
->>> +#define MDIO_LPA_USXGMII_10		0x0000	/* 10Mbps */
->>> +#define MDIO_LPA_USXGMII_10HALF		0x0000	/* 10Mbps half-duplex */
->>> +#define MDIO_LPA_USXGMII_10FULL		0x1000	/* 10Mbps full-duplex */
->>> +#define MDIO_LPA_USXGMII_100		0x0200	/* 100Mbps */
->>> +#define MDIO_LPA_USXGMII_100HALF	0x0200	/* 100Mbps half-duplex */
->>> +#define MDIO_LPA_USXGMII_100FULL	0x1200	/* 100Mbps full-duplex */
->>> +#define MDIO_LPA_USXGMII_1000		0x0400	/* 1000Mbps */
->>> +#define MDIO_LPA_USXGMII_1000HALF	0x0400	/* 1000Mbps half-duplex */
->>> +#define MDIO_LPA_USXGMII_1000FULL	0x1400	/* 1000Mbps full-duplex */
->>> +#define MDIO_LPA_USXGMII_10G		0x0600	/* 10Gbps */
->>> +#define MDIO_LPA_USXGMII_10GHALF	0x0600	/* 10Gbps half-duplex */
->>> +#define MDIO_LPA_USXGMII_10GFULL	0x1600	/* 10Gbps full-duplex */
->>> +#define MDIO_LPA_USXGMII_2500		0x0800	/* 2500Mbps */
->>> +#define MDIO_LPA_USXGMII_2500HALF	0x0800	/* 2500Mbps half-duplex */
->>> +#define MDIO_LPA_USXGMII_2500FULL	0x1800	/* 2500Mbps full-duplex */
->>> +#define MDIO_LPA_USXGMII_5000		0x0a00	/* 5000Mbps */
->>> +#define MDIO_LPA_USXGMII_5000HALF	0x0a00	/* 5000Mbps half-duplex */
->>> +#define MDIO_LPA_USXGMII_5000FULL	0x1a00	/* 5000Mbps full-duplex */
->>> +#define MDIO_LPA_USXGMII_LINK		0x8000	/* PHY link with copper-side 
->>> partner */
->> 
->> btw, the only thing which is missing from this is bit 0.
+On Thu, 02 Jul 2020 00:24:44 +0800, Wenchao Hao wrote:
+> The first variable name of of_iomap is np while previous
+> comment write device here.
 > 
-> TBH, I didn't know how to name it. Any suggestions?
+> Signed-off-by: Wenchao Hao <haowenchao22@gmail.com>
+> ---
+>  drivers/of/address.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-NXP calls it ABIL0, in xilinx docs its called USXGMII [1]. In the 
-USXGMII
-spec, its "set to 1 (0 is SGMII)" which I don't understand because its
-also 1 for SGMII, right? At least as described in the tx_configReg[15:0] 
-in
-the SGMII spec.
-
-#define MDIO_USXGMII_USXGMII 0x0001 ?
-
--michael
-
-[1] 
-https://www.xilinx.com/support/documentation/ip_documentation/usxgmii/v1_0/pg251-usxgmii.pdf
+Applied, thanks!
