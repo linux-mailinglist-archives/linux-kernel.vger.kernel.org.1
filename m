@@ -2,135 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2D9221606
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DC822160C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgGOUVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 16:21:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726370AbgGOUVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 16:21:44 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B209320657;
-        Wed, 15 Jul 2020 20:21:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594844504;
-        bh=VQli7jtE5T/1SYWklpK2VCHwm8hJkAqOYFW8SlVpDJ0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Yu9VK1c6Pq0Q4zp0DjbR6qa28sZfUiRyQIeX5Qlc7Q1aGH/Ly5XlPtofF7ct7+HgH
-         U5eiDd7kibMnusLyA2PK+HltG5eZp8baVIOdimQiu2PTQ7irKwXIuG2J6oc8d+VCXY
-         JQGTi+Re6xVngnPDUCw3tBLdsBt0tp8abdeupdoA=
-Date:   Wed, 15 Jul 2020 13:21:41 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     John Ogness <john.ogness@linutronix.de>,
-        Willem de Bruijn <willemb@google.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] af_packet: TPACKET_V3: replace busy-wait loop
-Message-ID: <20200715132141.2c72ae75@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200707152204.10314-1-john.ogness@linutronix.de>
-References: <20200707152204.10314-1-john.ogness@linutronix.de>
+        id S1727774AbgGOUWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 16:22:55 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:37088 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgGOUWy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 16:22:54 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id AA8492A5175
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH 0/7] media: Clean H264 stateless uAPI
+Date:   Wed, 15 Jul 2020 17:22:23 -0300
+Message-Id: <20200715202233.185680-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Jul 2020 17:28:04 +0206 John Ogness wrote:
-> A busy-wait loop is used to implement waiting for bits to be copied
-> from the skb to the kernel buffer before retiring a block. This is
-> a problem on PREEMPT_RT because the copying task could be preempted
-> by the busy-waiting task and thus live lock in the busy-wait loop.
-> 
-> Replace the busy-wait logic with an rwlock_t. This provides lockdep
-> coverage and makes the code RT ready.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+The recent patch posted by Jernej (which I'm including for context),
+encouraged me to address all the known issues in the uAPI.
 
-Is taking a lock and immediately releasing it better than a completion?
-Seems like the lock is guaranteed to dirty a cache line, which would
-otherwise be avoided here.
+I hope we can finally make this uAPI interface
+public; and then also address the other codec
+interfaces so we can move the codec drivers out of staging.
 
-Willem, would you be able to take a look as well? Is this path
-performance sensitive in real life?
+It should be noted that there is already GStreamer native
+support for this interface, which will be part of 1.18,
+once it's released [1], as well as support in Chromium [2].
 
-> diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-> index 29bd405adbbd..dd1eec2dd6ef 100644
-> --- a/net/packet/af_packet.c
-> +++ b/net/packet/af_packet.c
-> @@ -593,6 +593,7 @@ static void init_prb_bdqc(struct packet_sock *po,
->  						req_u->req3.tp_block_size);
->  	p1->tov_in_jiffies = msecs_to_jiffies(p1->retire_blk_tov);
->  	p1->blk_sizeof_priv = req_u->req3.tp_sizeof_priv;
-> +	rwlock_init(&p1->blk_fill_in_prog_lock);
->  
->  	p1->max_frame_len = p1->kblk_size - BLK_PLUS_PRIV(p1->blk_sizeof_priv);
->  	prb_init_ft_ops(p1, req_u);
-> @@ -659,10 +660,9 @@ static void prb_retire_rx_blk_timer_expired(struct timer_list *t)
->  	 *
->  	 */
->  	if (BLOCK_NUM_PKTS(pbd)) {
-> -		while (atomic_read(&pkc->blk_fill_in_prog)) {
-> -			/* Waiting for skb_copy_bits to finish... */
-> -			cpu_relax();
-> -		}
-> +		/* Waiting for skb_copy_bits to finish... */
-> +		write_lock(&pkc->blk_fill_in_prog_lock);
-> +		write_unlock(&pkc->blk_fill_in_prog_lock);
->  	}
->  
->  	if (pkc->last_kactive_blk_num == pkc->kactive_blk_num) {
-> @@ -921,10 +921,9 @@ static void prb_retire_current_block(struct tpacket_kbdq_core *pkc,
->  		 * the timer-handler already handled this case.
->  		 */
->  		if (!(status & TP_STATUS_BLK_TMO)) {
-> -			while (atomic_read(&pkc->blk_fill_in_prog)) {
-> -				/* Waiting for skb_copy_bits to finish... */
-> -				cpu_relax();
-> -			}
-> +			/* Waiting for skb_copy_bits to finish... */
-> +			write_lock(&pkc->blk_fill_in_prog_lock);
-> +			write_unlock(&pkc->blk_fill_in_prog_lock);
->  		}
->  		prb_close_block(pkc, pbd, po, status);
->  		return;
-> @@ -944,7 +943,8 @@ static int prb_queue_frozen(struct tpacket_kbdq_core *pkc)
->  static void prb_clear_blk_fill_status(struct packet_ring_buffer *rb)
->  {
->  	struct tpacket_kbdq_core *pkc  = GET_PBDQC_FROM_RB(rb);
-> -	atomic_dec(&pkc->blk_fill_in_prog);
-> +
-> +	read_unlock(&pkc->blk_fill_in_prog_lock);
->  }
->  
->  static void prb_fill_rxhash(struct tpacket_kbdq_core *pkc,
-> @@ -998,7 +998,7 @@ static void prb_fill_curr_block(char *curr,
->  	pkc->nxt_offset += TOTAL_PKT_LEN_INCL_ALIGN(len);
->  	BLOCK_LEN(pbd) += TOTAL_PKT_LEN_INCL_ALIGN(len);
->  	BLOCK_NUM_PKTS(pbd) += 1;
-> -	atomic_inc(&pkc->blk_fill_in_prog);
-> +	read_lock(&pkc->blk_fill_in_prog_lock);
->  	prb_run_all_ft_ops(pkc, ppd);
->  }
->  
-> diff --git a/net/packet/internal.h b/net/packet/internal.h
-> index 907f4cd2a718..fd41ecb7f605 100644
-> --- a/net/packet/internal.h
-> +++ b/net/packet/internal.h
-> @@ -39,7 +39,7 @@ struct tpacket_kbdq_core {
->  	char		*nxt_offset;
->  	struct sk_buff	*skb;
->  
-> -	atomic_t	blk_fill_in_prog;
-> +	rwlock_t	blk_fill_in_prog_lock;
->  
->  	/* Default is set to 8ms */
->  #define DEFAULT_PRB_RETIRE_TOV	(8)
+I have pushed a branch porting GStreamer to
+support these interface changes:
+
+https://gitlab.freedesktop.org/ezequielgarcia/gst-plugins-bad/-/commits/for_h264_uapi_v2
+
+The main changes are:
+
+* Split prediction weight table to a separate control.
+* Increase size of first_mb_in_slice field.
+* Cleanup DPB entry interface, to support field coding.
+* Increase of DPB entry pic_num field.
+* Move slice invariant fields to the per-frame control.
+
+I'm adding here the change from Jernej, and a change from
+Philipp Zabel which apparently fell thru the cracks.
+
+Ezequiel Garcia (8):
+  media: uapi: h264: Further clarify scaling lists order
+  media: uapi: h264: Split prediction weight parameters
+  media: uapi: h264: Increase size of 'first_mb_in_slice' field
+  media: uapi: h264: Cleanup DPB entry interface
+  media: uapi: h264: Increase size of DPB entry pic_num
+  media: uapi: h264: Clean slice invariants syntax elements
+  media: hantro: Don't require unneeded H264_SLICE_PARAMS
+  media: rkvdec: Don't require unneeded H264_SLICE_PARAMS
+
+Jernej Skrabec (1):
+  media: uapi: h264: Update reference lists
+
+Philipp Zabel (1):
+  media: uapi: h264: Clarify pic_order_cnt_bit_size field
+
+ .../media/v4l/ext-ctrls-codec.rst             | 192 +++++++++++-------
+ drivers/media/v4l2-core/v4l2-ctrls.c          |  25 +++
+ drivers/media/v4l2-core/v4l2-h264.c           |  12 +-
+ drivers/staging/media/hantro/hantro_drv.c     |   5 -
+ .../staging/media/hantro/hantro_g1_h264_dec.c |  21 +-
+ drivers/staging/media/hantro/hantro_h264.c    |   8 +-
+ drivers/staging/media/hantro/hantro_hw.h      |   2 -
+ drivers/staging/media/rkvdec/rkvdec-h264.c    |  18 +-
+ drivers/staging/media/rkvdec/rkvdec.c         |   5 -
+ drivers/staging/media/sunxi/cedrus/cedrus.h   |   1 +
+ .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +
+ .../staging/media/sunxi/cedrus/cedrus_h264.c  |  21 +-
+ include/media/h264-ctrls.h                    |  80 +++++---
+ include/media/v4l2-h264.h                     |   3 +-
+ 14 files changed, 234 insertions(+), 161 deletions(-)
+
+-- 
+2.27.0
 
