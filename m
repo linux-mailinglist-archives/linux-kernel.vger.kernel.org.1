@@ -2,160 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248AE220AAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEBA220AB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729352AbgGOLHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 07:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729239AbgGOLHI (ORCPT
+        id S1731380AbgGOLHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 07:07:34 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24536 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729239AbgGOLHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:07:08 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844C0C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 04:07:07 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id d17so2138323ljl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 04:07:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=antmicro.com; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=LS4hCUEzoSELDF8hz/hUz8/P4swJmb1Knux4DAvwCKg=;
-        b=tvY8PQWQZsDh/YAzpSCW8KgGWfH/ut9NLsu5C5/0X9wPFGorLTcyD1G44JFNQm6oZV
-         K2TpoM4gFya+SxV4S10GEWIFI6ILbEhuUIHR/w2ViF/aBdf0eeQG7+RwKPlEezU4PFGI
-         1LQEJTyjDCvNu4rN3aM32w9MRpSKGQfRO3O7Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=LS4hCUEzoSELDF8hz/hUz8/P4swJmb1Knux4DAvwCKg=;
-        b=LKg/WY0jnu5T5ZpTqahpCZ8H1NH8gRhtt54JhSxjBtBG3wvf4lFsfwdxNrUtK0QVJF
-         UPWmEdySfRrbmO0PvBtaH1ZfDcT9k0Ir38LQtPxmPVOvq0wfytpQEoqUMNPoDrh1xhrt
-         PPcOE+wCpjLKPnhvP7vE6g10siVKReZ2Fk5YS48tI2aU1ZUsDGg5+3Sio7ht4yVsKQVY
-         Mm0RurLOP3JLoaYm2XSCIme2IU4al38VN+OnCHTgy8RNSVO3F1XV8v8HUVECaH+vlQg2
-         fHb9OtyD3zYX2k2DqywZKLYaThrN7I1l9Pv/S60CxSjbi4lNiDqfxnRu2Ci3zEgeCwjm
-         NNxw==
-X-Gm-Message-State: AOAM532aNXveaJg27XSztbN/hxVpfUADqQ+7ASOuiXK5DlWKoF1TfWHo
-        rSrt0l+rchlROVj82moNF1JJnA==
-X-Google-Smtp-Source: ABdhPJy1PC3WtzZvS6+3qsGyi9RvAdJfykrkOKNKr8hT+mKebr7eUBDBcbenv+FYYIgZFXzoLaKNLA==
-X-Received: by 2002:a2e:9a0f:: with SMTP id o15mr4723355lji.450.1594811226020;
-        Wed, 15 Jul 2020 04:07:06 -0700 (PDT)
-Received: from localhost.localdomain (d79-196.icpnet.pl. [77.65.79.196])
-        by smtp.gmail.com with ESMTPSA id u7sm513117lfi.45.2020.07.15.04.07.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 04:07:05 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 13:06:59 +0200
-From:   Mateusz Holenko <mholenko@antmicro.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, devicetree@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Cc:     Stafford Horne <shorne@gmail.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Filip Kokosinski <fkokosinski@antmicro.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, "Gabriel L. Somlo" <gsomlo@gmail.com>
-Subject: [PATCH v8 0/5] LiteX SoC controller and LiteUART serial driver
-Message-ID: <20200715130641.1953227-0-mholenko@antmicro.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        Wed, 15 Jul 2020 07:07:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594811251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=iO4hEQrHk7iLjyxygpyETAS7orfGuntOuz03Rz8KnAc=;
+        b=idgEadKBQxEYF0evKbL/tS2djuxCB9ZE8GBf8UUYUhe/ZLyFXjEnpZDEPVmMQ7xHAlKWN/
+        6VvsECDTQyUTFPTi9wV7h4GaaIoyLQ2lMmArcoqUfhiUxmTaAxPilE+KrsTQgi0TodHiGh
+        FH/iaupBHaa2gxqh0d/0wggpd2U1n8Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214--_YKm2lUM8SgshmOVEIsag-1; Wed, 15 Jul 2020 07:07:26 -0400
+X-MC-Unique: -_YKm2lUM8SgshmOVEIsag-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 657F280BCAC;
+        Wed, 15 Jul 2020 11:07:25 +0000 (UTC)
+Received: from janakin.usersys.redhat.com (unknown [10.40.208.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A8C07100238C;
+        Wed, 15 Jul 2020 11:07:23 +0000 (UTC)
+From:   Jan Stancek <jstancek@redhat.com>
+To:     broonie@kernel.org, skhan@linuxfoundation.org
+Cc:     ltp@lists.linux.it, linux-kernel@vger.kernel.org,
+        jstancek@redhat.com
+Subject: [PATCH] selftests: vdso: hash entry size on alpha,s390x is 8 bytes
+Date:   Wed, 15 Jul 2020 13:07:11 +0200
+Message-Id: <9927ed18c642db002e43afe5e36fb9c18c4f9495.1594811090.git.jstancek@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset introduces support for LiteX SoC Controller
-and LiteUART - serial device from LiteX SoC builder
-(https://github.com/enjoy-digital/litex).
+parse_vdso.c is crashing on 5.8-rc5 s390x, because it wrongly reads
+nbucket as 0:
+  Program received signal SIGFPE, Arithmetic exception.
+  0x0000000001000f3e in vdso_sym (version=0x1001280 "LINUX_2.6", name=0x100128a "__vdso_getcpu") at parse_vdso.c:207
+  207             ELF(Word) chain = vdso_info.bucket[elf_hash(name) % vdso_info.nbucket];
+  (gdb) p vdso_info.nbucket
+  $1 = 0
 
-In the following patchset I will add
-a new mor1kx-based (OpenRISC) platform that
-uses this device.
+Per readelf source:
+  https://sourceware.org/git/?p=binutils-gdb.git;a=blob;f=binutils/readelf.c;h=2406304fe35a832ac53aa7b1a367f3f7afed4264;hb=HEAD#l10027
+and objdump output hash entries are double size on 64bit s390 and alpha:
+  0000000000000120 <.hash>:
+   120:   00 00 00 00             .long   0x00000000
+   124:   00 00 00 03             .long   0x00000003
+   128:   00 00 00 00             .long   0x00000000
+   12c:   00 00 00 07             .long   0x00000007
+   130:   00 00 00 00             .long   0x00000000
+   134:   00 00 00 01             .long   0x00000001
+   138:   00 00 00 00             .long   0x00000000
+   13c:   00 00 00 05             .long   0x00000005
+   140:   00 00 00 00             .long   0x00000000
+   144:   00 00 00 06             .long   0x00000006
+	  ...
+   16c:   00 00 00 02             .long   0x00000002
+   170:   00 00 00 00             .long   0x00000000
+   174:   00 00 00 03             .long   0x00000003
+   178:   00 00 00 00             .long   0x00000000
+   17c:   00 00 00 04             .long   0x00000004
 
-Later I plan to extend this platform by
-adding support for more devices from LiteX suite.
+Do similar check in parse_vdso.c and treat hash entries as double word.
 
-Changes in v8:
-    - fixed help messages in LiteUART's KConfig
-    - removed dependency between LiteUART and LiteX SoC drivers
-    - removed `litex_check_accessors()` helper function
-    - added crashing (BUG) on the failed LiteX CSR access test
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ tools/testing/selftests/vDSO/parse_vdso.c | 48 +++++++++++++++++++----
+ 1 file changed, 40 insertions(+), 8 deletions(-)
 
-Changes in v7:
-    - added missing include directive in UART's driver
-
-Changes in v6:
-    - changed accessors in SoC Controller's driver
-    - reworked UART driver
-
-Changes in v5:
-    - added Reviewed-by tag
-    - removed custom accessors from SoC Controller's driver
-    - fixed error checking in SoC Controller's driver
-
-Changes in v4:
-    - fixed copyright headers
-    - fixed SoC Controller's yaml 
-    - simplified SoC Controller's driver
-
-Changes in v3:
-    - added Acked-by and Reviewed-by tags
-    - introduced LiteX SoC Controller driver
-    - removed endianness detection (handled now by LiteX SoC Controller driver)
-    - modified litex.h header
-    - DTS aliases for LiteUART made optional
-    - renamed SERIAL_LITEUART_NR_PORTS to SERIAL_LITEUART_MAX_PORTS
-    - changed PORT_LITEUART from 122 to 123
-
-Changes in v2:
-    - binding description rewritten to a yaml schema file
-    - added litex.h header with common register access functions
-
-Filip Kokosinski (3):
-  dt-bindings: vendor: add vendor prefix for LiteX
-  dt-bindings: serial: document LiteUART bindings
-  drivers/tty/serial: add LiteUART driver
-
-Pawel Czarnecki (2):
-  dt-bindings: soc: document LiteX SoC Controller bindings
-  drivers/soc/litex: add LiteX SoC Controller driver
-
- .../bindings/serial/litex,liteuart.yaml       |  38 ++
- .../soc/litex/litex,soc-controller.yaml       |  39 ++
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- MAINTAINERS                                   |   9 +
- drivers/soc/Kconfig                           |   1 +
- drivers/soc/Makefile                          |   1 +
- drivers/soc/litex/Kconfig                     |  15 +
- drivers/soc/litex/Makefile                    |   3 +
- drivers/soc/litex/litex_soc_ctrl.c            | 192 +++++++++
- drivers/tty/serial/Kconfig                    |  32 ++
- drivers/tty/serial/Makefile                   |   1 +
- drivers/tty/serial/liteuart.c                 | 402 ++++++++++++++++++
- include/linux/litex.h                         |  24 ++
- 13 files changed, 759 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/serial/litex,liteuart.yaml
- create mode 100644 Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
- create mode 100644 drivers/soc/litex/Kconfig
- create mode 100644 drivers/soc/litex/Makefile
- create mode 100644 drivers/soc/litex/litex_soc_ctrl.c
- create mode 100644 drivers/tty/serial/liteuart.c
- create mode 100644 include/linux/litex.h
-
+diff --git a/tools/testing/selftests/vDSO/parse_vdso.c b/tools/testing/selftests/vDSO/parse_vdso.c
+index 413f75620a35..e23efcbd1c88 100644
+--- a/tools/testing/selftests/vDSO/parse_vdso.c
++++ b/tools/testing/selftests/vDSO/parse_vdso.c
+@@ -47,8 +47,9 @@ static struct vdso_info
+ 	/* Symbol table */
+ 	ELF(Sym) *symtab;
+ 	const char *symstrings;
+-	ELF(Word) *bucket, *chain;
++	void *bucket, *chain;
+ 	ELF(Word) nbucket, nchain;
++	bool hash_ent_is_dword;
+ 
+ 	/* Version table */
+ 	ELF(Versym) *versym;
+@@ -69,6 +70,28 @@ static unsigned long elf_hash(const unsigned char *name)
+ 	return h;
+ }
+ 
++/* return value of hash table entry */
++ELF(Word) get_hash_val(void *ptr, ELF(Word) idx)
++{
++	if (vdso_info.hash_ent_is_dword) {
++		ELF(Xword) *table = ptr;
++		/* for vdso assume all values fit in Elf Word */
++		return (ELF(Word)) table[idx];
++	}
++
++	ELF(Word) *table = ptr;
++	return table[idx];
++}
++
++/* return pointer to hash table entry */
++void *get_hash_ptr(void *ptr, ELF(Word) idx)
++{
++	if (vdso_info.hash_ent_is_dword)
++		return &((ELF(Xword) *) ptr)[idx];
++
++	return &((ELF(Word) *) ptr)[idx];
++}
++
+ void vdso_init_from_sysinfo_ehdr(uintptr_t base)
+ {
+ 	size_t i;
+@@ -84,6 +107,14 @@ void vdso_init_from_sysinfo_ehdr(uintptr_t base)
+ 		return;  /* Wrong ELF class -- check ELF_BITS */
+ 	}
+ 
++	/* 64bit s390 and alpha have hash entry size of 8 bytes */
++	if ((hdr->e_machine == EM_ALPHA
++		|| hdr->e_machine == EM_S390)
++		&& hdr->e_ident[EI_CLASS] == ELFCLASS64)
++		vdso_info.hash_ent_is_dword = true;
++	else
++		vdso_info.hash_ent_is_dword = false;
++
+ 	ELF(Phdr) *pt = (ELF(Phdr)*)(vdso_info.load_addr + hdr->e_phoff);
+ 	ELF(Dyn) *dyn = 0;
+ 
+@@ -149,11 +180,11 @@ void vdso_init_from_sysinfo_ehdr(uintptr_t base)
+ 	if (!vdso_info.verdef)
+ 		vdso_info.versym = 0;
+ 
+-	/* Parse the hash table header. */
+-	vdso_info.nbucket = hash[0];
+-	vdso_info.nchain = hash[1];
+-	vdso_info.bucket = &hash[2];
+-	vdso_info.chain = &hash[vdso_info.nbucket + 2];
++
++	vdso_info.nbucket = get_hash_val(hash, 0);
++	vdso_info.nchain = get_hash_val(hash, 1);
++	vdso_info.bucket = get_hash_ptr(hash, 2);
++	vdso_info.chain = get_hash_ptr(hash, vdso_info.nbucket + 2);
+ 
+ 	/* That's all we need. */
+ 	vdso_info.valid = true;
+@@ -204,9 +235,10 @@ void *vdso_sym(const char *version, const char *name)
+ 		return 0;
+ 
+ 	ver_hash = elf_hash(version);
+-	ELF(Word) chain = vdso_info.bucket[elf_hash(name) % vdso_info.nbucket];
++	ELF(Word) chain = get_hash_val(vdso_info.bucket,
++		elf_hash(name) % vdso_info.nbucket);
+ 
+-	for (; chain != STN_UNDEF; chain = vdso_info.chain[chain]) {
++	for (; chain != STN_UNDEF; chain = get_hash_val(vdso_info.chain, chain)) {
+ 		ELF(Sym) *sym = &vdso_info.symtab[chain];
+ 
+ 		/* Check for a defined global or weak function w/ right name. */
 -- 
-2.25.1
+2.18.1
 
