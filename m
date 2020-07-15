@@ -2,91 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458402217A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA482217A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbgGOWOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 18:14:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35668 "EHLO mail.kernel.org"
+        id S1727927AbgGOWQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 18:16:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727971AbgGOWOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 18:14:50 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        id S1726660AbgGOWQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 18:16:14 -0400
+Received: from localhost (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83FE72065F;
-        Wed, 15 Jul 2020 22:14:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4816B2064C;
+        Wed, 15 Jul 2020 22:16:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594851289;
-        bh=CUZJ25Szi3C99xPXb1iXVJJARRC12tD/b1ygd9NAdUQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dY5oTNj0X17RH9aW4Nv23OmusgZCXcHgxD5lbUTTasH6D9BhuT9n1DJHeiAYIRmBM
-         d9gOnEiKmvaiv2isIrQaDOsJuu8TQfOp6SH/VjECxcfwo1q5M/BOkYeAAKYjqyAc4N
-         iVwx8IHOXCPCMqCeZWrr6V/ytkn+pk8b5GCQ+584=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 65E8935229F4; Wed, 15 Jul 2020 15:14:49 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 15:14:49 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/1] rcu/tree: Drop the lock before entering to page
- allocator
-Message-ID: <20200715221449.GJ9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200715183537.4010-1-urezki@gmail.com>
- <20200715185628.7b4k3o5efp4gnbla@linutronix.de>
- <20200715190243.GA26735@pc636>
- <20200715193250.axntj7jdt6bw52dr@linutronix.de>
+        s=default; t=1594851373;
+        bh=AduDpuP4BuNgA0+vcxsVbUCT/F7CI9dj/FjNHV2Uc+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MBIPXYF0vN7qpDTm/mSfI5fR9iVNwpI6ea/FEqvK8YNM/M5Ar+GlxMwguV+OUSnD/
+         JnqGTsblfMth1GRyguJGjinZNXstKgOE4BmXDV4LKvKys4mgaZrraSWQTzwb/PzCIL
+         QDkHkrThhwuiiANvS333UlFcKk1CNj5UeCWuiM/w=
+Date:   Thu, 16 Jul 2020 00:16:11 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] timer: Preserve higher bits of expiration on index
+ calculation
+Message-ID: <20200715221610.GC16227@lenoir>
+References: <20200714072924.6810-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="Dxnq1zWXvFF0Q93v"
 Content-Disposition: inline
-In-Reply-To: <20200715193250.axntj7jdt6bw52dr@linutronix.de>
+In-Reply-To: <20200714072924.6810-1-anna-maria@linutronix.de>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 09:32:50PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2020-07-15 21:02:43 [+0200], Uladzislau Rezki wrote:
-> > 
-> > <snip>
-> >     spin_lock();
-> >     __get_free_page(GFP_NOWAIT | __GFP_NOWARN);
-> >     spin_unlock();
-> > <snip>
-> > 
-> > Also, please note we do it for regular kernel.
+
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 14, 2020 at 09:29:24AM +0200, Anna-Maria Behnsen wrote:
+> The bucket expiry time is the effective expriy time of timers and is
+> greater than or equal to the requested timer expiry time. This is due
+> to the guarantee that timers never expire early and the reduced expiry
+> granularity in the secondary wheel levels.
 > 
-> ach right okay then.
+> When a timer is enqueued, trigger_dyntick_cpu() checks whether the
+> timer is the new first timer. This check compares next_expiry with
+> the requested timer expiry value and not with the effective expiry
+> value of the bucket into which the timer was queued.
 > 
-> > >
-> > > What happened to the part where I asked for a spinlock_t?
-> > > 
-> > What do you mean?
+> Storing the requested timer expiry value in base->next_expiry can lead
+> to base->clk going backwards if the requested timer expiry value is
+> smaller than base->clk. Commit 30c66fc30ee7 ("timer: Prevent base->clk
+> from moving backward") worked around this by preventing the store when
+> timer->expiry is before base->clk, but did not fix the underlying
+> problem.
 > 
-> Please drop that raw_spinlock_t for the kfree_rcu() based locking and
-> use just a plain spinlock_t for the locking. Then you can keep the same
-> code flow for RT and !RT without any special cases and everything.
+> Use the expiry value of the bucket into which the timer is queued to
+> do the new first timer check. This fixes the base->clk going backward
+> problem.
+> 
+> The workaround of commit 30c66fc30ee7 ("timer: Prevent base->clk from
+> moving backward") in trigger_dyntick_cpu() is not longer necessary as the
+> timers bucket expiry is guaranteed to be greater than or equal base->clk.
+> 
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
 
-My concern is that some critical bug will show up at some point
-that requires double-argument kfree_rcu() be invoked while holding
-a raw spinlock.  (Single-argument kfree_rcu() must sometimes invoke
-synchronize_rcu(), so it can never be invoked in any state forbidding
-invoking schedule().)
+Actually I triggered the nasty warning in forward_timer_base()
+with base->next_expiry < base->clk.
 
-Yes, dropping to a plain spinlock would be simple in the here and now,
-but experience indicates that it is only a matter of time, and that when
-that time comes it will come as an emergency.
+You'll need to first apply the following before your patch:
 
-One approach would be to replace the "IS_ENABLED(CONFIG_PREEMPT_RT)"
-with some sort of check for being in a context where spinlock acquisition
-is not legal.  What could be done along those lines?
 
-							Thanx, Paul
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="0001-timer-Preserve-higher-bits-of-expiration-on-index-ca.patch"
+
+From 9770c3de69749cc2b8d1f295cecf12848212360e Mon Sep 17 00:00:00 2001
+From: Frederic Weisbecker <frederic@kernel.org>
+Date: Wed, 15 Jul 2020 23:49:09 +0200
+Subject: [PATCH] timer: Preserve higher bits of expiration on index
+ calculation
+
+The higher bits of the timer expiration are cropped while calling
+calc_index() due to the implicit cast from unsigned long to unsigned int.
+
+This loss shouldn't have consequences on the current code since all the
+computation to calculate the index is done on the lower 32 bits.
+
+However we are preparing to return the actual bucket expiration from
+calc_index() in order to properly fix base->next_expiry updates.
+Preserving the higher bits is a requirement to achieve that.
+
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
+---
+ kernel/time/timer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 9a838d38dbe6..95e0b66f81ec 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -487,7 +487,7 @@ static inline void timer_set_idx(struct timer_list *timer, unsigned int idx)
+  * Helper function to calculate the array index for a given expiry
+  * time.
+  */
+-static inline unsigned calc_index(unsigned expires, unsigned lvl)
++static inline unsigned calc_index(unsigned long expires, unsigned lvl)
+ {
+ 	expires = (expires + LVL_GRAN(lvl)) >> LVL_SHIFT(lvl);
+ 	return LVL_OFFS(lvl) + (expires & LVL_MASK);
+-- 
+2.26.2
+
+
+--Dxnq1zWXvFF0Q93v--
