@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F3122174C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 23:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3702221750
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 23:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbgGOVq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 17:46:58 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:43205 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgGOVq4 (ORCPT
+        id S1726832AbgGOVu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 17:50:28 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:35669 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726356AbgGOVu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 17:46:56 -0400
-Received: by mail-io1-f67.google.com with SMTP id k23so3870427iom.10;
-        Wed, 15 Jul 2020 14:46:55 -0700 (PDT)
+        Wed, 15 Jul 2020 17:50:27 -0400
+Received: by mail-io1-f65.google.com with SMTP id v8so3923137iox.2;
+        Wed, 15 Jul 2020 14:50:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=8X1vTbH+xw2rCtV8oFWi4+4P5U4mLPjeUc+S5jha1dI=;
-        b=CD0MBXrfyiYFyvNMEbpo9r3X2YxyYRGnfjENQSg+aWtRe5RYuOBYFkL5roTO1vZ0DA
-         Aj7b1PfQEag/VmLmzf160N/gUvsd9aOFMHzDulN3kXoLcFsUQCMtKfLmAkRzcculn2Mo
-         Aua/QpxG9dFpIK7vunXLNfXCKrOuwI3MFZO5YBAJ+8P0pSBV9DwdkD3NNvWQ43zaqsx7
-         Cz5Xd5dEMr1UZtKFnvbLRJbqug4AJj6MXpYFiKE/9Ya6v9hM3iqdRMbGTcAG36NDMNqF
-         uLDRzc6QmivlYuTpeF/g8DLryuZFW9K2pveZi5BconobU7r29BWGFSxdT8sgAuwVajJL
-         5akg==
-X-Gm-Message-State: AOAM531ceMbADn/buTtlUA72v2bUZn80bHF87Jtw+O8U5w1v46qxFK5H
-        pafhPUUq/6qkdTDz8RHdQA==
-X-Google-Smtp-Source: ABdhPJyzuv6RdWuDkioL49WymJzxtFy1VHPX3fMw2CtZy0VDQtTxfVBdWTwCsbTEYs0hrDISr0c6PQ==
-X-Received: by 2002:a6b:3f57:: with SMTP id m84mr1241019ioa.99.1594849615577;
-        Wed, 15 Jul 2020 14:46:55 -0700 (PDT)
+        bh=vtsf3o1eYBAy/nkaF79NS+N7y25ekYe59y/m9iX3KAs=;
+        b=GLPGnAXqc2IAHuZ8Tr4fuWHS5aD68xeEnG7rQP8iMcNiSeMZxX/ZdJKzV8/DYTEns+
+         zlXjbQeum116kbsl4jIgALPfikaClN8FW2LQd7GB+IkGRWqv/1qCFEV1ZkXfmdJopDIy
+         WNo8csgCPzVpXXf/rCsOi1byDPoj9V6AgPorgTVsvYs8QF0BpSJx7b1UitcmFL1bHZ04
+         uRumMFdKZEir1zmQiyTPv/jph+QVNfH3Mgt2dSpd1H2VAhF13qdRj/vZpuw3b2mOrwZ+
+         UUtpsxTj846BCZH22eMX0ONRf3cW+MdJSgesXZvgDdGXhRRA6lWsGgz1Bbh8JipQ9TAs
+         7cow==
+X-Gm-Message-State: AOAM531Mu8uC50/cxTcc+4H0r04V8Xs7KfihdFqFXI2BRCxFvgleVk6Z
+        Tc6R7CyWYNCLcAODSPTmF4B8TQaRGh2f
+X-Google-Smtp-Source: ABdhPJxGRVUsg6IBa7QL/kosfRlrx9cJWUaL0BDSLMS3jigu0Nv2//AFuQr0jb/1bRVhIahCHXZ7yQ==
+X-Received: by 2002:a6b:ba06:: with SMTP id k6mr1388146iof.101.1594849825905;
+        Wed, 15 Jul 2020 14:50:25 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id c14sm1623116ild.41.2020.07.15.14.46.54
+        by smtp.gmail.com with ESMTPSA id s11sm1705927ili.79.2020.07.15.14.50.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 14:46:55 -0700 (PDT)
-Received: (nullmailer pid 872990 invoked by uid 1000);
-        Wed, 15 Jul 2020 21:46:53 -0000
-Date:   Wed, 15 Jul 2020 15:46:53 -0600
+        Wed, 15 Jul 2020 14:50:25 -0700 (PDT)
+Received: (nullmailer pid 878244 invoked by uid 1000);
+        Wed, 15 Jul 2020 21:50:23 -0000
+Date:   Wed, 15 Jul 2020 15:50:23 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     robh+dt@kernel.org, leon@kernel.org, wg@grandegger.com,
-        mkl@pengutronix.de, kuba@kernel.org, dmurphy@ti.com,
-        krzk@kernel.org, masahiroy@kernel.org, linux-can@vger.kernel.org,
-        sriram.dash@samsung.com, netdev@vger.kernel.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        hpeter@gmail.com, devicetree@vger.kernel.org, davem@davemloft.net
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: CAN network drivers
-Message-ID: <20200715214653.GA872937@bogus>
-References: <20200705075606.22802-1-grandmaster@al2klimov.de>
+To:     Sivaprakash Murugesan <sivaprak@codeaurora.org>
+Cc:     svarbanov@mm-sol.com, sboyd@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        varada@codeaurora.org, smuthayy@codeaurora.org, agross@kernel.org,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        mturquette@baylibre.com, bhelgaas@google.com, kishon@ti.com,
+        linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org,
+        Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>,
+        vkoul@kernel.org, mgautam@codeaurora.org
+Subject: Re: [PATCH 1/9] dt-bindings: pci: Add ipq8074 gen3 pci compatible
+Message-ID: <20200715215023.GA878186@bogus>
+References: <1593940680-2363-1-git-send-email-sivaprak@codeaurora.org>
+ <1593940680-2363-2-git-send-email-sivaprak@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200705075606.22802-1-grandmaster@al2klimov.de>
+In-Reply-To: <1593940680-2363-2-git-send-email-sivaprak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 05 Jul 2020 09:56:06 +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
+On Sun, 05 Jul 2020 14:47:52 +0530, Sivaprakash Murugesan wrote:
+> ipq8074 has two PCIe ports while the support for gen2 pcie port is
+> already available add the support for gen3 binding.
 > 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
->           If both the HTTP and HTTPS versions
->           return 200 OK and serve the same content:
->             Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> Co-developed-by: Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
+> Signed-off-by: Selvam Sathappan Periakaruppan <speriaka@codeaurora.org>
+> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
 > ---
->  Continuing my work started at 93431e0607e5.
-> 
->  If there are any URLs to be removed completely or at least not HTTPSified:
->  Just clearly say so and I'll *undo my change*.
->  See also https://lkml.org/lkml/2020/6/27/64
-> 
->  If there are any valid, but yet not changed URLs:
->  See https://lkml.org/lkml/2020/6/26/837
-> 
->  Documentation/devicetree/bindings/net/can/grcan.txt |  2 +-
->  drivers/net/can/grcan.c                             |  2 +-
->  drivers/net/can/m_can/m_can.c                       |  2 +-
->  drivers/net/can/m_can/m_can.h                       |  2 +-
->  drivers/net/can/m_can/m_can_platform.c              |  2 +-
->  drivers/net/can/m_can/tcan4x5x.c                    |  2 +-
->  drivers/net/can/sja1000/Kconfig                     | 12 ++++++------
->  drivers/net/can/sja1000/tscan1.c                    |  2 +-
->  drivers/net/can/slcan.c                             |  2 +-
->  drivers/net/can/ti_hecc.c                           |  4 ++--
->  drivers/net/can/usb/Kconfig                         |  6 +++---
->  11 files changed, 19 insertions(+), 19 deletions(-)
+>  .../devicetree/bindings/pci/qcom,pcie.yaml         | 47 ++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
