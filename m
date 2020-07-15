@@ -2,120 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8774C220E6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF2B220E71
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731946AbgGONuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 09:50:17 -0400
-Received: from mga09.intel.com ([134.134.136.24]:36587 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729086AbgGONuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 09:50:16 -0400
-IronPort-SDR: Mw6I9VVgcTZ0j0ub+FXnw+O/JfIYU+xh9Vc45w926/ncjloNNvuxiV1n3Izc85Pl8U6xlTOmsg
- UjAvHRVM2XSg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="150556596"
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; 
-   d="scan'208";a="150556596"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 06:50:15 -0700
-IronPort-SDR: HGWwevdqxTxDRDHxu6Loac2IHFbvALH+N778mrEpxGQOVurNvv8tjElWvYNleM189heoRQy4oy
- DriO0I4yhElA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,355,1589266800"; 
-   d="scan'208";a="282095027"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 15 Jul 2020 06:50:13 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id EA8C476; Wed, 15 Jul 2020 16:50:12 +0300 (EEST)
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: [PATCHv2] mm: Fix warning in move_normal_pmd()
-Date:   Wed, 15 Jul 2020 16:50:11 +0300
-Message-Id: <20200715135011.42743-1-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
+        id S1729703AbgGONvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 09:51:52 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:39503 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729086AbgGONvw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 09:51:52 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id B7D4820008;
+        Wed, 15 Jul 2020 13:51:46 +0000 (UTC)
+Date:   Wed, 15 Jul 2020 15:51:45 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, stable@vger.kernel.org,
+        kernel@collabora.com, Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: cedrus: Propagate OUTPUT resolution to CAPTURE
+Message-ID: <20200715135145.GA2019248@aptenodytes>
+References: <20200514153903.341287-1-nicolas.dufresne@collabora.com>
+ <3c8a235ebb0bf76bcffeb8c6b983cd4c95d77459.camel@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="n8g4imXOkfNTN/H1"
+Content-Disposition: inline
+In-Reply-To: <3c8a235ebb0bf76bcffeb8c6b983cd4c95d77459.camel@collabora.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mremap(2) does not allow source and destination regions to overlap, but
-shift_arg_pages() calls move_page_tables() directly and in this case the
-source and destination overlap often. It confuses move_normal_pmd():
 
-  WARNING: CPU: 3 PID: 27091 at mm/mremap.c:211 move_page_tables+0x6ef/0x720
+--n8g4imXOkfNTN/H1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-move_normal_pmd() expects the destination PMD to be empty, but when
-ranges overlap nobody removes PTE page tables on source side.
-move_ptes() only removes PTE entries, leaving tables behind.
-When the source PMD becomes destination and alignment/size is right we
-step onto the warning.
+Hi,
 
-The warning is harmless: kernel correctly fallbacks to handle entries on
-per-entry basis.
+On Wed 15 Jul 20, 08:57, Ezequiel Garcia wrote:
+> It seems this one felt thru the cracks. Sorry for the delay.
+>=20
+> On Thu, 2020-05-14 at 11:39 -0400, Nicolas Dufresne wrote:
+> > As per spec, the CAPTURE resolution should be automatically set based on
+> > the OTUPUT resolution. This patch properly propagate width/height to the
+> > capture when the OUTPUT format is set and override the user provided
+> > width/height with configured OUTPUT resolution when the CAPTURE fmt is
+> > updated.
+> >=20
+> > This also prevents userspace from selecting a CAPTURE resolution that is
+> > too small, avoiding unwanted page faults.
+> >=20
+> > Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+>=20
+> This looks correct.
 
-The fix is to avoid move_normal_pmd() if we see that source and
-destination ranges overlap.
+Looks like there's no issue with alignment (that will get applied as well),
+which was a possible concern.
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Fixes: 2c91bd4a4e2e ("mm: speed up mremap by 20x on large regions")
-Link: https://lore.kernel.org/lkml/20200713025354.GB3644504@google.com/
-Reported-and-tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Cc: William Kucharski <william.kucharski@oracle.com>
----
- mm/mremap.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+Thanks for reviewing!
 
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 5dd572d57ca9..340a96a29cbb 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -245,6 +245,26 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 	unsigned long extent, next, old_end;
- 	struct mmu_notifier_range range;
- 	pmd_t *old_pmd, *new_pmd;
-+	bool overlaps;
-+
-+	/*
-+	 * shift_arg_pages() can call move_page_tables() on overlapping ranges.
-+	 * In this case we cannot use move_normal_pmd() because destination pmd
-+	 * might be established page table: move_ptes() doesn't free page
-+	 * table.
-+	 */
-+	if (old_addr > new_addr) {
-+		overlaps = old_addr - new_addr < len;
-+	} else {
-+		overlaps = new_addr - old_addr < len;
-+
-+		/*
-+		 * We are interating over ranges forward. It means we cannot
-+		 * handle overlapping ranges with new_addr > old_addr without
-+		 * risking data corruption. Don't do this.
-+		 */
-+		WARN_ON(overlaps);
-+	}
- 
- 	old_end = old_addr + len;
- 	flush_cache_range(vma, old_addr, old_end);
-@@ -282,7 +302,7 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
- 			split_huge_pmd(vma, old_pmd, old_addr);
- 			if (pmd_trans_unstable(old_pmd))
- 				continue;
--		} else if (extent == PMD_SIZE) {
-+		} else if (!overlaps && extent == PMD_SIZE) {
- #ifdef CONFIG_HAVE_MOVE_PMD
- 			/*
- 			 * If the extent is PMD-sized, try to speed the move by
--- 
-2.26.2
+Acked-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 
+Cheers,
+
+Paul
+
+> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+>=20
+> Thanks,
+> Ezequiel
+>=20
+> > ---
+> >  drivers/staging/media/sunxi/cedrus/cedrus_video.c | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/driver=
+s/staging/media/sunxi/cedrus/cedrus_video.c
+> > index 16d82309e7b6..a6d6b15adc2e 100644
+> > --- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
+> > +++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
+> > @@ -247,6 +247,8 @@ static int cedrus_try_fmt_vid_cap(struct file *file=
+, void *priv,
+> >  		return -EINVAL;
+> > =20
+> >  	pix_fmt->pixelformat =3D fmt->pixelformat;
+> > +	pix_fmt->width =3D ctx->src_fmt.width;
+> > +	pix_fmt->height =3D ctx->src_fmt.height;
+> >  	cedrus_prepare_format(pix_fmt);
+> > =20
+> >  	return 0;
+> > @@ -319,11 +321,14 @@ static int cedrus_s_fmt_vid_out(struct file *file=
+, void *priv,
+> >  		break;
+> >  	}
+> > =20
+> > -	/* Propagate colorspace information to capture. */
+> > +	/* Propagate format information to capture. */
+> >  	ctx->dst_fmt.colorspace =3D f->fmt.pix.colorspace;
+> >  	ctx->dst_fmt.xfer_func =3D f->fmt.pix.xfer_func;
+> >  	ctx->dst_fmt.ycbcr_enc =3D f->fmt.pix.ycbcr_enc;
+> >  	ctx->dst_fmt.quantization =3D f->fmt.pix.quantization;
+> > +	ctx->dst_fmt.width =3D ctx->src_fmt.width;
+> > +	ctx->dst_fmt.height =3D ctx->src_fmt.height;
+> > +	cedrus_prepare_format(&ctx->dst_fmt);
+> > =20
+> >  	return 0;
+> >  }
+> > --=20
+> > 2.26.2
+> >=20
+> >=20
+>=20
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--n8g4imXOkfNTN/H1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl8PCfAACgkQ3cLmz3+f
+v9Hn4Af9EzN5gnaUQKr1CzXC653L4rnjwlGYHhQ1ctQj7EtF8LgF6iugRO1UMIF9
+nKLxp3yyElrKlWAE3DpaVDmb4cilu8IzSeO3T6f9XtUwaAhJcsmP+QEeQ3QLT2R/
+yclIp4Nv7u93jYLvPDXKLf4BPQ1Gjrrhh1R9fEda+GV/lVkaY6jzFBoGwPRCr7Ix
+t0FWyHNrOH+FfAAWm+gmqWB4Molnl3cd1vYcvWBbM8Yf7VbDL3DyvUA6NhUCcs64
+f5OUBpJVGArH7HxL/sHB7pmqG4pcsQeljXE1GPuV77+/AJ/AlvpVslpWyC4sOx1C
+PdDbVhi/dtKugkhQNAtUN2fnmFHRAg==
+=49po
+-----END PGP SIGNATURE-----
+
+--n8g4imXOkfNTN/H1--
