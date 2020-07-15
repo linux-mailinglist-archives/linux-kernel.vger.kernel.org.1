@@ -2,66 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09AD220CBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 14:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60E8220CC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 14:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728769AbgGOMNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 08:13:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:50084 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726437AbgGOMNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 08:13:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 582E230E;
-        Wed, 15 Jul 2020 05:13:51 -0700 (PDT)
-Received: from e119603-lin.cambridge.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AACF93F66E;
-        Wed, 15 Jul 2020 05:13:49 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 13:13:38 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Cc:     jdelvare@suse.com, linux@roeck-us.net, cristian.marussi@arm.com,
-        sudeep.holla@arm.com
-Subject: [RESEND][PATCH] hwmon: scmi: fix potential buffer overflow in
- scmi_hwmon_probe()
-Message-ID: <20200715121338.GA18761@e119603-lin.cambridge.arm.com>
+        id S1729683AbgGOMRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 08:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727075AbgGOMRB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 08:17:01 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E29C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:17:01 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id o11so2411484wrv.9
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=P9+1m3wZiqcpo0cnrnururZIQWEQrhFekUGBts30/fQ=;
+        b=EKHMfQBUPRLnnQQy6i3XNrTIKLvKdaglpd3anIxBP5KtA7V0HujMdXnvEX3vUZo7+H
+         t5fnqFjVnqkUKRH/hlyrsXh79yMI5l92TtpicLz4H/eS9mTJqfDmvttnyNDi2IvvIo3m
+         X5VL7L7f9fqXfDap7ketUgOdL0B4HCZLZjQe/bxYv1YNbr0wJzntZpfsbyOeSVqzdf34
+         dvmF/viWDyhmQRt9ktn/P9OOl50Cm9AWl1vTRjww8R1nZ+1q4NdkQ6Z6AQNGfGnIR+Gc
+         Hpc+pE7t77YFeWLuHTYM+VBefRVRkEvb2oBUFG6+aHJ97Btx2gu1PdW+KJ1pTNWdB5d1
+         6Y+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=P9+1m3wZiqcpo0cnrnururZIQWEQrhFekUGBts30/fQ=;
+        b=hyjSyeGn+dZkpv5leELn3M7Lz3CnzAwJzI5eGKxJzWk822N4jMdSwWVpfPqokkWyLF
+         XrZDECsmRdB78DGDUgSII+c99FJA7hUxYQ1be9dmO0NcA82gmf7f2vQn9P4B07NhUq72
+         jKrEm+Yrrhs+CFIWTlfexFiWZSH2jJcbLIlMNkemxTt67ycYehNqRFWXB110KvP2/KVT
+         SECzOBW7GQfhUuxPp0NCEScxTIo/eUBYjE3pgd/0yiDFxb+JlrPpCafWDyir5LZlnVcJ
+         ptHsY+2hfoSrUP9HrvgqPnCXrDvZEDRMZbc7mF5/78ooVzY6hu9JIntI73NoGVK1DxDM
+         LCpA==
+X-Gm-Message-State: AOAM533E01fr/HlBBCKOjVnSY6ENdR3ntFi5cAWSvnyU/elplhq767Wj
+        B/JzPB56xidtmzb4U+sHsZh76A==
+X-Google-Smtp-Source: ABdhPJw1RlHdFlCQxqYGIvI7SbhsAtRef67AkGJAHgn0iJW7X2IQ3QQMgUd4z/mr68WLHf9teEyKyA==
+X-Received: by 2002:a5d:4a84:: with SMTP id o4mr11321706wrq.104.1594815419802;
+        Wed, 15 Jul 2020 05:16:59 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id p29sm3239215wmi.43.2020.07.15.05.16.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 05:16:59 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 13:16:57 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>,
+        Dominik Brodowski <linux@brodo.de>,
+        Denis Sadykov <denis.m.sadykov@intel.com>
+Subject: Re: [PATCH 09/13] cpufreq: acpi-cpufreq: Remove unused ID structs
+Message-ID: <20200715121657.GE3165313@dell>
+References: <20200714145049.2496163-10-lee.jones@linaro.org>
+ <CAJZ5v0iB0K6H28DSDQj9T7k_kV10THxV6-HwN9qfmkLsYNHfiA@mail.gmail.com>
+ <20200714210340.GJ1398296@dell>
+ <20200715032442.gh2cliiddhv35fdj@vireshk-i7>
+ <20200715032718.2zlo2eurhkpoayya@vireshk-i7>
+ <CAJZ5v0jHJDLt6QFWG9FOpqmWMXAUuSEPHdHbVgFWcwR6FQD57Q@mail.gmail.com>
+ <20200715113433.GB3165313@dell>
+ <CAJZ5v0gFwYj7KKKj806s5SdWO1Wu5exiwObKKAdQWQEKg+2CJA@mail.gmail.com>
+ <20200715115029.GC3165313@dell>
+ <CAJZ5v0hJf2BwDvmtD6UEyyxm-CGcA=SLmAt+F8Sr0ceDZji0jw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mailer: git-send-email 2.17.1
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0hJf2BwDvmtD6UEyyxm-CGcA=SLmAt+F8Sr0ceDZji0jw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SMATCH detected a potential buffer overflow in the manipulation of
-hwmon_attributes array inside the scmi_hwmon_probe function:
+On Wed, 15 Jul 2020, Rafael J. Wysocki wrote:
 
-drivers/hwmon/scmi-hwmon.c:226
- scmi_hwmon_probe() error: buffer overflow 'hwmon_attributes' 6 <= 9
+> On Wed, Jul 15, 2020 at 1:50 PM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Wed, 15 Jul 2020, Rafael J. Wysocki wrote:
+> >
+> > > On Wed, Jul 15, 2020 at 1:34 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > >
+> > > > On Wed, 15 Jul 2020, Rafael J. Wysocki wrote:
+> > > >
+> > > > > On Wed, Jul 15, 2020 at 5:27 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > > > > >
+> > > > > > On 15-07-20, 08:54, Viresh Kumar wrote:
+> > > > > > > On 14-07-20, 22:03, Lee Jones wrote:
+> > > > > > > > On Tue, 14 Jul 2020, Rafael J. Wysocki wrote:
+> > > > > > > >
+> > > > > > > > > On Tue, Jul 14, 2020 at 4:51 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > > > > > > >
+> > > > > > > > > > Can't see them being used anywhere and the compiler doesn't complain
+> > > > > > > > > > that they're missing, so ...
+> > > > > > > > >
+> > > > > > > > > Aren't they needed for automatic module loading in certain configurations?
+> > > > > > > >
+> > > > > > > > Any idea how that works, or where the code is for that?
+> > > > > > >
+> > > > > > > The MODULE_DEVICE_TABLE() thingy creates a map of vendor-id,
+> > > > > > > product-id that the kernel keeps after boot (and so there is no static
+> > > > > > > reference of it for the compiler), later when a device is hotplugged
+> > > > > > > into the kernel it refers to the map to find the related driver for it
+> > > > > > > and loads it if it isn't already loaded.
+> > > > > > >
+> > > > > > > This has some of it, search for MODULE_DEVICE_TABLE() in it.
+> > > > > > > Documentation/driver-api/usb/hotplug.rst
+> > > > > >
+> > > > > > And you just need to add __maybe_unused to them to suppress the
+> > > > > > warning.
+> > > > >
+> > > > > Wouldn't that cause the compiler to optimize them away if it doesn't
+> > > > > see any users?
+> > > >
+> > > > It looks like they're only unused when !MODULE,
+> > >
+> > > OK
+> > >
+> > > > in which case optimising them away would be the correct thing to do, no?
+> >
+> > It would be good if someone with a little more knowledge could provide
+> > a second opinion though.  I would think (hope) that the compiler would
+> > be smart enough to see when its actually in use.  After all, it is the
+> > compiler that places the information into the device table.
+> >
+> If that is not the case, then the MODULE_DEVICE_TABLE() magic is
+> > broken and will need fixing.
+> 
+> I'm not sure why that would be the case?
 
-Fix it by statically declaring the size of the array as the maximum
-possible as defined by hwmon_max define.
+Nor me.  In fact, take a look at my latest email.  I think I just
+proved out that it's not broken.  The warning is valid and
+MODULE_DEVICE_TABLE() appears to work just as it should.
 
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
- drivers/hwmon/scmi-hwmon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > Removing boiler-plate is good, but not at the expense of obfuscation.
+> 
+> I'm not following you here to be honest.
 
-diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
-index 281454c5c5b1..758f66fc9afe 100644
---- a/drivers/hwmon/scmi-hwmon.c
-+++ b/drivers/hwmon/scmi-hwmon.c
-@@ -149,7 +149,7 @@ static enum hwmon_sensor_types scmi_types[] = {
- 	[ENERGY] = hwmon_energy,
- };
- 
--static u32 hwmon_attributes[] = {
-+static u32 hwmon_attributes[hwmon_max] = {
- 	[hwmon_chip] = HWMON_C_REGISTER_TZ,
- 	[hwmon_temp] = HWMON_T_INPUT | HWMON_T_LABEL,
- 	[hwmon_in] = HWMON_I_INPUT | HWMON_I_LABEL,
+Never mind.  It's no longer important.
+
+> BTW, I'm wondering if removing the "static" modifier from the
+> definitions of the structures in question makes the warnings you want
+> to get rid of go away.
+
+I'm sure that it would.  But that just alludes to the fact that the
+tables may be in use elsewhere, which in the case of !MODULE is
+untrue.  That's probably more of a hack than using __maybe_unused.
+
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
