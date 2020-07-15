@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD92B22019D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 03:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0342201DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 03:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgGOBF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 21:05:59 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:42256 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725977AbgGOBF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 21:05:59 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 8EAD0CC9408669B46A0A;
-        Wed, 15 Jul 2020 09:05:56 +0800 (CST)
-Received: from localhost (10.175.101.6) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Jul 2020
- 09:05:47 +0800
-From:   Weilong Chen <chenweilong@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <jiri@mellanox.com>,
-        <edumazet@google.com>, <chenweilong@huawei.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 net] rtnetlink: Fix memory(net_device) leak when ->newlink fails
-Date:   Wed, 15 Jul 2020 09:49:30 +0800
-Message-ID: <20200715014930.323472-1-chenweilong@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727844AbgGOB33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 21:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbgGOB33 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 21:29:29 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370C6C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 18:29:29 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id d4so911441pgk.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 18:29:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=E7jBTUN+q1MFSKfnbOqN34m9kwFSgfqPOQP4XPd3q20=;
+        b=TNYBRU3rt8vQTV68BnfmZdJfy3duhGTQeyyt+yRIYHSFoG9BCK31dGBtdbo1N+7tbt
+         hrI79dVb1fe0ntLBKMc4WL1x6kMHbfxRiEDmzwpmQialwoYqiYVbPw6KH1WAcausmpbJ
+         J7PsSsy2KNGZvf69+Tloxy+LXK3NkkzxsHi28=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E7jBTUN+q1MFSKfnbOqN34m9kwFSgfqPOQP4XPd3q20=;
+        b=sy6pposLvc958ZZ2TvjnBEziRwogpNgpB7uNFt8pCxt09J7iuiWkkOz7i/rX8o23D1
+         MfjBqX0e7rtPRBn/F8thYhP1dnHf1RSJINvSpW1Q0vbKGtqx57dhozZWM5Sp5fFiyitI
+         QIsoBYiv1QmOCThdRa/x9dQ0HZSVuOLEnYragtv3ZG5ZyDwsxpvxhLIaKGDUmAlNebZh
+         rRQAIwpiV7zSyKE283sGuTeL10QaNlDpYLSNxmWzYB4nNPqJ1MY8Jlf48Nxvhwikyd6u
+         hrxhAd6et9XPDUsB/s3HnOqNOXwCezO7rhkRX9EVVfTdaCx/c/Wl8/HTHfLoZUiJImA9
+         z3Ng==
+X-Gm-Message-State: AOAM532edjKOXW5zUr+XO4RQBv15zGnEjNmy5rS3ptR6OKLj4wab3jXH
+        m/zVIy64xJNZBAYE6lxi4N3aiQ==
+X-Google-Smtp-Source: ABdhPJzuAx2MU3/IFIN5Fo5Om9COSAdzzeAOeGxBQatzJZdo3a9WrMaQ/5hz7S1dWNOewUMx6ayNgg==
+X-Received: by 2002:a63:308:: with SMTP id 8mr6053673pgd.112.1594776568754;
+        Tue, 14 Jul 2020 18:29:28 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d37sm311670pgd.18.2020.07.14.18.29.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 18:29:27 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 18:29:27 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v4 29/75] x86/idt: Move two function from k/idt.c to
+ i/a/desc.h
+Message-ID: <202007141827.5A5D64454@keescook>
+References: <20200714120917.11253-1-joro@8bytes.org>
+ <20200714120917.11253-30-joro@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714120917.11253-30-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When vlan_newlink call register_vlan_dev fails, it might return error
-with dev->reg_state = NETREG_UNREGISTERED. The rtnl_newlink should
-free the memory. But currently rtnl_newlink only free the memory which
-state is NETREG_UNINITIALIZED.
+On Tue, Jul 14, 2020 at 02:08:31PM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
 
-BUG: memory leak
-unreferenced object 0xffff8881051de000 (size 4096):
-  comm "syz-executor139", pid 560, jiffies 4294745346 (age 32.445s)
-  hex dump (first 32 bytes):
-    76 6c 61 6e 32 00 00 00 00 00 00 00 00 00 00 00  vlan2...........
-    00 45 28 03 81 88 ff ff 00 00 00 00 00 00 00 00  .E(.............
-  backtrace:
-    [<0000000047527e31>] kmalloc_node include/linux/slab.h:578 [inline]
-    [<0000000047527e31>] kvmalloc_node+0x33/0xd0 mm/util.c:574
-    [<000000002b59e3bc>] kvmalloc include/linux/mm.h:753 [inline]
-    [<000000002b59e3bc>] kvzalloc include/linux/mm.h:761 [inline]
-    [<000000002b59e3bc>] alloc_netdev_mqs+0x83/0xd90 net/core/dev.c:9929
-    [<000000006076752a>] rtnl_create_link+0x2c0/0xa20 net/core/rtnetlink.c:3067
-    [<00000000572b3be5>] __rtnl_newlink+0xc9c/0x1330 net/core/rtnetlink.c:3329
-    [<00000000e84ea553>] rtnl_newlink+0x66/0x90 net/core/rtnetlink.c:3397
-    [<0000000052c7c0a9>] rtnetlink_rcv_msg+0x540/0x990 net/core/rtnetlink.c:5460
-    [<000000004b5cb379>] netlink_rcv_skb+0x12b/0x3a0 net/netlink/af_netlink.c:2469
-    [<00000000c71c20d3>] netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
-    [<00000000c71c20d3>] netlink_unicast+0x4c6/0x690 net/netlink/af_netlink.c:1329
-    [<00000000cca72fa9>] netlink_sendmsg+0x735/0xcc0 net/netlink/af_netlink.c:1918
-    [<000000009221ebf7>] sock_sendmsg_nosec net/socket.c:652 [inline]
-    [<000000009221ebf7>] sock_sendmsg+0x109/0x140 net/socket.c:672
-    [<000000001c30ffe4>] ____sys_sendmsg+0x5f5/0x780 net/socket.c:2352
-    [<00000000b71ca6f3>] ___sys_sendmsg+0x11d/0x1a0 net/socket.c:2406
-    [<0000000007297384>] __sys_sendmsg+0xeb/0x1b0 net/socket.c:2439
-    [<000000000eb29b11>] do_syscall_64+0x56/0xa0 arch/x86/entry/common.c:359
-    [<000000006839b4d0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+I'm not a huge fan of the Subject. :) Maybe:
 
-Fixes: e51fb152318ee6 ("rtnetlink: fix a memory leak when ->newlink fails")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Cc: David S. Miller <davem@davemloft.net>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Weilong Chen <chenweilong@huawei.com>
----
- net/core/rtnetlink.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+x86/idt: Make IDT init functions static inlines
 
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 9aedc15736ad..85a4b0101f76 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -3343,7 +3343,8 @@ static int __rtnl_newlink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		 */
- 		if (err < 0) {
- 			/* If device is not registered at all, free it now */
--			if (dev->reg_state == NETREG_UNINITIALIZED)
-+			if (dev->reg_state == NETREG_UNINITIALIZED ||
-+			    dev->reg_state == NETREG_UNREGISTERED)
- 				free_netdev(dev);
- 			goto out;
- 		}
+> 
+> Move these two functions from kernel/idt.c to include/asm/desc.h:
+> 
+> 	* init_idt_data()
+> 	* idt_init_desc()
+> 
+> These functions are needed to setup IDT entries very early and need to
+> be called from head64.c. To be usable this early these functions need to
+> be compiled without instrumentation and the stack-protector feature.
+> These features need to be kept enabled for kernel/idt.c, so head64.c
+> must use its own versions.
+> 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+
+But regardless:
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 -- 
-2.17.1
-
+Kees Cook
