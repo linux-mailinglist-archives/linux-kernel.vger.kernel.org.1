@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22A12208CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A768A2208D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730788AbgGOJcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33804 "EHLO
+        id S1730866AbgGOJcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730760AbgGOJcQ (ORCPT
+        with ESMTP id S1730769AbgGOJcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:32:16 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738F8C08C5DB
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:15 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id o8so4660892wmh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:15 -0700 (PDT)
+        Wed, 15 Jul 2020 05:32:17 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971C2C08C5C1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:16 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id o2so4889734wmh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+Z3KCPJPJ9xqOxMrVh/E1QUCCirSlEPo9eFXpxRTSLE=;
-        b=j1hC6fbFvEKSfKk3vGCWwkBbfplkz5E48kA4VMiG9AJs8jLE2MQYYlqUG4PUexzeWZ
-         JaAxqVumQic3OZhO1DNUlAwOkwiHCXh5UE3M2Z+S87THP6F5wND7f9Ee0wmUgmoEegsZ
-         LVnSYFgKt+rh9f+IXR2jnsPTcDcBsap1QoK8duiDrdW8QG78i3ll5N03D/juvat4fj7k
-         X1b6UEJ/f13U3vfWT5XhHJr0ty7jwnu35Q6LggfCBPBNOw8noBWj6GmoDQ/nQyU7nP+D
-         XmMKy432/ChdZt0+jP09xTU+QNTA3a3+aRuWXDbxAe9tU8D26pQELScIlU5dAIpuwSar
-         zzkw==
+        bh=aGkX+E1EBfqRr0rfaGdLhwyAcBiQ16E9WQER7VbVHB0=;
+        b=B9eGyNDCvcRazQ5Vt4bCO10YvxegSYTM59WaGhCMmKF1ntTqI0zxMbYoNhBkEWX6+u
+         Q/bcBNCzP/NiyAp1huYTJNpJcx0WdrEb56Rkp5DQRWi7GJPA4qNC2nOe1shHedItKyw6
+         3OrZOdisEymzmeJLiYQ+pmiZ96mEIhootgO4sR9Ci94A0kJzd3MQ7+em+CZmN+XMU0bv
+         Itkn84N4qTA3X3ge6IF1QJwxgLZ5oB523cWAJtAWZa9ztHkAhjwA+FMCGpHv3mFGJeGh
+         bAIgVniOn+Dt6KpDNO9N3MtF4zQRMy+UZcXk9qotI5EeRahzIe/Gmm3D4sIsBdKJt4Km
+         jJXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+Z3KCPJPJ9xqOxMrVh/E1QUCCirSlEPo9eFXpxRTSLE=;
-        b=grZHp8nSjz7xc1nATiC8Lemm5zUPuQSvNaKE6v6RtUnmgjSchsmAqdR2JmADrSVTsO
-         vaYk90jX81Q8gQnx4JeWzsdr/tHRk0zQL12/fkEN1CGpMMB+KXhpbjKcBF4lQHh8jDjo
-         GIEID8lwa+4PZuR94AycgJ+Vn+t60bR9QSYrzXVYg/ROYESTt/TjUxR/KvuzyBNKgIB3
-         0h9JVyBj8EFgK2OdViYjDdttkmXGdR2zhuHy4dIGzDWM8IN3gixTqMjcwbeqxcEgTY8K
-         s7NBVh4JmnddiIsINM/lYlcqoYk/5EsZlHb0CDN8vP8oeyTAqSo4+jHePZZ9lMZAADRt
-         ZBkw==
-X-Gm-Message-State: AOAM5318feDWBFixXpPsYttZs2/ynINbVu3aEHFI+6ln0YvT+YXo0BIj
-        pP1LGqMUqU3Tnl9otETCt5Z9ww==
-X-Google-Smtp-Source: ABdhPJz2F7AQdDuodvs3Nhzm9b78oR7eczk/gzHg9MMwyTt6vuYsGoFv1+7G/mzU5URIZ5Ey8K5mdg==
-X-Received: by 2002:a1c:e0c4:: with SMTP id x187mr7495953wmg.153.1594805534090;
-        Wed, 15 Jul 2020 02:32:14 -0700 (PDT)
+        bh=aGkX+E1EBfqRr0rfaGdLhwyAcBiQ16E9WQER7VbVHB0=;
+        b=aDDoRPMI4w7USjWRSNFqEcDyZhbfktyoPmDn3sb6R3Q+gFQ3l716ZLXWvdsauJZTJO
+         1x2JweRmbVcoXEPOfP9Mp5n9B9+mp8CBuT2yWs9SGjN9A7W4EjB1O/lE0wpLqqskGvFd
+         azODGAhavHy2vx7xsNS75bWdHETviGWFg9nOkGPc+NzVDmv9l6r+RUakcsD2QY3Uurro
+         3eJMNWwj8Iu7VLOpKg3zVxgdn/7DY7egMm9O/rkVLYsTCuIUGG+UNAJZ0JKPh7+oLamh
+         z9GmWq5CEb+RLcLWZELH4XMSVmoxsxoNvrGB9An3CiNA8/hGT+7Asy6jP42kqP1wrowN
+         oMIQ==
+X-Gm-Message-State: AOAM533TP8B0u/WWQc1+Znme58ed7YQrEjtKDSAVV5MRX2cpWMLJ/V4y
+        3+gnbDkJtzyPRXKy7CBtOf96eInWEr8=
+X-Google-Smtp-Source: ABdhPJzy0kAtC0mAb9N9Nk0jBlEslSi+EyKpZKizI1grPl6nIG7Ij66G9kluURFmeTpNfzFWlDbOcQ==
+X-Received: by 2002:a05:600c:2050:: with SMTP id p16mr7507657wmg.44.1594805535285;
+        Wed, 15 Jul 2020 02:32:15 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id s203sm2686991wms.32.2020.07.15.02.32.12
+        by smtp.gmail.com with ESMTPSA id s203sm2686991wms.32.2020.07.15.02.32.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 02:32:13 -0700 (PDT)
+        Wed, 15 Jul 2020 02:32:14 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Minas Harutyunyan <hminas@synopsys.com>,
-        Ben Dooks <ben@simtec.co.uk>
-Subject: [PATCH v2 1/8] usb: dwc2: gadget: Make use of GINTMSK2
-Date:   Wed, 15 Jul 2020 10:32:02 +0100
-Message-Id: <20200715093209.3165641-2-lee.jones@linaro.org>
+        Ben Dooks <ben@simtec.co.uk>,
+        Minas Harutyunyan <hminas@synopsys.com>
+Subject: [PATCH v2 2/8] usb: dwc2: gadget: Avoid pointless read of EP control register
+Date:   Wed, 15 Jul 2020 10:32:03 +0100
+Message-Id: <20200715093209.3165641-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200715093209.3165641-1-lee.jones@linaro.org>
 References: <20200715093209.3165641-1-lee.jones@linaro.org>
@@ -68,41 +68,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The value obtained from GINTSTS2 should be masked with the GINTMSK2
-value.  Looks like this has been broken since
-dwc2_gadget_wkup_alert_handler() was added back in 2018.
+Commit ec1f9d9f01384 ("usb: dwc2: gadget: parity fix in isochronous mode") moved
+these checks to dwc2_hsotg_change_ep_iso_parity() back in 2015.  The assigned
+value hasn't been read back since.  Let's remove the unnecessary H/W read.
 
-Also fixes the following W=1 warning:
+Fixes the following W=1 warning:
 
- drivers/usb/dwc2/gadget.c: In function ‘dwc2_gadget_wkup_alert_handler’:
- drivers/usb/dwc2/gadget.c:259:6: warning: variable ‘gintmsk2’ set but not used [-Wunused-but-set-variable]
- 259 | u32 gintmsk2;
- | ^~~~~~~~
+ drivers/usb/dwc2/gadget.c: In function ‘dwc2_hsotg_epint’:
+ drivers/usb/dwc2/gadget.c:2981:6: warning: variable ‘ctrl’ set but not used [-Wunused-but-set-variable]
+ 2981 | u32 ctrl;
+ | ^~~~
 
-Cc: Minas Harutyunyan <hminas@synopsys.com>
 Cc: Ben Dooks <ben@simtec.co.uk>
-Fixes: 187c5298a1229 ("usb: dwc2: gadget: Add handler for WkupAlert interrupt")
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Minas Harutyunyan <hminas@synopsys.com>
 ---
-Changelog:
+Changelog
 
-v2: Re-written to *use* instad of *remove* gintmsk2
+v2: No change - added Acked-by
 
- drivers/usb/dwc2/gadget.c | 1 +
- 1 file changed, 1 insertion(+)
+drivers/usb/dwc2/gadget.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/usb/dwc2/gadget.c b/drivers/usb/dwc2/gadget.c
-index df5fedaca60a0..03cf1fa856219 100644
+index 03cf1fa856219..5b9d23991c99d 100644
 --- a/drivers/usb/dwc2/gadget.c
 +++ b/drivers/usb/dwc2/gadget.c
-@@ -260,6 +260,7 @@ static void dwc2_gadget_wkup_alert_handler(struct dwc2_hsotg *hsotg)
+@@ -2978,10 +2978,8 @@ static void dwc2_hsotg_epint(struct dwc2_hsotg *hsotg, unsigned int idx,
+ 	u32 epctl_reg = dir_in ? DIEPCTL(idx) : DOEPCTL(idx);
+ 	u32 epsiz_reg = dir_in ? DIEPTSIZ(idx) : DOEPTSIZ(idx);
+ 	u32 ints;
+-	u32 ctrl;
  
- 	gintsts2 = dwc2_readl(hsotg, GINTSTS2);
- 	gintmsk2 = dwc2_readl(hsotg, GINTMSK2);
-+	gintsts2 &= gintmsk2;
+ 	ints = dwc2_gadget_read_ep_interrupts(hsotg, idx, dir_in);
+-	ctrl = dwc2_readl(hsotg, epctl_reg);
  
- 	if (gintsts2 & GINTSTS2_WKUP_ALERT_INT) {
- 		dev_dbg(hsotg->dev, "%s: Wkup_Alert_Int\n", __func__);
+ 	/* Clear endpoint interrupts */
+ 	dwc2_writel(hsotg, ints, epint_reg);
 -- 
 2.25.1
 
