@@ -2,167 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 641D72204D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3769B2204DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgGOGRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 02:17:01 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:38938 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725866AbgGOGRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 02:17:01 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id D38F29671EBDBCF0AA7B;
-        Wed, 15 Jul 2020 14:16:58 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 15 Jul
- 2020 14:16:57 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: change the way of handling range.len
- in F2FS_IOC_SEC_TRIM_FILE
-To:     Daeho Jeong <daeho43@gmail.com>
-CC:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        Daeho Jeong <daehojeong@google.com>, <kernel-team@android.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20200713031252.3873546-1-daeho43@gmail.com>
- <20200713181152.GC2910046@google.com>
- <3b02263d-a5e1-136c-40ed-514d34e4c895@huawei.com>
- <CACOAw_wBD_ourGJSdRTDM-wzeH97aGE966QDB6bpjiyXRrh47A@mail.gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <f4a594a1-464f-3a74-90cb-fd536bed9962@huawei.com>
-Date:   Wed, 15 Jul 2020 14:16:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1728496AbgGOGUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 02:20:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60664 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725866AbgGOGUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 02:20:02 -0400
+Received: from localhost (unknown [122.171.202.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E49520672;
+        Wed, 15 Jul 2020 06:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594794001;
+        bh=05czjJvRJc8XN686B6X5OIjt1m5Lx94Zy66nZ0TFTuI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TkN9kI7sW2FxzrMGLsnMSOwyLrYgRTsapamaHFT5ehvpboZalM4to6Kn4CneZsoAf
+         l4tDgoEVPTgKkzAIWkq6cI1RYmZsqxw6PeL35Jmiwe4gky+oFMzPrqQysl6qj66iMd
+         mZBGDFdxeuRN4wxW83eGEdBuxtQBaZu7WESwQtMo=
+Date:   Wed, 15 Jul 2020 11:49:57 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     EastL Lee <EastL.Lee@mediatek.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>, robh+dt@kernel.org,
+        mark.rutland@arm.com, matthias.bgg@gmail.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        wsd_upstream@mediatek.com, cc.hwang@mediatek.com
+Subject: Re: [PATCH v6 2/4] dmaengine: mediatek-cqdma: remove redundant queue
+ structure
+Message-ID: <20200715061957.GA34333@vkoul-mobl>
+References: <1593673564-4425-1-git-send-email-EastL.Lee@mediatek.com>
+ <1593673564-4425-3-git-send-email-EastL.Lee@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <CACOAw_wBD_ourGJSdRTDM-wzeH97aGE966QDB6bpjiyXRrh47A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1593673564-4425-3-git-send-email-EastL.Lee@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/15 12:06, Daeho Jeong wrote:
-> We could use fscrypt_zeroout_range() for an encrypted file.
-> But, one problem is fscrypt_zeroout_range() assumes that filesystems
-> only use a single block device.
-> It means it doesn't receive bdev as a parameter.
-> How about changing the interface of fscrypt_zeroout_range() first and using it?
+On 02-07-20, 15:06, EastL Lee wrote:
 
-Yes, please limited to use fscrypt_zeroout_range() on non-multidevice f2fs image
-first, we can add a condition to check that in the beginning of ioctl interface,
-once fscrypt_zeroout_range() accepts bdev as parameter, we can remove that limitation.
+>  static enum dma_status mtk_cqdma_tx_status(struct dma_chan *c,
+>  					   dma_cookie_t cookie,
+>  					   struct dma_tx_state *txstate)
+>  {
+> -	struct mtk_cqdma_vchan *cvc = to_cqdma_vchan(c);
+> -	struct mtk_cqdma_vdesc *cvd;
+> -	struct virt_dma_desc *vd;
+> -	enum dma_status ret;
+> -	unsigned long flags;
+> -	size_t bytes = 0;
+> -
+> -	ret = dma_cookie_status(c, cookie, txstate);
+> -	if (ret == DMA_COMPLETE || !txstate)
+> -		return ret;
+> -
+> -	spin_lock_irqsave(&cvc->vc.lock, flags);
+> -	vd = mtk_cqdma_find_active_desc(c, cookie);
+> -	spin_unlock_irqrestore(&cvc->vc.lock, flags);
+> -
+> -	if (vd) {
+> -		cvd = to_cqdma_vdesc(vd);
+> -		bytes = cvd->residue;
+> -	}
+> -
+> -	dma_set_residue(txstate, bytes);
 
-Thanks,
+any reason why you want to remove setting residue?
 
-> 
-> 2020년 7월 14일 (화) 오후 9:36, Chao Yu <yuchao0@huawei.com>님이 작성:
->>
->> On 2020/7/14 2:11, Jaegeuk Kim wrote:
->>> Hi Daeho,
->>>
->>> Please take a look at this.
->>>
->>> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=35245180459aebf6d70fde88a538f0400a794aa6
->>
->> I'm curious about what will happen if we call
->> sec_trim_file(F2FS_TRIM_FILE_ZEROOUT) on an encrypted file, will
->> it use zero bits covering encrypted data on disk?
->>
->> Thanks,
->>
->>>
->>> Thanks,
->>>
->>> On 07/13, Daeho Jeong wrote:
->>>> From: Daeho Jeong <daehojeong@google.com>
->>>>
->>>> Changed the way of handling range.len of F2FS_IOC_SEC_TRIM_FILE.
->>>>  1. Added -1 value support for range.len to secure trim the whole blocks
->>>>     starting from range.start regardless of i_size.
->>>>  2. If the end of the range passes over the end of file, it means until
->>>>     the end of file (i_size).
->>>>  3. ignored the case of that range.len is zero to prevent the function
->>>>     from making end_addr zero and triggering different behaviour of
->>>>     the function.
->>>>
->>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->>>> ---
->>>> Changes in v2:
->>>>  - Changed -1 range.len option to mean the whole blocks starting from
->>>>    range.start regardless of i_size
->>>> ---
->>>>  fs/f2fs/file.c | 23 ++++++++++++-----------
->>>>  1 file changed, 12 insertions(+), 11 deletions(-)
->>>>
->>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>>> index 368c80f8e2a1..2485841e3b2d 100644
->>>> --- a/fs/f2fs/file.c
->>>> +++ b/fs/f2fs/file.c
->>>> @@ -3792,7 +3792,7 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
->>>>      pgoff_t index, pg_end;
->>>>      block_t prev_block = 0, len = 0;
->>>>      loff_t end_addr;
->>>> -    bool to_end;
->>>> +    bool to_end = false;
->>>>      int ret = 0;
->>>>
->>>>      if (!(filp->f_mode & FMODE_WRITE))
->>>> @@ -3813,23 +3813,23 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
->>>>      file_start_write(filp);
->>>>      inode_lock(inode);
->>>>
->>>> -    if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode)) {
->>>> +    if (f2fs_is_atomic_file(inode) || f2fs_compressed_file(inode) ||
->>>> +                    range.start >= inode->i_size) {
->>>>              ret = -EINVAL;
->>>>              goto err;
->>>>      }
->>>>
->>>> -    if (range.start >= inode->i_size) {
->>>> -            ret = -EINVAL;
->>>> +    if (range.len == 0)
->>>>              goto err;
->>>> -    }
->>>>
->>>> -    if (inode->i_size - range.start < range.len) {
->>>> -            ret = -E2BIG;
->>>> -            goto err;
->>>> +    if (inode->i_size - range.start > range.len) {
->>>> +            end_addr = range.start + range.len;
->>>> +    } else {
->>>> +            end_addr = range.len == (u64)-1 ?
->>>> +                    sbi->sb->s_maxbytes : inode->i_size;
->>>> +            to_end = true;
->>>>      }
->>>> -    end_addr = range.start + range.len;
->>>>
->>>> -    to_end = (end_addr == inode->i_size);
->>>>      if (!IS_ALIGNED(range.start, F2FS_BLKSIZE) ||
->>>>                      (!to_end && !IS_ALIGNED(end_addr, F2FS_BLKSIZE))) {
->>>>              ret = -EINVAL;
->>>> @@ -3846,7 +3846,8 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
->>>>      down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>>>      down_write(&F2FS_I(inode)->i_mmap_sem);
->>>>
->>>> -    ret = filemap_write_and_wait_range(mapping, range.start, end_addr - 1);
->>>> +    ret = filemap_write_and_wait_range(mapping, range.start,
->>>> +                    to_end ? LLONG_MAX : end_addr - 1);
->>>>      if (ret)
->>>>              goto out;
->>>>
->>>> --
->>>> 2.27.0.383.g050319c2ae-goog
->>>
->>>
->>> _______________________________________________
->>> Linux-f2fs-devel mailing list
->>> Linux-f2fs-devel@lists.sourceforge.net
->>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>> .
->>>
-> .
-> 
+> -static void mtk_cqdma_free_active_desc(struct dma_chan *c)
+> +static int mtk_cqdma_terminate_all(struct dma_chan *c)
+>  {
+>  	struct mtk_cqdma_vchan *cvc = to_cqdma_vchan(c);
+> -	bool sync_needed = false;
+> +	struct virt_dma_chan *vc = to_virt_chan(c);
+>  	unsigned long pc_flags;
+>  	unsigned long vc_flags;
+> +	LIST_HEAD(head);
+> +
+> +	/* wait for the VC to be inactive  */
+> +	if (!wait_for_completion_timeout(&cvc->cmp, msecs_to_jiffies(3000)))
+> +		return -EAGAIN;
+>  
+>  	/* acquire PC's lock first due to lock dependency in dma ISR */
+>  	spin_lock_irqsave(&cvc->pc->lock, pc_flags);
+>  	spin_lock_irqsave(&cvc->vc.lock, vc_flags);
+>  
+> -	/* synchronization is required if this VC is active */
+> -	if (mtk_cqdma_is_vchan_active(cvc)) {
+> -		cvc->issue_synchronize = true;
+> -		sync_needed = true;
+> -	}
+> +	/* get VDs from lists */
+> +	vchan_get_all_descriptors(vc, &head);
+> +
+> +	/* free all the VDs */
+> +	vchan_dma_desc_free_list(vc, &head);
+>  
+>  	spin_unlock_irqrestore(&cvc->vc.lock, vc_flags);
+>  	spin_unlock_irqrestore(&cvc->pc->lock, pc_flags);
+
+Good cleanup, do you need both these locks?
+-- 
+~Vinod
