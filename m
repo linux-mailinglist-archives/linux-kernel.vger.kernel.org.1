@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235232212B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0372212CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726034AbgGOQmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:42:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725834AbgGOQmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:42:23 -0400
-Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3798120658;
-        Wed, 15 Jul 2020 16:42:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594831342;
-        bh=ED5t9A4zYRl2ppiYuYOQoWbYJVj84a6IYOD4Vjh9qcw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dQA5TiCjdpTjdRjyFo64GaYmcJ38VZ98DmESuH3bIc7IwBm+v5kPqFNCfamABR9ad
-         juc1949N82lTQqEXq8UtZ8CEbj9YS6CApPxNuKJZjUnXctZlMrROfyWVI3oPc7nkke
-         bgJOSl8Vf6rDJvb6pGJKcpTQJ6zKF3hQOrGgCfOk=
-Date:   Wed, 15 Jul 2020 09:42:20 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: change the way of handling range.len
- in F2FS_IOC_SEC_TRIM_FILE
-Message-ID: <20200715164220.GC1167@sol.localdomain>
-References: <20200713031252.3873546-1-daeho43@gmail.com>
- <20200713181152.GC2910046@google.com>
- <3b02263d-a5e1-136c-40ed-514d34e4c895@huawei.com>
- <CACOAw_wBD_ourGJSdRTDM-wzeH97aGE966QDB6bpjiyXRrh47A@mail.gmail.com>
- <f4a594a1-464f-3a74-90cb-fd536bed9962@huawei.com>
- <CACOAw_w3OWDVXSYHuTEEVv1HaBZir1CWcRAmxOt00MB4vXBKVg@mail.gmail.com>
- <1d84bc01-fece-df55-6e33-07a705cfb432@huawei.com>
- <CACOAw_xaS7qB22EPsZvHoC=uPiPtqGMAK5cP4Vk20xO21GQ-Kg@mail.gmail.com>
+        id S1728059AbgGOQn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726652AbgGOQmz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 12:42:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490DBC061755;
+        Wed, 15 Jul 2020 09:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=J/Nj7cakMWC9zRzrNKsSvW3BAo+rPjXjpVsN8Iiqtp4=; b=k+zcfuYkUPeXtfLFXqYwbw7ptD
+        9FQm277+V3gwzLMV7wZdJzRX5a7t6yavZSeDUneCwlxaaQDxaNggWJPj5ir6dqJWuAe8j36b4GNaV
+        OpOT3YZxaicF2DEgYwq/K9Xn1cikr9Wt/1hcohGL10i6rLlBNC/R3uaXQ+rzXRmyRVMVBu6x9Pofc
+        crAGSzS6aS7ktqta5ZvGBnygp+fdzl51HcDJnXgSe9ca2yK+9VlgqVXAqAD17InyaTca1l//Xc41g
+        /NJfCqoBzqFPZ7axn5y1desYShbz8j+H7SYbt3Cg82dwSmQToPULODr232A4dCH1bojS3PYtx9Gse
+        bvrbezAg==;
+Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvkUc-0000Bh-Tj; Wed, 15 Jul 2020 16:42:51 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH 1/9 v2 net-next] net: qed: drop duplicate words in comments
+Date:   Wed, 15 Jul 2020 09:42:38 -0700
+Message-Id: <20200715164246.9054-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACOAw_xaS7qB22EPsZvHoC=uPiPtqGMAK5cP4Vk20xO21GQ-Kg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 07:25:13PM +0900, Daeho Jeong wrote:
-> Chao,
-> 
-> I can't find fscrypt_zeroout_range_inline_crypt() function. Do you
-> mean we need to implement this one for inline encryption?
-> 
-> 2020년 7월 15일 (수) 오후 4:17, Chao Yu <yuchao0@huawei.com>님이 작성:
-> >
-> > On 2020/7/15 14:54, Daeho Jeong wrote:
-> > > You mean we can support ZEROOUT option only for encrypted files of
-> > > non-multidevice f2fs,
-> > > and return -EOPNOTSUPP in the multidevice case, right now?
-> >
-> > Yes, something like:
-> >
-> > f2fs_sec_trim_file()
-> >
-> > if ((range.flags & F2FS_TRIM_FILE_ZEROOUT) &&
-> >         f2fs_encrypted_file() && f2fs_is_multi_device())
-> >         return -EOPNOTSUPP;
-> >
-> >
-> > f2fs_secure_erase()
-> >
-> > if (!ret && (flags & F2FS_TRIM_FILE_ZEROOUT)) {
-> >         if (f2fs_encrypted_file()) {
-> >                 if (fscrypt_inode_uses_fs_layer_crypto)
-> >                         ret = fscrypt_zeroout_range();
-> >                 else
-> >                         ret = fscrypt_zeroout_range_inline_crypt();
-> >         } else {
-> >                 ret = blkdev_issue_zeroout();
-> >         }
-> > }
+Drop doubled word "the" in two comments.
 
-fscrypt_zeroout_range_inline_crypt() is being added by
-"fscrypt: add inline encryption support", which is queued in the fscrypt tree
-(the master branch of https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git).
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
+---
+v2: move wireless patches to a separate patch series.
 
-But that's not actually relevant here because fscrypt_zeroout_range() calls
-fscrypt_zeroout_range_inline_crypt() when needed.
+ include/linux/qed/qed_chain.h |    2 +-
+ include/linux/qed/qed_if.h    |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Just use fscrypt_zeroout_range().
-
-- Eric
+--- linux-next-20200714.orig/include/linux/qed/qed_chain.h
++++ linux-next-20200714/include/linux/qed/qed_chain.h
+@@ -130,7 +130,7 @@ struct qed_chain {
+ 	} pbl_sp;
+ 
+ 	/* Address of first page of the chain - the address is required
+-	 * for fastpath operation [consume/produce] but only for the the SINGLE
++	 * for fastpath operation [consume/produce] but only for the SINGLE
+ 	 * flavour which isn't considered fastpath [== SPQ].
+ 	 */
+ 	void *p_virt_addr;
+--- linux-next-20200714.orig/include/linux/qed/qed_if.h
++++ linux-next-20200714/include/linux/qed/qed_if.h
+@@ -498,7 +498,7 @@ struct qed_fcoe_pf_params {
+ 	u8 bdq_pbl_num_entries[2];
+ };
+ 
+-/* Most of the the parameters below are described in the FW iSCSI / TCP HSI */
++/* Most of the parameters below are described in the FW iSCSI / TCP HSI */
+ struct qed_iscsi_pf_params {
+ 	u64 glbl_q_params_addr;
+ 	u64 bdq_pbl_base_addr[3];
