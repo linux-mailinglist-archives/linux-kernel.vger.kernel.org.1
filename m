@@ -2,66 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FB022120B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32013221214
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgGOQMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:12:39 -0400
-Received: from smtprelay0035.hostedemail.com ([216.40.44.35]:48024 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725831AbgGOQMi (ORCPT
+        id S1725909AbgGOQRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:17:04 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:33506 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbgGOQRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:12:38 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 02B74181D303A;
-        Wed, 15 Jul 2020 16:12:37 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2692:2828:3138:3139:3140:3141:3142:3351:3622:3865:3866:3867:3868:3870:3873:3874:4321:5007:8957:10004:10400:10848:10967:11232:11658:11914:12297:12555:12740:12760:12895:13069:13311:13357:13439:14180:14181:14659:14721:21060:21080:21451:21611:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:4,LUA_SUMMARY:none
-X-HE-Tag: grade82_170551826efa
-X-Filterd-Recvd-Size: 1637
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 15 Jul 2020 16:12:35 +0000 (UTC)
-Message-ID: <6653f2f65ec4a9cc1024b69ffe97d5dc4c7ff33a.camel@perches.com>
-Subject: Re: [PATCH 01/13 net-next] net: nl80211.h: drop duplicate words in
- comments
-From:   Joe Perches <joe@perches.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        johannes@sipsolutions.net
-Date:   Wed, 15 Jul 2020 09:12:34 -0700
-In-Reply-To: <20200715084811.01ba7ffd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20200715025914.28091-1-rdunlap@infradead.org>
-         <20200715084811.01ba7ffd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Wed, 15 Jul 2020 12:17:04 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C1612564;
+        Wed, 15 Jul 2020 18:17:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1594829821;
+        bh=IomH7o8rac3NGmFDKq1XchQn1ckZPiqly9xWhwp/YxU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jaUQqOIp4sYgb5+PK2ECSVB6gHmIaFhcSOyjNOzGVkTcMGoxDBN4GFcOHGYUoLEjP
+         s+zYYO6jRFaImebUx8AWRf8RrYYXW27cFtVEzyEXmMPlhc7UTyGLTPgm1pdNSeoXhh
+         kE5d5JEXRS5csWu5w1LJvfqm5M2cIciiNaUA8XnY=
+Date:   Wed, 15 Jul 2020 19:16:47 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Vishal Sagar <vishal.sagar@xilinx.com>
+Cc:     hyunk@xilinx.com, hverkuil@xs4all.nl, mchehab@kernel.org,
+        robh+dt@kernel.org, mark.rutland@arm.com, michals@xilinx.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        joe@perches.com, sandipk@xilinx.com, dineshk@xilinx.com
+Subject: Re: [PATCH v3 1/3] v4l2-dv-timings: Add timings for 1920x1080P48 and
+ 4KP48
+Message-ID: <20200715161647.GD6144@pendragon.ideasonboard.com>
+References: <20200618053304.14551-1-vishal.sagar@xilinx.com>
+ <20200618053304.14551-2-vishal.sagar@xilinx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200618053304.14551-2-vishal.sagar@xilinx.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-07-15 at 08:48 -0700, Jakub Kicinski wrote:
-> On Tue, 14 Jul 2020 19:59:02 -0700 Randy Dunlap wrote:
-> > Drop doubled words in several comments.
-> > 
-> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: netdev@vger.kernel.org
+Hi Vishal,
+
+Thank you for the patch.
+
+On Thu, Jun 18, 2020 at 11:03:02AM +0530, Vishal Sagar wrote:
+> Add the timing entry for 1920x1080p48, 3840x2160p48 and 4096x2160p48
+> from CTA-861-G.
+> 1920x1080p48 is VIC 111.
+> 3840x2160P48 is VIC 114.
+> 4096x2160P48 is VIC 115.
 > 
-> Hi Randy, the WiFi stuff goes through Johannes's mac80211 tree.
+> Signed-off-by: Vishal Sagar <vishal.sagar@xilinx.com>
+> ---
+> v3
+> - Added for first time
 > 
-> Would you mind splitting those 5 patches out to a separate series and
-> sending to him?
+>  include/uapi/linux/v4l2-dv-timings.h | 31 +++++++++++++++++++++++++++-
+>  1 file changed, 30 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/linux/v4l2-dv-timings.h b/include/uapi/linux/v4l2-dv-timings.h
+> index b52b67c62562..6ceaa7841923 100644
+> --- a/include/uapi/linux/v4l2-dv-timings.h
+> +++ b/include/uapi/linux/v4l2-dv-timings.h
+> @@ -167,6 +167,16 @@
+>  		V4L2_DV_FL_HAS_CEA861_VIC, { 0, 0 }, 20) \
+>  }
+>  
+> +#define V4L2_DV_BT_CEA_1920X1080P48 { \
+> +	.type = V4L2_DV_BT_656_1120, \
+> +	V4L2_INIT_BT_TIMINGS(1920, 1080, 0, \
+> +		V4L2_DV_HSYNC_POS_POL | V4L2_DV_VSYNC_POS_POL, \
+> +		148500000, 638, 44, 148, 4, 5, 36, 0, 0, 0, \
+> +		V4L2_DV_BT_STD_CEA861, \
+> +		V4L2_DV_FL_CAN_REDUCE_FPS | V4L2_DV_FL_IS_CE_VIDEO | \
+> +		V4L2_DV_FL_HAS_CEA861_VIC, { 0, 0 }, 111) \
+> +}
+> +
+>  #define V4L2_DV_BT_CEA_1920X1080P50 { \
+>  	.type = V4L2_DV_BT_656_1120, \
+>  	V4L2_INIT_BT_TIMINGS(1920, 1080, 0, \
+> @@ -229,6 +239,16 @@
+>  		{ 0, 0 }, 95, 1) \
+>  }
+>  
+> +#define V4L2_DV_BT_CEA_3840X2160P48 { \
+> +	.type = V4L2_DV_BT_656_1120, \
+> +	V4L2_INIT_BT_TIMINGS(3840, 2160, 0, \
+> +		V4L2_DV_HSYNC_POS_POL | V4L2_DV_VSYNC_POS_POL, \
+> +		594000000, 1276, 88, 296, 8, 10, 72, 0, 0, 0, \
+> +		V4L2_DV_BT_STD_CEA861, \
+> +		V4L2_DV_FL_CAN_REDUCE_FPS | V4L2_DV_FL_IS_CE_VIDEO | \
+> +		V4L2_DV_FL_HAS_CEA861_VIC, { 0, 0 }, 114) \
+> +}
+> +
+>  #define V4L2_DV_BT_CEA_3840X2160P50 { \
+>  	.type = V4L2_DV_BT_656_1120, \
+>  	V4L2_INIT_BT_TIMINGS(3840, 2160, 0, \
+> @@ -278,6 +298,16 @@
+>  		V4L2_DV_FL_HAS_CEA861_VIC, { 0, 0 }, 100) \
+>  }
+>  
+> +#define V4L2_DV_BT_CEA_4096X2160P48 { \
+> +	.type = V4L2_DV_BT_656_1120, \
+> +	V4L2_INIT_BT_TIMINGS(4096, 2160, 0, \
+> +		V4L2_DV_HSYNC_POS_POL | V4L2_DV_VSYNC_POS_POL, \
+> +		594000000, 1020, 88, 296, 8, 10, 72, 0, 0, 0, \
+> +		V4L2_DV_BT_STD_CEA861, \
+> +		V4L2_DV_FL_CAN_REDUCE_FPS | V4L2_DV_FL_IS_CE_VIDEO | \
+> +		V4L2_DV_FL_HAS_CEA861_VIC, { 0, 0 }, 115) \
+> +}
+> +
+>  #define V4L2_DV_BT_CEA_4096X2160P50 { \
+>  	.type = V4L2_DV_BT_656_1120, \
+>  	V4L2_INIT_BT_TIMINGS(4096, 2160, 0, \
+> @@ -297,7 +327,6 @@
+>  		V4L2_DV_FL_HAS_CEA861_VIC, { 0, 0 }, 102) \
+>  }
+>  
+> -
 
-Do I understand you to want separate patches
-for separate sections of individual files?
+This seems to be an unrelated change. Apart from that,
 
-I think that's a bit much...
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
+>  /* VESA Discrete Monitor Timings as per version 1.0, revision 12 */
+>  
+>  #define V4L2_DV_BT_DMT_640X350P85 { \
 
+-- 
+Regards,
+
+Laurent Pinchart
