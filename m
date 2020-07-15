@@ -2,159 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277EC220A92
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 12:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D038220A96
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 12:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729657AbgGOK4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 06:56:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:39850 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726201AbgGOK4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 06:56:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CEA430E;
-        Wed, 15 Jul 2020 03:56:53 -0700 (PDT)
-Received: from [192.168.1.84] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 100403F718;
-        Wed, 15 Jul 2020 03:56:51 -0700 (PDT)
-Subject: Re: [PATCH 2/3] firmware: arm_scmi: Remove unneeded __packed
- attribute
-To:     Cristian Marussi <cristian.marussi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        arnd@arndb.de, sudeep.holla@arm.com
-References: <20200710133919.39792-1-cristian.marussi@arm.com>
- <20200710133919.39792-2-cristian.marussi@arm.com>
- <751ee628-ff38-a383-5832-aab4905af32b@arm.com>
- <20200713130749.GA31938@e119603-lin.cambridge.arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <310a7e5a-2d6a-313a-4020-362703ceb1b8@arm.com>
-Date:   Wed, 15 Jul 2020 11:56:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728860AbgGOK6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 06:58:41 -0400
+Received: from mail-eopbgr00099.outbound.protection.outlook.com ([40.107.0.99]:14574
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728385AbgGOK6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 06:58:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iSWLcvSCeK0WvG9I1zjOejYbjj1t7rbU0NF388+9/4ZXJmrsxjOHAOW+390qIdsuAb7GR+/wKmA0Q6u3aE8E67o6fqLhkrx9mIcwCxg5Ot15Q+igy3F2ucGJiul+SNBA4wlO/vby0zMEQSFMqU4kSMQkheEq+zufmXALyzg3Qxki0UT+2BSghnpXObY57cz6v9znKq4lRhWC8LxNAdiJCNJOCFTTPFzFNECEKds1WkqnZBTtMhPYpvZYs/D+UQo9JIneE/MzZVFvWmkMCSSoJfIEb9F+b0YBa9P/1Es3uk088fd0b4kdQE117wWZt3oSd1boXsFQOfeVIfpnsu0egg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MmbRwYOpdqkkq8KpePyOha1yUi2SW5UCqeN6311cWV4=;
+ b=OHvO/1EFYeHTVyR78HBZ4KMghsToAOtyQBA0vkrl9bRzbfuZkgkm9n4yZOsEQ0SOQI+ya6vtxAR8wqnLxsnhhBnsIGNmqZfuYXbzEMrmMH4g599tSCaE6pnb0FQF6BtJNKF4MiIHkPHMSySHaKVJMe3p1F+mcr2aYmuaXAJfE7w5DK8d0ZueOdTTD3rJ3zarZS8bZSUMXE+pGTAHXh2/I5fsmv1AIYRPMIIPkl5ivbYxNMx0CcCO9quTH3nEkE6GDJVFt5dnrjZW/J71wdMzA/uRFJLG4FT6psMoHCaGFmIV0IIQBakuM3VKnnrViF9PZcq0+VvCJ4NmOjj97cIQLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=habana.ai; dmarc=pass action=none header.from=habana.ai;
+ dkim=pass header.d=habana.ai; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=habanalabs.onmicrosoft.com; s=selector2-habanalabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MmbRwYOpdqkkq8KpePyOha1yUi2SW5UCqeN6311cWV4=;
+ b=kvDpQs+GOxUtV+XYOWkWtAA6Hx4jsYafGKLTlOOq/PUoseap0cZuXx4fb1PZshFFgdnsCXOL8S6qxyc798T/iBpVTNrI4SgR39KdIsfMuRA55V9QgEToR2pTZvhhGHaAte4pEut+gHHSn38iO4NADolvddXXjgfTw7OiD/CaTmg=
+Received: from AM0PR02MB5523.eurprd02.prod.outlook.com (2603:10a6:208:15e::24)
+ by AM4PR02MB2978.eurprd02.prod.outlook.com (2603:10a6:205:6::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.18; Wed, 15 Jul
+ 2020 10:58:36 +0000
+Received: from AM0PR02MB5523.eurprd02.prod.outlook.com
+ ([fe80::dd30:3782:bf4e:2316]) by AM0PR02MB5523.eurprd02.prod.outlook.com
+ ([fe80::dd30:3782:bf4e:2316%7]) with mapi id 15.20.3195.018; Wed, 15 Jul 2020
+ 10:58:36 +0000
+From:   Omer Shpigelman <oshpigelman@habana.ai>
+To:     Oded Gabbay <oded.gabbay@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        SW_Drivers <SW_Drivers@habana.ai>
+Subject: RE: [PATCH 3/3] habanalabs: update hl_boot_if.h from firmware
+Thread-Topic: [PATCH 3/3] habanalabs: update hl_boot_if.h from firmware
+Thread-Index: AQHWWSSlknnHv2ZxzkizTWvPSf2hvakIev+w
+Date:   Wed, 15 Jul 2020 10:58:36 +0000
+Message-ID: <AM0PR02MB5523A8221809C6D9CD5CFFA0B87E0@AM0PR02MB5523.eurprd02.prod.outlook.com>
+References: <20200713155424.24721-1-oded.gabbay@gmail.com>
+ <20200713155424.24721-3-oded.gabbay@gmail.com>
+In-Reply-To: <20200713155424.24721-3-oded.gabbay@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=habana.ai;
+x-originating-ip: [5.102.239.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fd12ccec-c2d7-49dc-2871-08d828ae0652
+x-ms-traffictypediagnostic: AM4PR02MB2978:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM4PR02MB29782782F6B422D184B0394EB87E0@AM4PR02MB2978.eurprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: o8IfWmQSiCfwp/u2rZmWx2hytWVp39RpeKOruWk3mC+cIw09IWkEcESrPAF+bviRERocAtnZxIjeY59N1nhPt/0dtOVwvxVadkL6Vyq2o4+JD7wUGzZ0z2jCCSh47J22pmAy4pPlLoX/vjY1zaggUE2NqzPdlgEHDQE9+2A4ubfqUiMQ2dtBAExp0g0pAkTAUz9vmY0PUlXmUI/DaOwXkLFNCw6h6h1lOFYdcLtXUEK2xqgsDqdhWEYVyAYZYteH3F0qvzyj+IsQEE2ZYuskmjSOapqGWab74Im5DlI4zak6ENDwh7NGHUPWvW0Bmfsdspuck4v+1j3xWvCwYqgDUg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB5523.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(376002)(396003)(39850400004)(346002)(366004)(55016002)(9686003)(8936002)(2906002)(71200400001)(86362001)(33656002)(6636002)(186003)(8676002)(66446008)(64756008)(66476007)(66946007)(66556008)(76116006)(83380400001)(6506007)(26005)(15650500001)(7696005)(110136005)(558084003)(478600001)(53546011)(316002)(5660300002)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: ITRM5ZKhuuJ9ABJXML/3ADaAh9MAjH/xzJ7Z/4aoKs3JoU7CtIWqNc6+nHN/ZfFbbfmSHjINH9WNKvmVVvQZ62RVXA8EgvtVVz3N9VQUnxgrDJMZQGt99xbYKU7imohucWxZOk5zxyVlSeqSeH7HszLxjbiC4eiIg8N24+xExnOGOwHNo9+KJqNPL42Wu7kRv8wDT66v6LXqYmnUE/4OvA9I+QmhdHkzTRGlPOf97UZ8zIkN8EUCVyOsWGPJmN+GxGUc7+IQK4hGmS7Pj08u/TnQN10v5G+674SgdYlPMiraxRJYAcm7X4x2QJKFoV8SwKelQCp/hMUsDdsb0q6VafeuOMh4L+KxVbzV43L0bhmtBxM2AaeJ2yiCpYKDlC6nXe1+9QdtMhfoGAEC3xUZ43EhvmfhXIdKsQN1SNLQXLQ8PEkrTU/MeoxBCzwwM2zcm1YIQ56RGQPWmp1wnez6zGIh7dEHQAkx4/IpUUSVFtk=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20200713130749.GA31938@e119603-lin.cambridge.arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: habana.ai
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB5523.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd12ccec-c2d7-49dc-2871-08d828ae0652
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2020 10:58:36.7194
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4d4539-213c-4ed8-a251-dc9766ba127a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ImkypoEq6mRF1oMIZkXhyVZK9HfgQFcT09sp1V1Igud+oikreOcd+nSRVmofN8mDkhU4REU9y6okfVG7VycOkA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR02MB2978
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2020 14:07, Cristian Marussi wrote:
-> Hi Steven
-> 
-> thanks for the review.
-> 
-> On Mon, Jul 13, 2020 at 12:20:43PM +0100, Steven Price wrote:
->> On 10/07/2020 14:39, Cristian Marussi wrote:
->>> Remove __packed attribute from struct scmi_event_header.
->>>
->>> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
->>
->> A drive-by review. But this doesn't look safe to me. sizeof(struct
->> scmi_event_header) is used in several places and this change will modify
->> that from 13 to 16, but leave the structure members at the same offset (as
->> the members are naturally aligned). In particular the naï¿½ve header size is
->> now bigger than the offset to payld.
->>
->> What is the justification for __packed being 'unneeded'?
->>
-> 
-> Arnd pointed out at first that this structure in the original series had a mix of
-> fixed and non-fixed types in its fields and that the __packed rendered some fields
-> misaglined.
-> 
-> Removing that as it is, in fact left also some unexplained implicit padding which is
-> at odd for a struct containing fixed-sized types.
-> 
-> In a following fix in the series I have indeed moved this struct's fields  and others
-> to generic non fixed type fields and shuffled around the fields to avoid misalignment
-> and implicit internal padding (except for the trailing padding due to the variable
-> size array)
-> 
-> It was probably better to squash also this patch in that following patch.
-> 
-> This structure is used internally to push variable-sized (through the means of the payld[])
-> events descriptors through a fifo from the ISR to the deferred workqueus, so that's whhy I
-> originally thought to avoid to carry around unneeded padding into the fifos and use the
-> __packed.
-> 
-> On the correctness side, as you pointed out, the header with padding is now 16 so when
-> I push thorugh the kfifos this header and the payload there's a hole in the data as
-> represented in the fifo buffer as such
-> 
-> @end_of hdr+payld kfifo writes:
->    kifo_in(fifo, h, sizeof(*h)) + kfifo_in(fifo, payld, h->payld_sz)
-> 
-> 0       14   16
-> +-------+----+------------
-> |header - pad| payload...
-> -------------------------
->          ^
-> 	|
-> 	.payld
-> 
-> (Note that header and payload comes from two distinct place so I have push it with two kfifo_in()
-> in order to avoid a redundant memcpy on an intermediate buffer to collate them...thing
-> that was pointed out as undesirable in a review)
-> 
-> and when I read it back from the fifo such hole is just transparently overwritten:
-> 
-> @header read:
->   kfifo_out(fifo, h, sizeof(*h))
-> 
-> 0       14   16
-> +-------+----+--------------
-> |header - pad|
-> ----------------------------
-> 
-> @payload_read:
->   kfifo_out(fifo, h->payld, h->payld_sz)
-> 
-> 0       14
-> +-------+----+--------------
-> |header | payload....
-> ----------------------------
->          ^
-> 	|
-> 	.payld
-> 
-> So since anyway the drawback of packing is that the misaglined access potentially slows down the
-> reads, I was not sure anymore it was worth to pack and misalign, and, given that it seemed not
-> to be liked so much, I dropped it and moved to generic non-fixed types without packing.
-
-Thanks for the explanation - it sounds like the change is correct.
-
-However, from the description above it sounds like splitting the header 
-and payload into separate types would be clearer. I'm not sure the 
-flexible length array is adding to code clarity here. In particular the 
-'pad' being put into the fifo is actually going to be a (truncated) copy 
-of the payload.
-
-There is also a trick with an unnamed internal struct which gets the 
-padding in the correct place...
-
-	struct scmi_event_header {
-		struct {
-			u64	timestamp;
-			u8	evt_id;
-			size_t	payld_sz;
-		}
-		u8	payld[];
-	};
-
-...with that then...
-
-	offsetof(struct scmi_event_header, payld) ==
-		sizeof(struct scmi_event_header)
-
-...which avoids the need for kfifo_out having to overwrite the padding.
-
-> A better (and shorter) explanation of all of the above is possibly needed (but I'd still prefer
-> the fixed sized typing and __packed 'holeless' approach...)
-
-Fixed sized types and __packed is easier to reason about, but obviously 
-naturally aligned types do tend to be faster.
-
-Steve
+T24gTW9uLCBKdWwgMTMsIDIwMjAgYXQgMDY6NTQgUE0sIE9kZWQgR2FiYmF5IDxvZGVkLmdhYmJh
+eUBnbWFpbC5jb20+IHdyb3RlOg0KPiBVcGRhdGUgdGhlIGJvb3QgaW50ZXJmYWNlIGZpbGUgZnJv
+bSB0aGUgbGF0ZXN0IHZlcnNpb24gZnJvbSBmaXJtd2FyZS4NCj4gRGVmaW5lcyBmb3Igc2VjdXJl
+IGJvb3Qgd2VyZSBhZGRlZC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE9kZWQgR2FiYmF5IDxvZGVk
+LmdhYmJheUBnbWFpbC5jb20+DQoNClJldmlld2VkLWJ5OiBPbWVyIFNocGlnZWxtYW4gPG9zaHBp
+Z2VsbWFuQGhhYmFuYS5haT4NCg==
