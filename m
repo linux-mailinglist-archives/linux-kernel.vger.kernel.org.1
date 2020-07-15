@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB44220C8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 14:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF06A220C91
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 14:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730633AbgGOMBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 08:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgGOMBd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 08:01:33 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB744C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:01:32 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o18so1870679eje.7
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=aphiOP4h9v9T9OtJ9dBaBxGd9lSp1X6ehev+oAyP+7g=;
-        b=r/e29ZyCyz/kFzZtP1L8rUa51b+KUKz0VoX+W+23Uude9+faffHoBAo4ZF6SYq/pKH
-         oZZSlJAXdqng8seNA76gsQyr7iUjnLgL0VKhVp8KthxyihwqHBeeYxzDL80P/RQtxz5W
-         L2hYtztPpSfGrf+g6rtfhTBUpoV1dwCvQq3DOtPxufy6g251Kitt7J7KF5blgjl/DVLz
-         GcpeKTH8Uqj9+VL2+qvwcEZGsyPFzasK28pTK6TuOh27op5R/IZvJG8RxcaHJrB2UEwy
-         2Nf4hxTGQ9Y8UCiclEsfB9XT/5jjS1QYYO6oZdfASEyYYKg3SfWuRThxJqlTFbQYFxbm
-         Us6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=aphiOP4h9v9T9OtJ9dBaBxGd9lSp1X6ehev+oAyP+7g=;
-        b=RjrZ30PBQXTY0qhm1APQ+GcLBcQsU+dHbF+//0yhYAnH7ZObsLbxJ+bi6kcPG3kNsk
-         /lnLPZuOHhRzm/3G50fiYp1BAylzuGsB8e5EQ/UoPIA2Oph6d7DuUfgCfHS4bCeCMLUi
-         9ZowjlgKn7Z8tYGvaiokM2MhK9vGQKS9uNo8KFRYoK8LXdhyEQJwcCM/rUBSqXXYQrRG
-         HisvOa1iPP+SSYckatRn0c4TzDSWJQlZzEj7VyzsWbZYlV+kmriCJnJPFGDF0lBRvfSL
-         Su/oOGHHNsw53qJ81cP1oQ0Kz4rmDWjD00hWsZc044kLQQbwKxkVn8W0iJKasnhBIand
-         KQPw==
-X-Gm-Message-State: AOAM531F0GQKIthtm/CUWhmxnyrF5JetwOPjc9PjwOaQjJ91DlYnMd2t
-        AsUBycoONDotH7aVCF7EkqqKaR3XOUTih0MWbS8=
-X-Google-Smtp-Source: ABdhPJyVULnrFEoEeyOBwlGGGzGdJujueg9FegHaMkX9J3bfgdJ+Hvh9feerewNSWUQiskwwP5APx6ydjOzL1TQHQgc=
-X-Received: by 2002:a17:906:c453:: with SMTP id ck19mr8668334ejb.185.1594814491470;
- Wed, 15 Jul 2020 05:01:31 -0700 (PDT)
+        id S1730657AbgGOMBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 08:01:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728263AbgGOMBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 08:01:52 -0400
+Received: from localhost (unknown [122.171.202.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAD1C20658;
+        Wed, 15 Jul 2020 12:01:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594814512;
+        bh=Asm2zKeo6RUzv3qZh0M/yLSCpflT44ffhplUnINxP60=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KW3gGmQZA89N4eAtDMQ9aeeHQkuGpSOV0nlqEqLD+4oUyFPWRlcZMmhEp1sQBvei+
+         6Mc8nfFxVskvuvwh4Ag5QXE4NSOBrV6QSBbPZ5uhXBGXaYRRyZ0k/0YbnMYyfzML9l
+         QJUAQVvrmhHBKXcDYB1xPq+V6y4LRB53IDboT1VA=
+Date:   Wed, 15 Jul 2020 17:31:45 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 08/11] dmaengine: dw: Add dummy device_caps callback
+Message-ID: <20200715120145.GL34333@vkoul-mobl>
+References: <20200709224550.15539-1-Sergey.Semin@baikalelectronics.ru>
+ <20200709224550.15539-9-Sergey.Semin@baikalelectronics.ru>
+ <20200710085123.GF3703480@smile.fi.intel.com>
+ <20200710094510.j6ugxygkadxex53c@mobilestation>
 MIME-Version: 1.0
-Received: by 2002:ab4:ad84:0:0:0:0:0 with HTTP; Wed, 15 Jul 2020 05:01:30
- -0700 (PDT)
-Reply-To: sgtjanray@gmail.com
-From:   SGT JAN RAY <mrade568@gmail.com>
-Date:   Wed, 15 Jul 2020 14:01:30 +0200
-Message-ID: <CABZnd=UzBPeFg-3QWx5N2xUBcnvH630Lo846dWD5Y-4Avhh_Hw@mail.gmail.com>
-Subject: Hello Greetings.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200710094510.j6ugxygkadxex53c@mobilestation>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Hello Greetings.
+On 10-07-20, 12:45, Serge Semin wrote:
+> On Fri, Jul 10, 2020 at 11:51:23AM +0300, Andy Shevchenko wrote:
+> > On Fri, Jul 10, 2020 at 01:45:47AM +0300, Serge Semin wrote:
+> > > Since some DW DMA controllers (like one installed on Baikal-T1 SoC) may
+> > > have non-uniform DMA capabilities per device channels, let's add
+> > > the DW DMA specific device_caps callback to expose that specifics up to
+> > > the DMA consumer. It's a dummy function for now. We'll fill it in with
+> > > capabilities overrides in the next commits.
+> > 
+> 
+> > Just a reminder (mainly to Vinod) of my view to this.
+> > Unneeded churn, should be folded to patch 9.
+> 
+> Just to remind (mainly to Vinod). That's Andy's bikeshedding.
+> This isn't a churn, since it's totally normal to design the patchset in this way:
+> introduce a callback, then fill it in with functionality.
 
-I am happy to have you here as a friend, i hope all is well with you,
-and how are you enjoying your day over there in your country?
+Looking at both patches, they do one thing, so please fold them in..
 
-My name is SGT SAFI IBRAHIM,. I=E2=80=99m 28 years old an orphan my parents
-died when I was five years old nobody to help me,I send you my
-business proposal with tears and sorrow Please let this not be a
-surprised message to you.
-
-I am single. an Nurse in America military but i am presently in
-Afghanistan for the fight against terrorism and peace keeping, I need
-an urgent help from you i have in my possession the sum of $3.5million
-USD I made here in Afghanistan.
-
-I want you to stand as my beneficiary receive the fund you will assist
-me to invest it in a good profitable Venture or you keep it for me
-until I arrive your country, I will give You 40% of the total money
-for your assistance after you have receive The money.
-
-Take good care of yourself.your urgent reply is needed is my private
-email address below sgtsafiibrahim@gmail.com, for more details.
-
-Best Resgards
-SGT SAFI IBRAHIM,
+-- 
+~Vinod
