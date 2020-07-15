@@ -2,65 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BE222164F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE41221656
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 22:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgGOUgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 16:36:39 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:35320 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbgGOUgi (ORCPT
+        id S1727026AbgGOUhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 16:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726650AbgGOUhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 16:36:38 -0400
-Received: by mail-il1-f193.google.com with SMTP id t18so3183081ilh.2;
-        Wed, 15 Jul 2020 13:36:38 -0700 (PDT)
+        Wed, 15 Jul 2020 16:37:18 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D6BC08C5CE
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 13:37:18 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id o13so3679348pgf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 13:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Zaaf8OFN0Mkv/43hLUAJDeNUstQbcnrUeWnNFq9ntQY=;
+        b=l9A5pBS/4KP4RTCNxMaKKaV+072X9gd7LEGM/3JWklkcz/Drht5gd7TJiFK4GxBxVr
+         jZCmb1notoEqLmxKu0+ocLrw9VKEKpjvh8Va1zKB5Pza0ifi8AupC34OGZedIFseHjn/
+         1r7EhDpsHB1nsJQkfGVNJefFs23IWUf/8byNs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BJXqP+XSa8G42ZyuDhISJ/0QmN/qD/vI4ezaEI9n1jk=;
-        b=p4nFhlTzE0KKtv6xXcVUU0+ExVtfRcu2iPb0aUQUGet9HGspCQM1CLARGgWXaegcWk
-         NOic0SnrPYvZOPFZp/HBq2eKKqXhOe7cCvn+UXtj0w5NF31F7nkBpjZ8EzTt7Pf488aq
-         1T6a2XMVwAtZf3TGkX3RrG+3LV6xwL2FFGhfOBu+d/7mk8pSQJpHC8aynM8Ul+nXtcC2
-         2z89DzdtzhO88pk2OHE931tKEqJ8gkFv9eG6h27ak7ANlz9ut89B1V0ZKDfQa8sdcYFq
-         tRaS41a1dBpHmTicBppjPG+oA0vRC8CfXVl2CztE8czX/7zS1tsE+bztZ9pezJO5rIaC
-         +YeA==
-X-Gm-Message-State: AOAM530+VbEfz2a5Zow6XbEU/NL5FJzReNqcMPTgUQr9Semnhyk1OOfp
-        cJpKVE1lZYeqrK/TVL/S/Q==
-X-Google-Smtp-Source: ABdhPJy9wtrz0U4Y6iejGJoArzuSrlG0r9+g5Y1CnR9WU06vnjI5mV5Fd3x5SusqG0Fm/xx1Hy0YLg==
-X-Received: by 2002:a05:6e02:5c4:: with SMTP id l4mr1265616ils.209.1594845397644;
-        Wed, 15 Jul 2020 13:36:37 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id f9sm1577464ilq.9.2020.07.15.13.36.36
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Zaaf8OFN0Mkv/43hLUAJDeNUstQbcnrUeWnNFq9ntQY=;
+        b=M13MNZ5AmtH9AVGxwUyRY2IzuwYDvXj6FQS5z0WlnSkl1NVncEL3wkYDBL5bRVUQEV
+         +WPT9+f+9ZEcwMtzREFOhz9MVXVyLuklO8zKz3mUrAAcGTZ5Btsf7U9wuGzk504shpuR
+         WSEQbQhZjrcwn/MsM/7pdGFlP9/USpvt9ywYYbWHfhop4S5oy3ZkIx7Pnolr5myNUrO2
+         /HF6Smdzb1eJ0u74/1dgGRPsvNAZKkqFPNLgOFXOSGxRp1/xt1cH6n9RV5+kOGTlOkRJ
+         nNjHAvRx1fE+2M0Dr+52mHl52kxTYtwUFMZtKbLU16khwGOxdLpUE0suRo0tdlUhUL/Z
+         ZAZw==
+X-Gm-Message-State: AOAM530/USLo2IgJgngajF79zBrlxGKZABMmVIpFTG1M6LpI2oJc1W6t
+        zyWRgKoYVXjewTdryDzhDWy1eA==
+X-Google-Smtp-Source: ABdhPJzwZ1pGNMV72yuIGcVlwa7f4Vu3SViQldrIVyIwMBZnJrwaLmWw/w85VJ0XhTGIWtU4XLlfyA==
+X-Received: by 2002:a63:7c4d:: with SMTP id l13mr1353283pgn.12.1594845437856;
+        Wed, 15 Jul 2020 13:37:17 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h15sm2871918pfo.192.2020.07.15.13.37.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 13:36:37 -0700 (PDT)
-Received: (nullmailer pid 775848 invoked by uid 1000);
-        Wed, 15 Jul 2020 20:36:36 -0000
-Date:   Wed, 15 Jul 2020 14:36:36 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Wenchao Hao <haowenchao22@gmail.com>
-Cc:     robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        frowand.list@gmail.com, devicetree@vger.kernel.org
-Subject: Re: [PATCH] of/address: Fix variable name in comment of of_iomap
-Message-ID: <20200715203636.GA775752@bogus>
-References: <20200701162444.9494-1-haowenchao22@gmail.com>
+        Wed, 15 Jul 2020 13:37:16 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 13:37:15 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v6 5/7] fs,doc: Enable to enforce noexec mounts or file
+ exec through O_MAYEXEC
+Message-ID: <202007151312.C28D112013@keescook>
+References: <20200714181638.45751-1-mic@digikod.net>
+ <20200714181638.45751-6-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200701162444.9494-1-haowenchao22@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200714181638.45751-6-mic@digikod.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Jul 2020 00:24:44 +0800, Wenchao Hao wrote:
-> The first variable name of of_iomap is np while previous
-> comment write device here.
-> 
-> Signed-off-by: Wenchao Hao <haowenchao22@gmail.com>
-> ---
->  drivers/of/address.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Jul 14, 2020 at 08:16:36PM +0200, Mickaël Salaün wrote:
+> @@ -2849,7 +2855,7 @@ static int may_open(const struct path *path, int acc_mode, int flag)
+>  	case S_IFLNK:
+>  		return -ELOOP;
+>  	case S_IFDIR:
+> -		if (acc_mode & (MAY_WRITE | MAY_EXEC))
+> +		if (acc_mode & (MAY_WRITE | MAY_EXEC | MAY_OPENEXEC))
+>  			return -EISDIR;
+>  		break;
+
+(I need to figure out where "open for reading" rejects S_IFDIR, since
+it's clearly not here...)
+
+>  	case S_IFBLK:
+> @@ -2859,13 +2865,26 @@ static int may_open(const struct path *path, int acc_mode, int flag)
+>  		fallthrough;
+>  	case S_IFIFO:
+>  	case S_IFSOCK:
+> -		if (acc_mode & MAY_EXEC)
+> +		if (acc_mode & (MAY_EXEC | MAY_OPENEXEC))
+>  			return -EACCES;
+>  		flag &= ~O_TRUNC;
+>  		break;
+
+This will immediately break a system that runs code with MAY_OPENEXEC
+set but reads from a block, char, fifo, or socket, even in the case of
+a sysadmin leaving the "file" sysctl disabled.
+
+>  	case S_IFREG:
+> -		if ((acc_mode & MAY_EXEC) && path_noexec(path))
+> -			return -EACCES;
+> +		if (path_noexec(path)) {
+> +			if (acc_mode & MAY_EXEC)
+> +				return -EACCES;
+> +			if ((acc_mode & MAY_OPENEXEC) &&
+> +					(sysctl_open_mayexec_enforce & OPEN_MAYEXEC_ENFORCE_MOUNT))
+> +				return -EACCES;
+> +		}
+> +		if ((acc_mode & MAY_OPENEXEC) &&
+> +				(sysctl_open_mayexec_enforce & OPEN_MAYEXEC_ENFORCE_FILE))
+> +			/*
+> +			 * Because acc_mode may change here, the next and only
+> +			 * use of acc_mode should then be by the following call
+> +			 * to inode_permission().
+> +			 */
+> +			acc_mode |= MAY_EXEC;
+>  		break;
+>  	}
+
+Likely very minor, but I'd like to avoid the path_noexec() call in the
+fast-path (it dereferences a couple pointers where as doing bit tests on
+acc_mode is fast).
+
+Given that and the above observations, I think that may_open() likely
+needs to start with:
+
+	if (acc_mode & MAY_OPENEXEC) {
+		/* Reject all file types when mount enforcement set. */
+		if ((sysctl_open_mayexec_enforce & OPEN_MAYEXEC_ENFORCE_MOUNT) &&
+		    path_noexec(path))
+			return -EACCES;
+		/* Treat the same as MAY_EXEC. */
+		if (sysctl_open_mayexec_enforce & OPEN_MAYEXEC_ENFORCE_FILE))
+			acc_mode |= MAY_EXEC;
+	}
+
+(Though I'm not 100% sure that path_noexec() is safe to be called for
+all file types: i.e. path->mnt and path->-mnt->mnt_sb *always* non-NULL?)
+
+This change would also imply that OPEN_MAYEXEC_ENFORCE_FILE *includes*
+OPEN_MAYEXEC_ENFORCE_MOUNT (i.e. the sysctl should not be a bitfield),
+since path_noexec() would get checked for S_ISREG. I can't come up with
+a rationale where one would want OPEN_MAYEXEC_ENFORCE_FILE but _not_
+OPEN_MAYEXEC_ENFORCE_MOUNT?
+
+(I can absolutely see wanting only OPEN_MAYEXEC_ENFORCE_MOUNT, or
+suddenly one has to go mark every loaded thing with the exec bit and
+most distros haven't done this to, for example, shared libraries. But
+setting the exec bit and then NOT wanting to enforce the mount check
+seems... not sensible?)
+
+Outside of this change, yes, I like this now -- it's much cleaner
+because we have all the checks in the same place where they belong. :)
+
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index db1ce7af2563..5008a2566e79 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -113,6 +113,7 @@ static int sixty = 60;
+>  
+>  static int __maybe_unused neg_one = -1;
+>  static int __maybe_unused two = 2;
+> +static int __maybe_unused three = 3;
+>  static int __maybe_unused four = 4;
+>  static unsigned long zero_ul;
+>  static unsigned long one_ul = 1;
+
+Oh, are these still here? I thought they got removed (or at least made
+const). Where did that series go? Hmpf, see sysctl_vals, but yes, for
+now, this is fine.
+
+> @@ -888,7 +889,6 @@ static int proc_taint(struct ctl_table *table, int write,
+>  	return err;
+>  }
+>  
+> -#ifdef CONFIG_PRINTK
+>  static int proc_dointvec_minmax_sysadmin(struct ctl_table *table, int write,
+>  				void *buffer, size_t *lenp, loff_t *ppos)
+>  {
+> @@ -897,7 +897,6 @@ static int proc_dointvec_minmax_sysadmin(struct ctl_table *table, int write,
+>  
+>  	return proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+>  }
+> -#endif
+>  
+>  /**
+>   * struct do_proc_dointvec_minmax_conv_param - proc_dointvec_minmax() range checking structure
+> @@ -3264,6 +3263,15 @@ static struct ctl_table fs_table[] = {
+>  		.extra1		= SYSCTL_ZERO,
+>  		.extra2		= &two,
+>  	},
+> +	{
+> +		.procname       = "open_mayexec_enforce",
+> +		.data           = &sysctl_open_mayexec_enforce,
+> +		.maxlen         = sizeof(int),
+> +		.mode           = 0600,
+> +		.proc_handler	= proc_dointvec_minmax_sysadmin,
+> +		.extra1		= SYSCTL_ZERO,
+> +		.extra2		= &three,
+> +	},
+>  #if defined(CONFIG_BINFMT_MISC) || defined(CONFIG_BINFMT_MISC_MODULE)
+>  	{
+>  		.procname	= "binfmt_misc",
+> -- 
+> 2.27.0
 > 
 
-Applied, thanks!
+-- 
+Kees Cook
