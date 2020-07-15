@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091382203E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 06:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0080F2203E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 06:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725917AbgGOEZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 00:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
+        id S1726386AbgGOE0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 00:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbgGOEZn (ORCPT
+        with ESMTP id S1725770AbgGOE0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 00:25:43 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A63C061755;
-        Tue, 14 Jul 2020 21:25:42 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 15 Jul 2020 00:26:47 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5212FC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 21:26:47 -0700 (PDT)
+Received: from nazgul.tnic (77-85-108-148.ip.btc-net.bg [77.85.108.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B647S2kkwz9s1x;
-        Wed, 15 Jul 2020 14:25:39 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594787141;
-        bh=PIR4MD77rwKLqJ6yQ8k6FdIRDzr+gc5sZZ8je9CemGI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=V4w74ltL0Rr9F9/FhUKVV/qjSOzXk4tOwnRcKX1RPmuP7SRfQso9jZY5lNhm2QR/b
-         8bvl4KhRr5orrFfXrjesddkri8FzLP7QilCkyo5N4RPYZwmNgXv3umFxVsykOaOxt0
-         KuuAgVd9iHf6IQhIVW9r+85VT13H3oj/lGfA1se0W/hAaMC7IXuwqpnVuSo1IvGqNb
-         eNfNeTntz1PsRtQV2p7ss+1K8BCoMx7VGyiU7kOykVz9H1t//7kPNfv8vV0y3yUNIZ
-         qfq9KofgHcVKbCtcHES2JSeiDeCebIMFd12DdhXpBHmgGsfZ6FDQRXGKrr0MjF7dWH
-         n+796OowKykJw==
-Date:   Wed, 15 Jul 2020 14:25:39 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Andy Gross <agross@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: linux-next: manual merge of the tty tree with the qcom tree
-Message-ID: <20200715142539.4a3b34c6@canb.auug.org.au>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A2D5A1EC03CF;
+        Wed, 15 Jul 2020 06:26:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1594787203;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=CiZcICc9wZD5zsp7FjRnYyHRTcDwcJ2rY6S08MFi6gE=;
+        b=gbYAiJuw92F8awLzJrsH7FNd3JfJGdCdjzUwzQIQdT1cC1e3DZv94XbeNSEQvyJCotp8CV
+        5wru2AvQpPQk9Hmm0fnnLbYnKgZPqMDYX9ix+tKVhhGRyricBOu2PKKItkhKKS8ah/YEnf
+        VDYSm1kVXcasuLQ/h8/0J2xM6bbmpUs=
+Date:   Wed, 15 Jul 2020 06:26:47 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
+        sean.j.christopherson@intel.com, tony.luck@intel.com,
+        torvalds@linux-foundation.org, x86@kernel.org, kernel-team@fb.com,
+        Matthew Garrett <matthewgarrett@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        erpalma <palmarini@unive.it>
+Subject: Re: [PATCH -v2.1] x86/msr: Filter MSR writes
+Message-ID: <20200715042645.GD4228@nazgul.tnic>
+References: <20200615063837.GA14668@zn.tnic>
+ <20200714121955.GA2080@chrisdown.name>
+ <20200714154728.GA3101@nazgul.tnic>
+ <20200714160448.GC2080@chrisdown.name>
+ <20200714165621.GA3622@nazgul.tnic>
+ <e33ebe71317b0a09ca40e97fb76ff57313c0444c.camel@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/g3erc/IK63cHOMtHNP1g9s9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e33ebe71317b0a09ca40e97fb76ff57313c0444c.camel@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/g3erc/IK63cHOMtHNP1g9s9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jul 14, 2020 at 11:52:47AM -0700, Srinivas Pandruvada wrote:
+> > As to the power issue, lemme CC some Intel folks I found in
+> > MAINTAINERS.
+> > 
+> > Intel folks, pls check the link above and upthread: Why TF do people
+> > need to use some luserspace daemon which pokes at MSRs which the
+> > kernel
+> > writes to too, in order to bypass some apparently too conservative
+> > throttling, AFAIU?
+> For issues related to thermal or power, we don't expect to poke MSRs
+> from user space by any daemon. We have sysfs interfaces for the
+> required controls. This is also true for controls via MMIO space.
+> Anytime if it is safe to add, we are adding controls via sysfs.
+> 
+> The tool in question from the link (not from Intel), when developed may
+> not have TCC or RAPL-MMIO controls via sysfs. We have sysfs interfaces
+> for a while. They can send email to me to justify other controls if
+> any.
 
-Hi all,
+CCed. (I think I got the right email from the repo).
 
-Today's linux-next merge of the tty tree got a conflict in:
+Francesco, see the whole thread starting here:
 
-  drivers/tty/serial/qcom_geni_serial.c
+https://lkml.kernel.org/r/20200714121955.GA2080@chrisdown.name
 
-between commit:
+> > And why does this work on windoze reportedly?
+> This is not related to MSR or MMIO. This is related to some ACPI
+> tables. In Linux, thermald will adjust these knobs like Windows. It was
+> missing some ACPI details, which Matthew Garrett submitted patches to
+> kernel and getting merged with 5.8 series.
 
-  650c8bd36a66 ("serial: qcom_geni_serial: Always use 4 bytes per TX FIFO w=
-ord")
+Good.
 
-from the qcom tree and commit:
+Which means that that throttled tool could do the same thing thermald is
+doing so that they're all on the same page. Or simply not do anything
+and tell users to install thermald instead.
 
-  3550f8979a7b ("tty: serial: qcom_geni_serial: Clean up an ARRAY_SIZE() vs=
- sizeof()")
+Thx.
 
-from the tty tree.
+-- 
+Regards/Gruss,
+    Boris.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/tty/serial/qcom_geni_serial.c
-index 07b7b6b05b8b,1ed3d354e16d..000000000000
---- a/drivers/tty/serial/qcom_geni_serial.c
-+++ b/drivers/tty/serial/qcom_geni_serial.c
-@@@ -768,8 -718,8 +768,8 @@@ static void qcom_geni_serial_handle_tx(
-  		u8 buf[sizeof(u32)];
-  		int c;
- =20
-- 		memset(buf, 0, ARRAY_SIZE(buf));
-+ 		memset(buf, 0, sizeof(buf));
- -		tx_bytes =3D min_t(size_t, remaining, port->tx_bytes_pw);
- +		tx_bytes =3D min_t(size_t, remaining, BYTES_PER_FIFO_WORD);
- =20
-  		for (c =3D 0; c < tx_bytes ; c++) {
-  			buf[c] =3D xmit->buf[tail++];
-
---Sig_/g3erc/IK63cHOMtHNP1g9s9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8OhUMACgkQAVBC80lX
-0GydPgf/XJg53cpOA6TVJuAbToLebJbagnAjG0ItAiKoahhkmy4bJlqWuROGzGsW
-UF5TK3SpHEtx20K96bxggB9WRwQNYMzW8kS6IMvyY4xA6KPIfDkpHLUQNFxhZYMz
-dZzPAqDkaW6tTMrzTGukiEC5zjGXelKD03W3DRB6OI8wlWE1L4FbPBn+CwtCx6pz
-020vYjNlahbBi+PGyZ0425hN6U1vFXEzStXR2DyWaRxOBv+jLeps+ASGUwt1lyCJ
-PLrjN0poWN36OMUArGxawLHxwhrLy9fBB6uZHIK2MC572LHlLcNppNBRBaZoasFR
-63M/9ltzaBmJzP+l1yTRJVXH1F3L9w==
-=0bez
------END PGP SIGNATURE-----
-
---Sig_/g3erc/IK63cHOMtHNP1g9s9--
+https://people.kernel.org/tglx/notes-about-netiquette
