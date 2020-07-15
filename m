@@ -2,112 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1FD22104A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD87221041
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728174AbgGOPHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
+        id S1728059AbgGOPG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728009AbgGOPGw (ORCPT
+        with ESMTP id S1727931AbgGOPGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 11:06:52 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB262C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:51 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id w3so6163968wmi.4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:51 -0700 (PDT)
+        Wed, 15 Jul 2020 11:06:45 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006E9C08C5DE
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:44 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id o2so6184723wmh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Neuk7hlxyMHOEJZl+c3Ce+fuWuJ+zLYxzzvecm8U2ZQ=;
-        b=ic4mFINwL49QSVPf3k9/rgWYim5/9jEoZkN3gqetr4K9fAHlJVyJ3XypL6SuWfRqDz
-         +S7WszcHEof6BWrZKfFj9g/YLF71Qcm1yt4zHcQPPYgdqTAQxCrOZh51+TZvW0YQ8Ck0
-         aLn5KjCQKZ3Gd/aFzV5L2DQfyiqU8ujb9Iv4xSapyMw6tqW4tt5JwZPpcrPnOA8PiwaE
-         0yOlSql13qvWzpkdNz/tyd6HeetzNbv+eay/5/xjytCtAkIYMyDbb9Uefd2mAG3NGm2+
-         EaVE9UW+LkFfgx1Zg5Rp6RueZCf8/5881/TkICwUazyXDTk14I4cs6dLDvr0xHFNjtcl
-         EisA==
+        bh=HtRzZ5KmeCiCWZA3g8vq3ZlMKJB7i9QBYHFK4C8GH0s=;
+        b=mm5H0gktuRl27KwOE3Op7rhTrBCOq3IjXtDklC9duhaS3OTT2AIBTmiUK7enabkTxf
+         phcZ+mlV/fhB5510gdwnlVT3Nu8bq+sziuBIoKP6hjoayECw6hdssq4P9CHFYDMgDvIQ
+         ErWfZyh4qn06Cfihd8RkCok4YpfxkvExmV1F49S4++6DMkMoaoPjSjicaXvmiKHPAhAs
+         zamOm620KAFOcYr63wq8QipRJwm8ft++56w68XfTbJiF0Y/z8iqjB7oqiRiK4B4uUWpS
+         X6Lp1A3i1p5aH4zsuxlrzFMGCAXnMp1cnAVb07VjMsCZTEORkYIDT50YyijZRN7wzI4Y
+         PcOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Neuk7hlxyMHOEJZl+c3Ce+fuWuJ+zLYxzzvecm8U2ZQ=;
-        b=DnA1Rp5kxkxeDM+W4srP7F0Z4RTuP0iYepvzh0IjNYMozsKQsqdGk933AInREjEvvs
-         2KPz9DPiYAXbRRDs3wW7cYSsoCQOPiaJof4hgGv0YHFOAeR21CeAEfXEyb5FrjrBS8FQ
-         ZzD4UAPG05auv54CIBQmTATY39esIM2MZHheTuszc1KiShLRjtp5JSQuFjjWrkm+Ui4x
-         aCS2ynSG033tP9qjJ/Xgdhzr6V9vQWplQpyvQWFFoUEtCLrokZ++IPbnXteqxdTApW2o
-         btX8n7D+mds0hzGhqyThBIczuqpaOrhHvcNmzBAmPCagf8XM/243YV3i/D7JtRHoH9eB
-         pKww==
-X-Gm-Message-State: AOAM530RpuKkHLvDdPVLzZ4s2WkVJsHVe8wB1U7glz5J0ptkJs/yoBo1
-        cZyvn8tlpWAcKs5eM355YsM84w==
-X-Google-Smtp-Source: ABdhPJyhQwehdC5E5vWdp2tq0inGEyTI0AsEuhIDReVDRKACyOC/THNq1DETNswb/m5QQ3kSVY3afQ==
-X-Received: by 2002:a1c:7315:: with SMTP id d21mr8770056wmb.108.1594825602210;
-        Wed, 15 Jul 2020 08:06:42 -0700 (PDT)
+        bh=HtRzZ5KmeCiCWZA3g8vq3ZlMKJB7i9QBYHFK4C8GH0s=;
+        b=QS5gtqgKdvg6CAONcpX5pHMrP87ZDVCpM4kQa+gRnNr8xDWg2gkmTWZLpE/nnLyO8R
+         RycxLEqaf15BFzIa/M3gbT3v1CJ+4XM9olB3H8POU3kHn3tmAX8FmmipWhky2ibkagl4
+         2f/SOcQ8785ukiFQKEN1OQrakmrT5vmNMyQvK53ItffTp0yI40QSQWkAU4LFRi1bN/nQ
+         0DryyMa/DrLamj6DphuLjnkIT/0Eh8MZ3kBkKDUjaImmCmEhB+KfqYLfyFMvHxjyHHyt
+         Z0ZNw/0mA2bsacMtEoH20iRQmJPKs9yQohJnXPqSrd71taWQmBdpPB95txOEKQWE/I2y
+         M+hg==
+X-Gm-Message-State: AOAM532ZF3nyw0CjB49Ziu3SI9hP36AzKBOD52yU6C6zkCR9o2+TkpJi
+        Or7gs5YAm4qgq6wX7PFmXX4zUw==
+X-Google-Smtp-Source: ABdhPJwPI7700rZiGUg8UA2/gAzTCD4H6EyDR617KU4GnsAL6bxdbGHlfr3Qjde6X1ytzLoqJxXbAg==
+X-Received: by 2002:a05:600c:21cb:: with SMTP id x11mr8697229wmj.141.1594825603705;
+        Wed, 15 Jul 2020 08:06:43 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id w2sm3906140wrs.77.2020.07.15.08.06.40
+        by smtp.gmail.com with ESMTPSA id w2sm3906140wrs.77.2020.07.15.08.06.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 08:06:41 -0700 (PDT)
+        Wed, 15 Jul 2020 08:06:42 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-spi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amlogic@lists.infradead.org
-Subject: [PATCH 06/14] spi: spi-meson-spicc: Remove set but never used variable 'data' from meson_spicc_reset_fifo()
-Date:   Wed, 15 Jul 2020 16:06:24 +0100
-Message-Id: <20200715150632.409077-7-lee.jones@linaro.org>
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andi Shyti <andi@etezian.org>,
+        Jaswinder Singh <jassi.brar@samsung.com>,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH 07/14] spi: spi-s3c64xx: Add missing entries for structs 's3c64xx_spi_dma_data' and 's3c64xx_spi_dma_data'
+Date:   Wed, 15 Jul 2020 16:06:25 +0100
+Message-Id: <20200715150632.409077-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200715150632.409077-1-lee.jones@linaro.org>
 References: <20200715150632.409077-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like it hasn't ever been checked.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/spi/spi-meson-spicc.c: In function ‘meson_spicc_reset_fifo’:
- drivers/spi/spi-meson-spicc.c:365:6: warning: variable ‘data’ set but not used [-Wunused-but-set-variable]
- 365 | u32 data;
- | ^~~~
+ drivers/spi/spi-s3c64xx.c:150: warning: Function parameter or member 'quirks' not described in 's3c64xx_spi_port_config'
+ drivers/spi/spi-s3c64xx.c:150: warning: Function parameter or member 'clk_ioclk' not described in 's3c64xx_spi_port_config'
+ drivers/spi/spi-s3c64xx.c:189: warning: Function parameter or member 'pdev' not described in 's3c64xx_spi_driver_data'
+ drivers/spi/spi-s3c64xx.c:189: warning: Function parameter or member 'rx_dma' not described in 's3c64xx_spi_driver_data'
+ drivers/spi/spi-s3c64xx.c:189: warning: Function parameter or member 'tx_dma' not described in 's3c64xx_spi_driver_data'
+ drivers/spi/spi-s3c64xx.c:189: warning: Function parameter or member 'port_conf' not described in 's3c64xx_spi_driver_data'
+ drivers/spi/spi-s3c64xx.c:189: warning: Function parameter or member 'port_id' not described in 's3c64xx_spi_driver_data'
 
-Cc: Kevin Hilman <khilman@baylibre.com>
-Cc: Neil Armstrong <narmstrong@baylibre.com>
-Cc: linux-amlogic@lists.infradead.org
+Cc: Kukjin Kim <kgene@kernel.org>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Andi Shyti <andi@etezian.org>
+Cc: Jaswinder Singh <jassi.brar@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/spi/spi-meson-spicc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/spi/spi-s3c64xx.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
-index 77f7d0e0e46ad..ecba6b4a5d85d 100644
---- a/drivers/spi/spi-meson-spicc.c
-+++ b/drivers/spi/spi-meson-spicc.c
-@@ -362,8 +362,6 @@ static void meson_spicc_setup_xfer(struct meson_spicc_device *spicc,
- 
- static void meson_spicc_reset_fifo(struct meson_spicc_device *spicc)
- {
--	u32 data;
--
- 	if (spicc->data->has_oen)
- 		writel_bits_relaxed(SPICC_ENH_MAIN_CLK_AO,
- 				    SPICC_ENH_MAIN_CLK_AO,
-@@ -373,7 +371,7 @@ static void meson_spicc_reset_fifo(struct meson_spicc_device *spicc)
- 			    spicc->base + SPICC_TESTREG);
- 
- 	while (meson_spicc_rxready(spicc))
--		data = readl_relaxed(spicc->base + SPICC_RXDATA);
-+		readl_relaxed(spicc->base + SPICC_RXDATA);
- 
- 	if (spicc->data->has_oen)
- 		writel_bits_relaxed(SPICC_ENH_MAIN_CLK_AO, 0,
+diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
+index cf67ea60dc0ed..924b24441789a 100644
+--- a/drivers/spi/spi-s3c64xx.c
++++ b/drivers/spi/spi-s3c64xx.c
+@@ -130,9 +130,11 @@ struct s3c64xx_spi_dma_data {
+  * @fifo_lvl_mask: Bit-mask for {TX|RX}_FIFO_LVL bits in SPI_STATUS register.
+  * @rx_lvl_offset: Bit offset of RX_FIFO_LVL bits in SPI_STATUS regiter.
+  * @tx_st_done: Bit offset of TX_DONE bit in SPI_STATUS regiter.
++ * @quirks: Bitmask of known quirks
+  * @high_speed: True, if the controller supports HIGH_SPEED_EN bit.
+  * @clk_from_cmu: True, if the controller does not include a clock mux and
+  *	prescaler unit.
++ * @clk_ioclk: True if clock is present on this device
+  *
+  * The Samsung s3c64xx SPI controller are used on various Samsung SoC's but
+  * differ in some aspects such as the size of the fifo and spi bus clock
+@@ -154,6 +156,7 @@ struct s3c64xx_spi_port_config {
+  * @clk: Pointer to the spi clock.
+  * @src_clk: Pointer to the clock used to generate SPI signals.
+  * @ioclk: Pointer to the i/o clock between master and slave
++ * @pdev: Pointer to device's platform device data
+  * @master: Pointer to the SPI Protocol master.
+  * @cntrlr_info: Platform specific data for the controller this driver manages.
+  * @lock: Controller specific lock.
+@@ -166,7 +169,11 @@ struct s3c64xx_spi_port_config {
+  * @xfer_completion: To indicate completion of xfer task.
+  * @cur_mode: Stores the active configuration of the controller.
+  * @cur_bpw: Stores the active bits per word settings.
+- * @cur_speed: Stores the active xfer clock speed.
++ * @cur_speed: Current clock speed
++ * @rx_dma: Local receive DMA data (e.g. chan and direction)
++ * @tx_dma: Local transmit DMA data (e.g. chan and direction)
++ * @port_conf: Local SPI port configuartion data
++ * @port_id: Port identification number
+  */
+ struct s3c64xx_spi_driver_data {
+ 	void __iomem                    *regs;
 -- 
 2.25.1
 
