@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664AF220297
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D343822029B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgGOC7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 22:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
+        id S1728170AbgGOC7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 22:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728400AbgGOC7e (ORCPT
+        with ESMTP id S1726930AbgGOC7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 22:59:34 -0400
+        Tue, 14 Jul 2020 22:59:23 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04AAC061755;
-        Tue, 14 Jul 2020 19:59:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABCEC061794;
+        Tue, 14 Jul 2020 19:59:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=ufO4lHePtrPPVz7YbFrezalftZMWhKJ1TX8oM3yPcfM=; b=gmucBQdEVlKk+FMDuRFc2mEwTR
-        o+4TN/09L/t6Cxyz6d+u+bhuIvfhgVkPvFNtVJo1R5NYzcD0QGWImKFaNi4+y9xLDG8dbx0jOjYB9
-        Tjyrv4dH8Wabjzjm7ivtYGDFU6s1OAA03oUZ42PUN2p68gDl4X8Xa0ekcPoeKJYzaP3JYBIsJKDtb
-        Tw/Mc22M2CY8ViYA+URBZ3KZ+uP+v+n/TGOZ0P/OjGfKoCxLkCFkWidH2OdgalXOdXEpXphEQwAif
-        RMfB4F4Qy1J621lA+kqt67s97KQhudP2NvqgCUyPIQvEzQICyBgvaRclsZuM06kt0mVVYbZeqtntD
-        lnXVUmcw==;
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=3PCd8FgrmS1PhNvTlKavM59zD4cPi+6M/pikUlCiTMM=; b=ZHLcUut+5unzw0LXec/tQGCVoF
+        AqMoKkfTsRozme76ouJbHQp/98DN8FD5kCQyPi6bxW5n9v8BiLRW1m4Lyms72iZibwSlXZRcZSVcK
+        m31yCUfT0EASu9ImLHu+rCDfcdTl1GmhSlxr+Le3L1tbeJn0EigRzNAKgjRb9VNTKnVgCFWROoLxW
+        4Z2HLrD+63LzZCm9erPmFc4r8L894kvjyYnPcCiEBz3CTAz2mJjWB3E+EnFK2vF5j8AMVHwqVPu+8
+        sKXQ+Nv9La+Bjxh4RdViz7f/2owBIs5lL1DjnW+XgdWb8lDYzRFAPLMUenuMBJCZufORMp3KIGbA7
+        8lVKfytQ==;
 Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvXdr-0001FT-G8; Wed, 15 Jul 2020 02:59:32 +0000
+        id 1jvXdd-0001FT-S4; Wed, 15 Jul 2020 02:59:19 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH 07/13 net-next] net: caif: drop duplicate words in comments
-Date:   Tue, 14 Jul 2020 19:59:08 -0700
-Message-Id: <20200715025914.28091-7-rdunlap@infradead.org>
+Subject: [PATCH 01/13 net-next] net: nl80211.h: drop duplicate words in comments
+Date:   Tue, 14 Jul 2020 19:59:02 -0700
+Message-Id: <20200715025914.28091-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200715025914.28091-1-rdunlap@infradead.org>
-References: <20200715025914.28091-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -46,45 +44,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop doubled words "or" and "the" in several comments.
+Drop doubled words in several comments.
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
 Cc: netdev@vger.kernel.org
 ---
- include/net/caif/caif_layer.h         |    4 ++--
- include/uapi/linux/caif/caif_socket.h |    2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ include/uapi/linux/nl80211.h |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
---- linux-next-20200714.orig/include/net/caif/caif_layer.h
-+++ linux-next-20200714/include/net/caif/caif_layer.h
-@@ -156,7 +156,7 @@ struct cflayer {
- 	 *  CAIF packets upwards in the stack.
- 	 *	Packet handling rules:
- 	 *	      - The CAIF packet (cfpkt) ownership is passed to the
--	 *		called receive function. This means that the the
-+	 *		called receive function. This means that the
- 	 *		packet cannot be accessed after passing it to the
- 	 *		above layer using up->receive().
- 	 *
-@@ -184,7 +184,7 @@ struct cflayer {
- 	 *	CAIF packet downwards in the stack.
- 	 *	Packet handling rules:
- 	 *	      - The CAIF packet (cfpkt) ownership is passed to the
--	 *		transmit function. This means that the the packet
-+	 *		transmit function. This means that the packet
- 	 *		cannot be accessed after passing it to the below
- 	 *		layer using dn->transmit().
- 	 *
---- linux-next-20200714.orig/include/uapi/linux/caif/caif_socket.h
-+++ linux-next-20200714/include/uapi/linux/caif/caif_socket.h
-@@ -169,7 +169,7 @@ struct sockaddr_caif {
-  * @CAIFSO_LINK_SELECT:		Selector used if multiple CAIF Link layers are
-  *				available. Either a high bandwidth
-  *				link can be selected (CAIF_LINK_HIGH_BANDW) or
-- *				or a low latency link (CAIF_LINK_LOW_LATENCY).
-+ *				a low latency link (CAIF_LINK_LOW_LATENCY).
-  *                              This option is of type __u32.
-  *				Alternatively SO_BINDTODEVICE can be used.
+--- linux-next-20200714.orig/include/uapi/linux/nl80211.h
++++ linux-next-20200714/include/uapi/linux/nl80211.h
+@@ -363,7 +363,7 @@
+  * @NL80211_CMD_SET_STATION: Set station attributes for station identified by
+  *	%NL80211_ATTR_MAC on the interface identified by %NL80211_ATTR_IFINDEX.
+  * @NL80211_CMD_NEW_STATION: Add a station with given attributes to the
+- *	the interface identified by %NL80211_ATTR_IFINDEX.
++ *	interface identified by %NL80211_ATTR_IFINDEX.
+  * @NL80211_CMD_DEL_STATION: Remove a station identified by %NL80211_ATTR_MAC
+  *	or, if no MAC address given, all stations, on the interface identified
+  *	by %NL80211_ATTR_IFINDEX. %NL80211_ATTR_MGMT_SUBTYPE and
+@@ -383,7 +383,7 @@
+  * @NL80211_CMD_DEL_MPATH: Delete a mesh path to the destination given by
+  *	%NL80211_ATTR_MAC.
+  * @NL80211_CMD_NEW_PATH: Add a mesh path with given attributes to the
+- *	the interface identified by %NL80211_ATTR_IFINDEX.
++ *	interface identified by %NL80211_ATTR_IFINDEX.
+  * @NL80211_CMD_DEL_PATH: Remove a mesh path identified by %NL80211_ATTR_MAC
+  *	or, if no MAC address given, all mesh paths, on the interface identified
+  *	by %NL80211_ATTR_IFINDEX.
+@@ -934,7 +934,7 @@
+  * @NL80211_CMD_SET_COALESCE: Configure coalesce rules or clear existing rules.
   *
+  * @NL80211_CMD_CHANNEL_SWITCH: Perform a channel switch by announcing the
+- *	the new channel information (Channel Switch Announcement - CSA)
++ *	new channel information (Channel Switch Announcement - CSA)
+  *	in the beacon for some time (as defined in the
+  *	%NL80211_ATTR_CH_SWITCH_COUNT parameter) and then change to the
+  *	new channel. Userspace provides the new channel information (using
+@@ -1113,7 +1113,7 @@
+  *	randomization may be enabled and configured by specifying the
+  *	%NL80211_ATTR_MAC and %NL80211_ATTR_MAC_MASK attributes.
+  *	If a timeout is requested, use the %NL80211_ATTR_TIMEOUT attribute.
+- *	A u64 cookie for further %NL80211_ATTR_COOKIE use is is returned in
++ *	A u64 cookie for further %NL80211_ATTR_COOKIE use is returned in
+  *	the netlink extended ack message.
+  *
+  *	To cancel a measurement, close the socket that requested it.
+@@ -1511,7 +1511,7 @@ enum nl80211_commands {
+  *	rates as defined by IEEE 802.11 7.3.2.2 but without the length
+  *	restriction (at most %NL80211_MAX_SUPP_RATES).
+  * @NL80211_ATTR_STA_VLAN: interface index of VLAN interface to move station
+- *	to, or the AP interface the station was originally added to to.
++ *	to, or the AP interface the station was originally added to.
+  * @NL80211_ATTR_STA_INFO: information about a station, part of station info
+  *	given for %NL80211_CMD_GET_STATION, nested attribute containing
+  *	info as possible, see &enum nl80211_sta_info.
+@@ -2084,7 +2084,7 @@ enum nl80211_commands {
+  * @NL80211_ATTR_STA_SUPPORTED_CHANNELS: array of supported channels.
+  *
+  * @NL80211_ATTR_STA_SUPPORTED_OPER_CLASSES: array of supported
+- *      supported operating classes.
++ *      operating classes.
+  *
+  * @NL80211_ATTR_HANDLE_DFS: A flag indicating whether user space
+  *	controls DFS operation in IBSS mode. If the flag is included in
+@@ -2395,7 +2395,7 @@ enum nl80211_commands {
+  *      nl80211_txq_stats)
+  * @NL80211_ATTR_TXQ_LIMIT: Total packet limit for the TXQ queues for this phy.
+  *      The smaller of this and the memory limit is enforced.
+- * @NL80211_ATTR_TXQ_MEMORY_LIMIT: Total memory memory limit (in bytes) for the
++ * @NL80211_ATTR_TXQ_MEMORY_LIMIT: Total memory limit (in bytes) for the
+  *      TXQ queues for this phy. The smaller of this and the packet limit is
+  *      enforced.
+  * @NL80211_ATTR_TXQ_QUANTUM: TXQ scheduler quantum (bytes). Number of bytes
+@@ -5636,7 +5636,7 @@ enum nl80211_feature_flags {
+  * enum nl80211_ext_feature_index - bit index of extended features.
+  * @NL80211_EXT_FEATURE_VHT_IBSS: This driver supports IBSS with VHT datarates.
+  * @NL80211_EXT_FEATURE_RRM: This driver supports RRM. When featured, user can
+- *	can request to use RRM (see %NL80211_ATTR_USE_RRM) with
++ *	request to use RRM (see %NL80211_ATTR_USE_RRM) with
+  *	%NL80211_CMD_ASSOCIATE and %NL80211_CMD_CONNECT requests, which will set
+  *	the ASSOC_REQ_USE_RRM flag in the association request even if
+  *	NL80211_FEATURE_QUIET is not advertized.
+@@ -6045,7 +6045,7 @@ enum nl80211_dfs_state {
+ };
+ 
+ /**
+- * enum enum nl80211_protocol_features - nl80211 protocol features
++ * enum nl80211_protocol_features - nl80211 protocol features
+  * @NL80211_PROTOCOL_FEATURE_SPLIT_WIPHY_DUMP: nl80211 supports splitting
+  *	wiphy dumps (if requested by the application with the attribute
+  *	%NL80211_ATTR_SPLIT_WIPHY_DUMP. Also supported is filtering the
