@@ -2,108 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8773B221768
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 23:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4440522177A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 00:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgGOV6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 17:58:06 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:35375 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgGOV6G (ORCPT
+        id S1727819AbgGOWD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 18:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727042AbgGOWD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 17:58:06 -0400
-Received: from localhost (lfbn-lyo-1-1676-121.w90-65.abo.wanadoo.fr [90.65.108.121])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 5973B100008;
-        Wed, 15 Jul 2020 21:58:02 +0000 (UTC)
-Date:   Wed, 15 Jul 2020 23:58:01 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Cristian Birsan <cristian.birsan@microchip.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Songjun Wu <songjun.wu@atmel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH RESEND 3/3] usb: gadget: udc: atmel: implement .pullup
- callback
-Message-ID: <20200715215801.GG23553@piout.net>
-References: <cover.1594231056.git.mirq-linux@rere.qmqm.pl>
- <63121e624012996a2f6f5f3763270ad834667a12.1594231056.git.mirq-linux@rere.qmqm.pl>
+        Wed, 15 Jul 2020 18:03:56 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11D6C061755;
+        Wed, 15 Jul 2020 15:03:55 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id h190so846213vkh.6;
+        Wed, 15 Jul 2020 15:03:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KI9Mde07pxk4goJz9fnrbNuMJ5Nwi3EajcG9yYLG+m4=;
+        b=o45vpIlbigNauT/xzIHQ1p7d1Blxc0cUFIEu5F4vCfolJeRszhwNqo1DLkfIjSxMaB
+         yrv7Wj8Jyp6ew+il2xDyqaB0hbB/opH/UCycK6qecxKpDN34G3YDxis5atxFLDOe2QVD
+         CZ10+gSLvOmAlqnqlu0qHhQ9iyaHRz+M9zKGLQ84I3BfupbM9gr1slhno5rvZmyUcmUJ
+         5WviwD7Rzf6gyPHZVQBcjMChMTjrd59MIUTrkBbk1Y9R6LZyHr/Zabh4h3NYZJ49fR+3
+         7Xpelf2nXEC86SuOEBrCp2SFFrUY1BPBGU7T2+OHBLF7fpYly6emsos71DruFRQ4J8Ez
+         AqWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KI9Mde07pxk4goJz9fnrbNuMJ5Nwi3EajcG9yYLG+m4=;
+        b=E2wQhijmvt1oLLco2yGvc3T1fZ9/gI3nO6kJ3iT6MpE/sr0b0BUAuKRCa5W7Mx98kb
+         I4BiF0XhtKZ8D8EJYisg7cTfZryT5xDy9X1tsgw9yeosXHxm99fYi+CjdzQlU21Q9ZCA
+         skONYxfTRFJBMCfy10+lb6FKXfAhzvDPK7vHRyXGU43tXuAt1f6ZiMaJjkHN2OESipuL
+         cIjNUp9gcAaTA/em4KRIIjBKzx9jDHk2E1qtpavVv9gFkTydHARAYrivLvO9PsuCTvhG
+         C5EIUGSEv7ph2O3o8txujykf0PiM9Wyon0XY74t6SyVHs7IktkJ+0iUiDmcZBgkl7Tw2
+         qxAA==
+X-Gm-Message-State: AOAM530SvLNXvqpeKEGM7Dann0boEp1Tl0LFwRLfujiRHeZYPckj/HIJ
+        7HHcAyUWS8NFSrPFUBYcugaUaxwxCQHYDiSWdA4=
+X-Google-Smtp-Source: ABdhPJw/P79FzpGlgS3RQuq3c7IwTh9oXZtHQJTWKgvTacZzW+jF/Ju7r2S4vvudBnzdz44PBQmy8DWIUbWEiN93rLU=
+X-Received: by 2002:a1f:eec8:: with SMTP id m191mr999635vkh.47.1594850634903;
+ Wed, 15 Jul 2020 15:03:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <63121e624012996a2f6f5f3763270ad834667a12.1594231056.git.mirq-linux@rere.qmqm.pl>
+References: <9324ef33-eedd-b965-37e8-b82e06778aab@0882a8b5-c6c3-11e9-b005-00805fc181fe>
+ <yq1blkgo6y0.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <yq1blkgo6y0.fsf@ca-mkp.ca.oracle.com>
+From:   Ju Hyung Park <qkrwngud825@gmail.com>
+Date:   Thu, 16 Jul 2020 07:03:43 +0900
+Message-ID: <CAD14+f1BjqmzGXnt_ha04gD-WpSu7spq93hVMDqnoO60MX3zEg@mail.gmail.com>
+Subject: Re: [PATCH] ata: Disable queued TRIM for Samsung 860 SSDs
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Simon Arlott <simon@octiron.net>, Jens Axboe <axboe@kernel.dk>,
+        linux-ide@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/07/2020 20:04:10+0200, Michał Mirosław wrote:
-> Implement udc->pullup callback, so that udc_connect/disconnect work.
-> This is needed for composite gadget, as it assumes udc_disconnect()
-> actually works and calls its ->disconnect callback.
-> 
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Hi Martin,
 
-> ---
->  drivers/usb/gadget/udc/atmel_usba_udc.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
-> index 9342a3d24963..c5128c229c52 100644
-> --- a/drivers/usb/gadget/udc/atmel_usba_udc.c
-> +++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
-> @@ -1028,6 +1028,7 @@ usba_udc_set_selfpowered(struct usb_gadget *gadget, int is_selfpowered)
->  	return 0;
->  }
->  
-> +static int atmel_usba_pullup(struct usb_gadget *gadget, int is_on);
->  static int atmel_usba_start(struct usb_gadget *gadget,
->  		struct usb_gadget_driver *driver);
->  static int atmel_usba_stop(struct usb_gadget *gadget);
-> @@ -1101,6 +1102,7 @@ static const struct usb_gadget_ops usba_udc_ops = {
->  	.get_frame		= usba_udc_get_frame,
->  	.wakeup			= usba_udc_wakeup,
->  	.set_selfpowered	= usba_udc_set_selfpowered,
-> +	.pullup			= atmel_usba_pullup,
->  	.udc_start		= atmel_usba_start,
->  	.udc_stop		= atmel_usba_stop,
->  	.match_ep		= atmel_usba_match_ep,
-> @@ -1957,6 +1959,24 @@ static irqreturn_t usba_vbus_irq_thread(int irq, void *devid)
->  	return IRQ_HANDLED;
->  }
->  
-> +static int atmel_usba_pullup(struct usb_gadget *gadget, int is_on)
-> +{
-> +	struct usba_udc *udc = container_of(gadget, struct usba_udc, gadget);
-> +	unsigned long flags;
-> +	u32 ctrl;
-> +
-> +	spin_lock_irqsave(&udc->lock, flags);
-> +	ctrl = usba_readl(udc, CTRL);
-> +	if (is_on)
-> +		ctrl &= ~USBA_DETACH;
-> +	else
-> +		ctrl |= USBA_DETACH;
-> +	usba_writel(udc, CTRL, ctrl);
-> +	spin_unlock_irqrestore(&udc->lock, flags);
-> +
-> +	return 0;
-> +}
-> +
->  static int atmel_usba_start(struct usb_gadget *gadget,
->  		struct usb_gadget_driver *driver)
->  {
-> -- 
-> 2.20.1
-> 
+On Thu, Jul 16, 2020 at 5:53 AM Martin K. Petersen
+<martin.petersen@oracle.com> wrote:
+> I really wish we had some more data to work with :(
+>
+> Lacking a proper heuristic I guess we don't have any choice to disable
+> the feature. But that's sad news for the people who currently don't have
+> problems since their performance will inevitably suffer.
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+It seems like the latest 860 EVO's firmware, RVT24B6Q, is fairly recent.
+The earliest reference that I could find on Google is this from Jan,
+2020: https://smarthdd.com/database/Samsung-SSD-860-EVO-M.2-500GB/RVT24B6Q/
+and an Amazon review.
+
+Earlier reports seem to be related to ASMedia's chipsets and NCQ quirks.
+
+AFAIK, no reports were made in 2018.
+IIRC the last time we went through this with the 850 series, a bunch
+of people reported data corruptions, sometimes even filesystem's
+superblock.
+Surely, we would have gotten reports of it pretty soon if the drives
+were indeed faulty.
+
+Maybe the latest firmware is to blame?
+
+Also, I don't think queued trim is all that crucial to performance
+imho, at least in the context of Linux.
+
+In my experience, regular R/W I/Os were still severely blocked when
+fstrim is undergoing even with queued trim was in use(which, to my
+understanding, is exactly what queued trim tried to resolve in the
+first place?). Probably file-system's implementation is at partial
+fault too with it sending ERASE commands with too big granularity. I
+believe f2fs' default discard_granularity of 4KB is what tries to
+mitigate this.
+
+Linux distros are not using the "discard" mount flag by default and
+defers to periodic fstrim on idle.
+Android has been doing this since 4.3(2013), and doesn't even use SATA.
+f2fs avoids this problem entirely by sending ERASE commands only when
+the drive is idle.
+
+All in all, I don't think we should pull out hairs trying to figure
+out how to do this properly.
+I'm yet to be convinced that queued trim solves practical performance issues.
+
+If we can't figure this out quickly, I agree on blacklisting 860s again.
+
+Thanks.
