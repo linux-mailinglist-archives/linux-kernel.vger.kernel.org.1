@@ -2,346 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB3222013D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 02:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB3A220148
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 02:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgGOAHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 20:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59762 "EHLO
+        id S1727965AbgGOARF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 20:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726450AbgGOAHR (ORCPT
+        with ESMTP id S1726142AbgGOARF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 20:07:17 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71177C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:07:17 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id q5so534568wru.6
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:07:17 -0700 (PDT)
+        Tue, 14 Jul 2020 20:17:05 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A3BC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:17:04 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id j80so267510qke.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:17:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rCsvWHMFwQCkIyblreEWmVYkj4jsb8u3rKO56xByVZs=;
-        b=lpGn5HgZbuDP9ylEBUNzc14d7+OMrAfnaiEZH01+vtmc4SBQgn/imHg8LWncE9AnRW
-         +UqvO+EGKVepIIvs+nhCSAA6sUwLlyt5CNPiFkfwXkRAOwWCFEgpCziF6jqcpj675seq
-         EAbr9XgDqD72LriKwqjE9Z10tkfkWnANIa8SDz6idOvHUzbpXSjloFlttWQfYHNX1K9H
-         SVY+FAKPJ6DEDt+vPk/wPsjdlaOb1m9CcH7vFxj+nYjIpQcrWBIEQqsePqEPz8jVQqTU
-         RVkB435jX66IukxL4A6y2VRJT6SulwNpxNElhz+Cd5dEw/gsTxBpnUixQDYzlrj8C4nH
-         HDIQ==
+        bh=Oq76v+RUv94wSS69Fqfqev4VRzCgB2IyBU1P7nBVtig=;
+        b=m0ut99R/8dD81hmur6pMC9ru6Vq9dtQamQKgmoqoLYTEfqFFkOIiJyqL/d7oWzxxID
+         5JAvEZqNqyR8qSP6voCyTFwScD757h15qUjPPyMX4wDRYllrp1sLj3vKklZcfQ6DQv3F
+         vlWq+SGYaBMgcYUpXfuv5WZ6qchx31F5olne0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rCsvWHMFwQCkIyblreEWmVYkj4jsb8u3rKO56xByVZs=;
-        b=kvFJmnawKe4CZM3Gxh45JfA34unvsOb5x2Y7bZPdK4j73MhrbPp14Dq6p6OBAwhDWb
-         G4UyR3aC+HwNFefjwmjHW6ynMLfV5AZSiXk6XJAeX++I4nYeOs+zODzEs2zAGJADMPZx
-         /oEf1Vp+CpFDIcCAi2PpFwL3qJ1WeGS/BvieWLRJ7NGI39PmfMF/sUwqDO2VnW3rx1uU
-         67y/BeZbik5/5e4H8FJ7N3sJCh7tePR2YevmTVB0GKUYj8CnzKwxKSL7c/k1u0A/dnv8
-         dzmIbv/ReRIvQ4GEYh01jI3hU+y5UVrYILOH5A9LN0aLZdGqnfEMIbsp0zpvcYpHud9f
-         7agg==
-X-Gm-Message-State: AOAM531gsuZDIdp5rrw+YGPrL2So5O53+2bk4o0eOF2I9j9IQ9KSGIc+
-        Qnl3DYrRQ1UI5YWjvXtRILkVVqKTCbx7pek7uJdiww==
-X-Google-Smtp-Source: ABdhPJwznz7DG3lneSkNmhwSYgCLIbBiJRbrvOH4dwTnjKOCexkxOybh1+7N0+QaVdX0BnQDOxDfmBdpUYWpbjkSo3c=
-X-Received: by 2002:adf:e6cb:: with SMTP id y11mr8215330wrm.282.1594771635889;
- Tue, 14 Jul 2020 17:07:15 -0700 (PDT)
+        bh=Oq76v+RUv94wSS69Fqfqev4VRzCgB2IyBU1P7nBVtig=;
+        b=TUzbUztQoynWpP1x17n4/SHIqJeZoU7Ipu0hHaXs22EYJy/8cRlYdG4V6j89q3wM8I
+         JfLDwSfogHj/S1gHSPbrjmtH8B6VWpy6lpmYFbqL5VDIRSR06IAOKp5I85KgsEg9SMsQ
+         2c8KWuy9EW5+DFk0uoO48SfLxZoecoO3rSMQxlJHx7tJrPvD20LUu9f4NZu3+LcF9HrA
+         DvwNjIWf60/a9vKw1YVHf3QYaE+Y6xdDY40z9LLrEX4OqbCFgv5wE/EwIXS4SMiXhdAy
+         PHOoXKUocbzwqCeI+qMRA8Af3MAnpjgXJDbGe9T+XSf8gUw9FzbCRThSBABWXpEgmVK/
+         1+bg==
+X-Gm-Message-State: AOAM532EHxjHvblLm1s141Ok40s+Dcj9P6dPxj645ztsOiAF8G+VwJsh
+        SpleIDxzGfffA/Xoq250XNr8IVnBlX0=
+X-Google-Smtp-Source: ABdhPJzn3HNRyDSDtv9z8EOmCSoVdLSyu3k5MAVLVj1wkIiyL46IuDUUoVrE3Qw/LfCkGGH8tXltrw==
+X-Received: by 2002:a05:620a:1598:: with SMTP id d24mr6934229qkk.295.1594772223689;
+        Tue, 14 Jul 2020 17:17:03 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id l1sm865384qtk.18.2020.07.14.17.17.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 17:17:03 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id c14so303986ybj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 17:17:03 -0700 (PDT)
+X-Received: by 2002:ab0:486d:: with SMTP id c42mr5460752uad.64.1594771725929;
+ Tue, 14 Jul 2020 17:08:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200712132634.138901-1-jolsa@kernel.org> <20200712132634.138901-10-jolsa@kernel.org>
-In-Reply-To: <20200712132634.138901-10-jolsa@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 14 Jul 2020 17:07:04 -0700
-Message-ID: <CAP-5=fUa0TKW5U3hivu4HMi+9s+9BEygPhGUNRDM-oAH-BOSsw@mail.gmail.com>
-Subject: Re: [PATCH 09/18] perf metric: Collect referenced metrics in struct metric_ref_node
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
+References: <1592818308-23001-1-git-send-email-mkshah@codeaurora.org>
+ <1592818308-23001-2-git-send-email-mkshah@codeaurora.org> <CAD=FV=WcbEH2O+7xqCyDfrPR0+g+MpWWsgORNPepC=VrhOanFQ@mail.gmail.com>
+ <723acb53-364a-9045-8dbd-fa2a270798a6@codeaurora.org>
+In-Reply-To: <723acb53-364a-9045-8dbd-fa2a270798a6@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 14 Jul 2020 17:08:34 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WqeCbAgM+7_+trHYgeYFN3XnNdBcMy4N34N_8m9QFr9w@mail.gmail.com>
+Message-ID: <CAD=FV=WqeCbAgM+7_+trHYgeYFN3XnNdBcMy4N34N_8m9QFr9w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] pinctrl: qcom: Remove irq_disable callback from
+ msmgpio irqchip
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        LinusW <linus.walleij@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Evan Green <evgreen@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Srinivas Rao L <lsrao@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 6:27 AM Jiri Olsa <jolsa@kernel.org> wrote:
+Hi,
+
+On Tue, Jul 14, 2020 at 3:38 AM Maulik Shah <mkshah@codeaurora.org> wrote:
 >
-> Collecting referenced metrics in struct metric_ref_node object,
-> so we can process them later on.
+> Hi,
 >
-> The change will parse nested metric names out of expression and
-> 'resolve' them.
+> On 7/14/2020 3:47 AM, Doug Anderson wrote:
 >
-> All referenced metrics are dissolved into one context, meaning all
-> nested metrics events and added to the parent context.
+> Hi,
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/metricgroup.c | 147 ++++++++++++++++++++++++++++++----
->  1 file changed, 132 insertions(+), 15 deletions(-)
+> On Mon, Jun 22, 2020 at 2:32 AM Maulik Shah <mkshah@codeaurora.org> wrote:
 >
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index f0b0a053bfd2..9923eef1e2d4 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -102,12 +102,20 @@ void metricgroup__rblist_exit(struct rblist *metric_events)
->         rblist__exit(metric_events);
->  }
+> > > The gpio can be marked for wakeup and drivers can invoke disable_irq()
+> > > during suspend, in such cases unlazy approach will also disable at HW
+> > > and such gpios will not wakeup device from suspend to RAM.
+> > >
+> > > Remove irq_disable callback to allow gpio interrupts to lazy disabled.
+> > > The gpio interrupts will get disabled during irq_mask callback.
+> > >
+> > > Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> > > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> > > ---
+> > >  drivers/pinctrl/qcom/pinctrl-msm.c | 13 -------------
+> > >  1 file changed, 13 deletions(-)
+> >
+> > While the code of this patch looks fairly correct to me (there's no
+> > need to implement the irq_disable callback and we can just rely on the
+> > masking), I'm slightly anxious about the description.  It almost feels
+> > like you're somehow relying on the laziness to "fix" your issue here.
 >
-> +struct metric_ref_node {
-> +       const char *metric_name;
-> +       const char *metric_expr;
-> +       struct list_head list;
-> +};
+> i don't think thats the case here. As i have mentioned in previous discussions, reiterating here..
 
-Perhaps a comment like this above:
-/* A node in the list of referenced metrics. metric_expr is held as a
-convenience to avoid a search through the metric list. */
+I hadn't followed all the previous discussions, but generally if two
+people are independently confused by the same thing it's a sign that
+it needs to be explained better.  In this case that means a better
+commit message that explains exactly why this isn't a problem.
 
-> +
->  struct egroup {
->         struct list_head nd;
->         struct expr_parse_ctx pctx;
->         const char *metric_name;
->         const char *metric_expr;
->         const char *metric_unit;
-> +       struct list_head refs;
-> +       int refs_cnt;
 
-A comment would be nice here as refs is a pretty overloaded term. For
-example, is refs_cnt a reference count for memory management or the
-length of the refs list? I'm unpopular and would use a long variable
-name here of something like referenced_metrics for the list.
-
->         int runtime;
->         bool has_constraint;
->  };
-> @@ -574,27 +582,66 @@ int __weak arch_get_runtimeparam(void)
->  static int __add_metric(struct list_head *group_list,
->                         struct pmu_event *pe,
->                         bool metric_no_group,
-> -                       int runtime)
-> +                       int runtime,
-> +                       struct egroup **egp)
-
-Rather than egp perhaps parent_eg or parent_metric?
-
->  {
-> +       struct metric_ref_node *ref;
->         struct egroup *eg;
+> During suspend there is no way IRQ will be enabled/unmasked in HW even if its marked for wakeup.
 >
-> -       eg = malloc(sizeof(*eg));
-> -       if (!eg)
-> -               return -ENOMEM;
-> +       if (*egp == NULL) {
-> +               /*
-> +                * We got in here for the master group,
-> +                * allocate it and put it on the list.
-> +                */
-> +               eg = malloc(sizeof(*eg));
-> +               if (!eg)
-> +                       return -ENOMEM;
-> +
-> +               expr__ctx_init(&eg->pctx);
-> +               eg->metric_name = pe->metric_name;
-> +               eg->metric_expr = pe->metric_expr;
-> +               eg->metric_unit = pe->unit;
-> +               eg->runtime = runtime;
-> +               eg->has_constraint = metric_no_group || metricgroup__has_constraint(pe);
-> +               INIT_LIST_HEAD(&eg->refs);
-> +               eg->refs_cnt = 0;
-> +               *egp = eg;
-> +       } else {
-> +               /*
-> +                * We got here for the referenced metric, via the
-> +                * recursive metricgroup__add_metric call, add
-> +                * it to the master group.
-
-Probably want to avoid the term master here and below:
-https://www.kernel.org/doc/html/latest/process/coding-style.html?highlight=language%20master#naming
-Perhaps parent or referencing metric?
-
-> +                */
-> +               eg = *egp;
-> +
-> +               ref = malloc(sizeof(*ref));
-> +               if (!ref)
-> +                       return -ENOMEM;
+> All kernel does during suspend is if an IRQ is not marked for wakeup (did not invoke enable_irq_wake())
+> then during suspend those IRQs will get disabled/masked in HW to prevent them waking up.
 >
-> -       expr__ctx_init(&eg->pctx);
-> -       eg->metric_name = pe->metric_name;
-> -       eg->metric_expr = pe->metric_expr;
-> -       eg->metric_unit = pe->unit;
-> -       eg->runtime = runtime;
-> -       eg->has_constraint = metric_no_group || metricgroup__has_constraint(pe);
-> +               ref->metric_name = pe->metric_name;
-> +               ref->metric_expr = pe->metric_expr;
-> +               list_add(&ref->list, &eg->refs);
-> +               eg->refs_cnt++;
-> +               eg->has_constraint |= metricgroup__has_constraint(pe);
-
-Why not metric_no_group here? Perhaps use a function to avoid
-duplication with the code above.
-
-> +       }
+> Note that kernel don't do anything for the IRQs that are marked for wakeup. those IRQs are left in its original state.
+> by original state, i mean if the IRQ was enabled/unmasked in HW, it will stay as is, if its disabled/masked it will stay same.
+> suspend process won't change the state of those IRQs.
 >
-> +       /*
-> +        * For both the master and referenced metrics, we parse
-> +        * all the metric's IDs and add it to the parent context.
-> +        */
->         if (expr__find_other(pe->metric_expr, NULL, &eg->pctx, runtime) < 0) {
->                 expr__ctx_clear(&eg->pctx);
->                 free(eg);
->                 return -EINVAL;
+> Lets take two cases of lazy and unlazy disable/mask.
+>
+> case-1)
+>
+> if the irq_chip implements .irq_disable callback, genirq by default takes unlazy path (immediatly disabled in SW + HW).
+> if device enters suspend after client driver calls disable_irq(), there is no way to wakeup with such IRQs, even though
+> driver choosen to mark it for wakeup. As i told above, kernel leaves such IRQ in its original state (disabled in SW + HW here)
+> This is the problem case where we started with.
+>
+> case -2)
+>
+> If the irq_chip did not implements .irq_disable callback, genirq takes lazy disable path and only marks IRQ disabled in SW.
+> It is still left enabled in HW. This is what current series is implemented for.
+
+OK, I think I understand what you're trying to say.  What you're
+saying is that the important thing is that when you're using the
+kernel's "lazy" mode that the kernel will have knowledge of whether a
+disabled IRQ is pending.  That's because the IRQ fired once (and the
+kernel set IRQS_PENDING) before it got masked.  If we're using a
+non-lazy case then the IRQ could be pending but the kernel wouldn't
+know.
+
+If that's what you're relying on for this patch to work then it
+belongs in the commit message.
+
+...but (see below) I don't think it's working like you think it does.
+
+
+> > ...but the laziness is supposed to just be an optimization.
+> > Specifically if an interrupt happens to fire at any point in time
+> > after a driver has called disable_irq() then it acts just like a
+> > non-lazy disable.
+> >
+> > Said another way, I think this is a valid thing for a driver to do and
+> > it should get woken up if the irq fires in suspend:
+> >
+> > disable_irq();
+> > msleep(1000);
+> > enable_irq_wake()
+> >
+> > Specifically if an IRQ comes in during that sleep then it will be just
+> > like you had a non-lazy IRQ.
+>
+> i don't think, Let me take your example...driver calls below during suspend
+>
+>
+> 1. disable_irq();
+> 2. msleep(1000);
+> 3. enable_irq_wake();
+>
+>     a) if the IRQ comes in before (1) No issue in this case, its just like during active time if any other IRQ gets handled.
+>
+>     b) if IRQ comes anytime after (1) is over, but (3) is not done (i.e. during msleep())
+>
+>     - genirq will find that IRQ was disabled in SW,
+>     - driver's IRQ handler will not get called since it was disabled in SW via (1).
+>     - it will mark pending in SW and then really disables in HW now (lazy disable)
+>     - next call is enable_irq_wake(), which will mark IRQ as wake up capable and also re-enable in HW from patch-4 of this series
+>       in PDC driver's .irq_set_wake call...
+>         if (on) {
+>                 pdc_enable_intr(d, true);
+>                 irq_chip_enable_parent(d);
+>                 set_bit(d->hwirq, pdc_wake_irqs);
 >         }
->
-> +       /*
-> +        * We add new group only in the 'master' call,
-> +        * so bail out for referenced metric case.
-> +        */
-> +       if (eg->refs_cnt)
-> +               return 0;
-> +
->         if (list_empty(group_list))
->                 list_add(&eg->nd, group_list);
->         else {
-> @@ -636,14 +683,63 @@ static struct pmu_event *find_metric(const char *metric, struct pmu_events_map *
->
->  static int add_metric(struct list_head *group_list,
->                       struct pmu_event *pe,
-> -                     bool metric_no_group)
-> +                     bool metric_no_group,
-> +                     struct egroup **egp);
-> +
-> +static int resolve_metric(struct egroup *eg,
-> +                         bool metric_no_group,
-> +                         struct list_head *group_list,
-> +                         struct pmu_events_map *map)
-> +{
-> +       struct hashmap_entry *cur;
-> +       size_t bkt;
-> +       bool all;
-> +       int ret;
-> +
-> +       /*
-> +        * Iterate all the parsed IDs and if there's metric,
-> +        * add it to the context.
-> +        */
+>         with this IRQ will be left enabled/unmasked in HW.
+>     - device goes to suspend.
+>     - since its enabled/unmasked in HW, it will be able to wake up with this IRQ since GIC will forward this IRQ to CPU to wake it up.
 
-Does this mean that the ID doesn't need to begin "metric:" to
-reference a different metric as per Andi Kleen's request?
+...but what if it's an edge interrupt?  Then:
 
-> +       do {
-> +               all = true;
-> +               hashmap__for_each_entry((&eg->pctx.ids), cur, bkt) {
-> +                       struct pmu_event *pe;
-> +
-> +                       pe = find_metric(cur->key, map);
-> +                       if (!pe)
-> +                               continue;
-> +
-> +                       all = false;
-> +                       /* The metric key itself needs to go out.. */
-> +                       expr__del_id(&eg->pctx, cur->key);
-> +
-> +                       /* ... and it gets resolved to the parent context. */
-> +                       ret = add_metric(group_list, pe, metric_no_group, &eg);
-> +                       if (ret)
-> +                               return ret;
-> +
-> +                       /*
-> +                        * We added new metric to hashmap, so we need
-> +                        * to break the iteration and start over.
-> +                        */
-> +                       break;
-> +               }
-> +       } while (!all);
-> +
-> +       return 0;
-> +}
-> +
-> +static int add_metric(struct list_head *group_list,
-> +                     struct pmu_event *pe,
-> +                     bool metric_no_group,
-> +                     struct egroup **egp)
->  {
->         int ret = 0;
+1. It will fire.
+2. It will get marked as IRQS_PENDING and Acked.
+3. It will get masked.
+4. Your code will unmask and wake up from future edges but the edge
+that already came in won't cause a wakeup, right?
+
+Hrm, though I guess that's just a problem in general.  Probably
+suspend_device_irq() should check to see if an IRQ is pending?  In any
+case, at this point in time it's not a bug that is affecting me since
+(right now) cros_ec sets the wakeup _before_ disabling, but it
+probably should still be fixed.
+
+
+>     c) if IRQ comes in anytime after (3) is done,
 >
->         pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
+>     - genirq will find that IRQ was disabled in SW
+>     - driver's IRQ handler will not get called since it was disabled in SW via (1).
+>     - it will mark pending in SW and then really disables in HW now (lazy disable)
+>     - it will also notify suspend PM core about this event to abort the suspend since this IRQ was marked for wakeup.
+
+So I tested this and it didn't seem to work.  I went into
+cros_ec_suspend() and added a delay after the disable_irq() call.  I
+pressed a key on my keyboard while the delay was happening.  When I
+pressed the key I saw qcom_pdc_gic_mask() get called for the
+interrupt.  ...and the suspend was _not_ aborted.  I watched and the
+system continued all the way.
+
+I watched the system go all the way down and shut down the CPUs.
+Then, after 6 seconds (!) it woke back up.  I don't quite understand
+it, but the 6 seconds here seems to be the time needed to wakeup if
+PDC is enabled but the interrupt is masked at the gic level.
+
+Digging a little deeper, I see that in irq_may_run() it was getting true for:
+
+!irqd_has_set(&desc->irq_data, mask)
+
+...and thus it was returning true for irq_may_run() without setting
+irq_pm_check_wakeup().
+
+Given that it's not working as you describe it to be working, I feel
+like you might need to go back and re-evaluate your approach.  I'll
+try to spend more time thinking about this tomorrow too, but I'm about
+out of time for the day.
+
+
+> So, in all cases we are fine.
 >
->         if (!strstr(pe->metric_expr, "?")) {
-> -               ret = __add_metric(group_list, pe, metric_no_group, 1);
-> +               ret = __add_metric(group_list, pe, metric_no_group, 1, egp);
->         } else {
->                 int j, count;
 >
-> @@ -655,7 +751,7 @@ static int add_metric(struct list_head *group_list,
->                  */
+> So while I'm for this patch, I'd suggest a simpler description
+> (assuming my understanding is correct):
 >
->                 for (j = 0; j < count && !ret; j++) {
-> -                       ret = __add_metric(group_list, pe, metric_no_group, j);
-> +                       ret = __add_metric(group_list, pe, metric_no_group, j, egp);
->                 }
->         }
+> There is no reason to implement irq_disable() and irq_mask().  Let's just
+> use irq_mask() and let the rest of the core handle it.
 >
-> @@ -666,16 +762,26 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
->                                    struct strbuf *events,
->                                    struct list_head *group_list,
->                                    struct pmu_events_map *map)
-> +
->  {
-> +       struct egroup *eg = NULL;
->         struct pmu_event *pe;
-> -       struct egroup *eg;
->         int ret;
+> i think current description is fine with above explanation.
+
+As per above, if nothing else you need to clarify things so people
+aren't so confused.
+
+
+> Also: it feels really weird to me that you're getting rid of the
+> irq_disable() but keeping irq_enable().  That seems like asking for
+> trouble, though I'd have to do more research to see if I could figure
+> out exactly what might go wrong.  Could you remove your irq_enable()
+> too?
 >
->         pe = find_metric(metric, map);
->         if (!pe)
->                 return -EINVAL;
 >
-> -       ret = add_metric(group_list, pe, metric_no_group);
-> +       ret = add_metric(group_list, pe, metric_no_group, &eg);
-> +       if (ret)
-> +               return ret;
-> +
-> +       /*
-> +        * Process any possible referenced metrics
-> +        * included in the expression.
-> +        */
-> +       ret = resolve_metric(eg, metric_no_group,
-> +                            group_list, map);
->         if (ret)
->                 return ret;
+> -Doug
 >
-> @@ -727,11 +833,22 @@ static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
->         return ret;
->  }
+> irq_enable() servers another purpose of clearing any errornous IRQ when enabling it first time, so its kept as it is.
 >
-> +static void egroup__free_refs(struct egroup *egroup)
-> +{
-> +       struct metric_ref_node *ref, *tmp;
-> +
-> +       list_for_each_entry_safe(ref, tmp, &egroup->refs, list) {
-> +               list_del(&ref->list);
-> +               free(ref);
-> +       }
-> +}
-> +
->  static void metricgroup__free_egroups(struct list_head *group_list)
->  {
->         struct egroup *eg, *egtmp;
->
->         list_for_each_entry_safe (eg, egtmp, group_list, nd) {
-> +               egroup__free_refs(eg);
->                 expr__ctx_clear(&eg->pctx);
->                 list_del_init(&eg->nd);
->                 free(eg);
-> --
-> 2.25.4
->
+> i do not think it causes any troubles.
+
+I kinda ran out of time to dig more here, but it still worries me.
+I'll try to dig more tomorrow.  In any case, can't you just clear out
+any erroneous IRQs at init time and make it symmetric?
+
+-Doug
