@@ -2,68 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A578220506
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16159220502
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 08:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728666AbgGOGdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 02:33:40 -0400
-Received: from albireo.enyo.de ([37.24.231.21]:44584 "EHLO albireo.enyo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725823AbgGOGdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 02:33:39 -0400
-Received: from [172.17.203.2] (helo=deneb.enyo.de)
-        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1jvayt-0000Pz-3w; Wed, 15 Jul 2020 06:33:27 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1jvawb-00039g-W6; Wed, 15 Jul 2020 08:31:05 +0200
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     Chris Kennelly <ckennelly@google.com>
-Cc:     Peter Oskolkov <posk@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        paulmck <paulmck@linux.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api <linux-api@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        carlos <carlos@redhat.com>
-Subject: Re: [RFC PATCH 2/4] rseq: Allow extending struct rseq
-References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com>
-        <20200714030348.6214-3-mathieu.desnoyers@efficios.com>
-        <CAFTs51UHaUqaKj5bEj0vQtEZrww9gnrqb-kGVk7DAgQJPBAR+w@mail.gmail.com>
-        <775688146.12145.1594748580461.JavaMail.zimbra@efficios.com>
-        <CAPNVh5fiCCJpyeLj_ciWzFrO4fasVXZNhpfKXJhJWJirXdJOjQ@mail.gmail.com>
-        <CAEE+ybmt4BredezuTPdh-vf=FkKtu0yAhWuf+0daUe89AnbmPg@mail.gmail.com>
-Date:   Wed, 15 Jul 2020 08:31:05 +0200
-In-Reply-To: <CAEE+ybmt4BredezuTPdh-vf=FkKtu0yAhWuf+0daUe89AnbmPg@mail.gmail.com>
-        (Chris Kennelly's message of "Tue, 14 Jul 2020 22:34:38 -0400")
-Message-ID: <87k0z5xpau.fsf@mid.deneb.enyo.de>
+        id S1728481AbgGOGcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 02:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgGOGcS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 02:32:18 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E29BC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 23:32:18 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 22so4140938wmg.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 23:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=pkHUcVa4GYgE65LjnGsodAOm4gwGb9et7Xg2bzrwdzE=;
+        b=jGogWDgbgbl2Aen5UYcLTTHJfC/9rpVJZsfavJSZ7TkB5UwdLUMDooQoT6g+wKKZw9
+         pZHxPvxYwfTgAFzLCmz+mWXsHQuf4K+jmnjlmHf08qnBBgAEJifed9e/K9+61lg/9W6F
+         qUDNBAit2SLTA4D++TMePb0pZdD5qlETRBG6ZREFNiC6cj5qKW3ix/j6eMxcthF7Em8m
+         ZmILsRfMBsfk7btqm+m4BKYdWFj0kKbuGYJyGJeoRVd8hv+etMhaR2O9xRbxHdQVpMOG
+         Sh1xCQiazfBihP6e29yQc2uONwoPl7CTIMkQE0fKSQFjE/mdkvASHRFmZ+VsRuk4Lxhe
+         okZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=pkHUcVa4GYgE65LjnGsodAOm4gwGb9et7Xg2bzrwdzE=;
+        b=aS0i0aMviPEMtiNtxp1G+gqRQiL+P6ODCn/YMM1/c/NxjwE2t/4YsCwm/yKoJFj9nU
+         6gStwA33vTD8awdOtc5Yy8K/pbbeBBaAObTv3KqWg3UlbBSbHikkX9uJsNdOAp8igmBg
+         9mDcB2imkWn4OplzzhfEvoJRhigH1kiM4ZTI8OWs7ZRrHRlvx2jF7YuUuXA5n9ZfRou4
+         yrfJmRZA7pb4h/zJj5/z97QEUA6G6Jg9GxAoorLdk3Cc+c1iLA5lWZUB18YE6mFjUGDy
+         CeRquz5vOhZmGFlH+S7oTOxGX9/W/mnN0IuKHtNgfIYg6i3od/AZmeieuVIZti8LAer2
+         tLCQ==
+X-Gm-Message-State: AOAM533lh5eNDUzVpBqJ+l5YSQkBveDRFB0CT/9Qnz8IVky7z6OMUJCs
+        VDfBKATix0X8Ud7JaBeYNML//w==
+X-Google-Smtp-Source: ABdhPJxMK1q+aFYu8Ne/pvxzKFhE4bmkNgHpgH+yuuJVXawMMk1x0V0KEwkym2ub6wbPjV351i6yeg==
+X-Received: by 2002:a1c:f60d:: with SMTP id w13mr7440522wmc.51.1594794737161;
+        Tue, 14 Jul 2020 23:32:17 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id t2sm1827418wma.43.2020.07.14.23.32.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 23:32:16 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 07:32:14 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     rjw@rjwysocki.net, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 00/13] Rid W=1 warnings in CPUFreq
+Message-ID: <20200715063214.GO1398296@dell>
+References: <20200714145049.2496163-1-lee.jones@linaro.org>
+ <20200715033627.k6ardlhm3z3w65xw@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200715033627.k6ardlhm3z3w65xw@vireshk-i7>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Chris Kennelly:
+On Wed, 15 Jul 2020, Viresh Kumar wrote:
 
-> When glibc provides registration, is the anticipated use case that a
-> library would unregister and reregister each thread to "upgrade" it to
-> the most modern version of interface it knows about provided by the
-> kernel?
+> On 14-07-20, 15:50, Lee Jones wrote:
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> > 
+> > After these patches are applied, the build system no longer
+> > complains about any W=0 nor W=1 level warnings in drivers/cpufreq.
+> 
+> And you need to rebase this stuff of pm/linux-next, as there are some
+> changes in cpufreq.c there.
 
-Absolutely not, that is likely to break other consumers because an
-expected rseq area becomes dormant instead.
+It's based on the latest -next.  Is pm/linux-next in -next?
 
-> There, I could assume an all-or-nothing registration of the new
-> feature--limited only by kernel availability for thread
-> homogeneity--but inconsistencies across early adopter libraries would
-> mean each thread would have to examine its own TLS to determine if a
-> feature were available.
-
-Exactly.  Certain uses of seccomp can also have this effect,
-presenting a non-homogeneous view.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
