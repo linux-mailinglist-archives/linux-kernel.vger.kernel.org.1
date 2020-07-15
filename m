@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC522211DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F57A2211D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgGOQEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:04:33 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:57252 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726634AbgGOQBF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:01:05 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06FFlEKq035568;
-        Wed, 15 Jul 2020 16:00:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=6UwNJBozS5Fm/gYrc3f/+HHTTdKUvXgAqHENd6eVNP4=;
- b=WmDHlBA9+S02t3dRwtZ9VfPlAbwlySN6lYtGSCqMaVxjC4ZCodpZN9hIJrpxNxUbEzqK
- 1PDKHAl5TxOEEcJpVMejURtJ7lSn1/WSdnrYMNidGVy0bgVLqsZVUUilIN1fch84/cKS
- r6IfF9ZZ/YI19gwQCcGxnZyAOBj1sLEgOEHrEmdgfv9t59iy8omhIxSs1QmdFQfXxzPb
- 95BmFO4oADnCGH9hI8/jhKz4UUurC+ngFzTEpKsmp3YdKkmpqza7w/eKyhxcAIQDAxuM
- hX5DIEk0IzHnNRADuJaDWM66IHSUrJoCfvWW81VZhOuvGRLRphd+gXneAZAeYqVc8qES og== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 3275cmc9y5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Jul 2020 16:00:48 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06FFlp2C114397;
-        Wed, 15 Jul 2020 15:58:47 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 32a4cqsrhg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jul 2020 15:58:47 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06FFwjbB005043;
-        Wed, 15 Jul 2020 15:58:45 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 15 Jul 2020 08:58:45 -0700
-Date:   Wed, 15 Jul 2020 11:59:13 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Sistare <steven.sistare@oracle.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] x86/mm: use max memory block size on bare metal
-Message-ID: <20200715155913.plxsu7h55xif2jic@ca-dmjordan1.us.oracle.com>
-References: <20200714205450.945834-1-daniel.m.jordan@oracle.com>
+        id S1726652AbgGOQBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725835AbgGOQAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 12:00:41 -0400
+Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 288E620658;
+        Wed, 15 Jul 2020 16:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594828824;
+        bh=r2YnEV9cxZM540gF/4uEROxq/iKUQNDEAAOnbE7D4rM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TSraei5WAVUss84PNiZUOAWjKbF5UhQIXgrUAKGiz+XmNKDJPQVcfJn1He6kSERvG
+         UFW0lSXJmP1LSGNWz3Yiy8QRGgGuLq5FESuWbAfPz8D0K/5CPNpsGuYrxH7dH3z9bj
+         /Ae+yQ/Ga6f+neztta058RKTVaLEx6cyWGzqzqtI=
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alistair Delva <adelva@google.com>, mhiramat@kernel.org,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] bootconfig: Add value override operator
+Date:   Thu, 16 Jul 2020 01:00:21 +0900
+Message-Id: <159482882056.126704.15508672095852220119.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714205450.945834-1-daniel.m.jordan@oracle.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9683 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- suspectscore=0 bulkscore=0 adultscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007150126
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9683 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
- bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007150126
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 04:54:50PM -0400, Daniel Jordan wrote:
-> Some of our servers spend significant time at kernel boot initializing
-> memory block sysfs directories and then creating symlinks between them
-> and the corresponding nodes.  The slowness happens because the machines
-> get stuck with the smallest supported memory block size on x86 (128M),
-> which results in 16,288 directories to cover the 2T of installed RAM.
-> The search for each memory block is noticeable even with
-> commit 4fb6eabf1037 ("drivers/base/memory.c: cache memory blocks in
-> xarray to accelerate lookup").
-> 
-> Commit 078eb6aa50dc ("x86/mm/memory_hotplug: determine block size based
-> on the end of boot memory") chooses the block size based on alignment
-> with memory end.  That addresses hotplug failures in qemu guests, but
-> for bare metal systems whose memory end isn't aligned to even the
-> smallest size, it leaves them at 128M.
-> 
-> Make kernels that aren't running on a hypervisor use the largest
-> supported size (2G) to minimize overhead on big machines.  Kernel boot
-> goes 7% faster on the aforementioned servers, shaving off half a second.
-> 
-> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
+Hi,
 
-Darn.  David, I forgot to add your ack from v2.  My assumption is that it still
-stands after the minor change in this version, but please do correct me if I'm
-wrong.
+Here is a seires of value-override operator support for bootconfig.
+
+Currently, the bootconfig syntax supports normal assignment operator
+("=") and value append operator ("+="), but there is no way to
+override (or update) existing value.
+
+This patch adds the value override operator (":=") to update the
+existing value with another value. For example,
+
+key.word = value1
+key.word := value2, value3
+
+In this case, the 2nd "key.word" config overwrites the 1st one.
+Thus this is equal to;
+
+key.word = value2, value3
+
+Note that it is still not allowed to override a subkey with
+a value, and a value with a subkey. This means the following
+case is not allowed.
+
+key.word = value1
+key := value2 # Error!
+
+
+With this change, if the bootloader wants to change some value
+in the default bootconfig, it doesn't need to parse the existing
+bootconfig, but it can just append the new configs at the tail
+of the bootconfig and update the footer (size, checksum and magic
+word).
+
+Thank you,
+
+---
+
+Masami Hiramatsu (3):
+      lib/bootconfig: Add override operator support
+      tools/bootconfig: Add testcases for value override operator
+      Documentation: bootconfig: Add bootconfig override operator
+
+
+ Documentation/admin-guide/bootconfig.rst     |   11 +++++++++
+ lib/bootconfig.c                             |   33 ++++++++++++++++++--------
+ tools/bootconfig/samples/bad-override.bconf  |    3 ++
+ tools/bootconfig/samples/bad-override2.bconf |    3 ++
+ tools/bootconfig/samples/good-override.bconf |    6 +++++
+ tools/bootconfig/test-bootconfig.sh          |   13 ++++++++++
+ 6 files changed, 59 insertions(+), 10 deletions(-)
+ create mode 100644 tools/bootconfig/samples/bad-override.bconf
+ create mode 100644 tools/bootconfig/samples/bad-override2.bconf
+ create mode 100644 tools/bootconfig/samples/good-override.bconf
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
