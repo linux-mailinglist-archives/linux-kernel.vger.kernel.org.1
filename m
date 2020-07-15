@@ -2,150 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA312202BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB722202C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbgGODJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 23:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59494 "EHLO
+        id S1728261AbgGODL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 23:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgGODJt (ORCPT
+        with ESMTP id S1726769AbgGODL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 23:09:49 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809C5C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 20:09:49 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t6so1323512plo.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 20:09:49 -0700 (PDT)
+        Tue, 14 Jul 2020 23:11:27 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E62FC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 20:11:27 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d27so627284qtg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 20:11:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=R8Gi68qr1aDvO0QyibD3Pq2zcXF2jU6VWUvfFWeUSio=;
-        b=mCQYqHdaeQKSdh/0G0+UcnKbrk3gam4BRinxdpoSmGWJoo7YCrXU1HXoo+l5rldKPl
-         35He1pWMZF9+F9lDMZ/nN7jyxZJKlRGDfK/7qZh0qgnwbam4p/hkHtbfSI7oUXsU2MYb
-         Cl+PWrpd57mmjpgbe9ZokVqqcc23el1nAOtpj4e4lZMjeIEieffTfWhCh5sYaAZxbY0f
-         cj8Y2A3l/aKfqUHGS48stXID25o58xi/YqXfV+8OlDK+hbdWvRENKfBx96v9J21XA8MR
-         XbeQrkCgsBNXAIX4Fy0Wa8z3FfdSfjqYRN7X6lpEEm36Z9uwGzkz8f8D2M1DjKiUWxtg
-         tJWw==
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=43tn4SCdUQPE+RtWwrBeE6OYYiz+sN9YblVYLrd3cSI=;
+        b=r83DgT29XWRfj/E7kT6DQYKdCfnI9xI/0edg/bbFkV//C89wvNTd4nIGL/BjrPYIWC
+         tvFQi2YYH4+gOuGYcFnVDui7pyAX77p2sV/fCKLn0+80JLmbDB8KYA2MYENTAN4mBcr3
+         m3/1fScIkCh8vnuV2VqtumrP7DHivlE2HhB0zm+0VMZuQVgv1yXJuJ9hyZXZaU9bHYpq
+         HHpIxZm3rtMT/yRX7tvMg7/N2m9ffCf6LD2oepP8UHxOcpq4DamHysbUISrm7oGUbKHc
+         GnJEe4LUjs6ErJS+KTAhjR+Qer6Dsx/R1xoehGnGR1d0rOpqP4FUq8ZAqwSvPvsg1JjS
+         TsDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=R8Gi68qr1aDvO0QyibD3Pq2zcXF2jU6VWUvfFWeUSio=;
-        b=a3VuJKzCJgDekAm3kS3TjbE0XNDThOx4CNJHCoCrKQav/xZImj9B5nmgrI5M2a3D0L
-         jGlfGhHre15CbCwQPUr779HvcJ88XC7VEQu67yB/a3C21g0ET7z32tyCTlMVrfXGtlHy
-         B+MHbtIRQEdLXj3dto4uYrwvwpqvWwmhcdOCKjJiQdxLyKip9DnDhIe2r/g5bSsLsYtp
-         6PcHmvs5UU02ZfVsEe1+nRg4+jaL8SXsQcW1CbealRe2WwCVQPLqFHrJgYeQGGGIGABm
-         iV39gnyYhN5HdjNOJw4EBi0UYHw5nZ3/8Vnh9RhbsL78O1WsGzONNNQy9nqnghhsPjw/
-         +RnA==
-X-Gm-Message-State: AOAM533jmiAbsAxwuitkpyL4IYmuo4+ARwo12IaGksBGiq7N47oPqo7w
-        bGVf3HA++BCBAaAFL3cvdY+RoA==
-X-Google-Smtp-Source: ABdhPJxLkRpCAh56OHvV9+ruY7Vzg+a1Z9+GxC17tANOkAOMf1eHdhsH69mrQ3UVDo33lzSRWmiORw==
-X-Received: by 2002:a17:902:82cb:: with SMTP id u11mr6359503plz.207.1594782588903;
-        Tue, 14 Jul 2020 20:09:48 -0700 (PDT)
-Received: from localhost ([122.172.34.142])
-        by smtp.gmail.com with ESMTPSA id ml8sm369552pjb.47.2020.07.14.20.09.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 Jul 2020 20:09:48 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 08:39:46 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     rjw@rjwysocki.net, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 07/13] cpufreq: powernv-cpufreq: Fix a bunch of kerneldoc
- related issues
-Message-ID: <20200715030946.xxetozdxe5slvoid@vireshk-i7>
-References: <20200714145049.2496163-1-lee.jones@linaro.org>
- <20200714145049.2496163-8-lee.jones@linaro.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=43tn4SCdUQPE+RtWwrBeE6OYYiz+sN9YblVYLrd3cSI=;
+        b=ZP38ww+fLWro1xbEyIPc5E0GaCAEE8TGaw/oVcNCxlxY2DVDhen71qfIkHBwLHOYyk
+         JRpHuMg/CUIquVnLzohYIedaQh2zigo1j3PlLfCZPEmfNjgRuVTpMkg7rpiUAiG2mhtq
+         KM5jy5292SzTZCK98niTaWHtncJWYEHG6oRsHWAGEWMKoIJXOE2+d3QW1m86rvFWcOMY
+         9aMDYipqyzfjf30VCwkY62UAhTz9omHMXMI3s8Cs9hEoMI4lILBtnTdnEh6zspyL6RuG
+         7dzfIrAJ4GuFTNWbn9vPY2QrRGLXVoAvCTArVFEEuHO1ex6T1q2Ynb8uEeWrYIYbm8gn
+         jqtA==
+X-Gm-Message-State: AOAM531WTN4/VhKPbzZAzfE5CXh39zypB+/uAzjDoyLZhW7fNjFjnVkb
+        qhsH3tSdtbhHaiXpDq4GlkymoQ==
+X-Google-Smtp-Source: ABdhPJz+ERBPdgPWk+4c+xiGhT5xApaA/bLt7Vj/xp0Mu7m61aF81TVotdoVo7ixAdGzSmR3E69gqw==
+X-Received: by 2002:ac8:40cd:: with SMTP id f13mr7767036qtm.373.1594782686419;
+        Tue, 14 Jul 2020 20:11:26 -0700 (PDT)
+Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
+        by smtp.gmail.com with ESMTPSA id x29sm1269229qtx.74.2020.07.14.20.11.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 20:11:24 -0700 (PDT)
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     kunit-dev@googlegroups.com
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brendanhiggins@google.com, keescook@chromium.org,
+        davidgow@google.com, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [RFC 0/3] kunit: add support to use modules
+Date:   Wed, 15 Jul 2020 00:11:17 -0300
+Message-Id: <20200715031120.1002016-1-vitor@massaru.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714145049.2496163-8-lee.jones@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-07-20, 15:50, Lee Jones wrote:
-> Repair problems with formatting and missing attributes/parameters, and
-> demote header comments which do not meet the required standards
-> applicable to kerneldoc.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/cpufreq/powernv-cpufreq.c:84: warning: Function parameter or member 'last_lpstate_idx' not described in 'global_pstate_info'
->  drivers/cpufreq/powernv-cpufreq.c:84: warning: Function parameter or member 'last_gpstate_idx' not described in 'global_pstate_info'
->  drivers/cpufreq/powernv-cpufreq.c:84: warning: Function parameter or member 'policy' not described in 'global_pstate_info'
->  drivers/cpufreq/powernv-cpufreq.c:182: warning: Function parameter or member 'i' not described in 'idx_to_pstate'
->  drivers/cpufreq/powernv-cpufreq.c:201: warning: Function parameter or member 'pstate' not described in 'pstate_to_idx'
->  drivers/cpufreq/powernv-cpufreq.c:670: warning: Function parameter or member 't' not described in 'gpstate_timer_handler'
->  drivers/cpufreq/powernv-cpufreq.c:670: warning: Excess function parameter 'data' description in 'gpstate_timer_handler'
-> 
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/cpufreq/powernv-cpufreq.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-> index 068cc53abe320..2e5a8b8a4abaa 100644
-> --- a/drivers/cpufreq/powernv-cpufreq.c
-> +++ b/drivers/cpufreq/powernv-cpufreq.c
-> @@ -64,13 +64,14 @@
->   *				highest_lpstate_idx
->   * @last_sampled_time:		Time from boot in ms when global pstates were
->   *				last set
-> - * @last_lpstate_idx,		Last set value of local pstate and global
-> - * last_gpstate_idx		pstate in terms of cpufreq table index
-> + * @last_lpstate_idx:		Last set value of local pstate and global
-> + * @last_gpstate_idx:		pstate in terms of cpufreq table index
->   * @timer:			Is used for ramping down if cpu goes idle for
->   *				a long time with global pstate held high
->   * @gpstate_lock:		A spinlock to maintain synchronization between
->   *				routines called by the timer handler and
->   *				governer's target_index calls
-> + * @policy:			Associated CPUFreq policy
->   */
->  struct global_pstate_info {
->  	int highest_lpstate_idx;
-> @@ -170,7 +171,7 @@ static inline u8 extract_pstate(u64 pmsr_val, unsigned int shift)
->  
->  /* Use following functions for conversions between pstate_id and index */
->  
-> -/**
-> +/*
->   * idx_to_pstate : Returns the pstate id corresponding to the
->   *		   frequency in the cpufreq frequency table
->   *		   powernv_freqs indexed by @i.
-> @@ -188,7 +189,7 @@ static inline u8 idx_to_pstate(unsigned int i)
->  	return powernv_freqs[i].driver_data;
->  }
->  
-> -/**
-> +/*
->   * pstate_to_idx : Returns the index in the cpufreq frequencytable
->   *		   powernv_freqs for the frequency whose corresponding
->   *		   pstate id is @pstate.
-> @@ -660,7 +661,7 @@ static inline void  queue_gpstate_timer(struct global_pstate_info *gpstates)
->  /**
->   * gpstate_timer_handler
->   *
-> - * @data: pointer to cpufreq_policy on which timer was queued
-> + * @t: Timer context used to fetch global pstate info struct
->   *
->   * This handler brings down the global pstate closer to the local pstate
->   * according quadratic equation. Queues a new timer if it is still not equal
+Currently, KUnit does not allow the use of tests as a module.
+This prevents the implementation of tests that require userspace.
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+This patchset makes this possible by introducing the use of
+the root filesystem in KUnit. And it allows the use of tests
+that can be compiled as a module
 
+Vitor Massaru Iha (3):
+  kunit: tool: Add support root filesystem in kunit-tool
+  lib: Allows to borrow mm in userspace on KUnit
+  lib: Convert test_user_copy to KUnit test
+
+ include/kunit/test.h                        |   1 +
+ lib/Kconfig.debug                           |  17 ++
+ lib/Makefile                                |   2 +-
+ lib/kunit/try-catch.c                       |  15 +-
+ lib/{test_user_copy.c => user_copy_kunit.c} | 196 +++++++++-----------
+ tools/testing/kunit/kunit.py                |  37 +++-
+ tools/testing/kunit/kunit_kernel.py         | 105 +++++++++--
+ 7 files changed, 238 insertions(+), 135 deletions(-)
+ rename lib/{test_user_copy.c => user_copy_kunit.c} (55%)
+
+
+base-commit: 725aca9585956676687c4cb803e88f770b0df2b2
+prerequisite-patch-id: 582b6d9d28ce4b71628890ec832df6522ca68de0
 -- 
-viresh
+2.26.2
+
