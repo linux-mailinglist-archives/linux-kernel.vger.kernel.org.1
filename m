@@ -2,509 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2A4221399
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 19:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A721E2213A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 19:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgGORm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 13:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
+        id S1726829AbgGORoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 13:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgGORm2 (ORCPT
+        with ESMTP id S1725900AbgGORop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 13:42:28 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81B6C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 10:42:27 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id w3so6646865wmi.4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 10:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xg2xS7FLFiGq3fXGz7uNXfj9GuJsc/dqXv3ZQu72lRE=;
-        b=BXZ7xTgyk+lhw86JGcCjIUnN5lEdbc/2F23x74vsCBxE6KnXVnAWDLcYky8TtokEm3
-         34zXSAK0gsH5dRUc5Hft6CnroqVAfqg0LC2Mf0nF7HxtZhlvwHAzh9Zo0a10idZWm9ls
-         qIAQtvd4mHPg7ydgi6n5PPl/K5q3Xsde8syyiO89nLLj45vC6eGpYmYSziydmAulvJsz
-         am8KffoAVicYpi83DhqsoEC2vXf14vsodhqfJ27DAzsJH8OXm9tYaSByTaVHQxb4IGc5
-         qSoQah4bBi/NC9ihpxcXUF81KVW10IjGOMMWUqq+hmEvaxC8IR/IDoLuejYggzpRRGPV
-         P1ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xg2xS7FLFiGq3fXGz7uNXfj9GuJsc/dqXv3ZQu72lRE=;
-        b=gZHl4/rAfal4bjA6IJKxVtXxqCm/GVizZKsbVQGp77NO+5+NrePOao6dKOn8A0h5Kt
-         vTKPnKRSgNguvQ9Q84+ftLmNd4Y6GvumrUSoSWsFFll9HUX0QsJqKS1GmqEIjdDje6zY
-         MVIq3HoR+JaP8BxiZ0TcjbrJvKPiVCDm33W2jx4+nXUghg8tZ78g11RqsNIwu0WJPmHS
-         pL901CmsIbcAo3SQZ4iNwOky/z2Dpn6XVn0CBb1NrZPRBQlfMvVWCD0/DUHTR6PZ+rar
-         IxQGBpOu9aQ3Jk8/m+d9p5dk+FdHcMeRfz07mTf6lE9RjOZcSDCMa2hgjGUh6kt2v/Mg
-         12Bg==
-X-Gm-Message-State: AOAM533+qGqS+MimUoezBgVnbcMv1gKR6dPzou7m0YsbkbgHHUKcr12x
-        ThZ28RHvlWgzMSu+bK0Z8ZGjoUlO2Zmm9XrATuCNug==
-X-Google-Smtp-Source: ABdhPJyFnHO6IMw8xaJOIhhBcLfPl0giUS6A0GMWqY95K9KVfA+xUZqLt23NrWRDCF95LN2Qt/VdfDQ1i7rPnAAhgEQ=
-X-Received: by 2002:a1c:19c5:: with SMTP id 188mr536824wmz.124.1594834946021;
- Wed, 15 Jul 2020 10:42:26 -0700 (PDT)
+        Wed, 15 Jul 2020 13:44:45 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52FBFC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 10:44:45 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 0794B2A18A0
+Subject: Re: [PATCH] ASoC: cros_ec_codec: Reset I2S RX when probing
+To:     Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        Guenter Roeck <groeck@google.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Yicheng Li <yichengli@chromium.org>,
+        ALSA development <alsa-devel@alsa-project.org>
+References: <20200708071117.3070707-1-yuhsuan@chromium.org>
+ <f6a0ea44-3805-5901-9864-72d4a3a4562e@collabora.com>
+ <CABXOdTfV_oGgZWbyP3o07obMuYGOLY87fou2h3_gowQkV7QVNw@mail.gmail.com>
+ <CAGvk5Po=BcHZ8uQJAp10cYHJcvc6-x613o-0Jj00K23xpeQpaQ@mail.gmail.com>
+ <CABXOdTf1+nBtau7ujnUVTfNd68D-RijZBPU8XMv=ZQ-RLbpzAg@mail.gmail.com>
+ <CAGvk5Po2osJOc077x6AWOn7bDgYsWzYSfqrSp64XBgjvjMHKsQ@mail.gmail.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <fd73832a-3e5b-7e43-c69c-1d4b9ee78d27@collabora.com>
+Date:   Wed, 15 Jul 2020 19:44:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200712132634.138901-1-jolsa@kernel.org> <20200712132634.138901-18-jolsa@kernel.org>
-In-Reply-To: <20200712132634.138901-18-jolsa@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 15 Jul 2020 10:42:14 -0700
-Message-ID: <CAP-5=fUZcETzK=LFX=d-PQ7QfeGR+i=DDyyc621=HjFCr0AcXg@mail.gmail.com>
-Subject: Re: [PATCH 17/18] perf metric: Rename struct egroup to metric
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAGvk5Po2osJOc077x6AWOn7bDgYsWzYSfqrSp64XBgjvjMHKsQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 6:27 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Renaming struct egroup to metric, because it seems
-> to make more sense. Plus renaming all the variables
-> that hold egroup to appropriate names.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Hi Yu-Hsuan,
 
-Awesome, thanks for improving readability!
+On 8/7/20 19:51, Yu-Hsuan Hsu wrote:
+> Guenter Roeck <groeck@google.com> 於 2020年7月9日 週四 上午1:26寫道：
+>>
+>> On Wed, Jul 8, 2020 at 9:17 AM Yu-Hsuan Hsu <yuhsuan@chromium.org> wrote:
+>>>
+>>> Guenter Roeck <groeck@google.com> 於 2020年7月8日 週三 下午9:28寫道：
+>>>>
+>>>> On Wed, Jul 8, 2020 at 3:16 AM Enric Balletbo i Serra
+>>>> <enric.balletbo@collabora.com> wrote:
+>>>>>
+>>>>> Hi Yu-Hsuan,
+>>>>>
+>>>>> Thank you for your patch.
+>>>>>
+>>>>> On 8/7/20 9:11, Yu-Hsuan Hsu wrote:
+>>>>>> It is not guaranteed that I2S RX is disabled when the kernel booting.
+>>>>>> For example, if the kernel crashes while it is enabled, it will keep
+>>>>>> enabled until the next time EC reboots. Reset I2S RX when probing to
+>>>>>> fix this issue.
+>>>>>>
+>>>>>> Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+>>>>>> ---
+>>>>>>  include/linux/platform_data/cros_ec_commands.h | 1 +
+>>>>>>  sound/soc/codecs/cros_ec_codec.c               | 7 +++++++
+>>>>>>  2 files changed, 8 insertions(+)
+>>>>>>
+>>>>>> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+>>>>>> index 69210881ebac8..11ce917ca924c 100644
+>>>>>> --- a/include/linux/platform_data/cros_ec_commands.h
+>>>>>> +++ b/include/linux/platform_data/cros_ec_commands.h
+>>>>>> @@ -4598,6 +4598,7 @@ enum ec_codec_i2s_rx_subcmd {
+>>>>>>       EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
+>>>>>>       EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
+>>>>>>       EC_CODEC_I2S_RX_SET_BCLK = 0x4,
+>>>>>> +     EC_CODEC_I2S_RX_RESET = 0x5,
+>>>>>
+>>>>> Is this a new command not available in the firmware that is already in the field?
+>>>>>
+>>>>>
+>>>>>>       EC_CODEC_I2S_RX_SUBCMD_COUNT,
+>>>>>>  };
+>>>>>>
+>>>>>> diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+>>>>>> index 8d45c628e988e..5495214e73e68 100644
+>>>>>> --- a/sound/soc/codecs/cros_ec_codec.c
+>>>>>> +++ b/sound/soc/codecs/cros_ec_codec.c
+>>>>>> @@ -1034,6 +1034,13 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
+>>>>>>       }
+>>>>>>       priv->ec_capabilities = r.capabilities;
+>>>>>>
+>>>>>> +     /* Reset EC codec I2S RX. */
+>>>>>> +     p.cmd = EC_CODEC_I2S_RX_RESET;
+>>>>>> +     ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
+>>>>>> +                                (uint8_t *)&p, sizeof(p), NULL, 0);
+>>>>>> +     if (ret)
+>>>>>> +             dev_err(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
+>>>>>> +
 
-Acked-by: Ian Rogers <irogers@google.com>
+What about notify the user that he *must* update their firmware?
 
-> ---
->  tools/perf/util/metricgroup.c | 158 +++++++++++++++++-----------------
->  1 file changed, 79 insertions(+), 79 deletions(-)
->
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 69ec20dd737b..9b880a5fb52b 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -112,7 +112,7 @@ struct metric_ref_node {
->
->  #define RECURSION_ID_MAX 100
->
-> -struct egroup {
-> +struct metric {
->         struct list_head nd;
->         struct expr_parse_ctx pctx;
->         const char *metric_name;
-> @@ -242,7 +242,7 @@ static int metricgroup__setup_events(struct list_head *groups,
->         struct metric_expr *expr;
->         int i = 0;
->         int ret = 0;
-> -       struct egroup *eg;
-> +       struct metric *m;
->         struct evsel *evsel, *tmp;
->         unsigned long *evlist_used;
->
-> @@ -250,23 +250,23 @@ static int metricgroup__setup_events(struct list_head *groups,
->         if (!evlist_used)
->                 return -ENOMEM;
->
-> -       list_for_each_entry (eg, groups, nd) {
-> +       list_for_each_entry (m, groups, nd) {
->                 struct evsel **metric_events;
->                 struct metric_ref *metric_refs = NULL;
->
->                 metric_events = calloc(sizeof(void *),
-> -                               hashmap__size(&eg->pctx.ids) + 1);
-> +                               hashmap__size(&m->pctx.ids) + 1);
->                 if (!metric_events) {
->                         ret = -ENOMEM;
->                         break;
->                 }
-> -               evsel = find_evsel_group(perf_evlist, &eg->pctx,
-> +               evsel = find_evsel_group(perf_evlist, &m->pctx,
->                                          metric_no_merge,
-> -                                        eg->has_constraint, metric_events,
-> +                                        m->has_constraint, metric_events,
->                                          evlist_used);
->                 if (!evsel) {
->                         pr_debug("Cannot resolve %s: %s\n",
-> -                                       eg->metric_name, eg->metric_expr);
-> +                                       m->metric_name, m->metric_expr);
->                         free(metric_events);
->                         continue;
->                 }
-> @@ -289,10 +289,10 @@ static int metricgroup__setup_events(struct list_head *groups,
->                  * Collect and store collected nested expressions
->                  * for metric processing.
->                  */
-> -               if (eg->refs_cnt) {
-> +               if (m->refs_cnt) {
->                         struct metric_ref_node *ref;
->
-> -                       metric_refs = zalloc(sizeof(struct metric_ref) * (eg->refs_cnt + 1));
-> +                       metric_refs = zalloc(sizeof(struct metric_ref) * (m->refs_cnt + 1));
->                         if (!metric_refs) {
->                                 ret = -ENOMEM;
->                                 free(metric_events);
-> @@ -300,7 +300,7 @@ static int metricgroup__setup_events(struct list_head *groups,
->                         }
->
->                         i = 0;
-> -                       list_for_each_entry(ref, &eg->refs, list) {
-> +                       list_for_each_entry(ref, &m->refs, list) {
->                                 metric_refs[i].metric_name = ref->metric_name;
->                                 metric_refs[i].metric_expr = ref->metric_expr;
->                                 i++;
-> @@ -308,11 +308,11 @@ static int metricgroup__setup_events(struct list_head *groups,
->                 };
->
->                 expr->metric_refs = metric_refs;
-> -               expr->metric_expr = eg->metric_expr;
-> -               expr->metric_name = eg->metric_name;
-> -               expr->metric_unit = eg->metric_unit;
-> +               expr->metric_expr = m->metric_expr;
-> +               expr->metric_name = m->metric_name;
-> +               expr->metric_unit = m->metric_unit;
->                 expr->metric_events = metric_events;
-> -               expr->runtime = eg->runtime;
-> +               expr->runtime = m->runtime;
->                 list_add(&expr->nd, &me->head);
->         }
->
-> @@ -617,38 +617,38 @@ static int __add_metric(struct list_head *group_list,
->                         struct pmu_event *pe,
->                         bool metric_no_group,
->                         int runtime,
-> -                       struct egroup **egp,
-> +                       struct metric **mp,
->                         struct expr_id *parent)
->  {
->         struct metric_ref_node *ref;
-> -       struct egroup *eg;
-> +       struct metric *m;
->
-> -       if (*egp == NULL) {
-> +       if (*mp == NULL) {
->                 /*
->                  * We got in here for the master group,
->                  * allocate it and put it on the list.
->                  */
-> -               eg = zalloc(sizeof(*eg));
-> -               if (!eg)
-> +               m = zalloc(sizeof(*m));
-> +               if (!m)
->                         return -ENOMEM;
->
-> -               expr__ctx_init(&eg->pctx);
-> -               eg->metric_name = pe->metric_name;
-> -               eg->metric_expr = pe->metric_expr;
-> -               eg->metric_unit = pe->unit;
-> -               eg->runtime = runtime;
-> -               eg->has_constraint = metric_no_group || metricgroup__has_constraint(pe);
-> -               INIT_LIST_HEAD(&eg->refs);
-> -               eg->refs_cnt = 0;
-> -               *egp = eg;
-> +               expr__ctx_init(&m->pctx);
-> +               m->metric_name = pe->metric_name;
-> +               m->metric_expr = pe->metric_expr;
-> +               m->metric_unit = pe->unit;
-> +               m->runtime = runtime;
-> +               m->has_constraint = metric_no_group || metricgroup__has_constraint(pe);
-> +               INIT_LIST_HEAD(&m->refs);
-> +               m->refs_cnt = 0;
-> +               *mp = m;
->
->                 /* Initialize first recursion exr id with base name. */
-> -               parent = &eg->recursion.id[0];
-> -               eg->recursion.cnt = 1;
-> +               parent = &m->recursion.id[0];
-> +               m->recursion.cnt = 1;
->
->                 parent->id = strdup(pe->metric_name);
->                 if (!parent->id) {
-> -                       free(eg);
-> +                       free(m);
->                         return -ENOMEM;
->                 }
->         } else {
-> @@ -657,7 +657,7 @@ static int __add_metric(struct list_head *group_list,
->                  * recursive metricgroup__add_metric call, add
->                  * it to the master group.
->                  */
-> -               eg = *egp;
-> +               m = *mp;
->
->                 ref = malloc(sizeof(*ref));
->                 if (!ref)
-> @@ -665,22 +665,22 @@ static int __add_metric(struct list_head *group_list,
->
->                 ref->metric_name = pe->metric_name;
->                 ref->metric_expr = pe->metric_expr;
-> -               list_add(&ref->list, &eg->refs);
-> -               eg->refs_cnt++;
-> -               eg->has_constraint |= metricgroup__has_constraint(pe);
-> +               list_add(&ref->list, &m->refs);
-> +               m->refs_cnt++;
-> +               m->has_constraint |= metricgroup__has_constraint(pe);
->         }
->
->         /* Force all found IDs in metric to have us as parent ID. */
->         WARN_ON_ONCE(!parent);
-> -       eg->pctx.parent = parent;
-> +       m->pctx.parent = parent;
->
->         /*
->          * For both the master and referenced metrics, we parse
->          * all the metric's IDs and add it to the parent context.
->          */
-> -       if (expr__find_other(pe->metric_expr, NULL, &eg->pctx, runtime) < 0) {
-> -               expr__ctx_clear(&eg->pctx);
-> -               free(eg);
-> +       if (expr__find_other(pe->metric_expr, NULL, &m->pctx, runtime) < 0) {
-> +               expr__ctx_clear(&m->pctx);
-> +               free(m);
->                 return -EINVAL;
->         }
->
-> @@ -688,23 +688,23 @@ static int __add_metric(struct list_head *group_list,
->          * We add new group only in the 'master' call,
->          * so bail out for referenced metric case.
->          */
-> -       if (eg->refs_cnt)
-> +       if (m->refs_cnt)
->                 return 0;
->
->         if (list_empty(group_list))
-> -               list_add(&eg->nd, group_list);
-> +               list_add(&m->nd, group_list);
->         else {
->                 struct list_head *pos;
->
->                 /* Place the largest groups at the front. */
->                 list_for_each_prev(pos, group_list) {
-> -                       struct egroup *old = list_entry(pos, struct egroup, nd);
-> +                       struct metric *old = list_entry(pos, struct metric, nd);
->
-> -                       if (hashmap__size(&eg->pctx.ids) <=
-> +                       if (hashmap__size(&m->pctx.ids) <=
->                             hashmap__size(&old->pctx.ids))
->                                 break;
->                 }
-> -               list_add(&eg->nd, pos);
-> +               list_add(&m->nd, pos);
->         }
->
->         return 0;
-> @@ -730,7 +730,7 @@ static struct pmu_event *find_metric(const char *metric, struct pmu_events_map *
->         return NULL;
->  }
->
-> -static int recursion_check(struct egroup *eg, const char *id, struct expr_id **parent)
-> +static int recursion_check(struct metric *m, const char *id, struct expr_id **parent)
->  {
->         struct expr_id_data *data;
->         struct expr_id *p;
-> @@ -742,7 +742,7 @@ static int recursion_check(struct egroup *eg, const char *id, struct expr_id **p
->          * if we already processed 'id', if we did, it's recursion
->          * and we fail.
->          */
-> -       ret = expr__get_id(&eg->pctx, id, &data);
-> +       ret = expr__get_id(&m->pctx, id, &data);
->         if (ret)
->                 return ret;
->
-> @@ -760,13 +760,13 @@ static int recursion_check(struct egroup *eg, const char *id, struct expr_id **p
->          * If we are over the limit of static entris, the metric
->          * is too difficult/nested to process, fail as well.
->          */
-> -       if (eg->recursion.cnt + 1 >= RECURSION_ID_MAX) {
-> +       if (m->recursion.cnt + 1 >= RECURSION_ID_MAX) {
->                 pr_err("failed: too many nested metrics\n");
->                 return -EINVAL;
->         }
->
-> -       p = &eg->recursion.id[eg->recursion.cnt];
-> -       eg->recursion.cnt++;
-> +       p = &m->recursion.id[m->recursion.cnt];
-> +       m->recursion.cnt++;
->
->         p->id     = strdup(id);
->         p->parent = data->parent;
-> @@ -778,10 +778,10 @@ static int recursion_check(struct egroup *eg, const char *id, struct expr_id **p
->  static int add_metric(struct list_head *group_list,
->                       struct pmu_event *pe,
->                       bool metric_no_group,
-> -                     struct egroup **egp,
-> +                     struct metric **mp,
->                       struct expr_id *parent);
->
-> -static int resolve_metric(struct egroup *eg,
-> +static int resolve_metric(struct metric *m,
->                           bool metric_no_group,
->                           struct list_head *group_list,
->                           struct pmu_events_map *map)
-> @@ -797,7 +797,7 @@ static int resolve_metric(struct egroup *eg,
->          */
->         do {
->                 all = true;
-> -               hashmap__for_each_entry((&eg->pctx.ids), cur, bkt) {
-> +               hashmap__for_each_entry((&m->pctx.ids), cur, bkt) {
->                         struct expr_id *parent;
->                         struct pmu_event *pe;
->
-> @@ -805,16 +805,16 @@ static int resolve_metric(struct egroup *eg,
->                         if (!pe)
->                                 continue;
->
-> -                       ret = recursion_check(eg, cur->key, &parent);
-> +                       ret = recursion_check(m, cur->key, &parent);
->                         if (ret)
->                                 return ret;
->
->                         all = false;
->                         /* The metric key itself needs to go out.. */
-> -                       expr__del_id(&eg->pctx, cur->key);
-> +                       expr__del_id(&m->pctx, cur->key);
->
->                         /* ... and it gets resolved to the parent context. */
-> -                       ret = add_metric(group_list, pe, metric_no_group, &eg, parent);
-> +                       ret = add_metric(group_list, pe, metric_no_group, &m, parent);
->                         if (ret)
->                                 return ret;
->
-> @@ -832,7 +832,7 @@ static int resolve_metric(struct egroup *eg,
->  static int add_metric(struct list_head *group_list,
->                       struct pmu_event *pe,
->                       bool metric_no_group,
-> -                     struct egroup **egp,
-> +                     struct metric **m,
->                       struct expr_id *parent)
->  {
->         int ret = 0;
-> @@ -840,7 +840,7 @@ static int add_metric(struct list_head *group_list,
->         pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
->
->         if (!strstr(pe->metric_expr, "?")) {
-> -               ret = __add_metric(group_list, pe, metric_no_group, 1, egp, parent);
-> +               ret = __add_metric(group_list, pe, metric_no_group, 1, m, parent);
->         } else {
->                 int j, count;
->
-> @@ -852,7 +852,7 @@ static int add_metric(struct list_head *group_list,
->                  */
->
->                 for (j = 0; j < count && !ret; j++) {
-> -                       ret = __add_metric(group_list, pe, metric_no_group, j, egp, parent);
-> +                       ret = __add_metric(group_list, pe, metric_no_group, j, m, parent);
->                 }
->         }
->
-> @@ -865,7 +865,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
->                                    struct pmu_events_map *map)
->
->  {
-> -       struct egroup *eg = NULL;
-> +       struct metric *m = NULL;
->         struct pmu_event *pe;
->         int ret;
->
-> @@ -873,7 +873,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
->         if (!pe)
->                 return -EINVAL;
->
-> -       ret = add_metric(group_list, pe, metric_no_group, &eg, NULL);
-> +       ret = add_metric(group_list, pe, metric_no_group, &m, NULL);
->         if (ret)
->                 return ret;
->
-> @@ -881,7 +881,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
->          * Process any possible referenced metrics
->          * included in the expression.
->          */
-> -       ret = resolve_metric(eg, metric_no_group,
-> +       ret = resolve_metric(m, metric_no_group,
->                              group_list, map);
->         if (ret)
->                 return ret;
-> @@ -893,12 +893,12 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
->          * Even if we add multiple groups through the runtime
->          * param, they share same events.
->          */
-> -       if (eg->has_constraint) {
-> +       if (m->has_constraint) {
->                 metricgroup__add_metric_non_group(events,
-> -                                                 &eg->pctx);
-> +                                                 &m->pctx);
->         } else {
->                 metricgroup__add_metric_weak_group(events,
-> -                                                  &eg->pctx);
-> +                                                  &m->pctx);
->         }
->         return 0;
->  }
-> @@ -936,35 +936,35 @@ static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
->         return ret;
->  }
->
-> -static void egroup__free_refs(struct egroup *egroup)
-> +static void metric__free_refs(struct metric *metric)
->  {
->         struct metric_ref_node *ref, *tmp;
->
-> -       list_for_each_entry_safe(ref, tmp, &egroup->refs, list) {
-> +       list_for_each_entry_safe(ref, tmp, &metric->refs, list) {
->                 list_del(&ref->list);
->                 free(ref);
->         }
->  }
->
-> -static void egroup__free_recursion(struct egroup *egroup)
-> +static void metric__free_recursion(struct metric *metric)
->  {
->         int i;
->
-> -       for (i = 0; i < egroup->recursion.cnt; i++) {
-> -               free(egroup->recursion.id[i].id);
-> +       for (i = 0; i < metric->recursion.cnt; i++) {
-> +               free(metric->recursion.id[i].id);
->         }
->  }
->
-> -static void metricgroup__free_egroups(struct list_head *group_list)
-> +static void metricgroup__free_metrics(struct list_head *group_list)
->  {
-> -       struct egroup *eg, *egtmp;
-> -
-> -       list_for_each_entry_safe (eg, egtmp, group_list, nd) {
-> -               egroup__free_recursion(eg);
-> -               egroup__free_refs(eg);
-> -               expr__ctx_clear(&eg->pctx);
-> -               list_del_init(&eg->nd);
-> -               free(eg);
-> +       struct metric *m, *tmp;
-> +
-> +       list_for_each_entry_safe (m, tmp, group_list, nd) {
-> +               metric__free_recursion(m);
-> +               metric__free_refs(m);
-> +               expr__ctx_clear(&m->pctx);
-> +               list_del_init(&m->nd);
-> +               free(m);
->         }
->  }
->
-> @@ -997,7 +997,7 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
->         ret = metricgroup__setup_events(&group_list, metric_no_merge,
->                                         perf_evlist, metric_events);
->  out:
-> -       metricgroup__free_egroups(&group_list);
-> +       metricgroup__free_metrics(&group_list);
->         return ret;
->  }
->
-> --
-> 2.25.4
->
+  dev_info(dev, "Missing reset command. Please update your EC firmware.\n")
+
+>>>>>
+>>>>> With an old firmware I suspect this message will appear on every boot, right?
+>>>>> So, to solve the issue and get rid of this error you're forced to upgrade the
+>>>>> firmware. Is that true?
+>>>>>
+>>>>
+>>>> It might possibly make more sense to fail this silently and to send
+>>>> EC_CODEC_I2S_RX_DISABLE as backup if it is not supported (-ENOTSUPP
+>>>> can possibly be used as trigger if the call returns it).
+>>>>
+>>>> Also, I don't accept dev_err() if the error is ignored for patches in
+>>>> my scope of responsibility.
+>>>>
+>>>> Guenter
+>>> Thanks for the suggestion. Our plan is to upstream this patch first.
+>>> And then we will merge it into the kernel after the firmware is
+>>> updated. Is it feasible? (I'm not sure whether there is the better way
+>>> if I want to update EC and the kernel at the same time.)
+>>>
+>>> I think calling EC_CODEC_I2S_RX_DISABLE does not make sense because it
+>>> checks the value of i2s_rx_enabled first. If i2s_rx_enabled is false,
+>>> it will skip the function. However, we don't need to reset while the
+>>> i2s_rx_enabled is already false.
+>>>
+>> Exactly my point. If i2s_rx_enabled is false, nothing needs to be
+>> done, and it doesn't hurt if the EC does nothing. If i2s_rx_enabled is
+>> true, it needs to be set to false, which is accomplished by sending
+>> EC_CODEC_I2S_RX_DISABLE.
+> Sorry my bad. If i2s_rx_enabled is false, it will skip and return
+> EC_RES_BUSY. And then we may need to handle one more error. I think it
+> may become too complicated to handle those errors. Could we just merge
+> this change after the firmware updates? So that we don't need to worry
+> about the unsupported command.
+> 
+
+How can you ensure that assuming there is already devices in the field? The
+patch should work for both cases, on devices that has the old firmware and on
+devices that have the new firmware. You can't guarantee that all the devices
+will update their firmware.
+
+I'd suggest notify the user that should update the EC firmware and
+fallback/continue when the EC_CODEC_I2S_RX_RESET is not implemented.
+
+>>
+>>> In addition, since it is a sub-command, it will return
+>>> EC_RES_INVALID_PARAM but not ENOTSUPP if the command is not supported.
+>>> And then EC_RES_INVALID_PARAM will turn into -EPROTO finally so it's
+>>> difficult to do other operators basing on the return value.
+>>>
+>>
+>> You might have to convince Enric to permit another error code to
+>> translate EC_RES_INVALID_PARAM. After all, that would meet his
+>> requirement that the error code must be used in the kernel to accept a
+>> translation.
+>>
+>> Guenter
+>>
+>>> Thanks,
+>>> Yu-Hsuan
+>>>
+>>>>
+>>>>>>       platform_set_drvdata(pdev, priv);
+>>>>>>
+>>>>>>       ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
+>>>>>>
