@@ -2,133 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB269221863
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 01:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D8B22186D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 01:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgGOXaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 19:30:35 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:49850 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727047AbgGOXae (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 19:30:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1594855834; x=1626391834;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=1WUJsuuWe1ZBua62bFIdOijTgWGShB9OAlNDVmWfFmY=;
-  b=TsPBifboiuVFCCuQ4BhaQF8e9Y9VJxJX1Yem1CL9I6hQt5Mbya3yK4Al
-   eXgL9xTA0mqltFMzsyZaY7jLCqg3kOZT69qTWGo7GcLO4q5/LPTr3iHZC
-   JWIUIyFuRlIr5UQvJp+Lw3EAnHmFDJAF7JD+kJ4ROS5Eg3ZkDFe9RWVwU
-   aNg3CtgIULZCV/aZ369FzYo68OQLUsxUmCu+GCYxyj9brzJ/pbU1nmM4A
-   me+2JyD+JANzpWCkDIShmwlbkH31VRT+umPWsqTP2KUG/iT1q8x5F4Obg
-   0HgHKnf7/x1cLvEqdR1ScMACS1SNyUabYBpmfNCq6vH1xgNmLft9pYFt9
-   w==;
-IronPort-SDR: VRG942NGLmNjMASHaJzkBluPVMBpTqhtym6MtWUapENhFBtqCh+SZU378lH49vFH/Y6XXU1iMV
- af27qBOz7aHpnfvqPVs/7O8MTCVxemGSmJMx3DeP2/sm9Rq6zq9G3jlJwZhnpLmliRbKfGxCoG
- TwbCX0p90u0aLJOIVvdmLTRJNnkF+fLccf6VP0tZghpOBjhKGvu4FKYq0vw/r//eKDW/tb4GYv
- gf6CRKrIdZpVLsqy+XGOZnapxw7UO/AcPqZMlPxCgHlVgGkwlqed7s6KB0bbjGu2CgkTqwBxZA
- 7Ow=
-X-IronPort-AV: E=Sophos;i="5.75,357,1589212800"; 
-   d="scan'208";a="146868544"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Jul 2020 07:30:23 +0800
-IronPort-SDR: 23mcAq4JMdd+m6NbmF+zNTphh6dgWPkayNMYKsaVJZQmfp0VecHPvIMRxPoWnWL2KcWH5zFsO6
- x4yMDcC9NlHxpxJW3S45q/fJkxqKvbRMk=
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 16:18:48 -0700
-IronPort-SDR: jolcTqH56Kqn7iIi8sFylTtgUKK7/Idjrhr2qok3aASAzRD1+74v7auysvNA/+tadSVs44nyYc
- W3zYMoqRAm7g==
-WDCIronportException: Internal
-Received: from cnf009656.ad.shared (HELO jedi-01.hgst.com) ([10.86.58.5])
-  by uls-op-cesaip01.wdc.com with ESMTP; 15 Jul 2020 16:30:21 -0700
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        linux-riscv@lists.infradead.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Vincent Chen <vincent.chen@sifive.com>,
-        Zong Li <zong.li@sifive.com>
-Subject: [PATCH 4/4] riscv: Parse all memory blocks to remove unusable memory
-Date:   Wed, 15 Jul 2020 16:30:09 -0700
-Message-Id: <20200715233009.27183-5-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20200715233009.27183-1-atish.patra@wdc.com>
-References: <20200715233009.27183-1-atish.patra@wdc.com>
+        id S1727090AbgGOXcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 19:32:03 -0400
+Received: from mga07.intel.com ([134.134.136.100]:63890 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726778AbgGOXcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 19:32:03 -0400
+IronPort-SDR: aGV584jx/8tb1xTKRHCaS42SI8yKQWgYqjaUgo8MbRT1HU4aTl4uMLwwipBuJs/0URVGCDxNCm
+ LWlod7QmTfuQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="214030969"
+X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
+   d="scan'208";a="214030969"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 16:32:00 -0700
+IronPort-SDR: cZvsAGDgpGF+2NbxakPS01kIeZEkM3esK0Xo0RC0msz+O1PuaVl0fyjRi+rZ8CiAPRiGdMsLcJ
+ Mfelb6mDMgGw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
+   d="scan'208";a="308429363"
+Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
+  by fmsmga004.fm.intel.com with ESMTP; 15 Jul 2020 16:32:00 -0700
+Date:   Wed, 15 Jul 2020 16:32:00 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Liu, Yi L" <yi.l.liu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        amd-gfx <amd-gfx@lists.freedesktop.org>
+Subject: Re: [PATCH v6 03/12] docs: x86: Add documentation for SVA (Shared
+ Virtual Addressing)
+Message-ID: <20200715233200.GD64320@romley-ivt3.sc.intel.com>
+References: <1594684087-61184-1-git-send-email-fenghua.yu@intel.com>
+ <1594684087-61184-4-git-send-email-fenghua.yu@intel.com>
+ <DM5PR11MB1435394EDA593222F19F3BF8C3610@DM5PR11MB1435.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM5PR11MB1435394EDA593222F19F3BF8C3610@DM5PR11MB1435.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, maximum physical memory allowed is equal to -PAGE_OFFSET.
-That's why we remove any memory blocks spanning beyond that size. However,
-it is done only for memblock containing linux kernel which will not work
-if there are multiple memblocks.
+Hi, Yi,
 
-Process all memory blocks to figure out how much memory needs to be removed
-and remove at the end instead of updating the memblock list in place.
+On Mon, Jul 13, 2020 at 08:25:20PM -0700, Liu, Yi L wrote:
+> > From: Fenghua Yu <fenghua.yu@intel.com>
+> > Sent: Tuesday, July 14, 2020 7:48 AM
+> > From: Ashok Raj <ashok.raj@intel.com>
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
----
- arch/riscv/mm/init.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+Thank you for your comments!
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index f818a47a72d1..79e9d55bdf1a 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -147,26 +147,29 @@ void __init setup_bootmem(void)
- {
- 	struct memblock_region *reg;
- 	phys_addr_t mem_size = 0;
-+	phys_addr_t total_mem = 0;
-+	phys_addr_t mem_start, end = 0;
- 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
- 	phys_addr_t vmlinux_start = __pa_symbol(&_start);
+But I think we don't need to update this patch because the current text
+is better than suggested changes. I would rather to keep this patch
+unchanged. Please see my following explanations for details.
+
+> > +(PRI) allow devices to function much the same way as the CPU handling
+> > +application page-faults. For more information please refer to PCIe
+> > +specification Chapter 10: ATS Specification.
+> > +
+> 
+> nit: may be helpful to mention Chapter 10 of PCIe spec since 4.0. before that, ATS has its
+> own specification.
+
+This doc only refers to the latest specs. Older specs are not useful
+for this spec.
+
+> > +ENQCMD is the glue that ensures applications can directly submit
+> > +commands to the hardware and also permit hardware to be aware of
+> > +application context to perform I/O operations via use of PASID.
+> > +
+> 
+> maybe a reader will ask about ENQCMDs after reading ENQCMD/S spec. :-)
+
+This doc only covers ENQCMD. ENQCMDS is out of scope of this doc.
+
+> > +- Allocate the PASID, and program the process page-table (cr3) in the
+> > +PASID
+> > +  context entries.
+> 
+> nit: s/PASID context entries/PASID table entries/
+
+Kernel IOMMU does use PASID context. So we would keep the current text.
+
+> 
+> > +- Register for mmu_notifier() to track any page-table invalidations to
+> > +keep
+> > +  the device tlb in sync. For example, when a page-table entry is
+> 
+> not only device tlb. I guess iotlb is also included.
+
+I think they are same/similar concepts. No need to duplicate here.
+
+> > +it into the new MSR to communicate the process identity to platform hardware.
+> > +ENQCMD uses the PASID stored in this MSR to tag requests from this process.
+> > +When a user submits a work descriptor to a device using the ENQCMD
+> > +instruction, the PASID field in the descriptor is auto-filled with the
+> > +value from MSR_IA32_PASID. Requests for DMA from the device are also
+> > +tagged with the same PASID. The platform IOMMU uses the PASID in the
+> 
+> not quite get " Requests for DMA from the device are also tagged with the
+> same PASID"
+
+The DMA access from device to the process address space uses the same PASID
+set up in the MSR.
  
- 	/* Find the memory region containing the kernel */
- 	for_each_memblock(memory, reg) {
--		phys_addr_t end = reg->base + reg->size;
--
--		if (reg->base <= vmlinux_start && vmlinux_end <= end) {
--			mem_size = min(reg->size, (phys_addr_t)-PAGE_OFFSET);
--
--			/*
--			 * Remove memblock from the end of usable area to the
--			 * end of region
--			 */
--			if (reg->base + mem_size < end)
--				memblock_remove(reg->base + mem_size,
--						end - reg->base - mem_size);
--		}
-+		end = reg->base + reg->size;
-+		if (!total_mem)
-+			mem_start = reg->base;
-+		if (reg->base <= vmlinux_start && vmlinux_end <= end)
-+			BUG_ON(reg->size == 0);
-+		total_mem = total_mem + reg->size;
- 	}
--	BUG_ON(mem_size == 0);
-+
-+	/*
-+	 * Remove memblock from the end of usable area to the
-+	 * end of region
-+	 */
-+	mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
-+	if (mem_start + mem_size < end)
-+		memblock_remove(mem_start + mem_size,
-+				end - mem_start - mem_size);
- 
- 	/* Reserve from the start of the kernel to the end of the kernel */
- 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
--- 
-2.24.0
+> 
+> > +transaction to perform address translation. The IOMMU api's setup the
+> 
+> s/api's/apis/ ?
 
+
+> 
+> > +corresponding PASID entry in IOMMU with the process address used by the CPU
+> > (for e.g cr3 in x86).
+> 
+> with the process page tables used by the CPU (e.g. the page tables pointed by cr3 in x86).
+
+We use address to match the "address space" specified in the term of PASID.
+page table is implementation details. So we would keep the current text.
+
+> > +The MSR must be configured on each logical CPU before any application
+> 
+> s/MSR/MSR_IA32_PASID/
+
+The MSR refers to MSR_IA32_PASID. We don't need to repeat long
+"MSR_IA32_PASID" everywhere while a short "the MSR" is better and clear
+in the doc.
+
+> > +thread can interact with a device. Threads that belong to the same
+> > +process share the same page tables, thus the same MSR value.
+> 
+> s/MSR/PASID/
+
+The "MSR" is better because we focus on the MSR value here that is set up for
+each thread.
+
+> 
+> > +
+> > +PASID is cleared when a process is created. The PASID allocation and
+> 
+> s/PASID/MSR_IA32_PASID/
+
+No. It is PASID that is cleared per process creation. We are not talking about
+the MSR here although the MSR will cleared as part of process FPU init.
+
+> 
+> > +MSR programming may occur long after a process and its threads have been
+> > created.
+> > +One thread must call bind() to allocate the PASID for the process. If a
+> 
+> s/bind()/iommu_sva_bind_device()/ or say "call iommu api to bind a process with
+> a device." :-)
+
+bind() is better because the binding function may be changed (e.g. it was
+changed in 5.8). People know bind() means binding. Even in the future the
+binding function is changed again, we don't need to change the text here
+if using bind().
+
+> 
+> > +thread uses ENQCMD without the MSR first being populated, it will cause #GP.
+> > +The kernel will fix up the #GP by writing the process-wide PASID into
+> > +the thread that took the #GP. A single process PASID can be used
+> > +simultaneously with multiple devices since they all share the same address space.
+> 
+> simultaneously with multiple devices if they all share the process address
+> space.
+
+Using "since" is better. It explains "why".
+
+> 
+> > +
+> > +New threads could inherit the MSR value from the parent. But this would
+> 
+> s/MSR/MSR_IA32_PASID/
+
+Ditto. It's unnecessary to use long "MSR_IA32_PASID" everywhere.
+"The MSR" is concise and clear.
+
+Thanks.
+
+-Fenghua
