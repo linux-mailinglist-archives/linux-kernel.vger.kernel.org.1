@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D2A220BF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0661220BFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729204AbgGOLgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 07:36:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728970AbgGOLgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:36:20 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CDD6206E9;
-        Wed, 15 Jul 2020 11:36:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594812979;
-        bh=Xh8/JBgH7wyEwqIpFjmyPj/0SkJTwu7TpyHRES0GSNA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xWh9fdXswjUMMJiZeb3FqvqyCsw77pDePQcttewiRlCv6W1+bmP+5pxznafCelqxv
-         4ocXUjxeDGJUuFvIKyB6r+3kwO2j5+CwjFxD+zqIYGuMU1e5Szsd94ezsSwmwwSxVh
-         JQHwjm6Cy48dDzKVKK9DbGos0MXTVJn01SZ7pdJs=
-Date:   Wed, 15 Jul 2020 12:36:09 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] spi: spidev: Add compatible for external SPI ports on
- Kontron boards
-Message-ID: <20200715113609.GD5431@sirena.org.uk>
-References: <20200702141846.7752-1-frieder.schrempf@kontron.de>
- <20200702142511.GF4483@sirena.org.uk>
- <24ec4eed-de01-28df-ee1f-f7bcfc80051a@kontron.de>
- <20200702150725.GI4483@sirena.org.uk>
- <479d566a-213f-4e33-8ac7-7637ae88e31c@kontron.de>
- <a5b88ad9-3884-1d9c-c4ad-057266f84261@kontron.de>
- <20200713151108.GB4420@sirena.org.uk>
- <2eb6971b-7ea4-c9c8-5452-6f4b17e8860a@kontron.de>
- <20200714192907.GJ4900@sirena.org.uk>
- <16825a78-8eb0-90f2-433a-d1ae6eed6ba8@kontron.de>
+        id S1729363AbgGOLjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 07:39:17 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15656 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725924AbgGOLjR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 07:39:17 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f0eea730001>; Wed, 15 Jul 2020 04:37:23 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 15 Jul 2020 04:39:17 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 15 Jul 2020 04:39:17 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 15 Jul
+ 2020 11:39:12 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 15 Jul 2020 11:39:12 +0000
+Received: from moonraker.nvidia.com (Not Verified[10.26.73.219]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f0eeade0000>; Wed, 15 Jul 2020 04:39:11 -0700
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jon Hunter <jonathanh@nvidia.com>, <stable@vger.kernel.org>
+Subject: [PATCH V2] usb: tegra: Fix allocation for the FPCI context
+Date:   Wed, 15 Jul 2020 12:38:42 +0100
+Message-ID: <20200715113842.30680-1-jonathanh@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200712102837.24340-1-jonathanh@nvidia.com>
+References: <20200712102837.24340-1-jonathanh@nvidia.com>
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="FFoLq8A0u+X9iRU8"
-Content-Disposition: inline
-In-Reply-To: <16825a78-8eb0-90f2-433a-d1ae6eed6ba8@kontron.de>
-X-Cookie: 40 isn't old.  If you're a tree.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1594813043; bh=uuPzFrd79X6snwWrV1rXcJChGJVyio56NAiQtRIpVMc=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
+         Content-Type;
+        b=KMonAL2NbiHVsPl3rkICVkx73w8mC+CLtMefaqfM1KgIRQsRrVud30eixHuu3Zm0c
+         YF5DXh1QC43if5k/v50J6t7ajWSsTt0YEaXxyENBVBSLRIAobeVQU4FNheHuVb9R0R
+         Ay+/3YyQaGcMePqWIvUGnW9YuKZDNvaWBjC/F1ziF5ga3sGJiPjpzODCiRqJv33TRU
+         6KsW+6oeB85vHFI9FRD0Z1gizhPwW6g4hwh+NzsYUQHknuqsSK8eUX9UOEVEIjKrOb
+         uXM1GjDqHQts882dmRP3XnmWs6AJ/Ts1co3nV0WlbuQi9aPjL6KJms8FtLivukX/lf
+         p6rf6QuZ1gMHA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 5c4e8d3781bc ("usb: host: xhci-tegra: Add support for XUSB
+context save/restore") is using the IPFS 'num_offsets' value when
+allocating memory for FPCI context instead of the FPCI 'num_offsets'.
 
---FFoLq8A0u+X9iRU8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+After commit cad064f1bd52 ("devres: handle zero size in devm_kmalloc()")
+was added system suspend started failing on Tegra186. The kernel log
+showed that the Tegra XHCI driver was crashing on entry to suspend when
+attempting the save the USB context. On Tegra186, the IPFS context has a
+zero length but the FPCI content has a non-zero length, and because of
+the bug in the Tegra XHCI driver we are incorrectly allocating a zero
+length array for the FPCI context. The crash seen on entering suspend
+when we attempt to save the FPCI context and following commit
+cad064f1bd52 ("devres: handle zero size in devm_kmalloc()") this now
+causes a NULL pointer deference when we access the memory. Fix this by
+correcting the amount of memory we are allocating for FPCI contexts.
 
-On Wed, Jul 15, 2020 at 09:26:29AM +0200, Frieder Schrempf wrote:
-> On 14.07.20 21:29, Mark Brown wrote:
-> > On Tue, Jul 14, 2020 at 10:54:15AM +0200, Frieder Schrempf wrote:
+Cc: stable@vger.kernel.org
 
-> > > patch in our own tree, or if a node with a custom compatible string like for
-> > > example "kontron,user-spi" would be accepted upstream, without a matching
-> > > driver?
+Fixes: 5c4e8d3781bc ("usb: host: xhci-tegra: Add support for XUSB context save/restore")
 
-> > I'm having a hard time getting enthusiastic about it TBH - can you not
-> > just use spidev and live with the warning?
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+---
 
-> Ok, I can do that, but when I resend my patches and add "compatible =
-> 'spidev'" to my DT I expect someone to complain again as my DT does not
-> describe the hardware.
+Changes since V1:
+- Corrected commit message
+- Added Thierry's ACK
 
-That's the issue with kontron,user-spi too though :/
+ drivers/usb/host/xhci-tegra.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> But for obvious reasons this can't be considered a good solution and it
-> seems somewhat disturbing that the maintainer needs to propose it because of
-> lack of proper solutions ;)
+diff --git a/drivers/usb/host/xhci-tegra.c b/drivers/usb/host/xhci-tegra.c
+index 9ce28ab47f4b..014d79334f50 100644
+--- a/drivers/usb/host/xhci-tegra.c
++++ b/drivers/usb/host/xhci-tegra.c
+@@ -856,7 +856,7 @@ static int tegra_xusb_init_context(struct tegra_xusb *tegra)
+ 	if (!tegra->context.ipfs)
+ 		return -ENOMEM;
+ 
+-	tegra->context.fpci = devm_kcalloc(tegra->dev, soc->ipfs.num_offsets,
++	tegra->context.fpci = devm_kcalloc(tegra->dev, soc->fpci.num_offsets,
+ 					   sizeof(u32), GFP_KERNEL);
+ 	if (!tegra->context.fpci)
+ 		return -ENOMEM;
+-- 
+2.17.1
 
-Hey, I proposed other solutions you didn't want to implement!
-
---FFoLq8A0u+X9iRU8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8O6ikACgkQJNaLcl1U
-h9Ahqwf+Iu9cDSXmEFlO9SyIzVOl/fi+MMZVdyFlaZY9LJVs3q1FMn8K0FRwOnwh
-8iqEHnjOSp6PlupJJmbXPTNw666Qv+d4Ct9WyCo3fq98npEi6P8aW37zmfbCLGSv
-aBrxA3A5/bBoOV3NSXcmVOOGHjV0zqP+h1NVQ4gGTG27rSN3BXCE8BYifdvN5bP6
-u67RLmi1feDqkQXt2beZ1nXv0N6xbVCyWcGG8g/Y2bt3e7/FO3zACmAQQc5CZ0WW
-+sucY7Sa2zNMMXVkBgoaHvuvmjtIxsBKkRnwq/jcoOct3KITx7gz/1EsaVbPWnsL
-lv4IT5tp7hkw4JezgeJRwJf60L84BA==
-=YQrr
------END PGP SIGNATURE-----
-
---FFoLq8A0u+X9iRU8--
