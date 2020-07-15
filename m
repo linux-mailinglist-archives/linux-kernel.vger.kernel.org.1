@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099ED2210E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 715F72210F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgGOP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:27:16 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:59558 "EHLO m43-7.mailgun.net"
+        id S1727086AbgGOP1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:27:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725881AbgGOP1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 11:27:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594826835; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=OS9jfqCnxLfBYtRX/l34nJHSA0Qibt4senv0rOAx718=; b=RCbJcu1qj3ZqZZImlhDi/8sVe4EChlTyI6bSky/Nweqs5lZ/YTbNfKoeBoj+ftQOoIqMxSIf
- IQtiItQ2i7KHJ1Tfbb43VGKvJHMz+uF6x1+CvtpaMX/2HKcwzH85EGSVDDVT5wTqpurHRj0p
- w+e8uezY5G7glhVFKsT4BndPItE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f0f2046f9ca681bd0a4dd9c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 15 Jul 2020 15:27:02
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B13B4C43391; Wed, 15 Jul 2020 15:27:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726335AbgGOP1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 11:27:36 -0400
+Received: from localhost (unknown [122.171.202.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 080D3C433C9;
-        Wed, 15 Jul 2020 15:26:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 080D3C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Zekun Shen <bruceshenzk@gmail.com>
-Cc:     security@kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ath10k@lists.infradead.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] net: ath10k: fix OOB: __ath10k_htt_rx_ring_fill_n
-References: <20200623221105.3486-1-bruceshenzk@gmail.com>
-Date:   Wed, 15 Jul 2020 18:26:56 +0300
-In-Reply-To: <20200623221105.3486-1-bruceshenzk@gmail.com> (Zekun Shen's
-        message of "Tue, 23 Jun 2020 18:11:05 -0400")
-Message-ID: <87mu4094u7.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by mail.kernel.org (Postfix) with ESMTPSA id 494E8206D5;
+        Wed, 15 Jul 2020 15:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594826856;
+        bh=pd1KRNwdr6dNRTt+fz8M+If2IOA/euVVDP3NJec0v2Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mrLic7g1CDBl7et7jqZXJ7pVzRWFyU0Ngir56bA7NSqYDWZvNwLYalATxabHrQ9g/
+         /zWFBdV6j56drzy+KQAxybFkkB7cwW/EwclG0QkT+lvwbqlr0O+Byp27fLkAKoHOcq
+         W6yHfnruoDB+11StWz6aqiJ0N7gWJcoaRvN8+KR0=
+Date:   Wed, 15 Jul 2020 20:57:32 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     dmaengine@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] dmaengine: imx-sdma: remove always true comparisons
+Message-ID: <20200715152732.GA52592@vkoul-mobl>
+References: <20200715130122.39873-1-vkoul@kernel.org>
+ <CAOMZO5AYWKw2RBjt+sEveejzwmD1o0768FiCfa9ObHupENsweQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5AYWKw2RBjt+sEveejzwmD1o0768FiCfa9ObHupENsweQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zekun Shen <bruceshenzk@gmail.com> writes:
+Hi Fabio,
 
-> The idx in __ath10k_htt_rx_ring_fill_n function lives in
-> consistent dma region writable by the device. Malfunctional
-> or malicious device could manipulate such idx to have a OOB
-> write. Either by
->     htt->rx_ring.netbufs_ring[idx] = skb;
-> or by
->     ath10k_htt_set_paddrs_ring(htt, paddr, idx);
->
-> The idx can also be negative as it's signed, giving a large
-> memory space to write to.
->
-> It's possibly exploitable by corruptting a legit pointer with
-> a skb pointer. And then fill skb with payload as rougue object.
->
-> Signed-off-by: Zekun Shen <bruceshenzk@gmail.com>
-> ---
-> Part of the log here. Sometimes it appears as UAF when writing 
-> to a freed memory by chance.
->
->  [   15.594376] BUG: unable to handle page fault for address: ffff887f5c1804f0
->  [   15.595483] #PF: supervisor write access in kernel mode
->  [   15.596250] #PF: error_code(0x0002) - not-present page
->  [   15.597013] PGD 0 P4D 0
->  [   15.597395] Oops: 0002 [#1] SMP KASAN PTI
->  [   15.597967] CPU: 0 PID: 82 Comm: kworker/u2:2 Not tainted 5.6.0 #69
->  [   15.598843] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
->  BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
->  [   15.600438] Workqueue: ath10k_wq ath10k_core_register_work [ath10k_core]
->  [   15.601389] RIP: 0010:__ath10k_htt_rx_ring_fill_n 
->  (linux/drivers/net/wireless/ath/ath10k/htt_rx.c:173) ath10k_core
+On 15-07-20, 10:16, Fabio Estevam wrote:
+> Hi Vinod,
+> 
+> On Wed, Jul 15, 2020 at 10:01 AM Vinod Koul <vkoul@kernel.org> wrote:
+> >
+> > sdmac->event_id0 is of type unsigned int and hence can never be less
+> > than zero. Driver compares this at couple of places with greater than or
+> > equal to zero, these are always true so should be dropped
+> >
+> > drivers/dma/imx-sdma.c:1336:23: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
+> > drivers/dma/imx-sdma.c:1637:23: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
+> >
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> 
+> I have already fixed this problem and you have already applied my patch:
+> https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git/commit/?h=next&id=2f57b8d57673af2c2caf8c2c7bef01be940a5c2c
 
-I added the log to the commit log as it looks useful.
-
-Also I made minor changes to the title and to the error message.
+My bad that I didnt run this on -next :-)
 
 -- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+~Vinod
