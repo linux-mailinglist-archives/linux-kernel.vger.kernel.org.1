@@ -2,317 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0036D220BFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF10B220C12
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729292AbgGOLi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 07:38:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44315 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725924AbgGOLi4 (ORCPT
+        id S1729517AbgGOLoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 07:44:15 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:36055 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729402AbgGOLoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:38:56 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jvfkR-0007Mt-8s; Wed, 15 Jul 2020 11:38:51 +0000
-Date:   Wed, 15 Jul 2020 13:38:49 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Florian Weimer <fw@deneb.enyo.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api@vger.kernel.org, carlos@redhat.com
-Subject: Re: [RFC PATCH 2/4] rseq: Allow extending struct rseq
-Message-ID: <20200715113849.yy6amhynxya64arv@wittgenstein>
-References: <20200714030348.6214-1-mathieu.desnoyers@efficios.com>
- <20200714030348.6214-3-mathieu.desnoyers@efficios.com>
+        Wed, 15 Jul 2020 07:44:14 -0400
+Received: by mail-ot1-f68.google.com with SMTP id 72so1215033otc.3;
+        Wed, 15 Jul 2020 04:44:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BaBDIw1z/eEqdf0QQ4ZUt0oW4z4lCjYpMBZZDcbuR0c=;
+        b=RrtCkGNRfH3fAsP1WY6uPp7osIGCxNk8Tm6aqLZWdMTXfwTpMFhnluX/Nq/gJghiSK
+         5Lblc8Zn0QOqpxvlA/Qq3ZORXjUicOyxJSgF9ffio5/frR8QNEOfNc0pBv3Z8Ffldj+w
+         oAHFROAcRvC25+JAu4OJkdHwAlZYvSLSxQFpL4uwincr/N/5ZjV27iuuZWIJ6XiF/Mup
+         4hkfP8R3xVppNM94d9TGftX0tDOx7G2pOdZH2sV6laQL3RrvBP4kpE/18y5bGCPKxsk3
+         kRtDVTl/AVKVRIrsxv354n3fvL0F3g8v7VlqxyX2gGcLEs1S4iRNPrvl3rcyBcWjpRAh
+         9xUQ==
+X-Gm-Message-State: AOAM533VDzvw7e1pe2BF8txx1kJAxV6MubGCHYyMLnkE0yVJnDzgF3xm
+        Q+ouXuogLQDbxt/+kxoITWapWe5AnnDuAvj6S1w=
+X-Google-Smtp-Source: ABdhPJxEcoP6okwQqNr/RlRkCB0Aw3hNucn3W2acw4J2SJUqB280r/rPKtFMA2T/K62rr7Bm4/+fKhqo/8OcKnWTGb0=
+X-Received: by 2002:a9d:1c82:: with SMTP id l2mr8192356ota.167.1594813453344;
+ Wed, 15 Jul 2020 04:44:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200714030348.6214-3-mathieu.desnoyers@efficios.com>
+References: <20200714145049.2496163-1-lee.jones@linaro.org>
+ <20200714145049.2496163-10-lee.jones@linaro.org> <CAJZ5v0iB0K6H28DSDQj9T7k_kV10THxV6-HwN9qfmkLsYNHfiA@mail.gmail.com>
+ <20200714210340.GJ1398296@dell> <20200715032442.gh2cliiddhv35fdj@vireshk-i7>
+ <20200715032718.2zlo2eurhkpoayya@vireshk-i7> <CAJZ5v0jHJDLt6QFWG9FOpqmWMXAUuSEPHdHbVgFWcwR6FQD57Q@mail.gmail.com>
+ <20200715113433.GB3165313@dell>
+In-Reply-To: <20200715113433.GB3165313@dell>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 15 Jul 2020 13:44:01 +0200
+Message-ID: <CAJZ5v0gFwYj7KKKj806s5SdWO1Wu5exiwObKKAdQWQEKg+2CJA@mail.gmail.com>
+Subject: Re: [PATCH 09/13] cpufreq: acpi-cpufreq: Remove unused ID structs
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Andy Grover <andrew.grover@intel.com>,
+        Paul Diefenbaugh <paul.s.diefenbaugh@intel.com>,
+        Dominik Brodowski <linux@brodo.de>,
+        Denis Sadykov <denis.m.sadykov@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 11:03:46PM -0400, Mathieu Desnoyers wrote:
-> Add a __rseq_abi.flags "RSEQ_TLS_FLAG_SIZE", which indicates support for
-> extending struct rseq. This adds two new fields to struct rseq:
-> user_size and kernel_size.
-> 
-> The user_size field allows the size of the __rseq_abi definition (which
-> can be overridden by symbol interposition either by a preloaded library
-> or by the application) to be handed over to the kernel at registration.
-> This registration can be performed by a library, e.g. glibc, which does
-> not know there is interposition taking place.
-> 
-> The kernel_size is populated by the kernel when the "RSEQ_TLS_FLAG_SIZE"
-> flag is set in __rseq_abi.flags to the minimum between user_size and
-> the offset of the "end" field of struct rseq as known by the kernel.
-> This allows user-space to query which fields are effectively populated
-> by the kernel.
-> 
-> A rseq_size field is added to the task struct to keep track of the
-> "kernel_size" effective for each thread.
-> 
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> ---
->  include/linux/sched.h     |  4 ++++
->  include/uapi/linux/rseq.h | 37 ++++++++++++++++++++++++++++++++--
->  kernel/rseq.c             | 42 +++++++++++++++++++++++++++++++++------
->  3 files changed, 75 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 692e327d7455..5d61a3197987 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1147,6 +1147,7 @@ struct task_struct {
->  #ifdef CONFIG_RSEQ
->  	struct rseq __user *rseq;
->  	u32 rseq_sig;
-> +	u32 rseq_size;
->  	/*
->  	 * RmW on rseq_event_mask must be performed atomically
->  	 * with respect to preemption.
-> @@ -1976,10 +1977,12 @@ static inline void rseq_fork(struct task_struct *t, unsigned long clone_flags)
->  	if (clone_flags & CLONE_VM) {
->  		t->rseq = NULL;
->  		t->rseq_sig = 0;
-> +		t->rseq_size = 0;
->  		t->rseq_event_mask = 0;
->  	} else {
->  		t->rseq = current->rseq;
->  		t->rseq_sig = current->rseq_sig;
-> +		t->rseq_size = current->rseq_size;
->  		t->rseq_event_mask = current->rseq_event_mask;
->  	}
->  }
-> @@ -1988,6 +1991,7 @@ static inline void rseq_execve(struct task_struct *t)
->  {
->  	t->rseq = NULL;
->  	t->rseq_sig = 0;
-> +	t->rseq_size = 0;
->  	t->rseq_event_mask = 0;
->  }
->  
-> diff --git a/include/uapi/linux/rseq.h b/include/uapi/linux/rseq.h
-> index e11d9df5e564..03c0b5e9a859 100644
-> --- a/include/uapi/linux/rseq.h
-> +++ b/include/uapi/linux/rseq.h
-> @@ -37,6 +37,15 @@ enum rseq_cs_flags {
->  		(1U << RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE_BIT),
->  };
->  
-> +enum rseq_tls_flags_bit {
-> +	/* enum rseq_cs_flags reserves bits 0-2. */
-> +	RSEQ_TLS_FLAG_SIZE_BIT = 3,
-> +};
-> +
-> +enum rseq_tls_flags {
-> +	RSEQ_TLS_FLAG_SIZE = (1U << RSEQ_TLS_FLAG_SIZE_BIT),
-> +};
-> +
->  /* The rseq_len expected by rseq registration is always 32 bytes. */
->  enum rseq_len_expected {
->  	RSEQ_LEN_EXPECTED = 32,
-> @@ -133,8 +142,9 @@ struct rseq {
->  	 *
->  	 * This field should only be updated by the thread which
->  	 * registered this data structure. Read by the kernel.
-> -	 * Mainly used for single-stepping through rseq critical sections
-> -	 * with debuggers.
-> +	 *
-> +	 * The RSEQ_CS flags are mainly used for single-stepping through rseq
-> +	 * critical sections with debuggers.
->  	 *
->  	 * - RSEQ_CS_FLAG_NO_RESTART_ON_PREEMPT
->  	 *     Inhibit instruction sequence block restart on preemption
-> @@ -145,8 +155,31 @@ struct rseq {
->  	 * - RSEQ_CS_FLAG_NO_RESTART_ON_MIGRATE
->  	 *     Inhibit instruction sequence block restart on migration for
->  	 *     this thread.
-> +	 *
-> +	 * - RSEQ_TLS_FLAG_SIZE
-> +	 *     Extensible struct rseq ABI. This flag should be statically
-> +	 *     initialized.
->  	 */
->  	__u32 flags;
-> +	/*
-> +	 * With __rseq_abi.flags RSEQ_TLS_FLAG_SIZE set, user_size should be
-> +	 * statically initialized to offsetof(struct rseq, end).
-> +	 */
-> +	__u16 user_size;
-> +	/*
-> +	 * With __rseq_abi.flags RSEQ_TLS_FLAG_SIZE set, if the kernel supports
-> +	 * extensible struct rseq ABI, the kernel_size field is populated by
-> +	 * the kernel to the minimum between user_size and the offset of the
-> +	 * "end" field within the struct rseq supported by the kernel on
-> +	 * successful registration. Should be initialized to 0.
-> +	 */
-> +	__u16 kernel_size;
+On Wed, Jul 15, 2020 at 1:34 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Wed, 15 Jul 2020, Rafael J. Wysocki wrote:
+>
+> > On Wed, Jul 15, 2020 at 5:27 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > On 15-07-20, 08:54, Viresh Kumar wrote:
+> > > > On 14-07-20, 22:03, Lee Jones wrote:
+> > > > > On Tue, 14 Jul 2020, Rafael J. Wysocki wrote:
+> > > > >
+> > > > > > On Tue, Jul 14, 2020 at 4:51 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > > > >
+> > > > > > > Can't see them being used anywhere and the compiler doesn't complain
+> > > > > > > that they're missing, so ...
+> > > > > >
+> > > > > > Aren't they needed for automatic module loading in certain configurations?
+> > > > >
+> > > > > Any idea how that works, or where the code is for that?
+> > > >
+> > > > The MODULE_DEVICE_TABLE() thingy creates a map of vendor-id,
+> > > > product-id that the kernel keeps after boot (and so there is no static
+> > > > reference of it for the compiler), later when a device is hotplugged
+> > > > into the kernel it refers to the map to find the related driver for it
+> > > > and loads it if it isn't already loaded.
+> > > >
+> > > > This has some of it, search for MODULE_DEVICE_TABLE() in it.
+> > > > Documentation/driver-api/usb/hotplug.rst
+> > >
+> > > And you just need to add __maybe_unused to them to suppress the
+> > > warning.
+> >
+> > Wouldn't that cause the compiler to optimize them away if it doesn't
+> > see any users?
+>
+> It looks like they're only unused when !MODULE,
 
-(Btw, this what I suggested - minus the user_size part - when I said
-"expose the size of struct rseq" the kernel knows about. The approach
-here is of course more general.)
+OK
 
-It's pretty uncommon to use __u16 for sizes at least in public facing
-structs. I'd suggest to use __u32 user_size and __u32 kernel_size and if
-needed, insert padding. Seems you have done this in your union above
-already.
-
-> +
-> +	/*
-> +	 * Very last field of the structure, to calculate size excluding padding
-> +	 * with offsetof().
-> +	 */
-> +	char end[];
-
-Hm, could this mess with alignment or break making the struct
-extensible? Feels like you're adding new members always before this
-which is also pretty non-standard in terms of how we'd usually extend
-structs.
-
->  } __attribute__((aligned(4 * sizeof(__u64))));
->  
->  #endif /* _UAPI_LINUX_RSEQ_H */
-> diff --git a/kernel/rseq.c b/kernel/rseq.c
-> index a4f86a9d6937..bbc57fc18573 100644
-> --- a/kernel/rseq.c
-> +++ b/kernel/rseq.c
-> @@ -96,6 +96,7 @@ static int rseq_update_cpu_id(struct task_struct *t)
->  static int rseq_reset_rseq_cpu_id(struct task_struct *t)
->  {
->  	u32 cpu_id_start = 0, cpu_id = RSEQ_CPU_ID_UNINITIALIZED;
-> +	u16 kernel_size = 0;
->  
->  	/*
->  	 * Reset cpu_id_start to its initial state (0).
-> @@ -109,6 +110,11 @@ static int rseq_reset_rseq_cpu_id(struct task_struct *t)
->  	 */
->  	if (put_user(cpu_id, &t->rseq->cpu_id))
->  		return -EFAULT;
-> +	/*
-> +	 * Reset kernel_size to its initial state (0).
-> +	 */
-> +	if (put_user(kernel_size, &t->rseq->kernel_size))
-> +		return -EFAULT;
->  	return 0;
->  }
->  
-> @@ -266,7 +272,7 @@ void __rseq_handle_notify_resume(struct ksignal *ksig, struct pt_regs *regs)
->  
->  	if (unlikely(t->flags & PF_EXITING))
->  		return;
-> -	if (unlikely(!access_ok(t->rseq, sizeof(*t->rseq))))
-> +	if (unlikely(!access_ok(t->rseq, t->rseq_size)))
->  		goto error;
->  	ret = rseq_ip_fixup(regs);
->  	if (unlikely(ret < 0))
-> @@ -294,7 +300,7 @@ void rseq_syscall(struct pt_regs *regs)
->  
->  	if (!t->rseq)
->  		return;
-> -	if (!access_ok(t->rseq, sizeof(*t->rseq)) ||
-> +	if (!access_ok(t->rseq, t->rseq_size) ||
->  	    rseq_get_rseq_cs(t, &rseq_cs) || in_rseq_cs(ip, &rseq_cs))
->  		force_sig(SIGSEGV);
->  }
-> @@ -308,6 +314,7 @@ SYSCALL_DEFINE4(rseq, struct rseq __user *, rseq, u32, rseq_len,
->  		int, flags, u32, sig)
->  {
->  	int ret;
-> +	u32 tls_flags;
->  
->  	if (flags & RSEQ_FLAG_UNREGISTER) {
->  		if (flags & ~RSEQ_FLAG_UNREGISTER)
-> @@ -315,7 +322,7 @@ SYSCALL_DEFINE4(rseq, struct rseq __user *, rseq, u32, rseq_len,
->  		/* Unregister rseq for current thread. */
->  		if (current->rseq != rseq || !current->rseq)
->  			return -EINVAL;
-> -		if (rseq_len != sizeof(*rseq))
-> +		if (rseq_len != RSEQ_LEN_EXPECTED)
-
-So I have to say that I think it's not a great to fix the length of the
-rseq_len argument basically making it somewhat a nop. If I recall
-correctly Florian said something about the rseq_len becoming part of the
-glibc abi and that's why it can't be changed?
-Is there any way we can avoid that so we can use the rseq_len argument
-to have userspace pass down the size of struct rseq they know about?
-
-It's really unintuitive to pass down an extensible struct but the length
-argument associated with it is fixed.
-
-I also think there should be some compile-time sanity checks here
-similar to what we do in other places see e.g.
-
-	BUILD_BUG_ON(sizeof(struct clone_args) != CLONE_ARGS_SIZE_VER2);
-
-So here should at least be sm like:
-
-	BUILD_BUG_ON(sizeof(struct rseq) != RSEQ_LEN_EXPECTED);
-
-
-
->  			return -EINVAL;
->  		if (current->rseq_sig != sig)
->  			return -EPERM;
-> @@ -323,6 +330,7 @@ SYSCALL_DEFINE4(rseq, struct rseq __user *, rseq, u32, rseq_len,
->  		if (ret)
->  			return ret;
->  		current->rseq = NULL;
-> +		current->rseq_size = 0;
->  		current->rseq_sig = 0;
->  		return 0;
->  	}
-> @@ -336,7 +344,7 @@ SYSCALL_DEFINE4(rseq, struct rseq __user *, rseq, u32, rseq_len,
->  		 * the provided address differs from the prior
->  		 * one.
->  		 */
-> -		if (current->rseq != rseq || rseq_len != sizeof(*rseq))
-> +		if (current->rseq != rseq || rseq_len != RSEQ_LEN_EXPECTED)
->  			return -EINVAL;
->  		if (current->rseq_sig != sig)
->  			return -EPERM;
-> @@ -349,10 +357,32 @@ SYSCALL_DEFINE4(rseq, struct rseq __user *, rseq, u32, rseq_len,
->  	 * ensure the provided rseq is properly aligned and valid.
->  	 */
->  	if (!IS_ALIGNED((unsigned long)rseq, __alignof__(*rseq)) ||
-> -	    rseq_len != sizeof(*rseq))
-> +	    rseq_len != RSEQ_LEN_EXPECTED)
->  		return -EINVAL;
-> -	if (!access_ok(rseq, rseq_len))
-> +	if (!access_ok(rseq, RSEQ_LEN_EXPECTED))
->  		return -EFAULT;
-> +
-> +	/* Handle extensible struct rseq ABI. */
-> +	ret = get_user(tls_flags, &rseq->flags);
-> +	if (ret)
-> +		return ret;
-> +	if (tls_flags & RSEQ_TLS_FLAG_SIZE) {
-> +		u16 user_size, kernel_size;
-> +
-> +		ret = get_user(user_size, &rseq->user_size);
-> +		if (ret)
-> +			return ret;
-> +		if (user_size < offsetof(struct rseq, kernel_size) + sizeof(u16))
-> +			return -EINVAL;
-> +		kernel_size = min_t(u16, user_size, offsetof(struct rseq, end));
-> +		ret = put_user(kernel_size, &rseq->kernel_size);
-> +		if (ret)
-> +			return ret;
-> +		current->rseq_size = kernel_size;
-> +	} else {
-> +		current->rseq_size = offsetof(struct rseq, user_size);
-> +	}
-> +
->  	current->rseq = rseq;
->  	current->rseq_sig = sig;
->  	/*
-> -- 
-> 2.17.1
-> 
+> in which case optimising them away would be the correct thing to do, no?
