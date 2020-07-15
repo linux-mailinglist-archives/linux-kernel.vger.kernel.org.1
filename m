@@ -2,97 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D8D221039
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1FD22104A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727951AbgGOPGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
+        id S1728174AbgGOPHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727903AbgGOPGm (ORCPT
+        with ESMTP id S1728009AbgGOPGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 11:06:42 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E5BC08C5DB
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:42 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id w3so6163491wmi.4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:42 -0700 (PDT)
+        Wed, 15 Jul 2020 11:06:52 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB262C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:51 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id w3so6163968wmi.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 08:06:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=R5bZU73kxT5M1JMsvuGC6Lo9dJE8hXmdkV8EdjzvhWs=;
-        b=zSvp1cyp9NwMoDYQ099HhmCQeArDGEPwCWKkWWzxkXBbj5HghEulOTG6delZXfRB4V
-         7pZwKEOvp46RKySf8Yzgtk9eN3B4BrBHD+xBCvj58iH13cRfFWtS2B5C2Nhix1PIZUxg
-         JREpBcxLC3C7l0qnK44ImxJ1a2yrz/6U6//NpLOhRGhvW5Ui21FgwTqGG8Jn0swFlid/
-         7fez9lVPIMrbEJ9VMehmmZlRi4gHVJBZjIzmMBGGfGCL5Rt4m8lN9MaPazxs8psW/9VH
-         iV600X2ZSWoU8ZSzhXfgAfPccHmAflze7iWKZwsSmgjjO7Pft90i2o6F6TpklayyKXza
-         Cw/A==
+        bh=Neuk7hlxyMHOEJZl+c3Ce+fuWuJ+zLYxzzvecm8U2ZQ=;
+        b=ic4mFINwL49QSVPf3k9/rgWYim5/9jEoZkN3gqetr4K9fAHlJVyJ3XypL6SuWfRqDz
+         +S7WszcHEof6BWrZKfFj9g/YLF71Qcm1yt4zHcQPPYgdqTAQxCrOZh51+TZvW0YQ8Ck0
+         aLn5KjCQKZ3Gd/aFzV5L2DQfyiqU8ujb9Iv4xSapyMw6tqW4tt5JwZPpcrPnOA8PiwaE
+         0yOlSql13qvWzpkdNz/tyd6HeetzNbv+eay/5/xjytCtAkIYMyDbb9Uefd2mAG3NGm2+
+         EaVE9UW+LkFfgx1Zg5Rp6RueZCf8/5881/TkICwUazyXDTk14I4cs6dLDvr0xHFNjtcl
+         EisA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=R5bZU73kxT5M1JMsvuGC6Lo9dJE8hXmdkV8EdjzvhWs=;
-        b=uBdBV8tqoVhN0Tn7s7tHbqPu2ojXWCx1/PTT5InsOwnSdUFJHlxRYf4rIwxnNVXG4B
-         xqYU8yFtYcyHt2K0Dvxf1Damzu8jC4ML+N16oIXqDE5O+n5MqvAwa60X4sRxd9I5+ZDs
-         /sBXy3Zl9ZNn0KrnM+7rrqI1cn+e3sz8Tm/p/eop90NpYjDhLqbjqk2qutgqvrUOdxVl
-         t41ByJGMfyVAlkuvUMvzuVZ98sJcMz68GlsJzaqDQVuFc4JclgJAy121ScMBa3dDXN8g
-         lsVbChPMO1c7Sz99AttC8ge09AyjrvMK4J+kekyEKiNfz8BlWK6JxquF6FrQGn5EcnBF
-         8lwA==
-X-Gm-Message-State: AOAM531i506YY29fEeYbQpjsBx7iVPG5cygixkD9QpPUnnpbO13mUcmU
-        YTSvOlVCUFCTEa4FLKTOhWE9xQ==
-X-Google-Smtp-Source: ABdhPJyhdfGUmrtF4d7P3vciFQvDcpZfiGbqTTuoOSU/tp9T2pBra1bNvwYIGOrWZFGbTtCfW3Nx+Q==
-X-Received: by 2002:a1c:5986:: with SMTP id n128mr8694473wmb.112.1594825600839;
-        Wed, 15 Jul 2020 08:06:40 -0700 (PDT)
+        bh=Neuk7hlxyMHOEJZl+c3Ce+fuWuJ+zLYxzzvecm8U2ZQ=;
+        b=DnA1Rp5kxkxeDM+W4srP7F0Z4RTuP0iYepvzh0IjNYMozsKQsqdGk933AInREjEvvs
+         2KPz9DPiYAXbRRDs3wW7cYSsoCQOPiaJof4hgGv0YHFOAeR21CeAEfXEyb5FrjrBS8FQ
+         ZzD4UAPG05auv54CIBQmTATY39esIM2MZHheTuszc1KiShLRjtp5JSQuFjjWrkm+Ui4x
+         aCS2ynSG033tP9qjJ/Xgdhzr6V9vQWplQpyvQWFFoUEtCLrokZ++IPbnXteqxdTApW2o
+         btX8n7D+mds0hzGhqyThBIczuqpaOrhHvcNmzBAmPCagf8XM/243YV3i/D7JtRHoH9eB
+         pKww==
+X-Gm-Message-State: AOAM530RpuKkHLvDdPVLzZ4s2WkVJsHVe8wB1U7glz5J0ptkJs/yoBo1
+        cZyvn8tlpWAcKs5eM355YsM84w==
+X-Google-Smtp-Source: ABdhPJyhQwehdC5E5vWdp2tq0inGEyTI0AsEuhIDReVDRKACyOC/THNq1DETNswb/m5QQ3kSVY3afQ==
+X-Received: by 2002:a1c:7315:: with SMTP id d21mr8770056wmb.108.1594825602210;
+        Wed, 15 Jul 2020 08:06:42 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id w2sm3906140wrs.77.2020.07.15.08.06.39
+        by smtp.gmail.com with ESMTPSA id w2sm3906140wrs.77.2020.07.15.08.06.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 08:06:40 -0700 (PDT)
+        Wed, 15 Jul 2020 08:06:41 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-spi@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
         Kevin Hilman <khilman@baylibre.com>,
-        Beniamino Galvani <b.galvani@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
         linux-amlogic@lists.infradead.org
-Subject: [PATCH 05/14] spi: spi-meson-spifc: Fix misdocumenting of 'dev' in 'struct meson_spifc'
-Date:   Wed, 15 Jul 2020 16:06:23 +0100
-Message-Id: <20200715150632.409077-6-lee.jones@linaro.org>
+Subject: [PATCH 06/14] spi: spi-meson-spicc: Remove set but never used variable 'data' from meson_spicc_reset_fifo()
+Date:   Wed, 15 Jul 2020 16:06:24 +0100
+Message-Id: <20200715150632.409077-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200715150632.409077-1-lee.jones@linaro.org>
 References: <20200715150632.409077-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Looks like it hasn't ever been checked.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/spi/spi-meson-spifc.c:80: warning: Function parameter or member 'dev' not described in 'meson_spifc'
+ drivers/spi/spi-meson-spicc.c: In function ‘meson_spicc_reset_fifo’:
+ drivers/spi/spi-meson-spicc.c:365:6: warning: variable ‘data’ set but not used [-Wunused-but-set-variable]
+ 365 | u32 data;
+ | ^~~~
 
 Cc: Kevin Hilman <khilman@baylibre.com>
-Cc: Beniamino Galvani <b.galvani@gmail.com>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
 Cc: linux-amlogic@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/spi/spi-meson-spifc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-meson-spicc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-meson-spifc.c b/drivers/spi/spi-meson-spifc.c
-index c7b0399802913..8eca6f24cb799 100644
---- a/drivers/spi/spi-meson-spifc.c
-+++ b/drivers/spi/spi-meson-spifc.c
-@@ -70,7 +70,7 @@
-  * @master:	the SPI master
-  * @regmap:	regmap for device registers
-  * @clk:	input clock of the built-in baud rate generator
-- * @device:	the device structure
-+ * @dev:	the device structure
-  */
- struct meson_spifc {
- 	struct spi_master *master;
+diff --git a/drivers/spi/spi-meson-spicc.c b/drivers/spi/spi-meson-spicc.c
+index 77f7d0e0e46ad..ecba6b4a5d85d 100644
+--- a/drivers/spi/spi-meson-spicc.c
++++ b/drivers/spi/spi-meson-spicc.c
+@@ -362,8 +362,6 @@ static void meson_spicc_setup_xfer(struct meson_spicc_device *spicc,
+ 
+ static void meson_spicc_reset_fifo(struct meson_spicc_device *spicc)
+ {
+-	u32 data;
+-
+ 	if (spicc->data->has_oen)
+ 		writel_bits_relaxed(SPICC_ENH_MAIN_CLK_AO,
+ 				    SPICC_ENH_MAIN_CLK_AO,
+@@ -373,7 +371,7 @@ static void meson_spicc_reset_fifo(struct meson_spicc_device *spicc)
+ 			    spicc->base + SPICC_TESTREG);
+ 
+ 	while (meson_spicc_rxready(spicc))
+-		data = readl_relaxed(spicc->base + SPICC_RXDATA);
++		readl_relaxed(spicc->base + SPICC_RXDATA);
+ 
+ 	if (spicc->data->has_oen)
+ 		writel_bits_relaxed(SPICC_ENH_MAIN_CLK_AO, 0,
 -- 
 2.25.1
 
