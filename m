@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03E0220244
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F67422024F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgGOCTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 22:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgGOCTs (ORCPT
+        id S1728314AbgGOCWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 22:22:32 -0400
+Received: from kernel.crashing.org ([76.164.61.194]:36952 "EHLO
+        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgGOCWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 22:19:48 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7090DC061755;
-        Tue, 14 Jul 2020 19:19:48 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B61L81L3Hz9sQt;
-        Wed, 15 Jul 2020 12:19:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1594779584;
-        bh=+IIpIm5NBf0FLv1htcwiZDfeAADjuxvH47Lc0Ejtq2Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J+AcP4twDPUf7D3brcjpb2DpRsznmMk+CLVEFTrsUO9Ji+U8fVuT0SNBqrFT9hEvS
-         FsawEyHoGcwyCrM98PfdwyQj3qamcqRdlQQv0DRlF0RDE2IkhB5YuCj7HGCtZk+Wua
-         84syc2Qhj326ydHFFS5bBx9o0JVdSr7P8Jrw4tnEMParhSna+26dVQuk3AOCgLTryG
-         0lvYRtA5rMznfCP2LCLcdoze16ghklSs0tyWJJIEBoVVrdXWh32Y0ThO4kmy+yYhvI
-         iSkeSD6CTuhFd3M1LvF9ZaYRGkZbXGKkDeHK3GniAHtcnobwmpC4+tp31Lg/ogDXwR
-         3qOhRN9xa3FSg==
-Date:   Wed, 15 Jul 2020 12:19:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Guo Xuenan <guoxuenan@huawei.com>, axboe@kernel.dk,
-        linux-block@vger.kernel.org, wangli74@huawei.com,
-        fangwei1@huawei.com, ming.lei@redhat.com, josef@toxicpanda.com,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] blk-rq-qos: remove redundant finish_wait to
- rq_qos_wait.
-Message-ID: <20200715121942.33bb34d8@canb.auug.org.au>
-In-Reply-To: <20200714232123.GA49251@lca.pw>
-References: <20200628135625.3396636-1-guoxuenan@huawei.com>
-        <20200714232123.GA49251@lca.pw>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.aioA6X+ig3cO9mw.DyZQFf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Tue, 14 Jul 2020 22:22:31 -0400
+Received: from localhost (gate.crashing.org [63.228.1.57])
+        (authenticated bits=0)
+        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 06F2JlC0001315
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 14 Jul 2020 21:19:51 -0500
+Message-ID: <2629240c07af7fec5989127ed6da405e12cf77a3.camel@kernel.crashing.org>
+Subject: Re: [RFC PATCH 00/35] Move all PCIBIOS* definitions into arch/x86
+From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        bjorn@helgaas.com, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Toan Le <toan@os.amperecomputing.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Kjetil Oftedal <oftedal@gmail.com>
+Date:   Wed, 15 Jul 2020 12:19:46 +1000
+In-Reply-To: <20200714234625.GA428442@bjorn-Precision-5520>
+References: <20200714234625.GA428442@bjorn-Precision-5520>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.aioA6X+ig3cO9mw.DyZQFf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2020-07-14 at 18:46 -0500, Bjorn Helgaas wrote:
+> Yes.  I have no problem with that.  There are a few cases where it's
+> important to check for errors, e.g., we read a status register and do
+> something based on a bit being set.  A failure will return all bits
+> set, and we may do the wrong thing.  But most of the errors we care
+> about will be on MMIO reads, not config reads, so we can probably
+> ignore most config read errors.
 
-Hi all,
+And in both cases, we don't have the plumbing to provide accurate
+and reliable error returns for all platforms anyways (esp. not for
+MMIO).
 
-On Tue, 14 Jul 2020 19:21:24 -0400 Qian Cai <cai@lca.pw> wrote:
->
-> On Sun, Jun 28, 2020 at 09:56:25AM -0400, Guo Xuenan wrote:
-> > It is no need do finish_wait twice after acquiring inflight.
-> >=20
-> > Signed-off-by: Guo Xuenan <guoxuenan@huawei.com>
-> > ---
-> >  block/blk-rq-qos.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> >=20
-> > diff --git a/block/blk-rq-qos.c b/block/blk-rq-qos.c
-> > index 656460636ad3..18f3eab9f768 100644
-> > --- a/block/blk-rq-qos.c
-> > +++ b/block/blk-rq-qos.c
-> > @@ -273,8 +273,6 @@ void rq_qos_wait(struct rq_wait *rqw, void *private=
-_data,
-> >  		if (data.got_token)
-> >  			break;
-> >  		if (!has_sleeper && acquire_inflight_cb(rqw, private_data)) {
-> > -			finish_wait(&rqw->wait, &data.wq);
-> > -
-> >  			/*
-> >  			 * We raced with wbt_wake_function() getting a token,
-> >  			 * which means we now have two. Put our local token
-> > --=20
-> > 2.25.4 =20
->=20
-> Reverting this commit fixed an issue that swapping workloads will stall f=
-or
-> days without being able to make any progress below.
+I think it makes sense to stick to the good old "if all 1's, then go
+out of line" including for config space.
 
-I have reverted that commit from linux-next today.
+ ../..
 
---=20
+> Yep, except for things like device removal or other PCI errors.
+
+A whole bunch of these are reported asynchronously, esp for writes (and
+yes, including config writes, they are supposed to be non-posted but
+more often than not, the path  from the CPU to the PCI bridge remains
+posted for writes including config ones).
+
+> So maybe a good place to start is by removing some of the useless
+> error checking for pci_read_config_*() and pci_write_config_*().
+> That's a decent-sized but not impractical project that could be done
+> per subsystem or something:
+> 
+>   git grep -E "(if|return|=).*\<pci_(read|write)_config" drivers
+> 
+> finds about 400 matches.
+> 
+> Some of those callers probably really *do* want to check for errors,
+> and I guess we'd have to identify them and do them separately as you
+> mentioned.
+
+I'd be curious about these considering how unreliable our error return
+is accross the board.
+
 Cheers,
-Stephen Rothwell
+Ben.
 
---Sig_/.aioA6X+ig3cO9mw.DyZQFf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8OZ78ACgkQAVBC80lX
-0GybOAgAnpJviyuvglPkeY5E4Ah0HAPdrEr3GmaaWUxS8v+D1qxs3u8/Jd8UhPOP
-I8nZsL3u41jxUzFtn8jMy8b3/8k+BbZej+aRXwLIg6O42YS/40AfX+SYvOnMp0n3
-mD9joEL0hUoqvpZSWfPRLWzgqvzF7KLCKY9wyvB+f5xQDrzftY67u+4J6A9YyG5Z
-AvsUetVrt2SvOpxavgjs9YyHE/XDC5CPAy7QnDyZUu0Y7RC9ndoGcNOYtZrQ9BjZ
-e1tisxXkROR0IUSAQv9x/xExKLj4uUi4Z0RDdHD5lWuokOUZi6WA6XRORqgfFbRW
-uJPi45PylXE4PrzRYnZKEghPtTmyKA==
-=KgD5
------END PGP SIGNATURE-----
-
---Sig_/.aioA6X+ig3cO9mw.DyZQFf--
