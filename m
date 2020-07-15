@@ -2,253 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621DB2210D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31A32210DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 17:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgGOPZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 11:25:42 -0400
-Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:15034 "EHLO
-        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725798AbgGOPZj (ORCPT
+        id S1726827AbgGOP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 11:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726425AbgGOP0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 11:25:39 -0400
-From:   Peter Enderborg <peter.enderborg@sony.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-CC:     Peter Enderborg <peter.enderborg@sony.com>
-Subject: [PATCH 2/2] debugfs: Add access restriction option
-Date:   Wed, 15 Jul 2020 17:25:29 +0200
-Message-ID: <20200715152529.11223-3-peter.enderborg@sony.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200715152529.11223-1-peter.enderborg@sony.com>
-References: <20200617133738.6631-1-peter.enderborg@sony.com>
- <20200715152529.11223-1-peter.enderborg@sony.com>
+        Wed, 15 Jul 2020 11:26:12 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF99DC061755;
+        Wed, 15 Jul 2020 08:26:11 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id 12so2509573oir.4;
+        Wed, 15 Jul 2020 08:26:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4u0MYE5Hv4MZlWDF0+ytXg/Vh8b5Piy9y2hJOynhogo=;
+        b=YBmd4Z/FA3zV0n93TF3jJ85Cupe79N4fRRDu3keVic1IjVfEC2I2qRO1URuvKUxh81
+         uPXcz/CNeRcvb4Jlg+Ujq59fbYcXe86CQTAJrhJf838Z5ZQT4p/fbZnX0iDId0UX+70G
+         VT4w6MPcUPZg1Qs7DfliKEbO2u/1vORQFraIRU2/SGxil8Ni5Tg/qnLCb3t7Gl7PAveq
+         TixNPVrmORBGYetOV4E2wRlKko0Kp+rCAcYU2guLnJY7dg0Npmm7rODq+FOW+DWplPlt
+         LJK/C7Q4Kl2aj/bm4mGa7njGcQdhtx48alzGH/eYYhus8Xek6vFoTVuako2jo6/5gItE
+         GsnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4u0MYE5Hv4MZlWDF0+ytXg/Vh8b5Piy9y2hJOynhogo=;
+        b=OX0sex9V4OMjYcmFsCGG4yAogbKuCvOYEkx+334WnQ3P98KmfdmqNuMdqqJ7T0OtN5
+         D4fQ06tDfzzOCu319EW1gWEDj7sm69XJp3PLWxK8RxRM3qmPQUvoXdpTKmY1IFye1BzB
+         0AVK5zmDM18zWls9hbVadGXexORv2xSzECcNSBg9w5wmnad62TPsrPBXd50FewP3/LOZ
+         3AgJ5JiVAS7YVI12wiOfV8xqC5VYrvLEKSBKm64xui1xqXHr5l3KjWlGe+eZ7Ua4iRR/
+         pL/+cl4geTiWRFU9yzv2Yuvs91IegTUgrBwm+J7vqrVr98JjvEPxcZbgpDinYGy50bb3
+         cmew==
+X-Gm-Message-State: AOAM530h9sOS+lgHSwH7zKvSueKeEUsxclakhGa51Xe7kVpyZIU3GAIV
+        WsLUIjwNsZlLwRxSypY9wEHa9ChJxGMF2s+QYtY=
+X-Google-Smtp-Source: ABdhPJyvP5/WOrJAQhh5gAFgy3OCO1l0+YuNhb0lE44rireuqmPWrg9uu4/Zd/ksXagftdMRIRBf2ykLxj9iBGqHWJc=
+X-Received: by 2002:aca:4a04:: with SMTP id x4mr205534oia.152.1594826770975;
+ Wed, 15 Jul 2020 08:26:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=CszBjUwD c=1 sm=1 tr=0 a=Jtaq2Av1iV2Yg7i8w6AGMw==:117 a=_RQrkK6FrEwA:10 a=z6gsHLkEAAAA:8 a=VrXpv0pnXvPFombwIUYA:9 a=d-OLMTCWyvARjPbQ-enb:22
-X-SEG-SpamProfiler-Score: 0
+References: <20200627105437.453053-1-apusaka@google.com> <20200627185320.RFC.v1.1.Icea550bb064a24b89f2217cf19e35b4480a31afd@changeid>
+ <91CFE951-262A-4E83-8550-25445AE84B5A@holtmann.org> <CAJQfnxFSfbUbPLVC-be41TqNXzr_6hLq2z=u521HL+BqxLHn_Q@mail.gmail.com>
+ <7BBB55E0-FBD9-40C0-80D9-D5E7FC9F80D2@holtmann.org> <CALWDO_Vrn_pXMbkXifKFazha7BYPqLpCthqHOb9ZmVE3wDRMfA@mail.gmail.com>
+ <CALWDO_X5JuDaugE-s2uaBu9DCn2gBxq22JBmq+HxmKhznFoPdA@mail.gmail.com>
+In-Reply-To: <CALWDO_X5JuDaugE-s2uaBu9DCn2gBxq22JBmq+HxmKhznFoPdA@mail.gmail.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Wed, 15 Jul 2020 08:25:54 -0700
+Message-ID: <CABBYNZ+nF+2hn2HmEep7v-iUN-Ezh=NRg2bwJULFWT8q83iGwA@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 1/2] Bluetooth: queue ACL packets if no handle is found
+To:     Alain Michaud <alainmichaud@google.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Archie Pusaka <apusaka@google.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since debugfs include sensitive information it need to be treated
-carefully. But it also has many very useful debug functions for userspace.
-With this option we can have same configuration for system with
-need of debugfs and a way to turn it off. This gives a extra protection
-for exposure on systems where user-space services with system
-access are attacked.
+Hi Alain,
 
-It is controlled by a configurable default value that can be override
-with a kernel command line parameter. (debugfs=)
+On Wed, Jul 15, 2020 at 8:10 AM Alain Michaud <alainmichaud@google.com> wro=
+te:
+>
+> Resending in plain text.
 
-It can be on or off, but also internally on but not seen from user-space.
-This no-mount mode do not register a debugfs as filesystem, but client can
-register their parts in the internal structures. This data can be readed
-with a debugger or saved with a crashkernel. When it is off clients
-get EPERM error when accessing the functions for registering their
-components.
+I've sent a RFC to work out the ordering, that should work out for any
+race where it process ACL before Events during a polling interval
+(1ms) so I hope that is enough to catch all these races, if that is
+not perhaps we could make the interval configurable.
 
-Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
----
- .../admin-guide/kernel-parameters.txt         | 15 ++++++++
- fs/debugfs/inode.c                            | 37 +++++++++++++++++++
- fs/debugfs/internal.h                         | 14 +++++++
- lib/Kconfig.debug                             | 32 ++++++++++++++++
- 4 files changed, 98 insertions(+)
+>
+> On Wed, Jul 15, 2020 at 9:56 AM Alain Michaud <alainmichaud@google.com> w=
+rote:
+> >
+> > Hi Marcel,
+> >
+> > Sorry, just got around to this.
+> >
+> > On Tue, Jun 30, 2020 at 2:55 AM Marcel Holtmann <marcel@holtmann.org> w=
+rote:
+> >>
+> >> Hi Archie,
+> >>
+> >> >>> There is a possibility that an ACL packet is received before we
+> >> >>> receive the HCI connect event for the corresponding handle. If thi=
+s
+> >> >>> happens, we discard the ACL packet.
+> >> >>>
+> >> >>> Rather than just ignoring them, this patch provides a queue for
+> >> >>> incoming ACL packet without a handle. The queue is processed when
+> >> >>> receiving a HCI connection event. If 2 seconds elapsed without
+> >> >>> receiving the HCI connection event, assume something bad happened
+> >> >>> and discard the queued packet.
+> >> >>>
+> >> >>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> >> >>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> >> >>
+> >> >> so two things up front. I want to hide this behind a HCI_QUIRK_OUT_=
+OF_ORDER_ACL that a transport driver has to set first. Frankly if this kind=
+ of out-of-order happens on UART or SDIO transports, then something is obvi=
+ously going wrong. I have no plan to fix up after a fully serialized transp=
+ort.
+> >> >>
+> >> >> Secondly, if a transport sets HCI_QUIRK_OUT_OF_ORDER_ACL, then I wa=
+nt this off by default. You can enable it via an experimental setting. The =
+reason here is that we have to make it really hard and fail as often as pos=
+sible so that hardware manufactures and spec writers realize that something=
+ is fundamentally broken here.
+> >
+> > I don't have any objection to making this explicit enable to non serial=
+ized transports.  However, I do wonder what the intention is around making =
+this off by default.  We already know there is a race condition between the=
+ interupt and bulk endpoints over USB, so this can and does happen.  Hardwa=
+re manufaturers can't relly do much about this other than trying to pull th=
+e interupt endpoint more often, but that's only a workaround, it can't avoi=
+d it all together.
+> >
+> > IMO, this seems like a legitimate fix at the host level and I don't see=
+ any obvious benefits to hide this fix under an experimental feature and ma=
+ke it more difficult for the customers and system integrators to discover.
+> >
+> >>
+> >> >>
+> >> >> I have no problem in running the code and complaining loudly in cas=
+e the quirk has been set. Just injecting the packets can only happen if blu=
+etoothd explicitly enabled it.
+> >> >
+> >> > Got it.
+> >> >
+> >> >>
+> >> >>
+> >> >>>
+> >> >>> ---
+> >> >>>
+> >> >>> include/net/bluetooth/hci_core.h |  8 +++
+> >> >>> net/bluetooth/hci_core.c         | 84 ++++++++++++++++++++++++++++=
++---
+> >> >>> net/bluetooth/hci_event.c        |  2 +
+> >> >>> 3 files changed, 88 insertions(+), 6 deletions(-)
+> >> >>>
+> >> >>> diff --git a/include/net/bluetooth/hci_core.h b/include/net/blueto=
+oth/hci_core.h
+> >> >>> index 836dc997ff94..b69ecdd0d15a 100644
+> >> >>> --- a/include/net/bluetooth/hci_core.h
+> >> >>> +++ b/include/net/bluetooth/hci_core.h
+> >> >>> @@ -270,6 +270,9 @@ struct adv_monitor {
+> >> >>> /* Default authenticated payload timeout 30s */
+> >> >>> #define DEFAULT_AUTH_PAYLOAD_TIMEOUT   0x0bb8
+> >> >>>
+> >> >>> +/* Time to keep ACL packets without a corresponding handle queued=
+ (2s) */
+> >> >>> +#define PENDING_ACL_TIMEOUT          msecs_to_jiffies(2000)
+> >> >>> +
+> >> >>
+> >> >> Do we have some btmon traces with timestamps. Isn=E2=80=99t a secon=
+d enough? Actually 2 seconds is an awful long time.
+> >> >
+> >> > When this happens in the test lab, the HCI connect event is about
+> >> > 0.002 second behind the first ACL packet. We can change this if
+> >> > required.
+> >> >
+> >> >>
+> >> >>> struct amp_assoc {
+> >> >>>      __u16   len;
+> >> >>>      __u16   offset;
+> >> >>> @@ -538,6 +541,9 @@ struct hci_dev {
+> >> >>>      struct delayed_work     rpa_expired;
+> >> >>>      bdaddr_t                rpa;
+> >> >>>
+> >> >>> +     struct delayed_work     remove_pending_acl;
+> >> >>> +     struct sk_buff_head     pending_acl_q;
+> >> >>> +
+> >> >>
+> >> >> can we name this ooo_q and move it to the other queues in this stru=
+ct. Unless we want to add a Kconfig option around it, we don=E2=80=99t need=
+ to keep it here.
+> >> >
+> >> > Ack.
+> >> >
+> >> >>
+> >> >>> #if IS_ENABLED(CONFIG_BT_LEDS)
+> >> >>>      struct led_trigger      *power_led;
+> >> >>> #endif
+> >> >>> @@ -1773,6 +1779,8 @@ void hci_le_start_enc(struct hci_conn *conn,=
+ __le16 ediv, __le64 rand,
+> >> >>> void hci_copy_identity_address(struct hci_dev *hdev, bdaddr_t *bda=
+ddr,
+> >> >>>                             u8 *bdaddr_type);
+> >> >>>
+> >> >>> +void hci_process_pending_acl(struct hci_dev *hdev, struct hci_con=
+n *conn);
+> >> >>> +
+> >> >>> #define SCO_AIRMODE_MASK       0x0003
+> >> >>> #define SCO_AIRMODE_CVSD       0x0000
+> >> >>> #define SCO_AIRMODE_TRANSP     0x0003
+> >> >>> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> >> >>> index 7959b851cc63..30780242c267 100644
+> >> >>> --- a/net/bluetooth/hci_core.c
+> >> >>> +++ b/net/bluetooth/hci_core.c
+> >> >>> @@ -1786,6 +1786,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
+> >> >>>      skb_queue_purge(&hdev->rx_q);
+> >> >>>      skb_queue_purge(&hdev->cmd_q);
+> >> >>>      skb_queue_purge(&hdev->raw_q);
+> >> >>> +     skb_queue_purge(&hdev->pending_acl_q);
+> >> >>>
+> >> >>>      /* Drop last sent command */
+> >> >>>      if (hdev->sent_cmd) {
+> >> >>> @@ -3518,6 +3519,78 @@ static int hci_suspend_notifier(struct noti=
+fier_block *nb, unsigned long action,
+> >> >>>      return NOTIFY_STOP;
+> >> >>> }
+> >> >>>
+> >> >>> +static void hci_add_pending_acl(struct hci_dev *hdev, struct sk_b=
+uff *skb)
+> >> >>> +{
+> >> >>> +     skb_queue_tail(&hdev->pending_acl_q, skb);
+> >> >>> +
+> >> >>> +     queue_delayed_work(hdev->workqueue, &hdev->remove_pending_ac=
+l,
+> >> >>> +                        PENDING_ACL_TIMEOUT);
+> >> >>> +}
+> >> >>> +
+> >> >>> +void hci_process_pending_acl(struct hci_dev *hdev, struct hci_con=
+n *conn)
+> >> >>> +{
+> >> >>> +     struct sk_buff *skb, *tmp;
+> >> >>> +     struct hci_acl_hdr *hdr;
+> >> >>> +     u16 handle, flags;
+> >> >>> +     bool reset_timer =3D false;
+> >> >>> +
+> >> >>> +     skb_queue_walk_safe(&hdev->pending_acl_q, skb, tmp) {
+> >> >>> +             hdr =3D (struct hci_acl_hdr *)skb->data;
+> >> >>> +             handle =3D __le16_to_cpu(hdr->handle);
+> >> >>> +             flags  =3D hci_flags(handle);
+> >> >>> +             handle =3D hci_handle(handle);
+> >> >>> +
+> >> >>> +             if (handle !=3D conn->handle)
+> >> >>> +                     continue;
+> >> >>> +
+> >> >>> +             __skb_unlink(skb, &hdev->pending_acl_q);
+> >> >>> +             skb_pull(skb, HCI_ACL_HDR_SIZE);
+> >> >>> +
+> >> >>> +             l2cap_recv_acldata(conn, skb, flags);
+> >> >>> +             reset_timer =3D true;
+> >> >>> +     }
+> >> >>> +
+> >> >>> +     if (reset_timer)
+> >> >>> +             mod_delayed_work(hdev->workqueue, &hdev->remove_pend=
+ing_acl,
+> >> >>> +                              PENDING_ACL_TIMEOUT);
+> >> >>> +}
+> >> >>> +
+> >> >>> +/* Remove the oldest pending ACL, and all pending ACLs with the s=
+ame handle */
+> >> >>> +static void hci_remove_pending_acl(struct work_struct *work)
+> >> >>> +{
+> >> >>> +     struct hci_dev *hdev;
+> >> >>> +     struct sk_buff *skb, *tmp;
+> >> >>> +     struct hci_acl_hdr *hdr;
+> >> >>> +     u16 handle, oldest_handle;
+> >> >>> +
+> >> >>> +     hdev =3D container_of(work, struct hci_dev, remove_pending_a=
+cl.work);
+> >> >>> +     skb =3D skb_dequeue(&hdev->pending_acl_q);
+> >> >>> +
+> >> >>> +     if (!skb)
+> >> >>> +             return;
+> >> >>> +
+> >> >>> +     hdr =3D (struct hci_acl_hdr *)skb->data;
+> >> >>> +     oldest_handle =3D hci_handle(__le16_to_cpu(hdr->handle));
+> >> >>> +     kfree_skb(skb);
+> >> >>> +
+> >> >>> +     bt_dev_err(hdev, "ACL packet for unknown connection handle %=
+d",
+> >> >>> +                oldest_handle);
+> >> >>> +
+> >> >>> +     skb_queue_walk_safe(&hdev->pending_acl_q, skb, tmp) {
+> >> >>> +             hdr =3D (struct hci_acl_hdr *)skb->data;
+> >> >>> +             handle =3D hci_handle(__le16_to_cpu(hdr->handle));
+> >> >>> +
+> >> >>> +             if (handle =3D=3D oldest_handle) {
+> >> >>> +                     __skb_unlink(skb, &hdev->pending_acl_q);
+> >> >>> +                     kfree_skb(skb);
+> >> >>> +             }
+> >> >>> +     }
+> >> >>> +
+> >> >>> +     if (!skb_queue_empty(&hdev->pending_acl_q))
+> >> >>> +             queue_delayed_work(hdev->workqueue, &hdev->remove_pe=
+nding_acl,
+> >> >>> +                                PENDING_ACL_TIMEOUT);
+> >> >>> +}
+> >> >>> +
+> >> >>
+> >> >> So I am wondering if we make this too complicated. Since generally =
+speaking we can only have a single HCI connect complete anyway at a time. N=
+o matter if the controller serializes it for us or we do it for the control=
+ler. So hci_conn_add could just process the queue for packets with its hand=
+le and then flush it. And it can flush it no matter what since whatever oth=
+er packets are in the queue, they can not be valid.
+> >> >>
+> >> >> That said, we wouldn=E2=80=99t even need to check the packet handle=
+s at all. We just needed to flag them as already out-of-order queued once a=
+nd hand them back into the rx_q at the top. Then the would be processed as =
+usual. Already ooo packets would cause the same error as before if it is fo=
+r a non-existing handle and others would end up being processed.
+> >> >>
+> >> >> For me this means we just need another queue to park the packets un=
+til hci_conn_add gets called. I might have missed something, but I am looki=
+ng for the least invasive option for this and least code duplication.
+> >> >
+> >> > I'm not aware of the fact that we can only have a single HCI connect
+> >> > complete event at any time. Is this also true even if two / more
+> >> > peripherals connect at the same time?
+> >> > I was under the impression that if we have device A and B both are
+> >> > connecting to us at the same time, we might receive the packets in
+> >> > this order:
+> >> > (1) ACL A
+> >> > (2) ACL B
+> >> > (3) HCI conn evt B
+> >> > (4) HCI conn evt A
+> >> > Hence the queue and the handle check.
+> >>
+> >> my reading from the LL state machine is that once the first LL_Connect=
+_Req is processes, the controller moves out of the advertising state. So no=
+ other LL_Connect_Req can be processed. So that means that connection attem=
+pts are serialized.
+> >>
+> >> Now if you run AE and multiple instances, that might be different, but=
+ then again, these instances are also offset in time and so I don=E2=80=99t=
+ see how we can get more than one HCI_Connection_Complete event at a time (=
+and with that a leading ACL packet).
+> >>
+> >> Regards
+> >>
+> >> Marcel
+> >>
+> >> --
+> >> You received this message because you are subscribed to the Google Gro=
+ups "ChromeOS Bluetooth Upstreaming" group.
+> >> To unsubscribe from this group and stop receiving emails from it, send=
+ an email to chromeos-bluetooth-upstreaming+unsubscribe@chromium.org.
+> >> To post to this group, send email to chromeos-bluetooth-upstreaming@ch=
+romium.org.
+> >> To view this discussion on the web visit https://groups.google.com/a/c=
+hromium.org/d/msgid/chromeos-bluetooth-upstreaming/7BBB55E0-FBD9-40C0-80D9-=
+D5E7FC9F80D2%40holtmann.org.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index fb95fad81c79..779d6cdc9627 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -827,6 +827,21 @@
- 			useful to also enable the page_owner functionality.
- 			on: enable the feature
- 
-+	debugfs=    	[KNL] This parameter enables what is exposed to userspace
-+			and debugfs internal clients.
-+			Format: { on, no-mount, off }
-+			on: 	All functions are enabled.
-+			no-mount:
-+				Filesystem is not registered but kernel clients can
-+			        access APIs and a crashkernel can be used to read
-+				its content. There is nothing to mount.
-+			off: 	Filesystem is not registered and clients
-+			        get a -EPERM as result when trying to register files
-+				or directories within debugfs.
-+				This is equilivant of the runtime functionality if
-+				debugfs was not enabled in the kernel at all.
-+			Default value is set in build-time with a kernel configuration.
-+
- 	debugpat	[X86] Enable PAT debugging
- 
- 	decnet.addr=	[HW,NET]
-diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
-index b7f2e971ecbc..02d08b17d0e6 100644
---- a/fs/debugfs/inode.c
-+++ b/fs/debugfs/inode.c
-@@ -35,6 +35,7 @@
- static struct vfsmount *debugfs_mount;
- static int debugfs_mount_count;
- static bool debugfs_registered;
-+static unsigned int debugfs_allow = DEFAULT_DEBUGFS_ALLOW_BITS;
- 
- /*
-  * Don't allow access attributes to be changed whilst the kernel is locked down
-@@ -266,6 +267,9 @@ static struct dentry *debug_mount(struct file_system_type *fs_type,
- 			int flags, const char *dev_name,
- 			void *data)
- {
-+	if (!(debugfs_allow & DEBUGFS_ALLOW_API))
-+		return ERR_PTR(-EPERM);
-+
- 	return mount_single(fs_type, flags, data, debug_fill_super);
- }
- 
-@@ -311,6 +315,9 @@ static struct dentry *start_creating(const char *name, struct dentry *parent)
- 	struct dentry *dentry;
- 	int error;
- 
-+	if (!(debugfs_allow & DEBUGFS_ALLOW_API))
-+		return ERR_PTR(-EPERM);
-+
- 	pr_debug("creating file '%s'\n", name);
- 
- 	if (IS_ERR(parent))
-@@ -385,6 +392,11 @@ static struct dentry *__debugfs_create_file(const char *name, umode_t mode,
- 	if (IS_ERR(dentry))
- 		return dentry;
- 
-+	if (!(debugfs_allow & DEBUGFS_ALLOW_API)) {
-+		failed_creating(dentry);
-+		return ERR_PTR(-EPERM);
-+	}
-+
- 	inode = debugfs_get_inode(dentry->d_sb);
- 	if (unlikely(!inode)) {
- 		pr_err("out of free dentries, can not create file '%s'\n",
-@@ -541,6 +553,11 @@ struct dentry *debugfs_create_dir(const char *name, struct dentry *parent)
- 	if (IS_ERR(dentry))
- 		return dentry;
- 
-+	if (!(debugfs_allow & DEBUGFS_ALLOW_API)) {
-+		failed_creating(dentry);
-+		return ERR_PTR(-EPERM);
-+	}
-+
- 	inode = debugfs_get_inode(dentry->d_sb);
- 	if (unlikely(!inode)) {
- 		pr_err("out of free dentries, can not create directory '%s'\n",
-@@ -583,6 +600,11 @@ struct dentry *debugfs_create_automount(const char *name,
- 	if (IS_ERR(dentry))
- 		return dentry;
- 
-+	if (!(debugfs_allow & DEBUGFS_ALLOW_API)) {
-+		failed_creating(dentry);
-+		return ERR_PTR(-EPERM);
-+	}
-+
- 	inode = debugfs_get_inode(dentry->d_sb);
- 	if (unlikely(!inode)) {
- 		pr_err("out of free dentries, can not create automount '%s'\n",
-@@ -786,10 +808,25 @@ bool debugfs_initialized(void)
- }
- EXPORT_SYMBOL_GPL(debugfs_initialized);
- 
-+static int __init debugfs_kernel(char *str)
-+{
-+	if (str && !strcmp(str, "on"))
-+		debugfs_allow = DEBUGFS_ALLOW_API | DEBUGFS_ALLOW_MOUNT;
-+	if (str && !strcmp(str, "no-mount"))
-+		debugfs_allow = DEBUGFS_ALLOW_API;
-+	if (str && !strcmp(str, "off"))
-+		debugfs_allow = 0;
-+
-+	return 0;
-+}
-+early_param("debugfs", debugfs_kernel);
- static int __init debugfs_init(void)
- {
- 	int retval;
- 
-+	if (!(debugfs_allow & DEBUGFS_ALLOW_MOUNT))
-+		return -EPERM;
-+
- 	retval = sysfs_create_mount_point(kernel_kobj, "debug");
- 	if (retval)
- 		return retval;
-diff --git a/fs/debugfs/internal.h b/fs/debugfs/internal.h
-index 034e6973cead..92af8ae31313 100644
---- a/fs/debugfs/internal.h
-+++ b/fs/debugfs/internal.h
-@@ -29,4 +29,18 @@ struct debugfs_fsdata {
-  */
- #define DEBUGFS_FSDATA_IS_REAL_FOPS_BIT BIT(0)
- 
-+/* Access BITS */
-+#define DEBUGFS_ALLOW_API	BIT(0)
-+#define DEBUGFS_ALLOW_MOUNT	BIT(1)
-+
-+#ifdef CONFIG_DEBUG_FS_ALLOW_ALL
-+#define DEFAULT_DEBUGFS_ALLOW_BITS (DEBUGFS_ALLOW_MOUNT | DEBUGFS_ALLOW_API)
-+#endif
-+#ifdef CONFIG_DEBUG_FS_DISALLOW_MOUNT
-+#define DEFAULT_DEBUGFS_ALLOW_BITS (DEBUGFS_ALLOW_API)
-+#endif
-+#ifdef CONFIG_DEBUG_FS_ALLOW_NONE
-+#define DEFAULT_DEBUGFS_ALLOW_BITS (0)
-+#endif
-+
- #endif /* _DEBUGFS_INTERNAL_H_ */
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 9ad9210d70a1..aec81f38bfce 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -476,6 +476,38 @@ config DEBUG_FS
- 
- 	  If unsure, say N.
- 
-+choice
-+	prompt "Debugfs default access"
-+	depends on DEBUG_FS
-+	default DEBUG_FS_ALLOW_ALL
-+	help
-+	  This select the default access restricions for debugfs.
-+	  It can be overridden with kernel command line option
-+	  debugfs=[on,no-mount,off] The restrictions apply for API access
-+	  and filesystem registration. .
-+
-+config DEBUG_FS_ALLOW_ALL
-+       bool "Access normal"
-+       help
-+	  No restrictions applies. Both API and filesystem registration
-+	  is on. This is the normal default operation.
-+
-+config DEBUG_FS_DISALLOW_MOUNT
-+       bool "Do not register debugfs as filesystem"
-+       help
-+	 The API is open but filesystem not loaded. Client can still do
-+	 their work and readed with debug tools that does not need
-+	 debugfs filesystem.
-+
-+config DEBUG_FS_ALLOW_NONE
-+       bool "No access"
-+       help
-+	  Access is off. Clients get EPERM when trying to create nodes in
-+	  debugfs tree and debugfs is not registred as an filesystem.
-+	  Client can then back-off or continue without debugfs access.
-+
-+endchoice
-+
- source "lib/Kconfig.kgdb"
- 
- source "lib/Kconfig.ubsan"
--- 
-2.17.1
 
+
+--=20
+Luiz Augusto von Dentz
