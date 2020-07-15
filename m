@@ -2,147 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C966C220446
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 07:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093E022046A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 07:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgGOFOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 01:14:00 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:48572 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbgGOFN7 (ORCPT
+        id S1728509AbgGOFm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 01:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725832AbgGOFm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 01:13:59 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200715051355epoutp04d56a71223a471e74396c6110c425cee2~h1RaSa3P-0561505615epoutp04R
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:13:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200715051355epoutp04d56a71223a471e74396c6110c425cee2~h1RaSa3P-0561505615epoutp04R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1594790036;
-        bh=GIdXeG9LsXYkUgrWWOUY0Jh4teDLnJtF0I4YxRoyxug=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=FcSvr06b/VwGObhzcsHaKH9FVcrqbeAuRIYtGSEBqEL1ySn01h1nRaLgxU7Zp1R7I
-         Xx3FN0PN6n1TYmDo7ts7yKpRfQlu4UjqsOCu+jgGPyc2J8ItRNpsQI0EMYM39BloLo
-         Mg8bU3DdbtwARSdJ5w6kcd+okPSQ8Wkv/JwHzaB8=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200715051355epcas1p2f5a139c8dee95e82b27438b02b476bed~h1RZs_KC23061530615epcas1p29;
-        Wed, 15 Jul 2020 05:13:55 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4B65C56WzRzMqYkX; Wed, 15 Jul
-        2020 05:13:53 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B8.46.19033.1909E0F5; Wed, 15 Jul 2020 14:13:53 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200715051353epcas1p46ae6b84555180be315752ef69262dfce~h1RXp0kgP0136901369epcas1p4w;
-        Wed, 15 Jul 2020 05:13:53 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200715051353epsmtrp1a3877c73a7eb2f2b0d5eb26e0b147381~h1RXpMRDq0122501225epsmtrp1B;
-        Wed, 15 Jul 2020 05:13:53 +0000 (GMT)
-X-AuditID: b6c32a36-16fff70000004a59-30-5f0e9091b9b4
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4E.6D.08382.1909E0F5; Wed, 15 Jul 2020 14:13:53 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.105.96]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200715051353epsmtip17fbac96bdc4e0b9c4a65516606bb5d7f~h1RXhq5Rd0927509275epsmtip1e;
-        Wed, 15 Jul 2020 05:13:53 +0000 (GMT)
-From:   Jeehong Kim <jhez.kim@samsung.com>
-To:     jhez.kim@samsung.com, sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dohyung Kim <dh0703.kim@samsung.com>
-Subject: [PATCH] power: supply: add "Wireless" to power_supply_type and
- power_supply_type_text
-Date:   Wed, 15 Jul 2020 14:38:44 +0900
-Message-Id: <20200715053844.12657-1-jhez.kim@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFKsWRmVeSWpSXmKPExsWy7bCmru7ECXzxBltv6Vsc+reb0eLq0UnM
-        Fpd3zWGz+Nx7hNHi9O4SB1aPTas62Tz6tqxi9Pi8SS6AOSrHJiM1MSW1SCE1Lzk/JTMv3VbJ
-        OzjeOd7UzMBQ19DSwlxJIS8xN9VWycUnQNctMwdoo5JCWWJOKVAoILG4WEnfzqYov7QkVSEj
-        v7jEVim1ICWnwNCgQK84Mbe4NC9dLzk/18rQwMDIFKgyISfjy609jAXL+Cqev41pYFzM08XI
-        ySEhYCKx5M9k9i5GLg4hgR2MEtevvWKDcD4xSlz58Y4NpEpI4BujxJ+3lTAdqyb+Y4Qo2sso
-        sb11KlT7Z0aJ2e+3sYNUsQloSNxtvscCYosA2U0N0xlBbGaBJIkNd64D2RwcwgIJEqe680DC
-        LAKqEvuengMr4RWwlLjw6C0zxDJ5idUbDjCDzJcQ6GeXWN13gw0i4SJx588eJghbWOLV8S3s
-        ELaUxMv+NnaoBkaJD2/bobp7gF5Y+ZgVospYorfnAjPIFcwCmhLrd+lDhBUldv6eC3Uon8S7
-        rz2sICUSArwSHW1CEKaSxLFV9hDVEhJPvp+HGughsfz2YyZIYMVKbF0yjX0Co+wshPkLGBlX
-        MYqlFhTnpqcWGxYYIcfRJkZwItIy28E46e0HvUOMTByMhxglOJiVRHh5uHjjhXhTEiurUovy
-        44tKc1KLDzGaAgNsIrOUaHI+MBXmlcQbmhoZGxtbmJiZm5kaK4nz/jvLHi8kkJ5YkpqdmlqQ
-        WgTTx8TBKdXAtGy5+8Gj9id/+93ec2Ae2xY3O47fDPMkvzAvjDxgP6vaxGD+bQamrLcP9Vyv
-        Zd9lEmue/dnBPtCk+PlO3aqW6duzAz96bnom0sRSJb2hPDOsQUFHf/Hy+ff9ZjLzKBwVOfNs
-        auYj6ffxURJZQu3evCuOXGOavJPX73lazK8Zk44uiCyftObtQ6vQSXoXp+7kct1UULxSKlVY
-        gL053q6Cl2vupDscn08ENz/fr++4V/RbzIn/SxxWuK69OW+XpaiaX2ay3KFFHZuapkSVN6R2
-        GWhNWH6jKcRT5nryHYtT7zf6sfIE+C/asmdC27Snusec/l3Z+f1EVlhmUbFIqNmBp5eCdi/d
-        eOxkiJBLicTKfiWW4oxEQy3mouJEAER+QIvNAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBJMWRmVeSWpSXmKPExsWy7bCSnO7ECXzxBpO3sFkc+reb0eLq0UnM
-        Fpd3zWGz+Nx7hNHi9O4SB1aPTas62Tz6tqxi9Pi8SS6AOYrLJiU1J7MstUjfLoEr48utPYwF
-        y/gqnr+NaWBczNPFyMkhIWAisWriP8YuRi4OIYHdjBIfnx1lh0hISBz+cJe1i5EDyBaWOHy4
-        GKLmI6PE+sV3wGrYBDQk7jbfYwGxRQS0JBbf3sUGYjMLpEhsO9oHViMsECfx5uhqMJtFQFVi
-        39NzjCA2r4ClxIVHb5khdslLrN5wgHkCI88CRoZVjJKpBcW56bnFhgWGeanlesWJucWleel6
-        yfm5mxjBgaGluYNx+6oPeocYmTgYDzFKcDArifDycPHGC/GmJFZWpRblxxeV5qQWH2KU5mBR
-        Eue9UbgwTkggPbEkNTs1tSC1CCbLxMEp1cDUsXE+Y8GUqLBckQ/K6ZWxNddXXQxT/hz31LM1
-        k+PAi/RVf2WE1Xdt3iM87fDqT3Vffdj9H7Lk8jX+nBGxqp6ffaKkMKdpSvzvLb8npgqluQV9
-        9HkvvkvnXq6a+bYypWexqmf5k7XDDxlpawe0zpzr8GrfuyWczdPbVj4UEd1s5HpyTeFeB+dH
-        dzRY38Zmv5i/76FLZsz2BUFHX4udmi/Yrl+hqfhgRsr6A9H52bfiK/29D510Cpg9M+Hjzz6n
-        5XH33pxMbCwztMk7nzT9KctX7qWt+7zmb9jF/fZXp6r/1ccc1zfffnTEY+e54grDG5cjjXa6
-        lZ2bOjEz58SMa2p3ynU3Rr1pjJn/kWku165pSizFGYmGWsxFxYkA0Y5iRXsCAAA=
-X-CMS-MailID: 20200715051353epcas1p46ae6b84555180be315752ef69262dfce
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200715051353epcas1p46ae6b84555180be315752ef69262dfce
-References: <CGME20200715051353epcas1p46ae6b84555180be315752ef69262dfce@epcas1p4.samsung.com>
+        Wed, 15 Jul 2020 01:42:26 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D4BC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 22:42:25 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ls15so2507573pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 22:42:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FzipDiDAYZY58rqh2kzcXYBD7EF+tctB+0O3KKzLNz4=;
+        b=d2SmiiK9RFir0tNVLiwsWneH8WEOVeZ1SBJW+gMYBzXE+LjnQ6p9R6IyK72TJZc/nr
+         RQe0LtOvyt7j1XCc6EWFxN1UXLs4CCtGO6FbX+Nj9MTAzMJoid2s0rBvqfagAx5UbhfZ
+         rGs7lWy/xi/JHmW8/b5gE9ZqzLzKFeM/1MIDU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FzipDiDAYZY58rqh2kzcXYBD7EF+tctB+0O3KKzLNz4=;
+        b=pCdns0kzvv5HngMHix35Zst4f81Cylfx4lntlvo6LWSykvEu9MEhCUhjYJYtK4r6Mk
+         wzxn/N6G0DSUya6zqXoBAug6rTcLbawmQrqweeFmeRRhT5ddAIHYplsF5TqjvnPYdVNc
+         L5Z/lTQ55bZ9ACaUHBNuph7TAaLm5G5s7rr7OfEFFZFiLodEaIBxbCtieQS+XECB5Tuv
+         lDzp3owqqwXwn2qvyuOJqw2gaBLuer4WSgtsmyZZg0VmzQBLLZabD3DOsftP15V09j/i
+         Up8gdvBvcMDB3bDdu9EyJ+HkPWEceIMtHKzTfgDdeTlPnn5wGFqCe3Mc8ytTHfP8MBf8
+         gpbQ==
+X-Gm-Message-State: AOAM5337aJXOfxHG2UCywayiunWXFIZ1//mM8PdTIgieVfG64/f3c0t0
+        rjjWcsrZlSSvmDzg+o1z+tZklU/Wabs=
+X-Google-Smtp-Source: ABdhPJxvD/CGXLDT0hjEdAtf/xEuDLiFDB2qJ6qUAUVu6sA05I1lb8+4WPE+6SJFItobQGneIh7org==
+X-Received: by 2002:a17:90a:6702:: with SMTP id n2mr8734214pjj.82.1594791745097;
+        Tue, 14 Jul 2020 22:42:25 -0700 (PDT)
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com. [209.85.210.177])
+        by smtp.gmail.com with ESMTPSA id s10sm4823491pjf.3.2020.07.14.22.42.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Jul 2020 22:42:24 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id z3so1575004pfn.12
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 22:42:24 -0700 (PDT)
+X-Received: by 2002:a05:6602:2008:: with SMTP id y8mr8441205iod.69.1594791376034;
+ Tue, 14 Jul 2020 22:36:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200714124113.20918-1-Sergey.Semin@baikalelectronics.ru> <CAP2xMbvwxYaGPPCDWY2LWUc2te8kS9t-+A0zieYp3RiGMJR6ng@mail.gmail.com>
+In-Reply-To: <CAP2xMbvwxYaGPPCDWY2LWUc2te8kS9t-+A0zieYp3RiGMJR6ng@mail.gmail.com>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Wed, 15 Jul 2020 13:36:04 +0800
+X-Gmail-Original-Message-ID: <CALiNf2-mmC1ueeiQ6xh5BPzCH_ratYPpeW1Rq=EHsA7+e6yK0A@mail.gmail.com>
+Message-ID: <CALiNf2-mmC1ueeiQ6xh5BPzCH_ratYPpeW1Rq=EHsA7+e6yK0A@mail.gmail.com>
+Subject: Re: [PATCH] serial: 8250_mtk: Fix high-speed baud rates clamping
+To:     Daniel Winkler <danielwinkler@google.com>
+Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Aaron Sierra <asierra@xes-inc.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-serial@vger.kernel.org,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        abhishekpandit@chromium.org, stable@vger.kernel.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In android platform(BatteryMonitor.cpp), SysfsStringEnumMap<int>
-supplyTypeMap[] is declred for communication with kernel(sysfs)
-and there is "Wireless". But, no type for "Wireless" in kernel.
-So, we suggest to add "Wireless" to power_supply_type and
-power_supply_type_text.
-I hope this will not only synchronize the text values with
-android platform, but also help other platforms.
-
-Reported-by: Jaeho Song <jaeho21.song@samsung.com>
-Signed-off-by: Dohyung Kim <dh0703.kim@samsung.com>
-Signed-off-by: Jeehong Kim <jhez.kim@samsung.com>
----
- drivers/power/supply/power_supply_sysfs.c | 1 +
- include/linux/power_supply.h              | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
-index bc79560229b5..35582b67eff5 100644
---- a/drivers/power/supply/power_supply_sysfs.c
-+++ b/drivers/power/supply/power_supply_sysfs.c
-@@ -56,6 +56,7 @@ static const char * const POWER_SUPPLY_TYPE_TEXT[] = {
- 	[POWER_SUPPLY_TYPE_USB_PD]		= "USB_PD",
- 	[POWER_SUPPLY_TYPE_USB_PD_DRP]		= "USB_PD_DRP",
- 	[POWER_SUPPLY_TYPE_APPLE_BRICK_ID]	= "BrickID",
-+	[POWER_SUPPLY_TYPE_WIRELESS]		= "Wireless",
- };
-
- static const char * const POWER_SUPPLY_USB_TYPE_TEXT[] = {
-diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
-index ac1345a48ad0..c8bad17a9483 100644
---- a/include/linux/power_supply.h
-+++ b/include/linux/power_supply.h
-@@ -182,6 +182,7 @@ enum power_supply_type {
- 	POWER_SUPPLY_TYPE_USB_PD,		/* Power Delivery Port */
- 	POWER_SUPPLY_TYPE_USB_PD_DRP,		/* PD Dual Role Port */
- 	POWER_SUPPLY_TYPE_APPLE_BRICK_ID,	/* Apple Charging Method */
-+	POWER_SUPPLY_TYPE_WIRELESS,		/* Wireless */
- };
-
-enum power_supply_usb_type {
-
-base-commit: e9919e11e219eaa5e8041b7b1a196839143e9125
---
-2.17.1
-
+On Wed, Jul 15, 2020 at 4:45 AM Daniel Winkler <danielwinkler@google.com> wrote:
+>
+> Thank you Sergey for looking into this. Adding folks working on this
+> platform to perform validation of the proposed patch.
+>
+> Best,
+> Daniel
+>
+> On Tue, Jul 14, 2020 at 5:41 AM Serge Semin
+> <Sergey.Semin@baikalelectronics.ru> wrote:
+> >
+> > Commit 7b668c064ec3 ("serial: 8250: Fix max baud limit in generic 8250
+> > port") fixed limits of a baud rate setting for a generic 8250 port.
+> > In other words since that commit the baud rate has been permitted to be
+> > within [uartclk / 16 / UART_DIV_MAX; uartclk / 16], which is absolutely
+> > normal for a standard 8250 UART port. But there are custom 8250 ports,
+> > which provide extended baud rate limits. In particular the Mediatek 8250
+> > port can work with baud rates up to "uartclk" speed.
+> >
+> > Normally that and any other peculiarity is supposed to be handled in a
+> > custom set_termios() callback implemented in the vendor-specific
+> > 8250-port glue-driver. Currently that is how it's done for the most of
+> > the vendor-specific 8250 ports, but for some reason for Mediatek a
+> > solution has been spread out to both the glue-driver and to the generic
+> > 8250-port code. Due to that a bug has been introduced, which permitted the
+> > extended baud rate limit for all even for standard 8250-ports. The bug
+> > has been fixed by the commit 7b668c064ec3 ("serial: 8250: Fix max baud
+> > limit in generic 8250 port") by narrowing the baud rates limit back down to
+> > the normal bounds. Unfortunately by doing so we also broke the
+> > Mediatek-specific extended bauds feature.
+> >
+> > A fix of the problem described above is twofold. First since we can't get
+> > back the extended baud rate limits feature to the generic set_termios()
+> > function and that method supports only a standard baud rates range, the
+> > requested baud rate must be locally stored before calling it and then
+> > restored back to the new termios structure after the generic set_termios()
+> > finished its magic business. By doing so we still use the
+> > serial8250_do_set_termios() method to set the LCR/MCR/FCR/etc. registers,
+> > while the extended baud rate setting procedure will be performed later in
+> > the custom Mediatek-specific set_termios() callback. Second since a true
+> > baud rate is now fully calculated in the custom set_termios() method we
+> > need to locally update the port timeout by calling the
+> > uart_update_timeout() function. After the fixes described above are
+> > implemented in the 8250_mtk.c driver, the Mediatek 8250-port should
+> > get back to normally working with extended baud rates.
+> >
+> > Link: https://lore.kernel.org/linux-serial/20200701211337.3027448-1-danielwinkler@google.com
+> >
+> > Fixes: 7b668c064ec3 ("serial: 8250: Fix max baud limit in generic 8250 port")
+> > Reported-by: Daniel Winkler <danielwinkler@google.com>
+> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Tested-by: Claire Chang <tientzu@chromium.org>
+> >
+> > ---
+> >
+> > Folks, sorry for a delay with the problem fix. A solution is turned out to
+> > be a bit more complicated than I originally thought in my comment to the
+> > Daniel revert-patch.
+> >
+> > Please also note, that I don't have a Mediatek hardware to test the
+> > solution suggested in the patch. The code is written as on so called
+> > the tip of the pen after digging into the 8250_mtk.c and 8250_port.c
+> > drivers code. So please Daniel or someone with Mediatek 8250-port
+> > available on a board test this patch first and report about the results in
+> > reply to this emailing thread. After that, if your conclusion is positive
+> > and there is no objection against the solution design the patch can be
+> > merged in.
+I tested it with mt8183 + QCA6174.
+The UART Bluetooth works fine with this fix.
+Thanks!
+> >
+> > Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> > Cc: Daniel Winkler <danielwinkler@google.com>
+> > Cc: Aaron Sierra <asierra@xes-inc.com>
+> > Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Cc: Lukas Wunner <lukas@wunner.de>
+> > Cc: Vignesh Raghavendra <vigneshr@ti.com>
+> > Cc: linux-serial@vger.kernel.org
+> > Cc: linux-mediatek@lists.infradead.org
+> > Cc: BlueZ <linux-bluetooth@vger.kernel.org>
+> > Cc: chromeos-bluetooth-upstreaming <chromeos-bluetooth-upstreaming@chromium.org>
+> > Cc: abhishekpandit@chromium.org
+> > Cc: stable@vger.kernel.org
+> > ---
+> >  drivers/tty/serial/8250/8250_mtk.c | 18 ++++++++++++++++++
+> >  1 file changed, 18 insertions(+)
+> >
+> > diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
+> > index f839380c2f4c..98b8a3e30733 100644
+> > --- a/drivers/tty/serial/8250/8250_mtk.c
+> > +++ b/drivers/tty/serial/8250/8250_mtk.c
+> > @@ -306,8 +306,21 @@ mtk8250_set_termios(struct uart_port *port, struct ktermios *termios,
+> >         }
+> >  #endif
+> >
+> > +       /*
+> > +        * Store the requested baud rate before calling the generic 8250
+> > +        * set_termios method. Standard 8250 port expects bauds to be
+> > +        * no higher than (uartclk / 16) so the baud will be clamped if it
+> > +        * gets out of that bound. Mediatek 8250 port supports speed
+> > +        * higher than that, therefore we'll get original baud rate back
+> > +        * after calling the generic set_termios method and recalculate
+> > +        * the speed later in this method.
+> > +        */
+> > +       baud = tty_termios_baud_rate(termios);
+> > +
+> >         serial8250_do_set_termios(port, termios, old);
+> >
+> > +       tty_termios_encode_baud_rate(termios, baud, baud);
+> > +
+> >         /*
+> >          * Mediatek UARTs use an extra highspeed register (MTK_UART_HIGHS)
+> >          *
+> > @@ -339,6 +352,11 @@ mtk8250_set_termios(struct uart_port *port, struct ktermios *termios,
+> >          */
+> >         spin_lock_irqsave(&port->lock, flags);
+> >
+> > +       /*
+> > +        * Update the per-port timeout.
+> > +        */
+> > +       uart_update_timeout(port, termios->c_cflag, baud);
+> > +
+> >         /* set DLAB we have cval saved in up->lcr from the call to the core */
+> >         serial_port_out(port, UART_LCR, up->lcr | UART_LCR_DLAB);
+> >         serial_dl_write(up, quot);
+> > --
+> > 2.26.2
+> >
