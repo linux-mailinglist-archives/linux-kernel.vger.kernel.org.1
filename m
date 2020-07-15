@@ -2,302 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 827FE221255
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5FD221260
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgGOQ3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41800 "EHLO
+        id S1726843AbgGOQbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgGOQ3M (ORCPT
+        with ESMTP id S1725792AbgGOQbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:29:12 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09167C061755;
-        Wed, 15 Jul 2020 09:29:12 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 95092564;
-        Wed, 15 Jul 2020 18:29:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1594830548;
-        bh=J0RmO1M1ihQJvW/q2HS1HUBA5UiJRDYlOCO40ivrSEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=owe9lWhyAxGIol67u3m6+OzIMITqa7IUxf6V+vB33ABRw2f+wURJr7dmS9lLqHJFd
-         aBE5vdEQvPBId8ywbjMCtAGMweNKtXe1C5aCP1Gfyyf/H2VmL+Zi9x41lJkV+DTz1q
-         GMJNQnSuXf49Gq9xxHJdOLXXTEHNcnplNZ2IoQds=
-Date:   Wed, 15 Jul 2020 19:29:01 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Vishal Sagar <vishal.sagar@xilinx.com>
-Cc:     Rob Herring <robh@kernel.org>, hyunk@xilinx.com,
-        hverkuil@xs4all.nl, mchehab@kernel.org, mark.rutland@arm.com,
-        michals@xilinx.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, joe@perches.com, sandipk@xilinx.com,
-        dineshk@xilinx.com
-Subject: Re: [PATCH v3 2/3] media: dt-bindings: media: xilinx: Add Xilinx
- UHD-SDI Receiver Subsystem
-Message-ID: <20200715162901.GE6144@pendragon.ideasonboard.com>
-References: <20200618053304.14551-1-vishal.sagar@xilinx.com>
- <20200618053304.14551-3-vishal.sagar@xilinx.com>
- <20200713185447.GA531731@bogus>
+        Wed, 15 Jul 2020 12:31:39 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CD9C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 09:31:39 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x72so2321983pfc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 09:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=53xi7g3puotGB363xy2OEXt6uuc0PRweN+NzFYccYkk=;
+        b=uyXgsFd5yE0F3yTWoENRGh6XofWx6qEDC5ysullQoFZ4TlZApXCAZUsSkQJcKJSLpc
+         tCaa1RS8UIbn8qmG39/lmXTGJAsqMK9V+gqdtH36JfsHjelGHd5nRvDrHB7cLerbmsgt
+         uWp3W/RR1JSDRU9DV0VK1gILcgX0Ia+lybe3xV3anqWkaNdvudr7uhcDgmRG30HchXOs
+         X3KfHMRbUj8qhEhhpv0fcLTGzds6B3Erxh0RDvCNf2AkPE9GhPtS7CflJWIMi2oC02LL
+         2Ztott/QVRz50ZqOTqld80XF1JCKg58bpPWOr5NkRNO5ZqFL639FKYdYtMau2UNxcQFN
+         r2OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=53xi7g3puotGB363xy2OEXt6uuc0PRweN+NzFYccYkk=;
+        b=JxlnE7oZjFXFP9H+jklLAnPMaANc3TfSRs0Swnlco7SzvOn3jlNS/grHEXmA/fxW/E
+         tj2Li+zAM4IMc2HqLUzrHArfdY8UDrshTZi0YsHPGmPbKzKJqoOuDopJyLJjJZ3HGSDf
+         ZmzGyZ5pAzKt6ottSQRQIdn+QRYVxA2Z16TnID6aA04bOSzB0wBNlKDHXucag/pOMo+V
+         fjwAZlyN0cMvmaBhoDbxPrgPj6U1kKrNAGqxCmoq/iVpU2uCSXh6Kt35aJ2qDVSzWdVI
+         a1JufRtDu3NLpGXu+YR7RO8U+za4nRDD796bIjksTnUGsk1rh8oJcwGpXkCKhsv+chDe
+         3U4A==
+X-Gm-Message-State: AOAM533w7YLmpvU7iKRbPEOMQI26QZXSR1cBpJaJJVEX2KbuoU1k9Rvf
+        v9DNLMtuIUHoUf0MenXNj3grW7JFGvxw14FOaBB0HA==
+X-Google-Smtp-Source: ABdhPJxUGp93WoplWQdqdBEzPCf01zWLhU2TGTWuQ1UTb/Kp9Zv/8T5yRUuQSVR/t1KT3ObYn2nEDfUFQWaP6ZKlbuc=
+X-Received: by 2002:a63:cf49:: with SMTP id b9mr446382pgj.31.1594830698604;
+ Wed, 15 Jul 2020 09:31:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200713185447.GA531731@bogus>
+References: <20200707062754.8383-1-songmuchun@bytedance.com>
+ <3d06418e-e75c-e7b8-91cd-ba56283045be@suse.cz> <20200715162445.GA4003@carbon.lan>
+In-Reply-To: <20200715162445.GA4003@carbon.lan>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 16 Jul 2020 00:31:02 +0800
+Message-ID: <CAMZfGtXfkCLrCEgkPM7a03OTP=ejZDPbrxBSb=u6raj6vQFLOg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5.4.y, v4.19.y] mm: memcg/slab: fix memory
+ leak at non-root kmem_cache destroy
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vishal,
+On Thu, Jul 16, 2020 at 12:24 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Wed, Jul 15, 2020 at 01:32:00PM +0200, Vlastimil Babka wrote:
+> > On 7/7/20 8:27 AM, Muchun Song wrote:
+> > > If the kmem_cache refcount is greater than one, we should not
+> > > mark the root kmem_cache as dying. If we mark the root kmem_cache
+> > > dying incorrectly, the non-root kmem_cache can never be destroyed.
+> > > It resulted in memory leak when memcg was destroyed. We can use the
+> > > following steps to reproduce.
+> > >
+> > >   1) Use kmem_cache_create() to create a new kmem_cache named A.
+> > >   2) Coincidentally, the kmem_cache A is an alias for kmem_cache B,
+> > >      so the refcount of B is just increased.
+> > >   3) Use kmem_cache_destroy() to destroy the kmem_cache A, just
+> > >      decrease the B's refcount but mark the B as dying.
+> > >   4) Create a new memory cgroup and alloc memory from the kmem_cache
+> > >      A. It leads to create a non-root kmem_cache for allocating.
 
-Thank you for the patch.
+Hi Roman,
 
-On Mon, Jul 13, 2020 at 12:54:47PM -0600, Rob Herring wrote:
-> On Thu, Jun 18, 2020 at 11:03:03AM +0530, Vishal Sagar wrote:
-> > Add bindings documentation for Xilinx UHD-SDI Receiver Subsystem.
-> > 
-> > The Xilinx UHD-SDI Receiver Subsystem consists of SMPTE UHD-SDI (RX) IP
-> > core, an SDI RX to Video Bridge IP core to convert SDI video to native
-> > video and a Video In to AXI4-Stream IP core to convert native video to
-> > AXI4-Stream.
-> > 
-> > Signed-off-by: Vishal Sagar <vishal.sagar@xilinx.com>
-> > ---
-> > v3
-> > - bpc instead of bpp
-> > - removed bpc as required property (default to 10 bpc)
-> > - add dt-bindings/media/xilinx-sdi.h
-> > - made line-rate as u32 instead of string
-> > - fixed reg
-> > - fixed s/upto/up to/
-> > 
-> > v2
-> > - Removed references to xlnx,video*
-> > - Fixed as per Sakari Ailus and Rob Herring's comments
-> > - Converted to yaml format
-> > 
-> >  .../bindings/media/xilinx/xlnx,sdirxss.yaml   | 132 ++++++++++++++++++
-> >  include/dt-bindings/media/xilinx-sdi.h        |  20 +++
-> >  2 files changed, 152 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/xilinx/xlnx,sdirxss.yaml
-> >  create mode 100644 include/dt-bindings/media/xilinx-sdi.h
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/xilinx/xlnx,sdirxss.yaml b/Documentation/devicetree/bindings/media/xilinx/xlnx,sdirxss.yaml
-> > new file mode 100644
-> > index 000000000000..6cfc18ca435f
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/xilinx/xlnx,sdirxss.yaml
-> > @@ -0,0 +1,132 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/xilinx/xlnx,sdirxss.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +
+I am sorry, here is a typo. I mean the step 4) allocates memory from
+the kmem_cache
+B instead of A.
 
-I think a single blank line is enough.
+> > >   5) When destroy the memory cgroup created in the step 4), the
+> > >      non-root kmem_cache can never be destroyed.
+>
+> Hello, Muchun!
+>
+> If the scenario above is accurate, it means that somebody is allocating
+> from the kmem_cache A (or it's memcg counterparts, doesn't matter) after
+> calling kmem_cache_destroy()? If so, it's an API violation, and the following
+> memory leak is a non-issue on the slab side. No one should allocate memory
+> after calling kmem_cache_destroy(). It has to be called after all outstanding
+> allocations are freed, and it should be literally the last operation
+> with the kmem_cache.
+>
+> Kmem_cache aliasing/sharing, as well as memcg accounting implementation are
+> implementation details and should not affect the picture.
+>
+> I wonder, did you see the problem in the wild? How does it look like?
+> Which kmem_cache is involved? Etc.
+>
+> BTW, Vlastimil is absolutely right about stable backports and rework planned
+> for 5.9, but let's figure out the problem first.
+>
+> Thank you!
+>
+> > >
+> > > If we repeat steps 4) and 5), this will cause a lot of memory leak.
+> > > So only when refcount reach zero, we mark the root kmem_cache as dying.
+> > >
+> > > Fixes: 92ee383f6daa ("mm: fix race between kmem_cache destroy, create and deactivate")
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >
+> > CC Roman, who worked in this area recently.
+> >
+> > Also why is this marked "[PATCH v5.4.y, v4.19.y]"? Has it been fixed otherwise
+> > in 5.5+ ?
+> >
+> > > ---
+> > >  mm/slab_common.c | 43 +++++++++++++++++++++++++++++++++++++++++--
+> > >  1 file changed, 41 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > > index 8c1ffbf7de45..83ee6211aec7 100644
+> > > --- a/mm/slab_common.c
+> > > +++ b/mm/slab_common.c
+> > > @@ -258,6 +258,11 @@ static void memcg_unlink_cache(struct kmem_cache *s)
+> > >             list_del(&s->memcg_params.kmem_caches_node);
+> > >     }
+> > >  }
+> > > +
+> > > +static inline bool memcg_kmem_cache_dying(struct kmem_cache *s)
+> > > +{
+> > > +   return is_root_cache(s) && s->memcg_params.dying;
+> > > +}
+> > >  #else
+> > >  static inline int init_memcg_params(struct kmem_cache *s,
+> > >                                 struct kmem_cache *root_cache)
+> > > @@ -272,6 +277,11 @@ static inline void destroy_memcg_params(struct kmem_cache *s)
+> > >  static inline void memcg_unlink_cache(struct kmem_cache *s)
+> > >  {
+> > >  }
+> > > +
+> > > +static inline bool memcg_kmem_cache_dying(struct kmem_cache *s)
+> > > +{
+> > > +   return false;
+> > > +}
+> > >  #endif /* CONFIG_MEMCG_KMEM */
+> > >
+> > >  /*
+> > > @@ -326,6 +336,13 @@ int slab_unmergeable(struct kmem_cache *s)
+> > >     if (s->refcount < 0)
+> > >             return 1;
+> > >
+> > > +   /*
+> > > +    * If the kmem_cache is dying. We should also skip this
+> > > +    * kmem_cache.
+> > > +    */
+> > > +   if (memcg_kmem_cache_dying(s))
+> > > +           return 1;
+> > > +
+> > >     return 0;
+> > >  }
+> > >
+> > > @@ -944,8 +961,6 @@ void kmem_cache_destroy(struct kmem_cache *s)
+> > >     if (unlikely(!s))
+> > >             return;
+> > >
+> > > -   flush_memcg_workqueue(s);
+> > > -
+> > >     get_online_cpus();
+> > >     get_online_mems();
+> > >
+> > > @@ -955,6 +970,30 @@ void kmem_cache_destroy(struct kmem_cache *s)
+> > >     if (s->refcount)
+> > >             goto out_unlock;
+> > >
+> > > +#ifdef CONFIG_MEMCG_KMEM
+> > > +   mutex_unlock(&slab_mutex);
+> > > +
+> > > +   put_online_mems();
+> > > +   put_online_cpus();
+> > > +
+> > > +   flush_memcg_workqueue(s);
+> > > +
+> > > +   get_online_cpus();
+> > > +   get_online_mems();
+> > > +
+> > > +   mutex_lock(&slab_mutex);
+> > > +
+> > > +   if (WARN(s->refcount,
+> > > +            "kmem_cache_destroy %s: Slab cache is still referenced\n",
+> > > +            s->name)) {
+> > > +           /*
+> > > +            * Reset the dying flag setted by flush_memcg_workqueue().
+> > > +            */
+> > > +           s->memcg_params.dying = false;
+> > > +           goto out_unlock;
+> > > +   }
+> > > +#endif
+> > > +
+> > >     err = shutdown_memcg_caches(s);
+> > >     if (!err)
+> > >             err = shutdown_cache(s);
+> > >
+> >
 
-> > +title: Xilinx SMPTE UHD-SDI Receiver Subsystem
-> > +
-> > +maintainers:
-> > +  - Vishal Sagar <vishal.sagar@xilinx.com>
-> > +
-> > +description: |
-> > +  The SMPTE UHD-SDI Receiver (RX) Subsystem allows you to quickly create systems
-> > +  based on SMPTE SDI protocols. It receives unaligned native SDI streams from
-> > +  the SDI GT PHY and outputs an AXI4-Stream video stream, native video, or
-> > +  native SDI using Xilinx transceivers as the physical layer.
-> > +
-> > +  The subsystem consists of
-> > +  1 - SMPTE UHD-SDI Rx
-> > +  2 - SDI Rx to Native Video Bridge
-> > +  3 - Video In to AXI4-Stream Bridge
-> > +
-> > +  The subsystem can capture SDI streams in up to 12G mode 8 data streams and output
-> > +  a dual pixel per clock RGB/YUV444,422/420 10/12 bits per component AXI4-Stream.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - enum:
-> > +        - xlnx,v-smpte-uhdsdi-rx-ss-2.0
-> 
-> Should be indented 2 more spaces.
 
-Or you could simply use
-
-properties:
-  compatible:
-    const: xlnx,v-smpte-uhdsdi-rx-ss-2.0
-
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    description: List of clock specifiers
-> 
-> Drop. That's every 'clocks' property.
-> 
-> > +    items:
-> > +      - description: AXI4-Lite clock
-> > +      - description: SMPTE UHD-SDI Rx core clock
-> > +      - description: Video clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: s_axi_aclk
-> > +      - const: sdi_rx_clk
-> > +      - const: video_out_clk
-> > +
-> > +  xlnx,bpc:
-> > +    description: Bits per component supported. Can be 10 or 12 bits per component only.
-> > +    allOf:
-> 
-> You can drop the 'allOf' now.
-> 
-> > +      - $ref: "/schemas/types.yaml#/definitions/uint32"
-> > +      - enum: [10, 12]
-> 
-> Seems like this should be a standard property?
-
-Rob, if my understanding is correct, this tells for how many bits per
-component the IP core has been synthesized. I think it qualifies as a
-vendor property, as how to express constraints on supported formats (for
-IP cores that can be synthesized with different options) is highly
-vendor-specific.
-
-Vishal, I think the question I asked in the review of v2 fell through
-the cracks. Is the documentation for the new IP core version available ?
-Should this property only be allowed for the new version, given that in
-v2.0 the BPC is fixed to 10 ?
-
-> > +
-> > +  xlnx,line-rate:
-> > +    description: |
-> > +      The maximum mode supported by the design. Possible values are as below
-> > +      0 - XSDI_STD_3G      -  3G mode
-> > +      1 - XSDI_STD_6G      -  6G mode
-> > +      2 - XSDI_STD_12G_8DS - 12G mode with 8 data streams
-> > +    allOf:
-> > +      - $ref: "/schemas/types.yaml#/definitions/uint32"
-> > +      - enum: [0, 1, 2]
-> 
-> Standard?
-
-For this one, I'm not sure. There's little support for SDI in the
-kernel, and I'm sure we'll get this wrong the first time. I'd rather try
-not to over-standardize properties before we have more examples.
-
-> > +
-> > +  xlnx,include-edh:
-> > +    type: boolean
-> > +    description: |
-> > +      This is present when the Error Detection and Handling processor is
-> > +      enabled in design.
-> > +
-> > +  ports:
-> > +    type: object
-> > +    description: |
-> > +      Generally the SDI port is connected to a device like SDI Broadcast camera
-> > +      which is independently controlled. Hence port@0 is a source port which can be
-> > +      connected to downstream IP which can work with AXI4 Stream data.
-> > +    properties:
-> > +      port@0:
-> > +        type: object
-> > +        description: Source port
-> > +        properties:
-> > +          reg:
-> > +            const: 0
-> > +          endpoint:
-> > +            type: object
-> > +            properties:
-> > +              remote-endpoint: true
-> > +            required:
-> > +              - remote-endpoint
-> > +            additionalProperties: false
-> > +        additionalProperties: false
-
-Same here, I explained in the review of v2 that we should have an input
-port.
-
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - clocks
-> > +  - clock-names
-> > +  - xlnx,line-rate
-> > +  - ports
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/media/xilinx-sdi.h>
-> > +    uhdsdirxss: v-smpte-uhdsdi-rxss@80000000 {
-
-The label is not used, you can drop it.
-
-> > +      compatible = "xlnx,v-smpte-uhdsdi-rx-ss-2.0";
-> > +      interrupt-parent = <&gic>;
-> > +      interrupts = <0 89 4>;
-> > +      reg = <0x80000000 0x10000>;
-> > +      xlnx,include-edh;
-> > +      xlnx,line-rate = <XSDI_STD_12G_8DS>;
-> > +      clocks = <&clk_1>, <&si570_1>, <&clk_2>;
-> > +      clock-names = "s_axi_aclk", "sdi_rx_clk", "video_out_clk";
-> > +      xlnx,bpc = <10>;
-
-I would group the xlnx,* properties after the standard properties.
-
-> > +
-> > +      ports {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +        port@0 {
-> > +          reg = <0>;
-> > +          sdirx_out: endpoint {
-> > +            remote-endpoint = <&vcap_sdirx_in>;
-> > +          };
-> > +        };
-> > +      };
-> > +    };
-> > +...
-> > diff --git a/include/dt-bindings/media/xilinx-sdi.h b/include/dt-bindings/media/xilinx-sdi.h
-> > new file mode 100644
-> > index 000000000000..11938fade041
-> > --- /dev/null
-> > +++ b/include/dt-bindings/media/xilinx-sdi.h
-> > @@ -0,0 +1,20 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Xilinx SDI device tree bindings
-> > + *
-> > + * Copyright (C) 2020 Xilinx, Inc.
-> > + *
-> > + * Contacts: Vishal Sagar <vishal.sagar@xilinx.com>
-> > + */
-> > +
-> > +#ifndef __DT_BINDINGS_MEDIA_XILINX_SDI_H__
-> > +#define __DT_BINDINGS_MEDIA_XILINX_SDI_H__
-> > +
-> > +/*
-> > + * SDI Configurations
-> > + */
-> > +#define XSDI_STD_3G		0
-> > +#define XSDI_STD_6G		1
-> > +#define XSDI_STD_12G_8DS	2
-> > +
-> > +#endif /* __DT_BINDINGS_MEDIA_XILINX_SDI_H__ */
 
 -- 
-Regards,
-
-Laurent Pinchart
+Yours,
+Muchun
