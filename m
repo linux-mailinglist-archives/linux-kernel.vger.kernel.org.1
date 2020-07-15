@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713CA2202CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF53B2202CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728174AbgGODMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 23:12:17 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:60754 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726852AbgGODMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 23:12:16 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3029CF1C7A3FF46CCD8E;
-        Wed, 15 Jul 2020 11:12:14 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Wed, 15 Jul 2020
- 11:12:06 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <b-liu@ti.com>, <gregkh@linuxfoundation.org>,
-        <nishadkamdar@gmail.com>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] USB: musb: Remove unused inline function
-Date:   Wed, 15 Jul 2020 11:12:04 +0800
-Message-ID: <20200715031204.17308-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1727990AbgGODMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 23:12:13 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:60896 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726852AbgGODMN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 23:12:13 -0400
+Date:   Tue, 14 Jul 2020 23:12:11 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: ioremap and dma cleanups and fixes for superh (2nd resend)
+Message-ID: <20200715031210.GD14669@brightrain.aerifal.cx>
+References: <20200714121856.955680-1-hch@lst.de>
+ <b0745e43-0ff1-58f7-70d5-60b9c8b8d81b@physik.fu-berlin.de>
+ <20200714155914.GA24404@brightrain.aerifal.cx>
+ <8cbf2963-d0e4-0ca8-4ffe-c2057694447f@physik.fu-berlin.de>
+ <011f29e6-ad71-366e-dbff-bc8471f3da60@physik.fu-berlin.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <011f29e6-ad71-366e-dbff-bc8471f3da60@physik.fu-berlin.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is never used, so can remove it.
+On Wed, Jul 15, 2020 at 01:12:33AM +0200, John Paul Adrian Glaubitz wrote:
+> Hello!
+> 
+> I have applied Christoph's full series on top of Linus' tree and I can confirm that
+> the kernel boots fine on my SH-7785LCR board.
+> 
+> Thus, for the whole series of patches:
+> 
+> Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> 
+> However, independent of Christoph's series, the kernels throws two backtraces during
+> boot which I think should require a git bisect (unless I missed a configuration option
+> as I trimmed down the kernel a bit to make sure it's not too big).
+> 
+> See the traces below and let me know what you think.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/usb/musb/musb_host.h | 1 -
- 1 file changed, 1 deletion(-)
+I've got a slightly earlier version (my for-next) built for qemu r2d
+board, and don't get any such messages. Do you have a lock-debugging
+option enabled that's catching a problem, perhaps?
 
-diff --git a/drivers/usb/musb/musb_host.h b/drivers/usb/musb/musb_host.h
-index 32336571f05c..4804d4d85c15 100644
---- a/drivers/usb/musb/musb_host.h
-+++ b/drivers/usb/musb/musb_host.h
-@@ -97,7 +97,6 @@ static inline void musb_host_tx(struct musb *musb, u8 epnum)	{}
- static inline void musb_host_rx(struct musb *musb, u8 epnum)	{}
- static inline void musb_root_disconnect(struct musb *musb)	{}
- static inline void musb_host_resume_root_hub(struct musb *musb)	{}
--static inline void musb_host_poll_rh_status(struct musb *musb)	{}
- static inline void musb_host_poke_root_hub(struct musb *musb)	{}
- static inline int musb_port_suspend(struct musb *musb, bool do_suspend)
- {
--- 
-2.17.1
-
-
+Rich
