@@ -2,225 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF01220977
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 12:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9B4220987
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 12:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731007AbgGOKEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 06:04:21 -0400
-Received: from mx.socionext.com ([202.248.49.38]:44653 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726023AbgGOKES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 06:04:18 -0400
-Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 15 Jul 2020 19:04:16 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id D7A7860060;
-        Wed, 15 Jul 2020 19:04:16 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Wed, 15 Jul 2020 19:04:16 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by kinkan.css.socionext.com (Postfix) with ESMTP id 80C131A0507;
-        Wed, 15 Jul 2020 19:04:16 +0900 (JST)
-Received: from [10.212.4.153] (unknown [10.212.4.153])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id CA66912012E;
-        Wed, 15 Jul 2020 19:04:15 +0900 (JST)
-Subject: Re: [PATCH v5 2/6] PCI: uniphier: Add misc interrupt handler to
- invoke PME and AER
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?B?WWFtYWRhLCBNYXNhaGlyby/lsbHnlLAg55yf5byY?= 
-        <yamada.masahiro@socionext.com>, Marc Zyngier <maz@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>
-References: <1592469493-1549-1-git-send-email-hayashi.kunihiko@socionext.com>
- <1592469493-1549-3-git-send-email-hayashi.kunihiko@socionext.com>
- <20200714132727.GA13061@e121166-lin.cambridge.arm.com>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <293ed6fe-6e73-f664-c26e-0aef744ce933@socionext.com>
-Date:   Wed, 15 Jul 2020 19:04:13 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730719AbgGOKGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 06:06:49 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:30450 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728244AbgGOKGs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 06:06:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594807607;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xBNcpWQc4Ly7N1dkjlNTikVzXMkApkE+anJ2teQxPYU=;
+        b=TLz/uX6vjmPAjbSEsmE94IKYRud7aZVqKI3FMsIHHlzVnkkibiZQMqcs4idZXpts/o62kB
+        Ut+cCIqG50pV48k0I73UtEy7Dgf+mOTwH9xHQ9JB36aixFoKJEUksDi8+hzWdZxkMvdfSn
+        UaUdDEBHCslLp7eN97dCcEIQl3EJLYU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-U6flhRmtMjeDvoiuK8DmzA-1; Wed, 15 Jul 2020 06:06:41 -0400
+X-MC-Unique: U6flhRmtMjeDvoiuK8DmzA-1
+Received: by mail-wr1-f72.google.com with SMTP id z1so761176wrn.18
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 03:06:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xBNcpWQc4Ly7N1dkjlNTikVzXMkApkE+anJ2teQxPYU=;
+        b=ujPDnE3X0odUxemnlIXxoIT7QX+n1aSrsXhMk4KMQG/hG6XRx81UsB1Ed4+/VLeIF8
+         reqJ+G5YqGoOUGqHmVR+j+/mknhaAg+MaSgQYw2ZSbTK628ffT08O9jxd9nEbbnmLyRI
+         xKh6D0Zc0BrWcR3EaSXGQASTfzpQboO8iM/lavYwlMQQqzgjwaMK/2GEJgAQmAKbAewf
+         TKbg800NHawDgHARvvkGAw3Zu3PJWyT95OtbZ8sspZQOgfxbNsL8S7RM3maZdd5AXP0m
+         P4bqm+v9R+VTI/B4jaT81UKzWJmXezB1JEc2FR8mynd2Wew3cLgopjjuY7Trmxb7T98O
+         dR5g==
+X-Gm-Message-State: AOAM530I2tecHcrnzWw5Jol9EKj2wTJ0UcccAsXpEiTh70ZpBJxrzC3a
+        kShkc5BBLGz0eptHg9dT9RuI9A6JAfHilUJ4n6BaV9n1tj+mz0yrbc/eTx4XFhjsVzccvmgFHlq
+        hp+J2X+ayodvTl9HueGlx8e0T
+X-Received: by 2002:a5d:6846:: with SMTP id o6mr10603204wrw.370.1594807599931;
+        Wed, 15 Jul 2020 03:06:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwea8LjSmMMg83WCulVLpJxzWYofbQm7iliNTI4DNdbx1Z3ZYCaB7MdTPLhYSHvHIsiYhllvA==
+X-Received: by 2002:a5d:6846:: with SMTP id o6mr10603175wrw.370.1594807599711;
+        Wed, 15 Jul 2020 03:06:39 -0700 (PDT)
+Received: from redhat.com (bzq-79-180-10-140.red.bezeqint.net. [79.180.10.140])
+        by smtp.gmail.com with ESMTPSA id u15sm2743100wrm.64.2020.07.15.03.06.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 03:06:38 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 06:06:14 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        "open list:VIRTIO CORE AND NET DRIVERS" 
+        <virtualization@lists.linux-foundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH] virtio-blk: check host supplied logical block size
+Message-ID: <20200715060233-mutt-send-email-mst@kernel.org>
+References: <20200715095518.3724-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200714132727.GA13061@e121166-lin.cambridge.arm.com>
-Content-Type: text/plain; charset=iso-2022-jp; format=flowed; delsp=yes
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715095518.3724-1-mlevitsk@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
-
-On 2020/07/14 22:27, Lorenzo Pieralisi wrote:
-> On Thu, Jun 18, 2020 at 05:38:09PM +0900, Kunihiko Hayashi wrote:
->> The misc interrupts consisting of PME, AER, and Link event, is handled
->> by INTx handler, however, these interrupts should be also handled by
->> MSI handler.
+On Wed, Jul 15, 2020 at 12:55:18PM +0300, Maxim Levitsky wrote:
+> Linux kernel only supports logical block sizes which are power of two,
+> at least 512 bytes and no more that PAGE_SIZE.
 > 
-> Define what you mean please.
-
-AER/PME signals are assigned to the same signal as MSI by internal logic,
-that is, AER/PME and MSI are assigned to the same GIC interrupt number.
-So it's necessary to modify the code to call the misc handler from MSI handler.
-
-I'll rewrite it next.
-
+> Check this instead of crashing later on.
 > 
->> This adds the function uniphier_pcie_misc_isr() that handles misc
->> interrupts, which is called from both INTx and MSI handlers.
->> This function detects PME and AER interrupts with the status register,
->> and invoke PME and AER drivers related to MSI.
->>
->> And this sets the mask for misc interrupts from INTx if MSI is enabled
->> and sets the mask for misc interrupts from MSI if MSI is disabled.
->>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: Jingoo Han <jingoohan1@gmail.com>
->> Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
->> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
->> ---
->>   drivers/pci/controller/dwc/pcie-uniphier.c | 57 ++++++++++++++++++++++++------
->>   1 file changed, 46 insertions(+), 11 deletions(-)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
->> index a5401a0..5ce2479 100644
->> --- a/drivers/pci/controller/dwc/pcie-uniphier.c
->> +++ b/drivers/pci/controller/dwc/pcie-uniphier.c
->> @@ -44,7 +44,9 @@
->>   #define PCL_SYS_AUX_PWR_DET		BIT(8)
->>   
->>   #define PCL_RCV_INT			0x8108
->> +#define PCL_RCV_INT_ALL_INT_MASK	GENMASK(28, 25)
->>   #define PCL_RCV_INT_ALL_ENABLE		GENMASK(20, 17)
->> +#define PCL_RCV_INT_ALL_MSI_MASK	GENMASK(12, 9)
->>   #define PCL_CFG_BW_MGT_STATUS		BIT(4)
->>   #define PCL_CFG_LINK_AUTO_BW_STATUS	BIT(3)
->>   #define PCL_CFG_AER_RC_ERR_MSI_STATUS	BIT(2)
->> @@ -167,7 +169,15 @@ static void uniphier_pcie_stop_link(struct dw_pcie *pci)
->>   
->>   static void uniphier_pcie_irq_enable(struct uniphier_pcie_priv *priv)
->>   {
->> -	writel(PCL_RCV_INT_ALL_ENABLE, priv->base + PCL_RCV_INT);
->> +	u32 val;
->> +
->> +	val = PCL_RCV_INT_ALL_ENABLE;
->> +	if (pci_msi_enabled())
->> +		val |= PCL_RCV_INT_ALL_INT_MASK;
->> +	else
->> +		val |= PCL_RCV_INT_ALL_MSI_MASK;
->> +
->> +	writel(val, priv->base + PCL_RCV_INT);
->>   	writel(PCL_RCV_INTX_ALL_ENABLE, priv->base + PCL_RCV_INTX);
->>   }
->>   
->> @@ -231,32 +241,56 @@ static const struct irq_domain_ops uniphier_intx_domain_ops = {
->>   	.map = uniphier_pcie_intx_map,
->>   };
->>   
->> -static void uniphier_pcie_irq_handler(struct irq_desc *desc)
->> +static void uniphier_pcie_misc_isr(struct pcie_port *pp, bool is_msi)
->>   {
->> -	struct pcie_port *pp = irq_desc_get_handler_data(desc);
->>   	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->>   	struct uniphier_pcie_priv *priv = to_uniphier_pcie(pci);
->> -	struct irq_chip *chip = irq_desc_get_chip(desc);
->> -	unsigned long reg;
->> -	u32 val, bit, virq;
->> +	u32 val, virq;
->>   
->> -	/* INT for debug */
->>   	val = readl(priv->base + PCL_RCV_INT);
->>   
->>   	if (val & PCL_CFG_BW_MGT_STATUS)
->>   		dev_dbg(pci->dev, "Link Bandwidth Management Event\n");
->> +
->>   	if (val & PCL_CFG_LINK_AUTO_BW_STATUS)
->>   		dev_dbg(pci->dev, "Link Autonomous Bandwidth Event\n");
->> -	if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS)
->> -		dev_dbg(pci->dev, "Root Error\n");
->> -	if (val & PCL_CFG_PME_MSI_STATUS)
->> -		dev_dbg(pci->dev, "PME Interrupt\n");
->> +
->> +	if (is_msi) {
->> +		if (val & PCL_CFG_AER_RC_ERR_MSI_STATUS)
->> +			dev_dbg(pci->dev, "Root Error Status\n");
->> +
->> +		if (val & PCL_CFG_PME_MSI_STATUS)
->> +			dev_dbg(pci->dev, "PME Interrupt\n");
->> +
->> +		if (val & (PCL_CFG_AER_RC_ERR_MSI_STATUS |
->> +			   PCL_CFG_PME_MSI_STATUS)) {
->> +			virq = irq_linear_revmap(pp->irq_domain, 0);
+> Note that there is no need to check physical block size since it is
+> only a hint, and virtio-blk already only supports power of two values.
 > 
-> I think this is wrong. pp->irq_domain is the DWC MSI domain, how do
-> you know that hwirq 0 *is* the AER/PME interrupt ?
-
-When AER/PME drivers are probed, AER/PME interrupts are registered
-as MSI-0.
-
-The pcie_message_numbers() function refers the following fields of
-PCI registers,
-
-   - PCI_EXP_FLAGS_IRQ (for PME)
-   - PCI_ERR_ROOT_AER_IRQ (for AER)
-
-and decides AER/PME interrupts numbers in MSI domain.
-Initial values of both fields are 0, so these interrupts are set to MSI-0.
-
-However, pcie_uniphier driver doesn't know that these interrupts are MSI-0.
-Surely using 0 here is wrong.
-I think that the method to get virq for AER/PME from pcieport is needed.
-
->
-> It just *works* in this case because the port driver probes and alloc
-> MSIs before any PCI device has a chance to do it and actually I think
-> this is just wrong also because hwirq 0 *is* usable by devices but
-> it can't be used because current code takes it for the PME/AER interrupt
-> (which AFAICS is an internal signal disconnected from the DWC MSI
-> interrupt controller).
-
-AER/PME interrupts are with IRQF_SHARED, so hwirq 0 can share
-any PCI device, however, the multiple handlers might be called
-with other factor, so I don't think it is desiable.
-
+> Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=1664619
 > 
-> I think this extra glue logic should be separate MSI domain
-> otherwise there is no way you can reliably look-up the virq
-> corresponding to AER/PME.
-
-Ok, however, it seems that there is no way to get virq for AER/PME
-from pcieport in pcie/portdrv_core.c.
-
-When I try to separate AER/PME interrtups from MSI domain,
-how should I get virq for AER/PME?
-
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  drivers/block/virtio_blk.c | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
 > 
-> How does it work in HW ? Is the root port really sending a memory
-> write to raise an IRQ or it just signal the IRQ through internal
-> logic ? I think the root port MSI handling is different from the
-> DWC logic and should be treated separately.
+> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> index 980df853ee497..36dda31cc4e96 100644
+> --- a/drivers/block/virtio_blk.c
+> +++ b/drivers/block/virtio_blk.c
+> @@ -681,6 +681,12 @@ static const struct blk_mq_ops virtio_mq_ops = {
+>  static unsigned int virtblk_queue_depth;
+>  module_param_named(queue_depth, virtblk_queue_depth, uint, 0444);
+>  
+> +
+> +static bool virtblk_valid_block_size(unsigned int blksize)
+> +{
+> +	return blksize >= 512 && blksize <= PAGE_SIZE && is_power_of_2(blksize);
+> +}
+> +
 
-The internal logic assigns the same signal as MSI interrupt
-to AER/PME interrupts.
+Is this a blk core assumption? in that case, does not this belong
+in blk core?
 
-The MSI handler checks internal status register PCL_RCV_INT,
-and know if the signal is AER or PME interrupt. MSI memory write
-isn't used for the signal.
+>  static int virtblk_probe(struct virtio_device *vdev)
+>  {
+>  	struct virtio_blk *vblk;
+> @@ -809,9 +815,16 @@ static int virtblk_probe(struct virtio_device *vdev)
+>  	err = virtio_cread_feature(vdev, VIRTIO_BLK_F_BLK_SIZE,
+>  				   struct virtio_blk_config, blk_size,
+>  				   &blk_size);
+> -	if (!err)
+> +	if (!err) {
+> +		if (!virtblk_valid_block_size(blk_size)) {
+> +			dev_err(&vdev->dev,
+> +				"%s failure: unsupported logical block size %d\n",
+> +				__func__, blk_size);
+> +			err = -EINVAL;
+> +			goto out_cleanup_queue;
+> +		}
+>  		blk_queue_logical_block_size(q, blk_size);
+> -	else
+> +	} else
+>  		blk_size = queue_logical_block_size(q);
+>  
+>  	/* Use topology information if available */
 
-Since DWC MSI handler doesn't have a method to check the internal
-status register, I added callback .msi_host_isr() to DWC MSI handler
-in patch 1/6.
+OK so if we are doing this pls add {} around  blk_size = queue_logical_block_size(q);
+too.
 
-Thank you,
+> @@ -872,6 +885,9 @@ static int virtblk_probe(struct virtio_device *vdev)
+>  	device_add_disk(&vdev->dev, vblk->disk, virtblk_attr_groups);
+>  	return 0;
+>  
+> +out_cleanup_queue:
+> +	blk_cleanup_queue(vblk->disk->queue);
+> +	vblk->disk->queue = NULL;
+>  out_free_tags:
+>  	blk_mq_free_tag_set(&vblk->tag_set);
+>  out_put_disk:
+> -- 
+> 2.26.2
 
----
-Best Regards
-Kunihiko Hayashi
