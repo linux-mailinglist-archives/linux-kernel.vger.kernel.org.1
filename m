@@ -2,117 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F67422024F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88E622024A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728314AbgGOCWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 22:22:32 -0400
-Received: from kernel.crashing.org ([76.164.61.194]:36952 "EHLO
-        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgGOCWb (ORCPT
+        id S1728115AbgGOCWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 22:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgGOCWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 22:22:31 -0400
-Received: from localhost (gate.crashing.org [63.228.1.57])
-        (authenticated bits=0)
-        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 06F2JlC0001315
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 14 Jul 2020 21:19:51 -0500
-Message-ID: <2629240c07af7fec5989127ed6da405e12cf77a3.camel@kernel.crashing.org>
-Subject: Re: [RFC PATCH 00/35] Move all PCIBIOS* definitions into arch/x86
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        bjorn@helgaas.com, Shuah Khan <skhan@linuxfoundation.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Toan Le <toan@os.amperecomputing.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Kjetil Oftedal <oftedal@gmail.com>
-Date:   Wed, 15 Jul 2020 12:19:46 +1000
-In-Reply-To: <20200714234625.GA428442@bjorn-Precision-5520>
-References: <20200714234625.GA428442@bjorn-Precision-5520>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 14 Jul 2020 22:22:01 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA7AC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 19:22:01 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id e13so467273qkg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 19:22:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=NB5VkdcJiOiqkvi9GdDmHtiKnXecniHwA3U0Zar/EsI=;
+        b=RJbb5FSyUf9z+6g4s1r5uE8Chir674PlvuH/V9UgTJAuimjkAv7KcWxlw4pw421B4Y
+         ZCzfZLGnWA9XL0zDFauyZsARle30TexAJczLPnjG40KR23K7lZGD/b/I6XJNb5hhciOY
+         433PibC2uc4PjO5G3lIr5KJhJ6Q60wBenTCBOJ7OpwzfdjAKHmH4gFU2itO53OOI+1lM
+         qniBRA6HTKeE+DEWGRWY2vKw7wKQrkUCXsBkd4C81iOL5631sW1bLgZMrFNzo2UC+y23
+         /wP/ScBv4EamuEDbK7cQoGDF8I7wi92twB6iE0ZRAw9mW0JF63vZi1B7GyN9zins3ISi
+         7s7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=NB5VkdcJiOiqkvi9GdDmHtiKnXecniHwA3U0Zar/EsI=;
+        b=TAB/03A7fs5p9ob1cUbvZ6HUBdVfRTHC7gK9mW8XiXl/9a86CuKhsZ837i3x2QB54Q
+         Ef1jEWAkBROgNBiYxyPrhdF132pKvtCTrKuaZxoJxIypl5EaTiFDpjdpWN2tQSm2Tcx0
+         aAF1/aujFs74Nju69tfOijsHlfgZlM7JLxkbidmLBWOSdnE+Gt3kHFbgx1j7wyxYeuMn
+         VkGLLuAFjKcIp3nrn5bfiqEfNJLauKVnPkeVGBZExw6xm1rF67RB80dDNOLcEqzLM73A
+         b/KAj+7dWq3zGjr9KUQpO7OzM0owEfQFOOGvy0TJmEsAUI7xDuBuzbgZxU6tQqc7SKgL
+         mJ1g==
+X-Gm-Message-State: AOAM531IiK/uix4fmsLJdUbuoLVykMQtQoL/d3ofDoKT5smtPj04I6av
+        LfHMzWFO9gsMRV9oKckLkY/YDA==
+X-Google-Smtp-Source: ABdhPJzRXPD1i0Ii1MhhJShUTtAlh2BeRBcqHwD8WR6YWmiupLF/I+F63MitweZ7P0ea6uQGo3cQKg==
+X-Received: by 2002:a37:9fc2:: with SMTP id i185mr7298465qke.481.1594779720113;
+        Tue, 14 Jul 2020 19:22:00 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id d136sm751977qke.47.2020.07.14.19.21.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2020 19:21:59 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 22:21:53 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     nao.horiguchi@gmail.com, linux-mm@kvack.org, mhocko@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        tony.luck@intel.com, david@redhat.com,
+        aneesh.kumar@linux.vnet.ibm.com, zeil@yandex-team.ru,
+        naoya.horiguchi@nec.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/15] HWPOISON: soft offline rework
+Message-ID: <20200715022152.GA54790@lca.pw>
+References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
+ <20200630050803.GA2747@lca.pw>
+ <20200714100839.GA1939@linux>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714100839.GA1939@linux>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-14 at 18:46 -0500, Bjorn Helgaas wrote:
-> Yes.  I have no problem with that.  There are a few cases where it's
-> important to check for errors, e.g., we read a status register and do
-> something based on a bit being set.  A failure will return all bits
-> set, and we may do the wrong thing.  But most of the errors we care
-> about will be on MMIO reads, not config reads, so we can probably
-> ignore most config read errors.
-
-And in both cases, we don't have the plumbing to provide accurate
-and reliable error returns for all platforms anyways (esp. not for
-MMIO).
-
-I think it makes sense to stick to the good old "if all 1's, then go
-out of line" including for config space.
-
- ../..
-
-> Yep, except for things like device removal or other PCI errors.
-
-A whole bunch of these are reported asynchronously, esp for writes (and
-yes, including config writes, they are supposed to be non-posted but
-more often than not, the path  from the CPU to the PCI bridge remains
-posted for writes including config ones).
-
-> So maybe a good place to start is by removing some of the useless
-> error checking for pci_read_config_*() and pci_write_config_*().
-> That's a decent-sized but not impractical project that could be done
-> per subsystem or something:
+On Tue, Jul 14, 2020 at 12:08:46PM +0200, Oscar Salvador wrote:
+> On Tue, Jun 30, 2020 at 01:08:03AM -0400, Qian Cai wrote:
+> > Even after applied the compling fix,
+> > 
+> > https://lore.kernel.org/linux-mm/20200628065409.GA546944@u2004/
+> > 
+> > madvise(MADV_SOFT_OFFLINE) will fail with EIO with hugetlb where it
+> > would succeed without this series. Steps:
+> > 
+> > # git clone https://github.com/cailca/linux-mm
+> > # cd linux-mm; make
+> > # ./random 1 (Need at least two NUMA memory nodes)
+> >  start: migrate_huge_offline
+> > - use NUMA nodes 0,4.
+> > - mmap and free 8388608 bytes hugepages on node 0
+> > - mmap and free 8388608 bytes hugepages on node 4
+> > madvise: Input/output error
 > 
->   git grep -E "(if|return|=).*\<pci_(read|write)_config" drivers
+> Ok, sorry for the lateness, but I had to re-fetch the code on my brain again.
 > 
-> finds about 400 matches.
+> I just finished v4 of this patchset and it seems this problem is gone:
 > 
-> Some of those callers probably really *do* want to check for errors,
-> and I guess we'd have to identify them and do them separately as you
-> mentioned.
+> # ./random 1
+> - start: migrate_huge_offline
+> - use NUMA nodes 0,1.
+> - mmap and free 8388608 bytes hugepages on node 0
+> - mmap and free 8388608 bytes hugepages on node 1
+> - pass: mmap_offline_node_huge
+> - start: hotplug_memory
+> offline: Device or resource busy
+> offline: Device or resource busy
+> offline: Device or resource busy
+> offline: Device or resource busy
+> offline: Device or resource busy
+> offline: Device or resource busy
+> offline: Device or resource busy
+> offline: Device or resource busy
+> offline: Invalid argument
+> offline: Device or resource busy
+> offline: Invalid argument
+> offline: Device or resource busy
+> offline: Device or resource busy
+> offline: Device or resource busy
+> offline: Device or resource busy
+> - pass: hotplug_memory
+> 
+> The test seems to suceed and no crash on the kernel side.
+> 
+> I will just run some more tests to make sure the thing is solid enough
+> and then I will post v4.
 
-I'd be curious about these considering how unreliable our error return
-is accross the board.
+Great, I plan to reproduce a bit more of the crash below which I am not 100%
+sure yet which patchset/patch is the culprit where that LTP move_pages12
+reproducer does the similar things.
 
-Cheers,
-Ben.
-
-
+https://lore.kernel.org/lkml/20200708012044.GC992@lca.pw/
