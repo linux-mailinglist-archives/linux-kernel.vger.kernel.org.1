@@ -2,290 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466EA220612
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 09:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06BB220614
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 09:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgGOHUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 03:20:13 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7754 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729066AbgGOHUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 03:20:11 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 4FDBFEDC143ACF09E1A1;
-        Wed, 15 Jul 2020 15:20:01 +0800 (CST)
-Received: from DESKTOP-KKJBAGG.china.huawei.com (10.174.186.75) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 15 Jul 2020 15:19:53 +0800
-From:   Zhenyu Ye <yezhenyu2@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>,
-        <suzuki.poulose@arm.com>, <maz@kernel.org>, <steven.price@arm.com>,
-        <guohanjun@huawei.com>, <olof@lixom.net>
-CC:     <yezhenyu2@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
-        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
-        <kuhn.chenqun@huawei.com>
-Subject: [PATCH v3 3/3] arm64: tlb: Use the TLBI RANGE feature in arm64
-Date:   Wed, 15 Jul 2020 15:19:45 +0800
-Message-ID: <20200715071945.897-4-yezhenyu2@huawei.com>
-X-Mailer: git-send-email 2.22.0.windows.1
-In-Reply-To: <20200715071945.897-1-yezhenyu2@huawei.com>
-References: <20200715071945.897-1-yezhenyu2@huawei.com>
+        id S1729263AbgGOHVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 03:21:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49226 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729066AbgGOHVQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 03:21:16 -0400
+Date:   Wed, 15 Jul 2020 09:21:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594797674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LQKcsIDOp9awa5wYn/MiS0JSdtaDZAuKW8Y1r7Tzr58=;
+        b=EMD4enJkqUiQpN/+EBNUOaxkp0MoHUOrBxYA0mA4w9LWfPjvCoYpqcHWBE/kg36etyHmfg
+        4pnUSyAfdwCs/LZN+Eu0lNJPKJbh4w7/hZKc/A+aHX9SCsGZr/oLWOl5l2twiTqcMW+rGX
+        7Do2G2sAsLjfX7wJ8fob5RL5X+jzdXKi4hkEIhUeTuAZCQrnPaI7GGv0PuYFcigUsn1G/j
+        gQ2oLQuRbMhKH5rKa5KW7a6qnUFjzj2GFgcypCvCR5wg8jeI05KmZJ/HtjFhO29TGXpyC+
+        SfqbM/6BS99tlLwNIuy/w4GTXJTKRZbvGfe5IP0z+jzj4BUDtCo+gJHTW0jebQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594797674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LQKcsIDOp9awa5wYn/MiS0JSdtaDZAuKW8Y1r7Tzr58=;
+        b=EOP6n3WooIDvd/2I0f/ZqKRcpxwz12l7P0dSD1vrkYd4039Yq0sz2gktohTSTQiE3slkaW
+        8CVrVCHbJH4HTZBw==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>, jogness@linutronix.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] sched_clock: Expose struct clock_read_data
+Message-ID: <20200715072112.GA231369@debian-buster-darwi.lab.linutronix.de>
+References: <20200715020512.20991-1-leo.yan@linaro.org>
+ <20200715020512.20991-2-leo.yan@linaro.org>
+ <20200715055650.GB225020@debian-buster-darwi.lab.linutronix.de>
+ <20200715065407.GB19269@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.186.75]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715065407.GB19269@leoy-ThinkPad-X240s>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add __TLBI_VADDR_RANGE macro and rewrite __flush_tlb_range().
+On Wed, Jul 15, 2020 at 02:54:07PM +0800, Leo Yan wrote:
+> On Wed, Jul 15, 2020 at 07:56:50AM +0200, Ahmed S. Darwish wrote:
+> > On Wed, Jul 15, 2020 at 10:05:07AM +0800, Leo Yan wrote:
+> > > From: Peter Zijlstra <peterz@infradead.org>
+> > >
+> > ...
+> > >
+> > > Provide struct clock_read_data and two (seqcount) helpers so that
+> > > architectures (arm64 in specific) can expose the numbers to userspace.
+> > >
+> > ...
+> > >
+> > > +struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
+> > > +{
+> > > +	*seq = raw_read_seqcount(&cd.seq);
+> > > +	return cd.read_data + (*seq & 1);
+> > > +}
+> > > +
+> > ...
+> >
+> > Hmm, this seqcount_t is actually a latch seqcount. I know the original
+> > code also used raw_read_seqcount(), but while at it, let's use the
+> > proper read API for seqcount_t latchers: raw_read_seqcount_latch().
+>
+> Good point.  To be honest, I think myself cannot give a good judgement
+> for memory barrier related thing :)
+>
+> I read a bit the document for the latch technique [1], comparing to
+> raw_read_seqcount_latch(), the function raw_read_seqcount() contains
+> smp_rmb(), IIUC, the *read* memory barrier is used to support for
+> kcsan.
+>
 
-When cpu supports TLBI feature, the minimum range granularity is
-decided by 'scale', so we can not flush all pages by one instruction
-in some cases.
+The smp_rmb() has no relation whatsoever to KCSAN. It pairs with the
+write memory barriers in the seqcount_t write path.
 
-For example, when the pages = 0xe81a, let's start 'scale' from
-maximum, and find right 'num' for each 'scale':
+AFAIK, PeterZ is the author of this patch, so let's wait for his input
+here.
 
-1. scale = 3, we can flush no pages because the minimum range is
-   2^(5*3 + 1) = 0x10000.
-2. scale = 2, the minimum range is 2^(5*2 + 1) = 0x800, we can
-   flush 0xe800 pages this time, the num = 0xe800/0x800 - 1 = 0x1c.
-   Remaining pages is 0x1a;
-3. scale = 1, the minimum range is 2^(5*1 + 1) = 0x40, no page
-   can be flushed.
-4. scale = 0, we flush the remaining 0x1a pages, the num =
-   0x1a/0x2 - 1 = 0xd.
+Thanks,
 
-However, in most scenarios, the pages = 1 when flush_tlb_range() is
-called. Start from scale = 3 or other proper value (such as scale =
-ilog2(pages)), will incur extra overhead.
-So increase 'scale' from 0 to maximum, the flush order is exactly
-opposite to the example.
-
-Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
-Link: https://lore.kernel.org/r/20200710094420.517-3-yezhenyu2@huawei.com
-[catalin.marinas@arm.com: removed unnecessary masks in __TLBI_VADDR_RANGE]
-[catalin.marinas@arm.com: __TLB_RANGE_NUM subtracts 1]
-[catalin.marinas@arm.com: minor adjustments to the comments]
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
----
- arch/arm64/include/asm/tlbflush.h | 156 ++++++++++++++++++++++++------
- 1 file changed, 127 insertions(+), 29 deletions(-)
-
-diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-index 2cb275efcea3..4a21d8dc0312 100644
---- a/arch/arm64/include/asm/tlbflush.h
-+++ b/arch/arm64/include/asm/tlbflush.h
-@@ -60,6 +60,31 @@
- 		__ta;						\
- 	})
- 
-+/*
-+ * Get translation granule of the system, which is decided by
-+ * PAGE_SIZE.  Used by TTL.
-+ *  - 4KB	: 1
-+ *  - 16KB	: 2
-+ *  - 64KB	: 3
-+ */
-+#define TLBI_TTL_TG_4K		1
-+#define TLBI_TTL_TG_16K		2
-+#define TLBI_TTL_TG_64K		3
-+
-+static inline unsigned long get_trans_granule(void)
-+{
-+	switch (PAGE_SIZE) {
-+	case SZ_4K:
-+		return TLBI_TTL_TG_4K;
-+	case SZ_16K:
-+		return TLBI_TTL_TG_16K;
-+	case SZ_64K:
-+		return TLBI_TTL_TG_64K;
-+	default:
-+		return 0;
-+	}
-+}
-+
- /*
-  * Level-based TLBI operations.
-  *
-@@ -73,9 +98,6 @@
-  * in asm/stage2_pgtable.h.
-  */
- #define TLBI_TTL_MASK		GENMASK_ULL(47, 44)
--#define TLBI_TTL_TG_4K		1
--#define TLBI_TTL_TG_16K		2
--#define TLBI_TTL_TG_64K		3
- 
- #define __tlbi_level(op, addr, level) do {				\
- 	u64 arg = addr;							\
-@@ -83,19 +105,7 @@
- 	if (cpus_have_const_cap(ARM64_HAS_ARMv8_4_TTL) &&		\
- 	    level) {							\
- 		u64 ttl = level & 3;					\
--									\
--		switch (PAGE_SIZE) {					\
--		case SZ_4K:						\
--			ttl |= TLBI_TTL_TG_4K << 2;			\
--			break;						\
--		case SZ_16K:						\
--			ttl |= TLBI_TTL_TG_16K << 2;			\
--			break;						\
--		case SZ_64K:						\
--			ttl |= TLBI_TTL_TG_64K << 2;			\
--			break;						\
--		}							\
--									\
-+		ttl |= get_trans_granule() << 2;			\
- 		arg &= ~TLBI_TTL_MASK;					\
- 		arg |= FIELD_PREP(TLBI_TTL_MASK, ttl);			\
- 	}								\
-@@ -108,6 +118,44 @@
- 		__tlbi_level(op, (arg | USER_ASID_FLAG), level);	\
- } while (0)
- 
-+/*
-+ * This macro creates a properly formatted VA operand for the TLB RANGE.
-+ * The value bit assignments are:
-+ *
-+ * +----------+------+-------+-------+-------+----------------------+
-+ * |   ASID   |  TG  | SCALE |  NUM  |  TTL  |        BADDR         |
-+ * +-----------------+-------+-------+-------+----------------------+
-+ * |63      48|47  46|45   44|43   39|38   37|36                   0|
-+ *
-+ * The address range is determined by below formula:
-+ * [BADDR, BADDR + (NUM + 1) * 2^(5*SCALE + 1) * PAGESIZE)
-+ *
-+ */
-+#define __TLBI_VADDR_RANGE(addr, asid, scale, num, ttl)		\
-+	({							\
-+		unsigned long __ta = (addr) >> PAGE_SHIFT;	\
-+		__ta &= GENMASK_ULL(36, 0);			\
-+		__ta |= (unsigned long)(ttl) << 37;		\
-+		__ta |= (unsigned long)(num) << 39;		\
-+		__ta |= (unsigned long)(scale) << 44;		\
-+		__ta |= get_trans_granule() << 46;		\
-+		__ta |= (unsigned long)(asid) << 48;		\
-+		__ta;						\
-+	})
-+
-+/* These macros are used by the TLBI RANGE feature. */
-+#define __TLBI_RANGE_PAGES(num, scale)	\
-+	((unsigned long)((num) + 1) << (5 * (scale) + 1))
-+#define MAX_TLBI_RANGE_PAGES		__TLBI_RANGE_PAGES(31, 3)
-+
-+/*
-+ * Generate 'num' values from -1 to 30 with -1 rejected by the
-+ * __flush_tlb_range() loop below.
-+ */
-+#define TLBI_RANGE_MASK			GENMASK_ULL(4, 0)
-+#define __TLBI_RANGE_NUM(pages, scale)	\
-+	((((pages) >> (5 * (scale) + 1)) & TLBI_RANGE_MASK) - 1)
-+
- /*
-  *	TLB Invalidation
-  *	================
-@@ -231,32 +279,82 @@ static inline void __flush_tlb_range(struct vm_area_struct *vma,
- 				     unsigned long stride, bool last_level,
- 				     int tlb_level)
- {
-+	int num = 0;
-+	int scale = 0;
- 	unsigned long asid = ASID(vma->vm_mm);
- 	unsigned long addr;
-+	unsigned long pages;
- 
- 	start = round_down(start, stride);
- 	end = round_up(end, stride);
-+	pages = (end - start) >> PAGE_SHIFT;
- 
--	if ((end - start) >= (MAX_TLBI_OPS * stride)) {
-+	/*
-+	 * When not uses TLB range ops, we can handle up to
-+	 * (MAX_TLBI_OPS - 1) pages;
-+	 * When uses TLB range ops, we can handle up to
-+	 * (MAX_TLBI_RANGE_PAGES - 1) pages.
-+	 */
-+	if ((!(cpus_have_const_cap(ARM64_HAS_TLB_RANGE) &&
-+	       IS_ENABLED(CONFIG_ARM64_TLB_RANGE)) &&
-+	     (end - start) >= (MAX_TLBI_OPS * stride)) ||
-+	    pages >= MAX_TLBI_RANGE_PAGES) {
- 		flush_tlb_mm(vma->vm_mm);
- 		return;
- 	}
- 
--	/* Convert the stride into units of 4k */
--	stride >>= 12;
-+	dsb(ishst);
- 
--	start = __TLBI_VADDR(start, asid);
--	end = __TLBI_VADDR(end, asid);
-+	/*
-+	 * When the CPU does not support TLB range operations, flush the TLB
-+	 * entries one by one at the granularity of 'stride'. If the the TLB
-+	 * range ops are supported, then:
-+	 *
-+	 * 1. If 'pages' is odd, flush the first page through non-range
-+	 *    operations;
-+	 *
-+	 * 2. For remaining pages: the minimum range granularity is decided
-+	 *    by 'scale', so multiple range TLBI operations may be required.
-+	 *    Start from scale = 0, flush the corresponding number of pages
-+	 *    ((num+1)*2^(5*scale+1) starting from 'addr'), then increase it
-+	 *    until no pages left.
-+	 *
-+	 * Note that certain ranges can be represented by either num = 31 and
-+	 * scale or num = 0 and scale + 1. The loop below favours the latter
-+	 * since num is limited to 30 by the __TLBI_RANGE_NUM() macro.
-+	 */
-+	while (pages > 0) {
-+		if (!IS_ENABLED(CONFIG_ARM64_TLB_RANGE) ||
-+		    !cpus_have_const_cap(ARM64_HAS_TLB_RANGE) ||
-+		    pages % 2 == 1) {
-+			addr = __TLBI_VADDR(start, asid);
-+			if (last_level) {
-+				__tlbi_level(vale1is, addr, tlb_level);
-+				__tlbi_user_level(vale1is, addr, tlb_level);
-+			} else {
-+				__tlbi_level(vae1is, addr, tlb_level);
-+				__tlbi_user_level(vae1is, addr, tlb_level);
-+			}
-+			start += stride;
-+			pages -= stride >> PAGE_SHIFT;
-+			continue;
-+		}
- 
--	dsb(ishst);
--	for (addr = start; addr < end; addr += stride) {
--		if (last_level) {
--			__tlbi_level(vale1is, addr, tlb_level);
--			__tlbi_user_level(vale1is, addr, tlb_level);
--		} else {
--			__tlbi_level(vae1is, addr, tlb_level);
--			__tlbi_user_level(vae1is, addr, tlb_level);
-+		num = __TLBI_RANGE_NUM(pages, scale);
-+		if (num >= 0) {
-+			addr = __TLBI_VADDR_RANGE(start, asid, scale,
-+						  num, tlb_level);
-+			if (last_level) {
-+				__tlbi(rvale1is, addr);
-+				__tlbi_user(rvale1is, addr);
-+			} else {
-+				__tlbi(rvae1is, addr);
-+				__tlbi_user(rvae1is, addr);
-+			}
-+			start += __TLBI_RANGE_PAGES(num, scale) << PAGE_SHIFT;
-+			pages -= __TLBI_RANGE_PAGES(num, scale);
- 		}
-+		scale++;
- 	}
- 	dsb(ish);
- }
--- 
-2.19.1
-
-
+--
+Ahmed S. Darwish
+Linutronix GmbH
