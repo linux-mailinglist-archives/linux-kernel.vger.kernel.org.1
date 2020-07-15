@@ -2,88 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DC2220E33
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40D8220E46
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 15:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731901AbgGONc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 09:32:59 -0400
-Received: from djelibeybi.uuid.uk ([45.91.101.70]:50160 "EHLO
-        djelibeybi.uuid.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731174AbgGONc6 (ORCPT
+        id S1731915AbgGONgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 09:36:49 -0400
+Received: from mail-m963.mail.126.com ([123.126.96.3]:42876 "EHLO
+        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731782AbgGONgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 09:32:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=NMFdGnynEXqfWa9Heq3oIWzpS++cOfT6IC0BYKcqnB8=; b=LJvkg8GG26kYf7nLFxn57N1DzL
-        PlTpMD18CPHkz4hfqo3o0OLueNlA6RuRhH1pjQetkNbKayc05A6RLSnX9XN+GalweM2anXwPhaftS
-        +SdLHl6FPmS206vHE+uBtWI8OFBjwqVl3unmBkxKm+Nnq4EU4Koigv8EaqJ8FYWnXqu6L35LUtTnx
-        JrQGv+tkM94YC2YiB6FClqAGNID5Vaubdbu8T7tGC5Q1mI4V/A45GhlxuoGLnZYwGDTLPndbSmGmb
-        r+034be/9YtIlRAmq4kW3op+Ln2AXPpvBFguc/srSSdOn688ii+UZxbMBshLRNTEMkFSi9Ex40Vhb
-        +qpLJldg==;
-Received: by djelibeybi.uuid.uk with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <simon@octiron.net>)
-        id 1jvhWa-0005kE-5N; Wed, 15 Jul 2020 14:32:51 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=octiron.net
-        ; s=20180214; h=Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:
-        Content-Transfer-Encoding:Content-Type:MIME-Version;
-        bh=NMFdGnynEXqfWa9Heq3oIWzpS++cOfT6IC0BYKcqnB8=; b=FqIxAzTo7U3PEEnnrfUuc2hWhz
-        TQf/NGL/p2kMjsohUM0SekrhQmKQvLrysSL43r1faa5OCwHnqSiBqeDetwCKQmQ904UhYUW8YeARy
-        9pdNLlkgNnWIhverb815U9nTpCWZP3kp3CF2YroOkwPWtIcg6BIaoHTRphdOPjhaY97mJhckTiZ2I
-        TzaQeq7iHksbG/WX+iaCbc8fh1+7kOuvwXwCl2+QWQmWDGTntYkPWLFDUBXLTe7NbruY+4dJy4oFP
-        Z/uDPv86lUomAgtK/4/m3ju08eURTWu9aFmSnLrysr6G+7HPIuLUTnMmQIxakxkk95u2af7tY/n3g
-        kSEpqcyQ==;
-Received: by tsort.uuid.uk with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <simon@octiron.net>)
-        id 1jvhWL-0000pJ-4o; Wed, 15 Jul 2020 14:32:36 +0100
-Received: from localhost ([::1]:45596)
-        by skund.uuid.uk with esmtp (Exim 4.86_2)
-        (envelope-from <simon@octiron.net>)
-        id 1jvhWK-0004hS-8Q; Wed, 15 Jul 2020 14:32:24 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 15 Jul 2020 14:32:24 +0100
-From:   Simon Arlott <simon@octiron.net>
-To:     =?UTF-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-Cc:     jonas.gorski@gmail.com, kishon@ti.com, vkoul@kernel.org,
-        robh+dt@kernel.org, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, p.zabel@pengutronix.de,
-        krzk@kernel.org, gregkh@linuxfoundation.org, alcooperx@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 2/2] phy: bcm63xx-usbh: Add BCM63xx USBH driver
-In-Reply-To: <20200715131803.1762064-3-noltari@gmail.com>
-References: <20200715131803.1762064-1-noltari@gmail.com>
- <20200715131803.1762064-3-noltari@gmail.com>
-Message-ID: <2e28eed25955385ab2513f8b617829f3@arlott.org>
-X-Sender: simon@octiron.net
-User-Agent: Roundcube Webmail/1.2-beta
+        Wed, 15 Jul 2020 09:36:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=Wsk0EW3NKnQYOliQwG
+        GUlcFkMt5BvGU9p5h2zd+faXo=; b=N5OuaLw4bFTclyFje8Met8ZM2lbSoccaQd
+        xTg6Ww313Ba2mJImdtGCLgLqX5VJdfjhd+m3Ml+P7Fs4Finu9IbdZMGulskaeNvu
+        GB47ZVQ5vDT9dMsn9zFWG/f1lPyB1bKFnqtjpcaW0TsYWe/MhEmo6KzRbfbcltLy
+        qn8xbDu6g=
+Received: from zhixu-home.lan (unknown [114.249.221.156])
+        by smtp8 (Coremail) with SMTP id NORpCgDn7f3qBQ9fWhQlAQ--.2826S2;
+        Wed, 15 Jul 2020 21:34:36 +0800 (CST)
+From:   Zhixu Zhao <zhixu001@126.com>
+To:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        joe@perches.com, linux-kernel@vger.kernel.org, rcy@google.com,
+        rspringer@google.com, toddpoynor@google.com,
+        dan.carpenter@oracle.com
+Cc:     zhixu001@126.com
+Subject: [PATCH v3] staging: gasket: core: Fix a coding style issue in gasket_core.c
+Date:   Wed, 15 Jul 2020 21:33:13 +0800
+Message-Id: <20200715133313.16327-1-zhixu001@126.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200617161127.32006-1-zhixu001@126.com>
+References: <20200617161127.32006-1-zhixu001@126.com>
+X-CM-TRANSID: NORpCgDn7f3qBQ9fWhQlAQ--.2826S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZw13JF4rCr48Zw15CF15Jwb_yoW5KF1kpa
+        y8Cas8KrZFqwsIqr13JF4UArZxXr1qyryjk3ySyrWkJrZ8ta48Jr48GF18KayIyFWUAr47
+        Wr1DJFWjy34DXaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRBVbPUUUUU=
+X-Originating-IP: [114.249.221.156]
+X-CM-SenderInfo: x2kl53qqqrqiyswou0bp/1tbiJAxifFpEAOdvXAAAs8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-15 14:18, Álvaro Fernández Rojas wrote:
-> Add BCM63xx USBH PHY driver for BMIPS.
-> 
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> ---
-> ...
-> +MODULE_DESCRIPTION("BCM63xx USBH PHY driver");
-> +MODULE_AUTHOR("Álvaro Fernández Rojas <noltari@gmail.com>");
-> +MODULE_AUTHOR("Simon Arlott <simon@fire.lp0.eu>");
-> +MODULE_LICENSE("GPL");
+A coding alignment issue is found by checkpatch.pl.
+Fix it by using a temporary for gasket_dev->bar_data[bar_num].
 
-I'm not the author of this.
+Signed-off-by: Zhixu Zhao <zhixu001@126.com>
+---
 
-Nacked-by: Simon Arlott <simon@octiron.net>
+Changes in v2:
+  - gasket_dev->bar_data[bar_num] was used everywhere. Now replace it
+    with a `struct gasket_bar_data *data`, making the code more elegant.
+    Thanks to Joe Perches.
 
+About v3:
+  - Resolved all comments in v2. Resending it...
+
+ drivers/staging/gasket/gasket_core.c | 29 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/staging/gasket/gasket_core.c b/drivers/staging/gasket/gasket_core.c
+index 67325fbaf760..28dab302183b 100644
+--- a/drivers/staging/gasket/gasket_core.c
++++ b/drivers/staging/gasket/gasket_core.c
+@@ -261,6 +261,7 @@ static int gasket_map_pci_bar(struct gasket_dev *gasket_dev, int bar_num)
+ 	const struct gasket_driver_desc *driver_desc =
+ 		internal_desc->driver_desc;
+ 	ulong desc_bytes = driver_desc->bar_descriptions[bar_num].size;
++	struct gasket_bar_data *data;
+ 	int ret;
+ 
+ 	if (desc_bytes == 0)
+@@ -270,31 +271,32 @@ static int gasket_map_pci_bar(struct gasket_dev *gasket_dev, int bar_num)
+ 		/* not PCI: skip this entry */
+ 		return 0;
+ 	}
++
++	data = &gasket_dev->bar_data[bar_num];
++
+ 	/*
+ 	 * pci_resource_start and pci_resource_len return a "resource_size_t",
+ 	 * which is safely castable to ulong (which itself is the arg to
+ 	 * request_mem_region).
+ 	 */
+-	gasket_dev->bar_data[bar_num].phys_base =
++	data->phys_base =
+ 		(ulong)pci_resource_start(gasket_dev->pci_dev, bar_num);
+-	if (!gasket_dev->bar_data[bar_num].phys_base) {
++	if (!data->phys_base) {
+ 		dev_err(gasket_dev->dev, "Cannot get BAR%u base address\n",
+ 			bar_num);
+ 		return -EINVAL;
+ 	}
+ 
+-	gasket_dev->bar_data[bar_num].length_bytes =
++	data->length_bytes =
+ 		(ulong)pci_resource_len(gasket_dev->pci_dev, bar_num);
+-	if (gasket_dev->bar_data[bar_num].length_bytes < desc_bytes) {
++	if (data->length_bytes < desc_bytes) {
+ 		dev_err(gasket_dev->dev,
+ 			"PCI BAR %u space is too small: %lu; expected >= %lu\n",
+-			bar_num, gasket_dev->bar_data[bar_num].length_bytes,
+-			desc_bytes);
++			bar_num, data->length_bytes, desc_bytes);
+ 		return -ENOMEM;
+ 	}
+ 
+-	if (!request_mem_region(gasket_dev->bar_data[bar_num].phys_base,
+-				gasket_dev->bar_data[bar_num].length_bytes,
++	if (!request_mem_region(data->phys_base, data->length_bytes,
+ 				gasket_dev->dev_info.name)) {
+ 		dev_err(gasket_dev->dev,
+ 			"Cannot get BAR %d memory region %p\n",
+@@ -302,10 +304,8 @@ static int gasket_map_pci_bar(struct gasket_dev *gasket_dev, int bar_num)
+ 		return -EINVAL;
+ 	}
+ 
+-	gasket_dev->bar_data[bar_num].virt_base =
+-		ioremap(gasket_dev->bar_data[bar_num].phys_base,
+-				gasket_dev->bar_data[bar_num].length_bytes);
+-	if (!gasket_dev->bar_data[bar_num].virt_base) {
++	data->virt_base = ioremap(data->phys_base, data->length_bytes);
++	if (!data->virt_base) {
+ 		dev_err(gasket_dev->dev,
+ 			"Cannot remap BAR %d memory region %p\n",
+ 			bar_num, &gasket_dev->pci_dev->resource[bar_num]);
+@@ -319,9 +319,8 @@ static int gasket_map_pci_bar(struct gasket_dev *gasket_dev, int bar_num)
+ 	return 0;
+ 
+ fail:
+-	iounmap(gasket_dev->bar_data[bar_num].virt_base);
+-	release_mem_region(gasket_dev->bar_data[bar_num].phys_base,
+-			   gasket_dev->bar_data[bar_num].length_bytes);
++	iounmap(data->virt_base);
++	release_mem_region(data->phys_base, data->length_bytes);
+ 	return ret;
+ }
+ 
 -- 
-Simon Arlott
+2.17.1
+
