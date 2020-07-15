@@ -2,192 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947C8221233
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D44221237
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgGOQZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbgGOQZH (ORCPT
+        id S1726945AbgGOQZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:25:52 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50208 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725885AbgGOQZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:25:07 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2F6C061755;
-        Wed, 15 Jul 2020 09:25:07 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id k5so3211933pjg.3;
-        Wed, 15 Jul 2020 09:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6OxB8yXUbjqLqy6UM+HxywH3ynWzmwHFc2n7Yp8WHA0=;
-        b=hMLtT0+keXp39EyvI1kSFSqUosgLDz2/BuUQhceva3UdHHDD3QE0ZGa6YiR5QXxFhX
-         QvwawR4avNciS0BVH6x/Olm+0yqGQulNQCrt6NIaWjWAtmgMeD/xXr/ZX7A0XwcnMUJx
-         KsF6qr9d8ATa4RQLQfhELZWHA1UbjkduZrbbMEqw8LdFaYwNrjYSAHLl24eDopRz2Ufe
-         gb+M2aew0tA+TWKJwKSdcTVQghuVbWrsZBb9oCzEBMt67hEEVps0F/XjOdO1dXMKqU65
-         HLwHFPfr7OGPA/5XE4GOKRL0yHj8lAXdbXYOsbxstmYBq+XpUPRiMNn8Mna2SFqkygF6
-         9vxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=6OxB8yXUbjqLqy6UM+HxywH3ynWzmwHFc2n7Yp8WHA0=;
-        b=E0ueSFF92Yyon2g8uNHc2ELzf2eOTZrTiQK5zG/JRaLRBVK8IIJk+EJXMt7RgQX6dG
-         uJvemOHjF9DQQ3m5P/UY4wvryMX4Y62W7b2A95nUi5nKLqdZe4KdLkcocLdKZFwqXS+f
-         gSlC2YCryBFLC03VqW3pCOXdYxVtk/BWe9URI/9JQ7YZ15FD5fd0sbOg0cQBcWKE+a6A
-         HForsC225QYoL69hg7aqyfGNTOBw0bdfETlN/vtE0TpnmwUm2ZcTJhOjHDOggpF/dXOF
-         8EIK4ajyhaTOy4eEqY9oKGRlwCBYSNTmaP3+btty3vFf35CrW4kI3h9uWtwFGs8uW0n5
-         FURw==
-X-Gm-Message-State: AOAM532LctqT0lMtQCuhiRKYzhNl9n67gcXIQzcHsCRlUPILFp1nWHrl
-        3CZQTK/TvPWUN2+efXh+r4rSdzIZ
-X-Google-Smtp-Source: ABdhPJx/oJQAxCLrZdkObtX6gcOj9aVpU/b9RcKbvYjes+cZjfo6pHsiGT7LYvhezYM38EDYsea5Yw==
-X-Received: by 2002:a17:902:c086:: with SMTP id j6mr178573pld.293.1594830307043;
-        Wed, 15 Jul 2020 09:25:07 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j36sm2884891pgj.39.2020.07.15.09.25.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Jul 2020 09:25:06 -0700 (PDT)
-Subject: Re: [PATCH 2/3 v2] usb: typec: tcpm: Support bist test data mode for
- compliance
-To:     Badhri Jagan Sridharan <badhri@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        reg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200714231207.866838-1-badhri@google.com>
- <20200714231207.866838-2-badhri@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <a88cc020-5231-768a-8e84-b14e8935d83a@roeck-us.net>
-Date:   Wed, 15 Jul 2020 09:25:04 -0700
+        Wed, 15 Jul 2020 12:25:51 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06FG5jGJ102285;
+        Wed, 15 Jul 2020 12:25:45 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 327u1jscrw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Jul 2020 12:25:45 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06FG5jbm102297;
+        Wed, 15 Jul 2020 12:25:44 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 327u1jscrf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Jul 2020 12:25:44 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06FGP6CY004063;
+        Wed, 15 Jul 2020 16:25:43 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma05wdc.us.ibm.com with ESMTP id 3275291wuh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Jul 2020 16:25:43 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06FGPhIa22806888
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Jul 2020 16:25:43 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1256512405B;
+        Wed, 15 Jul 2020 16:25:43 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E9C33124052;
+        Wed, 15 Jul 2020 16:25:42 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.135.204])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Wed, 15 Jul 2020 16:25:42 +0000 (GMT)
+Subject: Re: linux-next: manual merge of the kvms390 tree with the kvm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jim Mattson <jmattson@google.com>
+References: <20200713145007.26acf3fb@canb.auug.org.au>
+From:   Collin Walling <walling@linux.ibm.com>
+Message-ID: <067cf82f-cc6d-968a-d1ab-53edc4e44114@linux.ibm.com>
+Date:   Wed, 15 Jul 2020 12:25:42 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200714231207.866838-2-badhri@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200713145007.26acf3fb@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-15_12:2020-07-15,2020-07-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ spamscore=0 priorityscore=1501 clxscore=1011 mlxlogscore=999
+ suspectscore=0 phishscore=0 bulkscore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007150125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/20 4:12 PM, Badhri Jagan Sridharan wrote:
-> TCPM supports BIST carried mode. PD compliance tests require
-> BIST Test Data to be supported as well.
+On 7/13/20 12:50 AM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Introducing set_bist_data callback to signal tcpc driver for
-> configuring the port controller hardware to enable/disable
-> BIST Test Data mode.
+> Today's linux-next merge of the kvms390 tree got a conflict in:
 > 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-
-This needs to be the first patch in the series. For the code itself:
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-> ---
-> Version history:
-> Changes since V1:(Guenter's suggestions)
-> - Split the change into two: TCPM and TCPCI
-> - Move BIST log to TCPM log
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 11 +++++++++++
->  include/linux/usb/tcpm.h      |  2 ++
->  2 files changed, 13 insertions(+)
+>   include/uapi/linux/kvm.h
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 82b19ebd7838e0..379fcab9dbd973 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -2746,6 +2746,11 @@ static void tcpm_detach(struct tcpm_port *port)
->  	if (!port->attached)
->  		return;
->  
-> +	if (port->tcpc->set_bist_data) {
-> +		tcpm_log(port, "disable BIST MODE TESTDATA");
-> +		port->tcpc->set_bist_data(port->tcpc, false);
-> +	}
-> +
->  	if (tcpm_port_is_disconnected(port))
->  		port->hard_reset_count = 0;
->  
-> @@ -3555,6 +3560,12 @@ static void run_state_machine(struct tcpm_port *port)
->  		case BDO_MODE_CARRIER2:
->  			tcpm_pd_transmit(port, TCPC_TX_BIST_MODE_2, NULL);
->  			break;
-> +		case BDO_MODE_TESTDATA:
-> +			if (port->tcpc->set_bist_data) {
-> +				tcpm_log(port, "Enable BIST MODE TESTDATA");
-> +				port->tcpc->set_bist_data(port->tcpc, true);
-> +			}
-> +			break;
->  		default:
->  			break;
->  		}
-> diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
-> index e7979c01c3517c..89f58760cf4800 100644
-> --- a/include/linux/usb/tcpm.h
-> +++ b/include/linux/usb/tcpm.h
-> @@ -79,6 +79,7 @@ enum tcpm_transmit_type {
->   * @try_role:	Optional; called to set a preferred role
->   * @pd_transmit:Called to transmit PD message
->   * @mux:	Pointer to multiplexer data
-> + * @set_bist_data: Turn on/off bist data mode for compliance testing
->   */
->  struct tcpc_dev {
->  	struct fwnode_handle *fwnode;
-> @@ -103,6 +104,7 @@ struct tcpc_dev {
->  	int (*try_role)(struct tcpc_dev *dev, int role);
->  	int (*pd_transmit)(struct tcpc_dev *dev, enum tcpm_transmit_type type,
->  			   const struct pd_message *msg);
-> +	int (*set_bist_data)(struct tcpc_dev *dev, bool on);
->  };
->  
->  struct tcpm_port;
+> between commit:
+> 
+>   1aa561b1a4c0 ("kvm: x86: Add "last CPU" to some KVM_EXIT information")
+> 
+> from the kvm tree and commit:
+> 
+>   23a60f834406 ("s390/kvm: diagnose 0x318 sync and reset")
+> 
+> from the kvms390 tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 > 
 
+Much appreciated. This change is acceptable and should be properly
+reflected in a header sync for QEMU (which I believe just copies the
+files from the kernel?)
+
+Thanks for the update.
+
+-- 
+Regards,
+Collin
+
+Stay safe and stay healthy
