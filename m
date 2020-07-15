@@ -2,120 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7B5221508
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 21:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973942214FD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 21:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgGOTXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 15:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgGOTXo (ORCPT
+        id S1726767AbgGOTVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 15:21:51 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:35545 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726472AbgGOTVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 15:23:44 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF318C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 12:23:43 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id l6so2781715plt.7
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 12:23:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OJ/YWMib2y0Oi9xcE3B9cmLij4uK6K7vyJCnBwYrt/0=;
-        b=kiYOUCLw+1YMW5C/hDrCQnyOlnRtGrFPezJA04+b0b4IIM5w8VNidZnsPMPHfZ31KS
-         LxhyDUqGX0RwzJAlBRqOfe2ODGCTv2LKEk/50WpTfn28Dp+ZBxdVxNZXkt6vym0qxK/Q
-         rx82Fv0Ijv3kJKlDTbYSXiKFjVaIlmJguN6+3aaiaOjcY7ZTRMaa5SON4MfuTw8M/HSU
-         v8ruKKdEd2o//mAyXMOkE3cXxzduzOyubtoH4T/VezrAKzRSY9zqMZ+YPOlllJ7ocF+k
-         UdiLFpdNVsXZC/MUNV+4eR0KRB3FESXVCeMno3tw/kkcCifALuCf49tFeBBbwBN9AyNI
-         Cing==
+        Wed, 15 Jul 2020 15:21:51 -0400
+Received: by mail-io1-f68.google.com with SMTP id v8so3495109iox.2;
+        Wed, 15 Jul 2020 12:21:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=OJ/YWMib2y0Oi9xcE3B9cmLij4uK6K7vyJCnBwYrt/0=;
-        b=fkEYkgK2ms3V2qRHz3zUQHcAqOtoJ7fxoMQzb+B7n4VBTmiVrSyU1QWpghv4zftGbO
-         s6nDtUN6PYlRJ1gaHlQ1Ba/QMiJ2GZty3o+OugR/vY12Ir5a2wHdn3Hz/2wppFV7j9vD
-         rnj1RBikArIEsp4xF+fBcyTNAY+mmsiDiA9yuLjvzPY/UCzVzqitwloZW3PKW6zvVWPG
-         w87kjOGhB3MVuR8u+vYb3hkYg6U0VE3b7TGw0OKWM1pjwfyi17Giwr/Cj0SiS/UMBef+
-         kaJwjkGTycpJFdzVFCsj5nwyv1p/ARoZKDPjXQad+TtHEasv1baagSnBZ+lAbXD84nBJ
-         Lh7A==
-X-Gm-Message-State: AOAM530YV0V1HSj1jdMinRvnjE/7F8DyQmp6hxqaGbotDYiZNbYPeB65
-        hsjnGN7jFEcn6ZKAqSFgVcoESE1o+wI=
-X-Google-Smtp-Source: ABdhPJxxiugzYbbF1aUsgwFCaTWYsI5jJtHeJsIIOQXJcVFYwSl1wCBetM40QxEzTt5KKymF9BCfSw==
-X-Received: by 2002:a17:90a:ed87:: with SMTP id k7mr1208692pjy.31.1594841023280;
-        Wed, 15 Jul 2020 12:23:43 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id g6sm2829878pfr.129.2020.07.15.12.23.42
+        bh=XpO2PmYmWFeYwVE+k7Xx8wRkBjcoL7yVQGNUR1MHgJU=;
+        b=rkVsyUrOiFKQTZPfC3qY0Slb6btxKYkxTkyU3SuU2+1fKn8/dqsgji+xhKbXGKBoiE
+         2X9N3O45rLldVec4orE4oAFPKuvKRgs68cH6d4y+eBgnWqjwSm6LqsFr6eA1yObBHkF7
+         0BdkrLJVwjwBCkHdkfCLksjXyDoltm3ax0QxREuebwJX6OiGVwjXlTruhrWnzEIDcxP4
+         5LyK1avioby7YNLam1AbMrDgLuuBpaAiKKnRhMPMyja95Rh+78XWjuKbkQl1TxDXWIFg
+         ccMkT3vebV6SK4TcMitFDQh5wEMh6oc5Z/a2RxlRjx+dEZyd4rrdxHNR7GxPbIbmn8dU
+         8Q2Q==
+X-Gm-Message-State: AOAM532d6YVxeYVi7FeeCVzmkCVkSeStaRNTJzSIkvAwmRvGAizZCDvw
+        tQ0IrYxmqkxohOantFq91JfPbf/4JA==
+X-Google-Smtp-Source: ABdhPJynn0MDDy8fnolqF32P3LzcbAvnAj/VAANNkoeMF6+dMrtRFB2N5E81MG9VXkm5KqIzuoogWQ==
+X-Received: by 2002:a05:6602:21c3:: with SMTP id c3mr773323ioc.93.1594840910191;
+        Wed, 15 Jul 2020 12:21:50 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id j17sm1478157ilq.7.2020.07.15.12.21.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 12:23:42 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 12:21:38 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     ohad@wizery.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 2/2] remoteproc: qcom_sysmon: Solve function header
- bitrot issues
-Message-ID: <20200715192138.GA2922385@builder.lan>
-References: <20200715123551.4011154-1-lee.jones@linaro.org>
- <20200715123551.4011154-2-lee.jones@linaro.org>
+        Wed, 15 Jul 2020 12:21:49 -0700 (PDT)
+Received: (nullmailer pid 674969 invoked by uid 1000);
+        Wed, 15 Jul 2020 19:21:48 -0000
+Date:   Wed, 15 Jul 2020 13:21:48 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        alexandre.belloni@bootlin.com, linux@armlinux.org.uk,
+        ludovic.desroches@microchip.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kamel.bouhara@bootlin.com,
+        wsa@kernel.org, linux-i2c@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [RFC PATCH 1/4] dt-binding: i2c: add generic properties for GPIO
+ bus recovery
+Message-ID: <20200715192148.GA674938@bogus>
+References: <20200619141904.910889-1-codrin.ciubotariu@microchip.com>
+ <20200619141904.910889-2-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200715123551.4011154-2-lee.jones@linaro.org>
+In-Reply-To: <20200619141904.910889-2-codrin.ciubotariu@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 15 Jul 05:35 PDT 2020, Lee Jones wrote:
-
-> Looks as though 'name' has now been moved into 'struct sysmod_event'
-> which is passed in instead.  However, the parameter descriptions were
-> not updated at the same time.  Let's do that now.
+On Fri, 19 Jun 2020 17:19:01 +0300, Codrin Ciubotariu wrote:
+> The I2C GPIO bus recovery properties consist of two GPIOS and one extra
+> pinctrl state ("gpio" or "recovery"). Not all are mandatory for recovery.
 > 
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/remoteproc/qcom_sysmon.c:78: warning: Function parameter or member 'event' not described in 'sysmon_send_event'
->  drivers/remoteproc/qcom_sysmon.c:78: warning: Excess function parameter 'name' description in 'sysmon_send_event'
->  drivers/remoteproc/qcom_sysmon.c:350: warning: Function parameter or member 'event' not described in 'ssctl_send_event'
->  drivers/remoteproc/qcom_sysmon.c:350: warning: Excess function parameter 'name' description in 'ssctl_send_event'
-> 
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-Thanks Lee, both patches applied.
-
-Regards,
-Bjorn
-
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 > ---
->  drivers/remoteproc/qcom_sysmon.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  Documentation/devicetree/bindings/i2c/i2c.txt | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> diff --git a/drivers/remoteproc/qcom_sysmon.c b/drivers/remoteproc/qcom_sysmon.c
-> index 8d8996d714f07..9eb2f6bccea63 100644
-> --- a/drivers/remoteproc/qcom_sysmon.c
-> +++ b/drivers/remoteproc/qcom_sysmon.c
-> @@ -71,7 +71,7 @@ static LIST_HEAD(sysmon_list);
->  /**
->   * sysmon_send_event() - send notification of other remote's SSR event
->   * @sysmon:	sysmon context
-> - * @name:	other remote's name
-> + * @event:	sysmon event context
->   */
->  static void sysmon_send_event(struct qcom_sysmon *sysmon,
->  			      const struct sysmon_event *event)
-> @@ -343,7 +343,7 @@ static void ssctl_request_shutdown(struct qcom_sysmon *sysmon)
->  /**
->   * ssctl_send_event() - send notification of other remote's SSR event
->   * @sysmon:	sysmon context
-> - * @name:	other remote's name
-> + * @event:	sysmon event context
->   */
->  static void ssctl_send_event(struct qcom_sysmon *sysmon,
->  			     const struct sysmon_event *event)
-> -- 
-> 2.25.1
-> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
