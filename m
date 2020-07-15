@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7FC22129E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235232212B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 18:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727886AbgGOQkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 12:40:47 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:33599 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727787AbgGOQkg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 12:40:36 -0400
-Received: by mail-ed1-f68.google.com with SMTP id h28so2106348edz.0;
-        Wed, 15 Jul 2020 09:40:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mkYMsiSKEyTRllQWaVCWr/1Tzi9Mh4OsE2TArv0QPE4=;
-        b=GpWMlkg2pG8vm7YvFAaQ5PN9iyjgJxBcHxfNP3RKeR7O6FdGk1AWMu9tK1zV5eem+d
-         +3ywLdxKa2B4/7UcNFoR/rj8856HLeOS7aqKO3rtOUCCJx+VN8gFqLdwyrczkxVvhzMF
-         kUS2AUrtz7GfMWFVDCd+wSk1pdoYBlsDvGuEuKWky/VIMFHcf8DQGye/cvjTHVGtXInc
-         ESF3JIhZWxuvi/EQ510MnBXavtcfz8WWXUh0vcrRsFvMp/02uKdELXy7qCHmqDs85vXg
-         eeZC9uKDLkSgJ59UwzNh9u85l6yjwwDva5mxgFi6hYJayxAMGTXIZcl94LkNhKafxw07
-         S3YA==
-X-Gm-Message-State: AOAM532ucAZU1HpiMKFGguksDMocNJZ/WPlOgDL+tElPcyvcx8WWofbq
-        TTmpCIZAXjgA7SvH5SyFBcNKVoyMcwXSD6gAvU18LA==
-X-Google-Smtp-Source: ABdhPJxL2C4dTVVKrNN4e+F8ARVR16RmQ+W2KY1F0ucI6oh6+0b4B0E4YcDIV44fX0Geoxf4yVkiP3FmOGIrLSi9TeA=
-X-Received: by 2002:a50:ab5c:: with SMTP id t28mr436194edc.209.1594831234383;
- Wed, 15 Jul 2020 09:40:34 -0700 (PDT)
+        id S1726034AbgGOQmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 12:42:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725834AbgGOQmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 12:42:23 -0400
+Received: from sol.localdomain (c-107-3-166-239.hsd1.ca.comcast.net [107.3.166.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3798120658;
+        Wed, 15 Jul 2020 16:42:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594831342;
+        bh=ED5t9A4zYRl2ppiYuYOQoWbYJVj84a6IYOD4Vjh9qcw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dQA5TiCjdpTjdRjyFo64GaYmcJ38VZ98DmESuH3bIc7IwBm+v5kPqFNCfamABR9ad
+         juc1949N82lTQqEXq8UtZ8CEbj9YS6CApPxNuKJZjUnXctZlMrROfyWVI3oPc7nkke
+         bgJOSl8Vf6rDJvb6pGJKcpTQJ6zKF3hQOrGgCfOk=
+Date:   Wed, 15 Jul 2020 09:42:20 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: change the way of handling range.len
+ in F2FS_IOC_SEC_TRIM_FILE
+Message-ID: <20200715164220.GC1167@sol.localdomain>
+References: <20200713031252.3873546-1-daeho43@gmail.com>
+ <20200713181152.GC2910046@google.com>
+ <3b02263d-a5e1-136c-40ed-514d34e4c895@huawei.com>
+ <CACOAw_wBD_ourGJSdRTDM-wzeH97aGE966QDB6bpjiyXRrh47A@mail.gmail.com>
+ <f4a594a1-464f-3a74-90cb-fd536bed9962@huawei.com>
+ <CACOAw_w3OWDVXSYHuTEEVv1HaBZir1CWcRAmxOt00MB4vXBKVg@mail.gmail.com>
+ <1d84bc01-fece-df55-6e33-07a705cfb432@huawei.com>
+ <CACOAw_xaS7qB22EPsZvHoC=uPiPtqGMAK5cP4Vk20xO21GQ-Kg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200715162604.1080552-1-colin.king@canonical.com> <eb5d2ead-807b-3435-5024-b8cc4a1311f3@canonical.com>
-In-Reply-To: <eb5d2ead-807b-3435-5024-b8cc4a1311f3@canonical.com>
-From:   Anna Schumaker <anna.schumaker@netapp.com>
-Date:   Wed, 15 Jul 2020 12:40:18 -0400
-Message-ID: <CAFX2Jfn75a8XENoqvztVnUe0aR9S2KGjpcGp3zyLeFS-h--9ag@mail.gmail.com>
-Subject: Re: [PATCH] xprtrdma: fix incorrect header size calcations
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Trond Myklebust <trond.myklebust@hammerspace.com>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACOAw_xaS7qB22EPsZvHoC=uPiPtqGMAK5cP4Vk20xO21GQ-Kg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need for a v2, I can fix it up!
+On Wed, Jul 15, 2020 at 07:25:13PM +0900, Daeho Jeong wrote:
+> Chao,
+> 
+> I can't find fscrypt_zeroout_range_inline_crypt() function. Do you
+> mean we need to implement this one for inline encryption?
+> 
+> 2020년 7월 15일 (수) 오후 4:17, Chao Yu <yuchao0@huawei.com>님이 작성:
+> >
+> > On 2020/7/15 14:54, Daeho Jeong wrote:
+> > > You mean we can support ZEROOUT option only for encrypted files of
+> > > non-multidevice f2fs,
+> > > and return -EOPNOTSUPP in the multidevice case, right now?
+> >
+> > Yes, something like:
+> >
+> > f2fs_sec_trim_file()
+> >
+> > if ((range.flags & F2FS_TRIM_FILE_ZEROOUT) &&
+> >         f2fs_encrypted_file() && f2fs_is_multi_device())
+> >         return -EOPNOTSUPP;
+> >
+> >
+> > f2fs_secure_erase()
+> >
+> > if (!ret && (flags & F2FS_TRIM_FILE_ZEROOUT)) {
+> >         if (f2fs_encrypted_file()) {
+> >                 if (fscrypt_inode_uses_fs_layer_crypto)
+> >                         ret = fscrypt_zeroout_range();
+> >                 else
+> >                         ret = fscrypt_zeroout_range_inline_crypt();
+> >         } else {
+> >                 ret = blkdev_issue_zeroout();
+> >         }
+> > }
 
+fscrypt_zeroout_range_inline_crypt() is being added by
+"fscrypt: add inline encryption support", which is queued in the fscrypt tree
+(the master branch of https://git.kernel.org/pub/scm/fs/fscrypt/fscrypt.git).
 
-On Wed, Jul 15, 2020 at 12:32 PM Colin Ian King
-<colin.king@canonical.com> wrote:
->
-> Bah, $SUBJECT typo "calcations" -> "calculations". can that be fixed up
-> when it's applied, or shall I send a V2?
->
-> On 15/07/2020 17:26, Colin King wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > Currently the header size calculations are using an assignment
-> > operator instead of a += operator when accumulating the header
-> > size leading to incorrect sizes.  Fix this by using the correct
-> > operator.
-> >
-> > Addresses-Coverity: ("Unused value")
-> > Fixes: 302d3deb2068 ("xprtrdma: Prevent inline overflow")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >  net/sunrpc/xprtrdma/rpc_rdma.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/net/sunrpc/xprtrdma/rpc_rdma.c b/net/sunrpc/xprtrdma/rpc_rdma.c
-> > index 935bbef2f7be..453bacc99907 100644
-> > --- a/net/sunrpc/xprtrdma/rpc_rdma.c
-> > +++ b/net/sunrpc/xprtrdma/rpc_rdma.c
-> > @@ -71,7 +71,7 @@ static unsigned int rpcrdma_max_call_header_size(unsigned int maxsegs)
-> >       size = RPCRDMA_HDRLEN_MIN;
-> >
-> >       /* Maximum Read list size */
-> > -     size = maxsegs * rpcrdma_readchunk_maxsz * sizeof(__be32);
-> > +     size += maxsegs * rpcrdma_readchunk_maxsz * sizeof(__be32);
-> >
-> >       /* Minimal Read chunk size */
-> >       size += sizeof(__be32); /* segment count */
-> > @@ -94,7 +94,7 @@ static unsigned int rpcrdma_max_reply_header_size(unsigned int maxsegs)
-> >       size = RPCRDMA_HDRLEN_MIN;
-> >
-> >       /* Maximum Write list size */
-> > -     size = sizeof(__be32);          /* segment count */
-> > +     size += sizeof(__be32);         /* segment count */
-> >       size += maxsegs * rpcrdma_segment_maxsz * sizeof(__be32);
-> >       size += sizeof(__be32); /* list discriminator */
-> >
-> >
->
+But that's not actually relevant here because fscrypt_zeroout_range() calls
+fscrypt_zeroout_range_inline_crypt() when needed.
+
+Just use fscrypt_zeroout_range().
+
+- Eric
