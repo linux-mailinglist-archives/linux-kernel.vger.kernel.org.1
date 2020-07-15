@@ -2,105 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D02220C88
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4827220C8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 13:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730580AbgGOL6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 07:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
+        id S1730626AbgGOL7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 07:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgGOL6B (ORCPT
+        with ESMTP id S1725852AbgGOL7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 07:58:01 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB17C061755;
-        Wed, 15 Jul 2020 04:58:01 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 206512A06C6
-Message-ID: <3c8a235ebb0bf76bcffeb8c6b983cd4c95d77459.camel@collabora.com>
-Subject: Re: [PATCH] media: cedrus: Propagate OUTPUT resolution to CAPTURE
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     stable@vger.kernel.org, kernel@collabora.com,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chen-Yu Tsai <wens@csie.org>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 15 Jul 2020 08:57:50 -0300
-In-Reply-To: <20200514153903.341287-1-nicolas.dufresne@collabora.com>
-References: <20200514153903.341287-1-nicolas.dufresne@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        Wed, 15 Jul 2020 07:59:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F35C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 04:59:06 -0700 (PDT)
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594814341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E/Hw+7u7aBxeaVg0fnGygmITDj3v4tIkOl2+fAUxPTA=;
+        b=yPvm7CWthkRwlgkbg7g+faKOFs7NJk5qxg8qwKA5nL8eKSbGvhGte1Wk7qi7IQL0FSRFYk
+        hIzoPza7nioo4DDk51dvAslE9Jzr2bo8V56WpkGviOaJvGH7tyUF9RPAnkuLcq+BN8W/51
+        juhHRRzevdx88N+vmlySdiTMSN2TuCIXZNOwezf74nu6T7mVA7Goxa2S8cyQmOD0lvRbqZ
+        czhk3/wxsFBgedPVCwHQgVqVlr/VKNiOitSIAX4Yw7eA7Q7De9CkqtTSq2dhAawVEDYrz8
+        QJLZWcObt5Y2xkzhtCkEEYq2TitT+AYe+Ra3dZnwQx2AgcJjwtt8pzqz2uQOIA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594814341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E/Hw+7u7aBxeaVg0fnGygmITDj3v4tIkOl2+fAUxPTA=;
+        b=oNrpRIq83+0jvmZcDwfQAsaE9OgkuYiwLJQw1Jtukv/q1VpPzrB9AVnPYwXiiCSZdsisJq
+        oyeq+HTEY0CQieCQ==
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Leo Yan <leo.yan@linaro.org>
+Cc:     Will Deacon <will@kernel.org>, John Ogness <jogness@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Subject: [PATCH] time/sched_clock: Use raw_read_seqcount_latch()
+Date:   Wed, 15 Jul 2020 13:59:01 +0200
+Message-Id: <20200715115901.515956-1-a.darwish@linutronix.de>
+In-Reply-To: <20200715095220.GH10769@hirez.programming.kicks-ass.net>
+References: <20200715095220.GH10769@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems this one felt thru the cracks. Sorry for the delay.
+sched_clock uses seqcount_t latching to switch between two storage
+places protected by the sequence counter. This allows it to have
+interruptible, NMI-safe, seqcount_t write side critical sections.
 
-On Thu, 2020-05-14 at 11:39 -0400, Nicolas Dufresne wrote:
-> As per spec, the CAPTURE resolution should be automatically set based on
-> the OTUPUT resolution. This patch properly propagate width/height to the
-> capture when the OUTPUT format is set and override the user provided
-> width/height with configured OUTPUT resolution when the CAPTURE fmt is
-> updated.
-> 
-> This also prevents userspace from selecting a CAPTURE resolution that is
-> too small, avoiding unwanted page faults.
-> 
-> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Since 7fc26327b756 ("seqlock: Introduce raw_read_seqcount_latch()"),
+raw_read_seqcount_latch() became the standardized way for seqcount_t
+latch read paths. Due to the dependent load, it also has one read
+memory barrier less than the currently used raw_read_seqcount() API.
 
-This looks correct.
+Use raw_read_seqcount_latch() for the seqcount_t latch read path.
 
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+Link: https://lkml.kernel.org/r/20200625085745.GD117543@hirez.programming.kicks-ass.net
+Link: https://lkml.kernel.org/r/20200715092345.GA231464@debian-buster-darwi.lab.linutronix.de
+References: 1809bfa44e10 ("timers, sched/clock: Avoid deadlock during read from NMI")
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+---
+ kernel/time/sched_clock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Ezequiel
+diff --git a/kernel/time/sched_clock.c b/kernel/time/sched_clock.c
+index fa3f800d7d76..ea007928d681 100644
+--- a/kernel/time/sched_clock.c
++++ b/kernel/time/sched_clock.c
+@@ -100,7 +100,7 @@ unsigned long long notrace sched_clock(void)
+ 	struct clock_read_data *rd;
 
-> ---
->  drivers/staging/media/sunxi/cedrus/cedrus_video.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> index 16d82309e7b6..a6d6b15adc2e 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-> @@ -247,6 +247,8 @@ static int cedrus_try_fmt_vid_cap(struct file *file, void *priv,
->  		return -EINVAL;
->  
->  	pix_fmt->pixelformat = fmt->pixelformat;
-> +	pix_fmt->width = ctx->src_fmt.width;
-> +	pix_fmt->height = ctx->src_fmt.height;
->  	cedrus_prepare_format(pix_fmt);
->  
->  	return 0;
-> @@ -319,11 +321,14 @@ static int cedrus_s_fmt_vid_out(struct file *file, void *priv,
->  		break;
->  	}
->  
-> -	/* Propagate colorspace information to capture. */
-> +	/* Propagate format information to capture. */
->  	ctx->dst_fmt.colorspace = f->fmt.pix.colorspace;
->  	ctx->dst_fmt.xfer_func = f->fmt.pix.xfer_func;
->  	ctx->dst_fmt.ycbcr_enc = f->fmt.pix.ycbcr_enc;
->  	ctx->dst_fmt.quantization = f->fmt.pix.quantization;
-> +	ctx->dst_fmt.width = ctx->src_fmt.width;
-> +	ctx->dst_fmt.height = ctx->src_fmt.height;
-> +	cedrus_prepare_format(&ctx->dst_fmt);
->  
->  	return 0;
->  }
-> -- 
-> 2.26.2
-> 
-> 
+ 	do {
+-		seq = raw_read_seqcount(&cd.seq);
++		seq = raw_read_seqcount_latch(&cd.seq);
+ 		rd = cd.read_data + (seq & 1);
 
-
+ 		cyc = (rd->read_sched_clock() - rd->epoch_cyc) &
+--
+2.20.1
