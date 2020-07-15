@@ -2,283 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C977220463
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 07:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C079F220459
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 07:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728513AbgGOF30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 01:29:26 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:55622 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728495AbgGOF3Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 01:29:25 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06F5TMOn000582
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 22:29:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=EQVhyN0Yhc5N1dItjWL5u9vys6FyokTu/QB730ry8+A=;
- b=Q2/5Mmkw95IEcR2dnpZl4CCfVn9tiybHZ8VWzGKbAFwVrphTPa8i9F0e/4n3kNr8a7Pm
- GwD/gGOup/dkY4b8GDjMlT1GifOH2RCbShN01ztmMM87zAggZHO+kpDQIoI/Bqcltr8d
- LmzJsBV9fhG7T+0c4dUFLLeu9WcyqlSRmy0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 327b8j12pn-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 22:29:24 -0700
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 14 Jul 2020 22:29:04 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 3121E62E52E7; Tue, 14 Jul 2020 22:26:10 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <brouer@redhat.com>, <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: add callchain_stackid
-Date:   Tue, 14 Jul 2020 22:26:01 -0700
-Message-ID: <20200715052601.2404533-3-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200715052601.2404533-1-songliubraving@fb.com>
-References: <20200715052601.2404533-1-songliubraving@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-15_02:2020-07-15,2020-07-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- mlxlogscore=999 phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0
- spamscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007150046
-X-FB-Internal: deliver
+        id S1728397AbgGOF07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 01:26:59 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48595 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726928AbgGOF04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 01:26:56 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxCdWYkw5fPuQEAA--.6136S2;
+        Wed, 15 Jul 2020 13:26:48 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] spi: omap-uwire: Use clk_prepare_enable and clk_disable_unprepare
+Date:   Wed, 15 Jul 2020 13:26:46 +0800
+Message-Id: <1594790807-32319-1-git-send-email-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9CxCdWYkw5fPuQEAA--.6136S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrurWxZw4rtw4rZF47CFW7Jwb_yoWDuwb_uF
+        4DWrs7Gr4Y9rsak3W2gwnxA34I9r1qvFn2g34IqFWfJry2vwn8CrZ0qrsxCr1rZw4rAFnx
+        Ar1kJ34akw1fGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8WwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jwCztUUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This tests new helper function bpf_get_stackid_pe and bpf_get_stack_pe.
-These two helpers have different implementation for perf_event with PEB
-entries.
+Convert clk_enable() to clk_prepare_enable() and clk_disable() to
+clk_disable_unprepare() respectively in the spi-omap-uwire.c.
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
 ---
- .../bpf/prog_tests/perf_event_stackmap.c      | 120 ++++++++++++++++++
- .../selftests/bpf/progs/perf_event_stackmap.c |  64 ++++++++++
- 2 files changed, 184 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_event_sta=
-ckmap.c
- create mode 100644 tools/testing/selftests/bpf/progs/perf_event_stackmap=
-.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c=
- b/tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c
-new file mode 100644
-index 0000000000000..6dcc67572afc7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_event_stackmap.c
-@@ -0,0 +1,120 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <sched.h>
-+#include <test_progs.h>
-+#include "perf_event_stackmap.skel.h"
-+
-+#ifndef noinline
-+#define noinline __attribute__((noinline))
-+#endif
-+
-+noinline int func_1(void)
-+{
-+	static int val =3D 1;
-+
-+	val +=3D 1;
-+
-+	usleep(100);
-+	return val;
-+}
-+
-+noinline int func_2(void)
-+{
-+	return func_1();
-+}
-+
-+noinline int func_3(void)
-+{
-+	return func_2();
-+}
-+
-+noinline int func_4(void)
-+{
-+	return func_3();
-+}
-+
-+noinline int func_5(void)
-+{
-+	return func_4();
-+}
-+
-+noinline int func_6(void)
-+{
-+	int i, val =3D 1;
-+
-+	for (i =3D 0; i < 100; i++)
-+		val +=3D func_5();
-+
-+	return val;
-+}
-+
-+void test_perf_event_stackmap(void)
-+{
-+	struct perf_event_attr attr =3D {
-+		/* .type =3D PERF_TYPE_SOFTWARE, */
-+		.type =3D PERF_TYPE_HARDWARE,
-+		.config =3D PERF_COUNT_HW_CPU_CYCLES,
-+		.precise_ip =3D 2,
-+		.sample_type =3D PERF_SAMPLE_IP | PERF_SAMPLE_BRANCH_STACK |
-+			PERF_SAMPLE_CALLCHAIN,
-+		.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER |
-+			PERF_SAMPLE_BRANCH_NO_FLAGS |
-+			PERF_SAMPLE_BRANCH_NO_CYCLES |
-+			PERF_SAMPLE_BRANCH_CALL_STACK,
-+		.sample_period =3D 5000,
-+		.size =3D sizeof(struct perf_event_attr),
-+	};
-+	struct perf_event_stackmap *skel;
-+	__u32 duration =3D 0;
-+	cpu_set_t cpu_set;
-+	int pmu_fd, err;
-+
-+	skel =3D perf_event_stackmap__open();
-+
-+	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
-+		return;
-+
-+	/* override program type */
-+	bpf_program__set_perf_event(skel->progs.oncpu);
-+
-+	err =3D perf_event_stackmap__load(skel);
-+	if (CHECK(err, "skel_load", "skeleton load failed: %d\n", err))
-+		goto cleanup;
-+
-+	CPU_ZERO(&cpu_set);
-+	CPU_SET(0, &cpu_set);
-+	err =3D pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_se=
-t);
-+	if (CHECK(err, "set_affinity", "err %d, errno %d\n", err, errno))
-+		goto cleanup;
-+
-+	pmu_fd =3D syscall(__NR_perf_event_open, &attr, -1 /* pid */,
-+			 0 /* cpu 0 */, -1 /* group id */,
-+			 0 /* flags */);
-+	if (pmu_fd < 0) {
-+		printf("%s:SKIP:cpu doesn't support the event\n", __func__);
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	skel->links.oncpu =3D bpf_program__attach_perf_event(skel->progs.oncpu,
-+							   pmu_fd);
-+	if (CHECK(IS_ERR(skel->links.oncpu), "attach_perf_event",
-+		  "err %ld\n", PTR_ERR(skel->links.oncpu))) {
-+		close(pmu_fd);
-+		goto cleanup;
-+	}
-+
-+	/* create kernel and user stack traces for testing */
-+	func_6();
-+
-+	CHECK(skel->data->stackid_kernel !=3D 2, "get_stackid_kernel", "failed\=
-n");
-+	CHECK(skel->data->stackid_user !=3D 2, "get_stackid_user", "failed\n");
-+	CHECK(skel->data->stack_kernel !=3D 2, "get_stack_kernel", "failed\n");
-+	CHECK(skel->data->stack_user !=3D 2, "get_stack_user", "failed\n");
-+	close(pmu_fd);
-+
-+cleanup:
-+	perf_event_stackmap__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/perf_event_stackmap.c b/to=
-ols/testing/selftests/bpf/progs/perf_event_stackmap.c
-new file mode 100644
-index 0000000000000..1b0457efeedec
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/perf_event_stackmap.c
-@@ -0,0 +1,64 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Facebook
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+#ifndef PERF_MAX_STACK_DEPTH
-+#define PERF_MAX_STACK_DEPTH         127
-+#endif
-+
-+#ifndef BPF_F_USER_STACK
-+#define BPF_F_USER_STACK		(1ULL << 8)
-+#endif
-+
-+typedef __u64 stack_trace_t[PERF_MAX_STACK_DEPTH];
-+struct {
-+	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
-+	__uint(max_entries, 16384);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(stack_trace_t));
-+} stackmap SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, stack_trace_t);
-+} stackdata_map SEC(".maps");
-+
-+long stackid_kernel =3D 1;
-+long stackid_user =3D 1;
-+long stack_kernel =3D 1;
-+long stack_user =3D 1;
-+
-+SEC("perf_event")
-+int oncpu(void *ctx)
-+{
-+	int max_len =3D PERF_MAX_STACK_DEPTH * sizeof(__u64);
-+	stack_trace_t *trace;
-+	__u32 key =3D 0;
-+	long val;
-+
-+	val =3D bpf_get_stackid(ctx, &stackmap, 0);
-+	if (val > 0)
-+		stackid_kernel =3D 2;
-+	val =3D bpf_get_stackid(ctx, &stackmap, BPF_F_USER_STACK);
-+	if (val > 0)
-+		stackid_user =3D 2;
-+
-+	trace =3D bpf_map_lookup_elem(&stackdata_map, &key);
-+	if (!trace)
-+		return 0;
-+
-+	val =3D bpf_get_stack(ctx, trace, max_len, 0);
-+	if (val > 0)
-+		stack_kernel =3D 2;
-+
-+	val =3D bpf_get_stack(ctx, trace, max_len, BPF_F_USER_STACK);
-+	if (val > 0)
-+		stack_user =3D 2;
-+
-+	return 0;
-+}
-+
-+char LICENSE[] SEC("license") =3D "GPL";
---=20
-2.24.1
+v2:
+  -Modify the commit message
+  -Split into two patches
+
+ drivers/spi/spi-omap-uwire.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/spi-omap-uwire.c b/drivers/spi/spi-omap-uwire.c
+index ce8dbdb..71402f7 100644
+--- a/drivers/spi/spi-omap-uwire.c
++++ b/drivers/spi/spi-omap-uwire.c
+@@ -443,7 +443,7 @@ static void uwire_cleanup(struct spi_device *spi)
+ static void uwire_off(struct uwire_spi *uwire)
+ {
+ 	uwire_write_reg(UWIRE_SR3, 0);
+-	clk_disable(uwire->ck);
++	clk_disable_unprepare(uwire->ck);
+ 	spi_master_put(uwire->bitbang.master);
+ }
+ 
+@@ -475,7 +475,7 @@ static int uwire_probe(struct platform_device *pdev)
+ 		spi_master_put(master);
+ 		return status;
+ 	}
+-	clk_enable(uwire->ck);
++	clk_prepare_enable(uwire->ck);
+ 
+ 	if (cpu_is_omap7xx())
+ 		uwire_idx_shift = 1;
+-- 
+2.1.0
 
