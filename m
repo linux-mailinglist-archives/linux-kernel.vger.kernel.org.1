@@ -2,111 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9386B220787
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1D2220788
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729324AbgGOIiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:38:11 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54604 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729066AbgGOIiK (ORCPT
+        id S1730283AbgGOIiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729066AbgGOIiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:38:10 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06F8W7kg147701;
-        Wed, 15 Jul 2020 08:37:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=0oIcIHic/n+18h7D2ez3Bk061rU2Mlnb/HJIfCwCVqU=;
- b=c5VIn3MtRNPOEhDMfEao95+zv9V3kIYxMcRBq6EDrPNQzGsumpbNqdjgju1O/oCBpdMx
- 8Ku3ZlFWL64vWQcTS2hobf2++tYJaP0ccPSC3FekTWvdYu5eFk7LMEiy42Pi7A9fxfIF
- +VpJDL/B+ImOoY6MAUA5jbPgRY3acGVp/NdbWDsOck2eRZdwTf8KKo7ggfxBIcqAIQgj
- A6igT30WtACoCgBCsX2LrucRHqxrGxuOmMCN1V8F9cAmn74V4QVmfGxZ1WV5br2gZUWN
- VcaEVTneH1nDxhaCdKh+8OUcbEIUxKXUKKf3NA50CAaGGhdnDl0iIC9IlxubYeO78C6F 8Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 3274ura2kv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Jul 2020 08:37:56 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06F8XeDp042497;
-        Wed, 15 Jul 2020 08:37:56 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 327q6tytyk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jul 2020 08:37:56 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06F8bt7d017390;
-        Wed, 15 Jul 2020 08:37:55 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 15 Jul 2020 01:37:54 -0700
-Date:   Wed, 15 Jul 2020 11:37:27 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Joe Perches <joe@perches.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Zhixu Zhao <zhixu001@126.com>,
-        rcy@google.com, rspringer@google.com, toddpoynor@google.com
-Subject: Re: [PATCH v2] staging: gasket: core: Fix a coding style issue in
- gasket_core.c
-Message-ID: <20200715083727.GY2549@kadam>
-References: <20200617161127.32006-1-zhixu001@126.com>
- <20200714234440.27009-1-zhixu001@126.com>
- <20200715071748.GC2305231@kroah.com>
- <23ef3ca9616418b702df891443d0f4864edd58ff.camel@perches.com>
- <20200715075755.GA2516028@kroah.com>
+        Wed, 15 Jul 2020 04:38:18 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA65C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:38:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0kjsVOfV30caO/5Zchs4MAMTJc5SZZBY2bLlqPn+b6U=; b=tpJhfIRz2E8zQ08WOsHHmIFe5n
+        n9VDMj5cagstx5VgIfC8HrUizrdH2KsxuEcSQ3kqH1OGGV4BmDaQo1O6T7I1bvC989Ir6Jp7Gzubw
+        0psAguRiKJMhYikHNoyv5ZHNTXFbaBbj1etTPSQjmrV74UUNsc3zRD6pX7pSjPhWOzuE5F5BPVf9W
+        y5rD+K6aWXI7tPr4Ak21vZ8NZHN+X84PkS/C/ZUgWd2nlfM/w3hxxRWBZhKZETjUJod2xVJQq0yTW
+        uSMvVysCOzvfoN+FaQKelHCUlAOedsCbHLsgL3WbnzgfKYhkquEqPJjEfhp9VOsuEMy7Kulb/aEJj
+        eC6sUKAQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvcvV-0000Bo-Oa; Wed, 15 Jul 2020 08:38:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F2B1A300446;
+        Wed, 15 Jul 2020 10:38:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B270023648708; Wed, 15 Jul 2020 10:38:00 +0200 (CEST)
+Date:   Wed, 15 Jul 2020 10:38:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] arm64: perf: Implement correct cap_user_time
+Message-ID: <20200715083800.GC10769@hirez.programming.kicks-ass.net>
+References: <20200715020512.20991-1-leo.yan@linaro.org>
+ <20200715020512.20991-3-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200715075755.GA2516028@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- phishscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007150072
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9682 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 priorityscore=1501 adultscore=0 bulkscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007150072
+In-Reply-To: <20200715020512.20991-3-leo.yan@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 09:57:55AM +0200, Greg KH wrote:
-> On Wed, Jul 15, 2020 at 12:24:22AM -0700, Joe Perches wrote:
-> > On Wed, 2020-07-15 at 09:17 +0200, Greg KH wrote:
-> > > On Wed, Jul 15, 2020 at 07:44:40AM +0800, Zhixu Zhao wrote:
-> > > > On Thu, Jun 18, 2020 at 12:11:27AM +0800, Zhixu Zhao wrote:
-> > > > > A coding alignment issue is found by checkpatch.pl.
-> > > > > Fix it by using a temporary for gasket_dev->bar_data[bar_num].
-> > > > > 
-> > > > > Signed-off-by: Zhixu Zhao <zhixu001@126.com>
-> > > > 
-> > > > Hi, there~
-> > > > 
-> > > > Does anybody have any further comments on this?
-> > > > Can it be merged?
-> > > 
-> > > I never saw the first version of this, are you sure it got sent to the
-> > > mailing list?  It's not in any archives anywhere.
-> > 
-> > I saw it.  It's here:
-> > https://lore.kernel.org/lkml/20200617161127.32006-1-zhixu001@126.com/
-> 
-> Ah, doh, sorry.
-> 
-> Zhixu, please address the comments given to you on the series and resend
-> it as a new version.
+On Wed, Jul 15, 2020 at 10:05:08AM +0800, Leo Yan wrote:
 
-He responded but not as a reply to my email.  It turns out I made a
-mistake.
+> [leoyan: Use quot/rem to convert cyc to ns to avoid overflow]
 
-Anyway, just resend, Zhixu.
+> +		quot = rd->epoch_cyc >> rd->shift;
+> +		rem = rd->epoch_cyc & (((u64)1 << rd->shift) - 1);
+> +		ns = quot * rd->mult + ((rem * rd->mult) >> rd->shift);
+> +		userpg->time_zero -= ns;
 
-regards,
-dan carpenter
+I think we have mul_u64_u32_shr() for that.
 
