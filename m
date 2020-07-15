@@ -2,422 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F9F220722
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EB0220720
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730036AbgGOI1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:27:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37426 "EHLO mail.kernel.org"
+        id S1730026AbgGOI1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:27:44 -0400
+Received: from mga07.intel.com ([134.134.136.100]:41250 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726396AbgGOI1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:27:46 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B24BC206D5;
-        Wed, 15 Jul 2020 08:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594801665;
-        bh=qGb0YPwemNdz/a7HEDVtuPhoJwQFsspP4paClTm11fQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ncwm3q4tsI1/f2ZO8r9V+Hj+XAonXZp3IyfdE9+UjSMNG9PMt6+7R98W0cxec7iKb
-         vgNIhxA9sadskAYqzAAUQT9xCY8SHU1ZC3dtG52sroPSnLoU/EmtvgkVFfyRYHDOiT
-         De9ah3Lz8fVdTUx2nukJuXaTvy2+0j4tmS2hWl/E=
-Date:   Wed, 15 Jul 2020 17:27:32 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Alexandre Ghiti <alex@ghiti.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Babu Moger <Babu.Moger@amd.com>,
-        Omar Sandoval <osandov@fb.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Marco Elver <elver@google.com>,
-        Brian Gerst <brgerst@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v3 1/3] kprobes: Add text_alloc() and text_free()
-Message-Id: <20200715172732.35110a4e53e84fcec9aeac83@kernel.org>
-In-Reply-To: <20200714223239.1543716-2-jarkko.sakkinen@linux.intel.com>
-References: <20200714223239.1543716-1-jarkko.sakkinen@linux.intel.com>
-        <20200714223239.1543716-2-jarkko.sakkinen@linux.intel.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726396AbgGOI1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 04:27:43 -0400
+IronPort-SDR: ESfhtG135gxq2CEs2vGLLJRd7PVjIWaMsyWKJ5c8ucru3O93/oEhG4XD1DkTaZpWB7dBZoSYZh
+ 3MhsQr8M5VHg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="213876760"
+X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
+   d="scan'208";a="213876760"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 01:27:37 -0700
+IronPort-SDR: R2YkGjF0/a7Jh7EPsjLE55eWyoNz3iAYV26+kZVW+YaC8o8eWQDXB2vr9kw9bdtnyGyVvMFErL
+ iPHarFRLMHLg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
+   d="scan'208";a="299812940"
+Received: from yren3-mobl.ccr.corp.intel.com ([10.249.174.224])
+  by orsmga002.jf.intel.com with ESMTP; 15 Jul 2020 01:27:35 -0700
+Message-ID: <e078f9ebd3e8e440d5c04d2abac31201f5d3443d.camel@intel.com>
+Subject: Re: [RFC PATCH 0/4] thermal: Introduce support for monitoring
+ falling temperature
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>, robh+dt@kernel.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 15 Jul 2020 16:27:34 +0800
+In-Reply-To: <5861acec-c49a-47cc-d7c6-ccef11dc1d58@linaro.org>
+References: <20200710135154.181454-1-thara.gopinath@linaro.org>
+         <7437ee89-e76d-0c82-9860-5c6076ad8a30@linaro.org>
+         <b25d54d35cec777f0dcc5b2bcacce27321d9bd45.camel@intel.com>
+         <5861acec-c49a-47cc-d7c6-ccef11dc1d58@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jarkko,
+Hi, Thara,
 
-On Wed, 15 Jul 2020 01:32:27 +0300
-Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-
-> Introduce new API for allocating space for code generaed at run-time
-> leveraging from module_alloc() and module_memfree() code. Use this to
-> perform memory allocations in the kprobes code in order to loose the
-> bound between kprobes and modules subsystem.
+On Tue, 2020-07-14 at 17:39 -0400, Thara Gopinath wrote:
 > 
-> Initially, use this API only with arch/x86 and define a new config
-> flag CONFIG_ARCH_HAS_TEXT_ALLOC to promote the availability of the
-> new API.
-
-This might need to be extended for the text_alloc() flags as we discuss
-in previous thread. (e.g. bpf on arm64)
-
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  arch/Kconfig             |  2 +-
->  arch/x86/Kconfig         |  3 ++
->  arch/x86/kernel/Makefile |  1 +
->  arch/x86/kernel/module.c | 49 ---------------------------
->  arch/x86/kernel/text.c   | 71 ++++++++++++++++++++++++++++++++++++++++
-
-I think this would better be arch/x86/mm/text_alloc.c (text.c is too
-generic, and this only provides memory allocation.)
-
->  include/linux/text.h     | 17 ++++++++++
-
-"text_alloc.h" would be better, or puting the prototype in vmalloc.h
-will be easier to use.
-
->  kernel/kprobes.c         | 11 +++++++
->  kernel/module.c          | 10 ++++++
->  8 files changed, 114 insertions(+), 50 deletions(-)
->  create mode 100644 arch/x86/kernel/text.c
->  create mode 100644 include/linux/text.h
+> > 
+> > For example, to support this, we can
+> > either
+> > introduce both "cold" trip points and "warming devices", and
+> > introduce
+> > new logic in thermal framework and governors to handle them,
+> > Or
+> > introduce "cold" trip point and "warming" device, but only
+> > semantically, and treat them just like normal trip points and
+> > cooling
+> > devices. And strictly define cooling state 0 as the state that
+> > generates most heat, and define max cooling state as the state that
+> > generates least heat. Then, say, we have a trip point at -10C, the
+> > "warming" device is set to cooling state 0 when the temperature is
+> > lower than -10C, and in most cases, this thermal zone is always in
+> > a
+> > "overheating" state (temperature higher than -10C), and the
+> > "warming"
+> > device for this thermal zone is "throttled" to generate as least
+> > heat
+> > as possible. And this is pretty much what the current code has
+> > always
+> > been doing, right?
 > 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 8cc35dc556c7..e3d6b6868ccb 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -61,7 +61,7 @@ config OPROFILE_NMI_TIMER
->  
->  config KPROBES
->  	bool "Kprobes"
-> -	depends on MODULES
-> +	depends on MODULES || ARCH_HAS_TEXT_ALLOC
->  	depends on HAVE_KPROBES
->  	select KALLSYMS
->  	help
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 0dea7fdd7a00..a4ee5d1300f6 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -2035,6 +2035,9 @@ config KEXEC_FILE
->  config ARCH_HAS_KEXEC_PURGATORY
->  	def_bool KEXEC_FILE
->  
-> +config ARCH_HAS_TEXT_ALLOC
-> +	def_bool y
-> +
->  config KEXEC_SIG
->  	bool "Verify kernel signature during kexec_file_load() syscall"
->  	depends on KEXEC_FILE
-> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-> index e77261db2391..2878e4b753a0 100644
-> --- a/arch/x86/kernel/Makefile
-> +++ b/arch/x86/kernel/Makefile
-> @@ -68,6 +68,7 @@ obj-y			+= tsc.o tsc_msr.o io_delay.o rtc.o
->  obj-y			+= pci-iommu_table.o
->  obj-y			+= resource.o
->  obj-y			+= irqflags.o
-> +obj-y			+= text.o
->  
->  obj-y				+= process.o
->  obj-y				+= fpu/
-> diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-> index 34b153cbd4ac..261df078f127 100644
-> --- a/arch/x86/kernel/module.c
-> +++ b/arch/x86/kernel/module.c
-> @@ -36,55 +36,6 @@ do {							\
->  } while (0)
->  #endif
->  
-> -#ifdef CONFIG_RANDOMIZE_BASE
-> -static unsigned long module_load_offset;
-> -
-> -/* Mutex protects the module_load_offset. */
-> -static DEFINE_MUTEX(module_kaslr_mutex);
-> -
-> -static unsigned long int get_module_load_offset(void)
-> -{
-> -	if (kaslr_enabled()) {
-> -		mutex_lock(&module_kaslr_mutex);
-> -		/*
-> -		 * Calculate the module_load_offset the first time this
-> -		 * code is called. Once calculated it stays the same until
-> -		 * reboot.
-> -		 */
-> -		if (module_load_offset == 0)
-> -			module_load_offset =
-> -				(get_random_int() % 1024 + 1) * PAGE_SIZE;
-> -		mutex_unlock(&module_kaslr_mutex);
-> -	}
-> -	return module_load_offset;
-> -}
-> -#else
-> -static unsigned long int get_module_load_offset(void)
-> -{
-> -	return 0;
-> -}
-> -#endif
-> -
-> -void *module_alloc(unsigned long size)
-> -{
-> -	void *p;
-> -
-> -	if (PAGE_ALIGN(size) > MODULES_LEN)
-> -		return NULL;
-> -
-> -	p = __vmalloc_node_range(size, MODULE_ALIGN,
-> -				    MODULES_VADDR + get_module_load_offset(),
-> -				    MODULES_END, GFP_KERNEL,
-> -				    PAGE_KERNEL, 0, NUMA_NO_NODE,
-> -				    __builtin_return_address(0));
-> -	if (p && (kasan_module_alloc(p, size) < 0)) {
-> -		vfree(p);
-> -		return NULL;
-> -	}
-> -
-> -	return p;
-> -}
+> 
+> IMHO, thermal framework should move to a direction where the term 
+> "mitigation" is used rather than cooling or warming. In this case 
+> "cooling dev" and "warming dev" should will become 
+> "temp-mitigating-dev". So going by this, I think what you mention as 
+> option 1 is more suitable where new logic is introduced into the 
+> framework and governors to handle the trip points marked as "cold".
+> 
+> Also in the current set of requirements, we have a few power domain 
+> rails and other resources that are used exclusively in the thermal 
+> framework for warming alone as in they are not used ever for cooling 
+> down a zone. But then one of the requirements we have discussed is
+> for cpufreq and gpu scaling to be behave as warming devices where
+> the minimum operating point/ voltage of the relevant cpu/gpu is
+> restricted.
+> So in this case, Daniel had this suggestion of introducing negative 
+> states for presently what is defined as cooling devices. So cooling
+> dev 
+> / temp-mitigation-dev states can range from say -3 to 5 with 0 as
+> the 
+> good state where no mitigation is happening. This is an interesting
+> idea 
+> though I have not proto-typed it yet.
 
-Please don't touch this module_alloc() at all. Then we can
-just call __vmalloc_node_range() in the text_alloc().
+Agreed. If some devices support both "cooling" and "warning", we should
+have only one "temp-mitigating-dev" instead.
+> 
+> > 
+> > I can not say which one is better for now as I don't have the
+> > background of this requirement. It's nice that Thara sent this RFC
+> > series for discussion, but from upstream point of view, I'd prefer
+> > to
+> > see a full stack solution, before taking any code.
+> 
+> We had done a session at ELC on this requirement. Here is the link
+> to 
+> the presentation. Hopefully it gives you some back ground on this.
 
-> -
->  #ifdef CONFIG_X86_32
->  int apply_relocate(Elf32_Shdr *sechdrs,
->  		   const char *strtab,
-> diff --git a/arch/x86/kernel/text.c b/arch/x86/kernel/text.c
-> new file mode 100644
-> index 000000000000..986b92ff1434
-> --- /dev/null
-> +++ b/arch/x86/kernel/text.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + *  Kernel module help for x86.
-> + *  Copyright (C) 2001 Rusty Russell.
-> + */
-> +
-> +#include <linux/kasan.h>
-> +#include <linux/mm.h>
-> +#include <linux/moduleloader.h>
-> +#include <linux/vmalloc.h>
-> +#include <asm/setup.h>
-> +
-> +#ifdef CONFIG_RANDOMIZE_BASE
-> +static unsigned long module_load_offset;
-> +
-> +/* Mutex protects the module_load_offset. */
-> +static DEFINE_MUTEX(module_kaslr_mutex);
-> +
-> +static unsigned long get_module_load_offset(void)
-> +{
-> +	if (kaslr_enabled()) {
-> +		mutex_lock(&module_kaslr_mutex);
-> +		/*
-> +		 * Calculate the module_load_offset the first time this
-> +		 * code is called. Once calculated it stays the same until
-> +		 * reboot.
-> +		 */
-> +		if (module_load_offset == 0)
-> +			module_load_offset =
-> +				(get_random_int() % 1024 + 1) * PAGE_SIZE;
-> +		mutex_unlock(&module_kaslr_mutex);
-> +	}
-> +	return module_load_offset;
-> +}
-> +#else
-> +static unsigned long get_module_load_offset(void)
-> +{
-> +	return 0;
-> +}
-> +#endif
+yes, it helps. :)
+> 
+> 
+https://elinux.org/images/f/f7/ELC-2020-Thara-Ram-Linux-Kernel-Thermal-Warming.pdf
+> 
+> I have sent across some patches for introducing a generic power
+> domain 
+> warming device which is under review by Daniel.
+> 
+> So how do you want to proceed on this? Can you elaborate a bit more
+> on 
+> what you mean by a full stack solution.
 
-So as I pointed, we can ignore this for kprobes (and other
-dynamic allocated trampoline code).
+I mean, the patches, and the idea look good to me, just with some minor
+comments. But applying this patch series, alone, does not bring us
+anything because we don't have a thermal zone driver that supports cold
+trip point, right?
+I'd like to see this patch series together with the support in
+thermal_core/governors and real users like updated/new thermal
+zone/cdev drivers that supports the cold trip point and warming
+actions.
+Or else I've the concern that this piece of code may be changed back
+and forth when prototyping the rest of the support.
 
-> +
-> +void *text_alloc(unsigned long size)
-> +{
-> +	void *p;
-> +
-> +	if (PAGE_ALIGN(size) > MODULES_LEN)
-> +		return NULL;
-> +
-> +	p = __vmalloc_node_range(size, MODULE_ALIGN,
-> +				    MODULES_VADDR + get_module_load_offset(),
-> +				    MODULES_END, GFP_KERNEL,
-> +				    PAGE_KERNEL, 0, NUMA_NO_NODE,
-> +				    __builtin_return_address(0));
-> +	if (p && (kasan_module_alloc(p, size) < 0)) {
-> +		vfree(p);
-> +		return NULL;
-> +	}
-> +
-> +	return p;
-> +}
-> +
-> +void text_free(void *region)
-> +{
-> +	/*
-> +	 * This memory may be RO, and freeing RO memory in an interrupt is not
-> +	 * supported by vmalloc.
-> +	 */
-> +	WARN_ON(in_interrupt());
-> +
-> +	vfree(region);
-> +}
-> diff --git a/include/linux/text.h b/include/linux/text.h
-> new file mode 100644
-> index 000000000000..a27d4a42ecda
-> --- /dev/null
-> +++ b/include/linux/text.h
-> @@ -0,0 +1,17 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +
-> +#ifndef _LINUX_TEXT_H
-> +#define _LINUX_TEXT_H
-> +
-> +/*
-> + * An allocator used for allocating modules, core sections and init sections.
-> + * Returns NULL on failure.
-> + */
-> +void *text_alloc(unsigned long size);
-> +
-> +/*
-> + * Free memory returned from text_alloc().
-> + */
-> +void text_free(void *region);
+thanks,
+rui
 
-Hmm, if this is this short, in this version we might better move
-these to vmalloc.h.
-
-> +
-> +#endif /* _LINUX_TEXT_H */
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 2e97febeef77..fa7687eb0c0e 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -35,6 +35,7 @@
->  #include <linux/ftrace.h>
->  #include <linux/cpu.h>
->  #include <linux/jump_label.h>
-> +#include <linux/text.h>
->  
->  #include <asm/sections.h>
->  #include <asm/cacheflush.h>
-> @@ -111,12 +112,20 @@ enum kprobe_slot_state {
->  
->  void __weak *alloc_insn_page(void)
->  {
-> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> +	return text_alloc(PAGE_SIZE);
-> +#else
->  	return module_alloc(PAGE_SIZE);
-> +#endif
->  }
->  
->  void __weak free_insn_page(void *page)
->  {
-> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> +	text_free(page);
-> +#else
->  	module_memfree(page);
-> +#endif
->  }
->  
->  struct kprobe_insn_cache kprobe_insn_slots = {
-> @@ -1608,6 +1617,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
->  			goto out;
->  		}
->  
-> +#ifdef CONFIG_MODULES
->  		/*
->  		 * If the module freed .init.text, we couldn't insert
->  		 * kprobes in there.
-> @@ -1618,6 +1628,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
->  			*probed_mod = NULL;
->  			ret = -ENOENT;
->  		}
-> +#endif
-
-This change is not related to text_alloc(). Please move this to 3/3.
-
->  	}
->  out:
->  	preempt_enable();
-> diff --git a/kernel/module.c b/kernel/module.c
-> index aa183c9ac0a2..8adeb126b02c 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -56,6 +56,7 @@
->  #include <linux/bsearch.h>
->  #include <linux/dynamic_debug.h>
->  #include <linux/audit.h>
-> +#include <linux/text.h>
->  #include <uapi/linux/module.h>
->  #include "module-internal.h"
->  
-> @@ -2151,7 +2152,12 @@ void __weak module_memfree(void *module_region)
->  	 * supported by vmalloc.
->  	 */
->  	WARN_ON(in_interrupt());
-> +
-> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> +	text_free(module_region);
-> +#else
->  	vfree(module_region);
-> +#endif
->  }
->  
->  void __weak module_arch_cleanup(struct module *mod)
-> @@ -2786,9 +2792,13 @@ static void dynamic_debug_remove(struct module *mod, struct _ddebug *debug)
->  
->  void * __weak module_alloc(unsigned long size)
->  {
-> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> +	return text_alloc(size);
-> +#else
->  	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
->  			GFP_KERNEL, PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS,
->  			NUMA_NO_NODE, __builtin_return_address(0));
-> +#endif
->  }
-
-Please don't touch kernel/module.c too. This seems to make things complicated.
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
