@@ -2,359 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93991220D33
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 14:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAE1220D4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 14:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730936AbgGOMnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 08:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728461AbgGOMnv (ORCPT
+        id S1731206AbgGOMr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 08:47:28 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:41348 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728861AbgGOMr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 08:43:51 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA91C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:43:51 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id k71so3018202pje.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 05:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MEa5w74m42sydYqVt+jkUha8QcX3LpQeVlKRuUnOhw8=;
-        b=FpamnAnSv0Ufyf57K4ENGfuzBkUA+0mjCLhfO3oeT8zVIYdUbhk5O+N9aCrDrk0XmD
-         OYCL4Y2cNz6esebqkYRAUpbl0/9AcxglV/vwrDaGkUghf2hEj0lC9ckLzPbqx8e1IVMn
-         cEAT8IvfWCS3w1fRu6SkvltqzDHjIThTRN3DdoMEU7kIiOu3iHLWiQh0Y7fF7rODl/SL
-         BfmEBcVTf/tVKB5eT23AldBY5VPds3H/qQV2QaQOhZU9/5hWEnWxQ0RV0BJxLqJ/8NY5
-         6sSG55+o09RjsQfiF+m1uEUt03NGKD0fIfskM7evX2D1po6Ch3j+3lZK58NOi9ALxyX5
-         WpNg==
+        Wed, 15 Jul 2020 08:47:28 -0400
+Received: by mail-oi1-f196.google.com with SMTP id y22so2073059oie.8;
+        Wed, 15 Jul 2020 05:47:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MEa5w74m42sydYqVt+jkUha8QcX3LpQeVlKRuUnOhw8=;
-        b=aDAUmizTYDltjvQcI++9nqrQqw5DVFor9g0BPe6js6p0hIQqM1z5anq6/3UDa1iBoj
-         GnGvSCoHNlzMS6NNcTbR6W2aJqPTywSvDycODWGjxexEAWKoHp5EUYkAFX0uSfCRVRJc
-         yKo8lF+5l4CzsDJ7d0yNob8L6sVEG1x2ioDgMquDUJy2H6AotWHjxG+LAmBOrCijYdny
-         A+DM+aaHit3pv73gBn+1MOBVfBikfT3l3PtTgl39xk1Av6P4LsT4vtLiKqcQmbe0YFyJ
-         NTLR28DyOzLkUYfB90tJ8JVboqWp+9hRW0yL6+m18nmaP4+PBfZVKbV/I5wduhnoZ8Q5
-         4Wtw==
-X-Gm-Message-State: AOAM53264vrb/jK3UunopadO0HMvumkd4RSDaB1hSAWUZ0Rgf8+ZH2iG
-        7c4Wnn/tdtZiplr9N/moQLk=
-X-Google-Smtp-Source: ABdhPJzIW8f9uDmWqlTZwBppiDAbZt3owNfbhDhPwibvJzHHTRdjqtM5iMeP3fGGk4b2OCMZFvkkGw==
-X-Received: by 2002:a17:90a:2683:: with SMTP id m3mr10474846pje.8.1594817031223;
-        Wed, 15 Jul 2020 05:43:51 -0700 (PDT)
-Received: from realwakka ([61.83.141.141])
-        by smtp.gmail.com with ESMTPSA id ia13sm2106924pjb.42.2020.07.15.05.43.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Jul 2020 05:43:50 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 12:43:37 +0000
-From:   Sidong Yang <realwakka@gmail.com>
-To:     Daniel Vetter <daniel@ffwll.ch>,
-        Melissa Wen <melissa.srw@gmail.com>
-Cc:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/vkms: add wait_for_vblanks in atomic_commit_tail
-Message-ID: <20200715124337.GA18441@realwakka>
-References: <20200701153134.4187-1-realwakka@gmail.com>
- <20200702131355.GX3278063@phenom.ffwll.local>
- <20200710170533.xn2ar2cpekom6i2n@smtp.gmail.com>
- <20200713160621.GQ3278063@phenom.ffwll.local>
- <20200714102009.4qxgdq5bkpwhhhio@smtp.gmail.com>
- <CAJeY4oF9k--dGOYaC9qAXiVbx6aX2a6isXpfOg+JV2s+UskKGA@mail.gmail.com>
- <20200714140904.GF3278063@phenom.ffwll.local>
- <20200714183513.6zah7wqlo2bpalum@smtp.gmail.com>
- <CAKMK7uFF=CuuTQQJ+MSZD-7+gDzcN-jKB3Uojgps+hY0jdz1bg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4wdDNfmxaJDMgzx6KGb0R32bfQn7xefP7F9Z+jm7O8M=;
+        b=ErJPE7Y3tXa/QwfTZ8E+hqgzHhBnqeik0/u9v8c2k/hJSZsMGii49ClvmN/ypA/kBC
+         LZf1jkIHDdBCftCqO6/DPZ7c0RbRUznkZ1EHz/yx+qeGKpK3E+UWrgy0Qen3ihsF4vpB
+         of2Gx9AJ2R1fiNZX0x6zp4m3T3I7QPJ+2TcQ4dFS6Coc2CroJnOedC/ueCHmhAdDpnEF
+         KzrRdDg3a/JCSe38u1z8L0DvcZNt7ctxu5ibhuucAxtl8SlANBBGV9cR5YEhCTo0DOi/
+         lfYysjgs7Pc6VMhDgMaGq4sH2rBkI3o58VhwzqHYzrD1xsugWObKTuZlI5bUWC9eUMib
+         U+AA==
+X-Gm-Message-State: AOAM532VzyGKuCZdE6uD8Bkh1N682rX85s9rUDdBSwEsNoc+YJ/uetJH
+        r5NOhq0Xo1AguSMcoP/SCTCn4LZyEu97jx6O7P4=
+X-Google-Smtp-Source: ABdhPJxewLcMbqQtHFzIXxogNRmQ7yp2yEiyvW8cX3rQxeBkDtYIVHg606iB1KWw9RAdZfYsCuseer30sxq1Sm9KkVg=
+X-Received: by 2002:aca:f58a:: with SMTP id t132mr7362035oih.68.1594817247377;
+ Wed, 15 Jul 2020 05:47:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uFF=CuuTQQJ+MSZD-7+gDzcN-jKB3Uojgps+hY0jdz1bg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <cover.1594707424.git.viresh.kumar@linaro.org> <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
+ <CAJZ5v0i=yNH9pGkty2QdeQLcqJcuY=pLx_XcY4VXs8bSqXL=dg@mail.gmail.com> <20200715073225.vnf6dibfca3oc2h4@vireshk-i7>
+In-Reply-To: <20200715073225.vnf6dibfca3oc2h4@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 15 Jul 2020 14:47:16 +0200
+Message-ID: <CAJZ5v0j1iaOuASa9K0x3QsWW2mhqoMQyhiVU5eXbNgEN=aU_rw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 10:17:56AM +0200, Daniel Vetter wrote:
-> On Tue, Jul 14, 2020 at 9:01 PM Melissa Wen <melissa.srw@gmail.com> wrote:
-> >
-> > On 07/14, Daniel Vetter wrote:
-> > > On Tue, Jul 14, 2020 at 07:39:42AM -0300, Melissa Wen wrote:
-> > > > On Tue, Jul 14, 2020 at 7:20 AM Melissa Wen <melissa.srw@gmail.com> wrote:
-> > > > >
-> > > > > On 07/13, Daniel Vetter wrote:
-> > > > > > On Fri, Jul 10, 2020 at 02:05:33PM -0300, Melissa Wen wrote:
-> > > > > > > On 07/02, Daniel Vetter wrote:
-> > > > > > > > On Wed, Jul 01, 2020 at 03:31:34PM +0000, Sidong Yang wrote:
-> > > > > > > > > there is an error when igt test is run continuously. vkms_atomic_commit_tail()
-> > > > > > > > > need to call drm_atomic_helper_wait_for_vblanks() for give up ownership of
-> > > > > > > > > vblank events. without this code, next atomic commit will not enable vblank
-> > > > > > > > > and raise timeout error.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> > > > > > > > > ---
-> > > > > > > > >  drivers/gpu/drm/vkms/vkms_drv.c | 2 ++
-> > > > > > > > >  1 file changed, 2 insertions(+)
-> > > > > > > > >
-> > > > > > > > > diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-> > > > > > > > > index 1e8b2169d834..10b9be67a068 100644
-> > > > > > > > > --- a/drivers/gpu/drm/vkms/vkms_drv.c
-> > > > > > > > > +++ b/drivers/gpu/drm/vkms/vkms_drv.c
-> > > > > > > > > @@ -93,6 +93,8 @@ static void vkms_atomic_commit_tail(struct drm_atomic_state *old_state)
-> > > > > > > > >                 flush_work(&vkms_state->composer_work);
-> > > > > > > > >         }
-> > > > > > > > >
-> > > > > > > > > +       drm_atomic_helper_wait_for_vblanks(dev, old_state);
-> > > > > > > >
-> > > > > > > > Uh, we have a wait_for_flip_done right above, which should be doing
-> > > > > > > > exactly the same, but more precisely: Instead of just waiting for any
-> > > > > > > > vblank to happen, we wait for exactly the vblank corresponding to this
-> > > > > > > > atomic commit. So no races possible. If this is papering over some issue,
-> > > > > > > > then I think more debugging is needed.
-> > > > > > > >
-> > > > > > > > What exactly is going wrong here for you?
-> > > > > > >
-> > > > > > > Hi Daniel and Sidong,
-> > > > > > >
-> > > > > > > I noticed a similar issue when running the IGT test kms_cursor_crc. For
-> > > > > > > example, a subtest that passes on the first run (alpha-opaque) fails on
-> > > > > > > the second due to a kind of busy waiting in subtest preparation (the
-> > > > > > > subtest fails before actually running).
-> > > > > > >
-> > > > > > > In addition, in the same test, the dpms subtest started to fail since
-> > > > > > > the commit that change from wait_for_vblanks to wait_for_flip_done. By
-> > > > > > > reverting this commit, the dpms subtest passes again and the sequential
-> > > > > > > subtests return to normal.
-> > > > > > >
-> > > > > > > I am trying to figure out what's missing from using flip_done op on
-> > > > > > > vkms, since I am also interested in solving this problem and I
-> > > > > > > understand that the change for flip_done has been discussed in the past.
-> > > > > > >
-> > > > > > > Do you have any idea?
-> > > > > >
-> > > > > > Uh, not at all. This is indeed rather surprising ...
-> > > > > >
-> > > > > > What exactly is the failure mode when running a test the 2nd time? Full
-> > > > > > igt logs might give me an idea. But yeah this is kinda surprising.
-> > > > >
-> > > > > Hi Daniel,
-> > > > >
-> > > > > This is the IGT log of the 2nd run of kms_cursor_crc/alpha-opaque:
-> > > > >
-> > > > > IGT-Version: 1.25-NO-GIT (x86_64) (Linux: 5.8.0-rc2-DRM+ x86_64)
-> > > > > Force option used: Using driver vkms
-> > > > > Starting subtest: pipe-A-cursor-alpha-opaque
-> > > > > Timed out: Opening crc fd, and poll for first CRC.
-> > > > > Subtest pipe-A-cursor-alpha-opaque failed.
-> > > > > **** DEBUG ****
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display: Virtual-1: set_pipe(A)
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display: Virtual-1: Selecting pipe A
-> > > > > (kms_cursor_crc:2317) igt_fb-DEBUG: igt_create_fb_with_bo_size(width=1024, height=768, format=XR24(0x34325258), modifier=0x0, size=0)
-> > > > > (kms_cursor_crc:2317) igt_fb-DEBUG: igt_create_fb_with_bo_size(handle=1, pitch=4096)
-> > > > > (kms_cursor_crc:2317) igt_fb-DEBUG: Test requirement passed: cairo_surface_status(fb->cairo_surface) == CAIRO_STATUS_SUCCESS
-> > > > > (kms_cursor_crc:2317) igt_fb-DEBUG: igt_create_fb_with_bo_size(width=1024, height=768, format=XR24(0x34325258), modifier=0x0, size=0)
-> > > > > (kms_cursor_crc:2317) igt_fb-DEBUG: igt_create_fb_with_bo_size(handle=2, pitch=4096)
-> > > > > (kms_cursor_crc:2317) igt_fb-DEBUG: Test requirement passed: cairo_surface_status(fb->cairo_surface) == CAIRO_STATUS_SUCCESS
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: Test requirement passed: plane_idx >= 0 && plane_idx < pipe->n_planes
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: Test requirement passed: plane_idx >= 0 && plane_idx < pipe->n_planes
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display: A.0: plane_set_fb(37)
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display: A.0: plane_set_size (1024x768)
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display: A.0: fb_set_position(0,0)
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display: A.0: fb_set_size(1024x768)
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display: commit {
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display:     Virtual-1: SetCrtc pipe A, fb 37, src (0, 0), mode 1024x768
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display:     SetCursor pipe A, disabling
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display:     MoveCursor pipe A, (0, 0)
-> > > > > (kms_cursor_crc:2317) igt_kms-DEBUG: display: }
-> > > > > (kms_cursor_crc:2317) igt_debugfs-DEBUG: Opening debugfs directory '/sys/kernel/debug/dri/0'
-> > > > > (kms_cursor_crc:2317) igt_debugfs-DEBUG: Opening debugfs directory '/sys/kernel/debug/dri/0'
-> > > > > (kms_cursor_crc:2317) igt_debugfs-DEBUG: Opening debugfs directory '/sys/kernel/debug/dri/0'
-> > > > > (kms_cursor_crc:2317) igt_core-INFO: Timed out: Opening crc fd, and poll for first CRC.
-> > > > > ****  END  ****
-> > > > > Subtest pipe-A-cursor-alpha-opaque: FAIL (10.017s)
-> > > > >
-> > > > > ---
-> > > > >
-> > > > > What I found was a timeout in the poll of
-> > > > > igt_debugfs/igt_pipe_crc_start() that in turn is called in the
-> > > > > prepare_crc() of kms_cursor_crc.
-> > > > >
-> > > > > Initially, I thought it was just a matter of timing for vblank and sent
-> > > > > a patch to IGT that solved the problem by calling igt_wait_for_vblank()
-> > > > > before the "start" op. But then I saw that the timeout also happens in a
-> > > > > similar way in the dpms subtest, which before the change to flip_done
-> > > > > was succeded.
-> > > > >
-> > > > > I still have doubts if it is or not a matter of timing...
-> > > >
-> > > > Just to complement, this is what I sent to IGT due to my first suspicion
-> > > > (still not reviewed): https://patchwork.freedesktop.org/series/78813/
+On Wed, Jul 15, 2020 at 9:32 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 14-07-20, 15:05, Rafael J. Wysocki wrote:
+> > On Tue, Jul 14, 2020 at 8:37 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >  static u32 get_load(struct cpufreq_cooling_device *cpufreq_cdev, int cpu,
+> > >                     int cpu_idx)
+> > >  {
+> > > -       u32 load;
+> > > -       u64 now, now_idle, delta_time, delta_idle;
+> > > -       struct time_in_idle *idle_time = &cpufreq_cdev->idle_time[cpu_idx];
+> > > -
+> > > -       now_idle = get_cpu_idle_time(cpu, &now, 0);
+> > > -       delta_idle = now_idle - idle_time->time;
+> > > -       delta_time = now - idle_time->timestamp;
+> > > +       unsigned long util = cpu_util_cfs(cpu_rq(cpu));
+> > > +       unsigned long max = arch_scale_cpu_capacity(cpu);
 > > >
-> > > Hm, so the first patch makes some sense I think, that would indeed be a
-> > > test bug if we pile up the crc and leak the old one.
-> > >
-> > > The 2nd patch looks a bit like similar duct-tape like the kernel patch
-> > > here, somehow forcing a full vblank wait instead of just waiting for the
-> > > previos flip to complete fixes something. I'm just really confused what it
-> > > could be.
-> > >
-> > > We don't have multiple crtc in vkms, so it's likely not that, but it could
-> > > be that something goes wrong when we switch everything on. And after one
-> > > vblank, things are in sync and working ...
-> > >
-> > > Maybe to test this theory, adding a drm_crtc_wait_one_vblank() to the
-> > > crtc->enable function? If that fixes all these bugs, then we at least have
-> > > a better idea where this vblank wait is needed, and can try to investigate
-> > > a bit more focused why.
+> > > -       if (delta_time <= delta_idle)
+> > > -               load = 0;
+> > > -       else
+> > > -               load = div64_u64(100 * (delta_time - delta_idle), delta_time);
+> > > -
+> > > -       idle_time->time = now_idle;
+> > > -       idle_time->timestamp = now;
+> > > -
+> > > -       return load;
+> > > +       util = effective_cpu_util(cpu, util, max, ENERGY_UTIL, NULL);
 > >
-> > Hey,
+> > Hmm.
 > >
-> > I just checked this way (let me know if I made a mistake):
-> >
-> > diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-> > index ac85e17428f8..893d451fa966 100644
-> > --- a/drivers/gpu/drm/vkms/vkms_crtc.c
-> > +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-> > @@ -212,6 +212,7 @@ static void vkms_crtc_atomic_enable(struct drm_crtc *crtc,
-> >                                     struct drm_crtc_state *old_state)
-> >  {
-> >         drm_crtc_vblank_on(crtc);
-> > +       drm_crtc_wait_one_vblank(crtc);
-> >  }
-> >
-> > and yes, in the case of kms_cursor_crc, it solves the failure of the 2nd
-> > run (ie, sequential run) and the failure of the cursor-dpms subtest.
-> >
-> > :)
-> > >
-> > > I don't think it's relevant for crtc->disable, since once the crtc is off,
-> > > vblanks stop doing anything. And since steady-state seems to work (at
-> > > least your igt patch only adds a vblank wait on setup), so I don't think
-> > > we need it for all flips ...
-> >
-> > I'm not sure if it's also related: I noticed that the cursor-suspend
-> > subtest has another pipe_crc_start that is also "requiring" another
-> > igt_wait_for_vblank before it.
-> >
-> > Describing a little more, the cursor-dpms and cursor-suspend subtests
-> > have the same setup structure [do_single_test()] besides the
-> > prepare_crtc, but in the case of cursor-suspend, even applying any of
-> > these "proposals" to wait for vblank, it still breaks due to timeout
-> > issues in a last pipe_crc_start.  The cursor-suspend subtest only
-> > completes when we add another igt_wait_for_vblank also here.
-> 
-> Excellent debug work, that's some solid information that limits the
-> scope of the bug. I think the next step would be to put a vblank wait
-> into the vkms crc setup function. If that papers over all the bugs
-> you've found, then that should give us pretty solid information about
-> what's breaking. And hopefully only a little bit of code to further
-> debug.
-> 
-> Cheers, Daniel
+> > It doesn't look like cpufreq_cdev and cpu_idx are needed any more in
+> > this function, so maybe drop them from the arg list?
+>
+> Right.
+>
+> > And then there
+> > won't be anything specific to CPU cooling in this function, so maybe
+> > move it to sched and export it from there properly?
+>
+> There isn't a lot happening in this routine right now TBH and am not
+> sure if it is really worth it to have a separate routine for this
+> (unless we can get rid of something for all the callers, like avoiding
+> a call to arch_scale_cpu_capacity() and then naming it
+> effective_cpu_load().
 
-Hi, Daniel and Melissa.
-I tested the code that Daniel said.
+Maybe yes.  Or sched_cpu_load() to stand for "the effective CPU load
+as seen by the scheduler".
 
-diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-index 4af2f19480f4..f7309b54b86a 100644
---- a/drivers/gpu/drm/vkms/vkms_composer.c
-+++ b/drivers/gpu/drm/vkms/vkms_composer.c
-@@ -239,6 +239,7 @@ int vkms_set_crc_source(struct drm_crtc *crtc, const char *src_name)
-        bool enabled = false;
-        int ret = 0;
- 
-+       //drm_crtc_wait_one_vblank(crtc);
-        ret = vkms_crc_parse_source(src_name, &enabled);
- 
-        spin_lock_irq(&out->lock);
+But I'm not sure if percent is the best unit to return from it.  Maybe
+make it return something like (util << SCHED_CAPACITY_SHFT) /
+arch_scale_cpu_capacity(cpu).
 
-and It solves all problem. I traced this code and it enable vblank in set_crc_source
+> > Also it looks like max could be passed to it along with the CPU number
+> > instead of being always taken as arch_scale_cpu_capacity(cpu).
+>
+> I am not sure what you are suggesting here. What will be the value of
+> max if not arch_scale_cpu_capacity() ?
 
- 0)               |  vkms_set_crc_source [vkms]() {
- 0)   1.687 us    |    vkms_enable_vblank [vkms]();
- 0)   0.165 us    |    vkms_get_vblank_timestamp [vkms]();
-
-before this code, it enable vblank by drm_atomic_vblank_get() in crtc_atomic_flush. 
-
- 0)               |  vkms_atomic_commit_tail [vkms]() {
- 0)   0.574 us    |    vkms_crtc_atomic_begin [vkms]();
- 0)   0.487 us    |    vkms_plane_atomic_update [vkms]();
- 0)               |    vkms_crtc_atomic_flush [vkms]() {
- 0)   1.934 us    |      vkms_enable_vblank [vkms]();
- 0)   0.347 us    |      vkms_get_vblank_timestamp [vkms]();
- 0)   0.379 us    |      vkms_get_vblank_timestamp [vkms]();
- 0)   6.789 us    |    }
-
-I think there is some problem because wait_for_flip_done() wait for only affected crtc.
-but kms_cursor_crc only set cursor call and maybe wait_for_flip_done() assumes this call
-doesn't affact crtc.
-
-I'll keep trace this problem.
-Thanks.
--Sidong
-
-> >
-> > >
-> > > Stil confused what's going on here.
-> > > -Daniel
-> > >
-> > > >
-> > > > >
-> > > > >
-> > > > > Thanks,
-> > > > >
-> > > > > Melissa
-> > > > > >
-> > > > > > Also happy to chat on irc for debugging ideas, that might be faster (I'm
-> > > > > > danvet on #dri-devel on freenode).
-> > > > > > -Daniel
-> > > > > >
-> > > > > > >
-> > > > > > > Melissa
-> > > > > > >
-> > > > > > > > -Daniel
-> > > > > > > >
-> > > > > > > > > +
-> > > > > > > > >         drm_atomic_helper_cleanup_planes(dev, old_state);
-> > > > > > > > >  }
-> > > > > > > > >
-> > > > > > > > > --
-> > > > > > > > > 2.17.1
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > Daniel Vetter
-> > > > > > > > Software Engineer, Intel Corporation
-> > > > > > > > http://blog.ffwll.ch
-> > > > > > > > _______________________________________________
-> > > > > > > > dri-devel mailing list
-> > > > > > > > dri-devel@lists.freedesktop.org
-> > > > > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > > > > >
-> > > > > > --
-> > > > > > Daniel Vetter
-> > > > > > Software Engineer, Intel Corporation
-> > > > > > http://blog.ffwll.ch
-> > > > _______________________________________________
-> > > > dri-devel mailing list
-> > > > dri-devel@lists.freedesktop.org
-> > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > >
-> > > --
-> > > Daniel Vetter
-> > > Software Engineer, Intel Corporation
-> > > http://blog.ffwll.ch
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> 
-> 
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+I was thinking about a value supplied by the caller, eg.
+sched_cpu_load(cpu, max), but if all callers would pass
+arch_scale_cpu_capacity(cpu) as max anyway, then it's better to simply
+call it from there.
