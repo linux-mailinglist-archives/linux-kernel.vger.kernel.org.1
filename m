@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135002208E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0198A2208CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 11:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730806AbgGOJcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 05:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
+        id S1730838AbgGOJc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 05:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730783AbgGOJcT (ORCPT
+        with ESMTP id S1730789AbgGOJcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 05:32:19 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D59C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:19 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id g75so4660240wme.5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:18 -0700 (PDT)
+        Wed, 15 Jul 2020 05:32:20 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D04C08C5DD
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:20 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id r12so1615558wrj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 02:32:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tDADXb7FAzSw8X5lKDm1Tv4eULkfL4pe/oWt/8u/tjI=;
-        b=LdQed/Ih0lqZSe0CCBXFgRaZlWuEjjDKJxIpKs/nPHffEQP1EdCkcHyMLyH37Yz6LS
-         hw3npNiL3hzjRYUd1n4AFDMrT0loBlTdv1mSuVODZjFfdKA5HWic/IoHbOHOa4zkFowx
-         OXx9B97n+b4Kxs2zb/p5G3JVDB52/VcKxYcfzDBFm9RCqeUtgBLq4ThSGCTp8HmC33Rp
-         7iPo+vyJiyamddgrr3wrjR3t40fA+jCSFuS/YmUgy7j8Iw+0aw8ElXPK457oReUWs2jO
-         /kew5bxhd7rV2rtWYpK2FoaxwlADY6SqfwuWS/+eX/L8KjU/C3IKG2NuQqIg+YdDhOXJ
-         ar2Q==
+        bh=LLJr1BBujxQgRf198E6OimaqdThx6WekIFuCOWBUZHE=;
+        b=kr848DQ9ivIVfBHU6WJ8Wly8JL0ZbRIf1G3oj2WAD7ofS9XQNvwMS2e0gmX4WhVzKi
+         D8jxSQC44EqtEw5q8u+Z/ZBHCwviGXkyI0Qg9St4qOfJ4GlXrtdZSweriaNAyUcqy6Jx
+         rzzCf6Br8pwtRvpnhljycULVdv60T2JVS4og79hV89iNKWb0a/HI+Was+ROyYO1Umeij
+         muJIBhE8XjmyQoDccGKD6GnIC+QYey0ZhjgZQxhZo4OPdfvo5vAkT+3iF/shc0GmpEit
+         q5fVyQUAajS3Q9bmzwwkVJK4pAREl9iG0gxQI7B17lhvkJj6lyL2SNDqU5nDl2u3mVEf
+         UZ2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tDADXb7FAzSw8X5lKDm1Tv4eULkfL4pe/oWt/8u/tjI=;
-        b=poUKzRQTBy9fXoPg4hD9rdx/Xl7cX7CHt2+BeVCOg/PAxEdNTaOxgLZ506iWhqcuyP
-         NS8rGxpxqCt+pWD8e55znsMN67OWwL5Itz5NvuIPgPGTunWmljM45BjmlVjNT0w1wqg8
-         cn27ST8qooX5voo9H7bBWVC6iWZUhwrkj3o9QJDb2hrKaEyoPa1+e+CXG2PUy8o+4gUy
-         hdMFv7atDPEuUQlBXowx1cQahAyOJqEsXFQvaoLzGP1Lvu53aG56h3TpXzmhmeZMiEE6
-         5MORqqsrcWzywzd1RD4VBgaD4e4BjMGsnixwpKNR+svm+jwBOCEVTLahMBPkbGMi95NM
-         YdbQ==
-X-Gm-Message-State: AOAM532u3eX6Z7AKf9Of1KAR0NW7M+gBZ6bTMGBYt4Nj/+8NEXUgrjz1
-        QsYHqOnQmCX+uPdK/Yu3z4JJ8w==
-X-Google-Smtp-Source: ABdhPJxO/xBg6hX1tW1/OdfO23Yl4NCWnZHIuTxnlzd6rvRZWjW7iMR0nFemLByMXCsySd2r1950Wg==
-X-Received: by 2002:a7b:c348:: with SMTP id l8mr8206612wmj.54.1594805537724;
-        Wed, 15 Jul 2020 02:32:17 -0700 (PDT)
+        bh=LLJr1BBujxQgRf198E6OimaqdThx6WekIFuCOWBUZHE=;
+        b=qlkgH7NQK2Mu8/VhiP9usQXumwTfi2OPg+mCfrDNZOdTVuCvcGXZQXHt46BMeTUtIl
+         kERNg/Gse1Ok4U5aXHFjxe4wqDNDaWTIUpDIHCu4g3aC1pqCQVWJxjAIPoagI+Xj9Dib
+         BwW3oYp4a616RdYP41oKXVRdn96ZeN/22dPCvSVNAhxzGCG714izRhbXOHBoOM1CkwRL
+         fCfjg3dAlrHIvKAx/Z1B+nPGP4cguZQAhPRo8U09FlHlq1VmbS1HOdRsiTD+Sbu2xKJ0
+         rX6uX1c/63TRqmUmLTCgngwY3KKQlBIhx+B5bcbEPPamu8OTGibi4Ok4MfxWHxElOJpI
+         Unag==
+X-Gm-Message-State: AOAM532y3lmrluuEMoANMIHhf05DrsUBzZdul07yRyi3Oh5V10dSizWR
+        xJgqvh2PnZC1eYPiZQF1u4zgmg==
+X-Google-Smtp-Source: ABdhPJzeuYlG/tm0jxRW34wzZNpRlF352IlkECXOk6bLtk1cRbbPoxaw5zCmvUSrZuy8Wcsq493Kew==
+X-Received: by 2002:a5d:4d8b:: with SMTP id b11mr10407200wru.341.1594805538872;
+        Wed, 15 Jul 2020 02:32:18 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id s203sm2686991wms.32.2020.07.15.02.32.16
+        by smtp.gmail.com with ESMTPSA id s203sm2686991wms.32.2020.07.15.02.32.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 02:32:17 -0700 (PDT)
+        Wed, 15 Jul 2020 02:32:18 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 4/8] usb: mtu3: mtu3_trace: Supply missing mtu3_debug.h include file
-Date:   Wed, 15 Jul 2020 10:32:05 +0100
-Message-Id: <20200715093209.3165641-5-lee.jones@linaro.org>
+        Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH v2 5/8] usb: class: cdc-wdm: Provide description for usb_cdc_wdm_register()'s manage_power arg
+Date:   Wed, 15 Jul 2020 10:32:06 +0100
+Message-Id: <20200715093209.3165641-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200715093209.3165641-1-lee.jones@linaro.org>
 References: <20200715093209.3165641-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the header file containing a function's prototype isn't included by
-the sourcefile containing the associated function, the build system
-complains of missing prototypes.
+A good attempt was made to document everything else.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/usb/mtu3/mtu3_trace.c:13:6: warning: no previous prototype for ‘mtu3_dbg_trace’ [-Wmissing-prototypes]
- 13 | void mtu3_dbg_trace(struct device *dev, const char *fmt, ...)
- | ^~~~~~~~~~~~~~
+ drivers/usb/class/cdc-wdm.c:961: warning: Function parameter or member 'manage_power' not described in 'usb_cdc_wdm_register'
 
-Cc: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mediatek@lists.infradead.org
+Cc: Oliver Neukum <oneukum@suse.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
 Changelog
 
-v2: No change - robot warning did not appear to be valid
+v2: Fixed-up trailing whitespace (and enabled highlighting)
 
- drivers/usb/mtu3/mtu3_trace.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/class/cdc-wdm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/mtu3/mtu3_trace.c b/drivers/usb/mtu3/mtu3_trace.c
-index 155eae126e5e2..d17ddb87cdcf2 100644
---- a/drivers/usb/mtu3/mtu3_trace.c
-+++ b/drivers/usb/mtu3/mtu3_trace.c
-@@ -8,6 +8,7 @@
-  */
- 
- #define CREATE_TRACE_POINTS
-+#include "mtu3_debug.h"
- #include "mtu3_trace.h"
- 
- void mtu3_dbg_trace(struct device *dev, const char *fmt, ...)
+diff --git a/drivers/usb/class/cdc-wdm.c b/drivers/usb/class/cdc-wdm.c
+index e3db6fbeadef8..7f5de956a2fc8 100644
+--- a/drivers/usb/class/cdc-wdm.c
++++ b/drivers/usb/class/cdc-wdm.c
+@@ -940,7 +940,8 @@ static int wdm_probe(struct usb_interface *intf, const struct usb_device_id *id)
+  * @intf: usb interface the subdriver will associate with
+  * @ep: interrupt endpoint to monitor for notifications
+  * @bufsize: maximum message size to support for read/write
+- *
++ * @manage_power: call-back invoked during open and release to
++ *                manage the device's power
+  * Create WDM usb class character device and associate it with intf
+  * without binding, allowing another driver to manage the interface.
+  *
 -- 
 2.25.1
 
