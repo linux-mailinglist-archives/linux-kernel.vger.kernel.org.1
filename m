@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F4023221744
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 23:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F76E221748
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 23:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgGOVo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 17:44:56 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:36156 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgGOVoz (ORCPT
+        id S1727768AbgGOVp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 17:45:58 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:36715 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgGOVpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 17:44:55 -0400
-Received: by mail-io1-f65.google.com with SMTP id y2so3897021ioy.3;
-        Wed, 15 Jul 2020 14:44:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G2Mqt7gxRiFgu+zBoG7bPjfYecL9s+S+lyU0ScviujI=;
-        b=tDLPz8rWtwGfcf7mR215ep7KtrBZNn/03hbvhHa29SsAybIF1Rc3sDDhbZh9wAzVRn
-         B//VEJIS25JacBkBH7KRoKVYA7YPwC2ECmPuI01BuUVSwg5S2LlrjG2/eY8/dWxQbOyn
-         LbWLv6Ljyt/RLaKhvEr4kBI1aG+3AJX7nvjOqdlawLPq81x4Q8mdAZm6S1AbXjiQx3+z
-         SFuR9Zs27+G6a7QX0Cksq3/BKSkVbxWe0yl6Ov7zq3a5KtKJhbwoOE8NtgO2KI8mf5yx
-         LQCwp4oP+YSj94J7tT5CrLu8OduXnt2Z9z4ak85iCsAsL9GdWJ/mplvkjsKTXJPa17fk
-         x9ng==
-X-Gm-Message-State: AOAM5334BXonM3fO3Y8YJn3YjXpl2g1TV6DINy6gzwypTVo8JmUpwiTQ
-        uWxefP9QD3TggICCvB06Yg==
-X-Google-Smtp-Source: ABdhPJzmxir1p3e9ru+Hz1g9JLvam/4uHKqg3E7b8w9WMvJYI1Tx2B7G1S7vbF+WtPKipdU9wyqFog==
-X-Received: by 2002:a6b:b2d1:: with SMTP id b200mr1314239iof.137.1594849494492;
-        Wed, 15 Jul 2020 14:44:54 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id v4sm1632908ilo.44.2020.07.15.14.44.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 14:44:53 -0700 (PDT)
-Received: (nullmailer pid 869896 invoked by uid 1000);
-        Wed, 15 Jul 2020 21:44:52 -0000
-Date:   Wed, 15 Jul 2020 15:44:52 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     devicetree@vger.kernel.org, hyun.kwon@xilinx.com,
-        michal.simek@xilinx.com, mchehab@kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-media@vger.kernel.org, laurent.pinchart@ideasonboard.com
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: Xilinx video IP cores
-Message-ID: <20200715214452.GA869842@bogus>
-References: <20200705075524.22657-1-grandmaster@al2klimov.de>
+        Wed, 15 Jul 2020 17:45:55 -0400
+X-Originating-IP: 90.65.108.121
+Received: from localhost (lfbn-lyo-1-1676-121.w90-65.abo.wanadoo.fr [90.65.108.121])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 8DDB860002;
+        Wed, 15 Jul 2020 21:45:51 +0000 (UTC)
+Date:   Wed, 15 Jul 2020 23:45:51 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Cristian Birsan <cristian.birsan@microchip.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Songjun Wu <songjun.wu@atmel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH RESEND 2/3] usb: gadget: udc: atmel: fix uninitialized
+ read in debug printk
+Message-ID: <20200715214551.GF23553@piout.net>
+References: <cover.1594231056.git.mirq-linux@rere.qmqm.pl>
+ <248e7089f7fbb3727e83a1dfb43820d96a69e8c2.1594231056.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200705075524.22657-1-grandmaster@al2klimov.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <248e7089f7fbb3727e83a1dfb43820d96a69e8c2.1594231056.git.mirq-linux@rere.qmqm.pl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 05 Jul 2020 09:55:24 +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
+On 08/07/2020 20:04:09+0200, Michał Mirosław wrote:
+> Fixed commit moved the assignment of 'req', but did not update a
+> reference in the DBG() call. Use the argument as it was renamed.
 > 
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
->           If both the HTTP and HTTPS versions
->           return 200 OK and serve the same content:
->             Replace HTTP with HTTPS.
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> Fixes: 5fb694f96e7c ("usb: gadget: udc: atmel: fix possible oops when unloading module")
+> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
 > ---
->  Continuing my work started at 93431e0607e5.
-> 
->  If there are any URLs to be removed completely or at least not HTTPSified:
->  Just clearly say so and I'll *undo my change*.
->  See also https://lkml.org/lkml/2020/6/27/64
-> 
->  If there are any valid, but yet not changed URLs:
->  See https://lkml.org/lkml/2020/6/26/837
-> 
->  Documentation/devicetree/bindings/media/xilinx/video.txt | 2 +-
+>  drivers/usb/gadget/udc/atmel_usba_udc.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
+> index 9153e220848d..9342a3d24963 100644
+> --- a/drivers/usb/gadget/udc/atmel_usba_udc.c
+> +++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+> @@ -865,7 +865,7 @@ static int usba_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
+>  	u32 status;
+>  
+>  	DBG(DBG_GADGET | DBG_QUEUE, "ep_dequeue: %s, req %p\n",
+> -			ep->ep.name, req);
+> +			ep->ep.name, _req);
+>  
+>  	spin_lock_irqsave(&udc->lock, flags);
+>  
+> -- 
+> 2.20.1
+> 
 
-Applied, thanks!
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
