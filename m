@@ -2,139 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F418522022D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36A5220226
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 04:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgGOCGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 22:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726820AbgGOCGP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 22:06:15 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71867C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 19:06:15 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id f16so1274657pjt.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 19:06:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=5uEgZcOvxySkXqr8EUPn06IShVdK3dXiQkAlG2OoJgw=;
-        b=pOWWp9YnQGbRhp8vnvcjFzCjOY/Ptp60xa3w+pOU/QVau8l+iZKApRVWCKB3OwQiBz
-         lnTthcfCxJWWgteowrvSvu9Ti0/yvZr7r2iOrdMZGCBtWv8Z64IB5X55LfjRyyv0LWwV
-         ECtZ7d190zXrgGaiPuYqxOjtk+G1YIEMZvgUrNkmRus9DLuwT4FMnkNOrX5ZZdlCO4fo
-         9xU0aanlhWpSxHmnqv8Zuczc2G7bTv5vRNPZ5tVDm0CgGdkypgdzom7wh8oUlSfTRB5F
-         VpHstdK1QuNugsk8R3KmLMcmmqqyYeVacr35ZR5SWwUrhtbmrWTEwu4T2LHA3/xL0iIW
-         59KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=5uEgZcOvxySkXqr8EUPn06IShVdK3dXiQkAlG2OoJgw=;
-        b=tChdXPDz3PrK3Velj9etZ36i2ZEmDU1OZgGll228ZZIr3+ooovpAKOAfoVeJa6HWHC
-         GF5wJQHGZdAHROnq9NvaKCv99QBNRoZQZDIsTFbK1e/MdNsOtMBS7Q9umNiKSqstsZH5
-         W4zJ7YrToAir2Wig7Bx05qfcI6mbFsSUTT2qLzXknbBu1SVkjYR57uDFIKw8BqzQKLZX
-         CmUCssOJdFpaKKRdYzbphK7LrP6e1O9MLswBN7FzpzRnm61bxq+vniqfg09RN5FUFLct
-         Oec/c+7g+F77zTvhcNLV2hp13V1Cwnt+/4wGU5gXdtPk9zoFlC2S07feNB8+2u4PRevk
-         oWzg==
-X-Gm-Message-State: AOAM530TpLOGomMLTyfuAW/REqhf1stZUsCqOB8ti9oQY2etSOkrZkA+
-        Qld7HNrVRcFD1gO/DeDINIVmBcSPsSfuCQ==
-X-Google-Smtp-Source: ABdhPJwMXpKq4bmzp8Tj2k831gLgHkghRRnoLsBK25hBLPT1cNEMu++Q/+CeJ5hpYTHTn55V9DEsVQ==
-X-Received: by 2002:a17:90b:1c12:: with SMTP id oc18mr7615246pjb.160.1594778774962;
-        Tue, 14 Jul 2020 19:06:14 -0700 (PDT)
-Received: from localhost ([2400:8904::f03c:91ff:fe8a:bbe4])
-        by smtp.gmail.com with ESMTPSA id c134sm369404pfc.115.2020.07.14.19.06.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 14 Jul 2020 19:06:14 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 6/6] tools headers UAPI: Update tools's copy of linux/perf_event.h
-Date:   Wed, 15 Jul 2020 10:05:12 +0800
-Message-Id: <20200715020512.20991-7-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200715020512.20991-1-leo.yan@linaro.org>
-References: <20200715020512.20991-1-leo.yan@linaro.org>
+        id S1728193AbgGOCFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 22:05:30 -0400
+Received: from mail.synology.com ([211.23.38.101]:60084 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726356AbgGOCF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 14 Jul 2020 22:05:29 -0400
+Subject: Re: [PATCH] mm : fix pte _PAGE_DIRTY bit when fallback migrate page
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1594778727; bh=YDrsMEH4rB9HXHNVRExpD6LMr7xokp4y9XlpkI3qsRo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=kHqL3YjTUkLKU+mFo39ywmRMf4qTO8txj2I5J34NwSQiOHh7HNklZCY4H6mFUzXBV
+         GeVsjmCAtIkNCO5Tbt3orFAbv3EVXejLhZTOuEmhwhypkLlUBzhS7jeKCw1GPp25tH
+         deYTKO02Sk3S3YYJTWoYOUAfLmaIUyQO2wW/66S8=
+To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>, David Sterba <dsterba@suse.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20200709024808.18466-1-robbieko@synology.com>
+ <859c810e-376e-5e8b-e8a5-0da3f83315d1@suse.cz>
+ <80b55fcf-def1-8a83-8f53-a22f2be56244@synology.com>
+ <433e26b0-5201-129a-4afe-4881e42781fa@suse.cz>
+From:   Robbie Ko <robbieko@synology.com>
+Message-ID: <13d4b937-23e8-2d6f-919c-deb2f4284951@synology.com>
+Date:   Wed, 15 Jul 2020 10:05:26 +0800
+MIME-Version: 1.0
+In-Reply-To: <433e26b0-5201-129a-4afe-4881e42781fa@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To get the changes in the commit:
 
-  "perf: Add perf_event_mmap_page::cap_user_time_short ABI"
+Vlastimil Babka 於 2020/7/14 下午5:46 寫道:
+> On 7/13/20 3:57 AM, Robbie Ko wrote:
+>> Vlastimil Babka 於 2020/7/10 下午11:31 寫道:
+>>> On 7/9/20 4:48 AM, robbieko wrote:
+>>>> From: Robbie Ko <robbieko@synology.com>
+>>>>
+>>>> When a migrate page occurs, we first create a migration entry
+>>>> to replace the original pte, and then go to fallback_migrate_page
+>>>> to execute a writeout if the migratepage is not supported.
+>>>>
+>>>> In the writeout, we will clear the dirty bit of the page and use
+>>>> page_mkclean to clear the dirty bit along with the corresponding pte,
+>>>> but page_mkclean does not support migration entry.
+>>>>
+>>>> The page ditry bit is cleared, but the dirty bit of the pte still exists,
+>>>> so if mmap continues to write, it will result in data loss.
+>>> Curious, did you observe this data loss? What filesystem? If yes, it seems
+>>> serious enough to
+>>> CC stable and determine a Fixes: tag?
+>> Yes, there is data loss.
+>> I'm using a btrfs environment, but not the following patch
+> And the kernel is otherwise upstream? Which version?
+> Anyway we better let btrfs guys know (+CC) even if the fix is in MM code.
 
-This update is a prerequisite to add support for short clock counters
-related ABI extension.
+Kernel verion is 4.4.
+I think this is a bug that has been around for a long time.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/include/uapi/linux/perf_event.h | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+I think the problem is not limited to btrfs, as long as other fs
+have not implemented the migrationpage, they will encounter
+the problem. (Eg ecryptfs, fat, nfs...)
 
-diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-index 7b2d6fc9e6ed..21a1edd08cbe 100644
---- a/tools/include/uapi/linux/perf_event.h
-+++ b/tools/include/uapi/linux/perf_event.h
-@@ -532,9 +532,10 @@ struct perf_event_mmap_page {
- 				cap_bit0_is_deprecated	: 1, /* Always 1, signals that bit 0 is zero */
- 
- 				cap_user_rdpmc		: 1, /* The RDPMC instruction can be used to read counts */
--				cap_user_time		: 1, /* The time_* fields are used */
-+				cap_user_time		: 1, /* The time_{shift,mult,offset} fields are used */
- 				cap_user_time_zero	: 1, /* The time_zero field is used */
--				cap_____res		: 59;
-+				cap_user_time_short	: 1, /* the time_{cycle,mask} fields are used */
-+				cap_____res		: 58;
- 		};
- 	};
- 
-@@ -593,13 +594,29 @@ struct perf_event_mmap_page {
- 	 *               ((rem * time_mult) >> time_shift);
- 	 */
- 	__u64	time_zero;
-+
- 	__u32	size;			/* Header size up to __reserved[] fields. */
-+	__u32	__reserved_1;
-+
-+	/*
-+	 * If cap_usr_time_short, the hardware clock is less than 64bit wide
-+	 * and we must compute the 'cyc' value, as used by cap_usr_time, as:
-+	 *
-+	 *   cyc = time_cycles + ((cyc - time_cycles) & time_mask)
-+	 *
-+	 * NOTE: this form is explicitly chosen such that cap_usr_time_short
-+	 *       is a correction on top of cap_usr_time, and code that doesn't
-+	 *       know about cap_usr_time_short still works under the assumption
-+	 *       the counter doesn't wrap.
-+	 */
-+	__u64	time_cycles;
-+	__u64	time_mask;
- 
- 		/*
- 		 * Hole for extension of the self monitor capabilities
- 		 */
- 
--	__u8	__reserved[118*8+4];	/* align to 1k. */
-+	__u8	__reserved[116*8];	/* align to 1k. */
- 
- 	/*
- 	 * Control data for the mmap() data buffer.
--- 
-2.17.1
-
+>> btrfs: implement migratepage callback for data pages
+>> https://git.kernel.org/pub/scm/linux/kernel
+>> /git/torvalds/linux.git/commit/?h=v5.8-rc5&
+>> id=f8e6608180a31cc72a23b74969da428da236dbd1
+> That's a new commit, so if this is really affecting upstream btrfs pre-5.8 we
+> should either backport that commit, or your fix (after review).
+>
+>>>> We fix the by first remove the migration entry and then clearing
+>>>> the dirty bits of the page, which also clears the pte's dirty bits.
+>>>>
+>>>> Signed-off-by: Robbie Ko <robbieko@synology.com>
+>>>> ---
+>>>>    mm/migrate.c | 8 ++++----
+>>>>    1 file changed, 4 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/mm/migrate.c b/mm/migrate.c
+>>>> index f37729673558..5c407434b9ba 100644
+>>>> --- a/mm/migrate.c
+>>>> +++ b/mm/migrate.c
+>>>> @@ -875,10 +875,6 @@ static int writeout(struct address_space *mapping, struct page *page)
+>>>>    		/* No write method for the address space */
+>>>>    		return -EINVAL;
+>>>>    
+>>>> -	if (!clear_page_dirty_for_io(page))
+>>>> -		/* Someone else already triggered a write */
+>>>> -		return -EAGAIN;
+>>>> -
+>>>>    	/*
+>>>>    	 * A dirty page may imply that the underlying filesystem has
+>>>>    	 * the page on some queue. So the page must be clean for
+>>>> @@ -889,6 +885,10 @@ static int writeout(struct address_space *mapping, struct page *page)
+>>>>    	 */
+>>>>    	remove_migration_ptes(page, page, false);
+>>>>    
+>>>> +	if (!clear_page_dirty_for_io(page))
+>>>> +		/* Someone else already triggered a write */
+>>>> +		return -EAGAIN;
+>>>> +
+>>>>    	rc = mapping->a_ops->writepage(page, &wbc);
+>>>>    
+>>>>    	if (rc != AOP_WRITEPAGE_ACTIVATE)
+>>>>
+>
