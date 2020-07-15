@@ -2,247 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1117C22042D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 07:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAFF9220431
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 07:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727963AbgGOFBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 01:01:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725932AbgGOFBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 01:01:34 -0400
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B13D02074B;
-        Wed, 15 Jul 2020 05:01:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594789293;
-        bh=BP1XU8xIR+fvOq10ATBpe//b2NjFNKyBXAHk6X7rMGo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DRyMU3+1kKmzK6QQceszq3hcQikuwW84EuLUOMhsWmsFh1oj+0JJpQsb/pMq/EgrM
-         h/XbCNDGXBdURCMagxqaa2GWpNRChZH+9x5J/E6we1zg6HfLBIMIck1eH0RZiT6RLD
-         45LoO5tLcsod3yfHwKuhuh4KGeWkOs+zau+n1VPM=
-Received: by mail-lj1-f179.google.com with SMTP id r19so1027272ljn.12;
-        Tue, 14 Jul 2020 22:01:32 -0700 (PDT)
-X-Gm-Message-State: AOAM533hEPW09oZsGUAiD4OBD5gS5qqNH0A4ADCBAj5bsujm/4D5EMQ3
-        umt7MRWGl1iWc4gDj52ksP28lh7efq21XEeqsqM=
-X-Google-Smtp-Source: ABdhPJwEi9sTAbh/CUwlrbnxmAqKB7C+J6BICaVzBsW7VDPRYLh/EqngV/qcwFIWR4LPkB8QYPbW7xlc5s4feenHWZ0=
-X-Received: by 2002:a2e:b0ed:: with SMTP id h13mr3645428ljl.250.1594789290935;
- Tue, 14 Jul 2020 22:01:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJF2gTSYyj5rTUJW-yDDrrV7T3hUssAhGc0gnCntcQpuixNJzw@mail.gmail.com>
- <mhng-3921ee3a-6033-4f1c-9c93-ecdb5751b3b1@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-3921ee3a-6033-4f1c-9c93-ecdb5751b3b1@palmerdabbelt-glaptop1>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 15 Jul 2020 13:01:19 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSEHqD0KR85r-FjDXW-4Z2kzNDVgM5pHVsKwoVoX==NgA@mail.gmail.com>
-Message-ID: <CAJF2gTSEHqD0KR85r-FjDXW-4Z2kzNDVgM5pHVsKwoVoX==NgA@mail.gmail.com>
-Subject: Re: [PATCH V1 0/5] riscv: Add k/uprobe supported
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     Pekka Enberg <penberg@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup@brainfault.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        =?UTF-8?Q?Patrick_St=C3=A4hlin?= <me@packi.ch>,
-        Bjorn Topel <bjorn.topel@gmail.com>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1727883AbgGOFFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 01:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725917AbgGOFFp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 01:05:45 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A852EC061755;
+        Tue, 14 Jul 2020 22:05:45 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ls15so2427706pjb.1;
+        Tue, 14 Jul 2020 22:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=z+wv8TGtFVQ1hlwrfyzpVwymGKMjlXdbSWkQQF4iJxI=;
+        b=mVdrq8+UEYotcCGr+EDqNcpyWzyi3Tj+1an8oO/wgzzahQj8FEchq3rg5A6emWKwin
+         bdpUO4taDuCCYFVROBKfbHlaZ5rFUFY5v89yvkVhm/t+WPA4P7zGZoIRufJvUdDO9hBt
+         J3w2XHcwQgBQgNLMB/dqJqCW5F768LhYctTWl+qvaMu6M/nNWMsnC/AkmZj4cBtK96ir
+         4ApDGo+FIPCh/F303Cjjxli3Aeo6r/F2pSFbogYpQDIYYR9R2j2jWIa63j/nvXn6X8Zx
+         VQq9E4roHRDNlTHNiwt9v5bHL+Yv02VbmNBosu/MHVi8kfYb0cG7vbvM/b+MFHM9mJik
+         RoGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=z+wv8TGtFVQ1hlwrfyzpVwymGKMjlXdbSWkQQF4iJxI=;
+        b=o3R506+zkRDvjtmNg3kp1x7YRMUD6FnCj/aa8MR2aP1DSpu8JfKrTy5Zq5jROSWuDW
+         evhbxZwvr/G1rIOuAw5CldLpKe6yKSTBi/xOysXEal17LPPOmtGBAXVP6SMm+R1oXQu7
+         j5QcPu4my090ZX/dUZTIRLTkxwRxXsH0dlWlNnPEGP5TftsOdiaanNkTTJT2hprfEJx8
+         XkSOepyB4vlphJhTKPyW73KwNO/KoHZZihVjBKc/1o1m8yDcd3AYqAsW0ud8Bp+xyu6S
+         GLdmdqrk5n+D5bR2/imz1nxSNRtiCSyIJkcutYQ5vXkQALyi7PoBPoegnbGvOd28WaOZ
+         e6Xg==
+X-Gm-Message-State: AOAM531lxLHfVxYtY2+BRcWMFD1nYovBV6i733YsJ8wmsSi0rNrrwmEw
+        BSXZcsBw4JVQ11NRCHLIXRyRa81a
+X-Google-Smtp-Source: ABdhPJza7Rlli4ZIDhwyoO76GHLo1Ah2DCPstIOcYT7GHUj3pMDr9aKgEtz17O8TCQIjcamlkOFgiw==
+X-Received: by 2002:a17:90b:3612:: with SMTP id ml18mr8160176pjb.193.1594789544814;
+        Tue, 14 Jul 2020 22:05:44 -0700 (PDT)
+Received: from localhost.localdomain ([114.206.198.176])
+        by smtp.gmail.com with ESMTPSA id i21sm747251pfa.18.2020.07.14.22.05.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 Jul 2020 22:05:44 -0700 (PDT)
+From:   js1304@gmail.com
+X-Google-Original-From: iamjoonsoo.kim@lge.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@lge.com, Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, stable@vger.kernel.org
+Subject: [PATCH 1/4] mm/page_alloc: fix non cma alloc context
+Date:   Wed, 15 Jul 2020 14:05:26 +0900
+Message-Id: <1594789529-6206-1-git-send-email-iamjoonsoo.kim@lge.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Palmer,
+From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 
-On Wed, Jul 15, 2020 at 2:43 AM Palmer Dabbelt <palmerdabbelt@google.com> w=
-rote:
->
-> On Sat, 04 Jul 2020 07:55:28 PDT (-0700), guoren@kernel.org wrote:
-> > Hi Pekka,
-> >
-> > On Sat, Jul 4, 2020 at 2:40 PM Pekka Enberg <penberg@gmail.com> wrote:
-> >>
-> >> On Sat, Jul 4, 2020 at 6:34 AM <guoren@kernel.org> wrote:
-> >> > The patchset includes kprobe/uprobe support and some related fixups.
-> >>
-> >> Nice!
-> >>
-> >> On Sat, Jul 4, 2020 at 6:34 AM <guoren@kernel.org> wrote:
-> >> > There is no single step exception in riscv ISA, so utilize ebreak to
-> >> > simulate. Some pc related instructions couldn't be executed out of l=
-ine
-> >> > and some system/fence instructions couldn't be a trace site at all.
-> >> > So we give out a reject list and simulate list in decode-insn.c.
-> >>
-> >> Can you elaborate on what you mean by this? Why would you need a
-> >> single-step facility for kprobes? Is it for executing the instruction
-> >> that was replaced with a probe breakpoint?
-> >
-> > It's the single-step exception, not single-step facility!
-> >
-> > Other arches use hardware single-step exception for k/uprobe,  eg:
-> >  - powerpc: regs->msr |=3D MSR_SINGLESTEP
-> >  - arm/arm64: PSTATE.D for enabling software step exceptions
-> >  - s390: Set PER control regs, turns on single step for the given addre=
-ss
-> >  - x86: regs->flags |=3D X86_EFLAGS_TF
-> >  - csky: of course use hw single step :)
-> >
-> > Yes, All the above arches use a hardware single-step exception
-> > mechanism to execute the instruction that was replaced with a probe
-> > breakpoint.
->
-> I guess we could handle fences by just IPIing over there and executing th=
-e
-> fence?  Probably not worth the effort, though, as if you have an issue th=
-at's
-> showing up close enough to a fence that you can't just probe somewhere ne=
-arby
-> then you're probably going to disrupt things too much to learn anything.
-All fence instructions are rejected to probe in the current patchset.
-ref arch/riscv/kernel/probes/decode-insn.c:
-        /*
-         * Reject instructions list:
-         */
-        RISCV_INSN_REJECTED(system,             insn);
-        RISCV_INSN_REJECTED(fence,              insn);
+Currently, preventing cma area in page allocation is implemented by using
+current_gfp_context(). However, there are two problems of this
+implementation.
 
-> I'd
-> assume that AMOs are also too much of a headache to emulate, as moving th=
-em to
-> a different hart would allow for different orderings that may break thing=
-s.
-All AMO instructions could be single-step emulated.
+First, this doesn't work for allocation fastpath. In the fastpath,
+original gfp_mask is used since current_gfp_context() is introduced in
+order to control reclaim and it is on slowpath.
+Second, clearing __GFP_MOVABLE has a side effect to exclude the memory
+on the ZONE_MOVABLE for allocation target.
 
->
-> I suppose the tricker issue is that inserting a probe in the middle of a =
-LR/SC
-> sequence will result in a loss of forward progress (or maybe even incorre=
-ct
-> behavior, if you mess up a pairing), as there are fairly heavyweight
-> restrictions on what you're allowed to do inside there.  I don't see any
-> mechanism for handling this, maybe we need to build up tables of restrict=
-ed
-> regions?  All the LR/SC sequences should be hidden behind macros already,=
- so it
-> shouldn't be that hard to figure it out.
-Yes, the probe between LR/SC will cause dead loop risk and arm64 just
-prevent exclusive instructions to probe without the middle detecting.
-The macros wrapper idea seems good, but I prefer to leave it to user caring=
-.
+To fix these problems, this patch changes the implementation to exclude
+cma area in page allocation. Main point of this change is using the
+alloc_flags. alloc_flags is mainly used to control allocation so it fits
+for excluding cma area in allocation.
 
->
-> I only gave the code a quick look, but I don't see any references to LR/S=
-C or
-> AMO so if you are handling these I guess we at least need a comment :)
-Yes, I let all AMO & LR/SC could be executed out of line with a
-single-step style.
-I'll add a comment about LR/SC wrapper macros' idea which you mentioned.
+Fixes: d7fefcc (mm/cma: add PF flag to force non cma alloc)
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+---
+ include/linux/sched/mm.h |  4 ----
+ mm/page_alloc.c          | 27 +++++++++++++++------------
+ 2 files changed, 15 insertions(+), 16 deletions(-)
 
->
-> >
-> >>
-> >> Also, the "Debug Specification" [1] specifies a single-step facility
-> >> for RISC-V -- why is that not useful for implementing kprobes?
-> >>
-> >> 1. https://riscv.org/specifications/debug-specification/
-> > We need single-step exception not single-step by jtag, so above spec
-> > is not related to the patchset.
-> >
-> > See riscv-Privileged spec:
-> >
-> > Interrupt Exception Code-Description
-> > 1 0 Reserved
-> > 1 1 Supervisor software interrupt
-> > 1 2=E2=80=934 Reserved
-> > 1 5 Supervisor timer interrupt
-> > 1 6=E2=80=938 Reserved
-> > 1 9 Supervisor external interrupt
-> > 1 10=E2=80=9315 Reserved
-> > 1 =E2=89=A516 Available for platform use
-> > 0 0 Instruction address misaligned
-> > 0 1 Instruction access fault
-> > 0 2 Illegal instruction
-> > 0 3 Breakpoint
-> > 0 4 Load address misaligned
-> > 0 5 Load access fault
-> > 0 6 Store/AMO address misaligned
-> > 0 7 Store/AMO access fault
-> > 0 8 Environment call from U-mode
-> > 0 9 Environment call from S-mode
-> > 0 10=E2=80=9311 Reserved
-> > 0 12 Instruction page fault
-> > 0 13 Load page fault
-> > 0 14 Reserved
-> > 0 15 Store/AMO page fault
-> > 0 16=E2=80=9323 Reserved
-> > 0 24=E2=80=9331 Available for custom use
-> > 0 32=E2=80=9347 Reserved
-> > 0 48=E2=80=9363 Available for custom use
-> > 0 =E2=89=A564 Reserved
-> >
-> > No single step!
-> >
-> > So I insert a "ebreak" instruction behind the target single-step
-> > instruction to simulate the same mechanism.
->
-> Single step is part of the debug spec.  That mostly discusses JTAG debugg=
-ing,
-> but there's also some stuff in there related to in-band debugging (at lea=
-st
-> watch points and single step, though there may be more).  IIRC you get a
-What's the meaning of IIRC?
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index 44ad5b7..a73847a 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -191,10 +191,6 @@ static inline gfp_t current_gfp_context(gfp_t flags)
+ 			flags &= ~(__GFP_IO | __GFP_FS);
+ 		else if (pflags & PF_MEMALLOC_NOFS)
+ 			flags &= ~__GFP_FS;
+-#ifdef CONFIG_CMA
+-		if (pflags & PF_MEMALLOC_NOCMA)
+-			flags &= ~__GFP_MOVABLE;
+-#endif
+ 	}
+ 	return flags;
+ }
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 6416d08..cd53894 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2791,7 +2791,7 @@ __rmqueue(struct zone *zone, unsigned int order, int migratetype,
+ 	 * allocating from CMA when over half of the zone's free memory
+ 	 * is in the CMA area.
+ 	 */
+-	if (migratetype == MIGRATE_MOVABLE &&
++	if (alloc_flags & ALLOC_CMA &&
+ 	    zone_page_state(zone, NR_FREE_CMA_PAGES) >
+ 	    zone_page_state(zone, NR_FREE_PAGES) / 2) {
+ 		page = __rmqueue_cma_fallback(zone, order);
+@@ -2802,7 +2802,7 @@ __rmqueue(struct zone *zone, unsigned int order, int migratetype,
+ retry:
+ 	page = __rmqueue_smallest(zone, order, migratetype);
+ 	if (unlikely(!page)) {
+-		if (migratetype == MIGRATE_MOVABLE)
++		if (alloc_flags & ALLOC_CMA)
+ 			page = __rmqueue_cma_fallback(zone, order);
+ 
+ 		if (!page && __rmqueue_fallback(zone, order, migratetype,
+@@ -3502,11 +3502,9 @@ static inline long __zone_watermark_unusable_free(struct zone *z,
+ 	if (likely(!alloc_harder))
+ 		unusable_free += z->nr_reserved_highatomic;
+ 
+-#ifdef CONFIG_CMA
+ 	/* If allocation can't use CMA areas don't use free CMA pages */
+-	if (!(alloc_flags & ALLOC_CMA))
++	if (IS_ENABLED(CONFIG_CMA) && !(alloc_flags & ALLOC_CMA))
+ 		unusable_free += zone_page_state(z, NR_FREE_CMA_PAGES);
+-#endif
+ 
+ 	return unusable_free;
+ }
+@@ -3693,6 +3691,16 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
+ 	return alloc_flags;
+ }
+ 
++static inline void current_alloc_flags(gfp_t gfp_mask,
++				unsigned int *alloc_flags)
++{
++	unsigned int pflags = READ_ONCE(current->flags);
++
++	if (!(pflags & PF_MEMALLOC_NOCMA) &&
++		gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
++		*alloc_flags |= ALLOC_CMA;
++}
++
+ /*
+  * get_page_from_freelist goes through the zonelist trying to allocate
+  * a page.
+@@ -3706,6 +3714,8 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ 	struct pglist_data *last_pgdat_dirty_limit = NULL;
+ 	bool no_fallback;
+ 
++	current_alloc_flags(gfp_mask, &alloc_flags);
++
+ retry:
+ 	/*
+ 	 * Scan zonelist, looking for a zone with enough free.
+@@ -4339,10 +4349,6 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
+ 	} else if (unlikely(rt_task(current)) && !in_interrupt())
+ 		alloc_flags |= ALLOC_HARDER;
+ 
+-#ifdef CONFIG_CMA
+-	if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
+-		alloc_flags |= ALLOC_CMA;
+-#endif
+ 	return alloc_flags;
+ }
+ 
+@@ -4808,9 +4814,6 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+ 	if (should_fail_alloc_page(gfp_mask, order))
+ 		return false;
+ 
+-	if (IS_ENABLED(CONFIG_CMA) && ac->migratetype == MIGRATE_MOVABLE)
+-		*alloc_flags |= ALLOC_CMA;
+-
+ 	return true;
+ }
+ 
+-- 
+2.7.4
 
-> breakpoint exception and then chase around some CSRs to differentiate bet=
-ween
-> the various reasons, but it's been a while since I've looked at this stuf=
-f.
-I just use k/uprobe state check function in ebreak handler, no
-additional csr tested.
-asmlinkage __visible void do_trap_break(struct pt_regs *regs)
-{
-#ifdef CONFIG_KPROBES
-        if (kprobe_single_step_handler(regs))
-                return;
-
-        if (kprobe_breakpoint_handler(regs))
-                return;
-#endif
-#ifdef CONFIG_UPROBES
-        if (uprobe_single_step_handler(regs))
-                return;
-
-        if (uprobe_breakpoint_handler(regs))
-                return;
-#endif
-        current->thread.bad_cause =3D regs->cause;
-
-Seems it works good.
-
->
-> It's all kind of irrelevant, though, as there's no way to get at all this=
- stuff
-> from supervisor mode.  I don't see any reason we couldn't put together an=
- SBI
-> extension to access this stuff, but I also don't know anyone who's looked=
- into
-> doing so.  There are some complexities involved because this state is all
-> shared between machine mode and debug mode that we'd need to deal with, b=
-ut I
-> think we could put something together -- at least for single step those a=
-re
-> fairly straight-forward issues to handle.
-Do you prefer to add a single-step mechanism into a privileged-spec?
-
---=20
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
