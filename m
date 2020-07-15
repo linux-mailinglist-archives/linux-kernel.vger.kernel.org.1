@@ -2,142 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BEC220E9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46966220ED4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 16:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731998AbgGOOBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 10:01:17 -0400
-Received: from gateway22.websitewelcome.com ([192.185.46.152]:13312 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727822AbgGOOBQ (ORCPT
+        id S1730110AbgGOOHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 10:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728561AbgGOOHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 10:01:16 -0400
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 0D128B38D
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 09:01:11 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id vhyAjMSjKBb5dvhyAjI7sE; Wed, 15 Jul 2020 09:01:11 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=4iwqT3WfXrrqqbd5eziAeRmZcm4YwIluCI8XVOCzLr8=; b=yEpCZRWpV2C0e3KPjjpnEVP61b
-        0tsSZnA9JCUk5ZJQ3/9U3WDtHIpMeaX3kgG3Z4yfzYz21omd1DXzowhyd6i3/6RVaTFsLThPLC1bJ
-        sK4RAXc/FpX9AqdJChHImZSHRbblKoFpXNQ3DvCbVfVffbfxAjLGv/SZtueZFAHdDjCZarJwAACwa
-        7tbGDP5VqWa8I6gLJsF3Qg+yrwLV46HO3RoFrKN2tgMxlJXcK5km7Fvy/68ftXp4/vFuaFZmMTocy
-        iFbcvtSlt8HvnzT8pzhvm13AatNUi2tfD92LrEnFu+zhR1VJLWexrbCBPKI5NLNtNf19ZPrUuaOU5
-        mls3Iqvw==;
-Received: from [201.162.227.232] (port=56224 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jvhyA-002W9K-9q; Wed, 15 Jul 2020 09:01:10 -0500
-Subject: Re: [PATCH][next] dmaengine: ti: k3-udma: Use struct_size() in
- kzalloc()
-To:     Vinod Koul <vkoul@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200619224334.GA7857@embeddedor>
- <20200624055535.GX2324254@vkoul-mobl>
- <3a5514c9-d966-c332-84ba-f418c26fa74c@embeddedor.com>
- <98426221-8bff-25df-a062-9ec1ca4e8f26@ti.com>
- <20200626132944.GA26003@embeddedor>
- <04a5fb89-37eb-2cf7-d085-aaa4c9ed284d@ti.com>
- <20200710182512.GB21202@embeddedor> <20200715062125.GB34333@vkoul-mobl>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <3ac08a6f-3940-f849-e5b2-9e5f4d8c9f0b@embeddedor.com>
-Date:   Wed, 15 Jul 2020 09:06:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 15 Jul 2020 10:07:48 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D3A4C08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:07:48 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id s9so2685344ljm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 07:07:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GwtK5O+3Qx+AW5UZbEsmQwmztNE5Qtm0zrRpOgCDPDw=;
+        b=Z50q0jva64kKnA9bHxbkza5a5OVSleUKldlv8Mv8wTlW4u+9mfkSq5rCs6yX2/4vQ8
+         5puB36UVAZ+fN8PbGHm08yBB6ZxUxUtbrXuHK/GPih8VC9gCKvdCZZFUXV8zqsWSEzlC
+         6XUnIeauibzUDnR4lNCvssVOIpwjQFnsaAUfUD0nTFZCHKzIOh70zfUDWcBrl6FEjrOm
+         Z0aM4yWcntmALqXLajKUje1xqa9SuIJJ7LgEHQfLD1Ulsu8UUQwlAUVYWUsNW3vCLcZG
+         HIcLaMYL4H/DcjXoQViMNLjqL4dVNMH976G2YBN0KsNAgnvdg7Ii2/DG6+1mk5ho5hlh
+         DLsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GwtK5O+3Qx+AW5UZbEsmQwmztNE5Qtm0zrRpOgCDPDw=;
+        b=C4BS2u3o4JwwKzhrabBLJ6AZPnFJxJgcrsucGEMxsmuadpvUQ+rD7Bi9mns0eieZ8q
+         aSpFwYCXjh/pwnKt5bOOTwHiQe58qV3VPz9KBNMDkSjFSQXRZVV17FA/kOqbFmUp/b5w
+         W/PSPqi0K+MT9smETjMyFyGrEaSZlejBEcTltX1JAAIYs2khwHaDbgGeahsjnllKW0l2
+         3/7fQmac/2qS3ufq28zaeAKHYfrMS+xI2pRlMccZ9l51J5iz/6FNrJOhZ56ObzHR8Z3p
+         zhemeYwPSDiC30YKvrJlNd+b3ZANjfQlXqeCIdBOi313qTOoBDkr7+Fw8dpBOISzQhAd
+         KUww==
+X-Gm-Message-State: AOAM531ad6WMX4c5GcyR685h4zmT03lZbWdoK1hJckDmMbpekrDqd6TC
+        zMEgrD5pxrV9DQl94J31jArE2lvt20E+JLccy5CCGQ==
+X-Google-Smtp-Source: ABdhPJy2WUzzkfkT10PYJGKtS94RXc6kQXRSwbO/aYsMFwqVZXHCzcQxLFlgFleSif/e8ahKTdDig7VMSo2cJSutYKQ=
+X-Received: by 2002:a2e:80cc:: with SMTP id r12mr5410540ljg.344.1594822066627;
+ Wed, 15 Jul 2020 07:07:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200715062125.GB34333@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.227.232
-X-Source-L: No
-X-Exim-ID: 1jvhyA-002W9K-9q
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.227.232]:56224
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20200627105437.453053-1-apusaka@google.com> <20200627185320.RFC.v1.1.Icea550bb064a24b89f2217cf19e35b4480a31afd@changeid>
+ <91CFE951-262A-4E83-8550-25445AE84B5A@holtmann.org> <CAJQfnxFSfbUbPLVC-be41TqNXzr_6hLq2z=u521HL+BqxLHn_Q@mail.gmail.com>
+ <7BBB55E0-FBD9-40C0-80D9-D5E7FC9F80D2@holtmann.org> <CALWDO_Vrn_pXMbkXifKFazha7BYPqLpCthqHOb9ZmVE3wDRMfA@mail.gmail.com>
+In-Reply-To: <CALWDO_Vrn_pXMbkXifKFazha7BYPqLpCthqHOb9ZmVE3wDRMfA@mail.gmail.com>
+From:   Alain Michaud <alainmichaud@google.com>
+Date:   Wed, 15 Jul 2020 10:07:35 -0400
+Message-ID: <CALWDO_X5JuDaugE-s2uaBu9DCn2gBxq22JBmq+HxmKhznFoPdA@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 1/2] Bluetooth: queue ACL packets if no handle is found
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Archie Pusaka <apusaka@google.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        chromeos-bluetooth-upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Resending in plain text.
 
 
-On 7/15/20 01:21, Vinod Koul wrote:
-> On 10-07-20, 13:25, Gustavo A. R. Silva wrote:
->> Hi all,
+On Wed, Jul 15, 2020 at 9:56 AM Alain Michaud <alainmichaud@google.com> wro=
+te:
+>
+> Hi Marcel,
+>
+> Sorry, just got around to this.
+>
+> On Tue, Jun 30, 2020 at 2:55 AM Marcel Holtmann <marcel@holtmann.org> wro=
+te:
 >>
->> Friendly ping: who can take this, please?
-> 
-> Applied now
-> 
-
-Thanks, Vinod.
-
+>> Hi Archie,
+>>
+>> >>> There is a possibility that an ACL packet is received before we
+>> >>> receive the HCI connect event for the corresponding handle. If this
+>> >>> happens, we discard the ACL packet.
+>> >>>
+>> >>> Rather than just ignoring them, this patch provides a queue for
+>> >>> incoming ACL packet without a handle. The queue is processed when
+>> >>> receiving a HCI connection event. If 2 seconds elapsed without
+>> >>> receiving the HCI connection event, assume something bad happened
+>> >>> and discard the queued packet.
+>> >>>
+>> >>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+>> >>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+>> >>
+>> >> so two things up front. I want to hide this behind a HCI_QUIRK_OUT_OF=
+_ORDER_ACL that a transport driver has to set first. Frankly if this kind o=
+f out-of-order happens on UART or SDIO transports, then something is obviou=
+sly going wrong. I have no plan to fix up after a fully serialized transpor=
+t.
+>> >>
+>> >> Secondly, if a transport sets HCI_QUIRK_OUT_OF_ORDER_ACL, then I want=
+ this off by default. You can enable it via an experimental setting. The re=
+ason here is that we have to make it really hard and fail as often as possi=
+ble so that hardware manufactures and spec writers realize that something i=
+s fundamentally broken here.
+>
+> I don't have any objection to making this explicit enable to non serializ=
+ed transports.  However, I do wonder what the intention is around making th=
+is off by default.  We already know there is a race condition between the i=
+nterupt and bulk endpoints over USB, so this can and does happen.  Hardware=
+ manufaturers can't relly do much about this other than trying to pull the =
+interupt endpoint more often, but that's only a workaround, it can't avoid =
+it all together.
+>
+> IMO, this seems like a legitimate fix at the host level and I don't see a=
+ny obvious benefits to hide this fix under an experimental feature and make=
+ it more difficult for the customers and system integrators to discover.
+>
+>>
+>> >>
+>> >> I have no problem in running the code and complaining loudly in case =
+the quirk has been set. Just injecting the packets can only happen if bluet=
+oothd explicitly enabled it.
+>> >
+>> > Got it.
+>> >
+>> >>
+>> >>
+>> >>>
+>> >>> ---
+>> >>>
+>> >>> include/net/bluetooth/hci_core.h |  8 +++
+>> >>> net/bluetooth/hci_core.c         | 84 +++++++++++++++++++++++++++++-=
 --
-Gustavo
+>> >>> net/bluetooth/hci_event.c        |  2 +
+>> >>> 3 files changed, 88 insertions(+), 6 deletions(-)
+>> >>>
+>> >>> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetoot=
+h/hci_core.h
+>> >>> index 836dc997ff94..b69ecdd0d15a 100644
+>> >>> --- a/include/net/bluetooth/hci_core.h
+>> >>> +++ b/include/net/bluetooth/hci_core.h
+>> >>> @@ -270,6 +270,9 @@ struct adv_monitor {
+>> >>> /* Default authenticated payload timeout 30s */
+>> >>> #define DEFAULT_AUTH_PAYLOAD_TIMEOUT   0x0bb8
+>> >>>
+>> >>> +/* Time to keep ACL packets without a corresponding handle queued (=
+2s) */
+>> >>> +#define PENDING_ACL_TIMEOUT          msecs_to_jiffies(2000)
+>> >>> +
+>> >>
+>> >> Do we have some btmon traces with timestamps. Isn=E2=80=99t a second =
+enough? Actually 2 seconds is an awful long time.
+>> >
+>> > When this happens in the test lab, the HCI connect event is about
+>> > 0.002 second behind the first ACL packet. We can change this if
+>> > required.
+>> >
+>> >>
+>> >>> struct amp_assoc {
+>> >>>      __u16   len;
+>> >>>      __u16   offset;
+>> >>> @@ -538,6 +541,9 @@ struct hci_dev {
+>> >>>      struct delayed_work     rpa_expired;
+>> >>>      bdaddr_t                rpa;
+>> >>>
+>> >>> +     struct delayed_work     remove_pending_acl;
+>> >>> +     struct sk_buff_head     pending_acl_q;
+>> >>> +
+>> >>
+>> >> can we name this ooo_q and move it to the other queues in this struct=
+. Unless we want to add a Kconfig option around it, we don=E2=80=99t need t=
+o keep it here.
+>> >
+>> > Ack.
+>> >
+>> >>
+>> >>> #if IS_ENABLED(CONFIG_BT_LEDS)
+>> >>>      struct led_trigger      *power_led;
+>> >>> #endif
+>> >>> @@ -1773,6 +1779,8 @@ void hci_le_start_enc(struct hci_conn *conn, _=
+_le16 ediv, __le64 rand,
+>> >>> void hci_copy_identity_address(struct hci_dev *hdev, bdaddr_t *bdadd=
+r,
+>> >>>                             u8 *bdaddr_type);
+>> >>>
+>> >>> +void hci_process_pending_acl(struct hci_dev *hdev, struct hci_conn =
+*conn);
+>> >>> +
+>> >>> #define SCO_AIRMODE_MASK       0x0003
+>> >>> #define SCO_AIRMODE_CVSD       0x0000
+>> >>> #define SCO_AIRMODE_TRANSP     0x0003
+>> >>> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+>> >>> index 7959b851cc63..30780242c267 100644
+>> >>> --- a/net/bluetooth/hci_core.c
+>> >>> +++ b/net/bluetooth/hci_core.c
+>> >>> @@ -1786,6 +1786,7 @@ int hci_dev_do_close(struct hci_dev *hdev)
+>> >>>      skb_queue_purge(&hdev->rx_q);
+>> >>>      skb_queue_purge(&hdev->cmd_q);
+>> >>>      skb_queue_purge(&hdev->raw_q);
+>> >>> +     skb_queue_purge(&hdev->pending_acl_q);
+>> >>>
+>> >>>      /* Drop last sent command */
+>> >>>      if (hdev->sent_cmd) {
+>> >>> @@ -3518,6 +3519,78 @@ static int hci_suspend_notifier(struct notifi=
+er_block *nb, unsigned long action,
+>> >>>      return NOTIFY_STOP;
+>> >>> }
+>> >>>
+>> >>> +static void hci_add_pending_acl(struct hci_dev *hdev, struct sk_buf=
+f *skb)
+>> >>> +{
+>> >>> +     skb_queue_tail(&hdev->pending_acl_q, skb);
+>> >>> +
+>> >>> +     queue_delayed_work(hdev->workqueue, &hdev->remove_pending_acl,
+>> >>> +                        PENDING_ACL_TIMEOUT);
+>> >>> +}
+>> >>> +
+>> >>> +void hci_process_pending_acl(struct hci_dev *hdev, struct hci_conn =
+*conn)
+>> >>> +{
+>> >>> +     struct sk_buff *skb, *tmp;
+>> >>> +     struct hci_acl_hdr *hdr;
+>> >>> +     u16 handle, flags;
+>> >>> +     bool reset_timer =3D false;
+>> >>> +
+>> >>> +     skb_queue_walk_safe(&hdev->pending_acl_q, skb, tmp) {
+>> >>> +             hdr =3D (struct hci_acl_hdr *)skb->data;
+>> >>> +             handle =3D __le16_to_cpu(hdr->handle);
+>> >>> +             flags  =3D hci_flags(handle);
+>> >>> +             handle =3D hci_handle(handle);
+>> >>> +
+>> >>> +             if (handle !=3D conn->handle)
+>> >>> +                     continue;
+>> >>> +
+>> >>> +             __skb_unlink(skb, &hdev->pending_acl_q);
+>> >>> +             skb_pull(skb, HCI_ACL_HDR_SIZE);
+>> >>> +
+>> >>> +             l2cap_recv_acldata(conn, skb, flags);
+>> >>> +             reset_timer =3D true;
+>> >>> +     }
+>> >>> +
+>> >>> +     if (reset_timer)
+>> >>> +             mod_delayed_work(hdev->workqueue, &hdev->remove_pendin=
+g_acl,
+>> >>> +                              PENDING_ACL_TIMEOUT);
+>> >>> +}
+>> >>> +
+>> >>> +/* Remove the oldest pending ACL, and all pending ACLs with the sam=
+e handle */
+>> >>> +static void hci_remove_pending_acl(struct work_struct *work)
+>> >>> +{
+>> >>> +     struct hci_dev *hdev;
+>> >>> +     struct sk_buff *skb, *tmp;
+>> >>> +     struct hci_acl_hdr *hdr;
+>> >>> +     u16 handle, oldest_handle;
+>> >>> +
+>> >>> +     hdev =3D container_of(work, struct hci_dev, remove_pending_acl=
+.work);
+>> >>> +     skb =3D skb_dequeue(&hdev->pending_acl_q);
+>> >>> +
+>> >>> +     if (!skb)
+>> >>> +             return;
+>> >>> +
+>> >>> +     hdr =3D (struct hci_acl_hdr *)skb->data;
+>> >>> +     oldest_handle =3D hci_handle(__le16_to_cpu(hdr->handle));
+>> >>> +     kfree_skb(skb);
+>> >>> +
+>> >>> +     bt_dev_err(hdev, "ACL packet for unknown connection handle %d"=
+,
+>> >>> +                oldest_handle);
+>> >>> +
+>> >>> +     skb_queue_walk_safe(&hdev->pending_acl_q, skb, tmp) {
+>> >>> +             hdr =3D (struct hci_acl_hdr *)skb->data;
+>> >>> +             handle =3D hci_handle(__le16_to_cpu(hdr->handle));
+>> >>> +
+>> >>> +             if (handle =3D=3D oldest_handle) {
+>> >>> +                     __skb_unlink(skb, &hdev->pending_acl_q);
+>> >>> +                     kfree_skb(skb);
+>> >>> +             }
+>> >>> +     }
+>> >>> +
+>> >>> +     if (!skb_queue_empty(&hdev->pending_acl_q))
+>> >>> +             queue_delayed_work(hdev->workqueue, &hdev->remove_pend=
+ing_acl,
+>> >>> +                                PENDING_ACL_TIMEOUT);
+>> >>> +}
+>> >>> +
+>> >>
+>> >> So I am wondering if we make this too complicated. Since generally sp=
+eaking we can only have a single HCI connect complete anyway at a time. No =
+matter if the controller serializes it for us or we do it for the controlle=
+r. So hci_conn_add could just process the queue for packets with its handle=
+ and then flush it. And it can flush it no matter what since whatever other=
+ packets are in the queue, they can not be valid.
+>> >>
+>> >> That said, we wouldn=E2=80=99t even need to check the packet handles =
+at all. We just needed to flag them as already out-of-order queued once and=
+ hand them back into the rx_q at the top. Then the would be processed as us=
+ual. Already ooo packets would cause the same error as before if it is for =
+a non-existing handle and others would end up being processed.
+>> >>
+>> >> For me this means we just need another queue to park the packets unti=
+l hci_conn_add gets called. I might have missed something, but I am looking=
+ for the least invasive option for this and least code duplication.
+>> >
+>> > I'm not aware of the fact that we can only have a single HCI connect
+>> > complete event at any time. Is this also true even if two / more
+>> > peripherals connect at the same time?
+>> > I was under the impression that if we have device A and B both are
+>> > connecting to us at the same time, we might receive the packets in
+>> > this order:
+>> > (1) ACL A
+>> > (2) ACL B
+>> > (3) HCI conn evt B
+>> > (4) HCI conn evt A
+>> > Hence the queue and the handle check.
+>>
+>> my reading from the LL state machine is that once the first LL_Connect_R=
+eq is processes, the controller moves out of the advertising state. So no o=
+ther LL_Connect_Req can be processed. So that means that connection attempt=
+s are serialized.
+>>
+>> Now if you run AE and multiple instances, that might be different, but t=
+hen again, these instances are also offset in time and so I don=E2=80=99t s=
+ee how we can get more than one HCI_Connection_Complete event at a time (an=
+d with that a leading ACL packet).
+>>
+>> Regards
+>>
+>> Marcel
+>>
+>> --
+>> You received this message because you are subscribed to the Google Group=
+s "ChromeOS Bluetooth Upstreaming" group.
+>> To unsubscribe from this group and stop receiving emails from it, send a=
+n email to chromeos-bluetooth-upstreaming+unsubscribe@chromium.org.
+>> To post to this group, send email to chromeos-bluetooth-upstreaming@chro=
+mium.org.
+>> To view this discussion on the web visit https://groups.google.com/a/chr=
+omium.org/d/msgid/chromeos-bluetooth-upstreaming/7BBB55E0-FBD9-40C0-80D9-D5=
+E7FC9F80D2%40holtmann.org.
