@@ -2,142 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D17A2206D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C612206DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729693AbgGOIPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:15:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
+        id S1729708AbgGOIQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729643AbgGOIPW (ORCPT
+        with ESMTP id S1729698AbgGOIQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:15:22 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17CEDC08C5C1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:15:22 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id r12so1367539wrj.13
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:15:22 -0700 (PDT)
+        Wed, 15 Jul 2020 04:16:53 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6C8C08C5DB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:16:53 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id s9so1534137ljm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:16:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=V6iOQn1Lci+q2i98jVN1XTnGz+Hdxpv3vM8VpJ0S+A4=;
-        b=Eo5oREcFHhZXozrzcYRD2JWcOY62qWjJx/ikx+izFFRRQlFSm3LkxjcNRo7W4jftdw
-         OT46EtdbcYELcxrrX4573eqhkuXexsQEidpGP0IqFGfV3QGzWWhlOv7B7xVTUXKYFEph
-         ZbNl+aLguuorGcF2N2/Fk21KaYytnYjmzgOiKS6CkMtevjcWf/pdZq7CaHWvEcVFONFu
-         GtSkZLE4zPAhj12kQBrIdXliiBDEWSoUCbUQuSgjdWJ/XjyCI2YoC0YMYUfLIPw7mZLv
-         aR03zAHQgulnkuoYZCxoYXS/RqhyIRx8G6pkumIRMZeb9Ar5cf89hcp+Lv7zKTELW9Wz
-         9Oow==
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=I5qZejAIQq++nnd7O7LL3lalpe7lhmzwl0tFbvuobuo=;
+        b=Gzz92IMQX2sC0iZHXUrf4B54p2Nu5HGb/sJFPOgQq/1UflTk9/FKdYY4lLrTSNXu0w
+         PZN0c2ABgKSbYHv6Pk3shycPo/BkbFCLufjq+5DxgjtfF6Y44ScQw0h3wcp2SDV5hze0
+         mJ2CokvBuuotOUOH2z2rRknfxowQNuJvGIIbapp+TCfchXKrHXUVJ+ikCKtPEly8PAFu
+         mWsTFK2Ois6xOffKQEnyDkNZoCDqzhkzRnmW5AKy2HcZdHHjLVEbTkkurQKD1wK2d+EY
+         eSfpJaCrVpm8ocppmWIqUU0veC6tkc/CyNJLg+RKJfRNVvZG+LapQef0T6N81JNR0Khq
+         Ud+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=V6iOQn1Lci+q2i98jVN1XTnGz+Hdxpv3vM8VpJ0S+A4=;
-        b=CpxXjy91vmZt4GhQnqThQhLRDi312+BjRi1QFi1HoztDSvAAssWrPppaSA5SrVRlLa
-         QQ6wyTHot0Gg0KReqwTFvb9qH+moJohHoazENjiLROcMaYR6kGx0LLqkWc1LlfAIOEaU
-         AsoB5LOiR5RQcZ0NaBdNXexccTSVnyD6IDpRZnMqHEh2f7cQUBUGnCihyaXX1Jtffn2Q
-         HSHWg5a99ToRKfHHC/etb5YxLN+gYTKXxMeqqxdiM4NgM/ZncvctZFYsKBGT5ZMKNteR
-         EhGupQn7AiLlNk9a1+nA1xJNaDm2shHwtmsvW2ShiyShdM87ifVNHGwfUf9KIC/4Xyb8
-         b7Eg==
-X-Gm-Message-State: AOAM532BVVhfuiGYS/cp8wvT1ogP1Tuh3I0tbV2001ddo5apInNxh3H8
-        sofz72vETjY8v1z5ot6Ngml8ug==
-X-Google-Smtp-Source: ABdhPJwd+NKXVIjT54d4zwOzR0bqm0ITLJ5fYWXqUhjjUznee1tbkVt+fBHedhAAyIzddgA6Opsg+Q==
-X-Received: by 2002:a5d:5441:: with SMTP id w1mr9526333wrv.381.1594800920670;
-        Wed, 15 Jul 2020 01:15:20 -0700 (PDT)
-Received: from dell ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id t2sm2186116wma.43.2020.07.15.01.15.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 01:15:20 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 09:15:18 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rjw@rjwysocki.net, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>,
-        Jun Nakajima <jun.nakajima@intel.com>,
-        Alexander Clouter <alex@digriz.org.uk>
-Subject: Re: [PATCH 03/13] cpufreq: cpufreq_governor: Demote
- store_sampling_rate() header to standard comment block
-Message-ID: <20200715081518.GA1398296@dell>
-References: <20200714145049.2496163-1-lee.jones@linaro.org>
- <20200714145049.2496163-4-lee.jones@linaro.org>
- <20200715025249.ukoqup4piqiz5lim@vireshk-i7>
- <20200715064539.GS1398296@dell>
- <20200715070836.l24lzkb6pgvqj26i@vireshk-i7>
- <20200715073150.GX1398296@dell>
- <20200715080236.n3gecwhidorn4rqq@vireshk-i7>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I5qZejAIQq++nnd7O7LL3lalpe7lhmzwl0tFbvuobuo=;
+        b=PdyYTqIhye4B9v8L4JawvfbBfpnLwYW6//mHPDcV8IpML9shM9ee5yQi2NdTm9IIEt
+         WTWPyLnUDiAcQC8ycotgLmgDufZwJBEIPkCZeh2UGp9IBtvK7dajiXX7sdbnH8g9Kb7F
+         G6ygT7mVexjWtr5s6l9JgiU6nNvFbI84jFActnrUBknqLS/XzvD/TovZ5eeACBGTVDMJ
+         KjnVF8N39AlI45tWvQNoQkunTNorUXKPfv1Ri/jYrJ/au57Iz4ioKgcJZJrSiYUsjwO3
+         9s5KwIsz+RGHL6jCpoNdEcH56YSVqY849l5mom4Y3pOSuT2qT8/S/uWvZyajwwIzb2PL
+         yZrA==
+X-Gm-Message-State: AOAM533IyylJgOuHT04tOvjHlFet1sd4VXc3PC5pIe+1821x9liSaLx6
+        ZJVM4BPZaaqn+l+fv92S0DsQ/yAMLe0=
+X-Google-Smtp-Source: ABdhPJxqAFU9d9qG0B2IeCGOTGsnjaqirHnR+hmZdY7Fok6nHXNjd8zVRcxq89X/7K/8CQUFnp9PAQ==
+X-Received: by 2002:a2e:850b:: with SMTP id j11mr4605072lji.30.1594801011614;
+        Wed, 15 Jul 2020 01:16:51 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:42dd:3c8c:7d45:c199:bbef:e36? ([2a00:1fa0:42dd:3c8c:7d45:c199:bbef:e36])
+        by smtp.gmail.com with ESMTPSA id w24sm338403lfl.17.2020.07.15.01.16.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jul 2020 01:16:50 -0700 (PDT)
+Subject: Re: [PATCH V2 2/2] dt-bindings: arm: renesas: Document beacon-rzg2m
+To:     Adam Ford <aford173@gmail.com>, linux-renesas-soc@vger.kernel.org
+Cc:     aford@beaconembedded.com,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200714123419.3390-1-aford173@gmail.com>
+ <20200714123419.3390-2-aford173@gmail.com>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <c2e52f87-b2cf-ca36-7780-5e206f065d40@cogentembedded.com>
+Date:   Wed, 15 Jul 2020 11:16:43 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200715080236.n3gecwhidorn4rqq@vireshk-i7>
+In-Reply-To: <20200714123419.3390-2-aford173@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Jul 2020, Viresh Kumar wrote:
+Hello!
 
-> On 15-07-20, 08:31, Lee Jones wrote:
-> > I'm not sure what you mean.  Kerneldoc headers are designed to be
-> > extracted and converted into mediums which are easy to read/browse.
-> > For example, see the online documentation for 'debug_object_init':
-> > 
-> >  https://www.kernel.org/doc/html/latest/core-api/debug-objects.html?highlight=debug_object_init#c.debug_object_init
-> > 
-> > They are generally meant to be referenced/consumed.  There is even a
-> > script provided inside the kernel to find offending instances where
-> > kerneldoc headers are provided, but not *yet* referenced:
-> > 
-> >  `scripts/find-unused-docs.sh`
-> > 
-> > HINT: There are many.
-> > 
-> > There *could* be and argument to use kerneldoc *just* so you can use
-> > the kerneldoc checker `scripts/kernel-doc` (which is invoked by W=1
-> > builds), in order to ensure the parameter descriptions are kept in
-> > check.
-> > 
-> > However, in this case, there are no descriptions provided.  So, in
-> > reference to my previous question, what are your reasons for wanting
-> > to keep kerneldoc here?
+On 14.07.2020 15:34, Adam Ford wrote:
+
+> Beacon EmbeddedWorks in introducing a development kit based on the
+
+    s/in/is/?
+
+> Renesas RZ/G2M platform.  This patch adds the entry to the bindings
+> list.
 > 
-> I think the code did the right thing by keeping them as kernel doc
-> type comments. What we missed then is getting them used in the *.rst
-> documentation.
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V2:	New to series
 > 
-> A simple way of doing that could be just adding this to the cpu-freq
-> rst file, like:
-> 
-> -------------------------8<-------------------------
-> Here are the bits from the in-source documentation:
-> 
-> .. kernel-doc:: include/linux/cpufreq.h
-> .. kernel-doc:: drivers/cpufreq/cpufreq.c
-> .. kernel-doc:: drivers/cpufreq/freq_table.c
-> .. kernel-doc:: drivers/cpufreq/cpufreq_governor.c
-> -------------------------8<-------------------------
-> 
-> This will make the script stop complaining about these.
+> diff --git a/Documentation/devicetree/bindings/arm/renesas.yaml b/Documentation/devicetree/bindings/arm/renesas.yaml
+> index d8fd25bccbf5..0d4dabb4a164 100644
+> --- a/Documentation/devicetree/bindings/arm/renesas.yaml
+> +++ b/Documentation/devicetree/bindings/arm/renesas.yaml
+> @@ -118,6 +118,7 @@ properties:
+>           items:
+>             - enum:
+>                 - hoperun,hihope-rzg2m # HopeRun HiHope RZ/G2M platform
+> +              - beacon,beacon-rzg2m # Beacon EmbeddedWorks RZ/G2M Kit
 
-This will stop `scripts/find-unused-docs.sh` from mentioning these
-files as an offender, but `scripts/kernel-doc` and by extension W=1
-builds (which is the point of this patch-set) will still complain.
+    Why the vendor-prefixes.yaml file calls it Compass Electronics Group?
 
-Before you add the lines above, you need to provide descriptions for
-each of the function parameters or else they will not reach the
-required standards expected of kerneldoc.
+[...]
 
-My suggestion would be to take this (and the other) patch and
-subsequently provide your own set i) providing the required parameter
-descriptions ii) re-promoting the comment blocks to kerneldoc and iii)
-adding the aforementioned lines to the *.rst file(s).
-
-> But the layout of things wont' be very nice right now.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+MBR, Sergei
