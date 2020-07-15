@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A102220316
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7AA220318
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 05:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728688AbgGODu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Jul 2020 23:50:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:26174 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726710AbgGODuz (ORCPT
+        id S1728704AbgGODvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Jul 2020 23:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728692AbgGODvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Jul 2020 23:50:55 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06F3WE6f160439;
-        Tue, 14 Jul 2020 23:50:45 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 329d9hnnxp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Jul 2020 23:50:45 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06F3Z8dt167394;
-        Tue, 14 Jul 2020 23:50:44 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 329d9hnnxg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Jul 2020 23:50:44 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06F3ifkR025877;
-        Wed, 15 Jul 2020 03:50:44 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02wdc.us.ibm.com with ESMTP id 327urspgjw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 03:50:44 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06F3og5x61669836
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Jul 2020 03:50:42 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C34947805F;
-        Wed, 15 Jul 2020 03:50:42 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5294B7805E;
-        Wed, 15 Jul 2020 03:50:39 +0000 (GMT)
-Received: from morokweng.localdomain (unknown [9.163.66.159])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Wed, 15 Jul 2020 03:50:38 +0000 (GMT)
-References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com> <159466090332.24747.9255471295044653085.stgit@hbathini.in.ibm.com>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Hari Bathini <hbathini@linux.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pingfan Liu <piliu@redhat.com>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH v3 05/12] powerpc/drmem: make lmb walk a bit more flexible
-In-reply-to: <159466090332.24747.9255471295044653085.stgit@hbathini.in.ibm.com>
-Date:   Wed, 15 Jul 2020 00:50:35 -0300
-Message-ID: <871rld8mic.fsf@morokweng.localdomain>
+        Tue, 14 Jul 2020 23:51:31 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D425C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 20:51:31 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id o1so1567675plk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Jul 2020 20:51:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=XL4t1R7KO+iiuMm12j+xjnscuEfFndInUHw84PmBU/0=;
+        b=ylZ7LAUr7v3nNsUSJz4QBwWUkMu5K8QLciZp5z1a5hp2fILGp0VPgza+2a7vL1RduE
+         2orVyqzcsKEpygHUPltAqLIr7lS8ANkLD2UvrG3NeNrUr0iCJuegFHD/qgy9qiev1Ofh
+         biJRAcpw2pf18vEbtOTRXsI0rlMQ8Hg0QHQi+R8s274ANV6PYW+FcTW8YAdnq+d2YVnn
+         7Gjf2vX/8npSCLhwZnlk9c96vbwS9kVfhGLc9PZZmZOftJba8Va7Y+G1Dd4sIjKVt/IK
+         TMd5jMtoM77db2UokF5JBiagwoOdQ5RHgFSmN+6T5mxXMd7VFZ8dMnyFpWHhRT7YVrCs
+         lt3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=XL4t1R7KO+iiuMm12j+xjnscuEfFndInUHw84PmBU/0=;
+        b=GItD0VKNk64H18qJDzcTKis1d7w/91DY6goYhdgcPxBrQLjQLoVgb8jEL4tSMzyKkr
+         JNgoTQiORpmRtNbqkXyXo4jR+zz8r61pl20k/fjHFIgcD8BSrAcQoe2peE9vXh3ko3JH
+         M8NotBxnUPo2tUMwDjyisBheSP17K/qiYRyET/aMl6HyR04p6maJOFqsTekzvEeiOPeE
+         SPLszNR48iPQvf11J2k8t/s6TBa+/AaYFeOcRKpc/nbSAhgixi1g49RnN6F766EIc7WT
+         3EodonZPOH5FQgtc04oE+5ZbgtXZI7w6yeR60owDDt0RyZ3ylYR4jOZ3Jv0wrWaSrYgS
+         w0zw==
+X-Gm-Message-State: AOAM531lpIuFXrdcCxQ4+kw5D4XNwAL7/W5ipeAETQG1Oke7lpW0QzXI
+        oCcBDdezKals5jqkc/qGVa4Q9w==
+X-Google-Smtp-Source: ABdhPJz/fr4UJ94q97HnzrCpojOj2P5clVmMzwu1+0cWBhjM/jhe2/UJORYoOQc0tflEF8L9/1W8yQ==
+X-Received: by 2002:a17:902:b193:: with SMTP id s19mr6492581plr.246.1594785090510;
+        Tue, 14 Jul 2020 20:51:30 -0700 (PDT)
+Received: from localhost ([122.172.34.142])
+        by smtp.gmail.com with ESMTPSA id r17sm546201pfg.62.2020.07.14.20.51.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 Jul 2020 20:51:29 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 09:21:28 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Olof Johansson <olof@lixom.net>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pm@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 05/13] cpufreq/arch: powerpc: pasemi: Move prototypes to
+ shared header
+Message-ID: <20200715035128.3j7xegbdz4bourxz@vireshk-i7>
+References: <20200714145049.2496163-1-lee.jones@linaro.org>
+ <20200714145049.2496163-6-lee.jones@linaro.org>
+ <20200715030706.prxya7fyylscoy25@vireshk-i7>
+ <CAOesGMi1dfqPbFJ8YoUoJ75NdU1=XiNoYx+6+JLu44a4LuuYGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-14_10:2020-07-14,2020-07-14 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- suspectscore=0 malwarescore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 clxscore=1015 spamscore=0 phishscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007150025
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOesGMi1dfqPbFJ8YoUoJ75NdU1=XiNoYx+6+JLu44a4LuuYGA@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14-07-20, 20:49, Olof Johansson wrote:
+> On Tue, Jul 14, 2020 at 8:07 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 14-07-20, 15:50, Lee Jones wrote:
+> > > If function callers and providers do not share the same prototypes the
+> > > compiler complains of missing prototypes.  Fix this by moving the
+> > > already existing prototypes out to a mutually convenient location.
+> > >
+> > > Fixes the following W=1 kernel build warning(s):
+> > >
+> > >  drivers/cpufreq/pasemi-cpufreq.c:109:5: warning: no previous prototype for ‘check_astate’ [-Wmissing-prototypes]
+> > >  109 | int check_astate(void)
+> > >  | ^~~~~~~~~~~~
+> > >  drivers/cpufreq/pasemi-cpufreq.c:114:6: warning: no previous prototype for ‘restore_astate’ [-Wmissing-prototypes]
+> > >  114 | void restore_astate(int cpu)
+> > >  | ^~~~~~~~~~~~~~
+> > >
+> > > Cc: Olof Johansson <olof@lixom.net>
+> > > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > > Cc: Paul Mackerras <paulus@samba.org>
+> > > Cc: linuxppc-dev@lists.ozlabs.org
+> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > ---
+> > >  arch/powerpc/platforms/pasemi/pasemi.h    | 15 ------------
+> >
+> > Is there no sane way we can include this file directly to the cpufreq
+> > file ?
+> 
+> Yep. arch/powerpc seems to be in the search path for modules on powerpc, so:
+> 
+> diff --git a/drivers/cpufreq/pasemi-cpufreq.c b/drivers/cpufreq/pasemi-cpufreq.c
+> index c66f566a854cb..815645170c4de 100644
+> --- a/drivers/cpufreq/pasemi-cpufreq.c
+> +++ b/drivers/cpufreq/pasemi-cpufreq.c
+> @@ -22,6 +22,8 @@
+>  #include <asm/time.h>
+>  #include <asm/smp.h>
+> 
+> +#include <platforms/pasemi/pasemi.h>
+> +
+>  #define SDCASR_REG             0x0100
+>  #define SDCASR_REG_STRIDE      0x1000
+>  #define SDCPWR_CFGA0_REG       0x0100
 
-Hari Bathini <hbathini@linux.ibm.com> writes:
+Fantastic. Thanks.
 
-> @@ -534,7 +537,7 @@ static int __init early_init_dt_scan_memory_ppc(unsigned long node,
->  #ifdef CONFIG_PPC_PSERIES
->  	if (depth == 1 &&
->  	    strcmp(uname, "ibm,dynamic-reconfiguration-memory") == 0) {
-> -		walk_drmem_lmbs_early(node, early_init_drmem_lmb);
-> +		walk_drmem_lmbs_early(node, NULL, early_init_drmem_lmb);
-
-walk_drmem_lmbs_early() can now fail. Should this failure be propagated
-as a return value of early_init_dt_scan_memory_ppc()?
-
->  		return 0;
->  	}
->  #endif
-<snip>
-
-> @@ -787,7 +790,7 @@ static int __init parse_numa_properties(void)
->  	 */
->  	memory = of_find_node_by_path("/ibm,dynamic-reconfiguration-memory");
->  	if (memory) {
-> -		walk_drmem_lmbs(memory, numa_setup_drmem_lmb);
-> +		walk_drmem_lmbs(memory, NULL, numa_setup_drmem_lmb);
-
-Similarly here. Now that this call can fail, should
-parse_numa_properties() handle or propagate the failure?
-
->  		of_node_put(memory);
->  	}
->
-
-
---
-Thiago Jung Bauermann
-IBM Linux Technology Center
+-- 
+viresh
