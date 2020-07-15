@@ -2,110 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F362207B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D69C2207BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Jul 2020 10:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730382AbgGOIq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 04:46:57 -0400
-Received: from mga11.intel.com ([192.55.52.93]:61786 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729377AbgGOIq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 04:46:56 -0400
-IronPort-SDR: AVBd4w/lewG8wnDfAgIeB6mv+zgzyBqn7bjk41JbB9qb2ClgbQ0Vnh8G3dNZXONfW7HAGLrRwh
- QmrTP2vASdHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9682"; a="147113218"
-X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
-   d="scan'208";a="147113218"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 01:46:56 -0700
-IronPort-SDR: DXexAs8H1P9V9yOFnm7lrcgiUiXuzWp57mJFBrWKsRwwIaSGj+DcHhlB7ITlgE7qWM2rj3LQsj
- K6bIgPBigxIg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,354,1589266800"; 
-   d="scan'208";a="299819931"
-Received: from yren3-mobl.ccr.corp.intel.com ([10.249.174.224])
-  by orsmga002.jf.intel.com with ESMTP; 15 Jul 2020 01:46:54 -0700
-Message-ID: <746420e6b213985518d8b314018e32dc3438e9af.camel@intel.com>
-Subject: Re: [RFC PATCH 3/4] thermal:core:Add genetlink notifications for
- monitoring falling temperature
-From:   Zhang Rui <rui.zhang@intel.com>
-To:     Thara Gopinath <thara.gopinath@linaro.org>,
-        daniel.lezcano@linaro.org, robh+dt@kernel.org
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 15 Jul 2020 16:46:53 +0800
-In-Reply-To: <20200710135154.181454-4-thara.gopinath@linaro.org>
-References: <20200710135154.181454-1-thara.gopinath@linaro.org>
-         <20200710135154.181454-4-thara.gopinath@linaro.org>
+        id S1730394AbgGOIsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 04:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729377AbgGOIsC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 04:48:02 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39606C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:48:02 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b25so1673692ljp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 01:48:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z3hVhufvufXQboj6QREMdbRyVrzG4VOiVEWo0NmaKI8=;
+        b=zzE/SG3GryrZi4INSREvj2bwX++iDiohWUBB1r3DGukCDT0xsnKV+KXePEyUBQWbgk
+         moo0vW2i9w14X/d7AOnBSnD2IeuTtzeH8Ovno4lQ2UO0JxnKYD2z8hk4jYHLnYvKUPOr
+         gmBnaXBrPhucb+aEIg6jGmuJRtgQr6EamgUoutHVqpbaNd17ywxcu2g+t3/M/z0AYKtq
+         lI1Z6EEDSnGhsZNnY0Tu4qURv/4V+jwLcRIBFtfwchcIJxFVUR/5bHnc89uaZPHNa3FD
+         yi2uqWDtAt9S2N6W5ZBgGpd8Q78iaZxXPAURcaCq/KjeZ69R5M/7F1C5xy9gL0KQPODQ
+         +lDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z3hVhufvufXQboj6QREMdbRyVrzG4VOiVEWo0NmaKI8=;
+        b=QNc8Nh5mBeCcCQGdU4ItniX6yO4DJkaYp8vvNT01MV/fnttTjK3+hg+cYwAA9pGE3v
+         OBLSHOJnM/3oNqFQcecxL0xKhsgRlBgVr2yVmNEXu3xl4+M+OgqWjzn44NaJ1hGPBlH3
+         QqvP/X7AGmtursSb9Ip7PwZd1ePBo5LIQ0GD6HeuD+r2QAC8L90cSaUZ/f50J7n9GXID
+         0PJI9VzHQcbfQqr+axNeGzVuvNkmo62vL6cVj84tM0MnmsGnl3RFOB6qfsSnwURJkPGj
+         3fgtvf5RS3aZU6M3F7U5E/ixVCIMXc2BJfPu2xUCCSHtQBl+C22CkdkvwQJ5szWZQXkH
+         F8Ng==
+X-Gm-Message-State: AOAM532FqsMl/uqvdLqLQ/fa0ObMKByiejfAFbvbmGFnB4RlTNhfRYbX
+        mZOW35bPOVo4mpGeSBsJKZ/FDjA0BDFXu6EdoU5u+A==
+X-Google-Smtp-Source: ABdhPJxseDK1Uqjj1tMP0opgQSRwRNbFmW6KqOplfOiIfoUj33UA7GFRoAo7UG+GqxmMubfTzKeDkQOC3uks2+v63zQ=
+X-Received: by 2002:a2e:9c59:: with SMTP id t25mr4172548ljj.402.1594802880625;
+ Wed, 15 Jul 2020 01:48:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200715044813.fww3regsgsbgyp7b@pesu-pes-edu> <20200715070842.GA2303720@kroah.com>
+ <CAAhDqq3u_0wCRGDaWRGgtC6bkx6t+AubAXfnX_f7V0t10BRuuA@mail.gmail.com>
+ <20200715083144.GA2716443@kroah.com> <CAAhDqq1hwtgqyOnfx__OFgTkm9QDs0or-Zg76cMojShCYRAN2w@mail.gmail.com>
+In-Reply-To: <CAAhDqq1hwtgqyOnfx__OFgTkm9QDs0or-Zg76cMojShCYRAN2w@mail.gmail.com>
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+Date:   Wed, 15 Jul 2020 04:47:48 -0400
+Message-ID: <CAAhDqq2y7wn5zX1zg1LN19zYBsf_EiuOmHEL-ivNP5C4aH63Pw@mail.gmail.com>
+Subject: Re: [PATCH] staging: comedi: comedi_fops.c: changed type in
+ assignment to unsigned int *
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Michel Lespinasse <walken@google.com>,
+        Divyansh Kamboj <kambojdivyansh2000@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-07-10 at 09:51 -0400, Thara Gopinath wrote:
-> Add notification calls for trip type THERMAL_TRIP_COLD when
-> temperature
-> crosses the trip point in either direction.
-> 
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> ---
->  drivers/thermal/thermal_core.c | 21 +++++++++++++++------
->  1 file changed, 15 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/thermal/thermal_core.c
-> b/drivers/thermal/thermal_core.c
-> index 750a89f0c20a..e2302ca1cd3b 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -429,12 +429,21 @@ static void handle_thermal_trip(struct
-> thermal_zone_device *tz, int trip)
->  		tz->ops->get_trip_hyst(tz, trip, &hyst);
->  
->  	if (tz->last_temperature != THERMAL_TEMP_INVALID) {
-> -		if (tz->last_temperature < trip_temp &&
-> -		    tz->temperature >= trip_temp)
-> -			thermal_notify_tz_trip_up(tz->id, trip);
-> -		if (tz->last_temperature >= trip_temp &&
-> -		    tz->temperature < (trip_temp - hyst))
-> -			thermal_notify_tz_trip_down(tz->id, trip);
-> +		if (type == THERMAL_TRIP_COLD) {
-> +			if (tz->last_temperature > trip_temp &&
-> +			    tz->temperature <= trip_temp)
-> +				thermal_notify_tz_trip_down(tz->id,
-> trip);
+On Wed, Jul 15, 2020 at 4:41 AM B K Karthik <bkkarthik@pesu.pes.edu> wrote:
+>
+> On Wed, Jul 15, 2020 at 4:31 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Wed, Jul 15, 2020 at 01:56:45PM +0530, B K Karthik wrote:
+> > > On Wed, Jul 15, 2020, 12:38 PM Greg Kroah-Hartman <
+> > > gregkh@linuxfoundation.org> wrote:
+> > >
+> > > > On Wed, Jul 15, 2020 at 12:48:13AM -0400, B K Karthik wrote:
+> > > > > fixed a sparse warning by changing the type in
+> > > > > assignment from void [noderef] __user * to unsigned int *
+> > > > > (different address space)
+> > > > >
+> > > > > Signed-off-by: B K Karthik <karthik.bk2000@live.com>
+> > > > > ---
+> > > > >  drivers/staging/comedi/comedi_fops.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/staging/comedi/comedi_fops.c
+> > > > b/drivers/staging/comedi/comedi_fops.c
+> > > > > index 3f70e5dfac39..4cc012e231b7 100644
+> > > > > --- a/drivers/staging/comedi/comedi_fops.c
+> > > > > +++ b/drivers/staging/comedi/comedi_fops.c
+> > > > > @@ -2956,7 +2956,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
+> > > > >       cmd->scan_end_arg = v32.scan_end_arg;
+> > > > >       cmd->stop_src = v32.stop_src;
+> > > > >       cmd->stop_arg = v32.stop_arg;
+> > > > > -     cmd->chanlist = compat_ptr(v32.chanlist);
+> > > > > +     cmd->chanlist = (unsigned int *) compat_ptr(v32.chanlist);
+> > > > >       cmd->chanlist_len = v32.chanlist_len;
+> > > > >       cmd->data = compat_ptr(v32.data);
+> > > > >       cmd->data_len = v32.data_len;
+> > > >
+> > > > Always run your patches through checkpatch before sending them, so you
+> > > > do not have a grumpy maintainer telling you that you have to run
+> > > > checkpatch on your patch before sending them.
+> > > >
+> > >
+> > > I will. Sorry for that.
+> > >
+> > > But the error that's being shown in this patch is something that comes up
+> > > on its own.
+> >
+> > No it is not.
+> >
+> > > git format-patch leaves trailing whitespace in blank lines.
+> >
+> > It does?  Where is any trailing whitespace here?  That's not the issue.
+>
+> To give you an example,
+> https://lore.kernel.org/lkml/20200714132350.naekk4zqivpuaedi@pesu-pes-edu/
+> was a patch i submitted recently.
+> This is what checkpatch has to say:
+>
+> $ perl scripts/checkpatch.pl -f
+> ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch
+> ERROR: trailing whitespace
+> #21: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:21:
+> + $
+>
+> ERROR: trailing whitespace
+> #23: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:23:
+> + $
+>
+> ERROR: trailing whitespace
+> #30: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:30:
+> + $
+>
+> ERROR: trailing whitespace
+> #37: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:37:
+> + $
+>
+> ERROR: trailing whitespace
+> #44: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:44:
+> + $
+>
+> ERROR: trailing whitespace
+> #51: FILE: ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch:51:
+> +-- $
+>
+> total: 6 errors, 0 warnings, 53 lines checked
+>
+> NOTE: For some of the reported defects, checkpatch may be able to
+>       mechanically convert to the typical style using --fix or --fix-inplace.
+>
+> NOTE: Whitespace errors detected.
+>       You may wish to use scripts/cleanpatch or scripts/cleanfile
+>
+> ../cbridge/1407d/1/0001-drivers-staging-media-atomisp-pci-css_2401_system-ho.patch
+> has style problems, please review.
+>
+> NOTE: If any of the errors are false positives, please report
+>       them to the maintainer, see CHECKPATCH in MAINTAINERS.
+>
+> Does this happen only to patches I make? Am I making a silly mistake
+> while making a patch?
+> I use 'git format-patch -1' to generate the patch file.
+> If I am going wrong somewhere, please let me know.
 
-trip_type should also be part of the event because trip_down/trip_up
-for hot trip and cold trip have different meanings.
-Or can we use some more generic names like trip_on/trip_off? trip_on
-means the trip point is violated or actions need to be taken for the
-specific trip points, for both hot and cold trips. I know
-trip_on/trip_off doesn't represent what I mean clearly, but surely you
-can find a better name.
+Also, The patch I sent (this thread):
+$ perl scripts/checkpatch.pl -f
+./0001-staging-comedi-comedi_fops.c-changed-void-__user-to-.patch
+ERROR: trailing whitespace
+#29: FILE: ./0001-staging-comedi-comedi_fops.c-changed-void-__user-to-.patch:29:
++-- $
+
+total: 1 errors, 0 warnings, 31 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+NOTE: Whitespace errors detected.
+      You may wish to use scripts/cleanpatch or scripts/cleanfile
+
+./0001-staging-comedi-comedi_fops.c-changed-void-__user-to-.patch has
+style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+
+Am I using 'git format-patch' or 'checkpatch.pl' the wrong way?
 
 thanks,
-rui
 
-> +			if (tz->last_temperature <= trip_temp &&
-> +			    tz->temperature > (trip_temp + hyst))
-> +				thermal_notify_tz_trip_up(tz->id,
-> trip);
-> +		} else {
-> +			if (tz->last_temperature < trip_temp &&
-> +			    tz->temperature >= trip_temp)
-> +				thermal_notify_tz_trip_up(tz->id,
-> trip);
-> +			if (tz->last_temperature >= trip_temp &&
-> +			    tz->temperature < (trip_temp - hyst))
-> +				thermal_notify_tz_trip_down(tz->id,
-> trip);
-> +		}
->  	}
->  
->  	if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
-
+karthik
