@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DAFA222EDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64BF222EE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgGPXQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgGPXQW (ORCPT
+        id S1727847AbgGPXTZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Jul 2020 19:19:25 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37712 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726846AbgGPXTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:16:22 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A9BC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:16:22 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id z63so7213523qkb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:16:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=tP4Cttrqlt778V4hKdyccGRNUrN6EWX/eaRs+bR7mIs=;
-        b=NWQyWe8/Jw7d6xhMG5PKg5v53PMxsVJWfG+PDv5Jotk4MzwLRy4K3Sy1yzPHZU8CMW
-         XEdpCxn2hdPlqAvgiN8XPBuZ0scL6517nlUpuFtFx6hfpkZjmENBY5CP7nZt2OnaUFB9
-         g2Mkov4unQ62RvX8GGukI81uH5DCFdIjdZKVFWp+B5KgJjAg8ISxyoD6IgedElMOfFcX
-         f/nLBWzwHJh3WjCOqNA9KTELvFxpLOL3ZB+iAzjD0w6rytZwxAFqC9+8SroXsS6F+hx7
-         w0p1oHFxTFkTLHKAnSbuf7GCLDBjZ01Mz92pmTGAkYJ3tbU4n51aAF6Q7DSFzknheJfZ
-         BTsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=tP4Cttrqlt778V4hKdyccGRNUrN6EWX/eaRs+bR7mIs=;
-        b=nLTnd4/DqQxydzrtB6oQBwgBxM+OPOXcwauZLJTzj4p7KcqbtT47mZdMklmKJDDiGb
-         X/lzyFL7Qom1WwZv9BFhQvwxBIfMq5pZVttJ2tU7PzLbkGuHSKZ5YEZ2wqQu3M1G7MXy
-         ix1KSnKft9jecBFb1oTYmnZvYFidNc8HV0WTzg1ViQFtFAnphqvKy7ruIe/cNK8KoCqU
-         FlUMQ6dKihvAVqYlbuhMl90B+Fq9tccgYU4MNaqWc6DfBSOPnCetIVgWGs4y6qOG3PDR
-         imJIGTE7QNwMeh5sUtbAMnymqOO+I12whUSts/aVv7horhddIxpWvRESDiTNSIWSlKCf
-         n1MA==
-X-Gm-Message-State: AOAM530vuXY/cJSsACP6jhoZ6ZvupfgJUgGZ77uQlYE0wnxW1vSnRoJn
-        aSvnEz0wY7buQwBR/YbCvSI=
-X-Google-Smtp-Source: ABdhPJw32rZJoKjJL/Yf8r2h2VtaxwJOXWaEfSeoVPpf16lYne8NBhwRkmf91pbtkjlsHfegSAYjcA==
-X-Received: by 2002:a05:620a:22a3:: with SMTP id p3mr6414774qkh.501.1594941381534;
-        Thu, 16 Jul 2020 16:16:21 -0700 (PDT)
-Received: from DESKTOP-JC0RTV5.neu.edu ([155.33.134.7])
-        by smtp.gmail.com with ESMTPSA id y45sm9877577qtk.19.2020.07.16.16.16.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Jul 2020 16:16:21 -0700 (PDT)
-From:   Changming Liu <charley.ashbringer@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     willy@infradead.org, rdunlap@infradead.org, keescook@chromium.org,
-        mcgrof@kernel.org, yzaikin@google.com,
-        linux-kernel@vger.kernel.org,
-        Changming Liu <charley.ashbringer@gmail.com>
-Subject: [PATCH v3] panic: prevent panic_timeout * 1000 from overflow
-Date:   Thu, 16 Jul 2020 19:15:53 -0400
-Message-Id: <1594941353-13089-1-git-send-email-charley.ashbringer@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <20200714025058.GZ12769@casper.infradead.org>
-References: <20200714025058.GZ12769@casper.infradead.org>
+        Thu, 16 Jul 2020 19:19:21 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06GN2r0f177405;
+        Thu, 16 Jul 2020 19:18:36 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 329x6077m7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Jul 2020 19:18:36 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06GNBBQ8031579;
+        Thu, 16 Jul 2020 23:18:34 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04wdc.us.ibm.com with ESMTP id 327529cf4m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Jul 2020 23:18:34 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06GNIYpI53281202
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Jul 2020 23:18:34 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4081DAE060;
+        Thu, 16 Jul 2020 23:18:34 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 996E5AE05C;
+        Thu, 16 Jul 2020 23:18:33 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.65.214.95])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 16 Jul 2020 23:18:33 +0000 (GMT)
+From:   Tulio Magno Quites Machado Filho <tuliom@linux.ibm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-arch@vger.kernel.org, nathanl@linux.ibm.com, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>, luto@kernel.org,
+        tglx@linutronix.de, vincenzo.frascino@arm.com,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v8 5/8] powerpc/vdso: Prepare for switching VDSO to generic C implementation.
+In-Reply-To: <20200715204725.Horde.5GZvsEv4ZkdzFHL76HZiFg8@messagerie.si.c-s.fr>
+References: <cover.1588079622.git.christophe.leroy@c-s.fr> <2a67c333893454868bbfda773ba4b01c20272a5d.1588079622.git.christophe.leroy@c-s.fr> <878sflvbad.fsf@mpe.ellerman.id.au> <20200715204725.Horde.5GZvsEv4ZkdzFHL76HZiFg8@messagerie.si.c-s.fr>
+User-Agent: Notmuch/0.29.1 (http://notmuchmail.org) Emacs/26.3 (x86_64-redhat-linux-gnu)
+Date:   Thu, 16 Jul 2020 20:18:32 -0300
+Message-ID: <87ft9rdp6f.fsf@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 suspectscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007160148
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since panic_timeout is an s32 integer passed in through sysctl, the
-loop boundary panic_timeout * 1000 could overflow and result in
-a zero-delay panic when panic_timeout is greater than INT_MAX/1000.
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 
-Fix this by elevating the precision of the loop boundary via 
-assigning the result to a u64 integer, also in case the loop 
-counter i might never be greater than u64 timeout = panic_timeout*1000,
-elevate its precision to u64(timer) as well. The same applies to
-timer_next replacing i_next which is initialized to 0.
+> Michael Ellerman <mpe@ellerman.id.au> a écrit :
+>
+>> Christophe Leroy <christophe.leroy@c-s.fr> writes:
+>>> Prepare for switching VDSO to generic C implementation in following
+>>> patch. Here, we:
+>>> - Modify __get_datapage() to take an offset
+>>> - Prepare the helpers to call the C VDSO functions
+>>> - Prepare the required callbacks for the C VDSO functions
+>>> - Prepare the clocksource.h files to define VDSO_ARCH_CLOCKMODES
+>>> - Add the C trampolines to the generic C VDSO functions
+>>>
+>>> powerpc is a bit special for VDSO as well as system calls in the
+>>> way that it requires setting CR SO bit which cannot be done in C.
+>>> Therefore, entry/exit needs to be performed in ASM.
+>>>
+>>> Implementing __arch_get_vdso_data() would clobber the link register,
+>>> requiring the caller to save it. As the ASM calling function already
+>>> has to set a stack frame and saves the link register before calling
+>>> the C vdso function, retriving the vdso data pointer there is lighter.
+>> ...
+>>
+>>> diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h  
+>>> b/arch/powerpc/include/asm/vdso/gettimeofday.h
+>>> new file mode 100644
+>>> index 000000000000..4452897f9bd8
+>>> --- /dev/null
+>>> +++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
+>>> @@ -0,0 +1,175 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>> +#ifndef __ASM_VDSO_GETTIMEOFDAY_H
+>>> +#define __ASM_VDSO_GETTIMEOFDAY_H
+>>> +
+>>> +#include <asm/ptrace.h>
+>>> +
+>>> +#ifdef __ASSEMBLY__
+>>> +
+>>> +.macro cvdso_call funct
+>>> +  .cfi_startproc
+>>> +	PPC_STLU	r1, -STACK_FRAME_OVERHEAD(r1)
+>>> +	mflr		r0
+>>> +  .cfi_register lr, r0
+>>> +	PPC_STL		r0, STACK_FRAME_OVERHEAD + PPC_LR_STKOFF(r1)
+>>
+>> This doesn't work for me on ppc64(le) with glibc.
+>>
+>> glibc doesn't create a stack frame before making the VDSO call, so the
+>> store of r0 (LR) goes into the caller's frame, corrupting the saved LR,
+>> leading to an infinite loop.
+>
+> Where should it be saved if it can't be saved in the standard location ?
 
-Signed-off-by: Changming Liu <charley.ashbringer@gmail.com>
----
-Changes in v3:
-- change the loop in panic, instead of change the sysctl
-- avoid using 64-bit division, doing 64-bit mult instead
+As Michael pointed out, userspace doesn't treat the VDSO as a normal function
+call.  In order to keep compatibility with existent software, LR would need to
+be saved on another stack frame.
 
- kernel/panic.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/panic.c b/kernel/panic.c
-index e2157ca..ef6cd57 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -313,13 +313,16 @@ void panic(const char *fmt, ...)
- 		 * Delay timeout seconds before rebooting the machine.
- 		 * We can't use the "normal" timers since we just panicked.
- 		 */
-+		u64 timeout = panic_timeout * 1000ULL;	/* avoid overflow */
-+		u64 timer, timer_next = 0;
-+
- 		pr_emerg("Rebooting in %d seconds..\n", panic_timeout);
- 
--		for (i = 0; i < panic_timeout * 1000; i += PANIC_TIMER_STEP) {
-+		for (timer = 0; timer < timeout; timer += PANIC_TIMER_STEP) {
- 			touch_nmi_watchdog();
--			if (i >= i_next) {
--				i += panic_blink(state ^= 1);
--				i_next = i + 3600 / PANIC_BLINK_SPD;
-+			if (timer >= timer_next) {
-+				timer += panic_blink(state ^= 1);
-+				timer_next = timer + 3600 / PANIC_BLINK_SPD;
- 			}
- 			mdelay(PANIC_TIMER_STEP);
- 		}
 -- 
-2.7.4
-
+Tulio Magno
