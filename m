@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A5822246E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539B9222479
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729008AbgGPN4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:56:25 -0400
-Received: from elvis.franken.de ([193.175.24.41]:38517 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728087AbgGPN4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:56:24 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jw4N4-0001gW-00; Thu, 16 Jul 2020 15:56:22 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B06E7C0815; Thu, 16 Jul 2020 15:56:05 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 15:56:05 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "paulburton@kernel.org" <paulburton@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: Replace HTTP links with HTTPS ones
-Message-ID: <20200716135605.GA15355@alpha.franken.de>
-References: <20200713085243.32566-1-grandmaster@al2klimov.de>
- <59938583-2ce4-c7bf-c454-89a1559be846@flygoat.com>
- <CAHiYmc7ax=A=Tb59wh4+yHx=2MEKc3G==tun5nsefbKvsceBHg@mail.gmail.com>
+        id S1729041AbgGPN5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:57:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728952AbgGPN5u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 09:57:50 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA86C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:57:50 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id g2so3333129lfb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:57:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3CikeVXsmSH3xLejOtc64KxmHFqUPdsBn8HUNTfiQdM=;
+        b=qCTvAswWd3m3SFChWcBhgjSBV9sXk0iKF+7Njy/yLDzYrxghImOwWXRjF9o8Wtrf/b
+         jLJt5mYhaXRH1FURrwzxmUh4LdwSR7X3n4vKK2nzsFmpCbRqoCluigSiSfXJMUFR7aFf
+         h+tkfv9tzeI6leN8Z8uGxSHi717r7MI+mxTew9gvnfTy0JC5OSG0bKToY5HAurR9vKfm
+         wK0wDBQliaJIptP6i7OGYKHh+rcyiiQqD3mXU/Pf3H4XLmi3xULSHCXqms6zk0Mov4Jg
+         x4vXazJcuaZz+UAGy5hsejggtpbZyzZeTWNaWqNHwKwId5M0sDi2mhXEwmmzacTJClMt
+         1nhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3CikeVXsmSH3xLejOtc64KxmHFqUPdsBn8HUNTfiQdM=;
+        b=aKX8Hxtefn303+eLHZzaAXbRPZY0sDnNz7sUnZYjXSr6aBPzKo0SHm0vK1aZ3KSo79
+         FMma4dr4Wlz9XBSdksQKoBQsrBypWATyYSlXY5C1qPlBedio+4gJDMUkgkEg4b/JKE1J
+         tUfiunv6wfmGR3P32tV9rBZAa+hZkSNLA/8GcrGRMbCvsiXWT29h+o3f8WFGD3cTiZAO
+         CpK9wmCAdrI6/VMdnhN4iuFM28V0DOxzSIJjin3zh2BJBQUGnG4Xni+OqzZZ6KO6BT2X
+         k+6dSal3ILmQXbkqpW3gmA1QkY1yn0vOk88Y7CelK4RcRLBSnI6pk6MoRm41//tsH9OG
+         Bqnw==
+X-Gm-Message-State: AOAM532Bc3mjIBZQmNE6rhOuAK0fJS1tysnRK59okeSZoMhghWm9oL9a
+        4J0QZc04Z4/llqvSE+y5XK268zO306PQZCdA4P7B2Q==
+X-Google-Smtp-Source: ABdhPJxVFqXa0LJbvSZZW1t3IXhfBWED/cnhyxm/+4d67HItSPQn+L5o6S2HvAr1UKqianvKT7hJBHSeaZYmBa2iAKE=
+X-Received: by 2002:a19:e05d:: with SMTP id g29mr2138883lfj.217.1594907868617;
+ Thu, 16 Jul 2020 06:57:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHiYmc7ax=A=Tb59wh4+yHx=2MEKc3G==tun5nsefbKvsceBHg@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200713144930.1034632-1-lee.jones@linaro.org>
+ <20200713144930.1034632-21-lee.jones@linaro.org> <CAMuHMdWMUN8sU09J1eSsSJ9sXMhf10GUHeP47UDf6+yp8vnAnw@mail.gmail.com>
+In-Reply-To: <CAMuHMdWMUN8sU09J1eSsSJ9sXMhf10GUHeP47UDf6+yp8vnAnw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 16 Jul 2020 15:57:37 +0200
+Message-ID: <CACRpkdYep_r1KsTnU2gVr-DeOf50hRiyTRq=jgeas=fD-qPHVg@mail.gmail.com>
+Subject: Re: [PATCH 20/25] pinctrl: pinctrl-rza1: Demote some kerneldoc
+ headers and fix others
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 12:07:55PM +0200, Aleksandar Markovic wrote:
-> On Tuesday, July 14, 2020, Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
-> > 在 2020/7/13 16:52, Alexander A. Klimov 写道:
-> >>           virtual processors which supports SMP. This is equivalent to the
-> >>           Intel Hyperthreading feature. For further information go to
-> >> -         <http://www.imgtec.com/mips/mips-multithreading.asp>.
-> >> +         <https://www.imgtec.com/mips/mips-multithreading.asp>.
-> >>
-> >
-> > All MIPS content have been removed from IMGTEC's site, we'd better remove
-> > this link?
-> >
-> >
-> Perhaps it is better to replace it with:
-> 
-> https://www.mips.com/products/architectures/ase/multi-threading/
-> 
-> ?
+On Wed, Jul 15, 2020 at 9:30 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-yes, looks better.
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in sh-pfc-for-v5.9.
 
-Thomas.
+OK since Geert is queueing this I'll drop this patch from my tree.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Yours,
+Linus Walleij
