@@ -2,62 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CAF2221B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 311FD2221B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728207AbgGPLxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 07:53:02 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:40032 "EHLO fornost.hmeau.com"
+        id S1728273AbgGPLxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 07:53:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726383AbgGPLxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 07:53:02 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jw2RZ-0008IV-K6; Thu, 16 Jul 2020 21:52:54 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Jul 2020 21:52:53 +1000
-Date:   Thu, 16 Jul 2020 21:52:53 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>
-Cc:     Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH 2/2] crypto: caam - support tagged keys for skcipher
- algorithms
-Message-ID: <20200716115253.GA25035@gondor.apana.org.au>
-References: <1594591536-531-1-git-send-email-iuliana.prodan@nxp.com>
- <1594591536-531-3-git-send-email-iuliana.prodan@nxp.com>
- <20200716073610.GA28215@gondor.apana.org.au>
- <0c818beb-05e5-a6c6-717d-782b32afff26@nxp.com>
+        id S1726383AbgGPLxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 07:53:53 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C24620739;
+        Thu, 16 Jul 2020 11:53:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594900432;
+        bh=snuO7Afj7MA835fjlKy97Sdl/QB5+F2KKYVi91gzJGY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=z+Lo92f1Z3Hqd0m/IYqU2kSKtnFQPWyqMXEoQQ0N/Zzl0ctA9mVeKJ19ZxZIQLToC
+         baqRXp/Yx5/pujymq4Cpv9hPfJY3aK0GWGqd7ZnS3SQnItLBpk5iPLCy/e/d5L4rpE
+         WWkD99oVRhItakVJ5C/0akC+F8VNqg4R8kNLV6qc=
+Date:   Thu, 16 Jul 2020 13:53:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: properly check all write ioctls for permissions
+Message-ID: <20200716115346.GA1667288@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0c818beb-05e5-a6c6-717d-782b32afff26@nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 01:35:51PM +0300, Horia Geantă wrote:
->
-> This patch set adds support only for some AES-based algorithms.
-> However, going further the plan is to add all keyed algorithms
-> supported by caam.
-> 
-> Thus I wouldn't tie the name to AES.
+When doing a "write" ioctl call, properly check that we have permissions
+to do so before copying anything from userspace or anything else so we
+can "fail fast".  This includes also covering the MEMWRITE ioctl which
+previously missed checking for this.
 
-Yes but it's still exactly the same underlying feature as paes.
-So I don't want to have two ways of doing the same thing in the
-Crypto API.
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Cc: stable <stable@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/mtd/mtdchar.c | 54 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 45 insertions(+), 9 deletions(-)
 
-Cheers,
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index c5935b2f9cd1..52c120f9fb0d 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -355,9 +355,6 @@ static int mtdchar_writeoob(struct file *file, struct mtd_info *mtd,
+ 	uint32_t retlen;
+ 	int ret = 0;
+ 
+-	if (!(file->f_mode & FMODE_WRITE))
+-		return -EPERM;
+-
+ 	if (length > 4096)
+ 		return -EINVAL;
+ 
+@@ -643,6 +640,48 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 
+ 	pr_debug("MTD_ioctl\n");
+ 
++	/*
++	 * Check the file mode to require "dangerous" commands to have write
++	 * permissions.
++	 */
++	switch (cmd) {
++	/* "safe" commands */
++	case MEMGETREGIONCOUNT:
++	case MEMGETREGIONINFO:
++	case MEMGETINFO:
++	case MEMREADOOB:
++	case MEMREADOOB64:
++	case MEMLOCK:
++	case MEMUNLOCK:
++	case MEMISLOCKED:
++	case MEMGETOOBSEL:
++	case MEMGETBADBLOCK:
++	case MEMSETBADBLOCK:
++	case OTPSELECT:
++	case OTPGETREGIONCOUNT:
++	case OTPGETREGIONINFO:
++	case OTPLOCK:
++	case ECCGETLAYOUT:
++	case ECCGETSTATS:
++	case MTDFILEMODE:
++	case BLKPG:
++	case BLKRRPART:
++		break;
++
++	/* "dangerous" commands */
++	case MEMERASE:
++	case MEMERASE64:
++	case MEMWRITEOOB:
++	case MEMWRITEOOB64:
++	case MEMWRITE:
++		if (!(file->f_mode & FMODE_WRITE))
++			return -EPERM;
++		break;
++
++	default:
++		return -ENOTTY;
++	}
++
+ 	switch (cmd) {
+ 	case MEMGETREGIONCOUNT:
+ 		if (copy_to_user(argp, &(mtd->numeraseregions), sizeof(int)))
+@@ -690,9 +729,6 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 	{
+ 		struct erase_info *erase;
+ 
+-		if(!(file->f_mode & FMODE_WRITE))
+-			return -EPERM;
+-
+ 		erase=kzalloc(sizeof(struct erase_info),GFP_KERNEL);
+ 		if (!erase)
+ 			ret = -ENOMEM;
+@@ -985,9 +1021,6 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		ret = 0;
+ 		break;
+ 	}
+-
+-	default:
+-		ret = -ENOTTY;
+ 	}
+ 
+ 	return ret;
+@@ -1031,6 +1064,9 @@ static long mtdchar_compat_ioctl(struct file *file, unsigned int cmd,
+ 		struct mtd_oob_buf32 buf;
+ 		struct mtd_oob_buf32 __user *buf_user = argp;
+ 
++		if (!(file->f_mode & FMODE_WRITE))
++			return -EPERM;
++
+ 		if (copy_from_user(&buf, argp, sizeof(buf)))
+ 			ret = -EFAULT;
+ 		else
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.27.0
+
