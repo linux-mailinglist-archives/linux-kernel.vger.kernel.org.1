@@ -2,202 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E55A222D82
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A0D222D70
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbgGPVOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 17:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727032AbgGPVOB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 17:14:01 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088BCC08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 14:14:01 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id 72so4422777ple.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 14:14:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CSCv+qenN8fQz+hz3SBJPq4lxH8/L5lNiF/O/RXH4cs=;
-        b=I+5xqu6T187eBlA+tL31dh5CS7wCkNI25QanX8f0QfAWVGToBzsZX8AeIKyT7710Bs
-         F94Tg6+plhmnLGCVlrr/UFEsPF9kU5zpXXmZwrmqg0W/0MYVN46CtWYu55uxwXw2fCn6
-         +2FGuZWQiqu1zo5Jq+VajaCuGX6Q4J7vQ4gJI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CSCv+qenN8fQz+hz3SBJPq4lxH8/L5lNiF/O/RXH4cs=;
-        b=SFIgI5OjMEowS1YrCiFltOeMFQe0sGnzFMax+c5WdS7EnVaWY2XF43R2jITXxrsHtb
-         N0uqKnUHkm32c/+HfPZdlhPgIu76wHM1G9bR8o+uCjo+jE0+o9xe9fbr98Rreaeh2lyo
-         8IL4lCdMzhodUAPVWmjOA4d1CcFxSPxpEM3LP1zpENOgfkQWYpjigKiHX/QRRU3ttLD3
-         +iC35yu/9apXPV6N3wNra8m7GETCI4EqOhZwYUp7o0jJTka6gPyfob6l7I47iUmqj0Md
-         +36MVGdJcQe0c9a/CX4QUd9+Q5AijBj3ny5gb/un+eikt9kfxo+ImJWz+ZCdDiZumhVv
-         R4Fg==
-X-Gm-Message-State: AOAM533HwLsCTiPkttWy05I03dSO28qvMMSgwDBBSDQ5O84LmzwH5KLO
-        mO8UkrGQFYt5eeH5XtkKuv6zjg==
-X-Google-Smtp-Source: ABdhPJz1BmB9fwt+demvs5kOAZ0MYGo3jfds+eP75BLBTh2DsDI3UFftrsMyrJVfYldCQpL3sKvIZQ==
-X-Received: by 2002:a17:902:8206:: with SMTP id x6mr5160870pln.328.1594934040349;
-        Thu, 16 Jul 2020 14:14:00 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x13sm5361936pfj.122.2020.07.16.14.13.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 14:13:59 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 14:13:58 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [patch V3 08/13] x86/entry: Use generic syscall entry function
-Message-ID: <202007161359.AB211685@keescook>
-References: <20200716182208.180916541@linutronix.de>
- <20200716185424.765294277@linutronix.de>
+        id S1727026AbgGPVJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 17:09:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725959AbgGPVJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 17:09:54 -0400
+Received: from embeddedor (unknown [201.162.240.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A08E0207DD;
+        Thu, 16 Jul 2020 21:09:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594933794;
+        bh=AcwhowgLvFEZNKhytEiTcdGfl0j994HbxXy5LFPSc18=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WkZDqo7FDqKZ6oomojkl8Say6lmEeGL8iewbke1QHhFyqu9tTR8MbbAWx1jtqszSB
+         Jv+Vlu8aujRO7T7O4hZG02RTqSg8s3yTFFjgmyGPMe1iJQpr2P0PqEplXfmiMhoEZ7
+         ZovdgyAIR1uhQfGsmv6B3+WBA/k9JkM2w+p8hr9E=
+Date:   Thu, 16 Jul 2020 16:15:17 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] PCI: rcar-gen2: Use fallthrough pseudo-keyword
+Message-ID: <20200716211517.GA17174@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200716185424.765294277@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 08:22:16PM +0200, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> Replace the syscall entry work handling with the generic version. Provide
-> the necessary helper inlines to handle the real architecture specific
-> parts, e.g. audit and seccomp invocations.
-> 
-> Use a temporary define for idtentry_enter_user which will be cleaned up
-> seperately.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> [...]
-> --- /dev/null
-> +++ b/arch/x86/include/asm/entry-common.h
-> @@ -0,0 +1,86 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +#ifndef _ASM_X86_ENTRY_COMMON_H
-> +#define _ASM_X86_ENTRY_COMMON_H
-> +
-> +#include <linux/seccomp.h>
-> +#include <linux/audit.h>
-> +
-> +/* Check that the stack and regs on entry from user mode are sane. */
-> +static __always_inline void arch_check_user_regs(struct pt_regs *regs)
-> +{
-> +	if (IS_ENABLED(CONFIG_DEBUG_ENTRY)) {
-> +		/*
-> +		 * Make sure that the entry code gave us a sensible EFLAGS
-> +		 * register.  Native because we want to check the actual CPU
-> +		 * state, not the interrupt state as imagined by Xen.
-> +		 */
-> +		unsigned long flags = native_save_fl();
-> +		WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
-> +				      X86_EFLAGS_NT));
-> +
-> +		/* We think we came from user mode. Make sure pt_regs agrees. */
-> +		WARN_ON_ONCE(!user_mode(regs));
-> +
-> +		/*
-> +		 * All entries from user mode (except #DF) should be on the
-> +		 * normal thread stack and should have user pt_regs in the
-> +		 * correct location.
-> +		 */
-> +		WARN_ON_ONCE(!on_thread_stack());
-> +		WARN_ON_ONCE(regs != task_pt_regs(current));
-> +	}
-> +}
-> +#define arch_check_user_regs arch_check_user_regs
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-Will architectures implement subsets of these functions? (i.e. instead
-of each of the defines, is CONFIG_ENTRY_GENERIC sufficient for the
-no-op inlines?)
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-> +
-> +static inline long arch_syscall_enter_seccomp(struct pt_regs *regs)
-> +{
-> +#ifdef CONFIG_SECCOMP
-> +	u32 arch = in_ia32_syscall() ? AUDIT_ARCH_I386 : AUDIT_ARCH_X86_64;
-> +	struct seccomp_data sd;
-> +
-> +	sd.arch = arch;
-> +	sd.nr = regs->orig_ax;
-> +	sd.instruction_pointer = regs->ip;
-> +
-> +#ifdef CONFIG_X86_64
-> +	if (arch == AUDIT_ARCH_X86_64) {
-> +		sd.args[0] = regs->di;
-> +		sd.args[1] = regs->si;
-> +		sd.args[2] = regs->dx;
-> +		sd.args[3] = regs->r10;
-> +		sd.args[4] = regs->r8;
-> +		sd.args[5] = regs->r9;
-> +	} else
-> +#endif
-> +	{
-> +		sd.args[0] = regs->bx;
-> +		sd.args[1] = regs->cx;
-> +		sd.args[2] = regs->dx;
-> +		sd.args[3] = regs->si;
-> +		sd.args[4] = regs->di;
-> +		sd.args[5] = regs->bp;
-> +	}
-> +
-> +	return __secure_computing(&sd);
-> +#else
-> +	return 0;
-> +#endif
-> +}
-> +#define arch_syscall_enter_seccomp arch_syscall_enter_seccomp
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/pci/controller/pci-rcar-gen2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Actually, I've been meaning to clean this up. It's not needed at all.
-This was left over from the seccomp fast-path code that got ripped out a
-while ago. seccomp already has everything it needs to do this work, so
-just:
-
-	__secure_computing(NULL);
-
-is sufficient for every architecture that supports seccomp. (See kernel/seccomp.c
-populate_seccomp_data().)
-
-And if you want more generalization work, note that the secure_computing()
-macro performs a TIF test before calling __secure_computing(NULL). But
-my point is, I think arch_syscall_enter_seccomp() is not needed.
-
-> +static inline void arch_syscall_enter_audit(struct pt_regs *regs)
-> +{
-> +#ifdef CONFIG_X86_64
-> +	if (in_ia32_syscall()) {
-> +		audit_syscall_entry(regs->orig_ax, regs->di,
-> +				    regs->si, regs->dx, regs->r10);
-> +	} else
-> +#endif
-> +	{
-> +		audit_syscall_entry(regs->orig_ax, regs->bx,
-> +				    regs->cx, regs->dx, regs->si);
-> +	}
-> +}
-> +#define arch_syscall_enter_audit arch_syscall_enter_audit
-
-Similarly, I think these can be redefined in the generic case
-using the existing accessors for syscall arguments, etc. e.g.
-arch_syscall_enter_audit() is not needed for any architecture, and the
-generic is:
-
-	unsigned long args[6];
-
-        syscall_get_arguments(task, regs, args);
-	audit_syscall_entry(syscall_get_nr(current, regs),
-			    args[0], args[1], args[2], args[3]);
-
-
-
+diff --git a/drivers/pci/controller/pci-rcar-gen2.c b/drivers/pci/controller/pci-rcar-gen2.c
+index 326171cb1a97..2ec7093a7588 100644
+--- a/drivers/pci/controller/pci-rcar-gen2.c
++++ b/drivers/pci/controller/pci-rcar-gen2.c
+@@ -228,7 +228,7 @@ static int rcar_pci_setup(int nr, struct pci_sys_data *sys)
+ 		pr_warn("unknown window size %ld - defaulting to 256M\n",
+ 			priv->window_size);
+ 		priv->window_size = SZ_256M;
+-		/* fall-through */
++		fallthrough;
+ 	case SZ_256M:
+ 		val |= RCAR_USBCTR_PCIAHB_WIN1_256M;
+ 		break;
 -- 
-Kees Cook
+2.27.0
+
