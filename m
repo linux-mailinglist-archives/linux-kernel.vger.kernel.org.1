@@ -2,83 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2A222208B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43A1222087
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgGPKXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 06:23:17 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2486 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726973AbgGPKXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 06:23:16 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 863847D64898BC86D4B5;
-        Thu, 16 Jul 2020 11:23:14 +0100 (IST)
-Received: from [127.0.0.1] (10.210.168.254) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 16 Jul
- 2020 11:23:13 +0100
-Subject: Re: [PATCH] drivers/perf: Fix kernel panic when rmmod PMU modules
- during perf sampling
-To:     Will Deacon <will@kernel.org>, Qi Liu <liuqi115@huawei.com>
-CC:     <zhangshaokun@hisilicon.com>, <mark.rutland@arm.com>,
-        <wang.wanghaifeng@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1594891165-8228-1-git-send-email-liuqi115@huawei.com>
- <20200716094144.GC6771@willie-the-truck>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <07cd8e16-6967-410a-4006-6c82b0263397@huawei.com>
-Date:   Thu, 16 Jul 2020 11:21:25 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726832AbgGPKWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 06:22:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725996AbgGPKWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 06:22:38 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89A51204EA;
+        Thu, 16 Jul 2020 10:22:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594894958;
+        bh=vzEaE1HWTa7LYtbebB7ritpzkpel2YtikBtG3CEZDzU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O7qT433Bf508kbmPUyZtGJ1ha3eKm5yrmKHurnYxiVO1tk+RfIFdFzfIP9a4dEULJ
+         cxskKb6f2hESv3IlEBT1RUtZQsbEm8i3bC2eetulC0gX+ABbte+A6hbUMZv5oMxo3Z
+         dEeF7i7CvTyJM+Yn2p8YoEk1EHckrb6iEUSt+mB4=
+Date:   Thu, 16 Jul 2020 11:22:33 +0100
+From:   Will Deacon <will@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     robin.murphy@arm.com, joro@8bytes.org, trivial@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, maz@kernel.org
+Subject: Re: [PATCH 0/4] iommu/arm-smmu-v3: Improve cmdq lock efficiency
+Message-ID: <20200716102233.GC7036@willie-the-truck>
+References: <1592846920-45338-1-git-send-email-john.garry@huawei.com>
+ <20200716101940.GA7036@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <20200716094144.GC6771@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.168.254]
-X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200716101940.GA7036@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/07/2020 10:41, Will Deacon wrote:
-> On Thu, Jul 16, 2020 at 05:19:25PM +0800, Qi Liu wrote:
->> Kernel panic will also happen when users try to unbind PMU drivers with
->> device. This unbind issue could be solved by another patch latter.
->>
->>   drivers/perf/arm_smmuv3_pmu.c                 | 1 +
->>   drivers/perf/fsl_imx8_ddr_perf.c              | 1 +
->>   drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c | 1 +
->>   drivers/perf/hisilicon/hisi_uncore_hha_pmu.c  | 1 +
->>   drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c  | 1 +
->>   5 files changed, 5 insertions(+)
->>
->> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
->> index 48e28ef..90caba56 100644
->> --- a/drivers/perf/arm_smmuv3_pmu.c
->> +++ b/drivers/perf/arm_smmuv3_pmu.c
->> @@ -742,6 +742,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
->>   	platform_set_drvdata(pdev, smmu_pmu);
->>
->>   	smmu_pmu->pmu = (struct pmu) {
->> +		.module		= THIS_MODULE,
+On Thu, Jul 16, 2020 at 11:19:41AM +0100, Will Deacon wrote:
+> On Tue, Jun 23, 2020 at 01:28:36AM +0800, John Garry wrote:
+> > As mentioned in [0], the CPU may consume many cycles processing
+> > arm_smmu_cmdq_issue_cmdlist(). One issue we find is the cmpxchg() loop to
+> > get space on the queue takes approx 25% of the cycles for this function.
+> > 
+> > This series removes that cmpxchg().
 > 
-> I thought platform_driver_register() did this automatically?
-> 
+> How about something much simpler like the diff below?
 
-Isn't that something different? The perf framework knows nothing of the 
-platform_device/driver really, and just knows the event_source device 
-which it creates. And so we also need to tell the perf framework about 
-the module backing this pmu.
+Ah, scratch that, I don't drop the lock if we fail the cas with it held.
+Let me hack it some more (I have no hardware so I can only build-test this).
 
-I think some relevant code is perf_try_init_event() -> 
-try_module_get(pmu->module).
-
-Thanks,
-John
-
+Will
