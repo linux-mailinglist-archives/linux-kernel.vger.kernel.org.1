@@ -2,101 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DB92223E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2E82223EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgGPN3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgGPN3m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:29:42 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67ACC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:29:41 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 22so10311433wmg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=ekSSt/5t2jmT5g2LzLm9iiouocorbUPUaL0+PSkZByk=;
-        b=e4FEY+O3MN9kneCWpjw2AuA6M3EOeHa76eTJCimRqpdrtKBQSSOraxPXNbBS8f8Hzc
-         tz6zo/FvGqILsjj+bkWDfBySfy7EQhsxQfhljSHeGFQUXL1R14dAuoybNl747hLEjDPY
-         vNppE3yDsKtFgZlvE7vJe6drtvYw7kI2pOfy2MRc5OuRRPF1FSQ8K8uCJQgeihxxobQi
-         QVzUMhFg6KbZManF2vD441ml3dsS6g5yEkZFsIp/v/x1LiDzvlWdzu0jxI4KmMVzVDtZ
-         mvFloFDMjuuzLmqzI356WyXrn6UiezpZ3f74qnVUym5bzdrugxI4+QulkFaW1qEiGlH3
-         oUmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=ekSSt/5t2jmT5g2LzLm9iiouocorbUPUaL0+PSkZByk=;
-        b=P4Pm1Z/8cms23Ggswj/XOPjoqTmzczg8xcNnP9uXLgDAjGZLzllRPxhm3Y2xriLRhZ
-         6qfldVJVctiIseVcMT9W1+EeMjIiWLA9mJMkl8GuWjNbgjvCuKojt/sRFBiRjBDcWNG5
-         BhHBnTz5jLTcIBJCdwR0KM5Teo60+7yaVVBW7a3kb5/CbIBjmiK7gcCG+5Qb9Ho5fSWA
-         6jcNy4LfpqbJuGGsoPFbElWeym6e+ARtd8S9IBOeq8imCEQs7Mlzm3J7cIV9UHFFMLiC
-         qYMqOQS7pohzZVEdvo7occzH2g/7xBuYY5IWlGqZF81gtTzrEJT6XvbG4ox+m1cKiq57
-         sWpQ==
-X-Gm-Message-State: AOAM533sHuYlCrg8tiX7rcsu1AYbuGhKL4BUH4fkacj+9NAQ88aYQPs0
-        93DWZHw+hIGdWcJ2P2z+Xkd+wg==
-X-Google-Smtp-Source: ABdhPJyADBcDb+XzELdoJ99YW8KYEjCgWzkM0ZKScl+XNUWRXJyRD/oosm2ILnxfvcz3p0ggTeii6Q==
-X-Received: by 2002:a1c:4c0a:: with SMTP id z10mr4618549wmf.38.1594906180632;
-        Thu, 16 Jul 2020 06:29:40 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id x7sm8945595wrr.72.2020.07.16.06.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 06:29:39 -0700 (PDT)
-References: <20200716132558.33932-1-jingxiangfeng@huawei.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        khilman@baylibre.com, kuninori.morimoto.gx@renesas.com
-Cc:     alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: meson: add the missed kfree() for axg_card_add_tdm_loopback
-In-reply-to: <20200716132558.33932-1-jingxiangfeng@huawei.com>
-Date:   Thu, 16 Jul 2020 15:29:39 +0200
-Message-ID: <1jzh7zegfw.fsf@starbuckisacylon.baylibre.com>
+        id S1728150AbgGPNdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:33:08 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2492 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725975AbgGPNdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 09:33:08 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 9F5A2950D01906284ED5;
+        Thu, 16 Jul 2020 14:33:06 +0100 (IST)
+Received: from [127.0.0.1] (10.210.168.254) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 16 Jul
+ 2020 14:33:05 +0100
+Subject: Re: [PATCH 0/4] iommu/arm-smmu-v3: Improve cmdq lock efficiency
+To:     Will Deacon <will@kernel.org>
+CC:     <robin.murphy@arm.com>, <joro@8bytes.org>, <trivial@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <maz@kernel.org>
+References: <1592846920-45338-1-git-send-email-john.garry@huawei.com>
+ <20200716101940.GA7036@willie-the-truck>
+ <20200716102233.GC7036@willie-the-truck>
+ <20200716102814.GD7036@willie-the-truck>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <54b0c8b9-d079-f832-2338-11cf6b09fa00@huawei.com>
+Date:   Thu, 16 Jul 2020 14:31:17 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200716102814.GD7036@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.254]
+X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16/07/2020 11:28, Will Deacon wrote:
+> On Thu, Jul 16, 2020 at 11:22:33AM +0100, Will Deacon wrote:
+>> On Thu, Jul 16, 2020 at 11:19:41AM +0100, Will Deacon wrote:
+>>> On Tue, Jun 23, 2020 at 01:28:36AM +0800, John Garry wrote:
+>>>> As mentioned in [0], the CPU may consume many cycles processing
+>>>> arm_smmu_cmdq_issue_cmdlist(). One issue we find is the cmpxchg() loop to
+>>>> get space on the queue takes approx 25% of the cycles for this function.
+>>>>
+>>>> This series removes that cmpxchg().
+>>>
+>>> How about something much simpler like the diff below?
+>>
+>> Ah, scratch that, I don't drop the lock if we fail the cas with it held.
+>> Let me hack it some more (I have no hardware so I can only build-test this).
+> 
+> Right, second attempt...
+> 
+> Will
 
-On Thu 16 Jul 2020 at 15:25, Jing Xiangfeng <jingxiangfeng@huawei.com> wrote:
+Unfortunately that hangs my machine during boot:
 
-> axg_card_add_tdm_loopback() misses to call kfree() in an error path. Add
-> the missed function call to fix it.
->
-> Fixes: c84836d7f650 ("ASoC: meson: axg-card: use modern dai_link style")
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+[10.902893] 00:01: ttyS0 at MMIO 0x3f00003f8 (irq = 6, base_baud = 
+115200) is a 16550A
+[10.912048] SuperH (H)SCI(F) driver initialized
+[10.916811] msm_serial: driver initialized
+[10.921371] arm-smmu-v3 arm-smmu-v3.0.auto: option mask 0x0
+[10.926946] arm-smmu-v3 arm-smmu-v3.0.auto: ias 48-bit, oas 48-bit 
+(features 0x00000fef)
+[10.935374] arm-smmu-v3 arm-smmu-v3.0.auto: allocated 65536 entries for cmdq
+[10.942522] arm-smmu-v3 arm-smmu-v3.0.auto: allocated 32768 entries for evtq
 
-Thanks for fixing this.
-Maybe it would be better to use the devm_ variant for the name instead ?
 
-> ---
->  sound/soc/meson/axg-card.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-> index 89f7f64747cd..6eac22ba8b99 100644
-> --- a/sound/soc/meson/axg-card.c
-> +++ b/sound/soc/meson/axg-card.c
-> @@ -121,8 +121,10 @@ static int axg_card_add_tdm_loopback(struct snd_soc_card *card,
->  		return -ENOMEM;
->  
->  	dlc = devm_kzalloc(card->dev, 2 * sizeof(*dlc), GFP_KERNEL);
-> -	if (!dlc)
-> +	if (!dlc) {
-> +		kfree(lb->name);
->  		return -ENOMEM;
-> +	}
->  
->  	lb->cpus = &dlc[0];
->  	lb->codecs = &dlc[1];
+> 
+> --->8
+> 
+> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+> index f578677a5c41..e6bcddd6ef69 100644
+> --- a/drivers/iommu/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm-smmu-v3.c
+> @@ -560,6 +560,7 @@ struct arm_smmu_cmdq {
+>   	atomic_long_t			*valid_map;
+>   	atomic_t			owner_prod;
+>   	atomic_t			lock;
+> +	spinlock_t			slock;
+>   };
+>   
+>   struct arm_smmu_cmdq_batch {
+> @@ -1378,7 +1379,7 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
+>   	u64 cmd_sync[CMDQ_ENT_DWORDS];
+>   	u32 prod;
+>   	unsigned long flags;
+> -	bool owner;
+> +	bool owner, locked = false;
+>   	struct arm_smmu_cmdq *cmdq = &smmu->cmdq;
+>   	struct arm_smmu_ll_queue llq = {
+>   		.max_n_shift = cmdq->q.llq.max_n_shift,
+> @@ -1387,27 +1388,38 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
+>   
+>   	/* 1. Allocate some space in the queue */
+>   	local_irq_save(flags);
+> -	llq.val = READ_ONCE(cmdq->q.llq.val);
+>   	do {
+>   		u64 old;
+> +		llq.val = READ_ONCE(cmdq->q.llq.val);
+>   
+> -		while (!queue_has_space(&llq, n + sync)) {
+> +		if (queue_has_space(&llq, n + sync))
+> +			goto try_cas;
+> +
+> +		if (locked)
+> +			spin_unlock(&cmdq->slock);
+> +
+> +		do {
+>   			local_irq_restore(flags);
+>   			if (arm_smmu_cmdq_poll_until_not_full(smmu, &llq))
+>   				dev_err_ratelimited(smmu->dev, "CMDQ timeout\n");
+>   			local_irq_save(flags);
+> -		}
+> +		} while (!queue_has_space(&llq, n + sync));
+>   
+> +try_cas:
+>   		head.cons = llq.cons;
+>   		head.prod = queue_inc_prod_n(&llq, n + sync) |
+>   					     CMDQ_PROD_OWNED_FLAG;
+>   
+>   		old = cmpxchg_relaxed(&cmdq->q.llq.val, llq.val, head.val);
+> -		if (old == llq.val)
+> +		if (old != llq.val)
+
+Not sure why you changed this. And if I change it back, it seems that we 
+could drop out of the loop with cmdq->slock held, so need to drop the 
+lock also.
+
+I tried that and it stops my machine hanging. Let me know that was the 
+intention, so I can test.
+
+Thanks,
+John
+
+>   			break;
+>   
+> -		llq.val = old;
+> +		if (!locked) {
+> +			spin_lock(&cmdq->slock);
+> +			locked = true;
+> +		}
+>   	} while (1);
+> +
+>   	owner = !(llq.prod & CMDQ_PROD_OWNED_FLAG);
+>   	head.prod &= ~CMDQ_PROD_OWNED_FLAG;
+>   	llq.prod &= ~CMDQ_PROD_OWNED_FLAG;
+> @@ -3192,6 +3204,7 @@ static int arm_smmu_cmdq_init(struct arm_smmu_device *smmu)
+>   
+>   	atomic_set(&cmdq->owner_prod, 0);
+>   	atomic_set(&cmdq->lock, 0);
+> +	spin_lock_init(&cmdq->slock);
+>   
+>   	bitmap = (atomic_long_t *)bitmap_zalloc(nents, GFP_KERNEL);
+>   	if (!bitmap) {
+> .
+> 
 
