@@ -2,182 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC387222C9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8A9222CA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729538AbgGPUSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 16:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
+        id S1726125AbgGPUWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 16:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728788AbgGPUSc (ORCPT
+        with ESMTP id S1725844AbgGPUWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 16:18:32 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A653C061755;
-        Thu, 16 Jul 2020 13:18:32 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id o8so11479216wmh.4;
-        Thu, 16 Jul 2020 13:18:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hT1ysO8UtcshQI1jXyBj8JCzEF++nOcaQlKMyGdyebI=;
-        b=gPyJXh21xqwg6wi5lQgsCnsHNHIw9zktYFEeZM4/dwWJwAfEuNc0aXHghzkPptrEiu
-         cAh9PlzMYLW0zPNTVC+VV8PCDQUjKDgyhyjllp/rVI5iLFzOi7t7aWFaFO8xCxODZEkU
-         u8/Y+QJ5lc/6Ty/GTE/GXgFOZ/loWYpedar5hfUCbuagq5kvlrFQxbjpLbLzd4Zeyhw4
-         R81cod5MZcfun9atECCis6ywDNt9vo6LS0fiJx8oiusJNMeNe7us4GOjM5yrg9NPkNpl
-         k/KDljEdwh3CfUFlMWz+dMFc4sdS7diIT8HcyIyDelxqrIAODpPXuPuzOI7w8a1Q9Xdz
-         YJPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=hT1ysO8UtcshQI1jXyBj8JCzEF++nOcaQlKMyGdyebI=;
-        b=pTajQw3UbO56Wk5by9fQIIigUYtbc6TWmOO0s6DLBfh+QzyctO/78qsEZC/8DdUA7M
-         KmnOvzngfMNZM2gX2V/A3sBUY1L3MPyyLI1MzvyQN/1q/HqvTG41ULV1pA2vFsnyiFRq
-         9Y3wVnntOowTIjO2Fn+DMf/0ND5A7zvTCSsihmEIZs261KrnUscIhX3BY/86u7cPy8tB
-         bkLdduwodFoKe2ychd9jIeoEXIOkm9m5cxbUvVaa1/wm5KxHnzElOoUBfL/9DZ4c4+JX
-         rmTFl6kDRP4zT0qyE9t0CDfbj/d7z15NLmVpv72xEYoblBdlSgo9kqtY5D+yBd0+ueEX
-         vO6g==
-X-Gm-Message-State: AOAM530FmgkopV3Byn1dbNBz/uM8QpvMUkBQ51WJ8BbNbS7Z4ZljMYMH
-        hdIb74TaqesI3SRl2SZ//grlDqSn6w8=
-X-Google-Smtp-Source: ABdhPJw8nV+8IAqaXqIGkoX8kBdfOHm2J50mIVqOpgcP41uZ6JJSTEB1svlXncB9MoytaJ+z1MBJWw==
-X-Received: by 2002:a7b:cc92:: with SMTP id p18mr6057089wma.4.1594930710261;
-        Thu, 16 Jul 2020 13:18:30 -0700 (PDT)
-Received: from [192.168.43.238] ([5.100.193.69])
-        by smtp.gmail.com with ESMTPSA id k18sm10805024wrx.34.2020.07.16.13.18.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jul 2020 13:18:29 -0700 (PDT)
-Subject: Re: [PATCH RFC v2 1/3] io_uring: use an enumeration for
- io_uring_register(2) opcodes
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Kees Cook <keescook@chromium.org>,
-        Aleksa Sarai <asarai@suse.de>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Jann Horn <jannh@google.com>, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jeff Moyer <jmoyer@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20200716124833.93667-1-sgarzare@redhat.com>
- <20200716124833.93667-2-sgarzare@redhat.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <ca242a15-576d-4099-a5f8-85c08985e3ff@gmail.com>
-Date:   Thu, 16 Jul 2020 23:16:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <20200716124833.93667-2-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Thu, 16 Jul 2020 16:22:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0CD7C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 13:22:10 -0700 (PDT)
+Message-Id: <20200716201923.228696399@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594930929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
+        bh=B2z75b9EVAFdPiAkFYGJ2QvpOBVmIkm00c1ZqJcTUIw=;
+        b=0IJN0M0O1MtNeuRYOJKOp7hDmFApvmvbLSRPfNNXnvX35YYgdy80oqIi19GnepXpbFtmoG
+        AnCKcJ508ImoOxQBtR+8Bw6tT11Xjez8f2SvC4QZpKrY4e7vOKbaHSc6yKEUHEjG54MUPB
+        R83xbIk4IBHClM228LQ/dHc7hRqQZ4j7I6ncwDZaw1c4IZ4FjnsO9sOkTWuJBK89VgQ1qZ
+        VR0vmXH36UvFwt5+zEQljf9/GwIkjSt0RAzPksWz7Io23rdQLTU7b/skMTTtP3C//z4Jnp
+        iQuG4TPS7LIX24qOOqX54qkPIR/c8ACSX+rIusqiXV3ykupp5tHpqJXYLsBYCw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594930929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
+        bh=B2z75b9EVAFdPiAkFYGJ2QvpOBVmIkm00c1ZqJcTUIw=;
+        b=vV2mLSuWmGOg55yi8Tcdy0CjDVlmui8kVF1dkCDAi4Cy58LsTXaFHTPu/OfmsvBZxzL0G5
+        5+MtMJlP17a5/TAw==
+Date:   Thu, 16 Jul 2020 22:19:23 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [patch V2 0/5] posix-cpu-timers: Move expiry into task work context
+Content-transfer-encoding: 8-bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/07/2020 15:48, Stefano Garzarella wrote:
-> The enumeration allows us to keep track of the last
-> io_uring_register(2) opcode available.
-> 
-> Behaviour and opcodes names don't change.
-> 
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->  include/uapi/linux/io_uring.h | 27 ++++++++++++++++-----------
->  1 file changed, 16 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-> index 7843742b8b74..efc50bd0af34 100644
-> --- a/include/uapi/linux/io_uring.h
-> +++ b/include/uapi/linux/io_uring.h
-> @@ -253,17 +253,22 @@ struct io_uring_params {
->  /*
->   * io_uring_register(2) opcodes and arguments
->   */
-> -#define IORING_REGISTER_BUFFERS		0
-> -#define IORING_UNREGISTER_BUFFERS	1
-> -#define IORING_REGISTER_FILES		2
-> -#define IORING_UNREGISTER_FILES		3
-> -#define IORING_REGISTER_EVENTFD		4
-> -#define IORING_UNREGISTER_EVENTFD	5
-> -#define IORING_REGISTER_FILES_UPDATE	6
-> -#define IORING_REGISTER_EVENTFD_ASYNC	7
-> -#define IORING_REGISTER_PROBE		8
-> -#define IORING_REGISTER_PERSONALITY	9
-> -#define IORING_UNREGISTER_PERSONALITY	10
-> +enum {
-> +	IORING_REGISTER_BUFFERS,
-> +	IORING_UNREGISTER_BUFFERS,
-> +	IORING_REGISTER_FILES,
-> +	IORING_UNREGISTER_FILES,
-> +	IORING_REGISTER_EVENTFD,
-> +	IORING_UNREGISTER_EVENTFD,
-> +	IORING_REGISTER_FILES_UPDATE,
-> +	IORING_REGISTER_EVENTFD_ASYNC,
-> +	IORING_REGISTER_PROBE,
-> +	IORING_REGISTER_PERSONALITY,
-> +	IORING_UNREGISTER_PERSONALITY,
-> +
-> +	/* this goes last */
-> +	IORING_REGISTER_LAST
-> +};
+This is the second attempt of moving the posix CPU timer heavy lifting out
+of interrupt context. The initial version can be found here:
 
-It breaks userspace API. E.g.
+   https://lore.kernel.org/r/20190801143250.370326052@linutronix.de
 
-#ifdef IORING_REGISTER_BUFFERS
+Running posix cpu timers in hard interrupt context has a few downsides:
 
->  
->  struct io_uring_files_update {
->  	__u32 offset;
-> 
+ - For PREEMPT_RT it cannot work as the expiry code needs to take sighand
+   lock, which is a 'sleeping spinlock' in RT
 
--- 
-Pavel Begunkov
+ - For fine grained accounting it's just wrong to run this in context of
+   the timer interrupt because that way a process specific cpu time is
+   accounted to the timer interrupt.
+
+ - Long running timer interrupts caused by a large amount of expiring
+   timers which can be created and armed by unpriviledged user space.
+
+There is no real hard requirement to run the expiry code in hard interrupt
+context. The posix CPU timers are an approximation anyway, so having them
+expired and evaluated in task work context does not really make them worse.
+
+This version is more or less a resend of the posix CPU timer bits of
+V1. The back then observed issue that KVM does not handle pending task work
+before going into guest mode has been solved differently. The related
+patches have been posted here:
+
+  https://lore.kernel.org/r/20200716182208.180916541@linutronix.de
+
+This patch series has no code dependency on the entry/KVM work, but the
+functional dependency vs. KVM exists.
+
+It applies on mainline and passes all tests - except when KVM is active and
+timers are armed on the KVM threads. This particular issue is solved when
+the entry/KVM series is applied as well.
+
+The entry/KVM changes are available from:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/entry
+
+and the whole lot (entry/kvm + posix CPU timers) is available from:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git timers/posixtimer
+
+Thanks,
+
+	tglx
+
+----
+ b/arch/x86/Kconfig             |    1 
+ include/linux/posix-timers.h   |   33 ++++--
+ include/linux/sched/cputime.h  |    2 
+ kernel/time/Kconfig            |    5 
+ kernel/time/posix-cpu-timers.c |  213 ++++++++++++++++++++++++++++++-----------
+ 5 files changed, 192 insertions(+), 62 deletions(-)
+
+
