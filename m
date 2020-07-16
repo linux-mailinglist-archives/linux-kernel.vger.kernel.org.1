@@ -2,111 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB9A221AB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D170221A9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbgGPDRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 23:17:18 -0400
-Received: from mga06.intel.com ([134.134.136.31]:8158 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728271AbgGPDRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 23:17:14 -0400
-IronPort-SDR: yvXKX+Eq0ty5Bnj0MsI+h8F8Kp93IFkBOJn51tn/um13Kro6Rw8oD72duSMWP+jZio+vXoQqmp
- /iwj8RDS+GzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="210844864"
-X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
-   d="scan'208";a="210844864"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 20:17:14 -0700
-IronPort-SDR: SrJQS4EtKr8PXj1FJSSsKS1x7Kelif0kMOiFZn3LoOaUORCMiNNUfCCW78Hk9LJe1YJbrFmJf1
- iZokZpt7s+ig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
-   d="scan'208";a="360910481"
-Received: from unknown (HELO local-michael-cet-test.sh.intel.com) ([10.239.159.128])
-  by orsmga001.jf.intel.com with ESMTP; 15 Jul 2020 20:17:12 -0700
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        jmattson@google.com
-Cc:     yu.c.zhang@linux.intel.com, Yang Weijiang <weijiang.yang@intel.com>
-Subject: [RESEND v13 09/11] KVM: VMX: Add VMCS dump and sanity check for CET states
+        id S1728080AbgGPDQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 23:16:42 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48544 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727034AbgGPDQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 23:16:41 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7x+Pxg9f1GoFAA--.6749S5;
+        Thu, 16 Jul 2020 11:16:33 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 3/8] irqchip/loongson-htvec: Fix potential resource leak
 Date:   Thu, 16 Jul 2020 11:16:25 +0800
-Message-Id: <20200716031627.11492-10-weijiang.yang@intel.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20200716031627.11492-1-weijiang.yang@intel.com>
-References: <20200716031627.11492-1-weijiang.yang@intel.com>
+Message-Id: <1594869390-21053-4-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1594869390-21053-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1594869390-21053-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Dx7x+Pxg9f1GoFAA--.6749S5
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF4xAFyxXr15KF4DXFy8uFg_yoWkGFg_Cr
+        yIgrn7GrW8Cr13J342kr43XFW2vrWvgF109FW8tFWaq34xtw1xAr42yw13CF47CF4S9ryr
+        Gr4S9ry0kw1xujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbSxYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
+        IE14v26r1rM28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CE
+        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6x
+        kF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv
+        6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4
+        CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvj
+        eVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gr4l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUVXo7DUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dump CET VMCS states for debug purpose. Since CET kernel protection is
-not enabled, if related MSRs in host are filled by mistake, warn once on
-detecting it.
+In the function htvec_of_init(), system resource "parent_irq"
+was not released in an error case. Thus add a jump target for
+the completion of the desired exception handling.
 
-Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+Fixes: 818e915fbac5 ("irqchip: Add Loongson HyperTransport Vector support")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- arch/x86/kvm/vmx/vmx.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/irqchip/irq-loongson-htvec.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index d465ff990094..5d4250b9dec8 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6056,6 +6056,12 @@ void dump_vmcs(void)
- 		pr_err("InterruptStatus = %04x\n",
- 		       vmcs_read16(GUEST_INTR_STATUS));
- 
-+	if (vmentry_ctl & VM_ENTRY_LOAD_CET_STATE) {
-+		pr_err("S_CET = 0x%016lx\n", vmcs_readl(GUEST_S_CET));
-+		pr_err("SSP = 0x%016lx\n", vmcs_readl(GUEST_SSP));
-+		pr_err("SSP TABLE = 0x%016lx\n",
-+		       vmcs_readl(GUEST_INTR_SSP_TABLE));
-+	}
- 	pr_err("*** Host State ***\n");
- 	pr_err("RIP = 0x%016lx  RSP = 0x%016lx\n",
- 	       vmcs_readl(HOST_RIP), vmcs_readl(HOST_RSP));
-@@ -6130,6 +6136,12 @@ void dump_vmcs(void)
- 	if (secondary_exec_control & SECONDARY_EXEC_ENABLE_VPID)
- 		pr_err("Virtual processor ID = 0x%04x\n",
- 		       vmcs_read16(VIRTUAL_PROCESSOR_ID));
-+	if (vmexit_ctl & VM_EXIT_LOAD_CET_STATE) {
-+		pr_err("S_CET = 0x%016lx\n", vmcs_readl(HOST_S_CET));
-+		pr_err("SSP = 0x%016lx\n", vmcs_readl(HOST_SSP));
-+		pr_err("SSP TABLE = 0x%016lx\n",
-+		       vmcs_readl(HOST_INTR_SSP_TABLE));
-+	}
- }
- 
- /*
-@@ -8205,6 +8217,7 @@ static __init int hardware_setup(void)
- 	unsigned long host_bndcfgs;
- 	struct desc_ptr dt;
- 	int r, i, ept_lpage_level;
-+	u64 cet_msr;
- 
- 	store_idt(&dt);
- 	host_idt_base = dt.address;
-@@ -8365,6 +8378,16 @@ static __init int hardware_setup(void)
- 			return r;
+diff --git a/drivers/irqchip/irq-loongson-htvec.c b/drivers/irqchip/irq-loongson-htvec.c
+index 1ece933..b36d403 100644
+--- a/drivers/irqchip/irq-loongson-htvec.c
++++ b/drivers/irqchip/irq-loongson-htvec.c
+@@ -192,7 +192,7 @@ static int htvec_of_init(struct device_node *node,
+ 	if (!priv->htvec_domain) {
+ 		pr_err("Failed to create IRQ domain\n");
+ 		err = -ENOMEM;
+-		goto iounmap_base;
++		goto irq_dispose;
  	}
  
-+	if (boot_cpu_has(X86_FEATURE_IBT) || boot_cpu_has(X86_FEATURE_SHSTK)) {
-+		rdmsrl(MSR_IA32_S_CET, cet_msr);
-+		WARN_ONCE(cet_msr, "KVM: CET S_CET in host will be lost!\n");
-+	}
-+
-+	if (boot_cpu_has(X86_FEATURE_SHSTK)) {
-+		rdmsrl(MSR_IA32_PL0_SSP, cet_msr);
-+		WARN_ONCE(cet_msr, "KVM: CET PL0_SSP in host will be lost!\n");
-+	}
-+
- 	vmx_set_cpu_caps();
+ 	htvec_reset(priv);
+@@ -203,6 +203,9 @@ static int htvec_of_init(struct device_node *node,
  
- 	r = alloc_kvm_area();
+ 	return 0;
+ 
++irq_dispose:
++	for (; i > 0; i--)
++		irq_dispose_mapping(parent_irq[i - 1]);
+ iounmap_base:
+ 	iounmap(priv->base);
+ free_priv:
 -- 
-2.17.2
+2.1.0
 
