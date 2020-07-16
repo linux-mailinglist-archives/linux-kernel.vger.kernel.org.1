@@ -2,133 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECF3221D0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2441E221CFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgGPHMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgGPHMe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:12:34 -0400
-X-Greylist: delayed 498 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 16 Jul 2020 00:12:34 PDT
-Received: from mx2.mailbox.org (mx2a.mailbox.org [IPv6:2001:67c:2050:104:0:2:25:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4778FC061755;
-        Thu, 16 Jul 2020 00:12:34 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+        id S1728236AbgGPHEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:04:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725921AbgGPHEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 03:04:23 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx2.mailbox.org (Postfix) with ESMTPS id 9F33DA5B5A;
-        Thu, 16 Jul 2020 09:04:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
-        with ESMTP id H3ahpmlKgLcK; Thu, 16 Jul 2020 09:04:09 +0200 (CEST)
-Subject: Re: [PATCH 07/17] dma: altera-msgdma: Fix struct documentation blocks
-To:     Lee Jones <lee.jones@linaro.org>, dan.j.williams@intel.com,
-        vkoul@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org
-References: <20200714111546.1755231-1-lee.jones@linaro.org>
- <20200714111546.1755231-8-lee.jones@linaro.org>
-From:   Stefan Roese <sr@denx.de>
-Message-ID: <edc171b1-39a0-7395-f186-6477c0b490d8@denx.de>
-Date:   Thu, 16 Jul 2020 09:04:07 +0200
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BAE1206F4;
+        Thu, 16 Jul 2020 07:04:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594883062;
+        bh=DV5zKc/ZWVUvHklF0tyr4PwKp6kaVLmlesNhot2hFgo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OYFVjxV5k9yB/i4gwIJF2lqTwXuMDkamt5mmUDgF5kgsQRDjjU3yMQGzeUIGSVp3d
+         AROD9O1qtZ/4/oZiB9e4eceD/516OtCK1qKO2K7qxcnAFaWslYY6Aqzezaa5ugTxFo
+         hfbofGjOPkH6OW6NCLuoHfmH4ERtGfWAYZ9242J8=
+Date:   Thu, 16 Jul 2020 09:04:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Qiu Wenbo <qiuwenbo@phytium.com.cn>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Linux Driver Project Developer List 
+        <driverdev-devel@linuxdriverproject.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Nishka Dasgupta <nishkadg.linux@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Villegas <git@marvil07.net>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8712: Fixes coding style in several headers
+Message-ID: <20200716070416.GA962748@kroah.com>
+References: <20200716064118.61243-1-qiuwenbo@phytium.com.cn>
 MIME-Version: 1.0
-In-Reply-To: <20200714111546.1755231-8-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 0
-X-Rspamd-Score: -3.01 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 1E3A41818
-X-Rspamd-UID: 559862
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200716064118.61243-1-qiuwenbo@phytium.com.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.20 13:15, Lee Jones wrote:
-> Fix some misspelling/description issues, demote non-kerneldoc header
-> to standard comment block and provide a new description for
-> msgdma_desc_config()'s 'stride' parameter.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/dma/altera-msgdma.c:163: warning: Function parameter or member 'node' not described in 'msgdma_sw_desc'
->   drivers/dma/altera-msgdma.c:163: warning: Function parameter or member 'tx_list' not described in 'msgdma_sw_desc'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'lock' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'dev' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'irq_tasklet' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'pending_list' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'free_list' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'active_list' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'done_list' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'desc_free_cnt' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'idle' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'dmadev' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'dmachan' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'hw_desq' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'sw_desq' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'npendings' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'slave_cfg' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'irq' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'csr' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'desc' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:197: warning: Function parameter or member 'resp' not described in 'msgdma_device'
->   drivers/dma/altera-msgdma.c:265: warning: Function parameter or member 'stride' not described in 'msgdma_desc_config'
-> 
-> Cc: Stefan Roese <sr@denx.de>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Thu, Jul 16, 2020 at 02:41:12PM +0800, Qiu Wenbo wrote:
+> This patch fixes warnings in several headers found by the checkpatch.pl tool.
 
-Reviewed-by: Stefan Roese <sr@denx.de>
+What warnings specifically?
 
-Thanks,
-Stefan
+Please only fix one type of warning per patch.
 
+> 
+> Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
 > ---
->   drivers/dma/altera-msgdma.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
+>  drivers/staging/rtl8712/rtl871x_event.h   | 15 ++++++++++-----
+>  drivers/staging/rtl8712/rtl871x_io.h      |  3 ++-
+>  drivers/staging/rtl8712/rtl871x_pwrctrl.h | 15 ++++++++++-----
+>  drivers/staging/rtl8712/rtl871x_xmit.h    | 15 ++++++++++-----
+>  4 files changed, 32 insertions(+), 16 deletions(-)
 > 
-> diff --git a/drivers/dma/altera-msgdma.c b/drivers/dma/altera-msgdma.c
-> index 539e785039cac..321ac3a7aa418 100644
-> --- a/drivers/dma/altera-msgdma.c
-> +++ b/drivers/dma/altera-msgdma.c
-> @@ -153,7 +153,8 @@ struct msgdma_extended_desc {
->    * struct msgdma_sw_desc - implements a sw descriptor
->    * @async_tx: support for the async_tx api
->    * @hw_desc: assosiated HW descriptor
-> - * @free_list: node of the free SW descriprots list
-> + * @node: node to move from the free list to the tx list
-> + * @tx_list: transmit list node
->    */
->   struct msgdma_sw_desc {
->   	struct dma_async_tx_descriptor async_tx;
-> @@ -162,7 +163,7 @@ struct msgdma_sw_desc {
->   	struct list_head tx_list;
->   };
->   
-> -/**
-> +/*
->    * struct msgdma_device - DMA device structure
->    */
->   struct msgdma_device {
-> @@ -258,6 +259,7 @@ static void msgdma_free_desc_list(struct msgdma_device *mdev,
->    * @dst: Destination buffer address
->    * @src: Source buffer address
->    * @len: Transfer length
-> + * @stride: Read/write stride value to set
->    */
->   static void msgdma_desc_config(struct msgdma_extended_desc *desc,
->   			       dma_addr_t dst, dma_addr_t src, size_t len,
+> diff --git a/drivers/staging/rtl8712/rtl871x_event.h b/drivers/staging/rtl8712/rtl871x_event.h
+> index d9a5476d2426..0e59d0ee6aae 100644
+> --- a/drivers/staging/rtl8712/rtl871x_event.h
+> +++ b/drivers/staging/rtl8712/rtl871x_event.h
+> @@ -78,13 +78,16 @@ struct event_node {
+>  	unsigned char *node;
+>  	unsigned char evt_code;
+>  	unsigned short evt_sz;
+> -	/*volatile*/ int *caller_ff_tail;
+> +	/*volatile*/
+> +	int *caller_ff_tail;
+
+Why did you change this?  It's fine as is, and a hint something needs to
+be fixed.
+
+>  	int	caller_ff_sz;
+>  };
+>  
+>  struct c2hevent_queue {
+> -	/*volatile*/ int	head;
+> -	/*volatile*/ int	tail;
+> +	/*volatile*/
+> +	int	head;
+> +	/*volatile*/
+> +	int	tail;
+
+Same for these.
+
+
+
+>  	struct	event_node	nodes[C2HEVENT_SZ];
+>  	unsigned char	seq;
+>  };
+> @@ -92,8 +95,10 @@ struct c2hevent_queue {
+>  #define NETWORK_QUEUE_SZ	4
+>  
+>  struct network_queue {
+> -	/*volatile*/ int	head;
+> -	/*volatile*/ int	tail;
+> +	/*volatile*/
+> +	int	head;
+> +	/*volatile*/
+> +	int	tail;
+>  	struct wlan_bssid_ex networks[NETWORK_QUEUE_SZ];
+>  };
+>  
+> diff --git a/drivers/staging/rtl8712/rtl871x_io.h b/drivers/staging/rtl8712/rtl871x_io.h
+> index c20dd5a6bbd1..2e269b71072c 100644
+> --- a/drivers/staging/rtl8712/rtl871x_io.h
+> +++ b/drivers/staging/rtl8712/rtl871x_io.h
+> @@ -101,7 +101,8 @@ struct	_io_ops {
+>  struct io_req {
+>  	struct list_head list;
+>  	u32	addr;
+> -	/*volatile*/ u32	val;
+> +	/*volatile*/
+> +	u32	val;
+>  	u32	command;
+>  	u32	status;
+>  	u8	*pbuf;
+> diff --git a/drivers/staging/rtl8712/rtl871x_pwrctrl.h b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
+> index dd5a79f90b1a..e6b740c09120 100644
+> --- a/drivers/staging/rtl8712/rtl871x_pwrctrl.h
+> +++ b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
+> @@ -77,14 +77,19 @@ struct reportpwrstate_parm {
+>  
+>  struct	pwrctrl_priv {
+>  	struct mutex mutex_lock;
+> -	/*volatile*/ u8 rpwm; /* requested power state for fw */
+> +	/*volatile*/
+> +	u8 rpwm; /* requested power state for fw */
+>  	/* fw current power state. updated when 1. read from HCPWM or
+>  	 * 2. driver lowers power level
+>  	 */
+> -	/*volatile*/ u8 cpwm;
+> -	/*volatile*/ u8 tog; /* toggling */
+> -	/*volatile*/ u8 cpwm_tog; /* toggling */
+> -	/*volatile*/ u8 tgt_rpwm; /* wanted power state */
+> +	/*volatile*/
+> +	u8 cpwm;
+> +	/*volatile*/
+> +	u8 tog; /* toggling */
+> +	/*volatile*/
+> +	u8 cpwm_tog; /* toggling */
+> +	/*volatile*/
+> +	u8 tgt_rpwm; /* wanted power state */
+>  	uint pwr_mode;
+>  	uint smart_ps;
+>  	uint alives;
+> diff --git a/drivers/staging/rtl8712/rtl871x_xmit.h b/drivers/staging/rtl8712/rtl871x_xmit.h
+> index f227828094bf..6d2e12b35670 100644
+> --- a/drivers/staging/rtl8712/rtl871x_xmit.h
+> +++ b/drivers/staging/rtl8712/rtl871x_xmit.h
+> @@ -182,11 +182,16 @@ struct sta_xmit_priv {
+>  };
+>  
+>  struct	hw_txqueue {
+> -	/*volatile*/ sint	head;
+> -	/*volatile*/ sint	tail;
+> -	/*volatile*/ sint	free_sz;	/*in units of 64 bytes*/
+> -	/*volatile*/ sint      free_cmdsz;
+> -	/*volatile*/ sint	 txsz[8];
+> +	/*volatile*/
+> +	sint	head;
+> +	/*volatile*/
+> +	sint	tail;
+> +	/*volatile*/
+> +	sint	free_sz;	/*in units of 64 bytes*/
+> +	/*volatile*/
+> +	sint      free_cmdsz;
+> +	/*volatile*/
+> +	sint	 txsz[8];
+>  	uint	ff_hwaddr;
+>  	uint	cmd_hwaddr;
+>  	sint	ac_tag;
+> -- 
+> 2.27.0
 > 
 
+Actually same for all of these, the code is fine as-is.
 
-Viele Grüße,
-Stefan
+thanks,
 
--- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-51 Fax: (+49)-8142-66989-80 Email: sr@denx.de
+greg k-h
