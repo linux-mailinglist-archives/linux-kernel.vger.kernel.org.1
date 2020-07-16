@@ -2,166 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCE0221EA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72C7221ED4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgGPImn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 04:42:43 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:7757 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725950AbgGPIml (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 04:42:41 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3042D61FE7B99EBF6193;
-        Thu, 16 Jul 2020 16:42:39 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 16 Jul 2020 16:42:33 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nilesh Javali <njavali@marvell.com>,
-        <GR-QLogic-Storage-Upstream@marvell.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] scsi: qla2xxx: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Thu, 16 Jul 2020 16:46:03 +0800
-Message-ID: <20200716084603.7491-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727883AbgGPIqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 04:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgGPIqs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 04:46:48 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5256C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:46:47 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b11so456917lfe.10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:46:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bCC4Mo9K3VF01NtlTfFZEG+9hWwFt1H0Qp6ndqIsiwU=;
+        b=Ycw6kDBxvy+1hQHj8/FEH/4U7ljQ25EreUCaL8gvHBx79vA4SVG7pi1ofaKXig142P
+         Gv4HHcbCIl7RuiW+f6NYdmQ18/KM9+d6WPB3wsltKZM/LHLdCq4EyEaSjSy2kASMEmNd
+         UButTqENhwLwFBBan8sW2USiTgE6HsycZxDMUEqXEhq1hNS1IFzcUxBQ/SHQ/4nSdMC8
+         ol/m2fyHdFtlPPWvoYWBOenk3RLLYvhDA6+nd+VPnVB+gzGDVHFcJZz6wXcsevOmmK7j
+         TG9IlfdqD3qQ+cxBN7CkGBrTKDah/jOIKq8qc3Ty8euWFfetsHaS5lGuEBZvSo5NzgEg
+         A08A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bCC4Mo9K3VF01NtlTfFZEG+9hWwFt1H0Qp6ndqIsiwU=;
+        b=TpU/s9V/qtSDj0vnJR+RjZkthDldMNNuoOjuQY2wkGDye65sVe/HlaV1qYJM68d5Dc
+         z8fLBWzEb0c+BW19+T/0Lxb6UFUeLxjRtbXiz3N0TxMUMvZqTRm2/4dcS+cwIGCyfQu0
+         1yqkq3SIDHrjRJyll+gXxuvWx8+si0/qZmR6Qsnkr2lObznHIdN3N4vpTm5LRm4P7hDk
+         cCOcWltIBoisc0YZ7Eo4lwspWChXqavU2w5hJUjqfBNhXTWFgMuxzqdH3ohh+qOcvBFA
+         Sp36JBu+a68j9FH0CtaU/0xc8jXgB04n18oy+fzlcViyW0N8GDNjz9KJZ8lpkfV1ID1R
+         5LzQ==
+X-Gm-Message-State: AOAM532gWnexSuYpNccna4r3zBQ6j5PylOx1jAMu705h9L8zYs/DbvNn
+        f5cMOseuJGSO0LiOiTQ97C5g5A==
+X-Google-Smtp-Source: ABdhPJz8inNJN8d4cqC6GtP6eT65CJ32H8/x2tA708d+Q20Njn2roHvF8GceCd/xwIpo0KKI8jOrAg==
+X-Received: by 2002:a19:4a96:: with SMTP id x144mr1571683lfa.213.1594889206222;
+        Thu, 16 Jul 2020 01:46:46 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id y188sm1242637lfc.36.2020.07.16.01.46.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 01:46:45 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id B0BE91020FF; Thu, 16 Jul 2020 11:46:51 +0300 (+03)
+Date:   Thu, 16 Jul 2020 11:46:51 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCHv2] mm: Fix warning in move_normal_pmd()
+Message-ID: <20200716084651.4457czjaszv3uprv@box>
+References: <CAHk-=wh4pB-jRngOjcGxpc8=NPds3jWqJwDMUWC3-OEo4dRiKg@mail.gmail.com>
+ <20200715205428.GA201569@google.com>
+ <CAHk-=wg-_Oof43pKUHMk4ySdLwpYi7+shFg+aeV18UP2Akiv8g@mail.gmail.com>
+ <CAHk-=wg+iVwK7MDXB+BPbhTmP-1eBa-y4vxRNr_G8ETnzv5pZg@mail.gmail.com>
+ <20200715222228.jf2pv5u2wyhtc5o5@box>
+ <CAHk-=wgp-ZJ+J250DMaJFBDU2hnhUUqXcUnVnZZ1iFQEK6O-jg@mail.gmail.com>
+ <CAHk-=wh3jD4dwXWWFors9OnYp-YCzYN2bCGs9HDxrtZ=TiFyDQ@mail.gmail.com>
+ <CAHk-=wjw2yuQjP1rqB=ocr9W3=ak+6h4XygoFTAgM5meiM1Q0A@mail.gmail.com>
+ <CA+G9fYsRcL1mcFhH47ek3YdGcK6sDSa+Gb0UoJzWkMcTsfxWdQ@mail.gmail.com>
+ <CA+G9fYuO+ZHDbWR7fqfFoFj2HcSSmDYSBnQBm2FmY4Sj19Rg+g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYuO+ZHDbWR7fqfFoFj2HcSSmDYSBnQBm2FmY4Sj19Rg+g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongqiang Liu <liuyongqiang13@huawei.com>
+On Thu, Jul 16, 2020 at 12:53:23PM +0530, Naresh Kamboju wrote:
+> On Thu, 16 Jul 2020 at 12:07, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > On Thu, 16 Jul 2020 at 04:49, Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > > On Wed, Jul 15, 2020 at 4:04 PM Linus Torvalds
+> > > <torvalds@linux-foundation.org> wrote:
+> > > >
+> > > > It *might* be as simple as this incremental thing on top
+> > >
+> > > No, it needs to be
+> > >
+> > > +       if (*old_addr + *len < old->vm_end)
+> > > +               return;
+> > >
+> > > in try_to_align_end(), of course.
+> > >
+> > > Now I'm going for a lie-down, because this cross-eyed thing isn't working.
+> >
+> >
+> > Just want to double check.
+> > Here is the diff after those two patches applied. Please correct me if
+> > it is wrong.
+> > This patch applied on top of Linus mainline master branch.
+> > I am starting my test cycles.
+> 
+> Sorry this patch (the below pasted ) did not solve the reported problem.
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+As Linus said, it does not trigger on the stack movement anymore and it is
+not going to fix the issue, but may help to increase coverage of the
+optimization.
 
-Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
----
- drivers/scsi/qla2xxx/qla_dfs.c | 69 +++++-----------------------------
- 1 file changed, 9 insertions(+), 60 deletions(-)
-
-diff --git a/drivers/scsi/qla2xxx/qla_dfs.c b/drivers/scsi/qla2xxx/qla_dfs.c
-index 581ed7597..954a4d9f7 100644
---- a/drivers/scsi/qla2xxx/qla_dfs.c
-+++ b/drivers/scsi/qla2xxx/qla_dfs.c
-@@ -37,20 +37,7 @@ qla2x00_dfs_tgt_sess_show(struct seq_file *s, void *unused)
- 	return 0;
- }
- 
--static int
--qla2x00_dfs_tgt_sess_open(struct inode *inode, struct file *file)
--{
--	scsi_qla_host_t *vha = inode->i_private;
--
--	return single_open(file, qla2x00_dfs_tgt_sess_show, vha);
--}
--
--static const struct file_operations dfs_tgt_sess_ops = {
--	.open		= qla2x00_dfs_tgt_sess_open,
--	.read_iter		= seq_read_iter,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(qla2x00_dfs_tgt_sess);
- 
- static int
- qla2x00_dfs_tgt_port_database_show(struct seq_file *s, void *unused)
-@@ -106,20 +93,7 @@ qla2x00_dfs_tgt_port_database_show(struct seq_file *s, void *unused)
- 	return 0;
- }
- 
--static int
--qla2x00_dfs_tgt_port_database_open(struct inode *inode, struct file *file)
--{
--	scsi_qla_host_t *vha = inode->i_private;
--
--	return single_open(file, qla2x00_dfs_tgt_port_database_show, vha);
--}
--
--static const struct file_operations dfs_tgt_port_database_ops = {
--	.open		= qla2x00_dfs_tgt_port_database_open,
--	.read_iter		= seq_read_iter,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(qla2x00_dfs_tgt_port_database);
- 
- static int
- qla_dfs_fw_resource_cnt_show(struct seq_file *s, void *unused)
-@@ -154,20 +128,7 @@ qla_dfs_fw_resource_cnt_show(struct seq_file *s, void *unused)
- 	return 0;
- }
- 
--static int
--qla_dfs_fw_resource_cnt_open(struct inode *inode, struct file *file)
--{
--	struct scsi_qla_host *vha = inode->i_private;
--
--	return single_open(file, qla_dfs_fw_resource_cnt_show, vha);
--}
--
--static const struct file_operations dfs_fw_resource_cnt_ops = {
--	.open           = qla_dfs_fw_resource_cnt_open,
--	.read_iter           = seq_read_iter,
--	.llseek         = seq_lseek,
--	.release        = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(qla_dfs_fw_resource_cnt);
- 
- static int
- qla_dfs_tgt_counters_show(struct seq_file *s, void *unused)
-@@ -244,20 +205,7 @@ qla_dfs_tgt_counters_show(struct seq_file *s, void *unused)
- 	return 0;
- }
- 
--static int
--qla_dfs_tgt_counters_open(struct inode *inode, struct file *file)
--{
--	struct scsi_qla_host *vha = inode->i_private;
--
--	return single_open(file, qla_dfs_tgt_counters_show, vha);
--}
--
--static const struct file_operations dfs_tgt_counters_ops = {
--	.open           = qla_dfs_tgt_counters_open,
--	.read_iter           = seq_read_iter,
--	.llseek         = seq_lseek,
--	.release        = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(qla_dfs_tgt_counters);
- 
- static int
- qla2x00_dfs_fce_show(struct seq_file *s, void *unused)
-@@ -459,19 +407,20 @@ qla2x00_dfs_setup(scsi_qla_host_t *vha)
- 
- create_nodes:
- 	ha->dfs_fw_resource_cnt = debugfs_create_file("fw_resource_count",
--	    S_IRUSR, ha->dfs_dir, vha, &dfs_fw_resource_cnt_ops);
-+	    S_IRUSR, ha->dfs_dir, vha, &qla_dfs_fw_resource_cnt_fops);
- 
- 	ha->dfs_tgt_counters = debugfs_create_file("tgt_counters", S_IRUSR,
--	    ha->dfs_dir, vha, &dfs_tgt_counters_ops);
-+	    ha->dfs_dir, vha, &qla_dfs_tgt_counters_fops);
- 
- 	ha->tgt.dfs_tgt_port_database = debugfs_create_file("tgt_port_database",
--	    S_IRUSR,  ha->dfs_dir, vha, &dfs_tgt_port_database_ops);
-+	    S_IRUSR,  ha->dfs_dir, vha, &qla2x00_dfs_tgt_port_database_fops);
- 
- 	ha->dfs_fce = debugfs_create_file("fce", S_IRUSR, ha->dfs_dir, vha,
- 	    &dfs_fce_ops);
- 
- 	ha->tgt.dfs_tgt_sess = debugfs_create_file("tgt_sess",
--		S_IRUSR, ha->dfs_dir, vha, &dfs_tgt_sess_ops);
-+		S_IRUSR, ha->dfs_dir, vha, &qla2x00_dfs_tgt_sess_fops);
-+
- 
- 	if (IS_QLA27XX(ha) || IS_QLA83XX(ha) || IS_QLA28XX(ha))
- 		ha->tgt.dfs_naqp = debugfs_create_file("naqp",
 -- 
-2.17.1
-
+ Kirill A. Shutemov
