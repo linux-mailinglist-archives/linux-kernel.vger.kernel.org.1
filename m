@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39564222A71
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BF0222A6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729230AbgGPRui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 13:50:38 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:43706 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728672AbgGPRug (ORCPT
+        id S1729119AbgGPRuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 13:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725867AbgGPRue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 13:50:36 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 9D83520024;
-        Thu, 16 Jul 2020 19:50:33 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 19:50:32 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] drm/panel-simple: Fix inverted V/H SYNC for Frida
- FRD350H54004 panel
-Message-ID: <20200716175032.GD2235355@ravnborg.org>
-References: <20200716125647.10964-1-paul@crapouillou.net>
+        Thu, 16 Jul 2020 13:50:34 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A745C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:50:34 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id ls15so5181597pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:50:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=upsOBUtW2Y73xz61cW61K0SNxFB0qFhoYjoqZY76O6s=;
+        b=IKAGyyw3pysydSYPlEqUWDTe2zCYCxq9TXbes/nl8mUNVnJg93De+kHvXNWI1oHlm2
+         iWFaCxemD/cRY7g5mVRuU9dNKgDoRfXiPfASq97Fcm7MTxa6Be5T9hHUzqbkoza4mM6d
+         END7oTzS29ak5wGQ23r2nWIp5xVm4lyUrUSfYcQxoy5ErIc7mPKxJ2RxMIWKwRqTa8wp
+         2QNxdNlU7+psazLL0VXWrJVIxWbltG6HstoglvBGeN0b0O1REg7msJKhDmPzTsGgdCMy
+         bVAxc0HiVqRzHjyJ9bEG6fUk6HZaNlRfB0IYKIHGnPChrFUh/0v1szE0ui2tTM3STcw6
+         Kyjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=upsOBUtW2Y73xz61cW61K0SNxFB0qFhoYjoqZY76O6s=;
+        b=LKko4ZzDlUP8ZvLL+Lr1ebWV2lcnU2QCi4M5LHLo7bBTLjUmeSTiU63DXPBHfT7dTy
+         kpgZuxKkUY5HHjJqEwO/nbyipByTVRZUo88C3XiObHNjvP9RqjsYpHbXfz8efkCkhKC8
+         wnP2/iLjEwCFOA2ZV3+0WZB47zyioYUUxTPHzyflrQkreZzJU1dqg26aD4+xrYUylGwG
+         w6bnnDxcNAbqB3ksGEmFQ8USjinKGkfww8Uk8jnsXGddkrGpkz7MRk10jVmlyiY+wJUq
+         43/xFUToEToIrsNARKeykDtlUZLAOtEbV8i6nnc7bzl55uTJ6OXZW9AiORCe7hhBuOxQ
+         6SBQ==
+X-Gm-Message-State: AOAM533hTUhPNH3LRRVZhhTsFt9VRc/hxkAhtfQEJULXLSgUP5w4vovA
+        K5LZdRA+ybSC8pU2lzo6Swf28DRkH7jEm1r1QUc=
+X-Google-Smtp-Source: ABdhPJwstUNIGLUOM0VaKVoUw09IuHHbUK7MT4yaDY1xaOe0W+AVvXV+CWPqE/1ZBZYsrXzGvI0rKIJ0eAQ1Ney8ASQ=
+X-Received: by 2002:a17:90a:84:: with SMTP id a4mr6095610pja.110.1594921833915;
+ Thu, 16 Jul 2020 10:50:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716125647.10964-1-paul@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=VwQbUJbxAAAA:8 a=ER_8r6IbAAAA:8
-        a=etWGH2V3dnbwptkrp_gA:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=9LHmKk7ezEChjTCyhBa9:22
+Received: by 2002:a17:90a:e7d1:0:0:0:0 with HTTP; Thu, 16 Jul 2020 10:50:33
+ -0700 (PDT)
+Reply-To: salim.salif@mail.com
+From:   "_s_a_l_l_m_i_f.,,,,  " <engaliaosama@gmail.com>
+Date:   Thu, 16 Jul 2020 10:50:33 -0700
+Message-ID: <CAOUXT9PC68=oBbADfXp2sBHJeip=zoZoW8eEjDDjM+4c21-nEQ@mail.gmail.com>
+Subject: Mr __s_a_l_l_m_..s_a_l_i_f.,,,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 02:56:46PM +0200, Paul Cercueil wrote:
-> The FRD350H54004 panel was marked as having active-high VSYNC and HSYNC
-> signals, which sorts-of worked, but resulted in the picture fading out
-> under certain circumstances.
-> 
-> Fix this issue by marking VSYNC and HSYNC signals active-low.
-> 
-> v2: Rebase on drm-misc-next
-> 
-> Fixes: 7b6bd8433609 ("drm/panel: simple: Add support for the Frida FRD350H54004 panel")
-> Cc: stable@vger.kernel.org # v5.5
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+I am Mr.sallm Salif, a regional managing director (CORIS BANK
+INTERNATIONAL) Ouagadougou Burkina Faso, in my department we have
+US$9,500.0000 million united state dollars, to transfer into your
+account as a dormant fund.If you are interested to use this fund to
+help the orphans around the world contact and send me your personal
+information for more details:
 
-Thanks for the re-submit. Applied both patches to drm-misc-next.
-
-	Sam
-
-> ---
->  drivers/gpu/drm/panel/panel-simple.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index f42249b72548..8b0bab9dd075 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -1763,7 +1763,7 @@ static const struct drm_display_mode frida_frd350h54004_mode = {
->  	.vsync_start = 240 + 2,
->  	.vsync_end = 240 + 2 + 6,
->  	.vtotal = 240 + 2 + 6 + 2,
-> -	.flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC,
-> +	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
->  };
->  
->  static const struct panel_desc frida_frd350h54004 = {
-> -- 
-> 2.27.0
+Your full names..........
+Your country of origin.....
+your city..........
+Your occupation..........
+Your Age..........
+Your Mobile Number..........
+Your Marital Status........
+A copy of your identification
