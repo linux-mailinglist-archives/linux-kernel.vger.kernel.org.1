@@ -2,230 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020172221FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BFE2221C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728398AbgGPL5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 07:57:07 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:34820 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728225AbgGPL43 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 07:56:29 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06GBpeZ4032230;
-        Thu, 16 Jul 2020 04:56:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0818;
- bh=mmPjUSFdMND1ZpSzT0MvJ8Gk26aDdePDNpVRUQly/Lo=;
- b=yBc0snixXMqINNH0ZDN81OIn2hfgT2QI6vSxMkURlMVrUf+IWuHXMS8qZJeYZNrprwsu
- 61D8VsT2oYirdRgme+/e9Rcw/ovrDFlJeIqH8sfQN1RkTfJ4KPSNc8yU8zkT9eILAsED
- I5DkT8xCcVHqgiAax1We0kIof0Cqv7DvYDo5VXZ2967cIXXb7y+jzzSnj4H6qtSVzhdD
- CpSktkLNY408mDQCNAPbQmCYT5WhdQLqxz3bE7CGUudPDfbFThoNmf3KWlYOOGMNJbol
- cJUAVuilmkKo33pNLcEti7D0EpkHMcIVjceBb/zM7NJLpHxfK3bdt4eCIIBFDohnpKiH cA== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0a-0016f401.pphosted.com with ESMTP id 32ap7v81qp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 04:56:08 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 16 Jul
- 2020 04:56:07 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 16 Jul 2020 04:56:07 -0700
-Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
-        by maili.marvell.com (Postfix) with ESMTP id AB0803F7041;
-        Thu, 16 Jul 2020 04:56:03 -0700 (PDT)
-From:   Alexander Lobakin <alobakin@marvell.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Alexander Lobakin <alobakin@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        "Ariel Elior" <aelior@marvell.com>,
-        Denis Bolotin <denis.bolotin@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <GR-everest-linux-l2@marvell.com>,
-        <QLogic-Storage-Upstream@cavium.com>, <netdev@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next 07/13] qede: format qede{,_vf}_ethtool_ops
-Date:   Thu, 16 Jul 2020 14:54:40 +0300
-Message-ID: <20200716115446.994-8-alobakin@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200716115446.994-1-alobakin@marvell.com>
-References: <20200716115446.994-1-alobakin@marvell.com>
+        id S1728410AbgGPLzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 07:55:25 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:40130 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726855AbgGPLzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 07:55:25 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jw2TI-0008Mw-8v; Thu, 16 Jul 2020 21:54:41 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Jul 2020 21:54:40 +1000
+Date:   Thu, 16 Jul 2020 21:54:40 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     mpm@selenic.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        alexander.sverdlin@nokia.com, dinghao.liu@zju.edu.cn,
+        yuehaibing@huawei.com, ben.dooks@codethink.co.uk,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HARDWARE RANDOM NUMBER GENERATOR CORE: Replace HTTP
+ links with HTTPS ones
+Message-ID: <20200716115440.GE31166@gondor.apana.org.au>
+References: <20200709103539.24319-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-16_05:2020-07-16,2020-07-16 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709103539.24319-1-grandmaster@al2klimov.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prior to adding new callbacks, format qede ethtool_ops structs to make
-declarations more fancy and readable.
+On Thu, Jul 09, 2020 at 12:35:39PM +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>  If there are any URLs to be removed completely or at least not HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+> 
+>  If you apply the patch, please let me know.
+> 
+> 
+>  drivers/char/hw_random/ks-sa-rng.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
----
- .../net/ethernet/qlogic/qede/qede_ethtool.c   | 137 +++++++++---------
- 1 file changed, 68 insertions(+), 69 deletions(-)
-
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_ethtool.c b/drivers/net/ethernet/qlogic/qede/qede_ethtool.c
-index f47167cfa382..f5851a6ae729 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_ethtool.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_ethtool.c
-@@ -2059,78 +2059,77 @@ static int qede_get_dump_data(struct net_device *dev,
- }
- 
- static const struct ethtool_ops qede_ethtool_ops = {
--	.supported_coalesce_params = ETHTOOL_COALESCE_USECS,
--	.get_link_ksettings = qede_get_link_ksettings,
--	.set_link_ksettings = qede_set_link_ksettings,
--	.get_drvinfo = qede_get_drvinfo,
--	.get_regs_len = qede_get_regs_len,
--	.get_regs = qede_get_regs,
--	.get_wol = qede_get_wol,
--	.set_wol = qede_set_wol,
--	.get_msglevel = qede_get_msglevel,
--	.set_msglevel = qede_set_msglevel,
--	.nway_reset = qede_nway_reset,
--	.get_link = qede_get_link,
--	.get_coalesce = qede_get_coalesce,
--	.set_coalesce = qede_set_coalesce,
--	.get_ringparam = qede_get_ringparam,
--	.set_ringparam = qede_set_ringparam,
--	.get_pauseparam = qede_get_pauseparam,
--	.set_pauseparam = qede_set_pauseparam,
--	.get_strings = qede_get_strings,
--	.set_phys_id = qede_set_phys_id,
--	.get_ethtool_stats = qede_get_ethtool_stats,
--	.get_priv_flags = qede_get_priv_flags,
--	.set_priv_flags = qede_set_priv_flags,
--	.get_sset_count = qede_get_sset_count,
--	.get_rxnfc = qede_get_rxnfc,
--	.set_rxnfc = qede_set_rxnfc,
--	.get_rxfh_indir_size = qede_get_rxfh_indir_size,
--	.get_rxfh_key_size = qede_get_rxfh_key_size,
--	.get_rxfh = qede_get_rxfh,
--	.set_rxfh = qede_set_rxfh,
--	.get_ts_info = qede_get_ts_info,
--	.get_channels = qede_get_channels,
--	.set_channels = qede_set_channels,
--	.self_test = qede_self_test,
--	.get_module_info = qede_get_module_info,
--	.get_module_eeprom = qede_get_module_eeprom,
--	.get_eee = qede_get_eee,
--	.set_eee = qede_set_eee,
--
--	.get_tunable = qede_get_tunable,
--	.set_tunable = qede_set_tunable,
--	.flash_device = qede_flash_device,
--	.get_dump_flag = qede_get_dump_flag,
--	.get_dump_data = qede_get_dump_data,
--	.set_dump = qede_set_dump,
-+	.supported_coalesce_params	= ETHTOOL_COALESCE_USECS,
-+	.get_link_ksettings		= qede_get_link_ksettings,
-+	.set_link_ksettings		= qede_set_link_ksettings,
-+	.get_drvinfo			= qede_get_drvinfo,
-+	.get_regs_len			= qede_get_regs_len,
-+	.get_regs			= qede_get_regs,
-+	.get_wol			= qede_get_wol,
-+	.set_wol			= qede_set_wol,
-+	.get_msglevel			= qede_get_msglevel,
-+	.set_msglevel			= qede_set_msglevel,
-+	.nway_reset			= qede_nway_reset,
-+	.get_link			= qede_get_link,
-+	.get_coalesce			= qede_get_coalesce,
-+	.set_coalesce			= qede_set_coalesce,
-+	.get_ringparam			= qede_get_ringparam,
-+	.set_ringparam			= qede_set_ringparam,
-+	.get_pauseparam			= qede_get_pauseparam,
-+	.set_pauseparam			= qede_set_pauseparam,
-+	.get_strings			= qede_get_strings,
-+	.set_phys_id			= qede_set_phys_id,
-+	.get_ethtool_stats		= qede_get_ethtool_stats,
-+	.get_priv_flags			= qede_get_priv_flags,
-+	.set_priv_flags			= qede_set_priv_flags,
-+	.get_sset_count			= qede_get_sset_count,
-+	.get_rxnfc			= qede_get_rxnfc,
-+	.set_rxnfc			= qede_set_rxnfc,
-+	.get_rxfh_indir_size		= qede_get_rxfh_indir_size,
-+	.get_rxfh_key_size		= qede_get_rxfh_key_size,
-+	.get_rxfh			= qede_get_rxfh,
-+	.set_rxfh			= qede_set_rxfh,
-+	.get_ts_info			= qede_get_ts_info,
-+	.get_channels			= qede_get_channels,
-+	.set_channels			= qede_set_channels,
-+	.self_test			= qede_self_test,
-+	.get_module_info		= qede_get_module_info,
-+	.get_module_eeprom		= qede_get_module_eeprom,
-+	.get_eee			= qede_get_eee,
-+	.set_eee			= qede_set_eee,
-+	.get_tunable			= qede_get_tunable,
-+	.set_tunable			= qede_set_tunable,
-+	.flash_device			= qede_flash_device,
-+	.get_dump_flag			= qede_get_dump_flag,
-+	.get_dump_data			= qede_get_dump_data,
-+	.set_dump			= qede_set_dump,
- };
- 
- static const struct ethtool_ops qede_vf_ethtool_ops = {
--	.supported_coalesce_params = ETHTOOL_COALESCE_USECS,
--	.get_link_ksettings = qede_get_link_ksettings,
--	.get_drvinfo = qede_get_drvinfo,
--	.get_msglevel = qede_get_msglevel,
--	.set_msglevel = qede_set_msglevel,
--	.get_link = qede_get_link,
--	.get_coalesce = qede_get_coalesce,
--	.set_coalesce = qede_set_coalesce,
--	.get_ringparam = qede_get_ringparam,
--	.set_ringparam = qede_set_ringparam,
--	.get_strings = qede_get_strings,
--	.get_ethtool_stats = qede_get_ethtool_stats,
--	.get_priv_flags = qede_get_priv_flags,
--	.get_sset_count = qede_get_sset_count,
--	.get_rxnfc = qede_get_rxnfc,
--	.set_rxnfc = qede_set_rxnfc,
--	.get_rxfh_indir_size = qede_get_rxfh_indir_size,
--	.get_rxfh_key_size = qede_get_rxfh_key_size,
--	.get_rxfh = qede_get_rxfh,
--	.set_rxfh = qede_set_rxfh,
--	.get_channels = qede_get_channels,
--	.set_channels = qede_set_channels,
--	.get_tunable = qede_get_tunable,
--	.set_tunable = qede_set_tunable,
-+	.supported_coalesce_params	= ETHTOOL_COALESCE_USECS,
-+	.get_link_ksettings		= qede_get_link_ksettings,
-+	.get_drvinfo			= qede_get_drvinfo,
-+	.get_msglevel			= qede_get_msglevel,
-+	.set_msglevel			= qede_set_msglevel,
-+	.get_link			= qede_get_link,
-+	.get_coalesce			= qede_get_coalesce,
-+	.set_coalesce			= qede_set_coalesce,
-+	.get_ringparam			= qede_get_ringparam,
-+	.set_ringparam			= qede_set_ringparam,
-+	.get_strings			= qede_get_strings,
-+	.get_ethtool_stats		= qede_get_ethtool_stats,
-+	.get_priv_flags			= qede_get_priv_flags,
-+	.get_sset_count			= qede_get_sset_count,
-+	.get_rxnfc			= qede_get_rxnfc,
-+	.set_rxnfc			= qede_set_rxnfc,
-+	.get_rxfh_indir_size		= qede_get_rxfh_indir_size,
-+	.get_rxfh_key_size		= qede_get_rxfh_key_size,
-+	.get_rxfh			= qede_get_rxfh,
-+	.set_rxfh			= qede_set_rxfh,
-+	.get_channels			= qede_get_channels,
-+	.set_channels			= qede_set_channels,
-+	.get_tunable			= qede_get_tunable,
-+	.set_tunable			= qede_set_tunable,
- };
- 
- void qede_set_ethtool_ops(struct net_device *dev)
+Patch applied.  Thanks.
 -- 
-2.25.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
