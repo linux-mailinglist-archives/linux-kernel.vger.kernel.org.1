@@ -2,156 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6298622288E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 18:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BE3222896
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 18:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgGPQuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 12:50:35 -0400
-Received: from mail-eopbgr1400110.outbound.protection.outlook.com ([40.107.140.110]:59424
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        id S1728906AbgGPQwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 12:52:34 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2493 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728415AbgGPQuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 12:50:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k4ebYTp7s2Psau3pppV8KWB/+TGd8hhWl0POpaLu1pcUSM5X8tsxEk1GLLIh/mdEZw+FoGRspth8qBVoL/OqulUujREIVelh8ch7VyiqG9i3HMeoaEmASF1AAKNlbZ9f1Mf+2UBbanvc2PFcdiihGhF4hEPh4sxYMQUcTbTGISnjif43C5XWRlm0K+SLlZu02P7rqSK405NYlmfb0XcdH9+NdsDlhKvKmJWb7FHG/BT6iZAyBef2bpQQAYH+8Cr3z90xkwuoEJ3ESC6iqALlVgeyQYYqgZy/CMozsuHmQOe6NXKf9RFFqUEAiKeZ3io8QwK0x1wa0wR0AdOo0cgolw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=taykd8y8jMBO41xXFE+NWR/Yzx+KYl6gOuMxvy+fdK8=;
- b=NlAuyZpqv0yZN5AWU0degJHT/XyPNWp2CGubsMaUGukuGd8anJvQFEynOEePJsz9Ts9JqmjoMGbElpvny0uRl/dLtEGt7Lg7bMCPU/o3v5EWf2oodddVMJrpwiaH8uUhGSKopeNiMQDZ1NEtFw4XkMV7GeRVd6RSXLmG1LMBFzROv9R/40QXhQrL+CEIICrLMbQisGjL5NrfSd6O0f4iqJEXN8zWPXg5UNOSU1INdqwSafGw+clQkpKhR4SoMGYyr4Sw0J54ALyleQLM7QpVup8iNjt2NZh3PtnDFNAdrfpQm18r51I06yKkYzoDyjFuv/dwF4/tJq7EpELF25rYMA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=taykd8y8jMBO41xXFE+NWR/Yzx+KYl6gOuMxvy+fdK8=;
- b=oI9QDurPsT2RYveu7yO3FbSpbnC11zGYgU3ALxgOcMgYsg29GkBfkKfI1l5g24xEozwoOQPvp8Q1q2SciiqzL4O3eX0xwCw7jic5x22aPRKKZb254f5WhQrpeHKrTNcyLvMN703oMbvrP/FbUh0lApBkAlyl/QPwjCGfuikzfXA=
-Received: from OSAPR01MB1748.jpnprd01.prod.outlook.com (2603:1096:603:32::19)
- by OSAPR01MB3041.jpnprd01.prod.outlook.com (2603:1096:603:3e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Thu, 16 Jul
- 2020 16:50:24 +0000
-Received: from OSAPR01MB1748.jpnprd01.prod.outlook.com
- ([fe80::8902:d50b:a2a:9f0a]) by OSAPR01MB1748.jpnprd01.prod.outlook.com
- ([fe80::8902:d50b:a2a:9f0a%2]) with mapi id 15.20.3195.019; Thu, 16 Jul 2020
- 16:50:23 +0000
-From:   Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: RE: [PATCH 6/8] arm64: dts: renesas: Initial r8a774e1 SoC device tree
-Thread-Topic: [PATCH 6/8] arm64: dts: renesas: Initial r8a774e1 SoC device
- tree
-Thread-Index: AQHWVVARu8MnMherwUCzbazhwdeoQKkKVlkAgAAhO0A=
-Date:   Thu, 16 Jul 2020 16:50:23 +0000
-Message-ID: <OSAPR01MB1748AAB4C372427D67D02981AA7F0@OSAPR01MB1748.jpnprd01.prod.outlook.com>
-References: <1594230511-24790-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1594230511-24790-7-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdVy4O9vbyO-j1eJbjQGon-3MEng42EOYJ2PoRmRY5ttKQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdVy4O9vbyO-j1eJbjQGon-3MEng42EOYJ2PoRmRY5ttKQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux-m68k.org; dkim=none (message not signed)
- header.d=none;linux-m68k.org; dmarc=none action=none
- header.from=bp.renesas.com;
-x-originating-ip: [193.141.220.21]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 88708588-ddd5-4300-4e32-08d829a85590
-x-ms-traffictypediagnostic: OSAPR01MB3041:
-x-microsoft-antispam-prvs: <OSAPR01MB30414FE78102035090E1DE25AA7F0@OSAPR01MB3041.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3A4IJtM7VJ3xIWKSoxIC02lRZ40bcFEkTDpm65OVEwaVJyLA64/q+4wCbe3930hUDwDQPN3G3U5sCIl4ErGF0O6dIjgWpIJAWxg9BBVsOiZjnybIIj65IQTSr07hfuspd21eBIvhWCAVJ7TwJ7gIeekk++k4PbUiKypAL/pcu1LTsacpaVTZTaa4f2A8ovUShViC9O4MUb7lsRJT8EwDhOF+YV2alz8677yyZ8yuiczRHDtdUJmzhNxnPZl4AgIhSFoxRJ3o+Ju52U+y+jcM0lKQsmA4wASh7xUhe5RDDUuChRa2TSTMbDtH/NhaUHhTUFhn1bMS4OGA2znRbEsMOw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB1748.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(346002)(366004)(376002)(396003)(64756008)(66556008)(66476007)(52536014)(66946007)(53546011)(83380400001)(76116006)(6506007)(66446008)(4326008)(186003)(33656002)(26005)(7696005)(5660300002)(86362001)(2906002)(316002)(9686003)(8676002)(7416002)(8936002)(6916009)(71200400001)(54906003)(55016002)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: OCmQ+QZ3+kfFAtqoouhY+RQN4/qhQs1i1wLEAM9ZNEgHIu/5zMcpA960S21kiGS6PQZFtp6TkWBNutCFPL+2Aw6uUCLUZUrOT6iotZdRq4IteLu35t871rI7GXBPv06D4/GyhhZifPbFfKmyFGMWXHuEh2KF/PFGTP3z6eL85AtNYz60Y6i3deyENHCT0+EU44tFDibTREXQiWa/zCZQwKu08nFljg1LGC/oSy3IaOIFfOJLQwGDDL7Tnu6dUVAMgRJaAz5FfQ73JEmEHmLKXskaLDH2QNQGdGrRIPmqW6xiQIlDKBhrkeR3PlCIsjmU8TCdR7EUKy4Okk5yHt8O2S5xQKxaAIkDeTEeI72MBiZKTMaICC6yQ6DYQrjGOwniP2O4zZIxqnX5V4zrAREmj+oVyRoCayMoWxYlFn+xt+pG42s1jjliVox/EECkISywJi5UTlem/6ox9MvjBp5CQUwpF6aB8zecUdln/eEcaTEwhCGBKiziN2GT8HcFQd2C
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1725867AbgGPQwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 12:52:32 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 845DA1299124E69D3125;
+        Thu, 16 Jul 2020 17:52:30 +0100 (IST)
+Received: from [127.0.0.1] (10.210.168.254) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 16 Jul
+ 2020 17:52:29 +0100
+Subject: Re: [PATCH 0/4] iommu/arm-smmu-v3: Improve cmdq lock efficiency
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>
+CC:     <joro@8bytes.org>, <trivial@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <maz@kernel.org>
+References: <1592846920-45338-1-git-send-email-john.garry@huawei.com>
+ <20200716101940.GA7036@willie-the-truck>
+ <20200716102233.GC7036@willie-the-truck>
+ <20200716102814.GD7036@willie-the-truck>
+ <bd302efa-20d8-e1b3-6a80-db65ab5ad752@huawei.com>
+ <aef1e4a4-d594-f477-9029-8f4295bb9f6c@arm.com>
+ <20200716113234.GA7290@willie-the-truck>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <cfd36aff-94ae-2019-3331-d43fba01070b@huawei.com>
+Date:   Thu, 16 Jul 2020 17:50:41 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB1748.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88708588-ddd5-4300-4e32-08d829a85590
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jul 2020 16:50:23.8750
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Aorx6wLGTwI5STeSQk4+39ctyVBBg+T6mg0yaM4dPa+GhZ0yqiVXoF8wmK5quPA76QE7JFjdRrrG7yrS+BW2OcGhMOqPfUW1/7GMPjgSC3d90seigsyDpY9cWxNMKX2M
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB3041
+In-Reply-To: <20200716113234.GA7290@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.254]
+X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgR2VlcnQsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogR2VlcnQg
-VXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4NCj4gU2VudDogMTYgSnVseSAyMDIw
-IDE1OjUxDQo+IFRvOiBQcmFiaGFrYXIgTWFoYWRldiBMYWQgPHByYWJoYWthci5tYWhhZGV2LWxh
-ZC5yakBicC5yZW5lc2FzLmNvbT4NCj4gQ2M6IE1hZ251cyBEYW1tIDxtYWdudXMuZGFtbUBnbWFp
-bC5jb20+OyBSb2IgSGVycmluZyA8cm9iaCtkdEBrZXJuZWwub3JnPjsgVGhvbWFzIEdsZWl4bmVy
-IDx0Z2x4QGxpbnV0cm9uaXguZGU+OyBKYXNvbg0KPiBDb29wZXIgPGphc29uQGxha2VkYWVtb24u
-bmV0PjsgTWFyYyBaeW5naWVyIDxtYXpAa2VybmVsLm9yZz47IFVsZiBIYW5zc29uIDx1bGYuaGFu
-c3NvbkBsaW5hcm8ub3JnPjsgR3JlZyBLcm9haC1IYXJ0bWFuDQo+IDxncmVna2hAbGludXhmb3Vu
-ZGF0aW9uLm9yZz47IENhdGFsaW4gTWFyaW5hcyA8Y2F0YWxpbi5tYXJpbmFzQGFybS5jb20+OyBX
-aWxsIERlYWNvbiA8d2lsbEBrZXJuZWwub3JnPjsgTGludXgtUmVuZXNhcyA8bGludXgtDQo+IHJl
-bmVzYXMtc29jQHZnZXIua2VybmVsLm9yZz47IG9wZW4gbGlzdDpPUEVOIEZJUk1XQVJFIEFORCBG
-TEFUVEVORUQgREVWSUNFIFRSRUUgQklORElOR1MgPGRldmljZXRyZWVAdmdlci5rZXJuZWwub3Jn
-PjsgTGludXgNCj4gTU1DIExpc3QgPGxpbnV4LW1tY0B2Z2VyLmtlcm5lbC5vcmc+OyBvcGVuIGxp
-c3Q6U0VSSUFMIERSSVZFUlMgPGxpbnV4LXNlcmlhbEB2Z2VyLmtlcm5lbC5vcmc+OyBMaW51eCBB
-Uk0gPGxpbnV4LWFybS0NCj4ga2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc+OyBMaW51eCBLZXJu
-ZWwgTWFpbGluZyBMaXN0IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPjsgUHJhYmhha2Fy
-IDxwcmFiaGFrYXIuY3NlbmdnQGdtYWlsLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCA2Lzhd
-IGFybTY0OiBkdHM6IHJlbmVzYXM6IEluaXRpYWwgcjhhNzc0ZTEgU29DIGRldmljZSB0cmVlDQo+
-DQo+IEhpIFByYWJoYWthciwNCj4NCj4gT24gV2VkLCBKdWwgOCwgMjAyMCBhdCA3OjQ5IFBNIExh
-ZCBQcmFiaGFrYXINCj4gPHByYWJoYWthci5tYWhhZGV2LWxhZC5yakBicC5yZW5lc2FzLmNvbT4g
-d3JvdGU6DQo+ID4gRnJvbTogTWFyaWFuLUNyaXN0aWFuIFJvdGFyaXUgPG1hcmlhbi1jcmlzdGlh
-bi5yb3Rhcml1LnJiQGJwLnJlbmVzYXMuY29tPg0KPiA+DQo+ID4gQmFzaWMgc3VwcG9ydCBmb3Ig
-dGhlIFJaL0cySCBTb0MuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBNYXJpYW4tQ3Jpc3RpYW4g
-Um90YXJpdSA8bWFyaWFuLWNyaXN0aWFuLnJvdGFyaXUucmJAYnAucmVuZXNhcy5jb20+DQo+ID4g
-U2lnbmVkLW9mZi1ieTogTGFkIFByYWJoYWthciA8cHJhYmhha2FyLm1haGFkZXYtbGFkLnJqQGJw
-LnJlbmVzYXMuY29tPg0KPiA+IC0tLQ0KPiA+ICBhcmNoL2FybTY0L2Jvb3QvZHRzL3JlbmVzYXMv
-cjhhNzc0ZTEuZHRzaSB8IDY1MiArKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmlsZSBj
-aGFuZ2VkLCA2NTIgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC9h
-cm02NC9ib290L2R0cy9yZW5lc2FzL3I4YTc3NGUxLmR0c2kNCj4gPg0KPiA+IGRpZmYgLS1naXQg
-YS9hcmNoL2FybTY0L2Jvb3QvZHRzL3JlbmVzYXMvcjhhNzc0ZTEuZHRzaSBiL2FyY2gvYXJtNjQv
-Ym9vdC9kdHMvcmVuZXNhcy9yOGE3NzRlMS5kdHNpDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQN
-Cj4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLjY2MzdlMTU3ZmZjZA0KPiA+IC0tLSAvZGV2L251bGwN
-Cj4gPiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL3JlbmVzYXMvcjhhNzc0ZTEuZHRzaQ0KPg0K
-PiA+ICsgICAgICAgICAgICAgICBpbnRjX2V4OiBpbnRlcnJ1cHQtY29udHJvbGxlckBlNjFjMDAw
-MCB7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJyZW5lc2FzLGlu
-dGMtZXgtcjhhNzc0YjEiLCAicmVuZXNhcyxpcnFjIjsNCj4NCj4gV29vcHMsICc0ZTEsIG9mIGNv
-dXJzZS4NCj4NCj4gQXMgSSBoYXZlbid0IHNlbnQgYSBQUiBmb3IgYXJtLXNvYyB5ZXQsIEknbGwg
-Zml4IGl0IHVwIGluIHJlbmVzYXMtZGV2ZWwuDQo+DQpBcmdoLCB0aGFua3MgZm9yIHRoZSBjYXRj
-aC4NCg0KQ2hlZXJzLA0KLS1QcmFiaGFrYXINCg0KPiBHcntvZXRqZSxlZXRpbmd9cywNCj4NCj4g
-ICAgICAgICAgICAgICAgICAgICAgICAgR2VlcnQNCj4NCj4gLS0NCj4gR2VlcnQgVXl0dGVyaG9l
-dmVuIC0tIFRoZXJlJ3MgbG90cyBvZiBMaW51eCBiZXlvbmQgaWEzMiAtLSBnZWVydEBsaW51eC1t
-NjhrLm9yZw0KPg0KPiBJbiBwZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGggdGVjaG5pY2FsIHBl
-b3BsZSwgSSBjYWxsIG15c2VsZiBhIGhhY2tlci4gQnV0DQo+IHdoZW4gSSdtIHRhbGtpbmcgdG8g
-am91cm5hbGlzdHMgSSBqdXN0IHNheSAicHJvZ3JhbW1lciIgb3Igc29tZXRoaW5nIGxpa2UgdGhh
-dC4NCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtLSBMaW51cyBUb3J2YWxkcw0K
-DQoNClJlbmVzYXMgRWxlY3Ryb25pY3MgRXVyb3BlIEdtYkgsIEdlc2NoYWVmdHNmdWVocmVyL1By
-ZXNpZGVudDogQ2Fyc3RlbiBKYXVjaCwgU2l0eiBkZXIgR2VzZWxsc2NoYWZ0L1JlZ2lzdGVyZWQg
-b2ZmaWNlOiBEdWVzc2VsZG9yZiwgQXJjYWRpYXN0cmFzc2UgMTAsIDQwNDcyIER1ZXNzZWxkb3Jm
-LCBHZXJtYW55LCBIYW5kZWxzcmVnaXN0ZXIvQ29tbWVyY2lhbCBSZWdpc3RlcjogRHVlc3NlbGRv
-cmYsIEhSQiAzNzA4IFVTdC1JRE5yLi9UYXggaWRlbnRpZmljYXRpb24gbm8uOiBERSAxMTkzNTM0
-MDYgV0VFRS1SZWcuLU5yLi9XRUVFIHJlZy4gbm8uOiBERSAxNDk3ODY0Nw0K
+>>
+>> Perhaps a silly question (I'm too engrossed in PMU world ATM to get properly
+>> back up to speed on this), but couldn't this be done without cmpxchg anyway?
+>> Instinctively it feels like instead of maintaining a literal software copy
+>> of the prod value, we could resolve the "claim my slot in the queue" part
+>> with atomic_fetch_add on a free-running 32-bit "pseudo-prod" index, then
+>> whoever updates the hardware deals with the truncation and wrap bit to
+>> convert it to an actual register value.
+> 
+> Maybe, but it's easier said than done. The hard part is figuring how that
+> you have space and there's no way I'm touching that logic without a way to
+> test this.
+> 
+> I'm also not keen to complicate the code because of systems that don't scale
+> well with contended CAS [1]. If you put down loads of cores, you need an
+> interconnect/coherence protocol that can handle it.
+
+JFYI, I added some debug to the driver to get the cmpxchg() attempt rate 
+while running a testharness (below):
+
+cpus	rate
+2	1.1
+4	1.1
+8	1.3
+16	3.6
+32	8.1
+64	12.6
+96	14.7
+
+Ideal rate is 1. So it's not crazy high for many CPUs, but still 
+drifting away from 1.
+
+John
+
+> 
+> Will
+> 
+> [1] https://lore.kernel.org/lkml/20190607072652.GA5522@hc/T/#m0d00f107c29223045933292a8b5b90d2ca9b7e5c
+> .
+> 
+
+//copied from Barry, thanks :)
+
+static int ways = 64;
+module_param(ways, int, S_IRUGO);
+
+static int seconds = 20;
+module_param(seconds, int, S_IRUGO);
+
+int mappings[NR_CPUS];
+struct semaphore sem[NR_CPUS];
+
+
+#define COMPLETIONS_SIZE 50
+
+static noinline dma_addr_t test_mapsingle(struct device *dev, void *buf, 
+int size)
+{
+     dma_addr_t dma_addr = dma_map_single(dev, buf, size, DMA_TO_DEVICE);
+     return dma_addr;
+}
+
+static noinline void test_unmapsingle(struct device *dev, void *buf, int 
+size, dma_addr_t dma_addr)
+{
+     dma_unmap_single(dev, dma_addr, size, DMA_TO_DEVICE);
+}
+
+static noinline void test_memcpy(void *out, void *in, int size)
+{
+     memcpy(out, in, size);
+}
+
+//just a hack to get a dev h behind a SMMU
+extern struct device *hisi_dev;
+
+static int testthread(void *data)
+{
+     unsigned long stop = jiffies +seconds*HZ;
+     struct device *dev = hisi_dev;
+     char *inputs[COMPLETIONS_SIZE];
+     char *outputs[COMPLETIONS_SIZE];
+     dma_addr_t dma_addr[COMPLETIONS_SIZE];
+     int i, cpu = smp_processor_id();
+     struct semaphore *sem = data;
+
+     for (i = 0; i < COMPLETIONS_SIZE; i++) {
+         inputs[i] = kzalloc(4096, GFP_KERNEL);
+         if (!inputs[i])
+             return -ENOMEM;
+     }
+
+     for (i = 0; i < COMPLETIONS_SIZE; i++) {
+         outputs[i] = kzalloc(4096, GFP_KERNEL);
+         if (!outputs[i])
+             return -ENOMEM;
+     }
+
+     while (time_before(jiffies, stop)) {
+         for (i = 0; i < COMPLETIONS_SIZE; i++) {
+             dma_addr[i] = test_mapsingle(dev, inputs[i], 4096);
+             test_memcpy(outputs[i], inputs[i], 4096);
+         }
+         for (i = 0; i < COMPLETIONS_SIZE; i++) {
+             test_unmapsingle(dev, inputs[i], 4096, dma_addr[i]);
+         }
+         mappings[cpu] += COMPLETIONS_SIZE;
+     }
+
+     for (i = 0; i < COMPLETIONS_SIZE; i++) {
+         kfree(outputs[i]);
+         kfree(inputs[i]);
+     }
+
+     up(sem);
+
+     return 0;
+}
+
+void smmu_test_core(int cpus)
+{
+     struct task_struct *tsk;
+     int i;
+     int total_mappings = 0;
+
+     ways = cpus;
+
+     for(i=0;i<ways;i++) {
+         mappings[i] = 0;
+         tsk = kthread_create_on_cpu(testthread, &sem[i], i,  "map_test");
+
+         if (IS_ERR(tsk))
+             printk(KERN_ERR "create test thread failed\n");
+         wake_up_process(tsk);
+     }
+
+     for(i=0;i<ways;i++) {
+         down(&sem[i]);
+         total_mappings += mappings[i];
+     }
+
+     printk(KERN_ERR "finished total_mappings=%d (per way=%d) (rate=%d 
+per second per cpu) ways=%d\n",
+     total_mappings, total_mappings / ways, total_mappings / (seconds* 
+ways), ways);
+
+}
+EXPORT_SYMBOL(smmu_test_core);
+
+
+static int __init test_init(void)
+{
+     int i;
+
+     for(i=0;i<NR_CPUS;i++)
+         sema_init(&sem[i], 0);
+
+     return 0;
+}
+
+static void __exit test_exit(void)
+{
+}
+
+module_init(test_init);
+module_exit(test_exit);
+MODULE_LICENSE("GPL");
+
