@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AFA222433
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D309622243A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728725AbgGPNqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgGPNqH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:46:07 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DB4C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:46:07 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id f18so11655433wml.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:46:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1Crn7XaTOFPhrYlDIsZatzqk+FDLvcbXlzkZjad2WAY=;
-        b=ZCu8CXInP03TrQAxb0+85FxBWLoCqTLjBYofXz9dz/MHBJ77oYeCkS8BZyB8PfsyfR
-         h7cjuoHQ174FvNAJe35uUkTDTuLXEnw9B1Cflc08dT7LoiAJ9eS/MTClE919psUmJ1Yu
-         p4hq+AQIbrL3c/EQPIxO7/uBvFi2BgRHqOB6Iaxhwlr7sxy4ZjOm3HmFduE5nVCaoc40
-         GLk8L5R5p6M8YK+HSwfbUvxTgwY7ielCaJZwmN2BYHiTS/+L6bfalaUV0qJPIu/KD7Kw
-         S9tgrpiX2WcT4Xz3ZUF3ygTqzjgJ1Tn23fETuDN+PWti4AfK+fNPDv5fpTB+vXXq4CvH
-         hiIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1Crn7XaTOFPhrYlDIsZatzqk+FDLvcbXlzkZjad2WAY=;
-        b=ndDRHGHLDXosrgIZ7/iGhDU3wiFXjWBOLmjf26JGRMMzaLiAdr/HMXWWecLY5EiLRu
-         ofPvjYKeNhjP7ZixF8/Ww1YaqMCOkPthAe9AzOFHPud17JvhbwWkvWzOymBQk8rJeMV9
-         Ent9f5+3S0v1u8CwFzi5+KRvijPN1Clq2gva1r6G1i2tJPeE8WvgO9g/3yRVahFi6Lv5
-         McUwOZYu2ZNrD+N3nZkDuda6Zz8h5+PSgScMCzINf6MjEq0QdP9HDQfEYLbFyiR3HymC
-         +KBCCgnqjAGgvhGxjud1LN/cCZ/SO8JIAso2znwSoB06Ll/pxtsUxA3GKUPDrn44w+yz
-         Tcbg==
-X-Gm-Message-State: AOAM532yi8hA/bC0Z8cdXyOHARCM18oNc/iNTVE9NXo06fS0kCzDByt5
-        5/6rj4fG0lmaJakeuyIcWJTDDQ==
-X-Google-Smtp-Source: ABdhPJzABLymprHrJbOu3vDvVfyXX0rXIMPbOqyh2TEOe8TDMx7XvUjAN27s4XgvRAL1AYfWA8gMCA==
-X-Received: by 2002:a7b:ca52:: with SMTP id m18mr4433464wml.92.1594907165870;
-        Thu, 16 Jul 2020 06:46:05 -0700 (PDT)
-Received: from dell ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id w13sm9162781wrr.67.2020.07.16.06.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 06:46:05 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 14:46:03 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] mfd: Convert to DEFINE_SHOW_ATTRIBUTE
-Message-ID: <20200716134603.GR3165313@dell>
-References: <20200716090236.13057-1-miaoqinglang@huawei.com>
+        id S1728828AbgGPNrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:47:22 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:46564 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726537AbgGPNrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 09:47:22 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id C8AF06FE82A9CF1EF574;
+        Thu, 16 Jul 2020 21:47:17 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.238) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Jul 2020
+ 21:47:11 +0800
+Subject: [PATCH -next v2] usb: usbtest: reduce stack usage in test_queue
+To:     <linux-next@vger.kernel.org>, <gustavoars@kernel.org>,
+        <stern@rowland.harvard.edu>, <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <qiang.zhang@windriver.com>,
+        "Wanghui (John)" <john.wanghui@huawei.com>
+References: <20200716082735.66342-1-cuibixuan@huawei.com>
+From:   Bixuan Cui <cuibixuan@huawei.com>
+Message-ID: <42fe1a83-38a5-816b-9258-8a344008f398@huawei.com>
+Date:   Thu, 16 Jul 2020 21:47:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200716090236.13057-1-miaoqinglang@huawei.com>
+In-Reply-To: <20200716082735.66342-1-cuibixuan@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.238]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Jul 2020, Qinglang Miao wrote:
+Fix the warning: [-Werror=-Wframe-larger-than=]
 
-> From: Yongqiang Liu <liuyongqiang13@huawei.com>
-> 
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
-> 
-> Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
-> ---
->  drivers/mfd/ab3100-core.c | 15 ++-------------
->  drivers/mfd/ab3100-otp.c  | 16 +++-------------
->  drivers/mfd/tps65010.c    | 14 ++------------
+drivers/usb/misc/usbtest.c: In function 'test_queue':
+drivers/usb/misc/usbtest.c:2148:1:
+warning: the frame size of 1232 bytes is larger than 1024 bytes
 
-Can you split this out into different patches please.
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+---
+ drivers/usb/misc/usbtest.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
->  3 files changed, 7 insertions(+), 38 deletions(-)
+diff --git a/drivers/usb/misc/usbtest.c b/drivers/usb/misc/usbtest.c
+index 8b220d56647b..a9b40953d6bc 100644
+--- a/drivers/usb/misc/usbtest.c
++++ b/drivers/usb/misc/usbtest.c
+@@ -2043,7 +2043,7 @@ test_queue(struct usbtest_dev *dev, struct usbtest_param_32 *param,
+ 	unsigned		i;
+ 	unsigned long		packets = 0;
+ 	int			status = 0;
+-	struct urb		*urbs[MAX_SGLEN];
++	struct urb		**urbs;
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+ 	if (!param->sglen || param->iterations > UINT_MAX / param->sglen)
+ 		return -EINVAL;
+@@ -2051,6 +2051,10 @@ test_queue(struct usbtest_dev *dev, struct usbtest_param_32 *param,
+ 	if (param->sglen > MAX_SGLEN)
+ 		return -EINVAL;
+
++	urbs = kcalloc(MAX_SGLEN, sizeof(*urbs), GFP_KERNEL);
++	if (!urbs)
++		return -ENOMEM;
++
+ 	memset(&context, 0, sizeof(context));
+ 	context.count = param->iterations * param->sglen;
+ 	context.dev = dev;
+@@ -2137,6 +2141,8 @@ test_queue(struct usbtest_dev *dev, struct usbtest_param_32 *param,
+ 	else if (context.errors >
+ 			(context.is_iso ? context.packet_count / 10 : 0))
+ 		status = -EIO;
++
++	kfree(urbs);
+ 	return status;
+
+ fail:
+@@ -2144,6 +2150,8 @@ test_queue(struct usbtest_dev *dev, struct usbtest_param_32 *param,
+ 		if (urbs[i])
+ 			simple_free_urb(urbs[i]);
+ 	}
++
++	kfree(urbs);
+ 	return status;
+ }
+
+--
+2.17.1
+
+
+.
+
+
