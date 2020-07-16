@@ -2,63 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F2C221D54
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D8C221D57
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgGPHYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:24:31 -0400
-Received: from mail-out.m-online.net ([212.18.0.9]:38384 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728260AbgGPHYa (ORCPT
+        id S1728492AbgGPHZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726141AbgGPHZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:24:30 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4B6m3J2gbWz1qsZw;
-        Thu, 16 Jul 2020 09:24:28 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4B6m3J1lMtz1qtwB;
-        Thu, 16 Jul 2020 09:24:28 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id J70jrAzaypsO; Thu, 16 Jul 2020 09:24:27 +0200 (CEST)
-X-Auth-Info: +GkvJW+U7a1jkwpYYtwvJGW4qb6pdIBqEmyMYF7EgbvcE/fEsu3c4+4SqZRjkrRE
-Received: from igel.home (ppp-46-244-175-239.dynamic.mnet-online.de [46.244.175.239])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 16 Jul 2020 09:24:27 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id D5C4F2C28D5; Thu, 16 Jul 2020 09:24:26 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Zong Li <zong.li@sifive.com>
-Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] riscv: fix build warning of mm/pageattr
-References: <cover.1594880014.git.zong.li@sifive.com>
-        <28365b581b04d0237e127363a63c1ad72dbea683.1594880014.git.zong.li@sifive.com>
-X-Yow:  I just remembered something about a TOAD!
-Date:   Thu, 16 Jul 2020 09:24:26 +0200
-In-Reply-To: <28365b581b04d0237e127363a63c1ad72dbea683.1594880014.git.zong.li@sifive.com>
-        (Zong Li's message of "Thu, 16 Jul 2020 14:15:27 +0800")
-Message-ID: <87sgdrx6qd.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.0.91 (gnu/linux)
+        Thu, 16 Jul 2020 03:25:02 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15885C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 00:25:02 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id z24so5962056ljn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 00:25:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iwWRMO4k+W7lJrGwJ6PHZuZwqQtagZ/HD1fwTfYKovY=;
+        b=iThWgF7429hYsYc4qRTjSRex2kqbLsyLFpMP2MZn9vGSLoqoJxFfTPHkXy3X4h1yNO
+         wMz1ItZrgKBpe7X5PMDM4myu4rrmCQjBEjRGT5S7BwY5oHsi0Guvhf6UbuJJcopsQB7b
+         OGYSi5XHeVBvtqJtMdhjgcvHv/TwUTYAbR3bnLbJ6hPEsCuHnhOwU3PgVSMjVTh75xaf
+         AeCTv9c2vFTB92HqSTh1fztxT5IsXbKt0ZQfFS3lRIjiAeDY1ZHreovLQH6JDLDXGQdD
+         c0wFuKYAiUNdlMGde+goFWD2217kTFZADR6xebf6pPZir0X6sz8/C6bZbzz3ICzSFyOd
+         ye1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iwWRMO4k+W7lJrGwJ6PHZuZwqQtagZ/HD1fwTfYKovY=;
+        b=MlDP0JGLntHHZCjQpVRGAsBAPrP10ahjVAnt395Z34WX2ySOTwh5Aw1c8avvb/GzrN
+         cw8aor7KnG67go6XR5tftqdrRSiYwDPq5pivaodmi2V1j/CMWWiKNSbk7cmjBSw2oM8g
+         BFd7YGUtyU1G7IXYNawQLCPw2fra7NTpQOfw7ecrX++QQ7IUHYo0ye4W1mhtzCnHDZht
+         OZd5pcGEeVlN2njaCK6lMmhHCve0hvwOYNIqcjD5bA4oJfLnjhWZRn2oBbFmFd8xrYYg
+         p/P8Ne5wCwyk+W7HL1vzNC4TpuDIZohoa4sVHhpK/PFYDKJODgxaZ3UKAYy8Ws0drejZ
+         fv3Q==
+X-Gm-Message-State: AOAM532Hq72Q/Z1s73168cjxzzOmIW3P1ybB3N6N66dmn7R0lUXEzsJC
+        esncHv74ImLsTbkTmlZWJt9ZGA==
+X-Google-Smtp-Source: ABdhPJxzkaMOt17VDa5ZtlEX2xqBMWiE7KrO334rqTYiE7Kn0Ybp1ROEMzXevSBfAY/ipqVHatFG1Q==
+X-Received: by 2002:a05:651c:1a7:: with SMTP id c7mr1396061ljn.345.1594884300536;
+        Thu, 16 Jul 2020 00:25:00 -0700 (PDT)
+Received: from [192.168.1.9] ([83.68.95.66])
+        by smtp.googlemail.com with ESMTPSA id f13sm1003407lfs.29.2020.07.16.00.24.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jul 2020 00:24:59 -0700 (PDT)
+Subject: Re: [PATCH v4 2/4] iommu/arm-smmu: Workaround for Marvell
+ Armada-AP806 SoC erratum #582743
+To:     Robin Murphy <robin.murphy@arm.com>, will@kernel.org,
+        joro@8bytes.org, gregory.clement@bootlin.com, robh+dt@kernel.org,
+        hannah@marvell.com
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        devicetree@vger.kernel.org, catalin.marinas@arm.com,
+        nadavh@marvell.com, linux-arm-kernel@lists.infradead.org,
+        mw@semihalf.com
+References: <20200715070649.18733-1-tn@semihalf.com>
+ <20200715070649.18733-3-tn@semihalf.com>
+ <793ede4d-79e9-3615-9da1-57cfe1a44c4d@arm.com>
+From:   Tomasz Nowicki <tn@semihalf.com>
+Message-ID: <5728f570-b3e5-63fe-9d59-768831943fef@semihalf.com>
+Date:   Thu, 16 Jul 2020 09:24:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <793ede4d-79e9-3615-9da1-57cfe1a44c4d@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Jul 16 2020, Zong Li wrote:
+On 15.07.2020 12:32, Robin Murphy wrote:
+> On 2020-07-15 08:06, Tomasz Nowicki wrote:
+>> From: Hanna Hawa <hannah@marvell.com>
+>>
+>> Due to erratum #582743, the Marvell Armada-AP806 can't access 64bit to
+>> ARM SMMUv2 registers.
+>>
+>> Provide implementation relevant hooks:
+>> - split the writeq/readq to two accesses of writel/readl.
+>> - mask the MMU_IDR2.PTFSv8 fields to not use AArch64 format (but
+>> only AARCH32_L) since with AArch64 format 32 bits access is not 
+>> supported.
+>>
+>> Note that most 64-bit registers like TTBRn can be accessed as two 32-bit
+>> halves without issue, and AArch32 format ensures that the register writes
+>> which must be atomic (for TLBI etc.) need only be 32-bit.
+> 
+> Thanks Tomasz, this has ended up as clean as I'd hoped it could, and 
+> there's still room to come back and play more complicated games later if 
+> a real need for AARCH64_64K at stage 2 crops up.
 
-> Add hearder for missing prototype. Also, static keyword should be at
+Based on your implementation infrastructure rework, indeed the code 
+looks much cleaner :)
 
-s/hearder/header/
+> 
+> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+> 
 
-Andreas.
+Thanks!
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Tomasz
