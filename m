@@ -2,139 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C769B222F50
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D75222F4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgGPXpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:45:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgGPXpN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:45:13 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCD8C08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:45:13 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id q17so4461433pfu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7HMps4EVe5QouaH170Ni6vFF1hKv4OVRQ58+hvK869s=;
-        b=a5rn2ThYvk32OHonppZRgr0gWChDuOIPVBbDLQ1uQhEBEWduMAs8sxC7Wtn5610Kwf
-         BciU3PiM4HVbTqEi+YdL05OTqTb7BhYaltbnoIY1SK98AUoRxrJlxTW7LgrHy8yaaFzg
-         wHc8SukhPm1z3uRr1c6PYMn6oqqCyyOOZztVtJfyLTr/Rw9rWqSwpZ1q30JamSf1DvS4
-         cK+9L1/ntRGxVe4zJRnol1izTRhavFA1NySWDPzwZ39usxUlrRmIR0YXRyolCBGhoqhD
-         myQZ6X+dn2KLMSc73YoDPqwaaCFslzde3FXdY5+5qBfVbX8WlFGpZY3zk9f4aIRfvls5
-         3E3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7HMps4EVe5QouaH170Ni6vFF1hKv4OVRQ58+hvK869s=;
-        b=UV+/6v/fgVXEGtQFsrc8eG0goP6nMPLOl3IT2p9M9j6GHyq+qmwGIn+UUq/+ecuVZU
-         Sm8bjZjNLxxghIjo3NKmoSswDLMWZn4UOQSpWJNcW1mYUH2anF2MckZbqY1/JFdl3Tgd
-         dyeIvEpzSm/OdIYiz8s10vCmvI9Ws2eRgfxsSodsxDTjXEMlCh39reyZAqNXAeHEqRtV
-         F16dFiF4zRDVnKNc90czudaGo9H1n7QjF5ECzxcNBcslPNy/rIvqOl3Cz9D3aDUfD7jx
-         thnHBbyKJH1RCplh5JAwP3FOQDbzUXB0Ald5bZU8TGnyg7yZ+5cL/8as1ugoQPkMNHHk
-         vKBg==
-X-Gm-Message-State: AOAM530Sds1ucLjP/6XyONtSz812270PqplYHDVOdjJrnyA4fsTVGrGO
-        2+T/uOb3sK9H7g8TLo2UUH4hvQ==
-X-Google-Smtp-Source: ABdhPJwmfESAulSis3weUqV/31ICtbnWJSbR9MqBo6uiZUCmpXjfWM5F052GbpZ/gabM+1BDHHe16A==
-X-Received: by 2002:a65:4786:: with SMTP id e6mr6275744pgs.258.1594943113069;
-        Thu, 16 Jul 2020 16:45:13 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id o8sm5752304pgb.23.2020.07.16.16.45.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 16:45:12 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 16:43:10 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     stanimir.varbanov@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mka@chromium.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: media: venus: Add an optional power
- domain for perf voting
-Message-ID: <20200716234310.GH1218486@builder.lan>
-References: <1594878139-3402-1-git-send-email-rnayak@codeaurora.org>
- <1594878139-3402-2-git-send-email-rnayak@codeaurora.org>
+        id S1726238AbgGPXoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:44:16 -0400
+Received: from mail-eopbgr00080.outbound.protection.outlook.com ([40.107.0.80]:50308
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726125AbgGPXoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 19:44:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fdAQXRU0D08Ps4FDiE/Yfnh8uDz/LFfW4lJMWKlA4IFzT4X/P+KQpPrZSYEBjzo46HNyBRQFfPmUj8Plo7Ck0eSYHpdkYEfPRFiGAEPiM7qfFWoWALS3PvXDEa/gdoTLxtXSKYi26HLwtOwV5HYMkN4c1Gr0KpTGVtUUGz5ruu0mAn9yk4E5AWH4VP/gW+LI22wODQKwW3FP7p0VvitW3Lb53iS8fBnrpAYAg86HY634c7B5DeXVScRv5XXqbLtAdkmqyYCWbeFaxLGgddZmHPSG+2wor277kwrHxANdA6y9Sdm/HtR3ew6HRNINmFbiXKzvdfu4c9fW0oRcMKPUNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lI1yy9aQskN+vUKHhhI48eLNLu/sEKVKUFpUhOiVQ+0=;
+ b=SZXUIp7lQOXfx4MLTOTmhHu/rZJZ5FPMc6U9XVp3r57WsNIH7oayWCqlrrHhARCbd694uxgeWThQqOpCRJzshwILkejznzzK92iGb9VUDbnTYstVCLgFPNrIGj/MAXv+Yp9gYvzzZaAmMmR12bQtG1IFjv1nBjIRVHhw7EI2gbgHCS6aecTVnyE6W9A+d+bhMGoDu2pb7epbjnjss/voNmrWbzwBLQRp4JQcxcQpn7zhI6KNmhcXPRlFu0SwLnje4EJa5pj4Zt1Lck+3wCuFXnQjlII7r8838irbVi8lHLdF1YCOGUilwgRLR6YAZyxCbJD8U8i/B8NNfbPz9/KI2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lI1yy9aQskN+vUKHhhI48eLNLu/sEKVKUFpUhOiVQ+0=;
+ b=UbOHCl5awBklUyqzrq+Jdg38BYoaMq8AwLDP2M9OWixki0G/UpwQRKpsEFRdYsaN/Mvdahj38zKaaMKveOn7cjt61etHPyZIQA9UO+7wCacitap8eWq7iQBOHs8phYdr6IVCDLmyU/rzR1vmO9wV4PyM8OJXrog8zYmU2kFkedI=
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com (2603:10a6:8:10::18)
+ by DB6PR0401MB2376.eurprd04.prod.outlook.com (2603:10a6:4:51::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3174.20; Thu, 16 Jul
+ 2020 23:44:11 +0000
+Received: from DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::1dab:b68c:e028:acb3]) by DB3PR0402MB3916.eurprd04.prod.outlook.com
+ ([fe80::1dab:b68c:e028:acb3%6]) with mapi id 15.20.3174.026; Thu, 16 Jul 2020
+ 23:44:11 +0000
+From:   Anson Huang <anson.huang@nxp.com>
+To:     Daniel Baluta <daniel.baluta@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "stefan@agner.ch" <stefan@agner.ch>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+CC:     dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH 1/2] pinctrl: imx: Support building SCU pinctrl driver as
+ module
+Thread-Topic: [PATCH 1/2] pinctrl: imx: Support building SCU pinctrl driver as
+ module
+Thread-Index: AQHWW4NHWrU0ATUAm0ydC8gIz0Rl9akKUIoAgAABVNCAAArtgIAAgWsw
+Date:   Thu, 16 Jul 2020 23:44:10 +0000
+Message-ID: <DB3PR0402MB3916AAEE01257A7F9A25A657F57F0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+References: <1594912013-20859-1-git-send-email-Anson.Huang@nxp.com>
+ <c00f8fe3-d12a-0f91-c301-c028e5aa3f25@nxp.com>
+ <DB3PR0402MB3916C9FE00C0F4FC62ACB711F57F0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <5e2af0c3-c832-3978-017e-0b1649aac61c@nxp.com>
+In-Reply-To: <5e2af0c3-c832-3978-017e-0b1649aac61c@nxp.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [183.192.22.28]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: af583e62-643d-4134-89d5-08d829e223ac
+x-ms-traffictypediagnostic: DB6PR0401MB2376:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR0401MB23765058D56E8DE0A74860A4F57F0@DB6PR0401MB2376.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VZZisyR758hmGBfWmPV+yAgQj5+Wb8VXjZYsDYbI68gIUTMYZZhLGgrQZcbzc3OKnBlEjnIdwbkOQLukfvAsAZirej+IcyOS1f4EhuWWEizks/UMzn/PCKyvzQOPAVbCDLVOXNMVJ7jUDkFk1FuxDSaEKaCaNDU3p3u11weFCKb4FVcj08niwIBq9UzWEKT4opIDWGIf+XYaqTqISq4n6MOKP6aMze9mnWmWjn8mvFSSttAXyJgXg2KOXLYYrCxwYbe7I2+YIrFrP4eeMPgx03h7KiJCckrYHn3EstQ+K81Jm8/EG8R2L4iLDg85Qj4jePApvcFF79ISjQIIkNq5NCeRAM2/iKNXlYawQ5y4Q5KVH80GGgIMI7tQfezJwzF+
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3916.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(39860400002)(376002)(366004)(346002)(52536014)(71200400001)(76116006)(66476007)(53546011)(6506007)(9686003)(2906002)(64756008)(66556008)(66446008)(5660300002)(66946007)(83380400001)(7696005)(33656002)(55016002)(8676002)(186003)(316002)(26005)(44832011)(110136005)(86362001)(8936002)(478600001)(4326008)(921003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: lLzTE1nHBOeWhDhwm1bneK/Tl1yBikR6hnZj66fNNMNTdHpaDBoGppQFOvHKpbJJkr19juBBdVzPMnRXQLJ/WcrmhzUZ+PmegOGchW5zDc8txlmrRGRFClgDFykLNTVHGYW4/jf/7FjIW5bsIHxosyyqNFhEnWi+5cD7YGqwCrDTSRMt6yrjG1R/J8U3lZoIgqYtkl+kC5Qj9nqGXOKvFPc8w0E0nXpe/yeC/112vBhO760+s0i4eX6+vhbuXd/qCh4Kl9+STnANAj0O++CGJRRfyOAbJjhJMzpPHqKXrQpu7OFtj0fJtrctY3tg93oECc3G1ggEtpWt/+XQzp7q6z3958F7wL8Gtcuf9d7Ebava9yCTZlUwGDN0XWAIqzs/q434CRb2QstMK+uRgUsBuNU2QPlybOCwTyW17FTgsBSrWmpUT+80cD/ePlxSCsFJTttPd4dGclcMYf7/uuMOXHaje0+gwt8tEMMLDGBBvgr+A8DixHT7uEZ5EGpeV3dX
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594878139-3402-2-git-send-email-rnayak@codeaurora.org>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3916.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af583e62-643d-4134-89d5-08d829e223ac
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Jul 2020 23:44:10.9753
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UOBUB262TZUHOYoGdg+UJG3OLGLYDVny6LVva7I5uPcls3Fdyogh6cy0m9a7XC1KAvWRkPhLNHlJvTYtxZheFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2376
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 15 Jul 22:42 PDT 2020, Rajendra Nayak wrote:
-
-> Add an optional power domain which when specified can be used for
-> setting the performance state of Venus.
-> 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
-> This is a resend of https://lore.kernel.org/patchwork/patch/1241077/
-> 
->  Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml    | 6 +++++-
->  Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml | 6 +++++-
->  2 files changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml b/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml
-> index 55f2d67..1e8675b 100644
-> --- a/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml
-> +++ b/Documentation/devicetree/bindings/media/qcom,sc7180-venus.yaml
-> @@ -25,12 +25,16 @@ properties:
->      maxItems: 1
->  
->    power-domains:
-> -    maxItems: 2
-> +    minItems: 2
-> +    maxItems: 3
->  
->    power-domain-names:
-> +    minItems: 2
-> +    maxItems: 3
->      items:
->        - const: venus
->        - const: vcodec0
-> +      - const: opp-pd
-
-In line with Rob's question, the "opp power-domain" seems like a
-software construct, wouldn't this be better named e.g. "cx"?
-
-Regards,
-Bjorn
-
->  
->    clocks:
->      maxItems: 5
-> diff --git a/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml b/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml
-> index 157dff8..437286d 100644
-> --- a/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml
-> +++ b/Documentation/devicetree/bindings/media/qcom,sdm845-venus-v2.yaml
-> @@ -25,13 +25,17 @@ properties:
->      maxItems: 1
->  
->    power-domains:
-> -    maxItems: 3
-> +    minItems: 3
-> +    maxItems: 4
->  
->    power-domain-names:
-> +    minItems: 3
-> +    maxItems: 4
->      items:
->        - const: venus
->        - const: vcodec0
->        - const: vcodec1
-> +      - const: opp-pd
->  
->    clocks:
->      maxItems: 7
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+SGksIERhbmllbA0KDQoNCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzJdIHBpbmN0cmw6IGlteDog
+U3VwcG9ydCBidWlsZGluZyBTQ1UgcGluY3RybCBkcml2ZXIgYXMNCj4gbW9kdWxlDQo+IA0KPiBP
+biA3LzE2LzIwIDY6MjEgUE0sIEFuc29uIEh1YW5nIHdyb3RlOg0KPiA+IEhpLCBEYW5pZWwNCj4g
+Pg0KPiA+DQo+ID4+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMS8yXSBwaW5jdHJsOiBpbXg6IFN1cHBv
+cnQgYnVpbGRpbmcgU0NVIHBpbmN0cmwNCj4gPj4gZHJpdmVyIGFzIG1vZHVsZQ0KPiA+Pg0KPiA+
+PiBIaSBBbnNvbiwNCj4gPj4NCj4gPj4gRmV3IGNvbW1lbnRzIGlubGluZToNCj4gPj4NCj4gPj4g
+T24gNy8xNi8yMCA2OjA2IFBNLCBBbnNvbiBIdWFuZyB3cm90ZToNCj4gPj4+IFRvIHN1cHBvcnQg
+YnVpbGRpbmcgaS5NWCBTQ1UgcGluY3RybCBkcml2ZXIgYXMgbW9kdWxlLCBiZWxvdyB0aGluZ3MN
+Cj4gPj4+IG5lZWQgdG8NCj4gPj4gYmUgY2hhbmdlZDoNCj4gPj4+ICAgICAgIC0gRXhwb3J0IFND
+VSByZWxhdGVkIGZ1bmN0aW9ucyBhbmQgdXNlICJJU19FTkFCTEVEIiBpbnN0ZWFkIG9mDQo+ID4+
+PiAgICAgICAgICJpZmRlZiIgdG8gc3VwcG9ydCBTQ1UgcGluY3RybCBkcml2ZXIgdXNlciBhbmQg
+aXRzZWxmIHRvIGJlDQo+ID4+PiAgICAgICAgIGJ1aWx0IGFzIG1vZHVsZTsNCj4gPj4+ICAgICAg
+IC0gVXNlIGZ1bmN0aW9uIGNhbGxiYWNrcyBmb3IgU0NVIHJlbGF0ZWQgZnVuY3Rpb25zIGluIHBp
+bmN0cmwtaW14LmMNCj4gPj4+ICAgICAgICAgaW4gb3JkZXIgdG8gc3VwcG9ydCB0aGUgc2NlbmFy
+aW8gb2YgUElOQ1RSTF9JTVggaXMgYnVpbHQgaW4NCj4gPj4+ICAgICAgICAgd2hpbGUgUElOQ1RS
+TF9JTVhfU0NVIGlzIGJ1aWx0IGFzIG1vZHVsZTsNCj4gPj4+ICAgICAgIC0gQWxsIGRyaXZlcnMg
+dXNpbmcgU0NVIHBpbmN0cmwgZHJpdmVyIG5lZWQgdG8gaW5pdGlhbGl6ZSB0aGUNCj4gPj4+ICAg
+ICAgICAgU0NVIHJlbGF0ZWQgZnVuY3Rpb24gY2FsbGJhY2s7DQo+ID4+PiAgICAgICAtIENoYW5n
+ZSBQSU5DVFJfSU1YX1NDVSB0byB0cmlzdGF0ZTsNCj4gPj4+ICAgICAgIC0gQWRkIG1vZHVsZSBh
+dXRob3IsIGRlc2NyaXB0aW9uIGFuZCBsaWNlbnNlLg0KPiA+Pj4NCj4gPj4+IFdpdGggYWJvdmUg
+Y2hhbmdlcywgaS5NWCBTQ1UgcGluY3RybCBkcml2ZXIgY2FuIGJlIGJ1aWx0IGFzIG1vZHVsZS4N
+Cj4gPj4NCj4gPj4gVGhlcmUgYXJlIGEgbG90IG9mIGNoYW5nZXMgaGVyZS4gSSB0aGluayBpdCB3
+b3VsZCBiZSBiZXR0ZXIgdG8gdHJ5IHRvDQo+ID4+IHNwbGl0IHRoZW0NCj4gPj4NCj4gPj4gcGVy
+IGZ1bmN0aW9uYWxpdHkuIE9uZSBmdW5jdGlvbmFsIGNoYW5nZSBwZXIgcGF0Y2guDQo+ID4gQWN0
+dWFsbHksIEkgZXZlciB0cmllZCB0byBzcGxpdCB0aGVtLCBidXQgdGhlIGZ1bmN0aW9uIHdpbGwg
+YmUgYnJva2VuLg0KPiA+IEFsbCB0aGUgY2hhbmdlcyBhcmUganVzdCB0byBzdXBwb3J0IHRoZSBt
+b2R1bGUgYnVpbGQuIElmIHNwbGl0IHRoZW0sDQo+ID4gdGhlIGJpc2VjdCB3aWxsIGhhdmUgcGlu
+Y3RybCBidWlsZCBvciBmdW5jdGlvbiBicm9rZW4uDQo+IA0KPiBIaSBBbnNvbiwNCj4gDQo+IA0K
+PiBJIHNlZSB5b3VyIHBvaW50IGFuZCBJIGtub3cgdGhhdCB0aGlzIGlzIGEgdmVyeSBoYXJkIHRh
+c2sgdG8gZ2V0IGl0IHJpZ2h0IGZyb20NCj4gDQo+IHRoZSBmaXJzdCBwYXRjaGVzLg0KPiANCj4g
+QnV0IGxldCBtZSBzdWdnZXN0IGF0IGxlYXN0IHRoYXQ6DQo+IA0KPiAtIGNoYW5nZXMgaW7CoCBk
+cml2ZXJzL3BpbmN0cmwvZnJlZXNjYWxlL3BpbmN0cmwtaW14LmMgKGluY2x1ZGUgZmlsZSBhbmQN
+Cj4gTU9EVUxFXyBtYWNyb3Mgc2hvdWxkIGdvIHRvIGEgc2VwYXJhdGUgcGF0Y2gpLg0KDQpZb3Ug
+bWVhbnQgaW4gcGF0Y2ggIzIsIHRoZSBjaGFuZ2VzIGluIEtjb25maWcgYW5kIHRoZSBjaGFuZ2Vz
+IGluIC5jIGZpbGUgc2hvdWxkDQpiZSBzcGxpdCB0byAyIHBhdGNoZXM/DQoNClRoYW5rcywNCkFu
+c29uIA0KDQo=
