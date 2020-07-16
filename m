@@ -2,145 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71DB221AF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235D9221B01
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728329AbgGPDlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 23:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728280AbgGPDll (ORCPT
+        id S1728451AbgGPDmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 23:42:47 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:7621 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728179AbgGPDmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 23:41:41 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34B5C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 20:41:41 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id s1so4445751pgq.10
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 20:41:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=eyGKIrNpC4d1P/2vRZTid13/ubCOQhtxZ8c/xlJYEpE=;
-        b=X+ZDYKXjnyNj5AU7zCSbrpZoHPKZ51Hrfb1LR4pT/3xzCKM9/fUKUUNTWEEkmBN61r
-         H9ebfBhG/IjIEUBJyrB+9l+v4rQMqLqi8vjpxM6S8K3uja/zR/oeHraNKLjsEb2Y41Rg
-         Qg0v5wHhjIBeqZl8XBah6pM807Jy4VUarcw4gDAk8iUY6ffk+mLqW0vgzy20+mH5QLIX
-         345hY6WD0ktT+q0dztB9Y2xrSONOgMwxyHCHOsxL63qCLtNA3hSSUwWv3mCSs/n6nN1p
-         /jsSPm6MsS1K9vT7UcT56OVxoU7xF4xqtCO1yBbnVGkUxOtgrxtngHSGmcOMdWg6pkdR
-         5RdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=eyGKIrNpC4d1P/2vRZTid13/ubCOQhtxZ8c/xlJYEpE=;
-        b=X9XU8O2ti7Rsy3lWLRGL9oFgTpppRSK3Uur+AOrKWNT+xBTuouNPHigA+26QIp08O6
-         9ZHg774HPQW7EJoTkA3e281Evg0YRonyMPzPlZlFCcfIWqulURCtfS7e5hGZcEsrHFrL
-         qhk0JtAAbC/4jhMSaSsUVIWQa8KLH2DzRFpz7eXqxaeBggLQR7v5tcRc5Yq8QSO1cLbY
-         P8RmTQqneTrOA/+HIwj1RGC4e/mKMahhPRvz+Gty9Ksjcfhh7lhVh1tvfyJadKT8HaJC
-         4If0jiVM4MgKQqs3KXm6YAgg7QkHVlt8do6NrrpvgekWryTqE8nkHVAU5+0jEZkWTx8W
-         Gj3Q==
-X-Gm-Message-State: AOAM532BGibfZ4ozST4A+4DlRY6FH+OjGcuJNEOlrmHD8pRvJ/q1XY3v
-        VHKYsb8daKk4vJUJ5+hn0jDI3vmmpP0=
-X-Google-Smtp-Source: ABdhPJxfUJKtPzUYd517kts5e2ZalfpZFYJNAaqWBnkfCircu0u2gV2Mqp09m/xHeasMDg5A8lCL0f+o63w=
-X-Received: by 2002:a17:90a:1fcb:: with SMTP id z11mr1642988pjz.1.1594870900921;
- Wed, 15 Jul 2020 20:41:40 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 20:41:28 -0700
-In-Reply-To: <20200716034128.1251728-1-badhri@google.com>
-Message-Id: <20200716034128.1251728-3-badhri@google.com>
-Mime-Version: 1.0
-References: <20200716034128.1251728-1-badhri@google.com>
-X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
-Subject: [PATCH 3/3 v3] usb: typec: tcpm: Stay in BIST mode till hardreset or unattached
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        reg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
+        Wed, 15 Jul 2020 23:42:46 -0400
+X-UUID: d23062ae6dd24211b7604b952cbb209d-20200716
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=CEsk1XhS81S7YqCL2/cfWNZFVQ4l+rq1KaxE7ps3pAk=;
+        b=ot8bMGEuqZnvlaEM5bTelmKbuXoEhy3D168PxipH1v4qMrueDtoW5Jpa65+AtkCq40uGMlBhPfiX2xRM+UwggvVU7yQjJZ0JCvpm/QFLhItZwRyibzn6zndysV3u2dmJu1IZva0SFd3T3vliUEaZvJRBBf/ipeeS5fVgvsvcK5c=;
+X-UUID: d23062ae6dd24211b7604b952cbb209d-20200716
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1572197662; Thu, 16 Jul 2020 11:42:40 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 16 Jul 2020 11:42:29 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 16 Jul 2020 11:42:29 +0800
+Message-ID: <1594870950.5018.3.camel@mtkswgap22>
+Subject: Re: [PATCH v2 2/2] soc: mediatek: add mtk-devapc driver
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     Neal Liu <neal.liu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 16 Jul 2020 11:42:30 +0800
+In-Reply-To: <CAAOTY_-6d12FUf5XnYco0f0CfeWsb-XjsCESsLixLr_Q=jnc0Q@mail.gmail.com>
+References: <1594285927-1840-1-git-send-email-neal.liu@mediatek.com>
+         <1594285927-1840-3-git-send-email-neal.liu@mediatek.com>
+         <CAAOTY_-6d12FUf5XnYco0f0CfeWsb-XjsCESsLixLr_Q=jnc0Q@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Port starts to toggle when transitioning to unattached state.
-This is incorrect while in BIST mode.
-
-6.4.3.1 BIST Carrier Mode
-Upon receipt of a BIST Message, with a BIST Carrier Mode BIST Data Object,
-the UUT Shall send out a continuous string of BMC encoded alternating "1"s
-and =E2=80=9C0=E2=80=9Ds. The UUT Shall exit the Continuous BIST Mode withi=
-n
-tBISTContMode of this Continuous BIST Mode being enabled(see
-Section 6.6.7.2).
-
-6.4.3.2 BIST Test Data
-Upon receipt of a BIST Message, with a BIST Test Data BIST Data Object,
-the UUT Shall return a GoodCRC Message and Shall enter a test mode in which
-it sends no further Messages except for GoodCRC Messages in response to
-received Messages. See Section 5.9.2 for the definition of the Test Data
-Frame. The test Shall be ended by sending Hard Reset Signaling to reset the
-UUT.
-
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
-Version history:
-Changes since V1:
-- None
-
-Changes since V2:(Guenter's suggestions)
-- Fixed formatting error
-- Reduced timeout to 50ms
-
----
- drivers/usb/typec/tcpm/tcpm.c | 7 +++++--
- include/linux/usb/pd.h        | 1 +
- 2 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 379fcab9dbd973..38b958a9650104 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -3559,6 +3559,8 @@ static void run_state_machine(struct tcpm_port *port)
- 		switch (BDO_MODE_MASK(port->bist_request)) {
- 		case BDO_MODE_CARRIER2:
- 			tcpm_pd_transmit(port, TCPC_TX_BIST_MODE_2, NULL);
-+			tcpm_set_state(port, unattached_state(port),
-+				       PD_T_BIST_CONT_MODE);
- 			break;
- 		case BDO_MODE_TESTDATA:
- 			if (port->tcpc->set_bist_data) {
-@@ -3569,8 +3571,6 @@ static void run_state_machine(struct tcpm_port *port)
- 		default:
- 			break;
- 		}
--		/* Always switch to unattached state */
--		tcpm_set_state(port, unattached_state(port), 0);
- 		break;
- 	case GET_STATUS_SEND:
- 		tcpm_pd_send_control(port, PD_CTRL_GET_STATUS);
-@@ -3960,6 +3960,9 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
- static void _tcpm_pd_hard_reset(struct tcpm_port *port)
- {
- 	tcpm_log_force(port, "Received hard reset");
-+	if (port->bist_request =3D=3D BDO_MODE_TESTDATA && port->tcpc->set_bist_d=
-ata)
-+		port->tcpc->set_bist_data(port->tcpc, false);
-+
- 	/*
- 	 * If we keep receiving hard reset requests, executing the hard reset
- 	 * must have failed. Revert to error recovery if that happens.
-diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
-index a665d7f211424d..b6c233e79bd457 100644
---- a/include/linux/usb/pd.h
-+++ b/include/linux/usb/pd.h
-@@ -483,4 +483,5 @@ static inline unsigned int rdo_max_power(u32 rdo)
- #define PD_N_CAPS_COUNT		(PD_T_NO_RESPONSE / PD_T_SEND_SOURCE_CAP)
- #define PD_N_HARD_RESET_COUNT	2
-=20
-+#define PD_T_BIST_CONT_MODE	50 /* 30 - 60 ms */
- #endif /* __LINUX_USB_PD_H */
---=20
-2.27.0.389.gc38d7665816-goog
+SGkgQ2h1bi1LdWFuZywNCg0KT24gVGh1LCAyMDIwLTA3LTE2IGF0IDA3OjQ2ICswODAwLCBDaHVu
+LUt1YW5nIEh1IHdyb3RlOg0KPiBISSwgTmVhbDoNCj4gDQo+IE5lYWwgTGl1IDxuZWFsLmxpdUBt
+ZWRpYXRlay5jb20+IOaWvCAyMDIw5bm0N+aciDnml6Ug6YCx5ZubIOS4i+WNiDU6MTPlr6vpgZPv
+vJoNCj4gPg0KPiA+IE1lZGlhVGVrIGJ1cyBmYWJyaWMgcHJvdmlkZXMgVHJ1c3Rab25lIHNlY3Vy
+aXR5IHN1cHBvcnQgYW5kIGRhdGENCj4gPiBwcm90ZWN0aW9uIHRvIHByZXZlbnQgc2xhdmVzIGZy
+b20gYmVpbmcgYWNjZXNzZWQgYnkgdW5leHBlY3RlZA0KPiA+IG1hc3RlcnMuDQo+ID4gVGhlIHNl
+Y3VyaXR5IHZpb2xhdGlvbiBpcyBsb2dnZWQgYW5kIHNlbnQgdG8gdGhlIHByb2Nlc3NvciBmb3IN
+Cj4gPiBmdXJ0aGVyIGFuYWx5c2lzIG9yIGNvdW50ZXJtZWFzdXJlcy4NCj4gPg0KPiA+IEFueSBv
+Y2N1cnJlbmNlIG9mIHNlY3VyaXR5IHZpb2xhdGlvbiB3b3VsZCByYWlzZSBhbiBpbnRlcnJ1cHQs
+IGFuZA0KPiA+IGl0IHdpbGwgYmUgaGFuZGxlZCBieSBtdGstZGV2YXBjIGRyaXZlci4gVGhlIHZp
+b2xhdGlvbg0KPiA+IGluZm9ybWF0aW9uIGlzIHByaW50ZWQgaW4gb3JkZXIgdG8gZmluZCB0aGUg
+bXVyZGVyZXIuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBOZWFsIExpdSA8bmVhbC5saXVAbWVk
+aWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiANCj4gW3NuaXBdDQo+IA0KPiA+ICsNCj4gPiArLyoNCj4g
+PiArICogbXRrX2RldmFwY19kdW1wX3Zpb19kYmcgLSBzaGlmdCAmIGR1bXAgdGhlIHZpb2xhdGlv
+biBkZWJ1ZyBpbmZvcm1hdGlvbi4NCj4gPiArICovDQo+ID4gK3N0YXRpYyBib29sIG10a19kZXZh
+cGNfZHVtcF92aW9fZGJnKHN0cnVjdCBtdGtfZGV2YXBjX2NvbnRleHQgKmRldmFwY19jdHgsDQo+
+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IHNsYXZlX3R5cGUsIGlu
+dCAqdmlvX2lkeCkNCj4gPiArew0KPiA+ICsgICAgICAgY29uc3Qgc3RydWN0IG10a19kZXZpY2Vf
+aW5mbyAqKmRldmljZV9pbmZvOw0KPiA+ICsgICAgICAgdTMyIHNoaWZ0X2JpdDsNCj4gPiArICAg
+ICAgIGludCBpOw0KPiA+ICsNCj4gPiArICAgICAgIGRldmljZV9pbmZvID0gZGV2YXBjX2N0eC0+
+ZGV2aWNlX2luZm87DQo+ID4gKw0KPiA+ICsgICAgICAgZm9yIChpID0gMDsgaSA8IGdldF92aW9f
+c2xhdmVfbnVtKHNsYXZlX3R5cGUpOyBpKyspIHsNCj4gPiArICAgICAgICAgICAgICAgKnZpb19p
+ZHggPSBkZXZpY2VfaW5mb1tzbGF2ZV90eXBlXVtpXS52aW9faW5kZXg7DQo+ID4gKw0KPiA+ICsg
+ICAgICAgICAgICAgICBpZiAoY2hlY2tfdmlvX21hc2soZGV2YXBjX2N0eCwgc2xhdmVfdHlwZSwg
+KnZpb19pZHgpKQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGNvbnRpbnVlOw0KPiANCj4g
+SSBndWVzcyBpZiBvbmUgdmlvX2lkeCBpcyBtYXNrZWQsIGl0cyBzdGF0dXMgd291bGQgbmV2ZXIg
+YmUgdHJ1ZS4gSWYNCj4gbXkgZ3Vlc3MgaXMgcmlnaHQsIEkgdGhpbmsgeW91IGNvdWxkIHNraXAg
+Y2hlY2tfdmlvX21hc2soKSBhbmQNCj4gZGlyZWN0bHkgY2hlY2tfdmlvX3N0YXR1cygpLg0KDQpO
+by4gRXZlbiBpZiB2aW9faWR4IGlzIG1hc2tlZCwgdmlvX3N0YXR1cyB3aWxsIHN0aWxsIHJhaXNl
+IHdoZW4NCnZpb2xhdGlvbiBpcyB0cmlnZ2VyZWQuDQoNCj4gDQo+ID4gKw0KPiA+ICsgICAgICAg
+ICAgICAgICBpZiAoIWNoZWNrX3Zpb19zdGF0dXMoZGV2YXBjX2N0eCwgc2xhdmVfdHlwZSwgKnZp
+b19pZHgpKQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGNvbnRpbnVlOw0KPiA+ICsNCj4g
+PiArICAgICAgICAgICAgICAgc2hpZnRfYml0ID0gZ2V0X3NoaWZ0X2dyb3VwKGRldmFwY19jdHgs
+IHNsYXZlX3R5cGUsICp2aW9faWR4KTsNCj4gPiArDQo+ID4gKyAgICAgICAgICAgICAgIGlmICgh
+c3luY192aW9fZGJnKGRldmFwY19jdHgsIHNsYXZlX3R5cGUsIHNoaWZ0X2JpdCkpDQo+ID4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgY29udGludWU7DQo+ID4gKw0KPiA+ICsgICAgICAgICAgICAg
+ICBkZXZhcGNfZXh0cmFjdF92aW9fZGJnKGRldmFwY19jdHgsIHNsYXZlX3R5cGUpOw0KPiA+ICsN
+Cj4gPiArICAgICAgICAgICAgICAgcmV0dXJuIHRydWU7DQo+IA0KPiBJIHRoaW5rIG11bHRpcGxl
+IHZpb19pZHggd291bGQgdmlvbGF0ZSBhdCB0aGUgc2FtZSB0aW1lLCB3aHkganVzdCBwcm9jZXNz
+IG9uZT8NCg0KV2UgcHJvY2VzcyBlYWNoIHZpb19pZHggZm9yIGVhY2ggaW50ZXJydXB0Lg0KSWYg
+dGhlcmUgYXJlIG11bHRpcGxlIHZpb19pZHggaXMgcmFpc2VkLCBpdCB3aWxsIHRyaWdnZXIgYW5v
+dGhlcg0KaW50ZXJydXB0IHRvIGhhbmRsZSBpdC4NCg0KPiANCj4gUmVnYXJkcywNCj4gQ2h1bi1L
+dWFuZy4NCj4gDQo+ID4gKyAgICAgICB9DQo+ID4gKw0KPiA+ICsgICAgICAgcmV0dXJuIGZhbHNl
+Ow0KPiA+ICt9DQoNCg==
 
