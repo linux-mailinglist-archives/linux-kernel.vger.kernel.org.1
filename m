@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04934221F50
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D1C221F66
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728295AbgGPJCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:02:55 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7868 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726333AbgGPJCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:02:54 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 17F9E5A95E9514988E2A;
-        Thu, 16 Jul 2020 17:02:48 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 16 Jul 2020 17:02:46 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>, Chen-Yu Tsai <wens@csie.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stefano Stabellini <sstabellini@kernel.org>
-CC:     <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] x86/xen: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Thu, 16 Jul 2020 17:06:41 +0800
-Message-ID: <20200716090641.14184-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726350AbgGPJHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:07:01 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:35620 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgGPJHA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:07:00 -0400
+Received: by mail-lj1-f193.google.com with SMTP id q4so6341975lji.2;
+        Thu, 16 Jul 2020 02:06:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OBEQGPTChpp2rgfOeM1kSlSWAgJYyyqDBB2eHOFChvg=;
+        b=E3WGiQii4LSgSwQD1wK61QMPu1byZy4EaIJ5eFfCeE01Q2L4FTjQmvV7W0f4hrxcSA
+         36V2Kh3nnTexA6Km5cqGc7fsFPCStRMb5kyFJ5CXvzksAHZa9QNU7uESMHqXXX5Q2CNe
+         L/w2ijxPJSakpFWYWrJosDlboAPRjl4Cf2E5TnbVBqUMF7brV/jYAzwZwb8upw4wNTiO
+         KlIltQIontVYk/lRA6Ks3R8IHTEwCMuqbaEcK3ieTQcxiRa7ICicjVmF/pWZFZ3SCVEb
+         OsP8MM7hH3R2t5lucWqbHD5DKv+o28mTHvWvdWonK8hVrMC4Q2DXR2u3dqdhf4tqnr2a
+         /gsA==
+X-Gm-Message-State: AOAM530UIwgvZjaP2H7+4Ts5Q7EbtLs4glcdLbgAUU+mpY+47NuOQO2G
+        6a48DhRfXee0rbzYJ5IXbcGjouyr0XHmpnjkqlA=
+X-Google-Smtp-Source: ABdhPJzY4AtdWyo0zU9lTfnS590Gsucs///uO2eLVmlTpmxBUsgFn3PU56CccKqZUhFsj1MTJh4QVTSCc2tt6OsY5EQ=
+X-Received: by 2002:a05:651c:3c2:: with SMTP id f2mr1584485ljp.37.1594890418508;
+ Thu, 16 Jul 2020 02:06:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+References: <CGME20200716053452eucas1p24dedd4565b90817c244724b1c52a8329@eucas1p2.samsung.com>
+ <20200716053438.3498-1-m.szyprowski@samsung.com>
+In-Reply-To: <20200716053438.3498-1-m.szyprowski@samsung.com>
+From:   Sudeep Holla <sudeep.holla@arm.com>
+Date:   Thu, 16 Jul 2020 10:06:46 +0100
+Message-ID: <CAPKp9uYCKBpWazGCV8gw8U0ZBB-X5UkeSw4+_5m6awZ8W=azFA@mail.gmail.com>
+Subject: Re: [PATCH] rtc: pl031: fix alarm support
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-arm <linux-arm-kernel@lists.infradead.org>,
+        linux-rtc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Huang <chenhuang5@huawei.com>
+On Thu, Jul 16, 2020 at 6:37 AM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> Commit 75a472845196 ("rtc: pl031: switch to rtc_time64_to_tm/rtc_tm_to_time64")
+> adjusted driver to the new API, but during the conversion a call to enable
+> alarm irq in set_alarm() was lost. Restore it, what fixes alarm support in
+> the PL031 RTC driver.
+>
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+I posted exact same fix couple of days back[1]
 
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
----
- arch/x86/xen/p2m.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+--
+Regards,
+Sudeep
 
-diff --git a/arch/x86/xen/p2m.c b/arch/x86/xen/p2m.c
-index 4cf680e2e..0f4a449de 100644
---- a/arch/x86/xen/p2m.c
-+++ b/arch/x86/xen/p2m.c
-@@ -799,17 +799,7 @@ static int p2m_dump_show(struct seq_file *m, void *v)
- 	return 0;
- }
- 
--static int p2m_dump_open(struct inode *inode, struct file *filp)
--{
--	return single_open(filp, p2m_dump_show, NULL);
--}
--
--static const struct file_operations p2m_dump_fops = {
--	.open		= p2m_dump_open,
--	.read_iter		= seq_read_iter,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(p2m_dump);
- 
- static struct dentry *d_mmu_debug;
- 
--- 
-2.17.1
-
+[1] http://lore.kernel.org/r/20200714124556.20294-1-sudeep.holla@arm.com
