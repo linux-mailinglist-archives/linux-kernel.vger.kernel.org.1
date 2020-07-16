@@ -2,72 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDB5221B09
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D75FA221B0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbgGPDoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 23:44:25 -0400
-Received: from mga09.intel.com ([134.134.136.24]:54949 "EHLO mga09.intel.com"
+        id S1728163AbgGPDui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 23:50:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727983AbgGPDoL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 23:44:11 -0400
-IronPort-SDR: hO3DR8pIHPJyAPib1as0tvQsemZi7+efXMS71WapPlhFxaMuPzGYWa7bHhy+TVxinnXUclVI5u
- Ag+m/XRY4VgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="150699764"
-X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
-   d="scan'208";a="150699764"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 20:44:10 -0700
-IronPort-SDR: uzxfcCpMkc51totkU1zNgVmE1rsGKQo6vjRhXZ+f+A+HSx+uV7N4gF8AlPBAdS2hnSmSMAmWrJ
- EA7Ur5x4bxog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
-   d="scan'208";a="282314266"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by orsmga003.jf.intel.com with ESMTP; 15 Jul 2020 20:44:10 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] KVM: x86: Unexport cpuid_query_maxphyaddr()
-Date:   Wed, 15 Jul 2020 20:44:08 -0700
-Message-Id: <20200716034408.6342-4-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200716034408.6342-1-sean.j.christopherson@intel.com>
-References: <20200716034408.6342-1-sean.j.christopherson@intel.com>
+        id S1726770AbgGPDui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 23:50:38 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E64692071B;
+        Thu, 16 Jul 2020 03:50:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594871438;
+        bh=0bDASk0781jq/cji5sUbOq/NcKI50JUK8aOvo76NM1A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oogYGLGg0wKaXDpiEPMy1C41qPf1XwXf75ZyM6sPozBFOEfZLOmH1H3ACsugiBw4D
+         xQmkE5O0d+/WUca5QU/EybTHyZ2vzR8gomP1mVuR2rWfVW4rg1PEi8y49sXdFPqxO9
+         lNFpbIavUtYET351S/KiGjPIo8O5wj5qv5X6mchI=
+Date:   Wed, 15 Jul 2020 20:50:36 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Subject: Re: [PATCH 3/9 v2 net-next] net: wimax: fix duplicate words in
+ comments
+Message-ID: <20200715205036.551e0486@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <50300854-3b28-3bab-dcf8-4dd49efebf86@infradead.org>
+References: <20200715164246.9054-1-rdunlap@infradead.org>
+        <20200715164246.9054-3-rdunlap@infradead.org>
+        <20200715203453.4781ddee@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <50300854-3b28-3bab-dcf8-4dd49efebf86@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stop exporting cpuid_query_maxphyaddr() now that it's not being abused
-by VMX.
+On Wed, 15 Jul 2020 20:35:34 -0700 Randy Dunlap wrote:
+> On 7/15/20 8:34 PM, Jakub Kicinski wrote:
+> > On Wed, 15 Jul 2020 09:42:40 -0700 Randy Dunlap wrote:  
+> >>  /*
+> >> - * CPP sintatic sugar to generate A_B like symbol names when one of
+> >> - * the arguments is a a preprocessor #define.
+> >> + * CPP syntatic sugar to generate A_B like symbol names when one of  
+> > 
+> > synta*c*tic
+> > 
+> > Let me fix that up before applying.  
+> 
+> eww. Thanks.
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/cpuid.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 7d92854082a14..e4a8065fbddd7 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -188,7 +188,6 @@ int cpuid_query_maxphyaddr(struct kvm_vcpu *vcpu)
- not_found:
- 	return 36;
- }
--EXPORT_SYMBOL_GPL(cpuid_query_maxphyaddr);
- 
- /* when an old userspace process fills a new kernel module */
- int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
--- 
-2.26.0
-
+Applied, pushed. Thanks!
