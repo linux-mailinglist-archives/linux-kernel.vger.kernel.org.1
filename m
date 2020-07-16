@@ -2,177 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63396222F4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 243D0222F5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbgGPXow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
+        id S1726216AbgGPXr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgGPXow (ORCPT
+        with ESMTP id S1725933AbgGPXr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:44:52 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4C4C061755;
-        Thu, 16 Jul 2020 16:44:51 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s189so5720555pgc.13;
-        Thu, 16 Jul 2020 16:44:51 -0700 (PDT)
+        Thu, 16 Jul 2020 19:47:56 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F53C061755;
+        Thu, 16 Jul 2020 16:47:56 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id i80so4948852lfi.13;
+        Thu, 16 Jul 2020 16:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b87Qqp4/uiRihe98ddeAhee2zlCsyVOmpKiv8uZHXek=;
-        b=hEkIv4UtH9Uo1HCpChBQ5wcUVhRASkkdGBO/z/koaN0BOKodrPbX3MXorkr/vL/q6p
-         +dZ7YkdDJlapVuRDihjd6xZEnbrw22uEBfyzJqOqcclcS1ILf1ANkVEGE7dnkJEOo7d7
-         pDdObdv6t957O8QV+6an28TumGcwxfYRFz07pjtxMkOkrf9v2KLDniNHRYs+reGLOlEw
-         DRMFqcx/5dI0bUfTAh6r3Jh7fRhIBZb5XKzqE0iS2lnlx7bD5iW/TSXRVh/VplMXBqro
-         uLn9UE+DCDLJBv6zGe3D+m9GE0MzPVOtamE8tAQAUgwhVjTTQNzLUzEk1/mzQxHaoOWv
-         e3zQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=A1jn6c7kFJPkQon2SVOTVHBfqbqTtwTIfeuqRURf4Ug=;
+        b=PKfOr/DZLkDBdJpo4cehHWUJ3UzAwunBUGjeH54n1BEgrMmkKvXW6t8Uaa75NEkVIi
+         eXt5QJa5YKtqbb6dWts5NZNafBl7/DaaVAh+R+VSwXNmIRuWPjLylhxWYhIdOvvb4SEZ
+         Vi0B9Fa9UlO82BDQzgrqib3v/iyn333Y0Ha7SlwiWSXQdkV2DwzreZ7quH+FmXx8ZqWV
+         ViyT4luwEyp2XUiupKhNsEtKIWcg2TciioRQJGGdGUJZFl+VPCRVsO1i4Q4RIfwEbUmw
+         DeO9ZATWn8TwGHaFwSINclBe5qEKPLOMZwBepEw8Y7nVZIbjRpDvItrMaq/kCWnYkhos
+         /rwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=b87Qqp4/uiRihe98ddeAhee2zlCsyVOmpKiv8uZHXek=;
-        b=cnYOE2g3XLq7TfxDbFhWZpX5YJKkj5+Mfj0xPFFKPZ+Y8D1yZfme2fi8nKH4V/tNzT
-         cq/ZHSK4PvnhzMjHvyZK9O3+mpbjluyfJyE7TqFM4YaVY58ydYNsfj8715+KZZwVOclw
-         EgSZVI2gU8HBNecCHPUKwlpz/jlFCFvBo6aOCtHItHB2sDNVLpzYqFJN4PxQB/oUr6z0
-         D+4i7l8/KtvfgIvXP+NCwrb9PLQWAonptGBMt848Iw0rsBmPxCGQQffYcG5bzvSf8HZS
-         KmSSSoUT3OCFm2X0I/6eewJxf3Z9ZfgWSXzn01Yy3gB1VqOncGKvWsEKhiJ/Tne4nz/n
-         nCcA==
-X-Gm-Message-State: AOAM5338dmQHm7sw2ULTS009yAamBuY6mPdKP5O4sQgDNGxS++HmeBfa
-        UJt0W+XUlRkNrzL0qrdQtMg=
-X-Google-Smtp-Source: ABdhPJzBpCDAi9m56FIS0fdW6XyWSbp5t1i5QtOoyG2uqLnRMj/6r2yyF4b1tubGXKCr5scrR6cD1w==
-X-Received: by 2002:a63:210c:: with SMTP id h12mr6244042pgh.152.1594943091216;
-        Thu, 16 Jul 2020 16:44:51 -0700 (PDT)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8880:9ae0:70a0:cae8:8c09:d74a])
-        by smtp.gmail.com with ESMTPSA id f6sm5903309pfe.174.2020.07.16.16.44.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 16:44:50 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Martin Schiller <ms@dev.tdt.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-x25@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH v2] drivers/net/wan/x25_asy: Fix to make it work
-Date:   Thu, 16 Jul 2020 16:44:33 -0700
-Message-Id: <20200716234433.6490-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=A1jn6c7kFJPkQon2SVOTVHBfqbqTtwTIfeuqRURf4Ug=;
+        b=o9tH3c86hHSIrK4H/dke0gcszXqWAEnHIiA5pVA7Upfev7aSGhAx90qAeDyvsGtOoV
+         WNFuuYj/N3W5ue/ZLedNJWKnYy1bgBLwNi3RFQvWtZVADaBSEICu61eV5IzJmqZpyRXd
+         0K2zZFl/e+BqGEVyQM0loQ3GSx3JTPfMIvaeNERDHQEi8moTTX3NOQoP48WlaIfqekRy
+         SwxJCRjHAQTwFT9vR0Q3oAW9xgTGCZHibxmAPrTe59fbheF96boViIy+Ubs/6zkzvPWt
+         7mJOiZ+VaK6J1sYTQy46FwCieZXQDvMEteyh/dwCmirAqtZgk46WgmPeGElWfvt12m28
+         /2KQ==
+X-Gm-Message-State: AOAM533XHaflqYVCR8tlS/9oS+bPrKSjnevWVu/eFzqcowlt2J1k1OIg
+        AkJrZhOAJYo1xhgpNUfSJMU4rmra
+X-Google-Smtp-Source: ABdhPJxPXRlZnIakzEq9kDotxPaAbFxj5XNB36qCPTk2TdYQ/jB+VGMj7ZWGuPNBjUj/HtViFD5hAg==
+X-Received: by 2002:a19:c797:: with SMTP id x145mr3283492lff.143.1594943274284;
+        Thu, 16 Jul 2020 16:47:54 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-76-4-184.pppoe.mtu-net.ru. [91.76.4.184])
+        by smtp.googlemail.com with ESMTPSA id k6sm1482260lfm.89.2020.07.16.16.47.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jul 2020 16:47:53 -0700 (PDT)
+Subject: Re: [RFC PATCH v3 16/18] gpu: host1x: mipi: Split
+ tegra_mipi_calibrate and tegra_mipi_wait
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, sakari.ailus@iki.fi, robh+dt@kernel.org,
+        helen.koike@collabora.com
+Cc:     sboyd@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+References: <1594786855-26506-1-git-send-email-skomatineni@nvidia.com>
+ <1594786855-26506-17-git-send-email-skomatineni@nvidia.com>
+ <a06dec8f-7042-767b-545b-048685a7683d@gmail.com>
+ <20d63eca-4b2b-584e-a391-a4fb64a16b40@nvidia.com>
+ <c4945c77-5de1-e9b1-9f4f-cdd78bca18c7@gmail.com>
+ <ce0c5ffb-f859-0eab-1ea5-044623dff221@nvidia.com>
+ <a2b8169c-c4a3-4862-cd27-8c1a51ddc558@gmail.com>
+ <4690e682-8495-2327-87c7-c2f06a7a479d@nvidia.com>
+ <66812127-38cf-2af3-51c0-50edbe446e73@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <9b4fbf9d-d651-aa35-c0a6-b8f16aeb0900@gmail.com>
+Date:   Fri, 17 Jul 2020 02:47:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <66812127-38cf-2af3-51c0-50edbe446e73@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is not working because of problems of its receiving code.
-This patch fixes it to make it work.
+17.07.2020 02:09, Sowjanya Komatineni пишет:
+> 
+> On 7/16/20 4:06 PM, Sowjanya Komatineni wrote:
+>>
+>> On 7/16/20 4:01 PM, Dmitry Osipenko wrote:
+>>> 17.07.2020 01:49, Sowjanya Komatineni пишет:
+>>>>> What keeps MIPI clock enabled after completion of the
+>>>>> tegra_mipi_calibrate() invocation?
+>>>> MIPI clock is disabled at end of tegra_mipi_calibrate and is re-enabled
+>>>> during tegra_mipi_wait.
+>>>>
+>>>> I think I should fix this to keep the clock enabled till calibration
+>>>> results are latched.
+>>>>
+>>>> All consumers of tegra_mipi_calibrate() will call tegra_mipi_wait().
+>>>>
+>>>> So will remove clk_disable mipi clk at end of tegra_mipi_calibrate()
+>>>> and
+>>>> clk_enable mipi_clk at beginning of tegra_mipi_wait()
+>>> Isn't it possible to perform the calibration after enabling CSI and
+>>> before of starting the sensor streaming?
+>> Currently this is what I am doing. Triggering calibration start during
+>> CSI receiver being ready and then sensor streaming will happen where
+>> internal MIPI CAL detects for LP -> HS transition and applies results
+>> to pads. So checking for calibration results after sensor stream is
+>> enabled
+> 
+> 1. Calling tegra_mipi_calibrate() during CSI streaming where CSI pads
+> are enabled and receiver is kept ready
+> 
+> 2. Start Sensor stream
+> 
+> 3. Calling tegra_mipi_wait() to check for MIPI Cal status.
+> 
+> So as mipi cal clk need to be kept enabled till 3rd step, we can enable
+> clock during tegra_mipi_calibrate() and leave it enabled and disable it
+> in tegra_mipi_wait after status check.
 
-When the driver receives an LAPB frame, it should first pass the frame
-to the LAPB module to process. After processing, the LAPB module passes
-the data (the packet) back to the driver, the driver should then add a
-one-byte pseudo header and pass the data to upper layers.
+From TRM:
 
-The changes to the "x25_asy_bump" function and the
-"x25_asy_data_indication" function are to correctly implement this
-procedure.
+The following sequence is recommended for capturing a single frame:
 
-Also, the "x25_asy_unesc" function ignores any frame that is shorter
-than 3 bytes. However the shortest frames are 2-byte long. So we need
-to change it to allow 2-byte frames to pass.
+1. Set up CSI registers for use case such as number of lanes, virtual
+channel, etc.
+2. Initialize and power up CSI interface
+3. Wait for initialization time or done signal from calibration logic
+4. Power up camera through the I2C interface
+5. All CSI data and clock lanes are in stop state, LP11
+6. Initiate frame capture through the I2C
+7. Frame done, CSI goes back to stop state, LP11
 
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
-
-Change from v1:
-Added skb_cow before skb_push to ensure skb_push will succeed
-according the suggestion of Eric Dumazet.
-
-Hi Eric Dumazet and Martin Schiller,
-Can you review this patch again and see if it is OK for me to include
-your names in a "Signed-off-by", "Reviewed-by" or "Acked-by" tag?
-Thank you!
-
-Hi All,
-I'm happy to answer any questions you might have and make improvements
-according to your suggestions. Thanks!
-
----
- drivers/net/wan/x25_asy.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/wan/x25_asy.c b/drivers/net/wan/x25_asy.c
-index 69773d228ec1..84640a0c13f3 100644
---- a/drivers/net/wan/x25_asy.c
-+++ b/drivers/net/wan/x25_asy.c
-@@ -183,7 +183,7 @@ static inline void x25_asy_unlock(struct x25_asy *sl)
- 	netif_wake_queue(sl->dev);
- }
- 
--/* Send one completely decapsulated IP datagram to the IP layer. */
-+/* Send an LAPB frame to the LAPB module to process. */
- 
- static void x25_asy_bump(struct x25_asy *sl)
- {
-@@ -195,13 +195,12 @@ static void x25_asy_bump(struct x25_asy *sl)
- 	count = sl->rcount;
- 	dev->stats.rx_bytes += count;
- 
--	skb = dev_alloc_skb(count+1);
-+	skb = dev_alloc_skb(count);
- 	if (skb == NULL) {
- 		netdev_warn(sl->dev, "memory squeeze, dropping packet\n");
- 		dev->stats.rx_dropped++;
- 		return;
- 	}
--	skb_push(skb, 1);	/* LAPB internal control */
- 	skb_put_data(skb, sl->rbuff, count);
- 	skb->protocol = x25_type_trans(skb, sl->dev);
- 	err = lapb_data_received(skb->dev, skb);
-@@ -209,7 +208,6 @@ static void x25_asy_bump(struct x25_asy *sl)
- 		kfree_skb(skb);
- 		printk(KERN_DEBUG "x25_asy: data received err - %d\n", err);
- 	} else {
--		netif_rx(skb);
- 		dev->stats.rx_packets++;
- 	}
- }
-@@ -356,12 +354,21 @@ static netdev_tx_t x25_asy_xmit(struct sk_buff *skb,
-  */
- 
- /*
-- *	Called when I frame data arrives. We did the work above - throw it
-- *	at the net layer.
-+ *	Called when I frame data arrive. We add a pseudo header for upper
-+ *	layers and pass it to upper layers.
-  */
- 
- static int x25_asy_data_indication(struct net_device *dev, struct sk_buff *skb)
- {
-+	if (skb_cow(skb, 1)) {
-+		kfree_skb(skb);
-+		return NET_RX_DROP;
-+	}
-+	skb_push(skb, 1);
-+	skb->data[0] = X25_IFACE_DATA;
-+
-+	skb->protocol = x25_type_trans(skb, dev);
-+
- 	return netif_rx(skb);
- }
- 
-@@ -657,7 +664,7 @@ static void x25_asy_unesc(struct x25_asy *sl, unsigned char s)
- 	switch (s) {
- 	case X25_END:
- 		if (!test_and_clear_bit(SLF_ERROR, &sl->flags) &&
--		    sl->rcount > 2)
-+		    sl->rcount >= 2)
- 			x25_asy_bump(sl);
- 		clear_bit(SLF_ESCAPE, &sl->flags);
- 		sl->rcount = 0;
--- 
-2.25.1
-
+Hence, is it really necessary to perform the manual calibration?
