@@ -2,128 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E551F2226D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0032F2226B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729096AbgGPPWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 11:22:21 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:64460 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728150AbgGPPWV (ORCPT
+        id S1728856AbgGPPSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 11:18:01 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:39659 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728385AbgGPPSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:22:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594912940; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=Fsjdjjd/Og6F+tby19z8oTo04GrQvO0K2CiurdVNlIQ=; b=plx+rFzx9DnFD7gtnZuSIC3e4ihce6pfmwZnhff47l6jwuenHnBZSfjvbcb+JiAA5rAxN3Y7
- zRMXsFphTwHcZDxy6g0es1MMN3mwWHW8wXHQTr+pdojwWEbKkXG9tFL8AoYkBbdaZgyM6MZX
- zY9+YO0QPtDrWfLU0fNG/jXL/tw=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
- 5f106f4fee86618575d5d276 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Jul 2020 15:16:31
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 97C25C433AF; Thu, 16 Jul 2020 15:16:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0060BC433C9;
-        Thu, 16 Jul 2020 15:16:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0060BC433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Thu, 16 Jul 2020 09:16:25 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        John Stultz <john.stultz@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [Freedreno] [PATCH v9 4/7] iommu/arm-smmu: Add a pointer to the
- attached device to smmu_domain
-Message-ID: <20200716151625.GA14526@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Will Deacon <will@kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org,
-        John Stultz <john.stultz@linaro.org>,
-        freedreno@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200626200042.13713-1-jcrouse@codeaurora.org>
- <20200626200042.13713-5-jcrouse@codeaurora.org>
- <20200713150901.GA3072@willie-the-truck>
- <20200713171917.GA3815@jcrouse1-lnx.qualcomm.com>
- <20200716085053.GB6771@willie-the-truck>
+        Thu, 16 Jul 2020 11:18:01 -0400
+Received: by mail-wr1-f67.google.com with SMTP id q5so7456781wru.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:17:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0H5Bd3kw4GjkewKQ3kKww4Zq5793dgkMaSPrkSNreRc=;
+        b=Xyz0se5pWWf/dvBst211JV/+g9RNAxyvN/ePpbifxlgA6P5Hokdzka3Cb6dWG2bUgM
+         erFD0Cp0/WFnRb0aQ9VJ/posGVI70L/cEF5ShvAI5Z5i/7H/xNLbHWi6oIS1ySvr1dbx
+         C+unFfm7Zs385mNZ0oMGdSYkSvLgbfXNqsOdTlKhu45bVV5s0zAGX/OMhMoiVsfVo6oW
+         oxreM0SxWTQnJFtGbrSqI0Pi79Zc57mfMRmK2NMEcLZCukm59WISfFMGz4SYg24h7ls1
+         S4zJHdKyo+DOPH+RGSMB0c2tLHXepz+t4F8C2eTXL2F7s7iDu0OhuOyPm4KUevzBB65Z
+         HC2Q==
+X-Gm-Message-State: AOAM531qv2Ei4Y4WBFH6ef1OTyEAhkMhbRrPpZSQ3zUIzLrQZnENh/UQ
+        MB4nvdqgJedOz+ljQKbXeQM=
+X-Google-Smtp-Source: ABdhPJzWAPL7nRYRrf93ZSHHh8l/vk69TykNKhpQHF5kPWiSF8g7Pw9z/3d4LZQMoR+WzcGZhBSj6Q==
+X-Received: by 2002:adf:8521:: with SMTP id 30mr5325964wrh.238.1594912679077;
+        Thu, 16 Jul 2020 08:17:59 -0700 (PDT)
+Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
+        by smtp.gmail.com with ESMTPSA id b17sm9755636wrp.32.2020.07.16.08.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 08:17:57 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 17:17:56 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve Hjonnevag <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        linux-mm <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] binder: Don't use mmput() from shrinker function.
+Message-ID: <20200716151756.GO31089@dhcp22.suse.cz>
+References: <0000000000001fbbb605aa805c9b@google.com>
+ <5ce3ee90-333e-638d-ac8c-cd6d7ab7aa3b@I-love.SAKURA.ne.jp>
+ <20200716083506.GA20915@dhcp22.suse.cz>
+ <36db7016-98d6-2c6b-110b-b2481fd480ac@i-love.sakura.ne.jp>
+ <20200716135445.GN31089@dhcp22.suse.cz>
+ <4ba9adb2-43f5-2de0-22de-f6075c1fab50@i-love.sakura.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200716085053.GB6771@willie-the-truck>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <4ba9adb2-43f5-2de0-22de-f6075c1fab50@i-love.sakura.ne.jp>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 09:50:53AM +0100, Will Deacon wrote:
-> On Mon, Jul 13, 2020 at 11:19:17AM -0600, Jordan Crouse wrote:
-> > On Mon, Jul 13, 2020 at 04:09:02PM +0100, Will Deacon wrote:
-> > > On Fri, Jun 26, 2020 at 02:00:38PM -0600, Jordan Crouse wrote:
-> > > > diff --git a/drivers/iommu/arm-smmu.h b/drivers/iommu/arm-smmu.h
-> > > > index 5f2de20e883b..d33cfe26b2f5 100644
-> > > > --- a/drivers/iommu/arm-smmu.h
-> > > > +++ b/drivers/iommu/arm-smmu.h
-> > > > @@ -345,6 +345,7 @@ struct arm_smmu_domain {
-> > > >  	struct mutex			init_mutex; /* Protects smmu pointer */
-> > > >  	spinlock_t			cb_lock; /* Serialises ATS1* ops and TLB syncs */
-> > > >  	struct iommu_domain		domain;
-> > > > +	struct device			*dev;	/* Device attached to this domain */
-> > > 
-> > > This really doesn't feel right to me -- you can generally have multiple
-> > > devices attached to a domain and they can come and go without the domain
-> > > being destroyed. Perhaps you could instead identify the GPU during
-> > > cfg_probe() and squirrel that information away somewhere?
-> > 
-> > I need some help here. The SMMU device (qcom,adreno-smmu) will have at least two
-> > stream ids from two different platform devices (GPU and GMU) and I need to
-> > configure split-pagetable and stall/terminate differently on the two domains.
+On Fri 17-07-20 00:12:15, Tetsuo Handa wrote:
+> syzbot is reporting that mmput() from shrinker function has a risk of
+> deadlock [1], for delayed_uprobe_add() from update_ref_ctr() calls
+> kzalloc(GFP_KERNEL) with delayed_uprobe_lock held, and
+> uprobe_clear_state() from __mmput() also holds delayed_uprobe_lock.
 > 
-> Hmm. How does the GPU driver know which context bank is assigned to the GPU
-> and which one is assigned to the GMU? I assume it needs this information so
-> that it can play its nasty tricks with the TTBR registers?
+> Commit a1b2289cef92ef0e ("android: binder: drop lru lock in isolate
+> callback") replaced mmput() with mmput_async() in order to avoid sleeping
+> with spinlock held. But this patch replaces mmput() with mmput_async() in
+> order not to start __mmput() from shrinker context.
 > 
-> I ask because if we need to guarantee stability of the context-bank
-> assignment, then you could match on that in the ->init_context() callback,
-> but now I worry that it currently works by luck :/
- 
-Its more like "educated" luck. If we assign the domains in the right order we
-know that the GPU will be on context bank 0 but you are entirely right that if
-everything doesn't go exactly the way we need things go badly.
+> [1] https://syzkaller.appspot.com/bug?id=bc9e7303f537c41b2b0cc2dfcea3fc42964c2d45
+> 
+> Reported-by: syzbot <syzbot+1068f09c44d151250c33@syzkaller.appspotmail.com>
+> Reported-by: syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-Some targets do have the ability to reprogram which context bank is used but
-that would require a domain attribute from the SMMU driver to communicate that
-information back to the GPU driver.
+Reviewed-by: Michal Hocko <mhocko@suse.com>
 
-> Do we need to add an extra callback to allocate the context bank?
+Thanks!
 
-That seems like a reasonable option. That seems like it would work with legacy
-targets and rely less on luck.
-
-Jordan
+> ---
+>  drivers/android/binder_alloc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+> index 42c672f1584e..cbe6aa77d50d 100644
+> --- a/drivers/android/binder_alloc.c
+> +++ b/drivers/android/binder_alloc.c
+> @@ -947,7 +947,7 @@ enum lru_status binder_alloc_free_page(struct list_head *item,
+>  		trace_binder_unmap_user_end(alloc, index);
+>  	}
+>  	mmap_read_unlock(mm);
+> -	mmput(mm);
+> +	mmput_async(mm);
+>  
+>  	trace_binder_unmap_kernel_start(alloc, index);
+>  
+> -- 
+> 2.18.4
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Michal Hocko
+SUSE Labs
