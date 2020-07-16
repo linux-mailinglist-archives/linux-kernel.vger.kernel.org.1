@@ -2,77 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD37222EAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C68AB222E9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbgGPXJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:09:43 -0400
-Received: from kernel.crashing.org ([76.164.61.194]:38540 "EHLO
-        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726962AbgGPXJf (ORCPT
+        id S1727870AbgGPXJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbgGPXI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:09:35 -0400
-Received: from localhost (gate.crashing.org [63.228.1.57])
-        (authenticated bits=0)
-        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 06GMcUf3029747
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 16 Jul 2020 17:38:33 -0500
-Message-ID: <b1aa976cf9788ed7d2bf949b2b5e5e5b2e3f9776.camel@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc/64: Fix an out of date comment about MMIO
- ordering
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Will Deacon <willdeacon@google.com>
-Cc:     mpe@ellerman.id.au, paulus@samba.org, npiggin@gmail.com,
-        msuchanek@suse.de, tglx@linutronix.de, bigeasy@linutronix.de,
-        jniethe5@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Date:   Fri, 17 Jul 2020 08:38:29 +1000
-In-Reply-To: <20200716193820.1141936-1-palmer@dabbelt.com>
-References: <20200716193820.1141936-1-palmer@dabbelt.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Thu, 16 Jul 2020 19:08:58 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85063C08C5F7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 15:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1qAKoes74GlZe9USKnILAIURyyddaWhdldrIzkY97zA=; b=O31CALaczkJRmTQNtptd/MMXuw
+        pAcvdqEjSDstR7JSBMD1BOY3DTjhIOU2R9Kw+ni+BoR/m51yAT6snWjFNiZApQGbq5vbRi8tWwGbC
+        GeTY42Wv4CT90bKpF8MYtwoxXhvCuJIj4gkjpXG8N9XVQokVN875seOYSkK5q82hQkHocOO05HMqs
+        ZZ1B7Wf5S0qEb04jVWtk68w8DO3E+ZSDv8IKouRaouslYSknkvfwZA03x6+sdQ1A6wB1D1CpPwFoE
+        TZdEk9kCxoBIiA1IrnE4vsLVpWABDXlaBdRyCo6XYBBiM6eujfeIxKAnbWe43TJvUYKDf8SoPQuAX
+        jjKziztQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jwCi9-0003qZ-RV; Thu, 16 Jul 2020 22:50:42 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1ED2F9817E0; Fri, 17 Jul 2020 00:50:34 +0200 (CEST)
+Date:   Fri, 17 Jul 2020 00:50:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [patch V2 3/5] posix-cpu-timers: Provide mechanisms to defer
+ timer handling to task_work
+Message-ID: <20200716225034.GK5523@worktop.programming.kicks-ass.net>
+References: <20200716201923.228696399@linutronix.de>
+ <20200716202044.734067877@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200716202044.734067877@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-07-16 at 12:38 -0700, Palmer Dabbelt wrote:
-> From: Palmer Dabbelt <palmerdabbelt@google.com>
-> 
-> This primitive has been renamed, but because it was spelled incorrectly in the
-> first place it must have escaped the fixup patch.  As far as I can tell this
-> logic is still correct: smp_mb__after_spinlock() uses the default smp_mb()
-> implementation, which is "sync" rather than "hwsync" but those are the same
-> (though I'm not that familiar with PowerPC).
+On Thu, Jul 16, 2020 at 10:19:26PM +0200, Thomas Gleixner wrote:
 
-Typo ? That must be me ... :)
+> @@ -1096,6 +1099,12 @@ static void __run_posix_cpu_timers(struc
+>  	check_process_timers(tsk, &firing);
+>  
+>  	/*
+> +	 * Allow new work to be scheduled. The expiry cache
+> +	 * is up to date.
+> +	 */
+> +	posix_cpu_timers_enable_work(tsk);
+> +
+> +	/*
+>  	 * We must release these locks before taking any timer's lock.
+>  	 * There is a potential race with timer deletion here, as the
+>  	 * siglock now protects our private firing list.  We have set
 
-Looks fine. Yes, sync and hwsync are the same (by opposition to lwsync
-which is lighter weight and doesn't order cache inhibited).
+I think I would feel more comfortable if this was done at the very
+beginning of that function, possibly even with:
 
-Cheers,
-Ben.
+> +static void __run_posix_cpu_timers(struct task_struct *tsk)
+> +{
+> +	struct posix_cputimers *pct = &tsk->posix_cputimers;
+> +
+> +	if (!test_and_set_bit(CPUTIMERS_WORK_SCHEDULED, &pct->flags))
+> +		task_work_add(tsk, &pct->task_work, true);
+> +}
+> +
+> +static inline void posix_cpu_timers_enable_work(struct task_struct *tsk)
+> +{
+> +	clear_bit(CPUTIMERS_WORK_SCHEDULED, &tsk->posix_cputimers.flags);
+	/*
+	 * Ensure we observe everything before a failing test_and_set()
+	 * in __run_posix_cpu_timers().
+	 */
+	smp_mb__after_atomic();
+> +}
 
-> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> ---
->  arch/powerpc/kernel/entry_64.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/kernel/entry_64.S b/arch/powerpc/kernel/entry_64.S
-> index b3c9f15089b6..7b38b4daca93 100644
-> --- a/arch/powerpc/kernel/entry_64.S
-> +++ b/arch/powerpc/kernel/entry_64.S
-> @@ -357,7 +357,7 @@ _GLOBAL(_switch)
->  	 * kernel/sched/core.c).
->  	 *
->  	 * Uncacheable stores in the case of involuntary preemption must
-> -	 * be taken care of. The smp_mb__before_spin_lock() in __schedule()
-> +	 * be taken care of. The smp_mb__after_spinlock() in __schedule()
->  	 * is implemented as hwsync on powerpc, which orders MMIO too. So
->  	 * long as there is an hwsync in the context switch path, it will
->  	 * be executed on the source CPU after the task has performed
-
+Such that when another timer interrupt happens while we run this, we're
+guaranteed to either see it, or get re-queued and thus re-run the
+function.
