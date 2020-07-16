@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66692222B13
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E71C222B14
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgGPSdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 14:33:16 -0400
-Received: from mga14.intel.com ([192.55.52.115]:48476 "EHLO mga14.intel.com"
+        id S1729148AbgGPShE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 14:37:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726986AbgGPSdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 14:33:16 -0400
-IronPort-SDR: +Hf42S45CR1VfpyVZSZ23YAgi+YPMLnpJp+Ja/TcEkRWdIQkr/sTHZYTcIp7/npi9y0YM3duZp
- T3eIWXNdYItQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="148630603"
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
-   d="scan'208";a="148630603"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 11:33:07 -0700
-IronPort-SDR: TKPL0jLmulRarJNwiLFsU8S2XJGod/eu8rC4R3h0fBHAhNUlcpet1hBrclfdf7HAOoJY7ZsfvL
- 7rtok1GMWLEQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
-   d="scan'208";a="486199143"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006.fm.intel.com with ESMTP; 16 Jul 2020 11:33:05 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jw8gs-002Cwp-9C; Thu, 16 Jul 2020 21:33:06 +0300
-Date:   Thu, 16 Jul 2020 21:33:06 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, rafael.j.wysocki@intel.com,
-        sakari.ailus@linux.intel.com, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Subject: Re: kernel oops in 'typec_ucsi' due to commit 'drivers property:
- When no children in primary, try secondary'
-Message-ID: <20200716183306.GU3703480@smile.fi.intel.com>
-References: <7affdd923186c5ce8c7dcf7cbe7b826eaa3ac8b2.camel@redhat.com>
- <20200716154721.GO3703480@smile.fi.intel.com>
- <43148a2ebe546fde67028d99fd7365acce1311b2.camel@redhat.com>
- <20200716182120.GS3703480@smile.fi.intel.com>
- <64a1ba836139b028936e24705eab06a032d598cf.camel@redhat.com>
+        id S1726986AbgGPShE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 14:37:04 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 344CA2065E;
+        Thu, 16 Jul 2020 18:37:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594924623;
+        bh=cyuHt7Jip0eq20sRWrd3G9ePaAZdPsdZ0yNGOmJPB9M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PwNh51jz9iiPJqxQvrCKFhvU98fNfkgWc2XUrjOV7JZSO4fpFFc/m0euX8xX+P/oX
+         LrOCD6PEBk9jFkSS6zoewEHcAMfEvE9BpUSvep5bI29LH6Fh/iN0bDT5tV4T+ZonvW
+         YJtF7FqrR1m2bSTzrR2Q01ErAl6PBdT/QiBCJJnI=
+Date:   Thu, 16 Jul 2020 11:37:01 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andy Duan <fugang.duan@nxp.com>
+Cc:     Sergey Organov <sorganov@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Subject: Re: [EXT] [PATCH net-next v2 0/4]  net: fec: a few improvements
+Message-ID: <20200716113701.65b4f19f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <AM6PR0402MB36071DED4EC0FAF0A02F5872FF7F0@AM6PR0402MB3607.eurprd04.prod.outlook.com>
+References: <20200706142616.25192-1-sorganov@gmail.com>
+        <20200715154300.13933-1-sorganov@gmail.com>
+        <AM6PR0402MB36071DED4EC0FAF0A02F5872FF7F0@AM6PR0402MB3607.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64a1ba836139b028936e24705eab06a032d598cf.camel@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 09:22:11PM +0300, Maxim Levitsky wrote:
-> On Thu, 2020-07-16 at 21:21 +0300, Andy Shevchenko wrote:
-> > On Thu, Jul 16, 2020 at 09:00:00PM +0300, Maxim Levitsky wrote:
-> > > On Thu, 2020-07-16 at 18:47 +0300, Andy Shevchenko wrote:
-
-...
-
-> > > It works (no more oops)
+On Thu, 16 Jul 2020 03:00:56 +0000 Andy Duan wrote:
+> From: Sergey Organov <sorganov@gmail.com> Sent: Wednesday, July 15, 2020 11:43 PM
+> > This is a collection of simple improvements that reduce and/or simplify code.
+> > They got developed out of attempt to use DP83640 PTP PHY connected to
+> > built-in FEC (that has its own PTP support) of the iMX 6SX micro-controller.
+> > The primary bug-fix was now submitted separately, and this is the rest of the
+> > changes.
 > > 
-> > Thanks for testing. I'm about to send formal patch, can you give your Tested-by tag there then?
-> 
-> Of course.
-> 
-> Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > NOTE: the patches are developed and tested on 4.9.146, and rebased on top
+> > of recent 'net-next/master', where, besides visual inspection, I only tested
+> > that they do compile.
+> > 
+> > Sergey Organov (4):
+> >   net: fec: enable to use PPS feature without time stamping
+> >   net: fec: initialize clock with 0 rather than current kernel time
+> >   net: fec: get rid of redundant code in fec_ptp_set()
+> >   net: fec: replace snprintf() with strlcpy() in fec_ptp_init()
 
-Thanks, I meant there [1] :-)
+Applied, thanks!
 
-[1]: https://lore.kernel.org/lkml/20200716182747.54929-1-andriy.shevchenko@linux.intel.com/T/#u
+> For the version: Acked-by: Fugang Duan <fugang.duan@nxp.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks! In the future please make sure to have the tag as a separate
+line, patchwork is not clever enough to pick it up if it doesn't start
+at the start of the line :(
