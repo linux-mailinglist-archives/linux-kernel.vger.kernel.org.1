@@ -2,178 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5755221AED
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474D5221AF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728284AbgGPDlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 23:41:37 -0400
-Received: from mga02.intel.com ([134.134.136.20]:4816 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728225AbgGPDl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 23:41:27 -0400
-IronPort-SDR: pc6P02SkZTYxULKjhVjsL1kioXRhBsap74Av0BbOvNc+HISx2Pn1OQXRsHP2XOfVKjyx+vLOw8
- fEAqBQyFXMqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="137442919"
-X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
-   d="scan'208";a="137442919"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 20:41:25 -0700
-IronPort-SDR: JIh1Iw7mvK1AXZSu+Bj6d/C3EOwGZWaVQoQIJ5m7p1vKzGKBUscdwdHNpSE6a0Eb/fzcovHJ1t
- Xo/hMmLFdutg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
-   d="scan'208";a="316905496"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by orsmga008.jf.intel.com with ESMTP; 15 Jul 2020 20:41:24 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 9/9] KVM: x86: Specify max TDP level via kvm_configure_mmu()
-Date:   Wed, 15 Jul 2020 20:41:22 -0700
-Message-Id: <20200716034122.5998-10-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200716034122.5998-1-sean.j.christopherson@intel.com>
-References: <20200716034122.5998-1-sean.j.christopherson@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728316AbgGPDlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 23:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728261AbgGPDle (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 23:41:34 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F09C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 20:41:34 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id b69so3616930pfb.14
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 20:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=JVqaQcsA9ryghGPWNt77bGonDTUiuVmDFOB6lIrP5uc=;
+        b=K5ymQTs8/rpyXUKrYTyN/1HyUfnkOXOQil8fcN+1PzFV2h3fAH1SKSK//Ow6Okgu7R
+         Uo5T1G1IWymG9mTvR22lPQ3wwNa3rrPYNhuFuDUueieKeMhNJ9fj3crby4bRj16wlmTe
+         I/tuIVus84MZhHHQBrflnlrPk1H6AkhUWuJtL/ie9+q+BJIW3FuvDs3AMsiqMeMFDYbs
+         yvdSEndTLz+KzUHvhDcpW7ruGhoDSETHfVSDYjDW+khHq9IWWLCp4P1wdCm4Y1pSuUMt
+         x2/7FQc0k4Qn+8QZsPLrVbkqgp7LdJAI25ZgfY+wEzyQKmKJ0br0l0ejoL3IM/w/iVLx
+         NKJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=JVqaQcsA9ryghGPWNt77bGonDTUiuVmDFOB6lIrP5uc=;
+        b=cAfWTrP8qTpMChRDP3ZJfjTwKlR8AetASZgrdH/ME7AICI9GYz1BTng2ruhc9d8CCI
+         gwkOw0bERnEYSitX9viBLM7OdD8EjGgKpmslJzKAcyzaBeEzdtBmPZKYA4Q1s7zR1N/P
+         /oVzw9RVQEP7CewkCKDAlr1T26MiYj0FV69rwHwGqe5IFJOZVF4NDW/k47jUvcSXPHSo
+         RJ0BDSdowJMJ/gpqSZ28qqmdbiQvSqU43L6flDkApSUuSaoaJizbwoLl3IDlUAcvqhas
+         prM9osIhgL8IM68dKwL5vQlpz+u5FS8LCLd7hejm1K1xNSBrwSHOHyCbsf9S398DtAZs
+         rm6Q==
+X-Gm-Message-State: AOAM531RLBM9jbIYSKmKJrKPOjfDBADymBGGm37nl45klBoLcmr3fL8Y
+        w+qa4nDDcCIRejtKCdNVU9CcvCtfD5M=
+X-Google-Smtp-Source: ABdhPJzW0b2j+f3mJfI3L/UXfvtVozfUxZ2l5SINSWF+xaz86zYtZAGYzDR31ITKGuaXsDjlTmAxOGsQgBY=
+X-Received: by 2002:a63:6c5:: with SMTP id 188mr2508631pgg.33.1594870893475;
+ Wed, 15 Jul 2020 20:41:33 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 20:41:26 -0700
+Message-Id: <20200716034128.1251728-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.389.gc38d7665816-goog
+Subject: [PATCH 1/3 v3] usb: typec: tcpm: Support bist test data mode for compliance
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        reg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Capture the max TDP level during kvm_configure_mmu() instead of using a
-kvm_x86_ops hook to do it at every vCPU creation.
+TCPM supports BIST carried mode. PD compliance tests require
+BIST Test Data to be supported as well.
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Introducing set_bist_data callback to signal tcpc driver for
+configuring the port controller hardware to enable/disable
+BIST Test Data mode.
+
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 ---
- arch/x86/include/asm/kvm_host.h | 4 ++--
- arch/x86/kvm/mmu/mmu.c          | 9 ++++++---
- arch/x86/kvm/svm/svm.c          | 3 +--
- arch/x86/kvm/vmx/vmx.c          | 3 +--
- arch/x86/kvm/x86.c              | 1 -
- 5 files changed, 10 insertions(+), 10 deletions(-)
+Version history:
+Changes since V1:(Guenter's suggestions)
+- Split the change into two: TCPM and TCPCI
+- Move BIST log to TCPM log
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index ffd45b68e1d46..5ab3af7275d81 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1133,7 +1133,6 @@ struct kvm_x86_ops {
- 	int (*sync_pir_to_irr)(struct kvm_vcpu *vcpu);
- 	int (*set_tss_addr)(struct kvm *kvm, unsigned int addr);
- 	int (*set_identity_map_addr)(struct kvm *kvm, u64 ident_addr);
--	int (*get_max_tdp_level)(void);
- 	u64 (*get_mt_mask)(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio);
+Changes since V2:(Guenter's suggestions)
+- Re-ordered patchset
+- Included Reviewed-by tag
+---
+ drivers/usb/typec/tcpm/tcpm.c | 11 +++++++++++
+ include/linux/usb/tcpm.h      |  2 ++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index 82b19ebd7838e0..379fcab9dbd973 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -2746,6 +2746,11 @@ static void tcpm_detach(struct tcpm_port *port)
+ 	if (!port->attached)
+ 		return;
  
- 	void (*load_mmu_pgd)(struct kvm_vcpu *vcpu, unsigned long pgd,
-@@ -1509,7 +1508,8 @@ void kvm_mmu_invpcid_gva(struct kvm_vcpu *vcpu, gva_t gva, unsigned long pcid);
- void kvm_mmu_new_pgd(struct kvm_vcpu *vcpu, gpa_t new_pgd, bool skip_tlb_flush,
- 		     bool skip_mmu_sync);
++	if (port->tcpc->set_bist_data) {
++		tcpm_log(port, "disable BIST MODE TESTDATA");
++		port->tcpc->set_bist_data(port->tcpc, false);
++	}
++
+ 	if (tcpm_port_is_disconnected(port))
+ 		port->hard_reset_count = 0;
  
--void kvm_configure_mmu(bool enable_tdp, int tdp_page_level);
-+void kvm_configure_mmu(bool enable_tdp, int tdp_max_root_level,
-+		       int tdp_huge_page_level);
+@@ -3555,6 +3560,12 @@ static void run_state_machine(struct tcpm_port *port)
+ 		case BDO_MODE_CARRIER2:
+ 			tcpm_pd_transmit(port, TCPC_TX_BIST_MODE_2, NULL);
+ 			break;
++		case BDO_MODE_TESTDATA:
++			if (port->tcpc->set_bist_data) {
++				tcpm_log(port, "Enable BIST MODE TESTDATA");
++				port->tcpc->set_bist_data(port->tcpc, true);
++			}
++			break;
+ 		default:
+ 			break;
+ 		}
+diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
+index e7979c01c3517c..89f58760cf4800 100644
+--- a/include/linux/usb/tcpm.h
++++ b/include/linux/usb/tcpm.h
+@@ -79,6 +79,7 @@ enum tcpm_transmit_type {
+  * @try_role:	Optional; called to set a preferred role
+  * @pd_transmit:Called to transmit PD message
+  * @mux:	Pointer to multiplexer data
++ * @set_bist_data: Turn on/off bist data mode for compliance testing
+  */
+ struct tcpc_dev {
+ 	struct fwnode_handle *fwnode;
+@@ -103,6 +104,7 @@ struct tcpc_dev {
+ 	int (*try_role)(struct tcpc_dev *dev, int role);
+ 	int (*pd_transmit)(struct tcpc_dev *dev, enum tcpm_transmit_type type,
+ 			   const struct pd_message *msg);
++	int (*set_bist_data)(struct tcpc_dev *dev, bool on);
+ };
  
- static inline u16 kvm_read_ldt(void)
- {
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index c867b35759ab5..862bf418214e2 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -93,6 +93,7 @@ module_param_named(flush_on_reuse, force_flush_and_sync_on_reuse, bool, 0644);
- bool tdp_enabled = false;
- 
- static int max_huge_page_level __read_mostly;
-+static int max_tdp_level __read_mostly;
- 
- enum {
- 	AUDIT_PRE_PAGE_FAULT,
-@@ -4849,10 +4850,10 @@ static union kvm_mmu_role kvm_calc_mmu_role_common(struct kvm_vcpu *vcpu,
- static inline int kvm_mmu_get_tdp_level(struct kvm_vcpu *vcpu)
- {
- 	/* Use 5-level TDP if and only if it's useful/necessary. */
--	if (vcpu->arch.max_tdp_level == 5 && cpuid_maxphyaddr(vcpu) <= 48)
-+	if (max_tdp_level == 5 && cpuid_maxphyaddr(vcpu) <= 48)
- 		return 4;
- 
--	return vcpu->arch.max_tdp_level;
-+	return max_tdp_level;
- }
- 
- static union kvm_mmu_role
-@@ -5580,9 +5581,11 @@ void kvm_mmu_invpcid_gva(struct kvm_vcpu *vcpu, gva_t gva, unsigned long pcid)
- }
- EXPORT_SYMBOL_GPL(kvm_mmu_invpcid_gva);
- 
--void kvm_configure_mmu(bool enable_tdp, int tdp_huge_page_level)
-+void kvm_configure_mmu(bool enable_tdp, int tdp_max_root_level,
-+		       int tdp_huge_page_level)
- {
- 	tdp_enabled = enable_tdp;
-+	max_tdp_level = tdp_max_root_level;
- 
- 	/*
- 	 * max_huge_page_level reflects KVM's MMU capabilities irrespective
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index c94faca46e760..5f47b44c5c324 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -885,7 +885,7 @@ static __init int svm_hardware_setup(void)
- 	if (npt_enabled && !npt)
- 		npt_enabled = false;
- 
--	kvm_configure_mmu(npt_enabled, PG_LEVEL_1G);
-+	kvm_configure_mmu(npt_enabled, get_max_npt_level(), PG_LEVEL_1G);
- 	pr_info("kvm: Nested Paging %sabled\n", npt_enabled ? "en" : "dis");
- 
- 	if (nrips) {
-@@ -4109,7 +4109,6 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
- 
- 	.set_tss_addr = svm_set_tss_addr,
- 	.set_identity_map_addr = svm_set_identity_map_addr,
--	.get_max_tdp_level = get_max_npt_level,
- 	.get_mt_mask = svm_get_mt_mask,
- 
- 	.get_exit_info = svm_get_exit_info,
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index c0b1c7bd1248a..a70d8f6d8aba7 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7959,7 +7959,6 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
- 
- 	.set_tss_addr = vmx_set_tss_addr,
- 	.set_identity_map_addr = vmx_set_identity_map_addr,
--	.get_max_tdp_level = vmx_get_max_tdp_level,
- 	.get_mt_mask = vmx_get_mt_mask,
- 
- 	.get_exit_info = vmx_get_exit_info,
-@@ -8110,7 +8109,7 @@ static __init int hardware_setup(void)
- 		ept_lpage_level = PG_LEVEL_2M;
- 	else
- 		ept_lpage_level = PG_LEVEL_4K;
--	kvm_configure_mmu(enable_ept, ept_lpage_level);
-+	kvm_configure_mmu(enable_ept, vmx_get_max_tdp_level(), ept_lpage_level);
- 
- 	/*
- 	 * Only enable PML when hardware supports PML feature, and both EPT
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 6b8347d703430..831179adedaa9 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9520,7 +9520,6 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
- 	fx_init(vcpu);
- 
- 	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
--	vcpu->arch.max_tdp_level = kvm_x86_ops.get_max_tdp_level();
- 
- 	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
- 
+ struct tcpm_port;
 -- 
-2.26.0
+2.27.0.389.gc38d7665816-goog
 
