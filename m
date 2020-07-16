@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F9F2221D95
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8F9221D96
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgGPHqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:46:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725867AbgGPHqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:46:38 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C19CE206F4;
-        Thu, 16 Jul 2020 07:46:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594885598;
-        bh=2rRF0+H6dzoiWSGTgh9BDTtMArRDj3M+AvESL+Ll92M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ykopcBfC8YZCQhBDtu5ek2ciYghlU215+FDFUuzg2YHmoat+k86idGLq2jd84r4PL
-         M+nWOuyxNyB0H5bJhyI3P9YPhnwhmKATxdHpf6lyTxFWENbayTObGZUbv675fhC2Ww
-         X/fx1WnTSpJjB87+FY1X0YI2klLEX/2NPc2ri7Qc=
-Date:   Thu, 16 Jul 2020 09:46:32 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.7 000/166] 5.7.9-rc1 review
-Message-ID: <20200716074632.GB975409@kroah.com>
-References: <20200714184115.844176932@linuxfoundation.org>
- <424db635-44a1-8bc8-fe5e-4b84e9c14281@roeck-us.net>
+        id S1726710AbgGPHq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725867AbgGPHq5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 03:46:57 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7470CC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 00:46:57 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id 12so4395734oir.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 00:46:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3BUXUL9AKrDqMaBqwt9woIa2xKGZFsJ8thm8KS7GNOo=;
+        b=SvqjbM1I8bN85zcWimONZ2ozTVklUFbPOB/mg5lt6Y+tKPILTkC89j1wv+TI/vHEWy
+         PtYOQw0C9VRBd7uliQgJiZ1E2UFUYq0EGNJ77CLsmHLivGWnmB4naXdj+kJeicdi167z
+         YDIvILeC4NZhNsBXtgsqUht1RvatrtdtATbVSG67GB2XyNBOgVjICI/1vyj4lpuxkVE+
+         V3xvVI1wJWKylQD6RWYPdI0bgHS75tgDGStMjQlL2bXLjqwIthAF+AUEh1uH5tdS+pB4
+         ac48QYZi+yViVAbeXObD7OnMDUTrquYdZJR7VorvbJ8XykuIPcpl92sBT0MGX8cKTLSR
+         KKKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3BUXUL9AKrDqMaBqwt9woIa2xKGZFsJ8thm8KS7GNOo=;
+        b=a2uDYhjjLGqs8b/IcEGTuJ2DWv5g/WskbAugKcMcB2ylzoqqVFHtKUBGko7EjHXzDS
+         jj899/7SzcULQHHPIs2OGhMLkcODwS6qql2HDcFmwy6RIkaW326DS5TIw6tRmjDUiID7
+         z3Xj+Byx+3CGZMJ/YwlTQyb3r22tdDrYKGesp6XGDLn0Z8+dMA7IKshxogIw7++1kNDk
+         qt5Vdm8qYWI1FjnpI1dvLC5u1OvEf6P1FeInLpDsDbB9uw1lOnsuaw5BKZgGd6kRWplD
+         CRJqvh/WW7qU2M+HkYj+7mPnHiheQE2P+PFLqbi+USqFRDuhvoep0/WPz9AdKbWZ78r0
+         d1zw==
+X-Gm-Message-State: AOAM5319DWUsWCXLiGyVEi0jmAHedC8GmNtPOFVVLRoztiH4j1s7e6yT
+        0eb00xkrqRcSunGekRUfZ/CKnPbJqSAT2grexVk+X8Rr
+X-Google-Smtp-Source: ABdhPJzCKBDq7dV4e8atqNGFS0KfPTtTyRSbv0GrxEGTjPSIOfpn+4bk/ky8L19DllK9NXe9m/wIBKvsRsRbgjA7I2U=
+X-Received: by 2002:aca:be57:: with SMTP id o84mr2821993oif.32.1594885616879;
+ Thu, 16 Jul 2020 00:46:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <424db635-44a1-8bc8-fe5e-4b84e9c14281@roeck-us.net>
+References: <cover.1594880014.git.zong.li@sifive.com> <28365b581b04d0237e127363a63c1ad72dbea683.1594880014.git.zong.li@sifive.com>
+ <87sgdrx6qd.fsf@igel.home>
+In-Reply-To: <87sgdrx6qd.fsf@igel.home>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Thu, 16 Jul 2020 15:46:45 +0800
+Message-ID: <CANXhq0omXrUCAFscZy5tDFisR29_4agA1ZTTYTezgZTmQg5Y3Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] riscv: fix build warning of mm/pageattr
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 09:43:41AM -0700, Guenter Roeck wrote:
-> On 7/14/20 11:42 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.7.9 release.
-> > There are 166 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 16 Jul 2020 18:40:38 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> Build results:
-> 	total: 155 pass: 155 fail: 0
-> Qemu test results:
-> 	total: 431 pass: 431 fail: 0
+On Thu, Jul 16, 2020 at 3:24 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
+>
+> On Jul 16 2020, Zong Li wrote:
+>
+> > Add hearder for missing prototype. Also, static keyword should be at
+>
+> s/hearder/header/
+>
+> Andreas.
+>
+> --
+> Andreas Schwab, schwab@linux-m68k.org
+> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+> "And now for something completely different."
 
-Thanks for testing all of these and letting me know.
+Hi all,
 
-greg k-h
+Let me describe the details in the commit message and fix the typo in
+the next version.
+Thanks for reviewing.
