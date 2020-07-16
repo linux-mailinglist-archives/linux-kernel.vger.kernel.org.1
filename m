@@ -2,179 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F943221CD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB1A221CBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgGPGya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 02:54:30 -0400
-Received: from lonlinode-sdnproxy-1.icoremail.net ([139.162.193.133]:51568
-        "HELO lonlinode-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1725921AbgGPGya (ORCPT
+        id S1728163AbgGPGnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:43:35 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:28496 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726141AbgGPGne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:54:30 -0400
-X-Greylist: delayed 711 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Jul 2020 02:54:28 EDT
-Received: from localhost.localdomain (unknown [106.19.113.251])
-        by c1app1 (Coremail) with SMTP id AQINCgDnyZLC9g9f7dSfAQ--.20987S2;
-        Thu, 16 Jul 2020 14:42:12 +0800 (CST)
-From:   Qiu Wenbo <qiuwenbo@phytium.com.cn>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Linux Driver Project Developer List 
-        <driverdev-devel@linuxdriverproject.org>
-Cc:     Qiu Wenbo <qiuwenbo@phytium.com.cn>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Villegas <git@marvil07.net>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8712: Fixes coding style in several headers
-Date:   Thu, 16 Jul 2020 14:41:12 +0800
-Message-Id: <20200716064118.61243-1-qiuwenbo@phytium.com.cn>
-X-Mailer: git-send-email 2.27.0
+        Thu, 16 Jul 2020 02:43:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594881813;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=92A49Ojmn2AU0Fmvk+D6Q53rRv9UoaDayPIPpa5wWcs=;
+        b=MO8/5ogSgdemiaogmGgiARWFGj9RpG7wn1e0V0kcMI0DZdR+MWf7nt2aF+VvyQEGYfW5WF
+        UaEEooi7g4df/WZkWuDPmbinoStPKP5l0Qy2Px00HmAG89DpftWGRcVvT6W8vH9cMWAEGA
+        ws6/qnCT6oi+j1k2QXU8604NBG1/cJ8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-agiQ7in4NsaR7ImE9y9K4g-1; Thu, 16 Jul 2020 02:43:29 -0400
+X-MC-Unique: agiQ7in4NsaR7ImE9y9K4g-1
+Received: by mail-wr1-f71.google.com with SMTP id c6so4728557wru.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:43:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=92A49Ojmn2AU0Fmvk+D6Q53rRv9UoaDayPIPpa5wWcs=;
+        b=rzuKwp45Kcteg/WbwCIYbtGxx4UOWtf6aRbJ5Rx1dspU+MbU9Ds+bW1+p1J6bEQ3Ya
+         a9HtTDyQgaRbFYpSNt5DoYN+XmmWZpzV/ZvcsaPEG1DKtiI4fh/sRvOoulOGlFb0OJoX
+         EPN6FXiRN+rAOVun6WUYEIrkTxLjHKAWzDOk7AntmpzZ3quSBv1ZMVMCYEGubiadKPdL
+         +KMOHZXIWNMTfO8yWyd/5e/Ti4Evi50HEsCZBXIQ4E2qExPMJDf10WxupF/5ID6fTv8+
+         pHkZZ4vIJX/DaWzfFoqhb65ffWjamB9dMaLd3+aTyPuIHbGTHieiF2sQTxwIl7Wbi+dl
+         CH2Q==
+X-Gm-Message-State: AOAM5316ilekklxaBdC3b6zHghEr5xYVpwPsicX1CwE1BnOJI9InsUD/
+        HHTwmV3zXWHx9vxR8lkL72dXkYEl1Wv9RUvNEtHEBT7Cuv3MBj9dNeICYhH43yOr8lFtn+5334m
+        2+hpCctnYI5PMPYANq5nwnja5
+X-Received: by 2002:a1c:9a07:: with SMTP id c7mr2963443wme.147.1594881808573;
+        Wed, 15 Jul 2020 23:43:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6DpABEgJSEbkgqOOGpGbulniuOcb/AXbRsfBNAusCpgTzcOusCDH2paSBBwm1ZZJQp/CfjQ==
+X-Received: by 2002:a1c:9a07:: with SMTP id c7mr2963420wme.147.1594881808359;
+        Wed, 15 Jul 2020 23:43:28 -0700 (PDT)
+Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
+        by smtp.gmail.com with ESMTPSA id g3sm8085920wrb.59.2020.07.15.23.43.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 23:43:27 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 02:43:25 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Hui Zhu <teawater@gmail.com>
+Cc:     david@redhat.com, jasowang@redhat.com, akpm@linux-foundation.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        qemu-devel@nongnu.org, virtio-dev@lists.oasis-open.org,
+        Hui Zhu <teawaterz@linux.alibaba.com>
+Subject: Re: [RFC for Linux v4 1/2] virtio_balloon: Add
+ VIRTIO_BALLOON_F_CONT_PAGES and inflate_cont_vq
+Message-ID: <20200716024114-mutt-send-email-mst@kernel.org>
+References: <1594867315-8626-1-git-send-email-teawater@gmail.com>
+ <1594867315-8626-2-git-send-email-teawater@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQINCgDnyZLC9g9f7dSfAQ--.20987S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGryUGF48WrWrGw4kKFW7Arb_yoW5tFWrpr
-        srX3ySyw1Uta1UWrnxtFyUuF1fKa4xCrWkG39rt34YvF1rurWFgFy7Aa4UJr43Gas5AF13
-        tFWUGry5W34UKrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
-        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
-        628vn2kIc2xKxwCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-        1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyU
-        JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUndb1UUUUU
-X-Originating-IP: [106.19.113.251]
-X-CM-SenderInfo: 5tlx4vhqerq15k1wx33pof0zgofq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1594867315-8626-2-git-send-email-teawater@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes warnings in several headers found by the checkpatch.pl tool.
+On Thu, Jul 16, 2020 at 10:41:51AM +0800, Hui Zhu wrote:
+> diff --git a/include/uapi/linux/virtio_balloon.h b/include/uapi/linux/virtio_balloon.h
+> index dc3e656..4d0151a 100644
+> --- a/include/uapi/linux/virtio_balloon.h
+> +++ b/include/uapi/linux/virtio_balloon.h
+> @@ -37,6 +37,7 @@
+>  #define VIRTIO_BALLOON_F_FREE_PAGE_HINT	3 /* VQ to report free pages */
+>  #define VIRTIO_BALLOON_F_PAGE_POISON	4 /* Guest is using page poisoning */
+>  #define VIRTIO_BALLOON_F_REPORTING	5 /* Page reporting virtqueue */
+> +#define VIRTIO_BALLOON_F_CONT_PAGES	6 /* VQ to report continuous pages */
+>  
+>  /* Size of a PFN in the balloon interface. */
+>  #define VIRTIO_BALLOON_PFN_SHIFT 12
 
-Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
----
- drivers/staging/rtl8712/rtl871x_event.h   | 15 ++++++++++-----
- drivers/staging/rtl8712/rtl871x_io.h      |  3 ++-
- drivers/staging/rtl8712/rtl871x_pwrctrl.h | 15 ++++++++++-----
- drivers/staging/rtl8712/rtl871x_xmit.h    | 15 ++++++++++-----
- 4 files changed, 32 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/staging/rtl8712/rtl871x_event.h b/drivers/staging/rtl8712/rtl871x_event.h
-index d9a5476d2426..0e59d0ee6aae 100644
---- a/drivers/staging/rtl8712/rtl871x_event.h
-+++ b/drivers/staging/rtl8712/rtl871x_event.h
-@@ -78,13 +78,16 @@ struct event_node {
- 	unsigned char *node;
- 	unsigned char evt_code;
- 	unsigned short evt_sz;
--	/*volatile*/ int *caller_ff_tail;
-+	/*volatile*/
-+	int *caller_ff_tail;
- 	int	caller_ff_sz;
- };
- 
- struct c2hevent_queue {
--	/*volatile*/ int	head;
--	/*volatile*/ int	tail;
-+	/*volatile*/
-+	int	head;
-+	/*volatile*/
-+	int	tail;
- 	struct	event_node	nodes[C2HEVENT_SZ];
- 	unsigned char	seq;
- };
-@@ -92,8 +95,10 @@ struct c2hevent_queue {
- #define NETWORK_QUEUE_SZ	4
- 
- struct network_queue {
--	/*volatile*/ int	head;
--	/*volatile*/ int	tail;
-+	/*volatile*/
-+	int	head;
-+	/*volatile*/
-+	int	tail;
- 	struct wlan_bssid_ex networks[NETWORK_QUEUE_SZ];
- };
- 
-diff --git a/drivers/staging/rtl8712/rtl871x_io.h b/drivers/staging/rtl8712/rtl871x_io.h
-index c20dd5a6bbd1..2e269b71072c 100644
---- a/drivers/staging/rtl8712/rtl871x_io.h
-+++ b/drivers/staging/rtl8712/rtl871x_io.h
-@@ -101,7 +101,8 @@ struct	_io_ops {
- struct io_req {
- 	struct list_head list;
- 	u32	addr;
--	/*volatile*/ u32	val;
-+	/*volatile*/
-+	u32	val;
- 	u32	command;
- 	u32	status;
- 	u8	*pbuf;
-diff --git a/drivers/staging/rtl8712/rtl871x_pwrctrl.h b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
-index dd5a79f90b1a..e6b740c09120 100644
---- a/drivers/staging/rtl8712/rtl871x_pwrctrl.h
-+++ b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
-@@ -77,14 +77,19 @@ struct reportpwrstate_parm {
- 
- struct	pwrctrl_priv {
- 	struct mutex mutex_lock;
--	/*volatile*/ u8 rpwm; /* requested power state for fw */
-+	/*volatile*/
-+	u8 rpwm; /* requested power state for fw */
- 	/* fw current power state. updated when 1. read from HCPWM or
- 	 * 2. driver lowers power level
- 	 */
--	/*volatile*/ u8 cpwm;
--	/*volatile*/ u8 tog; /* toggling */
--	/*volatile*/ u8 cpwm_tog; /* toggling */
--	/*volatile*/ u8 tgt_rpwm; /* wanted power state */
-+	/*volatile*/
-+	u8 cpwm;
-+	/*volatile*/
-+	u8 tog; /* toggling */
-+	/*volatile*/
-+	u8 cpwm_tog; /* toggling */
-+	/*volatile*/
-+	u8 tgt_rpwm; /* wanted power state */
- 	uint pwr_mode;
- 	uint smart_ps;
- 	uint alives;
-diff --git a/drivers/staging/rtl8712/rtl871x_xmit.h b/drivers/staging/rtl8712/rtl871x_xmit.h
-index f227828094bf..6d2e12b35670 100644
---- a/drivers/staging/rtl8712/rtl871x_xmit.h
-+++ b/drivers/staging/rtl8712/rtl871x_xmit.h
-@@ -182,11 +182,16 @@ struct sta_xmit_priv {
- };
- 
- struct	hw_txqueue {
--	/*volatile*/ sint	head;
--	/*volatile*/ sint	tail;
--	/*volatile*/ sint	free_sz;	/*in units of 64 bytes*/
--	/*volatile*/ sint      free_cmdsz;
--	/*volatile*/ sint	 txsz[8];
-+	/*volatile*/
-+	sint	head;
-+	/*volatile*/
-+	sint	tail;
-+	/*volatile*/
-+	sint	free_sz;	/*in units of 64 bytes*/
-+	/*volatile*/
-+	sint      free_cmdsz;
-+	/*volatile*/
-+	sint	 txsz[8];
- 	uint	ff_hwaddr;
- 	uint	cmd_hwaddr;
- 	sint	ac_tag;
--- 
-2.27.0
+So how does the guest/host interface look like?
+Could you write up something about it?
 
