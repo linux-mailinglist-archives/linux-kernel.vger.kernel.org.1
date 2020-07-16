@@ -2,91 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067A5221DBF
+	by mail.lfdr.de (Postfix) with ESMTP id EAA00221DC1
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgGPH6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:58:38 -0400
-Received: from nautica.notk.org ([91.121.71.147]:45383 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbgGPH6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:58:38 -0400
-Received: by nautica.notk.org (Postfix, from userid 1001)
-        id 637A9C01B; Thu, 16 Jul 2020 09:58:35 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 09:58:20 +0200
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     David Miller <davem@davemloft.net>
-Cc:     hch@lst.de, nazard@nazar.ca, ericvh@gmail.com, lucho@ionkov.net,
-        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+e6f77e16ff68b2434a2c@syzkaller.appspotmail.com
-Subject: Re: [PATCH] net/9p: validate fds in p9_fd_open
-Message-ID: <20200716075820.GA3720@nautica>
-References: <20200711104923.GA6584@nautica>
- <20200715073715.GA22899@lst.de>
- <20200715134756.GB22828@nautica>
- <20200715.142459.1215411672362681844.davem@davemloft.net>
+        id S1726759AbgGPH7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725867AbgGPH7O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 03:59:14 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C94C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 00:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4yHrVwlLmRJ5Bhrf6xotNIxowaqaP9OKLVsYKTRYeZY=; b=zcQlv+AMirIGkhjBtwpzK2apBM
+        LECXQoNcXnetlLH3TUpxSzOT4dAIe+3P5RvOpmiOOkQJf9fY42LZ1Oa454qrZh6gAiH7pSbjQ9QPj
+        sSpHdkRNFxJegyMI3el3sfTQ2kfwJBPccx71ES1wY12YtiSih6hA/mS+7i7xYFM611sThJ60zW2r3
+        J2Kykcgghbp/ijLUQkcbyL75Bb9GBb9MK+GLVNHofez61TEKQE/xZTTqc1Q55FnGcKhDuffTrA2my
+        bRuwhRAUWsL9VEdTr+vYu47sCo+JdXZRvQgDo7MI2nMWaQ7Kvd5LzZ8QRJkvIBZQoGGKqxL1jYXmE
+        dgyahRkA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvynJ-0001Y8-QW; Thu, 16 Jul 2020 07:59:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 94DA9300130;
+        Thu, 16 Jul 2020 09:59:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4BD9F23D64B97; Thu, 16 Jul 2020 09:59:04 +0200 (CEST)
+Date:   Thu, 16 Jul 2020 09:59:04 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] trace/events/sched.h: fix duplicated word
+Message-ID: <20200716075904.GN10769@hirez.programming.kicks-ass.net>
+References: <25305c1d-4ee8-e091-d20f-e700ddad49fd@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200715.142459.1215411672362681844.davem@davemloft.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <25305c1d-4ee8-e091-d20f-e700ddad49fd@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Miller wrote on Wed, Jul 15, 2020:
-> From: Dominique Martinet <asmadeus@codewreck.org>
-> Date: Wed, 15 Jul 2020 15:47:56 +0200
-> > It's honestly just a warn on something that would fail anyway so I'd
-> > rather let it live in -next first, I don't get why syzbot is so verbose
-> > about this - it sent a mail when it found a c repro and one more once it
-> > bisected the commit yesterday but it should not be sending more?
+On Wed, Jul 15, 2020 at 06:31:38PM -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
 > 
-> I honestly find it hard to understand the resistence to fixing the
-> warning in mainline.
-> 
-> I merge such fixes aggressively.
+> Change "It it" to "It is".
 
-Well, if it was something a user could ever see with normal (even
-exotic) 9p workloads, sure; I would want that in mainline asap and do
-what's required in a hurry.
+So I read the diff 2 times, gave up and went to read the Changelog
+before I noticed the change... clearly I need more wake-up juice :-)
 
-But this warning only happens when passing fd that are invalid, so the
-mount would fail with EIO anyway, and it's not a dos either -- I don't
-see the harm really.
-Someone who'd get errors anyway will just get slightly more verbose
-errors (and for people like me with kernel.panic_on_warn set it'll even
-crash their machines sure), and "normal" users won't ever see it -- I
-see no reason to rush this.
-
-
-It's not about the "extra work" of sending things to linus in a single
-patch PR (it's honestly a wonder 9p gets maintainers at all, the volume
-of patches doesn't really mandate it), but I need to fix tests first
-anyway as said previously.
-I've spent a couple of hours on it yesterday, and should be able to get
-things running again soonish -- meanwhile I'm not comfortable sending
-any patch anywhere anyway.
-
-Yes given the patch content it's probably fine but syzbot doesn't test
-that a 9p mount with a fd argument works, just that there's no warning /
-crash, so for all I know we could just be returning -EIO early and
-calling it a fix.
-I don't see any reason this would fail, but the point of tests is to...
-test things work the things we think they do?
-
-
-
-Anyways, if you care about this feel free to take the patch and send it
-along with your process earlier. I'm just stubborn in not wanting to
-send things I could test untested and it came at a bad time / don't
-think this is critical enough to manually test. Then again I probably
-just spent more time arguing about it than it would have taken to
-test...
-(if you do please fix the goto as pointed out in a review)
-
-Thanks,
--- 
-Dominique
+Thanks!
