@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FFF222CDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A75222CE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgGPUa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 16:30:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
+        id S1726580AbgGPUcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 16:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgGPUax (ORCPT
+        with ESMTP id S1725921AbgGPUcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 16:30:53 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951CFC061755;
-        Thu, 16 Jul 2020 13:30:53 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id EA6E62A5A65
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        gofmanp@gmail.com, linux-api@vger.kernel.org, x86@kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org, jannh@google.com
-Subject: Re: [PATCH v4 0/2] Syscall User Redirection
-Organization: Collabora
-References: <20200716193141.4068476-1-krisman@collabora.com>
-        <202007161300.7452A2C5@keescook>
-        <20200716202234.wryj7pj7zmwcrxxx@wittgenstein>
-        <202007161324.E75E01B@keescook>
-        <20200716202935.yorxrz2om67r366x@wittgenstein>
-Date:   Thu, 16 Jul 2020 16:30:48 -0400
-In-Reply-To: <20200716202935.yorxrz2om67r366x@wittgenstein> (Christian
-        Brauner's message of "Thu, 16 Jul 2020 22:29:35 +0200")
-Message-ID: <871rlbjj7r.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Thu, 16 Jul 2020 16:32:02 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AF3C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 13:32:01 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j4so8445636wrp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 13:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=k6BBl5BUFM3oiIHSrILloKC9MrcWgF9ThT+XuvJnmT8=;
+        b=U/gNbcrlPwAlWDZJfubKr3mmM5yEZVrnnCpM0ZNBsilq09nBJI7R6k8/+VFy2ozYSg
+         RdAsSBpGA6597te+J31NFbppwDHFgzaqizCUzWGyXP+hd/yDM8QHOga2FoHd0qQwWCYN
+         8cFuBpQP+DX5jEmuoKqYCH1oiRFzE76db61oWlnDEzxdp5WCF0+WkAnOEUt79RLn56t/
+         6XQ1IuKJU37Ey86UsCKLH1wVVNwOzR5EaaL7I0WJYI5h/TeAaGXT9LdxAruUcMfNxo35
+         S42aFYQD74hRHgS88ASHuB32LFsjmjGAmUDyq0JFxSJJldJ9iqVurTbb0EPhQxMSb43k
+         kDiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=k6BBl5BUFM3oiIHSrILloKC9MrcWgF9ThT+XuvJnmT8=;
+        b=GmKh6ax9zAfLcJoTG5PjpCzvR6dQbTpcICj6+DlN4RuEwtdbo8oguCGifG7CyZ7VU0
+         62/zVX75gW7yRQteoUCuz9vWexsYZt4Npy+LIvFmCsYvYU9U3TNcsi679QO/glTQjSYu
+         bWAQ6cA/oQj42XeAjm+eYAFhmJSW/MnHftAfGzihiC+YaC1ldRblGbXuGcPSxwT83BNe
+         A8PLCogj4AkN6/kahr44Z+BdTmUIZCslwJPBy0Ze09qFpbmftNzUvixng3Rb8+OX14Xl
+         Zw/MdZ6PRigpkvn9aNkMYdSDKmrt0eSSvxNJZUYoaj9kl87HcA1kCpBeaH1UMFu8XT9U
+         +ohQ==
+X-Gm-Message-State: AOAM532BctCcy1eGOZoAcAMh1f4gO9l6K8qb3uDFQdVuHeBQPYaPa2g9
+        e3PFO7ixX7zp4jZK5FWWrCg=
+X-Google-Smtp-Source: ABdhPJxMXgzz6yxZzhsCLg4fnfW3I5zn36+cHjxqG5Xyci3xiDk5im82bTc41E93B6iEwcivUAvM+A==
+X-Received: by 2002:adf:dfd1:: with SMTP id q17mr6281416wrn.94.1594931520166;
+        Thu, 16 Jul 2020 13:32:00 -0700 (PDT)
+Received: from garrit-VirtualBox.fritz.box ([94.31.102.44])
+        by smtp.gmail.com with ESMTPSA id p25sm9656416wmg.39.2020.07.16.13.31.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 13:31:59 -0700 (PDT)
+From:   Garrit Franke <garritfranke@gmail.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Garrit Franke <garritfranke@gmail.com>
+Subject: [PATCH v3] kobject: remove unused KOBJ_MAX action
+Date:   Thu, 16 Jul 2020 22:31:01 +0200
+Message-Id: <20200716203100.7959-1-garritfranke@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200715153216.GB749262@kroah.com>
+References: <20200715153216.GB749262@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Brauner <christian.brauner@ubuntu.com> writes:
+The loop in libb/kobj_uevent.c that checked for KOBBJ_MAX is no longer
+present, we do a much more sane ARRAY_SIZE() check instead. See
+5c5daf657cb5 ("Driver core: exclude kobject_uevent.c for
+!CONFIG_HOTPLUG").
 
-> On Thu, Jul 16, 2020 at 01:25:43PM -0700, Kees Cook wrote:
->> On Thu, Jul 16, 2020 at 10:22:34PM +0200, Christian Brauner wrote:
->> > On Thu, Jul 16, 2020 at 01:04:38PM -0700, Kees Cook wrote:
->> > > On Thu, Jul 16, 2020 at 03:31:39PM -0400, Gabriel Krisman Bertazi wrote:
->> > > > This is v4 of Syscall User Redirection.  The implementation itself is
->> > > > not modified from v3, it only applies the latest round of reviews to the
->> > > > selftests.
->> > > > 
->> > > > __NR_syscalls is not really exported in header files other than
->> > > > asm-generic for every architecture, so it felt safer to optionally
->> > > > expose it with a fallback to a high value.
->> > > > 
->> > > > Also, I didn't expose tests for PR_GET as that is not currently
->> > > > implemented.  If possible, I'd have it supported by a future patchset,
->> > > > since it is not immediately necessary to support this feature.
->> > > 
->> > > Thanks! That all looks good to me.
->> > 
->> > Don't have any problem with this but did this ever get exposure on
->> > linux-api? This is the first time I see this pop up.
->> 
->> I thought I'd added it to CC in the past, but that might have been other
->> recent unrelated threads. Does this need a full repost there too, you
->> think?
->
-> Nah, wasn't my intention to force a repost. Seems that several people
-> have looked this over. :) Just curious why it didn't get to linux-api
-> and we know quite some people who only do look at linux-api (for sanity). :)
+Signed-off-by: Garrit Franke <garritfranke@gmail.com>
+---
+ include/linux/kobject.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-That's my mistake.  I didn't think about it when submitting :(
-
-If this get re-spinned again I will make sure to CC linux-api.
-
+diff --git a/include/linux/kobject.h b/include/linux/kobject.h
+index 6cba088bee24..ea30529fba08 100644
+--- a/include/linux/kobject.h
++++ b/include/linux/kobject.h
+@@ -59,7 +59,6 @@ enum kobject_action {
+ 	KOBJ_OFFLINE,
+ 	KOBJ_BIND,
+ 	KOBJ_UNBIND,
+-	KOBJ_MAX
+ };
+ 
+ struct kobject {
 -- 
-Gabriel Krisman Bertazi
+2.25.1
+
