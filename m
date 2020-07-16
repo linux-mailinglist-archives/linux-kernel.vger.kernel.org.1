@@ -2,189 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1900722196B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0EC22196D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgGPB2x convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Jul 2020 21:28:53 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2643 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726776AbgGPB2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 21:28:53 -0400
-Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id 3CC0BA0E7C6EE7FA304C;
-        Thu, 16 Jul 2020 09:28:49 +0800 (CST)
-Received: from DGGEMM526-MBX.china.huawei.com ([169.254.8.195]) by
- DGGEMM402-HUB.china.huawei.com ([10.3.20.210]) with mapi id 14.03.0487.000;
- Thu, 16 Jul 2020 09:28:45 +0800
-From:   "Zengtao (B)" <prime.zeng@hisilicon.com>
-To:     Qian Cai <cai@lca.pw>
-CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michel Lespinasse" <walken@google.com>,
-        Denis Efremov <efremov@linux.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] vfio/pci: fix racy on error and request eventfd ctx
-Thread-Topic: [PATCH] vfio/pci: fix racy on error and request eventfd ctx
-Thread-Index: AQHWWnqQ+QrCfngfhUOguFGy1o0RgqkIHjeAgAFMeKA=
-Date:   Thu, 16 Jul 2020 01:28:45 +0000
-Message-ID: <678F3D1BB717D949B966B68EAEB446ED415861C7@dggemm526-mbx.china.huawei.com>
-References: <1594798484-20501-1-git-send-email-prime.zeng@hisilicon.com>
- <20200715133418.GA4426@lca.pw>
-In-Reply-To: <20200715133418.GA4426@lca.pw>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.74.221.187]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1727975AbgGPB25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 21:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726776AbgGPB2z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 21:28:55 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340F4C061755;
+        Wed, 15 Jul 2020 18:28:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:To:Subject:From:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Ivt/S2E26MMmfuGaOWJ4/5vbxsd/UYTBZ3TQCIqNLng=; b=MyQFx3UcYSKlzISyFpi1oast9v
+        AXcaUvG75KxTI6/bxqStU3uCRyw56lDwAEgtNFQGuGbd34h91cli8lIGkL+k9scQcgH/lyN8NLei8
+        l4qf3ULUQTTX4jFWPEcg4h0x4jzGYg/A462dAqNLQn+6IkwooqAUWGPmrKMAmje0jCmWlbGY5cnwj
+        ARoe6h4HOVVGFCcWKQ+PWdVTQ4bd7HGjYkc/50oaxFmPGUqGmXzgslTkFEKcsGz7RBxywoCICrRjX
+        +prYNKXS/7T0W1GNKlS63+yTm87gWJLoB+YGxSc/FR725efAA29o0ullXUf33URuf/EPrPbndOqNB
+        PfLut/xQ==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvshe-0000Ny-RU; Thu, 16 Jul 2020 01:28:51 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] autofs: fix doubled word
+To:     LKML <linux-kernel@vger.kernel.org>,
+        autofs mailing list <autofs@vger.kernel.org>,
+        Ian Kent <raven@themaw.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <5a82befd-40f8-8dc0-3498-cbc0436cad9b@infradead.org>
+Date:   Wed, 15 Jul 2020 18:28:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Qian Cai [mailto:cai@lca.pw]
-> Sent: Wednesday, July 15, 2020 9:34 PM
-> To: Zengtao (B)
-> Cc: alex.williamson@redhat.com; Cornelia Huck; Kevin Tian; Peter Xu;
-> Andrew Morton; Michel Lespinasse; Denis Efremov; kvm@vger.kernel.org;
-> linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH] vfio/pci: fix racy on error and request eventfd ctx
-> 
-> On Wed, Jul 15, 2020 at 03:34:41PM +0800, Zeng Tao wrote:
-> > The vfio_pci_release call will free and clear the error and request
-> > eventfd ctx while these ctx could be in use at the same time in the
-> > function like vfio_pci_request, and it's expected to protect them under
-> > the vdev->igate mutex, which is missing in vfio_pci_release.
-> 
-> How about other similar places calling eventfd_ctx_put() for "struct
-> vfio_pci_device" ? For example, vfio_intx_set_signal().
->
-I think there is no need, since the only wrapper call is
-vfio_pci_set_irqs_ioctl which is already protected by the igate mutex.
+From: Randy Dunlap <rdunlap@infradead.org>
+
+Change doubled word "is" to "it is".
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Ian Kent <raven@themaw.net>
+Cc: autofs@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ include/uapi/linux/auto_dev-ioctl.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-next-20200714.orig/include/uapi/linux/auto_dev-ioctl.h
++++ linux-next-20200714/include/uapi/linux/auto_dev-ioctl.h
+@@ -82,7 +82,7 @@ struct args_ismountpoint {
+ /*
+  * All the ioctls use this structure.
+  * When sending a path size must account for the total length
+- * of the chunk of memory otherwise is is the size of the
++ * of the chunk of memory otherwise it is the size of the
+  * structure.
+  */
  
-> >
-> > This issue is introduced since commit 1518ac272e78 ("vfio/pci: fix
-> memory
-> > leaks of eventfd ctx"),and since commit 5c5866c593bb ("vfio/pci: Clear
-> > error and request eventfd ctx after releasing"), it's very easily to
-> > trigger the kernel panic like this:
-> >
-> > [ 9513.904346] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000000000008
-> > [ 9513.913091] Mem abort info:
-> > [ 9513.915871]   ESR = 0x96000006
-> > [ 9513.918912]   EC = 0x25: DABT (current EL), IL = 32 bits
-> > [ 9513.924198]   SET = 0, FnV = 0
-> > [ 9513.927238]   EA = 0, S1PTW = 0
-> > [ 9513.930364] Data abort info:
-> > [ 9513.933231]   ISV = 0, ISS = 0x00000006
-> > [ 9513.937048]   CM = 0, WnR = 0
-> > [ 9513.940003] user pgtable: 4k pages, 48-bit VAs,
-> pgdp=0000007ec7d12000
-> > [ 9513.946414] [0000000000000008] pgd=0000007ec7d13003,
-> p4d=0000007ec7d13003, pud=0000007ec728c003,
-> pmd=0000000000000000
-> > [ 9513.956975] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-> > [ 9513.962521] Modules linked in: vfio_pci vfio_virqfd vfio_iommu_type1
-> vfio hclge hns3 hnae3 [last unloaded: vfio_pci]
-> > [ 9513.972998] CPU: 4 PID: 1327 Comm: bash Tainted: G        W
-> 5.8.0-rc4+ #3
-> > [ 9513.980443] Hardware name: Huawei TaiShan 2280 V2/BC82AMDC,
-> BIOS 2280-V2 CS V3.B270.01 05/08/2020
-> > [ 9513.989274] pstate: 80400089 (Nzcv daIf +PAN -UAO BTYPE=--)
-> > [ 9513.994827] pc : _raw_spin_lock_irqsave+0x48/0x88
-> > [ 9513.999515] lr : eventfd_signal+0x6c/0x1b0
-> > [ 9514.003591] sp : ffff800038a0b960
-> > [ 9514.006889] x29: ffff800038a0b960 x28: ffff007ef7f4da10
-> > [ 9514.012175] x27: ffff207eefbbfc80 x26: ffffbb7903457000
-> > [ 9514.017462] x25: ffffbb7912191000 x24: ffff007ef7f4d400
-> > [ 9514.022747] x23: ffff20be6e0e4c00 x22: 0000000000000008
-> > [ 9514.028033] x21: 0000000000000000 x20: 0000000000000000
-> > [ 9514.033321] x19: 0000000000000008 x18: 0000000000000000
-> > [ 9514.038606] x17: 0000000000000000 x16: ffffbb7910029328
-> > [ 9514.043893] x15: 0000000000000000 x14: 0000000000000001
-> > [ 9514.049179] x13: 0000000000000000 x12: 0000000000000002
-> > [ 9514.054466] x11: 0000000000000000 x10: 0000000000000a00
-> > [ 9514.059752] x9 : ffff800038a0b840 x8 : ffff007ef7f4de60
-> > [ 9514.065038] x7 : ffff007fffc96690 x6 : fffffe01faffb748
-> > [ 9514.070324] x5 : 0000000000000000 x4 : 0000000000000000
-> > [ 9514.075609] x3 : 0000000000000000 x2 : 0000000000000001
-> > [ 9514.080895] x1 : ffff007ef7f4d400 x0 : 0000000000000000
-> > [ 9514.086181] Call trace:
-> > [ 9514.088618]  _raw_spin_lock_irqsave+0x48/0x88
-> > [ 9514.092954]  eventfd_signal+0x6c/0x1b0
-> > [ 9514.096691]  vfio_pci_request+0x84/0xd0 [vfio_pci]
-> > [ 9514.101464]  vfio_del_group_dev+0x150/0x290 [vfio]
-> > [ 9514.106234]  vfio_pci_remove+0x30/0x128 [vfio_pci]
-> > [ 9514.111007]  pci_device_remove+0x48/0x108
-> > [ 9514.115001]  device_release_driver_internal+0x100/0x1b8
-> > [ 9514.120200]  device_release_driver+0x28/0x38
-> > [ 9514.124452]  pci_stop_bus_device+0x68/0xa8
-> > [ 9514.128528]  pci_stop_and_remove_bus_device+0x20/0x38
-> > [ 9514.133557]  pci_iov_remove_virtfn+0xb4/0x128
-> > [ 9514.137893]  sriov_disable+0x3c/0x108
-> > [ 9514.141538]  pci_disable_sriov+0x28/0x38
-> > [ 9514.145445]  hns3_pci_sriov_configure+0x48/0xb8 [hns3]
-> > [ 9514.150558]  sriov_numvfs_store+0x110/0x198
-> > [ 9514.154724]  dev_attr_store+0x44/0x60
-> > [ 9514.158373]  sysfs_kf_write+0x5c/0x78
-> > [ 9514.162018]  kernfs_fop_write+0x104/0x210
-> > [ 9514.166010]  __vfs_write+0x48/0x90
-> > [ 9514.169395]  vfs_write+0xbc/0x1c0
-> > [ 9514.172694]  ksys_write+0x74/0x100
-> > [ 9514.176079]  __arm64_sys_write+0x24/0x30
-> > [ 9514.179987]  el0_svc_common.constprop.4+0x110/0x200
-> > [ 9514.184842]  do_el0_svc+0x34/0x98
-> > [ 9514.188144]  el0_svc+0x14/0x40
-> > [ 9514.191185]  el0_sync_handler+0xb0/0x2d0
-> > [ 9514.195088]  el0_sync+0x140/0x180
-> > [ 9514.198389] Code: b9001020 d2800000 52800022 f9800271
-> (885ffe61)
-> > [ 9514.204455] ---[ end trace 648de00c8406465f ]---
-> > [ 9514.212308] note: bash[1327] exited with preempt_count 1
-> >
-> > Cc: Qian Cai <cai@lca.pw>
-> > Cc: Alex Williamson <alex.williamson@redhat.com>
-> > Fixes: 1518ac272e78 ("vfio/pci: fix memory leaks of eventfd ctx")
-> > Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
-> > ---
-> >  drivers/vfio/pci/vfio_pci.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> > index f634c81..de881a6 100644
-> > --- a/drivers/vfio/pci/vfio_pci.c
-> > +++ b/drivers/vfio/pci/vfio_pci.c
-> > @@ -521,14 +521,19 @@ static void vfio_pci_release(void
-> *device_data)
-> >  		vfio_pci_vf_token_user_add(vdev, -1);
-> >  		vfio_spapr_pci_eeh_release(vdev->pdev);
-> >  		vfio_pci_disable(vdev);
-> > +		mutex_lock(&vdev->igate);
-> >  		if (vdev->err_trigger) {
-> >  			eventfd_ctx_put(vdev->err_trigger);
-> >  			vdev->err_trigger = NULL;
-> >  		}
-> > +		mutex_unlock(&vdev->igate);
-> > +
-> > +		mutex_lock(&vdev->igate);
-> >  		if (vdev->req_trigger) {
-> >  			eventfd_ctx_put(vdev->req_trigger);
-> >  			vdev->req_trigger = NULL;
-> >  		}
-> > +		mutex_unlock(&vdev->igate);
-> >  	}
-> >
-> >  	mutex_unlock(&vdev->reflck->lock);
-> > --
-> > 2.8.1
-> >
+
