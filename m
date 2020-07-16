@@ -2,156 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B368221DFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64E1A221E0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgGPIPG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Jul 2020 04:15:06 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2978 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725867AbgGPIPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 04:15:04 -0400
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id 335E35F8ECBBA684FFF9;
-        Thu, 16 Jul 2020 16:15:02 +0800 (CST)
-Received: from dggema766-chm.china.huawei.com (10.1.198.208) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Thu, 16 Jul 2020 16:15:01 +0800
-Received: from lhreml703-chm.china.huawei.com (10.201.108.52) by
- dggema766-chm.china.huawei.com (10.1.198.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 16 Jul 2020 16:14:59 +0800
-Received: from lhreml703-chm.china.huawei.com ([10.201.68.198]) by
- lhreml703-chm.china.huawei.com ([10.201.68.198]) with mapi id 15.01.1913.007;
- Thu, 16 Jul 2020 09:14:57 +0100
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, yuzenghui <yuzenghui@huawei.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Zhuangyuzeng (Yisen)" <yisen.zhuang@huawei.com>,
-        "Wanghaibin (D)" <wanghaibin.wang@huawei.com>
-Subject: RE: [REPORT] possible circular locking dependency when booting a VM
- on arm64 host
-Thread-Topic: [REPORT] possible circular locking dependency when booting a VM
- on arm64 host
-Thread-Index: AQHWVd2KjX+gRVf/zUS8x8KvRiYF2qkIx/6AgAAPrCCAAQtKIA==
-Date:   Thu, 16 Jul 2020 08:14:57 +0000
-Message-ID: <9c5087015361434bb1ccb93276c235bc@huawei.com>
-References: <7225eba7-6e5e-ec7e-953b-d1fef0b1775b@huawei.com>
- <99e001bba70216d9e9a54a786791cb92@kernel.org> 
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.68.220]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726983AbgGPISI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 04:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725867AbgGPISH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 04:18:07 -0400
+Received: from mout2.freenet.de (mout2.freenet.de [IPv6:2001:748:100:40::2:4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE46C061755;
+        Thu, 16 Jul 2020 01:18:07 -0700 (PDT)
+Received: from [195.4.92.164] (helo=mjail1.freenet.de)
+        by mout2.freenet.de with esmtpa (ID viktor.jaegerskuepper@freenet.de) (port 25) (Exim 4.92 #3)
+        id 1jvz5f-0002ek-UX; Thu, 16 Jul 2020 10:18:03 +0200
+Received: from localhost ([::1]:41380 helo=mjail1.freenet.de)
+        by mjail1.freenet.de with esmtpa (ID viktor.jaegerskuepper@freenet.de) (Exim 4.92 #3)
+        id 1jvz5f-0007YJ-Sw; Thu, 16 Jul 2020 10:18:03 +0200
+Received: from sub7.freenet.de ([195.4.92.126]:39256)
+        by mjail1.freenet.de with esmtpa (ID viktor.jaegerskuepper@freenet.de) (Exim 4.92 #3)
+        id 1jvz3E-000508-Cc; Thu, 16 Jul 2020 10:15:32 +0200
+Received: from p200300e707002e000785056b8e3c0b45.dip0.t-ipconnect.de ([2003:e7:700:2e00:785:56b:8e3c:b45]:51182 helo=[127.0.0.1])
+        by sub7.freenet.de with esmtpsa (ID viktor.jaegerskuepper@freenet.de) (TLSv1.2:ECDHE-RSA-CHACHA20-POLY1305:256) (port 465) (Exim 4.92 #3)
+        id 1jvz3E-0003y2-7Q; Thu, 16 Jul 2020 10:15:32 +0200
+Subject: Re: ath9k broken [was: Linux 5.7.3]
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gabriel C <nix.or.die@googlemail.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable <stable@vger.kernel.org>, lwn@lwn.net,
+        angrypenguinpoland@gmail.com, Qiujun Huang <hqjagain@gmail.com>,
+        ath9k-devel <ath9k-devel@qca.qualcomm.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        Roman Mamedov <rm@romanrm.net>
+References: <1592410366125160@kroah.com>
+ <CAEJqkgjV8p6LtBV8YUGbNb0vYzKOQt4-AMAvYw5mzFr3eicyTg@mail.gmail.com>
+ <b7993e83-1df7-0c93-f6dd-dba9dc10e27a@kernel.org>
+ <CAEJqkggG2ZB8De_zbP2W7Z9eRYve2br8jALaLRhjC33ksLZpTw@mail.gmail.com>
+ <CAEJqkgj4LS7M3zYK51Vagt4rWC9A7uunA+7CvX0Qv=57Or3Ngg@mail.gmail.com>
+ <CAEJqkghJWGsLCj2Wvt-yhzMewjXwrXhSEDpar6rbDpbSA6R8kQ@mail.gmail.com>
+ <20200626133959.GA4024297@kroah.com>
+ <CAEJqkgiACMar-iWsWQgJPAViBBURaNpcOD4FKtp6M8Aw_D4FOw@mail.gmail.com>
+ <CAEJqkgg4Ka8oNL7ELoJrR0-Abz3=caLns48KyDC=DQcym6SRvA@mail.gmail.com>
+ <20200707141100.GE4064836@kroah.com>
+ <07c8d8fa-8bbc-0b4e-191c-b2635214e8b9@freenet.de>
+ <87ft9sbym3.fsf@tynnyri.adurom.net>
+From:   =?UTF-8?B?VmlrdG9yIErDpGdlcnNrw7xwcGVy?= 
+        <viktor_jaegerskuepper@freenet.de>
+Message-ID: <20eec98e-960c-cece-21e4-01e26b44233e@freenet.de>
+Date:   Thu, 16 Jul 2020 10:15:30 +0200
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <87ft9sbym3.fsf@tynnyri.adurom.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US-large
+Content-Transfer-Encoding: 8bit
+X-Originated-At: 2003:e7:700:2e00:785:56b:8e3c:b45!51182
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Salil Mehta
-> Sent: Thursday, July 16, 2020 1:53 AM
-> To: 'Marc Zyngier' <maz@kernel.org>; yuzenghui <yuzenghui@huawei.com>
-> 
-> > From: Marc Zyngier [mailto:maz@kernel.org]
-> > Sent: Wednesday, July 15, 2020 5:09 PM
-> > To: yuzenghui <yuzenghui@huawei.com>
-> >
-> > Hi Zenghui,
-> >
-> > On 2020-07-09 11:41, Zenghui Yu wrote:
-> > > Hi All,
-> > >
-> > > I had seen the following lockdep splat when booting a guest on my
-> > > Kunpeng 920 with GICv4 enabled. I can also trigger the same splat
-> > > on v5.5 so it should already exist in the kernel for a while. I'm
-> > > not sure what the exact problem is and hope someone can have a look!
-> >
-> > I can't manage to trigger this splat on my D05, despite running guests
-> > with GICv4 enabled. A couple of questions below:
-> 
-> 
-> Sorry I forgot to update but I did try on Friday and I could not manage
-> to trigger it on D06/Kunpeng920 either. I used 5.8.0-rc4.
-> 
-> 
-> > > Thanks,
-> > > Zenghui
-> > >
-> > > [  103.855511] ======================================================
-> > > [  103.861664] WARNING: possible circular locking dependency detected
-> > > [  103.867817] 5.8.0-rc4+ #35 Tainted: G        W
-> > > [  103.872932] ------------------------------------------------------
-> > > [  103.879083] CPU 2/KVM/20515 is trying to acquire lock:
-> > > [  103.884200] ffff202fcd5865b0 (&irq_desc_lock_class){-.-.}-{2:2},
-> > > at: __irq_get_desc_lock+0x60/0xa0
-> > > [  103.893127]
-> > >                but task is already holding lock:
-> > > [  103.898933] ffff202fcfd07f58 (&rq->lock){-.-.}-{2:2}, at:
-> > > __schedule+0x114/0x8b8
-> > > [  103.906301]
-> > >                which lock already depends on the new lock.
-> > >
-> > > [  103.914441]
-> > >                the existing dependency chain (in reverse order) is:
-> > > [  103.921888]
-> > >                -> #3 (&rq->lock){-.-.}-{2:2}:
-> > > [  103.927438]        _raw_spin_lock+0x54/0x70
-> > > [  103.931605]        task_fork_fair+0x48/0x150
-> > > [  103.935860]        sched_fork+0x100/0x268
-> > > [  103.939856]        copy_process+0x628/0x1868
-> > > [  103.944106]        _do_fork+0x74/0x710
-> > > [  103.947840]        kernel_thread+0x78/0xa0
-> > > [  103.951917]        rest_init+0x30/0x270
-> > > [  103.955742]        arch_call_rest_init+0x14/0x1c
-> > > [  103.960339]        start_kernel+0x534/0x568
-> > > [  103.964503]
-> > >                -> #2 (&p->pi_lock){-.-.}-{2:2}:
-> > > [  103.970224]        _raw_spin_lock_irqsave+0x70/0x98
-> > > [  103.975080]        try_to_wake_up+0x5c/0x5b0
-> > > [  103.979330]        wake_up_process+0x28/0x38
-> > > [  103.983581]        create_worker+0x128/0x1b8
-> > > [  103.987834]        workqueue_init+0x308/0x3bc
-> > > [  103.992172]        kernel_init_freeable+0x180/0x33c
-> > > [  103.997027]        kernel_init+0x18/0x118
-> > > [  104.001020]        ret_from_fork+0x10/0x18
-> > > [  104.005097]
-> > >                -> #1 (&pool->lock){-.-.}-{2:2}:
-> > > [  104.010817]        _raw_spin_lock+0x54/0x70
-> > > [  104.014983]        __queue_work+0x120/0x6e8
-> > > [  104.019146]        queue_work_on+0xa0/0xd8
-> > > [  104.023225]        irq_set_affinity_locked+0xa8/0x178
-> > > [  104.028253]        __irq_set_affinity+0x5c/0x90
-> > > [  104.032762]        irq_set_affinity_hint+0x74/0xb0
-> > > [  104.037540]        hns3_nic_init_irq+0xe0/0x210 [hns3]
-> > > [  104.042655]        hns3_client_init+0x2d8/0x4e0 [hns3]
-> > > [  104.047779]        hclge_init_client_instance+0xf0/0x3a8 [hclge]
-> > > [  104.053760]        hnae3_init_client_instance.part.3+0x30/0x68
-> > > [hnae3]
-> > > [  104.060257]        hnae3_register_ae_dev+0x100/0x1f0 [hnae3]
-> > > [  104.065892]        hns3_probe+0x60/0xa8 [hns3]
-> >
-> > Are you performing some kind of PCIe hot-plug here? Or is that done
-> > at boot only? It seems to help triggering the splat.
-> 
-> 
-> I am not sure how you can do that since HNS3 is integrated NIC so
-> physical hot-plug is definitely ruled out. local_pci_probe()
-> should also get called when we insert the hns3_enet module which
-> eventually initializes the driver.
+[CC'ed Roman]
 
-Or perhaps you meant below?
+Kalle Valo:
+> Viktor Jägersküpper <viktor_jaegerskuepper@freenet.de> writes:
+> 
+>> Greg Kroah-Hartman wrote:
+>>> On Fri, Jun 26, 2020 at 04:40:18PM +0200, Gabriel C wrote:
+>>>> Am Fr., 26. Juni 2020 um 15:51 Uhr schrieb Gabriel C
+>>>> <nix.or.die@googlemail.com>:
+>>>>>
+>>>>> Am Fr., 26. Juni 2020 um 15:40 Uhr schrieb Greg Kroah-Hartman
+>>>>> <gregkh@linuxfoundation.org>:
+>>>>>>
+>>>>>> On Fri, Jun 26, 2020 at 01:48:59PM +0200, Gabriel C wrote:
+>>>>>>> Am Do., 25. Juni 2020 um 12:52 Uhr schrieb Gabriel C
+>>>>>>> <nix.or.die@googlemail.com>:
+>>>>>>>>
+>>>>>>>> Am Do., 25. Juni 2020 um 12:48 Uhr schrieb Gabriel C
+>>>>>>>> <nix.or.die@googlemail.com>:
+>>>>>>>>>
+>>>>>>>>> Am Do., 25. Juni 2020 um 06:57 Uhr schrieb Jiri Slaby <jirislaby@kernel.org>:
+>>>>>>>>>>
+>>>>>>>>>> On 25. 06. 20, 0:05, Gabriel C wrote:
+>>>>>>>>>>> Am Mi., 17. Juni 2020 um 18:13 Uhr schrieb Greg Kroah-Hartman
+>>>>>>>>>>> <gregkh@linuxfoundation.org>:
+>>>>>>>>>>>>
+>>>>>>>>>>>> I'm announcing the release of the 5.7.3 kernel.
+>>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> Hello Greg,
+>>>>>>>>>>>
+>>>>>>>>>>>> Qiujun Huang (5):
+>>>>>>>>>>>>       ath9k: Fix use-after-free Read in htc_connect_service
+>>>>>>>>>>>>       ath9k: Fix use-after-free Read in ath9k_wmi_ctrl_rx
+>>>>>>>>>>>>       ath9k: Fix use-after-free Write in ath9k_htc_rx_msg
+>>>>>>>>>>>>       ath9x: Fix stack-out-of-bounds Write in ath9k_hif_usb_rx_cb
+>>>>>>>>>>>>       ath9k: Fix general protection fault in ath9k_hif_usb_rx_cb
+>>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> We got a report on IRC about 5.7.3+ breaking a USB ath9k Wifi Dongle,
+>>>>>>>>>>> while working fine on <5.7.3.
+>>>>>>>>>>>
+>>>>>>>>>>> I don't have myself such HW, and the reported doesn't have any experience
+>>>>>>>>>>> in bisecting the kernel, so we build kernels, each with one of the
+>>>>>>>>>>> above commits reverted,
+>>>>>>>>>>> to find the bad commit.
+>>>>>>>>>>>
+>>>>>>>>>>> The winner is:
+>>>>>>>>>>>
+>>>>>>>>>>> commit 6602f080cb28745259e2fab1a4cf55eeb5894f93
+>>>>>>>>>>> Author: Qiujun Huang <hqjagain@gmail.com>
+>>>>>>>>>>> Date:   Sat Apr 4 12:18:38 2020 +0800
+>>>>>>>>>>>
+>>>>>>>>>>>     ath9k: Fix general protection fault in ath9k_hif_usb_rx_cb
+>>>>>>>>>>>
+>>>>>>>>>>>     commit 2bbcaaee1fcbd83272e29f31e2bb7e70d8c49e05 upstream.
+>>>>>>>>>>> ...
+>>>>>>>>>>>
+>>>>>>>>>>> Reverting this one fixed his problem.
+>>>>>>>>>>
+>>>>>>>>>> Obvious question: is 5.8-rc1 (containing the commit) broken too?
+>>>>>>>>>
+>>>>>>>>> Yes, it does, just checked.
+>>>>>>>>>
+>>>>>>>>> git tag --contains 2bbcaaee1fcbd83272e29f31e2bb7e70d8c49e05
+>>>>>>>>> v5.8-rc1
+>>>>>>>>> v5.8-rc2
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> Sorry, I read the wrong, I just woke up.
+>>>>>>>>
+>>>>>>>> We didn't test 5.8-rc{1,2} yet but we will today and let you know.
+>>>>>>>>
+>>>>>>>
+>>>>>>> We tested 5.8-rc2 and it is broken too.
+>>>>>>>
+>>>>>>> The exact HW name is:
+>>>>>>>
+>>>>>>> TP-link tl-wn722n (Atheros AR9271 chip)
+>>>>>>
+>>>>>> Great!
+>>>>>>
+>>>>>> Can you work with the developers to fix this in Linus's tree first?
+>>>>>
+>>>>> I'm the man in the middle, but sure we will try patches or any suggestions
+>>>>> from developers to identify and fix the problem.
+>>>>>
+>>>>>>
+>>>>>> I bet they want to see the output of 'lsusb -v' for this device to see
+>>>>>> if the endpoint calculations are correct...
+>>>>>>
+>>>>>
+>>>>> Working on it. As soon the reporter gives me the output, I will post it here.
+>>>>> I've told him to run it on a broken and one working kernel.
+>>>>
+>>>> That is from a good kernel with reverted commit
+>>>> https://gist.github.com/AngryPenguinPL/07c8e2abd3b103eaf8978a39ad8577d1
+>>>>
+>>>> That is from the broken kernel without the commit reverted
+>>>> https://gist.github.com/AngryPenguinPL/5cdc0dd16ce5e59ff3c32c048e2f5111
+>>>>
+>>>> This is from 5.7.5 kernel, I don't have yet a 5.8-rc2 package with the
+>>>> reverted commit.
+>>>
+>>> Did this ever get resolved?
+>>>
+>>> thanks,
+>>>
+>>> greg k-h
+>>>
+>>
+>> This bug was also reported on the thread where it had been posted originally:
+>> https://lore.kernel.org/linux-wireless/20200621020428.6417d6fb@natsu/
+>>
+>> I am waiting for Kalle Valo to accept my patch (v2) which reverts the above
+>> mentioned commit and which looks correct according to him. He wrote that he
+>> would take a closer look at this as soon as he could.
+> 
+> Mark posted a patch which I'm hoping to fix the issue:
+> 
+> [1/1] ath9k: Fix regression with Atheros 9271
+> 
+> https://patchwork.kernel.org/patch/11657669/
+> 
+> Can someone confirm this, please? I would rather take Mark's fix than
+> the revert.
+> 
 
-echo 1 > /sys/bus/pci/devices/xxxx/xx.x/remove
-echo 1 > /sys/bus/pci/devices/rescan
-
-Above is not being used I did confirm this with Zenghui earlier.
-
- 
-
+12345678901234567890123456789012345678901234567890123456789012345678901234567890
+This fixes the issue for me. Unfortunately the revert landed in 5.7.9 (it was
+also queued for the older releases, but I didn't check them) because Hans de
+Goede requested it since he didn't know about Mark's patch. So if you want to
+fix the stable and longterm kernels properly, we need another patch which
+includes a re-revert and Mark's patch. But Mark's patch should definitely land
+in the mainline kernel first.
