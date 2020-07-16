@@ -2,370 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBDB221C85
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C27221C8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgGPGT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 02:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgGPGT6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:19:58 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F727C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:19:58 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 1so3190987pfn.9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernelci-org.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:mime-version:content-transfer-encoding:subject:to
-         :from:cc;
-        bh=FKPcf7JwgOCMRldycKp+o5YHoDwPYEJEd75y9Q84pKg=;
-        b=WofiQHeTUi0IO1eEo2pPnbAF37JHNuCuVBDM2Dti1IQ2zjM8dT8mKHJhJvfeTW5NSG
-         EHJfoxjcR3SEdZ9CXIW/Yem2WKDD8rjR4OcNQ1DjwNADF4B7d0eKkLfRf0knZgKvMNYG
-         F9Y8L5PR9c5iCeNT88Nnf3c06DXYqNcbErgje67WUqwAXq5WFJkuAREAnkk1FvmKj0uQ
-         qmFHoHySG+zlU9OzFUpqMf6/EZEeOSexBYYViXS5i6ckUHtUI5yPVEr14h21yy+mH+fu
-         pjZOwe00rLUZP9OJscCwNaHmg9chso/ORIVoWpJFhXV64+dPSQq4GxMpnBghqfCUzJB3
-         pT9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version
-         :content-transfer-encoding:subject:to:from:cc;
-        bh=FKPcf7JwgOCMRldycKp+o5YHoDwPYEJEd75y9Q84pKg=;
-        b=B/walWMhklPI9ri1+PI/gzNYN4CmbgPc5MD6iq8bYk+joo4qAryOIn6+KSydaxuXdz
-         7x55Hz8Ccps/0NkVlXkm86b9NPZYrHAnrIL+N9/ojFUp1Em1rFviKY2ejYzMqU6xHd6L
-         nBrkjTaCe6R84zcCc5XpekPJ9O7BsAlZHaJBRsXD4k2IKcYUbRHc/Z5lHTHB8sFT+IGM
-         SO4OQdUInnaqDtTKwSSyo6jy/xsc4wAIpmyJKVlmPnv1OcRQ69QF5ccJ9grjnOQp6bqW
-         7O4FIbWNVUspFSsVC4Yjw5Zq52mPK77BDDHCzo1IERXcgiDjTPok66tqXDLLI5CY8UON
-         KfFA==
-X-Gm-Message-State: AOAM533i5rfdoRuUNHi/QqVcNx+zme/fvYOE31+p4/hgraQzhoZdwp+m
-        usxh8yJdIGK45fSQC91qT0WKFw==
-X-Google-Smtp-Source: ABdhPJxg+TIg+/m4zJI4ZpHObj5YA20D6VltNo4qLGe2r80SO0ZQyTpQ/TQmxamVOK4YuE+jgNYqeQ==
-X-Received: by 2002:a63:9d87:: with SMTP id i129mr2991954pgd.412.1594880397829;
-        Wed, 15 Jul 2020 23:19:57 -0700 (PDT)
-Received: from kernelci-production.internal.cloudapp.net ([52.250.1.28])
-        by smtp.gmail.com with ESMTPSA id u26sm4028385pgo.71.2020.07.15.23.19.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 23:19:57 -0700 (PDT)
-Message-ID: <5f0ff18d.1c69fb81.da154.b562@mx.google.com>
-Date:   Wed, 15 Jul 2020 23:19:57 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S1728066AbgGPGVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:21:05 -0400
+Received: from mout.web.de ([217.72.192.78]:54115 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725921AbgGPGVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 02:21:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1594880435;
+        bh=hdCH7SaYt62vrtpJuP5NTSPx6/mox19FQ0HXVHVNdtQ=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=ZsndZeOcLo1zzUG50uv79Bqc5GYXqsrV8btnP29PVoj9XhDNkoBjDRREjLA/1DJ+l
+         eUZtJg6xeWjBhv8WjsFYlw43mcb5FI5inujf5IIM0SVOnQ4O4jIWyVnpndhuQflLzI
+         KLko6cFrWPMaIU3XxcABn+Zbxv+Gf5vx15Mf/ulk=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.48.165.142]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MLifq-1kDU8p0Tia-00I2hU; Thu, 16
+ Jul 2020 08:20:35 +0200
+Subject: Re: [PATCH] net: smc91x: Fix possible memory leak in smc_drv_probe()
+To:     Wang Hai <wanghai38@huawei.com>, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Wang Hai <wanghai26@huawei.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20200716035038.19207-1-wanghai38@huawei.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <0f8fec15-aba1-17a6-88a2-971872e2f6f3@web.de>
+Date:   Thu, 16 Jul 2020 08:20:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200716035038.19207-1-wanghai38@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
-X-Kernelci-Kernel: v5.8-rc5-262-g7be1e4d3000e
-X-Kernelci-Report-Type: bisect
-X-Kernelci-Tree: next
-X-Kernelci-Branch: pending-fixes
-X-Kernelci-Lab-Name: lab-collabora
-Subject: next/pending-fixes bisection: baseline.dmesg.crit on
- qemu_arm-vexpress-a15
-To:     gtucker@collabora.com, Andre Przywara <andre.przywara@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>, kernelci-results@groups.io
-From:   "kernelci.org bot" <bot@kernelci.org>
-Cc:     devicetree@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+X-Provags-ID: V03:K1:aWw+EZzL4cffL+TmU10ndQWQ29E4T47JD9B4c5K5vunq48TIEal
+ +bZk9XHGx0QJHbEqdr3SjD9Y+8TZ2k1HkUpT3ET7/L/nPF95oLppWpmIunZS+pzs+IU9CJL
+ 3yUf0qPOiG1vLAWZzD0tL6nxDwbvcYCZ4yCosBWctGNIP10VjLPJttHLWGuzktTNjedJ3ZM
+ tvi56RQlbkdQy4fNgxz0g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1y1aZ+IOhOs=:uFQILoHvRsCx57/YIWiHDD
+ oWkXUJ/PbnJx0UX+nHSklDrVTjakjJptQP3/W4ukaqJfJweed5V7rGprrUQY6hPdcXP7772gP
+ EXQV4NKfQMmkKBwqg+xx9xbIAXaKkgInCCAWNDg9GJEjfhRWCyhEHCIwmdJMvOvP2EHOBaCjj
+ rEKlcCmw3T1bMTTnpNF5Ul4ZAM2IG1QRIdAAhTN1opPtS4DWPebu5K8drkZGACbPUFKkTDHCA
+ I1jRjg9T+B5H1zu1DDfErXTVv/VIECdvfuKOtLVy3dxof8DCuRv0bLzzFC2NNLNDVgpnr7PjF
+ h1mWNaUgzXGz01cbPrmdY4DHB0zhVofc19u2nxhb6NkrgXLypvZAQW4zAYiLjDJm3nemmERAx
+ HL2gUN3zLD4eW8lgg2FsgpRr2iN+HioIT1TPWmYQaz1QagnShbTuQtMYZK4vzQ1V6kESGWKQh
+ BskMC/KVwSAaDVFdQmXT0v3Zl1rfU2NRbMxqup/RFsaIy1d/Te04XtQsCcmQdQEfOo51dXhZ/
+ cq+e589cD52uPYWSWZTpC4SO6yWVjoeVl7AWvJlT5c+XVN7s/KWeEj61M6K94WoVyKYekoOug
+ AKxYqwx+PUTZynU3djFgbAYOivOMsg9VZ7UpzgozkbwB+F2xF0yRvv+ARpdOQ9+WD/wM+WEkx
+ RHOJHKLw+sX7o5z7NDL96cy6l5WqpMHKbLwZn2qhm3Qey7eUVQPCnrn0uk4+6cFjBLRP2Fh7j
+ /YfcOUbP+X1VOOYy3C/J9crEVmecGT4rl5SmxtwhhZS6AhDJ6Bx23wzeSMoOFaz2O1G2HLj1n
+ OBvptt+vXe3paFneD3qNMmE4fccYTRP9hD7xjb0mw6W11rpsP0qsxFiHP7c/1QHQDN61ta0Ew
+ 39rkI6Pq1/pk8xrMeXybKsiDgJSjLpflYnMyDXMtyDuhiwYv9/9/u99pDJ2/SubD74GJyStmU
+ AXL8ONPlAMKYIHhANhTuwiwZQVLXQQiY8Km1Co3samb/XPATHqkZuDppLhWuA6MUZlvq9g18F
+ Vb8JqgwrApp8NCjVhAdJsjmKS/7SQ13AK/RzepnzATWY+vAWpU/tcb3ozTaW6gfLEqIse6xJg
+ vBpW5buzml7FIJ/sjlq0/zJELtRawvwlLnrOX2STBiIjwhyz88qLzOhAqi8YSgfn1R1sLx6FJ
+ mlHyT6SYEr4yREloFt+hSPxZyM0NRr9qIjKJn+5l7ZbefDonsqLir+WFbG24wK8iEc2YAWlYp
+ qKfxQscsPO8dg5gjUNVUJjpTeCxVd94lLIiOGpw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-* This automated bisection report was sent to you on the basis  *
-* that you may be involved with the breaking commit it has      *
-* found.  No manual investigation has been done to verify it,   *
-* and the root cause of the problem may be somewhere else.      *
-*                                                               *
-* If you do send a fix, please include this trailer:            *
-*   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
-*                                                               *
-* Hope this helps!                                              *
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> If try_toggle_control_gpio() failed in smc_drv_probe(), free_netdev(ndev=
+)
+> should be called to free the ndev created earlier. Otherwise, a memleak
+> will occur.
 
-next/pending-fixes bisection: baseline.dmesg.crit on qemu_arm-vexpress-a15
+* Will it be nicer to use the term =E2=80=9Cmemory leak=E2=80=9D also in t=
+his change description?
 
-Summary:
-  Start:      7be1e4d3000e Merge remote-tracking branch 'drm-misc-fixes/for=
--linux-next-fixes'
-  Plain log:  https://storage.kernelci.org/next/pending-fixes/v5.8-rc5-262-=
-g7be1e4d3000e/arm/vexpress_defconfig/gcc-8/lab-collabora/baseline-vexpress-=
-v2p-ca15-tc1.txt
-  HTML log:   https://storage.kernelci.org/next/pending-fixes/v5.8-rc5-262-=
-g7be1e4d3000e/arm/vexpress_defconfig/gcc-8/lab-collabora/baseline-vexpress-=
-v2p-ca15-tc1.html
-  Result:     38ac46002d1d arm: dts: vexpress: Move mcc node back into moth=
-erboard node
+* Would another imperative wording be preferred for the commit message?
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
+Documentation/process/submitting-patches.rst?id=3Df8456690ba8eb18ea4714e68=
+554e242a04f65cff#n151
 
-Checks:
-  revert:     PASS
-  verify:     PASS
-
-Parameters:
-  Tree:       next
-  URL:        https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-ne=
-xt.git
-  Branch:     pending-fixes
-  Target:     qemu_arm-vexpress-a15
-  CPU arch:   arm
-  Lab:        lab-collabora
-  Compiler:   gcc-8
-  Config:     vexpress_defconfig
-  Test case:  baseline.dmesg.crit
-
-Breaking commit found:
-
----------------------------------------------------------------------------=
-----
-commit 38ac46002d1df5707566a73486452851341028d2
-Author: Andre Przywara <andre.przywara@arm.com>
-Date:   Wed Jun 3 17:22:37 2020 +0100
-
-    arm: dts: vexpress: Move mcc node back into motherboard node
-    =
-
-    Commit d9258898ad49 ("arm64: dts: arm: vexpress: Move fixed devices
-    out of bus node") moved the "mcc" DT node into the root node, because
-    it does not have any children using "reg" properties, so does violate
-    some dtc checks about "simple-bus" nodes.
-    =
-
-    However this broke the vexpress config-bus code, which walks up the
-    device tree to find the first node with an "arm,vexpress,site" property.
-    This gave the wrong result (matching the root node instead of the
-    motherboard node), so broke the clocks and some other devices for
-    VExpress boards.
-    =
-
-    Move the whole node back into its original position. This re-introduces
-    the dtc warning, but is conceptually the right thing to do. The dtc
-    warning seems to be overzealous here, there are discussions on fixing or
-    relaxing this check instead.
-    =
-
-    Link: https://lore.kernel.org/r/20200603162237.16319-1-andre.przywara@a=
-rm.com
-    Fixes: d9258898ad49 ("arm64: dts: vexpress: Move fixed devices out of b=
-us node")
-    Reported-and-tested-by: Guenter Roeck <linux@roeck-us.net>
-    Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-    Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-
-diff --git a/arch/arm/boot/dts/vexpress-v2m-rs1.dtsi b/arch/arm/boot/dts/ve=
-xpress-v2m-rs1.dtsi
-index e6308fb76183..a88ee5294d35 100644
---- a/arch/arm/boot/dts/vexpress-v2m-rs1.dtsi
-+++ b/arch/arm/boot/dts/vexpress-v2m-rs1.dtsi
-@@ -100,79 +100,6 @@
- 		};
- 	};
- =
-
--	mcc {
--		compatible =3D "arm,vexpress,config-bus";
--		arm,vexpress,config-bridge =3D <&v2m_sysreg>;
--
--		oscclk0 {
--			/* MCC static memory clock */
--			compatible =3D "arm,vexpress-osc";
--			arm,vexpress-sysreg,func =3D <1 0>;
--			freq-range =3D <25000000 60000000>;
--			#clock-cells =3D <0>;
--			clock-output-names =3D "v2m:oscclk0";
--		};
--
--		v2m_oscclk1: oscclk1 {
--			/* CLCD clock */
--			compatible =3D "arm,vexpress-osc";
--			arm,vexpress-sysreg,func =3D <1 1>;
--			freq-range =3D <23750000 65000000>;
--			#clock-cells =3D <0>;
--			clock-output-names =3D "v2m:oscclk1";
--		};
--
--		v2m_oscclk2: oscclk2 {
--			/* IO FPGA peripheral clock */
--			compatible =3D "arm,vexpress-osc";
--			arm,vexpress-sysreg,func =3D <1 2>;
--			freq-range =3D <24000000 24000000>;
--			#clock-cells =3D <0>;
--			clock-output-names =3D "v2m:oscclk2";
--		};
--
--		volt-vio {
--			/* Logic level voltage */
--			compatible =3D "arm,vexpress-volt";
--			arm,vexpress-sysreg,func =3D <2 0>;
--			regulator-name =3D "VIO";
--			regulator-always-on;
--			label =3D "VIO";
--		};
--
--		temp-mcc {
--			/* MCC internal operating temperature */
--			compatible =3D "arm,vexpress-temp";
--			arm,vexpress-sysreg,func =3D <4 0>;
--			label =3D "MCC";
--		};
--
--		reset {
--			compatible =3D "arm,vexpress-reset";
--			arm,vexpress-sysreg,func =3D <5 0>;
--		};
--
--		muxfpga {
--			compatible =3D "arm,vexpress-muxfpga";
--			arm,vexpress-sysreg,func =3D <7 0>;
--		};
--
--		shutdown {
--			compatible =3D "arm,vexpress-shutdown";
--			arm,vexpress-sysreg,func =3D <8 0>;
--		};
--
--		reboot {
--			compatible =3D "arm,vexpress-reboot";
--			arm,vexpress-sysreg,func =3D <9 0>;
--		};
--
--		dvimode {
--			compatible =3D "arm,vexpress-dvimode";
--			arm,vexpress-sysreg,func =3D <11 0>;
--		};
--	};
--
- 	bus@8000000 {
- 		motherboard-bus {
- 			model =3D "V2M-P1";
-@@ -435,6 +362,79 @@
- 						};
- 					};
- 				};
-+
-+				mcc {
-+					compatible =3D "arm,vexpress,config-bus";
-+					arm,vexpress,config-bridge =3D <&v2m_sysreg>;
-+
-+					oscclk0 {
-+						/* MCC static memory clock */
-+						compatible =3D "arm,vexpress-osc";
-+						arm,vexpress-sysreg,func =3D <1 0>;
-+						freq-range =3D <25000000 60000000>;
-+						#clock-cells =3D <0>;
-+						clock-output-names =3D "v2m:oscclk0";
-+					};
-+
-+					v2m_oscclk1: oscclk1 {
-+						/* CLCD clock */
-+						compatible =3D "arm,vexpress-osc";
-+						arm,vexpress-sysreg,func =3D <1 1>;
-+						freq-range =3D <23750000 65000000>;
-+						#clock-cells =3D <0>;
-+						clock-output-names =3D "v2m:oscclk1";
-+					};
-+
-+					v2m_oscclk2: oscclk2 {
-+						/* IO FPGA peripheral clock */
-+						compatible =3D "arm,vexpress-osc";
-+						arm,vexpress-sysreg,func =3D <1 2>;
-+						freq-range =3D <24000000 24000000>;
-+						#clock-cells =3D <0>;
-+						clock-output-names =3D "v2m:oscclk2";
-+					};
-+
-+					volt-vio {
-+						/* Logic level voltage */
-+						compatible =3D "arm,vexpress-volt";
-+						arm,vexpress-sysreg,func =3D <2 0>;
-+						regulator-name =3D "VIO";
-+						regulator-always-on;
-+						label =3D "VIO";
-+					};
-+
-+					temp-mcc {
-+						/* MCC internal operating temperature */
-+						compatible =3D "arm,vexpress-temp";
-+						arm,vexpress-sysreg,func =3D <4 0>;
-+						label =3D "MCC";
-+					};
-+
-+					reset {
-+						compatible =3D "arm,vexpress-reset";
-+						arm,vexpress-sysreg,func =3D <5 0>;
-+					};
-+
-+					muxfpga {
-+						compatible =3D "arm,vexpress-muxfpga";
-+						arm,vexpress-sysreg,func =3D <7 0>;
-+					};
-+
-+					shutdown {
-+						compatible =3D "arm,vexpress-shutdown";
-+						arm,vexpress-sysreg,func =3D <8 0>;
-+					};
-+
-+					reboot {
-+						compatible =3D "arm,vexpress-reboot";
-+						arm,vexpress-sysreg,func =3D <9 0>;
-+					};
-+
-+					dvimode {
-+						compatible =3D "arm,vexpress-dvimode";
-+						arm,vexpress-sysreg,func =3D <11 0>;
-+					};
-+				};
- 			};
- 		};
- 	};
----------------------------------------------------------------------------=
-----
-
-
-Git bisection log:
-
----------------------------------------------------------------------------=
-----
-git bisect start
-# good: [9a33e375d98ece5ea40c576eabd3257acb90c509] platform/x86: asus-wmi: =
-allow BAT1 battery name
-git bisect good 9a33e375d98ece5ea40c576eabd3257acb90c509
-# bad: [7be1e4d3000ef52ab90d0239711df69b881bd807] Merge remote-tracking bra=
-nch 'drm-misc-fixes/for-linux-next-fixes'
-git bisect bad 7be1e4d3000ef52ab90d0239711df69b881bd807
-# good: [668f532da4808688f5162cec6a38875390e1a91d] Merge tag 'timers-urgent=
--2020-06-28' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
-git bisect good 668f532da4808688f5162cec6a38875390e1a91d
-# bad: [a581387e415bbb0085e7e67906c8f4a99746590e] Merge tag 'io_uring-5.8-2=
-020-07-10' of git://git.kernel.dk/linux-block
-git bisect bad a581387e415bbb0085e7e67906c8f4a99746590e
-# bad: [29206c6314a3e5242b23b61cd1270cba9e93b415] Merge tag 'block-5.8-2020=
--07-05' of git://git.kernel.dk/linux-block
-git bisect bad 29206c6314a3e5242b23b61cd1270cba9e93b415
-# bad: [45564bcd57046ebe8c9309527c114dcd042cb7e5] Merge tag 'for-linus-2020=
--07-02' of git://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux
-git bisect bad 45564bcd57046ebe8c9309527c114dcd042cb7e5
-# bad: [a0271a15cf2cf907ea5b0f2ba611123f1b7935ec] exfat: call sync_filesyst=
-em for read-only remount
-git bisect bad a0271a15cf2cf907ea5b0f2ba611123f1b7935ec
-# good: [d528945d7762be94beca4c111bb95dcc9a9f39c0] Merge tag 'omap-for-v5.8=
-/fixes-rc1-signed' of git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/=
-linux-omap into arm/omap-fixes
-git bisect good d528945d7762be94beca4c111bb95dcc9a9f39c0
-# bad: [2596ce4b4ded685b67fed407aed2bfe6ebcc39cb] Merge tag 'arm-soc/for-5.=
-8/drivers-fixes' of https://github.com/Broadcom/stblinux into arm/fixes
-git bisect bad 2596ce4b4ded685b67fed407aed2bfe6ebcc39cb
-# bad: [0f77ce26ebcf6ea384421d2dd47b924b83649692] Revert "ARM: sti: Impleme=
-nt dummy L2 cache's write_sec"
-git bisect bad 0f77ce26ebcf6ea384421d2dd47b924b83649692
-# bad: [d68ec1644dd546851d651787a638aead32a60a6f] Merge tag 'juno-fix-5.8' =
-of git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into ar=
-m/fixes
-git bisect bad d68ec1644dd546851d651787a638aead32a60a6f
-# bad: [38ac46002d1df5707566a73486452851341028d2] arm: dts: vexpress: Move =
-mcc node back into motherboard node
-git bisect bad 38ac46002d1df5707566a73486452851341028d2
-# first bad commit: [38ac46002d1df5707566a73486452851341028d2] arm: dts: ve=
-xpress: Move mcc node back into motherboard node
----------------------------------------------------------------------------=
-----
+Regards,
+Markus
