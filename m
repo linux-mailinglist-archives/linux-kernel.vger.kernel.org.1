@@ -2,129 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2F7222BBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38B8222BC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgGPTRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 15:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728541AbgGPTRD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 15:17:03 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A4DC061755;
-        Thu, 16 Jul 2020 12:17:03 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id l6so4279807plt.7;
-        Thu, 16 Jul 2020 12:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=ctBf8/7XPdvbbAkJHl7up2LKX2yqPU2x4trxTx5gJxQ=;
-        b=mkb+z21tnzXUUogTFHF8Q1qb56fwTZmcZUnsDM+2Bl88ZPTCYaX4A1LtSFhV0mInzV
-         MmkU+tXreJo+pQCFKqIv9yfbKZmtP54qa9yKHCAG6y+fK/kme/KYpOvkEle+1C64AP5Q
-         j7HlJ+jyN2bF5vTjNNd6rrFuFjfHlZpvgKXYOip9Xw82nX0vdltTzpiEamt2kWonnCCA
-         x1Ka0lzXQNLmJnEgyXm9NEVXLNVNKhd3HAZ+9VK2RDJweEcQJUFVEsuY0Ae2AkpqYqFV
-         X7/TuA2CCGe7yL2ydyitajzK+o/G3CIQvnM/43Y6oN2tWH6h9+D7a4xPwaknoqfAfFRe
-         GLDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=ctBf8/7XPdvbbAkJHl7up2LKX2yqPU2x4trxTx5gJxQ=;
-        b=MC4NrMl51ZZxniBD0Y8ebdWut4F87pfQYCqCOBdT846IrBCte05BxRUXtQ/IZokyj9
-         Ocz0Wd+xOJufn28TUqZNHhVW4t20wKg68Ga67g5JV2RluIS5G7JGN0VVTaBXHSAdvy7f
-         0CbsmNoQ7sm4XuVOc+RVeBu/7rEvsNpsTPsJvHcsOAdCAyCy9WedWMDnrR7g57YX+Whk
-         N3S21mfiCnn0ulF8B0COIOnuW9RX+4HQRXRkYyTb++KKf3PK1ZniNcGrY/Ua4yOT3mHY
-         KTaeLSCP8bb1v2Q/CRr/pxdw3cft/j/1GT4SFu+6PSgrabL7TMX1IzVmr6pVNuzcgVpy
-         oOkQ==
-X-Gm-Message-State: AOAM5331UGrXoFA0N66PIQjn+c2/ttP27ZL022ZR73KvNk4qT8fzR3qa
-        ps0tojCzhUlH+kG5m0sx/fI=
-X-Google-Smtp-Source: ABdhPJwSzTaQlCtxnOXDeWa3n+peKBrIVM9xhShLR8fMayDya6j6FbD33dwdlWUE+CtW9NUj15lS+g==
-X-Received: by 2002:a17:902:d70f:: with SMTP id w15mr4792036ply.110.1594927023223;
-        Thu, 16 Jul 2020 12:17:03 -0700 (PDT)
-Received: from blackclown ([103.88.82.145])
-        by smtp.gmail.com with ESMTPSA id q10sm6124187pfk.86.2020.07.16.12.17.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Jul 2020 12:17:02 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 00:46:45 +0530
-From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     linux-decnet-user@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: decnet: af_decnet: Simplify goto loop.
-Message-ID: <20200716191645.GA4953@blackclown>
+        id S1729493AbgGPTSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 15:18:08 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:52302 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729387AbgGPTSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 15:18:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594927086; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=821OGAVDUhSCY8vDD5l+pZi3vMo7wwG14w+yqfyRJrY=; b=lgRyosIrBQSk/W4DZbAOwzfuVUv49YP6dvibAatYK9z32tNFVP+sK6FLJsdkiy4YjVhPoOUu
+ E8T5AeobcqzNzk6Lqqd11FOBTkPBueoOyw+EywtoFx6qr6dlkGyWMT4KZ+5exnlnVObR2wh4
+ uGVNJpAvWWyKJqSgw22K7T/CCZ0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5f10a7ee03c8596cdb317d3e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Jul 2020 19:18:06
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 55ED4C43395; Thu, 16 Jul 2020 19:18:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 044DFC433C9;
+        Thu, 16 Jul 2020 19:18:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 044DFC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        evgreen@chromium.org, dianders@chromium.org,
+        pillair@codeaurora.org, robh+dt@kernel.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH] arm64: dts: qcom: sc7180: Move the fixed-perm property to SoC dtsi
+Date:   Fri, 17 Jul 2020 00:47:46 +0530
+Message-Id: <20200716191746.23196-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+All the platforms using SC7180 SoC are expected to have the wlan firmware
+memory statically mapped by the Trusted Firmware. Hence move back the
+qcom,msa-fixed-perm property to the SoC dtsi.
 
---IJpNTDwzlM2Ie8A6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Replace goto loop with while loop.
-
-Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+Fixes: 7d484566087c0 ("arm64: dts: qcom: sc7180: Add missing properties for Wifi node")
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 ---
- net/decnet/af_decnet.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ arch/arm64/boot/dts/qcom/sc7180-idp.dts | 1 -
+ arch/arm64/boot/dts/qcom/sc7180.dtsi    | 1 +
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/decnet/af_decnet.c b/net/decnet/af_decnet.c
-index 0a46ea3bddd5..7d7ae2dd69b8 100644
---- a/net/decnet/af_decnet.c
-+++ b/net/decnet/af_decnet.c
-@@ -2134,14 +2134,11 @@ static struct sock *dn_socket_get_next(struct seq_f=
-ile *seq,
- 	struct dn_iter_state *state =3D seq->private;
-=20
- 	n =3D sk_next(n);
--try_again:
--	if (n)
--		goto out;
--	if (++state->bucket >=3D DN_SK_HASH_SIZE)
--		goto out;
--	n =3D sk_head(&dn_sk_hash[state->bucket]);
--	goto try_again;
--out:
-+	while (!n) {
-+		if (++state->bucket >=3D DN_SK_HASH_SIZE)
-+			break;
-+		n =3D sk_head(&dn_sk_hash[state->bucket]);
-+	}
- 	return n;
- }
-=20
---=20
-2.17.1
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+index 860fc4658b8b1..26cc4913d3ddc 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+@@ -392,7 +392,6 @@ video-firmware {
+ 
+ &wifi {
+ 	status = "okay";
+-	qcom,msa-fixed-perm;
+ 	vdd-0.8-cx-mx-supply = <&vreg_l9a_0p6>;
+ 	vdd-1.8-xo-supply = <&vreg_l1c_1p8>;
+ 	vdd-1.3-rfa-supply = <&vreg_l2c_1p3>;
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 126e2fce26c1a..a91d3f074625e 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -3233,6 +3233,7 @@ wifi: wifi@18800000 {
+ 				<GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH /* CE10 */>,
+ 				<GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH /* CE11 */>;
+ 			memory-region = <&wlan_mem>;
++			qcom,msa-fixed-perm;
+ 			status = "disabled";
+ 		};
+ 	};
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-
---IJpNTDwzlM2Ie8A6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8Qp5wACgkQ+gRsbIfe
-74734BAAorwVxz+f8hyIOXsQT3a5bVBzZlIZLjZGqBMc2M45GtFrb2NQRPTmwr+s
-f0I/PbgtXj5+tADrCSY7FD4AOkBk3qHgUfWze8dpM0/9EopSqOzNp6x88nO4LLqu
-P8raX7c55wujcWqqDdwe/4Kk3Uhs3ZxobwPGwBivUEFCHFqXFyAFOxNdBqh5geXE
-xlh0WTrnvbD8Pwt+D9aP02QjTIp/7n3hGsf4lznPsVt4u32hl51QrXdOp9AL25B4
-1ligDFPjt+2VrnQrdJ/NZ2pORjF7pEYcG5kPMk3qPathqN9gz2sRrFg8IyOY9UvZ
-6BeOd3h7HbhyHezaROSxIf8puIVNWybxqidy3aPk7yLIptDzTqk8/JhlD/Js7Fle
-XBlMinF0M+I+YXIWMipVx2mvldqmnuwDhYvEMwQF3xhp4N2A7r8ruAdztQyAJR+k
-k308k6hm/Op54yvksym93rv3VngYjFJ8MtUjHzuLhQ+jHs19dOpKHfI8gfMdqQsY
-NIWcUKHYF3ZTcT2aRcdHdBdYIolOt45Qidap99nf47aUjHBTNavB8+6vxeA+hbV/
-PzrSdZYO8r/my10iz3Ihgpm7R7iFTnChlWL70XGDOsURINn8jOKPTBBRm4xs38Eq
-0UpzqU4ej+DZP5mz1yg3uxpwxTNceCeHIEY8PrVjytcNgEGuM/Y=
-=TBRA
------END PGP SIGNATURE-----
-
---IJpNTDwzlM2Ie8A6--
