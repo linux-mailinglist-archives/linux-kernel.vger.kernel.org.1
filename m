@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9B3221E21
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F7B221E23
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgGPIW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 04:22:59 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:47874 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgGPIW6 (ORCPT
+        id S1726898AbgGPIXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 04:23:02 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37516 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725867AbgGPIXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 04:22:58 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06G8Mu71029471;
-        Thu, 16 Jul 2020 03:22:56 -0500
+        Thu, 16 Jul 2020 04:23:00 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06G8Mw3O037713;
+        Thu, 16 Jul 2020 03:22:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594887776;
-        bh=unHdhvVc3KqUmoNw9TPayL1iGlRp9XkaaB6wq8CJEOk=;
-        h=From:To:CC:Subject:Date;
-        b=MUdAmi3/jNpwkbCsXx1R0uOBLxGV+1eCFga/74l/YfM5W7aaFI5ckaarA4ucRhE+M
-         NGCfuFpVx3UE8B/yR65uljQ+VWJEAdKi+MZ04nSIK1I9juDXtplZFBwFb+TI3+q2pz
-         ZGYKyOte+VrCeW5WMFXbCcaLW0tlqgR0YPDQvXgs=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06G8MuGY116244
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 16 Jul 2020 03:22:56 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+        s=ti-com-17Q1; t=1594887778;
+        bh=5VliJ1eRKODWhjxkf03Nw+kM4cdPS9d8ibF/Wms+xHg=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=FWOUjBRpFUGwDrw3CHdTqK2uwcSjvV5swSguE9Rgu4frdeANw4RF7COEnwmKk6Y//
+         XlhF+mzvTH5kDS8HYP7QeM6m45zwDFRqBkUjlIcFg8c9xzZtbgomVIMrGBoUyOhM2e
+         TEaQf9ko9kWilzXtfZfGq+F2FABfmwneEUOQS9VA=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06G8Mw8C043181;
+        Thu, 16 Jul 2020 03:22:58 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 16
- Jul 2020 03:22:56 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2020 03:22:58 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 16 Jul 2020 03:22:55 -0500
+ Frontend Transport; Thu, 16 Jul 2020 03:22:57 -0500
 Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06G8MrSF049495;
-        Thu, 16 Jul 2020 03:22:54 -0500
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06G8MrSG049495;
+        Thu, 16 Jul 2020 03:22:56 -0500
 From:   Roger Quadros <rogerq@ti.com>
 To:     <kishon@ti.com>
 CC:     <robh+dt@kernel.org>, <nsekhar@ti.com>, <vigneshr@ti.com>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v4 0/3] phy: omap-usb2: add quirk to disable charger detection
-Date:   Thu, 16 Jul 2020 11:22:49 +0300
-Message-ID: <20200716082252.21266-1-rogerq@ti.com>
+Subject: [PATCH v4 1/3] dt-binding: phy: convert ti,omap-usb2 to YAML
+Date:   Thu, 16 Jul 2020 11:22:50 +0300
+Message-ID: <20200716082252.21266-2-rogerq@ti.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200716082252.21266-1-rogerq@ti.com>
+References: <20200716082252.21266-1-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
@@ -54,39 +55,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Move ti,omap-usb2 to its own YAML schema.
 
-- convert DT binding to YAML
-- add DT property to disable charger detection
-  (Errata i2075 for AM65 SR1.0)
-
-Changelog:
-v4
-- fix example to fix dt_binding_check warnings
-- '#phy-cells' -> "#phy-cells"
-- Add 'oneOf' to compatible logic to allow just "ti,omap-usb2" as valid
-
-v3
-- Removed quotes from compatibles
-- changed property to "ti,disable-charger-det"
-
-v2
-- Address Rob's comments on YAML schema.
-
-cheers,
--roger
-
-Roger Quadros (3):
-  dt-binding: phy: convert ti,omap-usb2 to YAML
-  dt-binding: phy: ti,omap-usb2: Add quirk to disable charger detection
-  phy: omap-usb2-phy: disable PHY charger detect
-
- .../devicetree/bindings/phy/ti,omap-usb2.yaml | 77 +++++++++++++++++++
- .../devicetree/bindings/phy/ti-phy.txt        | 37 ---------
- drivers/phy/ti/phy-omap-usb2.c                | 35 +++++++--
- 3 files changed, 105 insertions(+), 44 deletions(-)
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/phy/ti,omap-usb2.yaml | 72 +++++++++++++++++++
+ .../devicetree/bindings/phy/ti-phy.txt        | 37 ----------
+ 2 files changed, 72 insertions(+), 37 deletions(-)
  create mode 100644 Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
 
+diff --git a/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml b/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
+new file mode 100644
+index 000000000000..a05110351814
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/phy/ti,omap-usb2.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: OMAP USB2 PHY
++
++maintainers:
++ - Kishon Vijay Abraham I <kishon@ti.com>
++ - Roger Quadros <rogerq@ti.com>
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++        - enum:
++          - ti,dra7x-usb2
++          - ti,dra7x-usb2-phy2
++          - ti,am654-usb2
++        - enum:
++          - ti,omap-usb2
++      - items:
++        - const: ti,omap-usb2
++
++  reg:
++    maxItems: 1
++
++  "#phy-cells":
++    const: 0
++
++  clocks:
++    minItems: 1
++    items:
++      - description: wakeup clock
++      - description: reference clock
++
++  clock-names:
++    minItems: 1
++    items:
++      - const: wkupclk
++      - const: refclk
++
++  syscon-phy-power:
++    $ref: /schemas/types.yaml#definitions/phandle-array
++    description:
++      phandle/offset pair. Phandle to the system control module and
++      register offset to power on/off the PHY.
++
++  ctrl-module:
++    $ref: /schemas/types.yaml#definitions/phandle
++    description:
++      (deprecated) phandle of the control module used by PHY driver
++      to power on the PHY. Use syscon-phy-power instead.
++
++required:
++  - compatible
++  - reg
++  - "#phy-cells"
++  - clocks
++  - clock-names
++
++examples:
++  - |
++    usb0_phy: phy@4100000 {
++      compatible = "ti,am654-usb2", "ti,omap-usb2";
++      reg = <0x4100000 0x54>;
++      syscon-phy-power = <&scm_conf 0x4000>;
++      clocks = <&k3_clks 151 0>, <&k3_clks 151 1>;
++      clock-names = "wkupclk", "refclk";
++      #phy-cells = <0>;
++    };
+diff --git a/Documentation/devicetree/bindings/phy/ti-phy.txt b/Documentation/devicetree/bindings/phy/ti-phy.txt
+index 8f93c3b694a7..60c9d0ac75e6 100644
+--- a/Documentation/devicetree/bindings/phy/ti-phy.txt
++++ b/Documentation/devicetree/bindings/phy/ti-phy.txt
+@@ -27,43 +27,6 @@ omap_control_usb: omap-control-usb@4a002300 {
+         reg-names = "otghs_control";
+ };
+ 
+-OMAP USB2 PHY
+-
+-Required properties:
+- - compatible: Should be "ti,omap-usb2"
+-	       Should be "ti,dra7x-usb2" for the 1st instance of USB2 PHY on
+-	       DRA7x
+-	       Should be "ti,dra7x-usb2-phy2" for the 2nd instance of USB2 PHY
+-	       in DRA7x
+-	       Should be "ti,am654-usb2" for the USB2 PHYs on AM654.
+- - reg : Address and length of the register set for the device.
+- - #phy-cells: determine the number of cells that should be given in the
+-   phandle while referencing this phy.
+- - clocks: a list of phandles and clock-specifier pairs, one for each entry in
+-   clock-names.
+- - clock-names: should include:
+-   * "wkupclk" - wakeup clock.
+-   * "refclk" - reference clock (optional).
+-
+-Deprecated properties:
+- - ctrl-module : phandle of the control module used by PHY driver to power on
+-   the PHY.
+-
+-Recommended properies:
+-- syscon-phy-power : phandle/offset pair. Phandle to the system control
+-  module and the register offset to power on/off the PHY.
+-
+-This is usually a subnode of ocp2scp to which it is connected.
+-
+-usb2phy@4a0ad080 {
+-	compatible = "ti,omap-usb2";
+-	reg = <0x4a0ad080 0x58>;
+-	ctrl-module = <&omap_control_usb>;
+-	#phy-cells = <0>;
+-	clocks = <&usb_phy_cm_clk32k>, <&usb_otg_ss_refclk960m>;
+-	clock-names = "wkupclk", "refclk";
+-};
+-
+ TI PIPE3 PHY
+ 
+ Required properties:
 -- 
 Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
 Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
