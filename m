@@ -2,119 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CA522304C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 03:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B42C2230C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 03:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgGQB1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 21:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgGQB1X (ORCPT
+        id S1726784AbgGQBuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 21:50:22 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:27452 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726204AbgGQBuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 21:27:23 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702EFC061755;
-        Thu, 16 Jul 2020 18:27:23 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id ch3so5730172pjb.5;
-        Thu, 16 Jul 2020 18:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e1upXG/w6fJvlrnOhhbNLfAIfkDeUhkYBp8tA8xaSkg=;
-        b=TjrPyIyK0rODcxcEGIfCjagLjCDheZqGzLxIA0k0oOZOUeG4PxFrrvjosMzhwTl9LP
-         yWHS/fiyp1BWteyWGaekFRbLKibkCurhdwPviCwjxYwaICTBtnkoV05rT8oAuFBP/+xX
-         0XKcZ3HIXga/Bu586SbIXQRgn+37dqnQP3VRAtT1JLsbCIDwcXxZVioNomdWmCuuo+NX
-         EKAdX0LUM33KBMmKHFymIb7mqvUiD+Iqeh7jxPN0VuZPO/Mz1mzoObJWRsS3iqaBcJNL
-         /e3dfoEGeBp5GDU3YGY6DzHVwVP5I5rKRWHR/TNo4TNZYbJ5eLmMXCFrt35jZrM9ckzX
-         rbtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e1upXG/w6fJvlrnOhhbNLfAIfkDeUhkYBp8tA8xaSkg=;
-        b=cqNAG92WUV/ekcPyae6WnKmxYnQYZv7ofO1RI7qE91l12mXrcYdv+/v/O3rBdXzcXk
-         lQ5tsuTop6EVHuTy6pS3AKA/TU3GR41BAYvRZBuiCzb8NQdrFbLlKOfIFOL4jO9EUlHj
-         EGl18WxpucaZXjHsSUcRXoI81xA+TlykIxCF2fmGIWtj/FNJbGFj1Ha8ispAQQcUk3wu
-         2rCOhgAuCNBvOUWI32TMzuftS8h/8YVFvhiyJknvnSzebRImqQUsr9SBC6logA8mr3sE
-         03bEzqvvk0B8gw5cPa/h0Qu8dfcrKreebdxN/EzUHb5bzZ/nnhVzYnQvwOHZN0Eg4RG4
-         rEzQ==
-X-Gm-Message-State: AOAM533IZ5iqZk8LjkDMk9ozRX3OcheoR8XBaEAaPOxgPg/ETn+Nd9Uq
-        dAlrC9J4/YGgXlqYOdWejek=
-X-Google-Smtp-Source: ABdhPJxZ/3zG5CwWxAp40LcYWTc3CuwMq+bDJV1J/HM3vCD3nvNxrg3EzxgCM6Hbo15HJf0/JrZjYA==
-X-Received: by 2002:a17:902:a388:: with SMTP id x8mr5641436pla.159.1594949242695;
-        Thu, 16 Jul 2020 18:27:22 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id v2sm1059780pje.19.2020.07.16.18.27.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 18:27:21 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 18:27:19 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     "jingle.wu" <jingle.wu@emc.com.tw>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        phoenix <phoenix@emc.com.tw>, "josh.chen" <josh.chen@emc.com.tw>,
-        "kai.heng.feng" <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH 2/2] Input: elan_i2c - Modify the IAP related functio n
- for page sizes 128, 512 bytes.
-Message-ID: <20200717012719.GC1665100@dtor-ws>
-References: <20200714105641.15151-1-jingle.wu@emc.com.tw>
- <20200716053912.GB1665100@dtor-ws>
- <1594880123.69588.jingle.wu@emc.com.tw>
+        Thu, 16 Jul 2020 21:50:21 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200717015017epoutp01ed7f948d749bb0b6cfcfc5e7ee20bec2~iZyL0m8NS0832908329epoutp01j
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Jul 2020 01:50:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200717015017epoutp01ed7f948d749bb0b6cfcfc5e7ee20bec2~iZyL0m8NS0832908329epoutp01j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1594950617;
+        bh=qdjULQp3ZZR65z/qcwBuzTZHFQcxGD6qLQ1iEDE5gmk=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=W0DQIWLKJ7KTOFEU2icuI/bRORIeU5/JF8B/PmkCdAjPwmAf/MAWwl+tCOF+soDXy
+         2Dg+jzmMtYE36+DDbWa1xfaYuIMIDGKn7rgL/B/NCJ9/YeHxm2ePjaMcXdT9jNKSAs
+         EsTqEIqQYyUfpXhMjvfRfCcvV0P2LD21ut03Aeu4=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20200717015017epcas5p417f7194ad5145ba2eb26402f3ba7b5b6~iZyLCJ5Id1286012860epcas5p4i;
+        Fri, 17 Jul 2020 01:50:17 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        58.BA.09467.8D3011F5; Fri, 17 Jul 2020 10:50:16 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200716164524epcas5p310db2c23bbc82adf365112ae673a5209~iSWbc2z9K0203802038epcas5p31;
+        Thu, 16 Jul 2020 16:45:24 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200716164524epsmtrp1d758bdc50442e6a5c771eab7205ca0c2~iSWbXQRd71958019580epsmtrp1a;
+        Thu, 16 Jul 2020 16:45:24 +0000 (GMT)
+X-AuditID: b6c32a49-a29ff700000024fb-4b-5f1103d84f22
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        12.62.08303.324801F5; Fri, 17 Jul 2020 01:45:23 +0900 (KST)
+Received: from alimakhtar02 (unknown [107.108.234.165]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200716164519epsmtip2489569e9c4cb5042564c431e03c45d00~iSWXLwRzG1317113171epsmtip2b;
+        Thu, 16 Jul 2020 16:45:19 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Avi Shchislowski'" <Avi.Shchislowski@wdc.com>,
+        "'Bart Van Assche'" <bvanassche@acm.org>,
+        <daejun7.park@samsung.com>, "'Avri Altman'" <Avri.Altman@wdc.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <asutoshd@codeaurora.org>, <beanhuo@micron.com>,
+        <stanley.chu@mediatek.com>, <cang@codeaurora.org>,
+        <tomas.winkler@intel.com>
+Cc:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "'Sang-yoon Oh'" <sangyoon.oh@samsung.com>,
+        "'Sung-Jun Park'" <sungjun07.park@samsung.com>,
+        "'yongmyung lee'" <ymhungry.lee@samsung.com>,
+        "'Jinyoung CHOI'" <j-young.choi@samsung.com>,
+        "'Adel Choi'" <adel.choi@samsung.com>,
+        "'BoRam Shin'" <boram.shin@samsung.com>
+In-Reply-To: <SN6PR04MB3872FBE1EAE3578BFD2601189A7F0@SN6PR04MB3872.namprd04.prod.outlook.com>
+Subject: RE: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
+Date:   Thu, 16 Jul 2020 22:15:17 +0530
+Message-ID: <001301d65b90$8012c3e0$80384ba0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1594880123.69588.jingle.wu@emc.com.tw>
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQNTAwbo7R95v2Jv+B+oDyvdEhuZkAJ3qsxbAEskZzgCs8hfhQGhYIDUpdhZ7/A=
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMKsWRmVeSWpSXmKPExsWy7bCmuu4NZsF4g2lnLSw23n3FarG37QS7
+        xdddC5gtXv68ymZx8GEni8Xh2+/YLaZ9+Mls8Wn9MlaLVQ/CLXr7t7JZLLqxjcni8q45bBbd
+        13ewWSw//o/JYsLLJSwWS7feZLTonL6GxeJDT53FooW7WRyEPS5f8fa43NfL5LF4z0smjwmL
+        DjB6tJzcz+LxfX0Hm8fHp7dYPPq2rGL0+LxJzqP9QDdTAFcUl01Kak5mWWqRvl0CV8bjhuCC
+        B/IVbZ//MzYwNkh1MXJySAiYSPw9Npmli5GLQ0hgN6PEyePvmCGcT4wSs6d+Y4NwPjNKdD++
+        xgrT8ukMTGIXo0Tb3vtQ/W8YJY4tW8wMUsUmoCuxY3EbWJWIwG0miY9ze9hBHGaBC0wS977f
+        BpvFKRArsWb9JyYQW1jAW+L32xlsIDaLgKrE5pvHwOK8ApYS7x9dZIGwBSVOznwCZjMLaEss
+        W/iaGeImBYmfT5eBzRQR8JO4tvoaI0SNuMTRnz1gH0kI9HNKTN+xAKrBRWL7nE9sELawxKvj
+        W9ghbCmJl/1tQDYHkJ0t0bPLGCJcI7F03jEWCNte4sCVOSwgJcwCmhLrd+lDhGUlpp5axwSx
+        lk+i9/cTJog4r8SOeTC2qkTzu6tQY6QlJnZ3s05gVJqF5LNZSD6bheSDWQjbFjCyrGKUTC0o
+        zk1PLTYtMMxLLdcrTswtLs1L10vOz93ECE6XWp47GO8++KB3iJGJg/EQowQHs5II7/yXAvFC
+        vCmJlVWpRfnxRaU5qcWHGKU5WJTEeZV+nIkTEkhPLEnNTk0tSC2CyTJxcEo1MGWJnSlU0l2+
+        W3ORfHKfoSf/krfzn0S4SK7l+vv1l7bRCj65ffalFsvb3x885nlpfqCavaBHeM+T/FWZc3Om
+        7nm9bqHo+a2i8TX5Br9SmExfFf8KEHx67IHYESW5pKD+j1lbFp+vmdfSo8ClHl6SLHu9bQpX
+        o7FKkuFDB4OlIldXlYRmX+SuK57k1mWqqfDDJ+jETA3l1DrfBRbK7Pq9zN9Tex4Ly9RMmNxi
+        wcJQKX4jbOujtPAyoy+fDBetKrT7F3ayL1jffeakcIYEbe/5MlfL/E7GqFs//Ht1r9qy11qv
+        lAvy2JOaJj2yjVuz9F4Qz9cIPV/1U9oP71768/3gyW8fZvzlPfRghvJDdb06JZbijERDLeai
+        4kQASRTo4wYEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrKIsWRmVeSWpSXmKPExsWy7bCSvK5Ki0C8QZumxca7r1gt9radYLf4
+        umsBs8XLn1fZLA4+7GSxOHz7HbvFtA8/mS0+rV/GarHqQbhFb/9WNotFN7YxWVzeNYfNovv6
+        DjaL5cf/MVlMeLmExWLp1puMFp3T17BYfOips1i0cDeLg7DH5SveHpf7epk8Fu95yeQxYdEB
+        Ro+Wk/tZPL6v72Dz+Pj0FotH35ZVjB6fN8l5tB/oZgrgiuKySUnNySxLLdK3S+DKmN9mUbBI
+        vmLB57usDYzrJLsYOTkkBEwkPp35xgZiCwnsYJSY8jECIi4tcX3jBHYIW1hi5b/nQDYXUM0r
+        Rom/+5ezgCTYBHQldixuYwNJiAg8Z5I4sewLE4jDLHCNSeLPx89sEC1XmST+LfzECNLCKRAr
+        sWb9JyYQW1jAW+L32xlgu1kEVCU23zwGFucVsJR4/+giC4QtKHFy5hMwm1lAW6L3YSsjjL1s
+        4WtmiPsUJH4+XcYKYosI+ElcW30NqkZc4ujPHuYJjMKzkIyahWTULCSjZiFpWcDIsopRMrWg
+        ODc9t9iwwCgvtVyvODG3uDQvXS85P3cTIzjmtbR2MO5Z9UHvECMTB+MhRgkOZiURXh4u3ngh
+        3pTEyqrUovz4otKc1OJDjNIcLErivF9nLYwTEkhPLEnNTk0tSC2CyTJxcEo1MNXKpPzIFp9q
+        fvukSOfMmGyt7k3XbzpynX7JOevw9Hdb1+/+qc6mJvv03h+V8Elrfl86U5Uxo2nmNv5ZigV9
+        mkIbu7/eCXzzR+q61JmaR1MLvDS+ZcpMsC17U76Zv3BqC7OftePKxNhziQeefpVlV17x2dj5
+        NPN2SfdjtzNEJ3awhv5p2vugc3E4z+/ca7dMKq+brBS89T/+wmr/e1vlW7uvTfsTzlilNe+x
+        vBJzl/f/NxrrjMLuXb+s+z085QLfypSeXRFHll6ZM3/3NeO3E77I5u759JK30OWs2Qkbu39T
+        Jk1duimm1Mx5R06iS11G6vvDTjpRjZEOm6Yt1vJMYn5jHJQ4vU9YOPX8947rjlOUWIozEg21
+        mIuKEwFA8W5maAMAAA==
+X-CMS-MailID: 20200716164524epcas5p310db2c23bbc82adf365112ae673a5209
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8
+References: <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p8>
+        <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
+        <SN6PR04MB38720C3D8FC176C3C7FB51B89A7E0@SN6PR04MB3872.namprd04.prod.outlook.com>
+        <4174fcf4-73ec-8e3f-90a5-1e7584e3e2d0@acm.org>
+        <SN6PR04MB3872FBE1EAE3578BFD2601189A7F0@SN6PR04MB3872.namprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jingle,
+Hi Avi,
 
-On Thu, Jul 16, 2020 at 02:15:23PM +0800, jingle.wu wrote:
-> HI Dmitry:
-> 
-> Just to confirm, the older devices (I assume that pattern 0 means older)
->  have version command that is numerically higher than the one for the
->  newer (pattern >= 1) devices?
-> 
-> >> Yes, Pattern 1, 2 are newer devices.
-> 
-> > @@ -324,7 +342,14 @@ static int elan_i2c_get_sm_version(struct i2c_client *client,
-> >  			return error;
-> >  		}
-> >  		*version = val[0];
-> > -		*ic_type = val[1];
-> > +
-> > +		error = elan_i2c_read_cmd(client, ETP_I2C_IAP_VERSION_CMD, val);
-> > +		if (error) {
-> > +			dev_err(&client->dev, "failed to get ic type: %d\n",
-> > +				error);
-> > +			return error;
-> > +		}
-> 
-> Could you please tell me why this chunk is needed?
-> >> Modify the old pattern IC firmware read the correct ic_type.
-> 
-> In the elan_i2c_core.c, move this code to elan_i2c_i2c.c. 
-> static int elan_query_device_info(struct elan_tp_data *data)
-> {
-> 	.....
-> 	if (data->pattern == 0x01)
-> 		ic_type = data->ic_type;
-> 	else
-> 		ic_type = data->iap_version;
-> 	.....
-> 	return 0;
-> }
+> -----Original Message-----
+> From: Avi Shchislowski <Avi.Shchislowski=40wdc.com>
+> Sent: 16 July 2020 15:31
+> To: Bart Van Assche <bvanassche=40acm.org>; daejun7.park=40samsung.com; A=
+vri
+> Altman <Avri.Altman=40wdc.com>; jejb=40linux.ibm.com;
+> martin.petersen=40oracle.com; asutoshd=40codeaurora.org;
+> beanhuo=40micron.com; stanley.chu=40mediatek.com; cang=40codeaurora.org;
+> tomas.winkler=40intel.com; ALIM AKHTAR <alim.akhtar=40samsung.com>
+> Cc: linux-scsi=40vger.kernel.org; linux-kernel=40vger.kernel.org; Sang-yo=
+on Oh
+> <sangyoon.oh=40samsung.com>; Sung-Jun Park
+> <sungjun07.park=40samsung.com>; yongmyung lee
+> <ymhungry.lee=40samsung.com>; Jinyoung CHOI <j-young.choi=40samsung.com>;
+> Adel Choi <adel.choi=40samsung.com>; BoRam Shin
+> <boram.shin=40samsung.com>
+> Subject: RE: =5BPATCH v6 0/5=5D scsi: ufs: Add Host Performance Booster S=
+upport
+>=20
+>=20
+>=20
+> > -----Original Message-----
+> > From: Bart Van Assche <bvanassche=40acm.org>
+> > Sent: Thursday, July 16, 2020 4:42 AM
+> > To: Avi Shchislowski <Avi.Shchislowski=40wdc.com>;
+> > daejun7.park=40samsung.com; Avri Altman <Avri.Altman=40wdc.com>;
+> > jejb=40linux.ibm.com; martin.petersen=40oracle.com;
+> > asutoshd=40codeaurora.org; beanhuo=40micron.com;
+> stanley.chu=40mediatek.com;
+> > cang=40codeaurora.org; tomas.winkler=40intel.com; ALIM AKHTAR
+> > <alim.akhtar=40samsung.com>
+> > Cc: linux-scsi=40vger.kernel.org; linux-kernel=40vger.kernel.org;
+> > Sang-yoon Oh <sangyoon.oh=40samsung.com>; Sung-Jun Park
+> > <sungjun07.park=40samsung.com>; yongmyung lee
+> > <ymhungry.lee=40samsung.com>; Jinyoung CHOI <j-
+> young.choi=40samsung.com>;
+> > Adel Choi <adel.choi=40samsung.com>; BoRam Shin
+> <boram.shin=40samsung.com>
+> > Subject: Re: =5BPATCH v6 0/5=5D scsi: ufs: Add Host Performance Booster
+> > Support
+> >
+> > CAUTION: This email originated from outside of Western Digital. Do not
+> > click on links or open attachments unless you recognize the sender and
+> > know that the content is safe.
+> >
+> >
+> > On 2020-07-15 11:34, Avi Shchislowski wrote:
+> > > My name is Avi Shchislowski, I am managing the WDC's Linux Host R&D
+> > > team
+> > in which Avri is a member of.
+> > > As the review process of HPB is progressing very constructively, we
+> > > are getting
+> > more and more requests from OEMs, Inquiring about HPB in general, and
+> > host control mode in particular.
+> > >
+> > > Their main concern is that HPB will make it to 5.9 merge window, but
+> > > the host
+> > control mode patches will not.
+> > > Thus, because of recent Google's GKI, the next Android LTS might not
+> > > include
+> > HPB with host control mode.
+> > >
+> > > Aside of those requests, initial host control mode testing are
+> > > showing
+> > promising prospective with respect of performance gain.
+> > >
+> > > What would be, in your opinion, the best policy that host control
+> > > mode is
+> > included in next Android LTS?
+> >
+> > Hi Avi,
+> >
+> > Are you perhaps referring to the HPB patch series that has already been
+> posted?
+> > Although I'm not sure of this, I think that the SCSI maintainer
+> > expects more
+> > Reviewed-by: and Tested-by: tags. Has anyone from WDC already taken
+> > the time to review and/or test this patch series?
+> >
+> > Thanks,
+> >
+> > Bart.
+>=20
+> Yes, I am referring to the current proposal which I am replying to:
+> =5BPATCH v6 0/5=5D scsi: ufs: Add Host Performance Booster Support This p=
+roposal
+> does not contains host mode, hence our customers concern.
+> What would be, in your opinion, the best policy that host control mode is
+> included in next Android LTS  assuming it will be based on kernel v5.9 ?
+>=20
+This series has nothing to do with Host mode control, this series is target=
+ed for device mode control. General consensus here is to land this series a=
+s it is (unless someone has more review comments) and lets add/enhance what=
+ever need to be done for adding Host mode controls as well as other HPB2.0 =
+related changes.
 
-I am concerned that unconditionally substituting iap_version for ic_type
-for "pattern 0" devices will break check in
-elan_check_ASUS_special_fw() as it operates on the ic_type returned by
-ETP_I2C_OSM_VERSION_CMD and not iap_version.
+> Thanks,
+> Avi
 
-Thanks.
-
--- 
-Dmitry
