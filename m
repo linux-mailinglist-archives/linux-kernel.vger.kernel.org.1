@@ -2,60 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648572222B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484EB2222BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728435AbgGPMnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 08:43:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39074 "EHLO mx2.suse.de"
+        id S1728084AbgGPMrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 08:47:51 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:50051 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgGPMny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 08:43:54 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 87F1AADC4;
-        Thu, 16 Jul 2020 12:43:57 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 16 Jul 2020 14:43:53 +0200
-From:   osalvador@suse.de
-To:     akpm@linux-foundation.org
-Cc:     mhocko@suse.com, linux-mm@kvack.org, mike.kravetz@oracle.com,
-        david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
-        naoya.horiguchi@nec.com, linux-kernel@vger.kernel.org,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        KarimAllah Ahmed <karahmed@amazon.de>,
-        gnomes@lxorguk.ukuu.org.uk, ak@linux.intel.com,
-        ashok.raj@intel.com, dave.hansen@intel.com, arjan@linux.intel.com,
-        torvalds@linux-foundation.org, peterz@infradead.org, bp@alien8.de,
-        pbonzini@redhat.com, tim.c.chen@linux.intel.com,
-        gregkh@linux-foundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: Re: [PATCH] x86/speculation: Add basic IBPB (Indirect Branch
- Prediction Barrier) support
-In-Reply-To: <20200716123810.25292-17-osalvador@suse.de>
-References: bnc#1012382 <20200716123810.25292-17-osalvador@suse.de>
-User-Agent: Roundcube Webmail
-Message-ID: <3300e32e2782f8521ba81234535b5c84@suse.de>
-X-Sender: osalvador@suse.de
+        id S1726537AbgGPMru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 08:47:50 -0400
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4B6vDP0wsfz9sTF; Thu, 16 Jul 2020 22:47:49 +1000 (AEST)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     Laurent Dufour <ldufour@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Sukadev Bhattiprolu <sukadev@linux.vnet.ibm.com>
+In-Reply-To: <20200619070113.16696-1-sathnaga@linux.vnet.ibm.com>
+References: <20200619070113.16696-1-sathnaga@linux.vnet.ibm.com>
+Subject: Re: [PATCH V2] powerpc/pseries/svm: Remove unwanted check for shared_lppaca_size
+Message-Id: <159490364667.3801815.6147810158620423747.b4-ty@ellerman.id.au>
+Date:   Thu, 16 Jul 2020 22:47:49 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-16 14:38, Oscar Salvador wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
+On Fri, 19 Jun 2020 12:31:13 +0530, Satheesh Rajendran wrote:
+> Early secure guest boot hits the below crash while booting with
+> vcpus numbers aligned with page boundary for PAGE size of 64k
+> and LPPACA size of 1k i.e 64, 128 etc, due to the BUG_ON assert
+> for shared_lppaca_total_size equal to shared_lppaca_size,
+> 
+>  [    0.000000] Partition configured for 64 cpus.
+>  [    0.000000] CPU maps initialized for 1 thread per core
+>  [    0.000000] ------------[ cut here ]------------
+>  [    0.000000] kernel BUG at arch/powerpc/kernel/paca.c:89!
+>  [    0.000000] Oops: Exception in kernel mode, sig: 5 [#1]
+>  [    0.000000] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA pSeries
+> 
+> [...]
 
-Sorry for the noise.
-This should not be here.
+Applied to powerpc/fixes.
 
-I dunno how this patch sneaked in.
+[1/1] powerpc/pseries/svm: Fix incorrect check for shared_lppaca_size
+      https://git.kernel.org/powerpc/c/b710d27bf72068b15b2f0305d825988183e2ff28
 
-Please ignore it.
-
-
-
+cheers
