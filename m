@@ -2,39 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACE0222EEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1C3222EA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727909AbgGPXVC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Jul 2020 19:21:02 -0400
-Received: from mail.umc.edu.ve ([190.202.0.214]:37505 "EHLO mail.umc.edu.ve"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726333AbgGPXVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:21:02 -0400
-X-Greylist: delayed 163406 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Jul 2020 19:21:01 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.umc.edu.ve (Postfix) with ESMTP id 334B6488FEC8;
-        Tue, 14 Jul 2020 19:11:48 -0400 (BOT)
-X-Virus-Scanned: amavisd-new at mail.umc.edu.ve
-Received: from mail.umc.edu.ve ([127.0.0.1])
-        by localhost (mail.umc.edu.ve [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ojPlgV_MlqP8; Tue, 14 Jul 2020 19:11:48 -0400 (BOT)
-Received: from WIN-GI8HVF40BRQ.openstacklocal (vps-6ecfbe1d.vps.ovh.ca [51.222.31.9])
-        by mail.umc.edu.ve (Postfix) with ESMTPSA id 14706488F93D;
-        Tue, 14 Jul 2020 19:04:16 -0400 (BOT)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1728041AbgGPXJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727932AbgGPXJS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 19:09:18 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5526C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 15:14:56 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B77pk0wbsz9sRW;
+        Fri, 17 Jul 2020 08:14:54 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1594937694;
+        bh=WbKC4vHYjG/L2xjR4Kz3ljWUlwM3GL392sM2wMXaNrY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WbeVJMO3HzRvwKZlCho9ai47gUDSvbuccBnDFYWCNgDn2zYBd0RqwZFSVuRbE9gl4
+         o5RTRy/rbPJMMgUlwkSPTloOdWdW5+a6YxH8O7V5AWIvMjGecPVwehFemqXTciIWzc
+         QM9YCdEBumkD0Et9g0rCX8fLEureocjN5jmpABTWqcQrowf/Y1GAoZCmbSobc45o5g
+         0SeihO3zR6jGRCsxqivoDPNerQAHfQ4jd6LJ+uYIfu9hxOnU2IbIwfdWESpu85r3Wx
+         opSnS2wQWHyUYgurjJ42IbU7TY/iBOoQPEkuN6/wdyXA82024RzJuhtE6Vcwepp8Ix
+         Q0/CK7s56q7wQ==
+Date:   Fri, 17 Jul 2020 08:14:53 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: please add the init/ cleanup tree to linux-next
+Message-ID: <20200717081453.38d96678@canb.auug.org.au>
+In-Reply-To: <20200716150511.GA25454@lst.de>
+References: <20200716150511.GA25454@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Darlehensangebot
-To:     Recipients <operez@umc.edu.ve>
-From:   "Jesse Peterson" <operez@umc.edu.ve>
-Date:   Tue, 14 Jul 2020 16:04:15 -0700
-Reply-To: jessepetersonlthu@gmail.com
-Message-Id: <20200714230417.14706488F93D@mail.umc.edu.ve>
+Content-Type: multipart/signed; boundary="Sig_/f7lswCwx9ckTWPhEyYK4qI/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Haben Sie nach Finanzierungsmöglichkeiten für Ihr Unternehmen, den Kauf eines neuen Eigenheims, den Bau, den Immobilienkredit, die Refinanzierung, die Schuldenkonsolidierung, den persönlichen oder geschäftlichen Zweck gesucht? Willkommen in der Zukunft! Finanzierung mit uns leicht gemacht. Kontaktieren Sie uns, da wir unseren Finanzdienstleister zu einem niedrigen und erschwinglichen Zinssatz von 2% für lange und kurze Darlehenslaufzeiten anbieten. Interessierte Antragsteller sollten sich unter jessepetersonlthu@gmail.com an uns wenden, um weitere Verfahren zum Erwerb von Darlehen zu erhalten
+--Sig_/f7lswCwx9ckTWPhEyYK4qI/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi Christoph,
+
+On Thu, 16 Jul 2020 17:05:11 +0200 Christoph Hellwig <hch@lst.de> wrote:
+>
+> can you add the init/ cleanup tree:
+>=20
+>    git://git.infradead.org/users/hch/misc.git init-user-pointers
+>=20
+> to linux-next?
+
+Added from today.
+
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
+
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+--Sig_/f7lswCwx9ckTWPhEyYK4qI/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8Q0V0ACgkQAVBC80lX
+0GzkpAf/QmU8ueZ/h/AcYnKoBI3pRAViPC6nxDx2t7xDZYoUSFYqQih0PoTl5HT7
+K03sU11ewf06v3HUIP6PaHHtk45LVCM1l1wBJqwcw0rY+bqEHz0YCPXkxUKbrLn4
+zgXaY/rpxFJ7TTcLe9vlk0Yss7oo1Kt9PZw9ZzELE+Y3ii3ACMvyAA0gXpx+xg7u
+XG6vVwGs4JL/iez944GCIUbjBTZeuEzPjbNX/uH+qo4mNDMt8GvkgSpnRz/rVEAw
+dx3k3wEAtDa/C3tZyfUMg2DTE36TF3kL/felzkLY8ffpGXY77lHD2rqpncxw4XSf
+/SKftrZcw4NRW5NHF9VGN6nHNtBuKA==
+=1ucm
+-----END PGP SIGNATURE-----
+
+--Sig_/f7lswCwx9ckTWPhEyYK4qI/--
