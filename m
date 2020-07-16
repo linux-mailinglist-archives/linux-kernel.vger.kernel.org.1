@@ -2,143 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 907032228C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4FE2228CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728807AbgGPROI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 13:14:08 -0400
-Received: from mga18.intel.com ([134.134.136.126]:3242 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728237AbgGPROI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 13:14:08 -0400
-IronPort-SDR: V7I+Fu9P0xR6n8pnXJ7lmTTRCZHOX/MV7eEMu8i9R6iGjBZajrzku09Scyl/nIm+k7BtxHds8D
- dq/HQ552JHEw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="136896015"
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
-   d="scan'208";a="136896015"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 10:14:07 -0700
-IronPort-SDR: 6R0t2Qz3xSDnnYjKm0gNGfTjzRigT680d016xG8ijHFG4kqpS3pVSpC4YV+DWV4U1Pt2CT/GuN
- Ad4BlzF4EQGA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
-   d="scan'208";a="308707428"
-Received: from joycetoh-desk.sc.intel.com ([172.25.206.187])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Jul 2020 10:14:06 -0700
-From:   Harsha Priya <harshapriya.n@intel.com>
-To:     alsa-devel@alsa-project.org, broonie@kernel.org,
-        pierre-louis.bossart@linux.intel.com
-Cc:     lma@semihalf.com, yang.jie@linux.intel.com,
-        liam.r.girdwood@linux.intel.com, rad@semihalf.com,
-        zwisler@google.com, linux-kernel@vger.kernel.org,
-        sathya.prakash.m.r@intel.com, brndt@google.com, mw@semihalf.com,
-        levinale@chromium.org,
-        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
-        Harsha Priya <harshapriya.n@intel.com>
-Subject: [PATCH v6] ASoC: Intel: kbl_rt5663_rt5514_max98927: Fix kabylake_ssp_fixup function
-Date:   Thu, 16 Jul 2020 10:13:57 -0700
-Message-Id: <1594919637-31460-1-git-send-email-harshapriya.n@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728728AbgGPRRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 13:17:09 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:20092 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728257AbgGPRRI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 13:17:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594919827;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3fQB3h1kkyYLBylVq5k4Bhd4Kz/DPg9j4ID1VQtmqZc=;
+        b=Hvf1/tU8hWLLy9wvqkrRKAGsFu+iZu6NoVrN8YyHrfBMqShAJIhMi6ZIoGa3R8nquMdZlt
+        gOINZ1KRHVvF07+Dunn2s69TCvld8ClFQMV/Iio51HcLXOltnMGobFYCB/TJanmGfq4/Pb
+        TSb3myUeiAtOsa4dkqEKqLR90OxWTYI=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-472-7mEkV_vTMBewRgQZK8CExQ-1; Thu, 16 Jul 2020 13:17:04 -0400
+X-MC-Unique: 7mEkV_vTMBewRgQZK8CExQ-1
+Received: by mail-qk1-f199.google.com with SMTP id h4so4183033qkl.23
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:17:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3fQB3h1kkyYLBylVq5k4Bhd4Kz/DPg9j4ID1VQtmqZc=;
+        b=eEYYxJRl1N9ZRpIjZCX+M3wQUcb+8q7+RhcfA4LxuyqpWgFzZybm4zzZCTOz6YYuse
+         WM0O+HdpywPJfyZLQFckRbGwxP5PJ/8P5/T45AlTBzga0htMpAWQoKOBHaYfCDOakiND
+         /nTtpwAi2hEAPp3VPXjjfQdRdAdNxSc2HyC+0heTLWUoVga6nPt20SoDwGj39x3sPzgX
+         DYPEPLVYsVAWkOjt/IE54FtvzWwF7DgE/kFPgg2TJTKGyF1DfAlCB3GYHfNjhcQuT/1/
+         KJYIEr3ZN1se2PSOJyrrDI4TgMpPagXtc3fYVUFfg/cRVsiuGGz8Xk1hOcD7PpcswaYS
+         feyQ==
+X-Gm-Message-State: AOAM532fty97OWiSI3iI6ZKwmZK/u5GmHtFp5rJWKYsB781Qtg+rnWmL
+        qFznTpVsgaaTF1jOjrChK9y4as8PdqTmEP+Sql4hRzuL+D345NcXn82i/UoNXQKMztpRvmJ9DQk
+        LRLb/hd4YCzL/+Eu+yCWvs/LsK5TvG4tP+D0QHD8b
+X-Received: by 2002:a05:620a:11b3:: with SMTP id c19mr5023053qkk.203.1594919824438;
+        Thu, 16 Jul 2020 10:17:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxyyC+DL23IP8O9brTPle0l22Dr445jM9hQ5TROISxF5aP01PD5Cpgh6/ubiVQT+bVCdjlg6+/nT3WxD41Gj1I=
+X-Received: by 2002:a05:620a:11b3:: with SMTP id c19mr5023025qkk.203.1594919824159;
+ Thu, 16 Jul 2020 10:17:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200622122546-mutt-send-email-mst@kernel.org>
+ <CAJaqyWfbouY4kEXkc6sYsbdCAEk0UNsS5xjqEdHTD7bcTn40Ow@mail.gmail.com>
+ <CAJaqyWefMHPguj8ZGCuccTn0uyKxF9ZTEi2ASLtDSjGNb1Vwsg@mail.gmail.com>
+ <419cc689-adae-7ba4-fe22-577b3986688c@redhat.com> <CAJaqyWedEg9TBkH1MxGP1AecYHD-e-=ugJ6XUN+CWb=rQGf49g@mail.gmail.com>
+ <0a83aa03-8e3c-1271-82f5-4c07931edea3@redhat.com> <CAJaqyWeqF-KjFnXDWXJ2M3Hw3eQeCEE2-7p1KMLmMetMTm22DQ@mail.gmail.com>
+ <20200709133438-mutt-send-email-mst@kernel.org> <7dec8cc2-152c-83f4-aa45-8ef9c6aca56d@redhat.com>
+ <CAJaqyWdLOH2EceTUduKYXCQUUNo1XQ1tLgjYHTBGhtdhBPHn_Q@mail.gmail.com> <20200710015615-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20200710015615-mutt-send-email-mst@kernel.org>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Thu, 16 Jul 2020 19:16:27 +0200
+Message-ID: <CAJaqyWf1skGxrjuT9GLr6dtgd-433y-rCkbtStLHaAs2W2jYXA@mail.gmail.com>
+Subject: Re: [PATCH RFC v8 02/11] vhost: use batched get_vq_desc version
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
+On Fri, Jul 10, 2020 at 7:58 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Fri, Jul 10, 2020 at 07:39:26AM +0200, Eugenio Perez Martin wrote:
+> > > > How about playing with the batch size? Make it a mod parameter instead
+> > > > of the hard coded 64, and measure for all values 1 to 64 ...
+> > >
+> > >
+> > > Right, according to the test result, 64 seems to be too aggressive in
+> > > the case of TX.
+> > >
+> >
+> > Got it, thanks both!
+>
+> In particular I wonder whether with batch size 1
+> we get same performance as without batching
+> (would indicate 64 is too aggressive)
+> or not (would indicate one of the code changes
+> affects performance in an unexpected way).
+>
+> --
+> MST
+>
 
-kabylake_ssp_fixup function uses snd_soc_dpcm to identify the codecs DAIs.
-The hw parameters are changed based on the codec DAI,
-the stream is intended for. The earlier approach to get
-snd_soc_dpcm was using container_of() macro on snd_pcm_hw_params.
-The structures have been modified over time and snd_soc_dpcm does 
-not have snd_pcm_hw_params as a reference but as a copy.
-This causes the current driver to crash when used.
-This patch changes the way snd_soc_dpcm is extracted.
-The snd_soc_pcm_runtime holds 2 dpcm
-instances (one for playback and one for capture).
-The 2 codecs on this SSP are dmic and speakers.
-One is for capture and one is for playback respectively.
-Based on the direction of the stream,
-the snd_soc_dpcm is extracted from the snd_soc_pcm_runtime structure.
-Tested for all use cases of the driver.
+Hi!
 
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-Signed-off-by: Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>
-Tested-by: Lukasz Majczak <lma@semihalf.com>
----
-v1 -> v2:
-- Extract dmic from SSP0 as every BE should have own fixup function.
-v2 -> v3:
-- Restore naming in the dapm route table to not confuse with other
-drivers
-- Fixed indentations
-v3 -> v4:
-- Updated code and commit description according to
-solution proposed by Harsha
-v4 -> v5:
-- Cosmetic Changes
-v5 -> v6:
-- Dmic regression seen with v4 fixed 
-- Using available routines for obtaining dpcm information
----
----
- .../intel/boards/kbl_rt5663_rt5514_max98927.c | 26 ++++++++++++-------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+Varying batch_size as drivers/vhost/net.c:VHOST_NET_BATCH, and testing
+the pps as previous mail says. This means that we have either only
+vhost_net batching (in base testing, like previously to apply this
+patch) or both batching sizes the same.
 
-diff --git a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-index 584e4f9cedc2..b261b1c466a8 100644
---- a/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-+++ b/sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-@@ -379,22 +379,30 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 	struct snd_interval *chan = hw_param_interval(params,
- 			SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
--	struct snd_soc_dpcm *dpcm = container_of(
--			params, struct snd_soc_dpcm, hw_params);
--	struct snd_soc_dai_link *fe_dai_link = dpcm->fe->dai_link;
--	struct snd_soc_dai_link *be_dai_link = dpcm->be->dai_link;
-+	struct snd_soc_dpcm *dpcm, *rtd_dpcm;
-+
-+	/*
-+	 * This macro will be called for playback stream
-+	 */
-+	for_each_dpcm_fe(rtd, SNDRV_PCM_STREAM_PLAYBACK, dpcm)
-+		rtd_dpcm = dpcm;
-+	/*
-+	 * This macro will be called for capture stream
-+	 */
-+	for_each_dpcm_fe(rtd, SNDRV_PCM_STREAM_CAPTURE, dpcm)
-+		rtd_dpcm = dpcm;
- 
- 	/*
- 	 * The ADSP will convert the FE rate to 48k, stereo, 24 bit
- 	 */
--	if (!strcmp(fe_dai_link->name, "Kbl Audio Port") ||
--	    !strcmp(fe_dai_link->name, "Kbl Audio Headset Playback") ||
--	    !strcmp(fe_dai_link->name, "Kbl Audio Capture Port")) {
-+	if (!strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Port") ||
-+	    !strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Headset Playback") ||
-+	    !strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio Capture Port")) {
- 		rate->min = rate->max = 48000;
- 		chan->min = chan->max = 2;
- 		snd_mask_none(fmt);
- 		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
--	} else if (!strcmp(fe_dai_link->name, "Kbl Audio DMIC cap")) {
-+	} else if (!strcmp(rtd_dpcm->fe->dai_link->name, "Kbl Audio DMIC cap")) {
- 		if (params_channels(params) == 2 ||
- 				DMIC_CH(dmic_constraints) == 2)
- 			chan->min = chan->max = 2;
-@@ -405,7 +413,7 @@ static int kabylake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 	 * The speaker on the SSP0 supports S16_LE and not S24_LE.
- 	 * thus changing the mask here
- 	 */
--	if (!strcmp(be_dai_link->name, "SSP0-Codec"))
-+	if (!strcmp(rtd_dpcm->be->dai_link->name, "SSP0-Codec"))
- 		snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
- 
- 	return 0;
--- 
-2.17.1
+I've checked that vhost process (and pktgen) goes 100% cpu also.
+
+For tx: Batching decrements always the performance, in all cases. Not
+sure why bufapi made things better the last time.
+
+Batching makes improvements until 64 bufs, I see increments of pps but like 1%.
+
+For rx: Batching always improves performance. It seems that if we
+batch little, bufapi decreases performance, but beyond 64, bufapi is
+much better. The bufapi version keeps improving until I set a batching
+of 1024. So I guess it is super good to have a bunch of buffers to
+receive.
+
+Since with this test I cannot disable event_idx or things like that,
+what would be the next step for testing?
+
+Thanks!
+
+--
+Results:
+# Buf size: 1,16,32,64,128,256,512
+
+# Tx
+# ===
+# Base
+2293304.308,3396057.769,3540860.615,3636056.077,3332950.846,3694276.154,3689820
+# Batch
+2286723.857,3307191.643,3400346.571,3452527.786,3460766.857,3431042.5,3440722.286
+# Batch + Bufapi
+2257970.769,3151268.385,3260150.538,3379383.846,3424028.846,3433384.308,3385635.231,3406554.538
+
+# Rx
+# ==
+# pktgen results (pps)
+1223275,1668868,1728794,1769261,1808574,1837252,1846436
+1456924,1797901,1831234,1868746,1877508,1931598,1936402
+1368923,1719716,1794373,1865170,1884803,1916021,1975160
+
+# Testpmd pps results
+1222698.143,1670604,1731040.6,1769218,1811206,1839308.75,1848478.75
+1450140.5,1799985.75,1834089.75,1871290,1880005.5,1934147.25,1939034
+1370621,1721858,1796287.75,1866618.5,1885466.5,1918670.75,1976173.5,1988760.75,1978316
+
+pktgen was run again for rx with 1024 and 2048 buf size, giving
+1988760.75 and 1978316 pps. Testpmd goes the same way.
 
