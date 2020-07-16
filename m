@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF018223168
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C748522316A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 05:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726996AbgGQDEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 23:04:30 -0400
+        id S1727065AbgGQDEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 23:04:38 -0400
 Received: from mga17.intel.com ([192.55.52.151]:62877 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726968AbgGQDE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 23:04:27 -0400
-IronPort-SDR: zBe5gXespM6ECN/MIv6lswUw0HiVSVf+PFgPAg7icGAOnAxSYa7T8ubbeixEnwq40F1x7mJjdj
- lerVpTv3067w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="129613825"
+        id S1727025AbgGQDEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 23:04:34 -0400
+IronPort-SDR: eRDLtauJgihKSTG2uuT42C4CojRA8DnX46kkjfQZXv9cpFWYiy+pRrQlnWIM8GSYK+4lGvkGrq
+ QTLoBvIwCv1Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="129613835"
 X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="129613825"
+   d="scan'208";a="129613835"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:04:26 -0700
-IronPort-SDR: cWaqfjxiyrLjSXD2/c0orjjtSTuwm51MT4TTEDu85VxShWlQn9eYRKzJ9vlxY45Cpb5vS9pwdA
- e4+8Zx1IlHwg==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:04:30 -0700
+IronPort-SDR: xsIleZcLLeZe+2RXOeUmlnmUFIkaU4JIsiznwcs+LXNfxm9RGep54/M8QiylUzcPHcBdxUfKo7
+ Rw/OWa4Pvozg==
 X-IronPort-AV: E=Sophos;i="5.75,361,1589266800"; 
-   d="scan'208";a="460699722"
+   d="scan'208";a="460699741"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:04:22 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 20:04:26 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -35,9 +35,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         slawomir.blauciak@intel.com, mengdong.lin@intel.com,
         bard.liao@intel.com
-Subject: [PATCH v2 6/9] soundwire: intel_init: use EXPORT_SYMBOL_NS
-Date:   Thu, 16 Jul 2020 23:09:44 +0800
-Message-Id: <20200716150947.22119-7-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v2 7/9] soundwire: intel/cadence: merge Soundwire interrupt handlers/threads
+Date:   Thu, 16 Jul 2020 23:09:45 +0800
+Message-Id: <20200716150947.22119-8-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200716150947.22119-1-yung-chuan.liao@linux.intel.com>
 References: <20200716150947.22119-1-yung-chuan.liao@linux.intel.com>
@@ -46,74 +46,217 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+The existing code uses one pair of interrupt handler/thread per link
+but at the hardware level the interrupt is shared. This works fine for
+legacy PCI interrupts, but leads to timeouts in MSI (Message-Signaled
+Interrupt) mode, likely due to edges being lost.
 
-Make sure all symbols in this soundwire-intel-init module are exported
-with a namespace.
+This patch unifies interrupt handling for all links. The dedicated
+handler is removed since we use a common one for all shared interrupt
+sources, and the thread function takes care of dealing with interrupt
+sources. This partition follows the model used for the SOF IPC on
+HDaudio platforms, where similar timeout issues were noticed and doing
+all the interrupt handling/clearing in the thread improved
+reliability/stability.
 
-The MODULE_IMPORT_NS will be used in Intel/SOF HDaudio modules to be
-posted in a separate series.
+Validation results with 4 links active in parallel show a night-and-day
+improvement with no timeouts noticed even during stress tests. Latency
+and quality of service are not affected by the change - mostly because
+events on a SoundWire link are throttled by the bus frame rate
+(typically 8..48kHz).
 
-Namespaces are only introduced for the Intel parts of the SoundWire
-code at this time, in future patches we should also add namespaces for
-Cadence parts and the SoundWire core.
-
-Suggested-by: Greg KH <gregkh@linuxfoundation.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/intel_init.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/soundwire/cadence_master.c | 18 ++++++++++--------
+ drivers/soundwire/cadence_master.h |  4 ++++
+ drivers/soundwire/intel.c          | 15 ---------------
+ drivers/soundwire/intel.h          |  4 ++++
+ drivers/soundwire/intel_init.c     | 19 +++++++++++++++++++
+ 5 files changed, 37 insertions(+), 23 deletions(-)
 
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 613dbd415b91..24eafe0aa1c3 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -17,6 +17,7 @@
+ #include <linux/soundwire/sdw.h>
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
++#include <linux/workqueue.h>
+ #include "bus.h"
+ #include "cadence_master.h"
+ 
+@@ -790,7 +791,7 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
+ 			     CDNS_MCP_INT_SLAVE_MASK, 0);
+ 
+ 		int_status &= ~CDNS_MCP_INT_SLAVE_MASK;
+-		ret = IRQ_WAKE_THREAD;
++		schedule_work(&cdns->work);
+ 	}
+ 
+ 	cdns_writel(cdns, CDNS_MCP_INTSTAT, int_status);
+@@ -799,13 +800,15 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id)
+ EXPORT_SYMBOL(sdw_cdns_irq);
+ 
+ /**
+- * sdw_cdns_thread() - Cadence irq thread handler
+- * @irq: irq number
+- * @dev_id: irq context
++ * To update slave status in a work since we will need to handle
++ * other interrupts eg. CDNS_MCP_INT_RX_WL during the update slave
++ * process.
++ * @work: cdns worker thread
+  */
+-irqreturn_t sdw_cdns_thread(int irq, void *dev_id)
++static void cdns_update_slave_status_work(struct work_struct *work)
+ {
+-	struct sdw_cdns *cdns = dev_id;
++	struct sdw_cdns *cdns =
++		container_of(work, struct sdw_cdns, work);
+ 	u32 slave0, slave1;
+ 
+ 	dev_dbg_ratelimited(cdns->dev, "Slave status change\n");
+@@ -822,9 +825,7 @@ irqreturn_t sdw_cdns_thread(int irq, void *dev_id)
+ 	cdns_updatel(cdns, CDNS_MCP_INTMASK,
+ 		     CDNS_MCP_INT_SLAVE_MASK, CDNS_MCP_INT_SLAVE_MASK);
+ 
+-	return IRQ_HANDLED;
+ }
+-EXPORT_SYMBOL(sdw_cdns_thread);
+ 
+ /*
+  * init routines
+@@ -1427,6 +1428,7 @@ int sdw_cdns_probe(struct sdw_cdns *cdns)
+ 	init_completion(&cdns->tx_complete);
+ 	cdns->bus.port_ops = &cdns_port_ops;
+ 
++	INIT_WORK(&cdns->work, cdns_update_slave_status_work);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(sdw_cdns_probe);
+diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+index b410656f8194..7638858397df 100644
+--- a/drivers/soundwire/cadence_master.h
++++ b/drivers/soundwire/cadence_master.h
+@@ -129,6 +129,10 @@ struct sdw_cdns {
+ 
+ 	bool link_up;
+ 	unsigned int msg_count;
++
++	struct work_struct work;
++
++	struct list_head list;
+ };
+ 
+ #define bus_to_cdns(_bus) container_of(_bus, struct sdw_cdns, bus)
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 0a4fc7f65743..06c553d94890 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1258,21 +1258,7 @@ static int intel_master_probe(struct platform_device *pdev)
+ 			 "SoundWire master %d is disabled, will be ignored\n",
+ 			 bus->link_id);
+ 
+-	/* Acquire IRQ */
+-	ret = request_threaded_irq(sdw->link_res->irq,
+-				   sdw_cdns_irq, sdw_cdns_thread,
+-				   IRQF_SHARED, KBUILD_MODNAME, cdns);
+-	if (ret < 0) {
+-		dev_err(dev, "unable to grab IRQ %d, disabling device\n",
+-			sdw->link_res->irq);
+-		goto err_init;
+-	}
+-
+ 	return 0;
+-
+-err_init:
+-	sdw_bus_master_delete(bus);
+-	return ret;
+ }
+ 
+ int intel_master_startup(struct platform_device *pdev)
+@@ -1344,7 +1330,6 @@ static int intel_master_remove(struct platform_device *pdev)
+ 	if (!bus->prop.hw_disabled) {
+ 		intel_debugfs_exit(sdw);
+ 		sdw_cdns_enable_interrupt(cdns, false);
+-		free_irq(sdw->link_res->irq, sdw);
+ 		snd_soc_unregister_component(dev);
+ 	}
+ 	sdw_bus_master_delete(bus);
+diff --git a/drivers/soundwire/intel.h b/drivers/soundwire/intel.h
+index d6bdd4d63e08..bf127c88eb51 100644
+--- a/drivers/soundwire/intel.h
++++ b/drivers/soundwire/intel.h
+@@ -17,6 +17,8 @@
+  * @dev: device implementing hw_params and free callbacks
+  * @shim_lock: mutex to handle access to shared SHIM registers
+  * @shim_mask: global pointer to check SHIM register initialization
++ * @cdns: Cadence master descriptor
++ * @list: used to walk-through all masters exposed by the same controller
+  */
+ struct sdw_intel_link_res {
+ 	struct platform_device *pdev;
+@@ -29,6 +31,8 @@ struct sdw_intel_link_res {
+ 	struct device *dev;
+ 	struct mutex *shim_lock; /* protect shared registers */
+ 	u32 *shim_mask;
++	struct sdw_cdns *cdns;
++	struct list_head list;
+ };
+ 
+ struct sdw_intel {
 diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index d8f0c1472f1f..ad3175272e88 100644
+index ad3175272e88..a97d3577eb57 100644
 --- a/drivers/soundwire/intel_init.c
 +++ b/drivers/soundwire/intel_init.c
-@@ -164,7 +164,7 @@ void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable)
+@@ -9,6 +9,7 @@
  
- 	writel(val, mmio_base + HDA_DSP_REG_ADSPIC2);
+ #include <linux/acpi.h>
+ #include <linux/export.h>
++#include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+@@ -166,6 +167,19 @@ void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable)
  }
--EXPORT_SYMBOL(sdw_intel_enable_irq);
-+EXPORT_SYMBOL_NS(sdw_intel_enable_irq, SOUNDWIRE_INTEL_INIT);
+ EXPORT_SYMBOL_NS(sdw_intel_enable_irq, SOUNDWIRE_INTEL_INIT);
  
++irqreturn_t sdw_intel_thread(int irq, void *dev_id)
++{
++	struct sdw_intel_ctx *ctx = dev_id;
++	struct sdw_intel_link_res *link;
++
++	list_for_each_entry(link, &ctx->link_list, list)
++		sdw_cdns_irq(irq, link->cdns);
++
++	sdw_intel_enable_irq(ctx->mmio_base, true);
++	return IRQ_HANDLED;
++}
++EXPORT_SYMBOL_NS(sdw_intel_thread, SOUNDWIRE_INTEL_INIT);
++
  static struct sdw_intel_ctx
  *sdw_intel_probe_controller(struct sdw_intel_res *res)
-@@ -353,7 +353,7 @@ int sdw_intel_acpi_scan(acpi_handle *parent_handle,
- 
- 	return sdw_intel_scan_controller(info);
- }
--EXPORT_SYMBOL(sdw_intel_acpi_scan);
-+EXPORT_SYMBOL_NS(sdw_intel_acpi_scan, SOUNDWIRE_INTEL_INIT);
- 
- /**
-  * sdw_intel_probe() - SoundWire Intel probe routine
-@@ -370,7 +370,7 @@ struct sdw_intel_ctx
  {
- 	return sdw_intel_probe_controller(res);
- }
--EXPORT_SYMBOL(sdw_intel_probe);
-+EXPORT_SYMBOL_NS(sdw_intel_probe, SOUNDWIRE_INTEL_INIT);
+@@ -209,6 +223,8 @@ static struct sdw_intel_ctx
+ 	link = ctx->links;
+ 	link_mask = ctx->link_mask;
  
- /**
-  * sdw_intel_startup() - SoundWire Intel startup
-@@ -383,7 +383,7 @@ int sdw_intel_startup(struct sdw_intel_ctx *ctx)
- {
- 	return sdw_intel_startup_controller(ctx);
- }
--EXPORT_SYMBOL(sdw_intel_startup);
-+EXPORT_SYMBOL_NS(sdw_intel_startup, SOUNDWIRE_INTEL_INIT);
- /**
-  * sdw_intel_exit() - SoundWire Intel exit
-  * @ctx: SoundWire context allocated in the probe
-@@ -394,7 +394,7 @@ void sdw_intel_exit(struct sdw_intel_ctx *ctx)
- {
- 	sdw_intel_cleanup(ctx);
- }
--EXPORT_SYMBOL(sdw_intel_exit);
-+EXPORT_SYMBOL_NS(sdw_intel_exit, SOUNDWIRE_INTEL_INIT);
++	INIT_LIST_HEAD(&ctx->link_list);
++
+ 	/* Create SDW Master devices */
+ 	for (i = 0; i < count; i++, link++) {
+ 		if (!(link_mask & BIT(i))) {
+@@ -246,6 +262,9 @@ static struct sdw_intel_ctx
+ 			goto err;
+ 		}
+ 		link->pdev = pdev;
++		link->cdns = platform_get_drvdata(pdev);
++
++		list_add_tail(&link->list, &ctx->link_list);
+ 	}
  
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_DESCRIPTION("Intel Soundwire Init Library");
+ 	return ctx;
 -- 
 2.17.1
 
