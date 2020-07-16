@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63408222371
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3820222237D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728734AbgGPNE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:04:29 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:40934 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728119AbgGPNE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:04:29 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id F3C45DF5121E4CB53979;
-        Thu, 16 Jul 2020 21:04:24 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.91) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Jul 2020
- 21:04:08 +0800
-Subject: Re: [PATCH -next] scsi: hisi_sas: Convert to DEFINE_SHOW_ATTRIBUTE
-To:     John Garry <john.garry@huawei.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-References: <20200716084714.7872-1-miaoqinglang@huawei.com>
- <801e6d49-9bd5-8079-bb83-9f67591a9158@huawei.com>
-From:   miaoqinglang <miaoqinglang@huawei.com>
-Message-ID: <98e26dfe-b6f9-5730-097e-95ff2db5c987@huawei.com>
-Date:   Thu, 16 Jul 2020 21:04:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728801AbgGPNF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728696AbgGPNFy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 09:05:54 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A387C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:05:54 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id z24so7029676ljn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:05:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ruUcWHpAX25SqHSlxnSJmiPi/ZbeiW+By6HZVPnMDB4=;
+        b=a3oMNXy1OxKO2GgQyHV8bNNbS8hYVv5rPh91+E+xtFoeq9TGyEN/F7Ue5vCdja5pjc
+         AojJoGPXeQk1PeffZ4VS4r4pOaHCjZRh/qqNOkHOKz3l2zpYQtpdQsIHFv37AJrqkjLL
+         ZOkUT+h+Cnlg2ePavbRoap5QZU0+Lt0wVVYTgWxN3O1f340VhBnm5ssUCNiizMxZs7ZY
+         6PRa27fnggcVzjXMgvILAobdP/4HWUG6DRsMxVKRiEKei48JBj8sRbNIvmzy1tug7okg
+         5mMJoNnNr42LyUFgIvVdDqh4vomG60mDdEBEgYcr51qMR3TVGU/1m6WsyBbVKH6Elm1x
+         l1XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ruUcWHpAX25SqHSlxnSJmiPi/ZbeiW+By6HZVPnMDB4=;
+        b=hV89Oh5zLzkDP5tuy294EdNCBd0WpLQ6SDJqTv7eLZyOrqToqQFMKNNYJ6ehL/jojN
+         YSEIrqrzgJZe+enDJGYPfwS6JZTRuC2uWE8WDQu2AmuHAbdnHzwNB6FOCAUNDYHO2Sip
+         QWSDTWEZfvmdp1wlIl1DYqmcZqnIhUITNxtGbP6ftmgqpnqc5rMmXxSzTae8InjPEv2D
+         v/MPLIZAlzZnX42NjMuuqVPx27OBCHoC6P2VtK5z4nCwH+hKiOyqxNa0A1cKLRgZbu7Z
+         jHRwfJbUcEVtTeOzITRh2EHnVERLDut5Upsi+OceIQmDmqb2M2sZnDQRWX30JpnKSdQq
+         qxqQ==
+X-Gm-Message-State: AOAM531ofFe94WZxCbhRulpee3ii0WOahhdf687CfgwieWR4Qvx1xaJn
+        HdHvPOfbs4XY78rt4aFEcXnFAhJzFtc6BeHxZwbdGQ==
+X-Google-Smtp-Source: ABdhPJwZP6ponE8O8lLi1/kuYNusEhjJ7aWp5r5MCmgf5ruim5Ya8w28a0XWndi0+Aa2FFJPlGBKsEmYX0+ShfPxZJA=
+X-Received: by 2002:a2e:810a:: with SMTP id d10mr1929957ljg.144.1594904752512;
+ Thu, 16 Jul 2020 06:05:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <801e6d49-9bd5-8079-bb83-9f67591a9158@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.91]
-X-CFilter-Loop: Reflected
+References: <20200713144930.1034632-1-lee.jones@linaro.org>
+In-Reply-To: <20200713144930.1034632-1-lee.jones@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 16 Jul 2020 15:05:41 +0200
+Message-ID: <CACRpkdZ7toWRvWbw-7e7t-HEr5hdApV+F=bDrkv4vkCjGCNCtA@mail.gmail.com>
+Subject: Re: [PATCH 00/25] Rid W=1 warnings in Pinctrl
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 13, 2020 at 4:49 PM Lee Jones <lee.jones@linaro.org> wrote:
 
-在 2020/7/16 17:25, John Garry 写道:
-> On 16/07/2020 09:47, Qinglang Miao wrote:
->
-> Not sure why you cc Greg, but SCSI maintainers should have been - 
-> James and Martin
->
->> From: Yongqiang Liu <liuyongqiang13@huawei.com>
->>
->> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
->>
->> Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
->
-> The sender is not the author, so your signed-off-by should also be 
-> here (after sign off from Yongqiang Liu)
->
-Sorry for not knowing this rule, I will send a new patch later on if you 
-don't mind.
->> ---
->>   drivers/scsi/hisi_sas/hisi_sas_main.c | 137 ++------------------------
->>   1 file changed, 10 insertions(+), 127 deletions(-)
->>
->> diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c 
->> b/drivers/scsi/hisi_sas/hisi_sas_main.c
->> index 852d2620e..f50b0c78f 100644
->> --- a/drivers/scsi/hisi_sas/hisi_sas_main.c
->> +++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
->> @@ -2870,19 +2870,7 @@ static int hisi_sas_debugfs_global_show(struct 
->> seq_file *s, void *p)
->>       return 0;
->>   }
->>   -static int hisi_sas_debugfs_global_open(struct inode *inode, 
->> struct file *filp)
->> -{
->> -    return single_open(filp, hisi_sas_debugfs_global_show,
->> -               inode->i_private);
->> -}
->> -
->> -static const struct file_operations hisi_sas_debugfs_global_fops = {
->> -    .open = hisi_sas_debugfs_global_open,
->> -    .read_iter = seq_read_iter,
->> -    .llseek = seq_lseek,
->> -    .release = single_release,
->> -    .owner = THIS_MODULE,
->> -};
->> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_global);
->
-> I couldn't see an equivalent for file_operations which have a read and 
-> write method, and the driver has a few of those.
-Yes, you're right. There's no equivalence when drivers have read and  
-write method. So the file_operations we cleaned up are those without  
-write method, like hisi_sas_debugfs_global_fops.
->
-> Thanks
-> .
-Thanks
-  .
+>   pinctrl: pinctrl-single: Fix struct/function documentation blocks
 
+This patch didn't apply to v5.8-rc1 so I applied that one separately
+after merging in all the other patches from a branch.
+
+Seems to work! So all applied.
+
+Also THANKS for doing this!!
+
+Yours,
+Linus Walleij
