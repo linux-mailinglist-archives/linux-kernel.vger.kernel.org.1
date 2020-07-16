@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481F8221D4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0BD221D51
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728409AbgGPHXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:23:47 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:60003 "EHLO
+        id S1728435AbgGPHXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:23:49 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:60004 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728318AbgGPHXl (ORCPT
+        with ESMTP id S1728333AbgGPHXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Jul 2020 03:23:41 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from eli@mellanox.com)
         with SMTP; 16 Jul 2020 10:23:35 +0300
 Received: from nps-server-21.mtl.labs.mlnx (nps-server-21.mtl.labs.mlnx [10.237.240.120])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06G7NZTR006458;
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06G7NZvS006461;
         Thu, 16 Jul 2020 10:23:35 +0300
 Received: from nps-server-21.mtl.labs.mlnx (localhost [127.0.0.1])
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 06G7NZ1E005414;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 06G7NZj5005416;
         Thu, 16 Jul 2020 10:23:35 +0300
 Received: (from eli@localhost)
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 06G7NZms005413;
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 06G7NZBZ005415;
         Thu, 16 Jul 2020 10:23:35 +0300
 From:   Eli Cohen <eli@mellanox.com>
 To:     mst@redhat.com, jasowang@redhat.com,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Cc:     shahafs@mellanox.com, saeedm@mellanox.com
-Subject: [PATCH vhost next 02/10] vdpa_sim: use the batching API
-Date:   Thu, 16 Jul 2020 10:23:19 +0300
-Message-Id: <20200716072327.5359-3-eli@mellanox.com>
+Cc:     shahafs@mellanox.com, saeedm@mellanox.com,
+        Max Gurtovoy <maxg@mellanox.com>
+Subject: [PATCH vhost next 03/10] vdpa: remove hard coded virtq num
+Date:   Thu, 16 Jul 2020 10:23:20 +0300
+Message-Id: <20200716072327.5359-4-eli@mellanox.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200716072327.5359-1-eli@mellanox.com>
 References: <20200716072327.5359-1-eli@mellanox.com>
@@ -41,65 +42,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Wang <jasowang@redhat.com>
+From: Max Gurtovoy <maxg@mellanox.com>
 
-Change-Id: I3751f1aecce285e0f61530c69616852d49e5f547
-Signed-off-by: Jason Wang <jasowang@redhat.com>
+This will enable vdpa providers to add support for multi queue feature
+and publish it to upper layers (vhost and virtio).
+
+Signed-off-by: Max Gurtovoy <maxg@mellanox.com>
+Reviewed-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 20 --------------------
- drivers/vhost/vdpa.c             |  1 -
- 2 files changed, 21 deletions(-)
+ drivers/vdpa/ifcvf/ifcvf_main.c  | 3 ++-
+ drivers/vdpa/vdpa.c              | 3 +++
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 4 ++--
+ drivers/vhost/vdpa.c             | 9 +++------
+ include/linux/vdpa.h             | 6 ++++--
+ 5 files changed, 14 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+index f5a60c14b979..e0d43f25fc88 100644
+--- a/drivers/vdpa/ifcvf/ifcvf_main.c
++++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+@@ -420,7 +420,8 @@ static int ifcvf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	}
+ 
+ 	adapter = vdpa_alloc_device(struct ifcvf_adapter, vdpa,
+-				    dev, &ifc_vdpa_ops);
++				    dev, &ifc_vdpa_ops,
++				    IFCVF_MAX_QUEUE_PAIRS * 2);
+ 	if (adapter == NULL) {
+ 		IFCVF_ERR(pdev, "Failed to allocate vDPA structure");
+ 		return -ENOMEM;
+diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
+index de211ef3738c..f9c59f023d6d 100644
+--- a/drivers/vdpa/vdpa.c
++++ b/drivers/vdpa/vdpa.c
+@@ -61,6 +61,7 @@ static void vdpa_release_dev(struct device *d)
+  * initialized but before registered.
+  * @parent: the parent device
+  * @config: the bus operations that is supported by this device
++ * @nvqs: number of virtqueues supported by this device
+  * @size: size of the parent structure that contains private data
+  *
+  * Driver should use vdpa_alloc_device() wrapper macro instead of
+@@ -71,6 +72,7 @@ static void vdpa_release_dev(struct device *d)
+  */
+ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
+ 					const struct vdpa_config_ops *config,
++					int nvqs,
+ 					size_t size)
+ {
+ 	struct vdpa_device *vdev;
+@@ -96,6 +98,7 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
+ 	vdev->dev.release = vdpa_release_dev;
+ 	vdev->index = err;
+ 	vdev->config = config;
++	vdev->nvqs = nvqs;
+ 
+ 	err = dev_set_name(&vdev->dev, "vdpa%u", vdev->index);
+ 	if (err)
 diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index c7334cc65bb2..82d1068af3ef 100644
+index 82d1068af3ef..a38d8dc12192 100644
 --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
 +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -548,24 +548,6 @@ static int vdpasim_set_map(struct vdpa_device *vdpa,
- 	return ret;
- }
+@@ -60,7 +60,7 @@ static u64 vdpasim_features = (1ULL << VIRTIO_F_ANY_LAYOUT) |
+ /* State of each vdpasim device */
+ struct vdpasim {
+ 	struct vdpa_device vdpa;
+-	struct vdpasim_virtqueue vqs[2];
++	struct vdpasim_virtqueue vqs[VDPASIM_VQ_NUM];
+ 	struct work_struct work;
+ 	/* spinlock to synchronize virtqueue state */
+ 	spinlock_t lock;
+@@ -312,7 +312,7 @@ static struct vdpasim *vdpasim_create(void)
+ 	int ret = -ENOMEM;
  
--static int vdpasim_dma_map(struct vdpa_device *vdpa, u64 iova, u64 size,
--			   u64 pa, u32 perm)
--{
--	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
--
--	return vhost_iotlb_add_range(vdpasim->iommu, iova,
--				     iova + size - 1, pa, perm);
--}
--
--static int vdpasim_dma_unmap(struct vdpa_device *vdpa, u64 iova, u64 size)
--{
--	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
--
--	vhost_iotlb_del_range(vdpasim->iommu, iova, iova + size - 1);
--
--	return 0;
--}
--
- static void vdpasim_free(struct vdpa_device *vdpa)
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
-@@ -598,8 +580,6 @@ static const struct vdpa_config_ops vdpasim_net_config_ops = {
- 	.set_config             = vdpasim_set_config,
- 	.get_generation         = vdpasim_get_generation,
- 	.set_map                = vdpasim_set_map,
--	.dma_map                = vdpasim_dma_map,
--	.dma_unmap              = vdpasim_dma_unmap,
- 	.free                   = vdpasim_free,
- };
+ 	vdpasim = vdpa_alloc_device(struct vdpasim, vdpa, NULL,
+-				    &vdpasim_net_config_ops);
++				    &vdpasim_net_config_ops, VDPASIM_VQ_NUM);
+ 	if (!vdpasim)
+ 		goto err_alloc;
  
 diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index 8827ae31f96d..65195b30133b 100644
+index 65195b30133b..78f9d90c23b1 100644
 --- a/drivers/vhost/vdpa.c
 +++ b/drivers/vhost/vdpa.c
-@@ -533,7 +533,6 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
+@@ -55,9 +55,6 @@ enum {
+ 		(1ULL << VIRTIO_NET_F_SPEED_DUPLEX),
+ };
  
- static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
+-/* Currently, only network backend w/o multiqueue is supported. */
+-#define VHOST_VDPA_VQ_MAX	2
+-
+ #define VHOST_VDPA_DEV_MAX (1U << MINORBITS)
+ 
+ struct vhost_vdpa {
+@@ -882,7 +879,7 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
  {
--	struct vhost_dev *dev = &v->vdev;
- 	struct vdpa_device *vdpa = v->vdpa;
  	const struct vdpa_config_ops *ops = vdpa->config;
+ 	struct vhost_vdpa *v;
+-	int minor, nvqs = VHOST_VDPA_VQ_MAX;
++	int minor;
+ 	int r;
  
+ 	/* Currently, we only accept the network devices. */
+@@ -903,14 +900,14 @@ static int vhost_vdpa_probe(struct vdpa_device *vdpa)
+ 	atomic_set(&v->opened, 0);
+ 	v->minor = minor;
+ 	v->vdpa = vdpa;
+-	v->nvqs = nvqs;
++	v->nvqs = vdpa->nvqs;
+ 	v->virtio_id = ops->get_device_id(vdpa);
+ 
+ 	device_initialize(&v->dev);
+ 	v->dev.release = vhost_vdpa_release_dev;
+ 	v->dev.parent = &vdpa->dev;
+ 	v->dev.devt = MKDEV(MAJOR(vhost_vdpa_major), minor);
+-	v->vqs = kmalloc_array(nvqs, sizeof(struct vhost_virtqueue),
++	v->vqs = kmalloc_array(v->nvqs, sizeof(struct vhost_virtqueue),
+ 			       GFP_KERNEL);
+ 	if (!v->vqs) {
+ 		r = -ENOMEM;
+diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+index 239db794357c..715a159ee1f0 100644
+--- a/include/linux/vdpa.h
++++ b/include/linux/vdpa.h
+@@ -39,6 +39,7 @@ struct vdpa_device {
+ 	struct device *dma_dev;
+ 	const struct vdpa_config_ops *config;
+ 	unsigned int index;
++	int nvqs;
+ };
+ 
+ /**
+@@ -208,11 +209,12 @@ struct vdpa_config_ops {
+ 
+ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
+ 					const struct vdpa_config_ops *config,
++					int nvqs,
+ 					size_t size);
+ 
+-#define vdpa_alloc_device(dev_struct, member, parent, config)   \
++#define vdpa_alloc_device(dev_struct, member, parent, config, nvqs)   \
+ 			  container_of(__vdpa_alloc_device( \
+-				       parent, config, \
++				       parent, config, nvqs, \
+ 				       sizeof(dev_struct) + \
+ 				       BUILD_BUG_ON_ZERO(offsetof( \
+ 				       dev_struct, member))), \
 -- 
 2.27.0
 
