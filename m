@@ -2,93 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D37222E26
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C505222E37
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgGPVtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 17:49:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726070AbgGPVtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 17:49:06 -0400
-Received: from embeddedor (unknown [201.162.240.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACA2020884;
-        Thu, 16 Jul 2020 21:49:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594936145;
-        bh=7fP6dH5TD/3xNVb+QSbCWAiUHN2ghzRP4+H2BnHJxhI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=iPv6fRHaDROCuIF84yZsec82Gu6wloGalM6p5tTXh6asv5Anj3ovxXHZz73kA9DOX
-         Yfxn7XqfnjJ4o96m7mqQj2uR87UZoopGoRA3KzGxRa6E+9e58OBbjoX6fWyP16R74W
-         xTmTbvY7MEm+LBPXpfUKcmoEKE4JffPNJHzjLkmE=
-Date:   Thu, 16 Jul 2020 16:54:31 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] i2c: mv64xxx: Use fallthrough pseudo-keyword
-Message-ID: <20200716215431.GA19300@embeddedor>
+        id S1726784AbgGPV4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 17:56:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36182 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726579AbgGPV4C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 17:56:02 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594936560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bsyDj+dTue2WIP0pk5zGUno9OU1LywpIXSAi/vYPoQs=;
+        b=0bVNdp0B/UaxWgy72YFKyLzQWdf8CSVx64FHBr83D1ciBRuFI7A71FoDrXfl5k3sL2QxdA
+        O8HpHbYGFRD3puE/L/2afZxpVP0HFM0c2sKxDFinhbAagHNwd7GuBxrvsUULzf5yAcBN03
+        gcDoijt0QYA2T9DXQiY6GMOYLdn91/duWpMYvKapnmsS5SffIRK9PNF3ByiQ8I7gvFHKGg
+        dKkJdLi+8GIOHjNkjypLKkRgEATqfMP+fyLcyZgpWsaSwDxuxhyO8wj2wdurJEV6+UXbhh
+        Vhsvy4Y49jASsQb21QP69Hrr164Ifsyjk1FvdluSho+nGrUDX4bDffZ5y2TxkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594936560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bsyDj+dTue2WIP0pk5zGUno9OU1LywpIXSAi/vYPoQs=;
+        b=KgVJ09qAZ9uHZF5kMPNjFmsbcKwamC34NQluBD8GHOBcuwsj+txXWXeFm9UVhLJpJH7haY
+        4L92gYWqPCKrh3Cg==
+To:     Kees Cook <keescook@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        linux-arch@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>
+Subject: Re: [patch V3 01/13] entry: Provide generic syscall entry functionality
+In-Reply-To: <202007161336.B993ED938@keescook>
+References: <20200716182208.180916541@linutronix.de> <20200716185424.011950288@linutronix.de> <202007161336.B993ED938@keescook>
+Date:   Thu, 16 Jul 2020 23:55:59 +0200
+Message-ID: <87d04vt98w.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
+Kees Cook <keescook@chromium.org> writes:
+> On Thu, Jul 16, 2020 at 08:22:09PM +0200, Thomas Gleixner wrote:
+>> This code is needlessly duplicated and  different in all
+>> architectures.
+>> 
+>> Provide a generic version based on the x86 implementation which has all the
+>> RCU and instrumentation bits right.
+>
+> Ahh! You're reading my mind!
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+I told you about that plan at the last conference over a beer :)
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/i2c/busses/i2c-mv64xxx.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+> I was just thinking about this while reviewing the proposed syscall
+> redirection series[1], and pondering the lack of x86 TIF flags, and
+> that nearly everything in the series (and for seccomp and other
+> things) didn't need to be arch-specific. And now that series
+> absolutely needs to be rebased and it'll magically work for every arch
+> that switches to the generic entry code. :)
 
-diff --git a/drivers/i2c/busses/i2c-mv64xxx.c b/drivers/i2c/busses/i2c-mv64xxx.c
-index 829b8c98ae51..8d9d4ffdcd24 100644
---- a/drivers/i2c/busses/i2c-mv64xxx.c
-+++ b/drivers/i2c/busses/i2c-mv64xxx.c
-@@ -251,7 +251,7 @@ mv64xxx_i2c_fsm(struct mv64xxx_i2c_data *drv_data, u32 status)
- 				MV64XXX_I2C_STATE_WAITING_FOR_ADDR_2_ACK;
- 			break;
- 		}
--		/* FALLTHRU */
-+		fallthrough;
- 	case MV64XXX_I2C_STATUS_MAST_WR_ADDR_2_ACK: /* 0xd0 */
- 	case MV64XXX_I2C_STATUS_MAST_WR_ACK: /* 0x28 */
- 		if ((drv_data->bytes_left == 0)
-@@ -282,14 +282,14 @@ mv64xxx_i2c_fsm(struct mv64xxx_i2c_data *drv_data, u32 status)
- 				MV64XXX_I2C_STATE_WAITING_FOR_ADDR_2_ACK;
- 			break;
- 		}
--		/* FALLTHRU */
-+		fallthrough;
- 	case MV64XXX_I2C_STATUS_MAST_RD_ADDR_2_ACK: /* 0xe0 */
- 		if (drv_data->bytes_left == 0) {
- 			drv_data->action = MV64XXX_I2C_ACTION_SEND_STOP;
- 			drv_data->state = MV64XXX_I2C_STATE_IDLE;
- 			break;
- 		}
--		/* FALLTHRU */
-+		fallthrough;
- 	case MV64XXX_I2C_STATUS_MAST_RD_DATA_ACK: /* 0x50 */
- 		if (status != MV64XXX_I2C_STATUS_MAST_RD_DATA_ACK)
- 			drv_data->action = MV64XXX_I2C_ACTION_CONTINUE;
-@@ -417,8 +417,7 @@ mv64xxx_i2c_do_action(struct mv64xxx_i2c_data *drv_data)
- 			"mv64xxx_i2c_do_action: Invalid action: %d\n",
- 			drv_data->action);
- 		drv_data->rc = -EIO;
--
--		/* FALLTHRU */
-+		fallthrough;
- 	case MV64XXX_I2C_ACTION_SEND_STOP:
- 		drv_data->cntl_bits &= ~MV64XXX_I2C_REG_CONTROL_INTEN;
- 		writel(drv_data->cntl_bits | MV64XXX_I2C_REG_CONTROL_STOP,
--- 
-2.27.0
+That's the plan. 
+
+> Notes below...
+>
+> [1] https://lore.kernel.org/lkml/20200716193141.4068476-2-krisman@collabora.com/
+
+Saw that fly by. *shudder*
+
+>> +/*
+>> + * Define dummy _TIF work flags if not defined by the architecture or for
+>> + * disabled functionality.
+>> + */
+>
+> When I was thinking about this last week I was pondering having a split
+> between the arch-agnositc TIF flags and the arch-specific TIF flags, and
+> that each arch could have a single "there is agnostic work to be done"
+> TIF in their thread_info, and the agnostic flags could live in
+> task_struct or something. Anyway, I'll keep reading...
+
+That's going to be nasty. We rather go and expand the TIF storage to
+64bit. And then do the following in a generic header:
+
+#ifndef TIF_ARCH_SPECIFIC
+# define TIF_ARCH_SPECIFIC
+#endif
+
+enum tif_bits {
+	TIF_NEED_RESCHED = 0,
+        TIF_...,
+        TIF_LAST_GENERIC,
+        TIF_ARCH_SPECIFIC,
+};
+        
+and in the arch specific one:
+
+#define TIF_ARCH_SPECIFIC	\
+	TIF_ARCH_1,             \
+        TIF_ARCH_2,
+
+or something like that.
+
+>> +/**
+>> + * syscall_enter_from_user_mode - Check and handle work before invoking
+>> + *				 a syscall
+>> + * @regs:	Pointer to currents pt_regs
+>> + * @syscall:	The syscall number
+>> + *
+>> + * Invoked from architecture specific syscall entry code with interrupts
+>> + * disabled. The calling code has to be non-instrumentable. When the
+>> + * function returns all state is correct and the subsequent functions can be
+>> + * instrumented.
+>> + *
+>> + * Returns: The original or a modified syscall number
+>> + *
+>> + * If the returned syscall number is -1 then the syscall should be
+>> + * skipped. In this case the caller may invoke syscall_set_error() or
+>> + * syscall_set_return_value() first.  If neither of those are called and -1
+>> + * is returned, then the syscall will fail with ENOSYS.
+>
+> There's been some recent confusion over "has the syscall changed,
+> or did seccomp request it be skipped?" that was explored in arm64[2]
+> (though I see Will and Keno in CC already). There might need to be a
+> clearer way to distinguish between "wild userspace issued a -1 syscall"
+> and "seccomp or ptrace asked for the syscall to be skipped". The
+> difference is mostly about when ENOSYS gets set, with respect to calls
+> to syscall_set_return_value(), but if the syscall gets changed, the arch
+> may need to recheck the value and consider ENOSYS, etc. IIUC, what Will
+> ended up with[3] was having syscall_trace_enter() return the syscall return
+> value instead of the new syscall.
+
+I was chatting with Will about that yesterday. IIRC he plans to fix the
+immediate issue on arm64 first and then move arm64 over to the generic
+variant. That's the reason why I reshuffled the patch series so the
+generic parts are first which allows me to provide will a branch with
+just those. If there are any changes needed we can just feed them back
+into that branch and fixup the affected architecture trees.
+
+IOW, that should not block progress on this stuff.
+
+Thanks,
+
+        tglx
+
+
 
