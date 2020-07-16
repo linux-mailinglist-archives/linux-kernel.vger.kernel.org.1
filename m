@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DA522263F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E641922264A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728845AbgGPOwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:52:41 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46564 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728678AbgGPOwj (ORCPT
+        id S1728374AbgGPO5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725867AbgGPO5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 10:52:39 -0400
-Received: from xps.home (unknown [IPv6:2a01:e35:2fb5:1510:95f7:ce7f:fb76:c54a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: aferraris)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 421E82A50E0;
-        Thu, 16 Jul 2020 15:52:38 +0100 (BST)
-From:   Arnaud Ferraris <arnaud.ferraris@collabora.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Timur Tabi <timur@kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: [PATCH 2/2] ASoC: fsl_asrc: always use internal ratio
-Date:   Thu, 16 Jul 2020 16:52:01 +0200
-Message-Id: <20200716145201.186270-3-arnaud.ferraris@collabora.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200716145201.186270-1-arnaud.ferraris@collabora.com>
-References: <20200716145201.186270-1-arnaud.ferraris@collabora.com>
+        Thu, 16 Jul 2020 10:57:06 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C44FC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:57:05 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z15so7367930wrl.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:57:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Xpge14sV3XcdoTt3xDoqzbYEwttWmufNba1daoXoE1A=;
+        b=J+wyW/U9gdDLdITg4YfzCmv7D73MaBHyreqDJE7qRFLz1XeyXs17BjDJvLVDc4j28j
+         RW1kzm1wUOdyBKRyWaKa0q/qjRldIjM5O0JWLtW7eBP+Zw13Qzm6k1GtBZi90IQowXXe
+         7sYE7i9oxUBGAAMrfi/01ydsNRVnXoTX+oDQo+IubxrBI29BhJ4hav14KoNcHqC9ONHB
+         WHqskV9zMZ+XSPL3GFk2MPwm9g8ZoCQ7cOTmoqOizBMk+HYUDk70JJhBOdMGmP6Ft0XK
+         EVhjUOUjpItl8y36iLmL6kMObW4d4nePZ5ABrI98/BkUWUmXqCUEcVcQTC32QKKdJwDk
+         x3nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Xpge14sV3XcdoTt3xDoqzbYEwttWmufNba1daoXoE1A=;
+        b=ORuGTA7E/xHz9ATH4GOcBtff5PQ/uMHgP4ra0OajikQQNamRi5enGtolxTbGQAKKsA
+         RnArEOAMUlAROkZOLfWh0+2joKF3FKw2ABe8Fz5Kq7Nobki8G1bG8ALpANWJ/kabKDsJ
+         ppNad/7MYm+Snv0GZvpKuSwZ2vU1zcs9FRDnzr+ByxtA2vxqzsN4gpshRPbJH2Fh902u
+         nNWzHht9EYtOxivmR7XXPw0hLpKRA868Km8xQSsU4adIxnoBHty4YnuYzmYDqOw/5V+R
+         sJCq2f6sFKEO+PYfDnX4oCF7Ld0olFZ5Kx+paK/HinZilN7be2ZKadWhKV1lC9NGDJsO
+         GKGg==
+X-Gm-Message-State: AOAM531AJB4qytUE5MOQqZsieNcif/+yo/FAhsZKJdK4a35lpa9fLiH0
+        jjukSN1ddKyTbcr/8GWMIBt4ea9hpvw=
+X-Google-Smtp-Source: ABdhPJxOexkEuBxrIIT6NLtdXaI9fPey7YXsXj7BOki1czGm7Zg1I5iu5n15mJENb0upnshAAMWoHw==
+X-Received: by 2002:a5d:5587:: with SMTP id i7mr5419335wrv.314.1594911424394;
+        Thu, 16 Jul 2020 07:57:04 -0700 (PDT)
+Received: from dell ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id v6sm9212435wrr.85.2020.07.16.07.57.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 07:57:03 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 15:57:01 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     linux-kernel@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: Re: [PATCH] mfd: motorola-cpcap: Disable interrupt for suspend
+Message-ID: <20200716145701.GU3165313@dell>
+References: <20200706183934.26274-1-tony@atomide.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200706183934.26274-1-tony@atomide.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even though the current driver calculates the dividers to be used
-depending on the clocks and sample rates, enabling the internal ratio
-can lead to noticeable improvements in the audio quality, based on my
-testing.
+On Mon, 06 Jul 2020, Tony Lindgren wrote:
 
-As stated in the documentation, "When USRx=1 and IDRx=0, ASRC internal
-measured ratio will be used", so setting this bit even when not in
-"Ideal Ratio" mode still makes sense.
+> Otherwise we get spammed with errors on resume after rtcwake:
+> 
+> cpcap-core spi0.0: Failed to read IRQ status: -108
+> 
+> Note that rtcwake is still capable of waking up the system with
+> this patch.
+> 
+> Cc: Merlijn Wajer <merlijn@wizzup.org>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+> 
+> This has always been broken so can be merged whenever.
+> 
+> ---
+>  drivers/mfd/motorola-cpcap.c | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
 
-Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
----
- sound/soc/fsl/fsl_asrc.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Applied, thanks.
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index bfd35b9c0781..cc0f70c9140f 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -465,7 +465,7 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair, bool use_ideal_rate)
- 	regmap_update_bits(asrc->regmap, REG_ASRCTR,
- 			   ASRCTR_ATSi_MASK(index), ASRCTR_ATS(index));
- 	regmap_update_bits(asrc->regmap, REG_ASRCTR,
--			   ASRCTR_USRi_MASK(index), 0);
-+			   ASRCTR_USRi_MASK(index), ASRCTR_USR(index));
- 
- 	/* Set the input and output clock sources */
- 	regmap_update_bits(asrc->regmap, REG_ASRCSR,
-@@ -507,8 +507,7 @@ static int fsl_asrc_config_pair(struct fsl_asrc_pair *pair, bool use_ideal_rate)
- 
- 	/* Enable Ideal Ratio mode */
- 	regmap_update_bits(asrc->regmap, REG_ASRCTR,
--			   ASRCTR_IDRi_MASK(index) | ASRCTR_USRi_MASK(index),
--			   ASRCTR_IDR(index) | ASRCTR_USR(index));
-+			   ASRCTR_IDRi_MASK(index), ASRCTR_IDR(index);
- 
- 	fsl_asrc_sel_proc(inrate, outrate, &pre_proc, &post_proc);
- 
 -- 
-2.27.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
