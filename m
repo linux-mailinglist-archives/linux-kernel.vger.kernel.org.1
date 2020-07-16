@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25295222B22
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF08222B36
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbgGPSjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 14:39:03 -0400
-Received: from mga09.intel.com ([134.134.136.24]:21162 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728479AbgGPSip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 14:38:45 -0400
-IronPort-SDR: gbt+GHd3r+PIqf7tp1xTr4h5Prdsu4AVxycO1i6Iyk5lsGLLEYk3GpiKi7fG9psvEaK7A83YRs
- IdPrHwMDqOUQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="150857734"
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
-   d="scan'208";a="150857734"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 11:38:43 -0700
-IronPort-SDR: LQKkNqx8qAF9JuLkKoio2GWHPoODxcKkMDnngzPnHHVvW4bDxKHuyvHoK7jEkP+THF7Ca4SiPS
- gq0n1WoqePMQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
-   d="scan'208";a="460572052"
-Received: from jacob-builder.jf.intel.com ([10.7.199.155])
-  by orsmga005.jf.intel.com with ESMTP; 16 Jul 2020 11:38:35 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Lu Baolu" <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v5 5/5] iommu/vt-d: Check UAPI data processed by IOMMU core
-Date:   Thu, 16 Jul 2020 11:45:17 -0700
-Message-Id: <1594925117-64892-6-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594925117-64892-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1594925117-64892-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S1729376AbgGPSrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 14:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728374AbgGPSrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 14:47:47 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC185C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 11:47:47 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id q74so7158867iod.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 11:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JE7Pen46inwZxO9tkaTJDy3WUDLZxNVQfxoIMcr/BoM=;
+        b=q5Zcz/RPeQzCQ7zvA09TOSlqV6ksWSUtVb781iASamVNpGleTcjxA/JExhU+rexFaK
+         hApORWXALbZ9CxyXvvHFTeNcOjxzkfe7d2tGfr0j4shRPSbk+ommynMq1fsA+9gtRuuD
+         SghO4Ch7ivHSta+51v4KvYEJsVg37tVVpTT1s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JE7Pen46inwZxO9tkaTJDy3WUDLZxNVQfxoIMcr/BoM=;
+        b=mq1WCSkIGRzo1kltM+S5rqBuHl3h0xSHkcA2WNODD2tEjt5Um3pizgahMmdV1812So
+         IhR2eQQG89ZkyKYOd34+96kqvqhz+gz53ZmvYUDnQ2ijDlsVw7M0MSEresOmxMD6n27a
+         lSbz1aqxnUPYAxvEDJ2MG5KIlKCDF6ZM5MY8rzkqVYI82bAoYV4EC579LC15AFxVqC1H
+         jQKrO8AFmuC4UQlSMu5N5mPEdG1ED3CTcOQCX2VMeJP4hYI7ETc9jxty15olmaR+fJbl
+         3stFnfpWQHrGTzrXob5FTb5V6mORoo41wuBmhGUYsli3rIBJRkEdbup5FsazdWHizEwq
+         LQFg==
+X-Gm-Message-State: AOAM531xPBTUZJVSRLCBd4LQLxePfKqrXN7Zv+KSHONvlyYnIozZqjje
+        4nVpfaqmBohT3hfPMsH2cOodtcQV5dOaf5QVqzf/Qg==
+X-Google-Smtp-Source: ABdhPJwajtXehTH2xCamwP/Z0zea0M1DJ8xsJRZ40e52TLDCiQieV6T9sHH/g0K/InHRuIK3CfDMNY9XQQMriZOOz6o=
+X-Received: by 2002:a05:6638:1450:: with SMTP id l16mr6872872jad.74.1594925267035;
+ Thu, 16 Jul 2020 11:47:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200715135011.42743-1-kirill.shutemov@linux.intel.com>
+ <CAHk-=wh4pB-jRngOjcGxpc8=NPds3jWqJwDMUWC3-OEo4dRiKg@mail.gmail.com>
+ <20200715205428.GA201569@google.com> <CAHk-=wg-_Oof43pKUHMk4ySdLwpYi7+shFg+aeV18UP2Akiv8g@mail.gmail.com>
+ <CAHk-=wg+iVwK7MDXB+BPbhTmP-1eBa-y4vxRNr_G8ETnzv5pZg@mail.gmail.com>
+ <20200715222228.jf2pv5u2wyhtc5o5@box> <CAHk-=wgp-ZJ+J250DMaJFBDU2hnhUUqXcUnVnZZ1iFQEK6O-jg@mail.gmail.com>
+ <CAHk-=wh3jD4dwXWWFors9OnYp-YCzYN2bCGs9HDxrtZ=TiFyDQ@mail.gmail.com>
+ <CAHk-=wjw2yuQjP1rqB=ocr9W3=ak+6h4XygoFTAgM5meiM1Q0A@mail.gmail.com>
+ <20200716131612.b7ottczdgnxwdvrp@box> <CAHk-=wi1PKGsk-Nr_Jd1vHGqg5AjTUtJkeh9R-a9SN-H=i2-1A@mail.gmail.com>
+In-Reply-To: <CAHk-=wi1PKGsk-Nr_Jd1vHGqg5AjTUtJkeh9R-a9SN-H=i2-1A@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Thu, 16 Jul 2020 14:47:35 -0400
+Message-ID: <CAEXW_YRWDwUVrvedLtoMssFcrwAnWHAQ0CWNbR4UF=GS18B3wA@mail.gmail.com>
+Subject: Re: [PATCHv2] mm: Fix warning in move_normal_pmd()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        William Kucharski <william.kucharski@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOMMU generic layer already does sanity checks UAPI data for version
-match and argsz range under generic information.
-Remove the redundant version check from VT-d driver and check for vendor
-specific data size.
+On Thu, Jul 16, 2020 at 1:55 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, Jul 16, 2020 at 6:16 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+> >
+> > It can also lead to performance regression: for small mremap() if only one
+> > side of the range got aligned and there's no PMD_SIZE range to move,
+> > kernel will still iterate over PTEs, but it would need to handle more
+> > pte_none()s than without the patch.
+>
+> Ack, I've dropped the patch from my queue of experiments, because it
+> doesn't work for the case I wanted to do, and the other cases could
+> regress, as you say.
+>
+> Plus considering how many problems that patch had, I decided it wasn't
+> as simple as I initially thought it would be anyway ;)
+>
+> Joel - while it's gone from my mind, if you're still interested in
+> this, maybe you can do something _similar_ that patch, except perhaps
+> also start out checking that the initial size is large enough for this
+> to make sense even when one of the sides doesn't align, for example.
+>
+> (It might be as simple as checking that the initial 'len' is at least
+> PMD_SIZE - then you're guaranteed that whichever side gets aligned,
+> it's not doing extra work because the other side didn't).
 
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/iommu/intel/iommu.c | 3 +--
- drivers/iommu/intel/svm.c   | 7 +++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+Hi Linus,
+Yes I'm quite interested in doing a similar patch and also adding some
+test cases to make sure it always works properly. Probably I can add
+some kselftest cases doing mremap on various ranges.
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index f3a6ca88cf95..5e80484f0537 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -5383,8 +5383,7 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
- 	int ret = 0;
- 	u64 size = 0;
- 
--	if (!inv_info || !dmar_domain ||
--	    inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
-+	if (!inv_info || !dmar_domain)
- 		return -EINVAL;
- 
- 	if (!dev || !dev_is_pci(dev))
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 713b3a218483..55ea11e9c0f5 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -240,8 +240,11 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 	if (WARN_ON(!iommu) || !data)
- 		return -EINVAL;
- 
--	if (data->version != IOMMU_GPASID_BIND_VERSION_1 ||
--	    data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-+	if (data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-+		return -EINVAL;
-+
-+	/* IOMMU core ensures argsz is more than the start of the union */
-+	if (data->argsz < offsetofend(struct iommu_gpasid_bind_data, vendor.vtd))
- 		return -EINVAL;
- 
- 	if (!dev_is_pci(dev))
--- 
-2.7.4
+I think it will be a great optimization to trigger the PMD move more
+often. I'll work on it and get back hopefully soon on this, Thanks!
 
+ - Joel
