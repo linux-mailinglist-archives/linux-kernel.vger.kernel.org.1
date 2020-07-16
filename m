@@ -2,54 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEFD2221EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D0E22220A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728733AbgGPL4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 07:56:53 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:40184 "EHLO fornost.hmeau.com"
+        id S1728418AbgGPL6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 07:58:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728674AbgGPL4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 07:56:48 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jw2VD-00008u-UO; Thu, 16 Jul 2020 21:56:41 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Jul 2020 21:56:39 +1000
-Date:   Thu, 16 Jul 2020 21:56:39 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     ayush.sawal@chelsio.com, vinay.yadav@chelsio.com,
-        rohitm@chelsio.com, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 2/2] Crypto/chcr: Fix some pr_xxx messages
-Message-ID: <20200716115639.GI31166@gondor.apana.org.au>
-References: <20200712211424.276263-1-christophe.jaillet@wanadoo.fr>
+        id S1726239AbgGPL6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 07:58:20 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C6B920739;
+        Thu, 16 Jul 2020 11:58:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594900699;
+        bh=9srEDBajR9p24JXNJ8Nyoxyn9WC5JbPe2lny+DUlt7Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pu8X5C/5QsnFhDYwgMhuZLTAmv5Iqm3pbpC4uVRJj4m4dpHIfW2d8aQoHWl7fesKX
+         itxj2q3KFriY/jQchrDds7xvxv0ktKU2nIU4F5CXZKR/PsKumfdtf6bXm8/ob6ZYIr
+         +5AlXeyoDa123hOfnJb1XjLL+QBv3w1oaKyQfYFo=
+Date:   Thu, 16 Jul 2020 13:58:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     stable@vger.kernel.org, arnd@arndb.de, sashal@kernel.org,
+        naresh.kamboju@linaro.org, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [Stable-5.4][PATCH 0/3] arm64: Allow the compat vdso to be
+ disabled at runtime
+Message-ID: <20200716115813.GB1668009@kroah.com>
+References: <20200715125614.3240269-1-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200712211424.276263-1-christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200715125614.3240269-1-maz@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 12, 2020 at 11:14:24PM +0200, Christophe JAILLET wrote:
-> At the top this file, we have:
->    #define pr_fmt(fmt) "chcr:" fmt
+On Wed, Jul 15, 2020 at 01:56:11PM +0100, Marc Zyngier wrote:
+> This is a backport of the series that recently went into 5.8. Note
+> that the first patch is more a complete rewriting than a backport, as
+> the vdso implementation in 5.4 doesn't have much in common with
+> mainline. This affects the 32bit arch code in a benign way.
 > 
-> So there is no need to repeat "chcr : " in some error message when the
-> pr_xxx macro is used.
-> This would lead to log "chcr:chcr : blabla"
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/crypto/chelsio/chcr_algo.c | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
+> It has seen very little testing, as I don't have the HW that triggers
+> this issue. I have run it in VMs by faking the CPU MIDR, and nothing
+> caught fire. Famous last words.
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+These are also needed in 5.7.y, right?  If so, I need that series before
+I can take this one as we don't want people moving to a newer kernel and
+suffer regressions :(
+
+thanks,
+
+greg k-h
