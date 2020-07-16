@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486912224C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11732224C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbgGPOBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43030 "EHLO
+        id S1729376AbgGPOBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729097AbgGPN7i (ORCPT
+        with ESMTP id S1729113AbgGPN7j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:59:38 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168A5C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:38 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z2so7210346wrp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:38 -0700 (PDT)
+        Thu, 16 Jul 2020 09:59:39 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CE8C08C5DB
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:39 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z15so7162053wrl.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=prTZ5JEswUnocIpjh51nEpoOPf62BiWU4kn635sFnW8=;
-        b=Hd2yo7pmgR53H21ZDQwCTMsS7vmn+wCghqwTrr1p71Vg/do4U9Uh450Dtj7OneNCx5
-         bzdI98Lv0aruEcPTEqDPmVbi7xwK6HgkSxaI3WC0iedr2lQQn487UTvM/sdLkDW30iKP
-         d5cH1P5Nk/NPDup/jnmfyvKQaDacq/y5UMiZWdpUsEdSaXMc9BUpTHKvbnRDXnYlDOHU
-         bofZ043dhHRiP1oIAhQWfWcisZdVSRwr4nZI3GxNDY1iB2r/hiL8emYHW8yojob2Mr8G
-         HVe8nxbbvG5IfR8E+z3WnsFXmgZo+gni9zjsrrJ/VwANSAyydO42CpYlgfWJV8vfqiKi
-         /dpw==
+        bh=fG8RCQ1K6Z0ZD4fhah06tp/GYuGMejEtwlGsSpFMXOU=;
+        b=Jv6cEZz6qHBVpSVOcwxAwzMDLFTHVAMLrP4A4D4V+FHDXZFAj1flc7YVNIRB0ee/WE
+         aGwz1qvHH5ne6KtO0pimqv30XyEUFcAkU23rYpnzcim2sUiERnCh6IOKBB5AawvDrf8C
+         ehF69Fh15rdZX9cZB3/5QsQtMFIlc6Z/K5pwABNbOJZ3J9yl9OmDxcPn1ZmNQ73UBVdd
+         1nd8eBuxEXNCHdgG3vNdNRXpWRlvHe1EONC1e4r2cMKbEMXWTcWXpn3M4bomO7+Qtk0Q
+         f9bBWRoxYeSNIHsBfDB6eeNBmtIY/JWwik6Dn/F/JwVAb7FmkeG6bI8x/+y8B8xVwthK
+         o+AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=prTZ5JEswUnocIpjh51nEpoOPf62BiWU4kn635sFnW8=;
-        b=nAxBr3KXQIzplJ+gsznXcvBGXCPZlebRfGNYVIkZUOfAx3mT6/cvp4Ze/ZY+CglapQ
-         miEaLCKCoYkRTCSwj8+Zd5Om/nlI1vZZTz/7LNwab7pTDXAcpSK065mpn4xHlTaG3txw
-         a19uoGRJQIl1yks8gmj9/oCwlfEW+CtEDSjH6QhMBJLinAN8RM8CQWpbu9N96uyj75Ie
-         M+w11gjWGUFt9nku76fDAY7f45V41a63FiZ6rOLMKMdED20w/C5bKKjK+C4yhbtmuNZW
-         BHgDzLfLRLJANtmAFQOkcha9p86xB7KH2an0TqIiBn86WrvQV0prKuJuhiAmYO66GHx7
-         GB0A==
-X-Gm-Message-State: AOAM531f7c9kbMaxkaUVTEUfOSMCARe1TI+busSkYtpRMrWIV71syw/G
-        slD2aeIXGfff1YzQiCXLDVGSBw==
-X-Google-Smtp-Source: ABdhPJwX3IRYbokI3ZHKxGyWbM/Z7e1QEIkzkfGiBwVXjlu5nBA3i+bXqJiziE4LGWMiuzurDIAHbg==
-X-Received: by 2002:a5d:6412:: with SMTP id z18mr5143505wru.310.1594907976855;
-        Thu, 16 Jul 2020 06:59:36 -0700 (PDT)
+        bh=fG8RCQ1K6Z0ZD4fhah06tp/GYuGMejEtwlGsSpFMXOU=;
+        b=FSZ/rdJzSbhNIvS88CWl8VCLt+YxbJmLGThrp7Ju286Aw68oAKkxiAArDpk9EtT96o
+         384JCJhkat4fq56Q8PKtmC/oNxQlUj2DyJtFvFKvgl8niia9JbB59tYkXBBSGwNeemJ2
+         KXq7n/0j8PJRcKmJYmh3qiaI9yvKdKe6mJYLLwONA4EQLd7GKQbnwAkDNiO3YZN5v7Oy
+         fCSN+0qnnTgNrHjbL/byIX2qiC2sSeD67ZgPmBFgJTjtb0Fior5jT5QRaVUFQoBRH/3O
+         mac3fCD3McVJTGPV0p3CD3NmT/yvfnl7vK6/nAc9hO1PR3+vFr01LXtXImLfapkKVpjg
+         C4Zg==
+X-Gm-Message-State: AOAM5335sFQHYZUaZa4rAPijNR8FGZaW3RGYFCM4nKLxr5gqkqmWcME6
+        oaRbjW2Ovj67w70EN/aEOufEUA==
+X-Google-Smtp-Source: ABdhPJyvpcH8qjv3cJarACK1MheVg11n29CkbWUPLk1zd4I4RoIeswrSswn++4ZubNJ1s43pi5gpJQ==
+X-Received: by 2002:a5d:60c7:: with SMTP id x7mr4966047wrt.138.1594907977935;
+        Thu, 16 Jul 2020 06:59:37 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.35
+        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 06:59:36 -0700 (PDT)
+        Thu, 16 Jul 2020 06:59:37 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: [PATCH 04/30] iio: adc: ad7298: Demote obvious misuse of kerneldoc to standard comment blocks
-Date:   Thu, 16 Jul 2020 14:59:02 +0100
-Message-Id: <20200716135928.1456727-5-lee.jones@linaro.org>
+        Andreas Brauchli <a.brauchli@elementarea.net>,
+        Pascal Sachs <pascal.sachs@sensirion.com>
+Subject: [PATCH 05/30] iio: chemical: sgp30: Add description for sgp_read_cmd()'s 'duration_us'
+Date:   Thu, 16 Jul 2020 14:59:03 +0100
+Message-Id: <20200716135928.1456727-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200716135928.1456727-1-lee.jones@linaro.org>
 References: <20200716135928.1456727-1-lee.jones@linaro.org>
@@ -67,52 +68,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No attempt has been made to document either of the demoted functions here.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/adc/ad7298.c:106: warning: Function parameter or member 'indio_dev' not described in 'ad7298_update_scan_mode'
- drivers/iio/adc/ad7298.c:106: warning: Function parameter or member 'active_scan_mask' not described in 'ad7298_update_scan_mode'
- drivers/iio/adc/ad7298.c:154: warning: Function parameter or member 'irq' not described in 'ad7298_trigger_handler'
- drivers/iio/adc/ad7298.c:154: warning: Function parameter or member 'p' not described in 'ad7298_trigger_handler'
+ drivers/iio/chemical/sgp30.c:236: warning: Function parameter or member 'duration_us' not described in 'sgp_read_cmd'
 
-Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+Cc: Andreas Brauchli <a.brauchli@elementarea.net>
+Cc: Pascal Sachs <pascal.sachs@sensirion.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/adc/ad7298.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/iio/chemical/sgp30.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/iio/adc/ad7298.c b/drivers/iio/adc/ad7298.c
-index dc8d8c5f6ad36..006b6f63cf4e8 100644
---- a/drivers/iio/adc/ad7298.c
-+++ b/drivers/iio/adc/ad7298.c
-@@ -98,9 +98,9 @@ static const struct iio_chan_spec ad7298_channels[] = {
- 	IIO_CHAN_SOFT_TIMESTAMP(8),
- };
- 
--/**
-+/*
-  * ad7298_update_scan_mode() setup the spi transfer buffer for the new scan mask
-- **/
-+ */
- static int ad7298_update_scan_mode(struct iio_dev *indio_dev,
- 	const unsigned long *active_scan_mask)
- {
-@@ -144,12 +144,12 @@ static int ad7298_update_scan_mode(struct iio_dev *indio_dev,
- 	return 0;
- }
- 
--/**
-+/*
-  * ad7298_trigger_handler() bh of trigger launched polling to ring buffer
+diff --git a/drivers/iio/chemical/sgp30.c b/drivers/iio/chemical/sgp30.c
+index 403e8803471a9..82e407d48a0aa 100644
+--- a/drivers/iio/chemical/sgp30.c
++++ b/drivers/iio/chemical/sgp30.c
+@@ -227,6 +227,7 @@ static int sgp_verify_buffer(const struct sgp_data *data,
+  * @cmd:         SGP Command to issue
+  * @buf:         Raw data buffer to use
+  * @word_count:  Num words to read, excluding CRC bytes
++ * @duration_us: Time to sleep in microseconds
   *
-  * Currently there is no option in this driver to disable the saving of
-  * timestamps within the ring.
-- **/
-+ */
- static irqreturn_t ad7298_trigger_handler(int irq, void *p)
- {
- 	struct iio_poll_func *pf = p;
+  * Return:       0 on success, negative error otherwise.
+  */
 -- 
 2.25.1
 
