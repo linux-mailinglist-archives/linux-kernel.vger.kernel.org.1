@@ -2,250 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D948C221C53
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663A3221C5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgGPGGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 02:06:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
+        id S1727788AbgGPGIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgGPGGQ (ORCPT
+        with ESMTP id S1725844AbgGPGIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:06:16 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79287C061755;
-        Wed, 15 Jul 2020 23:06:16 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t6so4321680pgq.1;
-        Wed, 15 Jul 2020 23:06:16 -0700 (PDT)
+        Thu, 16 Jul 2020 02:08:40 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625C1C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:08:40 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id l63so4300627pge.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:08:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=qPCrNp37K6q3aKkXlYE/4fEYBOhUCPkKHsv9G1ygSB0=;
-        b=fTdnQ7CSNu7F9Fv/42LKBdPIwZbwn1ToKoItunqqTWJ9XsmvqqcfRvPC0cVwFqSXVQ
-         jTPYwowEcTz+Cv25XzHXc6yX7KoPveL0k1koV2mHhbam6fiHU05iIAtmBsEcIYliEGkQ
-         Mlpe2K7rwTikYh65uvk+PPaxifcx0UvDU91KhFJ4g7SsWuvppYY4Y+QgR+31GFVBcG77
-         RS7tJPaTqQRhnora1OuzfypJLFow9C0bEZ21gFhtWMYHkcad/mZfZB50RNv1dfBw/AZk
-         d+mr7t7McCPcEoKmF3G8EJ9jeCj3l0F73zRzicvJKFZXAqEwXDNekFR1N2YDwdQPhoGG
-         QoaQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=D4RopI2SK+VrJEt5Anwxfc4A31dj9pQyiM4Ej3RP8gk=;
+        b=Z4LPEAHLdCtydXYwHy5cU2hsfvFcR5JZLRy085J5GiJJX1s8CFicrMFC3sfVPq82iA
+         S2gTAcNRx0z7pigJVhpFAZY/SMoNlmmokLMMb+NQpHw0E/iM55ch/lGZvz1Bkjn2nTIq
+         OsHUkpcep1ZQ8SLY+kskWFbRRi3v7mY8mY+NopAHN6/N1OJFJDi7MLRtV2vfsOINfkFi
+         lsn1yQaTDs1D8GtgLFesxH5GmUoAWVXjmEv/WJUcX/MaUzmFog3cHE7j8z+Foz5bNOx7
+         LPYArLeNaOsMs5xOf1+QgAhIHLLl0vRfNp1uZAVZnwYvE0vqDnwlyRihhP4O6CiPuFRu
+         wwGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=qPCrNp37K6q3aKkXlYE/4fEYBOhUCPkKHsv9G1ygSB0=;
-        b=c4oNL56CqDExmiVczBCWJ8n+NFrTJo3u/7OO243j8ej9nZmoYTZ0nyeu7s64Dv92c1
-         pwjF+LqElcWMntoiQw0epfv2aeQqowBh8zeAFBbQgYZ6wvwE2C/p6MoDmKVlXSJmK7YE
-         GEx7s0sGs5RFgNYTKkGPyKma7CVhe1AWbxBMflGGOUf+BmRaLLAYJu9XNcAl8UPmH4No
-         OGayG8FKJd180FvOkH8Eqg4Y4CnZen6JMfteY9sk3YAFfs3ZMoP+pChduVxM5RbgXIUY
-         KWgjBenQqtTskDFiUBwi8VayOZ9mrZ9J6AKpv0+XLlddFnsuQdqZ4zEfqcJJKnhUlYKl
-         17Ew==
-X-Gm-Message-State: AOAM532+KS9Ml4BwjbkSyyAZpYZ7IIPqpToz++YzG9EO5ot4IBsI/9mp
-        HkaoNdTgF/VEhjkU9U+beO0=
-X-Google-Smtp-Source: ABdhPJxv5uogTZdodbJ5dWo5RNSOy42pZBLBiqLpnhhxyiNFoDo6zs63uszyH0rq2zc0n4i841tTMA==
-X-Received: by 2002:a63:201f:: with SMTP id g31mr2865429pgg.186.1594879575974;
-        Wed, 15 Jul 2020 23:06:15 -0700 (PDT)
-Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id b128sm3670149pfg.114.2020.07.15.23.06.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 23:06:15 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 16:06:10 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
- membarrier_mm_sync_core_before_usermode
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>
-References: <1594868476.6k5kvx8684.astroid@bobo.none>
-        <EFAD6E2F-EC08-4EB3-9ECC-2A963C023FC5@amacapital.net>
-In-Reply-To: <EFAD6E2F-EC08-4EB3-9ECC-2A963C023FC5@amacapital.net>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=D4RopI2SK+VrJEt5Anwxfc4A31dj9pQyiM4Ej3RP8gk=;
+        b=gK+hv1baH5aXpnq0YLrAauijSHGS94G8McMY1Q9oY8stiYeAC6nUSLRe514nKQdiXG
+         44OvzPaIPqFHab+L2ryz499DaIX5dcamDUkAeO3Uo3Mzq6nJLbaqiN5289x3eWU12IAk
+         d5U4MCHcHPTGcKwn8uVhd3+fmQYNCozrdMTV5BMOGeYnrw0uarYVHZaa3kt+VXtCFc4p
+         AXC229FTDrFl0nBTGgPGucfzeIpRgc5EvW+RL4tyGCbqXSXxCn9pYFYey/PexQHs0u4V
+         8TSbgoVfA78YlJEyO5Xf3o/Mg8xcrDlrCEScsCWFoctPoipvmKEYhieJU5ii11dy+Ky0
+         UzXw==
+X-Gm-Message-State: AOAM53108EkFJv1HKE9+Bq92OIdTUIaQOwwBMkNtXduAvZ8Fw+qx8oPt
+        wistx2oM7I3jKje0F9cbqi+l
+X-Google-Smtp-Source: ABdhPJzWa1JbitsW/hnOb4MBqiXITtCsWCUmRQVBbs5jud0hn6mZskzEN3d0CKaYGXLBuLVYHqcNpA==
+X-Received: by 2002:aa7:860f:: with SMTP id p15mr2360915pfn.59.1594879719659;
+        Wed, 15 Jul 2020 23:08:39 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6d89:fed1:8431:5b69:9df5:ad9f])
+        by smtp.gmail.com with ESMTPSA id j8sm3854003pfd.145.2020.07.15.23.08.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 15 Jul 2020 23:08:38 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 11:38:33 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     bbhatt@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH v4 3/9] bus: mhi: core: Use helper API to trigger a
+ non-blocking host resume
+Message-ID: <20200716060833.GE3271@Mani-XPS-13-9360>
+References: <1593448782-8385-1-git-send-email-bbhatt@codeaurora.org>
+ <1593448782-8385-4-git-send-email-bbhatt@codeaurora.org>
+ <20200704144714.GC3066@Mani-XPS-13-9360>
+ <ed30fd4330863c9743a019b6bd89aabd@codeaurora.org>
 MIME-Version: 1.0
-Message-Id: <1594878414.pdm2jvp999.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed30fd4330863c9743a019b6bd89aabd@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Andy Lutomirski's message of July 16, 2020 3:18 pm:
->=20
->=20
->> On Jul 15, 2020, at 9:15 PM, Nicholas Piggin <npiggin@gmail.com> wrote:
->>=20
->> =EF=BB=BFExcerpts from Mathieu Desnoyers's message of July 14, 2020 12:1=
-3 am:
->>> ----- On Jul 13, 2020, at 9:47 AM, Nicholas Piggin npiggin@gmail.com wr=
-ote:
->>>=20
->>>> Excerpts from Nicholas Piggin's message of July 13, 2020 2:45 pm:
->>>>> Excerpts from Andy Lutomirski's message of July 11, 2020 3:04 am:
->>>>>> Also, as it stands, I can easily see in_irq() ceasing to promise to
->>>>>> serialize.  There are older kernels for which it does not promise to
->>>>>> serialize.  And I have plans to make it stop serializing in the
->>>>>> nearish future.
->>>>>=20
->>>>> You mean x86's return from interrupt? Sounds fun... you'll konw where=
- to
->>>>> update the membarrier sync code, at least :)
->>>>=20
->>>> Oh, I should actually say Mathieu recently clarified a return from
->>>> interrupt doesn't fundamentally need to serialize in order to support
->>>> membarrier sync core.
->>>=20
->>> Clarification to your statement:
->>>=20
->>> Return from interrupt to kernel code does not need to be context serial=
-izing
->>> as long as kernel serializes before returning to user-space.
->>>=20
->>> However, return from interrupt to user-space needs to be context serial=
-izing.
->>=20
->> Hmm, I'm not sure it's enough even with the sync in the exit_lazy_tlb
->> in the right places.
->>=20
->> A kernel thread does a use_mm, then it blocks and the user process with
->> the same mm runs on that CPU, and then it calls into the kernel, blocks,
->> the kernel thread runs again, another CPU issues a membarrier which does
->> not IPI this one because it's running a kthread, and then the kthread
->> switches back to the user process (still without having unused the mm),
->> and then the user process returns from syscall without having done a=20
->> core synchronising instruction.
->>=20
->> The cause of the problem is you want to avoid IPI'ing kthreads. Why?
->> I'm guessing it really only matters as an optimisation in case of idle
->> threads. Idle thread is easy (well, easier) because it won't use_mm, so=20
->> you could check for rq->curr =3D=3D rq->idle in your loop (in a suitable=
-=20
->> sched accessor function).
->>=20
->> But... I'm not really liking this subtlety in the scheduler for all this=
-=20
->> (the scheduler still needs the barriers when switching out of idle).
->>=20
->> Can it be improved somehow? Let me forget x86 core sync problem for now
->> (that _may_ be a bit harder), and step back and look at what we're doing=
-.
->> The memory barrier case would actually suffer from the same problem as
->> core sync, because in the same situation it has no implicit mmdrop in
->> the scheduler switch code either.
->>=20
->> So what are we doing with membarrier? We want any activity caused by the=
-=20
->> set of CPUs/threads specified that can be observed by this thread before=
-=20
->> calling membarrier is appropriately fenced from activity that can be=20
->> observed to happen after the call returns.
->>=20
->> CPU0                     CPU1
->>                         1. user stuff
->> a. membarrier()          2. enter kernel
->> b. read rq->curr         3. rq->curr switched to kthread
->> c. is kthread, skip IPI  4. switch_to kthread
->> d. return to user        5. rq->curr switched to user thread
->>                 6. switch_to user thread
->>                 7. exit kernel
->>                         8. more user stuff
->>=20
->> As far as I can see, the problem is CPU1 might reorder step 5 and step
->> 8, so you have mmdrop of lazy mm be a mb after step 6.
->>=20
->> But why? The membarrier call only cares that there is a full barrier
->> between 1 and 8, right? Which it will get from the previous context
->> switch to the kthread.
->>=20
->> I must say the memory barrier comments in membarrier could be improved
->> a bit (unless I'm missing where the main comment is). It's fine to know
->> what barriers pair with one another, but we need to know which exact
->> memory accesses it is ordering
->>=20
->>       /*
->>         * Matches memory barriers around rq->curr modification in
->>         * scheduler.
->>         */
->>=20
->> Sure, but it doesn't say what else is being ordered. I think it's just
->> the user memory accesses, but would be nice to make that a bit more
->> explicit. If we had such comments then we might know this case is safe.
->>=20
->> I think the funny powerpc barrier is a similar case of this. If we
->> ever see remote_rq->curr->flags & PF_KTHREAD, then we _know_ that
->> CPU has or will have issued a memory barrier between running user
->> code.
->>=20
->> So AFAIKS all this membarrier stuff in kernel/sched/core.c could
->> just go away. Except x86 because thread switch doesn't imply core
->> sync, so CPU1 between 1 and 8 may never issue a core sync instruction
->> the same way a context switch must be a full mb.
->>=20
->> Before getting to x86 -- Am I right, or way off track here?
->=20
-> I find it hard to believe that this is x86 only. Why would thread switch =
-imply core sync on any architecture?  Is x86 unique in having a stupid expe=
-nsive core sync that is heavier than smp_mb()?
+On Wed, Jul 08, 2020 at 01:53:49PM -0700, bbhatt@codeaurora.org wrote:
+> On 2020-07-04 07:47, Manivannan Sadhasivam wrote:
+> > On Mon, Jun 29, 2020 at 09:39:36AM -0700, Bhaumik Bhatt wrote:
+> > > Autonomous low power mode support requires the MHI host to resume from
+> > > multiple places and post a wakeup source to exit system suspend. This
+> > > needs to be done in a non-blocking manner. Introduce a helper API to
+> > > trigger the host resume for data transfers and other non-blocking use
+> > > cases while supporting implementation of autonomous low power modes.
+> > > 
+> > 
+> > Why can't you use pm_wakeup_event() as done in __mhi_device_get_sync()?
+> > 
+> > Thanks,
+> > Mani
+> > 
+> 
+> I forgot to address the __mhi_device_get_sync() function. Thanks for
+> pointing out.
+> 
+> Is it preferable to always post wakeup source with hard boolean set?
 
-It's not the thread switch but the return from kernel to user -- at=20
-least of architectures that implement membarrier SYNC_CORE, x86 can do=20
-that without serializing.
+A quick grep shows that this routine is not used extensively as compared to
+the other one and hence the question.
 
-The thread switch is muddying the waters a bit, it's not the actual=20
-thread switch we care about, that just happens to be used as a point
-where we try to catch the membarrier IPIs that were skipped due to the
-PF_KTHREAD optimisation.
-
-I think that doing said check in the lazy tlb exit code is both
-unnecessary for the memory ordering and insufficient for pipeline=20
-serialization.
-
-> But I=E2=80=99m wondering if all this deferred sync stuff is wrong. In th=
-e brave new world of io_uring and such, perhaps kernel access matter too.  =
-Heck, even:
->=20
-> int a[2];
->=20
-> Thread A:
-> a[0] =3D 1;
-> a[1] =3D 2:
->=20
-> Thread B:
->=20
-> write(fd, a, sizeof(a));
->=20
-> Doesn=E2=80=99t do what thread A is expecting.  Admittedly this particula=
-r example is nonsense, but maybe there are sensible cases that matter to so=
-meone.
-
-I think kernel accesses probably do matter (or at least they should by=20
-principle of least surprise). And so I was doubly misleading by labeling
-it as "user stuff". I should have distinguished between previous user or
-kernel accesses, as opposed to the kernel accesses specifically for the
-implementation of the membarrier call.
-
-So I think the membarrier code gets *that* part right (modulo what we=20
-have seen already) if the kernel access is being done from process
-context.
-
-But yes if the access is coming from io_uring that has done
-kthread_use_mm or some other random code running in a kernel thread
-working on get_user_pages memory or any similar shared vm_insert_pfn
-memory, then it goes completely to hell.
-
-So good catch, PF_KTHREAD check is problematic there even if no actual
-users exist today. rq->curr =3D=3D rq->idle test might be better, but can
-we have interrupts writing completions into user memory? For performance
-I would hope so, so that makes even that test problematic.
-
-Maybe membarrier should close that gap entirely, and work around performanc=
-e
-issue by adding _USER_ONLY flags which explicitly only order user mode
-accesess vs other user accesses.
+For a bus driver like this I think we can just live without the hard wakeup.
+I don't see a specific usecase where we would need a hard wakeup from suspend.
 
 Thanks,
-Nick
+Mani
 
+> We do want to wakeup from Suspend-to-Idle if system suspend happens to go
+> that route.
+> 
+> As of now, we just by default do regular wakeup event and not hard.
+> I figured at some point we might need to distinguish between hard vs
+> regular, hence the option but
+> it can be eliminated in favor of one or another.
+> 
+
+
+
+> Thanks,
+> Bhaumik
+> 
+> > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > ---
+> > >  drivers/bus/mhi/core/internal.h |  8 ++++++++
+> > >  drivers/bus/mhi/core/main.c     | 21 +++++++--------------
+> > >  drivers/bus/mhi/core/pm.c       |  6 ++----
+> > >  3 files changed, 17 insertions(+), 18 deletions(-)
+> > > 
+> > > diff --git a/drivers/bus/mhi/core/internal.h
+> > > b/drivers/bus/mhi/core/internal.h
+> > > index bcfa7b6..cb32eaf 100644
+> > > --- a/drivers/bus/mhi/core/internal.h
+> > > +++ b/drivers/bus/mhi/core/internal.h
+> > > @@ -599,6 +599,14 @@ int mhi_queue_state_transition(struct
+> > > mhi_controller *mhi_cntrl,
+> > >  int mhi_send_cmd(struct mhi_controller *mhi_cntrl, struct mhi_chan
+> > > *mhi_chan,
+> > >  		 enum mhi_cmd_type cmd);
+> > > 
+> > > +static inline void mhi_trigger_resume(struct mhi_controller
+> > > *mhi_cntrl,
+> > > +				      bool hard_wakeup)
+> > > +{
+> > > +	pm_wakeup_dev_event(&mhi_cntrl->mhi_dev->dev, 0, hard_wakeup);
+> > > +	mhi_cntrl->runtime_get(mhi_cntrl);
+> > > +	mhi_cntrl->runtime_put(mhi_cntrl);
+> > > +}
+> > > +
+> > >  /* Register access methods */
+> > >  void mhi_db_brstmode(struct mhi_controller *mhi_cntrl, struct
+> > > db_cfg *db_cfg,
+> > >  		     void __iomem *db_addr, dma_addr_t db_val);
+> > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> > > index 1f622ce..8d6ec34 100644
+> > > --- a/drivers/bus/mhi/core/main.c
+> > > +++ b/drivers/bus/mhi/core/main.c
+> > > @@ -909,8 +909,7 @@ void mhi_ctrl_ev_task(unsigned long data)
+> > >  		 * process it since we are probably in a suspended state,
+> > >  		 * so trigger a resume.
+> > >  		 */
+> > > -		mhi_cntrl->runtime_get(mhi_cntrl);
+> > > -		mhi_cntrl->runtime_put(mhi_cntrl);
+> > > +		mhi_trigger_resume(mhi_cntrl, false);
+> > > 
+> > >  		return;
+> > >  	}
+> > > @@ -971,10 +970,8 @@ int mhi_queue_skb(struct mhi_device *mhi_dev,
+> > > enum dma_data_direction dir,
+> > >  	}
+> > > 
+> > >  	/* we're in M3 or transitioning to M3 */
+> > > -	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state)) {
+> > > -		mhi_cntrl->runtime_get(mhi_cntrl);
+> > > -		mhi_cntrl->runtime_put(mhi_cntrl);
+> > > -	}
+> > > +	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state))
+> > > +		mhi_trigger_resume(mhi_cntrl, false);
+> > > 
+> > >  	/* Toggle wake to exit out of M2 */
+> > >  	mhi_cntrl->wake_toggle(mhi_cntrl);
+> > > @@ -1032,10 +1029,8 @@ int mhi_queue_dma(struct mhi_device *mhi_dev,
+> > > enum dma_data_direction dir,
+> > >  	}
+> > > 
+> > >  	/* we're in M3 or transitioning to M3 */
+> > > -	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state)) {
+> > > -		mhi_cntrl->runtime_get(mhi_cntrl);
+> > > -		mhi_cntrl->runtime_put(mhi_cntrl);
+> > > -	}
+> > > +	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state))
+> > > +		mhi_trigger_resume(mhi_cntrl, false);
+> > > 
+> > >  	/* Toggle wake to exit out of M2 */
+> > >  	mhi_cntrl->wake_toggle(mhi_cntrl);
+> > > @@ -1147,10 +1142,8 @@ int mhi_queue_buf(struct mhi_device *mhi_dev,
+> > > enum dma_data_direction dir,
+> > >  	read_lock_irqsave(&mhi_cntrl->pm_lock, flags);
+> > > 
+> > >  	/* we're in M3 or transitioning to M3 */
+> > > -	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state)) {
+> > > -		mhi_cntrl->runtime_get(mhi_cntrl);
+> > > -		mhi_cntrl->runtime_put(mhi_cntrl);
+> > > -	}
+> > > +	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state))
+> > > +		mhi_trigger_resume(mhi_cntrl, false);
+> > > 
+> > >  	/* Toggle wake to exit out of M2 */
+> > >  	mhi_cntrl->wake_toggle(mhi_cntrl);
+> > > diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> > > index 661d704..5e3994e 100644
+> > > --- a/drivers/bus/mhi/core/pm.c
+> > > +++ b/drivers/bus/mhi/core/pm.c
+> > > @@ -1139,10 +1139,8 @@ void mhi_device_put(struct mhi_device *mhi_dev)
+> > > 
+> > >  	mhi_dev->dev_wake--;
+> > >  	read_lock_bh(&mhi_cntrl->pm_lock);
+> > > -	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state)) {
+> > > -		mhi_cntrl->runtime_get(mhi_cntrl);
+> > > -		mhi_cntrl->runtime_put(mhi_cntrl);
+> > > -	}
+> > > +	if (MHI_PM_IN_SUSPEND_STATE(mhi_cntrl->pm_state))
+> > > +		mhi_trigger_resume(mhi_cntrl, false);
+> > > 
+> > >  	mhi_cntrl->wake_put(mhi_cntrl, false);
+> > >  	read_unlock_bh(&mhi_cntrl->pm_lock);
+> > > --
+> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+> > > Forum,
+> > > a Linux Foundation Collaborative Project
+> > > 
