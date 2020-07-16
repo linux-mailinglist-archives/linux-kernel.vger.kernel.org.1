@@ -2,141 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F9F22269B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DCF72226BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728906AbgGPPMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 11:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
+        id S1729017AbgGPPTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 11:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728725AbgGPPMi (ORCPT
+        with ESMTP id S1728515AbgGPPTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:12:38 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673C6C08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:12:38 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d1so3999688plr.8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:12:38 -0700 (PDT)
+        Thu, 16 Jul 2020 11:19:48 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62031C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:19:48 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id w17so3998531ply.11
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:19:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N9cLlw64hWKscX8FZb2xpNSIxOyx8OVcITnqRM7FpVI=;
-        b=mv9JS06gZ97E3G32ZQWL6GS0ElnkOcD6uZoaEwIKSYlYwnw+I789fgsnu9RIyKRAU+
-         UtjwIxEz8y/Rd1KzJvRZW5NPhGYYsAgc+9JcovTIRuRW4JSCU7Yy4LtIaNRwRtKYVMAa
-         O0HqOafeihrdM6BtpKQ9bf/CSzxCZGvW/VyGU=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SkAb+ZQCHMOj0PuOUxDCiufP7aMc1qYndOmat4SVlkE=;
+        b=s7ZMHEaD8l3hfQKladU34x3lpBaJxaoIxB++2ycJ1zXb3XIZbdSyy8xQv3VGmyKDCM
+         fpRlsvCOtRQ/FvmjUOLy1u1qEj2svVDSflYceA2Yunq0V5Ho0X/FjIQWBi8Hgtdfjdm7
+         157Oww5hjIsgB/zLrBPaGTP9Ho30ggFcdq4Hx1nstOpGyWcUFUwG87PvdAfF5Z22h/c8
+         q5U2Sd/f22Hf5TTlvSi2wxR3zq43kHwtMGdWQHhTl+XK7d5AfjmILt21wsL9ogLWw3Wd
+         2y0OWsRf2+z+u6O1kw5oIXRQ66SIwX2ywhOlqTYTBnop1MnoYWFDMYiPbM/uZr7SSFpC
+         ftFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N9cLlw64hWKscX8FZb2xpNSIxOyx8OVcITnqRM7FpVI=;
-        b=hDnVqT3yHFP9hJ+wgySRDZdbtyRFfIOw5esT0qLDFKv3cZK0yOTsnMH6Ma55u62S6D
-         AdTIg2w3gC1NjP+mYmwZd4P0vErMFEhGNZdjlfm49PXUWJcvjY+DDtTV5Jta/tFIpOuQ
-         Jep0+w6KLEIM7hB16ak0sDZc1CF0VLkZ0U6/hBBt7dE8GNjVqGfxNmC5NE56h4P2ZLCP
-         pLadG9epEkLohNRNpCrFsjr61n/5fMIf5rr1fz/mcJjAcxM8sjm+Fk/F5Xhjjbh0UGuh
-         8n72bIGssY7Wpn7wcYpyjoyHWE7aH4vetqUNRAznfKKvB1kXYQwKVEGLplRd97y2C+Wk
-         NX/w==
-X-Gm-Message-State: AOAM531iaHa879j2g6/SXa+MnBgmbgFrIapMSQTzQaZnZ/rVXnrobbso
-        zYO4FJz/wqe9wjGIiXEVgsyGmw==
-X-Google-Smtp-Source: ABdhPJxZQy+rxF9/jXytbGfyHMD/u/Eum1INRvVxrE25iFO25PsexI0VEAJV5sGRq2U2nAyAa4wWdA==
-X-Received: by 2002:a17:90a:cc:: with SMTP id v12mr4994854pjd.96.1594912357822;
-        Thu, 16 Jul 2020 08:12:37 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z6sm5060155pfn.173.2020.07.16.08.12.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SkAb+ZQCHMOj0PuOUxDCiufP7aMc1qYndOmat4SVlkE=;
+        b=hv/oiyYqkASNP5HVYkiEn/lck62tN8URxl8NOSL6Ghz6FOX6ofX1iMAJWLZYHZ+ieV
+         NNizLZR0nfJI87EQf5QsV0RHyohP18hE5Pf81/9aWf/nRdupr+TLwY4pS594vOFC0BMI
+         4dFatBOvZqFR9bdMQETICdcJAlPb9PvS6MlfxkAUoEBSAU6mKQ+jBL1eIwmSLK6NPZ4P
+         aO28DtkmOclSNg42XFSrTJjpgbGl3vE2q4Ih+M7FoCr5SSAGI1/VMLfL+6kVLsMjQUkF
+         NNUXUcNOWcPTcMGKKE1RfhvMmgR6qV6rbm3eXaNJcCgsDPQipECS4gNO6kUMg3u4CWM4
+         ja1g==
+X-Gm-Message-State: AOAM533vHJ8xwSP4vdluJV3gZjfX0zO4h1VXpppvkE0tDoXcLnAQbd2p
+        08ELlVUv3/kmjsfod4WSQY0=
+X-Google-Smtp-Source: ABdhPJzbMM63DHJxy9yrgW/roY6OGog39Bc5HtyluVWwo5o97FmFHv12o1ezNvYHvf0HAC3xarpXFQ==
+X-Received: by 2002:a17:90a:e017:: with SMTP id u23mr5438552pjy.179.1594912787778;
+        Thu, 16 Jul 2020 08:19:47 -0700 (PDT)
+Received: from thinkpad.teksavvy.com ([69.172.171.109])
+        by smtp.gmail.com with ESMTPSA id l17sm5502252pgn.48.2020.07.16.08.19.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 08:12:36 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 08:12:35 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jann Horn <jannh@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        strace-devel@lists.strace.io, io-uring@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Subject: Re: strace of io_uring events?
-Message-ID: <202007160751.ED56C55@keescook>
-References: <CAJfpegu3EwbBFTSJiPhm7eMyTK2MzijLUp1gcboOo3meMF_+Qg@mail.gmail.com>
- <D9FAB37B-D059-4137-A115-616237D78640@amacapital.net>
- <20200715171130.GG12769@casper.infradead.org>
- <7c09f6af-653f-db3f-2378-02dca2bc07f7@gmail.com>
- <CAJfpegt9=p4uo5U2GXqc-rwqOESzZCWAkGMRTY1r8H6fuXx96g@mail.gmail.com>
- <48cc7eea-5b28-a584-a66c-4eed3fac5e76@gmail.com>
- <202007151511.2AA7718@keescook>
- <20200716131404.bnzsaarooumrp3kx@steredhat>
+        Thu, 16 Jul 2020 08:19:47 -0700 (PDT)
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rustam Kovhaev <rkovhaev@gmail.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+80899a8a8efe8968cde7@syzkaller.appspotmail.com
+Subject: [PATCH] staging: rtl8712: handle firmware load failure
+Date:   Thu, 16 Jul 2020 08:13:26 -0700
+Message-Id: <20200716151324.1036204-1-rkovhaev@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716131404.bnzsaarooumrp3kx@steredhat>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 03:14:04PM +0200, Stefano Garzarella wrote:
-> On Wed, Jul 15, 2020 at 04:07:00PM -0700, Kees Cook wrote:
-> [...]
-> 
-> > Speaking to Stefano's proposal[1]:
-> > 
-> > - There appear to be three classes of desired restrictions:
-> >   - opcodes for io_uring_register() (which can be enforced entirely with
-> >     seccomp right now).
-> >   - opcodes from SQEs (this _could_ be intercepted by seccomp, but is
-> >     not currently written)
-> >   - opcodes of the types of restrictions to restrict... for making sure
-> >     things can't be changed after being set? seccomp already enforces
-> >     that kind of "can only be made stricter"
-> 
-> In addition we want to limit the SQEs to use only the registered fd and buffers.
+when firmware fails to load we should not call unregister_netdev()
+this patch fixes a race condition between rtl871x_load_fw_cb() and
+r871xu_dev_remove() and fixes the bug reported by syzbot
 
-Hmm, good point. Yeah, since it's an "extra" mapping (ioring file number
-vs fd number) this doesn't really map well to seccomp. (And frankly,
-there's some difficulty here mapping many of the ioring-syscalls to
-seccomp because it's happening "deeper" than the syscall layer (i.e.
-some of the arguments have already been resolved into kernel object
-pointers, etc).
+Reported-by: syzbot+80899a8a8efe8968cde7@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=80899a8a8efe8968cde7
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+---
+ drivers/staging/rtl8712/hal_init.c |  3 ++-
+ drivers/staging/rtl8712/usb_intf.c | 11 ++++++++---
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-> Do you think it's better to have everything in seccomp instead of adding
-> the restrictions in io_uring (the patch isn't very big)?
-
-I'm still trying to understand how io_uring will be used, and it seems
-odd to me that it's effectively a seccomp bypass. (Though from what I
-can tell it is not an LSM bypass, which is good -- though I'm worried
-there might be some embedded assumptions in LSMs about creds vs current
-and LSMs may try to reason (or report) on actions with the kthread in
-mind, but afaict everything important is checked against creds.
-
-> With seccomp, would it be possible to have different restrictions for two
-> instances of io_uring in the same process?
-
-For me, this is the most compelling reason to have the restrictions NOT
-implemented via seccomp. Trying to make "which instance" choice in
-seccomp would be extremely clumsy.
-
-So at this point, I think it makes sense for the restriction series to
-carry on -- it is io_uring-specific and solves some problems that
-seccomp is not in good position to reason about.
-
-All this said, I'd still like a way to apply seccomp to io_uring
-because it's a rather giant syscall filter bypass mechanism, and gaining
-access (IIUC) is possible without actually calling any of the io_uring
-syscalls. Is that correct? A process would receive an fd (via SCM_RIGHTS,
-pidfd_getfd, or soon seccomp addfd), and then call mmap() on it to gain
-access to the SQ and CQ, and off it goes? (The only glitch I see is
-waking up the worker thread?)
-
-What appears to be the worst bit about adding seccomp to io_uring is the
-almost complete disassociation of process hierarchy from syscall action.
-Only a cred is used for io_uring, and seccomp filters are associated with
-task structs. I'm not sure if there is a way to solve this disconnect
-without a major internal refactoring of seccomp to attach to creds and
-then make every filter attachment create a new cred... *head explody*
-
+diff --git a/drivers/staging/rtl8712/hal_init.c b/drivers/staging/rtl8712/hal_init.c
+index 40145c0338e4..42c0a3c947f1 100644
+--- a/drivers/staging/rtl8712/hal_init.c
++++ b/drivers/staging/rtl8712/hal_init.c
+@@ -33,7 +33,6 @@ static void rtl871x_load_fw_cb(const struct firmware *firmware, void *context)
+ {
+ 	struct _adapter *adapter = context;
+ 
+-	complete(&adapter->rtl8712_fw_ready);
+ 	if (!firmware) {
+ 		struct usb_device *udev = adapter->dvobjpriv.pusbdev;
+ 		struct usb_interface *usb_intf = adapter->pusb_intf;
+@@ -41,11 +40,13 @@ static void rtl871x_load_fw_cb(const struct firmware *firmware, void *context)
+ 		dev_err(&udev->dev, "r8712u: Firmware request failed\n");
+ 		usb_put_dev(udev);
+ 		usb_set_intfdata(usb_intf, NULL);
++		complete(&adapter->rtl8712_fw_ready);
+ 		return;
+ 	}
+ 	adapter->fw = firmware;
+ 	/* firmware available - start netdev */
+ 	register_netdev(adapter->pnetdev);
++	complete(&adapter->rtl8712_fw_ready);
+ }
+ 
+ static const char firmware_file[] = "rtlwifi/rtl8712u.bin";
+diff --git a/drivers/staging/rtl8712/usb_intf.c b/drivers/staging/rtl8712/usb_intf.c
+index a87562f632a7..2fcd65260f4c 100644
+--- a/drivers/staging/rtl8712/usb_intf.c
++++ b/drivers/staging/rtl8712/usb_intf.c
+@@ -595,13 +595,17 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
+ 	if (pnetdev) {
+ 		struct _adapter *padapter = netdev_priv(pnetdev);
+ 
+-		usb_set_intfdata(pusb_intf, NULL);
+-		release_firmware(padapter->fw);
+ 		/* never exit with a firmware callback pending */
+ 		wait_for_completion(&padapter->rtl8712_fw_ready);
++		pnetdev = usb_get_intfdata(pusb_intf);
++		usb_set_intfdata(pusb_intf, NULL);
++		if (!pnetdev)
++			goto firmware_load_fail;
++		release_firmware(padapter->fw);
+ 		if (drvpriv.drv_registered)
+ 			padapter->surprise_removed = true;
+-		unregister_netdev(pnetdev); /* will call netdev_close() */
++		if (pnetdev->reg_state != NETREG_UNINITIALIZED)
++			unregister_netdev(pnetdev); /* will call netdev_close() */
+ 		flush_scheduled_work();
+ 		udelay(1);
+ 		/* Stop driver mlme relation timer */
+@@ -614,6 +618,7 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
+ 		 */
+ 		usb_put_dev(udev);
+ 	}
++firmware_load_fail:
+ 	/* If we didn't unplug usb dongle and remove/insert module, driver
+ 	 * fails on sitesurvey for the first time when device is up.
+ 	 * Reset usb port for sitesurvey fail issue.
 -- 
-Kees Cook
+2.27.0
+
