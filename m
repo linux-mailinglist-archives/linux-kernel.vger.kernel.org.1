@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD77221E6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7A5221E78
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:35:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728002AbgGPIbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 04:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726411AbgGPIbr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 04:31:47 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7306C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:31:46 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id r19so6113136ljn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:31:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YBdBkCZyYrnro0mG4wNU/SXS3tLA8FxNGX+obuNgjH8=;
-        b=p7Podd+vPOqWJxeSsTXewwQJ0pYEiECsXkQ0W0tTlg1WtzqovoD0lIeXALNMQTneJY
-         604+6fxhst8qRgbo6s1Hc639xjJUdtyMKoUX8PB/9JIopac0hBV6FjHPtNjovabGggjt
-         AJ0s2M0cDTK0UZd1ZlVIE0BGTo0u9MiP2b46VswczuwB4MpvS5ARlyQBeZ6qR7xQbDdu
-         1mO9Njf1lroyNzg122nkwu11lYwHrYVuQlW/fstTtq1jzzIvlsO4FhjhybmXpfwr+Spw
-         DujOXbXHRH5cxw0nStYzF9/MswhlsqF6ivYvZNDaVDiuMBZ/UYdklChcy8oaXeOa2QOS
-         gHTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YBdBkCZyYrnro0mG4wNU/SXS3tLA8FxNGX+obuNgjH8=;
-        b=HiB9ZB8Wklt0YkCPO48m62OnalJeIp7E/jbcXop4doQtA6pNvN5VVxdHXAiai86JDB
-         ajJ2QIm+vUT5XUZkGUJHUq4ScHLqwGdZaOdaEOTgl0LNEKCZcIPwngisMa4MZUtI77hI
-         clKPSfmmmqW/u585U9c6/OMh0cR76KlRaJOMsHYABX0LUiyS0Mkz3AqlmpfSFu1gDdGN
-         a5KCAhXM+JtLTPGkxl/D12URdUq6QBMve663UDza9HRAAQ2BI+HDEkRBPjdBOO9FuZeX
-         Uqfll64sHBuoLhI4grJpJwK1ywYPTfKhtC+vs5yQOz52i4pJBPFyLwKlhjfUEO0yuhti
-         r8oQ==
-X-Gm-Message-State: AOAM5307+82d0M06iIUKPBaqKzd9nTSREcO9otV2tAPcCiYmBakJF5jy
-        20FfVEBF4YIamfHlOjFiE5AfEWpGiUEU9OzYeSAdr53eteQ=
-X-Google-Smtp-Source: ABdhPJy4xVhgi7qV+wdCvfTxXW1sKMtMQ2SQtdo9WMbH1aOpTecfj5o/jZrVXV9VwVBxb/zyeN1VEJor6pJwOtfXLxk=
-X-Received: by 2002:a05:651c:1291:: with SMTP id 17mr1581632ljc.286.1594888305338;
- Thu, 16 Jul 2020 01:31:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200701030039.2834418-1-joel@jms.id.au>
-In-Reply-To: <20200701030039.2834418-1-joel@jms.id.au>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 16 Jul 2020 10:31:34 +0200
-Message-ID: <CACRpkdY_3HHfC1uDHVfnD529o5Wpa7msZU+YMomnpUS6qJjx4g@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: aspeed: Improve debug output
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728108AbgGPIcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 04:32:51 -0400
+Received: from mx.socionext.com ([202.248.49.38]:56533 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728018AbgGPIct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 04:32:49 -0400
+Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
+  by mx.socionext.com with ESMTP; 16 Jul 2020 17:32:35 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id B9DD4180BC2;
+        Thu, 16 Jul 2020 17:32:35 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Thu, 16 Jul 2020 17:32:35 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan.css.socionext.com (Postfix) with ESMTP id 35D1D1A0509;
+        Thu, 16 Jul 2020 17:32:35 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH v4 0/2] Add new UniPhier AHCI PHY driver
+Date:   Thu, 16 Jul 2020 17:32:22 +0900
+Message-Id: <1594888344-32066-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 1, 2020 at 5:00 AM Joel Stanley <joel@jms.id.au> wrote:
+This series adds support for AHCI PHY interface implemented in Socionext
+UniPhier SoCs. This driver supports PXs2 and PXs3 SoCs.
 
-> From: Andrew Jeffery <andrew@aj.id.au>
->
-> We need to iterate over each pin in a group for a function and
-> disable higher priority mux configurations on the pin before finally
-> muxing the relevant function's signal. With the current debug output it
-> is hard to track what register output is relevant to which operation, so
-> break up the actions in the debug output by providing some more context.
->
-> Before:
->
->     [    5.446656] aspeed-g6-pinctrl 1e6e2000.syscon:pinctrl: request pin 37 (B26) for 1e780000.gpio:341
->     [    5.447377] Want SCU414[0x00000020]=0x1, got 0x0 from 0x00000000
->     [    5.447854] Want SCU4B4[0x00000020]=0x1, got 0x0 from 0x00000000
->     [    5.448340] Want SCU4B4[0x00000020]=0x1, got 0x0 from 0x00000000
->
-> After:
->
->     [    5.298053] Muxing pin 37 for GPIO
->     [    5.298294] Disabling signal NRI4 for NRI4
->     [    5.298593] Want SCU414[0x00000020]=0x1, got 0x0 from 0x00000000
->     [    5.298983] Disabling signal RGMII4RXD1 for RGMII4
->     [    5.299309] Want SCU4B4[0x00000020]=0x1, got 0x0 from 0x00000000
->     [    5.299694] Disabling signal RMII4RXD1 for RMII4
->     [    5.300014] Want SCU4B4[0x00000020]=0x1, got 0x0 from 0x00000000
->     [    5.300396] Enabling signal GPIOE5 for GPIOE5
->     [    5.300687] Muxed pin 37 as GPIOE5
->
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> Signed-off-by: Joel Stanley <joel@jms.id.au>
+Changes since v3:
+- Eliminate a meaningless blank line and a line break
+- Fix misspelling
 
-Patch applied, thanks!
+Changes since v2:
+- Adjust copyright year
+- Add helper for enabling the controller
+- Remove redundant .init in uniphier_pxs2_data
+- Add comments for dummy read accesses
+- Fix return value in uniphier_ahciphy_init
+- dt-bindings: Add Reviewed-by line
 
-Yours,
-Linus Walleij
+Changes since v1:
+- dt-bindings: Fix items in reset-names
+
+Kunihiko Hayashi (2):
+  dt-bindings: phy: Add UniPhier AHCI PHY description
+  phy: socionext: Add UniPhier AHCI PHY driver support
+
+ .../bindings/phy/socionext,uniphier-ahci-phy.yaml  |  76 +++++
+ drivers/phy/socionext/Kconfig                      |  10 +
+ drivers/phy/socionext/Makefile                     |   1 +
+ drivers/phy/socionext/phy-uniphier-ahci.c          | 321 +++++++++++++++++++++
+ 4 files changed, 408 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/socionext,uniphier-ahci-phy.yaml
+ create mode 100644 drivers/phy/socionext/phy-uniphier-ahci.c
+
+-- 
+2.7.4
+
