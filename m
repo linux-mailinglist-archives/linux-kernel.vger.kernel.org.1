@@ -2,84 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8F9221D96
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72693221D9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgGPHq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
+        id S1726556AbgGPHt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725867AbgGPHq5 (ORCPT
+        with ESMTP id S1725831AbgGPHt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:46:57 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7470CC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 00:46:57 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id 12so4395734oir.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 00:46:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3BUXUL9AKrDqMaBqwt9woIa2xKGZFsJ8thm8KS7GNOo=;
-        b=SvqjbM1I8bN85zcWimONZ2ozTVklUFbPOB/mg5lt6Y+tKPILTkC89j1wv+TI/vHEWy
-         PtYOQw0C9VRBd7uliQgJiZ1E2UFUYq0EGNJ77CLsmHLivGWnmB4naXdj+kJeicdi167z
-         YDIvILeC4NZhNsBXtgsqUht1RvatrtdtATbVSG67GB2XyNBOgVjICI/1vyj4lpuxkVE+
-         V3xvVI1wJWKylQD6RWYPdI0bgHS75tgDGStMjQlL2bXLjqwIthAF+AUEh1uH5tdS+pB4
-         ac48QYZi+yViVAbeXObD7OnMDUTrquYdZJR7VorvbJ8XykuIPcpl92sBT0MGX8cKTLSR
-         KKKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3BUXUL9AKrDqMaBqwt9woIa2xKGZFsJ8thm8KS7GNOo=;
-        b=a2uDYhjjLGqs8b/IcEGTuJ2DWv5g/WskbAugKcMcB2ylzoqqVFHtKUBGko7EjHXzDS
-         jj899/7SzcULQHHPIs2OGhMLkcODwS6qql2HDcFmwy6RIkaW326DS5TIw6tRmjDUiID7
-         z3Xj+Byx+3CGZMJ/YwlTQyb3r22tdDrYKGesp6XGDLn0Z8+dMA7IKshxogIw7++1kNDk
-         qt5Vdm8qYWI1FjnpI1dvLC5u1OvEf6P1FeInLpDsDbB9uw1lOnsuaw5BKZgGd6kRWplD
-         CRJqvh/WW7qU2M+HkYj+7mPnHiheQE2P+PFLqbi+USqFRDuhvoep0/WPz9AdKbWZ78r0
-         d1zw==
-X-Gm-Message-State: AOAM5319DWUsWCXLiGyVEi0jmAHedC8GmNtPOFVVLRoztiH4j1s7e6yT
-        0eb00xkrqRcSunGekRUfZ/CKnPbJqSAT2grexVk+X8Rr
-X-Google-Smtp-Source: ABdhPJzCKBDq7dV4e8atqNGFS0KfPTtTyRSbv0GrxEGTjPSIOfpn+4bk/ky8L19DllK9NXe9m/wIBKvsRsRbgjA7I2U=
-X-Received: by 2002:aca:be57:: with SMTP id o84mr2821993oif.32.1594885616879;
- Thu, 16 Jul 2020 00:46:56 -0700 (PDT)
+        Thu, 16 Jul 2020 03:49:28 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06FEC061755;
+        Thu, 16 Jul 2020 00:49:27 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 8D48622ED8;
+        Thu, 16 Jul 2020 09:49:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1594885765;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pWBr+/btBiE5Q9vVGPEpJuj78sM+TfheCGwdYlLfv10=;
+        b=bdKZJZ56SYA/gpVU/tzL8+QSrck8/I5DVSK86+eoQLrGVqQjGeoYMB2KIjTGrCKk4wPayU
+        yf2mzJzDdUXZQ2UdlaoRm1gO6I/XqK7yPcePojI1UXyBQb37x4JI0gjbJQ1TSrZfj8Ys5F
+        Cj9hS4wG9wvxe4svOPk41MVBiYGTLPw=
 MIME-Version: 1.0
-References: <cover.1594880014.git.zong.li@sifive.com> <28365b581b04d0237e127363a63c1ad72dbea683.1594880014.git.zong.li@sifive.com>
- <87sgdrx6qd.fsf@igel.home>
-In-Reply-To: <87sgdrx6qd.fsf@igel.home>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Thu, 16 Jul 2020 15:46:45 +0800
-Message-ID: <CANXhq0omXrUCAFscZy5tDFisR29_4agA1ZTTYTezgZTmQg5Y3Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] riscv: fix build warning of mm/pageattr
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 16 Jul 2020 09:49:24 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Alex Marginean <alexandru.marginean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH net-next v6 1/4] net: phy: add USXGMII link partner
+ ability constants
+In-Reply-To: <20200715224449.hrqblfteshuknxon@skbuf>
+References: <20200709213526.21972-1-michael@walle.cc>
+ <20200709213526.21972-2-michael@walle.cc>
+ <20200713182314.GW1551@shell.armlinux.org.uk>
+ <546718f3f76862d285aeb82cb02767c4@walle.cc>
+ <b6c24b8f698245549056c975042d9b51@walle.cc>
+ <20200715224449.hrqblfteshuknxon@skbuf>
+User-Agent: Roundcube Webmail/1.4.7
+Message-ID: <beb263ca1453c1505e8ddebdd92a1ba4@walle.cc>
+X-Sender: michael@walle.cc
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 3:24 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
->
-> On Jul 16 2020, Zong Li wrote:
->
-> > Add hearder for missing prototype. Also, static keyword should be at
->
-> s/hearder/header/
->
-> Andreas.
->
-> --
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-> "And now for something completely different."
+Am 2020-07-16 00:44, schrieb Vladimir Oltean:
+> On Wed, Jul 15, 2020 at 10:33:23PM +0200, Michael Walle wrote:
+>> Am 2020-07-13 20:37, schrieb Michael Walle:
+>> > Am 2020-07-13 20:23, schrieb Russell King - ARM Linux admin:
+>> > > On Thu, Jul 09, 2020 at 11:35:23PM +0200, Michael Walle wrote:
+>> > > > The constants are taken from the USXGMII Singleport Copper Interface
+>> > > > specification. The naming are based on the SGMII ones, but with
+>> > > > an MDIO_
+>> > > > prefix.
+>> > > >
+>> > > > Signed-off-by: Michael Walle <michael@walle.cc>
+>> > > > ---
+>> > > >  include/uapi/linux/mdio.h | 26 ++++++++++++++++++++++++++
+>> > > >  1 file changed, 26 insertions(+)
+>> > > >
+>> > > > diff --git a/include/uapi/linux/mdio.h b/include/uapi/linux/mdio.h
+>> > > > index 4bcb41c71b8c..784723072578 100644
+>> > > > --- a/include/uapi/linux/mdio.h
+>> > > > +++ b/include/uapi/linux/mdio.h
+>> > > > @@ -324,4 +324,30 @@ static inline __u16 mdio_phy_id_c45(int
+>> > > > prtad, int devad)
+>> > > >  	return MDIO_PHY_ID_C45 | (prtad << 5) | devad;
+>> > > >  }
+>> > > >
+>> > > > +/* UsxgmiiChannelInfo[15:0] for USXGMII in-band auto-negotiation.*/
+>> > > > +#define MDIO_LPA_USXGMII_EEE_CLK_STP	0x0080	/* EEE clock stop
+>> > > > supported */
+>> > > > +#define MDIO_LPA_USXGMII_EEE		0x0100	/* EEE supported */
+>> > > > +#define MDIO_LPA_USXGMII_SPD_MASK	0x0e00	/* USXGMII speed mask */
+>> > > > +#define MDIO_LPA_USXGMII_FULL_DUPLEX	0x1000	/* USXGMII full
+>> > > > duplex */
+>> > > > +#define MDIO_LPA_USXGMII_DPX_SPD_MASK	0x1e00	/* USXGMII duplex
+>> > > > and speed bits */
+>> > > > +#define MDIO_LPA_USXGMII_10		0x0000	/* 10Mbps */
+>> > > > +#define MDIO_LPA_USXGMII_10HALF		0x0000	/* 10Mbps half-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_10FULL		0x1000	/* 10Mbps full-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_100		0x0200	/* 100Mbps */
+>> > > > +#define MDIO_LPA_USXGMII_100HALF	0x0200	/* 100Mbps half-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_100FULL	0x1200	/* 100Mbps full-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_1000		0x0400	/* 1000Mbps */
+>> > > > +#define MDIO_LPA_USXGMII_1000HALF	0x0400	/* 1000Mbps half-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_1000FULL	0x1400	/* 1000Mbps full-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_10G		0x0600	/* 10Gbps */
+>> > > > +#define MDIO_LPA_USXGMII_10GHALF	0x0600	/* 10Gbps half-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_10GFULL	0x1600	/* 10Gbps full-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_2500		0x0800	/* 2500Mbps */
+>> > > > +#define MDIO_LPA_USXGMII_2500HALF	0x0800	/* 2500Mbps half-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_2500FULL	0x1800	/* 2500Mbps full-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_5000		0x0a00	/* 5000Mbps */
+>> > > > +#define MDIO_LPA_USXGMII_5000HALF	0x0a00	/* 5000Mbps half-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_5000FULL	0x1a00	/* 5000Mbps full-duplex */
+>> > > > +#define MDIO_LPA_USXGMII_LINK		0x8000	/* PHY link with
+>> > > > copper-side partner */
+>> > >
+>> > > btw, the only thing which is missing from this is bit 0.
+>> >
+>> > TBH, I didn't know how to name it. Any suggestions?
+>> 
+>> NXP calls it ABIL0, in xilinx docs its called USXGMII [1]. In the 
+>> USXGMII
+>> spec, its "set to 1 (0 is SGMII)" which I don't understand because its
+>> also 1 for SGMII, right? At least as described in the 
+>> tx_configReg[15:0] in
+>> the SGMII spec.
+>> 
+>> #define MDIO_USXGMII_USXGMII 0x0001 ?
+>> 
+>> -michael
+>> 
+>> [1] 
+>> https://www.xilinx.com/support/documentation/ip_documentation/usxgmii/v1_0/pg251-usxgmii.pdf
+> 
+> The explanation in the spec is quite cryptic, I've taken that to mean
+> "corresponds to bit 0 in SGMII". Hence the reason why, in the code I've
+> introduced in Felix, this is simply used as ADVERTISE_SGMII. I have no
+> problem in creating an alias to ADVERTISE_SGMII named
+> MDIO_LPA_USXGMII_SGMII. That being said, I don't see, right now, a
+> practical situation where you might want to parse bit 0 from LPA, it's
+> just like in Forrest Gump: "life is like a box of chocolates, you never
+> know what you're gonna get". Adding it now to the UAPI might very well
+> be a non-issue.
 
-Hi all,
+what about
+   #define MDIO_USXGMII_ADVERTISE 0x0001 /* must always be set */
 
-Let me describe the details in the commit message and fix the typo in
-the next version.
-Thanks for reviewing.
+Russell, do you agree? Then I'd send a new version with your 
+"Reviewed-by:".
+
+-michael
