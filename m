@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1D1222A10
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF76222A20
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729296AbgGPRiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 13:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728402AbgGPRiN (ORCPT
+        id S1729100AbgGPRm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 13:42:26 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:42146 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728257AbgGPRmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 13:38:13 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30339C08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:38:13 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id g20so5375237edm.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RVT0J9Mnoh6KQFZ+Is1z4W+ElwDxGQDJlUT/PfjxoTs=;
-        b=AkFSpU6dl4IWPv94BJbTRzhClWvrcotA8ft9jlYZBWyqGWGpijHqy3bFvogJ6NBmxp
-         +RrPka0inm9ERTMBaoGlH/pu1QgWwQuEAIOWKVTpxIq5P6FK9n5ipj65Dz3s48V6Shou
-         zXr553DUydsZpqrGw2gItSaEmo2RP0eZ9q0oJtsmHcQkQ8pIOizvzo381PBt4LOMUaDL
-         A2V5F/X82783qDM+zPTBVaR8i1AGNyL19KnjcnJZSD4CuqybOciimS8MtpoPG3N7yXqA
-         +9VVVxU/yRBNqtmbXQ0z+0jgJqH9rOhXgeduogxc0zqPI3sMJ22Vn+I6w/LD7tifHkK4
-         G9Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RVT0J9Mnoh6KQFZ+Is1z4W+ElwDxGQDJlUT/PfjxoTs=;
-        b=Dp1qBwqc37k1LaiebNFfp0P2VCCps0JPqWqj6XEsEe2AV+XbEkI7Pd/NXCpc+EQbiK
-         qe56dIPlBEL8thqqiBLBC+HDb4SNGUxM5mtK3OsPy59AtampCsxaoxf211iCfYHC7Gau
-         6WMzplbh0EsGjs51ZcFaxRf4SFPNVITVqUBu6E1xstvQ2KwQ7KilG1xgWCbtoJpJxEPf
-         sGoN4qmzGUG1j2w+a/EUYjOFjv+/EEft8ZIB3o7VuBe62hv1qI+ji1Cp/sNf0n+ID/jb
-         ONOtyGtzrt9tPNvL4ddQdtzPOuH5Iu+1xl+QG2Qwhj4d78g4snwDwdTO8d1SEDm4+6iC
-         qmTA==
-X-Gm-Message-State: AOAM53090wYKq8qO6eQ//xUjlwrGW/XV5hpFZfpzJaQTk63R0CYQd5ot
-        LBndj63wmGXkXAL0qLLoSxnm2vjWFhcY11VxB2MfERqYxHQ=
-X-Google-Smtp-Source: ABdhPJwj1a0ZBWmjixk6X/sNKVRUUadtEYpVwfYwK0ttL1AyGhEOnWi9jW3CgiHzo3CiylWi4K7r2yTb37BMSsAEXNg=
-X-Received: by 2002:a50:ed15:: with SMTP id j21mr5697574eds.246.1594921091453;
- Thu, 16 Jul 2020 10:38:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200710002209.6757-1-apronin@chromium.org> <20200710114000.GD2614@linux.intel.com>
- <CAP7wa8LfEtEATbENjr18jTXShT+YmrAoDt4k9FK1SLpxVqViog@mail.gmail.com>
- <20200714113205.GA1461506@linux.intel.com> <CABXOdTcAZjG8aQvs+M72CFe9rAdBKZH+6x=C1Ha2aX_w0gXiHw@mail.gmail.com>
- <20200716172811.GB14135@linux.intel.com>
-In-Reply-To: <20200716172811.GB14135@linux.intel.com>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Thu, 16 Jul 2020 10:38:00 -0700
-Message-ID: <CABXOdTd4oY8TpuE1qZP--dYTJ-czdovsjmhLVbd_tTw=sApHYw@mail.gmail.com>
-Subject: Re: [PATCH] tpm: avoid accessing cleared ops during shutdown
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Andrey Pronin <apronin@chromium.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org,
+        Thu, 16 Jul 2020 13:42:25 -0400
+Received: from 89-64-86-30.dynamic.chello.pl (89.64.86.30) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id fb6e85f8e17426b2; Thu, 16 Jul 2020 19:42:23 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     Linux Documentation <linux-doc@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <groeck@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Doug Smythies <dsmythies@telus.net>,
+        Francisco Jerez <francisco.jerez.plata@intel.com>
+Subject: [PATCH v2 1/2] cpufreq: intel_pstate: Rearrange the storing of newv EPP values
+Date:   Thu, 16 Jul 2020 19:38:25 +0200
+Message-ID: <2185721.1uhhhTEYdH@kreacher>
+In-Reply-To: <4981405.3kqTVLv5tO@kreacher>
+References: <4981405.3kqTVLv5tO@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 10:28 AM Jarkko Sakkinen
-<jarkko.sakkinen@linux.intel.com> wrote:
->
-> On Tue, Jul 14, 2020 at 08:48:38AM -0700, Guenter Roeck wrote:
-> > On Tue, Jul 14, 2020 at 4:32 AM Jarkko Sakkinen
-> > <jarkko.sakkinen@linux.intel.com> wrote:
-> > >
-> > > On Fri, Jul 10, 2020 at 11:25:44AM -0700, Andrey Pronin wrote:
-> > > > > Why does not tpm_del_char_device need this?
-> > > >
-> > > > "Not" is a typo in the sentence above, right? tpm_del_char_device *does*
-> > > > need the fix. When tpm_class_shutdown is called it sets chip->ops to
-> > > > NULL. If tpm_del_char_device is called after that, it doesn't check if
-> > > > chip->ops is NULL (normal kernel API and char device API calls go
-> > > > through tpm_try_get_ops, but tpm_del_char_device doesn't) and proceeds to
-> > > > call tpm2_shutdown(), which tries sending the command and dereferences
-> > > > chip->ops.
-> > >
-> > > It's a typo, yes. Sorry about that.
-> > >
-> > > tpm_class_shutdown() is essentially tail of tpm_del_char_device().
-> > >
-> > > To clean things up, I'd suggest dropping tpm_del_char_device() and
-> > > call tpm_class_shutdown() in tpm_chip_unregisters() along, and open
-> > > coding things that prepend it in tpm_del_char_device().
-> > >
-> >
-> > Personally I would have preferred two separate patches, one to fix the
-> > immediate problem (with Cc: stable) and one for the cleanup, but I
-> > guess merging both into one is ok as long as it is marked for stable.
-> >
-> > Thanks,
-> > Guenter
->
-> Not sure about stable as this issue does not afaik concern earlier
-> kernel versions?
->
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I just had a quick look into linux-5.4.y, and it seemed to me that it
-is affected. Maybe I am wrong. Either case, we already applied this
-patch to all affected ChromeOS kernel branches, so from our
-perspective it doesn't really matter.
+Move the locking away from intel_pstate_set_energy_pref_index()
+into its only caller and drop the (now redundant) return_pref label
+from it.
 
-Thanks,
-Guenter
+Also move the "raw" EPP value check into the caller of that function,
+so as to do it before acquiring the mutex, and reduce code duplication
+related to the "raw" EPP values processing somewhat.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpufreq/intel_pstate.c |   29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
+
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -648,28 +648,18 @@ static int intel_pstate_set_energy_pref_
+ 	if (!pref_index)
+ 		epp = cpu_data->epp_default;
+ 
+-	mutex_lock(&intel_pstate_limits_lock);
+-
+ 	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
+ 		u64 value;
+ 
+ 		ret = rdmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, &value);
+ 		if (ret)
+-			goto return_pref;
++			return ret;
+ 
+ 		value &= ~GENMASK_ULL(31, 24);
+ 
+-		if (use_raw) {
+-			if (raw_epp > 255) {
+-				ret = -EINVAL;
+-				goto return_pref;
+-			}
+-			value |= (u64)raw_epp << 24;
+-			ret = wrmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, value);
+-			goto return_pref;
+-		}
+-
+-		if (epp == -EINVAL)
++		if (use_raw)
++			epp = raw_epp;
++		else if (epp == -EINVAL)
+ 			epp = epp_values[pref_index - 1];
+ 
+ 		value |= (u64)epp << 24;
+@@ -679,8 +669,6 @@ static int intel_pstate_set_energy_pref_
+ 			epp = (pref_index - 1) << 2;
+ 		ret = intel_pstate_set_epb(cpu_data->cpu, epp);
+ 	}
+-return_pref:
+-	mutex_unlock(&intel_pstate_limits_lock);
+ 
+ 	return ret;
+ }
+@@ -723,12 +711,19 @@ static ssize_t store_energy_performance_
+ 		if (ret)
+ 			return ret;
+ 
++		if (epp > 255)
++			return -EINVAL;
++
+ 		raw = true;
+ 	}
+ 
++	mutex_lock(&intel_pstate_limits_lock);
++
+ 	ret = intel_pstate_set_energy_pref_index(cpu_data, ret, raw, epp);
+ 	if (ret)
+-		return ret;
++		count = ret;
++
++	mutex_unlock(&intel_pstate_limits_lock);
+ 
+ 	return count;
+ }
+
+
+
