@@ -2,122 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B45221A99
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EB6221AA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbgGPDLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 23:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726770AbgGPDLa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 23:11:30 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46112C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 20:11:30 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id l63so4111389pge.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 20:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QLoWBC0BJ34kcTABjgpHRAC9g5IOexIa4Kkz6/GXqs8=;
-        b=ijalJuL9PGxOrIsrIUwPgLKAwFP9kmsjcYbHNxc+aaEXHPHVEkxRH3D1TxMn6YtWdc
-         fJ59p1EBxUmbvlDi6KkjStMofhrvt+csKuX+vs4IRMq89BiKJpFo1Pv+VCZbxIVqSVyt
-         1MR3LlWOesnrBBGsGbCIPxBAl385jEJ5PGRYdY9yjUur0FWod5qyRE2EsdVO0mtkdR1y
-         EGuy5zC+fPrlDlnH57JJKjUi6l3pS7HtepmEuMBQWrnSAw5QCRELuXsqUaVTdnvNoIrl
-         5yPDdkvrtTlungl+Ra/JF7QjuVjtZSSa+aq10gZtIzEzqUspziaFnWYDMwOO3CAOQwTm
-         a3SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QLoWBC0BJ34kcTABjgpHRAC9g5IOexIa4Kkz6/GXqs8=;
-        b=V4c0vYyoZP5kXvAreue2v5VAyA+5OV38pX1MvweNgyEAd9lrF/Dd/MA9m8k5BETDTH
-         FfgC8KchPdJRqfXnKT5enR/3GAeIFzHE30MiunKtZ/+RlBz/ZjJqDRFKQy0ayvnxxXpZ
-         JEal3d4MtIgtg1/ap43Vd1LYeYFviePXYx9ZFt8V856Bfq8g9ommZjzlpuSWAdPRos9l
-         2ruIBW9M56R6UmhCuSDB7Bie0nTo3XTG57n78RilnVxv2AGcwVgZoyMShwR/g6XaWJJM
-         Ij485VkvzP4vuBPVFyMk0RS7wI2xlsLl7lPyVxZSvO6vG6jkn6mK2e8TcAsfZvd/mSDv
-         EWjg==
-X-Gm-Message-State: AOAM530sOB5xp8AYGrb589Bg4lljvbBi7/HR+9Z2ORUyarAipYia4psU
-        gfKywzrK+xRpCis6AgqirMk5
-X-Google-Smtp-Source: ABdhPJx8qzuAcYQYs9VvKUu35phOkt2EJG4oIBl/MnxUezG+NMCCfUn3ns+lQahCvc6jA5gHENh/oA==
-X-Received: by 2002:a62:e712:: with SMTP id s18mr1936293pfh.224.1594869089523;
-        Wed, 15 Jul 2020 20:11:29 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6d89:fed1:9157:c271:c363:4849])
-        by smtp.gmail.com with ESMTPSA id az13sm3165742pjb.34.2020.07.15.20.11.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Jul 2020 20:11:28 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 08:41:24 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH] mhi: fix doubled words and struct image_info kernel-doc
-Message-ID: <20200716031124.GC3271@Mani-XPS-13-9360>
-References: <cab64692-31f6-5a2b-a540-aa434d35f9a9@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cab64692-31f6-5a2b-a540-aa434d35f9a9@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728206AbgGPDRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 23:17:00 -0400
+Received: from mga06.intel.com ([134.134.136.31]:8143 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728149AbgGPDQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 23:16:56 -0400
+IronPort-SDR: 1n3+rtKl315Fpj7xjL7c7EdpqVOBmZXVrlbcAynUN4EuST0RvSVFlJIC2ZRqF4w018/cru1jWs
+ Fqf3HWyoVvjg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="210844827"
+X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
+   d="scan'208";a="210844827"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 20:16:55 -0700
+IronPort-SDR: WcX57bLryolWS71PxD9B4xqX2K/v7gerMW1I+hLtAkpIn0FpDYDeDdu/htFLlZlhBrTI4PGhli
+ 88dsjn2ksdww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
+   d="scan'208";a="360910405"
+Received: from unknown (HELO local-michael-cet-test.sh.intel.com) ([10.239.159.128])
+  by orsmga001.jf.intel.com with ESMTP; 15 Jul 2020 20:16:53 -0700
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        jmattson@google.com
+Cc:     yu.c.zhang@linux.intel.com, Yang Weijiang <weijiang.yang@intel.com>
+Subject: [RESEND PATCH v13 00/11] Introduce support for guest CET feature
+Date:   Thu, 16 Jul 2020 11:16:16 +0800
+Message-Id: <20200716031627.11492-1-weijiang.yang@intel.com>
+X-Mailer: git-send-email 2.17.2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 06:29:32PM -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Drop doubled word "table" in kernel-doc.
-> Fix syntax for the kernel-doc notation for struct image_info.
-> Note that the bhi_vec field is private and not part of the kernel-doc.
-> 
-> Drop doubled word "device" in a comment.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Control-flow Enforcement Technology (CET) provides protection against
+Return/Jump-Oriented Programming (ROP/JOP) attack. There're two CET
+sub-features: Shadow Stack (SHSTK) and Indirect Branch Tracking (IBT).
+SHSTK is to prevent ROP programming and IBT is to prevent JOP programming.
 
-Applied to mhi-next!
+Several parts in KVM have been updated to provide VM CET support, including:
+CPUID/XSAVES config, MSR pass-through, user space MSR access interface, 
+vmentry/vmexit config, nested VM etc. These patches have dependency on CET
+kernel patches for xsaves support and CET definitions, e.g., MSR and related
+feature flags.
 
-Thanks,
-Mani
+CET kernel patches are here:
+https://lkml.kernel.org/r/20200429220732.31602-1-yu-cheng.yu@intel.com
 
-> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Cc: Hemant Kumar <hemantk@codeaurora.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> ---
->  include/linux/mhi.h |   10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> --- linux-next-20200714.orig/include/linux/mhi.h
-> +++ linux-next-20200714/include/linux/mhi.h
-> @@ -85,13 +85,15 @@ enum mhi_ch_type {
->  };
->  
->  /**
-> - * struct image_info - Firmware and RDDM table table
-> - * @mhi_buf - Buffer for firmware and RDDM table
-> - * @entries - # of entries in table
-> + * struct image_info - Firmware and RDDM table
-> + * @mhi_buf: Buffer for firmware and RDDM table
-> + * @entries: # of entries in table
->   */
->  struct image_info {
->  	struct mhi_buf *mhi_buf;
-> +	/* private: from internal.h */
->  	struct bhi_vec_entry *bhi_vec;
-> +	/* public: */
->  	u32 entries;
->  };
->  
-> @@ -593,7 +595,7 @@ int mhi_async_power_up(struct mhi_contro
->  
->  /**
->   * mhi_sync_power_up - Start MHI power up sequence and wait till the device
-> - *                     device enters valid EE state
-> + *                     enters valid EE state
->   * @mhi_cntrl: MHI controller
->   */
->  int mhi_sync_power_up(struct mhi_controller *mhi_cntrl);
-> 
+v13:
+- Added CET definitions as a separate patch to facilitate KVM test.
+- Disabled CET support in KVM if unrestricted_guest is turned off since
+  in this case CET related instructions/infrastructure cannot be emulated
+  well.
+- Don't expose CET feature to guest if host kernel doesn't support CET.
+- Rebased the series to v5.8-rc5, commit: 11ba468877bb
+
+v12:
+- Fixed a few issues per Sean and Paolo's review feeback.
+- Refactored patches to make them properly arranged.
+- Removed unnecessary hard-coded CET states for host/guest.
+- Added compile-time assertions for vmcs_field_to_offset_table to detect
+  mismatch of the field type and field encoding number.
+- Added a custom MSR MSR_KVM_GUEST_SSP for guest active SSP save/restore.
+- Rebased patches to 5.7-rc3.
+
+v11:
+- Fixed a guest vmentry failure issue when guest reboots.
+- Used vm_xxx_control_{set, clear}bit() to avoid side effect, it'll
+  clear cached data instead of pure VMCS field bits.
+- Added vcpu->arch.guest_supported_xss dedidated for guest runtime mask,
+  this avoids supported_xss overwritten issue caused by an old qemu.
+- Separated vmentry/vmexit state setting with CR0/CR4 dependency check
+  to make the patch more clear.
+- Added CET VMCS states in dump_vmcs() for debugging purpose.
+- Other refactor based on testing.
+- This patch serial is built on top of below branch and CET kernel patches
+  for seeking xsaves support:
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=cpu-caps
+
+v10:
+- Refactored code per Sean's review feedback.
+- Added CET support for nested VM.
+- Removed fix-patch for CPUID(0xd,N) enumeration as this part is done
+  by Paolo and Sean.
+- This new patchset is based on Paolo's queued cpu_caps branch.
+- Modified patch per XSAVES related change.
+- Consolidated KVM unit-test patch with KVM patches.
+
+v9:
+- Refactored msr-check functions per Sean's feedback.
+- Fixed a few issues per Sean's suggestion.
+- Rebased patch to kernel-v5.4.
+- Moved CET CPUID feature bits and CR4.CET to last patch.
+
+v8:
+- Addressed Jim and Sean's feedback on: 1) CPUID(0xD,i) enumeration. 2)
+  sanity check when configure guest CET. 3) function improvement.
+- Added more sanity check functions.
+- Set host vmexit default status so that guest won't leak CET status to
+  host when vmexit.
+- Added CR0.WP vs. CR4.CET mutual constrains.
+
+v7:
+- Rebased patch to kernel v5.3
+- Sean suggested to change CPUID(0xd, n) enumeration code as alined with
+  existing one, and I think it's better to make the fix as an independent patch 
+  since XSS MSR are being used widely on X86 platforms.
+- Check more host and guest status before configure guest CET
+  per Sean's feedback.
+- Add error-check before guest accesses CET MSRs per Sean's feedback.
+- Other minor fixes suggested by Sean.
+
+v6:
+- Rebase patch to kernel v5.2.
+- Move CPUID(0xD, n>=1) helper to a seperate patch.
+- Merge xsave size fix with other patch.
+- Other minor fixes per community feedback.
+
+v5:
+- Rebase patch to kernel v5.1.
+- Wrap CPUID(0xD, n>=1) code to a helper function.
+- Pass through MSR_IA32_PL1_SSP and MSR_IA32_PL2_SSP to Guest.
+- Add Co-developed-by expression in patch description.
+- Refine patch description.
+
+v4:
+- Add Sean's patch for loading Guest fpu state before access XSAVES
+  managed CET MSRs.
+- Melt down CET bits setting into CPUID configuration patch.
+- Add VMX interface to query Host XSS.
+- Check Host and Guest XSS support bits before set Guest XSS.
+- Make Guest SHSTK and IBT feature enabling independent.
+- Do not report CET support to Guest when Host CET feature is Disabled.
+
+v3:
+- Modified patches to make Guest CET independent to Host enabling.
+- Added patch 8 to add user space access for Guest CET MSR access.
+- Modified code comments and patch description to reflect changes.
+
+v2:
+- Re-ordered patch sequence, combined one patch.
+- Added more description for CET related VMCS fields.
+- Added Host CET capability check while enabling Guest CET loading bit.
+- Added Host CET capability check while reporting Guest CPUID(EAX=7, EXC=0).
+- Modified code in reporting Guest CPUID(EAX=D,ECX>=1), make it clearer.
+- Added Host and Guest XSS mask check while setting bits for Guest XSS.
+
+Sean Christopherson (1):
+  KVM: x86: Load guest fpu state when access MSRs managed by XSAVES
+
+Yang Weijiang (10):
+  KVM: x86: Include CET definitions for KVM test purpose
+  KVM: VMX: Introduce CET VMCS fields and flags
+  KVM: VMX: Set guest CET MSRs per KVM and host configuration
+  KVM: VMX: Configure CET settings upon guest CR0/4 changing
+  KVM: x86: Refresh CPUID once guest changes XSS bits
+  KVM: x86: Add userspace access interface for CET MSRs
+  KVM: VMX: Enable CET support for nested VM
+  KVM: VMX: Add VMCS dump and sanity check for CET states
+  KVM: x86: Add #CP support in guest exception dispatch
+  KVM: x86: Enable CET virtualization and advertise CET to userspace
+
+ arch/x86/include/asm/kvm_host.h      |   4 +-
+ arch/x86/include/asm/vmx.h           |   8 +
+ arch/x86/include/uapi/asm/kvm.h      |   1 +
+ arch/x86/include/uapi/asm/kvm_para.h |   7 +-
+ arch/x86/kvm/cpuid.c                 |  28 ++-
+ arch/x86/kvm/vmx/capabilities.h      |   5 +
+ arch/x86/kvm/vmx/nested.c            |  34 ++++
+ arch/x86/kvm/vmx/vmcs12.c            | 267 ++++++++++++++++-----------
+ arch/x86/kvm/vmx/vmcs12.h            |  14 +-
+ arch/x86/kvm/vmx/vmx.c               | 262 +++++++++++++++++++++++++-
+ arch/x86/kvm/x86.c                   |  53 +++++-
+ arch/x86/kvm/x86.h                   |   2 +-
+ include/linux/kvm_host.h             |  32 ++++
+ 13 files changed, 590 insertions(+), 127 deletions(-)
+
+-- 
+2.17.2
+
