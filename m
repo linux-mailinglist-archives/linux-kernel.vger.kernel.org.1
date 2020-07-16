@@ -2,117 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF614222A49
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4682C222A14
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729515AbgGPRoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 13:44:16 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54512 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729432AbgGPRoF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 13:44:05 -0400
-Received: from localhost.localdomain (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 33CC520B490F;
-        Thu, 16 Jul 2020 10:44:04 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 33CC520B490F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1594921444;
-        bh=mgND1QTe5Ztcv9Kvm/Chu/AhsMHOCtifBt1wUR59OJg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZggH5bsHm6of+unxW8oNu9IzB5aTHoePLY+eSifN8VHwiCCeD7Ka8cEwwjhykBIiN
-         6QkozYVnGvAPbLU1uqwZ818aya2br+V6So+XvMLY6mXV5kEpvbs9GKK7zqD8enFaPk
-         2Yzx9cDFJw2/skxXH2IrZH2DPnTqwk09RUbjLkXY=
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-To:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com
-Cc:     jmorris@namei.org, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        id S1729349AbgGPRij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 13:38:39 -0400
+Received: from mga17.intel.com ([192.55.52.151]:8961 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728402AbgGPRij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 13:38:39 -0400
+IronPort-SDR: 6CkuUBcQfzN0E6KDlCc5iI6lgFGGawrq253DIeJPs/5L00gQFHi773oF2ZLJwqr3m8Qopk6O8u
+ EHlP94Nb4P8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="129532090"
+X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
+   d="scan'208";a="129532090"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 10:38:36 -0700
+IronPort-SDR: YDRUuERxVNSyk1doULQTKuDaV+UvquAPe0631hrANGzqWu7D/U7FXpaPVVzRQogpgw43RbLzA5
+ 6wY3QizvvHmA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
+   d="scan'208";a="325207812"
+Received: from unknown (HELO linuxpc.iind.intel.com) ([10.223.107.108])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Jul 2020 10:38:32 -0700
+From:   Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+To:     rjw@rjwysocki.net, rui.zhang@intel.com,
+        srinivas.pandruvada@linux.intel.com, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] LSM: Define workqueue for measuring security module state
-Date:   Thu, 16 Jul 2020 10:43:51 -0700
-Message-Id: <20200716174351.20128-6-nramas@linux.microsoft.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200716174351.20128-1-nramas@linux.microsoft.com>
-References: <20200716174351.20128-1-nramas@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     andriy.shevchenko@intel.com, sumeet.r.pawnikar@intel.com
+Subject: [PATCH v3] powercap: Add Power Limit4 support
+Date:   Thu, 16 Jul 2020 23:14:55 +0530
+Message-Id: <1594921495-519-1-git-send-email-sumeet.r.pawnikar@intel.com>
+X-Mailer: git-send-email 1.7.9.5
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Data structures critical to the functioning of a security module could
-be tampered with by malware or changed inadvertently at runtime
-thereby disabling or reducing the security guarantees provided by
-the security module. Such critical data need to be periodically checked
-and measured, if there is any change. This would enable an attestation
-service, for instance, to verify that the security modules are operating
-with the configuration and policy setup by the system administrator.
+Modern Intel Mobile platforms support power limit4 (PL4), which is
+the SoC package level maximum power limit (in Watts). It can be used
+to preemptively limits potential SoC power to prevent power spikes
+from tripping the power adapter and battery over-current protection.
+This patch enables this feature by exposing package level peak power
+capping control to userspace via RAPL sysfs interface. With this,
+application like DTPF can modify PL4 power limit, the similar way
+of other package power limit (PL1).
+As this feature is not tested on previous generations, here it is
+enabled only for the platform that has been verified to work,
+for safety concerns.
 
-Define a workqueue in the LSM and invoke the security modules in
-the workqueue handler to check their data and measure.
-
-Note that the data given by the security module would be measured by
-the IMA subsystem only if it has changed since the last time it was
-measured.
-
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+Co-developed-by: Zhang Rui <rui.zhang@intel.com>
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+Reviewed-and-tested-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 ---
- security/security.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Changes in v3:
+ - Addressed review comments from Srinivas.
 
-diff --git a/security/security.c b/security/security.c
-index 1afa2aebc3ac..63b30da337d8 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -89,6 +89,11 @@ static __initdata struct lsm_info *exclusive;
- static struct lsm_info *security_state_lsms;
- static int security_state_lsms_count;
+Changes in v2:
+ - Addressed review comments from Rafael.
+ - Made the commit message more clearer.
+ - Updated powercap documentation.
+---
+ Documentation/power/powercap/powercap.rst |   15 +++++---
+ drivers/powercap/intel_rapl_common.c      |   54 +++++++++++++++++++++++++++--
+ drivers/powercap/intel_rapl_msr.c         |   15 ++++++++
+ include/linux/intel_rapl.h                |    5 ++-
+ 4 files changed, 81 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/power/powercap/powercap.rst b/Documentation/power/powercap/powercap.rst
+index 7ae3b44c7624..e75d12596dac 100644
+--- a/Documentation/power/powercap/powercap.rst
++++ b/Documentation/power/powercap/powercap.rst
+@@ -167,11 +167,13 @@ For example::
+ package-0
+ ---------
  
-+static long security_state_timeout = 300000; /* 5 Minutes */
-+static void security_state_handler(struct work_struct *work);
-+static DECLARE_DELAYED_WORK(security_state_delayed_work,
-+			    security_state_handler);
-+
- static __initdata bool debug;
- #define init_debug(...)						\
- 	do {							\
-@@ -277,6 +282,26 @@ static void __init initialize_security_state_lsms(void)
- 	security_state_lsms_count = count;
- }
+-The Intel RAPL technology allows two constraints, short term and long term,
+-with two different time windows to be applied to each power zone.  Thus for
+-each zone there are 2 attributes representing the constraint names, 2 power
+-limits and 2 attributes representing the sizes of the time windows. Such that,
+-constraint_j_* attributes correspond to the jth constraint (j = 0,1).
++Depending on different power zones, the Intel RAPL technology allows
++one or multiple constraints like short term, long term and peak power,
++with different time windows to be applied to each power zone.
++All the zones contain attributes representing the constraint names,
++power limits and the sizes of the time windows. Note that time window
++is not applicable to peak power. Here, constraint_j_* attributes
++correspond to the jth constraint (j = 0,1,2).
  
-+static void initialize_security_state_monitor(void)
-+{
-+	if (security_state_lsms_count == 0)
-+		return;
+ For example::
+ 
+@@ -181,6 +183,9 @@ For example::
+ 	constraint_1_name
+ 	constraint_1_power_limit_uw
+ 	constraint_1_time_window_us
++	constraint_2_name
++	constraint_2_power_limit_uw
++	constraint_2_time_window_us
+ 
+ Power Zone Attributes
+ =====================
+diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
+index 61a63a16b5e7..a8bcc58d61f0 100644
+--- a/drivers/powercap/intel_rapl_common.c
++++ b/drivers/powercap/intel_rapl_common.c
+@@ -39,6 +39,8 @@
+ #define POWER_HIGH_LOCK         BIT_ULL(63)
+ #define POWER_LOW_LOCK          BIT(31)
+ 
++#define POWER_LIMIT4_MASK		0x1FFF
 +
-+	schedule_delayed_work(&security_state_delayed_work,
-+			      msecs_to_jiffies(security_state_timeout));
-+}
-+
-+static void security_state_handler(struct work_struct *work)
-+{
-+	int inx;
-+
-+	for (inx = 0; inx < security_state_lsms_count; inx++)
-+		measure_security_state(&(security_state_lsms[inx]));
-+
-+	schedule_delayed_work(&security_state_delayed_work,
-+			      msecs_to_jiffies(security_state_timeout));
-+}
-+
- /* Populate ordered LSMs list from comma-separated LSM name list. */
- static void __init ordered_lsm_parse(const char *order, const char *origin)
- {
-@@ -400,6 +425,7 @@ static void __init ordered_lsm_init(void)
+ #define TIME_WINDOW1_MASK       (0x7FULL<<17)
+ #define TIME_WINDOW2_MASK       (0x7FULL<<49)
+ 
+@@ -82,6 +84,7 @@ enum unit_type {
+ 
+ static const char pl1_name[] = "long_term";
+ static const char pl2_name[] = "short_term";
++static const char pl4_name[] = "peak_power";
+ 
+ #define power_zone_to_rapl_domain(_zone) \
+ 	container_of(_zone, struct rapl_domain, power_zone)
+@@ -337,6 +340,9 @@ static int set_power_limit(struct powercap_zone *power_zone, int cid,
+ 	case PL2_ENABLE:
+ 		rapl_write_data_raw(rd, POWER_LIMIT2, power_limit);
+ 		break;
++	case PL4_ENABLE:
++		rapl_write_data_raw(rd, POWER_LIMIT4, power_limit);
++		break;
+ 	default:
+ 		ret = -EINVAL;
  	}
+@@ -371,6 +377,9 @@ static int get_current_power_limit(struct powercap_zone *power_zone, int cid,
+ 	case PL2_ENABLE:
+ 		prim = POWER_LIMIT2;
+ 		break;
++	case PL4_ENABLE:
++		prim = POWER_LIMIT4;
++		break;
+ 	default:
+ 		put_online_cpus();
+ 		return -EINVAL;
+@@ -440,6 +449,13 @@ static int get_time_window(struct powercap_zone *power_zone, int cid,
+ 	case PL2_ENABLE:
+ 		ret = rapl_read_data_raw(rd, TIME_WINDOW2, true, &val);
+ 		break;
++	case PL4_ENABLE:
++		/*
++		 * Time window parameter is not applicable for PL4 entry
++		 * so assigining '0' as default value.
++		 */
++		val = 0;
++		break;
+ 	default:
+ 		put_online_cpus();
+ 		return -EINVAL;
+@@ -483,6 +499,9 @@ static int get_max_power(struct powercap_zone *power_zone, int id, u64 *data)
+ 	case PL2_ENABLE:
+ 		prim = MAX_POWER;
+ 		break;
++	case PL4_ENABLE:
++		prim = MAX_POWER;
++		break;
+ 	default:
+ 		put_online_cpus();
+ 		return -EINVAL;
+@@ -492,6 +511,10 @@ static int get_max_power(struct powercap_zone *power_zone, int id, u64 *data)
+ 	else
+ 		*data = val;
  
- 	initialize_security_state_lsms();
-+	initialize_security_state_monitor();
++	/* As a generalization rule, PL4 would be around two times PL2. */
++	if (rd->rpl[id].prim_id == PL4_ENABLE)
++		*data = *data * 2;
++
+ 	put_online_cpus();
  
- 	kfree(ordered_lsms);
+ 	return ret;
+@@ -524,12 +547,22 @@ static void rapl_init_domains(struct rapl_package *rp)
+ 		rd->id = i;
+ 		rd->rpl[0].prim_id = PL1_ENABLE;
+ 		rd->rpl[0].name = pl1_name;
+-		/* some domain may support two power limits */
+-		if (rp->priv->limits[i] == 2) {
++
++		/*
++		 * The PL2 power domain is applicable for limits two
++		 * and limits three
++		 */
++		if (rp->priv->limits[i] >= 2) {
+ 			rd->rpl[1].prim_id = PL2_ENABLE;
+ 			rd->rpl[1].name = pl2_name;
+ 		}
+ 
++		/* Enable PL4 domain if the total power limits are three */
++		if (rp->priv->limits[i] == 3) {
++			rd->rpl[2].prim_id = PL4_ENABLE;
++			rd->rpl[2].name = pl4_name;
++		}
++
+ 		for (j = 0; j < RAPL_DOMAIN_REG_MAX; j++)
+ 			rd->regs[j] = rp->priv->regs[i][j];
+ 
+@@ -587,6 +620,8 @@ static u64 rapl_unit_xlate(struct rapl_domain *rd, enum unit_type type,
+ 			    RAPL_DOMAIN_REG_LIMIT, POWER_UNIT, 0),
+ 	PRIMITIVE_INFO_INIT(POWER_LIMIT2, POWER_LIMIT2_MASK, 32,
+ 			    RAPL_DOMAIN_REG_LIMIT, POWER_UNIT, 0),
++	PRIMITIVE_INFO_INIT(POWER_LIMIT4, POWER_LIMIT4_MASK, 0,
++				RAPL_DOMAIN_REG_PL4, POWER_UNIT, 0),
+ 	PRIMITIVE_INFO_INIT(FW_LOCK, POWER_LOW_LOCK, 31,
+ 			    RAPL_DOMAIN_REG_LIMIT, ARBITRARY_UNIT, 0),
+ 	PRIMITIVE_INFO_INIT(PL1_ENABLE, POWER_LIMIT1_ENABLE, 15,
+@@ -597,6 +632,8 @@ static u64 rapl_unit_xlate(struct rapl_domain *rd, enum unit_type type,
+ 			    RAPL_DOMAIN_REG_LIMIT, ARBITRARY_UNIT, 0),
+ 	PRIMITIVE_INFO_INIT(PL2_CLAMP, POWER_LIMIT2_CLAMP, 48,
+ 			    RAPL_DOMAIN_REG_LIMIT, ARBITRARY_UNIT, 0),
++	PRIMITIVE_INFO_INIT(PL4_ENABLE, POWER_LIMIT4_MASK, 0,
++				RAPL_DOMAIN_REG_PL4, ARBITRARY_UNIT, 0),
+ 	PRIMITIVE_INFO_INIT(TIME_WINDOW1, TIME_WINDOW1_MASK, 17,
+ 			    RAPL_DOMAIN_REG_LIMIT, TIME_UNIT, 0),
+ 	PRIMITIVE_INFO_INIT(TIME_WINDOW2, TIME_WINDOW2_MASK, 49,
+@@ -1252,6 +1289,7 @@ void rapl_remove_package(struct rapl_package *rp)
+ 		if (find_nr_power_limit(rd) > 1) {
+ 			rapl_write_data_raw(rd, PL2_ENABLE, 0);
+ 			rapl_write_data_raw(rd, PL2_CLAMP, 0);
++			rapl_write_data_raw(rd, PL4_ENABLE, 0);
+ 		}
+ 		if (rd->id == RAPL_DOMAIN_PACKAGE) {
+ 			rd_package = rd;
+@@ -1360,6 +1398,13 @@ static void power_limit_state_save(void)
+ 				if (ret)
+ 					rd->rpl[i].last_power_limit = 0;
+ 				break;
++			case PL4_ENABLE:
++				ret = rapl_read_data_raw(rd,
++						 POWER_LIMIT4, true,
++						 &rd->rpl[i].last_power_limit);
++				if (ret)
++					rd->rpl[i].last_power_limit = 0;
++				break;
+ 			}
+ 		}
+ 	}
+@@ -1390,6 +1435,11 @@ static void power_limit_state_restore(void)
+ 					rapl_write_data_raw(rd, POWER_LIMIT2,
+ 					    rd->rpl[i].last_power_limit);
+ 				break;
++			case PL4_ENABLE:
++				if (rd->rpl[i].last_power_limit)
++					rapl_write_data_raw(rd, POWER_LIMIT4,
++					    rd->rpl[i].last_power_limit);
++				break;
+ 			}
+ 		}
+ 	}
+diff --git a/drivers/powercap/intel_rapl_msr.c b/drivers/powercap/intel_rapl_msr.c
+index d5487965bdfe..d2a2627507a9 100644
+--- a/drivers/powercap/intel_rapl_msr.c
++++ b/drivers/powercap/intel_rapl_msr.c
+@@ -28,6 +28,7 @@
+ 
+ /* Local defines */
+ #define MSR_PLATFORM_POWER_LIMIT	0x0000065C
++#define MSR_VR_CURRENT_CONFIG		0x00000601
+ 
+ /* private data for RAPL MSR Interface */
+ static struct rapl_if_priv rapl_msr_priv = {
+@@ -123,13 +124,27 @@ static int rapl_msr_write_raw(int cpu, struct reg_action *ra)
+ 	return ra->err;
  }
+ 
++/* List of verified CPUs. */
++static const struct x86_cpu_id pl4_support_ids[] = {
++	{ X86_VENDOR_INTEL, 6, INTEL_FAM6_TIGERLAKE_L, X86_FEATURE_ANY },
++	{}
++};
++
+ static int rapl_msr_probe(struct platform_device *pdev)
+ {
++	const struct x86_cpu_id *id = x86_match_cpu(pl4_support_ids);
+ 	int ret;
+ 
+ 	rapl_msr_priv.read_raw = rapl_msr_read_raw;
+ 	rapl_msr_priv.write_raw = rapl_msr_write_raw;
+ 
++	if (id) {
++		rapl_msr_priv.limits[RAPL_DOMAIN_PACKAGE] = 3;
++		rapl_msr_priv.regs[RAPL_DOMAIN_PACKAGE][RAPL_DOMAIN_REG_PL4] =
++			MSR_VR_CURRENT_CONFIG;
++		pr_info("PL4 support detected.\n");
++	}
++
+ 	rapl_msr_priv.control_type = powercap_register_control_type(NULL, "intel-rapl", NULL);
+ 	if (IS_ERR(rapl_msr_priv.control_type)) {
+ 		pr_debug("failed to register powercap control_type.\n");
+diff --git a/include/linux/intel_rapl.h b/include/linux/intel_rapl.h
+index efb3ce892c20..3582176a1eca 100644
+--- a/include/linux/intel_rapl.h
++++ b/include/linux/intel_rapl.h
+@@ -29,6 +29,7 @@ enum rapl_domain_reg_id {
+ 	RAPL_DOMAIN_REG_PERF,
+ 	RAPL_DOMAIN_REG_POLICY,
+ 	RAPL_DOMAIN_REG_INFO,
++	RAPL_DOMAIN_REG_PL4,
+ 	RAPL_DOMAIN_REG_MAX,
+ };
+ 
+@@ -38,12 +39,14 @@ enum rapl_primitives {
+ 	ENERGY_COUNTER,
+ 	POWER_LIMIT1,
+ 	POWER_LIMIT2,
++	POWER_LIMIT4,
+ 	FW_LOCK,
+ 
+ 	PL1_ENABLE,		/* power limit 1, aka long term */
+ 	PL1_CLAMP,		/* allow frequency to go below OS request */
+ 	PL2_ENABLE,		/* power limit 2, aka short term, instantaneous */
+ 	PL2_CLAMP,
++	PL4_ENABLE,		/* power limit 4, aka max peak power */
+ 
+ 	TIME_WINDOW1,		/* long term */
+ 	TIME_WINDOW2,		/* short term */
+@@ -65,7 +68,7 @@ struct rapl_domain_data {
+ 	unsigned long timestamp;
+ };
+ 
+-#define NR_POWER_LIMITS (2)
++#define NR_POWER_LIMITS (3)
+ struct rapl_power_limit {
+ 	struct powercap_zone_constraint *constraint;
+ 	int prim_id;		/* primitive ID used to enable */
 -- 
-2.27.0
+1.7.9.5
 
