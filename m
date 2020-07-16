@@ -2,116 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F87221945
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002CF221951
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgGPBGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 21:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726479AbgGPBGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 21:06:13 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFABC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 18:06:13 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id o22so3841441pjw.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 18:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=e2rVUlKuuIkQy85IOtUCVSZFDO7sfvuCwv9FBlIGudc=;
-        b=WBRwXuL1J49aFDX6OowkdQp60wkBLDyNji+VnP+47luf3SDgodM5CwOA/KeRQyBiK/
-         Ds76Qrv97EixHLwWaFyaLiwTYTLZejCwlFlXIoUV0aQV3W6LmFuXJ0T9YbB3FvLVWKvL
-         v9EEQ8v7wIiTl2OmiIYvZKqXM71Q7RR3K0iF8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=e2rVUlKuuIkQy85IOtUCVSZFDO7sfvuCwv9FBlIGudc=;
-        b=abbwR2P4ONXGuBzDx0ViVdsZKp+bQBicR5EAqcPyljMwsH3Og06tU35Cg93DkCW2k5
-         P3sbUUhJXF4ES5lQI5RMBObEUhYoWaWMld1IFghc7aG/7NY0VMUnBX9ntJk2ox2vuXSE
-         C/Tn64K19W7VGS7yNxSM4NO8nLb3crLmtKIUUhh2TTwAWYSeOl7ReyGACJVlFkGl8p0M
-         nNcpfZkg7ogpx6PVzD2ETl7nI3wtCAYgBZHxdSwnVvKfj82LuXRz4Xs3/v0eqtQH0W8e
-         IVL5vSUYV6yAGAHfq5f55oKT0NVe2FsLHCgNpT0opco1+dnF6EBmqHl31R02eWUEOY/1
-         oWsA==
-X-Gm-Message-State: AOAM531W5I0x4u+WwZxYNSJqB5Ai+dr1U2D5dOHOBjkq8HWJtVqFfsOC
-        GN6+614cpAXcl9g9He/Ig6eoYA==
-X-Google-Smtp-Source: ABdhPJwDuXNH1tttabpe1OV+jVg8VPDxCAe+DQNCQJLCDygr1r24B/9SZizwmtIKi2LthbUBcxYHIA==
-X-Received: by 2002:a17:902:8d8b:: with SMTP id v11mr1626798plo.221.1594861572552;
-        Wed, 15 Jul 2020 18:06:12 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id j19sm3134274pjy.40.2020.07.15.18.06.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 18:06:11 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S1727858AbgGPBMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 21:12:30 -0400
+Received: from mga01.intel.com ([192.55.52.88]:3875 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726479AbgGPBM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 21:12:29 -0400
+IronPort-SDR: NZTbzLX4dxDJ7QbAV0V43r6gZixLl8fIrvN0D1CIDqwoYU7szHvgsVord+0G5uBQB2bvPJMEnI
+ 4KklAoXkO12g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="167430860"
+X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
+   d="scan'208";a="167430860"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 18:12:26 -0700
+IronPort-SDR: GhBuvpJerEQSGZCcQwjV6esXaMp0MVHcttK2IMF8/qwgeeLs4waGLsGO+L6VICx8W1I+0Eonmq
+ 4vlc+KAEaZbA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
+   d="scan'208";a="460289202"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by orsmga005.jf.intel.com with ESMTP; 15 Jul 2020 18:12:23 -0700
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, kvm@vger.kernel.org,
+        Cornelia Huck <cohuck@redhat.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH v3 2/4] iommu: Add iommu_aux_at(de)tach_group()
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+References: <20200714055703.5510-1-baolu.lu@linux.intel.com>
+ <20200714055703.5510-3-baolu.lu@linux.intel.com>
+ <20200714093909.1ab93c9e@jacob-builder>
+ <b5b22e01-4a51-8dfe-9ba4-aeca783740f1@linux.intel.com>
+ <20200715090114.50a459d4@jacob-builder>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <435a2014-c2e8-06b9-3c9a-4afbf6607ffe@linux.intel.com>
+Date:   Thu, 16 Jul 2020 09:07:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1594622881-6563-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1594622881-6563-1-git-send-email-chunfeng.yun@mediatek.com>
-Subject: Re: [v3 PATCH] usb: gadget: bdc: use readl_poll_timeout() to simplify code
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        linux-kernel@vger.kernel.org,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Date:   Wed, 15 Jul 2020 18:06:10 -0700
-Message-ID: <159486157046.1987609.11356860908068064534@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+In-Reply-To: <20200715090114.50a459d4@jacob-builder>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Chunfeng Yun (2020-07-12 23:48:01)
-> diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/u=
-dc/bdc/bdc_core.c
-> index 02a3a77..d567e20 100644
-> --- a/drivers/usb/gadget/udc/bdc/bdc_core.c
-> +++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
-> @@ -29,24 +30,19 @@
->  #include "bdc_dbg.h"
-> =20
->  /* Poll till controller status is not OIP */
-> -static int poll_oip(struct bdc *bdc, int usec)
-> +static int poll_oip(struct bdc *bdc, u32 usec)
->  {
->         u32 status;
-> -       /* Poll till STS!=3D OIP */
-> -       while (usec) {
-> -               status =3D bdc_readl(bdc->regs, BDC_BDCSC);
-> -               if (BDC_CSTS(status) !=3D BDC_OIP) {
-> -                       dev_dbg(bdc->dev,
-> -                               "poll_oip complete status=3D%d",
-> -                               BDC_CSTS(status));
-> -                       return 0;
-> -               }
-> -               udelay(10);
-> -               usec -=3D 10;
-> -       }
-> -       dev_err(bdc->dev, "Err: operation timedout BDCSC: 0x%08x\n", stat=
-us);
-> +       int ret;
-> =20
-> -       return -ETIMEDOUT;
-> +       ret =3D readl_poll_timeout(bdc->regs + BDC_BDCSC, status,
-> +                                (BDC_CSTS(status) !=3D BDC_OIP), 10, use=
-c);
-> +       if (ret)
-> +               dev_err(bdc->dev, "operation timedout BDCSC: 0x%08x\n", s=
-tatus);
-> +       else
-> +               dev_dbg(bdc->dev, "%s complete status=3D%d", __func__, BD=
-C_CSTS(status));
+Hi Jacob,
 
-Different than before but OK.
+On 7/16/20 12:01 AM, Jacob Pan wrote:
+> On Wed, 15 Jul 2020 08:47:36 +0800
+> Lu Baolu <baolu.lu@linux.intel.com> wrote:
+> 
+>> Hi Jacob,
+>>
+>> On 7/15/20 12:39 AM, Jacob Pan wrote:
+>>> On Tue, 14 Jul 2020 13:57:01 +0800
+>>> Lu Baolu<baolu.lu@linux.intel.com>  wrote:
+>>>    
+>>>> This adds two new aux-domain APIs for a use case like vfio/mdev
+>>>> where sub-devices derived from an aux-domain capable device are
+>>>> created and put in an iommu_group.
+>>>>
+>>>> /**
+>>>>    * iommu_aux_attach_group - attach an aux-domain to an iommu_group
+>>>> which
+>>>>    *                          contains sub-devices (for example
+>>>> mdevs) derived
+>>>>    *                          from @dev.
+>>>>    * @domain: an aux-domain;
+>>>>    * @group:  an iommu_group which contains sub-devices derived from
+>>>> @dev;
+>>>>    * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
+>>>>    *
+>>>>    * Returns 0 on success, or an error value.
+>>>>    */
+>>>> int iommu_aux_attach_group(struct iommu_domain *domain,
+>>>>                              struct iommu_group *group,
+>>>>                              struct device *dev)
+>>>>
+>>>> /**
+>>>>    * iommu_aux_detach_group - detach an aux-domain from an
+>>>> iommu_group *
+>>>>    * @domain: an aux-domain;
+>>>>    * @group:  an iommu_group which contains sub-devices derived from
+>>>> @dev;
+>>>>    * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
+>>>>    *
+>>>>    * @domain must have been attached to @group via
+>>>> iommu_aux_attach_group(). */
+>>>> void iommu_aux_detach_group(struct iommu_domain *domain,
+>>>>                               struct iommu_group *group,
+>>>>                               struct device *dev)
+>>>>
+>>>> It also adds a flag in the iommu_group data structure to identify
+>>>> an iommu_group with aux-domain attached from those normal ones.
+>>>>
+>>>> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+>>>> ---
+>>>>    drivers/iommu/iommu.c | 58
+>>>> +++++++++++++++++++++++++++++++++++++++++++ include/linux/iommu.h |
+>>>> 17 +++++++++++++ 2 files changed, 75 insertions(+)
+>>>>
+>>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>>>> index e1fdd3531d65..cad5a19ebf22 100644
+>>>> --- a/drivers/iommu/iommu.c
+>>>> +++ b/drivers/iommu/iommu.c
+>>>> @@ -45,6 +45,7 @@ struct iommu_group {
+>>>>    	struct iommu_domain *default_domain;
+>>>>    	struct iommu_domain *domain;
+>>>>    	struct list_head entry;
+>>>> +	unsigned int aux_domain_attached:1;
+>>>>    };
+>>>>    
+>>>>    struct group_device {
+>>>> @@ -2759,6 +2760,63 @@ int iommu_aux_get_pasid(struct iommu_domain
+>>>> *domain, struct device *dev) }
+>>>>    EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+>>>>    
+>>>> +/**
+>>>> + * iommu_aux_attach_group - attach an aux-domain to an iommu_group
+>>>> which
+>>>> + *                          contains sub-devices (for example
+>>>> mdevs) derived
+>>>> + *                          from @dev.
+>>>> + * @domain: an aux-domain;
+>>>> + * @group:  an iommu_group which contains sub-devices derived from
+>>>> @dev;
+>>>> + * @dev:    the physical device which supports IOMMU_DEV_FEAT_AUX.
+>>>> + *
+>>>> + * Returns 0 on success, or an error value.
+>>>> + */
+>>>> +int iommu_aux_attach_group(struct iommu_domain *domain,
+>>>> +			   struct iommu_group *group, struct
+>>>> device *dev) +{
+>>>> +	int ret = -EBUSY;
+>>>> +
+>>>> +	mutex_lock(&group->mutex);
+>>>> +	if (group->domain)
+>>>> +		goto out_unlock;
+>>>> +
+>>> Perhaps I missed something but are we assuming only one mdev per
+>>> mdev group? That seems to change the logic where vfio does:
+>>> iommu_group_for_each_dev()
+>>> 	iommu_aux_attach_device()
+>>>    
+>>
+>> It has been changed in PATCH 4/4:
+>>
+>> static int vfio_iommu_attach_group(struct vfio_domain *domain,
+>>                                      struct vfio_group *group)
+>> {
+>>           if (group->mdev_group)
+>>                   return iommu_aux_attach_group(domain->domain,
+>>                                                 group->iommu_group,
+>>                                                 group->iommu_device);
+>>           else
+>>                   return iommu_attach_group(domain->domain,
+>> group->iommu_group);
+>> }
+>>
+>> So, for both normal domain and aux-domain, we use the same concept:
+>> attach a domain to a group.
+>>
+> I get that, but don't you have to attach all the devices within the
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+This iommu_group includes only mediated devices derived from an
+IOMMU_DEV_FEAT_AUX-capable device. Different from iommu_attach_group(),
+iommu_aux_attach_group() doesn't need to attach the domain to each
+device in group, instead it only needs to attach the domain to the
+physical device where the mdev's were created from.
+
+> group? Here you see the group already has a domain and exit.
+
+If the (group->domain) has been set, that means a domain has already
+attached to the group, so it returns -EBUSY.
+
+Best regards,
+baolu
