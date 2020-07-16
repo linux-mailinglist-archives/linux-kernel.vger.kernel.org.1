@@ -2,147 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D302221DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604F82221FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728596AbgGPL4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 07:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728225AbgGPL4T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 07:56:19 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE92C061755;
-        Thu, 16 Jul 2020 04:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9J/2b3b7YX/w3J/Y99T7XKn5p5MncV/hBcAxZFSpP/o=; b=md/+XRNjQfIIl04ga7+CuiYGkD
-        23HE25+cL7oCCu6eiZqV11gN85lh57Bkl4/WYxZwIgXB8CZvL1CW1FkvES3ed5bEGaP9TXuxYf6vJ
-        DVU5QYkHxxERZLAvUooucsUg3WwPRcwHjKrfaHvkynBJUGJx4iNl3AXt/miZSxgpEGJZOIQkkhmVi
-        mG4eLrjSTMqhBbCZadjsGFvWlh4KqSQyph6U+CR4WeE0QlKEO7G1XKRkqtN/gUo8xt0bRX+MPuaWO
-        GKq925mMwcrX6jiBbzU/hDLiN3KDpijvwTtrM9tbFAznWJtSb3sbu3iRGAuYir0aJ6WwhbndTLE2X
-        qNyjyVjQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jw2Ug-0006Cm-Rk; Thu, 16 Jul 2020 11:56:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 474A0305DD1;
-        Thu, 16 Jul 2020 13:56:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 27ACE20D27ABC; Thu, 16 Jul 2020 13:56:05 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 13:56:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Javi Merino <javi.merino@kernel.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com
-Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
-Message-ID: <20200716115605.GR10769@hirez.programming.kicks-ass.net>
-References: <cover.1594707424.git.viresh.kumar@linaro.org>
- <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
+        id S1728689AbgGPL5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 07:57:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45238 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728541AbgGPL4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 07:56:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 11194AEB1;
+        Thu, 16 Jul 2020 11:56:18 +0000 (UTC)
+Date:   Thu, 16 Jul 2020 13:56:13 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Mark Brown <broonie@kernel.org>
+cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: stacktrace: Convert to ARCH_STACKWALK
+In-Reply-To: <20200715202821.12220-4-broonie@kernel.org>
+Message-ID: <alpine.LSU.2.21.2007161342290.3958@pobox.suse.cz>
+References: <20200715202821.12220-1-broonie@kernel.org> <20200715202821.12220-4-broonie@kernel.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 12:06:53PM +0530, Viresh Kumar wrote:
->  /**
-> + * get_load() - get current load for a cpu
->   * @cpufreq_cdev:	&struct cpufreq_cooling_device for this cpu
->   * @cpu:	cpu number
-> + * @cpu_idx:	index of the cpu
->   *
-> + * Return: The current load of cpu @cpu in percentage.
->   */
->  static u32 get_load(struct cpufreq_cooling_device *cpufreq_cdev, int cpu,
->  		    int cpu_idx)
->  {
-> +	unsigned long util = cpu_util_cfs(cpu_rq(cpu));
-> +	unsigned long max = arch_scale_cpu_capacity(cpu);
+Hi,
+
+On Wed, 15 Jul 2020, Mark Brown wrote:
+
+> Historically architectures have had duplicated code in their stack trace
+> implementations for filtering what gets traced. In order to avoid this
+> duplication some generic code has been provided using a new interface
+> arch_stack_walk(), enabled by selecting ARCH_STACKWALK in Kconfig, which
+> factors all this out into the generic stack trace code. Convert arm64
+> to use this common infrastructure.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  arch/arm64/Kconfig             |  1 +
+>  arch/arm64/kernel/stacktrace.c | 79 ++++------------------------------
+>  2 files changed, 9 insertions(+), 71 deletions(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 5d4f02b3dfe9..6ed4b6c6df95 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -29,6 +29,7 @@ config ARM64
+>  	select ARCH_HAS_SETUP_DMA_OPS
+>  	select ARCH_HAS_SET_DIRECT_MAP
+>  	select ARCH_HAS_SET_MEMORY
+> +	select ARCH_STACKWALK
+>  	select ARCH_HAS_STRICT_KERNEL_RWX
+>  	select ARCH_HAS_STRICT_MODULE_RWX
+>  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+> index 743cf11fbfca..a33fba048954 100644
+> --- a/arch/arm64/kernel/stacktrace.c
+> +++ b/arch/arm64/kernel/stacktrace.c
+> @@ -133,82 +133,19 @@ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+>  NOKPROBE_SYMBOL(walk_stackframe);
 >  
-> +	util = effective_cpu_util(cpu, util, max, ENERGY_UTIL, NULL);
-> +	return (util * 100) / max;
+>  #ifdef CONFIG_STACKTRACE
+> -struct stack_trace_data {
+> -	struct stack_trace *trace;
+> -	unsigned int no_sched_functions;
+> -	unsigned int skip;
+> -};
+>  
+> -static bool save_trace(void *d, unsigned long addr)
+> +void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
+> +		     struct task_struct *task, struct pt_regs *regs)
+>  {
+> -	struct stack_trace_data *data = d;
+> -	struct stack_trace *trace = data->trace;
+> -
+> -	if (data->no_sched_functions && in_sched_functions(addr))
+> -		return false;
+> -	if (data->skip) {
+> -		data->skip--;
+> -		return false;
+> -	}
+> -
+> -	trace->entries[trace->nr_entries++] = addr;
+> -
+> -	return trace->nr_entries >= trace->max_entries;
+> -}
+> -
+> -void save_stack_trace_regs(struct pt_regs *regs, struct stack_trace *trace)
+> -{
+> -	struct stack_trace_data data;
+> -	struct stackframe frame;
+> -
+> -	data.trace = trace;
+> -	data.skip = trace->skip;
+> -	data.no_sched_functions = 0;
+> -
+> -	start_backtrace(&frame, regs->regs[29], regs->pc);
+> -	walk_stackframe(current, &frame, save_trace, &data);
+> -}
+> -EXPORT_SYMBOL_GPL(save_stack_trace_regs);
+> -
+> -static noinline void __save_stack_trace(struct task_struct *tsk,
+> -	struct stack_trace *trace, unsigned int nosched)
+> -{
+> -	struct stack_trace_data data;
+>  	struct stackframe frame;
+>  
+> -	if (!try_get_task_stack(tsk))
+> -		return;
+> +	if (regs)
+> +		start_backtrace(&frame, regs->regs[29], regs->pc);
+> +	else
+> +		start_backtrace(&frame, thread_saved_fp(task),
+> +				thread_saved_pc(task));
+>  
+> -	data.trace = trace;
+> -	data.skip = trace->skip;
+> -	data.no_sched_functions = nosched;
+> -
+> -	if (tsk != current) {
+> -		start_backtrace(&frame, thread_saved_fp(tsk),
+> -				thread_saved_pc(tsk));
+> -	} else {
+> -		/* We don't want this function nor the caller */
+> -		data.skip += 2;
+> -		start_backtrace(&frame,
+> -				(unsigned long)__builtin_frame_address(0),
+> -				(unsigned long)__save_stack_trace);
+> -	}
+> -
+> -	walk_stackframe(tsk, &frame, save_trace, &data);
+> -
+> -	put_task_stack(tsk);
+> -}
+> -
+> -void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+> -{
+> -	__save_stack_trace(tsk, trace, 1);
+> -}
+> -EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
+> -
+> -void save_stack_trace(struct stack_trace *trace)
+> -{
+> -	__save_stack_trace(current, trace, 0);
+> +	walk_stackframe(task, &frame, consume_entry, cookie);
 >  }
 
-So there's a number of things... let me recap a bunch of things that
-got mentioned on IRC earlier this week and then continue from there..
+just an idea for further improvement (and it might be a matter of taste). 
+Wouldn't it be slightly better to do one more step and define "struct 
+unwind_state" instead of "struct stackframe" and also some iterator for 
+the unwinding and use that right in new arch_stack_walk() instead of 
+walk_stackframe()? I mean, take the unbounded loop, "inline" it to 
+arch_stack_walk() and replace the loop with the iterator. The body of the 
+iterator would call to unwind_frame() and consume_entry() and that's it. 
+It would make arm64 implementation very similar to x86 and s390 and thus 
+easier to follow when one switches between architectures all the time.
 
-So IPA* (or any other thermal governor) needs energy estimates for the
-various managed devices, cpufreq_cooling, being the driver for the CPU
-device, needs to provide that and in return receives feedback on how
-much energy it is allowed to consume, cpufreq_cooling then dynamically
-enables/disables OPP states.
+Tangential to this patch, but another idea for improvement is in 
+unwind_frame(). If I am not missing something, everything in 
+CONFIG_FUNCTION_GRAPH_TRACER could be replaced by a simple call to 
+ftrace_graph_ret_addr(). Again see for example unwind_next_frame() in
+arch/s390/kernel/unwind_bc.c (x86 has it too).
 
-There are actually two methods the thermal governor will use:
-get_real_power() and get_requested_power().
-
-The first isn't used anywhere in mainline, but could be implemented on
-hardware that has energy counters (like say x86 RAPL).
-
-The second attempts to guesstimate power, and is the subject of this
-patch.
-
-Currently cpufreq_cooling appears to estimate the CPU energy usage by
-calculating the percentage of idle time using the per-cpu cpustat stuff,
-which is pretty horrific.
-
-This patch then attempts to improve upon that by using the scheduler's
-cpu_util(ENERGY_UTIL) estimate, which is also used to select OPP state
-and improves upon avg idle. This should be a big improvement as higher
-frequency consumes more energy, but should we not also consider that:
-
-	E = C V^2 f
-
-The EAS energy model has tables for the OPPs that contain this, but in
-this case we seem to be assuming a linear enery/frequency curve, which
-is just not the case.
-
-I suppose we could do something like **:
-
-	100 * util^3 / max^3
-
-which assumes V~f.
-
-Another point is that cpu_util() vs turbo is a bit iffy, and to that,
-things like x86-APERF/MPERF and ARM-AMU got mentioned. Those might also
-have the benefit of giving you values that match your own sampling
-interval (100ms), where the sched stuff is PELT (64,32.. based).
-
-So what I've been thinking is that cpufreq drivers ought to be able to
-supply this method, and only when they lack, can the cpufreq-governor
-(schedutil) install a fallback. And then cpufreq-cooling can use
-whatever is provided (through the cpufreq interfaces).
-
-That way, we:
-
- 1) don't have to export anything
- 2) get arch drivers to provide something 'better'
-
-
-Does that sounds like something sensible?
-
-
-
-
-[*] I always want a beer when I see that name :-)
-
-[**] I despise code that uses percentages, computers suck at
-/100 and there is no reason not to use any other random fraction, so why
-pick a bad one.
-
+Regards
+Miroslav
