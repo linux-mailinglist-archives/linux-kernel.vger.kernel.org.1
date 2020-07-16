@@ -2,87 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6122227C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC0E2227D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729269AbgGPPrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 11:47:23 -0400
-Received: from mga11.intel.com ([192.55.52.93]:63006 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728374AbgGPPrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:47:23 -0400
-IronPort-SDR: 66vCs9QHHj+AyBLAdyD2uiHVhokEOENqGeHP72k7Db9XNGLYSaI6dBbj7Foj9v1+JXolYlZsnO
- cXWGvnDx7ghQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="147401517"
-X-IronPort-AV: E=Sophos;i="5.75,359,1589266800"; 
-   d="scan'208";a="147401517"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 08:47:22 -0700
-IronPort-SDR: xSxEJLfX4nvgtLlEKhPBOw6PTUbGGrB41NYeDdBHnh8wYRSLIYXKK6oSLOO3e4pGAJeWEKKKdg
- 7K4Du4uFfdmA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,359,1589266800"; 
-   d="scan'208";a="325178688"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by FMSMGA003.fm.intel.com with ESMTP; 16 Jul 2020 08:47:20 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jw66T-002BYF-6O; Thu, 16 Jul 2020 18:47:21 +0300
-Date:   Thu, 16 Jul 2020 18:47:21 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, rafael.j.wysocki@intel.com,
-        sakari.ailus@linux.intel.com, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Subject: Re: kernel oops in 'typec_ucsi' due to commit 'drivers property:
- When no children in primary, try secondary'
-Message-ID: <20200716154721.GO3703480@smile.fi.intel.com>
-References: <7affdd923186c5ce8c7dcf7cbe7b826eaa3ac8b2.camel@redhat.com>
+        id S1729236AbgGPPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 11:51:18 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60445 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728126AbgGPPvR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 11:51:17 -0400
+Received: from 1.general.ppisati.uk.vpn ([10.172.193.134] helo=canonical.com)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <paolo.pisati@canonical.com>)
+        id 1jw6AE-0006Pi-NC; Thu, 16 Jul 2020 15:51:14 +0000
+From:   Paolo Pisati <paolo.pisati@canonical.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] selftests: net: ip_defrag: modprobe missing nf_defrag_ipv6 support
+Date:   Thu, 16 Jul 2020 17:51:14 +0200
+Message-Id: <20200716155114.72625-1-paolo.pisati@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7affdd923186c5ce8c7dcf7cbe7b826eaa3ac8b2.camel@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 11:17:03AM +0300, Maxim Levitsky wrote:
-> Hi!
-> 
-> Few days ago I bisected a regression on 5.8 kernel:
-> 
-> I have nvidia rtx 2070s and its USB type C port driver (which is open source)
-> started to crash on load:
+Fix ip_defrag.sh when CONFIG_NF_DEFRAG_IPV6=m:
 
-...
+$ sudo ./ip_defrag.sh
++ set -e
++ mktemp -u XXXXXX
++ readonly NETNS=ns-rGlXcw
++ trap cleanup EXIT
++ setup
++ ip netns add ns-rGlXcw
++ ip -netns ns-rGlXcw link set lo up
++ ip netns exec ns-rGlXcw sysctl -w net.ipv4.ipfrag_high_thresh=9000000
++ ip netns exec ns-rGlXcw sysctl -w net.ipv4.ipfrag_low_thresh=7000000
++ ip netns exec ns-rGlXcw sysctl -w net.ipv4.ipfrag_time=1
++ ip netns exec ns-rGlXcw sysctl -w net.ipv6.ip6frag_high_thresh=9000000
++ ip netns exec ns-rGlXcw sysctl -w net.ipv6.ip6frag_low_thresh=7000000
++ ip netns exec ns-rGlXcw sysctl -w net.ipv6.ip6frag_time=1
++ ip netns exec ns-rGlXcw sysctl -w net.netfilter.nf_conntrack_frag6_high_thresh=9000000
++ cleanup
++ ip netns del ns-rGlXcw
 
-> Reverting the commit helped fix this oops.
-> 
-> My .config attached.
-> If any more info is needed I'll be happy to provide it,
-> and of course test patches.
+$ ls -la /proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh
+ls: cannot access '/proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh': No such file or directory
 
-Can you test below?
+$ sudo modprobe nf_defrag_ipv6
+$ ls -la /proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh
+-rw-r--r-- 1 root root 0 Jul 14 12:34 /proc/sys/net/netfilter/nf_conntrack_frag6_high_thresh
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index 1e6d75e65938..d58aa98fe964 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -721,7 +721,7 @@ struct fwnode_handle *device_get_next_child_node(struct device *dev,
- 		return next;
+Signed-off-by: Paolo Pisati <paolo.pisati@canonical.com>
+---
+ tools/testing/selftests/net/ip_defrag.sh | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/testing/selftests/net/ip_defrag.sh b/tools/testing/selftests/net/ip_defrag.sh
+index 15d3489ecd9c..ceb7ad4dbd94 100755
+--- a/tools/testing/selftests/net/ip_defrag.sh
++++ b/tools/testing/selftests/net/ip_defrag.sh
+@@ -6,6 +6,8 @@
+ set +x
+ set -e
  
- 	/* When no more children in primary, continue with secondary */
--	if (!IS_ERR_OR_NULL(fwnode->secondary))
-+	if (fwnode && !IS_ERR_OR_NULL(fwnode->secondary))
- 		next = fwnode_get_next_child_node(fwnode->secondary, child);
++modprobe -q nf_defrag_ipv6
++
+ readonly NETNS="ns-$(mktemp -u XXXXXX)"
  
- 	return next;
+ setup() {
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
