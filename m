@@ -2,139 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BBE221BD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 07:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4236221BCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 07:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728010AbgGPFM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 01:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725268AbgGPFM4 (ORCPT
+        id S1726585AbgGPFLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 01:11:49 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:45897 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725268AbgGPFLt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 01:12:56 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CD7C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 22:12:56 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l63so4238474pge.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 22:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=5uEgZcOvxySkXqr8EUPn06IShVdK3dXiQkAlG2OoJgw=;
-        b=CyRfgRhBPlbJusvWZ2r6TphLSUqOHZjwFjCUPFk4b0NBT22sQeUDaJ717mzoDj3zAz
-         MVUZsXUGOplDpyd9M+8GVQGshB2Mo8Lc0MKq7+iTRog7lrQJNWLmqK9tVvRtwlkEEUxt
-         N6HKAb0924maFPbitUjI2O06iGLFFngf/67TSSZD+rtoVfQEvq+U6xUWIVZPgPziTcLY
-         c03WrC2tRZeuCnvFXyccZWdySAfelGuPrVPtzSQFremFGc8NJWz6OROOUgjlpLvpZ6uF
-         0l88G612fXl0BSRTEIYHmPqU46PxFQ+xAh6chUdesCpDENSxsp97o6sL0yq0hFUMKw7i
-         EB2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=5uEgZcOvxySkXqr8EUPn06IShVdK3dXiQkAlG2OoJgw=;
-        b=TlruKVLOEBFHZgRL4th4Hujw1mt+GPVVWAK5vmhSPKbtO+YE5DU9TePrZ/03C2JKQK
-         W8huuWkXOZjUtaXmZSfmbMee5LwLQJUcp+ZQ1jDcTN7i1JauA6Ktb7oIhHfzL5qU37ML
-         O8lBCJzSGk4EzmyXleP3cym+SWmqeBEaUGbvUmVAUiVrjyGJgdjG4uTKSjC5tb+ITUGl
-         C+GCtoE0j7V+EhcUdKehPZH/aKvSmWrOdohnl0ZahuWN11Wkhq3Lx5Xl5E1nhojeAP7U
-         btlN1ZmC5tKu0KoOCtg1yp5aneN6+4/lmyiLmbh0UuYcNsgmfpe6zFurDkDw+SzFcRDc
-         +UYw==
-X-Gm-Message-State: AOAM532KazH3QQ5oAzWlhsqub3BuYldkoTP0/DQ0y8i6NdMyVJox3vvt
-        K8cZSNfp0ysfpX6URGw0OMzPww==
-X-Google-Smtp-Source: ABdhPJyMvmCqRalWIJW5f9/g7nrURfOw7B8xkuE0x7liIs+vZhTKT7UKjFTL2WrzuJNWEe8iDMSN3A==
-X-Received: by 2002:aa7:988f:: with SMTP id r15mr2227739pfl.2.1594876375762;
-        Wed, 15 Jul 2020 22:12:55 -0700 (PDT)
-Received: from localhost ([2400:8904::f03c:91ff:fe8a:bbe4])
-        by smtp.gmail.com with ESMTPSA id az13sm3449882pjb.34.2020.07.15.22.12.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 15 Jul 2020 22:12:55 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 7/7] tools headers UAPI: Update tools's copy of linux/perf_event.h
-Date:   Thu, 16 Jul 2020 13:11:30 +0800
-Message-Id: <20200716051130.4359-8-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200716051130.4359-1-leo.yan@linaro.org>
-References: <20200716051130.4359-1-leo.yan@linaro.org>
+        Thu, 16 Jul 2020 01:11:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1594876308; x=1626412308;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=f+rPT+jNEXdJoFoZf0UEA0FTUOzDbR/rIkJL2ofKWF0=;
+  b=oQ4/q7HaCGy+dAbHIEAhHtg/6P5OU4eJvhQTMG1G7RmNQk7GjNnjKXKs
+   b1ISXe6/ELBD2eW7ppQzbCgLM2wqqbExX94duAtdalGeQeTd2h7atkpSC
+   HXun1P07Vzm6iQPpxHraycA29zqeGR0tXk5iO8EYRGAR1mSyF9+GLPvYW
+   tEB7CZWWFZCYjsVPt8OUctYaQUmK1rswHklOeZcFZ0khbMhaEhKRdTgP6
+   CVLsM423YcUallmsz0qJFg3OJZUSOQ4PWkTFfAHr0MICqq424LIVXby8q
+   EufhbtJWoqWXUakr1WpTuiQ6PijbFBp/iiaCfmw7l2axYpZc1N5DzoT3J
+   Q==;
+IronPort-SDR: wQwQRKuCAYZPa4M66Lv+/DTAIg8SUlTR2tOOyI8CyphClmYcWz5VxQKli4nA5Q2CcH3oWfGiym
+ ychYzYEoeftLGroJPtzwW6oqXZSYbkWtBCQVWFmDXKb6RQm7DW+MsGHAQ8iq8iI+GMcTQMDFhG
+ Z2h//MYmbTst6ZAC4nGHgKSKS+V3Tr7m0IcxnqIEIg+JBAo9+flw2QT1vtkAQcQaT1tEUJCJ5M
+ Cny35fvz+mQeYQORKopnKFgQ9JhQC3ZlyJP6CP8o6sxgyjcWweu5fl0+FcHVXHPQ52djQQufgl
+ prU=
+X-IronPort-AV: E=Sophos;i="5.75,358,1589266800"; 
+   d="scan'208";a="84097825"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 15 Jul 2020 22:11:48 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 15 Jul 2020 22:11:47 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 15 Jul 2020 22:11:46 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <broonie@kernel.org>
+CC:     <han.xu@nxp.com>, <trivial@kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH trivial] spi: Fix SPI NOR and SPI NAND acronyms
+Date:   Thu, 16 Jul 2020 08:11:44 +0300
+Message-ID: <20200716051144.568606-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To get the changes in the commit:
+The industry refers to these flash types as "SPI NOR" and
+"SPI NAND". Be consistent and use the same acronyms.
 
-  "perf: Add perf_event_mmap_page::cap_user_time_short ABI"
-
-This update is a prerequisite to add support for short clock counters
-related ABI extension.
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 ---
- tools/include/uapi/linux/perf_event.h | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+ drivers/spi/Kconfig        | 10 +++++-----
+ drivers/spi/spi-fsl-qspi.c |  2 +-
+ drivers/spi/spi-orion.c    |  2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-index 7b2d6fc9e6ed..21a1edd08cbe 100644
---- a/tools/include/uapi/linux/perf_event.h
-+++ b/tools/include/uapi/linux/perf_event.h
-@@ -532,9 +532,10 @@ struct perf_event_mmap_page {
- 				cap_bit0_is_deprecated	: 1, /* Always 1, signals that bit 0 is zero */
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index b89d03a36cbd..c11c6c5cb442 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -169,7 +169,7 @@ config SPI_BCM_QSPI
+ 	help
+ 	  Enables support for the Broadcom SPI flash and MSPI controller.
+ 	  Select this option for any one of BRCMSTB, iProc NSP and NS2 SoCs
+-	  based platforms. This driver works for both SPI master for spi-nor
++	  based platforms. This driver works for both SPI master for SPI NOR
+ 	  flash device as well as MSPI device.
  
- 				cap_user_rdpmc		: 1, /* The RDPMC instruction can be used to read counts */
--				cap_user_time		: 1, /* The time_* fields are used */
-+				cap_user_time		: 1, /* The time_{shift,mult,offset} fields are used */
- 				cap_user_time_zero	: 1, /* The time_zero field is used */
--				cap_____res		: 59;
-+				cap_user_time_short	: 1, /* the time_{cycle,mask} fields are used */
-+				cap_____res		: 58;
- 		};
- 	};
+ config SPI_BITBANG
+@@ -311,11 +311,11 @@ config SPI_FSL_QUADSPI
+ 	  supports the high-level SPI memory interface.
  
-@@ -593,13 +594,29 @@ struct perf_event_mmap_page {
- 	 *               ((rem * time_mult) >> time_shift);
- 	 */
- 	__u64	time_zero;
-+
- 	__u32	size;			/* Header size up to __reserved[] fields. */
-+	__u32	__reserved_1;
-+
-+	/*
-+	 * If cap_usr_time_short, the hardware clock is less than 64bit wide
-+	 * and we must compute the 'cyc' value, as used by cap_usr_time, as:
-+	 *
-+	 *   cyc = time_cycles + ((cyc - time_cycles) & time_mask)
-+	 *
-+	 * NOTE: this form is explicitly chosen such that cap_usr_time_short
-+	 *       is a correction on top of cap_usr_time, and code that doesn't
-+	 *       know about cap_usr_time_short still works under the assumption
-+	 *       the counter doesn't wrap.
-+	 */
-+	__u64	time_cycles;
-+	__u64	time_mask;
+ config SPI_HISI_SFC_V3XX
+-	tristate "HiSilicon SPI-NOR Flash Controller for Hi16XX chipsets"
++	tristate "HiSilicon SPI NOR Flash Controller for Hi16XX chipsets"
+ 	depends on (ARM64 && ACPI) || COMPILE_TEST
+ 	depends on HAS_IOMEM
+ 	help
+-	  This enables support for HiSilicon v3xx SPI-NOR flash controller
++	  This enables support for HiSilicon v3xx SPI NOR flash controller
+ 	  found in hi16xx chipsets.
  
+ config SPI_NXP_FLEXSPI
+@@ -477,9 +477,9 @@ config SPI_MTK_NOR
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
+ 	help
+ 	  This enables support for SPI NOR controller found on MediaTek
+-	  ARM SoCs. This is a controller specifically for SPI-NOR flash.
++	  ARM SoCs. This is a controller specifically for SPI NOR flash.
+ 	  It can perform generic SPI transfers up to 6 bytes via generic
+-	  SPI interface as well as several SPI-NOR specific instructions
++	  SPI interface as well as several SPI NOR specific instructions
+ 	  via SPI MEM interface.
+ 
+ config SPI_NPCM_FIU
+diff --git a/drivers/spi/spi-fsl-qspi.c b/drivers/spi/spi-fsl-qspi.c
+index 6766262d7e75..9851551ebbe0 100644
+--- a/drivers/spi/spi-fsl-qspi.c
++++ b/drivers/spi/spi-fsl-qspi.c
+@@ -15,7 +15,7 @@
+  *     Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+  *     Suresh Gupta <suresh.gupta@nxp.com>
+  *
+- * Based on the original fsl-quadspi.c spi-nor driver:
++ * Based on the original fsl-quadspi.c SPI NOR driver:
+  * Author: Freescale Semiconductor, Inc.
+  *
+  */
+diff --git a/drivers/spi/spi-orion.c b/drivers/spi/spi-orion.c
+index 43f73db22f21..b57b8b3cc26e 100644
+--- a/drivers/spi/spi-orion.c
++++ b/drivers/spi/spi-orion.c
+@@ -708,7 +708,7 @@ static int orion_spi_probe(struct platform_device *pdev)
  		/*
- 		 * Hole for extension of the self monitor capabilities
+ 		 * Only map one page for direct access. This is enough for the
+ 		 * simple TX transfer which only writes to the first word.
+-		 * This needs to get extended for the direct SPI-NOR / SPI-NAND
++		 * This needs to get extended for the direct SPI NOR / SPI NAND
+ 		 * support, once this gets implemented.
  		 */
- 
--	__u8	__reserved[118*8+4];	/* align to 1k. */
-+	__u8	__reserved[116*8];	/* align to 1k. */
- 
- 	/*
- 	 * Control data for the mmap() data buffer.
+ 		dir_acc = &spi->child[cs].direct_access;
 -- 
-2.17.1
+2.25.1
 
