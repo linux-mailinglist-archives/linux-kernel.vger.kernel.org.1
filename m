@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC80222C06
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4A2222C08
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729399AbgGPThB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 15:37:01 -0400
-Received: from mga11.intel.com ([192.55.52.93]:25433 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728788AbgGPThB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 15:37:01 -0400
-IronPort-SDR: mmYM6DBlrqvgHzgZAzdSAGmdTSfJuQQ5k7YnMEhAH/o4Vc+YuttIX6mJDdHo/XA+kffaXx8Mg8
- rLSBdYV3JHLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="147472120"
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
-   d="scan'208";a="147472120"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 12:37:01 -0700
-IronPort-SDR: rgeq5PWWOvapHXHEl2k+ns8B4LrbmEfXbA/av211FVXohb1QHNca5F582yThEbVc3FbmVZf8G8
- Hh2tbjW64qDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
-   d="scan'208";a="308751536"
-Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Jul 2020 12:37:00 -0700
-Date:   Thu, 16 Jul 2020 12:37:00 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     x86 <x86@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/split_lock: Enumerate split lock feature on Sapphire
- Rapids
-Message-ID: <20200716193659.GA66451@romley-ivt3.sc.intel.com>
-References: <1593208534-33721-1-git-send-email-fenghua.yu@intel.com>
+        id S1729424AbgGPTjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 15:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728788AbgGPTjU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 15:39:20 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C55FC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 12:39:20 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id n5so5355868pgf.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 12:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=jFw/ClOpq5T+sEE+HkoHP8FUQXO2g2TMYTCx3LN9u+U=;
+        b=cIXAUZoEl+VbWqI+bWZ6UNd/b6CjlQlebzn7F51ygg732VKsNUyl7DvsnIq/q8CnRD
+         MWyO5PEAVK+AkyuS5IIP160Qpqg2RwaJbiuHaOqIGaOUrKwLZjyuK6YPwi3I3c9OqjPX
+         uxs4LYz/vya0GQfg8gs6V7ZoR51P/Vj9BNpDc7Q/ocU7sDI+m+K1wqHn6n/tbTWPr2kl
+         CJXmyuKlnDiQDAXaXdlljeJaPSGAfOvtQS3iU3y20mg5hEoBJ0exCxREj9zx5TbYnuhl
+         21YpvR8/8GOndAJMOSKUAdZD2btafq3qF0kFteV1b9ieb06F9FRiy+fJiW/DOY6PNdcv
+         fjNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=jFw/ClOpq5T+sEE+HkoHP8FUQXO2g2TMYTCx3LN9u+U=;
+        b=rTXUlwRdVguvENdh+1tQk9L/mIF1gDf+10uyEbF4/yDjhy/LTkb0Xe2bS/ayNP0vi1
+         BMIS600FCBV9ykxGrbAHSqALr33nXQio+drzbb7wQkeqzspxJ+QNrmfwfzEXlxjD8rsL
+         ylHGSu2PcBfn9x/G8wtGfyf17A0yNA51UFvZ4x1nThSgIgm6iDot/w/WRvknYc1w9z6B
+         EJANuxpztcfjsPtA25D3AQaoT9v1sa0oZaN0Bx2l7SpOUZmAOK0eI5GtzNtDjMNzIqvs
+         FCXY40Fkq83kqbb72e0SJVS48BaFZMMt0qNwq+4+EChaWhktKDVhofFnK4Ax8rOJBiFR
+         xb2Q==
+X-Gm-Message-State: AOAM530ekiii3W+dUU8i0dnjkT8Oq7+svmUZD62BIlgmgrFQjpUM/mxn
+        K6rg5BuWQIGoGZaM68GqL+muzw==
+X-Google-Smtp-Source: ABdhPJzVTejMe5736mG+GTa4x+WLCBZjws2DJXmE8I5MCTTJ/dLjlEKKrmiobrsE6CR38PDoJ0gZig==
+X-Received: by 2002:a63:7e55:: with SMTP id o21mr5702707pgn.263.1594928359698;
+        Thu, 16 Jul 2020 12:39:19 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 129sm5351398pfv.161.2020.07.16.12.39.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 12:39:19 -0700 (PDT)
+Subject: [PATCH] powerpc/64: Fix an out of date comment about MMIO ordering
+Date:   Thu, 16 Jul 2020 12:38:20 -0700
+Message-Id: <20200716193820.1141936-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1593208534-33721-1-git-send-email-fenghua.yu@intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        npiggin@gmail.com, msuchanek@suse.de, tglx@linutronix.de,
+        bigeasy@linutronix.de, jniethe5@gmail.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Will Deacon <willdeacon@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Thomas, Boris, Ingo,
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-On Fri, Jun 26, 2020 at 02:55:34PM -0700, Fenghua Yu wrote:
-> Add Sapphire Rapids processor to CPU list to enumerate split lock
-> feature.
-> 
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> ---
->  arch/x86/kernel/cpu/intel.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-> index c25a67a34bd3..dca069ad6671 100644
-> --- a/arch/x86/kernel/cpu/intel.c
-> +++ b/arch/x86/kernel/cpu/intel.c
-> @@ -1148,6 +1148,7 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
->  	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,	1),
->  	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,		1),
->  	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		1),
-> +	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	1),
->  	{}
->  };
+This primitive has been renamed, but because it was spelled incorrectly in the
+first place it must have escaped the fixup patch.  As far as I can tell this
+logic is still correct: smp_mb__after_spinlock() uses the default smp_mb()
+implementation, which is "sync" rather than "hwsync" but those are the same
+(though I'm not that familiar with PowerPC).
 
-Any comment on this patch?
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+ arch/powerpc/kernel/entry_64.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks.
+diff --git a/arch/powerpc/kernel/entry_64.S b/arch/powerpc/kernel/entry_64.S
+index b3c9f15089b6..7b38b4daca93 100644
+--- a/arch/powerpc/kernel/entry_64.S
++++ b/arch/powerpc/kernel/entry_64.S
+@@ -357,7 +357,7 @@ _GLOBAL(_switch)
+ 	 * kernel/sched/core.c).
+ 	 *
+ 	 * Uncacheable stores in the case of involuntary preemption must
+-	 * be taken care of. The smp_mb__before_spin_lock() in __schedule()
++	 * be taken care of. The smp_mb__after_spinlock() in __schedule()
+ 	 * is implemented as hwsync on powerpc, which orders MMIO too. So
+ 	 * long as there is an hwsync in the context switch path, it will
+ 	 * be executed on the source CPU after the task has performed
+-- 
+2.28.0.rc0.105.gf9edc3c819-goog
 
--Fenghua
