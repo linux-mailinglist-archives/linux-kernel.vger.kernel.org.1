@@ -2,86 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C839221CB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F943221CD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgGPGle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 02:41:34 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:4367 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727943AbgGPGle (ORCPT
+        id S1728036AbgGPGya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:54:30 -0400
+Received: from lonlinode-sdnproxy-1.icoremail.net ([139.162.193.133]:51568
+        "HELO lonlinode-sdnproxy-1.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S1725921AbgGPGya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:41:34 -0400
-X-UUID: 23d064985d8c44cb8eb27405b3e6b9e4-20200716
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Ho71eZkBMon4Vz3VLsPtyCt1CUgMlDiLHMKnef2ILSA=;
-        b=XRXOcdeTwdFN5d5s8jX8hdz6O50rKSfYqC/FF81iO2+b53MPXL5/oC0kr7EVgPUpRORpRoYW96U7jERsz9vZ9HnAyr9cI8T9YQHHcldb5pesSvSRotu9pyGF/T3RirNz9Y82YCsHptjKZZ/PHrJZIhY7f3bsF0ReHtLCijHTROo=;
-X-UUID: 23d064985d8c44cb8eb27405b3e6b9e4-20200716
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 982203569; Thu, 16 Jul 2020 14:41:28 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 16 Jul 2020 14:41:20 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 16 Jul 2020 14:41:20 +0800
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Mediatek WSD Upstream <wsd_upstream@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Macpaul Lin <macpaul.lin@gmail.com>,
-        Eddie Hung <eddie.hung@mediatek.com>, <stable@vger.kernel.org>
-Subject: [PATCH] usb: gadget: configfs: Fix use-after-free issue with udc_name
-Date:   Thu, 16 Jul 2020 14:41:06 +0800
-Message-ID: <1594881666-8843-1-git-send-email-macpaul.lin@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
+        Thu, 16 Jul 2020 02:54:30 -0400
+X-Greylist: delayed 711 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Jul 2020 02:54:28 EDT
+Received: from localhost.localdomain (unknown [106.19.113.251])
+        by c1app1 (Coremail) with SMTP id AQINCgDnyZLC9g9f7dSfAQ--.20987S2;
+        Thu, 16 Jul 2020 14:42:12 +0800 (CST)
+From:   Qiu Wenbo <qiuwenbo@phytium.com.cn>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Linux Driver Project Developer List 
+        <driverdev-devel@linuxdriverproject.org>
+Cc:     Qiu Wenbo <qiuwenbo@phytium.com.cn>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Nishka Dasgupta <nishkadg.linux@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Kees Cook <keescook@chromium.org>,
+        Marco Villegas <git@marvil07.net>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: rtl8712: Fixes coding style in several headers
+Date:   Thu, 16 Jul 2020 14:41:12 +0800
+Message-Id: <20200716064118.61243-1-qiuwenbo@phytium.com.cn>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQINCgDnyZLC9g9f7dSfAQ--.20987S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGryUGF48WrWrGw4kKFW7Arb_yoW5tFWrpr
+        srX3ySyw1Uta1UWrnxtFyUuF1fKa4xCrWkG39rt34YvF1rurWFgFy7Aa4UJr43Gas5AF13
+        tFWUGry5W34UKrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
+        628vn2kIc2xKxwCY02Avz4vE14v_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+        1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+        AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyU
+        JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+        nIWIevJa73UjIFyTuYvjfUndb1UUUUU
+X-Originating-IP: [106.19.113.251]
+X-CM-SenderInfo: 5tlx4vhqerq15k1wx33pof0zgofq/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlcmUgaXMgYSB1c2UtYWZ0ZXItZnJlZSBpc3N1ZSwgaWYgYWNjZXNzIHVkY19uYW1lDQppbiBm
-dW5jdGlvbiBnYWRnZXRfZGV2X2Rlc2NfVURDX3N0b3JlIGFmdGVyIGFub3RoZXIgY29udGV4dA0K
-ZnJlZSB1ZGNfbmFtZSBpbiBmdW5jdGlvbiB1bnJlZ2lzdGVyX2dhZGdldC4NCg0KQ29udGV4IDE6
-DQpnYWRnZXRfZGV2X2Rlc2NfVURDX3N0b3JlKCktPnVucmVnaXN0ZXJfZ2FkZ2V0KCktPg0KZnJl
-ZSB1ZGNfbmFtZS0+c2V0IHVkY19uYW1lIHRvIE5VTEwNCg0KQ29udGV4IDI6DQpnYWRnZXRfZGV2
-X2Rlc2NfVURDX3Nob3coKS0+IGFjY2VzcyB1ZGNfbmFtZQ0KDQpDYWxsIHRyYWNlOg0KZHVtcF9i
-YWNrdHJhY2UrMHgwLzB4MzQwDQpzaG93X3N0YWNrKzB4MTQvMHgxYw0KZHVtcF9zdGFjaysweGU0
-LzB4MTM0DQpwcmludF9hZGRyZXNzX2Rlc2NyaXB0aW9uKzB4NzgvMHg0NzgNCl9fa2FzYW5fcmVw
-b3J0KzB4MjcwLzB4MmVjDQprYXNhbl9yZXBvcnQrMHgxMC8weDE4DQpfX2FzYW5fcmVwb3J0X2xv
-YWQxX25vYWJvcnQrMHgxOC8weDIwDQpzdHJpbmcrMHhmNC8weDEzOA0KdnNucHJpbnRmKzB4NDI4
-LzB4MTRkMA0Kc3ByaW50ZisweGU0LzB4MTJjDQpnYWRnZXRfZGV2X2Rlc2NfVURDX3Nob3crMHg1
-NC8weDY0DQpjb25maWdmc19yZWFkX2ZpbGUrMHgyMTAvMHgzYTANCl9fdmZzX3JlYWQrMHhmMC8w
-eDQ5Yw0KdmZzX3JlYWQrMHgxMzAvMHgyYjQNClN5U19yZWFkKzB4MTE0LzB4MjA4DQplbDBfc3Zj
-X25ha2VkKzB4MzQvMHgzOA0KDQpBZGQgbXV0ZXhfbG9jayB0byBwcm90ZWN0IHRoaXMga2luZCBv
-ZiBzY2VuYXJpby4NCg0KU2lnbmVkLW9mZi1ieTogRWRkaWUgSHVuZyA8ZWRkaWUuaHVuZ0BtZWRp
-YXRlay5jb20+DQpTaWduZWQtb2ZmLWJ5OiBNYWNwYXVsIExpbiA8bWFjcGF1bC5saW5AbWVkaWF0
-ZWsuY29tPg0KQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCi0tLQ0KIGRyaXZlcnMvdXNiL2dh
-ZGdldC9jb25maWdmcy5jIHwgMTEgKysrKysrKysrLS0NCiAxIGZpbGUgY2hhbmdlZCwgOSBpbnNl
-cnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2Fk
-Z2V0L2NvbmZpZ2ZzLmMgYi9kcml2ZXJzL3VzYi9nYWRnZXQvY29uZmlnZnMuYw0KaW5kZXggOWRj
-MDZhNGUxYjMwLi4yMTExMGIyODY1YjkgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3VzYi9nYWRnZXQv
-Y29uZmlnZnMuYw0KKysrIGIvZHJpdmVycy91c2IvZ2FkZ2V0L2NvbmZpZ2ZzLmMNCkBAIC0yMjEs
-OSArMjIxLDE2IEBAIHN0YXRpYyBzc2l6ZV90IGdhZGdldF9kZXZfZGVzY19iY2RVU0Jfc3RvcmUo
-c3RydWN0IGNvbmZpZ19pdGVtICppdGVtLA0KIA0KIHN0YXRpYyBzc2l6ZV90IGdhZGdldF9kZXZf
-ZGVzY19VRENfc2hvdyhzdHJ1Y3QgY29uZmlnX2l0ZW0gKml0ZW0sIGNoYXIgKnBhZ2UpDQogew0K
-LQljaGFyICp1ZGNfbmFtZSA9IHRvX2dhZGdldF9pbmZvKGl0ZW0pLT5jb21wb3NpdGUuZ2FkZ2V0
-X2RyaXZlci51ZGNfbmFtZTsNCisJc3RydWN0IGdhZGdldF9pbmZvICpnaSA9IHRvX2dhZGdldF9p
-bmZvKGl0ZW0pOw0KKwljaGFyICp1ZGNfbmFtZTsNCisJaW50IHJldDsNCisNCisJbXV0ZXhfbG9j
-aygmZ2ktPmxvY2spOw0KKwl1ZGNfbmFtZSA9IGdpLT5jb21wb3NpdGUuZ2FkZ2V0X2RyaXZlci51
-ZGNfbmFtZTsNCisJcmV0ID0gc3ByaW50ZihwYWdlLCAiJXNcbiIsIHVkY19uYW1lID86ICIiKTsN
-CisJbXV0ZXhfdW5sb2NrKCZnaS0+bG9jayk7DQogDQotCXJldHVybiBzcHJpbnRmKHBhZ2UsICIl
-c1xuIiwgdWRjX25hbWUgPzogIiIpOw0KKwlyZXR1cm4gcmV0Ow0KIH0NCiANCiBzdGF0aWMgaW50
-IHVucmVnaXN0ZXJfZ2FkZ2V0KHN0cnVjdCBnYWRnZXRfaW5mbyAqZ2kpDQotLSANCjIuMTguMA0K
+This patch fixes warnings in several headers found by the checkpatch.pl tool.
+
+Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
+---
+ drivers/staging/rtl8712/rtl871x_event.h   | 15 ++++++++++-----
+ drivers/staging/rtl8712/rtl871x_io.h      |  3 ++-
+ drivers/staging/rtl8712/rtl871x_pwrctrl.h | 15 ++++++++++-----
+ drivers/staging/rtl8712/rtl871x_xmit.h    | 15 ++++++++++-----
+ 4 files changed, 32 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/staging/rtl8712/rtl871x_event.h b/drivers/staging/rtl8712/rtl871x_event.h
+index d9a5476d2426..0e59d0ee6aae 100644
+--- a/drivers/staging/rtl8712/rtl871x_event.h
++++ b/drivers/staging/rtl8712/rtl871x_event.h
+@@ -78,13 +78,16 @@ struct event_node {
+ 	unsigned char *node;
+ 	unsigned char evt_code;
+ 	unsigned short evt_sz;
+-	/*volatile*/ int *caller_ff_tail;
++	/*volatile*/
++	int *caller_ff_tail;
+ 	int	caller_ff_sz;
+ };
+ 
+ struct c2hevent_queue {
+-	/*volatile*/ int	head;
+-	/*volatile*/ int	tail;
++	/*volatile*/
++	int	head;
++	/*volatile*/
++	int	tail;
+ 	struct	event_node	nodes[C2HEVENT_SZ];
+ 	unsigned char	seq;
+ };
+@@ -92,8 +95,10 @@ struct c2hevent_queue {
+ #define NETWORK_QUEUE_SZ	4
+ 
+ struct network_queue {
+-	/*volatile*/ int	head;
+-	/*volatile*/ int	tail;
++	/*volatile*/
++	int	head;
++	/*volatile*/
++	int	tail;
+ 	struct wlan_bssid_ex networks[NETWORK_QUEUE_SZ];
+ };
+ 
+diff --git a/drivers/staging/rtl8712/rtl871x_io.h b/drivers/staging/rtl8712/rtl871x_io.h
+index c20dd5a6bbd1..2e269b71072c 100644
+--- a/drivers/staging/rtl8712/rtl871x_io.h
++++ b/drivers/staging/rtl8712/rtl871x_io.h
+@@ -101,7 +101,8 @@ struct	_io_ops {
+ struct io_req {
+ 	struct list_head list;
+ 	u32	addr;
+-	/*volatile*/ u32	val;
++	/*volatile*/
++	u32	val;
+ 	u32	command;
+ 	u32	status;
+ 	u8	*pbuf;
+diff --git a/drivers/staging/rtl8712/rtl871x_pwrctrl.h b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
+index dd5a79f90b1a..e6b740c09120 100644
+--- a/drivers/staging/rtl8712/rtl871x_pwrctrl.h
++++ b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
+@@ -77,14 +77,19 @@ struct reportpwrstate_parm {
+ 
+ struct	pwrctrl_priv {
+ 	struct mutex mutex_lock;
+-	/*volatile*/ u8 rpwm; /* requested power state for fw */
++	/*volatile*/
++	u8 rpwm; /* requested power state for fw */
+ 	/* fw current power state. updated when 1. read from HCPWM or
+ 	 * 2. driver lowers power level
+ 	 */
+-	/*volatile*/ u8 cpwm;
+-	/*volatile*/ u8 tog; /* toggling */
+-	/*volatile*/ u8 cpwm_tog; /* toggling */
+-	/*volatile*/ u8 tgt_rpwm; /* wanted power state */
++	/*volatile*/
++	u8 cpwm;
++	/*volatile*/
++	u8 tog; /* toggling */
++	/*volatile*/
++	u8 cpwm_tog; /* toggling */
++	/*volatile*/
++	u8 tgt_rpwm; /* wanted power state */
+ 	uint pwr_mode;
+ 	uint smart_ps;
+ 	uint alives;
+diff --git a/drivers/staging/rtl8712/rtl871x_xmit.h b/drivers/staging/rtl8712/rtl871x_xmit.h
+index f227828094bf..6d2e12b35670 100644
+--- a/drivers/staging/rtl8712/rtl871x_xmit.h
++++ b/drivers/staging/rtl8712/rtl871x_xmit.h
+@@ -182,11 +182,16 @@ struct sta_xmit_priv {
+ };
+ 
+ struct	hw_txqueue {
+-	/*volatile*/ sint	head;
+-	/*volatile*/ sint	tail;
+-	/*volatile*/ sint	free_sz;	/*in units of 64 bytes*/
+-	/*volatile*/ sint      free_cmdsz;
+-	/*volatile*/ sint	 txsz[8];
++	/*volatile*/
++	sint	head;
++	/*volatile*/
++	sint	tail;
++	/*volatile*/
++	sint	free_sz;	/*in units of 64 bytes*/
++	/*volatile*/
++	sint      free_cmdsz;
++	/*volatile*/
++	sint	 txsz[8];
+ 	uint	ff_hwaddr;
+ 	uint	cmd_hwaddr;
+ 	sint	ac_tag;
+-- 
+2.27.0
 
