@@ -2,156 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C03F221F9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673DA221F97
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgGPJV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:21:26 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7873 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726027AbgGPJVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:21:25 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 43A44EA7FF2CEFEB46D5;
-        Thu, 16 Jul 2020 17:21:22 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 16 Jul 2020 17:21:13 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <john.garry@huawei.com>, <zhangshaokun@hisilicon.com>,
-        <will@kernel.org>, <mark.rutland@arm.com>
-CC:     <wang.wanghaifeng@huawei.com>,
+        id S1726830AbgGPJUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:20:49 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:28500 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726037AbgGPJUs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:20:48 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06G9K6Dk012022;
+        Thu, 16 Jul 2020 11:20:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=YYdEfJ7VryBj+oIRISl+0NE3XQm3xJF36O7Hxx33TUo=;
+ b=DER8KaZgqXYt5QUIc87g+W9oYIbTIn83sSD4i0qGguy2ESL9oD2R2WZsxE/bYVL+29Qd
+ wbyUSel97hEh2/DEJJYZRUNthWVqIPRKvovDSurABIXK4Olo1K1PshVG53lXUKc4RkcP
+ cFHAqG3kFlwM4wn8Y5oImbyLjpsRNE5yLF8l4wlSaaQWx8sg9fI5H96b7K16ZPZmoiHi
+ UUi/vkX6jl9MKfeSLVoXBsAA9zaXIUdh4MaMIWsiMhCQ+T8vjQNyrYsfAQXRmytyFN2W
+ 3qveZEdYGAkz57tzoQoFTMfsjldkJglAX7qiRv6aYOra4qIOm8cLz7f/bQVY7sMX7XJ6 0A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 327btt1asu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Jul 2020 11:20:30 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7BE7510002A;
+        Thu, 16 Jul 2020 11:20:28 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5976F2AD9EB;
+        Thu, 16 Jul 2020 11:20:28 +0200 (CEST)
+Received: from lmecxl0995.lme.st.com (10.75.127.47) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Thu, 16 Jul
+ 2020 11:20:27 +0200
+Subject: Re: [PATCH 1/6] dt-bindings: connector: add power-opmode optional
+ property to usb-connector
+To:     Rob Herring <robh@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH] drivers/perf: Fix kernel panic when rmmod PMU modules during perf sampling
-Date:   Thu, 16 Jul 2020 17:19:25 +0800
-Message-ID: <1594891165-8228-1-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Fabrice GASNIER <fabrice.gasnier@st.com>
+References: <20200615161512.19150-1-amelie.delaunay@st.com>
+ <20200615161512.19150-2-amelie.delaunay@st.com>
+ <20200715181916.GA551920@bogus>
+From:   Amelie DELAUNAY <amelie.delaunay@st.com>
+Message-ID: <f186558e-210c-ff11-29e0-fc653d4b865b@st.com>
+Date:   Thu, 16 Jul 2020 11:20:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200715181916.GA551920@bogus>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-16_05:2020-07-16,2020-07-16 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When users try to remove PMU modules during perf sampling, kernel panic
-will happen because the pmu->read() is a NULL pointer here.
+Hi Rob,
 
-INFO on HiSilicon hip08 platform as follow:
-pc : hisi_uncore_pmu_event_update+0x30/0xa4 [hisi_uncore_pmu]
-lr : hisi_uncore_pmu_read+0x20/0x2c [hisi_uncore_pmu]
-sp : ffff800010103e90
-x29: ffff800010103e90 x28: ffff0027db0c0e40
-x27: ffffa29a76f129d8 x26: ffffa29a77ceb000
-x25: ffffa29a773a5000 x24: ffffa29a77392000
-x23: ffffddffe5943f08 x22: ffff002784285960
-x21: ffff002784285800 x20: ffff0027d2e76c80
-x19: ffff0027842859e0 x18: ffff80003498bcc8
-x17: ffffa29a76afe910 x16: ffffa29a7583f530
-x15: 16151a1512061a1e x14: 0000000000000000
-x13: ffffa29a76f1e238 x12: 0000000000000001
-x11: 0000000000000400 x10: 00000000000009f0
-x9 : ffff8000107b3e70 x8 : ffff0027db0c1890
-x7 : ffffa29a773a7000 x6 : 00000007f5131013
-x5 : 00000007f5131013 x4 : 09f257d417c00000
-x3 : 00000002187bd7ce x2 : ffffa29a38f0f0d8
-x1 : ffffa29a38eae268 x0 : ffff0027d2e76c80
-Call trace:
-hisi_uncore_pmu_event_update+0x30/0xa4 [hisi_uncore_pmu]
-hisi_uncore_pmu_read+0x20/0x2c [hisi_uncore_pmu]
-__perf_event_read+0x1a0/0x1f8
-flush_smp_call_function_queue+0xa0/0x160
-generic_smp_call_function_single_interrupt+0x18/0x20
-handle_IPI+0x31c/0x4dc
-gic_handle_irq+0x2c8/0x310
-el1_irq+0xcc/0x180
-arch_cpu_idle+0x4c/0x20c
-default_idle_call+0x20/0x30
-do_idle+0x1b4/0x270
-cpu_startup_entry+0x28/0x30
-secondary_start_kernel+0x1a4/0x1fc
+On 7/15/20 8:19 PM, Rob Herring wrote:
+> On Mon, Jun 15, 2020 at 06:15:07PM +0200, Amelie Delaunay wrote:
+>> Power operation mode may depends on hardware design, so, add the optional
+>> property power-opmode for usb-c connector to select the power operation
+>> mode capability.
+>> 
+>> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+>> ---
+>>  .../devicetree/bindings/connector/usb-connector.yaml  | 11 +++++++++++
+>>  1 file changed, 11 insertions(+)
+>> 
+>> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> index 9bd52e63c935..cd7feb2d4984 100644
+>> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+>> @@ -88,6 +88,17 @@ properties:
+>>        - device
+>>        - dual
+>>  
+>> +  power-opmode:
+>> +    description: Determines the power operation mode that the Type C connector
+>> +      will support.
+>> +    allOf:
+>> +      - $ref: /schemas/types.yaml#definitions/string
+>> +    enum:
+>> +      - default
+> 
+> Wouldn't this just be no property?
 
-To solve the above issue, current module should be registered to kernel,
-so that try_module_get() can be invoked when perf sampling starts. This
-adds the reference counting of module and could prevent users from removing
-modules during sampling.
+No because the aim of this optional property is to re-configure the 
+Type-C controller power operation mode. So, when using power-opmode = 
+"default", the use can re-configure it to the 'default' USB power 
+operation mode - 500mA for USB2 or 900mA for USB3.
 
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
-Reported-by: Haifeng Wang <wang.wanghaifeng@huawei.com>
-Reviewed-by: John Garry <john.garry@huawei.com>
----
-Kernel panic will also happen when users try to unbind PMU drivers with
-device. This unbind issue could be solved by another patch latter.
+> 
+>> +      - 1.5A
+>> +      - 3.0A
+> 
+> You'll need to explain these better.
+>
 
- drivers/perf/arm_smmuv3_pmu.c                 | 1 +
- drivers/perf/fsl_imx8_ddr_perf.c              | 1 +
- drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c | 1 +
- drivers/perf/hisilicon/hisi_uncore_hha_pmu.c  | 1 +
- drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c  | 1 +
- 5 files changed, 5 insertions(+)
+Ok I'll add a description in V2.
 
-diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
-index 48e28ef..90caba56 100644
---- a/drivers/perf/arm_smmuv3_pmu.c
-+++ b/drivers/perf/arm_smmuv3_pmu.c
-@@ -742,6 +742,7 @@ static int smmu_pmu_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, smmu_pmu);
+>> +      - usb_power_delivery
+> 
+> I would have thought 'default' would be USB-PD. Though I thought Type-C
+> was always USB-PD.
+> 
 
- 	smmu_pmu->pmu = (struct pmu) {
-+		.module		= THIS_MODULE,
- 		.task_ctx_nr    = perf_invalid_context,
- 		.pmu_enable	= smmu_pmu_enable,
- 		.pmu_disable	= smmu_pmu_disable,
-diff --git a/drivers/perf/fsl_imx8_ddr_perf.c b/drivers/perf/fsl_imx8_ddr_perf.c
-index 90884d1..2aed2d9 100644
---- a/drivers/perf/fsl_imx8_ddr_perf.c
-+++ b/drivers/perf/fsl_imx8_ddr_perf.c
-@@ -512,6 +512,7 @@ static int ddr_perf_init(struct ddr_pmu *pmu, void __iomem *base,
- {
- 	*pmu = (struct ddr_pmu) {
- 		.pmu = (struct pmu) {
-+			.module	      = THIS_MODULE,
- 			.capabilities = PERF_PMU_CAP_NO_EXCLUDE,
- 			.task_ctx_nr = perf_invalid_context,
- 			.attr_groups = attr_groups,
-diff --git a/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c b/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
-index 15713fa..71587f1 100644
---- a/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_ddrc_pmu.c
-@@ -378,6 +378,7 @@ static int hisi_ddrc_pmu_probe(struct platform_device *pdev)
- 			      ddrc_pmu->sccl_id, ddrc_pmu->index_id);
- 	ddrc_pmu->pmu = (struct pmu) {
- 		.name		= name,
-+		.module		= THIS_MODULE,
- 		.task_ctx_nr	= perf_invalid_context,
- 		.event_init	= hisi_uncore_pmu_event_init,
- 		.pmu_enable	= hisi_uncore_pmu_enable,
-diff --git a/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c b/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
-index dcc5600..c199de7 100644
---- a/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_hha_pmu.c
-@@ -390,6 +390,7 @@ static int hisi_hha_pmu_probe(struct platform_device *pdev)
- 			      hha_pmu->sccl_id, hha_pmu->index_id);
- 	hha_pmu->pmu = (struct pmu) {
- 		.name		= name,
-+		.module		= THIS_MODULE,
- 		.task_ctx_nr	= perf_invalid_context,
- 		.event_init	= hisi_uncore_pmu_event_init,
- 		.pmu_enable	= hisi_uncore_pmu_enable,
-diff --git a/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c b/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
-index 7719ae4..567d7e6 100644
---- a/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
-@@ -380,6 +380,7 @@ static int hisi_l3c_pmu_probe(struct platform_device *pdev)
- 			      l3c_pmu->sccl_id, l3c_pmu->index_id);
- 	l3c_pmu->pmu = (struct pmu) {
- 		.name		= name,
-+		.module		= THIS_MODULE,
- 		.task_ctx_nr	= perf_invalid_context,
- 		.event_init	= hisi_uncore_pmu_event_init,
- 		.pmu_enable	= hisi_uncore_pmu_enable,
---
-2.7.4
+In fact, the DT property matches the typec_pwr_opmode enum and 
+typec_pwr_opmodes strings tab:
+static const char * const typec_pwr_opmodes[] = {
+	[TYPEC_PWR_MODE_USB]	= "default",
+	[TYPEC_PWR_MODE_1_5A]	= "1.5A",
+	[TYPEC_PWR_MODE_3_0A]	= "3.0A",
+	[TYPEC_PWR_MODE_PD]	= "usb_power_delivery",
+};
+The same is done for data-role and power-role properties.
 
+So, I would keep "default", "1.5A", "3.0A" and "usb_power_delivery", and 
+I'll add a description for each. Is it OK for you ?
+
+Regards,
+Amelie
+
+>> +
+>>    # The following are optional properties for "usb-c-connector" with power
+>>    # delivery support.
+>>    source-pdos:
+>> -- 
+>> 2.17.1
+>> 
