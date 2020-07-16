@@ -2,72 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467F5221F5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB0F221F74
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbgGPJDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:03:47 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56170 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726811AbgGPJDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:03:47 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 605B784122587D58A67F;
-        Thu, 16 Jul 2020 17:03:45 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 16 Jul 2020 17:03:43 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russell King <linux@armlinux.org.uk>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] arm: dump: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Thu, 16 Jul 2020 17:07:39 +0800
-Message-ID: <20200716090739.14553-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726201AbgGPJKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725908AbgGPJKv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:10:51 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572F6C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 02:10:51 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.93)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1jvzuV-005dVk-Ii; Thu, 16 Jul 2020 11:10:35 +0200
+Message-ID: <159691324719ca79fbb8c206da527fc1f2bbc1ed.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 3/3] um: allow static linking for non-glibc
+ implementations
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Ignat Korchagin <ignat@cloudflare.com>, jdike@addtoit.com,
+        richard@nod.at, anton.ivanov@cambridgegreys.com,
+        brendanhiggins@google.com, masahiroy@kernel.org,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     kernel-team@cloudflare.com
+Date:   Thu, 16 Jul 2020 11:10:19 +0200
+In-Reply-To: <20200715201159.54166-4-ignat@cloudflare.com>
+References: <20200715201159.54166-1-ignat@cloudflare.com>
+         <20200715201159.54166-4-ignat@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Huang <chenhuang5@huawei.com>
+On Wed, 2020-07-15 at 21:11 +0100, Ignat Korchagin wrote:
+> It is possible to produce a statically linked UML binary with UML_NET_VECTOR,
+> UML_NET_VDE and UML_NET_PCAP options enabled using alternative libc
+> implementations, which do not rely on NSS, such as musl.
+> 
+> Allow static linking in this case.
+> 
+> Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> Tested-by: Brendan Higgins <brendanhiggins@google.com>
+> ---
+>  arch/um/Kconfig         | 5 +----
+>  arch/um/drivers/Kconfig | 3 ---
+>  2 files changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+> index 9318dc6d1a0c..beb98b3b9f75 100644
+> --- a/arch/um/Kconfig
+> +++ b/arch/um/Kconfig
+> @@ -62,12 +62,9 @@ config NR_CPUS
+>  
+>  source "arch/$(HEADER_ARCH)/um/Kconfig"
+>  
+> -config FORBID_STATIC_LINK
+> -	bool
+> -
+>  config STATIC_LINK
+>  	bool "Force a static link"
+> -	depends on !FORBID_STATIC_LINK
+> +	depends on CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS || (!UML_NET_VECTOR && !UML_NET_VDE && !UML_NET_PCAP)
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+Come to think of it, in a way "FORBID_STATIC_LINK" was nicer because
+there didn't need to be a single list of "what has dynamic dependencies"
+like here the list of UML_NET_VECTOR, UML_NET_VDE, UML_NET_PCAP.
 
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
----
- arch/arm/mm/ptdump_debugfs.c | 12 +-----------
- 1 file changed, 1 insertion(+), 11 deletions(-)
+Maybe it could be
 
-diff --git a/arch/arm/mm/ptdump_debugfs.c b/arch/arm/mm/ptdump_debugfs.c
-index ec30bf13c..6a62bceab 100644
---- a/arch/arm/mm/ptdump_debugfs.c
-+++ b/arch/arm/mm/ptdump_debugfs.c
-@@ -12,17 +12,7 @@ static int ptdump_show(struct seq_file *m, void *v)
- 	return 0;
- }
- 
--static int ptdump_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, ptdump_show, inode->i_private);
--}
--
--static const struct file_operations ptdump_fops = {
--	.open		= ptdump_open,
--	.read_iter		= seq_read_iter,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(ptdump);
- 
- void ptdump_debugfs_register(struct ptdump_info *info, const char *name)
- {
--- 
-2.17.1
+config MAY_HAVE_NON_STATIC_RUNTIME_DEPS
+	bool
+
+config STATIC_LINK
+	...
+	depends on !MAY_HAVE_NON_STATIC_RUNTIME_DEPS || CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
+
+
+and then UML_NET_VECTOR et al can
+
+	select MAY_HAVE_NON_STATIC_RUNTIME_DEPS
+
+so that the knowledge is still distributed to the corresponding options?
+
+johannes
 
