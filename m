@@ -2,246 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FE3221976
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4B922195D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbgGPB30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 21:29:26 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:49022 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728033AbgGPB3Z (ORCPT
+        id S1727798AbgGPBRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 21:17:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726479AbgGPBRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 21:29:25 -0400
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200716012921epoutp01a6c2f65424fdaf3b13eb9df5dd30de3d~iF2nUBlut0890408904epoutp01Q
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:29:21 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200716012921epoutp01a6c2f65424fdaf3b13eb9df5dd30de3d~iF2nUBlut0890408904epoutp01Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1594862961;
-        bh=hOa/A7YiqiUgUKfubXBHWOxCskvKIPDJb68BD6K6Sdw=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=sDJkD157ZwKeUhy3Akdkhhi095mTtIZFjR0nR2RYYcGSmYkKkNVmoEpTzQCnUoQ54
-         R7EFZORZO2AvdnDAZrjhQV7vPQ7CCyZ5Y05AiANfQpLAqRcYW96KHe9LZovcvBU0gL
-         Yfy2rjcukJhR6DshEOSLjlHlT5M+k8mZycd86jSU=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20200716012920epcas5p2ff4a5f48f3e6b052117db3476bd22e35~iF2m1jJaB0342103421epcas5p2K;
-        Thu, 16 Jul 2020 01:29:20 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4D.1A.09467.07DAF0F5; Thu, 16 Jul 2020 10:29:20 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200716011732epcas5p4e81ce853962d66b1a48ce24e9f63d7ed~iFsTYGCbK1630116301epcas5p4Z;
-        Thu, 16 Jul 2020 01:17:32 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200716011732epsmtrp219362f3104ebe5bcc0433d9f84bf0c9a~iFsTXS0GR2678726787epsmtrp2V;
-        Thu, 16 Jul 2020 01:17:32 +0000 (GMT)
-X-AuditID: b6c32a49-a29ff700000024fb-ba-5f0fad709991
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5D.EB.08303.CAAAF0F5; Thu, 16 Jul 2020 10:17:32 +0900 (KST)
-Received: from alimakhtar02 (unknown [107.108.234.165]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200716011730epsmtip1bda720948ff454b86cbda2a5c209b952~iFsRNj4yc3113931139epsmtip19;
-        Thu, 16 Jul 2020 01:17:30 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Vinod Koul'" <vkoul@kernel.org>
-Cc:     <robh+dt@kernel.org>, <krzk@kernel.org>, <kwmad.kim@samsung.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>, <kishon@ti.com>
-In-Reply-To: <20200713061737.GD34333@vkoul-mobl>
-Subject: RE: [PATCH v12 2/2] phy: samsung-ufs: add UFS PHY driver for
- samsung SoC
-Date:   Thu, 16 Jul 2020 06:47:28 +0530
-Message-ID: <077501d65b0e$e1630100$a4290300$@samsung.com>
+        Wed, 15 Jul 2020 21:17:41 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34770C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 18:17:41 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s189so3980676pgc.13
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 18:17:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zaNhy7jKEUTeXPCFJVaXdjqKRf1wA9n3kEWdA7kmaCg=;
+        b=USvIahWDGxeeJCtcRexeqgdqTHbk9VetJrZufYtnSHY22VZkaCVi6y2CQDfOuA/dQd
+         IskadzGmkejaxVeyVNuajhux2kU4WuW6sUbNXOCLKU79C/49RycBgyNMJXhWijqsLeHV
+         TnuzSwGuaMzBub7SanKN/tgeCaI61A/gAZL4iZNraXzntPXY1QoPBDPdBXUBWpCE4bdV
+         MrKBPBQH8E4DKcoMEeg+Vse2n/lkQY3cNlppeT82UQWFj5wloZhVFZ5xtaHkId89dA8O
+         F8jZDiPtb4kfjHHUpWMtJf0dS06Nst6edh8rSet3HeeOnNyU4XupczkZkaaITgSYGB6q
+         /gJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zaNhy7jKEUTeXPCFJVaXdjqKRf1wA9n3kEWdA7kmaCg=;
+        b=Oo68HOrIPjuSpKCkSS4XAz+2otG+8h2jHuVU2CWqf4jMRxIyE51//KLLseqibpUOdx
+         fStbOmvesj54P3y39NK1q3oN1+z/WQWnoYbUoO4hITIXqwkxl2jC3s+ObFPHtS5aRYRJ
+         r4GRszRJKHPiIcbu9Xvda+g7ErfpQFCAINzHL7i+T2bzDvSZWcnrrZ5tfpXj4zSkTtUM
+         e479VEyRCsICyMkTIgnVTVx5WMG6GAKaBOtUhtYCEIwcJK6kjbosPH/30zTg9Fo6ofVn
+         RC+Ay+lejAa6SaJ2VjivUwQ/fIUwb49VpMZScJ6WZIME+DQMsPUFK3hV7SnUPzTyROCV
+         q91Q==
+X-Gm-Message-State: AOAM5326U2F5DNemDmhldfbgHv8zDYenvQAok+UOSoEmrKcDm1Y/BqRw
+        5kPRh4D3f2/r5L5EAZ39TfEQSnftXK8UWA==
+X-Google-Smtp-Source: ABdhPJwYZygRURnD2JrMEthJce6dZK/3rCVSCW34kL8wdrrm18D2z5RwTR1TAzZuDJi+Ng+4ZhFNFw==
+X-Received: by 2002:a63:29c8:: with SMTP id p191mr2197019pgp.333.1594862260490;
+        Wed, 15 Jul 2020 18:17:40 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id kx3sm3058517pjb.32.2020.07.15.18.17.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 15 Jul 2020 18:17:39 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 09:17:38 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        James Clark <james.clark@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 0/3] Perf tool: Enable Arm arch timer counter and
+ arm-spe's timestamp
+Message-ID: <20200716011738.GA17312@leoy-ThinkPad-X240s>
+References: <20200715023401.23988-1-leo.yan@linaro.org>
+ <CAP-5=fVaLA8C5Cd=jLR1TeCe9ktF5eqMmE++Wb4JHmJxrcfsJg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQIAZudAEAONCLYZ7ErPEYM0UJKVzwJEgx3VAd4V62cCg/PmQ6h9FfEw
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCKsWRmVeSWpSXmKPExsWy7bCmpm7BWv54gzM39C3mHznHanHhaQ+b
-        xfnzG9gtbm45ymKx6fE1VovLu+awWcw4v4/JonXvEXaLnXdOMDtwemxa1cnmsXlJvUffllWM
-        HsdvbGfy+LxJLoA1issmJTUnsyy1SN8ugStj+l2rgjXyFfeexDUwfpHoYuTkkBAwkZh7fwcb
-        iC0ksJtR4u4PCQj7E6PE8/aiLkYuIPszo8Sby7tYYBom3rjDDpHYxSjRd+w+E4TzhlHi9Mpp
-        rCBVbAK6EjsWt4GNFRFQldjy5AEbSBGzwDNGiTWbOhhBEpwCBhKn/l0CGyssECzxYd8CZhCb
-        Bajh1pfXYDavgKXEuaWXGSFsQYmTM5+A1TMLyEtsfzuHGeIkBYmfT5cBLeYAWuYm8fleEUSJ
-        uMTRnz3MIHslBBZySKz9f4MZpEZCwEXiz1R1iFZhiVfHt7BD2FISn9/tZYMoyZbo2WUMEa6R
-        WDrvGNTz9hIHrsxhASlhFtCUWL9LHyIsKzH11DomiK18Er2/nzBBxHkldsyDsVUlmt9dhRoj
-        LTGxu5t1AqPSLCR/zULy1ywkD8xC2LaAkWUVo2RqQXFuemqxaYFhXmq5XnFibnFpXrpecn7u
-        JkZwQtLy3MF498EHvUOMTByMhxglOJiVRHh5uHjjhXhTEiurUovy44tKc1KLDzFKc7AoifMq
-        /TgTJySQnliSmp2aWpBaBJNl4uCUamDa0F96qNXs/+fZF/ZuF5syl+kjT4Jb1eMpR64Hm0rW
-        z9aXFo5s1umXNRc/erk+XIVX+nHsM+ZllxXuiS62vrFD2j98XsSjINOkkxbbeRP8Lyy1bAvj
-        2OTP88oo8P4T0RcVYmW/xVX/v8+UL5snv3TRlLeTvaceC+Cv5Ir5Vbxs3UXPrB9hBf/8frpf
-        85+3aMf8FV5Rf0N7D78yM6w8O6Guu+jphplnV6xgl1/7W1D+oOOpWdaHfGU5Ev9HTCxKmKMf
-        1LY0yPX4Ko/FG1YXBHM6rmm402nmmHFjWsvMnh9zX2w/sCEu8oKc4Cmb68Lq+fGrJ7F08nvn
-        ee6xVJtQmWUapZ9UrKvozBi0gatzwRElluKMREMt5qLiRABgTY+wtwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeLIzCtJLcpLzFFi42LZdlhJTnfNKv54gxdbNSzmHznHanHhaQ+b
-        xfnzG9gtbm45ymKx6fE1VovLu+awWcw4v4/JonXvEXaLnXdOMDtwemxa1cnmsXlJvUffllWM
-        HsdvbGfy+LxJLoA1issmJTUnsyy1SN8ugStj+l2rgjXyFfeexDUwfpHoYuTkkBAwkZh44w47
-        iC0ksINRYs5HZ4i4tMT1jRPYIWxhiZX/ngPZXEA1rxgl7t/sYQVJsAnoSuxY3MYGYosIqEps
-        efKADaSIWeAdo8TufSfZIDoeM0pcOHIXrIpTwEDi1L9LLCC2sECgxKLZ75hAbBag7ltfXjOD
-        2LwClhLnll5mhLAFJU7OfAJUzwE0VU+ibSNYmFlAXmL72znMENcpSPx8uowVpEREwE3i870i
-        iBJxiaM/e5gnMArPQjJoFsKgWUgGzULSsYCRZRWjZGpBcW56brFhgVFearlecWJucWleul5y
-        fu4mRnBkaWntYNyz6oPeIUYmDsZDjBIczEoivDxcvPFCvCmJlVWpRfnxRaU5qcWHGKU5WJTE
-        eb/OWhgnJJCeWJKanZpakFoEk2Xi4JRqYOJ7c/On3BxlV0eej5Pnp+/7kn385FSmmQqK/Fu2
-        Kf+3l4qSN/pyb+JFwfNvdTvkecrrj/QdORWbt6R78nuF1n9xCfel8/aq8iZtCX7MfKza4R1r
-        9b+dIvzXq3/tSzvf6trWl+j6tyDWzdtmUop0obRatssdhayti8/tOXd/vlc7+58ra/eaxPKG
-        r5a3vj4/Mu366qkne1I8xMR8I29L/nz0v/swi3dlo6X7OZu/alIlPOXf5q0ql41t2CegH8T9
-        jEn45sOqVtVN35x25Oc8/LepbB1bwrOpX2uKTy5wvOi7onuzReS/U76CV4VnLasvn7to5XGZ
-        hxUN11lYd7LqrEpimaP6SdT553ZrPeO3rkosxRmJhlrMRcWJAGADDc8bAwAA
-X-CMS-MailID: 20200716011732epcas5p4e81ce853962d66b1a48ce24e9f63d7ed
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200703173144epcas5p1daa9f5c594e7f299638cc75b7425b7c8
-References: <20200703171135.77389-1-alim.akhtar@samsung.com>
-        <CGME20200703173144epcas5p1daa9f5c594e7f299638cc75b7425b7c8@epcas5p1.samsung.com>
-        <20200703171135.77389-2-alim.akhtar@samsung.com>
-        <20200713061737.GD34333@vkoul-mobl>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fVaLA8C5Cd=jLR1TeCe9ktF5eqMmE++Wb4JHmJxrcfsJg@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+Hi Ian,
 
-> -----Original Message-----
-> From: Vinod Koul <vkoul@kernel.org>
-> Sent: 13 July 2020 11:48
-> To: Alim Akhtar <alim.akhtar@samsung.com>
-> Cc: robh+dt@kernel.org; krzk@kernel.org; kwmad.kim@samsung.com;
-> devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-
-> kernel@vger.kernel.org; linux-samsung-soc@vger.kernel.org; kishon@ti.com
-> Subject: Re: [PATCH v12 2/2] phy: samsung-ufs: add UFS PHY driver for
-samsung
-> SoC
+On Wed, Jul 15, 2020 at 09:31:14AM -0700, Ian Rogers wrote:
+> On Tue, Jul 14, 2020 at 7:34 PM Leo Yan <leo.yan@linaro.org> wrote:
+> >
+> > This patch set is to enable Arm arch timer counter and Arm SPE is the
+> > first customer to use arch timer counter for its timestamp.
+> >
+> > The patch 01 is to retrieve arch timer's parameters from mmaped page;
+> > patch 02 provides APIs for the conversion between arch timer's counter
+> > and time; patch 03 is to enable timestamp based on the new introduced
+> > APIs for timestamp related calculation.
+> >
+> > Note, this patch set is depend on the kernel changes for "arm64: perf:
+> > Proper cap_user_time* support" [1].
+> >
+> > This patch set has been rebased on mainline kernel with the latest
+> > commit 11ba468877bb ("Linux 5.8-rc5") and also applied on top of patch
+> > set [1].  After enabling the timestamp, the samples can show the
+> > timestamp, and the timestamp is consistent with the kernel's timestamp
+> > by checking the kernel log:
+> >
+> >   $ perf script -F,+time
+> >     dd  6799 [034] 25496.733475:          1              l1d-access:      ffff87f37b88 _dl_start+0x288 (/usr/lib/aarch64-linux-gnu/ld-2.28.so)
+> >     dd  6799 [034] 25496.733475:          1              tlb-access:      ffff87f37b88 _dl_start+0x288 (/usr/lib/aarch64-linux-gnu/ld-2.28.so)
+> >     dd  6799 [034] 25496.733479:          1              l1d-access:      ffff87f37c74 _dl_start+0x374 (/usr/lib/aarch64-linux-gnu/ld-2.28.so)
+> >     dd  6799 [034] 25496.733479:          1              tlb-access:      ffff87f37c74 _dl_start+0x374 (/usr/lib/aarch64-linux-gnu/ld-2.28.so)
+> >     dd  6799 [034] 25496.733485:          1              l1d-access:      ffff87f49af4 __GI___tunables_init+0x3c (/usr/lib/aarch64-linux-gnu/ld-2.28.so)
+> >     dd  6799 [034] 25496.733485:          1              tlb-access:      ffff87f49af4 __GI___tunables_init+0x3c (/usr/lib/aarch64-linux-gnu/ld-2.28.so)
+> >
+> > [1] https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=318401
 > 
-> On 03-07-20, 22:41, Alim Akhtar wrote:
-> 
-> > +static const struct samsung_ufs_phy_cfg exynos7_post_init_cfg[] = {
-> > +	END_UFS_PHY_CFG
-> > +};
-> 
-> This is dummy, why not add a check to make config optional?
-> 
-Currently this is dummy, however this might be used for the similar platform
-which do some phy tunning post init.
-Will just remove this for now for this platform, will add this check in
-driver.
+> This looks good to me! Would it be possible to add a test on the
+> functionality? It's possible to add a C test in
+> tools/perf/arch/arm64/tests or something related to you perf script
+> command line in tools/perf/tests/shell.
 
-> > +static int samsung_ufs_phy_symbol_clk_init(struct samsung_ufs_phy
-> > +*phy) {
-> > +	int ret = 0;
-> 
-> superfluous init, am sure I flagged it before as well
-> 
-Yes, you did, but 0-DAY CI kernel test gave warning [1], so I kept this as
-it is.
-[1] https://lkml.org/lkml/2020/7/3/81
+Yeah, will look into testing and it's good add two testing cases,
+one is for arch timer testing in C, another is for SPE testing
+with shell script.
 
-> > +
-> > +	phy->tx0_symbol_clk = devm_clk_get(phy->dev, "tx0_symbol_clk");
-> > +	if (IS_ERR(phy->tx0_symbol_clk)) {
-> > +		dev_err(phy->dev, "failed to get tx0_symbol_clk clock\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	phy->rx0_symbol_clk = devm_clk_get(phy->dev, "rx0_symbol_clk");
-> > +	if (IS_ERR(phy->rx0_symbol_clk)) {
-> > +		dev_err(phy->dev, "failed to get rx0_symbol_clk clock\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	phy->rx1_symbol_clk = devm_clk_get(phy->dev, "rx1_symbol_clk");
-> > +	if (IS_ERR(phy->rx0_symbol_clk)) {
-> > +		dev_err(phy->dev, "failed to get rx1_symbol_clk clock\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	ret = clk_prepare_enable(phy->tx0_symbol_clk);
-> > +	if (ret) {
-> > +		dev_err(phy->dev, "%s: tx0_symbol_clk enable failed %d\n",
-> __func__, ret);
-> > +		goto out;
-> > +	}
-> > +
-> > +	ret = clk_prepare_enable(phy->rx0_symbol_clk);
-> > +	if (ret) {
-> > +		dev_err(phy->dev, "%s: rx0_symbol_clk enable failed %d\n",
-> __func__, ret);
-> > +		clk_disable_unprepare(phy->tx0_symbol_clk);
-> > +		goto out;
-> > +	}
-> > +
-> > +	ret = clk_prepare_enable(phy->rx1_symbol_clk);
-> > +	if (ret) {
-> > +		dev_err(phy->dev, "%s: rx1_symbol_clk enable failed %d\n",
-> __func__, ret);
-> > +		clk_disable_unprepare(phy->tx0_symbol_clk);
-> > +		clk_disable_unprepare(phy->rx0_symbol_clk);
-> 
-> maybe it will look better if we add common rollback and jump to proper
-labels
-> 
-Sure, will change in next version.
-
-> > +static int samsung_ufs_phy_clks_init(struct samsung_ufs_phy *phy) {
-> > +	int ret;
-> > +
-> > +	phy->ref_clk = devm_clk_get(phy->dev, "ref_clk");
-> > +	if (IS_ERR(phy->ref_clk))
-> > +		dev_err(phy->dev, "failed to get ref_clk clock\n");
-> > +
-> > +	ret = clk_prepare_enable(phy->ref_clk);
-> > +	if (ret) {
-> > +		dev_err(phy->dev, "%s: ref_clk enable failed %d\n",
-__func__,
-> ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	dev_info(phy->dev, "UFS MPHY ref_clk_rate = %ld\n",
-> > +clk_get_rate(phy->ref_clk));
-> 
-> debug pls
-> 
-Sure, will change
-
-> > +static int samsung_ufs_phy_init(struct phy *phy) {
-> > +	struct samsung_ufs_phy *_phy = get_samsung_ufs_phy(phy);
-> 
-> ss_phy perhaps?
-> 
-Sure, will change 
-
-> > +	int ret;
-> > +
-> > +	_phy->lane_cnt = phy->attrs.bus_width;
-> > +	_phy->ufs_phy_state = CFG_PRE_INIT;
-> > +
-> > +	if (_phy->drvdata->has_symbol_clk) {
-> > +		ret = samsung_ufs_phy_symbol_clk_init(_phy);
-> > +		if (ret)
-> > +			dev_err(_phy->dev, "failed to set ufs phy symbol
-> clocks\n");
-> > +	}
-> > +
-> > +	ret = samsung_ufs_phy_clks_init(_phy);
-> > +	if (ret)
-> > +		dev_err(_phy->dev, "failed to set ufs phy  clocks\n");
-> > +
-> > +	samsung_ufs_phy_calibrate(phy);
-> > +
-> > +	return 0;
-> 
-> not return samsung_ufs_phy_calibrate() ?
-> --
-Will add an error path.
-
-> ~Vinod
-
+Thanks for suggestions,
+Leo
