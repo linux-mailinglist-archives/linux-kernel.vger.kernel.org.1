@@ -2,146 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871C7221AAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2334221ABF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgGPDRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 23:17:15 -0400
-Received: from mga06.intel.com ([134.134.136.31]:8148 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728238AbgGPDRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 23:17:06 -0400
-IronPort-SDR: /W1/v4ee3af8ZAyWtPZhVMDXUfrp/fhA+QO/kOUKNKYcDns8EhuVeBPkrMFrJ+UYiZBNVLDQK3
- WPpb/sa95rgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="210844855"
-X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
-   d="scan'208";a="210844855"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 20:17:05 -0700
-IronPort-SDR: sBbk95E8CgFg+2aBOH0e5p1KT6FjtbJKGU0/G1lD+eGSi0PsqlpeS7SUykkiauNfRnMhMQubjz
- 6+wTJfj1M2Tw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
-   d="scan'208";a="360910452"
-Received: from unknown (HELO local-michael-cet-test.sh.intel.com) ([10.239.159.128])
-  by orsmga001.jf.intel.com with ESMTP; 15 Jul 2020 20:17:03 -0700
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        jmattson@google.com
-Cc:     yu.c.zhang@linux.intel.com, Yang Weijiang <weijiang.yang@intel.com>
-Subject: [RESEND v13 05/11] KVM: x86: Refresh CPUID once guest changes XSS bits
-Date:   Thu, 16 Jul 2020 11:16:21 +0800
-Message-Id: <20200716031627.11492-6-weijiang.yang@intel.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20200716031627.11492-1-weijiang.yang@intel.com>
-References: <20200716031627.11492-1-weijiang.yang@intel.com>
+        id S1728406AbgGPDSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 23:18:12 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48524 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726998AbgGPDQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 23:16:41 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7x+Pxg9f1GoFAA--.6749S2;
+        Thu, 16 Jul 2020 11:16:32 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/8] irqchip: Fix some issues and do some code cleanups about Loongson
+Date:   Thu, 16 Jul 2020 11:16:22 +0800
+Message-Id: <1594869390-21053-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx7x+Pxg9f1GoFAA--.6749S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF1rGw1DWr4rGFykZryDGFg_yoW8Xw18pa
+        1fC3sIgr4UCrW7ZryfAry8Ary3Aryrt39rta9rt343XF95X34DZF13AFykurZ3CrWxWF1j
+        9ry0grW0k3WDCaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkqb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JV
+        WxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r48MxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0-_-PUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CPUID(0xd, 1) reports the current required storage size of XCR0 | XSS,
-when guest updates the XSS, it's necessary to update the CPUID leaf, otherwise
-guest will fetch old state size, and results to some WARN traces during guest
-running.
+Check the return value of irq_domain_translate_onecell() and
+irq_domain_translate_twocell(), fix potential resource leak
+and dead lock, do some code cleanups about Loongson to make
+it more clean and readable.
 
-supported_xss is initialized to host_xss & KVM_SUPPORTED_XSS to indicate current
-MSR_IA32_XSS bits supported in KVM, but actual XSS bits seen in guest depends
-on the setting of CPUID(0xd,1).{ECX, EDX} for guest.
+v2:
+  - In order to avoid git send-email failed, make the related patches
+    about Loongson into a new patch series and add "Fixes" tag
 
-Co-developed-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
-Signed-off-by: Zhang Yi Z <yi.z.zhang@linux.intel.com>
-Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/cpuid.c            | 23 +++++++++++++++++++----
- arch/x86/kvm/x86.c              | 12 ++++++++----
- 3 files changed, 28 insertions(+), 8 deletions(-)
+v3:
+  - Add a new patch "irqchip/loongson-liointc: Fix potential dead lock"
+  - Fix another typo in loongson,liointc.yaml
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index be5363b21540..e8c749596ba2 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -654,6 +654,7 @@ struct kvm_vcpu_arch {
- 
- 	u64 xcr0;
- 	u64 guest_supported_xcr0;
-+	u64 guest_supported_xss;
- 
- 	struct kvm_pio_request pio;
- 	void *pio_data;
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 8a294f9747aa..d97b2a6e8a8c 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -88,14 +88,29 @@ int kvm_update_cpuid(struct kvm_vcpu *vcpu)
- 		vcpu->arch.guest_supported_xcr0 = 0;
- 	} else {
- 		vcpu->arch.guest_supported_xcr0 =
--			(best->eax | ((u64)best->edx << 32)) & supported_xcr0;
-+			(((u64)best->edx << 32) | best->eax) & supported_xcr0;
- 		best->ebx = xstate_required_size(vcpu->arch.xcr0, false);
- 	}
- 
- 	best = kvm_find_cpuid_entry(vcpu, 0xD, 1);
--	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
--		     cpuid_entry_has(best, X86_FEATURE_XSAVEC)))
--		best->ebx = xstate_required_size(vcpu->arch.xcr0, true);
-+	if (best) {
-+		if (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
-+		    cpuid_entry_has(best, X86_FEATURE_XSAVEC))  {
-+			u64 xstate = vcpu->arch.xcr0 | vcpu->arch.ia32_xss;
-+
-+			best->ebx = xstate_required_size(xstate, true);
-+		}
-+
-+		if (!cpuid_entry_has(best, X86_FEATURE_XSAVES)) {
-+			best->ecx = 0;
-+			best->edx = 0;
-+		}
-+		vcpu->arch.guest_supported_xss =
-+			(((u64)best->edx << 32) | best->ecx) & supported_xss;
-+
-+	} else {
-+		vcpu->arch.guest_supported_xss = 0;
-+	}
- 
- 	/*
- 	 * The existing code assumes virtual address is 48-bit or 57-bit in the
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 906e07039d59..8aed32ff9c0c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2912,9 +2912,12 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		 * IA32_XSS[bit 8]. Guests have to use RDMSR/WRMSR rather than
- 		 * XSAVES/XRSTORS to save/restore PT MSRs.
- 		 */
--		if (data & ~supported_xss)
-+		if (data & ~vcpu->arch.guest_supported_xss)
- 			return 1;
--		vcpu->arch.ia32_xss = data;
-+		if (vcpu->arch.ia32_xss != data) {
-+			vcpu->arch.ia32_xss = data;
-+			kvm_update_cpuid(vcpu);
-+		}
- 		break;
- 	case MSR_SMI_COUNT:
- 		if (!msr_info->host_initiated)
-@@ -9779,8 +9782,9 @@ int kvm_arch_hardware_setup(void *opaque)
- 
- 	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
- 
--	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
--		supported_xss = 0;
-+	supported_xss = 0;
-+	if (kvm_cpu_cap_has(X86_FEATURE_XSAVES))
-+		supported_xss = host_xss & KVM_SUPPORTED_XSS;
- 
- #define __kvm_cpu_cap_has(UNUSED_, f) kvm_cpu_cap_has(f)
- 	cr4_reserved_bits = __cr4_reserved_bits(__kvm_cpu_cap_has, UNUSED_);
+v4:
+  - Fix another typo in loongson,liointc.yaml reviewed by Rob
+
+Tiezhu Yang (8):
+  irqchip/loongson-htpic: Remove redundant kfree operation
+  irqchip/loongson-htpic: Remove unneeded select of I8259
+  irqchip/loongson-htvec: Fix potential resource leak
+  irqchip/loongson-htvec: Check return value of
+    irq_domain_translate_onecell()
+  irqchip/loongson-pch-pic: Check return value of
+    irq_domain_translate_twocell()
+  irqchip/loongson-pch-msi: Remove unneeded variable
+  irqchip/loongson-liointc: Fix potential dead lock
+  dt-bindings: interrupt-controller: Fix typos in loongson,liointc.yaml
+
+ .../bindings/interrupt-controller/loongson,liointc.yaml   |  4 ++--
+ drivers/irqchip/Kconfig                                   |  1 -
+ drivers/irqchip/irq-loongson-htpic.c                      |  6 ++----
+ drivers/irqchip/irq-loongson-htvec.c                      | 10 ++++++++--
+ drivers/irqchip/irq-loongson-liointc.c                    |  1 +
+ drivers/irqchip/irq-loongson-pch-msi.c                    |  7 +------
+ drivers/irqchip/irq-loongson-pch-pic.c                    | 15 +++++++++------
+ 7 files changed, 23 insertions(+), 21 deletions(-)
+
 -- 
-2.17.2
+2.1.0
 
