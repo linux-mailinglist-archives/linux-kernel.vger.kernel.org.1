@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EDF2220B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297DF2220BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgGPKgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 06:36:02 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:48437 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726190AbgGPKgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 06:36:00 -0400
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 532C8240007;
-        Thu, 16 Jul 2020 10:34:21 +0000 (UTC)
-Date:   Thu, 16 Jul 2020 12:37:55 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        sakari.ailus@iki.fi,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
-Subject: Re: [PATCH] MAINTAINERS: Fix sort order for RDACM20
-Message-ID: <20200716103755.7q2z62xuxb4d34vy@uno.localdomain>
-References: <20200716102552.1390223-1-kieran.bingham+renesas@ideasonboard.com>
+        id S1727030AbgGPKkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 06:40:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726239AbgGPKkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 06:40:02 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62EBF2074B;
+        Thu, 16 Jul 2020 10:40:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594896002;
+        bh=r/8Oh1rit4CQjxeB1Qex0fA/yclw0hsotGx9cOiaz1g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=D3rsYugSoLV9FqfQvdCME/kYHCS46rSd922a9iW22Ksv7gNdlmSkPxA0cU0lXKuNv
+         HDWHlYNUPjC+H18tdMvP/mq/FiRXzKuHytp7nwDO8n7+q1EQoGqS0ClM0f6mz+TxyN
+         b/WVs4kGGBgucd6EKv1B9lH3a7vZi1NahSYXBqqI=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v1 0/2] Align write() and ioctl() paths
+Date:   Thu, 16 Jul 2020 13:39:54 +0300
+Message-Id: <20200716103956.1422139-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200716102552.1390223-1-kieran.bingham+renesas@ideasonboard.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kieran,
+From: Leon Romanovsky <leonro@mellanox.com>
 
-On Thu, Jul 16, 2020 at 11:25:52AM +0100, Kieran Bingham wrote:
-> The files maintained as part of the RDACM20 were incorrectly sorted
-> while they were added.
->
-> Correct the sort-order.
->
-> Fixes: 874a93adf972 ("media: i2c: Add RDACM20 driver")
-> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Changelog:
+v1:
+ * v0 revealed old bug https://lore.kernel.org/linux-rdma/20200716102059.1420681-1-leon@kernel.org
+  that took a while to find.
+ * create_cq() was rewritten to make sure that uobj is properly initialized.
+v0: https://lore.kernel.org/lkml/20200708110554.1270613-1-leon@kernel.org
 
-FWIW
-Acked-by: Jacopo Mondi <jacopo@jmondi.org>
+----------------------------------------------------
+Hi,
+
+The discussion about RWQ table patch revealed incosistency with use of
+usecnt, complex unwind flows without any reason and difference between
+write() and ioctl() paths.
+
+This series extends infrastructure to be consistent, reliable and
+predicable in regards of commit/desotry uobject.
 
 Thanks
-  j
 
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 373e4198d2b1..8bd8d4ab8b5f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14412,9 +14412,9 @@ M:	Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
->  F:	Documentation/devicetree/bindings/media/i2c/imi,rdacm2x-gmsl.yaml
-> -F:	drivers/media/i2c/rdacm20.c
->  F:	drivers/media/i2c/max9271.c
->  F:	drivers/media/i2c/max9271.h
-> +F:	drivers/media/i2c/rdacm20.c
->
->  RDC R-321X SoC
->  M:	Florian Fainelli <florian@openwrt.org>
-> --
-> 2.25.1
->
+Leon Romanovsky (2):
+  RDMA/core: Align abort/commit object scheme for write() and ioctl()
+    paths
+  RDMA/core: Update write interface to use automatic object lifetime
+
+ drivers/infiniband/core/uverbs_cmd.c          | 314 ++++++------------
+ drivers/infiniband/core/uverbs_main.c         |   4 +
+ .../infiniband/core/uverbs_std_types_device.c |   7 +-
+ include/rdma/uverbs_ioctl.h                   |   1 +
+ include/rdma/uverbs_std_types.h               |  14 +
+ 5 files changed, 120 insertions(+), 220 deletions(-)
+
+--
+2.26.2
+
