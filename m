@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280D3222D49
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB83222D4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgGPUzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 16:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50916 "EHLO
+        id S1726528AbgGPU5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 16:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgGPUzO (ORCPT
+        with ESMTP id S1725928AbgGPU5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 16:55:14 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8433DC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 13:55:13 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id d4so5458385pgk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 13:55:13 -0700 (PDT)
+        Thu, 16 Jul 2020 16:57:00 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D09C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 13:56:59 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id 207so4262093pfu.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 13:56:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=5MTI6j+IP80rlb/aM1c91JmfYfE5Osj9CRG4Mb8h3u8=;
-        b=BUv2M4VRSD2wen45IsSL7yNTJnozpg/gwPGZodjItCPRDJfb7N4bKQjiX7XixbYm8P
-         cIsboo5bKpOkxk3XtZVey2uiuX1eRBu5WIt92S/1k6oMZppoMS2xjZ2lYtLeFnGf5F42
-         4VmBFpQ2GAs4br3hw2RsfpoSwHxlXKla8vxwM=
+        bh=VhwUXS7xQLeI5A8zuKFyZny7IQHvIE+zP5ObVJhuh7o=;
+        b=juh+QMp9iXE9jqDtJtdsumhrFyyJ4wGE7w2uxHCiQ4hgadiBuZzPhFjfXzE/UUX3ry
+         zXHjDUciBIv+1/76l2skFse0Ks6ANgnaIfesAnXonjXm9WpbaenWt+bOkTHX+wYi3EwR
+         K8GNbPPPqJ5re+9LirXkpX5Rk+EUm1YIoyL6Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=5MTI6j+IP80rlb/aM1c91JmfYfE5Osj9CRG4Mb8h3u8=;
-        b=nLgwnqBhodv9E50mCWFkpKDshze1mBspM6zGOH4VZKHl1eyJDi+25JsJhzh0V847bE
-         yn253d9o5wd22/qpcB1J6LXqKxZc42RbMVpk+PNG32dF921ay7E75dNUlHFjraCBsG+z
-         voCypisDO6le0z3M0n27j/ejFyx2CL3+tbqnlPSGUSspwfcHx1iyfaxcvP22rUa6hedU
-         jY7G7ISDR2gtKue9KHniXnxuAkgElzkQBTgxwrVvEOZW6c4suXRTpg30rXGoytyRJP7e
-         r55FHTfL1PQVSY8JoDcV3a3yXB2yj0lVhD45AsWe98e8PJ76sq9eNYLrdW/NDI5Cc4KI
-         9vUw==
-X-Gm-Message-State: AOAM5314v6+yDjo3I+vZgsNRywbZQJbS4W+B1NSRxb7mjQAPPkMWtAPB
-        HIPCOtRYb5ZdCrk57IpjUCbOLw==
-X-Google-Smtp-Source: ABdhPJwAy3pY3PKmw7KMXldIFkljrR5dKIYZZ376c+NTl4R4CSIRSOXzPuSZuhNstL3QzpzBisSHrA==
-X-Received: by 2002:a63:3ec4:: with SMTP id l187mr5653642pga.371.1594932913054;
-        Thu, 16 Jul 2020 13:55:13 -0700 (PDT)
+        bh=VhwUXS7xQLeI5A8zuKFyZny7IQHvIE+zP5ObVJhuh7o=;
+        b=itIwNzzV0Be+cxdChnRF9exiHUZD8aAvR9RWqQm3hKg5Oa4sDQmztIckzOd0Q0D3/a
+         qFv3+n8lEO6NYM8NR6cOXyVBN/DjlRqw8AQkf37lE7hsRYh3LexC7gTfHXrAGkh625sA
+         WLBGtvNLPTC1Q+2wT+M5HTkDHRvj96/bVZ/tp6rrcTXGGPbkrcQTRRpsXM+HtnkHKI22
+         xILL0kgDyIGucbGu76Qe1heaRCQeykiRHVdTa+4/a2tTfdZTpAOmO25ggLWXmSMVxyOI
+         DWWlbC6RPUgKKhZAFe/8oyDtszYmSpyvUa7oalWkJNDKkOZzf+dlkqVfiomGsq+2Wyz3
+         PDwQ==
+X-Gm-Message-State: AOAM530/pnbsjryei5soPPStpHCKP+YKQCCqXsCcoBtaB5HOj77gV6Rv
+        bMCo1qwPBHKxeH4ctCHrUR9zN3oSBcM=
+X-Google-Smtp-Source: ABdhPJwMV2s/kQB+MFw/wcpWH6J0wsZn4KhmDPbLhSzK2FEmEK7+il1ocsbY/TenztYWogQxFnw2Lg==
+X-Received: by 2002:aa7:8648:: with SMTP id a8mr5179085pfo.222.1594933019474;
+        Thu, 16 Jul 2020 13:56:59 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id f15sm5823160pgr.36.2020.07.16.13.55.11
+        by smtp.gmail.com with ESMTPSA id b18sm839769pju.10.2020.07.16.13.56.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 13:55:12 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 13:55:11 -0700
+        Thu, 16 Jul 2020 13:56:58 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 13:56:57 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
@@ -54,53 +54,24 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
         Mark Rutland <mark.rutland@arm.com>,
         Keno Fischer <keno@juliacomputing.com>,
         Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [patch V3 02/13] entry: Provide generic syscall exit function
-Message-ID: <202007161354.62030182F@keescook>
+Subject: Re: [patch V3 05/13] x86/entry: Consolidate check_user_regs()
+Message-ID: <202007161356.5CD3A6ACE@keescook>
 References: <20200716182208.180916541@linutronix.de>
- <20200716185424.116500611@linutronix.de>
+ <20200716185424.442693273@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200716185424.116500611@linutronix.de>
+In-Reply-To: <20200716185424.442693273@linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 08:22:10PM +0200, Thomas Gleixner wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> Like syscall entry all architectures have similar and pointlessly different
-> code to handle pending work before returning from a syscall to user space.
-> 
->   1) One-time syscall exit work:
->       - rseq syscall exit
->       - audit
->       - syscall tracing
->       - tracehook (single stepping)
-> 
->   2) Preparatory work
->       - Exit to user mode loop (common TIF handling).
->       - Architecture specific one time work arch_exit_to_user_mode_prepare()
->       - Address limit and lockdep checks
->      
->   3) Final transition (lockdep, tracing, context tracking, RCU). Invokes
->      arch_exit_to_user_mode() to handle e.g. speculation mitigations
-> 
-> Provide a generic version based on the x86 code which has all the RCU and
-> instrumentation protections right.
-> 
-> Provide a variant for interrupt return to user mode as well which shares
-> the above #2 and #3 work items.
-> 
-> After syscall_exit_to_user_mode() and irqentry_exit_to_user_mode() the
-> architecture code just has to return to user space. The code after
-> returning from these functions must not be instrumented.
+On Thu, Jul 16, 2020 at 08:22:13PM +0200, Thomas Gleixner wrote:
+> The user register sanity check is sprinkled all over the place. Move it
+> into enter_from_user_mode().
 > 
 > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-This looks correct to me. Did you happen to run the seccomp selftests
-under this series?
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
 
