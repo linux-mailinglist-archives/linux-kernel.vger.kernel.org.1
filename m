@@ -2,102 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA34622201E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0530222031
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgGPKBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 06:01:25 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36886 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725996AbgGPKBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 06:01:24 -0400
-Received: from [10.130.0.99] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn9duJRBfuJsFAA--.4223S3;
-        Thu, 16 Jul 2020 18:01:19 +0800 (CST)
-Subject: Re: [PATCH v2 2/2] spi: coldfire-qspi: Use clk_prepare_enable and
- clk_disable_unprepare
-To:     Mark Brown <broonie@kernel.org>
-References: <1594790807-32319-1-git-send-email-zhangqing@loongson.cn>
- <1594790807-32319-2-git-send-email-zhangqing@loongson.cn>
- <20200715094940.GB5431@sirena.org.uk>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-From:   zhangqing <zhangqing@loongson.cn>
-Message-ID: <1616bb3e-ba20-46df-7818-c11c382a0d86@loongson.cn>
-Date:   Thu, 16 Jul 2020 18:01:18 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1728084AbgGPKC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 06:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726190AbgGPKCZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 06:02:25 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABA4C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 03:02:23 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f139so10994586wmf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 03:02:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HmJaP7NVFikmcFK4iQg7dTx43rAgLK9eCD2nR0ykggk=;
+        b=QXqXKWHD595aOxvBvIH0/gxFgCKeBmrudeJvMWbRzyIjiUcd8RY3hApeSAnEV1kvE3
+         QpgeeNZA2EfDthgH3ykQZgPNBvm2P3awtwuaXp2nmwOFPFwcQ0DOVXbvhgDB53c/Ae0I
+         XIkCuf6zc8kz51rbtP8PDxSLTOyINc3kqx25w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=HmJaP7NVFikmcFK4iQg7dTx43rAgLK9eCD2nR0ykggk=;
+        b=eDGhCmJAJUCXBfnhfA09aM0bp/nJYvBixOsVyGUKO5WYztxvIYbF8H5f3K/33s4G+U
+         /DBeSBuqCUSm0qV0oLqYmAfb/nOwkDpcZtw+3SGnUvCR5uv2r5/qRVQkxDJgmfDBkcZu
+         HJY/Np5X5JGZs/pko3AC3hZrQ7hB5eQ0n+GChmY2DeSm93jlX7XdJuol7PCwgrrGYX+F
+         pLUpY0rUORLw8N5uafnPW+sECi7bX/Hf03WhreFRtOlh8iC2ll5mLlxtvvaRysduQBzs
+         ewNddoRqiF8eedYijKia/iKURB350osuWi35BQMkVqPe7ZfrdMzOkGrz8oiq8lPDitNC
+         Nlug==
+X-Gm-Message-State: AOAM532Lpn8X1+bv4CBjTSyBLNt5UHmVIEWFEFaJ/s10kOAZhRBU3fWM
+        Bux3ylCoi11ek6XmUrzuuduIHA==
+X-Google-Smtp-Source: ABdhPJy/fuyzYF8bhQ0P7Z9zswy1xZik8dtBkFxL5eo+aszv5YPTqw8TmSmFdKQ6/aArjI3D5ObphA==
+X-Received: by 2002:a1c:5418:: with SMTP id i24mr3521598wmb.47.1594893742062;
+        Thu, 16 Jul 2020 03:02:22 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id x9sm8030657wmk.45.2020.07.16.03.02.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 03:02:21 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 12:02:19 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, ajax@redhat.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: remove redundant assignment to variable 'ret'
+Message-ID: <20200716100202.GO3278063@phenom.ffwll.local>
+Mail-Followup-To: Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, ajax@redhat.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20200715070559.180986-1-jingxiangfeng@huawei.com>
+ <20200715120503.GJ3278063@phenom.ffwll.local>
+ <5F0FB48A.6080407@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20200715094940.GB5431@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dxn9duJRBfuJsFAA--.4223S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7XFyDCr1xXF17Gw4UXr4rGrg_yoW8Jr4xpF
-        WxJFWFka1UXryF9an2yr40qr1ak3yvgayUArWrKa4xXw13Gr9Yqr1rCFyDWFyYvrZ7A3WI
-        9FyxXF95AF4DCrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
-        c2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-        AVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280
-        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
-        uYvjxUx3CzDUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5F0FB48A.6080407@huawei.com>
+X-Operating-System: Linux phenom 5.6.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 16, 2020 at 09:59:38AM +0800, Jing Xiangfeng wrote:
+> 
+> 
+> On 2020/7/15 20:05, Daniel Vetter wrote:
+> > On Wed, Jul 15, 2020 at 03:05:59PM +0800, Jing Xiangfeng wrote:
+> > > The variable ret has been assigned the value '-EINVAL'. The assignment
+> > > in the if() is redundant. We can remove it.
+> > 
+> > Nope, that's not correct. Before this assignement ret is guaranteed to be
+> > 0.
+> 
+> Before this assignment ret is '-EINVAL'(see commit 45bc3d26c95a: "drm:
+> rework SET_MASTER and DROP_MASTER perm handling"). It is set to 0 above
+> around the drm_drop_master() calls.
 
+Ah indeed, but it got fixed already in 
 
-On 07/15/2020 05:49 PM, Mark Brown wrote:
-> On Wed, Jul 15, 2020 at 01:26:47PM +0800, Qing Zhang wrote:
->> Convert clk_enable() to clk_prepare_enable() and clk_disable() to
->> clk_disable_unprepare() respectively in the spi-coldfire-qspi.c.
-> Like I said on the previous version are you sure that ColdFire uses the
-> common clock framework and has the prepare calls?
-Hi Mark,
+commit 264ddd077c72092178153fc32d510dcecff32eeb
+Author: Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Sat May 30 13:46:40 2020 +0100
 
-Thanks for your reminder again.
+    drm/auth: make drm_{set,drop}master_ioctl symmetrical
 
-I see the following comment and code in arch/m68k/coldfire/clk.c:
+That's why your patch didn't make any sense to me.
+-Daniel
 
-For more advanced ColdFire parts that have clocks that can be enabled
-we supply enable/disable functions. These must properly define their
-clocks in their platform specific code.
+> 
+> Thanks
+> > -Daniel
+> > 
+> > > 
+> > > Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> > > ---
+> > >   drivers/gpu/drm/drm_auth.c | 1 -
+> > >   1 file changed, 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+> > > index 800ac39f3213..6e1b502f2797 100644
+> > > --- a/drivers/gpu/drm/drm_auth.c
+> > > +++ b/drivers/gpu/drm/drm_auth.c
+> > > @@ -299,7 +299,6 @@ int drm_dropmaster_ioctl(struct drm_device *dev, void *data,
+> > > 
+> > >   	if (file_priv->master->lessor != NULL) {
+> > >   		DRM_DEBUG_LEASE("Attempt to drop lessee %d as master\n", file_priv->master->lessee_id);
+> > > -		ret = -EINVAL;
+> > >   		goto out_unlock;
+> > >   	}
+> > > 
+> > > --
+> > > 2.17.1
+> > > 
+> > 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-int clk_enable(struct clk *clk)
-{
-     unsigned long flags;
-     spin_lock_irqsave(&clk_lock, flags);
-     if ((clk->enabled++ == 0) && clk->clk_ops)
-         clk->clk_ops->enable(clk);
-     spin_unlock_irqrestore(&clk_lock, flags);
-
-     return 0;
-}
-EXPORT_SYMBOL(clk_enable);
-
-void clk_disable(struct clk *clk)
-{
-     unsigned long flags;
-
-     if (!clk)
-         return;
-
-     spin_lock_irqsave(&clk_lock, flags);
-     if ((--clk->enabled == 0) && clk->clk_ops)
-         clk->clk_ops->disable(clk);
-     spin_unlock_irqrestore(&clk_lock, flags);
-}
-EXPORT_SYMBOL(clk_disable);
-
-Thanks,
-Qing
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
