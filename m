@@ -2,121 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5C7221F00
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB9A221F20
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgGPIwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 04:52:55 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:40462 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726837AbgGPIwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 04:52:55 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 215AE7860A1264D70A90;
-        Thu, 16 Jul 2020 16:52:53 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 16 Jul 2020 16:52:50 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH -next] soc: ti: Convert to DEFINE_SHOW_ATTRIBUTE
-Date:   Thu, 16 Jul 2020 16:56:45 +0800
-Message-ID: <20200716085645.10851-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726411AbgGPI5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 04:57:31 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:43170 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725908AbgGPI5b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 04:57:31 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 7143826103D
+Subject: Re: mainline/master bisection: baseline.dmesg.crit on
+ qemu_arm-vexpress-a15
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     kernelci-results@groups.io,
+        Andre Przywara <andre.przywara@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        devicetree@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <5f0288aa.1c69fb81.b1c2a.eea4@mx.google.com>
+ <20200706124951.GA32234@bogus>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <b7d63093-a1a8-fbc1-6673-040d6ba8cc8d@collabora.com>
+Date:   Thu, 16 Jul 2020 09:57:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200706124951.GA32234@bogus>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+On 06/07/2020 13:49, Sudeep Holla wrote:
+> Hi,
+> 
+> On Sun, Jul 05, 2020 at 07:12:58PM -0700, kernelci.org bot wrote:
+>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+>> * This automated bisection report was sent to you on the basis  *
+>> * that you may be involved with the breaking commit it has      *
+>> * found.  No manual investigation has been done to verify it,   *
+>> * and the root cause of the problem may be somewhere else.      *
+>> *                                                               *
+>> * If you do send a fix, please include this trailer:            *
+>> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+>> *                                                               *
+>> * Hope this helps!                                              *
+>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+>>
+> 
+> Andre test and replied to one of the similar but earlier reports.
+> Unless we get some response to that, we can't proceed and we can't
+> do much other than ignoring these reports. Please respond to Andre's
+> queries.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- drivers/soc/ti/knav_dma.c        | 16 +++-------------
- drivers/soc/ti/knav_qmss_queue.c | 14 ++------------
- 2 files changed, 5 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/soc/ti/knav_dma.c b/drivers/soc/ti/knav_dma.c
-index fa6bb14f8..8c863ecb1 100644
---- a/drivers/soc/ti/knav_dma.c
-+++ b/drivers/soc/ti/knav_dma.c
-@@ -355,7 +355,7 @@ static void dma_debug_show_devices(struct seq_file *s,
- 	}
- }
- 
--static int dma_debug_show(struct seq_file *s, void *v)
-+static int knav_dma_debug_show(struct seq_file *s, void *v)
- {
- 	struct knav_dma_device *dma;
- 
-@@ -370,17 +370,7 @@ static int dma_debug_show(struct seq_file *s, void *v)
- 	return 0;
- }
- 
--static int knav_dma_debug_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, dma_debug_show, NULL);
--}
--
--static const struct file_operations knav_dma_debug_ops = {
--	.open		= knav_dma_debug_open,
--	.read_iter		= seq_read_iter,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(knav_dma_debug);
- 
- static int of_channel_match_helper(struct device_node *np, const char *name,
- 					const char **dma_instance)
-@@ -778,7 +768,7 @@ static int knav_dma_probe(struct platform_device *pdev)
- 	}
- 
- 	debugfs_create_file("knav_dma", S_IFREG | S_IRUGO, NULL, NULL,
--			    &knav_dma_debug_ops);
-+			    &knav_dma_debug_fops);
- 
- 	device_ready = true;
- 	return ret;
-diff --git a/drivers/soc/ti/knav_qmss_queue.c b/drivers/soc/ti/knav_qmss_queue.c
-index 85702d66b..a460f201b 100644
---- a/drivers/soc/ti/knav_qmss_queue.c
-+++ b/drivers/soc/ti/knav_qmss_queue.c
-@@ -478,17 +478,7 @@ static int knav_queue_debug_show(struct seq_file *s, void *v)
- 	return 0;
- }
- 
--static int knav_queue_debug_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, knav_queue_debug_show, NULL);
--}
--
--static const struct file_operations knav_queue_debug_ops = {
--	.open		= knav_queue_debug_open,
--	.read_iter		= seq_read_iter,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(knav_queue_debug);
- 
- static inline int knav_queue_pdsp_wait(u32 * __iomem addr, unsigned timeout,
- 					u32 flags)
-@@ -1878,7 +1868,7 @@ static int knav_queue_probe(struct platform_device *pdev)
- 	}
- 
- 	debugfs_create_file("qmss", S_IFREG | S_IRUGO, NULL, NULL,
--			    &knav_queue_debug_ops);
-+			    &knav_queue_debug_fops);
- 	device_ready = true;
- 	return 0;
- 
--- 
-2.17.1
+Sorry I missed your email, the regression is still there.  I'll
+reply to André.
 
+Guillaume
