@@ -2,68 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFC42223CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D98F2223DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728648AbgGPNWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:22:32 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:59336 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727044AbgGPNWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:22:31 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E1ACDF1C77EE7C3B6E82;
-        Thu, 16 Jul 2020 21:22:29 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 16 Jul 2020 21:22:22 +0800
-From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
-To:     <jbrunet@baylibre.com>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <khilman@baylibre.com>, <kuninori.morimoto.gx@renesas.com>
-CC:     <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <jingxiangfeng@huawei.com>
-Subject: [PATCH] ASoC: meson: add the missed kfree() for axg_card_add_tdm_loopback
-Date:   Thu, 16 Jul 2020 21:25:58 +0800
-Message-ID: <20200716132558.33932-1-jingxiangfeng@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1728743AbgGPN1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726986AbgGPN1B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 09:27:01 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC424C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:27:00 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id b25so7123763ljp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g/vDuN1L2KCEbNuFEXJItw+g/c3pd50/6Ev+anSTygo=;
+        b=iczHf7TbyYkMy0BWfgpzsOiVABUoxFhLHlLkbkGc1mGYacGVfxuaNeXRmfY8Tnau+z
+         V6Ys4UJQjGsi5JXc/kEe3DFQJDzbxwH550fJ8UxQrLyQO49GGfXKxxwy4obQfa8wWEa6
+         g+OpiQcbhTwx0zOLwtOJblk7pD5ppy9+2lXf+PYzptH3GxfZwFiqoIdYiJ1uJXR1ATc+
+         NM7xGdxfXPP89AVXgXY7OGXTHN/PUEyibCJ/OdcLUauSg/BUIERlxnxfj61KO2pyt6eG
+         ed+RGobQ6iFu0SSN/psr6T78MeBntG+xbb6VaWqOoejleDe3SliONb1B7Xa+fo6XC6o0
+         TZQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g/vDuN1L2KCEbNuFEXJItw+g/c3pd50/6Ev+anSTygo=;
+        b=fixPhQKmu7ESyTum6WmaiJiZWtDX67r/PX/nTKv43gPtKO7bwAv20dKKvsnoGpA/jN
+         loREcc98dM0BsQvUbloDIpq7V2wmBpP4Fq6ofidOVgavBgkl3OH94KSc0wxgl+3wwlw7
+         s7z8PAM7JDfeEFxqq9SuAROqugVSR7gApEW1tDiH6J+7XZhk12Q31F4W0MIYqDk8fsLN
+         5j8t75VWnT+NfGsIpHD6FWu7C9pXC6WqKjCZBYV+QXiSgA5J1B4WbBU33QMcXmejNLFi
+         4XedS8c2g1wmY7SEuX6f9iowcBTWmByHgAvg8EAQDIPy1NXXdXc/81Fwvr/HabEINm/0
+         yEOQ==
+X-Gm-Message-State: AOAM531tDc3CRrn1CYPtnc25aX473mIaorMA7cuoX4DURnJuvr+PSzL2
+        i9aLNZZKNYTjCE06RxygQwWaIZIG9r9gUYYSGHKtBXW8AWYBDA==
+X-Google-Smtp-Source: ABdhPJzTvWzWY7xde2a3Mu6BMB59vLxHOlDAtL09MGxblo1BkRQCPu5O6Gx0M9FWfCAG68RIFcQ0zgAGPIhWb3rjt30=
+X-Received: by 2002:a2e:8597:: with SMTP id b23mr1876406lji.338.1594906019044;
+ Thu, 16 Jul 2020 06:26:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+References: <1594717479-8160-1-git-send-email-hanks.chen@mediatek.com> <1594717479-8160-3-git-send-email-hanks.chen@mediatek.com>
+In-Reply-To: <1594717479-8160-3-git-send-email-hanks.chen@mediatek.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 16 Jul 2020 15:26:48 +0200
+Message-ID: <CACRpkdZNL=mnF0dx63bQPpHVLcAHA=oSEiiHzH8vi3+X58y5Jw@mail.gmail.com>
+Subject: Re: [PATCH 2/7] dt-bindings: pinctrl: add bindings for MediaTek
+ MT6779 SoC
+To:     Hanks Chen <hanks.chen@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        mtk01761 <wendell.lin@mediatek.com>,
+        Andy Teng <andy.teng@mediatek.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        wsd_upstream@mediatek.com, CC Hwang <cc.hwang@mediatek.com>,
+        Loda Chou <loda.chou@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-axg_card_add_tdm_loopback() misses to call kfree() in an error path. Add
-the missed function call to fix it.
+On Tue, Jul 14, 2020 at 11:04 AM Hanks Chen <hanks.chen@mediatek.com> wrote:
 
-Fixes: c84836d7f650 ("ASoC: meson: axg-card: use modern dai_link style")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
----
- sound/soc/meson/axg-card.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> From: Andy Teng <andy.teng@mediatek.com>
+>
+> Add devicetree bindings for MediaTek MT6779 pinctrl driver.
+>
+> Signed-off-by: Andy Teng <andy.teng@mediatek.com>
+(...)
 
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index 89f7f64747cd..6eac22ba8b99 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -121,8 +121,10 @@ static int axg_card_add_tdm_loopback(struct snd_soc_card *card,
- 		return -ENOMEM;
- 
- 	dlc = devm_kzalloc(card->dev, 2 * sizeof(*dlc), GFP_KERNEL);
--	if (!dlc)
-+	if (!dlc) {
-+		kfree(lb->name);
- 		return -ENOMEM;
-+	}
- 
- 	lb->cpus = &dlc[0];
- 	lb->codecs = &dlc[1];
--- 
-2.17.1
+Please make an attempt to reuse the generic schemas in
+Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
+Documentation/devicetree/bindings/pinctrl/pinmux-node.yaml
 
+See how other bindings reuse them, e.g.:
+qcom,ipq6018-pinctrl.yaml
+
+Yours,
+Linus Walleij
