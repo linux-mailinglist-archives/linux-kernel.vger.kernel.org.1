@@ -2,95 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D36B222DA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E56B222D80
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgGPVS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 17:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgGPVS6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 17:18:58 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B96C061755;
-        Thu, 16 Jul 2020 14:18:58 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id k17so4722370lfg.3;
-        Thu, 16 Jul 2020 14:18:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=FJ3bW/4MDplVqCGVWSq/Y4HTWcLjazCOxA2VaAymdio=;
-        b=tLibSqDixVLggiT3a5OEyl/yqOUjhTW3gev2IISxArAok+qzQagmcK40ICetTX/JsF
-         pWKvcs/Boas7uA0vEFBQWFR98U6cMFrQkcr7rEV+D+OSeG812R96mLerKlXtpuDVBPbT
-         fQCI9QIuFT1/ctJdTqT7S8yTb0pBRMgpEKc94HhUlpZOmtAJRbcmMO1yC6kUWuu5/7mQ
-         cMQaN0eIY+4bHK68yRKFCx7g+dDq1KGMzJ6DC+U6c2ahU7cviE967FgMABZIiVOy+WJ+
-         majaZjoEa3i21JrpzGoXOMy6nR5IlsHmOWCBlor3T/xH7BfwaeU9JC4kXQQnq6NWLz0d
-         ZWLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=FJ3bW/4MDplVqCGVWSq/Y4HTWcLjazCOxA2VaAymdio=;
-        b=RH1b6KoXEMctZxdYEiq+D18ETwF7IEHzPxithqEpezAcez2p3yjIOfUTILrKKd+0ph
-         jdyKQuuhadQ+9xh3kBzdGdEbt1YjaGFS8oiGuce6bcnRPT4CX9YWTGVuRZf/kR0Hp+Bv
-         ltacbbTb1zQyl1Rux7Nij+kCj8Ib/AnfyYjBxf5ACk4BEM6VV/gXy08QazteyGKL40Ui
-         Ts8G0YY5dL+JdNbiHwjGxyVuj5JtKg8ZeY0UlVGxMWOFyASCatJx5tIIJzIlmosOUgAE
-         RHtAPkBz9PBFruQAkGB+Q1zARsMksJadkXEGUE7qediybMLT2KAijvVFcZvlHC3WhRmr
-         RY6w==
-X-Gm-Message-State: AOAM532IA+yrkXfPA81sckTpKTwdzf2sV9Frgp3Am5k9IEkIcbdqQA0I
-        U3uaoLE2/E11qjUGDVQL35U=
-X-Google-Smtp-Source: ABdhPJw9l3DlJWTKFiEKS7TvlzylVC4K8ePaVh2ivhyQrRffemw7utu2lIUAIrEiZLLKRnZ2sza0rA==
-X-Received: by 2002:ac2:4557:: with SMTP id j23mr3179716lfm.124.1594934336863;
-        Thu, 16 Jul 2020 14:18:56 -0700 (PDT)
-Received: from osv.localdomain ([89.175.180.246])
-        by smtp.gmail.com with ESMTPSA id w15sm1421647lff.25.2020.07.16.14.18.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 14:18:56 -0700 (PDT)
-From:   Sergey Organov <sorganov@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fugang Duan <fugang.duan@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-Subject: Re: [PATCH v3 net] net: fec: fix hardware time stamping by external
- devices
-References: <20200706142616.25192-1-sorganov@gmail.com>
-        <20200714162802.11926-1-sorganov@gmail.com>
-        <20200716112432.127b9d99@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87a6zz9owa.fsf@osv.gnss.ru>
-        <20200716140602.2a23530b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Date:   Fri, 17 Jul 2020 00:18:55 +0300
-In-Reply-To: <20200716140602.2a23530b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        (Jakub Kicinski's message of "Thu, 16 Jul 2020 14:06:02 -0700")
-Message-ID: <87blkf88g0.fsf@osv.gnss.ru>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        id S1726989AbgGPVNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 17:13:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726256AbgGPVNy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 17:13:54 -0400
+Received: from embeddedor (unknown [201.162.240.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E06DE20760;
+        Thu, 16 Jul 2020 21:13:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594934034;
+        bh=W/rnCJweoSroLPFc4qIJiZovV2xgzWULfomtSZCzpLY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tpxK0XQjI40X994VvpKDI8qWdJfXDo+L2E9a7aHlksE0YnI51yxxDzJCZG4hmE6kX
+         dYBojpDBIKG/JEQXPfTcmfDA5XgsmfRKz7cHfErnCZMhgbwlAYpc2HHAWREiqKyoKQ
+         d2ePqrl7hDE49IdUS0/LlOm1k7L0WWTDI7PGAIm8=
+Date:   Thu, 16 Jul 2020 16:19:19 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] pinctrl: baytrail: Use fallthrough pseudo-keyword
+Message-ID: <20200716211919.GA17378@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org> writes:
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1].
 
-> On Thu, 16 Jul 2020 23:38:13 +0300 Sergey Organov wrote:
->> > Applied, and added to the stable queue, thanks!  
->> 
->> Thanks, and I've also got a no-brainer patch that lets this bug fix
->> compile as-is with older kernels, where there were no phy_has_hwtstamp()
->> function. Dunno how to properly handle this. Here is the patch (on
->> top of v4.9.146), just in case:
->
-> I see, I'll only add it to 5.7. By default we backport net fixes to
-> the two most recent releases, anyway. Could you send a patch that will 
-> work on 4.4 or 4.9 - 5.4 to Greg yourself once this hits Linus's tree
-> in a week or two?
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Sure. Hopefully I get it right that I'll need to send it to Greg as a
-backport of this one to older kernel trees.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/pinctrl/intel/pinctrl-baytrail.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
--- Sergey
+diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
+index a917a2df520e..d6e35cba3065 100644
+--- a/drivers/pinctrl/intel/pinctrl-baytrail.c
++++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
+@@ -1372,13 +1372,13 @@ static void byt_irq_unmask(struct irq_data *d)
+ 	switch (irqd_get_trigger_type(d)) {
+ 	case IRQ_TYPE_LEVEL_HIGH:
+ 		value |= BYT_TRIG_LVL;
+-		/* fall through */
++		fallthrough;
+ 	case IRQ_TYPE_EDGE_RISING:
+ 		value |= BYT_TRIG_POS;
+ 		break;
+ 	case IRQ_TYPE_LEVEL_LOW:
+ 		value |= BYT_TRIG_LVL;
+-		/* fall through */
++		fallthrough;
+ 	case IRQ_TYPE_EDGE_FALLING:
+ 		value |= BYT_TRIG_NEG;
+ 		break;
+-- 
+2.27.0
+
