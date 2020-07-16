@@ -2,123 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63521221F5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C90F221F40
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728488AbgGPJDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgGPJDe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:03:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B60C061755;
-        Thu, 16 Jul 2020 02:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=e61STVzmvtcU26/gTnsoAUvU2jG9R5G2Meed7diTLDI=; b=lWTmzh055UUr2BQQyP1bzO+OPL
-        6PZShHzLC3ec1bA+WQlbevXX+P/XBH+g29WI5sve0+YnzGPofonq0rfSYbZd+PtG2WtIKmxgQ2JrR
-        GfXu+YHPj3ii/vyxCXnoUPjhMDUhdmKRsUJmQIh2I2OsS0nh7+eW//wx9EOlhK9pnAYKqoZljXcL4
-        u+nnuaAfjotC6rxL5/VdGbUQOzFLU0O6cjwNIDxlmd86xZvvECX+KtfdPrAUCtb79dr/56vvxVIv2
-        TubtAdOwJofAtoqXJRYU3wHAAaFi7eGHzVW5/pOUs/HkVfHqtqykMO7XAhQJVqSbXsabY85Z4edI+
-        AVtsaVmQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvzn5-0001xz-FC; Thu, 16 Jul 2020 09:02:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4D049305E21;
-        Thu, 16 Jul 2020 11:02:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 33849207A6644; Thu, 16 Jul 2020 11:02:53 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 11:02:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Alexandre Ghiti <alex@ghiti.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Babu Moger <Babu.Moger@amd.com>,
-        Omar Sandoval <osandov@fb.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Marco Elver <elver@google.com>,
-        Brian Gerst <brgerst@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v3 1/3] kprobes: Add text_alloc() and text_free()
-Message-ID: <20200716090253.GP10769@hirez.programming.kicks-ass.net>
-References: <20200714223239.1543716-1-jarkko.sakkinen@linux.intel.com>
- <20200714223239.1543716-2-jarkko.sakkinen@linux.intel.com>
+        id S1728428AbgGPJAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:00:53 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:50232 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725897AbgGPJAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:00:52 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 58EE47094AE4D8256181;
+        Thu, 16 Jul 2020 17:00:47 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 16 Jul 2020 17:00:43 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joshua Morris <josh.h.morris@us.ibm.com>,
+        Philip Kelleher <pjk1939@linux.ibm.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] rsxx: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Thu, 16 Jul 2020 17:04:32 +0800
+Message-ID: <20200716090432.13691-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714223239.1543716-2-jarkko.sakkinen@linux.intel.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 01:32:27AM +0300, Jarkko Sakkinen wrote:
-> +void *text_alloc(unsigned long size)
-> +{
-> +	void *p;
-> +
-> +	if (PAGE_ALIGN(size) > MODULES_LEN)
-> +		return NULL;
-> +
-> +	p = __vmalloc_node_range(size, MODULE_ALIGN,
-> +				    MODULES_VADDR + get_module_load_offset(),
-> +				    MODULES_END, GFP_KERNEL,
-> +				    PAGE_KERNEL, 0, NUMA_NO_NODE,
-> +				    __builtin_return_address(0));
-> +	if (p && (kasan_module_alloc(p, size) < 0)) {
-> +		vfree(p);
-> +		return NULL;
-> +	}
-> +
-> +	return p;
-> +}
-> +
-> +void text_free(void *region)
-> +{
-> +	/*
-> +	 * This memory may be RO, and freeing RO memory in an interrupt is not
-> +	 * supported by vmalloc.
-> +	 */
-> +	WARN_ON(in_interrupt());
+From: Liu Shixin <liushixin2@huawei.com>
 
-I think that wants to be:
+Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
-	lockdep_assert_irqs_enabled();
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ drivers/block/rsxx/core.c | 31 ++++---------------------------
+ 1 file changed, 4 insertions(+), 27 deletions(-)
 
-in_interrupt() isn't sufficient, interrupts must also not be disabled
-when issuesing TLB invalidations.
+diff --git a/drivers/block/rsxx/core.c b/drivers/block/rsxx/core.c
+index e631749e1..9c35fa35b 100644
+--- a/drivers/block/rsxx/core.c
++++ b/drivers/block/rsxx/core.c
+@@ -150,16 +150,6 @@ static int rsxx_attr_stats_show(struct seq_file *m, void *p)
+ 	return 0;
+ }
+ 
+-static int rsxx_attr_stats_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, rsxx_attr_stats_show, inode->i_private);
+-}
+-
+-static int rsxx_attr_pci_regs_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, rsxx_attr_pci_regs_show, inode->i_private);
+-}
+-
+ static ssize_t rsxx_cram_read(struct file *fp, char __user *ubuf,
+ 			      size_t cnt, loff_t *ppos)
+ {
+@@ -206,21 +196,8 @@ static const struct file_operations debugfs_cram_fops = {
+ 	.write		= rsxx_cram_write,
+ };
+ 
+-static const struct file_operations debugfs_stats_fops = {
+-	.owner		= THIS_MODULE,
+-	.open		= rsxx_attr_stats_open,
+-	.read_iter		= seq_read_iter,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
+-
+-static const struct file_operations debugfs_pci_regs_fops = {
+-	.owner		= THIS_MODULE,
+-	.open		= rsxx_attr_pci_regs_open,
+-	.read_iter		= seq_read_iter,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(rsxx_attr_stats);
++DEFINE_SHOW_ATTRIBUTE(rsxx_attr_pci_regs);
+ 
+ static void rsxx_debugfs_dev_new(struct rsxx_cardinfo *card)
+ {
+@@ -234,13 +211,13 @@ static void rsxx_debugfs_dev_new(struct rsxx_cardinfo *card)
+ 
+ 	debugfs_stats = debugfs_create_file("stats", 0444,
+ 					    card->debugfs_dir, card,
+-					    &debugfs_stats_fops);
++					    &rsxx_attr_stats_fops);
+ 	if (IS_ERR_OR_NULL(debugfs_stats))
+ 		goto failed_debugfs_stats;
+ 
+ 	debugfs_pci_regs = debugfs_create_file("pci_regs", 0444,
+ 					       card->debugfs_dir, card,
+-					       &debugfs_pci_regs_fops);
++					       &rsxx_attr_pci_regs_fops);
+ 	if (IS_ERR_OR_NULL(debugfs_pci_regs))
+ 		goto failed_debugfs_pci_regs;
+ 
+-- 
+2.17.1
 
-> +
-> +	vfree(region);
-> +}
