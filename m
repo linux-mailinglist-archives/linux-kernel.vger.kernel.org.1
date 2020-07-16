@@ -2,95 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68AB222E9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84C0222EF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbgGPXJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgGPXI6 (ORCPT
+        id S1727952AbgGPXVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:21:17 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:52287 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726333AbgGPXVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:08:58 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85063C08C5F7
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 15:50:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1qAKoes74GlZe9USKnILAIURyyddaWhdldrIzkY97zA=; b=O31CALaczkJRmTQNtptd/MMXuw
-        pAcvdqEjSDstR7JSBMD1BOY3DTjhIOU2R9Kw+ni+BoR/m51yAT6snWjFNiZApQGbq5vbRi8tWwGbC
-        GeTY42Wv4CT90bKpF8MYtwoxXhvCuJIj4gkjpXG8N9XVQokVN875seOYSkK5q82hQkHocOO05HMqs
-        ZZ1B7Wf5S0qEb04jVWtk68w8DO3E+ZSDv8IKouRaouslYSknkvfwZA03x6+sdQ1A6wB1D1CpPwFoE
-        TZdEk9kCxoBIiA1IrnE4vsLVpWABDXlaBdRyCo6XYBBiM6eujfeIxKAnbWe43TJvUYKDf8SoPQuAX
-        jjKziztQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jwCi9-0003qZ-RV; Thu, 16 Jul 2020 22:50:42 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1ED2F9817E0; Fri, 17 Jul 2020 00:50:34 +0200 (CEST)
-Date:   Fri, 17 Jul 2020 00:50:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [patch V2 3/5] posix-cpu-timers: Provide mechanisms to defer
- timer handling to task_work
-Message-ID: <20200716225034.GK5523@worktop.programming.kicks-ass.net>
-References: <20200716201923.228696399@linutronix.de>
- <20200716202044.734067877@linutronix.de>
+        Thu, 16 Jul 2020 19:21:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594941673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TIFp0Hg7q04yf1DG6HMd9RGoWeHArzTBdvRZoWQamlI=;
+        b=ZZyITWdZzUpnU3UL9yU1OoHzqC56oiPPr0fn0mUF4qk2g/g5V+s84FOQm2vclSz7S/T5u4
+        fKm39WgbIrKhq5uHEcHxhUJdNnQ6CsC86WXbuKgARNZbQIW4WWqYvFU4jEOmJopL36LaNN
+        O6/GmmCLTL1oN99EQUbrKqjZ9L+MtkA=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-27nXiqm1NS6ECX0Exu4U7A-1; Thu, 16 Jul 2020 18:50:55 -0400
+X-MC-Unique: 27nXiqm1NS6ECX0Exu4U7A-1
+Received: by mail-qv1-f70.google.com with SMTP id j4so4373839qvt.20
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 15:50:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=TIFp0Hg7q04yf1DG6HMd9RGoWeHArzTBdvRZoWQamlI=;
+        b=o3iOP3NGTc+C/2u+Yo/AZjuCoZtS8wp+SUcPt5kKyCJvdwVc2ZjyYZuS9zC8do/0B+
+         qH+cSoN7fcedI6Fqtl3I+BXxnEW+MMhYtnNGjmuC/M7j19DcoQbtOf5rZoJjGX1BnM/O
+         LMi7DLHw6RNh8JoWdpc6UtbnscdLefr0Pc18gBNpFJUHW9X/CBR6brjfjDN+46YtHQJ5
+         dOdkBM20mVVlPKoTkipXiVUUJZ5LCuQW/IalSyYxyxu0BLec47UDW1tJKQiHz7Qx2rIu
+         8hRXwR6Qc+LeJ79gDR0VXHCyFaULb//MaDitq4/qhKANiXcp2e9Bgo906QYIXBzc6ZJP
+         nP4A==
+X-Gm-Message-State: AOAM5318RXHkJCekAvCkqlzvM6tW9eTc/m7koBtchpAzD2hxnfOb1adp
+        L4f4wnTSbXZR0UdOC7ag+LH0b90kqUi8i0x/bfwNyt6coBx/nN4Nl/XuS7MG2b2cvNCotV6whYq
+        7EVqnfaX8ibe0hIY5VAoE6upB
+X-Received: by 2002:a37:6343:: with SMTP id x64mr6351693qkb.114.1594939854034;
+        Thu, 16 Jul 2020 15:50:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9I+YtgVZqYJkdYGFK6gqcCdhQADDw6d3C/sjWjsOMDp/j86RqH2uKqe6zw6lUnjp2cIPBRg==
+X-Received: by 2002:a37:6343:: with SMTP id x64mr6351678qkb.114.1594939853688;
+        Thu, 16 Jul 2020 15:50:53 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id a6sm8439003qkd.69.2020.07.16.15.50.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jul 2020 15:50:52 -0700 (PDT)
+Subject: Re: [PATCH 0/2] Modularization of DFL private feature drivers
+To:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com
+References: <1594791498-14495-1-git-send-email-yilun.xu@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <0c7c63b8-5444-2deb-9fed-18956a5ad938@redhat.com>
+Date:   Thu, 16 Jul 2020 15:50:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716202044.734067877@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1594791498-14495-1-git-send-email-yilun.xu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 10:19:26PM +0200, Thomas Gleixner wrote:
+Generally i think this is a good approach.
 
-> @@ -1096,6 +1099,12 @@ static void __run_posix_cpu_timers(struc
->  	check_process_timers(tsk, &firing);
->  
->  	/*
-> +	 * Allow new work to be scheduled. The expiry cache
-> +	 * is up to date.
-> +	 */
-> +	posix_cpu_timers_enable_work(tsk);
-> +
-> +	/*
->  	 * We must release these locks before taking any timer's lock.
->  	 * There is a potential race with timer deletion here, as the
->  	 * siglock now protects our private firing list.  We have set
+However I do have concern.
 
-I think I would feel more comfortable if this was done at the very
-beginning of that function, possibly even with:
+The feature_id in dfl is magic number, similar to pci id but without a vendor id.
 
-> +static void __run_posix_cpu_timers(struct task_struct *tsk)
-> +{
-> +	struct posix_cputimers *pct = &tsk->posix_cputimers;
-> +
-> +	if (!test_and_set_bit(CPUTIMERS_WORK_SCHEDULED, &pct->flags))
-> +		task_work_add(tsk, &pct->task_work, true);
-> +}
-> +
-> +static inline void posix_cpu_timers_enable_work(struct task_struct *tsk)
-> +{
-> +	clear_bit(CPUTIMERS_WORK_SCHEDULED, &tsk->posix_cputimers.flags);
-	/*
-	 * Ensure we observe everything before a failing test_and_set()
-	 * in __run_posix_cpu_timers().
-	 */
-	smp_mb__after_atomic();
-> +}
+Is it possible to add something like a vendor id so different vendors would not have to be so careful to use a unique id ?
 
-Such that when another timer interrupt happens while we run this, we're
-guaranteed to either see it, or get re-queued and thus re-run the
-function.
+This touches some of the matching function of the bus ops.  Could there be a way for bus ops to be used so that there could be multiple matching function.  Maybe the one in 0002 as a default so users could override it ?
+
+The use case I am worrying about is an OEM.  The OEM uses an unclaimed feature_id and supplies their own platform device device driver to match the feature_id.  But some later version of the kernel claims this feature_id and the OEM's driver no longer works and since the value comes from pci config space it is difficult to change.
+
+So looking for something like
+
+register_feature_matcher((*bus_match)(struct device *dev, struct device_driver *drv))
+
+static int dfl_bus_match_default(struct device *dev, struct device_driver *drv)
+{
+    struct dfl_device *dfl_dev = to_dfl_dev(dev);
+    struct dfl_driver *dfl_drv = to_dfl_drv(drv);
+    const struct dfl_device_id *id_entry = dfl_drv->id_table;
+
+    while (id_entry->feature_id) {
+        if (dfl_match_one_device(id_entry, dfl_dev)) {
+            dfl_dev->id_entry = id_entry;
+            return 1;
+        }
+        id_entry++;
+    }
+
+    return 0;
+}
+
+register_feature_matcher(&dfl_bus_match_default)
+
+static int dfl_bus_match(struct device *dev, struct device_driver *drv)
+{
+
+    struct dfl_device *dfl_dev = to_dfl_dev(dev);
+    struct dfl_driver *dfl_drv = to_dfl_drv(drv);
+    const struct dfl_device_id *id_entry = dfl_drv->id_table;
+
+    while (id_entry->feature_id) {
+
+        matcher = Loop over matchers()
+
+        if (matcher(dev, drv)) {
+            dfl_dev->id_entry = id_entry;
+            return 1;
+        }
+        id_entry++;
+    }
+
+    return 0;
+}
+
+Or maybe use some of the unused bits in the dfl header to add a second vendor-like id and change existing matcher to look feature_id and vendor_like_id.
+
+Tom
+
+ 
+
+On 7/14/20 10:38 PM, Xu Yilun wrote:
+> This patchset makes it possible to develop independent driver modules
+> for DFL private features. It also helps to leverage existing kernel
+> drivers to enable some IP blocks in DFL.
+>
+> Xu Yilun (2):
+>   fpga: dfl: map feature mmio resources in their own feature drivers
+>   fpga: dfl: create a dfl bus type to support DFL devices
+>
+>  Documentation/ABI/testing/sysfs-bus-dfl |  15 ++
+>  drivers/fpga/dfl-pci.c                  |  21 +-
+>  drivers/fpga/dfl.c                      | 435 +++++++++++++++++++++++++++-----
+>  drivers/fpga/dfl.h                      |  91 ++++++-
+>  4 files changed, 492 insertions(+), 70 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
+>
+
