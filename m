@@ -2,205 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968882224F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86AA2224FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728993AbgGPONP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:13:15 -0400
-Received: from mga09.intel.com ([134.134.136.24]:54539 "EHLO mga09.intel.com"
+        id S1729004AbgGPOOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:14:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:55090 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgGPONN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 10:13:13 -0400
-IronPort-SDR: DKGO7TGHVNJ277zNQTqkVc/mXBl7mCqbE2CBkGF6GdAgPmIgFYvHOU0qmRxz6gXnDZzr0NiiQE
- WFAzl8/0jJ1w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="150762277"
-X-IronPort-AV: E=Sophos;i="5.75,359,1589266800"; 
-   d="scan'208";a="150762277"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 07:13:11 -0700
-IronPort-SDR: YUFmZip9rdFMIzQSQOog48cRe8PWI2Qm8HnMO8YJy1e1uPyxpkW1X644OLnrPBnv1v5qM/lvVc
- VvSsrAmHxPbg==
-X-IronPort-AV: E=Sophos;i="5.75,359,1589266800"; 
-   d="scan'208";a="308644306"
-Received: from unknown (HELO dalessan-mobl1.ir.intel.com) ([10.251.86.10])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 07:13:09 -0700
-Message-ID: <b4d22e4a5154a9ad4c224eb2dfaeb61ed1680834.camel@linux.intel.com>
-Subject: Re: [PATCH] firmware: arm_scmi: Pass shmem address to SMCCC call
-From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Peng Fan <peng.fan@nxp.com>,
-        "Paul J. Murphy" <paul.j.murphy@linux.intel.com>,
-        "Paul J. Murphy" <paul.j.murphy@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Date:   Thu, 16 Jul 2020 15:13:03 +0100
-In-Reply-To: <5f74221b-aec7-7715-19d1-5cbb406f1bdc@gmail.com>
-References: <20200715165518.57558-1-daniele.alessandrelli@linux.intel.com>
-         <5f74221b-aec7-7715-19d1-5cbb406f1bdc@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        id S1726537AbgGPOOo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 10:14:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA8F331B;
+        Thu, 16 Jul 2020 07:14:43 -0700 (PDT)
+Received: from [192.168.1.84] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 00B4B3F66E;
+        Thu, 16 Jul 2020 07:14:38 -0700 (PDT)
+Subject: Re: [PATCH V5 1/4] mm/debug_vm_pgtable: Add tests validating arch
+ helpers for core MM features
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, agordeev@linux.ibm.com,
+        Will Deacon <will@kernel.org>, linux-riscv@lists.infradead.org,
+        linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
+        christophe.leroy@csgroup.eu, Mike Rapoport <rppt@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, ziy@nvidia.com,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-snps-arc@lists.infradead.org,
+        Vasily Gorbik <gor@linux.ibm.com>, cai@lca.pw,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        gerald.schaefer@de.ibm.com, christophe.leroy@c-s.fr,
+        Vineet Gupta <vgupta@synopsys.com>,
+        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
+        aneesh.kumar@linux.ibm.com, Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, rppt@kernel.org
+References: <1594610587-4172-1-git-send-email-anshuman.khandual@arm.com>
+ <1594610587-4172-2-git-send-email-anshuman.khandual@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <2ff756c5-28e2-b64a-3788-260ba30c6409@arm.com>
+Date:   Thu, 16 Jul 2020 15:14:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <1594610587-4172-2-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
-
-Thanks for you feedback.
-
-On Wed, 2020-07-15 at 15:43 -0700, Florian Fainelli wrote:
+On 13/07/2020 04:23, Anshuman Khandual wrote:
+> This adds new tests validating arch page table helpers for these following
+> core memory features. These tests create and test specific mapping types at
+> various page table levels.
 > 
-> On 7/15/2020 9:55 AM, Daniele Alessandrelli wrote:
-> > From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> > 
-> > Currently, when SMC/HVC is used as transport, the base address of
-> > the
-> > shared memory used for communication is not passed to the SMCCC
-> > call.
-> > This means that such an address must be hard-coded into the
-> > bootloader.
-> > 
-> > In order to increase flexibility and allow the memory layout to be
-> > changed without modifying the bootloader, this patch adds the
-> > shared
-> > memory base address to the a1 argument of the SMCCC call.
-> > 
-> > On the Secure Monitor side, the service call implementation can
-> > therefore read the a1 argument in order to know the location of the
-> > shared memory to use. This change is backward compatible to
-> > existing
-> > service call implementations as long as they don't check for a1 to
-> > be
-> > zero.
+> 1. SPECIAL mapping
+> 2. PROTNONE mapping
+> 3. DEVMAP mapping
+> 4. SOFTDIRTY mapping
+> 5. SWAP mapping
+> 6. MIGRATION mapping
+> 7. HUGETLB mapping
+> 8. THP mapping
 > 
-> resource_size_t being defined after phys_addr_t, its size is
-> different
-> between 32-bit, 32-bit with PAE and 64-bit so it would probably make
-> more sense to define an physical address alignment, or maybe an
-> address
-> that is in multiple of 4KBytes so you can address up to 36-bits of
-> physical address even on a 32-bit only system?
-
-I see your point. After a quick look, I think that, practically, the
-issue is with ARM32 LPAE addresses, for which phys_addr_t is a u64. So,
-basically, for AArch32 systems with LPAE the 64-bit shmem_paddr gets
-truncated to 32-bit when it's passed to the SMC32/HVC32 call.
-
-To solve that, I would prefer splitting the address between two SMC
-parameters (a1 = addr_lo, a2 = addr_hi), instead of imposing an
-arbitrary alignment. Would that be reasonable?
-
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Gerald Schaefer <gerald.schaefer@de.ibm.com>
+> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Vineet Gupta <vgupta@synopsys.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Kirill A. Shutemov <kirill@shutemov.name>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: linux-snps-arc@lists.infradead.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-riscv@lists.infradead.org
+> Cc: x86@kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-arch@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Tested-by: Vineet Gupta <vgupta@synopsys.com>	#arc
+> Reviewed-by: Zi Yan <ziy@nvidia.com>
+> Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   mm/debug_vm_pgtable.c | 302 +++++++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 301 insertions(+), 1 deletion(-)
 > 
-> What discovery mechanism does the OS have that the specified address
-> within the SMCCC call has been accepted by the firmware given the
-> return
-> value of that SMCCC call does not appear to be used or checked? Do we
-> just expect a timeout initializing the SCMI subsystem?
+> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+> index 61ab16fb2e36..2fac47db3eb7 100644
+> --- a/mm/debug_vm_pgtable.c
+> +++ b/mm/debug_vm_pgtable.c
+[...]
+> +
+> +static void __init pte_swap_tests(unsigned long pfn, pgprot_t prot)
+> +{
+> +	swp_entry_t swp;
+> +	pte_t pte;
+> +
+> +	pte = pfn_pte(pfn, prot);
+> +	swp = __pte_to_swp_entry(pte);
 
-The return code is actually checked at the end of the function:
-https://elixir.bootlin.com/linux/v5.8-rc4/source/drivers/firmware/arm_scmi/smc.c#L118
+Minor issue: this doesn't look necessarily valid - there's no reason a 
+normal PTE can be turned into a swp_entry. In practise this is likely to 
+work on all architectures because there's no reason not to use (at 
+least) all the PFN bits for the swap entry, but it doesn't exactly seem 
+correct.
 
-But in the meantime scmi_rx_callback() has already been called. Not
-sure if that's intentional or a possible bug.
+Can we start with a swp_entry_t (from __swp_entry()) and check the round 
+trip of that?
 
-> 
-> Given that the kernel must somehow reserve this memory as a shared
-> memory area for obvious reasons, and the trusted firmware must also
-> ensure it treats this memory region with specific permissions in its
-> translation regime, does it really make sense to give that much
-> flexibility?
+It would also seem sensible to have a check that 
+is_swap_pte(__swp_entry_to_pte(__swp_entry(x,y))) is true.
 
-Well, the trusted firmware might reserve a bigger region to be used for
-other service as well. In other words, the MMU of TF-A is not necessary
-specifically set up for this region, but, possibly, for a bigger
-general shared region.
+> +	pte = __swp_entry_to_pte(swp);
+> +	WARN_ON(pfn != pte_pfn(pte));
+> +}
+> +
+> +#ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
+> +static void __init pmd_swap_tests(unsigned long pfn, pgprot_t prot)
+> +{
+> +	swp_entry_t swp;
+> +	pmd_t pmd;
+> +
+> +	pmd = pfn_pmd(pfn, prot);
+> +	swp = __pmd_to_swp_entry(pmd);
+> +	pmd = __swp_entry_to_pmd(swp);
+> +	WARN_ON(pfn != pmd_pfn(pmd));
+> +}
+> +#else  /* !CONFIG_ARCH_ENABLE_THP_MIGRATION */
+> +static void __init pmd_swap_tests(unsigned long pfn, pgprot_t prot) { }
+> +#endif /* CONFIG_ARCH_ENABLE_THP_MIGRATION */
+> +
+> +static void __init swap_migration_tests(void)
+> +{
+> +	struct page *page;
+> +	swp_entry_t swp;
+> +
+> +	if (!IS_ENABLED(CONFIG_MIGRATION))
+> +		return;
+> +	/*
+> +	 * swap_migration_tests() requires a dedicated page as it needs to
+> +	 * be locked before creating a migration entry from it. Locking the
+> +	 * page that actually maps kernel text ('start_kernel') can be real
+> +	 * problematic. Lets allocate a dedicated page explicitly for this
 
-Passing the SCMI shmem to the SMC call allows the shmem to be moved
-within such bigger shared memory without modifying the trusted
-firmware.
+NIT: s/Lets/Let's
 
-> 
-> If your boot loader has FDT patching capability, maybe it can also do
-> a
-> SMC call to provide the address to your trusted firmware, prior to
-> loading the Linux kernel, and then they both agree, prior to boot
-> about
-> the shared memory address?
+Otherwise looks good to me.
 
-Yes, that's a possible solution, but it looks more complicated to me,
-since it adds an additional component (the boot loader) to the
-equation, while the goal of this patch was to reduce the coupling
-between components (namely the DT/kernel and the trusted firmware).
-
-I guess my question is: if we fix the handling of LPAE addresses and
-the SMC return code, what is the drawback of having the shmem address
-passed to the SMC?
-
-Anyway, I should have mentioned this in the commit message (sorry for
-not doing so), but I submitted this patch because initial feedback from
-Sudeep was positive [1]; but if there is no consensus around it I'm
-fine with dropping it.
-
-[1] https://lore.kernel.org/lkml/20200710075931.GB1189@bogus/
-
-> 
-> > Signed-off-by: Daniele Alessandrelli <
-> > daniele.alessandrelli@intel.com>
-> > Signed-off-by: Paul J. Murphy <paul.j.murphy@intel.com>
-> > ---
-> >  drivers/firmware/arm_scmi/smc.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/firmware/arm_scmi/smc.c
-> > b/drivers/firmware/arm_scmi/smc.c
-> > index 49bc4b0e8428..aef3a58f8266 100644
-> > --- a/drivers/firmware/arm_scmi/smc.c
-> > +++ b/drivers/firmware/arm_scmi/smc.c
-> > @@ -21,12 +21,14 @@
-> >   *
-> >   * @cinfo: SCMI channel info
-> >   * @shmem: Transmit/Receive shared memory area
-> > + * @shmem_paddr: Physical address of shmem
-> >   * @func_id: smc/hvc call function id
-> >   */
-> >  
-> >  struct scmi_smc {
-> >  	struct scmi_chan_info *cinfo;
-> >  	struct scmi_shared_mem __iomem *shmem;
-> > +	resource_size_t shmem_paddr;
-> >  	struct mutex shmem_lock;
-> >  	u32 func_id;
-> >  };
-> > @@ -73,6 +75,7 @@ static int smc_chan_setup(struct scmi_chan_info
-> > *cinfo, struct device *dev,
-> >  		dev_err(dev, "failed to ioremap SCMI Tx shared
-> > memory\n");
-> >  		return -EADDRNOTAVAIL;
-> >  	}
-> > +	scmi_info->shmem_paddr = res.start;
-> >  
-> >  	ret = of_property_read_u32(dev->of_node, "arm,smc-id",
-> > &func_id);
-> >  	if (ret < 0)
-> > @@ -109,7 +112,8 @@ static int smc_send_message(struct
-> > scmi_chan_info *cinfo,
-> >  
-> >  	shmem_tx_prepare(scmi_info->shmem, xfer);
-> >  
-> > -	arm_smccc_1_1_invoke(scmi_info->func_id, 0, 0, 0, 0, 0, 0, 0,
-> > &res);
-> > +	arm_smccc_1_1_invoke(scmi_info->func_id, scmi_info-
-> > >shmem_paddr, 0, 0,
-> > +			     0, 0, 0, 0, &res);
-> >  	scmi_rx_callback(scmi_info->cinfo, shmem_read_header(scmi_info-
-> > >shmem));
-> >  
-> >  	mutex_unlock(&scmi_info->shmem_lock);
-> > 
-
+Steve
