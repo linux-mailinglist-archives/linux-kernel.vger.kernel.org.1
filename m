@@ -2,90 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEAA222F68
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E214B222F6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgGPXw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgGPXw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:52:59 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A8847206F4;
-        Thu, 16 Jul 2020 23:52:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594943577;
-        bh=4CYHGW9f4TNDqQkfNjdBI3p0P2PYHswYd3FtirRWxXc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qgdn9gwXPbrVgYJvq6kzBsXYH+nQmYTZwhsChh6QZz6ZEJIHbq3kLU4EiWkFCoNtn
-         33DUYjVC5p42m9+RqLVs2IqhO3Se5pnt5jgnSEDxmoWXmxBJOXV/O+YZYKTww39/wl
-         Bf+i96oXjizncsBu4hURDwZUNrys7aoCbESTM43w=
-Date:   Thu, 16 Jul 2020 16:52:57 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: thp: Replace HTTP links with HTTPS ones
-Message-Id: <20200716165257.88776064be381ca5797983c5@linux-foundation.org>
-In-Reply-To: <642ab4dc-d0fb-d973-0e5e-7d1bc7d90f11@suse.cz>
-References: <20200713164345.36088-1-grandmaster@al2klimov.de>
-        <642ab4dc-d0fb-d973-0e5e-7d1bc7d90f11@suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726189AbgGPXxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgGPXxr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 19:53:47 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F77C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:53:46 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id z17so6176016edr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:53:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gHjNZ84Odw9I00tyL0rNJk6APocttkiZI0Xw6GVe51U=;
+        b=fJH2BDM6Ixum8ogIhI3oTUAlm4JvVXiLMlmveR9PrJbIIrNyy3hsxZgPKviKM4+YQU
+         vBjg568mWozwniuvnzS7+RVc+0Jd05h4JQWcmc40j5oFxRSmZZPHTJ0WA+nC/pbF7+lt
+         +vy3Te1DvgX4Xr1H7Hv4Py4nE4khXVlMOQUUd4rebpjFuetFSu7eDqsVAMh0IfdpwPUp
+         1fwxiuksHBFBohjtIHgVptCoaISFbvcRjGEYErDBPMDcXlJX5VJ2moHZkjNCm5Bg70mj
+         NlJ9wOoEvoer1eaKx9RImAsktSIETPZ0CYL7IqduNsMoJ4+VF5q7UJYys3Tix9n3r4zS
+         spNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gHjNZ84Odw9I00tyL0rNJk6APocttkiZI0Xw6GVe51U=;
+        b=POYQr7mkDL4qUW+iJpdGqlVtQbDTJ/D6/nK9iPwMhC7UK813NFkcYttUSHtLNGUOMt
+         IuPsIJExlgesFbeG2UjIgeL2RJTUETRl41Tn4zuJwnj5pzR4blxV7E4ByfOIWjaajM5f
+         S2QclllbXPPOBXdHXnrt9DGgqY71zii3nRMIJOqOKx6xBbSjkPsbeKb08lvzAZbEM04I
+         OhQquQmPIkP7TU18YpurAsUWv6yY+nvPmPblacX1Lm0o8NPB7d/qidVRSruZINAXs3g2
+         y0hYaR9SkX62tert0f0ZOgoxBoHzOqtHg03Qsfk3d1wLvCPD4OvvKQnP4OWN7CI+ZgIj
+         CaLA==
+X-Gm-Message-State: AOAM531Sea86UNQ+mEiL2EbnC+4yeb8VOVIEEzSFH3bf198IPQ30SSvE
+        qT0B8dfFxYUpJzbfSjYbIJNO6iwgtqReP3j8DCttlA==
+X-Google-Smtp-Source: ABdhPJzJOYksqSLMgx/OMH73qQrO95Fo4PRZuMwDHNlEsde8QBxONmvSl4lHz2cQxebZnKGBfy9UpcHlCi8QgE9NkGs=
+X-Received: by 2002:aa7:dd8e:: with SMTP id g14mr6950966edv.208.1594943624633;
+ Thu, 16 Jul 2020 16:53:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <0000000000001fbbb605aa805c9b@google.com> <5ce3ee90-333e-638d-ac8c-cd6d7ab7aa3b@I-love.SAKURA.ne.jp>
+ <20200716083506.GA20915@dhcp22.suse.cz> <36db7016-98d6-2c6b-110b-b2481fd480ac@i-love.sakura.ne.jp>
+ <20200716135445.GN31089@dhcp22.suse.cz> <4ba9adb2-43f5-2de0-22de-f6075c1fab50@i-love.sakura.ne.jp>
+ <20200716151756.GO31089@dhcp22.suse.cz>
+In-Reply-To: <20200716151756.GO31089@dhcp22.suse.cz>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Thu, 16 Jul 2020 16:53:31 -0700
+Message-ID: <CAHRSSEzL7E3BPnyc7WAoqo8U=ofSxaj9bKTnU-=+W2=1WManDQ@mail.gmail.com>
+Subject: Re: [PATCH v2] binder: Don't use mmput() from shrinker function.
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve Hjonnevag <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020 11:41:37 +0200 Vlastimil Babka <vbabka@suse.cz> wrote:
+On Thu, Jul 16, 2020 at 8:18 AM Michal Hocko <mhocko@kernel.org> wrote:
+>
+> On Fri 17-07-20 00:12:15, Tetsuo Handa wrote:
+> > syzbot is reporting that mmput() from shrinker function has a risk of
+> > deadlock [1], for delayed_uprobe_add() from update_ref_ctr() calls
+> > kzalloc(GFP_KERNEL) with delayed_uprobe_lock held, and
+> > uprobe_clear_state() from __mmput() also holds delayed_uprobe_lock.
+> >
+> > Commit a1b2289cef92ef0e ("android: binder: drop lru lock in isolate
+> > callback") replaced mmput() with mmput_async() in order to avoid sleeping
+> > with spinlock held. But this patch replaces mmput() with mmput_async() in
+> > order not to start __mmput() from shrinker context.
+> >
+> > [1] https://syzkaller.appspot.com/bug?id=bc9e7303f537c41b2b0cc2dfcea3fc42964c2d45
+> >
+> > Reported-by: syzbot <syzbot+1068f09c44d151250c33@syzkaller.appspotmail.com>
+> > Reported-by: syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>
+> > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+>
+> Reviewed-by: Michal Hocko <mhocko@suse.com>
 
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -2069,7 +2069,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
-> >  	 * free), userland could trigger a small page size TLB miss on the
-> >  	 * small sized TLB while the hugepage TLB entry is still established in
-> >  	 * the huge TLB. Some CPU doesn't like that.
-> > -	 * See http://support.amd.com/us/Processor_TechDocs/41322.pdf, Erratum
-> > +	 * See https://support.amd.com/us/Processor_TechDocs/41322.pdf, Erratum
-> >  	 * 383 on page 93. Intel should be safe but is also warns that it's
-> 
-> Well, it was a good opportunity to find out that the link doesn't work anyway.
-> The pdf seems to be now at
-> http://support.amd.com/TechDocs/41322_10h_Rev_Gd.pdf
-> and the erratum is on page 105
+Acked-by: Todd Kjos <tkjos@google.com>
 
-Thanks.
-
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: mm-thp-replace-http-links-with-https-ones-fix
-
-fix amd.com URL, per Vlastimil
-
-Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- mm/huge_memory.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/mm/huge_memory.c~mm-thp-replace-http-links-with-https-ones-fix
-+++ a/mm/huge_memory.c
-@@ -2065,8 +2065,8 @@ static void __split_huge_pmd_locked(stru
- 	 * free), userland could trigger a small page size TLB miss on the
- 	 * small sized TLB while the hugepage TLB entry is still established in
- 	 * the huge TLB. Some CPU doesn't like that.
--	 * See https://support.amd.com/us/Processor_TechDocs/41322.pdf, Erratum
--	 * 383 on page 93. Intel should be safe but is also warns that it's
-+	 * See http://support.amd.com/TechDocs/41322_10h_Rev_Gd.pdf, Erratum
-+	 * 383 on page 105. Intel should be safe but is also warns that it's
- 	 * only safe if the permission and cache attributes of the two entries
- 	 * loaded in the two TLB is identical (which should be the case here).
- 	 * But it is generally safer to never allow small and huge TLB entries
-_
-
+>
+> Thanks!
+>
+> > ---
+> >  drivers/android/binder_alloc.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+> > index 42c672f1584e..cbe6aa77d50d 100644
+> > --- a/drivers/android/binder_alloc.c
+> > +++ b/drivers/android/binder_alloc.c
+> > @@ -947,7 +947,7 @@ enum lru_status binder_alloc_free_page(struct list_head *item,
+> >               trace_binder_unmap_user_end(alloc, index);
+> >       }
+> >       mmap_read_unlock(mm);
+> > -     mmput(mm);
+> > +     mmput_async(mm);
+> >
+> >       trace_binder_unmap_kernel_start(alloc, index);
+> >
+> > --
+> > 2.18.4
+>
+> --
+> Michal Hocko
+> SUSE Labs
