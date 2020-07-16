@@ -2,438 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E39222B00
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C93222B06
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728975AbgGPSZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 14:25:31 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:18377 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726986AbgGPSZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 14:25:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594923928; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/7d7d7eDzeq27O0/+/UOHv33sCUwJW0phlXRVXixepw=;
- b=s7op29L3W1bXwVhDfHW1t0fPT6PhNFzRwfL9yiKCWZZafcT7MC1RXMjiRzDzSHarzEoXOyQn
- XEW4+u5rm6+UO7/G85fJKgRjrYgySlEGPAeAG+M5iaVpvgDOyLMbaxpr2sBKPtcQmoYWy6GV
- aYs9uOhODlLYrbUCIdI72CtjcW4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f109b8d8423214e13735562 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Jul 2020 18:25:17
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 67458C433C9; Thu, 16 Jul 2020 18:25:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2FCFC433CA;
-        Thu, 16 Jul 2020 18:25:15 +0000 (UTC)
+        id S1729366AbgGPS2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 14:28:47 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:40702 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726986AbgGPS2q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 14:28:46 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06GIMorL116040;
+        Thu, 16 Jul 2020 18:28:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=NMspoUF3zFfbPIO6bYbuQkF0xdzf5NUiaa140NHriiM=;
+ b=Dvx6znEXNYqach8SL6g3CA1M7C93/fv3vpdg/QvWCBq+MlZnYqS2Y4a9RCRDpJfaFJxe
+ j7/oS2UwK9Ssfhddm3SNYxdUtMStb2YDjuKdtpW/kUyypS6KVWcbDH0teffRgufFaGDB
+ Wwg3IxpzaTefW8BcornOKuy6yJfoNLuC4VezF3XuqrTsYrks4SZBG8qmAo0d1FYBY3H4
+ Y+59JzO1ZMsLdYnU31qK1n04wW37wt3Wx8b5DePcOhKQYVzTWko1+q0X++VEb4h3xgTC
+ Dmw5VHZLaLN48P8weIQAoXU7gfyfacfRb7up99vHO04pXJGQDBH1C5f0tBULQA0M1n1y Tg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 3275cmk3bx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 16 Jul 2020 18:28:05 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06GIHhHv093791;
+        Thu, 16 Jul 2020 18:26:05 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 327qbc55dg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Jul 2020 18:26:05 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06GIPuYL032145;
+        Thu, 16 Jul 2020 18:25:57 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 16 Jul 2020 11:25:56 -0700
+Subject: Re: [PATCH v3] mm/hugetlb: split hugetlb_cma in nodes with memory
+To:     Will Deacon <will@kernel.org>, Roman Gushchin <guro@fb.com>
+Cc:     Barry Song <song.bao.hua@hisilicon.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "H.Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        akpm@linux-foundation.org, Mike Rapoport <rppt@linux.ibm.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20200710120950.37716-1-song.bao.hua@hisilicon.com>
+ <359ea1d0-b1fd-d09f-d28a-a44655834277@oracle.com>
+ <20200715081822.GA5683@willie-the-truck>
+ <5724f1f8-63a6-ee0f-018c-06fb259b6290@oracle.com>
+ <20200716081243.GA6561@willie-the-truck>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <a867c7a2-e89b-2015-4895-f30f7aeb07cb@oracle.com>
+Date:   Thu, 16 Jul 2020 11:25:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20200716081243.GA6561@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 16 Jul 2020 11:25:15 -0700
-From:   rishabhb@codeaurora.org
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v7 3/4] remoteproc: Add inline coredump functionality
-In-Reply-To: <3a7f78c9178a6fa02dc339c3507c5229@codeaurora.org>
-References: <1594326716-15474-1-git-send-email-rishabhb@codeaurora.org>
- <1594326716-15474-4-git-send-email-rishabhb@codeaurora.org>
- <3a7f78c9178a6fa02dc339c3507c5229@codeaurora.org>
-Message-ID: <f893f7df444b3782551e66dce819c25c@codeaurora.org>
-X-Sender: rishabhb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9684 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=100 mlxlogscore=-1000 malwarescore=0
+ mlxscore=100 spamscore=100 phishscore=0 suspectscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007160130
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9684 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=100 suspectscore=0 priorityscore=1501
+ bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=100
+ impostorscore=0 malwarescore=0 mlxlogscore=-1000 clxscore=1015
+ mlxscore=100 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007160130
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-16 01:25, Sibi Sankar wrote:
-> On 2020-07-10 02:01, Rishabh Bhatnagar wrote:
->> The current coredump implementation uses vmalloc area to copy
->> all the segments. But this might put strain on low memory targets
->> as the firmware size sometimes is in tens of MBs. The situation
->> becomes worse if there are multiple remote processors undergoing
->> recovery at the same time. This patch adds inline coredump
->> functionality that avoids extra memory usage. This requires
->> recovery to be halted until data is read by userspace and free
->> function is called. Also modify the qcom_q6v5_mss driver to include
->> size and offset in the segment dump function.
->> 
->> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
->> Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->>  drivers/remoteproc/qcom_q6v5_mss.c       |  11 ++-
->>  drivers/remoteproc/remoteproc_coredump.c | 160 
->> +++++++++++++++++++++++++++----
->>  include/linux/remoteproc.h               |  21 +++-
->>  3 files changed, 166 insertions(+), 26 deletions(-)
->> 
->> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c
->> b/drivers/remoteproc/qcom_q6v5_mss.c
->> index c6ce032..79df354 100644
->> --- a/drivers/remoteproc/qcom_q6v5_mss.c
->> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
->> @@ -1199,11 +1199,12 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
->> 
->>  static void qcom_q6v5_dump_segment(struct rproc *rproc,
->>  				   struct rproc_dump_segment *segment,
->> -				   void *dest)
->> +				   void *dest, size_t cp_offset, size_t size)
->>  {
->>  	int ret = 0;
->>  	struct q6v5 *qproc = rproc->priv;
->>  	int offset = segment->da - qproc->mpss_reloc;
->> +	size_t cp_size = size ? size : segment->size;
->>  	void *ptr = NULL;
->> 
->>  	/* Unlock mba before copying segments */
->> @@ -1219,16 +1220,16 @@ static void qcom_q6v5_dump_segment(struct 
->> rproc *rproc,
->>  	}
->> 
->>  	if (!ret)
->> -		ptr = ioremap_wc(qproc->mpss_phys + offset, segment->size);
->> +		ptr = ioremap_wc(qproc->mpss_phys + offset + cp_offset, cp_size);
->> 
->>  	if (ptr) {
->> -		memcpy(dest, ptr, segment->size);
->> +		memcpy(dest, ptr, cp_size);
->>  		iounmap(ptr);
->>  	} else {
->> -		memset(dest, 0xff, segment->size);
->> +		memset(dest, 0xff, cp_size);
->>  	}
->> 
->> -	qproc->current_dump_size += segment->size;
->> +	qproc->current_dump_size += cp_size;
->> 
->>  	/* Reclaim mba after copying segments */
->>  	if (qproc->current_dump_size == qproc->total_dump_size) {
->> diff --git a/drivers/remoteproc/remoteproc_coredump.c
->> b/drivers/remoteproc/remoteproc_coredump.c
->> index ded0244..646886f 100644
->> --- a/drivers/remoteproc/remoteproc_coredump.c
->> +++ b/drivers/remoteproc/remoteproc_coredump.c
->> @@ -5,6 +5,7 @@
->>   * Copyright (c) 2020, The Linux Foundation. All rights reserved.
->>   */
->> 
->> +#include <linux/completion.h>
->>  #include <linux/devcoredump.h>
->>  #include <linux/device.h>
->>  #include <linux/kernel.h>
->> @@ -12,6 +13,12 @@
->>  #include "remoteproc_internal.h"
->>  #include "remoteproc_elf_helpers.h"
->> 
->> +struct rproc_coredump_state {
->> +	struct rproc *rproc;
->> +	void *header;
->> +	struct completion dump_done;
->> +};
->> +
->>  /**
->>   * rproc_coredump_cleanup() - clean up dump_segments list
->>   * @rproc: the remote processor handle
->> @@ -72,7 +79,8 @@ int rproc_coredump_add_custom_segment(struct rproc 
->> *rproc,
->>  				      dma_addr_t da, size_t size,
->>  				      void (*dumpfn)(struct rproc *rproc,
->>  						     struct rproc_dump_segment *segment,
->> -						     void *dest),
->> +						     void *dest, size_t offset,
->> +						     size_t size),
->>  				      void *priv)
->>  {
->>  	struct rproc_dump_segment *segment;
->> @@ -114,12 +122,110 @@ int rproc_coredump_set_elf_info(struct rproc
->> *rproc, u8 class, u16 machine)
->>  }
->>  EXPORT_SYMBOL(rproc_coredump_set_elf_info);
->> 
->> +static void rproc_coredump_free(void *data)
->> +{
->> +	struct rproc_coredump_state *dump_state = data;
->> +
->> +	complete(&dump_state->dump_done);
->> +	vfree(dump_state->header);
+On 7/16/20 1:12 AM, Will Deacon wrote:
+> On Wed, Jul 15, 2020 at 09:59:24AM -0700, Mike Kravetz wrote:
+>>
+>> So, everything in the existing code really depends on the hugetlb definition
+>> of gigantic page (order >= MAX_ORDER).  The code to check for
+>> 'order >= MAX_ORDER' in my proposed patch is just following the same
+>> convention.
 > 
-> Rishabh,
+> Fair enough, and thanks for the explanation. Maybe just chuck a comment in,
+> then? Alternatively, having something like:
 > 
-> I observed a system hang when I trigger
-> recovery of a number of remoteproc
-> simultaneously (after a number of iterations
-> consistently). This goes away if I free the
-> header and  then issue the dump completion
-> and that does seem to be the right thing to
-> do.
+> static inline bool page_order_is_gigantic(unsigned int order)
+> {
+> 	return order >= MAX_ORDER;
+> }
 > 
-Makes sense i'll switch it in the next patchset.
->> +}
->> +
->> +static void *rproc_coredump_find_segment(loff_t user_offset,
->> +					 struct list_head *segments,
->> +					 size_t *data_left)
->> +{
->> +	struct rproc_dump_segment *segment;
->> +
->> +	list_for_each_entry(segment, segments, node) {
->> +		if (user_offset < segment->size) {
->> +			*data_left = segment->size - user_offset;
->> +			return segment;
->> +		}
->> +		user_offset -= segment->size;
->> +	}
->> +
->> +	*data_left = 0;
->> +	return NULL;
->> +}
->> +
->> +static void rproc_copy_segment(struct rproc *rproc, void *dest,
->> +			       struct rproc_dump_segment *segment,
->> +			       size_t offset, size_t size)
->> +{
->> +	void *ptr;
->> +
->> +	if (segment->dump) {
->> +		segment->dump(rproc, segment, dest, offset, size);
->> +	} else {
->> +		ptr = rproc_da_to_va(rproc, segment->da + offset, size);
->> +		if (!ptr) {
->> +			dev_err(&rproc->dev,
->> +				"invalid copy request for segment %pad with offset %zu and size 
->> %zu)\n",
->> +				&segment->da, offset, size);
->> +			memset(dest, 0xff, size);
->> +		} else {
->> +			memcpy(dest, ptr, size);
->> +		}
->> +	}
->> +}
->> +
->> +static ssize_t rproc_coredump_read(char *buffer, loff_t offset, 
->> size_t count,
->> +				   void *data, size_t header_sz)
->> +{
->> +	size_t seg_data, bytes_left = count;
->> +	ssize_t copy_sz;
->> +	struct rproc_dump_segment *seg;
->> +	struct rproc_coredump_state *dump_state = data;
->> +	struct rproc *rproc = dump_state->rproc;
->> +	void *elfcore = dump_state->header;
->> +
->> +	/* Copy the vmalloc'ed header first. */
->> +	if (offset < header_sz) {
->> +		copy_sz = memory_read_from_buffer(buffer, count, &offset,
->> +						  elfcore, header_sz);
->> +
->> +		return copy_sz;
->> +	}
->> +
->> +	/*
->> +	 * Find out the segment memory chunk to be copied based on offset.
->> +	 * Keep copying data until count bytes are read.
->> +	 */
->> +	while (bytes_left) {
->> +		seg = rproc_coredump_find_segment(offset - header_sz,
->> +						  &rproc->dump_segments,
->> +						  &seg_data);
->> +		/* EOF check */
->> +		if (!seg) {
->> +			dev_info(&rproc->dev, "Ramdump done, %lld bytes read",
->> +				 offset);
->> +			break;
->> +		}
->> +
->> +		copy_sz = min_t(size_t, bytes_left, seg_data);
->> +
->> +		rproc_copy_segment(rproc, buffer, seg, seg->size - seg_data,
->> +				   copy_sz);
->> +
->> +		offset += copy_sz;
->> +		buffer += copy_sz;
->> +		bytes_left -= copy_sz;
->> +	}
->> +
->> +	return count - bytes_left;
->> +}
->> +
->>  /**
->>   * rproc_coredump() - perform coredump
->>   * @rproc:	rproc handle
->>   *
->>   * This function will generate an ELF header for the registered 
->> segments
->> - * and create a devcoredump device associated with rproc.
->> + * and create a devcoredump device associated with rproc. Based on 
->> the
->> + * coredump configuration this function will directly copy the 
->> segments
->> + * from device memory to userspace or copy segments from device 
->> memory to
->> + * a separate buffer, which can then be read by userspace.
->> + * The first approach avoids using extra vmalloc memory. But it will 
->> stall
->> + * recovery flow until dump is read by userspace.
->>   */
->>  void rproc_coredump(struct rproc *rproc)
->>  {
->> @@ -129,11 +235,13 @@ void rproc_coredump(struct rproc *rproc)
->>  	size_t data_size;
->>  	size_t offset;
->>  	void *data;
->> -	void *ptr;
->>  	u8 class = rproc->elf_class;
->>  	int phnum = 0;
->> +	struct rproc_coredump_state dump_state;
->> +	enum rproc_dump_mechanism dump_conf = rproc->dump_conf;
->> 
->> -	if (list_empty(&rproc->dump_segments))
->> +	if (list_empty(&rproc->dump_segments) ||
->> +	    dump_conf == RPROC_COREDUMP_DISABLED)
->>  		return;
->> 
->>  	if (class == ELFCLASSNONE) {
->> @@ -143,7 +251,14 @@ void rproc_coredump(struct rproc *rproc)
->> 
->>  	data_size = elf_size_of_hdr(class);
->>  	list_for_each_entry(segment, &rproc->dump_segments, node) {
->> -		data_size += elf_size_of_phdr(class) + segment->size;
->> +		/*
->> +		 * For default configuration buffer includes headers & segments.
->> +		 * For inline dump buffer just includes headers as segments are
->> +		 * directly read from device memory.
->> +		 */
->> +		data_size += elf_size_of_phdr(class);
->> +		if (dump_conf == RPROC_COREDUMP_DEFAULT)
->> +			data_size += segment->size;
->> 
->>  		phnum++;
->>  	}
->> @@ -182,23 +297,30 @@ void rproc_coredump(struct rproc *rproc)
->>  		elf_phdr_set_p_flags(class, phdr, PF_R | PF_W | PF_X);
->>  		elf_phdr_set_p_align(class, phdr, 0);
->> 
->> -		if (segment->dump) {
->> -			segment->dump(rproc, segment, data + offset);
->> -		} else {
->> -			ptr = rproc_da_to_va(rproc, segment->da, segment->size);
->> -			if (!ptr) {
->> -				dev_err(&rproc->dev,
->> -					"invalid coredump segment (%pad, %zu)\n",
->> -					&segment->da, segment->size);
->> -				memset(data + offset, 0xff, segment->size);
->> -			} else {
->> -				memcpy(data + offset, ptr, segment->size);
->> -			}
->> -		}
->> +		if (dump_conf == RPROC_COREDUMP_DEFAULT)
->> +			rproc_copy_segment(rproc, data + offset, segment, 0,
->> +					   segment->size);
->> 
->>  		offset += elf_phdr_get_p_filesz(class, phdr);
->>  		phdr += elf_size_of_phdr(class);
->>  	}
->> 
->> -	dev_coredumpv(&rproc->dev, data, data_size, GFP_KERNEL);
->> +	if (dump_conf == RPROC_COREDUMP_DEFAULT) {
->> +		dev_coredumpv(&rproc->dev, data, data_size, GFP_KERNEL);
->> +		return;
->> +	}
->> +
->> +	/* Initialize the dump state struct to be used by 
->> rproc_coredump_read */
->> +	dump_state.rproc = rproc;
->> +	dump_state.header = data;
->> +	init_completion(&dump_state.dump_done);
->> +
->> +	dev_coredumpm(&rproc->dev, NULL, &dump_state, data_size, GFP_KERNEL,
->> +		      rproc_coredump_read, rproc_coredump_free);
->> +
->> +	/*
->> +	 * Wait until the dump is read and free is called. Data is freed
->> +	 * by devcoredump framework automatically after 5 minutes.
->> +	 */
->> +	wait_for_completion(&dump_state.dump_done);
->>  }
->> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
->> index e7b7bab..38d037d 100644
->> --- a/include/linux/remoteproc.h
->> +++ b/include/linux/remoteproc.h
->> @@ -435,6 +435,20 @@ enum rproc_crash_type {
->>  };
->> 
->>  /**
->> + * enum rproc_dump_mechanism - Coredump options for core
->> + * @RPROC_COREDUMP_DEFAULT:	Copy dump to separate buffer and carry on 
->> with
->> +				recovery
->> + * @RPROC_COREDUMP_INLINE:	Read segments directly from device memory. 
->> Stall
->> +				recovery until all segments are read
->> + * @RPROC_COREDUMP_DISABLED:	Don't perform any dump
->> + */
->> +enum rproc_dump_mechanism {
->> +	RPROC_COREDUMP_DEFAULT,
->> +	RPROC_COREDUMP_INLINE,
->> +	RPROC_COREDUMP_DISABLED,
->> +};
->> +
->> +/**
->>   * struct rproc_dump_segment - segment info from ELF header
->>   * @node:	list node related to the rproc segment list
->>   * @da:		device address of the segment
->> @@ -451,7 +465,7 @@ struct rproc_dump_segment {
->> 
->>  	void *priv;
->>  	void (*dump)(struct rproc *rproc, struct rproc_dump_segment 
->> *segment,
->> -		     void *dest);
->> +		     void *dest, size_t offset, size_t size);
->>  	loff_t offset;
->>  };
->> 
->> @@ -466,6 +480,7 @@ struct rproc_dump_segment {
->>   * @dev: virtual device for refcounting and common remoteproc 
->> behavior
->>   * @power: refcount of users who need this rproc powered up
->>   * @state: state of the device
->> + * @dump_conf: Currently selected coredump configuration
->>   * @lock: lock which protects concurrent manipulations of the rproc
->>   * @dbg_dir: debugfs directory of this rproc device
->>   * @traces: list of trace buffers
->> @@ -499,6 +514,7 @@ struct rproc {
->>  	struct device dev;
->>  	atomic_t power;
->>  	unsigned int state;
->> +	enum rproc_dump_mechanism dump_conf;
->>  	struct mutex lock;
->>  	struct dentry *dbg_dir;
->>  	struct list_head traces;
->> @@ -630,7 +646,8 @@ int rproc_coredump_add_custom_segment(struct rproc 
->> *rproc,
->>  				      dma_addr_t da, size_t size,
->>  				      void (*dumpfn)(struct rproc *rproc,
->>  						     struct rproc_dump_segment *segment,
->> -						     void *dest),
->> +						     void *dest, size_t offset,
->> +						     size_t size),
->>  				      void *priv);
->>  int rproc_coredump_set_elf_info(struct rproc *rproc, u8 class, u16 
->> machine);
+> static inline bool hstate_is_gigantic(struct hstate *h)
+> {
+> 	return page_order_is_gigantic(huge_page_order(h));
+> }
+
+Ok, the updated patch below includes both as well as your other suggestions.
+
+It would be great if Roman could comment/test as he provided the initial
+code and has a well defined use case.  Testing from Barry would also be
+appreciated as most of the recent churn has come from his testing.
+
+>> I think the current dependency on the hugetlb definition of gigantic page
+>> may be too simplistic if using CMA for huegtlb pages becomes more common.
+>> Some architectures (sparc, powerpc) have more than one gigantic pages size.
+>> Currently there is no way to specify that CMA should be used for one and
+>> not the other.  In addition, I could imagine someone wanting to reserve/use
+>> CMA for non-gigantic (PMD) sized pages.  There is no mechainsm for that today.
+>>
+>> I honestly have not heard about many use cases for this CMA functionality.
+>> When support was initially added, it was driven by a specific use case and
+>> the 'all gigantic pages use CMA if defined' implementation was deemed
+>> sufficient.  If there are more use cases, or this seems too simple we can
+>> revisit that decision.
+> 
+> Agreed, I think your patch is an improvement regardless of that.
+
+Anshuman and Barry have pending patches changing the place in arch specific
+code where hugetlb_cma_reserve is called.  This will not be necessary if the
+proposed code proves successful.
+
+From 17c8f37afbf42fe7412e6eebb3619c6e0b7e1c3c Mon Sep 17 00:00:00 2001
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Date: Tue, 14 Jul 2020 15:54:46 -0700
+Subject: [PATCH] hugetlb: move cma reservation to code setting up gigantic
+ hstate
+
+Instead of calling hugetlb_cma_reserve() directly from arch specific
+code, call from hugetlb_add_hstate when adding a gigantic hstate.
+hugetlb_add_hstate is either called from arch specific huge page setup,
+or as the result of hugetlb command line processing.  In either case,
+this is late enough in the init process that all numa memory information
+should be initialized.  And, it is early enough to still use early
+memory allocator.
+
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ arch/arm64/mm/init.c    | 10 ----------
+ arch/x86/kernel/setup.c |  9 ---------
+ include/linux/hugetlb.h | 12 ------------
+ mm/hugetlb.c            | 32 ++++++++++++++++++++++++++++----
+ 4 files changed, 28 insertions(+), 35 deletions(-)
+
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 79806732f4b4..ff0ff584dde9 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -427,16 +427,6 @@ void __init bootmem_init(void)
+ 	sparse_init();
+ 	zone_sizes_init(min, max);
+ 
+-	/*
+-	 * must be done after zone_sizes_init() which calls free_area_init()
+-	 * that calls node_set_state() to initialize node_states[N_MEMORY]
+-	 * because hugetlb_cma_reserve() will scan over nodes with N_MEMORY
+-	 * state
+-	 */
+-#ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-#endif
+-
+ 	memblock_dump_all();
+ }
+ 
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index a1a9712090ae..111c8467fafa 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1177,15 +1177,6 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	x86_init.paging.pagetable_init();
+ 
+-	/*
+-	 * must be done after zone_sizes_init() which calls free_area_init()
+-	 * that calls node_set_state() to initialize node_states[N_MEMORY]
+-	 * because hugetlb_cma_reserve() will scan over nodes with N_MEMORY
+-	 * state
+-	 */
+-	if (boot_cpu_has(X86_FEATURE_GBPAGES))
+-		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-
+ 	kasan_init();
+ 
+ 	/*
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 6b9508dc31b4..5fadba1febcc 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -933,16 +933,4 @@ static inline spinlock_t *huge_pte_lock(struct hstate *h,
+ 	return ptl;
+ }
+ 
+-#if defined(CONFIG_HUGETLB_PAGE) && defined(CONFIG_CMA)
+-extern void __init hugetlb_cma_reserve(int order);
+-extern void __init hugetlb_cma_check(void);
+-#else
+-static inline __init void hugetlb_cma_reserve(int order)
+-{
+-}
+-static inline __init void hugetlb_cma_check(void)
+-{
+-}
+-#endif
+-
+ #endif /* _LINUX_HUGETLB_H */
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index f24acb3af741..2ca68c5620b7 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -76,8 +76,10 @@ DEFINE_SPINLOCK(hugetlb_lock);
+ static int num_fault_mutexes;
+ struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
+ 
+-/* Forward declaration */
++/* Forward declarations */
+ static int hugetlb_acct_memory(struct hstate *h, long delta);
++static void __init hugetlb_cma_reserve(int order);
++static void __init hugetlb_cma_check(void);
+ 
+ static inline void unlock_or_release_subpool(struct hugepage_subpool *spool)
+ {
+@@ -3273,6 +3275,13 @@ void __init hugetlb_add_hstate(unsigned int order)
+ 	snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
+ 					huge_page_size(h)/1024);
+ 
++	/*
++	 * If user wants CMA for gigantic pages, reserve it now as we
++	 * set up the gigantic page hstate.
++	 */
++	if (hstate_is_gigantic(h) && hugetlb_cma_size)
++		hugetlb_cma_reserve(order);
++
+ 	parsed_hstate = h;
+ }
+ 
+@@ -5627,12 +5636,16 @@ void move_hugetlb_state(struct page *oldpage, struct page *newpage, int reason)
+ #ifdef CONFIG_CMA
+ static bool cma_reserve_called __initdata;
+ 
++/*
++ * early_param, as hugetlb_cma_size must be processed before any call to
++ * hugetlb_add_hstate by arch specific code or regular hugetlb command
++ * line processing.
++ */
+ static int __init cmdline_parse_hugetlb_cma(char *p)
+ {
+ 	hugetlb_cma_size = memparse(p, &p);
+ 	return 0;
+ }
+-
+ early_param("hugetlb_cma", cmdline_parse_hugetlb_cma);
+ 
+ /*
+@@ -5642,11 +5655,13 @@ early_param("hugetlb_cma", cmdline_parse_hugetlb_cma);
+  * hugetlb_cma_reserve() scans over N_MEMORY nodemask and hence expects the platforms
+  * to have initialized N_MEMORY state.
+  */
+-void __init hugetlb_cma_reserve(int order)
++static void __init hugetlb_cma_reserve(int order)
+ {
+ 	unsigned long size, reserved, per_node;
+ 	int nid;
+ 
++	if (cma_reserve_called)
++		return;
+ 	cma_reserve_called = true;
+ 
+ 	if (!hugetlb_cma_size)
+@@ -5693,12 +5708,21 @@ void __init hugetlb_cma_reserve(int order)
+ 	}
+ }
+ 
+-void __init hugetlb_cma_check(void)
++static void __init hugetlb_cma_check(void)
+ {
+ 	if (!hugetlb_cma_size || cma_reserve_called)
+ 		return;
+ 
+ 	pr_warn("hugetlb_cma: the option isn't supported by current arch\n");
+ }
++#else
++
++static void __init hugetlb_cma_reserve(int order)
++{
++}
++
++static void __init hugetlb_cma_check(void)
++{
++}
+ 
+ #endif /* CONFIG_CMA */
+-- 
+2.25.4
+
