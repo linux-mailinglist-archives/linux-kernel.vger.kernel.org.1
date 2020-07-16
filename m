@@ -2,64 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D233221923
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 02:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D456A221927
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 02:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727782AbgGPAzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 20:55:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35560 "EHLO mail.kernel.org"
+        id S1727062AbgGPA5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 20:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726479AbgGPAzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 20:55:13 -0400
+        id S1726479AbgGPA5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 20:57:51 -0400
 Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13DD120658;
-        Thu, 16 Jul 2020 00:55:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C38FF20658;
+        Thu, 16 Jul 2020 00:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594860913;
-        bh=Uy/8ESF+QLnINaje1tAvlX+l9b8wvAMN50TwncsSIbI=;
+        s=default; t=1594861070;
+        bh=3Q9P7UQS49i5KShXWhmDgVyNUCeDNAwi1WcfoQD4ewI=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=ZkOEyqooUuO7oga3APF1nhJgYu8RN7Zyn+hujImeGqtPW6UntYiI3OBE06FKH5+PG
-         SQ/4krRlKEWkFsXJ6TlCq9jdO1X/BgGDurnqyv/kTqmgke3nC+ef9wYeksYSVuEpBK
-         ZGZYXh2w1TYdNZ1gIFU2S9LmqCtXTice8qzjLkWY=
+        b=bZtm36rK+mUku7jiYwl47k7VQr/5YTzZe+8mH/k99Oit3LAVs0yzFAL4S4dZ/pl1Z
+         05KWgLHxn61KG7EEGtz4HA748nGp2fhQ0SRhbW0JfHJm13H3pbfFvrD+bRujVn1jRj
+         DGe5WsTxhS8ifU/rN+xQey3RVGCngWkcMPuVlxpE=
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1594739122-29327-1-git-send-email-sivaprak@codeaurora.org>
-References: <1594739122-29327-1-git-send-email-sivaprak@codeaurora.org>
-Subject: Re: [PATCH 0/4] Split ipq8074 reset bindings from clock bindings
+In-Reply-To: <1594098579-25050-3-git-send-email-Anson.Huang@nxp.com>
+References: <1594098579-25050-1-git-send-email-Anson.Huang@nxp.com> <1594098579-25050-3-git-send-email-Anson.Huang@nxp.com>
+Subject: Re: [PATCH V6 2/6] clk: imx: Support building i.MX common clock driver as module
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Sivaprakash Murugesan <sivaprak@codeaurora.org>
-To:     Sivaprakash Murugesan <sivaprak@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+Cc:     Linux-imx@nxp.com
+To:     Anson Huang <Anson.Huang@nxp.com>,
+        Georg.Waibel@wiedemann-group.com, abel.vesa@nxp.com,
+        aisheng.dong@nxp.com, andrew.smirnov@gmail.com, chen.fang@nxp.com,
+        daniel.baluta@nxp.com, festevam@gmail.com, fugang.duan@nxp.com,
+        georg.waibel@wiedemann-group.de, horia.geanta@nxp.com,
+        j.remmet@phytec.de, kernel@pengutronix.de,
+        laurent.pinchart@ideasonboard.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        p.zabel@pengutronix.de, robh+dt@kernel.org
-Date:   Wed, 15 Jul 2020 17:55:12 -0700
-Message-ID: <159486091238.1987609.14897518216700398772@swboyd.mtv.corp.google.com>
+        peng.fan@nxp.com, s.hauer@pengutronix.de, sfr@canb.auug.org.au,
+        shawnguo@kernel.org, yuehaibing@huawei.com
+Date:   Wed, 15 Jul 2020 17:57:50 -0700
+Message-ID: <159486107011.1987609.3725728274148570354@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sivaprakash Murugesan (2020-07-14 08:05:18)
-> The patch series https://lwn.net/Articles/825325/ wrongly added clock
-> bindings into reset bindings. This is caught by=20
-> kernel test robot <lkp@intel.com> after it got merged into the clk-next
-> tree.
+Quoting Anson Huang (2020-07-06 22:09:35)
+> There are more and more requirements of building SoC specific drivers
+> as modules, add support for building i.MX common clock driver as module
+> to meet the requirement.
 >=20
-> To avoid these kind of future mistakes it is better we split up the reset
-> bindings from clock bindings.
->=20
-> Since the clock patches in https://lwn.net/Articles/825325/ are applied to
-> clk-next it would be better if all the changes in this series to go throu=
-gh
-> clk-next.
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
 
-I disagree. We've put them all in the same file because they're all used
-provided by the same compatible string. Please keep doing that and just
-fix the number scheme if that is the problem. Also, use lore.kernel.org
-for your links next time (i.e. https://lore.kernel.org/r/<message-id>)
-so that we don't need to rely on lwn.net links.
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
