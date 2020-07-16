@@ -2,142 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB38222D78
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762EC222D59
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgGPVKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 17:10:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62844 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725999AbgGPVKy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 17:10:54 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06GL3B88056822;
-        Thu, 16 Jul 2020 17:10:47 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32auqucwen-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 17:10:47 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06GL5nPs066215;
-        Thu, 16 Jul 2020 17:10:47 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32auqucwdx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 17:10:47 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06GLA8UB014886;
-        Thu, 16 Jul 2020 21:10:44 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 329nmyj6xy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 21:10:44 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06GLAf2Q54198436
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Jul 2020 21:10:41 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BE184AE051;
-        Thu, 16 Jul 2020 21:10:41 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4ECCFAE04D;
-        Thu, 16 Jul 2020 21:10:38 +0000 (GMT)
-Received: from [9.102.2.181] (unknown [9.102.2.181])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 16 Jul 2020 21:10:38 +0000 (GMT)
-From:   Hari Bathini <hbathini@linux.ibm.com>
-Subject: Re: [PATCH v3 09/12] ppc64/kexec_file: setup backup region for kdump
- kernel
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     kernel test robot <lkp@intel.com>, Pingfan Liu <piliu@redhat.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Young <dyoung@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>
-References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com>
- <159466096898.24747.16701009925943468066.stgit@hbathini.in.ibm.com>
- <87y2nk8cjq.fsf@morokweng.localdomain>
-Message-ID: <bea19627-c6b7-5d59-e194-03038bb4d9f6@linux.ibm.com>
-Date:   Fri, 17 Jul 2020 02:40:37 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1726113AbgGPVFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 17:05:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbgGPVFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 17:05:30 -0400
+Received: from embeddedor (unknown [201.162.240.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE828207DD;
+        Thu, 16 Jul 2020 21:05:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594933529;
+        bh=iW7BjEZ60Foe5MOsebfnRJHNZwW9KgJqpGOyAb7JsGU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Xdb4jTIC972OWicAcjGAjt8XjGzG33BuaaDDh1fXUuNHRTg3+ov4YPlKacoLY8xVg
+         IhUxhZy0U0c3w9Ff34IlHqy4/D0n9cU6ismqF9BuMYIscA9+I+4ndPiK6U257lHkyB
+         IAOn0daYQwoZwyOATyV+mTQdHL2e1y1H6RIib0Xk=
+Date:   Thu, 16 Jul 2020 16:10:52 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] PCI: imx6: Use fallthrough pseudo-keyword
+Message-ID: <20200716211052.GA16893@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <87y2nk8cjq.fsf@morokweng.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-16_11:2020-07-16,2020-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 malwarescore=0
- bulkscore=0 adultscore=0 clxscore=1015 phishscore=0 spamscore=100
- impostorscore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- mlxscore=100 mlxlogscore=-1000 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007160139
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-On 16/07/20 7:08 am, Thiago Jung Bauermann wrote:
-> 
-> Hari Bathini <hbathini@linux.ibm.com> writes:
-> 
->> @@ -968,7 +1040,7 @@ int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
->>
->>  	/*
->>  	 * Restrict memory usage for kdump kernel by setting up
->> -	 * usable memory ranges.
->> +	 * usable memory ranges and memory reserve map.
->>  	 */
->>  	if (image->type == KEXEC_TYPE_CRASH) {
->>  		ret = get_usable_memory_ranges(&umem);
->> @@ -980,6 +1052,24 @@ int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
->>  			pr_err("Error setting up usable-memory property for kdump kernel\n");
->>  			goto out;
->>  		}
->> +
->> +		ret = fdt_add_mem_rsv(fdt, BACKUP_SRC_START + BACKUP_SRC_SIZE,
->> +				      crashk_res.start - BACKUP_SRC_SIZE);
-> 
-> I believe this answers my question from the other email about how the
-> crashkernel is prevented from stomping in the crashed kernel's memory,
-> right? I needed to think for a bit to understand what the above
-> reservation was protecting. I think it's worth adding a comment.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/pci/controller/dwc/pci-imx6.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Right. The reason to add it in the first place is, prom presses the panic button if
-it can't find low memory. Marking it reserved seems to keep it quiet though. so..
+diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+index 4e5c379ae418..1119ded593d0 100644
+--- a/drivers/pci/controller/dwc/pci-imx6.c
++++ b/drivers/pci/controller/dwc/pci-imx6.c
+@@ -439,7 +439,7 @@ static int imx6_pcie_enable_ref_clk(struct imx6_pcie *imx6_pcie)
+ 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+ 				   IMX6SX_GPR12_PCIE_TEST_POWERDOWN, 0);
+ 		break;
+-	case IMX6QP:		/* FALLTHROUGH */
++	case IMX6QP:
+ 	case IMX6Q:
+ 		/* power up core phy and enable ref clock */
+ 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR1,
+@@ -642,7 +642,7 @@ static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
+ 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+ 				   IMX6SX_GPR12_PCIE_RX_EQ_MASK,
+ 				   IMX6SX_GPR12_PCIE_RX_EQ_2);
+-		/* FALLTHROUGH */
++		fallthrough;
+ 	default:
+ 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
+ 				   IMX6Q_GPR12_PCIE_CTL_2, 0 << 10);
+@@ -1107,7 +1107,7 @@ static int imx6_pcie_probe(struct platform_device *pdev)
+ 			dev_err(dev, "pcie_aux clock source missing or invalid\n");
+ 			return PTR_ERR(imx6_pcie->pcie_aux);
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	case IMX7D:
+ 		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
+ 			imx6_pcie->controller_id = 1;
+-- 
+2.27.0
 
-Will add comment mentioning that..
-
->> +void purgatory(void)
->> +{
->> +	void *dest, *src;
->> +
->> +	src = (void *)BACKUP_SRC_START;
->> +	if (backup_start) {
->> +		dest = (void *)backup_start;
->> +		__memcpy(dest, src, BACKUP_SRC_SIZE);
->> +	}
->> +}
-> 
-> In general I'm in favor of using C code over assembly, but having to
-> bring in that relocation support just for the above makes me wonder if
-> it's worth it in this case.
-
-I am planning to build on purgatory later with "I'm in purgatory" print support
-for pseries at least and also, sha256 digest check.
-
-Thanks
-Hari
