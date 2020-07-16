@@ -2,414 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C13C222945
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB6122299D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729306AbgGPRUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 13:20:36 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:48874 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728949AbgGPRUc (ORCPT
+        id S1729225AbgGPRVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 13:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729443AbgGPRTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 13:20:32 -0400
-X-IronPort-AV: E=Sophos;i="5.75,360,1589209200"; 
-   d="scan'208";a="52107540"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 17 Jul 2020 02:20:30 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 5C98840B5998;
-        Fri, 17 Jul 2020 02:20:25 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jens Axboe <axboe@kernel.dk>, Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
-        Niklas <niklas.soderlund@ragnatech.se>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org
-Cc:     linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-renesas-soc@vger.kernel.org,
-        linux-usb@vger.kernel.org, Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 20/20] arm64: dts: renesas: r8a774e1: Add VIN and CSI-2 nodes
-Date:   Thu, 16 Jul 2020 18:18:35 +0100
-Message-Id: <1594919915-5225-21-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1594919915-5225-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Thu, 16 Jul 2020 13:19:07 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D8DC08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:19:07 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id p3so5179542pgh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:19:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PJplWTbP//JWBP6LiwpcydCLM3kpmqRCafKXQ2sO8HM=;
+        b=gFZyKus1CsQMXkTyfQNTl5O+0k7AWFHlIkYaZ/5TREymgAeyqVUDm/gqS0BV7rcrsu
+         82GmpCSlv26mJYkIfMbStCv9Qy8zBrSoJXare02pYn4LqPE5JgZo1T7UNIT+y5MJDzkg
+         61blOixw6uZPHNnqnZo0H1+brKdZsu0on9SNMnH42bxqRCxrCX/yAR8sXJJaheYfKIBL
+         mPKSk7Ve24sR4PhSPnJEgbd1z4rD0N4+dAMVEGsd25bCGZwVb5wm2SCKJH8MPXuO4LcS
+         7Y8N+rkP9A5ldAquSCD8DeT+G+eh7bmxGOX6VuRMyNnK+XEyu6RgnPXjjyNj+0f8Pmjo
+         ahSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PJplWTbP//JWBP6LiwpcydCLM3kpmqRCafKXQ2sO8HM=;
+        b=KKPK16wGHLzmPjWl0slFreNY+A3kdow6vHeYuJ4YvRhqd2hSIBxY7AMYhu7T4+etNa
+         PiM3nocGCJ7HS3nCWNMK0CnMx+XF6b2bltwCFsfUC7ve8D7CxwJ9T1clufctXyjkEcb8
+         4Zw/+kxCvts4Lk3PU6oYSMQXOji2S7ux9/YtsvnWp8Duzo8lZejyhJTk5YXi9Ud/nkbV
+         8d5xfocmNeJAE7b4tKICJyV2640xpcN4zlpy8Ieo6EGqLn7ij9W4CY958+P3lraYvyWx
+         6ijfkJpsnbRlU3Ei/+NPuNbCELLA+x9Z4PCRC0LhLjHqBSpHz9+2ABKG4EMwi/t77v41
+         fyGg==
+X-Gm-Message-State: AOAM531wYA4GqD+YKfdIBbCxoIQVDlCxsVUey/uDwCADsrrXA35aWsZH
+        lEivfVomt+XjHCCO/8mclRPzPA==
+X-Google-Smtp-Source: ABdhPJwJiFSQcdB6omeWjkDHMF9mbOoLcdHIviL7+KHQY8vyEQkjrY3SKAm2f71bm739lOZkfFQVGw==
+X-Received: by 2002:a63:1a44:: with SMTP id a4mr5211817pgm.281.1594919946664;
+        Thu, 16 Jul 2020 10:19:06 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id h7sm5551458pfq.15.2020.07.16.10.19.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 10:19:05 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 11:19:03 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Suman Anna <s-anna@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stefanos@xilinx.com, BLEVINSK@xilinx.com
+Subject: Re: [PATCH v2 1/4] dt-bindings: remoteproc: Add bindings for R5F
+ subsystem on TI K3 SoCs
+Message-ID: <20200716171903.GA3286345@xps15>
+References: <20200630024922.32491-1-s-anna@ti.com>
+ <20200630024922.32491-2-s-anna@ti.com>
+ <20200714171553.GA2522956@bogus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714171553.GA2522956@bogus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add VIN and CSI-2 nodes to RZ/G2H (R8A774E1) SoC dtsi.
+Hi Rob,
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/r8a774e1.dtsi | 334 ++++++++++++++++++++++
- 1 file changed, 334 insertions(+)
+On Tue, Jul 14, 2020 at 11:15:53AM -0600, Rob Herring wrote:
+> On Mon, Jun 29, 2020 at 09:49:19PM -0500, Suman Anna wrote:
+> > The Texas Instruments K3 family of SoCs have one or more dual-core
+> > Arm Cortex R5F processor subsystems/clusters (R5FSS). The clusters
+> > can be split between multiple voltage domains as well. Add the device
+> > tree bindings document for these R5F subsystem devices. These R5F
+> > processors do not have an MMU, and so require fixed memory carveout
+> > regions matching the firmware image addresses. The nodes require more
+> > than one memory region, with the first memory region used for DMA
+> > allocations at runtime. The remaining memory regions are reserved
+> > and are used for the loading and running of the R5F remote processors.
+> > The R5F processors can also optionally use any internal on-chip SRAM
+> > memories either for executing code or using it as fast-access data.
+> > 
+> > The added example illustrates the DT nodes for the single R5FSS device
+> > present on K3 AM65x family of SoCs.
+> > 
+> > Signed-off-by: Suman Anna <s-anna@ti.com>
+> > ---
+> > v2:
+> >  - Renamed "lockstep-mode" property to "ti,cluster-mode"
+> 
+> I don't think that's a move in the right direction given this is at 
+> least partially a standard feature.
+> 
+> As I said before, I'm very hesistant to accept anything here given I 
+> know the desires and activity to define 'system Devicetrees' of which 
+> TI is participating. While maybe an rproc node is sufficient for a 
+> DSP, it seems multiple vendors have R cores and want to define them in 
+> system DT.
+> 
+> Though the system DT effort has not yet given any thought to what is the 
+> view of one processor or instance to another instance (which is what 
+> this binding is). We'll still need something defined for that, but I'd 
+> expect that to be dependent on what is defined for system DT.
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-index ce9e5615b932..bd87c4c4dcaf 100644
---- a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-@@ -1415,6 +1415,246 @@
- 			status = "disabled";
- 		};
- 
-+		vin0: video@e6ef0000 {
-+			compatible = "renesas,vin-r8a774e1";
-+			reg = <0 0xe6ef0000 0 0x1000>;
-+			interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 811>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 811>;
-+			renesas,id = <0>;
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					reg = <1>;
-+
-+					vin0csi20: endpoint@0 {
-+						reg = <0>;
-+						remote-endpoint = <&csi20vin0>;
-+					};
-+					vin0csi40: endpoint@2 {
-+						reg = <2>;
-+						remote-endpoint = <&csi40vin0>;
-+					};
-+				};
-+			};
-+		};
-+
-+		vin1: video@e6ef1000 {
-+			compatible = "renesas,vin-r8a774e1";
-+			reg = <0 0xe6ef1000 0 0x1000>;
-+			interrupts = <GIC_SPI 189 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 810>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 810>;
-+			renesas,id = <1>;
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					reg = <1>;
-+
-+					vin1csi20: endpoint@0 {
-+						reg = <0>;
-+						remote-endpoint = <&csi20vin1>;
-+					};
-+					vin1csi40: endpoint@2 {
-+						reg = <2>;
-+						remote-endpoint = <&csi40vin1>;
-+					};
-+				};
-+			};
-+		};
-+
-+		vin2: video@e6ef2000 {
-+			compatible = "renesas,vin-r8a774e1";
-+			reg = <0 0xe6ef2000 0 0x1000>;
-+			interrupts = <GIC_SPI 190 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 809>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 809>;
-+			renesas,id = <2>;
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					reg = <1>;
-+
-+					vin2csi20: endpoint@0 {
-+						reg = <0>;
-+						remote-endpoint = <&csi20vin2>;
-+					};
-+					vin2csi40: endpoint@2 {
-+						reg = <2>;
-+						remote-endpoint = <&csi40vin2>;
-+					};
-+				};
-+			};
-+		};
-+
-+		vin3: video@e6ef3000 {
-+			compatible = "renesas,vin-r8a774e1";
-+			reg = <0 0xe6ef3000 0 0x1000>;
-+			interrupts = <GIC_SPI 191 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 808>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 808>;
-+			renesas,id = <3>;
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					reg = <1>;
-+
-+					vin3csi20: endpoint@0 {
-+						reg = <0>;
-+						remote-endpoint = <&csi20vin3>;
-+					};
-+					vin3csi40: endpoint@2 {
-+						reg = <2>;
-+						remote-endpoint = <&csi40vin3>;
-+					};
-+				};
-+			};
-+		};
-+
-+		vin4: video@e6ef4000 {
-+			compatible = "renesas,vin-r8a774e1";
-+			reg = <0 0xe6ef4000 0 0x1000>;
-+			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 807>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 807>;
-+			renesas,id = <4>;
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					reg = <1>;
-+
-+					vin4csi20: endpoint@0 {
-+						reg = <0>;
-+						remote-endpoint = <&csi20vin4>;
-+					};
-+				};
-+			};
-+		};
-+
-+		vin5: video@e6ef5000 {
-+			compatible = "renesas,vin-r8a774e1";
-+			reg = <0 0xe6ef5000 0 0x1000>;
-+			interrupts = <GIC_SPI 175 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 806>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 806>;
-+			renesas,id = <5>;
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					reg = <1>;
-+
-+					vin5csi20: endpoint@0 {
-+						reg = <0>;
-+						remote-endpoint = <&csi20vin5>;
-+					};
-+				};
-+			};
-+		};
-+
-+		vin6: video@e6ef6000 {
-+			compatible = "renesas,vin-r8a774e1";
-+			reg = <0 0xe6ef6000 0 0x1000>;
-+			interrupts = <GIC_SPI 176 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 805>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 805>;
-+			renesas,id = <6>;
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					reg = <1>;
-+
-+					vin6csi20: endpoint@0 {
-+						reg = <0>;
-+						remote-endpoint = <&csi20vin6>;
-+					};
-+				};
-+			};
-+		};
-+
-+		vin7: video@e6ef7000 {
-+			compatible = "renesas,vin-r8a774e1";
-+			reg = <0 0xe6ef7000 0 0x1000>;
-+			interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 804>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 804>;
-+			renesas,id = <7>;
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					reg = <1>;
-+
-+					vin7csi20: endpoint@0 {
-+						reg = <0>;
-+						remote-endpoint = <&csi20vin7>;
-+					};
-+				};
-+			};
-+		};
-+
- 		rcar_sound: sound@ec500000 {
- 			/*
- 			 * #sound-dai-cells is required
-@@ -2136,6 +2376,100 @@
- 			status = "disabled";
- 		};
- 
-+		csi20: csi2@fea80000 {
-+			compatible = "renesas,r8a774e1-csi2";
-+			reg = <0 0xfea80000 0 0x10000>;
-+			interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 714>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 714>;
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					reg = <1>;
-+
-+					csi20vin0: endpoint@0 {
-+						reg = <0>;
-+						remote-endpoint = <&vin0csi20>;
-+					};
-+					csi20vin1: endpoint@1 {
-+						reg = <1>;
-+						remote-endpoint = <&vin1csi20>;
-+					};
-+					csi20vin2: endpoint@2 {
-+						reg = <2>;
-+						remote-endpoint = <&vin2csi20>;
-+					};
-+					csi20vin3: endpoint@3 {
-+						reg = <3>;
-+						remote-endpoint = <&vin3csi20>;
-+					};
-+					csi20vin4: endpoint@4 {
-+						reg = <4>;
-+						remote-endpoint = <&vin4csi20>;
-+					};
-+					csi20vin5: endpoint@5 {
-+						reg = <5>;
-+						remote-endpoint = <&vin5csi20>;
-+					};
-+					csi20vin6: endpoint@6 {
-+						reg = <6>;
-+						remote-endpoint = <&vin6csi20>;
-+					};
-+					csi20vin7: endpoint@7 {
-+						reg = <7>;
-+						remote-endpoint = <&vin7csi20>;
-+					};
-+				};
-+			};
-+		};
-+
-+		csi40: csi2@feaa0000 {
-+			compatible = "renesas,r8a774e1-csi2";
-+			reg = <0 0xfeaa0000 0 0x10000>;
-+			interrupts = <GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&cpg CPG_MOD 716>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 716>;
-+			status = "disabled";
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@1 {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					reg = <1>;
-+
-+					csi40vin0: endpoint@0 {
-+						reg = <0>;
-+						remote-endpoint = <&vin0csi40>;
-+					};
-+					csi40vin1: endpoint@1 {
-+						reg = <1>;
-+						remote-endpoint = <&vin1csi40>;
-+					};
-+					csi40vin2: endpoint@2 {
-+						reg = <2>;
-+						remote-endpoint = <&vin2csi40>;
-+					};
-+					csi40vin3: endpoint@3 {
-+						reg = <3>;
-+						remote-endpoint = <&vin3csi40>;
-+					};
-+				};
-+			};
-+		};
-+
- 		hdmi0: hdmi@fead0000 {
- 			reg = <0 0xfead0000 0 0x10000>;
- 			status = "disabled";
--- 
-2.17.1
+Efforts related to the definition of the system DT are under way, something I
+expect to keep going on for some time to come.  I agree with the need to use the
+system DT to define remote processors and I look forward to the time we can do
+so.
 
+That being said we need to find a concensus on how to move forward with patches
+that are ready to be merged.  What is your opinion on that?
+
+Thanks,
+Mathieu 
+
+> 
+> Rob
