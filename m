@@ -2,111 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F579229A1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812AB229ADC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 16:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732587AbgGVO3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 10:29:48 -0400
-Received: from verein.lst.de ([213.95.11.211]:56551 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732576AbgGVO3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 10:29:47 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id B599868B05; Wed, 22 Jul 2020 16:29:43 +0200 (CEST)
-Date:   Wed, 22 Jul 2020 16:29:43 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        will@kernel.org, ganapatrao.kulkarni@cavium.com,
-        catalin.marinas@arm.com, iommu@lists.linux-foundation.org,
-        linuxarm@huawei.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Steve Capper <steve.capper@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v3 1/2] dma-direct: provide the ability to reserve
- per-numa CMA
-Message-ID: <20200722142943.GB17658@lst.de>
-References: <20200628111251.19108-1-song.bao.hua@hisilicon.com> <20200628111251.19108-2-song.bao.hua@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200628111251.19108-2-song.bao.hua@hisilicon.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1732817AbgGVO7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 10:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730870AbgGVO7o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 10:59:44 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD99C0619DC;
+        Wed, 22 Jul 2020 07:59:44 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id a21so2526029ejj.10;
+        Wed, 22 Jul 2020 07:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:in-reply-to:references:mime-version
+         :date:content-transfer-encoding;
+        bh=URRzOHpgQhWz8k04t/0LNtBaTy9pE9Bui1vrbzjXhfI=;
+        b=e7uwKCVt6D3jSem4PO+P9pzhJVScJ7gidvn9qlcv2TgMZh4TtkZ2Nlxv2iZbVr0QT1
+         I5ur5Gxim9UapTLNIomFJ53fYjqFeqf7cVoEkGCCz2PUynwz/5jhzyz3QA7xIRbSVXyl
+         ZugspPMGasrEZvItvBiZbvc7XTZT4L4d2cfXcjb4Wu8KMTfHa7tN7Q9ht4xyj42HkOXO
+         gjoMQr4yNH3A0fQo3VOqyOw+EYiS38uvxBMKG0ttAiURk/pOZda47DLf3uTs8mfK6Mw6
+         fTo6nt5bF0U/obvwSAH8K2NRoRdtXnnOalZIevQDaiKHtbFeyBiA4yenH1ELOoAPA07i
+         XdIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:in-reply-to
+         :references:mime-version:date:content-transfer-encoding;
+        bh=URRzOHpgQhWz8k04t/0LNtBaTy9pE9Bui1vrbzjXhfI=;
+        b=NbSLniTT6GqokBzY66UQ9cF1YWZsQR6TmhGD+MrRdVlzXfoMTEdLRsOK3gVyMDjJku
+         caYBCJXtxUDsUl541g77DYjqsbFnGbia+qxkHKSYFpTbNIc7XjGJHC9KAnUAQNzeFBgC
+         XlxXvzbQc47ZHzkexShveqkeqiYlVwmbvxGOY3tOPtUVpK3HWZt3iabF5RVIjynAJi5a
+         Mfbq0XBy1b4Gpu/6cx2DgVEP7csiC9ewXhqvZnTRMWYhEQEfYm9Mz5yUEICMp6foJVal
+         ldoQEq+PT21LIS3EKO0bTfUgu3HqNDDr+Ji7NlLQ+OVgZl1Y+dr+OpScRHOtQFuWrUi8
+         vXpA==
+X-Gm-Message-State: AOAM532dITZ14N9J8d8gt1/nnaQYT1r7XGasm6V8sP6+ABp8f4UDoXNe
+        ba702ivP1m5T7JP2x4Ma820=
+X-Google-Smtp-Source: ABdhPJy7OGFfe2ZmIbIPJgSKdIxz7vpB5TeN9Z25EU/fegE+4BuZZsw1np3Tb5T0TkZ8dgiUZTy26A==
+X-Received: by 2002:a17:906:6558:: with SMTP id u24mr26724151ejn.364.1595429982763;
+        Wed, 22 Jul 2020 07:59:42 -0700 (PDT)
+Received: from ubuntu-laptop (ip5f5bee3d.dynamic.kabel-deutschland.de. [95.91.238.61])
+        by smtp.googlemail.com with ESMTPSA id d12sm65543edx.80.2020.07.22.07.59.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 Jul 2020 07:59:42 -0700 (PDT)
+Message-ID: <c2450609677d4b3df172545a9aaad5373402e23c.camel@gmail.com>
+Subject: Re: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
+From:   Bean Huo <huobean@gmail.com>
+To:     Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        Avri Altman <Avri.Altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+In-Reply-To: <SN6PR04MB38720C3D8FC176C3C7FB51B89A7E0@SN6PR04MB3872.namprd04.prod.outlook.com>
+References: <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p8>
+         <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
+         <SN6PR04MB38720C3D8FC176C3C7FB51B89A7E0@SN6PR04MB3872.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Date:   Thu, 16 Jul 2020 10:13:33 +0200
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 28, 2020 at 11:12:50PM +1200, Barry Song wrote:
->  struct page *dma_alloc_contiguous(struct device *dev, size_t size, gfp_t gfp)
->  {
->  	size_t count = size >> PAGE_SHIFT;
->  	struct page *page = NULL;
->  	struct cma *cma = NULL;
-> +	int nid = dev ? dev_to_node(dev) : NUMA_NO_NODE;
-> +	bool alloc_from_pernuma = false;
-> +
-> +	if ((count <= 1) && !(dev && dev->cma_area))
-> +		return NULL;
->  
->  	if (dev && dev->cma_area)
->  		cma = dev->cma_area;
-> -	else if (count > 1)
-> +	else if ((nid != NUMA_NO_NODE) && dma_contiguous_pernuma_area[nid]
-> +		&& !(gfp & (GFP_DMA | GFP_DMA32))) {
-> +		cma = dma_contiguous_pernuma_area[nid];
-> +		alloc_from_pernuma = true;
-> +	} else {
->  		cma = dma_contiguous_default_area;
-> +	}
+On Wed, 2020-07-15 at 18:34 +0000, Avi Shchislowski wrote:
+> Hello All,
+> My name is Avi Shchislowski, I am managing the WDC's Linux Host R&D
+> team in which Avri is a member of.
+> As the review process of HPB is progressing very constructively, we
+> are getting more and more requests from OEMs, Inquiring about HPB in
+> general, and host control mode in particular.
+> 
+> Their main concern is that HPB will make it to 5.9 merge window, but
+> the host control mode patches will not.
+> Thus, because of recent Google's GKI, the next Android LTS might not
+> include HPB with host control mode.
+> 
+> Aside of those requests, initial host control mode testing are
+> showing promising prospective with respect of performance gain.
+> 
+> What would be, in your opinion, the best policy that host control
+> mode is included in next Android LTS?
+> 
+> Thanks,
+> Avi
+> 
 
-I find the function rather confusing now.  What about something
-like (this relies on the fact that dev should never be NULL in the
-DMA API)
+Hi Avi
+IMO, no matter how did the driver implement, if you truly want the HPB
+host mode driver you mentioned to be mainlined in the upstream Linux,
+the best policy is that you should first post the driver in the SCSI
+maillist community, let us firstly review here. I didn't see your
+driver, I don't know how to provide the correct answer.
 
-struct page *dma_alloc_contiguous(struct device *dev, size_t size, gfp_t gfp)
-{
-	size_t cma_align = min_t(size_t, get_order(size), CONFIG_CMA_ALIGNMENT);
- 	size_t count = size >> PAGE_SHIFT;
+Thanks,
+Bean
 
-	if (gfpflags_allow_blocking(gfp))
-		return NULL;
-	gfp &= __GFP_NOWARN;
 
-	if (dev->cma_area)
-		return cma_alloc(dev->cma_area, count, cma_align, gfp);
-	if (count <= 1)
-		return NULL;
 
-	if (IS_ENABLED(CONFIG_PERNODE_CMA) && !(gfp & (GFP_DMA | GFP_DMA32)) {
-		int nid = dev_to_node(dev);
- 		struct cma *cma = dma_contiguous_pernuma_area[nid];
-		struct page *page;
-
-		if (cma) {
-			page = cma_alloc(cma, count, cma_align, gfp);
-			if (page)
-				return page;
-		}
-	}
-
-	return cma_alloc(dma_contiguous_default_area, count, cma_align, gfp);
-}
-
-> +		/*
-> +		 * otherwise, page is from either per-numa cma or default cma
-> +		 */
-> +		int nid = page_to_nid(page);
-> +
-> +		if (nid != NUMA_NO_NODE) {
-> +			if (cma_release(dma_contiguous_pernuma_area[nid], page,
-> +						PAGE_ALIGN(size) >> PAGE_SHIFT))
-> +				return;
-> +		}
-> +
-> +		if (cma_release(dma_contiguous_default_area, page,
-
-How can page_to_nid ever return NUMA_NO_NODE?
