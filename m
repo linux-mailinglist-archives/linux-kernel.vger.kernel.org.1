@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF322222FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCD7222313
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgGPMzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 08:55:52 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:35969 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbgGPMzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 08:55:51 -0400
+        id S1728837AbgGPM4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 08:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728605AbgGPMz4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 08:55:56 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72E9C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 05:55:56 -0700 (PDT)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4B6vPb6rTHz9sTC; Thu, 16 Jul 2020 22:55:47 +1000 (AEST)
+        id 4B6vPc4zFDz9sTh; Thu, 16 Jul 2020 22:55:48 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     nathanl@linux.ibm.com, Michael Ellerman <mpe@ellerman.id.au>,
+To:     npiggin@gmail.com, Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vincenzo.frascino@arm.com, tglx@linutronix.de, luto@kernel.org,
-        arnd@arndb.de, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <cover.1588079622.git.christophe.leroy@c-s.fr>
-References: <cover.1588079622.git.christophe.leroy@c-s.fr>
-Subject: Re: [PATCH v8 0/8] powerpc: switch VDSO to C implementation
-Message-Id: <159490400799.3805857.1673818426986159282.b4-ty@ellerman.id.au>
-Date:   Thu, 16 Jul 2020 22:55:47 +1000 (AEST)
+        Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <173de3b659fa3a5f126a0eb170522cccd909950f.1594125164.git.christophe.leroy@csgroup.eu>
+References: <173de3b659fa3a5f126a0eb170522cccd909950f.1594125164.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH 1/2] powerpc/signal_32: Remove !FULL_REGS() special handling in PPC64 save_general_regs()
+Message-Id: <159490400779.3805857.2201061957365361885.b4-ty@ellerman.id.au>
+Date:   Thu, 16 Jul 2020 22:55:48 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Apr 2020 13:16:46 +0000 (UTC), Christophe Leroy wrote:
-> This is the seventh version of a series to switch powerpc VDSO to
-> generic C implementation.
+On Tue, 7 Jul 2020 12:33:35 +0000 (UTC), Christophe Leroy wrote:
+> Since commit ("1bd79336a426 powerpc: Fix various
+> syscall/signal/swapcontext bugs"), getting save_general_regs() called
+> without FULL_REGS() is very unlikely and generates a warning.
 > 
-> Main changes since v7 are:
-> - Added gettime64 on PPC32
-> 
-> This series applies on today's powerpc/merge branch.
+> The 32-bit version of save_general_regs() doesn't take care of it
+> at all and copies all registers anyway since that commit.
 > 
 > [...]
 
-Patch 1 applied to powerpc/next.
+Applied to powerpc/next.
 
-[1/8] powerpc/vdso64: Switch from __get_datapage() to get_datapage inline macro
-      https://git.kernel.org/powerpc/c/793d74a8c78e05d6833bfcf582e24e40bd92518f
+[1/2] powerpc/signal_32: Remove !FULL_REGS() special handling in PPC64 save_general_regs()
+      https://git.kernel.org/powerpc/c/667e3c413ecf20371692fd2dc37e06dc14d0b140
+[2/2] powerpc/signal_32: Simplify loop in PPC64 save_general_regs()
+      https://git.kernel.org/powerpc/c/020c4831e01264f8b62af6ca9e669b7c51881a56
 
 cheers
