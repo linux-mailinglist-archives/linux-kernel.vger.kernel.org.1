@@ -2,114 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181A4222B09
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BC5222B10
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729390AbgGPS3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 14:29:15 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:39147 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgGPS3M (ORCPT
+        id S1729230AbgGPScg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 14:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726986AbgGPScg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 14:29:12 -0400
-Received: from mail-qk1-f177.google.com ([209.85.222.177]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MdNTy-1kVCOk1UTA-00ZNbO; Thu, 16 Jul 2020 20:29:10 +0200
-Received: by mail-qk1-f177.google.com with SMTP id 145so6460753qke.9;
-        Thu, 16 Jul 2020 11:29:09 -0700 (PDT)
-X-Gm-Message-State: AOAM530nNoPjPKzPIluuQKhKCyfzeQyIfDQteLDJU935osUzUM7aJqg8
-        wb49PWHP2MTH2Gnqc/T7knIbFjpi42ISaL31aEo=
-X-Google-Smtp-Source: ABdhPJwpnVi3yTN8/eCBJobJvERBe9E39v4nmlAu46cNhC03D5mIwa1L0kP09TpwQqOYtQR2/q6zs01B21hw0nyk7DU=
-X-Received: by 2002:a37:9dd6:: with SMTP id g205mr5507389qke.352.1594924149045;
- Thu, 16 Jul 2020 11:29:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200619125801.9530-1-faiz_abbas@ti.com> <20200619125801.9530-8-faiz_abbas@ti.com>
- <3ed03440-7fbd-6abc-8a15-67e7217e2c3d@ti.com> <2e50333c-5387-236f-3fb2-6d8014b224e0@ti.com>
-In-Reply-To: <2e50333c-5387-236f-3fb2-6d8014b224e0@ti.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 16 Jul 2020 20:28:52 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1JpCCCV-CVQj3+eMfWF+=4AuHPpv390Tyj2pKn63_ZVg@mail.gmail.com>
-Message-ID: <CAK8P3a1JpCCCV-CVQj3+eMfWF+=4AuHPpv390Tyj2pKn63_ZVg@mail.gmail.com>
-Subject: Re: [PATCH 7/7] arm64: defconfig: Enable AM654x SDHCI controller
-To:     Sekhar Nori <nsekhar@ti.com>
-Cc:     Faiz Abbas <faiz_abbas@ti.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        ARM-SoC Maintainers <soc@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:zNjLXb5vHEpNpoSBwn+Afpdez3i7UM+Ignp814vB+CU/NGZRXjY
- CzKQ/HqpUJ529deZnSVTDd4R9mnkuUz3tafXxuatlxtrS88F+qnGckQls/gpJxAk7ObR8rs
- zfnpUDOW3v3aFNSMZOtGOXlyZnRp4ZsyjBWntlgMxgJJbD3Y0zsQbOBMdg83EtObs+2FGqU
- ATvFhR8HTJPO8GK/O2Gsw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:x15BDNpakwY=:84QQbrNNE386mCC6/k27Nu
- QZV1WSoV6OARpNoonBgXWLCDNGwidtV3cjeOcHyCNwZcr1p7VoICgSowLe3uBuX692hucIN5D
- W4Q+5YJwnJYoTniobGV6ZNNT5M0E41n2m4YrYmhnZ2pQsY4PwfROz4z8g7wYbGwyvLg3naTYK
- jTyxY8XhuyRUL/x0jGqOgoJBM2afDJqESmIxLVjR6uNid+S8ID5KRRa8cMTVCFbzYMZYwrT9d
- 8stKounBeofd/KsNAKqeD/Zi/qmckmBVJjM4Py1qTngvpewRThD36pO5K898e67cq21E+Ubmk
- 55IJ7jNpHi0fI1LfN44twQMlCh69Qqu0ubxpGFRNO9nogzrYDcA0WGFaY7Hr5LHcqfqzkORD0
- zEnn+D2W2uw3Wweg2UzdP3OtnSoQcLeH/iTyTtTPgVTJ10ifAXWINOpM/VSo2LtvAW0TTa3pM
- rtalfj2iHWQIDHJh5SG6sUJ1iHUg1m/Flcd7qNH4dp0NA82K5pIJjUSFAd98M4fhblaJdHi9o
- XW2+0ZCWkQZt71CCUlO/gAhtBH80dVW+qHLKlglJ8wT2jF1tivJbIFGFMqjd0YnVi7g4M3nix
- DoOiH4mFJW4aiLVE0EHSNQblhRN4lTh2JbZBoAwLiaWgxwoV61raBubNXdXSifJnZOhuiWFEx
- KpoSKZNpPSoqtf9Lp/JwxGMS6JxYXSILoKD0nXR0MIJG9P81DmvJP0Vlo8wl8BtygAmRSKoWb
- rjAkr7Z65KY8//SGFquv26BuReGc3w07U/3UE2bMrz44C7dqoBnVX2uOFXneOf8jb6GYsaiFY
- 9s8h79osEDsDfDbs+G1eeUFI+3N3MzsCJpZ6687JYMVi9PNXMNdwrf72L5rm7YhzIvAy0q1IY
- ieo0mxGswaUFcyz2sQqmg5B6e4JC8kUzVBLRFeu10KbxXKJm4A5PRFBWGDMhnznNidL7UxL2T
- qbV2349dDIsYgqznPbPOx5LsYVn0neJFn+MY23NUW6oSntByrWMvo
+        Thu, 16 Jul 2020 14:32:36 -0400
+Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EBDC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 11:32:35 -0700 (PDT)
+Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
+        by m0050093.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id 06GIE2m5016660;
+        Thu, 16 Jul 2020 19:32:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=from : to : cc :
+ subject : date : message-id; s=jan2016.eng;
+ bh=mJWk1msa5bXNtY79l547bsHSpzevc8f1+D0rPmjrpFU=;
+ b=NX0d7I67x54frelgbNJrmkYvBk6LdK1gQKDDevNezZ4wY9jIsNVO4K42Lt8vL/9o7kfx
+ gLMs2LeLuKTVRve4Ba8wA79mxkaFu/YU9i9RdoN+eQ+qObDXQQcEBHj9Zia2rjAVJzzB
+ KuihUZ+q2e4vGMvK2Wj5uU0m73SZUsuXuZ516J1cL21Ihx6FLzti17eQHEPVBwPFtahg
+ /Bd8Ab9ec7A0eNutu97wSMPoo9UGOHnOUBxVjY/SJRxjZ84cRThINoiHSThQfRUeegVu
+ ztxVF9I5QEQRQvZ9d9IYcmmjozwSZRpT5Z6hjBFNt8GqhecCPl98wv8qsveqPF/jwqXS Bw== 
+Received: from prod-mail-ppoint2 (prod-mail-ppoint2.akamai.com [184.51.33.19] (may be forged))
+        by m0050093.ppops.net-00190b01. with ESMTP id 328kcd3hsd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Jul 2020 19:32:29 +0100
+Received: from pps.filterd (prod-mail-ppoint2.akamai.com [127.0.0.1])
+        by prod-mail-ppoint2.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 06GIFx01015869;
+        Thu, 16 Jul 2020 14:32:28 -0400
+Received: from prod-mail-relay11.akamai.com ([172.27.118.250])
+        by prod-mail-ppoint2.akamai.com with ESMTP id 3278rxf0ya-1;
+        Thu, 16 Jul 2020 14:32:28 -0400
+Received: from bos-lpjec.145bw.corp.akamai.com (bos-lpjec.145bw.corp.akamai.com [172.28.3.71])
+        by prod-mail-relay11.akamai.com (Postfix) with ESMTP id 3575922C29;
+        Thu, 16 Jul 2020 18:32:28 +0000 (GMT)
+From:   Jason Baron <jbaron@akamai.com>
+To:     bp@suse.de
+Cc:     linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        linux-edac <linux-edac@vger.kernel.org>
+Subject: [PATCH] EDAC/ie31200: fallback if host bridge device is already initialized
+Date:   Thu, 16 Jul 2020 14:25:11 -0400
+Message-Id: <1594923911-10885-1-git-send-email-jbaron@akamai.com>
+X-Mailer: git-send-email 2.7.4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-16_07:2020-07-16,2020-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 suspectscore=1 bulkscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007160128
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-16_08:2020-07-16,2020-07-16 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 priorityscore=1501
+ mlxscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ suspectscore=1 impostorscore=0 malwarescore=0 clxscore=1011 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007160130
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 3:25 PM Sekhar Nori <nsekhar@ti.com> wrote:
->
-> On 7/16/20 5:49 PM, Faiz Abbas wrote:
-> > Hi,
-> >
-> > On 19/06/20 6:28 pm, Faiz Abbas wrote:
-> >> Enable CONFIG_SDHCI_AM654 to Support AM65x sdhci controller.
-> >>
-> >> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-> >> ---
-> >>  arch/arm64/configs/defconfig | 1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> >> index 883e8bace3ed..40dd13e0adc5 100644
-> >> --- a/arch/arm64/configs/defconfig
-> >> +++ b/arch/arm64/configs/defconfig
-> >> @@ -731,6 +731,7 @@ CONFIG_MMC_DW_ROCKCHIP=y
-> >>  CONFIG_MMC_SUNXI=y
-> >>  CONFIG_MMC_BCM2835=y
-> >>  CONFIG_MMC_SDHCI_XENON=y
-> >> +CONFIG_MMC_SDHCI_AM654=y
-> >>  CONFIG_MMC_OWL=y
-> >>  CONFIG_NEW_LEDS=y
-> >>  CONFIG_LEDS_CLASS=y
-> >>
-> >
-> > Gentle ping. Will, Catalin, can this patch be picked up?
->
-> From logs, Arnd has been picking up patches for this file. Looping in
-> Arnd and ARM-SoC team.
+The Intel uncore driver may claim some of the pci ids from ie31200 which
+means that the ie31200 edac driver will not initialize them as part of
+pci_register_driver().
 
-I tend to ignore individual patches to the defconfig file unless
-they are sent to:soc@kernel.org. The best way to get them
-included is to have the platform maintainers pick up the
-changes and send them that way as a separate pull request
-at the same time as sending any DT updates.
+Let's add a fallback for this case to 'pci_get_device()' to get a
+reference on the device such that it can still be configured. This is
+similar in approach to other edac drivers.
 
-The MAINTAINERS file lists Tero and Nishanth as maintainers
-for the platform. If they want, I can apply this one directly, but in
-the future, send it to them.
+Signed-off-by: Jason Baron <jbaron@akamai.com>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: linux-edac <linux-edac@vger.kernel.org>
+---
+ drivers/edac/ie31200_edac.c | 50 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 47 insertions(+), 3 deletions(-)
 
-        Arnd
+diff --git a/drivers/edac/ie31200_edac.c b/drivers/edac/ie31200_edac.c
+index d68346a..ebe5099 100644
+--- a/drivers/edac/ie31200_edac.c
++++ b/drivers/edac/ie31200_edac.c
+@@ -170,6 +170,8 @@
+ 	(n << (28 + (2 * skl) - PAGE_SHIFT))
+ 
+ static int nr_channels;
++static struct pci_dev *mci_pdev;
++static int ie31200_registered = 1;
+ 
+ struct ie31200_priv {
+ 	void __iomem *window;
+@@ -538,12 +540,16 @@ static int ie31200_probe1(struct pci_dev *pdev, int dev_idx)
+ static int ie31200_init_one(struct pci_dev *pdev,
+ 			    const struct pci_device_id *ent)
+ {
+-	edac_dbg(0, "MC:\n");
++	int rc;
+ 
++	edac_dbg(0, "MC:\n");
+ 	if (pci_enable_device(pdev) < 0)
+ 		return -EIO;
++	rc = ie31200_probe1(pdev, ent->driver_data);
++	if (rc == 0 && !mci_pdev)
++		mci_pdev = pci_dev_get(pdev);
+ 
+-	return ie31200_probe1(pdev, ent->driver_data);
++	return rc;
+ }
+ 
+ static void ie31200_remove_one(struct pci_dev *pdev)
+@@ -552,6 +558,8 @@ static void ie31200_remove_one(struct pci_dev *pdev)
+ 	struct ie31200_priv *priv;
+ 
+ 	edac_dbg(0, "\n");
++	pci_dev_put(mci_pdev);
++	mci_pdev = NULL;
+ 	mci = edac_mc_del_mc(&pdev->dev);
+ 	if (!mci)
+ 		return;
+@@ -593,17 +601,53 @@ static struct pci_driver ie31200_driver = {
+ 
+ static int __init ie31200_init(void)
+ {
++	int pci_rc, i;
++
+ 	edac_dbg(3, "MC:\n");
+ 	/* Ensure that the OPSTATE is set correctly for POLL or NMI */
+ 	opstate_init();
+ 
+-	return pci_register_driver(&ie31200_driver);
++	pci_rc = pci_register_driver(&ie31200_driver);
++	if (pci_rc < 0)
++		goto fail0;
++
++	if (!mci_pdev) {
++		ie31200_registered = 0;
++		for (i = 0; ie31200_pci_tbl[i].vendor != 0; i++) {
++			mci_pdev = pci_get_device(ie31200_pci_tbl[i].vendor,
++						  ie31200_pci_tbl[i].device,
++						  NULL);
++			if (mci_pdev)
++				break;
++		}
++		if (!mci_pdev) {
++			edac_dbg(0, "ie31200 pci_get_device fail\n");
++			pci_rc = -ENODEV;
++			goto fail1;
++		}
++		pci_rc = ie31200_init_one(mci_pdev, &ie31200_pci_tbl[i]);
++		if (pci_rc < 0) {
++			edac_dbg(0, "ie31200 init fail\n");
++			pci_rc = -ENODEV;
++			goto fail1;
++		}
++	}
++	return 0;
++
++fail1:
++	pci_unregister_driver(&ie31200_driver);
++fail0:
++	pci_dev_put(mci_pdev);
++
++	return pci_rc;
+ }
+ 
+ static void __exit ie31200_exit(void)
+ {
+ 	edac_dbg(3, "MC:\n");
+ 	pci_unregister_driver(&ie31200_driver);
++	if (!ie31200_registered)
++		ie31200_remove_one(mci_pdev);
+ }
+ 
+ module_init(ie31200_init);
+-- 
+2.7.4
+
