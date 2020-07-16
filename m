@@ -2,132 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30EB1221DAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1491221DA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgGPHwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:52:47 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2484 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725867AbgGPHwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:52:46 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id D14F726862762246E102;
-        Thu, 16 Jul 2020 08:52:44 +0100 (IST)
-Received: from [127.0.0.1] (10.210.168.254) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 16 Jul
- 2020 08:52:43 +0100
-Subject: Re: [PATCH 00/18] perf metric: Add support to reuse metric
-To:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-References: <20200712132634.138901-1-jolsa@kernel.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <b085ecf9-207d-6204-41b7-0937bd95633d@huawei.com>
-Date:   Thu, 16 Jul 2020 08:50:56 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726141AbgGPHwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:52:04 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22299 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725867AbgGPHwE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 03:52:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594885922;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6zwh3uv/4dKOUDKuvTiQugEhD9LKpVaA1KJEov11HNA=;
+        b=XZQAAKHBIjeQ6YO3V45litMoaKslbOoMz9lm+yxZ6BCKFjReGnbxlXmAebzqtu6Urp1B7s
+        aAv8yeZDGCePnIzDQObz/OLkj1Eet0wnbf+35rl97ln3I6rjfuihENWJSuZJ38xpwumdaB
+        Xb19ADZ2wVs5/BF3A5yGGsuT5OxqvyU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-294-leaykoy7M9GUz5dciJ2ADQ-1; Thu, 16 Jul 2020 03:52:00 -0400
+X-MC-Unique: leaykoy7M9GUz5dciJ2ADQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A915E107BEF5;
+        Thu, 16 Jul 2020 07:51:58 +0000 (UTC)
+Received: from [10.36.115.54] (ovpn-115-54.ams2.redhat.com [10.36.115.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8F72F2B6D6;
+        Thu, 16 Jul 2020 07:51:56 +0000 (UTC)
+Subject: Re: [PATCH v4 4/7] iommu/vt-d: Handle non-page aligned address
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>
+References: <1594080774-33413-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1594080774-33413-5-git-send-email-jacob.jun.pan@linux.intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <889b3fcd-482a-46b7-7b95-19555f73f907@redhat.com>
+Date:   Thu, 16 Jul 2020 09:51:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200712132634.138901-1-jolsa@kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <1594080774-33413-5-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.168.254]
-X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/07/2020 14:26, Jiri Olsa wrote:
-> hi,
-> this patchset is adding the support to reused metric in another
-> metric. The metric needs to be referenced by 'metric:' prefix.
+Hi Jacob,
+
+On 7/7/20 2:12 AM, Jacob Pan wrote:
+> From: Liu Yi L <yi.l.liu@intel.com>
 > 
-> For example, to define IPC by using CPI with change like:
+> Address information for device TLB invalidation comes from userspace
+> when device is directly assigned to a guest with vIOMMU support.
+> VT-d requires page aligned address. This patch checks and enforce
+> address to be page aligned, otherwise reserved bits can be set in the
+> invalidation descriptor. Unrecoverable fault will be reported due to
+> non-zero value in the reserved bits.
 > 
->           "BriefDescription": "Instructions Per Cycle (per Logical Processor)",
->   -       "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD",
->   +       "MetricExpr": "1/metric:CPI",
->           "MetricGroup": "TopDownL1",
->           "MetricName": "IPC"
-> 
-> I won't be able to find all the possible places we could
-> use this at, so I wonder you guys (who was asking for this)
-> would try it and come up with comments if there's something
-> missing or we could already use it at some places.
-> 
-> It's based on Arnaldo's tmp.perf/core.
-> 
-> v2 changes:
->    - collected Ian's acks for few patches [Ian]
->    - renamed expr__add_id to expr__add_id_val [Ian]
->    - renamed expr_parse_data to expr_id_data [Ian]
->    - added recursion check [Ian]
->    - added metric test for DCache_L2 metric [Ian]
->    - added some renames as discussed in review [Ian]
-> 
-> Also available in here:
->    git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->    perf/metric
-> 
-> thanks,
-> jirka
-> 
+> Fixes: 61a06a16e36d8 ("iommu/vt-d: Support flushing more translation
+> cache types")
+> Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+Thanks
+
+Eric
 > 
 > ---
-> Jiri Olsa (18):
->        perf metric: Rename expr__add_id to expr__add_val
->        perf metric: Add struct expr_id_data to keep expr value
->        perf metric: Add expr__add_id function
->        perf metric: Change expr__get_id to return struct expr_id_data
->        perf metric: Add expr__del_id function
->        perf metric: Add find_metric function
->        perf metric: Add add_metric function
->        perf metric: Rename __metricgroup__add_metric to __add_metric
->        perf metric: Collect referenced metrics in struct metric_ref_node
->        perf metric: Collect referenced metrics in struct metric_expr
->        perf metric: Add referenced metrics to hash data
->        perf metric: Compute referenced metrics
->        perf metric: Add events for the current group
->        perf metric: Add cache_miss_cycles to metric parse test
->        perf metric: Add DCache_L2 to metric parse test
->        perf metric: Add recursion check when processing nested metrics
->        perf metric: Rename struct egroup to metric
->        perf metric: Rename group_list to list
-
-I was thinking that a test metric using this reuse feature could be 
-added in pmu-events/arch/test/test_cpu. But since no relevant parsing is 
-done in jevents, maybe not a lot of value. Just for a bit more completeness.
-
-Thanks,
-John
-
+>  drivers/iommu/intel/dmar.c | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
 > 
->   tools/perf/tests/expr.c         |   7 +-
->   tools/perf/tests/parse-metric.c | 131 +++++++++++++++++++++++++++++++++++-
->   tools/perf/tests/pmu-events.c   |   4 +-
->   tools/perf/util/expr.c          | 130 ++++++++++++++++++++++++++++++------
->   tools/perf/util/expr.h          |  34 +++++++++-
->   tools/perf/util/expr.y          |  16 +++--
->   tools/perf/util/metricgroup.c   | 435 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------
->   tools/perf/util/metricgroup.h   |   6 ++
->   tools/perf/util/stat-shadow.c   |  24 ++++---
->   9 files changed, 644 insertions(+), 143 deletions(-)
-> 
-> .
+> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> index d9f973fa1190..b2c53bada905 100644
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -1455,9 +1455,25 @@ void qi_flush_dev_iotlb_pasid(struct intel_iommu *iommu, u16 sid, u16 pfsid,
+>  	 * Max Invs Pending (MIP) is set to 0 for now until we have DIT in
+>  	 * ECAP.
+>  	 */
+> -	desc.qw1 |= addr & ~mask;
+> -	if (size_order)
+> +	if (addr & GENMASK_ULL(size_order + VTD_PAGE_SHIFT, 0))
+> +		pr_warn_ratelimited("Invalidate non-aligned address %llx, order %d\n", addr, size_order);
+> +
+> +	/* Take page address */
+> +	desc.qw1 = QI_DEV_EIOTLB_ADDR(addr);
+> +
+> +	if (size_order) {
+> +		/*
+> +		 * Existing 0s in address below size_order may be the least
+> +		 * significant bit, we must set them to 1s to avoid having
+> +		 * smaller size than desired.
+> +		 */
+> +		desc.qw1 |= GENMASK_ULL(size_order + VTD_PAGE_SHIFT,
+> +					VTD_PAGE_SHIFT);
+> +		/* Clear size_order bit to indicate size */
+> +		desc.qw1 &= ~mask;
+> +		/* Set the S bit to indicate flushing more than 1 page */
+>  		desc.qw1 |= QI_DEV_EIOTLB_SIZE;
+> +	}
+>  
+>  	qi_submit_sync(iommu, &desc, 1, 0);
+>  }
 > 
 
