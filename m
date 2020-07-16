@@ -2,70 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDCC222EDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC3C222ECE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbgGPXQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:16:41 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:54435 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726189AbgGPXQl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:16:41 -0400
-Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 06GMR8YS077197;
-        Fri, 17 Jul 2020 07:27:08 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp);
- Fri, 17 Jul 2020 07:27:08 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 06GMR8eS077194
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Fri, 17 Jul 2020 07:27:08 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v2] binder: Don't use mmput() from shrinker function.
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve Hjonnevag <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        linux-mm <linux-mm@kvack.org>
-References: <0000000000001fbbb605aa805c9b@google.com>
- <5ce3ee90-333e-638d-ac8c-cd6d7ab7aa3b@I-love.SAKURA.ne.jp>
- <20200716083506.GA20915@dhcp22.suse.cz>
- <36db7016-98d6-2c6b-110b-b2481fd480ac@i-love.sakura.ne.jp>
- <20200716135445.GN31089@dhcp22.suse.cz>
- <4ba9adb2-43f5-2de0-22de-f6075c1fab50@i-love.sakura.ne.jp>
- <20200716151756.GO31089@dhcp22.suse.cz>
- <20200716162931.g3delsp7qmfjup6x@wittgenstein>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <3407ed9e-9f88-6b13-ce05-7aecc25b77d4@i-love.sakura.ne.jp>
-Date:   Fri, 17 Jul 2020 07:27:04 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727107AbgGPXNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:13:00 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:39766 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726113AbgGPXNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 19:13:00 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jwCQe-005W6C-L1; Fri, 17 Jul 2020 00:32:36 +0200
+Date:   Fri, 17 Jul 2020 00:32:36 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Matthew Hagan <mnhagan88@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        John Crispin <john@phrozen.org>,
+        Jonathan McDowell <noodles@earth.li>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: net: dsa: qca8k: Add PORT0_PAD_CTRL
+ properties
+Message-ID: <20200716223236.GA1314837@lunn.ch>
+References: <2e1776f997441792a44cd35a16f1e69f848816ce.1594668793.git.mnhagan88@gmail.com>
+ <ea0a35ed686e6dace77e25cb70a8f39fdd1ea8ad.1594668793.git.mnhagan88@gmail.com>
+ <20200716150925.0f3e01b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20200716162931.g3delsp7qmfjup6x@wittgenstein>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200716150925.0f3e01b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/07/17 1:29, Christian Brauner wrote:
-> Does this need a Cc: stable?
+On Thu, Jul 16, 2020 at 03:09:25PM -0700, Jakub Kicinski wrote:
+> On Mon, 13 Jul 2020 21:50:26 +0100 Matthew Hagan wrote:
+> > Add names and decriptions of additional PORT0_PAD_CTRL properties.
+> > 
+> > Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > index ccbc6d89325d..3d34c4f2e891 100644
+> > --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > @@ -13,6 +13,14 @@ Optional properties:
+> >  
+> >  - reset-gpios: GPIO to be used to reset the whole device
+> >  
+> > +Optional MAC configuration properties:
+> > +
+> > +- qca,exchange-mac0-mac6:	If present, internally swaps MAC0 and MAC6.
+> 
+> Perhaps we can say a little more here?
+> 
+> > +- qca,sgmii-rxclk-falling-edge:	If present, sets receive clock phase to
+> > +				falling edge.
+> > +- qca,sgmii-txclk-falling-edge:	If present, sets transmit clock phase to
+> > +				falling edge.
+> 
+> These are not something that other vendors may implement and therefore
+> something we may want to make generic? Andrew?
 
-Up to someone who applies this patch. I think this race is hard to hit.
+I've never seen any other vendor implement this. Which to me makes me
+think this is a vendor extension, to Ciscos vendor extension of
+1000BaseX.
+
+Matthew, do you have a real use cases of these? I don't see a DT patch
+making use of them. And if you do, what is the PHY on the other end
+which also allows you to invert the clocks?
+
+       Andrew
