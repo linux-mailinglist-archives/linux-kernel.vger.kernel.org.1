@@ -2,109 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083BC222B45
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB86222B49
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgGPSwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 14:52:13 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34942 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726986AbgGPSwM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 14:52:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594925531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hv8DvK0upvVoTIHsLS9sWiIB7kS2ZyTYYRmQ0XHnu9w=;
-        b=fStVqY298RuNUQOi5SzDK+qmX212wV0/dEObX7WDl2GYZ2eGiOKvj+guFsNtK0FMo96d9P
-        REI2BtW4lLYvI9HZgkNIzVxbMz9UC9GBtcFsnPktC1Mu6fxeX4zce8eMhOgkFrV9PZtKkg
-        M2db2H2CvIvtRAU09XXN0sjB7NVm7u4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-247-YQgUMFfeNDO1DN3_NOnLzg-1; Thu, 16 Jul 2020 14:52:04 -0400
-X-MC-Unique: YQgUMFfeNDO1DN3_NOnLzg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26718800469;
-        Thu, 16 Jul 2020 18:52:02 +0000 (UTC)
-Received: from krava (unknown [10.40.192.81])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4AE0217D04;
-        Thu, 16 Jul 2020 18:51:59 +0000 (UTC)
-Date:   Thu, 16 Jul 2020 20:51:58 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 03/18] perf metric: Add expr__add_id function
-Message-ID: <20200716185158.GA426898@krava>
-References: <20200712132634.138901-1-jolsa@kernel.org>
- <20200712132634.138901-4-jolsa@kernel.org>
- <20200716152906.GC374956@kernel.org>
+        id S1729428AbgGPSws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 14:52:48 -0400
+Received: from mga02.intel.com ([134.134.136.20]:38349 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726986AbgGPSwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 14:52:47 -0400
+IronPort-SDR: B853POwWx+C/LctXjItTXIXyz4MJo0OqgSgiiuYMWaQ0VjYYX8/7yJt6n+1TFmpBZzTKup3BG3
+ v3wF5TS/FquA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9684"; a="137597756"
+X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
+   d="scan'208";a="137597756"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 11:52:45 -0700
+IronPort-SDR: N3vv3ND+OnFJU9V0jEIRGgw0vxCUTShGBSE6hTDap1fDoKWpNoKTUhnT+137SEhsp507I8dbry
+ 7ovP33xCmHgw==
+X-IronPort-AV: E=Sophos;i="5.75,360,1589266800"; 
+   d="scan'208";a="460575619"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 11:52:45 -0700
+Date:   Thu, 16 Jul 2020 11:52:42 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Jason Baron <jbaron@akamai.com>
+Cc:     bp@suse.de, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-edac <linux-edac@vger.kernel.org>
+Subject: Re: [PATCH] EDAC/ie31200: fallback if host bridge device is already
+ initialized
+Message-ID: <20200716185242.GA7045@agluck-desk2.amr.corp.intel.com>
+References: <1594923911-10885-1-git-send-email-jbaron@akamai.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200716152906.GC374956@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <1594923911-10885-1-git-send-email-jbaron@akamai.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 12:29:06PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Sun, Jul 12, 2020 at 03:26:19PM +0200, Jiri Olsa escreveu:
-> > Adding expr__add_id function to data for ID
-> > with zero value, which is used when scanning
-> > the expression for IDs.
-> > 
-> > Acked-by: Ian Rogers <irogers@google.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/perf/util/expr.c | 29 +++++++++++++++++++++++------
-> >  tools/perf/util/expr.h |  1 +
-> >  tools/perf/util/expr.y |  2 +-
-> >  3 files changed, 25 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-> > index 5d05f9765ed8..4b8953605aed 100644
-> > --- a/tools/perf/util/expr.c
-> > +++ b/tools/perf/util/expr.c
-> > @@ -32,6 +32,24 @@ static bool key_equal(const void *key1, const void *key2,
-> >  	return !strcmp((const char *)key1, (const char *)key2);
-> >  }
-> >  
-> > +/* Caller must make sure id is allocated */
-> > +int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
-> > +{
-> > +	struct expr_id_data *data_ptr = NULL, *old_data = NULL;
-> > +	char *old_key = NULL;
-> > +	int ret;
-> > +
-> > +	data_ptr = malloc(sizeof(*data_ptr));
-> > +	if (!data_ptr)
-> > +		return -ENOMEM;
-> > +
-> > +	ret = hashmap__set(&ctx->ids, id, data_ptr,
-> > +			   (const void **)&old_key, (void **)&old_data);
-> > +	free(old_key);
-> > +	free(old_data);
+On Thu, Jul 16, 2020 at 02:25:11PM -0400, Jason Baron wrote:
+> The Intel uncore driver may claim some of the pci ids from ie31200 which
+> means that the ie31200 edac driver will not initialize them as part of
+> pci_register_driver().
 > 
-> Hey, if hashmap__set() fails then we leak data_ptr?
+> Let's add a fallback for this case to 'pci_get_device()' to get a
+> reference on the device such that it can still be configured. This is
+> similar in approach to other edac drivers.
 
-right, good catch, will fix
+What functionality is lost when this happens?
 
-thanks,
-jirka
+Does the user see some message in the console
+log to let them know?
 
+-Tony
