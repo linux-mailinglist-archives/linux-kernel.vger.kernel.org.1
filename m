@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFDB5222DA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A83222D9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgGPVSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 17:18:22 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:47682 "EHLO
+        id S1727851AbgGPVSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 17:18:01 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:47698 "EHLO
         ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgGPVRu (ORCPT
+        with ESMTP id S1727826AbgGPVR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 17:17:50 -0400
+        Thu, 16 Jul 2020 17:17:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Y+jzSbXVvaGAj5ehPx9GFRrh0LwsI1Rxsrkj6tqzM/I=; b=ZWOXt3fEg5/BT5kbNGVRR4Dgop
-        wB9IJI2xSxfo1veRo3U/KnB60/HQZGpcQAqI29O1bjtxfDD+46dWlekYeOnITdpLEVOREzWorrrpS
-        f+Q8Eq9CEjN1fiBXtATSFbn+OcauBoY4gUsDs5pp3KK45Fgi2J/0kjmDpsR5fYuxAmOI8LfC17j8a
-        rDEVQzJFRisAj6+UCGVB7B/n3ExzisP0IBkY0SLYX0QkJjkPHnJyvEc9gY0P8tieqVQwayfvXBdcU
-        7uWrJF5OjznBlivzYuIQTTx8AAGDgSZB5PULaSxj+kORrA6QApm8LTz0aZN6r5SzKqmwU2oOlbmAA
-        AcJIPGhg==;
+        bh=0/yaouBPu7eCNi0t9IxXWAFGwKjoHzbe5679PrGixkU=; b=DL8g+MI+Kfc4IdGRpdjxqh0ZiV
+        eB193nfAE/KY+CCkcQ8bnDWLaRoT7/EjoFsubWUV33oFINIbgLgYdeEMH2eEZ0ynGEVODSE3vigBj
+        geinz9IHbqEQ4gdc+mePWv4Zhei8wBL+tZh9L6EH4qX5CtRA4VLxakekyJx8YXs2oFTlxdO5nD1CD
+        6ge9LhjPvrn1schK8u5b6fTGdGuj4gMCMAvv9WwaxIBWqJVHB4hSGgBG4e1//JPDDwttGg4x+5Z7z
+        KNC0kDs7S1BSeXBTQ0b02ucsPXGwMk8lbfVBj6Yzpvl+ag/qMXIP2OhAY+ERlML/j3I2B96UT5GyJ
+        dk3qt0qA==;
 Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
         by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <gunthorp@deltatee.com>)
-        id 1jwAZH-0005uI-GV; Thu, 16 Jul 2020 14:33:25 -0600
+        id 1jwAZH-0005uJ-GW; Thu, 16 Jul 2020 14:33:25 -0600
 Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
         (envelope-from <gunthorp@deltatee.com>)
-        id 1jwAZE-0004BK-Gn; Thu, 16 Jul 2020 14:33:20 -0600
+        id 1jwAZE-0004BN-Lf; Thu, 16 Jul 2020 14:33:20 -0600
 From:   Logan Gunthorpe <logang@deltatee.com>
 To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
 Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
@@ -40,8 +40,8 @@ Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
         Max Gurtovoy <maxg@mellanox.com>,
         Stephen Bates <sbates@raithlin.com>,
         Logan Gunthorpe <logang@deltatee.com>
-Date:   Thu, 16 Jul 2020 14:33:11 -0600
-Message-Id: <20200716203319.16022-2-logang@deltatee.com>
+Date:   Thu, 16 Jul 2020 14:33:12 -0600
+Message-Id: <20200716203319.16022-3-logang@deltatee.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200716203319.16022-1-logang@deltatee.com>
 References: <20200716203319.16022-1-logang@deltatee.com>
@@ -55,7 +55,7 @@ X-Spam-Level:
 X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
         MYRULES_NO_TEXT,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.2
-Subject: [PATCH v15 1/9] nvme-core: Clear any SGL flags in passthru commands
+Subject: [PATCH v15 2/9] nvme: Create helper function to obtain command effects
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-kernel-owner@vger.kernel.org
@@ -63,30 +63,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The host driver should decide whether to use SGLs or PRPs and they
-currently assume the flags are cleared after the call to
-nvme_setup_cmd(). However, passed-through commands may erroneously
-set these bits; so clear them for all cases.
+Separate the code to obtain command effects from the code
+to start a passthru request and open code nvme_known_admin_effects()
+in the new helper.
+
+The new helper function will be necessary for nvmet passthru
+code to determine if we need to change out of interrupt context
+to handle the effects.
 
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
 Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
 ---
- drivers/nvme/host/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/nvme/host/core.c | 39 ++++++++++++++++++++++-----------------
+ 1 file changed, 22 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index f49085bcaa42..63a59186e68b 100644
+index 63a59186e68b..80d534c5bc44 100644
 --- a/drivers/nvme/host/core.c
 +++ b/drivers/nvme/host/core.c
-@@ -759,6 +759,8 @@ blk_status_t nvme_setup_cmd(struct nvme_ns *ns, struct request *req,
- 	case REQ_OP_DRV_IN:
- 	case REQ_OP_DRV_OUT:
- 		memcpy(cmd, nvme_req(req)->cmd, sizeof(*cmd));
-+		/* passthru commands should let the driver set the SGL flags */
-+		cmd->common.flags &= ~NVME_CMD_SGL_ALL;
- 		break;
- 	case REQ_OP_FLUSH:
- 		nvme_setup_flush(ns, cmd);
+@@ -1377,22 +1377,8 @@ static int nvme_submit_io(struct nvme_ns *ns, struct nvme_user_io __user *uio)
+ 			metadata, meta_len, lower_32_bits(io.slba), NULL, 0);
+ }
+ 
+-static u32 nvme_known_admin_effects(u8 opcode)
+-{
+-	switch (opcode) {
+-	case nvme_admin_format_nvm:
+-		return NVME_CMD_EFFECTS_CSUPP | NVME_CMD_EFFECTS_LBCC |
+-					NVME_CMD_EFFECTS_CSE_MASK;
+-	case nvme_admin_sanitize_nvm:
+-		return NVME_CMD_EFFECTS_CSE_MASK;
+-	default:
+-		break;
+-	}
+-	return 0;
+-}
+-
+-static u32 nvme_passthru_start(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
+-								u8 opcode)
++static u32 nvme_command_effects(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
++				u8 opcode)
+ {
+ 	u32 effects = 0;
+ 
+@@ -1408,7 +1394,26 @@ static u32 nvme_passthru_start(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
+ 
+ 	if (ctrl->effects)
+ 		effects = le32_to_cpu(ctrl->effects->acs[opcode]);
+-	effects |= nvme_known_admin_effects(opcode);
++
++	switch (opcode) {
++	case nvme_admin_format_nvm:
++		effects |= NVME_CMD_EFFECTS_CSUPP | NVME_CMD_EFFECTS_LBCC |
++			NVME_CMD_EFFECTS_CSE_MASK;
++		break;
++	case nvme_admin_sanitize_nvm:
++		effects |= NVME_CMD_EFFECTS_CSE_MASK;
++		break;
++	default:
++		break;
++	}
++
++	return effects;
++}
++
++static u32 nvme_passthru_start(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
++			       u8 opcode)
++{
++	u32 effects = nvme_command_effects(ctrl, ns, opcode);
+ 
+ 	/*
+ 	 * For simplicity, IO to all namespaces is quiesced even if the command
 -- 
 2.20.1
 
