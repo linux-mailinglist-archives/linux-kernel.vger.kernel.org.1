@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A332221FDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFCB221FEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgGPJmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:42:53 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14796 "EHLO
+        id S1727898AbgGPJm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:42:57 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2554 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725996AbgGPJmw (ORCPT
+        by vger.kernel.org with ESMTP id S1727844AbgGPJmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:42:52 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06G9Wahu004507;
-        Thu, 16 Jul 2020 05:42:46 -0400
+        Thu, 16 Jul 2020 05:42:55 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06G9W7ac038784;
+        Thu, 16 Jul 2020 05:42:50 -0400
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32afd68w6d-1
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32afv087h9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 05:42:45 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06G9WgYj005072;
-        Thu, 16 Jul 2020 05:42:45 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32afd68w5e-1
+        Thu, 16 Jul 2020 05:42:50 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06G9Wd7t040408;
+        Thu, 16 Jul 2020 05:42:49 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32afv087g0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 05:42:45 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06G9dqUW016812;
-        Thu, 16 Jul 2020 09:42:42 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma02fra.de.ibm.com with ESMTP id 327527wjqk-1
+        Thu, 16 Jul 2020 05:42:49 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06G9emsv009266;
+        Thu, 16 Jul 2020 09:42:47 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 327527wejd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 09:42:42 +0000
+        Thu, 16 Jul 2020 09:42:47 +0000
 Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06G9gdZM21954700
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06G9fLR861211100
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Jul 2020 09:42:40 GMT
+        Thu, 16 Jul 2020 09:41:21 GMT
 Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D32094C046;
-        Thu, 16 Jul 2020 09:42:39 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 2828C4C05A;
+        Thu, 16 Jul 2020 09:42:44 +0000 (GMT)
 Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D1D24C044;
-        Thu, 16 Jul 2020 09:42:35 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 737BA4C044;
+        Thu, 16 Jul 2020 09:42:40 +0000 (GMT)
 Received: from localhost.localdomain.com (unknown [9.199.49.170])
         by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 16 Jul 2020 09:42:35 +0000 (GMT)
+        Thu, 16 Jul 2020 09:42:40 +0000 (GMT)
 From:   Kajol Jain <kjain@linux.ibm.com>
 To:     acme@kernel.org
 Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
@@ -56,9 +56,9 @@ Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
         maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
         anju@linux.vnet.ibm.com, kan.liang@linux.intel.com,
         nasastry@in.ibm.com, kjain@linux.ibm.com
-Subject: [PATCH v3 3/5] perf jevents: Add support for parsing perchip/percore events
-Date:   Thu, 16 Jul 2020 15:12:14 +0530
-Message-Id: <20200716094216.1418659-4-kjain@linux.ibm.com>
+Subject: [PATCH v3 4/5] perf/tools: Pass pmu_event structure as a parameter for arch_get_runtimeparam
+Date:   Thu, 16 Jul 2020 15:12:15 +0530
+Message-Id: <20200716094216.1418659-5-kjain@linux.ibm.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200716094216.1418659-1-kjain@linux.ibm.com>
 References: <20200716094216.1418659-1-kjain@linux.ibm.com>
@@ -67,71 +67,95 @@ Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-16_04:2020-07-16,2020-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 malwarescore=0
- priorityscore=1501 mlxlogscore=-1000 lowpriorityscore=0 mlxscore=100
- spamscore=100 phishscore=0 adultscore=0 bulkscore=0 impostorscore=0
- suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007160072
+X-Proofpoint-Spam-Details: rule=outbound_spam_definite policy=outbound score=100 spamscore=100
+ bulkscore=0 clxscore=1015 mlxscore=100 priorityscore=1501 impostorscore=0
+ mlxlogscore=-1000 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007160072
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added the "PerChip" field  in enum so that perf knows they are
-per chip events.
-
-Added the "PerCore" field in enum so that perf knows they are
-per core events and add these fields to pmu_event structure.
-
-Similar to the way we had "PerPkg field
-to specify perpkg events.
+This patch adds passing of  pmu_event as a parameter in function
+'arch_get_runtimeparam' which can be used to get details like
+if the event is percore/perchip.
 
 Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
 ---
- tools/perf/pmu-events/jevents.c    | 8 +++++++-
- tools/perf/pmu-events/pmu-events.h | 4 +++-
- 2 files changed, 10 insertions(+), 2 deletions(-)
+ tools/perf/arch/powerpc/util/header.c | 7 +++++--
+ tools/perf/util/metricgroup.c         | 5 ++---
+ tools/perf/util/metricgroup.h         | 3 ++-
+ 3 files changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index b2f59f0af63d..e1c43f739083 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -54,13 +54,19 @@ int verbose;
- char *prog;
- 
- enum aggr_mode_class {
--	PerPkg = 1
-+	PerPkg = 1,
-+	PerChip,
-+	PerCore
- };
- 
- enum aggr_mode_class convert(const char *aggr_mode)
- {
- 	if (!strcmp(aggr_mode, "PerPkg"))
- 		return PerPkg;
-+	else if (!strcmp(aggr_mode, "PerCore"))
-+		return PerCore;
-+	else if (!strcmp(aggr_mode, "PerChip"))
-+		return PerChip;
- 	return -1;
+diff --git a/tools/perf/arch/powerpc/util/header.c b/tools/perf/arch/powerpc/util/header.c
+index d4870074f14c..c8a33120a7a3 100644
+--- a/tools/perf/arch/powerpc/util/header.c
++++ b/tools/perf/arch/powerpc/util/header.c
+@@ -47,8 +47,11 @@ get_cpuid_str(struct perf_pmu *pmu __maybe_unused)
+ 	return bufp;
  }
  
-diff --git a/tools/perf/pmu-events/pmu-events.h b/tools/perf/pmu-events/pmu-events.h
-index 71b7aa6278d0..214ffc681b54 100644
---- a/tools/perf/pmu-events/pmu-events.h
-+++ b/tools/perf/pmu-events/pmu-events.h
-@@ -3,7 +3,9 @@
- #define PMU_EVENTS_H
+-int arch_get_runtimeparam(void)
++int arch_get_runtimeparam(struct pmu_event *pe)
+ {
+ 	int count;
+-	return sysfs__read_int("/devices/hv_24x7/interface/sockets", &count) < 0 ? 1 : count;
++	char path[PATH_MAX] = "/devices/hv_24x7/interface/";
++
++	atoi(pe->aggr_mode) == PerChip ? strcat(path, "sockets") : strcat(path, "coresperchip");
++	return sysfs__read_int(path, &count) < 0 ? 1 : count;
+ }
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 82fecb5a302d..58054588f599 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -15,7 +15,6 @@
+ #include "rblist.h"
+ #include <string.h>
+ #include <errno.h>
+-#include "pmu-events/pmu-events.h"
+ #include "strlist.h"
+ #include <assert.h>
+ #include <linux/ctype.h>
+@@ -566,7 +565,7 @@ static bool metricgroup__has_constraint(struct pmu_event *pe)
+ 	return false;
+ }
  
- enum aggr_mode_class {
--	PerPkg = 1
-+	PerPkg = 1,
-+	PerChip,
-+	PerCore
- };
+-int __weak arch_get_runtimeparam(void)
++int __weak arch_get_runtimeparam(struct pmu_event *pe __maybe_unused)
+ {
+ 	return 1;
+ }
+@@ -650,7 +649,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+ 			} else {
+ 				int j, count;
  
- /*
+-				count = arch_get_runtimeparam();
++				count = arch_get_runtimeparam(pe);
+ 
+ 				/* This loop is added to create multiple
+ 				 * events depend on count value and add
+diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
+index 8315bd1a7da4..3917b5e43ebb 100644
+--- a/tools/perf/util/metricgroup.h
++++ b/tools/perf/util/metricgroup.h
+@@ -5,6 +5,7 @@
+ #include <linux/list.h>
+ #include <linux/rbtree.h>
+ #include <stdbool.h>
++#include "pmu-events/pmu-events.h"
+ 
+ struct evsel;
+ struct evlist;
+@@ -46,6 +47,6 @@ int metricgroup__parse_groups_test(struct evlist *evlist,
+ void metricgroup__print(bool metrics, bool groups, char *filter,
+ 			bool raw, bool details);
+ bool metricgroup__has_metric(const char *metric);
+-int arch_get_runtimeparam(void);
++int arch_get_runtimeparam(struct pmu_event *pe __maybe_unused);
+ void metricgroup__rblist_exit(struct rblist *metric_events);
+ #endif
 -- 
 2.26.2
 
