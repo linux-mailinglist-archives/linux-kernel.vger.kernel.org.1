@@ -2,148 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35645222CA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EE3222CAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 22:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729657AbgGPUTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 16:19:31 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:50612 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728788AbgGPUTb (ORCPT
+        id S1726246AbgGPUWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 16:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgGPUWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 16:19:31 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 1D3A520039;
-        Thu, 16 Jul 2020 22:19:28 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 22:19:26 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Suraj Upadhyay <usuraj35@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 0/4] drm: core: Convert logging to drm_* functions.
-Message-ID: <20200716201926.GE2254583@ravnborg.org>
-References: <cover.1594136880.git.usuraj35@gmail.com>
- <20200710175643.GF17565@ravnborg.org>
- <20200711151126.GA12262@blackclown>
+        Thu, 16 Jul 2020 16:22:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8A5C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 13:22:15 -0700 (PDT)
+Message-Id: <20200716202044.842575508@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1594930934;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=MF77CFqEB/ftbEu/d/q7hO5/8SRQkkOdOVJRaW7p2QE=;
+        b=4Z/47y4z4gRZ3/n3NE+Bw8MKQq47HonexdTK8QuK8T6bghk4sLqGr28ycXusotrtzq4R5m
+        BY71tkk0EQrh2B0m8b98uCAeRBnyzAyZwwV6DutkZHnwDn5iSUVKEBps0oAF7Eqnt1pWHG
+        gkDPXd9Fz/G9xszBrnbaqjdh5zWRFt8suVmSoB7hRxc8kQ24B3gaXqDBTTMdQdgOaWtfTu
+        /pfXKgIUG5UyFTvOvcpuP80uCy7bVhG9K0QueiBKjbcEXy190Rrc2bJ7Cheyma7bEDwsn+
+        On+eI8o1IBqAaZVlDIldOzsG9IgrEnLpVXg8JMd8wZeT2ccdl3qVvKuR1pvMYg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1594930934;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=MF77CFqEB/ftbEu/d/q7hO5/8SRQkkOdOVJRaW7p2QE=;
+        b=qJPHqI0Ymu3sOXd0nhU1zOl71vbUeFb0u8gpp4WP90vPgNM7iE1eVQMp63gugifxgsSAw/
+        kvo+YZlvweJriHDQ==
+Date:   Thu, 16 Jul 2020 22:19:27 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [patch V2 4/5] posix-cpu-timers: Expiry timers directly when in task
+ work context
+References: <20200716201923.228696399@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200711151126.GA12262@blackclown>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=e5mUnYsNAAAA:8 a=M7-yi6CMk_IXB4dErxsA:9
-        a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suraj.
+If the expiry happens in task context, there is no point in collecting the
+expired timers on a list first. Just expire them directly.
 
-On Sat, Jul 11, 2020 at 08:41:26PM +0530, Suraj Upadhyay wrote:
-> On Fri, Jul 10, 2020 at 07:56:43PM +0200, Sam Ravnborg wrote:
-> > Hi Suraj.
-> > 
-> > On Tue, Jul 07, 2020 at 10:04:14PM +0530, Suraj Upadhyay wrote:
-> > > 
-> > > This patchset converts logging to drm_* functions in drm core.
-> > > 
-> > > The following functions have been converted to their respective
-> > > DRM alternatives :
-> > > dev_info()      --> drm_info()
-> > > dev_err()       --> drm_err()
-> > > dev_warn()      --> drm_warn()
-> > > dev_err_once()  --> drm_err_once().
-> > 
-> > I would prefer that DRM_* logging in the same files are converted in the
-> > same patch. So we have one logging conversion patch for each file you
-> > touches and that we do not need to re-vist the files later to change
-> > another set of logging functions.
-> 
-> Agreed.
-> 
-> > If possible WARN_* should also be converted to drm_WARN_*
-> > If patch is too large, then split them up but again lets have all
-> > logging updated when we touch a file.
-> > 
-> > Care to take a look at this approach?
-> >
-> 
-> Hii,
-> 	The problem with WARN_* macros is that they are used without any
-> drm device context. For example [this use here](https://cgit.freedesktop.org/drm/drm-misc/tree/drivers/gpu/drm/drm_edid.c#n1667) in drm_edid.c,
-> doesn't have a drm device context and only has one argument (namely !raw_edid).
-> There are many more such use cases.
-> 
-> And also there were cases where dev_* logging functions didn't have any
-> drm_device context.
-> 
-> I would be very glad, if we came up with a possible solution to this
-> problem. I think we should develop drm_* logging APIs which could print
-> contextless logs (which would possibly be midlyering) or give every situation a context.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/time/posix-cpu-timers.c |   92 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 79 insertions(+), 13 deletions(-)
 
-This was discussed in the past.
-For now the focus is migrating existing logging to the new drm_ based
-logging. Preferably using coccinelle.
-when we are more or less covered there we can discuss if we will add
-more logging functions.
-
-> 
-> > Also please consider if coccinelle can make this job easier.
-> > There is a lot of files...
-> 
-> I totally agree with you. I will remember this next time.
-> 
-> But here, in this patchset I have tried to convert all possible
-> cases of conversion, i.e. I have changed logging wherever there was a
-> drm_device context.
-
-Please note this in the changelog when you resend.
-I delete your original patches so they are gone now from my mail-box.
-Yeah, could dig them up somewhere, but it is easier to let you resend
-them and then we can have an updated changelog too.
-
-	Sam
-
-> 
-> Thanks.
-> 
-> > 	Sam
-> > 
-> > > 
-> > > Suraj Upadhyay (4):
-> > >   drm: mipi-dsi: Convert logging to drm_* functions.
-> > >   drm: mipi-dbi: Convert logging to drm_* functions.
-> > >   drm: edid: Convert logging to drm_* functions.
-> > >   drm: fb-helper: Convert logging to drm_* functions.
-> > > 
-> > >  drivers/gpu/drm/drm_edid.c      |  7 +++----
-> > >  drivers/gpu/drm/drm_fb_helper.c |  2 +-
-> > >  drivers/gpu/drm/drm_mipi_dbi.c  |  4 ++--
-> > >  drivers/gpu/drm/drm_mipi_dsi.c  | 15 +++++++--------
-> > >  4 files changed, 13 insertions(+), 15 deletions(-)
-> > > 
-> > > -- 
-> > > 2.17.1
-> > > 
-> > > 
-> > 
-> > 
-> > 
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > 
-
-
-
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+--- a/kernel/time/posix-cpu-timers.c
++++ b/kernel/time/posix-cpu-timers.c
+@@ -753,13 +753,71 @@ static void posix_cpu_timer_get(struct k
+ 
+ #define MAX_COLLECTED	20
+ 
+-static u64 collect_timerqueue(struct timerqueue_head *head,
++#ifdef CONFIG_POSIX_CPU_TIMERS_TASK_WORK
++/*
++ * Expiry in task work context. Access to sighand->siglock is safe here.
++ */
++static void handle_expired_timer(struct cpu_timer *ctmr,
++				 struct list_head *firing)
++{
++	struct k_itimer *timer;
++	int cpu_firing;
++
++	/*
++	 * Unlock sighand lock so the timer can be locked. Keep interrupts
++	 * disabled accross the lock switch.
++	 */
++	spin_unlock(&current->sighand->siglock);
++	timer = container_of(ctmr, struct k_itimer, it.cpu);
++	spin_lock(&timer->it_lock);
++	cpu_firing = timer->it.cpu.firing;
++	timer->it.cpu.firing = 0;
++	/*
++	 * The firing flag is -1 if this raced with a reset of the timer,
++	 * which already reported this almost-firing as an overrun.  So
++	 * don't generate an event.
++	 */
++	if (likely(cpu_firing >= 0))
++		cpu_timer_fire(timer);
++	/*
++	 * Drop timer lock again and reacquire sighand lock. Allow
++	 * interrupts to come in between so this wont block interrupts
++	 * accross the delivery of a gazillion of timers.
++	 */
++	spin_unlock_irq(&timer->it_lock);
++	spin_lock_irq(&current->sighand->siglock);
++}
++#else
++/*
++ * Expiry in interupt context. Just move them to the firing list.
++ */
++static void handle_expired_timer(struct cpu_timer *ctmr,
++				 struct list_head *firing)
++{
++	list_add_tail(&ctmr->elist, firing);
++}
++#endif
++
++static u64 collect_timerqueue(struct posix_cputimer_base *base,
+ 			      struct list_head *firing, u64 now)
+ {
+ 	struct timerqueue_node *next;
+ 	int i = 0;
+ 
+-	while ((next = timerqueue_getnext(head))) {
++	/*
++	 * Reset the expiry cache first when expiry context is task work.
++	 * This is required because when sighand lock is dropped new timers
++	 * can be enqueued. That's not a problem for regular posix timers
++	 * as the expiry time would be correct when expire_timerqueue()
++	 * returns, but the expiry cache is also used by itimers which do
++	 * not have a corresponding posix timer and therefore a simple
++	 * update after expire_timerqueue() might overwrite their newly
++	 * written expiry time.
++	 */
++	if (IS_ENABLED(CONFIG_POSIX_CPU_TIMERS_TASK_WORK))
++		base->nextevt = U64_MAX;
++
++	while ((next = timerqueue_getnext(&base->tqhead))) {
+ 		struct cpu_timer *ctmr;
+ 		u64 expires;
+ 
+@@ -771,7 +829,7 @@ static u64 collect_timerqueue(struct tim
+ 
+ 		ctmr->firing = 1;
+ 		cpu_timer_dequeue(ctmr);
+-		list_add_tail(&ctmr->elist, firing);
++		handle_expired_timer(ctmr, firing);
+ 	}
+ 
+ 	return U64_MAX;
+@@ -783,10 +841,8 @@ static void collect_posix_cputimers(stru
+ 	struct posix_cputimer_base *base = pct->bases;
+ 	int i;
+ 
+-	for (i = 0; i < CPUCLOCK_MAX; i++, base++) {
+-		base->nextevt = collect_timerqueue(&base->tqhead, firing,
+-						    samples[i]);
+-	}
++	for (i = 0; i < CPUCLOCK_MAX; i++, base++)
++		base->nextevt = collect_timerqueue(base, firing, samples[i]);
+ }
+ 
+ static inline void check_dl_overrun(struct task_struct *tsk)
+@@ -812,9 +868,10 @@ static bool check_rlimit(u64 time, u64 l
+ }
+ 
+ /*
+- * Check for any per-thread CPU timers that have fired and move them off
+- * the tsk->cpu_timers[N] list onto the firing list.  Here we update the
+- * tsk->it_*_expires values to reflect the remaining thread CPU timers.
++ * Check for any per-thread CPU timers that have fired and depending on the
++ * context (task work or interrupt) move them off the tsk->cpu_timers[N]
++ * list onto the firing list or expire them directly.  Update the expiry
++ * cache as well to reflect the remaining thread CPU timers.
+  */
+ static void check_thread_timers(struct task_struct *tsk,
+ 				struct list_head *firing)
+@@ -889,9 +946,11 @@ static void check_cpu_itimer(struct task
+ }
+ 
+ /*
+- * Check for any per-thread CPU timers that have fired and move them
+- * off the tsk->*_timers list onto the firing list.  Per-thread timers
+- * have already been taken off.
++ * Check for any per-process CPU timers that have fired and depending on
++ * the context (task work or interrupt) move them off the tsk->signal timer
++ * list onto the firing list or expire them directly.  Update the expiry
++ * cache to reflect the resulting state. Per-thread timers have already
++ * been handled.
+  */
+ static void check_process_timers(struct task_struct *tsk,
+ 				 struct list_head *firing)
+@@ -1115,6 +1174,12 @@ static void handle_posix_cpu_timers(stru
+ 	unlock_task_sighand(tsk, &flags);
+ 
+ 	/*
++	 * If task work delivery is enabled, the timers are already
++	 * expired.
++	 */
++	if (IS_ENABLED(CONFIG_POSIX_CPU_TIMERS_TASK_WORK))
++		goto out;
++	/*
+ 	 * Now that all the timers on our list have the firing flag,
+ 	 * no one will touch their list entries but us.  We'll take
+ 	 * each timer's lock before clearing its firing flag, so no
+@@ -1136,6 +1201,7 @@ static void handle_posix_cpu_timers(stru
+ 			cpu_timer_fire(timer);
+ 		spin_unlock(&timer->it_lock);
+ 	}
++out:
+ 	lockdep_posixtimer_exit();
+ }
+ 
 
