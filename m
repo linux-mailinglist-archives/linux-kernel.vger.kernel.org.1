@@ -2,170 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4525222BC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9122A222BC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729534AbgGPTSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 15:18:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:39474 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729387AbgGPTSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 15:18:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23D4231B;
-        Thu, 16 Jul 2020 12:18:19 -0700 (PDT)
-Received: from [10.57.35.46] (unknown [10.57.35.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED5483F718;
-        Thu, 16 Jul 2020 12:18:17 -0700 (PDT)
-Subject: Re: [RFC PATCH v1 1/2] dt-bindings: arm: rockchip: add A95X Z2
- description
-To:     Johan Jonker <jbx6244@gmail.com>, Rob Herring <robh@kernel.org>
-Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        heiko@sntech.de, linux-arm-kernel@lists.infradead.org,
+        id S1729364AbgGPTWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 15:22:08 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:43219 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728257AbgGPTWH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 15:22:07 -0400
+Received: by mail-il1-f196.google.com with SMTP id i18so6054000ilk.10;
+        Thu, 16 Jul 2020 12:22:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=khkn4T4UpW3MWVOEs8OJAq3mrIQ/B8iZQcHJwo8TpP0=;
+        b=geDUBvWr04isbEMX+Qopu5Au+yeBzTAj0q3o5AAqWXCy86K1k6XXGuKAXwKC8praic
+         UGYtPwIcYU1/MV1V1vRa6h4U8eUgGNjcgbTVXKhHECRl+BfeO+fPHIpqLZDIsVluzotz
+         aEJgt4uqoMJIdwLjlNeqeIlIRvpec/L0FS7ONolINVIlXcmZuFd1wwRK8Wr3YjyM749D
+         Tsp374Yc1c3vg7wk4d4VortSMcIFPEsY1r8QnTV2mivzPaD9ezrmvL4pikbrh/HCWjDF
+         U+6F2rCsCh/RM0sJYajSgkOu22FRbeq+hah3upSmIVY8PPFjMCF5yvRYTwh7OKLvulcm
+         iflg==
+X-Gm-Message-State: AOAM5300e4yM4n2mSOj2ciPbIB+0y2e3p/PMaRj+oQgyhnKjd6tiSSbu
+        vKRI8JV3Km5iXiDxrko5vPWWRvDZ46+Y
+X-Google-Smtp-Source: ABdhPJzKRvOl5dJErYnlVV9nkZglTeQrubGKWVUGLK4EA2N846XRgBL/oS7PcTa/GtfaBKer7H7BXg==
+X-Received: by 2002:a92:41d0:: with SMTP id o199mr6212179ila.205.1594927326323;
+        Thu, 16 Jul 2020 12:22:06 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id q2sm3109196ilp.82.2020.07.16.12.22.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 12:22:05 -0700 (PDT)
+Received: (nullmailer pid 2696847 invoked by uid 1000);
+        Thu, 16 Jul 2020 19:22:04 -0000
+Date:   Thu, 16 Jul 2020 13:22:04 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        linux-pm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-References: <20200620134659.4592-1-jbx6244@gmail.com>
- <20200620134659.4592-2-jbx6244@gmail.com> <20200715192935.GA684031@bogus>
- <14b39efe-f38b-b471-560d-1ecaeafc5dd5@gmail.com>
- <56b1447d-6c62-9e73-a7ce-08fb70096a97@arm.com>
- <544f9182-034b-6309-a945-72b5a34ee2e8@gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <7811d168-6f41-adda-bd64-e7475b239863@arm.com>
-Date:   Thu, 16 Jul 2020 20:18:16 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH v2 2/7] dt-bindings: interconnect: Add Qualcomm SM8150 DT
+ bindings
+Message-ID: <20200716192204.GA2696793@bogus>
+References: <20200713154121.22094-1-jonathan@marek.ca>
+ <20200713154121.22094-3-jonathan@marek.ca>
 MIME-Version: 1.0
-In-Reply-To: <544f9182-034b-6309-a945-72b5a34ee2e8@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200713154121.22094-3-jonathan@marek.ca>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-16 17:11, Johan Jonker wrote:
-> On 7/16/20 3:34 PM, Robin Murphy wrote:
->> On 2020-07-16 13:05, Johan Jonker wrote:
->>> Hi Rob,
->>>
->>> The A95X Z2 boxes are sold by various vendors/manufacturers/web shops.
->>> The box it self only shows a label with a model name.
->>> Determining the true vendor is a kind of tricky for a outsider of the
->>> business.
->>> Could you advise what would be a save choice to the rather rigid vendor
->>> requirements.
->>> Is for example this a option:
->>>
->>>     "^a95x,.*":
->>>       description: A95X
->>>
->>> Is there someone who can give more info on this subject?
->>
->> FWIW we already have some "A95X" branded things attributed to Nexbox in
->> upstream DTs, however, the evidence from scraping around the internet
->> suggests that the closest thing to an original vendor for the "A95X Z2"
->> model is probably these folks:
->>
->> https://zkmagic.en.alibaba.com/
+On Mon, 13 Jul 2020 11:41:11 -0400, Jonathan Marek wrote:
+> The Qualcomm SM8150 platform has several bus fabrics that could be
+> controlled and tuned dynamically according to the bandwidth demand.
 > 
-> That's where I got my update/backup img from.
-> A mail was sent, but what if they all claim to be a 'official' or
-> 'direct' store?
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  .../bindings/interconnect/qcom,rpmh.yaml      |  11 ++
+>  .../dt-bindings/interconnect/qcom,sm8150.h    | 163 ++++++++++++++++++
+>  2 files changed, 174 insertions(+)
+>  create mode 100644 include/dt-bindings/interconnect/qcom,sm8150.h
+> 
 
-Well, at some point we have to make a judgement call if the facts aren't 
-easy to come by, but it's already clear that "A95X" is not a vendor but 
-some kind of generic model name apparently used by multiple vendors. We 
-already have "nexbox,a95x" as a binding for another model, and a 
-plausible idea of who's responsible for this one, so I think 
-"zkmagic,a95x-z2" would be the appropriate binding here. It's hardly the 
-end of the world if it's not 100% accurate, but that's no excuse not to 
-at least try.
-
-Robin.
-
-> 
-> option 1:
-> 
->        - description: A95X Z2
->          items:
->            - const: a95x,z2
-> 
->    "^a95x,.*":
->      description: A95X
-> 
-> or option 2:
-> 
->        - description: Zkmagic A95X Z2
->          items:
->            - const: zkmagic,a95x-z2
-> 
->    "^zkmagic,.*":
->      description: Shenzhen Zkmagic Technology Co., Ltd.
-> 
-> I'ld rather prefer a short neutral name like option 1 just to be save. ;)
-> For the completeness there seems to be:
-> a95x a2
-> a95x a3
-> a95x f1
-> a95x f2
-> a95x f3
-> a95x max
-> a95x max plus
-> a95x r1
-> a95x r2
-> a95x r3
-> a95x r5
-> a95x z2
-> a95x z2 +
-> 
-> Any advice welcome..
-> 
-> Johan
-> 
->>
->> Robin.
->>
->>>
->>> Kind regards,
->>>
->>> Johan Jonker
->>>
->>> On 7/15/20 9:29 PM, Rob Herring wrote:
->>>> On Sat, Jun 20, 2020 at 03:46:58PM +0200, Johan Jonker wrote:
->>>>> Add A95X Z2 description for a board with rk3318 processor.
->>>>>
->>>>> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
->>>>> ---
->>>>>    Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
->>>>>    1 file changed, 5 insertions(+)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml
->>>>> b/Documentation/devicetree/bindings/arm/rockchip.yaml
->>>>> index d4a404509..3d44b3cf0 100644
->>>>> --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
->>>>> +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
->>>>> @@ -25,6 +25,11 @@ properties:
->>>>>              - const: vamrs,rock960
->>>>>              - const: rockchip,rk3399
->>>>>    +      - description: A95X Z2
->>>>> +        items:
->>>>> +          - const: a95x,z2
->>>>
->>>> Need to document vendor prefix.
->>>>
->>>>> +          - const: rockchip,rk3318
->>>>> +
->>>>>          - description: Amarula Vyasa RK3288
->>>>>            items:
->>>>>              - const: amarula,vyasa-rk3288
->>>>> -- 
->>>>> 2.11.0
->>>>>
->>>
->>>
->>> _______________________________________________
->>> Linux-rockchip mailing list
->>> Linux-rockchip@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-rockchip
->>>
-> 
+Reviewed-by: Rob Herring <robh@kernel.org>
