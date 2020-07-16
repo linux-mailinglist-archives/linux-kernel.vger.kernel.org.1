@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087DD221AA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DC4221ABE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbgGPDQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 23:16:43 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:48548 "EHLO loongson.cn"
+        id S1728383AbgGPDSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 23:18:06 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48554 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726989AbgGPDQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727097AbgGPDQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Jul 2020 23:16:41 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7x+Pxg9f1GoFAA--.6749S8;
-        Thu, 16 Jul 2020 11:16:34 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7x+Pxg9f1GoFAA--.6749S9;
+        Thu, 16 Jul 2020 11:16:35 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Marc Zyngier <maz@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -21,17 +21,17 @@ To:     Marc Zyngier <maz@kernel.org>,
 Cc:     Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 6/8] irqchip/loongson-pch-msi: Remove unneeded variable
-Date:   Thu, 16 Jul 2020 11:16:28 +0800
-Message-Id: <1594869390-21053-7-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v4 7/8] irqchip/loongson-liointc: Fix potential dead lock
+Date:   Thu, 16 Jul 2020 11:16:29 +0800
+Message-Id: <1594869390-21053-8-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1594869390-21053-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1594869390-21053-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx7x+Pxg9f1GoFAA--.6749S8
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFW7Jw17Kr47Cr15WryUZFb_yoWktwb_CF
-        1Iq3ZxGFy2yr43WF4xK3yYqFy2vFyDuF1v9FWFva13X3yYgws7AFW3Aan3JrW7Gr18Zr1f
-        CrZ5Gw1Syr129jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbh8YjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
+X-CM-TRANSID: AQAAf9Dx7x+Pxg9f1GoFAA--.6749S9
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF4fWryfGFW5KF13uFWfZrb_yoWfuFc_CF
+        W2qwn7Jr9Fqr15tr1xur45XFy2q345W3Wv9F4YvFW3u34rKw17JrW7Zw13AF48tF48ZFn3
+        CrW8ur4Skw1IyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbh8YjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
         6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
         IE14v26r126s0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0
         c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2
@@ -42,47 +42,36 @@ X-Coremail-Antispam: 1UD129KBjvdXoW7GFW7Jw17Kr47Cr15WryUZFb_yoWktwb_CF
         IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
         0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
         IF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxGNtDUUUU
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87
+        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxNB_UUUUU
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-irq_domain_alloc_irqs_parent() returns 0 on success and non-zero value
-on failure, it is redudant to check its non-zero return value and then
-return it, so just remove the variable "ret" and return directly in the
-function pch_msi_parent_domain_alloc().
+In the function liointc_set_type(), we need to call the function
+irq_gc_unlock_irqrestore() before returning.
 
+Fixes: dbb152267908 ("irqchip: Add driver for Loongson I/O Local Interrupt Controller")
+Reported-by: Jianmin Lv <lvjianmin@loongson.cn>
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/irqchip/irq-loongson-pch-msi.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/irqchip/irq-loongson-liointc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/irqchip/irq-loongson-pch-msi.c b/drivers/irqchip/irq-loongson-pch-msi.c
-index 50becd2..12aeeab 100644
---- a/drivers/irqchip/irq-loongson-pch-msi.c
-+++ b/drivers/irqchip/irq-loongson-pch-msi.c
-@@ -100,17 +100,12 @@ static int pch_msi_parent_domain_alloc(struct irq_domain *domain,
- 					unsigned int virq, int hwirq)
- {
- 	struct irq_fwspec fwspec;
--	int ret;
- 
- 	fwspec.fwnode = domain->parent->fwnode;
- 	fwspec.param_count = 1;
- 	fwspec.param[0] = hwirq;
- 
--	ret = irq_domain_alloc_irqs_parent(domain, virq, 1, &fwspec);
--	if (ret)
--		return ret;
--
--	return 0;
-+	return irq_domain_alloc_irqs_parent(domain, virq, 1, &fwspec);
- }
- 
- static int pch_msi_middle_domain_alloc(struct irq_domain *domain,
+diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
+index 63b6147..6ef86a3 100644
+--- a/drivers/irqchip/irq-loongson-liointc.c
++++ b/drivers/irqchip/irq-loongson-liointc.c
+@@ -114,6 +114,7 @@ static int liointc_set_type(struct irq_data *data, unsigned int type)
+ 		liointc_set_bit(gc, LIOINTC_REG_INTC_POL, mask, false);
+ 		break;
+ 	default:
++		irq_gc_unlock_irqrestore(gc, flags);
+ 		return -EINVAL;
+ 	}
+ 	irq_gc_unlock_irqrestore(gc, flags);
 -- 
 2.1.0
 
