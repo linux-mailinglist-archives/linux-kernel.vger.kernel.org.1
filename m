@@ -2,119 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2811222014
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE23221FB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgGPKAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 06:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgGPKAL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 06:00:11 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95396C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 03:00:10 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id o8so9716645wmh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 03:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p7ULmXvRXYxCcTo8wTXcMu3x+yaWMQIGr98XOBExKbA=;
-        b=WiOCEj2aX2XvOMwJRHGb2nmKLYzIngZK3V8yvoeZMgI50rW5jzQZSaclNCu+hYD2fh
-         W9Ax4Z9wBtrHU6XdeweO1EuJSpp4uBxsxMIvwZ3p2oBWvSvklN2/tqt+R++hmOJph1Pa
-         Cg4wzU0cANnHCT1Vl9YvZXeDnZQsbNhLUpOQE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=p7ULmXvRXYxCcTo8wTXcMu3x+yaWMQIGr98XOBExKbA=;
-        b=E75dD0mOnFwKZtn9bE8wUwOoIqhZ/Sm+4bLXTS7oE525zYpxLjC094F3XWjVWzT6c5
-         DqN7c2bP2XFMzxOdXwtW4oR/0kyQOP3wUkQDWndaJ1xAb6bQ49f8DqehlLMkyAYTrSjM
-         WZVmpIfri82M3TofxxH45HCAPvcKgu7ly4tOf5Ou5d54hAA9pnvaJs0MNHNjwRmW99ZM
-         JlT//Au/SPkOLPHuXYixrx1KkIgS7QG66kTI1hwfXb47NfTzEUHutmdcyxRnbhuhW1F0
-         XAnDg5D148t9ZIM/+LRZ2dfqLOehKPKU+dgJ8TBlxpn5YpTp/5R0YqM0jVfel4SRndrD
-         52TA==
-X-Gm-Message-State: AOAM531mtAQUFk2BvjfEQL6SBLWsOYRoeMhiV0JIyA2CMQbNBoyn29oa
-        abuwLBhRmiF8dKAtis6aBjXeqg==
-X-Google-Smtp-Source: ABdhPJxn6oG23L3JWUoDJgbj2CK99jMIxywnQc6uT8hr9FP8YkPYYWAV3FpUvuGMkDhTuMGWgHs27g==
-X-Received: by 2002:a05:600c:2249:: with SMTP id a9mr3448422wmm.163.1594893609246;
-        Thu, 16 Jul 2020 03:00:09 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id y16sm8215061wro.71.2020.07.16.03.00.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 03:00:08 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 12:00:06 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-fbdev@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzbot <syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        George Kennedy <george.kennedy@oracle.com>,
-        Jiri Slaby <jslaby@suse.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH v2] fbdev: Detect integer underflow at "struct
- fbcon_ops"->clear_margins.
-Message-ID: <20200716100006.GN3278063@phenom.ffwll.local>
-Mail-Followup-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-fbdev@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzbot <syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        George Kennedy <george.kennedy@oracle.com>,
-        Jiri Slaby <jslaby@suse.com>, Dmitry Vyukov <dvyukov@google.com>
-References: <adff5d10-fe35-62d4-74c5-182958c5ada7@i-love.sakura.ne.jp>
- <20200715015102.3814-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <20200715094836.GD2571@kadam>
- <9e6eac10-c5c3-f518-36cc-9ea32fb5d7fe@i-love.sakura.ne.jp>
- <b50f85c7-80e5-89c5-0aca-31d8e9892665@i-love.sakura.ne.jp>
- <20200715151220.GE2571@kadam>
- <adfa8720-c411-dfe6-6b0f-7591dd95396c@i-love.sakura.ne.jp>
+        id S1727047AbgGPJbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:31:19 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:51958 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726769AbgGPJbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:31:18 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 8601BF5814DDACD0A27C;
+        Thu, 16 Jul 2020 17:31:15 +0800 (CST)
+Received: from huawei.com (10.174.28.241) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Jul 2020
+ 17:31:09 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-next@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <jdmason@kudzu.us>, <christophe.jaillet@wanadoo.fr>,
+        <john.wanghui@huawei.com>
+Subject: [PATCH] net: neterion: vxge: reduce stack usage in VXGE_COMPLETE_VPATH_TX
+Date:   Thu, 16 Jul 2020 17:32:47 +0000
+Message-ID: <20200716173247.78912-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <adfa8720-c411-dfe6-6b0f-7591dd95396c@i-love.sakura.ne.jp>
-X-Operating-System: Linux phenom 5.6.0-1-amd64 
+Content-Type: text/plain
+X-Originating-IP: [10.174.28.241]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 12:29:00AM +0900, Tetsuo Handa wrote:
-> On 2020/07/16 0:12, Dan Carpenter wrote:
-> > I've complained about integer overflows in fbdev for a long time...
-> > 
-> > What I'd like to see is something like the following maybe.  I don't
-> > know how to get the vc_data in fbmem.c so it doesn't include your checks
-> > for negative.
-> 
-> Yes. Like I said "Thus, I consider that we need more sanity/constraints checks." at
-> https://lore.kernel.org/lkml/b1e7dd6a-fc22-bba8-0abb-d3e779329bce@i-love.sakura.ne.jp/ ,
-> we want basic checks. That's a task for fbdev people who should be familiar with
-> necessary constraints.
+Fix the warning: [-Werror=-Wframe-larger-than=]
 
-I think the worldwide supply of people who understand fbdev and willing to
-work on it is roughly 0. So if someone wants to fix this mess properly
-(which likely means adding tons of over/underflow checks at entry points,
-since you're never going to catch the driver bugs, there's too many and
-not enough people who care) they need to fix this themselves.
+drivers/net/ethernet/neterion/vxge/vxge-main.c:
+In function'VXGE_COMPLETE_VPATH_TX.isra.37':
+drivers/net/ethernet/neterion/vxge/vxge-main.c:119:1:
+warning: the frame size of 1056 bytes is larger than 1024 bytes
 
-Just to avoid confusion here.
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+---
+ drivers/net/ethernet/neterion/vxge/vxge-main.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-> Anyway, my two patches are small and low cost; can we apply these patches regardless
-> of basic checks?
+diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.c b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+index b0faa737b817..97ddfc9debd4 100644
+--- a/drivers/net/ethernet/neterion/vxge/vxge-main.c
++++ b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+@@ -100,8 +100,14 @@ static inline void VXGE_COMPLETE_VPATH_TX(struct vxge_fifo *fifo)
+ 	struct sk_buff **temp;
+ #define NR_SKB_COMPLETED 128
+ 	struct sk_buff *completed[NR_SKB_COMPLETED];
++	struct sk_buff **completed;
+ 	int more;
 
-Which two patches where?
++	completed = kcalloc(NR_SKB_COMPLETED, sizeof(*completed),
++			    GFP_KERNEL);
++	if (!completed)
++		return;
++
+ 	do {
+ 		more = 0;
+ 		skb_ptr = completed;
+@@ -116,6 +122,8 @@ static inline void VXGE_COMPLETE_VPATH_TX(struct vxge_fifo *fifo)
+ 		for (temp = completed; temp != skb_ptr; temp++)
+ 			dev_consume_skb_irq(*temp);
+ 	} while (more);
++
++	free(completed);
+ }
 
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+ static inline void VXGE_COMPLETE_ALL_TX(struct vxgedev *vdev)
+--
+2.17.1
+
