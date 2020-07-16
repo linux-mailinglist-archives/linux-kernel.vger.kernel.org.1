@@ -2,175 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE24221B37
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 06:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5482D221B3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 06:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgGPEVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 00:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726036AbgGPEVH (ORCPT
+        id S1726002AbgGPEXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 00:23:33 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:40140 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725268AbgGPEXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 00:21:07 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEB6C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 21:21:07 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id s9so5666273ybj.18
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 21:21:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Db+rdJzVsVadbu0BHlNrIH6C9D6Gk0kU0eYJ13OSzw8=;
-        b=B0eJf1YBX/Lo+BBodqJYBYhOnp2Tm0+ZoiwongPu5M8ntYb0kA8JNA06xloYqDPpuP
-         Mtu1naE954uQNuTED3DZaPdkDgKExKIR1WsVGMYt5SdABRvAK553ch4l2mdRbipQ/zLp
-         wcBm/xX+1jdjfOmCktWDFzZ1I2Yk0r9+5olSOJyIYnRpxHJPe77mi0JoKjRGADt3db5E
-         Ra/Kf0lb/AySw01rh8brZztqxtGSf0w5WR66gJgOhVXYJndY8s4PZdCjJDeNClQJzJmS
-         Yb6FWYDK2elei0o9CNtLT1pJxbuYqdwpML24KtcWqtaI7RKFMFQ4wPPuoFSVz2XkoJR+
-         vKlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Db+rdJzVsVadbu0BHlNrIH6C9D6Gk0kU0eYJ13OSzw8=;
-        b=XOj0ylWEqwhg5ZwyG3C/NkReWfJQoVXQOQmHFMeLpY0RD92Fy6gmf2z+6Z3Qwunsy1
-         18oE8CHdVA+Uhuo3D8KujTM2q7a1Ko9VxgBnC1douKyUVSMBSdvKylTbc0EbfT8zeWQE
-         bsiR2mimV/+zxNlU7XObU4kcRR0zMSPl7eGGkFX6LOGhg7J8J1+taEhN1/6VTt7mQ+g8
-         ahta4FuRPT3Hhvi3qEVNab9TLavnJNs5Zr/6dMxZ8GhbU5u+D15+Nv6nW7MD0vH1qfyx
-         6WAT3vxWLO2513cw7BtzCUt9Q6b6i8c9P70NFawUGePn0by8JZ5TtIgjn6GIabWj9TeZ
-         78/Q==
-X-Gm-Message-State: AOAM5300d9UxRQIKIqWfWC7qgwX1cN6smiVQvmoqxdANuwy0tPTxaq8g
-        pY/2UOhxEatiY3Z5LXZQFV/wHNXvUcQKWME=
-X-Google-Smtp-Source: ABdhPJxw9TSo27Nppgi18vjTCW6ENkTRBxVnmYCPiEz1dkpPFlcFSL3SuIiZFOps9muOJLp1qlDzj2i777BYSeQ=
-X-Received: by 2002:a25:ac66:: with SMTP id r38mr3804732ybd.105.1594873266503;
- Wed, 15 Jul 2020 21:21:06 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 21:20:53 -0700
-In-Reply-To: <20200716042053.1927676-1-saravanak@google.com>
-Message-Id: <20200716042053.1927676-5-saravanak@google.com>
-Mime-Version: 1.0
-References: <20200716042053.1927676-1-saravanak@google.com>
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH v3 4/4] regulator: core: Add voltage support for sync_state() callbacks
-From:   Saravana Kannan <saravanak@google.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 16 Jul 2020 00:23:32 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06G4NHh4053064;
+        Wed, 15 Jul 2020 23:23:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1594873398;
+        bh=n1xpmpifzwr3iQTyJflXTGpcVwdiIXOkn+SYdcnsPJE=;
+        h=From:To:CC:Subject:Date;
+        b=HaDnXEiqCTLzixwGCVji1pobk/61gBgshlHgKrVWrz1GsMBvwtbuKsBV8MhKLC3lf
+         OkNHMPMdgx5DO/xNiW2ZGI8ir0oIseMoLNWttvMFUp3jQBuBSMB2lVJsZUmpt2fIog
+         /F33Qc30IeDvWrdqRdfDzBX4oAkcIg9ub5Anjkrs=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06G4NHXk084956
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 15 Jul 2020 23:23:17 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 15
+ Jul 2020 23:23:17 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 15 Jul 2020 23:23:17 -0500
+Received: from a0230074-Latitude-E7470.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06G4NCZq007189;
+        Wed, 15 Jul 2020 23:23:13 -0500
+From:   Faiz Abbas <faiz_abbas@ti.com>
+To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-can@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <mkl@pengutronix.de>,
+        <wg@grandegger.com>, <sriram.dash@samsung.com>, <dmurphy@ti.com>,
+        <faiz_abbas@ti.com>
+Subject: [PATCH] can: m_can: Set device to software init mode before closing
+Date:   Thu, 16 Jul 2020 09:53:12 +0530
+Message-ID: <20200716042312.26989-1-faiz_abbas@ti.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consider the following example:
-- regulator-X is provided by device-X.
-- regulator-X is a supplier to device-A, device-B and device-C.
-- device-A is off/inactive from boot.
-- device-B and device-C are left on/active by the bootloader
-- regulator-X is left on boot by the bootloader at 2000 mV to supply
-  device-B and device-C.
+There might be some requests pending in the buffer when the
+interface close sequence occurs. In some devices, these
+pending requests might lead to the module not shutting down
+properly when m_can_clk_stop() is called.
 
-Example boot sequence:
-1. device-X is probed successfully.
-2. device-B is probed by driver-B
-   a. driver-B gets regulator-X
-   b. driver-B votes on regulator-X
-   c. driver-B lowers device-B performance point.
-   d. driver-B lowers voltage vote to 1000 mV.
-   e. regulator-X voltage is lowered to 1000 mV.
-3. System crashes or device-C becomes unreliable because regulator-X
-   voltage was lowered to 1000 mV when device-C still needed it at 2000 mV
+Therefore, move the device to init state before potentially
+powering it down.
 
-The issue reported by Marek Szyprowski [1] between vdd_int and vdd_arm
-is very similar to example 2, except driver-B lowers the voltage of
-device-C due to a regulator coupling instead of a direct request from
-driver-B.
-
-This patch addresses the problem in the example by:
-1. When a boot-on regulator is registered, a minimum voltage limit that
-   matches the boot time voltage is placed on the regulator.
-
-2. When the regulator_sync_state() callback comes, the minimum voltage
-   limit is removed along with the rest of the boot limits.
-
-So with this patch and regulator_cleanup_timeout=0, the example will
-work as follows:
-
-1. device-X is probed successfully.
-   a. regulator-X is registered.
-   b. Since regulator-X is on, a minimum voltage of 2000 mV is made by
-      the BOOT-LIMITS consumer.
-   c. Since regulator-X is on, an enable vote is made by the BOOT-LIMITS
-      consumer.
-2. device-B is probed by driver-B
-   a. driver-B gets regulator-X
-   b. driver-B votes on regulator-X
-   c. driver-B lowers device-B performance point.
-   d. driver-B lowers voltage vote to 1000 mV.
-   e. regulator-X voltage is NOT lowered to 1000 mV.
-3. device-C is probed by driver-C
-   a. Does stuff similar to device-B.
-4. Since all consumers of device-X have probed, device-X gets
-   sync_state() callback which is a call to regulator_sync_state():
-   a. BOOT-LIMITS removes enable vote for regulator-X
-   b. regulator-X remains on becaue device-B and device-C have their
-      enable votes in.
-   c. BOOT-LIMITS consumer is freed.
-   d. regulator-X voltage drops is lowered to 1000 mV.
-5. The system is stable because regulator-X voltage is NOT lowered to
-   1000 mV when device-C still needed it at 2000 mV.
-
-[1] - https://lore.kernel.org/lkml/20200605063724.9030-1-m.szyprowski@samsung.com/#t
-Signed-off-by: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 ---
- drivers/regulator/core.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/net/can/m_can/m_can.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index f10ef6ec1af1..9b70295820f3 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1783,6 +1783,8 @@ static struct regulator_dev *regulator_dev_lookup(struct device *dev,
-  */
- static void regulator_add_boot_limits(struct regulator_dev *rdev)
- {
-+	int boot_uV;
-+
- 	/* We already set up boot limits. */
- 	if (rdev->boot_limits)
- 		return;
-@@ -1815,6 +1817,13 @@ static void regulator_add_boot_limits(struct regulator_dev *rdev)
- 	}
- 	rdev->open_count++;
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 02c5795b7393..d0c458f7f6e1 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -1414,6 +1414,9 @@ static void m_can_stop(struct net_device *dev)
+ 	/* disable all interrupts */
+ 	m_can_disable_all_interrupts(cdev);
  
-+	if (regulator_ops_is_valid(rdev, REGULATOR_CHANGE_VOLTAGE)) {
-+		boot_uV = regulator_get_voltage_rdev(rdev);
-+		if (boot_uV > 0)
-+			regulator_set_voltage(rdev->boot_limits, boot_uV,
-+								 INT_MAX);
-+	}
++	/* Set init mode to disengage from the network */
++	m_can_config_endisable(cdev, true);
 +
- 	if (regulator_enable(rdev->boot_limits)) {
- 		dev_err(&rdev->dev, "Unable to set boot limits\n");
- 		destroy_regulator(rdev->boot_limits);
-@@ -1847,10 +1856,12 @@ static int regulator_del_boot_limits(struct regulator_dev *rdev, bool handoff)
- 		return 0;
- 
- 	rdev_info(rdev, "removing boot limits\n");
--	if (!handoff)
-+	if (!handoff) {
- 		regulator_disable(rdev->boot_limits);
--	else
-+		regulator_set_voltage(rdev->boot_limits, 0, INT_MAX);
-+	} else {
- 		rdev->use_count--;
-+	}
- 	destroy_regulator(rdev->boot_limits);
- 	/*
- 	 * Set it to an error value so that boot limits can't be set again once
+ 	/* set the state as STOPPED */
+ 	cdev->can.state = CAN_STATE_STOPPED;
+ }
 -- 
-2.28.0.rc0.105.gf9edc3c819-goog
+2.17.1
 
