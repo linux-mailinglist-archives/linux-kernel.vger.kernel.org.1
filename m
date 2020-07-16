@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02240221B8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 06:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8302E221B91
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 06:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbgGPEyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 00:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725268AbgGPEyG (ORCPT
+        id S1726198AbgGPEyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 00:54:31 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:11440 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725268AbgGPEyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 00:54:06 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0EF8C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 21:54:05 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B6hjh1m8Dz9sR4;
-        Thu, 16 Jul 2020 14:54:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1594875240;
-        bh=FmAkXsd5ylVmoGslmFobuHuO65vIrkIORrej0EwX2ts=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Q+fZUiVGUkVTM4eSFCMtRkFtxovdTo6nBtySqfDlb2q7ySoyuEWGLA49Ses8+LwNR
-         qFckoQe3HjNIeOH2Up5nOdYzMZYqnjsk/FuCP+ohYJWUX/P3q43aAyVpEZzOmOM7a4
-         RpYIb9Flr0ucpju+Xv17yhKosh8FdDoW9+qB8oByVMEjSufhJpXvc/gQOV2fzukiMb
-         NiqsBike/HalTrjb42Wlr3chaRn7SEt8m2HGAQaR0vk9475WQ2wK7sL1EtrQm9i/7y
-         fNT5fwDvdfoYGbT56wKLSb6ats077QovgkrWuhmvrKLdS57csz/P7LmBneL1md1yWR
-         VuWDQ7hY0B9ug==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Daniel Axtens <dja@axtens.net>, Nayna Jain <nayna@linux.ibm.com>,
-        linuxppc-dev@ozlabs.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        Nayna Jain <nayna@linux.ibm.com>
-Subject: Re: [PATCH v3] powerpc/pseries: detect secure and trusted boot state of the system.
-In-Reply-To: <87v9iothc1.fsf@dja-thinkpad.axtens.net>
-References: <1594813921-12425-1-git-send-email-nayna@linux.ibm.com> <87v9iothc1.fsf@dja-thinkpad.axtens.net>
-Date:   Thu, 16 Jul 2020 14:53:51 +1000
-Message-ID: <87sgdst600.fsf@mpe.ellerman.id.au>
+        Thu, 16 Jul 2020 00:54:31 -0400
+From:   Peter Enderborg <peter.enderborg@sony.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: [PATCH v7 0/2] debugfs: Add access restriction option
+Date:   Thu, 16 Jul 2020 06:54:23 +0200
+Message-ID: <20200716045425.8729-1-peter.enderborg@sony.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200617133738.6631-1-peter.enderborg@sony.com>
+References: <20200617133738.6631-1-peter.enderborg@sony.com>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=CszBjUwD c=1 sm=1 tr=0 a=Jtaq2Av1iV2Yg7i8w6AGMw==:117 a=_RQrkK6FrEwA:10 a=QyXUC8HyAAAA:8 a=rwTvC7ucDngX97v92ZIA:9
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Axtens <dja@axtens.net> writes:
-> Hi Nayna,
->
-> Looks good to me.
->
-> Sorry for not noticing this before, but I think
->> +#include <asm/machdep.h>
+Since debugfs include sensitive information it need to be treated
+carefully. But it also has many very useful debug functions for userspace.
+With this option we can have same configuration for system with
+need of debugfs and a way to turn it off. This gives a extra protection
+for exposure on systems where user-space services with system
+access are attacked.
 
-> is now superfluous (I think it's leftover from the machine_is
-> version?). Maybe mpe will take pity on you and remove it when he picks
-> up your patch.
+v2. Removed MOUNT as part of restrictions. Added API's restrictions as
+    separate restriction.
+v3  Updated Documentation after Randy Dunlap reviews and suggestions.
+v4  Removed #ifdefs from inode.c and using internal.h for configuration
+    and now using BIT() for that. Function is now always on, and are
+    instead selected by a built in default or command line parameter.
+    Changed return value on debug_mount
+    Reported-by: kernel test robot <lkp@intel.com>
+    Im not sure about that it is right
+v5  Added notes to config help suggested by GregKH.
+    Removed _BIT from names, white-space and tab.
+    (checkpatch did not complain).
+v6  Using ALLOW instead of ACCESS as name on BIT's. Change the fs to
+    mount to make it clear and easy to understand.
+v7  Updated Kconfig.debug with Randy Dunlap corrections.
 
-Yeah I did that.
 
-cheers
