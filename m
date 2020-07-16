@@ -2,76 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DC4221ABE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B14B221AA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 05:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728383AbgGPDSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 23:18:06 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:48554 "EHLO loongson.cn"
+        id S1728182AbgGPDQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 23:16:46 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48576 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727097AbgGPDQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 23:16:41 -0400
+        id S1728149AbgGPDQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 23:16:45 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7x+Pxg9f1GoFAA--.6749S9;
-        Thu, 16 Jul 2020 11:16:35 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7x+Pxg9f1GoFAA--.6749S10;
+        Thu, 16 Jul 2020 11:16:38 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Marc Zyngier <maz@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Jason Cooper <jason@lakedaemon.net>
 Cc:     Huacai Chen <chenhc@lemote.com>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 7/8] irqchip/loongson-liointc: Fix potential dead lock
-Date:   Thu, 16 Jul 2020 11:16:29 +0800
-Message-Id: <1594869390-21053-8-git-send-email-yangtiezhu@loongson.cn>
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Subject: [PATCH v4 8/8] dt-bindings: interrupt-controller: Fix typos in loongson,liointc.yaml
+Date:   Thu, 16 Jul 2020 11:16:30 +0800
+Message-Id: <1594869390-21053-9-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1594869390-21053-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1594869390-21053-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx7x+Pxg9f1GoFAA--.6749S9
-X-Coremail-Antispam: 1UD129KBjvdXoWrZF4fWryfGFW5KF13uFWfZrb_yoWfuFc_CF
-        W2qwn7Jr9Fqr15tr1xur45XFy2q345W3Wv9F4YvFW3u34rKw17JrW7Zw13AF48tF48ZFn3
-        CrW8ur4Skw1IyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbh8YjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r126s0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0
-        c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2
-        IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2
-        IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4U
-        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gr4l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxNB_UUUUU
+X-CM-TRANSID: AQAAf9Dx7x+Pxg9f1GoFAA--.6749S10
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF4Dtw1kCF47KFy3KFyrXrb_yoW8Xr48pa
+        yDCanFgF4jqF13C3yDta4vkF13Zr98A3ZxGFsav3yxGFsruw1DXrWa9F95J3W5GrWxtFWU
+        ZryFga10gay7Ar7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBvb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
+        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI
+        8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2
+        z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4
+        xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWx
+        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r48MxAIw2
+        8IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4l
+        x2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrw
+        CI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l
+        IxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4
+        A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j4Q6JUUUUU=
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the function liointc_set_type(), we need to call the function
-irq_gc_unlock_irqrestore() before returning.
+Fix the following typos in loongson,liointc.yaml:
+children -> child
+fron -> from
+connected -> connect
+it's -> its
 
-Fixes: dbb152267908 ("irqchip: Add driver for Loongson I/O Local Interrupt Controller")
-Reported-by: Jianmin Lv <lvjianmin@loongson.cn>
+Fixes: b6280c8bb6f5 ("dt-bindings: interrupt-controller: Add Loongson LIOINTC")
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 ---
- drivers/irqchip/irq-loongson-liointc.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../devicetree/bindings/interrupt-controller/loongson,liointc.yaml    | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
-index 63b6147..6ef86a3 100644
---- a/drivers/irqchip/irq-loongson-liointc.c
-+++ b/drivers/irqchip/irq-loongson-liointc.c
-@@ -114,6 +114,7 @@ static int liointc_set_type(struct irq_data *data, unsigned int type)
- 		liointc_set_bit(gc, LIOINTC_REG_INTC_POL, mask, false);
- 		break;
- 	default:
-+		irq_gc_unlock_irqrestore(gc, flags);
- 		return -EINVAL;
- 	}
- 	irq_gc_unlock_irqrestore(gc, flags);
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+index b1db21e..03fc4f5 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+@@ -51,8 +51,8 @@ properties:
+     description: |
+       This property points how the children interrupts will be mapped into CPU
+       interrupt lines. Each cell refers to a parent interrupt line from 0 to 3
+-      and each bit in the cell refers to a children interrupt fron 0 to 31.
+-      If a CPU interrupt line didn't connected with liointc, then keep it's
++      and each bit in the cell refers to a child interrupt from 0 to 31.
++      If a CPU interrupt line didn't connect with liointc, then keep its
+       cell with zero.
+     $ref: /schemas/types.yaml#/definitions/uint32-array
+     minItems: 4
 -- 
 2.1.0
 
