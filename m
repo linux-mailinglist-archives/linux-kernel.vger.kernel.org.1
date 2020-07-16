@@ -2,292 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0BB222A9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8886E222AA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729418AbgGPSFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 14:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728975AbgGPSFu (ORCPT
+        id S1728947AbgGPSIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 14:08:24 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:54016 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728257AbgGPSIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 14:05:50 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B458C08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 11:05:50 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id j186so3490762vsd.10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 11:05:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6LJXcaiErt+0IC9WAhFqF+PgHD+Xfmr3j77sKRGuw00=;
-        b=fHBUTi0o7R2ZDnjv7Bf840urtxXMHNAU19jmAKkxEYrc6Pk78KckWPlezDehMCs/1Q
-         hxxgx33laG/g8T4dGc3fZblx3pRHNmBqLsxNbFwE/ZExYBRbTifNAI03v5WghgHjWt30
-         Hxtcg186Z3dmy5Srwbn3Z6rUdC3iK3KE0li2s=
+        Thu, 16 Jul 2020 14:08:23 -0400
+Received: by mail-io1-f72.google.com with SMTP id g11so4083969ioc.20
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 11:08:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6LJXcaiErt+0IC9WAhFqF+PgHD+Xfmr3j77sKRGuw00=;
-        b=p20ZMB2wlrqNdKvZOq23grmATLWvf+dzlPaj6K2eQsaoUYzSYZvSHoUfi8UGp6RSee
-         7pO4fxGCLl7mmRYdEk/mmolaojbwmI+fqG13m4l503LC9mwkfKupg7M561uOXaH4l1M5
-         MSHMf8lgsl92mtNnnpGxHAMF0/voeq1M8+ucDv8HYU+RQU2nRQs243F1l6/5ArMwXxGE
-         CtJDfQZl0mDak1VGcUV6ZHHSf1Fkv4Ope7gTazBl43ByYl+QaFAqhKJv+kwGpZy8+Ypx
-         YDUsrdv3Okthg9qXjDusSUoFaJxjwtM+zxJJcoktqI53Atvb0nuSsAVGDnKXEQx6xsjJ
-         c2kw==
-X-Gm-Message-State: AOAM531Ne1dcF6owRbmQnOzRklIsrc42KHUXV03GrTPbVMSuUBcpMLAY
-        1lhs0lJPpvddjZ3wjhoV1NiIr9JB0vQ=
-X-Google-Smtp-Source: ABdhPJw87V5CCY6CNHvEKBgT5t7yUL4sNJEMFeQNWv+DGuFQpfrMLzHUvv4+dFJGgj/H7/XwZcf5Sg==
-X-Received: by 2002:a67:7fd5:: with SMTP id a204mr4164494vsd.97.1594922748831;
-        Thu, 16 Jul 2020 11:05:48 -0700 (PDT)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id v9sm668536vsi.4.2020.07.16.11.05.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jul 2020 11:05:47 -0700 (PDT)
-Received: by mail-ua1-f43.google.com with SMTP id b24so2057847uak.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 11:05:46 -0700 (PDT)
-X-Received: by 2002:ab0:486d:: with SMTP id c42mr4460815uad.64.1594922746099;
- Thu, 16 Jul 2020 11:05:46 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=SyFRYH38AbxdGG8YhsFqsJe3A32MYR05LhqTmyXFUfw=;
+        b=OosKtw80rt32Gi8h6PVL5vrskLFSOLvs+RniU5mdCeNuWxwyi22RJ5rFjvrADS65qa
+         +96FVO+X6Eb7QvVzkBSzWNItoDmlGUM91O472Sb47Hw6Q1R4j9amzYCKZ0OviOkZHu+7
+         wIkizxHc7fouwVJlK0W7lX/T5vQuQflV6ZGKWHdxns4rmA1Cz7tvj5/666dTpAEyrjC9
+         hzcRaqxlGXNbM8IK/xe0W7FOSDiFmGbJosn4roWE6xmmffOX7QgcJTSO17F2ZV2Qaen1
+         GofW9nNbjJLNHHFU5aUF4Yfb+HsqkWnPl8zEYxlR/kXOXm0fsODSHgJJCflnfdgQQ6Da
+         5MoQ==
+X-Gm-Message-State: AOAM532ZghLUkSOF2IOr74Y2fBwupTUnKhhJ7ZLGAbe2/FW/0bvIPmvE
+        JAByLITGZZAkMTY85R+whfMcpuE7OWGFuuKqhlU6Mpyimfxf
+X-Google-Smtp-Source: ABdhPJzdNygBUlghhbz34SGcB/qFOaqeRDNmtEri0Ca8NWCM4Y243yX7jWgBfk5QpfDvKUWveqk2ycvIPiY9cs4Sb3HdEYTeTfxU
 MIME-Version: 1.0
-References: <20200716061445.628709-1-cychiang@chromium.org>
-In-Reply-To: <20200716061445.628709-1-cychiang@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 16 Jul 2020 11:05:34 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=U6oStCh3kyoM-jLEsRrYgnKvUNiQFOqxXm409gDUhcGA@mail.gmail.com>
-Message-ID: <CAD=FV=U6oStCh3kyoM-jLEsRrYgnKvUNiQFOqxXm409gDUhcGA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Add lpass cpu node for I2S driver
-To:     Cheng-Yi Chiang <cychiang@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Ajit Pandey <ajitp@codeaurora.org>
+X-Received: by 2002:a92:8b51:: with SMTP id i78mr5564034ild.179.1594922900973;
+ Thu, 16 Jul 2020 11:08:20 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 11:08:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f4ef6a05aa92ec6c@google.com>
+Subject: KASAN: slab-out-of-bounds Read in get_block
+From:   syzbot <syzbot+7d3e463b43b093527e84@syzkaller.appspotmail.com>
+To:     danarag@gmail.com, jack@suse.cz, linux-kernel@vger.kernel.org,
+        pombredanne@nexb.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On Wed, Jul 15, 2020 at 11:14 PM Cheng-Yi Chiang <cychiang@chromium.org> wrote:
->
-> From: Ajit Pandey <ajitp@codeaurora.org>
->
-> Add the I2S controller node to sc7180 dtsi.
-> Add pinmux for pirmary and secondary I2S.
+syzbot found the following issue on:
 
-s/pirmary/primary
+HEAD commit:    0aea6d5c Merge tag 'for-linus-5.8b-rc5-tag' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14af114f100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b1a5a263f7a540cb
+dashboard link: https://syzkaller.appspot.com/bug?extid=7d3e463b43b093527e84
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
->
-> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
-> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-> ---
-> This patch depends on these patch series so it is not ready to be merged now.
-> - clk: qcom: Support for Low Power Audio Clocks on SC7180 https://patchwork.kernel.org/cover/11664273/
-> - arm64: dts: qcom: sc7180: Add LPASS clock controller nodes https://patchwork.kernel.org/patch/11664303/
-> - ASoC: qcom: Add support for SC7180 lpass variant https://patchwork.kernel.org/cover/11650649/
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Thanks for pointing out the dependencies!
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7d3e463b43b093527e84@syzkaller.appspotmail.com
 
+==================================================================
+BUG: KASAN: slab-out-of-bounds in add_chain fs/minix/itree_common.c:14 [inline]
+BUG: KASAN: slab-out-of-bounds in get_branch fs/minix/itree_common.c:52 [inline]
+BUG: KASAN: slab-out-of-bounds in get_block+0x69a/0x1600 fs/minix/itree_common.c:160
+Read of size 2 at addr ffff8880a91b018a by task syz-executor.1/28305
 
->  arch/arm64/boot/dts/qcom/sc7180.dtsi | 132 +++++++++++++++++++++++++++
->  1 file changed, 132 insertions(+)
+CPU: 0 PID: 28305 Comm: syz-executor.1 Not tainted 5.8.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1f0/0x31e lib/dump_stack.c:118
+ print_address_description+0x66/0x5a0 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report+0x132/0x1d0 mm/kasan/report.c:530
+ add_chain fs/minix/itree_common.c:14 [inline]
+ get_branch fs/minix/itree_common.c:52 [inline]
+ get_block+0x69a/0x1600 fs/minix/itree_common.c:160
+ __block_write_begin_int+0x708/0x1a00 fs/buffer.c:2012
+ __block_write_begin fs/buffer.c:2062 [inline]
+ block_write_begin+0x59/0x280 fs/buffer.c:2121
+ minix_write_begin+0x38/0x1f0 fs/minix/inode.c:412
+ generic_perform_write+0x23b/0x4e0 mm/filemap.c:3318
+ __generic_file_write_iter+0x22b/0x4e0 mm/filemap.c:3447
+ generic_file_write_iter+0x4a6/0x650 mm/filemap.c:3479
+ call_write_iter include/linux/fs.h:1908 [inline]
+ new_sync_write fs/read_write.c:503 [inline]
+ __kernel_write+0x85b/0xa60 fs/read_write.c:530
+ do_acct_process+0xec6/0x12b0 kernel/acct.c:522
+ slow_acct_process kernel/acct.c:581 [inline]
+ acct_process+0x398/0x4a0 kernel/acct.c:607
+ do_exit+0x593/0x1f80 kernel/exit.c:795
+ do_group_exit+0x161/0x2d0 kernel/exit.c:903
+ get_signal+0x139b/0x1d30 kernel/signal.c:2743
+ do_signal+0x33/0x610 arch/x86/kernel/signal.c:810
+ exit_to_usermode_loop arch/x86/entry/common.c:235 [inline]
+ __prepare_exit_to_usermode+0xd7/0x1e0 arch/x86/entry/common.c:269
+ do_syscall_64+0x7f/0xe0 arch/x86/entry/common.c:393
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45cba9
+Code: Bad RIP value.
+RSP: 002b:00007f0364adcc78 EFLAGS: 00000246 ORIG_RAX: 00000000000000a3
+RAX: 0000000000000000 RBX: 00000000004da400 RCX: 000000000045cba9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000480
+RBP: 000000000078bfa0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 000000000000001c R14: 00000000004c2f71 R15: 00007f0364add6d4
 
-My review is a bit rote since I don't actually know anything about
-audio.  This is mostly just a dt-hygiene review.
+Allocated by task 28189:
+ save_stack mm/kasan/common.c:48 [inline]
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0x103/0x140 mm/kasan/common.c:494
+ slab_post_alloc_hook mm/slab.h:586 [inline]
+ slab_alloc mm/slab.c:3320 [inline]
+ kmem_cache_alloc+0x1f5/0x2d0 mm/slab.c:3484
+ skb_clone+0x1b2/0x370 net/core/skbuff.c:1447
+ __netlink_deliver_tap_skb net/netlink/af_netlink.c:287 [inline]
+ __netlink_deliver_tap net/netlink/af_netlink.c:312 [inline]
+ netlink_deliver_tap+0x478/0x810 net/netlink/af_netlink.c:325
+ netlink_deliver_tap_kernel net/netlink/af_netlink.c:334 [inline]
+ netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
+ netlink_unicast+0x75c/0x940 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0xa57/0xd70 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2352
+ ___sys_sendmsg net/socket.c:2406 [inline]
+ __sys_sendmmsg+0x45b/0x680 net/socket.c:2496
+ __do_sys_sendmmsg net/socket.c:2525 [inline]
+ __se_sys_sendmmsg net/socket.c:2522 [inline]
+ __x64_sys_sendmmsg+0x9c/0xb0 net/socket.c:2522
+ do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
+Freed by task 28189:
+ save_stack mm/kasan/common.c:48 [inline]
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0x114/0x170 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kmem_cache_free+0x7e/0xf0 mm/slab.c:3694
+ nlmon_xmit+0x8d/0xb0 drivers/net/nlmon.c:14
+ __netdev_start_xmit include/linux/netdevice.h:4611 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4625 [inline]
+ xmit_one net/core/dev.c:3556 [inline]
+ dev_hard_start_xmit+0x1bd/0x3d0 net/core/dev.c:3572
+ __dev_queue_xmit+0x1bda/0x2940 net/core/dev.c:4131
+ __netlink_deliver_tap_skb net/netlink/af_netlink.c:294 [inline]
+ __netlink_deliver_tap net/netlink/af_netlink.c:312 [inline]
+ netlink_deliver_tap+0x5be/0x810 net/netlink/af_netlink.c:325
+ netlink_deliver_tap_kernel net/netlink/af_netlink.c:334 [inline]
+ netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
+ netlink_unicast+0x75c/0x940 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0xa57/0xd70 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2352
+ ___sys_sendmsg net/socket.c:2406 [inline]
+ __sys_sendmmsg+0x45b/0x680 net/socket.c:2496
+ __do_sys_sendmmsg net/socket.c:2525 [inline]
+ __se_sys_sendmmsg net/socket.c:2522 [inline]
+ __x64_sys_sendmmsg+0x9c/0xb0 net/socket.c:2522
+ do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> index 6eb14b6a47f5..2fe3bd89f950 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -511,6 +511,34 @@ qusb2p_hstx_trim: hstx-trim-primary@25b {
->                         };
->                 };
->
-> +               lpass_cpu: lpass {
+The buggy address belongs to the object at ffff8880a91b0080
+ which belongs to the cache skbuff_head_cache of size 224
+The buggy address is located 42 bytes to the right of
+ 224-byte region [ffff8880a91b0080, ffff8880a91b0160)
+The buggy address belongs to the page:
+page:ffffea0002a46c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00024781c8 ffffea00012e3688 ffff88821bb6b700
+raw: 0000000000000000 ffff8880a91b0080 000000010000000c 0000000000000000
+page dumped because: kasan: bad access detected
 
-Missing unit address and also sorted incorrectly.  Nodes should be
-sorted by unit address.
-
-
-> +                       compatible = "qcom,lpass-cpu-sc7180";
-
-Is there a pin config that generally makes sense for all boards?  If
-so, you can add it here so it doesn't need to be added to all
-sub-boards.
-
-
-> +                       reg = <0 0x62F00000 0 0x29000>;
-
-nit: lower case hex for reg address, so 62f not 62F.
-
-
-> +                       reg-names = "lpass-lpaif";
-> +
-> +                       iommus = <&apps_smmu 0x1020 0>;
-> +
-> +                       power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
-> +
-> +                       status = "disabled";
-> +
-> +                       clocks = <&gcc GCC_LPASS_CFG_NOC_SWAY_CLK>,
-> +                                <&lpasscc LPASS_AUDIO_CORE_CORE_CLK>,
-> +                                <&lpasscc LPASS_AUDIO_CORE_EXT_MCLK0_CLK>,
-> +                                <&lpasscc LPASS_AUDIO_CORE_SYSNOC_MPORT_CORE_CLK>,
-> +                                <&lpasscc LPASS_AUDIO_CORE_LPAIF_PRI_IBIT_CLK>,
-> +                                <&lpasscc LPASS_AUDIO_CORE_LPAIF_SEC_IBIT_CLK>;
-> +
-> +                       clock-names = "noc", "audio-core", "mclk0", "sysnoc_mport",
-> +                                     "pri_ibit", "sec_ibit";
-> +
-> +                       #sound-dai-cells = <1>;
-> +
-> +                       interrupts = <0 160 IRQ_TYPE_LEVEL_HIGH>;
-
-First entry of interrupts should be GIC_SPI, which is what 0 is referring to.
-
-
-> +                       interrupt-names = "lpass-irq-lpaif";
-> +               };
-
-Bindings claim you're supposed to have:
-
-#address-cells = <1>;
-#size-cells = <0>;
-
-Do you not need them for some reason?
-
-
->                 sdhc_1: sdhci@7c4000 {
->                         compatible = "qcom,sc7180-sdhci", "qcom,sdhci-msm-v5";
->                         reg = <0 0x7c4000 0 0x1000>,
-> @@ -1357,6 +1385,110 @@ pinmux {
->                                 };
->                         };
->
-> +                       sec_mi2s_active: sec-mi2s-active {
-> +                               pinmux {
-> +                                       pins = "gpio49";
-> +                                       function = "mi2s_1";
-> +                               };
-> +
-> +                               pinconf {
-> +                                       pins = "gpio49";
-> +                                       drive-strength = <8>;
-> +                                       bias-pull-up;
-> +                               };
-> +                       };
-> +
-> +                       sec_mi2s_ws_active: sec-mi2s-ws-active {
-> +                               pinmux {
-> +                                       pins = "gpio50";
-> +                                       function = "mi2s_1";
-> +                               };
-> +
-> +                               pinconf {
-> +                                       pins = "gpio50";
-> +                                       drive-strength = <8>;
-> +                                       bias-pull-up;
-> +                               };
-> +                       };
-> +
-> +                       sec_mi2s_dout_active: sec-mi2s-dout-active {
-> +                               pinmux {
-> +                                       pins = "gpio51";
-> +                                       function = "mi2s_1";
-> +                               };
-> +
-> +                               pinconf {
-> +                                       pins = "gpio51";
-> +                                       drive-strength = <8>;
-> +                                       bias-pull-up;
-> +                               };
-> +                       };
-> +
-> +                       pri_mi2s_active: pri-mi2s-active {
-> +                               pinmux {
-> +                                       pins = "gpio53";
-> +                                       function = "mi2s_0";
-> +                               };
-> +
-> +                               pinconf {
-> +                                       pins = "gpio53";
-> +                                       drive-strength = <8>;
-> +                                       bias-pull-up;
-> +                               };
-> +                       };
-> +
-> +                       pri_mi2s_ws_active: pri-mi2s-ws-active {
-> +                               pinmux {
-> +                                       pins = "gpio54";
-> +                                       function = "mi2s_0";
-> +                               };
-> +
-> +                               pinconf {
-> +                                       pins = "gpio54";
-> +                                       drive-strength = <8>;
-> +                                       bias-pull-up;
-> +                               };
-> +                       };
-> +
-> +                       pri_mi2s_dout_active: pri-mi2s-dout-active {
-> +                               pinmux {
-> +                                       pins = "gpio55";
-> +                                       function = "mi2s_0";
-> +                               };
-> +
-> +                               pinconf {
-> +                                       pins = "gpio55";
-> +                                       drive-strength = <8>;
-> +                                       bias-pull-up;
-> +                               };
-> +                       };
-> +
-> +                       pri_mi2s_din_active: pri-mi2s-din-active {
-> +                               pinmux {
-> +                                       pins = "gpio56";
-> +                                       function = "mi2s_0";
-> +                               };
-> +
-> +                               pinconf {
-> +                                       pins = "gpio56";
-> +                                       drive-strength = <8>;
-> +                                       bias-pull-up;
-> +                               };
-> +                       };
-
-Can you group together any of the configs?  See, for instance,
-"qup_spi0_default" where we configure 4 pins together.  Then you don't
-need so many separate nodes to add.
-
-Also: pinconf is nearly always done in board files unless you truly
-have a reason to believe that it would be the same for every board.
+Memory state around the buggy address:
+ ffff8880a91b0080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880a91b0100: fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc fc
+>ffff8880a91b0180: fc fc fc fc fc fc fc fc fb fb fb fb fb fb fb fb
+                      ^
+ ffff8880a91b0200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880a91b0280: fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
 
 
-> +                       pri_mi2s_mclk_active: pri-mi2s-mclk-active {
-> +                               pinmux {
-> +                                       pins = "gpio57";
-> +                                       function = "lpass_ext";
-> +                               };
-> +
-> +                               pinconf {
-> +                                       pins = "gpio57";
-> +                                       drive-strength = <8>;
-> +                                       bias-pull-up;
-> +                               };
-> +                       };
-> +
->                         sdc1_on: sdc1-on {
->                                 pinconf-clk {
->                                         pins = "sdc1_clk";
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--Doug
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
