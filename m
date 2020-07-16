@@ -2,114 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4460221DA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EB1221DAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgGPHtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:49:31 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:60850 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbgGPHt3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:49:29 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06G7nRlE027619;
-        Thu, 16 Jul 2020 02:49:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1594885767;
-        bh=jSyR9YwoxdBX9QS43xi8Ib08a9fQAkZ5xGyzFevMyNQ=;
-        h=Subject:From:To:CC:References:Date:In-Reply-To;
-        b=lfHFuLsLvlwISZN4jO0EoaVyt/sQjHpsi5ZW1z9pm23MVlFT/Sabag3e5Mo7lse1Y
-         8Ns2KUnOCIoex9mM41z4O4AAOJV5P8JxmLjVvD1KrIGXROhrnX9R+cRz04cfTL+OA8
-         lO24vRQlLeo8wvh/ZKrCIpgYPfpN2sw0sByiE1bQ=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06G7nRak013835
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 16 Jul 2020 02:49:27 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 16
- Jul 2020 02:49:26 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 16 Jul 2020 02:49:26 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06G7nO5v113210;
-        Thu, 16 Jul 2020 02:49:25 -0500
-Subject: Re: [PATCH v3 1/3] dt-binding: phy: convert ti,omap-usb2 to YAML
-From:   Roger Quadros <rogerq@ti.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
-        <robh+dt@kernel.org>, <kishon@ti.com>, <nsekhar@ti.com>,
-        <devicetree@vger.kernel.org>
-References: <20200630092729.15346-1-rogerq@ti.com>
- <20200630092729.15346-2-rogerq@ti.com> <20200702204758.GA1665250@bogus>
- <7899660d-936e-6d88-877a-f75d76f34c40@ti.com>
-Message-ID: <0ae2e424-f5d4-83d0-90ea-56acde3d4c9b@ti.com>
-Date:   Thu, 16 Jul 2020 10:49:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726803AbgGPHwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:52:47 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2484 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725867AbgGPHwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 03:52:46 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id D14F726862762246E102;
+        Thu, 16 Jul 2020 08:52:44 +0100 (IST)
+Received: from [127.0.0.1] (10.210.168.254) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 16 Jul
+ 2020 08:52:43 +0100
+Subject: Re: [PATCH 00/18] perf metric: Add support to reuse metric
+To:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+References: <20200712132634.138901-1-jolsa@kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <b085ecf9-207d-6204-41b7-0937bd95633d@huawei.com>
+Date:   Thu, 16 Jul 2020 08:50:56 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <7899660d-936e-6d88-877a-f75d76f34c40@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20200712132634.138901-1-jolsa@kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.254]
+X-ClientProxiedBy: lhreml714-chm.china.huawei.com (10.201.108.65) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/07/2020 14:26, Jiri Olsa wrote:
+> hi,
+> this patchset is adding the support to reused metric in another
+> metric. The metric needs to be referenced by 'metric:' prefix.
+> 
+> For example, to define IPC by using CPI with change like:
+> 
+>           "BriefDescription": "Instructions Per Cycle (per Logical Processor)",
+>   -       "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD",
+>   +       "MetricExpr": "1/metric:CPI",
+>           "MetricGroup": "TopDownL1",
+>           "MetricName": "IPC"
+> 
+> I won't be able to find all the possible places we could
+> use this at, so I wonder you guys (who was asking for this)
+> would try it and come up with comments if there's something
+> missing or we could already use it at some places.
+> 
+> It's based on Arnaldo's tmp.perf/core.
+> 
+> v2 changes:
+>    - collected Ian's acks for few patches [Ian]
+>    - renamed expr__add_id to expr__add_id_val [Ian]
+>    - renamed expr_parse_data to expr_id_data [Ian]
+>    - added recursion check [Ian]
+>    - added metric test for DCache_L2 metric [Ian]
+>    - added some renames as discussed in review [Ian]
+> 
+> Also available in here:
+>    git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>    perf/metric
+> 
+> thanks,
+> jirka
+> 
+> 
+> ---
+> Jiri Olsa (18):
+>        perf metric: Rename expr__add_id to expr__add_val
+>        perf metric: Add struct expr_id_data to keep expr value
+>        perf metric: Add expr__add_id function
+>        perf metric: Change expr__get_id to return struct expr_id_data
+>        perf metric: Add expr__del_id function
+>        perf metric: Add find_metric function
+>        perf metric: Add add_metric function
+>        perf metric: Rename __metricgroup__add_metric to __add_metric
+>        perf metric: Collect referenced metrics in struct metric_ref_node
+>        perf metric: Collect referenced metrics in struct metric_expr
+>        perf metric: Add referenced metrics to hash data
+>        perf metric: Compute referenced metrics
+>        perf metric: Add events for the current group
+>        perf metric: Add cache_miss_cycles to metric parse test
+>        perf metric: Add DCache_L2 to metric parse test
+>        perf metric: Add recursion check when processing nested metrics
+>        perf metric: Rename struct egroup to metric
+>        perf metric: Rename group_list to list
 
+I was thinking that a test metric using this reuse feature could be 
+added in pmu-events/arch/test/test_cpu. But since no relevant parsing is 
+done in jevents, maybe not a lot of value. Just for a bit more completeness.
 
-On 03/07/2020 11:58, Roger Quadros wrote:
-> Hi Rob,
-> 
-> On 02/07/2020 23:47, Rob Herring wrote:
->> On Tue, 30 Jun 2020 12:27:27 +0300, Roger Quadros wrote:
->>> Move ti,omap-usb2 to its own YAML schema.
->>>
->>> Signed-off-by: Roger Quadros <rogerq@ti.com>
->>> Reviewed-by: Rob Herring <robh@kernel.org>
->>> ---
->>>   .../devicetree/bindings/phy/ti,omap-usb2.yaml | 69 +++++++++++++++++++
->>>   .../devicetree/bindings/phy/ti-phy.txt        | 37 ----------
->>>   2 files changed, 69 insertions(+), 37 deletions(-)
->>>   create mode 100644 Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
->>>
->>
->>
->> My bot found errors running 'make dt_binding_check' on your patch:
->>
->> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/phy/ti,omap-usb2.example.dt.yaml: example-0: phy@4100000:reg:0: [0, 68157440, 0, 84] is too long
->>
-> 
-> In my local build in the dt example I see
-> 
->      phy@4100000:
->        compatible: ["ti,am654-usb2", "ti,omap-usb2"]
->        reg: [[0x0, 0x4100000, 0x0, 0x54]]
-> 
-> And I don't see any errors. I've updated my dt-schema as well.
-
-I'm able to see the issue now. Will fix it and send v4.
+Thanks,
+John
 
 > 
->>
->> See https://patchwork.ozlabs.org/patch/1319665
->>
->> If you already ran 'make dt_binding_check' and didn't see the above
->> error(s), then make sure dt-schema is up to date:
->>
->> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
->>
->> Please check and re-submit.
->>
+>   tools/perf/tests/expr.c         |   7 +-
+>   tools/perf/tests/parse-metric.c | 131 +++++++++++++++++++++++++++++++++++-
+>   tools/perf/tests/pmu-events.c   |   4 +-
+>   tools/perf/util/expr.c          | 130 ++++++++++++++++++++++++++++++------
+>   tools/perf/util/expr.h          |  34 +++++++++-
+>   tools/perf/util/expr.y          |  16 +++--
+>   tools/perf/util/metricgroup.c   | 435 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------
+>   tools/perf/util/metricgroup.h   |   6 ++
+>   tools/perf/util/stat-shadow.c   |  24 ++++---
+>   9 files changed, 644 insertions(+), 143 deletions(-)
+> 
+> .
 > 
 
-cheers,
--roger
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
