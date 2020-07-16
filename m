@@ -2,50 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 593EA221FAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A52F221F8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726233AbgGPJ3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:29:54 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:56719 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgGPJ3x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:29:53 -0400
-Received: from localhost (lfbn-lyo-1-1676-121.w90-65.abo.wanadoo.fr [90.65.108.121])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 572EA100036;
-        Thu, 16 Jul 2020 09:28:50 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     linux-rtc@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] rtc: pl031: fix set_alarm by adding back call to alarm_irq_enable
-Date:   Thu, 16 Jul 2020 11:28:48 +0200
-Message-Id: <159489162374.11068.17476364476005647206.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200714124556.20294-1-sudeep.holla@arm.com>
-References: <20200714124556.20294-1-sudeep.holla@arm.com>
+        id S1726891AbgGPJQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:16:14 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7872 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725975AbgGPJQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:16:13 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id DB2A2BB2FE22CB6FFFDF;
+        Thu, 16 Jul 2020 17:16:10 +0800 (CST)
+Received: from huawei.com (10.174.28.241) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Jul 2020
+ 17:16:04 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <linux-next@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <mchehab@kernel.org>, <john.wanghui@huawei.com>
+Subject: [PATCH] media: tuners: reduce stack usage in mxl5005s_reconfigure
+Date:   Thu, 16 Jul 2020 17:17:42 +0000
+Message-ID: <20200716171742.45621-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.28.241]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020 13:45:56 +0100, Sudeep Holla wrote:
-> Commit c8ff5841a90b ("rtc: pl031: switch to rtc_time64_to_tm/rtc_tm_to_time64")
-> seemed to have accidentally removed the call to pl031_alarm_irq_enable
-> from pl031_set_alarm while switching to 64-bit apis.
-> 
-> Let us add back the same to get the set alarm functionality back.
+Fix the warning: [-Werror=-Wframe-larger-than=]
 
-Applied, thanks!
+drivers/media/tuners/mxl5005s.c: In function 'mxl5005s_reconfigure':
+drivers/media/tuners/mxl5005s.c:3953:1:
+warning: the frame size of 1152 bytes is larger than 1024 bytes
 
-[1/1] rtc: pl031: fix set_alarm by adding back call to alarm_irq_enable
-      commit: 4df2ef85f0efe44505f511ca5e4455585f53a2da
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+---
+ drivers/media/tuners/mxl5005s.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+diff --git a/drivers/media/tuners/mxl5005s.c b/drivers/media/tuners/mxl5005s.c
+index 1c07e2225fb3..f6e82a8e7d37 100644
+--- a/drivers/media/tuners/mxl5005s.c
++++ b/drivers/media/tuners/mxl5005s.c
+@@ -3926,15 +3926,26 @@ static int mxl5005s_reconfigure(struct dvb_frontend *fe, u32 mod_type,
+ 	u32 bandwidth)
+ {
+ 	struct mxl5005s_state *state = fe->tuner_priv;
+-
+-	u8 AddrTable[MXL5005S_REG_WRITING_TABLE_LEN_MAX];
+-	u8 ByteTable[MXL5005S_REG_WRITING_TABLE_LEN_MAX];
++	u8 *AddrTable;
++	u8 *ByteTable;
+ 	int TableLen;
+
+ 	dprintk(1, "%s(type=%d, bw=%d)\n", __func__, mod_type, bandwidth);
+
+ 	mxl5005s_reset(fe);
+
++	AddrTable = kcalloc(MXL5005S_REG_WRITING_TABLE_LEN_MAX, sizeof(u8),
++			    GFP_KERNEL);
++	if (!AddrTable)
++		return -ENOMEM;
++
++	ByteTable = kcalloc(MXL5005S_REG_WRITING_TABLE_LEN_MAX, sizeof(u8),
++			    GFP_KERNEL);
++	if (!ByteTable) {
++		kfree(AddrTable);
++		return -ENOMEM;
++	}
++
+ 	/* Tuner initialization stage 0 */
+ 	MXL_GetMasterControl(ByteTable, MC_SYNTH_RESET);
+ 	AddrTable[0] = MASTER_CONTROL_ADDR;
+@@ -3949,6 +3960,9 @@ static int mxl5005s_reconfigure(struct dvb_frontend *fe, u32 mod_type,
+
+ 	mxl5005s_writeregs(fe, AddrTable, ByteTable, TableLen);
+
++	kfree(AddrTable);
++	kfree(ByteTable);
++
+ 	return 0;
+ }
+
+--
+2.17.1
+
