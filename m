@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988F4222488
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A987A2224C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729130AbgGPN7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
+        id S1729396AbgGPOBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728455AbgGPN7g (ORCPT
+        with ESMTP id S1728964AbgGPN7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:59:36 -0400
+        Thu, 16 Jul 2020 09:59:37 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C11C08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:35 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b6so7136343wrs.11
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF25FC08C5DB
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:36 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id f2so7167460wrp.7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=o0dhfHbo6Jhv4Yln3PlbJvX7LMKYF41HBBRlxGthXZ4=;
-        b=nH29Z6gXpzv5rrELeKbsdKM3w0Q8+IhNcFKvDYYG+5ormhOG7cqwxfEWAJMPX+tIeD
-         4YEFHvI1LUQC539kYwto5BLCq22ol9DE2V14VDMmTISmPt6cov2REhfTCXLxbQCw8+qQ
-         8mIB3H5ZRm9fSWzY4MV2Ps/NNaMnuCF88HVFPyTTJvR4Djc5k8itxx0aa57B8C6H/5Uw
-         7siUf49+UEmni9Mi+E5QPAXfys5420syQp3aVNCPGv9a3nL1IHCjmwA8vAP7iMjQgU8z
-         4C+IN/Yzfw2ST3q17qtQFIUUu/G+OSPr+/qnWnUwNwyF+T8+Y/uF5EtVB8YwjrUNQuMw
-         jvdA==
+        bh=nZqUJm7bYgsZ8KeaAgk3CGTLQbMlyTjU1eHGwM4twhc=;
+        b=u/3C4sQeGVtp5QvH0BG2uoM++8foxBBivmq7LztkEXFIjki8OKzHY/suLvH5GlFSJT
+         aBPb8mYlBq8sk4rysEi+xShx9QDkOgpAXDgfzGOVBtNlra+4ezfqAkdcOUqyBgTIFRRO
+         4oJX7VzO3ZAONnoykr7CgGQm/H03O6Dn1NGoipxSA/Flqg7j7jb22km6l+qipJml0bGf
+         t/o65W9rL1PdHK/mW0WZlFIXY0YpWsWlU66jqnlFaGND/3nGEgDJQSiZLdvparA76LyR
+         L3vFWevr+rMooQIx8K9I0Cv2RYAoyKseOHsFhMDGTuB0slHfj/4es1KnEod2lslLNoST
+         xBPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=o0dhfHbo6Jhv4Yln3PlbJvX7LMKYF41HBBRlxGthXZ4=;
-        b=PsQHN6MjPxWc9k8SHauAEb+EwfB9AljRSepEFWIZ5aIrvEvVn56JHR8CWZWszqtyrD
-         7wCo3EUV+DsTGH1voFP8Mk2j0RAUMYcH21wdOEKpn56rmICbDa7s9+IzrMQlTVADCAbO
-         vr7uKLMXE2Otu3AS3VFiq6BTN6yMmBLvX/RxwjgQ1vtEaWY0Oe158wktXJ+/8Ep9TI/4
-         mMPLRZthhdvRj3itF9I9Lr4vhc+qIN0fwamwi1+8LG1cP+d1OGBCRSsWhZxOAzzcDmv2
-         gWf2sGmDUPOq0Vms9ku3s6VWjdomSKSzWSH0gfwOnlaM5txrvumDBbJwD+mvxKcwgWqo
-         55RA==
-X-Gm-Message-State: AOAM532w16wGSqGuODX3r9ubPFH8og4fo0Swb6sBCWuiSsv5/XFlCRWW
-        CQhp/k555wYQe45FhIpkKvPQ2g==
-X-Google-Smtp-Source: ABdhPJzt85WxUm5a+7iQZLZMqFgtmD0y0IXrfcffy8eG4OYxdxAw6V7PIRtpH8R127p9kwRO8kn9OQ==
-X-Received: by 2002:a5d:540d:: with SMTP id g13mr4877688wrv.380.1594907974355;
-        Thu, 16 Jul 2020 06:59:34 -0700 (PDT)
+        bh=nZqUJm7bYgsZ8KeaAgk3CGTLQbMlyTjU1eHGwM4twhc=;
+        b=U1ZR6w5l2pv3XDUn3k+yz8XE8xHAe5xfX9LZvoehdU3Eoh10AtEU7jKZhqxHfr1nZZ
+         Vse+0johxBwbJq64tMfIVAPXLVZQtrpvzz5HmAad5lc3rL3Y/3uXtIBSmqFR2zAL14OF
+         7Ulx3wKNRLpzRgO0NFAeobfJzmxCZZi8wG8H3cUHdQQ9b13jtTmae7k/1NcwnKApEeWB
+         kJnjwI25bIqptdyAHdfFs7SnSXX1qKllBGdF5P7Yk0yXLqrhLR+gixoMF0HoMUaHSs/A
+         qf6PegZoJZm4PIiqewju8i3lU+QvvWtg8i/vN8iG63KBQxW4Z30RLgYMDOQeGpLIL3an
+         FEtA==
+X-Gm-Message-State: AOAM532i/z3kZDiJeYDkpTpN4X8PCO1rA3/ZEL4oZKGcrEyMLgFfc3Sf
+        yMHXS3221hiP2yK+4ldfdvc23Js+kxo=
+X-Google-Smtp-Source: ABdhPJzoybcvPp58Q0rumnOu7a78XDNKPWdg9tdSi33Mheeo0/bn1IcCnvlOajQjQtmD8Y+8YcwWVA==
+X-Received: by 2002:adf:8521:: with SMTP id 30mr5016609wrh.238.1594907975545;
+        Thu, 16 Jul 2020 06:59:35 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.33
+        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 06:59:33 -0700 (PDT)
+        Thu, 16 Jul 2020 06:59:34 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Tiberiu Breana <tiberiu.a.breana@intel.com>
-Subject: [PATCH 02/30] iio: accel: bma220_spi: Do not define 'struct acpi_device_id' when !CONFIG_ACPI
-Date:   Thu, 16 Jul 2020 14:59:00 +0100
-Message-Id: <20200716135928.1456727-3-lee.jones@linaro.org>
+        William Markezana <william.markezana@meas-spec.com>,
+        Ludovic Tancerel <ludovic.tancerel@maplehightech.com>
+Subject: [PATCH 03/30] iio: common: ms_sensors: ms_sensors_i2c: Fix misspelling of parameter 'client'
+Date:   Thu, 16 Jul 2020 14:59:01 +0100
+Message-Id: <20200716135928.1456727-4-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200716135928.1456727-1-lee.jones@linaro.org>
 References: <20200716135928.1456727-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since ACPI_PTR() is used to NULLify the value when !CONFIG_ACPI,
-struct 'bma220_acpi_id' becomes defined but unused.
+Probably due to docrot.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/accel/bma220_spi.c:312:36: warning: ‘bma220_acpi_id’ defined but not used [-Wunused-const-variable=]
- 312 | static const struct acpi_device_id bma220_acpi_id[] = {
- | ^~~~~~~~~~~~~~
+ drivers/iio/common/ms_sensors/ms_sensors_i2c.c:186: warning: Function parameter or member 'client' not described in 'ms_sensors_read_serial'
+ drivers/iio/common/ms_sensors/ms_sensors_i2c.c:186: warning: Excess function parameter 'cli' description in 'ms_sensors_read_serial'
 
-Cc: Tiberiu Breana <tiberiu.a.breana@intel.com>
+Cc: William Markezana <william.markezana@meas-spec.com>
+Cc: Ludovic Tancerel <ludovic.tancerel@maplehightech.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/accel/bma220_spi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/iio/common/ms_sensors/ms_sensors_i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/accel/bma220_spi.c b/drivers/iio/accel/bma220_spi.c
-index cae905039cb62..439618d815594 100644
---- a/drivers/iio/accel/bma220_spi.c
-+++ b/drivers/iio/accel/bma220_spi.c
-@@ -309,12 +309,14 @@ static const struct spi_device_id bma220_spi_id[] = {
- 	{}
- };
+diff --git a/drivers/iio/common/ms_sensors/ms_sensors_i2c.c b/drivers/iio/common/ms_sensors/ms_sensors_i2c.c
+index b52cba1b3c831..b9e2038d05ef4 100644
+--- a/drivers/iio/common/ms_sensors/ms_sensors_i2c.c
++++ b/drivers/iio/common/ms_sensors/ms_sensors_i2c.c
+@@ -165,7 +165,7 @@ static bool ms_sensors_crc_valid(u32 value)
  
-+#ifdef CONFIG_ACPI
- static const struct acpi_device_id bma220_acpi_id[] = {
- 	{"BMA0220", 0},
- 	{}
- };
- 
- MODULE_DEVICE_TABLE(spi, bma220_spi_id);
-+#endif
- 
- static struct spi_driver bma220_driver = {
- 	.driver = {
+ /**
+  * ms_sensors_read_serial() - Serial number read function
+- * @cli:	pointer to i2c client
++ * @client:	pointer to i2c client
+  * @sn:		pointer to 64-bits destination value
+  *
+  * Generic i2c serial number read function for Measurement Specialties devices.
 -- 
 2.25.1
 
