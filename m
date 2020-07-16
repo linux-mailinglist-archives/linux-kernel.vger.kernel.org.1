@@ -2,164 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB24221A65
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 04:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BE6221A69
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 04:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgGPC7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 22:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
+        id S1728065AbgGPC7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 22:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726996AbgGPC7a (ORCPT
+        with ESMTP id S1728043AbgGPC7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 22:59:30 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9888C061755;
-        Wed, 15 Jul 2020 19:59:30 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4B6f9W42bZz9sRK;
-        Thu, 16 Jul 2020 12:59:27 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1594868368;
-        bh=jzbuvvlMTLS4EHeC88n/VPIkgVW18hN1jUzcnLgJ8d8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=KMMinymWhupPskkr7ijdgeKRQBfmcQ4UD12mWc7vxc+iRvR808D5wY8Mj/qG7RzH1
-         OHI/TsSDwoR7pyjvHq/2M9xVkWbTVyIx7qfuWkbqTBZq8UU8nXRDct3ncuimUMoMmi
-         KCZyddshC1iZkGKtl12ydu6Z03cBSK3qenn+FwbYwRwNypcN9XciDtMxTYBXwn0QUB
-         0/rY8qC6joGsomWAVYkgt7g268mAUpFLF4Q6e1Z/MgSQrrOl3BVPOjUd4iBr9ABxKd
-         b76to3OCrSbin7CCh/LrEhpoqSSCIxaCAC9VJZiS1TVle+0mUSbEVuqxX+UIW1QuN1
-         DhJ20PPAVjEhw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        arnd@arndb.de, tglx@linutronix.de, vincenzo.frascino@arm.com,
-        luto@kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH v8 2/8] powerpc/vdso: Remove __kernel_datapage_offset and simplify __get_datapage()
-In-Reply-To: <0d2201efe3c7727f2acc718aefd7c5bb22c66c57.1588079622.git.christophe.leroy@c-s.fr>
-References: <cover.1588079622.git.christophe.leroy@c-s.fr> <0d2201efe3c7727f2acc718aefd7c5bb22c66c57.1588079622.git.christophe.leroy@c-s.fr>
-Date:   Thu, 16 Jul 2020 12:59:23 +1000
-Message-ID: <87wo34tbas.fsf@mpe.ellerman.id.au>
+        Wed, 15 Jul 2020 22:59:44 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02125C08C5DD
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 19:59:43 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id s26so3001726pfm.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 19:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LuoIleQ9Ji/xAYuJDXT6Z6dO3ZLl5ioORiaja/lMqvU=;
+        b=yDC9WRFS8c2b76sobDkpCegCdn3qmN6PPKK4I3OvnoOO/1z9MLPmZRkplla4Eg/ukz
+         1yjsgCBhx+fRw0LuToGQnO47Bl+60XCpT96Y0dXbMit9EC6ZdCMqRa6JraA+u7TbAW17
+         euvBlP7GfXe6acQFG64G5x6qEgGoJBqWFEiHSaCnX/VsxbRMG4tS8yt8TyP+Xu+XFWc8
+         s8IvNYvyMn1Ggs7e9HxoGYCErU0nRsm5i2C2E8eXWFut8qs1G363dUt0dmSIwNP+F2WZ
+         pvtlrtM37l/jWHo+7dFbDMGm8W4A4TFN8bSz8LBagKLRQNt3tcBsj0Q/osGEd8IH85lN
+         GHbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LuoIleQ9Ji/xAYuJDXT6Z6dO3ZLl5ioORiaja/lMqvU=;
+        b=C7SYjMg9b6Af9j94Jtq7EfBq1fB492QpqbkIi0fmOj/KtKgCN6ThtjWRbUDkSDnAC7
+         wVV1s7+gXUCV0rW0b4cv89xGdsESq4NIRjarUyiI6YrBnsqHeaRi8gIQUSmmGcVXutO/
+         Q+X/qAEI4C3c9zk41OSfWxkXKjkL32Bbaa+xYj9GqeGVmaZ7lWqBSyb9E1wQAJKfTYTU
+         oXEHNzFi8YCamn/taIvJ5cNVARpBCaL2XirYF6vogq2OESTdi/bpxdjXLLIdTTXiELOm
+         sURCrj0p43WR3BIfJQO3Cehys/E4KtuGeiayzxeRjMj59tMENrZGKPcZirb02WIlH92l
+         F29g==
+X-Gm-Message-State: AOAM532USHpAzuv6N1DXxBZBzPmD6bGwRCqAni/RNQwrtQfL0m4ioSgs
+        aIWfPYxwzzp4aLp51Av1VdLG
+X-Google-Smtp-Source: ABdhPJzWhG+hWqD5f/hYQ2NvZiC3lvnRQfSCnWdqN4YpElhXZ2qpZ/W6KhstotDJpZvgzwohyXYNxw==
+X-Received: by 2002:a62:8688:: with SMTP id x130mr1902048pfd.280.1594868383282;
+        Wed, 15 Jul 2020 19:59:43 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6d89:fed1:9157:c271:c363:4849])
+        by smtp.gmail.com with ESMTPSA id h3sm3217799pjz.23.2020.07.15.19.59.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 15 Jul 2020 19:59:42 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 08:29:32 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: sm8250: Drop tcsr_mutex syscon
+Message-ID: <20200716025932.GA3271@Mani-XPS-13-9360>
+References: <20200622075956.171058-1-bjorn.andersson@linaro.org>
+ <20200622075956.171058-5-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622075956.171058-5-bjorn.andersson@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@c-s.fr> writes:
-> The VDSO datapage and the text pages are always located immediately
-> next to each other, so it can be hardcoded without an indirection
-> through __kernel_datapage_offset
->
-> In order to ease things, move the data page in front like other
-> arches, that way there is no need to know the size of the library
-> to locate the data page.
->
-> Before:
-> clock-getres-realtime-coarse:    vdso: 714 nsec/call
-> clock-gettime-realtime-coarse:    vdso: 792 nsec/call
-> clock-gettime-realtime:    vdso: 1243 nsec/call
->
-> After:
-> clock-getres-realtime-coarse:    vdso: 699 nsec/call
-> clock-gettime-realtime-coarse:    vdso: 784 nsec/call
-> clock-gettime-realtime:    vdso: 1231 nsec/call
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+On Mon, Jun 22, 2020 at 12:59:56AM -0700, Bjorn Andersson wrote:
+> Now that we don't need the intermediate syscon to represent the TCSR
+> mutexes, update the dts to describe the TCSR mutex directly under /soc.
+> 
+> The change also fixes the sort order of the nodes.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
+
 > ---
-> v7:
-> - Moved the removal of the tmp param of __get_datapage()
-> in a subsequent patch
-> - Included the addition of the offset param to __get_datapage()
-> in the further preparatory patch
-> ---
->  arch/powerpc/include/asm/vdso_datapage.h |  8 ++--
->  arch/powerpc/kernel/vdso.c               | 53 ++++--------------------
->  arch/powerpc/kernel/vdso32/datapage.S    |  3 --
->  arch/powerpc/kernel/vdso32/vdso32.lds.S  |  7 +---
->  arch/powerpc/kernel/vdso64/datapage.S    |  3 --
->  arch/powerpc/kernel/vdso64/vdso64.lds.S  |  7 +---
->  6 files changed, 16 insertions(+), 65 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/vdso_datapage.h b/arch/powerpc/include/asm/vdso_datapage.h
-> index b9ef6cf50ea5..11886467dfdf 100644
-> --- a/arch/powerpc/include/asm/vdso_datapage.h
-> +++ b/arch/powerpc/include/asm/vdso_datapage.h
-> @@ -118,10 +118,12 @@ extern struct vdso_data *vdso_data;
+> 
+> Changs since v1:
+> - Adjusted sort order of the nodes
+> 
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi | 17 ++++++-----------
+>  1 file changed, 6 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> index 7050adba7995..67a1b6f3301b 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> @@ -144,12 +144,6 @@ scm: scm {
+>  		};
+>  	};
 >  
->  .macro get_datapage ptr, tmp
->  	bcl	20, 31, .+4
-> +999:
->  	mflr	\ptr
-> -	addi	\ptr, \ptr, (__kernel_datapage_offset - (.-4))@l
-> -	lwz	\tmp, 0(\ptr)
-> -	add	\ptr, \tmp, \ptr
-> +#if CONFIG_PPC_PAGE_SHIFT > 14
-> +	addis	\ptr, \ptr, (_vdso_datapage - 999b)@ha
-> +#endif
-> +	addi	\ptr, \ptr, (_vdso_datapage - 999b)@l
->  .endm
+> -	tcsr_mutex: hwlock {
+> -		compatible = "qcom,tcsr-mutex";
+> -		syscon = <&tcsr_mutex_regs 0 0x1000>;
+> -		#hwlock-cells = <1>;
+> -	};
+> -
+>  	memory@80000000 {
+>  		device_type = "memory";
+>  		/* We expect the bootloader to fill in the size */
+> @@ -376,6 +370,12 @@ ufs_mem_phy_lanes: lanes@1d87400 {
+>  			};
+>  		};
 >  
->  #endif /* __ASSEMBLY__ */
-> diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
-> index f38f26e844b6..d33fa22ddbed 100644
-> --- a/arch/powerpc/kernel/vdso.c
-> +++ b/arch/powerpc/kernel/vdso.c
-> @@ -190,7 +190,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
->  	 * install_special_mapping or the perf counter mmap tracking code
->  	 * will fail to recognise it as a vDSO (since arch_vma_name fails).
->  	 */
-> -	current->mm->context.vdso_base = vdso_base;
-> +	current->mm->context.vdso_base = vdso_base + PAGE_SIZE;
-
-I merged this but then realised it breaks the display of the vdso in /proc/self/maps.
-
-ie. the vdso vma gets no name:
-
-  # cat /proc/self/maps
-  110f90000-110fa0000 r-xp 00000000 08:03 17021844                         /usr/bin/cat
-  110fa0000-110fb0000 r--p 00000000 08:03 17021844                         /usr/bin/cat
-  110fb0000-110fc0000 rw-p 00010000 08:03 17021844                         /usr/bin/cat
-  126000000-126030000 rw-p 00000000 00:00 0                                [heap]
-  7fffa8790000-7fffa87d0000 rw-p 00000000 00:00 0 
-  7fffa87d0000-7fffa8830000 r--p 00000000 08:03 17521786                   /usr/lib/locale/en_AU.utf8/LC_CTYPE
-  7fffa8830000-7fffa8840000 r--p 00000000 08:03 16958337                   /usr/lib/locale/en_AU.utf8/LC_NUMERIC
-  7fffa8840000-7fffa8850000 r--p 00000000 08:03 8501358                    /usr/lib/locale/en_AU.utf8/LC_TIME
-  7fffa8850000-7fffa8ad0000 r--p 00000000 08:03 16870886                   /usr/lib/locale/en_AU.utf8/LC_COLLATE
-  7fffa8ad0000-7fffa8ae0000 r--p 00000000 08:03 8509433                    /usr/lib/locale/en_AU.utf8/LC_MONETARY
-  7fffa8ae0000-7fffa8af0000 r--p 00000000 08:03 25383753                   /usr/lib/locale/en_AU.utf8/LC_MESSAGES/SYS_LC_MESSAGES
-  7fffa8af0000-7fffa8b00000 r--p 00000000 08:03 17521790                   /usr/lib/locale/en_AU.utf8/LC_PAPER
-  7fffa8b00000-7fffa8b10000 r--p 00000000 08:03 8501354                    /usr/lib/locale/en_AU.utf8/LC_NAME
-  7fffa8b10000-7fffa8b20000 r--p 00000000 08:03 8509431                    /usr/lib/locale/en_AU.utf8/LC_ADDRESS
-  7fffa8b20000-7fffa8b30000 r--p 00000000 08:03 8509434                    /usr/lib/locale/en_AU.utf8/LC_TELEPHONE
-  7fffa8b30000-7fffa8b40000 r--p 00000000 08:03 17521787                   /usr/lib/locale/en_AU.utf8/LC_MEASUREMENT
-  7fffa8b40000-7fffa8b50000 r--s 00000000 08:03 25623315                   /usr/lib64/gconv/gconv-modules.cache
-  7fffa8b50000-7fffa8d40000 r-xp 00000000 08:03 25383789                   /usr/lib64/libc-2.30.so
-  7fffa8d40000-7fffa8d50000 r--p 001e0000 08:03 25383789                   /usr/lib64/libc-2.30.so
-  7fffa8d50000-7fffa8d60000 rw-p 001f0000 08:03 25383789                   /usr/lib64/libc-2.30.so
-  7fffa8d60000-7fffa8d70000 r--p 00000000 08:03 8509432                    /usr/lib/locale/en_AU.utf8/LC_IDENTIFICATION
-  7fffa8d70000-7fffa8d90000 r-xp 00000000 00:00 0						<--- missing
-  7fffa8d90000-7fffa8dc0000 r-xp 00000000 08:03 25383781                   /usr/lib64/ld-2.30.so
-  7fffa8dc0000-7fffa8dd0000 r--p 00020000 08:03 25383781                   /usr/lib64/ld-2.30.so
-  7fffa8dd0000-7fffa8de0000 rw-p 00030000 08:03 25383781                   /usr/lib64/ld-2.30.so
-  7fffc31c0000-7fffc31f0000 rw-p 00000000 00:00 0                          [stack]
-
-
-And it's also going to break the logic in arch_unmap() to detect if
-we're unmapping (part of) the VDSO. And it will break arch_remap() too.
-
-And the logic to recognise the signal trampoline in
-arch/powerpc/perf/callchain_*.c as well.
-
-So I'm going to rebase and drop this for now.
-
-Basically we have a bunch of places that assume that vdso_base is == the
-start of the VDSO vma, and also that the code starts there. So that will
-need some work to tease out all those assumptions and make them work
-with this change.
-
-cheers
+> +		tcsr_mutex: hwlock@1f40000 {
+> +			compatible = "qcom,tcsr-mutex";
+> +			reg = <0x0 0x01f40000 0x0 0x40000>;
+> +			#hwlock-cells = <1>;
+> +		};
+> +
+>  		intc: interrupt-controller@17a00000 {
+>  			compatible = "arm,gic-v3";
+>  			#interrupt-cells = <3>;
+> @@ -486,11 +486,6 @@ rpmhpd_opp_turbo_l1: opp10 {
+>  			};
+>  		};
+>  
+> -		tcsr_mutex_regs: syscon@1f40000 {
+> -			compatible = "syscon";
+> -			reg = <0x0 0x01f40000 0x0 0x40000>;
+> -		};
+> -
+>  		timer@17c20000 {
+>  			#address-cells = <2>;
+>  			#size-cells = <2>;
+> -- 
+> 2.26.2
+> 
