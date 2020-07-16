@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE382227DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B39A12227E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729138AbgGPPzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 11:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728126AbgGPPzM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:55:12 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FA3C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:55:11 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 17so12093841wmo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:55:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/Wm5nrLpCBdqeYkmR+57rLRuzRzpNbn845e+5GZLhdQ=;
-        b=vZRZASGUjzHUDNUcoWRJVEw/jprfGBhvzfE347Y80rA4PUsDvEPgDpQmwf0g9FfhVG
-         9ikl4jTDrkinwreLaaXqxVE9fsGf/w9fU4498vUUFEQPHBZgRe7V2u3k3lvStIkGSTym
-         XvIHE5c2u3SW7L2A7GKBpYNQHvdpyBtruaMdffJa3GalO0Ij4GTdmvbItV4mkVwuXQqO
-         GlP19rGLfU0OCyQNdW1aonSGxS8+DSgLACEeO3w1G9lFmWrdkqwLBrINsrFBKCgj/t4y
-         xnwsAPPbvpiFYmerLBDbqm5MY2knzZq+YZaIC3hS4jdOxPWgasXzLjuYUx7YjmzEnDAi
-         l4WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/Wm5nrLpCBdqeYkmR+57rLRuzRzpNbn845e+5GZLhdQ=;
-        b=N8fwJZ6cxon4X7xnqVrCD25c4m/KUzLuL6oaFgJjYol0fDmehICcZMqxMaFm/9+QhN
-         7BR3+MYbohDWY9D1RPjaV2OfbYeJIEiRe5T8Xb6jjJYapBqVh/AlAZrGscU/h2TITi6I
-         yiZLdlo57ExvDmsNKrcpaIUI48F0zNJNNbB9xzc98AmOqwc78s1D3uwtTPgd1DrtsW2n
-         d9ViuLepzV6+zQlOPwCzpWDISeen2EEwhisuT7zACB9rkRG59TFCJRN9RHY+NdmCunZH
-         RizyhbGv8RSP0h4G7OkmlzqLJ9DsQdAGduVEKdqGGab5tAztnUmhRmDBX/J4HorJs/bW
-         eXYw==
-X-Gm-Message-State: AOAM5310yDRu9JHTga5gTvoOhtWGHwX4nfiUWmBNYJhaji2ur5HgJsUj
-        co9PtTqskfPLuYPfOqNg4aew11kuNCVz0zlWqdSw/g==
-X-Google-Smtp-Source: ABdhPJzBrhvBt5WZDYVM9BB+5Ge01yxUo/KxdkO1suwsN8v/UCTxvNd1QhAwCk2imFJLL0ZsShqhItpxBSVnMqiMg+0=
-X-Received: by 2002:a05:600c:2154:: with SMTP id v20mr5279691wml.185.1594914910499;
- Thu, 16 Jul 2020 08:55:10 -0700 (PDT)
+        id S1729241AbgGPP4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 11:56:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728126AbgGPP4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 11:56:43 -0400
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C9D82065D;
+        Thu, 16 Jul 2020 15:56:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594915003;
+        bh=jJqrTNbkQoxcAWYZupWzp871YfiDMozrRJ2TOMEZhYA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ovNPcAOcMxsNl3/H4OnTt/3Y3PM1kwDwZjH1Zf/fiJFIH+5Wm/WNqlwlDp5fq4SRP
+         BnhGAzcJ2Nl3fnJNQAhtRFdrXThUDzYd4MU3aLuOsKDyT65YYR6BdmKPpkln1uwb6z
+         TG02wqIGy65ryBJl7Glad3OXoN4uRVuV23UVJGCE=
+Received: by mail-oo1-f43.google.com with SMTP id t6so1269136ooh.4;
+        Thu, 16 Jul 2020 08:56:43 -0700 (PDT)
+X-Gm-Message-State: AOAM530QyulxfttKS9ovNJJ8wS48CqAJk6c3rzER0bF2sGyzZm24wmyY
+        dc1SROC3ECkRoIRt3naFkUvSSgFqVjVsiYpCiMs=
+X-Google-Smtp-Source: ABdhPJxeJ6PQM06OfuW17AZW1S09ijhVmwxYQsAwizY5gDnabvoEEg1DshcxF5n1QkCmEFR05Wh1iXa3yal7FrHGtaU=
+X-Received: by 2002:a4a:de8d:: with SMTP id v13mr4799786oou.45.1594915002430;
+ Thu, 16 Jul 2020 08:56:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200715071506.10994-1-anup.patel@wdc.com> <20200715071506.10994-5-anup.patel@wdc.com>
- <20200715175052.GA497000@bogus> <CAAhSdy04h-PD-=VhjB=5MOf=-RZMrMOcvEtbtUaDc3-kbV47BA@mail.gmail.com>
- <9c12dd2c-7285-5664-973e-3ec066eec0a2@linaro.org>
-In-Reply-To: <9c12dd2c-7285-5664-973e-3ec066eec0a2@linaro.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 16 Jul 2020 21:24:58 +0530
-Message-ID: <CAAhSdy1kOvXXecGM=qyWS5cpx9nq9RpahLrVaQAUg0VKFu7pYg@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] dt-bindings: timer: Add CLINT bindings
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        devicetree@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>
+References: <20200716152900.1709694-1-colin.king@canonical.com>
+In-Reply-To: <20200716152900.1709694-1-colin.king@canonical.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 16 Jul 2020 18:56:30 +0300
+X-Gmail-Original-Message-ID: <CAMj1kXEWyweZ0E3WHthEG9oiOpOS9UxtTB7xskAsF8FeinNg9w@mail.gmail.com>
+Message-ID: <CAMj1kXEWyweZ0E3WHthEG9oiOpOS9UxtTB7xskAsF8FeinNg9w@mail.gmail.com>
+Subject: Re: [PATCH] crypto: xts: use memmove to avoid overlapped memory copy
+To:     Colin King <colin.king@canonical.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Thu, 16 Jul 2020 at 18:29, Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There is a memcpy that performs a potential overlapped memory copy
+> from source b to destination b + 1.  Fix this by using the safer
+> memmove instead.
+>
+> Addresses-Coverity: ("Overlapping buffer in memory copy")
+> Fixes: 8083b1bf8163 ("crypto: xts - add support for ciphertext stealing")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  crypto/xts.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/crypto/xts.c b/crypto/xts.c
+> index 3565f3b863a6..fa3e6e7b7043 100644
+> --- a/crypto/xts.c
+> +++ b/crypto/xts.c
+> @@ -169,7 +169,7 @@ static int cts_final(struct skcipher_request *req,
+>                                       offset - XTS_BLOCK_SIZE);
+>
+>         scatterwalk_map_and_copy(b, rctx->tail, 0, XTS_BLOCK_SIZE, 0);
+> -       memcpy(b + 1, b, tail);
+> +       memmove(b + 1, b, tail);
 
-On Thu, Jul 16, 2020 at 7:31 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
->
-> Hi Anup,
->
->
-> On 16/07/2020 14:32, Anup Patel wrote:
-> > On Wed, Jul 15, 2020 at 11:20 PM Rob Herring <robh@kernel.org> wrote:
->
-> [ ... ]
->
-> > Thanks for these steps. I will fix and send v4.
->
-> Please take the opportunity to clarify how you want the series to be merged.
+This is a false positive: tail is guaranteed to be smaller than
+sizeof(*b), so memmove() is unnecessary here.
 
-This is yet another series which largely impacts arch/riscv because we are
-factoring CLINT code from arch/riscv into it's own timer driver.
+If changing to memcpy(&b[1], &b[0], tail) makes the warning go away, i
+am fine with it, but otherwise we should just leave it as is.
 
-I think this can go via the RISC-V tree.
 
-Regards,
-Anup
+>         scatterwalk_map_and_copy(b, req->src, offset, tail, 0);
+>
+>         le128_xor(b, &rctx->t, b);
+> --
+> 2.27.0
+>
