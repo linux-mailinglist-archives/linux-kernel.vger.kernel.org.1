@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3C3221DC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881ED221DCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgGPIAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 04:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43808 "EHLO
+        id S1726201AbgGPICk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 04:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgGPIAR (ORCPT
+        with ESMTP id S1725922AbgGPICg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 04:00:17 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E30C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:00:16 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id o2so10438760wmh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:00:16 -0700 (PDT)
+        Thu, 16 Jul 2020 04:02:36 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DC8C08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:02:36 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id z63so4700213qkb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 01:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=eK+NQpi1H7gGHgVmnjEP/NQYX3h/AgB6eSXs4+PSJIg=;
-        b=sn57QzsyyH/w3IwaZ0qzjp/xeuPrzZt7j6tXzWGKXK90sZwzf6oTn8EiYU5aUnn+dS
-         CnwtApOXbFaxNR4tEdeFMYlkT422aoRx64dXZ+S5kV20KGZMMjPz8kDOovJxpBafODc6
-         R0I6rxpc/y07qIPqgOOQDx+OutoRh8fw7nskpUFw84/uaPKyprC9crt0MCJHakzLJUKs
-         Nl6wogMf3oJdZYN9WYdmi/A8PhsBCuy9U4AFX+xuk/oAyl4H1Cp9GeaIVyYNnomNHLNn
-         RWOEvIuduHK2lsAlt3FSVtwIcl8d7fo3vuSuiBQmh93VdD88d6h8O8m+mL+foTnDy2Yp
-         NMvA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cw3GUMPATHvcre91PrkdEqA4LChZAUyOWgRKc6fMd3g=;
+        b=Pp0OOmetcPJXIPMDP1xz5qLv2FI/ipLD4jr7oR/anFU6pD5fHABKlB3Ia8Jp0JuQJN
+         RD6SihtDkOi9cemx3q72J9IgD1VSE/9o/kBervi5qBd9CTqa0RASiaY3c0pGLQgQmJHu
+         1ghTRVGe/m3LPdWXV7dQzpXsLM4aiJG+KEKvzUD+xLqKAHdLkYALo5u40Ir4cdpQOMfR
+         RBxmSpDbEBW7mBE0pUa/IMYYCzHUdYdmComVyh41jn8JWL+l2uE1RBG5qOPSmolSdF7m
+         1aBoa5KVtGBuvB5OptH0Tnl4fTBd+mmA5WeJCGT/wb2/zRNGErAdgMcxaBeiMPYaxmOQ
+         QVfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=eK+NQpi1H7gGHgVmnjEP/NQYX3h/AgB6eSXs4+PSJIg=;
-        b=Et/fwKM1BPHS4MzzEmluyoVLoidUMQIMRRtXNyjRYwGxBsnxTlzRGozdhfHpaDcZ37
-         v8/WafCgVHGQWvGcHEM7aCXfM59kre5lzWVP17XhIRdCaJiCA9EbV09Gxi3mD5zl+lHt
-         zl8Tm50XszogUQGAOOU4x+6oYLZJdNPfKo4p+Z5c0+AGjiPS1MlFylnI0X5ntxPEtMum
-         zsRGw+V9R0JEuYNkEuCuzAacjMuRVzoZjGJW9JUIDcP77djkFm0huIWGQRhRIFW5ZmJP
-         FqYle/v4REmDNj1jYfIjdcpado1w4us5U4mg+A5waczGOwLqTyLyVwwrMxQ4CFrGS5rC
-         EfCQ==
-X-Gm-Message-State: AOAM5336Na+JmQ8Q8CukdHCr1JP+sW73RRNWIScOBxIOpoPKYpOdROBp
-        4sl9fdzFl5HzESDoWRpfuUC81w==
-X-Google-Smtp-Source: ABdhPJzyiWXnbPWAnIVh5m8XQyYNIG3Wghkom35f6C3up/cDmURrL5N/1/DpnQ2fW4UcyeX7OG2/IQ==
-X-Received: by 2002:a1c:81c8:: with SMTP id c191mr3123266wmd.23.1594886415588;
-        Thu, 16 Jul 2020 01:00:15 -0700 (PDT)
-Received: from dell ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id k11sm8160742wrd.23.2020.07.16.01.00.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 01:00:15 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 09:00:13 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     jejb@linux.ibm.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/24] Set 3: Fix another set of SCSI related W=1
- warnings
-Message-ID: <20200716080013.GO3165313@dell>
-References: <20200713080001.128044-1-lee.jones@linaro.org>
- <159484884355.21107.3732344826044180939.b4-ty@oracle.com>
- <20200716071629.GL3165313@dell>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cw3GUMPATHvcre91PrkdEqA4LChZAUyOWgRKc6fMd3g=;
+        b=kfY/OItiXNH/5Ta026Bz9U/hLdTRV5VV4sVpPl7QCD9aSnXXWz2P+p3Z6VXwAxkit7
+         Wn3Fyq6whIKlTJ5OIsjnf1Mp1ZbFIWed/c6p/Eqb/kwRRPSBU6wkaXoA4BYJURsmifU1
+         KXbNeHnJNR4Na3hrEkP4SpNVOZYY84Km+959Gc1TxyKSY+vrKYCHVO5vH8YJRmLaIkso
+         Ycv1Q3m4IsdRDNUeATVjQMHilAgy5MdgXtYgwM6ZHHesW9iBNhvRMI2rTXJ3siUdOKpV
+         VXe1UjSyx9cJE6USBOU0L0bAm5OtEriWvvYwFRsL3ivDNs3xDlTXPWv6x9wXM33LTLeD
+         x0VQ==
+X-Gm-Message-State: AOAM532KbBqexX95UfpzSaNtHKZuB/9q9kbhaEGDtbi1Xs6dqva/XjCu
+        L6pkwvTcAh1USUnEVylliR6RPjZfuZN+oWLEsMjWGw==
+X-Google-Smtp-Source: ABdhPJw9To9HhFwU3duxkt3EvlkQrR+eoiqlyrEu6foV4P95lSwEfe4qR3tJJYJd0iEPUAPr/L+aHXiPiRqhNfUSG7U=
+X-Received: by 2002:a37:7741:: with SMTP id s62mr2485109qkc.263.1594886555696;
+ Thu, 16 Jul 2020 01:02:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200716071629.GL3165313@dell>
+References: <20200715124839.252822-1-kieran.bingham+renesas@ideasonboard.com> <20200715124839.252822-2-kieran.bingham+renesas@ideasonboard.com>
+In-Reply-To: <20200715124839.252822-2-kieran.bingham+renesas@ideasonboard.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 16 Jul 2020 10:02:24 +0200
+Message-ID: <CAMpxmJXhRX1Gpxg2iqX2XXy67BhGrgrqchJb6OOoDz8POo0sgQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] arch: arm: mach-davinci: Fix trivial spelling
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     Jiri Kosina <trivial@kernel.org>, Sekhar Nori <nsekhar@ti.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "moderated list:ARM SUB-ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Jul 2020, Lee Jones wrote:
+On Wed, Jul 15, 2020 at 2:48 PM Kieran Bingham
+<kieran.bingham+renesas@ideasonboard.com> wrote:
+>
+> The word 'descriptor' is misspelled throughout the tree.
+>
+> Fix it up accordingly:
+>     decriptors -> descriptors
+>
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> ---
+>  arch/arm/mach-davinci/board-da830-evm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
+> index a273ab25c668..1076886938b6 100644
+> --- a/arch/arm/mach-davinci/board-da830-evm.c
+> +++ b/arch/arm/mach-davinci/board-da830-evm.c
+> @@ -266,7 +266,7 @@ static struct mtd_partition da830_evm_nand_partitions[] = {
+>         }
+>  };
+>
+> -/* flash bbt decriptors */
+> +/* flash bbt descriptors */
+>  static uint8_t da830_evm_nand_bbt_pattern[] = { 'B', 'b', 't', '0' };
+>  static uint8_t da830_evm_nand_mirror_pattern[] = { '1', 't', 'b', 'B' };
+>
+> --
+> 2.25.1
+>
 
-> On Wed, 15 Jul 2020, Martin K. Petersen wrote:
-> 
-> > On Mon, 13 Jul 2020 08:59:37 +0100, Lee Jones wrote:
-> > 
-> > > This set is part of a larger effort attempting to clean-up W=1
-> > > kernel builds, which are currently overwhelmingly riddled with
-> > > niggly little warnings.
-> > > 
-> > > Slowly working through the SCSI related ones.  There are many.
-> > > 
-> > > This brings the total of W=1 SCSI wanings from 1690 in v5.8-rc1 to 1109.
-> > > 
-> > > [...]
-> > 
-> > [01/24] scsi: aacraid: Repair two kerneldoc headers
-> >         https://git.kernel.org/mkp/scsi/c/b115958d91f5
-> > [02/24] scsi: aacraid: Fix a few kerneldoc issues
-> >         https://git.kernel.org/mkp/scsi/c/cf93fffac261
-> > [03/24] scsi: aacraid: Fix logical bug when !DBG
-> >         https://git.kernel.org/mkp/scsi/c/2fee77e5b820
-> > [04/24] scsi: aacraid: Remove unused variable 'status'
-> >         https://git.kernel.org/mkp/scsi/c/0123c7c62d6c
-> > [05/24] scsi: aacraid: Demote partially documented function header
-> >         https://git.kernel.org/mkp/scsi/c/71aa4d3e0e78
-> > [06/24] scsi: aic94xx: Document 'lseq' and repair asd_update_port_links() header
-> >         https://git.kernel.org/mkp/scsi/c/966fdadf6fea
-> > [07/24] scsi: aacraid: Fix a bunch of function header issues
-> >         https://git.kernel.org/mkp/scsi/c/f1134f0eb184
-> > [08/24] scsi: aic94xx: Fix a couple of formatting and bitrot issues
-> >         https://git.kernel.org/mkp/scsi/c/d2e510505006
-> > [09/24] scsi: aacraid: Fill in the very parameter descriptions for rx_sync_cmd()
-> >         https://git.kernel.org/mkp/scsi/c/ae272a95133a
-> > [10/24] scsi: pm8001: Provide descriptions for the many undocumented 'attr's
-> >         https://git.kernel.org/mkp/scsi/c/e1c3e0f8a2ae
-> > [11/24] scsi: ipr: Fix a mountain of kerneldoc misdemeanours
-> >         https://git.kernel.org/mkp/scsi/c/a96099e2c164
-> > [12/24] scsi: virtio_scsi: Demote seemingly unintentional kerneldoc header
-> >         https://git.kernel.org/mkp/scsi/c/e31f2661ff41
-> > [13/24] scsi: ipr: Remove a bunch of set but checked variables
-> >         https://git.kernel.org/mkp/scsi/c/4dc833999e37
-> > [14/24] scsi: ipr: Fix struct packed-not-aligned issues
-> >         https://git.kernel.org/mkp/scsi/c/f3bdc59f9b11
-> > [15/24] scsi: myrs: Demote obvious misuse of kerneldoc to standard comment blocks
-> >         https://git.kernel.org/mkp/scsi/c/8a692fdb1d04
-> 
-> Something wrong with [16/24]?
-
-I see that you reviewed v1.  No need to respond, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
