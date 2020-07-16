@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB49B222BB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2F7222BBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729458AbgGPTO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 15:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35390 "EHLO
+        id S1729376AbgGPTRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 15:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728374AbgGPTO5 (ORCPT
+        with ESMTP id S1728541AbgGPTRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 15:14:57 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3DD1C061755;
-        Thu, 16 Jul 2020 12:14:56 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f5so9540728ljj.10;
-        Thu, 16 Jul 2020 12:14:56 -0700 (PDT)
+        Thu, 16 Jul 2020 15:17:03 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A4DC061755;
+        Thu, 16 Jul 2020 12:17:03 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id l6so4279807plt.7;
+        Thu, 16 Jul 2020 12:17:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FH1i/9Q7biv+5kd2aHJzTASe8AFgNZkqx6zcZ0CRgAM=;
-        b=Wn7hhFIJBgNHurMYXpcMzkVEpgS+G0L7MmD8J8qk3tCEqcYin8UHdaPxMT5CXRg+S9
-         g83fFCUogHDCB6WOJ4rpJ+8uh1wxnGl0J7FmcabE8rce6HWdqsbzaw0R4/Dowv1tdpJh
-         DIAlQT38AV71ra9Ka/8j1WaHlIv5TEvlzqq9oZTib3fjS8IydzBFRyvELNRZQU9vVPeV
-         /x0xTA6jYir1Q9hW5bTld/jgCm4zngsfN39XIiRD+XNuixgVtIOcfW4aW3DVcKpD+Vcf
-         KmzvDEK+J86k5402o4XaGz7PhPUV1EWfNEK72hUm7msuQgdm0zxDD9bGTq+4PjpsD6rv
-         5M8Q==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=ctBf8/7XPdvbbAkJHl7up2LKX2yqPU2x4trxTx5gJxQ=;
+        b=mkb+z21tnzXUUogTFHF8Q1qb56fwTZmcZUnsDM+2Bl88ZPTCYaX4A1LtSFhV0mInzV
+         MmkU+tXreJo+pQCFKqIv9yfbKZmtP54qa9yKHCAG6y+fK/kme/KYpOvkEle+1C64AP5Q
+         j7HlJ+jyN2bF5vTjNNd6rrFuFjfHlZpvgKXYOip9Xw82nX0vdltTzpiEamt2kWonnCCA
+         x1Ka0lzXQNLmJnEgyXm9NEVXLNVNKhd3HAZ+9VK2RDJweEcQJUFVEsuY0Ae2AkpqYqFV
+         X7/TuA2CCGe7yL2ydyitajzK+o/G3CIQvnM/43Y6oN2tWH6h9+D7a4xPwaknoqfAfFRe
+         GLDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FH1i/9Q7biv+5kd2aHJzTASe8AFgNZkqx6zcZ0CRgAM=;
-        b=uKLA6yRgm8fzkGOEwfROln2VXNcnT9krxSdFUu4aMpusmPwlKCq3j2B0NMj3LqkyR1
-         Y64/7klSMjrcbXJDM3w8uKkl86NPAWiI52Ml1fkLRaV9xnXyiq8rsx+8GyCAgvz3KPmr
-         YIhMY6V6JaXc7c9DJKO1tvN2+sWhLlPxzQjXe4ABxow9c8Ul1YWcg1z6PSoQ/31+56Gk
-         OvDAv/JEXvIWhx/E0drfkStjwL9sX8s78baP3MEvYqmVF8ATuneygDM0TZYBWYxNqNZl
-         FuADX8nTzy6ORUnF1lti8vOEnYrtsUtlLT1sRqURbMLNKIm+PaV9o+u4KVmOzMPSx1BZ
-         N6zw==
-X-Gm-Message-State: AOAM531l6Y1lE0iPp+psx40QRea7ByUGwCXcb6ae/VrbnAxKHO9Sshud
-        /5oM+WqtnihKz9+dGF2SOtKgopaS
-X-Google-Smtp-Source: ABdhPJwcYWd14dWMRbo7MCBi1xwO+8IGc1NwY6E8MeiMH3Khln7PDLzj6vFwtTk/KoIlzzJ7hJsiig==
-X-Received: by 2002:a2e:5746:: with SMTP id r6mr2910169ljd.205.1594926894806;
-        Thu, 16 Jul 2020 12:14:54 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-76-4-184.pppoe.mtu-net.ru. [91.76.4.184])
-        by smtp.googlemail.com with ESMTPSA id s4sm1357437lfc.71.2020.07.16.12.14.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Jul 2020 12:14:54 -0700 (PDT)
-Subject: Re: [PATCH v4 0/6] Improvements for MAX77620 GPIO driver
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-tegra@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200709171203.12950-1-digetx@gmail.com>
- <CACRpkdZNLDgsrPRenyvPZD6A+Wvj-P3AJBf5Ke-uY9=R9DyjxQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c33c7f0d-cc0d-a9ba-dbd2-587c8cf9e2e8@gmail.com>
-Date:   Thu, 16 Jul 2020 22:14:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=ctBf8/7XPdvbbAkJHl7up2LKX2yqPU2x4trxTx5gJxQ=;
+        b=MC4NrMl51ZZxniBD0Y8ebdWut4F87pfQYCqCOBdT846IrBCte05BxRUXtQ/IZokyj9
+         Ocz0Wd+xOJufn28TUqZNHhVW4t20wKg68Ga67g5JV2RluIS5G7JGN0VVTaBXHSAdvy7f
+         0CbsmNoQ7sm4XuVOc+RVeBu/7rEvsNpsTPsJvHcsOAdCAyCy9WedWMDnrR7g57YX+Whk
+         N3S21mfiCnn0ulF8B0COIOnuW9RX+4HQRXRkYyTb++KKf3PK1ZniNcGrY/Ua4yOT3mHY
+         KTaeLSCP8bb1v2Q/CRr/pxdw3cft/j/1GT4SFu+6PSgrabL7TMX1IzVmr6pVNuzcgVpy
+         oOkQ==
+X-Gm-Message-State: AOAM5331UGrXoFA0N66PIQjn+c2/ttP27ZL022ZR73KvNk4qT8fzR3qa
+        ps0tojCzhUlH+kG5m0sx/fI=
+X-Google-Smtp-Source: ABdhPJwSzTaQlCtxnOXDeWa3n+peKBrIVM9xhShLR8fMayDya6j6FbD33dwdlWUE+CtW9NUj15lS+g==
+X-Received: by 2002:a17:902:d70f:: with SMTP id w15mr4792036ply.110.1594927023223;
+        Thu, 16 Jul 2020 12:17:03 -0700 (PDT)
+Received: from blackclown ([103.88.82.145])
+        by smtp.gmail.com with ESMTPSA id q10sm6124187pfk.86.2020.07.16.12.17.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 16 Jul 2020 12:17:02 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 00:46:45 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     linux-decnet-user@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: decnet: af_decnet: Simplify goto loop.
+Message-ID: <20200716191645.GA4953@blackclown>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZNLDgsrPRenyvPZD6A+Wvj-P3AJBf5Ke-uY9=R9DyjxQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-16.07.2020 11:52, Linus Walleij пишет:
-> On Thu, Jul 9, 2020 at 7:12 PM Dmitry Osipenko <digetx@gmail.com> wrote:
-> 
->> This series addresses a problem that I discovered on Nexus 7 device where
->> GPIO interrupts may be left enabled after bootloader and the driver isn't
->> prepared to this. It also makes a small improvements to the code, fixes the
->> non-released interrupt bug and converts driver to use irqchip template.
->>
->> Changelog:
->>
->> v4: - Added stable-tag to the patch "Fix missing release of interrupt".
-> 
-> This v4 series applied, thanks a *LOT* for your patient work on this!
 
-Hello, Linus! Thank you for applying the patches!
+--IJpNTDwzlM2Ie8A6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I need to fix the USB port on my Nexus 7 so I can test how the
-> mainline support is working these days!
+Replace goto loop with while loop.
 
-Please notice that this should be a Nexus 7 2012, which is NVIDIA
-Tegra30-based Nexus 7.
+Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+---
+ net/decnet/af_decnet.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-The mainline support just starting to emerge for the 2012 model,
-although not much is missed in the upstream. There are couple patches
-currently under review which are necessary for Nexus 7 2012 in order to
-make it ready for everyday use, like a tiny patch for the touchscreen
-support and DRM bridges/panel orientation improvements for the Tegra DRM
-driver. We're pretty close! :)
+diff --git a/net/decnet/af_decnet.c b/net/decnet/af_decnet.c
+index 0a46ea3bddd5..7d7ae2dd69b8 100644
+--- a/net/decnet/af_decnet.c
++++ b/net/decnet/af_decnet.c
+@@ -2134,14 +2134,11 @@ static struct sock *dn_socket_get_next(struct seq_f=
+ile *seq,
+ 	struct dn_iter_state *state =3D seq->private;
+=20
+ 	n =3D sk_next(n);
+-try_again:
+-	if (n)
+-		goto out;
+-	if (++state->bucket >=3D DN_SK_HASH_SIZE)
+-		goto out;
+-	n =3D sk_head(&dn_sk_hash[state->bucket]);
+-	goto try_again;
+-out:
++	while (!n) {
++		if (++state->bucket >=3D DN_SK_HASH_SIZE)
++			break;
++		n =3D sk_head(&dn_sk_hash[state->bucket]);
++	}
+ 	return n;
+ }
+=20
+--=20
+2.17.1
+
+
+--IJpNTDwzlM2Ie8A6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8Qp5wACgkQ+gRsbIfe
+74734BAAorwVxz+f8hyIOXsQT3a5bVBzZlIZLjZGqBMc2M45GtFrb2NQRPTmwr+s
+f0I/PbgtXj5+tADrCSY7FD4AOkBk3qHgUfWze8dpM0/9EopSqOzNp6x88nO4LLqu
+P8raX7c55wujcWqqDdwe/4Kk3Uhs3ZxobwPGwBivUEFCHFqXFyAFOxNdBqh5geXE
+xlh0WTrnvbD8Pwt+D9aP02QjTIp/7n3hGsf4lznPsVt4u32hl51QrXdOp9AL25B4
+1ligDFPjt+2VrnQrdJ/NZ2pORjF7pEYcG5kPMk3qPathqN9gz2sRrFg8IyOY9UvZ
+6BeOd3h7HbhyHezaROSxIf8puIVNWybxqidy3aPk7yLIptDzTqk8/JhlD/Js7Fle
+XBlMinF0M+I+YXIWMipVx2mvldqmnuwDhYvEMwQF3xhp4N2A7r8ruAdztQyAJR+k
+k308k6hm/Op54yvksym93rv3VngYjFJ8MtUjHzuLhQ+jHs19dOpKHfI8gfMdqQsY
+NIWcUKHYF3ZTcT2aRcdHdBdYIolOt45Qidap99nf47aUjHBTNavB8+6vxeA+hbV/
+PzrSdZYO8r/my10iz3Ihgpm7R7iFTnChlWL70XGDOsURINn8jOKPTBBRm4xs38Eq
+0UpzqU4ej+DZP5mz1yg3uxpwxTNceCeHIEY8PrVjytcNgEGuM/Y=
+=TBRA
+-----END PGP SIGNATURE-----
+
+--IJpNTDwzlM2Ie8A6--
