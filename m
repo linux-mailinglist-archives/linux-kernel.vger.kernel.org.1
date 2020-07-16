@@ -2,149 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B218221F55
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE65221F70
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728445AbgGPJDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:03:03 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54260 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728349AbgGPJDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:03:02 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6B75115B7A521A036300;
-        Thu, 16 Jul 2020 17:03:01 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 16 Jul 2020 17:02:58 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rich Felker <dalias@libc.org>
-CC:     <linux-sh@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] sh: Convert to DEFINE_SHOW_ATTRIBUTE
+        id S1726836AbgGPJHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:07:53 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:47321 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726201AbgGPJHw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:07:52 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R571e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U2t2gmE_1594890464;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2t2gmE_1594890464)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 16 Jul 2020 17:07:45 +0800
+Subject: Re: [PATCH v16 13/22] mm/lru: introduce TestClearPageLRU
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1594429136-20002-14-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <00b5e5ef-fd05-baae-49c7-e1b1a973b864@linux.alibaba.com>
 Date:   Thu, 16 Jul 2020 17:06:53 +0800
-Message-ID: <20200716090653.14256-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <1594429136-20002-14-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Huang <chenhuang5@huawei.com>
+Hi Johannes,
 
-Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
+The patchset looks good from logical and testing part. Is there any concern
+for any patches?
 
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
----
- arch/sh/mm/asids-debugfs.c | 15 ++-------------
- arch/sh/mm/cache-debugfs.c | 15 ++-------------
- arch/sh/mm/pmb.c           | 15 ++-------------
- 3 files changed, 6 insertions(+), 39 deletions(-)
+Thanks
+Alex
 
-diff --git a/arch/sh/mm/asids-debugfs.c b/arch/sh/mm/asids-debugfs.c
-index 065519ba6..d16d6f5ec 100644
---- a/arch/sh/mm/asids-debugfs.c
-+++ b/arch/sh/mm/asids-debugfs.c
-@@ -26,7 +26,7 @@
- #include <asm/processor.h>
- #include <asm/mmu_context.h>
- 
--static int asids_seq_show(struct seq_file *file, void *iter)
-+static int asids_debugfs_show(struct seq_file *file, void *iter)
- {
- 	struct task_struct *p;
- 
-@@ -48,18 +48,7 @@ static int asids_seq_show(struct seq_file *file, void *iter)
- 	return 0;
- }
- 
--static int asids_debugfs_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, asids_seq_show, inode->i_private);
--}
--
--static const struct file_operations asids_debugfs_fops = {
--	.owner		= THIS_MODULE,
--	.open		= asids_debugfs_open,
--	.read_iter		= seq_read_iter,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(asids_debugfs);
- 
- static int __init asids_debugfs_init(void)
- {
-diff --git a/arch/sh/mm/cache-debugfs.c b/arch/sh/mm/cache-debugfs.c
-index 114085cd5..b0f185169 100644
---- a/arch/sh/mm/cache-debugfs.c
-+++ b/arch/sh/mm/cache-debugfs.c
-@@ -22,7 +22,7 @@ enum cache_type {
- 	CACHE_TYPE_UNIFIED,
- };
- 
--static int cache_seq_show(struct seq_file *file, void *iter)
-+static int cache_debugfs_show(struct seq_file *file, void *iter)
- {
- 	unsigned int cache_type = (unsigned int)file->private;
- 	struct cache_info *cache;
-@@ -94,18 +94,7 @@ static int cache_seq_show(struct seq_file *file, void *iter)
- 	return 0;
- }
- 
--static int cache_debugfs_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, cache_seq_show, inode->i_private);
--}
--
--static const struct file_operations cache_debugfs_fops = {
--	.owner		= THIS_MODULE,
--	.open		= cache_debugfs_open,
--	.read_iter		= seq_read_iter,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(cache_debugfs);
- 
- static int __init cache_debugfs_init(void)
- {
-diff --git a/arch/sh/mm/pmb.c b/arch/sh/mm/pmb.c
-index 1944c412f..68eb7cc6e 100644
---- a/arch/sh/mm/pmb.c
-+++ b/arch/sh/mm/pmb.c
-@@ -812,7 +812,7 @@ bool __in_29bit_mode(void)
-         return (__raw_readl(PMB_PASCR) & PASCR_SE) == 0;
- }
- 
--static int pmb_seq_show(struct seq_file *file, void *iter)
-+static int pmb_debugfs_show(struct seq_file *file, void *iter)
- {
- 	int i;
- 
-@@ -846,18 +846,7 @@ static int pmb_seq_show(struct seq_file *file, void *iter)
- 	return 0;
- }
- 
--static int pmb_debugfs_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, pmb_seq_show, NULL);
--}
--
--static const struct file_operations pmb_debugfs_fops = {
--	.owner		= THIS_MODULE,
--	.open		= pmb_debugfs_open,
--	.read_iter		= seq_read_iter,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(pmb_debugfs);
- 
- static int __init pmb_debugfs_init(void)
- {
--- 
-2.17.1
-
+ÔÚ 2020/7/11 ÉÏÎç8:58, Alex Shi Ð´µÀ:
+> Combine PageLRU check and ClearPageLRU into a function by new
+> introduced func TestClearPageLRU. This function will be used as page
+> isolation precondition to prevent other isolations some where else.
+> Then there are may non PageLRU page on lru list, need to remove BUG
+> checking accordingly.
+> 
+> Hugh Dickins pointed that __page_cache_release and release_pages
+> has no need to do atomic clear bit since no user on the page at that
+> moment. and no need get_page() before lru bit clear in isolate_lru_page,
+> since it '(1) Must be called with an elevated refcount on the page'.
+> 
+> As Andrew Morton mentioned this change would dirty cacheline for page
+> isn't on LRU. But the lost would be acceptable with Rong Chen
+> <rong.a.chen@intel.com> report:
+> https://lkml.org/lkml/2020/3/4/173
+> 
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> ---
+>  include/linux/page-flags.h |  1 +
+>  mm/mlock.c                 |  3 +--
+>  mm/swap.c                  |  6 ++----
+>  mm/vmscan.c                | 26 +++++++++++---------------
+>  4 files changed, 15 insertions(+), 21 deletions(-)
+> 
+> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> index 6be1aa559b1e..9554ed1387dc 100644
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -326,6 +326,7 @@ static inline void page_init_poison(struct page *page, size_t size)
+>  PAGEFLAG(Dirty, dirty, PF_HEAD) TESTSCFLAG(Dirty, dirty, PF_HEAD)
+>  	__CLEARPAGEFLAG(Dirty, dirty, PF_HEAD)
+>  PAGEFLAG(LRU, lru, PF_HEAD) __CLEARPAGEFLAG(LRU, lru, PF_HEAD)
+> +	TESTCLEARFLAG(LRU, lru, PF_HEAD)
+>  PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
+>  	TESTCLEARFLAG(Active, active, PF_HEAD)
+>  PAGEFLAG(Workingset, workingset, PF_HEAD)
+> diff --git a/mm/mlock.c b/mm/mlock.c
+> index f8736136fad7..228ba5a8e0a5 100644
+> --- a/mm/mlock.c
+> +++ b/mm/mlock.c
+> @@ -108,13 +108,12 @@ void mlock_vma_page(struct page *page)
+>   */
+>  static bool __munlock_isolate_lru_page(struct page *page, bool getpage)
+>  {
+> -	if (PageLRU(page)) {
+> +	if (TestClearPageLRU(page)) {
+>  		struct lruvec *lruvec;
+>  
+>  		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+>  		if (getpage)
+>  			get_page(page);
+> -		ClearPageLRU(page);
+>  		del_page_from_lru_list(page, lruvec, page_lru(page));
+>  		return true;
+>  	}
+> diff --git a/mm/swap.c b/mm/swap.c
+> index f645965fde0e..5092fe9c8c47 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -83,10 +83,9 @@ static void __page_cache_release(struct page *page)
+>  		struct lruvec *lruvec;
+>  		unsigned long flags;
+>  
+> +		__ClearPageLRU(page);
+>  		spin_lock_irqsave(&pgdat->lru_lock, flags);
+>  		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> -		VM_BUG_ON_PAGE(!PageLRU(page), page);
+> -		__ClearPageLRU(page);
+>  		del_page_from_lru_list(page, lruvec, page_off_lru(page));
+>  		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+>  	}
+> @@ -878,9 +877,8 @@ void release_pages(struct page **pages, int nr)
+>  				spin_lock_irqsave(&locked_pgdat->lru_lock, flags);
+>  			}
+>  
+> -			lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
+> -			VM_BUG_ON_PAGE(!PageLRU(page), page);
+>  			__ClearPageLRU(page);
+> +			lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
+>  			del_page_from_lru_list(page, lruvec, page_off_lru(page));
+>  		}
+>  
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index c1c4259b4de5..18986fefd49b 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1548,16 +1548,16 @@ int __isolate_lru_page(struct page *page, isolate_mode_t mode)
+>  {
+>  	int ret = -EINVAL;
+>  
+> -	/* Only take pages on the LRU. */
+> -	if (!PageLRU(page))
+> -		return ret;
+> -
+>  	/* Compaction should not handle unevictable pages but CMA can do so */
+>  	if (PageUnevictable(page) && !(mode & ISOLATE_UNEVICTABLE))
+>  		return ret;
+>  
+>  	ret = -EBUSY;
+>  
+> +	/* Only take pages on the LRU. */
+> +	if (!PageLRU(page))
+> +		return ret;
+> +
+>  	/*
+>  	 * To minimise LRU disruption, the caller can indicate that it only
+>  	 * wants to isolate pages it will be able to operate on without
+> @@ -1671,8 +1671,6 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
+>  		page = lru_to_page(src);
+>  		prefetchw_prev_lru_page(page, src, flags);
+>  
+> -		VM_BUG_ON_PAGE(!PageLRU(page), page);
+> -
+>  		nr_pages = compound_nr(page);
+>  		total_scan += nr_pages;
+>  
+> @@ -1769,21 +1767,19 @@ int isolate_lru_page(struct page *page)
+>  	VM_BUG_ON_PAGE(!page_count(page), page);
+>  	WARN_RATELIMIT(PageTail(page), "trying to isolate tail page");
+>  
+> -	if (PageLRU(page)) {
+> +	if (TestClearPageLRU(page)) {
+>  		pg_data_t *pgdat = page_pgdat(page);
+>  		struct lruvec *lruvec;
+> +		int lru = page_lru(page);
+>  
+> -		spin_lock_irq(&pgdat->lru_lock);
+> +		get_page(page);
+>  		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> -		if (PageLRU(page)) {
+> -			int lru = page_lru(page);
+> -			get_page(page);
+> -			ClearPageLRU(page);
+> -			del_page_from_lru_list(page, lruvec, lru);
+> -			ret = 0;
+> -		}
+> +		spin_lock_irq(&pgdat->lru_lock);
+> +		del_page_from_lru_list(page, lruvec, lru);
+>  		spin_unlock_irq(&pgdat->lru_lock);
+> +		ret = 0;
+>  	}
+> +
+>  	return ret;
+>  }
+>  
+> 
