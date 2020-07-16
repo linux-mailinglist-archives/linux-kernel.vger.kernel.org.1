@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A52F221F8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7AB221FB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgGPJQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:16:14 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:7872 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725975AbgGPJQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:16:13 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DB2A2BB2FE22CB6FFFDF;
-        Thu, 16 Jul 2020 17:16:10 +0800 (CST)
-Received: from huawei.com (10.174.28.241) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Jul 2020
- 17:16:04 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <linux-next@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <mchehab@kernel.org>, <john.wanghui@huawei.com>
-Subject: [PATCH] media: tuners: reduce stack usage in mxl5005s_reconfigure
-Date:   Thu, 16 Jul 2020 17:17:42 +0000
-Message-ID: <20200716171742.45621-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726665AbgGPJbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:31:06 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:44456 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgGPJbG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:31:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1594891866; x=1626427866;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=CTM7Lg+kTZhV/28ULjCgZGcDn3aqFihZ0oeYbYMaRzM=;
+  b=WkOXxk5cl9Bbj9+ueRvKoLohtkgrg8EabXmGXKPwETPpqg2QuZfObjfR
+   k6hH44BbhPD7Ga6drvVME5T5IOngdqPS62SqbBvA1hvO2kvv/hb0KpHcb
+   Q2vT5hwHU5/Wt4Ql6QHBLNlQ8DPVbooq47T49oqakhonH9N01m3OqrOvP
+   I=;
+IronPort-SDR: 02zWTIZn0DoG/hiyNBhP3Vk32tZ6iPLCTwTVIpce3Jig3wsuOZySn3dzIgWJlGLAROiUk1N8qb
+ 8Me9iK9u8ulA==
+X-IronPort-AV: E=Sophos;i="5.75,358,1589241600"; 
+   d="scan'208";a="43659948"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 16 Jul 2020 09:31:05 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id 9949EC065A;
+        Thu, 16 Jul 2020 09:31:03 +0000 (UTC)
+Received: from EX13D16EUB001.ant.amazon.com (10.43.166.28) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 16 Jul 2020 09:31:03 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.146) by
+ EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 16 Jul 2020 09:30:53 +0000
+Subject: Re: [PATCH v5 01/18] nitro_enclaves: Add ioctl interface definition
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        David Duncan <davdunc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Karen Noel <knoel@redhat.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>, Alexander Graf <graf@amazon.com>
+References: <20200715194540.45532-1-andraprs@amazon.com>
+ <20200715194540.45532-2-andraprs@amazon.com>
+ <20200716083010.GA85868@stefanha-x1.localdomain>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <5c1deb3f-35fe-f89f-3eb7-bae07f7a1e6c@amazon.com>
+Date:   Thu, 16 Jul 2020 12:30:31 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.28.241]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200716083010.GA85868@stefanha-x1.localdomain>
+Content-Language: en-US
+X-Originating-IP: [10.43.161.146]
+X-ClientProxiedBy: EX13D16UWC003.ant.amazon.com (10.43.162.15) To
+ EX13D16EUB001.ant.amazon.com (10.43.166.28)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the warning: [-Werror=-Wframe-larger-than=]
 
-drivers/media/tuners/mxl5005s.c: In function 'mxl5005s_reconfigure':
-drivers/media/tuners/mxl5005s.c:3953:1:
-warning: the frame size of 1152 bytes is larger than 1024 bytes
 
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
- drivers/media/tuners/mxl5005s.c | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+On 16/07/2020 11:30, Stefan Hajnoczi wrote:
+> On Wed, Jul 15, 2020 at 10:45:23PM +0300, Andra Paraschiv wrote:
+>> + * A NE CPU pool has be set before calling this function. The pool can =
+be set
+> s/has be/has to be/
 
-diff --git a/drivers/media/tuners/mxl5005s.c b/drivers/media/tuners/mxl5005s.c
-index 1c07e2225fb3..f6e82a8e7d37 100644
---- a/drivers/media/tuners/mxl5005s.c
-+++ b/drivers/media/tuners/mxl5005s.c
-@@ -3926,15 +3926,26 @@ static int mxl5005s_reconfigure(struct dvb_frontend *fe, u32 mod_type,
- 	u32 bandwidth)
- {
- 	struct mxl5005s_state *state = fe->tuner_priv;
--
--	u8 AddrTable[MXL5005S_REG_WRITING_TABLE_LEN_MAX];
--	u8 ByteTable[MXL5005S_REG_WRITING_TABLE_LEN_MAX];
-+	u8 *AddrTable;
-+	u8 *ByteTable;
- 	int TableLen;
+Fixed.
 
- 	dprintk(1, "%s(type=%d, bw=%d)\n", __func__, mod_type, bandwidth);
+>
+> Thanks, this looks good!
+>
+> Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
 
- 	mxl5005s_reset(fe);
+Thanks for review, glad to hear it's in a better shape.
 
-+	AddrTable = kcalloc(MXL5005S_REG_WRITING_TABLE_LEN_MAX, sizeof(u8),
-+			    GFP_KERNEL);
-+	if (!AddrTable)
-+		return -ENOMEM;
-+
-+	ByteTable = kcalloc(MXL5005S_REG_WRITING_TABLE_LEN_MAX, sizeof(u8),
-+			    GFP_KERNEL);
-+	if (!ByteTable) {
-+		kfree(AddrTable);
-+		return -ENOMEM;
-+	}
-+
- 	/* Tuner initialization stage 0 */
- 	MXL_GetMasterControl(ByteTable, MC_SYNTH_RESET);
- 	AddrTable[0] = MASTER_CONTROL_ADDR;
-@@ -3949,6 +3960,9 @@ static int mxl5005s_reconfigure(struct dvb_frontend *fe, u32 mod_type,
+Andra
 
- 	mxl5005s_writeregs(fe, AddrTable, ByteTable, TableLen);
 
-+	kfree(AddrTable);
-+	kfree(ByteTable);
-+
- 	return 0;
- }
 
---
-2.17.1
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar=
+ Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in R=
+omania. Registration number J22/2621/2005.
 
