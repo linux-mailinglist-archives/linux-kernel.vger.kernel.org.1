@@ -2,593 +2,580 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C966222A1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A787222A26
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728867AbgGPRl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 13:41:27 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:43296 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728385AbgGPRl1 (ORCPT
+        id S1729306AbgGPRma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 13:42:30 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:46802 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728182AbgGPRm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 13:41:27 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 44A5920039;
-        Thu, 16 Jul 2020 19:41:20 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 19:41:18 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        od@zcrc.me, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 09/12] drm/ingenic: Add support for OSD mode
-Message-ID: <20200716174118.GB2235355@ravnborg.org>
-References: <20200716163846.174790-1-paul@crapouillou.net>
- <20200716163846.174790-9-paul@crapouillou.net>
+        Thu, 16 Jul 2020 13:42:27 -0400
+Received: from 89-64-86-30.dynamic.chello.pl (89.64.86.30) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 54f48e5912de7bb2; Thu, 16 Jul 2020 19:42:21 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     Linux Documentation <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Doug Smythies <dsmythies@telus.net>,
+        Francisco Jerez <francisco.jerez.plata@intel.com>
+Subject: [PATCH v2 2/2] cpufreq: intel_pstate: Implement passive mode with HWP enabled
+Date:   Thu, 16 Jul 2020 19:42:08 +0200
+Message-ID: <14003341.m6ogLmtsG7@kreacher>
+In-Reply-To: <4981405.3kqTVLv5tO@kreacher>
+References: <4981405.3kqTVLv5tO@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716163846.174790-9-paul@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=7gkXJVJtAAAA:8
-        a=7ZqDmCQ5pYAlb7f_WvIA:9 a=V4AImkEgxDfFZ9j0:21 a=beNfZJ9CnbTgBxgd:21
-        a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22 a=E9Po1WZjFZOl8hwRPBS3:22
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 06:38:43PM +0200, Paul Cercueil wrote:
-> All Ingenic SoCs starting from the JZ4725B support OSD mode.
-> 
-> In this mode, two separate planes can be used. They can have different
-> positions and sizes, and one can be overlayed on top of the other.
-> 
-> v2: Use fallthrough; instead of /* fall-through */
-> 
-> v3: - Add custom atomic_tail function to handle case where HW gives no
->       VBLANK
->     - Use regmap_set_bits() / regmap_clear_bits() when possible
->     - Use dma_hwdesc_f{0,1} fields in priv structure instead of array
->     - Use dmam_alloc_coherent() instead of dma_alloc_coherent()
->     - Use more meaningful 0xf0 / 0xf1 values as DMA descriptors IDs
->     - Add a bit more code comments
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Indent is wrong for ingenic_drm_plane_enable().
-One space too much on second line.
-With this fixed:
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Allow intel_pstate to work in the passive mode with HWP enabled and
+make it set the HWP minimum performance limit (HWP floor) to the
+P-state value given by the target frequency supplied by the cpufreq
+governor, so as to prevent the HWP algorithm and the CPU scheduler
+from working against each other, at least when the schedutil governor
+is in use, and update the intel_pstate documentation accordingly.
 
-> ---
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 303 ++++++++++++++++++----
->  drivers/gpu/drm/ingenic/ingenic-drm.h     |  35 +++
->  2 files changed, 288 insertions(+), 50 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index 9cc785776594..e922b910ad39 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -43,12 +43,18 @@ struct ingenic_dma_hwdesc {
->  
->  struct jz_soc_info {
->  	bool needs_dev_clk;
-> +	bool has_osd;
->  	unsigned int max_width, max_height;
->  };
->  
->  struct ingenic_drm {
->  	struct drm_device drm;
-> -	struct drm_plane primary;
-> +	/*
-> +	 * f1 (aka. foreground1) is our primary plane, on top of which
-> +	 * f0 (aka. foreground0) can be overlayed. Z-order is fixed in
-> +	 * hardware and cannot be changed.
-> +	 */
-> +	struct drm_plane f0, f1;
->  	struct drm_crtc crtc;
->  	struct drm_encoder encoder;
->  
-> @@ -57,10 +63,11 @@ struct ingenic_drm {
->  	struct clk *lcd_clk, *pix_clk;
->  	const struct jz_soc_info *soc_info;
->  
-> -	struct ingenic_dma_hwdesc *dma_hwdesc;
-> -	dma_addr_t dma_hwdesc_phys;
-> +	struct ingenic_dma_hwdesc *dma_hwdesc_f0, *dma_hwdesc_f1;
-> +	dma_addr_t dma_hwdesc_phys_f0, dma_hwdesc_phys_f1;
->  
->  	bool panel_is_sharp;
-> +	bool no_vblank;
->  };
->  
->  static const u32 ingenic_drm_primary_formats[] = {
-> @@ -90,7 +97,7 @@ static const struct regmap_config ingenic_drm_regmap_config = {
->  	.val_bits = 32,
->  	.reg_stride = 4,
->  
-> -	.max_register = JZ_REG_LCD_CMD1,
-> +	.max_register = JZ_REG_LCD_SIZE1,
->  	.writeable_reg = ingenic_drm_writeable_reg,
->  };
->  
-> @@ -110,11 +117,6 @@ drm_encoder_get_priv(struct drm_encoder *encoder)
->  	return container_of(encoder, struct ingenic_drm, encoder);
->  }
->  
-> -static inline struct ingenic_drm *drm_plane_get_priv(struct drm_plane *plane)
-> -{
-> -	return container_of(plane, struct ingenic_drm, primary);
-> -}
-> -
->  static void ingenic_drm_crtc_atomic_enable(struct drm_crtc *crtc,
->  					   struct drm_crtc_state *state)
->  {
-> @@ -185,34 +187,16 @@ static void ingenic_drm_crtc_update_timings(struct ingenic_drm *priv,
->  		regmap_write(priv->map, JZ_REG_LCD_SPL, hpe << 16 | (hpe + 1));
->  		regmap_write(priv->map, JZ_REG_LCD_REV, mode->htotal << 16);
->  	}
-> -}
-> -
-> -static void ingenic_drm_crtc_update_ctrl(struct ingenic_drm *priv,
-> -					 const struct drm_format_info *finfo)
-> -{
-> -	unsigned int ctrl = JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16;
-> -
-> -	switch (finfo->format) {
-> -	case DRM_FORMAT_XRGB1555:
-> -		ctrl |= JZ_LCD_CTRL_RGB555;
-> -		/* fall-through */
-> -	case DRM_FORMAT_RGB565:
-> -		ctrl |= JZ_LCD_CTRL_BPP_15_16;
-> -		break;
-> -	case DRM_FORMAT_XRGB8888:
-> -		ctrl |= JZ_LCD_CTRL_BPP_18_24;
-> -		break;
-> -	}
->  
-> -	regmap_update_bits(priv->map, JZ_REG_LCD_CTRL,
-> -			   JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16 |
-> -			   JZ_LCD_CTRL_BPP_MASK, ctrl);
-> +	regmap_set_bits(priv->map, JZ_REG_LCD_CTRL,
-> +			JZ_LCD_CTRL_OFUP | JZ_LCD_CTRL_BURST_16);
->  }
->  
->  static int ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
->  					 struct drm_crtc_state *state)
->  {
->  	struct ingenic_drm *priv = drm_crtc_get_priv(crtc);
-> +	struct drm_plane_state *f1_state, *f0_state;
->  	long rate;
->  
->  	if (!drm_atomic_crtc_needs_modeset(state))
-> @@ -227,6 +211,14 @@ static int ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
->  	if (rate < 0)
->  		return rate;
->  
-> +	if (priv->soc_info->has_osd) {
-> +		f1_state = drm_atomic_get_plane_state(state->state, &priv->f1);
-> +		f0_state = drm_atomic_get_plane_state(state->state, &priv->f0);
-> +
-> +		/* If all the planes are disabled, we won't get a VBLANK IRQ */
-> +		priv->no_vblank = !f1_state->fb && !f0_state->fb;
-> +	}
-> +
->  	return 0;
->  }
->  
-> @@ -236,14 +228,9 @@ static void ingenic_drm_crtc_atomic_flush(struct drm_crtc *crtc,
->  	struct ingenic_drm *priv = drm_crtc_get_priv(crtc);
->  	struct drm_crtc_state *state = crtc->state;
->  	struct drm_pending_vblank_event *event = state->event;
-> -	struct drm_framebuffer *drm_fb = crtc->primary->state->fb;
-> -	const struct drm_format_info *finfo;
->  
->  	if (drm_atomic_crtc_needs_modeset(state)) {
-> -		finfo = drm_format_info(drm_fb->format->format);
-> -
->  		ingenic_drm_crtc_update_timings(priv, &state->mode);
-> -		ingenic_drm_crtc_update_ctrl(priv, finfo);
->  
->  		clk_set_rate(priv->pix_clk, state->adjusted_mode.clock * 1000);
->  	}
-> @@ -260,11 +247,152 @@ static void ingenic_drm_crtc_atomic_flush(struct drm_crtc *crtc,
->  	}
->  }
->  
-> +static int ingenic_drm_plane_atomic_check(struct drm_plane *plane,
-> +					  struct drm_plane_state *state)
-> +{
-> +	struct ingenic_drm *priv = drm_device_get_priv(plane->dev);
-> +	struct drm_crtc_state *crtc_state;
-> +	struct drm_crtc *crtc = state->crtc ?: plane->state->crtc;
-> +	int ret;
-> +
-> +	if (!crtc)
-> +		return 0;
-> +
-> +	crtc_state = drm_atomic_get_existing_crtc_state(state->state, crtc);
-> +	if (WARN_ON(!crtc_state))
-> +		return -EINVAL;
-> +
-> +	ret = drm_atomic_helper_check_plane_state(state, crtc_state,
-> +						  DRM_PLANE_HELPER_NO_SCALING,
-> +						  DRM_PLANE_HELPER_NO_SCALING,
-> +						  priv->soc_info->has_osd,
-> +						  true);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * If OSD is not available, check that the width/height match.
-> +	 * Note that state->src_* are in 16.16 fixed-point format.
-> +	 */
-> +	if (!priv->soc_info->has_osd &&
-> +	    (state->src_x != 0 ||
-> +	     (state->src_w >> 16) != state->crtc_w ||
-> +	     (state->src_h >> 16) != state->crtc_h))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * Require full modeset if enabling or disabling a plane, or changing
-> +	 * its position, size or depth.
-> +	 */
-> +	if (priv->soc_info->has_osd &&
-> +	    (!plane->state->fb || !state->fb ||
-> +	     plane->state->crtc_x != state->crtc_x ||
-> +	     plane->state->crtc_y != state->crtc_y ||
-> +	     plane->state->crtc_w != state->crtc_w ||
-> +	     plane->state->crtc_h != state->crtc_h ||
-> +	     plane->state->fb->format->format != state->fb->format->format))
-> +		crtc_state->mode_changed = true;
-> +
-> +	return 0;
-> +}
-> +
-> +static void ingenic_drm_plane_enable(struct ingenic_drm *priv,
-> +				      struct drm_plane *plane)
-> +{
-> +	unsigned int en_bit;
-> +
-> +	if (priv->soc_info->has_osd) {
-> +		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
-> +			en_bit = JZ_LCD_OSDC_F1EN;
-> +		else
-> +			en_bit = JZ_LCD_OSDC_F0EN;
-> +
-> +		regmap_set_bits(priv->map, JZ_REG_LCD_OSDC, en_bit);
-> +	}
-> +}
-> +
-> +static void ingenic_drm_plane_atomic_disable(struct drm_plane *plane,
-> +					     struct drm_plane_state *old_state)
-> +{
-> +	struct ingenic_drm *priv = drm_device_get_priv(plane->dev);
-> +	unsigned int en_bit;
-> +
-> +	if (priv->soc_info->has_osd) {
-> +		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
-> +			en_bit = JZ_LCD_OSDC_F1EN;
-> +		else
-> +			en_bit = JZ_LCD_OSDC_F0EN;
-> +
-> +		regmap_clear_bits(priv->map, JZ_REG_LCD_OSDC, en_bit);
-> +	}
-> +}
-> +
-> +static void ingenic_drm_plane_config(struct ingenic_drm *priv,
-> +				     struct drm_plane *plane, u32 fourcc)
-> +{
-> +	struct drm_plane_state *state = plane->state;
-> +	unsigned int xy_reg, size_reg;
-> +	unsigned int ctrl = 0;
-> +
-> +	ingenic_drm_plane_enable(priv, plane);
-> +
-> +	if (priv->soc_info->has_osd &&
-> +	    plane->type == DRM_PLANE_TYPE_PRIMARY) {
-> +		switch (fourcc) {
-> +		case DRM_FORMAT_XRGB1555:
-> +			ctrl |= JZ_LCD_OSDCTRL_RGB555;
-> +			fallthrough;
-> +		case DRM_FORMAT_RGB565:
-> +			ctrl |= JZ_LCD_OSDCTRL_BPP_15_16;
-> +			break;
-> +		case DRM_FORMAT_XRGB8888:
-> +			ctrl |= JZ_LCD_OSDCTRL_BPP_18_24;
-> +			break;
-> +		}
-> +
-> +		regmap_update_bits(priv->map, JZ_REG_LCD_OSDCTRL,
-> +				   JZ_LCD_OSDCTRL_BPP_MASK, ctrl);
-> +	} else {
-> +		switch (fourcc) {
-> +		case DRM_FORMAT_XRGB1555:
-> +			ctrl |= JZ_LCD_CTRL_RGB555;
-> +			fallthrough;
-> +		case DRM_FORMAT_RGB565:
-> +			ctrl |= JZ_LCD_CTRL_BPP_15_16;
-> +			break;
-> +		case DRM_FORMAT_XRGB8888:
-> +			ctrl |= JZ_LCD_CTRL_BPP_18_24;
-> +			break;
-> +		}
-> +
-> +		regmap_update_bits(priv->map, JZ_REG_LCD_CTRL,
-> +				   JZ_LCD_CTRL_BPP_MASK, ctrl);
-> +	}
-> +
-> +	if (priv->soc_info->has_osd) {
-> +		if (plane->type == DRM_PLANE_TYPE_PRIMARY) {
-> +			xy_reg = JZ_REG_LCD_XYP1;
-> +			size_reg = JZ_REG_LCD_SIZE1;
-> +		} else {
-> +			xy_reg = JZ_REG_LCD_XYP0;
-> +			size_reg = JZ_REG_LCD_SIZE0;
-> +		}
-> +
-> +		regmap_write(priv->map, xy_reg,
-> +			     state->crtc_x << JZ_LCD_XYP01_XPOS_LSB |
-> +			     state->crtc_y << JZ_LCD_XYP01_YPOS_LSB);
-> +		regmap_write(priv->map, size_reg,
-> +			     state->crtc_w << JZ_LCD_SIZE01_WIDTH_LSB |
-> +			     state->crtc_h << JZ_LCD_SIZE01_HEIGHT_LSB);
-> +	}
-> +}
-> +
->  static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->  					    struct drm_plane_state *oldstate)
->  {
-> -	struct ingenic_drm *priv = drm_plane_get_priv(plane);
-> +	struct ingenic_drm *priv = drm_device_get_priv(plane->dev);
->  	struct drm_plane_state *state = plane->state;
-> +	struct ingenic_dma_hwdesc *hwdesc;
->  	unsigned int width, height, cpp;
->  	dma_addr_t addr;
->  
-> @@ -274,9 +402,17 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->  		height = state->src_h >> 16;
->  		cpp = state->fb->format->cpp[0];
->  
-> -		priv->dma_hwdesc->addr = addr;
-> -		priv->dma_hwdesc->cmd = width * height * cpp / 4;
-> -		priv->dma_hwdesc->cmd |= JZ_LCD_CMD_EOF_IRQ;
-> +		if (priv->soc_info->has_osd && plane->type == DRM_PLANE_TYPE_OVERLAY)
-> +			hwdesc = priv->dma_hwdesc_f0;
-> +		else
-> +			hwdesc = priv->dma_hwdesc_f1;
-> +
-> +		hwdesc->addr = addr;
-> +		hwdesc->cmd = JZ_LCD_CMD_EOF_IRQ | (width * height * cpp / 4);
-> +
-> +		if (drm_atomic_crtc_needs_modeset(state->crtc->state))
-> +			ingenic_drm_plane_config(priv, plane,
-> +						 state->fb->format->format);
->  	}
->  }
->  
-> @@ -360,6 +496,29 @@ static int ingenic_drm_encoder_atomic_check(struct drm_encoder *encoder,
->  	}
->  }
->  
-> +static void ingenic_drm_atomic_helper_commit_tail(struct drm_atomic_state *old_state)
-> +{
-> +	/*
-> +	 * Just your regular drm_atomic_helper_commit_tail(), but only calls
-> +	 * drm_atomic_helper_wait_for_vblanks() if priv->no_vblank.
-> +	 */
-> +	struct drm_device *dev = old_state->dev;
-> +	struct ingenic_drm *priv = drm_device_get_priv(dev);
-> +
-> +	drm_atomic_helper_commit_modeset_disables(dev, old_state);
-> +
-> +	drm_atomic_helper_commit_planes(dev, old_state, 0);
-> +
-> +	drm_atomic_helper_commit_modeset_enables(dev, old_state);
-> +
-> +	drm_atomic_helper_commit_hw_done(old_state);
-> +
-> +	if (!priv->no_vblank)
-> +		drm_atomic_helper_wait_for_vblanks(dev, old_state);
-> +
-> +	drm_atomic_helper_cleanup_planes(dev, old_state);
-> +}
-> +
->  static irqreturn_t ingenic_drm_irq_handler(int irq, void *arg)
->  {
->  	struct ingenic_drm *priv = drm_device_get_priv(arg);
-> @@ -437,6 +596,8 @@ static const struct drm_crtc_funcs ingenic_drm_crtc_funcs = {
->  
->  static const struct drm_plane_helper_funcs ingenic_drm_plane_helper_funcs = {
->  	.atomic_update		= ingenic_drm_plane_atomic_update,
-> +	.atomic_check		= ingenic_drm_plane_atomic_check,
-> +	.atomic_disable		= ingenic_drm_plane_atomic_disable,
->  	.prepare_fb		= drm_gem_fb_prepare_fb,
->  };
->  
-> @@ -459,6 +620,10 @@ static const struct drm_mode_config_funcs ingenic_drm_mode_config_funcs = {
->  	.atomic_commit		= drm_atomic_helper_commit,
->  };
->  
-> +static struct drm_mode_config_helper_funcs ingenic_drm_mode_config_helpers = {
-> +	.atomic_commit_tail = ingenic_drm_atomic_helper_commit_tail,
-> +};
-> +
->  static int ingenic_drm_probe(struct platform_device *pdev)
->  {
->  	const struct jz_soc_info *soc_info;
-> @@ -498,6 +663,7 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  	drm->mode_config.max_width = soc_info->max_width;
->  	drm->mode_config.max_height = 4095;
->  	drm->mode_config.funcs = &ingenic_drm_mode_config_funcs;
-> +	drm->mode_config.helper_private = &ingenic_drm_mode_config_helpers;
->  
->  	base = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(base)) {
-> @@ -541,19 +707,31 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  		bridge = devm_drm_panel_bridge_add_typed(dev, panel,
->  							 DRM_MODE_CONNECTOR_DPI);
->  
-> -	priv->dma_hwdesc = dmam_alloc_coherent(dev, sizeof(*priv->dma_hwdesc),
-> -					       &priv->dma_hwdesc_phys,
-> -					       GFP_KERNEL);
-> -	if (!priv->dma_hwdesc)
-> +	priv->dma_hwdesc_f1 = dmam_alloc_coherent(dev, sizeof(*priv->dma_hwdesc_f1),
-> +						  &priv->dma_hwdesc_phys_f1,
-> +						  GFP_KERNEL);
-> +	if (!priv->dma_hwdesc_f1)
->  		return -ENOMEM;
->  
-> -	priv->dma_hwdesc->next = priv->dma_hwdesc_phys;
-> -	priv->dma_hwdesc->id = 0xdeafbead;
-> +	priv->dma_hwdesc_f1->next = priv->dma_hwdesc_phys_f1;
-> +	priv->dma_hwdesc_f1->id = 0xf1;
->  
-> -	drm_plane_helper_add(&priv->primary, &ingenic_drm_plane_helper_funcs);
-> +	if (priv->soc_info->has_osd) {
-> +		priv->dma_hwdesc_f0 = dmam_alloc_coherent(dev,
-> +							  sizeof(*priv->dma_hwdesc_f0),
-> +							  &priv->dma_hwdesc_phys_f0,
-> +							  GFP_KERNEL);
-> +		if (!priv->dma_hwdesc_f0)
-> +			return -ENOMEM;
->  
-> -	ret = drm_universal_plane_init(drm, &priv->primary,
-> -				       0, &ingenic_drm_primary_plane_funcs,
-> +		priv->dma_hwdesc_f0->next = priv->dma_hwdesc_phys_f0;
-> +		priv->dma_hwdesc_f0->id = 0xf0;
-> +	}
-> +
-> +	drm_plane_helper_add(&priv->f1, &ingenic_drm_plane_helper_funcs);
-> +
-> +	ret = drm_universal_plane_init(drm, &priv->f1, 1,
-> +				       &ingenic_drm_primary_plane_funcs,
->  				       ingenic_drm_primary_formats,
->  				       ARRAY_SIZE(ingenic_drm_primary_formats),
->  				       NULL, DRM_PLANE_TYPE_PRIMARY, NULL);
-> @@ -564,13 +742,30 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  
->  	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
->  
-> -	ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->primary,
-> +	ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
->  					NULL, &ingenic_drm_crtc_funcs, NULL);
->  	if (ret) {
->  		dev_err(dev, "Failed to init CRTC: %i\n", ret);
->  		return ret;
->  	}
->  
-> +	if (soc_info->has_osd) {
-> +		drm_plane_helper_add(&priv->f0,
-> +				     &ingenic_drm_plane_helper_funcs);
-> +
-> +		ret = drm_universal_plane_init(drm, &priv->f0, 1,
-> +					       &ingenic_drm_primary_plane_funcs,
-> +					       ingenic_drm_primary_formats,
-> +					       ARRAY_SIZE(ingenic_drm_primary_formats),
-> +					       NULL, DRM_PLANE_TYPE_OVERLAY,
-> +					       NULL);
-> +		if (ret) {
-> +			dev_err(dev, "Failed to register overlay plane: %i\n",
-> +				ret);
-> +			return ret;
-> +		}
-> +	}
-> +
->  	priv->encoder.possible_crtcs = 1;
->  
->  	drm_encoder_helper_add(&priv->encoder,
-> @@ -632,7 +827,12 @@ static int ingenic_drm_probe(struct platform_device *pdev)
->  	}
->  
->  	/* Set address of our DMA descriptor chain */
-> -	regmap_write(priv->map, JZ_REG_LCD_DA0, priv->dma_hwdesc_phys);
-> +	regmap_write(priv->map, JZ_REG_LCD_DA0, priv->dma_hwdesc_phys_f0);
-> +	regmap_write(priv->map, JZ_REG_LCD_DA1, priv->dma_hwdesc_phys_f1);
-> +
-> +	/* Enable OSD if available */
-> +	if (soc_info->has_osd)
-> +		regmap_write(priv->map, JZ_REG_LCD_OSDC, JZ_LCD_OSDC_OSDEN);
->  
->  	ret = drm_dev_register(drm, 0);
->  	if (ret) {
-> @@ -668,18 +868,21 @@ static int ingenic_drm_remove(struct platform_device *pdev)
->  
->  static const struct jz_soc_info jz4740_soc_info = {
->  	.needs_dev_clk = true,
-> +	.has_osd = false,
->  	.max_width = 800,
->  	.max_height = 600,
->  };
->  
->  static const struct jz_soc_info jz4725b_soc_info = {
->  	.needs_dev_clk = false,
-> +	.has_osd = true,
->  	.max_width = 800,
->  	.max_height = 600,
->  };
->  
->  static const struct jz_soc_info jz4770_soc_info = {
->  	.needs_dev_clk = false,
-> +	.has_osd = true,
->  	.max_width = 1280,
->  	.max_height = 720,
->  };
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.h b/drivers/gpu/drm/ingenic/ingenic-drm.h
-> index cb578cff7bb1..d0b827a9fe83 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm.h
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm.h
-> @@ -30,6 +30,18 @@
->  #define JZ_REG_LCD_SA1				0x54
->  #define JZ_REG_LCD_FID1				0x58
->  #define JZ_REG_LCD_CMD1				0x5C
-> +#define JZ_REG_LCD_OSDC				0x100
-> +#define JZ_REG_LCD_OSDCTRL			0x104
-> +#define JZ_REG_LCD_OSDS				0x108
-> +#define JZ_REG_LCD_BGC				0x10c
-> +#define JZ_REG_LCD_KEY0				0x110
-> +#define JZ_REG_LCD_KEY1				0x114
-> +#define JZ_REG_LCD_ALPHA			0x118
-> +#define JZ_REG_LCD_IPUR				0x11c
-> +#define JZ_REG_LCD_XYP0				0x120
-> +#define JZ_REG_LCD_XYP1				0x124
-> +#define JZ_REG_LCD_SIZE0			0x128
-> +#define JZ_REG_LCD_SIZE1			0x12c
->  
->  #define JZ_LCD_CFG_SLCD				BIT(31)
->  #define JZ_LCD_CFG_PS_DISABLE			BIT(23)
-> @@ -123,4 +135,27 @@
->  #define JZ_LCD_STATE_SOF_IRQ			BIT(4)
->  #define JZ_LCD_STATE_DISABLED			BIT(0)
->  
-> +#define JZ_LCD_OSDC_OSDEN			BIT(0)
-> +#define JZ_LCD_OSDC_F0EN			BIT(3)
-> +#define JZ_LCD_OSDC_F1EN			BIT(4)
-> +
-> +#define JZ_LCD_OSDCTRL_IPU			BIT(15)
-> +#define JZ_LCD_OSDCTRL_RGB555			BIT(4)
-> +#define JZ_LCD_OSDCTRL_CHANGE			BIT(3)
-> +#define JZ_LCD_OSDCTRL_BPP_15_16		0x4
-> +#define JZ_LCD_OSDCTRL_BPP_18_24		0x5
-> +#define JZ_LCD_OSDCTRL_BPP_30			0x7
-> +#define JZ_LCD_OSDCTRL_BPP_MASK			(JZ_LCD_OSDCTRL_RGB555 | 0x7)
-> +
-> +#define JZ_LCD_OSDS_READY			BIT(0)
-> +
-> +#define JZ_LCD_IPUR_IPUREN			BIT(31)
-> +#define JZ_LCD_IPUR_IPUR_LSB			0
-> +
-> +#define JZ_LCD_XYP01_XPOS_LSB			0
-> +#define JZ_LCD_XYP01_YPOS_LSB			16
-> +
-> +#define JZ_LCD_SIZE01_WIDTH_LSB			0
-> +#define JZ_LCD_SIZE01_HEIGHT_LSB		16
-> +
->  #endif /* DRIVERS_GPU_DRM_INGENIC_INGENIC_DRM_H */
-> -- 
-> 2.27.0
+Among other things, this allows utilization clamps to be taken
+into account, at least to a certain extent, when intel_pstate is
+in use and makes it more likely that sufficient capacity for
+deadline tasks will be provided.
+
+After this change, the resulting behavior of an HWP system with
+intel_pstate in the passive mode should be close to the behavior
+of the analogous non-HWP system with intel_pstate in the passive
+mode, except that in the frequency range below the base frequency
+(ie. the frequency retured by the base_frequency cpufreq attribute
+in sysfs on HWP systems) the HWP algorithm is allowed to go above
+the floor P-state set by intel_pstate with or without hardware
+coordination of P-states among CPUs in the same package.
+
+Also note that the setting of the HWP floor may not be taken into
+account by the processor in the following cases:
+
+ * For the HWP floor in the range of P-states above the base
+   frequency, referred to as the turbo range, the processor has a
+   license to choose any P-state from that range, either below or
+   above the HWP floor, just like a non-HWP processor in the case
+   when the target P-state falls into the turbo range.
+
+ * If P-states of the CPUs in the same package are coordinated
+   at the hardware level, the processor may choose a P-state
+   above the HWP floor, just like a non-HWP processor in the
+   analogous case.
+
+With this change applied, intel_pstate in the passive mode
+assumes complete control over the HWP request MSR and concurrent
+changes of that MSR (eg. via the direct MSR access interface) are
+overridden by it.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v1 -> v2:
+   * Avoid a race condition when updating the HWP request register while
+     setting a new EPP value via sysfs.
+
+---
+ Documentation/admin-guide/pm/intel_pstate.rst |   89 ++++++-------
+ drivers/cpufreq/intel_pstate.c                |  169 ++++++++++++++++++++------
+ 2 files changed, 175 insertions(+), 83 deletions(-)
+
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -36,6 +36,7 @@
+ #define INTEL_PSTATE_SAMPLING_INTERVAL	(10 * NSEC_PER_MSEC)
+ 
+ #define INTEL_CPUFREQ_TRANSITION_LATENCY	20000
++#define INTEL_CPUFREQ_TRANSITION_DELAY_HWP	5000
+ #define INTEL_CPUFREQ_TRANSITION_DELAY		500
+ 
+ #ifdef CONFIG_ACPI
+@@ -220,6 +221,7 @@ struct global_params {
+  *			preference/bias
+  * @epp_saved:		Saved EPP/EPB during system suspend or CPU offline
+  *			operation
++ * @epp_cached		Cached HWP energy-performance preference value
+  * @hwp_req_cached:	Cached value of the last HWP Request MSR
+  * @hwp_cap_cached:	Cached value of the last HWP Capabilities MSR
+  * @last_io_update:	Last time when IO wake flag was set
+@@ -257,6 +259,7 @@ struct cpudata {
+ 	s16 epp_policy;
+ 	s16 epp_default;
+ 	s16 epp_saved;
++	s16 epp_cached;
+ 	u64 hwp_req_cached;
+ 	u64 hwp_cap_cached;
+ 	u64 last_io_update;
+@@ -689,6 +692,8 @@ static ssize_t show_energy_performance_a
+ 
+ cpufreq_freq_attr_ro(energy_performance_available_preferences);
+ 
++static struct cpufreq_driver intel_pstate;
++
+ static ssize_t store_energy_performance_preference(
+ 		struct cpufreq_policy *policy, const char *buf, size_t count)
+ {
+@@ -717,14 +722,34 @@ static ssize_t store_energy_performance_
+ 		raw = true;
+ 	}
+ 
++	mutex_lock(&intel_pstate_driver_lock);
++
++	if (!intel_pstate_driver) {
++		mutex_unlock(&intel_pstate_driver_lock);
++		return -EAGAIN;
++	}
++
+ 	mutex_lock(&intel_pstate_limits_lock);
+ 
+-	ret = intel_pstate_set_energy_pref_index(cpu_data, ret, raw, epp);
+-	if (ret)
+-		count = ret;
++	if (intel_pstate_driver == &intel_pstate) {
++		ret = intel_pstate_set_energy_pref_index(cpu_data, ret, raw, epp);
++		if (ret)
++			count = ret;
++	} else {
++		/*
++		 * In the passive mode simply update the cached EPP value and
++		 * rely on intel_cpufreq_adjust_hwp() to pick it up later.
++		 */
++		if (!raw)
++			epp = ret ? epp_values[ret - 1] : cpu_data->epp_default;
++
++		WRITE_ONCE(cpu_data->epp_cached, epp);
++	}
+ 
+ 	mutex_unlock(&intel_pstate_limits_lock);
+ 
++	mutex_unlock(&intel_pstate_driver_lock);
++
+ 	return count;
+ }
+ 
+@@ -1137,8 +1162,6 @@ static ssize_t store_no_turbo(struct kob
+ 	return count;
+ }
+ 
+-static struct cpufreq_driver intel_pstate;
+-
+ static void update_qos_request(enum freq_qos_req_type type)
+ {
+ 	int max_state, turbo_max, freq, i, perf_pct;
+@@ -2040,6 +2063,7 @@ static int intel_pstate_init_cpu(unsigne
+ 		cpu->epp_default = -EINVAL;
+ 		cpu->epp_powersave = -EINVAL;
+ 		cpu->epp_saved = -EINVAL;
++		WRITE_ONCE(cpu->epp_cached, -EINVAL);
+ 	}
+ 
+ 	cpu = all_cpu_data[cpunum];
+@@ -2238,7 +2262,10 @@ static int intel_pstate_verify_policy(st
+ 
+ static void intel_cpufreq_stop_cpu(struct cpufreq_policy *policy)
+ {
+-	intel_pstate_set_min_pstate(all_cpu_data[policy->cpu]);
++	if (hwp_active)
++		intel_pstate_hwp_force_min_perf(policy->cpu);
++	else
++		intel_pstate_set_min_pstate(all_cpu_data[policy->cpu]);
+ }
+ 
+ static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
+@@ -2246,12 +2273,10 @@ static void intel_pstate_stop_cpu(struct
+ 	pr_debug("CPU %d exiting\n", policy->cpu);
+ 
+ 	intel_pstate_clear_update_util_hook(policy->cpu);
+-	if (hwp_active) {
++	if (hwp_active)
+ 		intel_pstate_hwp_save_state(policy);
+-		intel_pstate_hwp_force_min_perf(policy->cpu);
+-	} else {
+-		intel_cpufreq_stop_cpu(policy);
+-	}
++
++	intel_cpufreq_stop_cpu(policy);
+ }
+ 
+ static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
+@@ -2381,13 +2406,82 @@ static void intel_cpufreq_trace(struct c
+ 		fp_toint(cpu->iowait_boost * 100));
+ }
+ 
++static void intel_cpufreq_adjust_hwp(struct cpudata *cpu, u32 target_pstate,
++				     bool fast_switch)
++{
++	u64 prev = READ_ONCE(cpu->hwp_req_cached), value = prev;
++	s16 epp;
++
++	value &= ~HWP_MIN_PERF(~0L);
++	value |= HWP_MIN_PERF(target_pstate);
++
++	/*
++	 * The entire MSR needs to be updated in order to update the HWP min
++	 * field in it, so opportunistically update the max too if needed.
++	 */
++	value &= ~HWP_MAX_PERF(~0L);
++	value |= HWP_MAX_PERF(cpu->max_perf_ratio);
++
++	/*
++	 * In case the EPP has been adjusted via sysfs, write the last cached
++	 * value of it to the MSR as well.
++	 */
++	epp = READ_ONCE(cpu->epp_cached);
++	if (epp >= 0) {
++		value &= ~GENMASK_ULL(31, 24);
++		value |= (u64)epp << 24;
++	}
++
++	if (value == prev)
++		return;
++
++	WRITE_ONCE(cpu->hwp_req_cached, value);
++	if (fast_switch)
++		wrmsrl(MSR_HWP_REQUEST, value);
++	else
++		wrmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST, value);
++}
++
++static void intel_cpufreq_adjust_perf_ctl(struct cpudata *cpu,
++					  u32 target_pstate, bool fast_switch)
++{
++	if (fast_switch)
++		wrmsrl(MSR_IA32_PERF_CTL,
++		       pstate_funcs.get_val(cpu, target_pstate));
++	else
++		wrmsrl_on_cpu(cpu->cpu, MSR_IA32_PERF_CTL,
++			      pstate_funcs.get_val(cpu, target_pstate));
++}
++
++static int intel_cpufreq_update_pstate(struct cpudata *cpu, int target_pstate,
++				       bool fast_switch)
++{
++	int old_pstate = cpu->pstate.current_pstate;
++
++	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
++	if (target_pstate != old_pstate) {
++		cpu->pstate.current_pstate = target_pstate;
++		if (hwp_active)
++			intel_cpufreq_adjust_hwp(cpu, target_pstate,
++						 fast_switch);
++		else
++			intel_cpufreq_adjust_perf_ctl(cpu, target_pstate,
++						      fast_switch);
++	}
++
++	intel_cpufreq_trace(cpu, fast_switch ? INTEL_PSTATE_TRACE_FAST_SWITCH :
++			    INTEL_PSTATE_TRACE_TARGET, old_pstate);
++
++	return target_pstate;
++}
++
+ static int intel_cpufreq_target(struct cpufreq_policy *policy,
+ 				unsigned int target_freq,
+ 				unsigned int relation)
+ {
+ 	struct cpudata *cpu = all_cpu_data[policy->cpu];
+ 	struct cpufreq_freqs freqs;
+-	int target_pstate, old_pstate;
++	int target_pstate;
+ 
+ 	update_turbo_state();
+ 
+@@ -2395,6 +2489,7 @@ static int intel_cpufreq_target(struct c
+ 	freqs.new = target_freq;
+ 
+ 	cpufreq_freq_transition_begin(policy, &freqs);
++
+ 	switch (relation) {
+ 	case CPUFREQ_RELATION_L:
+ 		target_pstate = DIV_ROUND_UP(freqs.new, cpu->pstate.scaling);
+@@ -2406,15 +2501,11 @@ static int intel_cpufreq_target(struct c
+ 		target_pstate = DIV_ROUND_CLOSEST(freqs.new, cpu->pstate.scaling);
+ 		break;
+ 	}
+-	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
+-	old_pstate = cpu->pstate.current_pstate;
+-	if (target_pstate != cpu->pstate.current_pstate) {
+-		cpu->pstate.current_pstate = target_pstate;
+-		wrmsrl_on_cpu(policy->cpu, MSR_IA32_PERF_CTL,
+-			      pstate_funcs.get_val(cpu, target_pstate));
+-	}
++
++	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, false);
++
+ 	freqs.new = target_pstate * cpu->pstate.scaling;
+-	intel_cpufreq_trace(cpu, INTEL_PSTATE_TRACE_TARGET, old_pstate);
++
+ 	cpufreq_freq_transition_end(policy, &freqs, false);
+ 
+ 	return 0;
+@@ -2424,15 +2515,14 @@ static unsigned int intel_cpufreq_fast_s
+ 					      unsigned int target_freq)
+ {
+ 	struct cpudata *cpu = all_cpu_data[policy->cpu];
+-	int target_pstate, old_pstate;
++	int target_pstate;
+ 
+ 	update_turbo_state();
+ 
+ 	target_pstate = DIV_ROUND_UP(target_freq, cpu->pstate.scaling);
+-	target_pstate = intel_pstate_prepare_request(cpu, target_pstate);
+-	old_pstate = cpu->pstate.current_pstate;
+-	intel_pstate_update_pstate(cpu, target_pstate);
+-	intel_cpufreq_trace(cpu, INTEL_PSTATE_TRACE_FAST_SWITCH, old_pstate);
++
++	target_pstate = intel_cpufreq_update_pstate(cpu, target_pstate, true);
++
+ 	return target_pstate * cpu->pstate.scaling;
+ }
+ 
+@@ -2452,7 +2542,6 @@ static int intel_cpufreq_cpu_init(struct
+ 		return ret;
+ 
+ 	policy->cpuinfo.transition_latency = INTEL_CPUFREQ_TRANSITION_LATENCY;
+-	policy->transition_delay_us = INTEL_CPUFREQ_TRANSITION_DELAY;
+ 	/* This reflects the intel_pstate_get_cpu_pstates() setting. */
+ 	policy->cur = policy->cpuinfo.min_freq;
+ 
+@@ -2464,10 +2553,17 @@ static int intel_cpufreq_cpu_init(struct
+ 
+ 	cpu = all_cpu_data[policy->cpu];
+ 
+-	if (hwp_active)
++	if (hwp_active) {
++		u64 value;
++
+ 		intel_pstate_get_hwp_max(policy->cpu, &turbo_max, &max_state);
+-	else
++		policy->transition_delay_us = INTEL_CPUFREQ_TRANSITION_DELAY_HWP;
++		rdmsrl_on_cpu(cpu->cpu, MSR_HWP_REQUEST, &value);
++		WRITE_ONCE(cpu->hwp_req_cached, value);
++	} else {
+ 		turbo_max = cpu->pstate.turbo_pstate;
++		policy->transition_delay_us = INTEL_CPUFREQ_TRANSITION_DELAY;
++	}
+ 
+ 	min_freq = DIV_ROUND_UP(turbo_max * global.min_perf_pct, 100);
+ 	min_freq *= cpu->pstate.scaling;
+@@ -2568,9 +2664,6 @@ static int intel_pstate_register_driver(
+ 
+ static int intel_pstate_unregister_driver(void)
+ {
+-	if (hwp_active)
+-		return -EBUSY;
+-
+ 	cpufreq_unregister_driver(intel_pstate_driver);
+ 	intel_pstate_driver_cleanup();
+ 
+@@ -2826,7 +2919,10 @@ static int __init intel_pstate_init(void
+ 			hwp_active++;
+ 			hwp_mode_bdw = id->driver_data;
+ 			intel_pstate.attr = hwp_cpufreq_attrs;
+-			default_driver = &intel_pstate;
++			intel_cpufreq.attr = hwp_cpufreq_attrs;
++			if (!default_driver)
++				default_driver = &intel_pstate;
++
+ 			goto hwp_cpu_matched;
+ 		}
+ 	} else {
+@@ -2897,14 +2993,13 @@ static int __init intel_pstate_setup(cha
+ 	if (!str)
+ 		return -EINVAL;
+ 
+-	if (!strcmp(str, "disable")) {
++	if (!strcmp(str, "disable"))
+ 		no_load = 1;
+-	} else if (!strcmp(str, "active")) {
++	else if (!strcmp(str, "active"))
+ 		default_driver = &intel_pstate;
+-	} else if (!strcmp(str, "passive")) {
++	else if (!strcmp(str, "passive"))
+ 		default_driver = &intel_cpufreq;
+-		no_hwp = 1;
+-	}
++
+ 	if (!strcmp(str, "no_hwp")) {
+ 		pr_info("HWP disabled\n");
+ 		no_hwp = 1;
+Index: linux-pm/Documentation/admin-guide/pm/intel_pstate.rst
+===================================================================
+--- linux-pm.orig/Documentation/admin-guide/pm/intel_pstate.rst
++++ linux-pm/Documentation/admin-guide/pm/intel_pstate.rst
+@@ -54,10 +54,13 @@ registered (see `below <status_attr_>`_)
+ Operation Modes
+ ===============
+ 
+-``intel_pstate`` can operate in three different modes: in the active mode with
+-or without hardware-managed P-states support and in the passive mode.  Which of
+-them will be in effect depends on what kernel command line options are used and
+-on the capabilities of the processor.
++``intel_pstate`` can operate in two different modes, active or passive.  In the
++active mode, it uses its own internal preformance scaling governor algorithm or
++allows the hardware to do preformance scaling by itself, while in the passive
++mode it responds to requests made by a generic ``CPUFreq`` governor implementing
++a certain performance scaling algorithm.  Which of them will be in effect
++depends on what kernel command line options are used and on the capabilities of
++the processor.
+ 
+ Active Mode
+ -----------
+@@ -194,10 +197,11 @@ This is the default operation mode of ``
+ hardware-managed P-states (HWP) support.  It is always used if the
+ ``intel_pstate=passive`` argument is passed to the kernel in the command line
+ regardless of whether or not the given processor supports HWP.  [Note that the
+-``intel_pstate=no_hwp`` setting implies ``intel_pstate=passive`` if it is used
+-without ``intel_pstate=active``.]  Like in the active mode without HWP support,
+-in this mode ``intel_pstate`` may refuse to work with processors that are not
+-recognized by it.
++``intel_pstate=no_hwp`` setting causes the driver to start in the passive mode
++if it is not combined with ``intel_pstate=active``.]  Like in the active mode
++without HWP support, in this mode ``intel_pstate`` may refuse to work with
++processors that are not recognized by it if HWP is prevented from being enabled
++through the kernel command line.
+ 
+ If the driver works in this mode, the ``scaling_driver`` policy attribute in
+ ``sysfs`` for all ``CPUFreq`` policies contains the string "intel_cpufreq".
+@@ -318,10 +322,9 @@ manuals need to be consulted to get to i
+ 
+ For this reason, there is a list of supported processors in ``intel_pstate`` and
+ the driver initialization will fail if the detected processor is not in that
+-list, unless it supports the `HWP feature <Active Mode_>`_.  [The interface to
+-obtain all of the information listed above is the same for all of the processors
+-supporting the HWP feature, which is why they all are supported by
+-``intel_pstate``.]
++list, unless it supports the HWP feature.  [The interface to obtain all of the
++information listed above is the same for all of the processors supporting the
++HWP feature, which is why ``intel_pstate`` works with all of them.]
+ 
+ 
+ User Space Interface in ``sysfs``
+@@ -425,22 +428,16 @@ argument is passed to the kernel in the
+ 	as well as the per-policy ones) are then reset to their default
+ 	values, possibly depending on the target operation mode.]
+ 
+-	That only is supported in some configurations, though (for example, if
+-	the `HWP feature is enabled in the processor <Active Mode With HWP_>`_,
+-	the operation mode of the driver cannot be changed), and if it is not
+-	supported in the current configuration, writes to this attribute will
+-	fail with an appropriate error.
+-
+ ``energy_efficiency``
+-	This attribute is only present on platforms, which have CPUs matching
+-	Kaby Lake or Coffee Lake desktop CPU model. By default
+-	energy efficiency optimizations are disabled on these CPU models in HWP
+-	mode by this driver. Enabling energy efficiency may limit maximum
+-	operating frequency in both HWP and non HWP mode. In non HWP mode,
+-	optimizations are done only in the turbo frequency range. In HWP mode,
+-	optimizations are done in the entire frequency range. Setting this
+-	attribute to "1" enables energy efficiency optimizations and setting
+-	to "0" disables energy efficiency optimizations.
++	This attribute is only present on platforms with CPUs matching the Kaby
++	Lake or Coffee Lake desktop CPU model. By default, energy-efficiency
++	optimizations are disabled on these CPU models if HWP is enabled.
++	Enabling energy-efficiency optimizations may limit maximum operating
++	frequency with or without the HWP feature.  With HWP enabled, the
++	optimizations are done only in the turbo frequency range.  Without it,
++	they are done in the entire available frequency range.  Setting this
++	attribute to "1" enables the energy-efficiency optimizations and setting
++	to "0" disables them.
+ 
+ Interpretation of Policy Attributes
+ -----------------------------------
+@@ -484,8 +481,8 @@ Next, the following policy attributes ha
+ 	policy for the time interval between the last two invocations of the
+ 	driver's utilization update callback by the CPU scheduler for that CPU.
+ 
+-One more policy attribute is present if the `HWP feature is enabled in the
+-processor <Active Mode With HWP_>`_:
++One more policy attribute is present if the HWP feature is enabled in the
++processor:
+ 
+ ``base_frequency``
+ 	Shows the base frequency of the CPU. Any frequency above this will be
+@@ -526,11 +523,11 @@ on the following rules, regardless of th
+ 
+  3. The global and per-policy limits can be set independently.
+ 
+-If the `HWP feature is enabled in the processor <Active Mode With HWP_>`_, the
+-resulting effective values are written into its registers whenever the limits
+-change in order to request its internal P-state selection logic to always set
+-P-states within these limits.  Otherwise, the limits are taken into account by
+-scaling governors (in the `passive mode <Passive Mode_>`_) and by the driver
++In the `active mode with the HWP feature enabled <Active Mode With HWP_>`_, the
++resulting effective values are written into hardware registers whenever the
++limits change in order to request its internal P-state selection logic to always
++set P-states within these limits.  Otherwise, the limits are taken into account
++by scaling governors (in the `passive mode <Passive Mode_>`_) and by the driver
+ every time before setting a new P-state for a CPU.
+ 
+ Additionally, if the ``intel_pstate=per_cpu_perf_limits`` command line argument
+@@ -541,12 +538,11 @@ at all and the only way to set the limit
+ Energy vs Performance Hints
+ ---------------------------
+ 
+-If ``intel_pstate`` works in the `active mode with the HWP feature enabled
+-<Active Mode With HWP_>`_ in the processor, additional attributes are present
+-in every ``CPUFreq`` policy directory in ``sysfs``.  They are intended to allow
+-user space to help ``intel_pstate`` to adjust the processor's internal P-state
+-selection logic by focusing it on performance or on energy-efficiency, or
+-somewhere between the two extremes:
++If the hardware-managed P-states (HWP) is enabled in the processor, additional
++attributes, intended to allow user space to help ``intel_pstate`` to adjust the
++processor's internal P-state selection logic by focusing it on performance or on
++energy-efficiency, or somewhere between the two extremes, are present in every
++``CPUFreq`` policy directory in ``sysfs``.  They are :
+ 
+ ``energy_performance_preference``
+ 	Current value of the energy vs performance hint for the given policy
+@@ -650,12 +646,14 @@ of them have to be prepended with the ``
+ 	Do not register ``intel_pstate`` as the scaling driver even if the
+ 	processor is supported by it.
+ 
++``active``
++	Register ``intel_pstate`` in the `active mode <Active Mode_>`_ to start
++	with.
++
+ ``passive``
+ 	Register ``intel_pstate`` in the `passive mode <Passive Mode_>`_ to
+ 	start with.
+ 
+-	This option implies the ``no_hwp`` one described below.
+-
+ ``force``
+ 	Register ``intel_pstate`` as the scaling driver instead of
+ 	``acpi-cpufreq`` even if the latter is preferred on the given system.
+@@ -670,13 +668,12 @@ of them have to be prepended with the ``
+ 	driver is used instead of ``acpi-cpufreq``.
+ 
+ ``no_hwp``
+-	Do not enable the `hardware-managed P-states (HWP) feature
+-	<Active Mode With HWP_>`_ even if it is supported by the processor.
++	Do not enable the hardware-managed P-states (HWP) feature even if it is
++	supported by the processor.
+ 
+ ``hwp_only``
+ 	Register ``intel_pstate`` as the scaling driver only if the
+-	`hardware-managed P-states (HWP) feature <Active Mode With HWP_>`_ is
+-	supported by the processor.
++	hardware-managed P-states (HWP) feature is supported by the processor.
+ 
+ ``support_acpi_ppc``
+ 	Take ACPI ``_PPC`` performance limits into account.
+
+
+
