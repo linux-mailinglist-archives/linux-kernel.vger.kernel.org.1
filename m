@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DBE2224BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105CE222489
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729364AbgGPOBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:01:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
+        id S1729146AbgGPN7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729123AbgGPN7k (ORCPT
+        with ESMTP id S1729128AbgGPN7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:59:40 -0400
+        Thu, 16 Jul 2020 09:59:42 -0400
 Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0B7C08C5C0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:40 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id o8so10402081wmh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F42CC08C5C0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:42 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id c80so10423923wme.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fj2Sj0XBOTrpGgH9u3LbiKzQE/KWClevdkHkCrkv1Yg=;
-        b=PM/T9mUg57/CuVzSIuFJHVpwMZAsIApx9CGqyg4/eDIC/7dh9PlknGvhE+A+c7966q
-         XybA6myfzfBuH/Qh+OX1ITKny8XjO5LLjfsFV/fYTP9VMB5rmlvpW3iQsQuj8CITWU3h
-         jx97ObdkSLVlMbtORCmzu6vjidAYr+koJ+vGxd6udM4RZnXcrx2mGhZkzYwCBntnXg3e
-         mW/gVTm2uoeLOtllsIa/q8FTPSiXXd9ce7yyleepQoME4liFOQn5OUlCWrbtmqkK3imr
-         URy4fSosY1s0usmRsDFnkdkpLHNHYKXWKI9DgAhON/D+z9hadcuNobUG+pSlu75aJuQC
-         8Tsg==
+        bh=/50EGrtFWRegK5lMk9s0po818SOAgTGmFH82qJKUi/I=;
+        b=LBq+wAlywu8+D/xsZk/Cs41V54ogsSAD0symhkOQYpLjrmqFC+uJYxhqW0UP/c5E1A
+         HlqZ5qywOollM5+myR2LqfRsc5+Alvhl5bHRZ0Z4QnismbaeFRT/esVAVg9hGK6aliq4
+         /X/srN2wM3FTqHYr90UMBYB14yyyPrBPCny4IBkBKhPszAsPg5emDstBgUGnpf0uqJ52
+         RSyIenLpfqHEKS/hHGWhy1BGzEm9FhL4Lfc65738Gvuw+UMhsJnaWv4lx/DM9ttGUcO2
+         GmvThV397PbiqHdicaNyoJUo0DEm0RLW5k2O5DeYF3AL06StH8q2G/1fwNokG9guyMCF
+         DNYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fj2Sj0XBOTrpGgH9u3LbiKzQE/KWClevdkHkCrkv1Yg=;
-        b=GTHZ+UiSaTVSnHa2UnMm6S/HpkvOjYKuwp5v9oIp/CPDdHOPQB/ga5DUM0TtcZku9C
-         DBt6oD5Zs2bOvfiU6LgFnuM0KhJbSi/2MN4r50h2Ml/L1yLH/t4lCsc4CqoXWILO5VZH
-         C27q4js0gPG0qWYAuYmKQ4ykRLSBvLlf9sZFRMB4iwzs+Knxhe068JKaLCArcFCSI1+t
-         Eu4PGjeEFuI0/2rwOamSNIvd0ctGXPvzAs8Mk9qxPngfGGh5gTyaqpkzYC7lP4rkAKUL
-         So+sKAfaHzORncTwd6T7jvQK1Bpfo6Sx/hTqg5lWLWNB/sS5/Ybbl11AhGBgyqEMnm7F
-         o3qg==
-X-Gm-Message-State: AOAM531skO6d0OagII+KvXrM7RinZN7HmBvdLZIkhLEVDssWEHTZYOQo
-        7BD6sRG68F3PLa9GtR5frL5gZg==
-X-Google-Smtp-Source: ABdhPJyySGT29h69n7yXJV4PeAehRLjC+H/BTtk2NLBpgHq2750weLnkYpp73TD509FUkx9aIrc1cw==
-X-Received: by 2002:a1c:14e:: with SMTP id 75mr4753360wmb.151.1594907979060;
-        Thu, 16 Jul 2020 06:59:39 -0700 (PDT)
+        bh=/50EGrtFWRegK5lMk9s0po818SOAgTGmFH82qJKUi/I=;
+        b=PHwMAEumx6ty7ioNewvpUFo+GchHV4VGfTJUtO+OkM5V+j5BxCy2ydG/6WQrguD8zW
+         oljJLwHPK7yHfZCBCzvq2HrL4lknFLNuYfTTUEgZ+2rX87Th7tB2BpRLSjmZSiB/1QAm
+         k6JOMLwG7oyqBTqqogWbzL2hgP3/ooaH+M173y0Jqnk77hs4pTyTkIRApz2QmP9jKmly
+         cfccalI6Wo2nM4jYYJO80jULcu82wcYjX238NSMG2WbeV1Zx9iMZBAbo50v4nuF6HZm0
+         nSLmeZ1hBvLsGu/JwD4S4M/JrEDUqxUUubmzn4VwKatoMwPiVPMFe0Y40eUn1TfhZ472
+         jVkA==
+X-Gm-Message-State: AOAM530y/JtGRcSPp2D1eNrQcVypgeqnQL5m+JPH7Un0XveAh1GFO5cr
+        cmGqbxVQdoMGgvPK2U3xtV9IeA==
+X-Google-Smtp-Source: ABdhPJwTXEWVIoqKpOfpR0giULN1Ul3cws+HaMeoV0tNTI2jQekaFtv3xPzB4pUvgA61vDc3bIkKEg==
+X-Received: by 2002:a05:600c:2253:: with SMTP id a19mr4302911wmm.136.1594907980735;
+        Thu, 16 Jul 2020 06:59:40 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.38
+        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 06:59:38 -0700 (PDT)
+        Thu, 16 Jul 2020 06:59:40 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Patrick Vasseur <patrick.vasseur@c-s.fr>
-Subject: [PATCH 06/30] iio: adc: ad7923: Demote obvious misuse of kerneldoc to standard comment blocks
-Date:   Thu, 16 Jul 2020 14:59:04 +0100
-Message-Id: <20200716135928.1456727-7-lee.jones@linaro.org>
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: [PATCH 07/30] iio: dac: ad5360: Fix kerneldoc attribute formatting for 'lock'
+Date:   Thu, 16 Jul 2020 14:59:05 +0100
+Message-Id: <20200716135928.1456727-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200716135928.1456727-1-lee.jones@linaro.org>
 References: <20200716135928.1456727-1-lee.jones@linaro.org>
@@ -68,53 +67,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No attempt has been made to document either of the demoted functions here
+Kerneldoc expects attributes/parameters to be in '@*.: ' format.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/adc/ad7923.c:159: warning: Function parameter or member 'indio_dev' not described in 'ad7923_update_scan_mode'
- drivers/iio/adc/ad7923.c:159: warning: Function parameter or member 'active_scan_mask' not described in 'ad7923_update_scan_mode'
- drivers/iio/adc/ad7923.c:202: warning: Function parameter or member 'irq' not described in 'ad7923_trigger_handler'
- drivers/iio/adc/ad7923.c:202: warning: Function parameter or member 'p' not described in 'ad7923_trigger_handler'
+ drivers/iio/dac/ad5360.c:89: warning: Function parameter or member 'lock' not described in 'ad5360_state'
 
 Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-Cc: Patrick Vasseur <patrick.vasseur@c-s.fr>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/adc/ad7923.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/iio/dac/ad5360.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/ad7923.c b/drivers/iio/adc/ad7923.c
-index 1d124c87c6ace..2a11bc7fdb567 100644
---- a/drivers/iio/adc/ad7923.c
-+++ b/drivers/iio/adc/ad7923.c
-@@ -151,9 +151,9 @@ static const struct ad7923_chip_info ad7923_chip_info[] = {
- 	},
- };
+diff --git a/drivers/iio/dac/ad5360.c b/drivers/iio/dac/ad5360.c
+index 3e0c9e84e8dab..e2a2473bfed77 100644
+--- a/drivers/iio/dac/ad5360.c
++++ b/drivers/iio/dac/ad5360.c
+@@ -67,7 +67,7 @@ struct ad5360_chip_info {
+  * @chip_info:		chip model specific constants, available modes etc
+  * @vref_reg:		vref supply regulators
+  * @ctrl:		control register cache
+- * @lock		lock to protect the data buffer during SPI ops
++ * @lock:		lock to protect the data buffer during SPI ops
+  * @data:		spi transfer buffers
+  */
  
--/**
-+/*
-  * ad7923_update_scan_mode() setup the spi transfer buffer for the new scan mask
-- **/
-+ */
- static int ad7923_update_scan_mode(struct iio_dev *indio_dev,
- 				   const unsigned long *active_scan_mask)
- {
-@@ -192,12 +192,12 @@ static int ad7923_update_scan_mode(struct iio_dev *indio_dev,
- 	return 0;
- }
- 
--/**
-+/*
-  * ad7923_trigger_handler() bh of trigger launched polling to ring buffer
-  *
-  * Currently there is no option in this driver to disable the saving of
-  * timestamps within the ring.
-- **/
-+ */
- static irqreturn_t ad7923_trigger_handler(int irq, void *p)
- {
- 	struct iio_poll_func *pf = p;
 -- 
 2.25.1
 
