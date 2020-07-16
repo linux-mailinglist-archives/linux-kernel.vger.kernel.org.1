@@ -2,65 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9147222148
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22EC22214D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 13:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728162AbgGPLVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 07:21:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59898 "EHLO mx2.suse.de"
+        id S1728219AbgGPLWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 07:22:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:60232 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726515AbgGPLVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 07:21:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5A7A0AC52;
-        Thu, 16 Jul 2020 11:21:39 +0000 (UTC)
-Date:   Thu, 16 Jul 2020 13:21:34 +0200
-From:   Jean Delvare <jdelvare@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: failing to fetch the dmi tree
-Message-ID: <20200716132134.56cb4bc1@endymion>
-In-Reply-To: <20200715113743.6d54eefa@endymion>
-References: <20200713091102.28d186ca@canb.auug.org.au>
-        <20200715113743.6d54eefa@endymion>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S1726506AbgGPLWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 07:22:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50BA91FB;
+        Thu, 16 Jul 2020 04:22:21 -0700 (PDT)
+Received: from [10.57.35.46] (unknown [10.57.35.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A9D3C3F68F;
+        Thu, 16 Jul 2020 04:22:16 -0700 (PDT)
+Subject: Re: [PATCH 0/4] iommu/arm-smmu-v3: Improve cmdq lock efficiency
+To:     John Garry <john.garry@huawei.com>, Will Deacon <will@kernel.org>
+Cc:     joro@8bytes.org, trivial@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, maz@kernel.org
+References: <1592846920-45338-1-git-send-email-john.garry@huawei.com>
+ <20200716101940.GA7036@willie-the-truck>
+ <20200716102233.GC7036@willie-the-truck>
+ <20200716102814.GD7036@willie-the-truck>
+ <bd302efa-20d8-e1b3-6a80-db65ab5ad752@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <aef1e4a4-d594-f477-9029-8f4295bb9f6c@arm.com>
+Date:   Thu, 16 Jul 2020 12:22:05 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <bd302efa-20d8-e1b3-6a80-db65ab5ad752@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On Wed, 15 Jul 2020 11:37:43 +0200, Jean Delvare wrote:
-> On Mon, 13 Jul 2020 09:11:02 +1000, Stephen Rothwell wrote:
-> > Jean, I don't suppose you would like to produce a git tree for me to
-> > fetch instead, as yours is the last quilt series I fetch (apart from
-> > Andrew's which is special).  
+On 2020-07-16 11:56, John Garry wrote:
+> On 16/07/2020 11:28, Will Deacon wrote:
+>> On Thu, Jul 16, 2020 at 11:22:33AM +0100, Will Deacon wrote:
+>>> On Thu, Jul 16, 2020 at 11:19:41AM +0100, Will Deacon wrote:
+>>>> On Tue, Jun 23, 2020 at 01:28:36AM +0800, John Garry wrote:
+>>>>> As mentioned in [0], the CPU may consume many cycles processing
+>>>>> arm_smmu_cmdq_issue_cmdlist(). One issue we find is the cmpxchg() 
+>>>>> loop to
+>>>>> get space on the queue takes approx 25% of the cycles for this 
+>>>>> function.
+>>>>>
+>>>>> This series removes that cmpxchg().
+>>>>
+>>>> How about something much simpler like the diff below? >>
+>>> Ah, scratch that, I don't drop the lock if we fail the cas with it held.
+>>> Let me hack it some more (I have no hardware so I can only build-test 
+>>> this).
+>>
+>> Right, second attempt...
 > 
-> Actually, feel free to suppose. While a quilt tree fits my current
-> workflow better, I don't want to be the guy who makes your life more
-> difficult. Let me give it a try.
+> I can try it, but if performance if not as good, then please check mine 
+> further (patch 4/4 specifically) - performance is really good, IMHO.
 
-OK, so my old for-next branch in quilt format is still at:
+Perhaps a silly question (I'm too engrossed in PMU world ATM to get 
+properly back up to speed on this), but couldn't this be done without 
+cmpxchg anyway? Instinctively it feels like instead of maintaining a 
+literal software copy of the prod value, we could resolve the "claim my 
+slot in the queue" part with atomic_fetch_add on a free-running 32-bit 
+"pseudo-prod" index, then whoever updates the hardware deals with the 
+truncation and wrap bit to convert it to an actual register value.
 
-http://jdelvare.nerim.net/devel/linux/jdelvare-dmi/
+Robin.
 
-and what should be a git equivalent of it is at:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git dmi-for-next
-
-If the latter works for you then I shall be ready to switch to it
-officially. If there's anything wrong, please let me know.
-
-Will you curse me if I ever rebase this branch?
-
-Thanks,
--- 
-Jean Delvare
-SUSE L3 Support
+> 
+> Thanks,
+> 
+>>
+>> Will
+>>
+>> --->8
+>>
+>> diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+>> index f578677a5c41..e6bcddd6ef69 100644
+>> --- a/drivers/iommu/arm-smmu-v3.c
+>> +++ b/drivers/iommu/arm-smmu-v3.c
+>> @@ -560,6 +560,7 @@ struct arm_smmu_cmdq {
+>>       atomic_long_t            *valid_map;
+>>       atomic_t            owner_prod;
+>>       atomic_t            lock;
+>> +    spinlock_t            slock;
+>>   };
+>>   struct arm_smmu_cmdq_batch {
+>> @@ -1378,7 +1379,7 @@ static int arm_smmu_cmdq_issue_cmdlist(struct 
+>> arm_smmu_device *smmu,
+>>       u64 cmd_sync[CMDQ_ENT_DWORDS];
+>>       u32 prod;
+>>       unsigned long flags;
+>> -    bool owner;
+>> +    bool owner, locked = false;
+>>       struct arm_smmu_cmdq *cmdq = &smmu->cmdq;
+>>       struct arm_smmu_ll_queue llq = {
+>>           .max_n_shift = cmdq->q.llq.max_n_shift,
+>> @@ -1387,27 +1388,38 @@ static int arm_smmu_cmdq_issue_cmdlist(struct 
+>> arm_smmu_device *smmu,
+>>       /* 1. Allocate some space in the queue */
+>>       local_irq_save(flags);
+>> -    llq.val = READ_ONCE(cmdq->q.llq.val);
+>>       do {
+>>           u64 old;
+>> +        llq.val = READ_ONCE(cmdq->q.llq.val);
+>> -        while (!queue_has_space(&llq, n + sync)) {
+>> +        if (queue_has_space(&llq, n + sync))
+>> +            goto try_cas;
+>> +
+>> +        if (locked)
+>> +            spin_unlock(&cmdq->slock);
+>> +
+>> +        do {
+>>               local_irq_restore(flags);
+>>               if (arm_smmu_cmdq_poll_until_not_full(smmu, &llq))
+>>                   dev_err_ratelimited(smmu->dev, "CMDQ timeout\n");
+>>               local_irq_save(flags);
+>> -        }
+>> +        } while (!queue_has_space(&llq, n + sync));
+>> +try_cas:
+>>           head.cons = llq.cons;
+>>           head.prod = queue_inc_prod_n(&llq, n + sync) |
+>>                            CMDQ_PROD_OWNED_FLAG;
+>>           old = cmpxchg_relaxed(&cmdq->q.llq.val, llq.val, head.val);
+>> -        if (old == llq.val)
+>> +        if (old != llq.val)
+>>               break;
+>> -        llq.val = old;
+>> +        if (!locked) {
+>> +            spin_lock(&cmdq->slock);
+>> +            locked = true;
+>> +        }
+>>       } while (1);
+>> +
+>>       owner = !(llq.prod & CMDQ_PROD_OWNED_FLAG);
+>>       head.prod &= ~CMDQ_PROD_OWNED_FLAG;
+>>       llq.prod &= ~CMDQ_PROD_OWNED_FLAG;
+>> @@ -3192,6 +3204,7 @@ static int arm_smmu_cmdq_init(struct 
+>> arm_smmu_device *smmu)
+>>       atomic_set(&cmdq->owner_prod, 0);
+>>       atomic_set(&cmdq->lock, 0);
+>> +    spin_lock_init(&cmdq->slock);
+>>       bitmap = (atomic_long_t *)bitmap_zalloc(nents, GFP_KERNEL);
+>>       if (!bitmap) {
+>> .
+>>
+> 
