@@ -2,114 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC422218F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 02:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6804D2218FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 02:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgGPAf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 20:35:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48868 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726479AbgGPAf0 (ORCPT
+        id S1727097AbgGPAhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 20:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727042AbgGPAhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 20:35:26 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06G0WP27006018;
-        Wed, 15 Jul 2020 20:35:17 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 329r1jcupq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 20:35:16 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06G0WQg3006534;
-        Wed, 15 Jul 2020 20:35:16 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 329r1jcupe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jul 2020 20:35:16 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06G0KJoq015981;
-        Thu, 16 Jul 2020 00:35:15 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma03wdc.us.ibm.com with ESMTP id 327529cswp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 00:35:15 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06G0ZEiA46334458
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Jul 2020 00:35:14 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 454917805F;
-        Thu, 16 Jul 2020 00:35:14 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C2BE87805E;
-        Thu, 16 Jul 2020 00:35:10 +0000 (GMT)
-Received: from morokweng.localdomain (unknown [9.163.73.114])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Thu, 16 Jul 2020 00:35:10 +0000 (GMT)
-References: <159466074408.24747.10036072269371204890.stgit@hbathini.in.ibm.com> <159466095278.24747.9161591016931052627.stgit@hbathini.in.ibm.com>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Hari Bathini <hbathini@linux.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pingfan Liu <piliu@redhat.com>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH v3 08/12] ppc64/kexec_file: setup the stack for purgatory
-In-reply-to: <159466095278.24747.9161591016931052627.stgit@hbathini.in.ibm.com>
-Date:   Wed, 15 Jul 2020 21:35:07 -0300
-Message-ID: <87zh808fgk.fsf@morokweng.localdomain>
+        Wed, 15 Jul 2020 20:37:18 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD5FC08C5CE
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 17:37:18 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z3so2850728pfn.12
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 17:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mVodWiEHQkq0E0nBn3v+yTDqfSzN287V6yNqrTXAono=;
+        b=DFRDIY5fVPO+tRVNaoPThKmwQLGgQrirP047p4B4mIhpL3deqJvaKcI6gRIHq2khNf
+         F2HBJTLyaJ0AOeUJMrdPmoZXu1MX6JIUNyHpWyKuJmvM4f/vwPug1KfLEUZ9EumRKA8+
+         BDV3AXymAZFVYqoNfq8/LWIfCLKe5k65NnSlI0GlLgzpaZG5zzpqmG/4uDVihsjMcOeU
+         RRYscvBpSrSYR2qq/IoM2yj8IHgx7LEJk22IysJ1llJHOVowsOCwtN28MeycXUYHEswY
+         ai80mqr23WL40hFdEbfuHRotDCTONfWYWb3obD3Hmh1+8qpd3YxhafkepdkyH2YmY3R0
+         59FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mVodWiEHQkq0E0nBn3v+yTDqfSzN287V6yNqrTXAono=;
+        b=TQqDSsfV/WkL6IlewVAlrmaE29IyWi0LBCHd2mOgrY41fgBJzp2lWwZl/Uxu0zPbhg
+         7T5MPBhqxTdra9rcftpY2pbATgcRqInnbS44ICjvsO5R1fDecbNGUb1UBESfcChiUZwa
+         MOjh2+2Gc30o4PKCBcDYPQWqJiiY+KQdWPF+CuV0Z6gv11nejTOXagbaWHGhQBWXBqhZ
+         ACKSqopaKTx9+svrGgP9EtxaijQuIVIk375OsphD9BscJ1ZmdPaR0Xa6flXgrq/OZfQX
+         sVH+t/iUWpM4thobZdza3gVIFGKuTGfgO1CW6z1kfe5U4R5JEErsKI7ptggqbBh9fMLa
+         zj1A==
+X-Gm-Message-State: AOAM533bxcxYqyaZ3VxsnhQsr05bcri0Qu98hChk7zIg4Z/KuxNO9fQ8
+        +/4H5i0qYEbZvZVDweF5hwH3ua97EPVSgKsh3DTdQCXI
+X-Google-Smtp-Source: ABdhPJxGnJt4lUyRPW/VpEnwG2xIOd8fevL53BtMpqCJAdDEXJ8OmXXg7qkQPjBLGYmVPWNYLNSVgaXlhqhI5V1KDoQ=
+X-Received: by 2002:a63:6e0e:: with SMTP id j14mr1944707pgc.384.1594859837823;
+ Wed, 15 Jul 2020 17:37:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-15_12:2020-07-15,2020-07-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- priorityscore=1501 spamscore=0 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 adultscore=0 mlxscore=0 bulkscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007150175
+References: <20200715031120.1002016-1-vitor@massaru.org> <20200715031120.1002016-3-vitor@massaru.org>
+In-Reply-To: <20200715031120.1002016-3-vitor@massaru.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 15 Jul 2020 17:37:06 -0700
+Message-ID: <CAFd5g47HPGjX4AYuBCjH8DqSUMNO+yqjudWH+ZNovStM+aXExA@mail.gmail.com>
+Subject: Re: [RFC 2/3] lib: Allows to borrow mm in userspace on KUnit
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        David Gow <davidgow@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 14, 2020 at 8:11 PM Vitor Massaru Iha <vitor@massaru.org> wrote:
 
-Hari Bathini <hbathini@linux.ibm.com> writes:
+Probably want to add more of a description here as what you are doing
+is not entirely trivial to someone not familiar with mm contexts.
 
-> To avoid any weird errors, the purgatory should run with its own
-> stack. Set one up by adding the stack buffer to .data section of
-> the purgatory. Also, setup opal base & entry values in r8 & r9
-> registers to help early OPAL debugging.
 >
-> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
-> Tested-by: Pingfan Liu <piliu@redhat.com>
-
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-
+> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
 > ---
+>  include/kunit/test.h  |  1 +
+>  lib/kunit/try-catch.c | 15 ++++++++++++++-
+>  2 files changed, 15 insertions(+), 1 deletion(-)
 >
-> v2 -> v3:
-> * Unchanged. Added Tested-by tag from Pingfan.
->
-> v1 -> v2:
-> * Setting up opal base & entry values in r8 & r9 for early OPAL debug.
->
->
->  arch/powerpc/include/asm/kexec.h       |    4 ++++
->  arch/powerpc/kexec/file_load_64.c      |   29 +++++++++++++++++++++++++++++
->  arch/powerpc/purgatory/trampoline_64.S |   32 ++++++++++++++++++++++++++++++++
->  3 files changed, 65 insertions(+)
->
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 59f3144f009a..49c38bdcb93e 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -222,6 +222,7 @@ struct kunit {
+>          * protect it with some type of lock.
+>          */
+>         struct list_head resources; /* Protected by lock. */
+> +       struct mm_struct *mm;
 
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+Part of me thinks we should put a better name here, part of me thinks
+it is fine because it matches the convention.
+
+Either way, this DEFINITELY deserves a comment explaining what it is,
+why it exists, and how it should/shouldn't be used.
+
+>  };
+>
+>  void kunit_init_test(struct kunit *test, const char *name, char *log);
+> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
+> index 0dd434e40487..f677c2f2a51a 100644
+> --- a/lib/kunit/try-catch.c
+> +++ b/lib/kunit/try-catch.c
+> @@ -11,7 +11,8 @@
+>  #include <linux/completion.h>
+>  #include <linux/kernel.h>
+>  #include <linux/kthread.h>
+> -
+> +#include <linux/sched/mm.h>
+> +#include <linux/sched/task.h>
+>  #include "try-catch-impl.h"
+>
+>  void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
+> @@ -24,8 +25,17 @@ EXPORT_SYMBOL_GPL(kunit_try_catch_throw);
+>  static int kunit_generic_run_threadfn_adapter(void *data)
+>  {
+>         struct kunit_try_catch *try_catch = data;
+> +       struct kunit *test = try_catch->test;
+> +
+> +       if (test->mm != NULL)
+> +               kthread_use_mm(try_catch->test->mm);
+>
+>         try_catch->try(try_catch->context);
+> +       if (try_catch->test->mm) {
+
+Here and below: You already have a pointer to test. You should use it.
+
+> +               if (test->mm != NULL)
+> +                       kthread_unuse_mm(try_catch->test->mm);
+> +               try_catch->test->mm = NULL;
+> +       }
+>
+>         complete_and_exit(try_catch->try_completion, 0);
+>  }
+> @@ -65,6 +75,9 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
+>         try_catch->context = context;
+>         try_catch->try_completion = &try_completion;
+>         try_catch->try_result = 0;
+> +
+> +       test->mm = get_task_mm(current);
+> +
+>         task_struct = kthread_run(kunit_generic_run_threadfn_adapter,
+>                                   try_catch,
+>                                   "kunit_try_catch_thread");
+> --
+> 2.26.2
+>
