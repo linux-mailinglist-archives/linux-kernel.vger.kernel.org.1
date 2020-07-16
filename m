@@ -2,198 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBF7221CAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4B5221CAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728159AbgGPGiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 02:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbgGPGiG (ORCPT
+        id S1728178AbgGPGiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:38:22 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:26898 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726069AbgGPGiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:38:06 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98734C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:38:05 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r19so5795146ljn.12
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YaSPUbyvBCVCojGQeoPnqHkyJKZ1ja3Lr18Jje7cOqY=;
-        b=A3RvqCgsImn89jAmBAQl0jPkTGXm/qIASiHFdjKuJcvSnzMb7UwKbZPXvRK8ksXBe6
-         AHM3R3SiVqGkpawVE4KKXz+kX/RL1W75jq5DZGoysquqtbt3bsvgKrY54HJvqviQXjV5
-         95JOjbz1I3BJyEoOE6XyT+UNMnAc2JGrLyIas6TJSznkXgEKBN627ynk8DSDD9SyT5M+
-         Awoz1UQbqFptDo7wkZLfH75lSZ/79SNBBDb7ypq/refpjHrGwRZPtIoykmUtTKCDtL8C
-         jEG7Lxu8jjhTeoquReZoxynfD7eOy0CkSmENMNHGZFx2/K+VEI/UecbAMaxbzifkYBzm
-         i7Mg==
+        Thu, 16 Jul 2020 02:38:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1594881499;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mgsbCofvuyqXz4CiSAjrSGg+j5I3SP1iCQXPN1fyRB0=;
+        b=Ad1Tzu64duExagm01DiFHyHqR9Q4OZahI9GBiWq8DM/5ak1J2iNQxE/bQJjlbGrZnVjvPD
+        cF9gjjATcYeiYRHppAM/HlUf6AbXCiMAN/N3RY8IdZ78VlnUHhTaiXka3m+5LL6pJi0iEu
+        08o8MXuoaDBZDysOvnGBhjfJCen6GjI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-fGtZHe1kPjGQfMNdmIBBdg-1; Thu, 16 Jul 2020 02:38:13 -0400
+X-MC-Unique: fGtZHe1kPjGQfMNdmIBBdg-1
+Received: by mail-wm1-f71.google.com with SMTP id g6so4425663wmk.4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:38:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YaSPUbyvBCVCojGQeoPnqHkyJKZ1ja3Lr18Jje7cOqY=;
-        b=ID1IjhOh3Y49fjD2awcKPU7/1DGi4Aa+hWEvmdT6ArxDxWzYHhL64ZhMjWSIuloFY7
-         Hq1kH7NhSe4nzcHIigk8J9fMI/C8okib7lP68hl/v7niY6ViM4ETZzLw4AcaRjTxrFLn
-         +X1dO4hv4s/Aj6nX/mc5DeLI3MhVp4avSNr/KSXWAZpCW16/vK5wTormiQUCOSYX350f
-         aQ1PWtQIyPZcR9QH2FbncRNOyah4DUxWy8Mp5HHHiJxjdvwj+Jg1ZYJRPINPVwnOoMk3
-         G8LyNjI/wsh7hDh53MeCzi8wRRIQPuMw8dtykU1XEyxO6FfoEoRit8y81bUhhwdSnPP1
-         8LbQ==
-X-Gm-Message-State: AOAM532PMgLg5SKLRIfRo21wsnTJNP4jTHBsNjyjp3dGMLq90g3SIGGP
-        r9ZTNUhgGViNk3+5pRbgtf8Ead2rodkW/kCF3x9voJWw+eLR2w==
-X-Google-Smtp-Source: ABdhPJzl7MxZcRPZMcYe7FvBIvod+nuK2T3TXFDebC9bRcZP9xfmG1URn2nQMXs8vQhd38i87QcLVdvPUM+if6b5lzw=
-X-Received: by 2002:a2e:9857:: with SMTP id e23mr1322227ljj.411.1594881483731;
- Wed, 15 Jul 2020 23:38:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mgsbCofvuyqXz4CiSAjrSGg+j5I3SP1iCQXPN1fyRB0=;
+        b=BSk0hNg3Qad8/COw+cYPZdMJUo75/mAsHxOT1H9Ow+aq1G2G6AjHjaN1kv3tesqGo9
+         JqVVwoEEiqEkUbBOyvdCc2msqujPqXPSwtOuxiCHYgm9R7pJ9Eo5qK6kxJIQcr0+r1dr
+         BFmB7OMc2LEtZr4l5H3P7D0DsMRqJslmHAdRPoOu0EpwaS9ZYKwuTSg1RJO5mi35ZD1l
+         aBlwcgqdMRZyEfp9QUYr/XNjWKV+2It+WynrybUhYuyO10cJ1QQLEE7hnmo3IWUfVZME
+         xtR+NXNuMvq46ZVg6E+gnAsRMYaYklatV12sYFF5Sio8Zd0ux9QoIHbq8ym42OJQzCBz
+         qtKg==
+X-Gm-Message-State: AOAM530wAK1bVH2HxYF3l9/HNv+ALwhoQ9VjLAyer1KyGMsqvboBgcoJ
+        QoANvidEdR5VFlG0ZYDqv7Uqw8ym5nb3AyKDS/RjDzi/Qq0E0UJ1igNJI+ljn9WFpWeog7EkPCI
+        IdvH4UUkLsIW7xntpdW5ofXp5
+X-Received: by 2002:a1c:bb89:: with SMTP id l131mr2738041wmf.125.1594881492234;
+        Wed, 15 Jul 2020 23:38:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzzaPeWg1JnBNar2FAbNPZoF5EQR8AmndjmfZn9b+/T6UDyq076UKRxNe2r8PFt/+RlfkD65g==
+X-Received: by 2002:a1c:bb89:: with SMTP id l131mr2738003wmf.125.1594881491787;
+        Wed, 15 Jul 2020 23:38:11 -0700 (PDT)
+Received: from redhat.com (bzq-79-182-31-92.red.bezeqint.net. [79.182.31.92])
+        by smtp.gmail.com with ESMTPSA id p14sm8342659wrj.14.2020.07.15.23.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 23:38:11 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 02:38:07 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Hui Zhu <teawater@gmail.com>
+Cc:     david@redhat.com, jasowang@redhat.com, akpm@linux-foundation.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        qemu-devel@nongnu.org, virtio-dev@lists.oasis-open.org,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [RFC for Linux v4 0/2] virtio_balloon: Add
+ VIRTIO_BALLOON_F_CONT_PAGES to report continuous pages
+Message-ID: <20200716021929-mutt-send-email-mst@kernel.org>
+References: <1594867315-8626-1-git-send-email-teawater@gmail.com>
 MIME-Version: 1.0
-References: <20200715135011.42743-1-kirill.shutemov@linux.intel.com>
- <CAHk-=wh4pB-jRngOjcGxpc8=NPds3jWqJwDMUWC3-OEo4dRiKg@mail.gmail.com>
- <20200715205428.GA201569@google.com> <CAHk-=wg-_Oof43pKUHMk4ySdLwpYi7+shFg+aeV18UP2Akiv8g@mail.gmail.com>
- <CAHk-=wg+iVwK7MDXB+BPbhTmP-1eBa-y4vxRNr_G8ETnzv5pZg@mail.gmail.com>
- <20200715222228.jf2pv5u2wyhtc5o5@box> <CAHk-=wgp-ZJ+J250DMaJFBDU2hnhUUqXcUnVnZZ1iFQEK6O-jg@mail.gmail.com>
- <CAHk-=wh3jD4dwXWWFors9OnYp-YCzYN2bCGs9HDxrtZ=TiFyDQ@mail.gmail.com> <CAHk-=wjw2yuQjP1rqB=ocr9W3=ak+6h4XygoFTAgM5meiM1Q0A@mail.gmail.com>
-In-Reply-To: <CAHk-=wjw2yuQjP1rqB=ocr9W3=ak+6h4XygoFTAgM5meiM1Q0A@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 16 Jul 2020 12:07:52 +0530
-Message-ID: <CA+G9fYsRcL1mcFhH47ek3YdGcK6sDSa+Gb0UoJzWkMcTsfxWdQ@mail.gmail.com>
-Subject: Re: [PATCHv2] mm: Fix warning in move_normal_pmd()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        William Kucharski <william.kucharski@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1594867315-8626-1-git-send-email-teawater@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Jul 2020 at 04:49, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, Jul 15, 2020 at 4:04 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > It *might* be as simple as this incremental thing on top
->
-> No, it needs to be
->
-> +       if (*old_addr + *len < old->vm_end)
-> +               return;
->
-> in try_to_align_end(), of course.
->
-> Now I'm going for a lie-down, because this cross-eyed thing isn't working.
+On Thu, Jul 16, 2020 at 10:41:50AM +0800, Hui Zhu wrote:
+> The first, second and third version are in [1], [2] and [3].
+> Code of current version for Linux and qemu is available in [4] and [5].
+> Update of this version:
+> 1. Report continuous pages will increase the speed.  So added deflate
+>    continuous pages.
+> 2. According to the comments from David in [6], added 2 new vqs inflate_cont_vq
+>    and deflate_cont_vq to report continuous pages with format 32 bits pfn and 32
+>    bits size.
+> Following is the introduction of the function.
+> These patches add VIRTIO_BALLOON_F_CONT_PAGES to virtio_balloon. With this
+> flag, balloon tries to use continuous pages to inflate and deflate.
+> Opening this flag can bring two benefits:
+> 1. Report continuous pages will increase memory report size of each time
+>    call tell_host.  Then it will increase the speed of balloon inflate and
+>    deflate.
+> 2. Host THPs will be splitted when qemu release the page of balloon inflate.
+>    Inflate balloon with continuous pages will let QEMU release the pages
+>    of same THPs.  That will help decrease the splitted THPs number in
+>    the host.
+>    Following is an example in a VM with 1G memory 1CPU.  This test setups an
+>    environment that has a lot of fragmentation pages.  Then inflate balloon will
+>    split the THPs.
+> // This is the THP number before VM execution in the host.
+> // None use THP.
+> cat /proc/meminfo | grep AnonHugePages:
+> AnonHugePages:         0 kB
+> // After VM start, use usemem
+> // (https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git)
+> // punch-holes function generates 400m fragmentation pages in the guest
+> // kernel.
+> usemem --punch-holes -s -1 800m &
+> // This is the THP number after this command in the host.
+> // Some THP is used by VM because usemem will access 800M memory
+> // in the guest.
+> cat /proc/meminfo | grep AnonHugePages:
+> AnonHugePages:    911360 kB
+> // Connect to the QEMU monitor, setup balloon, and set it size to 600M.
+> (qemu) device_add virtio-balloon-pci,id=balloon1
+> (qemu) info balloon
+> balloon: actual=1024
+> (qemu) balloon 600
+> (qemu) info balloon
+> balloon: actual=600
+> // This is the THP number after inflate the balloon in the host.
+> cat /proc/meminfo | grep AnonHugePages:
+> AnonHugePages:     88064 kB
+> // Set the size back to 1024M in the QEMU monitor.
+> (qemu) balloon 1024
+> (qemu) info balloon
+> balloon: actual=1024
+> // Use usemem to increase the memory usage of QEMU.
+> killall usemem
+> usemem 800m
+> // This is the THP number after this operation.
+> cat /proc/meminfo | grep AnonHugePages:
+> AnonHugePages:     65536 kB
+> 
+> Following example change to use continuous pages balloon.  The number of
+> splitted THPs is decreased.
+> // This is the THP number before VM execution in the host.
+> // None use THP.
+> cat /proc/meminfo | grep AnonHugePages:
+> AnonHugePages:         0 kB
+> // After VM start, use usemem punch-holes function generates 400M
+> // fragmentation pages in the guest kernel.
+> usemem --punch-holes -s -1 800m &
+> // This is the THP number after this command in the host.
+> // Some THP is used by VM because usemem will access 800M memory
+> // in the guest.
+> cat /proc/meminfo | grep AnonHugePages:
+> AnonHugePages:    911360 kB
+> // Connect to the QEMU monitor, setup balloon, and set it size to 600M.
+> (qemu) device_add virtio-balloon-pci,id=balloon1,cont-pages=on
+> (qemu) info balloon
+> balloon: actual=1024
+> (qemu) balloon 600
+> (qemu) info balloon
+> balloon: actual=600
+> // This is the THP number after inflate the balloon in the host.
+> cat /proc/meminfo | grep AnonHugePages:
+> AnonHugePages:    616448 kB
+> // Set the size back to 1024M in the QEMU monitor.
+> (qemu) balloon 1024
+> (qemu) info balloon
+> balloon: actual=1024
+> // Use usemem to increase the memory usage of QEMU.
+> killall usemem
+> usemem 800m
+> // This is the THP number after this operation.
+> cat /proc/meminfo | grep AnonHugePages:
+> AnonHugePages:    907264 kB
+
+I'm a bit confused about which of the above run within guest,
+and which run within host. Could you explain pls?
 
 
-Just want to double check.
-Here is the diff after those two patches applied. Please correct me if
-it is wrong.
-This patch applied on top of Linus mainline master branch.
-I am starting my test cycles.
 
----
- mm/mremap.c | 73 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
+> [1] https://lkml.org/lkml/2020/3/12/144
+> [2] https://lore.kernel.org/linux-mm/1584893097-12317-1-git-send-email-teawater@gmail.com/
+> [3] https://lkml.org/lkml/2020/5/12/324
+> [4] https://github.com/teawater/linux/tree/balloon_conts
+> [5] https://github.com/teawater/qemu/tree/balloon_conts
+> [6] https://lkml.org/lkml/2020/5/13/1211
+> 
+> Hui Zhu (2):
+>   virtio_balloon: Add VIRTIO_BALLOON_F_CONT_PAGES and inflate_cont_vq
+>   virtio_balloon: Add deflate_cont_vq to deflate continuous pages
+> 
+>  drivers/virtio/virtio_balloon.c     |  180 +++++++++++++++++++++++++++++++-----
+>  include/linux/balloon_compaction.h  |   12 ++
+>  include/uapi/linux/virtio_balloon.h |    1
+>  mm/balloon_compaction.c             |  117 +++++++++++++++++++++--
+>  4 files changed, 280 insertions(+), 30 deletions(-)
 
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 6b153dc05fe4..4961c18d2008 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -254,6 +254,77 @@ static bool move_normal_pmd(struct vm_area_struct
-*vma, unsigned long old_addr,
-
-  return true;
- }
-+
-+#define ADDR_BEFORE_PREV(addr, vma) \
-+ ((vma)->vm_prev && (addr) < (vma)->vm_prev->vm_end)
-+
-+static inline void try_to_align_start(unsigned long *len,
-+ struct vm_area_struct *old, unsigned long *old_addr,
-+ struct vm_area_struct *new, unsigned long *new_addr)
-+{
-+ if (*old_addr > old->vm_start)
-+ return;
-+
-+ if (ADDR_BEFORE_PREV(*old_addr & PMD_MASK, old))
-+ return;
-+
-+ if (ADDR_BEFORE_PREV(*new_addr & PMD_MASK, new))
-+ return;
-+
-+ /* Bingo! */
-+ *len += *new_addr & ~PMD_MASK;
-+ *old_addr &= PMD_MASK;
-+ *new_addr &= PMD_MASK;
-+}
-+
-+/*
-+ * When aligning the end, avoid ALIGN() (which can overflow
-+ * if the user space is the full address space, and overshoot
-+ * the vm_start of the next vma).
-+ *
-+ * Align the upper limit down instead, and check that it's not
-+ * in the same PMD as the end.
-+ */
-+#define ADDR_AFTER_NEXT(addr, vma) \
-+ ((vma)->vm_next && (addr) > (PMD_MASK & (vma)->vm_next->vm_start))
-+
-+static inline void try_to_align_end(unsigned long *len,
-+ struct vm_area_struct *old, unsigned long *old_addr,
-+ struct vm_area_struct *new, unsigned long *new_addr)
-+{
-+ if (*old_addr < old->vm_end)
-+ return;
-+
-+ if (ADDR_AFTER_NEXT(*old_addr + *len, old))
-+ return;
-+
-+ if (ADDR_AFTER_NEXT(*new_addr + *len, new))
-+ return;
-+
-+ /* Mutual alignment means this is same for new/old addr */
-+ *len = ALIGN(*new_addr + *len, PMD_SIZE) - *new_addr;
-+}
-+
-+/*
-+ * The PMD move case is much more efficient, so if we have the
-+ * mutually aligned case, try to see if we can extend the
-+ * beginning and end to be aligned too.
-+ *
-+ * The pointer dereferences look bad, but with inlining, the
-+ * compiler will sort it out.
-+ */
-+static inline void try_to_align_range(unsigned long *len,
-+ struct vm_area_struct *old, unsigned long *old_addr,
-+ struct vm_area_struct *new, unsigned long *new_addr)
-+{
-+ if ((*old_addr ^ *new_addr) & ~PMD_MASK)
-+ return;
-+
-+ try_to_align_start(len, old, old_addr, new, new_addr);
-+ try_to_align_end(len, old, old_addr, new, new_addr);
-+}
-+#else
-+#define try_to_align_range(len,old,olda,new,newa) do { } while(0);
- #endif
-
- unsigned long move_page_tables(struct vm_area_struct *vma,
-@@ -272,6 +343,8 @@ unsigned long move_page_tables(struct vm_area_struct *vma,
-  old_addr, old_end);
-  mmu_notifier_invalidate_range_start(&range);
-
-+ try_to_align_range(&len, vma, &old_addr, new_vma, &new_addr);
-+
-  for (; old_addr < old_end; old_addr += extent, new_addr += extent) {
-  cond_resched();
-  next = (old_addr + PMD_SIZE) & PMD_MASK;
--- 
-2.27.0
-
->
->               Linus
-
-- Naresh
