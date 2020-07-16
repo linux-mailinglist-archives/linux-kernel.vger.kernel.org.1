@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C51D2224B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346D72224B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729322AbgGPOBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+        id S1729318AbgGPOA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729154AbgGPN7w (ORCPT
+        with ESMTP id S1729178AbgGPN7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:59:52 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97175C08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:52 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id o8so10402817wmh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:52 -0700 (PDT)
+        Thu, 16 Jul 2020 09:59:54 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE356C08C5DC
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:53 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z2so7211327wrp.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UrH3kHLe+dExzck//Xs9WC4y12BnMG39PRZDgQtY4y0=;
-        b=e6LcB+3pAZokM37jcPJ93LQeC/I0DhPbBDogTHulpprvOqEfVf//SPgEydAg3NXncF
-         kwIfObXF5wnxkCMdvqg6xSHqaIZ0Emf8L/Q5YPPSB9SrpdsGo7hfFc5zvsOJBodpl7it
-         LNub4EOvVQ6m6R5nmNVMx85hf00jH6o1yhlnfGpvhQz/ycvC+k64ZjN2OerS8I2h5RD9
-         IVM6pfM0ncc1lKjy07LgeJ25/vLSijE51CBZdL4AbM8l1+SYpyBJUD58O14yEOSAKwGF
-         /lw9NT7IcLZeqFGH7cceRbcVE/KeiLXdtBGAm+yoDaSItjNPWxnBZ04yBjVJXDorQHPK
-         RdQg==
+        bh=HmsMpTwfL7pGfzUHY+3b/NowLtKwAcX5ohfQKTrGvPA=;
+        b=laIysYMMocgn89Hv3NkjP1Jq0QAhgj4ZVjNxfrrMJwCnUv/WsLO4F2Nkr/wHPuNIUg
+         mP+NeoGVihsczpizzfCPJKw6wPE1V3cKXk5EpzHoeJ1HkZIaOS8M1t1xog85/GqpcNLf
+         WexHvrrAju7qfYLVBi1PbvzLB9kTTalqx47jC7JWPXtX7GskIYX4SkzKYNXvrXxTSg66
+         6NeHZk/b09GWq23D5NuCfI/3AdMEZnxvbXGwWmnihzJjUR5U5YqbxYeswhqywylnmJeS
+         C2zHSDSrJsXvxTwdsS0MrWavEpFi2BTcNF9FhUmK2BtFH+nJwzguJQM4Edwc9txNVjvf
+         O6WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UrH3kHLe+dExzck//Xs9WC4y12BnMG39PRZDgQtY4y0=;
-        b=oAWFCPmlVnbRivxpNMn/ZJODtYdB7varXdl/xuB6hheqVO1YKqktoqEBoz4ngWnKHk
-         1n57gjPI4SxIzLCC8s5j/4ySNUy3kijvIUjnDPdM+pMTMBouFyVxzXlrMvIQ3aXIifDO
-         Jy+w9KrxERKJUAwnuLH2SIRC3ILkM3+jAhW5EtDJ+J4+rut4d73Q5grUJgbB6A5kl14b
-         V1aI+2owkHEFwgYLHWTiUejHNZVhZIBoQvdTs8cD6Wa3cHrKNRs/QYoFAE6pj6B/CIGn
-         sAHa/VXa03qGwe5heNSf0WH0i6V/ygJg+upTsSoV7pSOTLoH4OkP06ygfSuMTFPbbx2c
-         eRoQ==
-X-Gm-Message-State: AOAM530xFnJCXL7wwv3CITe9/dBLU8QfyxlZ23nJ4/acj0vtLQ3rQP6r
-        l0vTP8Fmywf22eSSb2Z03B85Mg==
-X-Google-Smtp-Source: ABdhPJxuAnC+YGPWsxb+HKSvBTdc0WVR0l7V3uIrjXGnax3Yqf58atXa+3JP5r7A1VqoflQxuZgvPQ==
-X-Received: by 2002:a1c:4d05:: with SMTP id o5mr4456320wmh.130.1594907991365;
-        Thu, 16 Jul 2020 06:59:51 -0700 (PDT)
+        bh=HmsMpTwfL7pGfzUHY+3b/NowLtKwAcX5ohfQKTrGvPA=;
+        b=F/g89T7Ys/oNeVGXBVWp4WsPse/0Ue9WHuIOSa7cNr6MWaO6MV3qcvI/vKXgkvTSE0
+         ZIXQ0xXvGoauULdEjK6tVkUYdK2nS+/AdKyaTyV8GQ3b9WhI4OImgGtLKOJxCli759cW
+         EERDrkC8Y/eUTdqcMOPx1f+uqi6g05KhmBN7Y8sIscymjFlLoE/Hk2cUS0v4PN6/OFZm
+         S4bPSAT2GuhxFBLzyrJJFco/pSk3e6XWds2gFZNLFGKt+DN5hRzXUY+YJVTFk9UQzzh0
+         EQjAoc73X8aRwpEQrRKgUdS513AQcax0v2ooJ+5r5ldsLH9V7ySmJL8c8DsDeqtM7xOd
+         MG6w==
+X-Gm-Message-State: AOAM530GK20SGAVhIELwjy5gtjw030/zaczWsn6WLpT7/WO2tC5AoiqR
+        aZ1X6fqmgMZC+BbyZBCg3XkkxA==
+X-Google-Smtp-Source: ABdhPJx3xo8ont4fyIRFtPaHaTq3DoVh4R/yBthdWhJ+fV6UOuEkvSnBzCLHALtNNJeLVQx1vYiUdA==
+X-Received: by 2002:a05:6000:1190:: with SMTP id g16mr5000111wrx.286.1594907992627;
+        Thu, 16 Jul 2020 06:59:52 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.50
+        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 06:59:50 -0700 (PDT)
+        Thu, 16 Jul 2020 06:59:51 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: [PATCH 16/30] iio: adc: ad7887: Demote seemingly unintentional kerneldoc header
-Date:   Thu, 16 Jul 2020 14:59:14 +0100
-Message-Id: <20200716135928.1456727-17-lee.jones@linaro.org>
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Charles-Antoine Couret <charles-antoine.couret@essensium.com>
+Subject: [PATCH 17/30] iio: adc: ad7949: Fix misspelling issue and compiler attribute ordering
+Date:   Thu, 16 Jul 2020 14:59:15 +0100
+Message-Id: <20200716135928.1456727-18-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200716135928.1456727-1-lee.jones@linaro.org>
 References: <20200716135928.1456727-1-lee.jones@linaro.org>
@@ -67,33 +68,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the only use of function related kerneldoc in the sourcefile
-and no descriptions are provided.
+Kerneldoc gets confused if the variable does not follow the
+type/attribute definitions.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/adc/ad7887.c:119: warning: Function parameter or member 'irq' not described in 'ad7887_trigger_handler'
- drivers/iio/adc/ad7887.c:119: warning: Function parameter or member 'p' not described in 'ad7887_trigger_handler'
+ drivers/iio/adc/ad7949.c:58: warning: Function parameter or member 'indio_dev' not described in 'ad7949_adc_chip'
+ drivers/iio/adc/ad7949.c:58: warning: Function parameter or member '____cacheline_aligned' not described in 'ad7949_adc_chip'
 
 Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+Cc: Charles-Antoine Couret <charles-antoine.couret@essensium.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/adc/ad7887.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/adc/ad7949.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/adc/ad7887.c b/drivers/iio/adc/ad7887.c
-index c6a3428e950a9..bbaa0a3daea3c 100644
---- a/drivers/iio/adc/ad7887.c
-+++ b/drivers/iio/adc/ad7887.c
-@@ -109,7 +109,7 @@ static int ad7887_ring_postdisable(struct iio_dev *indio_dev)
- 	return spi_sync(st->spi, &st->msg[AD7887_CH0]);
- }
+diff --git a/drivers/iio/adc/ad7949.c b/drivers/iio/adc/ad7949.c
+index 2c6f60edb7ced..a3fc42617feb9 100644
+--- a/drivers/iio/adc/ad7949.c
++++ b/drivers/iio/adc/ad7949.c
+@@ -39,7 +39,7 @@ static const struct ad7949_adc_spec ad7949_adc_spec[] = {
+  * struct ad7949_adc_chip - AD ADC chip
+  * @lock: protects write sequences
+  * @vref: regulator generating Vref
+- * @iio_dev: reference to iio structure
++ * @indio_dev: reference to iio structure
+  * @spi: reference to spi structure
+  * @resolution: resolution of the chip
+  * @cfg: copy of the configuration register
+@@ -54,7 +54,7 @@ struct ad7949_adc_chip {
+ 	u8 resolution;
+ 	u16 cfg;
+ 	unsigned int current_channel;
+-	u16 buffer ____cacheline_aligned;
++	u16 ____cacheline_aligned buffer;
+ };
  
--/**
-+/*
-  * ad7887_trigger_handler() bh of trigger launched polling to ring buffer
-  *
-  * Currently there is no option in this driver to disable the saving of
+ static int ad7949_spi_write_cfg(struct ad7949_adc_chip *ad7949_adc, u16 val,
 -- 
 2.25.1
 
