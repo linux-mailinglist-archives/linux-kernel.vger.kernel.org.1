@@ -2,80 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CA7222459
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC2F222463
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbgGPNyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:54:50 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:40536 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgGPNyt (ORCPT
+        id S1728989AbgGPNzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728929AbgGPNzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:54:49 -0400
-Received: by mail-wm1-f65.google.com with SMTP id f139so11698214wmf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:54:48 -0700 (PDT)
+        Thu, 16 Jul 2020 09:55:08 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B86BC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:55:08 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b11so907565lfe.10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:55:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fSYl+obZVE+fUKznzfN+YjGdJqq6f8RfiQS+28i+3lU=;
+        b=yW0TqbV2Cmn34g+off5Xzod+BSQ8M1Xw4VxORpFRWUx+wIaEXJJhwqCsu+hmjEWM3V
+         PPGCXyWxy+R+W2N+bI0gtgOCetsz7Z1owadn47BzqxHpW9p53Ifhqefkn9j5GEfIVKq5
+         fOxjHE3rHiAeMdcJKce8rB8zIiKvTuuGTx67ld8xXchrZVzXBSWAGnbYPold/YYUaAto
+         i7EFg+cxceta14JfCDJZ5tHMznT+lsvoaLzdBaO1/+uPiyw92qJ0FxVswVSvg+ZJ9MyQ
+         /836A7RemmSD/r7Dt/coNl6VqvR67ATuNOirwQOyk3OYgq/k94bVCxNguezzutd+sM52
+         ZEFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=65QcCnpAmDce81oUaFA3QmWLjs//tlPa4Tv3XmT8+FQ=;
-        b=UTYNXgoD/PQPT8VgeMDlmKpwkhZyazb7d5OL9+XHUK4vcd1gyJ6rHmiaI5vRSin5Et
-         Rj5cInFIrKwMYOXLAaoNpgFTA4rahrA8/LUdp22kiUAXYIqeIHMbp4ssbeFsXxOkRWqa
-         WQTQo9/5M5v58eAznIWjlkRttxiJf1TszFbNAkpGznl23BqXnkfGaK0qlEsLoujPO/8l
-         xApcJXuTtEwOLQbWLUjYOkj9P9pzUl9JchsAw5R3CuqL90b4yLDyJ412yfaJ0jcZtqaa
-         7uaR0UO4Z87nG3GvNbSkDY6xeP4QyLzE5YKM1XeQQV8jLWVevm307kk2UvRQ9QGlLD9J
-         ikFQ==
-X-Gm-Message-State: AOAM533tM5ZEInt8AE/AzEBURS9j54E6cFqdeTNAdHwqoGtv6+3UCoVU
-        D0eiMBMAJfq4wyIu8S76KNo=
-X-Google-Smtp-Source: ABdhPJyj2yoIu1OI5sYIfY/IP84jBUda+jO/u4IzsW4mJwUw1NjKcW5ImRsOWLC2FicYTufKJVMauQ==
-X-Received: by 2002:a05:600c:218f:: with SMTP id e15mr4169276wme.63.1594907687641;
-        Thu, 16 Jul 2020 06:54:47 -0700 (PDT)
-Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
-        by smtp.gmail.com with ESMTPSA id k20sm8457168wmi.27.2020.07.16.06.54.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 06:54:46 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 15:54:45 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve Hjonnevag <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH] binder: Don't use mmput() from shrinker function.
-Message-ID: <20200716135445.GN31089@dhcp22.suse.cz>
-References: <0000000000001fbbb605aa805c9b@google.com>
- <5ce3ee90-333e-638d-ac8c-cd6d7ab7aa3b@I-love.SAKURA.ne.jp>
- <20200716083506.GA20915@dhcp22.suse.cz>
- <36db7016-98d6-2c6b-110b-b2481fd480ac@i-love.sakura.ne.jp>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fSYl+obZVE+fUKznzfN+YjGdJqq6f8RfiQS+28i+3lU=;
+        b=qCfSNbZ3MFBKQ+OPUpAEYTP38l8u8gRusfAcT14iCBUozuNLKHFlqZXLSj7lBaVXXa
+         mLUPK0vXM38+2y0yONLPHayIjDixRnNVjrJXY+65iX3CbdOPRhprRKGihkocvVOGYr/2
+         2AqwkM1mNU8kyTaASVlCV6FbJzgXNQN10ckH/YxHyS57sOaWpRLOgQdPhRnkyWVktOdD
+         H4kdDsz6sItycb+Aozgd2lOhTP3JFhM7TXWvTaGDpq7es4R6y64bTtXQ16fgHQUsLTsU
+         ycExc4A7K/mqG/POA9PTX4RDPvmBqIj8C+NhqhygFU7dQPULLpYAUxg6gCYUxgMTVWvs
+         zgVA==
+X-Gm-Message-State: AOAM530nbUQgAQusa2oLr7B1IiUmdtspgPWZDhEA5BXJ9Dr6B763QaSj
+        eyJ2hN3IonCNJzSDjqlDsYjD1HSV1yKBqXAAyxByCw==
+X-Google-Smtp-Source: ABdhPJzPt8lneTMty4LKVohX0XpVyQrsxGQOfHKHWJDQ5g7QK57hNzDZxOt+c+QzpVfm9NT4EJMpAs/zLD29z0/+tig=
+X-Received: by 2002:a19:f20a:: with SMTP id q10mr2210486lfh.89.1594907706496;
+ Thu, 16 Jul 2020 06:55:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <36db7016-98d6-2c6b-110b-b2481fd480ac@i-love.sakura.ne.jp>
+References: <1594164323-14920-1-git-send-email-Anson.Huang@nxp.com>
+ <CACRpkdYP4J+MZjxWUnkM-XGaMmFFZfMCfY13r7G6r2=v3F6zQw@mail.gmail.com>
+ <DB3PR0402MB39168FEA9306CBF90A596E31F5630@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+ <DB3PR0402MB3916FB27846F462C2210C3BFF57E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+In-Reply-To: <DB3PR0402MB3916FB27846F462C2210C3BFF57E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 16 Jul 2020 15:54:55 +0200
+Message-ID: <CACRpkda2gdu8FsSM0MC6g8C1mebmVc5dFWJZwNvQUPXNi5bnkQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] gpio: mxc: Support module build
+To:     Anson Huang <anson.huang@nxp.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
+        Adam Ford <aford173@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Olof Johansson <olof@lixom.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 16-07-20 22:41:14, Tetsuo Handa wrote:
-> On 2020/07/16 17:35, Michal Hocko wrote:
-[...]
-> > But in order for this to happen the shrinker would have to do the last
-> > put on the mm. But mm cannot go away from under uprobe_mmap so those two
-> > paths cannot race with each other.
-> 
-> and mm1 != mm2 is possible, isn't it?
+On Wed, Jul 15, 2020 at 4:44 AM Anson Huang <anson.huang@nxp.com> wrote:
 
-OK, I have missed that information. You are right. Can you make this
-into the changelog please?
--- 
-Michal Hocko
-SUSE Labs
+> > Subject: RE: [PATCH 1/3] gpio: mxc: Support module build
+> >
+> > Hi, Linus
+> >
+> > > Subject: Re: [PATCH 1/3] gpio: mxc: Support module build
+> > >
+> > > On Wed, Jul 8, 2020 at 1:28 AM Anson Huang <Anson.Huang@nxp.com>
+> > > wrote:
+> > >
+> > > >  subsys_initcall(gpio_mxc_init);
+> > > > +
+> > > > +MODULE_AUTHOR("Shawn Guo <shawn.guo@linaro.org>");
+> > > > +MODULE_DESCRIPTION("i.MX GPIO Driver"); MODULE_LICENSE("GPL");
+> > >
+> > > You are making this modualrizable but keeping the subsys_initcall(),
+> > > which doesn't make very much sense. It is obviously not necessary to
+> > > do this probe at subsys_initcall() time, right?
+> > >
+> >
+> > If building it as module, the subsys_initcall() will be equal to module_init(), I
+> > keep it unchanged is because I try to make it identical when built-in, since
+> > most of the config will still have it built-in, except the Android GKI support.
+> > Does it make sense?
+> >
+> > > Take this opportunity to convert the driver to use
+> > > module_platform_driver() as well.
+> >
+> > If you think it has to be or it is better to use module_platform_driver(), I will do
+> > it in V2.
+>
+> I tried to replace the subsys_initcall() with module_platform_driver(), but met issue
+> about " register_syscore_ops(&mxc_gpio_syscore_ops);" which is called in gpio_mxc_init()
+> function, this function should be called ONLY once, moving it to .probe function is NOT
+> working, so we may need to keep the gpio_mxc_init(), that is another reason that we may
+> need to keep subsys_initcall()?
+
+This looks a bit dangerous to keep like this while allowing this
+code to be used from a module.
+
+What happens if you insmod and rmmod this a few times, really?
+How is this tested?
+
+This is not really modularized if that isn't working, just that modprobing
+once works isn't real modularization IMO, it seems more like a
+quick and dirty way to get Androids GKI somewhat working with the module
+while not properly making the module a module.
+
+You need input from the driver maintainers on how to handle this.
+
+Yours,
+Linus Walleij
