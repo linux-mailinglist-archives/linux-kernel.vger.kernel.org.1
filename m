@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8A12226FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9DE222700
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729120AbgGPP3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 11:29:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45316 "EHLO mail.kernel.org"
+        id S1729124AbgGPP3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 11:29:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728412AbgGPP3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:29:25 -0400
+        id S1728412AbgGPP3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 11:29:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 551AE2065F;
-        Thu, 16 Jul 2020 15:29:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B77D2065F;
+        Thu, 16 Jul 2020 15:29:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594913364;
-        bh=FzucnMldDqmK+Cy2gUOBiRptVK7gB8amQqI3OD5XAPY=;
+        s=default; t=1594913385;
+        bh=W80dXnsx8xCpD4ZJDZiVreuYHVetErKPCjXzs3QZiGQ=;
         h=Date:From:To:Cc:Subject:From;
-        b=Ne3w8Bmm3s7y+REZ9uQP1EUd88b8tVS50zb2XpAk1MkNm/nhJ0PexdK+nNuYeMgf1
-         au3JsLCZ1R9GvlGJMiWz6FsCzs3NGsS23NVxZRd+NeMYkjVFcAEiX6WnqGiwCTV2XF
-         x1IkjLGTH0O4wWLKWchuk2Xmb3Pfvrhmq0pMAz3w=
-Date:   Thu, 16 Jul 2020 17:29:17 +0200
+        b=nhMKkuL8h1iFlTPmdvCAYA7hY4RttU7BKfsBtwtmAruEV190ao2fY2n8Kam/p67Az
+         HcomLt91gviNdfpgNpTOWos7VSNNYRnn4hPEGVvKBg0qcsdZIVKCCtGNizP6SKqjM6
+         ITnzp68hCPggpIfPHWn2mvgVAaI4L0uYZK0KTgxA=
+Date:   Thu, 16 Jul 2020 17:29:39 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jiri Slaby <jslaby@suse.cz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [GIT PULL] TTY/Serial driver fixes for 5.8-rc6
-Message-ID: <20200716152917.GA2378726@kroah.com>
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     devel@linuxdriverproject.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Staging/IIO driver fixes for 5.8-rc6
+Message-ID: <20200716152939.GA2378914@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 48778464bb7d346b47157d21ffde2af6b2d39110:
+The following changes since commit 9ebcfadb0610322ac537dd7aa5d9cbc2b2894c68:
 
-  Linux 5.8-rc2 (2020-06-21 15:45:29 -0700)
+  Linux 5.8-rc3 (2020-06-28 15:00:24 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-5.8-rc6
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.8-rc6
 
-for you to fetch changes up to f743061a85f5e9989df22ccbf07c80c98fc90e08:
+for you to fetch changes up to ef75e14a6c935eec82abac07ab68e388514e39bc:
 
-  serial: core: Initialise spin lock before use in uart_configure_port() (2020-07-10 14:44:46 +0200)
+  staging: comedi: verify array index is correct before using it (2020-07-10 14:03:00 +0200)
 
 ----------------------------------------------------------------
-TTY/Serial driver fixes for 5.8-rc6
+IIO/Staging driver fixes for 5.8-rc6
 
-Here are some small tty and serial driver fixes for 5.8-rc6.
+Here are some IIO and staging driver fixes for 5.8-rc6.
 
-The largest set of patches in here is a revert of the sysrq changes that
-went into 5.8-rc1 but turned out to cause a noticable overhead and cpu
-usage.
-
-Other than that, there's a few small serial driver fixes to resolve
-reported issues, and finally resolving the spinlock init problem on many
-serial driver consoles.
+The majority of fixes are for IIO drivers, resolving a number of small
+reported issues, and there are some counter fixes in here too that were
+tied to the IIO fixes.  There's only one staging driver fix here, a
+comedi fix found by code inspection.
 
 All of these have been in linux-next for a while with no reported
 issues.
@@ -71,33 +68,54 @@ issues.
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Andy Shevchenko (1):
-      serial: core: Initialise spin lock before use in uart_configure_port()
-
-Christophe Leroy (1):
-      tty: serial: cpm_uart: Fix behaviour for non existing GPIOs
+Christophe JAILLET (1):
+      iio: adc: ad7780: Fix a resource handling path in 'ad7780_probe()'
 
 Chuhong Yuan (1):
-      serial: mxs-auart: add missed iounmap() in probe failure and remove
+      iio: mma8452: Add missed iio_device_unregister() call in mma8452_probe()
 
-Jan Kiszka (1):
-      Revert "tty: xilinx_uartps: Fix missing id assignment to the console"
+Dan Carpenter (1):
+      staging: comedi: verify array index is correct before using it
 
-Johan Hovold (3):
-      Revert "serial: core: Refactor uart_unlock_and_check_sysrq()"
-      serial: core: fix sysrq overhead regression
-      serial: core: drop redundant sysrq checks
+Dinghao Liu (1):
+      iio: magnetometer: ak8974: Fix runtime PM imbalance on error
 
-Lad Prabhakar (1):
-      serial: sh-sci: Initialize spinlock for uart console
+Greg Kroah-Hartman (1):
+      Merge tag 'iio-fixes-for-5.8a' of git://git.kernel.org/.../jic23/iio into staging-linus
 
-Randy Dunlap (1):
-      tty/serial: fix serial_core.c kernel-doc warnings
+Jonathan Cameron (6):
+      iio:health:afe4403 Fix timestamp alignment and prevent data leak.
+      iio:health:afe4404 Fix timestamp alignment and prevent data leak.
+      iio:magnetometer:ak8974: Fix alignment and data leak issues
+      iio:humidity:hdc100x Fix alignment and data leak issues
+      iio:humidity:hts221 Fix alignment and data leak issues
+      iio:pressure:ms5611 Fix buffer element alignment
 
- drivers/tty/serial/cpm_uart/cpm_uart_core.c |   9 ++-
- drivers/tty/serial/mxs-auart.c              |  12 ++-
- drivers/tty/serial/serial_core.c            | 115 ++++------------------------
- drivers/tty/serial/sh-sci.c                 |   3 +
- drivers/tty/serial/xilinx_uartps.c          |   1 -
- include/linux/serial_core.h                 | 102 +++++++++++++++++++++++-
- 6 files changed, 134 insertions(+), 108 deletions(-)
+Matt Ranostay (1):
+      iio: core: add missing IIO_MOD_H2/ETHANOL string identifiers
+
+Navid Emamdoost (1):
+      iio: pressure: zpa2326: handle pm_runtime_get_sync failure
+
+Nuno Sá (1):
+      iio: adc: adi-axi-adc: Fix object reference counting
+
+Syed Nayyar Waris (2):
+      counter: 104-quad-8: Add lock guards - differential encoder
+      counter: 104-quad-8: Add lock guards - filter clock prescaler
+
+ drivers/counter/104-quad-8.c                    | 22 ++++++++++++++++---
+ drivers/iio/accel/mma8452.c                     |  5 ++++-
+ drivers/iio/adc/ad7780.c                        |  2 +-
+ drivers/iio/adc/adi-axi-adc.c                   |  4 ++--
+ drivers/iio/health/afe4403.c                    |  9 +++++---
+ drivers/iio/health/afe4404.c                    |  8 ++++---
+ drivers/iio/humidity/hdc100x.c                  | 10 ++++++---
+ drivers/iio/humidity/hts221.h                   |  7 ++++--
+ drivers/iio/humidity/hts221_buffer.c            |  9 ++++----
+ drivers/iio/industrialio-core.c                 |  2 ++
+ drivers/iio/magnetometer/ak8974.c               | 29 +++++++++++++++----------
+ drivers/iio/pressure/ms5611_core.c              | 11 +++++++---
+ drivers/iio/pressure/zpa2326.c                  |  4 +++-
+ drivers/staging/comedi/drivers/addi_apci_1500.c | 10 ++++++---
+ 14 files changed, 91 insertions(+), 41 deletions(-)
