@@ -2,124 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3432C222EEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED17222EF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727867AbgGPXUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45350 "EHLO
+        id S1726873AbgGPX1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726337AbgGPXU3 (ORCPT
+        with ESMTP id S1726189AbgGPX1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:20:29 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AABC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:20:29 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id cv18so3446134pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 16:20:29 -0700 (PDT)
+        Thu, 16 Jul 2020 19:27:04 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2F6C061755;
+        Thu, 16 Jul 2020 16:27:04 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id l63so5690732pge.12;
+        Thu, 16 Jul 2020 16:27:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rRlvvHVOlssZOjqWIkzRzCMnvlmtUd7Tnvbrt5nzg9E=;
-        b=eHayiyg0bfJPU1GbuLYA++YcuhbGdyxqWe29Vgabr+F//AYpjSn5hx+bdQvykpDmsc
-         ezsY+2hZn+5I7jW0hkEAVggqN2D1cABrwQQ1q1jdU9obkJLL5ze9Cv5A0xsfXpFZfjqo
-         gajcWV9fpnCR9mpdItqaY1+cFqI+OC3yuo9qcpH69Fg1SZS9t8nAJN3ZsRrct2vVjaye
-         //CVtLwhW8SMwVwggvOItzEYVUWRWUC28SBV/Bem0hfFp2g20SIgJKyU/VBeVAqn9/8l
-         IScUuZSAgaFQypVHjyJ2AYP5k/PTvyLAtyC+ZIy2gLxHfdbl9vspQM3mNujgf4GtaFJH
-         lsgw==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=emv834qbGgi893dX/IaKrVeomPzEVS0ZG+EyN4ke6Jw=;
+        b=BxY54KCj4kiARNkK+N4vp/W9OTuudktsuJd+WODxPAeDB4oFxO4DQsQB4GI6IM8Gas
+         UJN/mRtbMfMb7XYESBrFdSYxHm0/dz5lI2i/IvV6zif0bXiZCQ+gabEvMQ/IDQfQisVf
+         qes+jiODle+UMzXIbB4xMZ9XK1erPvZaombyKjkf2dPCBjxm1hRdpabhchByUJPhDzib
+         1F8S+2UX/dzkcedaYb5el1Xm3NMrNgCIzlZ/QU0AfZ6HYI73UBsnFviQsYS1R4bLJyiY
+         ZznnhHQxDV5gPYJtSWQnGIgTy8kG8Ine/794rLiZ9vTmkP2RhhiHUWsR4lNJs0KKqWp4
+         Ibpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rRlvvHVOlssZOjqWIkzRzCMnvlmtUd7Tnvbrt5nzg9E=;
-        b=DR5DkHgw5OEZokoMsiKiQ+9LsJGoxB6521SlmVMiWzr4xff0wofSfG4g50g4pYWTmP
-         FPxySnhHQbVeOtZT31ThgHl8FE7BwAICv4MCd7N/lpG+3q6JWBnjsMRYTRV4dKkQwTc0
-         +TEGEyKY1GOVgs6NMCRxyGHhRBIdb1UwDZSMjH8qshTwAhxkEsLVheyKWFJw9TELP9fQ
-         D8zk6HlYTe4y9I9wMlcchFR9kxKmTduDjynfBUw6Af59xGF4uubcmPLQri+Bk6pCf4k2
-         3pWFw8/Pn6MtVMmpr0u/2+TNnKs2RU+jNqmVWpCRvN2e7/2r0E3Oh1kRoUJbTEy3DR5c
-         Ir0A==
-X-Gm-Message-State: AOAM532hdP6OZ6S34S9BC8AvzAP9IaKk2DaZqTsn/IMcwrAQZ9/0SrRu
-        NqrH2A8fpXWqIrv2EG/5F1/Owb4uTvMK8Q==
-X-Google-Smtp-Source: ABdhPJwccEGhJhK3ui84CiJebJJII81e0U4AhifSXr6ZP/zd5rdwyPeQYX8mPtghFCLxzkHPX38VBQ==
-X-Received: by 2002:a17:90a:7c4f:: with SMTP id e15mr6671510pjl.133.1594941628897;
-        Thu, 16 Jul 2020 16:20:28 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id nk22sm912733pjb.51.2020.07.16.16.20.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Jul 2020 16:20:28 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 16:20:02 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Cc:     alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v2 1/2] ASoC: fsl_asrc: make sure the input and output
- clocks are different
-Message-ID: <20200716232000.GA27246@Asurada-Nvidia>
-References: <20200716145201.186270-1-arnaud.ferraris@collabora.com>
- <20200716151352.193451-1-arnaud.ferraris@collabora.com>
- <20200716151352.193451-2-arnaud.ferraris@collabora.com>
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=emv834qbGgi893dX/IaKrVeomPzEVS0ZG+EyN4ke6Jw=;
+        b=sSfhWaxXF+xNariXnzkSVtRhaQQnJasKUaF+qLb0QwhMwF3opD6kRSQ005h4Xd7W9A
+         IGFbyNICM1iHoXKyWtRFgelqL+T/ea46Vj9kbsS0VLcxGxCyKJL5h/ezhr+S3b4E9l+V
+         Xk1QFvsqU6GwwSy0UDeMvvOOKHp69uRYItizBimx/rFtnh2m12qwYn8JtVW0qt8TcGTo
+         vajA2c0PtgosYqDTKxtYLbcKIiWVxaUMGpdCpOCTdrUTblRvRvUDVV3Q6BRQ1LlU/hTl
+         JV7N250s12iL999HRzh9pxRTiz8GsujXoqiml2ZafO4HprrC5yywetGOGd+4LLipSs7g
+         s27g==
+X-Gm-Message-State: AOAM530cNtnP6jXIzqVq4nrOA48LlyKq2ayU7emTsdNMUc8irOSallk0
+        8CBbAg901HJ5vF3UA4rKGWw=
+X-Google-Smtp-Source: ABdhPJzsas/W/l7YZ8rsW53AbEGEaqr8R3Pt+kUjAsFkMcalVEs2KKHzvH8Zn5PQ137qjCJoqRQ5XQ==
+X-Received: by 2002:a63:fc52:: with SMTP id r18mr6477752pgk.334.1594942023742;
+        Thu, 16 Jul 2020 16:27:03 -0700 (PDT)
+Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
+        by smtp.gmail.com with ESMTPSA id 4sm5684665pgk.68.2020.07.16.16.27.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 16:27:03 -0700 (PDT)
+Date:   Fri, 17 Jul 2020 09:26:57 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [RFC PATCH 4/7] x86: use exit_lazy_tlb rather than
+ membarrier_mm_sync_core_before_usermode
+To:     peterz@infradead.org
+Cc:     Anton Blanchard <anton@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        x86 <x86@kernel.org>
+References: <1594868476.6k5kvx8684.astroid@bobo.none>
+        <EFAD6E2F-EC08-4EB3-9ECC-2A963C023FC5@amacapital.net>
+        <20200716085032.GO10769@hirez.programming.kicks-ass.net>
+        <1594892300.mxnq3b9a77.astroid@bobo.none>
+        <20200716110038.GA119549@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200716110038.GA119549@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716151352.193451-2-arnaud.ferraris@collabora.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-Id: <1594906688.ikv6r4gznx.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 05:13:52PM +0200, Arnaud Ferraris wrote:
-> The current clock selection algorithm might select the same clock for
-> both input and output. This can happen when, for instance, the output
-> sample rate is a multiple of the input rate.
+Excerpts from peterz@infradead.org's message of July 16, 2020 9:00 pm:
+> On Thu, Jul 16, 2020 at 08:03:36PM +1000, Nicholas Piggin wrote:
+>> Excerpts from Peter Zijlstra's message of July 16, 2020 6:50 pm:
+>> > On Wed, Jul 15, 2020 at 10:18:20PM -0700, Andy Lutomirski wrote:
+>> >> > On Jul 15, 2020, at 9:15 PM, Nicholas Piggin <npiggin@gmail.com> wr=
+ote:
+>=20
+>> >> But I=E2=80=99m wondering if all this deferred sync stuff is wrong. I=
+n the
+>> >> brave new world of io_uring and such, perhaps kernel access matter
+>> >> too.  Heck, even:
+>> >=20
+>> > IIRC the membarrier SYNC_CORE use-case is about user-space
+>> > self-modifying code.
+>> >=20
+>> > Userspace re-uses a text address and needs to SYNC_CORE before it can =
+be
+>> > sure the old text is forgotten. Nothing the kernel does matters there.
+>> >=20
+>> > I suppose the manpage could be more clear there.
+>>=20
+>> True, but memory ordering of kernel stores from kernel threads for
+>> regular mem barrier is the concern here.
+>>=20
+>> Does io_uring update completion queue from kernel thread or interrupt,
+>> for example? If it does, then membarrier will not order such stores
+>> with user memory accesses.
+>=20
+> So we're talking about regular membarrier() then? Not the SYNC_CORE
+> variant per-se.
 
-What's the issue when selecting the same clock source for both
-input and output? Please explain it in the commit logs.
+Well, both but Andy in this case was wondering about kernel writes
+vs user.
 
-> This patch makes sure it always selects distinct input and output
-> clocks.
-> 
-> Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
-> ---
->  sound/soc/fsl/fsl_asrc.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-> index 02c81d2e34ad..6d43cab6c885 100644
-> --- a/sound/soc/fsl/fsl_asrc.c
-> +++ b/sound/soc/fsl/fsl_asrc.c
-> @@ -608,8 +608,8 @@ static void fsl_asrc_select_clk(struct fsl_asrc_priv *asrc_priv,
->  {
->  	struct fsl_asrc_pair_priv *pair_priv = pair->private;
->  	struct asrc_config *config = pair_priv->config;
-> -	int rate[2], select_clk[2]; /* Array size 2 means IN and OUT */
-> -	int clk_rate, clk_index;
-> +	int rate[2], select_clk[2], clk_index[2]; /* Array size 2 means IN and OUT */
-> +	int clk_rate;
->  	int i = 0, j = 0;
->  
->  	rate[IN] = in_rate;
-> @@ -618,11 +618,12 @@ static void fsl_asrc_select_clk(struct fsl_asrc_priv *asrc_priv,
->  	/* Select proper clock source for internal ratio mode */
->  	for (j = 0; j < 2; j++) {
->  		for (i = 0; i < ASRC_CLK_MAP_LEN; i++) {
-> -			clk_index = asrc_priv->clk_map[j][i];
-> -			clk_rate = clk_get_rate(asrc_priv->asrck_clk[clk_index]);
-> +			clk_index[j] = asrc_priv->clk_map[j][i];
-> +			clk_rate = clk_get_rate(asrc_priv->asrck_clk[clk_index[j]]);
->  			/* Only match a perfect clock source with no remainder */
+>=20
+> Even there, I'll argue we don't care, but perhaps Mathieu has a
+> different opinion. All we care about is that all other threads (or CPUs
+> for GLOBAL) observe an smp_mb() before it returns.
+>=20
+> Any serialization against whatever those other threads/CPUs are running
+> at the instant of the syscall is external to the syscall, we make no
+> gauarantees about that. That is, we can fundamentally not say what
+> another CPU is executing concurrently. Nor should we want to.
+>=20
+> So if you feel that your membarrier() ought to serialize against remote
+> execution, you need to arrange a quiecent state on the remote side
+> yourself.
+>=20
+> Now, normally membarrier() is used to implement userspace RCU like
+> things, and there all that matters is that the remote CPUs observe the
+> beginngin of the new grace-period, ie counter flip, and we observe their
+> read-side critical sections, or smething like that, it's been a while
+> since I looked at all that.
+>=20
+> It's always been the case that concurrent syscalls could change user
+> memory, io_uring doesn't change that, it just makes it even less well
+> defined when that would happen. If you want to serialize against that,
+> you need to arrange that externally.
 
-Better to update the comments here as there's a new condition.
+membarrier does replace barrier instructions on remote CPUs, which do
+order accesses performed by the kernel on the user address space. So
+membarrier should too I guess.
 
->  			if (clk_rate != 0 && (clk_rate / rate[j]) <= 1024 &&
-> -			    (clk_rate % rate[j]) == 0)
-> +			    (clk_rate % rate[j]) == 0 &&
-> +			    (j == 0 || clk_index[j] != clk_index[j-1]))
+Normal process context accesses like read(2) will do so because they
+don't get filtered out from IPIs, but kernel threads using the mm may
+not.
 
-clk_index[j - 1]
+Thanks,
+Nick
