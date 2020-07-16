@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC8E222226
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2554822222A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728455AbgGPME5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 08:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728001AbgGPME5 (ORCPT
+        id S1728494AbgGPMFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 08:05:52 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:42401 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726855AbgGPMFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 08:04:57 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01CE5C061755;
-        Thu, 16 Jul 2020 05:04:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0BuPnT5dIJUwk1DzOp3WUgWJceui+ELcaKdkqG2qoDA=; b=Ut5wyw/K9yBsEEGWD4S/s/0YNv
-        f3/wbkjCTGcvWnsQ2/8Gt+PHIE48ZQMNuBsWpr69M914EaYQ84ysiywzQ832wgf1j24F5UhhXZ5Mu
-        hZtIe/fiVssausGAd13wVdch6tWODcyUsxhQAkSMGjWK5ho5+Nvjfis40JmskjZr23r4N49qFfOaj
-        bk0SJ7KuIHvL0c/zEfc+MiCwXWl+lOmdMvzMchpWKPBXeIl7u/lbd8uwRxklzL+nQoSBwLr3hhF22
-        3LPIEGhuEX78VldfDQiJ2XVguAAzVnUkWUF6+yQC8gWAyD2fj2yjlqlH9ITCQMby94iC6IdPfEryt
-        nKcu3iVA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jw2d0-0008Bg-9x; Thu, 16 Jul 2020 12:04:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8BCD0300446;
-        Thu, 16 Jul 2020 14:04:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3C5F02361DC80; Thu, 16 Jul 2020 14:04:40 +0200 (CEST)
-Date:   Thu, 16 Jul 2020 14:04:40 +0200
-From:   peterz@infradead.org
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Rich Felker <dalias@libc.org>, Christoph Hellwig <hch@lst.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: ioremap and dma cleanups and fixes for superh (2nd resend)
-Message-ID: <20200716120440.GD43129@hirez.programming.kicks-ass.net>
-References: <b5cd845f-7b5e-af8e-a15d-3ede7e61ced4@physik.fu-berlin.de>
- <0322def7-fc16-c805-8f2b-c88fffce2f1e@physik.fu-berlin.de>
- <2df7ca7f-7e26-c916-b6ac-4ec1913fb8d7@physik.fu-berlin.de>
- <CAMuHMdXjfq=RjJ2doR7XyQMnZUA8ccxKc7_tyUzTX29tpyZojw@mail.gmail.com>
- <20200716094039.GQ10769@hirez.programming.kicks-ass.net>
- <20200716102934.GC43129@hirez.programming.kicks-ass.net>
- <f4fcb2e7-eca3-9a70-8e32-e3bf341b62eb@physik.fu-berlin.de>
- <20200716110146.GB119549@hirez.programming.kicks-ass.net>
- <008b06d4-1edd-1610-2ee1-6ea402d06114@physik.fu-berlin.de>
- <20200716113720.GC119549@hirez.programming.kicks-ass.net>
+        Thu, 16 Jul 2020 08:05:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1594901151; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=mZToouJIgleobHZ2m2rREERXRWsV20MId2MvaPSl/d8=; b=gh+EoqjhKLID/dHH/uHlC3mJJ0paVksNeNNLS987/oHe3OFz/9z2pz95ZCzHghdNFAAx3Nuk
+ WmkW2ip3WLuVx1QhEeGl2PK01Fd9+R2BU+/eLyOL0YLuUiZxLqz+TdmfJtzGquXoo0goangu
+ Db+LDbObsqZUlo3WJPRGHnoQbLg=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n17.prod.us-east-1.postgun.com with SMTP id
+ 5f10429865270fa595814dec (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Jul 2020 12:05:44
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3C372C433CA; Thu, 16 Jul 2020 12:05:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3AA3EC433C6;
+        Thu, 16 Jul 2020 12:05:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3AA3EC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        evgreen@chromium.org, ohad@wizery.com,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH] remoteproc: qcom_q6v5_mss: Monitor MSS_STATUS for boot completion
+Date:   Thu, 16 Jul 2020 17:35:14 +0530
+Message-Id: <20200716120514.21588-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716113720.GC119549@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 01:37:20PM +0200, peterz@infradead.org wrote:
-> $ /opt/cross/bin/sh4-linux-gcc --version
-> sh4-linux-gcc (GCC) 10.1.0
+On secure devices there exists a race condition which could lock the MSS
+CONFIG AHB bus thus preventing access to BOOT_STATUS register during SSR.
+Switch to polling the MSS_STATUS register with an additional 10 us delay
+to reliably track boot completion.
 
-$ git checkout origin/master # linus' tree
-$ mkdir sh-defconfig
-$ make O=sh-defconfig/ ARCH=sh CROSS_COMPILE=/opt/cross/bin/sh4-linux- defconfig # shx3_defconfig
-$ make O=sh-defconfig/ ARCH=sh CROSS_COMPILE=/opt/cross/bin/sh4-linux- -j80
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+---
+ drivers/remoteproc/qcom_q6v5_mss.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-insane stream of errors
+diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+index a9ba5f38a58ed..13c6d5a72a831 100644
+--- a/drivers/remoteproc/qcom_q6v5_mss.c
++++ b/drivers/remoteproc/qcom_q6v5_mss.c
+@@ -113,8 +113,6 @@
+ #define QDSP6SS_SLEEP                   0x3C
+ #define QDSP6SS_BOOT_CORE_START         0x400
+ #define QDSP6SS_BOOT_CMD                0x404
+-#define QDSP6SS_BOOT_STATUS		0x408
+-#define BOOT_STATUS_TIMEOUT_US		200
+ #define BOOT_FSM_TIMEOUT                10000
+ 
+ struct reg_info {
+@@ -580,13 +578,15 @@ static int q6v5proc_reset(struct q6v5 *qproc)
+ 		/* De-assert the Q6 stop core signal */
+ 		writel(1, qproc->reg_base + QDSP6SS_BOOT_CORE_START);
+ 
++		/* Wait for 10 us for any staggering logic to settle */
++		usleep_range(10, 20);
++
+ 		/* Trigger the boot FSM to start the Q6 out-of-reset sequence */
+ 		writel(1, qproc->reg_base + QDSP6SS_BOOT_CMD);
+ 
+-		/* Poll the QDSP6SS_BOOT_STATUS for FSM completion */
+-		ret = readl_poll_timeout(qproc->reg_base + QDSP6SS_BOOT_STATUS,
+-					 val, (val & BIT(0)) != 0, 1,
+-					 BOOT_STATUS_TIMEOUT_US);
++		/* Poll the MSS_STATUS for FSM completion */
++		ret = readl_poll_timeout(qproc->rmb_base + RMB_MBA_MSS_STATUS,
++					 val, (val & BIT(0)) != 0, 10, BOOT_FSM_TIMEOUT);
+ 		if (ret) {
+ 			dev_err(qproc->dev, "Boot FSM failed to complete.\n");
+ 			/* Reset the modem so that boot FSM is in reset state */
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-
-Help?
