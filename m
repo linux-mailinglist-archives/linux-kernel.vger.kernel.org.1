@@ -2,87 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E2E221CAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2AE221CA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgGPGiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 02:38:01 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:39386 "EHLO fornost.hmeau.com"
+        id S1728049AbgGPGhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:37:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726069AbgGPGiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:38:00 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1jvxVi-0002fN-3n; Thu, 16 Jul 2020 16:36:51 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 16 Jul 2020 16:36:50 +1000
-Date:   Thu, 16 Jul 2020 16:36:50 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH RESEND] lockdep: Move list.h inclusion into lockdep.h
-Message-ID: <20200716063649.GA23065@gondor.apana.org.au>
+        id S1726069AbgGPGhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 02:37:55 -0400
+Received: from localhost (unknown [122.171.202.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5999206F5;
+        Thu, 16 Jul 2020 06:37:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594881474;
+        bh=i0+VY+ygP+qTpBzCKjka9/Jb+MkkhClqH6AwSsN73UM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EJHuMs3A2ePVdZ/8EsBZn//CVJgzRPBMiPbGsqOQziG+R1NMZXk4L4tHeNxLiHYWm
+         fdX+12atzFWsOnNMslCw+KFAMNyvylfmBkgrgDsEdRPY0jEIdpuVBhnAsOul/o+pB4
+         fry41USRLXqLNSf85zOgcglsrcE1gYLS9sFHZHzY=
+Date:   Thu, 16 Jul 2020 12:07:50 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] phy: socionext: Add UniPhier AHCI PHY driver
+ support
+Message-ID: <20200716063750.GH55478@vkoul-mobl>
+References: <1594867382-27509-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1594867382-27509-3-git-send-email-hayashi.kunihiko@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1594867382-27509-3-git-send-email-hayashi.kunihiko@socionext.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently lockdep_types.h includes list.h without actually using any
-of its macros or functions.  All it needs are the type definitions
-which were moved into types.h long ago.  This potentially causes
-inclusion loops because both are included by many core header
-files.
+On 16-07-20, 11:43, Kunihiko Hayashi wrote:
 
-This patch moves the list.h inclusion into lockdep.h.  Note that
-we could probably remove it completely but that could potentially
-result in compile failures should any end users not include list.h
-directly and also be unlucky enough to not get list.h via some other
-header file.
+> +static int uniphier_ahciphy_pxs3_init(struct uniphier_ahciphy_priv *priv)
+> +{
+> +	int i;
+> +	u32 val;
+> +
+> +	/* setup port parameter */
+> +	val = readl(priv->base + TXCTRL0);
+> +	val &= ~TXCTRL0_AMP_G3_MASK;
+> +	val |= FIELD_PREP(TXCTRL0_AMP_G3_MASK, 0x73);
+> +	val &= ~TXCTRL0_AMP_G2_MASK;
+> +	val |= FIELD_PREP(TXCTRL0_AMP_G2_MASK, 0x46);
+> +	val &= ~TXCTRL0_AMP_G1_MASK;
+> +	val |= FIELD_PREP(TXCTRL0_AMP_G1_MASK, 0x42);
+> +	writel(val, priv->base + TXCTRL0);
+> +
+> +	val = readl(priv->base + TXCTRL1);
+> +	val &= ~TXCTRL1_DEEMPH_G3_MASK;
+> +	val |= FIELD_PREP(TXCTRL1_DEEMPH_G3_MASK, 0x23);
+> +	val &= ~TXCTRL1_DEEMPH_G2_MASK;
+> +	val |= FIELD_PREP(TXCTRL1_DEEMPH_G2_MASK, 0x05);
+> +	val &= ~TXCTRL1_DEEMPH_G1_MASK;
+> +	val |= FIELD_PREP(TXCTRL1_DEEMPH_G1_MASK, 0x05);
+> +
+> +	val = readl(priv->base + RXCTRL);
+> +	val &= ~RXCTRL_LOS_LVL_MASK;
+> +	val |= FIELD_PREP(RXCTRL_LOS_LVL_MASK, 0x9);
+> +	val &= ~RXCTRL_LOS_BIAS_MASK;
+> +	val |= FIELD_PREP(RXCTRL_LOS_BIAS_MASK, 0x2);
+> +	val &= ~RXCTRL_RX_EQ_MASK;
+> +	val |= FIELD_PREP(RXCTRL_RX_EQ_MASK, 0x1);
+> +
+> +	/* dummy read 25 times to make a wait time for the phy to stablize */
 
-Reported-by: Petr Mladek <pmladek@suse.com>
-Tested-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+s/stablize/stabilize
 
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index 3b73cf84f77d..b1ad5c045353 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -21,6 +21,7 @@ extern int lock_stat;
- #ifdef CONFIG_LOCKDEP
- 
- #include <linux/linkage.h>
-+#include <linux/list.h>
- #include <linux/debug_locks.h>
- #include <linux/stacktrace.h>
- 
-diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
-index 7b9350624577..bb35b449f533 100644
---- a/include/linux/lockdep_types.h
-+++ b/include/linux/lockdep_types.h
-@@ -32,8 +32,6 @@ enum lockdep_wait_type {
- 
- #ifdef CONFIG_LOCKDEP
- 
--#include <linux/list.h>
--
- /*
-  * We'd rather not expose kernel/lockdep_states.h this wide, but we do need
-  * the total number of states... :-(
+> +static int uniphier_ahciphy_power_off(struct phy *phy)
+> +{
+> +	struct uniphier_ahciphy_priv *priv = phy_get_drvdata(phy);
+> +	int ret = 0;
+> +
+> +	if (priv->data->power_off)
+> +		ret = priv->data->power_off(priv);
+> +
+> +	reset_control_assert(priv->rst);
+> +	clk_disable_unprepare(priv->clk);
+> +
+> +	return ret;
+> +}
+> +
+> +
+
+multiple blank lines
+
+> +static const struct phy_ops uniphier_ahciphy_ops = {
+> +	.init  = uniphier_ahciphy_init,
+> +	.exit  = uniphier_ahciphy_exit,
+> +	.power_on  = uniphier_ahciphy_power_on,
+> +	.power_off = uniphier_ahciphy_power_off,
+> +	.owner = THIS_MODULE,
+> +};
+> +
+> +static int uniphier_ahciphy_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct uniphier_ahciphy_priv *priv;
+> +	struct phy *phy;
+> +	struct phy_provider *phy_provider;
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->dev = dev;
+> +	priv->data = of_device_get_match_data(dev);
+> +	if (WARN_ON(!priv->data))
+> +		return -EINVAL;
+> +
+> +	priv->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(priv->base))
+> +		return PTR_ERR(priv->base);
+> +
+> +	priv->clk_parent = devm_clk_get(dev, "link");
+> +	if (IS_ERR(priv->clk_parent))
+> +		return PTR_ERR(priv->clk_parent);
+> +
+> +	if (priv->data->is_phy_clk) {
+> +		priv->clk = devm_clk_get(dev, "phy");
+> +		if (IS_ERR(priv->clk))
+> +			return PTR_ERR(priv->clk);
+> +	}
+> +
+> +	priv->rst_parent = devm_reset_control_get_shared(dev, "link");
+> +	if (IS_ERR(priv->rst_parent))
+> +		return PTR_ERR(priv->rst_parent);
+> +
+> +	priv->rst = devm_reset_control_get_shared(dev, "phy");
+> +	if (IS_ERR(priv->rst))
+> +		return PTR_ERR(priv->rst);
+> +
+> +	phy = devm_phy_create(dev, dev->of_node, &uniphier_ahciphy_ops);
+> +	if (IS_ERR(phy)) {
+> +		dev_err(dev, "failed to create phy\n");
+> +		return PTR_ERR(phy);
+> +	}
+> +
+> +	phy_set_drvdata(phy, priv);
+> +	phy_provider = devm_of_phy_provider_register(dev,
+> +						     of_phy_simple_xlate);
+
+single line?
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+~Vinod
