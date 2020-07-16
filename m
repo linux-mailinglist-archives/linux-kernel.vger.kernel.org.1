@@ -2,120 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC7D221F26
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBA2221F0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgGPI62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 04:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbgGPI62 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 04:58:28 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26812C061755;
-        Thu, 16 Jul 2020 01:58:28 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ch3so4463895pjb.5;
-        Thu, 16 Jul 2020 01:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=rU2AvrUF1MSQNhOVtZSsFfE23nrV3JkloSDmiaF1rgQ=;
-        b=K3HTu2ZmadRX8xzBvryPFb5wAdcUVb0mZ4VBzLUH2tP6diUz22RvUOt0KI03cqJtva
-         ZKtTG4JRONNq9vH0+R6FxNCksupFsjlIpa25bMtCP4y3ZUrUwo8MVneh2tUtcYpMofRx
-         CanUgsDK2xXw7GQQNnQQ1jZ8rcejE41OwnkDhu2iMGSzWq9CaLgW5RJEleHjDLGHNkKs
-         NKiPdNCvxIUlWh6UdqPWeaiZ0Ur36VLTQl+Z6E9SIA+G43rD7GQN/Ftc1+kI4Ixfd139
-         aBPbkXRGA/iBXQSsnpAJQ8lqLB/wHeqaC21gyFRZmzpyi4kltB4hQiko1yM4JqIjxG8p
-         uraw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=rU2AvrUF1MSQNhOVtZSsFfE23nrV3JkloSDmiaF1rgQ=;
-        b=PWMNTlJSNlauN2AGGYaV1IlYg4LsZq7jyddRTZK1Y9yve7DNFqqVdGFvm8t4NKruD/
-         u10NXTFG4oF1tFZ7XbYnMNJlYd0Zs/ElKNODTRLnZtAMmziRzN2NLwQLEGSjYJas35pj
-         RK7Bhr4Qu1GQ9+uwhOC27Mtahf7912wxa2fiqdofRArTxl34wmTHx/eROGNq4EEy6R1q
-         nK+ZIPWLsS8IwXZ0PfKA44omif8K1hLp6SmoEEAoDByGf3754un8xbZpGZri35uqTAnU
-         /y5lQ1AKWJv8SfXo9pu8+R43lPkh5bBVUkmvNiEhWCdFtW9HpK1TCN2H+/UQWmxY0UxV
-         FN4A==
-X-Gm-Message-State: AOAM532CXs1q3yhg0s9ONIusYVkU0dvaiPpVCwc4vEDaQqeEt7oSGJsP
-        Pb+Tm+V7u4GRQFJgWBULsMwmEmM5ezI=
-X-Google-Smtp-Source: ABdhPJw5wys6nZkU2EwXlUQZltuw00zMlClC9BBY3XvLGB5xWrjt9v+5HR5AWIyGOo0u67fCgTVgsA==
-X-Received: by 2002:a17:90a:6448:: with SMTP id y8mr3846953pjm.142.1594889907702;
-        Thu, 16 Jul 2020 01:58:27 -0700 (PDT)
-Received: from blackclown ([103.88.82.145])
-        by smtp.gmail.com with ESMTPSA id t187sm4364244pgb.76.2020.07.16.01.58.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 Jul 2020 01:58:26 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 14:28:11 +0530
-From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     gregkh@linuxfoundation.org, GR-Linux-NIC-Dev@marvell.com,
-        manishc@marvell.com
-Cc:     netdev@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: qlge/qlge_main.c: Replace depracated MSI API.
-Message-ID: <20200716085811.GA29239@blackclown>
+        id S1728408AbgGPIy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 04:54:27 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7863 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725975AbgGPIy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 04:54:26 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 08EBF5F1AF760803B550;
+        Thu, 16 Jul 2020 16:54:24 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 16 Jul 2020 16:54:18 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] drm/msm/dpu: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Thu, 16 Jul 2020 16:58:13 +0800
+Message-ID: <20200716085813.11332-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Replace the depracated MSI API pci_enable_msi()
-with pci_alloc_irq_vectors().
-
-Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- drivers/staging/qlge/qlge_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c | 14 +---------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c     | 29 ++------------------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c  | 15 ++--------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c      | 17 ++----------
+ 4 files changed, 8 insertions(+), 67 deletions(-)
 
-diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_m=
-ain.c
-index f7e26defb844..44ef00f1f8ee 100644
---- a/drivers/staging/qlge/qlge_main.c
-+++ b/drivers/staging/qlge/qlge_main.c
-@@ -3181,7 +3181,7 @@ static void ql_enable_msix(struct ql_adapter *qdev)
- msi:
- 	qdev->intr_count =3D 1;
- 	if (qlge_irq_type =3D=3D MSI_IRQ) {
--		if (!pci_enable_msi(qdev->pdev)) {
-+		if (pci_alloc_irq_vectors(qdev->pdev, 1, 1, PCI_IRQ_MSI) >=3D 0) {
- 			set_bit(QL_MSI_ENABLED, &qdev->flags);
- 			netif_info(qdev, ifup, qdev->ndev,
- 				   "Running with MSI interrupts.\n");
---=20
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
+index 99be6d8d4..764332e83 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_core_irq.c
+@@ -288,18 +288,6 @@ static void dpu_disable_all_irqs(struct dpu_kms *dpu_kms)
+ }
+ 
+ #ifdef CONFIG_DEBUG_FS
+-#define DEFINE_DPU_DEBUGFS_SEQ_FOPS(__prefix)				\
+-static int __prefix ## _open(struct inode *inode, struct file *file)	\
+-{									\
+-	return single_open(file, __prefix ## _show, inode->i_private);	\
+-}									\
+-static const struct file_operations __prefix ## _fops = {		\
+-	.owner = THIS_MODULE,						\
+-	.open = __prefix ## _open,					\
+-	.release = single_release,					\
+-	.read_iter = seq_read_iter,						\
+-	.llseek = seq_lseek,						\
+-}
+ 
+ static int dpu_debugfs_core_irq_show(struct seq_file *s, void *v)
+ {
+@@ -328,7 +316,7 @@ static int dpu_debugfs_core_irq_show(struct seq_file *s, void *v)
+ 	return 0;
+ }
+ 
+-DEFINE_DPU_DEBUGFS_SEQ_FOPS(dpu_debugfs_core_irq);
++DEFINE_SHOW_ATTRIBUTE(dpu_debugfs_core_irq);
+ 
+ void dpu_debugfs_core_irq_init(struct dpu_kms *dpu_kms,
+ 		struct dentry *parent)
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+index 2fa8d0797..b2b0ce546 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
+@@ -1242,23 +1242,7 @@ static int _dpu_debugfs_status_show(struct seq_file *s, void *data)
+ 	return 0;
+ }
+ 
+-static int _dpu_debugfs_status_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, _dpu_debugfs_status_show, inode->i_private);
+-}
+-
+-#define DEFINE_DPU_DEBUGFS_SEQ_FOPS(__prefix)                          \
+-static int __prefix ## _open(struct inode *inode, struct file *file)	\
+-{									\
+-	return single_open(file, __prefix ## _show, inode->i_private);	\
+-}									\
+-static const struct file_operations __prefix ## _fops = {		\
+-	.owner = THIS_MODULE,						\
+-	.open = __prefix ## _open,					\
+-	.release = single_release,					\
+-	.read_iter = seq_read_iter,						\
+-	.llseek = seq_lseek,						\
+-}
++DEFINE_SHOW_ATTRIBUTE(_dpu_debugfs_status);
+ 
+ static int dpu_crtc_debugfs_state_show(struct seq_file *s, void *v)
+ {
+@@ -1275,25 +1259,18 @@ static int dpu_crtc_debugfs_state_show(struct seq_file *s, void *v)
+ 
+ 	return 0;
+ }
+-DEFINE_DPU_DEBUGFS_SEQ_FOPS(dpu_crtc_debugfs_state);
++DEFINE_SHOW_ATTRIBUTE(dpu_crtc_debugfs_state);
+ 
+ static int _dpu_crtc_init_debugfs(struct drm_crtc *crtc)
+ {
+ 	struct dpu_crtc *dpu_crtc = to_dpu_crtc(crtc);
+ 
+-	static const struct file_operations debugfs_status_fops = {
+-		.open =		_dpu_debugfs_status_open,
+-		.read_iter =		seq_read_iter,
+-		.llseek =	seq_lseek,
+-		.release =	single_release,
+-	};
+-
+ 	dpu_crtc->debugfs_root = debugfs_create_dir(dpu_crtc->name,
+ 			crtc->dev->primary->debugfs_root);
+ 
+ 	debugfs_create_file("status", 0400,
+ 			dpu_crtc->debugfs_root,
+-			dpu_crtc, &debugfs_status_fops);
++			dpu_crtc, &_dpu_debugfs_status_fops);
+ 	debugfs_create_file("state", 0600,
+ 			dpu_crtc->debugfs_root,
+ 			&dpu_crtc->base,
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+index 7d603784a..6bcd15bf4 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+@@ -1845,24 +1845,13 @@ static int _dpu_encoder_status_show(struct seq_file *s, void *data)
+ 	return 0;
+ }
+ 
+-static int _dpu_encoder_debugfs_status_open(struct inode *inode,
+-		struct file *file)
+-{
+-	return single_open(file, _dpu_encoder_status_show, inode->i_private);
+-}
++DEFINE_SHOW_ATTRIBUTE(_dpu_encoder_status);
+ 
+ static int _dpu_encoder_init_debugfs(struct drm_encoder *drm_enc)
+ {
+ 	struct dpu_encoder_virt *dpu_enc = to_dpu_encoder_virt(drm_enc);
+ 	int i;
+ 
+-	static const struct file_operations debugfs_status_fops = {
+-		.open =		_dpu_encoder_debugfs_status_open,
+-		.read_iter =		seq_read_iter,
+-		.llseek =	seq_lseek,
+-		.release =	single_release,
+-	};
+-
+ 	char name[DPU_NAME_SIZE];
+ 
+ 	if (!drm_enc->dev) {
+@@ -1878,7 +1867,7 @@ static int _dpu_encoder_init_debugfs(struct drm_encoder *drm_enc)
+ 
+ 	/* don't error check these */
+ 	debugfs_create_file("status", 0600,
+-		dpu_enc->debugfs_root, dpu_enc, &debugfs_status_fops);
++		dpu_enc->debugfs_root, dpu_enc, &_dpu_encoder_status_fops);
+ 
+ 	for (i = 0; i < dpu_enc->num_phys_encs; i++)
+ 		if (dpu_enc->phys_encs[i]->ops.late_register)
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index b8122173c..ea63534fc 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -98,30 +98,17 @@ static int _dpu_danger_signal_status(struct seq_file *s,
+ 	return 0;
+ }
+ 
+-#define DEFINE_DPU_DEBUGFS_SEQ_FOPS(__prefix)				\
+-static int __prefix ## _open(struct inode *inode, struct file *file)	\
+-{									\
+-	return single_open(file, __prefix ## _show, inode->i_private);	\
+-}									\
+-static const struct file_operations __prefix ## _fops = {		\
+-	.owner = THIS_MODULE,						\
+-	.open = __prefix ## _open,					\
+-	.release = single_release,					\
+-	.read_iter = seq_read_iter,						\
+-	.llseek = seq_lseek,						\
+-}
+-
+ static int dpu_debugfs_danger_stats_show(struct seq_file *s, void *v)
+ {
+ 	return _dpu_danger_signal_status(s, true);
+ }
+-DEFINE_DPU_DEBUGFS_SEQ_FOPS(dpu_debugfs_danger_stats);
++DEFINE_SHOW_ATTRIBUTE(dpu_debugfs_danger_stats);
+ 
+ static int dpu_debugfs_safe_stats_show(struct seq_file *s, void *v)
+ {
+ 	return _dpu_danger_signal_status(s, false);
+ }
+-DEFINE_DPU_DEBUGFS_SEQ_FOPS(dpu_debugfs_safe_stats);
++DEFINE_SHOW_ATTRIBUTE(dpu_debugfs_safe_stats);
+ 
+ static void dpu_debugfs_danger_init(struct dpu_kms *dpu_kms,
+ 		struct dentry *parent)
+-- 
 2.17.1
 
-
---k+w/mQv8wyuph6w0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8QFqMACgkQ+gRsbIfe
-747zow//ZLAF3gs132hkWk5iOyoAp9G/oCE0GXRsND9P4To3CoYUuX5be27oZdzR
-+JGvWRf2sraAene3fa+VweceoGu4kEX5mRVzRSRfAP9r/ah6Vug1bAAZ6zPFeeTx
-XFjiRqGFIDev2h5WNnGEnQQZWCtzCJbHu3+cImEkgMnfQjGOy+iPU/xJieBBQkY7
-/zMTb3+C//3VG7y1KhsW8+Wet+zv8xuPRtn+bUrNoja8Ak9pY32IThgyRu3UiNE7
-eiVvXnCz+VRF2lHP0J5lGBssZHjqni6IZ500rYxWLkATtEbN3nC73CuAx1XgIIMV
-+cm/a+3y4aY8XBbPnXsG0OkxIXI5B/vsEJtGUyR5to7DVv2oPsLTPp24QVHFftqM
-vQk0wS7cZmOCTYtOJcaGMVWo8wvY2TNk4U5L7KGu5BEXHRxFkkFtD6uARS5CcciR
-lyOkNQH2dcwm+9/JD5fvGJAHL3XMnI9C3v9ludnW+GiyOrM7wZPH+6rayh+pgb/K
-PF2Ts5a/cdyjX3bfOk/xlTZZdbPT7kr4ML6AKu3+smZVoU4Jq2wLUrykuZqxcB/N
-fBIl0bSPNsqAGxKDAIN9/GYX85nlNrHoRBEgX5HYS+6lSxHBIqOmEv1YvrxmvOa5
-pcrR9R17bWpX9uW6Ndjggi4VXkfSRPfaexAUxP48zdNhA8LiaMg=
-=0UMt
------END PGP SIGNATURE-----
-
---k+w/mQv8wyuph6w0--
