@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D747222ECD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0C2222EDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgGPXMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:12:37 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:58101 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbgGPXMg (ORCPT
+        id S1726960AbgGPXRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:17:24 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:55426 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbgGPXRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:12:36 -0400
-X-Originating-IP: 50.39.163.217
-Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id D26B420003;
-        Thu, 16 Jul 2020 23:12:22 +0000 (UTC)
-Date:   Thu, 16 Jul 2020 16:12:17 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Adrian Bunk <bunk@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        alex.gaynor@gmail.com, geofft@ldpreload.com, jbaublitz@redhat.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: Linux kernel in-tree Rust support
-Message-ID: <20200716231217.GA378765@localhost>
-References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
- <20200712123151.GB25970@localhost>
- <20200712193944.GA81641@localhost>
- <CAK8P3a20UQvQO0U=p1kBEUvRdwm8VFBa31aCe7C70hwTzcu_yw@mail.gmail.com>
+        Thu, 16 Jul 2020 19:17:23 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06GNDPgK088443;
+        Thu, 16 Jul 2020 23:17:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=8jtki/pU95bZMs51t72Fvdic/OjDlvBAeH0vxva+v1M=;
+ b=d1BIlQyasWZQ9MBtOcWLb43omvjPgkZWmnYzB71AFO0OcQc+6doqyh8kCIQnKRDmFggS
+ xZsMl0rbWhLZRY66Kwjdho6Q7gptc2icRRCVHEaKHyLYaUWCNaX4Vrhs+tkBcLGSf1AJ
+ HMJybpVlmy4UNTSTNnq+xjoHHQs98r2OTElwLvyZPGHDliwl/RSX6+SNQzSzBavtNA+Z
+ oV98Ev4fcwSrtUr3k+vFBmFL7LzpSATz8Y+J9AVj+Xvco0eUBKZ2RkaSEvGPgfbaJPRg
+ 8Qv1Q/MFs9S9Tjj3/ynJ7n7YQbfrc7VrJWCTYvSsapQaq/X34KorYouq+TU70KjwLAUu jg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 3275cmm8mr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 16 Jul 2020 23:17:07 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06GNDiTN111977;
+        Thu, 16 Jul 2020 23:15:06 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 327qbctyd5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Jul 2020 23:15:06 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06GNF3TF013005;
+        Thu, 16 Jul 2020 23:15:04 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 16 Jul 2020 16:15:03 -0700
+Subject: Re: [PATCH v4 03/15] mm,madvise: call soft_offline_page() without
+ MF_COUNT_INCREASED
+To:     Oscar Salvador <osalvador@suse.de>, akpm@linux-foundation.org
+Cc:     mhocko@suse.com, linux-mm@kvack.org, david@redhat.com,
+        aneesh.kumar@linux.vnet.ibm.com, naoya.horiguchi@nec.com,
+        linux-kernel@vger.kernel.org,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Oscar Salvador <osalvador@suse.com>
+References: <20200716123810.25292-1-osalvador@suse.de>
+ <20200716123810.25292-4-osalvador@suse.de>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <0467947a-4306-bc36-2c5e-04e578990d36@oracle.com>
+Date:   Thu, 16 Jul 2020 16:15:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a20UQvQO0U=p1kBEUvRdwm8VFBa31aCe7C70hwTzcu_yw@mail.gmail.com>
+In-Reply-To: <20200716123810.25292-4-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9684 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 spamscore=0 phishscore=0 suspectscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007160149
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9684 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 clxscore=1011 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007160149
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 03:06:01PM +0200, Arnd Bergmann wrote:
-> On Sun, Jul 12, 2020 at 9:39 PM Josh Triplett <josh@joshtriplett.org> wrote:
-> > On Sun, Jul 12, 2020 at 03:31:51PM +0300, Adrian Bunk wrote:
-> > >
-> > > As an example:
-> > > Ubuntu LTS releases upgrade to a new Rust version every 1-2 months.
-> > > Ubuntu 16.04 started with Rust 1.7.0 and is now at Rust 1.41.0.
-> > >
-> > > It would not sound good to me if security updates of distribution
-> > > kernels might additionally end up using a different version of the
-> > > Rust compiler - the toolchain for the kernel should be stable.
-> > >
-> > > Would Rust usage in the kernel require distributions to ship
-> > > a "Rust for Firefox" and a "Rust for the kernel"?
-> >
-> > Rust has hard stability guarantees when upgrading from one stable
-> > version to the next. If code compiles with a given stable version of
-> > Rust, it'll compile with a newer stable version of Rust. Given that, a
-> > stable distribution will just need a single sufficiently up-to-date Rust
-> > that meets the minimum version requirements of both Firefox and Linux.
-> >
-> > (That would not apply if the kernel used nightly Rust, since
-> > nightly-only features are allowed to change before becoming stable;
-> > that's one reason why we should use stable Rust, and try to get Firefox
-> > to stick to stable Rust.)
+On 7/16/20 5:37 AM, Oscar Salvador wrote:
+> From: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
 > 
-> I would expect we'd want a fairly tight coupling between kernel
-> releases and minimum rust releases at first. Whatever is the latest
-> stable rust version during the kernel's merge window might be
-> assumed to be the minimum version for the life of that kernel, but
-> an LTS release would not suddenly start relying on features
-> from a newer compiler (thought it might warn about known bugs).
+> The call to get_user_pages_fast is only to get the pointer to a struct
+> page of a given address, pinning it is memory-poisoning handler's job,
+> so drop the refcount grabbed by get_user_pages_fast
+> 
+> Signed-off-by: Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+> Signed-off-by: Oscar Salvador <osalvador@suse.com>
 
-Agreed; we should be careful that any backported fix to an LTS kernel
-does not increase the required Rust toolchain.
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-> While Linux used to build with 12 year old compilers (4.1 until
-> 2018), we now require a 6 year old gcc (4.9) or 1 year old
-> clang/llvm. I don't know whether these will fully converge over
-> time but it seems sensible that the minimum rust frontend version
-> we require for a new kernel release would eventually also fall
-> in that range, requiring a compiler that is no more than a few
-> years old, but not requiring the latest stable release.
-
-I expect in the short term that we will likely have a need for features
-from recent stable releases, especially when those features were added
-specifically to support the kernel or similar, but the rate at which we
-need new features will slow over time, and eventually we'll go from
-"latest stable" to "within a year or so".
+-- 
+Mike Kravetz
