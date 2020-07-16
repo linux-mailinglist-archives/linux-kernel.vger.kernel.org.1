@@ -2,89 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1851222BA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1573C222BAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbgGPTNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 15:13:25 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:35927 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729551AbgGPTNV (ORCPT
+        id S1729601AbgGPTNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 15:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729515AbgGPTNc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 15:13:21 -0400
-Received: by mail-io1-f68.google.com with SMTP id y2so7227482ioy.3;
-        Thu, 16 Jul 2020 12:13:20 -0700 (PDT)
+        Thu, 16 Jul 2020 15:13:32 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C33AC08C5DB
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 12:13:32 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id z5so5322417pgb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 12:13:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=P2Y3x3UF7aakg+eDh/JCMQ/ujg3OM7agEmMMQHUiWYw=;
+        b=eUF5kUcP1I8IOHUVxI3FxJ/qxspiNpwWZ1kyR1myyi5d/rlntny124yFpRoBP0S+TU
+         IULeT+p9QcpLBQJdqAMtaWb0tPOnG564tv2NICoimzwkKBF7b7R+TO++MSXHI9kPTYW4
+         dLCo8Qo5IB3QU1NMvjyOcqhje5qnF9Vt8u7nM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZIttOoTOPqMFdqazs8PahDWs8uAzKu3fQLp00yEZzEs=;
-        b=TbVAODPO+rMbA9zuoD6Z50MZax9GeDZrdAgkp4ldskfYF8MzHxQyeuv8DAIdgXsLsw
-         mdTkscg0WEm5r3D6c4zaHjMcAPwa5Ok74eEnl3gbjb5VBNFMs1p4A/9cnXmVM15elc1N
-         pBb2Rne6Hw0ffP7AYR5hV1mAcdRvT9vGtnetL11obUkq4bHzub/oh3JNztr8DVcbdj5E
-         wOLQ1WQjoftFpY/peFh5C55qkhKR0dTOIxJ7COF6aPtIhzIJ1ZMwPPOVKrD86xgJDlsr
-         lcLwEZkWBv4Uh1FGUIQg3OB8EZxyUv8Q6x0qRP9FY9hPdrTczQ/rW2LAlLxq0sp3W149
-         t+TQ==
-X-Gm-Message-State: AOAM532+3e17TfSy6YHZ8/ymHyqPtsL5944MTfYMBQ4OGlUbgYebYhyq
-        MMlMf1zAk27KzKvtYkLzKQ==
-X-Google-Smtp-Source: ABdhPJxDve+bGac++TOwwv477fCT+JMtLC0r9pSjhKoL4JqwZLLbzbzYgXnmngm9qddR1vgcFbbpQg==
-X-Received: by 2002:a02:8308:: with SMTP id v8mr6689601jag.101.1594926800526;
-        Thu, 16 Jul 2020 12:13:20 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id p9sm3201232ilc.78.2020.07.16.12.13.18
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=P2Y3x3UF7aakg+eDh/JCMQ/ujg3OM7agEmMMQHUiWYw=;
+        b=gFJYzUK22Ywe/i5NJLw2XfZYiU2w+5hYIMSc73EX/kYsfDsNPxOwhuOfkLyaqgyFim
+         80HUL2c/u3640KOpy6cMeL0dC7nfK8C0YR9fTErnpY1TDLX0ZlXMqYp0FqvcTFWFRtXf
+         M2pUM7ijK6pEtgBVKavsWxk9S5wh/3bVDYhxMn9CMMpTKxAORgvqzJnAsIJWy7S+E8jw
+         7X9+CyV8lPP7ATK1YoP2bqG+xwW7pUa25voCtG5y58WoXpjaVM+cBm+IWa9ITD4XWXyb
+         ketL1H8hZ0r+UExEpdkPi5Axltnq/off961In+J8DtZJHG5u1ok0vSNGlXx6NJagRDoV
+         iGjw==
+X-Gm-Message-State: AOAM5328+6X0451bz5gf8CbyA/KECjbBWXORd6ii3R5hPLNGd1nx3fmm
+        Czcp4sH1S6zvmKrsd0yWUJ/AMw==
+X-Google-Smtp-Source: ABdhPJy1fQTquN4l33pCs4D4d2Xd1YwY/TqBCMAGvi2rtEVPLt90LIg/bGHmjLscqWmRjzI4Zwih4g==
+X-Received: by 2002:a63:c150:: with SMTP id p16mr5583761pgi.141.1594926811598;
+        Thu, 16 Jul 2020 12:13:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u14sm6060148pfk.211.2020.07.16.12.13.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 12:13:19 -0700 (PDT)
-Received: (nullmailer pid 2685058 invoked by uid 1000);
-        Thu, 16 Jul 2020 19:13:18 -0000
-Date:   Thu, 16 Jul 2020 13:13:18 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Bhanu Prakash Maiya <bhanumaiya@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Furquan Shaikh <furquan@chromium.org>,
-        Raul E Rangel <rrangel@chromium.org>,
-        Eric Peers <epeers@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.Kernel.org
-Subject: Re: [PATCH v3 2/2] dt-bindings: mfd: Add DT compatible string
- "google,cros_ec_uart"
-Message-ID: <20200716191318.GA2683551@bogus>
-References: <20200715221150.v3.2.I113cdbaf66d48b37ac0faefb9b845480d122f3b9@changeid>
+        Thu, 16 Jul 2020 12:13:30 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 12:13:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v6 7/7] ima: add policy support for the new file open
+ MAY_OPENEXEC flag
+Message-ID: <202007161213.E8D240D98@keescook>
+References: <20200714181638.45751-1-mic@digikod.net>
+ <20200714181638.45751-8-mic@digikod.net>
+ <202007151339.283D7CD@keescook>
+ <8df69733-0088-3e3c-9c3d-2610414cea2b@digikod.net>
+ <61c05cb0-a956-3cc7-5dab-e11ebf0e95bf@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200715221150.v3.2.I113cdbaf66d48b37ac0faefb9b845480d122f3b9@changeid>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <61c05cb0-a956-3cc7-5dab-e11ebf0e95bf@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 10:16:04PM -0700, Bhanu Prakash Maiya wrote:
-> From: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
+On Thu, Jul 16, 2020 at 07:59:20AM -0700, Randy Dunlap wrote:
+> On 7/16/20 7:40 AM, Mickaël Salaün wrote:
+> > 
+> > On 15/07/2020 22:40, Kees Cook wrote:
+> >> On Tue, Jul 14, 2020 at 08:16:38PM +0200, Mickaël Salaün wrote:
+> >>> From: Mimi Zohar <zohar@linux.ibm.com>
+> >>>
+> >>> The kernel has no way of differentiating between a file containing data
+> >>> or code being opened by an interpreter.  The proposed O_MAYEXEC
+> >>> openat2(2) flag bridges this gap by defining and enabling the
+> >>> MAY_OPENEXEC flag.
+> >>>
+> >>> This patch adds IMA policy support for the new MAY_OPENEXEC flag.
+> >>>
+> >>> Example:
+> >>> measure func=FILE_CHECK mask=^MAY_OPENEXEC
+> >>> appraise func=FILE_CHECK appraise_type=imasig mask=^MAY_OPENEXEC
+> >>>
+> >>> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+> >>> Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> >>> Acked-by: Mickaël Salaün <mic@digikod.net>
+> >>
+> >> (Process nit: if you're sending this on behalf of another author, then
+> >> this should be Signed-off-by rather than Acked-by.)
+> > 
+> > I'm not a co-author of this patch.
+> > 
 > 
-> Add DT compatible string in
-> Documentation/devicetree/bindings/mfd/cros_ec.txt
-
-Need to update this.
-
-With that,
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-> Signed-off-by: Bhanu Prakash Maiya <bhanumaiya@chromium.org>
-> ---
+> from Documentation/process/submitting-patches.rst:
 > 
-> Changes in v3:
-> - Rebased changes on google,cros-ec.yaml
-> 
-> Changes in v2:
-> - No change
-> 
->  Documentation/devicetree/bindings/mfd/google,cros-ec.yaml | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> The Signed-off-by: tag indicates that the signer was involved in the
+> development of the patch, or that he/she was in the patch's delivery path.
+>                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Randy beat me to it. :)
+
+-- 
+Kees Cook
