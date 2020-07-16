@@ -2,149 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE8F2228AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951F52228AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 19:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728989AbgGPRFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 13:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
+        id S1728807AbgGPRE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 13:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728860AbgGPRFA (ORCPT
+        with ESMTP id S1725867AbgGPRE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 13:05:00 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD876C08C5CE
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:04:59 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id j186so3384828vsd.10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:04:59 -0700 (PDT)
+        Thu, 16 Jul 2020 13:04:57 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2758C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:04:56 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id e4so8719239ljn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 10:04:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yXCXHIokDzodhKUObyVjOxa03jfGTBYMvv8WAppwfWw=;
-        b=OMAZ17R5F4R2ot+nESDlRmF/PsTGBo0nI3RT7xp1G/cqE2oqUY3bc9Fb+ugMS80xrb
-         znXaX4PAarGdFPR4LBReIhms/8bt9bKPhyvwhSRlY7CU0GUd57x4rIKKEuvgWWBKz69x
-         i4xQ0ZoPWC36Gw/dqdOsafiQp1tUyNns5fk/cRljFa68IvfNSHwcTnQ9lYZzLLPNsfPk
-         PWK9Mi4QjWU6/kksGKdQKviiSIGSdka8ufAadG90A+Y7rITCQ8IDj/3BXZUBVKib3mkE
-         LA2ISGCmf/Id/n0XHdIlXCmmGZ/EntO1PICDf4G+PB6Vr1opRAuVYeK7+34wA+8GrRfo
-         rWxw==
+        bh=g2kCsm/bm1ve9jG+Cs+m54b7wlSjss2b9ylTUfr3H5Q=;
+        b=SmOJInW8UzmPU3mqjDPCmjZFhN/t2ZScfhEKYZb3jaL+M1UhR0jdgzDcrSW7i3qQYP
+         FhShRV+wjnwoaJP1VNmeb4BKME47gsr56p2OPQm0wati9CLgyCvsGy80KwrjimucLuF7
+         gV0/qhIwmOB9cH0MpkgXUXNCF6NkFNwUuF8FMqLCaamd4smxNNEcZUAk/jPPmwGjvxWr
+         E3aFdMyb+qiHFZbjT2MGpl/Yva9H4VkF5ZuYTKBEgXn+kpzvQ5WBPbd+ozFtrD3UF2Zx
+         lneXnovYbFNNoHepJ8V37MuOgdvD7ON+QFe2Jiice5+Cvx2ZyAxhl74GwT9JOVl/loqs
+         MA4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yXCXHIokDzodhKUObyVjOxa03jfGTBYMvv8WAppwfWw=;
-        b=dv29zylT6nvp4nsMFvsEZqYae8G671MGUHqv3iiMf9Gg975LS54MHWLaAwy/01HNls
-         zqJYK2XRAkEMOUgUNQFhqgf/uwGTyGdw2S1rUipQRjrDVK/nQqM4eSRbJuCUYsuKIPZv
-         NwLJm8EPiO4lcbKOttJEMWrBRV3jwOReFS8pUfOSXdq/XmDxaOMOxiqGa7HtojbGpg1m
-         zD6DGpiR4zCvNMUV6TdKOZKqaOxsnU8iTkOQdr38j2WIcIHXgN4vAu6rmzl6+JVuD1kq
-         K5irG0XnwPpyNnv/w9BDvnmAmPYcIbnZwtLy01cnkrzo0mAOnjJ0+TCUD+QgooJpmgbc
-         EbMQ==
-X-Gm-Message-State: AOAM531f73R5DpBprOI79VSnwFK7SeqZff8z443gsMs4KOiq5eLarUOu
-        zoigxUfmGhu5Ggz6ecCoAf+OzFO09vSH74G9rRj8Fw==
-X-Google-Smtp-Source: ABdhPJy+joudz+/azfNGzNGeAboNVq0ccJyFmfsvE4PWZBNI06UJy8K3PCy86RDOtundUZK2A9jXmpiX35sAbL82qYw=
-X-Received: by 2002:a67:d01a:: with SMTP id r26mr4172278vsi.200.1594919098955;
- Thu, 16 Jul 2020 10:04:58 -0700 (PDT)
+        bh=g2kCsm/bm1ve9jG+Cs+m54b7wlSjss2b9ylTUfr3H5Q=;
+        b=CYPqv91ybsg9kJSW5PjnvV0G3zrzNeI2AbJgxi6murLVtDBeosUrcHC7Of8bjPmUak
+         Pt52FeucIjMRQ0ybnLzYLTo5+VpuGpebo4Y2+R2osmS5jnA9/nv1zJLlILt4UXx2dJB8
+         KOVtstjO1vKY5dPwp08/pZ15lQOdNX+P8PGDHSq360Q93wNdYxXHvKZLnsJHs23VGLLu
+         wa/Ch7UZCb6AnxyrfERKINs2R2e+qgFnUuiN1UF0Lq4AUxJf4mtVEndbV4vi1/lbRsnt
+         jzt1hS6/ZBr6dxOTex7VLXuZk0QsaI/0aUR/Ubi9VbYfZhDKCOOamyhZM0qjQSBmyfDb
+         xtAQ==
+X-Gm-Message-State: AOAM532Th7zODNfVZJBlekizS6TnaRWEx8MPg+bA08f42WKksQbH8w2t
+        kpmMtqewz3msUC7hGppBmRbWlr/lBz8SITudi29yyw==
+X-Google-Smtp-Source: ABdhPJxSIIPnQxqHLZgaVWbqZ+jOLHmLZMiIPzk/5VcvReKa0rFFrDWP5flDhnZuVy7AGqysB9pz/olfwpeoIYNXTyc=
+X-Received: by 2002:a05:651c:10f:: with SMTP id a15mr2396471ljb.192.1594919094710;
+ Thu, 16 Jul 2020 10:04:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200716141534.30241-1-ulf.hansson@linaro.org> <20200716161358.GA3135454@kroah.com>
-In-Reply-To: <20200716161358.GA3135454@kroah.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 16 Jul 2020 19:04:21 +0200
-Message-ID: <CAPDyKFr6eSZr2V-=YvAEZH9SmsE2SZ9j5ZS5zZEFHBqwyWRfpw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Initial support for SD express card/host
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>,
-        Rui Feng <rui_feng@realsil.com.cn>,
-        linux-nvme@lists.infradead.org,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
+References: <1585649077-10896-1-git-send-email-laoar.shao@gmail.com>
+ <CALvZod6Yn=_fYEM+xN3a+4W2e5CCLkvMXZg_txD3j+dZieX-CQ@mail.gmail.com> <CALOAHbB_Koc8MTCqEg5Ev8mccqCGrBvPieCg+aeogn2PDuKFeg@mail.gmail.com>
+In-Reply-To: <CALOAHbB_Koc8MTCqEg5Ev8mccqCGrBvPieCg+aeogn2PDuKFeg@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 16 Jul 2020 10:04:43 -0700
+Message-ID: <CALvZod4D4H70XJYUcY=5NxHcRUff+17Qz2OegXVm8wnoZ1TfuA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] psi: enhance psi with the help of ebpf
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Jul 2020 at 18:14, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Wed, Jul 15, 2020 at 8:19 PM Yafang Shao <laoar.shao@gmail.com> wrote:
 >
-> On Thu, Jul 16, 2020 at 04:15:34PM +0200, Ulf Hansson wrote:
-> > +int mmc_send_if_cond_pcie(struct mmc_host *host, u32 ocr)
-> > +{
-> > +     u32 resp = 0;
-> > +     u8 pcie_bits = 0;
-> > +     int ret;
-> > +
-> > +     if (host->caps2 & MMC_CAP2_SD_EXP) {
-> > +             /* Probe card for SD express support via PCIe. */
-> > +             pcie_bits = 0x10;
-> > +             if (host->caps2 & MMC_CAP2_SD_EXP_1_2V)
-> > +                     /* Probe also for 1.2V support. */
-> > +                     pcie_bits = 0x30;
-> > +     }
-> > +
-> > +     ret = __mmc_send_if_cond(host, ocr, pcie_bits, &resp);
-> > +     if (ret)
-> > +             return 0;
-> > +
-> > +     /* Continue with the SD express init, if the card supports it. */
-> > +     resp &= 0x3000;
-> > +     if (pcie_bits && resp) {
-> > +             if (resp == 0x3000)
->
-> 0x3000 should be some defined value, right?  Otherwise it just looks
-> like magic bits :)
-
-Yeah, I was considering that, but there are already lots of magic bits
-around here in this code. On top of that, the bits are shifted,
-depending on how they are used.
-
-We should probably look into doing a cleanup, so this gets clearer overall.
-
->
-> > --- a/include/linux/mmc/host.h
-> > +++ b/include/linux/mmc/host.h
-> > @@ -60,6 +60,8 @@ struct mmc_ios {
-> >  #define MMC_TIMING_MMC_DDR52 8
-> >  #define MMC_TIMING_MMC_HS200 9
-> >  #define MMC_TIMING_MMC_HS400 10
-> > +#define MMC_TIMING_SD_EXP    11
-> > +#define MMC_TIMING_SD_EXP_1_2V       12
+> On Thu, Jul 16, 2020 at 12:36 AM Shakeel Butt <shakeelb@google.com> wrote:
 > >
-> >       unsigned char   signal_voltage;         /* signalling voltage (1.8V or 3.3V) */
+> > Hi Yafang,
 > >
-> > @@ -172,6 +174,9 @@ struct mmc_host_ops {
-> >        */
-> >       int     (*multi_io_quirk)(struct mmc_card *card,
-> >                                 unsigned int direction, int blk_size);
-> > +
-> > +     /* Initialize an SD express card, mandatory for MMC_CAP2_SD_EXP. */
-> > +     int     (*init_sd_express)(struct mmc_host *host, struct mmc_ios *ios);
-> >  };
+> > On Tue, Mar 31, 2020 at 3:05 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> > >
+> > > PSI gives us a powerful way to anaylze memory pressure issue, but we can
+> > > make it more powerful with the help of tracepoint, kprobe, ebpf and etc.
+> > > Especially with ebpf we can flexiblely get more details of the memory
+> > > pressure.
+> > >
+> > > In orderc to achieve this goal, a new parameter is added into
+> > > psi_memstall_{enter, leave}, which indicates the specific type of a
+> > > memstall. There're totally ten memstalls by now,
+> > >         MEMSTALL_KSWAPD
+> > >         MEMSTALL_RECLAIM_DIRECT
+> > >         MEMSTALL_RECLAIM_MEMCG
+> > >         MEMSTALL_RECLAIM_HIGH
+> > >         MEMSTALL_KCOMPACTD
+> > >         MEMSTALL_COMPACT
+> > >         MEMSTALL_WORKINGSET_REFAULT
+> > >         MEMSTALL_WORKINGSET_THRASH
+> > >         MEMSTALL_MEMDELAY
+> > >         MEMSTALL_SWAPIO
+> > > With the help of kprobe or tracepoint to trace this newly added agument we
+> > > can know which type of memstall it is and then do corresponding
+> > > improvement. I can also help us to analyze the latency spike caused by
+> > > memory pressure.
+> > >
+> > > But note that we can't use it to build memory pressure for a specific type
+> > > of memstall, e.g. memcg pressure, compaction pressure and etc, because it
+> > > doesn't implement various types of task->in_memstall, e.g.
+> > > task->in_memcgstall, task->in_compactionstall and etc.
+> > >
+> > > Although there're already some tracepoints can help us to achieve this
+> > > goal, e.g.
+> > >         vmscan:mm_vmscan_kswapd_{wake, sleep}
+> > >         vmscan:mm_vmscan_direct_reclaim_{begin, end}
+> > >         vmscan:mm_vmscan_memcg_reclaim_{begin, end}
+> > >         /* no tracepoint for memcg high reclaim*/
+> > >         compcation:mm_compaction_kcompactd_{wake, sleep}
+> > >         compcation:mm_compaction_begin_{begin, end}
+> > >         /* no tracepoint for workingset refault */
+> > >         /* no tracepoint for workingset thrashing */
+> > >         /* no tracepoint for use memdelay */
+> > >         /* no tracepoint for swapio */
+> > > but psi_memstall_{enter, leave} gives us a unified entrance for all
+> > > types of memstall and we don't need to add many begin and end tracepoints
+> > > that hasn't been implemented yet.
+> > >
+> > > Patch #2 gives us an example of how to use it with ebpf. With the help of
+> > > ebpf we can trace a specific task, application, container and etc. It also
+> > > can help us to analyze the spread of latencies and whether they were
+> > > clustered at a point of time or spread out over long periods of time.
+> > >
+> > > To summarize, with the pressure data in /proc/pressure/memroy we know that
+> > > the system is under memory pressure, and then with the newly added tracing
+> > > facility in this patchset we can get the reason of this memory pressure,
+> > > and then thinks about how to make the change.
+> > > The workflow can be illustrated as bellow.
+> > >
+> > >                    REASON         ACTION
+> > >                  | compcation   | improve compcation    |
+> > >                  | vmscan       | improve vmscan        |
+> > > Memory pressure -| workingset   | improve workingset    |
+> > >                  | etc          | ...                   |
+> > >
 > >
-> >  struct mmc_cqe_ops {
-> > @@ -357,6 +362,8 @@ struct mmc_host {
-> >  #define MMC_CAP2_HS200_1_2V_SDR      (1 << 6)        /* can support */
-> >  #define MMC_CAP2_HS200               (MMC_CAP2_HS200_1_8V_SDR | \
-> >                                MMC_CAP2_HS200_1_2V_SDR)
-> > +#define MMC_CAP2_SD_EXP              (1 << 7)        /* SD express via PCIe */
+> > I have not looked at the patch series in detail but I wanted to get
+> > your thoughts if it is possible to achieve what I am trying to do with
+> > this patch series.
+> >
+> > At the moment I am only interested in global reclaim and I wanted to
+> > enable alerts like "alert if there is process stuck in global reclaim
+> > for x seconds in last y seconds window" or "alert if all the processes
+> > are stuck in global reclaim for some z seconds".
+> >
+> > I see that using this series I can identify global reclaim but I am
+> > wondering if alert or notifications are possible. Android is using psi
+> > monitors for such alerts but it does not use cgroups, so, most of the
+> > memstalls are related to global reclaim stall. For cgroup environment,
+> > do we need for add support to psi monitor similar to this patch
+> > series?
+> >
 >
-> BIT(7)?
+> Hi Shakeel,
 >
-> > +#define MMC_CAP2_SD_EXP_1_2V (1 << 8)        /* SD express 1.2V */
+> We use the PSI tracepoints in our kernel to analyze the individual
+> latency caused by memory pressure, but the PSI tracepoints are
+> implemented with a new version as bellow:
+>     trace_psi_memstall_enter(_RET_IP_);
+>     trace_psi_memstall_leave(_RET_IP_);
+> And then using the _RET_IP_ to identify the specific PSI type.
 >
-> BIT(8)?
+> If the _RET_IP_ is at try_to_free_mem_cgroup_pages(), then it means
+> the pressure caused by the memory cgroup, IOW, the limit of memcg is
+> reached and it has to do memcg reclaim. Otherwise we can consider it
+> as global memory pressure.
+> try_to_free_mem_cgroup_pages
+>     psi_memstall_enter
+>         if (static_branch_likely(&psi_disabled))
+>             return;
+>         *flags = current->in_memstall;
+>          if (*flags)
+>              return;
+>          trace_psi_memstall_enter(_RET_IP_);  <<<<< memcg pressure
+>
 
-I can change to that, but it wouldn't be consistent with existing
-code. Again, probably better targeted as a separate bigger cleanup on
-top.
+Thanks for the response. I am looking for 'always on' monitoring. More
+specifically defining the system level SLIs based on PSI. My concern
+with ftrace is its global shared state and also it is not really for
+'always on' monitoring. You have mentioned ebpf. Is ebpf fine for
+'always on' monitoring and is it possible to notify user space by ebpf
+on specific conditions (e.g. a process stuck in global reclaim for 60
+seconds)?
 
->
-> thanks,
->
-> greg k-h
-
-Thanks for reviewing!
-
-Kind regards
-Uffe
+thanks,
+Shakeel
