@@ -2,102 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308BF22271D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3D4222738
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729123AbgGPPgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 11:36:42 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34056 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728774AbgGPPgl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:36:41 -0400
-Date:   Thu, 16 Jul 2020 17:36:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594913800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Znin1qZ+GVKKZWfo8pTR1eebjm4kkJGTUgY2Ff7zFs=;
-        b=1hf64CMCc0Fj0miZJXm5fWlr1x+X4rZ0/8IKFuL23AY19Kkitfbe5vN/cU0LDo5C+vAexw
-        KyRrXl1xcF4oOre+ooBVnfK0hmqYVQJiDWQypcBauUFPgJe3+6xrQdd1l5h17ZF+AbdIeJ
-        WfEw/YRuoQqwRne91sT6xtmjDuxrwkuIpTUGQP1n0i6quu9BmuM8eJy2JB5X4Ot0oCQZfJ
-        ZzM/YkNZ2cOSq/gIjkcKtupxrDIueUCTVKq6pX9roQqm8ZzdEAbo1skjYotJMLzpSl69h/
-        GFN4xb1E7v+/nnbWXCQUAGlloxxRLsLrrKRAof/k//8bSnXcTWsw54kcRSLwHQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594913800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Znin1qZ+GVKKZWfo8pTR1eebjm4kkJGTUgY2Ff7zFs=;
-        b=mVln4EgByMSCBqxuFMb+Cgh62v5trn1mfRNiJ5PRxrPIdAwcYPe6VY8njXiz9FDZuvohUy
-        PHqWcj7Y0XUj+7CQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/1] rcu/tree: Drop the lock before entering to page
- allocator
-Message-ID: <20200716153638.gfh6dzp2h35ygfaa@linutronix.de>
-References: <20200715183537.4010-1-urezki@gmail.com>
- <20200715185628.7b4k3o5efp4gnbla@linutronix.de>
- <20200715190243.GA26735@pc636>
- <20200715193250.axntj7jdt6bw52dr@linutronix.de>
- <20200715221449.GJ9247@paulmck-ThinkPad-P72>
- <20200716141421.fzwf4tedr6rixd6d@linutronix.de>
- <20200716152027.GQ9247@paulmck-ThinkPad-P72>
+        id S1729248AbgGPPir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 11:38:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729174AbgGPPiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 11:38:46 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF3A32076A;
+        Thu, 16 Jul 2020 15:38:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594913926;
+        bh=G8Zl9gleHNiBCu55Nq4ydnX8h6+TThG4FtYGk0/Xj8U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=zR+wH+XyGZYssehv5cG3L1nwEl/PJKISzTBnO/FYkqMvB9AgrnkVqacAuCefaVdIN
+         RDbERc5UG8g+AGV5vMsmpaOQ4IDzndQw/z1JsGW/R+3loRuvhSEyiFvWvCGThsYZbc
+         ZPTa/gSkzJZAwyVBUQZoV1jcUUHR+QRL1hI96+t4=
+Date:   Thu, 16 Jul 2020 08:38:44 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Paolo Pisati <paolo.pisati@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] selftests: net: ip_defrag: modprobe missing
+ nf_defrag_ipv6 support
+Message-ID: <20200716083844.709bad58@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAMsH0TQLKba_6G5CDpY4pDpr_PWVu0yE_c+LKoa+2fm2f4bjBQ@mail.gmail.com>
+References: <20200714124032.49133-1-paolo.pisati@canonical.com>
+        <20200715180144.02b83ed5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAMsH0TQLKba_6G5CDpY4pDpr_PWVu0yE_c+LKoa+2fm2f4bjBQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200716152027.GQ9247@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-16 08:20:27 [-0700], Paul E. McKenney wrote:
-> You lost me on this one.  I am instead concerned that something like this
-> might be needed on short notice:
+On Thu, 16 Jul 2020 09:23:12 +0200 Paolo Pisati wrote:
+> On Thu, Jul 16, 2020 at 3:01 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > Any reason you add this command before set -e ?
+> >
+> > It seems we want the script to fail if module can't be loaded.  
 > 
-> 	raw_spin_lock(&some_lock);
-> 	kfree_rcu(some_pointer, some_field_offset);
-> 
-> In contrast, single-argument kfree_rcu() cannot be invoked from any
-> environment where synchronize_rcu() cannot be invoked.
+> Cause if CONFIG_NF_DEFRAG_IPV6=y, the script would unnecessarily fail.
 
-I see. We don't have any kfree() in that context as far as I remember.
-We had a few cases in "resize" where you allocate memory, copy content
-and free old memory while under the lock but they are gone.
+I don't think modprobe fails when code is built in.
 
-> > > Yes, dropping to a plain spinlock would be simple in the here and now,
-> > > but experience indicates that it is only a matter of time, and that when
-> > > that time comes it will come as an emergency.
-> > 
-> > Hmmm.
-> 
-> I point out the call_rcu() experience.
-> 
-> > > One approach would be to replace the "IS_ENABLED(CONFIG_PREEMPT_RT)"
-> > > with some sort of check for being in a context where spinlock acquisition
-> > > is not legal.  What could be done along those lines?
-> > 
-> > I would rethink the whole concept how this is implemented now and give
-> > it another try. The code does not look pretty and is looking
-> > complicated. The RT covering of this part then just added a simple
-> > return because nothing else seemed to be possible. This patch here
-> > looks like another duct tape attempt to avoid a warning.
-> 
-> In addition to the possibility of invocation from BH?
-
-Invocation from BH should be possible because network would probably be
-the first user. I don't remember anything wrong with BH if I remember
-correctly.
-
-> 							Thanx, Paul
-
-Sebastian
+$ sudo modprobe pstore
+$ echo $?
+0
+$ grep CONFIG_PSTORE= /boot/config-5.7.8-200.fc32.x86_64
+CONFIG_PSTORE=y
+$ lsmod | grep pstore
+$
