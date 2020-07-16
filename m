@@ -2,125 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27ED0221FF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8572221FFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgGPJoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:44:15 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:63738 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728022AbgGPJoM (ORCPT
+        id S1727828AbgGPJq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:46:58 -0400
+Received: from smtprelay0186.hostedemail.com ([216.40.44.186]:39450 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726105AbgGPJq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:44:12 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06G9e8bJ031070;
-        Thu, 16 Jul 2020 05:44:11 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3279gmq8hv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Jul 2020 05:44:11 -0400
-Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 06G9i9ec057827
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 16 Jul 2020 05:44:09 -0400
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Thu, 16 Jul
- 2020 02:44:08 -0700
-Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 16 Jul 2020 02:44:08 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 06G9i21p001073;
-        Thu, 16 Jul 2020 05:44:07 -0400
-From:   Darius Berghe <darius.berghe@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>
-Subject: [PATCH v2 3/3] ltc2471 driver yaml
-Date:   Thu, 16 Jul 2020 12:46:11 +0300
-Message-ID: <20200716094611.81746-4-darius.berghe@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200716094611.81746-1-darius.berghe@analog.com>
-References: <20200716094611.81746-1-darius.berghe@analog.com>
+        Thu, 16 Jul 2020 05:46:58 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 3F00D837F24D;
+        Thu, 16 Jul 2020 09:46:57 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:2904:3138:3139:3140:3141:3142:3622:3865:3871:4321:5007:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12048:12114:12296:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21451:21627:30046:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: mind98_58102b926f01
+X-Filterd-Recvd-Size: 1571
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 16 Jul 2020 09:46:55 +0000 (UTC)
+Message-ID: <687734b1623965b154752252968adeca35740c88.camel@perches.com>
+Subject: Re: [PATCH] net: neterion: vxge: reduce stack usage in
+ VXGE_COMPLETE_VPATH_TX
+From:   Joe Perches <joe@perches.com>
+To:     Bixuan Cui <cuibixuan@huawei.com>, davem@davemloft.net,
+        kuba@kernel.org, linux-next@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        jdmason@kudzu.us, christophe.jaillet@wanadoo.fr,
+        john.wanghui@huawei.com
+Date:   Thu, 16 Jul 2020 02:46:54 -0700
+In-Reply-To: <20200716173247.78912-1-cuibixuan@huawei.com>
+References: <20200716173247.78912-1-cuibixuan@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-16_05:2020-07-16,2020-07-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 impostorscore=0 clxscore=1015
- suspectscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007160075
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dt binding documentation for ltc2471 driver. This covers all supported
-devices.
+On Thu, 2020-07-16 at 17:32 +0000, Bixuan Cui wrote:
+> Fix the warning: [-Werror=-Wframe-larger-than=]
+[]
+> diff --git a/drivers/net/ethernet/neterion/vxge/vxge-main.c b/drivers/net/ethernet/neterion/vxge/vxge-main.c
+[]
+> @@ -100,8 +100,14 @@ static inline void VXGE_COMPLETE_VPATH_TX(struct vxge_fifo *fifo)
+>  	struct sk_buff **temp;
+>  #define NR_SKB_COMPLETED 128
+>  	struct sk_buff *completed[NR_SKB_COMPLETED];
+> +	struct sk_buff **completed;
+>  	int more;
+> 
+> +	completed = kcalloc(NR_SKB_COMPLETED, sizeof(*completed),
+> +			    GFP_KERNEL);
 
-Signed-off-by: Darius Berghe <darius.berghe@analog.com>
----
- .../bindings/iio/adc/adi,ltc2471.yaml         | 49 +++++++++++++++++++
- 1 file changed, 49 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ltc2471.yaml
+I doubt this is a good idea.
+Check the callers interrupt status.
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ltc2471.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ltc2471.yaml
-new file mode 100644
-index 000000000000..d5b35a1fa651
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ltc2471.yaml
-@@ -0,0 +1,49 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright 2020 Analog Devices Inc.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/bindings/iio/adc/adi,ltc2471.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices LTC2471 16-bit I2C Sigma-Delta ADC
-+
-+maintainers:
-+  - Mike Looijmans <mike.looijmans@topic.nl>
-+
-+description: |
-+  Analog Devices LTC2461 (single-ended) and LTC2463 (differential) 16-bit
-+  I2C Sigma-Delta ADC with 60sps output rate.
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/24613fa.pdf
-+
-+  Analog Devices LTC2471 (single-ended) and LTC2473 (differential) 16-bit
-+  I2C Sigma-Delta ADC with selectable 208/833sps output rate.
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/24713fb.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,ltc2461
-+      - adi,ltc2463
-+      - adi,ltc2471
-+      - adi,ltc2473
-+
-+  reg:
-+    maxItems: 1
-+
-+  avcc-supply:
-+    description:
-+      Phandle to the Avcc power supply (2.7V - 5.5V)
-+
-+required:
-+  - compatible
-+  - reg
-+
-+examples:
-+  - |
-+    i2c0 {
-+      adc@14 {
-+        compatible = "adi,ltc2461";
-+        reg = <0x14>;
-+      };
-+    };
-+
--- 
-2.27.0
 
