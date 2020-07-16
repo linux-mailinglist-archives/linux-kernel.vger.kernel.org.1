@@ -2,147 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E27221C71
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE19221C73
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728022AbgGPGPa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Jul 2020 02:15:30 -0400
-Received: from emcscan.emc.com.tw ([192.72.220.5]:60598 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgGPGP3 (ORCPT
+        id S1728047AbgGPGPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:15:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728025AbgGPGPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:15:29 -0400
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="36456284"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 16 Jul 2020 14:15:28 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(95780:0:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Thu, 16 Jul 2020 14:15:26 +0800 (CST)
-Received: By OpenMail Mailer;Thu, 16 Jul 2020 14:15:23 +0800 (CST)
-From:   "jingle.wu" <jingle.wu@emc.com.tw>
-Reply-To: "jingle.wu" <jingle.wu@emc.com.tw>
-Subject: Re: [PATCH 2/2] Input: elan_i2c - Modify the IAP related functio
-        n for page sizes 128, 512 bytes.
-Message-ID: <1594880123.69588.jingle.wu@emc.com.tw>
-In-Reply-To: <20200716053912.GB1665100@dtor-ws>
-References: <20200714105641.15151-1-jingle.wu@emc.com.tw>
-        <20200716053912.GB1665100@dtor-ws>
-To:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
-Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "linux-input" <linux-input@vger.kernel.org>,
-        "phoenix" <phoenix@emc.com.tw>, "josh.chen" <josh.chen@emc.com.tw>,
-        "kai.heng.feng" <kai.heng.feng@canonical.com>
-Date:   Thu, 16 Jul 2020 14:15:23 +0800 (CST)
+        Thu, 16 Jul 2020 02:15:32 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D29BC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:15:32 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id a24so3194606pfc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:15:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DVb9BqnCCIXJSwGWTgbhyZjM4qcTaOK8ILi1j32bGuk=;
+        b=Ejy7ckchYzB4B/cGUpLwzSLs5SWO7j2kWIG+QyF6S7cM+STr5Pl4msE6B3g3mVMpuY
+         Hm4YOy9h2ZNvTyTyoj8vV4ybhx+YAPjv1RWuNVOzdC6IP+Z7PfXGASj1v5jqWLxXgqRr
+         eAyUauN1faGhfkiAKtK24NGVy4EXFFBUCxIujb+A3mjvHyc4ykYXS2RFZB44h642U87z
+         IWZsDw/RrO6K76WIUZMaPzuBLAgkG5sB6+ntFDxPM/uu99ODtxdV4FeWDXBP2wsTXukt
+         8F0A4Iitb8y8P8Z2KaD9gNq8OW6rWkBfuQUEG7WT0fVS7WpIan4dtegFoitWZJ74X7bQ
+         Eviw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DVb9BqnCCIXJSwGWTgbhyZjM4qcTaOK8ILi1j32bGuk=;
+        b=AXguJn7F6SgJ7hUrPUnSHEb5SAkW7Fydu5e8cFY95BpB5KTF+TcGyhhtQoq48S8oFb
+         ufEXuIycxMvQpZ+I/h5xFlkRNSXJ2nsDEYcU1D2RaO9zGTVL/wX3X5cqLXB0ULdWAq22
+         xxCwHYqiLDVC4mVRAbltBtFNDQoKSQ385nqET+Jetf+rzJd4Bh6yUO1lnbttQWPeANQQ
+         8pPTyns2/nSbIhJPCfH+t/k5ylIb7fdQSSNnFX98HOWNgUL3+AsEfJE7vbMUSv4k/I42
+         GvNbkbFZLpxWiKfJzQ8Fr43ty4ZzT/simWeZF27LLbfJIv9EQbL/RT0RGM2EAw5s6eyI
+         M+BA==
+X-Gm-Message-State: AOAM531AZlcrltyhyp/m0HemWck6em4vSWTRePfKsBmnHY6Ck8zN4l+G
+        tfQBK+D5lZGXfX5X+NVwkJ7hwg==
+X-Google-Smtp-Source: ABdhPJy4dj2Prxcig0aMdKJOiKAGjXoiqLvRtoIWGCfqYZeloqoaeRkaNEjF7GFc8mFQQ/QoRphcYw==
+X-Received: by 2002:a63:b06:: with SMTP id 6mr2884850pgl.116.1594880131151;
+        Wed, 15 Jul 2020 23:15:31 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id w20sm3669904pfn.44.2020.07.15.23.15.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 23:15:30 -0700 (PDT)
+From:   Zong Li <zong.li@sifive.com>
+To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Zong Li <zong.li@sifive.com>
+Subject: [PATCH 0/2] Fix some build warnings when W=1
+Date:   Thu, 16 Jul 2020 14:15:25 +0800
+Message-Id: <cover.1594880014.git.zong.li@sifive.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=big5
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Dmitry:
+These patches fix some build warnings when W=1, the most of warnings are
+missing prototype as follows:
 
-Just to confirm, the older devices (I assume that pattern 0 means older)
- have version command that is numerically higher than the one for the
- newer (pattern >= 1) devices?
+arch/riscv/mm/init.c:520:13: warning: no previous prototype for 'resource_init' [-Wmissing-prototypes]
+arch/riscv/mm/pageattr.c:130:5: warning: no previous prototype for 'set_memory_ro' [-Wmissing-prototypes]
+arch/riscv/mm/pageattr.c:136:5: warning: no previous prototype for 'set_memory_rw' [-Wmissing-prototypes]
+arch/riscv/mm/pageattr.c:142:5: warning: no previous prototype for 'set_memory_x' [-Wmissing-prototypes]
+arch/riscv/mm/pageattr.c:147:5: warning: no previous prototype for 'set_memory_nx' [-Wmissing-prototypes]
+arch/riscv/mm/pageattr.c:152:5: warning: no previous prototype for 'set_direct_map_invalid_noflush' [-Wmissing-prototypes]
+arch/riscv/mm/pageattr.c:169:5: warning: no previous prototype for 'set_direct_map_default_noflush' [-Wmissing-prototypes]
+arch/riscv/mm/pageattr.c:97:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
 
->> Yes, Pattern 1, 2 are newer devices.
+Zong Li (2):
+  riscv: Fix build warning for mm/init
+  riscv: fix build warning of mm/pageattr
 
-> @@ -324,7 +342,14 @@ static int elan_i2c_get_sm_version(struct i2c_client *client,
->  			return error;
->  		}
->  		*version = val[0];
-> -		*ic_type = val[1];
-> +
-> +		error = elan_i2c_read_cmd(client, ETP_I2C_IAP_VERSION_CMD, val);
-> +		if (error) {
-> +			dev_err(&client->dev, "failed to get ic type: %d\n",
-> +				error);
-> +			return error;
-> +		}
-
-Could you please tell me why this chunk is needed?
->> Modify the old pattern IC firmware read the correct ic_type.
-
-In the elan_i2c_core.c, move this code to elan_i2c_i2c.c. 
-static int elan_query_device_info(struct elan_tp_data *data)
-{
-	.....
-	if (data->pattern == 0x01)
-		ic_type = data->ic_type;
-	else
-		ic_type = data->iap_version;
-	.....
-	return 0;
-}
-
-THANKS
-
------Original message-----
-From:Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:Jingle Wu <jingle.wu@emc.com.tw>
-Cc:linux-kernel@vger.kernel.org,linux-input@vger.kernel.org,phoenix@emc.com.tw,josh.chen@emc.com.tw,kai.heng.feng@canonical.com
-Date:Thu, 16 Jul 2020 13:39:12
-Subject:Re: [PATCH 2/2] Input: elan_i2c - Modify the IAP related function for page sizes 128, 512 bytes.
-
-Hi Jingle,
-
-On Tue, Jul 14, 2020 at 06:56:41AM -0400, Jingle Wu wrote:
-> +	if (!iap)
-> +		cmd = ETP_I2C_FW_VERSION_CMD;
-> +	else if (pattern_ver == 0)
-> +		cmd = ETP_I2C_IAP_VERSION_CMD_OLD;
-
-Just to confirm, the older devices (I assume that pattern 0 means older)
-have version command that is numerically higher than the one for the
-newer (pattern >= 1) devices?
-
-> +	else
-> +		cmd = ETP_I2C_IAP_VERSION_CMD;
->  
-> -	error = elan_i2c_read_cmd(client,
-> -				  iap ? ETP_I2C_IAP_VERSION_CMD :
-> -					ETP_I2C_FW_VERSION_CMD,
-> -				  val);
-> +	error = elan_i2c_read_cmd(client, cmd, val);
->  	if (error) {
->  		dev_err(&client->dev, "failed to get %s version: %d\n",
->  			iap ? "IAP" : "FW", error);
->  		return error;
->  	}
->  
-> -	if (pattern_ver == 0x01)
-> +	if (pattern_ver >= 0x01)
->  		*version = iap ? val[1] : val[0];
->  	else
->  		*version = val[0];
-> @@ -298,7 +316,7 @@ static int elan_i2c_get_sm_version(struct i2c_client *client,
->  		return error;
->  	}
->  
-> -	if (pattern_ver == 0x01) {
-> +	if (pattern_ver >= 0x01) {
->  		error = elan_i2c_read_cmd(client, ETP_I2C_IC_TYPE_CMD, val);
->  		if (error) {
->  			dev_err(&client->dev, "failed to get ic type: %d\n",
-> @@ -324,7 +342,14 @@ static int elan_i2c_get_sm_version(struct i2c_client *client,
->  			return error;
->  		}
->  		*version = val[0];
-> -		*ic_type = val[1];
-> +
-> +		error = elan_i2c_read_cmd(client, ETP_I2C_IAP_VERSION_CMD, val);
-> +		if (error) {
-> +			dev_err(&client->dev, "failed to get ic type: %d\n",
-> +				error);
-> +			return error;
-> +		}
-
-Could you please tell me why this chunk is needed?
-
-Thanks.
+ arch/riscv/mm/init.c     | 2 +-
+ arch/riscv/mm/pageattr.c | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
 -- 
-Dmitry
+2.27.0
+
