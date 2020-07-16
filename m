@@ -2,189 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2441E221CFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52C1221CFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728236AbgGPHEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:04:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725921AbgGPHEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:04:23 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BAE1206F4;
-        Thu, 16 Jul 2020 07:04:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594883062;
-        bh=DV5zKc/ZWVUvHklF0tyr4PwKp6kaVLmlesNhot2hFgo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OYFVjxV5k9yB/i4gwIJF2lqTwXuMDkamt5mmUDgF5kgsQRDjjU3yMQGzeUIGSVp3d
-         AROD9O1qtZ/4/oZiB9e4eceD/516OtCK1qKO2K7qxcnAFaWslYY6Aqzezaa5ugTxFo
-         hfbofGjOPkH6OW6NCLuoHfmH4ERtGfWAYZ9242J8=
-Date:   Thu, 16 Jul 2020 09:04:16 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Qiu Wenbo <qiuwenbo@phytium.com.cn>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Linux Driver Project Developer List 
-        <driverdev-devel@linuxdriverproject.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Villegas <git@marvil07.net>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8712: Fixes coding style in several headers
-Message-ID: <20200716070416.GA962748@kroah.com>
-References: <20200716064118.61243-1-qiuwenbo@phytium.com.cn>
+        id S1728188AbgGPHFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725921AbgGPHFJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 03:05:09 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D5AC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 00:05:09 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id z3so3237507pfn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 00:05:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ryP8cAu4wXnxt+VFYVN54rpFGELZrqJgme1cG9J5OqU=;
+        b=G+DZxD0YAith1B1UP6I+ej0HyRvbj9dcbS2NtkptlwIxknfaVmWYjzzvWYIz5KnojX
+         QKCNvXBHj9ekbupKZMyqMP69g9WaVr26KE9OpyNfjbJ0NAT2N2wcWrvZ0EMwKPyA7iGQ
+         mArq87+Z57DFrnS1s+H0JFCHkwy5VP+mPvSd7WQnm77BRAXm34FfBfTmXY/2DB9IpT8/
+         lfNKPpOtIgOe8SEdEdYYmRnczKGfaNTzl03pWV+EjVxwkP54YNmrcAXWUrKtIsLMEsbk
+         s9slfGGmnvox7s+snK+U0VdnCS9ArJyGJmJ07Tr5r1WBMu3PTcI+C8JQwDX/aSvC1gW0
+         IFTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ryP8cAu4wXnxt+VFYVN54rpFGELZrqJgme1cG9J5OqU=;
+        b=SD4dKvvDJjT3e7w5cwTRNKc6u4GPNaLpf6LYLs9r1IzGo0lEzb0gm40ZRnon9YBEpw
+         i4H7jYLEfkbXA1yHGmL1UJ+A7e1JVjClg236PkdytPZkPJQZsHQvEI6p7MiuYGe66u3o
+         agUbzz9lR3rlOcZtVIXfxI1SkIEriqjcLlMDSv4xE88Y7fuvyOGKT5+OzUIE1VKONQrI
+         z55HTyffOH3oawyYhzPyDPvQWB9NGsWvS35jRPWwzMeFPNCKZc+78n4IxKVnVx5lBEnN
+         Byou3/qAbemzepcpwJXBzIf1Gls497pV2btmETPV274Xo8EZ5VsrseQRSUVojVkwDlO8
+         Y4Ow==
+X-Gm-Message-State: AOAM530hosldajhvuV9HkI9BRpVCLsoEnzdMqmi4GgWh0INP+xNkpODA
+        rAG1TWRiRcKabZfsBz5RnCEKYw==
+X-Google-Smtp-Source: ABdhPJyCGDBuKMoR1lMMNlBRqbnhkR5f8IVQjijFy3LK3JSFNhKcBH5/A7gpkZ1KSsTr6wnTtBcsXQ==
+X-Received: by 2002:a63:4b44:: with SMTP id k4mr3200939pgl.305.1594883109390;
+        Thu, 16 Jul 2020 00:05:09 -0700 (PDT)
+Received: from Smcdef-MBP.local.net ([103.136.220.68])
+        by smtp.gmail.com with ESMTPSA id 64sm4286950pgb.63.2020.07.16.00.05.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 16 Jul 2020 00:05:08 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     peterz@infradead.org, tglx@linutronix.de, mingo@kernel.org,
+        bigeasy@linutronix.de, namit@vmware.com
+Cc:     linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH RESEND] smp: Fix a potential usage of stale nr_cpus
+Date:   Thu, 16 Jul 2020 15:04:57 +0800
+Message-Id: <20200716070457.53255-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716064118.61243-1-qiuwenbo@phytium.com.cn>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 02:41:12PM +0800, Qiu Wenbo wrote:
-> This patch fixes warnings in several headers found by the checkpatch.pl tool.
+The get_option() maybe return 0, it means that the nr_cpus is
+not initialized. Then we will use the stale nr_cpus to initialize
+the nr_cpu_ids. So fix it.
 
-What warnings specifically?
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ kernel/smp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Please only fix one type of warning per patch.
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 472c2b274c65..2a9a04acf123 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -634,8 +634,7 @@ static int __init nrcpus(char *str)
+ {
+ 	int nr_cpus;
+ 
+-	get_option(&str, &nr_cpus);
+-	if (nr_cpus > 0 && nr_cpus < nr_cpu_ids)
++	if (get_option(&str, &nr_cpus) && nr_cpus > 0 && nr_cpus < nr_cpu_ids)
+ 		nr_cpu_ids = nr_cpus;
+ 
+ 	return 0;
+-- 
+2.11.0
 
-> 
-> Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
-> ---
->  drivers/staging/rtl8712/rtl871x_event.h   | 15 ++++++++++-----
->  drivers/staging/rtl8712/rtl871x_io.h      |  3 ++-
->  drivers/staging/rtl8712/rtl871x_pwrctrl.h | 15 ++++++++++-----
->  drivers/staging/rtl8712/rtl871x_xmit.h    | 15 ++++++++++-----
->  4 files changed, 32 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8712/rtl871x_event.h b/drivers/staging/rtl8712/rtl871x_event.h
-> index d9a5476d2426..0e59d0ee6aae 100644
-> --- a/drivers/staging/rtl8712/rtl871x_event.h
-> +++ b/drivers/staging/rtl8712/rtl871x_event.h
-> @@ -78,13 +78,16 @@ struct event_node {
->  	unsigned char *node;
->  	unsigned char evt_code;
->  	unsigned short evt_sz;
-> -	/*volatile*/ int *caller_ff_tail;
-> +	/*volatile*/
-> +	int *caller_ff_tail;
-
-Why did you change this?  It's fine as is, and a hint something needs to
-be fixed.
-
->  	int	caller_ff_sz;
->  };
->  
->  struct c2hevent_queue {
-> -	/*volatile*/ int	head;
-> -	/*volatile*/ int	tail;
-> +	/*volatile*/
-> +	int	head;
-> +	/*volatile*/
-> +	int	tail;
-
-Same for these.
-
-
-
->  	struct	event_node	nodes[C2HEVENT_SZ];
->  	unsigned char	seq;
->  };
-> @@ -92,8 +95,10 @@ struct c2hevent_queue {
->  #define NETWORK_QUEUE_SZ	4
->  
->  struct network_queue {
-> -	/*volatile*/ int	head;
-> -	/*volatile*/ int	tail;
-> +	/*volatile*/
-> +	int	head;
-> +	/*volatile*/
-> +	int	tail;
->  	struct wlan_bssid_ex networks[NETWORK_QUEUE_SZ];
->  };
->  
-> diff --git a/drivers/staging/rtl8712/rtl871x_io.h b/drivers/staging/rtl8712/rtl871x_io.h
-> index c20dd5a6bbd1..2e269b71072c 100644
-> --- a/drivers/staging/rtl8712/rtl871x_io.h
-> +++ b/drivers/staging/rtl8712/rtl871x_io.h
-> @@ -101,7 +101,8 @@ struct	_io_ops {
->  struct io_req {
->  	struct list_head list;
->  	u32	addr;
-> -	/*volatile*/ u32	val;
-> +	/*volatile*/
-> +	u32	val;
->  	u32	command;
->  	u32	status;
->  	u8	*pbuf;
-> diff --git a/drivers/staging/rtl8712/rtl871x_pwrctrl.h b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
-> index dd5a79f90b1a..e6b740c09120 100644
-> --- a/drivers/staging/rtl8712/rtl871x_pwrctrl.h
-> +++ b/drivers/staging/rtl8712/rtl871x_pwrctrl.h
-> @@ -77,14 +77,19 @@ struct reportpwrstate_parm {
->  
->  struct	pwrctrl_priv {
->  	struct mutex mutex_lock;
-> -	/*volatile*/ u8 rpwm; /* requested power state for fw */
-> +	/*volatile*/
-> +	u8 rpwm; /* requested power state for fw */
->  	/* fw current power state. updated when 1. read from HCPWM or
->  	 * 2. driver lowers power level
->  	 */
-> -	/*volatile*/ u8 cpwm;
-> -	/*volatile*/ u8 tog; /* toggling */
-> -	/*volatile*/ u8 cpwm_tog; /* toggling */
-> -	/*volatile*/ u8 tgt_rpwm; /* wanted power state */
-> +	/*volatile*/
-> +	u8 cpwm;
-> +	/*volatile*/
-> +	u8 tog; /* toggling */
-> +	/*volatile*/
-> +	u8 cpwm_tog; /* toggling */
-> +	/*volatile*/
-> +	u8 tgt_rpwm; /* wanted power state */
->  	uint pwr_mode;
->  	uint smart_ps;
->  	uint alives;
-> diff --git a/drivers/staging/rtl8712/rtl871x_xmit.h b/drivers/staging/rtl8712/rtl871x_xmit.h
-> index f227828094bf..6d2e12b35670 100644
-> --- a/drivers/staging/rtl8712/rtl871x_xmit.h
-> +++ b/drivers/staging/rtl8712/rtl871x_xmit.h
-> @@ -182,11 +182,16 @@ struct sta_xmit_priv {
->  };
->  
->  struct	hw_txqueue {
-> -	/*volatile*/ sint	head;
-> -	/*volatile*/ sint	tail;
-> -	/*volatile*/ sint	free_sz;	/*in units of 64 bytes*/
-> -	/*volatile*/ sint      free_cmdsz;
-> -	/*volatile*/ sint	 txsz[8];
-> +	/*volatile*/
-> +	sint	head;
-> +	/*volatile*/
-> +	sint	tail;
-> +	/*volatile*/
-> +	sint	free_sz;	/*in units of 64 bytes*/
-> +	/*volatile*/
-> +	sint      free_cmdsz;
-> +	/*volatile*/
-> +	sint	 txsz[8];
->  	uint	ff_hwaddr;
->  	uint	cmd_hwaddr;
->  	sint	ac_tag;
-> -- 
-> 2.27.0
-> 
-
-Actually same for all of these, the code is fine as-is.
-
-thanks,
-
-greg k-h
