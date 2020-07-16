@@ -2,125 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10CBE222F0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 237E7222F03
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgGPXcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:32:50 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8511 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbgGPXcn (ORCPT
+        id S1726970AbgGPXap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:30:45 -0400
+Received: from smtp-as-01.vtxnet.net ([194.38.175.130]:44802 "EHLO
+        smtp-as-01.vtxnet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbgGPXap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:32:43 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f10d8990000>; Thu, 16 Jul 2020 15:45:45 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 16 Jul 2020 15:46:44 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 16 Jul 2020 15:46:44 -0700
-Received: from [10.2.163.115] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 16 Jul
- 2020 22:46:43 +0000
-Subject: Re: [RFC PATCH v3 16/18] gpu: host1x: mipi: Split
- tegra_mipi_calibrate and tegra_mipi_wait
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>
-References: <1594786855-26506-1-git-send-email-skomatineni@nvidia.com>
- <1594786855-26506-17-git-send-email-skomatineni@nvidia.com>
- <a06dec8f-7042-767b-545b-048685a7683d@gmail.com>
- <20d63eca-4b2b-584e-a391-a4fb64a16b40@nvidia.com>
- <c4945c77-5de1-e9b1-9f4f-cdd78bca18c7@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <ce0c5ffb-f859-0eab-1ea5-044623dff221@nvidia.com>
-Date:   Thu, 16 Jul 2020 15:49:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 16 Jul 2020 19:30:45 -0400
+X-Greylist: delayed 1200 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 Jul 2020 19:30:44 EDT
+X-Spam-Flag: NO
+X-Spam-Score: 1.2
+X-Spam-Level: *
+X-Spam-Status: No, score=1.2 tagged_above=-999 required=999
+        tests=[FREEMAIL_FORGED_REPLYTO=1.199, LOTS_OF_MONEY=0.001]
+        autolearn=no autolearn_force=no
+Received: from smtp-02.datacomm.ch (smtp-02-5.datacomm.ch [212.40.2.22])
+        by smtp-as-01.vtxnet.net (Postfix) with ESMTP id ECD95406FE;
+        Fri, 17 Jul 2020 00:50:54 +0200 (CEST)
+Received: from webmail.vtx.ch (bas-flu-webmail-01.vtxnet.net [212.40.2.41])
+        by smtp-02.datacomm.ch (VTX Datacomm AG) with ESMTP id 1F78A120051;
+        Fri, 17 Jul 2020 00:50:54 +0200 (CEST)
+Received: from [156.38.89.48]
+ by webmail.vtx.ch
+ with HTTP (HTTP/1.1 POST); Fri, 17 Jul 2020 00:50:54 +0200
 MIME-Version: 1.0
-In-Reply-To: <c4945c77-5de1-e9b1-9f4f-cdd78bca18c7@gmail.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1594939545; bh=DBU7rkpSwcdm/T9Ofc9hoI63/nUNEGD1koFVXFhF+U4=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=nFMORG0KBm13wQActfeNEGrE1zTfVIyfLJ//f9isZ71e/0m8pSHRFZfxn4Vch+PrK
-         m467l/dCABGM7cypucxeKSO7ihOtmWx2RYRe7ASI+CVwCl89tYZv523OzYt7r+a/Gj
-         QEQJ9pQrzdrWWDsMo1MpeBY8uEOrwGKZcACUvLn7z02tudMGWgEtwLcbDFGcxOxron
-         CFiXdEhydMgbm3yuCd+qzK66L+0iuMRtQ6UtJWoqiN62PuoBS+T3mnls2EKz39D1Qk
-         pXAhGvVOx+t5lirI3vJWIgYvdkLb16b8GqcnX8Mu2SazjFJC+gFicbqDU7WC+jQG0r
-         SGZbpO91WJQdA==
+Date:   Fri, 17 Jul 2020 00:50:54 +0200
+From:   =?UTF-8?Q?Ocean_Finance=C2=AE?= <hoheneggerbrail@vtxmail.ch>
+To:     undisclosed-recipients:;
+Subject: =?UTF-8?Q?Gl=C3=BCckwunsch_!!?=
+Organization: =?UTF-8?Q?Ocean_Finance=C2=AE?=
+Reply-To: oceanfinance__@hotmail.com
+Mail-Reply-To: oceanfinance__@hotmail.com
+Message-ID: <4727f41278594856d69e0fbcf511c1ad@vtxmail.ch>
+X-Sender: hoheneggerbrail@vtxmail.ch
+User-Agent: Roundcube Webmail/1.2.10
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 7/16/20 2:18 PM, Dmitry Osipenko wrote:
-> 17.07.2020 00:09, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> On 7/16/20 1:38 PM, Dmitry Osipenko wrote:
->>> 15.07.2020 07:20, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>> SW can trigger MIPI pads calibration any time after power on
->>>> but calibration results will be latched and applied to the pads
->>>> by MIPI CAL unit only when the link is in LP-11 state and then
->>>> status register will be updated.
->>>>
->>>> For CSI, trigger of pads calibration happen during CSI stream
->>>> enable where CSI receiver is kept ready prior to sensor or CSI
->>>> transmitter stream start.
->>>>
->>>> So, pads may not be in LP-11 at this time and waiting for the
->>>> calibration to be done immediate after calibration start will
->>>> result in timeout.
->>>>
->>>> This patch splits tegra_mipi_calibrate() and tegra_mipi_wait()
->>>> so triggering for calibration and waiting for it to complete can
->>>> happen at different stages.
->>>>
->>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->>>> ---
->>> ...
->>>>  =C2=A0 int tegra_mipi_calibrate(struct tegra_mipi_device *device)
->>>>  =C2=A0 {
->>>> @@ -370,12 +381,10 @@ int tegra_mipi_calibrate(struct
->>>> tegra_mipi_device *device)
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 value |=3D MIPI_CAL_CTRL_START;
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tegra_mipi_writel(device->mipi, value,=
- MIPI_CAL_CTRL);
->>>>  =C2=A0 -=C2=A0=C2=A0=C2=A0 err =3D tegra_mipi_wait(device->mipi);
->>> Doesn't MIPI clock need to be enabled during of the calibration process=
-?
->> MIPI clock is already enabled in tegra_mipi_calibrate
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&device->mipi->lock);
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 clk_disable(device->mipi->clk);
-> What keeps MIPI clock enabled after completion of the
-> tegra_mipi_calibrate() invocation?
 
-MIPI clock is disabled at end of tegra_mipi_calibrate and is re-enabled=20
-during tegra_mipi_wait.
+-- 
+Sehr geehrter Herr / Frau,
 
-I think I should fix this to keep the clock enabled till calibration=20
-results are latched.
+Ich hoffe, Sie sind bei guter Gesundheit durch die Pandemie
+Coronavirus (COVID-19)
 
-All consumers of tegra_mipi_calibrate() will call tegra_mipi_wait().
+Ich bin Herr Heckmann Carl von der Active Lenders Loan Company,
+bekannt als Ocean Finance®. Damit möchten wir Sie darüber informieren,
+dass wir alle Arten von Darlehen zu einem Zinssatz von 2% anbieten.
+Wenn Sie daran interessiert sind, innerhalb von 24 Stunden ein
+Darlehen zu erhalten, genehmigen Sie es und überweisen Sie es auf Ihr
+Bankkonto. Bitte kontaktieren Sie uns mit den folgenden Informationen.
+Unser Kreditangebot reicht von 20.000,00 bis 20.000.000,00 (EUR).
 
-So will remove clk_disable mipi clk at end of tegra_mipi_calibrate() and=20
-clk_enable mipi_clk at beginning of tegra_mipi_wait()
+Bitte füllen Sie das unten stehende Formular aus und senden Sie es so
+schnell wie möglich zurück.
 
->
->>>>  =C2=A0 -=C2=A0=C2=A0=C2=A0 return err;
->>>> +=C2=A0=C2=A0=C2=A0 return 0;
->>>>  =C2=A0 }
->>>>  =C2=A0 EXPORT_SYMBOL(tegra_mipi_calibrate);
+Ihr vollständiger Name:
+Erforderlicher Darlehensbetrag:
+Laufzeit des Darlehens:
+Zweck des Kredits:
+Telefonnummer:
+
+In Bestätigung dieser E-Mail können wir mit der Bearbeitung Ihres
+Darlehens beginnen und versprechen, Ihren Herzenswunsch zu erfüllen.
+Freundliche Grüße.
+
+Herr Heckmann Carl
+Finanzberater
