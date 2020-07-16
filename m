@@ -2,304 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C93222B06
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E0A222B03
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 20:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729366AbgGPS2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 14:28:47 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:40702 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726986AbgGPS2q (ORCPT
+        id S1729422AbgGPS0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 14:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726986AbgGPS0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 14:28:46 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06GIMorL116040;
-        Thu, 16 Jul 2020 18:28:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=NMspoUF3zFfbPIO6bYbuQkF0xdzf5NUiaa140NHriiM=;
- b=Dvx6znEXNYqach8SL6g3CA1M7C93/fv3vpdg/QvWCBq+MlZnYqS2Y4a9RCRDpJfaFJxe
- j7/oS2UwK9Ssfhddm3SNYxdUtMStb2YDjuKdtpW/kUyypS6KVWcbDH0teffRgufFaGDB
- Wwg3IxpzaTefW8BcornOKuy6yJfoNLuC4VezF3XuqrTsYrks4SZBG8qmAo0d1FYBY3H4
- Y+59JzO1ZMsLdYnU31qK1n04wW37wt3Wx8b5DePcOhKQYVzTWko1+q0X++VEb4h3xgTC
- Dmw5VHZLaLN48P8weIQAoXU7gfyfacfRb7up99vHO04pXJGQDBH1C5f0tBULQA0M1n1y Tg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 3275cmk3bx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 16 Jul 2020 18:28:05 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06GIHhHv093791;
-        Thu, 16 Jul 2020 18:26:05 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 327qbc55dg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Jul 2020 18:26:05 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06GIPuYL032145;
-        Thu, 16 Jul 2020 18:25:57 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 16 Jul 2020 11:25:56 -0700
-Subject: Re: [PATCH v3] mm/hugetlb: split hugetlb_cma in nodes with memory
-To:     Will Deacon <will@kernel.org>, Roman Gushchin <guro@fb.com>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "H.Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        akpm@linux-foundation.org, Mike Rapoport <rppt@linux.ibm.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20200710120950.37716-1-song.bao.hua@hisilicon.com>
- <359ea1d0-b1fd-d09f-d28a-a44655834277@oracle.com>
- <20200715081822.GA5683@willie-the-truck>
- <5724f1f8-63a6-ee0f-018c-06fb259b6290@oracle.com>
- <20200716081243.GA6561@willie-the-truck>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <a867c7a2-e89b-2015-4895-f30f7aeb07cb@oracle.com>
-Date:   Thu, 16 Jul 2020 11:25:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 16 Jul 2020 14:26:44 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9E3C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 11:26:44 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id o1so4238517plk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 11:26:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=u7RPi0dZoxrinhSex63VGQU/jKFhdDJaMRbmZIfUlH4=;
+        b=ckUVbs1SYKKOQol/tE9tRtc5oeTZih4Ff7NQoYGxW6jbLLmwjnSe47n+jGbAGH33+4
+         mLqUdJ5ThOXmrJD+8wOd8bzXrL7Ws0PPETbndzpliyoDhBC/g/QxB6PtAVy21rUR6HJP
+         bsqEE74MRfeGMbMd8xduK2QqKHILoswzoxGtQy/TN6q8mzqPrr/Ei1kza0bAlAeuajm9
+         nPz+jgnAYVIBol7r7YAFKi86TwacSkjbN+fhwVDNSg2r2Gq6WgnxpNyLx1JoeAhMwEdd
+         PR+K/ce/b4OY1w8P3z3h4IS8DN82o/18LJbH11Z2h87JJ31AJZlzCID2c/N6A0VUsVy9
+         1LFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u7RPi0dZoxrinhSex63VGQU/jKFhdDJaMRbmZIfUlH4=;
+        b=jQ7ns0UIxVK0ABB096hwIzs3S93MgioS3IxxSA6Nx3Ctlg2G2pofHxcW0lT139/1md
+         EHHsH+pboFn8qqOl8n1hojBtjE6hKAsMpmPz8vWkYRFQi1fyqT2E3xxJXIlHFELYbSdC
+         qYv5LuA++RdLWHDszZLC9WhjXZYkp0WlWO1udJwj99p1IwRERgT9bAhAHfSI00+47qo1
+         7GQNyrvAkpWIdU8K9kCDTOX2BLFuvP1ZEz2UCtzdXVSuoS4W20E2zv1XN+KD5mQSAaWR
+         Z/h7PU+OTF/2pB/jZuc2enquCuA3qeeVbsDs6FPms5cFKYrdCpjSGyk/diOpp39BL2sz
+         3y+A==
+X-Gm-Message-State: AOAM5312MYqAWuPYmmPdLTg1h852MaQNkrbZ7cPayb2hxUzu27vaViyz
+        +HZpqMsHQf0ksOlRHaBv094EFRn/8otaCcHdPvo3zw==
+X-Google-Smtp-Source: ABdhPJzphgbYsjBbvOEjKOBoX4CycazX4k0q+zhWxgzOW4hYyQqYRt/zeen1wGSQbjTtoL2K8TJtDSD4hUyptEaPCfs=
+X-Received: by 2002:a17:90b:3683:: with SMTP id mj3mr6164614pjb.91.1594924003399;
+ Thu, 16 Jul 2020 11:26:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200716081243.GA6561@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9684 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=100 mlxlogscore=-1000 malwarescore=0
- mlxscore=100 spamscore=100 phishscore=0 suspectscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007160130
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9684 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=100 suspectscore=0 priorityscore=1501
- bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=100
- impostorscore=0 malwarescore=0 mlxlogscore=-1000 clxscore=1015
- mlxscore=100 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007160130
+References: <20200716050846.2047110-1-saravanak@google.com>
+ <CGME20200716053024eucas1p1fc9f469ce40472554cf377e4cd12e1d2@eucas1p1.samsung.com>
+ <e3f4469e-8467-1736-8a39-6539b9f542af@roeck-us.net> <99bf8e73-1daa-34b8-ca7e-093a44fdba9b@samsung.com>
+In-Reply-To: <99bf8e73-1daa-34b8-ca7e-093a44fdba9b@samsung.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 16 Jul 2020 11:26:07 -0700
+Message-ID: <CAGETcx9cLdhSWb9zVRrOrqAA2kN+9i3YcuNGmSHVjW3CNZdJhA@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Fix scheduling while atomic warnings
+ during device link deletion
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/16/20 1:12 AM, Will Deacon wrote:
-> On Wed, Jul 15, 2020 at 09:59:24AM -0700, Mike Kravetz wrote:
->>
->> So, everything in the existing code really depends on the hugetlb definition
->> of gigantic page (order >= MAX_ORDER).  The code to check for
->> 'order >= MAX_ORDER' in my proposed patch is just following the same
->> convention.
-> 
-> Fair enough, and thanks for the explanation. Maybe just chuck a comment in,
-> then? Alternatively, having something like:
-> 
-> static inline bool page_order_is_gigantic(unsigned int order)
-> {
-> 	return order >= MAX_ORDER;
-> }
-> 
-> static inline bool hstate_is_gigantic(struct hstate *h)
-> {
-> 	return page_order_is_gigantic(huge_page_order(h));
-> }
+On Wed, Jul 15, 2020 at 10:48 PM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> Hi
+>
+> On 16.07.2020 07:30, Guenter Roeck wrote:
+> > On 7/15/20 10:08 PM, Saravana Kannan wrote:
+> >> Marek and Guenter reported that commit 287905e68dd2 ("driver core:
+> >> Expose device link details in sysfs") caused sleeping/scheduling while
+> >> atomic warnings.
+> >>
+> >> BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
+> >> in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 12, name: kworker/0:1
+> >> 2 locks held by kworker/0:1/12:
+> >>    #0: ee8074a8 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x174/0x7dc
+> >>    #1: ee921f20 ((work_completion)(&sdp->work)){+.+.}-{0:0}, at: process_one_work+0x174/0x7dc
+> >> Preemption disabled at:
+> >> [<c01b10f0>] srcu_invoke_callbacks+0xc0/0x154
+> >> ----- 8< ----- SNIP
+> >> [<c064590c>] (device_del) from [<c0645c9c>] (device_unregister+0x24/0x64)
+> >> [<c0645c9c>] (device_unregister) from [<c01b10fc>] (srcu_invoke_callbacks+0xcc/0x154)
+> >> [<c01b10fc>] (srcu_invoke_callbacks) from [<c01493c4>] (process_one_work+0x234/0x7dc)
+> >> [<c01493c4>] (process_one_work) from [<c01499b0>] (worker_thread+0x44/0x51c)
+> >> [<c01499b0>] (worker_thread) from [<c0150bf4>] (kthread+0x158/0x1a0)
+> >> [<c0150bf4>] (kthread) from [<c0100114>] (ret_from_fork+0x14/0x20)
+> >> Exception stack(0xee921fb0 to 0xee921ff8)
+> >>
+> >> This was caused by the device link device being released in the context
+> >> of srcu_invoke_callbacks().  There is no need to wait till the RCU
+> >> callback to release the device link device.  So release the device
+> >> earlier and revert the RCU callback code to what it was before
+> >> commit 287905e68dd2 ("driver core: Expose device link details in sysfs")
+> >>
+> >> Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
+> >> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> >> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> >> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >> ---
+> >> Marek and Guenter,
+> >>
+> >> It haven't had a chance to test this yet. Can one of you please test it
+> >> and confirm it fixes the issue?
+> >>
+> > With this patch applied, the original warning is gone, but I get lots
+> > of other warnings.
+> >
+> > WARNING: CPU: 0 PID: 1 at drivers/base/core.c:1790 device_release+0x94/0xa4^M
+> > Device 'regulators:regulator@0:50038000.ethernet' does not have a release() function, it is broken and must be fixed.
+> >
+> > WARNING: CPU: 0 PID: 1 at drivers/base/core.c:1790 device_release+0x94/0xa4
+> > Device '53f9c000.gpio:50038000.ethernet' does not have a release() function, it is broken and must be fixed.
+> >
+> > WARNING: CPU: 0 PID: 1 at drivers/base/core.c:1790 device_release+0x94/0xa4^M
+> > Device '50030000.tscadc:50030400.tcq' does not have a release() function, it is broken and must be fixed.
+>
+> I confirm that I also get such warnings for every platform device in the
+> system with this patch applied to linux next-20200715:
 
-Ok, the updated patch below includes both as well as your other suggestions.
+Sigh... I should refrain from late night coding. I'll send a fix in a few hours.
 
-It would be great if Roman could comment/test as he provided the initial
-code and has a well defined use case.  Testing from Barry would also be
-appreciated as most of the recent churn has come from his testing.
-
->> I think the current dependency on the hugetlb definition of gigantic page
->> may be too simplistic if using CMA for huegtlb pages becomes more common.
->> Some architectures (sparc, powerpc) have more than one gigantic pages size.
->> Currently there is no way to specify that CMA should be used for one and
->> not the other.  In addition, I could imagine someone wanting to reserve/use
->> CMA for non-gigantic (PMD) sized pages.  There is no mechainsm for that today.
->>
->> I honestly have not heard about many use cases for this CMA functionality.
->> When support was initially added, it was driven by a specific use case and
->> the 'all gigantic pages use CMA if defined' implementation was deemed
->> sufficient.  If there are more use cases, or this seems too simple we can
->> revisit that decision.
-> 
-> Agreed, I think your patch is an improvement regardless of that.
-
-Anshuman and Barry have pending patches changing the place in arch specific
-code where hugetlb_cma_reserve is called.  This will not be necessary if the
-proposed code proves successful.
-
-From 17c8f37afbf42fe7412e6eebb3619c6e0b7e1c3c Mon Sep 17 00:00:00 2001
-From: Mike Kravetz <mike.kravetz@oracle.com>
-Date: Tue, 14 Jul 2020 15:54:46 -0700
-Subject: [PATCH] hugetlb: move cma reservation to code setting up gigantic
- hstate
-
-Instead of calling hugetlb_cma_reserve() directly from arch specific
-code, call from hugetlb_add_hstate when adding a gigantic hstate.
-hugetlb_add_hstate is either called from arch specific huge page setup,
-or as the result of hugetlb command line processing.  In either case,
-this is late enough in the init process that all numa memory information
-should be initialized.  And, it is early enough to still use early
-memory allocator.
-
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
----
- arch/arm64/mm/init.c    | 10 ----------
- arch/x86/kernel/setup.c |  9 ---------
- include/linux/hugetlb.h | 12 ------------
- mm/hugetlb.c            | 32 ++++++++++++++++++++++++++++----
- 4 files changed, 28 insertions(+), 35 deletions(-)
-
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 79806732f4b4..ff0ff584dde9 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -427,16 +427,6 @@ void __init bootmem_init(void)
- 	sparse_init();
- 	zone_sizes_init(min, max);
- 
--	/*
--	 * must be done after zone_sizes_init() which calls free_area_init()
--	 * that calls node_set_state() to initialize node_states[N_MEMORY]
--	 * because hugetlb_cma_reserve() will scan over nodes with N_MEMORY
--	 * state
--	 */
--#ifdef CONFIG_ARM64_4K_PAGES
--	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
--#endif
--
- 	memblock_dump_all();
- }
- 
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index a1a9712090ae..111c8467fafa 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1177,15 +1177,6 @@ void __init setup_arch(char **cmdline_p)
- 
- 	x86_init.paging.pagetable_init();
- 
--	/*
--	 * must be done after zone_sizes_init() which calls free_area_init()
--	 * that calls node_set_state() to initialize node_states[N_MEMORY]
--	 * because hugetlb_cma_reserve() will scan over nodes with N_MEMORY
--	 * state
--	 */
--	if (boot_cpu_has(X86_FEATURE_GBPAGES))
--		hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
--
- 	kasan_init();
- 
- 	/*
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 6b9508dc31b4..5fadba1febcc 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -933,16 +933,4 @@ static inline spinlock_t *huge_pte_lock(struct hstate *h,
- 	return ptl;
- }
- 
--#if defined(CONFIG_HUGETLB_PAGE) && defined(CONFIG_CMA)
--extern void __init hugetlb_cma_reserve(int order);
--extern void __init hugetlb_cma_check(void);
--#else
--static inline __init void hugetlb_cma_reserve(int order)
--{
--}
--static inline __init void hugetlb_cma_check(void)
--{
--}
--#endif
--
- #endif /* _LINUX_HUGETLB_H */
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index f24acb3af741..2ca68c5620b7 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -76,8 +76,10 @@ DEFINE_SPINLOCK(hugetlb_lock);
- static int num_fault_mutexes;
- struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
- 
--/* Forward declaration */
-+/* Forward declarations */
- static int hugetlb_acct_memory(struct hstate *h, long delta);
-+static void __init hugetlb_cma_reserve(int order);
-+static void __init hugetlb_cma_check(void);
- 
- static inline void unlock_or_release_subpool(struct hugepage_subpool *spool)
- {
-@@ -3273,6 +3275,13 @@ void __init hugetlb_add_hstate(unsigned int order)
- 	snprintf(h->name, HSTATE_NAME_LEN, "hugepages-%lukB",
- 					huge_page_size(h)/1024);
- 
-+	/*
-+	 * If user wants CMA for gigantic pages, reserve it now as we
-+	 * set up the gigantic page hstate.
-+	 */
-+	if (hstate_is_gigantic(h) && hugetlb_cma_size)
-+		hugetlb_cma_reserve(order);
-+
- 	parsed_hstate = h;
- }
- 
-@@ -5627,12 +5636,16 @@ void move_hugetlb_state(struct page *oldpage, struct page *newpage, int reason)
- #ifdef CONFIG_CMA
- static bool cma_reserve_called __initdata;
- 
-+/*
-+ * early_param, as hugetlb_cma_size must be processed before any call to
-+ * hugetlb_add_hstate by arch specific code or regular hugetlb command
-+ * line processing.
-+ */
- static int __init cmdline_parse_hugetlb_cma(char *p)
- {
- 	hugetlb_cma_size = memparse(p, &p);
- 	return 0;
- }
--
- early_param("hugetlb_cma", cmdline_parse_hugetlb_cma);
- 
- /*
-@@ -5642,11 +5655,13 @@ early_param("hugetlb_cma", cmdline_parse_hugetlb_cma);
-  * hugetlb_cma_reserve() scans over N_MEMORY nodemask and hence expects the platforms
-  * to have initialized N_MEMORY state.
-  */
--void __init hugetlb_cma_reserve(int order)
-+static void __init hugetlb_cma_reserve(int order)
- {
- 	unsigned long size, reserved, per_node;
- 	int nid;
- 
-+	if (cma_reserve_called)
-+		return;
- 	cma_reserve_called = true;
- 
- 	if (!hugetlb_cma_size)
-@@ -5693,12 +5708,21 @@ void __init hugetlb_cma_reserve(int order)
- 	}
- }
- 
--void __init hugetlb_cma_check(void)
-+static void __init hugetlb_cma_check(void)
- {
- 	if (!hugetlb_cma_size || cma_reserve_called)
- 		return;
- 
- 	pr_warn("hugetlb_cma: the option isn't supported by current arch\n");
- }
-+#else
-+
-+static void __init hugetlb_cma_reserve(int order)
-+{
-+}
-+
-+static void __init hugetlb_cma_check(void)
-+{
-+}
- 
- #endif /* CONFIG_CMA */
--- 
-2.25.4
-
+-Saravana
