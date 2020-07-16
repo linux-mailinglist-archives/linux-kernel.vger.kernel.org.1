@@ -2,70 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB9A221F20
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE15B221F07
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 10:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726411AbgGPI5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 04:57:31 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43170 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgGPI5b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 04:57:31 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 7143826103D
-Subject: Re: mainline/master bisection: baseline.dmesg.crit on
- qemu_arm-vexpress-a15
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     kernelci-results@groups.io,
-        Andre Przywara <andre.przywara@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        devicetree@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <5f0288aa.1c69fb81.b1c2a.eea4@mx.google.com>
- <20200706124951.GA32234@bogus>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <b7d63093-a1a8-fbc1-6673-040d6ba8cc8d@collabora.com>
-Date:   Thu, 16 Jul 2020 09:57:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728207AbgGPIyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 04:54:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7862 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725975AbgGPIyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 04:54:00 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 98C79304D547A792A00C;
+        Thu, 16 Jul 2020 16:53:56 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 16 Jul 2020 16:53:56 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kubakici@wp.pl>
+CC:     <linux-wireless@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] mt7601u: Convert to DEFINE_SHOW_ATTRIBUTE
+Date:   Thu, 16 Jul 2020 16:57:49 +0800
+Message-ID: <20200716085749.11105-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200706124951.GA32234@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/07/2020 13:49, Sudeep Holla wrote:
-> Hi,
-> 
-> On Sun, Jul 05, 2020 at 07:12:58PM -0700, kernelci.org bot wrote:
->> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
->> * This automated bisection report was sent to you on the basis  *
->> * that you may be involved with the breaking commit it has      *
->> * found.  No manual investigation has been done to verify it,   *
->> * and the root cause of the problem may be somewhere else.      *
->> *                                                               *
->> * If you do send a fix, please include this trailer:            *
->> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
->> *                                                               *
->> * Hope this helps!                                              *
->> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
->>
-> 
-> Andre test and replied to one of the similar but earlier reports.
-> Unless we get some response to that, we can't proceed and we can't
-> do much other than ignoring these reports. Please respond to Andre's
-> queries.
+Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ .../net/wireless/mediatek/mt7601u/debugfs.c   | 34 ++++---------------
+ 1 file changed, 6 insertions(+), 28 deletions(-)
 
-Sorry I missed your email, the regression is still there.  I'll
-reply to André.
+diff --git a/drivers/net/wireless/mediatek/mt7601u/debugfs.c b/drivers/net/wireless/mediatek/mt7601u/debugfs.c
+index eaabba20d..20669eacb 100644
+--- a/drivers/net/wireless/mediatek/mt7601u/debugfs.c
++++ b/drivers/net/wireless/mediatek/mt7601u/debugfs.c
+@@ -30,7 +30,7 @@ mt76_reg_get(void *data, u64 *val)
+ DEFINE_DEBUGFS_ATTRIBUTE(fops_regval, mt76_reg_get, mt76_reg_set, "0x%08llx\n");
+ 
+ static int
+-mt7601u_ampdu_stat_read(struct seq_file *file, void *data)
++mt7601u_ampdu_stat_show(struct seq_file *file, void *data)
+ {
+ 	struct mt7601u_dev *dev = file->private;
+ 	int i, j;
+@@ -73,21 +73,10 @@ mt7601u_ampdu_stat_read(struct seq_file *file, void *data)
+ 	return 0;
+ }
+ 
+-static int
+-mt7601u_ampdu_stat_open(struct inode *inode, struct file *f)
+-{
+-	return single_open(f, mt7601u_ampdu_stat_read, inode->i_private);
+-}
+-
+-static const struct file_operations fops_ampdu_stat = {
+-	.open = mt7601u_ampdu_stat_open,
+-	.read_iter = seq_read_iter,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(mt7601u_ampdu_stat);
+ 
+ static int
+-mt7601u_eeprom_param_read(struct seq_file *file, void *data)
++mt7601u_eeprom_param_show(struct seq_file *file, void *data)
+ {
+ 	struct mt7601u_dev *dev = file->private;
+ 	struct mt7601u_rate_power *rp = &dev->ee->power_rate_table;
+@@ -131,18 +120,7 @@ mt7601u_eeprom_param_read(struct seq_file *file, void *data)
+ 	return 0;
+ }
+ 
+-static int
+-mt7601u_eeprom_param_open(struct inode *inode, struct file *f)
+-{
+-	return single_open(f, mt7601u_eeprom_param_read, inode->i_private);
+-}
+-
+-static const struct file_operations fops_eeprom_param = {
+-	.open = mt7601u_eeprom_param_open,
+-	.read_iter = seq_read_iter,
+-	.llseek = seq_lseek,
+-	.release = single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(mt7601u_eeprom_param);
+ 
+ void mt7601u_init_debugfs(struct mt7601u_dev *dev)
+ {
+@@ -157,6 +135,6 @@ void mt7601u_init_debugfs(struct mt7601u_dev *dev)
+ 
+ 	debugfs_create_u32("regidx", 0600, dir, &dev->debugfs_reg);
+ 	debugfs_create_file("regval", 0600, dir, dev, &fops_regval);
+-	debugfs_create_file("ampdu_stat", 0400, dir, dev, &fops_ampdu_stat);
+-	debugfs_create_file("eeprom_param", 0400, dir, dev, &fops_eeprom_param);
++	debugfs_create_file("ampdu_stat", 0400, dir, dev, &mt7601u_ampdu_stat_fops);
++	debugfs_create_file("eeprom_param", 0400, dir, dev, &mt7601u_eeprom_param_fops);
+ }
+-- 
+2.17.1
 
-Guillaume
