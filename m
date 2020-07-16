@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69D922197B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A4D22197C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgGPB3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 21:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40246 "EHLO
+        id S1728102AbgGPB37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 21:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727938AbgGPB3t (ORCPT
+        with ESMTP id S1727105AbgGPB36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 21:29:49 -0400
+        Wed, 15 Jul 2020 21:29:58 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC05C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 18:29:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1E4C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 18:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
         MIME-Version:Date:Message-ID:To:Subject:From:Sender:Reply-To:Cc:Content-ID:
         Content-Description:In-Reply-To:References;
-        bh=80Cv1IsX1j20KEy3+YHkX9DECmJRcyYIEwZ015Az/3U=; b=Y+sp4V9c7wbuAwVyiLupY8zWp3
-        fXDmQ+KOoO06NsCloUaHC2/fPXS+T6xzErqr8fXAqnlZLiRy/f9+dOC7dLb/ncicbbJYkfSg4/bs1
-        hjr+yWV/yBbD+uNKqS/RIL4mvUqU5ZC2KcbtVN7/U1qUY3/sfcNJdZWdWpU0h4H6EvWbrKGlG+2Cr
-        xwcpyu19NLd2XCciMOIRHeNSbYQsb9DzxdnC7OZMINHA5Xnx8BApkG851lt/ES9IdOJCCFXD1PL7J
-        8SxQCbInyO49XWZWT+WFn2e6/J6HRAtv0ZsDbIGmTe8nSrr/vBwtuwPsBBYAKO8UrQw0YWIlVbGXu
-        P4uDgXKg==;
+        bh=RjzKDjnTgPacZTqkbQ3FDGXw1GgG1R3oxYXg8khQZXA=; b=KT7XpMtHCBpZkzY5qmeBQ/rMiB
+        XTnshJ+6tQtKLlb+e0CcqT1AqfF9u44ZDZdJVKY5RbtAHDFIEddXEDLEndRFjhWICtSg13UbeuKOJ
+        5OFlLf8JMGc/XPEvieZu3lwAeZZMt7uhWdnik1vc+165gfPTB+d9zpE4lp93zovANP4qIRtReSPOy
+        2S+uZHGxdh9QC7IWAYk65ojmJnH+T5LGh0Pn49ASNusLn/GF4NSNxLkDNLE3oi4CsgkbEvOlr5YaS
+        wwjfRAf0SvkCGXC6fAMidG3WdmJByM216oqAUJpJow3fLeyBf3l2qWxe9cPLJMlVwwj15JRA8c0zZ
+        3yX+hV8A==;
 Received: from [2601:1c0:6280:3f0::19c2]
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvsiY-0000SN-4l; Thu, 16 Jul 2020 01:29:46 +0000
+        id 1jvsig-0000Sy-U4; Thu, 16 Jul 2020 01:29:55 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] mm: drop duplicated words in <linux/mm.h>
+Subject: [PATCH] mm: drop duplicated words in <linux/pgtable.h>
 To:     LKML <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linux MM <linux-mm@kvack.org>
-Message-ID: <d9fae8d6-0d60-4d52-9385-3199ee98de49@infradead.org>
-Date:   Wed, 15 Jul 2020 18:29:43 -0700
+Message-ID: <2bb6e13e-44df-4920-52d9-4d3539945f73@infradead.org>
+Date:   Wed, 15 Jul 2020 18:29:51 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
@@ -48,33 +48,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Randy Dunlap <rdunlap@infradead.org>
 
-Drop the doubled words "to" and "the".
+Drop the doubled words "used" and "by".
+
+Drop the repeated acronym "TLB" and make several other fixes around it.
+(capital letters, spellos)
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-mm@kvack.org
 ---
- include/linux/mm.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/pgtable.h |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---- linux-next-20200714.orig/include/linux/mm.h
-+++ linux-next-20200714/include/linux/mm.h
-@@ -491,7 +491,7 @@ static inline bool fault_flag_allow_retr
- 	{ FAULT_FLAG_INTERRUPTIBLE,	"INTERRUPTIBLE" }
+--- linux-next-20200714.orig/include/linux/pgtable.h
++++ linux-next-20200714/include/linux/pgtable.h
+@@ -866,7 +866,7 @@ static inline void ptep_modify_prot_comm
  
  /*
-- * vm_fault is filled by the the pagefault handler and passed to the vma's
-+ * vm_fault is filled by the pagefault handler and passed to the vma's
-  * ->fault function. The vma's ->fault is responsible for returning a bitmask
-  * of VM_FAULT_xxx flags that give details about how the fault was handled.
-  *
-@@ -2613,7 +2613,7 @@ extern unsigned long stack_guard_gap;
- /* Generic expand stack which grows the stack according to GROWS{UP,DOWN} */
- extern int expand_stack(struct vm_area_struct *vma, unsigned long address);
- 
--/* CONFIG_STACK_GROWSUP still needs to to grow downwards at some places */
-+/* CONFIG_STACK_GROWSUP still needs to grow downwards at some places */
- extern int expand_downwards(struct vm_area_struct *vma,
- 		unsigned long address);
- #if VM_GROWSUP
+  * No-op macros that just return the current protection value. Defined here
+- * because these macros can be used used even if CONFIG_MMU is not defined.
++ * because these macros can be used even if CONFIG_MMU is not defined.
+  */
+ #ifndef pgprot_encrypted
+ #define pgprot_encrypted(prot)	(prot)
+@@ -1259,7 +1259,7 @@ static inline int pmd_trans_unstable(pmd
+  * Technically a PTE can be PROTNONE even when not doing NUMA balancing but
+  * the only case the kernel cares is for NUMA balancing and is only ever set
+  * when the VMA is accessible. For PROT_NONE VMAs, the PTEs are not marked
+- * _PAGE_PROTNONE so by by default, implement the helper as "always no". It
++ * _PAGE_PROTNONE so by default, implement the helper as "always no". It
+  * is the responsibility of the caller to distinguish between PROT_NONE
+  * protections and NUMA hinting fault protections.
+  */
+@@ -1343,10 +1343,10 @@ static inline int pmd_free_pte_page(pmd_
+ /*
+  * ARCHes with special requirements for evicting THP backing TLB entries can
+  * implement this. Otherwise also, it can help optimize normal TLB flush in
+- * THP regime. stock flush_tlb_range() typically has optimization to nuke the
+- * entire TLB TLB if flush span is greater than a threshold, which will
+- * likely be true for a single huge page. Thus a single thp flush will
+- * invalidate the entire TLB which is not desitable.
++ * THP regime. Stock flush_tlb_range() typically has optimization to nuke the
++ * entire TLB if flush span is greater than a threshold, which will
++ * likely be true for a single huge page. Thus a single THP flush will
++ * invalidate the entire TLB which is not desirable.
+  * e.g. see arch/arc: flush_pmd_tlb_range
+  */
+ #define flush_pmd_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
 
