@@ -2,320 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C29221A22
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 04:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73191221A15
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 04:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728085AbgGPCea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 22:34:30 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:57582 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgGPCeB (ORCPT
+        id S1728053AbgGPCeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 22:34:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727939AbgGPCeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 22:34:01 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 06G2Xei66017581, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 06G2Xei66017581
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 16 Jul 2020 10:33:40 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 16 Jul 2020 10:33:40 +0800
-Received: from RTEXMB06.realtek.com.tw (172.21.6.99) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 16 Jul 2020 10:33:40 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXMB01.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server id
- 15.1.1779.2 via Frontend Transport; Thu, 16 Jul 2020 10:33:40 +0800
-From:   TY Chang <tychang@realtek.com>
-To:     <linux-realtek-soc@lists.infradead.org>, <afaerber@suse.de>
-CC:     <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
-        <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 8/8] pinctrl: realtek: DHC: Add suspend/resume callback function.
-Date:   Thu, 16 Jul 2020 10:33:38 +0800
-Message-ID: <20200716023338.14922-9-tychang@realtek.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200716023338.14922-1-tychang@realtek.com>
-References: <20200716023338.14922-1-tychang@realtek.com>
+        Wed, 15 Jul 2020 22:34:08 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB47C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 19:34:08 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id q17so2976299pfu.8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 19:34:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OBHFrLP+zznPw6dlb+xXG2h+uzB263gsWgoLrOM5A/U=;
+        b=iBaOVvOBp/8cpWJBRzkHXXsvpirEoq1CjGUnb1KIpi1G+rcRPDkFLIFlGBCVL54pKM
+         s7xII+/8u3NGU8VPmuhB1E288OtTD10FzrwznllqHJ7H13zf+muLeTiFCh3hmbfAJ7bU
+         rkAfVlG5pbOycj9rqP2MwkqPEtLXoqGt4BkMQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OBHFrLP+zznPw6dlb+xXG2h+uzB263gsWgoLrOM5A/U=;
+        b=QJjhDdhP4oBUruAParVLlhTC4aEwIOjHs6Mop8lTTkke0A4H9/fNZMVGwJ+XS3GsVI
+         rXtRtLNTrbTH1ZYLfquiXNzaYqNuscDrADWJk8rNIM0Re+iG+Q3FthI6oFgOG2fRcou+
+         z0ujA11M3tOuLOw75gsn/8TMrod3Gp3OioskabH5RpQAj0MMki0Hk06UQKWU+OUKe9Gl
+         JI+mr8QR1Hky822mJHGNKtVcFE31XubXDvZFTWgSj4S1cQ3OhoVqAbvq01wGv5MnDxiJ
+         gm/ughIvrKHmtNnOjYZKVNVYe4ggzVw3LbT/PiqbuetK1Cs32heDe6/oK7JHtsrjU9WO
+         T2zw==
+X-Gm-Message-State: AOAM5328Il3lmcoUyUiYWATeod3eTy3Q83jrVEDyNPIBcGAicfaLjYaL
+        G2M41ruwKNvboHAYWEsEsi4Ntg==
+X-Google-Smtp-Source: ABdhPJwT2W5XcXGiXUbSxWDU3H1XbGT7OIjiB+N9Wb/ir/tyFHQzD+xKtJnodqbNxpjPU8gbPlwKtA==
+X-Received: by 2002:aa7:8597:: with SMTP id w23mr1732977pfn.219.1594866848006;
+        Wed, 15 Jul 2020 19:34:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c139sm3047867pfb.65.2020.07.15.19.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 19:34:07 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 19:34:06 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Vitor Massaru Iha <vitor@massaru.org>
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        davidgow@google.com, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [RFC 3/3] lib: Convert test_user_copy to KUnit test
+Message-ID: <202007151929.7A4E04E@keescook>
+References: <20200715031120.1002016-1-vitor@massaru.org>
+ <20200715031120.1002016-4-vitor@massaru.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200715031120.1002016-4-vitor@massaru.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add suspend and resume callback function for
-Realtek DHC SoC pinctrl driver.
+On Wed, Jul 15, 2020 at 12:11:20AM -0300, Vitor Massaru Iha wrote:
+> This adds the conversion of the runtime tests of test_user_copy fuctions,
+> from `lib/test_user_copy.c`to KUnit tests.
+> 
+> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> [...]
+> @@ -16,6 +16,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/vmalloc.h>
+> +#include <kunit/test.h>
+>  
+>  /*
+>   * Several 32-bit architectures support 64-bit {get,put}_user() calls.
+> @@ -31,26 +32,16 @@
+>  # define TEST_U64
+>  #endif
+>  
+> -#define test(condition, msg, ...)					\
+> -({									\
+> -	int cond = (condition);						\
+> -	if (cond)							\
+> -		pr_warn("[%d] " msg "\n", __LINE__, ##__VA_ARGS__);	\
+> -	cond;								\
+> -})
+> -
+>  static bool is_zeroed(void *from, size_t size)
+>  {
+>  	return memchr_inv(from, 0x0, size) == NULL;
+>  }
+>  
+> -static int test_check_nonzero_user(char *kmem, char __user *umem, size_t size)
+> +static void test_check_nonzero_user(struct kunit *test, char *kmem, char __user *umem, size_t size)
+>  {
+> -	int ret = 0;
+>  	size_t start, end, i, zero_start, zero_end;
+>  
+> -	if (test(size < 2 * PAGE_SIZE, "buffer too small"))
+> -		return -EINVAL;
+> +	KUNIT_EXPECT_FALSE_MSG(test, size < 2 * PAGE_SIZE, "buffer too small");
 
-Signed-off-by: TY Chang <tychang@realtek.com>
----
- drivers/pinctrl/realtek/pinctrl-rtd.c     | 39 +++++++++++++
- drivers/pinctrl/realtek/pinctrl-rtd1195.h | 33 +++++++++++
- drivers/pinctrl/realtek/pinctrl-rtd1295.h | 67 ++++++++++++++++++++++-
- 3 files changed, 138 insertions(+), 1 deletion(-)
+I think this could be a much smaller diff if you just replaced the
+"test" macro:
 
-diff --git a/drivers/pinctrl/realtek/pinctrl-rtd.c b/drivers/pinctrl/realtek/pinctrl-rtd.c
-index 4d9740f875ff..f327453b01df 100644
---- a/drivers/pinctrl/realtek/pinctrl-rtd.c
-+++ b/drivers/pinctrl/realtek/pinctrl-rtd.c
-@@ -57,6 +57,12 @@ struct rtd_pin_desc {
- 	const struct rtd_pin_mux_desc *functions;
- };
- 
-+struct rtd_pin_reg_list {
-+	unsigned int reg_offset;
-+	unsigned int val;
-+};
-+
-+
- #define RTK_PIN_CONFIG(_name, _reg_off, _base_bit, _pud_en_off, \
- 		_pud_sel_off, _curr_off, _smt_off, _curr_type) \
- 	{ \
-@@ -98,6 +104,8 @@ struct rtd_pinctrl_desc {
- 	unsigned int num_muxes;
- 	const struct rtd_pin_config_desc *configs;
- 	unsigned int num_configs;
-+	struct rtd_pin_reg_list *lists;
-+	unsigned int num_regs;
- };
- 
- #define PCONF_UNSUPP 0xffffffff
-@@ -549,8 +557,39 @@ static int rtd_pinctrl_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int rtd_pinctrl_suspend(struct platform_device *pdev, pm_message_t state)
-+{
-+	struct rtd_pinctrl *data = platform_get_drvdata(pdev);
-+	struct rtd_pin_reg_list *list;
-+	int i;
-+
-+	for (i = 0; i < data->info->num_regs; i++) {
-+		list = &data->info->lists[i];
-+		list->val = readl(data->base + list->reg_offset);
-+	}
-+
-+	return 0;
-+}
-+
-+static int rtd_pinctrl_resume(struct platform_device *pdev)
-+{
-+	struct rtd_pinctrl *data = platform_get_drvdata(pdev);
-+	const struct rtd_pin_reg_list *list;
-+	int i;
-+
-+	for (i = 0; i < data->info->num_regs; i++) {
-+		list = &data->info->lists[i];
-+		writel(list->val, data->base + list->reg_offset);
-+	}
-+
-+	return 0;
-+}
-+
-+
- static struct platform_driver rtd_pinctrl_driver = {
- 	.probe = rtd_pinctrl_probe,
-+	.suspend = rtd_pinctrl_suspend,
-+	.resume = rtd_pinctrl_resume,
- 	.driver = {
- 		.name = "rtd-pinctrl",
- 		.of_match_table	= rtd_pinctrl_dt_ids,
-diff --git a/drivers/pinctrl/realtek/pinctrl-rtd1195.h b/drivers/pinctrl/realtek/pinctrl-rtd1195.h
-index 74139345083c..c9d6e7894d66 100644
---- a/drivers/pinctrl/realtek/pinctrl-rtd1195.h
-+++ b/drivers/pinctrl/realtek/pinctrl-rtd1195.h
-@@ -358,6 +358,16 @@ static const struct rtd_pin_config_desc rtd1195_iso_configs[] = {
- };
- 
- 
-+static struct rtd_pin_reg_list rtd1195_iso_reg_lists[] = {
-+	{.reg_offset = 0x0},
-+	{.reg_offset = 0x4},
-+	{.reg_offset = 0x8},
-+	{.reg_offset = 0xc},
-+	{.reg_offset = 0x10},
-+	{.reg_offset = 0x14},
-+};
-+
-+
- static const struct rtd_pinctrl_desc rtd1195_iso_pinctrl_desc = {
- 	.pins = rtd1195_iso_pins,
- 	.num_pins = ARRAY_SIZE(rtd1195_iso_pins),
-@@ -369,6 +379,8 @@ static const struct rtd_pinctrl_desc rtd1195_iso_pinctrl_desc = {
- 	.num_muxes = ARRAY_SIZE(rtd1195_iso_muxes),
- 	.configs = rtd1195_iso_configs,
- 	.num_configs = ARRAY_SIZE(rtd1195_iso_configs),
-+	.lists = rtd1195_iso_reg_lists,
-+	.num_regs = ARRAY_SIZE(rtd1195_iso_reg_lists),
- };
- 
- /* CRT */
-@@ -1110,6 +1122,25 @@ static const struct rtd_pin_config_desc rtd1195_crt_configs[] = {
- 	RTK_PIN_CONFIG(sensor_cko_1, 0x9c, 28, 1, 0, 2, 3, PADDRI_2_4),
- };
- 
-+static struct rtd_pin_reg_list rtd1195_crt_reg_lists[] = {
-+	{.reg_offset = 0x60},
-+	{.reg_offset = 0x64},
-+	{.reg_offset = 0x68},
-+	{.reg_offset = 0x6c},
-+	{.reg_offset = 0x70},
-+	{.reg_offset = 0x74},
-+	{.reg_offset = 0x78},
-+	{.reg_offset = 0x7c},
-+	{.reg_offset = 0x80},
-+	{.reg_offset = 0x84},
-+	{.reg_offset = 0x88},
-+	{.reg_offset = 0x8c},
-+	{.reg_offset = 0x90},
-+	{.reg_offset = 0x94},
-+	{.reg_offset = 0x98},
-+	{.reg_offset = 0x9c},
-+};
-+
- 
- static const struct rtd_pinctrl_desc rtd1195_crt_pinctrl_desc = {
- 	.pins = rtd1195_crt_pins,
-@@ -1122,6 +1153,8 @@ static const struct rtd_pinctrl_desc rtd1195_crt_pinctrl_desc = {
- 	.num_muxes = ARRAY_SIZE(rtd1195_crt_muxes),
- 	.configs = rtd1195_crt_configs,
- 	.num_configs = ARRAY_SIZE(rtd1195_crt_configs),
-+	.lists = rtd1195_crt_reg_lists,
-+	.num_regs = ARRAY_SIZE(rtd1195_crt_reg_lists),
- };
- 
- #endif
-diff --git a/drivers/pinctrl/realtek/pinctrl-rtd1295.h b/drivers/pinctrl/realtek/pinctrl-rtd1295.h
-index 14d46baa97d8..7cd12f66e02f 100644
---- a/drivers/pinctrl/realtek/pinctrl-rtd1295.h
-+++ b/drivers/pinctrl/realtek/pinctrl-rtd1295.h
-@@ -525,7 +525,17 @@ static const struct rtd_pin_config_desc rtd1295_iso_configs[] = {
- 	RTK_PIN_CONFIG(iso_gpio_34, 0x20, 4, 1, 0, 2, 3, 2),
- };
- 
--
-+static struct rtd_pin_reg_list rtd1295_iso_reg_lists[] = {
-+	{.reg_offset = 0x0},
-+	{.reg_offset = 0x4},
-+	{.reg_offset = 0x8},
-+	{.reg_offset = 0xc},
-+	{.reg_offset = 0x10},
-+	{.reg_offset = 0x14},
-+	{.reg_offset = 0x18},
-+	{.reg_offset = 0x1c},
-+	{.reg_offset = 0x20},
-+};
- 
- static const struct rtd_pinctrl_desc rtd1295_iso_pinctrl_desc = {
- 	.pins = rtd1295_iso_pins,
-@@ -538,6 +548,8 @@ static const struct rtd_pinctrl_desc rtd1295_iso_pinctrl_desc = {
- 	.num_muxes = ARRAY_SIZE(rtd1295_iso_muxes),
- 	.configs = rtd1295_iso_configs,
- 	.num_configs = ARRAY_SIZE(rtd1295_iso_configs),
-+	.lists = rtd1295_iso_reg_lists,
-+	.num_regs = ARRAY_SIZE(rtd1295_iso_reg_lists),
- };
- 
- /* SB2 */
-@@ -1225,6 +1237,28 @@ static const struct rtd_pin_config_desc rtd1295_sb2_configs[] = {
- 	RTK_PIN_CONFIG(rgmii1_rxd_3, 0x78, 12, 1, 0, 2, 3, PADDRI_4_8),
- };
- 
-+static struct rtd_pin_reg_list rtd1295_sb2_reg_lists[] = {
-+	{.reg_offset = 0x8},
-+	{.reg_offset = 0xc},
-+	{.reg_offset = 0x10},
-+	{.reg_offset = 0x14},
-+	{.reg_offset = 0x28},
-+	{.reg_offset = 0x14},
-+	{.reg_offset = 0x2c},
-+	{.reg_offset = 0x30},
-+	{.reg_offset = 0x34},
-+	{.reg_offset = 0x38},
-+	{.reg_offset = 0x3c},
-+	{.reg_offset = 0x60},
-+	{.reg_offset = 0x64},
-+	{.reg_offset = 0x68},
-+	{.reg_offset = 0x6c},
-+	{.reg_offset = 0x70},
-+	{.reg_offset = 0x74},
-+	{.reg_offset = 0x78},
-+	{.reg_offset = 0x7c},
-+};
-+
- 
- static const struct rtd_pinctrl_desc rtd1295_sb2_pinctrl_desc = {
- 	.pins = rtd1295_sb2_pins,
-@@ -1237,6 +1271,8 @@ static const struct rtd_pinctrl_desc rtd1295_sb2_pinctrl_desc = {
- 	.num_muxes = ARRAY_SIZE(rtd1295_sb2_muxes),
- 	.configs = rtd1295_sb2_configs,
- 	.num_configs = ARRAY_SIZE(rtd1295_sb2_configs),
-+	.lists = rtd1295_sb2_reg_lists,
-+	.num_regs = ARRAY_SIZE(rtd1295_sb2_reg_lists),
- };
- 
- /* Disp */
-@@ -1373,6 +1409,12 @@ static const struct rtd_pin_config_desc rtd1295_disp_configs[] = {
- 	RTK_PIN_CONFIG(ao_sd_3, 0x4, 24, 1, 0, 2, 3, PADDRI_2_4),
- };
- 
-+static struct rtd_pin_reg_list rtd1295_disp_reg_lists[] = {
-+	{.reg_offset = 0x0},
-+	{.reg_offset = 0x4},
-+	{.reg_offset = 0x8},
-+};
-+
- 
- static const struct rtd_pinctrl_desc rtd1295_disp_pinctrl_desc = {
- 	.pins = rtd1295_disp_pins,
-@@ -1385,6 +1427,8 @@ static const struct rtd_pinctrl_desc rtd1295_disp_pinctrl_desc = {
- 	.num_muxes = ARRAY_SIZE(rtd1295_disp_muxes),
- 	.configs = rtd1295_disp_configs,
- 	.num_configs = ARRAY_SIZE(rtd1295_disp_configs),
-+	.lists = rtd1295_disp_reg_lists,
-+	.num_regs = ARRAY_SIZE(rtd1295_disp_reg_lists),
- };
- 
- /* CR */
-@@ -1825,6 +1869,25 @@ static const struct rtd_pin_config_desc rtd1295_cr_configs[] = {
- 	RTK_PIN_CONFIG(prob_3, 0x18, 24, 1, 0, 2, 3, PADDRI_4_8),
- };
- 
-+static struct rtd_pin_reg_list rtd1295_cr_reg_lists[] = {
-+	{.reg_offset = 0x0},
-+	{.reg_offset = 0x4},
-+	{.reg_offset = 0x8},
-+	{.reg_offset = 0xc},
-+	{.reg_offset = 0x10},
-+	{.reg_offset = 0x14},
-+	{.reg_offset = 0x18},
-+	{.reg_offset = 0x1c},
-+	{.reg_offset = 0x20},
-+	{.reg_offset = 0x24},
-+	{.reg_offset = 0x28},
-+	{.reg_offset = 0x2c},
-+	{.reg_offset = 0x30},
-+	{.reg_offset = 0x34},
-+	{.reg_offset = 0x38},
-+	{.reg_offset = 0x3c},
-+	{.reg_offset = 0x40},
-+};
- 
- static const struct rtd_pinctrl_desc rtd1295_cr_pinctrl_desc = {
- 	.pins = rtd1295_cr_pins,
-@@ -1837,6 +1900,8 @@ static const struct rtd_pinctrl_desc rtd1295_cr_pinctrl_desc = {
- 	.num_muxes = ARRAY_SIZE(rtd1295_cr_muxes),
- 	.configs = rtd1295_cr_configs,
- 	.num_configs = ARRAY_SIZE(rtd1295_cr_configs),
-+	.lists = rtd1295_cr_reg_lists,
-+	.num_regs = ARRAY_SIZE(rtd1295_cr_reg_lists),
- };
- 
- #endif
+#define test(condition, msg, ...)					\
+({									\
+	int cond = !!(condition);					\
+	KUNIT_EXPECT_FALSE_MSG(kunit_context, cond, msg, ##__VA_ARGS__);\
+	cond;								\
+})
+
 -- 
-2.27.0
-
+Kees Cook
