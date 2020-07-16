@@ -2,217 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6A4221C63
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25045221C6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgGPGKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 02:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
+        id S1727927AbgGPGOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:14:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgGPGKW (ORCPT
+        with ESMTP id S1727768AbgGPGOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:10:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1761C061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:10:21 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jvx5y-0004Ls-Bg; Thu, 16 Jul 2020 08:10:14 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1jvx5w-0008GV-5U; Thu, 16 Jul 2020 08:10:12 +0200
-Date:   Thu, 16 Jul 2020 08:10:09 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Thu, 16 Jul 2020 02:14:52 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF58EC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:14:52 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id l6so3408267plt.7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:14:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rX60TSR1P7XjO+Zan3QrbefgI3vkAw4Lsg0JYzx7KTU=;
+        b=DfaEXmosLkzCXColYdER7fQTE+pnxestTiwogli79YB63MdvbjgeIx7gkFJS1CbxBF
+         o5b5y2FxBgxlnZJbQFsEEwOTkyQq6DYaoAuN81UW48px8AC/6JitpcdVwdzeMjfQD2a8
+         tpLZ9QAuBKCI2jQcymhxWbWcN8sWCef2vk0BA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rX60TSR1P7XjO+Zan3QrbefgI3vkAw4Lsg0JYzx7KTU=;
+        b=Soh15VW4rAOaPU5WRcBfMtMnJBx6vIzJF+Eb0Jngcu+UV0LYuv1veP3/Fjg1gwokwj
+         q9QLB/ArCAsYcTcwxsbQfTOGcvOTjyI2vXTkSKJ/Qp3xYr5/fV9SDNBEzIuFRFd1uhth
+         oKfjPq/F4hVs+0lSCDZdv292yyxf583QjNngLItIt82eir8NTrz4vgihWbUX8Um9+FQf
+         3GiJF62KLUs9jqBHvkiCrQEmCcXOy2UfbsBdkiRxaLqe67ZT52nunWDj47c9UKh1Cj2f
+         GYZEx37IpiQTJ6hLBw4GVrAUqPhXaGIoyeWDftsW93bToPbvVbciRZ9YonMHKCPu4Opw
+         lGGA==
+X-Gm-Message-State: AOAM533xDmgTTjjRYh5cefgD3obJ3ZTV0z8qTekwyWNa2I9RbEInXrw6
+        VaLwTdd8Sv+xz1ZdrkydqRGlf/n6RC3cnA==
+X-Google-Smtp-Source: ABdhPJytRFsLl3nksVCRoGhLJkXcC9c3Nco6dEzjGhQI7mrBYNaPdjOvYWM0U7xbKS1h4vZ5aIHkJw==
+X-Received: by 2002:a17:90a:ea83:: with SMTP id h3mr3434941pjz.176.1594880091903;
+        Wed, 15 Jul 2020 23:14:51 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:de4a:3eff:fe7d:d39c])
+        by smtp.gmail.com with ESMTPSA id j10sm3885604pgh.28.2020.07.15.23.14.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jul 2020 23:14:51 -0700 (PDT)
+From:   Cheng-Yi Chiang <cychiang@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Taniya Das <tdas@codeaurora.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, dianders@chromium.org,
         linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v5 07/13] pwm: add support for sl28cpld PWM controller
-Message-ID: <20200716061009.z7uu4lcwo3wk6dzb@pengutronix.de>
-References: <20200709085006.b54ype3p4yu64upl@pengutronix.de>
- <72858253a9094074e9c8cd7a4e1db09f@walle.cc>
- <20200713084750.qj4hquzd6uz6y526@pengutronix.de>
- <c0594c34c712ce26b3936d42c92d2361@walle.cc>
- <20200714160856.rjqi7lv63geil3hm@pengutronix.de>
- <eedceb44cba9b54e0634f0e8e4f96f70@walle.cc>
- <20200715163620.xhi24mct5b64qpyp@pengutronix.de>
- <7d8e9f524f0fd81be282be0be50d16ad@walle.cc>
- <20200715181803.nmgi32tugpbuqvjg@pengutronix.de>
- <8debe0ee9aff2c49a7567069d7bb9477@walle.cc>
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>
+Subject: [PATCH] arm64: dts: qcom: sc7180: Add lpass cpu node for I2S driver
+Date:   Thu, 16 Jul 2020 14:14:45 +0800
+Message-Id: <20200716061445.628709-1-cychiang@chromium.org>
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4bah6ckq6xdukftr"
-Content-Disposition: inline
-In-Reply-To: <8debe0ee9aff2c49a7567069d7bb9477@walle.cc>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Ajit Pandey <ajitp@codeaurora.org>
 
---4bah6ckq6xdukftr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Add the I2S controller node to sc7180 dtsi.
+Add pinmux for pirmary and secondary I2S.
 
-Hello Michael,
+Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+---
+This patch depends on these patch series so it is not ready to be merged now.
+- clk: qcom: Support for Low Power Audio Clocks on SC7180 https://patchwork.kernel.org/cover/11664273/
+- arm64: dts: qcom: sc7180: Add LPASS clock controller nodes https://patchwork.kernel.org/patch/11664303/
+- ASoC: qcom: Add support for SC7180 lpass variant https://patchwork.kernel.org/cover/11650649/
 
-On Wed, Jul 15, 2020 at 10:41:25PM +0200, Michael Walle wrote:
-> Am 2020-07-15 20:18, schrieb Uwe Kleine-K=F6nig:
-> > On Wed, Jul 15, 2020 at 07:45:10PM +0200, Michael Walle wrote:
-> > >=20
-> > > Am 2020-07-15 18:36, schrieb Uwe Kleine-K=F6nig:
-> > > > On Tue, Jul 14, 2020 at 11:09:28PM +0200, Michael Walle wrote:
-> > > > > > My wishlist (just as it comes to my mind, so no guarantee of
-> > > > > > completeness):
-> > > > > >
-> > > > > >  - can do 0% duty cycle for all supported period lengths
-> > > > > >  - can do 100% duty cycle for all supported period lengths
-> > > > > >  - supports both polarities
-> > > > > >  - supports immediate change of configuration and after complet=
-ion of
-> > > > > >    the currently running period
-> > > > > >  - atomic update (i.e. if you go from configuration A to config=
-uration B
-> > > > > >    the hardware guarantees to only emit periods of type A and t=
-hen type
-> > > > > >    B. (Depending on the item above, the last A period might be =
-cut off.)
-> > > > >
-> > > > > We actually discussed this, because the implementation would be
-> > > > > easier. But
-> > > > > if the change takes place immediately you might end up with a lon=
-ger
-> > > > > duty
-> > > > > cycle. Assume the PWM runs at 80% duty cycle and starts with the
-> > > > > on-period.
-> > > > > If you now change that to 50% you might end up with one successive
-> > > > > duty
-> > > > > cycle of "130%". Eg. the 80% of the old and right after that you
-> > > > > switch to
-> > > > > the new 50% and then you'd have a high output which corresponds t=
-o a
-> > > > > 130%
-> > > > > cycle. I don't know if that is acceptable for all applications.
-> > > >
-> > > > I thought this is a "change takes place immediately" implementation=
-?! So
-> > > > these problems are actually real here. (And this not happening is
-> > > > exactly
-> > > > my wish here. Is there a mis-understanding?)
-> > >=20
-> > > I wasn't talking about the sl28cpld btw. What is the difference
-> > > between
-> > > your proposed "change take place immediately" and "after the cycle".
-> > > I understand how the after the cycle should work. But how would the
-> > > immediate change work in your ideal PWM?
-> >=20
-> > If the PWM is running at 1/3 duty cycle and reconfigured for 2/3, then
-> > the two scenarios are (the * marks the moment where pwm_apply_state() is
-> > called, ^ marks the start of a period):
-> >=20
-> > immediately:
-> >=20
-> >   __       __    _____    _____
-> >  /  \_____/  \__/     \__/
-> >  ^        ^     ^        ^
-> >                 *
->=20
-> Ok lets assume 2/3 and change it to 1/3:
->=20
->    ____     ______      __
->   /    \___/      \____/  \____
->   ^        ^   ^       ^
->                *
-> This will then have a longer on period than any of the settings.
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 132 +++++++++++++++++++++++++++
+ 1 file changed, 132 insertions(+)
 
-I think we agree here. With an immediate change to the new setting both
-too long and too short signals can heppen. How bad this is depends on
-the use. The consumers currently in the kernel probably don't care too
-much.
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 6eb14b6a47f5..2fe3bd89f950 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -511,6 +511,34 @@ qusb2p_hstx_trim: hstx-trim-primary@25b {
+ 			};
+ 		};
+ 
++		lpass_cpu: lpass {
++			compatible = "qcom,lpass-cpu-sc7180";
++
++			reg = <0 0x62F00000 0 0x29000>;
++			reg-names = "lpass-lpaif";
++
++			iommus = <&apps_smmu 0x1020 0>;
++
++			power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
++
++			status = "disabled";
++
++			clocks = <&gcc GCC_LPASS_CFG_NOC_SWAY_CLK>,
++				 <&lpasscc LPASS_AUDIO_CORE_CORE_CLK>,
++				 <&lpasscc LPASS_AUDIO_CORE_EXT_MCLK0_CLK>,
++				 <&lpasscc LPASS_AUDIO_CORE_SYSNOC_MPORT_CORE_CLK>,
++				 <&lpasscc LPASS_AUDIO_CORE_LPAIF_PRI_IBIT_CLK>,
++				 <&lpasscc LPASS_AUDIO_CORE_LPAIF_SEC_IBIT_CLK>;
++
++			clock-names = "noc", "audio-core", "mclk0", "sysnoc_mport",
++				      "pri_ibit", "sec_ibit";
++
++			#sound-dai-cells = <1>;
++
++			interrupts = <0 160 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "lpass-irq-lpaif";
++		};
++
+ 		sdhc_1: sdhci@7c4000 {
+ 			compatible = "qcom,sc7180-sdhci", "qcom,sdhci-msm-v5";
+ 			reg = <0 0x7c4000 0 0x1000>,
+@@ -1357,6 +1385,110 @@ pinmux {
+ 				};
+ 			};
+ 
++			sec_mi2s_active: sec-mi2s-active {
++				pinmux {
++					pins = "gpio49";
++					function = "mi2s_1";
++				};
++
++				pinconf {
++					pins = "gpio49";
++					drive-strength = <8>;
++					bias-pull-up;
++				};
++			};
++
++			sec_mi2s_ws_active: sec-mi2s-ws-active {
++				pinmux {
++					pins = "gpio50";
++					function = "mi2s_1";
++				};
++
++				pinconf {
++					pins = "gpio50";
++					drive-strength = <8>;
++					bias-pull-up;
++				};
++			};
++
++			sec_mi2s_dout_active: sec-mi2s-dout-active {
++				pinmux {
++					pins = "gpio51";
++					function = "mi2s_1";
++				};
++
++				pinconf {
++					pins = "gpio51";
++					drive-strength = <8>;
++					bias-pull-up;
++				};
++			};
++
++			pri_mi2s_active: pri-mi2s-active {
++				pinmux {
++					pins = "gpio53";
++					function = "mi2s_0";
++				};
++
++				pinconf {
++					pins = "gpio53";
++					drive-strength = <8>;
++					bias-pull-up;
++				};
++			};
++
++			pri_mi2s_ws_active: pri-mi2s-ws-active {
++				pinmux {
++					pins = "gpio54";
++					function = "mi2s_0";
++				};
++
++				pinconf {
++					pins = "gpio54";
++					drive-strength = <8>;
++					bias-pull-up;
++				};
++			};
++
++			pri_mi2s_dout_active: pri-mi2s-dout-active {
++				pinmux {
++					pins = "gpio55";
++					function = "mi2s_0";
++				};
++
++				pinconf {
++					pins = "gpio55";
++					drive-strength = <8>;
++					bias-pull-up;
++				};
++			};
++
++			pri_mi2s_din_active: pri-mi2s-din-active {
++				pinmux {
++					pins = "gpio56";
++					function = "mi2s_0";
++				};
++
++				pinconf {
++					pins = "gpio56";
++					drive-strength = <8>;
++					bias-pull-up;
++				};
++			};
++
++			pri_mi2s_mclk_active: pri-mi2s-mclk-active {
++				pinmux {
++					pins = "gpio57";
++					function = "lpass_ext";
++				};
++
++				pinconf {
++					pins = "gpio57";
++					drive-strength = <8>;
++					bias-pull-up;
++				};
++			};
++
+ 			sdc1_on: sdc1-on {
+ 				pinconf-clk {
+ 					pins = "sdc1_clk";
+-- 
+2.28.0.rc0.105.gf9edc3c819-goog
 
-> > > > > > > > What about disable()?
-> > > > > > >
-> > > > > > > Mhh well, it would do one 100% cycle.. mhh ;) Lets see if the=
-re we can
-> > > > > > > fix that (in hardware), not much we can do in the driver here=
-=2E We are
-> > > > > > > _very_ constraint in size, therefore all that little edge cas=
-es fall
-> > > > > > > off
-> > > > > > > the table.
-> > > > > >
-> > > > > > You're saying that on disable the hardware emits a constant hig=
-h level
-> > > > > > for one cycle? I hope not ...
-> > > > >
-> > > > > Mh, I was mistaken, disabling the PWM will turn it off immediatel=
-y,
-> > > > > but
-> > > >
-> > > > And does turn off mean, the output gets inactive?
-> > > > If so you might also disable the hardware if a 0% duty cycle is
-> > > > configured assuming this saves some energy without modifying the
-> > > > resulting wave form.
-> > >=20
-> > > Disabling it has some side effects like switching to another function
-> > > for this multi function pin. So I'd rather keep it on ;)
-> >=20
-> > So IMHO you should also keep it on when pwm_apply_state is called with
-> > state.enabled =3D false to ensure a low output.
->=20
-> That won't work either, because that is how you would turn on that multi
-> function. Ie. it is GPIO (default input) as long as the PWM is not enable=
-d,
-> otherwise its PWM.
-
-I think you misunderstood what I wrote. The intended behaviour for a
-disabled PWM (as in: pwm_apply_state() was called with state.enabled =3D
-false) is that the output is a constant low (assuming a normal
-polarity). If disabling your hardware results in something else, don't
-disable the hardware. That's another item in the Limitations paragraph.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---4bah6ckq6xdukftr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8P7z4ACgkQwfwUeK3K
-7AkERwf7Bnq1RmmZZQEaEwO2ylFCpy6YKnXVLNIu3EmoJGn5P52CsM5A5Qfzg+lh
-FqwhdDqowMO7BpePNly1bdYZzO32kuVb2rJUAgBcXtC06liNeJWCwXgCMola+8LC
-ZXVn66RdWkQpBVO2mHjnTgOLorVIJuytb//evqyxYgNcicNwUGy5Nq9WtQM9OkBl
-nwd1o+p5iqOvwJ5YfjJNTTKoDbzoG0RqfTcwSWiAazSZZBdcERzbCxUuKM+ci55y
-0CjOU+OaEQU2lMc6h+0e+mlYO3+3fHL4wiOF32iRXEabMbaaUxVq+R46VJXBwwwM
-CmDqF+afXcPaPzQqs1QqUj35WTTi5Q==
-=t2cU
------END PGP SIGNATURE-----
-
---4bah6ckq6xdukftr--
