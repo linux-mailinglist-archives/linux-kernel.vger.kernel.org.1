@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5E82218F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 02:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF8C221913
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 02:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbgGPAav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 20:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbgGPAav (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 20:30:51 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDC2C061755;
-        Wed, 15 Jul 2020 17:30:51 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id u5so2850592pfn.7;
-        Wed, 15 Jul 2020 17:30:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=uBPdtbhMDCIggv17A7lK3I7hrccMMLMD89OHuuDi1eU=;
-        b=bVF+hrfSIOlIlmuAGTW5yiXwT4RoYYlnCvPXrvElEncMCO//sXA+rvu0EkYVIbM0yv
-         FEdY7jJOK09kJubN3ipoG4VKHPdJhqUAUjoHwdTInEV8wD2TE/W4chYi/D4j9EPjjfHx
-         xHQX0hA0C/ZsQU2Je1EniCNAMbauy5Yfv0BymXRiCaFq6oVu1XZ7GN/AQpAmJRbzkKDU
-         sCjkWUd7QsyPwcSYk3+W/QGPnCAu+29ObprDLm0vbvh+rrRW34BGpNrjVhaJfsVTzabu
-         QjT4CUZRZ4tveBTuoHsPfwaIxzKlLlgIkWBbAt9hSQBzNaWYxdNAMDpKN6FF2kEdmw/T
-         uO9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=uBPdtbhMDCIggv17A7lK3I7hrccMMLMD89OHuuDi1eU=;
-        b=nfjKXDWHILM0QLZNON5YGLS8W2NglRVg1l+307ad4iYhiDHffZQmp4KZa6yeYhzDsS
-         17YGinV3yeZcKKgUs6k94oKgxEMejEfXp1/I3BY4Ax/LfD1fBvF3Eo/jvl2132bDPIC+
-         QqB8+X2jxS3uBp4oBUmPiVBffRAuGlkNk3lOVwCW8kse7EnOrmoNCeMafb/5ITY3kwb3
-         3uUwEGLrerWZKPuP4w3g3zaxSxd1HyPC92+dxhZojzt2pzMlygl+tBqjxM+lL/BGZ548
-         P7ygdS1VHwVawGXZc6kmCzC+N2XKvzvI6CTNmdm1U8PTHF38+Hg/2sFhBEpSxdCE6X1Q
-         sWkg==
-X-Gm-Message-State: AOAM533N/s0FylIm5Ul2IQ1QmNAaLGBU1aRDC6DNsfDU4F/0uGNYORdH
-        ucOk6Zluk0H1FeWPcVKSJeWpEeAnzX0=
-X-Google-Smtp-Source: ABdhPJyD+t29HuVzUhJe/yC3SyDbA1xtQsKOt8C3Hm+nYyCZ1rph5BZPsVsiqsQGoPHg9vVsLqJCCQ==
-X-Received: by 2002:a63:3646:: with SMTP id d67mr1967957pga.363.1594859450491;
-        Wed, 15 Jul 2020 17:30:50 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id m17sm3223968pfo.182.2020.07.15.17.30.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 17:30:49 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 17:30:47 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Henrik Rydberg <rydberg@bitmath.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        James Chen <james.chen@emc.com.tw>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>,
-        Scott Liu <scott.liu@emc.com.tw>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 5/5] input: mt: cleanup open-coded __set_bit()
-Message-ID: <20200716003047.GA1665100@dtor-ws>
-References: <cover.1594599118.git.mirq-linux@rere.qmqm.pl>
- <cf1dda3a372896cb01033ce084a7deb9620df7aa.1594599118.git.mirq-linux@rere.qmqm.pl>
+        id S1727901AbgGPAuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 20:50:06 -0400
+Received: from mga14.intel.com ([192.55.52.115]:57225 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727856AbgGPAuF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 15 Jul 2020 20:50:05 -0400
+IronPort-SDR: Oh4q28FxyzNNi5BpJ4ctT+KLFc4H0rik+bF6HhmUMoM1q526SQXFmJachSUDwtbmvYpRkGDu8m
+ OHDJm6jO9XwQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="148445956"
+X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
+   d="scan'208";a="148445956"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 17:50:05 -0700
+IronPort-SDR: R/+SrIlXs4XPEfzkb3vFXrAeuzpBokVDrbbxYbLF5J3PoZssdK4H1OpVscvaT948Zq4mdCM+KC
+ ZDR/mIFT+SNQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,357,1589266800"; 
+   d="scan'208";a="316874123"
+Received: from glacier.sc.intel.com ([10.3.62.63])
+  by orsmga008.jf.intel.com with ESMTP; 15 Jul 2020 17:50:04 -0700
+From:   Rajmohan Mani <rajmohan.mani@intel.com>
+To:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Ayman Bagabas <ayman.bagabas@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        =?UTF-8?q?Bla=C5=BE=20Hrastnik?= <blaz@mxxn.io>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Cc:     pmalani@chromium.org, bleung@chromium.org,
+        Rajmohan Mani <rajmohan.mani@intel.com>
+Subject: [PATCH 0/2] Add Intel Input Output Manager driver 
+Date:   Wed, 15 Jul 2020 17:33:08 -0700
+Message-Id: <20200716003310.26125-1-rajmohan.mani@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <cf1dda3a372896cb01033ce084a7deb9620df7aa.1594599118.git.mirq-linux@rere.qmqm.pl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 02:24:55AM +0200, Michał Mirosław wrote:
-> Replace open-coded __set_bit() with the function.
-> 
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Hi,
 
-Applied, thank you.
+This patch series add support for Intel Input Output Manager (IOM)
+driver, which is leveraged by the Intel PMC USB mux control driver.
+
+This patch series has a dependency on the following 4 patches, that
+are in Greg's usb-next branch.
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git/tree/?h=usb-next
+
+ffe82945d8eb usb: typec: intel_pmc_mux: Add support for USB4
+cab9219d2af4 usb: typec: intel_pmc_mux: Definitions for response status bits
+1a1be50b5ebd usb: typec: Add data structure for Enter_USB message
+6701911bb1c1 usb: typec: Combine the definitions for Accessory and USB modes
+
+Heikki Krogerus (1):
+  usb: typec: intel_pmc_mux: Check the port status before connect
+
+Rajmohan Mani (1):
+  platform/x86: Add Intel Input Output Manager (IOM) driver
+
+ drivers/platform/x86/Kconfig                |  16 +++
+ drivers/platform/x86/Makefile               |   1 +
+ drivers/platform/x86/intel_iom.c            | 133 ++++++++++++++++++++
+ drivers/usb/typec/mux/Kconfig               |   1 +
+ drivers/usb/typec/mux/intel_pmc_mux.c       |  73 +++++++++--
+ include/linux/platform_data/x86/intel_iom.h |  62 +++++++++
+ 6 files changed, 276 insertions(+), 10 deletions(-)
+ create mode 100644 drivers/platform/x86/intel_iom.c
+ create mode 100644 include/linux/platform_data/x86/intel_iom.h
 
 -- 
-Dmitry
+2.20.1
+
