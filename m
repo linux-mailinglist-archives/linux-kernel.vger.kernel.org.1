@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8ED2226D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67652226DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 17:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729024AbgGPPWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 11:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728911AbgGPPWK (ORCPT
+        id S1729146AbgGPPWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 11:22:38 -0400
+Received: from smtp-1908.mail.infomaniak.ch ([185.125.25.8]:48189 "EHLO
+        smtp-1908.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728949AbgGPPWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 11:22:10 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89461C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 08:22:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=tMW+FSjHDJDd5sV7mMP8PFIFsHf/Bo6cCti4h2al50Y=; b=Ftnj5nzs4K7ODC7QCGM0rkVVkN
-        wcbHZpBzkKKlK/7BMXiwAGjl1hT1Vy0e99SZxNHhZEkcDDk4iVgf/pGy4H+GQ5C+mzMWwFcZmEdCV
-        I8xR9z12UhzHMB5j4b5LUTL9cr4BENvkCxiTv8k+pR703OrGzmwNE5LQ7xA0cJ/haNnhULehsKl39
-        /2xsYix8hmiW2htwfu5p3jcGk/JurDBWh3r7YwesHFfjSO0qk/6/jQaYrKZXuY6S5ji2MEFOwS0Kv
-        0aThAb4icQMHfk98+G1LXtWO5KH8qITNS6jrDfi/wNlZb41JVcLAE3b3S1BROzMboDvWjS5jTWJg9
-        F3kd+zDw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jw5i1-0007Za-5R; Thu, 16 Jul 2020 15:22:05 +0000
-Subject: Re: [PATCH] phy: sun4i-usb: explicitly include gpio/consumer.h
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <20200716062427.71763-1-vkoul@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7d4fa99a-627b-67bb-33d6-85655deb15a5@infradead.org>
-Date:   Thu, 16 Jul 2020 08:22:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 16 Jul 2020 11:22:37 -0400
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4B6yfy65zfzlhfRc;
+        Thu, 16 Jul 2020 17:22:34 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4B6yfq65Djzlh8TX;
+        Thu, 16 Jul 2020 17:22:27 +0200 (CEST)
+Subject: Re: [PATCH v6 7/7] ima: add policy support for the new file open
+ MAY_OPENEXEC flag
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <20200714181638.45751-1-mic@digikod.net>
+ <20200714181638.45751-8-mic@digikod.net> <202007151339.283D7CD@keescook>
+ <8df69733-0088-3e3c-9c3d-2610414cea2b@digikod.net>
+ <61c05cb0-a956-3cc7-5dab-e11ebf0e95bf@infradead.org>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <639b1727-2d61-5c29-623f-87eaf5a66a03@digikod.net>
+Date:   Thu, 16 Jul 2020 17:22:26 +0200
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <20200716062427.71763-1-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <61c05cb0-a956-3cc7-5dab-e11ebf0e95bf@infradead.org>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
+X-Antivirus-Code: 0x100000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/20 11:24 PM, Vinod Koul wrote:
-> Driver uses GPIO functions but doesn't include the header explcitly. Add
-> that to fix build errors when GPIOLIB is disabled.
-> 
-> drivers/phy/allwinner/phy-sun4i-usb.c:367:11: error: implicit
-> declaration of function ‘gpiod_get_value_cansleep’; did you mean
-> ‘gpio_get_value_cansleep’? [-Werror=implicit-function-declaration]
-> drivers/phy/allwinner/phy-sun4i-usb.c:707:22: error: implicit
-> declaration of function ‘devm_gpiod_get_optional’; did you mean
-> ‘devm_clk_get_optional’? [-Werror=implicit-function-declaration]
-> drivers/phy/allwinner/phy-sun4i-usb.c:708:11: error: ‘GPIOD_IN’
-> undeclared (first use in this function); did you mean ‘GPIOF_IN’?
-> drivers/phy/allwinner/phy-sun4i-usb.c:815:21: error: implicit
-> declaration of function ‘gpiod_to_irq’; did you mean ‘gpio_to_irq’?
-> [-Werror=implicit-function-declaration]
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-Thanks.
-
-> ---
->  drivers/phy/allwinner/phy-sun4i-usb.c | 1 +
->  1 file changed, 1 insertion(+)
+On 16/07/2020 16:59, Randy Dunlap wrote:
+> On 7/16/20 7:40 AM, Micka�l Sala�n wrote:
+>>
+>> On 15/07/2020 22:40, Kees Cook wrote:
+>>> On Tue, Jul 14, 2020 at 08:16:38PM +0200, Micka�l Sala�n wrote:
+>>>> From: Mimi Zohar <zohar@linux.ibm.com>
+>>>>
+>>>> The kernel has no way of differentiating between a file containing data
+>>>> or code being opened by an interpreter.  The proposed O_MAYEXEC
+>>>> openat2(2) flag bridges this gap by defining and enabling the
+>>>> MAY_OPENEXEC flag.
+>>>>
+>>>> This patch adds IMA policy support for the new MAY_OPENEXEC flag.
+>>>>
+>>>> Example:
+>>>> measure func=FILE_CHECK mask=^MAY_OPENEXEC
+>>>> appraise func=FILE_CHECK appraise_type=imasig mask=^MAY_OPENEXEC
+>>>>
+>>>> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+>>>> Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>>>> Acked-by: Micka�l Sala�n <mic@digikod.net>
+>>>
+>>> (Process nit: if you're sending this on behalf of another author, then
+>>> this should be Signed-off-by rather than Acked-by.)
+>>
+>> I'm not a co-author of this patch.
+>>
 > 
-> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
-> index 7e09ad6a0b42..585d0a59e712 100644
-> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
-> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
-> @@ -16,6 +16,7 @@
->  #include <linux/delay.h>
->  #include <linux/err.h>
->  #include <linux/extcon-provider.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/io.h>
->  #include <linux/interrupt.h>
->  #include <linux/kernel.h>
+> from Documentation/process/submitting-patches.rst:
+> 
+> The Signed-off-by: tag indicates that the signer was involved in the
+> development of the patch, or that he/she was in the patch's delivery path.
+>                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > 
 
-
--- 
-~Randy
+OK, I though such tag had to go along with the From/Author, the
+Committer or a Co-developed-by tag, but there is also this specific
+case. I'll fix that in the next series.
