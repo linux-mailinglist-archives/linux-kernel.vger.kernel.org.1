@@ -2,117 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15D12225F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE972225ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729120AbgGPOkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:40:14 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:27233 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728589AbgGPOkO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 10:40:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1594910413; x=1626446413;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=Md3PPwvrPy33GuyoA1RPm1ZIiZ3YtZxHfXnteTdKvuE=;
-  b=v2ePmRcoWHLS7xRb3hVDdb8eVScHY7lzaW7XBnYJR0LwPMETFe5ogh2w
-   FBahMJmfbaay8NQYihJrFwlJhzSNH79GykJgbDyoM0xYM98D02ckzzdQM
-   9Q98Va8xuvqYfhoAbX6gZA2SMNReGkk36W+GcYbDuWNeUurEvjuqe/xfG
-   A=;
-IronPort-SDR: m5eMdnNy1//P3W0bkENgE1YpjOWhiR1O5DBzuYR3/6BQfyBxtf20eQ+Sg7BmVJ/TtuDAUul34w
- 3kP/Wpo7ZYrw==
-X-IronPort-AV: E=Sophos;i="5.75,359,1589241600"; 
-   d="scan'208";a="42274627"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 16 Jul 2020 14:40:12 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 5C7322250DE;
-        Thu, 16 Jul 2020 14:40:09 +0000 (UTC)
-Received: from EX13D31EUA004.ant.amazon.com (10.43.165.161) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 16 Jul 2020 14:40:08 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.73) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 16 Jul 2020 14:40:03 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: drop duplicated words in <linux/pgtable.h>
-Date:   Thu, 16 Jul 2020 16:39:43 +0200
-Message-ID: <20200716143943.30304-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <2bb6e13e-44df-4920-52d9-4d3539945f73@infradead.org>
+        id S1729100AbgGPOj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:39:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728589AbgGPOj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 10:39:56 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 921A5206F4;
+        Thu, 16 Jul 2020 14:39:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594910396;
+        bh=8iw2omV+8rcbIE2y5sg+rVi5KY6cy+c5PEsFn625WuY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wTqQV6KUMnjpRsu1sz4//WWIEsxgic8HNIIfQe05WfEVGsAvcynFS7DsrPSkizuIB
+         MzjhcxIOYPk1cDld8mdlE/11Pi2/xcEneZ9IDPOckuftgUI2K2hKFrWyHzAR8Yim71
+         nPKtVOpo6CY6nidbg3xc87XIG6JxJWCx55F8urts=
+Date:   Thu, 16 Jul 2020 16:39:49 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     B K Karthik <bkkarthik@pesu.pes.edu>
+Cc:     devel@driverdev.osuosl.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        linux-kernel@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michel Lespinasse <walken@google.com>,
+        Divyansh Kamboj <kambojdivyansh2000@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v3] staging: comedi: comedi_fops.c: added casts to get
+ rid of sparse warnings
+Message-ID: <20200716143949.GA2230084@kroah.com>
+References: <20200716141747.wewrnejrygosqhd5@pesu-pes-edu>
+ <20200716142537.GA2176745@kroah.com>
+ <CAAhDqq3EeWGOJHaW37iQN5UgmvTf3AP10fhrVdJ5GuYjBt8f3w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.73]
-X-ClientProxiedBy: EX13D48UWB003.ant.amazon.com (10.43.163.82) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAhDqq3EeWGOJHaW37iQN5UgmvTf3AP10fhrVdJ5GuYjBt8f3w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-15T18:29:51-07:00 Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> From: Randy Dunlap <rdunlap@infradead.org>
+On Thu, Jul 16, 2020 at 10:28:06AM -0400, B K Karthik wrote:
+> On Thu, Jul 16, 2020 at 10:25 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Jul 16, 2020 at 10:17:47AM -0400, B K Karthik wrote:
+> > > fixed sparse warnings by adding a cast in assignment from
+> > > void [noderef] __user * to unsigned int __force *
+> > > and a reverse cast in argument from
+> > > unsigned int * to  unsigned int __user * .
+> > >
+> > > Signed-off-by: B K Karthik <karthik.bk2000@live.com>
+> > > ---
+> > >  drivers/staging/comedi/comedi_fops.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > What changed from previous versions?
 > 
-> Drop the doubled words "used" and "by".
+> As Ian Abbott said "Minor quibble: the reverse cast is actually from
+> unsigned int * to"
 > 
-> Drop the repeated acronym "TLB" and make several other fixes around it.
-> (capital letters, spellos)
+> Hence this is a change in the commit description.
+
+How was anyone supposed to know this?  :)
+
+> > That always goes below the --- line.
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> I did not understand this sir, can you please clarify?
 
-Reviewed-by: SeongJae Park <sjpark@amazon.de>
+Please read the documentation for how to properly version patches, it's
+in the submitting patches document.  Do that and send a v4 for this.
 
+thanks,
 
-Thanks,
-SeongJae Park
-
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> ---
->  include/linux/pgtable.h |   12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> --- linux-next-20200714.orig/include/linux/pgtable.h
-> +++ linux-next-20200714/include/linux/pgtable.h
-> @@ -866,7 +866,7 @@ static inline void ptep_modify_prot_comm
->  
->  /*
->   * No-op macros that just return the current protection value. Defined here
-> - * because these macros can be used used even if CONFIG_MMU is not defined.
-> + * because these macros can be used even if CONFIG_MMU is not defined.
->   */
->  #ifndef pgprot_encrypted
->  #define pgprot_encrypted(prot)	(prot)
-> @@ -1259,7 +1259,7 @@ static inline int pmd_trans_unstable(pmd
->   * Technically a PTE can be PROTNONE even when not doing NUMA balancing but
->   * the only case the kernel cares is for NUMA balancing and is only ever set
->   * when the VMA is accessible. For PROT_NONE VMAs, the PTEs are not marked
-> - * _PAGE_PROTNONE so by by default, implement the helper as "always no". It
-> + * _PAGE_PROTNONE so by default, implement the helper as "always no". It
->   * is the responsibility of the caller to distinguish between PROT_NONE
->   * protections and NUMA hinting fault protections.
->   */
-> @@ -1343,10 +1343,10 @@ static inline int pmd_free_pte_page(pmd_
->  /*
->   * ARCHes with special requirements for evicting THP backing TLB entries can
->   * implement this. Otherwise also, it can help optimize normal TLB flush in
-> - * THP regime. stock flush_tlb_range() typically has optimization to nuke the
-> - * entire TLB TLB if flush span is greater than a threshold, which will
-> - * likely be true for a single huge page. Thus a single thp flush will
-> - * invalidate the entire TLB which is not desitable.
-> + * THP regime. Stock flush_tlb_range() typically has optimization to nuke the
-> + * entire TLB if flush span is greater than a threshold, which will
-> + * likely be true for a single huge page. Thus a single THP flush will
-> + * invalidate the entire TLB which is not desirable.
->   * e.g. see arch/arc: flush_pmd_tlb_range
->   */
->  #define flush_pmd_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
-> 
+greg k-h
