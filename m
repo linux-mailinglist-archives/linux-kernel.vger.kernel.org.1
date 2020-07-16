@@ -2,114 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B993221F53
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63521221F5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 11:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgGPJC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 05:02:59 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:13172 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728349AbgGPJC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 05:02:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594890176; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=7CyfaApRY22qfhxW5ZVfuZTLhmfeSWKVhmQOnb67Jk8=; b=cT1CLHEIYxWqBW5CQokAI3y45gN1HhanICCAs/m/Oo45smBG/t2aRZZU32wOxTpgmQl4Wgoi
- QNhsarjsWqa2fLVkhE7WjwVAj/9detJpCy9LJPFTFVoSB3JxCUufB/sy3LZ6uLYmX+ZbK12c
- MYnCbYQE6ptTYxMyN90ChpLkt30=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
- 5f1017c0ee6926bb4f75dcfe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Jul 2020 09:02:56
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9F5FDC433C9; Thu, 16 Jul 2020 09:02:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5E1E1C433CB;
-        Thu, 16 Jul 2020 09:02:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5E1E1C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Viktor =?utf-8?B?SsOkZ2Vyc2vDvHBwZXI=?= 
-        <viktor_jaegerskuepper@freenet.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gabriel C <nix.or.die@googlemail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        id S1728488AbgGPJDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 05:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726440AbgGPJDe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 05:03:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B60C061755;
+        Thu, 16 Jul 2020 02:03:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=e61STVzmvtcU26/gTnsoAUvU2jG9R5G2Meed7diTLDI=; b=lWTmzh055UUr2BQQyP1bzO+OPL
+        6PZShHzLC3ec1bA+WQlbevXX+P/XBH+g29WI5sve0+YnzGPofonq0rfSYbZd+PtG2WtIKmxgQ2JrR
+        GfXu+YHPj3ii/vyxCXnoUPjhMDUhdmKRsUJmQIh2I2OsS0nh7+eW//wx9EOlhK9pnAYKqoZljXcL4
+        u+nnuaAfjotC6rxL5/VdGbUQOzFLU0O6cjwNIDxlmd86xZvvECX+KtfdPrAUCtb79dr/56vvxVIv2
+        TubtAdOwJofAtoqXJRYU3wHAAaFi7eGHzVW5/pOUs/HkVfHqtqykMO7XAhQJVqSbXsabY85Z4edI+
+        AVtsaVmQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jvzn5-0001xz-FC; Thu, 16 Jul 2020 09:02:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4D049305E21;
+        Thu, 16 Jul 2020 11:02:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 33849207A6644; Thu, 16 Jul 2020 11:02:53 +0200 (CEST)
+Date:   Thu, 16 Jul 2020 11:02:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        stable <stable@vger.kernel.org>, lwn@lwn.net,
-        angrypenguinpoland@gmail.com, Qiujun Huang <hqjagain@gmail.com>,
-        ath9k-devel <ath9k-devel@qca.qualcomm.com>,
-        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        Roman Mamedov <rm@romanrm.net>
-Subject: Re: ath9k broken [was: Linux 5.7.3]
-References: <1592410366125160@kroah.com>
-        <CAEJqkgjV8p6LtBV8YUGbNb0vYzKOQt4-AMAvYw5mzFr3eicyTg@mail.gmail.com>
-        <b7993e83-1df7-0c93-f6dd-dba9dc10e27a@kernel.org>
-        <CAEJqkggG2ZB8De_zbP2W7Z9eRYve2br8jALaLRhjC33ksLZpTw@mail.gmail.com>
-        <CAEJqkgj4LS7M3zYK51Vagt4rWC9A7uunA+7CvX0Qv=57Or3Ngg@mail.gmail.com>
-        <CAEJqkghJWGsLCj2Wvt-yhzMewjXwrXhSEDpar6rbDpbSA6R8kQ@mail.gmail.com>
-        <20200626133959.GA4024297@kroah.com>
-        <CAEJqkgiACMar-iWsWQgJPAViBBURaNpcOD4FKtp6M8Aw_D4FOw@mail.gmail.com>
-        <CAEJqkgg4Ka8oNL7ELoJrR0-Abz3=caLns48KyDC=DQcym6SRvA@mail.gmail.com>
-        <20200707141100.GE4064836@kroah.com>
-        <07c8d8fa-8bbc-0b4e-191c-b2635214e8b9@freenet.de>
-        <87ft9sbym3.fsf@tynnyri.adurom.net>
-        <20eec98e-960c-cece-21e4-01e26b44233e@freenet.de>
-Date:   Thu, 16 Jul 2020 12:02:49 +0300
-In-Reply-To: <20eec98e-960c-cece-21e4-01e26b44233e@freenet.de> ("Viktor
-        \=\?utf-8\?Q\?J\=C3\=A4gersk\=C3\=BCpper\=22's\?\= message of "Thu, 16 Jul 2020
- 10:15:30 +0200")
-Message-ID: <87365r96iu.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Deacon <will@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Babu Moger <Babu.Moger@amd.com>,
+        Omar Sandoval <osandov@fb.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Marco Elver <elver@google.com>,
+        Brian Gerst <brgerst@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH v3 1/3] kprobes: Add text_alloc() and text_free()
+Message-ID: <20200716090253.GP10769@hirez.programming.kicks-ass.net>
+References: <20200714223239.1543716-1-jarkko.sakkinen@linux.intel.com>
+ <20200714223239.1543716-2-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200714223239.1543716-2-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Viktor J=C3=A4gersk=C3=BCpper <viktor_jaegerskuepper@freenet.de> writes:
+On Wed, Jul 15, 2020 at 01:32:27AM +0300, Jarkko Sakkinen wrote:
+> +void *text_alloc(unsigned long size)
+> +{
+> +	void *p;
+> +
+> +	if (PAGE_ALIGN(size) > MODULES_LEN)
+> +		return NULL;
+> +
+> +	p = __vmalloc_node_range(size, MODULE_ALIGN,
+> +				    MODULES_VADDR + get_module_load_offset(),
+> +				    MODULES_END, GFP_KERNEL,
+> +				    PAGE_KERNEL, 0, NUMA_NO_NODE,
+> +				    __builtin_return_address(0));
+> +	if (p && (kasan_module_alloc(p, size) < 0)) {
+> +		vfree(p);
+> +		return NULL;
+> +	}
+> +
+> +	return p;
+> +}
+> +
+> +void text_free(void *region)
+> +{
+> +	/*
+> +	 * This memory may be RO, and freeing RO memory in an interrupt is not
+> +	 * supported by vmalloc.
+> +	 */
+> +	WARN_ON(in_interrupt());
 
->>> This bug was also reported on the thread where it had been posted origi=
-nally:
->>> https://lore.kernel.org/linux-wireless/20200621020428.6417d6fb@natsu/
->>>
->>> I am waiting for Kalle Valo to accept my patch (v2) which reverts the a=
-bove
->>> mentioned commit and which looks correct according to him. He wrote tha=
-t he
->>> would take a closer look at this as soon as he could.
->>=20
->> Mark posted a patch which I'm hoping to fix the issue:
->>=20
->> [1/1] ath9k: Fix regression with Atheros 9271
->>=20
->> https://patchwork.kernel.org/patch/11657669/
->>=20
->> Can someone confirm this, please? I would rather take Mark's fix than
->> the revert.
->>=20
->
-> This fixes the issue for me.
+I think that wants to be:
 
-Great, thanks for testing. I'll wait at least another day for more
-comments and then queue it for v5.8.
+	lockdep_assert_irqs_enabled();
 
---=20
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+in_interrupt() isn't sufficient, interrupts must also not be disabled
+when issuesing TLB invalidations.
+
+> +
+> +	vfree(region);
+> +}
