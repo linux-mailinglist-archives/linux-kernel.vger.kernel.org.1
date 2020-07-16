@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE19221C73
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08398221C75
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgGPGPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 02:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55958 "EHLO
+        id S1728059AbgGPGPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728025AbgGPGPc (ORCPT
+        with ESMTP id S1728049AbgGPGPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:15:32 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D29BC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:15:32 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id a24so3194606pfc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:15:32 -0700 (PDT)
+        Thu, 16 Jul 2020 02:15:34 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0828FC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:15:34 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id 72so3423016ple.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 23:15:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DVb9BqnCCIXJSwGWTgbhyZjM4qcTaOK8ILi1j32bGuk=;
-        b=Ejy7ckchYzB4B/cGUpLwzSLs5SWO7j2kWIG+QyF6S7cM+STr5Pl4msE6B3g3mVMpuY
-         Hm4YOy9h2ZNvTyTyoj8vV4ybhx+YAPjv1RWuNVOzdC6IP+Z7PfXGASj1v5jqWLxXgqRr
-         eAyUauN1faGhfkiAKtK24NGVy4EXFFBUCxIujb+A3mjvHyc4ykYXS2RFZB44h642U87z
-         IWZsDw/RrO6K76WIUZMaPzuBLAgkG5sB6+ntFDxPM/uu99ODtxdV4FeWDXBP2wsTXukt
-         8F0A4Iitb8y8P8Z2KaD9gNq8OW6rWkBfuQUEG7WT0fVS7WpIan4dtegFoitWZJ74X7bQ
-         Eviw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NH8aoxyeroB9r2QCUkJbzC8njwuGOl2txaaxtAHbw8Y=;
+        b=al9N3pH2qFvWwSBc8W/ztrqzKd8bd1pyR+1d1oVXLKb49o52h5gNdw9FNyFPExLy0C
+         Wfftfu7vRuEfQNU83Zw+n370ONmwthk2AIMqzgMjgOiOqKHirErJOc6nY9kgSSI82mDi
+         CXbWLS/zhRxRh1jnPa8B4fG5mMSZWcg3idp+CiJsDQGP50k9FUCZbzbDstw1L9PrxoQh
+         h2zGbKTWGiEh8KdRIeCZ5MziDD8BEzW1O9cPCsnwQIO47UOE+N9qjSKuRnoVhN79zC0F
+         3jp//s+xZ4R5E/hZX+N65zfCjVDcPySj11v+cR0aoeGksyu2p+F6MMpy3NW5yQdgYP9a
+         HBUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DVb9BqnCCIXJSwGWTgbhyZjM4qcTaOK8ILi1j32bGuk=;
-        b=AXguJn7F6SgJ7hUrPUnSHEb5SAkW7Fydu5e8cFY95BpB5KTF+TcGyhhtQoq48S8oFb
-         ufEXuIycxMvQpZ+I/h5xFlkRNSXJ2nsDEYcU1D2RaO9zGTVL/wX3X5cqLXB0ULdWAq22
-         xxCwHYqiLDVC4mVRAbltBtFNDQoKSQ385nqET+Jetf+rzJd4Bh6yUO1lnbttQWPeANQQ
-         8pPTyns2/nSbIhJPCfH+t/k5ylIb7fdQSSNnFX98HOWNgUL3+AsEfJE7vbMUSv4k/I42
-         GvNbkbFZLpxWiKfJzQ8Fr43ty4ZzT/simWeZF27LLbfJIv9EQbL/RT0RGM2EAw5s6eyI
-         M+BA==
-X-Gm-Message-State: AOAM531AZlcrltyhyp/m0HemWck6em4vSWTRePfKsBmnHY6Ck8zN4l+G
-        tfQBK+D5lZGXfX5X+NVwkJ7hwg==
-X-Google-Smtp-Source: ABdhPJy4dj2Prxcig0aMdKJOiKAGjXoiqLvRtoIWGCfqYZeloqoaeRkaNEjF7GFc8mFQQ/QoRphcYw==
-X-Received: by 2002:a63:b06:: with SMTP id 6mr2884850pgl.116.1594880131151;
-        Wed, 15 Jul 2020 23:15:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NH8aoxyeroB9r2QCUkJbzC8njwuGOl2txaaxtAHbw8Y=;
+        b=CsVwpgN3/Z9+6kNLVaVjdM7flgvhyu/JGxWRtTvIksMEds4aaIXunkVRW/8M6cpr6X
+         Bmba60w+TKyqXjKdmIUs1krLnwzNE4Ln4grNzPN0BwXaJKdau4fO8iT0GDHeLnfqV6bQ
+         xc7VJsC4aILOBIP2pw6HK1YG65GbBUsWywMqUCOW/cgu4oiMh97J/FcDs3LG1O8seNGt
+         J0bwnuuzfmluqfhSJI7a6tneCoQXAT4Z0h6wyNDQWA3jPbxcWH6mmYjhmCy13qeEr8+9
+         q22720UlJSLRMbEB5Q91GeoxhPP5iakHkWBpWhs/FMs6i5I/1xyHGvPpYHIxSrA20Wj3
+         NcMQ==
+X-Gm-Message-State: AOAM53077K5n/3EFLfSb6/OnUffUGJx6g5um0UIwuKazFfYN3rQtmOcz
+        pNuPjfsPCVm14NYL5U/5xF1J24X8Ph4=
+X-Google-Smtp-Source: ABdhPJzleHvggTpz3JiVT7FG0OtQVvIPyv7xwLfn4i023ZwXgV+KjpcGGIOtQaCuKqOKSR3mKS+2/A==
+X-Received: by 2002:a17:90a:1acc:: with SMTP id p70mr3456925pjp.210.1594880133577;
+        Wed, 15 Jul 2020 23:15:33 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id w20sm3669904pfn.44.2020.07.15.23.15.29
+        by smtp.gmail.com with ESMTPSA id w20sm3669904pfn.44.2020.07.15.23.15.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jul 2020 23:15:30 -0700 (PDT)
+        Wed, 15 Jul 2020 23:15:33 -0700 (PDT)
 From:   Zong Li <zong.li@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Zong Li <zong.li@sifive.com>
-Subject: [PATCH 0/2] Fix some build warnings when W=1
-Date:   Thu, 16 Jul 2020 14:15:25 +0800
-Message-Id: <cover.1594880014.git.zong.li@sifive.com>
+Subject: [PATCH 1/2] riscv: Fix build warning for mm/init
+Date:   Thu, 16 Jul 2020 14:15:26 +0800
+Message-Id: <0ce0ae99b9af776497bce02f9ee1efb85797ce9f.1594880014.git.zong.li@sifive.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1594880014.git.zong.li@sifive.com>
+References: <cover.1594880014.git.zong.li@sifive.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -63,26 +65,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patches fix some build warnings when W=1, the most of warnings are
-missing prototype as follows:
+Add static keyword for resource_init, this function is only used in this
+object file.
 
-arch/riscv/mm/init.c:520:13: warning: no previous prototype for 'resource_init' [-Wmissing-prototypes]
-arch/riscv/mm/pageattr.c:130:5: warning: no previous prototype for 'set_memory_ro' [-Wmissing-prototypes]
-arch/riscv/mm/pageattr.c:136:5: warning: no previous prototype for 'set_memory_rw' [-Wmissing-prototypes]
-arch/riscv/mm/pageattr.c:142:5: warning: no previous prototype for 'set_memory_x' [-Wmissing-prototypes]
-arch/riscv/mm/pageattr.c:147:5: warning: no previous prototype for 'set_memory_nx' [-Wmissing-prototypes]
-arch/riscv/mm/pageattr.c:152:5: warning: no previous prototype for 'set_direct_map_invalid_noflush' [-Wmissing-prototypes]
-arch/riscv/mm/pageattr.c:169:5: warning: no previous prototype for 'set_direct_map_default_noflush' [-Wmissing-prototypes]
-arch/riscv/mm/pageattr.c:97:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+Signed-off-by: Zong Li <zong.li@sifive.com>
+---
+ arch/riscv/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Zong Li (2):
-  riscv: Fix build warning for mm/init
-  riscv: fix build warning of mm/pageattr
-
- arch/riscv/mm/init.c     | 2 +-
- arch/riscv/mm/pageattr.c | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 92002952c621..66f5952f39c0 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -517,7 +517,7 @@ void mark_rodata_ro(void)
+ }
+ #endif
+ 
+-void __init resource_init(void)
++static void __init resource_init(void)
+ {
+ 	struct memblock_region *region;
+ 
 -- 
 2.27.0
 
