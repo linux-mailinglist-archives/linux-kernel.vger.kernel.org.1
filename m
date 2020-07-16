@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34CC221B36
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 06:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE24221B37
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 06:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726233AbgGPEVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 00:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        id S1726293AbgGPEVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 00:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726036AbgGPEVF (ORCPT
+        with ESMTP id S1726036AbgGPEVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 00:21:05 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D5FC061755
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 21:21:04 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id x1so5669447ybg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 21:21:04 -0700 (PDT)
+        Thu, 16 Jul 2020 00:21:07 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEB6C061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 21:21:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id s9so5666273ybj.18
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 21:21:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=Zb9Ksn8SCjdD/hVC3/rnyZUUJ8FDyQJf1yIXDH+XUgo=;
-        b=Dt2KlYn+vrlb6IxoMIFG3XSGRGdLDxfaIjPE/LWF1t7DD/hs/2YR3XXS+a+zNGIOfL
-         dzQJQtVcwtOzGBxRcCWxvD3m5Nr2DvzdgZf76vgMNlyZzHbAC7zqI6qY+toNkKB1LpHH
-         giyY8rpDowTgjlXW+RSCI5HbXRdC5L0m7eD7lw5sW3Cv2etpkyzA182FJ72p9vGg35ie
-         2r/X7wr1Z6YLJX4Q3l6DktFlFGLBe3Kxage/Un+p73hxHakiItT0HcYE9D1h6ormrgr7
-         djyTpVUVABVY7CZ8/cJJp7ZVBSuoTwaQy1cCdchVy0jT3Q6KQpx3r36O2gcLCkq2BMk8
-         TAqA==
+        bh=Db+rdJzVsVadbu0BHlNrIH6C9D6Gk0kU0eYJ13OSzw8=;
+        b=B0eJf1YBX/Lo+BBodqJYBYhOnp2Tm0+ZoiwongPu5M8ntYb0kA8JNA06xloYqDPpuP
+         Mtu1naE954uQNuTED3DZaPdkDgKExKIR1WsVGMYt5SdABRvAK553ch4l2mdRbipQ/zLp
+         wcBm/xX+1jdjfOmCktWDFzZ1I2Yk0r9+5olSOJyIYnRpxHJPe77mi0JoKjRGADt3db5E
+         Ra/Kf0lb/AySw01rh8brZztqxtGSf0w5WR66gJgOhVXYJndY8s4PZdCjJDeNClQJzJmS
+         Yb6FWYDK2elei0o9CNtLT1pJxbuYqdwpML24KtcWqtaI7RKFMFQ4wPPuoFSVz2XkoJR+
+         vKlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Zb9Ksn8SCjdD/hVC3/rnyZUUJ8FDyQJf1yIXDH+XUgo=;
-        b=jl+MdKgnyTpZ9SaeM8opojfKsqcpqb9D5rTjS96I0XoMmS2FHGOga/VVIpqAMJGYu7
-         phviuGcoTy//uhXt4Ct4ZtHS6+wGVsBcCsHWiasy1MVMdciuBKqs7VAx7jewNsTCV5LO
-         xeh/qKlpHHoNzH6sBdJxQLpzonS8eori1/7ki3kDZl51bpoHGULFjRmwtDPqneP8t0tq
-         AwT37vVwZlGqUdq3C+sYgPV7cmBhDxooc3nChoNaTFlsczC8cCKJQcUBN0GZZztaPzFS
-         KVoShthRFXf+eLorvw2rZ0VV7BZR8taJ9cexz3GqDqu9gfAY4IvV0UQlDVREZ+x0q5DQ
-         9mPA==
-X-Gm-Message-State: AOAM5321e9eql/CdypDOP51kx6zsZA8834nw8723jhrHLfqoRC2wmgPT
-        sDyk95eI7SHnMPrHz7T4j1ORz6MRGiYtsCE=
-X-Google-Smtp-Source: ABdhPJxluGUr1UQ6wJGW2Kc125LY9FFANR3BuU8MmlZGKlgqcMEIZR4dwRqE/afhDA7T89bgwSF0L90F5deYkww=
-X-Received: by 2002:a25:c342:: with SMTP id t63mr3637322ybf.122.1594873264148;
- Wed, 15 Jul 2020 21:21:04 -0700 (PDT)
-Date:   Wed, 15 Jul 2020 21:20:52 -0700
+        bh=Db+rdJzVsVadbu0BHlNrIH6C9D6Gk0kU0eYJ13OSzw8=;
+        b=XOj0ylWEqwhg5ZwyG3C/NkReWfJQoVXQOQmHFMeLpY0RD92Fy6gmf2z+6Z3Qwunsy1
+         18oE8CHdVA+Uhuo3D8KujTM2q7a1Ko9VxgBnC1douKyUVSMBSdvKylTbc0EbfT8zeWQE
+         bsiR2mimV/+zxNlU7XObU4kcRR0zMSPl7eGGkFX6LOGhg7J8J1+taEhN1/6VTt7mQ+g8
+         ahta4FuRPT3Hhvi3qEVNab9TLavnJNs5Zr/6dMxZ8GhbU5u+D15+Nv6nW7MD0vH1qfyx
+         6WAT3vxWLO2513cw7BtzCUt9Q6b6i8c9P70NFawUGePn0by8JZ5TtIgjn6GIabWj9TeZ
+         78/Q==
+X-Gm-Message-State: AOAM5300d9UxRQIKIqWfWC7qgwX1cN6smiVQvmoqxdANuwy0tPTxaq8g
+        pY/2UOhxEatiY3Z5LXZQFV/wHNXvUcQKWME=
+X-Google-Smtp-Source: ABdhPJxw9TSo27Nppgi18vjTCW6ENkTRBxVnmYCPiEz1dkpPFlcFSL3SuIiZFOps9muOJLp1qlDzj2i777BYSeQ=
+X-Received: by 2002:a25:ac66:: with SMTP id r38mr3804732ybd.105.1594873266503;
+ Wed, 15 Jul 2020 21:21:06 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 21:20:53 -0700
 In-Reply-To: <20200716042053.1927676-1-saravanak@google.com>
-Message-Id: <20200716042053.1927676-4-saravanak@google.com>
+Message-Id: <20200716042053.1927676-5-saravanak@google.com>
 Mime-Version: 1.0
 References: <20200716042053.1927676-1-saravanak@google.com>
 X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH v3 3/4] regulator: core: Add basic enable/disable support for
- sync_state() callbacks
+Subject: [PATCH v3 4/4] regulator: core: Add voltage support for sync_state() callbacks
 From:   Saravana Kannan <saravanak@google.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -76,351 +75,102 @@ Consider the following example:
 
 Example boot sequence:
 1. device-X is probed successfully.
-2. device-A is probed by driver-A
-   a. driver-A gets regulator-X
-   b. driver-A votes on regulator-X
-   c. driver-A initializes device-A
-   d. driver-A votes off regulator-X
-   e. regulator-X is turned off.
-3. System crashes or device-B and device-C become unreliable because
-   regulator-X was turned off without following the proper quiescing
-   steps for device-B and device-C.
+2. device-B is probed by driver-B
+   a. driver-B gets regulator-X
+   b. driver-B votes on regulator-X
+   c. driver-B lowers device-B performance point.
+   d. driver-B lowers voltage vote to 1000 mV.
+   e. regulator-X voltage is lowered to 1000 mV.
+3. System crashes or device-C becomes unreliable because regulator-X
+   voltage was lowered to 1000 mV when device-C still needed it at 2000 mV
 
-There are Android devices that exhibit the issue in the example where
-regulator-X is an LDO, device-A is a camera device and device-B and
-device-C are UFS and USB. To avoid this, they have their own downstream
-changes to the regulator framework.
+The issue reported by Marek Szyprowski [1] between vdd_int and vdd_arm
+is very similar to example 2, except driver-B lowers the voltage of
+device-C due to a regulator coupling instead of a direct request from
+driver-B.
 
 This patch addresses the problem in the example by:
+1. When a boot-on regulator is registered, a minimum voltage limit that
+   matches the boot time voltage is placed on the regulator.
 
-1. When a regulator is registered,
-   a. The sync_state() callback for the regulator's device is set to
-      regulator_sync_state(). The sync_state() callback is called when
-      all the consumers of the regulator's device have probed
-      successfully.
-   b. If the regulator is ON at boot, a BOOT-LIMITS consumer is created
-      for the regulator and an enable vote is made.
+2. When the regulator_sync_state() callback comes, the minimum voltage
+   limit is removed along with the rest of the boot limits.
 
-2. When the regulator_sync_state() callback comes, all the boot-on
-   regulators registered by that device will have the BOOT-LIMITS enable
-   vote removed and the BOOT-LIMITS consumer freed.
-
-If an exclusive get is ever attempted on a boot-on regulator with an
-active BOOT-LIMITS vote, the regulator is handed off to the new consumer
-(and the BOOT-LIMITS freed) without affecting the regulator state. This
-ensures, consumers doing exclusive gets continue to work after this
-commit.
-
-To maintain backward compatibility with systems where some consumers of
-the device might never probe, a new regulator_cleanup_timeout kernel
-commandline argument is added and defaulted to 30 seconds. When the
-timeout is a non-zero value and it expires, all BOOT-LIMITS consumer
-votes are removed even if the sync_state() callbacks haven't been
-called.
-
-In systems where all the consumers are expected to probe, the
-regulator_cleanup_timeout can be set to 0. When that's done, the
-BOOT-LIMITS consumer votes for a regulator are removed only when all the
-consumers of the regulator's device have probed.
-
-So with this patch and regulator_cleanup_timeout=0, the example will work
-as follows:
+So with this patch and regulator_cleanup_timeout=0, the example will
+work as follows:
 
 1. device-X is probed successfully.
    a. regulator-X is registered.
-   b. Since regulator-X is on, an enable vote is made by the BOOT-LIMITS
+   b. Since regulator-X is on, a minimum voltage of 2000 mV is made by
+      the BOOT-LIMITS consumer.
+   c. Since regulator-X is on, an enable vote is made by the BOOT-LIMITS
       consumer.
-2. device-A is probed by driver-A
-   a. driver-A gets regulator-X
-   b. driver-A votes on regulator-X
-   c. driver-A initializes device-A
-   d. driver-A votes off regulator-X
-   e. regulator-X is NOT turned off due to BOOT-LIMITS consumer.
-3. device-B is probed by driver-B
+2. device-B is probed by driver-B
    a. driver-B gets regulator-X
    b. driver-B votes on regulator-X
-   c. driver-B initializes device-B.
-   d. driver-B votes off regulator-X because device-B enters runtime
-      idle.
-   e. regulator-X is NOT turned off due to BOOT-LIMITS consumer.
-4. device-C is probed by driver-C
-   a. Does stuff similar to device-B and votes off regulator-X.
-5. Since all consumers of device-X have probed, device-X gets
+   c. driver-B lowers device-B performance point.
+   d. driver-B lowers voltage vote to 1000 mV.
+   e. regulator-X voltage is NOT lowered to 1000 mV.
+3. device-C is probed by driver-C
+   a. Does stuff similar to device-B.
+4. Since all consumers of device-X have probed, device-X gets
    sync_state() callback which is a call to regulator_sync_state():
    a. BOOT-LIMITS removes enable vote for regulator-X
-   b. regulator-X is turned off.
+   b. regulator-X remains on becaue device-B and device-C have their
+      enable votes in.
    c. BOOT-LIMITS consumer is freed.
-6. The system is stable because regulator-X is only turned off after
-   device-B and device-C get to initialize and quiesce properly.
+   d. regulator-X voltage drops is lowered to 1000 mV.
+5. The system is stable because regulator-X voltage is NOT lowered to
+   1000 mV when device-C still needed it at 2000 mV.
 
-OR
-
-Same steps for 1 - 3 as above.
-4. device-C is never probed because driver-C isn't available.
-5. Since all consumers of device-X have NOT probed, device-X doesn't get
-   sync_state() callback.
-   a. BOOT-LIMITS votes continue to be enforced for regulator-X
-6. device-C continues to work in the mode the boot loader left it in and
-   the system remains usable. For example, device C is
-   - A display backlight that doesn't have a driver
-   - An interconnect that doesn't have an interconnect provider driver
-
+[1] - https://lore.kernel.org/lkml/20200605063724.9030-1-m.szyprowski@samsung.com/#t
 Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- drivers/regulator/core.c         | 155 ++++++++++++++++++++++++++++++-
- include/linux/regulator/driver.h |   2 +
- 2 files changed, 154 insertions(+), 3 deletions(-)
+ drivers/regulator/core.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index c9615d3530c7..f10ef6ec1af1 100644
+index f10ef6ec1af1..9b70295820f3 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -1769,6 +1769,115 @@ static struct regulator_dev *regulator_dev_lookup(struct device *dev,
- 	return ERR_PTR(-ENODEV);
- }
- 
-+/**
-+ * regulator_add_boot_limits - Set up boot limits for a regulator device.
-+ * @rdev: regulator device to set up boot limits for.
-+ *
-+ * Makes requests on the regulator device @rdev so that its operating state
-+ * doesn't drop below the state in which the bootloader left it at before
-+ * starting the kernel.
-+ *
-+ * If boot limits has already been set up, this function doesn't do anything.
-+ *
-+ * The boot limits can be dropped later by calling regulator_del_boot_limits().
-+ */
-+static void regulator_add_boot_limits(struct regulator_dev *rdev)
-+{
-+	/* We already set up boot limits. */
-+	if (rdev->boot_limits)
-+		return;
-+
-+	/*
-+	 * If the regulator is disabled or has an error getting the status,
-+	 * assume it's not on. We won't explicitly turn it off now, that can
-+	 * happen later.
-+	 */
-+	if (_regulator_is_enabled(rdev) <= 0)
-+		return;
-+
-+	/* Wait for supply to get resolved */
-+	if (rdev->supply_name && !rdev->supply)
-+		return;
-+
-+	/* Wait for coupled regulators to be resolved */
-+	if (rdev->coupling_desc.n_resolved != rdev->coupling_desc.n_coupled)
-+		return;
-+
-+	/*
-+	 * Get a reference to a regulator to set up boot limits to prevent it
-+	 * from going below the state in which the boot loader left it in.
-+	 */
-+	rdev->boot_limits = create_regulator(rdev, NULL, "BOOT-LIMITS");
-+	if (rdev->boot_limits == NULL) {
-+		dev_err(&rdev->dev, "Unable to get boot limits handle\n");
-+		rdev->boot_limits = ERR_PTR(-EPERM);
-+		return;
-+	}
-+	rdev->open_count++;
-+
-+	if (regulator_enable(rdev->boot_limits)) {
-+		dev_err(&rdev->dev, "Unable to set boot limits\n");
-+		destroy_regulator(rdev->boot_limits);
-+		rdev->boot_limits = ERR_PTR(-EPERM);
-+	}
-+}
-+
-+/**
-+ * regulator_del_boot_limits - Remove boot limits for a regulator device.
-+ * @rdev: regulator device to remove boot limits for.
-+ * @handoff: Flag to control if the regulator should be handed off without a
-+ *	     state change to the hardware.
-+ *
-+ * If boot limits has never been set up for this regulator, this function
-+ * doesn't do anything and returns immediately.
-+ *
-+ * If boot limits have already been set up for the regulator device @rdev, this
-+ * functions removes the boot limits so that operating state of @rdev can drop below
-+ * the state in which the bootloader left it at before starting the kernel.
-+ *
-+ * In addition, if @handoff is NOT set, the function immediately updates the
-+ * state of the regulator (potentially disabling it too).  Otherwise, this
-+ * function removes the boot limits and leaves the regulator state update to
-+ * subsequent requests by other consumers. This is mainly useful for removing
-+ * the boot limits when an exclusive consumer takes control of the regulator.
-+ */
-+static int regulator_del_boot_limits(struct regulator_dev *rdev, bool handoff)
-+{
-+	if (IS_ERR_OR_NULL(rdev->boot_limits))
-+		return 0;
-+
-+	rdev_info(rdev, "removing boot limits\n");
-+	if (!handoff)
-+		regulator_disable(rdev->boot_limits);
-+	else
-+		rdev->use_count--;
-+	destroy_regulator(rdev->boot_limits);
-+	/*
-+	 * Set it to an error value so that boot limits can't be set again once
-+	 * it has been removed.
-+	 */
-+	rdev->boot_limits = ERR_PTR(-EINVAL);
-+	return 0;
-+}
-+
-+static int regulator_del_boot_limits_by_dev(struct device *dev, void *data)
-+{
-+	struct regulator_dev *rdev = dev_to_rdev(dev);
-+
-+	if (dev->parent != data)
-+		return 0;
-+
-+	regulator_del_boot_limits(rdev, false);
-+	return 0;
-+}
-+
-+void regulator_sync_state(struct device *dev)
-+{
-+	class_for_each_device(&regulator_class, NULL, dev,
-+			      regulator_del_boot_limits_by_dev);
-+}
-+EXPORT_SYMBOL_GPL(regulator_sync_state);
-+
- static int regulator_resolve_supply(struct regulator_dev *rdev)
+@@ -1783,6 +1783,8 @@ static struct regulator_dev *regulator_dev_lookup(struct device *dev,
+  */
+ static void regulator_add_boot_limits(struct regulator_dev *rdev)
  {
- 	struct regulator_dev *r;
-@@ -1827,6 +1936,10 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 		return ret;
- 	}
- 
-+	mutex_lock(&regulator_list_mutex);
-+	regulator_add_boot_limits(rdev);
-+	mutex_unlock(&regulator_list_mutex);
++	int boot_uV;
 +
- 	/*
- 	 * In set_machine_constraints() we may have turned this regulator on
- 	 * but we couldn't propagate to the supply if it hadn't been resolved
-@@ -1851,7 +1964,7 @@ struct regulator *_regulator_get(struct device *dev, const char *id,
- 	struct regulator_dev *rdev;
- 	struct regulator *regulator;
- 	struct device_link *link;
--	int ret;
-+	int ret, open_count;
- 
- 	if (get_type >= MAX_GET_TYPE) {
- 		dev_err(dev, "invalid type %d in %s\n", get_type, __func__);
-@@ -1908,7 +2021,15 @@ struct regulator *_regulator_get(struct device *dev, const char *id,
- 		return regulator;
+ 	/* We already set up boot limits. */
+ 	if (rdev->boot_limits)
+ 		return;
+@@ -1815,6 +1817,13 @@ static void regulator_add_boot_limits(struct regulator_dev *rdev)
  	}
- 
--	if (get_type == EXCLUSIVE_GET && rdev->open_count) {
-+	/*
-+	 * Adjust for boot limits that'll be dropped if EXCLUSIVE_GET can
-+	 * succeed.
-+	 */
-+	open_count = rdev->open_count;
-+	if (!IS_ERR_OR_NULL(rdev->boot_limits))
-+		open_count--;
-+
-+	if (get_type == EXCLUSIVE_GET && open_count) {
- 		regulator = ERR_PTR(-EBUSY);
- 		put_device(&rdev->dev);
- 		return regulator;
-@@ -1947,6 +2068,9 @@ struct regulator *_regulator_get(struct device *dev, const char *id,
- 
  	rdev->open_count++;
- 	if (get_type == EXCLUSIVE_GET) {
-+		/* Drop boot limits before exclusive consumer */
-+		regulator_del_boot_limits(rdev, true);
+ 
++	if (regulator_ops_is_valid(rdev, REGULATOR_CHANGE_VOLTAGE)) {
++		boot_uV = regulator_get_voltage_rdev(rdev);
++		if (boot_uV > 0)
++			regulator_set_voltage(rdev->boot_limits, boot_uV,
++								 INT_MAX);
++	}
 +
- 		rdev->exclusive = 1;
+ 	if (regulator_enable(rdev->boot_limits)) {
+ 		dev_err(&rdev->dev, "Unable to set boot limits\n");
+ 		destroy_regulator(rdev->boot_limits);
+@@ -1847,10 +1856,12 @@ static int regulator_del_boot_limits(struct regulator_dev *rdev, bool handoff)
+ 		return 0;
  
- 		ret = _regulator_is_enabled(rdev);
-@@ -4896,7 +5020,9 @@ static void regulator_resolve_coupling(struct regulator_dev *rdev)
- 		regulator_unlock(c_rdev);
- 
- 		regulator_resolve_coupling(c_rdev);
-+		regulator_add_boot_limits(c_rdev);
- 	}
-+	regulator_add_boot_limits(rdev);
- }
- 
- static void regulator_remove_coupling(struct regulator_dev *rdev)
-@@ -5223,6 +5349,8 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 
- 	rdev_init_debugfs(rdev);
- 
-+	dev_set_drv_sync_state(rdev->dev.parent, regulator_sync_state);
-+
- 	/* try to resolve regulators coupling since a new one was registered */
- 	mutex_lock(&regulator_list_mutex);
- 	regulator_resolve_coupling(rdev);
-@@ -5755,6 +5883,17 @@ static int regulator_late_cleanup(struct device *dev, void *data)
- 	return 0;
- }
- 
-+static int regulator_boot_limits_timeout(struct device *dev, void *data)
-+{
-+	struct regulator_dev *rdev = dev_to_rdev(dev);
-+
-+	regulator_del_boot_limits(rdev, false);
-+	return 0;
-+}
-+
-+static unsigned int regulator_cleanup_timeout = 30000;
-+core_param(regulator_cleanup_timeout, regulator_cleanup_timeout, uint, 0);
-+
- static void regulator_init_complete_work_function(struct work_struct *work)
- {
+ 	rdev_info(rdev, "removing boot limits\n");
+-	if (!handoff)
++	if (!handoff) {
+ 		regulator_disable(rdev->boot_limits);
+-	else
++		regulator_set_voltage(rdev->boot_limits, 0, INT_MAX);
++	} else {
+ 		rdev->use_count--;
++	}
+ 	destroy_regulator(rdev->boot_limits);
  	/*
-@@ -5767,6 +5906,16 @@ static void regulator_init_complete_work_function(struct work_struct *work)
- 	class_for_each_device(&regulator_class, NULL, NULL,
- 			      regulator_register_resolve_supply);
- 
-+	/*
-+	 * If regulator_cleanup_timeout is set to a non-zero value, it probably
-+	 * means some of the consumers will never probe or the regulators have
-+	 * some restrictions on how long they can stay ON. So, don't wait
-+	 * forever for consumer devices to probe.
-+	 */
-+	if (regulator_cleanup_timeout)
-+		class_for_each_device(&regulator_class, NULL, NULL,
-+				      regulator_boot_limits_timeout);
-+
- 	/* If we have a full configuration then disable any regulators
- 	 * we have permission to change the status for and which are
- 	 * not in use or always_on.  This is effectively the default
-@@ -5802,7 +5951,7 @@ static int __init regulator_init_complete(void)
- 	 * command line option might be useful.
- 	 */
- 	schedule_delayed_work(&regulator_init_complete_work,
--			      msecs_to_jiffies(30000));
-+			      msecs_to_jiffies(regulator_cleanup_timeout));
- 
- 	return 0;
- }
-diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
-index 7eb9fea8e482..4761157a1528 100644
---- a/include/linux/regulator/driver.h
-+++ b/include/linux/regulator/driver.h
-@@ -451,6 +451,7 @@ struct regulator_dev {
- 	struct regulator *supply;	/* for tree */
- 	const char *supply_name;
- 	struct regmap *regmap;
-+	struct regulator *boot_limits;
- 
- 	struct delayed_work disable_work;
- 
-@@ -475,6 +476,7 @@ devm_regulator_register(struct device *dev,
- 			const struct regulator_desc *regulator_desc,
- 			const struct regulator_config *config);
- void regulator_unregister(struct regulator_dev *rdev);
-+void regulator_sync_state(struct device *dev);
- void devm_regulator_unregister(struct device *dev, struct regulator_dev *rdev);
- 
- int regulator_notifier_call_chain(struct regulator_dev *rdev,
+ 	 * Set it to an error value so that boot limits can't be set again once
 -- 
 2.28.0.rc0.105.gf9edc3c819-goog
 
