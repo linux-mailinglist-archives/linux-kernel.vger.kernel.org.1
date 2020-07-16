@@ -2,135 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC2F222463
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A5822246E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 15:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728989AbgGPNzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 09:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728929AbgGPNzI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:55:08 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B86BC061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:55:08 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id b11so907565lfe.10
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:55:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fSYl+obZVE+fUKznzfN+YjGdJqq6f8RfiQS+28i+3lU=;
-        b=yW0TqbV2Cmn34g+off5Xzod+BSQ8M1Xw4VxORpFRWUx+wIaEXJJhwqCsu+hmjEWM3V
-         PPGCXyWxy+R+W2N+bI0gtgOCetsz7Z1owadn47BzqxHpW9p53Ifhqefkn9j5GEfIVKq5
-         fOxjHE3rHiAeMdcJKce8rB8zIiKvTuuGTx67ld8xXchrZVzXBSWAGnbYPold/YYUaAto
-         i7EFg+cxceta14JfCDJZ5tHMznT+lsvoaLzdBaO1/+uPiyw92qJ0FxVswVSvg+ZJ9MyQ
-         /836A7RemmSD/r7Dt/coNl6VqvR67ATuNOirwQOyk3OYgq/k94bVCxNguezzutd+sM52
-         ZEFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fSYl+obZVE+fUKznzfN+YjGdJqq6f8RfiQS+28i+3lU=;
-        b=qCfSNbZ3MFBKQ+OPUpAEYTP38l8u8gRusfAcT14iCBUozuNLKHFlqZXLSj7lBaVXXa
-         mLUPK0vXM38+2y0yONLPHayIjDixRnNVjrJXY+65iX3CbdOPRhprRKGihkocvVOGYr/2
-         2AqwkM1mNU8kyTaASVlCV6FbJzgXNQN10ckH/YxHyS57sOaWpRLOgQdPhRnkyWVktOdD
-         H4kdDsz6sItycb+Aozgd2lOhTP3JFhM7TXWvTaGDpq7es4R6y64bTtXQ16fgHQUsLTsU
-         ycExc4A7K/mqG/POA9PTX4RDPvmBqIj8C+NhqhygFU7dQPULLpYAUxg6gCYUxgMTVWvs
-         zgVA==
-X-Gm-Message-State: AOAM530nbUQgAQusa2oLr7B1IiUmdtspgPWZDhEA5BXJ9Dr6B763QaSj
-        eyJ2hN3IonCNJzSDjqlDsYjD1HSV1yKBqXAAyxByCw==
-X-Google-Smtp-Source: ABdhPJzPt8lneTMty4LKVohX0XpVyQrsxGQOfHKHWJDQ5g7QK57hNzDZxOt+c+QzpVfm9NT4EJMpAs/zLD29z0/+tig=
-X-Received: by 2002:a19:f20a:: with SMTP id q10mr2210486lfh.89.1594907706496;
- Thu, 16 Jul 2020 06:55:06 -0700 (PDT)
+        id S1729008AbgGPN4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 09:56:25 -0400
+Received: from elvis.franken.de ([193.175.24.41]:38517 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728087AbgGPN4Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 09:56:24 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jw4N4-0001gW-00; Thu, 16 Jul 2020 15:56:22 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id B06E7C0815; Thu, 16 Jul 2020 15:56:05 +0200 (CEST)
+Date:   Thu, 16 Jul 2020 15:56:05 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "paulburton@kernel.org" <paulburton@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MIPS: Replace HTTP links with HTTPS ones
+Message-ID: <20200716135605.GA15355@alpha.franken.de>
+References: <20200713085243.32566-1-grandmaster@al2klimov.de>
+ <59938583-2ce4-c7bf-c454-89a1559be846@flygoat.com>
+ <CAHiYmc7ax=A=Tb59wh4+yHx=2MEKc3G==tun5nsefbKvsceBHg@mail.gmail.com>
 MIME-Version: 1.0
-References: <1594164323-14920-1-git-send-email-Anson.Huang@nxp.com>
- <CACRpkdYP4J+MZjxWUnkM-XGaMmFFZfMCfY13r7G6r2=v3F6zQw@mail.gmail.com>
- <DB3PR0402MB39168FEA9306CBF90A596E31F5630@DB3PR0402MB3916.eurprd04.prod.outlook.com>
- <DB3PR0402MB3916FB27846F462C2210C3BFF57E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-In-Reply-To: <DB3PR0402MB3916FB27846F462C2210C3BFF57E0@DB3PR0402MB3916.eurprd04.prod.outlook.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 16 Jul 2020 15:54:55 +0200
-Message-ID: <CACRpkda2gdu8FsSM0MC6g8C1mebmVc5dFWJZwNvQUPXNi5bnkQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] gpio: mxc: Support module build
-To:     Anson Huang <anson.huang@nxp.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "oleksandr.suvorov@toradex.com" <oleksandr.suvorov@toradex.com>,
-        Adam Ford <aford173@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Leo Li <leoyang.li@nxp.com>, Vinod Koul <vkoul@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Olof Johansson <olof@lixom.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHiYmc7ax=A=Tb59wh4+yHx=2MEKc3G==tun5nsefbKvsceBHg@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 4:44 AM Anson Huang <anson.huang@nxp.com> wrote:
-
-> > Subject: RE: [PATCH 1/3] gpio: mxc: Support module build
+On Wed, Jul 15, 2020 at 12:07:55PM +0200, Aleksandar Markovic wrote:
+> On Tuesday, July 14, 2020, Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> > 在 2020/7/13 16:52, Alexander A. Klimov 写道:
+> >>           virtual processors which supports SMP. This is equivalent to the
+> >>           Intel Hyperthreading feature. For further information go to
+> >> -         <http://www.imgtec.com/mips/mips-multithreading.asp>.
+> >> +         <https://www.imgtec.com/mips/mips-multithreading.asp>.
+> >>
 > >
-> > Hi, Linus
+> > All MIPS content have been removed from IMGTEC's site, we'd better remove
+> > this link?
 > >
-> > > Subject: Re: [PATCH 1/3] gpio: mxc: Support module build
-> > >
-> > > On Wed, Jul 8, 2020 at 1:28 AM Anson Huang <Anson.Huang@nxp.com>
-> > > wrote:
-> > >
-> > > >  subsys_initcall(gpio_mxc_init);
-> > > > +
-> > > > +MODULE_AUTHOR("Shawn Guo <shawn.guo@linaro.org>");
-> > > > +MODULE_DESCRIPTION("i.MX GPIO Driver"); MODULE_LICENSE("GPL");
-> > >
-> > > You are making this modualrizable but keeping the subsys_initcall(),
-> > > which doesn't make very much sense. It is obviously not necessary to
-> > > do this probe at subsys_initcall() time, right?
-> > >
 > >
-> > If building it as module, the subsys_initcall() will be equal to module_init(), I
-> > keep it unchanged is because I try to make it identical when built-in, since
-> > most of the config will still have it built-in, except the Android GKI support.
-> > Does it make sense?
-> >
-> > > Take this opportunity to convert the driver to use
-> > > module_platform_driver() as well.
-> >
-> > If you think it has to be or it is better to use module_platform_driver(), I will do
-> > it in V2.
->
-> I tried to replace the subsys_initcall() with module_platform_driver(), but met issue
-> about " register_syscore_ops(&mxc_gpio_syscore_ops);" which is called in gpio_mxc_init()
-> function, this function should be called ONLY once, moving it to .probe function is NOT
-> working, so we may need to keep the gpio_mxc_init(), that is another reason that we may
-> need to keep subsys_initcall()?
+> Perhaps it is better to replace it with:
+> 
+> https://www.mips.com/products/architectures/ase/multi-threading/
+> 
+> ?
 
-This looks a bit dangerous to keep like this while allowing this
-code to be used from a module.
+yes, looks better.
 
-What happens if you insmod and rmmod this a few times, really?
-How is this tested?
+Thomas.
 
-This is not really modularized if that isn't working, just that modprobing
-once works isn't real modularization IMO, it seems more like a
-quick and dirty way to get Androids GKI somewhat working with the module
-while not properly making the module a module.
-
-You need input from the driver maintainers on how to handle this.
-
-Yours,
-Linus Walleij
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
