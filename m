@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F86F2224B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571F62224B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729347AbgGPOBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43104 "EHLO
+        id S1729337AbgGPOBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729162AbgGPN7u (ORCPT
+        with ESMTP id S1729011AbgGPN7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:59:50 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633EBC08C5DF
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:49 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id f18so11699017wml.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:49 -0700 (PDT)
+        Thu, 16 Jul 2020 09:59:51 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72953C08C5E0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:50 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id r12so7094261wrj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ocpmprgzmWGZxJ5zL5R7ftXluU21C0wPbP88cIep754=;
-        b=CZneTPsXS9uqp5nPgc28Vz17b6BEQDi442w3rkHr9tDiPIC8oXfbXnyy5t0zYJaeSB
-         iPDQM+PZ7JnYsCFI9kgXY3Wl7QIXxII1h6qVnp3QscfnTSPsOHYxia4UuunI1tgrvD0G
-         gayKddwj1Ga4q7iyZP6r/sc5mExi2zmxJZbOE3goJHrkJkHeTrecbIABUECTmnB8ztby
-         4vVwtqub+b1iscTXmg4GlsQb5AQdEwTwB1OMqlOHyEWIJR/uHfH4mFJlhQnhDGGtVEMo
-         E94XWJGhZP5zbino255dTYXeR1G8COZK0D2sNNWTFgm/ee0VffX8nkeSIyb5VYy8n82/
-         cDfQ==
+        bh=xS5iaY7lfvInFgzdYtfbJOMULW0PjIgmtSXBGbeSKP0=;
+        b=xxL5Ag3IresWgQw0UNbgMhC8UUPDoSjfaeodJ14sFm3DDAPplrnoea1LlKXlrLmsSQ
+         H+ViunaN8TaBXhiQ42uSBOBQRJ/Tj3qVHVpYLEHkqg0B+ykx75a69k+HK9wM9pxRgzbQ
+         msvRRgeMRBI4z5xmbL1p8sMLUjz13LItqneeEcZ+WBLqTS+1BQsTTyVb80iy6I5fQGkq
+         bT1NyvWPobGdkt7RYGfQhv6DWxOF/p3vcoVx9zOS4/MtVofe2FEDHLt2LmNX6JLbRvuE
+         o0ycpNrLICFEj+hNnlyYRW2z3KmklAnWHiES2PuwZrizhLE/6BmBbWfXLW6nYaeQedpB
+         yxuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ocpmprgzmWGZxJ5zL5R7ftXluU21C0wPbP88cIep754=;
-        b=cEd9ENxpF3wE3nWvbrVMMxOrEBQqXu81zkXkw3n8OgkueNbcPtMzaLOGK29vlEoTF7
-         Z3UimxNwvjs5Q5uV4/l98pCM6ABv6/69vn2K191Scud6yHB+tstewcmleQ1zgKpEXyoJ
-         yhZHoBWhNpG2kh4tCCsHqlaFcqIQlNWQeEVxeiM3Bv0hSEFojqb4PWukrtLuUTpoMDcw
-         WCWqD22TlGHIBWXqbNNzBT8fcwekW7tocI/xiZLFhqnXSnkLpgN+9y048xqls29eN3c0
-         bzB5239HBaV1zl+f7f3PLvEvHQ950VvO51yj6Yld8qUrs+R8ogD2G4PUtgMfstSIMLLk
-         Mvqw==
-X-Gm-Message-State: AOAM5315T35/sjpC6XiZrE1SVr1nUY3ZthD6Sxsb7fKSw9HvQsCytvqf
-        kdPYKxnq+zRujstwSSeNI2jH/w==
-X-Google-Smtp-Source: ABdhPJysvKtOyj2iTio5knKzxJhexTSe2SR/RxB3NYtbN7/a417Z2IcOI3EZ8WcHL2WI8hxW0dYezQ==
-X-Received: by 2002:a05:600c:2219:: with SMTP id z25mr4828299wml.154.1594907988041;
-        Thu, 16 Jul 2020 06:59:48 -0700 (PDT)
+        bh=xS5iaY7lfvInFgzdYtfbJOMULW0PjIgmtSXBGbeSKP0=;
+        b=hlukCIiSrL9U0/jf3EKs25VDh57moU46lrplfAVRCsA21WQll/kSaYpJSZTF11LplA
+         UAvW4DiWC2gcL1qJ9tP1bwiInSnH2iEdfQVaYi0USVmdo+vZ3L4YhsXBwHWuh2ypl/0R
+         adqbVn+UnIB1N8mVz9abTVAWj570zcYeS/Llm67084xj3EiLuukEROQQdFBIcNJq71D0
+         HVsO+1PBrSqQcFxUdj+o6+cN4lnqyf1otHDCnerH6PMize2zOdnVCqHXfrHnB9+5A9DL
+         wBVqbKgMoQThvmCqLA/9/D4KqoHB7b8M8+a7PDvx1qjYbVeTV2iMLZxLNq2ZPGZJrJE8
+         2xCA==
+X-Gm-Message-State: AOAM530w9QOeQQGWJU5D5nAC81/a+RcZPLLm6f3PcSOVCy13qZkQEgsI
+        R+LcXYRyx2gqUUGMxdQO0/MxPg==
+X-Google-Smtp-Source: ABdhPJz+3bOsT4wSiHZeM6v8NBbP0nQ87ipkThT9NtG3fkIz00axC34VQ9CXjTVwPymWMRsbdcNijg==
+X-Received: by 2002:a5d:6412:: with SMTP id z18mr5144226wru.310.1594907989226;
+        Thu, 16 Jul 2020 06:59:49 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.47
+        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 06:59:47 -0700 (PDT)
+        Thu, 16 Jul 2020 06:59:48 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 13/30] iio: dummy: iio_simple_dummy_events: Demote file header and supply descriptions for val2 params
-Date:   Thu, 16 Jul 2020 14:59:11 +0100
-Message-Id: <20200716135928.1456727-14-lee.jones@linaro.org>
+        linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: [PATCH 14/30] iio: dac: ad5064: Value returned by ad5064_vref_name may not be 'const * const'
+Date:   Thu, 16 Jul 2020 14:59:12 +0100
+Message-Id: <20200716135928.1456727-15-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200716135928.1456727-1-lee.jones@linaro.org>
 References: <20200716135928.1456727-1-lee.jones@linaro.org>
@@ -66,50 +67,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-File headers are not good candidates for kerneldoc.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/dummy/iio_simple_dummy_events.c:21: warning: Incorrect use of kernel-doc format:  * iio_simple_dummy_read_event_config() - is event enabled?
- drivers/iio/dummy/iio_simple_dummy_events.c:34: warning: Function parameter or member 'indio_dev' not described in 'iio_simple_dummy_read_event_config'
- drivers/iio/dummy/iio_simple_dummy_events.c:34: warning: Function parameter or member 'chan' not described in 'iio_simple_dummy_read_event_config'
- drivers/iio/dummy/iio_simple_dummy_events.c:34: warning: Function parameter or member 'type' not described in 'iio_simple_dummy_read_event_config'
- drivers/iio/dummy/iio_simple_dummy_events.c:34: warning: Function parameter or member 'dir' not described in 'iio_simple_dummy_read_event_config'
- drivers/iio/dummy/iio_simple_dummy_events.c:123: warning: Function parameter or member 'val2' not described in 'iio_simple_dummy_read_event_value'
- drivers/iio/dummy/iio_simple_dummy_events.c:146: warning: Function parameter or member 'val2' not described in 'iio_simple_dummy_write_event_value'
+ drivers/iio/dac/ad5064.c:790:8: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
+ 790 | static const char * const ad5064_vref_name(struct ad5064_state *st,
+ | ^~~~~
 
+Cc: Michael Hennerich <Michael.Hennerich@analog.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/dummy/iio_simple_dummy_events.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/iio/dac/ad5064.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/dummy/iio_simple_dummy_events.c b/drivers/iio/dummy/iio_simple_dummy_events.c
-index b3abaaca6f5ef..63a2b844be508 100644
---- a/drivers/iio/dummy/iio_simple_dummy_events.c
-+++ b/drivers/iio/dummy/iio_simple_dummy_events.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * Copyright (c) 2011 Jonathan Cameron
-  *
-  * Event handling elements of industrial I/O reference driver.
-@@ -107,6 +107,7 @@ int iio_simple_dummy_write_event_config(struct iio_dev *indio_dev,
-  * @dir: direction of the vent whose value is being read
-  * @info: info type of the event whose value is being read
-  * @val: value for the event code.
-+ * @val2: unused
-  *
-  * Many devices provide a large set of events of which only a subset may
-  * be enabled at a time, with value registers whose meaning changes depending
-@@ -136,6 +137,7 @@ int iio_simple_dummy_read_event_value(struct iio_dev *indio_dev,
-  * @dir: direction of the vent whose value is being set
-  * @info: info type of the event whose value is being set
-  * @val: the value to be set.
-+ * @val2: unused
-  */
- int iio_simple_dummy_write_event_value(struct iio_dev *indio_dev,
- 				       const struct iio_chan_spec *chan,
+diff --git a/drivers/iio/dac/ad5064.c b/drivers/iio/dac/ad5064.c
+index d33642de9720e..303f6d1a5f311 100644
+--- a/drivers/iio/dac/ad5064.c
++++ b/drivers/iio/dac/ad5064.c
+@@ -787,7 +787,7 @@ static const char * const ad5064_vref_names[] = {
+ 	"vrefD",
+ };
+ 
+-static const char * const ad5064_vref_name(struct ad5064_state *st,
++static const char *ad5064_vref_name(struct ad5064_state *st,
+ 	unsigned int vref)
+ {
+ 	return st->chip_info->shared_vref ? "vref" : ad5064_vref_names[vref];
 -- 
 2.25.1
 
