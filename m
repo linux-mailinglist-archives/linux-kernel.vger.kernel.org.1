@@ -2,79 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F0F2220DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596D92220DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 12:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbgGPKqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 06:46:07 -0400
-Received: from mga01.intel.com ([192.55.52.88]:61506 "EHLO mga01.intel.com"
+        id S1728061AbgGPKqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 06:46:20 -0400
+Received: from mga12.intel.com ([192.55.52.136]:23800 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726898AbgGPKqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 06:46:06 -0400
-IronPort-SDR: ZC6HnhuuyPVL+Dk4R7+jeyWhQ1H/PNerlosqhl44YjAnse97g15IpbhS37yQcj7LYbtZt4UjF/
- 3ACp/J67pCRw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="167486273"
+        id S1726537AbgGPKqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 06:46:17 -0400
+IronPort-SDR: Xs+zIJg3znxE2F/0nIqfvAzWTKwI9S87+4SM01gdofrDi4ZC3ocZ1OFsO4EaeqOogee4KlLUvY
+ Yadr70Ex2tFA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="128923005"
 X-IronPort-AV: E=Sophos;i="5.75,359,1589266800"; 
-   d="scan'208";a="167486273"
+   d="scan'208";a="128923005"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 03:46:06 -0700
-IronPort-SDR: jOpF8xt5jklfDwyrNAM+rkI0fUYGOEDMQ95PgmQS+RWCMfh8X8t+5LYaETZfIE+ZWbAiI++SuL
- YN4Lkn269h/A==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2020 03:46:16 -0700
+IronPort-SDR: L8VK+aZ2Vf4Femkn8SU1E3eRNCT4jfzkerLAZP0H2JXZhyC6PtQnNGLHaPkx6yhfE3TySaQX2s
+ 91xgA6p+p2Yw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,359,1589266800"; 
-   d="scan'208";a="300207141"
+   d="scan'208";a="300207172"
 Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by orsmga002.jf.intel.com with ESMTP; 16 Jul 2020 03:46:04 -0700
+  by orsmga002.jf.intel.com with ESMTP; 16 Jul 2020 03:46:15 -0700
 From:   Xu Yilun <yilun.xu@intel.com>
 To:     broonie@kernel.org, lee.jones@linaro.org,
         linux-kernel@vger.kernel.org
 Cc:     trix@redhat.com, yilun.xu@intel.com,
         matthew.gerlach@linux.intel.com, russell.h.weight@intel.com,
         lgoncalv@redhat.com, hao.wu@intel.com
-Subject: [PATCH v2 0/3] add regmap-spi-avmm & Intel Max10 BMC chip support
-Date:   Thu, 16 Jul 2020 18:42:51 +0800
-Message-Id: <1594896174-18826-1-git-send-email-yilun.xu@intel.com>
+Subject: [PATCH v2 2/3] regmap: spi-avmm: start with the last SOP on phy rx buffer parsing
+Date:   Thu, 16 Jul 2020 18:42:53 +0800
+Message-Id: <1594896174-18826-3-git-send-email-yilun.xu@intel.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1594896174-18826-1-git-send-email-yilun.xu@intel.com>
+References: <1594896174-18826-1-git-send-email-yilun.xu@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds the regmap-spi-avmm to support the Intel SPI Slave to
-AVMM Bus Bridge (spi-avmm) IP block. It also implements the usercase - the
-driver of Intel Max10 BMC chip which integrates this IP block.
+From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 
-Patch #1 implements the main part of regmap-spi-avmm.
-Patch #2 is a fix of the HW issue in spi-avmm IP block.
-Patch #3 implements the mfd driver of Intel Max10 BMC chip.
+This patch works around a bug in the SPI Slave to Avalon Master bridge.
+The SPI slave will send an unexpected extra SOP in the following case.
 
-Main changes from v1:
-- Split out the regmap-spi-avmm module out of intel-m10-bmc module. 
+One in approximately one million read requests results in an apparant
+stall on the avalon bus where the SPI slave inserts IDLE characters. When
+the stall is over, the slave sends an extra SOP character instead of the
+0x7c indicating channel. The other characters are correct.
 
-Matthew Gerlach (1):
-  regmap: spi-avmm: start with the last SOP on phy rx buffer parsing
+To eliminate the impact of the bug, this patch changes to look for the
+last SOP as the start point of the valid phy rx data.
 
-Xu Yilun (2):
-  regmap: add Intel SPI Slave to AVMM Bus Bridge support
-  mfd: intel-m10-bmc: add Max10 BMC chip support for Intel FPGA PAC
+Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+Signed-off-by: Luis Claudio R. Goncalves <lgoncalv@redhat.com>
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+v2: no change.
+---
+ drivers/base/regmap/regmap-spi-avmm.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
- .../ABI/testing/sysfs-driver-intel-m10-bmc         |  15 +
- drivers/base/regmap/Kconfig                        |   6 +-
- drivers/base/regmap/Makefile                       |   1 +
- drivers/base/regmap/regmap-spi-avmm.c              | 932 +++++++++++++++++++++
- drivers/mfd/Kconfig                                |  13 +
- drivers/mfd/Makefile                               |   2 +
- drivers/mfd/intel-m10-bmc.c                        | 174 ++++
- include/linux/mfd/intel-m10-bmc.h                  |  57 ++
- include/linux/regmap.h                             |  36 +
- 9 files changed, 1235 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc
- create mode 100644 drivers/base/regmap/regmap-spi-avmm.c
- create mode 100644 drivers/mfd/intel-m10-bmc.c
- create mode 100644 include/linux/mfd/intel-m10-bmc.h
-
+diff --git a/drivers/base/regmap/regmap-spi-avmm.c b/drivers/base/regmap/regmap-spi-avmm.c
+index ab329d2..632e018 100644
+--- a/drivers/base/regmap/regmap-spi-avmm.c
++++ b/drivers/base/regmap/regmap-spi-avmm.c
+@@ -433,14 +433,14 @@ static int pkt_phy_rx_parse(struct device *dev,
+ {
+ 	char *b, *p;
+ 
+-	b = phy_buf;
+ 	p = trans_buf;
+ 
+-	/* Find the SOP */
+-	while (b < phy_buf + phy_len && *b != PKT_SOP)
+-		b++;
++	/* Find the last SOP */
++	b = (phy_buf + phy_len) - 1;
++	while (b >= phy_buf && *b != PKT_SOP)
++		b--;
+ 
+-	if (b >= phy_buf + phy_len) {
++	if (b < phy_buf) {
+ 		dev_err(dev, "%s no SOP\n", __func__);
+ 		return -EINVAL;
+ 	}
 -- 
 2.7.4
 
