@@ -2,52 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AAE222F73
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB3D222F75
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgGPX4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:56:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57064 "EHLO mail.kernel.org"
+        id S1726238AbgGPX4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:56:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725948AbgGPX4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:56:36 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        id S1725958AbgGPX4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 19:56:55 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C553A2076D;
-        Thu, 16 Jul 2020 23:56:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD9002076D;
+        Thu, 16 Jul 2020 23:56:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1594943796;
-        bh=m3W4a6mZcGBNErfi0jzmkZeG7pWDxWdwzWchzY8XPx0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bt5RY8B63Vhtg9Nd7/RWJ7IE4n3mJaMsVZgg57n4aAH3+zAlIj5HVFxIjfQwAQKtM
-         E/gOdCRS+iIn4Kk0TvrgttXo8OLDTMgKSQXXoKZ6oCUHxANQrmr5m1tYv9bMzqxzJb
-         f38yyje3hWRrn6Is3FYbddgatNlzsufSBTNdoB74=
-Date:   Thu, 16 Jul 2020 16:56:34 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Murali Karicheri <m-karicheri2@ti.com>
-Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <nsekhar@ti.com>, <grygorii.strashko@ti.com>,
-        <vinicius.gomes@intel.com>
-Subject: Re: [net-next PATCH v2 0/9] Add PRP driver and bug fixes
-Message-ID: <20200716165634.5a57d364@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200715164012.1222-1-m-karicheri2@ti.com>
-References: <20200715164012.1222-1-m-karicheri2@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1594943815;
+        bh=zeAWV8quqJcjNdKGBpwqdnxqQ3lUBTZRlol3e/xmC50=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=EhlCQmpQ7D8+Rn5PCJWFdB4BBXPH3Bk1PrJuvJj6/Oj1ZgeuiK1NWg2XGZijXsYHB
+         aNqNi/XV32KgqSAOZNPTEWDRLdQUGTFAVvK8pQSOub7lzDtWaLt/4byf4UdFLNhh4v
+         LMr7SSnohO5HKgSSliZeGyjXVSOegfT+XDRKhN+U=
+Date:   Fri, 17 Jul 2020 00:56:45 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>, lgirdwood@gmail.com
+Cc:     alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>
+In-Reply-To: <20200715150009.407442-1-lee.jones@linaro.org>
+References: <20200715150009.407442-1-lee.jones@linaro.org>
+Subject: Re: [PATCH v2 1/1] ASoC: fsl: fsl-asoc-card: Trivial: Fix misspelling of 'exists'
+Message-Id: <159494380521.42174.8014458780867404653.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Murali,
+On Wed, 15 Jul 2020 16:00:09 +0100, Lee Jones wrote:
+> 
 
-thanks for the patches. 
 
-It seems like at least the first patch addresses a problem which exist
-in Linus's tree, i.e. Linux 5.8-rc.
+Applied to
 
-Could you please separate bug fixes like that out to a new series
-addressed to the net tree, and add appropriate Fixes tags?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: fsl: fsl-asoc-card: Trivial: Fix misspelling of 'exists'
+      commit: 1b58214113481616b74ee4d196e5b1cb683758ee
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
