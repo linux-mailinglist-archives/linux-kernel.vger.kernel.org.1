@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 507E2222EC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C268E222E9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbgGPXKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:10:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53959 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727025AbgGPXKc (ORCPT
+        id S1727909AbgGPXJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727815AbgGPXI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:10:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594941031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=6Ur2fnt29zWLqlAHZnFwZ+08vVEEOwSdE8VzmyFXb6E=;
-        b=SspwcdToGDYFNWYHjQspGeowsVobLLSB4SigjKQ45g8t9Ib82VQYq0UavDiXxi9DdKpSo7
-        r5SB0hvYBTBBu/2NpN1A6A0ZgfAb3Ei1iV7VbWFoePX/7LMOED4tJrJDrxVnm6REgdylut
-        MQwDB3rFRZ5cZhnM0ZeR6O+ts3l10Gc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213--Pjs1E5hP0anHHHr-5CWwQ-1; Thu, 16 Jul 2020 18:55:20 -0400
-X-MC-Unique: -Pjs1E5hP0anHHHr-5CWwQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59915107BEFF;
-        Thu, 16 Jul 2020 22:55:19 +0000 (UTC)
-Received: from lszubowi.redhat.com (ovpn-65-66.rdu2.redhat.com [10.10.65.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E7581001B07;
-        Thu, 16 Jul 2020 22:55:18 +0000 (UTC)
-From:   Lenny Szubowicz <lszubowi@redhat.com>
-To:     linux-kernel@vger.kernel.org, jlbec@evilplan.org, hch@lst.de
-Cc:     rjw@rjwysocki.net
-Subject: [PATCH] configfs: Use flush file op to commit writes to a binary file
-Date:   Thu, 16 Jul 2020 18:55:17 -0400
-Message-Id: <20200716225517.29522-1-lszubowi@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Thu, 16 Jul 2020 19:08:58 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4EAC08C5FB;
+        Thu, 16 Jul 2020 16:01:32 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b30so2602072lfj.12;
+        Thu, 16 Jul 2020 16:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vRmrcXdGKYCulhx5JF7bmSsDjAzR+R6023P6GBnsjfQ=;
+        b=E56txzafzppMuffM1Gu5Z9yBTjbmyAv5+/F6FiMiUIVnnW2zq6c88cHxzrhnkrr6ow
+         gFVX2XlNz6/TNOI0paMw6OLATpLw48J/F2WQDK1u+lH+xK43cuSZeOiSLTc066vdBHUz
+         OR6NLSsip/EVOU+KKyVbfJlO1ObKA/e0PFM+hDzTYp7ibJ2r+L2dxpCeXcF+Fb0oGhV0
+         PQGskd1r2k/w9LTpmAy7RhVwrgx7IRoosJQuDzaQWfHwj+Ggw0OxvtXC8Q6DNuBPTTWU
+         37z0yMiIoUrbD4OM5k9f//XXEbpc3NFfsWMaxH6ejpdxx3WSoyEX0YvoM8Pw5agBQx2B
+         tLOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vRmrcXdGKYCulhx5JF7bmSsDjAzR+R6023P6GBnsjfQ=;
+        b=WTbuXDY4BY/Yf5GsU2tbCHAc2o0EzB5ohTgGHKqBKlhgaIo36Ohu2rVuoYpOclNuH1
+         UEewVMXll+EASduvUfCTsMjq4KH9jfAhW3epq/z7+bD5nYCWzAs5I6LMEGSX6WoTsEV1
+         j8E4B8KMeYBhI19tFAsxc/LO/ua7VxQyGLuX/gF3bW95w/6cVDq7F/p4ggCgX7qFv6Ro
+         0zkzCDUiyS4tShe68eDvtzk1gJMA9p4gdYTKLzjbOXYDqQJNMi4xBFWIdTYIUI5wvyBG
+         +UheD2MKu2CH3mn/5qo9g27zYiT9ZKwUdhYPd3SrFDxGAor6FHR0bqUBRHVJBtNe4dWT
+         xdFA==
+X-Gm-Message-State: AOAM531l+NewWf9wFg1zmseHU6KTZrdx3CKDtSEtj1NM2jGzTMAWyy71
+        7/7CxuI25a1tHTAJEd6jPzTgQMNr
+X-Google-Smtp-Source: ABdhPJxdHQgI4Iks82B0kVrmWJ74aaaj+x50J9DUOutD6acHfl6haGzwy4wP4QYnc1V6e6cfZgIn3w==
+X-Received: by 2002:a05:6512:250:: with SMTP id b16mr3118639lfo.67.1594940490262;
+        Thu, 16 Jul 2020 16:01:30 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-76-4-184.pppoe.mtu-net.ru. [91.76.4.184])
+        by smtp.googlemail.com with ESMTPSA id w4sm1315624ljw.16.2020.07.16.16.01.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Jul 2020 16:01:29 -0700 (PDT)
+Subject: Re: [RFC PATCH v3 16/18] gpu: host1x: mipi: Split
+ tegra_mipi_calibrate and tegra_mipi_wait
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, sakari.ailus@iki.fi, robh+dt@kernel.org,
+        helen.koike@collabora.com
+Cc:     sboyd@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+References: <1594786855-26506-1-git-send-email-skomatineni@nvidia.com>
+ <1594786855-26506-17-git-send-email-skomatineni@nvidia.com>
+ <a06dec8f-7042-767b-545b-048685a7683d@gmail.com>
+ <20d63eca-4b2b-584e-a391-a4fb64a16b40@nvidia.com>
+ <c4945c77-5de1-e9b1-9f4f-cdd78bca18c7@gmail.com>
+ <ce0c5ffb-f859-0eab-1ea5-044623dff221@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a2b8169c-c4a3-4862-cd27-8c1a51ddc558@gmail.com>
+Date:   Fri, 17 Jul 2020 02:01:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <ce0c5ffb-f859-0eab-1ea5-044623dff221@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the flush file operation instead of the release operation to commit
-the prior writes to a configfs binary file. This allows any error
-status from the commit to be returned as the status of the close.
+17.07.2020 01:49, Sowjanya Komatineni пишет:
+>> What keeps MIPI clock enabled after completion of the
+>> tegra_mipi_calibrate() invocation?
+> 
+> MIPI clock is disabled at end of tegra_mipi_calibrate and is re-enabled
+> during tegra_mipi_wait.
+> 
+> I think I should fix this to keep the clock enabled till calibration
+> results are latched.
+> 
+> All consumers of tegra_mipi_calibrate() will call tegra_mipi_wait().
+> 
+> So will remove clk_disable mipi clk at end of tegra_mipi_calibrate() and
+> clk_enable mipi_clk at beginning of tegra_mipi_wait()
 
-Both flush and release are invoked during a close, but the status from
-release is ignored by the file system layer because the release operation
-is not supposed to fail.
-
-For example, prior to this change no error is returned to user space
-when acpi_configfs correctly fails a write that attempts to commit an
-ACPI aml configfs binary file when kernel lockdown is in effect.
-This patch allows an error status to get returned to user space instead
-of a misleading success status.
-
-Note that during a close, release is only called on the last reference to
-the specified file struct whereas flush is called on every close.
-Therefore, to preserve the prior behavior, configfs_flush_bin_file()
-doesn't commit the prior writes if there are still multiple references.
-Additionally, since configfs does not support the fsync file operation,
-a configfs flush only occurs in the context of a close. This makes it
-safe to move the commit from release to flush.
-
-Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
----
- fs/configfs/file.c | 32 ++++++++++++++++++++++++++------
- 1 file changed, 26 insertions(+), 6 deletions(-)
-
-diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-index fb65b706cc0d..df0a76f7e62b 100644
---- a/fs/configfs/file.c
-+++ b/fs/configfs/file.c
-@@ -466,9 +466,28 @@ static int configfs_open_bin_file(struct inode *inode, struct file *filp)
- 	return __configfs_open_file(inode, filp, CONFIGFS_ITEM_BIN_ATTR);
- }
- 
--static int configfs_release_bin_file(struct inode *inode, struct file *file)
-+/**
-+ *	configfs_flush_bin_file - flush a binary attribute.
-+ *	@file:	file pointer
-+ *	@id:	pointer to files_struct
-+ *
-+ *	Flush is called during close and commits the buffered binary
-+ *	writes when there are no more shared references to this file
-+ *	struct.
-+ *
-+ *	Any error returned from the flush will be reflected in the
-+ *	return value from the close.
-+ */
-+
-+static int configfs_flush_bin_file(struct file *file, fl_owner_t id)
- {
- 	struct configfs_buffer *buffer = file->private_data;
-+	ssize_t len;
-+	int ret = 0;
-+
-+	/* Only commit the data if no more shared refs to file */
-+	if (file_count(file) > 1)
-+		return 0;
- 
- 	buffer->read_in_progress = false;
- 
-@@ -478,10 +497,11 @@ static int configfs_release_bin_file(struct inode *inode, struct file *file)
- 
- 		down_read(&frag->frag_sem);
- 		if (!frag->frag_dead) {
--			/* result of ->release() is ignored */
--			buffer->bin_attr->write(buffer->item,
-+			len = buffer->bin_attr->write(buffer->item,
- 					buffer->bin_buffer,
- 					buffer->bin_buffer_size);
-+			if (len < 0)
-+				ret = len;
- 		}
- 		up_read(&frag->frag_sem);
- 		/* vfree on NULL is safe */
-@@ -491,8 +511,7 @@ static int configfs_release_bin_file(struct inode *inode, struct file *file)
- 		buffer->needs_read_fill = 1;
- 	}
- 
--	configfs_release(inode, file);
--	return 0;
-+	return ret;
- }
- 
- 
-@@ -509,7 +528,8 @@ const struct file_operations configfs_bin_file_operations = {
- 	.write		= configfs_write_bin_file,
- 	.llseek		= NULL,		/* bin file is not seekable */
- 	.open		= configfs_open_bin_file,
--	.release	= configfs_release_bin_file,
-+	.flush		= configfs_flush_bin_file,
-+	.release	= configfs_release,
- };
- 
- /**
--- 
-2.27.0
-
+Isn't it possible to perform the calibration after enabling CSI and
+before of starting the sensor streaming?
