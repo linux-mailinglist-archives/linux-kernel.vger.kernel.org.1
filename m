@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583F5221D4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481F8221D4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728390AbgGPHXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:23:44 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:60000 "EHLO
+        id S1728409AbgGPHXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:23:47 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:60003 "EHLO
         mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728262AbgGPHXl (ORCPT
+        with ESMTP id S1728318AbgGPHXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Jul 2020 03:23:41 -0400
 Received: from Internal Mail-Server by MTLPINE1 (envelope-from eli@mellanox.com)
         with SMTP; 16 Jul 2020 10:23:35 +0300
 Received: from nps-server-21.mtl.labs.mlnx (nps-server-21.mtl.labs.mlnx [10.237.240.120])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06G7NYoE006454;
-        Thu, 16 Jul 2020 10:23:34 +0300
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06G7NZTR006458;
+        Thu, 16 Jul 2020 10:23:35 +0300
 Received: from nps-server-21.mtl.labs.mlnx (localhost [127.0.0.1])
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 06G7NYY4005412;
-        Thu, 16 Jul 2020 10:23:34 +0300
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 06G7NZ1E005414;
+        Thu, 16 Jul 2020 10:23:35 +0300
 Received: (from eli@localhost)
-        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 06G7NYRq005411;
-        Thu, 16 Jul 2020 10:23:34 +0300
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 06G7NZms005413;
+        Thu, 16 Jul 2020 10:23:35 +0300
 From:   Eli Cohen <eli@mellanox.com>
 To:     mst@redhat.com, jasowang@redhat.com,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
 Cc:     shahafs@mellanox.com, saeedm@mellanox.com
-Subject: [PATCH vhost next 01/10] vhost-vdpa: support batch updating
-Date:   Thu, 16 Jul 2020 10:23:18 +0300
-Message-Id: <20200716072327.5359-2-eli@mellanox.com>
+Subject: [PATCH vhost next 02/10] vdpa_sim: use the batching API
+Date:   Thu, 16 Jul 2020 10:23:19 +0300
+Message-Id: <20200716072327.5359-3-eli@mellanox.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200716072327.5359-1-eli@mellanox.com>
 References: <20200716072327.5359-1-eli@mellanox.com>
@@ -43,87 +43,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jason Wang <jasowang@redhat.com>
 
-Change-Id: Ifd7139cfbd122dc22493f4bb93fa884f8edbddb6
+Change-Id: I3751f1aecce285e0f61530c69616852d49e5f547
 Signed-off-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/vhost/vdpa.c             | 23 +++++++++++++++++------
- include/uapi/linux/vhost_types.h |  2 ++
- 2 files changed, 19 insertions(+), 6 deletions(-)
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 20 --------------------
+ drivers/vhost/vdpa.c             |  1 -
+ 2 files changed, 21 deletions(-)
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index a54b60d6623f..8827ae31f96d 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -73,6 +73,7 @@ struct vhost_vdpa {
- 	int virtio_id;
- 	int minor;
- 	struct eventfd_ctx *config_ctx;
-+	bool in_batch;
- };
- 
- static DEFINE_IDA(vhost_vdpa_ida);
-@@ -521,9 +522,9 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
- 
- 	if (ops->dma_map)
- 		r = ops->dma_map(vdpa, iova, size, pa, perm);
--	else if (ops->set_map)
--		r = ops->set_map(vdpa, dev->iotlb);
--	else
-+	else if (ops->set_map) {
-+
-+	} else
- 		r = iommu_map(v->domain, iova, pa, size,
- 			      perm_to_iommu_flags(perm));
- 
-@@ -540,9 +541,8 @@ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
- 
- 	if (ops->dma_map)
- 		ops->dma_unmap(vdpa, iova, size);
--	else if (ops->set_map)
--		ops->set_map(vdpa, dev->iotlb);
--	else
-+	else if (ops->set_map) {
-+	} else
- 		iommu_unmap(v->domain, iova, size);
+diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+index c7334cc65bb2..82d1068af3ef 100644
+--- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
++++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+@@ -548,24 +548,6 @@ static int vdpasim_set_map(struct vdpa_device *vdpa,
+ 	return ret;
  }
  
-@@ -636,6 +636,8 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
- 					struct vhost_iotlb_msg *msg)
+-static int vdpasim_dma_map(struct vdpa_device *vdpa, u64 iova, u64 size,
+-			   u64 pa, u32 perm)
+-{
+-	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+-
+-	return vhost_iotlb_add_range(vdpasim->iommu, iova,
+-				     iova + size - 1, pa, perm);
+-}
+-
+-static int vdpasim_dma_unmap(struct vdpa_device *vdpa, u64 iova, u64 size)
+-{
+-	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+-
+-	vhost_iotlb_del_range(vdpasim->iommu, iova, iova + size - 1);
+-
+-	return 0;
+-}
+-
+ static void vdpasim_free(struct vdpa_device *vdpa)
  {
- 	struct vhost_vdpa *v = container_of(dev, struct vhost_vdpa, vdev);
-+	struct vdpa_device *vdpa = v->vdpa;
-+	const struct vdpa_config_ops *ops = vdpa->config;
- 	int r = 0;
- 
- 	r = vhost_dev_check_owner(dev);
-@@ -649,6 +651,15 @@ static int vhost_vdpa_process_iotlb_msg(struct vhost_dev *dev,
- 	case VHOST_IOTLB_INVALIDATE:
- 		vhost_vdpa_unmap(v, msg->iova, msg->size);
- 		break;
-+	case VHOST_IOTLB_BATCH_BEGIN:
-+		v->in_batch = true;
-+		break;
-+	case VHOST_IOTLB_BATCH_END:
-+		if (v->in_batch && ops->set_map) {
-+			ops->set_map(vdpa, dev->iotlb);
-+		}
-+		v->in_batch = false;
-+		break;
- 	default:
- 		r = -EINVAL;
- 		break;
-diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_types.h
-index 669457ce5c48..7f52245f8d5d 100644
---- a/include/uapi/linux/vhost_types.h
-+++ b/include/uapi/linux/vhost_types.h
-@@ -60,6 +60,8 @@ struct vhost_iotlb_msg {
- #define VHOST_IOTLB_UPDATE         2
- #define VHOST_IOTLB_INVALIDATE     3
- #define VHOST_IOTLB_ACCESS_FAIL    4
-+#define VHOST_IOTLB_BATCH_BEGIN    5
-+#define VHOST_IOTLB_BATCH_END      6
- 	__u8 type;
+ 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+@@ -598,8 +580,6 @@ static const struct vdpa_config_ops vdpasim_net_config_ops = {
+ 	.set_config             = vdpasim_set_config,
+ 	.get_generation         = vdpasim_get_generation,
+ 	.set_map                = vdpasim_set_map,
+-	.dma_map                = vdpasim_dma_map,
+-	.dma_unmap              = vdpasim_dma_unmap,
+ 	.free                   = vdpasim_free,
  };
+ 
+diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+index 8827ae31f96d..65195b30133b 100644
+--- a/drivers/vhost/vdpa.c
++++ b/drivers/vhost/vdpa.c
+@@ -533,7 +533,6 @@ static int vhost_vdpa_map(struct vhost_vdpa *v,
+ 
+ static void vhost_vdpa_unmap(struct vhost_vdpa *v, u64 iova, u64 size)
+ {
+-	struct vhost_dev *dev = &v->vdev;
+ 	struct vdpa_device *vdpa = v->vdpa;
+ 	const struct vdpa_config_ops *ops = vdpa->config;
  
 -- 
 2.27.0
