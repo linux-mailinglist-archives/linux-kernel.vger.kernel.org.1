@@ -2,64 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682A7222D5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74515222D5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbgGPVGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 17:06:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgGPVGF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 17:06:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC85C061755;
-        Thu, 16 Jul 2020 14:06:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=97Vb3ATwIinLeyNU+ffoxlcz4EFi0R63Q1SkJc6H6p4=; b=We2uPn5NrJcfOM7pBBgSN3ww9e
-        lCAo0oiIysNi0p6TlBi8cRG351VfGXXjX3rAOl7pOiKOSVWt+DOKn+ILQxK3iM1PJ6SD27rEejTz0
-        Nd4LgC6aRVtX7HnRHnpcRI8jiCSSRCk0nOM/9s8RLEA+qF6l33rbGJyfYsJEHkF9wXL1d1ADUxbTT
-        /a4BroaC26YXa89MdHmUgQ/xXWk+m0K1gjIXv1wTwfXSkzGwf1r6lekyLqBKUMG1TGrNe2HnCq3t8
-        E3Bht6snrABBB2+1XSZweylW1kZLZdojpMa/Evhn9m9eLrtj7EbuPHx5gU/dHhMwDUpe2FHpEKjFA
-        Wnlyrahg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jwB4r-0007Wt-55; Thu, 16 Jul 2020 21:06:01 +0000
-Date:   Thu, 16 Jul 2020 22:06:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, luto@kernel.org, gofmanp@gmail.com,
-        keescook@chromium.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org
-Subject: Re: [PATCH v4 1/2] kernel: Implement selective syscall userspace
- redirection
-Message-ID: <20200716210601.GN12769@casper.infradead.org>
-References: <20200716193141.4068476-1-krisman@collabora.com>
- <20200716193141.4068476-2-krisman@collabora.com>
+        id S1726622AbgGPVGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 17:06:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbgGPVGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 17:06:04 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAA47207DD;
+        Thu, 16 Jul 2020 21:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594933564;
+        bh=0OGp5jt38BwSDYZlDxWMbGbrMFb7svBskFO9ftJ6/ws=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VYsCV73wVHMIzzLWtsqvUDlmUNY2qbo+diEhcLImfD+6+HhNdnsM2cyt8sPG4oAc2
+         cjYwDgbfqEKMiokfkxCUsUpQX4c8F8M38E1OvRjFjtxXQCgem5FGuWUHX6O3oRJGpf
+         8gftfLx7jQ3poOuMew58AXhuQHe5UoVpbdxpVMRs=
+Date:   Thu, 16 Jul 2020 14:06:02 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sergey Organov <sorganov@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fugang Duan <fugang.duan@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Subject: Re: [PATCH v3 net] net: fec: fix hardware time stamping by external
+ devices
+Message-ID: <20200716140602.2a23530b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <87a6zz9owa.fsf@osv.gnss.ru>
+References: <20200706142616.25192-1-sorganov@gmail.com>
+        <20200714162802.11926-1-sorganov@gmail.com>
+        <20200716112432.127b9d99@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <87a6zz9owa.fsf@osv.gnss.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716193141.4068476-2-krisman@collabora.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 03:31:40PM -0400, Gabriel Krisman Bertazi wrote:
-> selector is an optional pointer to a char-sized userspace memory region
-> that has a key switch for the mechanism. This key switch is set to
-> either PR_SYS_DISPATCH_ON, PR_SYS_DISPATCH_OFF to enable and disable the
-> redirection without calling the kernel.
+On Thu, 16 Jul 2020 23:38:13 +0300 Sergey Organov wrote:
+> > Applied, and added to the stable queue, thanks!  
 > 
-> The feature is meant to be set per-thread and it is disabled on
-> fork/clone/execv.
+> Thanks, and I've also got a no-brainer patch that lets this bug fix
+> compile as-is with older kernels, where there were no phy_has_hwtstamp()
+> function. Dunno how to properly handle this. Here is the patch (on
+> top of v4.9.146), just in case:
 
-Disabled on exec.  Disabled in the child on clone/fork (and vfork, I
-think).
-
-That means we don't need to worry about it interacting badly with
-a setuid program, right?
-
+I see, I'll only add it to 5.7. By default we backport net fixes to
+the two most recent releases, anyway. Could you send a patch that will 
+work on 4.4 or 4.9 - 5.4 to Greg yourself once this hits Linus's tree
+in a week or two?
