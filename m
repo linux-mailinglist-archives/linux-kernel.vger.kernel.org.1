@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687B0221CA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E38221CA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 08:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728162AbgGPGav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 02:30:51 -0400
-Received: from mga14.intel.com ([192.55.52.115]:24842 "EHLO mga14.intel.com"
+        id S1728100AbgGPGds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 02:33:48 -0400
+Received: from a.mx.secunet.com ([62.96.220.36]:39252 "EHLO a.mx.secunet.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728146AbgGPGat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 02:30:49 -0400
-IronPort-SDR: 5hBZWjTGUzeR9qnNkEqaHGZZVHTOTrXwdf5gQ3jHGJ1Giqp8TYlYFjN1Io+8nHmSInxKL8Jumw
- qjTBI09CyMAQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9683"; a="148477556"
-X-IronPort-AV: E=Sophos;i="5.75,358,1589266800"; 
-   d="scan'208";a="148477556"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2020 23:30:48 -0700
-IronPort-SDR: IXfBYcJ4VYSqSdGo8dunD4PiIUt7RfnjhdDq6U4jmS7cf+LPEc6GdkJY81Zl6enggmgV3qBMIR
- 3Gl+OG+FS8hg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,358,1589266800"; 
-   d="scan'208";a="269162527"
-Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
-  by fmsmga007.fm.intel.com with ESMTP; 15 Jul 2020 23:30:46 -0700
-From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
-To:     sboyd@kernel.org, mturquette@baylibre.com,
-        linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
-        qi-ming.wu@intel.com, yixin.zhu@linux.intel.com,
-        cheol.yong.kim@intel.com, rahul.tanwar.linux@gmail.com,
-        Rahul Tanwar <rahul.tanwar@linux.intel.com>
-Subject: [PATCH v2 3/3] clk: intel: Avoid unnecessary memset by improving code
-Date:   Thu, 16 Jul 2020 14:30:32 +0800
-Message-Id: <26624b65d0e6b958c4765a406b9929d1a9ce1c2c.1594880946.git.rahul.tanwar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <7ef7009b4e9f986fd6dfbf487c0e85de68a4ba9b.1594880946.git.rahul.tanwar@linux.intel.com>
-References: <7ef7009b4e9f986fd6dfbf487c0e85de68a4ba9b.1594880946.git.rahul.tanwar@linux.intel.com>
-In-Reply-To: <7ef7009b4e9f986fd6dfbf487c0e85de68a4ba9b.1594880946.git.rahul.tanwar@linux.intel.com>
-References: <7ef7009b4e9f986fd6dfbf487c0e85de68a4ba9b.1594880946.git.rahul.tanwar@linux.intel.com>
+        id S1726069AbgGPGds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 02:33:48 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id BB275200A7;
+        Thu, 16 Jul 2020 08:33:46 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id XQqA6EdDHMjd; Thu, 16 Jul 2020 08:33:46 +0200 (CEST)
+Received: from cas-essen-01.secunet.de (201.40.53.10.in-addr.arpa [10.53.40.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 58F5220536;
+        Thu, 16 Jul 2020 08:33:46 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 16 Jul 2020 08:33:46 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 16 Jul
+ 2020 08:33:45 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id A01DD3180222; Thu, 16 Jul 2020 08:33:45 +0200 (CEST)
+Date:   Thu, 16 Jul 2020 08:33:45 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Xin Long <lucien.xin@gmail.com>
+CC:     syzbot <syzbot+ea9832f8ae588deb0205@syzkaller.appspotmail.com>,
+        davem <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Jakub Kicinski" <kuba@kernel.org>, kuznet <kuznet@ms2.inr.ac.ru>,
+        LKML <linux-kernel@vger.kernel.org>,
+        network dev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        yoshfuji <yoshfuji@linux-ipv6.org>
+Subject: Re: KASAN: slab-out-of-bounds Read in __xfrm6_tunnel_spi_lookup
+Message-ID: <20200716063345.GX20687@gauss3.secunet.de>
+References: <0000000000003011fb05aa59df1e@google.com>
+ <20200714093718.GQ20687@gauss3.secunet.de>
+ <CADvbK_c3AGXDUr5_h5-JzcMowUJ4SZ5euyneAebssHjaKVx50A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CADvbK_c3AGXDUr5_h5-JzcMowUJ4SZ5euyneAebssHjaKVx50A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-memset can be avoided in a loop if the variables used are declared
-inside the loop. Move such variables declaration inside the loop
-to avoid memset.
+On Wed, Jul 15, 2020 at 05:18:36PM +0800, Xin Long wrote:
+> Hi, Steffen,
+> 
+> I've confirmed the patchset I posted yesterday would fix this:
+> 
+> [PATCH ipsec-next 0/3] xfrm: not register one xfrm(6)_tunnel object twice
 
-Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
----
- drivers/clk/x86/clk-cgu.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/clk/x86/clk-cgu.c b/drivers/clk/x86/clk-cgu.c
-index c379fedfb9f2..9a1be7035fd0 100644
---- a/drivers/clk/x86/clk-cgu.c
-+++ b/drivers/clk/x86/clk-cgu.c
-@@ -581,19 +581,18 @@ int lgm_clk_register_ddiv(struct lgm_clk_provider *ctx,
- 			  unsigned int nr_clk)
- {
- 	struct device *dev = ctx->dev;
--	struct clk_init_data init = {};
--	struct lgm_clk_ddiv *ddiv;
- 	struct clk_hw *hw;
- 	unsigned int idx;
- 	int ret;
- 
- 	for (idx = 0; idx < nr_clk; idx++, list++) {
--		ddiv = NULL;
-+		struct clk_init_data init = {};
-+		struct lgm_clk_ddiv *ddiv = NULL;
-+
- 		ddiv = devm_kzalloc(dev, sizeof(*ddiv), GFP_KERNEL);
- 		if (!ddiv)
- 			return -ENOMEM;
- 
--		memset(&init, 0, sizeof(init));
- 		init.name = list->name;
- 		init.ops = &lgm_clk_ddiv_ops;
- 		init.flags = list->flags;
--- 
-2.11.0
-
+Thanks for the confirmation! That patchset is now applied
+to ipsec-next.
