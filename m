@@ -2,115 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC145221D43
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5763221D4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 09:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgGPHXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 03:23:23 -0400
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:39157 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726069AbgGPHXW (ORCPT
+        id S1728399AbgGPHXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 03:23:45 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:59998 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728332AbgGPHXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 03:23:22 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id vyEcjTVy0yPEdvyEgj3GW2; Thu, 16 Jul 2020 09:23:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1594884199; bh=VSXAybE9aorsGhHWcD4kPLlmmss3u6qmIv6iB6zxOuw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=eEpd37B6zIN93WW+VPbMQ65FzbCxnCS9oCwJgQxdURnEMvHrQftmKUkyZXUrFBMqJ
-         KVkaycysoknaY86Aj+krfkW3fCUTtXTKWib7coOH/4rmYwdEvA4DFlTTeY5J0sjpdw
-         +hbxl+xEGH0zFo3W2uieDNuGLBFTr87p7vp6u4Z/1XZHCLBr3Bhv5xy+ERCNa6EY8j
-         vynrBfoEvinr8n2wm+737OeD00uiyTz3QtQvd4OBJkrjZiVZaAPHlXoo3ycko/RHQn
-         79x/9CKLTk5i7OIzFyqjrd2sP/LEgMp9slM4xPlUzIH2wyEdCE/2da8PEEc2CBkdL6
-         /Q8oN3AkuLx5g==
-Subject: Re: [PATCH 02/10] media: uapi: h264: Further clarify scaling lists
- order
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-References: <20200715202233.185680-1-ezequiel@collabora.com>
- <20200715202233.185680-3-ezequiel@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <bfb5d0df-779f-78d2-fc48-3c6056f5fdd3@xs4all.nl>
-Date:   Thu, 16 Jul 2020 09:23:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 16 Jul 2020 03:23:41 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from eli@mellanox.com)
+        with SMTP; 16 Jul 2020 10:23:34 +0300
+Received: from nps-server-21.mtl.labs.mlnx (nps-server-21.mtl.labs.mlnx [10.237.240.120])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 06G7NY5M006447;
+        Thu, 16 Jul 2020 10:23:34 +0300
+Received: from nps-server-21.mtl.labs.mlnx (localhost [127.0.0.1])
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7) with ESMTP id 06G7NYbG005410;
+        Thu, 16 Jul 2020 10:23:34 +0300
+Received: (from eli@localhost)
+        by nps-server-21.mtl.labs.mlnx (8.14.7/8.14.7/Submit) id 06G7NYEB005409;
+        Thu, 16 Jul 2020 10:23:34 +0300
+From:   Eli Cohen <eli@mellanox.com>
+To:     mst@redhat.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     shahafs@mellanox.com, saeedm@mellanox.com,
+        Eli Cohen <eli@mellanox.com>
+Subject: [PATCH vhost next 00/10] VDPA support for Mellanox ConnectX devices
+Date:   Thu, 16 Jul 2020 10:23:17 +0300
+Message-Id: <20200716072327.5359-1-eli@mellanox.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-In-Reply-To: <20200715202233.185680-3-ezequiel@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfImMhQ7c+BIsZ9AqMnePPQ/AN5ldCv/cinMIdByxFnEhoK5ohC0mMuhrKNMvYEhs5lHor2olkGMhT8MkOEh0z1wsu+aCLpqcr8y+5EToYgRDDRvMRCrF
- bux0cEc1KTIcXF9D5bSeUrVsT5yKrZzh4kN1+yp+Dl7/NZ9mwqMKTZr+UkMIkcPnGNucILOeBVws+6rOrUEIg/tx9nzs4XbZPDFnTe9KOKZLRg2kSD6g/BZr
- oIqlPOZgJDF72FqixedYcW1D/A0RaI8FwDoS0zcxVs0ZwxRpn2WCkaS0hxv0KeXsN3oeS1Ey6d4IfGxiX8/6adVf9O3fOiV69kuZA1/PKFOSRgTR5wjPBw2F
- PRvcjSMQBq9N2gNGL0meVLe2wwt1go92kSiKan19DNioRXxZPAOcE86cwxiLN98NWfPcfZJsIAbVulu8R5YJuwsgYZWt0PVkt6C2ih+sqhwLmne0wf/2iGnY
- 5G4g9ooZQWLYqMwg9HsmNcZ5GT87ohIzpMvx8ITZlnJhFoO/+vEZnV6gaqfyaGsiL0hfEuweU8GZD0PGR4USTclb+OAg7enbl+Wa3A==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/07/2020 22:22, Ezequiel Garcia wrote:
-> Commit 0b0393d59eb4a ("media: uapi: h264: clarify
-> expected scaling_list_4x4/8x8 order") improved the
-> documentation on H264 scaling lists order.
-> 
-> This commit improves the documentation by clarifying
-> that the lists themselves are expected in matrix order.
+Hi Michael,
+please note that this series depends on mlx5 core device driver patches
+in mlx5-next branch in
+git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git.
 
-"matrix order" is not a well defined term. Especially since different
-programming languages lay out matrices differently (e.g. fortran uses
-column-major order). Perhaps something like this is more unambiguous:
+git pull git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next 
 
-"The values on each scaling list are in row-major order."
+They also depend Jason Wang's patches submitted a couple of weeks ago. I
+included them in this series.
 
-BTW, why not be explicit and use:
+vdpa_sim: use the batching API
+vhost-vdpa: support batch updating
 
-__u8 scaling_list_4x4[6][4][4];
-__u8 scaling_list_8x8[6][8][8];
 
-That makes it explicit and the order is just that of what the C language
-uses.
+The following series of patches provide VDPA support for Mellanox
+devices. The supported devices are ConnectX6 DX and newer.
 
-Regards,
+Currently, only a network driver is implemented; future patches will
+introduce a block device driver. iperf performance on a single queue is
+around 12 Gbps.  Future patches will introduce multi queue support.
 
-	Hans
+The files are organized in such a way that code that can be used by
+different VDPA implementations will be placed in a common are resides in
+drivers/vdpa/mlx5/core.
 
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> ---
->  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index c2e17c02f77e..16bfc98ab2f6 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -1725,12 +1725,14 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
->        - ``scaling_list_4x4[6][16]``
->        - Scaling matrix after applying the inverse scanning process.
->          Expected list order is Intra Y, Intra Cb, Intra Cr, Inter Y,
-> -        Inter Cb, Inter Cr.
-> +        Inter Cb, Inter Cr. The values on each scaling list are
-> +        expected in matrix order.
->      * - __u8
->        - ``scaling_list_8x8[6][64]``
->        - Scaling matrix after applying the inverse scanning process.
->          Expected list order is Intra Y, Inter Y, Intra Cb, Inter Cb,
-> -        Intra Cr, Inter Cr.
-> +        Intra Cr, Inter Cr. The values on each scaling list are
-> +        expected in matrix order.
->  
->  ``V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS (struct)``
->      Specifies the slice parameters (as extracted from the bitstream)
-> 
+Only virtual functions are currently supported. Also, certain firmware
+capabilities must be set to enable the driver. Physical functions (PFs)
+are skipped by the driver.
+
+To make use of the VDPA net driver, one must load mlx5_vdpa. In such
+case, VFs will be operated by the VDPA driver. Although one can see a
+regular instance of a network driver on the VF, the VDPA driver takes
+precedence over the NIC driver, steering-wize.
+
+Currently, the device/interface infrastructure in mlx5_core is used to
+probe drivers. Future patches will introduce virtbus as a means to
+register devices and drivers and VDPA will be adapted to it.
+
+The mlx5 mode of operation required to support VDPA is switchdev mode.
+Once can use Linux or OVS bridge to take care of layer 2 switching.
+
+In order to provide virtio networking to a guest, an updated version of
+qemu is required. This version has been tested by the following quemu
+version:
+
+url: https://github.com/jasowang/qemu.git
+branch: vdpa
+Commit ID: 6f4e59b807db
+
+Eli Cohen (7):
+  net/vdpa: Use struct for set/get vq state
+  vhost: Fix documentation
+  vdpa: Add means to communicate vq status on get_vq_state
+  vdpa/mlx5: Add hardware descriptive header file
+  vdpa/mlx5: Add support library for mlx5 VDPA implementation
+  vdpa/mlx5: Add shared memory registration code
+  vdpa/mlx5: Add VDPA driver for supported mlx5 devices
+
+Jason Wang (2):
+  vhost-vdpa: support batch updating
+  vdpa_sim: use the batching API
+
+Max Gurtovoy (1):
+  vdpa: remove hard coded virtq num
+
+ drivers/vdpa/Kconfig                   |   18 +
+ drivers/vdpa/Makefile                  |    1 +
+ drivers/vdpa/ifcvf/ifcvf_base.c        |    4 +-
+ drivers/vdpa/ifcvf/ifcvf_base.h        |    4 +-
+ drivers/vdpa/ifcvf/ifcvf_main.c        |   13 +-
+ drivers/vdpa/mlx5/Makefile             |    4 +
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h     |   89 ++
+ drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h |  168 ++
+ drivers/vdpa/mlx5/core/mr.c            |  473 ++++++
+ drivers/vdpa/mlx5/core/resources.c     |  284 ++++
+ drivers/vdpa/mlx5/net/main.c           |   76 +
+ drivers/vdpa/mlx5/net/mlx5_vnet.c      | 1966 ++++++++++++++++++++++++
+ drivers/vdpa/mlx5/net/mlx5_vnet.h      |   32 +
+ drivers/vdpa/vdpa.c                    |    3 +
+ drivers/vdpa/vdpa_sim/vdpa_sim.c       |   35 +-
+ drivers/vhost/iotlb.c                  |    4 +-
+ drivers/vhost/vdpa.c                   |   43 +-
+ include/linux/vdpa.h                   |   33 +-
+ include/uapi/linux/vhost_types.h       |    2 +
+ 19 files changed, 3193 insertions(+), 59 deletions(-)
+ create mode 100644 drivers/vdpa/mlx5/Makefile
+ create mode 100644 drivers/vdpa/mlx5/core/mlx5_vdpa.h
+ create mode 100644 drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h
+ create mode 100644 drivers/vdpa/mlx5/core/mr.c
+ create mode 100644 drivers/vdpa/mlx5/core/resources.c
+ create mode 100644 drivers/vdpa/mlx5/net/main.c
+ create mode 100644 drivers/vdpa/mlx5/net/mlx5_vnet.c
+ create mode 100644 drivers/vdpa/mlx5/net/mlx5_vnet.h
+
+-- 
+2.27.0
 
