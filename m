@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6218B222577
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FF722257E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728562AbgGPO2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:28:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47544 "EHLO
+        id S1728651AbgGPO24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728084AbgGPO2U (ORCPT
+        with ESMTP id S1728054AbgGPO24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 10:28:20 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7A0C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:28:19 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id y13so3372835lfe.9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:28:19 -0700 (PDT)
+        Thu, 16 Jul 2020 10:28:56 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B1AC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:28:55 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 22so10499315wmg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8z5jVj0dStGocFUNAEWnetN1Y7eNdK3d0AYJ2HaWYpg=;
-        b=obEan/jtTHl0udOXHPR3KmPT44fbc0xUj31hTcpD//hyUGJUo81vOrGp3s283u40T1
-         +qx/p4WjECHNx0owRE2krlth8/ZwxMnWsqxm3kOLnSPpUXtrxBGdDPOb85rjIShvDPTY
-         y1Kkvd6voK4s7xyTce53xenzUbxCnYvr5MnUF3r/QUX9tqP6CRCIK1WZvGZKnjURvtkD
-         lBkPWQnsLJpo4BwQYoKapbk8y06OaXZGnBv79TP8RJuOOXmcgkWMZEHn8lfN9UGcu38a
-         r20Hp3VmyT0dPMPN9GUdee/eU0E0Nu+BqwP2vGnJ0SXrosdffcUs8QdJhwJodn7wIEZ3
-         Qhug==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6JRMdst6t7X7TTp06c6DTXphcwzBl33/L2DKEvEWMHo=;
+        b=G4oAcF1WPTVdBIfQ6w4eXULeQ2T9EmAs2gdHdIkD85BVqmrgSroOjiHjaFRsNv+ONM
+         11SpMBLH/32DcLe9/3OQXSFB+QpMyeh4A85hOTFlfBLndrUMQsln2TLZb+JGTaqqXxwW
+         +nzB3p7n7MfL+bs62aknL2LPN3THFvneyLQNSNP6r2AdyEAxBS0ccFGXCF+90nu8kPVB
+         e7oJqVZly8pPKFcbyYVTz83UsmhekrwEWFp4gtJS3xKSKtZuefKVn5dnPQrKK5z12g8W
+         RDlsa0GC5XuWSi8r/5uXG0jkIlJwEjipOecoOCQ1Qfj8ZgU76eHA/fcSA1kHagm1A2sU
+         BqvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8z5jVj0dStGocFUNAEWnetN1Y7eNdK3d0AYJ2HaWYpg=;
-        b=d8f5FrmDOvAGU2ilfy707wxM8L1vgv5z0X0kG2j4keiWcIUwkoM09JYjRoBrA7RuBO
-         +ZQTihQvY/Ccaiyzfxeumz8NaahfGWnODxDNwIVyQ3/1LAEWMiLn7nYqyhE7FIS9PNW7
-         p75L7mp3PI5RNZPAc95jC8W9BTIfJPqZWqTGzJONKKSJFt1OZlBA4KBP7h1m5cu5ju4U
-         wDPlItrZbXd6bbdEz6gYWrRJnXugzE4c7Yn2PwAqVMWa9YrmMPfCn4jMPa/Ff/AKftRR
-         k78zF20G2c/Jm45OgfE3YJ+wHK56NAB/hJsQFs3+nsOqubSyMg/7f8KJAC/WvELNMitJ
-         +jNw==
-X-Gm-Message-State: AOAM531OnpKvUpjoytfZ5qz9Ut4lAoc7ehAsk9OEjtnd88Vr+Ha/86h6
-        8HxzcDad1g4+irFbLISxgRFk6oQNJ9P+d+k29T4FdA==
-X-Google-Smtp-Source: ABdhPJzJFvr5vBcuV9MJ+9cegE1/UH2yId/s/8BzF3bEwGOIeUu86iS1G6nyjne+JIuplPRlLlDEGTnH0/RZ7D4ZA8M=
-X-Received: by 2002:a19:c797:: with SMTP id x145mr2250613lff.143.1594909698207;
- Thu, 16 Jul 2020 07:28:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6JRMdst6t7X7TTp06c6DTXphcwzBl33/L2DKEvEWMHo=;
+        b=F8jWSwo+G7MkPhM/jbWY30CUgKSBYzjuYUu7gPlXhch/M80w/evddjWiMUi97Ji2ZW
+         GvGWjbWSJGp86Hnw9rGbTiBmmUQVRWcbNAFuvh2m2RrC19z6FBsG1PWU9CAr91mY21ME
+         jpbLrWqzHdpn34I7zq4nq1dKuF9MY3eMMtofbLPQgJMC58WWNjp06PezfyevKAbU047e
+         Q4z3Z8dLNO38MtkDwJBbg6QBXoveUiDTlIxcTV55BjHFC2y0O0R91ek9rX45WSIDSJ7l
+         NncppHkGYpRDi17y2L5wH+Bugiz6wyVpyXLGpTiTnQTxceTZVkSDiJFHXnkCBuYA8YF0
+         H8AA==
+X-Gm-Message-State: AOAM532u1eJfU+R1DIbuWEsp2p7gtZ7RUw91VoQRRnLkcdz6z5tAaFwY
+        /mppZgnHMDzyezl/Sga0P2tH6w==
+X-Google-Smtp-Source: ABdhPJyHD8zrYi+EFetvc8uxd6vCIsnhmVFTMZ1dM9PRcghcTi/sTsarwrSdkE7Ex8nZ31dAkNCURg==
+X-Received: by 2002:a05:600c:204d:: with SMTP id p13mr4584426wmg.88.1594909734319;
+        Thu, 16 Jul 2020 07:28:54 -0700 (PDT)
+Received: from localhost.localdomain ([2.31.163.61])
+        by smtp.gmail.com with ESMTPSA id 59sm9749215wrj.37.2020.07.16.07.28.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 07:28:53 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] mfd: core: Fix memory leak of 'cell'
+Date:   Thu, 16 Jul 2020 15:28:51 +0100
+Message-Id: <20200716142851.1669946-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200716141747.wewrnejrygosqhd5@pesu-pes-edu> <20200716142537.GA2176745@kroah.com>
-In-Reply-To: <20200716142537.GA2176745@kroah.com>
-From:   B K Karthik <bkkarthik@pesu.pes.edu>
-Date:   Thu, 16 Jul 2020 10:28:06 -0400
-Message-ID: <CAAhDqq3EeWGOJHaW37iQN5UgmvTf3AP10fhrVdJ5GuYjBt8f3w@mail.gmail.com>
-Subject: Re: [PATCH v3] staging: comedi: comedi_fops.c: added casts to get rid
- of sparse warnings
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Michel Lespinasse <walken@google.com>,
-        Divyansh Kamboj <kambojdivyansh2000@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 10:25 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Jul 16, 2020 at 10:17:47AM -0400, B K Karthik wrote:
-> > fixed sparse warnings by adding a cast in assignment from
-> > void [noderef] __user * to unsigned int __force *
-> > and a reverse cast in argument from
-> > unsigned int * to  unsigned int __user * .
-> >
-> > Signed-off-by: B K Karthik <karthik.bk2000@live.com>
-> > ---
-> >  drivers/staging/comedi/comedi_fops.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> What changed from previous versions?
+When creating a platform device from an MFD cell description, we
+allocate some memory and make a copy which is then stored inside the
+platform_device's structure.  However, care is not currently taken to
+free the allocated memory when the platform device is torn down.
 
-As Ian Abbott said "Minor quibble: the reverse cast is actually from
-unsigned int * to"
+This patch takes care of the leak.
 
-Hence this is a change in the commit description.
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mfd/mfd-core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
->
-> That always goes below the --- line.
+diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+index f5a73af60dd40..e831e733b38cf 100644
+--- a/drivers/mfd/mfd-core.c
++++ b/drivers/mfd/mfd-core.c
+@@ -297,7 +297,10 @@ static int mfd_remove_devices_fn(struct device *dev, void *data)
+ 	regulator_bulk_unregister_supply_alias(dev, cell->parent_supplies,
+ 					       cell->num_parent_supplies);
+ 
++	kfree(cell);
++
+ 	platform_device_unregister(pdev);
++
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
 
-I did not understand this sir, can you please clarify?
-
-thanks,
-
-karthik
