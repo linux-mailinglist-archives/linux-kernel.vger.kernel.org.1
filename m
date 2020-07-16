@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB7822196F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D60221978
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 03:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgGPB3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Jul 2020 21:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
+        id S1728061AbgGPB33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Jul 2020 21:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727948AbgGPB3E (ORCPT
+        with ESMTP id S1728033AbgGPB32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Jul 2020 21:29:04 -0400
+        Wed, 15 Jul 2020 21:29:28 -0400
 Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41380C061755;
-        Wed, 15 Jul 2020 18:29:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C956FC061755
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Jul 2020 18:29:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
         MIME-Version:Date:Message-ID:To:Subject:From:Sender:Reply-To:Cc:Content-ID:
         Content-Description:In-Reply-To:References;
-        bh=BnLpqLBrUJ9YujbTwMz5b++VGY+LIbK1WsoqS+zn56w=; b=l+dfGhmGQDEyBav8PyGRHYscR5
-        CntsywkPpGl9cFbQ1/q4ptuHRBQsbKKOJpMMBayourqI7lSi8dZ9a/EgAZIO9nDYoZXRiawv0ITFw
-        CfX7TwDDzvg+H0JdnBkgFOqPEh2VswDQYspGkwjsiGI+QaJoCZPfGdnZOgPDBkgwkcJJi0/2tFQ8e
-        3zYBdNReT56NSIs6cRREYT49fl6Ec/D98Y84oJCVtc+18JoJaHlsngLSxi3fuWh2MfyxFEeRTDcCt
-        Amj9THyHHm5TBgt0vnMH6m5uviCuaRetlUmypzUvu5qhXKZZ7V2z9XhiZAkfMpRrBuA5JF6Fgec9Q
-        yyzRsupw==;
+        bh=QgotKbpZhsh+I6y5LuRfxy2LNV6XtIWfzNerVr87aUU=; b=J5XjavqT9dvj/jCIA89DFjG2Jc
+        aGAttPg95t7VpGLF9pLVay3ObhosbzBzviCjDJEz3zseKDVmpUs5SskWEQPzJ5rI97HupMUQGqMsS
+        AZcYyrRQWKnxGZ47XEym6NxPplEa33tLOXDVCJ4h7+EEvyXp9YDcGdu536/lfSYAIMQRfIebvgGbj
+        sADR3h4ROB0hwrlCyKmPcitVupDPszu/JH7jAzaaxNga4Qe5UKMa49ty/uzwzXhXX1ExG9DeEbjl0
+        4MQkK9a0+7BxwO9nlD4MejnnbKoFAGpGuKV9shVaCfx0ZKPeMYYwZcpoj90Xo7Y4UFWc7z5PZMWhW
+        3jnm08NQ==;
 Received: from [2601:1c0:6280:3f0::19c2]
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jvshp-0000Om-Rt; Thu, 16 Jul 2020 01:29:02 +0000
+        id 1jvsiA-0000QX-63; Thu, 16 Jul 2020 01:29:22 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] bcm963xx_tag.h: fix duplicated word
+Subject: [PATCH] genwqe: fix duplicated words for clarity
 To:     LKML <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
-Message-ID: <d30c09a3-fe30-ddf1-3f21-00fc48b16443@infradead.org>
-Date:   Wed, 15 Jul 2020 18:28:58 -0700
+        Andrew Morton <akpm@linux-foundation.org>,
+        Frank Haverkamp <haver@linux.ibm.com>
+Message-ID: <f902ae2f-0df9-500a-17d1-f2c4100ddd41@infradead.org>
+Date:   Wed, 15 Jul 2020 18:29:19 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
@@ -48,25 +48,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Randy Dunlap <rdunlap@infradead.org>
 
-Change doubled word "is" to "it is".
+Add a hyphen between duplicated word "Window" for clarity.
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: bcm-kernel-feedback-list@broadcom.com
-Cc: linux-mips@vger.kernel.org
+Cc: Frank Haverkamp <haver@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 ---
- include/linux/bcm963xx_tag.h |    2 +-
+ include/uapi/linux/genwqe/genwqe_card.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20200714.orig/include/linux/bcm963xx_tag.h
-+++ linux-next-20200714/include/linux/bcm963xx_tag.h
-@@ -84,7 +84,7 @@ struct bcm_tag {
- 	char flash_layout_ver[FLASHLAYOUTVER_LEN];
- 	/* 196-199: kernel+rootfs CRC32 */
- 	__u32 fskernel_crc;
--	/* 200-215: Unused except on Alice Gate where is is information */
-+	/* 200-215: Unused except on Alice Gate where it is information */
- 	char information2[TAGINFO2_LEN];
- 	/* 216-219: CRC32 of image less imagetag (kernel for Alice Gate) */
- 	__u32 image_crc;
+--- linux-next-20200714.orig/include/uapi/linux/genwqe/genwqe_card.h
++++ linux-next-20200714/include/uapi/linux/genwqe/genwqe_card.h
+@@ -86,7 +86,7 @@
+  * The Physical Function's Access is from offset 0x00050000
+  * Single Shared Registers exists only at offset 0x00060000
+  *
+- * SLC: Queue Virtual Window Window for accessing into a specific VF
++ * SLC: Queue Virtual Window - Window for accessing into a specific VF
+  * queue. When accessing the 0x10000 space using the 0x50000 address
+  * segment, the value indicated here is used to specify which VF
+  * register is decoded. This register, and the 0x50000 register space
 
