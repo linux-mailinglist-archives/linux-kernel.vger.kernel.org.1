@@ -2,95 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AA92224FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E17A9222500
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728948AbgGPOO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45380 "EHLO
+        id S1728799AbgGPOQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbgGPOOZ (ORCPT
+        with ESMTP id S1728257AbgGPOQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 10:14:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AA4C061755;
-        Thu, 16 Jul 2020 07:14:25 -0700 (PDT)
-Date:   Thu, 16 Jul 2020 16:14:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1594908863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AAXlecMOFFlUauM/8ONbVZjnpZpBV3pslxC+IrQ6lXU=;
-        b=3L7sNJi9VXo9Z5SmOslhbPfXNdmNOC/okJbIRApJQOVGSJHYxx3zwEI/NWVJtsP3JGmZud
-        I63zlGcDTBzr7GduXcDlNUUgW8W1HLsbe951Dy5inHl3BnvEczyvua/WyfJTJPnlnIELUz
-        0alHHrk1IZG/c9MMwTqFXZmUxgC5/SKi70ESzexzdMbcpd8SNAUMrtZQYAy3Vz4mr2RqGF
-        RDt6sMFncZVSXQS4YmcmtESaIQRW2ckHE02Zt5q4IMN3dz2S/pEKXELvpma5Uh4XtW4hgc
-        ALaHYuaZv3QGSyJrZDx04XbDKf+IkhaIVib9AxLiIQylgBb+ShhV6CxaUpuDVg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1594908863;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AAXlecMOFFlUauM/8ONbVZjnpZpBV3pslxC+IrQ6lXU=;
-        b=CmaaA0FyUpNJji9awzQD8Ot8BPXYUIJarkWbz1mYy2rj1VmNgJ75ieNKdI2WsJd0IfxG5u
-        xlc/8jOjBf5sFDCQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/1] rcu/tree: Drop the lock before entering to page
- allocator
-Message-ID: <20200716141421.fzwf4tedr6rixd6d@linutronix.de>
-References: <20200715183537.4010-1-urezki@gmail.com>
- <20200715185628.7b4k3o5efp4gnbla@linutronix.de>
- <20200715190243.GA26735@pc636>
- <20200715193250.axntj7jdt6bw52dr@linutronix.de>
- <20200715221449.GJ9247@paulmck-ThinkPad-P72>
+        Thu, 16 Jul 2020 10:16:13 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D3FC061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:16:12 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id r19so7264217ljn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 07:16:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mXH7vVi3KBPuSpGgzBWwHA8EoTmgJyz0ffp69H08dxI=;
+        b=CfjpSFsHuv9lIfuFR3u9YVTn3D2/DVD0NybAdw9y/3tyKxpu/BwdPjXQp6sU7A642P
+         KkDVTZ4i+npcyyiqXOFgryTudvpB8dz+Kk0is0viOQkv3oqSMIdFfeJqAt1+cBQuRGsr
+         Rl8xKml+Wakc8wSfCWakO8h09LR2AAUwyVNZMfZuXXVWP+cDLG1jGRi8UgBXfbcg/DMW
+         luSc+6sy30Enj5lxct8bjqh2TxmI++ZnrtYrN427CK5Bpl1Tw+991mHGf1z+DpFkzTzx
+         XGtol4/58I0ScHG2T9qPvTxZ+vJ4luQ+OBv/bfDQ0BaqcMsnwW+vuMx3kZss1wUPTgGI
+         RXYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mXH7vVi3KBPuSpGgzBWwHA8EoTmgJyz0ffp69H08dxI=;
+        b=SVKu8Rem7htnYwM+DoxHo/BTUbYDsd/BkdD6vI1Yf8XiIF7l5ao1GvtkukJUPQ0Nuo
+         RuhLMY3c60rRiNAvCU8UUKRaP7DfFOrN6u2xAQleKBkoTgSSaPurfQ7sNgMSzzWdqUx1
+         EMBKnzZzThI9EvjMXrotvVqryHrQMmFv3aqlaFePXRa9Gph5jz9TND026ghwla5lo9th
+         AD4TPKq1vspaL3DNqRYOnGHi57XNnHB8egPaLTDlJ62df3DwW2LEI1CuqLpm1wffCbvC
+         yfe5HTCSmnxu96K19ANMnbyOsnAUnJKFs4t3MHx1gwr3Lh30JYNHcE+YA/N9rQGiFKTa
+         lQbw==
+X-Gm-Message-State: AOAM531OzuDxaOkbrSvA08v29USDHU+Gq+Eo6jf3ZUnr2I778s8VYqYO
+        jcrJZPo93jp9Dnh61yjUXQGNRg==
+X-Google-Smtp-Source: ABdhPJw1htbppJl/Sb7eYbBder0jkiV1NnzJIDU6QIcD10aBY30vhSNCUz+quukA9UefrB3Zywn2lA==
+X-Received: by 2002:a2e:8559:: with SMTP id u25mr2078562ljj.52.1594908971254;
+        Thu, 16 Jul 2020 07:16:11 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-181-7.NA.cust.bahnhof.se. [98.128.181.7])
+        by smtp.gmail.com with ESMTPSA id x5sm1069418ljm.132.2020.07.16.07.16.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 07:16:09 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     linux-mmc@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rui Feng <rui_feng@realsil.com.cn>
+Cc:     linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] mmc: core: Initial support for SD express card/host
+Date:   Thu, 16 Jul 2020 16:15:34 +0200
+Message-Id: <20200716141534.30241-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200715221449.GJ9247@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-15 15:14:49 [-0700], Paul E. McKenney wrote:
-> 
-> My concern is that some critical bug will show up at some point
-> that requires double-argument kfree_rcu() be invoked while holding
-> a raw spinlock.  (Single-argument kfree_rcu() must sometimes invoke
-> synchronize_rcu(), so it can never be invoked in any state forbidding
-> invoking schedule().)
+In the SD specification v7.10 the SD express card has been added. This new
+type of removable SD card, can be managed via a PCIe/NVMe based interface,
+while also allowing backwards compatibility towards the legacy SD
+interface.
 
-So you are saying as of today we are good but in near future the
-following
-   synchronize_rcu() -> kfree_rcu()
+To keep the backwards compatibility, it's required to start the
+initialization through the legacy SD interface. If it turns out that the
+mmc host and the SD card, both supports the PCIe/NVMe interface, then a
+switch should be allowed.
 
-may be needed?
+Therefore, let's introduce some basic support for this type of SD cards to
+the mmc core. The mmc host, should set MMC_CAP2_SD_EXP if it supports this
+interface and MMC_CAP2_SD_EXP_1_2V, if also 1.2V is supported, as to inform
+the core about it.
 
-> Yes, dropping to a plain spinlock would be simple in the here and now,
-> but experience indicates that it is only a matter of time, and that when
-> that time comes it will come as an emergency.
+To deal with the switch to the PCIe/NVMe interface, the mmc host is
+required to implement a new host ops, ->init_sd_express(). Based on the
+initial communication between the host and the card, host->ios.timing is
+set to either MMC_TIMING_SD_EXP or MMC_TIMING_SD_EXP_1_2V, depending on if
+1.2V is supported or not. In this way, the mmc host can check these values
+in its ->init_sd_express() ops, to know how to proceed with the handover.
 
-Hmmm.
+Note that, to manage card insert/removal, the mmc core sticks with using
+the ->get_cd() callback, which means it's the host's responsibility to make
+sure it provides valid data, even if the card may be managed by PCIe/NVMe
+at the moment. As long as the card seems to be present, the mmc core keeps
+the card powered on.
 
-> One approach would be to replace the "IS_ENABLED(CONFIG_PREEMPT_RT)"
-> with some sort of check for being in a context where spinlock acquisition
-> is not legal.  What could be done along those lines?
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Rui Feng <rui_feng@realsil.com.cn>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ drivers/mmc/core/core.c   | 15 ++++++++++--
+ drivers/mmc/core/host.h   |  6 +++++
+ drivers/mmc/core/sd_ops.c | 49 +++++++++++++++++++++++++++++++++++++--
+ drivers/mmc/core/sd_ops.h |  1 +
+ include/linux/mmc/host.h  |  7 ++++++
+ 5 files changed, 74 insertions(+), 4 deletions(-)
 
-I would rethink the whole concept how this is implemented now and give
-it another try. The code does not look pretty and is looking
-complicated. The RT covering of this part then just added a simple
-return because nothing else seemed to be possible. This patch here
-looks like another duct tape attempt to avoid a warning.
+diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+index 8ccae6452b9c..6673c0f33cc7 100644
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -2137,8 +2137,12 @@ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
+ 
+ 	mmc_go_idle(host);
+ 
+-	if (!(host->caps2 & MMC_CAP2_NO_SD))
+-		mmc_send_if_cond(host, host->ocr_avail);
++	if (!(host->caps2 & MMC_CAP2_NO_SD)) {
++		if (mmc_send_if_cond_pcie(host, host->ocr_avail))
++			goto out;
++		if (mmc_card_sd_express(host))
++			return 0;
++	}
+ 
+ 	/* Order's important: probe SDIO, then SD, then MMC */
+ 	if (!(host->caps2 & MMC_CAP2_NO_SDIO))
+@@ -2153,6 +2157,7 @@ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
+ 		if (!mmc_attach_mmc(host))
+ 			return 0;
+ 
++out:
+ 	mmc_power_off(host);
+ 	return -EIO;
+ }
+@@ -2280,6 +2285,12 @@ void mmc_rescan(struct work_struct *work)
+ 		goto out;
+ 	}
+ 
++	/* If an SD express card is present, then leave it as is. */
++	if (mmc_card_sd_express(host)) {
++		mmc_release_host(host);
++		goto out;
++	}
++
+ 	for (i = 0; i < ARRAY_SIZE(freqs); i++) {
+ 		unsigned int freq = freqs[i];
+ 		if (freq > host->f_max) {
+diff --git a/drivers/mmc/core/host.h b/drivers/mmc/core/host.h
+index 5e3b9534ffb2..ba407617ed23 100644
+--- a/drivers/mmc/core/host.h
++++ b/drivers/mmc/core/host.h
+@@ -77,5 +77,11 @@ static inline bool mmc_card_hs400es(struct mmc_card *card)
+ 	return card->host->ios.enhanced_strobe;
+ }
+ 
++static inline bool mmc_card_sd_express(struct mmc_host *host)
++{
++	return host->ios.timing == MMC_TIMING_SD_EXP ||
++		host->ios.timing == MMC_TIMING_SD_EXP_1_2V;
++}
++
+ #endif
+ 
+diff --git a/drivers/mmc/core/sd_ops.c b/drivers/mmc/core/sd_ops.c
+index 22bf528294b9..d61ff811218c 100644
+--- a/drivers/mmc/core/sd_ops.c
++++ b/drivers/mmc/core/sd_ops.c
+@@ -158,7 +158,8 @@ int mmc_send_app_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
+ 	return err;
+ }
+ 
+-int mmc_send_if_cond(struct mmc_host *host, u32 ocr)
++static int __mmc_send_if_cond(struct mmc_host *host, u32 ocr, u8 pcie_bits,
++			      u32 *resp)
+ {
+ 	struct mmc_command cmd = {};
+ 	int err;
+@@ -171,7 +172,7 @@ int mmc_send_if_cond(struct mmc_host *host, u32 ocr)
+ 	 * SD 1.0 cards.
+ 	 */
+ 	cmd.opcode = SD_SEND_IF_COND;
+-	cmd.arg = ((ocr & 0xFF8000) != 0) << 8 | test_pattern;
++	cmd.arg = ((ocr & 0xFF8000) != 0) << 8 | pcie_bits << 8 | test_pattern;
+ 	cmd.flags = MMC_RSP_SPI_R7 | MMC_RSP_R7 | MMC_CMD_BCR;
+ 
+ 	err = mmc_wait_for_cmd(host, &cmd, 0);
+@@ -186,6 +187,50 @@ int mmc_send_if_cond(struct mmc_host *host, u32 ocr)
+ 	if (result_pattern != test_pattern)
+ 		return -EIO;
+ 
++	if (resp)
++		*resp = cmd.resp[0];
++
++	return 0;
++}
++
++int mmc_send_if_cond(struct mmc_host *host, u32 ocr)
++{
++	return __mmc_send_if_cond(host, ocr, 0, NULL);
++}
++
++int mmc_send_if_cond_pcie(struct mmc_host *host, u32 ocr)
++{
++	u32 resp = 0;
++	u8 pcie_bits = 0;
++	int ret;
++
++	if (host->caps2 & MMC_CAP2_SD_EXP) {
++		/* Probe card for SD express support via PCIe. */
++		pcie_bits = 0x10;
++		if (host->caps2 & MMC_CAP2_SD_EXP_1_2V)
++			/* Probe also for 1.2V support. */
++			pcie_bits = 0x30;
++	}
++
++	ret = __mmc_send_if_cond(host, ocr, pcie_bits, &resp);
++	if (ret)
++		return 0;
++
++	/* Continue with the SD express init, if the card supports it. */
++	resp &= 0x3000;
++	if (pcie_bits && resp) {
++		if (resp == 0x3000)
++			host->ios.timing = MMC_TIMING_SD_EXP_1_2V;
++		else
++			host->ios.timing = MMC_TIMING_SD_EXP;
++
++		/*
++		 * According to the spec the clock shall also be gated, but
++		 * let's leave this to the host driver for more flexibility.
++		 */
++		return host->ops->init_sd_express(host, &host->ios);
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/mmc/core/sd_ops.h b/drivers/mmc/core/sd_ops.h
+index 2194cabfcfc5..3ba7b3cf4652 100644
+--- a/drivers/mmc/core/sd_ops.h
++++ b/drivers/mmc/core/sd_ops.h
+@@ -16,6 +16,7 @@ struct mmc_host;
+ int mmc_app_set_bus_width(struct mmc_card *card, int width);
+ int mmc_send_app_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr);
+ int mmc_send_if_cond(struct mmc_host *host, u32 ocr);
++int mmc_send_if_cond_pcie(struct mmc_host *host, u32 ocr);
+ int mmc_send_relative_addr(struct mmc_host *host, unsigned int *rca);
+ int mmc_app_send_scr(struct mmc_card *card);
+ int mmc_sd_switch(struct mmc_card *card, int mode, int group,
+diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+index c5b6e97cb21a..905cddc5e6f3 100644
+--- a/include/linux/mmc/host.h
++++ b/include/linux/mmc/host.h
+@@ -60,6 +60,8 @@ struct mmc_ios {
+ #define MMC_TIMING_MMC_DDR52	8
+ #define MMC_TIMING_MMC_HS200	9
+ #define MMC_TIMING_MMC_HS400	10
++#define MMC_TIMING_SD_EXP	11
++#define MMC_TIMING_SD_EXP_1_2V	12
+ 
+ 	unsigned char	signal_voltage;		/* signalling voltage (1.8V or 3.3V) */
+ 
+@@ -172,6 +174,9 @@ struct mmc_host_ops {
+ 	 */
+ 	int	(*multi_io_quirk)(struct mmc_card *card,
+ 				  unsigned int direction, int blk_size);
++
++	/* Initialize an SD express card, mandatory for MMC_CAP2_SD_EXP. */
++	int	(*init_sd_express)(struct mmc_host *host, struct mmc_ios *ios);
+ };
+ 
+ struct mmc_cqe_ops {
+@@ -357,6 +362,8 @@ struct mmc_host {
+ #define MMC_CAP2_HS200_1_2V_SDR	(1 << 6)        /* can support */
+ #define MMC_CAP2_HS200		(MMC_CAP2_HS200_1_8V_SDR | \
+ 				 MMC_CAP2_HS200_1_2V_SDR)
++#define MMC_CAP2_SD_EXP		(1 << 7)	/* SD express via PCIe */
++#define MMC_CAP2_SD_EXP_1_2V	(1 << 8)	/* SD express 1.2V */
+ #define MMC_CAP2_CD_ACTIVE_HIGH	(1 << 10)	/* Card-detect signal active high */
+ #define MMC_CAP2_RO_ACTIVE_HIGH	(1 << 11)	/* Write-protect signal active high */
+ #define MMC_CAP2_NO_PRESCAN_POWERUP (1 << 14)	/* Don't power up before scan */
+-- 
+2.20.1
 
-> 							Thanx, Paul
-
-Sebastian
