@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86A8222BF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9357F222BEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 21:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729697AbgGPTbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 15:31:12 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:38622 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729666AbgGPTbH (ORCPT
+        id S1729530AbgGPTak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 15:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729136AbgGPTaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 15:31:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1594927865;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=qxETwBdUi8IQyqE8w1AoWdSu7aZcWlS4JLpVKb6zYWo=;
-        b=a/dwkiApbunypCpNgoi4q+rTpnwfhP/cP0zj/vC9890cl27KPcEsQpENr/IXjjezahL8iB
-        ZgJ9gM1PZg8tbllNYRzBbU0S3HSB8F6CS8LDXxOvqEoP5s9WoBj+Z5/KuYwJTNEdm2IRkL
-        DOsEBy61XCO45GLgColJDV6N8Y2iyOw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-OELazEwUNeGx2Fv-Vvd_RQ-1; Thu, 16 Jul 2020 15:31:01 -0400
-X-MC-Unique: OELazEwUNeGx2Fv-Vvd_RQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 692C615C2B;
-        Thu, 16 Jul 2020 19:30:59 +0000 (UTC)
-Received: from llong.com (ovpn-119-61.rdu2.redhat.com [10.10.119.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5439974F70;
-        Thu, 16 Jul 2020 19:30:58 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-arch@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 5/5] locking/qrwlock: Make qrwlock store writer cpu number
-Date:   Thu, 16 Jul 2020 15:29:27 -0400
-Message-Id: <20200716192927.12944-6-longman@redhat.com>
-In-Reply-To: <20200716192927.12944-1-longman@redhat.com>
-References: <20200716192927.12944-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Thu, 16 Jul 2020 15:30:39 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5A9C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 12:30:39 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id o184so3648619vsc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 12:30:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5JHL6dtY9/obxl6PVDueE6KgqOWo1hP8aToaLoJogXM=;
+        b=Lv8wc5MBk1xMDoVDniZJYSNIRYaVwYd563pj/BmHDv29qhlkxXzVxJn/UycDj5BI55
+         0o7EKZrbVLG1OH9iMGZCjUaydi2H0vTAwdpEKzb4PDFVmlhuT2w5pIQV1wJSSWKsjDnk
+         fvfiqoflke0iz/+NpbwihrTIcQZdfdIcAV8aHK0JN2ysHxmhrqZbA3VmcRSa9jqUfjsB
+         fMQlsVKQdqcwLjEJX7bJ4Qed9+Rn6rYUC4en/fQ9rUNxGrl03j2+7zPJiON+pYZQfpbO
+         EzxaJQcjLJ5PPVoVTuuALA5gujvbGUxCdHyehPNe2VtYJaHy1nYydB7CQfP374ARk7Zu
+         rU4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5JHL6dtY9/obxl6PVDueE6KgqOWo1hP8aToaLoJogXM=;
+        b=dOymsTjTZpGobFXELlBxphB5Q+YyYVs+SSZ3e1shT9PmCPE+eS/tsh+5e9fdofnXMO
+         wnnjI7hSAtD97pI8UmDdm1Kc6ylOjxCkAn8fF80rJjRT+SYCgZ6oilWnXLmnWbYSHjfi
+         amXuzEYYdFkSSB1cn05gOUzpjSlZ3Q/4cs9MlxUUWXsurrHLpGUpfEFmJgOLv87e25Os
+         +IEUGWW9sPV0maPBXtn4H0f5eHts0NM2b1d0X+EpvEzLrISsDS0CtXMu3abNk83yH+eT
+         OMHoTCPArqdr9uZylXLtnNLmcO5k/YNAldQAe4PoYTgh9jTr02/aUVYBQQzLjUUIhM0X
+         nAwQ==
+X-Gm-Message-State: AOAM530Fal+fuwbjRIgirdvflqIXIQlN0D2wVStPxQUS/avY4+Elv3SF
+        IS261SKTxRASzwdjru7jQhCeSliIjVzg2+V/hJPOuA==
+X-Google-Smtp-Source: ABdhPJwWkXtOPLOqrVcmtyJlG0aP+T8u+bPUV6PKoDH5U90Xrq5hIuM+nD03u5LdjnNO/fWF+VkxFtBnpluxWXZxTok=
+X-Received: by 2002:a67:69c1:: with SMTP id e184mr4865729vsc.119.1594927838113;
+ Thu, 16 Jul 2020 12:30:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200716024527.4009170-1-surenb@google.com> <20200716033048.GG1167@sol.localdomain>
+In-Reply-To: <20200716033048.GG1167@sol.localdomain>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 16 Jul 2020 12:30:27 -0700
+Message-ID: <CAJuCfpGwgmAD0v+F3CxieZmXHnjnbzrZ4Cpugi+8=-fDPgCU7w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] staging: android: ashmem: Fix lockdep warning for
+ write operation
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make the qrwlock code to store an encoded cpu number (+1 saturated)
-for the writer that hold the write lock if desired.
+On Wed, Jul 15, 2020 at 8:30 PM Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Wed, Jul 15, 2020 at 07:45:27PM -0700, Suren Baghdasaryan wrote:
+> > syzbot report [1] describes a deadlock when write operation against an
+> > ashmem fd executed at the time when ashmem is shrinking its cache results
+> > in the following lock sequence:
+> >
+> > Possible unsafe locking scenario:
+> >
+> >         CPU0                    CPU1
+> >         ----                    ----
+> >    lock(fs_reclaim);
+> >                                 lock(&sb->s_type->i_mutex_key#13);
+> >                                 lock(fs_reclaim);
+> >    lock(&sb->s_type->i_mutex_key#13);
+> >
+> > kswapd takes fs_reclaim and then inode_lock while generic_perform_write
+> > takes inode_lock and then fs_reclaim. However ashmem does not support
+> > writing into backing shmem with a write syscall. The only way to change
+> > its content is to mmap it and operate on mapped memory. Therefore the race
+> > that lockdep is warning about is not valid. Resolve this by introducing a
+> > separate lockdep class for the backing shmem inodes.
+> >
+> > [1]: https://lkml.kernel.org/lkml/0000000000000b5f9d059aa2037f@google.com/
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>
+> Please add proper tags:
+>
+> Reported-by: syzbot+7a0d9d0b26efefe61780@syzkaller.appspotmail.com
+> Fixes: ...
+> Cc: stable@vger.kernel.org
+>
+>
+> The Reported-by tag to use was given in the original syzbot report.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- include/asm-generic/qrwlock.h | 12 +++++++++++-
- kernel/locking/qrwlock.c      | 11 ++++++-----
- 2 files changed, 17 insertions(+), 6 deletions(-)
+Will add in v2. Thanks!
 
-diff --git a/include/asm-generic/qrwlock.h b/include/asm-generic/qrwlock.h
-index 3aefde23dcea..1b1d5253e314 100644
---- a/include/asm-generic/qrwlock.h
-+++ b/include/asm-generic/qrwlock.h
-@@ -15,11 +15,21 @@
- 
- #include <asm-generic/qrwlock_types.h>
- 
-+/*
-+ * If __cpu_number_sadd1 (+2 saturated cpu number) is defined, use it as the
-+ * writer lock value.
-+ */
-+#ifdef __cpu_number_sadd1
-+#define _QW_LOCKED	__cpu_number_sadd1
-+#else
-+#define _QW_LOCKED	0xff
-+#endif
-+
- /*
-  * Writer states & reader shift and bias.
-  */
- #define	_QW_WAITING	0x100		/* A writer is waiting	   */
--#define	_QW_LOCKED	0x0ff		/* A writer holds the lock */
-+#define	_QW_LMASK	0x0ff		/* A writer lock byte mask */
- #define	_QW_WMASK	0x1ff		/* Writer mask		   */
- #define	_QR_SHIFT	9		/* Reader count shift	   */
- #define _QR_BIAS	(1U << _QR_SHIFT)
-diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
-index fe9ca92faa2a..394f34db4b8f 100644
---- a/kernel/locking/qrwlock.c
-+++ b/kernel/locking/qrwlock.c
-@@ -30,7 +30,7 @@ void queued_read_lock_slowpath(struct qrwlock *lock)
- 		 * so spin with ACQUIRE semantics until the lock is available
- 		 * without waiting in the queue.
- 		 */
--		atomic_cond_read_acquire(&lock->cnts, !(VAL & _QW_LOCKED));
-+		atomic_cond_read_acquire(&lock->cnts, !(VAL & _QW_LMASK));
- 		return;
- 	}
- 	atomic_sub(_QR_BIAS, &lock->cnts);
-@@ -46,7 +46,7 @@ void queued_read_lock_slowpath(struct qrwlock *lock)
- 	 * that accesses can't leak upwards out of our subsequent critical
- 	 * section in the case that the lock is currently held for write.
- 	 */
--	atomic_cond_read_acquire(&lock->cnts, !(VAL & _QW_LOCKED));
-+	atomic_cond_read_acquire(&lock->cnts, !(VAL & _QW_LMASK));
- 
- 	/*
- 	 * Signal the next one in queue to become queue head
-@@ -61,12 +61,14 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
-  */
- void queued_write_lock_slowpath(struct qrwlock *lock)
- {
-+	const u8 lockval = _QW_LOCKED;
-+
- 	/* Put the writer into the wait queue */
- 	arch_spin_lock(&lock->wait_lock);
- 
- 	/* Try to acquire the lock directly if no reader is present */
- 	if (!atomic_read(&lock->cnts) &&
--	    (atomic_cmpxchg_acquire(&lock->cnts, 0, _QW_LOCKED) == 0))
-+	    (atomic_cmpxchg_acquire(&lock->cnts, 0, lockval) == 0))
- 		goto unlock;
- 
- 	/* Set the waiting flag to notify readers that a writer is pending */
-@@ -75,8 +77,7 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
- 	/* When no more readers or writers, set the locked flag */
- 	do {
- 		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
--	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
--					_QW_LOCKED) != _QW_WAITING);
-+	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING, lockval) != _QW_WAITING);
- unlock:
- 	arch_spin_unlock(&lock->wait_lock);
- }
--- 
-2.18.1
-
+>
+> - Eric
