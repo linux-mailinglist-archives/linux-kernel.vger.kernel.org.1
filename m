@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085AB222EC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABDF222E95
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Jul 2020 01:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728006AbgGPXLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 19:11:10 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:47433 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726205AbgGPXLK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 19:11:10 -0400
+        id S1727774AbgGPXIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 19:08:53 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43189 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726104AbgGPXIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 19:08:50 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1594941069; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1594940930; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=pCo9IyWGzz5InIzoYekTI4bxA69hoCf7jB3CN8mY28M=; b=JXClyfV5oqoDAw1m6YbbE7Yk7NA9aLiZACPIxH36Db4YPEyv792ekXW5dUR9T2phoaA1GcEs
- UcQKFsxVrvNgs6eiN1SzBVrpJD+UsNiTwxqmkl98vOPyTogQYTct4Z9AlT2aLSJtqLtP+bsE
- NGRMiuQZBa8bZBlGvWKcDF57e4A=
-X-Mailgun-Sending-Ip: 104.130.122.29
+ bh=48pheG6DAtrlIvf3tL1tLzrFDusskcmsxUCA7Ou9opQ=; b=lFIrTj1wkVSqHe86gKCgkxMTUH/aRz5VKzvnxJWNbMHXnZ+YHW9uDcIkunD/oCxGlT3SqhDe
+ kbF6PgbiLC5DY5dF1sLp9/hsqYmOtpsLv6zrgHhPrUaAxlHPrKP4TlXB7n8SN1DgStohC0vh
+ 1lBh6pYE+hQFtTILHGXclvOYslY=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
- 5f10d31ee3bee12510dab031 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Jul 2020 22:22:22
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f10d31f7c8ca473a84dbc78 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 16 Jul 2020 22:22:23
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8653DC433A0; Thu, 16 Jul 2020 22:22:21 +0000 (UTC)
+        id 893EEC433C9; Thu, 16 Jul 2020 22:22:22 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,20 +36,19 @@ Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.10
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93D3CC4339C;
-        Thu, 16 Jul 2020 22:22:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 93D3CC4339C
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 31897C433AD;
+        Thu, 16 Jul 2020 22:22:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 31897C433AD
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
 From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
 To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
         sibis@codearora.org, tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, Sibi Sankar <sibis@codeaurora.org>,
-        Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH v8 2/5] remoteproc: qcom_q6v5_mss: Replace mask based tracking with size
-Date:   Thu, 16 Jul 2020 15:20:32 -0700
-Message-Id: <1594938035-7327-3-git-send-email-rishabhb@codeaurora.org>
+        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [PATCH v8 3/5] remoteproc: Pass size and offset as arguments to segment dump function
+Date:   Thu, 16 Jul 2020 15:20:33 -0700
+Message-Id: <1594938035-7327-4-git-send-email-rishabhb@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1594938035-7327-1-git-send-email-rishabhb@codeaurora.org>
 References: <1594938035-7327-1-git-send-email-rishabhb@codeaurora.org>
@@ -59,86 +57,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sibi Sankar <sibis@codeaurora.org>
+Change the segment dump API signature to include size and offset
+arguments. Refactor the qcom_q6v5_mss driver to use these
+arguments while copying the segment. Doing this lays the ground
+work for "inline" coredump functionality being added in the next
+patch.
 
-In order to land inline coredump support for mss, the dump_segment
-function would need to support granularities less than the segment
-size. This is achieved by replacing mask based tracking with size.
-
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
 ---
- drivers/remoteproc/qcom_q6v5_mss.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/remoteproc/qcom_q6v5_mss.c       | 10 +++++-----
+ drivers/remoteproc/remoteproc_coredump.c |  5 +++--
+ include/linux/remoteproc.h               |  5 +++--
+ 3 files changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-index feb70283b..037cd45 100644
+index 037cd45..6baa3ae 100644
 --- a/drivers/remoteproc/qcom_q6v5_mss.c
 +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -181,8 +181,8 @@ struct q6v5 {
- 	bool running;
+@@ -1199,7 +1199,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
  
- 	bool dump_mba_loaded;
--	unsigned long dump_segment_mask;
--	unsigned long dump_complete_mask;
-+	size_t current_dump_size;
-+	size_t total_dump_size;
- 
- 	phys_addr_t mba_phys;
- 	void *mba_region;
-@@ -1203,7 +1203,6 @@ static void qcom_q6v5_dump_segment(struct rproc *rproc,
+ static void qcom_q6v5_dump_segment(struct rproc *rproc,
+ 				   struct rproc_dump_segment *segment,
+-				   void *dest)
++				   void *dest, size_t cp_offset, size_t size)
  {
  	int ret = 0;
  	struct q6v5 *qproc = rproc->priv;
--	unsigned long mask = BIT((unsigned long)segment->priv);
- 	int offset = segment->da - qproc->mpss_reloc;
- 	void *ptr = NULL;
- 
-@@ -1229,10 +1228,10 @@ static void qcom_q6v5_dump_segment(struct rproc *rproc,
- 		memset(dest, 0xff, segment->size);
+@@ -1219,16 +1219,16 @@ static void qcom_q6v5_dump_segment(struct rproc *rproc,
  	}
  
--	qproc->dump_segment_mask |= mask;
-+	qproc->current_dump_size += segment->size;
+ 	if (!ret)
+-		ptr = ioremap_wc(qproc->mpss_phys + offset, segment->size);
++		ptr = ioremap_wc(qproc->mpss_phys + offset + cp_offset, size);
+ 
+ 	if (ptr) {
+-		memcpy(dest, ptr, segment->size);
++		memcpy(dest, ptr, size);
+ 		iounmap(ptr);
+ 	} else {
+-		memset(dest, 0xff, segment->size);
++		memset(dest, 0xff, size);
+ 	}
+ 
+-	qproc->current_dump_size += segment->size;
++	qproc->current_dump_size += size;
  
  	/* Reclaim mba after copying segments */
--	if (qproc->dump_segment_mask == qproc->dump_complete_mask) {
-+	if (qproc->current_dump_size == qproc->total_dump_size) {
- 		if (qproc->dump_mba_loaded) {
- 			/* Try to reset ownership back to Q6 */
- 			q6v5_xfer_mem_ownership(qproc, &qproc->mpss_perm,
-@@ -1274,7 +1273,7 @@ static int q6v5_start(struct rproc *rproc)
- 			"Failed to reclaim mba buffer system may become unstable\n");
+ 	if (qproc->current_dump_size == qproc->total_dump_size) {
+diff --git a/drivers/remoteproc/remoteproc_coredump.c b/drivers/remoteproc/remoteproc_coredump.c
+index ded0244..390f563 100644
+--- a/drivers/remoteproc/remoteproc_coredump.c
++++ b/drivers/remoteproc/remoteproc_coredump.c
+@@ -72,7 +72,8 @@ int rproc_coredump_add_custom_segment(struct rproc *rproc,
+ 				      dma_addr_t da, size_t size,
+ 				      void (*dumpfn)(struct rproc *rproc,
+ 						     struct rproc_dump_segment *segment,
+-						     void *dest),
++						     void *dest, size_t offset,
++						     size_t size),
+ 				      void *priv)
+ {
+ 	struct rproc_dump_segment *segment;
+@@ -183,7 +184,7 @@ void rproc_coredump(struct rproc *rproc)
+ 		elf_phdr_set_p_align(class, phdr, 0);
  
- 	/* Reset Dump Segment Mask */
--	qproc->dump_segment_mask = 0;
-+	qproc->current_dump_size = 0;
- 	qproc->running = true;
+ 		if (segment->dump) {
+-			segment->dump(rproc, segment, data + offset);
++			segment->dump(rproc, segment, data + offset, 0, segment->size);
+ 		} else {
+ 			ptr = rproc_da_to_va(rproc, segment->da, segment->size);
+ 			if (!ptr) {
+diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+index e7b7bab..eb08139 100644
+--- a/include/linux/remoteproc.h
++++ b/include/linux/remoteproc.h
+@@ -451,7 +451,7 @@ struct rproc_dump_segment {
  
- 	return 0;
-@@ -1323,7 +1322,7 @@ static int qcom_q6v5_register_dump_segments(struct rproc *rproc,
+ 	void *priv;
+ 	void (*dump)(struct rproc *rproc, struct rproc_dump_segment *segment,
+-		     void *dest);
++		     void *dest, size_t offset, size_t size);
+ 	loff_t offset;
+ };
  
- 	ehdr = (struct elf32_hdr *)fw->data;
- 	phdrs = (struct elf32_phdr *)(ehdr + 1);
--	qproc->dump_complete_mask = 0;
-+	qproc->total_dump_size = 0;
+@@ -630,7 +630,8 @@ int rproc_coredump_add_custom_segment(struct rproc *rproc,
+ 				      dma_addr_t da, size_t size,
+ 				      void (*dumpfn)(struct rproc *rproc,
+ 						     struct rproc_dump_segment *segment,
+-						     void *dest),
++						     void *dest, size_t offset,
++						     size_t size),
+ 				      void *priv);
+ int rproc_coredump_set_elf_info(struct rproc *rproc, u8 class, u16 machine);
  
- 	for (i = 0; i < ehdr->e_phnum; i++) {
- 		phdr = &phdrs[i];
-@@ -1334,11 +1333,11 @@ static int qcom_q6v5_register_dump_segments(struct rproc *rproc,
- 		ret = rproc_coredump_add_custom_segment(rproc, phdr->p_paddr,
- 							phdr->p_memsz,
- 							qcom_q6v5_dump_segment,
--							(void *)i);
-+							NULL);
- 		if (ret)
- 			break;
- 
--		qproc->dump_complete_mask |= BIT(i);
-+		qproc->total_dump_size += phdr->p_memsz;
- 	}
- 
- 	release_firmware(fw);
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
