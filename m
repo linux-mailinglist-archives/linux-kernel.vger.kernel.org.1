@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76B2222494
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9052224AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 16:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729195AbgGPOAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 10:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
+        id S1729294AbgGPOAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 10:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729079AbgGPN75 (ORCPT
+        with ESMTP id S1728932AbgGPN76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 09:59:57 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22441C061755
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:57 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id b6so7137565wrs.11
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:57 -0700 (PDT)
+        Thu, 16 Jul 2020 09:59:58 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D92C061755
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:58 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j4so7148888wrp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Jul 2020 06:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5dhqQ4NUqiUF2Bq7q61YfGoR1xp2l5qeEphpBIwviqw=;
-        b=dbPBBqXNQxXcdUjhThIupcj7hUT6HiWHQxF6DtZKhLxNXTxrJyHDZvy567mnJlko7K
-         VmE/hBekbLstojqruJZVxnf54PwhVekIh/XpObFkAdGyJwnGImKh/34abAImwKgm5Qov
-         ZfjW3T7836AVQjZzbwFVCqo+988ZUTbc87SV1+coaF05IaNm7YROzqhNIfSbv9IKmzRR
-         Z5QLdS18fe7zcOUEVJc7RvYfYvCEoL1gwXRNpBvC209ybypJLdV+mN9YvMQSPdk8Ah14
-         XTQCtff8XV3rpAXhCEF8VJKAezSkguRXjzpkXz7Do6lpcB37Q3aXv98Vt55GDPwaqB0R
-         QEzA==
+        bh=1SUhdNLbgzPAWgw1RQZwdPTaqr6bugMt+fbr6rtma0A=;
+        b=ZAvEsaeFkwq5GcgDYK+/9rJcCLF1cuHMRI3FgfRAhfFpy2lSpeAOVYuwnpiWnp0j/u
+         sodd9cME6J+7QQLoK5/xcLsLofod4oprz+mrBGP59qMiTR052FLl2aEyPlxrSmqz2H/Z
+         7evmx8t3cXfDTu2Zib3ya9hwIeg8ndWeLJ0UcSwl8wB+vZHcD/ePhbibd7Bs+Bq0gdcx
+         9w0dFgkWDfV3gxs9rw0mDHIKpZd7wYTXUiXE1P6DYVjJbfWxQrJo6nGgDMWd4cSHsfh4
+         W460RnonrWkqaNjrv7vciSSLANEpDQCyy9BjJE/VYE2Oa7rRev585J4xrIiecbtPLnHU
+         dqqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5dhqQ4NUqiUF2Bq7q61YfGoR1xp2l5qeEphpBIwviqw=;
-        b=sBr1ZRgH+QLkBvPsmRA07WOnun72GhGy7dQ08jmemX3apBkVNmbRxiGD8Uld4mIOoM
-         XFPVkQGKIoI7KdfIRPRdKBm1tYj/BTznlkmqxq7EkXVOyu0ysEz7EDCTSnPrtGGMvfdu
-         GufdpT721v0yP1s0HLNiyBhmMUPOfbSZzac808QQn7HRw3FnIjldXCLY/5+Pjd21TVfY
-         55/peKQNN2McykHAfvz4VKHHMMTv1lYBgGdhRfcikQUk5ZDCGCj4tBt0ogWgovcJTMK2
-         68YsYHh6QGxPhsU6dzZT47AQEChHbIJdnJkvEj2Fsvtqh+FAZ/pfjrSRpRDfjhBIvYRQ
-         g+9w==
-X-Gm-Message-State: AOAM533iiCC+SlmkMw0+RDVu4Gn1mE3ieZ+Y/aluyjpT6Sh/fRi46pz5
-        Q1rRKLFbSxNi/wtOph7zDsM6g9O870Y=
-X-Google-Smtp-Source: ABdhPJz7hGYComCkdeZkkyqBGf5Dge6AU5ApxQjr/rt5vC1UMsucySFQGpPQzmN4Uk9auol+JJ7QQQ==
-X-Received: by 2002:a5d:6990:: with SMTP id g16mr5122440wru.131.1594907995889;
-        Thu, 16 Jul 2020 06:59:55 -0700 (PDT)
+        bh=1SUhdNLbgzPAWgw1RQZwdPTaqr6bugMt+fbr6rtma0A=;
+        b=bZpRyY7ve3dMw9rIUAl3+RzVIVw6GM3MlyP77FBmdWasz9C+vsAlNIGC+qIxxqQMcp
+         Nq+tnLKA3lCM3wumdZZf41cj9JtCpNZxbrLDUwsTDCCyGb+TlhDVlEYY+nJmuwCx6qqT
+         Ld0cmouZEYZefmJzMk6k+iK9wSBRuWZdYH6Bw621U5W+sKyoH5n9WvLFaXtB3sFtahh5
+         Af1EzkqJJM+o0jYwa7w+EpdCX1w5YICe/JmueTX+1cQ0mgZVMtRGd2JwIRSp+6gr2W0S
+         jEJvUwn8cpM7Hk7RkGG8biyhaWyMxBgV9bl1rKh36Y71biDzJK5sndFHqbu5uv0/yLep
+         mOaA==
+X-Gm-Message-State: AOAM532ASemftHYn+FcGIXhG1HdIp5uYOj4FUK91z9fc57Itj3tTeu/j
+        JwIi6UgDOzFoQaBzXCWY6ukKkA==
+X-Google-Smtp-Source: ABdhPJzmqEBOwvn53W4FP2sjwDCd5ej/MlGX+VNRjOmTyGRQcbKaLe3I4Ls1WV4amb5DWzEuFZxDGQ==
+X-Received: by 2002:a5d:4b45:: with SMTP id w5mr5010385wrs.4.1594907997025;
+        Thu, 16 Jul 2020 06:59:57 -0700 (PDT)
 Received: from localhost.localdomain ([2.31.163.61])
-        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.54
+        by smtp.gmail.com with ESMTPSA id x18sm9351001wrq.13.2020.07.16.06.59.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jul 2020 06:59:55 -0700 (PDT)
+        Thu, 16 Jul 2020 06:59:56 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
         pmeerw@pmeerw.net
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-iio@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 19/30] iio: dac: ad5064: Fix a few kerneldoc misdemeanours
-Date:   Thu, 16 Jul 2020 14:59:17 +0100
-Message-Id: <20200716135928.1456727-20-lee.jones@linaro.org>
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: [PATCH 20/30] iio: dac: ad5446: Complete 'struct ad5446_state' doc and demote unworthy kerneldocs
+Date:   Thu, 16 Jul 2020 14:59:18 +0100
+Message-Id: <20200716135928.1456727-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200716135928.1456727-1-lee.jones@linaro.org>
 References: <20200716135928.1456727-1-lee.jones@linaro.org>
@@ -69,63 +67,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Misspelling, missing description and compiler attribute ordering.
-
 Fixes the following W=1 kernel build warning(s):
 
- drivers/iio/dac/ad5064.c:71: warning: bad line:                         internal vref.
- drivers/iio/dac/ad5064.c:83: warning: Function parameter or member 'channels' not described in 'ad5064_chip_info'
- drivers/iio/dac/ad5064.c:125: warning: Function parameter or member 'lock' not described in 'ad5064_state'
- drivers/iio/dac/ad5064.c:125: warning: Function parameter or member '____cacheline_aligned' not described in 'ad5064_state'
+ drivers/iio/dac/ad5446.c:48: warning: Function parameter or member 'dev' not described in 'ad5446_state'
+ drivers/iio/dac/ad5446.c:48: warning: Function parameter or member 'cached_val' not described in 'ad5446_state'
+ drivers/iio/dac/ad5446.c:48: warning: Function parameter or member 'pwr_down_mode' not described in 'ad5446_state'
+ drivers/iio/dac/ad5446.c:48: warning: Function parameter or member 'pwr_down' not described in 'ad5446_state'
+ drivers/iio/dac/ad5446.c:48: warning: Function parameter or member 'lock' not described in 'ad5446_state'
+ drivers/iio/dac/ad5446.c:323: warning: cannot understand function prototype: 'enum ad5446_supported_spi_device_ids '
+ drivers/iio/dac/ad5446.c:545: warning: cannot understand function prototype: 'enum ad5446_supported_i2c_device_ids '
 
 Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/iio/dac/ad5064.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/iio/dac/ad5446.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/iio/dac/ad5064.c b/drivers/iio/dac/ad5064.c
-index 303f6d1a5f311..d7109f8f52efa 100644
---- a/drivers/iio/dac/ad5064.c
-+++ b/drivers/iio/dac/ad5064.c
-@@ -68,8 +68,8 @@ enum ad5064_regmap_type {
-  * struct ad5064_chip_info - chip specific information
-  * @shared_vref:	whether the vref supply is shared between channels
-  * @internal_vref:	internal reference voltage. 0 if the chip has no
--			internal vref.
-- * @channel:		channel specification
-+ *			internal vref.
-+ * @channels:		channel specification
-  * @num_channels:	number of channels
-  * @regmap_type:	register map layout variant
-  */
-@@ -98,6 +98,7 @@ typedef int (*ad5064_write_func)(struct ad5064_state *st, unsigned int cmd,
-  * @use_internal_vref:	set to true if the internal reference voltage should be
-  *			used.
-  * @write:		register write callback
-+ * @lock:		maintain consistency between cached and dev state
-  * @data:		i2c/spi transfer buffers
+diff --git a/drivers/iio/dac/ad5446.c b/drivers/iio/dac/ad5446.c
+index 8f8afc8999bc7..15c314f08a007 100644
+--- a/drivers/iio/dac/ad5446.c
++++ b/drivers/iio/dac/ad5446.c
+@@ -29,11 +29,14 @@
+ 
+ /**
+  * struct ad5446_state - driver instance specific data
+- * @spi:		spi_device
++ * @dev:		this device
+  * @chip_info:		chip model specific constants, available modes etc
+  * @reg:		supply regulator
+  * @vref_mv:		actual reference voltage used
+- * @lock		lock to protect the data buffer during write ops
++ * @cached_val:		store/retrieve values during power down
++ * @pwr_down_mode:	power down mode (1k, 100k or tristate)
++ * @pwr_down:		true if the device is in power down
++ * @lock:		lock to protect the data buffer during write ops
   */
  
-@@ -111,7 +112,6 @@ struct ad5064_state {
- 	bool				use_internal_vref;
+ struct ad5446_state {
+@@ -313,7 +316,7 @@ static int ad5660_write(struct ad5446_state *st, unsigned val)
+ 	return spi_write(spi, data, sizeof(data));
+ }
  
- 	ad5064_write_func		write;
--	/* Lock used to maintain consistency between cached and dev state */
- 	struct mutex lock;
+-/**
++/*
+  * ad5446_supported_spi_device_ids:
+  * The AD5620/40/60 parts are available in different fixed internal reference
+  * voltage options. The actual part numbers may look differently
+@@ -535,7 +538,7 @@ static int ad5622_write(struct ad5446_state *st, unsigned val)
+ 	return i2c_master_send(client, (char *)&data, sizeof(data));
+ }
  
- 	/*
-@@ -121,7 +121,7 @@ struct ad5064_state {
- 	union {
- 		u8 i2c[3];
- 		__be32 spi;
--	} data ____cacheline_aligned;
-+	} ____cacheline_aligned data;
- };
- 
- enum ad5064_type {
+-/**
++/*
+  * ad5446_supported_i2c_device_ids:
+  * The AD5620/40/60 parts are available in different fixed internal reference
+  * voltage options. The actual part numbers may look differently
 -- 
 2.25.1
 
