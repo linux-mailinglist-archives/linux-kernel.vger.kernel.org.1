@@ -2,264 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14709222D7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E70222D6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 23:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgGPVNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 17:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgGPVNA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 17:13:00 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714FAC061755;
-        Thu, 16 Jul 2020 14:13:00 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id v6so7618273iob.4;
-        Thu, 16 Jul 2020 14:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j4p2o66Y8Hysfm2THt7ux8U8lQwZrSREMMrCnItGpgg=;
-        b=ccywiF4g6bXn2B2vT3dj5M/n9xSMsRouUPOpvpLy4aLUj8oULfJ+c3FbDKouBUYVKC
-         6TpkN+gnyni3ECTO2wClaBly+OGUtIrKmYI2IaAe0Rg9aQbwZN+tzWwHb+DawxaVBWUi
-         ggedp06PekWUD/qNjCyO49Y32XnmyxnJL17iBDGBvGIA+V8PhZawlMaqvr2zY5KXBvYN
-         2o8aoNvSQ055T42wbPYosoulyRO4OVhB2/9PSvbmCd119yC6Rcnmcs8rxO5TKvW3YNVX
-         u0D9a89H+tJhZWCMAz+2qSXhjwFkSZFsOhDJO6xYc4DlpFfbbiFAcT6cCZfOlAmiuE+z
-         Qlsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j4p2o66Y8Hysfm2THt7ux8U8lQwZrSREMMrCnItGpgg=;
-        b=DaytrHgtK+nn2fR88vGCN2Q311H/iuXB0O2SXz5gjkikin/e3DZnO4SE3UCAnqtvVe
-         IaaHQZzB62lNYZYK5hmr4GS9+zpZoHoxpV7bV3as7cFamqCf9j0exjBnLZ2CjvqrHOsn
-         8LbPMl3QtfXfbTuQdjfY+d4FF9W0/j1ERSdCVRfWvsDTkV7tVJ5Zff5MFiC+7q0G/S7U
-         9K0LxkRzAPqubb8OoBM1T44Ytrie3NYPW5q0U/WL9bbywkihoHC3HFjBHrpXcqKhgGeV
-         mwg/Q20t11cezw17QZNAFY4+CC+YLWRZzcLXNEPYkeJd1GhVIFniCEPNymcHNb31CAFS
-         0N4Q==
-X-Gm-Message-State: AOAM5300bLDdvFlKk1QmH657e6R9dg737ueh5RIvmVMdocH2F4zpk7Xe
-        nXOtHB6aFgTk+4mZCQCGdPcTVyhW/pLTPxLUvJ4=
-X-Google-Smtp-Source: ABdhPJzIZWeboByU0xjr1seRgOGrHs5lVck5GyTNcpRf0diZ8LnyYlvJBjbgaRA+bW+cDFQMgHW73Le5EWxThU+YoJA=
-X-Received: by 2002:a6b:1d7:: with SMTP id 206mr6406999iob.138.1594933979444;
- Thu, 16 Jul 2020 14:12:59 -0700 (PDT)
+        id S1726962AbgGPVH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 17:07:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbgGPVH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 17:07:56 -0400
+Received: from embeddedor (unknown [201.162.240.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CF9E207DD;
+        Thu, 16 Jul 2020 21:07:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1594933675;
+        bh=YoUSoM3xGxkRWbb8SYHwwTUnz9+8wwbU0xwpr/carJw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ovEcFwCV3dckQXi+gnA2oZ9MWLDRFoYNggAdSPid8aV+FhzCx7w49YKmIgpMm1gM2
+         fsjCPSjfnogqYJN9OkrGrJZWzGN6Z5peh7uCrTHG3uTz80hDovGJicnawXZtM5cRkq
+         rNmlft5b0TPTuKbLzzvjCOqFzPLN2yZUXq2lqy5Q=
+Date:   Thu, 16 Jul 2020 16:13:20 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] PCI: Use fallthrough pseudo-keyword
+Message-ID: <20200716211320.GA17054@embeddedor>
 MIME-Version: 1.0
-References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com> <1594429136-20002-14-git-send-email-alex.shi@linux.alibaba.com>
-In-Reply-To: <1594429136-20002-14-git-send-email-alex.shi@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 16 Jul 2020 14:12:48 -0700
-Message-ID: <CAKgT0UfLbVRQ4+TOw-XnjuyZqoVmRmWb5_rbEZZ0povYv-n_Lg@mail.gmail.com>
-Subject: Re: [PATCH v16 13/22] mm/lru: introduce TestClearPageLRU
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 5:59 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->
-> Combine PageLRU check and ClearPageLRU into a function by new
-> introduced func TestClearPageLRU. This function will be used as page
-> isolation precondition to prevent other isolations some where else.
-> Then there are may non PageLRU page on lru list, need to remove BUG
-> checking accordingly.
->
-> Hugh Dickins pointed that __page_cache_release and release_pages
-> has no need to do atomic clear bit since no user on the page at that
-> moment. and no need get_page() before lru bit clear in isolate_lru_page,
-> since it '(1) Must be called with an elevated refcount on the page'.
->
-> As Andrew Morton mentioned this change would dirty cacheline for page
-> isn't on LRU. But the lost would be acceptable with Rong Chen
-> <rong.a.chen@intel.com> report:
-> https://lkml.org/lkml/2020/3/4/173
->
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: cgroups@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> ---
->  include/linux/page-flags.h |  1 +
->  mm/mlock.c                 |  3 +--
->  mm/swap.c                  |  6 ++----
->  mm/vmscan.c                | 26 +++++++++++---------------
->  4 files changed, 15 insertions(+), 21 deletions(-)
->
-> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> index 6be1aa559b1e..9554ed1387dc 100644
-> --- a/include/linux/page-flags.h
-> +++ b/include/linux/page-flags.h
-> @@ -326,6 +326,7 @@ static inline void page_init_poison(struct page *page, size_t size)
->  PAGEFLAG(Dirty, dirty, PF_HEAD) TESTSCFLAG(Dirty, dirty, PF_HEAD)
->         __CLEARPAGEFLAG(Dirty, dirty, PF_HEAD)
->  PAGEFLAG(LRU, lru, PF_HEAD) __CLEARPAGEFLAG(LRU, lru, PF_HEAD)
-> +       TESTCLEARFLAG(LRU, lru, PF_HEAD)
->  PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
->         TESTCLEARFLAG(Active, active, PF_HEAD)
->  PAGEFLAG(Workingset, workingset, PF_HEAD)
-> diff --git a/mm/mlock.c b/mm/mlock.c
-> index f8736136fad7..228ba5a8e0a5 100644
-> --- a/mm/mlock.c
-> +++ b/mm/mlock.c
-> @@ -108,13 +108,12 @@ void mlock_vma_page(struct page *page)
->   */
->  static bool __munlock_isolate_lru_page(struct page *page, bool getpage)
->  {
-> -       if (PageLRU(page)) {
-> +       if (TestClearPageLRU(page)) {
->                 struct lruvec *lruvec;
->
->                 lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
->                 if (getpage)
->                         get_page(page);
-> -               ClearPageLRU(page);
->                 del_page_from_lru_list(page, lruvec, page_lru(page));
->                 return true;
->         }
-> diff --git a/mm/swap.c b/mm/swap.c
-> index f645965fde0e..5092fe9c8c47 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -83,10 +83,9 @@ static void __page_cache_release(struct page *page)
->                 struct lruvec *lruvec;
->                 unsigned long flags;
->
-> +               __ClearPageLRU(page);
->                 spin_lock_irqsave(&pgdat->lru_lock, flags);
->                 lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> -               VM_BUG_ON_PAGE(!PageLRU(page), page);
-> -               __ClearPageLRU(page);
->                 del_page_from_lru_list(page, lruvec, page_off_lru(page));
->                 spin_unlock_irqrestore(&pgdat->lru_lock, flags);
->         }
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-So this piece doesn't make much sense to me. Why not use
-TestClearPageLRU(page) here? Just a few lines above you are testing
-for PageLRU(page) and it seems like if you are going to go for an
-atomic test/clear and then remove the page from the LRU list you
-should be using it here as well otherwise it seems like you could run
-into a potential collision since you are testing here without clearing
-the bit.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-> @@ -878,9 +877,8 @@ void release_pages(struct page **pages, int nr)
->                                 spin_lock_irqsave(&locked_pgdat->lru_lock, flags);
->                         }
->
-> -                       lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
-> -                       VM_BUG_ON_PAGE(!PageLRU(page), page);
->                         __ClearPageLRU(page);
-> +                       lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
->                         del_page_from_lru_list(page, lruvec, page_off_lru(page));
->                 }
->
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/pci/hotplug/ibmphp_res.c  | 2 +-
+ drivers/pci/hotplug/pciehp_ctrl.c | 4 ++--
+ drivers/pci/hotplug/shpchp_ctrl.c | 4 ++--
+ drivers/pci/pci.c                 | 4 ++--
+ drivers/pci/proc.c                | 2 +-
+ drivers/pci/quirks.c              | 4 ++--
+ drivers/pci/setup-bus.c           | 2 +-
+ 7 files changed, 11 insertions(+), 11 deletions(-)
 
-Same here. You are just moving the flag clearing, but you didn't
-combine it with the test. It seems like if you are expecting this to
-be treated as an atomic operation. It should be a relatively low cost
-to do since you already should own the cacheline as a result of
-calling put_page_testzero so I am not sure why you are not combining
-the two.
+diff --git a/drivers/pci/hotplug/ibmphp_res.c b/drivers/pci/hotplug/ibmphp_res.c
+index 5c93aa14f0de..ae9acc77d14f 100644
+--- a/drivers/pci/hotplug/ibmphp_res.c
++++ b/drivers/pci/hotplug/ibmphp_res.c
+@@ -1941,7 +1941,7 @@ static int __init update_bridge_ranges(struct bus_node **bus)
+ 						break;
+ 					case PCI_HEADER_TYPE_BRIDGE:
+ 						function = 0x8;
+-						/* fall through */
++						fallthrough;
+ 					case PCI_HEADER_TYPE_MULTIBRIDGE:
+ 						/* We assume here that only 1 bus behind the bridge
+ 						   TO DO: add functionality for several:
+diff --git a/drivers/pci/hotplug/pciehp_ctrl.c b/drivers/pci/hotplug/pciehp_ctrl.c
+index 6503d15effbb..9f85815b4f53 100644
+--- a/drivers/pci/hotplug/pciehp_ctrl.c
++++ b/drivers/pci/hotplug/pciehp_ctrl.c
+@@ -236,7 +236,7 @@ void pciehp_handle_presence_or_link_change(struct controller *ctrl, u32 events)
+ 	switch (ctrl->state) {
+ 	case BLINKINGOFF_STATE:
+ 		cancel_delayed_work(&ctrl->button_work);
+-		/* fall through */
++		fallthrough;
+ 	case ON_STATE:
+ 		ctrl->state = POWEROFF_STATE;
+ 		mutex_unlock(&ctrl->state_lock);
+@@ -265,7 +265,7 @@ void pciehp_handle_presence_or_link_change(struct controller *ctrl, u32 events)
+ 	switch (ctrl->state) {
+ 	case BLINKINGON_STATE:
+ 		cancel_delayed_work(&ctrl->button_work);
+-		/* fall through */
++		fallthrough;
+ 	case OFF_STATE:
+ 		ctrl->state = POWERON_STATE;
+ 		mutex_unlock(&ctrl->state_lock);
+diff --git a/drivers/pci/hotplug/shpchp_ctrl.c b/drivers/pci/hotplug/shpchp_ctrl.c
+index afdc52d1cae7..65502e3f7b4f 100644
+--- a/drivers/pci/hotplug/shpchp_ctrl.c
++++ b/drivers/pci/hotplug/shpchp_ctrl.c
+@@ -642,7 +642,7 @@ int shpchp_sysfs_enable_slot(struct slot *p_slot)
+ 	switch (p_slot->state) {
+ 	case BLINKINGON_STATE:
+ 		cancel_delayed_work(&p_slot->work);
+-		/* fall through */
++		fallthrough;
+ 	case STATIC_STATE:
+ 		p_slot->state = POWERON_STATE;
+ 		mutex_unlock(&p_slot->lock);
+@@ -678,7 +678,7 @@ int shpchp_sysfs_disable_slot(struct slot *p_slot)
+ 	switch (p_slot->state) {
+ 	case BLINKINGOFF_STATE:
+ 		cancel_delayed_work(&p_slot->work);
+-		/* fall through */
++		fallthrough;
+ 	case STATIC_STATE:
+ 		p_slot->state = POWEROFF_STATE;
+ 		mutex_unlock(&p_slot->lock);
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 45c51aff9c03..b02c5e6f5b67 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -922,7 +922,7 @@ static int pci_raw_set_power_state(struct pci_dev *dev, pci_power_t state)
+ 		if ((pmcsr & PCI_PM_CTRL_STATE_MASK) == PCI_D3hot
+ 		 && !(pmcsr & PCI_PM_CTRL_NO_SOFT_RESET))
+ 			need_restore = true;
+-		/* Fall-through - force to D0 */
++		fallthrough;	/* force to D0 */
+ 	default:
+ 		pmcsr = 0;
+ 		break;
+@@ -2406,7 +2406,7 @@ static pci_power_t pci_target_state(struct pci_dev *dev, bool wakeup)
+ 		case PCI_D2:
+ 			if (pci_no_d1d2(dev))
+ 				break;
+-			/* else, fall through */
++			fallthrough;
+ 		default:
+ 			target_state = state;
+ 		}
+diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
+index bd2b691fa7a3..d35186b01d98 100644
+--- a/drivers/pci/proc.c
++++ b/drivers/pci/proc.c
+@@ -231,7 +231,7 @@ static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
+ 		}
+ 		/* If arch decided it can't, fall through... */
+ #endif /* HAVE_PCI_MMAP */
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 9d7a43261613..0f18237e57a8 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -1730,7 +1730,7 @@ static void quirk_jmicron_ata(struct pci_dev *pdev)
+ 	case PCI_DEVICE_ID_JMICRON_JMB366:
+ 		/* Redirect IDE second PATA port to the right spot */
+ 		conf5 |= (1 << 24);
+-		/* Fall through */
++		fallthrough;
+ 	case PCI_DEVICE_ID_JMICRON_JMB361:
+ 	case PCI_DEVICE_ID_JMICRON_JMB363:
+ 	case PCI_DEVICE_ID_JMICRON_JMB369:
+@@ -2224,7 +2224,7 @@ static void quirk_netmos(struct pci_dev *dev)
+ 		if (dev->subsystem_vendor == PCI_VENDOR_ID_IBM &&
+ 				dev->subsystem_device == 0x0299)
+ 			return;
+-		/* else, fall through */
++		fallthrough;
+ 	case PCI_DEVICE_ID_NETMOS_9735:
+ 	case PCI_DEVICE_ID_NETMOS_9745:
+ 	case PCI_DEVICE_ID_NETMOS_9845:
+diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
+index 9b94b1f16d80..bd04a6a916d4 100644
+--- a/drivers/pci/setup-bus.c
++++ b/drivers/pci/setup-bus.c
+@@ -1252,7 +1252,7 @@ void __pci_bus_size_bridges(struct pci_bus *bus, struct list_head *realloc_head)
+ 			additional_mmio_size = pci_hotplug_mmio_size;
+ 			additional_mmio_pref_size = pci_hotplug_mmio_pref_size;
+ 		}
+-		/* Fall through */
++		fallthrough;
+ 	default:
+ 		pbus_size_io(bus, realloc_head ? 0 : additional_io_size,
+ 			     additional_io_size, realloc_head);
+-- 
+2.27.0
 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index c1c4259b4de5..18986fefd49b 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1548,16 +1548,16 @@ int __isolate_lru_page(struct page *page, isolate_mode_t mode)
->  {
->         int ret = -EINVAL;
->
-> -       /* Only take pages on the LRU. */
-> -       if (!PageLRU(page))
-> -               return ret;
-> -
->         /* Compaction should not handle unevictable pages but CMA can do so */
->         if (PageUnevictable(page) && !(mode & ISOLATE_UNEVICTABLE))
->                 return ret;
->
->         ret = -EBUSY;
->
-> +       /* Only take pages on the LRU. */
-> +       if (!PageLRU(page))
-> +               return ret;
-> +
->         /*
->          * To minimise LRU disruption, the caller can indicate that it only
->          * wants to isolate pages it will be able to operate on without
-> @@ -1671,8 +1671,6 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
->                 page = lru_to_page(src);
->                 prefetchw_prev_lru_page(page, src, flags);
->
-> -               VM_BUG_ON_PAGE(!PageLRU(page), page);
-> -
->                 nr_pages = compound_nr(page);
->                 total_scan += nr_pages;
->
-
-So effectively the changes here are making it so that a !PageLRU page
-will cycle to the start of the LRU list. Now if I understand correctly
-we are guaranteed that if the flag is not set it cannot be set while
-we are holding the lru_lock, however it can be cleared while we are
-holding the lock, correct? Thus that is why isolate_lru_pages has to
-call TestClearPageLRU after the earlier check in __isolate_lru_page.
-
-It might make it more readable to pull in the later patch that
-modifies isolate_lru_pages that has it using TestClearPageLRU.
-
-> @@ -1769,21 +1767,19 @@ int isolate_lru_page(struct page *page)
->         VM_BUG_ON_PAGE(!page_count(page), page);
->         WARN_RATELIMIT(PageTail(page), "trying to isolate tail page");
->
-> -       if (PageLRU(page)) {
-> +       if (TestClearPageLRU(page)) {
->                 pg_data_t *pgdat = page_pgdat(page);
->                 struct lruvec *lruvec;
-> +               int lru = page_lru(page);
->
-> -               spin_lock_irq(&pgdat->lru_lock);
-> +               get_page(page);
->                 lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> -               if (PageLRU(page)) {
-> -                       int lru = page_lru(page);
-> -                       get_page(page);
-> -                       ClearPageLRU(page);
-> -                       del_page_from_lru_list(page, lruvec, lru);
-> -                       ret = 0;
-> -               }
-> +               spin_lock_irq(&pgdat->lru_lock);
-> +               del_page_from_lru_list(page, lruvec, lru);
->                 spin_unlock_irq(&pgdat->lru_lock);
-> +               ret = 0;
->         }
-> +
->         return ret;
->  }
->
-> --
-> 1.8.3.1
->
->
