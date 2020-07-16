@@ -2,154 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFB1222295
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B05622229D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Jul 2020 14:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbgGPMjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Jul 2020 08:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728087AbgGPMjB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Jul 2020 08:39:01 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905AAC061755;
-        Thu, 16 Jul 2020 05:39:01 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id t15so4607616pjq.5;
-        Thu, 16 Jul 2020 05:39:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=K1HWiQZgE61cy/vLmXw2XWqZLzJFdYeUlZUgURRvU5U=;
-        b=hM8MArVcutmn6qHTeKVWDy7oE71DfDVoTU4O5q7N0THKl52g271rQZviqdZ3BmfX2H
-         wBqoYDoDmNn324vso1g5wApALL7Jldq7EGkn5+NuVzUSPd68+gg9wJDZHRjN1owC2enb
-         +zVvWZviVR2Mz9xJ/N2ZvDihSuoB5y8+If5VF7W+koKd3C0G3mMDbFYvOQuagCm4/Ppp
-         wTGtApYTOmZ4bsrZZcXyL59EAtHZ+rM5s/aRpM9/cUJ2NaGLoo/siDBxW0K/fJrGmjuf
-         CsF/y6XLeLoJW4I1RdWc99f3nheSOJKwdlk4AEm28L7a532FtDq6lsmzLhmFDIeYYkvd
-         aMCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=K1HWiQZgE61cy/vLmXw2XWqZLzJFdYeUlZUgURRvU5U=;
-        b=MjmYiXPn78saZh9fduGkVNauZVVdyFmhP2/OTLtFrEbZSbxcxve8j9huGCqMWQ2YsW
-         1J3k8pm7xuTmc4HEEuh+WsO+POf7Aea19XInNmRGQdCm/AARNlJSm/hmUQZLnYnpFD58
-         5YRIU2LfGJxiQVGDeZsLmWz7AzWdRrt/6q5Dj3v5Kg0EO2WgTR/8rygAIK5TCU0xg9TX
-         mtOEYpHeYs12+iIYA+ofsiRHto4fQqUJwgm9uTuvCC6Lr9lFetJmEvhfGXfLWUyIFLMs
-         sF9Us467YVU0fQMj+6A+EqCPwf7fvp+xz2/a0P0GIL9Rdh7mVGbFPqxG7ApXPKke5QIR
-         JkWw==
-X-Gm-Message-State: AOAM5310dpboEZuGeV+HGLC6mqFJjD0RcgG3I0UKkq/AWpzvHkcjWEN2
-        BiFWxQByrq+Cz2SwDFlTJ++EMEgFA6YLkFEl1OQ=
-X-Google-Smtp-Source: ABdhPJym4fUkA7PWQNVi5tG8ifNxe+uZqYMEc9TePz2JLjfYzUvpwTwBo1WSpcBLmCkunTVTGzgqldVCTP55rLJLojE=
-X-Received: by 2002:a17:90a:ef17:: with SMTP id k23mr4253147pjz.45.1594903141101;
- Thu, 16 Jul 2020 05:39:01 -0700 (PDT)
+        id S1728560AbgGPMjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Jul 2020 08:39:53 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:7875 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728188AbgGPMjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 16 Jul 2020 08:39:52 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id B58E3E23ED3454BD6129;
+        Thu, 16 Jul 2020 20:39:44 +0800 (CST)
+Received: from [127.0.0.1] (10.57.22.126) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Thu, 16 Jul 2020
+ 20:39:37 +0800
+Subject: Re: [PATCH -next] scsi: hisi_sas: Convert to DEFINE_SHOW_ATTRIBUTE
+To:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Garry <john.garry@huawei.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200716084714.7872-1-miaoqinglang@huawei.com>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <c3bc1f66-2eae-1f9b-58bf-7eacb25739e1@huawei.com>
+Date:   Thu, 16 Jul 2020 20:39:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-References: <20200618100852.13715-1-gengcixi@gmail.com> <2fae67c7637f4e978cb54c3b96090788@BJMBX01.spreadtrum.com>
-In-Reply-To: <2fae67c7637f4e978cb54c3b96090788@BJMBX01.spreadtrum.com>
-From:   Cixi Geng <gengcixi@gmail.com>
-Date:   Thu, 16 Jul 2020 20:38:25 +0800
-Message-ID: <CAF12kFseC4MMbEUk6CgW=Hpz_Hg-+fjwbLZKFdPu0K_EGtcPDw@mail.gmail.com>
-Subject: Re: [PATCH V6] GCOV: Add config to check the preqequisites situation
-To:     Greg KH <gregkh@linuxfoundation.org>, jslaby@suse.com,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-serial@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Cixi Geng1 <cixi.geng1@unisoc.com>,
-        Orson Zhai <orsonzhai@gmail.com>, zhang.lyra@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200716084714.7872-1-miaoqinglang@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.57.22.126]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All:
-Does this patch need more modification?
+Hi, Qinglang
 
-
-
-> =E5=8F=91=E4=BB=B6=E4=BA=BA: gengcixi@gmail.com <gengcixi@gmail.com>
-> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2020=E5=B9=B46=E6=9C=8818=E6=97=A5 =
-18:08
-> =E6=94=B6=E4=BB=B6=E4=BA=BA: gregkh@linuxfoundation.org; jslaby@suse.com;=
- oberpar@linux.ibm.com; linux-serial@vger.kernel.org; linux-kernel@vger.ker=
-nel.org
-> =E6=8A=84=E9=80=81: orsonzhai@gmail.com; zhang.lyra@gmail.com; =E8=80=BF=
-=E6=85=88=E7=86=99 (Cixi Geng/10039)
-> =E4=B8=BB=E9=A2=98: [PATCH V6] GCOV: Add config to check the preqequisite=
-s situation
+On 2020/7/16 16:47, Qinglang Miao wrote:
+> From: Yongqiang Liu <liuyongqiang13@huawei.com>
 >
-> From: Cixi Geng <cixi.geng1@unisoc.com>
+> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
 >
-> Introduce new configuration option GCOV_PROFILE_PREREQS that can be
-> used to check whether the prerequisites for enabling gcov profiling
-> for specific files and directories are met.
->
-> Only add SERIAL_GCOV for an example.
->
-> Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
+> Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
 > ---
->  drivers/tty/serial/Kconfig  |  7 +++++++
->  drivers/tty/serial/Makefile |  1 +
->  kernel/gcov/Kconfig         | 10 ++++++++++
->  3 files changed, 18 insertions(+)
+>   drivers/scsi/hisi_sas/hisi_sas_main.c | 137 ++------------------------
+>   1 file changed, 10 insertions(+), 127 deletions(-)
 >
-> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> index adf9e80e7dc9..6df002370f18 100644
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -1566,3 +1566,10 @@ endmenu
->
->  config SERIAL_MCTRL_GPIO
->         tristate
-> +
-> +config SERIAL_GCOV
-> +       bool "Enable profile gcov for serial directory"
-> +       depends on GCOV_PROFILE_PREREQS
-> +       help
-> +         The SERIAL_GCOV will add Gcov profiling flags when kernel compi=
-les.
-> +         Say 'Y' here if you want the gcov data for the serial directory=
-,
-> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-> index d056ee6cca33..17272733db95 100644
-> --- a/drivers/tty/serial/Makefile
-> +++ b/drivers/tty/serial/Makefile
-> @@ -3,6 +3,7 @@
->  # Makefile for the kernel serial device drivers.
->  #
->
-> +GCOV_PROFILE :=3D $(CONFIG_SERIAL_GCOV)
->  obj-$(CONFIG_SERIAL_CORE) +=3D serial_core.o
->
->  obj-$(CONFIG_SERIAL_EARLYCON) +=3D earlycon.o
-> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-> index 3941a9c48f83..f415c4aaf0ab 100644
-> --- a/kernel/gcov/Kconfig
-> +++ b/kernel/gcov/Kconfig
-> @@ -51,6 +51,16 @@ config GCOV_PROFILE_ALL
->         larger and run slower. Also be sure to exclude files from profili=
-ng
->         which are not linked to the kernel image to prevent linker errors=
-.
->
-> +config GCOV_PROFILE_PREREQS
-> +       bool "Profile Kernel for prereqs"
-> +       default y if GCOV_KERNEL && !COMPILE_TEST
-> +       help
-> +         This options activates profiling for the specified kernel modul=
-es.
-> +
-> +         When some modules need Gcov data, enable this config, then conf=
-igure
-> +         with gcov on the corresponding modules,The directories or files=
- of
-> +         these modules will be added profiling flags after kernel compil=
-e.
-> +
->  choice
->         prompt "Specify GCOV format"
->         depends on GCOV_KERNEL
-> --
-> 2.17.1
+> diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
+> index 852d2620e..f50b0c78f 100644
+> --- a/drivers/scsi/hisi_sas/hisi_sas_main.c
+> +++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
+> @@ -2870,19 +2870,7 @@ static int hisi_sas_debugfs_global_show(struct seq_file *s, void *p)
+>   	return 0;
+>   }
+>   
+> -static int hisi_sas_debugfs_global_open(struct inode *inode, struct file *filp)
+> -{
+> -	return single_open(filp, hisi_sas_debugfs_global_show,
+> -			   inode->i_private);
+> -}
+> -
+> -static const struct file_operations hisi_sas_debugfs_global_fops = {
+> -	.open = hisi_sas_debugfs_global_open,
+> -	.read_iter = seq_read_iter,
+> -	.llseek = seq_lseek,
+> -	.release = single_release,
+> -	.owner = THIS_MODULE,
+> -};
+
+
+I saw that your code is different from code in kernel 5.8-rc4, and it 
+should be as follow:
+
+static const struct file_operations hisi_sas_debugfs_global_fops = {
+     .open = hisi_sas_debugfs_global_open,
+     .read = seq_read,
+     .llseek = seq_lseek,
+     .release = single_release,
+     .owner = THIS_MODULE,
+};
+
+
+Plus, if we use this macro directly when we write this code, it really 
+makes the code simpler. But if we accept the cleanup now,
+
+we might need to consider evading compilation failures when we merge 
+these code back to some older kernel (e.g kernel 4.14 for centOS 7.6).
+
+I think this marco is introduced into kernel 4.16-rc2.
+
+
+So I don't see much additional benefit to us from this simplification. 
+But this marco is quite helpful and I think I will use it somewhere else.
+
+Thanks
+
+Jiaxing
+
+> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_global);
+>   
+>   static int hisi_sas_debugfs_axi_show(struct seq_file *s, void *p)
+>   {
+> @@ -2897,19 +2885,7 @@ static int hisi_sas_debugfs_axi_show(struct seq_file *s, void *p)
+>   	return 0;
+>   }
+>   
+> -static int hisi_sas_debugfs_axi_open(struct inode *inode, struct file *filp)
+> -{
+> -	return single_open(filp, hisi_sas_debugfs_axi_show,
+> -			   inode->i_private);
+> -}
+> -
+> -static const struct file_operations hisi_sas_debugfs_axi_fops = {
+> -	.open = hisi_sas_debugfs_axi_open,
+> -	.read_iter = seq_read_iter,
+> -	.llseek = seq_lseek,
+> -	.release = single_release,
+> -	.owner = THIS_MODULE,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_axi);
+>   
+>   static int hisi_sas_debugfs_ras_show(struct seq_file *s, void *p)
+>   {
+> @@ -2924,19 +2900,7 @@ static int hisi_sas_debugfs_ras_show(struct seq_file *s, void *p)
+>   	return 0;
+>   }
+>   
+> -static int hisi_sas_debugfs_ras_open(struct inode *inode, struct file *filp)
+> -{
+> -	return single_open(filp, hisi_sas_debugfs_ras_show,
+> -			   inode->i_private);
+> -}
+> -
+> -static const struct file_operations hisi_sas_debugfs_ras_fops = {
+> -	.open = hisi_sas_debugfs_ras_open,
+> -	.read_iter = seq_read_iter,
+> -	.llseek = seq_lseek,
+> -	.release = single_release,
+> -	.owner = THIS_MODULE,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_ras);
+>   
+>   static int hisi_sas_debugfs_port_show(struct seq_file *s, void *p)
+>   {
+> @@ -2951,18 +2915,7 @@ static int hisi_sas_debugfs_port_show(struct seq_file *s, void *p)
+>   	return 0;
+>   }
+>   
+> -static int hisi_sas_debugfs_port_open(struct inode *inode, struct file *filp)
+> -{
+> -	return single_open(filp, hisi_sas_debugfs_port_show, inode->i_private);
+> -}
+> -
+> -static const struct file_operations hisi_sas_debugfs_port_fops = {
+> -	.open = hisi_sas_debugfs_port_open,
+> -	.read_iter = seq_read_iter,
+> -	.llseek = seq_lseek,
+> -	.release = single_release,
+> -	.owner = THIS_MODULE,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_port);
+>   
+>   static void hisi_sas_show_row_64(struct seq_file *s, int index,
+>   				 int sz, __le64 *ptr)
+> @@ -3019,18 +2972,7 @@ static int hisi_sas_debugfs_cq_show(struct seq_file *s, void *p)
+>   	return 0;
+>   }
+>   
+> -static int hisi_sas_debugfs_cq_open(struct inode *inode, struct file *filp)
+> -{
+> -	return single_open(filp, hisi_sas_debugfs_cq_show, inode->i_private);
+> -}
+> -
+> -static const struct file_operations hisi_sas_debugfs_cq_fops = {
+> -	.open = hisi_sas_debugfs_cq_open,
+> -	.read_iter = seq_read_iter,
+> -	.llseek = seq_lseek,
+> -	.release = single_release,
+> -	.owner = THIS_MODULE,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_cq);
+>   
+>   static void hisi_sas_dq_show_slot(struct seq_file *s, int slot, void *dq_ptr)
+>   {
+> @@ -3052,18 +2994,7 @@ static int hisi_sas_debugfs_dq_show(struct seq_file *s, void *p)
+>   	return 0;
+>   }
+>   
+> -static int hisi_sas_debugfs_dq_open(struct inode *inode, struct file *filp)
+> -{
+> -	return single_open(filp, hisi_sas_debugfs_dq_show, inode->i_private);
+> -}
+> -
+> -static const struct file_operations hisi_sas_debugfs_dq_fops = {
+> -	.open = hisi_sas_debugfs_dq_open,
+> -	.read_iter = seq_read_iter,
+> -	.llseek = seq_lseek,
+> -	.release = single_release,
+> -	.owner = THIS_MODULE,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_dq);
+>   
+>   static int hisi_sas_debugfs_iost_show(struct seq_file *s, void *p)
+>   {
+> @@ -3080,18 +3011,7 @@ static int hisi_sas_debugfs_iost_show(struct seq_file *s, void *p)
+>   	return 0;
+>   }
+>   
+> -static int hisi_sas_debugfs_iost_open(struct inode *inode, struct file *filp)
+> -{
+> -	return single_open(filp, hisi_sas_debugfs_iost_show, inode->i_private);
+> -}
+> -
+> -static const struct file_operations hisi_sas_debugfs_iost_fops = {
+> -	.open = hisi_sas_debugfs_iost_open,
+> -	.read_iter = seq_read_iter,
+> -	.llseek = seq_lseek,
+> -	.release = single_release,
+> -	.owner = THIS_MODULE,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_iost);
+>   
+>   static int hisi_sas_debugfs_iost_cache_show(struct seq_file *s, void *p)
+>   {
+> @@ -3117,20 +3037,7 @@ static int hisi_sas_debugfs_iost_cache_show(struct seq_file *s, void *p)
+>   	return 0;
+>   }
+>   
+> -static int hisi_sas_debugfs_iost_cache_open(struct inode *inode,
+> -					    struct file *filp)
+> -{
+> -	return single_open(filp, hisi_sas_debugfs_iost_cache_show,
+> -			   inode->i_private);
+> -}
+> -
+> -static const struct file_operations hisi_sas_debugfs_iost_cache_fops = {
+> -	.open = hisi_sas_debugfs_iost_cache_open,
+> -	.read_iter = seq_read_iter,
+> -	.llseek = seq_lseek,
+> -	.release = single_release,
+> -	.owner = THIS_MODULE,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_iost_cache);
+>   
+>   static int hisi_sas_debugfs_itct_show(struct seq_file *s, void *p)
+>   {
+> @@ -3147,18 +3054,7 @@ static int hisi_sas_debugfs_itct_show(struct seq_file *s, void *p)
+>   	return 0;
+>   }
+>   
+> -static int hisi_sas_debugfs_itct_open(struct inode *inode, struct file *filp)
+> -{
+> -	return single_open(filp, hisi_sas_debugfs_itct_show, inode->i_private);
+> -}
+> -
+> -static const struct file_operations hisi_sas_debugfs_itct_fops = {
+> -	.open = hisi_sas_debugfs_itct_open,
+> -	.read_iter = seq_read_iter,
+> -	.llseek = seq_lseek,
+> -	.release = single_release,
+> -	.owner = THIS_MODULE,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_itct);
+>   
+>   static int hisi_sas_debugfs_itct_cache_show(struct seq_file *s, void *p)
+>   {
+> @@ -3184,20 +3080,7 @@ static int hisi_sas_debugfs_itct_cache_show(struct seq_file *s, void *p)
+>   	return 0;
+>   }
+>   
+> -static int hisi_sas_debugfs_itct_cache_open(struct inode *inode,
+> -					    struct file *filp)
+> -{
+> -	return single_open(filp, hisi_sas_debugfs_itct_cache_show,
+> -			   inode->i_private);
+> -}
+> -
+> -static const struct file_operations hisi_sas_debugfs_itct_cache_fops = {
+> -	.open = hisi_sas_debugfs_itct_cache_open,
+> -	.read_iter = seq_read_iter,
+> -	.llseek = seq_lseek,
+> -	.release = single_release,
+> -	.owner = THIS_MODULE,
+> -};
+> +DEFINE_SHOW_ATTRIBUTE(hisi_sas_debugfs_itct_cache);
+>   
+>   static void hisi_sas_debugfs_create_files(struct hisi_hba *hisi_hba)
+>   {
+
